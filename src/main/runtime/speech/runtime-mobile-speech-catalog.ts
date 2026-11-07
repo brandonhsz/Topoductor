@@ -43,7 +43,7 @@ export class RuntimeMobileSpeechCatalog {
     const runnable = SPEECH_MODEL_CATALOG.filter(
       (manifest) =>
         isOfferedSpeechModel(manifest) &&
-        (!isLocalSpeechModel(manifest) || hasLocalSpeechRecognizer(manifest))
+        (!isLocalSpeechModel(manifest) || hasLocalSpeechRecognizer())
     )
     const models: RuntimeSpeechModelSummary[] = runnable.map((manifest) => {
       const state = stateById.get(manifest.id)
@@ -70,7 +70,7 @@ export class RuntimeMobileSpeechCatalog {
   async download(modelId: string): Promise<{ started: true }> {
     const store = this.requireStore()
     const manifest = getCatalogModel(modelId)
-    if (!manifest || !isLocalSpeechModel(manifest) || !hasLocalSpeechRecognizer(manifest)) {
+    if (!manifest || !isLocalSpeechModel(manifest) || !hasLocalSpeechRecognizer()) {
       throw new Error('voice_model_not_downloadable')
     }
     void getSpeechModelManager(store)
