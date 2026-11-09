@@ -137,10 +137,11 @@ const stoppedReply = (worker: InstanceType<typeof MockWorker>) => ({
 })
 
 const readyModels = (): ModelManager =>
-  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: SttService reads only getModelState and getModelDir.
+  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: SttService reads getModelState and getModelDir, and fetches the VAD with downloadModel.
   ({
     getModelState: vi.fn().mockResolvedValue({ id: 'model-a', status: 'ready' }),
-    getModelDir: vi.fn().mockReturnValue('/tmp/model-a')
+    getModelDir: vi.fn().mockReturnValue('/tmp/model-a'),
+    downloadModel: vi.fn().mockResolvedValue(undefined)
   }) as never
 
 // Starting a session awaits the model check before it spawns the process.
@@ -321,11 +322,12 @@ describe('SttService', () => {
   })
 
   it('rebuilds the warm worker when the dictation language changes', async () => {
-    // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: a local start reads only getModelState and getModelDir.
+    // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: a local start reads getModelState and getModelDir, and fetches the VAD with downloadModel.
     const service = new SttService(
       {
         getModelState: vi.fn().mockResolvedValue({ id: 'whisper-model', status: 'ready' }),
-        getModelDir: vi.fn().mockReturnValue('/tmp/whisper-model')
+        getModelDir: vi.fn().mockReturnValue('/tmp/whisper-model'),
+        downloadModel: vi.fn().mockResolvedValue(undefined)
       } as never,
       spawnMockWorker
     )
@@ -468,7 +470,8 @@ describe('SttService', () => {
     const service = new SttService(
       {
         getModelState: vi.fn(() => modelStatePromise),
-        getModelDir: vi.fn().mockReturnValue('/tmp/model-a')
+        getModelDir: vi.fn().mockReturnValue('/tmp/model-a'),
+        downloadModel: vi.fn().mockResolvedValue(undefined)
       } as never,
       spawnMockWorker
     )
@@ -501,7 +504,8 @@ describe('SttService', () => {
     const service = new SttService(
       {
         getModelState: vi.fn().mockResolvedValue({ id: 'openai-model', status: 'ready' }),
-        getModelDir: vi.fn().mockReturnValue('/tmp/model-a')
+        getModelDir: vi.fn().mockReturnValue('/tmp/model-a'),
+        downloadModel: vi.fn().mockResolvedValue(undefined)
       } as never,
       spawnMockWorker
     )
@@ -783,7 +787,8 @@ describe('SttService', () => {
     const service = new SttService(
       {
         getModelState,
-        getModelDir: vi.fn().mockReturnValue('/tmp/model-a')
+        getModelDir: vi.fn().mockReturnValue('/tmp/model-a'),
+        downloadModel: vi.fn().mockResolvedValue(undefined)
       } as never,
       spawnMockWorker
     )
@@ -811,14 +816,15 @@ describe('SttService', () => {
     async (event) => {
       vi.useFakeTimers()
       try {
-        const models: Pick<ModelManager, 'getModelState' | 'getModelDir'> = {
+        const models: Pick<ModelManager, 'getModelState' | 'getModelDir' | 'downloadModel'> = {
           getModelState: vi.fn<ModelManager['getModelState']>().mockResolvedValue({
             id: 'model-a',
             status: 'ready'
           }),
-          getModelDir: vi.fn<ModelManager['getModelDir']>().mockReturnValue('/tmp/model-a')
+          getModelDir: vi.fn<ModelManager['getModelDir']>().mockReturnValue('/tmp/model-a'),
+          downloadModel: vi.fn().mockResolvedValue(undefined)
         }
-        // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: This lifecycle reads only getModelState/getModelDir on the model manager.
+        // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: This lifecycle reads getModelState/getModelDir and downloadModel (VAD) on the model manager.
         const service = new SttService(models as ModelManager, spawnMockWorker)
         const sink = vi.fn<SttEventSink>()
         await service.startDictation('model-a', sink, undefined, 'desktop')

@@ -102,7 +102,7 @@ export class ModelManager extends SpeechModelDownloadTransport {
       return { id: modelId, status: 'error', error: 'Unknown model' }
     }
 
-    if (!isLocalSpeechModel(manifest)) {
+    if (manifest.provider !== 'local') {
       const ready = this.hasCloudCredentials(manifest.provider)
       return { id: modelId, status: ready ? 'ready' : 'not-downloaded' }
     }
