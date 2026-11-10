@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { runProcessSync } from '@orca/process-host'
-import type { ProcessResult } from '@orca/process-host/process-spec'
+import { runProcessSync } from '@topo/process-host'
+import type { ProcessResult } from '@topo/process-host/process-spec'
 import { writeFileAtomically } from '../../filesystem/atomic-file-publication'
 
 // Opt out of the accent picker once so terminal keys repeat (#14746); later user choices win.
@@ -18,7 +18,7 @@ const DEFAULTS_TIMEOUT_MS = 5_000
 // defaults uses exit 1 for an absent key; other failures leave its presence unknown.
 const DEFAULTS_MISSING_STATUS = 1
 
-const ORCA_BUNDLE_ID = 'com.stablyai.orca'
+const TOPO_BUNDLE_ID = 'com.brandonhsz.topo'
 
 export type PressAndHoldDecision =
   | 'not-macos'
@@ -50,8 +50,8 @@ export type PressAndHoldHost = {
 }
 
 // Unpackaged Electron apps share com.github.Electron; do not change that domain.
-export function isOrcaPreferencesDomain(domain: string): boolean {
-  return domain === ORCA_BUNDLE_ID || domain.startsWith(`${ORCA_BUNDLE_ID}.`)
+export function isTopoPreferencesDomain(domain: string): boolean {
+  return domain === TOPO_BUNDLE_ID || domain.startsWith(`${TOPO_BUNDLE_ID}.`)
 }
 
 export function readBundleIdentifierFromExecutablePath(execPath: string): string | null {
@@ -151,7 +151,7 @@ export function ensureMacPressAndHoldDefault(host: PressAndHoldHost): PressAndHo
   }
 
   const domain = host.resolveBundleIdentifier()
-  if (!domain || !isOrcaPreferencesDomain(domain)) {
+  if (!domain || !isTopoPreferencesDomain(domain)) {
     return record('foreign-bundle', domain)
   }
 

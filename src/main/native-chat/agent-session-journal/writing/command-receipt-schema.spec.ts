@@ -26,7 +26,7 @@ export function registerCommandReceiptSchemaTests(): void {
   const scope = commandReceiptScope('caller-1', 'global')
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-command-receipt-schema-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-command-receipt-schema-'))
     dbPath = journalDatabasePath(root)
   })
 

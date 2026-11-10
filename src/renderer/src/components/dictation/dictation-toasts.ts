@@ -134,7 +134,7 @@ export function showDictationStartErrorToast(message: string): void {
     toast.error(
       translate(
         'auto.components.dictation.DictationController.2d5b9fabf9',
-        'Microphone access denied. Grant access in system settings, then restart Orca.'
+        'Microphone access denied. Grant access in system settings, then restart Topo.'
       )
     )
   } else if (kind === 'model-not-ready') {

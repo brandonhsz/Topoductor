@@ -2,14 +2,14 @@ import { toSshExecutionHostId } from '../../../../shared/execution-host'
 import { parsePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import type { Store } from '../../../persistence/loading-store/store'
 import type { PersistPtyBindingArgs } from '../../../persistence/loading-store/pty-binding-persistence'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import type { ReplacedPaneOwner } from './replaced-pane-owner'
 import { resolveStablePaneOwner } from './stable-owner'
 
 /** Caller holds the pane's spawn reservation, so no other spawn can claim the pane meanwhile. */
 export async function stopReplacedPaneOwner(
   deps: {
-    runtime?: OrcaRuntimeService
+    runtime?: TopoRuntimeService
     store?: Store
     stopReplacedPty: (id: string) => Promise<void>
   },

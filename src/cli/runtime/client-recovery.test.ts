@@ -25,7 +25,7 @@ afterEach(async () => {
 
 function writeRuntimeConnection(userDataPath: string, endpoint: string, runtimeId: string): void {
   writeFileSync(
-    join(userDataPath, 'orca-runtime.json'),
+    join(userDataPath, 'topo-runtime.json'),
     JSON.stringify({
       runtimeId,
       pid: 1,
@@ -56,7 +56,7 @@ function expectPromptRetryBlockedJson(error: unknown, requestId: string): void {
 
 describe('RuntimeClient orchestration recovery identity', () => {
   it('blocks retry when a downgraded runtime loses the prompt reply', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-lost-prompt-reply-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-lost-prompt-reply-'))
     const endpoint = join(userDataPath, 'runtime.sock')
     let receivedRequest: Record<string, unknown> | undefined
     const server = createServer((socket) => {
@@ -70,7 +70,7 @@ describe('RuntimeClient orchestration recovery identity', () => {
     await new Promise<void>((resolve) => server.listen(endpoint, resolve))
     writeRuntimeConnection(userDataPath, endpoint, 'runtime-after-downgrade')
 
-    const client = new RuntimeClient(userDataPath, 500, null, null, 'orca')
+    const client = new RuntimeClient(userDataPath, 500, null, null, 'topo')
     const error = await client
       .call(
         'terminal.send',
@@ -80,7 +80,7 @@ describe('RuntimeClient orchestration recovery identity', () => {
           enter: true,
           interrupt: false,
           agentPrompt: true,
-          client: { id: 'orca-cli', type: 'desktop' }
+          client: { id: 'topo-cli', type: 'desktop' }
         },
         {
           terminalPromptPreflight: { runtimeId: 'runtime-before-downgrade' },
@@ -94,6 +94,6 @@ describe('RuntimeClient orchestration recovery identity', () => {
     expect(error).toBeInstanceOf(RuntimeClientError)
     expect(error).not.toBeInstanceOf(RuntimeRpcFailureError)
     expectPromptRetryBlockedJson(error, 'prompt-downgraded-lost-reply')
-    expect(JSON.stringify((error as RuntimeClientError).data)).not.toContain('Update Orca')
+    expect(JSON.stringify((error as RuntimeClientError).data)).not.toContain('Update Topo')
   })
 })

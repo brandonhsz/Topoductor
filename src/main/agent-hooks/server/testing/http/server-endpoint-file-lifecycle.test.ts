@@ -42,7 +42,7 @@ describe('Endpoint file lifecycle', () => {
   let userDataPath: string
 
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-endpoint-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-endpoint-'))
   })
 
   afterEach(() => {
@@ -68,23 +68,23 @@ describe('Endpoint file lifecycle', () => {
     const server = new AgentHookServer()
     await server.start({ env: 'production', userDataPath })
     const firstPath = server.endpointFilePath
-    const firstToken = server.buildPtyEnv().ORCA_AGENT_HOOK_TOKEN
+    const firstToken = server.buildPtyEnv().TOPO_AGENT_HOOK_TOKEN
     server.stop()
 
     await server.start({ env: 'production', userDataPath })
     try {
       const secondPath = server.endpointFilePath
-      const secondPort = server.buildPtyEnv().ORCA_AGENT_HOOK_PORT
-      const secondToken = server.buildPtyEnv().ORCA_AGENT_HOOK_TOKEN
+      const secondPort = server.buildPtyEnv().TOPO_AGENT_HOOK_PORT
+      const secondToken = server.buildPtyEnv().TOPO_AGENT_HOOK_TOKEN
       // Surviving PTYs must find the same endpoint path after restart.
       expect(secondPath).toBe(firstPath)
       expect(secondToken).toBeTruthy()
       expect(secondToken).not.toBe(firstToken)
       const contents = readFileSync(secondPath!, 'utf8')
       // Compare regenerated tokens; ephemeral ports may legitimately be reused.
-      expect(contents).toContain(`ORCA_AGENT_HOOK_PORT=${secondPort}`)
-      expect(contents).toContain(`ORCA_AGENT_HOOK_TOKEN=${secondToken}`)
-      expect(contents).not.toContain(`ORCA_AGENT_HOOK_TOKEN=${firstToken}`)
+      expect(contents).toContain(`TOPO_AGENT_HOOK_PORT=${secondPort}`)
+      expect(contents).toContain(`TOPO_AGENT_HOOK_TOKEN=${secondToken}`)
+      expect(contents).not.toContain(`TOPO_AGENT_HOOK_TOKEN=${firstToken}`)
     } finally {
       server.stop()
     }
@@ -97,8 +97,8 @@ describe('Endpoint file lifecycle', () => {
     await secondServer.start({ env: 'development', userDataPath, endpointNamespace: 'dev-b' })
     try {
       expect(firstServer.endpointFilePath).not.toBe(secondServer.endpointFilePath)
-      expect(firstServer.buildPtyEnv().ORCA_AGENT_HOOK_ENDPOINT).toBe(firstServer.endpointFilePath)
-      expect(secondServer.buildPtyEnv().ORCA_AGENT_HOOK_ENDPOINT).toBe(
+      expect(firstServer.buildPtyEnv().TOPO_AGENT_HOOK_ENDPOINT).toBe(firstServer.endpointFilePath)
+      expect(secondServer.buildPtyEnv().TOPO_AGENT_HOOK_ENDPOINT).toBe(
         secondServer.endpointFilePath
       )
       expect(existsSync(firstServer.endpointFilePath!)).toBe(true)
@@ -136,9 +136,9 @@ describe('Endpoint file lifecycle', () => {
     await server.start({ env: 'bad;value', userDataPath })
     try {
       expect(existsSync(server.endpointFilePath!)).toBe(false)
-      expect(server.buildPtyEnv().ORCA_AGENT_HOOK_ENDPOINT).toBeUndefined()
-      expect(server.buildPtyEnv().ORCA_AGENT_HOOK_PORT).toBeTruthy()
-      expect(server.buildPtyEnv().ORCA_AGENT_HOOK_TOKEN).toBeTruthy()
+      expect(server.buildPtyEnv().TOPO_AGENT_HOOK_ENDPOINT).toBeUndefined()
+      expect(server.buildPtyEnv().TOPO_AGENT_HOOK_PORT).toBeTruthy()
+      expect(server.buildPtyEnv().TOPO_AGENT_HOOK_TOKEN).toBeTruthy()
     } finally {
       server.stop()
     }
@@ -152,8 +152,8 @@ describe('Endpoint file lifecycle', () => {
     await server.start({ env: 'production', userDataPath })
     try {
       const filePath = server.endpointFilePath!
-      const expectedPort = server.buildPtyEnv().ORCA_AGENT_HOOK_PORT
-      const out = execFileSync('/bin/sh', ['-c', `. "${filePath}" && echo "$ORCA_AGENT_HOOK_PORT"`])
+      const expectedPort = server.buildPtyEnv().TOPO_AGENT_HOOK_PORT
+      const out = execFileSync('/bin/sh', ['-c', `. "${filePath}" && echo "$TOPO_AGENT_HOOK_PORT"`])
         .toString()
         .trim()
       expect(out).toBe(expectedPort)

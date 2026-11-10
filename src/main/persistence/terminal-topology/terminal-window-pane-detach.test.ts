@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { toSshExecutionHostId, type ExecutionHostId } from '../../../shared/execution-host'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { makeRepo } from '../persistence-test-harness'
 import type { Store } from '../loading-store/store'
 import {
@@ -25,7 +25,7 @@ import {
 vi.mock('electron', () => ({
   app: {
     getPath: () => tmpdir(),
-    getName: () => 'orca-test',
+    getName: () => 'topo-test',
     getVersion: () => '0.0.0-test',
     isPackaged: false,
     on: () => {},
@@ -147,7 +147,7 @@ describe('a window drag-out through layout.apply', () => {
       incarnationId: 'inc-1'
     })
 
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       // With main owning all shown panes, the home copy determines last-pane refusal.
       await expect(detach(store, 'pty-agent')).resolves.toEqual({ ok: false, code: 'last_pane' })
       expect(tabsHoldingLeaf(store.getWorkspaceSession(), MOVED)).toEqual([SOURCE])

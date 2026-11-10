@@ -185,7 +185,7 @@ describe('bundled skill rename', () => {
 
   it('recovers a former-name sibling left by an interrupted retirement', async () => {
     const home = await makeSkillHome()
-    await writeCopy(join(dirname(home.claude), `.${FORMER_NAME}.orca-old-interrupted`), FORMER_TEXT)
+    await writeCopy(join(dirname(home.claude), `.${FORMER_NAME}.topo-old-interrupted`), FORMER_TEXT)
     const input = { ...serviceInput(home, { installedOnly: true }), sources: [SOURCE] }
     await previewAndInstall(input)
     await previewAndInstall(input)
@@ -196,7 +196,7 @@ describe('bundled skill rename', () => {
   it('leaves former-name recovery alone while a cloud transaction owns that path', async () => {
     const home = await makeSkillHome()
     const old = former(home.claude)
-    const sibling = join(dirname(home.claude), `.${FORMER_NAME}.orca-old-interrupted`)
+    const sibling = join(dirname(home.claude), `.${FORMER_NAME}.topo-old-interrupted`)
     await writeCopy(sibling, FORMER_TEXT)
     const journal = skillInstallJournalPath(home.state, old)
     await mkdir(dirname(journal), { recursive: true })

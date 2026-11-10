@@ -15,7 +15,7 @@ describe('legacy terminal shim neutralization', () => {
   const tempRoots: string[] = []
 
   const makeUserDataDir = (): string => {
-    const userData = mkdtempSync(join(tmpdir(), 'orca-legacy-shim-'))
+    const userData = mkdtempSync(join(tmpdir(), 'topo-legacy-shim-'))
     tempRoots.push(userData)
     return userData
   }
@@ -34,20 +34,20 @@ describe('legacy terminal shim neutralization', () => {
   itOnPosix('resolves its own directory even when CDPATH is set', () => {
     // CDPATH can redirect relative cd and echo into wrapper_dir, breaking lookup.
     const userData = makeUserDataDir()
-    const posixDir = join(userData, 'orca-terminal-attribution', 'posix')
+    const posixDir = join(userData, 'topo-terminal-attribution', 'posix')
     const realBin = join(userData, 'real-bin')
     const cdpathDir = join(userData, 'cdpath')
     mkdirSync(posixDir, { recursive: true })
     mkdirSync(realBin, { recursive: true })
     // CDPATH matches the whole relative operand, so mirror every directory segment.
-    mkdirSync(join(cdpathDir, 'orca-terminal-attribution', 'posix'), { recursive: true })
+    mkdirSync(join(cdpathDir, 'topo-terminal-attribution', 'posix'), { recursive: true })
     writeFileSync(join(posixDir, 'git'), 'legacy attribution wrapper')
 
     neutralizeLegacyTerminalShimDir(userData)
 
     writeFileSync(join(realBin, 'git'), "#!/bin/bash\nprintf 'REAL\\n'\n", { mode: 0o755 })
 
-    const run = spawnSync('/bin/bash', ['orca-terminal-attribution/posix/git', '--version'], {
+    const run = spawnSync('/bin/bash', ['topo-terminal-attribution/posix/git', '--version'], {
       cwd: userData,
       env: { CDPATH: cdpathDir, PATH: `${posixDir}:${realBin}:/usr/bin:/bin` },
       encoding: 'utf8',
@@ -61,7 +61,7 @@ describe('legacy terminal shim neutralization', () => {
   itOnPosix('fails closed instead of self-executing when it resolves to itself', () => {
     // Pin the self-exec guard: correct wrapper_dir normally hides its removal.
     const userData = makeUserDataDir()
-    const posixDir = join(userData, 'orca-terminal-attribution', 'posix')
+    const posixDir = join(userData, 'topo-terminal-attribution', 'posix')
     mkdirSync(posixDir, { recursive: true })
     writeFileSync(join(posixDir, 'git'), 'legacy attribution wrapper')
 
@@ -95,7 +95,7 @@ describe('legacy terminal shim neutralization', () => {
   itOnPosix('rejects the legacy shim directory reached by a different spelling', () => {
     // Equivalent inode spellings must exclude the still-live legacy wrapper too.
     const userData = makeUserDataDir()
-    const posixDir = join(userData, 'orca-terminal-attribution', 'posix')
+    const posixDir = join(userData, 'topo-terminal-attribution', 'posix')
     const legacyDir = join(userData, 'legacy-shim')
     const realBin = join(userData, 'real-bin')
     for (const dir of [posixDir, legacyDir, realBin]) {
@@ -114,7 +114,7 @@ describe('legacy terminal shim neutralization', () => {
       const run = spawnSync(join(posixDir, 'git'), ['--version'], {
         env: {
           ...process.env,
-          ORCA_ATTRIBUTION_SHIM_DIR: legacyDir,
+          TOPO_ATTRIBUTION_SHIM_DIR: legacyDir,
           PATH: `${spelling}:${realBin}:/usr/bin:/bin`
         },
         encoding: 'utf8',
@@ -128,7 +128,7 @@ describe('legacy terminal shim neutralization', () => {
   itOnPosix('does not fall back to the cwd when every PATH entry is filtered out', () => {
     // An emptied PATH must not fall through to cwd-local git.
     const userData = makeUserDataDir()
-    const posixDir = join(userData, 'orca-terminal-attribution', 'posix')
+    const posixDir = join(userData, 'topo-terminal-attribution', 'posix')
     const hostile = join(userData, 'hostile')
     mkdirSync(posixDir, { recursive: true })
     mkdirSync(hostile, { recursive: true })
@@ -152,7 +152,7 @@ describe('legacy terminal shim neutralization', () => {
   itOnPosix('does not let the cwd supply the script interpreter', async () => {
     // Interpreter lookup precedes script PATH hygiene; env bash permits checkout-local interception.
     const userData = makeUserDataDir()
-    const shimDir = join(userData, 'orca-terminal-attribution', 'posix')
+    const shimDir = join(userData, 'topo-terminal-attribution', 'posix')
     const realBin = join(userData, 'real-bin')
     const hostile = join(userData, 'hostile')
     for (const dir of [shimDir, realBin, hostile]) {
@@ -186,7 +186,7 @@ describe('legacy terminal shim neutralization', () => {
   itOnPosix('does not let an empty PATH element resolve the command from the cwd', async () => {
     // Empty POSIX PATH elements name cwd (STA-4169).
     const userData = makeUserDataDir()
-    const shimDir = join(userData, 'orca-terminal-attribution', 'posix')
+    const shimDir = join(userData, 'topo-terminal-attribution', 'posix')
     const realBin = join(userData, 'real-bin')
     mkdirSync(shimDir, { recursive: true })
     mkdirSync(realBin, { recursive: true })
@@ -244,7 +244,7 @@ describe('legacy terminal shim neutralization', () => {
 
   itOnPosix('keeps a real Bash command hash working with trailing PATH separators', async () => {
     const userData = makeUserDataDir()
-    const shimDir = join(userData, 'orca-terminal-attribution', 'posix')
+    const shimDir = join(userData, 'topo-terminal-attribution', 'posix')
     const shimGit = join(shimDir, 'git')
     const realBin = join(userData, 'real-bin')
     const realGit = join(realBin, 'git')
@@ -261,9 +261,9 @@ describe('legacy terminal shim neutralization', () => {
       env: {
         ...process.env,
         PATH: `${shimDir}//::${realBin}:${process.env.PATH ?? ''}`,
-        ORCA_ENABLE_GIT_ATTRIBUTION: '1',
-        ORCA_GIT_COMMIT_TRAILER: 'Co-authored-by: Orca <help@stably.ai>',
-        ORCA_ATTRIBUTION_SHIM_DIR: ''
+        TOPO_ENABLE_GIT_ATTRIBUTION: '1',
+        TOPO_GIT_COMMIT_TRAILER: 'Co-authored-by: Topo <help@stably.ai>',
+        TOPO_ATTRIBUTION_SHIM_DIR: ''
       },
       stdio: ['pipe', 'pipe', 'pipe']
     })
@@ -277,8 +277,8 @@ describe('legacy terminal shim neutralization', () => {
     child.stderr.on('data', (chunk: string) => {
       stderr += chunk
     })
-    const ready = waitForOutput(child.stdout, '__ORCA_HASH_READY__\n')
-    child.stdin.write(`hash -p ${quoteBash(shimGit)} git\nprintf '__ORCA_HASH_READY__\\n'\n`)
+    const ready = waitForOutput(child.stdout, '__TOPO_HASH_READY__\n')
+    child.stdin.write(`hash -p ${quoteBash(shimGit)} git\nprintf '__TOPO_HASH_READY__\\n'\n`)
 
     try {
       await ready
@@ -296,7 +296,7 @@ describe('legacy terminal shim neutralization', () => {
       child.kill('SIGKILL')
     }
     expect(stdout).toContain('arg=<commit>\narg=<-m>\narg=<subject with spaces>\nstdin payload\n')
-    expect(stdout).not.toContain('Co-authored-by: Orca')
+    expect(stdout).not.toContain('Co-authored-by: Topo')
     expect(stderr).toBe('fixture stderr\n')
   })
 })

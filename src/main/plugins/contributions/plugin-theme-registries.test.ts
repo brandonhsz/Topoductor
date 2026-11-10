@@ -17,7 +17,7 @@ afterEach(async () => {
 })
 
 async function themePlugin(files: { app?: unknown; terminal?: unknown }) {
-  const rootDir = await mkdtemp(join(tmpdir(), 'orca-plugin-theme-registry-'))
+  const rootDir = await mkdtemp(join(tmpdir(), 'topo-plugin-theme-registry-'))
   roots.push(rootDir)
   await writeFile(join(rootDir, 'app.json'), JSON.stringify(files.app ?? {}))
   await writeFile(join(rootDir, 'terminal.json'), JSON.stringify(files.terminal ?? {}))

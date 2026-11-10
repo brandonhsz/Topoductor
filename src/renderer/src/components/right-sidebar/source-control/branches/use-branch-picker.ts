@@ -83,7 +83,7 @@ export function useBranchPicker(options: BranchPickerOptions) {
           setError(
             translate(
               'sourceControl.branchPicker.listFailed',
-              "Orca couldn't list local branches. Try reopening the picker."
+              "Topo couldn't list local branches. Try reopening the picker."
             )
           )
         }
@@ -110,7 +110,7 @@ export function useBranchPicker(options: BranchPickerOptions) {
             setDiscoveryError(
               translate(
                 'sourceControl.branchPicker.discoveryFailed',
-                "Orca couldn't find remote branches. You can still switch local branches or create a branch."
+                "Topo couldn't find remote branches. You can still switch local branches or create a branch."
               )
             )
           }
@@ -183,7 +183,7 @@ export function useBranchPicker(options: BranchPickerOptions) {
                 ? failure.message
                 : translate(
                     'sourceControl.branchPicker.switchFailed',
-                    "Orca couldn't switch branches. Try again."
+                    "Topo couldn't switch branches. Try again."
                   ),
             // Matches the landed warning so the reason and its recovery stay readable.
             duration: 15000,

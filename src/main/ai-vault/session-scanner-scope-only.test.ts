@@ -90,7 +90,7 @@ async function workspaceSessionIds(
 }
 
 async function tempRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-ai-vault-scope-only-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-ai-vault-scope-only-'))
   tempRoots.push(root)
   return root
 }

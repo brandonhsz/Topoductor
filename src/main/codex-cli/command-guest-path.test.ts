@@ -17,7 +17,7 @@ function install(dir: string, name: string): string {
 }
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-agent-cli-guest-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-agent-cli-guest-'))
   native = join(root, 'home', '.local', 'bin')
   // Stands in for a Windows drive mount such as /mnt/c.
   drive = join(root, 'c')

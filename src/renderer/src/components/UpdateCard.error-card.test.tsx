@@ -65,8 +65,8 @@ beforeEach(() => {
   setSettings.mockReset().mockResolvedValue(undefined)
   getInstructions.mockReset().mockResolvedValue({
     ok: true,
-    command: 'sudo apt-get install -y /tmp/orca_1.4.200_amd64.deb',
-    packageFileName: 'orca_1.4.200_amd64.deb'
+    command: 'sudo apt-get install -y /tmp/topo_1.4.200_amd64.deb',
+    packageFileName: 'topo_1.4.200_amd64.deb'
   })
   Object.defineProperty(window, 'api', {
     configurable: true,
@@ -97,7 +97,7 @@ afterEach(() => {
 describe('UpdateCard Windows signature failures', () => {
   it('does not offer the rejected version as a manual publisher-check bypass', () => {
     const message =
-      'New version 1.4.200 is not signed by the application owner: publisherNames: Orca'
+      'New version 1.4.200 is not signed by the application owner: publisherNames: Topo'
     renderAfterAvailableStatus()
 
     act(() => useAppStore.getState().setUpdateStatus({ state: 'error', message }))
@@ -107,7 +107,7 @@ describe('UpdateCard Windows signature failures', () => {
     expect(screen.queryByText(message)).toBeNull()
 
     fireEvent.click(screen.getByRole('button', { name: 'Check official releases' }))
-    expect(openUrl).toHaveBeenCalledWith('https://github.com/stablyai/orca/releases')
+    expect(openUrl).toHaveBeenCalledWith('https://github.com/brandonhsz/Topoductor/releases')
     expect(openUrl).not.toHaveBeenCalledWith(expect.stringContaining('/tag/'))
   })
 })
@@ -124,7 +124,7 @@ function showPackageRecovery(recovery = PACKAGE_RECOVERY): void {
   act(() =>
     useAppStore.getState().setUpdateStatus({
       state: 'error',
-      message: 'Quit Orca before running the system package install command.',
+      message: 'Quit Topo before running the system package install command.',
       recovery
     })
   )
@@ -136,7 +136,9 @@ describe('UpdateCard Linux package-install recovery', () => {
     showPackageRecovery()
 
     fireEvent.click(screen.getByRole('button', { name: 'Download Manually' }))
-    expect(openUrl).toHaveBeenCalledWith('https://github.com/stablyai/orca/releases/tag/v1.4.200')
+    expect(openUrl).toHaveBeenCalledWith(
+      'https://github.com/brandonhsz/Topoductor/releases/tag/v1.4.200'
+    )
   })
 
   it('resets command discovery when a newer package cycle replaces the recovery', async () => {
@@ -162,7 +164,7 @@ describe('UpdateCard Linux package-install recovery', () => {
 
   it('links unusable package metadata to the release without offering a futile retry', () => {
     const message =
-      'The downloaded package metadata could not be verified. Quit Orca before downloading and installing the update from the official release page.'
+      'The downloaded package metadata could not be verified. Quit Topo before downloading and installing the update from the official release page.'
     renderWithInitialStatus({
       state: 'error',
       message,
@@ -175,7 +177,9 @@ describe('UpdateCard Linux package-install recovery', () => {
     expect(screen.queryByText('Manual Install Required')).toBeNull()
     expect(screen.queryByRole('button', { name: 'Retry Download' })).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'Download Manually' }))
-    expect(openUrl).toHaveBeenCalledWith('https://github.com/stablyai/orca/releases/tag/v1.4.200')
+    expect(openUrl).toHaveBeenCalledWith(
+      'https://github.com/brandonhsz/Topoductor/releases/tag/v1.4.200'
+    )
   })
 
   it('relaunches once when Enable & Restart is double-clicked', async () => {

@@ -1,7 +1,7 @@
 import { mkdtemp, realpath, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { afterEach, describe, expect, it } from 'vitest'
 import { createPluginFromTemplate } from './plugin-create'
 import { checkPluginPanels } from './plugin-panel-check'
@@ -15,16 +15,16 @@ afterEach(async () => {
 })
 
 async function workerPanelPlugin(): Promise<string> {
-  const root = await realpath(await mkdtemp(join(tmpdir(), 'orca-worker-panel-')))
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'topo-worker-panel-')))
   roots.push(root)
   const dir = join(root, 'counter')
   await createPluginFromTemplate({ dir, template: 'worker-panel' })
   return dir
 }
 
-describe('orca plugin create --template worker-panel', () => {
+describe('topo plugin create --template worker-panel', () => {
   it(
-    "passes its own panel and worker tests under `orca plugin test` on Orca's runtime",
+    "passes its own panel and worker tests under `topo plugin test` on Topo's runtime",
     async () => {
       const dir = await workerPanelPlugin()
       const files = await findPluginTestFiles(dir)
@@ -46,7 +46,7 @@ describe('orca plugin create --template worker-panel', () => {
   )
 
   it(
-    '`orca plugin check` renders the panel with its worker in each scenario',
+    '`topo plugin check` renders the panel with its worker in each scenario',
     async () => {
       const dir = await workerPanelPlugin()
       const panels = await checkPluginPanels(dir)
@@ -75,7 +75,7 @@ describe('orca plugin create --template worker-panel', () => {
       expect(result.timedOut).toBe(false)
       expect(result.code, `${result.stdout}${result.stderr}`).toBe(0)
     },
-    // Runs real tsc over the scaffold and Orca's typings, which takes a while on CI.
+    // Runs real tsc over the scaffold and Topo's typings, which takes a while on CI.
     90_000
   )
 })

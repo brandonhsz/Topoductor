@@ -198,7 +198,7 @@ export function registerPtyConnectionMainSideEffectAuthorityTests(): void {
         await flushAsyncTicks()
         expect(capturedDataCallback.current).not.toBeNull()
 
-        capturedDataCallback.current?.('Created https://github.com/acme/orca/pull/42\r\n')
+        capturedDataCallback.current?.('Created https://github.com/acme/topo/pull/42\r\n')
         capturedDataCallback.current?.('\x1b]133;D;130\x07prompt $ ')
 
         expect(mockStoreState.observeTerminalGitHubPullRequestLink).not.toHaveBeenCalled()

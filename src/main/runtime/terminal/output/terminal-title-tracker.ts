@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithEmitDaemonPtyTransientFact } from './terminal-transient-facts'
+import { TopoRuntimeWithEmitDaemonPtyTransientFact } from './terminal-transient-facts'
 import { getDecorativeTitleGateKey } from '../../../../shared/agent-status/title/agent-decorative-title-signature'
 import { shouldEmitTitleFactForFrame } from './decorative-title-fact-emission'
 import type { RuntimePtyTitleTrackerEntry } from '../records/runtime-terminal-state-records'
@@ -9,7 +9,7 @@ import {
 import type { AgentStatus } from '../../../../shared/agent-status/title/agent-title-core'
 import type { TerminalGitHubPRLink } from '../../../../shared/terminal/links/terminal-github-pr-link-detector'
 
-export abstract class OrcaRuntimeWithGetUnpersistedTrackedTitleForPty extends OrcaRuntimeWithEmitDaemonPtyTransientFact {
+export abstract class TopoRuntimeWithGetUnpersistedTrackedTitleForPty extends TopoRuntimeWithEmitDaemonPtyTransientFact {
   protected abstract recheckHookAgentPresenceForPty(
     ptyId: string,
     exitedSince?: number

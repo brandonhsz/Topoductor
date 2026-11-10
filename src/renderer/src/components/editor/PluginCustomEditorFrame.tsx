@@ -290,7 +290,7 @@ export default function PluginCustomEditorFrame({
               )
             : t(
                 'auto.components.editor.PluginCustomEditorFrame.editsHeld',
-                '{{value0}} is sending changes too quickly; Orca applies the latest one shortly.',
+                '{{value0}} is sending changes too quickly; Topo applies the latest one shortly.',
                 { value0: editor.title }
               )}
         </div>

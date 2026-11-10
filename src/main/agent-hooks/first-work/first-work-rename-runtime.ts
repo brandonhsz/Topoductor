@@ -9,7 +9,7 @@ import { moveWorktree } from '../../git/worktrees/movement/worktree-move'
 import { isWslMoveFolderWorkspaceBlocked } from '../../persistence/moving-wsl-projects/wsl-move-background-backoff'
 import type { Store } from '../../persistence/loading-store/store'
 import type { RuntimeStore } from '../../runtime/construction/runtime-store-contract'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import { resolveWorktreeMetaOwner } from '../../persistence/host-qualified-worktree-meta'
 
 const ENABLE_FIRST_WORK_FOLDER_RENAME = false
@@ -29,7 +29,7 @@ export function firstWorkRenameDeps(
       Pick<Store, 'migrateWorktreeIdentity' | 'getWorktreeIdForTab' | 'getWorktreeMetaForHost'>
     >,
   runtime: Pick<
-    OrcaRuntimeService,
+    TopoRuntimeService,
     | 'getCommitMessageAgentEnvironmentResolvers'
     | 'notifyFolderWorkspaceChanged'
     | 'notifyBranchRenamed'
@@ -65,14 +65,14 @@ export function firstWorkRenameDeps(
             true
         : store.getWorktreeMeta(worktreeId)?.pendingFirstAgentMessageRename === true
     },
-    canRenameOrcaCreatedBranch: (worktreeId) => {
+    canRenameTopoCreatedBranch: (worktreeId) => {
       // Renames run on this host only, so read this host's row, not a same-id twin's.
       const meta =
         store.getWorktreeMetaForHost?.(worktreeId, LOCAL_EXECUTION_HOST_ID) ??
         store.getWorktreeMeta(worktreeId)
-      // A creature-like name alone cannot prove Orca owns the branch.
+      // A creature-like name alone cannot prove Topo owns the branch.
       return (
-        !!meta?.orcaCreationSource &&
+        !!meta?.topoCreationSource &&
         meta.preserveBranchOnDelete !== true &&
         meta.branchNameIsUserChosen !== true
       )

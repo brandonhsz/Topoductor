@@ -19,7 +19,7 @@ function setup() {
   const frame = (message: Record<string, unknown>, observedAt?: number): void =>
     translator.handle({
       type: 'message',
-      sessionId: 'orca-session',
+      sessionId: 'topo-session',
       ...(observedAt === undefined ? {} : { observedAt }),
       message: {
         session_id: 'session',
@@ -177,7 +177,7 @@ describe('structured Claude reasoning', () => {
     })
     translator.handle({
       type: 'message',
-      sessionId: 'orca-session',
+      sessionId: 'topo-session',
       message: {
         type: 'stream_event',
         session_id: 'session',

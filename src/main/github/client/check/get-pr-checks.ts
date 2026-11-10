@@ -184,7 +184,7 @@ async function readPRChecks(
       await acquire()
       try {
         // No gh disk cache: its key ignores the PR head, so it served the previous head's checks after a push, and it never evicts.
-        // Orca's own head-keyed checks cache and read coalescing bound the request volume.
+        // Topo's own head-keyed checks cache and read coalescing bound the request volume.
         const { stdout } = await ghExecFileAsync(
           [
             'api',

@@ -56,10 +56,10 @@ export type BundledSkillObserved =
   | { kind: 'file'; mtimeMs: number | null; treeDigest?: string }
   | { kind: 'unreadable' }
 
-/** A leftover sibling of an interrupted Orca swap, handled before the target's op. */
+/** A leftover sibling of an interrupted Topo swap, handled before the target's op. */
 export type BundledSkillCleanup = {
   path: string
-  /** `delete` only ever applies to Orca's stage siblings and released old copies. */
+  /** `delete` only ever applies to Topo's stage siblings and released old copies. */
   action: 'delete' | 'backup'
   observed: BundledSkillObserved
 }
@@ -85,7 +85,7 @@ export type BundledSkillOp = {
     retain?: boolean
   }[]
   reason?: BundledSkillLeaveReason
-  /** Whether Replace / `--force` may back this up and put Orca's copy in its place. */
+  /** Whether Replace / `--force` may back this up and put Topo's copy in its place. */
   replaceable?: boolean
   /** Path of an earlier op that must succeed first. */
   requires?: string
@@ -135,7 +135,7 @@ export type BundledSkillInstallResult = {
 
 const BundledSkillForceSchema = z.array(z.string().min(1).max(4096)).max(256)
 
-/** Frozen strict skills.bundled-orca.v1 request for the host’s own global homes; adding fields requires a new capability because older hosts reject them. */
+/** Frozen strict skills.bundled-topo.v1 request for the host’s own global homes; adding fields requires a new capability because older hosts reject them. */
 export const BundledSkillPlanRequestSchema = z.strictObject({
   force: BundledSkillForceSchema.optional(),
   /** Install named host-shipped skills; absent means update installed skills only. Reject names the host does not ship. */
@@ -156,7 +156,7 @@ export const BundledSkillExecuteRequestSchema = z.strictObject({
 })
 export type BundledSkillExecuteRequest = z.infer<typeof BundledSkillExecuteRequestSchema>
 
-/** Silently updates only hash-verified Orca copies of the named installed skills; never writes elsewhere. */
+/** Silently updates only hash-verified Topo copies of the named installed skills; never writes elsewhere. */
 export const BundledSkillAutoUpdateRequestSchema = z.strictObject({
   names: z
     .array(z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/u))

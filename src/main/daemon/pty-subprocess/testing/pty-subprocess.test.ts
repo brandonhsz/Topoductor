@@ -98,7 +98,7 @@ describe('createPtySubprocess', () => {
       sessionId: 'canceled-validation',
       cols: 80,
       rows: 24,
-      cwd: process.platform === 'win32' ? 'C:\\orca-cwd-fixture' : '/tmp/orca-cwd-fixture',
+      cwd: process.platform === 'win32' ? 'C:\\topo-cwd-fixture' : '/tmp/topo-cwd-fixture',
       isCanceled: () => canceled
     })
     await vi.waitFor(() => expect(validateWorkingDirectoryMock).toHaveBeenCalled())

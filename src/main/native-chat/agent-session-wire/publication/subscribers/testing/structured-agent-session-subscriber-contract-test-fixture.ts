@@ -11,7 +11,7 @@ let root: string
 export const journals = createTrackedJournalOpener({ legacyInputs: true })
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-agent-subscribers-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-agent-subscribers-'))
 })
 
 afterEach(async () => {

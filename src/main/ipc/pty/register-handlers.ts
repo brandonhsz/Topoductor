@@ -1,6 +1,6 @@
 import { settledDaemonRestart } from '../../daemon/providers/lifecycle/daemon-restart-state'
 import { getAppEnvironment } from '../../../shared/app-environment'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import type { Store } from '../../persistence/loading-store/store'
 import type { GlobalSettings } from '../../../shared/global-settings-types'
 import { LocalPtyProvider } from '../../providers/local-pty/local-pty-provider'
@@ -66,12 +66,12 @@ import {
   resolveCodexResumeLaunch,
   stripSequencedStartupResumeArgv
 } from './host-env/codex-resume'
-import { ensureLinuxTerminalOrcaCliShimDir } from '../../cli/linux-terminal-orca-cli-shim'
+import { ensureLinuxTerminalTopoCliShimDir } from '../../cli/linux-terminal-topo-cli-shim'
 import { LOCAL_EXECUTION_HOST_ID } from '../../../shared/execution-host'
 
 export function registerPtyHandlers(
   mainWindow?: PtyRendererDelivery,
-  runtime?: OrcaRuntimeService,
+  runtime?: TopoRuntimeService,
   getSelectedCodexHomePath?: GetSelectedCodexHomePath,
   getSettings?: () => GlobalSettings,
   prepareClaudeAuth?: PrepareClaudeAuth,
@@ -81,7 +81,7 @@ export function registerPtyHandlers(
   if (process.platform === 'linux') {
     const appEnvironment = getAppEnvironment()
     if (appEnvironment.isPackaged()) {
-      ensureLinuxTerminalOrcaCliShimDir({ userDataPath: appEnvironment.getPath('userData') })
+      ensureLinuxTerminalTopoCliShimDir({ userDataPath: appEnvironment.getPath('userData') })
     }
   }
   const ipcMain = getPtyIpc()

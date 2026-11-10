@@ -3,8 +3,8 @@ import { z } from 'zod'
 import { harness } from './bridge-host-test-harness'
 import { clientFrame } from './bridge-host-test-fakes'
 
-const SPLIT_KEY = 'orca:terminalSplitLayout'
-const STORAGE = { [SPLIT_KEY]: 'stacked', 'orca:pins:host-a': '["wt-1"]' }
+const SPLIT_KEY = 'topo:terminalSplitLayout'
+const STORAGE = { [SPLIT_KEY]: 'stacked', 'topo:pins:host-a': '["wt-1"]' }
 
 function lastInit(posted: readonly string[]): Record<string, unknown> {
   const init = posted
@@ -25,6 +25,6 @@ describe('negotiated page storage keys across page and shell versions', () => {
     bridge.host.receive(clientFrame({ type: 'ready', storageKeys: [SPLIT_KEY, 7] }))
 
     expect(bridge.pageReadyCount()).toBe(1)
-    expect(lastInit(bridge.posted).storage).toEqual({ 'orca:pins:host-a': '["wt-1"]' })
+    expect(lastInit(bridge.posted).storage).toEqual({ 'topo:pins:host-a': '["wt-1"]' })
   })
 })

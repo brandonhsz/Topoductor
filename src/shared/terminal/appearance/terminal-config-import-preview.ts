@@ -2,7 +2,7 @@ import type { GlobalSettings } from '../../global-settings-types'
 import type { TerminalThemeSlot } from '../../terminal-themes/terminal-color-overrides'
 import { withImportedTerminalColorOverrides } from '../../terminal-themes/terminal-theme-selection'
 
-/** Terminal apps whose config Orca can import. */
+/** Terminal apps whose config Topo can import. */
 export type TerminalConfigImportFormat = 'ghostty' | 'kitty'
 
 /** Where an import reads from: the app's own config locations, or a file the user picks. */

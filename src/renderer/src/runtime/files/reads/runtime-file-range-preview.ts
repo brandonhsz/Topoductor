@@ -11,6 +11,6 @@ export async function readRemoteRangePreview(
     return null
   }
   const { target, ...address } = remote
-  // Null when this client cannot serve orca-media URLs (the paired web client).
+  // Null when this client cannot serve topo-media URLs (the paired web client).
   return window.api.fs.grantRuntimeFilePreview({ ...address, environmentId: target.environmentId })
 }

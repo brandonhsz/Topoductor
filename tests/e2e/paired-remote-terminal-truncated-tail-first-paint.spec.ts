@@ -6,7 +6,7 @@ import type { RuntimeTerminalRead } from '../../src/shared/runtime-types'
 import '../../src/shared/protocol-version'
 import { TERMINAL_PAIRED_PARKING_RUNTIME_CAPABILITY } from '../../src/shared/terminal/runtime-policy/terminal-runtime-capabilities'
 import { toWebTerminalSurfaceTabId } from '../../src/shared/workspace-layout/terminal-surface-id'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedWebClient
@@ -15,7 +15,7 @@ import { getTerminalContent, waitForActivePanePtyId } from './helpers/terminal'
 import { quotePosixShell } from '../../src/shared/shell/launch/shell-argument-quoting'
 
 const RETENTION_PARK_DELAY_MS = 100
-const scratch = mkdtempSync(path.join(os.tmpdir(), 'orca-paired-truncated-tail-'))
+const scratch = mkdtempSync(path.join(os.tmpdir(), 'topo-paired-truncated-tail-'))
 const fixturePath = path.join(scratch, 'truncated-tail-terminal.mjs')
 writeFileSync(
   fixturePath,
@@ -42,9 +42,9 @@ test.afterAll(() => {
 })
 
 test.use({
-  orcaAppExtraEnv: {
-    ORCA_E2E_TERMINAL_PARKING_DELAY_MS: String(RETENTION_PARK_DELAY_MS),
-    ORCA_E2E_TERMINAL_RETENTION_LIMIT: '1'
+  topoAppExtraEnv: {
+    TOPO_E2E_TERMINAL_PARKING_DELAY_MS: String(RETENTION_PARK_DELAY_MS),
+    TOPO_E2E_TERMINAL_RETENTION_LIMIT: '1'
   }
 })
 
@@ -70,12 +70,12 @@ async function callRuntime<TResult>(page: Page, method: string, params: unknown)
 
 test('paints a paired remote terminal when only its retained text tail overflowed @headful', async ({
   electronApp,
-  orcaPage
+  topoPage
 }) => {
   test.setTimeout(120_000)
   const firstPaintMarker = `REMOTE_TRUNCATED_TAIL_FIRST_PAINT_${Date.now()}`
   const liveMarker = `REMOTE_TRUNCATED_TAIL_LIVE_${Date.now()}`
-  const worktree = await orcaPage.evaluate(() => {
+  const worktree = await topoPage.evaluate(() => {
     const state = window.__store?.getState()
     const activeWorktreeId = state?.activeWorktreeId
     if (!activeWorktreeId) {
@@ -89,7 +89,7 @@ test('paints a paired remote terminal when only its retained text tail overflowe
     }
     return { id: activeWorktree.id, path: activeWorktree.path }
   })
-  const offer = await createRuntimeDesktopPairingOffer(orcaPage)
+  const offer = await createRuntimeDesktopPairingOffer(topoPage)
   const client = await launchPairedWebClient(electronApp, offer)
   let terminal: string | null = null
   try {
@@ -224,14 +224,14 @@ test('paints a paired remote terminal when only its retained text tail overflowe
 
 test('legacy paired hosts retain the lossy hidden-manager budget fallback @headful', async ({
   electronApp,
-  orcaPage
+  topoPage
 }) => {
   test.skip(
-    process.env.ORCA_E2E_DISABLE_PAIRED_TERMINAL_PARKING !== '1',
+    process.env.TOPO_E2E_DISABLE_PAIRED_TERMINAL_PARKING !== '1',
     'The legacy fallback requires a host without terminal.paired-parking.v1.'
   )
   test.setTimeout(120_000)
-  const worktreeIds = await orcaPage.evaluate(() =>
+  const worktreeIds = await topoPage.evaluate(() =>
     window.__store
       ?.getState()
       .allWorktrees()
@@ -241,7 +241,7 @@ test('legacy paired hosts retain the lossy hidden-manager budget fallback @headf
   if (!worktreeIds || worktreeIds.length < 2) {
     throw new Error('Paired retention fixture requires two seeded worktrees')
   }
-  const offer = await createRuntimeDesktopPairingOffer(orcaPage)
+  const offer = await createRuntimeDesktopPairingOffer(topoPage)
   const client = await launchPairedWebClient(electronApp, offer, {
     terminalParkingDelayMs: RETENTION_PARK_DELAY_MS,
     terminalRetentionLimit: 1

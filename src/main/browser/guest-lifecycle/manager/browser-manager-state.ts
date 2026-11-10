@@ -26,7 +26,7 @@ export type BrowserManagerSettings = {
   mobileEmulatorEnabled?: boolean
 }
 
-/** A link a headless serve page asked to open as an Orca tab beside it. */
+/** A link a headless serve page asked to open as a Topo tab beside it. */
 export type OffscreenBrowserTabOpenRequest = {
   worktreeId: string
   profileId: string | null
@@ -126,7 +126,7 @@ export abstract class BrowserManagerState extends BrowserManagerViewportScrollSt
     guestWebContentsId: number,
     rootGuestWebContentsId: number
   ): boolean
-  protected abstract openLinkInOrcaTab(
+  protected abstract openLinkInTopoTab(
     browserTabId: string,
     rawUrl: string,
     activate?: boolean
@@ -209,7 +209,7 @@ export abstract class BrowserManagerState extends BrowserManagerViewportScrollSt
     this.certificateTrustController?.removeSessionRequestGuard(session)
   }
 
-  /** Orca's shortcut overrides; extension commands yield to every Orca shortcut. */
+  /** Topo's shortcut overrides; extension commands yield to every Topo shortcut. */
   getKeybindingOverrides(): KeybindingOverrides | undefined {
     return this.settingsResolver?.().keybindings
   }

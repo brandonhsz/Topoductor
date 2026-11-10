@@ -47,7 +47,7 @@ afterEach(async () => {
 it.each(['cutoff', 'bucket', 'filtered'] as const)(
   'freezes %s work without changing cold/warm execution',
   async (flow) => {
-    tempRoot = await mkdtemp(join(tmpdir(), 'orca-scan-frozen-'))
+    tempRoot = await mkdtemp(join(tmpdir(), 'topo-scan-frozen-'))
     const roots = isolatedScanRoots(tempRoot)
     for (let index = 0; index < (flow === 'filtered' ? 27 : 6); index++) {
       const timestamp = new Date(Date.UTC(2026, 9, 19) - index * 60_000).toISOString()
@@ -163,7 +163,7 @@ it.each(['cutoff', 'bucket', 'filtered'] as const)(
 )
 
 it('does not settle a batch interrupted during its real parser invocation', async () => {
-  tempRoot = await mkdtemp(join(tmpdir(), 'orca-scan-abort-'))
+  tempRoot = await mkdtemp(join(tmpdir(), 'topo-scan-abort-'))
   const roots = isolatedScanRoots(tempRoot)
   await writeJsonlFile(join(roots.claudeProjectsDir, 'project', 'a.jsonl'), [
     { type: 'user', sessionId: 'a', message: { role: 'user', content: 'Generated' } }

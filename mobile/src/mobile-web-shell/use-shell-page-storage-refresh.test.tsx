@@ -97,7 +97,7 @@ it.each(TERMINAL_SHORTCUT_STORAGE_KEYS)(
     writeMirroredStorage(key, 'page-local-edit')
     await act(async () => store.pending.shift()!())
     expect(publish).toHaveBeenCalledTimes(completed)
-    const unrelated = persistMirrored('orca:hostDockWidth', '450')
+    const unrelated = persistMirrored('topo:hostDockWidth', '450')
     await act(async () => {
       store.pending.shift()!()
       await unrelated
@@ -125,7 +125,7 @@ it.each(TERMINAL_SHORTCUT_STORAGE_KEYS)(
 )
 
 it('republishes an accepted page zoom after an older native snapshot crosses the pinch', async () => {
-  const key = 'orca:terminalTextScale'
+  const key = 'topo:terminalTextScale'
   store.values.set(key, '1')
   const releaseKeys = retainMirroredStorage([key])
   const storage = { [key]: '1' }

@@ -94,7 +94,7 @@ export function renderClaudeAccountsSection(
         }
         description={t(
           'auto.components.settings.AccountsPane.72b36ea174',
-          'Optional. Orca can use your normal Claude login; add accounts only if you want quick switching without moving chat sessions.'
+          'Optional. Topo can use your normal Claude login; add accounts only if you want quick switching without moving chat sessions.'
         )}
       >
         <SearchableSetting
@@ -226,7 +226,7 @@ export function renderClaudeAccountsSection(
                 <p className="text-xs text-muted-foreground">
                   {t(
                     'accounts.claude.systemDefaultIsSaved',
-                    'System default is signed in as {{value0}}, which is also a saved account. An earlier Orca version may have copied that login there. If it is not your own login, select System default and run claude /login.',
+                    'System default is signed in as {{value0}}, which is also a saved account. An earlier Topo version may have copied that login there. If it is not your own login, select System default and run claude /login.',
                     { value0: systemDefaultEmail }
                   )}
                 </p>
@@ -249,7 +249,7 @@ export function renderClaudeAccountsSection(
                     )
                   : t(
                       'auto.components.settings.AccountsPane.3fe7862418',
-                      "No managed Claude accounts for {{value0}}. Orca will use that environment's system default Claude login until you add one here.",
+                      "No managed Claude accounts for {{value0}}. Topo will use that environment's system default Claude login until you add one here.",
                       { value0: accountRuntimeSentenceLabel }
                     )}
               </div>

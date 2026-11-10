@@ -1,8 +1,8 @@
 // worker-start adopts a chat through its queued send; Stop and failed start must leave the chat intact.
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { formatOrcaSessionAddress } from '../../../../../shared/orca-session-address'
-import { testOrcaSessionId } from '../../../../../shared/orca-session-address-test-fixture'
+import { formatTopoSessionAddress } from '../../../../../shared/topo-session-address'
+import { testTopoSessionId } from '../../../../../shared/topo-session-address-test-fixture'
 import type { FakeConnection } from './structured-chat-coordinator-fake-codex-fixture'
 import {
   COORDINATOR,
@@ -29,7 +29,7 @@ type WorkspaceLookup = {
   ) => Promise<Awaited<ReturnType<typeof placeWorkerAgent>>['worktree']>
 }
 
-const WORKER = formatOrcaSessionAddress(testOrcaSessionId(PEER_CHAT))
+const WORKER = formatTopoSessionAddress(testTopoSessionId(PEER_CHAT))
 
 beforeEach(() => {
   vi.spyOn<WorkspaceLookup, 'showManagedTerminalWorkspace'>(
@@ -105,14 +105,14 @@ describe('worker-start --terminal names a chat', () => {
     })
     const dispatchId = String(receipt.dispatchId)
     const task = turnText(worker.turns[0]!)
-    expect(task).toContain(`Your Orca session ID is: ${WORKER}`)
+    expect(task).toContain(`Your Topo session ID is: ${WORKER}`)
     expect(task).toContain('The coordinator cannot see this chat')
     expect(task).toContain('More supervised work arrives in this chat')
     expect(task).not.toContain('this terminal')
     expect(task).not.toMatch(/exit the shell/i)
     expect(db.getDispatchContextById(dispatchId)).toMatchObject({
       assignee_handle: WORKER,
-      assignee_orca_session_id: PEER_CHAT,
+      assignee_topo_session_id: PEER_CHAT,
       assignee_pane_key: null,
       process_incarnation: null
     })

@@ -11,7 +11,7 @@ let hostEntryPath = ''
 let manager: PluginWorkerManager | null = null
 
 beforeAll(async () => {
-  bundleRoot = await mkdtemp(join(tmpdir(), 'orca-plugin-host-ts-bundle-'))
+  bundleRoot = await mkdtemp(join(tmpdir(), 'topo-plugin-host-ts-bundle-'))
   hostEntryPath = join(bundleRoot, 'plugin-host-entry.cjs')
   await build({
     entryPoints: [join(process.cwd(), 'src', 'main', 'plugins', 'workers', 'plugin-host-entry.ts')],
@@ -23,7 +23,7 @@ beforeAll(async () => {
     sourcemap: false,
     logLevel: 'silent'
   })
-  pluginRoot = await mkdtemp(join(tmpdir(), 'orca-plugin-ts-worker-'))
+  pluginRoot = await mkdtemp(join(tmpdir(), 'topo-plugin-ts-worker-'))
   await mkdir(join(pluginRoot, 'lib'))
   await writeFile(
     join(pluginRoot, 'main.ts'),

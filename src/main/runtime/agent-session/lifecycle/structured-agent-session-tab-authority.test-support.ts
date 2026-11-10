@@ -18,7 +18,7 @@ import {
   closeTestStores,
   testState
 } from '../../../persistence/persistence-test-harness'
-import { initOrcaProfilePaths } from '../../../orca-profiles/profile-storage-paths'
+import { initTopoProfilePaths } from '../../../topo-profiles/profile-storage-paths'
 import { closeTestJournalHostDatabases } from '../../../native-chat/agent-session-journal/store-lifecycle/journal-host-database-test-support'
 import { getStructuredAgentSessionHost } from '../../../native-chat/agent-session-wire/host/structured-agent-session-registry'
 import {
@@ -26,10 +26,10 @@ import {
   CREATE_TEST_CALLER
 } from '../../../native-chat/agent-session-wire/host/testing/structured-agent-session-create-test-fixture'
 import { seedTestAgentSessionRecordStore } from '../records/agent-session-record-store-test-harness'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { withChatTabChanges } from '../agent-session-tab-layout'
 import { collectSavedStructuredAgentSessionIds } from './saved-structured-agent-session-restoration'
-import { chatTabCommandsSettled } from '../../orca-runtime-tests/session-layout-apply.test-fixture'
+import { chatTabCommandsSettled } from '../../topo-runtime-tests/session-layout-apply.test-fixture'
 import { stopStructuredAgentSessionRuntime } from '../structured-agent-session-runtime'
 
 export const B = 'chat-b-0002',
@@ -38,7 +38,7 @@ export const B = 'chat-b-0002',
 export let root: string
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-tab-authority-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-tab-authority-'))
   testState.dir = root
   vi.spyOn(console, 'warn').mockImplementation(() => undefined)
 })
@@ -51,7 +51,7 @@ afterEach(async () => {
   await rm(root, { recursive: true, force: true })
 })
 
-export class AuthorityRuntime extends OrcaRuntimeService {
+export class AuthorityRuntime extends TopoRuntimeService {
   protected override structuredAgentCatalogDependencies() {
     const missing = () => ({ command: join(root, 'agent-not-installed'), prefixArgs: [] })
     return {
@@ -77,7 +77,7 @@ export async function authorityProfile(
   options: { visible?: string[]; records?: string[] } = {},
   profile = createStore()
 ) {
-  initOrcaProfilePaths()
+  initTopoProfilePaths()
   const group = profile.createProjectGroup({
     name: 'Chats',
     parentPath: root,

@@ -171,13 +171,13 @@ export function useMobileBrowserStream(args: MobileBrowserStreamArgs) {
       if (!binaryScreencastGranted) {
         // Check app-local limitation before desktop reply; desktop updates cannot change phone build.
         setError(
-          translate('browser.stream.updateApp', 'Update the Orca app to stream browser tabs here.')
+          translate('browser.stream.updateApp', 'Update the Topo app to stream browser tabs here.')
         )
       } else if (screencastSupported === false) {
         setError(
           translate(
             'browser.stream.updateDesktop',
-            'Update desktop Orca to stream browser tabs on mobile.'
+            'Update desktop Topo to stream browser tabs on mobile.'
           )
         )
       } else if (screencastSupported === null) {

@@ -61,6 +61,6 @@ describeWindows('vendored windows registry addon', () => {
 
   it('returns null for a key that does not exist instead of throwing', () => {
     const registry = loadWindowsNativeRegistry()
-    expect(registry.getRegistryKey(registry.HK.CU, 'Software\\OrcaNoSuchKey\\Absent')).toBeNull()
+    expect(registry.getRegistryKey(registry.HK.CU, 'Software\\TopoNoSuchKey\\Absent')).toBeNull()
   })
 })

@@ -42,7 +42,7 @@ export function getLinearAgentSkillSetupToastDescription(
 function getLinearAgentSkillSetupToastBaseDescription(t: Translate = translate): string {
   return t(
     'auto.components.sidebar.LinearAgentSkillSetupPrompt.toastInstallSkillDescription',
-    'Install the Linear skill to enable your agents to read and edit Linear tasks through the Orca CLI.'
+    'Install the Linear skill to enable your agents to read and edit Linear tasks through the Topo CLI.'
   )
 }
 

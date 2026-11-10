@@ -1,6 +1,6 @@
 import { toWebTerminalSurfaceTabId } from '../../src/shared/workspace-layout/terminal-surface-id'
 import type { RuntimeTerminalRead } from '../../src/shared/runtime-types'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   callPairedRuntime,
   waitForPairedClientWorktree
@@ -28,14 +28,14 @@ type HostTerminalSurface = {
 const splitRightChord = process.platform === 'darwin' ? 'Meta+d' : 'Control+Shift+d'
 
 test('focuses the pane a client split creates on a paired remote workspace @headful', async ({
-  orcaPage
+  topoPage
 }, testInfo) => {
   test.setTimeout(150_000)
-  const hostWorktreeId = await orcaPage.evaluate(() => window.__store?.getState().activeWorktreeId)
+  const hostWorktreeId = await topoPage.evaluate(() => window.__store?.getState().activeWorktreeId)
   if (!hostWorktreeId) {
     throw new Error('Headed host has no active seeded workspace')
   }
-  const offer = await createRuntimeDesktopPairingOffer(orcaPage)
+  const offer = await createRuntimeDesktopPairingOffer(topoPage)
   const client = await launchPairedElectronClient(offer, testInfo, 'paired-split-focus-client')
   try {
     await revealPairedClientWindow(client)

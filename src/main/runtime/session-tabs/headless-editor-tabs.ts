@@ -9,7 +9,7 @@ import type {
 } from '../../../shared/runtime-mobile-session-tab-contracts'
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../shared/runtime-session-contracts'
 import type { Tab } from '../../../shared/tab-types'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { editorRowHost } from '../../../shared/workspace-session/session-tab-file-host'
 import {
   editorTabNamesFile,
@@ -117,7 +117,7 @@ export function retireHeadlessEditorTab(
   force = false
 ): WorkspaceSessionState | null {
   const files = session.openFilesByWorktree?.[worktreeId] ?? []
-  const file = ORCA_LAYOUT_OWNER_IS_MAIN
+  const file = TOPO_LAYOUT_OWNER_IS_MAIN
     ? findListedEditorFile(files, session, worktreeId, tab)
     : files.find((candidate) => candidate.filePath === tab.filePath)
   if (!file) {

@@ -59,7 +59,7 @@ let panelId: string
 let stdout: string[]
 
 beforeEach(async () => {
-  root = await realpath(await mkdtemp(join(tmpdir(), 'orca-shot-scenario-')))
+  root = await realpath(await mkdtemp(join(tmpdir(), 'topo-shot-scenario-')))
   dir = join(root, 'counter')
   await createPluginFromTemplate({ dir, template: 'worker-panel' })
   const manifest = JSON.parse(await readFile(join(dir, 'orca-plugin.json'), 'utf8'))
@@ -81,7 +81,7 @@ afterEach(async () => {
   check.readPluginCheckScenarioNames.mockReset()
   check.checkPluginPanels.mockReset()
   process.exitCode = undefined
-  delete process.env.ORCA_CLI_CWD
+  delete process.env.TOPO_CLI_CWD
   await rm(root, { recursive: true, force: true })
 })
 
@@ -90,7 +90,7 @@ const run = (argv: string[], call: ReturnType<typeof vi.fn>, remote = false) =>
 
 const printed = () => JSON.parse(stdout.join('')).result
 
-describe('orca plugin shot --scenario', () => {
+describe('topo plugin shot --scenario', () => {
   it('renders the scenario here and sends only its tree to plugins.shotReplay', async () => {
     const call = vi.fn(async () => ({ result: replayReply() }))
     await run(['plugin', 'shot', dir, '--scenario', 'counted', '--theme', 'dark'], call)
@@ -124,7 +124,7 @@ describe('orca plugin shot --scenario', () => {
     await expect(
       run(['plugin', 'shot', dir, '--scenario', 'counted'], vi.fn(), true)
     ).rejects.toMatchObject({ code: 'invalid_environment' })
-    process.env.ORCA_CLI_CWD = '/elsewhere'
+    process.env.TOPO_CLI_CWD = '/elsewhere'
     await expect(
       run(['plugin', 'shot', dir, '--scenario', 'counted'], vi.fn())
     ).rejects.toMatchObject({ code: 'invalid_environment' })
@@ -147,7 +147,7 @@ describe('orca plugin shot --scenario', () => {
       context(['plugin', 'shot', pluginKey, '--scenario', 'counted'], dev, { cwd: dir })
     )
     expect(dev.mock.calls.map(([method]) => method)).toEqual(['plugins.list', 'plugins.shotReplay'])
-    // A key from outside its folder: Orca does not share dev folder paths.
+    // A key from outside its folder: Topo does not share dev folder paths.
     await expect(
       run(['plugin', 'shot', pluginKey, '--scenario', 'counted'], list(true))
     ).rejects.toThrow(/Run this inside/)

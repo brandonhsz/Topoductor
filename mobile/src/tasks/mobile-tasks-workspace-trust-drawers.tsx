@@ -213,42 +213,42 @@ export function renderMobileTasksSetupTrustDrawer(model: ConnectionPresentationM
   )
 }
 
-export function renderMobileTasksOrcaYamlTrustDrawer(model: ConnectionPresentationModel) {
+export function renderMobileTasksTopoYamlTrustDrawer(model: ConnectionPresentationModel) {
   const {
     createWorkspace,
     creatingKey,
-    orcaYamlTrustPrompt,
+    topoYamlTrustPrompt,
     persistSetupHookTrust,
     setError,
-    setOrcaYamlTrustPrompt,
+    setTopoYamlTrustPrompt,
     taskUiReady
   } = model
   return (
     <BottomDrawer
-      visible={taskUiReady && orcaYamlTrustPrompt != null}
-      onClose={() => setOrcaYamlTrustPrompt(null)}
+      visible={taskUiReady && topoYamlTrustPrompt != null}
+      onClose={() => setTopoYamlTrustPrompt(null)}
       zIndex={TASK_SECONDARY_DRAWER_Z_INDEX + 1}
     >
-      {orcaYamlTrustPrompt ? (
+      {topoYamlTrustPrompt ? (
         <View>
           <View style={styles.sheetHeader}>
             <Text style={styles.sheetTitle}>
-              {orcaYamlTrustPrompt.previouslyApproved
+              {topoYamlTrustPrompt.previouslyApproved
                 ? translate(
                     'tasks.workspaceTrustDrawers.setupChangedTitle',
                     "{{name}}'s setup script changed",
-                    { name: orcaYamlTrustPrompt.repoName }
+                    { name: topoYamlTrustPrompt.repoName }
                   )
                 : translate(
                     'tasks.workspaceTrustDrawers.runSetupTitle',
                     'Run setup from {{name}}?',
-                    { name: orcaYamlTrustPrompt.repoName }
+                    { name: topoYamlTrustPrompt.repoName }
                   )}
             </Text>
             <Text style={styles.sheetSubtitle}>
               {translate(
                 'tasks.workspaceTrustDrawers.trustSubtitle',
-                "This repository's orca.yaml runs on your machine before the workspace starts. Only run it if you trust this repository."
+                "This repository's topo.yaml runs on your machine before the workspace starts. Only run it if you trust this repository."
               )}
             </Text>
           </View>
@@ -256,12 +256,12 @@ export function renderMobileTasksOrcaYamlTrustDrawer(model: ConnectionPresentati
           <View style={styles.setupPromptBox}>
             <View style={styles.detailSectionHeader}>
               <Text style={styles.detailSectionTitle}>
-                {orcaYamlTrustPrompt.previouslyApproved
+                {topoYamlTrustPrompt.previouslyApproved
                   ? translate('tasks.workspaceTrustDrawers.newSetupScript', 'New setup script')
                   : translate('tasks.workspaceTrustDrawers.setupScript', 'Setup script')}
               </Text>
             </View>
-            <Text style={styles.setupPromptCommand}>{orcaYamlTrustPrompt.scriptContent}</Text>
+            <Text style={styles.setupPromptCommand}>{topoYamlTrustPrompt.scriptContent}</Text>
           </View>
 
           <ListGroup separatorInset={LIST_LEADING_INSET}>
@@ -269,27 +269,27 @@ export function renderMobileTasksOrcaYamlTrustDrawer(model: ConnectionPresentati
               key="action-3"
               title={translate('tasks.workspaceTrustDrawers.runHooks', 'Run hooks')}
               leading={<Check size={16} color={colors.textPrimary} />}
-              disabled={creatingKey === orcaYamlTrustPrompt.item.key}
+              disabled={creatingKey === topoYamlTrustPrompt.item.key}
               onPress={() =>
                 void (async () => {
                   try {
                     await persistSetupHookTrust(
-                      orcaYamlTrustPrompt.repoId,
-                      orcaYamlTrustPrompt.contentHash,
+                      topoYamlTrustPrompt.repoId,
+                      topoYamlTrustPrompt.contentHash,
                       false
                     )
-                    setOrcaYamlTrustPrompt(null)
+                    setTopoYamlTrustPrompt(null)
                     await createWorkspace(
-                      orcaYamlTrustPrompt.item,
-                      orcaYamlTrustPrompt.repoIdOverride,
+                      topoYamlTrustPrompt.item,
+                      topoYamlTrustPrompt.repoIdOverride,
                       'run',
-                      orcaYamlTrustPrompt.agentOverride,
-                      orcaYamlTrustPrompt.workspaceNameOverride,
-                      orcaYamlTrustPrompt.noteOverride,
-                      orcaYamlTrustPrompt.baseBranchOverride,
-                      orcaYamlTrustPrompt.branchNameOverride,
-                      orcaYamlTrustPrompt.sparseCheckoutOverride,
-                      orcaYamlTrustPrompt.contentHash
+                      topoYamlTrustPrompt.agentOverride,
+                      topoYamlTrustPrompt.workspaceNameOverride,
+                      topoYamlTrustPrompt.noteOverride,
+                      topoYamlTrustPrompt.baseBranchOverride,
+                      topoYamlTrustPrompt.branchNameOverride,
+                      topoYamlTrustPrompt.sparseCheckoutOverride,
+                      topoYamlTrustPrompt.contentHash
                     )
                   } catch (err) {
                     setError(
@@ -311,27 +311,27 @@ export function renderMobileTasksOrcaYamlTrustDrawer(model: ConnectionPresentati
                 'Always trust and run'
               )}
               leading={<Check size={16} color={colors.textPrimary} />}
-              disabled={creatingKey === orcaYamlTrustPrompt.item.key}
+              disabled={creatingKey === topoYamlTrustPrompt.item.key}
               onPress={() =>
                 void (async () => {
                   try {
                     await persistSetupHookTrust(
-                      orcaYamlTrustPrompt.repoId,
-                      orcaYamlTrustPrompt.contentHash,
+                      topoYamlTrustPrompt.repoId,
+                      topoYamlTrustPrompt.contentHash,
                       true
                     )
-                    setOrcaYamlTrustPrompt(null)
+                    setTopoYamlTrustPrompt(null)
                     await createWorkspace(
-                      orcaYamlTrustPrompt.item,
-                      orcaYamlTrustPrompt.repoIdOverride,
+                      topoYamlTrustPrompt.item,
+                      topoYamlTrustPrompt.repoIdOverride,
                       'run',
-                      orcaYamlTrustPrompt.agentOverride,
-                      orcaYamlTrustPrompt.workspaceNameOverride,
-                      orcaYamlTrustPrompt.noteOverride,
-                      orcaYamlTrustPrompt.baseBranchOverride,
-                      orcaYamlTrustPrompt.branchNameOverride,
-                      orcaYamlTrustPrompt.sparseCheckoutOverride,
-                      orcaYamlTrustPrompt.contentHash
+                      topoYamlTrustPrompt.agentOverride,
+                      topoYamlTrustPrompt.workspaceNameOverride,
+                      topoYamlTrustPrompt.noteOverride,
+                      topoYamlTrustPrompt.baseBranchOverride,
+                      topoYamlTrustPrompt.branchNameOverride,
+                      topoYamlTrustPrompt.sparseCheckoutOverride,
+                      topoYamlTrustPrompt.contentHash
                     )
                   } catch (err) {
                     setError(
@@ -350,10 +350,10 @@ export function renderMobileTasksOrcaYamlTrustDrawer(model: ConnectionPresentati
               key="action-5"
               title={translate('tasks.workspaceTrustDrawers.dontRun', "Don't run")}
               leading={<X size={16} color={colors.textPrimary} />}
-              disabled={creatingKey === orcaYamlTrustPrompt.item.key}
+              disabled={creatingKey === topoYamlTrustPrompt.item.key}
               onPress={() => {
-                const prompt = orcaYamlTrustPrompt
-                setOrcaYamlTrustPrompt(null)
+                const prompt = topoYamlTrustPrompt
+                setTopoYamlTrustPrompt(null)
                 void createWorkspace(
                   prompt.item,
                   prompt.repoIdOverride,

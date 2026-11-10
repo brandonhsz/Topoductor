@@ -6,7 +6,7 @@ export function MobileRelayBetaNotice({ className }: { className?: string }): Re
   const t = useTranslate()
   return (
     <p className={cn('text-[11px] text-muted-foreground', className)}>
-      {t('auto.components.settings.MobileRelayBetaNotice.notice', 'Orca Relay is in beta.')}
+      {t('auto.components.settings.MobileRelayBetaNotice.notice', 'Topo Relay is in beta.')}
     </p>
   )
 }

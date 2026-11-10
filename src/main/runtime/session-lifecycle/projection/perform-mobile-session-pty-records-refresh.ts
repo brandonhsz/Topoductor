@@ -1,9 +1,9 @@
 import type { RuntimeWorkspaceSelectors as WorkspaceSelectors } from '../../workspaces/workspace-selectors'
-import type { OrcaRuntimeWithApplyMobileSessionTabNavigation as MobileSessionNavigation } from './apply-mobile-session-tab-navigation'
-import type { OrcaRuntimeWithAgentSessionResumeOwnership as AgentSessionResume } from './agent-session-resume-ownership'
-import type { OrcaRuntimeWithStopTerminalsForWorktree as WorktreeTerminalStop } from '../../terminal/stop/worktree-terminal-stop'
-import { OrcaRuntimeWithRestoredPaneStart } from './restored-pane-materialize'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import type { TopoRuntimeWithApplyMobileSessionTabNavigation as MobileSessionNavigation } from './apply-mobile-session-tab-navigation'
+import type { TopoRuntimeWithAgentSessionResumeOwnership as AgentSessionResume } from './agent-session-resume-ownership'
+import type { TopoRuntimeWithStopTerminalsForWorktree as WorktreeTerminalStop } from '../../terminal/stop/worktree-terminal-stop'
+import { TopoRuntimeWithRestoredPaneStart } from './restored-pane-materialize'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import type { PtyControllerInventory } from '../../terminal/lifecycle/runtime-pty-controller-contract'
 import { isAgentLaunchRunningIn } from '../../../agent-launch/agent-launch-pane-attachment'
 import { FLOATING_TERMINAL_WORKTREE_ID } from '../../../../shared/constants'
@@ -25,7 +25,7 @@ import { isWorktreeTerminalsSleepingError } from '../../../../shared/workspace-s
 import { paneHoldsSession } from '../../terminal/surface/main-terminal-surfaces'
 import { recordShownTerminalUserOpen } from '../../terminal/lifecycle/run-terminal-client-use'
 import { resolveChatTabActivation } from '../../agent-session/agent-session-tab-identity'
-export abstract class OrcaRuntimeWithPerformMobileSessionPtyRecordsRefresh extends OrcaRuntimeWithRestoredPaneStart {
+export abstract class TopoRuntimeWithPerformMobileSessionPtyRecordsRefresh extends TopoRuntimeWithRestoredPaneStart {
   protected abstract toMobileSessionTabsResult(
     snapshot: RuntimeMobileSessionTabsSnapshot
   ): RuntimeMobileSessionTabsResult
@@ -203,7 +203,7 @@ export abstract class OrcaRuntimeWithPerformMobileSessionPtyRecordsRefresh exten
         }
         let startupCwdFallback: RuntimeMobileSessionTabActivationResult['startupCwdFallback']
         try {
-          if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+          if (TOPO_LAYOUT_OWNER_IS_MAIN) {
             const started = await this.ensureRestoredPaneStarted(
               { worktreeId, tabId: tab.parentTabId, leafId: tab.leafId },
               trigger

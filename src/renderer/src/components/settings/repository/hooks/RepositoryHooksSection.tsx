@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type {
   HookCommandSourcePolicy,
-  OrcaHooks,
+  TopoHooks,
   RepoHookSettings,
   SetupAgentStartupPolicy,
   SetupRunPolicy
-} from '../../../../../../shared/orca-yaml-hook-types'
+} from '../../../../../../shared/topo-yaml-hook-types'
 import type { Repo } from '../../../../../../shared/repo-types'
 import { getRepoExecutionHostId } from '../../../../../../shared/execution-host'
 import { resolveHookCommandSourcePolicy } from '../../../../../../shared/hook-command-source-policy'
@@ -33,7 +33,7 @@ import { useRepositoryIssueCommand } from './use-repository-issue-command'
 
 type RepositoryHooksSectionProps = {
   repo: Repo
-  yamlHooks: OrcaHooks | null
+  yamlHooks: TopoHooks | null
   hasHooksFile: boolean
   hooksInspectionReady: boolean
   mayNeedUpdate: boolean
@@ -113,7 +113,7 @@ export function RepositoryHooksSection({
         title={t('auto.components.settings.RepositoryHooksSection.ff082fe7c6', 'Worktree Hooks')}
         description={t(
           'auto.components.settings.RepositoryHooksSection.8567127a40',
-          'Scripts that run when worktrees are created or archived. Local scripts are stored on this machine; `orca.yaml` scripts are shared with your team.'
+          'Scripts that run when worktrees are created or archived. Local scripts are stored on this machine; `topo.yaml` scripts are shared with your team.'
         )}
       >
         <SearchableSetting
@@ -130,8 +130,8 @@ export function RepositoryHooksSection({
             'command',
             'local',
             'local settings scripts',
-            'orca.yaml',
-            'orca.yaml hooks',
+            'topo.yaml',
+            'topo.yaml hooks',
             'hook'
           ]}
         >
@@ -184,8 +184,8 @@ export function RepositoryHooksSection({
             'command',
             'local',
             'local settings scripts',
-            'orca.yaml',
-            'orca.yaml hooks',
+            'topo.yaml',
+            'topo.yaml hooks',
             'hook'
           ]}
         >
@@ -228,14 +228,14 @@ export function RepositoryHooksSection({
           title={t('auto.components.settings.RepositoryHooksSection.c9bc1bfd8f', 'Advanced')}
           description={t(
             'auto.components.settings.RepositoryHooksSection.610d90fdbd',
-            'Command source and orca.yaml details.'
+            'Command source and topo.yaml details.'
           )}
           className="py-4"
           forceVisible={forceVisible}
           keywords={[
             'advanced',
             'command source',
-            'orca.yaml',
+            'topo.yaml',
             'shared',
             'local',
             'both',

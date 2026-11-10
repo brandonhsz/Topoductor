@@ -51,10 +51,10 @@ export function worktreeSelectorRecovery(selector: string): WorktreeSelectorReco
     validSelectorForms: WORKTREE_SELECTOR_FORMS,
     suggestions,
     nextSteps: [
-      `No Orca workspace matched the worktree selector "${selector}".`,
+      `No Topo workspace matched the worktree selector "${selector}".`,
       ...(suggestions.length > 0 ? [`Did you mean: ${suggestions.join(', ')}`] : []),
       `Valid selector forms: ${WORKTREE_SELECTOR_FORMS.join(', ')}.`,
-      'List the exact values, folder workspaces included, with `orca worktree ps --json` (add `--environment <id>` for a workspace in another environment); a bare repository id is not a worktree id.'
+      'List the exact values, folder workspaces included, with `topo worktree ps --json` (add `--environment <id>` for a workspace in another environment); a bare repository id is not a worktree id.'
     ]
   }
 }
@@ -89,5 +89,5 @@ export async function withWorktreeSelectorRecovery<T>(
 }
 
 export const parentCwdNextSteps = (selector?: string): string[] => [
-  `The parent selector "${selector}" could not be resolved. Run from an Orca-managed worktree or pass an explicit parent selector.`
+  `The parent selector "${selector}" could not be resolved. Run from a Topo-managed worktree or pass an explicit parent selector.`
 ]

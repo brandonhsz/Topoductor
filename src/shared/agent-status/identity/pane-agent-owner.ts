@@ -2,7 +2,7 @@ import type { AgentType } from '../contracts/agent-status-types'
 
 /** Optional owner signals preserve launch-first precedence and durable host identity; each caller supplies what it holds. */
 export type PaneAgentOwnerSignals = {
-  /** Tab-scoped launch intent — what Orca launched into this tab. */
+  /** Tab-scoped launch intent — what Topo launched into this tab. */
   launchAgent?: AgentType | null
   /** Never-cleared per-connection launch seed (pane connection only). */
   startupLaunchAgent?: AgentType | null

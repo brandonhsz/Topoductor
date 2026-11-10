@@ -34,23 +34,23 @@ describe('connector places', () => {
     const projects = connectorProjects(
       store([
         repo({
-          id: 'orca',
-          displayName: 'orca',
+          id: 'topo',
+          displayName: 'topo',
           gitRemoteIdentity: {
-            canonicalKey: 'github.com/stablyai/orca',
+            canonicalKey: 'github.com/brandonhsz/topo',
             remoteName: 'origin',
-            remoteUrl: 'git@github.com:stablyai/orca.git'
+            remoteUrl: 'git@github.com:brandonhsz/topo.git'
           }
         }),
-        repo({ id: 'orca', connectionId: 'box', executionHostId: 'ssh:box' }),
+        repo({ id: 'topo', connectionId: 'box', executionHostId: 'ssh:box' }),
         repo({ id: 'linux', path: '\\\\wsl.localhost\\Ubuntu\\home\\me\\linux' }),
         repo({ id: 'served', executionHostId: 'runtime:server-1' }),
         repo({ id: 'notes', kind: 'folder' })
       ])
     )
     expect(projects.map(({ name, remote, where }) => ({ name, remote, where }))).toEqual([
-      { name: 'orca', remote: 'stablyai/orca', where: { kind: 'local' } },
-      { name: 'orca', remote: undefined, where: { kind: 'ssh', label: 'openclaw' } },
+      { name: 'topo', remote: 'brandonhsz/topo', where: { kind: 'local' } },
+      { name: 'topo', remote: undefined, where: { kind: 'ssh', label: 'openclaw' } },
       { name: 'linux', remote: undefined, where: { kind: 'wsl', label: 'Ubuntu' } }
     ])
     expect(JSON.stringify(projects)).not.toContain('/src/')
@@ -58,14 +58,14 @@ describe('connector places', () => {
     expect(placeLaunchTarget(local!.placeId, 'T1:C9:1', 'slack')).toEqual({
       kind: 'create-worktree',
       create: {
-        repo: 'id:orca',
+        repo: 'id:topo',
         repoHostId: 'local',
         name: expect.stringMatching(/^slack-[0-9a-f]{8}$/),
         nameWasGenerated: true
       }
     })
     expect(placeLaunchTarget(remote!.placeId, 'T1:C9:1', 'slack')).toMatchObject({
-      create: { repo: 'id:orca', repoHostId: 'ssh:box' }
+      create: { repo: 'id:topo', repoHostId: 'ssh:box' }
     })
   })
 

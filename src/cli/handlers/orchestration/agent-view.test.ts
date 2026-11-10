@@ -53,9 +53,9 @@ describe('orchestration agent views', () => {
   beforeEach(() => {
     callMock.mockReset()
     process.exitCode = undefined
-    vi.stubEnv('ORCA_CLI_COMMAND', 'orca-dev')
-    vi.stubEnv('ORCA_TERMINAL_HANDLE', 'term_coord')
-    vi.stubEnv('ORCA_AGENT_SESSION_ID', undefined)
+    vi.stubEnv('TOPO_CLI_COMMAND', 'topo-dev')
+    vi.stubEnv('TOPO_TERMINAL_HANDLE', 'term_coord')
+    vi.stubEnv('TOPO_AGENT_SESSION_ID', undefined)
   })
 
   afterEach(() => {
@@ -86,12 +86,12 @@ describe('orchestration agent views', () => {
       failedStage: 'agent_ready',
       lastError: 'Agent did not reach a ready prompt within 60000ms.',
       residualResources: [{ kind: 'terminal', id: 'term_agent', ownership: 'owned' }],
-      recovery: 'Close it with: orca orchestration worker-release --dispatch ctx_1'
+      recovery: 'Close it with: topo orchestration worker-release --dispatch ctx_1'
     })
 
     expect(stdout).toBe(
       'dispatchId=ctx_1 taskId=task_1 runId=run_1 state=failed terminal=term_agent workspace=wt_1::/repo failedStage=agent_ready lastError="Agent did not reach a ready prompt within 60000ms." residualResources="terminal term_agent"\n' +
-        'Next: Close it with: orca-dev orchestration worker-release --dispatch ctx_1'
+        'Next: Close it with: topo-dev orchestration worker-release --dispatch ctx_1'
     )
     expect(stderr).toBe(
       'error: start_failed: agent_ready: Agent did not reach a ready prompt within 60000ms.'
@@ -164,7 +164,7 @@ describe('orchestration agent views', () => {
         'msg_q question from ctx_1',
         '  Remove the old flag now?',
         '  payload: taskId=task_1 dispatchId=ctx_1 options=now,later',
-        'Reply: orca-dev orchestration reply --id msg_q --body "..."'
+        'Reply: topo-dev orchestration reply --id msg_q --body "..."'
       ].join('\n')
     )
   })
@@ -210,13 +210,13 @@ describe('orchestration agent views', () => {
             preferred: 'terminal',
             detail: 'Started a terminal agent worker.'
           },
-          next: 'Orca wakes you when workers report; end your turn.'
+          next: 'Topo wakes you when workers report; end your turn.'
         }
       )
 
     expect((await followUp('reopened')).stdout).toBe(
       'delivery=reopened followUpOf=ctx_1 dispatchId=ctx_2 taskId=task_1 runId=run_1 state=ready terminal=term_agent workspace=wt_1::/repo queued=true\n' +
-        'Next: Orca wakes you when workers report; end your turn.'
+        'Next: Topo wakes you when workers report; end your turn.'
     )
     expect((await followUp('started_fresh')).stdout).toContain('mode=terminal')
   })
@@ -248,7 +248,7 @@ describe('orchestration agent views', () => {
 
     expect(stdout).toBe(
       'scope.run=run_1 scope.source=flag\n' +
-        'dispatchId=ctx_1 taskId=task_1 state=running liveness=live terminal=term_agent terminalState=active workspace=wt_1::/repo host=local attention=input next="orca-dev orchestration worker-stop --dispatch ctx_1"'
+        'dispatchId=ctx_1 taskId=task_1 state=running liveness=live terminal=term_agent terminalState=active workspace=wt_1::/repo host=local attention=input next="topo-dev orchestration worker-stop --dispatch ctx_1"'
     )
   })
 
@@ -346,7 +346,7 @@ describe('orchestration agent views', () => {
     expect(log).not.toHaveBeenCalled()
     expect(error.mock.calls).toEqual([
       [
-        'ask timeout after 1000ms; question is still pending (messageId: msg_q). Resume waiting; do not ask again:\norca-dev orchestration ask --from term_worker --resume msg_q --timeout-ms 1000'
+        'ask timeout after 1000ms; question is still pending (messageId: msg_q). Resume waiting; do not ask again:\ntopo-dev orchestration ask --from term_worker --resume msg_q --timeout-ms 1000'
       ]
     ])
     expect(process.exitCode).toBe(1)
@@ -359,12 +359,12 @@ describe('orchestration agent views', () => {
       stage: 'turn_start_unobserved',
       turnStart: 'unobserved',
       lastError: 'The agent did not show that it started the task.',
-      nextCommands: ['orca orchestration worker-abandon --dispatch ctx_1 --json']
+      nextCommands: ['topo orchestration worker-abandon --dispatch ctx_1 --json']
     })
 
     expect(stdout).toBe(
       'dispatchId=ctx_1 taskId=task_1 runId=run_1 state=outcome_unknown terminal=term_agent workspace=wt_1::/repo\n' +
-        "Next: Task typed in but the worker hasn't been seen starting; don't resend or abandon it. End your turn; Orca wakes you when it reports. If nothing arrives, run orca-dev orchestration worker-show --dispatch ctx_1."
+        "Next: Task typed in but the worker hasn't been seen starting; don't resend or abandon it. End your turn; Topo wakes you when it reports. If nothing arrives, run topo-dev orchestration worker-show --dispatch ctx_1."
     )
     expect(stderr).toBe(
       "warning: turn_start_unobserved: task typed in; the worker may still be starting. Don't resend."
@@ -401,7 +401,7 @@ describe('orchestration agent views', () => {
   })
 
   it('keeps colliding payload fields, never edits message text, and drops the runtime banner', async () => {
-    const body = '[Reply: orca orchestration reply --id x --body "quoted by the worker"]'
+    const body = '[Reply: topo orchestration reply --id x --body "quoted by the worker"]'
     const { stdout } = await run(
       'check',
       [
@@ -470,7 +470,7 @@ describe('orchestration agent views', () => {
     expect(stdout).not.toContain('Review add')
   })
 
-  it('never lets a payload stand in for Orca-computed message fields', async () => {
+  it('never lets a payload stand in for Topo-computed message fields', async () => {
     const { stdout } = await run('check', [['run', 'run_1']], {
       messages: [
         {
@@ -484,7 +484,7 @@ describe('orchestration agent views', () => {
       ],
       count: 1
     })
-    expect(stdout).toContain('Reply: orca-dev orchestration reply --id msg_q --body "..."')
+    expect(stdout).toContain('Reply: topo-dev orchestration reply --id msg_q --body "..."')
     expect(stdout).not.toContain('read-only')
     expect(stdout).not.toContain('Next:')
   })

@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto'
 import { BrowserWindow } from 'electron'
 import '../../../shared/constants'
-import { ORCA_BROWSER_PARTITION } from '../../../shared/browser/browser-session-partition'
-import { ORCA_BROWSER_GUEST_WEB_PREFERENCES } from '../../../shared/browser/guest-lifecycle/browser-guest-web-preferences'
+import { TOPO_BROWSER_PARTITION } from '../../../shared/browser/browser-session-partition'
+import { TOPO_BROWSER_GUEST_WEB_PREFERENCES } from '../../../shared/browser/guest-lifecycle/browser-guest-web-preferences'
 import { mapSettledWithConcurrency } from '../../../shared/map-with-concurrency'
 import type { BrowserBackend, BrowserBackendCreateTab } from '../browser-backend'
 import type { BrowserManager } from '../guest-lifecycle/manager/browser-manager'
@@ -11,7 +11,7 @@ import { browserSessionRegistry } from '../sessions/profiles/browser-session-reg
 import { installBrowserJavaScriptDialogs } from '../guest-lifecycle/prompts/browser-javascript-dialogs'
 import type { ServeBrowserPageState } from '../../runtime/browser/headless/serve-browser-tab-layout'
 
-// orca serve has no renderer for webviews; hidden BrowserWindows host its pages.
+// topo serve has no renderer for webviews; hidden BrowserWindows host its pages.
 // Headless Linux requires Xvfb; Electron --headless segfaults.
 
 const DEFAULT_VIEWPORT_WIDTH = 1280
@@ -45,14 +45,14 @@ export class OffscreenBrowserBackend implements BrowserBackend {
     const profile = params.profileId
       ? browserSessionRegistry.getProfile(params.profileId)
       : browserSessionRegistry.getDefaultProfile()
-    const partition = profile?.partition ?? ORCA_BROWSER_PARTITION
+    const partition = profile?.partition ?? TOPO_BROWSER_PARTITION
 
     const win = new BrowserWindow({
       show: false,
       width: DEFAULT_VIEWPORT_WIDTH,
       height: DEFAULT_VIEWPORT_HEIGHT,
       webPreferences: {
-        ...ORCA_BROWSER_GUEST_WEB_PREFERENCES,
+        ...TOPO_BROWSER_GUEST_WEB_PREFERENCES,
         partition,
         sandbox: true,
         contextIsolation: true,

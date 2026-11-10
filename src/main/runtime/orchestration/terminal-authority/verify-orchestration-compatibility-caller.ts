@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithSerializeHeadlessTerminalBuffer } from '../../terminal/output/headless-buffer-snapshot'
+import { TopoRuntimeWithSerializeHeadlessTerminalBuffer } from '../../terminal/output/headless-buffer-snapshot'
 import type {
   OrchestrationCompatibilityEvidence,
   OrchestrationCompatibilityHostStamp
@@ -12,7 +12,7 @@ import { createHash } from 'node:crypto'
 import type { RuntimePtyWorktreeRecord } from '../../terminal/records/runtime-terminal-state-records'
 import { parsePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 
-export abstract class OrcaRuntimeWithVerifyOrchestrationCompatibilityCaller extends OrcaRuntimeWithSerializeHeadlessTerminalBuffer {
+export abstract class TopoRuntimeWithVerifyOrchestrationCompatibilityCaller extends TopoRuntimeWithSerializeHeadlessTerminalBuffer {
   abstract getOrchestrationDispatchAuthority(
     handle: string
   ): OrchestrationCompatibilityTerminalAuthority | null

@@ -36,7 +36,7 @@ function manifest(options: { main?: string; capabilities?: PluginManifest['capab
 }
 
 async function pluginRoot(pluginManifest = manifest()): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-reconcile-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-reconcile-'))
   roots.push(root)
   await writeFile(join(root, 'orca-plugin.json'), JSON.stringify(pluginManifest))
   await writeFile(join(root, 'worker.js'), 'export default async function () {}')

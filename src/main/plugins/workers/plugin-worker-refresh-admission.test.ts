@@ -39,8 +39,8 @@ function worker(): PluginWorkerHandle & { exit: () => void } {
 }
 
 async function harness() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-refresh-admission-'))
-  const userDataPath = await mkdtemp(join(tmpdir(), 'orca-plugin-refresh-user-data-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-refresh-admission-'))
+  const userDataPath = await mkdtemp(join(tmpdir(), 'topo-plugin-refresh-user-data-'))
   roots.push(root, userDataPath)
   const manifest = pluginManifestSchema.parse({
     manifestVersion: 1,

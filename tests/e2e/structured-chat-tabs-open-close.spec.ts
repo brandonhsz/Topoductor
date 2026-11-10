@@ -1,11 +1,11 @@
 import { existsSync, readFileSync } from 'node:fs'
 import type { Page } from '@stablyai/playwright-test'
-import { expect } from './helpers/orca-app'
+import { expect } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import { buildFakeAgentCommandOverride } from './helpers/fake-agent-command-override'
 import { SUPPORTED, createChatOnHost, test } from './helpers/structured-claude-stub'
 import { resolveCliCommand } from '../../src/shared/node-cli-command-resolution'
-import { claudeSessionIdForOrcaSession } from '../../src/main/claude/structured/claude-structured-session-id'
+import { claudeSessionIdForTopoSession } from '../../src/main/claude/structured/claude-structured-session-id'
 import { buildClaudeModelListArgs } from '../../src/shared/claude-model-list-probe'
 
 type ChatTab = { id: string; entityId: string }
@@ -38,7 +38,7 @@ function tabInStrip(page: Page, tabId: string) {
   return page.locator(`[data-testid="sortable-tab"][data-tab-id="${tabId}"]`)
 }
 
-/** Every Claude process Orca started, as the stub recorded it. */
+/** Every Claude process Topo started, as the stub recorded it. */
 function readStubLaunches(launchLog: string): { pid: number; args: string[] }[] {
   if (!existsSync(launchLog)) {
     return []
@@ -89,7 +89,7 @@ test.describe('structured chat tabs', () => {
   test.skip(!SUPPORTED, 'the Claude stub wrapper is POSIX-only')
 
   test('open from the host and the New tab menu, show in the tab bar, and close', async ({
-    orcaPage: page,
+    topoPage: page,
     electronApp,
     claudeStub
   }) => {
@@ -148,7 +148,7 @@ test.describe('structured chat tabs', () => {
       .toBeTruthy()
     await expect(tabInStrip(page, opened!.id)).toBeVisible()
 
-    // Orca's own lookup, on its shell-hydrated PATH and isolated HOME, lands on the stub.
+    // Topo's own lookup, on its shell-hydrated PATH and isolated HOME, lands on the stub.
     const mainEnv = await electronApp.evaluate(() => ({
       pathEnv: process.env.PATH ?? null,
       homePath: process.env.HOME
@@ -156,7 +156,7 @@ test.describe('structured chat tabs', () => {
     expect(resolveCliCommand('claude', mainEnv)).toBe(claudeStub.command)
     // Only this stub's version/catalog probes or one of these exact conversations may start.
     const providerIds = [first, second, opened!.entityId].map((id) =>
-      claudeSessionIdForOrcaSession(id)
+      claudeSessionIdForTopoSession(id)
     )
     await expect.poll(() => readStubLaunches(claudeStub.launchLog).length).toBeGreaterThan(0)
     for (const { pid, args } of readStubLaunches(claudeStub.launchLog)) {

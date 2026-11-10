@@ -39,7 +39,7 @@ const itWithZsh = hasZsh ? it : it.skip
 const FISH = resolveFishBinary()
 const itWithFish = FISH.available ? it : it.skip
 
-const SHELL_READY_MARKER_OUTPUT = '\x1b]777;orca-shell-ready\x07'
+const SHELL_READY_MARKER_OUTPUT = '\x1b]777;topo-shell-ready\x07'
 
 /** Answer startup and per-prompt capability queries so fish can finish drawing prompts. */
 const TERMINAL_QUERY_REPLIES: readonly (readonly [string, string])[] = [
@@ -71,9 +71,9 @@ async function runInteractiveZshLogin(args: {
       HOME: args.tempHome,
       TERM: 'xterm-256color',
       ZDOTDIR: args.wrapperZdotdir,
-      ORCA_ORIG_ZDOTDIR: args.tempHome,
-      ORCA_ZSHENV_SOURCE_DIR: args.tempHome,
-      ORCA_SHELL_FEATURES: 'ready'
+      TOPO_ORIG_ZDOTDIR: args.tempHome,
+      TOPO_ZSHENV_SOURCE_DIR: args.tempHome,
+      TOPO_SHELL_FEATURES: 'ready'
     }
   })
   let output = ''
@@ -111,7 +111,7 @@ async function runInteractiveZshRc(args: {
       HOME: args.zdotdir,
       TERM: 'xterm-256color',
       ZDOTDIR: args.zdotdir,
-      ORCA_SHELL_FEATURES: 'ready'
+      TOPO_SHELL_FEATURES: 'ready'
     }
   })
   let output = ''
@@ -139,27 +139,27 @@ describePosix('daemon shell-ready launch config', () => {
   })
 
   let previousUserDataPath: string | undefined
-  let previousOrcaOrigZdotdir: string | undefined
+  let previousTopoOrigZdotdir: string | undefined
   let userDataPath: string
 
   beforeEach(() => {
-    previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-    previousOrcaOrigZdotdir = process.env.ORCA_ORIG_ZDOTDIR
-    delete process.env.ORCA_ORIG_ZDOTDIR
+    previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+    previousTopoOrigZdotdir = process.env.TOPO_ORIG_ZDOTDIR
+    delete process.env.TOPO_ORIG_ZDOTDIR
     userDataPath = mkdtempSync(join(tmpdir(), 'daemon-shell-ready-test-'))
-    process.env.ORCA_USER_DATA_PATH = userDataPath
+    process.env.TOPO_USER_DATA_PATH = userDataPath
   })
 
   afterEach(() => {
     if (previousUserDataPath === undefined) {
-      delete process.env.ORCA_USER_DATA_PATH
+      delete process.env.TOPO_USER_DATA_PATH
     } else {
-      process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+      process.env.TOPO_USER_DATA_PATH = previousUserDataPath
     }
-    if (previousOrcaOrigZdotdir === undefined) {
-      delete process.env.ORCA_ORIG_ZDOTDIR
+    if (previousTopoOrigZdotdir === undefined) {
+      delete process.env.TOPO_ORIG_ZDOTDIR
     } else {
-      process.env.ORCA_ORIG_ZDOTDIR = previousOrcaOrigZdotdir
+      process.env.TOPO_ORIG_ZDOTDIR = previousTopoOrigZdotdir
     }
     rmSync(userDataPath, { recursive: true, force: true })
     vi.restoreAllMocks()
@@ -222,7 +222,7 @@ describePosix('daemon shell-ready launch config', () => {
           if (commandWritten && !erasureProbeWritten && existsSync(sentinel)) {
             erasureProbeWritten = true
             proc.write(
-              `functions -q __orca_shell_ready_marker; and touch ${stillRegistered}; or touch ${erased}\n`
+              `functions -q __topo_shell_ready_marker; and touch ${stillRegistered}; or touch ${erased}\n`
             )
             return
           }
@@ -278,16 +278,16 @@ describePosix('daemon shell-ready launch config', () => {
     15_000
   )
 
-  it('sets no ORCA_ORIG_ZDOTDIR when the inherited ZDOTDIR points at a wrapper dir', async () => {
+  it('sets no TOPO_ORIG_ZDOTDIR when the inherited ZDOTDIR points at a wrapper dir', async () => {
     // Inherited wrapper ZDOTDIR would make the wrapper source itself recursively.
     const previousZdotdir = process.env.ZDOTDIR
     const previousHome = process.env.HOME
-    process.env.ZDOTDIR = '/some/other/orca/shell-ready/zsh'
+    process.env.ZDOTDIR = '/some/other/topo/shell-ready/zsh'
     process.env.HOME = '/Users/alice'
     try {
       const { getShellReadyLaunchConfig } = await importFreshShellReady()
       const config = getShellReadyLaunchConfig('/bin/zsh')
-      expect(config.env.ORCA_ORIG_ZDOTDIR).toBeUndefined()
+      expect(config.env.TOPO_ORIG_ZDOTDIR).toBeUndefined()
     } finally {
       if (previousZdotdir === undefined) {
         delete process.env.ZDOTDIR
@@ -302,18 +302,18 @@ describePosix('daemon shell-ready launch config', () => {
     }
   })
 
-  it('uses inherited ORCA_ORIG_ZDOTDIR when ZDOTDIR is an Orca wrapper dir', async () => {
+  it('uses inherited TOPO_ORIG_ZDOTDIR when ZDOTDIR is a Topo wrapper dir', async () => {
     const previousZdotdir = process.env.ZDOTDIR
-    const previousOrigZdotdir = process.env.ORCA_ORIG_ZDOTDIR
+    const previousOrigZdotdir = process.env.TOPO_ORIG_ZDOTDIR
     const previousHome = process.env.HOME
     const userZdotdir = makeUserZdotdir(userDataPath, '.config', 'zsh')
-    process.env.ZDOTDIR = '/some/other/orca/shell-ready/zsh'
-    process.env.ORCA_ORIG_ZDOTDIR = userZdotdir
+    process.env.ZDOTDIR = '/some/other/topo/shell-ready/zsh'
+    process.env.TOPO_ORIG_ZDOTDIR = userZdotdir
     process.env.HOME = userDataPath
     try {
       const { getShellReadyLaunchConfig } = await importFreshShellReady()
       const config = getShellReadyLaunchConfig('/bin/zsh')
-      expect(config.env.ORCA_ORIG_ZDOTDIR).toBe(userZdotdir)
+      expect(config.env.TOPO_ORIG_ZDOTDIR).toBe(userZdotdir)
     } finally {
       if (previousZdotdir === undefined) {
         delete process.env.ZDOTDIR
@@ -321,9 +321,9 @@ describePosix('daemon shell-ready launch config', () => {
         process.env.ZDOTDIR = previousZdotdir
       }
       if (previousOrigZdotdir === undefined) {
-        delete process.env.ORCA_ORIG_ZDOTDIR
+        delete process.env.TOPO_ORIG_ZDOTDIR
       } else {
-        process.env.ORCA_ORIG_ZDOTDIR = previousOrigZdotdir
+        process.env.TOPO_ORIG_ZDOTDIR = previousOrigZdotdir
       }
       if (previousHome === undefined) {
         delete process.env.HOME
@@ -338,7 +338,7 @@ describePosix('daemon shell-ready launch config', () => {
     async () => {
       const { getShellReadyLaunchConfig } = await importFreshShellReady()
       const config = getShellReadyLaunchConfig('/bin/zsh')
-      const tempHome = mkdtempSync(join(tmpdir(), 'orca-zsh-vi-mode-'))
+      const tempHome = mkdtempSync(join(tmpdir(), 'topo-zsh-vi-mode-'))
       writeFileSync(
         join(tempHome, '.zshrc'),
         [
@@ -368,15 +368,15 @@ describePosix('daemon shell-ready launch config', () => {
     async () => {
       const { getShellReadyLaunchConfig } = await importFreshShellReady()
       const config = getShellReadyLaunchConfig('/bin/zsh')
-      const tempHome = mkdtempSync(join(tmpdir(), 'orca-zsh-azhw-'))
-      const userHookOutput = 'ORCA-TEST-USER-HOOK'
+      const tempHome = mkdtempSync(join(tmpdir(), 'topo-zsh-azhw-'))
+      const userHookOutput = 'TOPO-TEST-USER-HOOK'
       writeFileSync(
         join(tempHome, '.zshrc'),
         [
-          `__orca_test_line_init_hook() { printf "${userHookOutput}" }`,
+          `__topo_test_line_init_hook() { printf "${userHookOutput}" }`,
           'autoload -Uz add-zle-hook-widget',
-          'zle -N __orca_test_line_init_hook',
-          'add-zle-hook-widget line-init __orca_test_line_init_hook',
+          'zle -N __topo_test_line_init_hook',
+          'add-zle-hook-widget line-init __topo_test_line_init_hook',
           ''
         ].join('\n')
       )
@@ -402,14 +402,14 @@ describePosix('daemon shell-ready launch config', () => {
   itWithZsh(
     'keeps chaining the prior zle-line-init widget when the marker block is sourced twice',
     async () => {
-      const zdotdir = mkdtempSync(join(tmpdir(), 'orca-zsh-resource-'))
-      const userHookOutput = 'ORCA-TEST-PRIOR-WIDGET'
-      const block = getZshShellReadyMarkerRegistrationBlock('\\033]777;orca-shell-ready\\007')
+      const zdotdir = mkdtempSync(join(tmpdir(), 'topo-zsh-resource-'))
+      const userHookOutput = 'TOPO-TEST-PRIOR-WIDGET'
+      const block = getZshShellReadyMarkerRegistrationBlock('\\033]777;topo-shell-ready\\007')
       writeFileSync(
         join(zdotdir, '.zshrc'),
         [
-          `__orca_test_prior_widget() { printf "${userHookOutput}" }`,
-          'zle -N zle-line-init __orca_test_prior_widget',
+          `__topo_test_prior_widget() { printf "${userHookOutput}" }`,
+          'zle -N zle-line-init __topo_test_prior_widget',
           block,
           block,
           ''

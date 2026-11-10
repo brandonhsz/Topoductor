@@ -14,7 +14,7 @@ import type {
 } from '../../../../../../shared/ui-chrome-types'
 import type { OpenFile } from '@/store/slices/editor/types/open-file'
 import {
-  ORCA_WORKTREE_FILE_CHANGE_EVENT,
+  TOPO_WORKTREE_FILE_CHANGE_EVENT,
   type WorktreeFileChangeEventDetail
 } from '@/hooks/worktree-file-change-event'
 
@@ -132,13 +132,13 @@ export function useGitStatusFileWatchRefresh({
         scheduleRefresh()
       }
     }
-    window.addEventListener(ORCA_WORKTREE_FILE_CHANGE_EVENT, handleFsChanged as EventListener)
+    window.addEventListener(TOPO_WORKTREE_FILE_CHANGE_EVENT, handleFsChanged as EventListener)
 
     return () => {
       if (refreshTimer) {
         clearTimeout(refreshTimer)
       }
-      window.removeEventListener(ORCA_WORKTREE_FILE_CHANGE_EVENT, handleFsChanged as EventListener)
+      window.removeEventListener(TOPO_WORKTREE_FILE_CHANGE_EVENT, handleFsChanged as EventListener)
     }
   }, [activeRuntimeEnvironmentId, shouldSubscribe, worktreePath])
 }

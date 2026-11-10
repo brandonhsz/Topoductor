@@ -29,7 +29,7 @@ async function writeFixture(prefix: string, records: unknown[]): Promise<string>
 describe('readNativeChatTranscriptTailFile', () => {
   it('windows to nothing for a non-positive limit instead of the whole tail', async () => {
     const decode = nativeChatLineDecoderForAgent('claude')!
-    const filePath = await writeFixture('orca-native-chat-tail-limit-', [
+    const filePath = await writeFixture('topo-native-chat-tail-limit-', [
       {
         type: 'assistant',
         uuid: 'a-1',

@@ -48,7 +48,7 @@ export type PluginRuntimeDelegate = {
   }): Promise<{ delivered: boolean }>
   /** The hook server's agent rows; absent where no hook server runs. */
   listAgentStatuses?(): readonly PluginAgentStatusRow[]
-  /** The runtime RPC the `orca` CLI calls, in process; absent where none is bound. */
+  /** The runtime RPC the `topo` CLI calls, in process; absent where none is bound. */
   callRuntime?: PluginRuntimeRpc
 }
 

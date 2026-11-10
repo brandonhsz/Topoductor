@@ -34,7 +34,7 @@ const request = z.object({
 // The launcher unset NODE_OPTIONS for this Node; OpenCode's own login shell sets it up again.
 const env: NodeJS.ProcessEnv = { ...process.env }
 
-// The launcher's stdin EOF, including Orca's death, cancels the task.
+// The launcher's stdin EOF, including Topo's death, cancels the task.
 const launcher = new AbortController()
 let started = false
 const lines = new SearchSubprocessLineAccumulator(OPENCODE_WSL_TEXT_TASK_REQUEST_MAX_BYTES)

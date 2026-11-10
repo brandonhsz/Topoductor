@@ -32,7 +32,7 @@ const { WslTranscriptFsError } = await import('../../../native-chat/wsl-transcri
 
 const FIRST = MARINE_CREATURES[0].toLowerCase()
 const SECOND = MARINE_CREATURES[1].toLowerCase()
-const DISTRO_ROOT = '\\\\wsl.localhost\\Ubuntu\\home\\ada\\orca\\workspaces'
+const DISTRO_ROOT = '\\\\wsl.localhost\\Ubuntu\\home\\ada\\topo\\workspaces'
 
 describe('retirement discovery on WSL', () => {
   beforeEach(() => {
@@ -52,14 +52,14 @@ describe('retirement discovery on WSL', () => {
     runWslTranscriptFsTaskMock.mockRejectedValue(
       new WslTranscriptFsError('timeout', 'filesystem access is taking too long')
     )
-    const hostHome = await mkdtemp(join(tmpdir(), 'orca-wsl-host-home-'))
+    const hostHome = await mkdtemp(join(tmpdir(), 'topo-wsl-host-home-'))
     try {
       await mkdir(
         join(
           hostHome,
           '.claude',
           'projects',
-          `--wsl-localhost-ubuntu-home-ada-orca-workspaces-${FIRST}`
+          `--wsl-localhost-ubuntu-home-ada-topo-workspaces-${FIRST}`
         ),
         { recursive: true }
       )
@@ -84,7 +84,7 @@ describe('retirement discovery on WSL', () => {
     // Only the home exists; walking past missing intermediate directories proves the route is up.
     const missing = new Set([
       DISTRO_ROOT,
-      '\\\\wsl.localhost\\Ubuntu\\home\\ada\\orca',
+      '\\\\wsl.localhost\\Ubuntu\\home\\ada\\topo',
       join(distroHome, '.claude', 'projects'),
       join(distroHome, '.claude')
     ])
@@ -119,10 +119,10 @@ describe('retirement discovery on WSL', () => {
 
   it('keeps a deleted WSL workspace name spent, so the next create cannot reuse its cwd', async () => {
     // The distro bucket outlives the deleted workspace and must keep its name retired.
-    const distroHome = await mkdtemp(join(tmpdir(), 'orca-wsl-distro-home-'))
-    const workspaceRoot = await mkdtemp(join(tmpdir(), 'orca-wsl-workspaces-'))
+    const distroHome = await mkdtemp(join(tmpdir(), 'topo-wsl-distro-home-'))
+    const workspaceRoot = await mkdtemp(join(tmpdir(), 'topo-wsl-workspaces-'))
     try {
-      await mkdir(join(distroHome, '.claude', 'projects', `-home-ada-orca-workspaces-${FIRST}`), {
+      await mkdir(join(distroHome, '.claude', 'projects', `-home-ada-topo-workspaces-${FIRST}`), {
         recursive: true
       })
 
@@ -150,8 +150,8 @@ describe('retirement discovery on WSL', () => {
     ['a distro bucket', 'distro', `-${FIRST}`]
   ])('keeps %s below a distro-root workspace folder spent', async (_case, side, bucket) => {
     const homes = {
-      host: await mkdtemp(join(tmpdir(), 'orca-wsl-host-home-')),
-      distro: await mkdtemp(join(tmpdir(), 'orca-wsl-distro-home-'))
+      host: await mkdtemp(join(tmpdir(), 'topo-wsl-host-home-')),
+      distro: await mkdtemp(join(tmpdir(), 'topo-wsl-distro-home-'))
     }
     try {
       await mkdir(join(homes[side], '.claude', 'projects', bucket), { recursive: true })
@@ -179,13 +179,13 @@ describe('retirement discovery on WSL', () => {
     async (_case, refusal, expectedProbes) => {
       const distro = '\\\\wsl.localhost\\Ubuntu'
       const longRoot = `/${'a'.repeat(229)}`
-      const distroDir = await mkdtemp(join(tmpdir(), 'orca-wsl-distro-'))
-      const hostHome = await mkdtemp(join(tmpdir(), 'orca-wsl-host-home-'))
+      const distroDir = await mkdtemp(join(tmpdir(), 'topo-wsl-distro-'))
+      const hostHome = await mkdtemp(join(tmpdir(), 'topo-wsl-host-home-'))
       try {
         const projects = join(distroDir, 'home', 'ada', '.claude', 'projects')
         await mkdir(join(distroDir, longRoot), { recursive: true })
-        await mkdir(join(distroDir, 'home', 'ada', 'orca', 'workspaces'), { recursive: true })
-        await mkdir(join(projects, `-home-ada-orca-workspaces-${FIRST}`), { recursive: true })
+        await mkdir(join(distroDir, 'home', 'ada', 'topo', 'workspaces'), { recursive: true })
+        await mkdir(join(projects, `-home-ada-topo-workspaces-${FIRST}`), { recursive: true })
         const hashed = join(
           projects,
           `${encodeClaudeProjectPath(`${longRoot}/${SECOND}`).slice(0, 200)}-1x2y3z`
@@ -231,9 +231,9 @@ describe('retirement discovery on WSL', () => {
   )
 
   it('reaches distro discovery from the real backfill, not only when called directly', async () => {
-    const distroHome = await mkdtemp(join(tmpdir(), 'orca-wsl-backfill-home-'))
+    const distroHome = await mkdtemp(join(tmpdir(), 'topo-wsl-backfill-home-'))
     try {
-      await mkdir(join(distroHome, '.claude', 'projects', `-home-ada-orca-workspaces-${FIRST}`), {
+      await mkdir(join(distroHome, '.claude', 'projects', `-home-ada-topo-workspaces-${FIRST}`), {
         recursive: true
       })
       getWslHomeAsyncMock.mockResolvedValue('\\\\wsl.localhost\\Ubuntu\\home\\ada')

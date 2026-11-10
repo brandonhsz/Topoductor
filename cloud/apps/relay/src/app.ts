@@ -1,9 +1,9 @@
-import { AssignmentRequestSchema, ResolveRequestSchema } from '@orca-cloud/relay-contract/director-messages'
-import { IdleRegionalRehomeRequestSchema, type IdleRegionalRehomeRequest, type IdleRegionalRehomeResult } from '@orca-cloud/relay-contract/idle-regional-rehome'
-import type { RegionCorrectionResponse } from '@orca-cloud/relay-contract/region-correction'
-import { isRelayCellConnectionHardCap, RELAY_ADMISSION_BUDGETS, RELAY_MAX_CELL_CONNECTION_UNOBSERVED_BOUND, cellPlacementCeiling, relayCellAdmissionBounds, type RelayCellConnectionHardCap } from '@orca-cloud/relay-contract/admission-budgets'
-import { RELAY_DEFAULT_REGION, RelayRegionSchema, type RelayRegion } from '@orca-cloud/relay-contract/relay-regions'
-import { RELAY_PROTOCOL_LIMITS } from '@orca-cloud/relay-contract/protocol-limits'
+import { AssignmentRequestSchema, ResolveRequestSchema } from '@topo-cloud/relay-contract/director-messages'
+import { IdleRegionalRehomeRequestSchema, type IdleRegionalRehomeRequest, type IdleRegionalRehomeResult } from '@topo-cloud/relay-contract/idle-regional-rehome'
+import type { RegionCorrectionResponse } from '@topo-cloud/relay-contract/region-correction'
+import { isRelayCellConnectionHardCap, RELAY_ADMISSION_BUDGETS, RELAY_MAX_CELL_CONNECTION_UNOBSERVED_BOUND, cellPlacementCeiling, relayCellAdmissionBounds, type RelayCellConnectionHardCap } from '@topo-cloud/relay-contract/admission-budgets'
+import { RELAY_DEFAULT_REGION, RelayRegionSchema, type RelayRegion } from '@topo-cloud/relay-contract/relay-regions'
+import { RELAY_PROTOCOL_LIMITS } from '@topo-cloud/relay-contract/protocol-limits'
 import { Hono, type Context } from 'hono'
 import { bodyLimit } from 'hono/body-limit'
 import { SignJWT } from 'jose'
@@ -250,7 +250,7 @@ export function createRelayApp(
     } catch (error) {
       console.warn(
         JSON.stringify({
-          event: 'orca_relay_shadow_compare_failed',
+          event: 'topo_relay_shadow_compare_failed',
           route,
           reason: error instanceof Error ? error.message : 'unknown'
         })
@@ -519,7 +519,7 @@ export function createRelayApp(
         if (error instanceof EdgeMoveDeferredError) {
           // Nothing moved (old-cell units still held, or the edge did not take the push): today's
           // path below keeps the host where it is, and a later ask moves it. Never a 503 loop.
-          console.warn(JSON.stringify({ event: 'orca_relay_edge_move_deferred', reason: error.message }))
+          console.warn(JSON.stringify({ event: 'topo_relay_edge_move_deferred', reason: error.message }))
           moved = null
         } else {
           if (!(error instanceof EdgeMoveBusyError) && !isRelayDatabaseTransientError(error)) {
@@ -714,7 +714,7 @@ export function createRelayApp(
         } catch (error) {
           if (body.data.regionCorrection.action === 'report') throw error
           // Optional measurement setup must not discard an otherwise valid placement.
-          console.warn(JSON.stringify({ event: 'orca_relay_region_window_unavailable' }))
+          console.warn(JSON.stringify({ event: 'topo_relay_region_window_unavailable' }))
         }
       }
     } catch (error) {
@@ -769,7 +769,7 @@ export function createRelayApp(
     // Reconnect grant logs locate hosts; placement-lane grants prove where failed sticky verifications eventually landed.
     if (body.data.reconnect) {
       console.warn(
-        `[orca-relay] assignment granted lane=${lane} hinted=true` +
+        `[topo-relay] assignment granted lane=${lane} hinted=true` +
           ` host=${relayHostLogDigest(claims.relayHostId)} cell=${assignment.cellId}`
       )
     }
@@ -1367,7 +1367,7 @@ export function createRelayApp(
         // The sweeps' switch: every write is on the record, the break-glass flip included.
         console.warn(
           JSON.stringify({
-            event: 'orca_relay_cell_admit_mode_recorded',
+            event: 'topo_relay_cell_admit_mode_recorded',
             cellId: body.data.cellId,
             from: before.admitMode,
             to: body.data.admitMode
@@ -2318,7 +2318,7 @@ const CellFenceAttemptBaseShape = {
   terraformStateObjectSha256: z.string().regex(/^[a-f0-9]{64}$/),
   requestReason: z
     .string()
-    .regex(/^orca-relay-fence\/[0-9a-f]{8}-[0-9a-f-]{27}$/)
+    .regex(/^topo-relay-fence\/[0-9a-f]{8}-[0-9a-f-]{27}$/)
 } as const
 const CellFenceAttemptEvidenceShape = {
   ...CellFenceAttemptBaseShape,
@@ -2505,7 +2505,7 @@ function logAssignmentRejection(input: {
   retryAfterSeconds?: number
 }): void {
   console.warn(
-    `[orca-relay] assignment rejected route=${input.route} lane=${input.lane}` +
+    `[topo-relay] assignment rejected route=${input.route} lane=${input.lane}` +
       ` hinted=${input.hinted} reason=${input.reason}` +
       ` host=${relayHostLogDigest(input.relayHostId)}` +
       (input.retryAfterSeconds === undefined ? '' : ` retryAfter=${input.retryAfterSeconds}`) +

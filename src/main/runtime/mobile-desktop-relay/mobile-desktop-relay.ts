@@ -144,7 +144,7 @@ export class MobileDesktopRelay {
                   : 'runtime_source_mismatch',
                 error instanceof Error
                   ? error.message
-                  : 'Unable to confirm the executing Orca server.'
+                  : 'Unable to confirm the executing Topo server.'
               )
             )
             if (reply) {
@@ -251,7 +251,7 @@ export class MobileDesktopRelay {
     // One budget covers the whole open, so a phone's open still answers in time.
     const grants = await link.setup.within(this.grants.get(host, phone.deviceId))
     if (grants.kind === 'update-needed') {
-      throw unavailable('The server needs an Orca update to open its workspaces from a phone.')
+      throw unavailable('The server needs a Topo update to open its workspaces from a phone.')
     }
     // Sync can outlive phone departure or server retirement; never open a stale link.
     if (!this.isCurrent(link)) {

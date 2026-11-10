@@ -59,7 +59,7 @@ export function createFixture() {
   }
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-journal-replace-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-journal-replace-'))
     clock = 1_000
     database = openTestJournalHostDatabase(root)
   })

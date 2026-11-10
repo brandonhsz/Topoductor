@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import type { WorkspaceLayoutStreamEvent } from '../../../../../shared/workspace-layout/workspace-layout-stream-frames'
 import { eraseRpcMethods, isStreamingMethod, type RpcContext } from '../../core'
 import { ALL_RPC_METHODS } from '../rpc-method-registry'
@@ -44,7 +44,7 @@ function harness(epoch?: string) {
     cleanupSubscription: (id: string) => cleanups.get(id)?.()
   }
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the handler calls only the three runtime methods this fake implements.
-  const runtime = fake as unknown as OrcaRuntimeService
+  const runtime = fake as unknown as TopoRuntimeService
   return {
     runtime,
     cleanups,

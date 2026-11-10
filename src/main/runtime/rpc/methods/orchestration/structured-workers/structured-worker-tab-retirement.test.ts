@@ -9,8 +9,8 @@ import type { AgentSessionLease } from '../../../../../../shared/agent-session/l
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { setStructuredAgentSessionHost } from '../../../../../native-chat/agent-session-wire/host/structured-agent-session-registry'
-import { partialRuntimeStore } from '../../../../orca-runtime-tests/runtime-store-partial-fixture'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { partialRuntimeStore } from '../../../../topo-runtime-tests/runtime-store-partial-fixture'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 
 import {
   mintStructuredWorkerPaneKey,
@@ -79,10 +79,10 @@ type RuntimeInternals = {
 }
 
 async function runtimeShowingStructuredTab(): Promise<{
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   emit: ReturnType<typeof vi.fn>
 }> {
-  const runtime = new OrcaRuntimeService(partialRuntimeStore())
+  const runtime = new TopoRuntimeService(partialRuntimeStore())
   const internal = runtime as unknown as RuntimeInternals
   internal.ensureStructuredAgentSessionHost = async () => undefined
   internal.notifyMessageArrived = vi.fn()
@@ -101,7 +101,7 @@ async function runtimeShowingStructuredTab(): Promise<{
   return { runtime, emit }
 }
 
-async function structuredTabIds(runtime: OrcaRuntimeService): Promise<string[]> {
+async function structuredTabIds(runtime: TopoRuntimeService): Promise<string[]> {
   const snapshot = await runtime.listMobileSessionTabs(`id:${WORKTREE}`)
   return snapshot.tabs.map((tab) => tab.id)
 }
@@ -164,7 +164,7 @@ describe('structured worker stop retires the chat tab', () => {
 describe('structured worker discard retires the chat tab', () => {
   it('prunes the tab a half-started worker published', async () => {
     const { close } = installHost()
-    const runtime = new OrcaRuntimeService(partialRuntimeStore())
+    const runtime = new TopoRuntimeService(partialRuntimeStore())
     const internal = runtime as unknown as RuntimeInternals
     internal.ensureStructuredAgentSessionHost = async () => undefined
     let createdSessionId = ''

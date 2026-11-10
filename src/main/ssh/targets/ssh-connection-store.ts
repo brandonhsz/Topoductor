@@ -10,7 +10,7 @@ import { findSshRouteDuplicates, sshRouteSnapshotFingerprint } from './ssh-targe
 
 import type { SshRouteResolvers, SshRouteSnapshot } from './ssh-target-route-resolution'
 
-import { SshTargetOrcadClaims } from './ssh-target-orcad-claims'
+import { SshTargetTopodClaims } from './ssh-target-topod-claims'
 import {
   buildRemovedSshTargetTombstone,
   readoptOrphanedWorkspacesForTarget
@@ -19,7 +19,7 @@ import {
 import {
   getRuntimeOwnedSshTargetId,
   isRuntimeOwnedSshTarget,
-  isManagedOrcadSshTarget
+  isManagedTopodSshTarget
 } from './ssh-target-runtime-ownership'
 
 // Reuse a snapshot while nothing it was built from changed, but re-resolve now and then: /etc/ssh_config and Match exec can change too.
@@ -102,13 +102,13 @@ export class SshConnectionStore {
     return next
   }
 
-  /** Exclusive managed-orcad ownership of a target; see ssh-target-orcad-claims. */
-  getOrcadRuntimeClaims(): SshTargetOrcadClaims {
-    return new SshTargetOrcadClaims(this.store)
+  /** Exclusive managed-topod ownership of a target; see ssh-target-topod-claims. */
+  getTopodRuntimeClaims(): SshTargetTopodClaims {
+    return new SshTargetTopodClaims(this.store)
   }
 
   /** The profile reads and scrollback reservations a migration exports from. */
-  getOrcadMigrationSource(): Store {
+  getTopodMigrationSource(): Store {
     return this.store
   }
 
@@ -259,7 +259,7 @@ export class SshConnectionStore {
       if (
         existing.source === 'manual' ||
         isRuntimeOwnedSshTarget(existing) ||
-        isManagedOrcadSshTarget(existing) ||
+        isManagedTopodSshTarget(existing) ||
         (existing.source === undefined && !isLegacyConfigImportTarget(existing))
       ) {
         manualAliases.add(alias)
@@ -325,7 +325,7 @@ export class SshConnectionStore {
           changed.push(updated)
         }
       } else if (routeDuplicates.has(alias)) {
-        // Another name for a machine already in Orca; inserting it would show its sessions twice.
+        // Another name for a machine already in Topo; inserting it would show its sessions twice.
         continue
       } else {
         const inserted: SshTarget = {

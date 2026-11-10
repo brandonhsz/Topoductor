@@ -26,7 +26,7 @@ afterEach(async () => {
 
 describe('readNativeChatTranscriptCached', () => {
   it('never serves one file’s parse for a different file that shares a sessionId', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-native-chat-cache-xwt-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-native-chat-cache-xwt-'))
     tempRoots.push(root)
     const fileA = join(root, 'worktree-a.jsonl')
     const fileC = join(root, 'worktree-c.jsonl')

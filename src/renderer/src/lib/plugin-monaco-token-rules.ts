@@ -1,6 +1,6 @@
 import type * as Monaco from 'monaco-editor'
 
-/** A VS Code theme's `tokenColors` entry, as plugin themes and Orca's bundled themes write it. */
+/** A VS Code theme's `tokenColors` entry, as plugin themes and Topo's bundled themes write it. */
 type TokenColorRule = {
   scope?: string | readonly string[]
   settings: { foreground?: string; fontStyle?: string }

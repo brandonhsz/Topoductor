@@ -10,8 +10,8 @@ export const CLAUDE_AGENT_VIEW_PLUGIN_FILES: Record<string, string> = {
   '.claude-plugin/plugin.json': JSON.stringify({
     name: CLAUDE_AGENT_VIEW_PLUGIN,
     version: '0.2.0',
-    description: 'Open Claude subagents from the Orca sidebar',
-    author: { name: 'stablyai' },
+    description: 'Open Claude subagents from the Topo sidebar',
+    author: { name: 'brandonhsz' },
     license: 'MIT'
   }),
   'hooks/hooks.json': JSON.stringify({ modules: ['./register.js'] }),

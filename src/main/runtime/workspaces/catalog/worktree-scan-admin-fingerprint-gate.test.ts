@@ -30,7 +30,7 @@ vi.mock('./repo-worktree-admin-fingerprint', () => ({
   readRepoWorktreeAdminFingerprint: readRepoWorktreeAdminFingerprintMock
 }))
 
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { WORKTREE_SCAN_ADMIN_FINGERPRINT_TIMEOUT_MS } from './worktree-scan-admin-budget'
 import type { HostWorktreeTarget } from '../../../../shared/worktree/host-qualified-identity'
 
@@ -112,12 +112,12 @@ type RuntimeInternals = { listResolvedWorktrees: () => Promise<unknown> }
 function makeRuntime(
   options: { connectionId?: string; repoCount?: number; repoPath?: string } = {}
 ): {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   list: () => Promise<unknown>
   store: ReturnType<typeof makeStore>
 } {
   const store = makeStore(options)
-  const runtime = new OrcaRuntimeService(store as never)
+  const runtime = new TopoRuntimeService(store as never)
   return {
     runtime,
     list: () => (runtime as unknown as RuntimeInternals).listResolvedWorktrees(),
@@ -267,7 +267,7 @@ describe('scoped explicit worktree-id resolution', () => {
   }
 
   it('keeps cross-repo selectors on the fleet path so ambiguity still throws', async () => {
-    const runtime = new OrcaRuntimeService(makeStore({ repoCount: 10 }) as never)
+    const runtime = new TopoRuntimeService(makeStore({ repoCount: 10 }) as never)
     const resolve = (selector: string): Promise<unknown> =>
       runtime['resolveGitWorktreeSelector'](selector)
 

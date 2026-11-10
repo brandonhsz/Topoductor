@@ -42,7 +42,7 @@ describe('Codex real-account validation harness', () => {
         await writeFile(path.join(managedHome, 'auth.json'), '{"refresh_token":"never-report-me"}\\n')
         console.log(JSON.stringify({ layout, snapshot: await snapshotValidationState(layout) }))
       `,
-      [path.join(os.tmpdir(), 'orca-primary-home-sentinel')]
+      [path.join(os.tmpdir(), 'topo-primary-home-sentinel')]
     )
     cleanupPaths.push(layout.tempRoot)
 
@@ -59,7 +59,7 @@ describe('Codex real-account validation harness', () => {
   it.skipIf(process.platform === 'win32')(
     'refuses a symlinked temp parent that resolves inside the primary home',
     async () => {
-      const root = await mkdtemp(path.join(os.tmpdir(), 'orca-symlink-guard-'))
+      const root = await mkdtemp(path.join(os.tmpdir(), 'topo-symlink-guard-'))
       cleanupPaths.push(root)
       const primaryHome = path.join(root, 'primary-home')
       const insidePrimary = path.join(primaryHome, 'nested-temp')
@@ -78,7 +78,7 @@ describe('Codex real-account validation harness', () => {
         }
       `,
         [primaryHome],
-        { ORCA_CODEX_VALIDATION_TEMP_PARENT: link }
+        { TOPO_CODEX_VALIDATION_TEMP_PARENT: link }
       )
 
       expect(error).toContain('Refusing to place the disposable validation root')
@@ -102,7 +102,7 @@ describe('Codex real-account validation harness', () => {
 
     expect(error).toContain('Refusing to place the disposable validation root')
     expect(error).toContain('--temp-parent')
-    expect(error).toContain('ORCA_CODEX_VALIDATION_TEMP_PARENT')
+    expect(error).toContain('TOPO_CODEX_VALIDATION_TEMP_PARENT')
   })
 })
 
@@ -113,7 +113,7 @@ function runValidationModule<T>(source: string, args: string[], env?: Record<str
     {
       encoding: 'utf8',
       // Why: an ambient temp-parent override must not redirect unrelated cases.
-      env: { ...process.env, ORCA_CODEX_VALIDATION_TEMP_PARENT: '', ...env }
+      env: { ...process.env, TOPO_CODEX_VALIDATION_TEMP_PARENT: '', ...env }
     }
   )
   return JSON.parse(stdout.trim()) as T

@@ -31,7 +31,7 @@ vi.mock('./client/lookup/branch-lookup-resolution', () => ({
 vi.mock('./client', async () => ({
   getPRForBranchOutcome: (await import('./client/lookup/pr-for-branch-outcome'))
     .getPRForBranchOutcome,
-  getRepoSlug: vi.fn(async () => ({ owner: 'acme', repo: 'orca' })),
+  getRepoSlug: vi.fn(async () => ({ owner: 'acme', repo: 'topo' })),
   getGitHubPRLookupRateLimitBlock: vi.fn(async () => null),
   createGitHubPullRequest: vi.fn()
 }))

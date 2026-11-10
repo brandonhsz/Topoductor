@@ -90,7 +90,7 @@ export function automationErrorMessage(error: unknown): string {
   if (/forbidden|method_not_found/.test(message)) {
     return translate(
       'automations.mobile.hostUnavailable',
-      'Automations are unavailable on this host. Update Orca on that host and reconnect.'
+      'Automations are unavailable on this host. Update Topo on that host and reconnect.'
     )
   }
   if (/disconnect|connection|cutover|closed|timeout/i.test(message)) {

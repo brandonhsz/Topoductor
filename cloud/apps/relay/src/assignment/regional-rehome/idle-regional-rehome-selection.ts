@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import type { IdleRegionalRehomeRequest } from '@orca-cloud/relay-contract/idle-regional-rehome'
+import type { IdleRegionalRehomeRequest } from '@topo-cloud/relay-contract/idle-regional-rehome'
 import type { RelayDatabase, SqlRow } from '../../database/database.js'
 
 export const IDLE_REHOME_PAGE_SIZE = 100

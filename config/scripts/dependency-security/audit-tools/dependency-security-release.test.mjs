@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { expect, it } from 'vitest'
 import { parse } from 'yaml'
 

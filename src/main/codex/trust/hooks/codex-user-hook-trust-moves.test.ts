@@ -20,7 +20,7 @@ let hooksPath: string
 let configPath: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-user-hook-trust-moves-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-user-hook-trust-moves-'))
   hooksPath = join(root, 'hooks.json')
   configPath = join(root, 'config.toml')
 })
@@ -59,12 +59,12 @@ function mutate(
 
 describe('real-home user hook trust rebasing', () => {
   it("moves each shifted hook's trust block to its new key, bytes unchanged", () => {
-    const orca = command('orca-hook')
+    const topo = command('topo-hook')
     const trusted = command('trusted-user')
     const disabled = command('disabled-user')
     const untrusted = command('untrusted-user')
     upsertHookTrustEntries(configPath, [
-      { ...stopEntry(0, orca), trustedHash: 'sha256:orca' },
+      { ...stopEntry(0, topo), trustedHash: 'sha256:topo' },
       { ...stopEntry(1, trusted), trustedHash: 'sha256:from-an-older-codex' },
       { ...stopEntry(2, disabled), trustedHash: 'sha256:disabled', enabled: false }
     ])
@@ -73,7 +73,7 @@ describe('real-home user hook trust rebasing', () => {
     mutate(
       {
         Stop: [
-          { hooks: [orca] },
+          { hooks: [topo] },
           { hooks: [trusted] },
           { hooks: [disabled] },
           { hooks: [untrusted] }
@@ -97,27 +97,27 @@ describe('real-home user hook trust rebasing', () => {
   })
 
   it('keeps the hooks write and reports when config.toml cannot be written', () => {
-    const orca = command('orca-hook')
+    const topo = command('topo-hook')
     const user = command('user-hook')
     upsertHookTrustEntries(configPath, [{ ...stopEntry(1, user), trustedHash: 'sha256:user' }])
     rmSync(configPath)
     mkdirSync(configPath)
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-    mutate({ Stop: [{ hooks: [orca] }, { hooks: [user] }] }, { Stop: [{ hooks: [user] }] })
+    mutate({ Stop: [{ hooks: [topo] }, { hooks: [user] }] }, { Stop: [{ hooks: [user] }] })
 
     expect(JSON.parse(readFileSync(hooksPath, 'utf-8')).hooks.Stop).toEqual([{ hooks: [user] }])
     expect(warn).toHaveBeenCalled()
   })
 
   it('moves nothing when any stored key has an unknown shape, leaving review to Codex', () => {
-    const orca = command('orca-hook')
+    const topo = command('topo-hook')
     const user = command('user-hook')
     upsertHookTrustEntries(configPath, [{ ...stopEntry(1, user), trustedHash: 'sha256:user' }])
     const before = `${readFileSync(configPath, 'utf-8')}\n[hooks.state."a-key-in-a-new-format"]\ntrusted_hash = "sha256:other"\n`
     writeFileSync(configPath, before)
 
-    mutate({ Stop: [{ hooks: [orca] }, { hooks: [user] }] }, { Stop: [{ hooks: [user] }] })
+    mutate({ Stop: [{ hooks: [topo] }, { hooks: [user] }] }, { Stop: [{ hooks: [user] }] })
 
     expect(JSON.parse(readFileSync(hooksPath, 'utf-8')).hooks.Stop).toEqual([{ hooks: [user] }])
     expect(readFileSync(configPath, 'utf-8')).toBe(before)
@@ -127,11 +127,11 @@ describe('real-home user hook trust rebasing', () => {
   it.skipIf(process.platform === 'win32')(
     'rewrites only the moved blocks, carrying each body verbatim and computing nothing',
     () => {
-      const orca = command('orca-hook')
+      const topo = command('topo-hook')
       const user = command('user-hook')
       const other = command('other-event-hook')
       const userBody =
-        'trusted_hash = "sha256:written-by-codex"\nnote = "a field Orca does not know"'
+        'trusted_hash = "sha256:written-by-codex"\nnote = "a field Topo does not know"'
       const unrelated = [
         'model = "user-model" # the user\'s own comment',
         '',
@@ -148,7 +148,7 @@ describe('real-home user hook trust rebasing', () => {
       )
 
       mutate(
-        { Stop: [{ hooks: [orca] }, { hooks: [user] }], PostToolUse: [{ hooks: [other] }] },
+        { Stop: [{ hooks: [topo] }, { hooks: [user] }], PostToolUse: [{ hooks: [other] }] },
         { Stop: [{ hooks: [user] }], PostToolUse: [{ hooks: [other] }] }
       )
 
@@ -164,7 +164,7 @@ describe('real-home user hook trust rebasing', () => {
   it.skipIf(process.platform === 'win32')(
     'moves a block in Codex quoted spelling verbatim, leaving no second table behind',
     () => {
-      const orca = command('orca-hook')
+      const topo = command('topo-hook')
       const user = command('user-hook')
       const userBody = 'enabled = false\ntrusted_hash = "sha256:written-by-codex"'
       const unrelated = ['model = "user-model"', '', '["hooks"."state"]', ''].join('\n')
@@ -173,7 +173,7 @@ describe('real-home user hook trust rebasing', () => {
         `${unrelated}\n["hooks"."state"."${hooksPath}:stop:1:0"]\n${userBody}\n`
       )
 
-      mutate({ Stop: [{ hooks: [orca] }, { hooks: [user] }] }, { Stop: [{ hooks: [user] }] })
+      mutate({ Stop: [{ hooks: [topo] }, { hooks: [user] }] }, { Stop: [{ hooks: [user] }] })
 
       const after = readFileSync(configPath, 'utf-8')
       expect(after).toBe(`${unrelated}\n[hooks.state."${hooksPath}:stop:0:0"]\n${userBody}\n`)

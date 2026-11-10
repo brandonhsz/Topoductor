@@ -2,7 +2,7 @@ import { vi } from 'vitest'
 import {
   createRuntime,
   syncSinglePty
-} from '../../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import { captureWorkerOutputArchive } from './worker-output-archive'
 
 // Synthetic normal-screen output; this exercises capture, not agent prompt detection.

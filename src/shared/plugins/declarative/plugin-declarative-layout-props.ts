@@ -10,7 +10,7 @@ import {
   requiredLabel
 } from './plugin-declarative-prop-schemas'
 
-/** Layout components added in catalog 2 (Orca 1.4.247). */
+/** Layout components added in catalog 2 (Topo 1.4.247). */
 
 const tabsProps = z
   .object({

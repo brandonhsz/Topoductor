@@ -26,7 +26,7 @@ export function nestedWorkerDepthExceededMessage(childDepth: number, maxDepth: n
 
 export const NESTED_WORKER_DEPTH_EXCEEDED_NEXT_STEPS: readonly string[] = [
   'Finish the task in this terminal instead of starting another worker.',
-  'To allow deeper nesting, ask the user to raise "Nested worker depth" in Settings → Orchestration of the Orca desktop app.'
+  'To allow deeper nesting, ask the user to raise "Nested worker depth" in Settings → Orchestration of the Topo desktop app.'
 ]
 
 /** Reject unsafe/noninteger values below one to the default; malformed settings cannot disable the depth fence. */

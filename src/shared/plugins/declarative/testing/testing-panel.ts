@@ -5,8 +5,8 @@ import {
   pluginDeclarativePersistPayloadSchema
 } from '../plugin-declarative-messages'
 import type { PluginDeclarativeNode } from '../plugin-declarative-catalog'
-import { installOrcaDeclarativeRuntime } from '../runtime/orca-module'
-import type { OrcaDeclarativeRuntime, OrcaPanelModule } from '../runtime/declarative-runtime-types'
+import { installOrcaDeclarativeRuntime } from '../runtime/topo-module'
+import type { TopoDeclarativeRuntime, TopoPanelModule } from '../runtime/declarative-runtime-types'
 import type { MockHost } from './testing-host'
 import {
   describeQuery,
@@ -59,9 +59,9 @@ const nextTask = (): Promise<void> =>
 
 export async function mountPanel(
   target:
-    | OrcaPanelModule
+    | TopoPanelModule
     | ((props: Record<string, unknown>) => unknown)
-    | Promise<OrcaPanelModule>,
+    | Promise<TopoPanelModule>,
   options: MountOptions
 ) {
   const host = options.host
@@ -100,7 +100,7 @@ export async function mountPanel(
     } else if (event === PLUGIN_DECLARATIVE_MESSAGES.render) {
       const parsed = parsePluginDeclarativeRender(payload)
       if (!parsed.ok) {
-        // Exactly what Orca refuses: the panel would keep showing its last good tree.
+        // Exactly what Topo refuses: the panel would keep showing its last good tree.
         errors.push({ kind: 'refused', message: parsed.error })
         if (parsed.document !== null && parsed.revision !== null) {
           emit(PLUGIN_DECLARATIVE_MESSAGES.ack, {
@@ -133,7 +133,7 @@ export async function mountPanel(
     } else if (event === PLUGIN_DECLARATIVE_MESSAGES.persist) {
       const parsed = pluginDeclarativePersistPayloadSchema.safeParse(payload)
       if (!parsed.success) {
-        errors.push({ kind: 'refused', message: 'persisted state Orca would not store' })
+        errors.push({ kind: 'refused', message: 'persisted state Topo would not store' })
         return
       }
       for (const entry of parsed.data.entries) {
@@ -142,7 +142,7 @@ export async function mountPanel(
     }
   }
 
-  const runtime: OrcaDeclarativeRuntime = installOrcaDeclarativeRuntime({
+  const runtime: TopoDeclarativeRuntime = installOrcaDeclarativeRuntime({
     post,
     awaitHydration: true,
     colorScheme: options.theme ?? 'dark',
@@ -178,7 +178,7 @@ export async function mountPanel(
     throw new Error('the panel did not settle: it keeps re-rendering (an update loop?)')
   }
 
-  // What Orca draws: no content of unselected tabs or closed Collapsibles.
+  // What Topo draws: no content of unselected tabs or closed Collapsibles.
   const elements = (): TestElement[] =>
     visibleElements(listElements(shown.tree), (element) => controls.valueOf(element))
   const findAll = (query: TestQuery): TestElement[] =>
@@ -232,18 +232,18 @@ export async function mountPanel(
 
   return {
     host,
-    /** Plugin errors (a throw in render or a handler) and renders Orca would refuse. */
+    /** Plugin errors (a throw in render or a handler) and renders Topo would refuse. */
     errors,
-    /** Props and components Orca would drop, as it would warn about them. */
+    /** Props and components Topo would drop, as it would warn about them. */
     warnings,
-    /** Host calls Orca would refuse (missing capability, no press, ...), even ones the panel caught. */
+    /** Host calls Topo would refuse (missing capability, no press, ...), even ones the panel caught. */
     get refusals() {
       return host.refusals
     },
     find: (query: TestQuery): TestElement | null => findAll(query)[0] ?? null,
     findAll,
     tree: (): TreeSnapshot | string | null => (shown.tree ? snapshotTree(shown.tree) : null),
-    /** The validated tree exactly as Orca draws it (handlers as `{ $callback }`), for replay. */
+    /** The validated tree exactly as Topo draws it (handlers as `{ $callback }`), for replay. */
     drawnTree: (): PluginDeclarativeNode | null => shown.tree,
     /** One line per thing a person notices first: headings, callouts, empty states, table sizes. */
     summary: (): string[] => {
@@ -266,7 +266,7 @@ export async function mountPanel(
     },
     settled,
     ...actions,
-    /** What Orca shows in a value control (what the person typed, until the panel resets it). */
+    /** What Topo shows in a value control (what the person typed, until the panel resets it). */
     valueOf: (target: Target): unknown => controls.valueOf(resolve(target, 'valueOf')),
     async emit(event: string, payload: unknown): Promise<void> {
       emit(event, payload)

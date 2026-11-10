@@ -11,13 +11,13 @@ import {
   type KnownRuntimeEnvironment
 } from '../host-catalog/runtime-environments'
 import { hardenExistingSecureFile } from '../../secure-storage/secure-file'
-import { OrcadWslDeploymentLinkSchema } from '../host-catalog/wsl-host-deployment-link'
+import { TopodWslDeploymentLinkSchema } from '../host-catalog/wsl-host-deployment-link'
 
 // Isolate WSL records so older builds cannot reject the entire pairing store.
-const WSL_HOST_DEPLOYMENTS_FILE = 'orca-wsl-host-deployments.json'
+const WSL_HOST_DEPLOYMENTS_FILE = 'topo-wsl-host-deployments.json'
 export const MAX_WSL_HOST_DEPLOYMENTS_FILE_BYTES = 256 * 1024
 
-/** A managed orcad in a WSL distro. The environment's name is its label; runtime state lives elsewhere. */
+/** A managed topod in a WSL distro. The environment's name is its label; runtime state lives elsewhere. */
 /** A Remove that could not prove the host's server stopped (E11); the host stays until one does. */
 export const WslHostPendingStopSchema = z.object({
   since: z.number().finite(),
@@ -30,11 +30,11 @@ export const WslHostPendingStopSchema = z.object({
 
 export type WslHostPendingStop = z.infer<typeof WslHostPendingStopSchema>
 
-export const WslHostDeploymentRecordSchema = OrcadWslDeploymentLinkSchema.extend({
+export const WslHostDeploymentRecordSchema = TopodWslDeploymentLinkSchema.extend({
   environmentId: z.string().min(1),
   createdAt: z.number().finite(),
   /**
-   * The paired orcad's host key, so a stale record cannot claim a server re-paired under the same
+   * The paired topod's host key, so a stale record cannot claim a server re-paired under the same
    * id and bridge port. Optional: records written before it are bound by port only until refreshed.
    */
   pairingPublicKeyB64: z.string().min(1).optional(),
@@ -69,8 +69,8 @@ export class WslHostDeploymentStoreInvalidError extends Error {
   constructor(path: string, environmentId?: string) {
     super(
       environmentId === undefined
-        ? `Could not read Orca WSL host deployments at ${path}; the file is invalid.`
-        : `Could not read the Orca WSL host deployment for ${environmentId} at ${path}; it may need a newer version of Orca.`
+        ? `Could not read Topo WSL host deployments at ${path}; the file is invalid.`
+        : `Could not read the Topo WSL host deployment for ${environmentId} at ${path}; it may need a newer version of Topo.`
     )
     this.name = 'WslHostDeploymentStoreInvalidError'
   }
@@ -188,7 +188,7 @@ export function writeWslHostDeployment(
 
 export function hasNonWslOwner(environment: KnownRuntimeEnvironment): boolean {
   return Boolean(
-    environment.orcadDeployment ||
+    environment.topodDeployment ||
     environment.sshAccess ||
     environment.pendingSshAccessOperation ||
     environment.connectionDependency
@@ -211,7 +211,7 @@ export function overlayWslHostDeployments(
   const hiddenIds = new Set(hidden.map((environment) => environment.id))
   if (hidden.length > 0) {
     warnUnreadableEnvironmentState(
-      `Hiding ${hidden.length} server(s) whose WSL deployment cannot be read (ids: ${hidden.map((environment) => environment.id).join(', ')}); they may need a newer version of Orca.`
+      `Hiding ${hidden.length} server(s) whose WSL deployment cannot be read (ids: ${hidden.map((environment) => environment.id).join(', ')}); they may need a newer version of Topo.`
     )
   }
   return environments
@@ -242,7 +242,7 @@ export function overlayWslHostDeployments(
       }
       const overlaid = hasNonWslOwner(environment)
         ? null
-        : KnownRuntimeEnvironmentSchema.safeParse({ ...environment, orcadDeployment: link })
+        : KnownRuntimeEnvironmentSchema.safeParse({ ...environment, topodDeployment: link })
       if (!overlaid?.success) {
         warnUnreadableEnvironmentState(
           `Ignoring the WSL deployment for server ${environment.id}; it conflicts with the server's pairing or SSH link.`

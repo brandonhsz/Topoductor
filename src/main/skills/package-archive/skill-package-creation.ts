@@ -65,7 +65,7 @@ async function createSkillPackageArchiveUnobserved(input: {
   if (!sourceObservation.files.some((file) => file.path === 'SKILL.md')) {
     throw new Error('skill-package-skill-markdown-required')
   }
-  const workDirectory = await mkdtemp(join(tmpdir(), 'orca-skill-package-'))
+  const workDirectory = await mkdtemp(join(tmpdir(), 'topo-skill-package-'))
   const stagedSkill = join(workDirectory, 'skill')
   const verificationDirectory = join(workDirectory, 'verification')
   const temporaryArchive = `${input.archivePath}.${process.pid}.${randomUUID()}.tmp`

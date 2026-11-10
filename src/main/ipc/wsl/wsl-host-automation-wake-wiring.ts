@@ -7,7 +7,7 @@ import {
 } from '../../wsl/host-lifecycle/wsl-host-automation-wake-store'
 import type { WslHostService } from '../../wsl/host-lifecycle/wsl-host-service'
 import { callRuntimeEnvironment } from '../runtime-environments/runtime-environment-transport-routing'
-import { onWslOrcadHostAutomationsChanged } from '../../wsl/orcad/wsl-orcad-host-environments'
+import { onWslTopodHostAutomationsChanged } from '../../wsl/topod/wsl-topod-host-environments'
 
 // A connected host's schedule can change from any client; re-read it this often.
 const RELEARN_MS = 15 * 60 * 1000
@@ -46,7 +46,7 @@ export function createWslHostAutomationWake(
   }, RELEARN_MS)
   relearn.unref?.()
   // A deleted, disabled or rescheduled automation must not keep its old wake time.
-  onWslOrcadHostAutomationsChanged((environmentId) => void wake.learn(environmentId))
+  onWslTopodHostAutomationsChanged((environmentId) => void wake.learn(environmentId))
   wake.start()
   return wake
 }

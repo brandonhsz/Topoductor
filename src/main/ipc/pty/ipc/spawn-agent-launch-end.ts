@@ -10,12 +10,12 @@ import {
 import { AgentLaunchTabClosedError } from '../../../../shared/agent-launch/contracts/agent-launch-tab-closed'
 import type { RunningAgentLaunchPane } from '../../../agent-launch/agent-launch-pane-attachment'
 import type { AgentLaunchRuntime } from '../../../../shared/agent-launch/startup/agent-launch-runtime'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import { agentLaunchFailureCode } from '../../../runtime/rpc/methods/agent-launch/agent-launch-failure-code'
 import type { PtyIpcSpawnState } from './spawn-state'
 
 export type PaneAgentLaunch = {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   address: AgentLaunchPaneAddress
   paneKey: string
   running: RunningAgentLaunchPane

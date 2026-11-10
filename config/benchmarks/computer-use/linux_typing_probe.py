@@ -15,8 +15,8 @@ import time
 
 def main():
     if (sys.platform != "linux" or os.environ.get("GITHUB_ACTIONS") != "true"
-            or os.environ.get("ORCA_COMPUTER_BENCH_ISOLATED") != "1"
-            or os.environ.get("ORCA_BACKGROUND_LAUNCH") != "1"):
+            or os.environ.get("TOPO_COMPUTER_BENCH_ISOLATED") != "1"
+            or os.environ.get("TOPO_BACKGROUND_LAUNCH") != "1"):
         raise SystemExit("typing probe requires isolated Linux CI")
     import bench
     import obs_x11 as obs
@@ -41,7 +41,7 @@ def main():
         ("identical", "café Ω", None),
         ("supplementary-selection", mixed, None),
         ("append", mixed, None),
-        ("latin-layout", "Orca ASCII", None),
+        ("latin-layout", "Topo ASCII", None),
         ("busy", mixed, "another keyboard operation is active"),
     ]
     replacement = trial_contract.TASKS["replace_submit"]
@@ -87,7 +87,7 @@ def main():
                 subprocess.run(["setxkbmap", "ru"], check=True)
             before = keymap()
             try:
-                with (open(Path(os.environ["XDG_RUNTIME_DIR"]) / "orca-computer-keyboard.lock", "a")
+                with (open(Path(os.environ["XDG_RUNTIME_DIR"]) / "topo-computer-keyboard.lock", "a")
                       if name == "busy" else nullcontext()) as lock:
                     if lock is not None:
                         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)

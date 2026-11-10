@@ -1,5 +1,5 @@
-// APNs nests custom fields under orca; FCM data is flat/string-valued. Read both and coerce numeric fields.
-export type OrcaPushPayload = {
+// APNs nests custom fields under topo; FCM data is flat/string-valued. Read both and coerce numeric fields.
+export type TopoPushPayload = {
   readonly kind?: 'alert' | 'dismiss'
   readonly hostFingerprint: string
   readonly notificationId?: string
@@ -21,11 +21,11 @@ function readSeq(value: unknown): number | undefined {
   return Number.isFinite(raw) ? raw : undefined
 }
 
-export function readOrcaPushPayload(data: unknown): OrcaPushPayload | null {
+export function readTopoPushPayload(data: unknown): TopoPushPayload | null {
   if (!data || typeof data !== 'object') {
     return null
   }
-  const nested = (data as { orca?: unknown }).orca
+  const nested = (data as { topo?: unknown }).topo
   const record = (nested && typeof nested === 'object' ? nested : data) as Record<string, unknown>
   // Push and socket alerts use the same paired-host identity.
   const hostFingerprint = readString(record.hostFingerprint)

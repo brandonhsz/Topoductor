@@ -46,7 +46,7 @@ describe('durable scope launch environment and lifetime (#25580, #24201)', () =>
         env: { XDG_RUNTIME_DIR: runtimeDir },
         platform: 'linux',
         canonicalRuntimeDir: runtimeDir,
-        readProcesses: () => ({ unit: 'app-orca-1.scope', pids: [321] }),
+        readProcesses: () => ({ unit: 'app-topo-1.scope', pids: [321] }),
         systemdBootPath: fakeSystemdBootPath(),
         runVersionProbe: () => ({ code: 0, timedOut: false }),
         runMigration: runMigration,

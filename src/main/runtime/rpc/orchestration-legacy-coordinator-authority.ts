@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import type { OrchestrationCompatibilityCallerAuthority } from '../orchestration/terminal-authority/orchestration-compatibility-authority'
 import type { OrchestrationDb } from '../orchestration/db/orchestration-db'
 import type { LegacyCompatibilityPrincipalRow } from '../orchestration/db/orchestration-records'
@@ -14,7 +14,7 @@ import {
 } from './orchestration-legacy-process-identity'
 
 export class LegacyCoordinatorAuthority {
-  constructor(private readonly runtime: OrcaRuntimeService) {}
+  constructor(private readonly runtime: TopoRuntimeService) {}
 
   resolve(
     request: RpcRequest,

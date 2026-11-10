@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import '../../../../../shared/ai-vault/contracts/ai-vault-types'
 import { RpcDispatcher } from '../../dispatcher'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import { AI_VAULT_METHODS } from './ai-vault'
 import '../../../../../shared/ai-vault/search/ai-vault-search-test-fixture'
 import '../../../../../shared/ai-vault/search/ai-vault-search-client'
@@ -17,7 +17,7 @@ describe('session search consent over the runtime RPC', () => {
     params
   })
 
-  function consentDispatcher(runtime = new OrcaRuntimeService()) {
+  function consentDispatcher(runtime = new TopoRuntimeService()) {
     const setSessionSearchEnabled = vi.fn(async () => {})
     Object.assign(runtime, { setSessionSearchEnabled })
     const dispatcher = new RpcDispatcher({ runtime, methods: AI_VAULT_METHODS })
@@ -49,7 +49,7 @@ describe('session search consent over the runtime RPC', () => {
   })
 
   it('reports the host refusal when this runtime has no settings store', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const dispatcher = new RpcDispatcher({ runtime, methods: AI_VAULT_METHODS })
     let raw = ''
     await dispatcher.dispatchStreaming(

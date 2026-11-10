@@ -26,7 +26,7 @@ import {
   codexModelCatalogDiscovery
 } from '../model-catalog/structured-agent-model-catalog-discovery'
 import { resolveStructuredAgentCommand } from '../../../native-chat/structured-agent-command-resolution'
-import { getProfileUserDataPath } from '../../../orca-profiles/profile-storage-paths'
+import { getProfileUserDataPath } from '../../../topo-profiles/profile-storage-paths'
 import type {
   StructuredAgentAccountHomeRequest,
   StructuredAgentChatProgram,
@@ -38,7 +38,7 @@ export type StructuredAgentRuntimeCatalogEntry =
   | { kind: 'pi' | 'codex' | 'claude'; metadata: StructuredAgentRuntimeMetadata }
   | { kind: 'acp'; metadata: StructuredAgentRuntimeMetadata; spec: AcpLaunchSpec }
 
-// Why the host's data folder: a start runs Orca's installed release before PATH.
+// Why the host's data folder: a start runs Topo's installed release before PATH.
 function acpChatProgram(spec: AcpLaunchSpec): StructuredAgentChatProgram {
   const { managedRuntime } = spec
   return {
@@ -91,7 +91,7 @@ function acpMetadata(spec: AcpLaunchSpec): StructuredAgentRuntimeMetadata {
         }
       : {}),
     // New chats prefer a compatible host program, which their account home then pins; reads such
-    // as Orca's own sign-in keep the agent's account.
+    // as Topo's own sign-in keep the agent's account.
     resolveAccountHome: async (
       { launchEnv, purpose, permissionMode },
       { stateDirectory, hostLaunchEnvironment, hostSettings }

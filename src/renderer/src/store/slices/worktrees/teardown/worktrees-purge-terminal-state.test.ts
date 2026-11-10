@@ -171,7 +171,7 @@ describe('purgeWorktreeTerminalState direct (design §4.4)', () => {
         ]
       },
       browserTabsByWorktree: {
-        [FLOATING_TERMINAL_WORKTREE_ID]: [{ id: 'floating-browser', url: 'https://orca.test' }]
+        [FLOATING_TERMINAL_WORKTREE_ID]: [{ id: 'floating-browser', url: 'https://topo.test' }]
       },
       openFiles: [
         floatingFile,
@@ -225,7 +225,7 @@ describe('purgeWorktreeTerminalState direct (design §4.4)', () => {
       ]
     })
     expect(store.getState().browserTabsByWorktree[FLOATING_TERMINAL_WORKTREE_ID]).toEqual([
-      { id: 'floating-browser', url: 'https://orca.test' }
+      { id: 'floating-browser', url: 'https://topo.test' }
     ])
     expect(store.getState().openFiles).toEqual([floatingFile])
     expect(store.getState().activeFileIdByWorktree).toEqual({

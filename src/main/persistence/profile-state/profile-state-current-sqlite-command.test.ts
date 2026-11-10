@@ -27,15 +27,15 @@ afterEach(() => {
 })
 
 function fixture() {
-  const root = mkdtempSync(join(tmpdir(), 'orca-current-sqlite-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-current-sqlite-'))
   roots.push(root)
   const directory = join(root, 'profiles', profileId)
   mkdirSync(directory, { recursive: true })
   writeFileSync(
-    join(root, 'orca-profile-index.json'),
+    join(root, 'topo-profile-index.json'),
     JSON.stringify({ activeProfileId: profileId, profiles: [{ id: profileId }] })
   )
-  const dataFile = join(directory, 'orca-data.json')
+  const dataFile = join(directory, 'topo-data.json')
   const databaseFile = join(directory, 'profile-state.db')
   const originalJson = JSON.stringify(sqliteState)
   writeFileSync(dataFile, originalJson)
@@ -71,7 +71,7 @@ describe('keeping SQLite over JSON edited by an older build', () => {
       removedDatabaseFiles: []
     })
     expect(result.backupId).toBeUndefined()
-    expect(readFileSync(join(result.quarantineDirectory, 'orca-data.json'), 'utf8')).toBe(
+    expect(readFileSync(join(result.quarantineDirectory, 'topo-data.json'), 'utf8')).toBe(
       editedJson
     )
     expect(readFileSync(join(result.quarantineDirectory, 'profile-state.db'))).toEqual(

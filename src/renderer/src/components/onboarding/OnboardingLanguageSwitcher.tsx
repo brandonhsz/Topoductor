@@ -186,7 +186,7 @@ export function OnboardingLanguageSwitcher({
               <Label htmlFor="onboarding-language-request">
                 {t(
                   'onboarding.language.requestPrompt',
-                  'Which language would you like Orca to support?'
+                  'Which language would you like Topo to support?'
                 )}
               </Label>
               <Input

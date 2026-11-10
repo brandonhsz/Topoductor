@@ -1,4 +1,4 @@
-import { formatOrcaSessionAddress, isOrcaSessionId } from '../../../../shared/orca-session-address'
+import { formatTopoSessionAddress, isTopoSessionId } from '../../../../shared/topo-session-address'
 import type { RefObject } from 'react'
 import type { NativeChatComposerHandle } from '../native-chat/composer/native-chat-composer-types'
 import { LazyOrchestrationCrewPanel } from './LazyOrchestrationCrewPanel'
@@ -22,7 +22,7 @@ export function NativeChatCrewPanel({
 }): React.JSX.Element | null {
   const party =
     suppliedParty ??
-    (sessionId && isOrcaSessionId(sessionId) ? formatOrcaSessionAddress(sessionId) : null)
+    (sessionId && isTopoSessionId(sessionId) ? formatTopoSessionAddress(sessionId) : null)
   if (!target || !party) {
     return null
   }

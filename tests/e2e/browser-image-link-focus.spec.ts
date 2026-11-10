@@ -1,31 +1,31 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { startBrowserLinkServer } from './helpers/browser-link-server'
 import { getActiveWorktreeId } from './helpers/store'
 
-test.use({ launchEnv: { ORCA_BACKGROUND_LAUNCH: '1' } })
+test.use({ launchEnv: { TOPO_BACKGROUND_LAUNCH: '1' } })
 
 test.describe('Image link focus', () => {
   test.skip(
     process.platform !== 'linux' ||
-      process.env.ORCA_E2E_BROWSER_NATIVE_XVFB !== '1' ||
+      process.env.TOPO_E2E_BROWSER_NATIVE_XVFB !== '1' ||
       (process.env.GITHUB_ACTIONS !== 'true' && !existsSync('/.dockerenv')),
     'Native input requires the owned CI or Docker Xvfb display'
   )
 
   test('routes native Ctrl+W to the image tab and preserves the opener @headful', async ({
-    orcaPage,
+    topoPage,
     electronApp
   }) => {
-    const ownedWindow = await electronApp.browserWindow(orcaPage)
+    const ownedWindow = await electronApp.browserWindow(topoPage)
     let nativeWindowId: number
     try {
       nativeWindowId = await ownedWindow.evaluate((window) => {
         if (
           process.platform !== 'linux' ||
-          process.env.ORCA_BACKGROUND_LAUNCH !== '1' ||
-          process.env.ORCA_E2E_BROWSER_NATIVE_XVFB !== '1' ||
+          process.env.TOPO_BACKGROUND_LAUNCH !== '1' ||
+          process.env.TOPO_E2E_BROWSER_NATIVE_XVFB !== '1' ||
           !/^:\d+(?:\.\d+)?$/.test(process.env.DISPLAY ?? '') ||
           (process.env.GITHUB_ACTIONS !== 'true' &&
             !process.getBuiltinModule('node:fs').existsSync('/.dockerenv')) ||
@@ -40,21 +40,21 @@ test.describe('Image link focus', () => {
     } finally {
       await ownedWindow.dispose()
     }
-    await orcaPage.waitForFunction(() => document.visibilityState === 'visible')
+    await topoPage.waitForFunction(() => document.visibilityState === 'visible')
     const nativeInput = (...args: string[]): void => {
       execFileSync('xdotool', args, { stdio: 'pipe', timeout: 10_000 })
     }
     nativeInput('windowactivate', '--sync', String(nativeWindowId))
     const fixture = await startBrowserLinkServer()
     try {
-      const worktreeId = (await getActiveWorktreeId(orcaPage))!
-      const sourceTabId = await orcaPage.evaluate(
+      const worktreeId = (await getActiveWorktreeId(topoPage))!
+      const sourceTabId = await topoPage.evaluate(
         ({ worktreeId, url }) =>
           window.__store!.getState().createBrowserTab(worktreeId, url, { activate: true }).id,
         { worktreeId, url: fixture.imageSourceUrl }
       )
-      const sourceTab = orcaPage.locator(`[data-tab-id="${sourceTabId}"]`)
-      const sourceOverlay = orcaPage.locator(`[data-browser-overlay-tab-id="${sourceTabId}"]`)
+      const sourceTab = topoPage.locator(`[data-tab-id="${sourceTabId}"]`)
+      const sourceOverlay = topoPage.locator(`[data-browser-overlay-tab-id="${sourceTabId}"]`)
       const sourceWebview = sourceOverlay.locator('webview')
       await expect(sourceTab).toContainText('Image gallery')
       await expect(sourceWebview).toBeVisible()
@@ -110,10 +110,10 @@ test.describe('Image link focus', () => {
       )
       nativeInput('click', '1')
 
-      const destinationTab = orcaPage.locator('[data-tab-id]').filter({ hasText: 'image.png' })
+      const destinationTab = topoPage.locator('[data-tab-id]').filter({ hasText: 'image.png' })
       await expect(destinationTab).toBeVisible()
       const destinationTabId = await destinationTab.getAttribute('data-tab-id')
-      const destinationOverlay = orcaPage.locator(
+      const destinationOverlay = topoPage.locator(
         `[data-browser-overlay-tab-id="${destinationTabId}"]`
       )
       await expect(destinationOverlay).toHaveCSS('opacity', '1')

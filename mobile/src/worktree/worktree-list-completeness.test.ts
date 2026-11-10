@@ -18,7 +18,7 @@ function worktree(repoId: string, id: string, repo = repoId): Worktree {
     repo,
     branch: `feature/${id}`,
     displayName: id,
-    path: `/tmp/orca/${repoId}/${id}`,
+    path: `/tmp/topo/${repoId}/${id}`,
     liveTerminalCount: 0,
     hasAttachedPty: false,
     unread: false,
@@ -58,11 +58,11 @@ function visibleWorktreeIds(
 describe('every worktree stays visible regardless of repo.list contents', () => {
   it('shows worktrees whose repoId is missing from repo.list', () => {
     const worktrees = [
-      worktree('orca-local', 'a'),
-      worktree('orca-local', 'b'),
-      worktree('orca-runtime', 'c')
+      worktree('topo-local', 'a'),
+      worktree('topo-local', 'b'),
+      worktree('topo-runtime', 'c')
     ]
-    const catalogRepos = [['orca-runtime', 'orca-runtime']] as const
+    const catalogRepos = [['topo-runtime', 'topo-runtime']] as const
 
     expect(visibleWorktreeIds(worktrees, catalogRepos)).toEqual(['a', 'b', 'c'])
   })
@@ -70,11 +70,11 @@ describe('every worktree stays visible regardless of repo.list contents', () => 
   it('shows every worktree when the same repo name maps to two host-specific ids', () => {
     // Same-name local/runtime repos expose any name-keyed map that discards an owner id.
     const worktrees = [
-      worktree('orca-local', 'local-1', 'orca'),
-      worktree('orca-local', 'local-2', 'orca'),
-      worktree('orca-runtime', 'runtime-1', 'orca')
+      worktree('topo-local', 'local-1', 'topo'),
+      worktree('topo-local', 'local-2', 'topo'),
+      worktree('topo-runtime', 'runtime-1', 'topo')
     ]
-    const catalogRepos = [['orca', 'orca-runtime']] as const
+    const catalogRepos = [['topo', 'topo-runtime']] as const
 
     expect(visibleWorktreeIds(worktrees, catalogRepos)).toEqual(['local-1', 'local-2', 'runtime-1'])
   })

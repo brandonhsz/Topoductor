@@ -27,7 +27,7 @@ export function usePluginDeclarativeHostValue<T>(options: {
   acked: number | undefined
   callback: string | undefined
   send: (callback: string, value: T, edit: number) => void
-  /** The drawn node's props, so `orca plugin shot --act` can edit this control as a person would. */
+  /** The drawn node's props, so `topo plugin shot --act` can edit this control as a person would. */
   actTarget?: PluginDeclarativeDrawnProps
 }): { value: T; change: (next: T) => void; readOnly: boolean } {
   const { value, callback, send } = options

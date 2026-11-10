@@ -51,8 +51,8 @@ export type WorktreeLineageCandidate = {
 }
 
 export function formatAmbiguousCwdParentMessage(agent?: TuiAgent): string {
-  return `Orca did not create the workspace${agent ? ` or start ${agent}` : ''} because more than one workspace matched the current directory when this request was prepared.
-Run \`orca worktree list --limit 10000 --json\` with the same server and host selection. Match path and host; if truncated, repeat with a larger --limit using totalCount. Choose id:<id> (or identity:<identity.key> for a shared ID), then add --parent-worktree <selector> to your original invocation, or deliberately use --no-parent. Pass the selector as one argument quoted for your shell.
+  return `Topo did not create the workspace${agent ? ` or start ${agent}` : ''} because more than one workspace matched the current directory when this request was prepared.
+Run \`topo worktree list --limit 10000 --json\` with the same server and host selection. Match path and host; if truncated, repeat with a larger --limit using totalCount. Choose id:<id> (or identity:<identity.key> for a shared ID), then add --parent-worktree <selector> to your original invocation, or deliberately use --no-parent. Pass the selector as one argument quoted for your shell.
 To choose a parent, start a fresh request without --retry-launch; retrying the old ID returns this refusal.`
 }
 
@@ -130,7 +130,7 @@ export async function resolveRuntimeWorktreeCreateLineage(
     } catch {
       warnings.push({
         code: 'LINEAGE_PARENT_CONTEXT_MISSING',
-        message: 'Worktree created, but Orca could not validate the environment parent context.',
+        message: 'Worktree created, but Topo could not validate the environment parent context.',
         details: { envParentWorkspace: input.envParentWorkspace }
       })
     }
@@ -175,7 +175,7 @@ export async function resolveRuntimeWorktreeCreateLineage(
       warnings.push({
         code: 'LINEAGE_PARENT_CONTEXT_MISSING',
         message:
-          'Worktree created, but Orca could not validate the caller terminal as a parent context.',
+          'Worktree created, but Topo could not validate the caller terminal as a parent context.',
         details: { callerTerminalHandle: input.callerTerminalHandle }
       })
     }
@@ -190,7 +190,7 @@ export async function resolveRuntimeWorktreeCreateLineage(
       warnings.push({
         code: 'LINEAGE_PARENT_CONTEXT_MISSING',
         message:
-          'Worktree created, but Orca could not validate the current directory as a parent context.',
+          'Worktree created, but Topo could not validate the current directory as a parent context.',
         details: { cwdParentWorktree: input.cwdParentWorktree }
       })
     }
@@ -208,7 +208,7 @@ export async function resolveRuntimeWorktreeCreateLineage(
       warnings: [
         {
           code: 'LINEAGE_PARENT_CONTEXT_CONFLICT',
-          message: 'Worktree created, but Orca could not prove which parent context caused it.',
+          message: 'Worktree created, but Topo could not prove which parent context caused it.',
           details: {
             terminalParentWorkspaceKey: candidates.find((c) => c.source === 'terminal-context')
               ?.parent.workspaceKey,

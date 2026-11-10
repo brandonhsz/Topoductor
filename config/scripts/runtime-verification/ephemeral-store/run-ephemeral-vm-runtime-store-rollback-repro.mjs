@@ -12,7 +12,7 @@ const driver =
   process.argv[2] ??
   'config/scripts/runtime-verification/ephemeral-store/ephemeral-vm-runtime-store-cross-version.test.ts'
 const config = 'config/vitest.config.ts'
-const tempRoot = mkdtempSync(join(tmpdir(), 'orca-sta-4274-repro-'))
+const tempRoot = mkdtempSync(join(tmpdir(), 'topo-sta-4274-repro-'))
 
 try {
   const baselineRoot = extractSource(BASELINE_COMMIT, 'baseline')

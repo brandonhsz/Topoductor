@@ -8,7 +8,7 @@ import {
 } from '../../../../../shared/plugins/catalog/plugin-marketplace'
 import { COMMUNITY_MARKETPLACE_GIT_SOURCE } from '../../../../../shared/plugins/catalog/plugin-install-link'
 
-/** The listing comes from Orca's official or community catalog, whose plugins have public stats. */
+/** The listing comes from Topo's official or community catalog, whose plugins have public stats. */
 export function isPublicCatalogListing(
   listing: PluginMarketplaceHostListing | null,
   catalogById: ReadonlyMap<string, PluginMarketplaceHostSourceState>

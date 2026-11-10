@@ -65,20 +65,20 @@ export async function verifyPreloadSource(source) {
   const api = exposed.get('api')
   if (
     typeof api?.app?.getIdentity !== 'function' ||
-    typeof api?.orcaProfiles?.list !== 'function'
+    typeof api?.topoProfiles?.list !== 'function'
   ) {
     throw new Error('Sandbox preload did not publish executable app/profile APIs')
   }
   for (const [call, channel] of [
     [() => api.app.getIdentity(), 'app:getIdentity'],
-    [() => api.orcaProfiles.list(), 'orcaProfiles:list']
+    [() => api.topoProfiles.list(), 'topoProfiles:list']
   ]) {
     const result = await call()
     if (result?.channel !== channel) {
       throw new Error(`Sandbox API did not return the ${String(channel)} bridge result`)
     }
   }
-  if (JSON.stringify(calls) !== JSON.stringify([['app:getIdentity'], ['orcaProfiles:list']])) {
+  if (JSON.stringify(calls) !== JSON.stringify([['app:getIdentity'], ['topoProfiles:list']])) {
     throw new Error('Sandbox API invocation changed IPC channels or arguments')
   }
   return { imports }

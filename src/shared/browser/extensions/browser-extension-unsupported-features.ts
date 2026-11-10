@@ -1,4 +1,4 @@
-/** Features an extension can ask for that Orca's browser does not provide yet. */
+/** Features an extension can ask for that Topo's browser does not provide yet. */
 export type UnsupportedBrowserExtensionFeature = 'identity'
 
 function featureFor(permission: string): UnsupportedBrowserExtensionFeature | null {

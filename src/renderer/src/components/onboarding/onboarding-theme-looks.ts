@@ -53,7 +53,7 @@ export type ThemeLook = {
   | { kind: 'terminal'; terminalThemeName: string }
 )
 
-// Popular community palettes Orca ships; Match Terminal turns each into a whole-app theme.
+// Popular community palettes Topo ships; Match Terminal turns each into a whole-app theme.
 const TERMINAL_LOOKS: Record<ThemeLookBase, readonly string[]> = {
   dark: [
     'Catppuccin Mocha',
@@ -212,7 +212,7 @@ function terminalLook(name: string, base: ThemeLookBase, source: string): ThemeL
   }
 }
 
-/** Every look the theme step offers for one mode: Orca's own first, then installed plugin
+/** Every look the theme step offers for one mode: Topo's own first, then installed plugin
  *  themes, then popular terminal palettes painted through Match Terminal. */
 export function buildThemeLooks(
   options: {
@@ -220,7 +220,7 @@ export function buildThemeLooks(
     pluginThemes: readonly PluginThemeRegistration[]
     pluginTerminalThemes: readonly PluginTerminalThemeRegistration[]
     baseline: GlobalSettings
-    labels: { orca: string; builtIn: (base: ThemeLookBase) => string; community: string }
+    labels: { topo: string; builtIn: (base: ThemeLookBase) => string; community: string }
   },
   t?: Translate
 ): ThemeLook[] {
@@ -229,7 +229,7 @@ export function buildThemeLooks(
     kind: 'built-in',
     id: builtInThemeLookId(base),
     label: labels.builtIn(base),
-    source: labels.orca,
+    source: labels.topo,
     base,
     palette: { ...BUILT_IN_CHROME[base], terminal: currentTerminal(baseline, base) }
   }

@@ -1,6 +1,6 @@
 import type { MessageType } from '../../../../orchestration/db/orchestration-records'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import { formatMessageBanner } from '../../../../orchestration/mailbox/formatting/message-formatting'
 import { exposeMessages } from './mailbox-message-receipt'
@@ -14,7 +14,7 @@ type CheckParamsInput = z.infer<typeof CheckParams>
 
 export async function checkDirectMailbox(args: {
   params: CheckParamsInput
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   handle: string
   typeFilter: MessageType[] | undefined

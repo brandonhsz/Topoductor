@@ -1,4 +1,4 @@
-/** Only orcad-local CLI browser calls forward to desktops; paired clients must never bounce back. */
+/** Only topod-local CLI browser calls forward to desktops; paired clients must never bounce back. */
 import { BrowserError } from '../../browser/browser-error'
 import {
   DESKTOP_BROWSER_BRIDGE_NOT_FORWARDED_CODE,
@@ -61,7 +61,7 @@ export async function routeDesktopBrowserBridgeRpc(options: {
     assertClientOpenableUrl(String(params.url))
   }
   let workspaceId: string | undefined
-  // Only orcad can resolve its host's path/branch/active selectors.
+  // Only topod can resolve its host's path/branch/active selectors.
   if (typeof params.worktree === 'string' && params.worktree.length > 0) {
     workspaceId = (await options.resolveWorkspace(params.worktree)).id
     params.worktree = `id:${workspaceId}`
@@ -72,7 +72,7 @@ export async function routeDesktopBrowserBridgeRpc(options: {
   if (params.expectUrl !== undefined && !options.registry.newestAttachmentEnforcesExpectUrl()) {
     throw new BrowserError(
       BROWSER_EXPECT_URL_UNSUPPORTED_CODE,
-      'The Orca desktop sharing its browser cannot check --expect-url. Update Orca on that desktop or drop the flag.'
+      'The Topo desktop sharing its browser cannot check --expect-url. Update Topo on that desktop or drop the flag.'
     )
   }
   const result = await options.registry.forward(

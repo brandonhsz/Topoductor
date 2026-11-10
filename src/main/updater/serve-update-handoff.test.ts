@@ -25,7 +25,7 @@ describe('serve update handoff', () => {
     vi.resetModules()
     appMock.getVersion.mockReturnValue('1.0.51')
     appMock.quit.mockReset()
-    root = mkdtempSync(join(tmpdir(), 'orca-serve-handoff-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-serve-handoff-'))
     getCanonicalUserDataPathMock.mockReturnValue(root)
     process.env[SERVE_UPDATE_HANDOFF_PATH_ENV] = getServeUpdateHandoffPath(root)
   })
@@ -100,14 +100,14 @@ describe('serve update handoff', () => {
   it.runIf(process.platform === 'darwin')(
     "accepts the service's other casing of the same profile directory (#34382)",
     async (context) => {
-      const profile = join(root, 'Orca')
+      const profile = join(root, 'Topo')
       mkdirSync(profile)
       // Case-sensitive volumes have no second spelling to accept.
-      if (!existsSync(join(root, 'orca'))) {
+      if (!existsSync(join(root, 'topo'))) {
         context.skip()
       }
       getCanonicalUserDataPathMock.mockReturnValue(profile)
-      process.env[SERVE_UPDATE_HANDOFF_PATH_ENV] = getServeUpdateHandoffPath(join(root, 'orca'))
+      process.env[SERVE_UPDATE_HANDOFF_PATH_ENV] = getServeUpdateHandoffPath(join(root, 'topo'))
       const { hasServeUpdateSupervisor, requestServeUpdateHandoff } =
         await import('./serve-update-handoff')
 

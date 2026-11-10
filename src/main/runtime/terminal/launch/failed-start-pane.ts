@@ -1,5 +1,5 @@
 // Main-owned starts retain a failed pane with its reason, even when failure preceded layout persistence.
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { isHibernationDoneRecord } from '../../../../shared/hibernation-done-record'
 import { isRemoteRuntimePtyId } from '../../../../shared/remote-runtime/remote-runtime-pty-id'
 import type { LayoutApplyReply } from '../../../../shared/workspace-layout/workspace-layout-command-types'
@@ -19,7 +19,7 @@ import {
   stopReplacedTerminals
 } from '../recovery/layout-command-pane-starts'
 import { allocateTerminalPaneIdentity } from '../identity/runtime-terminal-pane-identity'
-import { OrcaRuntimeWithCreateTerminal } from './terminal-create'
+import { TopoRuntimeWithCreateTerminal } from './terminal-create'
 import { mainOwnsTabLayout } from './main-owned-tab-layout'
 import { PaneOwnerContentionError } from '../../../ipc/pty/pane/pane-spawn-operation'
 import type { TerminalWorkspaceCreationEvidence } from './terminal-workspace-scope'
@@ -43,17 +43,17 @@ export async function startKeepingFailedPane<T>(
   }
 }
 
-export abstract class OrcaRuntimeWithFailedStartPanes extends OrcaRuntimeWithCreateTerminal {
+export abstract class TopoRuntimeWithFailedStartPanes extends TopoRuntimeWithCreateTerminal {
   protected abstract markPaneLiveTitlesDirty(): void
   abstract applyLayoutCommand(command: WindowLayoutCommand): Promise<LayoutApplyReply>
 
   /** Switch point: main's starts into panes it already holds, published until each binds. */
-  protected readonly paneStartStatuses = ORCA_LAYOUT_OWNER_IS_MAIN
+  protected readonly paneStartStatuses = TOPO_LAYOUT_OWNER_IS_MAIN
     ? new PaneStartStatuses(() => this.markPaneLiveTitlesDirty())
     : null
 
   /** Switch point: whether main's start of a pane resumed its agent, published while it stays bound. */
-  protected readonly paneResumeOutcomes = ORCA_LAYOUT_OWNER_IS_MAIN
+  protected readonly paneResumeOutcomes = TOPO_LAYOUT_OWNER_IS_MAIN
     ? new PaneResumeOutcomes(() => this.markPaneLiveTitlesDirty())
     : null
 
@@ -62,7 +62,7 @@ export abstract class OrcaRuntimeWithFailedStartPanes extends OrcaRuntimeWithCre
    * statuses in and its effects out. Undefined for any other command, and with the switch off.
    */
   protected layoutCommandRun(command: WindowLayoutCommand): LayoutCommandRunOptions | undefined {
-    if (!ORCA_LAYOUT_OWNER_IS_MAIN || command.type === 'renameTabs' || !startsPanes(command)) {
+    if (!TOPO_LAYOUT_OWNER_IS_MAIN || command.type === 'renameTabs' || !startsPanes(command)) {
       return undefined
     }
     const { workspace } = command
@@ -140,7 +140,7 @@ export abstract class OrcaRuntimeWithFailedStartPanes extends OrcaRuntimeWithCre
   ): Promise<RuntimeTerminalCreate> {
     // Keep main-owned failed panes visible regardless of which start step failed.
     if (
-      ORCA_LAYOUT_OWNER_IS_MAIN &&
+      TOPO_LAYOUT_OWNER_IS_MAIN &&
       opts.keepPaneOnStartFailure &&
       worktreeSelector !== undefined
     ) {
@@ -163,7 +163,7 @@ export abstract class OrcaRuntimeWithFailedStartPanes extends OrcaRuntimeWithCre
     opts: Omit<TerminalCreateOptions, 'tabId' | 'leafId' | 'presentation'>
   ): Promise<RuntimeTerminalCreate> {
     if (
-      !ORCA_LAYOUT_OWNER_IS_MAIN ||
+      !TOPO_LAYOUT_OWNER_IS_MAIN ||
       !mainOwnsTabLayout(this.getWorkspaceSessionHostIdsForTab(worktreeId, pane.tabId))
     ) {
       return Promise.reject(new Error('host_not_owned'))

@@ -1,5 +1,5 @@
-// Bundles src/panel.tsx to dist/panel.js. `orca` is provided by Orca at runtime, so it stays external.
-// Run from an Orca checkout (`node examples/plugins/hello-components/build.mjs`) or with esbuild installed.
+// Bundles src/panel.tsx to dist/panel.js. `orca` is provided by Topo at runtime, so it stays external.
+// Run from a Topo checkout (`node examples/plugins/hello-components/build.mjs`) or with esbuild installed.
 import path from 'node:path'
 import { build } from 'esbuild'
 

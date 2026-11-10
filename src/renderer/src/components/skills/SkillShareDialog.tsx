@@ -34,11 +34,11 @@ function operationError(status: string): string {
   return status === 'reconnect-required'
     ? translate(
         'auto.components.skills.SkillShareDialog.reconnect',
-        'Reconnect your Orca account before sharing.'
+        'Reconnect your Topo account before sharing.'
       )
     : translate(
         'auto.components.skills.SkillShareDialog.unconfigured',
-        'Connect an Orca Cloud account before sharing.'
+        'Connect a Topo Cloud account before sharing.'
       )
 }
 
@@ -110,7 +110,7 @@ export function SkillShareDialog({
         ...(managedInstall ? { packageId: managedInstall.packageId } : {})
       })
       retainedPreparationId = nextPreview.preparationId
-      const auth = await window.api.orcaProfiles.authStatus()
+      const auth = await window.api.topoProfiles.authStatus()
       return { nextPreview, auth, managedInstall }
     })()
       .then(async ({ nextPreview, auth, managedInstall }) => {
@@ -250,7 +250,7 @@ export function SkillShareDialog({
       setError(
         t(
           'auto.components.skills.SkillShareDialog.cancelRequestFailed',
-          'Orca could not send the cancellation request. The upload may still finish.'
+          'Topo could not send the cancellation request. The upload may still finish.'
         )
       )
     }

@@ -13,8 +13,8 @@ const RECOVERABLE_UTILITY_SERVICE_NAMES = new Set([
   // Screen-capture service exits are recoverable Chromium churn.
   'video_capture.mojom.VideoCaptureService'
 ])
-// Orca's own utility processes whose exits the app already handles and reports in place.
-const RECOVERABLE_ORCA_UTILITY_NAMES = new Set([STT_UTILITY_PROCESS_NAME])
+// Topo's own utility processes whose exits the app already handles and reports in place.
+const RECOVERABLE_TOPO_UTILITY_NAMES = new Set([STT_UTILITY_PROCESS_NAME])
 const RECOVERABLE_CHILD_PROCESS_REASONS = new Set(['abnormal-exit', 'crashed', 'killed'])
 const NON_RECOVERABLE_RENDERER_REASONS = new Set(['integrity-failure'])
 
@@ -53,11 +53,11 @@ function isRecoverableChildProcess({
     return false
   }
   const normalizedProcessType = processType?.toLowerCase()
-  // Orca handles every exit of its own utilities, including OOM and failed launches.
+  // Topo handles every exit of its own utilities, including OOM and failed launches.
   if (
     normalizedProcessType === 'utility' &&
     name !== undefined &&
-    RECOVERABLE_ORCA_UTILITY_NAMES.has(name)
+    RECOVERABLE_TOPO_UTILITY_NAMES.has(name)
   ) {
     return true
   }

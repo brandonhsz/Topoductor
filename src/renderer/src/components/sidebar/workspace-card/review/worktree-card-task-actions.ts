@@ -6,9 +6,9 @@ import { translate } from '@/i18n/i18n'
 export type WorktreeCardTaskActionHandlers = {
   onCopyLink: (url: string) => void
   onEditIssue?: (event: MouseEvent) => void
-  onOpenGitHubIssueInOrca?: (event: MouseEvent) => void
+  onOpenGitHubIssueInTopo?: (event: MouseEvent) => void
   onOpenIssueInBrowser?: (url: string) => void
-  onOpenLinearIssueInOrca?: (event: MouseEvent) => void
+  onOpenLinearIssueInTopo?: (event: MouseEvent) => void
 }
 
 async function copyWorkItemLink(url: string): Promise<void> {
@@ -50,8 +50,8 @@ export function getWorktreeCardTaskActions(
     },
     // Why: editing opens a dialog that owns its own dismissal of the card.
     onEditIssue: handlers.onEditIssue,
-    onOpenGitHubIssueInOrca: dismissing(closeHover, handlers.onOpenGitHubIssueInOrca),
+    onOpenGitHubIssueInTopo: dismissing(closeHover, handlers.onOpenGitHubIssueInTopo),
     onOpenIssueInBrowser: dismissing(closeHover, handlers.onOpenIssueInBrowser),
-    onOpenLinearIssueInOrca: dismissing(closeHover, handlers.onOpenLinearIssueInOrca)
+    onOpenLinearIssueInTopo: dismissing(closeHover, handlers.onOpenLinearIssueInTopo)
   }
 }

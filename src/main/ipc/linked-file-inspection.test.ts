@@ -10,7 +10,7 @@ describe.skipIf(process.platform === 'win32')('inspectLinkedFile', () => {
   let dir: string
 
   beforeEach(async () => {
-    dir = await mkdtemp(join(tmpdir(), 'orca-linked-file-'))
+    dir = await mkdtemp(join(tmpdir(), 'topo-linked-file-'))
   })
 
   afterEach(async () => {

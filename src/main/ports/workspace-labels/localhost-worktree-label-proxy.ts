@@ -19,7 +19,7 @@ type RegisteredRoute = LocalhostWorktreeLabelRoute & {
   target: URL
 }
 
-const ORCA_LOCALHOST_SUFFIX = '.orca.localhost'
+const TOPO_LOCALHOST_SUFFIX = '.topo.localhost'
 
 export class LocalhostWorktreeLabelProxy {
   private server: Server | null = null
@@ -113,7 +113,7 @@ export class LocalhostWorktreeLabelProxy {
       throw new Error('Localhost label proxy is not running.')
     }
     const url = new URL(target.toString())
-    url.hostname = `${label}${ORCA_LOCALHOST_SUFFIX}`
+    url.hostname = `${label}${TOPO_LOCALHOST_SUFFIX}`
     url.port = String(this.listenPort)
     return url.toString()
   }
@@ -122,7 +122,7 @@ export class LocalhostWorktreeLabelProxy {
     const route = this.routeForRequest(request)
     if (!route) {
       response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' })
-      response.end('Unknown Orca localhost label.')
+      response.end('Unknown Topo localhost label.')
       return
     }
 
@@ -192,10 +192,10 @@ export class LocalhostWorktreeLabelProxy {
       String(request.headers.host ?? '')
         .split(':')[0]
         ?.toLowerCase() ?? ''
-    if (!host.endsWith(ORCA_LOCALHOST_SUFFIX)) {
+    if (!host.endsWith(TOPO_LOCALHOST_SUFFIX)) {
       return null
     }
-    const label = host.slice(0, -ORCA_LOCALHOST_SUFFIX.length)
+    const label = host.slice(0, -TOPO_LOCALHOST_SUFFIX.length)
     return this.routes.get(label) ?? null
   }
 }

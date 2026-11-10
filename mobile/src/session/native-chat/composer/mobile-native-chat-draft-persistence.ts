@@ -26,7 +26,7 @@ import {
 
 // Why this slot: every shell since 0.0.59 lets session pages keep it, and #37900 retired the terminal drafts it held.
 // It is the store for shells without the device store, and older documents may still write it.
-const LEGACY_PREFIX = 'orca:terminalDrafts:'
+const LEGACY_PREFIX = 'topo:terminalDrafts:'
 
 export type MobileNativeChatDraftSource = {
   // Every scope's saveable draft; only tab scopes are kept.

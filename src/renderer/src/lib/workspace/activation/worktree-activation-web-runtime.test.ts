@@ -78,7 +78,7 @@ describe('activateAndRevealWorktree', () => {
 
 describe('ensureWorktreeHasInitialTerminal', () => {
   it('holds the issue command for the first mirrored web runtime tab when none exists yet', () => {
-    ;(globalThis as { __ORCA_WEB_CLIENT__?: boolean }).__ORCA_WEB_CLIENT__ = true
+    ;(globalThis as { __TOPO_WEB_CLIENT__?: boolean }).__TOPO_WEB_CLIENT__ = true
     useAppStore.setState((state) => ({
       settings: state.settings
         ? { ...state.settings, activeRuntimeEnvironmentId: 'web-runtime-1' }

@@ -11,7 +11,7 @@ export function AutomationListStatusCell({
   enabled: boolean
   /** A moved project's local copy: the host runs it, never this computer. */
   movedToDistro?: string | null
-  /** A copy its host's Orca server now serves: it runs only once migrated. */
+  /** A copy its host's Topo server now serves: it runs only once migrated. */
   needsMigration?: boolean
   /** The last run skipped setup whose commands changed and still need approval. */
   setupSkipped?: boolean
@@ -44,7 +44,7 @@ export function AutomationListStatusCell({
         className="inline-flex min-w-0 items-center gap-1 truncate text-status-warning-text"
         title={t(
           'automations.setupTrust.listSkippedTitle',
-          "The last run skipped setup because its branch's orca.yaml setup commands changed. Review them from the actions menu."
+          "The last run skipped setup because its branch's topo.yaml setup commands changed. Review them from the actions menu."
         )}
       >
         <TriangleAlert className="size-3.5 shrink-0" />

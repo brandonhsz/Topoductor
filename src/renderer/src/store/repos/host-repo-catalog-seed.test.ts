@@ -12,8 +12,8 @@ const HOST = 'runtime:env-wsl'
 
 const localRepo: Repo = {
   id: 'local-repo',
-  path: '/local/orca',
-  displayName: 'orca',
+  path: '/local/topo',
+  displayName: 'topo',
   badgeColor: '#22c55e',
   addedAt: 1
 }
@@ -87,7 +87,7 @@ beforeEach(() => {
       runtimeEnvironments: {
         call: runtimeCall,
         getStatus: runtimeGetStatus,
-        list: vi.fn().mockResolvedValue([{ id: 'env-wsl', name: 'orca-demo' }])
+        list: vi.fn().mockResolvedValue([{ id: 'env-wsl', name: 'topo-demo' }])
       },
       wsl: wslApi
     },

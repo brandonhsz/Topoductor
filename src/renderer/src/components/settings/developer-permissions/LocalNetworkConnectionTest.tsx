@@ -150,7 +150,7 @@ export function LocalNetworkConnectionTest(): React.JSX.Element {
           <p className="text-xs text-muted-foreground">
             {t(
               'auto.components.settings.DeveloperPermissionsPane.connectionTestDescription',
-              'Enter a service on another device on your local network. Orca tests the same network path used by terminal tools.'
+              'Enter a service on another device on your local network. Topo tests the same network path used by terminal tools.'
             )}
           </p>
           {failure && (

@@ -86,7 +86,7 @@ beforeEach(() => {
   mocks.resumeInChat.mockReset()
 })
 
-// What Orca remembers once the agent exits and the pane is back at its shell prompt.
+// What Topo remembers once the agent exits and the pane is back at its shell prompt.
 
 describe('one pane of a terminal tab', () => {
   const paneGate = (state: AppState, paneKey: string) =>

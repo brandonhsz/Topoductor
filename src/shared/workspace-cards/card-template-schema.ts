@@ -73,7 +73,7 @@ export const cardTemplateSchema = z
       .optional(),
     /** Named subtrees an element can use by name. */
     defs: z.record(elementName, cardTemplateNodeSchema).optional(),
-    /** What Orca's card frame needs from the template. */
+    /** What Topo's card frame needs from the template. */
     frame: z
       .object({
         /** Tighter vertical padding for a card that is a single line. */

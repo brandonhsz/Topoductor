@@ -8,7 +8,7 @@ import { sendLayoutCommandToOwner } from '@/runtime/workspace-layout/commands/la
 import { useAppStore } from '../../store'
 import type { TerminalLayoutSnapshot } from '../../../../shared/workspace-layout/terminal-tab-types'
 import { isTerminalLeafId } from '../../../../shared/workspace-layout/stable-pane-id'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { resolveRootlessTerminalLayoutLeafId } from '../../../../shared/workspace-layout/terminal-pane-tree'
 
 function showRuntimePaneTitle(tabId: string, leafId: string, title: string | null): void {
@@ -51,7 +51,7 @@ export function applyRuntimePaneTitle({ tabId, leafId, title }: SetTerminalPaneT
   const show = (): void => showRuntimePaneTitle(tabId, leafId, normalizedTitle)
   const worktreeId = findTerminalTabWorktreeId(store.tabsByWorktree, tabId)
   if (
-    ORCA_LAYOUT_OWNER_IS_MAIN &&
+    TOPO_LAYOUT_OWNER_IS_MAIN &&
     worktreeId &&
     sendLayoutCommandToOwner(
       worktreeId,

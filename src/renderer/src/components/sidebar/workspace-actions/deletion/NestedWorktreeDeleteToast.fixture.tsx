@@ -9,9 +9,9 @@ import {
   type ExecutionHostId
 } from '../../../../../../shared/execution-host'
 
-const PARENT = '/home/neil/orca/workspaces/orca/react-use-effects'
+const PARENT = '/home/neil/topo/workspaces/topo/react-use-effects'
 const CHILD = `${PARENT}/.context/wt-safe-merge`
-const WORKTREE_ID = `orca::${PARENT}`
+const WORKTREE_ID = `topo::${PARENT}`
 const REMOTE_HOST: ExecutionHostId = toRuntimeExecutionHostId('omarchy')
 
 const plan: GitWorktreeInfo[] = [

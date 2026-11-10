@@ -7,8 +7,8 @@ export type SshHostServerSetupRemedy =
 
 // A later connect clears these by itself: another run held the host, or its daemon didn't answer a count.
 const RETRYABLE_SETUP_CODES: ReadonlySet<string> = new Set([
-  'orcad_activation_fence_busy',
-  'orcad_update_terminal_census_unavailable'
+  'topod_activation_fence_busy',
+  'topod_update_terminal_census_unavailable'
 ])
 
 export function sshHostServerSetupRemedy(code: string | undefined): SshHostServerSetupRemedy {
@@ -17,9 +17,9 @@ export function sshHostServerSetupRemedy(code: string | undefined): SshHostServe
     return 'retry'
   }
   switch (code) {
-    case 'orcad_snapshot_space_insufficient':
+    case 'topod_snapshot_space_insufficient':
       return 'free-host-space'
-    case 'orcad_initial_runtime_live':
+    case 'topod_initial_runtime_live':
       return 'stop-unmanaged-runtime'
     default:
       return 'see-details'

@@ -41,7 +41,7 @@ export function registerJournalSubmissionQueuedLinkTests(): void {
   }
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-queued-link-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-queued-link-'))
     clock = 1_000
   })
 

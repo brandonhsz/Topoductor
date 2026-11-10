@@ -54,7 +54,7 @@ function setup(targets: SshTarget[] = []) {
 }
 
 const userHost: SshTarget = { id: 'ssh-1', label: 'build-box', host: 'h', port: 22, username: 'u' }
-const orcaOwnedHost: SshTarget = {
+const topoOwnedHost: SshTarget = {
   id: 'runtime-ssh-1',
   label: 'sandbox',
   host: 'h',
@@ -66,19 +66,19 @@ const orcaOwnedHost: SshTarget = {
 describe('desktop browser bridge host control', () => {
   afterEach(() => {
     setDesktopBrowserBridgeHostStopped(userHost.id, false)
-    setDesktopBrowserBridgeHostStopped(orcaOwnedHost.id, false)
+    setDesktopBrowserBridgeHostStopped(topoOwnedHost.id, false)
     setDesktopBrowserBridgeControl(null)
   })
 
-  it("Don't allow turns the host's setting off, and only stops hosts Orca created", () => {
-    const { deps, byId } = setup([userHost, orcaOwnedHost])
+  it("Don't allow turns the host's setting off, and only stops hosts Topo created", () => {
+    const { deps, byId } = setup([userHost, topoOwnedHost])
 
     expect(disallowDesktopBrowserBridgeHost(userHost.id, deps)).toBe(true)
     expect(byId.get(userHost.id)?.allowRemoteCliControl).toBe(false)
     expect(isDesktopBrowserBridgeHostStopped(userHost.id)).toBe(true)
 
-    expect(disallowDesktopBrowserBridgeHost(orcaOwnedHost.id, deps)).toBe(false)
-    expect(byId.get(orcaOwnedHost.id)?.allowRemoteCliControl).toBeUndefined()
-    expect(isDesktopBrowserBridgeHostStopped(orcaOwnedHost.id)).toBe(true)
+    expect(disallowDesktopBrowserBridgeHost(topoOwnedHost.id, deps)).toBe(false)
+    expect(byId.get(topoOwnedHost.id)?.allowRemoteCliControl).toBeUndefined()
+    expect(isDesktopBrowserBridgeHostStopped(topoOwnedHost.id)).toBe(true)
   })
 })

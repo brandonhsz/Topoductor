@@ -35,12 +35,12 @@ describe('CliInstaller', () => {
       platform: 'win32',
       isPackaged: false,
       userDataPath: fixture.userDataPath,
-      execPath: 'C:\\Users\\me\\AppData\\Local\\Orca\\Orca.exe',
+      execPath: 'C:\\Users\\me\\AppData\\Local\\Topo\\Topo.exe',
       appPath: fixture.appPath,
-      commandPathOverride: join(fixture.root, 'Programs', 'Orca', 'bin', 'orca.cmd'),
+      commandPathOverride: join(fixture.root, 'Programs', 'Topo', 'bin', 'topo.cmd'),
       userPathReader: async () => ({
         state: 'unknown',
-        detail: 'Orca could not read the Windows user PATH registry value.'
+        detail: 'Topo could not read the Windows user PATH registry value.'
       }),
       userPathWriter
     })
@@ -51,7 +51,7 @@ describe('CliInstaller', () => {
 
   it('bypasses cached status data before a Windows PATH mutation', async () => {
     const fixture = await makeFixture()
-    const installPath = join(fixture.root, 'Programs', 'Orca', 'bin', 'orca.cmd')
+    const installPath = join(fixture.root, 'Programs', 'Topo', 'bin', 'topo.cmd')
     const pathDirectory = dirname(installPath)
     let registryPath = 'C:\\Tools'
     const registryReader = new WindowsUserPathRegistryReader({
@@ -70,7 +70,7 @@ describe('CliInstaller', () => {
       platform: 'win32',
       isPackaged: false,
       userDataPath: fixture.userDataPath,
-      execPath: 'C:\\Users\\me\\AppData\\Local\\Orca\\Orca.exe',
+      execPath: 'C:\\Users\\me\\AppData\\Local\\Topo\\Topo.exe',
       appPath: fixture.appPath,
       commandPathOverride: installPath,
       userPathReader: () => registryReader.read(),
@@ -90,17 +90,17 @@ describe('CliInstaller', () => {
 
   it('matches expandable Windows PATH entries case-insensitively without rewriting them', async () => {
     const fixture = await makeFixture()
-    const installPath = join(fixture.root, 'Local App Data', 'Orca', 'bin', 'orca.cmd')
+    const installPath = join(fixture.root, 'Local App Data', 'Topo', 'bin', 'topo.cmd')
     const userPathWriter = vi.fn()
     const installer = new CliInstaller({
       platform: 'win32',
       isPackaged: false,
       userDataPath: fixture.userDataPath,
-      execPath: 'C:\\Users\\me\\AppData\\Local\\Orca\\Orca.exe',
+      execPath: 'C:\\Users\\me\\AppData\\Local\\Topo\\Topo.exe',
       appPath: fixture.appPath,
       commandPathOverride: installPath,
       windowsEnvironment: { LOCALAPPDATA: join(fixture.root, 'Local App Data') },
-      userPathReader: async () => userPathRead('%localappdata%\\Orca\\bin\\', true),
+      userPathReader: async () => userPathRead('%localappdata%\\Topo\\bin\\', true),
       userPathWriter
     })
 
@@ -113,30 +113,30 @@ describe('CliInstaller', () => {
 
   it('does not expand environment variables stored in a REG_SZ Windows PATH', async () => {
     const fixture = await makeFixture()
-    const installPath = join(fixture.root, 'Local App Data', 'Orca', 'bin', 'orca.cmd')
+    const installPath = join(fixture.root, 'Local App Data', 'Topo', 'bin', 'topo.cmd')
     const pathDirectory = dirname(installPath)
     const userPathWriter = vi.fn()
     const installer = new CliInstaller({
       platform: 'win32',
       isPackaged: false,
       userDataPath: fixture.userDataPath,
-      execPath: 'C:\\Users\\me\\AppData\\Local\\Orca\\Orca.exe',
+      execPath: 'C:\\Users\\me\\AppData\\Local\\Topo\\Topo.exe',
       appPath: fixture.appPath,
       commandPathOverride: installPath,
       windowsEnvironment: { LOCALAPPDATA: join(fixture.root, 'Local App Data') },
-      userPathReader: async () => userPathRead('%LOCALAPPDATA%\\Orca\\bin'),
+      userPathReader: async () => userPathRead('%LOCALAPPDATA%\\Topo\\bin'),
       userPathWriter
     })
 
     await installer.install()
 
-    expect(userPathWriter).toHaveBeenCalledWith(`%LOCALAPPDATA%\\Orca\\bin;${pathDirectory}`)
+    expect(userPathWriter).toHaveBeenCalledWith(`%LOCALAPPDATA%\\Topo\\bin;${pathDirectory}`)
   })
 
   it('keeps a bundled Windows launcher installed when the user PATH read is unknown', async () => {
     const fixture = await makeFixture()
     const resourcesPath = join(fixture.root, 'resources')
-    const bundledLauncher = join(resourcesPath, 'bin', 'orca.exe')
+    const bundledLauncher = join(resourcesPath, 'bin', 'topo.exe')
     await mkdir(dirname(bundledLauncher), { recursive: true })
     await writeFile(bundledLauncher, 'native launcher', 'utf8')
 
@@ -145,11 +145,11 @@ describe('CliInstaller', () => {
       isPackaged: true,
       resourcesPath,
       userDataPath: fixture.userDataPath,
-      execPath: join(fixture.root, 'Orca.exe'),
+      execPath: join(fixture.root, 'Topo.exe'),
       appPath: fixture.appPath,
       userPathReader: async () => ({
         state: 'unknown',
-        detail: 'Orca could not read the Windows user PATH registry value.'
+        detail: 'Topo could not read the Windows user PATH registry value.'
       })
     })
 
@@ -163,8 +163,8 @@ describe('CliInstaller', () => {
   it('does not overwrite the packaged Windows launcher while registering PATH', async () => {
     const fixture = await makeFixture()
     const localAppDataPath = join(fixture.root, 'AppData', 'Local')
-    const resourcesPath = join(fixture.root, 'D Custom Orca', 'resources')
-    const bundledLauncher = join(resourcesPath, 'bin', 'orca.exe')
+    const resourcesPath = join(fixture.root, 'D Custom Topo', 'resources')
+    const bundledLauncher = join(resourcesPath, 'bin', 'topo.exe')
     const bundledContent = 'native launcher'
     await mkdir(dirname(bundledLauncher), { recursive: true })
     await writeFile(bundledLauncher, bundledContent, 'utf8')
@@ -176,7 +176,7 @@ describe('CliInstaller', () => {
       resourcesPath,
       localAppDataPath,
       userDataPath: fixture.userDataPath,
-      execPath: join(fixture.root, 'D Custom Orca', 'Orca.exe'),
+      execPath: join(fixture.root, 'D Custom Topo', 'Topo.exe'),
       appPath: fixture.appPath,
       userPathReader: async () => userPathRead(userPath),
       userPathWriter: async (value) => {

@@ -2,7 +2,7 @@
   {
     "filePath": "mobile/app/mobile-onboarding.tsx",
     "kind": "jsx-text",
-    "text": "Orca",
+    "text": "Topo",
     "dynamic": false,
     "count": 1
   },
@@ -149,7 +149,7 @@
   {
     "filePath": "mobile/src/components/NewWorkspaceSetupScriptField.tsx",
     "kind": "jsx-expression",
-    "text": "ORCA.YAML",
+    "text": "TOPO.YAML",
     "dynamic": false,
     "count": 1
   },
@@ -184,7 +184,7 @@
   {
     "filePath": "mobile/src/home/MobileHomeTopBar.tsx",
     "kind": "jsx-text",
-    "text": "Orca",
+    "text": "Topo",
     "dynamic": false,
     "count": 1
   },
@@ -205,7 +205,7 @@
   {
     "filePath": "mobile/src/onboarding/NotificationOnboardingPreview.tsx",
     "kind": "jsx-text",
-    "text": "Orca",
+    "text": "Topo",
     "dynamic": false,
     "count": 1
   },
@@ -282,28 +282,28 @@
   {
     "filePath": "mobile/src/settings/about-screen.tsx",
     "kind": "jsx-attribute:title",
-    "text": "@orca_build",
+    "text": "@topo_build",
     "dynamic": false,
     "count": 1
   },
   {
     "filePath": "mobile/src/settings/about-screen.tsx",
     "kind": "jsx-attribute:title",
-    "text": "onOrca.dev",
+    "text": "GitHub",
     "dynamic": false,
     "count": 1
   },
   {
     "filePath": "mobile/src/settings/about-screen.tsx",
     "kind": "jsx-text",
-    "text": "Orca",
+    "text": "Topo",
     "dynamic": false,
     "count": 1
   },
   {
     "filePath": "mobile/src/settings/about-screen.tsx",
     "kind": "jsx-attribute:title",
-    "text": "stablyai/orca",
+    "text": "brandonhsz/Topoductor",
     "dynamic": false,
     "count": 1
   },

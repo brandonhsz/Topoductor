@@ -1,7 +1,7 @@
 // Live parked leaves preserve paired-client terminal handles (STA-2854); unmount alone must not invalidate actively viewed streams. Park watchers prove liveness and retire on reveal/close/exit/workspace teardown so dead terminals still disappear.
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { RuntimeSyncWindowGraph } from '../../../../shared/runtime-session-contracts'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import type { AppState } from '../../store/types'
 import type { TerminalTab } from '../../../../shared/workspace-layout/terminal-tab-types'
 
@@ -133,7 +133,7 @@ async function captureGraph(
  * parks (mountedLeaves), so the PTY id is main's binding and is not reported here.
  */
 function reportedPanes(graph: RuntimeSyncWindowGraph): Record<string, unknown>[] {
-  return ORCA_LAYOUT_OWNER_IS_MAIN ? (graph.mountedLeaves ?? []) : graph.leaves
+  return TOPO_LAYOUT_OWNER_IS_MAIN ? (graph.mountedLeaves ?? []) : graph.leaves
 }
 
 describe('syncRuntimeGraph cold-parked tabs', () => {

@@ -15,7 +15,7 @@ import { releaseDocPreviewGrant } from '@/lib/browser/documents/doc-preview-gran
 import { destroyWorkspaceWebviews } from './browser-webview-cleanup'
 import { omitRecordKeys } from '../../worktrees/teardown/record-key-omission'
 import { landOnEmptiedWorktree } from '../../tabs/tabs-empty-workspace'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import { forgetDesktopCreatedServerTab } from '@/lib/desktop-created-server-tabs'
 import {
   closeBrowserTabThroughLayoutOwner,
@@ -248,11 +248,11 @@ export function createBrowserCloseActions(
         }
       }
       // Switch point: main closes the tab first; today's close then runs over the tab as drawn.
-      const owningWorktreeId = ORCA_LAYOUT_OWNER_IS_MAIN
+      const owningWorktreeId = TOPO_LAYOUT_OWNER_IS_MAIN
         ? findWorkspace(get().browserTabsByWorktree, tabId)?.worktreeId
         : undefined
       if (
-        ORCA_LAYOUT_OWNER_IS_MAIN &&
+        TOPO_LAYOUT_OWNER_IS_MAIN &&
         closeBrowserTabThroughLayoutOwner(
           get,
           tabId,

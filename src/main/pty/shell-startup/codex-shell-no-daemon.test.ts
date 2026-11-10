@@ -93,7 +93,7 @@ type Sandbox = { bin: string; codex: string; helpFile: string; helpLog: string }
 
 /** Fake codex: `--help` prints the help file and logs the probe; any other call prints its argv. */
 function makeSandbox(help: string): Sandbox {
-  const root = mkdtempSync(join(tmpdir(), 'orca-codex-no-daemon-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-codex-no-daemon-'))
   roots.push(root)
   const bin = join(root, 'bin')
   mkdirSync(bin)
@@ -208,7 +208,7 @@ function run(
     ...process.env,
     PATH: `${sandbox.bin}${delimiter}${process.env.PATH ?? ''}`,
     CODEX_HOME: join(sandbox.bin, '..', 'codex-home'),
-    // Nested Orca tests must not forward the host pane's identity.
+    // Nested Topo tests must not forward the host pane's identity.
     ...Object.fromEntries(CODEX_COMMAND_IDENTITY_ENV_KEYS.map((key) => [key, ''])),
     SSH_CONNECTION: undefined,
     SSH_TTY: undefined,
@@ -236,7 +236,7 @@ const shells: [Shell, boolean][] = [
 
 describe.concurrent('codex wrapper --no-daemon rule', () => {
   it('has pwsh when CI demanded it', ({ expect }) => {
-    expect(process.env.ORCA_REQUIRE_PWSH !== '1' || pwshAvailable).toBe(true)
+    expect(process.env.TOPO_REQUIRE_PWSH !== '1' || pwshAvailable).toBe(true)
   })
 
   for (const [shell, available] of shells) {
@@ -263,7 +263,7 @@ describe.concurrent('codex wrapper --no-daemon rule', () => {
         async ([remote, inherited, inheritedTty, expected, exitCode], { expect }) => {
           const sandbox = makeSandbox(HELP_WITH_FLAG)
           const bareCall = isPowerShell(shell)
-            ? '$orcaClipboardExit = $LASTEXITCODE\n& (Get-Command codex -CommandType Application | Select-Object -First 1).Source shell\nexit $orcaClipboardExit'
+            ? '$topoClipboardExit = $LASTEXITCODE\n& (Get-Command codex -CommandType Application | Select-Object -First 1).Source shell\nexit $topoClipboardExit'
             : 'command codex shell'
           const result = await run(shell, `codex clipboard\n${bareCall}`, sandbox, {
             FAKE_CODEX_READ_CLIPBOARD_ENV: '1',
@@ -351,12 +351,12 @@ describe.concurrent('codex wrapper --no-daemon rule', () => {
 
   describe('caller identity for commands Codex runs', () => {
     const identity = {
-      ORCA_TERMINAL_HANDLE: 'term_abc',
-      ORCA_USER_DATA_PATH: '/Users/a b/Library/Application Support/orca $HOME \\x "q"'
+      TOPO_TERMINAL_HANDLE: 'term_abc',
+      TOPO_USER_DATA_PATH: '/Users/a b/Library/Application Support/topo $HOME \\x "q"'
     }
     const identityOverrides = [
-      "shell_environment_policy.set.ORCA_TERMINAL_HANDLE='term_abc'",
-      `shell_environment_policy.set.ORCA_USER_DATA_PATH='${identity.ORCA_USER_DATA_PATH}'`
+      "shell_environment_policy.set.TOPO_TERMINAL_HANDLE='term_abc'",
+      `shell_environment_policy.set.TOPO_USER_DATA_PATH='${identity.TOPO_USER_DATA_PATH}'`
     ]
     const splitOverrides = (line: string): { overrides: string[]; rest: string[] } => {
       const [, ...words] = line.split('|')
@@ -402,8 +402,8 @@ describe.concurrent('codex wrapper --no-daemon rule', () => {
       it.skipIf(!available)(`${shell} skips a value holding an apostrophe`, async ({ expect }) => {
         const sandbox = makeSandbox(HELP_WITHOUT_FLAG)
         const result = await run(shell, codexCall(shell, ['x']), sandbox, {
-          ORCA_TERMINAL_HANDLE: 'term_abc',
-          ORCA_USER_DATA_PATH: "/Users/o'brien/orca'"
+          TOPO_TERMINAL_HANDLE: 'term_abc',
+          TOPO_USER_DATA_PATH: "/Users/o'brien/topo'"
         })
 
         expect(lines(result.stdout).map(splitOverrides)).toEqual([
@@ -418,7 +418,7 @@ describe.concurrent('codex wrapper --no-daemon rule', () => {
       `${shell} runs under StrictMode and Stop with a failing, noisy hook prep`,
       async ({ expect }) => {
         const sandbox = makeSandbox(HELP_WITH_FLAG)
-        const prep = join(sandbox.bin, isWindows ? 'orca-prep.cmd' : 'orca-prep')
+        const prep = join(sandbox.bin, isWindows ? 'topo-prep.cmd' : 'topo-prep')
         writeExecutable(
           prep,
           isWindows
@@ -429,7 +429,7 @@ describe.concurrent('codex wrapper --no-daemon rule', () => {
           shell,
           'codex x\n"status=$LASTEXITCODE"',
           sandbox,
-          { ORCA_CODEX_LAUNCH_PREFLIGHT: prep },
+          { TOPO_CODEX_LAUNCH_PREFLIGHT: prep },
           [
             'Set-StrictMode -Version Latest',
             '$ErrorActionPreference = "Stop"',

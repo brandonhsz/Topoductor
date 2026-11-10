@@ -1,5 +1,5 @@
 import { selectFreshAgentRowForMobileTab } from '../../workspaces/process-listing/runtime-hook-agent-row-selection'
-import { OrcaRuntimeWithScheduleMobileSessionTabsChanged } from '../../session-tabs/session-tabs-change-publication'
+import { TopoRuntimeWithScheduleMobileSessionTabsChanged } from '../../session-tabs/session-tabs-change-publication'
 import type { TabGroupLayoutNode } from '../../../../shared/tab-types'
 import type {
   RuntimeMobileSessionSnapshotTab,
@@ -32,9 +32,9 @@ import {
 } from '../../session-tabs/structured-conversation-tab-title'
 import { structuredChatDisplayName } from '../../../../shared/structured-chat-row-name'
 
-export abstract class OrcaRuntimeWithPruneMobileSessionTabGroupLayout extends OrcaRuntimeWithScheduleMobileSessionTabsChanged {
+export abstract class TopoRuntimeWithPruneMobileSessionTabGroupLayout extends TopoRuntimeWithScheduleMobileSessionTabsChanged {
   constructor(
-    ...args: ConstructorParameters<typeof OrcaRuntimeWithScheduleMobileSessionTabsChanged>
+    ...args: ConstructorParameters<typeof TopoRuntimeWithScheduleMobileSessionTabsChanged>
   ) {
     super(...args)
     // Desktop chat renames reach main through saved window sessions only.

@@ -15,7 +15,7 @@ export async function applyOpenCodeRootModelOverlay(options: {
   probeEnv: Record<string, string>
   envToDelete: string[]
   cwd?: string
-  /** The startup prompt Orca quoted onto the command, when it is still there. */
+  /** The startup prompt Topo quoted onto the command, when it is still there. */
   promptBody?: string
 }): Promise<string> {
   if (!isVerifiedOpenCodeConfigModelVersion(options.version)) {

@@ -84,7 +84,7 @@ function closeUnpreparedPopup(
   }
 }
 
-// Native child windows lack an address bar; untrusted popups need an Orca-controlled origin display.
+// Native child windows lack an address bar; untrusted popups need a Topo-controlled origin display.
 export function openPopupWithOriginBar(
   options: PopupChildWindowOptions,
   initialUrl: string,

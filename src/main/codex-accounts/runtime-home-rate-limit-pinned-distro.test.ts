@@ -28,7 +28,7 @@ function account(id: string, distro: string, managedHomePath: string) {
     managedHomePath,
     managedHomeRuntime: 'wsl' as const,
     wslDistro: distro,
-    wslLinuxHomePath: `/home/alice/.local/share/orca/codex-accounts/${id}/home`,
+    wslLinuxHomePath: `/home/alice/.local/share/topo/codex-accounts/${id}/home`,
     providerAccountId: null,
     workspaceLabel: null,
     workspaceAccountId: null,

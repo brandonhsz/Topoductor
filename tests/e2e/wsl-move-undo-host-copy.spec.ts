@@ -10,10 +10,10 @@
 import { mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { launchHeadlessPairedRuntimeHost } from './helpers/headless-paired-runtime-host'
 import { mutateStoppedProfileState } from './helpers/persisted-profile-state'
-import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/orca-restart'
+import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/topo-restart'
 import { ensureTerminalVisible, waitForSessionReady } from './helpers/store'
 import { execInTerminal, waitForActivePanePtyId, waitForTerminalOutput } from './helpers/terminal'
 import { createMovedRepo } from './helpers/wsl-moved-host-profile'
@@ -31,13 +31,13 @@ test("undo stops the host's copy first, so the project's terminal runs in one pl
   test.skip(process.platform === 'win32', 'POSIX shell commands')
   // A move, a host terminal start and the undo's reload, each booting a full app.
   test.setTimeout(900_000)
-  const root = mkdtempSync(path.join(os.tmpdir(), 'orca-undo-host-copy-'))
+  const root = mkdtempSync(path.join(os.tmpdir(), 'topo-undo-host-copy-'))
   const repoPath = realpathSync(createMovedRepo(root))
   const host = await launchHeadlessPairedRuntimeHost({
     pinnedServePort: true,
     withoutBrowser: true,
-    // Stands in for the distro's orcad, the only host that serves moved panes' history.
-    extraEnv: { ORCA_E2E_WSL_MOVE_DESTINATION: '1' }
+    // Stands in for the distro's topod, the only host that serves moved panes' history.
+    extraEnv: { TOPO_E2E_WSL_MOVE_DESTINATION: '1' }
   })
   const session = createRestartSession(testInfo, GATE)
   let launched: Awaited<ReturnType<typeof session.launch>> | undefined

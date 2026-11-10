@@ -35,7 +35,7 @@ const mocks: {
 export { mocks }
 
 vi.mock('node:fs/promises', () => ({ mkdir: mocks.mkdir }))
-vi.mock('../orcad/orcad-data-root-locality', () => ({ orcadDataRootIsOnLocalDisk: () => true }))
+vi.mock('../topod/topod-data-root-locality', () => ({ topodDataRootIsOnLocalDisk: () => true }))
 
 vi.mock('../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),

@@ -4,7 +4,7 @@ import type { Page } from '@stablyai/playwright-test'
 import { gitExecFileAsync } from '../../src/main/git/runner'
 import { listWorktreesStrict } from '../../src/main/git/worktrees/catalog/worktree-listing'
 import { areWorktreePathsEqual } from '../../src/main/git/worktrees/catalog/worktree-path-comparison'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient,

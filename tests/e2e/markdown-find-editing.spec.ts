@@ -1,6 +1,6 @@
 import type { Locator, Page } from '@stablyai/playwright-test'
 import path from 'node:path'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import { pressShortcut } from './helpers/shortcuts'
 import {
@@ -95,44 +95,44 @@ async function pointAtParagraph(page: Page, paragraph: Locator, drag: boolean) {
   return selection
 }
 
-test.beforeEach(async ({ orcaPage }) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
+test.beforeEach(async ({ topoPage }) => {
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
 })
 
 for (const interaction of ['click', 'drag'] as const) {
   test(`keeps Find open while a document ${interaction} edits at the pointer position`, async ({
-    orcaPage,
+    topoPage,
     registerPostElectronShutdownCleanup
   }, testInfo) => {
-    const context = await getActiveWorktreeContext(orcaPage)
+    const context = await getActiveWorktreeContext(topoPage)
     const filePath = await createMarkdownFixture(
       context,
-      '.orca-e2e-markdown-find-editing',
+      '.topo-e2e-markdown-find-editing',
       `find-${interaction}`,
       testInfo.workerIndex,
       MARKDOWN
     )
     registerPostElectronShutdownCleanup(() => cleanupMarkdownFixture(filePath))
-    await openMarkdownFixture(orcaPage, context, filePath)
-    const editor = await waitForRichMarkdownEditor(orcaPage)
+    await openMarkdownFixture(topoPage, context, filePath)
+    const editor = await waitForRichMarkdownEditor(topoPage)
     const paragraph = editor.locator('p').filter({ hasText: 'Editing' })
-    const viewport = orcaPage.locator('.rich-markdown-editor-shell .overflow-auto')
+    const viewport = topoPage.locator('.rich-markdown-editor-shell .overflow-auto')
     await editor.locator('p').first().click()
-    await pressShortcut(orcaPage, 'f')
-    const search = orcaPage.getByRole('textbox', { name: 'Find in rich markdown editor' })
+    await pressShortcut(topoPage, 'f')
+    const search = topoPage.getByRole('textbox', { name: 'Find in rich markdown editor' })
     await expect(search).toBeFocused()
     await search.fill('Needle')
-    await orcaPage.getByRole('button', { name: 'Match case', exact: true }).click()
-    await orcaPage.getByRole('button', { name: 'Match whole word', exact: true }).click()
-    await expect(orcaPage.locator('.rich-markdown-search-status')).toHaveText('1/2')
+    await topoPage.getByRole('button', { name: 'Match case', exact: true }).click()
+    await topoPage.getByRole('button', { name: 'Match whole word', exact: true }).click()
+    await expect(topoPage.locator('.rich-markdown-search-status')).toHaveText('1/2')
     await centerParagraph(paragraph)
     const originalScroll = await viewport.evaluate((element) => element.scrollTop)
-    const selection = await pointAtParagraph(orcaPage, paragraph, interaction === 'drag')
+    const selection = await pointAtParagraph(topoPage, paragraph, interaction === 'drag')
 
     // Separate key events allow document updates to expose a caret reset between characters.
-    await orcaPage.keyboard.type('xy', { delay: 100 })
-    await orcaPage.screenshot({ path: testInfo.outputPath('find-document-edit.png') })
+    await topoPage.keyboard.type('xy', { delay: 100 })
+    await topoPage.screenshot({ path: testInfo.outputPath('find-document-edit.png') })
     await expect(paragraph).toHaveText(
       `${TARGET_TEXT.slice(0, selection.from)}xy${TARGET_TEXT.slice(selection.to)}`
     )
@@ -149,55 +149,55 @@ for (const interaction of ['click', 'drag'] as const) {
       .toBeCloseTo(originalScroll, 0)
     await expect(search).toBeVisible()
     await expect(search).toHaveValue('Needle')
-    await expect(orcaPage.getByRole('button', { name: 'Match case', exact: true })).toHaveAttribute(
+    await expect(topoPage.getByRole('button', { name: 'Match case', exact: true })).toHaveAttribute(
       'aria-pressed',
       'true'
     )
     await expect(
-      orcaPage.getByRole('button', { name: 'Match whole word', exact: true })
+      topoPage.getByRole('button', { name: 'Match whole word', exact: true })
     ).toHaveAttribute('aria-pressed', 'true')
-    await expect(orcaPage.locator('.rich-markdown-search-status')).toHaveText('1/2')
+    await expect(topoPage.locator('.rich-markdown-search-status')).toHaveText('1/2')
   })
 
   test(`keeps the scrolled table and ${interaction} selection after switching Source to Rich`, async ({
-    orcaPage,
+    topoPage,
     registerPostElectronShutdownCleanup
   }, testInfo) => {
-    const context = await getActiveWorktreeContext(orcaPage)
+    const context = await getActiveWorktreeContext(topoPage)
     const filePath = await createMarkdownFixture(
       context,
-      '.orca-e2e-markdown-find-editing',
+      '.topo-e2e-markdown-find-editing',
       `source-${interaction}`,
       testInfo.workerIndex,
       TABLE_MARKDOWN
     )
     registerPostElectronShutdownCleanup(() => cleanupMarkdownFixture(filePath))
-    await openMarkdownFixture(orcaPage, context, filePath)
-    await waitForRichMarkdownEditor(orcaPage)
-    await orcaPage.getByRole('radio', { name: 'Source', exact: true }).click()
-    await expect(orcaPage.locator('.monaco-editor')).toBeVisible()
-    await orcaPage.getByRole('radio', { name: 'Rich Editor', exact: true }).click()
-    const editor = await waitForRichMarkdownEditor(orcaPage)
+    await openMarkdownFixture(topoPage, context, filePath)
+    await waitForRichMarkdownEditor(topoPage)
+    await topoPage.getByRole('radio', { name: 'Source', exact: true }).click()
+    await expect(topoPage.locator('.monaco-editor')).toBeVisible()
+    await topoPage.getByRole('radio', { name: 'Rich Editor', exact: true }).click()
+    const editor = await waitForRichMarkdownEditor(topoPage)
     await expect(editor).not.toBeFocused()
     const paragraph = editor.locator('td p').filter({ hasText: 'Editing' })
-    const viewport = orcaPage.locator('.rich-markdown-editor-shell .overflow-auto')
+    const viewport = topoPage.locator('.rich-markdown-editor-shell .overflow-auto')
     await centerParagraph(paragraph)
     const originalScroll = await viewport.evaluate((element) => element.scrollTop)
-    const selection = await pointAtParagraph(orcaPage, paragraph, interaction === 'drag')
+    const selection = await pointAtParagraph(topoPage, paragraph, interaction === 'drag')
     await expect(editor).toBeFocused()
     await expect(paragraph).toHaveText(TARGET_TEXT)
     await expect
       .poll(() => viewport.evaluate((element) => element.scrollTop))
       .toBeCloseTo(originalScroll, 0)
-    const tab = orcaPage
+    const tab = topoPage
       .locator('[data-tab-id]')
       .filter({ hasText: path.basename(filePath) })
       .last()
     await expect(tab.locator('span.rounded-full')).toHaveCount(0)
     await expect(tab.getByRole('button', { name: 'Close tab' })).toBeVisible()
-    await orcaPage.screenshot({ path: testInfo.outputPath('source-rich-table-selection.png') })
-    await orcaPage.keyboard.type('xy', { delay: 100 })
-    await orcaPage.screenshot({ path: testInfo.outputPath('source-rich-pointer-edit.png') })
+    await topoPage.screenshot({ path: testInfo.outputPath('source-rich-table-selection.png') })
+    await topoPage.keyboard.type('xy', { delay: 100 })
+    await topoPage.screenshot({ path: testInfo.outputPath('source-rich-pointer-edit.png') })
     await expect(paragraph).toHaveText(
       `${TARGET_TEXT.slice(0, selection.from)}xy${TARGET_TEXT.slice(selection.to)}`
     )
@@ -216,46 +216,46 @@ for (const interaction of ['click', 'drag'] as const) {
 
 for (const returnPath of ['bare', 'removed-replace', 'native', 'escape'] as const) {
   test(`preserves the live viewport on ${returnPath} return from Find`, async ({
-    orcaPage,
+    topoPage,
     registerPostElectronShutdownCleanup
   }, testInfo) => {
-    const context = await getActiveWorktreeContext(orcaPage)
+    const context = await getActiveWorktreeContext(topoPage)
     const filePath = await createMarkdownFixture(
       context,
-      '.orca-e2e-markdown-find-editing',
+      '.topo-e2e-markdown-find-editing',
       `viewport-${returnPath}`,
       testInfo.workerIndex,
       MARKDOWN
     )
     registerPostElectronShutdownCleanup(() => cleanupMarkdownFixture(filePath))
-    await openMarkdownFixture(orcaPage, context, filePath)
-    const editor = await waitForRichMarkdownEditor(orcaPage)
+    await openMarkdownFixture(topoPage, context, filePath)
+    const editor = await waitForRichMarkdownEditor(topoPage)
     const originalText = await editor.textContent()
     await editor.locator('p').first().click()
-    await pressShortcut(orcaPage, 'f')
-    const search = orcaPage.getByRole('textbox', { name: 'Find in rich markdown editor' })
+    await pressShortcut(topoPage, 'f')
+    const search = topoPage.getByRole('textbox', { name: 'Find in rich markdown editor' })
     await search.fill('Needle')
-    await expect(orcaPage.locator('.rich-markdown-search-status')).toHaveText('1/2')
+    await expect(topoPage.locator('.rich-markdown-search-status')).toHaveText('1/2')
     if (returnPath === 'removed-replace' || returnPath === 'native') {
-      await orcaPage.getByRole('button', { name: 'Toggle replace', exact: true }).click()
-      await orcaPage.getByRole('textbox', { name: 'Replace in rich markdown editor' }).focus()
+      await topoPage.getByRole('button', { name: 'Toggle replace', exact: true }).click()
+      await topoPage.getByRole('textbox', { name: 'Replace in rich markdown editor' }).focus()
     }
     await centerParagraph(editor.locator('p').filter({ hasText: 'Editing' }))
-    const viewport = orcaPage.locator('.rich-markdown-editor-shell .overflow-auto')
+    const viewport = topoPage.locator('.rich-markdown-editor-shell .overflow-auto')
     const before = await viewport.evaluate((element) => element.scrollTop)
     expect(before).toBeGreaterThan(1000)
     if (returnPath === 'removed-replace' || returnPath === 'native') {
-      await orcaPage.getByRole('button', { name: 'Toggle replace', exact: true }).click()
+      await topoPage.getByRole('button', { name: 'Toggle replace', exact: true }).click()
       await expect(
-        orcaPage.getByRole('textbox', { name: 'Replace in rich markdown editor' })
+        topoPage.getByRole('textbox', { name: 'Replace in rich markdown editor' })
       ).toHaveCount(0)
     }
     if (returnPath === 'native') {
-      await orcaPage.keyboard.press('Shift+Tab')
+      await topoPage.keyboard.press('Shift+Tab')
       await expect(
-        orcaPage.getByRole('button', { name: 'Toggle replace', exact: true })
+        topoPage.getByRole('button', { name: 'Toggle replace', exact: true })
       ).toBeFocused()
-      await orcaPage.keyboard.press('Shift+Tab')
+      await topoPage.keyboard.press('Shift+Tab')
     } else if (returnPath === 'escape') {
       await search.press('Escape')
     } else {
@@ -280,8 +280,8 @@ for (const returnPath of ['bare', 'removed-replace', 'native', 'escape'] as cons
     await expect(editor).toHaveText(originalText ?? '')
     if (returnPath === 'bare') {
       await search.focus()
-      await orcaPage.getByRole('button', { name: 'Next match', exact: true }).click()
-      await expect(orcaPage.locator('.rich-markdown-search-status')).toHaveText('2/2')
+      await topoPage.getByRole('button', { name: 'Next match', exact: true }).click()
+      await expect(topoPage.locator('.rich-markdown-search-status')).toHaveText('2/2')
       const zero = await editor.evaluate((element) => {
         if (
           !(element instanceof HTMLElement) ||

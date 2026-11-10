@@ -5,7 +5,7 @@ import type { Translate } from '@/i18n/use-translate'
 import { canShowRightSidebarForView } from '@/lib/right-sidebar-visibility'
 import type { AppState } from '@/store/types'
 
-/** Only these statuses back the Adds rows with Orca's live registrations, so a "try it" does what it says. */
+/** Only these statuses back the Adds rows with Topo's live registrations, so a "try it" does what it says. */
 export function isPluginContributionLive(
   plugin: PluginHostListEntry | null
 ): plugin is PluginHostListEntry {

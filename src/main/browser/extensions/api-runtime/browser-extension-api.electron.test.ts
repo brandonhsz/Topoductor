@@ -1,4 +1,4 @@
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
@@ -39,7 +39,7 @@ const report = (prefix, run) => run().then(
   (error) => console.log(prefix + JSON.stringify({ error: String((error && error.stack) || error) }))
 );
 `
-// Electron never fires storage.onChanged in workers; Orca relays the worker's and pages' writes.
+// Electron never fires storage.onChanged in workers; Topo relays the worker's and pages' writes.
 const STORAGE_LISTENERS = `
 const storageEvents = [];
 const syncEvents = [];
@@ -52,10 +52,10 @@ const seeded = chrome.storage.local.set({ seed: 'old' });
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   for (let i = 0; i < 150 && !storageEvents.some(([area]) => area === 'session'); i++) await sleep(100);
   await sleep(1000);
-  console.log('ORCA_EXT_STORAGE ' + JSON.stringify(storageEvents));
+  console.log('TOPO_EXT_STORAGE ' + JSON.stringify(storageEvents));
 })();
 `
-// Electron disables storage.sync; Orca backs it in main and fires its events in pages and workers.
+// Electron disables storage.sync; Topo backs it in main and fires its events in pages and workers.
 const WORKER_SYNC = `
 const syncWritten = chrome.storage.sync.set({ fromWorker: 1 });
 (async () => {
@@ -63,7 +63,7 @@ const syncWritten = chrome.storage.sync.set({ fromWorker: 1 });
   await syncWritten;
   for (let i = 0; i < 150 && !syncEvents.some(([, changes]) => 'fromPage' in changes); i++) await sleep(100);
   await sleep(500);
-  console.log('ORCA_EXT_SYNC_WORKER ' + JSON.stringify({
+  console.log('TOPO_EXT_SYNC_WORKER ' + JSON.stringify({
     events: syncEvents,
     read: await chrome.storage.sync.get(null),
     bytes: await chrome.storage.sync.getBytesInUse(null)
@@ -87,7 +87,7 @@ chrome.storage.sync.onChanged.addListener((changes) => pageSyncEvents.push(['syn
     chrome.storage.sync.set({ big: 'x'.repeat(9000) }, () => resolve(chrome.runtime.lastError && chrome.runtime.lastError.message))
   );
   await sleep(500);
-  console.log('ORCA_EXT_SYNC_PAGE ' + JSON.stringify({ before, events: pageSyncEvents, quotaError, quota: chrome.storage.sync.QUOTA_BYTES }));
+  console.log('TOPO_EXT_SYNC_PAGE ' + JSON.stringify({ before, events: pageSyncEvents, quotaError, quota: chrome.storage.sync.QUOTA_BYTES }));
 })();
 `
 // A content script's storage.sync goes through the worker (Electron disables it in content scripts).
@@ -97,8 +97,8 @@ const CONTENT_SCRIPT = `
   chrome.storage.sync.onChanged.addListener((changes) => own.push(changes));
   await chrome.storage.sync.set({ fromContent: 1 });
   const read = await chrome.storage.sync.get(['fromContent', 'fromWorker']);
-  console.log('ORCA_EXT_SYNC_CONTENT ' + JSON.stringify({ read, own }));
-})().catch((error) => console.log('ORCA_EXT_SYNC_CONTENT ' + JSON.stringify({ error: String(error) })));
+  console.log('TOPO_EXT_SYNC_CONTENT ' + JSON.stringify({ read, own }));
+})().catch((error) => console.log('TOPO_EXT_SYNC_CONTENT ' + JSON.stringify({ error: String(error) })));
 // Chrome's content-script APIs Electron lacks, and an extension page framed in the web page.
 (async () => {
   const host = document.createElement('div');
@@ -107,17 +107,17 @@ const CONTENT_SCRIPT = `
   const frame = document.createElement('iframe');
   frame.src = chrome.runtime.getURL('frame.html?in=web');
   document.documentElement.append(frame);
-  console.log('ORCA_EXT_CONTENT_APIS ' + JSON.stringify({
+  console.log('TOPO_EXT_CONTENT_APIS ' + JSON.stringify({
     incognito: chrome.extension && chrome.extension.inIncognitoContext,
     shadowRoot: chrome.dom && chrome.dom.openOrClosedShadowRoot(host) === host.shadowRoot,
     managed: await chrome.storage.managed.get(null),
     managedBytes: await chrome.storage.managed.getBytesInUse(null)
   }));
-})().catch((error) => console.log('ORCA_EXT_CONTENT_APIS ' + JSON.stringify({ error: String(error) })));
+})().catch((error) => console.log('TOPO_EXT_CONTENT_APIS ' + JSON.stringify({ error: String(error) })));
 `
 // An extension page in a subframe gets the same added APIs as a top-level one.
 const FRAME_SCRIPT = `${SHARED_SCRIPT}
-report(location.search.includes('in=web') ? 'ORCA_EXT_WEB_FRAME ' : 'ORCA_EXT_FRAME ', async () => ({
+report(location.search.includes('in=web') ? 'TOPO_EXT_WEB_FRAME ' : 'TOPO_EXT_FRAME ', async () => ({
   chromeMissing: missing(chrome),
   permissions: typeof chrome.permissions.getAll,
   sync: await chrome.storage.sync.get(null).then(() => 'ok', (error) => String(error)),
@@ -125,7 +125,7 @@ report(location.search.includes('in=web') ? 'ORCA_EXT_WEB_FRAME ' : 'ORCA_EXT_FR
 }));
 `
 const WORKER_SCRIPT = `${SHARED_SCRIPT}${STORAGE_LISTENERS}${WORKER_SYNC}
-report('ORCA_EXT_WORKER ', async () => {
+report('TOPO_EXT_WORKER ', async () => {
   await seeded;
   const hasBrowser = typeof browser !== 'undefined';
   const activeTabs = (await chrome.tabs.query({ active: true })).map((tab) => tab.id);
@@ -152,7 +152,7 @@ const PAGE_SCRIPT = `${SHARED_SCRIPT}${PAGE_SYNC}
   await chrome.storage.local.set({ seed: 'new' });
   await chrome.storage.session.set({ token: 'abc' });
 })();
-report('ORCA_EXT_PAGE ', async () => ({
+report('TOPO_EXT_PAGE ', async () => ({
   chromeMissing: missing(chrome),
   browserMissing: typeof browser !== 'undefined' ? missing(browser) : 'no browser global',
   currentWindow: (await chrome.windows.getCurrent()).id,
@@ -206,14 +206,14 @@ async function buildBundle(entry: string, fileName: string): Promise<void> {
 }
 
 beforeAll(async () => {
-  root = mkdtempSync(join(tmpdir(), 'orca-browser-extension-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-browser-extension-'))
   const extensionDir = join(root, 'extension')
   mkdirSync(extensionDir)
   writeFileSync(
     join(extensionDir, 'manifest.json'),
     JSON.stringify({
       manifest_version: 3,
-      name: 'Orca API probe',
+      name: 'Topo API probe',
       version: '1.0.0',
       permissions: ['tabs', 'webNavigation', 'storage'],
       // A module worker under a policy that limits connect-src: the wrapper must still reach main.
@@ -239,11 +239,11 @@ beforeAll(async () => {
   )
   writeFileSync(join(extensionDir, 'frame.js'), FRAME_SCRIPT)
   writeFileSync(join(extensionDir, 'frame.html'), '<!doctype html><script src="frame.js"></script>')
-  // Chrome removes extension APIs from manifest sandbox pages; Orca's bridge must not restore them.
+  // Chrome removes extension APIs from manifest sandbox pages; Topo's bridge must not restore them.
   writeFileSync(
     join(extensionDir, 'sandboxed.js'),
     `const getAll = globalThis.chrome?.windows?.getAll
-    const report = (outcome) => console.log('ORCA_EXT_SANDBOX ' + JSON.stringify({ origin: self.origin, getAll: typeof getAll, outcome }))
+    const report = (outcome) => console.log('TOPO_EXT_SANDBOX ' + JSON.stringify({ origin: self.origin, getAll: typeof getAll, outcome }))
     if (typeof getAll === 'function') {
       Promise.resolve(getAll({ populate: true })).then((windows) => report('answered ' + windows.length), (error) => report('refused ' + String(error)))
     } else {
@@ -292,9 +292,9 @@ beforeAll(async () => {
     args,
     env: {
       ...env,
-      ORCA_BACKGROUND_LAUNCH: '1',
-      ORCA_EXTENSION_FIXTURE_STATUS: join(root, 'status.json'),
-      ORCA_EXTENSION_FIXTURE_DIR: extensionDir
+      TOPO_BACKGROUND_LAUNCH: '1',
+      TOPO_EXTENSION_FIXTURE_STATUS: join(root, 'status.json'),
+      TOPO_EXTENSION_FIXTURE_DIR: extensionDir
     },
     stdio: ['ignore', 'pipe', 'pipe']
   })
@@ -338,7 +338,7 @@ describe('browser extension APIs in a real Electron session', () => {
       lastError: 'No window with id: 999999.',
       popout: expect.any(Number)
     })
-    // A popout page's "current" window and tab are its own, not Orca's main window.
+    // A popout page's "current" window and tab are its own, not Topo's main window.
     expect(status.page).toEqual({
       chromeMissing: [],
       browserMissing: [],

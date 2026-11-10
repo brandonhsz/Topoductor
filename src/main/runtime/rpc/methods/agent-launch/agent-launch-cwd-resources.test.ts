@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 const {
   callMock,
   runtimeClientConstructorMock,
-  serveOrcaAppMock,
+  serveTopoAppMock,
   getDefaultUserDataPathMock,
   addEnvironmentFromPairingCodeMock,
   listEnvironmentsMock,
@@ -12,8 +12,8 @@ const {
 } = vi.hoisted(() => ({
   callMock: vi.fn(),
   runtimeClientConstructorMock: vi.fn(),
-  serveOrcaAppMock: vi.fn(),
-  getDefaultUserDataPathMock: vi.fn(() => '/tmp/orca-user-data'),
+  serveTopoAppMock: vi.fn(),
+  getDefaultUserDataPathMock: vi.fn(() => '/tmp/topo-user-data'),
   addEnvironmentFromPairingCodeMock: vi.fn(),
   listEnvironmentsMock: vi.fn(),
   spawnMock: vi.fn()
@@ -27,7 +27,7 @@ vi.mock('../../../../../cli/runtime-client', async () => {
   return createRuntimeClientModuleMock({
     callMock,
     runtimeClientConstructorMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock
   })
 })
@@ -77,13 +77,13 @@ import { RpcDispatcher } from '../../dispatcher'
 import { UnixSocketTransport } from '../../unix-socket-transport'
 import { AGENT_LAUNCH_METHODS } from './agent-launch'
 import { WORKTREE_METHODS } from '../workspaces/worktree'
-import '../../../orca-runtime-tests/runtime-test-module-registration.spec'
-import { OrcaRuntimeService } from '../../../orca-runtime'
-import '../../../orca-runtime-tests/orca-runtime-test-lifecycle.spec'
+import '../../../topo-runtime-tests/runtime-test-module-registration.spec'
+import { TopoRuntimeService } from '../../../topo-runtime'
+import '../../../topo-runtime-tests/topo-runtime-test-lifecycle.spec'
 import {
   store as runtimeStore,
   TEST_WORKTREE_ID
-} from '../../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import { openTestAgentSessionRecordStore } from '../../../agent-session/records/agent-session-record-store-test-harness'
 import {
   openTestJournalHostDatabase,
@@ -96,7 +96,7 @@ import { managedCwdLaunchFixture } from './managed-cwd-launch.test-fixture'
 
 configureWorktreeAwarenessEnvironment({
   callMock,
-  serveOrcaAppMock,
+  serveTopoAppMock,
   getDefaultUserDataPathMock,
   addEnvironmentFromPairingCodeMock,
   listEnvironmentsMock,
@@ -128,9 +128,9 @@ describe('CLI cwd resource frames, managed receipts and raw-path controls', () =
   let prior: typeof process.exitCode
   const childStateDirectories = new Set<string>()
   beforeEach(async () => {
-    vi.stubEnv('ORCA_AGENT_SESSION_ID', undefined)
-    vi.stubEnv('ORCA_STRUCTURED_SESSION', undefined)
-    directory = await mkdtemp(join(tmpdir(), 'orca-cwd-receipt-'))
+    vi.stubEnv('TOPO_AGENT_SESSION_ID', undefined)
+    vi.stubEnv('TOPO_STRUCTURED_SESSION', undefined)
+    directory = await mkdtemp(join(tmpdir(), 'topo-cwd-receipt-'))
     prior = process.exitCode
     const saved = runtimeStore.getAllWorktreeMeta()
     const metadata = {
@@ -233,7 +233,7 @@ describe('CLI cwd resource frames, managed receipts and raw-path controls', () =
         })
         const endpoint =
           process.platform === 'win32'
-            ? `\\\\.\\pipe\\orca-managed-scale-${randomUUID()}`
+            ? `\\\\.\\pipe\\topo-managed-scale-${randomUUID()}`
             : join(stateDirectory, 's.sock')
         transport = new UnixSocketTransport({
           endpoint,
@@ -306,7 +306,7 @@ describe('CLI cwd resource frames, managed receipts and raw-path controls', () =
           )
 
         for (const valid of [true, false]) {
-          process.env.ORCA_TERMINAL_HANDLE = valid ? host.caller : 'term_X'
+          process.env.TOPO_TERMINAL_HANDLE = valid ? host.caller : 'term_X'
           process.exitCode = prior
           operations = 0
           log.mockClear()
@@ -410,7 +410,7 @@ describe('CLI cwd resource frames, managed receipts and raw-path controls', () =
         }
         await closeTestJournalHostDatabase(stateDirectory)
         records = await openTestAgentSessionRecordStore(stateDirectory)
-        const restarted = new OrcaRuntimeService(host.runtimeStore)
+        const restarted = new TopoRuntimeService(host.runtimeStore)
         vi.spyOn(restarted, 'openAgentSessionRecordStore').mockResolvedValue(records)
         const executionSpies = [
           vi.spyOn(restarted, 'createManagedWorktree'),
@@ -430,7 +430,7 @@ describe('CLI cwd resource frames, managed receipts and raw-path controls', () =
           methods: [...AGENT_LAUNCH_METHODS, ...WORKTREE_METHODS]
         })
         for (const [index, operationId] of operationIds.entries()) {
-          process.env.ORCA_TERMINAL_HANDLE = index === 0 ? host.caller : 'term_X'
+          process.env.TOPO_TERMINAL_HANDLE = index === 0 ? host.caller : 'term_X'
           log.mockClear()
           error.mockClear()
           process.exitCode = prior

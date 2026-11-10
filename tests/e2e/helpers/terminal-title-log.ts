@@ -3,16 +3,16 @@ import type { Page } from '@stablyai/playwright-test'
 export async function installRendererTitleLog(page: Page): Promise<void> {
   await page.evaluate(() => {
     const w = window as unknown as {
-      __orcaE2eTitleLog?: string[]
-      __orcaE2eTitleUnsubscribe?: () => void
+      __topoE2eTitleLog?: string[]
+      __topoE2eTitleUnsubscribe?: () => void
     }
     const store = window.__store
     if (!store) {
       throw new Error('window.__store is not available')
     }
 
-    w.__orcaE2eTitleUnsubscribe?.()
-    w.__orcaE2eTitleLog = []
+    w.__topoE2eTitleUnsubscribe?.()
+    w.__topoE2eTitleLog = []
 
     const recordTitles = (): void => {
       const state = store.getState()
@@ -25,20 +25,20 @@ export async function installRendererTitleLog(page: Page): Promise<void> {
 
       for (const title of [...paneTitles, ...tabTitles]) {
         if (typeof title === 'string') {
-          w.__orcaE2eTitleLog!.push(title)
+          w.__topoE2eTitleLog!.push(title)
         }
       }
     }
 
     // Record transient OSC titles before shell prompts overwrite them.
     recordTitles()
-    w.__orcaE2eTitleUnsubscribe = store.subscribe(recordTitles)
+    w.__topoE2eTitleUnsubscribe = store.subscribe(recordTitles)
   })
 }
 
 export async function getRendererTitleLog(page: Page): Promise<string[]> {
   return page.evaluate(() => {
-    const w = window as unknown as { __orcaE2eTitleLog?: string[] }
-    return w.__orcaE2eTitleLog ?? []
+    const w = window as unknown as { __topoE2eTitleLog?: string[] }
+    return w.__topoE2eTitleLog ?? []
   })
 }

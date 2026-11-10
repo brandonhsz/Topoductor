@@ -1,6 +1,6 @@
 import type { TerminalIdentitySource } from '../identity/terminal-identity-source'
 /** Use graph-sequenced evidence: self-consistency cannot prove attachment, while pending spawns and lost graphs cannot prove detachment (#18191, #7587). */
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { parsePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import type { RuntimePtyWorktreeRecord } from '../records/runtime-terminal-state-records'
 import type { PtyPane } from './pty-pane-query'
@@ -27,7 +27,7 @@ export function recordPtySurfaceClaim(
   paneKey: string | null,
   graphSequence: number
 ): void {
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     return
   }
   // Replaying a claim adds no evidence but must preserve its existing graph standing.
@@ -50,7 +50,7 @@ export function recordPtySurface(
 ): void {
   // A pane is a binding, so worktree stops and sleep act on it even if a cwd guess filed it (#36716).
   source.confirmPtyWorktree(pty)
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     return
   }
   const standing =
@@ -65,7 +65,7 @@ export function recordPtySurface(
 
 /** Drops a PTY's surface claim; layout-owner builds keep none. */
 export function forgetPtySurface(source: SurfaceWrites, pty: RecordedPtySurface): void {
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     return
   }
   source.setRecordedSurface(pty, null, null, undefined)

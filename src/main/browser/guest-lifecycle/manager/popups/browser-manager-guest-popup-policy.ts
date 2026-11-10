@@ -61,7 +61,7 @@ export abstract class BrowserManagerGuestPopupPolicy extends BrowserManagerNavig
           return { action: 'deny' }
         }
         if (
-          this.openLinkInOrcaTab(
+          this.openLinkInTopoTab(
             ownerContext.browserTabId,
             newTabUrl,
             disposition !== 'background-tab'
@@ -69,7 +69,7 @@ export abstract class BrowserManagerGuestPopupPolicy extends BrowserManagerNavig
         ) {
           this.forwardOrQueuePopupEvent(guest.id, {
             origin: safeOrigin(newTabUrl),
-            action: 'opened-in-orca'
+            action: 'opened-in-topo'
           })
         }
         // A vanished renderer must not turn new-tab intent into a native popup.
@@ -169,10 +169,10 @@ export abstract class BrowserManagerGuestPopupPolicy extends BrowserManagerNavig
     const opened =
       owner !== null &&
       (tab.clicked || this.tryConsumePageInitiatedTab(owner.rootGuestWebContentsId)) &&
-      this.openLinkInOrcaTab(owner.browserTabId, url, tab.activate)
+      this.openLinkInTopoTab(owner.browserTabId, url, tab.activate)
     this.forwardOrQueuePopupEvent(opener.id, {
       origin: safeOrigin(url),
-      action: opened ? 'opened-in-orca' : 'blocked'
+      action: opened ? 'opened-in-topo' : 'blocked'
     })
     if (options.webContents && !options.nativeWindow) {
       // Discard directly to avoid flashing a window that would immediately close.
@@ -208,7 +208,7 @@ export abstract class BrowserManagerGuestPopupPolicy extends BrowserManagerNavig
     const opened = Boolean(options.webContents || options.nativeWindow)
     this.forwardOrQueuePopupEvent(openerGuest.id, {
       origin: safeOrigin(targetUrl),
-      action: opened ? 'opened-in-orca' : 'blocked'
+      action: opened ? 'opened-in-topo' : 'blocked'
     })
     const ownerTabId = this.resolveBrowserTabIdForGuestWebContentsId(openerGuest.id)
     if (opened && ownerTabId) {

@@ -64,19 +64,19 @@ export class BrowserPopupAdapterProbeFixture {
     let adopted = true
     let unrelatedDuringAdmission = false
     guest.on('console-message', ({ message }) => {
-      if (message === 'orca-popup-fixture:probe-native') {
+      if (message === 'topo-popup-fixture:probe-native') {
         adopted = false
       }
-      if (message === 'orca-popup-fixture:probe-adopted') {
+      if (message === 'topo-popup-fixture:probe-adopted') {
         adopted = true
       }
-      if (message === 'orca-popup-fixture:probe-unrelated') {
+      if (message === 'topo-popup-fixture:probe-unrelated') {
         unrelatedDuringAdmission = true
       }
-      if (message === 'orca-popup-fixture:snapshot') {
+      if (message === 'topo-popup-fixture:snapshot') {
         this.writeStatus()
       }
-      if (message === 'orca-popup-fixture:probe-cleanup') {
+      if (message === 'topo-popup-fixture:probe-cleanup') {
         for (const window of this.unrelatedWindows) {
           if (!window.isDestroyed()) {
             window.destroy()
@@ -130,7 +130,7 @@ export class BrowserPopupAdapterProbeFixture {
           contextIsolation: true,
           nodeIntegration: false,
           session: guest.session,
-          additionalArguments: [`--orca-popup-probe=${request}`]
+          additionalArguments: [`--topo-popup-probe=${request}`]
         }
       }
       return {

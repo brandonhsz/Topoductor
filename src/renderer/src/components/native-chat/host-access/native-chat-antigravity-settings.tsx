@@ -5,7 +5,7 @@ import { useAppStore } from '@/store'
 import { agentSessionSignInFor } from '../../../../../shared/agent-session/lifecycle/agent-session-sign-in'
 import { NativeChatActionButton } from '../composer/controls/NativeChatActionButton'
 
-/** Links Orca's own Antigravity sign-in; chats on the host's agy (`system`) use agy's instead. */
+/** Links Topo's own Antigravity sign-in; chats on the host's agy (`system`) use agy's instead. */
 export function nativeChatAntigravitySignInContent(
   failureKind: string | undefined,
   agentName: string | undefined,

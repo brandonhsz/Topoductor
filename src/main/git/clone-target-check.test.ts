@@ -11,7 +11,7 @@ import { getClonePathComparisonKey } from './repo-clone-path'
 const roots: string[] = []
 
 function parentFolder(): string {
-  const root = mkdtempSync(join(tmpdir(), 'orca-clone-target-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-clone-target-'))
   roots.push(root)
   return root
 }
@@ -35,7 +35,7 @@ function savedClone(path: string, originUrl: string): Repo {
   return {
     id: path,
     path,
-    displayName: 'orca-plugins',
+    displayName: 'topo-plugins',
     badgeColor: '#fff',
     addedAt: 1,
     kind: 'git'
@@ -59,35 +59,35 @@ describe('checkCloneTarget', () => {
   it('suggests an owner-named folder when a same-named repository from another owner is there', async () => {
     const parent = parentFolder()
     const official = savedClone(
-      join(parent, 'orca-plugins'),
-      'https://github.com/stablyai/orca-plugins.git'
+      join(parent, 'topo-plugins'),
+      'https://github.com/brandonhsz/topo-plugins.git'
     )
 
     await expect(
-      check([official], 'https://github.com/aamonnaig4/orca-plugins', parent)
+      check([official], 'https://github.com/aamonnaig4/topo-plugins', parent)
     ).resolves.toEqual({
       status: 'taken',
-      folderName: 'orca-plugins',
+      folderName: 'topo-plugins',
       reason: 'other-repository',
-      suggestedFolderName: 'orca-plugins-aamonnaig4'
+      suggestedFolderName: 'topo-plugins-aamonnaig4'
     })
 
-    mkdirSync(join(parent, 'orca-plugins-aamonnaig4'))
-    writeFileSync(join(parent, 'orca-plugins-aamonnaig4', 'notes.txt'), '')
+    mkdirSync(join(parent, 'topo-plugins-aamonnaig4'))
+    writeFileSync(join(parent, 'topo-plugins-aamonnaig4', 'notes.txt'), '')
     await expect(
-      check([official], 'git@github.com:aamonnaig4/orca-plugins.git', parent)
-    ).resolves.toMatchObject({ status: 'taken', suggestedFolderName: 'orca-plugins-2' })
+      check([official], 'git@github.com:aamonnaig4/topo-plugins.git', parent)
+    ).resolves.toMatchObject({ status: 'taken', suggestedFolderName: 'topo-plugins-2' })
   })
 
   it('leaves the default folder alone when it already holds this repository', async () => {
     const parent = parentFolder()
     const official = savedClone(
-      join(parent, 'orca-plugins'),
-      'https://github.com/stablyai/orca-plugins.git'
+      join(parent, 'topo-plugins'),
+      'https://github.com/brandonhsz/topo-plugins.git'
     )
 
     await expect(
-      check([official], 'git@github.com:stablyai/orca-plugins.git', parent)
-    ).resolves.toEqual({ status: 'free', folderName: 'orca-plugins' })
+      check([official], 'git@github.com:brandonhsz/topo-plugins.git', parent)
+    ).resolves.toEqual({ status: 'free', folderName: 'topo-plugins' })
   })
 })

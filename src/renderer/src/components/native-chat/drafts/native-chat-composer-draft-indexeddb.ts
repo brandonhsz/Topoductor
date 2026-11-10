@@ -10,7 +10,7 @@ import {
   settledRequest
 } from '@/lib/indexeddb-connection'
 
-const DATABASE_NAME = 'orca-native-chat-composer-drafts'
+const DATABASE_NAME = 'topo-native-chat-composer-drafts'
 const DATABASE_VERSION = 1
 const DRAFTS = 'drafts'
 

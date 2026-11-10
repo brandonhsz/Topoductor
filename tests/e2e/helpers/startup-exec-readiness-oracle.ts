@@ -7,7 +7,7 @@ import type {
   RuntimeTerminalShow
 } from '../../../src/shared/runtime-types'
 import { toWebTerminalSurfaceTabId } from '../../../src/shared/workspace-layout/terminal-surface-id'
-import { expect } from './orca-app'
+import { expect } from './topo-app'
 import { getTerminalContent, waitForActivePanePtyId } from './terminal'
 import { readFreshTerminalInventory } from './terminal-inventory-observation'
 import { quotePosixShell } from '../../../src/shared/shell/launch/shell-argument-quoting'
@@ -40,7 +40,7 @@ function execProfileContents(
   execLine: string,
   barrier?: BashExecProfileBarrier
 ): string {
-  const guard = `ORCA_STA4067_EXEC_${runId.replaceAll(/[^A-Za-z0-9_]/g, '_')}`
+  const guard = `TOPO_STA4067_EXEC_${runId.replaceAll(/[^A-Za-z0-9_]/g, '_')}`
   const barrierScript = barrier
     ? [
         `: > ${quotePosixShell(barrier.startedPath)}`,

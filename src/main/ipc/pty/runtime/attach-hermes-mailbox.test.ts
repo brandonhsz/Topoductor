@@ -40,7 +40,7 @@ describe('mail to a Hermes terminal attached without a renderer', () => {
           if (data.includes('You have')) {
             runtime.onPtyData(
               PTY_ID,
-              '\x1b]1;✓ Run Orca dispatched worker …\x07\x1b]2;✓ Run Orca dispatched worker … · grok-4.7 · ~/workspace\x07',
+              '\x1b]1;✓ Run Topo dispatched worker …\x07\x1b]2;✓ Run Topo dispatched worker … · grok-4.7 · ~/workspace\x07',
               Date.now()
             )
           }

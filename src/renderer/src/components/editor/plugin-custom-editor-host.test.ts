@@ -357,7 +357,7 @@ describe('custom editor document channel', () => {
     send(edit('pending'))
     send({ orca: 1, kind: 'res', id: 0, result: null })
     await expect(flushed).resolves.toBe(true)
-    // A frame that never answers holds edits Orca can't see.
+    // A frame that never answers holds edits Topo can't see.
     await expect(host.flush()).resolves.toBe(false)
   })
 

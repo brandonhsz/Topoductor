@@ -102,7 +102,7 @@ describe('Claude chat catch-up', () => {
       expect(reopened.canonicalItemId(key)).toBe(key)
       expect(
         structuredRewindCut(reopened, {
-          itemId: agentJournalItemKey({ provider: 'orca', clientMessageId }),
+          itemId: agentJournalItemKey({ provider: 'topo', clientMessageId }),
           provider: 'claude',
           nativeId: SID
         })
@@ -398,13 +398,13 @@ describe('Claude chat catch-up', () => {
         fence: 1,
         mutations: Array.from({ length: items - c.journal.snapshot().items.length }, (_, n) => ({
           kind: 'item' as const,
-          identity: { provider: 'orca' as const, clientMessageId: `padding${n}` },
+          identity: { provider: 'topo' as const, clientMessageId: `padding${n}` },
           body: { kind: 'message' as const, role: 'user' as const, blocks: [] },
           turnScope: { kind: 'thread' as const }
         }))
       })
       for (let n = 0; n < prompts; n++) {
-        const key = agentJournalItemKey({ provider: 'orca', clientMessageId: `padding${n}` })
+        const key = agentJournalItemKey({ provider: 'topo', clientMessageId: `padding${n}` })
         await c.write([
           {
             ...attachment(`queued${n}`, n ? `queued${n - 1}` : `outside-a${prompts - 1}`),

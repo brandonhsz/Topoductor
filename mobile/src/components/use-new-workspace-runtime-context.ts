@@ -1,6 +1,6 @@
 import { optionalSettingsRead } from '../settings/mobile-settings-read-operations'
 import { useCallback, useEffect, useState } from 'react'
-import type { PersistedTrustedOrcaHooks } from '../../../src/shared/orca-yaml-hook-types'
+import type { PersistedTrustedTopoHooks } from '../../../src/shared/topo-yaml-hook-types'
 import type { RpcAcceptedResult } from '../transport/rpc/rpc-accepted-result'
 import type { RpcClient } from '../transport/rpc/rpc-client-contract'
 import type { RpcResponse } from '../transport/rpc/rpc-wire-types'
@@ -37,7 +37,7 @@ function settledValue(
 type OwnedRuntimeContext = {
   owner: { hostId: string | undefined; serverId: string | undefined }
   runtimeSettings: NewWorktreeRuntimeSettings | null
-  trustedOrcaHooks: PersistedTrustedOrcaHooks
+  trustedTopoHooks: PersistedTrustedTopoHooks
   availableProviders: TaskProvider[]
 }
 
@@ -49,8 +49,8 @@ export function useNewWorkspaceRuntimeContext(
 ): {
   runtimeSettings: NewWorktreeRuntimeSettings | null
   setRuntimeSettings: (settings: NewWorktreeRuntimeSettings) => void
-  trustedOrcaHooks: PersistedTrustedOrcaHooks
-  setTrustedOrcaHooks: (trust: PersistedTrustedOrcaHooks) => void
+  trustedTopoHooks: PersistedTrustedTopoHooks
+  setTrustedTopoHooks: (trust: PersistedTrustedTopoHooks) => void
   availableProviders: TaskProvider[]
   jiraConnection: MobileJiraConnection
 } {
@@ -59,7 +59,7 @@ export function useNewWorkspaceRuntimeContext(
   const [context, setContext] = useState<OwnedRuntimeContext>(() => ({
     owner: { hostId, serverId },
     runtimeSettings: null,
-    trustedOrcaHooks: {},
+    trustedTopoHooks: {},
     availableProviders: []
   }))
   const { owner } = context
@@ -68,12 +68,12 @@ export function useNewWorkspaceRuntimeContext(
     setContext({
       owner: { hostId, serverId },
       runtimeSettings: null,
-      trustedOrcaHooks: {},
+      trustedTopoHooks: {},
       availableProviders: []
     })
   }
   const runtimeSettings = matchesOwner ? context.runtimeSettings : null
-  const trustedOrcaHooks = matchesOwner ? context.trustedOrcaHooks : {}
+  const trustedTopoHooks = matchesOwner ? context.trustedTopoHooks : {}
   const availableProviders = matchesOwner ? context.availableProviders : []
   const publish = useCallback(
     (patch: Partial<Omit<OwnedRuntimeContext, 'owner'>>) => {
@@ -85,8 +85,8 @@ export function useNewWorkspaceRuntimeContext(
     (settings: NewWorktreeRuntimeSettings) => publish({ runtimeSettings: settings }),
     [publish]
   )
-  const setTrustedOrcaHooks = useCallback(
-    (trust: PersistedTrustedOrcaHooks) => publish({ trustedOrcaHooks: trust }),
+  const setTrustedTopoHooks = useCallback(
+    (trust: PersistedTrustedTopoHooks) => publish({ trustedTopoHooks: trust }),
     [publish]
   )
   // Tasks can offer Jira setup; the composer requires a connected site.
@@ -128,7 +128,7 @@ export function useNewWorkspaceRuntimeContext(
       if (uiRes.status === 'fulfilled') {
         const ui = newWorkspaceUiStateRead.interpret(uiRes.value)
         if (ui.accepted) {
-          setTrustedOrcaHooks(ui.value?.trustedOrcaHooks ?? {})
+          setTrustedTopoHooks(ui.value?.trustedTopoHooks ?? {})
         }
       }
 
@@ -160,13 +160,13 @@ export function useNewWorkspaceRuntimeContext(
     return () => {
       stale = true
     }
-  }, [visible, client, hostId, publish, setRuntimeSettings, setTrustedOrcaHooks])
+  }, [visible, client, hostId, publish, setRuntimeSettings, setTrustedTopoHooks])
 
   return {
     runtimeSettings,
     setRuntimeSettings,
-    trustedOrcaHooks,
-    setTrustedOrcaHooks,
+    trustedTopoHooks,
+    setTrustedTopoHooks,
     availableProviders,
     jiraConnection
   }

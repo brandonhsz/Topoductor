@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useAppStore } from '@/store'
 import { getPairedWebClientEnvironmentId } from '@/lib/paired-web-client-host'
 import type { PublicKnownRuntimeEnvironment } from '../../../../shared/remote-runtime/host-catalog/runtime-environments'
-import { getManagedOrcadSshTargetId } from '../../../../shared/execution-host/managed-orcad-execution-host'
+import { getManagedTopodSshTargetId } from '../../../../shared/execution-host/managed-topod-execution-host'
 import type {
   AutomationCatalogRuntimeSource,
   AutomationCatalogSshSource,
@@ -56,7 +56,7 @@ export function useAutomationHostCatalogSourceState({
       runtimeEnvironments.map((environment) => {
         const bucket = sshStateByEnvironment.get(environment.id)
         const status = runtimeStatusByEnvironmentId.get(environment.id)
-        const managedSshTargetId = getManagedOrcadSshTargetId(environment)
+        const managedSshTargetId = getManagedTopodSshTargetId(environment)
         return {
           environmentId: environment.id,
           label: environment.name,

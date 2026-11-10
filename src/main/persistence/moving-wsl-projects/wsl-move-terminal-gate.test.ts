@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
-  MAX_ORCAD_MIGRATION_SCROLLBACK_SNAPSHOTS,
-  MAX_ORCAD_MIGRATION_SCROLLBACK_TOTAL_BYTES
-} from '../../../shared/orcad-migration/orcad-migration-scrollback'
+  MAX_TOPOD_MIGRATION_SCROLLBACK_SNAPSHOTS,
+  MAX_TOPOD_MIGRATION_SCROLLBACK_TOTAL_BYTES
+} from '../../../shared/topod-migration/topod-migration-scrollback'
 import { TERMINAL_SCROLLBACK_STORE_BYTE_LIMIT } from '../../../shared/terminal/replay/terminal-scrollback-limits'
 import { assessWslMoveTerminals, type WslMovePaneFacts } from './wsl-move-terminal-gate'
 
@@ -105,13 +105,13 @@ describe('assessWslMoveTerminals', () => {
   })
 
   it('counts a pane listed twice once, for the caps and the ready list', () => {
-    const atCount = Array.from({ length: MAX_ORCAD_MIGRATION_SCROLLBACK_SNAPSHOTS }, (_, i) =>
+    const atCount = Array.from({ length: MAX_TOPOD_MIGRATION_SCROLLBACK_SNAPSHOTS }, (_, i) =>
       pane(`t${i}:a`)
     )
     const verdict = gate([...atCount, pane('t0:a')])
     expect(verdict.verdict).toBe('ready')
     expect(verdict.verdict === 'ready' && verdict.paneKeys).toHaveLength(
-      MAX_ORCAD_MIGRATION_SCROLLBACK_SNAPSHOTS
+      MAX_TOPOD_MIGRATION_SCROLLBACK_SNAPSHOTS
     )
   })
 
@@ -126,14 +126,14 @@ describe('assessWslMoveTerminals', () => {
   })
 
   it('blocks rather than truncates when the move would exceed the transfer caps', () => {
-    const many = Array.from({ length: MAX_ORCAD_MIGRATION_SCROLLBACK_SNAPSHOTS + 1 }, (_, i) =>
+    const many = Array.from({ length: MAX_TOPOD_MIGRATION_SCROLLBACK_SNAPSHOTS + 1 }, (_, i) =>
       pane(`t${i}:a`)
     )
     expect(gate(many)).toMatchObject({
       verdict: 'blocked',
       blockers: [{ kind: 'scrollback-too-large' }]
     })
-    const perPane = Math.ceil(MAX_ORCAD_MIGRATION_SCROLLBACK_TOTAL_BYTES / 60)
+    const perPane = Math.ceil(MAX_TOPOD_MIGRATION_SCROLLBACK_TOTAL_BYTES / 60)
     const big = Array.from({ length: 61 }, (_, i) => pane(`b${i}:a`, { scrollbackBytes: perPane }))
     expect(gate(big)).toMatchObject({
       verdict: 'blocked',

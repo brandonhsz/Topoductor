@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 
 import {
   bundledRipgrepWslSpawnOptions,
@@ -22,7 +22,7 @@ describe('bundled ripgrep path', () => {
     'never executes a PATH ripgrep when WSL cannot translate the install drive',
     async () => {
       const { wslShellCommand } = bundledRipgrepWslSpawnOptions(
-        'C:\\Orca\\resources\\ripgrep\\linux-x64\\rg'
+        'C:\\Topo\\resources\\ripgrep\\linux-x64\\rg'
       )
       const result = await runProcess({
         program: '/bin/bash',

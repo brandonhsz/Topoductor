@@ -1,7 +1,7 @@
 import { access, mkdtemp, readFile, rm, stat, statfs, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import {
   findCommandsOnLocalPath,
   resolveCommandOnLocalPath
@@ -66,9 +66,9 @@ export function createHostEnvironmentDoctorDeps(
       return Number(stats.bavail) * Number(stats.bsize)
     },
     runSetupScript: async ({ worktreePath, rootPath, script }) => {
-      const dir = await mkdtemp(join(tmpdir(), 'orca-env-doctor-'))
+      const dir = await mkdtemp(join(tmpdir(), 'topo-env-doctor-'))
       try {
-        // Like Orca's runner: Windows uses cmd unless the script's shebang asks for a POSIX shell.
+        // Like Topo's runner: Windows uses cmd unless the script's shebang asks for a POSIX shell.
         const bash =
           process.platform !== 'win32'
             ? 'bash'
@@ -81,7 +81,7 @@ export function createHostEnvironmentDoctorDeps(
           bash ? buildPosixRunnerScript(script) : buildWindowsRunnerScript(script),
           'utf8'
         )
-        // Unattended like Orca's setup run: no credential prompt can wait on a terminal.
+        // Unattended like Topo's setup run: no credential prompt can wait on a terminal.
         const env = gitCredentialPromptGuardEnv({
           ...baseEnv(),
           ...getSetupEnvVars({ path: rootPath }, worktreePath)

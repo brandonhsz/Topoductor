@@ -8,7 +8,7 @@ import {
 } from './daemon-preserved-endpoint-loss'
 
 /**
- * A daemon kept from an older Orca version has no respawn. Why (#38432): when it died, nothing
+ * A daemon kept from an older Topo version has no respawn. Why (#38432): when it died, nothing
  * ended its PTYs, so every pane stayed "connected" on a frozen frame and input went nowhere.
  */
 export abstract class DaemonPtyPreservedHostLoss extends DaemonPtyDaemonRecovery {

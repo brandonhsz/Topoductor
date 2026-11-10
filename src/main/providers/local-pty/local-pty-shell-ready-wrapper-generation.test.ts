@@ -32,7 +32,7 @@ function runInteractiveBashRcfile(
       env: {
         ...process.env,
         HOME: tempDir,
-        ORCA_SHELL_FEATURES: 'ready',
+        TOPO_SHELL_FEATURES: 'ready',
         TERM: process.env.TERM || 'xterm'
       },
       timeout: 5000
@@ -71,30 +71,30 @@ function expectBashOsc133Lifecycle(output: string): void {
 
 describePosix('local PTY shell-ready launch config', () => {
   let userDataPath: string
-  let previousOrcaOrigZdotdir: string | undefined
+  let previousTopoOrigZdotdir: string | undefined
 
   beforeEach(() => {
-    previousOrcaOrigZdotdir = process.env.ORCA_ORIG_ZDOTDIR
-    delete process.env.ORCA_ORIG_ZDOTDIR
+    previousTopoOrigZdotdir = process.env.TOPO_ORIG_ZDOTDIR
+    delete process.env.TOPO_ORIG_ZDOTDIR
     userDataPath = mkdtempSync(join(tmpdir(), 'local-pty-shell-ready-test-'))
     setTestUserDataPath(userDataPath)
   })
 
   afterEach(() => {
-    if (previousOrcaOrigZdotdir === undefined) {
-      delete process.env.ORCA_ORIG_ZDOTDIR
+    if (previousTopoOrigZdotdir === undefined) {
+      delete process.env.TOPO_ORIG_ZDOTDIR
     } else {
-      process.env.ORCA_ORIG_ZDOTDIR = previousOrcaOrigZdotdir
+      process.env.TOPO_ORIG_ZDOTDIR = previousTopoOrigZdotdir
     }
     rmSync(userDataPath, { recursive: true, force: true })
     vi.restoreAllMocks()
   })
 
   itWithBash('emits lifecycle for foreground text ending like an internal hook', () => {
-    const input = 'echo user:__orca_osc133_prompt_done\nfalse\nexit 0\n'
+    const input = 'echo user:__topo_osc133_prompt_done\nfalse\nexit 0\n'
     const output = runInteractiveBashRcfile(getBashShellReadyRcfileContent(), userDataPath, input)
 
-    expect(output).toContain('user:__orca_osc133_prompt_done')
+    expect(output).toContain('user:__topo_osc133_prompt_done')
     expectBashOsc133Lifecycle(output)
   })
 
@@ -114,8 +114,8 @@ describePosix('local PTY shell-ready launch config', () => {
       expect(output).toContain('PROMPT_HOOK')
       expect(output).toContain('USER_DEBUG_AFTER')
       expect(output).toContain('USER_DEBUG_AFTER:<printf "PROMPT_HOOK\\n">')
-      expect(output).not.toContain('USER_DEBUG_AFTER:<(( __orca_exit_code == 0 ))>')
-      expect(output).not.toContain('USER_DEBUG_AFTER:<__orca_restore_prompt_status')
+      expect(output).not.toContain('USER_DEBUG_AFTER:<(( __topo_exit_code == 0 ))>')
+      expect(output).not.toContain('USER_DEBUG_AFTER:<__topo_restore_prompt_status')
       expectBashOsc133Lifecycle(output)
     }
   )

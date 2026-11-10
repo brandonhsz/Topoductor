@@ -1,4 +1,4 @@
-/** Which recorded `wsl.exe` holders an Orca launch keeps, and releasing the rest (E11). */
+/** Which recorded `wsl.exe` holders a Topo launch keeps, and releasing the rest (E11). */
 import { existsSync } from 'node:fs'
 import { readWslHostDeployments } from '../../../shared/remote-runtime/host-store/wsl-host-deployment-store'
 import { sameWslDistro } from './wsl-host-add-admission'

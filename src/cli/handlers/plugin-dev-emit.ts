@@ -60,7 +60,7 @@ export const PLUGIN_DEV_EMIT_HANDLERS: Record<string, CommandHandler> = {
     printPluginResult(
       ctx,
       result,
-      `Sent ${result.event} to ${result.pluginKey}'s worker; handler errors show in \`orca plugin logs ${result.pluginKey}\`.`
+      `Sent ${result.event} to ${result.pluginKey}'s worker; handler errors show in \`topo plugin logs ${result.pluginKey}\`.`
     )
   }
 }

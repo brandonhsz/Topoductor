@@ -34,7 +34,7 @@ vi.mock('../../telemetry/client', () =>
 vi.mock('../../telemetry/classify-error', () =>
   import('./pty-ipc-mock-registry').then((m) => m.classifyErrorModuleMock())
 )
-vi.mock('../../cli/linux-terminal-orca-cli-shim', () =>
+vi.mock('../../cli/linux-terminal-topo-cli-shim', () =>
   import('./pty-ipc-mock-registry').then((m) => m.linuxCliShimModuleMock())
 )
 vi.mock('../../memory/pty-registry', () =>
@@ -122,9 +122,9 @@ describe('registerPtyHandlers', () => {
         tabId,
         leafId,
         env: {
-          ORCA_PANE_KEY: paneKey,
-          ORCA_TAB_ID: tabId,
-          ORCA_WORKTREE_ID: worktreeId
+          TOPO_PANE_KEY: paneKey,
+          TOPO_TAB_ID: tabId,
+          TOPO_WORKTREE_ID: worktreeId
         }
       })
     ).rejects.toThrow('terminal_pane_owner_conflict')

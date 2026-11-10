@@ -42,7 +42,7 @@ import {
 } from '../plugins/plugin-runtime-binding'
 import { emitPluginWorktreeLifecycle } from './main-process-pty-startup'
 import { mainProcessState as state } from './main-process-state'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { PluginStatusBarState } from '../plugins/status-bar/plugin-status-bar-state'
 import { createDesktopPluginAppearance } from '../plugins/appearance/desktop-plugin-appearance'
 import { ALL_RPC_METHODS } from '../runtime/rpc/methods/rpc-method-registry'
@@ -51,7 +51,7 @@ const PLUGIN_AUTO_UPDATE_STARTUP_DELAY_MS = 60_000
 // Why: the official catalog fetch must not compete with first paint; opening the marketplace seeds sooner.
 const PLUGIN_MARKETPLACE_SEED_STARTUP_DELAY_MS = 15_000
 
-export async function initializeMainProcessPlugins(runtime: OrcaRuntimeService): Promise<void> {
+export async function initializeMainProcessPlugins(runtime: TopoRuntimeService): Promise<void> {
   const store = state.store
   const keybindings = state.keybindings
   if (!store || !keybindings) {
@@ -67,7 +67,7 @@ export async function initializeMainProcessPlugins(runtime: OrcaRuntimeService):
     // Why packaged only (like the safety list): dev and e2e runs must not reach the network unasked.
     isFetchAllowed: () =>
       store.getSettings().pluginSystemEnabled === true &&
-      (app.isPackaged || process.env.ORCA_PLUGIN_INSTALL_STATS === '1')
+      (app.isPackaged || process.env.TOPO_PLUGIN_INSTALL_STATS === '1')
   })
   state.pluginInstallStatsService.onChanged(() => {
     for (const window of BrowserWindow.getAllWindows()) {
@@ -165,7 +165,7 @@ export async function initializeMainProcessPlugins(runtime: OrcaRuntimeService):
     isKillListed: (pluginKey) => Boolean(state.pluginKillListService?.find(pluginKey))
   })
   // Why packaged only (like the safety list): dev and e2e runs must not update fixtures unasked.
-  const autoUpdateScheduled = app.isPackaged || process.env.ORCA_PLUGIN_AUTO_UPDATE === '1'
+  const autoUpdateScheduled = app.isPackaged || process.env.TOPO_PLUGIN_AUTO_UPDATE === '1'
   const syncPluginAutoUpdate = (runNow: boolean): void => {
     if (!autoUpdateScheduled) {
       return

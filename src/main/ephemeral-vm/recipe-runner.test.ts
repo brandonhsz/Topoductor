@@ -11,7 +11,7 @@ import {
   runEphemeralVmRecipeStart,
   runEphemeralVmRecipeSuspend
 } from '../../shared/ephemeral-vm-recipe-runner'
-import type { OrcaVmRecipe } from '../../shared/orca-yaml-hook-types'
+import type { TopoVmRecipe } from '../../shared/topo-yaml-hook-types'
 
 const tmpRoots: string[] = []
 
@@ -22,7 +22,7 @@ afterEach(() => {
 })
 
 function makeRepo(): string {
-  const root = mkdtempSync(join(tmpdir(), 'orca-vm-recipe-runner-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-vm-recipe-runner-'))
   tmpRoots.push(root)
   return root
 }
@@ -48,12 +48,12 @@ describe('runEphemeralVmRecipeStart', () => {
       scriptPath,
       [
         'console.error(`cwd:${process.cwd()}`)',
-        'console.error(`instance:${process.env.ORCA_VM_INSTANCE_ID}`)',
+        'console.error(`instance:${process.env.TOPO_VM_INSTANCE_ID}`)',
         'console.log(JSON.stringify({',
         '  schemaVersion: 1,',
         `  pairingCode: ${JSON.stringify(makePairingCode())},`,
         "  projectRoot: '/workspace/repo',",
-        '  userData: { providerResourceId: process.env.ORCA_VM_INSTANCE_ID }',
+        '  userData: { providerResourceId: process.env.TOPO_VM_INSTANCE_ID }',
         '}))'
       ].join('\n')
     )
@@ -70,7 +70,7 @@ describe('runEphemeralVmRecipeStart', () => {
     expect(result.ok).toBe(true)
     if (result.ok) {
       expect(result.context.recipeId).toBe('cloud-sandbox')
-      expect(result.context.instanceId).toMatch(/^orca-/)
+      expect(result.context.instanceId).toMatch(/^topo-/)
       expect(getEphemeralVmRecipeResultProjectRoot(result.result)).toBe('/workspace/repo')
       expect(result.result.userData).toEqual({ providerResourceId: result.context.instanceId })
       expect(result.stderr).toContain(`cwd:${realpathSync(repoPath)}`)
@@ -90,7 +90,7 @@ describe('runEphemeralVmRecipeStart', () => {
         name: 'Cloud Sandbox',
         create: nodeCommand(scriptPath)
       },
-      context: { instanceId: 'orca-test-instance' }
+      context: { instanceId: 'topo-test-instance' }
     })
 
     expect(result).toMatchObject({
@@ -99,7 +99,7 @@ describe('runEphemeralVmRecipeStart', () => {
       exitCode: 0,
       signal: null,
       context: {
-        instanceId: 'orca-test-instance',
+        instanceId: 'topo-test-instance',
         recipeId: 'cloud-sandbox',
         repoPath
       }
@@ -183,13 +183,13 @@ describe('runEphemeralVmRecipeCleanup', () => {
         '    recipeId: payload.recipeId,',
         '    instanceId: payload.instanceId,',
         '    projectRoot: payload.recipeResult.projectRoot,',
-        '    envMode: process.env.ORCA_VM_MODE,',
-        '    envWorkspace: process.env.ORCA_WORKSPACE_NAME',
+        '    envMode: process.env.TOPO_VM_MODE,',
+        '    envWorkspace: process.env.TOPO_WORKSPACE_NAME',
         '  }))',
         '})'
       ].join('\n')
     )
-    const recipe: OrcaVmRecipe = {
+    const recipe: TopoVmRecipe = {
       id: 'cloud-sandbox',
       name: 'Cloud Sandbox',
       create: 'unused',
@@ -202,7 +202,7 @@ describe('runEphemeralVmRecipeCleanup', () => {
       context: {
         recipeId: 'cloud-sandbox',
         repoPath,
-        instanceId: 'orca-test-instance',
+        instanceId: 'topo-test-instance',
         workspaceName: 'fix-login-race'
       },
       recipeResult: {
@@ -219,7 +219,7 @@ describe('runEphemeralVmRecipeCleanup', () => {
     expect(JSON.parse(result.stdout)).toEqual({
       mode: 'destroy',
       recipeId: 'cloud-sandbox',
-      instanceId: 'orca-test-instance',
+      instanceId: 'topo-test-instance',
       projectRoot: '/workspace/repo',
       envMode: 'destroy',
       envWorkspace: 'fix-login-race'
@@ -260,7 +260,7 @@ describe('runEphemeralVmRecipeSuspend and runEphemeralVmRecipeResume', () => {
       context: {
         recipeId: 'cloud-sandbox',
         repoPath,
-        instanceId: 'orca-test-instance'
+        instanceId: 'topo-test-instance'
       },
       recipeResult: {
         schemaVersion: 1,
@@ -296,7 +296,7 @@ describe('runEphemeralVmRecipeSuspend and runEphemeralVmRecipeResume', () => {
           resume: 'unused',
           timeoutSeconds: { suspend: 1 }
         },
-        context: { recipeId: 'cloud-sandbox', repoPath, instanceId: 'orca-test-instance' },
+        context: { recipeId: 'cloud-sandbox', repoPath, instanceId: 'topo-test-instance' },
         recipeResult: {
           schemaVersion: 1,
           pairingCode: makePairingCode(),
@@ -311,7 +311,7 @@ describe('runEphemeralVmRecipeSuspend and runEphemeralVmRecipeResume', () => {
         errorCode: 'recipeTimedOut',
         errorParams: { mode: 'suspend', timeout: '1s', timeoutSeconds: 1 },
         error:
-          'The recipe suspend step did not finish within 1s, so Orca stopped it. Check the recipe output, or raise timeoutSeconds in orca.yaml if it needs longer.'
+          'The recipe suspend step did not finish within 1s, so Topo stopped it. Check the recipe output, or raise timeoutSeconds in topo.yaml if it needs longer.'
       })
     }
   )
@@ -329,7 +329,7 @@ describe('runEphemeralVmRecipeSuspend and runEphemeralVmRecipeResume', () => {
         create: 'unused',
         resume: nodeCommand(resumePath)
       },
-      context: { recipeId: 'cloud-sandbox', repoPath, instanceId: 'orca-test-instance' },
+      context: { recipeId: 'cloud-sandbox', repoPath, instanceId: 'topo-test-instance' },
       recipeResult: {
         schemaVersion: 1,
         pairingCode: makePairingCode(),

@@ -61,7 +61,7 @@ describe('terminal path helpers', () => {
     it('does not treat regular URL hosts as local file paths', () => {
       expect(
         extractTerminalFileLinks(
-          'PR opened: https://github.com/stablyai/orca-marketing-website/pull/82'
+          'PR opened: https://github.com/brandonhsz/topo-marketing-website/pull/82'
         )
       ).toEqual([])
     })
@@ -109,8 +109,8 @@ describe('terminal path helpers', () => {
     // A spaced guess must never hide the plain path; the host keeps whichever exists.
     it.each([
       [
-        '~/orca-lanes/webhooks-research/bots/bots-ux-outline.md. It covers setup and/or teardown.',
-        '~/orca-lanes/webhooks-research/bots/bots-ux-outline.md'
+        '~/topo-lanes/webhooks-research/bots/bots-ux-outline.md. It covers setup and/or teardown.',
+        '~/topo-lanes/webhooks-research/bots/bots-ux-outline.md'
       ],
       ['Wrote ~/notes/plan.md. Next: src/foo.ts', '~/notes/plan.md'],
       ['Wrote ~/notes/plan.md and src/foo.ts covers the rest', '~/notes/plan.md'],
@@ -205,8 +205,8 @@ describe('terminal path helpers', () => {
 
   describe('plain-text file:// URIs', () => {
     it('does not also emit a bare-path link for the URI body', () => {
-      const links = extractTerminalFileLinks('file:///Users/dev/orca/report.html')
-      expect(links.map((link) => link.displayText)).toEqual(['file:///Users/dev/orca/report.html'])
+      const links = extractTerminalFileLinks('file:///Users/dev/topo/report.html')
+      expect(links.map((link) => link.displayText)).toEqual(['file:///Users/dev/topo/report.html'])
     })
   })
 })

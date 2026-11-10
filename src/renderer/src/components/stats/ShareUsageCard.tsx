@@ -10,7 +10,7 @@ import {
   getDailySegments,
   getDailyTotal,
   getLegendItems,
-  OrcaLogo,
+  TopoLogo,
   RANGE_LABELS
 } from './share-card-utils'
 import type { ClaudeShareData, CodexShareData } from './share-card-utils'
@@ -110,11 +110,11 @@ function CardHeader(props: { providerLabel: string; range: string }): React.JSX.
     >
       <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
         <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
-          <OrcaLogo />
+          <TopoLogo />
         </div>
         <div style={{ display: 'inline-block', verticalAlign: 'middle', marginLeft: 10 }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: '#fafafa', lineHeight: 1.2 }}>
-            {t('auto.components.stats.ShareUsageCard.0eb31e79ee', 'Orca IDE')}
+            {t('auto.components.stats.ShareUsageCard.0eb31e79ee', 'Topo IDE')}
           </div>
           <div style={{ fontSize: 10, color: '#555', letterSpacing: 0.3 }}>
             {props.providerLabel} {t('auto.components.stats.ShareUsageCard.da62578d9d', 'Usage')}

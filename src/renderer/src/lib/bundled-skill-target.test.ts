@@ -41,9 +41,9 @@ describe('resolveBundledSkillTarget', () => {
 
 describe('servingExecutionHostId', () => {
   const environments = [
-    { id: 'paired', orcadDeployment: null },
-    { id: 'box-server', orcadDeployment: { sshTargetId: 'box' } },
-    { id: 'wsl-server', orcadDeployment: { kind: 'wsl' as const } }
+    { id: 'paired', topodDeployment: null },
+    { id: 'box-server', topodDeployment: { sshTargetId: 'box' } },
+    { id: 'wsl-server', topodDeployment: { kind: 'wsl' as const } }
   ]
 
   it('sends an SSH workspace to the managed server that serves its host', () => {

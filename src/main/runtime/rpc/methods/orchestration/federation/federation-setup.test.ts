@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -10,7 +10,7 @@ import { monitorFederatedSetup } from './federation-setup'
 
 describe('orchestration federated setup evidence', () => {
   const databases: OrchestrationDb[] = []
-  const runtimes: OrcaRuntimeService[] = []
+  const runtimes: TopoRuntimeService[] = []
 
   afterEach(() => {
     for (const runtime of runtimes.splice(0)) {
@@ -21,9 +21,9 @@ describe('orchestration federated setup evidence', () => {
     }
   })
 
-  function createRuntime(): { db: OrchestrationDb; runtime: OrcaRuntimeService } {
+  function createRuntime(): { db: OrchestrationDb; runtime: TopoRuntimeService } {
     const db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     databases.push(db)
     runtimes.push(runtime)

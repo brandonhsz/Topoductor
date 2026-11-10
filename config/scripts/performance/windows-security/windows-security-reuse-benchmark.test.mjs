@@ -20,9 +20,9 @@ afterEach(() => {
 })
 const digest = (bytes) => createHash('sha256').update(bytes).digest('hex')
 function fixture(arch = 'x64') {
-  const root = mkdtempSync(join(tmpdir(), 'orca-security-qualification-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-security-qualification-'))
   directories.push(root)
-  const candidate = join(root, 'native/windows-security/build/Release/orca_windows_security.node')
+  const candidate = join(root, 'native/windows-security/build/Release/topo_windows_security.node')
   mkdirSync(dirname(candidate), { recursive: true })
   writeFileSync(candidate, peImage({ arch }))
   return { root, candidate }

@@ -22,9 +22,9 @@ async function makeFixture(): Promise<{
   appImagePath: string
   cacheRootPath: string
 }> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-appimage-extract-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-appimage-extract-'))
   created.push(root)
-  const appImagePath = join(root, 'Orca.AppImage')
+  const appImagePath = join(root, 'Topo.AppImage')
   await writeFile(appImagePath, '#!/usr/bin/env bash\n', { encoding: 'utf8', mode: 0o755 })
   return { root, appImagePath, cacheRootPath: join(root, 'cache') }
 }
@@ -33,7 +33,7 @@ async function makeFixture(): Promise<{
 async function writePayload(cwd: string, content = ''): Promise<void> {
   const launcherDir = join(cwd, 'squashfs-root', 'resources', 'bin')
   await mkdir(launcherDir, { recursive: true })
-  await writeFile(join(launcherDir, 'orca-ide'), content, { encoding: 'utf8', mode: 0o755 })
+  await writeFile(join(launcherDir, 'topo-ide'), content, { encoding: 'utf8', mode: 0o755 })
 }
 
 describe('appimage extracted root', () => {
@@ -49,7 +49,7 @@ describe('appimage extracted root', () => {
     const namespaceKey = namespacePath.slice(namespacePath.lastIndexOf('/') + 1)
 
     expect(readAppImageSourceOfNamespace(cacheRootPath, namespaceKey)).toBe(appImagePath)
-    await writeFile(join(namespacePath, 'source-appimage'), '/elsewhere/Orca.AppImage')
+    await writeFile(join(namespacePath, 'source-appimage'), '/elsewhere/Topo.AppImage')
     expect(readAppImageSourceOfNamespace(cacheRootPath, namespaceKey)).toBeNull()
   })
 
@@ -100,7 +100,7 @@ describe('appimage extracted root', () => {
         appImagePath,
         cacheRootPath,
         runExtract: async (_path, cwd) => {
-          const launcherPath = join(cwd, 'squashfs-root', 'resources', 'bin', 'orca-ide')
+          const launcherPath = join(cwd, 'squashfs-root', 'resources', 'bin', 'topo-ide')
           if (entryKind === 'directory') {
             await mkdir(launcherPath, { recursive: true })
           } else {
@@ -125,7 +125,7 @@ describe('appimage extracted root', () => {
         appImagePath,
         cacheRootPath,
         runExtract: async (_path, cwd) => {
-          const launcherPath = join(cwd, 'squashfs-root', 'resources', 'bin', 'orca-ide')
+          const launcherPath = join(cwd, 'squashfs-root', 'resources', 'bin', 'topo-ide')
           await mkdir(dirname(launcherPath), { recursive: true })
           await symlink(executable, launcherPath)
         }

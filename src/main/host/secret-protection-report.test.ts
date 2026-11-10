@@ -14,8 +14,8 @@ describe('reportSecretProtectionGap', () => {
   let logged: string[]
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-secret-report-'))
-    dataFile = join(dir, 'orca-data.json')
+    dir = mkdtempSync(join(tmpdir(), 'topo-secret-report-'))
+    dataFile = join(dir, 'topo-data.json')
     logged = []
   })
 

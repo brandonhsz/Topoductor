@@ -1,21 +1,21 @@
 import { errorMessage } from '../../../shared/error-message'
 import { resolveEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-store'
-import { getOrcadSshDeployment } from '../../../shared/remote-runtime/host-catalog/runtime-environments'
-import { managedOrcadRefusalNeedingUserCode } from '../../managed-server/lifecycle/orcad-managed-tunnel-identity'
+import { getTopodSshDeployment } from '../../../shared/remote-runtime/host-catalog/runtime-environments'
+import { managedTopodRefusalNeedingUserCode } from '../../managed-server/lifecycle/topod-managed-tunnel-identity'
 import {
-  managedOrcadPairingFailureStands,
-  recoverRefusedManagedOrcadPairing
-} from '../../managed-server/lifecycle/orcad-managed-tunnel'
+  managedTopodPairingFailureStands,
+  recoverRefusedManagedTopodPairing
+} from '../../managed-server/lifecycle/topod-managed-tunnel'
 import { getRuntimeEnvironmentStatusOwner } from './runtime-environment-request-connections'
 
 /** Null leaves user-managed pairing recovery to the caller. */
 export function recoverRefusedManagedPairing(
   userDataPath: string,
   environmentId: string,
-  recover: typeof recoverRefusedManagedOrcadPairing = recoverRefusedManagedOrcadPairing
+  recover: typeof recoverRefusedManagedTopodPairing = recoverRefusedManagedTopodPairing
 ): Promise<'built' | 'repaired'> | null {
   try {
-    if (!getOrcadSshDeployment(resolveEnvironment(userDataPath, environmentId))) {
+    if (!getTopodSshDeployment(resolveEnvironment(userDataPath, environmentId))) {
       return null
     }
   } catch {
@@ -28,8 +28,8 @@ export function recoverRefusedManagedPairing(
 export function handleManagedSharedControlRefusal(
   userDataPath: string,
   environmentId: string,
-  recover: typeof recoverRefusedManagedOrcadPairing = recoverRefusedManagedOrcadPairing,
-  failureStands: typeof managedOrcadPairingFailureStands = managedOrcadPairingFailureStands
+  recover: typeof recoverRefusedManagedTopodPairing = recoverRefusedManagedTopodPairing,
+  failureStands: typeof managedTopodPairingFailureStands = managedTopodPairingFailureStands
 ): Promise<'retry' | 'stop'> | null {
   const recovery = recoverRefusedManagedPairing(userDataPath, environmentId, recover)
   if (!recovery) {
@@ -40,7 +40,7 @@ export function handleManagedSharedControlRefusal(
     (outcome) => (outcome === 'repaired' ? 'stop' : 'retry'),
     (error: unknown) => {
       // A concurrent pairing has a successor owner this failure never judged.
-      const code = managedOrcadRefusalNeedingUserCode(error)
+      const code = managedTopodRefusalNeedingUserCode(error)
       if (code && error instanceof Error && failureStands(userDataPath, environmentId)) {
         // Authentication refusal blocks retries until an explicit user connect.
         try {
@@ -55,7 +55,7 @@ export function handleManagedSharedControlRefusal(
       }
       // Lost contact or a foreign answer is not a verdict on the pairing.
       console.warn(
-        '[runtime-environments] Could not re-pair the managed Orca server:',
+        '[runtime-environments] Could not re-pair the managed Topo server:',
         errorMessage(error)
       )
       return 'retry'

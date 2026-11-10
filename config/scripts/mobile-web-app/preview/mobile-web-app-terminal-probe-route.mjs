@@ -5,8 +5,8 @@ export const ROWS = 24
 // Sample must reach host chunker’s measured 48KiB size.
 export const MIN_STREAM_BYTES = 48 * 1024
 // Repeat run marker at both edges so readback proves entire stream reached buffer.
-export const FIRST_MARKER = 'ORCA-TERMINAL-RENDER-FIRST'
-export const LAST_MARKER = 'ORCA-TERMINAL-RENDER-LAST'
+export const FIRST_MARKER = 'TOPO-TERMINAL-RENDER-FIRST'
+export const LAST_MARKER = 'TOPO-TERMINAL-RENDER-LAST'
 
 // Generate grid-dependent escape-dense 48KiB+ sample; sizing solely from cap under test would be circular.
 export function escapeDenseStream() {
@@ -42,17 +42,17 @@ export default function TerminalProbeRoute() {
   const frameRef = useRef({ width: 0, height: 0 })
   const [mounted, setMounted] = useState(true)
   const onSelectionCopy = useCallback((text) => {
-    globalThis.__orcaTerminalCopied = text
+    globalThis.__topoTerminalCopied = text
   }, [])
   const onWebReady = useCallback(() => {
-    globalThis.__orcaTerminalReady = true
+    globalThis.__topoTerminalReady = true
   }, [])
   const onEngineError = useCallback((message) => {
-    globalThis.__orcaTerminalEngineErrors.push(message)
+    globalThis.__topoTerminalEngineErrors.push(message)
   }, [])
   useEffect(() => {
-    globalThis.__orcaTerminalEngineErrors = globalThis.__orcaTerminalEngineErrors ?? []
-    globalThis.__orcaTerminalProbe = {
+    globalThis.__topoTerminalEngineErrors = globalThis.__topoTerminalEngineErrors ?? []
+    globalThis.__topoTerminalProbe = {
       init: (cols, rows, initialData) =>
         handleRef.current?.init({ cols, rows, initialData, oscLinks: [], frame: frameRef.current }),
       write: (data) => handleRef.current?.write(data),

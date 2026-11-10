@@ -12,7 +12,7 @@ import { LinearApiKeyDialog } from '@/components/linear-api-key-dialog'
 import { LinearIcon } from '@/components/icons/LinearIcon'
 import { Button } from '@/components/ui/button'
 import { useAppStore } from '@/store/index'
-import { ORCA_LINEAR_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
+import { TOPO_LINEAR_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
 import { getLinearUsageExamples } from '@/lib/linear-usage-examples'
 import type { SkillUsageExample } from '@/lib/skill-usage-example'
 import { useLinearProviderConnected } from '@/hooks/useLinearProviderConnected'
@@ -78,7 +78,7 @@ export function LinearAgentSkillPane(): React.JSX.Element {
       hideHeader
       title={t('auto.components.settings.LinearAgentSkillPane.skillTitle', 'Linear skill')}
       description={null}
-      skillNames={[ORCA_LINEAR_SKILL_NAME]}
+      skillNames={[TOPO_LINEAR_SKILL_NAME]}
       installedSkillNames={[skillSetup.updateSkillName]}
       installed={skillSetup.skillInstalled}
       loading={skillSetup.skillLoading}
@@ -94,7 +94,7 @@ export function LinearAgentSkillPane(): React.JSX.Element {
       title={t('auto.components.settings.LinearAgentSkillPane.title', 'Linear')}
       description={t(
         'auto.components.settings.LinearAgentSkillPane.description',
-        'How Linear works in Orca: browse issues, start linked workspaces, and let agents update tickets with /orca-linear.'
+        'How Linear works in Topo: browse issues, start linked workspaces, and let agents update tickets with /topo-linear.'
       )}
       keywords={getLinearAgentSkillPaneSearchEntries()[0].keywords}
       className="space-y-8"
@@ -123,7 +123,7 @@ export function LinearAgentSkillPane(): React.JSX.Element {
         )}
         examples={getLinearUsageExamples()}
         resolveIcon={resolveLinearExampleIcon}
-        slashCommand={`/${ORCA_LINEAR_SKILL_NAME}`}
+        slashCommand={`/${TOPO_LINEAR_SKILL_NAME}`}
       />
 
       <LinearAgentSkillNotes />

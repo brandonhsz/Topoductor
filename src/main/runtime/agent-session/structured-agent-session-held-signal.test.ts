@@ -12,7 +12,7 @@ import type { StructuredAgentSessionHost } from '../../native-chat/agent-session
 import type { RpcRequest } from '../rpc/core'
 
 import { RpcDispatcher } from '../rpc/dispatcher'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import {
   ensureStructuredAgentSessionHost,
   stopStructuredAgentSessionRuntime
@@ -66,7 +66,7 @@ const runtime = {
     issues: [],
     scannedAt: new Date().toISOString()
   })
-} as unknown as OrcaRuntimeService
+} as unknown as TopoRuntimeService
 
 function operationId(suffix: string): string {
   return `${Date.now()}-${suffix.padStart(32, '0')}`
@@ -94,7 +94,7 @@ async function recordChat(host: StructuredAgentSessionHost): Promise<void> {
 }
 
 beforeEach(async () => {
-  stateDirectory = await mkdtemp(join(tmpdir(), 'orca-held-signal-'))
+  stateDirectory = await mkdtemp(join(tmpdir(), 'topo-held-signal-'))
   heldChanges = []
   stopListening = onStructuredAgentSessionsHeldChanged((held) => heldChanges.push(held))
 })

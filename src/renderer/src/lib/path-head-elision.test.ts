@@ -3,11 +3,11 @@ import { splitPathHeadForElision } from './path-head-elision'
 
 describe('splitPathHeadForElision', () => {
   it('supports Windows paths without changing their separators', () => {
-    const path = 'C:\\Users\\me\\projects\\orca\\src\\renderer\\app.ts'
+    const path = 'C:\\Users\\me\\projects\\topo\\src\\renderer\\app.ts'
     const start = path.indexOf('src')
 
     expect(splitPathHeadForElision(path, [{ start, end: start + 3 }])).toEqual({
-      head: 'C:\\Users\\me\\projects\\orca',
+      head: 'C:\\Users\\me\\projects\\topo',
       tail: '\\src\\renderer\\app.ts',
       tailRanges: [{ start: 1, end: 4 }]
     })
@@ -22,18 +22,18 @@ describe('splitPathHeadForElision', () => {
   })
 
   it('extends the tail back to the first matched segment and re-bases ranges', () => {
-    const path = '/Users/me/projects/orca/new-create-button-design/proposals/create-button.html'
+    const path = '/Users/me/projects/topo/new-create-button-design/proposals/create-button.html'
     const start = path.indexOf('create-butt')
     const split = splitPathHeadForElision(path, [{ start, end: start + 'create-butt'.length }])
     expect(split).toEqual({
-      head: '/Users/me/projects/orca',
+      head: '/Users/me/projects/topo',
       tail: '/new-create-button-design/proposals/create-button.html',
       tailRanges: [{ start: 5, end: 16 }]
     })
   })
 
   it('returns null when the match sits in the first segment', () => {
-    const path = '/Users-long-prefix/me/projects/orca/deep/file.ts'
+    const path = '/Users-long-prefix/me/projects/topo/deep/file.ts'
     expect(splitPathHeadForElision(path, [{ start: 1, end: 6 }])).toBeNull()
   })
 })

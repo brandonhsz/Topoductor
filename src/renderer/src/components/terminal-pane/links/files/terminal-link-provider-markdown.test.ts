@@ -15,7 +15,7 @@ installTerminalLinkTestEnvironment(doubles)
 
 describe('terminal Markdown destination existence', () => {
   it('selects the decoded real file even when the literal-percent file also exists', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-markdown-link-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-markdown-link-'))
     try {
       const decoded = join(root, 'folder with spaces', 'report.pdf')
       const literal = join(root, 'folder%20with%20spaces', 'report.pdf')

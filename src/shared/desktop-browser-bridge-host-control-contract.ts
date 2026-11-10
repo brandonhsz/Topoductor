@@ -7,6 +7,6 @@ export const DESKTOP_BROWSER_BRIDGE_HOST_DISALLOW_CHANNEL = 'browser:remoteHostC
 export type DesktopBrowserBridgeHostNotice = {
   targetId: string
   hostLabel: string
-  /** False for hosts Orca created itself, whose settings are not user-editable. */
+  /** False for hosts Topo created itself, whose settings are not user-editable. */
   canDisallow: boolean
 }

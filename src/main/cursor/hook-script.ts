@@ -15,7 +15,7 @@ import {
 import { quoteStartupArg } from '../../shared/agent-launch/startup/tui-agent-startup-shell'
 import { getCursorHookResponse, type CursorEvent } from './hook-events'
 
-const CURSOR_HOOK_RESPONSE_ENV = 'ORCA_CURSOR_HOOK_RESPONSE'
+const CURSOR_HOOK_RESPONSE_ENV = 'TOPO_CURSOR_HOOK_RESPONSE'
 
 export function getPosixManagedCommand(scriptPath: string, eventName: CursorEvent): string {
   const response = getCursorHookResponse(eventName)
@@ -50,8 +50,8 @@ export function getManagedScript(target: 'local' | 'posix' = 'local'): string {
       'setlocal',
       // Cursor permission hooks reject empty or invalid stdout (#15462).
       `if defined ${CURSOR_HOOK_RESPONSE_ENV} (echo %${CURSOR_HOOK_RESPONSE_ENV}%) else (echo {})`,
-      // Refresh endpoints for PTYs that survived an Orca restart.
-      'if defined ORCA_AGENT_HOOK_ENDPOINT if exist "%ORCA_AGENT_HOOK_ENDPOINT%" call "%ORCA_AGENT_HOOK_ENDPOINT%" 2>nul',
+      // Refresh endpoints for PTYs that survived a Topo restart.
+      'if defined TOPO_AGENT_HOOK_ENDPOINT if exist "%TOPO_AGENT_HOOK_ENDPOINT%" call "%TOPO_AGENT_HOOK_ENDPOINT%" 2>nul',
       ...buildWindowsHookEnvironmentGuardLines(),
       ...buildWindowsGrokReplayGuardLines(),
       buildWindowsAgentHookPostCommand('cursor'),
@@ -71,25 +71,25 @@ export function getManagedScript(target: 'local' | 'posix' = 'local'): string {
     ...buildPosixHookPayloadCapture(),
     ...buildPosixGrokReplayGuardLines(),
     ...buildPosixHookSpoolLines('cursor'),
-    // Refresh endpoints for PTYs that survived an Orca restart.
-    'if [ -n "$ORCA_AGENT_HOOK_ENDPOINT" ] && [ -r "$ORCA_AGENT_HOOK_ENDPOINT" ]; then',
-    '  . "$ORCA_AGENT_HOOK_ENDPOINT" 2>/dev/null || :',
+    // Refresh endpoints for PTYs that survived a Topo restart.
+    'if [ -n "$TOPO_AGENT_HOOK_ENDPOINT" ] && [ -r "$TOPO_AGENT_HOOK_ENDPOINT" ]; then',
+    '  . "$TOPO_AGENT_HOOK_ENDPOINT" 2>/dev/null || :',
     'fi',
-    'if [ -z "$ORCA_AGENT_HOOK_PORT" ] || [ -z "$ORCA_AGENT_HOOK_TOKEN" ] || [ -z "$ORCA_PANE_KEY" ]; then',
+    'if [ -z "$TOPO_AGENT_HOOK_PORT" ] || [ -z "$TOPO_AGENT_HOOK_TOKEN" ] || [ -z "$TOPO_PANE_KEY" ]; then',
     '  spool_hook_event',
     '  exit 0',
     'fi',
     // Form encoding handles path-bearing IDs; stdin keeps large payloads off the command line.
-    `printf '%s' "$payload" | ${posixCurlCommand()} -sS -X POST "http://127.0.0.1:\${ORCA_AGENT_HOOK_PORT}/hook/cursor" \\`,
+    `printf '%s' "$payload" | ${posixCurlCommand()} -sS -X POST "http://127.0.0.1:\${TOPO_AGENT_HOOK_PORT}/hook/cursor" \\`,
     '  --connect-timeout 0.5 --max-time 1.5 \\',
     '  -H "Content-Type: application/x-www-form-urlencoded" \\',
-    '  -H "X-Orca-Agent-Hook-Token: ${ORCA_AGENT_HOOK_TOKEN}" \\',
-    '  --data-urlencode "paneKey=${ORCA_PANE_KEY}" \\',
-    '  --data-urlencode "tabId=${ORCA_TAB_ID}" \\',
-    '  --data-urlencode "launchToken=${ORCA_AGENT_LAUNCH_TOKEN}" \\',
-    '  --data-urlencode "worktreeId=${ORCA_WORKTREE_ID}" \\',
-    '  --data-urlencode "env=${ORCA_AGENT_HOOK_ENV}" \\',
-    '  --data-urlencode "version=${ORCA_AGENT_HOOK_VERSION}" \\',
+    '  -H "X-Topo-Agent-Hook-Token: ${TOPO_AGENT_HOOK_TOKEN}" \\',
+    '  --data-urlencode "paneKey=${TOPO_PANE_KEY}" \\',
+    '  --data-urlencode "tabId=${TOPO_TAB_ID}" \\',
+    '  --data-urlencode "launchToken=${TOPO_AGENT_LAUNCH_TOKEN}" \\',
+    '  --data-urlencode "worktreeId=${TOPO_WORKTREE_ID}" \\',
+    '  --data-urlencode "env=${TOPO_AGENT_HOOK_ENV}" \\',
+    '  --data-urlencode "version=${TOPO_AGENT_HOOK_VERSION}" \\',
     '  --data-urlencode "payload@-" >/dev/null 2>&1 || spool_hook_event',
     'exit 0',
     ''

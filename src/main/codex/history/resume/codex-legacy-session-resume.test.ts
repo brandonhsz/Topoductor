@@ -32,8 +32,8 @@ vi.mock('node:fs/promises', async (importOriginal) => {
 // Isolate userData so session backfill cannot resolve the live managed home.
 let userDataRoot: string
 beforeEach(() => {
-  userDataRoot = mkdtempSync(join(tmpdir(), 'orca-codex-resume-user-data-'))
-  vi.stubEnv('ORCA_USER_DATA_PATH', userDataRoot)
+  userDataRoot = mkdtempSync(join(tmpdir(), 'topo-codex-resume-user-data-'))
+  vi.stubEnv('TOPO_USER_DATA_PATH', userDataRoot)
 })
 afterEach(() => {
   vi.unstubAllEnvs()
@@ -48,7 +48,7 @@ describe('prepareLegacySharedCodexSessionResume', () => {
 
   beforeEach(() => {
     lstatFaults.reset()
-    root = mkdtempSync(join(tmpdir(), 'orca-legacy-codex-resume-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-legacy-codex-resume-'))
     legacyHome = join(root, 'codex-runtime-home', 'home')
     systemHome = join(root, 'real-codex-home')
     rolloutPath = join(

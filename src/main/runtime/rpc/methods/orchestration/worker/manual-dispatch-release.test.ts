@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type Database from '../../../../../sqlite/sync-database'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -9,7 +9,7 @@ import '../../../../orchestration/db/attempt-outcome-projection'
 import type { OrchestrationSessionCaller } from '../../../../orchestration/addressing/orchestration-caller-identity'
 import { ORCHESTRATION_METHODS } from '../orchestration'
 import { isStreamingMethod, eraseRpcMethods, type RpcContext } from '../../../core'
-import { parseOrcaSessionAddress } from '../../../../../../shared/orca-session-address'
+import { parseTopoSessionAddress } from '../../../../../../shared/topo-session-address'
 
 const COORDINATOR = 'term_coordinator'
 const TARGET = 'term_target'
@@ -18,12 +18,12 @@ const SUPERVISED = 'term_supervised'
 
 describe('manual Dispatch release', () => {
   let db: OrchestrationDb
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
   let runId: string
 
   beforeEach(() => {
     db = new OrchestrationDb(':memory:')
-    runtime = new OrcaRuntimeService()
+    runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     vi.spyOn(runtime, 'getTerminalPaneKey').mockImplementation((handle) => paneKey(handle))
     vi.spyOn(runtime, 'getTerminalProcessIncarnation').mockImplementation(
@@ -195,11 +195,11 @@ function sqliteFor(db: OrchestrationDb): Database.Database {
 
 describe('orchestration.workerAbandon', () => {
   let db: OrchestrationDb
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
 
   beforeEach(() => {
     db = new OrchestrationDb(':memory:')
-    runtime = new OrcaRuntimeService()
+    runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
   })
   afterEach(() => db.close())
@@ -238,13 +238,13 @@ describe('orchestration.workerAbandon', () => {
   it('refuses self-abandon by a terminal handle, reissued pane, or resolved session before effects', async () => {
     const dispatchId = readyWorker()
     const pane = 'tab_worker:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
-    const orcaSessionId = parseOrcaSessionAddress('orca_session_id:worker_1')!
+    const topoSessionId = parseTopoSessionAddress('topo_session_id:worker_1')!
     const session: OrchestrationSessionCaller = {
       address: 'term_worker',
       terminalHandle: 'term_worker',
       paneKey: pane,
-      orcaSessionId,
-      sessionId: orcaSessionId,
+      topoSessionId,
+      sessionId: topoSessionId,
       workspaceId: 'wt'
     }
     const callers: Partial<RpcContext>[] = [

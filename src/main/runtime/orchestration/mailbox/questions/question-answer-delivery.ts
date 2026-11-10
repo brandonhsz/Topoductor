@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { OrchestrationError } from '../../orchestration-error'
 
 type QuestionState = {
@@ -21,7 +21,7 @@ function questionAnswerWaitHandle(question: { dispatch_id: string; message_id: s
 
 /** A waiting ask takes its own answer; otherwise the answer is Dispatch mail that wakes the worker. */
 export function deliverQuestionAnswer(
-  runtime: Pick<OrcaRuntimeService, 'notifyMessageWaiters' | 'notifyMessageArrived'>,
+  runtime: Pick<TopoRuntimeService, 'notifyMessageWaiters' | 'notifyMessageArrived'>,
   question: { message_id: string; dispatch_id: string }
 ): void {
   if (!runtime.notifyMessageWaiters(questionAnswerWaitHandle(question))) {
@@ -29,7 +29,7 @@ export function deliverQuestionAnswer(
   }
 }
 
-const ASKED_QUESTION_NEXT = 'End your turn; Orca wakes you with the answer.'
+const ASKED_QUESTION_NEXT = 'End your turn; Topo wakes you with the answer.'
 
 /** The question is recorded and stays pending; its answer arrives as Dispatch mail. */
 export function askedQuestionReceipt(
@@ -53,7 +53,7 @@ export function askedQuestionReceipt(
 /** The older waiting form of ask, kept for callers that still wait (older CLIs, --wait, --resume). */
 export async function waitForQuestionAnswer(args: {
   runtime: Pick<
-    OrcaRuntimeService,
+    TopoRuntimeService,
     'waitForMessage' | 'getOrchestrationDb' | 'notifyMessageArrived'
   >
   questionId: string

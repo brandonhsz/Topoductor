@@ -3,12 +3,12 @@ import { describe, expect, it } from 'vitest'
 import {
   withDeactivatedVersion,
   withDeactivatedVersionCommitted,
-  type OrcadActivationRecord
-} from '../activation/orcad-activation-record'
-import { planManagedOrcadAutoUpdate } from './orcad-managed-update-decision'
+  type TopodActivationRecord
+} from '../activation/topod-activation-record'
+import { planManagedTopodAutoUpdate } from './topod-managed-update-decision'
 
-describe('redeploying a host another desktop stopped, across Orca versions', () => {
-  const servedBy = (appVersion: string, active: string): OrcadActivationRecord => ({
+describe('redeploying a host another desktop stopped, across Topo versions', () => {
+  const servedBy = (appVersion: string, active: string): TopodActivationRecord => ({
     schemaVersion: 1,
     active,
     previous: null,
@@ -16,8 +16,8 @@ describe('redeploying a host another desktop stopped, across Orca versions', () 
     activeAppVersion: appVersion,
     snapshot: null
   })
-  const plan = (record: OrcadActivationRecord, appVersion: string, failedBefore = false) =>
-    planManagedOrcadAutoUpdate({
+  const plan = (record: TopodActivationRecord, appVersion: string, failedBefore = false) =>
+    planManagedTopodAutoUpdate({
       record,
       candidateVersion: `${appVersion}+cand`,
       appVersion,

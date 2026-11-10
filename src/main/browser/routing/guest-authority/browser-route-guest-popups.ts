@@ -1,6 +1,6 @@
 import type { Session, WebContents } from 'electron'
 import '../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../shared/browser/browser-blank-page'
 import {
   isBlankBrowserPopupUrl,
   normalizeBrowserPopupUrl
@@ -67,7 +67,7 @@ export function createBrowserRouteGuestPopupController(input: {
   let disposed = false
 
   const navigationAllowed = (url: string): boolean =>
-    input.isNavigationAllowed(isBlankBrowserPopupUrl(url) ? ORCA_BROWSER_BLANK_URL : url)
+    input.isNavigationAllowed(isBlankBrowserPopupUrl(url) ? TOPO_BROWSER_BLANK_URL : url)
 
   const onPopupNavigate = (event: Electron.Event, url: string): void => {
     if (disposed || !normalizeBrowserPopupUrl(url) || !navigationAllowed(url)) {
@@ -87,7 +87,7 @@ export function createBrowserRouteGuestPopupController(input: {
     if (
       disposed ||
       contentsPartition !== input.partition ||
-      !navigationAllowed(ORCA_BROWSER_BLANK_URL)
+      !navigationAllowed(TOPO_BROWSER_BLANK_URL)
     ) {
       return false
     }
@@ -105,7 +105,7 @@ export function createBrowserRouteGuestPopupController(input: {
       contents.on('will-prevent-unload', allowPageUnload)
       // Register before first navigation so downloads can resolve the root page.
       registerPopupOwnership(popupWebContentsId)
-      if (disposed || !navigationAllowed(ORCA_BROWSER_BLANK_URL)) {
+      if (disposed || !navigationAllowed(TOPO_BROWSER_BLANK_URL)) {
         releasePopupOwnership(popupWebContentsId)
         gestures.delete(gesture)
         gesture.dispose()
@@ -198,7 +198,7 @@ export function createBrowserRouteGuestPopupController(input: {
           opener: source,
           options,
           background: details?.disposition === 'background-tab',
-          canPresent: () => !disposed && navigationAllowed(ORCA_BROWSER_BLANK_URL),
+          canPresent: () => !disposed && navigationAllowed(TOPO_BROWSER_BLANK_URL),
           onCreated: (nativeOptions) => openPopup(nativeOptions, details?.url ?? normalized)
         })
       }

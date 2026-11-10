@@ -200,15 +200,15 @@ export class ManagedDataAccountService {
   restoreOriginalEnvironment(environment: Record<string, string | undefined>): void {
     // Restoring copied references requires the original overlay captured by this service.
     const selection = JSON.stringify([
-      environment.ORCA_DATA_ACCOUNT_DATA_HOME,
-      environment.ORCA_DATA_ACCOUNT_STATE_HOME
+      environment.TOPO_DATA_ACCOUNT_DATA_HOME,
+      environment.TOPO_DATA_ACCOUNT_STATE_HOME
     ])
     const ownsSelection =
-      environment.ORCA_DATA_ACCOUNT_PROVIDER === 'opencode' &&
+      environment.TOPO_DATA_ACCOUNT_PROVIDER === 'opencode' &&
       environment.OPENCODE_AUTH_CONTENT === '' &&
       environment.OPENCODE_DB === 'opencode.db' &&
-      environment.XDG_DATA_HOME === environment.ORCA_DATA_ACCOUNT_DATA_HOME &&
-      environment.XDG_STATE_HOME === environment.ORCA_DATA_ACCOUNT_STATE_HOME
+      environment.XDG_DATA_HOME === environment.TOPO_DATA_ACCOUNT_DATA_HOME &&
+      environment.XDG_STATE_HOME === environment.TOPO_DATA_ACCOUNT_STATE_HOME
     restoreManagedDataAccountEnvironment(environment, true, (reference) => {
       const baseline = this.inlineAuthBaselines.get(reference)
       return ownsSelection && baseline?.selections.has(selection) ? baseline.value : undefined
@@ -296,7 +296,7 @@ export class ManagedDataAccountService {
       lstatSync(path).isSymbolicLink() ||
       !realpathSync(path).startsWith(realpathSync(this.root) + sep)
     ) {
-      throw new Error('Managed account path is outside Orca account storage.')
+      throw new Error('Managed account path is outside Topo account storage.')
     }
   }
 

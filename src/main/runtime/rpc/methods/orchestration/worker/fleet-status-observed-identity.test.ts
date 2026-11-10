@@ -4,11 +4,11 @@ import type { AgentStatusOrchestrationContext } from '../../../../../../shared/a
 
 import { AgentHookServer } from '../../../../../agent-hooks/server/agent-hook-server'
 
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 
-import { OrcaRuntimeWithGetOrchestrationDispatchAuthority } from '../../../../terminal/output/terminal-orchestration-authority'
+import { TopoRuntimeWithGetOrchestrationDispatchAuthority } from '../../../../terminal/output/terminal-orchestration-authority'
 
 import {
   AgentStatusObservedPaneIdentities,
@@ -30,7 +30,7 @@ type ObservedWorld = {
   runProcess: (handle: string, incarnation: string) => void
   dispatchPane: (paneKey: string, dispatchId: string | null) => void
   ingest: (paneKey: string, state: 'working' | 'waiting') => void
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
 }
 
 /** Real hook server, real ingest-time capture, real fleet snapshot accessor. */
@@ -74,10 +74,10 @@ function createWorld(): ObservedWorld {
       }),
     runtime: {
       getOrchestrationFleetAgentStatusSnapshot: () =>
-        OrcaRuntimeWithGetOrchestrationDispatchAuthority.prototype.getOrchestrationFleetAgentStatusSnapshot.call(
+        TopoRuntimeWithGetOrchestrationDispatchAuthority.prototype.getOrchestrationFleetAgentStatusSnapshot.call(
           host as never
         )
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
   }
 }
 

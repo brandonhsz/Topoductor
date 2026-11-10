@@ -110,7 +110,7 @@ describe("Stop's event", () => {
         kind: 'agent',
         senders: [
           {
-            party: { address: 'agent:coordinator', terminalHandle: null, orcaSessionId: null },
+            party: { address: 'agent:coordinator', terminalHandle: null, topoSessionId: null },
             name: null
           }
         ],

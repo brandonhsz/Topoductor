@@ -6,7 +6,7 @@ import {
   resetAtoms,
   set,
   watchPersistedAtoms,
-  type OrcaAtom
+  type TopoAtom
 } from './declarative-atoms'
 import { actSnapshotSubscriptions } from './declarative-act-snapshot'
 
@@ -32,7 +32,7 @@ describe('shot --act atom snapshot', () => {
     const draft = atom('snapshot.draft', '')
     const count = atom(0)
     const persisted: unknown[] = []
-    watchPersistedAtoms((target: OrcaAtom<unknown>) => persisted.push(persistedEntry(target)))
+    watchPersistedAtoms((target: TopoAtom<unknown>) => persisted.push(persistedEntry(target)))
     const bridge = fakeBridge()
     actSnapshotSubscriptions(bridge.on, 'doc-1')
 

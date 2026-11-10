@@ -3,8 +3,8 @@ import { buildExecutionHostRegistry } from '../../execution-host/execution-host-
 import type { ExecutionHostHealth } from '../../execution-host/execution-host-health'
 import {
   pickerExecutionHosts,
-  type ManagedOrcadDeploymentSummary
-} from '../../execution-host/managed-orcad-execution-host'
+  type ManagedTopodDeploymentSummary
+} from '../../execution-host/managed-topod-execution-host'
 import type { RuntimeCompatVerdict } from '../../protocol-compat'
 import type { RuntimeEnvironmentSource } from './runtime-environments'
 import {
@@ -20,7 +20,7 @@ export type PairedServerHostInputs = {
     id: string
     name?: string | null
     source?: RuntimeEnvironmentSource
-    orcadDeployment?: ManagedOrcadDeploymentSummary | null
+    topodDeployment?: ManagedTopodDeploymentSummary | null
     pairedDeviceId?: string
   }[]
   statusByEnvironmentId: ReadonlyMap<string, RuntimeEnvironmentStatus>

@@ -52,7 +52,7 @@
       [
         9,
         1009,
-        "{\"v\":4,\"epoch\":\"epoch-1\",\"seq\":9,\"ts\":1009,\"fence\":1,\"kind\":\"tombstone\",\"itemId\":\"orca:U\",\"revision\":10,\"retireSubmission\":true}"
+        "{\"v\":4,\"epoch\":\"epoch-1\",\"seq\":9,\"ts\":1009,\"fence\":1,\"kind\":\"tombstone\",\"itemId\":\"topo:U\",\"revision\":10,\"retireSubmission\":true}"
       ],
       [
         10,
@@ -95,17 +95,17 @@
         0
       ],
       [13, "$", "\"queue\"", 1, "s0000000000000012:0000000000000001", "{\"revision\":4}", 0],
-      [14, "items", "\"orca:V\"", 1, "b", "null", 1],
+      [14, "items", "\"topo:V\"", 1, "b", "null", 1],
       [
         14,
         "tombstones",
-        "\"orca:V\"",
+        "\"topo:V\"",
         1,
         "s0000000000000014:0000000000000001",
-        "[\"orca:V\",20]",
+        "[\"topo:V\",20]",
         0
       ],
-      [14, "itemFences", "\"orca:V\"", 1, "b", "null", 1],
+      [14, "itemFences", "\"topo:V\"", 1, "b", "null", 1],
       [14, "submissions", "\"V\"", 1, "b", "null", 1],
       [14, "$", "\"lastActivityAt\"", 1, "s0000000000000014:0000000000000004", "1014", 0]
     ]
@@ -184,19 +184,19 @@
       [
         2,
         "items",
-        "\"orca:stopped-U\"",
+        "\"topo:stopped-U\"",
         1,
         "s0000000000000002:0000000000000001",
-        "{\"itemId\":\"orca:stopped-U\",\"revision\":0,\"body\":{\"kind\":\"message\",\"role\":\"user\",\"blocks\":[{\"type\":\"text\",\"text\":\"do this later\"}]},\"sequence\":2,\"observedAt\":2001,\"turnScope\":{\"kind\":\"thread\"}}",
+        "{\"itemId\":\"topo:stopped-U\",\"revision\":0,\"body\":{\"kind\":\"message\",\"role\":\"user\",\"blocks\":[{\"type\":\"text\",\"text\":\"do this later\"}]},\"sequence\":2,\"observedAt\":2001,\"turnScope\":{\"kind\":\"thread\"}}",
         0
       ],
       [
         2,
         "itemFences",
-        "\"orca:stopped-U\"",
+        "\"topo:stopped-U\"",
         1,
         "s0000000000000002:0000000000000002",
-        "[\"orca:stopped-U\",1]",
+        "[\"topo:stopped-U\",1]",
         0
       ],
       [2, "$", "\"lastActivityAt\"", 1, "s0000000000000001:0000000000000002", "2001", 0],
@@ -212,10 +212,10 @@
       [
         3,
         "items",
-        "\"orca:stopped-U\"",
+        "\"topo:stopped-U\"",
         1,
         "s0000000000000002:0000000000000001",
-        "{\"itemId\":\"orca:stopped-U\",\"revision\":0,\"body\":{\"kind\":\"message\",\"role\":\"user\",\"blocks\":[{\"type\":\"text\",\"text\":\"do this later\"}]},\"sequence\":3,\"observedAt\":2002,\"turnScope\":{\"kind\":\"thread\"}}",
+        "{\"itemId\":\"topo:stopped-U\",\"revision\":0,\"body\":{\"kind\":\"message\",\"role\":\"user\",\"blocks\":[{\"type\":\"text\",\"text\":\"do this later\"}]},\"sequence\":3,\"observedAt\":2002,\"turnScope\":{\"kind\":\"thread\"}}",
         0
       ],
       [3, "$", "\"lastActivityAt\"", 1, "s0000000000000001:0000000000000002", "2002", 0],
@@ -240,19 +240,19 @@
       [
         5,
         "items",
-        "\"orca:next\"",
+        "\"topo:next\"",
         1,
         "s0000000000000005:0000000000000001",
-        "{\"itemId\":\"orca:next\",\"revision\":0,\"body\":{\"kind\":\"message\",\"role\":\"user\",\"blocks\":[{\"type\":\"text\",\"text\":\"next human words\"}]},\"sequence\":5,\"observedAt\":2004,\"turnScope\":{\"kind\":\"thread\"}}",
+        "{\"itemId\":\"topo:next\",\"revision\":0,\"body\":{\"kind\":\"message\",\"role\":\"user\",\"blocks\":[{\"type\":\"text\",\"text\":\"next human words\"}]},\"sequence\":5,\"observedAt\":2004,\"turnScope\":{\"kind\":\"thread\"}}",
         0
       ],
       [
         5,
         "itemFences",
-        "\"orca:next\"",
+        "\"topo:next\"",
         1,
         "s0000000000000005:0000000000000002",
-        "[\"orca:next\",1]",
+        "[\"topo:next\",1]",
         0
       ],
       [5, "$", "\"lastActivityAt\"", 1, "s0000000000000001:0000000000000002", "2004", 0]
@@ -269,19 +269,19 @@
     [1, "$", "\"queue\""],
     [1, "$", "\"queuePauseMarks\""],
     [1, "$", "\"sessionId\""],
-    [2, "itemFences", "\"orca:stopped-U\""],
-    [2, "items", "\"orca:stopped-U\""],
+    [2, "itemFences", "\"topo:stopped-U\""],
+    [2, "items", "\"topo:stopped-U\""],
     [2, "submissions", "\"stopped-U\""],
-    [3, "items", "\"orca:stopped-U\""],
+    [3, "items", "\"topo:stopped-U\""],
     [3, "submissions", "\"stopped-U\""],
     [4, "$", "\"queuePauseMarks\""],
     [5, "$", "\"lastActivityAt\""],
-    [5, "itemFences", "\"orca:next\""],
-    [5, "items", "\"orca:next\""],
+    [5, "itemFences", "\"topo:next\""],
+    [5, "items", "\"topo:next\""],
     [5, "submissions", "\"next\""]
   ],
   "frozen": {
-    "stateJson": "{\"sessionId\":\"session-1\",\"epoch\":\"epoch-1\",\"lastSequence\":14,\"lastActivityAt\":1014,\"oldestSequence\":1,\"highestFence\":1,\"itemFences\":[[\"survivor-a\",1],[\"survivor-b\",1]],\"itemExecutionOwners\":[],\"providerActivityAt\":[],\"tombstones\":[[\"orca:U\",10],[\"orca:V\",20]],\"removedTurnIds\":[],\"submissions\":[],\"receipts\":[],\"aliases\":[],\"itemEchoes\":[],\"appliedSettlementIds\":[],\"derivedTurnScope\":null,\"latestAcceptedTurnSequence\":0,\"queuePauseMarks\":{\"latestStop\":null,\"resumedSequence\":0,\"reopenedSequence\":0},\"stoppedHistoryCarried\":[],\"queuedHandOffPlaces\":[[\"V\",{\"sequence\":7,\"observedAt\":1007,\"turnScope\":{\"kind\":\"thread\"}}]],\"normalizedHandOffs\":[\"U\",\"V\"],\"queue\":{\"revision\":4,\"cards\":[[\"Q\",{\"messageId\":\"Q\",\"position\":0,\"body\":{\"kind\":\"message\",\"role\":\"user\",\"blocks\":[{\"type\":\"text\",\"text\":\"final edit\"}]},\"fingerprint\":\"eac7b1ad378504a69cec9fdcde5d31107b21b2818d778f9e51b2fdbcf16cf877\",\"state\":\"withdrawn\",\"holdReason\":null,\"returnedReason\":null,\"returnedRejection\":null,\"consumedAs\":\"V\",\"queuedAt\":null}]]},\"historyOrigin\":null}",
+    "stateJson": "{\"sessionId\":\"session-1\",\"epoch\":\"epoch-1\",\"lastSequence\":14,\"lastActivityAt\":1014,\"oldestSequence\":1,\"highestFence\":1,\"itemFences\":[[\"survivor-a\",1],[\"survivor-b\",1]],\"itemExecutionOwners\":[],\"providerActivityAt\":[],\"tombstones\":[[\"topo:U\",10],[\"topo:V\",20]],\"removedTurnIds\":[],\"submissions\":[],\"receipts\":[],\"aliases\":[],\"itemEchoes\":[],\"appliedSettlementIds\":[],\"derivedTurnScope\":null,\"latestAcceptedTurnSequence\":0,\"queuePauseMarks\":{\"latestStop\":null,\"resumedSequence\":0,\"reopenedSequence\":0},\"stoppedHistoryCarried\":[],\"queuedHandOffPlaces\":[[\"V\",{\"sequence\":7,\"observedAt\":1007,\"turnScope\":{\"kind\":\"thread\"}}]],\"normalizedHandOffs\":[\"U\",\"V\"],\"queue\":{\"revision\":4,\"cards\":[[\"Q\",{\"messageId\":\"Q\",\"position\":0,\"body\":{\"kind\":\"message\",\"role\":\"user\",\"blocks\":[{\"type\":\"text\",\"text\":\"final edit\"}]},\"fingerprint\":\"eac7b1ad378504a69cec9fdcde5d31107b21b2818d778f9e51b2fdbcf16cf877\",\"state\":\"withdrawn\",\"holdReason\":null,\"returnedReason\":null,\"returnedRejection\":null,\"consumedAs\":\"V\",\"queuedAt\":null}]]},\"historyOrigin\":null}",
     "items": [
       {
         "itemId": "survivor-a",
@@ -380,7 +380,7 @@
     "epoch": "epoch-1",
     "sequence": 2,
     "item": {
-      "itemId": "orca:stopped-U",
+      "itemId": "topo:stopped-U",
       "revision": 0,
       "body": {
         "kind": "message",

@@ -1,6 +1,6 @@
 import type { FsChangedPayload } from '../../../shared/file-watch/filesystem-change-event'
 
-export const ORCA_WORKTREE_FILE_CHANGE_EVENT = 'orca:worktree-file-change'
+export const TOPO_WORKTREE_FILE_CHANGE_EVENT = 'topo:worktree-file-change'
 
 export type WorktreeFileChangeEventDetail = {
   payload: FsChangedPayload
@@ -10,7 +10,7 @@ export type WorktreeFileChangeEventDetail = {
 declare global {
   // oxlint-disable-next-line typescript/consistent-type-definitions -- WindowEventMap requires declaration merging.
   interface WindowEventMap {
-    'orca:worktree-file-change': CustomEvent<WorktreeFileChangeEventDetail>
+    'topo:worktree-file-change': CustomEvent<WorktreeFileChangeEventDetail>
   }
 }
 

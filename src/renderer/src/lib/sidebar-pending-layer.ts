@@ -1,4 +1,4 @@
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from '../../../shared/sidebar-inputs-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from '../../../shared/sidebar-inputs-switch'
 import { parseExecutionHostId, type ExecutionHostId } from '../../../shared/execution-host'
 import type { FolderWorkspace } from '../../../shared/folder-workspaces/folder-workspace-types'
 import { folderWorkspaceKey } from '../../../shared/workspace-scope'
@@ -197,7 +197,7 @@ export function withPendingSidebarRowWrites<T>(
   readWrites: () => readonly SidebarRowWrite[],
   operation: () => Promise<T>
 ): Promise<T> {
-  if (!ORCA_SIDEBAR_INPUTS_IS_MAIN) {
+  if (!TOPO_SIDEBAR_INPUTS_IS_MAIN) {
     return operation()
   }
   const added = readWrites().flatMap((write): PendingRowWrite[] => {
@@ -227,7 +227,7 @@ export function withPendingSidebarRowWrites<T>(
 
 /** Switch point. Lists a workspace the window just created until main's feed lists it too. */
 export function holdCreatedSidebarWorkspace(workspace: CreatedWorkspace): void {
-  if (!ORCA_SIDEBAR_INPUTS_IS_MAIN) {
+  if (!TOPO_SIDEBAR_INPUTS_IS_MAIN) {
     return
   }
   const [worktreeId, rawHostId] =

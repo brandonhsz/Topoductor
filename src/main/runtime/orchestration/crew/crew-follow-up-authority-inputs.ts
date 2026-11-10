@@ -75,7 +75,7 @@ export function createCrewFollowUpAuthorityInputs(db: OrchestrationDb) {
             .get(key)
         )
       if (creator.kind === 'session') {
-        return first('assignee_orca_session_id = ?', creator.orcaSessionId) ?? null
+        return first('assignee_topo_session_id = ?', creator.topoSessionId) ?? null
       }
       const handle = first('assignee_handle = ?', creator.handle)
       if (handle || !creator.paneKey) {

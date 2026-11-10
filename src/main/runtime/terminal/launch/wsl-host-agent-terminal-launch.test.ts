@@ -61,7 +61,7 @@ describe.skipIf(process.platform === 'win32')('resolveWslHostAgentLaunchInputs',
     expect(inputs.cmdOverrides.claude).toBe(`'${native}'`)
   })
 
-  // orcad's PATH lacks the interactive shell's nvm/~/.local entries; the install-dir search still finds them.
+  // topod's PATH lacks the interactive shell's nvm/~/.local entries; the install-dir search still finds them.
   it('finds a distro install that only the interactive shell PATH would list', () => {
     fakeExecutable(windowsBin, 'codex')
     const nvm = fakeExecutable(join(home, '.nvm', 'versions', 'node', 'v22.0.0', 'bin'), 'codex')

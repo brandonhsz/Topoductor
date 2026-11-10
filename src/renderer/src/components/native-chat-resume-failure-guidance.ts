@@ -42,7 +42,7 @@ export function resumeFailureGuidance(
 function manualContinuationText(t: Translate = translate): string {
   return t(
     'auto.components.NativeChatResumeFailureGuidance.fallback',
-    'Orca couldn’t resume this chat. Open it to continue manually.'
+    'Topo couldn’t resume this chat. Open it to continue manually.'
   )
 }
 
@@ -54,7 +54,7 @@ function reasonGuidance(
     return {
       text: t(
         'auto.components.NativeChatResumeFailureGuidance.unconfirmed',
-        'Orca couldn’t confirm the “continue” message was delivered. Open the chat and check before sending another.'
+        'Topo couldn’t confirm the “continue” message was delivered. Open the chat and check before sending another.'
       ),
       primary: 'open',
       secondary: null
@@ -65,7 +65,7 @@ function reasonGuidance(
     return {
       text: t(
         'auto.components.NativeChatResumeFailureGuidance.superseded',
-        'Open the chat and reply. New work arrived in it right after the restart, so Orca didn’t send its “continue” message.'
+        'Open the chat and reply. New work arrived in it right after the restart, so Topo didn’t send its “continue” message.'
       ),
       primary: 'open',
       secondary: null
@@ -75,7 +75,7 @@ function reasonGuidance(
     return {
       text: t(
         'auto.components.NativeChatResumeFailureGuidance.conflict',
-        'This chat is open in another Orca window or terminal. Close it there, then retry.'
+        'This chat is open in another Topo window or terminal. Close it there, then retry.'
       ),
       primary: 'retry',
       secondary: 'open'
@@ -115,7 +115,7 @@ function reasonGuidance(
     return {
       text: t(
         'auto.components.NativeChatResumeFailureGuidance.unsupported',
-        'This chat can’t be resumed by Orca. Open it to see where it stopped.'
+        'This chat can’t be resumed by Topo. Open it to see where it stopped.'
       ),
       primary: 'open',
       secondary: 'dismiss'

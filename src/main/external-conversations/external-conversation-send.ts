@@ -3,14 +3,14 @@ import {
   createLaunchedAgentWriteGuard,
   type LaunchedAgentWriteGuardRuntime
 } from '../runtime/terminal/wait/launched-agent-write-guard'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { sendAgentTurn } from '../runtime/orchestration/turn-delivery/send-agent-turn'
 import type { AgentPromptExpectedBinding } from '../runtime/terminal/input/agent-prompt-write-options'
 import { refusalOf } from './external-conversation-chain'
 import { refused, type Delivery } from './external-conversation-types'
 
 export type FollowUpTerminal = Pick<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   'getTerminalHandleForPaneKey' | 'getTerminalPromptRequestBinding' | 'sendTerminalAgentPrompt'
 > &
   LaunchedAgentWriteGuardRuntime

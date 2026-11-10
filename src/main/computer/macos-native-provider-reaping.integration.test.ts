@@ -1,6 +1,6 @@
 import { once } from 'node:events'
 import { afterEach, describe, expect, it } from 'vitest'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import type { ChildProcess } from 'node:child_process'
 import { reapMacOSProviderProcess } from './macos-native-provider-process-reaping'
 

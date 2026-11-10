@@ -94,7 +94,7 @@ describe('captured OMP compaction visibility', () => {
       submissions: []
     }))
     expect(captured.messages.some((message) => message.command)).toBe(false)
-    expect(captured.membership.turnKeys).toEqual(['orca:command-turn%3Acompact-1'])
+    expect(captured.membership.turnKeys).toEqual(['topo:command-turn%3Acompact-1'])
     expect(slotsFor(captured)[0]).toMatchObject({
       drawsMessage: true,
       folded: false,

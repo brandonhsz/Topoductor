@@ -54,6 +54,6 @@ describe('copying a provider uri into the cache', () => {
     const before = expo.deleted.length
     expect(() => copyPickedMediaIntoCache('content://media/gone')).toThrow(/nothing readable/)
     expect(expo.deleted.length).toBe(before + 1)
-    expect(expo.deleted.at(-1)?.startsWith('file:///cache/orca-media-')).toBe(true)
+    expect(expo.deleted.at(-1)?.startsWith('file:///cache/topo-media-')).toBe(true)
   })
 })

@@ -11,7 +11,7 @@ vi.mock('../runtime-client', async () => {
     readonly isRemote: boolean
     call = callMock
     getCliStatus = vi.fn()
-    openOrca = vi.fn()
+    openTopo = vi.fn()
 
     constructor() {
       this.isRemote = remoteMock()
@@ -26,9 +26,9 @@ vi.mock('../runtime-client', async () => {
 import { main } from '../index'
 import { okFixture, queueFixtures } from '../test-fixtures'
 
-describe('orca emulator CLI handlers', () => {
-  const originalWorkspaceId = process.env.ORCA_WORKSPACE_ID
-  const originalWorktreeId = process.env.ORCA_WORKTREE_ID
+describe('topo emulator CLI handlers', () => {
+  const originalWorkspaceId = process.env.TOPO_WORKSPACE_ID
+  const originalWorktreeId = process.env.TOPO_WORKTREE_ID
 
   beforeEach(() => {
     vi.restoreAllMocks()
@@ -41,14 +41,14 @@ describe('orca emulator CLI handlers', () => {
 
   afterEach(() => {
     if (originalWorkspaceId === undefined) {
-      delete process.env.ORCA_WORKSPACE_ID
+      delete process.env.TOPO_WORKSPACE_ID
     } else {
-      process.env.ORCA_WORKSPACE_ID = originalWorkspaceId
+      process.env.TOPO_WORKSPACE_ID = originalWorkspaceId
     }
     if (originalWorktreeId === undefined) {
-      delete process.env.ORCA_WORKTREE_ID
+      delete process.env.TOPO_WORKTREE_ID
     } else {
-      process.env.ORCA_WORKTREE_ID = originalWorktreeId
+      process.env.TOPO_WORKTREE_ID = originalWorktreeId
     }
   })
 
@@ -69,9 +69,9 @@ describe('orca emulator CLI handlers', () => {
     })
   })
 
-  it('uses the folder workspace exported by the current Orca terminal', async () => {
-    process.env.ORCA_WORKSPACE_ID = 'folder:folder-1'
-    delete process.env.ORCA_WORKTREE_ID
+  it('uses the folder workspace exported by the current Topo terminal', async () => {
+    process.env.TOPO_WORKSPACE_ID = 'folder:folder-1'
+    delete process.env.TOPO_WORKTREE_ID
     callMock.mockResolvedValue(
       okFixture('req_attach', {
         attached: true,
@@ -89,9 +89,9 @@ describe('orca emulator CLI handlers', () => {
     )
   })
 
-  it('uses the current git worktree exported by the Orca terminal', async () => {
-    process.env.ORCA_WORKSPACE_ID = 'folder:stale-parent'
-    process.env.ORCA_WORKTREE_ID = 'repo-1::/repo/project '
+  it('uses the current git worktree exported by the Topo terminal', async () => {
+    process.env.TOPO_WORKSPACE_ID = 'folder:stale-parent'
+    process.env.TOPO_WORKTREE_ID = 'repo-1::/repo/project '
     callMock.mockResolvedValue(
       okFixture('req_attach', {
         attached: true,

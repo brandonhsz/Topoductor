@@ -34,7 +34,7 @@ describe('the host-stamped turn start', () => {
   let userDataPath: string
 
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-turn-started-at-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-turn-started-at-'))
   })
 
   afterEach(() => {

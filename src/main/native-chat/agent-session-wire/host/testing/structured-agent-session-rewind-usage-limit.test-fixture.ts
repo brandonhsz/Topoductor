@@ -30,7 +30,7 @@ export async function appendUsageLimitedTurn(
   userItemId?: string
 ) {
   const key = {
-    provider: 'orca' as const,
+    provider: 'topo' as const,
     clientMessageId: name === 'kept' ? 'limited-before-rewind' : `limited-${name}`
   }
   const turnItemId = agentJournalItemKey(key)
@@ -50,7 +50,7 @@ export async function appendUsageLimitedTurn(
   )
   const resetsAt = clock + 60_000
   await journal.appendItem(
-    { provider: 'orca', clientMessageId: `${name}-limit` },
+    { provider: 'topo', clientMessageId: `${name}-limit` },
     {
       kind: 'status',
       ...agentSessionFailureWords(
@@ -180,7 +180,7 @@ export async function expectUsageLimitCompletionRollback({
   expect(restored.items.map(({ itemId }) => itemId)).toEqual([
     before.items[0]!.itemId,
     cut.turnItemId,
-    agentJournalItemKey({ provider: 'orca', clientMessageId: 'kept-limit' })
+    agentJournalItemKey({ provider: 'topo', clientMessageId: 'kept-limit' })
   ])
   expect(store.getRecord(HOST_TEST_SESSION)?.rewind?.phase).toBe('completed')
   expect(replace).toHaveBeenCalledTimes(1)

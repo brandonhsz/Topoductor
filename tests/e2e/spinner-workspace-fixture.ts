@@ -1,8 +1,8 @@
 import { expect, type Page } from '@stablyai/playwright-test'
 import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
-import { runProcess } from '@orca/process-host'
-import { attachRepoAndOpenTerminal } from './helpers/orca-restart'
+import { runProcess } from '@topo/process-host'
+import { attachRepoAndOpenTerminal } from './helpers/topo-restart'
 import { configureRendererScaleFixture } from '../../config/scripts/performance/idle-cpu/idle-cpu-renderer-scale-fixture.mjs'
 
 export async function createSpinnerRepository(worktrees: number) {

@@ -15,7 +15,7 @@ const {
 
 describe('packaged runtime resources', () => {
   it('verifies literal dynamic imports from the packaged main bundle', async () => {
-    const resourcesDir = await mkdtemp(join(tmpdir(), 'orca-runtime-dynamic-imports-'))
+    const resourcesDir = await mkdtemp(join(tmpdir(), 'topo-runtime-dynamic-imports-'))
     try {
       await writeFile(join(resourcesDir, 'app.asar'), '', 'utf8')
 
@@ -49,7 +49,7 @@ describe('packaged runtime resources', () => {
   })
 
   it('still fails when a required packaged main entry is missing entirely', async () => {
-    const resourcesDir = await mkdtemp(join(tmpdir(), 'orca-runtime-missing-entry-'))
+    const resourcesDir = await mkdtemp(join(tmpdir(), 'topo-runtime-missing-entry-'))
     try {
       await writeFile(join(resourcesDir, 'app.asar'), '', 'utf8')
 
@@ -67,7 +67,7 @@ describe('packaged runtime resources', () => {
   })
 
   it('verifies bare imports that rolldown hoisted into a shared main chunk', async () => {
-    const resourcesDir = await mkdtemp(join(tmpdir(), 'orca-runtime-chunk-imports-'))
+    const resourcesDir = await mkdtemp(join(tmpdir(), 'topo-runtime-chunk-imports-'))
     try {
       await writeFile(join(resourcesDir, 'app.asar'), '', 'utf8')
 
@@ -100,7 +100,7 @@ describe('packaged runtime resources', () => {
   })
 
   it('reads a spread require, whose leading dots are not member access', async () => {
-    const resourcesDir = await mkdtemp(join(tmpdir(), 'orca-runtime-spread-require-'))
+    const resourcesDir = await mkdtemp(join(tmpdir(), 'topo-runtime-spread-require-'))
     try {
       await writeFile(join(resourcesDir, 'app.asar'), '', 'utf8')
 
@@ -124,7 +124,7 @@ describe('packaged runtime resources', () => {
       ['x64', 1],
       ['arm64', 3]
     ]) {
-      const resourcesDir = await mkdtemp(join(tmpdir(), `orca-node-pty-conpty-${arch}-`))
+      const resourcesDir = await mkdtemp(join(tmpdir(), `topo-node-pty-conpty-${arch}-`))
       try {
         const nodePtyDir = join(resourcesDir, 'node_modules', 'node-pty')
         const releaseDir = join(nodePtyDir, 'build', 'Release')
@@ -157,7 +157,7 @@ describe('packaged runtime resources', () => {
   })
 
   it('leaves unrelated @parcel/* runtime deps untouched when pruning the watcher', async () => {
-    const resourcesDir = await mkdtemp(join(tmpdir(), 'orca-parcel-watcher-prune-unrelated-'))
+    const resourcesDir = await mkdtemp(join(tmpdir(), 'topo-parcel-watcher-prune-unrelated-'))
     try {
       const parcelDir = join(resourcesDir, 'node_modules', '@parcel')
       await mkdir(join(parcelDir, 'watcher'), { recursive: true })
@@ -179,7 +179,7 @@ describe('packaged runtime resources', () => {
   })
 
   it('fails when the packaged resources directory is missing', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-electron-builder-config-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-electron-builder-config-'))
     try {
       await expect(
         electronBuilderConfig.afterPack({

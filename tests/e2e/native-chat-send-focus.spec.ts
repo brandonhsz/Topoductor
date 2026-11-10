@@ -1,7 +1,7 @@
 // Completed tab and composer actions return keyboard input to the chat draft.
 
 import type { Locator } from '@stablyai/playwright-test'
-import { expect } from './helpers/orca-app'
+import { expect } from './helpers/topo-app'
 import { SUPPORTED, openStubChat, test } from './helpers/structured-claude-stub'
 
 function focusIsIn(composer: Locator): Promise<boolean> {
@@ -13,7 +13,7 @@ test.describe('native chat composer focus', () => {
 
   test('quick launcher keeps focus when Copy Context completes', async ({
     electronApp,
-    orcaPage: page,
+    topoPage: page,
     claudeStub
   }, testInfo) => {
     await page.setViewportSize({ width: 1280, height: 900 })
@@ -62,7 +62,7 @@ test.describe('native chat composer focus', () => {
   })
 
   test('keyboard tab rename returns input to the native chat composer', async ({
-    orcaPage: page,
+    topoPage: page,
     claudeStub
   }) => {
     const { tab, composer } = await openStubChat(page, claudeStub.command)
@@ -79,7 +79,7 @@ test.describe('native chat composer focus', () => {
     await expect(composer).toContainText('Draft after rename')
   })
 
-  test('when Send disables at the end of the turn', async ({ orcaPage: page, claudeStub }) => {
+  test('when Send disables at the end of the turn', async ({ topoPage: page, claudeStub }) => {
     const { composer, send, stop, reply } = await openStubChat(page, claudeStub.command)
     await page.keyboard.type('hello')
     await send.click()
@@ -88,7 +88,7 @@ test.describe('native chat composer focus', () => {
     await expect.poll(() => focusIsIn(composer)).toBe(true)
   })
 
-  test('when Stop disables while the stop is in flight', async ({ orcaPage: page, claudeStub }) => {
+  test('when Stop disables while the stop is in flight', async ({ topoPage: page, claudeStub }) => {
     const { composer, send, stop } = await openStubChat(page, claudeStub.command)
     // The stub runs a prompt containing "slow" until it is interrupted.
     await page.keyboard.type('slow')

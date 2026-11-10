@@ -1,6 +1,6 @@
 import type { WebContents } from 'electron'
 
-// Orca owns these frame-input sessions; hide their traffic from the agent's CDP client.
+// Topo owns these frame-input sessions; hide their traffic from the agent's CDP client.
 
 export type GuestSessionCdpSender = (
   method: string,
@@ -77,8 +77,8 @@ export async function settleWithin<T>(request: Promise<T>, fallback: T): Promise
   return settled.outcome === 'ok' ? settled.value : fallback
 }
 
-/** Hide Orca-owned session traffic that the agent's client did not request. */
-export function isOrcaFrameSessionTraffic(
+/** Hide Topo-owned session traffic that the agent's client did not request. */
+export function isTopoFrameSessionTraffic(
   webContents: WebContents,
   method: string,
   params: Record<string, unknown> | undefined,

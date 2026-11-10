@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import type {
   RuntimeRendererSyncWindowGraph,
   RuntimeStatus,
@@ -26,7 +26,7 @@ function boundTerminalFitRestore(pending: Promise<boolean>): Promise<boolean> {
   return Promise.race([pending, deadline]).finally(() => clearTimeout(timer))
 }
 
-export function registerRuntimeHandlers(runtime: OrcaRuntimeService): void {
+export function registerRuntimeHandlers(runtime: TopoRuntimeService): void {
   const pendingTerminalFitRestores = new Map<string, Promise<boolean>>()
   const desktopSenders = new DesktopRuntimeSenderLifecycle(runtime)
   ipcMain.removeHandler('runtime:syncWindowGraph')

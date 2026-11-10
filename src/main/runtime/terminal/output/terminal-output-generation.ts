@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithCreateTerminalSideEffectCommandCodeDetector } from './terminal-derived-agent-facts'
+import { TopoRuntimeWithCreateTerminalSideEffectCommandCodeDetector } from './terminal-derived-agent-facts'
 import type { AgentStatus } from '../../../../shared/agent-status/title/agent-title-core'
 import { getDisplayPromptLifecycle } from '../../workspaces/process-listing/runtime-worktree-status-projection'
 import { findLastCompleteOscTitleRange } from './terminal-osc-title-range'
@@ -8,7 +8,7 @@ import { TerminalPublishedOutputRings } from './terminal-published-output-ring'
 import type { RuntimePtyWorktreeRecord } from '../records/runtime-terminal-state-records'
 import { readLaunchCommandOutput } from '../wait/launched-agent-exit-watch'
 
-export abstract class OrcaRuntimeWithRecordAgentPromptLifecycleState extends OrcaRuntimeWithCreateTerminalSideEffectCommandCodeDetector {
+export abstract class TopoRuntimeWithRecordAgentPromptLifecycleState extends TopoRuntimeWithCreateTerminalSideEffectCommandCodeDetector {
   private readonly ptyLifecycleCancellation = new Map<string, AbortController>()
   private readonly publishedOutputRings = new TerminalPublishedOutputRings()
 

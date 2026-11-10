@@ -18,7 +18,7 @@ export function refuseUnresolvedOwner(innermost: readonly CatalogRow[]): void {
   }
   throw new RuntimeClientError(
     'selector_ambiguous',
-    `Orca can't tell which host owns the folder workspace containing the current directory (${unresolved.map((row) => `${row.id} at ${row.path}`).join(', ')}), so it won't guess the workspace.`,
+    `Topo can't tell which host owns the folder workspace containing the current directory (${unresolved.map((row) => `${row.id} at ${row.path}`).join(', ')}), so it won't guess the workspace.`,
     {
       workspaces: innermost.map((row) => ({
         kind: parseWorkspaceKey(row.id)?.type === 'folder' ? 'folder workspace' : 'worktree',
@@ -30,7 +30,7 @@ export function refuseUnresolvedOwner(innermost: readonly CatalogRow[]): void {
         ...unresolved.map(
           (row) => `Pass --worktree ${row.id} to target the folder workspace itself.`
         ),
-        'Or pass an explicit worktree selector from `orca worktree ps --json`.'
+        'Or pass an explicit worktree selector from `topo worktree ps --json`.'
       ]
     }
   )

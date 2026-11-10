@@ -1,20 +1,20 @@
 import { cpSync, lstatSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs'
 import type { Dirent, Stats } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { ORCA_PI_AGENT_STATUS_EXTENSION_FILE } from './agent-status-extension-source'
-import { ORCA_PI_PREFILL_EXTENSION_FILE } from './prefill-extension-source'
-import { ORCA_PI_EXTENSION_FILE } from './titlebar-extension-source'
+import { TOPO_PI_AGENT_STATUS_EXTENSION_FILE } from './agent-status-extension-source'
+import { TOPO_PI_PREFILL_EXTENSION_FILE } from './prefill-extension-source'
+import { TOPO_PI_EXTENSION_FILE } from './titlebar-extension-source'
 import { isSafeDescendCandidate } from '../pty/scrollback/overlay-mirror'
 
-const LEGACY_PI_OVERLAY_MANIFEST_FILE = '.orca-pi-overlay-manifest.json'
-const LEGACY_OMP_OVERLAY_MIGRATION_MARKER_FILE = '.orca-omp-overlay-migration-complete'
+const LEGACY_PI_OVERLAY_MANIFEST_FILE = '.topo-pi-overlay-manifest.json'
+const LEGACY_OMP_OVERLAY_MIGRATION_MARKER_FILE = '.topo-omp-overlay-migration-complete'
 const PI_AGENT_SETTINGS_FILE = 'settings.json'
 const SQLITE_DATABASE_EXTENSION = '.db'
 const SQLITE_SIDECAR_SUFFIXES = ['-wal', '-shm', '-journal'] as const
 const MANAGED_EXTENSION_FILES = new Set([
-  ORCA_PI_EXTENSION_FILE,
-  ORCA_PI_PREFILL_EXTENSION_FILE,
-  ORCA_PI_AGENT_STATUS_EXTENSION_FILE
+  TOPO_PI_EXTENSION_FILE,
+  TOPO_PI_PREFILL_EXTENSION_FILE,
+  TOPO_PI_AGENT_STATUS_EXTENSION_FILE
 ])
 
 type DeferredSidecar = {

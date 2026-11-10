@@ -2,7 +2,7 @@ import { mkdtemp, rename, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import * as path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { getDiff } from './file-diff'
 import { invalidateGitReadCaches } from './git-read-cache-invalidation'
 
@@ -21,10 +21,10 @@ describe('staged rename diffs with real Git', () => {
   }
 
   beforeEach(async () => {
-    repo = await mkdtemp(path.join(tmpdir(), 'orca-staged-rename-'))
+    repo = await mkdtemp(path.join(tmpdir(), 'topo-staged-rename-'))
     await git(['init'])
     await git(['config', 'user.email', 'test@example.invalid'])
-    await git(['config', 'user.name', 'Orca Test'])
+    await git(['config', 'user.name', 'Topo Test'])
     await writeFile(path.join(repo, OLD_PATH), ORIGINAL)
     await git(['add', '--all'])
     await git([

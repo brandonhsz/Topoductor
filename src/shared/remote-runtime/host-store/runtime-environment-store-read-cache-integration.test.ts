@@ -46,7 +46,7 @@ vi.mock('../../file-content/node-bounded-file-reader', async (importOriginal) =>
 let root: string
 let userDataPath: string
 beforeEach(() => {
-  root = fs.mkdtempSync(join(tmpdir(), 'orca-env-cache-integration-'))
+  root = fs.mkdtempSync(join(tmpdir(), 'topo-env-cache-integration-'))
   userDataPath = join(root, 'userData')
   fs.mkdirSync(userDataPath, { mode: 0o700 })
   __resetSecureFileHardenedPathsForTests()

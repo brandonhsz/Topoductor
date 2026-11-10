@@ -45,7 +45,7 @@ import {
   makeProjectGroup
 } from '@/components/sidebar/workspace-creation/folder/folder-workspace-composer-submit-fixtures'
 import { folderWorkspaceKey } from '../../../../../shared/workspace-scope'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import { launchStructuredWorktreeSession } from './worktree-creation-structured-session'
 
 // Main's answer to the window's layout commands, as a switch-on build sends them, and the first
@@ -68,7 +68,7 @@ vi.mock('@/runtime/rpc/calls/runtime-rpc-call', async (importOriginal) => {
 
 /** The startup the tab's terminal runs: main's start in a layout-owner build, else the window's. */
 function startupOf(tabId: string): unknown {
-  if (!ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (!TOPO_LAYOUT_OWNER_IS_MAIN) {
     return useAppStore.getState().pendingStartupByTabId[tabId]
   }
   return mocks.mainStarts.find(
@@ -130,7 +130,7 @@ function seedPairedServer(): ReturnType<typeof vi.fn> {
     ptyIdsByTabId: {},
     pendingWorktreeCreations: { 'creation-1': pendingCreation() },
     settings: {
-      ...getDefaultSettings(path.join('workspace', '.orca')),
+      ...getDefaultSettings(path.join('workspace', '.topo')),
       activeRuntimeEnvironmentId: 'server-1'
     }
   })
@@ -224,7 +224,7 @@ function seedThisMachine(): void {
     tabsByWorktree: {},
     ptyIdsByTabId: {},
     pendingWorktreeCreations: { 'creation-1': pendingCreation() },
-    settings: getDefaultSettings(path.join('workspace', '.orca')),
+    settings: getDefaultSettings(path.join('workspace', '.topo')),
     // The user moved to another workspace while the create ran.
     activeWorktreeId: LOCAL_OTHER.id
   })

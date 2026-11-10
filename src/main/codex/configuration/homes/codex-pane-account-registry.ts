@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { isDefinitiveAbsence } from '../../../../shared/definitive-filesystem-absence'
 import { dirname, join } from 'node:path'
-import { getOrcaUserDataPath } from './codex-home-paths'
+import { getTopoUserDataPath } from './codex-home-paths'
 import { CodexPaneAccountRegistryMutations } from './codex-pane-account-registry-mutations'
 import type {
   CodexPaneAccountRecord,
@@ -15,7 +15,7 @@ let cachedRegistry: CodexPaneAccountRegistryFile | null = null
 let cachedRegistryIsAuthoritative = true
 
 function getRegistryPath(): string {
-  return join(getOrcaUserDataPath(), 'codex-pane-accounts.json')
+  return join(getTopoUserDataPath(), 'codex-pane-accounts.json')
 }
 
 // Return uncached null on read errors; treating unreadable state as empty would erase attribution.

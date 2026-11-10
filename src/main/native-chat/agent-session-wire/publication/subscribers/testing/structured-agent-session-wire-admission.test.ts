@@ -31,7 +31,7 @@ let journal: AgentSessionJournal
 const journals = createTrackedJournalOpener({ legacyInputs: true })
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-wire-admission-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-wire-admission-'))
   journal = await journals.open({
     identity: {
       sessionId: SESSION,

@@ -44,9 +44,9 @@ describe('repo slice runtime routing', () => {
 
     await expect(
       store.getState().setupProjectExistingFolder({
-        projectId: 'github:acme/orca',
+        projectId: 'github:acme/topo',
         hostId: 'ssh:ssh-1',
-        path: '/srv/orca',
+        path: '/srv/topo',
         kind: 'git'
       })
     ).resolves.toBeNull()
@@ -66,7 +66,7 @@ describe('repo slice runtime routing', () => {
 
   it('drops persisted visit timestamps for removed unhydrated SSH repos', async () => {
     const store = createTestStore()
-    const sshWorktreeId = `${sshRepo.id}::/home/orca/wt`
+    const sshWorktreeId = `${sshRepo.id}::/home/topo/wt`
     const localWorktreeId = `${localRepo.id}::/local/wt`
     store.setState({
       repos: [sshRepo, localRepo],

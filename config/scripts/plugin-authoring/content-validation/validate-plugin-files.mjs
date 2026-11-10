@@ -15,14 +15,14 @@ const { validatePluginFile, pluginManifestWarnings } = loadPluginSchemaModule(
   'installation/plugin-file-validation.ts'
 )
 const { parsePluginManifest } = loadPluginSchemaModule('manifest/plugin-manifest.ts')
-// Why the CLI's main entry: `orca plugin validate` and `release-entry` run these same checks, and
-// the printed contentHash must be what Orca computes at install.
+// Why the CLI's main entry: `topo plugin validate` and `release-entry` run these same checks, and
+// the printed contentHash must be what Topo computes at install.
 const {
   pluginCatalogReleaseForHead,
   validateDeclaredPluginArtifacts,
   validatePluginInstallContent
 } = loadPluginSchemaModule('../../main/plugins/plugin-authoring-checks.ts')
-// Why shared: `orca plugin validate` runs these same strict artifact checks.
+// Why shared: `topo plugin validate` runs these same strict artifact checks.
 const { strictPluginArtifactErrors, strictPluginArtifactWarnings } = loadPluginSchemaModule(
   'authoring/plugin-strict-artifact-checks.ts'
 )
@@ -31,7 +31,7 @@ const { englishSourceLookup } = loadPluginSchemaModule(
   'languages/plugin-translation-string-policy.ts'
 )
 let englishSource = null
-// Why Orca's English: pack strings are capped relative to the text they translate.
+// Why Topo's English: pack strings are capped relative to the text they translate.
 function englishLookup() {
   englishSource ??= englishSourceLookup(
     JSON.parse(

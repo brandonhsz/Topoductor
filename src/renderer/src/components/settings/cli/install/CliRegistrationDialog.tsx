@@ -54,11 +54,11 @@ export function CliRegistrationDialog({
             {isEnabled
               ? t(
                   'auto.components.settings.CliSection.a030816e3e',
-                  'This removes the shell command symlink. Orca itself remains installed.'
+                  'This removes the shell command symlink. Topo itself remains installed.'
                 )
               : t(
                   'auto.components.settings.CliSection.aa6536977e',
-                  'Orca will register {{value0}} so the command works from your terminal.',
+                  'Topo will register {{value0}} so the command works from your terminal.',
                   { value0: commandPath ?? commandName }
                 )}
           </DialogDescription>

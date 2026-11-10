@@ -1,11 +1,11 @@
-import type { OrcaRuntimeWithTransitionGraphReloadToTerminalState as TransitionGraphReloadToTerminalStateMethods } from './session-graph-authority'
-import type { OrcaRuntimeWithBindPtyIncarnationHandle as BindPtyIncarnationHandleMethods } from '../terminal/identity/terminal-handle-bindings'
-import { OrcaRuntimeWithSessionTitleAuthority } from '../session-tabs/session-title-publisher'
+import type { TopoRuntimeWithTransitionGraphReloadToTerminalState as TransitionGraphReloadToTerminalStateMethods } from './session-graph-authority'
+import type { TopoRuntimeWithBindPtyIncarnationHandle as BindPtyIncarnationHandleMethods } from '../terminal/identity/terminal-handle-bindings'
+import { TopoRuntimeWithSessionTitleAuthority } from '../session-tabs/session-title-publisher'
 import type { RuntimeRendererReloadFence } from './renderer-reload-fence'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { HEADLESS_RUNTIME_WINDOW_ID } from '../../../shared/runtime-session-contracts'
 
-export abstract class OrcaRuntimeWithHasTerminalsForWorktree extends OrcaRuntimeWithSessionTitleAuthority {
+export abstract class TopoRuntimeWithHasTerminalsForWorktree extends TopoRuntimeWithSessionTitleAuthority {
   protected abstract assertStableReadyGraph(
     ...args: Parameters<TransitionGraphReloadToTerminalStateMethods['assertStableReadyGraph']>
   ): ReturnType<TransitionGraphReloadToTerminalStateMethods['assertStableReadyGraph']>
@@ -187,7 +187,7 @@ export abstract class OrcaRuntimeWithHasTerminalsForWorktree extends OrcaRuntime
     }
     this.graphReloadLifecycle.settleActive('cancelled')
     // Closed windows never republish; serve/main-owned layouts must reclaim the graph (#27292).
-    if (ORCA_LAYOUT_OWNER_IS_MAIN || this.servesHeadlessGraph) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN || this.servesHeadlessGraph) {
       this.headlessGraphFallbackAvailable = true
     }
     if (this.shouldRestoreHeadlessGraph(windowId)) {

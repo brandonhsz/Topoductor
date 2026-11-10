@@ -18,7 +18,7 @@ function codexIdleScreen(): string[] {
     '',
     '› Ask Codex to do anything',
     '',
-    '  gpt-6-astra medium · ~/orca/workspaces/orca/fix-wait-detector-scrollback'
+    '  gpt-6-astra medium · ~/topo/workspaces/topo/fix-wait-detector-scrollback'
   ]
 }
 
@@ -28,10 +28,10 @@ function codexScrollback(quotedLines: string[], trailingLineCount: number): stri
     '  └ Search press enter to confirm in src/main/runtime',
     '    Read terminal-wait-detection.ts',
     '',
-    '• Ran rg -n "press enter to confirm" src/main/runtime/terminal/wait/terminal-wait-detection.ts src/main/runtime/orca-runtime-tests/agent-status-and-waits.spec.ts',
+    '• Ran rg -n "press enter to confirm" src/main/runtime/terminal/wait/terminal-wait-detection.ts src/main/runtime/topo-runtime-tests/agent-status-and-waits.spec.ts',
     '  └ src/main/runtime/terminal/wait/terminal-wait-detection.ts',
-    '    src/main/runtime/orca-runtime-tests/agent-status-and-waits.spec.ts',
-    '    src/main/runtime/orca-runtime-tests/terminal-creation-and-readiness-part-07.spec.ts',
+    '    src/main/runtime/topo-runtime-tests/agent-status-and-waits.spec.ts',
+    '    src/main/runtime/topo-runtime-tests/terminal-creation-and-readiness-part-07.spec.ts',
     ...quotedLines
   ]
   for (let index = 0; index < trailingLineCount; index += 1) {
@@ -136,7 +136,7 @@ describe('detectTerminalWaitBlockedReason live prompts', () => {
         '',
         ...spaced,
         '',
-        '  gpt-6-astra medium · ~/orca/workspaces/orca/fix-wait-detector-scrollback',
+        '  gpt-6-astra medium · ~/topo/workspaces/topo/fix-wait-detector-scrollback',
         ''
       ].join('\n')
 
@@ -150,7 +150,7 @@ describe('detectTerminalWaitBlockedReason live prompts', () => {
       'Press enter to continue',
       ' >_ OpenAI Codex (v0.132.0)',
       ' model:       gpt-5.5 high   /model to change',
-      ' directory:   ~/orca/workspaces/orca/cli-debug',
+      ' directory:   ~/topo/workspaces/topo/cli-debug',
       'Hooks need review',
       'Press enter to confirm'
     ])
@@ -198,7 +198,7 @@ describe('Antigravity readiness does not absorb its own startup dialog', () => {
         'Antigravity CLI 1.0.3',
         'user@example.com (Antigravity Business)',
         'A new version is available',
-        '~/orca/workspaces/orca/agy-dispatch-issue',
+        '~/topo/workspaces/topo/agy-dispatch-issue',
         'Press enter to continue',
         '> Continue'
       ]
@@ -209,7 +209,7 @@ describe('Antigravity readiness does not absorb its own startup dialog', () => {
         'Antigravity CLI 1.0.3',
         'user@example.com (Antigravity Business)',
         'Sign in to continue',
-        '~/orca/workspaces/orca/agy-dispatch-issue',
+        '~/topo/workspaces/topo/agy-dispatch-issue',
         '1. Open browser',
         '2. Paste an API key',
         '> Open browser'
@@ -221,7 +221,7 @@ describe('Antigravity readiness does not absorb its own startup dialog', () => {
         'Antigravity CLI 1.0.3',
         'user@example.com (Antigravity Business)',
         'Select a model',
-        '~/orca/workspaces/orca/agy-dispatch-issue',
+        '~/topo/workspaces/topo/agy-dispatch-issue',
         '1. Claude Sonnet 4.5',
         '2. GPT-5.1',
         '> Claude Sonnet 4.5'
@@ -233,7 +233,7 @@ describe('Antigravity readiness does not absorb its own startup dialog', () => {
         'Antigravity CLI 1.0.3',
         'user@example.com (Antigravity Business)',
         'We collect usage data to improve the product',
-        '~/orca/workspaces/orca/agy-dispatch-issue',
+        '~/topo/workspaces/topo/agy-dispatch-issue',
         '1. Accept',
         '2. Decline',
         '> Accept'
@@ -245,7 +245,7 @@ describe('Antigravity readiness does not absorb its own startup dialog', () => {
         'Antigravity CLI 1.0.3',
         'user@example.com (Antigravity Business)',
         'Welcome! Choose a theme',
-        '~/orca/workspaces/orca/agy-dispatch-issue',
+        '~/topo/workspaces/topo/agy-dispatch-issue',
         '1. Dark',
         '2. Light',
         '> Dark'

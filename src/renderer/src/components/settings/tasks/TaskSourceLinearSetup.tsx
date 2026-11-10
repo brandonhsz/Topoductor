@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { LinearApiKeyDialog } from '@/components/linear-api-key-dialog'
 import { Button } from '@/components/ui/button'
 import { useAppStore } from '@/store/index'
-import { ORCA_LINEAR_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
+import { TOPO_LINEAR_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
 import { AgentSkillSetupPanel } from '../../skills/setup/AgentSkillSetupPanel'
 import { TaskSourceShowInTasksStep } from './TaskSourceShowInTasksStep'
 import { TaskSourceStepRow } from './TaskSourceStepRow'
@@ -50,7 +50,7 @@ export function TaskSourceLinearSetup({
           title={t('auto.components.settings.TaskSourceLinearSetup.connectTitle', 'Connect Linear')}
           description={t(
             'auto.components.settings.TaskSourceLinearSetup.connectDescription',
-            'Add a Personal API key so Orca can browse issues and open workspaces with ticket context.'
+            'Add a Personal API key so Topo can browse issues and open workspaces with ticket context.'
           )}
           action={
             <Button
@@ -97,7 +97,7 @@ export function TaskSourceLinearSetup({
           )}
           description={t(
             'auto.components.settings.TaskSourceLinearSetup.skillDescription',
-            'Gives agents /orca-linear to read tickets, post updates, move states, and attach pull or merge requests.'
+            'Gives agents /topo-linear to read tickets, post updates, move states, and attach pull or merge requests.'
           )}
           className={skillInstallBlocked ? 'opacity-60' : undefined}
         >
@@ -117,7 +117,7 @@ export function TaskSourceLinearSetup({
                 'Linear skill'
               )}
               description={null}
-              skillNames={[ORCA_LINEAR_SKILL_NAME]}
+              skillNames={[TOPO_LINEAR_SKILL_NAME]}
               installedSkillNames={[skillSetup.updateSkillName]}
               installed={skillSetup.skillInstalled}
               loading={skillSetup.skillLoading}

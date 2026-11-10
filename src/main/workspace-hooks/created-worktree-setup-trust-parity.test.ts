@@ -3,13 +3,13 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { getSetupTrustContent } from '../../shared/orca-hook-setup-config'
-import '../../renderer/src/lib/orca-hook-trust'
+import { getSetupTrustContent } from '../../shared/topo-hook-setup-config'
+import '../../renderer/src/lib/topo-hook-trust'
 import '../runtime/repositories/runtime-repository-hooks-commands'
 import { loadHooks } from './hooks'
-import { hashOrcaHookTrustContent } from './created-worktree-setup-trust'
+import { hashTopoHookTrustContent } from './created-worktree-setup-trust'
 
-// The prompt hashes the primary checkout's orca.yaml; the host hashes the created worktree's.
+// The prompt hashes the primary checkout's topo.yaml; the host hashes the created worktree's.
 // Same committed file => same hash, whatever the checkout did to line endings or a BOM.
 const SETUP_YAML = [
   'base: &base',
@@ -34,9 +34,9 @@ const SETUP_YAML = [
 
 const dirs: string[] = []
 function checkout(content: string): string {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-setup-parity-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-setup-parity-'))
   dirs.push(dir)
-  writeFileSync(join(dir, 'orca.yaml'), content)
+  writeFileSync(join(dir, 'topo.yaml'), content)
   return dir
 }
 
@@ -61,7 +61,7 @@ describe('approved setup hash parity between the trust prompt and the host', () 
         "# defaultTabs[3]\nprintf '%s\n' quoted"
       ].join('\n\n')
     )
-    expect(hashOrcaHookTrustContent(getSetupTrustContent(loadHooks(checkout(SETUP_YAML))))).toBe(
+    expect(hashTopoHookTrustContent(getSetupTrustContent(loadHooks(checkout(SETUP_YAML))))).toBe(
       PINNED_SETUP_HASH
     )
   })

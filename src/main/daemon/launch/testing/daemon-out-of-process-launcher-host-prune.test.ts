@@ -88,7 +88,7 @@ function materializedBuild(): string {
 function recordLaunch(oldBuild: string): { oldBuildPresent?: boolean; forkEntryPath?: string } {
   const seen: { oldBuildPresent?: boolean; forkEntryPath?: string } = {}
   harness.launchDaemonChild.mockImplementation(async (options: { forkEntryPath: string }) => {
-    seen.oldBuildPresent = existsSync(join(oldBuild, 'Orca.exe'))
+    seen.oldBuildPresent = existsSync(join(oldBuild, 'Topo.exe'))
     seen.forkEntryPath = options.forkEntryPath
     writePidRecord(REPLACEMENT_PID)
     return { child: new EventEmitter(), identity: { pid: REPLACEMENT_PID } }
@@ -120,7 +120,7 @@ beforeEach(() => {
     exit: () => {},
     getAppMetrics: () => []
   })
-  setProcessProp('execPath', join(installDir, 'Orca.exe'))
+  setProcessProp('execPath', join(installDir, 'Topo.exe'))
   setProcessProp('resourcesPath', join(installDir, 'resources'))
   harness.entryPath = join(
     installDir,
@@ -176,7 +176,7 @@ describe('out-of-process launcher: published daemon-host retention', () => {
       daemonHostStagingName(STALE_DAEMON_PID, '0123456789ab')
     )
     mkdirSync(abandonedStage, { recursive: true })
-    writeFileSync(join(abandonedStage, 'Orca.exe'), 'abandoned-copy')
+    writeFileSync(join(abandonedStage, 'Topo.exe'), 'abandoned-copy')
     staleDaemon = 'exited'
     writeFileSync(harness.entryPath, 'entry-rebuilt-same-version')
     harness.prepareDaemonReplacement.mockResolvedValue(null)
@@ -228,7 +228,7 @@ describe('out-of-process launcher: published daemon-host retention', () => {
     // No PID record pins the superseded version, so post-launch pruning can reclaim it.
     const supersededVersion = join(dirname(dirname(oldBuild)), '1.0.0')
     mkdirSync(supersededVersion, { recursive: true })
-    writeFileSync(join(supersededVersion, 'Orca.exe'), 'superseded')
+    writeFileSync(join(supersededVersion, 'Topo.exe'), 'superseded')
     harness.prepareDaemonReplacement.mockImplementation(async () => {
       staleDaemon = 'exited'
       return null
@@ -237,7 +237,7 @@ describe('out-of-process launcher: published daemon-host retention', () => {
     let supersededPresentAtFork: boolean | undefined
     const fork = harness.launchDaemonChild.getMockImplementation()
     harness.launchDaemonChild.mockImplementation(async (options) => {
-      supersededPresentAtFork = existsSync(join(supersededVersion, 'Orca.exe'))
+      supersededPresentAtFork = existsSync(join(supersededVersion, 'Topo.exe'))
       return fork?.(options)
     })
 
@@ -245,7 +245,7 @@ describe('out-of-process launcher: published daemon-host retention', () => {
 
     expect(seen.oldBuildPresent).toBe(true)
     expect(supersededPresentAtFork).toBe(true)
-    expect(existsSync(join(supersededVersion, 'Orca.exe'))).toBe(true)
+    expect(existsSync(join(supersededVersion, 'Topo.exe'))).toBe(true)
 
     pruneOldDaemonHosts(collectPinnedDaemonVersions(runtimeDir))
 

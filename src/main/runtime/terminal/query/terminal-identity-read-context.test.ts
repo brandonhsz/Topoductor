@@ -7,12 +7,12 @@ import '../../orchestration/db/attempt-outcome-projection'
 import { CrewReadModel } from '../../orchestration/crew/crew-read-model'
 import { readCrewRuntimeInputs } from '../../orchestration/crew/crew-runtime-watch'
 import { expect, it, vi } from 'vitest'
-import '../../orca-runtime-tests/runtime-test-module-registration.spec'
-import { TEST_WORKTREE_ID } from '../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+import '../../topo-runtime-tests/runtime-test-module-registration.spec'
+import { TEST_WORKTREE_ID } from '../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import '../../rpc/methods/orchestration/runs/runs'
 import '../../rpc/methods/orchestration/runs/run-scope'
-import '../../../../shared/orca-session-address'
-import '../../../../shared/orca-session-address-test-fixture'
+import '../../../../shared/topo-session-address'
+import '../../../../shared/topo-session-address-test-fixture'
 
 function countIterations<K, V>(
   map: ReadonlyMap<K, V>,

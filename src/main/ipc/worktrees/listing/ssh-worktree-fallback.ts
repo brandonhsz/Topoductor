@@ -14,7 +14,7 @@ import { readWorktreeMetaForRepo } from '../../../persistence/host-qualified-wor
 import { hostWorktreeTarget } from '../../../../shared/worktree/host-qualified-identity'
 import { getRepoOwnedWorktreeMeta } from '../../../workspaces/catalog/worktree-metadata-ownership'
 import {
-  buildKnownOrcaWorkspaceLayouts,
+  buildKnownTopoWorkspaceLayouts,
   isLegacyRepoForExternalWorktreeVisibility,
   toDetectedWorktree
 } from '../../../../shared/worktree/ownership'
@@ -142,7 +142,7 @@ export function buildDetectedGitWorktrees(
   allMetaOverride?: Record<string, WorktreeMeta>
 ): DetectedWorktree[] {
   const settings = store.getSettings()
-  const knownOrcaLayouts = buildKnownOrcaWorkspaceLayouts(settings, repo)
+  const knownTopoLayouts = buildKnownTopoWorkspaceLayouts(settings, repo)
   const isLegacyRepoForVisibility = isLegacyRepoForExternalWorktreeVisibility(repo)
   // Keep failed removals retryable; other prunable registrations stay hidden (#8389).
   const liveWorktrees = dedupeWorktreesByPath(
@@ -171,7 +171,7 @@ export function buildDetectedGitWorktrees(
       worktree,
       meta,
       settings,
-      knownOrcaLayouts,
+      knownTopoLayouts,
       isLegacyRepoForVisibility,
       worktreeVisibilitySourceMatcher
     })
@@ -195,7 +195,7 @@ export function buildDetectedGitWorktrees(
       worktree: mergeWorktree(repo.id, gitWorktree, backfilledMeta, repo.displayName),
       meta: backfilledMeta,
       settings,
-      knownOrcaLayouts,
+      knownTopoLayouts,
       isLegacyRepoForVisibility,
       worktreeVisibilitySourceMatcher
     })

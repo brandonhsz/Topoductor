@@ -24,7 +24,7 @@ const FIXES: Record<
     body: () =>
       translate(
         'auto.components.sidebar.LocalGitToolchainScanBanner.xcodeLicenseBody',
-        'macOS blocks Git until you accept it. Run this in Terminal, then switch back to Orca. It will check again automatically.'
+        'macOS blocks Git until you accept it. Run this in Terminal, then switch back to Topo. It will check again automatically.'
       )
   },
   'developer-tools': {
@@ -37,7 +37,7 @@ const FIXES: Record<
     body: () =>
       translate(
         'auto.components.sidebar.LocalGitToolchainScanBanner.developerToolsBody',
-        "Git needs Apple's developer tools. Run this in Terminal, then switch back to Orca. It will check again automatically."
+        "Git needs Apple's developer tools. Run this in Terminal, then switch back to Topo. It will check again automatically."
       )
   }
 }
@@ -83,7 +83,7 @@ export function LocalGitToolchainScanBanner(): React.JSX.Element | null {
     if (!isBlocked) {
       return
     }
-    // Users fix Git in Terminal; recheck when they return to Orca.
+    // Users fix Git in Terminal; recheck when they return to Topo.
     const onFocus = (): void => void rescan()
     window.addEventListener('focus', onFocus)
     return () => window.removeEventListener('focus', onFocus)

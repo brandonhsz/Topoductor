@@ -17,12 +17,12 @@ function showClaudeThemeSyncOffer(): void {
   const { updateSettings, updateSettingsOrThrow } = useAppStore.getState()
   // Why settle before showing: shown means answered, so a dismiss, quit or reload never asks again.
   void updateSettings({ claudeCodeThemeSyncOffer: 'settled' })
-  toast(translate('terminal.claudeThemeSyncOffer.title', 'Match Claude Code to your Orca theme?'), {
+  toast(translate('terminal.claudeThemeSyncOffer.title', 'Match Claude Code to your Topo theme?'), {
     // Why a stable id: a late settings sync can't stack a second offer.
     id: OFFER_TOAST_ID,
     description: translate(
       'terminal.claudeThemeSyncOffer.description',
-      'Claude Code on this computer would use your terminal colors and follow theme changes, including outside Orca. You can change this in Settings.'
+      'Claude Code on this computer would use your terminal colors and follow theme changes, including outside Topo. You can change this in Settings.'
     ),
     duration: Infinity,
     classNames: TRAILING_ACTIONS_CLASS_NAMES,
@@ -37,7 +37,7 @@ function showClaudeThemeSyncOffer(): void {
               {
                 description: translate(
                   'terminal.claudeThemeSyncOffer.acceptedDescription',
-                  'New Claude Code sessions on this computer use your Orca theme.'
+                  'New Claude Code sessions on this computer use your Topo theme.'
                 )
               }
             ),
@@ -64,7 +64,7 @@ function showClaudeThemeSyncOffer(): void {
   })
 }
 
-/** Offers theme sync once, when Claude Code first runs in an Orca terminal. */
+/** Offers theme sync once, when Claude Code first runs in a Topo terminal. */
 export function useClaudeThemeSyncOffer(): void {
   const due = useAppStore(isOfferDue)
 

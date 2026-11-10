@@ -15,7 +15,7 @@ import {
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 
 vi.mock('electron', () => ({
   app: {
@@ -39,16 +39,16 @@ afterEach(async () => {
 })
 
 async function createPrivilegedFixture() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-cli-privileged-transaction-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-cli-privileged-transaction-'))
   createdRoots.push(root)
   const protectedDirectory = join(root, 'protected')
   protectedDirectories.push(protectedDirectory)
-  const commandPath = join(protectedDirectory, 'orca')
+  const commandPath = join(protectedDirectory, 'topo')
   const userDataPath = join(root, 'user-data')
   const appPath = join(root, 'app')
   await mkdir(protectedDirectory)
   await mkdir(join(appPath, 'out', 'cli'), { recursive: true })
-  await writeFile(join(appPath, 'out', 'cli', 'index.js'), 'console.log("orca")\n')
+  await writeFile(join(appPath, 'out', 'cli', 'index.js'), 'console.log("topo")\n')
   return { root, protectedDirectory, commandPath, userDataPath, appPath }
 }
 
@@ -69,7 +69,7 @@ function fixtureInstallerOptions(fixture: Awaited<ReturnType<typeof createPrivil
     isPackaged: false,
     userDataPath: fixture.userDataPath,
     appPath: fixture.appPath,
-    execPath: '/Applications/Orca.app/Contents/MacOS/Orca',
+    execPath: '/Applications/Topo.app/Contents/MacOS/Topo',
     commandPathOverride: fixture.commandPath,
     processPathEnv: fixture.protectedDirectory
   }
@@ -106,7 +106,7 @@ describe.skipIf(process.platform !== 'darwin' || process.getuid?.() === 0)(
 
     it('restores a trailing-newline symlink inserted after privileged inspection', async () => {
       const fixture = await createPrivilegedFixture()
-      const staleTarget = join(fixture.userDataPath, 'cli', 'bin', 'old', 'orca')
+      const staleTarget = join(fixture.userDataPath, 'cli', 'bin', 'old', 'topo')
       const foreignTarget = `${staleTarget}\n`
       await symlink(staleTarget, fixture.commandPath)
       const original = await lstat(fixture.commandPath, { bigint: true })
@@ -134,7 +134,7 @@ describe.skipIf(process.platform !== 'darwin' || process.getuid?.() === 0)(
       await expect(installer.install()).rejects.toThrow()
       await expect(readlink(fixture.commandPath)).resolves.toBe(foreignTarget)
       expect(
-        (await readdir(fixture.protectedDirectory)).some((name) => name.startsWith('.orca-cli-'))
+        (await readdir(fixture.protectedDirectory)).some((name) => name.startsWith('.topo-cli-'))
       ).toBe(false)
     })
 
@@ -143,7 +143,7 @@ describe.skipIf(process.platform !== 'darwin' || process.getuid?.() === 0)(
       const oldCliPath = join(fixture.root, 'old', 'out', 'cli', 'index.js')
       await writeFile(
         fixture.commandPath,
-        buildUnixCliLauncher('/Applications/Old.app/Contents/MacOS/Orca', oldCliPath, 'user-data')
+        buildUnixCliLauncher('/Applications/Old.app/Contents/MacOS/Topo', oldCliPath, 'user-data')
       )
       const foreignContent = 'foreign command written into the inspected inode'
       let raced = false
@@ -163,7 +163,7 @@ describe.skipIf(process.platform !== 'darwin' || process.getuid?.() === 0)(
       await expect(installer.install()).rejects.toThrow()
       await expect(readFile(fixture.commandPath, 'utf8')).resolves.toBe(foreignContent)
       expect(
-        (await readdir(fixture.protectedDirectory)).some((name) => name.startsWith('.orca-cli-'))
+        (await readdir(fixture.protectedDirectory)).some((name) => name.startsWith('.topo-cli-'))
       ).toBe(false)
     })
 
@@ -194,9 +194,9 @@ describe.skipIf(process.platform !== 'darwin' || process.getuid?.() === 0)(
       await expect(readlink(fixture.commandPath)).resolves.toBe(launcherPath)
     })
 
-    it('repairs an unreadable link to an older Orca launcher through the transaction', async () => {
+    it('repairs an unreadable link to an older Topo launcher through the transaction', async () => {
       const fixture = await createPrivilegedFixture()
-      await symlink('/Applications/Old Orca.app/Contents/Resources/bin/orca', fixture.commandPath)
+      await symlink('/Applications/Old Topo.app/Contents/Resources/bin/topo', fixture.commandPath)
       await lchmod(fixture.commandPath, 0o300)
       const commands: string[] = []
       const installer = new CliInstaller({
@@ -217,9 +217,9 @@ describe.skipIf(process.platform !== 'darwin' || process.getuid?.() === 0)(
       expect((await lstat(fixture.commandPath)).mode & 0o777).toBe(0o755)
     })
 
-    it('refuses an unreadable symlink that is not an Orca launcher once root makes it readable', async () => {
+    it('refuses an unreadable symlink that is not a Topo launcher once root makes it readable', async () => {
       const fixture = await createPrivilegedFixture()
-      const foreignTarget = '/opt/other/bin/orca'
+      const foreignTarget = '/opt/other/bin/topo'
       await symlink(foreignTarget, fixture.commandPath)
       await lchmod(fixture.commandPath, 0o300)
       const installer = new CliInstaller({
@@ -228,16 +228,16 @@ describe.skipIf(process.platform !== 'darwin' || process.getuid?.() === 0)(
       })
 
       await chmod(fixture.protectedDirectory, 0o500)
-      await expect(installer.install()).rejects.toThrow(/Refusing to replace non-Orca command/)
+      await expect(installer.install()).rejects.toThrow(/Refusing to replace non-Topo command/)
       await expect(readlink(fixture.commandPath)).resolves.toBe(foreignTarget)
       expect(
-        (await readdir(fixture.protectedDirectory)).some((name) => name.startsWith('.orca-cli-'))
+        (await readdir(fixture.protectedDirectory)).some((name) => name.startsWith('.topo-cli-'))
       ).toBe(false)
     })
 
     it('restores the displaced command when publication setup fails', async () => {
       const fixture = await createPrivilegedFixture()
-      const staleTarget = join(fixture.userDataPath, 'cli', 'bin', 'old', 'orca')
+      const staleTarget = join(fixture.userDataPath, 'cli', 'bin', 'old', 'topo')
       await symlink(staleTarget, fixture.commandPath)
       const installer = new CliInstaller({
         ...fixtureInstallerOptions(fixture),
@@ -253,7 +253,7 @@ describe.skipIf(process.platform !== 'darwin' || process.getuid?.() === 0)(
       await expect(installer.install()).rejects.toThrow()
       await expect(readlink(fixture.commandPath)).resolves.toBe(staleTarget)
       expect(
-        (await readdir(fixture.protectedDirectory)).some((name) => name.startsWith('.orca-cli-'))
+        (await readdir(fixture.protectedDirectory)).some((name) => name.startsWith('.topo-cli-'))
       ).toBe(false)
     })
   }

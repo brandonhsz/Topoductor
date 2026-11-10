@@ -7,7 +7,7 @@ import { useAppStore } from '@/store'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import type { AgentSessionStatusEvent } from '../../../../../../shared/agent-session/agent-session-wire'
 import type { AgentMessageSource } from '../../../../../../shared/agent-session/agent-session-message-source'
-import { testOrcaSessionId } from '../../../../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../../../../shared/topo-session-address-test-fixture'
 import type { Tab } from '../../../../../../shared/tab-types'
 import type { RuntimeClientTarget } from '../../../../../../shared/runtime-client-target'
 import { AGENT_SESSION_STATUS_FEED_RUNTIME_CAPABILITY } from '../../../../../../shared/agent-session/agent-session-attention-capabilities'
@@ -76,7 +76,7 @@ import {
 } from '@/runtime/native-chat/status/structured-agent-session-status-feed'
 
 const WORKSPACE = 'shared-workspace'
-const ROOT = testOrcaSessionId('root-chat')
+const ROOT = testTopoSessionId('root-chat')
 const initial = useAppStore.getInitialState()
 const previousApi = Object.getOwnPropertyDescriptor(window, 'api')
 import { installNativeChatMessageListTestViewport } from '../../viewport/virtualization/native-chat-message-list-test-viewport'
@@ -102,7 +102,7 @@ function tab(id: string, sessionId: string, name: string, host: 'local' | 'runti
   }
 }
 function source(terminal = false): AgentMessageSource {
-  const address = terminal ? 'term-sender' : `orca_session_id:${ROOT}`
+  const address = terminal ? 'term-sender' : `topo_session_id:${ROOT}`
   return {
     kind: 'agent',
     senders: [
@@ -110,7 +110,7 @@ function source(terminal = false): AgentMessageSource {
         party: {
           address,
           terminalHandle: terminal ? address : null,
-          orcaSessionId: terminal ? null : ROOT
+          topoSessionId: terminal ? null : ROOT
         },
         name: 'Recorded sender'
       }

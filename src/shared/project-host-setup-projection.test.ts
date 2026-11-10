@@ -19,8 +19,8 @@ describe('project host setup projection', () => {
   it('keeps timestamps stable when addedAt is 0 across different now values', () => {
     const target = repo({
       id: 'repo-1',
-      path: '/Users/alice/orca',
-      displayName: 'orca',
+      path: '/Users/alice/topo',
+      displayName: 'topo',
       addedAt: 0
     })
     const first = projectHostSetupProjectionFromRepos([target], 1_000)
@@ -38,18 +38,18 @@ describe('project host setup projection', () => {
   // Unknown timestamps may occur first in host/disk order; neither order may erase known sibling times.
   const timestampedSibling = repo({
     id: 'local-repo',
-    path: '/Users/alice/orca',
-    displayName: 'Orca',
+    path: '/Users/alice/topo',
+    displayName: 'Topo',
     addedAt: 100,
-    upstream: { owner: 'StablyAI', repo: 'Orca' }
+    upstream: { owner: 'Brandonhsz', repo: 'Topo' }
   })
   const unknownSibling = repo({
     id: 'remote-repo',
-    path: '/home/alice/orca',
-    displayName: 'orca',
+    path: '/home/alice/topo',
+    displayName: 'topo',
     addedAt: 0,
     connectionId: 'gpu-vm',
-    upstream: { owner: 'stablyai', repo: 'orca' }
+    upstream: { owner: 'brandonhsz', repo: 'topo' }
   })
 
   it('does not wipe a persisted createdAt when a sibling repo has addedAt 0', () => {
@@ -88,8 +88,8 @@ describe('project host setup projection', () => {
     const projection = projectHostSetupProjectionFromRepos([
       repo({
         id: 'remote-repo',
-        path: '/home/alice/orca',
-        displayName: 'orca',
+        path: '/home/alice/topo',
+        displayName: 'topo',
         connectionId: 'openclaw 2',
         worktreeBasePath: '../worktrees',
         gitUsername: 'alice'
@@ -109,28 +109,28 @@ describe('project host setup projection', () => {
     const projection = projectHostSetupProjectionFromRepos([
       repo({
         id: 'local-repo',
-        path: '/Users/alice/orca',
-        displayName: 'Orca',
-        upstream: { owner: 'StablyAI', repo: 'Orca' }
+        path: '/Users/alice/topo',
+        displayName: 'Topo',
+        upstream: { owner: 'Brandonhsz', repo: 'Topo' }
       }),
       repo({
         id: 'remote-repo',
-        path: '/home/alice/orca',
-        displayName: 'orca',
+        path: '/home/alice/topo',
+        displayName: 'topo',
         connectionId: 'gpu-vm',
-        upstream: { owner: 'stablyai', repo: 'orca' }
+        upstream: { owner: 'brandonhsz', repo: 'topo' }
       })
     ])
 
     expect(projection.projects).toHaveLength(1)
     expect(projection.projects[0]).toMatchObject({
-      id: 'github:stablyai/orca',
+      id: 'github:brandonhsz/topo',
       sourceRepoIds: ['local-repo', 'remote-repo'],
-      providerIdentity: { provider: 'github', owner: 'StablyAI', repo: 'Orca' }
+      providerIdentity: { provider: 'github', owner: 'Brandonhsz', repo: 'Topo' }
     })
-    expect(getProjectHostSetupsForProject(projection.setups, 'github:stablyai/orca')).toHaveLength(
-      2
-    )
+    expect(
+      getProjectHostSetupsForProject(projection.setups, 'github:brandonhsz/topo')
+    ).toHaveLength(2)
   })
 
   it('keeps same-named github.com and GHES repositories in separate projects', () => {
@@ -203,71 +203,71 @@ describe('project host setup projection', () => {
     const projection = projectHostSetupProjectionFromRepos([
       repo({
         id: 'local-repo',
-        path: '/Users/alice/orca',
-        displayName: 'Orca',
+        path: '/Users/alice/topo',
+        displayName: 'Topo',
         repoIcon: {
           type: 'image',
-          src: 'https://github.com/stablyai.png?size=64',
+          src: 'https://github.com/brandonhsz.png?size=64',
           source: 'github',
-          label: 'stablyai/orca'
+          label: 'brandonhsz/topo'
         }
       }),
       repo({
         id: 'remote-repo',
-        path: '/home/alice/orca',
-        displayName: 'orca',
+        path: '/home/alice/topo',
+        displayName: 'topo',
         connectionId: 'gpu-vm',
         repoIcon: {
           type: 'image',
-          src: 'https://github.com/stablyai.png?size=64',
+          src: 'https://github.com/brandonhsz.png?size=64',
           source: 'github',
-          label: 'StablyAI/Orca'
+          label: 'Brandonhsz/Topo'
         }
       })
     ])
 
     expect(projection.projects).toHaveLength(1)
     expect(projection.projects[0]).toMatchObject({
-      id: 'github:stablyai/orca',
+      id: 'github:brandonhsz/topo',
       sourceRepoIds: ['local-repo', 'remote-repo'],
-      providerIdentity: { provider: 'github', owner: 'stablyai', repo: 'orca' }
+      providerIdentity: { provider: 'github', owner: 'brandonhsz', repo: 'topo' }
     })
-    expect(getProjectHostSetupsForProject(projection.setups, 'github:stablyai/orca')).toHaveLength(
-      2
-    )
+    expect(
+      getProjectHostSetupsForProject(projection.setups, 'github:brandonhsz/topo')
+    ).toHaveLength(2)
   })
 
   it('uses git remote identity as a provider identity fallback', () => {
     const projection = projectHostSetupProjectionFromRepos([
       repo({
         id: 'canonical-local-repo',
-        path: '/Users/alice/stably/orca',
-        displayName: 'orca',
+        path: '/Users/alice/stably/topo',
+        displayName: 'topo',
         gitRemoteIdentity: {
-          canonicalKey: 'github.com/stablyai/orca',
+          canonicalKey: 'github.com/brandonhsz/topo',
           remoteName: 'origin',
-          remoteUrl: 'git@github.com:stablyai/orca.git'
+          remoteUrl: 'git@github.com:brandonhsz/topo.git'
         }
       }),
       repo({
         id: 'old-branch-checkout',
-        path: '/Users/alice/orca/workspaces/orca/re-enable-webgl-for-remote-runtime-terminals',
+        path: '/Users/alice/topo/workspaces/topo/re-enable-webgl-for-remote-runtime-terminals',
         displayName: 're-enable-webgl-for-remote-runtime-terminals',
         repoIcon: {
           type: 'image',
-          src: 'https://github.com/stablyai.png?size=64',
+          src: 'https://github.com/brandonhsz.png?size=64',
           source: 'github',
-          label: 'stablyai/orca'
+          label: 'brandonhsz/topo'
         }
       })
     ])
 
     expect(projection.projects).toHaveLength(1)
     expect(projection.projects[0]).toMatchObject({
-      id: 'github:stablyai/orca',
-      displayName: 'orca',
+      id: 'github:brandonhsz/topo',
+      displayName: 'topo',
       sourceRepoIds: ['canonical-local-repo', 'old-branch-checkout'],
-      providerIdentity: { provider: 'github', owner: 'stablyai', repo: 'orca' }
+      providerIdentity: { provider: 'github', owner: 'brandonhsz', repo: 'topo' }
     })
   })
 
@@ -434,9 +434,9 @@ describe('project host setup projection', () => {
     const projection = projectHostSetupProjectionFromRepos([
       repo({
         id: 'repo-1',
-        path: '/Users/alice/orca',
-        displayName: 'orca',
-        upstream: { owner: 'stablyai', repo: 42 } as never
+        path: '/Users/alice/topo',
+        displayName: 'topo',
+        upstream: { owner: 'brandonhsz', repo: 42 } as never
       })
     ])
 
@@ -447,15 +447,15 @@ describe('project host setup projection', () => {
   it('derives workspace ownership metadata from the repo setup', () => {
     const targetRepo = repo({
       id: 'remote-repo',
-      path: '/home/alice/orca',
-      displayName: 'orca',
+      path: '/home/alice/topo',
+      displayName: 'topo',
       connectionId: 'openclaw 2',
-      upstream: { owner: 'stablyai', repo: 'orca' }
+      upstream: { owner: 'brandonhsz', repo: 'topo' }
     })
     const projection = projectHostSetupProjectionFromRepos([targetRepo])
 
     expect(getProjectHostSetupWorktreeMeta(projection.setups, targetRepo)).toEqual({
-      projectId: 'github:stablyai/orca',
+      projectId: 'github:brandonhsz/topo',
       hostId: 'ssh:openclaw%202',
       projectHostSetupId: 'remote-repo'
     })
@@ -501,14 +501,14 @@ describe('getProjectHostSetupWorktreeMeta host selection', () => {
   it("picks the setup for the repo's own execution host when a repoId spans two hosts", () => {
     const sshRepo = repo({
       id: 'repo-shared',
-      path: '/remote/orca',
-      displayName: 'orca',
+      path: '/remote/topo',
+      displayName: 'topo',
       connectionId: 'build-box'
     })
     // Local first in the array: a repoId-only match would stamp the wrong host durably.
     const setups = [
       ...projectHostSetupProjectionFromRepos([
-        repo({ id: 'repo-shared', path: '/local/orca', displayName: 'orca' })
+        repo({ id: 'repo-shared', path: '/local/topo', displayName: 'topo' })
       ]).setups,
       ...projectHostSetupProjectionFromRepos([sshRepo]).setups
     ]

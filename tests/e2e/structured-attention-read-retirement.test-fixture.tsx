@@ -182,7 +182,7 @@ export function dismissIds(): string[] {
 beforeEach(() => {
   vi.clearAllMocks()
   vi.spyOn(document, 'hasFocus').mockReturnValue(true)
-  const directory = mkdtempSync(join(tmpdir(), 'orca-renderer-read-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-renderer-read-'))
   installStructuredHostStub()
   const host = getStructuredAgentSessionHost()
   if (!host) {

@@ -80,7 +80,7 @@ const RESUMED = {
   runtime: { id: 'vm-1', status: 'running', recipeResult: {} }
 }
 
-describe('opening a workspace whose VM host Orca gave up reaching', () => {
+describe('opening a workspace whose VM host Topo gave up reaching', () => {
   afterEach(() => {
     vi.useRealTimers()
     state.record = { ...UP_RECORD }

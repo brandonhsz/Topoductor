@@ -50,7 +50,7 @@ type SshPane = {
 
 function createRelay(forwardTo: () => AgentHookServer): RelayAgentHookServer {
   return new RelayAgentHookServer({
-    endpointDir: temporaryDir('orca-relayed-cancel-'),
+    endpointDir: temporaryDir('topo-relayed-cancel-'),
     token: 'relayed-cancel-token',
     forward: (envelope) => forwardTo().ingestRemote(envelope, 'conn-1')
   })
@@ -64,7 +64,7 @@ async function startSshPane(desktop: AgentHookServer): Promise<SshPane> {
       const { port, token } = pane.relay.getCoordinates()
       const response = await fetch(`http://127.0.0.1:${port}/hook/claude`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Orca-Agent-Hook-Token': token },
+        headers: { 'Content-Type': 'application/json', 'X-Topo-Agent-Hook-Token': token },
         body: JSON.stringify(buildBody(payload))
       })
       expect(response.status).toBe(204)
@@ -199,7 +199,7 @@ describe('a relayed Claude cancel with a live subagent (captured)', () => {
   })
 
   it('does not read a restart-seeded local roster for a relayed pane', async () => {
-    const userDataPath = temporaryDir('orca-relayed-cancel-restart-')
+    const userDataPath = temporaryDir('topo-relayed-cancel-restart-')
     const firstDesktop = new AgentHookServer()
     await firstDesktop.start({ env: 'production', userDataPath })
     const pane = await startSshPane(firstDesktop)

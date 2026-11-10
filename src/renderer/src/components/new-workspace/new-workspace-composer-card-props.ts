@@ -10,7 +10,7 @@ import type {
   NeedsSetupProjectHostOption,
   ProjectHostSetupOption
 } from '@/lib/project-host-setup-options'
-import type { SetupConfig } from '../../../../shared/orca-hook-setup-config'
+import type { SetupConfig } from '../../../../shared/topo-hook-setup-config'
 import type { WorkspaceCreateErrorDisplay } from '@/lib/workspace-create-error-format'
 import type { SmartNameMode } from '../../../../shared/new-workspace/smart-workspace-source-results'
 import type SmartWorkspaceNameField from './SmartWorkspaceNameField'
@@ -19,7 +19,7 @@ import type { GitHubWorkItem } from '../../../../shared/github/work-item-types'
 import type { GitLabWorkItem } from '../../../../shared/gitlab-types'
 import type { JiraIssue } from '../../../../shared/jira/jira-types'
 import type { LinearIssue } from '../../../../shared/linear/issue-types'
-import type { OrcaHooks, SetupAgentStartupPolicy } from '../../../../shared/orca-yaml-hook-types'
+import type { TopoHooks, SetupAgentStartupPolicy } from '../../../../shared/topo-yaml-hook-types'
 import type { SparsePreset } from '../../../../shared/worktree/create-types'
 import type { SshConnectionStatus } from '../../../../shared/ssh-types'
 import type { TaskSourceContext } from '../../../../shared/work-items/task-source-context'
@@ -27,7 +27,7 @@ import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent
 import type { ExecutionHostId } from '../../../../shared/execution-host'
 
 export type RepoOption = React.ComponentProps<typeof RepoCombobox>['repos'][number]
-export type EphemeralVmRecipeOption = NonNullable<OrcaHooks['environmentRecipes']>[number]
+export type EphemeralVmRecipeOption = NonNullable<TopoHooks['environmentRecipes']>[number]
 
 export const EMPTY_PROJECT_OPTIONS: NewWorkspaceProjectOption[] = []
 export const EMPTY_PROJECT_HOST_SETUP_OPTIONS: ProjectHostSetupOption[] = []

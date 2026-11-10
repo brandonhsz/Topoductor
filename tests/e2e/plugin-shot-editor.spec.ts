@@ -1,5 +1,5 @@
 /**
- * Invariant: `orca plugin shot --editor` opens a file in a plugin's custom editor from the hidden
+ * Invariant: `topo plugin shot --editor` opens a file in a plugin's custom editor from the hidden
  * test window, waits for the editor to get and ask for its document, sends `--act` input into the
  * editor's isolated guest on a temporary copy of the file, and captures what it drew without showing or focusing the window. A
  * file no workspace holds opens its folder as a folder workspace; an editor that never asks for its
@@ -10,8 +10,8 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { ElectronApplication } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
-import { runCompiledOrcaCli } from './helpers/compiled-orca-cli'
+import { expect, test } from './helpers/topo-app'
+import { runCompiledTopoCli } from './helpers/compiled-topo-cli'
 import { disablePluginSystem, enableDevPlugins } from './helpers/plugin-smoke'
 import { ISOLATED_FRAMES_E2E } from './helpers/plugin-frame-guest'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
@@ -69,11 +69,11 @@ async function editorPlugin(root: string, id: string, extension: string, html: s
 
 test('plugin shot --editor opens the file, acts in the guest and fails a broken editor', async ({
   electronApp,
-  orcaPage
+  topoPage
 }) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-editor-shot-'))
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-editor-shot-'))
   try {
     const good = await editorPlugin(tempRoot, 'red-click', '.redclick', EDITOR_HTML)
     const broken = await editorPlugin(tempRoot, 'broken-editor', '.broken', BROKEN_HTML)
@@ -82,13 +82,13 @@ test('plugin shot --editor opens the file, acts in the guest and fails a broken 
     await mkdir(docs)
     await writeFile(join(docs, 'a.redclick'), 'x')
     await writeFile(join(docs, 'b.broken'), 'x')
-    await enableDevPlugins(orcaPage, [good, broken])
+    await enableDevPlugins(topoPage, [good, broken])
     const userDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'))
 
     await expect
       .poll(
         async () => {
-          const run = await runCompiledOrcaCli(userDataDir, [
+          const run = await runCompiledTopoCli(userDataDir, [
             'plugin',
             'shot',
             'local.red-click',
@@ -113,11 +113,11 @@ test('plugin shot --editor opens the file, acts in the guest and fails a broken 
     // The acts ran on a copy: the file is unchanged, and no tab or workspace of the copy is left.
     expect(await readFile(join(docs, 'a.redclick'), 'utf8')).toBe('x')
     expect(
-      await orcaPage.evaluate(() => {
+      await topoPage.evaluate(() => {
         const state = window.__store?.getState()
         return {
           tabs: state?.openFiles.filter((file) => file.filePath.endsWith('a.redclick')).length,
-          scratch: state?.repos.filter((repo) => repo.path.includes('orca-editor-shot-')).length
+          scratch: state?.repos.filter((repo) => repo.path.includes('topo-editor-shot-')).length
         }
       })
     ).toEqual({ tabs: 0, scratch: 0 })
@@ -127,7 +127,7 @@ test('plugin shot --editor opens the file, acts in the guest and fails a broken 
       )
     ).toBe(false)
 
-    const failed = await runCompiledOrcaCli(userDataDir, [
+    const failed = await runCompiledTopoCli(userDataDir, [
       'plugin',
       'shot',
       'local.broken-editor',
@@ -140,8 +140,8 @@ test('plugin shot --editor opens the file, acts in the guest and fails a broken 
     expect(failed.stdout).toContain('never asked for its document')
     expect(failed.stdout).toContain('editor exploded')
 
-    // Orca's own chrome, where plugins draw status bar items, from the hidden window too.
-    const statusBar = await runCompiledOrcaCli(userDataDir, [
+    // Topo's own chrome, where plugins draw status bar items, from the hidden window too.
+    const statusBar = await runCompiledTopoCli(userDataDir, [
       'plugin',
       'shot',
       'local.red-click',
@@ -157,7 +157,7 @@ test('plugin shot --editor opens the file, acts in the guest and fails a broken 
       )
     ).toBe(false)
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(tempRoot, { recursive: true, force: true })
   }
 })

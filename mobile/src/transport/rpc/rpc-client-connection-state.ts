@@ -78,7 +78,7 @@ export class RpcClientConnectionState {
             if (index !== -1) {
               this.waiters.splice(index, 1)
             }
-            reject(new Error('Timed out while connecting to the remote Orca runtime.'))
+            reject(new Error('Timed out while connecting to the remote Topo runtime.'))
           },
           Math.max(0, timeoutMs)
         )

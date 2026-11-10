@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 const {
   callMock,
   runtimeClientConstructorMock,
-  serveOrcaAppMock,
+  serveTopoAppMock,
   getDefaultUserDataPathMock,
   addEnvironmentFromPairingCodeMock,
   listEnvironmentsMock,
@@ -11,8 +11,8 @@ const {
 } = vi.hoisted(() => ({
   callMock: vi.fn(),
   runtimeClientConstructorMock: vi.fn(),
-  serveOrcaAppMock: vi.fn(),
-  getDefaultUserDataPathMock: vi.fn(() => '/tmp/orca-user-data'),
+  serveTopoAppMock: vi.fn(),
+  getDefaultUserDataPathMock: vi.fn(() => '/tmp/topo-user-data'),
   addEnvironmentFromPairingCodeMock: vi.fn(),
   listEnvironmentsMock: vi.fn(),
   spawnMock: vi.fn()
@@ -23,7 +23,7 @@ vi.mock('./runtime-client', async () => {
   return createRuntimeClientModuleMock({
     callMock,
     runtimeClientConstructorMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock
   })
 })
@@ -60,10 +60,10 @@ function readFixture(overrides: Record<string, unknown> = {}) {
   })
 }
 
-describe('orca terminal read --screen', () => {
+describe('topo terminal read --screen', () => {
   useWorktreeAwarenessEnvironment({
     callMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock,
     addEnvironmentFromPairingCodeMock,
     listEnvironmentsMock,

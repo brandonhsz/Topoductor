@@ -2,7 +2,7 @@ import { createContext } from 'react'
 import type { MobileStructuredInterruptedContinue } from './use-mobile-structured-interrupted-continue'
 import type { MobileNativeChatUsageLimit } from './native-chat/use-mobile-native-chat-usage-limit'
 
-/** What a notice row needs: the Orca host behind the chat (null when unnamed), the agent, and Continue for an Orca-stopped turn. */
+/** What a notice row needs: the Topo host behind the chat (null when unnamed), the agent, and Continue for a Topo-stopped turn. */
 export type MobileNativeChatNoticeView = {
   hostName: string | null
   agentName?: string

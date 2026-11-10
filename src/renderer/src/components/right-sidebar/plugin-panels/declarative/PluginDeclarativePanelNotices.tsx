@@ -61,7 +61,7 @@ export function PluginDeclarativeIssueNotice({
     )
   }
   return (
-    // Polite and plugin-attributed: this is the plugin's text, not an Orca failure.
+    // Polite and plugin-attributed: this is the plugin's text, not a Topo failure.
     <div
       role="status"
       className="border-b border-border px-3 py-1.5 text-xs break-words text-muted-foreground"

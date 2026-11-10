@@ -5,26 +5,26 @@
 **Please do not report security vulnerabilities through public GitHub issues, pull requests, or discussions.**
 
 Report them privately through GitHub instead:
-[**Security → Report a vulnerability**](https://github.com/stablyai/orca/security/advisories/new).
+[**Security → Report a vulnerability**](https://github.com/brandonhsz/Topoductor/security/advisories/new).
 Only you and the maintainers can see the report. The maintainers may invite you to work on the fix with them in a temporary private fork.
 
 Please include:
 
-- the affected component (for example: desktop app, CLI, `orca serve`, SSH relay, mobile app or pairing, runtime RPC, browser pane, agent hooks, Orca Cloud relay)
-- the Orca version or commit, and the operating system
+- the affected component (for example: desktop app, CLI, `topo serve`, SSH relay, mobile app or pairing, runtime RPC, browser pane, agent hooks, Topo Cloud relay)
+- the Topo version or commit, and the operating system
 - steps to reproduce, or a proof of concept
 - the impact: what an attacker could do, and what access they need first (local user, same network, a malicious repository, a malicious web page, a compromised SSH host)
 
 ## Scope
 
-Orca runs agents, terminals and Git against local repositories, remote SSH hosts and paired devices. Examples of what is in scope:
+Topo runs agents, terminals and Git against local repositories, remote SSH hosts and paired devices. Examples of what is in scope:
 
 - secrets or credentials (agent-hook tokens, pairing keys, Git or provider credentials) reaching a process, host or page that should not have them
 - IPC or RPC trust boundaries that a renderer, web page, deep link or remote host can cross
 - command or path injection through repository content, branch names, file names or deep links
-- unauthenticated access to a local or network-reachable Orca service
+- unauthenticated access to a local or network-reachable Topo service
 
-Out of scope: vulnerabilities in third-party agent CLIs, the user's own Git or SSH binaries, or upstream dependencies, unless Orca's use of them makes the problem worse. Please report those to their maintainers.
+Out of scope: vulnerabilities in third-party agent CLIs, the user's own Git or SSH binaries, or upstream dependencies, unless Topo's use of them makes the problem worse. Please report those to their maintainers.
 
 ## Supported Versions
 

@@ -10,7 +10,7 @@ import {
   text
 } from './plugin-declarative-prop-schemas'
 
-/** Form controls added in catalog 2 (Orca 1.4.247). Each value control follows the edit protocol. */
+/** Form controls added in catalog 2 (Topo 1.4.247). Each value control follows the edit protocol. */
 
 const textareaProps = z
   .object({

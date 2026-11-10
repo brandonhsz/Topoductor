@@ -6,7 +6,7 @@ import {
   getTerminalPasteIngestMs
 } from '../../../../shared/agent-launch/startup/agent-prompt-injection'
 
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { makeStore } from '../../rpc/server/runtime-rpc-worktree-store-fixtures'
 
 const WORKTREE_PATH = '/tmp/worktree-a'
@@ -85,13 +85,13 @@ describe('agent prompt render gate on a ConPTY host', () => {
       noise?: string
     } = {}
   ): Promise<{
-    runtime: OrcaRuntimeService
+    runtime: TopoRuntimeService
     handle: string
     writes: string[]
     submitTimes: number[]
   }> {
     const markerDelayMs = agentOutput.markerDelayMs ?? 100
-    const runtime = new OrcaRuntimeService(makeStore() as never)
+    const runtime = new TopoRuntimeService(makeStore() as never)
     const writes: string[] = []
     const submitTimes: number[] = []
     const startedAt = Date.now()

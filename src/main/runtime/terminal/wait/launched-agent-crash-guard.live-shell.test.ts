@@ -38,14 +38,14 @@ let home = ''
 let savedLoginOptOut: string | undefined
 
 beforeEach(() => {
-  home = mkdtempSync(join(tmpdir(), 'orca-crash-guard-'))
-  savedLoginOptOut = process.env.ORCA_DISABLE_MACOS_LOGIN_SHELL
-  delete process.env.ORCA_DISABLE_MACOS_LOGIN_SHELL
+  home = mkdtempSync(join(tmpdir(), 'topo-crash-guard-'))
+  savedLoginOptOut = process.env.TOPO_DISABLE_MACOS_LOGIN_SHELL
+  delete process.env.TOPO_DISABLE_MACOS_LOGIN_SHELL
 })
 
 afterEach(() => {
   if (savedLoginOptOut !== undefined) {
-    process.env.ORCA_DISABLE_MACOS_LOGIN_SHELL = savedLoginOptOut
+    process.env.TOPO_DISABLE_MACOS_LOGIN_SHELL = savedLoginOptOut
   }
   rmSync(home, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 })
 })

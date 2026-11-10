@@ -25,7 +25,7 @@ import {
   wrapReadablePosixHookCommand
 } from '../../hooks/definitions/codex-hook-definition'
 import { buildCodexHookCommand as getManagedCommand } from '../../hooks/definitions/codex-hook-command-form'
-import { getOrcaManagedCodexHomePath } from '../../configuration/homes/codex-home-paths'
+import { getTopoManagedCodexHomePath } from '../../configuration/homes/codex-home-paths'
 import {
   removeCodexManagedHookTrustEntries,
   removeStaleWslCodexManagedHookTrustEntries
@@ -138,7 +138,7 @@ export function removeRuntimeManagedHookTrustEntries(
     removeCodexManagedHookTrustEntries({
       codexHashes,
       tomlPath: getCodexConfigTomlPath(),
-      runtimeHomePath: getOrcaManagedCodexHomePath(),
+      runtimeHomePath: getTopoManagedCodexHomePath(),
       sourcePaths: [configPath],
       command: getManagedCommand(getManagedScriptPath()),
       managedEventLabels: CODEX_MANAGED_EVENT_LABELS,
@@ -181,7 +181,7 @@ export function removeStaleWslRuntimeManagedHookTrustEntries(
     managedEventLabels: CODEX_MANAGED_EVENT_LABELS,
     timeoutSec: MANAGED_HOOK_TIMEOUT_SECONDS,
     buildManagedCommand: (linuxRuntimeHome) =>
-      wrapReadablePosixHookCommand(`${linuxRuntimeHome}/.orca/agent-hooks/codex-hook.sh`),
+      wrapReadablePosixHookCommand(`${linuxRuntimeHome}/.topo/agent-hooks/codex-hook.sh`),
     priorLedgerHomes
   })
 }

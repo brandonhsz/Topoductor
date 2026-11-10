@@ -4,10 +4,10 @@ import {
   type ApnsEnvironment,
   type PushDeviceSummary,
   type PushPlatform
-} from '@orca-cloud/push-contract'
+} from '@topo-cloud/push-contract'
 import type { PushDatabase, SqlRow } from './push-database.js'
 
-const DEVICE_CAP_LOCK_PREFIX = 'orca-push-device-cap:'
+const DEVICE_CAP_LOCK_PREFIX = 'topo-push-device-cap:'
 
 export type PushDeviceRegistration = {
   registrationId: string

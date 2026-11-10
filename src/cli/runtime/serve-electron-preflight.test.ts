@@ -22,7 +22,7 @@ beforeAll(async () => {
 const METADATA: RuntimeMetadata = {
   runtimeId: 'runtime-1',
   pid: 4242,
-  transports: [{ kind: 'unix', endpoint: '/tmp/orca-test.sock' }],
+  transports: [{ kind: 'unix', endpoint: '/tmp/topo-test.sock' }],
   authToken: 'token',
   startedAt: 1
 }
@@ -37,7 +37,7 @@ describe('preflightElectronServe', () => {
   let stdout: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
-    userData = mkdtempSync(join(tmpdir(), 'orca-serve-preflight-'))
+    userData = mkdtempSync(join(tmpdir(), 'topo-serve-preflight-'))
     stderr = vi.spyOn(process.stderr, 'write').mockImplementation(() => true)
     stdout = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
   })
@@ -107,7 +107,7 @@ describe('preflightElectronServe', () => {
     const fingerprint = () => 'Background|ssh=1|sandbox=0'
 
     it('refuses a later run from the same environment with exit 78 before anything else', () => {
-      recordElectronServeStartupAbort(userData, 'Orca serve aborted with SIGABRT on macOS.', {
+      recordElectronServeStartupAbort(userData, 'Topo serve aborted with SIGABRT on macOS.', {
         now: 1_000,
         fingerprint
       })
@@ -144,7 +144,7 @@ describe.skipIf(process.platform === 'win32')('serve private admission snapshots
   let server: ReturnType<typeof createServer> | undefined
   const sockets = new Set<Socket>()
   beforeEach(() => {
-    root = mkdtempSync(join(tmpdir(), 'orca-serve-admission-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-serve-admission-'))
     vi.spyOn(process.stderr, 'write').mockImplementation(() => true)
   })
   afterEach(async () => {
@@ -164,7 +164,7 @@ describe.skipIf(process.platform === 'win32')('serve private admission snapshots
   })
   function publish(pid = 2147483647, endpoint = join(root, 'runtime.sock')) {
     const metadata = { ...METADATA, pid, transports: [{ kind: 'unix', endpoint }] }
-    writeFileSync(join(root, 'orca-runtime.json'), JSON.stringify(metadata))
+    writeFileSync(join(root, 'topo-runtime.json'), JSON.stringify(metadata))
     return metadata
   }
   it('keeps the missing-M0 default path synchronous without a second read', () => {
@@ -193,12 +193,12 @@ describe.skipIf(process.platform === 'win32')('serve private admission snapshots
       vi.mocked(metadataReader.tryReadMetadata).mockImplementationOnce((path) => {
         const m0 = actualMetadata.tryReadMetadata(path)
         if (change === 'disappeared') {
-          unlinkSync(join(root, 'orca-runtime.json'))
+          unlinkSync(join(root, 'topo-runtime.json'))
         } else {
           publish(process.pid, join(root, 'new.sock'))
           if (change === 'incomplete') {
             writeFileSync(
-              join(root, 'orca-runtime.json'),
+              join(root, 'topo-runtime.json'),
               JSON.stringify({ ...first, authToken: null })
             )
           }

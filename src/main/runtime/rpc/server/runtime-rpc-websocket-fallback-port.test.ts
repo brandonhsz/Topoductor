@@ -5,8 +5,8 @@ import { existsSync, mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import { WebSocketTransport } from '../ws-transport'
 
 vi.mock('../../../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => {
@@ -36,7 +36,7 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
 
 const FALLBACK_FILE = 'mobile-ws-fallback-port.json'
 
-describe('OrcaRuntimeRpcServer WebSocket fallback port (#15490)', () => {
+describe('TopoRuntimeRpcServer WebSocket fallback port (#15490)', () => {
   const cleanups: (() => Promise<void>)[] = []
   afterEach(async () => {
     for (const cleanup of cleanups.splice(0).toReversed()) {
@@ -60,9 +60,9 @@ describe('OrcaRuntimeRpcServer WebSocket fallback port (#15490)', () => {
   }
 
   async function startServer(userDataPath: string, wsPort: number): Promise<number> {
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort
@@ -73,7 +73,7 @@ describe('OrcaRuntimeRpcServer WebSocket fallback port (#15490)', () => {
   }
 
   it('drops a persisted fallback that no longer binds and serves the preferred port', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-ws-fallback-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-ws-fallback-'))
     const takenFallback = await holdPort()
     writeFileSync(join(userDataPath, FALLBACK_FILE), JSON.stringify({ port: takenFallback }))
     const preferred = await freePort()

@@ -76,7 +76,7 @@ describe('parseOmahaUpdateResponse', () => {
 
 describe('checkForBrowserExtensionUpdates', () => {
   it('does not reinstall an extension removed while the update check was running', async () => {
-    const path = mkdtempSync(join(tmpdir(), 'orca-updater-'))
+    const path = mkdtempSync(join(tmpdir(), 'topo-updater-'))
     writeFileSync(join(path, 'manifest.json'), JSON.stringify({ permissions: ['storage'] }))
     vi.spyOn(console, 'warn').mockImplementation(() => {})
     mocks.records.set(UBOL, {

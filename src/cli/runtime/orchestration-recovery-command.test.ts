@@ -6,12 +6,12 @@ import {
 
 describe('orchestration recovery command identity', () => {
   it.each([
-    ['configured dev', { ORCA_CLI_COMMAND: 'orca-dev' }, 'darwin', 'orca-dev'],
-    ['configured WSL', { ORCA_CLI_COMMAND: 'orca-ide' }, 'linux', 'orca-ide'],
-    ['dev checkout', { ORCA_DEV_REPO_ROOT: '/repo' }, 'darwin', 'orca-dev'],
-    ['packaged Linux', {}, 'linux', 'orca-ide'],
-    ['local macOS', {}, 'darwin', 'orca'],
-    ['local Windows', {}, 'win32', 'orca']
+    ['configured dev', { TOPO_CLI_COMMAND: 'topo-dev' }, 'darwin', 'topo-dev'],
+    ['configured WSL', { TOPO_CLI_COMMAND: 'topo-ide' }, 'linux', 'topo-ide'],
+    ['dev checkout', { TOPO_DEV_REPO_ROOT: '/repo' }, 'darwin', 'topo-dev'],
+    ['packaged Linux', {}, 'linux', 'topo-ide'],
+    ['local macOS', {}, 'darwin', 'topo'],
+    ['local Windows', {}, 'win32', 'topo']
   ] as const)('resolves the %s CLI identity', (_name, env, platform, expected) => {
     expect(resolveOrchestrationCliExecutable(env, platform)).toBe(expected)
   })
@@ -27,10 +27,10 @@ describe('orchestration recovery command identity', () => {
           timeoutMs: 90_000,
           devMode: false
         },
-        'orca'
+        'topo'
       )
     ).toEqual([
-      'orca',
+      'topo',
       'orchestration',
       'worker-start',
       '--task',
@@ -49,7 +49,7 @@ describe('orchestration recovery command identity', () => {
       buildOrchestrationRecoveryCommand(
         'orchestration.workerStart',
         { task: 'task_1' },
-        'orca-dev',
+        'topo-dev',
         [
           'orchestration',
           'worker-start',
@@ -61,7 +61,7 @@ describe('orchestration recovery command identity', () => {
         ]
       )
     ).toEqual([
-      'orca-dev',
+      'topo-dev',
       'orchestration',
       'worker-start',
       '--task',
@@ -85,16 +85,16 @@ describe('orchestration recovery command identity', () => {
     ]
   ])('blocks %s credential argv instead of exposing it', (_name, args) => {
     expect(
-      buildOrchestrationRecoveryCommand('orchestration.send', {}, 'orca', args)
+      buildOrchestrationRecoveryCommand('orchestration.send', {}, 'topo', args)
     ).toBeUndefined()
   })
 
   it('supports the explicit executable-first form', () => {
     expect(
-      buildOrchestrationRecoveryCommand('orca-ide', 'orchestration.workerStop', {
+      buildOrchestrationRecoveryCommand('topo-ide', 'orchestration.workerStop', {
         dispatch: 'dispatch_1'
       })
-    ).toEqual(['orca-ide', 'orchestration', 'worker-stop', '--dispatch', 'dispatch_1'])
+    ).toEqual(['topo-ide', 'orchestration', 'worker-stop', '--dispatch', 'dispatch_1'])
   })
 
   it('reconstructs worker-keep-open when raw argv is unavailable', () => {

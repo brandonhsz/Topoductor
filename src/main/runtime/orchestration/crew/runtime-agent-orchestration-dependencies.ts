@@ -1,8 +1,8 @@
 import { readAgentOrchestrationProjectionRecords } from '../addressing/orchestration-fleet-agent-status-snapshot'
 import type { RuntimeAgentOrchestrationDependencies } from './runtime-agent-orchestration-projection'
-import { OrcaRuntimeWithRuntimeId } from '../../construction/runtime-identity-state'
+import { TopoRuntimeWithRuntimeId } from '../../construction/runtime-identity-state'
 
-export abstract class OrcaRuntimeWithAgentOrchestrationDependencies extends OrcaRuntimeWithRuntimeId {
+export abstract class TopoRuntimeWithAgentOrchestrationDependencies extends TopoRuntimeWithRuntimeId {
   protected agentOrchestrationDependencies(bound?: Partial<RuntimeAgentOrchestrationDependencies>) {
     return {
       getDb: () => this.getOrchestrationDbIfAvailable(),

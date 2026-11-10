@@ -3,7 +3,7 @@
 import { createHash, randomUUID } from 'node:crypto'
 import { withTimeout } from '../../../../shared/promise-timeout-fallback'
 import type { AgentSessionResumeMarker } from '../../../../shared/agent-session/lifecycle/agent-session-resume-marker'
-import { latestNativeChatOrcaStopCut } from '../../../../shared/native-chat/native-chat-orca-stop-cut'
+import { latestNativeChatTopoStopCut } from '../../../../shared/native-chat/native-chat-topo-stop-cut'
 import {
   continuationDeps,
   RestartContinuationSupersededError,
@@ -48,7 +48,7 @@ export async function continueInterruptedStructuredAgentSessionTurn(
     const journal = host.sessions.get(sessionId)?.journal
     return (
       journal !== undefined &&
-      latestNativeChatOrcaStopCut(journal.statusRead().items, journal.statusRead().submissions)
+      latestNativeChatTopoStopCut(journal.statusRead().items, journal.statusRead().submissions)
         ?.turnItemId === turnItemId
     )
   }

@@ -56,10 +56,10 @@
         "src/shared/native-chat-subagent-summary.ts": "a41a36bcc304c32d6f955f4a675dda361817d50c97ec9568f1732a7183c885f0",
         "src/shared/structured-agent-session-projection.ts": "5f59cdfd8f51f745c652524ace0844d2c71d4dfa1f6532dde911e1de36f3f8f0",
         "src/shared/agent-status-field-normalization.ts": "a826255ed297b59483a7c27a6e4c4ad8c80a4e3811957613213a8b05b5e0bc79",
-        "src/shared/orca-dispatch-status-prompt.ts": "43bb7f3e89603a76add787a5fe99ee682cfa9d76e6b2b2b720bede914dfa9a97",
+        "src/shared/topo-dispatch-status-prompt.ts": "43bb7f3e89603a76add787a5fe99ee682cfa9d76e6b2b2b720bede914dfa9a97",
         "src/shared/agent-journal-tool-call-lifecycle.ts": "983081303500e9553a7278c8a64bb909eaf99742aad45fb5c9c3eee93b275768",
         "src/shared/structured-agent-session-status-block.ts": "39c38b26490b4930f1a2879b92a5d3ebd547246c599fad89e995c7d6c2d3dc76",
-        "src/shared/agent-session-orca-stop.ts": "c4ed738c8d9b516dbc56789c5461c1de622889ad10d20a946eb394bd7118e050",
+        "src/shared/agent-session-topo-stop.ts": "c4ed738c8d9b516dbc56789c5461c1de622889ad10d20a946eb394bd7118e050",
         "src/shared/agent-session-compaction.ts": "090179bd1a79501b16eff210f275ca85b07fbed7f1829f661434c0c8a7d8a26a",
         "src/shared/provider-timeline-item-key.ts": "456ab813dd8cd82a0687c3c7d869f60bc64d9be3eb4f9ba58fbac3c1e6f8481c",
         "src/shared/agent-status-types.ts": "db6383c6e0a375aa545b461349fa5856dd2639466542f0c509f220921abb1e1a",
@@ -77,7 +77,7 @@
         "src/shared/agent-session-message-source.ts": "3d4461d5f2c3227d8a52433db2a2d0643a5003e347b5d243c9f07142d825f38d",
         "src/shared/agent-session-conversation-name.ts": "f732ba58dbb855a4df0cc243c9112c06667611f7e790cb3ef610d71c39f439b9",
         "src/shared/surrogate-safe-text-slice.ts": "c93077a966a142e8c4e4c4145801e219cee54c7616607a3cb989b6dabe7dadfd",
-        "src/shared/orca-session-address.ts": "cf821ba18a36194293efac045bd826a250c6d000e8442c7c66b92a12ec7d9d0d",
+        "src/shared/topo-session-address.ts": "cf821ba18a36194293efac045bd826a250c6d000e8442c7c66b92a12ec7d9d0d",
         "src/shared/agent-session-record.ts": "187c512b462da023a1f3ddd8bdf4680e67b5e3d29ad266503456da9352e17bb2",
         "src/shared/agent-session-launch-args.ts": "4001086933c5e189cf9c824df053abb9a139fe812c725f5e7823d5629e5b851f",
         "src/shared/agent-session-legacy-handoff-lease.ts": "5894948104c7abb90851e5fdb8de2ffcffdaf1da185ae18b9afdd59ee63eab68",
@@ -87,7 +87,7 @@
         "src/shared/agent-session-provider-handle-encoding.ts": "d3404ef90f8533fbf37720ae7eac43cd0a1ebdbce335bce20eb05adeabea5d8f",
         "src/shared/agent-session-account-home.ts": "d4d7fe74f62c7b3075f1fc4256cb4d13f03e56825436d1c9481663fe61e09f52",
         "src/shared/structured-worker-handle.ts": "b7dfa2c1e832ee48d589869cb92598c8b1ffa256057b5edfe5f0ec673a88599f",
-        "src/shared/orca-session-address-prefix.ts": "d44a4bf817c56f7e83c2e4d48991bacb088e6114eefce43c34e6baa949b7c6ee",
+        "src/shared/topo-session-address-prefix.ts": "d44a4bf817c56f7e83c2e4d48991bacb088e6114eefce43c34e6baa949b7c6ee",
         "src/shared/zod-salvage.ts": "0c752ffb1d80f98cd1e6d7687adb619d1354ad9b454c40f71144f3a6ec3c640c",
         "src/shared/structured-agent-session-status-started-at.ts": "c1fae8cd3e76a6b7846a20d8c46887a982d93c9fbd3322f74d2fbb89a0884fad",
         "src/shared/structured-agent-session-owed-work.ts": "e3f14adc02ed7d14d49a66f6fa6d0a0b0ef5aa01d2945c97a8a67baa544b910c",
@@ -189,10 +189,10 @@
         "src/shared/native-chat-subagent-summary.ts": "a41a36bcc304c32d6f955f4a675dda361817d50c97ec9568f1732a7183c885f0",
         "src/shared/structured-agent-session-projection.ts": "ca5caaecd160e06d2e753a545833cee8500636a53e0991227a60ec76f512f85f",
         "src/shared/agent-status-field-normalization.ts": "a826255ed297b59483a7c27a6e4c4ad8c80a4e3811957613213a8b05b5e0bc79",
-        "src/shared/orca-dispatch-status-prompt.ts": "43bb7f3e89603a76add787a5fe99ee682cfa9d76e6b2b2b720bede914dfa9a97",
+        "src/shared/topo-dispatch-status-prompt.ts": "43bb7f3e89603a76add787a5fe99ee682cfa9d76e6b2b2b720bede914dfa9a97",
         "src/shared/agent-journal-tool-call-lifecycle.ts": "983081303500e9553a7278c8a64bb909eaf99742aad45fb5c9c3eee93b275768",
         "src/shared/structured-agent-session-status-block.ts": "3114fc0927d0c48e1ad13a3da1fb4d8157878618a5b9d28a70f649cef10fb88b",
-        "src/shared/agent-session-orca-stop.ts": "c4ed738c8d9b516dbc56789c5461c1de622889ad10d20a946eb394bd7118e050",
+        "src/shared/agent-session-topo-stop.ts": "c4ed738c8d9b516dbc56789c5461c1de622889ad10d20a946eb394bd7118e050",
         "src/shared/agent-session-compaction.ts": "090179bd1a79501b16eff210f275ca85b07fbed7f1829f661434c0c8a7d8a26a",
         "src/shared/provider-timeline-item-key.ts": "456ab813dd8cd82a0687c3c7d869f60bc64d9be3eb4f9ba58fbac3c1e6f8481c",
         "src/shared/agent-status-types.ts": "940f490d4e9e78217640f95d37f6efe357dee1bcec27533b97dad82fc688682c",
@@ -210,7 +210,7 @@
         "src/shared/agent-session-message-source.ts": "3d4461d5f2c3227d8a52433db2a2d0643a5003e347b5d243c9f07142d825f38d",
         "src/shared/agent-session-conversation-name.ts": "f732ba58dbb855a4df0cc243c9112c06667611f7e790cb3ef610d71c39f439b9",
         "src/shared/surrogate-safe-text-slice.ts": "c93077a966a142e8c4e4c4145801e219cee54c7616607a3cb989b6dabe7dadfd",
-        "src/shared/orca-session-address.ts": "cf821ba18a36194293efac045bd826a250c6d000e8442c7c66b92a12ec7d9d0d",
+        "src/shared/topo-session-address.ts": "cf821ba18a36194293efac045bd826a250c6d000e8442c7c66b92a12ec7d9d0d",
         "src/shared/agent-session-record.ts": "842c4dbd8395a26ff50adf7da3fafdfe959e04eb314c7caf6c725a6df7050747",
         "src/shared/agent-session-launch-args.ts": "4001086933c5e189cf9c824df053abb9a139fe812c725f5e7823d5629e5b851f",
         "src/shared/agent-session-legacy-handoff-lease.ts": "5894948104c7abb90851e5fdb8de2ffcffdaf1da185ae18b9afdd59ee63eab68",
@@ -220,7 +220,7 @@
         "src/shared/agent-session-provider-handle-encoding.ts": "d3404ef90f8533fbf37720ae7eac43cd0a1ebdbce335bce20eb05adeabea5d8f",
         "src/shared/agent-session-account-home.ts": "d4d7fe74f62c7b3075f1fc4256cb4d13f03e56825436d1c9481663fe61e09f52",
         "src/shared/structured-worker-handle.ts": "b7dfa2c1e832ee48d589869cb92598c8b1ffa256057b5edfe5f0ec673a88599f",
-        "src/shared/orca-session-address-prefix.ts": "d44a4bf817c56f7e83c2e4d48991bacb088e6114eefce43c34e6baa949b7c6ee",
+        "src/shared/topo-session-address-prefix.ts": "d44a4bf817c56f7e83c2e4d48991bacb088e6114eefce43c34e6baa949b7c6ee",
         "src/shared/zod-salvage.ts": "0c752ffb1d80f98cd1e6d7687adb619d1354ad9b454c40f71144f3a6ec3c640c",
         "src/shared/structured-agent-session-status-started-at.ts": "c1fae8cd3e76a6b7846a20d8c46887a982d93c9fbd3322f74d2fbb89a0884fad",
         "src/shared/structured-agent-session-owed-work.ts": "e3f14adc02ed7d14d49a66f6fa6d0a0b0ef5aa01d2945c97a8a67baa544b910c",
@@ -898,7 +898,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 4
@@ -911,7 +911,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "text": "original"
         }
       ],
@@ -925,10 +925,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 4
@@ -965,12 +965,12 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000002": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+        "topo:1800000000000-00000000000000000000000000000002": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
         ]
       }
     },
@@ -1001,7 +1001,7 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {}
@@ -1019,7 +1019,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "journalPosition": {
             "index": 0,
             "sequence": 7
@@ -1031,7 +1031,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "text": "original"
         }
       ],
@@ -1045,10 +1045,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000003-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000003-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "journalPosition": {
             "index": 0,
             "sequence": 7
@@ -1061,12 +1061,12 @@
       "idle": [],
       "busy": [],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000003": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000003-1.png"
+        "topo:1800000000000-00000000000000000000000000000003": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000003-1.png"
         ]
       }
     },
@@ -1083,7 +1083,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "journalPosition": {
             "index": 0,
             "sequence": 7
@@ -1103,7 +1103,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000005",
+          "id": "topo:1800000000000-00000000000000000000000000000005",
           "journalPosition": {
             "index": 0,
             "sequence": 13
@@ -1116,11 +1116,11 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "text": "original"
         },
         {
-          "id": "orca:1800000000000-00000000000000000000000000000005",
+          "id": "topo:1800000000000-00000000000000000000000000000005",
           "text": "original"
         }
       ],
@@ -1134,10 +1134,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000003-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000003-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "journalPosition": {
             "index": 0,
             "sequence": 7
@@ -1155,10 +1155,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000005-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000005-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000005",
+          "id": "topo:1800000000000-00000000000000000000000000000005",
           "journalPosition": {
             "index": 0,
             "sequence": 13
@@ -1195,16 +1195,16 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
-        ["orca:1800000000000-00000000000000000000000000000005", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
+        ["topo:1800000000000-00000000000000000000000000000005", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000003": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000003-1.png"
+        "topo:1800000000000-00000000000000000000000000000003": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000003-1.png"
         ],
-        "orca:1800000000000-00000000000000000000000000000005": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000005-1.png"
+        "topo:1800000000000-00000000000000000000000000000005": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000005-1.png"
         ]
       }
     },
@@ -1221,7 +1221,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "journalPosition": {
             "index": 0,
             "sequence": 7
@@ -1233,7 +1233,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "text": "original"
         }
       ],
@@ -1247,10 +1247,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000003-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000003-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "journalPosition": {
             "index": 0,
             "sequence": 7
@@ -1263,13 +1263,13 @@
       "idle": [],
       "busy": [],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
-        ["orca:1800000000000-00000000000000000000000000000005", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
+        ["topo:1800000000000-00000000000000000000000000000005", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000003": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000003-1.png"
+        "topo:1800000000000-00000000000000000000000000000003": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000003-1.png"
         ]
       }
     },
@@ -1319,7 +1319,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 2
@@ -1332,7 +1332,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "text": "original"
         }
       ],
@@ -1346,10 +1346,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 2
@@ -1387,14 +1387,14 @@
       ],
       "notices": [
         [
-          "orca:1800000000000-00000000000000000000000000000002",
+          "topo:1800000000000-00000000000000000000000000000002",
           "Codex couldn't restart. Send your message to try again."
         ]
       ],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000002": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+        "topo:1800000000000-00000000000000000000000000000002": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
         ]
       }
     },
@@ -1461,7 +1461,7 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {}
@@ -1493,7 +1493,7 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {}
@@ -1511,7 +1511,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000004",
+          "id": "topo:1800000000000-00000000000000000000000000000004",
           "journalPosition": {
             "index": 0,
             "sequence": 7
@@ -1524,7 +1524,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000004",
+          "id": "topo:1800000000000-00000000000000000000000000000004",
           "text": "edited original"
         }
       ],
@@ -1538,10 +1538,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000004-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000004-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000004",
+          "id": "topo:1800000000000-00000000000000000000000000000004",
           "journalPosition": {
             "index": 0,
             "sequence": 7
@@ -1555,12 +1555,12 @@
       "idle": [],
       "busy": [],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000004": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000004-1.png"
+        "topo:1800000000000-00000000000000000000000000000004": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000004-1.png"
         ]
       }
     },
@@ -1594,10 +1594,10 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
         [
-          "orca:1800000000000-00000000000000000000000000000004",
-          "Orca restarted before this message was sent."
+          "topo:1800000000000-00000000000000000000000000000004",
+          "Topo restarted before this message was sent."
         ]
       ],
       "resumableCard": true,
@@ -1616,7 +1616,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "journalPosition": {
             "index": 0,
             "sequence": 7
@@ -1629,7 +1629,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "text": "original"
         }
       ],
@@ -1643,10 +1643,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000003-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000003-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000003",
+          "id": "topo:1800000000000-00000000000000000000000000000003",
           "journalPosition": {
             "index": 0,
             "sequence": 7
@@ -1683,13 +1683,13 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
-        ["orca:1800000000000-00000000000000000000000000000003", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
+        ["topo:1800000000000-00000000000000000000000000000003", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000003": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000003-1.png"
+        "topo:1800000000000-00000000000000000000000000000003": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000003-1.png"
         ]
       }
     },
@@ -1723,8 +1723,8 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
-        ["orca:1800000000000-00000000000000000000000000000003", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
+        ["topo:1800000000000-00000000000000000000000000000003", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {}
@@ -1756,8 +1756,8 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
-        ["orca:1800000000000-00000000000000000000000000000003", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
+        ["topo:1800000000000-00000000000000000000000000000003", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {}
@@ -1775,7 +1775,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000005",
+          "id": "topo:1800000000000-00000000000000000000000000000005",
           "journalPosition": {
             "index": 0,
             "sequence": 10
@@ -1788,7 +1788,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000005",
+          "id": "topo:1800000000000-00000000000000000000000000000005",
           "text": "edited original"
         }
       ],
@@ -1802,10 +1802,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000005-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000005-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000005",
+          "id": "topo:1800000000000-00000000000000000000000000000005",
           "journalPosition": {
             "index": 0,
             "sequence": 10
@@ -1819,13 +1819,13 @@
       "idle": [],
       "busy": [],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
-        ["orca:1800000000000-00000000000000000000000000000003", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
+        ["topo:1800000000000-00000000000000000000000000000003", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000005": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000005-1.png"
+        "topo:1800000000000-00000000000000000000000000000005": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000005-1.png"
         ]
       }
     },
@@ -1859,11 +1859,11 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
-        ["orca:1800000000000-00000000000000000000000000000003", "Your message was not sent."],
+        ["topo:1800000000000-00000000000000000000000000000002", "Your message was not sent."],
+        ["topo:1800000000000-00000000000000000000000000000003", "Your message was not sent."],
         [
-          "orca:1800000000000-00000000000000000000000000000005",
-          "Orca restarted before this message was sent."
+          "topo:1800000000000-00000000000000000000000000000005",
+          "Topo restarted before this message was sent."
         ]
       ],
       "resumableCard": true,
@@ -1882,7 +1882,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -1894,7 +1894,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "text": "prior work"
         }
       ],
@@ -1908,10 +1908,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -1949,8 +1949,8 @@
       "notices": [],
       "resumableCard": true,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000002": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+        "topo:1800000000000-00000000000000000000000000000002": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
         ]
       }
     },
@@ -1967,7 +1967,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -1983,7 +1983,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-57df654a46d5482f8664d37950cda4ad",
+          "id": "topo:1800000000000-57df654a46d5482f8664d37950cda4ad",
           "journalPosition": {
             "index": 0,
             "sequence": 11
@@ -1996,11 +1996,11 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "text": "prior work"
         },
         {
-          "id": "orca:1800000000000-57df654a46d5482f8664d37950cda4ad",
+          "id": "topo:1800000000000-57df654a46d5482f8664d37950cda4ad",
           "text": ""
         }
       ],
@@ -2014,10 +2014,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2031,10 +2031,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-57df654a46d5482f8664d37950cda4ad-0.png"
+              "url": "file:///device/topo%3A1800000000000-57df654a46d5482f8664d37950cda4ad-0.png"
             }
           ],
-          "id": "orca:1800000000000-57df654a46d5482f8664d37950cda4ad",
+          "id": "topo:1800000000000-57df654a46d5482f8664d37950cda4ad",
           "journalPosition": {
             "index": 0,
             "sequence": 11
@@ -2071,15 +2071,15 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-57df654a46d5482f8664d37950cda4ad", "Your message was not sent."]
+        ["topo:1800000000000-57df654a46d5482f8664d37950cda4ad", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000002": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+        "topo:1800000000000-00000000000000000000000000000002": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
         ],
-        "orca:1800000000000-57df654a46d5482f8664d37950cda4ad": [
-          "file:///device/orca%3A1800000000000-57df654a46d5482f8664d37950cda4ad-0.png"
+        "topo:1800000000000-57df654a46d5482f8664d37950cda4ad": [
+          "file:///device/topo%3A1800000000000-57df654a46d5482f8664d37950cda4ad-0.png"
         ]
       }
     },
@@ -2096,7 +2096,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2108,7 +2108,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "text": "prior work"
         }
       ],
@@ -2122,10 +2122,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2138,12 +2138,12 @@
       "idle": [],
       "busy": [],
       "notices": [
-        ["orca:1800000000000-57df654a46d5482f8664d37950cda4ad", "Your message was not sent."]
+        ["topo:1800000000000-57df654a46d5482f8664d37950cda4ad", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000002": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+        "topo:1800000000000-00000000000000000000000000000002": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
         ]
       }
     },
@@ -2156,7 +2156,7 @@
               "type": "text"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2168,7 +2168,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "text": "Original first paragraph.\n\nKeep the complete final paragraph."
         }
       ],
@@ -2180,7 +2180,7 @@
               "type": "text"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2195,7 +2195,7 @@
       "notices": [],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000002": []
+        "topo:1800000000000-00000000000000000000000000000002": []
       }
     },
     "e4534fc3d43279f5004f62e56dd9ff8a540c44d0b95e5653e038a111d39c8dca": {
@@ -2219,7 +2219,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2231,7 +2231,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "text": "Original first paragraph.\n\nKeep the complete final paragraph.\n\nFinal prose after the image."
         }
       ],
@@ -2245,7 +2245,7 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
             },
             {
               "text": "Final prose after the image.",
@@ -2254,10 +2254,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000002-3.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000002-3.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2272,9 +2272,9 @@
       "notices": [],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000002": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png",
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000002-3.png"
+        "topo:1800000000000-00000000000000000000000000000002": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png",
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000002-3.png"
         ]
       }
     },
@@ -2299,7 +2299,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2311,7 +2311,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "text": "Original first paragraph.\n\nKeep the complete final paragraph.\n\nFinal prose after the image."
         }
       ],
@@ -2325,7 +2325,7 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
             },
             {
               "text": "Final prose after the image.",
@@ -2334,10 +2334,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000002-3.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000002-3.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2375,9 +2375,9 @@
       "notices": [],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000002": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png",
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000002-3.png"
+        "topo:1800000000000-00000000000000000000000000000002": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png",
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000002-3.png"
         ]
       }
     },
@@ -2402,7 +2402,7 @@
               "type": "image-ref"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2414,7 +2414,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "text": "Original first paragraph.\n\nKeep the complete final paragraph.\n\nFinal prose after the image."
         }
       ],
@@ -2428,7 +2428,7 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png"
             },
             {
               "text": "Final prose after the image.",
@@ -2437,10 +2437,10 @@
             {
               "path": "<host-root>/agent-session-attachments/0b6f8a52-4a3e-4c4e-9a59-1d5d1f2b8c0a/shot.png",
               "type": "image-ref",
-              "url": "file:///device/orca%3A1800000000000-00000000000000000000000000000002-3.png"
+              "url": "file:///device/topo%3A1800000000000-00000000000000000000000000000002-3.png"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2478,9 +2478,9 @@
       "notices": [],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000002": [
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000002-1.png",
-          "file:///device/orca%3A1800000000000-00000000000000000000000000000002-3.png"
+        "topo:1800000000000-00000000000000000000000000000002": [
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000002-1.png",
+          "file:///device/topo%3A1800000000000-00000000000000000000000000000002-3.png"
         ]
       }
     },
@@ -2493,7 +2493,7 @@
               "type": "text"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2505,7 +2505,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "text": "Complete immutable original."
         }
       ],
@@ -2517,7 +2517,7 @@
               "type": "text"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2588,7 +2588,7 @@
       "notices": [],
       "resumableCard": true,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000002": []
+        "topo:1800000000000-00000000000000000000000000000002": []
       }
     },
     "99b8ae435b68658833d56345601e9397f8208c1f8d179bbd1937a2fa372daa1c": {
@@ -2600,7 +2600,7 @@
               "type": "text"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2612,7 +2612,7 @@
       ],
       "plaintext": [
         {
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "text": "Complete immutable original."
         }
       ],
@@ -2624,7 +2624,7 @@
               "type": "text"
             }
           ],
-          "id": "orca:1800000000000-00000000000000000000000000000002",
+          "id": "topo:1800000000000-00000000000000000000000000000002",
           "journalPosition": {
             "index": 0,
             "sequence": 3
@@ -2693,11 +2693,11 @@
         }
       ],
       "notices": [
-        ["orca:1800000000000-00000000000000000000000000000006", "Your message was not sent."]
+        ["topo:1800000000000-00000000000000000000000000000006", "Your message was not sent."]
       ],
       "resumableCard": false,
       "previews": {
-        "orca:1800000000000-00000000000000000000000000000002": []
+        "topo:1800000000000-00000000000000000000000000000002": []
       }
     }
   }

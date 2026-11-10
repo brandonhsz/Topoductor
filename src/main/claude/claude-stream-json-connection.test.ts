@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { providerDiagnosticOf } from '../../shared/agent-session/failures/agent-session-failure'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { spawnProcess } from '@orca/process-host'
-import type { ProcessSpec } from '@orca/process-host/process-spec'
+import { spawnProcess } from '@topo/process-host'
+import type { ProcessSpec } from '@topo/process-host/process-spec'
 
 import type { query, CanUseTool } from '@anthropic-ai/claude-agent-sdk'
 import {
@@ -69,8 +69,8 @@ function scriptScenario(
     cwd: dir,
     env: {
       PATH: process.env.PATH ?? '',
-      ORCA_SDK_CONTRACT_SCENARIO_PATH: scenarioPath,
-      ORCA_SDK_CONTRACT_REPORT_PATH: reportPath
+      TOPO_SDK_CONTRACT_SCENARIO_PATH: scenarioPath,
+      TOPO_SDK_CONTRACT_REPORT_PATH: reportPath
     },
     readReport: () => JSON.parse(readFileSync(reportPath, 'utf8')) as ScriptedCliReport
   }
@@ -357,7 +357,7 @@ describe('Claude stream-json connection', () => {
     const scenario = scriptScenario([{ stderr: 'claude: not signed in\n' }, { exit: 1 }])
     const connection = await open({
       ...launchFor(scenario),
-      env: { ...launchFor(scenario).env, ORCA_SDK_CONTRACT_IGNORE_CONTROL_REQUESTS: '1' }
+      env: { ...launchFor(scenario).env, TOPO_SDK_CONTRACT_IGNORE_CONTROL_REQUESTS: '1' }
     })
 
     await expect(connection.initializationResult()).rejects.toThrow()
@@ -402,7 +402,7 @@ describe('Claude stream-json connection', () => {
       const connection = await open(
         {
           ...launchFor(scenario),
-          env: { ...launchFor(scenario).env, ORCA_SDK_CONTRACT_DESCENDANT: '1' }
+          env: { ...launchFor(scenario).env, TOPO_SDK_CONTRACT_DESCENDANT: '1' }
         },
         { onExit: (error) => (exit = error) }
       )

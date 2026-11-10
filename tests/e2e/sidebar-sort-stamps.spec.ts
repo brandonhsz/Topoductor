@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { postClaudeHook, readHookEndpoint } from './helpers/agent-hook-endpoint'
 import { SIDEBAR_INPUTS_BUILD } from './helpers/sidebar-inputs-build'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
@@ -18,7 +18,7 @@ import {
 
 test.skip(
   !SIDEBAR_INPUTS_BUILD,
-  'the host stamps sort keys only in an ORCA_SIDEBAR_INPUTS=main build'
+  'the host stamps sort keys only in an TOPO_SIDEBAR_INPUTS=main build'
 )
 
 async function readMainRow(page: Page, rowKey: string): Promise<WorkspaceRow | undefined> {
@@ -32,56 +32,56 @@ async function readMainRow(page: Page, rowKey: string): Promise<WorkspaceRow | u
 }
 
 test('the host stamps a workspace as its agent is prompted, finishes and asks for input', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }) => {
   test.setTimeout(90_000)
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage, 30_000)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage, 30_000)
   const endpoint = await readHookEndpoint(electronApp)
-  const pane = await waitForActivePaneHookDescriptor(orcaPage)
+  const pane = await waitForActivePaneHookDescriptor(topoPage)
   // Wait for pane spawn and hold its foreground; spawn clears earlier hook status.
   await execInTerminal(
-    orcaPage,
-    await waitForActivePanePtyId(orcaPage),
+    topoPage,
+    await waitForActivePanePtyId(topoPage),
     "printf 'agent-%s\\n' up; sleep 600"
   )
-  await waitForTerminalOutput(orcaPage, 'agent-up', 20_000)
+  await waitForTerminalOutput(topoPage, 'agent-up', 20_000)
   const rowKey = `local|${pane.worktreeId}`
-  await expect.poll(async () => (await readMainRow(orcaPage, rowKey))?.kind).toBe('git')
-  const before = (await readMainRow(orcaPage, rowKey))!
+  await expect.poll(async () => (await readMainRow(topoPage, rowKey))?.kind).toBe('git')
+  const before = (await readMainRow(topoPage, rowKey))!
   // Opening the workspace and its terminal is not activity.
   expect(before.smartTier).toBeUndefined()
 
   // Past the throttle, so the prompt's Recent stamp is not swallowed by the creation stamp.
-  await orcaPage.waitForTimeout(
+  await topoPage.waitForTimeout(
     Math.max(0, before.recentAt! + RECENT_STAMP_THROTTLE_MS - Date.now())
   )
   await postClaudeHook(endpoint, pane, { hook_event_name: 'UserPromptSubmit', prompt: 'go' })
-  await expect.poll(async () => (await readMainRow(orcaPage, rowKey))?.smartTier).toBe('working')
-  const prompted = (await readMainRow(orcaPage, rowKey))!
+  await expect.poll(async () => (await readMainRow(topoPage, rowKey))?.smartTier).toBe('working')
+  const prompted = (await readMainRow(topoPage, rowKey))!
   expect(prompted.recentAt!).toBeGreaterThan(before.recentAt!)
   expect(prompted.smartAt).toBe(prompted.recentAt)
 
-  await orcaPage.waitForTimeout(RECENT_STAMP_THROTTLE_MS + 500)
+  await topoPage.waitForTimeout(RECENT_STAMP_THROTTLE_MS + 500)
   await postClaudeHook(endpoint, pane, { hook_event_name: 'Stop', last_assistant_message: 'ok' })
-  await expect.poll(async () => (await readMainRow(orcaPage, rowKey))?.smartTier).toBe('done')
-  const finished = (await readMainRow(orcaPage, rowKey))!
+  await expect.poll(async () => (await readMainRow(topoPage, rowKey))?.smartTier).toBe('done')
+  const finished = (await readMainRow(topoPage, rowKey))!
   expect(finished.recentAt!).toBeGreaterThan(prompted.recentAt!)
   expect(finished.smartAt).toBe(finished.recentAt)
 
   // A new prompt then a question inside the throttle: tiers move at once, Recent holds.
   await postClaudeHook(endpoint, pane, { hook_event_name: 'UserPromptSubmit', prompt: 'more' })
-  await expect.poll(async () => (await readMainRow(orcaPage, rowKey))?.smartTier).toBe('working')
+  await expect.poll(async () => (await readMainRow(topoPage, rowKey))?.smartTier).toBe('working')
   await postClaudeHook(endpoint, pane, {
     hook_event_name: 'PermissionRequest',
     tool_name: 'Bash',
     tool_input: { command: 'ls' }
   })
-  await expect.poll(async () => (await readMainRow(orcaPage, rowKey))?.smartTier).toBe('needs-you')
-  const asked = (await readMainRow(orcaPage, rowKey))!
+  await expect.poll(async () => (await readMainRow(topoPage, rowKey))?.smartTier).toBe('needs-you')
+  const asked = (await readMainRow(topoPage, rowKey))!
   expect(asked.recentAt).toBe(finished.recentAt)
   expect(asked.smartAt!).toBeGreaterThan(finished.smartAt!)
 })

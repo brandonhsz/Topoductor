@@ -13,7 +13,7 @@ export type PluginDeclarativeHostServices = {
 
 export const PluginDeclarativeHostServicesContext = createContext<PluginDeclarativeHostServices>({})
 
-/** Links Orca opens outside itself; anything else in Markdown stays text. */
+/** Links Topo opens outside itself; anything else in Markdown stays text. */
 export function isPluginDeclarativeExternalHref(href: string | undefined): href is string {
   return typeof href === 'string' && /^(https?:\/\/|mailto:)/i.test(href) && href.length <= 2048
 }

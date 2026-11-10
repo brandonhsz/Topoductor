@@ -3,7 +3,7 @@ import { openSidebarWorkspaceComposer } from './helpers/sidebar-project-dialog'
 // #1191 removed StartFromField, but console/pageerror checks still reject equivalent render crashes; see tests/e2e/AGENTS.md.
 
 import type { ConsoleMessage } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   waitForSessionReady,
   waitForActiveWorktree,
@@ -13,17 +13,17 @@ import {
 } from './helpers/store'
 
 test.describe('Create Workspace', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
   })
 
-  test('creates a worktree through the composer UI and activates it', async ({ orcaPage }) => {
-    const worktreeIdBefore = await getActiveWorktreeId(orcaPage)
+  test('creates a worktree through the composer UI and activates it', async ({ topoPage }) => {
+    const worktreeIdBefore = await getActiveWorktreeId(topoPage)
 
     // Capture both console’s invalid-React-child message and pageerror #31 for dev/production render failures.
     const pageErrors: Error[] = []
-    orcaPage.on('pageerror', (err) => {
+    topoPage.on('pageerror', (err) => {
       pageErrors.push(err)
     })
     const consoleErrors: string[] = []
@@ -32,29 +32,29 @@ test.describe('Create Workspace', () => {
         consoleErrors.push(msg.text())
       }
     }
-    orcaPage.on('console', onConsole)
+    topoPage.on('console', onConsole)
 
     const workspaceName = `e2e-create-${Date.now()}`
 
     try {
       // Open via visible affordance to cover lazy modal mount.
-      await openSidebarWorkspaceComposer(orcaPage)
+      await openSidebarWorkspaceComposer(topoPage)
 
-      const dialog = orcaPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
+      const dialog = topoPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
       await expect(dialog).toBeVisible()
 
       // Wait for agent probe/name focus/hydration/setup hooks before clicking through Radix FocusScope reparenting.
       await expect(dialog.locator('[data-workspace-name-input="true"]')).toBeVisible()
 
       // Round-trip getBaseRefDefault so envelope consumers can trigger #1186-class render errors after #1191 removed StartFromField.
-      await orcaPage.evaluate(async () => {
+      await topoPage.evaluate(async () => {
         const repoId = Object.values(window.__store!.getState().worktreesByRepo).flat()[0]?.repoId
         if (!repoId) {
           return
         }
         await window.api.repos.getBaseRefDefault({ repoId })
       })
-      await orcaPage.waitForTimeout(100)
+      await topoPage.waitForTimeout(100)
 
       // Plain text in default smart mode submits as workspace name.
       const nameInput = dialog.getByPlaceholder(/Type a name/i)
@@ -68,7 +68,7 @@ test.describe('Create Workspace', () => {
       await expect(dialog).toBeHidden({ timeout: 15_000 })
 
       await expect
-        .poll(async () => worktreeExists(orcaPage, workspaceName), {
+        .poll(async () => worktreeExists(topoPage, workspaceName), {
           timeout: 10_000,
           message: `Worktree "${workspaceName}" did not appear in the store`
         })
@@ -77,7 +77,7 @@ test.describe('Create Workspace', () => {
       await expect
         .poll(
           async () => {
-            const id = await getActiveWorktreeId(orcaPage)
+            const id = await getActiveWorktreeId(topoPage)
             return id !== null && id !== worktreeIdBefore
           },
           { timeout: 10_000, message: 'New worktree did not become the active worktree' }
@@ -85,7 +85,7 @@ test.describe('Create Workspace', () => {
         .toBe(true)
 
       // Require auto-created terminal to prove activateAndRevealWorktree ran beyond creating the store row.
-      await ensureTerminalVisible(orcaPage)
+      await ensureTerminalVisible(topoPage)
 
       expect(pageErrors, `pageerror fired: ${pageErrors.map((e) => e.message).join(', ')}`).toEqual(
         []
@@ -95,9 +95,9 @@ test.describe('Create Workspace', () => {
       )
       expect(reactChildErrors, `React render error: ${reactChildErrors.join(', ')}`).toEqual([])
     } finally {
-      orcaPage.off('console', onConsole)
+      topoPage.off('console', onConsole)
       // Best-effort close if the test failed mid-flow and left the modal open.
-      await orcaPage
+      await topoPage
         .evaluate(() => {
           window.__store?.getState().closeModal()
         })
@@ -109,22 +109,22 @@ test.describe('Create Workspace', () => {
 
   for (const autoRenameBranchFromWork of [true, false]) {
     test(`uses a typed emoji workspace name as its branch with automatic branch naming ${autoRenameBranchFromWork ? 'on' : 'off'}`, async ({
-      orcaPage
+      topoPage
     }) => {
       const workspaceName = autoRenameBranchFromWork ? '✨🚀🧪' : '🚀🧪✨'
-      const previousSetting = await orcaPage.evaluate(
+      const previousSetting = await topoPage.evaluate(
         () => window.__store!.getState().settings!.autoRenameBranchFromWork
       )
 
       try {
-        await orcaPage.evaluate(async (enabled) => {
+        await topoPage.evaluate(async (enabled) => {
           await window
             .__store!.getState()
             .updateSettingsOrThrow({ autoRenameBranchFromWork: enabled })
         }, autoRenameBranchFromWork)
-        await openSidebarWorkspaceComposer(orcaPage)
+        await openSidebarWorkspaceComposer(topoPage)
 
-        const dialog = orcaPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
+        const dialog = topoPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
         await expect(dialog).toBeVisible()
         await expect(dialog.locator('[data-workspace-name-input="true"]')).toBeVisible()
 
@@ -136,26 +136,26 @@ test.describe('Create Workspace', () => {
         await createButton.click()
 
         await expect(dialog).toBeHidden({ timeout: 15_000 })
-        await expect(orcaPage.getByRole('option', { name: new RegExp(workspaceName) })).toBeVisible(
+        await expect(topoPage.getByRole('option', { name: new RegExp(workspaceName) })).toBeVisible(
           {
             timeout: 10_000
           }
         )
 
         await expect(
-          orcaPage.getByRole('option', { name: new RegExp(workspaceName) })
+          topoPage.getByRole('option', { name: new RegExp(workspaceName) })
         ).toContainText(
           autoRenameBranchFromWork ? 'sparkles-rocket-test-tube' : 'rocket-test-tube-sparkles'
         )
       } finally {
-        await orcaPage
+        await topoPage
           .evaluate(() => {
             window.__store?.getState().closeModal()
           })
           .catch(() => {
             /* page may already be torn down */
           })
-        await orcaPage.evaluate(async (enabled) => {
+        await topoPage.evaluate(async (enabled) => {
           await window
             .__store!.getState()
             .updateSettingsOrThrow({ autoRenameBranchFromWork: enabled })
@@ -164,34 +164,34 @@ test.describe('Create Workspace', () => {
     })
   }
 
-  test('enters the Korean flag with the flag_kr shortcode suggestion', async ({ orcaPage }) => {
+  test('enters the Korean flag with the flag_kr shortcode suggestion', async ({ topoPage }) => {
     try {
-      await openSidebarWorkspaceComposer(orcaPage)
+      await openSidebarWorkspaceComposer(topoPage)
 
-      const dialog = orcaPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
+      const dialog = topoPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
       const nameInput = dialog.getByPlaceholder(/Type a name/i)
       await expect(nameInput).toBeVisible()
 
       await nameInput.pressSequentially('Launch :flag_kr', { delay: 100 })
-      const emojiSuggestions = orcaPage.locator('[data-workspace-emoji-suggestions="true"]')
-      const sourceSuggestions = orcaPage.locator('[data-workspace-source-suggestions="true"]')
+      const emojiSuggestions = topoPage.locator('[data-workspace-emoji-suggestions="true"]')
+      const sourceSuggestions = topoPage.locator('[data-workspace-source-suggestions="true"]')
       await expect(emojiSuggestions).toBeVisible()
       await expect(emojiSuggestions.getByRole('option', { name: ':flag_kr:' })).toBeVisible()
       await expect(emojiSuggestions).toHaveAttribute('data-side', 'top')
       await expect(sourceSuggestions).toBeVisible()
       await expect(sourceSuggestions).toHaveAttribute('data-side', 'bottom')
       // Keep both independently positioned suggestion surfaces visible in proof recordings.
-      await orcaPage.waitForTimeout(750)
+      await topoPage.waitForTimeout(750)
 
       await nameInput.pressSequentially(':')
       await expect(nameInput).toHaveValue('Launch 🇰🇷')
-      await expect(orcaPage.getByRole('option', { name: /:flag_kr:/i })).toHaveCount(0)
+      await expect(topoPage.getByRole('option', { name: /:flag_kr:/i })).toHaveCount(0)
       await nameInput.pressSequentially(' experiment')
       await expect(nameInput).toHaveValue('Launch 🇰🇷 experiment')
       // Keep the asserted result visible in retained proof recordings.
-      await orcaPage.waitForTimeout(750)
+      await topoPage.waitForTimeout(750)
     } finally {
-      await orcaPage
+      await topoPage
         .evaluate(() => {
           window.__store?.getState().closeModal()
         })
@@ -201,8 +201,8 @@ test.describe('Create Workspace', () => {
     }
   })
 
-  test('shows a failed workspace entry when worktree creation fails', async ({ orcaPage }) => {
-    await orcaPage.evaluate(() => {
+  test('shows a failed workspace entry when worktree creation fails', async ({ topoPage }) => {
+    await topoPage.evaluate(() => {
       const store = window.__store
       if (!store) {
         throw new Error('window.__store is not available')
@@ -225,9 +225,9 @@ test.describe('Create Workspace', () => {
     try {
       const workspaceName = `e2e-create-failure-${Date.now()}`
 
-      await openSidebarWorkspaceComposer(orcaPage)
+      await openSidebarWorkspaceComposer(topoPage)
 
-      const dialog = orcaPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
+      const dialog = topoPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
       await expect(dialog).toBeVisible()
       await expect(dialog.locator('[data-workspace-name-input="true"]')).toBeVisible()
 
@@ -240,15 +240,15 @@ test.describe('Create Workspace', () => {
       await createButton.click()
 
       await expect(dialog).toBeHidden()
-      const failedWorkspace = orcaPage.getByRole('button', {
+      const failedWorkspace = topoPage.getByRole('button', {
         name: new RegExp(`${workspaceName} No base branch found`)
       })
       await expect(failedWorkspace).toBeVisible()
-      await expect(orcaPage.getByText('Couldn’t create worktree')).toBeVisible()
+      await expect(topoPage.getByText('Couldn’t create worktree')).toBeVisible()
       await expect(failedWorkspace).toContainText('No base branch found')
-      await expect(orcaPage.getByRole('button', { name: 'Retry' })).toBeVisible()
+      await expect(topoPage.getByRole('button', { name: 'Retry' })).toBeVisible()
     } finally {
-      await orcaPage
+      await topoPage
         .evaluate(() => {
           ;(
             window as unknown as {
@@ -265,16 +265,16 @@ test.describe('Create Workspace', () => {
 
   test('reuses a resolved pasted GitHub URL when quick create submits', async ({
     electronApp,
-    orcaPage
+    topoPage
   }) => {
     const title = `E2E smart URL resolution ${Date.now()}`
-    const url = 'https://github.com/stablyai/orca/pull/2049'
+    const url = 'https://github.com/brandonhsz/Topoductor/pull/2049'
     const linkedWorkspacePattern = new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
 
     try {
-      await openSidebarWorkspaceComposer(orcaPage)
+      await openSidebarWorkspaceComposer(topoPage)
 
-      const dialog = orcaPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
+      const dialog = topoPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
       await expect(dialog).toBeVisible()
       await expect(dialog.locator('[data-workspace-name-input="true"]')).toBeVisible()
 
@@ -344,11 +344,11 @@ test.describe('Create Workspace', () => {
       await createButton.click()
 
       await expect(dialog).toBeHidden({ timeout: 15_000 })
-      await expect(orcaPage.getByRole('option', { name: linkedWorkspacePattern })).toBeVisible({
+      await expect(topoPage.getByRole('option', { name: linkedWorkspacePattern })).toBeVisible({
         timeout: 10_000
       })
-      await expect(orcaPage.getByRole('option', { name: url })).toHaveCount(0)
-      await expect(orcaPage.getByText('Linked PR #2049')).toBeVisible()
+      await expect(topoPage.getByRole('option', { name: url })).toHaveCount(0)
+      await expect(topoPage.getByText('Linked PR #2049')).toBeVisible()
       // Quick create reuses typing’s GitHub lookup; #5733 resolves PR head once at submit, requiring one base resolution.
       await expect
         .poll(() =>
@@ -365,7 +365,7 @@ test.describe('Create Workspace', () => {
         )
         .toEqual({ githubLookupCount: 1, resolvePrBaseCount: 1 })
     } finally {
-      await orcaPage
+      await topoPage
         .evaluate(() => {
           window.__store?.getState().closeModal()
         })
@@ -377,16 +377,16 @@ test.describe('Create Workspace', () => {
 
   test('names the workspace after the PR title when the pasted URL suggestion is selected', async ({
     electronApp,
-    orcaPage
+    topoPage
   }) => {
     const title = `E2E selected URL resolution ${Date.now()}`
-    const url = 'https://github.com/stablyai/orca/pull/2050'
+    const url = 'https://github.com/brandonhsz/Topoductor/pull/2050'
     const linkedWorkspacePattern = new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
 
     try {
-      await openSidebarWorkspaceComposer(orcaPage)
+      await openSidebarWorkspaceComposer(topoPage)
 
-      const dialog = orcaPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
+      const dialog = topoPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
       await expect(dialog).toBeVisible()
       await expect(dialog.locator('[data-workspace-name-input="true"]')).toBeVisible()
 
@@ -420,22 +420,22 @@ test.describe('Create Workspace', () => {
       await nameInput.fill(url)
 
       // #4900: selecting resolved suggestion must replace the pasted URL as name; locate its portaled row outside the dialog.
-      const suggestion = orcaPage.getByRole('option', { name: linkedWorkspacePattern })
+      const suggestion = topoPage.getByRole('option', { name: linkedWorkspacePattern })
       await expect(suggestion).toBeVisible()
-      await orcaPage.keyboard.press('Enter')
+      await topoPage.keyboard.press('Enter')
 
       const createButton = dialog.getByRole('button', { name: /Create (Workspace|Worktree)/i })
       await expect(createButton).toBeEnabled()
       await createButton.click()
 
       await expect(dialog).toBeHidden({ timeout: 15_000 })
-      await expect(orcaPage.getByRole('option', { name: linkedWorkspacePattern })).toBeVisible({
+      await expect(topoPage.getByRole('option', { name: linkedWorkspacePattern })).toBeVisible({
         timeout: 10_000
       })
-      await expect(orcaPage.getByRole('option', { name: /https-github/i })).toHaveCount(0)
-      await expect(orcaPage.getByText('Linked PR #2050')).toBeVisible()
+      await expect(topoPage.getByRole('option', { name: /https-github/i })).toHaveCount(0)
+      await expect(topoPage.getByText('Linked PR #2050')).toBeVisible()
     } finally {
-      await orcaPage
+      await topoPage
         .evaluate(() => {
           window.__store?.getState().closeModal()
         })

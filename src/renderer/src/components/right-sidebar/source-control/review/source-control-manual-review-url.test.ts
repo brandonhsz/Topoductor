@@ -8,14 +8,16 @@ describe('buildSourceControlManualReviewUrl', () => {
         baseRef: 'refs/remotes/upstream/main',
         branchName: 'feature/fork-head',
         repoRemoteName: 'upstream',
-        repoRemoteUrl: 'https://github.com/stablyai/orca.git',
+        repoRemoteUrl: 'https://github.com/brandonhsz/Topoductor.git',
         pushTarget: {
           remoteName: 'fork',
           branchName: 'feature/fork-head',
-          remoteUrl: 'git@github.com:contributor/orca.git'
+          remoteUrl: 'git@github.com:contributor/topo.git'
         }
       })
-    ).toBe('https://github.com/stablyai/orca/compare/main...contributor:feature/fork-head?expand=1')
+    ).toBe(
+      'https://github.com/brandonhsz/Topoductor/compare/main...contributor:feature/fork-head?expand=1'
+    )
   })
 
   it('keeps slashes literal in a GitHub compare URL for a slash-containing branch name', () => {
@@ -24,11 +26,11 @@ describe('buildSourceControlManualReviewUrl', () => {
         baseRef: 'refs/remotes/origin/main',
         branchName: 'slashdevcorpse/identifying-pwsh.exe-error',
         repoRemoteName: 'origin',
-        repoRemoteUrl: 'git@github.com:stablyai/orca.git',
+        repoRemoteUrl: 'git@github.com:brandonhsz/Topoductor.git',
         upstreamName: 'origin/slashdevcorpse/identifying-pwsh.exe-error'
       })
     ).toBe(
-      'https://github.com/stablyai/orca/compare/main...slashdevcorpse/identifying-pwsh.exe-error?expand=1'
+      'https://github.com/brandonhsz/Topoductor/compare/main...slashdevcorpse/identifying-pwsh.exe-error?expand=1'
     )
   })
 
@@ -38,17 +40,17 @@ describe('buildSourceControlManualReviewUrl', () => {
         baseRef: 'refs/remotes/upstream/main',
         branchName: 'feature/fork-head',
         repoRemoteName: 'upstream',
-        repoRemoteUrl: 'git@gitlab.company.test:group/sub/orca.git',
+        repoRemoteUrl: 'git@gitlab.company.test:group/sub/topo.git',
         provider: 'gitlab',
         pushTarget: {
           remoteName: 'fork',
           branchName: 'feature/fork-head',
-          remoteUrl: 'git@gitlab.company.test:contributor/orca.git'
+          remoteUrl: 'git@gitlab.company.test:contributor/topo.git'
         }
       })
-      // On the fork project — not group/sub/orca, where source_branch would 404.
+      // On the fork project — not group/sub/topo, where source_branch would 404.
     ).toBe(
-      'https://gitlab.company.test/contributor/orca/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Ffork-head&merge_request%5Btarget_branch%5D=main'
+      'https://gitlab.company.test/contributor/topo/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Ffork-head&merge_request%5Btarget_branch%5D=main'
     )
   })
 
@@ -59,8 +61,8 @@ describe('buildSourceControlManualReviewUrl', () => {
         baseRef: 'refs/remotes/origin/main',
         branchName: 'quick-commands',
         repoRemoteName: 'origin',
-        repoRemoteUrl: 'https://github.com/stablyai/orca.git',
-        upstreamName: 'pr-devajmeireles-orca/quick-commands'
+        repoRemoteUrl: 'https://github.com/brandonhsz/Topoductor.git',
+        upstreamName: 'pr-devajmeireles-topo/quick-commands'
       })
     ).toBeNull()
   })
@@ -71,9 +73,9 @@ describe('buildSourceControlManualReviewUrl', () => {
         baseRef: 'refs/remotes/origin/main',
         branchName: 'local-wip-name',
         repoRemoteName: 'origin',
-        repoRemoteUrl: 'git@github.com:stablyai/orca.git',
+        repoRemoteUrl: 'git@github.com:brandonhsz/Topoductor.git',
         upstreamName: 'origin/feature/pushed-name'
       })
-    ).toBe('https://github.com/stablyai/orca/compare/main...feature/pushed-name?expand=1')
+    ).toBe('https://github.com/brandonhsz/Topoductor/compare/main...feature/pushed-name?expand=1')
   })
 })

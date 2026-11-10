@@ -9,7 +9,7 @@ import { parsePluginDeclarativeTree } from './plugin-declarative-tree'
 const ROOT = path.resolve(import.meta.dirname, '..', '..', '..', '..')
 const RUNTIME = path.join(ROOT, 'resources', 'plugins', 'declarative', 'orca-runtime.mjs')
 const EXAMPLE = path.join(ROOT, 'examples', 'plugins', 'hello-components', 'dist', 'panel.js')
-const scratch = mkdtempSync(path.join(tmpdir(), 'orca-declarative-'))
+const scratch = mkdtempSync(path.join(tmpdir(), 'topo-declarative-'))
 afterAll(() => rmSync(scratch, { recursive: true, force: true }))
 
 it('runs the prebuilt sample against the shipped guest runtime, like the guest import map would', async () => {
@@ -67,7 +67,7 @@ it('runs the prebuilt sample against the shipped guest runtime, like the guest i
   const renders = posted.filter((entry) => entry.event === 'ui.render')
   expect(JSON.stringify(renders.at(-1)!.payload.tree)).toContain('Ship it')
   expect(parsePluginDeclarativeTree(renders.at(-1)!.payload.tree).ok).toBe(true)
-  // The list is a persisted atom: the change goes to Orca for the next run.
+  // The list is a persisted atom: the change goes to Topo for the next run.
   expect(posted.filter((entry) => entry.event === 'ui.persist')).toEqual([
     {
       event: 'ui.persist',
@@ -81,7 +81,7 @@ it('runs the prebuilt sample against the shipped guest runtime, like the guest i
 
 // A missing named import is a link-time SyntaxError in real ES modules (checked with node); the
 // test runner's module shim cannot show that, so this covers the documented fallback only.
-it('draws a component created by name with h() as a placeholder when Orca does not know it', async () => {
+it('draws a component created by name with h() as a placeholder when Topo does not know it', async () => {
   const runtimeCopy = path.join(scratch, 'orca-runtime-compat.mjs')
   writeFileSync(runtimeCopy, readFileSync(RUNTIME))
   const orca = await import(/* @vite-ignore */ pathToFileURL(runtimeCopy).href)

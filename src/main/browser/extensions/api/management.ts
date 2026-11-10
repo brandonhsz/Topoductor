@@ -15,7 +15,7 @@ import {
 import { hasBrowserExtensionUserGesture } from '../permissions/browser-extension-user-gesture'
 
 /**
- * chrome.management for extensions that declare "management": Orca's installed list as the
+ * chrome.management for extensions that declare "management": Topo's installed list as the
  * caller's profile sees it. Electron's own getSelf/uninstallSelf stay native.
  */
 

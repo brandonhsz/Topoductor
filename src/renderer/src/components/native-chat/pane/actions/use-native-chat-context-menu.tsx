@@ -28,7 +28,7 @@ import { formatOptionalPrimaryShortcutLabel } from '@/hooks/useShortcutLabel'
 import { useAppStore } from '@/store'
 import { isEditableTarget } from '@/lib/editable-target'
 import { findEditablePrimarySelectionPasteTarget } from '@/lib/primary-selection-paste'
-import { NativeChatCopyOrcaSessionIdMenuItem } from './NativeChatCopyOrcaSessionIdMenuItem'
+import { NativeChatCopyTopoSessionIdMenuItem } from './NativeChatCopyTopoSessionIdMenuItem'
 import { NativeChatSelectionQuote } from '../../selection-quotes/NativeChatSelectionQuote'
 import {
   formatNativeChatQuote,
@@ -78,8 +78,8 @@ type UseNativeChatContextMenuArgs = {
   splitShortcutLabels?: { right: string; down: string }
   chatPane?: { tabId: string; worktreeId: string; groupId: string; sessionId: string }
   chatSession?: NativeChatSessionMenuSource
-  /** A structured chat tab's Orca session ID; a chat in a terminal pane is that terminal's agent. */
-  resolveOrcaSessionId?: () => Promise<string | null>
+  /** A structured chat tab's Topo session ID; a chat in a terminal pane is that terminal's agent. */
+  resolveTopoSessionId?: () => Promise<string | null>
 } & NativeChatContextMenuTargetArgs
 
 export type NativeChatContextMenuTargetArgs = {
@@ -146,7 +146,7 @@ export function useNativeChatContextMenu({
   splitShortcutLabels,
   chatPane,
   chatSession,
-  resolveOrcaSessionId,
+  resolveTopoSessionId,
   messageListRef,
   fileLinkContext = null,
   rewind,
@@ -178,7 +178,7 @@ export function useNativeChatContextMenu({
     (target.rewindItemId !== null && rewind !== undefined)
   const hasSessionItems = onFind !== undefined || onHandOff !== undefined || showTerminalPaneActions
   const hasItems =
-    hasEditItems || hasSessionItems || chatPane !== undefined || resolveOrcaSessionId !== undefined
+    hasEditItems || hasSessionItems || chatPane !== undefined || resolveTopoSessionId !== undefined
 
   if (!enabled && state.open) {
     setState({ ...state, open: false, image: undefined })
@@ -339,15 +339,15 @@ export function useNativeChatContextMenu({
               pane={chatPane}
               leadingSeparator={hasEditItems || hasSessionItems}
               splitShortcutLabels={splitShortcutLabels}
-              resolveOrcaSessionId={resolveOrcaSessionId}
+              resolveTopoSessionId={resolveTopoSessionId}
             />
           ) : null}
           {showTerminalPaneActions ? (
             <NativeChatPaneMenuItems actions={actions} splitShortcutLabels={splitShortcutLabels} />
-          ) : !chatPane && resolveOrcaSessionId ? (
+          ) : !chatPane && resolveTopoSessionId ? (
             <>
               {hasEditItems || hasSessionItems ? <DropdownMenuSeparator /> : null}
-              <NativeChatCopyOrcaSessionIdMenuItem resolveOrcaSessionId={resolveOrcaSessionId} />
+              <NativeChatCopyTopoSessionIdMenuItem resolveTopoSessionId={resolveTopoSessionId} />
             </>
           ) : null}
         </DropdownMenuContent>

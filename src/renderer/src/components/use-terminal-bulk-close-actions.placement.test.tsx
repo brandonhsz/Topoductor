@@ -14,7 +14,7 @@ import { useTerminalEditorCloseFoundation } from './use-terminal-editor-close-fo
 import { useTerminalEditorCloseQueue } from './use-terminal-editor-close-queue'
 import { useTerminalEditorCloseDialogActions } from './use-terminal-editor-close-dialog-actions'
 import {
-  ORCA_EDITOR_SAVE_AND_CLOSE_EVENT,
+  TOPO_EDITOR_SAVE_AND_CLOSE_EVENT,
   type EditorSaveAndCloseDetail
 } from './editor/autosave/editor-autosave'
 import { openNewTerminalTabInWorkspace } from '@/store/terminals/terminal-active-workspace-creation'
@@ -133,7 +133,7 @@ it('prompts once for distinct records sharing a buffer and retains the final tab
     useAppStore.getState().markFileDirty(childId, false)
     useAppStore.getState().closeUnifiedTab(finalTab.id)
   }
-  window.addEventListener(ORCA_EDITOR_SAVE_AND_CLOSE_EVENT, onSave)
+  window.addEventListener(TOPO_EDITOR_SAVE_AND_CLOSE_EVENT, onSave)
   try {
     await act(async () => hook.result.current.handleSaveDialogSave())
     expect(hook.result.current.saveDialogFileId).toBe(childId)
@@ -147,7 +147,7 @@ it('prompts once for distinct records sharing a buffer and retains the final tab
       await main!.settle()
     })
   } finally {
-    window.removeEventListener(ORCA_EDITOR_SAVE_AND_CLOSE_EVENT, onSave)
+    window.removeEventListener(TOPO_EDITOR_SAVE_AND_CLOSE_EVENT, onSave)
   }
   expect(hook.result.current.saveDialogFileId).toBeNull()
   expect(useAppStore.getState().unifiedTabsByWorktree[EDITOR_PLACEMENT] ?? []).toEqual([])
@@ -231,14 +231,14 @@ it('confirms only the final dirty placement, keeps its tab through Save, and spa
     useAppStore.getState().markFileDirty(file.id, false)
     useAppStore.getState().closeUnifiedTab(detail.tabId!)
   }
-  window.addEventListener(ORCA_EDITOR_SAVE_AND_CLOSE_EVENT, onSave)
+  window.addEventListener(TOPO_EDITOR_SAVE_AND_CLOSE_EVENT, onSave)
   try {
     await act(async () => {
       await hook.result.current.handleSaveDialogSave()
       await main!.settle()
     })
   } finally {
-    window.removeEventListener(ORCA_EDITOR_SAVE_AND_CLOSE_EVENT, onSave)
+    window.removeEventListener(TOPO_EDITOR_SAVE_AND_CLOSE_EVENT, onSave)
   }
   expect(useAppStore.getState().unifiedTabsByWorktree[EDITOR_PLACEMENT] ?? []).toEqual([])
   expect(useAppStore.getState().unifiedTabsByWorktree[EDITOR_OWNER]).toHaveLength(1)

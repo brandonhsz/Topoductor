@@ -23,7 +23,7 @@ declare module 'monaco-editor/esm/vs/basic-languages/cpp/cpp.js' {
   export const language: languages.IMonarchLanguage
 }
 
-// Monaco contributions lack public types; declare only Orca’s paste-override surface.
+// Monaco contributions lack public types; declare only Topo’s paste-override surface.
 declare module 'monaco-editor/esm/vs/editor/contrib/clipboard/browser/clipboard.js' {
   type PasteImplementation = () => boolean | Promise<unknown>
   export const PasteAction:
@@ -126,7 +126,7 @@ declare module 'monaco-editor/esm/vs/editor/browser/widget/diffEditor/utils/edit
 
 declare global {
   /** Full commit the build was made from, stamped by the renderer build. */
-  const ORCA_BUILD_COMMIT: string
+  const TOPO_BUILD_COMMIT: string
   var MonacoEnvironment:
     | {
         getWorker(workerId: string, label: string): Worker

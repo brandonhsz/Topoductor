@@ -15,8 +15,8 @@ const mocks = vi.hoisted(() => ({
   browserWindowMock: {
     getAllWindows: vi.fn<() => TestWindow[]>(() => [])
   },
-  checkOrcaStarredMock: vi.fn(),
-  starOrcaMock: vi.fn(),
+  checkTopoStarredMock: vi.fn(),
+  starTopoMock: vi.fn(),
   trackMock: vi.fn(),
   getCohortAtEmitMock: vi.fn(() => ({ nth_repo_added: 3 })),
   ipcMainHandleMock: vi.fn()
@@ -31,8 +31,8 @@ vi.mock('electron', () => ({
 }))
 
 vi.mock('../github/client', () => ({
-  checkOrcaStarred: mocks.checkOrcaStarredMock,
-  starOrca: mocks.starOrcaMock
+  checkTopoStarred: mocks.checkTopoStarredMock,
+  starTopo: mocks.starTopoMock
 }))
 
 vi.mock('../telemetry/client', () => ({
@@ -43,7 +43,7 @@ vi.mock('../telemetry/cohort-classifier', () => ({
   getCohortAtEmit: mocks.getCohortAtEmitMock
 }))
 
-const { browserWindowMock, starOrcaMock, trackMock } = mocks
+const { browserWindowMock, starTopoMock, trackMock } = mocks
 const getIpcHandler = createIpcHandlerLookup(mocks.ipcMainHandleMock)
 
 describe('StarNagService', () => {
@@ -62,12 +62,12 @@ describe('StarNagService', () => {
     const window = createWindow()
     browserWindowMock.getAllWindows.mockReturnValue([window])
     const deferredStar = createDeferred<boolean>()
-    starOrcaMock.mockReturnValue(deferredStar.promise)
+    starTopoMock.mockReturnValue(deferredStar.promise)
     const { service, ui } = createHarness()
 
     service.registerIpcHandlers()
     getIpcHandler('star-nag:forceShow')()
-    const starPromise = getIpcHandler('star-nag:starOrca')()
+    const starPromise = getIpcHandler('star-nag:starTopo')()
     getIpcHandler('star-nag:dismiss')()
 
     deferredStar.resolve(true)
@@ -77,7 +77,7 @@ describe('StarNagService', () => {
       'star_nag_outcome',
       expect.objectContaining({ outcome: 'direct_star_succeeded', mode: 'gh' })
     )
-    expect(trackMock).toHaveBeenCalledWith('app_starred_orca', {
+    expect(trackMock).toHaveBeenCalledWith('app_starred_topo', {
       source: 'star_nag',
       nth_repo_added: 3
     })
@@ -88,12 +88,12 @@ describe('StarNagService', () => {
     const window = createWindow()
     browserWindowMock.getAllWindows.mockReturnValue([window])
     const deferredStar = createDeferred<boolean>()
-    starOrcaMock.mockReturnValue(deferredStar.promise)
+    starTopoMock.mockReturnValue(deferredStar.promise)
     const { service, ui } = createHarness()
 
     service.registerIpcHandlers()
     getIpcHandler('star-nag:forceShow')()
-    const starPromise = getIpcHandler('star-nag:starOrca')()
+    const starPromise = getIpcHandler('star-nag:starTopo')()
     getIpcHandler('star-nag:dismiss')()
 
     deferredStar.resolve(false)
@@ -111,17 +111,17 @@ describe('StarNagService', () => {
   it('clears the in-flight direct-star guard after thrown attempts so the user can retry', async () => {
     const window = createWindow()
     browserWindowMock.getAllWindows.mockReturnValue([window])
-    starOrcaMock.mockRejectedValueOnce(new Error('gh failed')).mockResolvedValueOnce(true)
+    starTopoMock.mockRejectedValueOnce(new Error('gh failed')).mockResolvedValueOnce(true)
     const { service, ui } = createHarness()
 
     service.registerIpcHandlers()
     getIpcHandler('star-nag:forceShow')()
-    const starFromNag = getIpcHandler('star-nag:starOrca')
+    const starFromNag = getIpcHandler('star-nag:starTopo')
 
     await expect(starFromNag()).rejects.toThrow('gh failed')
     await expect(starFromNag()).resolves.toBe(true)
 
-    expect(starOrcaMock).toHaveBeenCalledTimes(2)
+    expect(starTopoMock).toHaveBeenCalledTimes(2)
     expect(ui.starNagCompleted).toBe(true)
   })
 
@@ -129,12 +129,12 @@ describe('StarNagService', () => {
     const window = createWindow()
     browserWindowMock.getAllWindows.mockReturnValue([window])
     const deferredStar = createDeferred<boolean>()
-    starOrcaMock.mockReturnValue(deferredStar.promise)
+    starTopoMock.mockReturnValue(deferredStar.promise)
     const { service, ui } = createHarness()
 
     service.registerIpcHandlers()
     getIpcHandler('star-nag:forceShow')()
-    const starFromNag = getIpcHandler('star-nag:starOrca')
+    const starFromNag = getIpcHandler('star-nag:starTopo')
     const first = starFromNag()
     const second = starFromNag()
 

@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import {
-  ORCAD_RECOVERY_CHANGED_STATE_CODE,
-  ORCAD_UPDATE_TERMINALS_RUNNING_CODE,
-  type OrcadManagedDeferral,
-  type OrcadManagedPastLiveTerminals,
-  type OrcadManagedRuntimeStatus
-} from '../../../../../../shared/orcad-managed-runtime'
+  TOPOD_RECOVERY_CHANGED_STATE_CODE,
+  TOPOD_UPDATE_TERMINALS_RUNNING_CODE,
+  type TopodManagedDeferral,
+  type TopodManagedPastLiveTerminals,
+  type TopodManagedRuntimeStatus
+} from '../../../../../../shared/topod-managed-runtime'
 import type { PublicKnownRuntimeEnvironment } from '../../../../../../shared/remote-runtime/host-catalog/runtime-environments'
-import type { ManagedOrcadPreloadApi } from '../../../../../../preload/api/managed-orcad-api'
+import type { ManagedTopodPreloadApi } from '../../../../../../preload/api/managed-topod-api'
 import { useMountedRef } from '@/hooks/useMountedRef'
 import { managedServerOutcomeLabel } from './managed-server-copy'
 
@@ -23,16 +23,16 @@ export type ManagedServerAction =
   | 'forget'
 
 export type ManagedServerLifecycle = {
-  status: OrcadManagedRuntimeStatus | null
+  status: TopodManagedRuntimeStatus | null
   statusError: string | null
-  recovery: OrcadManagedRuntimeStatus['recovery']
+  recovery: TopodManagedRuntimeStatus['recovery']
   busy: ManagedServerAction | 'status' | null
   confirmingStop: boolean
   confirmingForget: boolean
   confirmingRestore: boolean
   /** An Update deferred only by running terminals, which Update anyway restarts past. */
-  confirmingForceUpdate: OrcadManagedPastLiveTerminals | null
-  setConfirmingForceUpdate: (value: OrcadManagedPastLiveTerminals | null) => void
+  confirmingForceUpdate: TopodManagedPastLiveTerminals | null
+  setConfirmingForceUpdate: (value: TopodManagedPastLiveTerminals | null) => void
   setConfirmingStop: (value: boolean) => void
   setConfirmingForget: (value: boolean) => void
   setConfirmingRestore: (value: boolean) => void
@@ -40,12 +40,12 @@ export type ManagedServerLifecycle = {
   run: (action: ManagedServerAction) => Promise<void>
 }
 
-function isLiveTerminalsDeferral(result: { outcome: string } | OrcadManagedDeferral): boolean {
+function isLiveTerminalsDeferral(result: { outcome: string } | TopodManagedDeferral): boolean {
   return (
     result.outcome === 'deferred' &&
     'code' in result &&
     result.forceable === true &&
-    result.code === ORCAD_UPDATE_TERMINALS_RUNNING_CODE
+    result.code === TOPOD_UPDATE_TERMINALS_RUNNING_CODE
   )
 }
 
@@ -62,23 +62,23 @@ export function useManagedServerLifecycle({
   environment,
   onChanged
 }: {
-  api: ManagedOrcadPreloadApi
+  api: ManagedTopodPreloadApi
   environment: Pick<PublicKnownRuntimeEnvironment, 'id'>
   onChanged: () => void
 }): ManagedServerLifecycle {
   const mountedRef = useMountedRef()
-  const [status, setStatus] = useState<OrcadManagedRuntimeStatus | null>(null)
+  const [status, setStatus] = useState<TopodManagedRuntimeStatus | null>(null)
   const [statusError, setStatusError] = useState<string | null>(null)
   const [busy, setBusy] = useState<ManagedServerAction | 'status' | null>(null)
   const [confirmingStop, setStopConfirmation] = useState(false)
   const [confirmingForget, setForgetConfirmation] = useState(false)
   const [confirmingRestore, setRestoreConfirmation] = useState(false)
   const [forceUpdateRequest, setForceUpdateRequest] =
-    useState<OrcadManagedPastLiveTerminals | null>(null)
+    useState<TopodManagedPastLiveTerminals | null>(null)
   // Why one choke point: the row shows one confirmation, so opening any closes the rest.
   const openConfirmation = (
     open: 'stop' | 'forget' | 'restore' | 'forceUpdate' | null,
-    forceUpdate: OrcadManagedPastLiveTerminals | null = null
+    forceUpdate: TopodManagedPastLiveTerminals | null = null
   ): void => {
     setStopConfirmation(open === 'stop')
     setForgetConfirmation(open === 'forget')
@@ -88,7 +88,7 @@ export function useManagedServerLifecycle({
   const setConfirmingStop = (value: boolean): void => openConfirmation(value ? 'stop' : null)
   const setConfirmingForget = (value: boolean): void => openConfirmation(value ? 'forget' : null)
   const setConfirmingRestore = (value: boolean): void => openConfirmation(value ? 'restore' : null)
-  const setConfirmingForceUpdate = (value: OrcadManagedPastLiveTerminals | null): void =>
+  const setConfirmingForceUpdate = (value: TopodManagedPastLiveTerminals | null): void =>
     openConfirmation(value ? 'forceUpdate' : null, value)
   // Why derived: another desktop's activation, a stop or a migration voids the confirmation.
   const confirmingForceUpdate =
@@ -165,7 +165,7 @@ export function useManagedServerLifecycle({
         action === 'recover' &&
         result.outcome === 'refused' &&
         'code' in result &&
-        result.code === ORCAD_RECOVERY_CHANGED_STATE_CODE
+        result.code === TOPOD_RECOVERY_CHANGED_STATE_CODE
       ) {
         setConfirmingRestore(true)
       }

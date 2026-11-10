@@ -22,12 +22,12 @@ export function LandingBrand(): React.JSX.Element {
       >
         <img
           src={logo}
-          alt={t('auto.components.Landing.520304a067', 'Orca logo')}
+          alt={t('auto.components.Landing.520304a067', 'Topo logo')}
           className="size-12"
         />
       </div>
       <h1 className="text-4xl font-bold text-foreground tracking-tight">
-        {t('auto.components.Landing.6ca6ff404e', 'ORCA')}
+        {t('auto.components.Landing.6ca6ff404e', 'TOPO')}
       </h1>
     </>
   )

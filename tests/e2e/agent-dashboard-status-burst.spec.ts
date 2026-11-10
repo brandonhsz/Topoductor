@@ -1,4 +1,4 @@
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 
 const PANE_COUNT = 100
@@ -20,11 +20,11 @@ type BurstEvidence = {
 
 test('keeps the visible Agent Dashboard interactive during a 100-pane status replay', async ({
   electronApp,
-  orcaPage
+  topoPage
 }) => {
-  await waitForSessionReady(orcaPage)
-  const worktreeId = await waitForActiveWorktree(orcaPage)
-  const panes = await orcaPage.evaluate(
+  await waitForSessionReady(topoPage)
+  const worktreeId = await waitForActiveWorktree(topoPage)
+  const panes = await topoPage.evaluate(
     ({ baseTime, paneCount, worktreeId }): BurstPane[] => {
       const store = window.__store
       if (!store) {
@@ -81,14 +81,14 @@ test('keeps the visible Agent Dashboard interactive during a 100-pane status rep
     { baseTime: BASE_TIME, paneCount: PANE_COUNT, worktreeId }
   )
 
-  const dashboardButton = orcaPage.getByRole('button', { name: /Agent Dashboard/ })
+  const dashboardButton = topoPage.getByRole('button', { name: /Agent Dashboard/ })
   await expect(dashboardButton).toBeVisible()
 
   await electronApp.evaluate(
     ({ BrowserWindow }, { baseTime, panes }) => {
       const window = BrowserWindow.getAllWindows().find((candidate) => !candidate.isDestroyed())
       if (!window) {
-        throw new Error('Orca BrowserWindow is unavailable')
+        throw new Error('Topo BrowserWindow is unavailable')
       }
       for (const [index, pane] of panes.entries()) {
         const receivedAt = baseTime + index
@@ -108,9 +108,9 @@ test('keeps the visible Agent Dashboard interactive during a 100-pane status rep
 
   const interactionStartedAt = performance.now()
   await dashboardButton.click()
-  await orcaPage.locator('[data-agent-dashboard-sheet]').waitFor({ state: 'visible' })
+  await topoPage.locator('[data-agent-dashboard-sheet]').waitFor({ state: 'visible' })
   const interactionElapsedMs = performance.now() - interactionStartedAt
-  const statusPublicationsAtVisible = await orcaPage.evaluate(() => {
+  const statusPublicationsAtVisible = await topoPage.evaluate(() => {
     const probe = (
       window as typeof window & { __agentDashboardBurstProbe?: { statusPublications: number } }
     ).__agentDashboardBurstProbe
@@ -123,7 +123,7 @@ test('keeps the visible Agent Dashboard interactive during a 100-pane status rep
   await expect
     .poll(
       () =>
-        orcaPage.evaluate(
+        topoPage.evaluate(
           (paneKeys) => {
             const statuses = window.__store?.getState().agentStatusByPaneKey ?? {}
             return paneKeys.every((paneKey) => statuses[paneKey]?.state === 'done')
@@ -134,7 +134,7 @@ test('keeps the visible Agent Dashboard interactive during a 100-pane status rep
     )
     .toBe(true)
 
-  const evidence = await orcaPage.evaluate(
+  const evidence = await topoPage.evaluate(
     ({ paneKeys, statusPublicationsAtVisible }): BurstEvidence => {
       const state = window.__store?.getState()
       const probe = (

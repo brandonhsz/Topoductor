@@ -21,7 +21,7 @@ type PluginThemeSettings = Pick<
   | 'terminalPluginPalettes'
 >
 
-/** The app theme slot value that paints Orca from the active terminal theme's colors. */
+/** The app theme slot value that paints Topo from the active terminal theme's colors. */
 export const MATCH_TERMINAL_APP_THEME = 'match-terminal' satisfies AppThemeSlotSelection
 
 /** The setting that holds the app theme for one light/dark mode. */
@@ -119,7 +119,7 @@ type MatchTerminalSidebarSettings = Partial<
 >
 
 /** Whether stored settings carry the sidebar value from before the app theme slots existed (or
- *  from an older Orca that cleared the slots it didn't understand). */
+ *  from an older Topo that cleared the slots it didn't understand). */
 export function hasLegacyMatchTerminalSidebar(settings: MatchTerminalSidebarSettings): boolean {
   return (
     settings.leftSidebarAppearanceMode === 'match-terminal' &&
@@ -129,7 +129,7 @@ export function hasLegacyMatchTerminalSidebar(settings: MatchTerminalSidebarSett
 }
 
 /**
- * Keeps the sidebar's "Match Terminal" value in step with the app theme slots. Older Orca only
+ * Keeps the sidebar's "Match Terminal" value in step with the app theme slots. Older Topo only
  * reads the sidebar value, so it is written while a slot matches the terminal; a legacy write of
  * it fills the empty slots, and a slot holding a plugin theme keeps it.
  */

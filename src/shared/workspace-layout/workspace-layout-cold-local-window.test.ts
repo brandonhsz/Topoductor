@@ -4,7 +4,7 @@ import { nameBasedLoadContext } from './workspace-layout-minted-ids'
 import { coldInput } from './workspace-layout-cold-local.test-fixture'
 import { GIT_KEY } from './workspace-layout-session.test-fixture'
 
-vi.mock('../layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: false }))
+vi.mock('../layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: false }))
 it('leaves window browser hydration to its existing owner', () => {
   const stored = coldInput('browser', 100)
   const context = nameBasedLoadContext()

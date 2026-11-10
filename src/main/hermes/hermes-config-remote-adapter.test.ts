@@ -11,7 +11,7 @@ describe('Hermes remote installer through a local filesystem adapter (no SSH)', 
   const service = new HermesHookService()
 
   beforeEach(() => {
-    directory = mkdtempSync(join(tmpdir(), 'orca-hermes-remote-adapter-'))
+    directory = mkdtempSync(join(tmpdir(), 'topo-hermes-remote-adapter-'))
     mkdirSync(join(directory, '.hermes'))
     configPath = join(directory, '.hermes', 'config.yaml')
   })
@@ -30,7 +30,7 @@ describe('Hermes remote installer through a local filesystem adapter (no SSH)', 
     const filesystem = createManagedHookLocalFilesystem()
     const rename = filesystem.ext_openssh_rename.bind(filesystem)
     filesystem.ext_openssh_rename = (source, destination, callback) => {
-      if (destination === join(directory, '.hermes', 'plugins', 'orca-status', 'plugin.yaml')) {
+      if (destination === join(directory, '.hermes', 'plugins', 'topo-status', 'plugin.yaml')) {
         writeFileSync(configPath, updated)
       }
       rename(source, destination, callback)

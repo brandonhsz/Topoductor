@@ -1,4 +1,4 @@
-/** Keep desktop --serve and orcad readiness stdout consistent. */
+/** Keep desktop --serve and topod readiness stdout consistent. */
 import { statSync } from 'node:fs'
 import { isAbsolute } from 'node:path'
 

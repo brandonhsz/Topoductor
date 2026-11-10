@@ -75,7 +75,7 @@ afterEach(() => {
 
 describe('BrowserClientDownloadRelay', () => {
   it('leaves nothing on disk under the real staging root once transfers settle', async () => {
-    const root = await realpath(await mkdtemp(path.join(tmpdir(), 'orca-download-relay-')))
+    const root = await realpath(await mkdtemp(path.join(tmpdir(), 'topo-download-relay-')))
     const stagingRoot = path.join(root, 'downloads')
     // Seed crash leftovers before construction to exercise the startup sweep.
     await mkdir(path.join(stagingRoot, 'crashed-transfer'), { recursive: true })
@@ -86,7 +86,7 @@ describe('BrowserClientDownloadRelay', () => {
         hostLabel: 'build-box',
         transport: negotiatedTransport((_method, params) =>
           (params as { final: boolean }).final
-            ? { accepted: true, workspaceRelativePath: '.orca/browser-downloads/report.pdf' }
+            ? { accepted: true, workspaceRelativePath: '.topo/browser-downloads/report.pdf' }
             : { accepted: true }
         ),
         resolvePage: () => page

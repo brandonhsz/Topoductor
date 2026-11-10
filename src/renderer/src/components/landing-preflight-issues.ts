@@ -58,7 +58,7 @@ export function getLandingPreflightIssues(
       title: t('auto.components.Landing.5beaef5f9e', 'GitHub CLI is not installed'),
       description: t(
         'auto.components.Landing.73e1ad4282',
-        'Orca uses the GitHub CLI (gh) to show pull requests, issues, and checks.'
+        'Topo uses the GitHub CLI (gh) to show pull requests, issues, and checks.'
       ),
       fixLabel: t('auto.components.Landing.installGitHubCli', 'Install GitHub CLI'),
       fixUrl: 'https://cli.github.com',

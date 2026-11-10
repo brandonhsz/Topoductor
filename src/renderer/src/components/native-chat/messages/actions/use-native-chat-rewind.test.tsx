@@ -102,7 +102,7 @@ describe('structured chat rewind', () => {
   it('offers rewind only below the fork divider', async () => {
     const props = input()
     const marker: AgentJournalRenderItem = {
-      ...item('orca:forked-from', 11),
+      ...item('topo:forked-from', 11),
       body: {
         kind: 'status',
         presentation: 'forked-from',

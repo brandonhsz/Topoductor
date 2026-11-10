@@ -5,7 +5,7 @@ import type { BrowserClientHostedPageInventory } from '../../../../../shared/bro
 import { getBrowserHostLeaseRegistry } from '../../../browser-host/leases/browser-host-lease-registry-instance'
 import { getRuntimeBrowserPageRegistry } from '../../../browser/client-pages/runtime-browser-page-registry'
 import type { BrowserExecutionHostKeyResolution } from '../../../browser/client-pages/runtime-browser-client-page-adoption'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { RpcDispatcher } from '../../dispatcher'
 import { BROWSER_CLIENT_HOST_METHODS } from './browser-client-host'
 
@@ -60,7 +60,7 @@ function attachHost(
     markClientHostedPagesReconciled,
     notifyMobileSessionTabsChanged,
     registerSubscriptionCleanup: (id: string, cleanup: () => void) => cleanups.set(id, cleanup)
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   const dispatcher = new RpcDispatcher({
     runtime: hostRuntime,
     methods: BROWSER_CLIENT_HOST_METHODS

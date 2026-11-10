@@ -37,7 +37,7 @@ const SleepTwinWorkspaceDialog = lazyWithRetry(
 const WorktreeVisibilityDialog = lazyWithRetry(
   () => import('./workspace-visibility/dialog/WorktreeVisibilityDialog')
 )
-const OrcaYamlTrustDialog = lazyWithRetry(() => import('./OrcaYamlTrustDialog'))
+const TopoYamlTrustDialog = lazyWithRetry(() => import('./TopoYamlTrustDialog'))
 const ForgetSshWorkspaceDialog = lazyWithRetry(
   () => import('./workspace-actions/deletion/ForgetSshWorkspaceDialog')
 )
@@ -284,7 +284,7 @@ function Sidebar({
         {activeModal === 'confirm-remove-folder' ? <RemoveFolderDialog /> : null}
         {activeModal === 'confirm-sleep-twin' ? <SleepTwinWorkspaceDialog /> : null}
         {activeModal === 'worktree-visibility' ? <WorktreeVisibilityDialog /> : null}
-        {activeModal === 'confirm-orca-yaml-hooks' ? <OrcaYamlTrustDialog /> : null}
+        {activeModal === 'confirm-topo-yaml-hooks' ? <TopoYamlTrustDialog /> : null}
         {activeModal === 'forget-ssh-workspace' ? <ForgetSshWorkspaceDialog /> : null}
       </React.Suspense>
       {sidebarOpen ? (

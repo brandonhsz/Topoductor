@@ -4,7 +4,7 @@ import type { RuntimeTerminalCreate } from '../../../../../../shared/runtime-ter
 import type { AgentLaunchPreferences } from '../../../../../../shared/agent-session/agent-session-host-authority'
 import type { TuiAgent } from '../../../../../../shared/agent-launch/catalog/tui-agent'
 import { suggestCreatureNameForPaths } from '../../../../../../shared/worktree-name-suggestion'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import { parseWorkspaceKey } from '../../../../../../shared/workspace-scope'
@@ -19,7 +19,7 @@ export type WorkerWorktreeCreationTarget = {
 }
 
 export async function resolveWorkerWorktreeCreationTarget(args: {
-  runtime: Pick<OrcaRuntimeService, 'showManagedWorktree'>
+  runtime: Pick<TopoRuntimeService, 'showManagedWorktree'>
   requestedWorktree: string
   repo: string | undefined
   callerWorktreeId: string
@@ -48,7 +48,7 @@ export async function resolveWorkerWorktreeCreationTarget(args: {
       if (error instanceof Error && error.message === 'selector_not_found') {
         throw new OrchestrationError(
           'invalid_argument',
-          `The dispatching terminal's workspace could not be resolved to a git worktree Orca manages, which --worktree ${requestedWorktree} needs; run from one, or pass --worktree new-top-level --repo <selector>.`
+          `The dispatching terminal's workspace could not be resolved to a git worktree Topo manages, which --worktree ${requestedWorktree} needs; run from one, or pass --worktree new-top-level --repo <selector>.`
         )
       }
       throw error
@@ -94,7 +94,7 @@ export async function resolveWorkerWorktreeName(
 }
 
 export async function createWorkerWorktree(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   dispatchId: string
   requestedWorktree: string
@@ -115,7 +115,7 @@ export async function createWorkerWorktree(args: {
   launchPreferences?: AgentLaunchPreferences
   effects: WorkerEffect[]
 }): Promise<{
-  worktree: Awaited<ReturnType<OrcaRuntimeService['showManagedWorktree']>>
+  worktree: Awaited<ReturnType<TopoRuntimeService['showManagedWorktree']>>
   terminalHandle: string | undefined
   terminalCreation?: RuntimeTerminalCreate
   setupReceipt: WorkerSetupReceipt
@@ -218,7 +218,7 @@ export async function createWorkerWorktree(args: {
     terminalId: setupTerminalHandle ?? setupTerminal?.id
   })
   return {
-    worktree: created.worktree as Awaited<ReturnType<OrcaRuntimeService['showManagedWorktree']>>,
+    worktree: created.worktree as Awaited<ReturnType<TopoRuntimeService['showManagedWorktree']>>,
     terminalHandle,
     terminalCreation,
     setupReceipt

@@ -11,7 +11,7 @@ import {
 import type { RuntimeFileMutationExpectation } from '../../files/file-mutation-expectation'
 
 // Remote downloads need an in-workspace home reachable through containment-checked transfers.
-export const BROWSER_CLIENT_DOWNLOAD_WORKSPACE_DIRECTORY = '.orca/browser-downloads'
+export const BROWSER_CLIENT_DOWNLOAD_WORKSPACE_DIRECTORY = '.topo/browser-downloads'
 
 type TransferMutation = { workspaceId: string; expectation: RuntimeFileMutationExpectation }
 export type BrowserClientDownloadTransferDependencies = {

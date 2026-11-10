@@ -3,7 +3,7 @@ import type {
   MessageType
 } from '../../../../orchestration/db/orchestration-records'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import { encodeFederatedControlMessage } from '../../../../orchestration/federation/relay/federation-control-message'
 import { ORCHESTRATION_FEDERATION_CONTROL_MAIL_PROTOCOL_VERSION } from '../../../../../../shared/orchestration/orchestration-runtime-capabilities'
@@ -18,7 +18,7 @@ type SendReceipt = <T extends object>(receipt: T) => T & { warnings?: SendRecipi
 /** Delivers coordinator control mail to a federated worker when `to` names its exact Dispatch. */
 export function sendFederatedControlMail(args: {
   params: SendParamsInput
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   from: string
   to: string
@@ -57,8 +57,8 @@ export function sendFederatedControlMail(args: {
       refusal.code !== 'dispatch_inactive'
         ? refusal.message
         : state && ['succeeded', 'failed', 'stopped', 'abandoned'].includes(state)
-          ? `Dispatch ${dispatchId} finished on ${server}, which cannot take follow-ups for finished workers yet. Start a new worker there with \`orca orchestration worker-start --on ${server}\`.`
-          : `Dispatch ${dispatchId} on ${server} is not confirmed running (${state ?? 'unknown'}), so this message was not sent. Check it with \`orca orchestration worker-show --dispatch ${dispatchId}\` before starting another worker.`
+          ? `Dispatch ${dispatchId} finished on ${server}, which cannot take follow-ups for finished workers yet. Start a new worker there with \`topo orchestration worker-start --on ${server}\`.`
+          : `Dispatch ${dispatchId} on ${server} is not confirmed running (${state ?? 'unknown'}), so this message was not sent. Check it with \`topo orchestration worker-show --dispatch ${dispatchId}\` before starting another worker.`
     throw new OrchestrationError(refusal.code, message)
   }
   if (params.type === 'worker_done' || params.type === 'heartbeat') {
@@ -107,7 +107,7 @@ export function federatedControlMailRefusal(
   if (protocolVersion < ORCHESTRATION_FEDERATION_CONTROL_MAIL_PROTOCOL_VERSION) {
     return {
       code: 'capability_unsupported',
-      message: `Federated Dispatch ${dispatchId} does not support coordinator control mail; start a fresh worker after updating its Orca server.`
+      message: `Federated Dispatch ${dispatchId} does not support coordinator control mail; start a fresh worker after updating its Topo server.`
     }
   }
   if (workerState() !== 'ready') {

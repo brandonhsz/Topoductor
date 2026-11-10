@@ -14,7 +14,7 @@ const { hasOpenAiSpeechApiKeyMock, netRequestMock } = vi.hoisted(() => ({
 
 vi.mock('electron', () => ({
   app: {
-    getPath: () => '/tmp/orca-speech-models-test'
+    getPath: () => '/tmp/topo-speech-models-test'
   },
   net: {
     request: netRequestMock
@@ -63,7 +63,7 @@ describe('ModelManager', () => {
   })
 
   it('installs individually verified model files through a staging directory', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-manager-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-manager-'))
     try {
       const manifest = SPEECH_MODEL_CATALOG.find(
         (model) => model.id === 'zipformer-streaming-zh-14m'
@@ -103,7 +103,7 @@ describe('ModelManager', () => {
   })
 
   it('deletes a ready local model and reports it as not downloaded', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-manager-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-manager-'))
     try {
       const manifest = SPEECH_MODEL_CATALOG.find(
         (model) => model.id === 'zipformer-streaming-zh-14m'
@@ -135,7 +135,7 @@ describe('ModelManager', () => {
   })
 
   it('aborts an in-flight model download request when cancelled', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-manager-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-manager-'))
     try {
       const manifest = SPEECH_MODEL_CATALOG[0]
       const errorHandlers: ((err: Error) => void)[] = []
@@ -218,7 +218,7 @@ describe('ModelManager', () => {
 
   it('settles immediately when the abort signal fires before a response', async () => {
     vi.useFakeTimers()
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-manager-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-manager-'))
     try {
       const errorHandlers: ((err: Error) => void)[] = []
       const responseHandlers: ((response: unknown) => void)[] = []
@@ -301,7 +301,7 @@ describe('ModelManager', () => {
 
   it('times out a model download request that never responds', async () => {
     vi.useFakeTimers()
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-manager-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-manager-'))
     try {
       const errorHandlers: ((err: Error) => void)[] = []
       const responseHandlers: ((response: unknown) => void)[] = []

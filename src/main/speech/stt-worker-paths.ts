@@ -29,7 +29,7 @@ function speechNodeModulesDirCandidates(): string[] {
     ]
   }
   if (getAppEnvironment().isPackaged()) {
-    // orcad: only the installed app's copy, which `orca serve` names.
+    // topod: only the installed app's copy, which `topo serve` names.
     const handed = process.env[SPEECH_RECOGNIZER_DIR_ENV]
     return handed ? [handed] : []
   }

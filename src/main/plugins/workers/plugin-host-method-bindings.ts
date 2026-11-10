@@ -89,11 +89,11 @@ export type PluginHostServices = {
   desktop?: PluginDesktopFrameServices | null
   /** The plugin's open panels and its worker; absent where no panel host runs. */
   panels?: PluginPanelBridgeServices | null
-  /** Absent where no Orca window draws a status bar. */
+  /** Absent where no Topo window draws a status bar. */
   statusBar?: PluginStatusBarServices | null
-  /** The runtime methods the `orca` CLI calls, for workspace actions; absent without a runtime. */
+  /** The runtime methods the `topo` CLI calls, for workspace actions; absent without a runtime. */
   runtimeRpc?: PluginRuntimeRpc | null
-  /** Orca's window, for actions only it can take; absent in headless serve. */
+  /** Topo's window, for actions only it can take; absent in headless serve. */
   renderer?: PluginHostRendererActions | null
   settings: {
     getAll(pluginId: string): Record<string, PluginJsonValue>
@@ -234,7 +234,7 @@ const HANDLERS: Record<PluginHostMethodName, BoundPluginHostMethod> = {
 
 function requireDesktop(services: PluginHostServices): PluginDesktopFrameServices {
   if (!services.desktop) {
-    throw new Error('this method is only available in the Orca desktop app')
+    throw new Error('this method is only available in the Topo desktop app')
   }
   return services.desktop
 }

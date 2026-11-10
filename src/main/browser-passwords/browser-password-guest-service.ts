@@ -99,7 +99,7 @@ export function attachBrowserPasswordGuest(guest: WebContents): void {
       return
     }
     clearFocus(state)
-    // Address-bar, back/forward and Orca reloads carry no initiating frame; page navigations do.
+    // Address-bar, back/forward and Topo reloads carry no initiating frame; page navigations do.
     state.tracker.navigationStarted(details.initiator != null)
   })
   guest.on('did-fail-load', (_event, _code, _description, _url, isMainFrame) => {
@@ -256,7 +256,7 @@ function clearFocus(state: GuestState): void {
   }
 }
 
-/** Fills one saved login into the field the user picked it for, after Orca's own UI was clicked. */
+/** Fills one saved login into the field the user picked it for, after Topo's own UI was clicked. */
 export async function fillBrowserPassword(input: {
   browserPageId: string
   fieldToken: string

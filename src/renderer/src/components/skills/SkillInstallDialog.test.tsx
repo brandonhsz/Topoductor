@@ -75,8 +75,8 @@ function installApi(previewInstall: ReturnType<typeof vi.fn>) {
 }
 
 async function inspectSkill(expectedDescription = 'A private skill'): Promise<void> {
-  fireEvent.change(screen.getByLabelText('Orca skill link'), {
-    target: { value: 'https://app.orca.dev/skills/share/share_1' }
+  fireEvent.change(screen.getByLabelText('Topo skill link'), {
+    target: { value: 'https://app.topo.dev/skills/share/share_1' }
   })
   fireEvent.click(screen.getByRole('button', { name: 'Inspect skill' }))
   await screen.findByText(expectedDescription)
@@ -131,7 +131,7 @@ describe('SkillInstallDialog', () => {
   it('surfaces capability loss after preview selection without attempting installation', async () => {
     const previewInstall = vi.fn().mockResolvedValue({
       status: 'unsupported',
-      message: 'Update the selected Orca host to install shared skills.'
+      message: 'Update the selected Topo host to install shared skills.'
     })
     const skills = installApi(previewInstall)
     Object.defineProperty(window, 'api', { configurable: true, value: { skills } })
@@ -141,7 +141,7 @@ describe('SkillInstallDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Install skill' }))
 
     expect((await screen.findByRole('alert')).textContent).toContain(
-      'Update the selected Orca host'
+      'Update the selected Topo host'
     )
     expect(skills.installShare).not.toHaveBeenCalled()
   })

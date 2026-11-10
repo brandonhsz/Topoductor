@@ -1,4 +1,4 @@
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import type { Editor } from '@tiptap/core'
 import {
   cleanupMarkdownFixture,
@@ -14,24 +14,24 @@ type PageRichMarkdownLinkEditorElement = HTMLElement & {
 }
 
 test('collapses a selection beside a document link without rewriting the link', async ({
-  orcaPage,
+  topoPage,
   registerPostElectronShutdownCleanup
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  const context = await getActiveWorktreeContext(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  const context = await getActiveWorktreeContext(topoPage)
   const filePath = await createMarkdownFixture(
     context,
-    '.orca-e2e-markdown-links',
+    '.topo-e2e-markdown-links',
     'selection',
     testInfo.workerIndex,
     '[[Guide]]after\n\nSelecting text beside a document link should keep the link intact.'
   )
   registerPostElectronShutdownCleanup(() => cleanupMarkdownFixture(filePath))
-  await openMarkdownFixture(orcaPage, context, filePath)
-  const editor = await waitForRichMarkdownEditor(orcaPage)
+  await openMarkdownFixture(topoPage, context, filePath)
+  const editor = await waitForRichMarkdownEditor(topoPage)
   await expect(editor.locator('[data-doc-link-target="Guide"]')).toHaveCount(1)
-  await orcaPage.evaluate(() => {
+  await topoPage.evaluate(() => {
     const editorElement =
       document.querySelector<PageRichMarkdownLinkEditorElement>('.rich-markdown-editor')
     const instance = editorElement?.editor
@@ -43,10 +43,10 @@ test('collapses a selection beside a document link without rewriting the link', 
       throw new Error('Selection unavailable')
     }
   })
-  await expect.poll(() => orcaPage.evaluate(() => window.getSelection()?.toString())).toBe('after')
+  await expect.poll(() => topoPage.evaluate(() => window.getSelection()?.toString())).toBe('after')
   await expect
     .poll(() =>
-      orcaPage.evaluate(() => {
+      topoPage.evaluate(() => {
         const selection =
           document.querySelector<PageRichMarkdownLinkEditorElement>('.rich-markdown-editor')?.editor
             ?.state.selection
@@ -55,9 +55,9 @@ test('collapses a selection beside a document link without rewriting the link', 
     )
     .toEqual({ from: 2, to: 7, empty: false })
   await expect(editor).toBeFocused()
-  await orcaPage.keyboard.press('ArrowLeft')
+  await topoPage.keyboard.press('ArrowLeft')
   await expect(editor.locator('[data-doc-link-target="Guide"]')).toHaveCount(1)
   await expect(editor.locator('p').first()).toHaveText('Guideafter')
-  await expect.poll(() => orcaPage.evaluate(() => window.getSelection()?.toString())).toBe('')
-  await orcaPage.screenshot({ path: testInfo.outputPath('link-after-collapse.png') })
+  await expect.poll(() => topoPage.evaluate(() => window.getSelection()?.toString())).toBe('')
+  await topoPage.screenshot({ path: testInfo.outputPath('link-after-collapse.png') })
 })

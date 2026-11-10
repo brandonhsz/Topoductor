@@ -30,7 +30,7 @@ import { CodexHookService } from '../installation/codex-hook-service-implementat
 
 const homes = setupCodexHookHomes(homedirMock, getPathMock)
 
-function orcaEntryCommand(): string {
+function topoEntryCommand(): string {
   const scriptPath = join(
     homes.userDataDir,
     'agent-hooks',
@@ -49,7 +49,7 @@ function seedRealHomeHooks(): string {
       hooks: {
         Stop: [
           { hooks: [{ type: 'command', command: 'user-hook' }] },
-          { hooks: [{ type: 'command', command: orcaEntryCommand() }] }
+          { hooks: [{ type: 'command', command: topoEntryCommand() }] }
         ]
       }
     })}\n`,
@@ -63,7 +63,7 @@ function realHomeStopHooks(systemHooksPath: string): unknown {
 }
 
 describe('Codex turned off per agent', () => {
-  it('removes the Orca entry from the real ~/.codex and keeps user hooks', async () => {
+  it('removes the Topo entry from the real ~/.codex and keeps user hooks', async () => {
     const systemHooksPath = seedRealHomeHooks()
 
     await new CodexHookService().remove()

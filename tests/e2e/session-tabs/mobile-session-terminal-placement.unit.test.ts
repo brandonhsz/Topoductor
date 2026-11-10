@@ -1,12 +1,12 @@
-import '../../../src/main/runtime/orca-runtime-tests/runtime-test-module-registration.spec'
+import '../../../src/main/runtime/topo-runtime-tests/runtime-test-module-registration.spec'
 import { afterEach, expect, it, vi } from 'vitest'
 import { applyPtyBinding } from '../../../src/main/persistence/loading-store/pty-binding-session-update'
-import { committingSpawn } from '../../../src/main/runtime/orca-runtime-tests/bind-first-pane.test-fixture'
-import { OrcaRuntimeService } from '../../../src/main/runtime/orca-runtime'
+import { committingSpawn } from '../../../src/main/runtime/topo-runtime-tests/bind-first-pane.test-fixture'
+import { TopoRuntimeService } from '../../../src/main/runtime/topo-runtime'
 import {
   TEST_WORKTREE_ID as WT,
   TEST_WORKTREE_PATH
-} from '../../../src/main/runtime/orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../../../src/main/runtime/topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import type { RuntimeMobileSessionTabsResult } from '../../../src/shared/runtime-session-contracts'
 import type { RuntimePtyController } from '../../../src/main/runtime/terminal/lifecycle/runtime-pty-controller-contract'
 import { createRuntimeFixture } from './active-tab-publication.test-fixture'
@@ -74,7 +74,7 @@ it('publishes admitted terminal placement independently of the selected split gr
   expect(result.activeGroupId).toBe(right)
   expect(result.activeTabId).toBe(selected.activeTabId)
 
-  const reloaded = new OrcaRuntimeService(runtimeStore)
+  const reloaded = new TopoRuntimeService(runtimeStore)
   reloaded.setPtyController(controller)
   const cold = await reloaded.listMobileSessionTabs(`id:${WT}`)
   expect(cold.tabGroups?.map((group) => [group.id, group.tabOrder])).toEqual(expected)

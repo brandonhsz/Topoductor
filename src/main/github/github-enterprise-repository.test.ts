@@ -68,9 +68,9 @@ describe('getEnterpriseGitHubRepoSlug', () => {
   })
 
   it.each([
-    'https://ghe.acme.com:8443/team/orca.git',
-    'https://ghe.acme.com:80/team/orca.git',
-    'http://ghe.acme.com:443/team/orca.git'
+    'https://ghe.acme.com:8443/team/topo.git',
+    'https://ghe.acme.com:80/team/topo.git',
+    'http://ghe.acme.com:443/team/topo.git'
   ])('rejects portless authentication for a non-default web endpoint: %s', async (remoteUrl) => {
     mockOriginRemote(remoteUrl)
     mockHostAuthenticated('ghe.acme.com')
@@ -79,7 +79,7 @@ describe('getEnterpriseGitHubRepoSlug', () => {
   })
 
   it('preserves an indeterminate auth inventory failure so a later probe can recover', async () => {
-    mockOriginRemote('git@ghe.acme.com:team/orca.git')
+    mockOriginRemote('git@ghe.acme.com:team/topo.git')
     ghExecFileAsyncMock.mockRejectedValueOnce(
       Object.assign(new Error('not installed'), { stdout: '', stderr: '' })
     )
@@ -89,7 +89,7 @@ describe('getEnterpriseGitHubRepoSlug', () => {
     mockHostAuthenticated('ghe.acme.com:8443')
     await expect(getEnterpriseGitHubRepoSlug('/repo')).resolves.toEqual({
       owner: 'team',
-      repo: 'orca',
+      repo: 'topo',
       host: 'ghe.acme.com:8443'
     })
   })

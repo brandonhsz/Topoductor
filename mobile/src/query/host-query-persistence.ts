@@ -5,9 +5,9 @@ import {
 import { hashKey, replaceEqualDeep, type Query, type QueryClient } from '@tanstack/react-query'
 import type * as z from 'zod'
 import {
-  createOrcaQueryStorage,
-  orcaQueryStoreKey,
-  type OrcaQueryStoreBackend
+  createTopoQueryStorage,
+  topoQueryStoreKey,
+  type TopoQueryStoreBackend
 } from '../device-store/query-storage'
 import type { HostQueryKey } from './host-query-key'
 
@@ -113,7 +113,7 @@ export type HostQueryPersistence = {
 }
 
 // The boot read fetches every first-paint key in one store call; each key's later getItem takes its value once.
-function primedBackend(backend: OrcaQueryStoreBackend) {
+function primedBackend(backend: TopoQueryStoreBackend) {
   const primed = new Map<string, string | null>()
   return {
     async prime(keys: readonly string[]): Promise<void> {
@@ -142,18 +142,18 @@ function primedBackend(backend: OrcaQueryStoreBackend) {
         }
         return backend.write(ops)
       }
-    } satisfies OrcaQueryStoreBackend
+    } satisfies TopoQueryStoreBackend
   }
 }
 
 export function createHostQueryPersistence(
   queryClient: QueryClient,
-  store: OrcaQueryStoreBackend
+  store: TopoQueryStoreBackend
 ): HostQueryPersistence {
   const byHost = persistences.get(queryClient) ?? new Map<string, HostQueryPersistence>()
   persistences.set(queryClient, byHost)
   const primer = primedBackend(store)
-  const storage = createOrcaQueryStorage(primer.backend)
+  const storage = createTopoQueryStorage(primer.backend)
   const persisters = new Map<string, ReturnType<typeof createFamilyPersister>>()
   // The newest dataUpdatedAt each key was persisted or restored with: a restore never writes itself back.
   const settledAt = new Map<string, number>()
@@ -214,7 +214,7 @@ export function createHostQueryPersistence(
 
   function familyOf(queryKey: readonly unknown[]): string | null {
     const [scope, hostId, family] = queryKey
-    return scope === 'orca' && hostId === store.hostId && typeof family === 'string' ? family : null
+    return scope === 'topo' && hostId === store.hostId && typeof family === 'string' ? family : null
   }
 
   // Applied only to a key still empty: a live answer that landed first always wins. `after` is the boot
@@ -325,7 +325,7 @@ export function createHostQueryPersistence(
         empty.flatMap(({ queryKey, persist, family }) =>
           restoring.has(hashKey(queryKey))
             ? []
-            : [orcaQueryStoreKey(`${familyPrefix(family, persist)}-${hashKey(queryKey)}`)]
+            : [topoQueryStoreKey(`${familyPrefix(family, persist)}-${hashKey(queryKey)}`)]
         )
       )
       const batchRead = primed.catch(() => undefined)

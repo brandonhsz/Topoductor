@@ -34,7 +34,7 @@ const verifiedPairing = { ...pairing, endpoint: 'ws://127.0.0.1:41000/runtime' }
 describe('independent paired runtime SSH access persistence', () => {
   let userDataPath: string
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-ssh-access-store-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-ssh-access-store-'))
   })
   afterEach(() => {
     rmSync(userDataPath, { recursive: true, force: true })

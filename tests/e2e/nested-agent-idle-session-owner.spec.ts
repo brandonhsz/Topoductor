@@ -1,7 +1,7 @@
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   execInTerminal,
@@ -29,12 +29,12 @@ const SESSION = '11111111-2222-4333-8444-555555555555'
 const REPLY = 'Foreground Claude reply stays selected while a nested Codex reviews.'
 
 test('idle Claude keeps chat, mobile transcript, and return identity through nested Codex hooks', async ({
-  orcaPage,
+  topoPage,
   electronApp,
   registerPostElectronShutdownCleanup
 }, testInfo) => {
   test.skip(process.platform === 'win32', 'Claude hook process capture is POSIX-only')
-  const dir = mkdtempSync(join(tmpdir(), 'orca-idle-owner-e2e-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-idle-owner-e2e-'))
   registerPostElectronShutdownCleanup(async () => rmSync(dir, { recursive: true, force: true }))
   const transcriptPath = join(dir, `${SESSION}.jsonl`)
   writeFileSync(
@@ -45,15 +45,15 @@ test('idle Claude keeps chat, mobile transcript, and return identity through nes
       assistantText: REPLY
     })
   )
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage, 30_000)
-  const descriptor = await waitForActivePaneHookDescriptor(orcaPage)
-  const ptyId = await waitForActivePanePtyId(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage, 30_000)
+  const descriptor = await waitForActivePaneHookDescriptor(topoPage)
+  const ptyId = await waitForActivePanePtyId(topoPage)
   const sinkPath = join(dir, 'foreground-agent.log')
   const fixturePath = writeRetentionFixture(dir, { processTitle: 'claude' })
-  await execInTerminal(orcaPage, ptyId, retentionFixtureCommand(fixturePath, sinkPath))
+  await execInTerminal(topoPage, ptyId, retentionFixtureCommand(fixturePath, sinkPath))
   await expect.poll(() => readSink(sinkPath)).toMatch(/^READY:\d+/)
   const pid = Number(readSink(sinkPath).match(/^READY:(\d+)/)?.[1])
   const observed = await readAgentProcess(pid)
@@ -67,7 +67,7 @@ test('idle Claude keeps chat, mobile transcript, and return identity through nes
   const post = async (source: string, hook_event_name: string) => {
     const response = await fetch(`http://127.0.0.1:${endpoint.port}/hook/${source}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Orca-Agent-Hook-Token': endpoint.token },
+      headers: { 'Content-Type': 'application/json', 'X-Topo-Agent-Hook-Token': endpoint.token },
       body: JSON.stringify({
         ...descriptor,
         tabId,
@@ -92,18 +92,18 @@ test('idle Claude keeps chat, mobile transcript, and return identity through nes
   await post('claude', 'Stop')
   await expect
     .poll(() =>
-      orcaPage.evaluate(
+      topoPage.evaluate(
         (key) => window.__store?.getState().agentStatusByPaneKey[key]?.state,
         descriptor.paneKey
       )
     )
     .toBe('done')
-  await toggleTerminalTabToChatView(orcaPage, { tabId, worktreeId: descriptor.worktreeId })
-  const chat = orcaPage.locator('[data-native-chat-root="true"]')
+  await toggleTerminalTabToChatView(topoPage, { tabId, worktreeId: descriptor.worktreeId })
+  const chat = topoPage.locator('[data-native-chat-root="true"]')
   await expect(chat.getByText(REPLY, { exact: true })).toBeVisible()
-  await orcaPage.screenshot({ path: testInfo.outputPath('01-claude-before-nested.png') })
+  await topoPage.screenshot({ path: testInfo.outputPath('01-claude-before-nested.png') })
   expect(
-    await orcaPage.evaluate(
+    await topoPage.evaluate(
       async (key) => (await window.api.agentStatus.hasVerifiableAgentProcess?.(key)) ?? false,
       descriptor.paneKey
     )
@@ -120,16 +120,16 @@ test('idle Claude keeps chat, mobile transcript, and return identity through nes
     await expect(chat.getByText(REPLY, { exact: true })).toBeVisible()
     await expect
       .poll(() =>
-        orcaPage.evaluate(
+        topoPage.evaluate(
           (key) => window.__store?.getState().agentStatusByPaneKey[key]?.providerSession?.id,
           descriptor.paneKey
         )
       )
       .toBe(SESSION)
   }
-  await orcaPage.screenshot({ path: testInfo.outputPath('02-claude-after-nested.png') })
+  await topoPage.screenshot({ path: testInfo.outputPath('02-claude-after-nested.png') })
 
-  const phone = pairMobileClient(await createDesktopMobilePairingOffer(orcaPage))
+  const phone = pairMobileClient(await createDesktopMobilePairingOffer(topoPage))
   try {
     const result = await phone.call<RuntimeMobileSessionTabsResult>('session.tabs.list', {
       worktree: `id:${descriptor.worktreeId}`
@@ -151,16 +151,16 @@ test('idle Claude keeps chat, mobile transcript, and return identity through nes
     phone.dispose()
   }
 
-  await orcaPage.getByRole('button', { name: 'Show terminal', exact: true }).click()
+  await topoPage.getByRole('button', { name: 'Show terminal', exact: true }).click()
   await expect(chat).toHaveCount(0)
   await expect(
-    orcaPage.getByText('Orca could not verify the originating Codex session file', { exact: false })
+    topoPage.getByText('Topo could not verify the originating Codex session file', { exact: false })
   ).toHaveCount(0)
   expect(
-    await orcaPage.evaluate(
+    await topoPage.evaluate(
       (key) => window.__store?.getState().agentStatusByPaneKey[key]?.providerSession?.id,
       descriptor.paneKey
     )
   ).toBe(SESSION)
-  await orcaPage.screenshot({ path: testInfo.outputPath('03-return-to-terminal.png') })
+  await topoPage.screenshot({ path: testInfo.outputPath('03-return-to-terminal.png') })
 })

@@ -53,7 +53,7 @@ describe('daemon audit eligibility telemetry', () => {
     expect(firstProperties).toMatchObject({
       generation_role: 'current',
       exact_incarnation: 'endpoint-identity-linux-ticks',
-      exact_incarnation_correlation: 'v1:2751326d0f457808fe11a03ce2f6e732'
+      exact_incarnation_correlation: 'v1:04a3a195fb6f17b08eb569616547009a'
     })
     expect(secondProperties.exact_incarnation_correlation).toBe(
       firstProperties.exact_incarnation_correlation

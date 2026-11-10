@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useAppStore } from '../../../store'
 import type { TerminalPaneStartupController } from '../controller/use-terminal-pane-startup-actions'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import { sendLayoutCommandToOwner } from '@/runtime/workspace-layout/commands/layout-owner-command'
 import { notePendingPaneTitleRename } from '@/runtime/web-session-tabs-sync/naming/pending-pane-title-renames'
 
@@ -73,7 +73,7 @@ export function usePersistedPaneTitleActions({
         showPaneTitle(paneId, title)
       }
       if (
-        ORCA_LAYOUT_OWNER_IS_MAIN &&
+        TOPO_LAYOUT_OWNER_IS_MAIN &&
         leafId &&
         sendLayoutCommandToOwner(
           worktreeId,

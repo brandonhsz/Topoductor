@@ -2,7 +2,7 @@ import { createElement, type Dispatch, type SetStateAction } from 'react'
 import { QueryClient, QueryClientProvider, notifyManager } from '@tanstack/react-query'
 import { act, create } from 'react-test-renderer'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { OrcaQueryStoreBackend } from '../device-store/query-storage'
+import type { TopoQueryStoreBackend } from '../device-store/query-storage'
 import { hostQueryKey } from '../query/host-query-key'
 import { createHostQueryPersistence } from '../query/host-query-persistence'
 import type { TaskItem } from './mobile-tasks-project-workspace-types'
@@ -37,7 +37,7 @@ const storedRow = {
 
 function memoryStore(hostId: string) {
   const rows = new Map<string, string>()
-  const backend: OrcaQueryStoreBackend = {
+  const backend: TopoQueryStoreBackend = {
     hostId,
     read: async (keys) => ({
       status: 'ok',
@@ -158,7 +158,7 @@ describe('Tasks lists kept on the phone', () => {
           },
           ui: {
             taskResumeState: { linearPreset: 'assigned' },
-            trustedOrcaHooks: { 'repo-1': { setup: 'hash-trusted' } }
+            trustedTopoHooks: { 'repo-1': { setup: 'hash-trusted' } }
           },
           glabInstalled: false,
           linearConnected: true

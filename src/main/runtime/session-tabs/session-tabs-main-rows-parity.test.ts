@@ -6,7 +6,7 @@ import {
   HEADLESS_LEAF_ID,
   HEADLESS_SECOND_LEAF_ID,
   TEST_WORKTREE_ID
-} from '../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import {
   SURFACE_TAB_ID,
   surfaceRuntime
@@ -20,7 +20,7 @@ import {
   threeTabSurfaceRuntime
 } from './session-tabs-layout-moves.test-fixture'
 
-vi.mock('../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 const row = (leafId: string) => `${SURFACE_TAB_ID}::${leafId}`
 

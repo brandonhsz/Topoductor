@@ -11,7 +11,7 @@ import { PrivacyDiagnosticsSection } from './PrivacyDiagnosticsSection'
 import { useTranslate } from '@/i18n/use-translate'
 import { openAppHttpLink } from '@/lib/browser/navigation/app-http-link-open'
 
-export type EnvBlockedReason = 'do_not_track' | 'orca_disabled' | 'ci'
+export type EnvBlockedReason = 'do_not_track' | 'topo_disabled' | 'ci'
 export type BlockedReason = { kind: 'env'; reason: EnvBlockedReason }
 
 type PrivacyPaneProps = {
@@ -27,7 +27,7 @@ export function isEnvBlocked(consent: TelemetryConsentState | null): consent is 
   return (
     consent?.effective === 'disabled' &&
     (consent.reason === 'do_not_track' ||
-      consent.reason === 'orca_disabled' ||
+      consent.reason === 'topo_disabled' ||
       consent.reason === 'ci')
   )
 }
@@ -36,8 +36,8 @@ export function envVarNameForReason(reason: EnvBlockedReason): string {
   if (reason === 'do_not_track') {
     return 'DO_NOT_TRACK'
   }
-  if (reason === 'orca_disabled') {
-    return 'ORCA_TELEMETRY_DISABLED'
+  if (reason === 'topo_disabled') {
+    return 'TOPO_TELEMETRY_DISABLED'
   }
   return 'CI'
 }
@@ -99,7 +99,7 @@ export function PrivacyPane({ settings }: PrivacyPaneProps): React.JSX.Element {
           <p className="text-xs text-muted-foreground">
             {t(
               'auto.components.settings.PrivacyPane.8bfdd23a88',
-              'Help us figure out what to build next. Orca sends anonymous counts of which features you use and where things break.'
+              'Help us figure out what to build next. Topo sends anonymous counts of which features you use and where things break.'
             )}{' '}
             <button
               type="button"

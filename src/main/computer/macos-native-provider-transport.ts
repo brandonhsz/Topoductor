@@ -96,13 +96,13 @@ export async function startMacOSNativeProviderSocket({
   isCurrent: (socketPath: string) => boolean
   providerProcess: MacOSProviderProcessOwner
 }): Promise<StartedMacOSProviderSocket> {
-  const socketDirectory = mkdtempSync(join(tmpdir(), 'orca-computer-use-'))
+  const socketDirectory = mkdtempSync(join(tmpdir(), 'topo-computer-use-'))
   chmodSync(socketDirectory, 0o700)
   const socketPath = join(socketDirectory, 'provider.sock')
   const socketToken = randomUUID()
   const socketTokenPath = join(socketDirectory, 'provider.token')
   writeFileSync(socketTokenPath, socketToken, { encoding: 'utf8', mode: 0o600 })
-  // Spawn the signed helper directly so TCC does not charge LaunchServices activity to Orca.app.
+  // Spawn the signed helper directly so TCC does not charge LaunchServices activity to Topo.app.
   const provider = spawnProvider(helperExecutablePath, socketPath, socketTokenPath)
   // Own the helper before connecting so shutdown during startup cannot strand it.
   providerProcess.adopt(provider)

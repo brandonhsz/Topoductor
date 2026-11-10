@@ -7,7 +7,7 @@ import { createEditorSaveQueue } from './editor-save-queue'
 import type { EditorSaveQueue } from './editor-save-queue-contract'
 import { __clearSelfWriteRegistryForTests } from '../../external-changes/editor-self-write-registry'
 import {
-  ORCA_EDITOR_FILE_SAVED_EVENT,
+  TOPO_EDITOR_FILE_SAVED_EVENT,
   type EditorFileSavedDetail
 } from '../../autosave/editor-autosave'
 import { withRecordDiskText } from '../../model-lifetime/buffer-text/editor-buffer-adapter'
@@ -107,7 +107,7 @@ export function createClosedViewHarness(): ClosedViewHarness {
       store.setState((s) => ({ openFiles: s.openFiles.filter((file) => file.id !== id) }))
     },
     dispose: () => {
-      window.removeEventListener(ORCA_EDITOR_FILE_SAVED_EVENT, onSaved)
+      window.removeEventListener(TOPO_EDITOR_FILE_SAVED_EVENT, onSaved)
       h.queue.dispose()
       __clearSelfWriteRegistryForTests()
       vi.useRealTimers()
@@ -131,6 +131,6 @@ export function createClosedViewHarness(): ClosedViewHarness {
       h.loaded = { ...h.loaded, [detail.fileId]: { content: detail.content, isBinary: false } }
     }
   }
-  window.addEventListener(ORCA_EDITOR_FILE_SAVED_EVENT, onSaved)
+  window.addEventListener(TOPO_EDITOR_FILE_SAVED_EVENT, onSaved)
   return h
 }

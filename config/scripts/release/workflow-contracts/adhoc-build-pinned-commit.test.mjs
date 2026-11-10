@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { parse } from 'yaml'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 
 const workflow = parse(readFileSync('.github/workflows/adhoc-mac-build.yml', 'utf8'))
 const resolveStep = workflow.jobs['resolve-ref'].steps.find((step) => step.id === 'resolve')

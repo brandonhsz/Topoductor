@@ -66,7 +66,7 @@ function installDeps(
     catalogs: services.catalogs,
     applyConsent: services.applyConsent,
     // Why the hostname: a credential fix must happen on the machine whose Git ran.
-    executionHost: `the Orca host (${hostname()})`,
+    executionHost: `the Topo host (${hostname()})`,
     caller: context.caller
   }
 }
@@ -134,8 +134,8 @@ export const PLUGIN_INSTALL_METHODS = [
           {
             pluginKey: params.pluginKey,
             nextSteps: [
-              'Plugins bundled with Orca cannot be removed; disable them with `orca plugin disable`.',
-              'Remove a development folder with `orca plugin dev unload`.'
+              'Plugins bundled with Topo cannot be removed; disable them with `topo plugin disable`.',
+              'Remove a development folder with `topo plugin dev unload`.'
             ]
           }
         )
@@ -175,7 +175,7 @@ export const PLUGIN_INSTALL_METHODS = [
 function catalogDeps(services: PluginInstallRpcServices) {
   return {
     catalogs: services.catalogs,
-    host: { executionHost: `the Orca host (${hostname()})` },
+    host: { executionHost: `the Topo host (${hostname()})` },
     service: services.pluginService
   }
 }

@@ -3,7 +3,7 @@
 
 import { AGENT_SESSION_COMPACTION_SKIPPED_PRESENTATION } from '../../agent-session/agent-session-compaction'
 import { AGENT_SESSION_HOOK_SENT_BACK_PRESENTATION } from '../../agent-session/journal/agent-session-hook-outcome'
-import { AGENT_SESSION_ORCA_STOP_PRESENTATION } from '../../agent-session/lifecycle/agent-session-orca-stop'
+import { AGENT_SESSION_TOPO_STOP_PRESENTATION } from '../../agent-session/lifecycle/agent-session-topo-stop'
 import { AGENT_SESSION_TURN_NOTICE_PRESENTATION } from '../../agent-session/journal/agent-session-turn-notice'
 import { nativeChatRowRendersContent } from './native-chat-row-content'
 import { isStoppedBeforeStartBlock } from '../native-chat-stopped-before-start'
@@ -69,12 +69,12 @@ function deriveTurnFoldRow(
           isBackgroundTaskBlock(block) ||
           isStoppedBeforeStartBlock(block)
       ),
-    // A row about Orca's own stop is stored red for clients that predate it; it reports no failure.
+    // A row about Topo's own stop is stored red for clients that predate it; it reports no failure.
     reportsFailure: message.blocks.some(
       (block) =>
         block.type === 'text' &&
         (block.tone === 'error' || block.failure?.kind === 'usageLimitReached') &&
-        block.presentation !== AGENT_SESSION_ORCA_STOP_PRESENTATION
+        block.presentation !== AGENT_SESSION_TOPO_STOP_PRESENTATION
     ),
     explainsTurn: message.blocks.some(
       (block) =>
@@ -82,7 +82,7 @@ function deriveTurnFoldRow(
         (block.presentation === 'plan-document' ||
           block.presentation === 'compaction' ||
           block.presentation === AGENT_SESSION_COMPACTION_SKIPPED_PRESENTATION ||
-          block.presentation === AGENT_SESSION_ORCA_STOP_PRESENTATION ||
+          block.presentation === AGENT_SESSION_TOPO_STOP_PRESENTATION ||
           block.presentation === AGENT_SESSION_TURN_NOTICE_PRESENTATION ||
           block.presentation === AGENT_SESSION_HOOK_SENT_BACK_PRESENTATION)
     ),

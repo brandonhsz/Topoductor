@@ -21,7 +21,7 @@ import { promptEditor } from '@/components/native-chat/composer/editor/native-ch
 import { expect, it, vi } from 'vitest'
 import { useAppStore } from '@/store/index'
 import { getStructuredLaunchStateBySessionId } from './launch/structured-agent-session-launch-registry'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { clearNativeChatComposerDraftsForTests } from '@/components/native-chat/drafts/native-chat-draft-reset'
 import { hydrateNativeChatComposerDrafts } from '@/components/native-chat/drafts/native-chat-composer-draft-load'
 import {
@@ -34,7 +34,7 @@ import { promptTextContent } from '@/components/native-chat/composer/editor/nati
 import { openStructuredAgentSessionProvisionalTab } from './launch/structured-agent-session-launch-surface'
 
 it
-  .runIf(ORCA_LAYOUT_OWNER_IS_MAIN)
+  .runIf(TOPO_LAYOUT_OWNER_IS_MAIN)
   .each(['discarded-inventory', 'refused-close', 'excluded-close'] as const)(
   'keeps fresh END on the actually drawn destination after %s, then retires on accepted removal',
   async (schedule) => {
@@ -90,7 +90,7 @@ it
   }
 )
 
-it.runIf(ORCA_LAYOUT_OWNER_IS_MAIN).each(['fresh', 'restored', 'newer-seed'] as const)(
+it.runIf(TOPO_LAYOUT_OWNER_IS_MAIN).each(['fresh', 'restored', 'newer-seed'] as const)(
   'settles actual no-surface open without retiring another occurrence: %s',
   async (kind) => {
     const uuid = '11111111-2222-4333-8444-555555555555'
@@ -170,7 +170,7 @@ it.each(['remove', 'replace', 'final-retained'] as const)(
         expect(observedInput.current!.selectionStart).toBe(0)
       }
     })
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       const model = layoutApplyTestTransport.mainModel
       if (!model) {
         throw new Error('Expected main model')
@@ -223,7 +223,7 @@ it.each(['remove', 'replace', 'final-retained'] as const)(
     expect(readNativeChatComposerDraft(scope)).toBe(original)
     if (kind !== 'final-retained') {
       // Reopen the retained ordinary conversation through the existing API.
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         layoutApplyTestTransport.emitFrame({
           type: 'workspace',
           key: 'wt-1',

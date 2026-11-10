@@ -300,7 +300,7 @@ describe('initial host-mirror attach against a surface published as pending-hand
                 ok: false,
                 error: {
                   code: 'remote_runtime_unavailable',
-                  message: 'Remote Orca runtime connection closed'
+                  message: 'Remote Topo runtime connection closed'
                 }
               }
             : { ok: true, result: hostSessionSnapshot('pending-handle') }

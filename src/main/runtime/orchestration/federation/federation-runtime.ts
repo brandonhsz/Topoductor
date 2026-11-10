@@ -1,7 +1,7 @@
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 
 export type FederationRuntime = Pick<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   | 'syncOrchestrationFederatedDispatch'
   | 'getOrchestrationDb'
   | 'resolveOrchestrationWorkerServer'

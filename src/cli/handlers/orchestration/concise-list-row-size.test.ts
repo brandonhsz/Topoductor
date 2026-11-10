@@ -119,8 +119,8 @@ async function printed(command: string, flags: [string, string][], result: unkno
 
 describe('concise orchestration list output', () => {
   beforeEach(() => {
-    vi.stubEnv('ORCA_TERMINAL_HANDLE', 'term_coord')
-    vi.stubEnv('ORCA_AGENT_SESSION_ID', undefined)
+    vi.stubEnv('TOPO_TERMINAL_HANDLE', 'term_coord')
+    vi.stubEnv('TOPO_AGENT_SESSION_ID', undefined)
   })
 
   afterEach(() => {

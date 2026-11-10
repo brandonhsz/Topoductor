@@ -15,7 +15,7 @@ const temporaryRoots: string[] = []
 const savedEnvironment = {
   GIT_SSH_COMMAND: process.env.GIT_SSH_COMMAND,
   GIT_SSH_VARIANT: process.env.GIT_SSH_VARIANT,
-  ORCA_TEST_SSH_REPOSITORIES: process.env.ORCA_TEST_SSH_REPOSITORIES
+  TOPO_TEST_SSH_REPOSITORIES: process.env.TOPO_TEST_SSH_REPOSITORIES
 }
 
 async function runGit(cwd: string, args: string[]): Promise<void> {
@@ -39,9 +39,9 @@ async function createGitRepository(
   await runGit(repository, ['add', '--all'])
   await runGit(repository, [
     '-c',
-    'user.name=Orca Test',
+    'user.name=Topo Test',
     '-c',
-    'user.email=orca-test@example.invalid',
+    'user.email=topo-test@example.invalid',
     'commit',
     '--quiet',
     '-m',
@@ -69,7 +69,7 @@ afterEach(async () => {
 
 describe('private Git marketplace integration', () => {
   it('uses the caller SSH environment for marketplace preview and install', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-private-marketplace-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-private-marketplace-'))
     temporaryRoots.push(root)
     const pluginKey = 'private.private-locale'
     const pluginUrl = 'ssh://git@example.invalid/private/locale.git'
@@ -113,7 +113,7 @@ describe('private Git marketplace integration', () => {
     )
     process.env.GIT_SSH_COMMAND = `${shellQuote(process.execPath.replaceAll('\\', '/'))} ${shellQuote(sshShim.replaceAll('\\', '/'))}`
     process.env.GIT_SSH_VARIANT = 'ssh'
-    process.env.ORCA_TEST_SSH_REPOSITORIES = JSON.stringify({
+    process.env.TOPO_TEST_SSH_REPOSITORIES = JSON.stringify({
       '/private/locale.git': pluginRepository,
       '/private/marketplace.git': marketplaceRepository
     })

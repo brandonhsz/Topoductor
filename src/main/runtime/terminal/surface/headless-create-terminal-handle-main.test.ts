@@ -2,13 +2,13 @@
 import { expect, it, vi } from 'vitest'
 import { HEADLESS_RUNTIME_WINDOW_ID } from '../../../../shared/runtime-session-contracts'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 // Preserve side-effect order: mocks, lifecycle, fixtures.
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const { TEST_WORKTREE_ID, TEST_WORKTREE_PATH } =
-  await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
+  await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
 const { surfaceRuntime } = await import('./terminal-surface-replies.test-fixture')
 
 type Runtime = ReturnType<typeof surfaceRuntime>['runtime']

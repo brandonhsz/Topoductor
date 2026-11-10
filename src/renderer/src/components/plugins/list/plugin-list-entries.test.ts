@@ -9,7 +9,7 @@ import { buildPluginListEntries } from './plugin-list-entries'
 function listing(pluginKey: string, extra: Partial<PluginMarketplaceHostListing> = {}) {
   const value: PluginMarketplaceHostListing = {
     marketplaceSourceId: 'official',
-    marketplaceName: 'Orca Official Plugins',
+    marketplaceName: 'Topo Official Plugins',
     marketplaceOwner: 'stablyai',
     marketplaceCommit: 'abc123',
     pluginKey,
@@ -70,20 +70,20 @@ function catalog(id: string, url: string): PluginMarketplaceHostSourceState {
 describe('plugin list entries', () => {
   it("adds the publisher to a community plugin that shares an official one's name", () => {
     const community = {
-      ...installed('vale-c.catppuccin', 'Catppuccin for Orca'),
+      ...installed('vale-c.catppuccin', 'Catppuccin for Topo'),
       publisher: 'vale-c',
       official: false
     }
     const { installed: mine, available } = buildPluginListEntries(
       [community],
       [
-        listing('stablyai.orca-catppuccin-theme', { name: 'Catppuccin for Orca' }),
-        listing('vale-c.catppuccin', { name: 'Catppuccin for Orca', official: false })
+        listing('stablyai.orca-catppuccin-theme', { name: 'Catppuccin for Topo' }),
+        listing('vale-c.catppuccin', { name: 'Catppuccin for Topo', official: false })
       ]
     )
-    expect(mine[0]?.name).toBe('Catppuccin for Orca (vale-c)')
+    expect(mine[0]?.name).toBe('Catppuccin for Topo (vale-c)')
     expect(mine[0]?.nameShowsPublisher).toBe(true)
-    expect(available.map((entry) => entry.name)).toEqual(['Catppuccin for Orca'])
+    expect(available.map((entry) => entry.name)).toEqual(['Catppuccin for Topo'])
     expect(available[0]?.nameShowsPublisher).toBeUndefined()
   })
 
@@ -162,7 +162,7 @@ describe('plugin list entries', () => {
     expect(joined?.updateVersion).toBe('2.0.0')
   })
 
-  it('does not offer an update this Orca is too old to run', () => {
+  it('does not offer an update this Topo is too old to run', () => {
     const plugin = fromCatalog(installed('acme.notes', 'Notes'), 'https://official.invalid/c.git')
     const sources = [catalog('official', 'https://official.invalid/c.git')]
     const newer = listing('acme.notes', {
@@ -176,8 +176,8 @@ describe('plugin list entries', () => {
         types: []
       }
     })
-    const build = (orcaVersion: string) =>
-      buildPluginListEntries([plugin], [newer], { sources, orcaVersion }).installed[0]
+    const build = (topoVersion: string) =>
+      buildPluginListEntries([plugin], [newer], { sources, topoVersion }).installed[0]
     expect(build('1.9.0')?.updateVersion).toBeNull()
     expect(build('2.1.0')?.updateVersion).toBe('2.0.0')
   })
@@ -201,9 +201,9 @@ describe('plugin list entries', () => {
         }
       })
     const build = (offered: PluginMarketplaceHostListing, target = plugin) =>
-      buildPluginListEntries([target], [offered], { sources, orcaVersion: '1.5.0' }).installed[0]
+      buildPluginListEntries([target], [offered], { sources, topoVersion: '1.5.0' }).installed[0]
     expect(build(release('e'.repeat(64)))?.reinstallVersion).toBe('1.0.0')
-    // Same bytes would fail the same way; a release this Orca can't run is no fix either.
+    // Same bytes would fail the same way; a release this Topo can't run is no fix either.
     expect(build(release('b'.repeat(64)))?.reinstallVersion).toBeNull()
     expect(build(release('e'.repeat(64), '2.0.0'))?.reinstallVersion).toBeNull()
     expect(

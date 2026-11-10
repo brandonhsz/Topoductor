@@ -22,14 +22,14 @@ import {
 } from '../definitions/codex-hook-definition'
 import { buildCodexHookCommand as getManagedCommand } from '../definitions/codex-hook-command-form'
 import {
-  approvalsAtOrcaEntries,
-  findOrcaEntrySlots,
+  approvalsAtTopoEntries,
+  findTopoEntrySlots,
   getManagedCodexHookHome,
-  isKnownOrcaHash,
-  readKnownOrcaHashes,
+  isKnownTopoHash,
+  readKnownTopoHashes,
   getRealHomeCodexHookHome,
   type CodexHookHome
-} from '../../trust/hooks/codex-hook-orca-approvals'
+} from '../../trust/hooks/codex-hook-topo-approvals'
 import type { CodexHookAnswer } from '../../trust/hooks/codex-hook-trust-derivation'
 import { readKnownCodexHookAnswer } from '../../trust/hooks/codex-hook-hash-lookup'
 import { resolveCodexHookStatusHome } from './codex-hook-reconcile'
@@ -102,7 +102,7 @@ function readHomeStatus(
   if (!config) {
     return status('error', false, 'Could not parse Codex hooks.json')
   }
-  const slots = findOrcaEntrySlots(config.hooks, command)
+  const slots = findTopoEntrySlots(config.hooks, command)
   // Distinguish unreadable config from absence, which reads as an empty map.
   let trustStates: ReadonlyMap<string, CodexHookTrustState>
   let spelled: (key: string) => boolean = () => false
@@ -116,31 +116,31 @@ function readHomeStatus(
   }
   // Windows Codex ignores approvals kept only under the forward-slash key.
   const approvals = new Map(
-    [...approvalsAtOrcaEntries(trustStates, slots, home.keySourcePaths, command)].map(
+    [...approvalsAtTopoEntries(trustStates, slots, home.keySourcePaths, command)].map(
       ([eventLabel, held]) => [eventLabel, held.filter((approval) => spelled(approval.key))]
     )
   )
   if (answer?.kind !== 'hashes') {
-    const reason = answer?.failure ?? 'Orca has not asked Codex yet'
+    const reason = answer?.failure ?? 'Topo has not asked Codex yet'
     if (slots.size === 0) {
       return status('not_installed', false, reason)
     }
     if (answer?.kind === 'refused') {
-      return status('partial', true, `Orca's hook entry is installed, but ${reason}`)
+      return status('partial', true, `Topo's hook entry is installed, but ${reason}`)
     }
     // Known or local approvals may stand until Codex answers.
-    const known = readKnownOrcaHashes(home, command)
+    const known = readKnownTopoHashes(home, command)
     const approved =
       trustReadError === null &&
       [...approvals].every(([eventLabel, held]) =>
         held.some(
           (approval) =>
-            approval.enabled !== false && isKnownOrcaHash(known, eventLabel, approval.trustedHash)
+            approval.enabled !== false && isKnownTopoHash(known, eventLabel, approval.trustedHash)
         )
       )
     return approved
-      ? status('installed', true, `Approved by Orca; not yet confirmed by Codex (${reason})`)
-      : status('partial', true, `Orca's hook entry is not approved yet (${reason})`)
+      ? status('installed', true, `Approved by Topo; not yet confirmed by Codex (${reason})`)
+      : status('partial', true, `Topo's hook entry is not approved yet (${reason})`)
   }
   const listedEvents = CODEX_EVENTS.filter(
     (eventName) => answer.hashes[CODEX_EVENT_LABEL[eventName]] !== undefined
@@ -195,7 +195,7 @@ function describeInlineApprovals(
   }
   const command = getManagedCommand(getManagedScriptPath())
   const hooks = readHooksJson(home.hooksJsonPath)?.hooks
-  const slots = findOrcaEntrySlots(hooks, command)
+  const slots = findTopoEntrySlots(hooks, command)
   const probes: CodexTrustEntry[] = CODEX_EVENTS.flatMap((eventName) => {
     const label = CODEX_EVENT_LABEL[eventName]
     const hash = answer?.kind === 'hashes' ? answer.hashes[label] : 'probe'
@@ -228,7 +228,7 @@ function describeInlineApprovals(
     return null
   } catch (error) {
     return isCodexConfigTomlRefusedError(error)
-      ? `${home.tomlPath} keeps hook approvals inline, so Orca cannot add its own there; Orca shows no status for ~/.codex until they are tables`
+      ? `${home.tomlPath} keeps hook approvals inline, so Topo cannot add its own there; Topo shows no status for ~/.codex until they are tables`
       : null
   }
 }

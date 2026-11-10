@@ -99,7 +99,7 @@ export function useWorkspaceCopyStatus({
                 ? error.message
                 : translate(
                     'sourceControl.branchPicker.statusFailed',
-                    "Orca couldn't read this checkout's changes. Refresh Source Control before switching."
+                    "Topo couldn't read this checkout's changes. Refresh Source Control before switching."
                   )
           })
         }

@@ -8,7 +8,7 @@ import { PluginMarketplaceStore } from './plugin-marketplace-store'
 const roots: string[] = []
 
 async function tempRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-marketplace-store-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-marketplace-store-'))
   roots.push(root)
   return root
 }

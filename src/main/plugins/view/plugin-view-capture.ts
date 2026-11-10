@@ -1,7 +1,7 @@
 import type { NativeImage, WebContents } from 'electron'
 import type { PluginViewDrawnPanel } from '../../../shared/plugins/view/plugin-view-protocol'
 
-// Why 5 MiB: base64 of it still fits the 8 MiB frame remote Orca servers accept.
+// Why 5 MiB: base64 of it still fits the 8 MiB frame remote Topo servers accept.
 export const PLUGIN_SHOT_MAX_PNG_BYTES = 5 * 1024 * 1024
 const GUEST_SETTLE_TIMEOUT_MS = 1_500
 
@@ -157,7 +157,7 @@ export async function capturePluginPanelPng(
     ? await contents.capturePage(target, HIDDEN_CAPTURE)
     : await captureUntilDrawn(contents, target, wait)
   if (image.isEmpty()) {
-    throw new Error('Orca drew nothing to capture; try again once its window has loaded.')
+    throw new Error('Topo drew nothing to capture; try again once its window has loaded.')
   }
   image = atSize(image, target.width, target.height)
   if (guest && !guest.contents.isDestroyed()) {

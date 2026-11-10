@@ -2,14 +2,14 @@ export function resolveOrchestrationCliExecutable(
   env: NodeJS.ProcessEnv = process.env,
   platform: NodeJS.Platform = process.platform
 ): string {
-  const configured = env.ORCA_CLI_COMMAND?.trim()
+  const configured = env.TOPO_CLI_COMMAND?.trim()
   if (configured) {
     return configured
   }
-  if (env.ORCA_DEV_REPO_ROOT) {
-    return 'orca-dev'
+  if (env.TOPO_DEV_REPO_ROOT) {
+    return 'topo-dev'
   }
-  return platform === 'linux' ? 'orca-ide' : 'orca'
+  return platform === 'linux' ? 'topo-ide' : 'topo'
 }
 
 export function buildOrchestrationRecoveryCommand(

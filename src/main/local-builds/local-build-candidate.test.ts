@@ -13,7 +13,7 @@ const tempDirectories: string[] = []
 function compatibility(): LocalBuildCompatibility {
   return {
     formatVersion: 1,
-    appId: 'com.stablyai.orca',
+    appId: 'com.brandonhsz.topo',
     buildId: '1.2.3-local.1-abc-arm64',
     version: '1.2.3-local.1',
     commit: 'abc',
@@ -27,9 +27,9 @@ function compatibility(): LocalBuildCompatibility {
 }
 
 async function fixture(options: { sha512?: string; url?: string } = {}) {
-  const directory = await mkdtemp(join(tmpdir(), 'orca-local-build-'))
+  const directory = await mkdtemp(join(tmpdir(), 'topo-local-build-'))
   tempDirectories.push(directory)
-  const artifactName = 'orca-macos-arm64.zip'
+  const artifactName = 'topo-macos-arm64.zip'
   const artifactPath = join(directory, artifactName)
   const content = Buffer.from('signed-zip-placeholder')
   await writeFile(artifactPath, content)
@@ -45,7 +45,7 @@ async function fixture(options: { sha512?: string; url?: string } = {}) {
           size: content.length
         },
         {
-          url: 'orca-macos-arm64.dmg',
+          url: 'topo-macos-arm64.dmg',
           sha512: Buffer.alloc(64).toString('base64'),
           size: 1
         }
@@ -89,7 +89,7 @@ describe('loadLocalBuildCandidate', () => {
     const feed = await startLocalBuildFeed(candidate)
     try {
       await expect(
-        fetch(`${feed.url}orca-macos-arm64.zip`).then((response) => response.text())
+        fetch(`${feed.url}topo-macos-arm64.zip`).then((response) => response.text())
       ).resolves.toBe('signed-zip-placeholder')
     } finally {
       await feed.close()

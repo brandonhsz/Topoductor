@@ -1,4 +1,4 @@
-import type { OrcaHooks } from '../../shared/orca-yaml-hook-types'
+import type { TopoHooks } from '../../shared/topo-yaml-hook-types'
 import type { PublicKnownRuntimeEnvironment } from '../../shared/remote-runtime/host-catalog/runtime-environments'
 import type { EphemeralVmRecipeDoctorResult } from '../../shared/ephemeral-vm-recipes'
 import type { EphemeralVmRecipeResultWarning } from '../../shared/ephemeral-vm-recipe-diagnostics'
@@ -14,8 +14,8 @@ export type EphemeralVmApi = {
   listRecipes: (args: { repoId: string }) => Promise<{
     status: 'ok' | 'error'
     repoPath: string | null
-    recipes: OrcaHooks['environmentRecipes']
-    diagnostics: NonNullable<OrcaHooks['environmentRecipeDiagnostics']>
+    recipes: TopoHooks['environmentRecipes']
+    diagnostics: NonNullable<TopoHooks['environmentRecipeDiagnostics']>
     message?: string
     messageCode?: string
     messageParams?: Record<string, string | number>
@@ -25,8 +25,8 @@ export type EphemeralVmApi = {
       repoId: string
       repoName: string
       repoPath: string
-      recipes: NonNullable<OrcaHooks['environmentRecipes']>
-      diagnostics: NonNullable<OrcaHooks['environmentRecipeDiagnostics']>
+      recipes: NonNullable<TopoHooks['environmentRecipes']>
+      diagnostics: NonNullable<TopoHooks['environmentRecipeDiagnostics']>
     }[]
   >
   doctor: (args: { repoId: string; recipeId: string }) => Promise<EphemeralVmRecipeDoctorResult>
@@ -42,7 +42,7 @@ export type EphemeralVmApi = {
   }) => Promise<
     | {
         ok: true
-        connectionType: 'orca-server'
+        connectionType: 'topo-server'
         runtime: EphemeralVmProvisionedRuntimeRecord
         environment: PublicKnownRuntimeEnvironment
         stderr: string
@@ -53,7 +53,7 @@ export type EphemeralVmApi = {
         connectionType: 'ssh'
         runtime: EphemeralVmProvisionedRuntimeRecord
         sshTargetId: string
-        /** The managed Orca server the host runs; its workspace lives there. */
+        /** The managed Topo server the host runs; its workspace lives there. */
         environmentId?: string
         expectedRefHead?: string
         stderr: string

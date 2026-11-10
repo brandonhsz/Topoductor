@@ -15,7 +15,7 @@ import { reconcileCodexHooksForLaunch } from '../../hooks/reconciliation/codex-h
 import { ensureCodexDaemonSocketGuard } from '../../configuration/settings/codex-config-mirror'
 import { isAgentStatusHooksEnabledForAgent } from '../../../../shared/agent-hook-listener/configuration/agent-status-hooks-setting'
 import {
-  getOrcaManagedCodexHomePath,
+  getTopoManagedCodexHomePath,
   getSystemCodexHomePath
 } from '../../configuration/homes/codex-home-paths'
 import { normalizeRuntimePathForComparison } from '../../../../shared/cross-platform-path'
@@ -73,7 +73,7 @@ export function createCodexSessionResumeLaunchPreparation(deps: {
       trustedCodexHomes: trustedHomes,
       getSelectedAccountCodexHome: () => selectedAccountCodexHome,
       systemCodexHomePath: systemHomePath,
-      sharedRuntimeCodexHomePath: getOrcaManagedCodexHomePath(),
+      sharedRuntimeCodexHomePath: getTopoManagedCodexHomePath(),
       resolveVerifiedResumeHome: async (sessionSource) => {
         let migrated = { useRealCodexHome: false }
         try {
@@ -120,7 +120,7 @@ export function createCodexSessionResumeLaunchPreparation(deps: {
           ...preparation,
           reconcileSharedRuntimeAuth:
             normalizeRuntimePathForComparison(preparation.codexHomePath) ===
-            normalizeRuntimePathForComparison(getOrcaManagedCodexHomePath())
+            normalizeRuntimePathForComparison(getTopoManagedCodexHomePath())
         }
       : preparation
   }

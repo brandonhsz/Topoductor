@@ -6,7 +6,7 @@ import { runTypecheckProjects } from './run-typecheck-projects-in-parallel.mjs'
 
 describe('local and CI compiler selection', () => {
   it('continues to later projects after a compiler exits with an error', async () => {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), 'orca-typecheck-failure-')))
+    const root = realpathSync(mkdtempSync(join(tmpdir(), 'topo-typecheck-failure-')))
     try {
       const compilerDir = join(root, 'node_modules', 'typescript')
       mkdirSync(compilerDir, { recursive: true })

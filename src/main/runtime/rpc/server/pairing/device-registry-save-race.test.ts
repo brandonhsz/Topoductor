@@ -29,7 +29,7 @@ let dir: string
 let registryPath: string
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-registry-race-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-registry-race-'))
   registryPath = join(dir, DEVICE_REGISTRY_FILENAME)
 })
 

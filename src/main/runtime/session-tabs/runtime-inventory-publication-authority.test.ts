@@ -1,16 +1,16 @@
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { getSessionTabsInventoryPublication } from './session-tabs-inventory-test-fixture'
 
 function createInventoryRuntime(
-  runtimeStore: ConstructorParameters<typeof OrcaRuntimeService>[0] = null
-): OrcaRuntimeService {
-  const runtime = new OrcaRuntimeService(runtimeStore)
+  runtimeStore: ConstructorParameters<typeof TopoRuntimeService>[0] = null
+): TopoRuntimeService {
+  const runtime = new TopoRuntimeService(runtimeStore)
   runtime.setPtyController({ listProcesses: vi.fn(async () => []) } as never)
   return runtime
 }
 
-async function waitForInventoryWaiter(runtime: OrcaRuntimeService): Promise<void> {
+async function waitForInventoryWaiter(runtime: TopoRuntimeService): Promise<void> {
   const publication = getSessionTabsInventoryPublication(runtime)
   for (let index = 0; index < 20 && publication.pendingWaiterCount === 0; index += 1) {
     await Promise.resolve()
@@ -45,7 +45,7 @@ describe('authoritative session tab inventory publication', () => {
   })
 
   it('retries once and serves an unlabeled scan when the PTY census is unavailable', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const collect = vi.spyOn(
       runtime as unknown as { collectAllMobileSessionTabs: () => Promise<unknown> },
       'collectAllMobileSessionTabs'

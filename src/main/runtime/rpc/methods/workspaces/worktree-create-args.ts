@@ -3,7 +3,7 @@ import { terminalImageViewerSupported } from '../../../terminal/launch/terminal-
 import { callerLaunchSource } from '../../../../agent-launch/agent-started-telemetry'
 import type { z } from 'zod'
 import { resolveRuntimeNavigationTarget } from '../../../../../shared/runtime-navigation'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import {
   hostQualifiedRepoSelector,
   type RuntimeRepoSelector
@@ -11,7 +11,7 @@ import {
 import type { WorktreeCreate } from '../../../../../shared/rpc-contract/worktree-create-params'
 
 type WorktreeCreateParams = z.infer<typeof WorktreeCreate>
-type ManagedWorktreeCreateArgs = Parameters<OrcaRuntimeService['createManagedWorktree']>[0]
+type ManagedWorktreeCreateArgs = Parameters<TopoRuntimeService['createManagedWorktree']>[0]
 type CreateProvenance = Pick<
   ManagedWorktreeCreateArgs,
   'automationProvenance' | 'cliProvenance' | 'creatorProvenance'

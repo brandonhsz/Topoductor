@@ -1,8 +1,8 @@
 import { expect, it } from 'vitest'
 import { agentSessionRecordFixture } from '../../../native-chat/agent-session-record-test-fixture'
 import { agentSessionConversationView } from '../../../../shared/agent-session/lifecycle/agent-session-conversation-view'
-import { isOrcaSessionId, formatOrcaSessionAddress } from '../../../../shared/orca-session-address'
-import { testOrcaSessionId } from '../../../../shared/orca-session-address-test-fixture'
+import { isTopoSessionId, formatTopoSessionAddress } from '../../../../shared/topo-session-address'
+import { testTopoSessionId } from '../../../../shared/topo-session-address-test-fixture'
 import { CrewReadModel } from './crew-read-model'
 import { fixture } from './crew-read-model.test-fixture'
 import { createCrewPartyRegistry } from './crew-parties'
@@ -13,8 +13,8 @@ import { ORCHESTRATION_LEGACY_RUN_ID as LEGACY_RUN_ID } from '../../../../shared
 
 import { subscribeCrew } from './crew-stream'
 
-const LOCAL = testOrcaSessionId('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa')
-const IMPORTED = testOrcaSessionId('bbbbbbbb-2222-4222-8222-bbbbbbbbbbbb')
+const LOCAL = testTopoSessionId('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa')
+const IMPORTED = testTopoSessionId('bbbbbbbb-2222-4222-8222-bbbbbbbbbbbb')
 const record = (sessionId: string) =>
   agentSessionConversationView(agentSessionRecordFixture({ sessionId }))
 
@@ -37,7 +37,7 @@ function authorityFixture() {
     )
   }
   const available = (ids: string[], senderRun?: string) => {
-    const selected = ids.filter(isOrcaSessionId)
+    const selected = ids.filter(isTopoSessionId)
     const facts = input()
     facts.prepare(selected)
     return facts.finish(selected, senderRun, { livePane: () => null, process: () => null })
@@ -47,7 +47,7 @@ function authorityFixture() {
 
 it('re-derives retained legacy custody on actual commit/revoke/reset writers', async () => {
   const f = authorityFixture()
-  const peer = formatOrcaSessionAddress(IMPORTED)
+  const peer = formatTopoSessionAddress(IMPORTED)
   // Retained adoption-table control; migration admission remains covered by the existing legacy fixtures.
   f.db.db
     .prepare(
@@ -62,7 +62,7 @@ it('re-derives retained legacy custody on actual commit/revoke/reset writers', a
   const task = f.db.createTask({ runId: f.run.id, spec: 'active individual route' })
   const dispatch = f.db.createDispatchContext({
     taskId: task.id,
-    assigneeHandle: formatOrcaSessionAddress(LOCAL),
+    assigneeHandle: formatTopoSessionAddress(LOCAL),
     creator: { kind: 'system' },
     maxDepth: 10
   })

@@ -106,7 +106,7 @@ export function useAgentMessageSenderLabel(
   dispatchId?: string
 ): string {
   const t = useTranslate()
-  const { address, orcaSessionId } = sender.party
+  const { address, topoSessionId } = sender.party
   const local = !address.startsWith('dispatch:')
   const owner = useAppStore((state) => agentMessageSenderOwner(state, chatWorktreeId, target))
   const association = useAppStore((state) =>
@@ -116,8 +116,8 @@ export function useAgentMessageSenderLabel(
     owner ? hasAgentSenderPublication(state, owner) : false
   )
   const legacyTab = useAppStore((state) =>
-    !authoritative && local && owner && orcaSessionId
-      ? findAgentMessageSenderChatTab(state, orcaSessionId, owner)
+    !authoritative && local && owner && topoSessionId
+      ? findAgentMessageSenderChatTab(state, topoSessionId, owner)
       : undefined
   )
   const chatTab = association?.tab ?? legacyTab

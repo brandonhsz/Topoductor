@@ -7,8 +7,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { PairedRuntimeBrowserNetworkRoute } from '../../../browser/network/execution-routes/paired-runtime-browser-network-route'
 import { PairedRuntimeBrowserHostLease } from '../../../browser/client-hosts/leases/paired-runtime-browser-host-lease'
 import { parsePairingCode } from '../../../../shared/remote-runtime/pairing/pairing'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from '../../rpc/server/runtime-rpc'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from '../../rpc/server/runtime-rpc'
 import { ALL_RPC_METHODS } from '../../rpc/methods/rpc-method-registry'
 
 const resources: (() => Promise<void> | void)[] = []
@@ -34,10 +34,10 @@ describe('paired runtime browser network tunnel', () => {
     const destinationAddress = await listen(destination)
     resources.push(() => closeServer(destination))
 
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-browser-tunnel-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-browser-tunnel-'))
     resources.push(() => rmSync(userDataPath, { recursive: true, force: true }))
-    const runtime = new OrcaRuntimeService({} as never)
-    const rpc = new OrcaRuntimeRpcServer({
+    const runtime = new TopoRuntimeService({} as never)
+    const rpc = new TopoRuntimeRpcServer({
       runtime,
       userDataPath,
       enableWebSocket: true,

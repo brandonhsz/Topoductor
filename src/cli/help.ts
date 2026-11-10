@@ -30,7 +30,7 @@ export function printHelp(specs: CommandSpec[], commandPath: string[] = []): voi
 }
 
 export function formatCommandHelp(spec: CommandSpec): string {
-  const lines = [`orca ${spec.path.join(' ')}`, '', `Usage: ${spec.usage}`, '', spec.summary]
+  const lines = [`topo ${spec.path.join(' ')}`, '', `Usage: ${spec.usage}`, '', spec.summary]
   const displayedFlags =
     spec.argumentMode === 'passthrough'
       ? []
@@ -64,7 +64,7 @@ export function formatCommandHelp(spec: CommandSpec): string {
 
 export function formatGroupHelp(specs: CommandSpec[], groupPath: string[]): string {
   const group = groupPath.join(' ')
-  const lines = [`orca ${group}`, '', `Usage: orca ${group} <command> [options]`, '', 'Commands:']
+  const lines = [`topo ${group}`, '', `Usage: topo ${group} <command> [options]`, '', 'Commands:']
   for (const spec of specs) {
     if (
       spec.hidden === true ||
@@ -75,7 +75,7 @@ export function formatGroupHelp(specs: CommandSpec[], groupPath: string[]): stri
     }
     lines.push(`  ${spec.path.slice(groupPath.length).join(' ').padEnd(18)} ${spec.summary}`)
   }
-  lines.push('', `Run \`orca ${group} <command> --help\` for command-specific usage.`)
+  lines.push('', `Run \`topo ${group} <command> --help\` for command-specific usage.`)
   return lines.join('\n')
 }
 
@@ -128,7 +128,7 @@ function formatCommandFlagHelp(flag: string, commandPath: string[]): string {
     return '--terminal-state <state> Terminal accounting filter: active, reclaimable, retained, release_pending, release_unknown, or released'
   }
   if (command.startsWith('orchestration ') && flag === 'full') {
-    return '--full                 Print the full record Orca returned instead of the concise view'
+    return '--full                 Print the full record Topo returned instead of the concise view'
   }
   if (command === 'skills get' && flag === 'full') {
     return '--full                 Print the full guide with bundled references'

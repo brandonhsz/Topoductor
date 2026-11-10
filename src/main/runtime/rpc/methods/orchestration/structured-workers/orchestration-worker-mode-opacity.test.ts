@@ -7,7 +7,7 @@ import { agentSessionConversationView } from '../../../../../../shared/agent-ses
 /** Both worker modes receive identical orchestration instructions after identity/surface normalization, and structured workers can dispatch sub-workers through session authority. */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -96,13 +96,13 @@ function installStructuredCoordinator(handle: string, sessionId: string): string
 describe('a worker cannot tell which mode it is running in', () => {
   const coordinatorPaneKey = 'tab_coord:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
   let db: OrchestrationDb
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
 
   beforeEach(() => {
     structuredPreambles.length = 0
     structuredWorkerIdentities.clear()
     db = new OrchestrationDb(':memory:')
-    runtime = new OrcaRuntimeService()
+    runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     // Use real structured-handle getters to test registry resolution; stub only PTYs lacking runtime state.
     const realPaneKey = runtime.getTerminalPaneKey.bind(runtime)
@@ -130,7 +130,7 @@ describe('a worker cannot tell which mode it is running in', () => {
       status: 'running',
       exitCode: null
     })
-    vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('orca')
+    vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('topo')
     vi.spyOn(runtime, 'sendTerminalAgentPrompt').mockResolvedValue({
       handle: TERMINAL_HANDLE,
       accepted: true,
@@ -188,9 +188,9 @@ describe('a worker cannot tell which mode it is running in', () => {
 
     expect(result).toMatchObject({ state: 'ready' })
     expect(showTerminal).not.toHaveBeenCalled()
-    // Its sub-worker is told the coordinator's Orca session ID, not the handle it was minted.
+    // Its sub-worker is told the coordinator's Topo session ID, not the handle it was minted.
     expect(vi.mocked(runtime.sendTerminalAgentPrompt).mock.calls[0]?.[1]).toContain(
-      "Your coordinator's Orca session ID is: orca_session_id:sess_coord\n"
+      "Your coordinator's Topo session ID is: topo_session_id:sess_coord\n"
     )
     expect(vi.mocked(runtime.sendTerminalAgentPrompt).mock.calls[0]?.[1]).toContain(
       '=== SUB-DISPATCH ==='

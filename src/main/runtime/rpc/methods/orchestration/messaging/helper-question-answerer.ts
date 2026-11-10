@@ -1,12 +1,12 @@
 import type { OrchestrationCompatibilityEvidence } from '../../../../../../shared/orchestration/orchestration-compatibility-evidence'
 import type { OrchestrationSessionCaller } from '../../../../orchestration/addressing/orchestration-caller-identity'
 import type { MessageRow } from '../../../../orchestration/db/orchestration-records'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { assertCallerHandleMatchesEvidence, orchestrationCallerIdentity } from '../runs/run-scope'
 
 /** The caller's Dispatch when a helper asked this question of it; the Run answers otherwise. */
 export function helperQuestionAnswerer(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   args: {
     question: MessageRow
     from: string | undefined

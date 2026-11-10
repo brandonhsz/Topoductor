@@ -5,14 +5,14 @@ export type SystemSshBuildArgsOptions = {
   configFile?: string
   resolvedConfig?: SystemSshResolvedConfig | null
   disableControlMaster?: boolean
-  suppressOrcaControlMaster?: boolean
+  suppressTopoControlMaster?: boolean
   gssapiOnly?: boolean
   nonInteractive?: boolean
   /** Keeps OpenSSH's channel-open failures on stderr even under a quieter configured LogLevel. */
   logChannelFailures?: boolean
   /** Only proven absence of a matching Host/Match block permits stored endpoint overrides; unknown keeps the alias authoritative. */
   aliasClaimedByConfig?: boolean
-  /** Dial Orca's held `ssh -L` forward instead of the target's proxy. See `system-ssh-loopback-route`. */
+  /** Dial Topo's held `ssh -L` forward instead of the target's proxy. See `system-ssh-loopback-route`. */
   loopbackRoute?: SystemSshLoopbackRouteArgs
   /** Server-alive probes for a long-lived unmultiplexed process, which no ControlMaster watches. */
   keepAlive?: boolean
@@ -36,14 +36,14 @@ export function buildSshArgs(target: SshTarget, options?: SystemSshBuildArgsOpti
   }
   if (options?.gssapiOnly) {
     // Why: the probe must neither authenticate with a key nor open an OpenSSH
-    // credential prompt; failure belongs to Orca's existing ssh2 prompt path.
+    // credential prompt; failure belongs to Topo's existing ssh2 prompt path.
     args.push('-o', 'GSSAPIAuthentication=yes')
     args.push('-o', 'PreferredAuthentications=gssapi-with-mic')
   }
   args.push('-T')
 
   // Reuse one SSH connection across execs to avoid a fresh handshake per command.
-  const controlPath = getOrcaControlSocketPath(target, options)
+  const controlPath = getTopoControlSocketPath(target, options)
   const forceDisableControlMaster =
     options?.disableControlMaster === true ||
     target.systemSshConnectionReuse === false ||
@@ -66,7 +66,7 @@ export function buildSshArgs(target: SshTarget, options?: SystemSshBuildArgsOpti
   return args
 }
 
-/** Saved-target routing and login args, separate from Orca transport options. */
+/** Saved-target routing and login args, separate from Topo transport options. */
 export function appendSshTargetDestinationArgs(
   args: string[],
   target: SshTarget,
@@ -134,16 +134,16 @@ export function buildForwardProcessSshArgs(
   return buildSshArgs(target, {
     ...options,
     loopbackRoute: undefined,
-    suppressOrcaControlMaster: true,
+    suppressTopoControlMaster: true,
     disableControlMaster: true
   })
 }
 
-export function getOrcaControlSocketPath(
+export function getTopoControlSocketPath(
   target: SshTarget,
   options?: SystemSshBuildArgsOptions
 ): string | null {
-  if (shouldDisableOrcaControlMaster(target, options)) {
+  if (shouldDisableTopoControlMaster(target, options)) {
     return null
   }
   return getControlSocketPath(target, options?.resolvedConfig, options?.gssapiOnly === true)
@@ -162,8 +162,8 @@ export function getSystemSshBuildArgsFromOperationOptions(
   if (options?.disableControlMaster === true) {
     buildArgsOptions.disableControlMaster = true
   }
-  if (options?.suppressOrcaControlMaster === true) {
-    buildArgsOptions.suppressOrcaControlMaster = true
+  if (options?.suppressTopoControlMaster === true) {
+    buildArgsOptions.suppressTopoControlMaster = true
   }
   if (options?.gssapiOnly === true) {
     buildArgsOptions.gssapiOnly = true
@@ -180,7 +180,7 @@ export function getSystemSshBuildArgsFromOperationOptions(
   return Object.keys(buildArgsOptions).length === 0 ? undefined : buildArgsOptions
 }
 
-function shouldDisableOrcaControlMaster(
+function shouldDisableTopoControlMaster(
   target: SshTarget,
   options?: SystemSshBuildArgsOptions
 ): boolean {
@@ -189,7 +189,7 @@ function shouldDisableOrcaControlMaster(
     isOpenSshConfigBackedTarget(target) && options?.resolvedConfig == null
   return (
     options?.disableControlMaster === true ||
-    options?.suppressOrcaControlMaster === true ||
+    options?.suppressTopoControlMaster === true ||
     target.systemSshConnectionReuse === false ||
     unresolvedConfigBackedTarget ||
     (hasUserConfiguredControlMaster(options?.resolvedConfig) && options?.gssapiOnly !== true)
@@ -202,7 +202,7 @@ function hasUserConfiguredControlMaster(
   if (!resolvedConfig) {
     return false
   }
-  // ControlPersist/ControlPath reuse existing masters; Orca also needs ControlMaster enabled to create one.
+  // ControlPersist/ControlPath reuse existing masters; Topo also needs ControlMaster enabled to create one.
   return (
     hasEnabledControlMaster(resolvedConfig.controlMaster) &&
     hasEnabledControlPath(resolvedConfig.controlPath)

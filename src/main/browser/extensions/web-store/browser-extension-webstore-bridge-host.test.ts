@@ -48,12 +48,12 @@ function fakeEvent(overrides: {
 }
 
 const lookups = {
-  isOrcaBrowserTab: (id: number) => id === 7,
+  isTopoBrowserTab: (id: number) => id === 7,
   profileIdForSession: (session: unknown) => (session === localSession ? 'default' : null)
 }
 
 describe('resolveChromeWebStoreFrame', () => {
-  it('accepts the top frame of an Orca tab on the exact store origin', () => {
+  it('accepts the top frame of a Topo tab on the exact store origin', () => {
     const { event } = fakeEvent({})
     expect(resolveChromeWebStoreFrame(event, lookups)).toMatchObject({
       webContentsId: 7,
@@ -69,7 +69,7 @@ describe('resolveChromeWebStoreFrame', () => {
     ['a subframe', { isTopFrame: false }],
     ['a non-guest window', { type: 'window' }],
     ['a session that runs no extensions', { session: otherSession }],
-    ['a guest Orca does not own as a tab', { senderId: 9 }]
+    ['a guest Topo does not own as a tab', { senderId: 9 }]
   ])('refuses %s', (_label, overrides) => {
     expect(resolveChromeWebStoreFrame(fakeEvent(overrides).event, lookups)).toBeNull()
   })

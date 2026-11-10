@@ -28,8 +28,8 @@ import { resolveBrowserExtensionTab } from '../tabs-and-windows/browser-extensio
 
 /**
  * chrome.webRequest, observed rather than blocking. Electron 43 delivers no webRequest events to
- * MV3 workers, and Orca's own session handlers switch Electron's extension webRequest off anyway,
- * so Orca forwards what its handlers see. MV3 store extensions cannot block requests in Chrome
+ * MV3 workers, and Topo's own session handlers switch Electron's extension webRequest off anyway,
+ * so Topo forwards what its handlers see. MV3 store extensions cannot block requests in Chrome
  * either (webRequestBlocking is policy-only), so nothing they could do is lost.
  */
 
@@ -78,7 +78,7 @@ const observedSessions = new WeakSet<Electron.Session>()
 const watchedSessions = new WeakSet<Electron.Session>()
 const OBSERVE_ALL = { urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*'] }
 
-/** The events Orca does not otherwise handle, installed once a webRequest extension loads. */
+/** The events Topo does not otherwise handle, installed once a webRequest extension loads. */
 function observeRemainingEvents(session: Electron.Session): void {
   if (observedSessions.has(session)) {
     return
@@ -109,7 +109,7 @@ export function observeBrowserExtensionWebRequests(session: Electron.Session): v
   session.extensions.getAllExtensions().forEach(maybeObserve)
 }
 
-/** Extensions turned off: hand the session's request path back to Orca's own handlers alone. */
+/** Extensions turned off: hand the session's request path back to Topo's own handlers alone. */
 export function stopObservingBrowserExtensionWebRequests(session: Electron.Session): void {
   removeBrowserSessionHeadersReceived(session)
   removeBrowserSessionRequestLifecycle(session)

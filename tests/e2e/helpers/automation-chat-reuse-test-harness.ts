@@ -9,7 +9,7 @@ import { join } from 'node:path'
 import { expect, vi, type Mock } from 'vitest'
 import { gitExecFileAsync } from '../../../src/main/git/runner'
 import { getRepoMainWorktreeId } from '../../../src/shared/worktree/id'
-import type { OrcaRuntimeService } from '../../../src/main/runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../src/main/runtime/topo-runtime'
 import type { StructuredAgentSessionHost } from '../../../src/main/native-chat/agent-session-wire/host/structured-agent-session-host'
 import { createRuntimeAutomationService } from '../../../src/main/automations/runtime-automation-service'
 import { createAutomationRunWriter } from '../../../src/main/automations/automation-run-writer'
@@ -47,7 +47,7 @@ export async function exerciseBusyChatReuse(
 ): Promise<void> {
   const sessionId = 'codex_automation_reuse'
   vi.spyOn(Date, 'now').mockReturnValue(HOST_TEST_NOW)
-  const root = realpathSync(mkdtempSync(join(tmpdir(), 'orca-34332-accepted-')))
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'topo-34332-accepted-')))
   const repo = { ...target.repo, path: root, executionHostId: 'local' as const }
   const location = { ...HOST_TEST_LOCATION, workspaceId: getRepoMainWorktreeId(repo) }
   const rig = await createQueuedMessageTestRig({ restartable: true, sessionId, location })
@@ -122,7 +122,7 @@ export async function exerciseBusyChatReuse(
       }
     }
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: only the runtime facade is scripted; the real host/store and service/send/receipt/queue/observer/writer execute.
-    const runtime = runtimeFacade as unknown as OrcaRuntimeService
+    const runtime = runtimeFacade as unknown as TopoRuntimeService
     service = createRuntimeAutomationService({
       store: disk,
       runtime,
@@ -243,7 +243,7 @@ export async function exerciseBusyChatReuse(
     )
     expect(disk.listAutomationRuns(saved.id).find((r) => r.id === first.id)).toEqual(firstResult)
     expect(disk.listAutomationRuns(saved.id)).toHaveLength(3)
-    const persisted = JSON.parse(readPersistedStateJson(join(root, 'orca-data.json')))
+    const persisted = JSON.parse(readPersistedStateJson(join(root, 'topo-data.json')))
     expect(
       persisted.automationRuns.find((row: { id: string }) => row.id === current.id)
     ).toMatchObject({

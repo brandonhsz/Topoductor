@@ -12,7 +12,7 @@ import type { ConnectionState } from '../transport/connection/connection-state'
 export type ConnectionDiagnosis = {
   likelyCause: string
   nextStep: string
-  reportability: 'none' | 'orca-relay'
+  reportability: 'none' | 'topo-relay'
 }
 
 type DiagnoseConnectionArgs = {
@@ -64,8 +64,8 @@ function diagnoseFailure(
   if (/relay director resolve failed \(503\)/i.test(evidence)) {
     const retryMs = parseRetryDelayMs(evidence)
     return {
-      likelyCause: `Relay service was temporarily unavailable${retryMs == null ? '.' : ` and asked Orca to retry in ${formatDelay(retryMs)}.`}`,
-      nextStep: 'Keep Orca open; recovery should retry automatically.',
+      likelyCause: `Relay service was temporarily unavailable${retryMs == null ? '.' : ` and asked Topo to retry in ${formatDelay(retryMs)}.`}`,
+      nextStep: 'Keep Topo open; recovery should retry automatically.',
       reportability: 'none'
     }
   }
@@ -79,7 +79,7 @@ function diagnoseFailure(
   if (failure?.code === 'suspended-dial') {
     return {
       likelyCause: 'Connection deadline delivery was delayed; the app may have been suspended.',
-      nextStep: 'Orca is re-dialing to check the connection. Keep the app open while it retries.',
+      nextStep: 'Topo is re-dialing to check the connection. Keep the app open while it retries.',
       reportability: 'none'
     }
   }
@@ -95,17 +95,17 @@ function diagnoseFailure(
         : 'The connected host'
     return {
       likelyCause: `${path} stopped answering authenticated health checks.`,
-      nextStep: 'Orca closed the stale session and started recovery.',
-      reportability: relayLiveness ? 'orca-relay' : 'none'
+      nextStep: 'Topo closed the stale session and started recovery.',
+      reportability: relayLiveness ? 'topo-relay' : 'none'
     }
   }
 
   if (/relay-session-failed|active relay session failed/i.test(evidence)) {
     return {
       likelyCause: 'The active Relay session closed unexpectedly.',
-      nextStep: 'Orca started Relay recovery; the event history includes the cell close reason.',
+      nextStep: 'Topo started Relay recovery; the event history includes the cell close reason.',
       reportability:
-        failure?.code === 'relay-session-failed' && failure.path === 'relay' ? 'orca-relay' : 'none'
+        failure?.code === 'relay-session-failed' && failure.path === 'relay' ? 'topo-relay' : 'none'
     }
   }
 
@@ -124,7 +124,7 @@ function diagnoseFailure(
         : 'The saved direct endpoint did not answer before the connection timeout.',
       nextStep:
         args.pendingPath === 'relay'
-          ? 'Relay recovery is in progress; keep Orca open while it retries.'
+          ? 'Relay recovery is in progress; keep Topo open while it retries.'
           : 'Check the local/VPN network and confirm the desktop is awake.',
       reportability: 'none'
     }
@@ -132,8 +132,8 @@ function diagnoseFailure(
 
   if (/handshake-timeout|handshake timeout/i.test(evidence)) {
     return {
-      likelyCause: 'The endpoint opened, but the encrypted Orca handshake did not finish.',
-      nextStep: 'Confirm the desktop is running a compatible Orca version and retry.',
+      likelyCause: 'The endpoint opened, but the encrypted Topo handshake did not finish.',
+      nextStep: 'Confirm the desktop is running a compatible Topo version and retry.',
       reportability: 'none'
     }
   }
@@ -159,7 +159,7 @@ export function getReportableConnectionIncidentId(args: DiagnoseConnectionArgs):
     return null
   }
   return diagnoseFailure(args, selected.entry, diagnosticEvidence(selected.entry)).reportability ===
-    'orca-relay'
+    'topo-relay'
     ? selected.entry.id
     : null
 }
@@ -172,7 +172,7 @@ const RELAY_DIAL_ADVICE: Record<
   'host-offline': {
     likelyCause: (code) =>
       `Relay answered, but the desktop is not connected to it (close code ${code}, host offline).`,
-    nextStep: 'Check the desktop is awake, Orca is running, and it is signed in to Orca Cloud.'
+    nextStep: 'Check the desktop is awake, Topo is running, and it is signed in to Topo Cloud.'
   },
   'credential-refused': {
     likelyCause: (code) => `Relay refused this device’s relay credential (close code ${code}).`,
@@ -185,7 +185,7 @@ const RELAY_DIAL_ADVICE: Record<
   connecting: {
     likelyCause: (code) =>
       `Relay closed the dial with code ${code}; recovery re-resolves and retries.`,
-    nextStep: 'Keep Orca open while Relay recovery retries.'
+    nextStep: 'Keep Topo open while Relay recovery retries.'
   }
 }
 

@@ -17,11 +17,11 @@ function repo(id: string, path = `/repos/${id}`, executionHostId?: Repo['executi
 function setup(overrides: Partial<ProjectHostSetup> = {}): ProjectHostSetup {
   return {
     id: 'setup-builder',
-    projectId: 'github:stablyai/orca',
+    projectId: 'github:brandonhsz/Topoductor',
     hostId: 'ssh:builder',
     repoId: 'repo-builder',
-    path: '/remote/orca',
-    displayName: 'orca',
+    path: '/remote/topo',
+    displayName: 'topo',
     setupState: 'ready',
     setupMethod: 'cloned',
     createdAt: 1,
@@ -36,26 +36,26 @@ describe('buildAutomationRunContextForRepo', () => {
       buildAutomationRunContextForRepo({
         repoId: 'repo-builder',
         repos: [
-          repo('repo-local', '/local/orca'),
-          repo('repo-builder', '/remote/orca', 'ssh:builder')
+          repo('repo-local', '/local/topo'),
+          repo('repo-builder', '/remote/topo', 'ssh:builder')
         ],
         projectHostSetups: [
           setup({
             id: 'setup-local',
             hostId: 'local',
             repoId: 'repo-local',
-            path: '/local/orca'
+            path: '/local/topo'
           }),
           setup()
         ]
       })
     ).toEqual({
       kind: 'workspace-run',
-      projectId: 'github:stablyai/orca',
+      projectId: 'github:brandonhsz/Topoductor',
       hostId: 'ssh:builder',
       projectHostSetupId: 'setup-builder',
       repoId: 'repo-builder',
-      path: '/remote/orca'
+      path: '/remote/topo'
     })
   })
 

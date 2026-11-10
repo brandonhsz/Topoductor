@@ -176,7 +176,7 @@ function harness(options: { busy?: boolean; senderNames?: RuntimeOrchestrationSe
         handle === mailbox && !ended ? { sessionId: owner, dispatchId: 'd1' } : null,
       mailboxEnded: () => ended,
       unresolvedCustody: () => 'unverifiable',
-      getCliCommand: () => 'orca-dev',
+      getCliCommand: () => 'topo-dev',
       senderSnapshot: () => ({ name: 'Coordinator', agent: null }),
       senderSnapshotReader: options.senderNames
         ? () => options.senderNames!.snapshotReader()
@@ -190,7 +190,7 @@ function harness(options: { busy?: boolean; senderNames?: RuntimeOrchestrationSe
     get delivery() {
       return delivery
     },
-    /** Orca starting again over the same databases: nothing settled is remembered. */
+    /** Topo starting again over the same databases: nothing settled is remembered. */
     restart: () => {
       delivery = start()
     },
@@ -425,7 +425,7 @@ describe('structured mailbox delivery: each message whole', () => {
     h.receive('m1', 'x'.repeat(MAX_PROMPT_BYTES))
     await h.deliver()
     expect(h.sent.map((send) => send.text)).toEqual([
-      'You have 1 orchestration message. Run `orca-dev orchestration check`.'
+      'You have 1 orchestration message. Run `topo-dev orchestration check`.'
     ])
     expect(vi.mocked(h.host.send).mock.calls[0][0].body.from?.orchestration).toMatchObject({
       messages: [{ messageId: 'm1' }]
@@ -466,17 +466,17 @@ describe('structured mailbox delivery: each message whole', () => {
 describe('structured mailbox delivery across a real database close and reopen', () => {
   it.each([
     ['still waits as a card', { kind: 'waiting' }, true, 0],
-    ['was handed over while Orca was down', { kind: 'accepted' }, true, 0],
-    // Reserved, then Orca stopped before the host call: the same id is admitted.
+    ['was handed over while Topo was down', { kind: 'accepted' }, true, 0],
+    // Reserved, then Topo stopped before the host call: the same id is admitted.
     ['was reserved but never admitted', { kind: 'absent' }, true, 1],
-    // Admitted, then Orca stopped before an older build stamped it: never sent again.
+    // Admitted, then Topo stopped before an older build stamped it: never sent again.
     ['was admitted before an older build stamped it', { kind: 'unknown' }, false, 0],
     ['was handed over before an older build stamped it', { kind: 'accepted' }, false, 0]
   ] as const)('settles a send that %s', async (_label, state, stamped, sends) => {
-    // Orca reopens a minute after the send was recorded, well inside the host's admission window.
+    // Topo reopens a minute after the send was recorded, well inside the host's admission window.
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(1_757_030_460_000)
-    const directory = mkdtempSync(join(tmpdir(), 'orca-structured-mail-reopen-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-structured-mail-reopen-'))
     const file = join(directory, 'orchestration.db')
     let db = new OrchestrationDb(file)
     try {
@@ -521,7 +521,7 @@ describe('structured mailbox delivery across a real database close and reopen', 
         getMessageWaiters: () => undefined,
         resolveStructuredTarget: () => ({ sessionId: 'session-1', dispatchId: null }),
         mailboxEnded: () => false,
-        getCliCommand: () => 'orca-dev',
+        getCliCommand: () => 'topo-dev',
         senderSnapshot: () => ({ name: null, agent: null }),
         host: {
           currentFence: () => 4,

@@ -14,7 +14,7 @@ import { isLivePlugin, usePluginListDerived } from '../catalog/plugin-contributi
 
 type PluginFontFace = { url: string; weight: string; style: 'normal' | 'italic' }
 
-/** A font family from an enabled plugin, under the name Orca registers it as. */
+/** A font family from an enabled plugin, under the name Topo registers it as. */
 export type ActivePluginFont = { family: string; faces: PluginFontFace[] }
 
 /** Only URLs main serves for this plugin's own font slots, with the manifest's own rules. */

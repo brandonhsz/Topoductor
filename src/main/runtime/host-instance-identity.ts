@@ -1,4 +1,4 @@
-// Copies of one machine image share the pairing identity files; ORCA_INSTANCE_ID tells the copies apart.
+// Copies of one machine image share the pairing identity files; TOPO_INSTANCE_ID tells the copies apart.
 import { createHash, randomBytes, randomUUID } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync } from 'node:fs'
 import { basename, join } from 'node:path'
@@ -12,8 +12,8 @@ import { writeNewE2EEKeypair } from './rpc/server/pairing/e2ee-keypair'
 import { DEVICE_REGISTRY_FILENAME } from './rpc/server/pairing/mobile-pairing-files'
 import { HOST_INSTALLATION_FILENAME } from './hosts/platform-probe/host-descriptor'
 
-export const HOST_INSTANCE_FILENAME = 'orca-host-instance.json'
-export const ORCA_INSTANCE_ID_ENV = 'ORCA_INSTANCE_ID'
+export const HOST_INSTANCE_FILENAME = 'topo-host-instance.json'
+export const TOPO_INSTANCE_ID_ENV = 'TOPO_INSTANCE_ID'
 const MAX_HOST_INSTANCE_FILE_BYTES = 4 * 1024
 const IDENTITY_FILENAMES = [
   E2EE_KEYPAIR_FILENAME,
@@ -22,7 +22,7 @@ const IDENTITY_FILENAMES = [
 ] as const
 const STAGED_SUFFIX = '.next'
 /** Replaced identity files are moved here so an unwanted rotation can be undone by hand. */
-export const IDENTITY_BACKUPS_DIRNAME = 'orca-identity-backups'
+export const IDENTITY_BACKUPS_DIRNAME = 'topo-identity-backups'
 const MAX_IDENTITY_BACKUPS = 5
 const BACKUP_NAME_RE = /^\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z-[0-9a-f]{6}$/
 
@@ -58,8 +58,8 @@ export class HostIdentityRotationNotStartedError extends Error {
 }
 
 export function hostInstanceIdFromEnv(env: NodeJS.ProcessEnv = process.env): string | null {
-  const raw = env[ORCA_INSTANCE_ID_ENV]?.trim()
-  return raw ? createHash('sha256').update(`orca-host-instance\0${raw}`).digest('hex') : null
+  const raw = env[TOPO_INSTANCE_ID_ENV]?.trim()
+  return raw ? createHash('sha256').update(`topo-host-instance\0${raw}`).digest('hex') : null
 }
 
 function isMissing(error: unknown): boolean {
@@ -254,7 +254,7 @@ export function rotateHostIdentity(
 }
 
 /**
- * Rotates only when ORCA_INSTANCE_ID is set and differs from the id recorded with this identity.
+ * Rotates only when TOPO_INSTANCE_ID is set and differs from the id recorded with this identity.
  * Unset never rotates; the first id seen is recorded so adopting the variable keeps pairings.
  * Throws only when a started rotation cannot be finished, so old and new files may be mixed.
  */

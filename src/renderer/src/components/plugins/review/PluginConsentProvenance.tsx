@@ -57,7 +57,7 @@ function provenanceBadge(
   if (props.source?.kind === 'bundled') {
     return (
       <Badge variant="outline">
-        {t('auto.components.settings.PluginConsentProvenance.bundled', 'Bundled with Orca')}
+        {t('auto.components.settings.PluginConsentProvenance.bundled', 'Bundled with Topo')}
       </Badge>
     )
   }

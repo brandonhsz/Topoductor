@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithBindPtyIncarnationHandle } from '../identity/terminal-handle-bindings'
+import { TopoRuntimeWithBindPtyIncarnationHandle } from '../identity/terminal-handle-bindings'
 import type { RuntimePtyWorktreeRecord } from '../records/runtime-terminal-state-records'
 import {
   buildPtyTerminalWaitBlockedResult,
@@ -21,7 +21,7 @@ import { isMailboxTerminalTakingInput } from '../../orchestration/mailbox/routin
 
 const DIALOG_HOLD_RECHECK_MS = 2000
 
-export abstract class OrcaRuntimeWithResolveExitWaiters extends OrcaRuntimeWithBindPtyIncarnationHandle {
+export abstract class TopoRuntimeWithResolveExitWaiters extends TopoRuntimeWithBindPtyIncarnationHandle {
   protected resolvePtyExitWaiters(pty: RuntimePtyWorktreeRecord, ptyId: string): void {
     for (const waiter of this.terminalWaiters.forPty(ptyId)) {
       if (waiter.condition === 'exit') {
@@ -147,7 +147,7 @@ export abstract class OrcaRuntimeWithResolveExitWaiters extends OrcaRuntimeWithB
     const draft = !!state && this.hasComposerDraft(ptyId, state.emulator.getCursorLineContext())
     const drivingInputAt = facts.readLastDrivingInputAt(ptyId)
     const unattributed = drivingInputAt === null && facts.readProcessStartedAt(ptyId) === null
-    // Why: main saw every input to a process it started, so with no typing there the draft is Orca's
+    // Why: main saw every input to a process it started, so with no typing there the draft is Topo's
     // launch text; a process it attached to, as after a restart, may hold one typed before, which a
     // screen still restoring cannot rule out yet.
     const restoring = !state && this.headlessHydrationState.get(ptyId) === 'pending'

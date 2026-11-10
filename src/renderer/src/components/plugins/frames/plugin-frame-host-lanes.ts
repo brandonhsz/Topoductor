@@ -80,10 +80,10 @@ export function pluginFrameHello(
 
 /**
  * Whether a user-gesture method may run. A srcdoc iframe shares the host window, whose activation
- * any keystroke in Orca sets, so only a guest's isolated-world gesture serial counts, and each
+ * any keystroke in Topo sets, so only a guest's isolated-world gesture serial counts, and each
  * serial admits one call: activation lasts seconds, a gesture is one click or key press. A
  * components panel's hidden guest has no gestures of its own: `consumeHostActivation` is the
- * one-shot grant from a settled press on Orca's own controls, and the only thing that counts there.
+ * one-shot grant from a settled press on Topo's own controls, and the only thing that counts there.
  */
 export function createPluginFrameGestureGate(
   consumeHostActivation?: () => boolean

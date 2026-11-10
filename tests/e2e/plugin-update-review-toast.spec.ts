@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test, type Page } from '@stablyai/playwright-test'
-import { createRestartSession } from './helpers/orca-restart'
+import { createRestartSession } from './helpers/topo-restart'
 import { commitRepository, configureFixtureGit } from './helpers/plugin-git-fixture'
 import {
   commitFixtureChange,
@@ -42,7 +42,7 @@ function openPluginsSettings(page: Page): Promise<void> {
 test('tells once per version when an automatic update waits for review, and Review never approves', async ({}, testInfo) => {
   // Why: two launches, two Git-backed installs and four update passes against local git.
   test.setTimeout(300_000)
-  const root = await mkdtemp(join(tmpdir(), 'orca-update-review-toast-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-update-review-toast-'))
   const repositories = join(root, 'repositories')
   const home = join(root, 'home')
   await mkdir(repositories, { recursive: true })
@@ -68,8 +68,8 @@ test('tells once per version when an automatic update waits for review, and Revi
   }
   const session = createRestartSession(testInfo, {
     ...gitEnvironment,
-    ORCA_BACKGROUND_LAUNCH: '1',
-    ORCA_PLUGIN_AUTO_UPDATE: '1'
+    TOPO_BACKGROUND_LAUNCH: '1',
+    TOPO_PLUGIN_AUTO_UPDATE: '1'
   })
   let launched: Awaited<ReturnType<typeof session.launch>> | null = null
   try {
@@ -127,7 +127,7 @@ test('tells once per version when an automatic update waits for review, and Revi
       0
     )
 
-    // A newer version of one plugin is told again, by name and Orca-derived publisher.
+    // A newer version of one plugin is told again, by name and Topo-derived publisher.
     await publish([PLUGINS[0]], '3.0.0')
     await runAutoUpdatePass(page)
     const single = page.locator('[data-sonner-toast]', {

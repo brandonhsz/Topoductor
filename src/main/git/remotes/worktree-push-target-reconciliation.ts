@@ -14,12 +14,12 @@ import {
   type WorktreePushTargetStore
 } from './worktree-push-target-cleanup'
 
-// Orca-shaped names only narrow candidates; provenance must independently prove ownership.
-const ORCA_PR_REMOTE_NAME_PATTERN =
+// Topo-shaped names only narrow candidates; provenance must independently prove ownership.
+const TOPO_PR_REMOTE_NAME_PATTERN =
   /^pr-(?:head|[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?)(?:-[0-9]{1,2})?$/
 
-export function isOrcaGeneratedPrRemoteName(name: string): boolean {
-  return ORCA_PR_REMOTE_NAME_PATTERN.test(name)
+export function isTopoGeneratedPrRemoteName(name: string): boolean {
+  return TOPO_PR_REMOTE_NAME_PATTERN.test(name)
 }
 
 type PrRemoteCandidate = { name: string; url: string }
@@ -35,7 +35,7 @@ async function listPrRemoteCandidates(
     return []
   }
   return [...parseGitRemoteFetchUrls(stdout)]
-    .filter(([name]) => isOrcaGeneratedPrRemoteName(name))
+    .filter(([name]) => isTopoGeneratedPrRemoteName(name))
     .map(([name, url]) => ({ name, url }))
 }
 

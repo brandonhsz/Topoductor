@@ -55,7 +55,7 @@ function getManagedScript(target: 'local' | 'posix' = 'local'): string {
       'setlocal',
       // Restore DSH-scrubbed KEY/TOKEN variables before any guard or spool code reads them.
       ...buildWindowsScrubSafeEnvRestoreLines(),
-      'if defined ORCA_AGENT_HOOK_ENDPOINT if exist "%ORCA_AGENT_HOOK_ENDPOINT%" call "%ORCA_AGENT_HOOK_ENDPOINT%" 2>nul',
+      'if defined TOPO_AGENT_HOOK_ENDPOINT if exist "%TOPO_AGENT_HOOK_ENDPOINT%" call "%TOPO_AGENT_HOOK_ENDPOINT%" 2>nul',
       ...buildWindowsHookEnvironmentGuardLines(),
       buildWindowsAgentHookCurlPostCommand('dsh'),
       'exit /b 0',
@@ -69,11 +69,11 @@ function getManagedScript(target: 'local' | 'posix' = 'local'): string {
     ...buildPosixScrubSafeEnvRestoreLines(),
     ...buildPosixHookPayloadCapture(),
     ...buildPosixHookSpoolLines('dsh'),
-    // Refresh endpoint credentials for PTYs that outlive an Orca restart.
-    'if [ -n "$ORCA_AGENT_HOOK_ENDPOINT" ] && [ -r "$ORCA_AGENT_HOOK_ENDPOINT" ]; then',
-    '  . "$ORCA_AGENT_HOOK_ENDPOINT" 2>/dev/null || :',
+    // Refresh endpoint credentials for PTYs that outlive a Topo restart.
+    'if [ -n "$TOPO_AGENT_HOOK_ENDPOINT" ] && [ -r "$TOPO_AGENT_HOOK_ENDPOINT" ]; then',
+    '  . "$TOPO_AGENT_HOOK_ENDPOINT" 2>/dev/null || :',
     'fi',
-    'if [ -z "$ORCA_AGENT_HOOK_PORT" ] || [ -z "$ORCA_AGENT_HOOK_TOKEN" ] || [ -z "$ORCA_PANE_KEY" ]; then',
+    'if [ -z "$TOPO_AGENT_HOOK_PORT" ] || [ -z "$TOPO_AGENT_HOOK_TOKEN" ] || [ -z "$TOPO_PANE_KEY" ]; then',
     '  spool_hook_event',
     '  exit 0',
     'fi',
@@ -109,7 +109,7 @@ function writePatchText(configPath: string, text: string): void {
 }
 
 const FLOW_STYLE_DETAIL =
-  'The DSH home patch is a flow-style sequence ([…]); rewrite it as a block sequence (one `- ` entry per line) so Orca can add its hooks without breaking it'
+  'The DSH home patch is a flow-style sequence ([…]); rewrite it as a block sequence (one `- ` entry per line) so Topo can add its hooks without breaking it'
 
 function status(
   configPath: string,
@@ -127,7 +127,7 @@ function buildStatus(
   configPath: string
 ): AgentHookInstallStatus {
   if (managedText === null) {
-    return status(configPath, 'error', 'Could not read Orca managed hooks file')
+    return status(configPath, 'error', 'Could not read Topo managed hooks file')
   }
   // Check refusal first: an absent managed pointer would otherwise hide the actionable error.
   if (isDshPatchFileUnappendable(patchText)) {
@@ -140,7 +140,7 @@ function buildStatus(
       'not_installed',
       pointer === undefined
         ? null
-        : `The Orca patch block points at ${pointer}, not the Orca managed hooks file`
+        : `The Topo patch block points at ${pointer}, not the Topo managed hooks file`
     )
   }
   const present = readManagedDshHookEvents(
@@ -149,7 +149,7 @@ function buildStatus(
   )
   const missing = DSH_HOOK_EVENTS.filter((event) => !present.has(event))
   if (missing.length === 0) {
-    // Orca's files alone do not activate the row: DSH must also load the package it names.
+    // Topo's files alone do not activate the row: DSH must also load the package it names.
     const packagesDetail = describeDshProfilesMissingHookPackages(getDshHome())
     return status(
       configPath,
@@ -206,7 +206,7 @@ export class DshHookService {
 
   async installRemote(sftp: SFTPWrapper, remoteHome: string): Promise<AgentHookInstallStatus> {
     const remoteConfigPath = getDshRemoteConfigPath(remoteHome)
-    const remoteScriptPath = `${remoteHome.replace(/\/$/, '')}/.orca/agent-hooks/dsh-hook.sh`
+    const remoteScriptPath = `${remoteHome.replace(/\/$/, '')}/.topo/agent-hooks/dsh-hook.sh`
     const remoteManagedHooksPath = getDshRemoteManagedHooksPath(remoteHome)
     try {
       const body = (await readTextFileRemote(sftp, remoteConfigPath)) ?? ''

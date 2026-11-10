@@ -18,7 +18,7 @@ async function recipePlugin(
   id: string,
   artifacts: { path: string; recipe: unknown }[]
 ): Promise<ValidDiscoveredPlugin> {
-  const rootDir = await mkdtemp(join(tmpdir(), 'orca-plugin-vm-recipe-'))
+  const rootDir = await mkdtemp(join(tmpdir(), 'topo-plugin-vm-recipe-'))
   roots.push(rootDir)
   await mkdir(join(rootDir, 'recipes'))
   await Promise.all(

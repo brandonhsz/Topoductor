@@ -1,4 +1,4 @@
-/** `orca plugin open` / `shot`: main asks this window to show a plugin view and answers it. */
+/** `topo plugin open` / `shot`: main asks this window to show a plugin view and answers it. */
 export function registerPluginViewIpcBridge(unsubs: (() => void)[]): void {
   const plugins = window.api?.plugins
   if (!plugins?.onViewRequest || !plugins.answerViewRequest) {

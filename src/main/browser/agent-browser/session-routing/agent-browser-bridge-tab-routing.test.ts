@@ -123,6 +123,6 @@ describe('AgentBrowserBridge', () => {
     await b.click('@e2', undefined, 'tab-a')
     await b.exec('snapshot -i', 'wt-1')
     await b.click('@e2', 'wt-1')
-    expect(clickSessions).toEqual(['orca-tab-tab-a', 'orca-tab-tab-b'])
+    expect(clickSessions).toEqual(['topo-tab-tab-a', 'topo-tab-tab-b'])
   })
 })

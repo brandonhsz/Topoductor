@@ -1,14 +1,14 @@
 import { createElement, type ReactElement } from 'react'
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
 import { act, create, type ReactTestRenderer } from 'react-test-renderer'
-import { createOrcaQueryClient } from '../../query/orca-query-client'
+import { createTopoQueryClient } from '../../query/topo-query-client'
 
 // One query client per mounted document: `leave` keeps its cache for a return, `unmount` ends the document.
 export function documentQueryClient() {
   let queryClient: QueryClient | undefined
   return {
     wrap(element: ReactElement): ReactElement {
-      queryClient ??= createOrcaQueryClient()
+      queryClient ??= createTopoQueryClient()
       return createElement(QueryClientProvider, { client: queryClient }, element)
     },
     // The recorder refuses leftover timers: a cancelled fetch schedules gc as it settles, and clear() drops them.

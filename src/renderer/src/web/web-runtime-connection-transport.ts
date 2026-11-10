@@ -96,8 +96,8 @@ export class WebRuntimeConnectionTransport {
   close(options: { notifySubscriptions?: boolean } = {}): void {
     this.intentionallyClosed = true
     this.clearTimers()
-    this.requestRegistry.rejectAll('Remote Orca runtime connection closed.')
-    this.connectionWaiters.rejectAll(new Error('Remote Orca runtime connection closed.'))
+    this.requestRegistry.rejectAll('Remote Topo runtime connection closed.')
+    this.connectionWaiters.rejectAll(new Error('Remote Topo runtime connection closed.'))
     this.subscriptionRegistry.close(options.notifySubscriptions ?? true)
     closeWebRuntimeSocket(this, this.lifecycle.crewAttempt === true, (error) => {
       this.setupFailure ??= runtimeEnvironmentSetupFailure(error, 'subscription')
@@ -181,10 +181,10 @@ export class WebRuntimeConnectionTransport {
     this.timers.clear('connect')
     this.timers.clear('handshake')
     this.heartbeat.clear()
-    this.requestRegistry.rejectAll('Remote Orca runtime connection interrupted.')
+    this.requestRegistry.rejectAll('Remote Topo runtime connection interrupted.')
     this.subscriptionRegistry.handleInterrupted()
     if (this.lifecycle.crewAttempt && !this.intentionallyClosed) {
-      this.failSetup(new Error('Remote Orca runtime connection interrupted.'))
+      this.failSetup(new Error('Remote Topo runtime connection interrupted.'))
       return
     }
     if (this.intentionallyClosed || this.state === 'auth-failed') {

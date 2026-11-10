@@ -4,7 +4,7 @@ import type { ExecutionHostId } from '../../../../shared/execution-host'
 import type { WorkspaceSessionState } from '../../../../shared/workspace-session/workspace-session-state-types'
 import { TerminalListHostScope } from '../../terminal/query/terminal-list-host-scope'
 
-export abstract class OrcaRuntimeWithGetRuntimeId extends TerminalListHostScope {
+export abstract class TopoRuntimeWithGetRuntimeId extends TerminalListHostScope {
   getRuntimeId(): string {
     return this.runtimeId
   }

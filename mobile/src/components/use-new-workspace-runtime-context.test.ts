@@ -9,12 +9,12 @@ import { useNewWorkspaceRuntimeContext } from './use-new-workspace-runtime-conte
 type RuntimeContext = ReturnType<typeof useNewWorkspaceRuntimeContext>
 type PublishedState = Pick<
   RuntimeContext,
-  'runtimeSettings' | 'trustedOrcaHooks' | 'availableProviders'
+  'runtimeSettings' | 'trustedTopoHooks' | 'availableProviders'
 >
 
 // Use the persisted per-repo, per-hook approval shape; a content hash directly under the repo key is unreadable.
 const TRUSTED_HOOKS = { 'repo-1': { setup: { contentHash: 'sha-1', approvedAt: 1700000000000 } } }
-const UI_WITH_TRUST = { ui: { trustedOrcaHooks: TRUSTED_HOOKS } }
+const UI_WITH_TRUST = { ui: { trustedTopoHooks: TRUSTED_HOOKS } }
 const SETTINGS = { defaultTuiAgent: 'codex' as const, visibleTaskProviders: ['github', 'linear'] }
 
 function reply(result: unknown): RpcResponse {
@@ -79,16 +79,16 @@ describe('useNewWorkspaceRuntimeContext', () => {
       }
     })
     await act(async () => {})
-    const { runtimeSettings, trustedOrcaHooks, availableProviders } = context!
-    return { runtimeSettings, trustedOrcaHooks, availableProviders }
+    const { runtimeSettings, trustedTopoHooks, availableProviders } = context!
+    return { runtimeSettings, trustedTopoHooks, availableProviders }
   }
 
   // Stale trusted hooks would skip the setup-hook approval prompt; assert they are cleared.
   it('blanks the trust an earlier host published when the next ui result is null', async () => {
-    expect((await answer({ settings: SETTINGS }, UI_WITH_TRUST)).trustedOrcaHooks).toEqual(
+    expect((await answer({ settings: SETTINGS }, UI_WITH_TRUST)).trustedTopoHooks).toEqual(
       TRUSTED_HOOKS
     )
-    expect((await answer({ settings: SETTINGS }, null)).trustedOrcaHooks).toEqual({})
+    expect((await answer({ settings: SETTINGS }, null)).trustedTopoHooks).toEqual({})
   })
 
   async function swapToUnansweredClient(serverId: string): Promise<void> {
@@ -101,7 +101,7 @@ describe('useNewWorkspaceRuntimeContext', () => {
     await answer({ settings: SETTINGS }, UI_WITH_TRUST, 'runtime:a')
     await swapToUnansweredClient('runtime:b')
     expect(currentContext().runtimeSettings).toBeNull()
-    expect(currentContext().trustedOrcaHooks).toEqual({})
+    expect(currentContext().trustedTopoHooks).toEqual({})
     expect(currentContext().availableProviders).toEqual([])
   })
 
@@ -116,21 +116,21 @@ describe('useNewWorkspaceRuntimeContext', () => {
       renderer = create(createElement(Harness, { client: first, serverId: 'runtime:a' }))
     })
     const retired = currentContext()
-    expect(retired.trustedOrcaHooks).toEqual(TRUSTED_HOOKS)
+    expect(retired.trustedTopoHooks).toEqual(TRUSTED_HOOKS)
 
     await answer({ settings: { defaultTuiAgent: 'claude' } }, { ui: {} }, 'runtime:b')
     act(() => {
       retired.setRuntimeSettings(SETTINGS)
-      retired.setTrustedOrcaHooks(TRUSTED_HOOKS)
+      retired.setTrustedTopoHooks(TRUSTED_HOOKS)
     })
     expect(currentContext().runtimeSettings).toEqual({ defaultTuiAgent: 'claude' })
-    expect(currentContext().trustedOrcaHooks).toEqual({})
+    expect(currentContext().trustedTopoHooks).toEqual({})
 
     ui = { ui: {} }
     await act(async () =>
       renderer?.update(createElement(Harness, { client: first, serverId: 'runtime:a' }))
     )
-    act(() => retired.setTrustedOrcaHooks(TRUSTED_HOOKS))
-    expect(currentContext().trustedOrcaHooks).toEqual({})
+    act(() => retired.setTrustedTopoHooks(TRUSTED_HOOKS))
+    expect(currentContext().trustedTopoHooks).toEqual({})
   })
 })

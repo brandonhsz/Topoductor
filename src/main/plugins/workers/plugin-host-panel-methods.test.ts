@@ -13,7 +13,7 @@ function services(panels: PluginPanelBridgeServices | null = null) {
   return bindPluginHostServices({
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: these methods never reach the runtime delegate.
     delegate: {} as PluginRuntimeDelegate,
-    pluginsDataDir: mkdtempSync(join(tmpdir(), 'orca-panel-methods-')),
+    pluginsDataDir: mkdtempSync(join(tmpdir(), 'topo-panel-methods-')),
     panels,
     declaredSettings: [
       { key: 'pageSize', title: 'Page size', type: 'integer', default: 20, minimum: 1 }

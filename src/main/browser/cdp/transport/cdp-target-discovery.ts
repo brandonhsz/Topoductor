@@ -16,7 +16,7 @@ export class CdpTargetDiscovery {
   handleHttpRequest(url: string, res: ServerResponse): void {
     if (url === '/json/version' || url === '/json/version/') {
       res.writeHead(200, { 'Content-Type': 'application/json' })
-      // Report the bundled Chrome version without exposing Orca’s automation identity.
+      // Report the bundled Chrome version without exposing Topo’s automation identity.
       const chromeVersion = process.versions.chrome ?? '134.0.0.0'
       res.end(
         JSON.stringify({
@@ -33,7 +33,7 @@ export class CdpTargetDiscovery {
         JSON.stringify([
           {
             ...this.buildTargetInfo(),
-            id: 'orca-proxy-target',
+            id: 'topo-proxy-target',
             webSocketDebuggerUrl: this.getEndpoint()
           }
         ])
@@ -97,7 +97,7 @@ export class CdpTargetDiscovery {
   private buildTargetInfo(): Record<string, unknown> {
     const destroyed = this.webContents.isDestroyed()
     return {
-      targetId: 'orca-proxy-target',
+      targetId: 'topo-proxy-target',
       type: 'page',
       title: destroyed ? '' : this.webContents.getTitle(),
       url: destroyed ? '' : this.webContents.getURL(),

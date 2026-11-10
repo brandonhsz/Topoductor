@@ -71,7 +71,7 @@ export function matchFileSearchShortcut(
   e: Pick<KeyboardEvent, 'key' | 'metaKey' | 'ctrlKey' | 'shiftKey' | 'altKey' | 'repeat'>,
   platform: KeybindingPlatform,
   keybindings?: KeybindingOverrides,
-  terminalShortcutPolicy: TerminalShortcutPolicy = 'orca-first'
+  terminalShortcutPolicy: TerminalShortcutPolicy = 'topo-first'
 ): boolean {
   if (e.repeat) {
     return false

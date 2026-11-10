@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import type * as NodeOs from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { setSecretStore } from '../../../../../shared/secret-store'
 import type { RpcRequest } from '../../core'
 import { RpcDispatcher } from '../../dispatcher'
@@ -32,7 +32,7 @@ function createRuntime() {
   const runtime = {
     getRuntimeId: () => 'runtime-a',
     requireUsageRateLimits: () => rateLimits
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   return { runtime, rateLimits }
 }
 
@@ -43,8 +43,8 @@ function call(dispatcher: RpcDispatcher, method: string, params?: unknown) {
 
 describe('usage credential RPC methods', () => {
   beforeEach(() => {
-    home.dir = mkdtempSync(join(tmpdir(), 'orca-usage-credentials-'))
-    // Why plaintext: orcad's sealing is covered elsewhere; this pins where the bytes land.
+    home.dir = mkdtempSync(join(tmpdir(), 'topo-usage-credentials-'))
+    // Why plaintext: topod's sealing is covered elsewhere; this pins where the bytes land.
     setSecretStore({
       isEncryptionAvailable: () => false,
       encryptString: () => {
@@ -61,7 +61,7 @@ describe('usage credential RPC methods', () => {
     rmSync(home.dir, { recursive: true, force: true })
   })
 
-  // Why a tagged cipher: this process opens only what it sealed, as safeStorage and orcad do.
+  // Why a tagged cipher: this process opens only what it sealed, as safeStorage and topod do.
   function useSealingSecretStore(options: { working: boolean }): void {
     const tag = Buffer.from('this-host:')
     setSecretStore({
@@ -83,14 +83,14 @@ describe('usage credential RPC methods', () => {
   }
 
   function writeKeyFile(fileName: string, contents: string): string {
-    mkdirSync(join(home.dir, '.orca'), { recursive: true })
-    const keyPath = join(home.dir, '.orca', fileName)
+    mkdirSync(join(home.dir, '.topo'), { recursive: true })
+    const keyPath = join(home.dir, '.topo', fileName)
     writeFileSync(keyPath, contents)
     return keyPath
   }
 
   const providers = [
-    ['MiniMax', 'minimax-api-key.enc', 'orca-minimax-api-key:v1:', 'minimax'],
+    ['MiniMax', 'minimax-api-key.enc', 'topo-minimax-api-key:v1:', 'minimax'],
     ['GLM', 'zcode-plan-api-key.enc', API_KEY_ENVELOPE_PREFIX, 'zcodePlan']
   ] as const
 

@@ -27,7 +27,7 @@ import {
   stopStructuredAgentSessionRuntime
 } from './structured-agent-session-runtime'
 import { createStructuredAgentSessionLogger } from '../../native-chat/agent-session-wire/host/structured-agent-session-logger'
-import { scriptedCodexTransport } from '../orca-runtime-tests/scripted-codex-transport.test-fixture'
+import { scriptedCodexTransport } from '../topo-runtime-tests/scripted-codex-transport.test-fixture'
 import { createScriptedClaudeRuntime } from './installation/structured-claude-scripted-runtime-test-support'
 
 vi.mock('../../telemetry/client', () => ({ track: vi.fn() }))
@@ -81,7 +81,7 @@ describe('the chat strip and the session list read the same host child records',
 
   beforeEach(async () => {
     _internals.resetCachesForTests()
-    root = await mkdtemp(join(tmpdir(), 'orca-child-records-switch-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-child-records-switch-'))
     server = new AgentHookServer()
   })
 

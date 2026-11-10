@@ -52,9 +52,9 @@ const fail = (requestId: string, code: string, message: string): Failure => ({
 })
 
 const NO_WORKSPACE_MESSAGE =
-  'Orca shows plugin panels and editors beside an open workspace, and none is showing or could be selected.'
+  'Topo shows plugin panels and editors beside an open workspace, and none is showing or could be selected.'
 const NO_EDITOR_WORKSPACE_MESSAGE =
-  'No workspace shows the file, and Orca could not open its folder as a folder workspace.'
+  'No workspace shows the file, and Topo could not open its folder as a folder workspace.'
 
 /** `open` may leave Settings for the workspace behind it; a capture never changes the view. */
 function showWorkspace(requestId: string, leaveSettings: boolean): Failure | null {

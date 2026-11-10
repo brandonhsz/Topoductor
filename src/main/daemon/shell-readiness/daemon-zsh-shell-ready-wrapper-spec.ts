@@ -3,7 +3,7 @@ import { SHELL_READY_MARKER } from './daemon-shell-ready-marker'
 
 export function getDaemonZshWrapperSpec(): ZshStartupHookSpec {
   return {
-    headerLabel: 'Orca daemon zsh shell-ready wrapper',
+    headerLabel: 'Topo daemon zsh shell-ready wrapper',
     readyMarkerEscaped: SHELL_READY_MARKER,
     osc133CommandMarkers: true,
     startupCommandDelivery: false,

@@ -7,7 +7,7 @@ import { sweepStaleAgentHookEndpointTemps } from './agent-hook-endpoint-temp-cle
 
 describe('agent hook endpoint temp cleanup', () => {
   it('removes only matching temp files strictly older than five minutes', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-hook-endpoint-sweep-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-hook-endpoint-sweep-'))
     try {
       const now = 1_000_000
       for (const [name, age] of [

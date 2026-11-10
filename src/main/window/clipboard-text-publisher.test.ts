@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { ProcessResult, ProcessSpec } from '@orca/process-host/process-spec'
+import type { ProcessResult, ProcessSpec } from '@topo/process-host/process-spec'
 import {
   assertClipboardTextWriteWithinLimitWithYield,
   CLIPBOARD_TEXT_MEASURE_YIELD_CODE_UNITS,
@@ -17,7 +17,7 @@ const clearCache = vi.fn()
 function publisher(wayland = true, validate = assertClipboardTextWriteWithinLimitWithYield) {
   return createClipboardPublisher({
     isWayland: () => wayland,
-    helperPath: () => '/bundle/bin/orca-wayland-clipboard',
+    helperPath: () => '/bundle/bin/topo-wayland-clipboard',
     run,
     write,
     clearCache,
@@ -41,7 +41,7 @@ describe('terminal clipboard writes', () => {
     await copy(text)
     expect(run).toHaveBeenCalledTimes(2)
     expect(run).toHaveBeenCalledWith({
-      program: '/bundle/bin/orca-wayland-clipboard',
+      program: '/bundle/bin/topo-wayland-clipboard',
       input: text,
       timeoutMs: 2000,
       stdio: ['pipe', 'ignore', 'ignore']

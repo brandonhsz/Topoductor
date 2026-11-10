@@ -277,7 +277,7 @@ export default function TerminalSettingsScreen() {
             separatorInset={LIST_LEADING_INSET}
             footer={t(
               'app.terminalSettings.leaveAppDescription',
-              "While you're using a terminal on your phone, Orca shrinks it to fit your screen. When you close the app or switch away, this controls whether it stays at phone size (so interactive CLI tools don't reflow) or resizes back to your desktop. You can always use Restore on the desktop banner to resize manually."
+              "While you're using a terminal on your phone, Topo shrinks it to fit your screen. When you close the app or switch away, this controls whether it stays at phone size (so interactive CLI tools don't reflow) or resizes back to your desktop. You can always use Restore on the desktop banner to resize manually."
             )}
           >
             {hosts.length === 0 ? (

@@ -86,7 +86,7 @@ describe.skipIf(process.platform === 'win32')('registerWslHookFsHandlers (WSL fs
     await call(WSL_HOOK_FS_METHODS.writeFile, { path: inside, content: 'x' })
     const outbound = await call(WSL_HOOK_FS_METHODS.rename, {
       src: inside,
-      dst: '/etc/orca-evil.txt'
+      dst: '/etc/topo-evil.txt'
     })
     expect(outbound).toMatchObject({ ok: false, errno: 'EACCES' })
     const inbound = await call(WSL_HOOK_FS_METHODS.rename, {
@@ -97,7 +97,7 @@ describe.skipIf(process.platform === 'win32')('registerWslHookFsHandlers (WSL fs
   })
 
   it('refuses mkdir outside home and creates a dir inside home', async () => {
-    const outside = await call(WSL_HOOK_FS_METHODS.mkdir, { path: '/etc/orca-evil-dir' })
+    const outside = await call(WSL_HOOK_FS_METHODS.mkdir, { path: '/etc/topo-evil-dir' })
     expect(outside).toMatchObject({ ok: false, errno: 'EACCES' })
     const dir = posix.join(home, 'newdir')
     const inside = await call(WSL_HOOK_FS_METHODS.mkdir, { path: dir })

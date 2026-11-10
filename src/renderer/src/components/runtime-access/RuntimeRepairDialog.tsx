@@ -130,7 +130,7 @@ function RuntimeRepairForm({
         <DialogDescription>
           {t(
             'auto.components.settings.RuntimeRepairDialog.descriptionShareComputer',
-            '{{name}} no longer accepts this computer. On {{name}}, open Settings → Remote Orca Servers → Share this computer, create a link for another Orca, then paste it here.',
+            '{{name}} no longer accepts this computer. On {{name}}, open Settings → Remote Topo Servers → Share this computer, create a link for another Topo, then paste it here.',
             { name }
           )}
         </DialogDescription>
@@ -158,7 +158,7 @@ function RuntimeRepairForm({
           }}
           placeholder={t(
             'auto.components.settings.RuntimeHostAccessForm.accessLinkPlaceholder',
-            'orca://pair?code=...'
+            'topo://pair?code=...'
           )}
           className="min-w-0 font-mono"
         />

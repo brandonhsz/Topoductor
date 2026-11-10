@@ -48,12 +48,12 @@ function lookup(
 const LINUX: NativeHostLocationEnvironment = {
   platform: 'linux',
   homeDir: '/home/me',
-  userDataDir: '/home/me/.config/orca'
+  userDataDir: '/home/me/.config/topo'
 }
 const WINDOWS: NativeHostLocationEnvironment = {
   platform: 'win32',
   homeDir: 'C:\\Users\\me',
-  userDataDir: 'C:\\Users\\me\\AppData\\Roaming\\orca'
+  userDataDir: 'C:\\Users\\me\\AppData\\Roaming\\topo'
 }
 
 describe('native messaging host manifests', () => {

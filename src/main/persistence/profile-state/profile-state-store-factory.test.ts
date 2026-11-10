@@ -13,7 +13,7 @@ import { worktreeWorkspaceKey } from '../../../shared/workspace-scope'
 vi.mock('electron', () => ({
   app: {
     getPath: () => tmpdir(),
-    getName: () => 'orca-test',
+    getName: () => 'topo-test',
     getVersion: () => '0.0.0-test',
     isPackaged: false,
     on: () => {},
@@ -63,13 +63,13 @@ afterEach(async () => {
 })
 
 function createOptions(): ProfileStateStoreFactoryOptions & { directory: string } {
-  const root = mkdtempSync(join(tmpdir(), 'orca-profile-state-store-factory-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-profile-state-store-factory-'))
   temporaryDirectories.push(root)
   const directory = join(root, 'profiles', 'profile-factory-test')
   mkdirSync(directory, { recursive: true })
   return {
     directory,
-    dataFile: join(directory, 'orca-data.json'),
+    dataFile: join(directory, 'topo-data.json'),
     databaseFile: profileStateDatabaseFile(directory),
     profileId: 'profile-factory-test'
   }

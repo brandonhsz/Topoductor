@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-import { withDurableRuntimeStore } from '../../orca-runtime-tests/runtime-durable-store-fixture'
+import { withDurableRuntimeStore } from '../../topo-runtime-tests/runtime-durable-store-fixture'
 import { getDefaultWorkspaceSession } from '../../../../shared/constants'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import type { Repo } from '../../../../shared/repo-types'
 import type { FolderWorkspace } from '../../../../shared/folder-workspaces/folder-workspace-types'
 
@@ -62,10 +62,10 @@ function createRuntime(folders: FolderWorkspace[], repos: Repo[] = [], groups = 
     setWorkspaceSession: () => {},
     flushOrThrow: () => {}
   }) as never
-  return new OrcaRuntimeService(store)
+  return new TopoRuntimeService(store)
 }
 
-const show = (runtime: OrcaRuntimeService, selector: string) =>
+const show = (runtime: TopoRuntimeService, selector: string) =>
   runtime.showManagedWorktree(selector, undefined, { matchFolders: true })
 
 describe('path: and name: selectors on folder workspaces', () => {
@@ -168,7 +168,7 @@ describe('path: on repo-backed rows', () => {
 })
 
 describe('explicit create parents named by path:', () => {
-  it('record a folder parent on a child in another host of the same Orca', async () => {
+  it('record a folder parent on a child in another host of the same Topo', async () => {
     const runtime = createRuntime([folder({ id: 'hub-a' })], [sshRepo])
 
     const resolution = await runtime.resolveLineageForWorktreeCreate(

@@ -129,7 +129,7 @@ describe('the shared real-home Codex entry', () => {
     expect(snapshotRealCodexHome()).toEqual(before)
   })
 
-  it("is removed, with Orca's trust, only by the user's explicit opt-out", async () => {
+  it("is removed, with Topo's trust, only by the user's explicit opt-out", async () => {
     seedSharedEntry()
 
     await new CodexHookService().remove()

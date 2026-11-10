@@ -45,7 +45,7 @@ const sshRepo: Repo = {
 afterEach(() => {
   cleanup()
   useAppStore.setState(originalState, true)
-  localStorage.removeItem('orca.jira.has-workspace.v1')
+  localStorage.removeItem('topo.jira.has-workspace.v1')
 })
 beforeEach(() => {
   vi.resetAllMocks()

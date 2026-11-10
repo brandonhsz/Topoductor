@@ -1,5 +1,5 @@
 import type { EnvironmentDoctorCheck } from '../../shared/environment-doctor-types'
-import { parseOrcaYaml } from '../../shared/orca-yaml'
+import { parseTopoYaml } from '../../shared/topo-yaml'
 import {
   check,
   PROBE_TIMEOUT_MS,
@@ -10,8 +10,8 @@ import {
 } from './environment-doctor-check'
 import type { GitCheckoutProbe } from './environment-doctor-git'
 
-// Orca writes .cmd or .sh on Windows depending on the script's shell, so look for both.
-const SETUP_RUNNER_NAMES = ['orca/setup-runner.sh', 'orca/setup-runner.cmd'] as const
+// Topo writes .cmd or .sh on Windows depending on the script's shell, so look for both.
+const SETUP_RUNNER_NAMES = ['topo/setup-runner.sh', 'topo/setup-runner.cmd'] as const
 
 export async function checkSetup(
   deps: EnvironmentDoctorDeps,
@@ -23,13 +23,13 @@ export async function checkSetup(
     readRepoFile: (relativePath: string) => Promise<string | null>
   }
 ): Promise<EnvironmentDoctorCheck[]> {
-  const yaml = await context.readRepoFile('orca.yaml')
-  const script = yaml ? parseOrcaYaml(yaml)?.scripts.setup?.trim() : undefined
+  const yaml = await context.readRepoFile('topo.yaml')
+  const script = yaml ? parseTopoYaml(yaml)?.scripts.setup?.trim() : undefined
   if (!script) {
     return [
       context.impliesInstall
-        ? check('setup', 'setup.script', 'warn', 'orca.yaml has no setup script.', {
-            remediation: 'Add scripts.setup to orca.yaml so new workspaces install dependencies.'
+        ? check('setup', 'setup.script', 'warn', 'topo.yaml has no setup script.', {
+            remediation: 'Add scripts.setup to topo.yaml so new workspaces install dependencies.'
           })
         : check('setup', 'setup.script', 'pass', 'No setup script is configured.')
     ]
@@ -58,7 +58,7 @@ export async function checkSetup(
         result.timedOut
           ? 'Setup script did not finish in time.'
           : `Setup script exited with code ${result.code ?? 'unknown'}.`,
-        { remediation: withOutputTail('Fix scripts.setup in orca.yaml, then re-run.', result) }
+        { remediation: withOutputTail('Fix scripts.setup in topo.yaml, then re-run.', result) }
       )
     ]
   }
@@ -104,7 +104,7 @@ async function setupRunnerExists(root: string, deps: EnvironmentDoctorDeps): Pro
   return false
 }
 
-/** ORCA_ROOT_PATH is the primary checkout; a linked worktree's common dir is <primary>/.git. */
+/** TOPO_ROOT_PATH is the primary checkout; a linked worktree's common dir is <primary>/.git. */
 function primaryCheckout(root: string, checkout: GitCheckoutProbe): string {
   if (checkout.kind !== 'checkout' || !/[\\/]\.git$/.test(checkout.commonDir)) {
     return root

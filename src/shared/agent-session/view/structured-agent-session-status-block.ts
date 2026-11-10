@@ -6,7 +6,7 @@ import { AGENT_SESSION_TURN_NOTICE_PRESENTATION } from '../journal/agent-session
 import { readWholeAgentSessionFailureFact } from '../failures/agent-session-failure'
 import type { AgentJournalStatusItem } from '../journal/agent-session-journal-types'
 import type { AgentJournalTurnScope } from '../journal/agent-session-journal-turn-scope'
-import { readAgentSessionOrcaStop } from '../lifecycle/agent-session-orca-stop'
+import { readAgentSessionTopoStop } from '../lifecycle/agent-session-topo-stop'
 import type { NativeChatTextBlock } from '../../native-chat/native-chat-types'
 import {
   AGENT_SESSION_COMPACTION_SKIPPED_PRESENTATION,
@@ -20,9 +20,9 @@ export function structuredAgentSessionStatusBlock(
   itemId?: string
 ): NativeChatTextBlock {
   const failure = readWholeAgentSessionFailureFact(body.failure)
-  const orcaStop = readAgentSessionOrcaStop(body.orcaStop)
+  const topoStop = readAgentSessionTopoStop(body.topoStop)
   const modelFallback =
-    !failure && !orcaStop && body.presentation === undefined && body.tone === undefined
+    !failure && !topoStop && body.presentation === undefined && body.tone === undefined
       ? readClaudeModelFallbackFrame(body.providerFrame)
       : null
   const presentation =
@@ -43,10 +43,10 @@ export function structuredAgentSessionStatusBlock(
     ...(failure?.kind === 'usageLimitReached' && turnScope?.kind === 'turn'
       ? { usageLimitTurnItemId: turnScope.turnItemId }
       : {}),
-    ...(orcaStop
+    ...(topoStop
       ? {
-          orcaStop: {
-            ...orcaStop,
+          topoStop: {
+            ...topoStop,
             ...(turnScope?.kind === 'turn' ? { turnItemId: turnScope.turnItemId } : {})
           }
         }

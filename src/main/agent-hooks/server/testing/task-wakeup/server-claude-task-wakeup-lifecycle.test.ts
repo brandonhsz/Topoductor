@@ -8,7 +8,7 @@ import { createRuntimeAutomationRunTerminalObserver } from '../../../../automati
 import {
   createTranscriptPane,
   TRANSCRIPT_PANE_PTY_ID
-} from '../../../../runtime/orca-runtime-tests/agent-transcript-pane-test-harness'
+} from '../../../../runtime/topo-runtime-tests/agent-transcript-pane-test-harness'
 import { buildBody, PANE, postHookEvent } from '../server.test-fixtures'
 
 vi.mock('electron', () => ({
@@ -41,7 +41,7 @@ afterEach(() => vi.useRealTimers())
 
 async function host(remote: boolean, launchToken?: string) {
   const desktop = new AgentHookServer()
-  const dir = mkdtempSync(join(tmpdir(), 'orca-task-wakeup-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-task-wakeup-'))
   const relay = remote
     ? new RelayAgentHookServer({
         endpointDir: dir,
@@ -62,7 +62,7 @@ async function host(remote: boolean, launchToken?: string) {
             'Content-Type': 'application/json',
             // Advancing fake time can expire a pooled HTTP socket before the next post.
             Connection: 'close',
-            'X-Orca-Agent-Hook-Token': relay.getCoordinates().token
+            'X-Topo-Agent-Hook-Token': relay.getCoordinates().token
           },
           body: JSON.stringify(body)
         })

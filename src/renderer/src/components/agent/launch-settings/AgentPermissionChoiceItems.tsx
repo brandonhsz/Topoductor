@@ -12,7 +12,7 @@ function ownDescription(chatOwnSupported: boolean, t: Translate = translate): st
   if (!chatOwnSupported) {
     return t(
       'settings.agents.permissionOwnLegacyDescription',
-      'Orca adds no permission flag in terminals; chats use Settings → Chat.'
+      'Topo adds no permission flag in terminals; chats use Settings → Chat.'
     )
   }
   return t(

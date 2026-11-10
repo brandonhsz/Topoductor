@@ -23,7 +23,7 @@ function folder(): string {
 
 describe('prepareClaudeSignInBrowser', () => {
   it.skipIf(process.platform === 'win32')(
-    'hands the link Claude gives BROWSER to Orca and leaves nothing behind',
+    'hands the link Claude gives BROWSER to Topo and leaves nothing behind',
     async () => {
       const home = folder()
       const browser = await prepareClaudeSignInBrowser({
@@ -31,7 +31,7 @@ describe('prepareClaudeSignInBrowser', () => {
         linuxPath: null,
         wslDistro: null
       })
-      expect(browser?.path).toBe(join(home, '.orca-sign-in-browser'))
+      expect(browser?.path).toBe(join(home, '.topo-sign-in-browser'))
       expect(statSync(browser!.path).mode & 0o700).toBe(0o700)
       const next = browser!.nextLink(new AbortController().signal)
       execFileSync(browser!.path, [LINK])

@@ -19,7 +19,7 @@ describe('plugin source maps in the guest', () => {
 })
 
 describe('plugin errors as logged', () => {
-  it('locates the message and stack frames at source positions, without Orca runtime frames', () => {
+  it('locates the message and stack frames at source positions, without Topo runtime frames', () => {
     const url = `${base}src/panel.tsx?rev=2`
     registerPluginSourceMap(url, ';;AAEA,IAAM')
     const error = Object.assign(new Error('boom'), {

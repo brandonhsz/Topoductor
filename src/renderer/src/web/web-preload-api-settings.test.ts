@@ -20,7 +20,7 @@ describe('web settings preload API', () => {
     const { installWebPreloadApi } = await import('./web-preload-api')
     installWebPreloadApi()
     globals.storage.setItem(
-      'orca.web.settings.v1',
+      'topo.web.settings.v1',
       JSON.stringify({ terminalAllowOsc52Clipboard: false })
     )
 
@@ -47,7 +47,7 @@ describe('web settings preload API', () => {
     const globals = installBrowserGlobals('Linux')
     writeStoredRuntimeEnvironment(globals.storage)
     globals.storage.setItem(
-      'orca.web.settings.v1',
+      'topo.web.settings.v1',
       JSON.stringify({ worktreeVisibilityDefaults: { external: 'hide' } })
     )
     const { installWebPreloadApi } = await import('./web-preload-api')
@@ -72,7 +72,7 @@ describe('web settings preload API', () => {
       compactWorktreeCards: true,
       worktreeVisibilityDefaults: { external: 'hide' }
     })
-    expect(JSON.parse(globals.storage.getItem('orca.web.settings.v1') ?? '{}')).toMatchObject({
+    expect(JSON.parse(globals.storage.getItem('topo.web.settings.v1') ?? '{}')).toMatchObject({
       compactWorktreeCards: true,
       worktreeVisibilityDefaults: { external: 'hide' }
     })
@@ -111,7 +111,7 @@ describe('web settings preload API', () => {
     const globals = installBrowserGlobals('Linux')
     writeStoredRuntimeEnvironment(globals.storage)
     globals.storage.setItem(
-      'orca.web.settings.v1',
+      'topo.web.settings.v1',
       JSON.stringify({
         worktreeVisibilityDefaults: {
           external: 'show',
@@ -128,7 +128,7 @@ describe('web settings preload API', () => {
       sourcePreferences: { builtIn: { claude: 'hide' } }
     })
     expect(
-      JSON.parse(globals.storage.getItem('orca.web.settings.v1') ?? '{}').worktreeVisibilityDefaults
+      JSON.parse(globals.storage.getItem('topo.web.settings.v1') ?? '{}').worktreeVisibilityDefaults
     ).toEqual({
       external: 'show',
       customSources: [{ id: 'local', rootPath: '/srv/local' }]
@@ -148,7 +148,7 @@ describe('web settings preload API', () => {
       sourcePreferences: { builtIn: { claude: 'show' } }
     })
     expect(
-      JSON.parse(globals.storage.getItem('orca.web.settings.v1') ?? '{}').worktreeVisibilityDefaults
+      JSON.parse(globals.storage.getItem('topo.web.settings.v1') ?? '{}').worktreeVisibilityDefaults
     ).toEqual({
       external: 'show',
       customSources: [{ id: 'local', rootPath: '/srv/local' }]
@@ -192,7 +192,7 @@ describe('web settings preload API', () => {
     const globals = installBrowserGlobals('Linux')
     writeStoredRuntimeEnvironment(globals.storage)
     globals.storage.setItem(
-      'orca.web.settings.v1',
+      'topo.web.settings.v1',
       JSON.stringify({ worktreeVisibilityDefaults: { external: 'show' } })
     )
     const { installWebPreloadApi } = await import('./web-preload-api')
@@ -206,7 +206,7 @@ describe('web settings preload API', () => {
       })
     ).rejects.toThrow('offline')
 
-    expect(JSON.parse(globals.storage.getItem('orca.web.settings.v1') ?? '{}')).toMatchObject({
+    expect(JSON.parse(globals.storage.getItem('topo.web.settings.v1') ?? '{}')).toMatchObject({
       terminalFontSize: 15,
       worktreeVisibilityDefaults: { external: 'show' }
     })

@@ -299,7 +299,7 @@ describe('ACP JSON-RPC peer', () => {
     agent.on(captures.acp.request.method, asked.resolve)
     const load = peer.request(captures.acp.request.method, {}).catch((error: unknown) => error)
     await asked.promise
-    // The agent closes its stdin before the last chunk of its answer reaches Orca.
+    // The agent closes its stdin before the last chunk of its answer reaches Topo.
     agent.stdin.emit('finish')
     await expect(peer.request('late', {})).rejects.toBeInstanceOf(AcpConnectionClosedError)
     agent.stdout.write(`${JSON.stringify({ ...response, id: 1 })}\n`)

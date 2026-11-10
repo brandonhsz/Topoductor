@@ -1,7 +1,7 @@
 import { join } from 'node:path'
 import { observeAgentStateFile } from '../codex-path-observation'
 import { isOnlyCodexDaemonOverride } from '../shared-server/codex-daemon-socket-path-guard'
-import { getOrcaManagedCodexHomePath, getSystemCodexHomePath } from '../homes/codex-home-paths'
+import { getTopoManagedCodexHomePath, getSystemCodexHomePath } from '../homes/codex-home-paths'
 import {
   getCodexSettingsBaselinePath,
   observeCodexSettingsBaseline
@@ -15,7 +15,7 @@ import type {
 /** Diagnose settings withheld by a stalled mirror from the current file observations. */
 export function getCodexConfigSyncStatus(
   homes: CodexSettingsPromotionHomes = {
-    runtimeHomePath: getOrcaManagedCodexHomePath(),
+    runtimeHomePath: getTopoManagedCodexHomePath(),
     systemHomePath: getSystemCodexHomePath()
   }
 ): CodexConfigSyncStatus {

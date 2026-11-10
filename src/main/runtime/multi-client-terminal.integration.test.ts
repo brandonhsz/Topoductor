@@ -18,15 +18,15 @@ import {
   encodeTerminalStreamJson,
   encodeTerminalStreamText
 } from '../../shared/terminal/stream/terminal-stream-protocol'
-import { OrcaRuntimeService } from './orca-runtime'
-import { OrcaRuntimeRpcServer } from './rpc/server/runtime-rpc'
+import { TopoRuntimeService } from './topo-runtime'
+import { TopoRuntimeRpcServer } from './rpc/server/runtime-rpc'
 import { readRuntimeMetadata } from './rpc/server/runtime-metadata'
 import { sendRequest } from './rpc/server/runtime-rpc-test-harness'
 import { makeStore } from './rpc/server/runtime-rpc-worktree-store-fixtures'
-import { partialRuntimeStore } from './orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from './topo-runtime-tests/runtime-store-partial-fixture'
 import { settledWriteStub } from '../providers/settled-pty-write-stub'
 import { publishHeadlessRuntimeGraph } from './session-graph/headless-runtime-graph'
-import { committingSpawn } from './orca-runtime-tests/bind-first-pane.test-fixture'
+import { committingSpawn } from './topo-runtime-tests/bind-first-pane.test-fixture'
 
 vi.mock('../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => ({
   ...(await importOriginal<typeof WorktreeScanCacheModule>()),
@@ -164,7 +164,7 @@ async function attach(
   }
 }
 
-// Desktop app, web client and phone attach to one `orca serve`-style runtime through the shared remote-runtime client.
+// Desktop app, web client and phone attach to one `topo serve`-style runtime through the shared remote-runtime client.
 describe('multiple clients on one headless runtime', () => {
   const cleanups: (() => unknown)[] = []
   afterEach(async () => {
@@ -176,12 +176,12 @@ describe('multiple clients on one headless runtime', () => {
   })
 
   async function start() {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-multi-client-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-multi-client-'))
     cleanups.push(() => rmSync(userDataPath, { recursive: true, force: true }))
     const writes: string[] = []
     const sizes: { cols: number; rows: number }[] = [SPAWN]
-    // Headless: no notifier/window, like `orca serve`.
-    const runtime = new OrcaRuntimeService(partialRuntimeStore(makeStore()))
+    // Headless: no notifier/window, like `topo serve`.
+    const runtime = new TopoRuntimeService(partialRuntimeStore(makeStore()))
     runtime.setPtyController({
       spawn: committingSpawn(runtime, vi.fn().mockResolvedValue({ id: PTY_ID })),
       write: (_ptyId, data) => {
@@ -209,7 +209,7 @@ describe('multiple clients on one headless runtime', () => {
         viewerLeaves++
       }
     })
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       runtime,
       userDataPath,
       enableWebSocket: true,

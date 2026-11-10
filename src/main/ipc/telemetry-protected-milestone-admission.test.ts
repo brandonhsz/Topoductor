@@ -35,14 +35,14 @@ describe('renderer telemetry admission', () => {
 
     expect(
       trackHandler(sender, 'first_agent_interaction', {
-        source: 'orca_send',
+        source: 'topo_send',
         agent_kind: 'codex',
         install_cohort: 'fresh'
       })
     ).toBe(false)
     expect(
       trackHandler(sender, 'meaningful_activity_day', {
-        trigger: 'orca_send',
+        trigger: 'topo_send',
         install_cohort: 'fresh'
       })
     ).toBe(false)

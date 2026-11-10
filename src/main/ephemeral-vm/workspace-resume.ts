@@ -49,7 +49,7 @@ export async function resumeEphemeralVmWorkspace(
   if (!runtime) {
     return null
   }
-  // A VM recorded as up whose host Orca gave up reaching may have been stopped or reclaimed by its
+  // A VM recorded as up whose host Topo gave up reaching may have been stopped or reclaimed by its
   // provider (#34089): its recipe's resume brings it back. A failure there keeps the record as it
   // was, so a VM that was only out of reach is still reconnected as before.
   const lostContact =
@@ -67,7 +67,7 @@ export async function resumeEphemeralVmWorkspace(
       updateEphemeralVmRuntimeStatus(userDataPath, runtime.id, { status: runtime.status })
     }
   }
-  // After the recipe marked the VM running, an SSH host Orca cannot reach again is still a failed
+  // After the recipe marked the VM running, an SSH host Topo cannot reach again is still a failed
   // resume, saved with its reason so the row can explain it after a restart.
   const failAfterResume = (error: unknown): void => {
     if (lostContact) {
@@ -80,7 +80,7 @@ export async function resumeEphemeralVmWorkspace(
     })
   }
   const recipeContext = getRuntimeRecipeContext(store, userDataPath, runtime.id)
-  if (lostContact && runtime.connectionMode === 'orca-server' && !recipeContext.recipe.resume) {
+  if (lostContact && runtime.connectionMode === 'topo-server' && !recipeContext.recipe.resume) {
     // Nothing can restart this VM, and only the user can tell whether it is gone. Retry the
     // server now, and say what is left; the record and the workspace stay as they are.
     if (runtime.runtimeEnvironmentId) {
@@ -114,7 +114,7 @@ export async function resumeEphemeralVmWorkspace(
     // A pairing failure leaves the VM running: retrying the recipe's resume on it would fail.
     const pairingCode = getEphemeralVmRecipeResultPairingCode(result.runtime.recipeResult)
     if (!pairingCode) {
-      throw new Error('Resume result did not include an Orca Server pairing code.')
+      throw new Error('Resume result did not include a Topo Server pairing code.')
     }
     const { environment } = await applyResumedRuntimePairing({
       userDataPath,
@@ -169,10 +169,10 @@ export async function resumeEphemeralVmWorkspace(
 }
 
 export const RECIPE_VM_UNREACHABLE_WITHOUT_RESUME_MESSAGE =
-  "Orca hasn't reached this workspace's VM for several minutes, and its recipe has no resume " +
+  "Topo hasn't reached this workspace's VM for several minutes, and its recipe has no resume " +
   'step to restart it. If the VM is gone, delete this workspace and create it again.'
 
-/** A paired VM server Orca could not reach for minutes, that is not ready now and that the user
+/** A paired VM server Topo could not reach for minutes, that is not ready now and that the user
  *  did not disconnect. */
 function isPairedServerContactLost(environmentId: string): boolean {
   return (

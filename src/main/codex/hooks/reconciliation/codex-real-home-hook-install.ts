@@ -19,12 +19,12 @@ import {
 } from '../definitions/codex-hook-definition'
 import {
   type CodexHookHome,
-  findStopgapOrcaHashes,
+  findStopgapTopoHashes,
   getRealHomeCodexHookHome,
-  isKnownOrcaHash,
-  readKnownOrcaHashes
-} from '../../trust/hooks/codex-hook-orca-approvals'
-import { getOrcaUserDataPath } from '../../configuration/homes/codex-home-paths'
+  isKnownTopoHash,
+  readKnownTopoHashes
+} from '../../trust/hooks/codex-hook-topo-approvals'
+import { getTopoUserDataPath } from '../../configuration/homes/codex-home-paths'
 import { mutateRealHomeHooksPreservingUserTrust } from '../../trust/hooks/codex-user-hook-trust-moves'
 import { sweepRealHomeCodexHook } from './codex-real-home-hook-sweep'
 import { runExclusivelyForCodexTrustConfig } from '../../trust/toml/codex-trust-config-mutation-queue'
@@ -89,17 +89,17 @@ export async function reconcileCodexHookEntriesInHome(
           }
         }
       }
-      throw new Error(`Orca entries in ${home.homePath} did not settle`)
+      throw new Error(`Topo entries in ${home.homePath} did not settle`)
     })
   } catch (error) {
     console.warn(
-      `[codex-real-home-hooks] could not reconcile Orca entries in ${home.homePath}:`,
+      `[codex-real-home-hooks] could not reconcile Topo entries in ${home.homePath}:`,
       error
     )
   }
 }
 
-// Settlement also covers homes that cannot accept Orca's entry.
+// Settlement also covers homes that cannot accept Topo's entry.
 function reconcilePass(
   home: CodexHookHome,
   args: ReconcileArgs,
@@ -123,18 +123,18 @@ function reconcilePass(
     hooks,
     sourcePath: sourcePaths[0],
     material: { events, command: material.command },
-    isOrcaCommand: createManagedCommandMatcher(getCodexManagedScriptFileName()),
+    isTopoCommand: createManagedCommandMatcher(getCodexManagedScriptFileName()),
     convertOlderForms: args.convertOlderForms
   })
   const writeHooks = (nextHooks: Record<string, HookDefinition[]>): void => {
     if (pristineBackup) {
-      backupRealHomeHooksJsonOnce(getOrcaUserDataPath(), previousRaw)
+      backupRealHomeHooksJsonOnce(getTopoUserDataPath(), previousRaw)
     }
     assertHooksJsonGeneration(hooksJsonPath, hooksWritePath, previousRaw)
     writeHooksJson(hooksWritePath, { ...config, hooks: nextHooks }, { preserveMode: true })
   }
   if (plan.kind === 'prune') {
-    // Move shifted user approvals before writing Orca approvals into their former slots.
+    // Move shifted user approvals before writing Topo approvals into their former slots.
     mutateRealHomeHooksPreservingUserTrust({
       sourcePaths,
       tomlPath,
@@ -146,16 +146,16 @@ function reconcilePass(
   }
 
   const trustStates = readHookTrustEntries(tomlPath)
-  const knownOrcaHashes = readKnownOrcaHashes(home, material.command)
+  const knownTopoHashes = readKnownTopoHashes(home, material.command)
   // Preserve installed approvals while waiting for Codex to report hashes.
   const hashes =
     args.hashes ??
-    findStopgapOrcaHashes({
+    findStopgapTopoHashes({
       trustStates,
       hooks,
       keySourcePaths: sourcePaths,
       command: material.command,
-      knownOrcaHashes
+      knownTopoHashes
     })
   const approvals = sourcePaths.flatMap((keySource) =>
     plan.managedEntries.flatMap((entry) => {
@@ -167,7 +167,7 @@ function reconcilePass(
     })
   )
   const findStale = (states: ReadonlyMap<string, CodexHookTrustState>): string[] =>
-    findStaleOrcaApprovals(states, events, sourcePaths, knownOrcaHashes, plan)
+    findStaleTopoApprovals(states, events, sourcePaths, knownTopoHashes, plan)
   const changed = plan.changedLabels.size > 0
   if (
     !changed &&
@@ -193,17 +193,17 @@ function reconcilePass(
     removeHookTrustEntries(tomlPath, findStale(readHookTrustEntries(tomlPath)))
   } catch (error) {
     // The installed entry remains valid; leftover approvals match no hook.
-    console.warn('[codex-real-home-hooks] could not drop stale Orca approvals:', error)
+    console.warn('[codex-real-home-hooks] could not drop stale Topo approvals:', error)
   }
   return 'settled'
 }
 
-// Preserve held and untouched slots; stale approvals must carry a known Orca hash.
-function findStaleOrcaApprovals(
+// Preserve held and untouched slots; stale approvals must carry a known Topo hash.
+function findStaleTopoApprovals(
   trustStates: ReadonlyMap<string, CodexHookTrustState>,
   events: CodexManagedHookInstallMaterial['events'],
   sourcePaths: readonly string[],
-  knownOrcaHashes: readonly CodexHookHashes[],
+  knownTopoHashes: readonly CodexHookHashes[],
   plan: SettlePlan
 ): string[] {
   const plannedLabels = new Set(events.map((eventName) => CODEX_EVENT_LABEL[eventName]))
@@ -221,13 +221,13 @@ function findStaleOrcaApprovals(
       !plan.untouchedLabels.has(parts.eventLabel) &&
       !held.has(normalizeHookTrustKeyForLookup(key)) &&
       sourcePaths.some((sourcePath) => codexHookSourcePathsEqual(parts.sourcePath, sourcePath)) &&
-      isKnownOrcaHash(knownOrcaHashes, parts.eventLabel, state.trustedHash)
+      isKnownTopoHash(knownTopoHashes, parts.eventLabel, state.trustedHash)
       ? [key]
       : []
   })
 }
 
-/** Opt-out must move shifted user approvals when removing Orca entries. */
+/** Opt-out must move shifted user approvals when removing Topo entries. */
 export async function removeRealHomeCodexHookForOptOut(
   codexHashes: readonly CodexHookHashes[],
   home: CodexHookHome = getRealHomeCodexHookHome()

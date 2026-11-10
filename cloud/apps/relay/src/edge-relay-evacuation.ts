@@ -3,7 +3,7 @@
 // rows whose host is no longer in the cohort and asks the edge to drain them; the desktop then
 // re-asks /v1/assign, and that ask exports its data and places it on a cell (app.ts). Each pass also
 // retries fences that did not land after a host left (edge-relay-fence.ts).
-import { RELAY_DEFAULT_REGION, RelayRegionSchema } from '@orca-cloud/relay-contract/relay-regions'
+import { RELAY_DEFAULT_REGION, RelayRegionSchema } from '@topo-cloud/relay-contract/relay-regions'
 import type { RelayDatabase } from './database/database.js'
 import { EdgeAdminUnavailableError, type EdgeAdmin } from './edge-admin-client.js'
 import { inEdgeCohort, text, type EdgeRelayConfig, type Identity } from './edge-relay-cohort.js'
@@ -89,14 +89,14 @@ export class EdgeEvacuation {
         answered += 1
         console.warn(
           JSON.stringify({
-            event: 'orca_relay_edge_drain_sent',
+            event: 'topo_relay_edge_drain_sent',
             outcome: result.outcome,
             ...(result.outcome === 'drained' ? { controls: result.controls } : {})
           })
         )
       } catch (error) {
         if (!(error instanceof EdgeAdminUnavailableError)) { throw error }
-        console.warn(JSON.stringify({ event: 'orca_relay_edge_drain_failed', reason: error.message }))
+        console.warn(JSON.stringify({ event: 'topo_relay_edge_drain_failed', reason: error.message }))
       }
     })
     // Pending fences keep the busy cadence, so their backoff (from 60 s) is honoured.
@@ -181,7 +181,7 @@ export class EdgeEvacuation {
         .catch((error: unknown) =>
           console.warn(
             JSON.stringify({
-              event: 'orca_relay_edge_evacuation_deferred',
+              event: 'topo_relay_edge_evacuation_deferred',
               reason: error instanceof Error ? error.message : 'unknown'
             })
           )

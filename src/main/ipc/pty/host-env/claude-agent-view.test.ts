@@ -9,7 +9,7 @@ vi.mock('../../../claude/agent-view/agent-view-service', () => ({
 }))
 
 const options: BuildPtyHostEnvOptions = {
-  userDataPath: '/orca',
+  userDataPath: '/topo',
   isPackaged: false,
   selectedCodexHomePath: null,
   agentStatusHooksEnabled: true
@@ -20,9 +20,9 @@ afterEach(() => {
   read.mockReset()
 })
 
-it('strips only a previously inherited Orca path when disabled', () => {
-  vi.stubEnv('ORCA_CLAUDE_AGENT_VIEW_PLUGIN_DIR', '/orca/previous')
-  vi.stubEnv('CLAUDE_CODE_PLUGIN_DIRS', `/user/plugin${delimiter}/orca/previous`)
+it('strips only a previously inherited Topo path when disabled', () => {
+  vi.stubEnv('TOPO_CLAUDE_AGENT_VIEW_PLUGIN_DIR', '/topo/previous')
+  vi.stubEnv('CLAUDE_CODE_PLUGIN_DIRS', `/user/plugin${delimiter}/topo/previous`)
   const env = {}
   applyClaudeAgentViewEnv(env, { ...options, claudeSubagentNavigationEnabled: false })
   expect(env).toEqual({ CLAUDE_CODE_PLUGIN_DIRS: '/user/plugin' })

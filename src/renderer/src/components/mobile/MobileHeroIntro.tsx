@@ -8,7 +8,7 @@ export function HeroIntro({ onStart }: { onStart: () => void }): React.JSX.Eleme
     <div className="mp-intro-shell">
       <div className="mp-eyebrow-row">
         <span className="mp-eyebrow">
-          {t('auto.components.mobile.MobileHero.5410d55d79', 'Orca Mobile')}
+          {t('auto.components.mobile.MobileHero.5410d55d79', 'Topo Mobile')}
         </span>
       </div>
       <h1 className="mp-h1">
@@ -17,7 +17,7 @@ export function HeroIntro({ onStart }: { onStart: () => void }): React.JSX.Eleme
       <p className="mp-lead">
         {t(
           'auto.components.mobile.MobileHero.b4ccce5cb7',
-          "Control Orca from your phone. Check on agents, review changes, and kick off tasks while you're away from your desk."
+          "Control Topo from your phone. Check on agents, review changes, and kick off tasks while you're away from your desk."
         )}
       </p>
       <div

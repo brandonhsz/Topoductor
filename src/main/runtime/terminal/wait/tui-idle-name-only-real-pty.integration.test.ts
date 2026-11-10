@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import * as pty from 'node-pty'
 import { describe, it, type TestContext } from 'vitest'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 import { makeTuiIdleRuntime } from './tui-idle-wait-test-harness'
 import type { RuntimeSyncWindowGraph } from '../../../../shared/runtime-session-contracts'
 import { TERMINAL_LIFECYCLE_METHODS } from '../../rpc/methods/terminal/terminal-lifecycle-methods'
@@ -75,9 +75,9 @@ async function startRealAgentPane(
   return { runtime, transcript, handle: terminals[0].handle }
 }
 
-/** Exactly what `orca terminal wait --terminal <h> --for tui-idle` reaches over RPC. */
+/** Exactly what `topo terminal wait --terminal <h> --for tui-idle` reaches over RPC. */
 async function terminalWait(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   terminal: string,
   timeoutMs: number
 ): Promise<{ satisfied: boolean; elapsedMs: number }> {

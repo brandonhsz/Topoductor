@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Orca Linux computer-use bridge.
+"""Topo Linux computer-use bridge.
 
-The Node sidecar owns Orca's public API. This process is intentionally a small
+The Node sidecar owns Topo's public API. This process is intentionally a small
 AT-SPI adapter: read one JSON operation file, execute it in the user's desktop
 session, and print one JSON response.
 """
@@ -783,7 +783,7 @@ def handshake_response():
     has_screenshot = Gdk is not None and GdkPixbuf is not None and not is_wayland
     return {
         "platform": "linux",
-        "provider": "orca-computer-use-linux",
+        "provider": "topo-computer-use-linux",
         "providerVersion": "1.0.0",
         "protocolVersion": 1,
         "supports": {
@@ -1030,7 +1030,7 @@ def temporary_x11_keymap(value, read_receipt):
 
     if Gdk is None and not value.isascii():
         raise RuntimeError("unsupported capability: synthetic Unicode text requires GDK on X11")
-    lock = open(os.path.join(os.environ["XDG_RUNTIME_DIR"], "orca-computer-keyboard.lock"), "a")
+    lock = open(os.path.join(os.environ["XDG_RUNTIME_DIR"], "topo-computer-keyboard.lock"), "a")
     try:
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)

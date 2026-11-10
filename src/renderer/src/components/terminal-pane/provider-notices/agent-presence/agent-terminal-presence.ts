@@ -3,7 +3,7 @@ import type { AppState } from '@/store/types'
 
 type NoticeAgent = 'codex' | 'claude'
 
-// Why three sources: Orca-launched tabs, hook-reported agents (SSH too), and an agent typed in a local pane.
+// Why three sources: Topo-launched tabs, hook-reported agents (SSH too), and an agent typed in a local pane.
 function hasAgentTerminal(state: AppState, agent: NoticeAgent): boolean {
   return (
     Object.values(state.tabsByWorktree).some((tabs) =>

@@ -71,7 +71,7 @@ function read(request: Omit<AgentSessionHistoryRequest, 'sessionId'>): AgentSess
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-wire-history-window-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-wire-history-window-'))
   clock = 1_000
   ordinal = 0
   journal = await journals.open({

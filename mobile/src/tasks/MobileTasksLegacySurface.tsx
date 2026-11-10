@@ -73,7 +73,7 @@ import {
 import {
   renderMobileTasksWorkspaceSparseDrawer,
   renderMobileTasksSetupTrustDrawer,
-  renderMobileTasksOrcaYamlTrustDrawer
+  renderMobileTasksTopoYamlTrustDrawer
 } from './mobile-tasks-workspace-trust-drawers'
 import { pressedStyle } from '../theme/mobile-theme'
 import {
@@ -267,7 +267,7 @@ export function MobileTasksLegacySurface({ model }: { model: ConnectionPresentat
 
         {renderMobileTasksSetupTrustDrawer(model)}
 
-        {renderMobileTasksOrcaYamlTrustDrawer(model)}
+        {renderMobileTasksTopoYamlTrustDrawer(model)}
 
         {renderMobileTasksProjectMissingRepoDrawer(model)}
 

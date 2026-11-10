@@ -1,5 +1,5 @@
 import { hashKey, type QueryClient } from '@tanstack/react-query'
-import type { PersistedTrustedOrcaHooks } from '../../../src/shared/orca-yaml-hook-types'
+import type { PersistedTrustedTopoHooks } from '../../../src/shared/topo-yaml-hook-types'
 import { defineHostQuery, readHostQueryLive } from '../query/host-query'
 import { hostQueryKey, type HostQueryParams } from '../query/host-query-key'
 import { holdsRestoredHostQueryData } from '../query/host-query-persistence'
@@ -33,7 +33,7 @@ export { taskListKey } from './task-query-storage'
 // What the Tasks screen opens on: settings, resume state and provider availability, read in one batch.
 export type TaskHydration = {
   settings: RuntimeTaskSettings
-  ui: { taskResumeState?: TaskResumeState; trustedOrcaHooks?: PersistedTrustedOrcaHooks } | null
+  ui: { taskResumeState?: TaskResumeState; trustedTopoHooks?: PersistedTrustedTopoHooks } | null
   glabInstalled: boolean
   linearConnected: boolean
 }

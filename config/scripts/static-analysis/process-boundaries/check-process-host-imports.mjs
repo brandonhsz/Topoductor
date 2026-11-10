@@ -7,7 +7,7 @@ import { collectModuleSpecifiers } from '../module-requests/static-module-specif
 import { isTestOnlySourcePath } from './test-only-source-path.mjs'
 
 const ROOT = path.resolve(import.meta.dirname, '../../..', '..')
-const PACKAGE_NAME = '@orca/process-host'
+const PACKAGE_NAME = '@topo/process-host'
 const PACKAGE_DIRECTORY = 'src/packages/process-host'
 const PACKAGE_SOURCE = `${PACKAGE_DIRECTORY}/src/`
 const BASELINE_PATH = 'config/process-host-direct-import-baseline.txt'

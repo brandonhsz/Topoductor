@@ -14,11 +14,11 @@ describe('7za path resolution for the Windows signing gates (#6487)', () => {
     const path7za = await resolve7zaPath(projectRoot)
     expect(existsSync(path7za)).toBe(true)
 
-    const scratch = mkdtempSync(join(tmpdir(), 'orca 7za resolve '))
+    const scratch = mkdtempSync(join(tmpdir(), 'topo 7za resolve '))
     try {
       const payloadDir = join(scratch, 'payload')
       mkdirSync(payloadDir, { recursive: true })
-      writeFileSync(join(payloadDir, 'Orca.exe'), 'not-a-real-pe')
+      writeFileSync(join(payloadDir, 'Topo.exe'), 'not-a-real-pe')
 
       const archive = join(scratch, 'bundle.7z')
       const created = spawnSync(path7za, ['a', archive, payloadDir], { encoding: 'utf8' })
@@ -29,14 +29,14 @@ describe('7za path resolution for the Windows signing gates (#6487)', () => {
         encoding: 'utf8'
       })
       expect(extracted.status).toBe(0)
-      expect(existsSync(join(outDir, 'payload', 'Orca.exe'))).toBe(true)
+      expect(existsSync(join(outDir, 'payload', 'Topo.exe'))).toBe(true)
     } finally {
       rmSync(scratch, { recursive: true, force: true })
     }
   }, 120_000)
 
   it('prefers an explicit ELECTRON_BUILDER_7ZIP_PATH override', async () => {
-    const scratch = mkdtempSync(join(tmpdir(), 'orca 7za override '))
+    const scratch = mkdtempSync(join(tmpdir(), 'topo 7za override '))
     const previous = process.env.ELECTRON_BUILDER_7ZIP_PATH
     try {
       const fake = join(scratch, 'my7za')
@@ -55,7 +55,7 @@ describe('7za path resolution for the Windows signing gates (#6487)', () => {
 
   // Use directory override: Test-Path accepts it, masking bad resolver validation until extraction fails.
   it('ignores an override that points at a directory', async () => {
-    const scratch = mkdtempSync(join(tmpdir(), 'orca 7za dir override '))
+    const scratch = mkdtempSync(join(tmpdir(), 'topo 7za dir override '))
     const previous = process.env.ELECTRON_BUILDER_7ZIP_PATH
     try {
       process.env.ELECTRON_BUILDER_7ZIP_PATH = scratch
@@ -76,7 +76,7 @@ describe('7za path resolution for the Windows signing gates (#6487)', () => {
 
   // Use fresh subprocess: app-builder-lib memoizes toolset, hiding dangling-override failures in warm process.
   it('ignores an override that points at a missing file, in a cold process', () => {
-    const dangling = join(tmpdir(), 'orca-7za-does-not-exist')
+    const dangling = join(tmpdir(), 'topo-7za-does-not-exist')
     const result = spawnSync(
       process.execPath,
       ['config/scripts/archives/seven-zip/resolve-7za-path.mjs'],

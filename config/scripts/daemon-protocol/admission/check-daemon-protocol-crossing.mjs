@@ -14,7 +14,7 @@ import { selectLatestStableReleaseTag } from '../../release/versioning/stable-re
 import { readDaemonProtocolRevisionFacts } from '../schema-facts/daemon-protocol-revision-facts.mjs'
 
 // Same override the cross-version-wire harness honors, so both pair against one ref.
-const RELEASE_REF_ENV = 'ORCA_CROSS_VERSION_BASELINE_REF'
+const RELEASE_REF_ENV = 'TOPO_CROSS_VERSION_BASELINE_REF'
 
 function git(repoRoot, args) {
   return execFileSync('git', args, {

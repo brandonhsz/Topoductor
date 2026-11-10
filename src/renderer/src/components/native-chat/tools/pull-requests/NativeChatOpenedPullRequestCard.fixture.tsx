@@ -4,8 +4,8 @@ import type { NativeChatOpenedPullRequest } from '../../../../../../shared/nativ
 
 const pullRequest: NativeChatOpenedPullRequest = {
   provider: 'github',
-  url: 'https://github.com/stablyai/orca/pull/3',
-  slug: { owner: 'stablyai', repo: 'orca' },
+  url: 'https://github.com/brandonhsz/Topoductor/pull/3',
+  slug: { owner: 'brandonhsz', repo: 'topo' },
   number: 3
 }
 

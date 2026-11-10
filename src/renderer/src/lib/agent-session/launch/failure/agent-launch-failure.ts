@@ -21,17 +21,17 @@ export function agentLaunchRecoveryMessage(recovery: Recovery): string {
     case 'reconnectServer':
       return translate(
         'agentLaunch.reconnectServer',
-        'Reconnect to this workspace’s Orca server, then try again.'
+        'Reconnect to this workspace’s Topo server, then try again.'
       )
     case 'updateServer':
       return translate(
         'agentLaunch.updateServer',
-        'Update Orca on this workspace’s server, then try again.'
+        'Update Topo on this workspace’s server, then try again.'
       )
     case 'refreshProjects':
       return translate(
         'auto.store.slices.workspace.cleanup.hostUnresolved',
-        'Orca cannot tell which host owns this workspace. Refresh projects and review it again.'
+        'Topo cannot tell which host owns this workspace. Refresh projects and review it again.'
       )
   }
 }

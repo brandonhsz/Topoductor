@@ -15,7 +15,7 @@ afterEach(() =>
 )
 
 function inventory(entries) {
-  const root = mkdtempSync(join(tmpdir(), 'orca-release-parity-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-release-parity-'))
   directories.push(root)
   const files = Object.entries(entries).map(([path, content]) => {
     mkdirSync(dirname(join(root, path)), { recursive: true })
@@ -30,7 +30,7 @@ it('normalizes hashed JSON assets while rejecting content and reference changes'
     [`renderer/assets/de-${hash}.json`]: content,
     'renderer/assets/i18n.js': `fetch("./de-${reference}.json")`,
     'renderer/.vite/manifest.json': JSON.stringify({ locale: { file: `assets/de-${hash}.json` } }),
-    'renderer/.orca-web-client-files.json': JSON.stringify([`assets/de-${hash}.json`])
+    'renderer/.topo-web-client-files.json': JSON.stringify([`assets/de-${hash}.json`])
   })
   const before = inventory(entries('AAAAAAAA', '{\r\n"hello":"Hallo"\r\n}\r\n'))
   const after = inventory(entries('BBBBBBBB', '{\n"hello":"Hallo"\n}\n'))
@@ -57,7 +57,7 @@ it('normalizes hashed JSON assets while rejecting content and reference changes'
   }
   for (const [path, content] of [
     ['renderer/.vite/manifest.json', '{"locale":{"file":"assets/\\u0040asset:de.json\\u0040"}}'],
-    ['renderer/.orca-web-client-files.json', '["assets/\\u0040asset:de.json\\u0040"]']
+    ['renderer/.topo-web-client-files.json', '["assets/\\u0040asset:de.json\\u0040"]']
   ]) {
     const broken = entries('BBBBBBBB', '{\n"hello":"Hallo"\n}\n')
     broken[path] = content
@@ -65,7 +65,7 @@ it('normalizes hashed JSON assets while rejecting content and reference changes'
   }
   for (const [path, content] of [
     ['renderer/.vite/manifest.json', '{"locale":{"file":"assets/de\\u002dBBBBBBBB.json"}}'],
-    ['renderer/.orca-web-client-files.json', '["assets/de\\u002dBBBBBBBB.json"]']
+    ['renderer/.topo-web-client-files.json', '["assets/de\\u002dBBBBBBBB.json"]']
   ]) {
     const escaped = entries('BBBBBBBB', '{\n"hello":"Hallo"\n}\n')
     escaped[path] = content

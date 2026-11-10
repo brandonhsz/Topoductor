@@ -22,7 +22,7 @@ function openTestDatabase(): {
   directory: string
   db: ReturnType<typeof openProfileStateDatabase>['db']
 } {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-profile-state-documents-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-profile-state-documents-'))
   temporaryDirectories.push(directory)
   return {
     directory,

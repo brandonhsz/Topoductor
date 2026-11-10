@@ -21,7 +21,7 @@ export type ScriptedAgentChild = {
   spawns(): number
   /** How many spawns reopened the conversation the previous child left (resume / load). */
   resumes(): number
-  /** How many children ended because Orca closed them. */
+  /** How many children ended because Topo closed them. */
   closes(): number
 }
 

@@ -1,7 +1,7 @@
 import { agentSenderPublicationPatch } from '../native-chat/agent-senders/agent-sender-publication-patch'
 import { isWebSessionTabsWorktreeRemovalFrame } from './session-tabs-inventory-absence'
 import { FLOATING_TERMINAL_WORKTREE_ID } from '../../../../shared/constants'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import type { RuntimeMobileSessionTabsResult } from '../../../../shared/runtime-types'
 import { LOCAL_STRUCTURED_SESSION_OWNER } from '../native-chat/local-sessions/local-structured-session-owner'
 import type {
@@ -52,9 +52,9 @@ export function applyWebSessionTabsSnapshotWithContext(
       )
     : {}
   const worktreeId = rawSnapshot.worktree
-  // Switch point: ORCA_LAYOUT_OWNER_IS_MAIN && — every mirror write (single, batch, operations) passes here.
+  // Switch point: TOPO_LAYOUT_OWNER_IS_MAIN && — every mirror write (single, batch, operations) passes here.
   const previousSnapshotTabIds =
-    ORCA_LAYOUT_OWNER_IS_MAIN && options?.contentScope !== 'agent-session'
+    TOPO_LAYOUT_OWNER_IS_MAIN && options?.contentScope !== 'agent-session'
       ? indexMirroredTerminalSurfaces(environmentId, rawSnapshot)
       : null
   const frameDrawnPreviousTabIds =

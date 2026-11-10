@@ -1,8 +1,8 @@
 import { stripCredentialsFromMessage } from './git/remotes/git-remote-error'
-import type { OrcaVmRecipe } from './orca-yaml-hook-types'
+import type { TopoVmRecipe } from './topo-yaml-hook-types'
 
 export function getProvisionedRootRecipeRepoUrl(
-  checkoutMode: OrcaVmRecipe['checkoutMode'],
+  checkoutMode: TopoVmRecipe['checkoutMode'],
   remoteUrl: string | undefined
 ): string | undefined {
   if (checkoutMode !== 'provisioned-root' || !remoteUrl) {

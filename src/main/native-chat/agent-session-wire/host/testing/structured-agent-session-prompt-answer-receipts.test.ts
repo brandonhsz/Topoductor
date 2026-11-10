@@ -100,7 +100,7 @@ it.each(['allow', 'deny'])(
         options: { model: 'opus[1m]', interactionMode }
       })
     await pick(before)
-    const identity = { provider: 'orca' as const, clientMessageId: 'plan-approval' }
+    const identity = { provider: 'topo' as const, clientMessageId: 'plan-approval' }
     const events = acquire.mock.calls.at(-1)?.[0].events
     if (!events) {
       throw new Error('Expected acquired Claude events')

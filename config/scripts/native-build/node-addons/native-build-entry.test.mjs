@@ -16,7 +16,7 @@ afterEach(() => {
 })
 
 function makeRoot() {
-  const root = mkdtempSync(path.join(tmpdir(), 'orca-native-entry-'))
+  const root = mkdtempSync(path.join(tmpdir(), 'topo-native-entry-'))
   roots.push(root)
   return root
 }
@@ -35,14 +35,14 @@ describe('adoptPackagedNativeBuildEntries', () => {
     const root = makeRoot()
     const buildDir = packagedNodePty(root, {
       Release: 'pnpm-install-build',
-      'orca-napi-darwin-arm64': 'entry-arm64',
-      'orca-napi-darwin-x64': 'entry-x64',
-      'orca-napi-darwin-arm64.staging-1-x': 'partial'
+      'topo-napi-darwin-arm64': 'entry-arm64',
+      'topo-napi-darwin-x64': 'entry-x64',
+      'topo-napi-darwin-arm64.staging-1-x': 'partial'
     })
     adoptPackagedNativeBuildEntries(root, 'darwin', 'x64')
     expect(readFileSync(path.join(buildDir, 'Release', 'pty.node'), 'utf8')).toBe('entry-x64')
     expect(
-      ['Release', 'orca-napi-darwin-arm64'].map((name) => isNativeBuildEntryName(name))
+      ['Release', 'topo-napi-darwin-arm64'].map((name) => isNativeBuildEntryName(name))
     ).toEqual([false, true])
     expect(require('node:fs').readdirSync(buildDir)).toEqual(['Release'])
   })

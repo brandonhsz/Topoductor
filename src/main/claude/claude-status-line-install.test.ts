@@ -29,7 +29,7 @@ describe('Claude statusLine by resolved version', () => {
   let settingsPath: string
 
   beforeEach(() => {
-    tmpHome = mkdtempSync(join(tmpdir(), 'orca-claude-statusline-version-'))
+    tmpHome = mkdtempSync(join(tmpdir(), 'topo-claude-statusline-version-'))
     settingsPath = join(tmpHome, '.claude', 'settings.json')
     vi.stubEnv('HOME', tmpHome)
     vi.stubEnv('USERPROFILE', tmpHome)
@@ -42,7 +42,7 @@ describe('Claude statusLine by resolved version', () => {
 
   const readSettings = () => JSON.parse(readFileSync(settingsPath, 'utf-8'))
 
-  it('removes Orca statusLine on a downgrade and re-adds it after the upgrade', () => {
+  it('removes Topo statusLine on a downgrade and re-adds it after the upgrade', () => {
     const service = new ClaudeHookService()
     service.install({ claudeVersion: '2.1.261' })
     expect(readSettings().statusLine?.command).toContain('claude-statusline')
@@ -80,7 +80,7 @@ describe('Claude statusLine on Windows', () => {
   let settingsPath: string
 
   beforeEach(() => {
-    tmpHome = mkdtempSync(join(tmpdir(), 'orca-claude-statusline-win-'))
+    tmpHome = mkdtempSync(join(tmpdir(), 'topo-claude-statusline-win-'))
     settingsPath = join(tmpHome, '.claude', 'settings.json')
     vi.stubEnv('HOME', tmpHome)
     vi.stubEnv('USERPROFILE', tmpHome)

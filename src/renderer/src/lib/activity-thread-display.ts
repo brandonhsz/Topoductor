@@ -7,7 +7,7 @@ import type { TerminalTab } from '../../../shared/workspace-layout/terminal-tab-
 import type { Worktree } from '../../../shared/worktree/types'
 import {
   getAgentRowPrimaryText,
-  isOrcaDispatchPrompt,
+  isTopoDispatchPrompt,
   orchestrationLabelsMatchLiveDispatch
 } from '../../../shared/agent-status/presentation/agent-row-primary-text'
 import { formatAgentToolPreview } from './agent-status/presentation/agent-row-tool-preview'
@@ -30,7 +30,7 @@ export function isTerseAgentFollowUpPrompt(prompt: string): boolean {
 
 function taskTitleFromPrompt(prompt: string): string | null {
   const title = getAgentRowPrimaryText({ prompt })
-  if (!title || (!isOrcaDispatchPrompt(prompt) && isTerseAgentFollowUpPrompt(title))) {
+  if (!title || (!isTopoDispatchPrompt(prompt) && isTerseAgentFollowUpPrompt(title))) {
     return null
   }
   return title
@@ -62,7 +62,7 @@ function orchestrationLabelForEntry(
   if (!label) {
     return null
   }
-  if (isOrcaDispatchPrompt(entry.prompt)) {
+  if (isTopoDispatchPrompt(entry.prompt)) {
     return orchestrationLabelsMatchLiveDispatch(entry) ? label : null
   }
   if (taskTitleFromPrompt(entry.prompt)) {

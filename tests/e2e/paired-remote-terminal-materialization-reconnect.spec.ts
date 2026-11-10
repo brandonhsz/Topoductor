@@ -9,7 +9,7 @@ import type {
   RuntimeTerminalShow
 } from '../../src/shared/runtime-types'
 import { toWebTerminalSurfaceTabId } from '../../src/shared/workspace-layout/terminal-surface-id'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { launchHeadlessPairedRuntimeHost } from './helpers/headless-paired-runtime-host'
 import {
   createRuntimeDesktopPairingOffer,
@@ -19,7 +19,7 @@ import { getTerminalContent, waitForActivePanePtyId } from './helpers/terminal'
 import { readFreshTerminalInventory } from './helpers/terminal-inventory-observation'
 import { quotePosixShell } from '../../src/shared/shell/launch/shell-argument-quoting'
 
-const scratch = mkdtempSync(path.join(os.tmpdir(), 'orca-paired-materialize-'))
+const scratch = mkdtempSync(path.join(os.tmpdir(), 'topo-paired-materialize-'))
 const fixturePath = path.join(scratch, 'materialize-terminal.mjs')
 const processedInputPath = path.join(scratch, 'processed-input.txt')
 
@@ -377,14 +377,14 @@ async function runMaterializationJourney(
 }
 
 test('materializes a stopped terminal on reconnect from a headed paired host', async ({
-  orcaPage
+  topoPage
 }, testInfo) => {
   test.setTimeout(120_000)
-  const worktreeId = await orcaPage.evaluate(() => window.__store?.getState().activeWorktreeId)
+  const worktreeId = await topoPage.evaluate(() => window.__store?.getState().activeWorktreeId)
   if (!worktreeId) {
     throw new Error('Headed host has no active seeded workspace')
   }
-  const offer = await createRuntimeDesktopPairingOffer(orcaPage)
+  const offer = await createRuntimeDesktopPairingOffer(topoPage)
   const client = await launchPairedElectronClient(offer, testInfo, 'headed-materialization-client')
   try {
     await showClient(client.app, client.page)

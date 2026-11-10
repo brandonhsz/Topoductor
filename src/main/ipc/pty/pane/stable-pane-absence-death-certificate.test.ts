@@ -1,11 +1,11 @@
 // Only the owning registry's typed absence can prove exit; an untyped not-found message may instead mean the route was lost.
 import { describe, expect, it, vi } from 'vitest'
-import { withDurableRuntimeStore } from '../../../runtime/orca-runtime-tests/runtime-durable-store-fixture'
+import { withDurableRuntimeStore } from '../../../runtime/topo-runtime-tests/runtime-durable-store-fixture'
 import { getDefaultWorkspaceSession } from '../../../../shared/constants'
 import type { WorkspaceSessionState } from '../../../../shared/workspace-session/workspace-session-state-types'
 import type { Store } from '../../../persistence/loading-store/store'
 import type { IPtyProvider } from '../../../providers/pty-provider-contract'
-import { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import { adoptStablePane } from './adopt-stable'
 import * as providers from '../provider/registry'
 
@@ -63,8 +63,8 @@ function paneStore(): { store: Store; read: () => WorkspaceSessionState } {
   }
 }
 
-function runtimeOwning(store: Store): OrcaRuntimeService {
-  const runtime = new OrcaRuntimeService(store as never)
+function runtimeOwning(store: Store): TopoRuntimeService {
+  const runtime = new TopoRuntimeService(store as never)
   runtime.setPtyController({
     write: () => true,
     kill: () => true,

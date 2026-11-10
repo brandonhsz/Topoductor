@@ -123,7 +123,7 @@ async function readAcpLaunchInvocation(
   const envToDelete = spec.scrubEnvironment?.(env, deps.inheritedEnv ?? process.env) ?? []
   Object.assign(env, spec.env)
   const commandSettings = deps.resolveCommandSettings?.()
-  // Orca's account-type setting selects only the managed server's sign-in.
+  // Topo's account-type setting selects only the managed server's sign-in.
   const usesChatAuth = spec.agent === 'antigravity' && spec.authMethod !== undefined
   if (usesChatAuth) {
     assertAntigravityChatAuthPublished(commandSettings?.antigravityChatAuth)

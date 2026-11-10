@@ -28,7 +28,7 @@ const turnEnded = (turnId: number) =>
   }) as const
 
 beforeEach(() => {
-  userDataPath = mkdtempSync(join(tmpdir(), 'orca-connector-events-'))
+  userDataPath = mkdtempSync(join(tmpdir(), 'topo-connector-events-'))
 })
 
 afterEach(() => {

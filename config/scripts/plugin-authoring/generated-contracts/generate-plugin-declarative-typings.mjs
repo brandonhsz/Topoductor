@@ -5,11 +5,11 @@ import path from 'node:path'
 import { loadPluginSchemaModule, REPO_ROOT } from './plugin-schema-module-loader.mjs'
 
 const TYPINGS = path.join(REPO_ROOT, 'resources', 'plugins', 'declarative', 'orca.d.ts')
-const { spliceOrcaHostTypings } = loadPluginSchemaModule(
+const { spliceTopoHostTypings } = loadPluginSchemaModule(
   'declarative/plugin-declarative-host-typings.ts'
 )
 const current = readFileSync(TYPINGS, 'utf8')
-const next = spliceOrcaHostTypings(current)
+const next = spliceTopoHostTypings(current)
 if (process.argv.includes('--check')) {
   if (next !== current) {
     console.error('orca.d.ts host methods are stale; run pnpm generate:plugin-declarative-typings')

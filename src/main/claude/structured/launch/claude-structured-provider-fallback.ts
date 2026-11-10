@@ -91,7 +91,7 @@ export function claudeResultFailure(
 }
 
 /** Keep unknown wire kinds in disclosure, with readable placeholder text on the row. */
-export const CLAUDE_UNRENDERABLE_CONTENT_TEXT = 'Claude sent content Orca cannot display yet'
+export const CLAUDE_UNRENDERABLE_CONTENT_TEXT = 'Claude sent content Topo cannot display yet'
 
 export function isModeledClaudeContent(value: unknown): boolean {
   const part = claudeRecord(value)
@@ -106,7 +106,7 @@ export function isModeledClaudeContent(value: unknown): boolean {
     if (source?.type === 'url') {
       return claudeText(source.url) !== null
     }
-    // Local attachments replay with the base64 or file source Orca sent.
+    // Local attachments replay with the base64 or file source Topo sent.
     return source?.type === 'base64' || source?.type === 'file'
   }
   if (isClaudeToolUseContent(part)) {
@@ -151,7 +151,7 @@ export function createClaudeProviderFrameFallback(
         beforeAppend?.()
         // Revise one row per retry run.
         const identity = {
-          provider: 'orca',
+          provider: 'topo',
           clientMessageId: `provider-retry:claude:${acquisitionId}:${retryRun(retrying)}`
         } as const
         const body = claudeApiRetryRowBody(retrying)
@@ -166,7 +166,7 @@ export function createClaudeProviderFrameFallback(
         }
         beforeAppend?.()
         const identity = {
-          provider: 'orca',
+          provider: 'topo',
           clientMessageId: `provider-frame:claude:${acquisitionId}:${sequence}`
         } as const
         sink.appendItem(identity, body, stamp?.(identity, body) ?? { turnScope: turnScope() })
@@ -185,7 +185,7 @@ export function createClaudeProviderFrameFallback(
       }
       beforeAppend?.()
       const identity = {
-        provider: 'orca',
+        provider: 'topo',
         clientMessageId: `provider-frame:claude:${acquisitionId}:${sequence}`
       } as const
       const body: AgentJournalStatusItem =

@@ -20,7 +20,7 @@ import {
   insertTestJournalRowJson,
   liveTestJournalRows,
   openTestJournalHostDatabase,
-  SAVED_BY_NEWER_ORCA
+  SAVED_BY_NEWER_TOPO
 } from '../../../src/main/native-chat/agent-session-journal/store-lifecycle/journal-host-database-test-support'
 import type { JournalRow } from '../../../src/main/native-chat/agent-session-journal/durable-rows/journal-row-schema'
 import type { JournalReadRow } from '../../../src/main/native-chat/agent-session-journal/replay/journal-read-row'
@@ -74,12 +74,12 @@ function inputRows(rows: readonly JournalReadRow[]): JournalRow[] {
 test.each(['v1.4.219', 'v1.4.220', WRITABLE_BASELINE_REF])(
   '%s replays current raw rows with the unconfirmed failure intact',
   async (ref) => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-stop-note-raw-skew-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-stop-note-raw-skew-'))
     const journals = createTrackedJournalOpener({ legacyInputs: true })
     try {
       const journal = await journals.open({ identity: IDENTITY, stateDirectory: directory })
-      const turn = { provider: 'orca', clientMessageId: 'turn-raw-skew' } as const
-      const note = { provider: 'orca', clientMessageId: 'stop:turn-raw-skew' } as const
+      const turn = { provider: 'topo', clientMessageId: 'turn-raw-skew' } as const
+      const note = { provider: 'topo', clientMessageId: 'stop:turn-raw-skew' } as const
       const unconfirmed = {
         kind: 'status' as const,
         ...agentSessionFailureWords(agentSessionFailureFact('cancelUnconfirmed'), {
@@ -148,7 +148,7 @@ type OldReplay = {
 
 // Both downgrade probes load real old builds, including cold extraction and transforms.
 test("an older build keeps every row around a Stop's event, a Resume and a reopen mark, and folds the rows after them", async () => {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-stop-event-downgrade-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-stop-event-downgrade-'))
   const journals = createTrackedJournalOpener({ legacyInputs: true })
   try {
     // This build: history, a person's Stop, a Resume, then more history.
@@ -264,7 +264,7 @@ function storedRows(directory: string): string[] {
 }
 
 test("an older build opens this build's journal writable and appends to it; the pause survives the round trip", async () => {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-stop-event-writable-downgrade-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-stop-event-writable-downgrade-'))
   const journals = createTrackedJournalOpener({ legacyInputs: true })
   const itemIds = (journal: Pick<OlderJournal, 'snapshot'>) =>
     journal.snapshot().items.map((entry) => entry.itemId)
@@ -312,7 +312,7 @@ test("an older build opens this build's journal writable and appends to it; the 
 // Write a new Stop row kind only after supported readers know it, or bump v; earlier hosts truncate unknown kinds.
 // Move the pinned baseline once a released reader preserves them.
 test("this build keeps a newer build's row kind and refuses the load; a build before it deletes it", async () => {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-newer-kind-downgrade-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-newer-kind-downgrade-'))
   const journals = createTrackedJournalOpener({ legacyInputs: true })
   const newerKinds = () => storedRows(directory).filter((row) => row.includes('"future-mark"'))
   try {
@@ -342,7 +342,7 @@ test("this build keeps a newer build's row kind and refuses the load; a build be
 
     await expect(
       journals.open({ identity: IDENTITY, stateDirectory: directory })
-    ).rejects.toMatchObject(SAVED_BY_NEWER_ORCA)
+    ).rejects.toMatchObject(SAVED_BY_NEWER_TOPO)
     await journals.closeAll()
     expect(storedRows(directory)).toEqual(rowsBefore)
     expect(newerKinds()).toEqual([newer])

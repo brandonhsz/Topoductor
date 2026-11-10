@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from './dispatcher'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import { TERMINAL_METHODS } from './methods/terminal/terminal'
 import { createSubscriptionRegistryDouble } from './subscription-registry-test-double'
 import type { RuntimeTerminalWait } from '../../../shared/runtime-terminal-contracts'
@@ -32,7 +32,7 @@ describe('terminal multiplex rejected input signalling', () => {
     )
     const sendTerminal = vi.fn(() => hostWrite)
     const harness = startDesktopMultiplexSubscribe({
-      sendTerminal: sendTerminal as unknown as OrcaRuntimeService['sendTerminal']
+      sendTerminal: sendTerminal as unknown as TopoRuntimeService['sendTerminal']
     })
     await vi.waitFor(() => expect(harness.handlers.has(0)).toBe(true))
     const capabilities = { ackOutput: 1 as const, writeUnavailable: 1 as const }
@@ -97,7 +97,7 @@ describe('terminal multiplex RPC', () => {
       registerOwnedSubscriptionCleanup: vi.fn(registry.registerOwnedSubscriptionCleanup),
       cleanupSubscription: vi.fn(registry.cleanupSubscription),
       waitForTerminal: vi.fn(() => new Promise<RuntimeTerminalWait>(() => {})),
-      sendTerminal: sendTerminal as unknown as OrcaRuntimeService['sendTerminal'],
+      sendTerminal: sendTerminal as unknown as TopoRuntimeService['sendTerminal'],
       updateDesktopViewport: vi.fn().mockResolvedValue(true),
       handleMobileSubscribe: vi.fn(),
       handleMobileUnsubscribe: vi.fn(),

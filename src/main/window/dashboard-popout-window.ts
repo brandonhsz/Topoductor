@@ -20,7 +20,7 @@ const MIN_WIDTH = 480
 const MIN_HEIGHT = 360
 const DEFAULT_WIDTH = 960
 const DEFAULT_HEIGHT = 720
-const DASHBOARD_POPOUT_PARTITION = 'orca-dashboard-popout'
+const DASHBOARD_POPOUT_PARTITION = 'topo-dashboard-popout'
 
 // Reuse the companion window across Pop Out requests.
 let dashboardPopoutWindow: BrowserWindow | null = null
@@ -149,7 +149,7 @@ export function createOrFocusDashboardPopout(
     ...(savedBounds ? { x: savedBounds.x, y: savedBounds.y } : {}),
     minWidth: MIN_WIDTH,
     minHeight: MIN_HEIGHT,
-    title: translateMain('native.dialog.dashboardTitle', 'Orca Agent Dashboard'),
+    title: translateMain('native.dialog.dashboardTitle', 'Topo Agent Dashboard'),
     show: false,
     autoHideMenuBar: true,
     backgroundColor: nativeTheme.shouldUseDarkColors ? '#0a0a0a' : '#ffffff',
@@ -261,7 +261,7 @@ export function createOrFocusDashboardPopout(
   })
   const updateTitle = (): void => {
     if (!window.isDestroyed()) {
-      window.setTitle(translateMain('native.dialog.dashboardTitle', 'Orca Agent Dashboard'))
+      window.setTitle(translateMain('native.dialog.dashboardTitle', 'Topo Agent Dashboard'))
     }
   }
   mainI18n.on('languageChanged', updateTitle)

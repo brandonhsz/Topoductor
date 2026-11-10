@@ -82,7 +82,7 @@ describe('client-hosted downloads', () => {
     // Client-hosted pages bind in main without renderer registration.
     createBrowserClientPageGuestBinding(browserManager).bind({
       registration: {
-        partition: `persist:orca-browser-v1-${'a'.repeat(64)}`,
+        partition: `persist:topo-browser-v1-${'a'.repeat(64)}`,
         browserPageId: BROWSER_PAGE_ID,
         pageHostGeneration: 7,
         rendererWebContentsId,
@@ -105,7 +105,7 @@ describe('client-hosted downloads', () => {
   })
 
   it('aborts a download canceled while its commit is still streaming', async () => {
-    const root = await realpath(await mkdtemp(path.join(tmpdir(), 'orca-client-download-')))
+    const root = await realpath(await mkdtemp(path.join(tmpdir(), 'topo-client-download-')))
     const stagingRoot = path.join(root, 'downloads')
     const writes: { transferId: string; final: boolean }[] = []
     const aborts: { transferId: string }[] = []
@@ -130,7 +130,7 @@ describe('client-hosted downloads', () => {
         return {
           ok: true,
           result: chunk.final
-            ? { accepted: true, workspaceRelativePath: '.orca/browser-downloads/report.csv' }
+            ? { accepted: true, workspaceRelativePath: '.topo/browser-downloads/report.csv' }
             : { accepted: true },
           _meta: {}
         } as never

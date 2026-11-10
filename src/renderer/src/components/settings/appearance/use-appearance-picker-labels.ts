@@ -16,7 +16,7 @@ export function useIconThemePickerLabels() {
   return { themes, builtIn, labels: disambiguatedPluginContentLabels(themes, [builtIn], t) }
 }
 
-/** Orca's languages and plugin language packs, labelled as the language picker lists them. */
+/** Topo's languages and plugin language packs, labelled as the language picker lists them. */
 export function useUiLanguagePickerLabels() {
   const t = useTranslate()
   const packs = usePluginLanguagePacks()

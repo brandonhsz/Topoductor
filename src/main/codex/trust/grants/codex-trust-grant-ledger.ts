@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { isDefinitiveAbsence } from '../../../../shared/definitive-filesystem-absence'
 import { dirname, join } from 'node:path'
-import { resolveOrcaManagedCodexHomePath } from '../../configuration/homes/codex-home-paths'
+import { resolveTopoManagedCodexHomePath } from '../../configuration/homes/codex-home-paths'
 import '../toml/config-toml-trust'
 import { normalizeCodexTrustProjectPath as getCodexTrustGrantHomeKey } from '../identity/codex-trust-identity'
 
@@ -29,9 +29,9 @@ type CodexTrustGrantLedgerFile = {
   homes: Record<string, CodexTrustGrantLedgerHome>
 }
 
-// Reading grants must not create Orca's managed home.
+// Reading grants must not create Topo's managed home.
 export function getCodexTrustGrantLedgerPath(): string {
-  return join(dirname(resolveOrcaManagedCodexHomePath()), 'trust-grant-ledger.json')
+  return join(dirname(resolveTopoManagedCodexHomePath()), 'trust-grant-ledger.json')
 }
 
 /** Return null on read errors so writes cannot erase other homes' unreadable grants. */

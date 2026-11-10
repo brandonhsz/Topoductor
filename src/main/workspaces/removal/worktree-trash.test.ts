@@ -13,7 +13,7 @@ import {
 let scratchDir = ''
 
 beforeEach(async () => {
-  scratchDir = await mkdtemp(join(tmpdir(), 'orca-worktree-trash-'))
+  scratchDir = await mkdtemp(join(tmpdir(), 'topo-worktree-trash-'))
 })
 
 afterEach(async () => {
@@ -70,10 +70,10 @@ describe('sweepStaleWorktreeTrash', () => {
 })
 
 describe('collectWorktreeTrashSweepRoots', () => {
-  const settings = { workspaceDir: '/home/dev/orca/workspaces', nestWorkspaces: true }
+  const settings = { workspaceDir: '/home/dev/topo/workspaces', nestWorkspaces: true }
 
   function repo(overrides: Partial<Repo>): Repo {
-    return { id: 'repo-1', path: '/home/dev/code/orca', ...overrides } as unknown as Repo
+    return { id: 'repo-1', path: '/home/dev/code/topo', ...overrides } as unknown as Repo
   }
 
   it('skips SSH repos and folder workspaces', () => {
@@ -92,10 +92,10 @@ describe('collectWorktreeTrashSweepRoots', () => {
       expect(
         collectWorktreeTrashSweepRoots(
           [
-            repo({ path: '\\\\wsl.localhost\\Ubuntu\\home\\dev\\orca' }),
+            repo({ path: '\\\\wsl.localhost\\Ubuntu\\home\\dev\\topo' }),
             repo({
               id: 'repo-2',
-              path: 'C:\\code\\orca',
+              path: 'C:\\code\\topo',
               worktreeBasePath: '\\\\wsl.localhost\\Ubuntu\\home\\dev\\trees'
             })
           ],

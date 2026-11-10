@@ -57,7 +57,7 @@ describe('native connection diagnostic reports', () => {
     finishHydration()
     const { report } = await pendingReport
     expect(report).toContain('State: connected')
-    expect(report).toContain('Host Orca version: unknown')
+    expect(report).toContain('Host Topo version: unknown')
     expect(report).not.toContain('1.4.197')
   })
 })

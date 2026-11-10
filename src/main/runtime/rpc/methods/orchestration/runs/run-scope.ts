@@ -2,7 +2,7 @@ import type { OrchestrationCompatibilityEvidence } from '../../../../../../share
 import { orchestrationSkillRecoveryData } from '../../../../../../shared/orchestration/orchestration-rpc-contract'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import type { RunRow } from '../../../../orchestration/db/orchestration-records'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationCompatibilityCallerAuthority } from '../../../../orchestration/terminal-authority/orchestration-compatibility-authority'
 import {
   hasRunBindingKey,
@@ -33,7 +33,7 @@ export type RunScopeParams = {
 
 // Mutable Run bindings require attested callers to name only themselves.
 export function assertCallerHandleMatchesEvidence(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   callerTerminalHandle: string,
   callerEvidence?: OrchestrationCompatibilityEvidence
 ): void {
@@ -52,7 +52,7 @@ export function assertCallerHandleMatchesEvidence(
 
 /** Use the dispatch-resolved session outright; otherwise resolve the declared handle's party and pane. */
 export function orchestrationCallerIdentity(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   caller: {
     handle: string
     paneKey: string | null | undefined
@@ -79,15 +79,15 @@ export type OrchestrationCallerParams = {
 
 /** Resolve the caller's identity and, by default, attest its declared handle. */
 export function resolveOrchestrationCaller(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   params: OrchestrationCallerParams & { requireStablePane: true }
 ): OrchestrationCallerIdentity
 export function resolveOrchestrationCaller(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   params: OrchestrationCallerParams
 ): OrchestrationCallerIdentity | null
 export function resolveOrchestrationCaller(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   params: OrchestrationCallerParams
 ): OrchestrationCallerIdentity | null {
   if (!params.evidenceAssertedByCaller) {
@@ -107,7 +107,7 @@ export function resolveOrchestrationCaller(
     if (params.requireStablePane) {
       throw new OrchestrationError(
         'stable_pane_required',
-        'The coordinator terminal has no stable pane identity. Run this command inside a live Orca terminal.'
+        'The coordinator terminal has no stable pane identity. Run this command inside a live Topo terminal.'
       )
     }
     return null
@@ -143,7 +143,7 @@ function unboundCallerError(
 }
 
 // Why: task and gate mutations must share one Run-binding rule.
-export function resolveRunScope(runtime: OrcaRuntimeService, params: RunScopeParams): RunRow {
+export function resolveRunScope(runtime: TopoRuntimeService, params: RunScopeParams): RunRow {
   const db = runtime.getOrchestrationDb()
   const explicit = params.runId ? db.getRun(params.runId) : undefined
   if (params.runId && (!explicit || explicit.legacy === 1)) {

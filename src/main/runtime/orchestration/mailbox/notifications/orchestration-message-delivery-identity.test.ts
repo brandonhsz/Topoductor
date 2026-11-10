@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../../../shared/orchestration/orchestration-runtime-capabilities'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import { OrchestrationDb } from '../../db/orchestration-db'
 import '../../db/contract-constants'
 import '../../db/messages/mailbox-routing-page'
@@ -53,10 +53,10 @@ function createRuntime(
   db: OrchestrationDb,
   terminalHandle = TERMINAL_HANDLE
 ): {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   write: ReturnType<typeof vi.fn>
 } {
-  const runtime = new OrcaRuntimeService(null, undefined, {
+  const runtime = new TopoRuntimeService(null, undefined, {
     attestAgentHookCompatibilityAuthority: ({ paneKey }) =>
       paneKey === PANE_KEY ? { paneKey, source: 'current_hook' } : null
   })
@@ -99,7 +99,7 @@ function createRuntime(
   return { runtime, write }
 }
 
-async function driveToLiveIdle(runtime: OrcaRuntimeService): Promise<void> {
+async function driveToLiveIdle(runtime: TopoRuntimeService): Promise<void> {
   await runtime.listTerminals()
   runtime.onPtyData(PTY_ID, '\x1b]0;Codex done\x07', 1)
   // Await the model's write chain so the chunk is parsed.
@@ -107,7 +107,7 @@ async function driveToLiveIdle(runtime: OrcaRuntimeService): Promise<void> {
 }
 
 async function check(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   params: Record<string, unknown> = {}
 ): Promise<CheckResult> {
   const terminal = typeof params.terminal === 'string' ? params.terminal : TERMINAL_HANDLE
@@ -139,7 +139,7 @@ describe('STA-4325 message and delivery identity', () => {
   })
 
   it('repairs committed mail sent to a forgotten handle after restart', async () => {
-    const fixture = createDatabase('orca-sta-4325-late-old-handle-')
+    const fixture = createDatabase('topo-sta-4325-late-old-handle-')
     const run = fixture.db.createRun({
       objective: 'Late old-handle arrival',
       coordinatorHandle: TERMINAL_HANDLE,

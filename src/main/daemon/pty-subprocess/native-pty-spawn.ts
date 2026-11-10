@@ -2,7 +2,7 @@ import type { PtyCreationDisposition } from '../../../shared/terminal/pty/lifecy
 import type { TerminalCreationWork } from '../terminal-host/terminal-creation-work'
 import { createDaemonPtyPhysicalOwner } from './daemon-pty-physical-owner'
 import type { DaemonPtyPhysicalOwner } from './subprocess-handle'
-import { assertWslDistroAllowed } from '@orca/process-host/wsl-distro-allowlist'
+import { assertWslDistroAllowed } from '@topo/process-host/wsl-distro-allowlist'
 import type * as pty from 'node-pty'
 import {
   hostReportsChildExitStatus,
@@ -53,7 +53,7 @@ export async function spawnNativeDaemonPty(args: {
   cols: number
   rows: number
   windowsFallbackAttempts: WindowsShellSpawnAttempt[]
-  /** The primary shell's argv is Orca's interactive default, so a respawn cannot repeat a command. */
+  /** The primary shell's argv is Topo's interactive default, so a respawn cannot repeat a command. */
   primaryArgsRespawnSafe?: boolean
   signal?: AbortSignal
   assertCreateAllowed?: () => void

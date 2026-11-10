@@ -1,4 +1,4 @@
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import {
   chmodSync,
   existsSync,
@@ -25,7 +25,7 @@ import { resolveElectronProbeLaunch } from '../../electron-fixtures/electron-pro
 
 vi.setConfig({ testTimeout: 60_000, expect: { poll: { timeout: 45_000, interval: 200 } } })
 
-// A Chrome-style host: length-prefixed JSON both ways. It ignores stdin closing, so only Orca
+// A Chrome-style host: length-prefixed JSON both ways. It ignores stdin closing, so only Topo
 // killing it ends it.
 const ECHO_HOST = `
 const le = require('os').endianness() === 'LE';
@@ -49,7 +49,7 @@ setInterval(() => {}, 1000);
 const EXIT_HOST = 'process.exit(0)'
 
 const SHARED = `
-const log = (key, value) => console.log('ORCA_NM ' + JSON.stringify({ key, value }));
+const log = (key, value) => console.log('TOPO_NM ' + JSON.stringify({ key, value }));
 const lastError = () => (chrome.runtime.lastError ? chrome.runtime.lastError.message : null);
 const firstEvent = (port) => new Promise((resolve) => {
   port.onMessage.addListener((message) => resolve({ message }));
@@ -59,27 +59,27 @@ const firstEvent = (port) => new Promise((resolve) => {
 const WORKER_SCRIPT = `${SHARED}
 (async () => {
   log('popout', (await chrome.windows.create({ url: 'page.html', type: 'popup', focused: false })).id);
-  const port = chrome.runtime.connectNative('com.orca.echo');
+  const port = chrome.runtime.connectNative('com.topo.echo');
   const echoed = firstEvent(port);
   port.postMessage({ text: 'héllo 🦈', from: 'worker' });
   log('workerEcho', await echoed);
   port.disconnect();
   log('workerDisconnected', true);
-  log('oneShot', await chrome.runtime.sendNativeMessage('com.orca.echo', { once: true }));
-  log('missing', await firstEvent(chrome.runtime.connectNative('com.orca.missing')));
-  log('forbidden', await chrome.runtime.sendNativeMessage('com.orca.forbidden', {}).then(() => 'replied', (error) => error.message));
-  log('exit', await firstEvent(chrome.runtime.connectNative('com.orca.exit')));
+  log('oneShot', await chrome.runtime.sendNativeMessage('com.topo.echo', { once: true }));
+  log('missing', await firstEvent(chrome.runtime.connectNative('com.topo.missing')));
+  log('forbidden', await chrome.runtime.sendNativeMessage('com.topo.forbidden', {}).then(() => 'replied', (error) => error.message));
+  log('exit', await firstEvent(chrome.runtime.connectNative('com.topo.exit')));
   log('oneShotExit', await new Promise((resolve) =>
-    chrome.runtime.sendNativeMessage('com.orca.exit', {}, (response) => resolve({ response, error: lastError() }))
+    chrome.runtime.sendNativeMessage('com.topo.exit', {}, (response) => resolve({ response, error: lastError() }))
   ));
-  const lingering = chrome.runtime.connectNative('com.orca.echo');
+  const lingering = chrome.runtime.connectNative('com.topo.echo');
   const pong = firstEvent(lingering);
   lingering.postMessage('ping');
   log('lingering', await pong);
 })().catch((error) => log('workerError', String((error && error.stack) || error)));
 `
 const PAGE_SCRIPT = `${SHARED}
-const port = chrome.runtime.connectNative('com.orca.echo');
+const port = chrome.runtime.connectNative('com.topo.echo');
 firstEvent(port).then((event) => log('pageEcho', event));
 port.postMessage({ from: 'page' });
 `
@@ -150,14 +150,14 @@ async function buildBundle(entry: string, fileName: string): Promise<void> {
 }
 
 beforeAll(async () => {
-  root = mkdtempSync(join(tmpdir(), 'orca-native-messaging-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-native-messaging-'))
   const extensionDir = join(root, 'extension')
   mkdirSync(extensionDir)
   writeFileSync(
     join(extensionDir, 'manifest.json'),
     JSON.stringify({
       manifest_version: 3,
-      name: 'Orca native messaging probe',
+      name: 'Topo native messaging probe',
       version: '1.0.0',
       permissions: ['nativeMessaging'],
       background: { service_worker: 'worker.js' }
@@ -203,12 +203,12 @@ beforeAll(async () => {
     args,
     env: {
       ...env,
-      ORCA_BACKGROUND_LAUNCH: '1',
-      ORCA_EXTENSION_FIXTURE_STATUS: join(root, 'status.json'),
-      ORCA_EXTENSION_FIXTURE_DIR: extensionDir,
-      ORCA_NATIVE_FIXTURE_USER_DATA: join(root, 'profile'),
-      ORCA_NATIVE_FIXTURE_ECHO_HOST: writeHost('echo-host', ECHO_HOST),
-      ORCA_NATIVE_FIXTURE_EXIT_HOST: writeHost('exit-host', EXIT_HOST)
+      TOPO_BACKGROUND_LAUNCH: '1',
+      TOPO_EXTENSION_FIXTURE_STATUS: join(root, 'status.json'),
+      TOPO_EXTENSION_FIXTURE_DIR: extensionDir,
+      TOPO_NATIVE_FIXTURE_USER_DATA: join(root, 'profile'),
+      TOPO_NATIVE_FIXTURE_ECHO_HOST: writeHost('echo-host', ECHO_HOST),
+      TOPO_NATIVE_FIXTURE_EXIT_HOST: writeHost('exit-host', EXIT_HOST)
     },
     stdio: ['ignore', 'pipe', 'pipe']
   })
@@ -278,7 +278,7 @@ describe('chrome.runtime native messaging in a real Electron session', () => {
     expect(readStatus().presentationCalls).toEqual([])
   })
 
-  it('kills a host whose port is still open when Orca quits', async () => {
+  it('kills a host whose port is still open when Topo quits', async () => {
     await expect.poll(() => readStatus().lingering).toBeDefined()
     const pid = readStatus().lingering?.message?.pid ?? 0
     expect(isRunning(pid)).toBe(true)

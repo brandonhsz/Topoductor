@@ -168,7 +168,7 @@ export async function expectGoalRowRewindRecovery({
     ordinal: 0
   })
   const goalRow = {
-    provider: 'orca' as const,
+    provider: 'topo' as const,
     clientMessageId: `codex-goal:${'1'.repeat(64)}:${'2'.repeat(64)}:${'3'.repeat(64)}`
   }
   const goalBody = {
@@ -238,7 +238,7 @@ export async function expectGoalRowsThroughHydration({
     recordId: `turn-lifecycle:${turnId}`
   })
   const goalRow = {
-    provider: 'orca' as const,
+    provider: 'topo' as const,
     clientMessageId: `codex-goal:${'a'.repeat(64)}:${'b'.repeat(64)}:${'c'.repeat(64)}`
   }
   const goalBody = {

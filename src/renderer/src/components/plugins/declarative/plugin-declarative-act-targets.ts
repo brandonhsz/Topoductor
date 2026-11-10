@@ -1,8 +1,8 @@
 import { useLayoutEffect, useRef } from 'react'
 
 /**
- * A mounted value control, as `orca plugin shot --act` drives it: through the control's own edit
- * path, so what Orca shows and the edit ids the guest sees match a person's input exactly.
+ * A mounted value control, as `topo plugin shot --act` drives it: through the control's own edit
+ * path, so what Topo shows and the edit ids the guest sees match a person's input exactly.
  */
 export type PluginDeclarativeActTarget = {
   value(): unknown
@@ -64,7 +64,7 @@ export function usePluginDeclarativeActTarget<T>(
   }, [props])
 }
 
-/** A mounted Tree's expanded items, which Orca holds while the person browses. */
+/** A mounted Tree's expanded items, which Topo holds while the person browses. */
 export type PluginDeclarativeActExpansion = {
   expanded(): ReadonlySet<string>
   /** Opens or closes `key` as a click on its chevron would. */

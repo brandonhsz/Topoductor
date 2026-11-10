@@ -9,7 +9,7 @@ const scriptPath =
 const tempDirs = []
 
 function writeReport(annotationDescription, annotationType = 'opencode-test') {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-terminal-perf-report-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-terminal-perf-report-'))
   tempDirs.push(dir)
   const reportPath = join(dir, 'report.json')
   writeFileSync(

@@ -1,6 +1,6 @@
-// @orca-isolated-worker: the Electron app, mock server and temp root live at module level, one per test file.
+// @topo-isolated-worker: the Electron app, mock server and temp root live at module level, one per test file.
 import type { PopupCompatibilityStatus } from './browser-popup-compatibility-status'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { createServer } from 'node:http'
 import { createServer as createPortServer } from 'node:net'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
@@ -36,7 +36,7 @@ export type PopupFixtureReceipt = {
   fetchUser: string
 }
 export const receipts: PopupFixtureReceipt[] = []
-const root = mkdtempSync(join(tmpdir(), 'orca-popup-compatibility-'))
+const root = mkdtempSync(join(tmpdir(), 'topo-popup-compatibility-'))
 let fixture: ReturnType<typeof spawnProcess> | null = null
 export let browser: Browser | null = null
 export let origin = ''
@@ -44,7 +44,7 @@ let stderr = ''
 const pages = new Map<string, Page>()
 const stopFrameCaptures = new Map<Page, () => Promise<void>>()
 const statusPath = join(root, 'status.json')
-export const artifactDir = process.env.ORCA_POPUP_FIXTURE_ARTIFACT_DIR
+export const artifactDir = process.env.TOPO_POPUP_FIXTURE_ARTIFACT_DIR
 export const snapshots: ReturnType<typeof status>[] = []
 export const expectedSecurity = { sandbox: true, contextIsolation: true, nodeIntegration: false }
 
@@ -165,11 +165,11 @@ beforeAll(async () => {
     args,
     env: {
       ...env,
-      ORCA_BACKGROUND_LAUNCH: '1',
-      ORCA_POPUP_FIXTURE_ORIGIN: origin,
-      ORCA_POPUP_FIXTURE_STATUS: statusPath,
-      ORCA_POPUP_FIXTURE_NATIVE_CONTROLS: nativeControls ? '1' : '0',
-      ORCA_POPUP_FIXTURE_ADAPTER_PROBE: adapterProbe ? '1' : '0'
+      TOPO_BACKGROUND_LAUNCH: '1',
+      TOPO_POPUP_FIXTURE_ORIGIN: origin,
+      TOPO_POPUP_FIXTURE_STATUS: statusPath,
+      TOPO_POPUP_FIXTURE_NATIVE_CONTROLS: nativeControls ? '1' : '0',
+      TOPO_POPUP_FIXTURE_ADAPTER_PROBE: adapterProbe ? '1' : '0'
     },
     stdio: ['ignore', 'pipe', 'pipe']
   })
@@ -228,7 +228,7 @@ beforeAll(async () => {
 afterEach(async () => {
   const route = pages.get('route')
   if (route && !route.isClosed()) {
-    await route.evaluate('console.log("orca-popup-fixture:restore-authority")')
+    await route.evaluate('console.log("topo-popup-fixture:restore-authority")')
   }
   const local = pages.get('local')
   if (local && !local.isClosed()) {

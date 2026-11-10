@@ -19,7 +19,7 @@ export type PluginHookHostContext = Pick<
   'plugins' | 'isRuntimeApproved' | 'ensureWorker' | 'logWarning'
 > & { isEnabled: () => boolean }
 
-/** Plugins Orca waits on for `event`: installed ones by key (stable on every platform), then
+/** Plugins Topo waits on for `event`: installed ones by key (stable on every platform), then
  *  development folders in the order they were added. */
 export function pluginHookParticipants(
   event: PluginHookName,
@@ -83,7 +83,7 @@ export function createPluginHookRunner(context: PluginHookHostContext): PluginHo
             throw new Error('the worker is not running')
           }
           const decision = await worker.runHook(event, current, timeoutMs)
-          // Why: a plugin disabled, removed or updated while it decided no longer speaks for Orca.
+          // Why: a plugin disabled, removed or updated while it decided no longer speaks for Topo.
           if (!isSamePluginStillEnabled(plugin, context)) {
             throw new PluginHookParticipantGoneError(
               'the plugin was disabled or changed while its hook ran'
@@ -104,7 +104,7 @@ export function createPluginHookRunner(context: PluginHookHostContext): PluginHo
   }
 }
 
-/** Points Orca's hook sites at this service's plugins, through the same path events take. */
+/** Points Topo's hook sites at this service's plugins, through the same path events take. */
 export function installPluginHookRunner(
   service: Pick<PluginService, 'eventDelivery' | 'options'>,
   runtime?: { getTerminalHandleForPaneKey(paneKey: string): string | null }

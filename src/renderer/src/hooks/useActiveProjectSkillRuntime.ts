@@ -34,11 +34,11 @@ type ActiveProjectSkillRuntime = {
   discoveryTarget?: SkillDiscoveryTarget
   discoveryRuntimeTarget: RuntimeClientTarget | null
   agentRuntime?: ProjectAgentSkillRuntime
-  // COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+  // COMPAT(wsl-bridge): removed when WSL runs as an topod host.
   terminalShellOverride?: string
   installDisabledReason: string | null
   canUseSkillFreshness: boolean
-  /** Where Update skills plans Orca's skills; null while that host is unknown. */
+  /** Where Update skills plans Topo's skills; null while that host is unknown. */
   bundledSkillTarget: BundledSkillTarget | null
 }
 
@@ -151,7 +151,7 @@ export function useActiveProjectSkillRuntime(): ActiveProjectSkillRuntime {
       discoveryRuntimeTarget,
       discoveryTarget: getProjectSkillDiscoveryTarget(projectRuntime),
       agentRuntime,
-      // COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+      // COMPAT(wsl-bridge): removed when WSL runs as an topod host.
       terminalShellOverride: getProjectAgentSkillTerminalShellOverride(
         currentPlatform,
         runtimeState.settings,

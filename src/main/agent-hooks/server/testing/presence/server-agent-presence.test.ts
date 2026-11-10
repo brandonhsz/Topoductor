@@ -63,7 +63,7 @@ async function hook(
 
 describe('retained agent exit', () => {
   it('keeps a persisted exit through a spooled start written before it', async () => {
-    const userDataPath = createUserDataPath('orca-presence-exit-spool-')
+    const userDataPath = createUserDataPath('topo-presence-exit-spool-')
     const first = new AgentHookServer()
     servers.push(first)
     await first.start({ env: 'production', userDataPath })
@@ -97,7 +97,7 @@ describe('retained agent exit', () => {
   })
 
   it('lets a successor start spooled in the exit second clear the exit', async () => {
-    const userDataPath = createUserDataPath('orca-presence-exit-same-second-')
+    const userDataPath = createUserDataPath('topo-presence-exit-same-second-')
     const first = new AgentHookServer()
     servers.push(first)
     await first.start({ env: 'production', userDataPath })

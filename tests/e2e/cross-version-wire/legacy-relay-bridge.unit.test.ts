@@ -79,7 +79,7 @@ describe.skipIf(process.platform === 'win32')(
     beforeAll(async () => {
       const checkout = await materializeReleaseCheckout(PREVIOUS_RELAY_REF)
       // Why /tmp: macOS's per-user tmpdir pushes a socket path past sun_path.
-      root = await mkdtemp('/tmp/orca-xv-bridge-')
+      root = await mkdtemp('/tmp/topo-xv-bridge-')
       install = await installReleasedRelay(checkout, root)
       sockPath = join(install.dir, 'relay-target.sock')
       daemon = await startReleasedRelayDaemon(install, sockPath, { SHELL: '/bin/sh' })
@@ -254,12 +254,12 @@ describe.skipIf(process.platform === 'win32')(
 const MANY_RELAYS_TARGET_ID = 'ssh-many-relays'
 // Budget for the release build plus one real SSH session and sign-in per relay.
 const MANY_RELAYS_TIMEOUT_MS = 300_000
-// One per desktop update that left a relay running a shell; the reporter updated Orca many times.
-const RELAY_COUNT = Number(process.env.ORCA_REPRO_RELAY_COUNT ?? 10)
+// One per desktop update that left a relay running a shell; the reporter updated Topo many times.
+const RELAY_COUNT = Number(process.env.TOPO_REPRO_RELAY_COUNT ?? 10)
 // OpenSSH's default; lower values cover hosts stricter than the bridge's per-connection shard.
-const MAX_SESSIONS = Number(process.env.ORCA_REPRO_MAX_SESSIONS ?? 10)
+const MAX_SESSIONS = Number(process.env.TOPO_REPRO_MAX_SESSIONS ?? 10)
 
-describe.skipIf(process.platform === 'win32' || process.env.ORCA_REAL_OPENSSH_TEST !== '1')(
+describe.skipIf(process.platform === 'win32' || process.env.TOPO_REAL_OPENSSH_TEST !== '1')(
   'an SSH host where many old relays still run a shell',
   () => {
     let fixture: RealOpenSshFixture
@@ -275,7 +275,7 @@ describe.skipIf(process.platform === 'win32' || process.env.ORCA_REAL_OPENSSH_TE
       for (let i = 0; i < RELAY_COUNT; i++) {
         const v = `${version}-${i}`
         const install: ReleasedRelayInstall = {
-          dir: join(fixture.remoteHome, '.orca-remote', `relay-${v}`),
+          dir: join(fixture.remoteHome, '.topo-remote', `relay-${v}`),
           version: v
         }
         await mkdir(install.dir, { recursive: true })
@@ -300,7 +300,7 @@ describe.skipIf(process.platform === 'win32' || process.env.ORCA_REAL_OPENSSH_TE
       const sshdPort = fixture.buildOptions().resolvedConfig?.port ?? 0
       const target: SshTarget = {
         id: MANY_RELAYS_TARGET_ID,
-        label: 'orca-many-relays-repro',
+        label: 'topo-many-relays-repro',
         host: '127.0.0.1',
         port: sshdPort,
         username: process.env.USER ?? '',
@@ -335,7 +335,7 @@ describe.skipIf(process.platform === 'win32' || process.env.ORCA_REAL_OPENSSH_TE
           listEndpoints: (signal) => listLegacyRelayEndpoints(conn, MANY_RELAYS_TARGET_ID, signal),
           openClient: (endpoint, resume) =>
             LegacyRelayClient.open({
-              clientInstanceId: `orca-legacy-relay-bridge:${MANY_RELAYS_TARGET_ID}`,
+              clientInstanceId: `topo-legacy-relay-bridge:${MANY_RELAYS_TARGET_ID}`,
               resume,
               openTransport: async () =>
                 waitForSentinel(

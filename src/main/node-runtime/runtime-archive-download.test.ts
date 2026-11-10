@@ -41,7 +41,7 @@ function droppedMidway(): Response {
 }
 
 beforeEach(async () => {
-  dir = await mkdtemp(join(tmpdir(), 'orca-runtime-archive-'))
+  dir = await mkdtemp(join(tmpdir(), 'topo-runtime-archive-'))
   destination = join(dir, 'node.tar.gz')
   vi.spyOn(console, 'warn').mockImplementation(() => undefined)
 })

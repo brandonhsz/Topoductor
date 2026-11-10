@@ -1,6 +1,6 @@
 import { normalizeBrowserNavigationUrl } from '../../../../shared/browser-url'
 import '../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../shared/browser/browser-blank-page'
 import type { WebContents } from 'electron'
 import {
   browserRoutePageKey,
@@ -84,7 +84,7 @@ export function isBrowserRouteGuestNavigationAllowed(
   try {
     const normalized = normalizeBrowserNavigationUrl(rawUrl)
     return (
-      (allowUnregisteredBlank && normalized === ORCA_BROWSER_BLANK_URL) ||
+      (allowUnregisteredBlank && normalized === TOPO_BROWSER_BLANK_URL) ||
       Boolean(
         normalized &&
         !normalized.startsWith('file:') &&

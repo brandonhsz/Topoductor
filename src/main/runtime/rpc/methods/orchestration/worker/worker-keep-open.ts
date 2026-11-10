@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { defineMethod } from '../../../core'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import type { WorkerTerminalReleaseRuntime } from '../../../../orchestration/terminal-authority/release/worker-terminal-release-runtime'
@@ -61,7 +61,7 @@ export const ORCHESTRATION_WORKER_KEEP_OPEN_METHODS = [
 
 // Structured workers are named by session; their pane key is a credential the owning runtime resolves.
 function resolveWorkerPaneKey(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   params: { paneKey?: string; sessionId?: string; terminal?: string }
 ): string | null | undefined {
   if (params.sessionId) {

@@ -8,13 +8,13 @@ import { closeSync, mkdirSync, openSync, readSync, rmSync, writeFileSync } from 
 import { join } from 'node:path'
 
 import {
-  type OrcadMigrationBlobDescriptor,
-  ORCAD_MIGRATION_BLOB_KIND_CONTRACTS
-} from '../../../shared/orcad-migration/orcad-migration-blob-transfer'
+  type TopodMigrationBlobDescriptor,
+  TOPOD_MIGRATION_BLOB_KIND_CONTRACTS
+} from '../../../shared/topod-migration/topod-migration-blob-transfer'
 import {
-  ORCAD_MIGRATION_TERMINAL_HISTORY_VERSION,
-  type OrcadMigrationTerminalHistoryDocument
-} from '../../../shared/orcad-migration/orcad-migration-terminal-history'
+  TOPOD_MIGRATION_TERMINAL_HISTORY_VERSION,
+  type TopodMigrationTerminalHistoryDocument
+} from '../../../shared/topod-migration/topod-migration-terminal-history'
 import {
   isTerminalLeafId,
   makePaneKey,
@@ -26,8 +26,8 @@ import { parsePtySessionId } from '../../../shared/terminal/pty/lifecycle/pty-se
 import { collectLeafIds } from '../../../shared/workspace-layout/terminal-pane-layout-tree'
 import type { ColdRestoreInfo } from '../../daemon/history/restoration/terminal-history-cold-restore-info'
 import type { TerminalCheckpointFile } from '../../daemon/protocol/daemon-checkpoint-file'
-import type { OrcadMigrationBlobSource } from '../../managed-server/migration/transfers/orcad-migration-blob-coordinator'
-import { orcadMigrationTerminalHistoryKey } from '../migrating-orcad-catalog/orcad-terminal-history-installer'
+import type { TopodMigrationBlobSource } from '../../managed-server/migration/transfers/topod-migration-blob-coordinator'
+import { topodMigrationTerminalHistoryKey } from '../migrating-topod-catalog/topod-terminal-history-installer'
 import type { WslMoveDriverDeps } from './wsl-move-driver-ports'
 import {
   wslMoveHostLinuxCwd,
@@ -47,7 +47,7 @@ export type WslMoveSleptScrollback = {
 }
 
 export const WSL_MOVE_SLEPT_SPOOL_DIR = 'wsl-move-slept-scrollback'
-const MAX_HISTORY_BYTES = ORCAD_MIGRATION_BLOB_KIND_CONTRACTS['terminal-history'].maxBytes
+const MAX_HISTORY_BYTES = TOPOD_MIGRATION_BLOB_KIND_CONTRACTS['terminal-history'].maxBytes
 
 export function emptyWslMoveSleptScrollback(): WslMoveSleptScrollback {
   return { buffers: new Map(), problems: [], dispose: () => {} }
@@ -71,7 +71,7 @@ export async function readSleptScrollback(
       console.warn('[wsl-move] Slept terminal history unreadable:', error)
       return {
         ...emptyWslMoveSleptScrollback(),
-        problems: ['saved terminal history Orca could not read']
+        problems: ['saved terminal history Topo could not read']
       }
     })
 }
@@ -120,18 +120,18 @@ export function wslMoveTerminalHistoryBlobs(
     }
   }
 ): {
-  descriptors: OrcadMigrationBlobDescriptor[]
-  source: OrcadMigrationBlobSource
+  descriptors: TopodMigrationBlobDescriptor[]
+  source: TopodMigrationBlobSource
 } {
   const byKey = new Map<string, WslMoveSleptBuffer>()
-  const descriptors: OrcadMigrationBlobDescriptor[] = []
+  const descriptors: TopodMigrationBlobDescriptor[] = []
   const layouts = manifest.payload.dormantState?.workspaceSession?.terminalLayoutsByTabId ?? {}
   for (const [paneKey, entry] of slept.buffers) {
     const pane = parsePaneKey(paneKey)
     if (!pane || !collectLeafIds(layouts[pane.tabId]?.root).includes(pane.leafId)) {
       continue
     }
-    const key = orcadMigrationTerminalHistoryKey(paneKey)
+    const key = topodMigrationTerminalHistoryKey(paneKey)
     byKey.set(key, entry)
     descriptors.push({
       blobKind: 'terminal-history',
@@ -146,7 +146,7 @@ export function wslMoveTerminalHistoryBlobs(
       readChunk: async (requested, offset, maxBytes) => {
         const entry = byKey.get(requested.key)
         if (!entry || entry.sha256 !== requested.sha256) {
-          throw new Error(`orcad_migration_source_blob_changed:${requested.blobKind}`)
+          throw new Error(`topod_migration_source_blob_changed:${requested.blobKind}`)
         }
         const length = Math.max(0, Math.min(maxBytes, entry.byteLength - offset))
         const chunk = Buffer.alloc(length)
@@ -201,14 +201,14 @@ export async function readWslMoveSleptScrollbackFromHistory(
       // A checkpoint behind an unreadable log is older than the pane: moving it would lose the rest.
       if (detection.status === 'unreadable' || detection.hasUnreadableRecovery) {
         problems.push(
-          `saved terminal history Orca could not fully read for the tab ${tabName(leaf.tabId)}`
+          `saved terminal history Topo could not fully read for the tab ${tabName(leaf.tabId)}`
         )
         continue
       }
       const shellCwd = pane.shellCwd && /^\/(?!\/)/.test(pane.shellCwd) ? pane.shellCwd : null
       const cwd = shellCwd ?? wslMoveHostLinuxCwd(detection.restoreInfo.cwd, pane, distro)
-      const document: OrcadMigrationTerminalHistoryDocument = {
-        version: ORCAD_MIGRATION_TERMINAL_HISTORY_VERSION,
+      const document: TopodMigrationTerminalHistoryDocument = {
+        version: TOPOD_MIGRATION_TERMINAL_HISTORY_VERSION,
         paneKey: pane.paneKey,
         cwd,
         cols: detection.restoreInfo.cols,

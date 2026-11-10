@@ -121,7 +121,7 @@ export function formatOrchestrationCheckText(
 
 export function formatUnacknowledgedDeliveryNotice(deliveryId: string | null | undefined): string {
   return deliveryId
-    ? `\nThis Orca version does not acknowledge batches automatically. After handling every message, rerun this check with --ack ${deliveryId}.`
+    ? `\nThis Topo version does not acknowledge batches automatically. After handling every message, rerun this check with --ack ${deliveryId}.`
     : ''
 }
 
@@ -185,7 +185,7 @@ function formatLegacyAwareCheckMessages(
           replyTarget.startsWith('run:') || replyTarget.startsWith('dispatch:')
             ? ''
             : ` --from ${replyTarget}`
-        lines.push(`[Reply: orca orchestration reply --id ${message.id}${replyFrom} --body "..."]`)
+        lines.push(`[Reply: topo orchestration reply --id ${message.id}${replyFrom} --body "..."]`)
       }
       return lines.join('\n')
     })

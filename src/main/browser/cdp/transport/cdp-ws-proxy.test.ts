@@ -30,7 +30,7 @@ describe('CdpWsProxy', () => {
   function expectPdfStreamHandle(response: Record<string, unknown>): string {
     const result = response.result as Record<string, unknown>
     expect(result.data).toBe('')
-    expect(result.stream).toEqual(expect.stringMatching(/^orca-pdf-[\da-f-]{36}-\d+$/))
+    expect(result.stream).toEqual(expect.stringMatching(/^topo-pdf-[\da-f-]{36}-\d+$/))
     return result.stream as string
   }
 

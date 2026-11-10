@@ -13,7 +13,7 @@ afterEach(async () => {
 
 /** The editor template with `files` written over it (paths under the plugin, `/`-separated). */
 async function editorWith(files: Record<string, string>, entry?: string): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-editor-rules-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-editor-rules-'))
   roots.push(root)
   const dir = join(root, 'notes')
   await createPluginFromTemplate({ dir, template: 'editor', publisher: 'acme' })
@@ -34,7 +34,7 @@ async function check(root: string) {
 
 const page = (body: string) => `<!doctype html><html><body>\n${body}\n</body></html>\n`
 
-describe('orca plugin check: editors load as the frame protocol serves them', () => {
+describe('topo plugin check: editors load as the frame protocol serves them', () => {
   it.skipIf(process.platform === 'win32')(
     'refuses a script a symlink takes outside the plugin',
     async () => {

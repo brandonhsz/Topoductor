@@ -21,7 +21,7 @@ describe('shared agent-hook-listener', () => {
   })
 
   it('reads the last assistant message behind an oversized line without quadratic copying', () => {
-    const tmpDir = mkdtempSync(join(tmpdir(), 'orca-assistant-huge-line-'))
+    const tmpDir = mkdtempSync(join(tmpdir(), 'topo-assistant-huge-line-'))
     const transcriptPath = join(tmpDir, 'transcript.jsonl')
     const originalConcat = Buffer.concat
     let concatenatedBytes = 0
@@ -70,7 +70,7 @@ describe('shared agent-hook-listener', () => {
 
   // Backward scanning must preserve boundary-spanning prompts, latest-user selection and absolute interaction offsets.
   it('reads a Command Code prompt that straddles the backward-scan chunk boundary', () => {
-    const tmpDir = mkdtempSync(join(tmpdir(), 'orca-command-code-chunk-straddle-'))
+    const tmpDir = mkdtempSync(join(tmpdir(), 'topo-command-code-chunk-straddle-'))
     const transcriptPath = join(tmpDir, 'transcript.jsonl')
     try {
       const promptLine = JSON.stringify({
@@ -124,7 +124,7 @@ describe('shared agent-hook-listener', () => {
   })
 
   it('ignores a Command Code prompt older than the transcript scan cap', () => {
-    const tmpDir = mkdtempSync(join(tmpdir(), 'orca-command-code-over-cap-'))
+    const tmpDir = mkdtempSync(join(tmpdir(), 'topo-command-code-over-cap-'))
     const transcriptPath = join(tmpDir, 'transcript.jsonl')
     try {
       // Put the only user line beyond 4MB so removing the read cap fails.

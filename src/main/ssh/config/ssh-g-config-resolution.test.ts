@@ -28,7 +28,7 @@ describe('siteConfigMayRestrictHostKeys', () => {
   let dir: string
 
   beforeEach(async () => {
-    dir = await mkdtemp(join(tmpdir(), 'orca-site-ssh-config-'))
+    dir = await mkdtemp(join(tmpdir(), 'topo-site-ssh-config-'))
   })
 
   afterEach(async () => {

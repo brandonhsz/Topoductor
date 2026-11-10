@@ -1,4 +1,4 @@
-import type { RuntimeGitCommands } from './orca-runtime-git'
+import type { RuntimeGitCommands } from './topo-runtime-git'
 
 type RuntimeGitCommandName =
   | 'getRuntimeGitStatus'

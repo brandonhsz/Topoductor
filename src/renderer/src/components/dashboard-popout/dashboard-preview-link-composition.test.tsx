@@ -301,7 +301,7 @@ it('gives one useful refusal when a real saved chooser action loses runtime brow
   const screen = screenFor(view.container)
   pointer(screen, 'mousedown')
   pointer(screen, 'mouseup')
-  const savedAction = await view.findByRole('button', { name: /Orca Browser/ })
+  const savedAction = await view.findByRole('button', { name: /Topo Browser/ })
   // Actual failed-status refresh shape, after the real request has captured its action.
   store.setState({ runtimeStatusByEnvironmentId: new Map([['e', { status: null, checkedAt: 2 }]]) })
   fireEvent.click(savedAction)

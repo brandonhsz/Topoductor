@@ -132,7 +132,7 @@ export function getLegendItems(provider: 'claude' | 'codex', t: Translate = tran
   ]
 }
 
-export function OrcaLogo(): React.JSX.Element {
+export function TopoLogo(): React.JSX.Element {
   return (
     <svg
       width={26}
@@ -229,7 +229,10 @@ export function CardFooter(props: {
             marginLeft: 5
           }}
         >
-          {t('auto.components.stats.share.card.utils.19f4b4dc75', 'github.com/stablyai/orca')}
+          {t(
+            'auto.components.stats.share.card.utils.19f4b4dc75',
+            'github.com/brandonhsz/Topoductor'
+          )}
         </span>
       </div>
     </div>

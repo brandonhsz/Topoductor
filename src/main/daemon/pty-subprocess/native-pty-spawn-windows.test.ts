@@ -114,9 +114,9 @@ describe('Windows shell fallback over node-pty ConPTY', () => {
   })
 
   it('keeps a WSL pane out of a distro the internal allowlist excludes, falling back past it', async () => {
-    vi.stubEnv('ORCA_INTERNAL_WSL_DISTRO_ALLOWLIST', 'orca-test-a')
+    vi.stubEnv('TOPO_INTERNAL_WSL_DISTRO_ALLOWLIST', 'topo-test-a')
     try {
-      const wslAttempts = ['Ubuntu', 'orca-test-a'].map((distro) => ({
+      const wslAttempts = ['Ubuntu', 'topo-test-a'].map((distro) => ({
         ...attempts[0]!,
         shellPath: 'C:\\Windows\\System32\\wsl.exe',
         shellArgs: ['-d', distro, '--cd', '~']
@@ -129,7 +129,7 @@ describe('Windows shell fallback over node-pty ConPTY', () => {
         windowsFallbackAttempts: wslAttempts
       })
       expect(nodePty.spawn.mock.calls.map(([, argv]) => argv)).toEqual([
-        ['-d', 'orca-test-a', '--cd', '~']
+        ['-d', 'topo-test-a', '--cd', '~']
       ])
       expect(result.shellPath).toBe(wslAttempts[1]!.shellPath)
 
@@ -141,7 +141,7 @@ describe('Windows shell fallback over node-pty ConPTY', () => {
           shellArgs: wslAttempts[0]!.shellArgs,
           windowsFallbackAttempts: [wslAttempts[0]!]
         })
-      ).rejects.toMatchObject({ code: 'ORCA_WSL_DISTRO_NOT_ALLOWLISTED' })
+      ).rejects.toMatchObject({ code: 'TOPO_WSL_DISTRO_NOT_ALLOWLISTED' })
       expect(nodePty.spawn).not.toHaveBeenCalled()
     } finally {
       vi.unstubAllEnvs()

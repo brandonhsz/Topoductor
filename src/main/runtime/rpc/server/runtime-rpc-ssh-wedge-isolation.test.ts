@@ -4,9 +4,9 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createConnection, type Socket } from 'node:net'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { readRuntimeMetadata } from './runtime-metadata'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import { STATUS_METHODS } from '../methods/host-management/status'
 import { SSH_METHODS } from '../methods/ssh/ssh'
 import { sendRequest } from './runtime-rpc-test-harness'
@@ -32,7 +32,7 @@ vi.mock('../../../ssh/targets/ssh-target-registry', () => ({
   SshTargetManagementUnservedError: class extends Error {}
 }))
 
-const servers: OrcaRuntimeRpcServer[] = []
+const servers: TopoRuntimeRpcServer[] = []
 const sockets: Socket[] = []
 const userDataPaths: string[] = []
 
@@ -48,10 +48,10 @@ afterEach(async () => {
 })
 
 async function startServer(): Promise<{ endpoint: string; token: string }> {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-rpc-ssh-wedge-'))
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-rpc-ssh-wedge-'))
   userDataPaths.push(userDataPath)
-  const server = new OrcaRuntimeRpcServer({
-    runtime: new OrcaRuntimeService(),
+  const server = new TopoRuntimeRpcServer({
+    runtime: new TopoRuntimeService(),
     userDataPath,
     methods: [...STATUS_METHODS, ...SSH_METHODS]
   })

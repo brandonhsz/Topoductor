@@ -1,4 +1,4 @@
-import type { PersistedTrustedOrcaHooks } from '../../../../../shared/orca-yaml-hook-types'
+import type { PersistedTrustedTopoHooks } from '../../../../../shared/topo-yaml-hook-types'
 import type {
   FeatureInteractionId,
   FeatureInteractionState
@@ -6,7 +6,7 @@ import type {
 import type { FeatureTipId, FeatureTipSeenId } from '../../../../../shared/feature-tips'
 import type { ChatUiLaunchTipVariant } from '../../../../../shared/native-chat/chat-ui-launch-tip-audience'
 import type { ContextualTourId } from '../../../../../shared/contextual-tours'
-import type { OrcaHookScriptKind } from '../../../lib/orca-hook-trust'
+import type { TopoHookScriptKind } from '../../../lib/topo-hook-trust'
 import type { SettingsNavigationTarget } from '../../../lib/settings-navigation-types'
 import type { ExecutionHostId } from '../../../../../shared/execution-host'
 
@@ -51,7 +51,7 @@ export type UISliceContextual = {
     | 'feature-wall'
     | 'feature-tips'
     | 'new-workspace-composer'
-    | 'confirm-orca-yaml-hooks'
+    | 'confirm-topo-yaml-hooks'
     | 'diagram-viewer'
     | 'agent-session-history'
     | 'chat-account-usage'
@@ -98,14 +98,14 @@ export type UISliceContextual = {
   completeContextualTour: (id?: ContextualTourId) => void
   cancelContextualTour: (id?: ContextualTourId) => void
   markContextualToursSeen: (ids: ContextualTourId[]) => void
-  trustedOrcaHooks: PersistedTrustedOrcaHooks
-  markOrcaHookScriptConfirmed: (
+  trustedTopoHooks: PersistedTrustedTopoHooks
+  markTopoHookScriptConfirmed: (
     repoId: string,
-    kind: OrcaHookScriptKind,
+    kind: TopoHookScriptKind,
     contentHash: string
   ) => void
-  markOrcaHookRepoAlwaysTrusted: (repoId: string) => void
-  clearOrcaHookTrustForRepo: (repoId: string) => void
+  markTopoHookRepoAlwaysTrusted: (repoId: string) => void
+  clearTopoHookTrustForRepo: (repoId: string) => void
   setupScriptPromptDismissedRepoIds: readonly string[]
   dismissSetupScriptPrompt: (repoHostIdentity: string) => void
   setupGuideSidebarDismissed: boolean

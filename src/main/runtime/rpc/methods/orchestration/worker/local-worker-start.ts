@@ -3,7 +3,7 @@ import { refuseClaimedWorkerTerminal } from '../../../../orchestration/db/worker
 import { probeWorkerOpenCodeModelLaunchSupport } from './worker-opencode-model-preflight'
 import { resolveWorkerConfiguredAgentParams } from './worker-configured-agent-preflight'
 import { waitForWorkerAgentReady } from '../../../../terminal/wait/launched-agent-composer-readiness'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { describeTerminalWaitBlockedReason } from '../../../../../../shared/terminal/runtime-policy/terminal-wait-blocked-reason-legacy-alias'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import type {
@@ -42,7 +42,7 @@ import { placedWorkerParty, type WorkerFollowUp } from './worker-follow-up-place
 
 export async function startLocalWorker(args: {
   params: WorkerStartInput
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   /** Called only once effect-free validation passes, so a refused start binds no new Run. */
   bindRun: () => RunRow

@@ -13,7 +13,7 @@ import {
 import { successResponse } from './errors'
 import { withoutMethodsThisHostDoesNotServe } from './methods/terminal/session-terminal-scrollback'
 import { emulatorProbe, emulatorProbeError } from '../../emulator/emulator-probe'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import { isDurableMutation } from '../../../shared/orchestration/orchestration-rpc-contract'
 import type { OrchestrationSessionCaller } from '../orchestration/addressing/orchestration-caller-identity'
 import {
@@ -32,10 +32,10 @@ import { recordRuntimeFeatureInteraction } from './runtime-feature-interaction'
 import type { RpcCallerScope } from './rpc-caller-scope'
 import { runWithActiveRpcCaller } from './rpc-active-caller'
 import { admitRpcRequest } from './rpc-request-admission-prologue'
-import { resolveOrcadFeatureRequirement, rpcMethodFeatureWait } from './orcad-feature-readiness'
+import { resolveTopodFeatureRequirement, rpcMethodFeatureWait } from './topod-feature-readiness'
 
 export type DispatcherOptions = {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   methods: readonly RpcAnyMethodDeclaration[]
   /** Pins every call to this scope, for in-process bridges that relay a non-owner caller. */
   callerScope?: RpcCallerScope
@@ -49,7 +49,7 @@ type AdmittedUnaryCall = {
 }
 
 export class RpcDispatcher {
-  private readonly runtime: OrcaRuntimeService
+  private readonly runtime: TopoRuntimeService
   private readonly registry: RpcRegistry
   private readonly orchestrationMutations: OrchestrationMutationExecutor
   private readonly legacyOrchestration: OrchestrationLegacyCompatibility
@@ -84,7 +84,7 @@ export class RpcDispatcher {
     }
     try {
       const featureWait = rpcMethodFeatureWait(
-        resolveOrcadFeatureRequirement(admission.method.requires, admission.params),
+        resolveTopodFeatureRequirement(admission.method.requires, admission.params),
         [options?.signal, options?.connectionSignal]
       )
       if (featureWait) {
@@ -135,7 +135,7 @@ export class RpcDispatcher {
     }
     const { method, request, params, caller } = admission
     const featureWait = rpcMethodFeatureWait(
-      resolveOrcadFeatureRequirement(method.requires, params),
+      resolveTopodFeatureRequirement(method.requires, params),
       [options?.signal, options?.connectionSignal]
     )
     if (featureWait) {
@@ -275,7 +275,7 @@ export class RpcDispatcher {
       effectiveParams,
       invoke,
       callerFingerprint,
-      context.orchestrationCaller?.orcaSessionId
+      context.orchestrationCaller?.topoSessionId
     )
     if (request.method.startsWith('orchestration.')) {
       queueMicrotask(() => {

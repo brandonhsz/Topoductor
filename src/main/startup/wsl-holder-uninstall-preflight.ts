@@ -8,10 +8,10 @@ import {
   type WslHostUninstallStopDependencies
 } from '../wsl/host-lifecycle/wsl-host-uninstall-server-stop'
 
-/** The NSIS uninstaller's flag (config/nsis/orca-installer-hooks.nsh); keep the two in sync. */
-export const WSL_HOLDER_UNINSTALL_FLAG = '--orca-uninstall-release-wsl-holders'
+/** The NSIS uninstaller's flag (config/nsis/topo-installer-hooks.nsh); keep the two in sync. */
+export const WSL_HOLDER_UNINSTALL_FLAG = '--topo-uninstall-release-wsl-holders'
 /** Added only by the last install for this user: its HKCU/HKLM twin shares these hosts' servers. */
-export const WSL_SERVER_UNINSTALL_FLAG = '--orca-uninstall-stop-wsl-servers'
+export const WSL_SERVER_UNINSTALL_FLAG = '--topo-uninstall-stop-wsl-servers'
 
 // Uninstall must finish even if the process table or a distro never answers.
 const UNINSTALL_RELEASE_TIMEOUT_MS = 60_000
@@ -52,7 +52,7 @@ export function runWslHolderUninstallPreflight(argv: readonly string[] = process
   let holder: WslDistroHolder
   let servers: WslHostUninstallStopDependencies | undefined
   try {
-    process.env.ORCA_BACKGROUND_LAUNCH = '1'
+    process.env.TOPO_BACKGROUND_LAUNCH = '1'
     // The same userData the app records holders under; before any other preflight step.
     ensureWindowsAppDataPath(app)
     holder = createWslDistroHolder({ userDataPath: app.getPath('userData') })

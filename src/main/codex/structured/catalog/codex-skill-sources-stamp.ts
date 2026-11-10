@@ -6,7 +6,7 @@ import { findSkillFiles } from '../../../skills/discovery/skill-root-file-walk'
 import { runSkillCandidateTasks } from '../../../skills/filesystem/skill-candidate-concurrency'
 import {
   getSystemCodexHomePath,
-  resolveOrcaManagedCodexHomePath
+  resolveTopoManagedCodexHomePath
 } from '../../configuration/homes/codex-home-paths'
 import { readCopiedResourceSource } from '../../configuration/homes/codex-managed-home-resource-copy-marker'
 import { parse as parseToml } from 'smol-toml'
@@ -75,7 +75,7 @@ export function createCodexSkillSourcesStamp(
   const now = options.now ?? Date.now
   const home = options.homeDir ?? homedir
   const systemCodexHome = options.systemCodexHome ?? getSystemCodexHomePath
-  const managedCodexHome = options.managedCodexHome ?? resolveOrcaManagedCodexHomePath
+  const managedCodexHome = options.managedCodexHome ?? resolveTopoManagedCodexHomePath
   const roots = createTimedMemo<string>(now)
   const chains = createTimedMemo<string[]>(now)
   const markers = createTimedMemo<string | null>(now)
@@ -100,7 +100,7 @@ export function createCodexSkillSourcesStamp(
       return facts.join('\n')
     })
 
-  // Only skill and plugin tables matter: Orca adds a trust entry each time a chat opens in a new folder.
+  // Only skill and plugin tables matter: Topo adds a trust entry each time a chat opens in a new folder.
   const configStamp = async (path: string): Promise<string> => {
     const info = await stat(path).catch(() => null)
     if (!info) {
@@ -132,7 +132,7 @@ export function createCodexSkillSourcesStamp(
   ): Promise<string | undefined> => {
     const bounded = AbortSignal.any([signal, AbortSignal.timeout(STAMP_TIMEOUT_MS)])
     const work = async (): Promise<string> => {
-      // Orca's managed home holds copies the probe rewrites; stamping them would rescan forever.
+      // Topo's managed home holds copies the probe rewrites; stamping them would rescan forever.
       const mirrored =
         normalizeRuntimePathForComparison(accountHomePath) ===
         normalizeRuntimePathForComparison(managedCodexHome())

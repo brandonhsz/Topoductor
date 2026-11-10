@@ -42,7 +42,7 @@ vi.mock('@/lib/browser/documents/doc-preview-grants', () => ({
   ensureDocPreviewGrant: () =>
     Promise.resolve({
       grantId: GRANT_ID,
-      url: `orca-preview://${GRANT_ID}/${ENTRY_RELATIVE_PATH}`,
+      url: `topo-preview://${GRANT_ID}/${ENTRY_RELATIVE_PATH}`,
       location: grants.mintedLocation
     }),
   releaseDocPreviewGrant: () => undefined

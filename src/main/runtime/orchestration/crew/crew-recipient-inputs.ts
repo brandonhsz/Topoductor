@@ -5,7 +5,7 @@ import {
   type CrewRecipientRun,
   type DispatchInput
 } from './crew-recipient-owner-queries'
-import type { OrcaSessionId } from '../../../../shared/orca-session-address'
+import type { TopoSessionId } from '../../../../shared/topo-session-address'
 import { parsePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import type { OrchestrationDb } from '../db/orchestration-db'
 import {
@@ -26,7 +26,7 @@ import {
   createCrewRecipientWorkerFacts,
   type CrewRecipientKey as Key
 } from './crew-recipient-worker-facts'
-export type Recipient = OrcaSessionId | Key
+export type Recipient = TopoSessionId | Key
 export type CrewRecipientTerminal = {
   livePane: (handle: string) => string | null
   process: (handle: string) => string | null
@@ -37,7 +37,7 @@ const sourceKey = (key: Key) => key.sourceKey ?? key.address
 export function createCrewRecipientInputs(
   db: OrchestrationDb,
   records: AgentSessionRecordReader | null,
-  canonical: (id: OrcaSessionId) => OrcaSessionId,
+  canonical: (id: TopoSessionId) => TopoSessionId,
   legacyOwner: () => ReturnType<OrchestrationDb['getLegacyAdoptedRunMailboxOwner']>
 ) {
   const query = crewRecipientOwnerQueries(db)
@@ -75,7 +75,7 @@ export function createCrewRecipientInputs(
     }
     const requested = missing.map((key) => ({
       key: sourceKey(key),
-      session: key.orcaSessionId,
+      session: key.topoSessionId,
       suffix: key.paneKey === null ? null : paneKeyMatchSuffix(key.paneKey)
     }))
     const rows = query.currentRuns(requested)
@@ -92,16 +92,16 @@ export function createCrewRecipientInputs(
   const keyForInput = (input: Recipient) =>
     typeof input === 'string'
       ? keyFor(input)
-      : input.orcaSessionId
-        ? keyFor(input.orcaSessionId)
+      : input.topoSessionId
+        ? keyFor(input.topoSessionId)
         : input
-  const paneFor = (key: Key) => (key.orcaSessionId ? livePane(key) : (key.paneKey ?? undefined))
+  const paneFor = (key: Key) => (key.topoSessionId ? livePane(key) : (key.paneKey ?? undefined))
   const prepare = (ids: Recipient[], viewer?: Key) => {
     const sessions = ids.flatMap((input) =>
-      typeof input === 'string' ? [input] : input.orcaSessionId ? [input.orcaSessionId] : []
+      typeof input === 'string' ? [input] : input.topoSessionId ? [input.topoSessionId] : []
     )
-    prepareIdentities(viewer?.orcaSessionId ? [...sessions, viewer.orcaSessionId] : sessions)
-    const actual = viewer?.orcaSessionId ? keyFor(viewer.orcaSessionId) : viewer
+    prepareIdentities(viewer?.topoSessionId ? [...sessions, viewer.topoSessionId] : sessions)
+    const actual = viewer?.topoSessionId ? keyFor(viewer.topoSessionId) : viewer
     const caller = actual
       ? {
           ...actual,
@@ -109,7 +109,7 @@ export function createCrewRecipientInputs(
             'caller',
             actual.address,
             actual.paneKey,
-            actual.orcaSessionId
+            actual.topoSessionId
           ])
         }
       : undefined
@@ -184,7 +184,7 @@ export function createCrewRecipientInputs(
     }
     return { kind: 'ready', id: run?.id } as const
   }
-  const fallback = (id: OrcaSessionId): boolean | undefined => {
+  const fallback = (id: TopoSessionId): boolean | undefined => {
     if (!records) {
       return undefined
     }
@@ -223,7 +223,7 @@ export function createCrewRecipientInputs(
         return [...ids].sort()
       },
       fallback: () => {
-        const reachable = key.orcaSessionId ? fallback(key.orcaSessionId) : Boolean(key.paneKey)
+        const reachable = key.topoSessionId ? fallback(key.topoSessionId) : Boolean(key.paneKey)
         if (reachable === undefined) {
           throw new Error('Crew recipient source is unavailable')
         }

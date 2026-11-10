@@ -90,12 +90,16 @@ export async function createGleamCatalogFixture(root: string) {
     join(catalog, 'orca-catalog.json'),
     JSON.stringify({
       catalogVersion: 2,
-      name: 'Orca Plugins',
+      name: 'Topo Plugins',
       owner: 'stablyai',
       plugins: [
         {
           id: GLEAM_PLUGIN_KEY,
-          source: { kind: 'git', url: `https://github.com/stablyai/${PLUGIN}.git`, ref: 'v1.0.0' },
+          source: {
+            kind: 'git',
+            url: `https://github.com/stablyai/${PLUGIN}.git`,
+            ref: 'v1.0.0'
+          },
           releases: [
             {
               version: '1.0.0',
@@ -111,7 +115,11 @@ export async function createGleamCatalogFixture(root: string) {
         },
         {
           id: EXCALIDRAW_PLUGIN_KEY,
-          source: { kind: 'git', url: `https://github.com/stablyai/${EDITOR}.git`, ref: 'v1.0.0' },
+          source: {
+            kind: 'git',
+            url: `https://github.com/stablyai/${EDITOR}.git`,
+            ref: 'v1.0.0'
+          },
           releases: [
             {
               version: '1.0.0',
@@ -135,6 +143,6 @@ export async function createGleamCatalogFixture(root: string) {
   await mkdir(workspace, { recursive: true })
   await writeFile(join(workspace, 'main.gleam'), 'pub fn main() { Nil }\n')
   await commitRepository(workspace, gitEnvironment)
-  // Why realpath: Orca registers the repository by its resolved path, as macOS /var is a link.
+  // Why realpath: Topo registers the repository by its resolved path, as macOS /var is a link.
   return { gitEnvironment, workspace: await realpath(workspace) }
 }

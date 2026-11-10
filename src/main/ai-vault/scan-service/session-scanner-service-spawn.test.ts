@@ -22,7 +22,7 @@ describe('the shared scanner client', () => {
     vi.useRealTimers()
   })
 
-  it('retires an idle child after the timeout an orcad host configured', async () => {
+  it('retires an idle child after the timeout an topod host configured', async () => {
     vi.useFakeTimers()
     const child = new AiVaultServiceTestChild(4242)
     forkMock.mockReset()

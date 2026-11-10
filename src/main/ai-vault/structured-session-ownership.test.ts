@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { resolveOrcaManagedCodexHomePath } from '../codex/configuration/homes/codex-home-paths'
+import { resolveTopoManagedCodexHomePath } from '../codex/configuration/homes/codex-home-paths'
 import { redactForTransport } from '../../shared/ai-vault/search/ai-vault-search-transport'
 import { setStructuredAgentSessionHost } from '../native-chat/agent-session-wire/host/structured-agent-session-registry'
 import {
@@ -25,7 +25,7 @@ describe('structured AI Vault ownership', () => {
 
   it('keeps the legacy shared Codex home unknown and redacts account homes over relay search', () => {
     installOwnership({
-      accountHome: { variable: 'CODEX_HOME', path: resolveOrcaManagedCodexHomePath() }
+      accountHome: { variable: 'CODEX_HOME', path: resolveTopoManagedCodexHomePath() }
     })
     expect(
       projectStructuredAiVaultSessions(listResult(), OPENS_EVERY_STRUCTURED_CHAT).sessions[0]

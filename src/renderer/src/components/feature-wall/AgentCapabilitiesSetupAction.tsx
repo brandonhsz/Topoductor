@@ -134,7 +134,7 @@ function AgentCapabilitiesSetupForRuntime(
           }
         )
       }
-      // COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+      // COMPAT(wsl-bridge): removed when WSL runs as an topod host.
       if (legacyWsl) {
         const command = buildAgentFeatureSkillInstallCommand(result.skillNames)
         await window.api.ui.writeClipboardText(
@@ -183,7 +183,7 @@ function AgentCapabilitiesSetupForRuntime(
 
   return (
     <div className="space-y-5">
-      {/* COMPAT(wsl-bridge): removed when WSL runs as an orcad host. */}
+      {/* COMPAT(wsl-bridge): removed when WSL runs as an topod host. */}
       {wslSetup ? (
         <FeatureSetupInlineTerminal
           command={wslSetup.command}
@@ -267,8 +267,8 @@ function AgentCapabilitySetupControls(props: {
             {props.setupBusyLabel ??
               (props.installAction?.kind === 'replace'
                 ? t(
-                    'auto.components.settings.AgentSkillSetupPanel.replaceWithOrcaCopy',
-                    "Replace with Orca's copy"
+                    'auto.components.settings.AgentSkillSetupPanel.replaceWithTopoCopy',
+                    "Replace with Topo's copy"
                   )
                 : props.installAction?.kind === 'run' && props.installAction.changes
                   ? bundledSkillSetupActionLabel(props.installAction.changes, t)

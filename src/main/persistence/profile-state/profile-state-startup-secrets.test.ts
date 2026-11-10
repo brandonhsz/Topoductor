@@ -17,7 +17,7 @@ let keyState: 'available' | 'unavailable' | 'decrypt-fails' = 'available'
 vi.mock('electron', () => ({
   app: {
     getPath: () => tmpdir(),
-    getName: () => 'orca-test',
+    getName: () => 'topo-test',
     getVersion: () => '0.0.0-test',
     isPackaged: false,
     on: () => {},
@@ -86,9 +86,9 @@ describe.each(['serialized', 'parsed'] as const)(
     it.each(['available', 'unavailable', 'decrypt-fails'] as const)(
       'preserves every protected slot through an unrelated save when keys are %s',
       async (failure) => {
-        const directory = mkdtempSync(join(tmpdir(), 'orca-startup-secrets-'))
+        const directory = mkdtempSync(join(tmpdir(), 'topo-startup-secrets-'))
         directories.push(directory)
-        const dataFile = join(directory, 'orca-data.json')
+        const dataFile = join(directory, 'topo-data.json')
         const databaseFile = join(directory, 'profile-state.db')
         function open() {
           const authority = new ProfileStateSqliteAuthority(databaseFile, 'startup-secrets')

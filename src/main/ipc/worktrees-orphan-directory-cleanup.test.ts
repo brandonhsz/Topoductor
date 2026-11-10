@@ -174,8 +174,8 @@ describe('registerWorktreeHandlers', () => {
     runtimeStub = setupWorktreeHandlers()
   })
 
-  it('force-removes a legacy Orca-created orphaned worktree directory after Git tracking is gone', async () => {
-    const parentDir = await mkdtemp(join(tmpdir(), 'orca-ipc-orphan-'))
+  it('force-removes a legacy Topo-created orphaned worktree directory after Git tracking is gone', async () => {
+    const parentDir = await mkdtemp(join(tmpdir(), 'topo-ipc-orphan-'))
     const repoPath = join(parentDir, 'repo')
     const orphanPath = join(parentDir, 'orphan')
     const adminWorktreePath = join(repoPath, '.git', 'worktrees', 'orphan')
@@ -223,8 +223,8 @@ describe('registerWorktreeHandlers', () => {
     }
   })
 
-  it('prompts for force before removing an Orca-created orphaned worktree directory', async () => {
-    const parentDir = await mkdtemp(join(tmpdir(), 'orca-ipc-orphan-'))
+  it('prompts for force before removing a Topo-created orphaned worktree directory', async () => {
+    const parentDir = await mkdtemp(join(tmpdir(), 'topo-ipc-orphan-'))
     const repoPath = join(parentDir, 'repo')
     const orphanPath = join(parentDir, 'orphan')
     const adminWorktreePath = join(repoPath, '.git', 'worktrees', 'orphan')
@@ -244,7 +244,7 @@ describe('registerWorktreeHandlers', () => {
     store.getRepos.mockReturnValue([repo])
     mockKnownFeatureWorktree(join(parentDir, 'real-feature'), repoPath)
     store.getWorktreeMeta.mockReturnValue(
-      makeWorktreeMeta({ orcaCreatedAt: Date.now(), orcaCreationSource: 'runtime' })
+      makeWorktreeMeta({ topoCreatedAt: Date.now(), topoCreationSource: 'runtime' })
     )
 
     try {
@@ -262,8 +262,8 @@ describe('registerWorktreeHandlers', () => {
     }
   })
 
-  it('refuses an Orca-created unregistered directory with no git marker, even forced, until the user removes it', async () => {
-    const parentDir = await mkdtemp(join(tmpdir(), 'orca-ipc-leftover-'))
+  it('refuses a Topo-created unregistered directory with no git marker, even forced, until the user removes it', async () => {
+    const parentDir = await mkdtemp(join(tmpdir(), 'topo-ipc-leftover-'))
     const repoPath = join(parentDir, 'repo')
     const leftoverPath = join(parentDir, 'leftover')
     const worktreeId = `repo-1::${leftoverPath}`
@@ -279,7 +279,7 @@ describe('registerWorktreeHandlers', () => {
     })
     mockKnownFeatureWorktree(join(parentDir, 'real-feature'), repoPath)
     store.getWorktreeMeta.mockReturnValue(
-      makeWorktreeMeta({ orcaCreatedAt: Date.now(), orcaCreationSource: 'runtime' })
+      makeWorktreeMeta({ topoCreatedAt: Date.now(), topoCreationSource: 'runtime' })
     )
     gitExecFileAsyncMock.mockImplementation(async (args: string[]) => {
       if (args[0] === 'status') {
@@ -312,8 +312,8 @@ describe('registerWorktreeHandlers', () => {
     }
   })
 
-  it('rejects an Orca-created unregistered local directory with a git directory', async () => {
-    const parentDir = await mkdtemp(join(tmpdir(), 'orca-ipc-standalone-'))
+  it('rejects a Topo-created unregistered local directory with a git directory', async () => {
+    const parentDir = await mkdtemp(join(tmpdir(), 'topo-ipc-standalone-'))
     const repoPath = join(parentDir, 'repo')
     const standalonePath = join(parentDir, 'standalone')
     await mkdir(join(standalonePath, '.git'), { recursive: true })
@@ -327,7 +327,7 @@ describe('registerWorktreeHandlers', () => {
     })
     mockKnownFeatureWorktree(join(parentDir, 'real-feature'), repoPath)
     store.getWorktreeMeta.mockReturnValue(
-      makeWorktreeMeta({ orcaCreatedAt: Date.now(), orcaCreationSource: 'runtime' })
+      makeWorktreeMeta({ topoCreatedAt: Date.now(), topoCreationSource: 'runtime' })
     )
 
     try {
@@ -347,7 +347,7 @@ describe('registerWorktreeHandlers', () => {
   })
 
   it('does not inspect or delete a local path for an SSH orphan this process does not serve', async () => {
-    const localPath = await mkdtemp(join(tmpdir(), 'orca-ipc-ssh-missing-fs-'))
+    const localPath = await mkdtemp(join(tmpdir(), 'topo-ipc-ssh-missing-fs-'))
     const repo = {
       id: 'repo-ssh-missing-fs',
       path: '/remote/repo',
@@ -358,7 +358,7 @@ describe('registerWorktreeHandlers', () => {
     }
     store.getRepo.mockReturnValue(repo)
     store.getWorktreeMeta.mockReturnValue(
-      makeWorktreeMeta({ orcaCreatedAt: Date.now(), orcaCreationSource: 'ssh' })
+      makeWorktreeMeta({ topoCreatedAt: Date.now(), topoCreationSource: 'ssh' })
     )
 
     try {
@@ -367,7 +367,7 @@ describe('registerWorktreeHandlers', () => {
           worktreeId: `${repo.id}::${localPath}`,
           force: true
         })
-      ).rejects.toThrow('isn’t served by Orca’s server')
+      ).rejects.toThrow('isn’t served by Topo’s server')
 
       await expect(lstat(localPath)).resolves.toBeTruthy()
       expect(removeWorktreeMock).not.toHaveBeenCalled()

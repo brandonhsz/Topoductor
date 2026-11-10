@@ -1,17 +1,17 @@
 /**
- * Runs in the Chrome Web Store page's main world: renames the install wording from Chrome to Orca
+ * Runs in the Chrome Web Store page's main world: renames the install wording from Chrome to Topo
  * and hides the "Switch to Chrome" banner, which is wrong here because installing works.
  * Self-contained because executeInMainWorld serializes it without its closure. The
  * "Chrome Web Store" name stays.
  */
-export function adaptChromeWebStoreWordingForOrca(): void {
+export function adaptChromeWebStoreWordingForTopo(): void {
   const replacements: [RegExp, string][] = [
-    [/\bAdd to Chrome\b/g, 'Add to Orca'],
-    [/\bRemove from Chrome\b/g, 'Remove from Orca'],
-    [/ has been removed from Chrome\./g, ' has been removed from Orca.']
+    [/\bAdd to Chrome\b/g, 'Add to Topo'],
+    [/\bRemove from Chrome\b/g, 'Remove from Topo'],
+    [/ has been removed from Chrome\./g, ' has been removed from Topo.']
   ]
   const SWITCH_BANNER_TEXT = 'Switch to Chrome to install extensions and themes'
-  const HIDDEN_BANNER_ATTRIBUTE = 'data-orca-hidden-switch-banner'
+  const HIDDEN_BANNER_ATTRIBUTE = 'data-topo-hidden-switch-banner'
   const rewrite = (value: string): string =>
     replacements.reduce((text, [pattern, next]) => text.replace(pattern, next), value)
   // Why the climb: the banner's box also holds its "Install Chrome" button, and the store reuses

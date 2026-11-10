@@ -6,7 +6,7 @@ function controlResponseLine(models: unknown[]): string {
     type: 'control_response',
     response: {
       subtype: 'success',
-      request_id: 'orca-model-discovery',
+      request_id: 'topo-model-discovery',
       response: { models }
     }
   })

@@ -4,7 +4,7 @@ import {
   ORCHESTRATION_CONTRACT_RUNTIME_CAPABILITY,
   ORCHESTRATION_FEDERATION_RUNTIME_CAPABILITY
 } from '../../../../../../shared/orchestration/orchestration-runtime-capabilities'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -25,9 +25,9 @@ describe('orchestration migration behavior', () => {
     }
   })
 
-  function createRuntime(): { db: OrchestrationDb; runtime: OrcaRuntimeService } {
+  function createRuntime(): { db: OrchestrationDb; runtime: TopoRuntimeService } {
     const db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     databases.push(db)
     return { db, runtime }

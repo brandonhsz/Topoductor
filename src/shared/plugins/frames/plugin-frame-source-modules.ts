@@ -1,4 +1,4 @@
-/** Source files Orca transpiles to JavaScript when a plugin frame loads them, so plugins ship
+/** Source files Topo transpiles to JavaScript when a plugin frame loads them, so plugins ship
  *  TypeScript and JSX with no build step. */
 export const PLUGIN_SOURCE_MODULE_EXTENSIONS = ['.ts', '.tsx', '.mts', '.jsx'] as const
 

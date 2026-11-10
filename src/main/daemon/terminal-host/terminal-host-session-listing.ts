@@ -6,7 +6,7 @@ import type { WslGuestRoot } from '../../../shared/wsl-guest-root-marker'
 // Why a side table: only the listing reads it, and Session is at its max-lines cap.
 const spawnPaneKeys = new WeakMap<Session, string>()
 
-/** Records the ORCA_PANE_KEY a session was spawned with; reattaching never rewrites it. */
+/** Records the TOPO_PANE_KEY a session was spawned with; reattaching never rewrites it. */
 export function recordSessionSpawnPaneKey(session: Session, paneKey: string | undefined): void {
   if (paneKey) {
     spawnPaneKeys.set(session, paneKey)

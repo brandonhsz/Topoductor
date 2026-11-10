@@ -103,14 +103,14 @@ export function formatMessageBannerWithContent(
   const payload = msg.payload ? appendField(msg.payload, '[Payload: ', ']') : undefined
 
   if (authority === 'current' && options.followUp) {
-    lines.push(`[${formatReportFollowUpLine(options.followUp, options.cliCommand ?? 'orca')}]`)
+    lines.push(`[${formatReportFollowUpLine(options.followUp, options.cliCommand ?? 'topo')}]`)
   } else if (authority === 'current') {
     const explicitFrom =
       msg.to_handle.startsWith('run:') || msg.to_handle.startsWith('dispatch:')
         ? ''
         : ` --from ${msg.to_handle}`
     lines.push(
-      `[Reply: ${options.cliCommand ?? 'orca'} orchestration reply --id ${msg.id}${explicitFrom} --body "..."]`
+      `[Reply: ${options.cliCommand ?? 'topo'} orchestration reply --id ${msg.id}${explicitFrom} --body "..."]`
     )
   }
   lines.push(SEPARATOR)
@@ -134,7 +134,7 @@ export function formatMessagesForInjection(messages: MessageRow[]): string {
 export function formatMessagePointer(
   count: number,
   mailboxHandle?: string,
-  cliCommand: OrchestrationCliCommand = 'orca',
+  cliCommand: OrchestrationCliCommand = 'topo',
   heldDeliveryId?: string
 ): string {
   const noun = count === 1 ? 'message' : 'messages'

@@ -1,4 +1,4 @@
-import type { DeviceResumeConfirmed } from '@orca-cloud/relay-contract/credential-messages'
+import type { DeviceResumeConfirmed } from '@topo-cloud/relay-contract/credential-messages'
 import { RelayStoreError, type RelayCredentialStore, type RelayIdentity } from './credential-store.js'
 
 // Step 6: what a memory cell keeps instead of relay_connection_bases and relay_confirm_results.

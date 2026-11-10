@@ -1,5 +1,5 @@
-import { runProcess } from '@orca/process-host'
-import type { ProcessResult, ProcessSpec } from '@orca/process-host/process-spec'
+import { runProcess } from '@topo/process-host'
+import type { ProcessResult, ProcessSpec } from '@topo/process-host/process-spec'
 import { resolveWslInteropSpawnCwd } from './wsl-interop-spawn-directory'
 
 export const WSL_PROBE_TIMEOUT_MS = 5000

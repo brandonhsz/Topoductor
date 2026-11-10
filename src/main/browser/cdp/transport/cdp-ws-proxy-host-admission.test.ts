@@ -16,7 +16,7 @@ vi.mock('electron', () => ({
 }))
 
 const PAGE_ID = 7
-const REVOKED = 'The Orca desktop stopped sharing its browser before this command ran.'
+const REVOKED = 'The Topo desktop stopped sharing its browser before this command ran.'
 
 function mouseEvents(mock: MockWebContents): string[] {
   return mock.webContents.debugger.sendCommand.mock.calls

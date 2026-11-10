@@ -26,9 +26,9 @@ import { useSidebarFeedbackEnvironmentPrefill } from './use-sidebar-feedback-env
 import { useSidebarFeedbackImages } from './use-sidebar-feedback-images'
 import { openAppHttpLink } from '@/lib/browser/navigation/app-http-link-open'
 
-const GITHUB_ISSUES_URL = 'https://github.com/stablyai/orca/issues/'
+const GITHUB_ISSUES_URL = 'https://github.com/brandonhsz/Topoductor/issues/'
 const DISCORD_URL = 'https://discord.gg/fzjDKHxv8Q'
-const X_URL = 'https://x.com/orca_build'
+const X_URL = 'https://x.com/topo_build'
 
 type SubmitIdentity = {
   githubLogin: string | null
@@ -259,7 +259,7 @@ export function SidebarFeedbackDialog({
           <DialogDescription className="text-xs">
             {t(
               'auto.components.sidebar.SidebarFeedbackDialog.a828fa4aee',
-              "Share what's working, what's broken, or what Orca should do next."
+              "Share what's working, what's broken, or what Topo should do next."
             )}
           </DialogDescription>
         </DialogHeader>

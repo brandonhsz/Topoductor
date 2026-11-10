@@ -73,7 +73,7 @@ describe('spawnShellWithFallback macOS TCC login wrapping', () => {
 
   it('drops the first fallback’s launch env when a second fallback takes over', () => {
     // Scrub the last attempt keys; a once-only primary scrub would leak the first fallback env.
-    const bashLaunchEnv = { ORCA_SHELL_FEATURES: 'markers', BASH_ENV: '/userdata/bash/rcfile' }
+    const bashLaunchEnv = { TOPO_SHELL_FEATURES: 'markers', BASH_ENV: '/userdata/bash/rcfile' }
     const env: Record<string, string> = { HOME: '/home/jin', ZDOTDIR: '/userdata/shell-ready/zsh' }
     const ptySpawn = vi
       .fn()
@@ -98,7 +98,7 @@ describe('spawnShellWithFallback macOS TCC login wrapping', () => {
         shell === '/bin/bash' ? { args: ['--rcfile', '/rc'], env: bashLaunchEnv } : null
     })
 
-    expect(env.ORCA_SHELL_FEATURES).toBeUndefined()
+    expect(env.TOPO_SHELL_FEATURES).toBeUndefined()
     expect(env.BASH_ENV).toBeUndefined()
     expect(env.ZDOTDIR).toBeUndefined()
     expect(env.HOME).toBe('/home/jin')

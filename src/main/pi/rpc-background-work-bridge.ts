@@ -10,7 +10,7 @@ import {
 
 export type PiBackgroundWorkLaunch = {
   extension: string
-  /** This child's private request folder, named for the Orca process that owns it; the child creates it. */
+  /** This child's private request folder, named for the Topo process that owns it; the child creates it. */
   directory: string
 }
 
@@ -44,7 +44,7 @@ export async function ensurePiBackgroundWorkBridge(
   }
 }
 
-/** A folder outlives its child only when Orca crashed; its owner's process proves it abandoned. */
+/** A folder outlives its child only when Topo crashed; its owner's process proves it abandoned. */
 async function reclaimAbandonedProbeFolders(probes: string): Promise<void> {
   const names = await readdir(probes).catch(() => [])
   await Promise.all(

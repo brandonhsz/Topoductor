@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { ssh2Mock } from './testing/ssh-connection-test-client'
 import {
-  getOrcaControlSocketPathMock,
+  getTopoControlSocketPathMock,
   removeControlSocketPathMock,
   resetSshConnectionMocks,
   spawnSystemSshCommandMock
@@ -71,9 +71,9 @@ describe('SshConnection', () => {
   })
 
   it('retries a failed system SSH probe without ControlMaster and disables mux for the session', async () => {
-    getOrcaControlSocketPathMock.mockImplementation(
+    getTopoControlSocketPathMock.mockImplementation(
       (_target: SshTarget, options?: { disableControlMaster?: boolean }) =>
-        options?.disableControlMaster ? null : '/tmp/orca-ssh-501/stale-socket'
+        options?.disableControlMaster ? null : '/tmp/topo-ssh-501/stale-socket'
     )
     spawnSystemSshCommandMock
       .mockImplementationOnce(() => createFailingSystemCommandChannel(255, 'mux client failed'))
@@ -85,11 +85,11 @@ describe('SshConnection', () => {
     await conn.exec('echo after-connect')
     await conn.writeFile('/tmp/after-connect', 'contents')
 
-    expect(removeControlSocketPathMock).toHaveBeenCalledWith('/tmp/orca-ssh-501/stale-socket')
+    expect(removeControlSocketPathMock).toHaveBeenCalledWith('/tmp/topo-ssh-501/stale-socket')
     expect(spawnSystemSshCommandMock).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ configHost: 'fdpass-host' }),
-      'echo ORCA-SYSTEM-SSH-OK',
+      'echo TOPO-SYSTEM-SSH-OK',
       expect.objectContaining({
         wrapCommand: false,
         resolvedConfig: expect.objectContaining({ proxyUseFdpass: true })
@@ -98,7 +98,7 @@ describe('SshConnection', () => {
     expect(spawnSystemSshCommandMock).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({ configHost: 'fdpass-host' }),
-      'echo ORCA-SYSTEM-SSH-OK',
+      'echo TOPO-SYSTEM-SSH-OK',
       expect.objectContaining({
         disableControlMaster: true,
         wrapCommand: false,
@@ -129,9 +129,9 @@ describe('SshConnection', () => {
   it('retries a generic system SSH probe timeout without ControlMaster', async () => {
     vi.useFakeTimers()
     try {
-      getOrcaControlSocketPathMock.mockImplementation(
+      getTopoControlSocketPathMock.mockImplementation(
         (_target: SshTarget, options?: { disableControlMaster?: boolean }) =>
-          options?.disableControlMaster ? null : '/tmp/orca-ssh-501/stale-socket'
+          options?.disableControlMaster ? null : '/tmp/topo-ssh-501/stale-socket'
       )
       spawnSystemSshCommandMock
         .mockImplementationOnce(() => createHangingSystemCommandChannel())
@@ -144,11 +144,11 @@ describe('SshConnection', () => {
 
       await expect(settled).resolves.toBeUndefined()
       expect(spawnSystemSshCommandMock).toHaveBeenCalledTimes(2)
-      expect(removeControlSocketPathMock).toHaveBeenCalledWith('/tmp/orca-ssh-501/stale-socket')
+      expect(removeControlSocketPathMock).toHaveBeenCalledWith('/tmp/topo-ssh-501/stale-socket')
       expect(spawnSystemSshCommandMock).toHaveBeenNthCalledWith(
         2,
         expect.anything(),
-        'echo ORCA-SYSTEM-SSH-OK',
+        'echo TOPO-SYSTEM-SSH-OK',
         expect.objectContaining({ disableControlMaster: true })
       )
     } finally {
@@ -157,7 +157,7 @@ describe('SshConnection', () => {
   })
 
   it('skips a second probe for a definite host failure', async () => {
-    getOrcaControlSocketPathMock.mockReturnValue('/tmp/orca-ssh-501/stale-socket')
+    getTopoControlSocketPathMock.mockReturnValue('/tmp/topo-ssh-501/stale-socket')
     spawnSystemSshCommandMock.mockImplementation(() =>
       createFailingSystemCommandChannel(255, 'ssh: connect to host box port 22: No route to host')
     )
@@ -166,14 +166,14 @@ describe('SshConnection', () => {
 
     await expect(conn.connect()).rejects.toThrow('No route to host')
     expect(spawnSystemSshCommandMock).toHaveBeenCalledTimes(1)
-    expect(removeControlSocketPathMock).toHaveBeenCalledWith('/tmp/orca-ssh-501/stale-socket')
+    expect(removeControlSocketPathMock).toHaveBeenCalledWith('/tmp/topo-ssh-501/stale-socket')
   })
 
   it.each([
     'Permission denied (publickey,password).',
     'Encrypted private key detected, but no passphrase given'
   ])('skips a second probe for terminal credential failures: %s', async (stderr) => {
-    getOrcaControlSocketPathMock.mockReturnValue('/tmp/orca-ssh-501/stale-socket')
+    getTopoControlSocketPathMock.mockReturnValue('/tmp/topo-ssh-501/stale-socket')
     spawnSystemSshCommandMock.mockImplementation(() =>
       createFailingSystemCommandChannel(255, stderr)
     )
@@ -182,13 +182,13 @@ describe('SshConnection', () => {
 
     await expect(conn.connect()).rejects.toThrow(stderr)
     expect(spawnSystemSshCommandMock).toHaveBeenCalledTimes(1)
-    expect(removeControlSocketPathMock).toHaveBeenCalledWith('/tmp/orca-ssh-501/stale-socket')
+    expect(removeControlSocketPathMock).toHaveBeenCalledWith('/tmp/topo-ssh-501/stale-socket')
   })
 
-  it('keeps a host pinned in the Orca key store on ssh2 when negotiation fails', async () => {
-    const storeDir = mkdtempSync(join(tmpdir(), 'orca-ssh-pinned-store-'))
+  it('keeps a host pinned in the Topo key store on ssh2 when negotiation fails', async () => {
+    const storeDir = mkdtempSync(join(tmpdir(), 'topo-ssh-pinned-store-'))
     try {
-      initSshHostKeyStoreFile(join(storeDir, 'orca.json'))
+      initSshHostKeyStoreFile(join(storeDir, 'topo.json'))
       await trustHostKey({
         host: 'cert.example.com',
         port: 22,

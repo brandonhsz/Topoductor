@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { OrcadManagedRestartResult } from '../../../../../../shared/orcad-managed-runtime'
+import type { TopodManagedRestartResult } from '../../../../../../shared/topod-managed-runtime'
 import type { SshManagedServerStatus } from '../../../../../../shared/ssh-types'
 import { useMountedRef } from '@/hooks/useMountedRef'
 import { translate } from '@/i18n/i18n'
@@ -13,11 +13,11 @@ import {
   DialogHeader,
   DialogTitle
 } from '../../../ui/dialog'
-import { getManagedOrcadApi } from '../../../../runtime/hosts/installation/managed-orcad-api-availability'
+import { getManagedTopodApi } from '../../../../runtime/hosts/installation/managed-topod-api-availability'
 
 /** Offered only when the launching SSH session proved ended. */
 export function canRestartSshHostServer(status: SshManagedServerStatus | undefined): boolean {
-  return Boolean(getManagedOrcadApi() && status?.kind === 'managed' && status.launchSessionEnded)
+  return Boolean(getManagedTopodApi() && status?.kind === 'managed' && status.launchSessionEnded)
 }
 
 /** Restart macOS managed servers to restore local-network access (#25934); main refuses running terminals and never ends them. */
@@ -33,7 +33,7 @@ export function SshHostRestartServerDialog({
   onChanged: () => void
 }): React.JSX.Element | null {
   const t = useTranslate()
-  const api = getManagedOrcadApi()
+  const api = getManagedTopodApi()
   const mountedRef = useMountedRef()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -73,12 +73,12 @@ export function SshHostRestartServerDialog({
       <DialogContent showCloseButton={!busy}>
         <DialogHeader>
           <DialogTitle>
-            {t('auto.components.settings.restartServer.title', 'Restart Orca’s server')}
+            {t('auto.components.settings.restartServer.title', 'Restart Topo’s server')}
           </DialogTitle>
           <DialogDescription>
             {t(
               'auto.components.settings.restartServer.description',
-              'Orca restarts its server on this host from your current connection. It restarts only when no terminals are running on the host, because terminals that are still open stay cut off. Close them first.'
+              'Topo restarts its server on this host from your current connection. It restarts only when no terminals are running on the host, because terminals that are still open stay cut off. Close them first.'
             )}
           </DialogDescription>
         </DialogHeader>
@@ -96,19 +96,19 @@ export function SshHostRestartServerDialog({
   )
 }
 
-function refusalText(result: Exclude<OrcadManagedRestartResult, { outcome: 'restarted' }>): string {
+function refusalText(result: Exclude<TopodManagedRestartResult, { outcome: 'restarted' }>): string {
   if (result.outcome === 'not-restarted') {
     return result.reason
   }
   if (result.liveSessions === null) {
     return translate(
       'auto.components.settings.restartServer.terminalsUnknown',
-      'Orca couldn’t confirm whether terminals are running on this host, so it didn’t restart Orca’s server.'
+      'Topo couldn’t confirm whether terminals are running on this host, so it didn’t restart Topo’s server.'
     )
   }
   return translate(
     'auto.components.settings.restartServer.terminalsRunning',
-    '{{count}} terminals are still running on this host. Close them, then restart Orca’s server.',
+    '{{count}} terminals are still running on this host. Close them, then restart Topo’s server.',
     { count: result.liveSessions }
   )
 }

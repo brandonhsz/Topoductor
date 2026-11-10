@@ -6,10 +6,10 @@ import { createIndexedDbNativeChatComposerDraftStorage } from './native-chat-com
 
 export type NativeChatComposerDraftImage = {
   id: string
-  /** Empty for an image Orca could not keep. */
+  /** Empty for an image Topo could not keep. */
   path: string
   connectionId?: string
-  /** Set on an image Orca could not keep: the file name the user must attach again. */
+  /** Set on an image Topo could not keep: the file name the user must attach again. */
   unavailableName?: string
 }
 
@@ -158,7 +158,7 @@ export function parseStoredNativeChatComposerDraft(
           /^[0-9a-f-]{36}$/.test(id) &&
           typeof path === 'string' &&
           path !== '' &&
-          text.includes(`[Pasted text](orca-paste:${id})`)
+          text.includes(`[Pasted text](topo-paste:${id})`)
             ? [[id, path]]
             : []
         )
@@ -175,7 +175,7 @@ export function parseStoredNativeChatComposerDraft(
   }
 }
 
-const LEGACY_LOCAL_STORAGE_PREFIX = 'orca:nativeChatComposerDraft:v1:'
+const LEGACY_LOCAL_STORAGE_PREFIX = 'topo:nativeChatComposerDraft:v1:'
 
 /** Remove unreleased legacy localStorage drafts. */
 export function removeLegacyLocalStorageNativeChatComposerDrafts(): void {

@@ -89,7 +89,7 @@ describe('GitHub source lookup routing', () => {
         repoId: 'repo',
         sourceContext,
         owner: 'acme',
-        repo: 'orca',
+        repo: 'topo',
         host: 'github.com',
         number: 42,
         type: 'pr'
@@ -99,7 +99,7 @@ describe('GitHub source lookup routing', () => {
         repoId: 'repo',
         sourceContext,
         owner: 'acme',
-        repo: 'orca',
+        repo: 'topo',
         host: 'github.com',
         number: 42,
         type: 'pr'
@@ -163,13 +163,13 @@ const foundPR = {
   number: 42,
   type: 'pr' as const,
   title: 'Found PR',
-  url: 'https://github.com/acme/orca/pull/42',
+  url: 'https://github.com/acme/topo/pull/42',
   labels: [],
   author: null,
   state: 'open' as const,
   updatedAt: '',
   headSha: 'a'.repeat(40),
-  prRepo: { owner: 'acme', repo: 'orca', host: 'github.com' },
+  prRepo: { owner: 'acme', repo: 'topo', host: 'github.com' },
   checksSummary: {
     state: 'failure' as const,
     total: 1,

@@ -1,6 +1,6 @@
 import type { StructuredAgentSessionHost } from '../../native-chat/agent-session-wire/host/structured-agent-session-host'
 import { getStructuredAgentSessionHost } from '../../native-chat/agent-session-wire/host/structured-agent-session-registry'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import type { StructuredAgentSessionCloseCause } from '../../native-chat/agent-session-wire/termination/structured-agent-session-host-lifetime'
 import {
   observeStructuredSession,
@@ -14,7 +14,7 @@ export type StructuredAgentSessionCloseOutcome = {
 }
 
 export type StructuredSessionSurfaceRuntime = Pick<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   | 'currentLocalStructuredSessionPresentation'
   | 'captureStructuredAgentSessionPresentation'
   | 'retireStructuredAgentSessionTabFromSnapshot'

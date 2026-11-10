@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from '../../../dispatcher'
 import type { RpcRequest } from '../../../core'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import '../../../../../linear/linear-issue-write-support'
 import {
   linearError,
@@ -19,7 +19,7 @@ describe('Linear agent access RPC methods', () => {
     const runtime = {
       getRuntimeId: () => 'test-runtime',
       linearIssueSetState: vi.fn()
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     const dispatcher = new RpcDispatcher({ runtime, methods: LINEAR_AGENT_ACCESS_METHODS })
 
     const response = await dispatcher.dispatch(
@@ -39,7 +39,7 @@ describe('Linear agent access RPC methods', () => {
 })
 
 function runWrite(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   write: (signal: AbortSignal) => Promise<unknown>,
   unconfirmed: (cause?: string) => LinearAgentAccessError
 ): Promise<unknown> {
@@ -72,7 +72,7 @@ describe('Linear agent write recovery helpers', () => {
   it('returns unconfirmed at the write deadline even when the request ignores abort', async () => {
     vi.useFakeTimers()
     try {
-      const runtime = new OrcaRuntimeService()
+      const runtime = new TopoRuntimeService()
       const write = vi.fn((_signal: AbortSignal) => new Promise<string>(() => undefined))
       const unconfirmed = vi.fn(() => linearError('linear_write_unconfirmed', 'unconfirmed'))
 

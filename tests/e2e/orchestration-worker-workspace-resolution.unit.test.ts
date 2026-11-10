@@ -30,7 +30,7 @@ import type { ProjectGroup } from '../../src/shared/project-group-types'
 import type { Repo } from '../../src/shared/repo-types'
 import type { WorktreeMeta } from '../../src/shared/worktree/meta-types'
 import type { RuntimeStore } from '../../src/main/runtime/construction/runtime-store-contract'
-import { OrcaRuntimeService } from '../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../src/main/runtime/topo-runtime'
 import type { HostWorktreeTarget } from '../../src/shared/worktree/host-qualified-identity'
 
 const REPO_ID = 'repo-1'
@@ -130,7 +130,7 @@ describe('orchestration worker workspace resolution', () => {
       addedAt: 1,
       connectionId: 'ssh-1'
     } satisfies Repo
-    const runtime = new OrcaRuntimeService(
+    const runtime = new TopoRuntimeService(
       makeStore({
         repos: [remoteRepo],
         meta: { [WORKTREE_ID]: makeMeta('Remote feature') }
@@ -152,7 +152,7 @@ describe('orchestration worker workspace resolution', () => {
       addedAt: 1,
       connectionId: 'ssh-1'
     }
-    const runtime = new OrcaRuntimeService(
+    const runtime = new TopoRuntimeService(
       makeStore({
         repos: [repo, { ...repo, connectionId: 'ssh-2' }],
         meta: { [WORKTREE_ID]: makeMeta('Remote feature') }
@@ -172,7 +172,7 @@ describe('orchestration worker workspace resolution', () => {
         { path: secondPath, head: 'b', branch: 'two', isBare: false, isMainWorktree: false }
       ]
     })
-    const runtime = new OrcaRuntimeService(
+    const runtime = new TopoRuntimeService(
       makeStore({
         meta: {
           [WORKTREE_ID]: makeMeta('Duplicate'),
@@ -195,7 +195,7 @@ describe('orchestration worker workspace resolution', () => {
       addedAt: 1,
       connectionId: 'ssh-1'
     } satisfies Repo
-    const runtime = new OrcaRuntimeService(
+    const runtime = new TopoRuntimeService(
       makeStore({
         repos: [makeStore().getRepos()[0], remoteRepo],
         meta: {

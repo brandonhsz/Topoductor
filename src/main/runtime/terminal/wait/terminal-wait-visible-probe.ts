@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithCreateAgentPromptRenderGate } from '../input/terminal-agent-prompt-render'
+import { TopoRuntimeWithCreateAgentPromptRenderGate } from '../input/terminal-agent-prompt-render'
 import type { RuntimeProviderSnapshotReadOptions } from '../output/provider-snapshot-read-options'
 import type { TerminalWaiter } from './terminal-waiter'
 import { VISIBLE_TERMINAL_SNAPSHOT_TIMEOUT_MS } from '../output/provider-snapshot-budget'
@@ -9,7 +9,7 @@ import {
   isKnownReadyPromptSettled
 } from './terminal-wait-detection'
 import { readsTrustedScreen } from '../../agent-state-rules/agent-state-rules-engine'
-import { restoreProjectedComposerDraft } from '../view/orca-runtime-terminal-projection'
+import { restoreProjectedComposerDraft } from '../view/topo-runtime-terminal-projection'
 import type {
   RuntimeTerminalWait,
   RuntimeTerminalWaitBlockedReason
@@ -23,7 +23,7 @@ import { createSetupCompletionScanner } from '../../orchestration/workers/launch
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
 const TUI_IDLE_VISIBLE_PROBE_SETTLE_MARGIN_MS = 10
 
-export abstract class OrcaRuntimeWithStartTuiIdleVisibleReadProbe extends OrcaRuntimeWithCreateAgentPromptRenderGate {
+export abstract class TopoRuntimeWithStartTuiIdleVisibleReadProbe extends TopoRuntimeWithCreateAgentPromptRenderGate {
   /** One bounded readiness read for adopted PTYs with lost metadata; later working-to-idle transitions belong to the poll. */
   protected startTuiIdleVisibleReadProbe(
     waiter: TerminalWaiter,

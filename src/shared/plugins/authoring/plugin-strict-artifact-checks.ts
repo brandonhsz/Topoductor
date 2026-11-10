@@ -25,7 +25,7 @@ const THEME_PARSERS: Record<(typeof THEME_POINTS)[number], (raw: string) => unkn
   iconThemes: (raw) => parsePluginIconThemeArtifact(raw, 'strict')
 }
 
-// Why: Orca drops an icon theme whose SVG is missing or not an SVG only once a user picks it.
+// Why: Topo drops an icon theme whose SVG is missing or not an SVG only once a user picks it.
 function iconSvgErrors(read: PluginArtifactTextReader, themeText: string | null): string[] {
   if (themeText === null) {
     return []
@@ -46,7 +46,7 @@ function iconSvgErrors(read: PluginArtifactTextReader, themeText: string | null)
   })
 }
 
-// Why: Orca skips a missing background image silently at runtime, so authors hear about it here.
+// Why: Topo skips a missing background image silently at runtime, so authors hear about it here.
 function themeBackgroundErrors(read: PluginArtifactTextReader, themeText: string | null): string[] {
   if (themeText === null) {
     return []
@@ -88,7 +88,7 @@ function check(read: PluginArtifactTextReader, path: string, parse: (text: strin
 }
 
 /**
- * Author-time checks of every content artifact, strictly. Why: Orca skips unknown theme tokens,
+ * Author-time checks of every content artifact, strictly. Why: Topo skips unknown theme tokens,
  * icon slots and unsafe syntax settings at load, so authors would only learn about a typo here.
  * Protected language-pack copy is a warning instead (see strictPluginArtifactWarnings).
  */
@@ -145,7 +145,7 @@ export function strictPluginArtifactErrors(
   return [...themeErrors, ...svgErrors, ...backgroundErrors, ...packErrors, ...syntaxErrors]
 }
 
-/** Problems Orca handles safely at load but authors should know about; never block a release. */
+/** Problems Topo handles safely at load but authors should know about; never block a release. */
 export function strictPluginArtifactWarnings(
   manifest: PluginManifest,
   read: PluginArtifactTextReader
@@ -158,7 +158,7 @@ export function strictPluginArtifactWarnings(
     }
     const count = parsed.ignoredProtectedStrings
     return [
-      `contributes.languagePacks "${pack.locale}" (${pack.path}): ${count} protected ${count === 1 ? 'string is' : 'strings are'} ignored; Orca always shows its own text for security dialogs`
+      `contributes.languagePacks "${pack.locale}" (${pack.path}): ${count} protected ${count === 1 ? 'string is' : 'strings are'} ignored; Topo always shows its own text for security dialogs`
     ]
   })
 }

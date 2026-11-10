@@ -1,6 +1,6 @@
 import type { BrowserWindow } from 'electron'
 import { join } from 'node:path'
-import { ORCA_BROWSER_GUEST_WEB_PREFERENCES } from '../../shared/browser/guest-lifecycle/browser-guest-web-preferences'
+import { TOPO_BROWSER_GUEST_WEB_PREFERENCES } from '../../shared/browser/guest-lifecycle/browser-guest-web-preferences'
 import { normalizeBrowserNavigationUrl } from '../../shared/browser-url'
 import { browserManager } from '../browser/guest-lifecycle/manager/browser-manager'
 import { browserSessionRegistry } from '../browser/sessions/profiles/browser-session-registry'
@@ -13,7 +13,7 @@ import {
   browserRouteWebContentsRegistry
 } from '../browser/routing/sessions/browser-route-session-runtime'
 import '../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../shared/browser/browser-blank-page'
 import {
   DOC_PREVIEW_PARTITION,
   parseDocPreviewUrl
@@ -38,7 +38,7 @@ import {
 } from '../plugins/panels/plugin-frame-guest-registry'
 import { attachBrowserPasswordGuest } from '../browser-passwords/browser-password-guest-service'
 
-/** orca-preview is outside normal browser URL admission; require the doc partition and a main-minted user-preview grant. */
+/** topo-preview is outside normal browser URL admission; require the doc partition and a main-minted user-preview grant. */
 function isAdmissibleDocPreviewAttach(partition: string, src: string): boolean {
   if (partition !== DOC_PREVIEW_PARTITION) {
     return false
@@ -116,7 +116,7 @@ export function installMainWindowWebviewSecurity(mainWindow: BrowserWindow): voi
       !isExtensionPageAttach &&
       (!normalizedSrc ||
         (!isProfilePartition && !isRoutePartition && !isLocalSshPartition) ||
-        (isRoutePartition && normalizedSrc !== ORCA_BROWSER_BLANK_URL))
+        (isRoutePartition && normalizedSrc !== TOPO_BROWSER_BLANK_URL))
     ) {
       event.preventDefault()
       return
@@ -130,7 +130,7 @@ export function installMainWindowWebviewSecurity(mainWindow: BrowserWindow): voi
     // Electron 43 omits inherited arguments; clear defensively so future inheritance cannot leak browser-host identity.
     delete webPreferences.additionalArguments
     webPreferences.nodeIntegration = false
-    // Why every local profile: a framed extension page needs Orca's extension preload, and
+    // Why every local profile: a framed extension page needs Topo's extension preload, and
     // extensions can be switched on after the tab opens. Sandboxed and without Node, the flag only
     // runs the same preloads per frame; the close guard keeps to the top frame and the extension
     // preload, registered only while extensions run, acts only in chrome-extension:// frames.
@@ -142,7 +142,7 @@ export function installMainWindowWebviewSecurity(mainWindow: BrowserWindow): voi
     webPreferences.contextIsolation = true
     webPreferences.sandbox = true
     // Force hardened guest preferences even if host markup omits/misspells them.
-    Object.assign(webPreferences, ORCA_BROWSER_GUEST_WEB_PREFERENCES)
+    Object.assign(webPreferences, TOPO_BROWSER_GUEST_WEB_PREFERENCES)
     // Preserve only the registry-validated partition so isolated profiles keep their storage.
     webPreferences.partition = partition
   })
@@ -188,7 +188,7 @@ function hardenPluginFrameGuestPreferences(
   }
   // Why not a typed field: Electron derives it from `allowpopups` before this event.
   Object.assign(webPreferences, { disablePopups: true })
-  Object.assign(webPreferences, ORCA_BROWSER_GUEST_WEB_PREFERENCES, {
+  Object.assign(webPreferences, TOPO_BROWSER_GUEST_WEB_PREFERENCES, {
     partition,
     preload,
     additionalArguments: [...PLUGIN_FRAME_GUEST_RENDERER_ARGUMENTS],
@@ -204,7 +204,7 @@ function hardenPluginFrameGuestPreferences(
     plugins: false,
     navigateOnDragDrop: false,
     spellcheck: false,
-    // Plugins have Orca's own UI for prompts; alert/confirm would block the guest silently.
+    // Plugins have Topo's own UI for prompts; alert/confirm would block the guest silently.
     disableDialogs: true,
     enableBlinkFeatures: '',
     disableBlinkFeatures: ''

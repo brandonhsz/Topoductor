@@ -4,7 +4,7 @@ import { useAppStore } from '../../store'
 import { isWebRuntimeSessionActive } from '../../runtime/web-session-tabs-sync/identity/web-runtime-session-environment'
 import { moveWebRuntimeSessionTab } from '../../runtime/web-session-tabs-sync/actions/web-runtime-session-tab-move'
 import { isDesktopCreatedTabInFrameDrawnServerWorkspace } from '@/lib/frame-drawn-desktop-created-tabs'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 
 export function mirrorWebRuntimeTabMove(
   args: RuntimeMobileSessionTabMove & {
@@ -20,7 +20,7 @@ export function mirrorWebRuntimeTabMove(
   }
   // Desktop-only tabs move locally; server frames cannot place tabs the server never owned.
   if (
-    ORCA_LAYOUT_OWNER_IS_MAIN &&
+    TOPO_LAYOUT_OWNER_IS_MAIN &&
     isDesktopCreatedTabInFrameDrawnServerWorkspace(args.worktreeId, args.tabId)
   ) {
     return

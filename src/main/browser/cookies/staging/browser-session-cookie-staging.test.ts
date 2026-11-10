@@ -13,14 +13,14 @@ import {
   persistBrowserSessionMeta
 } from '../../sessions/profiles/browser-session-meta-store'
 
-const defaultPartition = 'persist:orca-browser-default'
-const routePartition = `persist:orca-browser-v1-${'c'.repeat(64)}`
+const defaultPartition = 'persist:topo-browser-default'
+const routePartition = `persist:topo-browser-v1-${'c'.repeat(64)}`
 let userData = ''
 const metadataPath = (): string => join(userData, 'browser-session-meta.json')
 
 beforeEach(() => {
   // Resolve macOS /var symlinks before comparing paths.
-  userData = realpathSync(mkdtempSync(join(tmpdir(), 'orca-cookie-staging-')))
+  userData = realpathSync(mkdtempSync(join(tmpdir(), 'topo-cookie-staging-')))
   appGetPathMock.mockReturnValue(userData)
 })
 
@@ -42,7 +42,7 @@ describe('applyPendingBrowserCookieImports', () => {
     applyPendingBrowserCookieImports({
       resolveMetadataPath: metadataPath,
       defaultPartition,
-      activeOrcaProfileId: 'profile-a'
+      activeTopoProfileId: 'profile-a'
     })
 
     for (const suffix of ['', '-wal', '-shm']) {

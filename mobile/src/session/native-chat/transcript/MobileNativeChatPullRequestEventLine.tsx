@@ -16,7 +16,7 @@ import { useMobileColorScheme } from '../../../theme/use-mobile-color-scheme'
 import { useMobileTranslation } from '../../../i18n/use-mobile-translation'
 import { scaledType } from './mobile-native-chat-message-styles'
 
-/** "CI failing on orca#3 at 8d5f74b": the desktop's one-line card, without its Hide button; the phone follows that setting. */
+/** "CI failing on topo#3 at 8d5f74b": the desktop's one-line card, without its Hide button; the phone follows that setting. */
 export function MobileNativeChatPullRequestEventLine({
   block,
   messageId,

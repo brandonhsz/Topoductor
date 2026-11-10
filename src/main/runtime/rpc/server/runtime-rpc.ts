@@ -1,7 +1,7 @@
 // Why: the single security boundary for the bundled CLI — auth-token enforcement, metadata publication, transport orchestration.
 import { RuntimeRpcMobilePairing } from './runtime-rpc-mobile-pairing'
 import { publishHostDescriptor } from '../../hosts/platform-probe/host-descriptor'
-import type { OrcaRuntimeRpcServerOptions } from './runtime-rpc-pairing-types'
+import type { TopoRuntimeRpcServerOptions } from './runtime-rpc-pairing-types'
 
 export type RuntimeRpcClientActivity = {
   openConnections: number
@@ -9,8 +9,8 @@ export type RuntimeRpcClientActivity = {
   lastRequestAt: number
 }
 
-export class OrcaRuntimeRpcServer extends RuntimeRpcMobilePairing {
-  constructor(options: OrcaRuntimeRpcServerOptions) {
+export class TopoRuntimeRpcServer extends RuntimeRpcMobilePairing {
+  constructor(options: TopoRuntimeRpcServerOptions) {
     super(options)
   }
 

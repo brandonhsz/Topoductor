@@ -3,7 +3,7 @@ import type { ChildProcess } from 'node:child_process'
 import {
   childProcessHasExited,
   signalProcessTree
-} from '@orca/process-host/process-tree-termination'
+} from '@topo/process-host/process-tree-termination'
 import { createSshOperationAbortError } from '../../connection/ssh-exec-options'
 import type { SshTarget } from '../../../../shared/ssh-types'
 import type { SshResolvedConfig } from '../../config/ssh-g-config-resolution'
@@ -22,7 +22,7 @@ import {
 // Allow the full proxy handshake: avoiding repeats is the route's purpose.
 export const SYSTEM_SSH_LOOPBACK_ROUTE_LISTEN_TIMEOUT_MS = 60_000
 export const SYSTEM_SSH_LOOPBACK_ROUTE_PROBE_TIMEOUT_MS = 15_000
-const LOOPBACK_ROUTE_PROBE_MARKER = 'ORCA-SYSTEM-SSH-LOOPBACK-OK'
+const LOOPBACK_ROUTE_PROBE_MARKER = 'TOPO-SYSTEM-SSH-LOOPBACK-OK'
 
 export type SystemSshLoopbackRoute = {
   args: SystemSshLoopbackRouteArgs
@@ -58,7 +58,7 @@ export function shouldUseSystemSshLoopbackRoute(
     : Boolean(target.proxyCommand || target.jumpHost)
 }
 
-// Why: Orca dials manual targets by their stored endpoint; `ssh -G` ran on the label, not that host.
+// Why: Topo dials manual targets by their stored endpoint; `ssh -G` ran on the label, not that host.
 function configBackedResolution(
   target: SshTarget,
   resolved: SshResolvedConfig | null

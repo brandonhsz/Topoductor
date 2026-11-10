@@ -1,7 +1,7 @@
 import { OrchestrationError } from '../../orchestration-error'
 import type { OrchestrationDb } from '../orchestration-db'
 import type { DispatchContextRow } from '../orchestration-records'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 
 // A starting Dispatch names its terminal only in its start options until its authority attaches.
 // A start stranded by a runtime restart is racing nothing, so only this runtime's starts claim.
@@ -11,7 +11,7 @@ const STARTING_ON_TERMINAL_SQL = `SELECT d.* FROM dispatch_contexts d
     AND json_extract(w.start_options, '$.terminal') = ?
   ORDER BY d.rowid LIMIT 1`
 
-type ClaimRuntime = Pick<OrcaRuntimeService, 'getTerminalPaneKey' | 'getRuntimeId'>
+type ClaimRuntime = Pick<TopoRuntimeService, 'getTerminalPaneKey' | 'getRuntimeId'>
 
 type TerminalClaim = {
   dispatchId: string
@@ -130,7 +130,7 @@ function terminalBusyError(
   const followUp = claim.followUpOf ? `, the follow-up of Dispatch ${claim.followUpOf}` : ''
   return new OrchestrationError(
     'terminal_busy',
-    `${busy}${followUp} (task ${claim.taskId}${title ? ` "${title}"` : ''}) is still open on it. To answer it or give it more work, use your Orca CLI's \`orchestration send --to dispatch:${claim.dispatchId}\`; to replace it, run \`orchestration worker-stop --dispatch ${claim.dispatchId}\` and then start again. No effects were applied.`,
+    `${busy}${followUp} (task ${claim.taskId}${title ? ` "${title}"` : ''}) is still open on it. To answer it or give it more work, use your Topo CLI's \`orchestration send --to dispatch:${claim.dispatchId}\`; to replace it, run \`orchestration worker-stop --dispatch ${claim.dispatchId}\` and then start again. No effects were applied.`,
     data
   )
 }

@@ -1,10 +1,10 @@
-/** R39: a WSL host's server lives in the Linux login's ~/.orca, so another Orca on this computer may share it. */
+/** R39: a WSL host's server lives in the Linux login's ~/.topo, so another Topo on this computer may share it. */
 import { z } from 'zod'
-import { ORCAD_PEER_DESKTOPS_RUNTIME_CAPABILITY } from '../../../shared/orcad-runtime-capabilities'
+import { TOPOD_PEER_DESKTOPS_RUNTIME_CAPABILITY } from '../../../shared/topod-runtime-capabilities'
 import {
-  ORCAD_PEER_DESKTOPS_METHOD,
-  OrcadPeerDesktopsResultSchema
-} from '../../../shared/orcad-peer-desktops-contract'
+  TOPOD_PEER_DESKTOPS_METHOD,
+  TopodPeerDesktopsResultSchema
+} from '../../../shared/topod-peer-desktops-contract'
 import { wslHostClientInstanceId } from './wsl-host-client-instance'
 
 export type WslHostPeerDesktops =
@@ -16,7 +16,7 @@ export type WslHostPeerDesktops =
 const StatusCapabilitiesSchema = z.looseObject({ capabilities: z.array(z.string()).optional() })
 
 /**
- * Another Orca counts only while its control socket is open on the server right now; a closed one
+ * Another Topo counts only while its control socket is open on the server right now; a closed one
  * isn't protected. Throws when the server can't answer, so the caller refuses the teardown.
  */
 export async function readWslHostPeerDesktops(
@@ -24,11 +24,11 @@ export async function readWslHostPeerDesktops(
   clientInstanceId = wslHostClientInstanceId()
 ): Promise<WslHostPeerDesktops> {
   const status = StatusCapabilitiesSchema.parse(await call('status.get', undefined))
-  if (!status.capabilities?.includes(ORCAD_PEER_DESKTOPS_RUNTIME_CAPABILITY)) {
+  if (!status.capabilities?.includes(TOPOD_PEER_DESKTOPS_RUNTIME_CAPABILITY)) {
     return { kind: 'unsupported' }
   }
-  const { peers } = OrcadPeerDesktopsResultSchema.parse(
-    await call(ORCAD_PEER_DESKTOPS_METHOD, { clientInstanceId })
+  const { peers } = TopodPeerDesktopsResultSchema.parse(
+    await call(TOPOD_PEER_DESKTOPS_METHOD, { clientInstanceId })
   )
   return peers.length > 0
     ? { kind: 'shared', names: peers.map((peer) => peer.name) }

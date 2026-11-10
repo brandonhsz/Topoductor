@@ -5,12 +5,12 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { promisify } from 'node:util'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import {
   partialRuntimeStore,
   storeRepo,
   storeWorktreeMeta
-} from '../orca-runtime-tests/runtime-store-partial-fixture'
+} from '../topo-runtime-tests/runtime-store-partial-fixture'
 import type { WorktreeMeta } from '../../../shared/worktree/meta-types'
 import type { Repo } from '../../../shared/repo-types'
 import type { HostWorktreeTarget } from '../../../shared/worktree/host-qualified-identity'
@@ -20,11 +20,11 @@ import type { RuntimeWorktreeRemoveResult } from '../../../shared/runtime-worktr
 import type { RuntimeRpcSuccess } from '../../../shared/runtime-rpc-envelope'
 import * as appEnvironment from '../../../shared/app-environment'
 import type { SshTarget } from '../../../shared/ssh-types'
-import { orcadMigrationCutoverFixture } from '../../managed-server/migration/cutover/testing/orcad-migration-cutover-fixture'
-import { writeOrcadMigrationSourceCutover } from '../../persistence/migrating-orcad-catalog/orcad-migration-cutover-journal'
+import { topodMigrationCutoverFixture } from '../../managed-server/migration/cutover/testing/topod-migration-cutover-fixture'
+import { writeTopodMigrationSourceCutover } from '../../persistence/migrating-topod-catalog/topod-migration-cutover-journal'
 import { removalPtyProvider } from './worktree-rm-pty.test-fixture'
 import { pairedRemovalReceiver } from './worktree-rm-paired.test-fixture'
-import { addManagedOrcadEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-managed-orcad-store'
+import { addManagedTopodEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-managed-topod-store'
 import { getRuntimeMetadataPath } from '../../../shared/runtime-bootstrap'
 import { WorktreeRemove } from '../../../shared/rpc-contract/worktree-params'
 import { UnixSocketTransport } from './unix-socket-transport'
@@ -101,7 +101,7 @@ let afterShow: () => void | Promise<void> = () => {}
 let beforeStatus: () => void | Promise<void> = () => {}
 const stopped = vi.fn(async () => {})
 const git = async (...args: string[]) => (await exec('git', args, { cwd: repoPath })).stdout.trim()
-class RemovalRuntime extends OrcaRuntimeService {
+class RemovalRuntime extends TopoRuntimeService {
   override readonly workspaceLifecycle = new WorkspaceLifecycleQueue()
   override async showManagedWorktree(selector: string) {
     const shown = await super.showManagedWorktree(selector)
@@ -141,7 +141,7 @@ async function dispatch(request: RpcRequest, legacy = !supported) {
 beforeEach(async () => {
   vi.spyOn(console, 'log').mockImplementation(() => {})
   vi.spyOn(console, 'error').mockImplementation(() => {})
-  directory = await realpath(await mkdtemp(join(tmpdir(), 'orca-cli-rm-')))
+  directory = await realpath(await mkdtemp(join(tmpdir(), 'topo-cli-rm-')))
   repoPath = join(directory, 'repo')
   checkout = join(directory, 'checkout')
   id = `repo::${checkout}`
@@ -150,10 +150,10 @@ beforeEach(async () => {
   stopped.mockClear()
   afterShow = () => {}
   beforeStatus = () => {}
-  vi.stubEnv('ORCA_USER_DATA_PATH', directory)
-  vi.stubEnv('ORCA_PAIRING_CODE', '')
-  vi.stubEnv('ORCA_REMOTE_PAIRING', '')
-  vi.stubEnv('ORCA_ENVIRONMENT', '')
+  vi.stubEnv('TOPO_USER_DATA_PATH', directory)
+  vi.stubEnv('TOPO_PAIRING_CODE', '')
+  vi.stubEnv('TOPO_REMOTE_PAIRING', '')
+  vi.stubEnv('TOPO_ENVIRONMENT', '')
   await mkdir(repoPath)
   await git('init', '-q')
   await git('checkout', '-qb', 'main')
@@ -213,7 +213,7 @@ beforeEach(async () => {
   const kind = process.platform === 'win32' ? 'named-pipe' : 'unix'
   const endpoint =
     process.platform === 'win32'
-      ? String.raw`\\.\pipe\orca-rm-${process.pid}`
+      ? String.raw`\\.\pipe\topo-rm-${process.pid}`
       : join(directory, 'rpc.sock')
   socket = new UnixSocketTransport({ kind, endpoint })
   socket.onMessage((message, reply) => {
@@ -485,7 +485,7 @@ it('selects legacy on B after lookup on A and cannot rediscover C during B statu
   const kind = process.platform === 'win32' ? 'named-pipe' : 'unix'
   const endpoint =
     process.platform === 'win32'
-      ? String.raw`\\.\pipe\orca-rm-${process.pid}-B`
+      ? String.raw`\\.\pipe\topo-rm-${process.pid}-B`
       : join(directory, 'B.sock')
   const legacy = new UnixSocketTransport({ kind, endpoint })
   const methods: string[] = []
@@ -548,11 +548,11 @@ it.each([true, false])(
       ])
       const localHead = (await exec('git', ['-C', clientRepo, 'rev-parse', 'HEAD'])).stdout
       const head = await git('rev-parse', 'task')
-      const environment = addManagedOrcadEnvironment(directory, {
+      const environment = addManagedTopodEnvironment(directory, {
         id: 'served-ssh',
         name: 'served-ssh',
         pairingCode: receiver.pairingCode,
-        orcadDeployment: {
+        topodDeployment: {
           sshTargetId: 'fixture-ssh',
           sshTargetGeneration: 1,
           localPort: receiver.port,
@@ -612,11 +612,11 @@ it('retains legacy hidden SSH folder removal with a raw-ID local twin', async ()
       port: 22,
       username: 'test',
       generation: 2,
-      orcadFence: { environmentId: 'env-1' }
+      topodFence: { environmentId: 'env-1' }
     }
   ]
-  writeOrcadMigrationSourceCutover(directory, {
-    ...orcadMigrationCutoverFixture('move', 'source'),
+  writeTopodMigrationSourceCutover(directory, {
+    ...topodMigrationCutoverFixture('move', 'source'),
     phase: 'destination-committed'
   })
   const hidden = storeRepo({ ...folderRepo, connectionId: 'source' })

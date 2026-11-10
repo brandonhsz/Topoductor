@@ -14,7 +14,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 vi.mock('electron', () => ({
   app: {
     getPath: () => tmpdir(),
-    getName: () => 'orca-test',
+    getName: () => 'topo-test',
     getVersion: () => '0.0.0-test',
     isPackaged: false,
     on: () => {},
@@ -50,7 +50,7 @@ function openStore(dataFile: string): InstanceType<typeof Store> {
 describe('persisted state survives a save/load round trip', () => {
   it('keeps a #22551 settings-slot OpenCode Go key on disk until its new owner has it', () => {
     const dataFile = join(
-      realpathSync(mkdtempSync(join(tmpdir(), 'orca-legacy-opencode-go-key-'))),
+      realpathSync(mkdtempSync(join(tmpdir(), 'topo-legacy-opencode-go-key-'))),
       'state.json'
     )
     const first = openStore(dataFile)

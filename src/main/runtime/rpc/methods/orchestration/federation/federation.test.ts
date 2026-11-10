@@ -2,7 +2,7 @@ import { registerFederationAnswerAtomicityTest } from './federation-answer-atomi
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../../../../shared/orchestration/orchestration-runtime-capabilities'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -19,8 +19,8 @@ describe('orchestration federation', () => {
   const databases: OrchestrationDb[] = []
   let homeDb: OrchestrationDb
   let workerDb: OrchestrationDb
-  let homeRuntime: OrcaRuntimeService
-  let workerRuntime: OrcaRuntimeService
+  let homeRuntime: TopoRuntimeService
+  let workerRuntime: TopoRuntimeService
   let homeDispatcher: RpcDispatcher
   let workerDispatcher: RpcDispatcher
   let workerCapabilities: string[]
@@ -31,7 +31,7 @@ describe('orchestration federation', () => {
     homeDb = new OrchestrationDb(':memory:')
     workerDb = new OrchestrationDb(':memory:')
     databases.push(homeDb, workerDb)
-    workerRuntime = new OrcaRuntimeService()
+    workerRuntime = new TopoRuntimeService()
     workerRuntime.setOrchestrationDb(workerDb)
     workerDispatcher = new RpcDispatcher({
       runtime: workerRuntime,
@@ -71,7 +71,7 @@ describe('orchestration federation', () => {
         return response
       }
     }
-    homeRuntime = new OrcaRuntimeService(null, undefined, {
+    homeRuntime = new TopoRuntimeService(null, undefined, {
       orchestrationEnvironmentTransport: transport
     })
     homeRuntime.setOrchestrationDb(homeDb)
@@ -102,7 +102,7 @@ describe('orchestration federation', () => {
   }
 
   function restartWorkerRuntime(): void {
-    workerRuntime = new OrcaRuntimeService()
+    workerRuntime = new TopoRuntimeService()
     workerRuntime.setOrchestrationDb(workerDb)
     configureFederationWorkerRuntime(workerRuntime)
     workerDispatcher = new RpcDispatcher({

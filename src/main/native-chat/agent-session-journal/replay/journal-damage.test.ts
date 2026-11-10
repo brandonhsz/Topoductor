@@ -19,7 +19,7 @@ import {
   liveTestJournalRows,
   updateTestJournalRowJson,
   deleteTestJournalRow,
-  SAVED_BY_NEWER_ORCA
+  SAVED_BY_NEWER_TOPO
 } from '../store-lifecycle/journal-host-database-test-support'
 
 const IDENTITY: AgentSessionJournalIdentity = {
@@ -81,7 +81,7 @@ async function writeChat(): Promise<void> {
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-journal-damage-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-journal-damage-'))
   clock = 1_000
 })
 
@@ -133,7 +133,7 @@ describe('a damaged chat', () => {
   })
 
   it.each([1, 3])(
-    "reads past damage at row %i to a newer build's row, which fails the load as a newer Orca's instead",
+    "reads past damage at row %i to a newer build's row, which fails the load as a newer Topo's instead",
     async (damaged) => {
       await writeChat()
       await withJournalDatabase((db) => {
@@ -143,7 +143,7 @@ describe('a damaged chat', () => {
       })
       const before = await storedRows()
 
-      await expect(open()).rejects.toMatchObject(SAVED_BY_NEWER_ORCA)
+      await expect(open()).rejects.toMatchObject(SAVED_BY_NEWER_TOPO)
       expect(await storedRows()).toEqual(before)
     }
   )

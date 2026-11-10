@@ -148,7 +148,7 @@ describe('RelayDispatcher', () => {
     const cliId = dispatcher.attachClient(() => {})
 
     const pending = dispatcher.requestAnyClient(
-      'orca.cli',
+      'topo.cli',
       { argv: ['status'] },
       { excludeClientId: cliId }
     )
@@ -156,7 +156,7 @@ describe('RelayDispatcher', () => {
     expect(ownerWritten).toHaveLength(1)
     const requestFrame = decodeFirstFrame(ownerWritten[0])
     const request = JSON.parse(requestFrame.payload.toString('utf-8')) as JsonRpcRequest
-    expect(request.method).toBe('orca.cli')
+    expect(request.method).toBe('topo.cli')
     expect(request.params).toEqual({ argv: ['status'] })
 
     dispatcher.feedClient(
@@ -175,7 +175,7 @@ describe('RelayDispatcher', () => {
     const cliId = dispatcher.attachClient(() => {})
 
     const pending = dispatcher.requestAnyClient(
-      'orca.cli',
+      'topo.cli',
       { argv: ['status'] },
       { excludeClientId: cliId }
     )
@@ -184,7 +184,7 @@ describe('RelayDispatcher', () => {
     expect(ownerWritten).toHaveLength(1)
     const requestFrame = decodeFirstFrame(ownerWritten[0])
     const request = JSON.parse(requestFrame.payload.toString('utf-8')) as JsonRpcRequest
-    expect(request.method).toBe('orca.cli')
+    expect(request.method).toBe('topo.cli')
 
     dispatcher.feedClient(
       ownerId,
@@ -330,7 +330,7 @@ describe('RelayDispatcher', () => {
       const detachListener = vi.fn()
       detachDispatcher.onClientDetached(detachListener)
 
-      // A frame the owning Orca must not silently miss (e.g. a pane exit).
+      // A frame the owning Topo must not silently miss (e.g. a pane exit).
       throwOnWrite = true
       detachDispatcher.notify('pty.exit', { id: 'pty-1', code: 0 })
 

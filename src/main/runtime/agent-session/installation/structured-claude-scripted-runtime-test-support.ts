@@ -18,7 +18,7 @@ import type {
   openClaudeStreamJsonConnection
 } from '../../../claude/claude-stream-json-connection'
 import { runClaudeControl } from '../../../claude/claude-agent-sdk-control-requests'
-import { claudeSessionIdForOrcaSession } from '../../../claude/structured/claude-structured-session-id'
+import { claudeSessionIdForTopoSession } from '../../../claude/structured/claude-structured-session-id'
 import type { AgentSessionAttachParams } from '../../../native-chat/agent-session-wire/acquisition/structured-agent-session-attach'
 import { hostTestAttachParams } from '../../../native-chat/agent-session-wire/host/testing/structured-agent-session-host-test-data'
 import type { StructuredAgentSessionHost } from '../../../native-chat/agent-session-wire/host/structured-agent-session-host'
@@ -28,8 +28,8 @@ import {
 } from '../structured-agent-session-runtime'
 import { createStructuredAgentSessionLogger } from '../../../native-chat/agent-session-wire/host/structured-agent-session-logger'
 
-/** The error a real CLI's exit reaches the adapter as: Orca's message, the stderr as a log detail. */
-/** A Claude Code with every version-gated flag and control Orca uses. */
+/** The error a real CLI's exit reaches the adapter as: Topo's message, the stderr as a log detail. */
+/** A Claude Code with every version-gated flag and control Topo uses. */
 const CURRENT_CLAUDE_CODE_VERSION = '2.1.284'
 
 export function scriptedClaudeExitError(diagnostic: string): Error {
@@ -91,7 +91,7 @@ export function createScriptedClaudeRuntime(sessionIds: readonly string[]) {
     const providerSessionId = String(launch.options.sessionId ?? launch.options.resume)
     const sessionId = sessionIds.find(
       (candidate) =>
-        claudeSessionIdForOrcaSession(
+        claudeSessionIdForTopoSession(
           candidate,
           host?.deps.store.getRecord(candidate)?.providerContextBoundary?.operationId
         ) === providerSessionId
@@ -244,7 +244,7 @@ export function createScriptedClaudeRuntime(sessionIds: readonly string[]) {
     children: (sessionId: string): ScriptedClaudeChild[] =>
       children.filter((entry) => entry.sessionId === sessionId),
     install: async (): Promise<StructuredAgentSessionHost> => {
-      root ??= await mkdtemp(join(tmpdir(), 'orca-scripted-claude-runtime-'))
+      root ??= await mkdtemp(join(tmpdir(), 'topo-scripted-claude-runtime-'))
       await mkdir(join(root, 'claude-home'), { recursive: true })
       const directory = root
       host = await ensureStructuredAgentSessionHost({
@@ -286,7 +286,7 @@ export function createScriptedClaudeRuntime(sessionIds: readonly string[]) {
         accountHome: { variable: 'CLAUDE_CONFIG_DIR', path: join(root ?? '', 'claude-home') },
         providerHandle: {
           kind: 'claude',
-          sessionId: claudeSessionIdForOrcaSession(sessionId),
+          sessionId: claudeSessionIdForTopoSession(sessionId),
           leafUuid: null
         },
         ...overrides

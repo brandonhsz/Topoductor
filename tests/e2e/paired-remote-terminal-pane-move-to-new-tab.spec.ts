@@ -2,7 +2,7 @@ import type {
   RuntimeMobileSessionTabsResult,
   RuntimeTerminalListResult
 } from '../../src/shared/runtime-types'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { launchHeadlessPairedRuntimeHost } from './helpers/headless-paired-runtime-host'
 import {
   createRuntimeDesktopPairingOffer,
@@ -215,15 +215,15 @@ test('a pane moved to a new tab on a paired server workspace stays in its new ta
 // A server with a desktop window keeps its layout in that window, so the window makes the move;
 // the pane must stay in the tab this desktop drew, not flash and go back into its split.
 test('a pane moved to a new tab on a server with a desktop window stays in its new tab', async ({
-  orcaPage
+  topoPage
 }, testInfo) => {
   // Why: launches a second, paired Electron client next to the server's own window.
   test.setTimeout(200_000)
-  const worktreeId = await orcaPage.evaluate(() => window.__store?.getState().activeWorktreeId)
+  const worktreeId = await topoPage.evaluate(() => window.__store?.getState().activeWorktreeId)
   if (!worktreeId) {
     throw new Error('Window host has no active seeded workspace')
   }
-  const offer = await createRuntimeDesktopPairingOffer(orcaPage)
+  const offer = await createRuntimeDesktopPairingOffer(topoPage)
   const desktop = await launchPairedElectronClient(offer, testInfo, 'window host pane move')
   const page = desktop.page
   try {
@@ -293,7 +293,7 @@ test('a pane moved to a new tab on a server with a desktop window stays in its n
     await expect(movedTab).toHaveCount(1)
     await expect
       .poll(() =>
-        orcaPage.evaluate(
+        topoPage.evaluate(
           ({ tabId, leafId }) => {
             const root = window.__store?.getState().terminalLayoutsByTabId[tabId]?.root
             return root?.type === 'leaf' && root.leafId === leafId

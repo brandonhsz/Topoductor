@@ -90,7 +90,7 @@
   );
   background-color: color-mix(
     in srgb,
-    var(--chat-canvas) calc(max(var(--orca-theme-background-surface-opacity), 0.8) * 100%),
+    var(--chat-canvas) calc(max(var(--topo-theme-background-surface-opacity), 0.8) * 100%),
     transparent
   );
 }

@@ -1,4 +1,4 @@
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { inProcessSliceMs, runPsInProcess } from '../../../shared/libproc-process-table'
 
 const PROCESS_TABLE_LOOKUP_TIMEOUT_MS = 250
@@ -103,7 +103,7 @@ export function getPosixPtyForegroundGroup(
   if (normalizeTty(root.tty) !== normalizeTty(ptsName)) {
     return null
   }
-  // A dev daemon may share the PTY; never group-signal Orca itself.
+  // A dev daemon may share the PTY; never group-signal Topo itself.
   if (rows.some((row) => row.pid === currentPid && row.tty === root.tty)) {
     return null
   }

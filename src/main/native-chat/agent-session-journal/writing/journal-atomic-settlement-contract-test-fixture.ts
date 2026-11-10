@@ -37,7 +37,7 @@ export function createFixture() {
   }
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-atomic-settlement-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-atomic-settlement-'))
     journal = await open()
   })
 
@@ -67,13 +67,13 @@ export function createFixture() {
       fence: 7
     })
     const turn = await journal.appendItem(
-      { provider: 'orca', clientMessageId: 'turn' },
+      { provider: 'topo', clientMessageId: 'turn' },
       { kind: 'turn', turnId: 'turn', state: 'running', startedAt: 900 },
       { fence: 7, turnScope: AGENT_JOURNAL_THREAD_SCOPE }
     )
     for (let index = 0; index < count; index++) {
       await journal.appendItem(
-        { provider: 'orca', clientMessageId: `call-${index}` },
+        { provider: 'topo', clientMessageId: `call-${index}` },
         {
           kind: 'tool-call',
           name: 'Write',

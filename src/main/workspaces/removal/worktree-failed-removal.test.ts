@@ -51,7 +51,7 @@ const mainWorktree: GitWorktreeInfo = {
 }
 
 beforeEach(async () => {
-  directory = await realpath(await mkdtemp(join(tmpdir(), 'orca-failed-removal-')))
+  directory = await realpath(await mkdtemp(join(tmpdir(), 'topo-failed-removal-')))
   checkout = join(directory, 'feature-$&-$$-$`')
   worktreeId = `repo-1::${checkout}`
   // What Git left: part of the checkout, `.git` already deleted.
@@ -221,7 +221,7 @@ describe('a delete that fails after Git dropped the registration', () => {
       publish: () => {}
     }))
 
-    const message = `A different checkout is now at ${checkout}; Orca left it in place. Delete it again to remove it.`
+    const message = `A different checkout is now at ${checkout}; Topo left it in place. Delete it again to remove it.`
     await expect(retried).rejects.toThrow(message)
     await _settlePendingWorktreeRemovalsForTests()
     expect(run).not.toHaveBeenCalled()
@@ -230,7 +230,7 @@ describe('a delete that fails after Git dropped the registration', () => {
     ])
   })
 
-  it('ends at the next listing once the checkout is deleted outside Orca', async () => {
+  it('ends at the next listing once the checkout is deleted outside Topo', async () => {
     await failRemoval()
     await rm(checkout, { recursive: true })
 
@@ -240,7 +240,7 @@ describe('a delete that fails after Git dropped the registration', () => {
     )
   })
 
-  it('ends at startup once its repo is removed from Orca, leaving the files', async () => {
+  it('ends at startup once its repo is removed from Topo, leaving the files', async () => {
     await failRemoval()
     _resetPendingWorktreeRemovalsForTests()
 

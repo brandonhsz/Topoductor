@@ -1,5 +1,5 @@
 import { recordLayoutApply } from '@/runtime/workspace-layout/commands/layout-apply-send'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import { tabOrderAnchor } from '../../../../../shared/workspace-layout/tab-order'
 import type { AppState } from '../../types'
 
@@ -142,7 +142,7 @@ export function restoreRecentlyClosedTabPosition(
   }
   restoreHere(getState, worktreeId, entityId, position)
   // Switch point: main moves the reopened tab to where the window shows it, wherever that came from.
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     recordReopenedTabPosition(getState(), worktreeId, entityId, position.groupId)
   }
 }
@@ -185,7 +185,7 @@ function restoreHere(
       {
         recordInteraction: false,
         // Why: restoreRecentlyClosedTabPosition records the reopened tab's place as one move.
-        ...(ORCA_LAYOUT_OWNER_IS_MAIN ? { layoutOwnerHandled: true } : {})
+        ...(TOPO_LAYOUT_OWNER_IS_MAIN ? { layoutOwnerHandled: true } : {})
       }
     )
   }

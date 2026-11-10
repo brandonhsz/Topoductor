@@ -22,8 +22,8 @@ function isSkillRootsUnsupported(error: unknown): boolean {
   )
 }
 
-/** extraRoots replaces the entire process list, so include every Orca root. */
-function orcaSkillRoots(visuals: NativeChatVisualsLaunch): string[] {
+/** extraRoots replaces the entire process list, so include every Topo root. */
+function topoSkillRoots(visuals: NativeChatVisualsLaunch): string[] {
   return [visuals.skill.skillsRoot]
 }
 
@@ -35,7 +35,7 @@ async function setSkillRoots(
   try {
     await connection.request(
       SKILL_ROOTS_METHOD,
-      { extraRoots: orcaSkillRoots(visuals) },
+      { extraRoots: topoSkillRoots(visuals) },
       { timeoutMs: CODEX_VISUALS_SETUP_BUDGET_MS }
     )
   } catch (error) {

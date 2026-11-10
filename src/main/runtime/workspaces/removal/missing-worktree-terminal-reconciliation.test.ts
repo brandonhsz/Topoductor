@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { IPtyProvider } from '../../../providers/pty-provider-contract'
 import type { Repo } from '../../../../shared/repo-types'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 import { stopMissingWorktreeTerminals } from './missing-worktree-terminal-reconciliation'
 import { createAdapter } from '../../../daemon/providers/routing/testing/daemon-pty-router-test-fixture'
 import { DaemonPtyRouter } from '../../../daemon/providers/routing/daemon-pty-router'
@@ -15,10 +15,10 @@ function createProvider(sessionIds: string[]): IPtyProvider {
   } as unknown as IPtyProvider
 }
 
-function createRuntime(): OrcaRuntimeService {
+function createRuntime(): TopoRuntimeService {
   return {
     stopTerminalsForWorktree: vi.fn(async () => ({ stopped: 0 }))
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
 }
 
 const localRepo: Repo = {

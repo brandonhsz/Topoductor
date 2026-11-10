@@ -25,7 +25,7 @@ describe('MimoCodeHookService buildPtyEnv', () => {
   let userConfigDir: string
 
   beforeEach(() => {
-    userDataDir = mkdtempSync(join(tmpdir(), 'orca-mimocode-userdata-'))
+    userDataDir = mkdtempSync(join(tmpdir(), 'topo-mimocode-userdata-'))
     getPathMock.mockImplementation((name) => {
       if (name === 'userData') {
         return userDataDir
@@ -42,11 +42,11 @@ describe('MimoCodeHookService buildPtyEnv', () => {
       getAppMetrics: () => []
     })
 
-    userConfigDir = mkdtempSync(join(tmpdir(), 'orca-mimocode-config-'))
+    userConfigDir = mkdtempSync(join(tmpdir(), 'topo-mimocode-config-'))
     mkdirSync(join(userConfigDir, 'plugins'), { recursive: true })
     writeFileSync(join(userConfigDir, 'mimocode.json'), '{"theme":"dark"}')
     writeFileSync(join(userConfigDir, 'plugins', 'user-plugin.js'), 'export default () => {}')
-    writeFileSync(join(userConfigDir, 'plugins', 'orca-mimocode-status.js'), 'USER PLUGIN')
+    writeFileSync(join(userConfigDir, 'plugins', 'topo-mimocode-status.js'), 'USER PLUGIN')
   })
 
   afterEach(() => {
@@ -63,18 +63,18 @@ describe('MimoCodeHookService buildPtyEnv', () => {
     expect(readFileSync(join(overlay, 'plugins', 'user-plugin.js'), 'utf8')).toBe(
       'export default () => {}'
     )
-    expect(readFileSync(join(overlay, 'plugins', 'orca-mimocode-status.js'), 'utf8')).toContain(
+    expect(readFileSync(join(overlay, 'plugins', 'topo-mimocode-status.js'), 'utf8')).toContain(
       '/hook/mimo-code'
     )
-    expect(readFileSync(join(userConfigDir, 'plugins', 'orca-mimocode-status.js'), 'utf8')).toBe(
+    expect(readFileSync(join(userConfigDir, 'plugins', 'topo-mimocode-status.js'), 'utf8')).toBe(
       'USER PLUGIN'
     )
   })
 
   it.skipIf(process.platform === 'win32')(
-    "never writes the Orca plugin through a user's linked plugins folder",
+    "never writes the Topo plugin through a user's linked plugins folder",
     () => {
-      const linkedPlugins = mkdtempSync(join(tmpdir(), 'orca-mimocode-linked-plugins-'))
+      const linkedPlugins = mkdtempSync(join(tmpdir(), 'topo-mimocode-linked-plugins-'))
       writeFileSync(join(linkedPlugins, 'user-plugin.js'), 'export default () => {}')
       rmSync(join(userConfigDir, 'plugins'), { recursive: true })
       symlinkSync(linkedPlugins, join(userConfigDir, 'plugins'))
@@ -91,7 +91,7 @@ describe('MimoCodeHookService buildPtyEnv', () => {
     }
   )
 
-  it('carries a login made under the old Orca MIMOCODE_HOME over once, owner-only', () => {
+  it('carries a login made under the old Topo MIMOCODE_HOME over once, owner-only', () => {
     const legacyData = join(userDataDir, 'mimocode-hooks', 'shared', 'data')
     mkdirSync(legacyData, { recursive: true })
     writeFileSync(join(legacyData, 'auth.json'), '{"legacy":true}')

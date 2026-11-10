@@ -13,15 +13,15 @@ export const WslDistroIdSchema = z
 
 const PortSchema = z.number().int().min(1).max(65_535)
 
-/** A managed orcad Orca deployed into a WSL distro and reaches through a `wsl.exe` stdio bridge. */
-export const OrcadWslDeploymentLinkSchema = z.object({
+/** A managed topod Topo deployed into a WSL distro and reaches through a `wsl.exe` stdio bridge. */
+export const TopodWslDeploymentLinkSchema = z.object({
   kind: z.literal('wsl'),
   distro: WslDistroNameSchema,
   distroId: WslDistroIdSchema.optional(),
   /** The desktop loopback port the bridge listens on; the pairing endpoint points here. */
   localPort: PortSchema,
-  /** orcad's listen port inside the distro, which each bridge connection dials. */
+  /** topod's listen port inside the distro, which each bridge connection dials. */
   remotePort: PortSchema
 })
 
-export type OrcadWslDeploymentLink = z.infer<typeof OrcadWslDeploymentLinkSchema>
+export type TopodWslDeploymentLink = z.infer<typeof TopodWslDeploymentLinkSchema>

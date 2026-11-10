@@ -12,9 +12,9 @@ import { fishHistorySessionName, resolveFishHistoryDir } from './fish-history-se
 const FISH = resolveFishBinary(4)
 const itWithFish = FISH.available ? it : it.skip
 
-const PROMPT_MARK = 'ORCAHIST> '
+const PROMPT_MARK = 'TOPOHIST> '
 const WORKTREE_HASH = 'deadbeefdeadbeef'
-const MARKER = 'echo orca-worktree-scoped-history'
+const MARKER = 'echo topo-worktree-scoped-history'
 
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -29,7 +29,7 @@ async function waitUntil(predicate: () => boolean, timeoutMs: number): Promise<b
   return false
 }
 
-describe('fish keeps per-worktree history under the session Orca names', () => {
+describe('fish keeps per-worktree history under the session Topo names', () => {
   let home: string | null = null
 
   it('has the fish this suite needs when CI requires one', () => {
@@ -48,7 +48,7 @@ describe('fish keeps per-worktree history under the session Orca names', () => {
     async () => {
       const nodePty = await import('node-pty')
 
-      home = mkdtempSync(path.join(tmpdir(), 'orca-fish-history-'))
+      home = mkdtempSync(path.join(tmpdir(), 'topo-fish-history-'))
       const dataHome = path.join(home, 'data')
       mkdirSync(path.join(home, 'fish'), { recursive: true })
       writeFileSync(
@@ -100,7 +100,7 @@ describe('fish keeps per-worktree history under the session Orca names', () => {
 
       expect(await waitUntil(() => rendered.includes(PROMPT_MARK), 15_000)).toBe(true)
       term.write(`${MARKER}\r`)
-      expect(await waitUntil(() => rendered.includes('orca-worktree-scoped-history'), 5_000)).toBe(
+      expect(await waitUntil(() => rendered.includes('topo-worktree-scoped-history'), 5_000)).toBe(
         true
       )
       // Fish flushes history on exit; wait before reading.

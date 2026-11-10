@@ -47,9 +47,9 @@ function installShell(
       const payload = isProbe
         ? `core.sshcommand\n${SSH_COMMAND}\0ssh.variant\n${options.variant ?? 'ssh'}\0`
         : 'fetch-ok'
-      const nonce = /__ORCA_WSL_CAPTURE_BEGIN_ ([^_]+)__/.exec(script)?.[1]
+      const nonce = /__TOPO_WSL_CAPTURE_BEGIN_ ([^_]+)__/.exec(script)?.[1]
       const stdout = nonce
-        ? `profile banner\n__ORCA_WSL_CAPTURE_BEGIN_${nonce}__${payload}__ORCA_WSL_CAPTURE_END_${nonce}__`
+        ? `profile banner\n__TOPO_WSL_CAPTURE_BEGIN_${nonce}__${payload}__TOPO_WSL_CAPTURE_END_${nonce}__`
         : payload
       callback(isProbe ? (options.configError ?? null) : null, stdout, '')
       close()

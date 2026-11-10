@@ -1,5 +1,5 @@
 /**
- * Orca Vault's in-page half. Runs in the guest's isolated world and exposes nothing to page
+ * Topo Vault's in-page half. Runs in the guest's isolated world and exposes nothing to page
  * script: it only describes credential forms, reports what the user typed and submitted, and
  * applies a fill main hands it. Main owns origins and every decision.
  */

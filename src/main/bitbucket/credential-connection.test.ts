@@ -28,14 +28,14 @@ async function loadModule() {
 beforeEach(() => {
   process.env = { ...OLD_ENV }
   for (const key of [
-    'ORCA_BITBUCKET_ACCESS_TOKEN',
-    'ORCA_BITBUCKET_EMAIL',
-    'ORCA_BITBUCKET_API_TOKEN',
-    'ORCA_BITBUCKET_API_BASE_URL'
+    'TOPO_BITBUCKET_ACCESS_TOKEN',
+    'TOPO_BITBUCKET_EMAIL',
+    'TOPO_BITBUCKET_API_TOKEN',
+    'TOPO_BITBUCKET_API_BASE_URL'
   ]) {
     delete process.env[key]
   }
-  tempHome = mkdtempSync(join(tmpdir(), 'orca-bitbucket-conn-'))
+  tempHome = mkdtempSync(join(tmpdir(), 'topo-bitbucket-conn-'))
 })
 
 afterEach(() => {

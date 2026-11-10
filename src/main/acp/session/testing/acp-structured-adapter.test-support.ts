@@ -27,7 +27,7 @@ import type { AcpStructuredSessionAdapterDeps } from '../acp-structured-session-
 import { AgentSessionStartFailure } from '../../../native-chat/agent-session-wire/startup/structured-agent-session-start-failure'
 
 export const GROK = acpLaunchSpecFor('grok')!
-const RIG_ENV = { PATH: '/usr/bin', ORCA_PANE_KEY: 'tab-1:pane-1', ORCA_AGENT_HOOK_PORT: '1234' }
+const RIG_ENV = { PATH: '/usr/bin', TOPO_PANE_KEY: 'tab-1:pane-1', TOPO_AGENT_HOOK_PORT: '1234' }
 export const PROVIDER_SESSION = 'acp-session-1'
 
 export const GROK_CONFIG_OPTIONS = [
@@ -102,14 +102,14 @@ export async function openAcpAdapterRig(
   const dataDirectory =
     options.deps?.dataDirectory ??
     (spec.privateTempDirectory
-      ? await mkdtemp(process.platform === 'win32' ? join(tmpdir(), 'orca-acp-') : '/tmp/o')
-      : join(tmpdir(), 'orca-acp-adapter-rig'))
+      ? await mkdtemp(process.platform === 'win32' ? join(tmpdir(), 'topo-acp-') : '/tmp/o')
+      : join(tmpdir(), 'topo-acp-adapter-rig'))
   if (spec.privateTempDirectory && !options.deps?.dataDirectory) {
     onTestFinished(() => rm(dataDirectory, { recursive: true, force: true }))
   }
   // Use a scratch account folder for agents that prepare one.
   const { prepare, resolve, environment } = spec.account
-  const stateDirectory = prepare ? await mkdtemp(join(tmpdir(), 'orca-acp-account-')) : tmpdir()
+  const stateDirectory = prepare ? await mkdtemp(join(tmpdir(), 'topo-acp-account-')) : tmpdir()
   if (prepare) {
     onTestFinished(() => rm(stateDirectory, { recursive: true, force: true }))
   }

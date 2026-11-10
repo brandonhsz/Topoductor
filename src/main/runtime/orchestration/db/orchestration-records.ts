@@ -1,5 +1,5 @@
 import type { TerminalExitCause } from '../../../../shared/terminal/pty/lifecycle/terminal-exit-cause'
-import type { OrcaSessionId } from '../../../../shared/orca-session-address'
+import type { TopoSessionId } from '../../../../shared/topo-session-address'
 export const MESSAGE_TYPES = [
   'status',
   'dispatch',
@@ -48,9 +48,9 @@ export type RunRow = {
   coordinator_handle: string | null
   coordinator_pane_key: string | null
   /** Bare coordinator session id; cleared chats use their lineage root. */
-  coordinator_orca_session_id: OrcaSessionId | null
-  /** The consumer_generation the id was written at; see currentRunCoordinatorOrcaSessionId. */
-  coordinator_orca_session_id_generation: number | null
+  coordinator_topo_session_id: TopoSessionId | null
+  /** The consumer_generation the id was written at; see currentRunCoordinatorTopoSessionId. */
+  coordinator_topo_session_id_generation: number | null
   consumer_generation: number
   legacy: number
   created_at: string
@@ -292,7 +292,7 @@ export type DispatchContextRow = {
   assignee_handle: string | null
   assignee_pane_key: string | null
   /** Bare assignee session id; cleared chats use their lineage root. */
-  assignee_orca_session_id: OrcaSessionId | null
+  assignee_topo_session_id: TopoSessionId | null
   /** Written only by hosts that minted a per-Dispatch capability; never read for authority. */
   capability_hash: string | null
   process_incarnation: string | null
@@ -305,7 +305,7 @@ export type DispatchContextRow = {
   creator_handle: string | null
   creator_pane_key: string | null
   /** Bare creator session id; cleared chats use their lineage root. */
-  creator_orca_session_id: OrcaSessionId | null
+  creator_topo_session_id: TopoSessionId | null
   host_scope: string | null
   status: DispatchStatus
   failure_count: number

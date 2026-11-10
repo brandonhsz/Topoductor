@@ -1,6 +1,6 @@
 import { resolveEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-store'
 import {
-  getOrcadSshDeployment,
+  getTopodSshDeployment,
   getPreferredPairedRuntimeConnection,
   getPreferredPairingOffer,
   type KnownRuntimeEnvironment
@@ -64,8 +64,8 @@ function repairedSameServer(userDataPath: string, before: KnownRuntimeEnvironmen
     const after = resolveEnvironment(userDataPath, before.id)
     return (
       (after.pairingRevision ?? after.createdAt) !== (before.pairingRevision ?? before.createdAt) &&
-      getOrcadSshDeployment(before) !== undefined &&
-      getOrcadSshDeployment(after) !== undefined &&
+      getTopodSshDeployment(before) !== undefined &&
+      getTopodSshDeployment(after) !== undefined &&
       getPreferredPairingOffer(after).publicKeyB64 === getPreferredPairingOffer(before).publicKeyB64
     )
   } catch {

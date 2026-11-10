@@ -16,7 +16,7 @@ import {
 } from '../structured-agent-session-runtime'
 
 export async function claudePipedFixture() {
-  const directory = await mkdtemp(join(tmpdir(), 'orca-claude-kill-evidence-'))
+  const directory = await mkdtemp(join(tmpdir(), 'topo-claude-kill-evidence-'))
   const children: ReturnType<typeof createFakePipedChild>[] = []
   const connections: Awaited<ReturnType<typeof openClaudeStreamJsonConnection>>[] = []
   const prompts: string[] = []

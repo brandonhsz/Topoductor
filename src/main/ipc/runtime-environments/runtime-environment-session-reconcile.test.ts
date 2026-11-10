@@ -38,7 +38,7 @@ function sessionStore(hostIds: ExecutionHostId[]) {
 
 describe('reconciling orphaned runtime sessions at startup', () => {
   it('drops only runtime sessions whose server is gone, never local or ssh', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-session-reconcile-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-session-reconcile-'))
     const kept = addEnvironmentFromPairingCode(userDataPath, {
       name: 'kept',
       pairingCode: pairingCode()
@@ -55,11 +55,11 @@ describe('reconciling orphaned runtime sessions at startup', () => {
   })
 
   it('deletes nothing when the environment store is missing or unreadable', () => {
-    const missing = mkdtempSync(join(tmpdir(), 'orca-session-reconcile-missing-'))
+    const missing = mkdtempSync(join(tmpdir(), 'topo-session-reconcile-missing-'))
     const store = sessionStore(['runtime:removed-env'])
     expect(reconcileOrphanedRuntimeSessions(store, missing)).toEqual([])
 
-    const corrupt = mkdtempSync(join(tmpdir(), 'orca-session-reconcile-corrupt-'))
+    const corrupt = mkdtempSync(join(tmpdir(), 'topo-session-reconcile-corrupt-'))
     writeFileSync(getEnvironmentStorePath(corrupt), '{not json', { mode: 0o600 })
     vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     expect(reconcileOrphanedRuntimeSessions(store, corrupt)).toEqual([])
@@ -67,7 +67,7 @@ describe('reconciling orphaned runtime sessions at startup', () => {
   })
 
   it('keeps sessions of saved servers this build cannot read or currently hides', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-session-reconcile-hidden-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-session-reconcile-hidden-'))
     const linked = addEnvironmentFromPairingCode(userDataPath, {
       name: 'linked',
       pairingCode: pairingCode()

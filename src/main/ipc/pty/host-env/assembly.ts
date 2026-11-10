@@ -12,7 +12,7 @@ import { agentHookServer } from '../../../agent-hooks/server/agent-hook-server'
 import { wslHookRelayManager } from '../../../agent-hooks/wsl-relay/wsl-hook-relay-manager'
 import { wslInteropHealthMonitor } from '../../../wsl/execution/wsl-interop-health'
 import { piTitlebarExtensionService } from '../../../pi/titlebar-extension-service'
-import { prependOrcaCliDirToChildPath } from '../../../cli/orca-cli-child-path'
+import { prependTopoCliDirToChildPath } from '../../../cli/topo-cli-child-path'
 import { getManagedWslCliDir, getWslCliCommandName } from '../../../cli/wsl-managed-cli'
 import { stripLegacyTerminalShimEnv } from '../../../pty/shell-startup/legacy-terminal-shim-dir'
 import { mergePersistedWindowsPath } from '../../../pty/environment/windows-environment-path'
@@ -21,7 +21,7 @@ import { scheduleCodexHookReconcile } from '../../../codex/hooks/reconciliation/
 import { buildConfiguredProxyEnv } from '../../../../shared/network-proxy'
 import { isTuiAgentEnabled } from '../../../../shared/agent-launch/catalog/tui-agent-selection'
 import type { BuildPtyHostEnvOptions } from './types'
-import { stripInheritedOrcaCodexHomeOverride } from './codex-home'
+import { stripInheritedTopoCodexHomeOverride } from './codex-home'
 import {
   clearPiAgentShadowEnv,
   exposePiManagedExtensionEnv,
@@ -103,13 +103,13 @@ export function buildPtyHostEnv(
   // Older builds redirected MIMOCODE_HOME; a nested pane must not inherit that overlay.
   restoreOrStripOverlayEnv(baseEnv, {
     primary: 'MIMOCODE_HOME',
-    overlay: 'ORCA_MIMOCODE_HOME',
-    source: 'ORCA_MIMOCODE_SOURCE_HOME'
+    overlay: 'TOPO_MIMOCODE_HOME',
+    source: 'TOPO_MIMOCODE_SOURCE_HOME'
   })
   restoreOrStripOverlayEnv(baseEnv, {
     primary: 'MIMOCODE_CONFIG_DIR',
-    overlay: 'ORCA_MIMOCODE_CONFIG_DIR',
-    source: 'ORCA_MIMOCODE_SOURCE_CONFIG_DIR',
+    overlay: 'TOPO_MIMOCODE_CONFIG_DIR',
+    source: 'TOPO_MIMOCODE_SOURCE_CONFIG_DIR',
     preserveExplicitPrimary: true
   })
   const mimoSourceConfigDir = resolveMimocodeSourceConfigDir(baseEnv)
@@ -118,9 +118,9 @@ export function buildPtyHostEnv(
     const overlay = mimoCodeHookService.buildPtyEnv(id, mimoSourceConfigDir).MIMOCODE_CONFIG_DIR
     if (overlay && overlay !== mimoSourceConfigDir) {
       baseEnv.MIMOCODE_CONFIG_DIR = overlay
-      baseEnv.ORCA_MIMOCODE_CONFIG_DIR = overlay
+      baseEnv.TOPO_MIMOCODE_CONFIG_DIR = overlay
       if (mimoSourceConfigDir) {
-        baseEnv.ORCA_MIMOCODE_SOURCE_CONFIG_DIR = mimoSourceConfigDir
+        baseEnv.TOPO_MIMOCODE_SOURCE_CONFIG_DIR = mimoSourceConfigDir
       }
     }
   }
@@ -141,7 +141,7 @@ export function buildPtyHostEnv(
       wslHookRelayManager.ensureForDistro(distro, opts.selectedCodexHomePath, wslLaunchKind)
       const guestEndpoint = wslHookRelayManager.getGuestEndpointFilePath(distro)
       if (guestEndpoint) {
-        baseEnv.ORCA_AGENT_HOOK_ENDPOINT = guestEndpoint
+        baseEnv.TOPO_AGENT_HOOK_ENDPOINT = guestEndpoint
       }
       const claude =
         opts.claudeSubagentNavigationEnabled !== false &&
@@ -149,8 +149,8 @@ export function buildPtyHostEnv(
           ? wslHookRelayManager.getClaudeAgentView(distro)
           : null
       if (claude) {
-        baseEnv.ORCA_CLAUDE_AGENT_VIEW_PLUGIN_DIR = claude.pluginDir
-        baseEnv.ORCA_CLAUDE_CONFIG_DIR = claude.configDir
+        baseEnv.TOPO_CLAUDE_AGENT_VIEW_PLUGIN_DIR = claude.pluginDir
+        baseEnv.TOPO_CLAUDE_CONFIG_DIR = claude.configDir
       }
       // OpenCode must load status hooks from its guest-resident overlay.
       const opencodeOverlayDir = openCodeAgent
@@ -158,18 +158,18 @@ export function buildPtyHostEnv(
         : null
       if (opencodeOverlayDir) {
         baseEnv.OPENCODE_CONFIG_DIR = opencodeOverlayDir
-        baseEnv.ORCA_OPENCODE_CONFIG_DIR = opencodeOverlayDir
-        delete baseEnv.ORCA_OPENCODE_SOURCE_CONFIG_DIR
+        baseEnv.TOPO_OPENCODE_CONFIG_DIR = opencodeOverlayDir
+        delete baseEnv.TOPO_OPENCODE_SOURCE_CONFIG_DIR
       } else {
         // Only guest overlays belong in WSL; otherwise let OpenCode use its guest config.
         delete baseEnv.OPENCODE_CONFIG_DIR
-        delete baseEnv.ORCA_OPENCODE_CONFIG_DIR
-        delete baseEnv.ORCA_OPENCODE_SOURCE_CONFIG_DIR
+        delete baseEnv.TOPO_OPENCODE_CONFIG_DIR
+        delete baseEnv.TOPO_OPENCODE_SOURCE_CONFIG_DIR
       }
     }
   }
 
-  // Preserve the user's Pi config/session root; install only Orca-owned extension files.
+  // Preserve the user's Pi config/session root; install only Topo-owned extension files.
   if (opts.agentStatusHooksEnabled) {
     clearPiAgentShadowEnv(baseEnv, 'pi')
     clearPiAgentShadowEnv(baseEnv, 'omp')
@@ -215,20 +215,20 @@ export function buildPtyHostEnv(
     // Nested PTYs must not inherit another agent's source/overlay state.
     restoreOrStripOverlayEnv(baseEnv, {
       primary: 'PI_CODING_AGENT_DIR',
-      overlay: 'ORCA_PI_CODING_AGENT_DIR',
-      source: 'ORCA_PI_SOURCE_AGENT_DIR'
+      overlay: 'TOPO_PI_CODING_AGENT_DIR',
+      source: 'TOPO_PI_SOURCE_AGENT_DIR'
     })
     restoreOrStripOverlayEnv(baseEnv, {
       primary: 'PI_CODING_AGENT_DIR',
-      overlay: 'ORCA_OMP_CODING_AGENT_DIR',
-      source: 'ORCA_OMP_SOURCE_AGENT_DIR'
+      overlay: 'TOPO_OMP_CODING_AGENT_DIR',
+      source: 'TOPO_OMP_SOURCE_AGENT_DIR'
     })
     if (shouldPrepareOmpShadow) {
       Object.assign(baseEnv, piTitlebarExtensionService.buildFreshOmpEnv())
     }
-    delete baseEnv.ORCA_OMP_STATUS_EXTENSION
-    delete baseEnv.ORCA_PRIME_AGENT_SOURCE_AGENT_DIR
-    delete baseEnv.ORCA_PRIME_AGENT_STATUS_EXTENSION
+    delete baseEnv.TOPO_OMP_STATUS_EXTENSION
+    delete baseEnv.TOPO_PRIME_AGENT_SOURCE_AGENT_DIR
+    delete baseEnv.TOPO_PRIME_AGENT_STATUS_EXTENSION
   }
 
   if (opts.isWsl && opts.agentStatusHooksEnabled) {
@@ -236,12 +236,12 @@ export function buildPtyHostEnv(
     if (explicitPiAgentKind === 'pi') {
       const guestPiDir = wslHookRelayManager.getGuestAgentPath(distro, 'pi')
       if (guestPiDir) {
-        baseEnv.ORCA_PI_SOURCE_AGENT_DIR = guestPiDir
+        baseEnv.TOPO_PI_SOURCE_AGENT_DIR = guestPiDir
       }
     } else if (explicitPiAgentKind === 'omp') {
       const guestOmpExtension = wslHookRelayManager.getGuestAgentPath(distro, 'omp')
       if (guestOmpExtension) {
-        baseEnv.ORCA_OMP_STATUS_EXTENSION = guestOmpExtension
+        baseEnv.TOPO_OMP_STATUS_EXTENSION = guestOmpExtension
       }
     }
   }
@@ -249,12 +249,12 @@ export function buildPtyHostEnv(
   // Keep managed Codex home selection PTY-scoped across dev/prod instances.
   if (opts.skipCodexHomeEnv) {
     delete baseEnv.CODEX_HOME
-    delete baseEnv.ORCA_CODEX_HOME
-    delete baseEnv.ORCA_CODEX_LAUNCH_PREFLIGHT
+    delete baseEnv.TOPO_CODEX_HOME
+    delete baseEnv.TOPO_CODEX_LAUNCH_PREFLIGHT
   } else if (opts.selectedCodexHomePath) {
     baseEnv.CODEX_HOME = opts.selectedCodexHomePath
     // Startup files may re-export CODEX_HOME; wrappers restore this pane's selected runtime home.
-    baseEnv.ORCA_CODEX_HOME = opts.selectedCodexHomePath
+    baseEnv.TOPO_CODEX_HOME = opts.selectedCodexHomePath
     const preflightCommand = resolveCodexShellLaunchPreflightCommand({
       hooksEnabled:
         opts.agentStatusHooksEnabled && isTuiAgentEnabled('codex', opts.disabledTuiAgents),
@@ -264,15 +264,15 @@ export function buildPtyHostEnv(
       resourcesPath: opts.resourcesPath
     })
     if (preflightCommand) {
-      baseEnv.ORCA_CODEX_LAUNCH_PREFLIGHT = preflightCommand
+      baseEnv.TOPO_CODEX_LAUNCH_PREFLIGHT = preflightCommand
     } else {
-      delete baseEnv.ORCA_CODEX_LAUNCH_PREFLIGHT
+      delete baseEnv.TOPO_CODEX_LAUNCH_PREFLIGHT
     }
-  } else if (opts.stripInheritedOrcaCodexHome) {
-    stripInheritedOrcaCodexHomeOverride(baseEnv)
-    delete baseEnv.ORCA_CODEX_LAUNCH_PREFLIGHT
+  } else if (opts.stripInheritedTopoCodexHome) {
+    stripInheritedTopoCodexHomeOverride(baseEnv)
+    delete baseEnv.TOPO_CODEX_LAUNCH_PREFLIGHT
   } else {
-    delete baseEnv.ORCA_CODEX_LAUNCH_PREFLIGHT
+    delete baseEnv.TOPO_CODEX_LAUNCH_PREFLIGHT
   }
 
   if (!opts.isWsl) {
@@ -281,24 +281,24 @@ export function buildPtyHostEnv(
   }
 
   // An inherited WSL CLI path belongs to another launch.
-  delete baseEnv.ORCA_WSL_CLI_DIR
+  delete baseEnv.TOPO_WSL_CLI_DIR
   // WSL wrapper state and development CLI routing require the owning instance's userData root.
   if (opts.isWsl) {
     wslInteropHealthMonitor.noteActivity(opts.wslDistro ?? null)
-    baseEnv.ORCA_USER_DATA_PATH = opts.userDataPath
+    baseEnv.TOPO_USER_DATA_PATH = opts.userDataPath
     // Advertise the managed WSL CLI name for agent guidance.
-    baseEnv.ORCA_CLI_COMMAND = getWslCliCommandName(opts.isPackaged)
+    baseEnv.TOPO_CLI_COMMAND = getWslCliCommandName(opts.isPackaged)
     const managedCliDir = getManagedWslCliDir(opts)
     if (managedCliDir) {
-      baseEnv.ORCA_WSL_CLI_DIR = managedCliDir
+      baseEnv.TOPO_WSL_CLI_DIR = managedCliDir
     }
   } else {
     if (!opts.isPackaged) {
-      baseEnv.ORCA_USER_DATA_PATH ??= opts.userDataPath
+      baseEnv.TOPO_USER_DATA_PATH ??= opts.userDataPath
     }
-    delete baseEnv.ORCA_CLI_COMMAND
+    delete baseEnv.TOPO_CLI_COMMAND
   }
-  prependOrcaCliDirToChildPath(baseEnv, {
+  prependTopoCliDirToChildPath(baseEnv, {
     isPackaged: opts.isPackaged,
     userDataPath: opts.userDataPath,
     resourcesPath: opts.resourcesPath
@@ -309,7 +309,7 @@ export function buildPtyHostEnv(
     baseEnv.BROWSER === undefined &&
     process.env.BROWSER === undefined
   ) {
-    const cliCommand = opts.isWsl ? getWslCliCommandName(opts.isPackaged) : 'orca'
+    const cliCommand = opts.isWsl ? getWslCliCommandName(opts.isPackaged) : 'topo'
     baseEnv.BROWSER = `${cliCommand} open-url --url %s`
   }
   // Browser-relayed and SSH-managed headless hosts both have viewers on another machine.

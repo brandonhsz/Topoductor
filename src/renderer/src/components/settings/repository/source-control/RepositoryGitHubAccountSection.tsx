@@ -202,7 +202,7 @@ export function RepositoryGitHubAccountSection({
           <p className="text-xs text-muted-foreground">
             {t(
               'auto.components.settings.RepositoryGitHubAccountSection.longDescription',
-              'Orca injects a short-lived token from the selected keyring login into each gh call for this project. Project View stays on the ambient login.'
+              'Topo injects a short-lived token from the selected keyring login into each gh call for this project. Project View stays on the ambient login.'
             )}
           </p>
         </div>

@@ -7,7 +7,7 @@ import { executeTerminalStartupCommandPaste } from '../input/paste/terminal-star
 import { resolveTerminalPasteRuntime } from '../input/paste/terminal-paste-runtime'
 import { CLIENT_PLATFORM } from '@/lib/new-workspace'
 import { recordPaneWakeThroughLayoutOwner } from '@/store/terminals/terminal-sleep-layout-owner'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 
 import { shouldKeepHiddenStartupRendererQueriesLive } from './output/hidden-startup-renderer-query'
 import { createForegroundImmediateBudget } from './output/foreground-output-budgets'
@@ -62,7 +62,7 @@ export function bindDeferredColdRestoreAndSnapshot(session: ConnectPanePtySessio
       return
     }
     const state = useAppStore.getState()
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       if (!startup.useLiveEntry && startup.sleepingRecordEntry) {
         recordPaneWakeThroughLayoutOwner(state, session.deps.worktreeId, session.cacheKey)
         session.clearSleepingRecordProviderDuplicates(state, startup.sleepingRecordEntry)
@@ -107,8 +107,8 @@ export function bindDeferredColdRestoreAndSnapshot(session: ConnectPanePtySessio
       ? {
           ...env,
           ...session.paneIdentityEnv,
-          ...(env.ORCA_AGENT_LAUNCH_TOKEN
-            ? { ORCA_AGENT_LAUNCH_TOKEN: env.ORCA_AGENT_LAUNCH_TOKEN }
+          ...(env.TOPO_AGENT_LAUNCH_TOKEN
+            ? { TOPO_AGENT_LAUNCH_TOKEN: env.TOPO_AGENT_LAUNCH_TOKEN }
             : {})
         }
       : undefined
@@ -129,7 +129,7 @@ export function bindDeferredColdRestoreAndSnapshot(session: ConnectPanePtySessio
       session.applyColdRestoreAgentResumeStartup(startup)
       const spawned = session.startFreshSpawn(startup, options)
       // Switch point: main's layout shows this pane unbound while the start runs.
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         holdInPlaceResumeUntilSettled(() => !session.disposed, startup, spawned)
       }
       return spawned

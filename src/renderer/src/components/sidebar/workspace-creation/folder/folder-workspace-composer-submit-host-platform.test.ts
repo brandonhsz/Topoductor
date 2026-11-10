@@ -15,7 +15,7 @@ import { submitFolderWorkspaceCreate } from './folder-workspace-composer-submit'
 import { getFolderWorkspaceAgentLaunchFact } from './folder-workspace-agent-startup'
 
 // The owning server’s OS determines agent command quoting.
-describe('submitFolderWorkspaceCreate on an Orca server', () => {
+describe('submitFolderWorkspaceCreate on a Topo server', () => {
   beforeEach(() => {
     mocks.activateAndRevealFolderWorkspace.mockReturnValue({ primaryTabId: 'tab-1' })
   })
@@ -108,7 +108,7 @@ describe('submitFolderWorkspaceCreate on an Orca server', () => {
     useAppStore.setState({ runtimeStatusByEnvironmentId: new Map() })
   })
 
-  it('quotes quick-agent startup for the Orca server that owns the folder group', async () => {
+  it('quotes quick-agent startup for the Topo server that owns the folder group', async () => {
     const createFolderWorkspace = vi.fn(async () => makeFolderWorkspace())
     const projectGroup = {
       ...makeProjectGroup(),
@@ -156,7 +156,7 @@ describe('submitFolderWorkspaceCreate on an Orca server', () => {
     )
   })
 
-  it('refuses an agent launch on an Orca server that never reported its OS', async () => {
+  it('refuses an agent launch on a Topo server that never reported its OS', async () => {
     const createFolderWorkspace = vi.fn(async () => makeFolderWorkspace())
     useAppStore.setState({ runtimeStatusByEnvironmentId: new Map() })
 

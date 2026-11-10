@@ -10,7 +10,7 @@ import {
   BrowserTunnelDestinationBlockedError,
   browserTunnelTargetBlockReason,
   createBrowserTunnelGuardedLookup,
-  reserveBrowserTunnelOrcaListenerPort
+  reserveBrowserTunnelTopoListenerPort
 } from './browser-network-tunnel-destination-policy'
 import type { BrowserNetworkTunnelSocket } from './browser-network-tunnel-stream-state'
 
@@ -65,12 +65,12 @@ describe('browser tunnel destination policy', () => {
     expect(browserTunnelTargetBlockReason(host, port)).toBe('link_local')
   })
 
-  it("blocks only the host's own reserved Orca listener ports, and only while reserved", () => {
-    const release = reserveBrowserTunnelOrcaListenerPort(6768)
+  it("blocks only the host's own reserved Topo listener ports, and only while reserved", () => {
+    const release = reserveBrowserTunnelTopoListenerPort(6768)
     cleanups.push(release)
 
     for (const host of ['localhost', 'app.localhost', '127.0.0.1', '127.1.2.3', '::1', '0.0.0.0']) {
-      expect(browserTunnelTargetBlockReason(host, 6768)).toBe('orca_listener')
+      expect(browserTunnelTargetBlockReason(host, 6768)).toBe('topo_listener')
     }
     expect(browserTunnelTargetBlockReason('127.0.0.1', 6769)).toBeNull()
     expect(browserTunnelTargetBlockReason('203.0.113.9', 6768)).toBeNull()
@@ -111,9 +111,9 @@ describe('browser tunnel destination policy', () => {
 })
 
 describe('remote (SSH/WSL) browser tunnel routes', () => {
-  it("refuse the remote machine's metadata but keep its loopback and Orca-port-numbered servers", () => {
+  it("refuse the remote machine's metadata but keep its loopback and Topo-port-numbered servers", () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {})
-    cleanups.push(reserveBrowserTunnelOrcaListenerPort(6768))
+    cleanups.push(reserveBrowserTunnelTopoListenerPort(6768))
     const dialed: string[] = []
     const connect = guardRemoteBrowserNetworkConnect((target) => {
       dialed.push(`${target.host}:${target.port}`)
@@ -181,10 +181,10 @@ describe('native browser tunnel dial', () => {
     ).resolves.toBe('connected')
   })
 
-  it("refuses metadata and the host's own Orca listener before dialing", async () => {
+  it("refuses metadata and the host's own Topo listener before dialing", async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {})
     const port = await startServer()
-    cleanups.push(reserveBrowserTunnelOrcaListenerPort(port))
+    cleanups.push(reserveBrowserTunnelTopoListenerPort(port))
 
     expect(() => connectNativeBrowserNetworkTarget({ host: '127.0.0.1', port }, {})).toThrow(
       BrowserTunnelDestinationBlockedError
@@ -199,13 +199,13 @@ describe('native browser tunnel dial', () => {
 
   it('restores unrestricted dialing when the host opts out', async () => {
     const port = await startServer()
-    cleanups.push(reserveBrowserTunnelOrcaListenerPort(port))
+    cleanups.push(reserveBrowserTunnelTopoListenerPort(port))
 
     await expect(
       outcome(
         connectNativeBrowserNetworkTarget(
           { host: '127.0.0.1', port },
-          { ORCA_BROWSER_TUNNEL_ALLOW_ALL_DESTINATIONS: '1' }
+          { TOPO_BROWSER_TUNNEL_ALLOW_ALL_DESTINATIONS: '1' }
         )
       )
     ).resolves.toBe('connected')

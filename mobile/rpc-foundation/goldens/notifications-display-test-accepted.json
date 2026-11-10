@@ -82,7 +82,7 @@
         "Send test notification",
         "Troubleshooting",
         "Test push delivery, or a local notification when push is unavailable.",
-        "Accepted by Orca’s push service. Check for the notification."
+        "Accepted by Topo’s push service. Check for the notification."
       ]
     },
     "8a172d4948a9": {

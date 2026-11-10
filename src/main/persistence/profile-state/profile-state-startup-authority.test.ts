@@ -26,7 +26,7 @@ vi.mock('../../worker-threads/worker-thread-entry-path', async (importOriginal) 
 })
 
 beforeAll(async () => {
-  bundle.directory = mkdtempSync(join(tmpdir(), 'orca-startup-writers-'))
+  bundle.directory = mkdtempSync(join(tmpdir(), 'topo-startup-writers-'))
   await build({
     entryPoints: [
       resolve('src/main/persistence/profile-state/profile-state-writer-worker-entry.ts'),
@@ -44,7 +44,7 @@ afterAll(() => rmSync(bundle.directory, { recursive: true, force: true }))
 vi.mock('electron', () => ({
   app: {
     getPath: () => tmpdir(),
-    getName: () => 'orca-test',
+    getName: () => 'topo-test',
     getVersion: () => '0.0.0-test',
     isPackaged: false,
     on: () => {},
@@ -79,9 +79,9 @@ afterEach(() => {
 
 describe('profile-state startup authority boundary', () => {
   it('leaves legacy JSON untouched when the runtime cannot own SQLite', async () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-profile-state-orcad-node18-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-profile-state-topod-node18-'))
     temporaryDirectories.push(directory)
-    const dataFile = join(directory, 'orca-data.json')
+    const dataFile = join(directory, 'topo-data.json')
     const databaseFile = profileStateDatabaseFile(directory)
     const source = JSON.stringify({ settings: { theme: 'dark' } })
     writeFileSync(dataFile, source)
@@ -94,8 +94,8 @@ describe('profile-state startup authority boundary', () => {
       createProfileStateStoreForStartup({
         dataFile,
         databaseFile,
-        profileId: 'orcad-node18-test',
-        runtime: 'orcad',
+        profileId: 'topod-node18-test',
+        runtime: 'topod',
         storageAuthority: 'runtime'
       })
     ).rejects.toThrowError(ProfileStateStartupAuthorityError)

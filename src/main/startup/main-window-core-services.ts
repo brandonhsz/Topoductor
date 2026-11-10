@@ -101,19 +101,19 @@ export function attachMainWindowCoreServices(
         desktopConnectorCloud()?.fence()
         await preserveAgentAuthBeforeRestart({ codexRuntimeHome, store })
       },
-      onOrcaProfileAuthMutation: () => {
+      onTopoProfileAuthMutation: () => {
         // An auth change retries relay installation after launch-time failure.
         void state.desktopRelayInstaller?.authChanged()
         state.desktopRelayService?.authMutated()
         desktopConnectorCloud()?.accountChanged()
       },
       // Only sign-out fences paired phones; reasonless quit/relaunch must not look like logout.
-      onBeforeOrcaProfileSignOut: () => {
+      onBeforeTopoProfileSignOut: () => {
         state.desktopRelayInstaller?.suspend()
         state.desktopRelayService?.fenceAndCloseNow(RELAY_HOST_CLOSE_REASON.SIGNED_OUT)
         desktopConnectorCloud()?.signOutStarted()
       },
-      onAfterOrcaProfileSignOut: () => desktopConnectorCloud()?.signOutFinished()
+      onAfterTopoProfileSignOut: () => desktopConnectorCloud()?.signOutFinished()
     },
     state.pluginService ?? undefined,
     state.pluginMarketplaceService && state.pluginMarketplaceInstaller

@@ -22,7 +22,7 @@ let server: AgentHookServer
 
 beforeEach(async () => {
   _internals.resetCachesForTests()
-  userDataPath = mkdtempSync(join(tmpdir(), 'orca-accepted-reply-'))
+  userDataPath = mkdtempSync(join(tmpdir(), 'topo-accepted-reply-'))
   server = new AgentHookServer()
   await server.start({ env: 'production', userDataPath })
 })
@@ -34,11 +34,11 @@ afterEach(() => {
 
 async function post(payload: Record<string, unknown>): Promise<void> {
   const env = server.buildPtyEnv()
-  await fetch(`http://127.0.0.1:${env.ORCA_AGENT_HOOK_PORT}/hook/claude`, {
+  await fetch(`http://127.0.0.1:${env.TOPO_AGENT_HOOK_PORT}/hook/claude`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Orca-Agent-Hook-Token': env.ORCA_AGENT_HOOK_TOKEN
+      'X-Topo-Agent-Hook-Token': env.TOPO_AGENT_HOOK_TOKEN
     },
     body: JSON.stringify(buildBody(payload))
   })

@@ -1,7 +1,7 @@
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import { defineMethod } from '../../../core'
 import { mapWithConcurrency } from '../../../../../../shared/map-with-concurrency'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import { WORKER_SETTLED_STATES } from '../../../../orchestration/terminal-authority/release/worker-terminal-ownership'
 import { WorkerDispatchParams } from '../../../../../../shared/rpc-contract/orchestration-worker-stop-params'
@@ -23,7 +23,7 @@ export const ORCHESTRATION_WORKER_STOP_METHODS = [
 
 /** Stopping a worker stops every helper under it; a kept-open helper is reported, not refused. */
 export function stopWorkerAndHelpers(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   dispatchId: string,
   mutation: StopMutation
 ): Promise<WorkerStopReceipt> {
@@ -39,7 +39,7 @@ export function stopWorkerAndHelpers(
 
 /** Runs after the creator's fence commits, so a helper started later was refused, or is stopped when its start finishes. */
 export async function withStoppedHelpers(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   creatorDispatchId: string,
   mutation: StopMutation,
   receipt: WorkerStopReceipt
@@ -52,7 +52,7 @@ export async function withStoppedHelpers(
 }
 
 async function stopHelpers(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   creatorDispatchId: string,
   mutation: StopMutation
 ): Promise<HelperStopOutcome[]> {
@@ -139,7 +139,7 @@ function helperMutation(mutation: StopMutation, dispatchId: string): StopMutatio
 
 /** Stops a helper whose start ended after worker-stop fenced its creator, which listed it as starting. */
 export async function stopHelperAfterStart(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   startReceipt: unknown,
   mutation: StopMutation
 ): Promise<void> {
@@ -185,13 +185,13 @@ export async function stopHelperAfterStart(
 }
 
 const activeStopByRuntime = new WeakMap<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   Map<string, Promise<WorkerStopReceipt>>
 >()
 
 /** Coalesce same-runtime stops so only one closes; beginWorkerStop admits this epoch only to recover a row stranded by a dead runtime. */
 function dedupeWorkerStop(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   dispatchId: string,
   stop: () => Promise<WorkerStopReceipt>
 ): Promise<WorkerStopReceipt> {

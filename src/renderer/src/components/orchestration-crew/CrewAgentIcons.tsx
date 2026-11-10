@@ -13,7 +13,7 @@ import {
 import { isAgentStatusState } from '../../../../shared/agent-status/contracts/agent-status-types'
 import { isTuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent-config'
 import { formatAgentTypeLabel } from '../../../../shared/agent-status/presentation/agent-type-label'
-import { isOrcaSessionId, formatOrcaSessionAddress } from '../../../../shared/orca-session-address'
+import { isTopoSessionId, formatTopoSessionAddress } from '../../../../shared/topo-session-address'
 import type { AgentMessageSenderView } from '../../../../shared/agent-session/agent-message-presentation'
 import type { OrchestrationCrewRow } from '../../../../shared/orchestration/orchestration-crew'
 import type { RuntimeClientTarget } from '../../../../shared/runtime-client-target'
@@ -30,13 +30,13 @@ export const CREW_STATUS_GROUPS: readonly CrewStatusGroup[] = [
 // Imported, missing, dispatch and other-host parties keep the Crew snapshot's own state.
 function crewRowSender(row: OrchestrationCrewRow): AgentMessageSenderInput {
   const location = row.hostLabel ? undefined : row.openTarget
-  if (location?.kind === 'chat' && isOrcaSessionId(location.sessionId)) {
+  if (location?.kind === 'chat' && isTopoSessionId(location.sessionId)) {
     return {
       sender: {
         name: row.label,
         party: {
-          address: formatOrcaSessionAddress(location.sessionId),
-          orcaSessionId: location.sessionId,
+          address: formatTopoSessionAddress(location.sessionId),
+          topoSessionId: location.sessionId,
           terminalHandle: null
         }
       },
@@ -47,7 +47,7 @@ function crewRowSender(row: OrchestrationCrewRow): AgentMessageSenderInput {
     return {
       sender: {
         name: row.label,
-        party: { address: location.handle, terminalHandle: location.handle, orcaSessionId: null }
+        party: { address: location.handle, terminalHandle: location.handle, topoSessionId: null }
       },
       worktreeId: null
     }

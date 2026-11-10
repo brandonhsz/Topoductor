@@ -1,6 +1,6 @@
 /**
- * Invariant: `orca plugin shot` captures exactly a plugin panel as Orca draws it, from the hidden
- * test window, without showing or focusing it: a components panel (Orca's own DOM) at the asked
+ * Invariant: `topo plugin shot` captures exactly a plugin panel as Topo draws it, from the hidden
+ * test window, without showing or focusing it: a components panel (Topo's own DOM) at the asked
  * width and theme, after `--act` input when asked, and an html panel whose isolated guest content
  * is in the image. `--scenario` captures a `.check.ts` scenario drawn apart from the plugin, so
  * its data never reaches the live panel, the plugin's storage or its worker.
@@ -10,8 +10,8 @@ import { cp, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/pr
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
-import { orcaCliResult, runCompiledOrcaCli } from './helpers/compiled-orca-cli'
+import { expect, test } from './helpers/topo-app'
+import { topoCliResult, runCompiledTopoCli } from './helpers/compiled-topo-cli'
 import { RuntimeClient } from '../../src/cli/runtime/client'
 import { disablePluginSystem, enableDevPlugins } from './helpers/plugin-smoke'
 import { createPluginFromTemplate } from '../../src/cli/plugin-authoring/plugin-create'
@@ -81,24 +81,24 @@ async function devChangeCount(page: Page, pluginKey: string): Promise<number> {
 
 test('plugin shot captures a components panel at the asked width and theme, hidden', async ({
   electronApp,
-  orcaPage
+  topoPage
 }) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-plugin-shot-'))
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-plugin-shot-'))
   const pluginRoot = join(tempRoot, 'hello-tsx')
   try {
     await cp(join(process.cwd(), 'examples', 'plugins', 'hello-tsx'), pluginRoot, {
       recursive: true
     })
-    await enableDevPlugins(orcaPage, [pluginRoot])
-    const pluginKey = await devPluginKey(orcaPage, 'Hello TSX')
+    await enableDevPlugins(topoPage, [pluginRoot])
+    const pluginKey = await devPluginKey(topoPage, 'Hello TSX')
     const userDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'))
-    const themeBefore = await orcaPage.evaluate(() => window.__store?.getState().settings?.theme)
-    const widthBefore = await orcaPage.evaluate(() => window.__store?.getState().rightSidebarWidth)
+    const themeBefore = await topoPage.evaluate(() => window.__store?.getState().settings?.theme)
+    const widthBefore = await topoPage.evaluate(() => window.__store?.getState().rightSidebarWidth)
     const shownBefore = await windowsShown(electronApp)
 
-    const dark = await orcaCliResult<Shot>(userDataDir, [
+    const dark = await topoCliResult<Shot>(userDataDir, [
       'plugin',
       'shot',
       pluginKey,
@@ -117,7 +117,7 @@ test('plugin shot captures a components panel at the asked width and theme, hidd
     // Text, inputs and buttons: far from a blank or single-color capture.
     expect(darkStats.colors).toBeGreaterThan(20)
 
-    const light = await orcaCliResult<Shot>(userDataDir, [
+    const light = await topoCliResult<Shot>(userDataDir, [
       'plugin',
       'shot',
       pluginKey,
@@ -130,27 +130,27 @@ test('plugin shot captures a components panel at the asked width and theme, hidd
     expect((await pngStats(electronApp, light.path)).colors).toBeGreaterThan(20)
 
     // Nothing the capture changed outlives it.
-    expect(await orcaPage.evaluate(() => window.__store?.getState().settings?.theme)).toBe(
+    expect(await topoPage.evaluate(() => window.__store?.getState().settings?.theme)).toBe(
       themeBefore
     )
-    expect(await orcaPage.evaluate(() => window.__store?.getState().rightSidebarWidth)).toBe(
+    expect(await topoPage.evaluate(() => window.__store?.getState().rightSidebarWidth)).toBe(
       widthBefore
     )
     expect(await windowsShown(electronApp)).toEqual(shownBefore)
-    await expect(orcaPage.getByRole('heading', { name: 'Tasks' })).toBeVisible()
+    await expect(topoPage.getByRole('heading', { name: 'Tasks' })).toBeVisible()
 
     // After a save, a shot waits for the new code: a broken save reports its located load error.
     const panelFile = join(pluginRoot, 'src', 'panel.tsx')
     const source = await readFile(panelFile, 'utf8')
     const saved = async (contents: string): Promise<void> => {
-      const before = await devChangeCount(orcaPage, pluginKey)
+      const before = await devChangeCount(topoPage, pluginKey)
       await writeFile(panelFile, contents)
       await expect
-        .poll(() => devChangeCount(orcaPage, pluginKey), { timeout: 15_000 })
+        .poll(() => devChangeCount(topoPage, pluginKey), { timeout: 15_000 })
         .toBeGreaterThan(before)
     }
     await saved("import { atom } from 'orca'\n\nconst = 1\n")
-    const broken = await orcaCliResult<Shot>(userDataDir, [
+    const broken = await topoCliResult<Shot>(userDataDir, [
       'plugin',
       'shot',
       pluginKey,
@@ -160,7 +160,7 @@ test('plugin shot captures a components panel at the asked width and theme, hidd
     expect(broken.settled).toBe(true)
     expect(broken.errors.join('\n')).toContain('src/panel.tsx:3')
     await saved(source)
-    const fixed = await orcaCliResult<Shot>(userDataDir, [
+    const fixed = await topoCliResult<Shot>(userDataDir, [
       'plugin',
       'shot',
       pluginKey,
@@ -169,18 +169,18 @@ test('plugin shot captures a components panel at the asked width and theme, hidd
     ])
     expect(fixed).toMatchObject({ settled: true, errors: [] })
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(tempRoot, { recursive: true, force: true })
   }
 })
 
 test('plugin shot includes an html panel guest, plugin open shows a panel, and ifShown never switches', async ({
   electronApp,
-  orcaPage
+  topoPage
 }) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-plugin-shot-html-'))
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-plugin-shot-html-'))
   const pluginRoot = join(tempRoot, 'red-frame')
   try {
     await mkdir(pluginRoot, { recursive: true })
@@ -206,11 +206,11 @@ test('plugin shot includes an html panel guest, plugin open shows a panel, and i
       join(pluginRoot, 'page.html'),
       '<!doctype html><html><body style="margin:0;background:rgb(255,0,0);height:100vh"></body></html>'
     )
-    await enableDevPlugins(orcaPage, [pluginRoot])
-    const pluginKey = await devPluginKey(orcaPage, 'Red Frame')
+    await enableDevPlugins(topoPage, [pluginRoot])
+    const pluginKey = await devPluginKey(topoPage, 'Red Frame')
     const userDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'))
 
-    const opened = await orcaCliResult<{ kind: string; panelId: string }>(userDataDir, [
+    const opened = await topoCliResult<{ kind: string; panelId: string }>(userDataDir, [
       'plugin',
       'open',
       pluginKey,
@@ -219,10 +219,10 @@ test('plugin shot includes an html panel guest, plugin open shows a panel, and i
     ])
     expect(opened).toMatchObject({ kind: 'panel', panelId: 'other' })
     await expect
-      .poll(() => orcaPage.evaluate(() => window.__store?.getState().rightSidebarTab))
+      .poll(() => topoPage.evaluate(() => window.__store?.getState().rightSidebarTab))
       .toBe(`plugin:${pluginKey}/other`)
 
-    const shot = await orcaCliResult<Shot>(userDataDir, [
+    const shot = await topoCliResult<Shot>(userDataDir, [
       'plugin',
       'shot',
       pluginKey,
@@ -242,7 +242,7 @@ test('plugin shot includes an html panel guest, plugin open shows a panel, and i
       ifShown: true
     })
     expect(away.result.notShown).toBe('the right sidebar shows another tab')
-    expect(await orcaPage.evaluate(() => window.__store?.getState().rightSidebarTab)).toBe(pageTab)
+    expect(await topoPage.evaluate(() => window.__store?.getState().rightSidebarTab)).toBe(pageTab)
     const shown = await client.call<{ png?: string; panelId: string }>('plugins.shot', {
       pluginKey,
       panelId: 'page',
@@ -255,25 +255,25 @@ test('plugin shot includes an html panel guest, plugin open shows a panel, and i
       client.call('plugins.shot', { pluginKey, acts: [{ press: { text: 'Go' } }] })
     ).rejects.toThrow(/components panels only/)
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(tempRoot, { recursive: true, force: true })
   }
 })
 
 test('plugin shot --act types and presses on the hidden components panel before capturing', async ({
   electronApp,
-  orcaPage
+  topoPage
 }) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-plugin-shot-act-'))
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-plugin-shot-act-'))
   const pluginRoot = join(tempRoot, 'hello-tsx')
   try {
     await cp(join(process.cwd(), 'examples', 'plugins', 'hello-tsx'), pluginRoot, {
       recursive: true
     })
-    await enableDevPlugins(orcaPage, [pluginRoot])
-    const pluginKey = await devPluginKey(orcaPage, 'Hello TSX')
+    await enableDevPlugins(topoPage, [pluginRoot])
+    const pluginKey = await devPluginKey(topoPage, 'Hello TSX')
     const userDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'))
     const shownBefore = await windowsShown(electronApp)
     const client = new RuntimeClient(userDataDir, 60_000, null, null)
@@ -285,8 +285,8 @@ test('plugin shot --act types and presses on the hidden components panel before 
     }
 
     const before = await client.call<ActShot>('plugins.shot', { pluginKey, width: 360 })
-    // Orca's floating launcher parks over the sidebar; a capture hides it so it is never in a shot.
-    const launcher = orcaPage.locator('[data-floating-terminal-toggle]')
+    // Topo's floating launcher parks over the sidebar; a capture hides it so it is never in a shot.
+    const launcher = topoPage.locator('[data-floating-terminal-toggle]')
     const launchers = await launcher.count()
     const pending = client.call<ActShot>(
       'plugins.shot',
@@ -318,25 +318,25 @@ test('plugin shot --act types and presses on the hidden components panel before 
     // The shot shows the acted panel; afterwards the persisted list and the draft are put back.
     expect(acted.result.png).not.toBe(before.result.png)
     expect(acted.result.restored).toBe(true)
-    await expect(orcaPage.getByRole('heading', { name: 'Tasks' })).toBeVisible()
-    await expect(orcaPage.getByRole('button', { name: /Ship the act/ })).toHaveCount(0)
-    await expect(orcaPage.getByRole('textbox', { name: 'New task' })).toHaveValue('')
+    await expect(topoPage.getByRole('heading', { name: 'Tasks' })).toBeVisible()
+    await expect(topoPage.getByRole('button', { name: /Ship the act/ })).toHaveCount(0)
+    await expect(topoPage.getByRole('textbox', { name: 'New task' })).toHaveValue('')
     // The launcher is back once the capture ended; the window never showed.
     await expect.poll(() => launcher.count()).toBe(launchers)
     expect(await windowsShown(electronApp)).toEqual(shownBefore)
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(tempRoot, { recursive: true, force: true })
   }
 })
 
 test('plugin shot waits for a cold worker, and --act state is put back after the capture', async ({
   electronApp,
-  orcaPage
+  topoPage
 }) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-plugin-shot-worker-'))
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-plugin-shot-worker-'))
   try {
     const created = await createPluginFromTemplate({
       dir: join(tempRoot, 'shot-counter'),
@@ -344,8 +344,8 @@ test('plugin shot waits for a cold worker, and --act state is put back after the
       id: 'shot-counter',
       name: 'Shot Counter'
     })
-    await enableDevPlugins(orcaPage, [created.path])
-    const pluginKey = await devPluginKey(orcaPage, 'Shot Counter')
+    await enableDevPlugins(topoPage, [created.path])
+    const pluginKey = await devPluginKey(topoPage, 'Shot Counter')
     const userDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'))
     const client = new RuntimeClient(userDataDir, 60_000, null, null)
     type WorkerShot = {
@@ -358,7 +358,7 @@ test('plugin shot waits for a cold worker, and --act state is put back after the
     // The first shot starts the panel and its worker: it waits for counter.get's answer.
     const cold = await client.call<WorkerShot>('plugins.shot', { pluginKey })
     expect(cold.result.pendingRequests).toBe(0)
-    const surface = orcaPage.locator(
+    const surface = topoPage.locator(
       `[data-plugin-panel-surface="plugin:${pluginKey}/${cold.result.panelId}"]`
     )
     // Read at once, no retry: the capture already showed the worker's total, not the placeholder.
@@ -377,7 +377,7 @@ test('plugin shot waits for a cold worker, and --act state is put back after the
     await expect(surface.getByRole('button', { name: 'Add 1' })).toBeVisible()
     await expect(surface.getByRole('button', { name: 'Step 10' })).toBeVisible()
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(tempRoot, { recursive: true, force: true })
   }
 })
@@ -397,11 +397,11 @@ async function pluginDataFiles(root: string): Promise<Record<string, string>> {
 
 test('plugin shot --scenario captures a check scenario apart from the live panel, storage and worker', async ({
   electronApp,
-  orcaPage
+  topoPage
 }) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-plugin-shot-scenario-'))
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-plugin-shot-scenario-'))
   try {
     const created = await createPluginFromTemplate({
       dir: join(tempRoot, 'scenario-counter'),
@@ -409,15 +409,15 @@ test('plugin shot --scenario captures a check scenario apart from the live panel
       id: 'scenario-counter',
       name: 'Scenario Counter'
     })
-    await enableDevPlugins(orcaPage, [created.path])
-    const pluginKey = await devPluginKey(orcaPage, 'Scenario Counter')
+    await enableDevPlugins(topoPage, [created.path])
+    const pluginKey = await devPluginKey(topoPage, 'Scenario Counter')
     const userDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'))
     const statusOf = async (): Promise<string | undefined> =>
-      (await orcaPage.evaluate(() => window.api.plugins.list())).find(
+      (await topoPage.evaluate(() => window.api.plugins.list())).find(
         (plugin) => plugin.pluginKey === pluginKey
       )?.status
     const sidebar = () =>
-      orcaPage.evaluate(() => {
+      topoPage.evaluate(() => {
         const state = window.__store?.getState()
         return { open: state?.rightSidebarOpen, tab: state?.rightSidebarTab }
       })
@@ -428,7 +428,7 @@ test('plugin shot --scenario captures a check scenario apart from the live panel
     expect(await statusOf()).toBe('idle')
 
     type ScenarioShot = Shot & { replay: true; scenario: string; notes: string[] }
-    const shot = await orcaCliResult<ScenarioShot>(userDataDir, [
+    const shot = await topoCliResult<ScenarioShot>(userDataDir, [
       'plugin',
       'shot',
       created.path,
@@ -458,14 +458,14 @@ test('plugin shot --scenario captures a check scenario apart from the live panel
     expect(await sidebar()).toEqual(sidebarBefore)
     expect(await pluginDataFiles(dataRoot)).toEqual(dataBefore)
     expect(await statusOf()).toBe('idle')
-    expect(await orcaPage.locator('[data-plugin-shot-replay]').count()).toBe(0)
+    expect(await topoPage.locator('[data-plugin-shot-replay]').count()).toBe(0)
     expect(
-      await orcaPage.locator(`[data-plugin-panel-surface^="plugin:${pluginKey}/"]`).count()
+      await topoPage.locator(`[data-plugin-panel-surface^="plugin:${pluginKey}/"]`).count()
     ).toBe(0)
     expect(await windowsShown(electronApp)).toEqual(shownBefore)
 
     // An unknown scenario fails and names the ones the panel has.
-    const unknown = await runCompiledOrcaCli(userDataDir, [
+    const unknown = await runCompiledTopoCli(userDataDir, [
       'plugin',
       'shot',
       created.path,
@@ -476,7 +476,7 @@ test('plugin shot --scenario captures a check scenario apart from the live panel
     expect(unknown.code).not.toBe(0)
     expect(unknown.json?.error?.message).toMatch(/its scenarios: fresh, counted/)
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(tempRoot, { recursive: true, force: true })
   }
 })

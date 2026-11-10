@@ -24,7 +24,7 @@ afterEach(() => {
 })
 
 function databasePath(): string {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-profile-state-parts-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-profile-state-parts-'))
   directories.push(directory)
   return profileStateDatabaseFile(directory)
 }

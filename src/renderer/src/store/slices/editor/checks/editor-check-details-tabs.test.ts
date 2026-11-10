@@ -4,7 +4,7 @@ import { makeWorktree } from '../../worktrees/worktree.test-fixture'
 import { TEST_REPO } from '../../../repos/repo.test-fixture'
 import { drawTabsFromMain } from '../../tabs/tabs-drawn-from-main.test-fixture'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 
 // Main's answer to the window's layout commands, as a switch-on build sends them.
 vi.mock('@/runtime/rpc/calls/runtime-rpc-call', async (importOriginal) =>
@@ -409,10 +409,10 @@ describe('createEditorSlice conflict status reconciliation', () => {
         entityId: 'wt-1::check-details::check-run:42',
         contentType: 'check-details',
         // Main's frame carries no label for a tab the window never drew.
-        ...(ORCA_LAYOUT_OWNER_IS_MAIN ? {} : { label: 'verify' })
+        ...(TOPO_LAYOUT_OWNER_IS_MAIN ? {} : { label: 'verify' })
       })
     )
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       expect(layoutApplyTestTransport.sentOfType('openEditorTab')).toEqual([
         expect.objectContaining({
           contentType: 'check-details',

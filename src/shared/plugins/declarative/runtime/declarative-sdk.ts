@@ -3,18 +3,18 @@ import {
   PLUGIN_DECLARATIVE_CATALOG_VERSION,
   PLUGIN_DECLARATIVE_COMPONENT_PROPS
 } from '../plugin-declarative-message-names'
-import type { OrcaBridge, OrcaDisposable, OrcaTheme } from './declarative-renderer'
+import type { TopoBridge, TopoDisposable, TopoTheme } from './declarative-renderer'
 
 /** The same facade frames get as `window.orca`, typed in orca.d.ts. */
-export type OrcaHostCallOptions = { signal?: AbortSignal; timeoutMs?: number }
-type SdkSource = { bridge: () => OrcaBridge | null; theme: () => OrcaTheme }
+export type TopoHostCallOptions = { signal?: AbortSignal; timeoutMs?: number }
+type SdkSource = { bridge: () => TopoBridge | null; theme: () => TopoTheme }
 
 function hostError(code: string, message: string): Error {
   return Object.assign(new Error(message), { code, retryable: code === 'timeout' })
 }
 
 function unavailable(what: string): Promise<never> {
-  return Promise.reject(hostError('unavailable', `${what} is not available in this Orca`))
+  return Promise.reject(hostError('unavailable', `${what} is not available in this Topo`))
 }
 
 function isComponentTag(name: string): name is keyof typeof PLUGIN_DECLARATIVE_COMPONENT_PROPS {
@@ -23,7 +23,7 @@ function isComponentTag(name: string): name is keyof typeof PLUGIN_DECLARATIVE_C
 
 export function createOrcaSdk(source: SdkSource) {
   const host = Object.freeze({
-    call(method: string, params?: unknown, options: OrcaHostCallOptions = {}): Promise<unknown> {
+    call(method: string, params?: unknown, options: TopoHostCallOptions = {}): Promise<unknown> {
       const bridgeHost = source.bridge()?.host
       if (!bridgeHost) {
         return unavailable('host.call')
@@ -70,12 +70,12 @@ export function createOrcaSdk(source: SdkSource) {
   })
 
   const env = Object.freeze({
-    /** Orca's UI language (BCP-47); the guest's `navigator.language` follows the OS instead. */
+    /** Topo's UI language (BCP-47); the guest's `navigator.language` follows the OS instead. */
     get locale(): string {
       return source.bridge()?.locale ?? 'en'
     },
     /** Reading it while rendering re-renders on light/dark switches. */
-    get theme(): OrcaTheme {
+    get theme(): TopoTheme {
       return source.theme()
     },
     client: 'desktop' as const
@@ -104,7 +104,7 @@ export function createOrcaSdk(source: SdkSource) {
     }
   })
 
-  function on(event: string, handler: (payload: unknown) => void): OrcaDisposable {
+  function on(event: string, handler: (payload: unknown) => void): TopoDisposable {
     if (typeof event !== 'string' || isReservedPluginDeclarativeEvent(event)) {
       throw new TypeError(`"${String(event)}" is not an event plugins can subscribe to`)
     }
@@ -114,7 +114,7 @@ export function createOrcaSdk(source: SdkSource) {
   const ui = Object.freeze({
     /** Grows with the component catalog. */
     catalog: PLUGIN_DECLARATIVE_CATALOG_VERSION,
-    /** Whether this Orca draws `component`, and accepts `prop` on it when given. */
+    /** Whether this Topo draws `component`, and accepts `prop` on it when given. */
     has(component: string, prop?: string): boolean {
       if (!isComponentTag(component)) {
         return false

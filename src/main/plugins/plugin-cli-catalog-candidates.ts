@@ -61,8 +61,8 @@ export function matchesCatalogSelector(
 
 function catalogNextSteps(): string[] {
   return [
-    '`orca plugin catalog list` shows the catalogs on this Orca host.',
-    'Install straight from the repository instead: `orca plugin install <owner>/<repo>`.'
+    '`topo plugin catalog list` shows the catalogs on this Topo host.',
+    'Install straight from the repository instead: `topo plugin install <owner>/<repo>`.'
   ]
 }
 
@@ -78,11 +78,11 @@ async function findListing(
   if (selector && allowed.length === 0) {
     throw new PluginCliError(
       PLUGIN_NOT_FOUND_CODE,
-      `No catalog on this Orca host matches ${selector}.`,
+      `No catalog on this Topo host matches ${selector}.`,
       {
         catalog: selector,
         nextSteps: [
-          '`orca plugin catalog list` shows the catalogs; `orca plugin catalog add <url>` adds one.'
+          '`topo plugin catalog list` shows the catalogs; `topo plugin catalog add <url>` adds one.'
         ]
       }
     )
@@ -120,7 +120,7 @@ async function findListing(
   if (!listing || !state) {
     throw new PluginCliError(
       PLUGIN_NOT_FOUND_CODE,
-      `No catalog on this Orca host lists ${pluginKey}.`,
+      `No catalog on this Topo host lists ${pluginKey}.`,
       { pluginKey, nextSteps: catalogNextSteps() }
     )
   }
@@ -137,7 +137,7 @@ function candidateFromPreview(
   if (preview.blockedByKillList) {
     throw new PluginCliError(
       PLUGIN_BLOCKED_CODE,
-      `${preview.pluginKey} is blocked by Orca's safety list: ${preview.blockedByKillList.reason}`,
+      `${preview.pluginKey} is blocked by Topo's safety list: ${preview.blockedByKillList.reason}`,
       {
         pluginKey: preview.pluginKey,
         nextSteps: ['Do not try to install this plugin another way.']
@@ -210,7 +210,7 @@ export async function catalogUpdateCandidate(
     : undefined
   if (!installed || !state) {
     throw installFailed(
-      `${entry.pluginKey} was installed from a catalog that is no longer on this Orca host.`,
+      `${entry.pluginKey} was installed from a catalog that is no longer on this Topo host.`,
       { pluginKey: entry.pluginKey }
     )
   }

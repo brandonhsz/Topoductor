@@ -1,11 +1,11 @@
-import { canonicalOrcaSessionFromEdges } from '../addressing/session-lineage/canonical-orca-session-id'
+import { canonicalTopoSessionFromEdges } from '../addressing/session-lineage/canonical-topo-session-id'
 import type { AgentMessageSender } from '../../../../shared/agent-session/agent-session-message-source'
 import {
-  formatOrcaSessionAddress,
-  isOrcaSessionId,
-  type OrcaSessionId,
-  parseOrcaSessionAddress
-} from '../../../../shared/orca-session-address'
+  formatTopoSessionAddress,
+  isTopoSessionId,
+  type TopoSessionId,
+  parseTopoSessionAddress
+} from '../../../../shared/topo-session-address'
 import { isPublicOrchestrationAddress } from '../../../../shared/orchestration/mailbox/orchestration-agent-reference'
 import {
   createCanonicalSessionPaneResolver,
@@ -61,10 +61,10 @@ export function createCrewPartyRegistry(deps: CrewReadDependencies) {
       lineageAliases.set(
         heads[0],
         [...component].sort().map((id) => {
-          if (!isOrcaSessionId(id)) {
-            throw new Error(`Not an Orca session id: ${id}`)
+          if (!isTopoSessionId(id)) {
+            throw new Error(`Not a Topo session id: ${id}`)
           }
-          return formatOrcaSessionAddress(id)
+          return formatTopoSessionAddress(id)
         })
       )
     }
@@ -113,8 +113,8 @@ export function createCrewPartyRegistry(deps: CrewReadDependencies) {
       const handle = mismatch ? null : candidateHandle
       const publicHandle = handle?.startsWith('term_') ? handle : null
       const publicAddress =
-        sessionId && isOrcaSessionId(sessionId)
-          ? formatOrcaSessionAddress(sessionId)
+        sessionId && isTopoSessionId(sessionId)
+          ? formatTopoSessionAddress(sessionId)
           : ((publicHandle && (aliases.get(publicHandle) ?? base?.addressOf(publicHandle))) ??
             publicHandle ??
             fallback)
@@ -125,7 +125,7 @@ export function createCrewPartyRegistry(deps: CrewReadDependencies) {
       const value = existing ?? {
         address: publicAddress,
         terminalHandle: publicHandle,
-        orcaSessionId: parseOrcaSessionAddress(publicAddress),
+        topoSessionId: parseTopoSessionAddress(publicAddress),
         paneKey: sessionId ? canonicalPane(sessionId) : pane
       }
       parties.set(publicAddress, value)
@@ -135,7 +135,7 @@ export function createCrewPartyRegistry(deps: CrewReadDependencies) {
         ...(sessionId ? (lineageAliases.get(sessionId) ?? []) : []),
         mismatch ? null : storedHandle,
         handle,
-        session && isOrcaSessionId(session) ? formatOrcaSessionAddress(session) : null
+        session && isTopoSessionId(session) ? formatTopoSessionAddress(session) : null
       ]) {
         if (alias) {
           registerAlias(alias, publicAddress)
@@ -166,7 +166,7 @@ export function createCrewPartyRegistry(deps: CrewReadDependencies) {
           }
         }
       },
-      commandCanonical: (id: OrcaSessionId) => canonicalOrcaSessionFromEdges(id, clearedFrom),
+      commandCanonical: (id: TopoSessionId) => canonicalTopoSessionFromEdges(id, clearedFrom),
       fork: (identity?: CrewIdentityRead) => build(lookup, identity)
     }
   }

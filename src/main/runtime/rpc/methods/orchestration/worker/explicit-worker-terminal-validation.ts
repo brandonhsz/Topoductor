@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import { isStructuredWorkerHandle } from '../../../../../../shared/orchestration/workers/structured-worker-handle'
 import type {
@@ -6,8 +6,8 @@ import type {
   OrchestrationPartyIdentity as OrchestrationParty
 } from '../../../../../../shared/orchestration/mailbox/orchestration-party-identity'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
-import type { OrcaSessionId } from '../../../../../../shared/orca-session-address'
-import { formatOrcaSessionAddress } from '../../../../../../shared/orca-session-address'
+import type { TopoSessionId } from '../../../../../../shared/topo-session-address'
+import { formatTopoSessionAddress } from '../../../../../../shared/topo-session-address'
 import {
   admitChatAssignee,
   chatAssigneeOf,
@@ -16,7 +16,7 @@ import {
 
 /** Before any effects, refuse coordinator self-assignment, foreign-workspace panes and terminals without agents. */
 export async function assertExplicitWorkerTerminalUsable(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   terminal: string
   from: string
   coordinator: OrchestrationCallerIdentity | null
@@ -56,9 +56,9 @@ export async function assertExplicitWorkerTerminalUsable(args: {
   }
 }
 
-/** A `--terminal` party: a terminal pane, or a chat named by its Orca session ID. */
+/** A `--terminal` party: a terminal pane, or a chat named by its Topo session ID. */
 export async function assertExplicitWorkerUsable(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   terminal: OrchestrationParty
   from: string
@@ -71,24 +71,24 @@ export async function assertExplicitWorkerUsable(args: {
     : assertExplicitWorkerTerminalUsable({ ...args, terminal: args.terminal.address }))
 }
 
-/** The same refusals for a chat named by its Orca session ID: itself, unreachable, another worktree. */
+/** The same refusals for a chat named by its Topo session ID: itself, unreachable, another worktree. */
 async function assertExplicitWorkerChatUsable(args: {
-  runtime: Pick<OrcaRuntimeService, 'ensureStructuredAgentSessionHost'>
+  runtime: Pick<TopoRuntimeService, 'ensureStructuredAgentSessionHost'>
   db: OrchestrationDb
-  chat: OrcaSessionId
+  chat: TopoSessionId
   coordinator: OrchestrationCallerIdentity | null
   resolvedWorktreeId: string | undefined
 }): Promise<void> {
   refuseChatSelfAssignment({
     sessionId: args.chat,
-    coordinatorSessionId: args.coordinator?.orcaSessionId,
+    coordinatorSessionId: args.coordinator?.topoSessionId,
     remedy: 'Pass --terminal for a different agent, or omit it so worker-start creates one.'
   })
   const session = await admitChatAssignee(args.runtime, args.chat, args.db)
   if (session.location.workspaceId !== args.resolvedWorktreeId) {
     throw new OrchestrationError(
       'terminal_worktree_mismatch',
-      `${formatOrcaSessionAddress(args.chat)} does not belong to worktree ${args.resolvedWorktreeId}.`
+      `${formatTopoSessionAddress(args.chat)} does not belong to worktree ${args.resolvedWorktreeId}.`
     )
   }
 }

@@ -6,7 +6,7 @@ import {
 import type { RpcCallerIdentity } from '../../rpc-caller-identity'
 import { InvalidArgumentError } from '../../core'
 import type { RuntimeTerminalSend } from '../../../../../shared/runtime-terminal-send-contract'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import type { RuntimeTerminalDriverState } from '../../../../../shared/runtime-session-contracts'
 import {
   TERMINAL_INPUT_MAX_BYTES,
@@ -29,14 +29,14 @@ export function terminalInputSourceForClient(
     return 'programmatic'
   }
   // Paired CLI versions already declare this source; authentication and floor remain unchanged.
-  if (caller?.kind === 'paired-device' && client.type === 'desktop' && client.id === 'orca-cli') {
+  if (caller?.kind === 'paired-device' && client.type === 'desktop' && client.id === 'topo-cli') {
     return 'programmatic'
   }
   return 'desktop'
 }
 
 export function isTerminalInputLockedForClient(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   ptyId: string,
   client: TerminalViewportClient | undefined
 ): boolean {
@@ -74,7 +74,7 @@ function isTerminalStreamInputRejection(error: unknown): boolean {
 }
 
 export async function sendTerminalStreamInput(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   args: {
     terminal: string
     text: string
@@ -130,7 +130,7 @@ function streamInputOutcome(result: RuntimeTerminalSend): TerminalStreamInputOut
 }
 
 export type MobileInputFloorClaimHolder = {
-  current: ReturnType<OrcaRuntimeService['beginMobileInputFloor']>
+  current: ReturnType<TopoRuntimeService['beginMobileInputFloor']>
 }
 
 export async function commitMobileInputFloorClaim(
@@ -169,7 +169,7 @@ export function isTerminalSendGuardNotWritable(error: unknown): boolean {
 }
 
 export function assertTerminalSendExactPtyBinding(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   handle: string,
   expectedPtyId: string | undefined
 ): void {

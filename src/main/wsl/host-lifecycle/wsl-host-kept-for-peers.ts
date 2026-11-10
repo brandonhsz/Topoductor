@@ -1,5 +1,5 @@
 /**
- * R39: a Remove that kept a WSL host's server for another Orca leaves that server, and anything a
+ * R39: a Remove that kept a WSL host's server for another Topo leaves that server, and anything a
  * move put on it, running. Undo of such a move must not read the removed host as stopped.
  */
 import { join } from 'node:path'
@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { writeSecureJsonFileWithinLimit } from '../../../shared/secure-storage/bounded-secure-json-file'
 import { readNodeFileSyncWithinLimit } from '../../../shared/file-content/node-bounded-file-reader'
 
-const KEPT_FILE = 'orca-wsl-hosts-kept-for-peers.json'
+const KEPT_FILE = 'topo-wsl-hosts-kept-for-peers.json'
 const MAX_KEPT_FILE_BYTES = 64 * 1024
 
 const KeptListSchema = z.object({

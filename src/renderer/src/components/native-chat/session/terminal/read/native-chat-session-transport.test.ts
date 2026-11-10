@@ -21,7 +21,7 @@ const ENV = 'env-1'
 beforeEach(() => {
   vi.clearAllMocks()
   clearRuntimeCompatibilityCacheForTests()
-  delete (globalThis as { __ORCA_WEB_CLIENT__?: boolean }).__ORCA_WEB_CLIENT__
+  delete (globalThis as { __TOPO_WEB_CLIENT__?: boolean }).__TOPO_WEB_CLIENT__
   vi.stubGlobal('window', {
     location: { pathname: '/index.html' },
     api: {

@@ -34,7 +34,7 @@ import {
 import { writeLegacyOpenCodePluginWithAclRetry } from './legacy-plugin-acl-retry'
 import {
   OPENCODE_OVERLAY_DIR,
-  ORCA_OPENCODE_PLUGIN_FILE,
+  TOPO_OPENCODE_PLUGIN_FILE,
   sourceOverlayDirName,
   toSafeDirName
 } from './overlay-dir-names'
@@ -73,13 +73,13 @@ export class OpenCodeHookService {
     const config: OpenCodeHookVariant =
       typeof variant === 'function'
         ? {
-            pluginFileName: ORCA_OPENCODE_PLUGIN_FILE,
+            pluginFileName: TOPO_OPENCODE_PLUGIN_FILE,
             legacyHooksDir: OPENCODE_LEGACY_HOOKS_DIR,
             overlayDir: OPENCODE_OVERLAY_DIR,
             pluginSource: variant
           }
         : (variant ?? {
-            pluginFileName: ORCA_OPENCODE_PLUGIN_FILE,
+            pluginFileName: TOPO_OPENCODE_PLUGIN_FILE,
             legacyHooksDir: OPENCODE_LEGACY_HOOKS_DIR,
             overlayDir: OPENCODE_OVERLAY_DIR,
             pluginSource: getOpenCodePluginSource,
@@ -229,7 +229,7 @@ export class OpenCodeHookService {
     )
   }
 
-  // Link config for live user edits; keep plugins real so Orca can install a sibling.
+  // Link config for live user edits; keep plugins real so Topo can install a sibling.
   private mirrorUserConfig(sourceDir: string, overlayDir: string): void {
     const previousManifest = readOpenCodeOverlayManifest(overlayDir)
     // Remove only mirrored paths; persistent overlays may contain OpenCode runtime directories.
@@ -263,7 +263,7 @@ export class OpenCodeHookService {
           const overlayPluginsDir = join(overlayDir, 'plugins')
           mkdirSync(overlayPluginsDir, { recursive: true })
           for (const pluginEntry of readdirSync(resolvedSource, { withFileTypes: true })) {
-            // Never mirror Orca’s filename: installation would overwrite the user’s target.
+            // Never mirror Topo’s filename: installation would overwrite the user’s target.
             if (
               pluginEntry.name === this.pluginFileName ||
               pluginEntry.name === this.tuiOnlyDirectory ||
@@ -321,7 +321,7 @@ export class OpenCodeHookService {
 
 export const openCodeHookService = new OpenCodeHookService()
 export const openCode2HookService = new OpenCodeHookService({
-  pluginFileName: 'orca-opencode2-status.js',
+  pluginFileName: 'topo-opencode2-status.js',
   legacyHooksDir: OPENCODE2_LEGACY_HOOKS_DIR,
   overlayDir: 'opencode2-config-overlays',
   pluginSource: getOpenCode2PluginSource,

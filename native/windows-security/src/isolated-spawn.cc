@@ -1,7 +1,7 @@
-// libuv spawns with bInheritHandles=TRUE and no handle list, so every inheritable handle in Orca
+// libuv spawns with bInheritHandles=TRUE and no handle list, so every inheritable handle in Topo
 // reaches a long-lived child. This spawn lists exactly one NUL handle, used for all three stdio.
 // Flags mirror libuv's detached spawn plus CREATE_BREAKAWAY_FROM_JOB: a holder must outlive a
-// kill-on-close job Orca was launched into (an OpenSSH session's, a terminal's). A job that forbids
+// kill-on-close job Topo was launched into (an OpenSSH session's, a terminal's). A job that forbids
 // breakaway fails that with ERROR_ACCESS_DENIED; the spawn then retries inside it and reports so.
 
 #include "isolated-spawn.h"
@@ -124,7 +124,7 @@ Napi::Value SpawnDetachedIsolated(const Napi::CallbackInfo& info) {
   result.Set("breakawayDenied", Napi::Boolean::New(env, breakawayDenied));
   auto* watch = new ExitWatch{created.hProcess};
   watch->onExit = Napi::ThreadSafeFunction::New(env, info[4].As<Napi::Function>(),
-                                                "orcaIsolatedSpawnExit", 0, 1);
+                                                "topoIsolatedSpawnExit", 0, 1);
   watch->onExit.Unref(env);
   if (!RegisterWaitForSingleObject(&watch->wait, created.hProcess, OnProcessExited, watch, INFINITE,
                                    WT_EXECUTEONLYONCE)) {

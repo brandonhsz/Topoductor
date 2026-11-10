@@ -5,7 +5,7 @@ import type {
 } from '../onboarding/onboarding-feature-setup'
 import {
   COMPUTER_USE_SKILL_NAME,
-  ORCA_CLI_SKILL_NAME,
+  TOPO_CLI_SKILL_NAME,
   ORCHESTRATION_SKILL_NAME
 } from '@/lib/skills/installation/agent-feature-skill-names'
 import {
@@ -56,7 +56,7 @@ export function useAgentCapabilitySetupStatus(): AgentCapabilitySetupStatus {
     agent: activeSkillRuntime.agent,
     sourceKinds: GLOBAL_AGENT_SKILL_SOURCE_KINDS
   }
-  const browserUseSkill = useInstalledAgentSkill(ORCA_CLI_SKILL_NAME, skillOptions)
+  const browserUseSkill = useInstalledAgentSkill(TOPO_CLI_SKILL_NAME, skillOptions)
   const computerUseSkill = useInstalledAgentSkill(COMPUTER_USE_SKILL_NAME, skillOptions)
   const orchestrationSkill = useInstalledAgentSkill(ORCHESTRATION_SKILL_NAME, skillOptions)
   const computerUsePermissionStatus = useComputerUsePermissionStatus(computerUseSkill.installed)
@@ -222,8 +222,8 @@ function getComputerUseInstallStatus(
       label:
         permissions.unavailableReason === 'web_client'
           ? t(
-              'auto.components.feature.wall.agent.capability.setup.status.requiresOrcaDesktop',
-              'Requires Orca Desktop'
+              'auto.components.feature.wall.agent.capability.setup.status.requiresTopoDesktop',
+              'Requires Topo Desktop'
             )
           : t(
               'auto.components.feature.wall.agent.capability.setup.status.6d2b0a84e1',

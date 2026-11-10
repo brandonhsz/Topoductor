@@ -94,7 +94,7 @@ export async function editorShotPluginKey(ctx: HandlerContext): Promise<string> 
   if (!isQualifiedPluginKey(target)) {
     throw new RuntimeClientError(
       'invalid_argument',
-      'Pass a plugin folder, or a plugin key such as acme.sketch; `orca plugin list` shows them.'
+      'Pass a plugin folder, or a plugin key such as acme.sketch; `topo plugin list` shows them.'
     )
   }
   return target
@@ -104,7 +104,7 @@ export function formatPluginEditorShot(shot: PluginEditorShotSaved, requested?: 
   return [
     `Saved ${shot.path} (${shot.width}x${shot.height}, ${shot.theme} theme, ${shot.title} on ${shot.filePath})`,
     ...(requested && !shot.themeApplied
-      ? [`  note: ${requested} was not applied (${shot.themeReason ?? 'Orca could not paint it'}).`]
+      ? [`  note: ${requested} was not applied (${shot.themeReason ?? 'Topo could not paint it'}).`]
       : []),
     ...(shot.acted
       ? [

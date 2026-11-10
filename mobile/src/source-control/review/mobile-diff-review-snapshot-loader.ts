@@ -79,7 +79,7 @@ async function buildWorktreeSnapshot(
       kind: 'unavailable',
       message: translate(
         'session.diffReviewLoaders.desktopUpdateRequired',
-        'Update Orca desktop to review changes on mobile.'
+        'Update Topo desktop to review changes on mobile.'
       )
     }
   }

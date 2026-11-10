@@ -8,7 +8,7 @@ import {
 const OPENCODE_EXECUTABLE = /^opencode2?(\.(exe|cmd))?$/i
 const MODEL_FLAGS = ['--model', '-m']
 const VALUE_FLAGS = ['--prompt', '--session', '-s']
-// Flags the launch builders append unquoted; every other argument Orca emits is quoteStartupArg'd.
+// Flags the launch builders append unquoted; every other argument Topo emits is quoteStartupArg'd.
 const BARE_FLAGS = new Set(['--prompt', '--standalone'])
 const LITERAL_HEAD = /^[A-Za-z0-9._/\\:-]+$/
 // Root options that leave a new session on the primary agent; resuming one makes the overlay moot.
@@ -25,7 +25,7 @@ export type OpenCodeRootModelRewrite = {
 
 /**
  * OpenCode 2's root TUI has no `--model`; its per-launch model is config read by a server this launch starts.
- * Only Orca's own emitted shape is rewritten: every argument quoted by quoteStartupArg or a known bare flag,
+ * Only Topo's own emitted shape is rewritten: every argument quoted by quoteStartupArg or a known bare flag,
  * so no shell syntax can hide another command. Anything else stays exactly as typed.
  */
 export function planOpenCodeRootModelRewrite(
@@ -40,7 +40,7 @@ export function planOpenCodeRootModelRewrite(
       return null
     }
   }
-  // The prompt operand is matched against the body Orca put in the env, never decoded.
+  // The prompt operand is matched against the body Topo put in the env, never decoded.
   const promptSuffix =
     promptBody === undefined ? undefined : ` --prompt ${quoteStartupArg(promptBody, shell)}`
   const suffix = promptSuffix && command.endsWith(promptSuffix) ? promptSuffix : ''

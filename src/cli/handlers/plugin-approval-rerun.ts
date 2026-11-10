@@ -15,7 +15,7 @@ export function approvalRerunCommand(rawArgs: readonly string[], fingerprint: st
     }
     kept.push(arg)
   }
-  return ['orca', ...kept, '--approve', fingerprint].map(quoteCliCommandArgument).join(' ')
+  return ['topo', ...kept, '--approve', fingerprint].map(quoteCliCommandArgument).join(' ')
 }
 
 export function approvalFingerprintOf(data: unknown): string | null {

@@ -1,6 +1,6 @@
 // Move main-owned tabs through layout commands so every view follows main without a window relay.
-import type { OrcaRuntimeWithPruneMobileSessionTabGroupLayout } from '../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import type { TopoRuntimeWithPruneMobileSessionTabGroupLayout } from '../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import type {
   RuntimeMobileSessionTabMove,
   RuntimeMobileSessionTabMoveResult,
@@ -9,19 +9,19 @@ import type {
 import { translateSessionTabMove } from '../../../shared/workspace-layout/old-client/old-client-method-translation'
 import { resolveSessionTabRow } from '../../../shared/workspace-layout/old-client/old-client-session-tab-rows'
 import { startedMainTerminalSurfaces } from '../terminal/surface/main-terminal-surfaces'
-import { OrcaRuntimeWithMainLayoutRenames } from './main-layout-renames'
+import { TopoRuntimeWithMainLayoutRenames } from './main-layout-renames'
 import { liveTerminalsOfTab } from '../session-lifecycle/close/closed-tab-terminal'
 import type { WorkspaceLayout } from '../../../shared/workspace-layout/workspace-layout-model'
 import type { CommandOf } from '../../../shared/workspace-layout/workspace-layout-command-types'
 import { isPaneColumnSplitDropNoOp } from '../../../shared/workspace-layout/pane-column-split-drop-no-op'
 import { selectMobileSessionTab } from './mobile-session-tab-selection'
 
-export abstract class OrcaRuntimeWithMainLayoutTabMoves extends OrcaRuntimeWithMainLayoutRenames {
+export abstract class TopoRuntimeWithMainLayoutTabMoves extends TopoRuntimeWithMainLayoutRenames {
   protected abstract toMobileSessionTabsResult(
     ...args: Parameters<
-      OrcaRuntimeWithPruneMobileSessionTabGroupLayout['toMobileSessionTabsResult']
+      TopoRuntimeWithPruneMobileSessionTabGroupLayout['toMobileSessionTabsResult']
     >
-  ): ReturnType<OrcaRuntimeWithPruneMobileSessionTabGroupLayout['toMobileSessionTabsResult']>
+  ): ReturnType<TopoRuntimeWithPruneMobileSessionTabGroupLayout['toMobileSessionTabsResult']>
 
   /** A closed tab's rows' live terminals, read before main's close drops their panes. */
   protected liveTerminalsOfClosedTab(
@@ -55,7 +55,7 @@ export abstract class OrcaRuntimeWithMainLayoutTabMoves extends OrcaRuntimeWithM
     move: RuntimeMobileSessionTabMove
   ): Promise<RuntimeMobileSessionTabMoveResult | null> {
     if (
-      !ORCA_LAYOUT_OWNER_IS_MAIN ||
+      !TOPO_LAYOUT_OWNER_IS_MAIN ||
       !startedMainTerminalSurfaces(this)?.ownsWorkspace(worktreeId)
     ) {
       return null

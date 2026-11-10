@@ -1,4 +1,4 @@
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import {
   decodeAntigravityKeychainValue,
   parseAntigravityNativeCredential,
@@ -87,7 +87,7 @@ async function resolveAgyCollection(): Promise<string | null> {
   }
   if (locked.value.includes('<true>')) {
     throw new Error(
-      'Your Linux keyring is locked, so Orca cannot read or switch the Antigravity account. Unlock the keyring (for example in Passwords and Keys) and try again.'
+      'Your Linux keyring is locked, so Topo cannot read or switch the Antigravity account. Unlock the keyring (for example in Passwords and Keys) and try again.'
     )
   }
   if (!locked.value.includes('<false>')) {

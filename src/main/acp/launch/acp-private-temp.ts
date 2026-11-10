@@ -54,7 +54,7 @@ function acpTempRoot(dataRoot: string, logger?: StructuredAgentSessionLogger): s
     logger?.warn('ACP agent temp folder kept in the data folder', { scope: 'acp-temp', error })
     return dataRoot
   }
-  // Why: a hash keeps the path short and stops two Orca copies wiping each other's runs.
+  // Why: a hash keeps the path short and stops two Topo copies wiping each other's runs.
   return join(owner, createHash('sha256').update(dataRoot).digest('hex').slice(0, 8))
 }
 

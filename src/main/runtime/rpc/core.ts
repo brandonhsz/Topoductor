@@ -1,7 +1,7 @@
 import type { RuntimeClientCapabilities } from './runtime-client-capabilities'
 import type { ZodError, ZodType } from 'zod'
 import type { TerminalStreamFrame } from '../../../shared/terminal/stream/terminal-stream-protocol'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import type { OrchestrationCompatibilityCallerAuthority } from '../orchestration/terminal-authority/orchestration-compatibility-authority'
 import type { StructuredAgentCliSourceEvidence } from '../../native-chat/structured-agent-cli-source'
 import type {
@@ -22,10 +22,10 @@ import type {
 import type { OrchestrationCompatibilityEvidence } from '../../../shared/orchestration/orchestration-compatibility-evidence'
 import type { OrchestrationSessionCaller } from '../orchestration/addressing/orchestration-caller-identity'
 import type { RpcCallerIdentity } from './rpc-caller-identity'
-import type { OrcadPeerDesktopsResult } from '../../../shared/orcad-peer-desktops-contract'
+import type { TopodPeerDesktopsResult } from '../../../shared/topod-peer-desktops-contract'
 import type { RpcBinarySender } from './rpc-binary-sender'
 import type { RpcMethodPermission } from './rpc-method-permission'
-import type { OrcadFeatureRequirement } from './orcad-feature-readiness'
+import type { TopodFeatureRequirement } from './topod-feature-readiness'
 import type {
   RegisterDeviceKeyParams,
   RegisterDeviceKeyResult
@@ -104,7 +104,7 @@ export type LegacyCoordinatorAuthorityProof = Readonly<{
 }>
 
 export type RpcContext = {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   // Release long-poll handlers immediately when the client disconnects.
   signal?: AbortSignal
   // Cleanup is socket-scoped so sibling sockets sharing a device token survive.
@@ -147,7 +147,7 @@ export type RpcContext = {
   replayedMutationReceipt?: unknown
   // Compare declared Run handles against request attestation.
   orchestrationCompatibilityEvidence?: OrchestrationCompatibilityEvidence
-  // Resolve the injected Orca session id once at dispatch; session identity wins.
+  // Resolve the injected Topo session id once at dispatch; session identity wins.
   orchestrationCaller?: OrchestrationSessionCaller
   // Only the trusted compatibility router sets this; params cannot bypass Run consumer binding.
   legacyCoordinatorRunId?: string
@@ -166,7 +166,7 @@ export type RpcContext = {
   }
   // Authenticated runtime devices see which other desktops share this server.
   peerDesktops?: {
-    list(callerClientInstanceId?: string): OrcadPeerDesktopsResult
+    list(callerClientInstanceId?: string): TopodPeerDesktopsResult
     /** Tags this socket with the caller's installation until it closes. */
     declare(clientInstanceId: string): void
   }
@@ -198,8 +198,8 @@ export type RpcTypedMethod<TName extends string, TSchema extends ZodType | null,
   // Every new method must explicitly choose caller permissions.
   readonly permission: RpcMethodPermission
   readonly params: TSchema
-  // Startup phases this method needs; the dispatcher waits for them, bounded (orcad only).
-  readonly requires?: OrcadFeatureRequirement<RpcParsedParams<TSchema>>
+  // Startup phases this method needs; the dispatcher waits for them, bounded (topod only).
+  readonly requires?: TopodFeatureRequirement<RpcParsedParams<TSchema>>
   readonly handler: (params: RpcParsedParams<TSchema>, ctx: RpcContext) => TResult
 }
 
@@ -214,7 +214,7 @@ export type RpcTypedStreamingMethod<TName extends string, TSchema extends ZodTyp
   readonly name: TName
   readonly permission: RpcMethodPermission
   readonly params: TSchema
-  readonly requires?: OrcadFeatureRequirement<RpcParsedParams<TSchema>>
+  readonly requires?: TopodFeatureRequirement<RpcParsedParams<TSchema>>
   readonly stream: true
   readonly handler: (
     params: RpcParsedParams<TSchema>,
@@ -233,7 +233,7 @@ type RpcMethodWithParams<P> = {
   readonly name: string
   readonly permission: RpcMethodPermission
   readonly params: ZodType | null
-  readonly requires?: OrcadFeatureRequirement<P>
+  readonly requires?: TopodFeatureRequirement<P>
   readonly handler: (params: P, ctx: RpcContext) => unknown
 }
 
@@ -241,7 +241,7 @@ type RpcStreamingMethodWithParams<P> = {
   readonly name: string
   readonly permission: RpcMethodPermission
   readonly params: ZodType | null
-  readonly requires?: OrcadFeatureRequirement<P>
+  readonly requires?: TopodFeatureRequirement<P>
   readonly stream: true
   readonly handler: (params: P, ctx: RpcContext, emit: (result: unknown) => void) => Promise<void>
 }

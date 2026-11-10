@@ -5,7 +5,7 @@ const { AndroidConfig, withAndroidManifest, withMainActivity } = require('expo/c
 // picker. Keeping the activity is not enough: React Native seeds its DisplayMetricsHolder from the
 // application context, which keeps the full-screen density, so the pane is laid out at the wrong
 // scale. MainActivity re-seeds it from its own resources after React Native does.
-const MARKER = 'orca: window density'
+const MARKER = 'topo: window density'
 
 const CLASS_HEADER = 'class MainActivity : ReactActivity() {'
 const IMPORTS = [

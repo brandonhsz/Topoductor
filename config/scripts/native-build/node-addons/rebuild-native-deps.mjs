@@ -71,7 +71,7 @@ const NATIVE_MODULES = [
   'node-pty',
   'cpu-features',
   ...(rebuildPlatform === 'win32'
-    ? ['@orca/windows-registry', '@orca/windows-security', '@vscode/windows-process-tree']
+    ? ['@topo/windows-registry', '@topo/windows-security', '@vscode/windows-process-tree']
     : [])
 ]
 const onlyModules = NATIVE_MODULES.filter((m) => !ignoreModules.includes(m))
@@ -82,7 +82,7 @@ const sharedNativeBuild = sharedModules.size > 0 ? await import('./shared-native
 /** Whether this rebuild targets something other than the machine running it. */
 const isCrossHostRebuild = rebuildPlatform !== osPlatform() || rebuildArch !== process.arch
 const forceRebuild =
-  process.env.ORCA_FORCE_NATIVE_REBUILD === '1' || cliOptions.force || isCrossHostRebuild
+  process.env.TOPO_FORCE_NATIVE_REBUILD === '1' || cliOptions.force || isCrossHostRebuild
 let modulesToRebuild = onlyModules
 
 warnAboutNodeModulesAboveSharedStore(projectDir)
@@ -140,7 +140,7 @@ if (!ignoreModules.includes('cpu-features')) {
 }
 
 try {
-  // Keep stale-addon deletion inside lock-classifying try: running Orca can hold it and cause EPERM.
+  // Keep stale-addon deletion inside lock-classifying try: running Topo can hold it and cause EPERM.
   assertNodePtyConptySourceDeniesMsysBreakaway()
   for (const moduleName of modulesToRebuild.filter((m) => sharedModules.has(m))) {
     buildSharedElectronModule(moduleName)
@@ -177,10 +177,10 @@ try {
   if (isWindowsNativeLockError(err)) {
     console.error(
       '[rebuild] A Windows process appears to be using a native .node file. ' +
-        'Close running Orca/Electron/dev processes for this worktree, then rerun `pnpm install` ' +
+        'Close running Topo/Electron/dev processes for this worktree, then rerun `pnpm install` ' +
         'or `pnpm run rebuild:electron`.'
     )
-    if (isPostinstall() && process.env.ORCA_STRICT_NATIVE_REBUILD !== '1') {
+    if (isPostinstall() && process.env.TOPO_STRICT_NATIVE_REBUILD !== '1') {
       console.error(
         '[rebuild] Continuing postinstall because the failure is a Windows file lock. ' +
           'The next dev/start command will re-check native modules.'
@@ -384,7 +384,7 @@ function runElectronPackageBinaryInstall() {
 }
 
 function continuePostinstallWithoutElectron() {
-  if (!isPostinstall() || process.env.ORCA_STRICT_ELECTRON_INSTALL === '1') {
+  if (!isPostinstall() || process.env.TOPO_STRICT_ELECTRON_INSTALL === '1') {
     return false
   }
   console.error(
@@ -508,7 +508,7 @@ function getPatchedNodePtyRebuildReason() {
     return null
   }
 
-  // Require patched native spawn/job ownership: loadable upstream prebuilds may lack Orca’s changes.
+  // Require patched native spawn/job ownership: loadable upstream prebuilds may lack Topo’s changes.
   const artifactPaths = nodePtyBuildArtifactPaths(
     resolve(projectDir, 'node_modules', 'node-pty'),
     rebuildPlatform
@@ -570,13 +570,13 @@ if (failures.length > 0) {
 }
 
 function loadNativeModule(moduleName) {
-  if (moduleName === '@orca/windows-registry') {
+  if (moduleName === '@topo/windows-registry') {
     const registry = projectRequire(moduleName)
     // Why: the package defers loading its .node addon until the first registry call.
     registry.getRegistryKey(registry.HK.CU, 'Environment')
     return
   }
-  if (moduleName === '@orca/windows-security') {
+  if (moduleName === '@topo/windows-security') {
     const security = projectRequire(moduleName)
     if (!security.currentUserSid() || !security.hasNativeExport('isolatedSpawnBreaksAwayFromJob')) throw new Error('stale build without the newest export; rebuild it')
     return
@@ -600,7 +600,7 @@ function loadNativeModule(moduleName) {
       throw new Error(
         'node-pty resolved to ' +
           native.dir +
-          '; expected build/Release so Orca\\'s node-pty patch is active'
+          '; expected build/Release so Topo\\'s node-pty patch is active'
       )
     }
     return

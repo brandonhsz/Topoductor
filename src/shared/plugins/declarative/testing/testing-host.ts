@@ -16,10 +16,10 @@ import {
 
 export { hostError, type MockHostError } from './testing-host-error'
 export type MockHostCall = { method: string; params: unknown }
-/** A call Orca itself would refuse (not a failure the test configured), even if the code caught it. */
+/** A call Topo itself would refuse (not a failure the test configured), even if the code caught it. */
 export type MockHostRefusal = { method: string; code: string; message: string }
 type Surface = 'panel' | 'worker'
-// The checks Orca makes before running a method; a configured `hostError` is not one of them.
+// The checks Topo makes before running a method; a configured `hostError` is not one of them.
 class Refusal extends Error {
   constructor(
     readonly code: string,
@@ -51,7 +51,7 @@ export function acknowledgesByDefault(spec: {
   return spec.result.safeParse(OK).success
 }
 
-// What a desktop Orca answers when a test configures nothing for these.
+// What a desktop Topo answers when a test configures nothing for these.
 const DEFAULT_RESULTS: Record<string, unknown> = {
   'workspace.readContext': null,
   'notifications.show': { delivered: true },
@@ -69,20 +69,20 @@ type MockHostSurface = {
 export type MockHost = {
   /** Every call that reached the host, in order, including refused ones. */
   readonly calls: readonly MockHostCall[]
-  /** Calls Orca would refuse: unknown method, wrong surface, missing capability, bad params, no press. */
+  /** Calls Topo would refuse: unknown method, wrong surface, missing capability, bad params, no press. */
   readonly refusals: readonly MockHostRefusal[]
   /** Granted capability kinds. */
   readonly capabilities: readonly string[]
   /** Calls of one method, params only. */
   callsOf(method: string): unknown[]
   respond(method: string, result: unknown): void
-  /** Grants one user-gesture call, as a press on one of Orca's controls does. */
+  /** Grants one user-gesture call, as a press on one of Topo's controls does. */
   grantGesture(): void
   /** Resolves when every call made so far has answered. */
   idle(): Promise<void>
   /** The plugin's storage, settings and secrets as they are now. */
   data(): MockPluginDataSnapshot
-  /** Hears each storage or settings write, as Orca tells the plugin's open panels. */
+  /** Hears each storage or settings write, as Topo tells the plugin's open panels. */
   onDataChange(listener: (area: 'storage' | 'settings', key: string) => void): () => void
   /** A mounted worker answers the panel's `plugin.request` (what `requests` does not stub). */
   routeRequests(handler: (name: string, input: unknown) => Promise<unknown>): () => void
@@ -93,7 +93,7 @@ export type MockHost = {
 }
 
 /**
- * A stand-in for Orca's host: it refuses what Orca would (unknown method, wrong surface, missing
+ * A stand-in for Topo's host: it refuses what Topo would (unknown method, wrong surface, missing
  * capability, bad params, a user-gesture method without a press) with the same codes, checks
  * results against the host API, and records every call.
  */
@@ -120,7 +120,7 @@ export function createMockHost(
   async function check(method: string, params: unknown, surface: Surface): Promise<unknown> {
     const spec = getPluginHostMethodSpec(method)
     if (!spec) {
-      return refuse('unknown_method', `${method} does not exist in this Orca`)
+      return refuse('unknown_method', `${method} does not exist in this Topo`)
     }
     if (!spec.surfaces.includes(surface)) {
       return refuse('not_permitted', `${method} is not available to ${surface}s`)

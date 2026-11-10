@@ -39,9 +39,9 @@ import { runAfterFirstWindowShown } from './first-window-deferral'
 import { startSpeechModelWarmup } from '../speech/speech-model-warmup'
 import { logStartupMilestone } from './startup-diagnostics'
 import { refreshInstalledOpenCodeStatusPlugins } from '../opencode/opencode-status-plugin-startup-refresh'
-import { pruneDesktopOrcadArtifactCache } from '../orcad/orcad-artifact-cache-retention'
+import { pruneDesktopTopodArtifactCache } from '../topod/topod-artifact-cache-retention'
 import { runGatedWslMoveDesktopRewritePass } from '../persistence/moving-wsl-projects/wsl-move-desktop-rewrite'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../shared/layout-owner-switch'
 import { repairDuplicatePtyPanesOnStart } from '../runtime/terminal/identity/moved-pane-owner-rekey'
 import { WslUsageReporter } from '../telemetry/wsl-usage-reporter'
 import { ALL_RPC_METHODS } from '../runtime/rpc/methods/rpc-method-registry'
@@ -94,7 +94,7 @@ export async function initializeReadyRuntimeServices(): Promise<void> {
       return response.result
     }
   })
-  // Only Orca-managed emulator helpers belong to workspaces; external serve-sim stays independent. macOS capability gates live in CLI/runtime.
+  // Only Topo-managed emulator helpers belong to workspaces; external serve-sim stays independent. macOS capability gates live in CLI/runtime.
   state.emulatorBridge = new EmulatorBridge()
   runtime.setEmulatorBridge(state.emulatorBridge)
   // Finish recorded deletes and old trash left across crashes; defer disk sweeps so they do not compete with first paint/catalog hydration.
@@ -114,15 +114,15 @@ export async function initializeReadyRuntimeServices(): Promise<void> {
     new WslUsageReporter(store, app.getPath('userData')).start()
   }, WORKTREE_TRASH_SWEEP_FALLBACK_MS)
   runAfterFirstWindowShown(() => {
-    void pruneDesktopOrcadArtifactCache(app.getPath('userData')).catch((error) => {
-      console.warn('[orcad-artifacts] Failed to bound the slot cache:', error)
+    void pruneDesktopTopodArtifactCache(app.getPath('userData')).catch((error) => {
+      console.warn('[topod-artifacts] Failed to bound the slot cache:', error)
     })
   }, WORKTREE_TRASH_SWEEP_FALLBACK_MS)
   // The startup pass ran before browser sessions and any window existed, so `browser-cookies` paused.
   runAfterFirstWindowShown(() => {
     void runGatedWslMoveDesktopRewritePass({ userDataPath: app.getPath('userData') })
   }, WORKTREE_TRASH_SWEEP_FALLBACK_MS)
-  // Load the dictation model after first paint; coming back to Orca re-warms one the idle timer unloaded.
+  // Load the dictation model after first paint; coming back to Topo re-warms one the idle timer unloaded.
   runAfterFirstWindowShown(() => {
     app.on('browser-window-focus', startSpeechModelWarmup(store))
   }, WORKTREE_TRASH_SWEEP_FALLBACK_MS)
@@ -176,7 +176,7 @@ export async function initializeReadyRuntimeServices(): Promise<void> {
     }
   })
   // Await duplicate-pane repair behind queued writes; all later phases must read the repaired tree.
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     await repairDuplicatePtyPanesOnStart(store, runtime)
   }
   logStartupMilestone('services-initialized')

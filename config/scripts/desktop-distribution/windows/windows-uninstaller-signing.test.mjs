@@ -12,11 +12,11 @@ const {
   signWindowsUninstallerViaSignPath
 } = require('./windows-uninstaller-signing.cjs')
 
-const makeDir = () => mkdtempSync(join(tmpdir(), 'orca-uninstaller-signing-'))
+const makeDir = () => mkdtempSync(join(tmpdir(), 'topo-uninstaller-signing-'))
 
 describe('relayNsisUninstaller', () => {
   const writeUninstaller = (dir, contents) => {
-    const filePath = join(dir, 'orca-windows-setup.__uninstaller.exe')
+    const filePath = join(dir, 'topo-windows-setup.__uninstaller.exe')
     writeFileSync(filePath, contents)
     return filePath
   }
@@ -27,7 +27,7 @@ describe('relayNsisUninstaller', () => {
   it('prefers importing over exporting when both are configured', () => {
     const dir = makeDir()
     const filePath = writeUninstaller(dir, 'rebuild-unsigned')
-    const signedPath = join(dir, 'signed', 'orca-uninstaller.exe')
+    const signedPath = join(dir, 'signed', 'topo-uninstaller.exe')
     mkdirSync(join(dir, 'signed'))
     writeFileSync(signedPath, 'signpath-signed')
 
@@ -43,7 +43,7 @@ describe('relayNsisUninstaller', () => {
     const filePath = writeUninstaller(dir, 'unsigned-uninstaller')
 
     expect(
-      relayNsisUninstaller({ filePath, signedPath: join(dir, 'absent', 'orca-uninstaller.exe') })
+      relayNsisUninstaller({ filePath, signedPath: join(dir, 'absent', 'topo-uninstaller.exe') })
     ).toBe('signed-missing')
     expect(readFileSync(filePath, 'utf8')).toBe('unsigned-uninstaller')
   })
@@ -51,7 +51,7 @@ describe('relayNsisUninstaller', () => {
 
 // Exercise actual hook’s fail-open behavior: Windows build has no continue-on-error and throwing prevents any SignPath request.
 describe('signWindowsUninstallerViaSignPath', () => {
-  const RELAY_VARS = ['ORCA_WIN_UNINSTALLER_EXPORT_PATH', 'ORCA_WIN_UNINSTALLER_SIGNED_PATH']
+  const RELAY_VARS = ['TOPO_WIN_UNINSTALLER_EXPORT_PATH', 'TOPO_WIN_UNINSTALLER_SIGNED_PATH']
 
   const withEnv = (env, run) => {
     const saved = Object.fromEntries(RELAY_VARS.map((key) => [key, process.env[key]]))
@@ -73,7 +73,7 @@ describe('signWindowsUninstallerViaSignPath', () => {
   }
 
   const writeBuiltUninstaller = (dir) => {
-    const filePath = join(dir, 'orca-windows-setup.__uninstaller.exe')
+    const filePath = join(dir, 'topo-windows-setup.__uninstaller.exe')
     writeFileSync(filePath, 'built-by-makensis')
     return filePath
   }
@@ -82,19 +82,19 @@ describe('signWindowsUninstallerViaSignPath', () => {
   it('is idempotent across the sha1 and sha256 invocations on both legs', () => {
     const dir = makeDir()
     const filePath = writeBuiltUninstaller(dir)
-    const exportPath = join(dir, 'relay', 'unsigned', 'orca-uninstaller.exe')
+    const exportPath = join(dir, 'relay', 'unsigned', 'topo-uninstaller.exe')
 
-    withEnv({ ORCA_WIN_UNINSTALLER_EXPORT_PATH: exportPath }, () => {
+    withEnv({ TOPO_WIN_UNINSTALLER_EXPORT_PATH: exportPath }, () => {
       signWindowsUninstallerViaSignPath({ path: filePath })
       signWindowsUninstallerViaSignPath({ path: filePath })
     })
     expect(readFileSync(exportPath, 'utf8')).toBe('built-by-makensis')
 
-    const signedPath = join(dir, 'relay', 'signed', 'orca-uninstaller.exe')
+    const signedPath = join(dir, 'relay', 'signed', 'topo-uninstaller.exe')
     mkdirSync(join(dir, 'relay', 'signed'), { recursive: true })
     writeFileSync(signedPath, 'signpath-signed')
 
-    withEnv({ ORCA_WIN_UNINSTALLER_SIGNED_PATH: signedPath }, () => {
+    withEnv({ TOPO_WIN_UNINSTALLER_SIGNED_PATH: signedPath }, () => {
       signWindowsUninstallerViaSignPath({ path: filePath })
       signWindowsUninstallerViaSignPath({ path: filePath })
     })
@@ -111,7 +111,7 @@ describe('signWindowsUninstallerViaSignPath', () => {
     const blocker = join(dir, 'blocker')
     writeFileSync(blocker, 'not a directory')
 
-    withEnv({ ORCA_WIN_UNINSTALLER_EXPORT_PATH: join(blocker, 'sub', 'x.exe') }, () => {
+    withEnv({ TOPO_WIN_UNINSTALLER_EXPORT_PATH: join(blocker, 'sub', 'x.exe') }, () => {
       expect(() => signWindowsUninstallerViaSignPath({ path: filePath })).not.toThrow()
     })
     expect(readFileSync(filePath, 'utf8')).toBe('built-by-makensis')

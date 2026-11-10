@@ -15,7 +15,7 @@ vi.mock('node:os', async (importOriginal) => {
   const actual = await importOriginal<{ homedir: () => string }>()
   return {
     ...actual,
-    homedir: () => process.env.ORCA_TEST_SSH_HOME || actual.homedir()
+    homedir: () => process.env.TOPO_TEST_SSH_HOME || actual.homedir()
   }
 })
 

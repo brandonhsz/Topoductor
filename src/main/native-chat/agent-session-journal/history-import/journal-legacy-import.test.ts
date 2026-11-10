@@ -8,7 +8,7 @@ import { prepareLegacyTranscriptImport } from './journal-legacy-import'
 let root: string
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-journal-import-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-journal-import-'))
 })
 
 afterEach(async () => {

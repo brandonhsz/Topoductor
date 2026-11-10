@@ -2,8 +2,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { UpdateStatus } from './update-status-types'
 import {
-  ORCA_RENDERER_SHUTDOWN_CHECKPOINT_ABORTED_EVENT,
-  ORCA_RENDERER_SHUTDOWN_CHECKPOINT_FAILED_EVENT
+  TOPO_RENDERER_SHUTDOWN_CHECKPOINT_ABORTED_EVENT,
+  TOPO_RENDERER_SHUTDOWN_CHECKPOINT_FAILED_EVENT
 } from './renderer-shutdown-events'
 import {
   createUpdaterQuitAbortRelay,
@@ -17,11 +17,11 @@ describe('prepareRendererForAppRestart', () => {
     const aborted = vi.fn()
     const independentlyAborted = vi.fn()
     const checkpoint = vi.fn((event: Event) => {
-      event.currentTarget?.dispatchEvent(new Event(ORCA_RENDERER_SHUTDOWN_CHECKPOINT_FAILED_EVENT))
+      event.currentTarget?.dispatchEvent(new Event(TOPO_RENDERER_SHUTDOWN_CHECKPOINT_FAILED_EVENT))
       event.preventDefault()
     })
     eventTarget.addEventListener('restart-started', started)
-    eventTarget.addEventListener(ORCA_RENDERER_SHUTDOWN_CHECKPOINT_ABORTED_EVENT, aborted)
+    eventTarget.addEventListener(TOPO_RENDERER_SHUTDOWN_CHECKPOINT_ABORTED_EVENT, aborted)
     eventTarget.addEventListener('restart-aborted', independentlyAborted)
     eventTarget.addEventListener('beforeunload', checkpoint)
 

@@ -44,7 +44,7 @@ on:
         required: false
         type: string
         default: ''
-      # Why: the app, orcad and its test template (--dark-test-template) build with it; releases refuse it.
+      # Why: the app, topod and its test template (--dark-test-template) build with it; releases refuse it.
       # Why: only required gates pay for Blacksmith; advisory lanes run on free hosted runners.
       fast_runners:
         description: Run on Blacksmith instead of free GitHub-hosted runners
@@ -52,7 +52,7 @@ on:
         type: boolean
         default: false
       layout_owner:
-        description: Set to main to build with ORCA_LAYOUT_OWNER=main and record save-divergence reports
+        description: Set to main to build with TOPO_LAYOUT_OWNER=main and record save-divergence reports
         required: false
         type: string
         default: ''
@@ -85,7 +85,7 @@ jobs:
     outputs:
       changed_e2e_shards: ${{ steps.changed-e2e-shards.outputs.shards }}
     env:
-      ORCA_BACKGROUND_LAUNCH: '1'
+      TOPO_BACKGROUND_LAUNCH: '1'
 
     steps:
       - name: Checkout
@@ -116,13 +116,13 @@ jobs:
 
       - name: Install native build tools
         env:
-          ORCA_E2E_APT_PACKAGES: build-essential python3
+          TOPO_E2E_APT_PACKAGES: build-essential python3
         run: &install_e2e_tools |
-          if [ "$ORCA_E2E_APT_PACKAGES" = 'build-essential python3' ] &&
+          if [ "$TOPO_E2E_APT_PACKAGES" = 'build-essential python3' ] &&
             command -v make >/dev/null && command -v g++ >/dev/null && command -v python3 >/dev/null; then
             exit 0
           fi
-          read -r -a packages <<< "$ORCA_E2E_APT_PACKAGES"
+          read -r -a packages <<< "$TOPO_E2E_APT_PACKAGES"
           if [ -f .github/scripts/prepare-ubuntu-apt.sh ]; then
             bash .github/scripts/prepare-ubuntu-apt.sh
           else
@@ -132,7 +132,7 @@ jobs:
                 sudo sed -i 's|https*://azure\.archive\.ubuntu\.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$source"
               fi
             done
-            sudo tee /etc/apt/apt.conf.d/99-orca-ci >/dev/null <<'APTCONF'
+            sudo tee /etc/apt/apt.conf.d/99-topo-ci >/dev/null <<'APTCONF'
           Acquire::http::Timeout "15";
           Acquire::https::Timeout "15";
           Acquire::Retries "1";
@@ -162,11 +162,11 @@ jobs:
       - name: Build E2E outputs
         env:
           VITE_EXPOSE_STORE: 'true'
-          ORCA_CI_MAIN_SOURCEMAPS: '0'
+          TOPO_CI_MAIN_SOURCEMAPS: '0'
           LAYOUT_OWNER: ${{ inputs.layout_owner }}
         run: |
           if [ -n "$LAYOUT_OWNER" ]; then
-            export ORCA_LAYOUT_OWNER="$LAYOUT_OWNER"
+            export TOPO_LAYOUT_OWNER="$LAYOUT_OWNER"
           fi
           pnpm run build:electron-vite:parallel --mode e2e
 
@@ -189,7 +189,7 @@ jobs:
       # The switch-on specs skip, rather than fail, when the build left no marker.
       - name: Check layout-owner build marker
         if: inputs.layout_owner == 'main'
-        run: test -f out/main/ORCA_LAYOUT_OWNER_MAIN
+        run: test -f out/main/TOPO_LAYOUT_OWNER_MAIN
 
       - name: Check shared native runtime action
         id: native-runtime-action
@@ -200,7 +200,7 @@ jobs:
             echo 'available=false' >> "$GITHUB_OUTPUT"
           fi
 
-      # The orcad builds downstream refuse to run without the page; older refs predate the action.
+      # The topod builds downstream refuse to run without the page; older refs predate the action.
       - uses: ./.github/actions/build-mobile-web-bundle
         if: hashFiles('.github/actions/build-mobile-web-bundle/action.yml') != ''
 
@@ -280,7 +280,7 @@ jobs:
         # The Azure archive took 16 minutes for one font package; bound setup
         # separately so a slow mirror cannot consume the shard's test budget.
         env: &e2e_tool_packages
-          ORCA_E2E_APT_PACKAGES: build-essential fonts-noto-cjk openssh-client python3 ripgrep xvfb zsh openbox x11-utils xdotool
+          TOPO_E2E_APT_PACKAGES: build-essential fonts-noto-cjk openssh-client python3 ripgrep xvfb zsh openbox x11-utils xdotool
         run: *install_e2e_tools
 
       - uses: ./.github/actions/install-node-dependencies
@@ -296,10 +296,10 @@ jobs:
       # Shard one worker per VM to avoid Electron/git/Xvfb contention. Reuse one SKIP_BUILD artifact and forward app logs for pre-window failures.
       - name: Balance E2E shard from timing evidence
         env:
-          ORCA_BACKGROUND_LAUNCH: '1'
+          TOPO_BACKGROUND_LAUNCH: '1'
           SKIP_BUILD: '1'
-          ORCA_E2E_FORWARD_APP_LOGS: '1'
-          ORCA_E2E_WEB_CLIENT: '1'
+          TOPO_E2E_FORWARD_APP_LOGS: '1'
+          TOPO_E2E_WEB_CLIENT: '1'
         run: |
           E2E_SHARD_PLAN_SCRIPT=config/scripts/ci/e2e-selection/ci-e2e-shard-plan.mjs
           if [ ! -f "$E2E_SHARD_PLAN_SCRIPT" ]; then
@@ -307,7 +307,7 @@ jobs:
           fi
           mkdir -p ci-shards
           pnpm exec playwright test --config tests/playwright.config.ts --project=electron-headless --list --reporter=json > ci-shards/discovery.json
-          export ORCA_SHARD_SOURCE_SHA="$(git rev-parse HEAD)"
+          export TOPO_SHARD_SOURCE_SHA="$(git rev-parse HEAD)"
           node "$E2E_SHARD_PLAN_SCRIPT" ci-shards/discovery.json '${{ matrix.shard }}' ci-shards
           pnpm exec playwright test --config tests/playwright.config.ts --project=electron-headless --test-list=ci-shards/selected.txt --list --reporter=json > ci-shards/selected-discovery.json
           node "$E2E_SHARD_PLAN_SCRIPT" --verify ci-shards/assignment.json ci-shards/selected-discovery.json
@@ -315,7 +315,7 @@ jobs:
       - name: Run E2E tests (${{ matrix.shard_name }})
         env:
           PLAYWRIGHT_JSON_OUTPUT_FILE: ci-shards/results.json
-        run: xvfb-run --auto-servernum bash .github/scripts/e2e-with-window-manager.sh env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 ORCA_E2E_WEB_CLIENT=1 pnpm run test:e2e --test-list=ci-shards/selected.txt --reporter=list,json
+        run: xvfb-run --auto-servernum bash .github/scripts/e2e-with-window-manager.sh env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 TOPO_E2E_WEB_CLIENT=1 pnpm run test:e2e --test-list=ci-shards/selected.txt --reporter=list,json
 
       - name: Summarize E2E failures
         if: always()
@@ -402,11 +402,11 @@ jobs:
             jq -r '.[] | select(
               . != "tests/e2e/ssh-browser-network-execution-route.docker.unit.test.ts" and
               . != "tests/e2e/terminal-ibus-hangul-native.spec.ts" and
-              . != "tests/e2e/orcad-serve-mode-switch.spec.ts" and
+              . != "tests/e2e/topod-serve-mode-switch.spec.ts" and
               . != "tests/e2e/workspace-layout-oracle-headless.spec.ts" and
               . != "tests/e2e/windows-missing-appdata-startup.spec.ts" and
               . != "tests/e2e/file-explorer-copy-file-windows.spec.ts" and
-              (startswith("tests/e2e/ssh-orcad-") | not)
+              (startswith("tests/e2e/ssh-topod-") | not)
             )' <<<"$TEST_FILES_JSON" > "$RUNNER_TEMP/general-e2e-specs"
           fi
           mapfile -t TEST_FILES < "$RUNNER_TEMP/general-e2e-specs"
@@ -414,15 +414,15 @@ jobs:
             echo "Changed specs are all owned by dedicated lanes."
             exit 0
           fi
-          E2E_ENV=(SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 ORCA_E2E_WEB_CLIENT=1)
+          E2E_ENV=(SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 TOPO_E2E_WEB_CLIENT=1)
           if printf '%s\n' "${TEST_FILES[@]}" | grep -Fxq 'tests/e2e/browser-image-link-focus.spec.ts'; then
-            E2E_ENV+=(ORCA_BACKGROUND_LAUNCH=1 ORCA_E2E_BROWSER_NATIVE_XVFB=1)
+            E2E_ENV+=(TOPO_BACKGROUND_LAUNCH=1 TOPO_E2E_BROWSER_NATIVE_XVFB=1)
           fi
           E2E_PROJECT_ARGS=()
           if [ -n "$LAYOUT_OWNER" ]; then
-            test -f out/main/ORCA_LAYOUT_OWNER_MAIN
+            test -f out/main/TOPO_LAYOUT_OWNER_MAIN
             mkdir -p layout-divergence
-            E2E_ENV+=(ORCA_LAYOUT_SAVE_DIVERGENCE_LOG="$PWD/layout-divergence/window-specs.jsonl")
+            E2E_ENV+=(TOPO_LAYOUT_SAVE_DIVERGENCE_LOG="$PWD/layout-divergence/window-specs.jsonl")
             E2E_ENV+=(PLAYWRIGHT_JSON_OUTPUT_FILE="$PWD/layout-divergence/window-specs-results.json")
             E2E_PROJECT_ARGS+=('--reporter=list,json')
           fi
@@ -436,7 +436,7 @@ jobs:
           elif [ -f "$E2E_SHARD_PLAN_SCRIPT" ]; then
             mkdir -p ci-shards-changed
             pnpm exec playwright test "${TEST_FILES[@]}" --config tests/playwright.config.ts --project=electron-headless "${E2E_PROJECT_ARGS[@]}" --list --reporter=json > ci-shards-changed/discovery.json
-            export ORCA_SHARD_SOURCE_SHA="$(git rev-parse HEAD)"
+            export TOPO_SHARD_SOURCE_SHA="$(git rev-parse HEAD)"
             node "$E2E_SHARD_PLAN_SCRIPT" ci-shards-changed/discovery.json "$SHARD" ci-shards-changed
             pnpm exec playwright test "${TEST_FILES[@]}" --config tests/playwright.config.ts --project=electron-headless "${E2E_PROJECT_ARGS[@]}" --test-list=ci-shards-changed/selected.txt --list --reporter=json > ci-shards-changed/selected-discovery.json
             node "$E2E_SHARD_PLAN_SCRIPT" --verify ci-shards-changed/assignment.json ci-shards-changed/selected-discovery.json
@@ -508,21 +508,21 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y openssh-client
       - name: Run Docker SSH browser network route journeys
         env:
-          ORCA_BACKGROUND_LAUNCH: '1'
-          ORCA_RUN_DOCKER_SSH_BROWSER_E2E: '1'
+          TOPO_BACKGROUND_LAUNCH: '1'
+          TOPO_RUN_DOCKER_SSH_BROWSER_E2E: '1'
         run: node_modules/.bin/vitest run --config config/vitest.config.ts tests/e2e/ssh-browser-network-execution-route.docker.unit.test.ts
 
-  orcad-serve-mode-switch:
-    name: orca serve Electron/orcad mode switch (D7)
+  topod-serve-mode-switch:
+    name: topo serve Electron/topod mode switch (D7)
     needs: [build]
     if: >-
       inputs.test_files == '' ||
-      contains(inputs.test_files, 'tests/e2e/orcad-serve-mode-switch.spec.ts') ||
+      contains(inputs.test_files, 'tests/e2e/topod-serve-mode-switch.spec.ts') ||
       contains(inputs.test_files, 'tests/e2e/workspace-layout-oracle-headless.spec.ts')
     runs-on: ${{ inputs.fast_runners && 'blacksmith-4vcpu-ubuntu-2404' || 'ubuntu-24.04' }}
     timeout-minutes: 45
     env:
-      ORCA_BACKGROUND_LAUNCH: '1'
+      TOPO_BACKGROUND_LAUNCH: '1'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -537,57 +537,57 @@ jobs:
         with:
           name: e2e-build-out${{ inputs.artifact_suffix }}
           path: out/
-      # The packaged orcad slot the T6-11 launcher runs: its own node-pty under the pinned Node.
-      # The template is what `orca serve`'s default selection materializes that slot from.
-      - name: Build this runner's orcad slot and template
+      # The packaged topod slot the T6-11 launcher runs: its own node-pty under the pinned Node.
+      # The template is what `topo serve`'s default selection materializes that slot from.
+      - name: Build this runner's topod slot and template
         env:
           LAYOUT_OWNER: ${{ inputs.layout_owner }}
         run: |
-          slot="$(node "$(if [ -f config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs ]; then printf %s config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs; else printf %s config/scripts/build-orcad-prebuilds.mjs; fi)" --print-slot)"
-          pnpm build:orcad-prebuilds
-          pnpm build:orcad-prebuilds --require-slots "$slot"
-          # The orcad host and its materialized template must use the Electron host’s layout owner.
+          slot="$(node "$(if [ -f config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs ]; then printf %s config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs; else printf %s config/scripts/build-topod-prebuilds.mjs; fi)" --print-slot)"
+          pnpm build:topod-prebuilds
+          pnpm build:topod-prebuilds --require-slots "$slot"
+          # The topod host and its materialized template must use the Electron host’s layout owner.
           if [ -n "$LAYOUT_OWNER" ]; then
-            export ORCA_LAYOUT_OWNER="$LAYOUT_OWNER"
-            pnpm build:orcad
-            node "$(if [ -f config/scripts/orcad-distribution/template/build-orcad-template.mjs ]; then printf %s config/scripts/orcad-distribution/template/build-orcad-template.mjs; else printf %s config/scripts/build-orcad-template.mjs; fi)" --targets "$slot" --dark-test-template
-            test -f out/orcad/ORCA_LAYOUT_OWNER_MAIN
-            test -f out/orcad-template/ORCA_LAYOUT_OWNER_MAIN
+            export TOPO_LAYOUT_OWNER="$LAYOUT_OWNER"
+            pnpm build:topod
+            node "$(if [ -f config/scripts/topod-distribution/template/build-topod-template.mjs ]; then printf %s config/scripts/topod-distribution/template/build-topod-template.mjs; else printf %s config/scripts/build-topod-template.mjs; fi)" --targets "$slot" --dark-test-template
+            test -f out/topod/TOPO_LAYOUT_OWNER_MAIN
+            test -f out/topod-template/TOPO_LAYOUT_OWNER_MAIN
           else
-            pnpm build:orcad
-            node "$(if [ -f config/scripts/orcad-distribution/template/build-orcad-template.mjs ]; then printf %s config/scripts/orcad-distribution/template/build-orcad-template.mjs; else printf %s config/scripts/build-orcad-template.mjs; fi)" --targets "$slot"
+            pnpm build:topod
+            node "$(if [ -f config/scripts/topod-distribution/template/build-topod-template.mjs ]; then printf %s config/scripts/topod-distribution/template/build-topod-template.mjs; else printf %s config/scripts/build-topod-template.mjs; fi)" --targets "$slot"
           fi
       - name: Switch serve hosts on one profile
-        if: inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/orcad-serve-mode-switch.spec.ts')
+        if: inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/topod-serve-mode-switch.spec.ts')
         env:
           SKIP_BUILD: '1'
-          ORCA_E2E_ORCAD_SERVE: '1'
-          ORCA_E2E_FORWARD_APP_LOGS: '1'
-        run: xvfb-run --auto-servernum bash .github/scripts/e2e-with-window-manager.sh pnpm exec playwright test --config tests/playwright.config.ts tests/e2e/orcad-serve-mode-switch.spec.ts --project=electron-headless --workers=1
-      # Only this job builds out/orcad, so the spec's orcad case runs here; the e2e shards run its Electron case.
-      - name: Phone Markdown on headless orcad serve
+          TOPO_E2E_TOPOD_SERVE: '1'
+          TOPO_E2E_FORWARD_APP_LOGS: '1'
+        run: xvfb-run --auto-servernum bash .github/scripts/e2e-with-window-manager.sh pnpm exec playwright test --config tests/playwright.config.ts tests/e2e/topod-serve-mode-switch.spec.ts --project=electron-headless --workers=1
+      # Only this job builds out/topod, so the spec's topod case runs here; the e2e shards run its Electron case.
+      - name: Phone Markdown on headless topod serve
         if: >-
           !cancelled() &&
           (inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/headless-serve-mobile-markdown.spec.ts'))
         env:
           SKIP_BUILD: '1'
-          ORCA_E2E_FORWARD_APP_LOGS: '1'
-        run: xvfb-run --auto-servernum bash .github/scripts/e2e-with-window-manager.sh pnpm exec playwright test --config tests/playwright.config.ts tests/e2e/headless-serve-mobile-markdown.spec.ts --grep "headless orcad server" --project=electron-headless --workers=1
-      # The layout oracle's headless scenarios run on both serve hosts, so they need this job's orcad.
-      - name: Layout oracle on headless serve (orcad and Electron)
+          TOPO_E2E_FORWARD_APP_LOGS: '1'
+        run: xvfb-run --auto-servernum bash .github/scripts/e2e-with-window-manager.sh pnpm exec playwright test --config tests/playwright.config.ts tests/e2e/headless-serve-mobile-markdown.spec.ts --grep "headless topod server" --project=electron-headless --workers=1
+      # The layout oracle's headless scenarios run on both serve hosts, so they need this job's topod.
+      - name: Layout oracle on headless serve (topod and Electron)
         if: >-
           !cancelled() &&
           (inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/workspace-layout-oracle-headless.spec.ts'))
         env:
           SKIP_BUILD: '1'
-          ORCA_E2E_FORWARD_APP_LOGS: '1'
+          TOPO_E2E_FORWARD_APP_LOGS: '1'
           LAYOUT_OWNER: ${{ inputs.layout_owner }}
         run: |
           REPORT_ARGS=()
           if [ -n "$LAYOUT_OWNER" ]; then
-            test -f out/main/ORCA_LAYOUT_OWNER_MAIN
+            test -f out/main/TOPO_LAYOUT_OWNER_MAIN
             mkdir -p layout-divergence
-            export ORCA_LAYOUT_SAVE_DIVERGENCE_LOG="$PWD/layout-divergence/headless-oracle.jsonl"
+            export TOPO_LAYOUT_SAVE_DIVERGENCE_LOG="$PWD/layout-divergence/headless-oracle.jsonl"
             export PLAYWRIGHT_JSON_OUTPUT_FILE="$PWD/layout-divergence/headless-oracle-results.json"
             REPORT_ARGS=('--reporter=list,json')
           fi
@@ -608,17 +608,17 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: orcad-serve-mode-switch-traces${{ inputs.artifact_suffix }}
+          name: topod-serve-mode-switch-traces${{ inputs.artifact_suffix }}
           path: test-results/
           retention-days: 7
           if-no-files-found: ignore
 
-  # Selected managed-orcad SSH specs on a Docker host; daily runs keep the full suite. Needs the
-  # orcad template for the fixture's target (Debian, linux-x64-glibc), which only this job builds.
-  orcad-ssh-docker:
-    name: ssh on managed orcad (Docker ${{ matrix.shard }})
+  # Selected managed-topod SSH specs on a Docker host; daily runs keep the full suite. Needs the
+  # topod template for the fixture's target (Debian, linux-x64-glibc), which only this job builds.
+  topod-ssh-docker:
+    name: ssh on managed topod (Docker ${{ matrix.shard }})
     needs: [build]
-    if: inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/ssh-orcad-')
+    if: inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/ssh-topod-')
     runs-on: ${{ inputs.fast_runners && 'blacksmith-4vcpu-ubuntu-2404' || 'ubuntu-24.04' }}
     timeout-minutes: 60
     strategy:
@@ -626,7 +626,7 @@ jobs:
       matrix:
         shard: ${{ fromJSON(inputs.managed_ssh_shards || '["1/2","2/2"]') }}
     env:
-      ORCA_BACKGROUND_LAUNCH: '1'
+      TOPO_BACKGROUND_LAUNCH: '1'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -646,27 +646,27 @@ jobs:
           path: out/
       # Built to a path the app does not look at by default, so the relay-era phase has no template.
       # The switch-on leg deploys a switch-on server, so both sides of the host run one layout owner.
-      - name: Build the linux-x64-glibc orcad template
+      - name: Build the linux-x64-glibc topod template
         env:
           LAYOUT_OWNER: ${{ inputs.layout_owner }}
         run: |
-          pnpm build:orcad-prebuilds
-          pnpm build:orcad-prebuilds --require-slots linux-x64-glibc
+          pnpm build:topod-prebuilds
+          pnpm build:topod-prebuilds --require-slots linux-x64-glibc
           if [ -n "$LAYOUT_OWNER" ]; then
-            ORCA_LAYOUT_OWNER="$LAYOUT_OWNER" node "$(if [ -f config/scripts/orcad-distribution/template/build-orcad-template.mjs ]; then printf %s config/scripts/orcad-distribution/template/build-orcad-template.mjs; else printf %s config/scripts/build-orcad-template.mjs; fi)" --targets linux-x64-glibc --dark-test-template
-            test -f out/orcad-template/ORCA_LAYOUT_OWNER_MAIN
+            TOPO_LAYOUT_OWNER="$LAYOUT_OWNER" node "$(if [ -f config/scripts/topod-distribution/template/build-topod-template.mjs ]; then printf %s config/scripts/topod-distribution/template/build-topod-template.mjs; else printf %s config/scripts/build-topod-template.mjs; fi)" --targets linux-x64-glibc --dark-test-template
+            test -f out/topod-template/TOPO_LAYOUT_OWNER_MAIN
           else
-            node "$(if [ -f config/scripts/orcad-distribution/template/build-orcad-template.mjs ]; then printf %s config/scripts/orcad-distribution/template/build-orcad-template.mjs; else printf %s config/scripts/build-orcad-template.mjs; fi)" --targets linux-x64-glibc
+            node "$(if [ -f config/scripts/topod-distribution/template/build-topod-template.mjs ]; then printf %s config/scripts/topod-distribution/template/build-topod-template.mjs; else printf %s config/scripts/build-topod-template.mjs; fi)" --targets linux-x64-glibc
           fi
-          mv out/orcad-template "$RUNNER_TEMP/orcad-convert-template"
+          mv out/topod-template "$RUNNER_TEMP/topod-convert-template"
       # The Windows CLI matrix collects here too and skips: it needs a Windows host descriptor.
       - name: Run managed SSH specs on a Docker host
         env:
           TEST_FILES_JSON: ${{ inputs.test_files }}
           SKIP_BUILD: '1'
-          ORCA_E2E_SSH_DOCKER: '1'
-          ORCA_E2E_ORCAD_CONVERT_HOST: docker
-          ORCA_E2E_FORWARD_APP_LOGS: '1'
+          TOPO_E2E_SSH_DOCKER: '1'
+          TOPO_E2E_TOPOD_CONVERT_HOST: docker
+          TOPO_E2E_FORWARD_APP_LOGS: '1'
           SHARD: ${{ matrix.shard }}
           LAYOUT_OWNER: ${{ inputs.layout_owner }}
           SHARD_INDEX: ${{ strategy.job-index }}
@@ -681,18 +681,18 @@ jobs:
           // Older checkout refs retain their full-suite behavior.
           const specs = selection.selectManagedSshE2eSpecs
             ? selection.selectManagedSshE2eSpecs(process.env.TEST_FILES_JSON)
-            : ['tests/e2e/ssh-orcad-']
+            : ['tests/e2e/ssh-topod-']
           for (const spec of specs) {
             console.log(spec.endsWith('.spec.ts') ? spec.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$' : spec)
           }
           NODE
           mapfile -t TEST_FILES < "$RUNNER_TEMP/managed-ssh-specs"
-          export ORCA_E2E_ORCAD_CONVERT_TEMPLATE="$RUNNER_TEMP/orcad-convert-template"
+          export TOPO_E2E_TOPOD_CONVERT_TEMPLATE="$RUNNER_TEMP/topod-convert-template"
           REPORT_ARGS=()
           if [ -n "$LAYOUT_OWNER" ]; then
-            test -f out/main/ORCA_LAYOUT_OWNER_MAIN
+            test -f out/main/TOPO_LAYOUT_OWNER_MAIN
             mkdir -p layout-divergence
-            export ORCA_LAYOUT_SAVE_DIVERGENCE_LOG="$PWD/layout-divergence/managed-ssh-$SHARD_INDEX.jsonl"
+            export TOPO_LAYOUT_SAVE_DIVERGENCE_LOG="$PWD/layout-divergence/managed-ssh-$SHARD_INDEX.jsonl"
             export PLAYWRIGHT_JSON_OUTPUT_FILE="$PWD/layout-divergence/managed-ssh-$SHARD_INDEX-results.json"
             REPORT_ARGS=('--reporter=list,json')
           fi
@@ -713,7 +713,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: orcad-ssh-docker-traces-${{ strategy.job-index }}${{ inputs.artifact_suffix }}
+          name: topod-ssh-docker-traces-${{ strategy.job-index }}${{ inputs.artifact_suffix }}
           path: test-results/
           retention-days: 7
           if-no-files-found: ignore
@@ -721,14 +721,14 @@ jobs:
   # D7 on Windows: both hosts share <userData>\daemon and so one daemon pipe. Built here rather than
   # from the Linux e2e build because the slot, template and addons are Windows-native. Also runs the
   # missing-AppData startup check and the explorer file-copy check, which need the same Windows e2e build.
-  orcad-serve-mode-switch-windows:
-    name: orca serve on Windows (D7 mode switch, missing AppData)
-    if: inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/orcad-serve-mode-switch.spec.ts') || contains(inputs.test_files, 'tests/e2e/windows-missing-appdata-startup.spec.ts') || contains(inputs.test_files, 'tests/e2e/file-explorer-copy-file-windows.spec.ts')
+  topod-serve-mode-switch-windows:
+    name: topo serve on Windows (D7 mode switch, missing AppData)
+    if: inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/topod-serve-mode-switch.spec.ts') || contains(inputs.test_files, 'tests/e2e/windows-missing-appdata-startup.spec.ts') || contains(inputs.test_files, 'tests/e2e/file-explorer-copy-file-windows.spec.ts')
     runs-on: windows-2022
     timeout-minutes: 45
     env:
       NODE_OPTIONS: --max-old-space-size=4096
-      ORCA_BACKGROUND_LAUNCH: '1'
+      TOPO_BACKGROUND_LAUNCH: '1'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -737,7 +737,7 @@ jobs:
       - uses: ./.github/actions/install-node-dependencies
         with:
           native-runtime: electron
-      - uses: ./.github/actions/prepare-orcad-prebuilds
+      - uses: ./.github/actions/prepare-topod-prebuilds
         with:
           resolve-windows-cache: 'true'
           restore-windows-cache: 'true'
@@ -745,43 +745,43 @@ jobs:
         with:
           arches: x64
       - uses: ./.github/actions/build-mobile-web-bundle
-      - name: Build the e2e app, CLI, orcad slot and template
+      - name: Build the e2e app, CLI, topod slot and template
         shell: bash
         env:
-          ORCA_REUSE_PREPARED_WINDOWS_SECURITY: 'true'
+          TOPO_REUSE_PREPARED_WINDOWS_SECURITY: 'true'
         run: |
           pnpm run build:wsl-guest
           pnpm exec electron-vite build --mode e2e
           pnpm run build:cli
-          pnpm build:orcad
+          pnpm build:topod
           node "$(if [ -f config/scripts/native-build/windows/build-windows-process-tree-addon.mjs ]; then printf %s config/scripts/native-build/windows/build-windows-process-tree-addon.mjs; else printf %s config/scripts/build-windows-process-tree-addon.mjs; fi)" --arch=x64 --reuse-prepared-runtime
-          node "$(if [ -f config/scripts/orcad-distribution/template/build-orcad-template.mjs ]; then printf %s config/scripts/orcad-distribution/template/build-orcad-template.mjs; else printf %s config/scripts/build-orcad-template.mjs; fi)" --targets win32-x64
+          node "$(if [ -f config/scripts/topod-distribution/template/build-topod-template.mjs ]; then printf %s config/scripts/topod-distribution/template/build-topod-template.mjs; else printf %s config/scripts/build-topod-template.mjs; fi)" --targets win32-x64
       # A profile-less Windows session has no roaming AppData; Electron 43 used to crash natively there.
       - name: Start serve with no AppData folder
         if: inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/windows-missing-appdata-startup.spec.ts')
         env:
           SKIP_BUILD: '1'
-          ORCA_E2E_FORWARD_APP_LOGS: '1'
+          TOPO_E2E_FORWARD_APP_LOGS: '1'
         run: pnpm exec playwright test --config tests/playwright.config.ts tests/e2e/windows-missing-appdata-startup.spec.ts --project=electron-headless --workers=1
       # Explorer pastes only a real CF_HDROP, which needs the Windows clipboard and shell.
       - name: Copy a file from the explorer
         if: ${{ !cancelled() && (inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/file-explorer-copy-file-windows.spec.ts')) }}
         env:
           SKIP_BUILD: '1'
-          ORCA_E2E_FORWARD_APP_LOGS: '1'
+          TOPO_E2E_FORWARD_APP_LOGS: '1'
         run: pnpm exec playwright test --config tests/playwright.config.ts tests/e2e/file-explorer-copy-file-windows.spec.ts --project=electron-headless --workers=1
       - name: Switch serve hosts on one profile
-        if: ${{ !cancelled() && (inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/orcad-serve-mode-switch.spec.ts')) }}
+        if: ${{ !cancelled() && (inputs.test_files == '' || contains(inputs.test_files, 'tests/e2e/topod-serve-mode-switch.spec.ts')) }}
         env:
           SKIP_BUILD: '1'
-          ORCA_E2E_ORCAD_SERVE: '1'
-          ORCA_E2E_FORWARD_APP_LOGS: '1'
-          ORCA_E2E_PRESERVE_PROFILE_LOGS_DIR: ${{ github.workspace }}\test-results\profile-logs
-        run: pnpm exec playwright test --config tests/playwright.config.ts tests/e2e/orcad-serve-mode-switch.spec.ts --project=electron-headless --workers=1
+          TOPO_E2E_TOPOD_SERVE: '1'
+          TOPO_E2E_FORWARD_APP_LOGS: '1'
+          TOPO_E2E_PRESERVE_PROFILE_LOGS_DIR: ${{ github.workspace }}\test-results\profile-logs
+        run: pnpm exec playwright test --config tests/playwright.config.ts tests/e2e/topod-serve-mode-switch.spec.ts --project=electron-headless --workers=1
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: orcad-serve-mode-switch-windows-traces${{ inputs.artifact_suffix }}
+          name: topod-serve-mode-switch-windows-traces${{ inputs.artifact_suffix }}
           path: test-results/
           retention-days: 7
           if-no-files-found: ignore

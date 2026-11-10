@@ -25,7 +25,7 @@ const releaseCapsule = prepareReleaseFixtures([BASELINE_REF], async (ref) =>
 )
 
 test('an older build reads the restart offer this build records at quit', async () => {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-resume-marker-downgrade-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-resume-marker-downgrade-'))
   try {
     // This build: the offer teardown takes for a chat whose turn was running.
     const marker = structuredAgentSessionWorkingAtStop({

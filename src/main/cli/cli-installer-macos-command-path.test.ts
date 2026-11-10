@@ -22,10 +22,10 @@ import { createPackagedMacLauncher, makeFixture } from './cli-installer-test-fix
 
 async function makeBundledLauncherFixture() {
   const fixture = await makeFixture()
-  const launcher = await readFile(join(process.cwd(), 'resources', 'darwin', 'bin', 'orca'), 'utf8')
+  const launcher = await readFile(join(process.cwd(), 'resources', 'darwin', 'bin', 'topo'), 'utf8')
   const resourcesPath = await createPackagedMacLauncher(fixture.root, launcher)
   const bundledBin = join(resourcesPath, 'bin')
-  const launcherPath = join(bundledBin, 'orca')
+  const launcherPath = join(bundledBin, 'topo')
   return {
     root: fixture.root,
     bundledBin,
@@ -34,7 +34,7 @@ async function makeBundledLauncherFixture() {
       isPackaged: true,
       resourcesPath,
       userDataPath: fixture.userDataPath,
-      execPath: '/Applications/Orca.app/Contents/MacOS/Orca',
+      execPath: '/Applications/Topo.app/Contents/MacOS/Topo',
       appPath: fixture.appPath,
       homePath: join(fixture.root, 'home')
     },
@@ -56,18 +56,18 @@ describe('CliInstaller', () => {
   })
 
   it.skipIf(process.platform === 'win32')(
-    'reports a conflict for an unmanaged macOS orca that shadows the install path',
+    'reports a conflict for an unmanaged macOS topo that shadows the install path',
     async () => {
       const fixture = await makeFixture()
       const homePath = join(fixture.root, 'home')
       const resourcesPath = await createPackagedMacLauncher(fixture.root)
       const usrLocalBin = join(fixture.root, 'usr', 'local', 'bin')
       const userLocalBin = join(homePath, '.local', 'bin')
-      const defaultInstallPath = join(usrLocalBin, 'orca')
-      const userInstallPath = join(userLocalBin, 'orca')
+      const defaultInstallPath = join(usrLocalBin, 'topo')
+      const userInstallPath = join(userLocalBin, 'topo')
       await mkdir(usrLocalBin, { recursive: true })
       await mkdir(userLocalBin, { recursive: true })
-      await writeFile(userInstallPath, '#!/usr/bin/env bash\necho other-orca\n', {
+      await writeFile(userInstallPath, '#!/usr/bin/env bash\necho other-topo\n', {
         encoding: 'utf8',
         mode: 0o755
       })
@@ -77,7 +77,7 @@ describe('CliInstaller', () => {
         isPackaged: true,
         resourcesPath,
         userDataPath: fixture.userDataPath,
-        execPath: '/Applications/Orca.app/Contents/MacOS/Orca',
+        execPath: '/Applications/Topo.app/Contents/MacOS/Topo',
         appPath: fixture.appPath,
         homePath,
         defaultMacCommandPath: defaultInstallPath,
@@ -87,13 +87,13 @@ describe('CliInstaller', () => {
       const status = await installer.getStatus()
       expect(status.commandPath).toBe(userInstallPath)
       expect(status.state).toBe('conflict')
-      await expect(installer.install()).rejects.toThrow('Refusing to replace non-Orca command')
+      await expect(installer.install()).rejects.toThrow('Refusing to replace non-Topo command')
       await expect(lstat(defaultInstallPath)).rejects.toMatchObject({ code: 'ENOENT' })
-      await expect(readFile(userInstallPath, 'utf8')).resolves.toContain('other-orca')
+      await expect(readFile(userInstallPath, 'utf8')).resolves.toContain('other-topo')
     }
   )
 
-  // Why (#33872): Orca terminals put the bundled bin dir first on PATH, so registration linked the launcher to itself.
+  // Why (#33872): Topo terminals put the bundled bin dir first on PATH, so registration linked the launcher to itself.
   describe.skipIf(process.platform === 'win32')('with the bundled launcher on PATH', () => {
     it('registers the default command instead of linking the launcher to itself', async () => {
       const { root, bundledBin, installerOptions, expectLauncherIntact } =
@@ -103,12 +103,12 @@ describe('CliInstaller', () => {
 
       const status = await new CliInstaller({
         ...installerOptions,
-        defaultMacCommandPath: join(usrLocalBin, 'orca'),
+        defaultMacCommandPath: join(usrLocalBin, 'topo'),
         processPathEnv: [bundledBin, usrLocalBin].join(':')
       }).install()
 
       expect(status.state).toBe('installed')
-      expect(status.commandPath).toBe(join(usrLocalBin, 'orca'))
+      expect(status.commandPath).toBe(join(usrLocalBin, 'topo'))
       await expectLauncherIntact()
     })
 
@@ -120,7 +120,7 @@ describe('CliInstaller', () => {
 
       const installer = new CliInstaller({
         ...installerOptions,
-        commandPathOverride: join(aliasBin, 'orca')
+        commandPathOverride: join(aliasBin, 'topo')
       })
 
       await expect(installer.install()).rejects.toThrow('link to itself')
@@ -132,8 +132,8 @@ describe('CliInstaller', () => {
         await makeBundledLauncherFixture()
       const usrLocalBin = join(root, 'usr', 'local', 'bin')
       await mkdir(usrLocalBin, { recursive: true })
-      const hardLink = join(usrLocalBin, 'orca')
-      await link(join(bundledBin, 'orca'), hardLink)
+      const hardLink = join(usrLocalBin, 'topo')
+      await link(join(bundledBin, 'topo'), hardLink)
 
       const status = await new CliInstaller({
         ...installerOptions,

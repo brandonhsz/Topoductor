@@ -8,7 +8,7 @@ export type PluginGrantSummary = {
 
 type GrantSubject = { pluginKey: string; version: string; grants: PluginGrantSummary }
 
-/** What a plugin would be granted, as `orca plugin inspect` and the dev watch prompt print it. */
+/** What a plugin would be granted, as `topo plugin inspect` and the dev watch prompt print it. */
 export function formatPluginGrantLines(subject: GrantSubject): string[] {
   const { grants } = subject
   return [

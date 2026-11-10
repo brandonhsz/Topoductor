@@ -1,7 +1,7 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   execInTerminal,
@@ -20,19 +20,19 @@ const SESSION = '11111111-2222-4333-8444-555555555555'
 const CHILD = 'sidebar-proof-child-id'
 
 test('sidebar child and parent clicks reach the exact Claude session without submitting a draft', async ({
-  orcaPage,
+  topoPage,
   electronApp,
   registerPostElectronShutdownCleanup
 }, testInfo) => {
   test.skip(process.platform === 'win32', 'The PTY fixture uses POSIX raw mode')
-  const dir = mkdtempSync(join(tmpdir(), 'orca-sidebar-view-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-sidebar-view-'))
   registerPostElectronShutdownCleanup(async () => rmSync(dir, { recursive: true, force: true }))
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage, 30000)
-  const descriptor = await waitForActivePaneHookDescriptor(orcaPage)
-  const ptyId = await waitForActivePanePtyId(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage, 30000)
+  const descriptor = await waitForActivePaneHookDescriptor(topoPage)
+  const ptyId = await waitForActivePanePtyId(topoPage)
   const endpoint = await readHookEndpoint(electronApp)
   const fixture = join(dir, 'claude-fixture.mjs')
   const sink = join(dir, 'events.jsonl')
@@ -47,14 +47,14 @@ const identity = {paneKey:${JSON.stringify(descriptor.paneKey)},sessionId:${JSON
 let agentId
 let revision=1
 const record = value => appendFileSync(sink, JSON.stringify(value)+'\\n')
-const post = async (action, extra={}) => (await fetch('http://127.0.0.1:'+endpoint.port+'/claude/agent-view',{method:'POST',headers:{'content-type':'application/json','x-orca-agent-hook-token':endpoint.token},body:JSON.stringify({...identity,action,...extra})})).json()
-const register=()=>post('register',{keybindings:JSON.stringify({bindings:[{context:'Chat',bindings:{'ctrl+alt+g':'command:orca-agent-view'}}]}),view:{agentId,revision}})
+const post = async (action, extra={}) => (await fetch('http://127.0.0.1:'+endpoint.port+'/claude/agent-view',{method:'POST',headers:{'content-type':'application/json','x-topo-agent-hook-token':endpoint.token},body:JSON.stringify({...identity,action,...extra})})).json()
+const register=()=>post('register',{keybindings:JSON.stringify({bindings:[{context:'Chat',bindings:{'ctrl+alt+g':'command:topo-agent-view'}}]}),view:{agentId,revision}})
 await register()
 setInterval(register,5000)
 process.stdin.setRawMode(true)
 record({ready:process.pid})
 process.stdout.write('Claude view fixture ready\\r\\n')
-let draft='ORCA_KEEP_DRAFT'
+let draft='TOPO_KEEP_DRAFT'
 process.stdin.on('data',async bytes=>{
  const text=bytes.toString()
  if(text==='\\x1b[103;7u') {
@@ -73,7 +73,7 @@ process.stdin.on('data',async bytes=>{
 process.stdin.resume()
 `
   )
-  await execInTerminal(orcaPage, ptyId, retentionFixtureCommand(fixture, sink))
+  await execInTerminal(topoPage, ptyId, retentionFixtureCommand(fixture, sink))
   const events = () => {
     try {
       return readFileSync(sink, 'utf8')
@@ -93,7 +93,7 @@ process.stdin.resume()
   const postHook = async (payload: Record<string, unknown>) => {
     const response = await fetch(`http://127.0.0.1:${endpoint.port}/hook/claude`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-orca-agent-hook-token': endpoint.token },
+      headers: { 'content-type': 'application/json', 'x-topo-agent-hook-token': endpoint.token },
       body: JSON.stringify({
         ...descriptor,
         tabId: descriptor.paneKey.split(':')[0],
@@ -119,14 +119,14 @@ process.stdin.resume()
       }
     ]
   })
-  await orcaPage.evaluate(() => {
+  await topoPage.evaluate(() => {
     const state = window.__store!.getState()
     if (!state.worktreeCardProperties.includes('inline-agents')) {
       state.setWorktreeCardProperties([...state.worktreeCardProperties, 'inline-agents'])
     }
   })
-  await dismissSetupScriptPrompts(orcaPage)
-  const sidebar = orcaPage.locator('[data-worktree-sidebar]').first()
+  await dismissSetupScriptPrompts(topoPage)
+  const sidebar = topoPage.locator('[data-worktree-sidebar]').first()
   const parent = sidebar
     .locator('.compact-agent-row')
     .filter({ hasText: 'Sidebar parent proof' })
@@ -142,11 +142,11 @@ process.stdin.resume()
     .last()
   await expect(child).toBeVisible()
   await expect(parent).toHaveAttribute('aria-current', 'true')
-  await orcaPage.mouse.move(20, 20)
+  await topoPage.mouse.move(20, 20)
   await expect(
-    orcaPage.getByRole('tooltip').filter({ hasText: 'Workspace board moved to the bottom bar' })
+    topoPage.getByRole('tooltip').filter({ hasText: 'Workspace board moved to the bottom bar' })
   ).toBeHidden({ timeout: 20000 })
-  await orcaPage.screenshot({
+  await topoPage.screenshot({
     path: testInfo.outputPath('before-agent-navigation.png'),
     animations: 'disabled'
   })
@@ -156,34 +156,34 @@ process.stdin.resume()
   await child.click()
   await expect
     .poll(() => events().find((event) => event.view === CHILD))
-    .toEqual({ view: CHILD, draft: 'ORCA_KEEP_DRAFT' })
-  await waitForTerminalOutput(orcaPage, `Viewing ${CHILD} draft=ORCA_KEEP_DRAFT`)
+    .toEqual({ view: CHILD, draft: 'TOPO_KEEP_DRAFT' })
+  await waitForTerminalOutput(topoPage, `Viewing ${CHILD} draft=TOPO_KEEP_DRAFT`)
   await expect(child).toHaveAttribute('aria-current', 'true')
   await expect(parent).not.toHaveAttribute('aria-current')
   await child.click()
   await expect(child).toHaveAttribute('aria-current', 'true')
   expect(events().filter((event) => event.view)).toHaveLength(1)
-  await orcaPage.screenshot({
+  await topoPage.screenshot({
     path: testInfo.outputPath('after-child-navigation.png'),
     animations: 'disabled'
   })
   await parent.click()
   await expect
     .poll(() => events().find((event) => event.view === 'main'))
-    .toEqual({ view: 'main', draft: 'ORCA_KEEP_DRAFT' })
+    .toEqual({ view: 'main', draft: 'TOPO_KEEP_DRAFT' })
   await expect(parent).toHaveAttribute('aria-current', 'true')
   await expect(child).not.toHaveAttribute('aria-current')
-  await sendToTerminal(orcaPage, ptyId, '\x0b')
+  await sendToTerminal(topoPage, ptyId, '\x0b')
   await expect(child).toHaveAttribute('aria-current', 'true')
   await disclosure.click()
   await expect(disclosure).toHaveAttribute('aria-expanded', 'false')
   await expect(child.locator('xpath=ancestor::*[@inert]')).toHaveCount(1)
-  await orcaPage.screenshot({ path: testInfo.outputPath('collapsed-child.png') })
+  await topoPage.screenshot({ path: testInfo.outputPath('collapsed-child.png') })
   await disclosure.click()
-  await sendToTerminal(orcaPage, ptyId, '\x0b')
+  await sendToTerminal(topoPage, ptyId, '\x0b')
   await expect(parent).toHaveAttribute('aria-current', 'true')
   expect(events().filter((event) => event.unexpected)).toEqual([])
-  await orcaPage.evaluate(() => window.__store!.getState().setAgentActivityDisplayMode('full'))
+  await topoPage.evaluate(() => window.__store!.getState().setAgentActivityDisplayMode('full'))
   const fullChild = sidebar
     .locator('[role="treeitem"]')
     .filter({ hasText: 'Sidebar child proof' })
@@ -201,8 +201,8 @@ process.stdin.resume()
   expect(
     events()
       .filter((event) => event.view)
-      .every((event) => event.draft === 'ORCA_KEEP_DRAFT')
+      .every((event) => event.draft === 'TOPO_KEEP_DRAFT')
   ).toBe(true)
   expect(events().filter((event) => event.unexpected)).toEqual([])
-  await orcaPage.screenshot({ path: testInfo.outputPath('sidebar-agent-navigation.png') })
+  await topoPage.screenshot({ path: testInfo.outputPath('sidebar-agent-navigation.png') })
 })

@@ -70,7 +70,7 @@ export function createAntigravityWslCredentialBackend(
       throw new Error(
         state === 'stopped'
           ? `${label} is not running. Start it, then refresh Antigravity accounts.`
-          : `Orca could not confirm that ${label} is running. Refresh Antigravity accounts to try again.`
+          : `Topo could not confirm that ${label} is running. Refresh Antigravity accounts to try again.`
       )
     }
     return deps.run({ ...spec, distro, loginPath: 'none', timeoutMs: 10_000 })

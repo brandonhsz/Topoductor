@@ -8,7 +8,7 @@ describe('readDevinHooksConfig', () => {
   let dir: string
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-devin-jsonc-'))
+    dir = mkdtempSync(join(tmpdir(), 'topo-devin-jsonc-'))
   })
 
   afterEach(() => {

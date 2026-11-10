@@ -1,6 +1,6 @@
 import { execFileSync, type ChildProcessWithoutNullStreams } from 'node:child_process'
 import { describe, expect, it } from 'vitest'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { proveClaudeChildExit } from './claude-agent-sdk-exit-proof'
 import { managedChild } from './claude-child-exit-proof-fixture'
 

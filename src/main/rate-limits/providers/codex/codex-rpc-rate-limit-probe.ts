@@ -241,7 +241,7 @@ export function readCodexRateLimitsViaRpc(
     child.on('close', onClose)
 
     try {
-      initId = sendRpc('initialize', { clientInfo: { name: 'orca', version: '1.0.0' } })
+      initId = sendRpc('initialize', { clientInfo: { name: 'topo', version: '1.0.0' } })
     } catch (error) {
       onError(error instanceof Error ? error : new Error(String(error)))
     }

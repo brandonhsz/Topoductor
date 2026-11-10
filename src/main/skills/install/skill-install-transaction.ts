@@ -195,11 +195,11 @@ export async function installLocalExtractedSkillPackage(
     const transactionId = randomUUID()
     const stagingPath = join(
       input.destinationRoot,
-      `.${extracted.manifest.name}.orca-staging-${transactionId}`
+      `.${extracted.manifest.name}.topo-staging-${transactionId}`
     )
     const backupPath = join(
       input.destinationRoot,
-      `.${extracted.manifest.name}.orca-backup-${transactionId}`
+      `.${extracted.manifest.name}.topo-backup-${transactionId}`
     )
     const destinationExists = await skillInstallPathExists(canonicalPath)
     const backupDigest = 'digest' in state ? (state.digest ?? null) : null

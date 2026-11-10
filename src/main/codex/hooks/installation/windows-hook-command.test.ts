@@ -3,7 +3,7 @@ import { existsSync, mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:
 import { tmpdir } from 'node:os'
 import { delimiter, join } from 'node:path'
 import { createServer } from 'node:http'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { removeTree } from '../../../../shared/windows-transient-lock-removal'
 import { CODEX_EVENTS } from '../definitions/codex-hook-definition'
 import { buildCodexHookCommand as getManagedCommand } from '../definitions/codex-hook-command-form'
@@ -31,7 +31,7 @@ describe.skipIf(process.platform !== 'win32')('Codex hook delivery through Power
   it.each([windowsPowerShell, ...(windowsPwsh ? [windowsPwsh] : [])])(
     'delivers all eight events exactly once from a Unicode profile through %s',
     async (shell) => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-codex-cjk-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-codex-cjk-'))
       const home = join(root, "测试 사용자 O'Brien")
       mkdirSync(home)
       const scriptPath = join(home, 'codex-hook.cmd')
@@ -42,7 +42,7 @@ describe.skipIf(process.platform !== 'win32')('Codex hook delivery through Power
         const chunks: Buffer[] = []
         req.on('data', (chunk) => chunks.push(chunk))
         req.on('end', () => {
-          tokens.push(req.headers['x-orca-agent-hook-token'])
+          tokens.push(req.headers['x-topo-agent-hook-token'])
           posts.push(new URLSearchParams(Buffer.concat(chunks).toString('utf8')))
           res.writeHead(204).end()
         })
@@ -54,13 +54,13 @@ describe.skipIf(process.platform !== 'win32')('Codex hook delivery through Power
       }
       const env = {
         ...Object.fromEntries(
-          Object.entries(process.env).filter(([key]) => !key.startsWith('ORCA_'))
+          Object.entries(process.env).filter(([key]) => !key.startsWith('TOPO_'))
         ),
-        ORCA_BACKGROUND_LAUNCH: '1',
-        ORCA_AGENT_HOOK_PORT: String(address.port),
-        ORCA_AGENT_HOOK_TOKEN: 'unicode-test-token',
-        ORCA_PANE_KEY: 'unicode-tab:unicode-leaf',
-        ORCA_WORKTREE_ID: 'C:\\folder workspace\\测试 & repo'
+        TOPO_BACKGROUND_LAUNCH: '1',
+        TOPO_AGENT_HOOK_PORT: String(address.port),
+        TOPO_AGENT_HOOK_TOKEN: 'unicode-test-token',
+        TOPO_PANE_KEY: 'unicode-tab:unicode-leaf',
+        TOPO_WORKTREE_ID: 'C:\\folder workspace\\测试 & repo'
       }
       const payloads = CODEX_EVENTS.map((hook_event_name) =>
         JSON.stringify({
@@ -92,8 +92,8 @@ describe.skipIf(process.platform !== 'win32')('Codex hook delivery through Power
         expect(tokens).toEqual(CODEX_EVENTS.map(() => 'unicode-test-token'))
         expect(posts.map((post) => post.get('payload')).sort()).toEqual([...payloads].sort())
         for (const post of posts) {
-          expect(post.get('paneKey')).toBe(env.ORCA_PANE_KEY)
-          expect(post.get('worktreeId')).toBe(env.ORCA_WORKTREE_ID)
+          expect(post.get('paneKey')).toBe(env.TOPO_PANE_KEY)
+          expect(post.get('worktreeId')).toBe(env.TOPO_WORKTREE_ID)
         }
         await new Promise<void>((resolve) => server.close(() => resolve()))
         expect(await invoke(getManagedCommand(scriptPath), payloads[0])).toMatchObject({

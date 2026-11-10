@@ -15,7 +15,7 @@ import {
 import '../../server/runtime-rpc-mobile-method-allowlist'
 import type { RpcRequest, RpcResponse } from '../../core'
 
-import '../../../../../shared/orcad-artifacts'
+import '../../../../../shared/topod-artifacts'
 import type { RpcDispatcher } from '../../dispatcher'
 
 import { resetBundledMobileWebBundleCacheForTests } from './bundled-mobile-web-bundle'
@@ -83,7 +83,7 @@ async function download(buildId: string, path: string): Promise<{ bytes: Buffer;
 }
 
 beforeEach(() => {
-  scratch = mkdtempSync(join(tmpdir(), 'orca-mobile-web-bundle-'))
+  scratch = mkdtempSync(join(tmpdir(), 'topo-mobile-web-bundle-'))
   installMobileWebBundleAppPath(scratch)
   resetBundledMobileWebBundleCacheForTests()
   resetMobileWebBundleAssetVerdictsForTests()

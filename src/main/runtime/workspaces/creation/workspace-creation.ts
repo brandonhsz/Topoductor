@@ -6,7 +6,7 @@ import {
 } from '../lineage/runtime-worktree-lineage-resolution'
 import { RuntimeLineageError, LINEAGE_PARENT_AMBIGUOUS } from '../lineage/runtime-lineage-error'
 import type { Repo } from '../../../../shared/repo-types'
-import { OrcaRuntimeWithGetWorktreeTerminalProvisioningHost } from '../startup/workspace-terminal-provisioning'
+import { TopoRuntimeWithGetWorktreeTerminalProvisioningHost } from '../startup/workspace-terminal-provisioning'
 import type { RuntimeManagedWorktreeCreateArgs } from './runtime-managed-worktree-create-types'
 import type { CreateWorktreeResult } from '../../../../shared/worktree/create-types'
 import { isFolderRepo } from '../../../../shared/repo-kind'
@@ -37,7 +37,7 @@ import { getRepoExecutionHostId } from '../../../../shared/execution-host'
 import { applyWorkspaceCreatePluginHook } from '../../../plugins/hooks/workspace-create-plugin-hook'
 import { withProjectWorktreeCreate } from '../../../workspaces/creation/worktree-create-in-flight'
 
-export abstract class OrcaRuntimeWithCreateManagedWorktree extends OrcaRuntimeWithGetWorktreeTerminalProvisioningHost {
+export abstract class TopoRuntimeWithCreateManagedWorktree extends TopoRuntimeWithGetWorktreeTerminalProvisioningHost {
   abstract resolveLineageForWorktreeCreate(
     input?: WorktreeLineageInput,
     childRepo?: Repo

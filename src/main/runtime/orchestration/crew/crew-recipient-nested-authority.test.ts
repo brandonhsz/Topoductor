@@ -1,11 +1,11 @@
-import { testOrcaSessionId } from '../../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../../shared/topo-session-address-test-fixture'
 import { fixture } from './crew-read-model.test-fixture'
 import { meterCrewSql, sqlTotals } from './crew-recipient-sql.test-fixture'
 import { CrewReadModel } from './crew-read-model'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { agentSessionConversationView } from '../../../../shared/agent-session/lifecycle/agent-session-conversation-view'
 import { agentSessionRecordFixture } from '../../../native-chat/agent-session-record-test-fixture'
-import { formatOrcaSessionAddress } from '../../../../shared/orca-session-address'
+import { formatTopoSessionAddress } from '../../../../shared/topo-session-address'
 import {
   mintStructuredWorkerHandle,
   mintStructuredWorkerPaneKey,
@@ -13,7 +13,7 @@ import {
   structuredWorkerIdentityFromRow,
   structuredWorkerProcessIncarnation
 } from '../terminal-authority/structured-sessions/structured-worker-identity'
-import { backfillStructuredWorkerOrcaSessionIds } from '../db/schema/structured-worker-orca-session-backfill'
+import { backfillStructuredWorkerTopoSessionIds } from '../db/schema/structured-worker-topo-session-backfill'
 import * as recipientRouting from '../../rpc/methods/orchestration/messaging/recipient-routing'
 import { afterEach, expect, it, vi } from 'vitest'
 
@@ -28,11 +28,11 @@ afterEach(() => {
 it('keeps retained NULL-session nested structured process reads inside selected batches at N/10N', () => {
   const samples = [3, 30].map((population) => {
     const f = fixture()
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(f.db)
     const records = new Map<string, ReturnType<typeof agentSessionConversationView>>()
     const identities = Array.from({ length: population }, (_, i) => {
-      const session = testOrcaSessionId(`chat-nested-${i}`)
+      const session = testTopoSessionId(`chat-nested-${i}`)
       const handle = mintStructuredWorkerHandle()
       const pane = mintStructuredWorkerPaneKey(session)
       const task = () => f.db.createTask({ runId: f.run.id, spec: 'retained nested owner' }).id
@@ -72,7 +72,7 @@ it('keeps retained NULL-session nested structured process reads inside selected 
       })
       // Retained older writers omitted this column; conflicting evidence must remain NULL after open.
       f.db.db
-        .prepare('UPDATE dispatch_contexts SET assignee_orca_session_id = NULL WHERE id = ?')
+        .prepare('UPDATE dispatch_contexts SET assignee_topo_session_id = NULL WHERE id = ?')
         .run(dispatch.id)
       const identity = structuredWorkerIdentityFromRow(resource)
       if (!identity) {
@@ -85,21 +85,21 @@ it('keeps retained NULL-session nested structured process reads inside selected 
       )
       f.handles.set(handle, pane)
       f.db.insertMessage({
-        from: formatOrcaSessionAddress(session),
+        from: formatTopoSessionAddress(session),
         to: 'term_worker',
         subject: 'Nested peer',
         body: session
       })
       return { ...identity, dispatch }
     })
-    backfillStructuredWorkerOrcaSessionIds(f.db.db)
+    backfillStructuredWorkerTopoSessionIds(f.db.db)
     for (const identity of identities) {
-      expect(f.db.getDispatchContextById(identity.dispatch.id)?.assignee_orca_session_id).toBeNull()
+      expect(f.db.getDispatchContextById(identity.dispatch.id)?.assignee_topo_session_id).toBeNull()
       expect(
         f.db.getCurrentRunForCoordinator({
           terminalHandle: identity.handle,
           paneKey: identity.paneKey,
-          orcaSessionId: testOrcaSessionId(identity.sessionId)
+          topoSessionId: testTopoSessionId(identity.sessionId)
         })
       ).toBeUndefined()
     }

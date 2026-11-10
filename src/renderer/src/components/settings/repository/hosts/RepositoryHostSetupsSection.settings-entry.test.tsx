@@ -12,7 +12,7 @@ import { RepositoryHostSetupsSection } from './RepositoryHostSetupsSection'
 let container: HTMLDivElement
 let root: Root
 
-const projectId = 'github:stablyai/orca'
+const projectId = 'github:brandonhsz/Topoductor'
 
 function makeRepo(overrides: Partial<Repo> & Pick<Repo, 'id' | 'displayName' | 'path'>): Repo {
   return { badgeColor: '#737373', addedAt: 100, kind: 'git', ...overrides }
@@ -23,7 +23,7 @@ function makeSetup(
 ): ProjectHostSetup {
   return {
     projectId,
-    displayName: 'Orca',
+    displayName: 'Topo',
     kind: 'git',
     setupState: 'ready',
     setupMethod: 'legacy-repo',
@@ -56,12 +56,12 @@ afterEach(() => {
 
 describe('RepositoryHostSetupsSection settings entry scope', () => {
   it('lists only its own settings entry when same-host clones split the project (#20861)', () => {
-    const cloneA = makeRepo({ id: 'clone-a', displayName: 'Orca', path: '/work/orca' })
-    const cloneB = makeRepo({ id: 'clone-b', displayName: 'Orca B', path: '/work/orca-b' })
+    const cloneA = makeRepo({ id: 'clone-a', displayName: 'Topo', path: '/work/topo' })
+    const cloneB = makeRepo({ id: 'clone-b', displayName: 'Topo B', path: '/work/topo-b' })
     const remoteRepo = makeRepo({
       id: 'remote-repo',
-      displayName: 'Orca',
-      path: '/home/alice/orca',
+      displayName: 'Topo',
+      path: '/home/alice/topo',
       connectionId: 'openclaw 2'
     })
     useAppStore.setState({
@@ -69,7 +69,7 @@ describe('RepositoryHostSetupsSection settings entry scope', () => {
       projects: [
         {
           id: projectId,
-          displayName: 'Orca',
+          displayName: 'Topo',
           badgeColor: '#737373',
           sourceRepoIds: [cloneA.id, cloneB.id, remoteRepo.id],
           createdAt: 100,
@@ -77,13 +77,13 @@ describe('RepositoryHostSetupsSection settings entry scope', () => {
         }
       ],
       projectHostSetups: [
-        makeSetup({ id: 'clone-a', repoId: 'clone-a', hostId: 'local', path: '/work/orca' }),
-        makeSetup({ id: 'clone-b', repoId: 'clone-b', hostId: 'local', path: '/work/orca-b' }),
+        makeSetup({ id: 'clone-a', repoId: 'clone-a', hostId: 'local', path: '/work/topo' }),
+        makeSetup({ id: 'clone-b', repoId: 'clone-b', hostId: 'local', path: '/work/topo-b' }),
         makeSetup({
           id: 'remote-repo',
           repoId: 'remote-repo',
           hostId: toSshExecutionHostId('openclaw 2'),
-          path: '/home/alice/orca'
+          path: '/home/alice/topo'
         }),
         makeSetup({
           id: 'gpu-setup',
@@ -108,10 +108,10 @@ describe('RepositoryHostSetupsSection settings entry scope', () => {
       )
     })
 
-    expect(container.textContent).toContain('/work/orca')
+    expect(container.textContent).toContain('/work/topo')
     expect(container.textContent).toContain('Path pending')
-    expect(container.textContent).not.toContain('/work/orca-b')
-    expect(container.textContent).not.toContain('/home/alice/orca')
+    expect(container.textContent).not.toContain('/work/topo-b')
+    expect(container.textContent).not.toContain('/home/alice/topo')
     expect(findButton('Open')).toBeUndefined()
     expect(findButton('Add to another host')).toBeUndefined()
   })

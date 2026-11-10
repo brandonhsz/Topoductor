@@ -19,7 +19,7 @@ vi.mock('../../app-server/codex-app-server-session', async (importOriginal) => (
   ...(await importOriginal<typeof AppServerSession>()),
   runCodexAppServerSession: mocks.runCodexAppServerSession
 }))
-vi.mock('@orca/process-host', () => ({ runProcess: mocks.runProcess }))
+vi.mock('@topo/process-host', () => ({ runProcess: mocks.runProcess }))
 import {
   deriveCodexHookHashes,
   probeCodexVersion,
@@ -28,7 +28,7 @@ import {
 } from './codex-hook-trust-derivation'
 import { CODEX_EVENTS, CODEX_EVENT_LABEL } from '../../hooks/definitions/codex-hook-definition'
 
-const COMMAND = '/home/u/.orca/agent-hooks/codex-hook.sh'
+const COMMAND = '/home/u/.topo/agent-hooks/codex-hook.sh'
 const LABELS = CODEX_EVENTS.map((eventName) => CODEX_EVENT_LABEL[eventName])
 const hashesOf = (answer: CodexHookAnswer) => (answer.kind === 'hashes' ? answer.hashes : null)
 
@@ -90,7 +90,7 @@ afterEach(() => {
 })
 
 describe('deriveCodexHookHashes', () => {
-  it("asks Codex in a throwaway home and trusted project holding Orca's entry, then removes both", async () => {
+  it("asks Codex in a throwaway home and trusted project holding Topo's entry, then removes both", async () => {
     const scratches = answerHooksList((scratch) => {
       const home = JSON.parse(readFileSync(join(scratch.home, 'hooks.json'), 'utf-8'))
       expect(Object.keys(home.hooks).sort()).toEqual([...CODEX_EVENTS].sort())
@@ -132,7 +132,7 @@ describe('deriveCodexHookHashes', () => {
       kind: 'refused',
       codexVersion: 'codex-cli 0.170.0',
       failure:
-        "Codex 0.170.0 hashes Orca's status hook differently by its file or position, so Orca does not approve it"
+        "Codex 0.170.0 hashes Topo's status hook differently by its file or position, so Topo does not approve it"
     })
   })
 
@@ -152,7 +152,7 @@ describe('deriveCodexHookHashes', () => {
 
 describe('sweepStaleCodexScratchHomes', () => {
   it('removes scratch homes older than an hour that a quit left, and nothing else', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-sweep-test-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-sweep-test-'))
     vi.stubEnv('TMPDIR', root)
     vi.stubEnv('TEMP', root)
     vi.stubEnv('TMP', root)
@@ -163,9 +163,9 @@ describe('sweepStaleCodexScratchHomes', () => {
       return join(root, name)
     }
     try {
-      const staleTrust = dir('orca-codex-hook-trust-old', hoursAgo(2))
-      const staleVersion = dir('orca-codex-version-old', hoursAgo(2))
-      const live = dir('orca-codex-hook-trust-live', new Date())
+      const staleTrust = dir('topo-codex-hook-trust-old', hoursAgo(2))
+      const staleVersion = dir('topo-codex-version-old', hoursAgo(2))
+      const live = dir('topo-codex-hook-trust-live', new Date())
       const unrelated = dir('someone-else-old', hoursAgo(2))
 
       await sweepStaleCodexScratchHomes()

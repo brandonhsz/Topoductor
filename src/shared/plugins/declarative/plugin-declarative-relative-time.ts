@@ -8,7 +8,7 @@ export type PluginRelativeTimeFormat = (typeof PLUGIN_RELATIVE_TIME_FORMATS)[num
 export const pluginRelativeTimeAt = z
   .number()
   .refine(Number.isFinite, 'must be a finite time in milliseconds')
-/** A Table cell Orca keeps current: `{ type: 'relative', at }`. */
+/** A Table cell Topo keeps current: `{ type: 'relative', at }`. */
 export const pluginRelativeTimeCellSchema = z
   .object({
     type: z.literal('relative'),

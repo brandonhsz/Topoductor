@@ -1,11 +1,11 @@
-import { resolveOrcadBindHost } from '../../shared/orcad-bind-address'
+import { resolveTopodBindHost } from '../../shared/topod-bind-address'
 import { getPresentStringFlag } from '../flags'
 import { RuntimeClientError } from './types'
 
 /** Convert a CLI bind value into the normalized literal address used by serve. */
 export function resolveServeBindValue(raw: string): string {
   try {
-    return resolveOrcadBindHost(raw)
+    return resolveTopodBindHost(raw)
   } catch (error) {
     throw new RuntimeClientError(
       'invalid_argument',

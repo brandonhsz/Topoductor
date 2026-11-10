@@ -1,12 +1,12 @@
-import '../../orca-runtime-tests/orca-runtime-test-lifecycle.spec'
+import '../../topo-runtime-tests/topo-runtime-test-lifecycle.spec'
 import { describe, expect, it, vi } from 'vitest'
 import {
   createRuntime,
   syncSinglePty,
   TEST_WORKTREE_ID
-} from '../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
-import { electronMocks } from '../../orca-runtime-test-mocks/setup.spec'
-import { createMobileCreateTestNotifier } from '../../orca-runtime-tests/orca-runtime-test-scenario-builders.spec'
+} from '../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
+import { electronMocks } from '../../topo-runtime-test-mocks/setup.spec'
+import { createMobileCreateTestNotifier } from '../../topo-runtime-tests/topo-runtime-test-scenario-builders.spec'
 
 async function createPaneTitleRuntime() {
   electronMocks.BrowserWindow.fromId.mockReturnValue({ isDestroyed: () => false })

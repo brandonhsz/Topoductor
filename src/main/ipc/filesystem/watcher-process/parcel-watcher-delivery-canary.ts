@@ -56,11 +56,11 @@ export async function startWatcherDeliveryCanary(
   getActivity: () => WatcherCanaryActivity,
   onHealthChange: (health: WatcherDeliveryHealth) => void = () => undefined
 ): Promise<void> {
-  const configuredCanaryDir = process.env.ORCA_WATCHER_CANARY_DIR
+  const configuredCanaryDir = process.env.TOPO_WATCHER_CANARY_DIR
   let canaryDir: string
   let lastEventAt = 0
   try {
-    canaryDir = configuredCanaryDir ?? mkdtempSync(join(tmpdir(), 'orca-watcher-canary-'))
+    canaryDir = configuredCanaryDir ?? mkdtempSync(join(tmpdir(), 'topo-watcher-canary-'))
     const watcher = await loadParcelWatcher()
     // Match the Windows subscriptions so the canary never probes for Watchman.
     const opts: ParcelWatcher.Options = process.platform === 'win32' ? { backend: 'windows' } : {}

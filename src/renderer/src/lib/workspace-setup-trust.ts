@@ -2,7 +2,7 @@ import type { AppState } from '@/store/types'
 import type { ExecutionHostId } from '../../../shared/execution-host'
 import type { SetupDecision } from '../../../shared/worktree/create-types'
 import type { ApprovedSetupHashes } from '../../../shared/worktree/approved-setup-hashes'
-import { approvedOrcaHookContentHashes } from '../../../shared/orca-hook-trust-entries'
+import { approvedTopoHookContentHashes } from '../../../shared/topo-hook-trust-entries'
 import { ensureHooksApproved } from './ensure-hooks-confirmed'
 import { settleComposerSubmit } from './composer-submit-cancellation'
 
@@ -37,8 +37,8 @@ export async function confirmWorkspaceSetupDecision<T extends SetupDecision | un
   }
   // The host runs shared setup only if the created branch's content hashes to one of these.
   const state = typeof stateOrGetter === 'function' ? stateOrGetter() : stateOrGetter
-  const approvedSetupHashes = approvedOrcaHookContentHashes(
-    state.trustedOrcaHooks,
+  const approvedSetupHashes = approvedTopoHookContentHashes(
+    state.trustedTopoHooks,
     repoId,
     'setup'
   ).filter((hash) => hash !== approvedContentHash)

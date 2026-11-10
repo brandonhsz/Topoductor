@@ -2,14 +2,14 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { RpcContext } from '../../../core'
 import { createOrchestrationRpcHarness } from '../rpc-test-harness'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { createRootDispatch } from '../../../../orchestration/db/root-dispatch-test-fixture'
 
 describe('orchestration RPC methods', () => {
   const h = createOrchestrationRpcHarness()
   const { coordinatorPaneKey } = h
   let db: OrchestrationDb
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
   let ctx: RpcContext
 
   function setup(withBoundRun = true): void {
@@ -95,7 +95,7 @@ describe('orchestration RPC methods', () => {
         run: { id: olderRun.id },
         next: expect.stringMatching(
           new RegExp(
-            `Dispatch ${dispatch.id} in Run ${currentRun.id}.*orca orchestration run-use --id ${olderRun.id}`
+            `Dispatch ${dispatch.id} in Run ${currentRun.id}.*topo orchestration run-use --id ${olderRun.id}`
           )
         )
       })

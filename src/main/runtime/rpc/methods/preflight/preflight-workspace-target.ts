@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { parseWorkspaceKey } from '../../../../../shared/workspace-scope'
 import type { ExecutionHostId } from '../../../../../shared/execution-host'
 import { resolveQualifiedFolderWorkspace } from '../../../../../shared/folder-workspaces/folder-workspace-execution-host'
@@ -6,7 +6,7 @@ import { resolveWorkspaceAgentDetectionHost } from '../../../../preflight/worksp
 import { resolveWorktreeHostRouting } from '../../../workspaces/catalog/worktree-launch-host-repo'
 
 export async function resolveQualifiedAgentDetectionHost(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   params: { worktreeId?: string; worktreeHostId?: ExecutionHostId; repoId?: string }
 ) {
   const hostId = params.worktreeHostId

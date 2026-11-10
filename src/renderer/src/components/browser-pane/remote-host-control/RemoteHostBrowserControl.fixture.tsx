@@ -119,8 +119,8 @@ export const firstUseNotice = defineFixture({
   interact: toastMounted
 })
 
-/** Hosts Orca created itself keep their setting; only Stop is offered. */
-export const firstUseNoticeOrcaOwnedHost = defineFixture({
+/** Hosts Topo created itself keep their setting; only Stop is offered. */
+export const firstUseNoticeTopoOwnedHost = defineFixture({
   width: 520,
   render: () => <Notice canDisallow={false} />,
   interact: toastMounted

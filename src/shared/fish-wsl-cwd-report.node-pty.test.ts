@@ -11,7 +11,7 @@ import { parseFileUriPath } from '../main/daemon/emulation/osc7-file-uri'
 const FISH = resolveFishBinary(3)
 const FISH_PATH = FISH.available ? FISH.path : ''
 const itWithFish = FISH.available ? it : it.skip
-const PROMPT_MARK = 'ORCAFISH> '
+const PROMPT_MARK = 'TOPOFISH> '
 
 type Report = { hosted: boolean; folder: string }
 
@@ -27,7 +27,7 @@ function reports(output: string): Report[] {
     }))
 }
 
-// Orca's reports and the foreign one carry no host; fish 4 also sends its own, with one.
+// Topo's reports and the foreign one carry no host; fish 4 also sends its own, with one.
 const hostless = (output: string): string[] =>
   reports(output)
     .filter((report) => !report.hosted)

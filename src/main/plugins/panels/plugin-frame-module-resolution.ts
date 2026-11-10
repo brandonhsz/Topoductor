@@ -12,7 +12,7 @@ export type PluginModuleSpecifierResolution =
 /** Whether a plugin-relative `/`-separated path names a file of the plugin. */
 export type PluginFileExists = (relativePath: string) => Promise<boolean>
 
-const isOrcaSpecifier = (specifier: string): boolean =>
+const isTopoSpecifier = (specifier: string): boolean =>
   specifier === 'orca' || specifier.startsWith('orca/')
 
 // Why kept: URLs are not bare names; the guest CSP decides whether they load.
@@ -33,7 +33,7 @@ export async function resolvePluginModuleSpecifier(
   specifier: string,
   exists: PluginFileExists
 ): Promise<PluginModuleSpecifierResolution> {
-  if (isOrcaSpecifier(specifier) || isUrlSpecifier(specifier)) {
+  if (isTopoSpecifier(specifier) || isUrlSpecifier(specifier)) {
     return { kind: 'keep' }
   }
   if (!specifier.startsWith('./') && !specifier.startsWith('../') && !specifier.startsWith('/')) {

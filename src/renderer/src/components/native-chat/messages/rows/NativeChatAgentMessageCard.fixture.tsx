@@ -24,7 +24,7 @@ const started = projectStructuredAgentStartItem({
     dispatchId: 'fixture-dispatch',
     task: prose,
     worker: {
-      party: { address: 'term_sender', terminalHandle: 'term_sender', orcaSessionId: null },
+      party: { address: 'term_sender', terminalHandle: 'term_sender', topoSessionId: null },
       name: 'Parser worker'
     }
   }
@@ -62,7 +62,7 @@ function cards() {
               party: {
                 address,
                 terminalHandle: kind === 'generic' && index === 0 ? null : address,
-                orcaSessionId: null
+                topoSessionId: null
               },
               name,
               ...(kind === 'worker' || kind === 'coordinator' ? { relation: kind } : {})

@@ -42,7 +42,7 @@ describe('plugin catalog', () => {
     }
   )
 
-  it('offers the newest release this Orca can install', () => {
+  it('offers the newest release this Topo can install', () => {
     const releases = [
       release('3.0.0', '2.0.0'),
       release('2.0.0', '1.5.0'),
@@ -50,7 +50,7 @@ describe('plugin catalog', () => {
     ]
     expect(selectPluginCatalogRelease(releases, '1.6.0')?.version).toBe('2.0.0')
     expect(selectPluginCatalogRelease(releases, '2.1.0')?.version).toBe('3.0.0')
-    // Why the smallest: "Needs Orca X" should name the first Orca that unlocks anything.
+    // Why the smallest: "Needs Topo X" should name the first Topo that unlocks anything.
     expect(selectPluginCatalogRelease(releases, '1.0.0')?.version).toBe('1.0.0')
     expect(
       selectPluginCatalogRelease([release('2.0.0', '9.0.0'), release('1.0.0', '8.0.0')], '1.0.0')

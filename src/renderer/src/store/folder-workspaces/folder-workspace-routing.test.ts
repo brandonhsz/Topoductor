@@ -157,9 +157,9 @@ describe('project group store routing', () => {
             provider: 'jira',
             type: 'issue',
             number: 0,
-            title: 'ORCA-123 Link Jira',
-            url: 'https://company.atlassian.net/browse/ORCA-123',
-            jiraIdentifier: 'ORCA-123'
+            title: 'TOPO-123 Link Jira',
+            url: 'https://company.atlassian.net/browse/TOPO-123',
+            jiraIdentifier: 'TOPO-123'
           }
         },
         { runtimeEnvironmentId: 'env-1' }

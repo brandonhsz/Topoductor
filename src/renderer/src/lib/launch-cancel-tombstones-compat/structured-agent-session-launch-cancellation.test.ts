@@ -15,7 +15,7 @@ import {
 import { beginStructuredAgentSessionAuthoritativeInventory } from './structured-agent-session-launch-cancellation'
 import { resetStructuredAgentLaunchPersistenceForTests } from '../agent-session/launch/structured-agent-session-launch-persistence'
 import { refreshLocalStructuredSessionTabs } from '@/runtime/local-structured-session-tabs-sync/inventory-refresh'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import type { ExecutionHostId } from '../../../../shared/execution-host'
 import type { RuntimeClientTarget } from '../../../../shared/runtime-client-target'
 import { useAppStore } from '@/store'
@@ -240,7 +240,7 @@ describe('structured launch cancellation retirement', () => {
 
   // A runtime refused its chats answers with no chat rows; that absence is not the host's answer.
   // Switch on, this machine keeps no tombstone: main's fence is in its close-before-create test.
-  it.skipIf(ORCA_LAYOUT_OWNER_IS_MAIN)(
+  it.skipIf(TOPO_LAYOUT_OWNER_IS_MAIN)(
     'keeps a tombstone through an inventory that cannot list chats',
     async () => {
       setStructuredLaunchState({
@@ -307,7 +307,7 @@ describe('structured launch cancellation retirement', () => {
     }
   )
 
-  it.skipIf(ORCA_LAYOUT_OWNER_IS_MAIN)(
+  it.skipIf(TOPO_LAYOUT_OWNER_IS_MAIN)(
     'drains a restored cancellation before a newer inventory retires it',
     async () => {
       markStructuredAgentSessionLaunchCancelled(WORKTREE_ID, SESSION_ID, 'local', layoutOwner)
@@ -352,11 +352,11 @@ describe('structured launch cancellation retirement', () => {
   )
 
   // An older switch-off build saved the tombstone; this build drains it on its first inventory.
-  it.runIf(ORCA_LAYOUT_OWNER_IS_MAIN)(
+  it.runIf(TOPO_LAYOUT_OWNER_IS_MAIN)(
     'drains a tombstone an older build saved: one close, and main shows no chat',
     async () => {
       localStorage.setItem(
-        'orca:structuredAgentLaunchCancelledSessions:v1',
+        'topo:structuredAgentLaunchCancelledSessions:v1',
         JSON.stringify([SESSION_ID])
       )
       resetStructuredAgentLaunchPersistenceForTests()

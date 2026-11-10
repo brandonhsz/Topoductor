@@ -106,7 +106,7 @@ describe('followWslAutomountRoots: one guest read per distro start', () => {
     }
   }
 
-  it('picks up a root edited across a restart no probe saw, once Orca wakes the distro', async () => {
+  it('picks up a root edited across a restart no probe saw, once Topo wakes the distro', async () => {
     let root = '/old/'
     const changed = vi.fn()
     onWslAutomountRootsChanged(changed)

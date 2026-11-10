@@ -14,16 +14,16 @@ type Callback = Parameters<typeof subscribeViaWatcherProcess>[1]
 
 describe('plugin dev revision', () => {
   it('counts per root, under any spelling of the path', () => {
-    const root = join(tmpdir(), 'orca-dev-revision-a')
+    const root = join(tmpdir(), 'topo-dev-revision-a')
     const before = pluginDevRevision(root)
     expect(before).toMatch(/^dev-[0-9a-f]{8}-\d+$/)
     bumpPluginDevRevision(`${root}/./`)
     expect(pluginDevRevision(root)).not.toBe(before)
-    expect(pluginDevRevision(join(tmpdir(), 'orca-dev-revision-b'))).toMatch(/-0$/)
+    expect(pluginDevRevision(join(tmpdir(), 'topo-dev-revision-b'))).toMatch(/-0$/)
   })
 
   it('is bumped by the dev watcher for each change it reports under the root', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-dev-revision-watch-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-dev-revision-watch-'))
     const callbacks = new Map<string, Callback>()
     const subscribe = vi.fn(async (path: string, callback: Callback) => {
       callbacks.set(path, callback)
@@ -40,7 +40,7 @@ describe('plugin dev revision', () => {
   })
 
   it('counts changed files from watcher events but not setup catch-ups', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-dev-change-count-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-dev-change-count-'))
     const callbacks = new Map<string, Callback>()
     const subscribe = vi.fn(async (path: string, callback: Callback) => {
       callbacks.set(path, callback)

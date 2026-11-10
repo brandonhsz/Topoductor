@@ -10,19 +10,19 @@ import { NewWorkspaceComposerProjectSection } from './NewWorkspaceComposerProjec
 const projects: NewWorkspaceProjectOption[] = [
   {
     kind: 'project',
-    id: 'orca',
-    projectId: 'orca',
-    displayName: 'orca',
+    id: 'topo',
+    projectId: 'topo',
+    displayName: 'topo',
     badgeColor: 'var(--muted-foreground)',
-    detail: 'stablyai/orca'
+    detail: 'brandonhsz/Topoductor'
   },
   {
     kind: 'project',
-    id: 'personal-orca',
-    projectId: 'personal-orca',
-    displayName: 'orca',
+    id: 'personal-topo',
+    projectId: 'personal-topo',
+    displayName: 'topo',
     badgeColor: 'var(--muted-foreground)',
-    detail: 'personal/orca'
+    detail: 'personal/topo'
   },
   {
     kind: 'project',
@@ -30,7 +30,7 @@ const projects: NewWorkspaceProjectOption[] = [
     projectId: 'api',
     displayName: 'platform-api',
     badgeColor: 'var(--muted-foreground)',
-    detail: 'stablyai/platform-api'
+    detail: 'brandonhsz/platform-api'
   },
   {
     kind: 'project-group',
@@ -47,27 +47,27 @@ const hosts: ProjectHostSetupOption[] = [
   {
     kind: 'ready',
     id: 'local',
-    projectId: 'orca',
-    repoId: 'orca-local',
+    projectId: 'topo',
+    repoId: 'topo-local',
     hostId: 'local',
     label: 'MacBook Pro',
     detail: 'Local',
-    path: '/Users/alice/Projects/orca'
+    path: '/Users/alice/Projects/topo'
   },
   {
     kind: 'ready',
     id: 'remote',
-    projectId: 'orca',
-    repoId: 'orca-remote',
+    projectId: 'topo',
+    repoId: 'topo-remote',
     hostId: 'ssh:devbox',
     label: 'Dev server',
     detail: 'SSH',
-    path: '/home/alice/projects/orca'
+    path: '/home/alice/projects/topo'
   },
   {
     kind: 'needs-setup',
     id: 'windows',
-    projectId: 'orca',
+    projectId: 'topo',
     hostId: 'runtime:windows',
     label: 'Windows workstation',
     detail: 'Project location not set',
@@ -82,7 +82,7 @@ function ProjectAndHostPreview({
 }: {
   folderOnly?: boolean
 }): React.JSX.Element {
-  const [project, setProject] = useState(folderOnly ? 'folder' : 'orca')
+  const [project, setProject] = useState(folderOnly ? 'folder' : 'topo')
   const [host, setHost] = useState('local')
   return (
     <div className="space-y-4 rounded-xl border border-border bg-background p-4">
@@ -117,7 +117,7 @@ function ProjectAndHostPreview({
         onConnectSelectedRepo={async () => {}}
         sshStatusLabel="Connected"
         connectButtonLabel="Connect"
-        selectedProjectName="orca"
+        selectedProjectName="topo"
       />
     </div>
   )

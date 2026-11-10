@@ -28,7 +28,7 @@ import type {
   RecipeVmState
 } from '../../runtime/workspaces/sleep/recipe-vm-operations'
 
-type RecipeVmEnvironment = Pick<KnownRuntimeEnvironment, 'id' | 'source' | 'orcadDeployment'>
+type RecipeVmEnvironment = Pick<KnownRuntimeEnvironment, 'id' | 'source' | 'topodDeployment'>
 
 /** The workspace and stored state of the live recipe VM serving this environment. */
 function recipeVmOf(

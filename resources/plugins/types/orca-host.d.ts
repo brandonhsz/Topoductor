@@ -20,7 +20,7 @@ declare module 'orca/host' {
   } from 'orca'
   export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue }
   export type Disposable = { dispose(): void }
-  /** `orca.api`: check `minor` (or `host.has`) before calling a method newer than your oldest Orca. */
+  /** `orca.api`: check `minor` (or `host.has`) before calling a method newer than your oldest Topo. */
   export type HostApiVersion = { readonly major: number; readonly minor: number }
   /** Open set: treat a code you do not know as `action_failed`. */
   export type HostErrorCode = "invalid_request" | "invalid_params" | "unknown_method" | "capability_denied" | "consent_required" | "not_permitted" | "rate_limited" | "unavailable" | "action_failed" | "cancelled" | "timeout" | "conflict" | "too_large"
@@ -112,13 +112,13 @@ declare module 'orca/host' {
       result: { ok: true }
       surfaces: "worker" | "panel" | "editor"
     }
-    /** Opens an http:, https: or mailto: URL in the default browser. Needs a click or key press in the frame; desktop app only. Orca asks the person before an http(s) host the plugin was not allowed; `opened` is false if they cancel. Since host API 1.1. */
+    /** Opens an http:, https: or mailto: URL in the default browser. Needs a click or key press in the frame; desktop app only. Topo asks the person before an http(s) host the plugin was not allowed; `opened` is false if they cancel. Since host API 1.1. */
     "shell.openExternal": {
       params: { url: string }
       result: { opened: boolean; reason?: "cancelled" | "consent-unavailable" }
       surfaces: "panel" | "editor"
     }
-    /** Offers data (a string or ArrayBuffer, up to 64 MiB) in Orca's save dialog; the plugin never learns the path. Needs a click or key press in the frame; desktop app only. Since host API 1.1. */
+    /** Offers data (a string or ArrayBuffer, up to 64 MiB) in Topo's save dialog; the plugin never learns the path. Needs a click or key press in the frame; desktop app only. Since host API 1.1. */
     "files.saveAs": {
       params: { suggestedName?: string; mimeType?: string; data: string | ArrayBuffer }
       result: { status: "saved" | "cancelled" }
@@ -142,7 +142,7 @@ declare module 'orca/host' {
       result: { ok: true }
       surfaces: "panel" | "editor"
     }
-    /** Changes one of the plugin's `contributes.statusBarItems` (named by `id`): fields given replace their current value, `visible: false` hides it. Desktop app only; lasts until Orca restarts, and is hidden while the plugin is disabled. A plugin with `main` and status bar items has its worker started when it is enabled and kept running while it stays enabled, so a worker can poll and update its items without an event or a hook. Since host API 1.2. */
+    /** Changes one of the plugin's `contributes.statusBarItems` (named by `id`): fields given replace their current value, `visible: false` hides it. Desktop app only; lasts until Topo restarts, and is hidden while the plugin is disabled. A plugin with `main` and status bar items has its worker started when it is enabled and kept running while it stays enabled, so a worker can poll and update its items without an event or a hook. Since host API 1.2. */
     "statusBar.update": {
       params: { id: string; text?: string; icon?: "activity" | "bar-chart-3" | "bell" | "blocks" | "book" | "bot" | "bug" | "calendar" | "cloud" | "code" | "database" | "file-text" | "flag" | "folder" | "gauge" | "globe" | "hammer" | "layers" | "lightbulb" | "package" | "plug" | "puzzle" | "rocket" | "star" | "terminal" | "wrench" | "zap" | "add" | "remove" | "delete" | "edit" | "refresh" | "search" | "settings" | "check" | "close" | "info" | "warning" | "error" | "open-external" | "copy" | "download" | "upload" | "play" | "pause" | "stop" | "more" | "expand" | "collapse" | "next" | "filter" | "branch" | "file" | "agent" | "link"; tone?: "neutral" | "accent" | "success" | "warning" | "danger"; tooltip?: string; visible?: boolean }
       result: { ok: true }
@@ -160,19 +160,19 @@ declare module 'orca/host' {
       result: { revision: string; themeId: string; mode: "dark" | "light"; delivery: "published" }
       surfaces: "worker"
     }
-    /** Lists every workspace, Git worktrees and folders, on every host Orca reaches. Since host API 1.3. */
+    /** Lists every workspace, Git worktrees and folders, on every host Topo reaches. Since host API 1.3. */
     "workspace.list": {
       params: Record<string, never> | undefined
       result: { workspaces: { id: string; kind: "worktree" | "folder"; name: string; project?: string | null; path: string; branch: string | null; hostId: string | null }[]; truncated: boolean }
       surfaces: "worker"
     }
-    /** Shows a workspace in Orca, as clicking it in the sidebar does; a folder workspace needs the desktop app. Since host API 1.3. */
+    /** Shows a workspace in Topo, as clicking it in the sidebar does; a folder workspace needs the desktop app. Since host API 1.3. */
     "workspace.open": {
       params: { workspaceId: string }
       result: { opened: true }
       surfaces: "worker"
     }
-    /** Renames a workspace in Orca's sidebar, as renaming it by hand does; the name stays until it is renamed again. Since host API 1.5. */
+    /** Renames a workspace in Topo's sidebar, as renaming it by hand does; the name stays until it is renamed again. Since host API 1.5. */
     "workspace.rename": {
       params: { workspaceId: string; name: string }
       result: { name: string }
@@ -196,13 +196,13 @@ declare module 'orca/host' {
       result: { terminalId: string }
       surfaces: "worker"
     }
-    /** Opens a file of a workspace in an editor tab of Orca's window; desktop app only. `workspace.open` shows the workspace. Since host API 1.3. */
+    /** Opens a file of a workspace in an editor tab of Topo's window; desktop app only. `workspace.open` shows the workspace. Since host API 1.3. */
     "editor.open": {
       params: { workspaceId: string; path: string }
       result: { opened: true }
       surfaces: "worker"
     }
-    /** Runs one of Orca's built-in actions in its window, never a plugin's replacement of it; desktop app only. Since host API 1.3. */
+    /** Runs one of Topo's built-in actions in its window, never a plugin's replacement of it; desktop app only. Since host API 1.3. */
     "commands.run": {
       params: { action: "worktree.history.back" | "worktree.history.forward" | "sidebar.left.toggle" | "sidebar.sleepingWorkspaces.toggle" | "floatingWorkspace.maximize" | "tab.rename" | "workspace.rename" | "workspace.openBoard" | "view.tasks" | "sidebar.right.toggle" | "sidebar.explorer.toggle" | "sidebar.search.toggle" | "sidebar.sourceControl.toggle" | "sidebar.checks.toggle" | "sidebar.ports.toggle" }
       result: { ran: true }
@@ -222,7 +222,7 @@ declare module 'orca/host' {
   export type HostApi<S extends HostSurface> = {
     /** Rejects with a {@link HostCallError}. */
     call<M extends HostMethodFor<S>>(method: M, ...args: HostCallArgs<M>): Promise<HostResult<M>>
-    /** Synchronous: whether this Orca offers `method` on this surface. */
+    /** Synchronous: whether this Topo offers `method` on this surface. */
     has(method: string): boolean
   }
 
@@ -232,7 +232,7 @@ declare module 'orca/host' {
     "workspace.created": { workspaceId: string; kind: "worktree" | "folder"; path: string; branch: string }
     /** A worktree workspace was removed. */
     "workspace.removed": { workspaceId: string; kind: "worktree" | "folder"; path: string }
-    /** An agent in a terminal pane changed status; `workspaceId` is null when Orca cannot tie the pane to a workspace, and `terminalId` names its terminal when Orca lists it. */
+    /** An agent in a terminal pane changed status; `workspaceId` is null when Topo cannot tie the pane to a workspace, and `terminalId` names its terminal when Topo lists it. */
     "agent.status.changed": { workspaceId: string | null; paneKey: string; terminalId?: string; title?: string; state: "working" | "blocked" | "waiting" | "done"; receivedAt: number; mainAgent?: { state: "working" | "blocked" | "waiting" | "done"; outcome?: "success" | "failure" | "cancellation" | "superseded" | "interruption" | "unconfirmed"; stateStartedAt: number } }
     /** The focused workspace changed, or its terminals were opened, closed or renamed; `context` is what `workspace.readContext` now answers. Each new subscriber first gets the current context. */
     "workspace.changed": { context: { branch: string; displayName: string; terminals: { id: string; title?: string }[] } | null }
@@ -241,21 +241,21 @@ declare module 'orca/host' {
 
   /** Worker `orca.hooks.on(hook, handler)`: the event each hook carries and its stop result. */
   export type PluginHooks = {
-    /** Text Orca, the CLI or a plugin is about to send to a terminal. A person typing (on the desktop, a phone or a paired client) is never hooked, and prompts Orca submits to an agent take `agent.prompt.before` instead. Writes to one terminal stay in order while a hook decides. Rewrite `text` or `enter` with `next`, or return `{ deny }` to refuse the send. */
+    /** Text Topo, the CLI or a plugin is about to send to a terminal. A person typing (on the desktop, a phone or a paired client) is never hooked, and prompts Topo submits to an agent take `agent.prompt.before` instead. Writes to one terminal stay in order while a hook decides. Rewrite `text` or `enter` with `next`, or return `{ deny }` to refuse the send. */
     "terminal.send": { event: { terminalId: string; text: string; enter: boolean; inputKind: "driving" | "orchestration" | "launch" }; result: { deny: string } }
     /** A worktree or folder workspace is about to be created. Change `name`, `branch` or `base` with `next`, or return `{ deny }` to refuse it. */
     "workspace.create.before": { event: { kind: "worktree" | "folder"; projectId: string; name: string; branch?: string; base?: string }; result: { deny: string } }
-    /** A worktree or folder workspace was created. Observe only: Orca does not wait for it, and results are ignored. */
+    /** A worktree or folder workspace was created. Observe only: Topo does not wait for it, and results are ignored. */
     "workspace.create.after": { event: { workspaceId: string; kind: "worktree" | "folder"; path: string; branch: string }; result: never }
-    /** Orca is about to start an agent CLI in a terminal, from any launcher (new tab, workspace create, CLI, automation, orchestration). Change `command` or add `env` with `next`, or return `{ deny }` to refuse the launch. Restores of saved sessions are not hooked. */
+    /** Topo is about to start an agent CLI in a terminal, from any launcher (new tab, workspace create, CLI, automation, orchestration). Change `command` or add `env` with `next`, or return `{ deny }` to refuse the launch. Restores of saved sessions are not hooked. */
     "agent.launch.before": { event: { agent: string; workspaceId: string | null; workspaceKind: "worktree" | "folder" | null; terminalId?: string; command: string; env: Record<string, string> }; result: { deny: string } }
-    /** Orca is about to submit a prompt to an agent in a terminal: a launch prompt, an orchestration dispatch, an issue or task prompt, or `orca terminal send` to an agent. A prompt a person submits is never hooked, and writes to one terminal stay in order while it decides. Rewrite `prompt` with `next`, or return `{ deny }` to refuse it. */
+    /** Topo is about to submit a prompt to an agent in a terminal: a launch prompt, an orchestration dispatch, an issue or task prompt, or `topo terminal send` to an agent. A prompt a person submits is never hooked, and writes to one terminal stay in order while it decides. Rewrite `prompt` with `next`, or return `{ deny }` to refuse it. */
     "agent.prompt.before": { event: { agent: string | null; terminalId: string; prompt: string; inputKind: "driving" | "orchestration" | "launch" }; result: { deny: string } }
-    /** An agent in an Orca terminal is about to run a tool. Claude Code waits for the answer: return `{ deny }` to refuse the call (the agent sees the reason) or change `input` with `next`; the person is still asked as usual. Other agents only report the call, so their results are ignored. Agents on SSH or WSL hosts are not hooked yet. */
+    /** An agent in a Topo terminal is about to run a tool. Claude Code waits for the answer: return `{ deny }` to refuse the call (the agent sees the reason) or change `input` with `next`; the person is still asked as usual. Other agents only report the call, so their results are ignored. Agents on SSH or WSL hosts are not hooked yet. */
     "agent.tool.before": { event: { agent: string; workspaceId: string | null; terminalId?: string; tool: string; input: JsonValue; callId?: string }; result: { deny: string } }
-    /** An agent in an Orca terminal finished a tool call (successfully or not). Observe only: Orca does not wait for it. */
+    /** An agent in a Topo terminal finished a tool call (successfully or not). Observe only: Topo does not wait for it. */
     "agent.tool.after": { event: { agent: string; workspaceId: string | null; terminalId?: string; tool: string; input: JsonValue; callId?: string; output?: JsonValue }; result: never }
-    /** The person is about to save a text file from an Orca editor tab (an explicit save, not autosave). Change `text` with `next` (format on save) or return `{ deny }` to refuse the save, which shows your reason. Edits made while the hook ran stay unsaved. */
+    /** The person is about to save a text file from a Topo editor tab (an explicit save, not autosave). Change `text` with `next` (format on save) or return `{ deny }` to refuse the save, which shows your reason. Edits made while the hook ran stay unsaved. */
     "editor.save.before": { event: { workspaceId: string | null; path: string; languageId?: string; text: string }; result: { deny: string } }
   }
   export type PluginHookName = keyof PluginHooks

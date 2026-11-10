@@ -90,7 +90,7 @@ async function sidecarOf(dbPath: string): Promise<SessionSidecarStat> {
 
 describe('devinSessionsIndexForSidecar', () => {
   it('tolerates an older schema missing optional columns', async () => {
-    const dir = await tempDir('orca-devin-db-')
+    const dir = await tempDir('topo-devin-db-')
     const dbPath = join(dir, 'sessions.db')
     const db = new SyncDatabase(dbPath)
     try {
@@ -149,7 +149,7 @@ describe('devin sessions.db through the scan', () => {
   it.each(['transcripts', 'agent_logs'])(
     'enriches %s sessions by session_id and excludes hidden ones',
     async (directory) => {
-      const root = await tempDir('orca-devin-scan-')
+      const root = await tempDir('topo-devin-scan-')
       const { transcriptsDir } = await writeDevinVault(root, directory)
       const result = await scanAiVaultSessions({
         ...isolatedScanRoots(root),
@@ -165,7 +165,7 @@ describe('devin sessions.db through the scan', () => {
   )
 
   it('picks up db-only changes on a rescan without the transcript moving', async () => {
-    const root = await tempDir('orca-devin-scan-')
+    const root = await tempDir('topo-devin-scan-')
     const { transcriptsDir, dbPath } = await writeDevinVault(root)
     const options = {
       ...isolatedScanRoots(root),

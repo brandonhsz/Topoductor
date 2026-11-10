@@ -11,8 +11,8 @@ import {
   listUserSshConfigHostSummaries,
   resolveUserSshConfigHost
 } from '../../ssh/config/ssh-config-host-picker'
-import { getManagedOrcadFenceEnvironmentId } from '../../../shared/managed-orcad-ssh-owner'
-import { closeOrcadManagedTunnel } from '../../managed-server/lifecycle/orcad-managed-tunnel'
+import { getManagedTopodFenceEnvironmentId } from '../../../shared/managed-topod-ssh-owner'
+import { closeTopodManagedTunnel } from '../../managed-server/lifecycle/topod-managed-tunnel'
 import { rotateSshProviderAuthority } from '../../ssh/connection/authority/ssh-provider-authority'
 import {
   getSshTargetRegistryStore,
@@ -20,7 +20,7 @@ import {
 } from '../../ssh/targets/ssh-target-registry'
 import {
   allowsDirectSshRelay,
-  isManagedOrcadSshTarget,
+  isManagedTopodSshTarget,
   isRuntimeOwnedSshTarget
 } from '../../ssh/targets/ssh-target-runtime-ownership'
 import { connectionManager, getCurrentMainWindow } from './ssh-ipc-context'
@@ -63,8 +63,8 @@ function publishRepoReadoptions(repoReadoptions: SshRepoReadoption[]): SshRepoRe
 function omitRendererSshTargetGeneration<
   T extends {
     generation?: unknown
-    orcadProvisioning?: unknown
-    orcadFence?: unknown
+    topodProvisioning?: unknown
+    topodFence?: unknown
     managedServerUnavailable?: unknown
     managedServerMoveOffered?: unknown
     managedServerLeaveBehind?: unknown
@@ -77,8 +77,8 @@ function omitRendererSshTargetGeneration<
 ): Omit<
   T,
   | 'generation'
-  | 'orcadProvisioning'
-  | 'orcadFence'
+  | 'topodProvisioning'
+  | 'topodFence'
   | 'managedServerUnavailable'
   | 'managedServerMoveOffered'
   | 'managedServerLeaveBehind'
@@ -88,8 +88,8 @@ function omitRendererSshTargetGeneration<
 > {
   const {
     generation: _generation,
-    orcadProvisioning: _orcadProvisioning,
-    orcadFence: _orcadFence,
+    topodProvisioning: _topodProvisioning,
+    topodFence: _topodFence,
     managedServerUnavailable: _managedServerUnavailable,
     managedServerMoveOffered: _managedServerMoveOffered,
     managedServerLeaveBehind: _managedServerLeaveBehind,
@@ -111,9 +111,9 @@ function assertNotRuntimeOwned(targetId: string, action: string): void {
 /** Removing a managed host would strand its server; Stop proves the exit, Forget skips a dead host. */
 export function assertNotManagedServerHost(targetId: string): void {
   const target = getSshTargetRegistryStore()!.getTarget(targetId)
-  if (target && isManagedOrcadSshTarget(target)) {
+  if (target && isManagedTopodSshTarget(target)) {
     throw new Error(
-      'Orca runs on this host. Use Stop… under Settings › Orca on your SSH hosts to stop it and remove it from the host first, or Forget… there if the host is gone.'
+      'Topo runs on this host. Use Stop… under Settings › Topo on your SSH hosts to stop it and remove it from the host first, or Forget… there if the host is gone.'
     )
   }
 }
@@ -137,14 +137,14 @@ function updateSshTarget(id: string, updates: SshTargetUpdateInput): SshTarget |
   if (isRemoteCliControlAllowed(updated)) {
     setDesktopBrowserBridgeHostStopped(id, false)
   }
-  const environmentId = getManagedOrcadFenceEnvironmentId(updated ?? undefined)
+  const environmentId = getManagedTopodFenceEnvironmentId(updated ?? undefined)
   if (environmentId && updated) {
     // Edited managed hosts need fresh tunnels and transports; unserved hosts have no managed route to redial.
     const redial =
       !allowsDirectSshRelay(updated) &&
       (!before || fingerprintRuntimeSshTarget(before) !== fingerprintRuntimeSshTarget(updated))
     void runTargetLifecycle(id, async () => {
-      await closeOrcadManagedTunnel(environmentId)
+      await closeTopodManagedTunnel(environmentId)
       if (redial) {
         await connectionManager?.disconnect(id)
       }

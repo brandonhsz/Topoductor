@@ -28,7 +28,7 @@ function resolveProbe(pathValue: string): string {
   delete env.Path
   const result = spawnSync(
     process.env.ComSpec ?? 'C:\\Windows\\System32\\cmd.exe',
-    ['/d', '/s', '/c', 'orca-path-probe.cmd'],
+    ['/d', '/s', '/c', 'topo-path-probe.cmd'],
     { encoding: 'utf8', env }
   )
   expect(result.error).toBeUndefined()
@@ -45,15 +45,15 @@ describe.runIf(process.platform === 'win32')('Windows shell PATH restoration', (
 
   beforeEach(() => {
     _resetHydrateShellPathCache()
-    fixtureRoot = mkdtempSync(join(tmpdir(), 'orca-shell-path-'))
+    fixtureRoot = mkdtempSync(join(tmpdir(), 'topo-shell-path-'))
     shellADir = join(fixtureRoot, 'shell-a')
     shellBDir = join(fixtureRoot, 'shell-b')
     shellBProfileDir = join(fixtureRoot, 'shell-b-profile')
     mkdirSync(shellADir)
     mkdirSync(shellBDir)
     mkdirSync(shellBProfileDir)
-    writeFileSync(join(shellADir, 'orca-path-probe.cmd'), '@echo shell-a\r\n')
-    writeFileSync(join(shellBDir, 'orca-path-probe.cmd'), '@echo shell-b\r\n')
+    writeFileSync(join(shellADir, 'topo-path-probe.cmd'), '@echo shell-a\r\n')
+    writeFileSync(join(shellBDir, 'topo-path-probe.cmd'), '@echo shell-b\r\n')
   })
 
   afterEach(() => {

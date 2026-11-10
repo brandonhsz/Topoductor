@@ -111,7 +111,7 @@ export function unknownCommandData(specs: CommandSpec[], commandPath: string[]):
     ...suggestCommands(specs, commandPath)
   ].slice(0, MAX_SUGGESTIONS)
   const nextSteps = suggestions.length
-    ? [`Did you mean: ${suggestions.map((path) => `orca ${path}`).join(', ')}`]
+    ? [`Did you mean: ${suggestions.map((path) => `topo ${path}`).join(', ')}`]
     : []
   return { suggestions, nextSteps }
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { MOBILE_BRIDGE_MAX_FRAME_BYTES } from '../../../../../shared/mobile-bridge-frame-bytes'
 import { SIDEBAR_INPUTS_PAGE_MAX_BYTES } from '../../../../../shared/sidebar-list/sidebar-inputs-feed-contract'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { SidebarInputsFeed } from '../../../sidebar-inputs/sidebar-inputs-feed'
 import { testDomain } from '../../../sidebar-inputs/sidebar-inputs-feed.test-fixture'
 import type { RpcRequest } from '../../core'
@@ -28,7 +28,7 @@ function makeHost() {
     registerSubscriptionCleanup: (id: string, cleanup: () => void) => cleanups.set(id, cleanup)
   }
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: sidebarInputs.read reads only the members above.
-  const runtime = fake as unknown as OrcaRuntimeService
+  const runtime = fake as unknown as TopoRuntimeService
   const dispatcher = new RpcDispatcher({ runtime, methods: SIDEBAR_INPUT_METHODS })
   let requestId = 0
   const read = (context: RpcDispatchStreamingOptions) => {

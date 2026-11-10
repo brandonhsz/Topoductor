@@ -1,17 +1,17 @@
 import { writeFileSync, rmSync, mkdirSync } from 'node:fs'
 import path from 'node:path'
-import { runProcess } from '@orca/process-host'
-import { expect, test } from './helpers/orca-app'
+import { runProcess } from '@topo/process-host'
+import { expect, test } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 
 // The fixture's hidden renderer is driven and captured through Playwright's CDP connection.
 test('CLI file positioning preserves background navigation and reveals the requested line', async ({
   electronApp,
-  orcaPage
+  topoPage
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  const worktreeId = await waitForActiveWorktree(orcaPage)
-  const root = await orcaPage.evaluate(
+  await waitForSessionReady(topoPage)
+  const worktreeId = await waitForActiveWorktree(topoPage)
+  const root = await topoPage.evaluate(
     (id) =>
       Object.values(window.__store?.getState().worktreesByRepo ?? {})
         .flat()
@@ -39,13 +39,13 @@ test('CLI file positioning preserves background navigation and reveals the reque
         '--json',
         ...flags
       ],
-      env: { ...process.env, ORCA_USER_DATA_PATH: userDataDir },
+      env: { ...process.env, TOPO_USER_DATA_PATH: userDataDir },
       timeoutMs: 30_000
     })
     expect(result.code, result.stderr).toBe(0)
   }
   const cursor = () =>
-    orcaPage.evaluate(() => {
+    topoPage.evaluate(() => {
       const probe = window.__monacoEditorE2E
       const snapshot = probe?.snapshot()
       return {
@@ -58,14 +58,14 @@ test('CLI file positioning preserves background navigation and reveals the reque
   mkdirSync(proofDir, { recursive: true })
   try {
     await open(['--focus'])
-    await expect(orcaPage.locator('.editor-header-path').first()).toContainText(relativePath)
+    await expect(topoPage.locator('.editor-header-path').first()).toContainText(relativePath)
     await expect.poll(async () => (await cursor()).line).toBe(1)
     await testInfo.attach('before-default-file-open.png', {
-      body: await orcaPage.screenshot({ path: path.join(proofDir, 'before.png') }),
+      body: await topoPage.screenshot({ path: path.join(proofDir, 'before.png') }),
       contentType: 'image/png'
     })
     await open(['--line', '300', '--column', '7'])
-    await orcaPage.evaluate(
+    await topoPage.evaluate(
       () =>
         new Promise<void>((resolve) =>
           requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
@@ -73,7 +73,7 @@ test('CLI file positioning preserves background navigation and reveals the reque
     )
     expect(await cursor()).toMatchObject({ line: 1, column: 1 })
     await open([])
-    await orcaPage.evaluate((id) => {
+    await topoPage.evaluate((id) => {
       const state = window.__store?.getState()
       const tab = state?.getActiveTab(id)
       if (!state || !tab) {
@@ -82,13 +82,13 @@ test('CLI file positioning preserves background navigation and reveals the reque
       state.createTab(id)
       state.activateTab(tab.id)
     }, worktreeId)
-    await orcaPage.evaluate(
+    await topoPage.evaluate(
       () =>
         new Promise<void>((resolve) =>
           requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
         )
     )
-    expect(await orcaPage.evaluate(() => window.__store?.getState().pendingEditorReveal)).toBeNull()
+    expect(await topoPage.evaluate(() => window.__store?.getState().pendingEditorReveal)).toBeNull()
     expect(await cursor()).toMatchObject({ line: 1, column: 1 })
     await open(['--line', '300', '--column', '7', '--focus'])
     await expect
@@ -105,12 +105,12 @@ test('CLI file positioning preserves background navigation and reveals the reque
       )
       .toBe(true)
     await testInfo.attach('after-line-300-column-7.png', {
-      body: await orcaPage.screenshot({ path: path.join(proofDir, 'after.png') }),
+      body: await topoPage.screenshot({ path: path.join(proofDir, 'after.png') }),
       contentType: 'image/png'
     })
     await open(['--line', '1', '--focus'])
     await expect.poll(async () => (await cursor()).line).toBe(1)
-    const split = await orcaPage.evaluate((id) => {
+    const split = await topoPage.evaluate((id) => {
       const state = window.__store?.getState()
       const tab = state?.getActiveTab(id)
       if (!state || !tab) {
@@ -122,15 +122,15 @@ test('CLI file positioning preserves background navigation and reveals the reque
       }
       return { tabId: tab.id, groupId: tab.groupId, siblingGroupId }
     }, worktreeId)
-    await orcaPage.evaluate(
+    await topoPage.evaluate(
       () =>
         new Promise<void>((resolve) =>
           requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
         )
     )
     await expect.poll(async () => (await cursor()).line).toBe(1)
-    const targetProbe = await orcaPage.evaluateHandle(() => window.__monacoEditorE2E)
-    await orcaPage.evaluate(
+    const targetProbe = await topoPage.evaluateHandle(() => window.__monacoEditorE2E)
+    await topoPage.evaluate(
       ({ id, split }) => {
         const state = window.__store?.getState()
         const tab = state?.unifiedTabsByWorktree[id]?.find((item) => item.id === split.tabId)
@@ -146,22 +146,22 @@ test('CLI file positioning preserves background navigation and reveals the reque
       },
       { id: worktreeId, split }
     )
-    await expect(orcaPage.locator('.monaco-editor:visible')).toHaveCount(2)
-    const siblingProbe = await orcaPage.evaluateHandle(() => window.__monacoEditorE2E)
+    await expect(topoPage.locator('.monaco-editor:visible')).toHaveCount(2)
+    const siblingProbe = await topoPage.evaluateHandle(() => window.__monacoEditorE2E)
     expect(await targetProbe.evaluate((target, sibling) => target === sibling, siblingProbe)).toBe(
       false
     )
     await expect
       .poll(() => siblingProbe.evaluate((probe) => probe?.snapshot().selection?.positionLineNumber))
       .toBe(1)
-    await orcaPage
+    await topoPage
       .locator('.monaco-editor:visible')
       .first()
       .getByRole('textbox', { name: 'Editor content' })
       .focus()
     await expect
       .poll(() =>
-        orcaPage.evaluate(
+        topoPage.evaluate(
           (id) => window.__store?.getState().activeGroupIdByWorktree[id],
           worktreeId
         )
@@ -183,7 +183,7 @@ test('CLI file positioning preserves background navigation and reveals the reque
       })
     ).toEqual({ line: 1, column: 1 })
     expect(
-      await orcaPage.evaluate(
+      await topoPage.evaluate(
         (id) => window.__store?.getState().activeGroupIdByWorktree[id],
         worktreeId
       )
@@ -200,7 +200,7 @@ test('CLI file positioning preserves background navigation and reveals the reque
       )
       .toBe(true)
     await testInfo.attach('same-file-split-target-only.png', {
-      body: await orcaPage.screenshot({ path: path.join(proofDir, 'split.png') }),
+      body: await topoPage.screenshot({ path: path.join(proofDir, 'split.png') }),
       contentType: 'image/png'
     })
     await targetProbe.dispose()

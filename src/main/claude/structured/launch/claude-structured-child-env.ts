@@ -32,13 +32,13 @@ export type ClaudeEnvDeps = {
   }) => StructuredAgentCommand
   /** Refresh once after command lookup misses; absent disables retry. */
   refreshEnvironmentAfterMiss?: (askedAt: number) => Promise<void>
-  /** Cwd used to resolve relative PATH entries; defaults to Orca's cwd. */
+  /** Cwd used to resolve relative PATH entries; defaults to Topo's cwd. */
   resolveWorkingDirectory?: () => Promise<string> | string
   resolveEnv?: () =>
     | Promise<Record<string, string> | undefined>
     | Record<string, string>
     | undefined
-  /** Inherited environment before auth policy; defaults to Orca's process environment. */
+  /** Inherited environment before auth policy; defaults to Topo's process environment. */
   resolveInheritedEnv?: () => Promise<Record<string, string>>
 }
 
@@ -84,8 +84,8 @@ async function readClaudeChildEnvSources(deps: ClaudeEnvDeps): Promise<ClaudeChi
 
 const CLAUDE_ENTRYPOINT_ENV = 'CLAUDE_CODE_ENTRYPOINT'
 
-// Name Orca as the client instead of the SDK's sdk-ts default or a launching Claude's value.
-export function withOrcaClaudeEntrypoint(
+// Name Topo as the client instead of the SDK's sdk-ts default or a launching Claude's value.
+export function withTopoClaudeEntrypoint(
   inheritedEnv: Record<string, string>,
   overlay: Record<string, string> | undefined,
   platform: NodeJS.Platform
@@ -100,7 +100,7 @@ export function withOrcaClaudeEntrypoint(
   return {
     ...withoutEntrypoint(inheritedEnv),
     ...withoutEntrypoint(overlay ?? {}),
-    [CLAUDE_ENTRYPOINT_ENV]: override ?? 'orca'
+    [CLAUDE_ENTRYPOINT_ENV]: override ?? 'topo'
   }
 }
 
@@ -112,7 +112,7 @@ export function claudeChildEnv(
   { runtimeOnPath = true }: { runtimeOnPath?: boolean } = {}
 ): Record<string, string> {
   const env = decorateEnv(
-    withOrcaClaudeEntrypoint(
+    withTopoClaudeEntrypoint(
       withoutInheritedClaudeConfigDir(sources.inheritedEnv, process.platform),
       sources.overlay,
       process.platform

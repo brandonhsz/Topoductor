@@ -1,13 +1,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { partialRuntimeStore } from '../../topo-runtime-tests/runtime-store-partial-fixture'
 import { publishHeadlessRuntimeGraph } from '../../session-graph/headless-runtime-graph'
 
 const PTY = 'pty-1'
 const PHONE = { cols: 50, rows: 30 }
 
 function createRuntime({ headless }: { headless: boolean }) {
-  const runtime = new OrcaRuntimeService(partialRuntimeStore())
+  const runtime = new TopoRuntimeService(partialRuntimeStore())
   const resizes: { cols: number; rows: number }[] = []
   runtime.setPtyController({
     write: () => true,

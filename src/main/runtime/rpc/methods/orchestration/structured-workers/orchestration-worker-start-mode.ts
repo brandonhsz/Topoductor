@@ -11,7 +11,7 @@ import {
 
 import type { AgentLaunchModeReceipt } from '../../../../../../shared/agent-launch/contracts/agent-launch-intent'
 import type { TuiAgent } from '../../../../../../shared/agent-launch/catalog/tui-agent'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 
 type WorkerStartModeReceipt = AgentLaunchModeReceipt
 
@@ -47,7 +47,7 @@ export function decideWorkerStartMode(args: {
 }
 
 export async function resolveWorkerStartModeOnHost(
-  runtime: Pick<OrcaRuntimeService, 'getStructuredAgentSessionCreateSupport'>,
+  runtime: Pick<TopoRuntimeService, 'getStructuredAgentSessionCreateSupport'>,
   mode: WorkerStartModeReceipt,
   worktreeId: string | undefined,
   agent: TuiAgent | undefined

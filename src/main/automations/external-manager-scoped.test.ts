@@ -15,7 +15,7 @@ const readFileMock = vi.hoisted(() => vi.fn())
 const writeFileMock = vi.hoisted(() => vi.fn())
 const fixtureHome = vi.hoisted(() => 'external-manager-fixture-home')
 
-vi.mock('@orca/process-host', () => ({ runProcess: runProcessMock }))
+vi.mock('@topo/process-host', () => ({ runProcess: runProcessMock }))
 vi.mock('fs', async () => {
   const actual = await vi.importActual<typeof Fs>('fs')
   return { ...actual, existsSync: existsSyncMock }
@@ -32,7 +32,7 @@ function sshTarget(overrides: Partial<SshTarget> = {}): SshTarget {
     label: 'Build box',
     host: 'build.example',
     port: 22,
-    username: 'orca',
+    username: 'topo',
     generation: 3,
     ...overrides
   }

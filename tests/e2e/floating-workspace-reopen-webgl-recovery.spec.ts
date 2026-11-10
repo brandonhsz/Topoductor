@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import { sendToTerminal } from './helpers/terminal'
 
@@ -8,7 +8,7 @@ const FLOATING_WORKTREE_ID = 'global-floating-terminal'
 const PANEL_SELECTOR = '[data-floating-terminal-panel]'
 
 // Dispatch the same toggle event as the status bar and shortcut.
-const TOGGLE_EVENT = 'orca-toggle-floating-terminal'
+const TOGGLE_EVENT = 'topo-toggle-floating-terminal'
 
 // Block shell prompt repaints so screenshot comparisons stay stable.
 const SILENT_FOREGROUND_COMMAND = 'node -e "setInterval(() => {}, 1000)"\r'
@@ -336,19 +336,19 @@ async function setUpCorruptedFloatingTerminal(
 
 test.describe('floating workspace reopen WebGL recovery @headful', () => {
   test('reopening the floating workspace recovers a corrupted glyph atlas', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
     // Closing must suspend WebGL so reopen discards silently corrupted atlas state.
-    const shots = await setUpCorruptedFloatingTerminal(orcaPage, 'REOPEN')
+    const shots = await setUpCorruptedFloatingTerminal(topoPage, 'REOPEN')
     test.skip(!shots, 'WebGL was not active or atlas corruption could not be injected')
     const { baseline, corrupted } = shots!
     expect(corrupted.equals(baseline)).toBe(false)
 
-    expect(await instrumentRecoveryCounters(orcaPage)).toBe(true)
+    expect(await instrumentRecoveryCounters(topoPage)).toBe(true)
 
-    await toggleFloatingPanel(orcaPage, false)
+    await toggleFloatingPanel(topoPage, false)
     // Hidden floating terminals must retain no live WebGL context to corrupt.
-    const webglAttachedWhileClosed = await orcaPage.evaluate((worktreeId) => {
+    const webglAttachedWhileClosed = await topoPage.evaluate((worktreeId) => {
       const state = window.__store?.getState()
       const tab = (state?.tabsByWorktree?.[worktreeId] ?? [])[0]
       const manager = tab ? window.__paneManagers?.get(tab.id) : null
@@ -357,11 +357,11 @@ test.describe('floating workspace reopen WebGL recovery @headful', () => {
     }, FLOATING_WORKTREE_ID)
     expect(webglAttachedWhileClosed, 'closing the panel should suspend WebGL rendering').toBe(false)
 
-    await toggleFloatingPanel(orcaPage, true)
-    await settleRecoveryWindows(orcaPage)
+    await toggleFloatingPanel(topoPage, true)
+    await settleRecoveryWindows(topoPage)
 
-    const counters = await readRecoveryCounters(orcaPage)
-    const afterReopen = await screenshotFloatingTerminal(orcaPage)
+    const counters = await readRecoveryCounters(topoPage)
+    const afterReopen = await screenshotFloatingTerminal(topoPage)
     await testInfo.attach('baseline', {
       body: baseline,
       contentType: 'image/png'
@@ -386,11 +386,11 @@ test.describe('floating workspace reopen WebGL recovery @headful', () => {
   })
 
   test('system resume recovers the corrupted atlas (harness control)', async ({
-    orcaPage,
+    topoPage,
     electronApp
   }) => {
     // Prove existing recovery heals this exact corruption so reopen failure cannot be blamed on the harness.
-    const shots = await setUpCorruptedFloatingTerminal(orcaPage, 'CONTROL')
+    const shots = await setUpCorruptedFloatingTerminal(topoPage, 'CONTROL')
     test.skip(!shots, 'WebGL was not active or atlas corruption could not be injected')
     const { baseline, corrupted } = shots!
     expect(corrupted.equals(baseline)).toBe(false)
@@ -398,13 +398,13 @@ test.describe('floating workspace reopen WebGL recovery @headful', () => {
     await electronApp.evaluate(({ BrowserWindow }) => {
       const mainWindow = BrowserWindow.getAllWindows()[0]
       if (!mainWindow) {
-        throw new Error('Orca window unavailable for system resume')
+        throw new Error('Topo window unavailable for system resume')
       }
       mainWindow.webContents.send('system:resumed')
     })
-    await settleRecoveryWindows(orcaPage)
+    await settleRecoveryWindows(topoPage)
 
-    const afterResume = await screenshotFloatingTerminal(orcaPage)
+    const afterResume = await screenshotFloatingTerminal(topoPage)
     console.log(`[floating-control] healedByResume=${afterResume.equals(baseline)}`)
     expect(afterResume.equals(baseline), 'system resume should heal the atlas').toBe(true)
   })

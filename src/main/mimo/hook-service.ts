@@ -27,7 +27,7 @@ import {
   safeRemoveOverlay
 } from '../pty/scrollback/overlay-mirror'
 
-const ORCA_MIMOCODE_PLUGIN_FILE = 'orca-mimocode-status.js'
+const TOPO_MIMOCODE_PLUGIN_FILE = 'topo-mimocode-status.js'
 const MIMOCODE_HOOKS_DIR = 'mimocode-hooks'
 const PLUGIN_ONLY_CONFIG_DIR = 'config'
 const SOURCE_CONFIG_OVERLAYS_DIR = 'config-overlays'
@@ -52,7 +52,7 @@ function mirrorConfigDir(sourceConfigDir: string, targetConfigDir: string): void
   clearOpenCodeOverlayManifestEntries(
     targetConfigDir,
     readOpenCodeOverlayManifest(targetConfigDir),
-    ORCA_MIMOCODE_PLUGIN_FILE
+    TOPO_MIMOCODE_PLUGIN_FILE
   )
   const manifest: OpenCodeOverlayManifest = {
     topLevelEntries: [],
@@ -61,14 +61,14 @@ function mirrorConfigDir(sourceConfigDir: string, targetConfigDir: string): void
   }
   for (const entry of readdirSync(sourceConfigDir, { withFileTypes: true })) {
     const sourcePath = join(sourceConfigDir, entry.name)
-    // A linked plugins dir must not be linked through, or Orca's plugin lands in the user's folder.
+    // A linked plugins dir must not be linked through, or Topo's plugin lands in the user's folder.
     if (entry.name === 'plugins' && isDirectoryFollowingLinks(sourcePath)) {
       const overlayPlugins = join(targetConfigDir, 'plugins')
       if (!ensureRealDirectory(overlayPlugins)) {
         throw new Error('MiMo overlay plugins folder is not a real directory')
       }
       for (const pluginName of readdirSync(sourcePath)) {
-        if (pluginName !== ORCA_MIMOCODE_PLUGIN_FILE) {
+        if (pluginName !== TOPO_MIMOCODE_PLUGIN_FILE) {
           mirrorInto(join(sourcePath, pluginName), overlayPlugins, pluginName)
           manifest.pluginEntries.push(pluginName)
         }
@@ -108,7 +108,7 @@ export class MimoCodeHookService {
         return fallback
       }
       writeFileSync(
-        join(pluginsDir, ORCA_MIMOCODE_PLUGIN_FILE),
+        join(pluginsDir, TOPO_MIMOCODE_PLUGIN_FILE),
         getOpenCodeFamilyPluginSource('/hook/mimo-code', { emitSessionStart: false })
       )
     } catch {
@@ -117,7 +117,7 @@ export class MimoCodeHookService {
     return { MIMOCODE_CONFIG_DIR: overlay }
   }
 
-  /** Older builds kept MiMo data under Orca's MIMOCODE_HOME; move a login made there over once, then mark it migrated. */
+  /** Older builds kept MiMo data under Topo's MIMOCODE_HOME; move a login made there over once, then mark it migrated. */
   carryOverLegacyAuth(env: Record<string, string | undefined>): void {
     const legacyAuth = join(
       getAppEnvironment().getPath('userData'),
@@ -126,7 +126,7 @@ export class MimoCodeHookService {
       'data',
       'auth.json'
     )
-    // MiMo rejects a relative MIMOCODE_HOME; Orca would otherwise write relative to its own cwd.
+    // MiMo rejects a relative MIMOCODE_HOME; Topo would otherwise write relative to its own cwd.
     if (env.MIMOCODE_HOME && !isAbsolute(env.MIMOCODE_HOME)) {
       return
     }
@@ -144,7 +144,7 @@ export class MimoCodeHookService {
         copyFileSync(legacyAuth, auth, constants.COPYFILE_EXCL)
         chmodSync(auth, 0o600)
       }
-      // Never restore the Orca-only login later, e.g. after the user deletes the canonical one.
+      // Never restore the Topo-only login later, e.g. after the user deletes the canonical one.
       renameSync(legacyAuth, `${legacyAuth}.migrated`)
     } catch {
       // A failed carry-over leaves MiMo logged out, as before; never block the launch.

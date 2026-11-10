@@ -34,7 +34,7 @@ async function copyIndexedLaunchTree(resourcesDir) {
 
 describe('verify packaged plugin resources', () => {
   it('rejects mutated bytes in the packaged output', async () => {
-    const resourcesDir = await mkdtemp(join(tmpdir(), 'orca-packaged-plugins-'))
+    const resourcesDir = await mkdtemp(join(tmpdir(), 'topo-packaged-plugins-'))
     try {
       const launchRoot = await copyIndexedLaunchTree(resourcesDir)
       expect(() => verifyPackagedPluginResources(resourcesDir)).not.toThrow()

@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 import { useTranslate } from '@/i18n/use-translate'
 import { getVisibleAutomationSetupDecision } from './automation-setup-decision'
 import type { AutomationDraft } from './AutomationEditorDialog'
-import type { OrcaHooks } from '../../../../shared/orca-yaml-hook-types'
+import type { TopoHooks } from '../../../../shared/topo-yaml-hook-types'
 import type { ProjectHostSetup } from '../../../../shared/project-types'
 import type { Repo } from '../../../../shared/repo-types'
 
@@ -13,7 +13,7 @@ type AutomationSetupDecisionFieldProps = {
   draft: AutomationDraft
   repos: readonly Repo[]
   projectHostSetups: readonly ProjectHostSetup[]
-  yamlHooks?: OrcaHooks | null
+  yamlHooks?: TopoHooks | null
   onDraftChange: (updater: (current: AutomationDraft) => AutomationDraft) => void
   onSetupDecisionTouched: () => void
 }

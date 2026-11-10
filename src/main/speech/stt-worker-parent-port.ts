@@ -13,7 +13,7 @@ export type SttWorkerParentPort = {
   onMessage(listener: (message: unknown, ports: readonly MessagePortMain[]) => void): void
 }
 
-/** Electron's utility process (desktop) or a forked child (orcad). */
+/** Electron's utility process (desktop) or a forked child (topod). */
 export function connectSttWorkerParentPort(): SttWorkerParentPort {
   // Electron types it as always set, but only a utility process has one.
   const utilityPort: UtilityParentPort | undefined = process.parentPort

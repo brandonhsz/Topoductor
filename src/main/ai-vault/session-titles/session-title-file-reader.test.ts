@@ -25,7 +25,7 @@ afterEach(async () => {
 })
 
 async function transcriptPath(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-ai-vault-title-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-ai-vault-title-'))
   temporaryRoots.push(root)
   const path = join(root, 'session.jsonl')
   await writeFile(path, '{}\n')
@@ -171,7 +171,7 @@ describe('readAiVaultSessionTitlesFromFiles', () => {
   })
 
   it('resolves one home directly from its index without requiring rollout reads', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-title-index-direct-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-title-index-direct-'))
     temporaryRoots.push(root)
     await mkdir(join(root, 'sessions'))
     await writeFile(

@@ -8,7 +8,7 @@ import { writeSecureFile } from '../../shared/secure-storage/secure-file'
  * so a fill or reveal unseals exactly one. Sealing goes through the host's SecretStore.
  */
 
-const VAULT_FORMAT = 'orca-browser-passwords-v1'
+const VAULT_FORMAT = 'topo-browser-passwords-v1'
 
 type PersistedVault = {
   version: 1

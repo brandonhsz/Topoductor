@@ -254,7 +254,7 @@ it('refuses a read whose journal will not open with the classified reason, never
   await restingChat()
   const open = vi.spyOn(fixture.rig.host.collaboratorsForTests().conversationDelivery, 'open')
   vi.spyOn(console, 'warn').mockImplementation(() => undefined)
-  const storagePath = '/Users/someone/.orca/journals/session-1/journal.sqlite'
+  const storagePath = '/Users/someone/.topo/journals/session-1/journal.sqlite'
   const failWith = (error: Error): void => {
     open.mockRejectedValue(error)
   }

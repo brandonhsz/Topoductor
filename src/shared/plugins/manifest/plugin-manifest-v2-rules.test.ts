@@ -20,11 +20,11 @@ function v2(overrides: Record<string, unknown> = {}): Record<string, unknown> {
 }
 
 describe('manifest format 2 rules', () => {
-  it('lets publisher be left out only where older Orca will say it needs a newer one', () => {
+  it('lets publisher be left out only where older Topo will say it needs a newer one', () => {
     const { publisher: _publisher, ...withoutPublisher } = v2()
     expect(parsePluginManifest(withoutPublisher)).toEqual({
       ok: false,
-      error: `engines.orca: must be at least >=${PLUGIN_DERIVED_PUBLISHER_SINCE} when publisher is left out, because older Orca requires publisher`
+      error: `engines.orca: must be at least >=${PLUGIN_DERIVED_PUBLISHER_SINCE} when publisher is left out, because older Topo requires publisher`
     })
     expect(
       parsePluginManifest({

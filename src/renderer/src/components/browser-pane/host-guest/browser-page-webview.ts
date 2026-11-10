@@ -1,6 +1,6 @@
 import '../../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
-import { ORCA_BROWSER_PAGE_GUEST_WEB_PREFERENCES_ATTRIBUTE } from '../../../../../shared/browser/guest-lifecycle/browser-guest-web-preferences'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_PAGE_GUEST_WEB_PREFERENCES_ATTRIBUTE } from '../../../../../shared/browser/guest-lifecycle/browser-guest-web-preferences'
 import {
   destroyPersistentWebview,
   registerPersistentWebview,
@@ -56,8 +56,8 @@ export function ensureBrowserPageWebview({
   webview = document.createElement('webview') as Electron.WebviewTag
   webview.setAttribute('partition', webviewPartition)
   webview.setAttribute('allowpopups', '')
-  // Electron spreads webpreferences verbatim; retain camelCase for fullscreen containment and keep the page canvas opaque over Orca’s themed host.
-  webview.setAttribute('webpreferences', ORCA_BROWSER_PAGE_GUEST_WEB_PREFERENCES_ATTRIBUTE)
+  // Electron spreads webpreferences verbatim; retain camelCase for fullscreen containment and keep the page canvas opaque over Topo’s themed host.
+  webview.setAttribute('webpreferences', TOPO_BROWSER_PAGE_GUEST_WEB_PREFERENCES_ATTRIBUTE)
   webview.style.display = 'flex'
   webview.style.flex = '1'
   webview.style.width = '100%'
@@ -70,7 +70,7 @@ export function ensureBrowserPageWebview({
   guest.addEventListener('load-commit', (event) => {
     if (event.isMainFrame) {
       guest.style.visibility =
-        event.url === 'about:blank' || event.url === ORCA_BROWSER_BLANK_URL ? 'hidden' : 'visible'
+        event.url === 'about:blank' || event.url === TOPO_BROWSER_BLANK_URL ? 'hidden' : 'visible'
     }
   })
   guest.addEventListener('render-process-gone', () => {

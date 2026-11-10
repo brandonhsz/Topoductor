@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const { runProcess } = vi.hoisted(() => ({ runProcess: vi.fn() }))
-vi.mock('@orca/process-host', () => ({ runProcess }))
+vi.mock('@topo/process-host', () => ({ runProcess }))
 vi.mock('./darwin-terminal-names', () => ({
   nameDarwinTerminalDevices: async (devices: ReadonlySet<string>) =>
     new Map([...devices].filter((device) => device === '16/4').map((device) => [device, 'ttys004']))
@@ -116,7 +116,7 @@ function installAddon(overrides: Partial<LibprocAddon> = {}): LibprocAddon {
   return addon
 }
 
-// Orca's euid is pinned, so neither a root runner nor Windows (no geteuid) changes whose argv is "own".
+// Topo's euid is pinned, so neither a root runner nor Windows (no geteuid) changes whose argv is "own".
 const OWN_UID = 501
 const OTHER_UID = 502
 const realGeteuid = process.geteuid
@@ -312,8 +312,8 @@ describe('runPsInProcess', () => {
       row({
         pid: 700,
         ppid: 1,
-        comm: 'Orca',
-        command: '/Applications/Orca',
+        comm: 'Topo',
+        command: '/Applications/Topo',
         commandIncomplete: false
       }),
       row({ pid: 701, ppid: 700, comm: 'helper', command: '/usr/libexec/helper' })

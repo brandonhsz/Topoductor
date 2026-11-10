@@ -9,8 +9,8 @@ import {
 
 const DISCARDED_TAB = PRELOAD_FIRST_DISCARDED_TAB_ID + 3
 
-const ORCA_TOP = 'A'.repeat(32)
-const ORCA_AD = 'B'.repeat(32)
+const TOPO_TOP = 'A'.repeat(32)
+const TOPO_AD = 'B'.repeat(32)
 const CHROMIUM_TOP = 'C'.repeat(32)
 const CHROMIUM_AD = 'D'.repeat(32)
 
@@ -54,13 +54,13 @@ function navigatingDocumentTarget(navigateOnLookup = 1) {
         for (const listener of listeners) {
           listener(
             {
-              orcaDocumentTargetProbe: {
+              topoDocumentTargetProbe: {
                 ...(message &&
                 typeof message === 'object' &&
-                'orcaDocumentTargetProbe' in message &&
-                message.orcaDocumentTargetProbe &&
-                typeof message.orcaDocumentTargetProbe === 'object'
-                  ? message.orcaDocumentTargetProbe
+                'topoDocumentTargetProbe' in message &&
+                message.topoDocumentTargetProbe &&
+                typeof message.topoDocumentTargetProbe === 'object'
+                  ? message.topoDocumentTargetProbe
                   : {}),
                 response: true
               }
@@ -124,13 +124,13 @@ function install(permissions: string[], nativeScripting = true) {
       options?: { frameId?: number; documentId?: string },
       _callback?: () => void
     ): Promise<string | boolean> => {
-      if (message && typeof message === 'object' && 'orcaDocumentTargetProbe' in message) {
+      if (message && typeof message === 'object' && 'topoDocumentTargetProbe' in message) {
         const frameId = options?.frameId ?? 0
-        const probe = message.orcaDocumentTargetProbe
+        const probe = message.topoDocumentTargetProbe
         for (const listener of nativeListeners) {
           listener(
             {
-              orcaDocumentTargetProbe: {
+              topoDocumentTargetProbe: {
                 ...(typeof probe === 'object' ? probe : {}),
                 response: true
               }
@@ -165,8 +165,8 @@ function install(permissions: string[], nativeScripting = true) {
       return {
         ok: true as const,
         value: [
-          { frameId: 0, documentId: ORCA_TOP },
-          { frameId: 42, documentId: ORCA_AD }
+          { frameId: 0, documentId: TOPO_TOP },
+          { frameId: 42, documentId: TOPO_AD }
         ]
       }
     },
@@ -195,7 +195,7 @@ function install(permissions: string[], nativeScripting = true) {
     }
   }
   const chrome = { runtime, scripting, tabs }
-  // `browser` shares chrome's namespace objects, as Orca's installer mirrors them.
+  // `browser` shares chrome's namespace objects, as Topo's installer mirrors them.
   const realm = {
     chrome: nativeScripting ? chrome : { runtime, tabs },
     browser: nativeScripting ? { scripting, tabs } : { tabs },
@@ -218,7 +218,7 @@ function install(permissions: string[], nativeScripting = true) {
   return { chrome, executeScript, insertCSS, sendMessage, calls, nativeListeners }
 }
 
-describe('Orca documentIds in native scripting targets', () => {
+describe('Topo documentIds in native scripting targets', () => {
   it.each([1, 2])(
     'rejects script navigation at discovery snapshot %i before executing user code',
     async (snapshot) => {
@@ -252,15 +252,15 @@ describe('Orca documentIds in native scripting targets', () => {
     }
   )
 
-  it("preserves a native document constraint for Orca's document ids", async () => {
+  it("preserves a native document constraint for Topo's document ids", async () => {
     const { chrome, executeScript, calls } = install(['webNavigation', 'scripting'])
     const results = await chrome.scripting.executeScript({
-      target: { tabId: 3, documentIds: [ORCA_AD] },
+      target: { tabId: 3, documentIds: [TOPO_AD] },
       func: () => 1
     })
     expect(executeScript).toHaveBeenCalledTimes(2)
     expect(executeScript.mock.calls[1][0].target).toEqual({ tabId: 3, documentIds: [CHROMIUM_AD] })
-    expect(results).toEqual([{ frameId: 42, documentId: ORCA_AD, result: 42 }])
+    expect(results).toEqual([{ frameId: 42, documentId: TOPO_AD, result: 42 }])
     expect(calls).toEqual([[3], [3]])
   })
 
@@ -271,7 +271,7 @@ describe('Orca documentIds in native scripting targets', () => {
 
     const done = await new Promise((resolve) =>
       chrome.scripting.insertCSS(
-        { target: { tabId: 3, documentIds: [ORCA_TOP] }, css: 'a{}' },
+        { target: { tabId: 3, documentIds: [TOPO_TOP] }, css: 'a{}' },
         () => resolve('called back')
       )
     )
@@ -281,7 +281,7 @@ describe('Orca documentIds in native scripting targets', () => {
       css: 'a{}'
     })
 
-    await chrome.tabs.sendMessage(3, 'ping', { documentId: ORCA_AD })
+    await chrome.tabs.sendMessage(3, 'ping', { documentId: TOPO_AD })
     expect(sendMessage).toHaveBeenCalledWith(3, 'ping', { documentId: CHROMIUM_AD })
   })
 
@@ -294,7 +294,7 @@ describe('Orca documentIds in native scripting targets', () => {
       )
       executeScript.mockRejectedValueOnce(new Error('Requires scripting permission'))
 
-      await expect(chrome.tabs.sendMessage(3, 'ping', { documentId: ORCA_AD })).resolves.toBe(
+      await expect(chrome.tabs.sendMessage(3, 'ping', { documentId: TOPO_AD })).resolves.toBe(
         'pong'
       )
 
@@ -314,7 +314,7 @@ describe('Orca documentIds in native scripting targets', () => {
     })
 
     await expect(
-      chrome.tabs.sendMessage(3, 'real payload', { documentId: ORCA_TOP })
+      chrome.tabs.sendMessage(3, 'real payload', { documentId: TOPO_TOP })
     ).resolves.toBe('dynamic receiver response')
 
     expect(sendMessage).toHaveBeenCalledTimes(1)
@@ -322,7 +322,7 @@ describe('Orca documentIds in native scripting targets', () => {
     expect(nativeListeners.size).toBe(0)
   })
 
-  it('never labels an unexpected native document as the requested Orca document', async () => {
+  it('never labels an unexpected native document as the requested Topo document', async () => {
     const { chrome, executeScript } = install(['webNavigation', 'scripting'])
     executeScript.mockResolvedValueOnce([{ frameId: 0, documentId: CHROMIUM_TOP, result: 0 }])
     executeScript.mockResolvedValueOnce([
@@ -331,7 +331,7 @@ describe('Orca documentIds in native scripting targets', () => {
 
     await expect(
       chrome.scripting.executeScript({
-        target: { tabId: 3, documentIds: [ORCA_TOP] }
+        target: { tabId: 3, documentIds: [TOPO_TOP] }
       })
     ).resolves.toEqual([{ frameId: 0, documentId: 'replacement-document', result: 1 }])
   })
@@ -341,7 +341,7 @@ describe('Orca documentIds in native scripting targets', () => {
     sendMessage.mockRejectedValueOnce(new Error('Receiving end does not exist'))
     const callback = vi.fn()
     const error = await new Promise((resolve) => {
-      chrome.tabs.sendMessage(3, 'private payload', { documentId: ORCA_TOP }, () => {
+      chrome.tabs.sendMessage(3, 'private payload', { documentId: TOPO_TOP }, () => {
         callback()
         resolve(chrome.runtime.lastError)
       })

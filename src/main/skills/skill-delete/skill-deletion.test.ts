@@ -28,7 +28,7 @@ async function fixture(): Promise<{
   canonicalDirectory: string
   file: string
 }> {
-  const home = await mkdtemp(join(tmpdir(), 'orca-skill-delete-service-'))
+  const home = await mkdtemp(join(tmpdir(), 'topo-skill-delete-service-'))
   roots.push(home)
   const canonicalDirectory = join(home, '.agents', 'skills', 'demo')
   await mkdir(canonicalDirectory, { recursive: true })

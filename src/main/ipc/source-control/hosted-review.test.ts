@@ -129,9 +129,9 @@ describe('registerHostedReviewHandlers', () => {
     listRepoWorktreeGraphMock.mockResolvedValue([{ path: worktreePath }])
   })
 
-  // Shared symlinks belong to Orca and must not fail the user's dirty preflight (#10451).
+  // Shared symlinks belong to Topo and must not fail the user's dirty preflight (#10451).
 
-  // Remote paths must not resolve unrelated local orca.yaml files.
+  // Remote paths must not resolve unrelated local topo.yaml files.
 
   it('fails closed when an explicit repo owner is missing', async () => {
     registerHostedReviewHandlers(store as never, stats as never)

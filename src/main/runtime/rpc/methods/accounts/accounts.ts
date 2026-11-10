@@ -1,8 +1,8 @@
 import { defineMethod, defineStreamingMethod, type RpcContext } from '../../core'
-import type { OrcadFeature } from '../../orcad-feature-readiness'
+import type { TopodFeature } from '../../topod-feature-readiness'
 import { rpcCallerOperationKey } from '../../rpc-caller-identity'
 import { HostAccountSignInFlows } from '../../../agent-session/environment/host-account-sign-in-flows'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import {
   AddDataAccountParams,
   SelectDataAccountParams,
@@ -32,8 +32,8 @@ let accountsSubscriptionSeq = 0
 // Why 10s: well under the CLI's 60s request timeout even when several Codex homes probe slowly.
 const STALE_USAGE_WAIT_MS = 10_000
 
-const hostSignIns = new WeakMap<OrcaRuntimeService, HostAccountSignInFlows>()
-function hostSignInFlows(runtime: OrcaRuntimeService): HostAccountSignInFlows {
+const hostSignIns = new WeakMap<TopoRuntimeService, HostAccountSignInFlows>()
+function hostSignInFlows(runtime: TopoRuntimeService): HostAccountSignInFlows {
   let flows = hostSignIns.get(runtime)
   if (!flows) {
     flows = new HostAccountSignInFlows((provider, channel) =>
@@ -60,7 +60,7 @@ const ACCOUNT_METHOD_DEFINITIONS = [
     params: HostAccountLaunchEnvParams,
     handler: async (params, { runtime, clientKind }) => {
       if (clientKind === 'mobile') {
-        throw new Error('Only the Orca desktop that owns this host can set its accounts.')
+        throw new Error('Only the Topo desktop that owns this host can set its accounts.')
       }
       runtime.setHostAccountLaunchEnv(params)
       return {}
@@ -73,7 +73,7 @@ const ACCOUNT_METHOD_DEFINITIONS = [
     params: BeginClaudeSignInParams,
     handler: async (params, { runtime, clientKind }) => {
       if (clientKind !== undefined) {
-        throw new Error('Sign in on the Orca execution host.')
+        throw new Error('Sign in on the Topo execution host.')
       }
       return runtime.beginClaudeSignIn(params)
     }
@@ -84,7 +84,7 @@ const ACCOUNT_METHOD_DEFINITIONS = [
     params: FinishClaudeSignInParams,
     handler: async (params, { runtime, clientKind }) => {
       if (clientKind !== undefined) {
-        throw new Error('Sign in on the Orca execution host.')
+        throw new Error('Sign in on the Topo execution host.')
       }
       return runtime.finishClaudeSignIn(params)
     }
@@ -95,7 +95,7 @@ const ACCOUNT_METHOD_DEFINITIONS = [
     params: FinishClaudeSignInParams,
     handler: async (params, { runtime, clientKind }) => {
       if (clientKind !== undefined) {
-        throw new Error('Sign in on the Orca execution host.')
+        throw new Error('Sign in on the Topo execution host.')
       }
       await runtime.cancelClaudeSignIn(params)
       return {}
@@ -113,7 +113,7 @@ const ACCOUNT_METHOD_DEFINITIONS = [
     params: AddDataAccountParams,
     handler: async (params, { runtime, clientKind }) => {
       if (clientKind !== undefined) {
-        throw new Error('Adding accounts is only available on the Orca host runtime.')
+        throw new Error('Adding accounts is only available on the Topo host runtime.')
       }
       return runtime.addDataAccountFromHome(params.provider, params.sourceDataHome, params.label)
     }
@@ -199,7 +199,7 @@ const ACCOUNT_METHOD_DEFINITIONS = [
     params: AddClaudeFromConfigDirParams,
     handler: async () => {
       throw new Error(
-        'Update the Orca CLI to add accounts. Importing Claude logins is no longer supported.'
+        'Update the Topo CLI to add accounts. Importing Claude logins is no longer supported.'
       )
     }
   }),
@@ -209,7 +209,7 @@ const ACCOUNT_METHOD_DEFINITIONS = [
     params: AddCodexFromHomeParams,
     handler: async (params, { runtime, clientKind }) => {
       if (clientKind !== undefined) {
-        throw new Error('Adding Codex accounts is only available on the Orca host runtime.')
+        throw new Error('Adding Codex accounts is only available on the Topo host runtime.')
       }
       return runtime.addCodexAccountFromHome(params.sourceHome, {
         runtime: params.runtime,
@@ -316,5 +316,5 @@ const ACCOUNT_SERVICE_FREE_METHODS: ReadonlySet<string> = new Set([
 export const ACCOUNT_METHODS = ACCOUNT_METHOD_DEFINITIONS.map((method) =>
   ACCOUNT_SERVICE_FREE_METHODS.has(method.name)
     ? method
-    : { ...method, requires: ['accounts'] satisfies OrcadFeature[] }
+    : { ...method, requires: ['accounts'] satisfies TopodFeature[] }
 )

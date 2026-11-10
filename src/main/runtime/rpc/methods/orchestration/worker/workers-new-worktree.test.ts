@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../../../../shared/orchestration/orchestration-runtime-capabilities'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -18,13 +18,13 @@ import '../../../../../../shared/rpc-contract/orchestration-federation-start-par
 describe('orchestration new-worktree workers', () => {
   const coordinatorPaneKey = 'tab_coord:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
   let db: OrchestrationDb
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
   let runId: string
   const paths: string[] = []
 
   beforeEach(() => {
     db = new OrchestrationDb(':memory:')
-    runtime = new OrcaRuntimeService()
+    runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     runId = db.createRun({
       objective: 'Test new-worktree workers',
@@ -71,7 +71,7 @@ describe('orchestration new-worktree workers', () => {
     vi.spyOn(runtime, 'waitForSetupTerminalCompletion').mockReturnValue(
       new Promise(() => undefined)
     )
-    vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('orca')
+    vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('topo')
     vi.spyOn(runtime, 'sendTerminalAgentPrompt').mockResolvedValue({
       handle: 'term_worker',
       accepted: true,
@@ -180,7 +180,7 @@ describe('orchestration new-worktree workers', () => {
   })
 
   it('replays a dispatch-input failure after restart without creating another worker', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-worker-start-replay-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-worker-start-replay-'))
     paths.push(dir)
     db.close()
     db = new OrchestrationDb(join(dir, 'orchestration.db'))
@@ -222,7 +222,7 @@ describe('orchestration new-worktree workers', () => {
     db.close()
 
     db = new OrchestrationDb(join(dir, 'orchestration.db'))
-    const restartedRuntime = new OrcaRuntimeService()
+    const restartedRuntime = new TopoRuntimeService()
     restartedRuntime.setOrchestrationDb(db)
     vi.spyOn(restartedRuntime, 'getTerminalPaneKey').mockImplementation((handle) =>
       handle === 'term_coord_reminted'

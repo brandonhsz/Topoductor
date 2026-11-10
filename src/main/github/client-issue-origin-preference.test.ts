@@ -125,7 +125,7 @@ describe('GitHub issue open-by-number origin preference', () => {
   })
 
   it('skips the issue probe on untyped open when origin identity is unresolved', async () => {
-    const origin = { owner: 'fork', repo: 'orca', host: 'github.com' }
+    const origin = { owner: 'fork', repo: 'topo', host: 'github.com' }
     resolveIssueSourceMock.mockResolvedValueOnce({ source: null, fellBack: false })
     getOwnerRepoMock.mockResolvedValue(origin)
     resolvePRRepositoryCandidatesMock.mockResolvedValue({ candidates: [origin], headRepo: origin })
@@ -136,7 +136,7 @@ describe('GitHub issue open-by-number origin preference', () => {
         state: 'open',
         labels: [],
         isDraft: false,
-        url: 'https://github.com/fork/orca/pull/7',
+        url: 'https://github.com/fork/topo/pull/7',
         baseRefName: 'main',
         headRefName: 'origin/fix',
         updatedAt: '2026-04-02T00:00:00Z',
@@ -149,7 +149,7 @@ describe('GitHub issue open-by-number origin preference', () => {
     expect(resolveIssueSourceMock).toHaveBeenCalledWith('/repo-root', 'origin', null, {})
     expect(getIssueOwnerRepoMock).not.toHaveBeenCalled()
     expect(ghExecFileAsyncMock.mock.calls[0]?.[0]).toEqual(
-      expect.arrayContaining(['pr', 'view', '--repo', 'fork/orca'])
+      expect.arrayContaining(['pr', 'view', '--repo', 'fork/topo'])
     )
     expect(item).toMatchObject({ number: 7, type: 'pr' })
   })

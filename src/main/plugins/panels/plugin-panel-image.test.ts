@@ -14,7 +14,7 @@ afterEach(async () => {
 })
 
 async function plugin(): Promise<{ root: string; outside: string }> {
-  const base = await mkdtemp(join(tmpdir(), 'orca-panel-image-'))
+  const base = await mkdtemp(join(tmpdir(), 'topo-panel-image-'))
   roots.push(base)
   const root = join(base, 'plugin')
   await mkdir(join(root, 'assets'), { recursive: true })

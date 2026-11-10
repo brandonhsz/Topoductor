@@ -1,4 +1,4 @@
-import type { OrcaVmRecipe, OrcaVmRecipeLifecycleMode } from './orca-yaml-hook-types'
+import type { TopoVmRecipe, TopoVmRecipeLifecycleMode } from './topo-yaml-hook-types'
 import type {
   EphemeralVmRecipeContext,
   EphemeralVmRecipeStartArgs
@@ -27,7 +27,7 @@ type RecipeStepArgs = Pick<
 
 export function runRecipeStep(
   args: RecipeStepArgs,
-  mode: OrcaVmRecipeLifecycleMode,
+  mode: TopoVmRecipeLifecycleMode,
   command: string,
   context: EphemeralVmRecipeContext,
   stdin?: string
@@ -51,7 +51,7 @@ export function runRecipeStep(
 }
 
 export function getRecipeStepFailure(
-  recipe: OrcaVmRecipe,
+  recipe: TopoVmRecipe,
   mode: 'create' | 'suspend' | 'resume',
   result: ProcessRunResult
 ): EphemeralVmFailure | null {

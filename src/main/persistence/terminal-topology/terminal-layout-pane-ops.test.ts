@@ -63,7 +63,7 @@ describe('layout.apply closePane against the legacy pane close', () => {
 
 describe('Store.applyLayoutCommand pane operations', () => {
   async function storeWithSplitTab(hostIds: string[]) {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-layout-pane-ops-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-layout-pane-ops-'))
     directories.push(directory)
     const store = await openTopologyStore(directory, emptyTerminalSessionProfile())
     const window = new WindowSession(getDefaultWorkspaceSession())

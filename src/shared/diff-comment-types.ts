@@ -1,4 +1,4 @@
-// Persist line review notes on WorktreeMeta for existing orca-data.json storage and later agent handoff.
+// Persist line review notes on WorktreeMeta for existing topo-data.json storage and later agent handoff.
 export type DiffCommentSource = 'diff' | 'markdown'
 export type DiffReviewScope = 'unstaged' | 'staged' | 'branch'
 

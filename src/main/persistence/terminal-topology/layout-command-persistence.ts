@@ -25,7 +25,7 @@ import {
 import { keepFrozen } from './layout-command-commit'
 import { applyLayoutRenames } from './terminal-layout-renames-commit'
 import { isTerminalClose, keptOnWriteFailure } from './terminal-close-write-failure'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { moveTabAcrossPartitions } from './cross-partition-tab-move'
 import { writeRestorable } from './restorable-write'
 import { raisingBindingGenerations } from './layout-command-binding-generations'
@@ -108,7 +108,7 @@ export class LayoutCommandPersistence {
         : commit()
     // Applied closes must stay closed even when persistence fails.
     const applied: Promise<LayoutApplyOutcome> =
-      ORCA_LAYOUT_OWNER_IS_MAIN && context.writeLater && isTerminalClose(command)
+      TOPO_LAYOUT_OWNER_IS_MAIN && context.writeLater && isTerminalClose(command)
         ? keptOnWriteFailure(
             (mutate) => context.runtime.runDurableMutation(mutate),
             writingOnly(resolved, admitted),

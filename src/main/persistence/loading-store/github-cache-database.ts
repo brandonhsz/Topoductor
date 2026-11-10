@@ -20,7 +20,7 @@ const GITHUB_CACHE_SCHEMA_VERSION = 2
 const KINDS: readonly GitHubCacheKind[] = ['pr', 'issue']
 
 export function getGithubCacheDatabaseFile(dataFile: string): string {
-  return join(dirname(dataFile), 'orca-github-cache.db')
+  return join(dirname(dataFile), 'topo-github-cache.db')
 }
 
 /**

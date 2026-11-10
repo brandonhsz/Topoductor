@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 
 import { RuntimeSubscriptionRegistry } from '../client/runtime-subscription-registry'
 
@@ -20,7 +20,7 @@ function stubRuntime(
   registry: ReturnType<typeof createSubscriptionRegistryDouble>,
   waiters: Waiter[],
   overrides: Record<string, unknown> = {}
-): OrcaRuntimeService {
+): TopoRuntimeService {
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: This partial runtime supplies the terminal RPC methods these tests invoke.
   return {
     getRuntimeId: () => 'test-runtime',
@@ -50,7 +50,7 @@ function stubRuntime(
       return vi.fn()
     }),
     ...overrides
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
 }
 
 const makeRequest = (params: unknown): RpcRequest => ({

@@ -1,11 +1,11 @@
 /** Same repo ids may exist on multiple hosts; repo.rm resolves one row and must delete only that host registration, including unambiguous path/name selectors (#11994). */
 import { describe, expect, it, vi } from 'vitest'
 import type { Repo } from '../../../shared/repo-types'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { findRepoRowForHostScopedWrite } from '../../persistence/tracking-repos/repo-update-operations'
 import { getRepoExecutionHostId } from '../../../shared/execution-host'
 import type { RepoHostTarget } from '../../../shared/repo-host-identity'
-import { partialRuntimeStore } from '../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../topo-runtime-tests/runtime-store-partial-fixture'
 import { withProjectWorktreeCreate } from '../../workspaces/creation/worktree-create-in-flight'
 
 function registerRuntimeRemoveProjectHostScopeTests(): void {
@@ -44,7 +44,7 @@ function registerRuntimeRemoveProjectHostScopeTests(): void {
         }
       }
     })
-    const runtime = new OrcaRuntimeService(
+    const runtime = new TopoRuntimeService(
       partialRuntimeStore({
         getRepos: () => [...repos],
         getRepo: (id: string) => repos.find((repo) => repo.id === id),

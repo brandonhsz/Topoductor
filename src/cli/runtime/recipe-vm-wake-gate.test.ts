@@ -45,7 +45,7 @@ function prepare(method: string, answer: DesktopRecipeVmWake = 'up') {
 
 describe('a CLI command for a recipe VM environment', () => {
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-cli-recipe-vm-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-cli-recipe-vm-'))
     environmentId = addEnvironmentFromPairingCode(userDataPath, {
       name: 'sandbox',
       pairingCode: PAIRING_CODE,

@@ -25,7 +25,7 @@ afterEach(() => {
   expect(unusedChatLeaves.inlineVisual).not.toHaveBeenCalled()
   expect(unusedChatLeaves.openSender).not.toHaveBeenCalled()
 })
-import { NativeChatOrcaStopContext } from '../../messages/notices/native-chat-orca-stop-context'
+import { NativeChatTopoStopContext } from '../../messages/notices/native-chat-topo-stop-context'
 import { agentSessionFailureWords } from '../../../../../../shared/agent-session/failures/agent-session-failure-words'
 import type {
   AgentJournalItemBody,
@@ -41,7 +41,7 @@ import {
   agentJournalItemKey,
   agentJournalSubmissionKey
 } from '../../../../../../shared/agent-session/journal/agent-session-journal-item-key'
-import { latestNativeChatOrcaStopCut } from '../../../../../../shared/native-chat/native-chat-orca-stop-cut'
+import { latestNativeChatTopoStopCut } from '../../../../../../shared/native-chat/native-chat-topo-stop-cut'
 import { latestNativeChatUsageLimitCut } from '../../../../../../shared/native-chat/native-chat-usage-limit-cut'
 import { latestStructuredAgentSessionRequest } from '../../../../../../shared/agent-session/requests/structured-agent-session-latest-request'
 
@@ -128,7 +128,7 @@ const commandView = {
 {
   const compactEntry = agentJournalSubmissionKey('cmd-1')
   const commandTurn = agentJournalItemKey({
-    provider: 'orca',
+    provider: 'topo',
     clientMessageId: 'command-turn:cmd-1'
   })
   const row = (
@@ -222,10 +222,10 @@ const commandView = {
           row('command-failure', 12, failure, commandTurn)
         ]
         // The live list's Continue targets come from these selectors; neither offers the command.
-        expect(latestNativeChatOrcaStopCut(items, [])).toBeNull()
+        expect(latestNativeChatTopoStopCut(items, [])).toBeNull()
         expect(latestNativeChatUsageLimitCut(items, [])).toBeNull()
         render(
-          <NativeChatOrcaStopContext.Provider value={commandView}>
+          <NativeChatTopoStopContext.Provider value={commandView}>
             <NativeChatMessageList
               session={{
                 messages: projectStructuredAgentSessionMessages(items, [], []),
@@ -243,7 +243,7 @@ const commandView = {
               isWorking={false}
               expandSignal={false}
             />
-          </NativeChatOrcaStopContext.Provider>
+          </NativeChatTopoStopContext.Provider>
         )
         expect(screen.getByText('/compact')).toBeVisible()
         expect(screen.getAllByText(words)).toHaveLength(1)

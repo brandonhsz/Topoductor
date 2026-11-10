@@ -95,10 +95,10 @@ describe('worker-owned Git capture', () => {
     const pending = capture(
       'process.stdin.setEncoding("utf8");process.stdin.on("data",data=>process.stdout.write(data));process.stdin.on("end",()=>{process.stderr.write("missing remote ref");process.exitCode=128})'
     )
-    pending.child.stdin.write('orca 🐋')
+    pending.child.stdin.write('topo 🐋')
     pending.child.stdin.end()
     await expect(pending.result).resolves.toMatchObject({
-      stdout: 'orca 🐋',
+      stdout: 'topo 🐋',
       stderr: 'missing remote ref',
       error: { code: 128 }
     })
@@ -116,7 +116,7 @@ describe('worker-owned Git capture', () => {
   it('reports a missing executable without a successful empty result', async () => {
     await createHost()
     const result = new Promise<Error | null>((resolve) =>
-      workerExecFile('/orca/nonexistent-git', [], { maxBuffer: 32 }, (error) => resolve(error))
+      workerExecFile('/topo/nonexistent-git', [], { maxBuffer: 32 }, (error) => resolve(error))
     )
     await expect(result).resolves.toMatchObject({ code: 'ENOENT' })
   })

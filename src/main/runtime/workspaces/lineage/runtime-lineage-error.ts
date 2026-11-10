@@ -27,7 +27,7 @@ export function explicitParentError(error: unknown): RuntimeLineageError {
     return new RuntimeLineageError(
       LINEAGE_PARENT_AMBIGUOUS,
       'More than one workspace matches the parent selector.',
-      { nextSteps: ['Run `orca worktree ps --json` and pass the parent by identity:<key>.'] }
+      { nextSteps: ['Run `topo worktree ps --json` and pass the parent by identity:<key>.'] }
     )
   }
   return new RuntimeLineageError(

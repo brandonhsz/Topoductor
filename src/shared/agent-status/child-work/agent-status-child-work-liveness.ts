@@ -1,4 +1,4 @@
-import { ORCA_ORCHESTRATION_WAIT_COMMAND } from '../../orca-cli-invocations'
+import { TOPO_ORCHESTRATION_WAIT_COMMAND } from '../../topo-cli-invocations'
 import type {
   AgentChildWorkKind,
   AgentChildWorkMembership,
@@ -29,7 +29,7 @@ export function isAgentChildWorkKind(kind: AgentChildWorkKind): boolean {
 
 function isAgentChildWork(child: AgentChildWorkLivenessCandidate): boolean {
   return (
-    isAgentChildWorkKind(child.kind) || child.operation?.input === ORCA_ORCHESTRATION_WAIT_COMMAND
+    isAgentChildWorkKind(child.kind) || child.operation?.input === TOPO_ORCHESTRATION_WAIT_COMMAND
   )
 }
 

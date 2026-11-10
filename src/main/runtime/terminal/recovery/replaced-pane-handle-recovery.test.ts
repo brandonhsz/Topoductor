@@ -2,20 +2,20 @@
 
 import { describe, expect, it, vi } from 'vitest'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
 const { makePaneKey } = await import('../../../../shared/workspace-layout/stable-pane-id')
 const { HEADLESS_LEAF_ID, HEADLESS_SECOND_LEAF_ID, TEST_REPO_ID, TEST_WORKTREE_ID, store } =
-  await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
+  await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
 const { dropFromHostInventory, movePaneFirst, registerBoundPty } =
-  await import('../../orca-runtime-tests/bind-first-pane.test-fixture')
+  await import('../../topo-runtime-tests/bind-first-pane.test-fixture')
 
 function paneWithHandle(tabId: string) {
-  const runtime = new OrcaRuntimeService(store)
+  const runtime = new TopoRuntimeService(store)
   const paneKey = makePaneKey(tabId, HEADLESS_LEAF_ID)
   registerBoundPty(runtime, 'pty-old', TEST_WORKTREE_ID, null, { tabId, leafId: HEADLESS_LEAF_ID })
   const oldHandle = runtime.resolveTerminalPane(paneKey, TEST_WORKTREE_ID).handle
@@ -119,7 +119,7 @@ describe('a stale handle of a replaced pane (switch on)', () => {
 
   it('fails closed after a restart, with the error base gives (no record of the old handle)', async () => {
     const { paneKey, oldHandle } = paneWithHandle('tab-p4-restart')
-    const restarted = new OrcaRuntimeService(store)
+    const restarted = new TopoRuntimeService(store)
     registerBoundPty(restarted, 'pty-new', TEST_WORKTREE_ID, null, {
       tabId: 'tab-p4-restart',
       leafId: HEADLESS_LEAF_ID

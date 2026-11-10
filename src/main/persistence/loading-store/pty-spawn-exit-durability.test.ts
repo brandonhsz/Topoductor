@@ -1,6 +1,6 @@
 import { expect, it, vi } from 'vitest'
 import { fixture } from './profile-state-delayed-authority-fixture'
-import { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import { TopoRuntimeService } from '../../runtime/topo-runtime'
 import { registerPersistedPtySpawn } from '../../ipc/pty/pane/spawn-registration'
 
 vi.mock('../../telemetry/client', () => ({ track: vi.fn() }))
@@ -24,7 +24,7 @@ it.each(['replacement-pty', binding.ptyId])(
   'preserves a replacement binding to %s while retirement waits',
   async (ptyId) => {
     const { store, authority, readState } = await fixture()
-    const runtime = new OrcaRuntimeService(store)
+    const runtime = new TopoRuntimeService(store)
     runtime.beginPtyRegistration(binding.ptyId, binding.incarnationId)
     await store.persistPtyBinding(binding)
     await runtime.onPtyExit(binding.ptyId, 0, binding.incarnationId, { providerExitObserved: true })
@@ -59,7 +59,7 @@ it.each(['replacement-pty', binding.ptyId])(
 
 it('retains the binding when loss of contact supplies no process-exit proof', async () => {
   const { store, readState } = await fixture()
-  const runtime = new OrcaRuntimeService(store)
+  const runtime = new TopoRuntimeService(store)
   runtime.beginPtyRegistration(binding.ptyId, binding.incarnationId)
   await store.persistPtyBinding(binding)
   await runtime.onPtyExit(binding.ptyId, -1, binding.incarnationId)
@@ -84,7 +84,7 @@ it('retains the binding when loss of contact supplies no process-exit proof', as
 
 it('does not settle rejected registration until its exit cleanup reaches SQLite', async () => {
   const { store, authority, readState } = await fixture()
-  const runtime = new OrcaRuntimeService(store)
+  const runtime = new TopoRuntimeService(store)
   runtime.beginPtyRegistration(binding.ptyId, binding.incarnationId)
   await store.persistPtyBinding(binding)
   await runtime.onPtyExit(binding.ptyId, 0, binding.incarnationId, { providerExitObserved: true })

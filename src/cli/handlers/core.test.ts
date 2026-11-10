@@ -7,12 +7,12 @@ const { spawnMock, reclaimStaleLockMock, printReclaimResultMock } = vi.hoisted((
 }))
 
 vi.mock('node:child_process', () => ({ spawn: spawnMock }))
-vi.mock('../../main/orcad/orcad-stale-lock-reclaim.js', () => ({
-  reclaimStaleOrcadInstanceLock: reclaimStaleLockMock,
-  printOrcadStaleLockReclaimResult: printReclaimResultMock
+vi.mock('../../main/topod/topod-stale-lock-reclaim.js', () => ({
+  reclaimStaleTopodInstanceLock: reclaimStaleLockMock,
+  printTopodStaleLockReclaimResult: printReclaimResultMock
 }))
 
-// Exclude the socket runtime graph; this handler needs only errors and serveOrcaApp.
+// Exclude the socket runtime graph; this handler needs only errors and serveTopoApp.
 vi.mock('../runtime-client', () => ({
   RuntimeClientError: class RuntimeClientError extends Error {
     readonly code: string
@@ -21,7 +21,7 @@ vi.mock('../runtime-client', () => ({
       this.code = code
     }
   },
-  serveOrcaApp: vi.fn()
+  serveTopoApp: vi.fn()
 }))
 
 import { CORE_HANDLERS } from './core'
@@ -43,7 +43,7 @@ function mockClaudeChild(): { once: (event: string, cb: (...args: unknown[]) => 
   return child
 }
 
-describe('orca claude-teams CLI handler', () => {
+describe('topo claude-teams CLI handler', () => {
   const isWindows = process.platform === 'win32'
   let previousRunAsNode: string | undefined
   let previousPaneKey: string | undefined
@@ -76,11 +76,11 @@ describe('orca claude-teams CLI handler', () => {
       }
     })
     previousRunAsNode = process.env.ELECTRON_RUN_AS_NODE
-    previousPaneKey = process.env.ORCA_PANE_KEY
+    previousPaneKey = process.env.TOPO_PANE_KEY
     previousExitCode = process.exitCode
-    // Reproduce the Electron-as-Node flag inherited from the orca launcher.
+    // Reproduce the Electron-as-Node flag inherited from the topo launcher.
     process.env.ELECTRON_RUN_AS_NODE = '1'
-    process.env.ORCA_PANE_KEY = 'tab-1:leaf-1'
+    process.env.TOPO_PANE_KEY = 'tab-1:leaf-1'
   })
 
   afterEach(() => {
@@ -90,9 +90,9 @@ describe('orca claude-teams CLI handler', () => {
       process.env.ELECTRON_RUN_AS_NODE = previousRunAsNode
     }
     if (previousPaneKey === undefined) {
-      delete process.env.ORCA_PANE_KEY
+      delete process.env.TOPO_PANE_KEY
     } else {
-      process.env.ORCA_PANE_KEY = previousPaneKey
+      process.env.TOPO_PANE_KEY = previousPaneKey
     }
     process.exitCode = previousExitCode
   })
@@ -115,20 +115,20 @@ describe('orca claude-teams CLI handler', () => {
   it.skipIf(isWindows)(
     'still forwards non-Electron parent env and prepareLaunch env to claude',
     async () => {
-      const previousMarker = process.env.ORCA_TEST_MARKER
-      process.env.ORCA_TEST_MARKER = 'keep-me'
+      const previousMarker = process.env.TOPO_TEST_MARKER
+      process.env.TOPO_TEST_MARKER = 'keep-me'
       try {
         await runClaudeTeams()
       } finally {
         if (previousMarker === undefined) {
-          delete process.env.ORCA_TEST_MARKER
+          delete process.env.TOPO_TEST_MARKER
         } else {
-          process.env.ORCA_TEST_MARKER = previousMarker
+          process.env.TOPO_TEST_MARKER = previousMarker
         }
       }
 
       const spawnEnv = spawnMock.mock.calls.at(-1)?.[2].env as SpawnEnv
-      expect(spawnEnv.ORCA_TEST_MARKER).toBe('keep-me')
+      expect(spawnEnv.TOPO_TEST_MARKER).toBe('keep-me')
       expect(spawnEnv.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS).toBe('1')
       expect(spawnEnv.PATH).toBe('/shim:/usr/bin')
     }
@@ -181,7 +181,7 @@ describe('orca claude-teams CLI handler', () => {
   })
 
   // #32177: an empty --data-root must never fall back to the default profile's lock.
-  it('refuses `orca serve --reclaim-stale-lock` with a --data-root that names no directory', async () => {
+  it('refuses `topo serve --reclaim-stale-lock` with a --data-root that names no directory', async () => {
     const ctx: HandlerContext = {
       flags: new Map<string, string | boolean>([
         ['reclaim-stale-lock', true],
@@ -196,7 +196,7 @@ describe('orca claude-teams CLI handler', () => {
     await expect(CORE_HANDLERS.serve(ctx)).rejects.toMatchObject({
       code: 'invalid_argument',
       message:
-        '--data-root expects a directory. Usage: orca serve --reclaim-stale-lock [--data-root <dir>] [--yes] [--json]'
+        '--data-root expects a directory. Usage: topo serve --reclaim-stale-lock [--data-root <dir>] [--yes] [--json]'
     })
     expect(reclaimStaleLockMock).not.toHaveBeenCalled()
     expect(printReclaimResultMock).not.toHaveBeenCalled()

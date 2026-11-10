@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { OrcadManagedIdentityError } from '../../managed-server/lifecycle/orcad-managed-tunnel-identity'
+import { TopodManagedIdentityError } from '../../managed-server/lifecycle/topod-managed-tunnel-identity'
 
 const mocks = vi.hoisted(() => ({ authenticationRejected: vi.fn() }))
 
 vi.mock('../../../shared/remote-runtime/host-store/runtime-environment-store', () => ({
   resolveEnvironment: () => ({
     id: 'env-1',
-    orcadDeployment: { sshTargetId: 'ssh-1', sshTargetGeneration: 1, localPort: 1, remotePort: 2 }
+    topodDeployment: { sshTargetId: 'ssh-1', sshTargetGeneration: 1, localPort: 1, remotePort: 2 }
   })
 }))
 vi.mock('./runtime-environment-request-connections', () => ({
@@ -14,9 +14,9 @@ vi.mock('./runtime-environment-request-connections', () => ({
     authenticationRejected: mocks.authenticationRejected
   })
 }))
-vi.mock('../../managed-server/lifecycle/orcad-managed-tunnel', () => ({
-  managedOrcadPairingFailureStands: vi.fn(),
-  recoverRefusedManagedOrcadPairing: vi.fn()
+vi.mock('../../managed-server/lifecycle/topod-managed-tunnel', () => ({
+  managedTopodPairingFailureStands: vi.fn(),
+  recoverRefusedManagedTopodPairing: vi.fn()
 }))
 
 const { handleManagedSharedControlRefusal } =
@@ -26,7 +26,7 @@ describe('handleManagedSharedControlRefusal', () => {
   beforeEach(() => mocks.authenticationRejected.mockReset())
 
   it('stops retrying a pairing whose host now serves another server key (#37766)', async () => {
-    const refusal = OrcadManagedIdentityError.replacedServer(
+    const refusal = TopodManagedIdentityError.replacedServer(
       { id: 'env-1', name: 'dev box' },
       'a different key'
     )
@@ -40,7 +40,7 @@ describe('handleManagedSharedControlRefusal', () => {
     ).resolves.toBe('stop')
     expect(mocks.authenticationRejected).toHaveBeenCalledWith(
       refusal.message,
-      'orcad_server_replaced'
+      'topod_server_replaced'
     )
   })
 })

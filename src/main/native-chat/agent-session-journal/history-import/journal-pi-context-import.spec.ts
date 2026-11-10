@@ -12,7 +12,7 @@ export function registerJournalPiContextImportTests(): void {
   let root: string
   const journals = createTrackedJournalOpener()
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-pi-context-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-pi-context-'))
   })
   afterEach(async () => {
     await journals.closeAll()

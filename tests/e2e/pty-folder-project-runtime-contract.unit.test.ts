@@ -138,7 +138,7 @@ vi.mock('../../src/main/telemetry/client', () =>
 vi.mock('../../src/main/telemetry/classify-error', () =>
   import('../../src/main/ipc/pty/pty-ipc-mock-registry').then((m) => m.classifyErrorModuleMock())
 )
-vi.mock('../../src/main/cli/linux-terminal-orca-cli-shim', () =>
+vi.mock('../../src/main/cli/linux-terminal-topo-cli-shim', () =>
   import('../../src/main/ipc/pty/pty-ipc-mock-registry').then((m) => m.linuxCliShimModuleMock())
 )
 vi.mock('../../src/main/memory/pty-registry', () =>
@@ -340,7 +340,7 @@ describe('mounted folder plain-shell project runtime', () => {
             }
           }
         : {}),
-      env: live ? { ORCA_PANE_KEY: `saved-tab:${leafId}` } : {}
+      env: live ? { TOPO_PANE_KEY: `saved-tab:${leafId}` } : {}
     })
     if (live) {
       expect(result).toMatchObject({ id: savedSessionId, wslDistro: 'Saved' })

@@ -1,5 +1,5 @@
-import type { OrcaRuntimeWithBindPtyIncarnationHandle } from './terminal-handle-bindings'
-import type { OrcaRuntimeWithInvalidateAllHandlesForPty } from '../lifecycle/pty-handle-invalidation'
+import type { TopoRuntimeWithBindPtyIncarnationHandle } from './terminal-handle-bindings'
+import type { TopoRuntimeWithInvalidateAllHandlesForPty } from '../lifecycle/pty-handle-invalidation'
 import { randomUUID } from 'node:crypto'
 import type { PtyIncarnationId } from '../../../../shared/terminal/pty/lifecycle/pty-incarnation'
 import { forgetPtySurface } from '../surface/pty-recorded-surface-topology'
@@ -8,28 +8,28 @@ export abstract class RuntimePreallocatedTerminalHandles extends RuntimeMobileSe
   protected abstract deliverPendingMessagesForPty(ptyId: string): void
 
   protected abstract invalidatePtyIncarnationHandle(
-    ...args: Parameters<OrcaRuntimeWithBindPtyIncarnationHandle['invalidatePtyIncarnationHandle']>
-  ): ReturnType<OrcaRuntimeWithBindPtyIncarnationHandle['invalidatePtyIncarnationHandle']>
+    ...args: Parameters<TopoRuntimeWithBindPtyIncarnationHandle['invalidatePtyIncarnationHandle']>
+  ): ReturnType<TopoRuntimeWithBindPtyIncarnationHandle['invalidatePtyIncarnationHandle']>
 
   protected abstract invalidateAllHandlesForPty(
-    ...args: Parameters<OrcaRuntimeWithInvalidateAllHandlesForPty['invalidateAllHandlesForPty']>
-  ): ReturnType<OrcaRuntimeWithInvalidateAllHandlesForPty['invalidateAllHandlesForPty']>
+    ...args: Parameters<TopoRuntimeWithInvalidateAllHandlesForPty['invalidateAllHandlesForPty']>
+  ): ReturnType<TopoRuntimeWithInvalidateAllHandlesForPty['invalidateAllHandlesForPty']>
 
   protected abstract isTerminalHandleAdoptionBlocked(
     ...args: Parameters<
-      OrcaRuntimeWithInvalidateAllHandlesForPty['isTerminalHandleAdoptionBlocked']
+      TopoRuntimeWithInvalidateAllHandlesForPty['isTerminalHandleAdoptionBlocked']
     >
-  ): ReturnType<OrcaRuntimeWithInvalidateAllHandlesForPty['isTerminalHandleAdoptionBlocked']>
+  ): ReturnType<TopoRuntimeWithInvalidateAllHandlesForPty['isTerminalHandleAdoptionBlocked']>
 
   protected abstract replaceSyntheticTerminalHandlesForRestoredPty(
     ...args: Parameters<
-      OrcaRuntimeWithInvalidateAllHandlesForPty['replaceSyntheticTerminalHandlesForRestoredPty']
+      TopoRuntimeWithInvalidateAllHandlesForPty['replaceSyntheticTerminalHandlesForRestoredPty']
     >
   ): ReturnType<
-    OrcaRuntimeWithInvalidateAllHandlesForPty['replaceSyntheticTerminalHandlesForRestoredPty']
+    TopoRuntimeWithInvalidateAllHandlesForPty['replaceSyntheticTerminalHandlesForRestoredPty']
   >
 
-  // Allocate before spawn so ORCA_TERMINAL_HANDLE lets agents self-identify; lazy RPC allocation reuses it.
+  // Allocate before spawn so TOPO_TERMINAL_HANDLE lets agents self-identify; lazy RPC allocation reuses it.
   preAllocateHandleForPty(ptyId: string): string {
     const existing = this.handleByPtyId.get(ptyId)
     if (existing) {

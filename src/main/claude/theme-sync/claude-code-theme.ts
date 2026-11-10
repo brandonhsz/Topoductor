@@ -22,10 +22,10 @@ export type ClaudeCodeTheme = {
 }
 
 const MIN_TEXT_CONTRAST = 4.5
-// Why 3:1: hues only tint status words and borders, the same floor Orca's own theme gate uses.
+// Why 3:1: hues only tint status words and borders, the same floor Topo's own theme gate uses.
 const MIN_HUE_CONTRAST = 3
 
-/** Claude Code colors from the terminal palette Orca paints, so Claude's own UI matches its pane. */
+/** Claude Code colors from the terminal palette Topo paints, so Claude's own UI matches its pane. */
 export function claudeCodeThemeFromTerminal(palette: ITheme | null): ClaudeCodeTheme | null {
   const colors = terminalPaletteRgba(palette, parseTerminalColor)
   if (!palette || !colors) {
@@ -90,7 +90,7 @@ export function claudeCodeThemeFromTerminal(palette: ITheme | null): ClaudeCodeT
     selectionBg: selection && contrastRatio(text, selection) >= MIN_TEXT_CONTRAST ? selection : null
   }
   return {
-    name: 'Orca',
+    name: 'Topo',
     base: light ? 'light' : 'dark',
     overrides: Object.fromEntries(
       Object.entries(overrides).flatMap(([key, value]) =>

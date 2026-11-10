@@ -118,7 +118,7 @@ async function openSender(
     .filter((message) => message.from === party.address)
     .map((message) => message.messageId)
   const state = useAppStore.getState()
-  const root = party.orcaSessionId
+  const root = party.topoSessionId
   const known = root
     ? Object.entries(state.unifiedTabsByWorktree).flatMap(([worktreeId, tabs]) =>
         tabs.flatMap((tab) =>
@@ -226,7 +226,7 @@ export async function openOrchestrationCrewAgent(
           }
         : {
             kind: 'sender',
-            party: { address: target.address, terminalHandle: null, orcaSessionId: null },
+            party: { address: target.address, terminalHandle: null, topoSessionId: null },
             messageIds: [],
             displayName: row.label
           },

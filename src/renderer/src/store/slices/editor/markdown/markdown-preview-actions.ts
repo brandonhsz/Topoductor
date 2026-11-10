@@ -8,7 +8,7 @@ import { resolveEditorFileIdForOwner } from '../file-ids/editor-file-ids'
 import { buildEditorActiveResult } from '../tabs/editor-open-target-group'
 import { openWorkspaceEditorItem } from '../tabs/workspace-editor-item'
 import type { Tab } from '../../../../../../shared/tab-types'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import { withPreviewEnded } from '../../tabs/tab-preview-flag'
 import { previewEditorTabsOf } from '../tabs/editor-tab-layout-owner'
 import {
@@ -194,7 +194,7 @@ export function createMarkdownPreviewActions(
     makePreviewFilePermanent: (fileId, tabId) => {
       const promoted: Tab[] = []
       set((s) => {
-        if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+        if (TOPO_LAYOUT_OWNER_IS_MAIN) {
           promoted.push(...previewEditorTabsOf(s.unifiedTabsByWorktree, fileId, tabId))
         }
         let changed = false
@@ -222,12 +222,12 @@ export function createMarkdownPreviewActions(
         return changed ? { openFiles, unifiedTabsByWorktree } : s
       })
       // Switch point: main makes the preview tabs the user kept permanent.
-      if (ORCA_LAYOUT_OWNER_IS_MAIN && promoted.length > 0) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN && promoted.length > 0) {
         promotePreviewTabsThroughLayoutOwner(get(), set, promoted)
       }
       // Switch point: a double click keeps a preview main has yet to draw, once its frame does.
       const worktreeId = get().openFiles.find((file) => file.id === fileId)?.worktreeId
-      if (ORCA_LAYOUT_OWNER_IS_MAIN && worktreeId && hasPendingEntityTab(worktreeId, fileId)) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN && worktreeId && hasPendingEntityTab(worktreeId, fileId)) {
         // Tabs asked for above are not asked again, even after main answered (or refused) them.
         const asked = new Set(promoted.map((tab) => tab.id))
         afterPendingEntityTabs(worktreeId, fileId, () =>

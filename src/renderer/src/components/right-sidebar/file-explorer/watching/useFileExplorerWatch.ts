@@ -13,7 +13,7 @@ import type { InlineInput } from '../mutations/file-explorer-inline-input-row'
 import { useAppStore } from '@/store/index'
 import {
   isWorktreeCatchUpPayload,
-  ORCA_WORKTREE_FILE_CHANGE_EVENT
+  TOPO_WORKTREE_FILE_CHANGE_EVENT
 } from '@/hooks/worktree-file-change-event'
 import { normalizeRuntimePathForComparison } from '../../../../../../shared/cross-platform-path'
 import {
@@ -217,14 +217,14 @@ export function useFileExplorerWatch({
     }
 
     const handleRuntimeChange = (
-      event: WindowEventMap[typeof ORCA_WORKTREE_FILE_CHANGE_EVENT]
+      event: WindowEventMap[typeof TOPO_WORKTREE_FILE_CHANGE_EVENT]
     ): void => {
       if (event.detail.runtimeEnvironmentId === activeRuntimeEnvironmentId) {
         handleFsChanged(event.detail.payload)
       }
     }
     // IPC trees also need synthesized catch-up after watch reacquisition.
-    const handleCatchUp = (event: WindowEventMap[typeof ORCA_WORKTREE_FILE_CHANGE_EVENT]): void => {
+    const handleCatchUp = (event: WindowEventMap[typeof TOPO_WORKTREE_FILE_CHANGE_EVENT]): void => {
       if (
         event.detail.runtimeEnvironmentId === null &&
         isWorktreeCatchUpPayload(event.detail.payload)
@@ -235,16 +235,16 @@ export function useFileExplorerWatch({
     let unsubscribeListener: (() => void) | null = null
     if (activeRuntimeEnvironmentId?.trim() && activeWorktreeId) {
       // The app watcher owns recovery; a separate stream would strand this consumer after reconnect.
-      window.addEventListener(ORCA_WORKTREE_FILE_CHANGE_EVENT, handleRuntimeChange)
+      window.addEventListener(TOPO_WORKTREE_FILE_CHANGE_EVENT, handleRuntimeChange)
     } else {
       unsubscribeListener = window.api.fs.onFsChanged(handleFsChanged)
-      window.addEventListener(ORCA_WORKTREE_FILE_CHANGE_EVENT, handleCatchUp)
+      window.addEventListener(TOPO_WORKTREE_FILE_CHANGE_EVENT, handleCatchUp)
     }
 
     return () => {
       disposed = true
-      window.removeEventListener(ORCA_WORKTREE_FILE_CHANGE_EVENT, handleRuntimeChange)
-      window.removeEventListener(ORCA_WORKTREE_FILE_CHANGE_EVENT, handleCatchUp)
+      window.removeEventListener(TOPO_WORKTREE_FILE_CHANGE_EVENT, handleRuntimeChange)
+      window.removeEventListener(TOPO_WORKTREE_FILE_CHANGE_EVENT, handleCatchUp)
       unsubscribeListener?.()
       if (activeResyncByWatchKey.get(currentWatchKey) === scheduler.requestFullRefresh) {
         activeResyncByWatchKey.delete(currentWatchKey)

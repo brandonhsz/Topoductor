@@ -92,7 +92,7 @@ export function handleMarkdownPreviewSystemLinkClick({
   return true
 }
 
-/** Opens the link in an Orca editor tab when main declines to launch it; null without a workspace. */
+/** Opens the link in a Topo editor tab when main declines to launch it; null without a workspace. */
 export function markdownPreviewLinkEditorOpener(
   href: string,
   filePath: string,

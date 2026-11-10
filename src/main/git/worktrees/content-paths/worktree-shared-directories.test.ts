@@ -18,7 +18,7 @@ let previousGitConfigGlobal: string | undefined
 let previousGitConfigNosystem: string | undefined
 
 beforeAll(() => {
-  gitConfigRoot = mkdtempSync(join(tmpdir(), 'orca-shared-dirs-gitconfig-'))
+  gitConfigRoot = mkdtempSync(join(tmpdir(), 'topo-shared-dirs-gitconfig-'))
   const emptyGlobalGitConfig = join(gitConfigRoot, 'global.gitconfig')
   writeFileSync(emptyGlobalGitConfig, '')
   previousGitConfigGlobal = process.env.GIT_CONFIG_GLOBAL
@@ -52,13 +52,13 @@ describe('resolveWorktreeSharedDirectories', () => {
   let repo: string
   let warn: ReturnType<typeof vi.spyOn>
 
-  const writeOrcaYaml = (body: string): void => {
-    writeFileSync(join(repo, 'orca.yaml'), body)
+  const writeTopoYaml = (body: string): void => {
+    writeFileSync(join(repo, 'topo.yaml'), body)
   }
 
   beforeEach(() => {
     clearConfiguredWorktreeSharedDirectoriesCacheForTests()
-    repo = mkdtempSync(join(tmpdir(), 'orca-shared-dirs-'))
+    repo = mkdtempSync(join(tmpdir(), 'topo-shared-dirs-'))
     git(['init', '-q'], repo)
     git(['config', 'user.email', 'test@example.com'], repo)
     git(['config', 'user.name', 'Test'], repo)
@@ -76,7 +76,7 @@ describe('resolveWorktreeSharedDirectories', () => {
 
   it('skips a directory that is not gitignored', async () => {
     mkdirSync(join(repo, 'shared-but-tracked'))
-    writeOrcaYaml('worktree:\n  sharedDirectories:\n    - shared-but-tracked\n')
+    writeTopoYaml('worktree:\n  sharedDirectories:\n    - shared-but-tracked\n')
 
     expect(await resolveWorktreeSharedDirectories(repo)).toEqual([])
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('only gitignored directories'))
@@ -84,7 +84,7 @@ describe('resolveWorktreeSharedDirectories', () => {
 
   it('skips a listed path that is a file, not a directory', async () => {
     writeFileSync(join(repo, '.cache'), 'not a dir')
-    writeOrcaYaml('worktree:\n  sharedDirectories:\n    - .cache\n')
+    writeTopoYaml('worktree:\n  sharedDirectories:\n    - .cache\n')
 
     expect(await resolveWorktreeSharedDirectories(repo)).toEqual([])
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('must be directories'))
@@ -92,7 +92,7 @@ describe('resolveWorktreeSharedDirectories', () => {
 
   it('drops unsafe entries before touching the filesystem', async () => {
     mkdirSync(join(repo, 'node_modules'))
-    writeOrcaYaml(
+    writeTopoYaml(
       [
         'worktree:',
         '  sharedDirectories:',
@@ -116,7 +116,7 @@ describe('shared directories and worktree removal', () => {
   let worktree: string
 
   beforeEach(() => {
-    root = mkdtempSync(join(tmpdir(), 'orca-shared-dirs-removal-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-shared-dirs-removal-'))
     primary = join(root, 'primary')
     worktree = join(root, 'worktree')
     mkdirSync(primary)
@@ -125,7 +125,7 @@ describe('shared directories and worktree removal', () => {
     git(['config', 'user.name', 'Test'], primary)
     writeFileSync(join(primary, '.gitignore'), 'node_modules/\n')
     writeFileSync(
-      join(primary, 'orca.yaml'),
+      join(primary, 'topo.yaml'),
       'worktree:\n  sharedDirectories:\n    - node_modules\n'
     )
     git(['add', '-A'], primary)
@@ -186,7 +186,7 @@ describe('shared directories and worktree removal', () => {
     }
     writeFileSync(join(primary, '.gitignore'), `node_modules/\n${names.join('\n')}\n`)
     writeFileSync(
-      join(primary, 'orca.yaml'),
+      join(primary, 'topo.yaml'),
       `worktree:\n  sharedDirectories:\n${names.map((name) => `    - ${name}`).join('\n')}\n`
     )
     clearConfiguredWorktreeSharedDirectoriesCacheForTests()

@@ -3,34 +3,34 @@
 import PackageDescription
 
 let package = Package(
-    name: "OrcaComputerUseMacOS",
+    name: "TopoComputerUseMacOS",
     platforms: [
         .macOS(.v14)
     ],
     products: [
         .library(
-            name: "OrcaComputerUseMacOSCore",
-            targets: ["OrcaComputerUseMacOSCore"]
+            name: "TopoComputerUseMacOSCore",
+            targets: ["TopoComputerUseMacOSCore"]
         ),
         .executable(
-            name: "orca-computer-use-macos",
-            targets: ["OrcaComputerUseMacOS"]
+            name: "topo-computer-use-macos",
+            targets: ["TopoComputerUseMacOS"]
         )
     ],
     targets: [
         .target(
-            name: "OrcaComputerUseMacOSCore",
-            path: "Sources/OrcaComputerUseMacOSCore"
+            name: "TopoComputerUseMacOSCore",
+            path: "Sources/TopoComputerUseMacOSCore"
         ),
         .executableTarget(
-            name: "OrcaComputerUseMacOS",
-            dependencies: ["OrcaComputerUseMacOSCore"],
-            path: "Sources/OrcaComputerUseMacOS"
+            name: "TopoComputerUseMacOS",
+            dependencies: ["TopoComputerUseMacOSCore"],
+            path: "Sources/TopoComputerUseMacOS"
         ),
         .testTarget(
-            name: "OrcaComputerUseMacOSTests",
-            dependencies: ["OrcaComputerUseMacOSCore"],
-            path: "Tests/OrcaComputerUseMacOSTests"
+            name: "TopoComputerUseMacOSTests",
+            dependencies: ["TopoComputerUseMacOSCore"],
+            path: "Tests/TopoComputerUseMacOSTests"
         )
     ]
 )

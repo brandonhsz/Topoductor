@@ -78,8 +78,8 @@ type Ssh2HostKeyVerificationHost = {
 /** The denial this attempt's verifier recorded; local to one attempt so a stale one cannot leak. */
 type Ssh2HostKeyVerdict = {
   rejection: HostKeyVerificationError | null
-  /** Orca's own store holds a key for this endpoint, which system OpenSSH never consults. */
-  pinnedByOrcaStore: boolean
+  /** Topo's own store holds a key for this endpoint, which system OpenSSH never consults. */
+  pinnedByTopoStore: boolean
 }
 
 /** Installs the host verifier and key-type order on `config` before ssh2 dials. */
@@ -121,14 +121,14 @@ export async function installSsh2HostKeyVerification(
   // Keep denial attempt-local and retain original ssh2 error codes so stale attempts and transient failures stay distinguishable.
   const verdict: Ssh2HostKeyVerdict = {
     rejection: null,
-    pinnedByOrcaStore: storedKeyTypes.length > 0
+    pinnedByTopoStore: storedKeyTypes.length > 0
   }
 
   // Accepted server fingerprints isolate shared-home relay locks across hosts; preserve mixed-version format and leave hostHash unset.
   config.hostVerifier = createHostKeyVerifier({
     host: hostKeyLookupHost,
     port: config.port ?? 22,
-    // Print the lookup host in ssh-keygen -R guidance; the Orca label would remove no trusted entry.
+    // Print the lookup host in ssh-keygen -R guidance; the Topo label would remove no trusted entry.
     displayHost: hostKeyLookupHost,
     hostKeyStoreFile: boundSshHostKeyStoreFile() ?? undefined,
     strictHostKeyChecking: hostKeyResolved?.strictHostKeyChecking ?? 'ask',

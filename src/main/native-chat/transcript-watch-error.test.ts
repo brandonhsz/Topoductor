@@ -54,7 +54,7 @@ afterEach(async () => {
 
 describe('native chat transcript watcher errors', () => {
   it('still wins with a real initial snapshot once the transcript becomes readable', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-native-chat-initial-recover-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-native-chat-initial-recover-'))
     roots.push(root)
     const filePath = join(root, 'transcript.jsonl')
     await writeFile(filePath, '')

@@ -15,20 +15,20 @@ describe('readBundleIdentifierFromExecutablePath', () => {
   })
 
   function bundleWithPlist(body: string): string {
-    const root = mkdtempSync(join(tmpdir(), 'orca-press-hold-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-press-hold-'))
     roots.push(root)
-    mkdirSync(join(root, 'Orca.app', 'Contents', 'MacOS'), { recursive: true })
-    writeFileSync(join(root, 'Orca.app', 'Contents', 'Info.plist'), body)
-    return join(root, 'Orca.app', 'Contents', 'MacOS', 'Orca')
+    mkdirSync(join(root, 'Topo.app', 'Contents', 'MacOS'), { recursive: true })
+    writeFileSync(join(root, 'Topo.app', 'Contents', 'Info.plist'), body)
+    return join(root, 'Topo.app', 'Contents', 'MacOS', 'Topo')
   }
 
   it('reads CFBundleIdentifier from the plist beside the executable', () => {
     const exe = bundleWithPlist(
-      '<plist><dict>\n<key>CFBundleName</key>\n<string>Orca</string>\n' +
-        '<key>CFBundleIdentifier</key>\n\t<string>com.stablyai.orca</string>\n</dict></plist>'
+      '<plist><dict>\n<key>CFBundleName</key>\n<string>Topo</string>\n' +
+        '<key>CFBundleIdentifier</key>\n\t<string>com.brandonhsz.topo</string>\n</dict></plist>'
     )
 
-    expect(readBundleIdentifierFromExecutablePath(exe)).toBe('com.stablyai.orca')
+    expect(readBundleIdentifierFromExecutablePath(exe)).toBe('com.brandonhsz.topo')
   })
 
   it('returns null when the plist is missing or carries no identifier', () => {

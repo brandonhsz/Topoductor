@@ -227,7 +227,7 @@ it('forgets evicted tool contributions and releases generated orphan names', () 
 it('preserves current delivery facts and synthetic notices when upstream wrappers refresh', () => {
   const items: AgentJournalRenderItem[] = [
     {
-      itemId: 'orca:send',
+      itemId: 'topo:send',
       revision: 1,
       sequence: 0,
       observedAt: 0,
@@ -251,7 +251,7 @@ it('preserves current delivery facts and synthetic notices when upstream wrapper
     submittedAt: 0,
     resolvedAt: null
   }
-  const stopped = new Set(['orca:send'])
+  const stopped = new Set(['topo:send'])
   const project = (input: AgentJournalRenderItem[], current: AgentJournalSubmission) =>
     withStopRowsAfterStoppedSends(
       projectStructuredAgentSessionMessages(input, [], [current]),
@@ -272,8 +272,8 @@ it('preserves current delivery facts and synthetic notices when upstream wrapper
     state
   )
   expect(state.rows.map((message) => message.id)).toEqual([
-    'orca:send',
-    'stopped-before-start:orca:send',
+    'topo:send',
+    'stopped-before-start:topo:send',
     'answer'
   ])
   expect(state.rows[0]?.deliveryState).toBe('pending')

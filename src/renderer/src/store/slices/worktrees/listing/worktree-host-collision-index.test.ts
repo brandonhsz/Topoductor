@@ -5,12 +5,12 @@ import type { AppState } from '../../../types'
 import { getWorktreeOnHostFromState } from '../../../workspaces/selection/worktree-on-host-selector'
 import { getIndexedAllWorktrees } from './worktree-catalog-index'
 
-const SHARED_ID = 'repo-1::/work/orca'
+const SHARED_ID = 'repo-1::/work/topo'
 
 const baseWorktree: Worktree = {
   id: SHARED_ID,
   repoId: 'repo-1',
-  path: '/work/orca',
+  path: '/work/topo',
   branch: 'refs/heads/feature',
   head: 'abc123',
   isBare: false,
@@ -24,8 +24,8 @@ const baseWorktree: Worktree = {
   isPinned: false
 } as Worktree
 
-const localRow: Worktree = { ...baseWorktree, hostId: 'local', displayName: 'local orca' }
-const sshRow: Worktree = { ...baseWorktree, hostId: 'ssh:build-box', displayName: 'ssh orca' }
+const localRow: Worktree = { ...baseWorktree, hostId: 'local', displayName: 'local topo' }
+const sshRow: Worktree = { ...baseWorktree, hostId: 'ssh:build-box', displayName: 'ssh topo' }
 
 function byRepo(...worktrees: Worktree[]): AppState['worktreesByRepo'] {
   return { 'repo-1': worktrees }

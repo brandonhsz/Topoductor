@@ -18,7 +18,7 @@ import { parse } from 'jsonc-parser'
 import { registerOpenCodeTuiPlugin } from './opencode-tui-config-registration'
 import { writeOpenCodeTuiPlugin } from './opencode-tui-plugin-install'
 
-const pluginSource = `const ORCA_STATUS_AGENT = "opencode";
+const pluginSource = `const TOPO_STATUS_AGENT = "opencode";
 async function setupLegacyOpenCodeTui() {}
 async function setupOpenCode2Status() {}
 export default async function server() {}
@@ -27,7 +27,7 @@ export default async function server() {}
 const roots: string[] = []
 afterEach(() => roots.splice(0).forEach((root) => rmSync(root, { recursive: true, force: true })))
 function root() {
-  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'orca-legacy-tui-config-')))
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'topo-legacy-tui-config-')))
   roots.push(dir)
   return dir
 }
@@ -40,8 +40,8 @@ function mainServer() { return 'main server'; }
 function mainSetup() { return 'main setup'; }
 export default { id: 'main-owned-id', server: mainServer, setup: mainSetup, unowned: { keep: true } };
 `
-  writeOpenCodeTuiPlugin(plugins, 'orca-opencode-status.js', source)
-  const entry = join(plugins, 'orca-opencode-status-tui', 'tui.js')
+  writeOpenCodeTuiPlugin(plugins, 'topo-opencode-status.js', source)
+  const entry = join(plugins, 'topo-opencode-status-tui', 'tui.js')
   const module: { exports: unknown } = { exports: null }
   runInNewContext(readFileSync(entry, 'utf8').replace(/^export default /m, 'module.exports = '), {
     module
@@ -67,7 +67,7 @@ export default { id: 'main-owned-id', server: mainServer, setup: mainSetup, unow
 
 it('preserves existing settings, comments, plugin options and package specifiers', () => {
   const dir = root()
-  const entry = join(dir, 'plugins', 'orca', 'tui.js')
+  const entry = join(dir, 'plugins', 'topo', 'tui.js')
   const configPath = join(dir, 'tui.jsonc')
   writeFileSync(
     configPath,
@@ -87,14 +87,14 @@ it('leaves current TUI source and registration timestamps unchanged', () => {
   const dir = root()
   const plugins = join(dir, 'plugins')
   const source = pluginSource
-  writeOpenCodeTuiPlugin(plugins, 'orca-opencode-status.js', source)
-  const entry = join(plugins, 'orca-opencode-status-tui', 'tui.js')
+  writeOpenCodeTuiPlugin(plugins, 'topo-opencode-status.js', source)
+  const entry = join(plugins, 'topo-opencode-status-tui', 'tui.js')
   const config = join(dir, 'tui.json')
   const before = [statSync(entry).mtimeMs, statSync(config).mtimeMs]
-  writeOpenCodeTuiPlugin(plugins, 'orca-opencode-status.js', source)
+  writeOpenCodeTuiPlugin(plugins, 'topo-opencode-status.js', source)
   expect([statSync(entry).mtimeMs, statSync(config).mtimeMs]).toEqual(before)
   writeFileSync(config, '{}\n')
-  writeOpenCodeTuiPlugin(plugins, 'orca-opencode-status.js', source)
+  writeOpenCodeTuiPlugin(plugins, 'topo-opencode-status.js', source)
   expect(parse(readFileSync(config, 'utf8')).plugin).toEqual([pathToFileURL(entry).href])
   expect(statSync(entry).mtimeMs).toBe(before[0])
 })
@@ -143,7 +143,7 @@ it.skipIf(process.platform === 'win32')(
     writeFileSync(user, text)
     const config = join(configDir, 'tui.jsonc')
     symlinkSync(user, config)
-    const entry = join(configDir, 'plugins', 'orca', 'tui.js')
+    const entry = join(configDir, 'plugins', 'topo', 'tui.js')
     registerOpenCodeTuiPlugin(configDir, entry, 'overlay')
     expect(lstatSync(config).isFile()).toBe(true)
     expect(readFileSync(user, 'utf8')).toBe(text)

@@ -23,9 +23,9 @@ export function resolveChecksPanelHostedReviewHttpOpenOptions(
 }
 
 /** Where a Shift+modifier click lands, or null when it lands where a plain click already does. */
-export type ChecksPanelHostedReviewModifierDestination = 'system-browser' | 'orca' | null
+export type ChecksPanelHostedReviewModifierDestination = 'system-browser' | 'topo' | null
 
-// Mirror routing inputs so inverted modifiers reaching Orca still get a discoverable hint.
+// Mirror routing inputs so inverted modifiers reaching Topo still get a discoverable hint.
 export function resolveChecksPanelHostedReviewModifierDestination(
   settings:
     | {
@@ -43,7 +43,7 @@ export function resolveChecksPanelHostedReviewModifierDestination(
   if (settings?.openLinksInApp === true) {
     return 'system-browser'
   }
-  return settings?.openLinksInAppModifierInverts === true ? 'orca' : null
+  return settings?.openLinksInAppModifierInverts === true ? 'topo' : null
 }
 
 export function openChecksPanelHostedReviewUrl({

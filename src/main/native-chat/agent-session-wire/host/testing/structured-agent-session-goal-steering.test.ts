@@ -62,7 +62,7 @@ beforeEach(async () => {
 
 afterEach(() => rig.dispose())
 
-/** Codex goal turns have no ordinary Orca submission as their opener. */
+/** Codex goal turns have no ordinary Topo submission as their opener. */
 async function startGoalTurn(): Promise<void> {
   const first = await rig.workingSend()
   await rig.settleAccepted(first, 'first')

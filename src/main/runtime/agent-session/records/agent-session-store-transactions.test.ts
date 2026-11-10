@@ -21,7 +21,7 @@ let root: string
 let counter = 0
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-agent-session-store-transactions-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-agent-session-store-transactions-'))
 })
 
 afterEach(async () => {
@@ -105,7 +105,7 @@ describe('a receipt', () => {
   const outcome = { status: 'succeeded' as const, sessionId: 'chat-a-0001' }
 
   const cancel = {
-    turnItemId: `orca:${'long-supported-identity'.repeat(220)}`,
+    turnItemId: `topo:${'long-supported-identity'.repeat(220)}`,
     resetsAt: NOW + 60_000
   }
   const change = {

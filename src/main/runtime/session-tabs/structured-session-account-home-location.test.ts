@@ -4,18 +4,18 @@ import { join } from 'node:path'
 import { afterEach, expect, it, vi } from 'vitest'
 import { ClaudeProfileRouter } from '../../claude-accounts/claude-profile-router'
 import { agentSessionRecordFixture } from '../../../shared/agent-session/lifecycle/agent-session-record.test-fixture'
-import { OrcaRuntimeWithStructuredSessionAccountHome } from './structured-session-account-home'
+import { TopoRuntimeWithStructuredSessionAccountHome } from './structured-session-account-home'
 import { installClaudeProfileRouter } from '../../claude-accounts/claude-profile-installed-router'
 
 vi.mock('./structured-session-cli-writer-host', () => ({
-  OrcaRuntimeWithStructuredSessionCliWriterHost: class {}
+  TopoRuntimeWithStructuredSessionCliWriterHost: class {}
 }))
-vi.mock('../../orca-profiles/profile-storage-paths', async () => {
+vi.mock('../../topo-profiles/profile-storage-paths', async () => {
   const { tmpdir } = await import('node:os')
   return { getProfileUserDataPath: () => tmpdir() }
 })
 const roots: string[] = []
-abstract class AccountHomeRuntime extends OrcaRuntimeWithStructuredSessionAccountHome {
+abstract class AccountHomeRuntime extends TopoRuntimeWithStructuredSessionAccountHome {
   resolveCreateHome(record: ReturnType<typeof agentSessionRecordFixture>) {
     return this.structuredAgentAccountHomeResolver(
       record.provider,
@@ -33,7 +33,7 @@ afterEach(() => {
 })
 
 it('with a router names the selected account before its folder exists, through the real runtime resolver', async () => {
-  const root = mkdtempSync(join(tmpdir(), 'orca-account-identity-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-account-identity-'))
   roots.push(root)
   const settings = {
     claudeManagedAccounts: [],

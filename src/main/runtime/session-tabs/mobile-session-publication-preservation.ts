@@ -1,5 +1,5 @@
-import type { OrcaRuntimeWithScheduleMobileSessionTabsChanged as ScheduleMobileSessionTabsChangedMethods } from './session-tabs-change-publication'
-import { OrcaRuntimeWithMergePreservedHeadlessMobileSessionTabs } from './mobile-session-preservation'
+import type { TopoRuntimeWithScheduleMobileSessionTabsChanged as ScheduleMobileSessionTabsChangedMethods } from './session-tabs-change-publication'
+import { TopoRuntimeWithMergePreservedHeadlessMobileSessionTabs } from './mobile-session-preservation'
 import type {
   RuntimeMobileSessionBrowserTab,
   RuntimeMobileSessionSnapshotTab
@@ -14,7 +14,7 @@ import { isHeadlessBuiltPublication } from './mobile-session-snapshot-equality'
 import { sameRuntimeBrowserPlacement } from '../../../shared/runtime-browser-placement'
 import type { ClientHostedBrowserRowsEvent } from '../../../shared/client-hosted-browser-rows'
 
-export abstract class OrcaRuntimeWithStoredMobileSnapshotHasStalePreservedTab extends OrcaRuntimeWithMergePreservedHeadlessMobileSessionTabs {
+export abstract class TopoRuntimeWithStoredMobileSnapshotHasStalePreservedTab extends TopoRuntimeWithMergePreservedHeadlessMobileSessionTabs {
   protected abstract getListedBrowserTabsByPageId(
     ...args: Parameters<ScheduleMobileSessionTabsChangedMethods['getListedBrowserTabsByPageId']>
   ): ReturnType<ScheduleMobileSessionTabsChangedMethods['getListedBrowserTabsByPageId']>

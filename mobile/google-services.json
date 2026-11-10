@@ -1,15 +1,15 @@
 {
   "project_info": {
     "project_number": "120364513935",
-    "project_id": "onorca-cloud",
-    "storage_bucket": "onorca-cloud.firebasestorage.app"
+    "project_id": "ontopo-cloud",
+    "storage_bucket": "ontopo-cloud.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:120364513935:android:1d951dc430aeb9bc664efa",
         "android_client_info": {
-          "package_name": "com.stably.orca.mobile"
+          "package_name": "com.brandonhsz.topo.mobile"
         }
       },
       "oauth_client": [

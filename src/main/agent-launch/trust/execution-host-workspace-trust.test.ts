@@ -22,12 +22,12 @@ const INHERITING_PRESETS: readonly AgentTrustPreset[] = ['claude', 'copilot', 'q
 let root: string
 
 beforeEach(() => {
-  root = realpathSync(mkdtempSync(join(tmpdir(), 'orca-host-trust-')))
+  root = realpathSync(mkdtempSync(join(tmpdir(), 'topo-host-trust-')))
   state.home = join(root, 'home', 'me')
   mkdirSync(state.home, { recursive: true })
   writeFileSync(join(state.home, '.claude.json'), '{}')
-  // Trust grants record ownership under Orca's userData; keep it in the temp root.
-  vi.stubEnv('ORCA_USER_DATA_PATH', join(root, 'user-data'))
+  // Trust grants record ownership under Topo's userData; keep it in the temp root.
+  vi.stubEnv('TOPO_USER_DATA_PATH', join(root, 'user-data'))
 })
 
 afterEach(() => {

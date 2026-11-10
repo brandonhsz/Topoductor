@@ -40,7 +40,7 @@ vi.mock('../../identity/browser-process-user-agent', () => ({
   getBrowserProcessUserAgentIdentity: () => ({
     mode: processUserAgentMode.value,
     userAgent: 'Mozilla/5.0 Chrome/150.0.0.0 Safari/537.36',
-    electronUserAgent: 'Mozilla/5.0 Orca/1.0.0 Chrome/150.0.0.0 Electron/43.0.0 Safari/537.36'
+    electronUserAgent: 'Mozilla/5.0 Topo/1.0.0 Chrome/150.0.0.0 Electron/43.0.0 Safari/537.36'
   })
 }))
 
@@ -72,7 +72,7 @@ import {
 import { setBrowserNetworkProxySettingsResolver } from '../proxy/browser-session-proxy'
 import { handleElectronProxyLogin } from '../../../network/electron-proxy-credentials'
 import { applyProxySettingsToSession } from '../../../network/proxy-settings'
-import { DEFAULT_LOCAL_ORCA_PROFILE_ID } from '../../../../shared/orca-profiles'
+import { DEFAULT_LOCAL_TOPO_PROFILE_ID } from '../../../../shared/topo-profiles'
 
 describe('BrowserSessionRegistry', () => {
   let profileDirectory: string
@@ -82,9 +82,9 @@ describe('BrowserSessionRegistry', () => {
   })
 
   beforeEach(() => {
-    profileDirectory = mkdtempSync(join(tmpdir(), 'orca-session-registry-'))
-    browserSessionRegistry.configureForOrcaProfile({
-      orcaProfileId: DEFAULT_LOCAL_ORCA_PROFILE_ID,
+    profileDirectory = mkdtempSync(join(tmpdir(), 'topo-session-registry-'))
+    browserSessionRegistry.configureForTopoProfile({
+      topoProfileId: DEFAULT_LOCAL_TOPO_PROFILE_ID,
       profileDirectory
     })
     sessionFromPartitionMock.mockReset()
@@ -209,7 +209,7 @@ describe('BrowserSessionRegistry', () => {
   })
 
   it('deletes a non-default profile and its remembered site answers', async () => {
-    configureBrowserSitePermissionStore(mkdtempSync(join(tmpdir(), 'orca-site-permissions-')))
+    configureBrowserSitePermissionStore(mkdtempSync(join(tmpdir(), 'topo-site-permissions-')))
     const profile = await browserSessionRegistry.createProfile('isolated', 'Delete Test')
     expect(profile).not.toBeNull()
     expect(browserSessionRegistry.isAllowedPartition(profile!.partition)).toBe(true)
@@ -236,7 +236,7 @@ describe('BrowserSessionRegistry', () => {
 
     expect(concurrent).toBe(first)
     expect(repoProfile.partition).not.toBe(first.partition)
-    expect(isValidPersistedBrowserSessionProfile(first, DEFAULT_LOCAL_ORCA_PROFILE_ID)).toBe(true)
+    expect(isValidPersistedBrowserSessionProfile(first, DEFAULT_LOCAL_TOPO_PROFILE_ID)).toBe(true)
 
     expect(await deleteManagedBrowserProfile(owner)).toBe(true)
     expect(browserSessionRegistry.isAllowedPartition(first.partition)).toBe(false)

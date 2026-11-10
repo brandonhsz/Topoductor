@@ -13,7 +13,7 @@ import {
   type WslDefaultDistro
 } from './wsl-default-distro'
 
-// A user act for a default distro Orca couldn't name; its gated runs pass, nothing else's do.
+// A user act for a default distro Topo couldn't name; its gated runs pass, nothing else's do.
 const UNRESOLVED_DEFAULT_DISTRO = '\u0000unresolved-default'
 const DEFAULT_DISTRO_LABEL = 'the default distro'
 

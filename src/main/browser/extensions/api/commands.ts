@@ -25,7 +25,7 @@ import {
 import { runBrowserExtensionToolbarAction } from '../actions/browser-extension-toolbar'
 import { noteBrowserExtensionUserGesture } from '../permissions/browser-extension-user-gesture'
 
-function isOrcaShortcut(input: Electron.Input): boolean {
+function isTopoShortcut(input: Electron.Input): boolean {
   const overrides = browserManager.getKeybindingOverrides()
   return KEYBINDING_DEFINITIONS.some((definition) =>
     keybindingMatchesAction(definition.id, input, process.platform, overrides)
@@ -46,7 +46,7 @@ function findCommand(
   return null
 }
 
-/** Shortcut keys typed into a tab or popout in an extension session; Orca's shortcuts win. */
+/** Shortcut keys typed into a tab or popout in an extension session; Topo's shortcuts win. */
 export function observeBrowserExtensionCommands(contents: Electron.WebContents): void {
   contents.on('before-input-event', (event, input) => {
     if (
@@ -60,7 +60,7 @@ export function observeBrowserExtensionCommands(contents: Electron.WebContents):
     const session = contents.session
     const browserProfileId = getBrowserExtensionProfileIdForSession(session)
     const match = browserProfileId ? findCommand(session, input) : null
-    if (!browserProfileId || !match || isOrcaShortcut(input)) {
+    if (!browserProfileId || !match || isTopoShortcut(input)) {
       return
     }
     event.preventDefault()

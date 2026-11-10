@@ -19,7 +19,7 @@ function call(
     services: bindPluginHostServices({
       // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: statusBar.update never reaches the runtime delegate.
       delegate: {} as PluginRuntimeDelegate,
-      pluginsDataDir: mkdtempSync(join(tmpdir(), 'orca-status-bar-methods-')),
+      pluginsDataDir: mkdtempSync(join(tmpdir(), 'topo-status-bar-methods-')),
       statusBar: options.state === undefined ? new PluginStatusBarState() : options.state,
       declaredStatusBarItemIds: ['blocked']
     }),

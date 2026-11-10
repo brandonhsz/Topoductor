@@ -13,7 +13,7 @@ import { loadMainLayoutModel } from '../testing/main-loaded-layout-frames.test-f
 import { endLayoutFramePositions } from './layout-frame-position'
 import { openWorkspaceLayoutFrameSync } from './workspace-layout-frame-sync'
 
-vi.mock('../../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 // Main's answer to the window's layout commands and its frames, as a switch-on build sends them.
 vi.mock('@/runtime/rpc/calls/runtime-rpc-call', async (importOriginal) =>
   (

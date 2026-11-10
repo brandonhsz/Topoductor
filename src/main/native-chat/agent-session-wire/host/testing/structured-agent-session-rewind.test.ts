@@ -61,7 +61,7 @@ beforeEach(async () => {
   rewind.mockReset().mockResolvedValue({ ok: true })
   recoverRewind.mockReset().mockResolvedValue({ ok: true })
   acquires = []
-  directory = await mkdtemp(join(tmpdir(), 'orca-rewind-'))
+  directory = await mkdtemp(join(tmpdir(), 'topo-rewind-'))
   store = await openTestAgentSessionRecordStore(directory)
   adapter = startsWhenPublished(
     {
@@ -368,6 +368,6 @@ it('completes an inherited rewind saved by the PR1 build with an atomic survivin
     projectForkMarker(reopened.snapshot(), readForkMarker(store, HOST_TEST_SESSION)).items.map(
       (item) => item.itemId
     )
-  ).toEqual(['codex:019fd532-7c11-7a90-b6de-4e1a2c3d5f60:kept:0', 'orca:forked-from'])
+  ).toEqual(['codex:019fd532-7c11-7a90-b6de-4e1a2c3d5f60:kept:0', 'topo:forked-from'])
   await reopened.close()
 })

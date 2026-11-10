@@ -10,7 +10,7 @@ export function getBrowserPasswordsTitle(t: Translate = translate): string {
 export function getBrowserPasswordsDescription(t: Translate = translate): string {
   return t(
     'settings.browser.passwords.description',
-    'Saved logins for Orca’s browser: add, import, edit and delete them.'
+    'Saved logins for Topo’s browser: add, import, edit and delete them.'
   )
 }
 

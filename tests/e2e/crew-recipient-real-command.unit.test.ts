@@ -6,7 +6,7 @@ import {
 import { mkdtempSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import * as profileStorage from '../../src/main/orca-profiles/profile-storage-paths'
+import * as profileStorage from '../../src/main/topo-profiles/profile-storage-paths'
 import { randomUUID } from 'node:crypto'
 
 import { releaseAgentSessionRecordStore } from '../../src/main/runtime/agent-session/records/agent-session-record-store-slot'
@@ -31,7 +31,7 @@ afterEach(async () => {
 
 it('publishes a restored session peer in the first completed Crew frame', async () => {
   const fixtureNow = 1_700_000_000_000
-  const directory = mkdtempSync(join(tmpdir(), 'orca-restored-crew-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-restored-crew-'))
   const profilePath = vi.spyOn(profileStorage, 'getProfileUserDataPath').mockReturnValue(directory)
   const h = createSessionCallerHarness({ current: null })
   hostRef.current = null
@@ -71,15 +71,15 @@ it('publishes a restored session peer in the first completed Crew frame', async 
     }
     released.journalDatabase.close()
     h.db.insertMessage({
-      from: `orca_session_id:${ids[1]}`,
-      to: `orca_session_id:${ids[0]}`,
+      from: `topo_session_id:${ids[1]}`,
+      to: `topo_session_id:${ids[0]}`,
       subject: 'saved peer',
       body: 'cold L'
     })
     const received: OrchestrationCrewFrame[] = []
     const completed = Promise.withResolvers<void>()
     subscription = ORCHESTRATION_CREW_METHODS[0].handler(
-      { party: `orca_session_id:${ids[0]}` },
+      { party: `topo_session_id:${ids[0]}` },
       { runtime: h.runtime, signal: controller.signal },
       (value) => {
         const frame = CrewFrame.parse(value)
@@ -95,7 +95,7 @@ it('publishes a restored session peer in the first completed Crew frame', async 
       received
         .flatMap((frame) => (frame.type === 'rows' ? frame.rows : []))
         .find((row) => row.latest?.preview === 'cold L')?.sendAddress
-    ).toBe(`orca_session_id:${ids[1]}`)
+    ).toBe(`topo_session_id:${ids[1]}`)
   } finally {
     controller.abort()
     await subscription

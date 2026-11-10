@@ -4,7 +4,7 @@ import * as path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type * as CheckoutGitConfig from '../wsl-windows-checkout-git-config'
 import type * as GitRunner from '../command-runner/git-stream-stdout'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { createDebouncedBatch } from '../../ipc/filesystem/watchers/filesystem-watcher-batch-control'
 import { watcherLifecycleState } from '../../ipc/filesystem/watchers/filesystem-watcher-lifecycle-state'
 import { getLocalWatcherRoot } from '../../ipc/filesystem/watchers/filesystem-watcher-paths'
@@ -59,7 +59,7 @@ describe('drive checkout suspect paths with real Git', () => {
   }
 
   beforeEach(async () => {
-    repo = await mkdtemp(path.join(tmpdir(), 'orca-suspect-git-'))
+    repo = await mkdtemp(path.join(tmpdir(), 'topo-suspect-git-'))
     await git(['init', '-q'])
     await git(['config', 'user.email', 'test@example.com'])
     await git(['config', 'user.name', 'Test User'])

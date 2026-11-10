@@ -17,7 +17,7 @@ import { AgentSessionAttachmentStore } from '../native-chat/agent-session-attach
 describe('a long paste saved as a file', () => {
   let root: string
   beforeEach(() => {
-    root = mkdtempSync(path.join(tmpdir(), 'orca-pasted-text-'))
+    root = mkdtempSync(path.join(tmpdir(), 'topo-pasted-text-'))
     installFakeAppEnvironment({ getPath: () => root })
     mocks.upload.mockReset()
   })

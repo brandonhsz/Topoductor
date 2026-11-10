@@ -71,7 +71,7 @@ import type { TerminalHandleAccess } from '../agent-senders/runtime-agent-sender
 
 import { RuntimeConstructionServices } from './runtime-construction-services'
 
-export abstract class OrcaRuntimeWithRuntimeId extends RuntimeConstructionServices {
+export abstract class TopoRuntimeWithRuntimeId extends RuntimeConstructionServices {
   protected getLeafKey(tabId: string, leafId: string): string {
     return `${tabId}::${leafId}`
   }
@@ -258,7 +258,7 @@ export abstract class OrcaRuntimeWithRuntimeId extends RuntimeConstructionServic
   protected pendingMobileSessionPtyAggregateInventoryRefresh: Promise<PtyControllerInventory | null> | null =
     null
 
-  /** Rank launch authority first, then foreground evidence for agents Orca did not launch. */
+  /** Rank launch authority first, then foreground evidence for agents Topo did not launch. */
   getPaneTerminalAgent(ptyId: string | null | undefined): TerminalAgent | null {
     const pty = ptyId ? this.ptysById.get(ptyId) : undefined
     return pty?.launchAgent ?? pty?.foregroundAgent ?? pty?.launchCommandAgent ?? null

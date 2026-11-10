@@ -26,7 +26,7 @@ it.each(['live', 'unverifiable', 'exited'] as const)(
       const post = async (source: string, event: string, session: string) => {
         const response = await fetch(`http://127.0.0.1:${port}/hook/${source}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Orca-Agent-Hook-Token': token },
+          headers: { 'Content-Type': 'application/json', 'X-Topo-Agent-Hook-Token': token },
           body: JSON.stringify({
             paneKey,
             tabId: 'tab-1',
@@ -93,7 +93,7 @@ it.each(['live', 'unverifiable', 'suspended'] as const)(
       const post = async (source: string, event: string, session: string) => {
         const response = await fetch(`http://127.0.0.1:${port}/hook/${source}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Orca-Agent-Hook-Token': token },
+          headers: { 'Content-Type': 'application/json', 'X-Topo-Agent-Hook-Token': token },
           body: JSON.stringify({
             paneKey,
             tabId: 'tab-1',

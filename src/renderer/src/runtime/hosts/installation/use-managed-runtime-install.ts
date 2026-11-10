@@ -38,7 +38,7 @@ import {
 import { useHostStructuredAgent } from '../../native-chat/agent-catalogs/use-host-structured-agent'
 
 export type ManagedRuntimeInstallObservation =
-  /** Orca provides no runtime for this agent on this host, or the host cannot install one. */
+  /** Topo provides no runtime for this agent on this host, or the host cannot install one. */
   | { kind: 'inactive' }
   /** A reachable host has not yet answered its capabilities or agent list. */
   | { kind: 'pending' }
@@ -61,7 +61,7 @@ const localInstallCapable = (): boolean | null =>
 const localRemoveCapable = (): boolean =>
   readLocalRuntimeCapabilities().includes(MANAGED_RUNTIME_REMOVE_RUNTIME_CAPABILITY)
 
-/** The install state of the runtime Orca provides for `agent` on the target's host. Subscribes
+/** The install state of the runtime Topo provides for `agent` on the target's host. Subscribes
  *  only while `shown`, so a hidden chat holds no subscription. */
 export function useManagedRuntimeInstall(
   target: RuntimeClientTarget,

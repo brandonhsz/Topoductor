@@ -9,7 +9,7 @@ export function installNativeChatVisualGuestTheme(
   ipc: Pick<IpcRenderer, 'sendSync' | 'on'>,
   frame: Pick<WebFrame, 'insertCSS' | 'removeInsertedCSS'>
 ): void {
-  if (!process.isMainFrame || !/^(file:|orca-preview:)/.test(globalThis.location?.href ?? '')) {
+  if (!process.isMainFrame || !/^(file:|topo-preview:)/.test(globalThis.location?.href ?? '')) {
     return
   }
   const initial: NativeChatVisualGuestTheme | null = ipc.sendSync(

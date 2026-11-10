@@ -5,8 +5,8 @@ import type {
 } from '../../../../../../shared/ai-vault/contracts/ai-vault-types'
 
 const store = vi.hoisted(() => {
-  const listeners = new Set<(state: { activeOrcaProfileId: string | null }) => void>()
-  const state: { activeOrcaProfileId: string | null } = { activeOrcaProfileId: 'profile-1' }
+  const listeners = new Set<(state: { activeTopoProfileId: string | null }) => void>()
+  const state: { activeTopoProfileId: string | null } = { activeTopoProfileId: 'profile-1' }
   return {
     state,
     useAppStore: {
@@ -131,7 +131,7 @@ async function loadModule() {
 }
 
 beforeEach(() => {
-  store.state.activeOrcaProfileId = 'profile-1'
+  store.state.activeTopoProfileId = 'profile-1'
 })
 
 afterEach(() => {

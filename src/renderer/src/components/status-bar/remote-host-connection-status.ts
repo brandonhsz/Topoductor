@@ -67,7 +67,7 @@ export function runtimeHostBlockedCopy(
         'auto.components.status.bar.RuntimeHostStatusRow.access_revoked_summary',
         'This server revoked access for this computer'
       ),
-      // Why: Orca pairs a managed server over SSH by itself; it reaches here only when that failed.
+      // Why: Topo pairs a managed server over SSH by itself; it reaches here only when that failed.
       explanation:
         repairRoute === 'access-link'
           ? t(
@@ -77,7 +77,7 @@ export function runtimeHostBlockedCopy(
           : repairRoute === 'ssh'
             ? t(
                 'auto.components.status.bar.RuntimeHostStatusRow.managed_access_revoked_explanation',
-                "Orca couldn't pair with it again over SSH. Connect to try again."
+                "Topo couldn't pair with it again over SSH. Connect to try again."
               )
             : t(
                 'auto.components.status.bar.RuntimeHostStatusRow.connect_access_revoked_explanation',
@@ -93,12 +93,12 @@ export function runtimeHostBlockedCopy(
       ),
       summary: t(
         'auto.components.status.bar.RuntimeHostStatusRow.server_replaced_summary',
-        'This host now runs a different Orca server than the one this computer paired with'
+        'This host now runs a different Topo server than the one this computer paired with'
       ),
       // Why: SSH access alone can't re-pin another server key, so reconnecting can't fix this.
       explanation: t(
         'auto.components.status.bar.RuntimeHostStatusRow.server_replaced_explanation',
-        'Orca connects to the host as a different SSH user, or its server was reinstalled. In Settings › Remote Orca Servers, open the ⋯ menu on this server and choose Forget…, then connect the SSH host to pair with its current server.'
+        'Topo connects to the host as a different SSH user, or its server was reinstalled. In Settings › Remote Topo Servers, open the ⋯ menu on this server and choose Forget…, then connect the SSH host to pair with its current server.'
       )
     }
   }
@@ -106,11 +106,11 @@ export function runtimeHostBlockedCopy(
     label: t('auto.components.status.bar.RuntimeHostStatusRow.update_required', 'Update required'),
     summary: t(
       'auto.components.status.bar.RuntimeHostStatusRow.update_required_summary',
-      'Orca versions are not compatible'
+      'Topo versions are not compatible'
     ),
     explanation: t(
       'auto.components.status.bar.RuntimeHostStatusRow.update_required_explanation',
-      'Update Orca on this computer or on the server, then connect again.'
+      'Update Topo on this computer or on the server, then connect again.'
     ),
     ...(compatibility?.kind === 'blocked'
       ? { detail: describeRuntimeCompatBlock(compatibility, t) }

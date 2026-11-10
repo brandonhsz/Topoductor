@@ -99,7 +99,7 @@ export async function verifyWorkerStartCardScenario(input: {
     expect(reopened.items.filter(({ body }) => body.kind !== 'tool-call')).toEqual(
       snapshot.items.filter(({ body }) => body.kind !== 'tool-call')
     )
-    const recovered = reopened.items.find(({ itemId }) => itemId === 'orca:caller-1')
+    const recovered = reopened.items.find(({ itemId }) => itemId === 'topo:caller-1')
     expect(recovered).toEqual({
       ...snapshot.items[1],
       revision: snapshot.items[1].revision + 1,
@@ -122,7 +122,7 @@ export async function verifyWorkerStartCardScenario(input: {
   if (scenario === 'success') {
     for (let index = 0; index < 3; index++) {
       await journal.appendItem(
-        { provider: 'orca', clientMessageId: `pressure-${index}` },
+        { provider: 'topo', clientMessageId: `pressure-${index}` },
         {
           kind: 'message',
           role: 'assistant',
@@ -151,7 +151,7 @@ export async function verifyWorkerStartCardScenario(input: {
     expect(older.page.items.find(({ itemId }) => itemId === card.itemId)).toEqual(card)
   }
   await journal.appendTombstone(
-    { provider: 'orca', clientMessageId: `agent-start:${card.body.dispatchId}` },
+    { provider: 'topo', clientMessageId: `agent-start:${card.body.dispatchId}` },
     { fence: current.store.getConversation(COORD)!.currentFence }
   )
   if (scenario === 'success') {

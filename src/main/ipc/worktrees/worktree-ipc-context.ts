@@ -1,6 +1,6 @@
 import type { BrowserWindow } from 'electron'
 import type { Store } from '../../persistence/loading-store/store'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import type { RuntimeWorktreeLifecycleEvent } from '../../runtime/workspaces/lifecycle/worktree-lifecycle-event'
 import type { SenderScopedRequestCancellations } from '../sender-scoped-request-cancellation'
 import type { WorktreeRemovalInFlight } from './removal/worktree-removal-coordinator'
@@ -8,7 +8,7 @@ import type { WorktreeRemovalInFlight } from './removal/worktree-removal-coordin
 export type WorktreeIpcContext = {
   mainWindow: BrowserWindow
   store: Store
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   options?: {
     onWorktreeLifecycle?: (event: RuntimeWorktreeLifecycleEvent) => void
   }

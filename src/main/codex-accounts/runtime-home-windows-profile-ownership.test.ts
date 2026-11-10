@@ -15,7 +15,7 @@ vi.mock('../windows/windows-native-registry', () => ({
 
 const originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform')
 const originalCodexHome = process.env.CODEX_HOME
-const originalOrcaCodexHome = process.env.ORCA_CODEX_HOME
+const originalTopoCodexHome = process.env.TOPO_CODEX_HOME
 const temporaryProfiles: string[] = []
 
 afterEach(() => {
@@ -23,7 +23,7 @@ afterEach(() => {
     Object.defineProperty(process, 'platform', originalPlatform)
   }
   restoreEnv('CODEX_HOME', originalCodexHome)
-  restoreEnv('ORCA_CODEX_HOME', originalOrcaCodexHome)
+  restoreEnv('TOPO_CODEX_HOME', originalTopoCodexHome)
   __resetPowerShellProfileEnvCache()
   vi.unstubAllEnvs()
   for (const path of temporaryProfiles.splice(0)) {
@@ -66,14 +66,14 @@ describe('Windows System Default Codex home ownership', () => {
 function createWindowsService(): CodexRuntimeHomeService {
   Object.defineProperty(process, 'platform', { configurable: true, value: 'win32' })
   delete process.env.CODEX_HOME
-  delete process.env.ORCA_CODEX_HOME
+  delete process.env.TOPO_CODEX_HOME
   const service = Object.create(CodexRuntimeHomeService.prototype) as CodexRuntimeHomeService
   Object.defineProperty(service, 'store', { value: createStore() })
   return service
 }
 
 function createUserProfile(): string {
-  const userProfile = mkdtempSync(join(tmpdir(), 'orca-win-profile-'))
+  const userProfile = mkdtempSync(join(tmpdir(), 'topo-win-profile-'))
   temporaryProfiles.push(userProfile)
   // Sandbox all-user profiles and process-wide path checks too.
   vi.stubEnv('USERPROFILE', userProfile)

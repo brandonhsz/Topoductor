@@ -13,7 +13,7 @@ function readAppDirArg(argv) {
     return explicit.slice('--app-dir='.length)
   }
   if (process.platform === 'darwin') {
-    return 'dist/mac-arm64/Orca.app'
+    return 'dist/mac-arm64/Topo.app'
   }
   if (process.platform === 'win32') {
     return 'dist/win-unpacked'
@@ -23,16 +23,16 @@ function readAppDirArg(argv) {
 
 function getPackagedCliPath(appDir) {
   if (process.platform === 'darwin' || appDir.endsWith('.app')) {
-    return join(appDir, 'Contents', 'Resources', 'bin', 'orca')
+    return join(appDir, 'Contents', 'Resources', 'bin', 'topo')
   }
   if (process.platform === 'win32') {
-    return join(appDir, 'resources', 'bin', 'orca.exe')
+    return join(appDir, 'resources', 'bin', 'topo.exe')
   }
-  return join(appDir, 'resources', 'bin', 'orca-ide')
+  return join(appDir, 'resources', 'bin', 'topo-ide')
 }
 
 const appDir = resolve(readAppDirArg(process.argv.slice(2)))
-const tempRoot = await mkdtemp(join(tmpdir(), 'orca-packaged-cli-smoke-'))
+const tempRoot = await mkdtemp(join(tmpdir(), 'topo-packaged-cli-smoke-'))
 const copiedAppDir = join(tempRoot, basename(appDir))
 
 let smokeFailure = null
@@ -40,7 +40,7 @@ try {
   await cp(appDir, copiedAppDir, { recursive: true, verbatimSymlinks: true })
   const cliPath = getPackagedCliPath(copiedAppDir)
   const env = { ...process.env, NODE_PATH: '' }
-  delete env.ORCA_CLI_CWD
+  delete env.TOPO_CLI_CWD
   const run = (args) =>
     execFileAsync(cliPath, args, {
       env,
@@ -51,20 +51,20 @@ try {
 
   await run(['--help'])
   const list = JSON.parse((await run(['skills', 'list', '--json'])).stdout)
-  assert(list.topics.some((topic) => topic.name === 'orca-cli'))
-  assert.match((await run(['skills', 'get', 'orca-cli'])).stdout, /name: orca-cli/)
+  assert(list.topics.some((topic) => topic.name === 'topo-cli'))
+  assert.match((await run(['skills', 'get', 'topo-cli'])).stdout, /name: topo-cli/)
   assert.match(
-    (await run(['skills', 'get', 'orca-computer-use'])).stdout,
-    /name: orca-computer-use/
+    (await run(['skills', 'get', 'topo-computer-use'])).stdout,
+    /name: topo-computer-use/
   )
-  assert.match((await run(['skills', 'get', 'computer-use'])).stdout, /name: orca-computer-use/)
+  assert.match((await run(['skills', 'get', 'computer-use'])).stdout, /name: topo-computer-use/)
   const install = JSON.parse(
     (
       await run([
         'skills',
         'install',
         '--skill',
-        'orca-cli',
+        'topo-cli',
         '--agent',
         'codex',
         '--dry-run',
@@ -73,7 +73,7 @@ try {
     ).stdout
   )
   const update = JSON.parse(
-    (await run(['skills', 'update', '--skill', 'orca-cli', '--dry-run', '--json'])).stdout
+    (await run(['skills', 'update', '--skill', 'topo-cli', '--dry-run', '--json'])).stdout
   )
   assert.equal(install.executed, false)
   assert.equal(update.executed, false)
@@ -82,7 +82,7 @@ try {
   smokeFailure = error
 }
 
-// Retry Windows cleanup locks from just-exited Orca.exe/crashpad descendants; persistent lock still throws unless it would mask smoke’s original failure.
+// Retry Windows cleanup locks from just-exited Topo.exe/crashpad descendants; persistent lock still throws unless it would mask smoke’s original failure.
 const cleanupFailure = await rm(tempRoot, {
   recursive: true,
   force: true,

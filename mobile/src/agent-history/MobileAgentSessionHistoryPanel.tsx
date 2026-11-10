@@ -353,7 +353,7 @@ function MobileAgentSessionHistoryPanelContent({
           title={t('agentHistory.panel.unavailable', 'Agent Session History Unavailable')}
           message={t(
             'agentHistory.panel.updateHost',
-            'Update Orca on this host to browse agent session history.'
+            'Update Topo on this host to browse agent session history.'
           )}
         />
       ) : screenState.kind === 'error' && connState !== 'connected' ? (

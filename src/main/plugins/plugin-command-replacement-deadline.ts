@@ -5,14 +5,14 @@ type ReplacementRun = {
   action: string
   /** The handler already ran the replaced action itself via `commands.run`. */
   ranAction: boolean
-  /** The deadline passed first, so the renderer runs Orca's own action instead. */
+  /** The deadline passed first, so the renderer runs Topo's own action instead. */
   abandoned: boolean
 }
 
 const running = new Set<ReplacementRun>()
 
 /**
- * Runs a command that replaces built-in `action`, for a renderer that runs Orca's own action
+ * Runs a command that replaces built-in `action`, for a renderer that runs Topo's own action
  * when this rejects. Past `deadline` (epoch ms) it rejects, and the still-running handler may no
  * longer run `action` through `commands.run`, so the person never gets the action twice.
  */
@@ -55,7 +55,7 @@ export function runPluginReplacementWithinDeadline(
   return Promise.race([work, late]).finally(() => clearTimeout(timer))
 }
 
-/** Called before a worker's `commands.run`: refuses an action Orca already ran in its place. */
+/** Called before a worker's `commands.run`: refuses an action Topo already ran in its place. */
 export function claimPluginReplacedActionRun(pluginKey: string, action: string): void {
   const runs = [...running].filter(
     (entry) => entry.pluginKey === pluginKey && entry.action === action
@@ -63,7 +63,7 @@ export function claimPluginReplacedActionRun(pluginKey: string, action: string):
   if (runs.some((entry) => entry.abandoned)) {
     throw new PluginHostCallError(
       'unavailable',
-      `Orca already ran ${action} itself: the replacing command did not finish in time`
+      `Topo already ran ${action} itself: the replacing command did not finish in time`
     )
   }
   // Why only the oldest: with two presses in flight, one handler's run must not also count as

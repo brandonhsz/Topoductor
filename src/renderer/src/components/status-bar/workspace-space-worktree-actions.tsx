@@ -54,7 +54,7 @@ export function WorkspaceSpaceWorktreeMenuItems({
               : !canOpenWorkspace
                 ? t(
                     'workspaceSpace.delete.unmanaged',
-                    'This workspace is no longer managed by Orca.'
+                    'This workspace is no longer managed by Topo.'
                   )
                 : t(
                     'workspaceSpace.delete.unavailable',

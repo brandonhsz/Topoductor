@@ -2,7 +2,7 @@ import {
   claimSpareDocument,
   discardSpareDocument,
   prepareSpareDocument
-} from '../../modules/orca-mobile-web-shell/src/spare-document'
+} from '../../modules/topo-mobile-web-shell/src/spare-document'
 import type { GenerationStore } from './generation-store'
 import { generationDirectoryPath } from './generation-store-file-system'
 import { deriveHostCacheKey } from './host-cache-key'

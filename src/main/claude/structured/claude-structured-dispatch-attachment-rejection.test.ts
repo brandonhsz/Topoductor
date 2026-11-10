@@ -26,7 +26,7 @@ describe('Claude structured dispatch attachment rejections', () => {
   })
 
   it('rejects local images whose aggregate size exceeds twenty MiB', async () => {
-    const directory = await mkdtemp(join(tmpdir(), 'orca-claude-images-'))
+    const directory = await mkdtemp(join(tmpdir(), 'topo-claude-images-'))
     try {
       const paths = await Promise.all(
         Array.from({ length: 5 }, async (_, index) => {
@@ -56,7 +56,7 @@ describe('Claude structured dispatch attachment rejections', () => {
   })
 
   it('rejects a local image by actual bytes read beyond the per-image cap', async () => {
-    const directory = await mkdtemp(join(tmpdir(), 'orca-claude-image-'))
+    const directory = await mkdtemp(join(tmpdir(), 'topo-claude-image-'))
     try {
       const path = join(directory, 'oversized.png')
       await writeFile(path, Buffer.alloc(5 * 1024 * 1024 + 1))
@@ -82,7 +82,7 @@ describe('Claude structured dispatch attachment rejections', () => {
   it('rejects an attachment it cannot read with the generic sentence and no path', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const session = sessionFor()
-    const path = join(tmpdir(), 'orca-claude-image-missing', 'gone.png')
+    const path = join(tmpdir(), 'topo-claude-image-missing', 'gone.png')
 
     await expect(
       dispatchClaudeTurn(session, {

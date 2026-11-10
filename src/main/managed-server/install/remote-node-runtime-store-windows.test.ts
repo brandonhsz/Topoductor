@@ -11,7 +11,7 @@ import { removeTreeSync } from '../../../shared/windows-transient-lock-removal'
 const sha = (c: string): string => c.repeat(64)
 
 const powerShell = [
-  process.env.ORCA_POWERSHELL_EXECUTABLE,
+  process.env.TOPO_POWERSHELL_EXECUTABLE,
   ...(process.platform === 'win32' ? ['powershell.exe', 'pwsh.exe'] : ['pwsh'])
 ].find(
   (candidate) =>
@@ -24,7 +24,7 @@ const powerShell = [
 describe.runIf(powerShell)('Windows runtime store commands (real PowerShell)', () => {
   let home: string
   beforeEach(() => {
-    home = mkdtempSync(join(tmpdir(), 'orca-win-store-'))
+    home = mkdtempSync(join(tmpdir(), 'topo-win-store-'))
   })
   afterEach(() => {
     removeTreeSync(home)
@@ -44,7 +44,7 @@ describe.runIf(powerShell)('Windows runtime store commands (real PowerShell)', (
     'holds a runtime whose node.exe is running, found by its image path',
     { timeout: 120_000 },
     async () => {
-      const remote = join(home, '.orca-remote')
+      const remote = join(home, '.topo-remote')
       const entry = join(remote, 'runtimes', `node-${sha('d')}`)
       mkdirSync(entry, { recursive: true })
       const exe = join(entry, 'node.exe')

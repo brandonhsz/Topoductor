@@ -43,8 +43,8 @@ function worktree(
   }
 }
 
-const local = repo('orca-local', 'orca')
-const server = repo('orca-server', 'orca', 'runtime:build-box')
+const local = repo('topo-local', 'topo')
+const server = repo('topo-server', 'topo', 'runtime:build-box')
 
 /** A new workspace on this Mac may nest under a workspace on a paired server. */
 export const parentOnAnotherMachine = defineFixture({
@@ -52,10 +52,10 @@ export const parentOnAnotherMachine = defineFixture({
   store: {
     repos: [local, server],
     worktreesByRepo: {
-      [local.id]: [worktree('orca-local::/src/fix-login', local.id, 'fix-login', 'local')],
+      [local.id]: [worktree('topo-local::/src/fix-login', local.id, 'fix-login', 'local')],
       [server.id]: [
         worktree(
-          'orca-server::/work/fix-login-tests',
+          'topo-server::/work/fix-login-tests',
           server.id,
           'fix-login-tests',
           'runtime:build-box'

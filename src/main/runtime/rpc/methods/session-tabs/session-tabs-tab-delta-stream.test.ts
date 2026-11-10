@@ -2,7 +2,7 @@ import { RuntimeClientCapabilities } from '../../runtime-client-capabilities'
 import { RUNTIME_CLIENT_CAPABILITY_METHODS } from '../client-events/runtime-client-capabilities'
 import { visibleSnapshot } from './session-tabs-snapshot.test-fixture'
 import { describe, expect, it, vi } from 'vitest'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import '../../../../../shared/protocol-version'
 import {
   SESSION_TABS_RETIREMENT_PROOF_DELTA_RUNTIME_CAPABILITY,
@@ -78,7 +78,7 @@ describe.each(['session.tabs.subscribe', 'session.tabs.subscribeAll'] as const)(
             listener = callback
             return () => {}
           }
-        } as unknown as OrcaRuntimeService
+        } as unknown as TopoRuntimeService
         const dispatcher = new RpcDispatcher({
           runtime,
           methods: [...SESSION_TAB_METHODS, ...RUNTIME_CLIENT_CAPABILITY_METHODS]

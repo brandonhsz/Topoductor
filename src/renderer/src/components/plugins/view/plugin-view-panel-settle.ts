@@ -113,7 +113,7 @@ export async function settlePluginPanel(
   await nextPaintedFrames()
 }
 
-// Why a cap: a theme Orca cannot apply must not hold the shot forever.
+// Why a cap: a theme Topo cannot apply must not hold the shot forever.
 const COLOR_SCHEME_MAX_FRAMES = 60
 
 /** Frames until the document shows the asked color scheme, so the capture is of that repaint. */

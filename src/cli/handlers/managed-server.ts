@@ -1,13 +1,13 @@
 import type {
-  OrcadManagedCancelStopResult,
-  OrcadManagedDeployResult,
-  OrcadManagedForgetResult,
-  OrcadManagedRecoveryResult,
-  OrcadManagedRollbackResult,
-  OrcadManagedRuntimeStatus,
-  OrcadManagedStopResult
-} from '../../shared/orcad-managed-runtime'
-import { ORCAD_RECOVERY_CHANGED_STATE_CODE } from '../../shared/orcad-managed-runtime'
+  TopodManagedCancelStopResult,
+  TopodManagedDeployResult,
+  TopodManagedForgetResult,
+  TopodManagedRecoveryResult,
+  TopodManagedRollbackResult,
+  TopodManagedRuntimeStatus,
+  TopodManagedStopResult
+} from '../../shared/topod-managed-runtime'
+import { TOPOD_RECOVERY_CHANGED_STATE_CODE } from '../../shared/topod-managed-runtime'
 import { MANAGED_SERVER_RUNTIME_CAPABILITY } from '../../shared/protocol-version'
 import type { RuntimeStatus } from '../../shared/runtime-session-contracts'
 import type { CommandHandler, HandlerContext } from '../dispatch'
@@ -18,7 +18,7 @@ import { formatManagedServerStatus } from './managed-server-format'
 import { reportAfterClosedConnection } from './managed-server-reconnect'
 
 const UNSUPPORTED_MESSAGE =
-  'This Orca runtime cannot manage servers over SSH. Run this on the computer whose Orca desktop app deployed the server, after updating Orca there.'
+  'This Topo runtime cannot manage servers over SSH. Run this on the computer whose Topo desktop app deployed the server, after updating Topo there.'
 
 // Windows promotion and readiness waits can take ten minutes; allow headroom on slow hosts.
 export const MANAGED_SERVER_ACTION_TIMEOUT_MS = 20 * 60_000
@@ -52,7 +52,7 @@ async function callManagedServer<TResult>(
     if (!readOnly && error instanceof RuntimeClientError && error.code === 'runtime_timeout') {
       throw new RuntimeClientError(
         'managed_server_in_progress',
-        'Stopped waiting, but the desktop may still be running this action. Check `orca environment status` before retrying.'
+        'Stopped waiting, but the desktop may still be running this action. Check `topo environment status` before retrying.'
       )
     }
     throw error
@@ -92,7 +92,7 @@ function report<TResult extends Outcome, TSettled extends TResult['outcome']>(
 ): void {
   const result = response.result
   if (!isSettled(result, settled)) {
-    const reason = result.reason ?? `The managed Orca server action was ${result.outcome}.`
+    const reason = result.reason ?? `The managed Topo server action was ${result.outcome}.`
     const step = nextStep?.(result)
     throw new RuntimeClientError(
       `managed_server_${result.outcome}`,
@@ -112,7 +112,7 @@ function isSettled<TResult extends Outcome, TSettled extends TResult['outcome']>
 
 export const MANAGED_SERVER_HANDLERS: Record<string, CommandHandler> = {
   'environment status': async (context) => {
-    const response = await callManagedServer<OrcadManagedRuntimeStatus>(
+    const response = await callManagedServer<TopodManagedRuntimeStatus>(
       context,
       'managedServer.status',
       selectorOf(context)
@@ -121,7 +121,7 @@ export const MANAGED_SERVER_HANDLERS: Record<string, CommandHandler> = {
   },
   'environment update': async (context) => {
     const params = { ...selectorOf(context), force: context.flags.get('force') === true }
-    const response = await callExpectingRestart<OrcadManagedDeployResult>(
+    const response = await callExpectingRestart<TopodManagedDeployResult>(
       context,
       'managedServer.update',
       params
@@ -136,7 +136,7 @@ export const MANAGED_SERVER_HANDLERS: Record<string, CommandHandler> = {
     )
   },
   'environment rollback': async (context) => {
-    const response = await callExpectingRestart<OrcadManagedRollbackResult>(
+    const response = await callExpectingRestart<TopodManagedRollbackResult>(
       context,
       'managedServer.rollback',
       selectorOf(context)
@@ -160,7 +160,7 @@ export const MANAGED_SERVER_HANDLERS: Record<string, CommandHandler> = {
         `Restoring ${params.selector}'s prelaunch snapshot discards what the rejected build changed. Re-run with --yes to confirm.`
       )
     }
-    const response = await callManagedServer<OrcadManagedRecoveryResult>(
+    const response = await callManagedServer<TopodManagedRecoveryResult>(
       context,
       'managedServer.recover',
       acceptChangedState ? { ...params, acceptChangedState } : params
@@ -174,7 +174,7 @@ export const MANAGED_SERVER_HANDLERS: Record<string, CommandHandler> = {
           ? `Recovered ${result.environment.name} (${result.resolution}); active version ${result.activeVersion ?? 'none'}.`
           : 'Nothing to recover.',
       (result) =>
-        !acceptChangedState && 'code' in result && result.code === ORCAD_RECOVERY_CHANGED_STATE_CODE
+        !acceptChangedState && 'code' in result && result.code === TOPOD_RECOVERY_CHANGED_STATE_CODE
           ? 'To restore it from the CLI, re-run with --accept-changed-state --yes.'
           : null
     )
@@ -187,7 +187,7 @@ export const MANAGED_SERVER_HANDLERS: Record<string, CommandHandler> = {
         `Stopping ${params.selector} ends its terminals and unlinks it from this machine. Re-run with --yes to confirm.`
       )
     }
-    const response = await callManagedServer<OrcadManagedStopResult>(
+    const response = await callManagedServer<TopodManagedStopResult>(
       context,
       'managedServer.stop',
       params
@@ -208,7 +208,7 @@ export const MANAGED_SERVER_HANDLERS: Record<string, CommandHandler> = {
         `Forgetting ${params.selector} unlinks it from this machine without stopping it on its host. Re-run with --yes to confirm.`
       )
     }
-    const response = await callManagedServer<OrcadManagedForgetResult>(
+    const response = await callManagedServer<TopodManagedForgetResult>(
       context,
       'managedServer.forget',
       params
@@ -218,11 +218,11 @@ export const MANAGED_SERVER_HANDLERS: Record<string, CommandHandler> = {
       context.json,
       ['forgotten'],
       () =>
-        `Unlinked ${params.selector} from this machine and disconnected its SSH host. The host was not contacted, so orcad may still be running there; connect the host to set its server up again.`
+        `Unlinked ${params.selector} from this machine and disconnected its SSH host. The host was not contacted, so topod may still be running there; connect the host to set its server up again.`
     )
   },
   'environment cancel-stop': async (context) => {
-    const response = await callManagedServer<OrcadManagedCancelStopResult>(
+    const response = await callManagedServer<TopodManagedCancelStopResult>(
       context,
       'managedServer.cancelStop',
       selectorOf(context)
@@ -232,7 +232,7 @@ export const MANAGED_SERVER_HANDLERS: Record<string, CommandHandler> = {
         case 'canceled':
           return `Stop withdrawn; the server keeps serving ${result.activeVersion}.`
         case 'already-stopped':
-          return 'orcad had already exited. Run `orca environment stop --yes` to unlink it.'
+          return 'topod had already exited. Run `topo environment stop --yes` to unlink it.'
         case 'none':
           return 'No stop is pending.'
       }

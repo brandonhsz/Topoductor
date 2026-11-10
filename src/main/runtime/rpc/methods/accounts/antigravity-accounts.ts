@@ -1,6 +1,6 @@
 import { defineMethod, defineStreamingMethod, type RpcContext } from '../../core'
 import { rpcCallerOperationKey } from '../../rpc-caller-identity'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import {
   AntigravityAccountMutationParams,
   AntigravityAccountTargetParams,
@@ -25,7 +25,7 @@ import {
   applyAntigravityChatAuthConfig
 } from '../../../../antigravity/antigravity-chat-auth-settings'
 
-const chatSignInHost = (runtime: OrcaRuntimeService) => ({
+const chatSignInHost = (runtime: TopoRuntimeService) => ({
   launchSources: (signal: AbortSignal) =>
     structuredAgentHostLaunchSources('antigravity', runtime, signal),
   stopLiveChats: () => stopStructuredAgentChats('antigravity', 'Antigravity')

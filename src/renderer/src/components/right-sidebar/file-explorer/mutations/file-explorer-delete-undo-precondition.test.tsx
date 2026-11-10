@@ -54,7 +54,7 @@ afterEach(() => useAppStore.setState(initialState, true))
 
 it('drops an undo whose failure may have applied it, as before', async () => {
   // A timed-out reply may follow a write that landed; replaying could replace a newer file.
-  mocks.write.mockRejectedValue(new Error('Timed out waiting for the remote Orca runtime'))
+  mocks.write.mockRejectedValue(new Error('Timed out waiting for the remote Topo runtime'))
   const { result } = renderHook(() =>
     useFileDeletion({
       activeWorktreeId: worktreeId,

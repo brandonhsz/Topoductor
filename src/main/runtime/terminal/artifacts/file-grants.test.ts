@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { RuntimeTerminalFileGrants } from './file-grants'
 
-const artifactPath = join(tmpdir(), 'orca-grant-ownership.txt')
+const artifactPath = join(tmpdir(), 'topo-grant-ownership.txt')
 
 function createGrants(
   worktreeId = 'folder-1',

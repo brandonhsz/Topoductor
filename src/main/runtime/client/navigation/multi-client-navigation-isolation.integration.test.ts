@@ -6,8 +6,8 @@ import { join } from 'node:path'
 import { afterEach, describe, expect, it, onTestFinished, vi } from 'vitest'
 import { parsePairingCode } from '../../../../shared/remote-runtime/pairing/pairing'
 import type { RuntimeMobileSessionTabsResult } from '../../../../shared/runtime-session-contracts'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from '../../rpc/server/runtime-rpc'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from '../../rpc/server/runtime-rpc'
 import {
   activeTabId,
   authenticate,
@@ -63,7 +63,7 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
 })
 
 describe('paired runtime navigation isolation', () => {
-  const servers: OrcaRuntimeRpcServer[] = []
+  const servers: TopoRuntimeRpcServer[] = []
   const sessions: PairedSession[] = []
   const readers: ResponseReader[] = []
 
@@ -85,7 +85,7 @@ describe('paired runtime navigation isolation', () => {
     const focusTerminal = vi.fn((nextTabId: string) => {
       hostSelections.tabId = nextTabId
     })
-    const runtime = new OrcaRuntimeService(makeStore() as never)
+    const runtime = new TopoRuntimeService(makeStore() as never)
     if (!options.headless) {
       runtime.setNotifier({
         worktreesChanged: vi.fn(),
@@ -105,10 +105,10 @@ describe('paired runtime navigation isolation', () => {
       seedSessionTabs(runtime)
     }
 
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-navigation-isolation-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-navigation-isolation-'))
     onTestFinished(() => rmSync(userDataPath, { recursive: true, force: true }))
 
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       runtime,
       userDataPath,
       enableWebSocket: true,
@@ -318,7 +318,7 @@ describe('paired runtime navigation isolation', () => {
     expect(eventB).toMatchObject({ result: { navigation: 'all' } })
   })
 
-  it('keeps create activation caller-scoped on a headless orca serve host', async () => {
+  it('keeps create activation caller-scoped on a headless topo serve host', async () => {
     const harness = await startHarness({ headless: true })
     await subscribeBothClientEventStreams(harness)
 

@@ -8,7 +8,7 @@ let dir: string
 let configPath: string
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-zcode-usage-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-zcode-usage-'))
   configPath = join(dir, 'config.json')
   vi.stubGlobal('fetch', vi.fn())
   vi.useFakeTimers()

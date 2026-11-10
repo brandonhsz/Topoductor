@@ -7,7 +7,7 @@ import '../../db/attempt-outcome-projection'
 import { ORCHESTRATION_LEGACY_RUN_ID as LEGACY_RUN_ID } from '../../../../../shared/orchestration/orchestration-rpc-contract'
 import '../../../../../shared/protocol-version'
 import { ORCHESTRATION_FEDERATION_LIFECYCLE_SETTLEMENT_RUNTIME_CAPABILITY } from '../../../../../shared/orchestration/orchestration-runtime-capabilities'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 
 const fixtureDatabases = new Set<OrchestrationDb>()
 afterEach(() => {
@@ -77,7 +77,7 @@ export function createIdleSyncHarness(initialSequence = 2, protocolVersion?: 1 |
     return db
   }
 
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(createDb(fixture))
   vi.spyOn(runtime, 'resolveOrchestrationWorkerServer').mockReturnValue({
     peerFingerprint: federated.peer_fingerprint

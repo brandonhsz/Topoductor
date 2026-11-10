@@ -53,8 +53,8 @@ describe('execution-host tmux client attachment', () => {
     expect(isTmuxPaneShownElsewhere(100, '%1', clients, rows)).toBe(elsewhere)
   })
 
-  it('reads no hint from Orca’s agent-teams compat TMUX', () => {
-    expect(readTmuxHookPaneHint('%1 /tmp/orca-claude-agent-teams/team-x')).toBeNull()
+  it('reads no hint from Topo’s agent-teams compat TMUX', () => {
+    expect(readTmuxHookPaneHint('%1 /tmp/topo-claude-agent-teams/team-x')).toBeNull()
     expect(readTmuxHookPaneHint('%1 /private/tmp/tmux-501/default')).toEqual({
       socket: '/private/tmp/tmux-501/default',
       pane: '%1'

@@ -1,7 +1,7 @@
 import { z, type RefinementCtx } from 'zod'
 import { formatPluginSchemaPath } from './plugin-schema-issues'
 import { PLUGIN_ENUM_SINCE_KEY } from './plugin-engine-floor-keys'
-import { orcaEngineRangeSchema, satisfiesOrcaEngineRange } from './plugin-manifest-engine-range'
+import { topoEngineRangeSchema, satisfiesTopoEngineRange } from './plugin-manifest-engine-range'
 import { isPluginJsonObject } from './plugin-json-object'
 
 type Floor = { version: string; path: readonly PropertyKey[] }
@@ -14,7 +14,7 @@ function newer(
   if (typeof version !== 'string') {
     return current
   }
-  return current === null || !satisfiesOrcaEngineRange(current.version, `>=${version}`)
+  return current === null || !satisfiesTopoEngineRange(current.version, `>=${version}`)
     ? { version, path }
     : current
 }
@@ -82,7 +82,7 @@ export function pluginEngineFloor(
   return floor ? { version: floor.version, field: formatPluginSchemaPath(floor.path) } : null
 }
 
-/** Why enforced: an older Orca reports "requires Orca >=X" only when engines.orca covers every
+/** Why enforced: an older Topo reports "requires Topo >=X" only when engines.orca covers every
  *  field the plugin uses, so authors may not under-declare it. */
 export function validatePluginEngineFloor(
   schema: z.core.$ZodType,
@@ -90,16 +90,16 @@ export function validatePluginEngineFloor(
   ctx: RefinementCtx
 ): void {
   // Why: an unreadable range already has its own issue; a floor message on top is noise.
-  if (!orcaEngineRangeSchema.safeParse(manifest.engines.orca).success) {
+  if (!topoEngineRangeSchema.safeParse(manifest.engines.orca).success) {
     return
   }
   const floor = pluginEngineFloor(schema, manifest)
   const declared = manifest.engines.orca.slice(2)
-  if (floor && !satisfiesOrcaEngineRange(declared, `>=${floor.version}`)) {
+  if (floor && !satisfiesTopoEngineRange(declared, `>=${floor.version}`)) {
     ctx.addIssue({
       code: 'custom',
       path: ['engines', 'orca'],
-      message: `must be at least >=${floor.version}, because ${floor.field} needs Orca ${floor.version}`
+      message: `must be at least >=${floor.version}, because ${floor.field} needs Topo ${floor.version}`
     })
   }
 }

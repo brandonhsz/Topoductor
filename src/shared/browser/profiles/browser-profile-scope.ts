@@ -2,7 +2,7 @@ import { FLOATING_TERMINAL_WORKTREE_ID } from '../../constants'
 import { getRepoIdFromWorktreeId } from '../../worktree/id'
 import { parseWorkspaceKey } from '../../workspace-scope'
 
-/** Which browser profile new tabs in a workspace use: the shared Default, or one Orca manages per repo or per workspace. */
+/** Which browser profile new tabs in a workspace use: the shared Default, or one Topo manages per repo or per workspace. */
 export type BrowserProfileScope = 'shared' | 'repo' | 'worktree'
 
 export type ManagedBrowserProfileOwner = { kind: 'repo' | 'worktree'; id: string }
@@ -34,5 +34,5 @@ export function isManagedBrowserProfileOf(
 
 /** A partition main never admits, so a tab whose profile main has not made, or has deleted, loads nowhere. */
 export function unadmittedBrowserPartition(profileId: string): string {
-  return `persist:orca-browser-unminted-${profileId}`
+  return `persist:topo-browser-unminted-${profileId}`
 }

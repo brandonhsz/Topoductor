@@ -109,7 +109,7 @@ function shortcutState(): AppShortcutState {
     openFloatingWorkspaceMaximized: vi.fn(),
     pluginCommands: [],
     setFloatingTerminalOpen: vi.fn(),
-    terminalShortcutPolicy: 'orca-first',
+    terminalShortcutPolicy: 'topo-first',
     workspaceChromeActive: true
   }
 }

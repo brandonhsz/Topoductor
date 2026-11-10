@@ -1,10 +1,10 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import type { ElectronApplication } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { TEST_REPO_PATH_FILE } from './global-setup'
 import { waitForExit } from './helpers/electron-process-shutdown'
-import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/orca-restart'
+import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/topo-restart'
 import { ensureTerminalVisible, waitForSessionReady } from './helpers/store'
 import {
   discoverActivePtyId,
@@ -96,7 +96,7 @@ test('Quit Completely closes the terminal tab and ends its shell and the daemon'
     // Why the exit event, not a poll: session.close needs app.process(), which Playwright drops soon after exit.
     const exited = waitForExit(first.app.process(), 60_000)
     await confirmQuitAndStopAllSessionsFromMenu(first.app)
-    expect(await exited, 'Orca stayed open after Quit Completely').toBe(true)
+    expect(await exited, 'Topo stayed open after Quit Completely').toBe(true)
     await session.close(first.app)
     firstApp = null
 

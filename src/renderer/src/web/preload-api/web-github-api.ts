@@ -171,8 +171,8 @@ export function createGitHubApi(): WebGitHubApi {
         local: (exact) => route(GITHUB_WEB_RPC_METHODS.listAssignableUsers, { ...args, ...exact })
       }),
     onWorkItemMutated: () => noopUnsubscribe,
-    checkOrcaStarred: () => Promise.resolve(null),
-    starOrca: () => Promise.resolve(false),
+    checkTopoStarred: () => Promise.resolve(null),
+    starTopo: () => Promise.resolve(false),
     rateLimit: (args) =>
       route<WebGitHubResult<'rateLimit'>>(GITHUB_WEB_RPC_METHODS.rateLimit, args),
     listBindableAccounts: (args) =>

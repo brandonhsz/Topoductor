@@ -120,8 +120,8 @@ describe('gitlab project ref resolution', () => {
 
   it('falls back on an upstream timeout and retries upstream on the next attempt', async () => {
     mockGitRemoteCommands({
-      origin: 'git@gitlab.com:fork/orca.git\n',
-      upstream: 'git@example.com:stablyai/orca.git\n'
+      origin: 'git@gitlab.com:fork/topo.git\n',
+      upstream: 'git@example.com:brandonhsz/Topoductor.git\n'
     })
 
     const serve = gitExecFileAsyncMock.getMockImplementation()
@@ -130,7 +130,7 @@ describe('gitlab project ref resolution', () => {
     )
     await expect(getIssueProjectRef('/repo')).resolves.toEqual({
       host: 'gitlab.com',
-      path: 'fork/orca'
+      path: 'fork/topo'
     })
     expect(gitRemoteGetUrlCalls('upstream')).toHaveLength(1)
     expect(gitRemoteGetUrlCalls('origin')).toHaveLength(1)

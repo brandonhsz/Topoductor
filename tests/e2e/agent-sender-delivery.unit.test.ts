@@ -51,7 +51,7 @@ afterEach(() => {
 const leafOf = (i: number) => `${(i + 1).toString(16).padStart(8, '0')}-1111-4111-8111-111111111111`
 const handleOf = (i: number) => `term_${i}`
 const sender = (i: number) => ({
-  party: { address: handleOf(i), terminalHandle: handleOf(i), orcaSessionId: null },
+  party: { address: handleOf(i), terminalHandle: handleOf(i), topoSessionId: null },
   name: `Worker ${i}`
 })
 

@@ -1,26 +1,26 @@
 // #1066/#1112: collapsed-sidebar floating chrome must not cover the first tab.
 // Measure the whole header including navigation, then require both clearing geometry and a successful tab-center hit test.
 
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForSessionReady, waitForActiveWorktree, ensureTerminalVisible } from './helpers/store'
 import { pressShortcut } from './helpers/shortcuts'
 
 test.describe('Sidebar boundaries beside terminal content', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
   })
 
-  test('sidebar resize handle owns the divider over a terminal', async ({ orcaPage }) => {
-    const handle = orcaPage.locator('[data-sidebar-resize-handle]')
-    const sidebar = orcaPage
+  test('sidebar resize handle owns the divider over a terminal', async ({ topoPage }) => {
+    const handle = topoPage.locator('[data-sidebar-resize-handle]')
+    const sidebar = topoPage
       .locator('[data-sidebar-resize-handle]')
       .locator('xpath=preceding-sibling::div[last()]')
     await expect(handle).toBeVisible()
-    await expect(orcaPage.locator('.xterm:visible').first()).toBeVisible()
+    await expect(topoPage.locator('.xterm:visible').first()).toBeVisible()
 
-    const terminalBox = await orcaPage.locator('.xterm:visible').first().boundingBox()
+    const terminalBox = await topoPage.locator('.xterm:visible').first().boundingBox()
     const handleBox = await handle.boundingBox()
     const sidebarBox = await sidebar.boundingBox()
     expect(terminalBox).not.toBeNull()
@@ -39,24 +39,24 @@ test.describe('Sidebar boundaries beside terminal content', () => {
     }
 
     const x = handleBox!.x + handleBox!.width / 2
-    await orcaPage.mouse.move(x, y)
-    await orcaPage.mouse.down()
-    await orcaPage.mouse.move(x + 40, y, { steps: 5 })
-    await orcaPage.mouse.up()
+    await topoPage.mouse.move(x, y)
+    await topoPage.mouse.down()
+    await topoPage.mouse.move(x + 40, y, { steps: 5 })
+    await topoPage.mouse.up()
 
     await expect
       .poll(async () => Math.round((await handle.boundingBox())!.x - handleBox!.x))
       .toBe(40)
   })
 
-  test('first tab stays visible after Cmd+B collapses the sidebar', async ({ orcaPage }) => {
+  test('first tab stays visible after Cmd+B collapses the sidebar', async ({ topoPage }) => {
     // Use Cmd/Ctrl+B so broken binding/editable-target routing cannot pass via direct state setup.
 
     // Require terminal view and initially open sidebar to exercise the actual open→collapsed transition.
     await expect
       .poll(
         async () =>
-          orcaPage.evaluate(() => {
+          topoPage.evaluate(() => {
             const store = window.__store
             if (!store) {
               // Fail a missing exposed store explicitly instead of timing out on downstream state.
@@ -76,20 +76,20 @@ test.describe('Sidebar boundaries beside terminal content', () => {
       .toEqual({ activeView: 'terminal', sidebarOpen: true })
 
     // Blur non-xterm editable focus so the chord reaches sidebar toggle instead of an editor’s bold keymap.
-    await orcaPage.evaluate(() => {
+    await topoPage.evaluate(() => {
       const active = document.activeElement
       if (active instanceof HTMLElement && !active.classList.contains('xterm-helper-textarea')) {
         active.blur()
       }
     })
 
-    await pressShortcut(orcaPage, 'b')
+    await pressShortcut(topoPage, 'b')
 
     // Poll closed state before layout measurement; React and ResizeObserver settle on later frames.
     await expect
       .poll(
         async () =>
-          orcaPage.evaluate(() => {
+          topoPage.evaluate(() => {
             const store = window.__store
             if (!store) {
               throw new Error('window.__store is not available — is the app in dev mode?')
@@ -110,7 +110,7 @@ test.describe('Sidebar boundaries beside terminal content', () => {
       firstTabWidth: number
       centerIsTabOrDescendant: boolean
     } | null> =>
-      orcaPage.evaluate(() => {
+      topoPage.evaluate(() => {
         const titlebarLeft = document.querySelector<HTMLElement>('.titlebar-left')
         // Pick the visually leftmost tab because split-group DOM order need not match screen order.
         const allTabs = Array.from(

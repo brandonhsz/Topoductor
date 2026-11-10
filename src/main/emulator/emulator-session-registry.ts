@@ -103,7 +103,7 @@ export class EmulatorSessionRegistry {
     }
   }
 
-  /** Drop managed records whose device stopped outside Orca; true while any managed device still runs. */
+  /** Drop managed records whose device stopped outside Topo; true while any managed device still runs. */
   async pruneGoneManagedSessions(backendForKind: CensusBackendForKind): Promise<boolean> {
     const managed = this.listSessions().filter((session) => session.managed)
     let live = false

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Inject commands through PTY API and discover active ID with marker probes; probing sends Ctrl+C to candidate panes and interrupts their commands.
-// Run node config/scripts/terminal-e2e-helpers.mjs --port 9444 --command "echo hello", or import OrcaTerminal for CDP-driven checks.
+// Run node config/scripts/terminal-e2e-helpers.mjs --port 9444 --command "echo hello", or import TopoTerminal for CDP-driven checks.
 
 import { execFileSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
@@ -29,8 +29,8 @@ function evalInRenderer(port, js) {
   return ab(port, ['eval', js])
 }
 
-export class OrcaTerminal {
-  /** @param {number} cdpPort — the --remote-debugging-port used when launching Orca */
+export class TopoTerminal {
+  /** @param {number} cdpPort — the --remote-debugging-port used when launching Topo */
   constructor(cdpPort) {
     this.port = cdpPort
   }
@@ -111,7 +111,7 @@ export class OrcaTerminal {
    * @param {number} maxId — highest PTY ID to probe
    * @param {string} screenshotPath — where to save the screenshot
    */
-  probePtyIdWithScreenshot(maxId = 10, screenshotPath = tempScreenshotPath('orca-pty-probe.png')) {
+  probePtyIdWithScreenshot(maxId = 10, screenshotPath = tempScreenshotPath('topo-pty-probe.png')) {
     for (let i = 1; i <= maxId; i++) {
       evalInRenderer(this.port, `window.api.pty.write('${i}', '\\x03\\x15echo PTY_ID_${i}\\r')`)
     }
@@ -150,18 +150,18 @@ export class OrcaTerminal {
   }
 
   /**
-   * Take a screenshot of the Orca window.
+   * Take a screenshot of the Topo window.
    *
    * @param {string} path — output file path
    * @returns {string} the screenshot path
    */
-  screenshot(path = tempScreenshotPath('orca-terminal.png')) {
+  screenshot(path = tempScreenshotPath('topo-terminal.png')) {
     ab(this.port, ['screenshot', path])
     return path
   }
 
   /**
-   * Open a new terminal tab in Orca.
+   * Open a new terminal tab in Topo.
    * @returns {void}
    */
   newTerminal() {
@@ -178,7 +178,7 @@ export class OrcaTerminal {
   readLang(ptyId) {
     this.exec(ptyId, 'echo __LANG__=$LANG')
     sleep(1_000)
-    return this.screenshot(tempScreenshotPath('orca-lang-check.png'))
+    return this.screenshot(tempScreenshotPath('topo-lang-check.png'))
   }
 }
 
@@ -189,8 +189,8 @@ if (process.argv[1]?.endsWith('terminal-e2e-cdp.mjs')) {
   const port = portIdx !== -1 ? Number(args[portIdx + 1]) : 9444
   const command = cmdIdx !== -1 ? args[cmdIdx + 1] : null
 
-  const term = new OrcaTerminal(port)
-  console.log('Connecting to Orca on CDP port', port, '...')
+  const term = new TopoTerminal(port)
+  console.log('Connecting to Topo on CDP port', port, '...')
   term.connect()
   console.log('Connected.')
 

@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
-import { addManagedOrcadEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-managed-orcad-store'
+import { addManagedTopodEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-managed-topod-store'
 import { encodePairingOffer } from '../../../shared/remote-runtime/pairing/pairing'
 import { PAIRING_OFFER_VERSION } from '../../../shared/remote-runtime/pairing/mobile-relay-pairing-offer'
 import {
@@ -23,11 +23,11 @@ const pairingCode = (port: number, publicKeyB64: string) =>
   })
 
 function addManaged(id: string, sshTargetId: string, port: number, publicKeyB64: string) {
-  return addManagedOrcadEnvironment(userDataPath, {
+  return addManagedTopodEnvironment(userDataPath, {
     id,
     name: id,
     pairingCode: pairingCode(port, publicKeyB64),
-    orcadDeployment: { sshTargetId, sshTargetGeneration: 1, localPort: port, remotePort: 6_768 }
+    topodDeployment: { sshTargetId, sshTargetGeneration: 1, localPort: port, remotePort: 6_768 }
   })
 }
 

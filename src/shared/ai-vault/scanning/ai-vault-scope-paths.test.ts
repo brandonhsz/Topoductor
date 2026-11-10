@@ -4,10 +4,10 @@ import { deriveAiVaultWorkspaceScopePaths } from './ai-vault-scope-paths'
 
 function makeWorktree(overrides: Partial<Worktree> = {}): Worktree {
   return {
-    id: 'repo-1::/repo/orca',
+    id: 'repo-1::/repo/topo',
     repoId: 'repo-1',
-    displayName: 'orca',
-    path: '/repo/orca',
+    displayName: 'topo',
+    path: '/repo/topo',
     head: 'abc123',
     branch: 'main',
     isBare: false,
@@ -29,13 +29,13 @@ describe('deriveAiVaultWorkspaceScopePaths', () => {
   it('drops a claimed prior path regardless of where the claimant sits in the list', () => {
     // Exclude the active workspace before indexing owners so duplicates cannot hide later claimants.
     const active = makeWorktree({
-      id: 'repo-1::/repo/orca-renamed',
-      path: '/repo/orca-renamed',
-      priorWorktreeIds: ['repo-1::/repo/orca']
+      id: 'repo-1::/repo/topo-renamed',
+      path: '/repo/topo-renamed',
+      priorWorktreeIds: ['repo-1::/repo/topo']
     })
-    const claimant = makeWorktree({ id: 'repo-1::/repo/orca', path: '/repo/orca' })
+    const claimant = makeWorktree({ id: 'repo-1::/repo/topo', path: '/repo/topo' })
     // Listing the active workspace at the prior path exposes first-writer-wins ownership bugs.
-    const activeAtPriorPath = makeWorktree({ id: active.id, path: '/repo/orca' })
+    const activeAtPriorPath = makeWorktree({ id: active.id, path: '/repo/topo' })
 
     for (const liveWorktrees of [
       [active, claimant],
@@ -44,7 +44,7 @@ describe('deriveAiVaultWorkspaceScopePaths', () => {
       [claimant, activeAtPriorPath]
     ]) {
       expect(deriveAiVaultWorkspaceScopePaths(active, liveWorktrees)).toEqual([
-        '/repo/orca-renamed'
+        '/repo/topo-renamed'
       ])
     }
   })

@@ -3,7 +3,7 @@ import type { RuntimeTerminalClose } from '../../../../../shared/runtime-termina
 import { unwrapRuntimeRpcResult } from '../../rpc/calls/runtime-rpc-result'
 import { parseRemoteRuntimePtyId } from '../../../../../shared/remote-runtime/remote-runtime-pty-id'
 import { isWebRuntimeSessionActive } from '../../web-session-tabs-sync/identity/web-runtime-session-environment'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import { redrawServerLayoutWorkspace } from '../../workspace-layout/server/server-layout-apply-routes'
 
 /** `worktreeId`: the pane's workspace, whose server frames redraw a pane the server kept. */
@@ -35,7 +35,7 @@ export function closeWebRuntimeTerminal(
     })
     .catch((error) => {
       // Switch point: the window already dropped the pane; the server's frames draw what it kept.
-      if (ORCA_LAYOUT_OWNER_IS_MAIN && worktreeId) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN && worktreeId) {
         redrawServerLayoutWorkspace(environmentId, worktreeId)
       }
       console.warn(

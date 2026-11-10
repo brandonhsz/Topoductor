@@ -10,7 +10,7 @@ const { runProcessMock, runProcessSyncMock } = vi.hoisted(() => ({
 }))
 
 // Fail any process spawn: repair must use the in-process addon rather than icacls.
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   runProcess: runProcessMock,
   runProcessSync: runProcessSyncMock
 }))
@@ -28,7 +28,7 @@ import {
 import { fakePackageGrant, grantsFrom } from './windows-install-dir-acl.test-fixture'
 import type { InstallDirPackageGrants } from './windows-install-dir-package-acl-grant'
 
-const INSTALL_DIR = 'C:\\Users\\neil\\AppData\\Local\\Programs\\orca'
+const INSTALL_DIR = 'C:\\Users\\neil\\AppData\\Local\\Programs\\topo'
 const APP_VERSION = '1.4.184'
 
 function deniedGrant(): ReturnType<typeof fakePackageGrant> {
@@ -36,7 +36,7 @@ function deniedGrant(): ReturnType<typeof fakePackageGrant> {
 }
 
 function userDataDir(): string {
-  const path = mkdtempSync(join(tmpdir(), 'orca-acl-repair-'))
+  const path = mkdtempSync(join(tmpdir(), 'topo-acl-repair-'))
   onTestFinished(() => rmSync(path, { recursive: true, force: true }))
   return path
 }
@@ -113,7 +113,7 @@ describe('repairWindowsInstallDirPackageAcl', () => {
       (
         await repair({
           userDataPath,
-          installDir: 'D:\\Program Files\\Orca',
+          installDir: 'D:\\Program Files\\Topo',
           grants: moved.grants
         })
       ).result

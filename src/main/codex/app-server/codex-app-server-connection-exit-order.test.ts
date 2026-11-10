@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events'
 import { PassThrough } from 'node:stream'
 import { describe, expect, it, vi } from 'vitest'
-import type { spawnProcess } from '@orca/process-host'
+import type { spawnProcess } from '@topo/process-host'
 import { openCodexAppServerConnection } from './codex-app-server-connection'
 import { CodexAppServerRequestError } from './codex-app-server-request-error'
 import { codexStartFailure } from './codex-startup-outcome'
@@ -65,7 +65,7 @@ describe('Codex app-server exit order', () => {
         return
       }
       const { id } = asked
-      // The exit is seen first; the answer's last chunk reaches Orca only afterwards.
+      // The exit is seen first; the answer's last chunk reaches Topo only afterwards.
       child.emit('exit', 1, null)
       setImmediate(() =>
         child.stdout.write(

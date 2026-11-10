@@ -1,17 +1,17 @@
 export function resolveDiagnosticBuildTokenEndpoint(): string | null {
   const endpoint =
-    typeof ORCA_DIAGNOSTICS_TOKEN_URL !== 'undefined'
-      ? ORCA_DIAGNOSTICS_TOKEN_URL
-      : ((globalThis as { ORCA_DIAGNOSTICS_TOKEN_URL?: string | null })
-          .ORCA_DIAGNOSTICS_TOKEN_URL ?? null)
+    typeof TOPO_DIAGNOSTICS_TOKEN_URL !== 'undefined'
+      ? TOPO_DIAGNOSTICS_TOKEN_URL
+      : ((globalThis as { TOPO_DIAGNOSTICS_TOKEN_URL?: string | null })
+          .TOPO_DIAGNOSTICS_TOKEN_URL ?? null)
   return typeof endpoint === 'string' && endpoint.length > 0 ? endpoint : null
 }
 
 export function resolveDiagnosticBuildIdentity(): 'stable' | 'rc' | null {
   const ident =
-    typeof ORCA_BUILD_IDENTITY !== 'undefined'
-      ? ORCA_BUILD_IDENTITY
-      : ((globalThis as { ORCA_BUILD_IDENTITY?: 'stable' | 'rc' | null }).ORCA_BUILD_IDENTITY ??
+    typeof TOPO_BUILD_IDENTITY !== 'undefined'
+      ? TOPO_BUILD_IDENTITY
+      : ((globalThis as { TOPO_BUILD_IDENTITY?: 'stable' | 'rc' | null }).TOPO_BUILD_IDENTITY ??
         null)
   return ident === 'stable' || ident === 'rc' ? ident : null
 }
@@ -22,14 +22,14 @@ export function resolveDiagnosticTokenEndpoint(): string | null {
   if (resolveDiagnosticBuildIdentity()) {
     return buildEndpoint
   }
-  const fromEnv = process.env.ORCA_DIAGNOSTICS_TOKEN_URL
+  const fromEnv = process.env.TOPO_DIAGNOSTICS_TOKEN_URL
   if (fromEnv && fromEnv.length > 0) {
     return fromEnv
   }
   return buildEndpoint
 }
 
-export function resolveDiagnosticOrcaChannel(): 'stable' | 'rc' | 'dev' {
+export function resolveDiagnosticTopoChannel(): 'stable' | 'rc' | 'dev' {
   const ident = resolveDiagnosticBuildIdentity()
   if (ident === 'stable' || ident === 'rc') {
     return ident

@@ -31,7 +31,7 @@ import {
 import { resolveOpenCodeConfigDirectory } from '../../shared/opencode-config-directory'
 
 beforeEach(() => {
-  vi.stubEnv('ORCA_OPENCODE_PLUGIN_API', 'v2')
+  vi.stubEnv('TOPO_OPENCODE_PLUGIN_API', 'v2')
   setAppEnvironment({
     getPath: getPathMock,
     getAppPath: () => process.cwd(),
@@ -54,7 +54,7 @@ describe('OpenCodeHookService buildPtyEnv / clearPty round-trip', () => {
   const originalXdgConfigHome = process.env.XDG_CONFIG_HOME
 
   beforeAll(() => {
-    userDataDir = mkdtempSync(join(tmpdir(), 'orca-opencode-hooks-'))
+    userDataDir = mkdtempSync(join(tmpdir(), 'topo-opencode-hooks-'))
     process.env.XDG_CONFIG_HOME = userDataDir
     getPathMock.mockImplementation((name: string) => {
       if (name === 'userData') {
@@ -83,14 +83,14 @@ describe('OpenCodeHookService buildPtyEnv / clearPty round-trip', () => {
     const env = service.buildPtyEnv(daemonSessionId)
 
     expect(env).toEqual({})
-    const pluginPath = join(resolveOpenCodeConfigDirectory(), 'plugins', 'orca-opencode-status.js')
+    const pluginPath = join(resolveOpenCodeConfigDirectory(), 'plugins', 'topo-opencode-status.js')
     expect(existsSync(pluginPath)).toBe(true)
     const pluginSource = readFileSync(pluginPath, 'utf8')
     expect(pluginSource).toContain('messageID: part.messageID')
     const tuiEntry = join(
       resolveOpenCodeConfigDirectory(),
       'plugins',
-      'orca-opencode-status-tui',
+      'topo-opencode-status-tui',
       'tui.js'
     )
     const past = new Date('2020-01-01T00:00:00Z')
@@ -103,7 +103,7 @@ describe('OpenCodeHookService buildPtyEnv / clearPty round-trip', () => {
   it('leaves a current installed plugin untouched and replaces a stale one', () => {
     const service = new OpenCodeHookService()
     service.buildPtyEnv(daemonSessionId)
-    const pluginPath = join(resolveOpenCodeConfigDirectory(), 'plugins', 'orca-opencode-status.js')
+    const pluginPath = join(resolveOpenCodeConfigDirectory(), 'plugins', 'topo-opencode-status.js')
     const past = new Date('2020-01-01T00:00:00Z')
     utimesSync(pluginPath, past, past)
 
@@ -123,9 +123,9 @@ describe('OpenCodeHookService buildPtyEnv / clearPty round-trip', () => {
       const pluginPath = join(
         resolveOpenCodeConfigDirectory(),
         'plugins',
-        'orca-opencode-status.js'
+        'topo-opencode-status.js'
       )
-      const targetPath = join(userDataDir, 'dotfiles-orca-opencode-status.js')
+      const targetPath = join(userDataDir, 'dotfiles-topo-opencode-status.js')
       writeFileSync(targetPath, _internals.getOpenCodePluginSource())
       rmSync(pluginPath, { force: true })
       symlinkSync(targetPath, pluginPath)
@@ -147,8 +147,8 @@ describe('OpenCodeHookService buildPtyEnv / clearPty round-trip', () => {
   // A service reloading between writes must already find the TUI copy and stand down.
   it('writes the TUI copy before the server plugin file', () => {
     const pluginsDir = join(resolveOpenCodeConfigDirectory(), 'plugins')
-    const serverPath = join(pluginsDir, 'orca-opencode2-status.js')
-    const tuiDir = join(pluginsDir, 'orca-opencode2-status-tui')
+    const serverPath = join(pluginsDir, 'topo-opencode2-status.js')
+    const tuiDir = join(pluginsDir, 'topo-opencode2-status-tui')
     rmSync(serverPath, { recursive: true, force: true })
     rmSync(tuiDir, { recursive: true, force: true })
     mkdirSync(serverPath, { recursive: true })
@@ -164,7 +164,7 @@ describe('OpenCodeHookService buildPtyEnv / clearPty round-trip', () => {
   it('repairs late and overwritten legacy plugins atomically on the same service', () => {
     const service = new OpenCodeHookService()
     service.refreshLegacySharedPlugin()
-    const path = join(userDataDir, 'opencode-hooks', 'shared', 'plugins', 'orca-opencode-status.js')
+    const path = join(userDataDir, 'opencode-hooks', 'shared', 'plugins', 'topo-opencode-status.js')
     mkdirSync(join(path, '..'), { recursive: true })
     for (const stale of ['// late old install', '// old process overwrote repair']) {
       writeFileSync(path, stale)
@@ -174,8 +174,8 @@ describe('OpenCodeHookService buildPtyEnv / clearPty round-trip', () => {
         expect(readFileSync(path, 'utf8')).toBe(getOpenCodePluginSource())
         expect(readFileSync(reader, 'utf8')).toBe(stale)
         expect(readdirSync(join(path, '..')).sort()).toEqual([
-          'orca-opencode-status-tui',
-          'orca-opencode-status.js'
+          'topo-opencode-status-tui',
+          'topo-opencode-status.js'
         ])
       } finally {
         closeSync(reader)
@@ -185,7 +185,7 @@ describe('OpenCodeHookService buildPtyEnv / clearPty round-trip', () => {
 
   it('reports repair failures and retries after the obstruction is removed', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    const path = join(userDataDir, 'opencode-hooks', 'shared', 'plugins', 'orca-opencode-status.js')
+    const path = join(userDataDir, 'opencode-hooks', 'shared', 'plugins', 'topo-opencode-status.js')
     const service = new OpenCodeHookService()
     try {
       service.refreshLegacySharedPlugin()
@@ -211,7 +211,7 @@ describe('OpenCodeHookService buildPtyEnv / clearPty round-trip', () => {
     new OpenCodeHookService().buildPtyEnv(daemonSessionId)
     expect(existsSync(legacyDir)).toBe(false)
 
-    const legacyPluginPath = join(legacyDir, 'shared', 'plugins', 'orca-opencode-status.js')
+    const legacyPluginPath = join(legacyDir, 'shared', 'plugins', 'topo-opencode-status.js')
     mkdirSync(join(legacyPluginPath, '..'), { recursive: true })
     writeFileSync(legacyPluginPath, getOpenCodePluginSource())
     const past = new Date('2020-01-01T00:00:00Z')
@@ -227,7 +227,7 @@ describe('OpenCodeHookService overlay mode (user OPENCODE_CONFIG_DIR set)', () =
   let userConfigDir: string
 
   beforeAll(() => {
-    userDataDir = mkdtempSync(join(tmpdir(), 'orca-opencode-overlay-userdata-'))
+    userDataDir = mkdtempSync(join(tmpdir(), 'topo-opencode-overlay-userdata-'))
     getPathMock.mockImplementation((name: string) => {
       if (name === 'userData') {
         return userDataDir
@@ -241,7 +241,7 @@ describe('OpenCodeHookService overlay mode (user OPENCODE_CONFIG_DIR set)', () =
   })
 
   beforeEach(() => {
-    userConfigDir = mkdtempSync(join(tmpdir(), 'orca-opencode-overlay-userconfig-'))
+    userConfigDir = mkdtempSync(join(tmpdir(), 'topo-opencode-overlay-userconfig-'))
     writeFileSync(join(userConfigDir, 'opencode.json'), '{"userTheme":"solarized"}')
     writeFileSync(join(userConfigDir, 'auth.json'), 'user-auth-token')
     mkdirSync(join(userConfigDir, 'plugins'), { recursive: true })
@@ -264,7 +264,7 @@ describe('OpenCodeHookService overlay mode (user OPENCODE_CONFIG_DIR set)', () =
     )
   }
 
-  it('builds an overlay under userData and exposes user config + Orca plugin together', () => {
+  it('builds an overlay under userData and exposes user config + Topo plugin together', () => {
     const service = new OpenCodeHookService()
     const env = service.buildPtyEnv(ptyId, userConfigDir)
 
@@ -283,42 +283,42 @@ describe('OpenCodeHookService overlay mode (user OPENCODE_CONFIG_DIR set)', () =
       'export default () => {}'
     )
 
-    const orcaPluginPath = join(env.OPENCODE_CONFIG_DIR!, 'plugins', 'orca-opencode-status.js')
-    expect(existsSync(orcaPluginPath)).toBe(true)
-    expect(readFileSync(orcaPluginPath, 'utf8')).toContain('OrcaOpenCodeStatusPlugin')
+    const topoPluginPath = join(env.OPENCODE_CONFIG_DIR!, 'plugins', 'topo-opencode-status.js')
+    expect(existsSync(topoPluginPath)).toBe(true)
+    expect(readFileSync(topoPluginPath, 'utf8')).toContain('TopoOpenCodeStatusPlugin')
 
     expectUserConfigIntact()
   })
 
-  it("does not overwrite a user plugin file with the same filename as Orca's plugin", () => {
+  it("does not overwrite a user plugin file with the same filename as Topo's plugin", () => {
     // Mirroring this filename would let plugin installation overwrite the user’s file.
-    const userOrcaSentinel = 'USER OWNED ORCA-NAMED PLUGIN — DO NOT CLOBBER'
-    writeFileSync(join(userConfigDir, 'plugins', 'orca-opencode-status.js'), userOrcaSentinel)
+    const userTopoSentinel = 'USER OWNED TOPO-NAMED PLUGIN — DO NOT CLOBBER'
+    writeFileSync(join(userConfigDir, 'plugins', 'topo-opencode-status.js'), userTopoSentinel)
 
     const service = new OpenCodeHookService()
     const env = service.buildPtyEnv(ptyId, userConfigDir)
 
-    expect(readFileSync(join(userConfigDir, 'plugins', 'orca-opencode-status.js'), 'utf8')).toBe(
-      userOrcaSentinel
+    expect(readFileSync(join(userConfigDir, 'plugins', 'topo-opencode-status.js'), 'utf8')).toBe(
+      userTopoSentinel
     )
 
     const overlayPlugin = readFileSync(
-      join(env.OPENCODE_CONFIG_DIR!, 'plugins', 'orca-opencode-status.js'),
+      join(env.OPENCODE_CONFIG_DIR!, 'plugins', 'topo-opencode-status.js'),
       'utf8'
     )
-    expect(overlayPlugin).toContain('OrcaOpenCodeStatusPlugin')
-    expect(overlayPlugin).not.toBe(userOrcaSentinel)
+    expect(overlayPlugin).toContain('TopoOpenCodeStatusPlugin')
+    expect(overlayPlugin).not.toBe(userTopoSentinel)
     expectUserConfigIntact()
   })
 
   it('installs the TUI copy in the overlay without mirroring a user dir of the same name', () => {
-    const userTuiDir = join(userConfigDir, 'plugins', 'orca-opencode-status-tui')
+    const userTuiDir = join(userConfigDir, 'plugins', 'topo-opencode-status-tui')
     mkdirSync(userTuiDir)
     writeFileSync(join(userTuiDir, 'tui.js'), 'USER OWNED')
 
     const env = new OpenCodeHookService().buildPtyEnv(ptyId, userConfigDir)
 
-    const overlayTui = join(env.OPENCODE_CONFIG_DIR!, 'plugins', 'orca-opencode-status-tui')
+    const overlayTui = join(env.OPENCODE_CONFIG_DIR!, 'plugins', 'topo-opencode-status-tui')
     expect(lstatSync(overlayTui).isSymbolicLink()).toBe(false)
     expect(readFileSync(join(overlayTui, 'tui.js'), 'utf8')).toContain(
       'tui: setupLegacyOpenCodeTui'
@@ -333,7 +333,7 @@ describe('OpenCodeHookService overlay mode (user OPENCODE_CONFIG_DIR set)', () =
     'does not write through a symlinked plugins/ directory into the user filesystem',
     () => {
       // Writing through a symlinked plugins directory would modify user-owned files.
-      const realPluginsDir = mkdtempSync(join(tmpdir(), 'orca-real-plugins-'))
+      const realPluginsDir = mkdtempSync(join(tmpdir(), 'topo-real-plugins-'))
       try {
         writeFileSync(join(realPluginsDir, 'real-plugin.js'), 'REAL USER PLUGIN')
 
@@ -343,10 +343,10 @@ describe('OpenCodeHookService overlay mode (user OPENCODE_CONFIG_DIR set)', () =
         const service = new OpenCodeHookService()
         const env = service.buildPtyEnv(ptyId, userConfigDir)
 
-        expect(existsSync(join(realPluginsDir, 'orca-opencode-status.js'))).toBe(false)
+        expect(existsSync(join(realPluginsDir, 'topo-opencode-status.js'))).toBe(false)
         expect(lstatSync(join(env.OPENCODE_CONFIG_DIR!, 'plugins')).isSymbolicLink()).toBe(false)
         expect(
-          existsSync(join(env.OPENCODE_CONFIG_DIR!, 'plugins', 'orca-opencode-status.js'))
+          existsSync(join(env.OPENCODE_CONFIG_DIR!, 'plugins', 'topo-opencode-status.js'))
         ).toBe(true)
         expect(
           readFileSync(join(env.OPENCODE_CONFIG_DIR!, 'plugins', 'real-plugin.js'), 'utf8')

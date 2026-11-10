@@ -24,7 +24,7 @@ vi.mock('../api-runtime/browser-extension-worker-shim-source', () => ({
   readBrowserExtensionContentScript: () => mocks.contentScript
 }))
 
-mocks.userData = mkdtempSync(join(tmpdir(), 'orca-extension-load-'))
+mocks.userData = mkdtempSync(join(tmpdir(), 'topo-extension-load-'))
 
 const {
   browserExtensionIdForUnpackedFolder,
@@ -59,14 +59,14 @@ describe('extension load directories', () => {
     expect(first.extensionId).toBe(chromeExtensionIdFromKey(STORE_KEY))
     expect(readJson(join(directory, 'manifest.json'))).toMatchObject({
       key: STORE_KEY,
-      background: { service_worker: 'orca-background.js' }
+      background: { service_worker: 'topo-background.js' }
     })
-    expect(readJson(join(directory, 'orca-original-manifest.json'))).toMatchObject({
+    expect(readJson(join(directory, 'topo-original-manifest.json'))).toMatchObject({
       background: { service_worker: 'bg.js' }
     })
     expect(readFileSync(join(directory, 'bg.js'), 'utf8')).toBe('self.started = true')
-    expect(readFileSync(join(directory, 'orca-extension-api.js'), 'utf8')).toBe('/* shim v1 */')
-    expect(readJson(join(directory, 'orca-extension-api-token.json'))).toEqual({
+    expect(readFileSync(join(directory, 'topo-extension-api.js'), 'utf8')).toBe('/* shim v1 */')
+    expect(readJson(join(directory, 'topo-extension-api-token.json'))).toEqual({
       token: getBrowserExtensionWorkerToken(first.extensionId)
     })
 
@@ -77,10 +77,10 @@ describe('extension load directories', () => {
     const updated = await prepareBrowserExtensionDirectory({ source: 'webstore', path: directory })
     mocks.shim = '/* shim v1 */'
     expect(updated.workerSignature).not.toBe(first.workerSignature)
-    expect(readFileSync(join(directory, 'orca-extension-api.js'), 'utf8')).toBe('/* shim v2 */')
+    expect(readFileSync(join(directory, 'topo-extension-api.js'), 'utf8')).toBe('/* shim v2 */')
   })
 
-  it('loads an unpacked folder from a stable Orca copy and never touches the folder', async () => {
+  it('loads an unpacked folder from a stable Topo copy and never touches the folder', async () => {
     const source = join(mocks.userData, 'dev', 'my-extension')
     writeExtension(source, {
       manifest_version: 3,
@@ -98,7 +98,7 @@ describe('extension load directories', () => {
     expect(readdirSync(source).sort()).toEqual(before)
     expect(readJson(join(source, 'manifest.json'))).not.toHaveProperty('key')
     expect(readJson(join(first.directory, 'manifest.json'))).toMatchObject({
-      background: { service_worker: 'orca-background.js', type: 'module' }
+      background: { service_worker: 'topo-background.js', type: 'module' }
     })
 
     // Copied once per run; Reload copies again. The id stays the same either way.
@@ -116,7 +116,7 @@ describe('extension load directories', () => {
 
   it('never lists the worker token as web-accessible, in any spelling', async () => {
     const directory = join(mocks.userData, 'browser-extensions', 'store-war', '1.0')
-    const resources = ['ORCA-EXTENSION-API-TOKEN.JSON', 'orca-extension-api-token.json', '*']
+    const resources = ['TOPO-EXTENSION-API-TOKEN.JSON', 'topo-extension-api-token.json', '*']
     writeExtension(directory, {
       manifest_version: 3,
       name: 'Vault',
@@ -126,7 +126,7 @@ describe('extension load directories', () => {
       web_accessible_resources: [{ resources, matches: ['<all_urls>'] }]
     })
     await prepareBrowserExtensionDirectory({ source: 'webstore', path: directory })
-    const token = statSync(join(directory, 'orca-extension-api-token.json'))
+    const token = statSync(join(directory, 'topo-extension-api-token.json'))
     const listed = z
       .object({ web_accessible_resources: z.tuple([z.object({ resources: z.array(z.string()) })]) })
       .parse(readJson(join(directory, 'manifest.json'))).web_accessible_resources[0].resources

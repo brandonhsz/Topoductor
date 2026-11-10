@@ -1,6 +1,6 @@
 import { isPlanApprovalSubject } from '../../../../shared/agent-session/agent-session-approval-subject'
 import type { AgentSessionPromptResult } from '../../../../shared/agent-session/agent-session-wire'
-import { refusingNewerOrcaJournal } from '../../agent-session-journal/replay/journal-open-failure'
+import { refusingNewerTopoJournal } from '../../agent-session-journal/replay/journal-open-failure'
 import type { MutationPlan } from './structured-agent-session-mutation-plans'
 import {
   performPrompt,
@@ -53,7 +53,7 @@ export function promptPlan(
       }
       return { ...record, options: { ...record.options, interactionMode: planChoice } }
     },
-    run: (ctx) => refusingNewerOrcaJournal(performPrompt(ctx, params)),
+    run: (ctx) => refusingNewerTopoJournal(performPrompt(ctx, params)),
     replay: (_ctx, _outcome, receipt) => acceptedPromptAnswer(receipt)
   }
 }

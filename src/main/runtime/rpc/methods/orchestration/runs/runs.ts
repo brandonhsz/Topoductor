@@ -4,7 +4,7 @@ import { readRunRemovedWork } from '../../../../orchestration/db/reset/removed-o
 import { boundRunWorkerNext } from '../../../../orchestration/db/runs/worker-run-binding'
 import { assertCallerHandleMatchesEvidence, resolveOrchestrationCaller } from './run-scope'
 import { exposeRun } from './run-receipt'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationPartyIdentity as OrchestrationCallerIdentity } from '../../../../../../shared/orchestration/mailbox/orchestration-party-identity'
 import type { RunRow } from '../../../../orchestration/db/orchestration-records'
 import { currentDispatchAssigneeRun } from '../messaging/recipient-routing'
@@ -17,7 +17,7 @@ import {
 } from '../../../../../../shared/rpc-contract/orchestration-runs-params'
 
 function cancelBoundDispatchWaiters(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   caller: OrchestrationCallerIdentity,
   runId: string
 ): void {
@@ -30,7 +30,7 @@ function cancelBoundDispatchWaiters(
 
 /** Create a Run and bind it to the caller, as `run-create` does; one-step `worker-start` reuses it. */
 export function createBoundRun(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   caller: OrchestrationCallerIdentity,
   from: string,
   objective: string
@@ -39,7 +39,7 @@ export function createBoundRun(
     objective,
     coordinatorHandle: caller.terminalHandle,
     coordinatorPaneKey: caller.paneKey,
-    coordinatorOrcaSessionId: caller.orcaSessionId
+    coordinatorTopoSessionId: caller.topoSessionId
   })
   // The earlier Run keeps this consumer, so only waiters that plain check now redirects end.
   runtime.cancelMessageWaiters(from)
@@ -106,7 +106,7 @@ export const ORCHESTRATION_RUN_METHODS = [
         runId: params.id,
         coordinatorHandle: caller.terminalHandle,
         coordinatorPaneKey: caller.paneKey,
-        coordinatorOrcaSessionId: caller.orcaSessionId,
+        coordinatorTopoSessionId: caller.topoSessionId,
         takeoverLegacy: params.takeoverLegacy,
         legacyCoordinatorAuthority
       })

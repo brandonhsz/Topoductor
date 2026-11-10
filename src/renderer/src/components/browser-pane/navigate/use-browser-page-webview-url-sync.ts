@@ -5,7 +5,7 @@ import {
   redactKagiSessionToken
 } from '../../../../../shared/browser-url'
 import '../../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
 import { normalizeBrowserGuestSrc } from '../../../../../shared/browser/extensions/browser-extension-url'
 import {
   applyBrowserPageViewportLayout,
@@ -100,7 +100,7 @@ export function useBrowserPageWebviewUrlSync({
     ) {
       lastKnownWebviewUrlRef.current = normalizedUrl
       webview.src = normalizedUrl
-      if (normalizedUrl !== ORCA_BROWSER_BLANK_URL) {
+      if (normalizedUrl !== TOPO_BROWSER_BLANK_URL) {
         keepAddressBarFocusRef.current = false
         if (document.activeElement === addressBarInputRef.current) {
           focusWebviewNow()

@@ -4,9 +4,9 @@ import { PLUGIN_COMMAND_ALIAS_ACTION_IDS } from '../contributions/plugin-command
 import { spec, WORKER_ONLY } from './plugin-host-method-spec'
 
 /**
- * Orca state and actions a full-access worker cannot reach from Node: its workspaces, terminals
- * and agents. Each runs the runtime method the `orca` CLI runs, on the host that owns the
- * workspace (local, WSL or SSH), so a mod acts exactly as `orca terminal create` would.
+ * Topo state and actions a full-access worker cannot reach from Node: its workspaces, terminals
+ * and agents. Each runs the runtime method the `topo` CLI runs, on the host that owns the
+ * workspace (local, WSL or SSH), so a mod acts exactly as `topo terminal create` would.
  */
 
 export const PLUGIN_WORKSPACE_LIST_LIMIT = 500
@@ -109,7 +109,7 @@ const terminalReadResult = z.object({
 
 const agentLaunchParams = z.strictObject({
   workspaceId,
-  /** An agent Orca knows: `claude`, `codex`, `gemini`, ... */
+  /** An agent Topo knows: `claude`, `codex`, `gemini`, ... */
   agent: z.string().min(1).max(64).refine(isTuiAgent, 'unknown agent'),
   /** Sent to the agent as its first message. */
   prompt: z.string().min(1).max(TEXT_MAX).optional()
@@ -149,7 +149,7 @@ const commandsRunResult = z.object({ ran: z.literal(true) })
 
 export const PLUGIN_WORKSPACE_ACTIONS_API = {
   'workspace.list': spec({
-    summary: 'Lists every workspace, Git worktrees and folders, on every host Orca reaches.',
+    summary: 'Lists every workspace, Git worktrees and folders, on every host Topo reaches.',
     since: 3,
     scope: 'any-workspace',
     capability: 'workspace:read',
@@ -160,7 +160,7 @@ export const PLUGIN_WORKSPACE_ACTIONS_API = {
   }),
   'workspace.open': spec({
     summary:
-      'Shows a workspace in Orca, as clicking it in the sidebar does; a folder workspace needs the desktop app.',
+      'Shows a workspace in Topo, as clicking it in the sidebar does; a folder workspace needs the desktop app.',
     since: 3,
     scope: 'any-workspace',
     capability: 'workspace:write',
@@ -171,7 +171,7 @@ export const PLUGIN_WORKSPACE_ACTIONS_API = {
   }),
   'workspace.rename': spec({
     summary:
-      "Renames a workspace in Orca's sidebar, as renaming it by hand does; the name stays until it is renamed again.",
+      "Renames a workspace in Topo's sidebar, as renaming it by hand does; the name stays until it is renamed again.",
     since: 5,
     scope: 'any-workspace',
     capability: 'workspace:write',
@@ -213,7 +213,7 @@ export const PLUGIN_WORKSPACE_ACTIONS_API = {
   }),
   'editor.open': spec({
     summary:
-      "Opens a file of a workspace in an editor tab of Orca's window; desktop app only. `workspace.open` shows the workspace.",
+      "Opens a file of a workspace in an editor tab of Topo's window; desktop app only. `workspace.open` shows the workspace.",
     since: 3,
     scope: 'any-workspace',
     capability: 'workspace:write',
@@ -224,7 +224,7 @@ export const PLUGIN_WORKSPACE_ACTIONS_API = {
   }),
   'commands.run': spec({
     summary:
-      "Runs one of Orca's built-in actions in its window, never a plugin's replacement of it; desktop app only.",
+      "Runs one of Topo's built-in actions in its window, never a plugin's replacement of it; desktop app only.",
     since: 3,
     scope: 'desktop',
     capability: 'workspace:write',

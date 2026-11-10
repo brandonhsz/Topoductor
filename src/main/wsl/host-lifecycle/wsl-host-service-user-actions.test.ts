@@ -29,7 +29,7 @@ describe('WslHostService Remove as a user action', () => {
   }
 
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-wsl-host-user-actions-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-wsl-host-user-actions-'))
     removed.mockReset()
     vi.spyOn(console, 'warn').mockImplementation(() => {})
   })
@@ -38,7 +38,7 @@ describe('WslHostService Remove as a user action', () => {
     rmSync(userDataPath, { recursive: true, force: true })
   })
 
-  // D3a: Settings → Remote Orca Servers removes through the owning service, not wslHosts:remove;
+  // D3a: Settings → Remote Topo Servers removes through the owning service, not wslHosts:remove;
   // that Remove must decline the distro's move too, and the orchestrator's own add never counts.
   it('reports a Remove made from Settings as the user declining the host', async () => {
     const connector = makeConnector([UBUNTU])

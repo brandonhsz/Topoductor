@@ -22,7 +22,7 @@ export function connectorHello(
   const envelope = {
     v: 1,
     contract: CONNECTOR_CONTRACT_VERSION,
-    orcaVersion: machine.orcaVersion,
+    topoVersion: machine.topoVersion,
     platform: process.platform,
     runtime: machine.runtime,
     hostName: machine.hostName,

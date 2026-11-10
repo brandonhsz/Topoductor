@@ -22,8 +22,8 @@ vi.mock('../../workspace-hooks/hooks', () => ({
   hasHooksFile: mocks.hasHooks,
   loadHooks: mocks.loadHooks,
   getEffectiveHooks: mocks.effectiveHooks,
-  hasUnrecognizedOrcaYamlKeys: () => false,
-  parseOrcaYaml: () => ({ issueCommand: 'shared' })
+  hasUnrecognizedTopoYamlKeys: () => false,
+  parseTopoYaml: () => ({ issueCommand: 'shared' })
 }))
 vi.mock('../../workspace-hooks/issue-command-file', () => ({
   readIssueCommandUnlessWslStopped: mocks.localRead,

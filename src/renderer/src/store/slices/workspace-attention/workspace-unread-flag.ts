@@ -12,7 +12,7 @@ import type { AppState } from '../../types'
 import { persistPassiveWorktreeMetaForOwner } from '../worktrees/listing/worktree-owner-settings'
 import type { WorkspaceAttentionGet, WorkspaceAttentionSet } from './workspace-attention-contract'
 import { workspaceHasLiveMarker } from './workspace-live-markers'
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from '../../../../../shared/sidebar-inputs-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from '../../../../../shared/sidebar-inputs-switch'
 import { ownerHostOwnsSidebarInputs } from '../worktrees/listing/owner-host-sidebar-inputs'
 
 // The persisted workspace flag `isUnread`. Only the workspace-attention module writes it.
@@ -22,7 +22,7 @@ export function markWorkspaceUnreadFlag(
   get: WorkspaceAttentionGet,
   worktreeId: string
 ): void {
-  if (!ORCA_SIDEBAR_INPUTS_IS_MAIN) {
+  if (!TOPO_SIDEBAR_INPUTS_IS_MAIN) {
     raiseWorkspaceUnreadFlag(set, get, worktreeId)
     return
   }

@@ -51,7 +51,7 @@ export type NativeChatStructuredComposerTransport = {
   worktreeId?: string
   /** Present only where the host can set this session's goal. */
   threadGoal?: { setObjective: (objective: string) => Promise<boolean> }
-  /** `/btw`; absent where Orca can't fork this chat, so the command stays the agent's. */
+  /** `/btw`; absent where Topo can't fork this chat, so the command stays the agent's. */
   sideChat?: NativeChatSideChat
   /** Present only where the host can read this chat's Codex account usage. */
   accountUsage?: { open: () => void }

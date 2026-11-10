@@ -24,7 +24,7 @@ function providerFrameKinds(items: { body: AgentJournalItemBody }[]): string[] {
 function pluginUi(subtype: string | undefined, uuid: string, fields: Record<string, unknown>) {
   return {
     type: 'message' as const,
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     message: {
       type: 'system',
       subtype,
@@ -39,7 +39,7 @@ function pluginUi(subtype: string | undefined, uuid: string, fields: Record<stri
 function userTurn(uuid: string, text: string) {
   return {
     type: 'message' as const,
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     startsTurn: true as const,
     message: {
       type: 'user',
@@ -55,7 +55,7 @@ function userTurn(uuid: string, text: string) {
 function assistantReply(uuid: string, text: string) {
   return {
     type: 'message' as const,
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     message: {
       type: 'assistant',
       uuid,
@@ -85,7 +85,7 @@ describe('Claude plugin UI frames', () => {
     translator.handle(pluginUi('ui_status', 'ui-3', { text: null }))
     translator.handle({
       type: 'message',
-      sessionId: 'orca-session',
+      sessionId: 'topo-session',
       message: {
         type: 'result',
         subtype: 'success',

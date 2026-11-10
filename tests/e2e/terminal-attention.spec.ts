@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   execInTerminal,
   waitForActivePanePtyId,
@@ -132,25 +132,25 @@ async function focusActiveXterm(page: Page, tabId: string): Promise<void> {
 test.describe('Terminal attention', () => {
   // Units own BEL parsing; E2E pins background indicator raise and selection clear.
   test('background terminal attention marks a tab unread and clears on focus', async ({
-    orcaPage
+    topoPage
   }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
-    await waitForActiveTerminalManager(orcaPage, 30_000)
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
 
-    const firstTabId = await getActiveTabId(orcaPage)
+    const firstTabId = await getActiveTabId(topoPage)
     if (!firstTabId) {
       throw new Error('Expected an initial terminal tab')
     }
 
-    const secondTabId = await createTerminalTab(orcaPage)
-    await waitForActiveTerminalManager(orcaPage, 30_000)
+    const secondTabId = await createTerminalTab(topoPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
 
     // Focus the first tab so the second becomes a background tab; attention
     // arriving there should raise its indicator.
-    await activateTerminalTab(orcaPage, firstTabId)
-    await orcaPage.evaluate((tabId) => {
+    await activateTerminalTab(topoPage, firstTabId)
+    await topoPage.evaluate((tabId) => {
       const store = window.__store
       if (!store) {
         throw new Error('window.__store is unavailable')
@@ -171,13 +171,13 @@ test.describe('Terminal attention', () => {
     }, secondTabId)
 
     await expect
-      .poll(async () => (await getUnreadTerminalTabIds(orcaPage)).includes(secondTabId), {
+      .poll(async () => (await getUnreadTerminalTabIds(topoPage)).includes(secondTabId), {
         timeout: 10_000,
         message: 'Background tab did not become unread after BEL'
       })
       .toBe(true)
 
-    const secondTabBell = orcaPage
+    const secondTabBell = topoPage
       .locator(
         `[data-testid="sortable-tab"][data-tab-id="${secondTabId}"] [data-testid="tab-activity-bell"]`
       )
@@ -185,10 +185,10 @@ test.describe('Terminal attention', () => {
     await expect(secondTabBell).toBeVisible()
 
     // Activating the tab counts as "the user saw it" — the indicator clears.
-    await activateTerminalTab(orcaPage, secondTabId)
+    await activateTerminalTab(topoPage, secondTabId)
 
     await expect
-      .poll(async () => (await getUnreadTerminalTabIds(orcaPage)).includes(secondTabId), {
+      .poll(async () => (await getUnreadTerminalTabIds(topoPage)).includes(secondTabId), {
         timeout: 5_000,
         message: 'Unread state did not clear when the user focused the tab'
       })
@@ -198,37 +198,37 @@ test.describe('Terminal attention', () => {
 
   // Why (on screen means read, #28637): a BEL on the tab the present user is
   // looking at is already read, so it must leave no unread marker or bell.
-  test('a BEL on the focused tab leaves no unread marker', async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
-    await waitForActiveTerminalManager(orcaPage, 30_000)
+  test('a BEL on the focused tab leaves no unread marker', async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
 
-    const activeTabId = await getActiveTabId(orcaPage)
+    const activeTabId = await getActiveTabId(topoPage)
     if (!activeTabId) {
       throw new Error('Expected an active terminal tab')
     }
-    const activePtyId = await waitForActivePanePtyId(orcaPage)
-    await installRendererTitleLog(orcaPage)
+    const activePtyId = await waitForActivePanePtyId(topoPage)
+    await installRendererTitleLog(topoPage)
 
     // Why: presence comes only from trusted input; a bare Shift keydown sends nothing to the shell.
-    await focusActiveXterm(orcaPage, activeTabId)
-    await orcaPage.keyboard.press('Shift')
+    await focusActiveXterm(topoPage, activeTabId)
+    await topoPage.keyboard.press('Shift')
 
     await emitBellAndWaitForTitleFlush(
-      orcaPage,
+      topoPage,
       activePtyId,
       `focused-tab-bell-marker-${Date.now()}`
     )
 
     await expect
-      .poll(async () => (await getUnreadTerminalTabIds(orcaPage)).includes(activeTabId), {
+      .poll(async () => (await getUnreadTerminalTabIds(topoPage)).includes(activeTabId), {
         timeout: 5_000,
         message: 'A BEL on the focused tab left it unread'
       })
       .toBe(false)
     await expect(
-      orcaPage.locator(
+      topoPage.locator(
         `[data-testid="sortable-tab"][data-tab-id="${activeTabId}"] [data-testid="tab-activity-bell"]`
       )
     ).toHaveCount(0)

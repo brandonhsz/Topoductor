@@ -4,7 +4,7 @@ import { isDefinitiveAbsence } from '../../shared/definitive-filesystem-absence'
 import {
   syncSystemCodexResourcesIntoManagedHome,
   getSystemCodexHomePath,
-  resolveOrcaManagedCodexHomePath
+  resolveTopoManagedCodexHomePath
 } from '../codex/configuration/homes/codex-home-paths'
 import { syncSystemConfigIntoManagedCodexHome } from '../codex/configuration/settings/codex-config-mirror'
 import { startCodexAccountSessionBridgeInBackground } from '../codex/history/bridges/codex-account-session-bridge'
@@ -165,7 +165,7 @@ export abstract class CodexRuntimeHomeManagedHome extends CodexRuntimeHomeSync {
             resolveHostCodexSessionSourceHome(this.store.getSettings()) ?? getSystemCodexHomePath()
           ]),
       // Resolve the mirror path without creating it for per-account launches.
-      resolveOrcaManagedCodexHomePath(),
+      resolveTopoManagedCodexHomePath(),
       ...this.getManagedHostAccountHomesForSessionDiscovery()
     ]
   }

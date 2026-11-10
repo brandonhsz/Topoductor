@@ -25,14 +25,14 @@ describeOnWindows('Windows secure paths against a real filesystem', () => {
   let addon: WindowsSecurity['addon']
   let sid: string
   let root: string
-  /** A relocated data root: `C:\orca-…` inherits BUILTIN\Users and Authenticated Users from C:\. */
+  /** A relocated data root: `C:\topo-…` inherits BUILTIN\Users and Authenticated Users from C:\. */
   let relocatedRoot: string
 
   const daclOf = (path: string) => addon.getDaclAces(path)
   const sidsOf = (path: string) => (daclOf(path)?.aces ?? []).map((ace) => ace.sid).sort()
   const INHERITABLE = OBJECT_INHERIT_ACE | CONTAINER_INHERIT_ACE
   const INHERITED_ACE = 0x10
-  const ORCA_PRINCIPALS = () => ['S-1-5-18', 'S-1-5-32-544', sid].sort()
+  const TOPO_PRINCIPALS = () => ['S-1-5-18', 'S-1-5-32-544', sid].sort()
 
   beforeAll(() => {
     const loaded = loadWindowsSecurity()
@@ -41,8 +41,8 @@ describeOnWindows('Windows secure paths against a real filesystem', () => {
     }
     addon = loaded.addon
     sid = loaded.userSid
-    root = mkdtempSync(join(tmpdir(), 'orca-acl-win32-'))
-    relocatedRoot = join('C:\\', `orca-acl-test-${randomBytes(4).toString('hex')}`)
+    root = mkdtempSync(join(tmpdir(), 'topo-acl-win32-'))
+    relocatedRoot = join('C:\\', `topo-acl-test-${randomBytes(4).toString('hex')}`)
     mkdirSync(relocatedRoot)
   })
 
@@ -82,7 +82,7 @@ describeOnWindows('Windows secure paths against a real filesystem', () => {
     expect(restrictWindowsPathSync(file, false)).toBe(true)
 
     expect(daclOf(file)?.protected).toBe(true)
-    expect(sidsOf(file)).toEqual(ORCA_PRINCIPALS())
+    expect(sidsOf(file)).toEqual(TOPO_PRINCIPALS())
   })
 
   it('gives a directory inheritable rules so files created inside start restricted', () => {
@@ -94,7 +94,7 @@ describeOnWindows('Windows secure paths against a real filesystem', () => {
     expect(daclOf(dir)?.aces.every((ace) => ace.flags === INHERITABLE)).toBe(true)
     const child = join(dir, 'plain.json')
     writeFileSync(child, '{}')
-    expect(sidsOf(child)).toEqual(ORCA_PRINCIPALS())
+    expect(sidsOf(child)).toEqual(TOPO_PRINCIPALS())
     expect(daclOf(child)?.aces.every((ace) => (ace.flags & INHERITED_ACE) !== 0)).toBe(true)
   })
 
@@ -119,7 +119,7 @@ describeOnWindows('Windows secure paths against a real filesystem', () => {
 
     expect(restrictWindowsPathSync(file, false)).toBe(true)
 
-    expect(sidsOf(file)).toEqual(ORCA_PRINCIPALS())
+    expect(sidsOf(file)).toEqual(TOPO_PRINCIPALS())
   })
 
   it('hardens a path longer than MAX_PATH', () => {
@@ -132,7 +132,7 @@ describeOnWindows('Windows secure paths against a real filesystem', () => {
     writeFileSync(file, '{}')
 
     expect(restrictWindowsPathSync(file, false)).toBe(true)
-    expect(sidsOf(`\\\\?\\${file}`)).toEqual(ORCA_PRINCIPALS())
+    expect(sidsOf(`\\\\?\\${file}`)).toEqual(TOPO_PRINCIPALS())
   })
 
   it('reports failure, not success, for a path that does not exist', () => {

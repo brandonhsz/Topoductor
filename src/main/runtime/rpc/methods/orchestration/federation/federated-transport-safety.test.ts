@@ -3,7 +3,7 @@ import {
   ORCHESTRATION_CONTRACT_RUNTIME_CAPABILITY,
   ORCHESTRATION_FEDERATION_RELEASE_ARCHIVE_RUNTIME_CAPABILITY
 } from '../../../../../../shared/orchestration/orchestration-runtime-capabilities'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 
 import type { FederatedDispatchRow } from '../../../../orchestration/db/orchestration-records'
 
@@ -36,7 +36,7 @@ describe('federated transport safety', () => {
             },
       _meta: { runtimeId: 'epoch-worker' }
     }))
-    const runtime = new OrcaRuntimeService(null, undefined, {
+    const runtime = new TopoRuntimeService(null, undefined, {
       orchestrationEnvironmentTransport: {
         resolve: () => server,
         call
@@ -80,7 +80,7 @@ describe('federated transport safety', () => {
     const runtime = {
       callOrchestrationWorkerServer,
       getOrchestrationDb: () => db
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
 
     const result = await releaseFederatedWorker({
       runtime,
@@ -136,7 +136,7 @@ describe('worker-stop of a remote worker already settled at home', () => {
         }
         return { keptOpen: false }
       })
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     const method = ORCHESTRATION_WORKER_STOP_METHODS[0]!
     return method.handler(method.params!.parse({ dispatch: 'dispatch-worker' }), {
       runtime,

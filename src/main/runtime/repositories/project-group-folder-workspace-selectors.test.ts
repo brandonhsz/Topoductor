@@ -1,10 +1,10 @@
 import { tmpdir } from 'node:os'
 import { describe, expect, it, vi } from 'vitest'
 
-import { withDurableRuntimeStore } from '../orca-runtime-tests/runtime-durable-store-fixture'
+import { withDurableRuntimeStore } from '../topo-runtime-tests/runtime-durable-store-fixture'
 import { getDefaultWorkspaceSession } from '../../../shared/constants'
 import { folderWorkspaceKey } from '../../../shared/workspace-scope'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 
 // STA-12562: project-group folder workspaces have no repo row, so a Git-only selector never finds them.
 const FOLDER_ID = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'
@@ -58,7 +58,7 @@ function createRuntime(
     statTerminalScrollbackSnapshotSize: async () => null,
     flushOrThrow: () => {}
   }) as never
-  const runtime = new OrcaRuntimeService(store)
+  const runtime = new TopoRuntimeService(store)
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the fake implements only the controller calls these commands make.
   runtime.setPtyController({
     write: () => true,
@@ -71,7 +71,7 @@ function createRuntime(
 }
 
 describe('workspace commands on a project-group folder workspace', () => {
-  it('shows it (orca worktree show)', async () => {
+  it('shows it (topo worktree show)', async () => {
     const shown = await createRuntime().showManagedWorktree(`id:${WORKSPACE_ID}`)
 
     expect(shown.id).toBe(WORKSPACE_ID)

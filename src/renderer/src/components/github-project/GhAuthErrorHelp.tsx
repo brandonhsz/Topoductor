@@ -31,7 +31,7 @@ function refreshCommandForHost(host: string | null | undefined): string {
 // Environment cleanup commands differ between PowerShell on Windows and bash/zsh on macOS/Linux.
 const IS_WINDOWS = typeof navigator !== 'undefined' && /Win(dows|32|64)/i.test(navigator.userAgent)
 
-export function reloadOrcaRenderer(): void {
+export function reloadTopoRenderer(): void {
   void window.api.app.reload().catch((error) => {
     console.error(
       '[github-projects] Renderer reload refused:',
@@ -64,7 +64,7 @@ function unsetEnvVarCommand(
   t: Translate = translate
 ): { label: string; command: string } {
   if (IS_WINDOWS) {
-    // User-scope changes require a fresh shell and Orca relaunch.
+    // User-scope changes require a fresh shell and Topo relaunch.
     return {
       label: t(
         'auto.components.github.project.GhAuthErrorHelp.fd17b3019f',
@@ -153,7 +153,7 @@ export function buildRemediation(
       ),
       detail: t(
         'projectViews.authHelp.ghMissingDetail',
-        'Orca uses `gh` to talk to GitHub Projects. Install it from cli.github.com, then sign in.'
+        'Topo uses `gh` to talk to GitHub Projects. Install it from cli.github.com, then sign in.'
       ),
       commands: [
         {
@@ -184,12 +184,12 @@ export function buildRemediation(
     const removal = IS_WINDOWS
       ? t(
           'projectViews.authHelp.envTokenRemoveWindows',
-          'Find where `{{varName}}` is set (System or User environment variables, or your PowerShell profile), remove it, then restart Orca so the new environment is picked up.',
+          'Find where `{{varName}}` is set (System or User environment variables, or your PowerShell profile), remove it, then restart Topo so the new environment is picked up.',
           { varName }
         )
       : t(
           'projectViews.authHelp.envTokenRemovePosix',
-          "Find where `{{varName}}` is exported (commonly `~/.zshrc`, `~/.zshenv`, `~/.bashrc`, `~/.profile`, or your shell's secrets manager), remove it, then restart Orca so the new environment is picked up.",
+          "Find where `{{varName}}` is exported (commonly `~/.zshrc`, `~/.zshenv`, `~/.bashrc`, `~/.profile`, or your shell's secrets manager), remove it, then restart Topo so the new environment is picked up.",
           { varName }
         )
     return {
@@ -204,24 +204,24 @@ export function buildRemediation(
     }
   }
 
-  // Orca’s inherited token can still shadow credentials refreshed in a separate terminal.
+  // Topo’s inherited token can still shadow credentials refreshed in a separate terminal.
   if (diag.envTokenInProcess && (!active || diag.missingScopes.length > 0)) {
     const varName = diag.envTokenInProcess
     return {
       summary: t(
         'projectViews.authHelp.envTokenInherited',
-        "Orca inherited `{{varName}}` from your shell, and `gh` is using that token. `gh auth refresh` doesn't apply to env-supplied tokens.",
+        "Topo inherited `{{varName}}` from your shell, and `gh` is using that token. `gh auth refresh` doesn't apply to env-supplied tokens.",
         { varName }
       ),
       detail: IS_WINDOWS
         ? t(
             'projectViews.authHelp.envTokenInheritedDetailWindows',
-            'Unset `{{varName}}` in the shell that launches Orca (or in your user environment variables), then restart Orca.',
+            'Unset `{{varName}}` in the shell that launches Topo (or in your user environment variables), then restart Topo.',
             { varName }
           )
         : t(
             'projectViews.authHelp.envTokenInheritedDetailPosix',
-            'Unset `{{varName}}` in the shell that launches Orca (or in your shell rc file), then restart Orca.',
+            'Unset `{{varName}}` in the shell that launches Topo (or in your shell rc file), then restart Topo.',
             { varName }
           ),
       commands: [findEnvVarCommand(varName, t), unsetEnvVarCommand(varName, t)],
@@ -355,7 +355,7 @@ export function GhAuthErrorHelp({
           {/* Reload diagnostics after refreshing credentials in a terminal. */}
           <button
             type="button"
-            onClick={reloadOrcaRenderer}
+            onClick={reloadTopoRenderer}
             className="inline-flex items-center gap-1 rounded border border-amber-500/30 px-1.5 py-0.5 text-[11px] hover:bg-amber-500/20"
           >
             <RotateCw className="size-3" />{' '}
@@ -393,7 +393,7 @@ export function GhAuthErrorHelp({
           </Button>
         ) : null}
         {/* Reload diagnostics after refreshing credentials in a terminal. */}
-        <Button size="sm" variant="outline" onClick={reloadOrcaRenderer}>
+        <Button size="sm" variant="outline" onClick={reloadTopoRenderer}>
           <RotateCw className="mr-1 size-3.5" />{' '}
           {t('auto.components.github.project.GhAuthErrorHelp.7e800068d8', 'Reload')}
         </Button>

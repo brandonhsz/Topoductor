@@ -19,7 +19,7 @@ describe('removed-worktree foreign authority', () => {
   let userDataPath: string
   beforeEach(() => {
     _internals.resetCachesForTests()
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-foreign-authority-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-foreign-authority-'))
   })
   afterEach(() => rmSync(userDataPath, { recursive: true, force: true }))
 

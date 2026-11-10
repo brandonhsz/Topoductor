@@ -38,7 +38,7 @@ function metadataOnlyTranscript(sessionId: string): unknown[] {
 
 describe('recoverable-but-empty Claude sessions', () => {
   it('surfaces a zero-turn session with queued messages and subagent transcripts', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-ai-vault-recoverable-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-ai-vault-recoverable-'))
     tempRoots.push(root)
     const roots = isolatedScanRoots(root)
     const sessionId = '9176163a-2f89-431f-b202-32f04d61f124'
@@ -76,7 +76,7 @@ describe('recoverable-but-empty Claude sessions', () => {
   })
 
   it('picks up subagent transcripts written after the parent transcript last changed', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-ai-vault-late-sub-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-ai-vault-late-sub-'))
     tempRoots.push(root)
     const roots = isolatedScanRoots(root)
     const sessionId = 'late-subagent-session'
@@ -107,7 +107,7 @@ describe('recoverable-but-empty Claude sessions', () => {
   })
 
   it('never counts local subagent transcripts for a remote-host transcript', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-ai-vault-remote-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-ai-vault-remote-'))
     tempRoots.push(root)
     const sessionId = 'remote-session'
     const transcriptPath = join(root, `${sessionId}.jsonl`)

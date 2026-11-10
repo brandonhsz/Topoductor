@@ -1,7 +1,7 @@
 import { ORCHESTRATION_FLEET_PAGE_MAX } from '../../../../../../shared/orchestration/fleet/orchestration-fleet-projection'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import type { FederatedDispatchRow } from '../../../../orchestration/db/orchestration-records'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 
 type HostGroup = {
   environmentId: string
@@ -10,7 +10,7 @@ type HostGroup = {
 }
 
 export function groupFederatedDispatches(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   dispatchIds: readonly string[]
 }): HostGroup[] {

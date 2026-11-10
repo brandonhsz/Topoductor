@@ -28,7 +28,7 @@ async function loadStoreModule() {
 }
 
 beforeEach(() => {
-  tempHome = mkdtempLike('orca-openai-key-store-')
+  tempHome = mkdtempLike('topo-openai-key-store-')
   safeStorageMock.decryptString.mockClear()
   safeStorageMock.encryptString.mockClear()
   safeStorageMock.isEncryptionAvailable.mockClear()
@@ -40,13 +40,13 @@ function mkdtempLike(prefix: string): string {
 }
 
 function writeStoredOpenAiKey(value: string): void {
-  const orcaDir = join(tempHome, '.orca')
-  mkdirSync(orcaDir, { recursive: true })
-  writeFileSync(join(orcaDir, 'openai-speech-token.enc'), value)
+  const topoDir = join(tempHome, '.topo')
+  mkdirSync(topoDir, { recursive: true })
+  writeFileSync(join(topoDir, 'openai-speech-token.enc'), value)
 }
 
 describe('OpenAI speech API key store', () => {
-  // #31174: orcad cannot open a key the desktop sealed with safeStorage, so it must not say ready.
+  // #31174: topod cannot open a key the desktop sealed with safeStorage, so it must not say ready.
   it('reports a stored key this host cannot decrypt as unusable', async () => {
     writeStoredOpenAiKey('v10\u0000ÿþ sealed by another store')
     const store = await loadStoreModule()

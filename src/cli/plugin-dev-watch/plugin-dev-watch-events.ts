@@ -47,7 +47,7 @@ export type PluginDevWatchEvent =
       error?: string
     }
   | ({ type: 'approval'; pluginKey: string } & PluginDevWatchApproval)
-  /** `--check`: `orca plugin check` after the load and after each reload. `ok` also needs Orca to
+  /** `--check`: `topo plugin check` after the load and after each reload. `ok` also needs Topo to
    *  run the plugin (`pluginStatus` running, idle or restarting); `checkOk` is the check alone. */
   | ({
       type: 'check'
@@ -87,7 +87,7 @@ function checkHeadline(event: Extract<PluginDevWatchEvent, { type: 'check' }>): 
   if (!event.checkOk) {
     return `✗ check failed for ${event.pluginKey}`
   }
-  return `✗ check passed, but in Orca ${event.pluginKey} is ${pluginStatusPhrase(event.pluginStatus, event.pluginError)}`
+  return `✗ check passed, but in Topo ${event.pluginKey} is ${pluginStatusPhrase(event.pluginStatus, event.pluginError)}`
 }
 
 export function formatPluginDevWatchEvent(event: PluginDevWatchEvent): string {
@@ -118,7 +118,7 @@ export function formatPluginDevWatchEvent(event: PluginDevWatchEvent): string {
       return [
         checkHeadline(event),
         ...(!event.ok && !event.checkOk && !PLUGIN_DEV_WATCH_SHOOTABLE.has(event.pluginStatus)
-          ? [`  in Orca: ${pluginStatusPhrase(event.pluginStatus, event.pluginError)}`]
+          ? [`  in Topo: ${pluginStatusPhrase(event.pluginStatus, event.pluginError)}`]
           : []),
         ...event.invalid.map((error) => `  invalid: ${error}`),
         ...event.panels.flatMap(formatPluginPanelCheck).map((line) => `  ${line}`),
@@ -139,7 +139,7 @@ export function formatPluginDevWatchEvent(event: PluginDevWatchEvent): string {
     case 'warning':
       return `warning: ${event.message}`
     case 'disconnected':
-      return `Lost the connection to Orca: ${event.message}`
+      return `Lost the connection to Topo: ${event.message}`
     case 'unloaded':
       return event.removed
         ? `Unloaded ${event.pluginKey} (${event.path}).`

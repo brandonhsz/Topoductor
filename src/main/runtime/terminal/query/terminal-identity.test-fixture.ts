@@ -1,6 +1,6 @@
-import '../../orca-runtime-tests/runtime-test-module-registration.spec'
+import '../../topo-runtime-tests/runtime-test-module-registration.spec'
 import { vi, type Mock, type MockInstance } from 'vitest'
-import { store, TEST_WORKTREE_ID } from '../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+import { store, TEST_WORKTREE_ID } from '../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import type { RuntimeSyncWindowGraph } from '../../../../shared/runtime-session-contracts'
 import type { TerminalIdentitySource } from '../identity/terminal-identity-source'
 
@@ -15,7 +15,7 @@ import type {
 } from '../identity/terminal-handle-records'
 
 import type { CrewChanges } from '../../orchestration/crew/crew-changes'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import type { TerminalIdentityReadContext } from './terminal-identity-read-context'
 import { OrchestrationDb } from '../../orchestration/db/orchestration-db'
 import { CrewReadModel } from '../../orchestration/crew/crew-read-model'
@@ -61,7 +61,7 @@ type Owner = {
   beginGraphReload: (windowId: number) => number
 }
 
-class IdentityRuntime extends OrcaRuntimeService {
+class IdentityRuntime extends TopoRuntimeService {
   identityOwner(): Owner {
     const current = () => this
     return {
@@ -138,7 +138,7 @@ export function watchIdentityFixture(
   f: ReturnType<typeof identityFixture>,
   captured = true
 ): {
-  acquisition: MockInstance<OrcaRuntimeService['createTerminalIdentityRawInputs']>
+  acquisition: MockInstance<TopoRuntimeService['createTerminalIdentityRawInputs']>
   wake: Mock<() => void>
   context: () => TerminalIdentityReadContext | undefined
   pane: (pane: string) => RuntimePtyWorktreeRecord | null

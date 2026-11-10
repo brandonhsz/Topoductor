@@ -1,11 +1,11 @@
-import { OrcaRuntimeWithMobileTookFloor } from './mobile-terminal-activity'
+import { TopoRuntimeWithMobileTookFloor } from './mobile-terminal-activity'
 
 // Finite holds must exceed legacy 300ms debounce and cannot exceed one hour.
 const MOBILE_AUTO_RESTORE_FIT_MIN_MS = 5_000
 
 const MOBILE_AUTO_RESTORE_FIT_MAX_MS = 60 * 60 * 1000
 
-export abstract class OrcaRuntimeWithReclaimTerminalForDesktop extends OrcaRuntimeWithMobileTookFloor {
+export abstract class TopoRuntimeWithReclaimTerminalForDesktop extends TopoRuntimeWithMobileTookFloor {
   abstract isMobileSubscriberActive(ptyId: string): boolean
   abstract setMobileDisplayMode(ptyId: string, mode: 'auto' | 'desktop'): void
 

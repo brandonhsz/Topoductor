@@ -3,7 +3,7 @@
  * it, so a one-off registry miss can't make the act and a gate disagree on which distro it is.
  */
 import { AsyncLocalStorage } from 'node:async_hooks'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { getCachedWslDistros, listWslDistrosAsync } from './distro-catalog'
 import {
   lxssRegQuerySpec,

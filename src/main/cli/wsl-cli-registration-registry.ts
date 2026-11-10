@@ -29,7 +29,7 @@ type WslCliRegistrationRegistryTiming = {
   currentTarget?: string | null
   appVersion?: string | null
   /**
-   * Unregistered distros that may still be inspected: ones Orca deployed a host into. Any other
+   * Unregistered distros that may still be inspected: ones Topo deployed a host into. Any other
    * distro is the user's own and never gets a guest command (EDR noise, untouched environments).
    */
   inspectableDistros?: readonly string[]

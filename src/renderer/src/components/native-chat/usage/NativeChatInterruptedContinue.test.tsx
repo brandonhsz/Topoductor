@@ -82,12 +82,12 @@ const cutChat: AgentJournalRenderItem[] = [
     body: { kind: 'turn', turnId: 'cut', state: 'interrupted', startedAt: 1, completedAt: 5 }
   },
   {
-    itemId: agentJournalItemKey({ provider: 'orca', clientMessageId: 'stale-session:s:death-1-5' }),
+    itemId: agentJournalItemKey({ provider: 'topo', clientMessageId: 'stale-session:s:death-1-5' }),
     revision: 1,
     sequence: 2,
     observedAt: 6,
     turnScope: { kind: 'turn', turnItemId: TURN },
-    body: { kind: 'status', text: 'Codex stopped.', tone: 'error', orcaStop: { cause: 'crash' } }
+    body: { kind: 'status', text: 'Codex stopped.', tone: 'error', topoStop: { cause: 'crash' } }
   }
 ]
 
@@ -176,7 +176,7 @@ afterEach(() => {
   clearNativeChatComposerDraftsForTests()
 })
 
-describe('Continue on a reply an Orca stop cut off', () => {
+describe('Continue on a reply a Topo stop cut off', () => {
   it('replaces an older composer error with its own failure, and clears it when it goes through', async () => {
     mocks.call.mockResolvedValueOnce({ outcome: 'refused', reason: 'agent_session_conflict' })
     mocks.call.mockResolvedValueOnce({ outcome: 'pending' })

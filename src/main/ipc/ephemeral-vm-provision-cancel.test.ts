@@ -32,8 +32,8 @@ afterEach(() => {
 })
 
 it('cancels source resolution before a provisioned-root recipe creates resources', async () => {
-  const userDataPath = makeTempDir('orca-vm-cancel-user-data-')
-  const repoPath = makeTempDir('orca-vm-cancel-repo-')
+  const userDataPath = makeTempDir('topo-vm-cancel-user-data-')
+  const repoPath = makeTempDir('topo-vm-cancel-repo-')
   const createMarker = join(repoPath, 'create-ran')
   getPathMock.mockReturnValue(userDataPath)
   handleMock.mockImplementation((channel: string, handler: never) => handlers.set(channel, handler))
@@ -85,7 +85,7 @@ function makeStore(repoPath: string) {
 
 function writeRecipe(repoPath: string, createMarker: string): void {
   writeFileSync(
-    join(repoPath, 'orca.yaml'),
+    join(repoPath, 'topo.yaml'),
     [
       'environmentRecipes:',
       '  - id: cloud-sandbox',

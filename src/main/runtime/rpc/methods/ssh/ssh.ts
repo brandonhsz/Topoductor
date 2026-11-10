@@ -7,7 +7,7 @@ import {
   listRegisteredSshTargets,
   SshTargetManagementUnservedError
 } from '../../../../ssh/targets/ssh-target-registry'
-import { isManagedOrcadSshTarget } from '../../../../ssh/targets/ssh-target-runtime-ownership'
+import { isManagedTopodSshTarget } from '../../../../ssh/targets/ssh-target-runtime-ownership'
 import { browseSshDirectory } from '../../../../ssh/filesystem/ssh-remote-directory-browse'
 import { defineMethod } from '../../core'
 import {
@@ -46,7 +46,7 @@ function toSshTargetSummary(
     connected: state?.status === 'connected',
     ...(state?.status === undefined ? {} : { connectionStatus: state.status }),
     ...(remotePlatform === undefined ? {} : { remotePlatform }),
-    ...(isManagedOrcadSshTarget(target) ? { managedServer: true as const } : {})
+    ...(isManagedTopodSshTarget(target) ? { managedServer: true as const } : {})
   }
 }
 
@@ -87,7 +87,7 @@ function toSshEditableTarget(target: SshTargetRecord): SshEditableTarget {
     allowRemoteCliControl: isRemoteCliControlAllowed(target),
     ...toSshTargetSummary(target),
     ...(target.source === undefined ? {} : { source: target.source }),
-    ...(isManagedOrcadSshTarget(target) ? { managedServer: true as const } : {})
+    ...(isManagedTopodSshTarget(target) ? { managedServer: true as const } : {})
   }
 }
 

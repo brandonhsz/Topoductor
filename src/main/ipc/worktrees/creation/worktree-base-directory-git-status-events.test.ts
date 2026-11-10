@@ -5,8 +5,8 @@ import { afterEach, expect, it, vi } from 'vitest'
 import { listWorktrees } from '../../../git/worktrees/catalog/worktree-scan-cache'
 import { listWorktreesStrict } from '../../../git/worktrees/catalog/worktree-listing'
 import { getStatusLineStatsCacheKey } from '../../../git/source-control/status-branch-line-total-input'
-import { OrcaRuntimeService } from '../../../runtime/orca-runtime'
-import { partialRuntimeStore } from '../../../runtime/orca-runtime-tests/runtime-store-partial-fixture'
+import { TopoRuntimeService } from '../../../runtime/topo-runtime'
+import { partialRuntimeStore } from '../../../runtime/topo-runtime-tests/runtime-store-partial-fixture'
 import { makeStore } from '../../../runtime/client/navigation/paired-client-navigation-test-harness'
 import type { RuntimeClientEvent } from '../../../../shared/runtime-client-events'
 import {
@@ -93,7 +93,7 @@ it('tells paired clients which worktree an index change touched', async () => {
   vi.mocked(listWorktrees).mockResolvedValue(listing)
   vi.mocked(listWorktreesStrict).mockResolvedValue(listing)
   // The harness store holds repo-1 at /tmp/repo.
-  const runtime = new OrcaRuntimeService(partialRuntimeStore(makeStore()))
+  const runtime = new TopoRuntimeService(partialRuntimeStore(makeStore()))
   setWorktreeCatalogRemoteClientNotifier(runtime)
   await runtime.listManagedWorktrees('repo-1')
   const events: RuntimeClientEvent[] = []

@@ -50,7 +50,7 @@ jobs:
           REPO: ${{ github.repository }}
           TAG: ${{ inputs.tag }}
           ASSETS: ${{ inputs.assets }}
-          # R2 S3 API keys with Object Read & Write on the orca-downloads bucket.
+          # R2 S3 API keys with Object Read & Write on the topo-downloads bucket.
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           WORK_DIR: ${{ runner.temp }}/release-mirror

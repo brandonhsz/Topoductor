@@ -28,15 +28,15 @@ describe('deriveGitRemoteIdentity', () => {
       expect(
         deriveGitRemoteIdentity(
           [
-            'amoaba\thttps://github.com/AmoabaKelvin/orca.git (fetch)',
-            `origin\thttps://github.com/stablyai/orca.git (fetch) [${filter}]`,
-            'origin\thttps://github.com/another/orca.git (push)'
+            'amoaba\thttps://github.com/AmoabaKelvin/topo.git (fetch)',
+            `origin\thttps://github.com/brandonhsz/Topoductor.git (fetch) [${filter}]`,
+            'origin\thttps://github.com/another/topo.git (push)'
           ].join('\r\n')
         )
       ).toEqual({
-        canonicalKey: 'github.com/stablyai/orca',
+        canonicalKey: 'github.com/brandonhsz/Topoductor',
         remoteName: 'origin',
-        remoteUrl: 'https://github.com/stablyai/orca.git'
+        remoteUrl: 'https://github.com/brandonhsz/Topoductor.git'
       })
     }
   )

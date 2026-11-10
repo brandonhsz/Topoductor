@@ -30,7 +30,7 @@ function parse(argv: string[]) {
   return normalizeCommandPositionals(COMMAND_SPECS, parseArgs(argv, paths, COMMAND_SPECS))
 }
 
-describe('orca plugin dev watch', () => {
+describe('topo plugin dev watch', () => {
   it('suggests an approval command that dev reload accepts, without watch-only flags', async () => {
     const rawArgs = [
       'plugin',
@@ -72,7 +72,7 @@ describe('orca plugin dev watch', () => {
   it('treats a transport failure as a lost host but a host error reply as a reply', async () => {
     const call = vi
       .fn()
-      .mockRejectedValueOnce(new RuntimeClientError('runtime_unavailable', 'Orca is not running'))
+      .mockRejectedValueOnce(new RuntimeClientError('runtime_unavailable', 'Topo is not running'))
       .mockRejectedValueOnce(rpcFailure('internal_error'))
     const host = bindPluginDevWatchHost(context(call), '/work/notes')
     await expect(host.list()).rejects.toBeInstanceOf(PluginHostUnreachableError)
@@ -113,7 +113,7 @@ describe('plugin dev watch --check', () => {
 
 describe('plugin dev watch --shot', () => {
   it('opens once by RPC, then shoots only while shown, also from a remote host', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'orca-watch-shot-'))
+    const dir = await mkdtemp(join(tmpdir(), 'topo-watch-shot-'))
     try {
       const png = Buffer.from('png').toString('base64')
       const replies = [

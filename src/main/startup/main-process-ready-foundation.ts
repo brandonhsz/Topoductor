@@ -12,7 +12,7 @@ import {
   browserManager
 } from '../browser/guest-lifecycle/manager/browser-manager'
 import { browserSiteDisplayController } from '../browser/site-settings/display/browser-site-display-controller'
-import { ensureActiveOrcaProfile } from '../orca-profiles/profile-index-store'
+import { ensureActiveTopoProfile } from '../topo-profiles/profile-index-store'
 import { getCanonicalUserDataPath } from '../persistence/loading-store/user-data-path'
 import { getAppEnvironment } from '../../shared/app-environment'
 import { loadWslMoveFence } from '../persistence/moving-wsl-projects/wsl-move-scope-guard'
@@ -20,12 +20,12 @@ import { startWslMoveStartup } from '../persistence/moving-wsl-projects/wsl-move
 import { startWslHostsPolicyLiveUpdates } from '../wsl/host-lifecycle/wsl-hosts-policy-live-update'
 import { runPendingWslDriveUncConversions } from '../wsl/filesystem/wsl-drive-unc-conversion-startup'
 import { createProfileStateStoreForStartup } from '../persistence/profile-state/profile-state-startup-authority'
-import { getProfileUserDataPath } from '../orca-profiles/profile-storage-paths'
+import { getProfileUserDataPath } from '../topo-profiles/profile-storage-paths'
 import { initializeBrowserClientHostId } from '../browser/client-hosts/lifecycle/browser-client-host-id'
 import { scheduleSecretProtectionGapReport } from '../host/deferred-secret-protection-report'
 import { withholdUnreachableKeychainForServe } from '../host/serve-keychain-guard'
 import { initSshHostKeyStoreFile } from '../ssh/host-keys/ssh-host-key-store'
-import { initOrcadHeldFenceTokenFile } from '../managed-server/activation/orcad-held-fence-tokens'
+import { initTopodHeldFenceTokenFile } from '../managed-server/activation/topod-held-fence-tokens'
 import { neutralizeLegacyTerminalShimDir } from '../pty/shell-startup/legacy-terminal-shim-dir'
 import { createWindowsShellPathHydration } from './windows-shell-path-hydration'
 import {
@@ -143,8 +143,8 @@ export async function initializeReadyFoundation(): Promise<void> {
   state.managedWslCliStartupBarrierReady = createWslCliReconciliationStartupBarrier(
     state.managedWslCliReconciliationReady
   )
-  const profile = ensureActiveOrcaProfile()
-  state.activeOrcaProfile = profile
+  const profile = ensureActiveTopoProfile()
+  state.activeTopoProfile = profile
   // Read durable browser hosting ID before window argv stamps it or renderer and lease ownership diverge.
   initializeBrowserClientHostId(profile.profileDirectory)
   // Before the profile store and the fence: a conversion that rewrites the profile here leaves
@@ -205,13 +205,13 @@ export async function initializeReadyFoundation(): Promise<void> {
   // Wait for profile-sidecar location, then defer potentially blocking OS-keyring probes past first paint (STA-5765).
   scheduleSecretProtectionGapReport({
     dataFile: profile.dataFile,
-    force: process.env.ORCA_ALWAYS_REPORT_SECRET_PROTECTION === '1',
+    force: process.env.TOPO_ALWAYS_REPORT_SECRET_PROTECTION === '1',
     deferUntilFirstWindow: !state.isServeMode,
     skipInDevelopment: !app.isPackaged
   })
   // Bind the profile host-key sidecar before connects or accepted trust records silently vanish each launch.
   initSshHostKeyStoreFile(profile.dataFile)
-  initOrcadHeldFenceTokenFile(profile.dataFile)
+  initTopodHeldFenceTokenFile(profile.dataFile)
   // Neutralize legacy shims before PTY handlers, including headless serve which never opens a main window.
   neutralizeLegacyTerminalShimDir(app.getPath('userData'))
   const windowsShellPathHydration = createWindowsShellPathHydration()
@@ -304,7 +304,7 @@ export async function initializeReadyFoundation(): Promise<void> {
   })
   // Desktop webviews and runtime commands share sessions; initialize without waiting for renderer IPC.
   initializeBrowserSessionsForApp({
-    orcaProfileId: profile.profile.id,
+    topoProfileId: profile.profile.id,
     profileDirectory: profile.profileDirectory,
     // Sweep against current SSH targets or live target cookie jars look orphaned.
     listLocalSshTargetIds: () => {

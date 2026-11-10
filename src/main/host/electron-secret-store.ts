@@ -34,7 +34,7 @@ export function assessSecretProtection(): SecretProtectionAssessment {
   if (withheld !== null) {
     return {
       level: 'unavailable',
-      gap: `The OS keychain is unavailable for this run (${withheld}), so secrets are stored unencrypted. Start orca serve from a logged-in desktop session, or unlock the login keychain, to seal them.`
+      gap: `The OS keychain is unavailable for this run (${withheld}), so secrets are stored unencrypted. Start topo serve from a logged-in desktop session, or unlock the login keychain, to seal them.`
     }
   }
   // Availability probes the keyring; backend reads below do not.
@@ -51,7 +51,7 @@ export function assessSecretProtection(): SecretProtectionAssessment {
       gap:
         readLinuxBackend() === 'basic_text'
           ? // Chromium may leave an installed secret service unselected on unrecognized tiling desktops.
-            `Orca could not tell which keyring service this desktop uses${describeDesktop()}, so secrets are stored unencrypted — even if a secret service is already running. Start Orca with --password-store=gnome-libsecret (or --password-store=kwallet6 on KDE) to name one.`
+            `Topo could not tell which keyring service this desktop uses${describeDesktop()}, so secrets are stored unencrypted — even if a secret service is already running. Start Topo with --password-store=gnome-libsecret (or --password-store=kwallet6 on KDE) to name one.`
           : 'The OS keyring is unavailable, so secrets are stored unencrypted. Install and unlock gnome-keyring or kwallet to seal them.'
     }
   }
@@ -59,7 +59,7 @@ export function assessSecretProtection(): SecretProtectionAssessment {
   return readLinuxBackend() === 'basic_text'
     ? {
         level: 'obfuscated',
-        gap: 'Secrets are obfuscated with a built-in key, not protected by the OS keyring. Install and unlock gnome-keyring or kwallet, then restart Orca, to seal them properly.'
+        gap: 'Secrets are obfuscated with a built-in key, not protected by the OS keyring. Install and unlock gnome-keyring or kwallet, then restart Topo, to seal them properly.'
       }
     : { level: 'os', gap: null }
 }

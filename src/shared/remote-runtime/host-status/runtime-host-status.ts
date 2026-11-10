@@ -7,8 +7,8 @@ export const RUNTIME_HOST_STATUS_CHANNEL = 'runtimeEnvironments:statusChanged'
 /** Why a host refused this client: its pairing was revoked, its host now runs another server, or the versions cannot talk. */
 export type RuntimeHostBlockedReason = 'access-revoked' | 'server-replaced' | 'incompatible'
 
-/** Status code for a managed host whose own Orca server is no longer the paired one. */
-export const RUNTIME_SERVER_REPLACED_STATUS_CODE = 'orcad_server_replaced'
+/** Status code for a managed host whose own Topo server is no longer the paired one. */
+export const RUNTIME_SERVER_REPLACED_STATUS_CODE = 'topod_server_replaced'
 
 /** Local client state; never exchanged with the paired host. */
 export type RuntimeHostStatusSnapshot = {

@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { parse } from 'yaml'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 
 const root = resolve(import.meta.dirname, '../../../..')
 const workflow = parse(readFileSync(join(root, '.github/workflows/mobile.yml'), 'utf8'))

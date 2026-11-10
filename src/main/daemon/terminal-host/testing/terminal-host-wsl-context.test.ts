@@ -42,7 +42,7 @@ describe('TerminalHost WSL context', () => {
     // from then waits in the pre-listener buffer and is replayed as the session subscribes.
     const events = new PtyPreListenerEvents()
     const boot = '0b1d2c3e-4f50-4617-8293-a4b5c6d7e8f9'
-    events.acceptData(`\x1b]777;orca-wsl-root:4242:${boot}:98765\x07$ `)
+    events.acceptData(`\x1b]777;topo-wsl-root:4242:${boot}:98765\x07$ `)
     const spawnSubprocess = vi.fn(() => ({
       ...createSubprocess(),
       onData: (callback: (data: string) => void) => events.onData(callback)

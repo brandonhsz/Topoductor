@@ -15,8 +15,8 @@ function frame(name: string, parent: TestFrame | null = null): TestFrame {
 
 describe('main-window permission requests from plugin frames', () => {
   const registry = new HostFrameNavigationRegistry()
-  const plugin = frame('orca-plugin-panel:tab')
-  const chatVisual = frame('orca-chat-visual:x')
+  const plugin = frame('topo-plugin-panel:tab')
+  const chatVisual = frame('topo-chat-visual:x')
   registry.register(plugin)
   registry.register(chatVisual)
 
@@ -39,7 +39,7 @@ describe('main-window permission requests from plugin frames', () => {
     expect(
       isPluginFramePermissionRequest({
         isMainFrame: false,
-        requestingFrame: frame('orca-plugin-panel:fake')
+        requestingFrame: frame('topo-plugin-panel:fake')
       })
     ).toBe(false)
     expect(isPluginFramePermissionRequest({ isMainFrame: true, requestingFrame: plugin })).toBe(

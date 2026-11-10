@@ -8,7 +8,7 @@ import {
   expandEquivalentExecutionHostIds,
   pickerExecutionHosts,
   type MergedExecutionHost
-} from '../execution-host/managed-orcad-execution-host'
+} from '../execution-host/managed-topod-execution-host'
 
 /** The shown hosts; with no list saved, the legacy single-host scope still narrows (null is all). */
 export function resolveVisibleWorkspaceHostIds(

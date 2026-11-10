@@ -1,4 +1,4 @@
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import type { SleepingAgentSessionRecord } from '../../../../shared/agent-session/lifecycle/agent-session-resume'
 import { findLegacyNumericSleepingRecord } from '../../../../shared/sleeping-record-legacy-pane-key'
 import {
@@ -21,7 +21,7 @@ export function findPaneSleepingRecord(
   if (record) {
     return worktreeIdsEqual(record.worktreeId, worktreeId) ? { record, aliases: [] } : null
   }
-  if (!ORCA_LAYOUT_OWNER_IS_MAIN || !records) {
+  if (!TOPO_LAYOUT_OWNER_IS_MAIN || !records) {
     return null
   }
   // The pane numbers the tab's records name, mapped to panes as the window numbers a restored tab.

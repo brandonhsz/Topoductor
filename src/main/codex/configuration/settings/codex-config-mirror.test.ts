@@ -51,10 +51,10 @@ function getRuntimeConfigPath(): string {
 }
 
 beforeEach(() => {
-  fakeHomeDir = mkdtempSync(join(tmpdir(), 'orca-codex-config-home-'))
-  userDataDir = mkdtempSync(join(tmpdir(), 'orca-codex-config-user-data-'))
-  previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-  process.env.ORCA_USER_DATA_PATH = userDataDir
+  fakeHomeDir = mkdtempSync(join(tmpdir(), 'topo-codex-config-home-'))
+  userDataDir = mkdtempSync(join(tmpdir(), 'topo-codex-config-user-data-'))
+  previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+  process.env.TOPO_USER_DATA_PATH = userDataDir
   homedirMock.mockReturnValue(fakeHomeDir)
   getPathMock.mockImplementation((name: string) => {
     if (name === 'userData') {
@@ -69,9 +69,9 @@ afterEach(() => {
   rmSync(fakeHomeDir, { recursive: true, force: true })
   rmSync(userDataDir, { recursive: true, force: true })
   if (previousUserDataPath === undefined) {
-    delete process.env.ORCA_USER_DATA_PATH
+    delete process.env.TOPO_USER_DATA_PATH
   } else {
-    process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+    process.env.TOPO_USER_DATA_PATH = previousUserDataPath
   }
   vi.clearAllMocks()
 })
@@ -161,7 +161,7 @@ describe('syncSystemConfigIntoManagedCodexHome', () => {
 describe('syncSystemConfigIntoLegacySharedCodexHome', () => {
   it('recovers an interrupted runtime config when the system source is missing', () => {
     const runtimeConfigPath = getRuntimeConfigPath()
-    const heldConfigPath = `${runtimeConfigPath}.orca-guarded`
+    const heldConfigPath = `${runtimeConfigPath}.topo-guarded`
     mkdirSync(join(userDataDir, 'codex-runtime-home', 'home'), { recursive: true })
     writeFileSync(heldConfigPath, 'model = "retained"\n', 'utf-8')
 

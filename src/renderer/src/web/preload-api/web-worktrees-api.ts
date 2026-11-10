@@ -1,5 +1,5 @@
 import { pickApprovedSetupHashes } from '../../../../shared/worktree/approved-setup-hashes'
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from '../../../../shared/sidebar-inputs-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from '../../../../shared/sidebar-inputs-switch'
 import type { Worktree, WorkspaceAttachment } from '../../../../shared/worktree/types'
 import type { WorkspaceAttachmentMutation } from '../../../../shared/workspace-attachments/workspace-attachment-mutation'
 import { getLegacyWorkspaceReviewSelectionUpdates } from '../../../../shared/workspace-attachments/workspace-attachment-legacy'
@@ -105,7 +105,7 @@ export function createWorktreesApi(): NonNullable<Partial<PreloadApi>['worktrees
         workspaceStatus: args.workspaceStatus,
         manualOrder: args.manualOrder,
         // Switch point: the host lists this creation under the window's id only on the dark path.
-        ...(ORCA_SIDEBAR_INPUTS_IS_MAIN ? { creationId: args.creationId } : {})
+        ...(TOPO_SIDEBAR_INPUTS_IS_MAIN ? { creationId: args.creationId } : {})
       })
       return {
         ...owned.result,

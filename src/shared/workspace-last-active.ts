@@ -1,4 +1,4 @@
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from './sidebar-inputs-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from './sidebar-inputs-switch'
 import {
   getWorkspaceCleanupInactivityReasons,
   type WorkspaceCleanupCandidate
@@ -9,7 +9,7 @@ export function getWorkspaceLastActiveAt(
   lastActivityAt: number,
   lastVisitedAt: number | undefined
 ): number {
-  if (!ORCA_SIDEBAR_INPUTS_IS_MAIN) {
+  if (!TOPO_SIDEBAR_INPUTS_IS_MAIN) {
     return lastActivityAt
   }
   const finite = (value: number | undefined): number =>

@@ -16,7 +16,7 @@ async function loadStoreModule() {
 }
 
 beforeEach(() => {
-  const home = mkdtempSync(join(tmpdir(), 'orca-compatible-speech-'))
+  const home = mkdtempSync(join(tmpdir(), 'topo-compatible-speech-'))
   vi.stubEnv('HOME', home)
   vi.stubEnv('USERPROFILE', home)
 })

@@ -1,6 +1,6 @@
 import type { Translate } from '../i18n/mobile-i18n'
 
-function isOrcaInstallUrl(data: string): boolean {
+function isTopoInstallUrl(data: string): boolean {
   try {
     const url = new URL(data.trim())
     const path = url.pathname.replace(/\/$/, '')
@@ -14,7 +14,7 @@ function isOrcaInstallUrl(data: string): boolean {
       case 'https://testflight.apple.com':
         return path === '/join/YjeGMQBA'
       case 'https://github.com':
-        return /^\/stablyai\/orca\/releases\/download\/mobile-android-v[^/]+\/app-release\.apk$/.test(
+        return /^\/brandonhsz\/Topoductor\/releases\/download\/mobile-android-v[^/]+\/app-release\.apk$/.test(
           path
         )
       default:
@@ -26,10 +26,10 @@ function isOrcaInstallUrl(data: string): boolean {
 }
 
 export function getPairingScanErrorMessage(data: string, t: Translate): string {
-  return isOrcaInstallUrl(data)
+  return isTopoInstallUrl(data)
     ? t(
         'app.pairScan.downloadQrCode',
         "That's the download code. Scan the pairing code in step 2 on your desktop."
       )
-    : t('app.pairScan.invalidQrCode', 'Not a valid Orca QR code')
+    : t('app.pairScan.invalidQrCode', 'Not a valid Topo QR code')
 }

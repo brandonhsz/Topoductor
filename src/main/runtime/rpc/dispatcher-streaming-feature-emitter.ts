@@ -1,11 +1,11 @@
 import type { FeatureInteractionId } from '../../../shared/feature-interaction-catalog'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import type { RpcEnvelopeMeta, RpcRequest, RpcResponse } from './core'
 import { successResponse } from './errors'
 import { recordRuntimeFeatureInteraction } from './runtime-feature-interaction'
 
 export function createDispatcherStreamingFeatureEmitter(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   request: RpcRequest,
   meta: RpcEnvelopeMeta,
   reply: (response: RpcResponse) => void

@@ -128,8 +128,8 @@ function BundledAgentSkillSetupPanel({
             ? t('auto.components.settings.AgentSkillSetupPanel.installing', 'Installing...')
             : installedButton === 'replace'
               ? t(
-                  'auto.components.settings.AgentSkillSetupPanel.replaceWithOrcaCopy',
-                  "Replace with Orca's copy"
+                  'auto.components.settings.AgentSkillSetupPanel.replaceWithTopoCopy',
+                  "Replace with Topo's copy"
                 )
               : action.kind === 'run' && action.changes
                 ? bundledSkillSetupActionLabel(action.changes, t)
@@ -159,7 +159,7 @@ function BundledAgentSkillSetupPanel({
         <p className="basis-full text-[12px] leading-snug text-muted-foreground">
           {t(
             'auto.components.settings.AgentSkillSetupPanel.hostUnavailable',
-            "Orca can't install skills on this workspace's machine yet."
+            "Topo can't install skills on this workspace's machine yet."
           )}
         </p>
       )}
@@ -260,7 +260,7 @@ export function AgentSkillSetupPanel(props: AgentSkillSetupPanelProps): React.JS
   const activeRuntime = useActiveProjectSkillRuntime()
   const runtime =
     props.terminalRuntime ?? (props.target === undefined ? activeRuntime.agentRuntime : undefined)
-  // COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+  // COMPAT(wsl-bridge): removed when WSL runs as an topod host.
   if (runtime?.runtime === 'wsl') {
     return (
       <WslAgentSkillSetupPanel

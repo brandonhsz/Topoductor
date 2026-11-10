@@ -1,4 +1,4 @@
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 
 type CapabilityProbe = {
   calls: number
@@ -9,9 +9,9 @@ type CapabilityProbe = {
 
 test('PTY capability lookup keeps renderer JavaScript responsive while main is stalled', async ({
   electronApp,
-  orcaPage
+  topoPage
 }) => {
-  await orcaPage.evaluate(() => {
+  await topoPage.evaluate(() => {
     const getCapabilities = window.api.pty.getAuthoritativeBufferSnapshotCapabilities
     if (!getCapabilities) {
       throw new Error('PTY snapshot capability API is unavailable')
@@ -36,7 +36,7 @@ test('PTY capability lookup keeps renderer JavaScript responsive while main is s
   })
   await expect
     .poll(() =>
-      orcaPage.evaluate(
+      topoPage.evaluate(
         () =>
           (window as typeof window & { __capabilityProbe?: CapabilityProbe }).__capabilityProbe
             ?.calls ?? 0
@@ -49,7 +49,7 @@ test('PTY capability lookup keeps renderer JavaScript responsive while main is s
     Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1_500)
     return Date.now() - startedAt
   })
-  const metrics = await orcaPage.evaluate(() => {
+  const metrics = await topoPage.evaluate(() => {
     const probe = (window as typeof window & { __capabilityProbe?: CapabilityProbe })
       .__capabilityProbe
     if (!probe) {

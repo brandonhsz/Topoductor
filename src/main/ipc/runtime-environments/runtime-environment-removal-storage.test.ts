@@ -54,7 +54,7 @@ describe('runtime environment removal storage clearing', () => {
         setRemoteLayoutSnapshot: vi.fn(),
         setHostRepoCatalogSnapshot: vi.fn()
       } as never,
-      getUserDataPath: () => '/tmp/orca-user-data',
+      getUserDataPath: () => '/tmp/topo-user-data',
       invalidateTransport: () => teardown
     })
 

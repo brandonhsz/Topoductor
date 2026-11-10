@@ -8,13 +8,13 @@ export type AppThemeSlotSelection = `plugin:${string}` | 'match-terminal'
 
 /** Appearance choices that come from plugins. */
 export type PluginAppearanceSettings = {
-  /** App theme painted while Orca is light; null keeps the built-in colors. */
+  /** App theme painted while Topo is light; null keeps the built-in colors. */
   pluginAppThemeLight?: AppThemeSlotSelection | null
-  /** App theme painted while Orca is dark; null keeps the built-in colors. */
+  /** App theme painted while Topo is dark; null keeps the built-in colors. */
   pluginAppThemeDark?: AppThemeSlotSelection | null
-  /** Code editor colors while Orca is light; null follows the app theme. */
+  /** Code editor colors while Topo is light; null follows the app theme. */
   editorThemeLight?: CodeEditorThemeChoice | null
-  /** Code editor colors while Orca is dark; null follows the app theme. */
+  /** Code editor colors while Topo is dark; null follows the app theme. */
   editorThemeDark?: CodeEditorThemeChoice | null
   /** Legacy single choice; moved into the slot of its theme's base once that theme loads. */
   pluginAppTheme?: `plugin:${string}` | null

@@ -30,7 +30,7 @@ vi.mock('../ssh/config/ssh-config-parser', () => ({
 
 describe('profile-state cutover fixture', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-profile-cutover-fixture-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-profile-cutover-fixture-'))
   })
 
   afterEach(async () => {

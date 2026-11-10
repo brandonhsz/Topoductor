@@ -23,19 +23,19 @@ import { sshHostSetupRemedyText } from './ssh-host-setup-remedy-copy'
 export type SshHostServerStatusLine = {
   text: string
   tone: 'muted' | 'warning' | 'destructive'
-  /** Main's untranslated cause, with the host's orcad.log tail when there is one; shown on request. */
+  /** Main's untranslated cause, with the host's topod.log tail when there is one; shown on request. */
   detail?: string
   /** A muted second line, e.g. what moving onto the host does and doesn't touch. */
   hint?: string
 }
 
 export function sshHostServerStatusLine(
-  target: Pick<SshTarget, 'label' | 'orcadFence' | 'managedServerUnavailable'>,
+  target: Pick<SshTarget, 'label' | 'topodFence' | 'managedServerUnavailable'>,
   state: Pick<SshConnectionState, 'managedServer'> | undefined,
   t: Translate = translate
 ): SshHostServerStatusLine | null {
   const status = state?.managedServer
-  if (target.orcadFence?.sourceChangedAt) {
+  if (target.topodFence?.sourceChangedAt) {
     return sourceChangedLine(t)
   }
   if (status?.kind === 'managed' && status.serving) {
@@ -43,7 +43,7 @@ export function sshHostServerStatusLine(
       tone: 'warning',
       text: t(
         'auto.components.settings.sshHostServer.notServing',
-        'Orca couldn’t confirm that its server on {{host}} is answering.',
+        'Topo couldn’t confirm that its server on {{host}} is answering.',
         { host: target.label }
       ),
       detail: status.serving.detail
@@ -62,7 +62,7 @@ export function sshHostServerStatusLine(
     return automationsLeftDisabledLine(status.automationsLeftDisabled, t)
   }
   // A healthy managed server is the default; the card stays quiet unless something needs attention.
-  if (status?.kind === 'managed' || (!status && target.orcadFence)) {
+  if (status?.kind === 'managed' || (!status && target.topodFence)) {
     return null
   }
   if (status?.kind === 'setting-up') {
@@ -113,7 +113,7 @@ export function sshTargetConnectFailureText(
   return sshConnectFailureText(state, published || extractIpcErrorMessage(error, fallback))
 }
 
-// Mirror main's ORCAD_TUNNEL_UNAVAILABLE_REASON.
+// Mirror main's TOPOD_TUNNEL_UNAVAILABLE_REASON.
 const TUNNEL_UNAVAILABLE = 'ssh_tunnel_unavailable'
 
 function sourceChangedLine(t: Translate = translate): SshHostServerStatusLine {
@@ -121,12 +121,12 @@ function sourceChangedLine(t: Translate = translate): SshHostServerStatusLine {
     tone: 'warning',
     text: t(
       'auto.components.settings.sshHostServer.sourceChanged',
-      'This computer has projects or folders for this host that its Orca server doesn’t have yet, often added by an older version of Orca. Move them to this host’s Orca server, or keep the server’s version, to connect again.'
+      'This computer has projects or folders for this host that its Topo server doesn’t have yet, often added by an older version of Topo. Move them to this host’s Topo server, or keep the server’s version, to connect again.'
     )
   }
 }
 
-/** `reason` is main's OrcadHostUnavailableReason; an unknown one is shown only as a detail. */
+/** `reason` is main's TopodHostUnavailableReason; an unknown one is shown only as a detail. */
 function unavailableLine(
   reason: string | undefined,
   t: Translate = translate
@@ -144,7 +144,7 @@ function unavailableLine(
       tone: 'destructive',
       text: t(
         'auto.components.settings.sshHostServer.unsupported',
-        'This host isn’t supported by this version of Orca ({{reason}}). To keep using it, install an older version of Orca.',
+        'This host isn’t supported by this version of Topo ({{reason}}). To keep using it, install an older version of Topo.',
         { reason: cause }
       )
     }
@@ -153,7 +153,7 @@ function unavailableLine(
     tone: 'destructive',
     text: t(
       'auto.components.settings.sshHostServer.unsupportedUnknown',
-      'This host isn’t supported by this version of Orca. To keep using it, install an older version of Orca.'
+      'This host isn’t supported by this version of Topo. To keep using it, install an older version of Topo.'
     ),
     ...(reason ? { detail: reason } : {})
   }
@@ -164,17 +164,17 @@ function unavailableCause(reason: string, t: Translate = translate): string | nu
     case 'unsupported_host':
       return t(
         'auto.components.settings.sshHostServer.cause.unsupportedHost',
-        'Orca has no server build for this system'
+        'Topo has no server build for this system'
       )
     case 'artifacts_unavailable':
       return t(
         'auto.components.settings.sshHostServer.cause.artifactsUnavailable',
-        'this Orca build doesn’t include the server'
+        'this Topo build doesn’t include the server'
       )
     case 'libc_unidentified':
       return t(
         'auto.components.settings.sshHostServer.cause.libcUnidentified',
-        'Orca couldn’t identify the host’s system libraries'
+        'Topo couldn’t identify the host’s system libraries'
       )
     case 'runtime_self_test':
       return t(
@@ -201,7 +201,7 @@ function tunnelUnavailableLine(t: Translate = translate): SshHostServerStatusLin
     tone: 'destructive',
     text: t(
       'auto.components.settings.sshHostServer.tunnelUnsupported',
-      'This host isn’t supported by this version of Orca: its SSH server doesn’t allow port forwarding, and Orca couldn’t reach its server through the SSH session either. To keep using it, install an older version of Orca.'
+      'This host isn’t supported by this version of Topo: its SSH server doesn’t allow port forwarding, and Topo couldn’t reach its server through the SSH session either. To keep using it, install an older version of Topo.'
     )
   }
 }
@@ -220,7 +220,7 @@ function contactLostLine(t: Translate = translate): SshHostServerStatusLine {
     tone: 'warning',
     text: t(
       'auto.components.settings.sshHostServer.setupContactLost',
-      'Orca lost contact with this host while setting up its server. Nothing on the host was stopped. Connect again to continue.'
+      'Topo lost contact with this host while setting up its server. Nothing on the host was stopped. Connect again to continue.'
     )
   }
 }
@@ -230,7 +230,7 @@ function heldMoveLine(t: Translate = translate): SshHostServerStatusLine {
     tone: 'warning',
     text: t(
       'auto.components.settings.sshHostServer.moveHeld',
-      'Orca paused moving this host’s projects to its Orca server because it couldn’t confirm the server’s copy. Nothing is lost: the host keeps its projects and stays locked until the move finishes. Connect again to resume. If the server can’t come back, stop or forget it in Settings > Orca on your SSH hosts.'
+      'Topo paused moving this host’s projects to its Topo server because it couldn’t confirm the server’s copy. Nothing is lost: the host keeps its projects and stays locked until the move finishes. Connect again to resume. If the server can’t come back, stop or forget it in Settings > Topo on your SSH hosts.'
     )
   }
 }
@@ -248,17 +248,17 @@ function linkedProjectsLine(
       count > 0
         ? t(
             'auto.components.settings.sshHostServer.linkedProjects',
-            'This host’s Orca server already had {{paths}}, so this desktop now uses the server’s copy. This desktop’s tabs and {{count}} automations there were not moved, and worktrees it created there show as external worktrees.',
+            'This host’s Topo server already had {{paths}}, so this desktop now uses the server’s copy. This desktop’s tabs and {{count}} automations there were not moved, and worktrees it created there show as external worktrees.',
             {
               paths,
               count,
               defaultValue_one:
-                'This host’s Orca server already had {{paths}}, so this desktop now uses the server’s copy. This desktop’s tabs and {{count}} automation there were not moved, and worktrees it created there show as external worktrees.'
+                'This host’s Topo server already had {{paths}}, so this desktop now uses the server’s copy. This desktop’s tabs and {{count}} automation there were not moved, and worktrees it created there show as external worktrees.'
             }
           )
         : t(
             'auto.components.settings.sshHostServer.linkedProjectsNoAutomations',
-            'This host’s Orca server already had {{paths}}, so this desktop now uses the server’s copy. This desktop’s tabs there were not moved, and worktrees it created there show as external worktrees.',
+            'This host’s Topo server already had {{paths}}, so this desktop now uses the server’s copy. This desktop’s tabs there were not moved, and worktrees it created there show as external worktrees.',
             { paths }
           )
   }
@@ -277,16 +277,16 @@ function unservedLine(
         text: status.terminals
           ? t(
               'auto.components.settings.sshHostServer.olderTerminals',
-              '{{count}} terminals started by an older version of Orca are still running on this host, and they don’t stop on their own. Close them in that version of Orca or end them on the host, then reconnect.',
+              '{{count}} terminals started by an older version of Topo are still running on this host, and they don’t stop on their own. Close them in that version of Topo or end them on the host, then reconnect.',
               {
                 count: status.terminals,
                 defaultValue_one:
-                  '{{count}} terminal started by an older version of Orca is still running on this host, and it doesn’t stop on its own. Close it in that version of Orca or end it on the host, then reconnect.'
+                  '{{count}} terminal started by an older version of Topo is still running on this host, and it doesn’t stop on its own. Close it in that version of Topo or end it on the host, then reconnect.'
               }
             )
           : t(
               'auto.components.settings.sshHostServer.olderTerminalsUncounted',
-              'Terminals started by an older version of Orca are still running on this host, and they don’t stop on their own. Close them in that version of Orca or end them on the host, then reconnect.'
+              'Terminals started by an older version of Topo are still running on this host, and they don’t stop on their own. Close them in that version of Topo or end them on the host, then reconnect.'
             )
       }
     case 'relay_terminals_unverifiable':
@@ -294,10 +294,10 @@ function unservedLine(
         tone: 'warning',
         text: t(
           'auto.components.settings.sshHostServer.olderTerminalsUnverifiable',
-          'Orca couldn’t confirm that terminals started by an older version of Orca have exited. Reconnect to try again.'
+          'Topo couldn’t confirm that terminals started by an older version of Topo have exited. Reconnect to try again.'
         )
       }
-    case 'orcad_unavailable':
+    case 'topod_unavailable':
       return unavailableLine(status.detail, t)
     case 'source_changed':
       return sourceChangedLine(t)

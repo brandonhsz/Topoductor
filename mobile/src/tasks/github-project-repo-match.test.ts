@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { findRepoForGitHubProjectRepository } from './github-project-repo-match'
 
 const repos = [
-  { id: 'repo-1', path: '/Users/me/orca', displayName: 'orca' },
+  { id: 'repo-1', path: '/Users/me/topo', displayName: 'topo' },
   { id: 'repo-2', path: '/Users/me/other', displayName: 'other' }
 ]
 
@@ -10,12 +10,12 @@ describe('GitHub project repo matching', () => {
   it('does not path-match a repo whose resolved slug points somewhere else', () => {
     expect(
       findRepoForGitHubProjectRepository(
-        'stablyai/orca',
-        [{ id: 'repo-1', path: '/Users/me/stablyai/orca', displayName: 'orca' }],
+        'brandonhsz/Topoductor',
+        [{ id: 'repo-1', path: '/Users/me/brandonhsz/Topoductor', displayName: 'topo' }],
         {
           'repo-1': {
-            path: '/Users/me/stablyai/orca',
-            repository: { owner: 'fork', repo: 'orca' }
+            path: '/Users/me/brandonhsz/Topoductor',
+            repository: { owner: 'fork', repo: 'topo' }
           }
         }
       )
@@ -25,18 +25,18 @@ describe('GitHub project repo matching', () => {
   it('matches same-named repositories only on the active Project host', () => {
     expect(
       findRepoForGitHubProjectRepository(
-        'stablyai/orca',
+        'brandonhsz/Topoductor',
         repos,
         {
           'repo-1': {
-            path: '/Users/me/orca',
-            repository: { owner: 'stablyai', repo: 'orca', host: 'github.com' }
+            path: '/Users/me/topo',
+            repository: { owner: 'brandonhsz', repo: 'topo', host: 'github.com' }
           },
           'repo-2': {
             path: '/Users/me/other',
             repository: {
-              owner: 'stablyai',
-              repo: 'orca',
+              owner: 'brandonhsz',
+              repo: 'topo',
               host: 'github.acme-corp.com'
             }
           }
@@ -74,8 +74,8 @@ describe('GitHub project repo matching', () => {
   it('does not use hostless path heuristics for Enterprise Project rows', () => {
     expect(
       findRepoForGitHubProjectRepository(
-        'stablyai/orca',
-        [{ id: 'repo-1', path: '/Users/me/stablyai/orca', displayName: 'orca' }],
+        'brandonhsz/Topoductor',
+        [{ id: 'repo-1', path: '/Users/me/brandonhsz/Topoductor', displayName: 'topo' }],
         {},
         'github.acme-corp.com'
       )

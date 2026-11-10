@@ -32,7 +32,7 @@ afterEach(async () => {
 })
 
 async function openJournal(onCommitted?: () => void): Promise<AgentSessionJournal> {
-  root ??= await mkdtemp(join(tmpdir(), 'orca-thread-goal-'))
+  root ??= await mkdtemp(join(tmpdir(), 'topo-thread-goal-'))
   const journal = await journals.open({ identity: IDENTITY, stateDirectory: root })
   if (onCommitted) {
     journal.observeCommits(onCommitted)

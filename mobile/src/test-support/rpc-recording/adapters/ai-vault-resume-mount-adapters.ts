@@ -58,7 +58,7 @@ export function aiVaultResumeMountAdapters(
               ...(name === 'bare'
                 ? {}
                 : {
-                    env: { ORCA_RESUME: '1' },
+                    env: { TOPO_RESUME: '1' },
                     envToDelete: ['CODEX_HOME'],
                     launchAgent: 'codex',
                     clientMutationId: 'resume-mutation-1'

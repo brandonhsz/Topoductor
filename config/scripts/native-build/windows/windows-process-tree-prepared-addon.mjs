@@ -1,5 +1,5 @@
 import { join } from 'node:path'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { windowsProcessTreeAddonDefect } from './windows-process-tree-gyp-rebuild.mjs'
 
 const root = join(import.meta.dirname, '../../../..')

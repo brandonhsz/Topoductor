@@ -3,11 +3,11 @@ import type { RuntimeClientTarget } from '../../../../../shared/runtime-client-t
 
 type AccountOwnerEnvironments = readonly Pick<
   PublicKnownRuntimeEnvironment,
-  'id' | 'orcadDeployment'
+  'id' | 'topodDeployment'
 >[]
 
-/** Who owns a host's provider accounts. A WSL host's orcad has no account services, so this
- *  desktop owns its distro's accounts as it does for a WSL pane (WSL-via-orcad D10). */
+/** Who owns a host's provider accounts. A WSL host's topod has no account services, so this
+ *  desktop owns its distro's accounts as it does for a WSL pane (WSL-via-topod D10). */
 export type AccountOwner = {
   target: RuntimeClientTarget
   /** Set when `target` is this desktop standing in for that WSL host's distro. */
@@ -26,7 +26,7 @@ export function wslHostDistroForTarget(
   }
   const deployment = environments.find(
     (environment) => environment.id === target.environmentId
-  )?.orcadDeployment
+  )?.topodDeployment
   return deployment?.kind === 'wsl' ? deployment.distro : null
 }
 

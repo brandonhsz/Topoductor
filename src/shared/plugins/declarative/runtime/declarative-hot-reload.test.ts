@@ -1,12 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { atom, read, set } from './declarative-atoms'
 import { h } from './declarative-elements'
-import { createOrcaDeclarativeRuntime, type OrcaBridge } from './declarative-renderer'
+import { createOrcaDeclarativeRuntime, type TopoBridge } from './declarative-renderer'
 
 function booted() {
   const posted: { event: string; payload: unknown }[] = []
   const handlers = new Map<string, (payload: unknown) => void>()
-  const bridge: OrcaBridge = {
+  const bridge: TopoBridge = {
     on: (name, handler) => {
       handlers.set(name, handler)
       return { dispose: () => handlers.delete(name) }
@@ -60,7 +60,7 @@ describe('dev hot reload of keyed memory atoms', () => {
     runtime.dispose()
   })
 
-  it('posts keyed memory changes only once Orca asks, and non-JSON values as a drop', () => {
+  it('posts keyed memory changes only once Topo asks, and non-JSON values as a drop', () => {
     vi.useFakeTimers()
     const { runtime, send, retained } = booted()
     const count = atom('hot.count', 0)

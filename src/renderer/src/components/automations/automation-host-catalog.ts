@@ -44,7 +44,7 @@ type AuthorityProjectionContext = {
   ssh: AutomationCatalogSshMirrorInput
   referenced: ReferencedAuthorityScope
   orphanCount: number | undefined
-  /** Desktop SSH target id to the self entry of the managed Orca server that serves it. */
+  /** Desktop SSH target id to the self entry of the managed Topo server that serves it. */
   servedBy?: ReadonlyMap<string, string>
 }
 

@@ -6,7 +6,7 @@ import type { Tab } from '../../../../shared/tab-types'
 import { createTestStore, seedStore } from '../testing/app-store-test-fixture'
 import { makeWorktree } from '../slices/worktrees/worktree.test-fixture'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 
 import { routeTerminalTabChangesThroughLayoutOwner } from './terminal-tab-layout-owner-actions'
 import { makeFolderWorkspace } from '../folder-workspaces/folder-workspace.test-fixture'
@@ -90,7 +90,7 @@ function colorOf(store: ReturnType<typeof createTestStore>): string | null | und
 
 /** A layout-owner build sends the change to main, whose frame draws it; otherwise the window does. */
 function expectChange(windowShows: () => void, mainGets: Record<string, unknown>): void {
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     expect(layoutApplyTestTransport.sent.at(-1)).toEqual(
       expect.objectContaining({ workspace: WORKTREE, ...mainGets })
     )
@@ -140,7 +140,7 @@ describe('renaming a structured chat tab', () => {
           .unifiedTabsByWorktree[WORKTREE]!.map((tab) => ({ ...tab, executionHostId: 'local' }))
       }
     })
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       layoutApplyTestTransport.answerWith('pending')
     }
     answer(true)
@@ -150,7 +150,7 @@ describe('renaming a structured chat tab', () => {
         { kind: 'local' }
       )
     )
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       await vi.waitFor(() => expect(layoutApplyTestTransport.pendingCount).toBe(1))
       store.getState().setUnifiedTabColor(STRUCTURED_TAB_ID, 'blue')
       layoutApplyTestTransport.answerPending()
@@ -158,7 +158,7 @@ describe('renaming a structured chat tab', () => {
     }
     await layoutApplyTestTransport.settle()
     await vi.waitFor(() => expect(labelOf(store)).toBeNull())
-    expect(colorOf(store)).toBe(ORCA_LAYOUT_OWNER_IS_MAIN ? 'blue' : 'red')
+    expect(colorOf(store)).toBe(TOPO_LAYOUT_OWNER_IS_MAIN ? 'blue' : 'red')
 
     // Existing alias retirement is bookkeeping, not a reason to discard an explicit host write.
     hostSavesNames.mockImplementationOnce(

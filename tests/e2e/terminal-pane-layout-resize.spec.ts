@@ -1,6 +1,6 @@
 // Require pane geometry to change after a divider drag.
 
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   countVisibleTerminalPanes,
   splitActiveTerminalPane,
@@ -14,13 +14,13 @@ test.describe('Terminal Panes', () => {
   registerTerminalPaneMountReadiness()
 
   // Real pointer capture needs a valid pointing-device id, unreliable in hidden Electron.
-  // Run ORCA_BACKGROUND_LAUNCH=1 ORCA_E2E_HEADFUL=1 pnpm run test:e2e only on an isolated display or CI.
-  test('@headful can resize terminal panes by real mouse drag', async ({ orcaPage }) => {
-    const panesBefore = await countVisibleTerminalPanes(orcaPage)
-    await splitActiveTerminalPane(orcaPage, 'vertical')
-    await waitForPaneCount(orcaPage, panesBefore + 1)
+  // Run TOPO_BACKGROUND_LAUNCH=1 TOPO_E2E_HEADFUL=1 pnpm run test:e2e only on an isolated display or CI.
+  test('@headful can resize terminal panes by real mouse drag', async ({ topoPage }) => {
+    const panesBefore = await countVisibleTerminalPanes(topoPage)
+    await splitActiveTerminalPane(topoPage, 'vertical')
+    await waitForPaneCount(topoPage, panesBefore + 1)
 
-    const paneWidthsBefore = await orcaPage.evaluate(() => {
+    const paneWidthsBefore = await topoPage.evaluate(() => {
       const xterms = document.querySelectorAll('.xterm')
       return Array.from(xterms)
         .filter((x) => (x as HTMLElement).offsetParent !== null)
@@ -28,22 +28,22 @@ test.describe('Terminal Panes', () => {
     })
     expect(paneWidthsBefore.length).toBeGreaterThanOrEqual(2)
 
-    const divider = orcaPage.locator('.pane-divider.is-vertical').first()
+    const divider = topoPage.locator('.pane-divider.is-vertical').first()
     await expect(divider).toBeVisible({ timeout: 3_000 })
     const box = await divider.boundingBox()
     expect(box).not.toBeNull()
 
     const startX = box!.x + box!.width / 2
     const startY = box!.y + box!.height / 2
-    await orcaPage.mouse.move(startX, startY)
-    await orcaPage.mouse.down()
-    await orcaPage.mouse.move(startX + 150, startY, { steps: 20 })
-    await orcaPage.mouse.up()
+    await topoPage.mouse.move(startX, startY)
+    await topoPage.mouse.down()
+    await topoPage.mouse.move(startX + 150, startY, { steps: 20 })
+    await topoPage.mouse.up()
 
     await expect
       .poll(
         async () => {
-          const widthsAfter = await orcaPage.evaluate(() => {
+          const widthsAfter = await topoPage.evaluate(() => {
             const xterms = document.querySelectorAll('.xterm')
             return Array.from(xterms)
               .filter((x) => (x as HTMLElement).offsetParent !== null)

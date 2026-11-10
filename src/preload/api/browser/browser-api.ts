@@ -142,7 +142,7 @@ export type BrowserApi = {
     browserPageId: string
     direction: BrowserPageZoomDirection
   }) => Promise<BrowserPageSiteDisplay | null>
-  /** Null makes the site match Orca's theme again. */
+  /** Null makes the site match Topo's theme again. */
   setPageSiteColorScheme: (args: {
     browserPageId: string
     colorScheme: BrowserSiteColorScheme | null
@@ -195,7 +195,7 @@ export type BrowserApi = {
   onPaneFocus: (
     callback: (data: { worktreeId: string | null; browserPageId: string }) => void
   ) => () => void
-  onOpenLinkInOrcaTab: (
+  onOpenLinkInTopoTab: (
     callback: (event: { browserPageId: string; url: string; activate?: boolean }) => void
   ) => () => void
   cancelDownload: (args: { downloadId: string }) => Promise<boolean>

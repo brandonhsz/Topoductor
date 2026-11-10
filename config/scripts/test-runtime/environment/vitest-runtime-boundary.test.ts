@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
 import { access } from 'node:fs/promises'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 
 it('preserves Node access() success and missing-file rejection', async () => {
   await expect(access(import.meta.filename)).resolves.toBeUndefined()

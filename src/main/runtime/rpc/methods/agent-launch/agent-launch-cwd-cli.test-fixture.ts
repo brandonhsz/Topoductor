@@ -41,7 +41,7 @@ export type CliWorktreeBuilder = (
 export type RuntimeClientModuleMockFactory = (mocks: {
   callMock: Mock
   runtimeClientConstructorMock: Mock
-  serveOrcaAppMock: Mock
+  serveTopoAppMock: Mock
   getDefaultUserDataPathMock: Mock
 }) => Promise<{
   RuntimeClient: new (
@@ -53,11 +53,11 @@ export type RuntimeClientModuleMockFactory = (mocks: {
     readonly isRemote: boolean
     call: Mock
     getCliStatus: Mock
-    openOrca: Mock
+    openTopo: Mock
   }
   RuntimeClientError: typeof RuntimeClientError
   RuntimeRpcFailureError: typeof RuntimeRpcFailureError
-  serveOrcaApp: Mock
+  serveTopoApp: Mock
   getDefaultUserDataPath: Mock
 }>
 
@@ -76,7 +76,7 @@ export type AgentLaunchCwdCliEntry = { main(argv?: string[], cwd?: string): Prom
 export type AgentLaunchCwdEnvironmentBindings = {
   useWorktreeAwarenessEnvironment(mocks: {
     callMock: Mock
-    serveOrcaAppMock: Mock
+    serveTopoAppMock: Mock
     getDefaultUserDataPathMock: Mock
     addEnvironmentFromPairingCodeMock: Mock
     listEnvironmentsMock: Mock

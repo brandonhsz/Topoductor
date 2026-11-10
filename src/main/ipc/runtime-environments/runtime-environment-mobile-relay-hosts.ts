@@ -131,7 +131,7 @@ export function createRuntimeEnvironmentMobileRelayHosts(): MobileDesktopRelayHo
           id: environment.id,
           name: environment.name,
           source: environment.source,
-          orcadDeployment: environment.orcadDeployment,
+          topodDeployment: environment.topodDeployment,
           pairingRevision: pairingRevision(environment),
           runtimeId: environment.runtimeId,
           ...(environment.pairedDeviceId ? { pairedDeviceId: environment.pairedDeviceId } : {}),

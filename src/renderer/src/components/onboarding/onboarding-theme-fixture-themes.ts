@@ -5,7 +5,7 @@ import {
 import type { PluginThemeRegistration } from '../../../../shared/plugins/artifacts/plugin-theme-artifact'
 import type { PluginTerminalThemeRegistration } from '../../../../shared/plugins/artifacts/plugin-terminal-theme-artifact'
 
-// Why real artifacts: the gallery should be judged against the themes Orca actually bundles.
+// Why real artifacts: the gallery should be judged against the themes Topo actually bundles.
 const appThemeFiles = import.meta.glob<{ base: 'dark' | 'light'; tokens: Record<string, string> }>(
   '../../../../../resources/plugins/launch/stablyai.orca-{github-vscode-theme,vscode-default-themes}/themes/*.json',
   { eager: true, import: 'default' }

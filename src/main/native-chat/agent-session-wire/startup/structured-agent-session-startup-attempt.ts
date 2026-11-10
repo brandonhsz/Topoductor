@@ -182,21 +182,21 @@ export class StructuredAgentSessionStartupAttempts {
     return this.tracking(sessionId, child)?.rootExit.promise ?? new Promise(() => {})
   }
 
-  /** Orca ending the child decides the start: a failure Orca recorded is final, any other close
+  /** Topo ending the child decides the start: a failure Topo recorded is final, any other close
    *  cancels it. An exit of its own leaves an open still settling the start, and its clock, until
    *  that open gives the outcome. */
   childEnded(
     sessionId: string,
     child: StructuredAgentSessionProviderChildIdentity,
-    ended: { byOrca: boolean; failure?: SubmissionRejectionFact; reason?: string | null } = {
-      byOrca: false
+    ended: { byTopo: boolean; failure?: SubmissionRejectionFact; reason?: string | null } = {
+      byTopo: false
     }
   ): void {
     const tracked = this.tracking(sessionId, child)
     if (ended.failure) {
-      const cause = new Error(ended.reason ?? 'Orca stopped the agent while it started')
+      const cause = new Error(ended.reason ?? 'Topo stopped the agent while it started')
       this.failed(sessionId, child, new AgentSessionStartFailure(cause, 'never', ended.failure))
-    } else if (tracked && (ended.byOrca || !this.ownsOpen(sessionId, child))) {
+    } else if (tracked && (ended.byTopo || !this.ownsOpen(sessionId, child))) {
       this.settle(sessionId, tracked, 'ended')
     }
   }

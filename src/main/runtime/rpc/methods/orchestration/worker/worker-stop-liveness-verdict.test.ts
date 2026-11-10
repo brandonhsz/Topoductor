@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -11,11 +11,11 @@ import { isStreamingMethod, eraseRpcMethods } from '../../../core'
 // Dropped relays clear connected across remote PTYs; use host verdicts to distinguish lost contact from death.
 describe('worker-stop against a terminal we lost contact with', () => {
   let db: OrchestrationDb
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
 
   beforeEach(() => {
     db = new OrchestrationDb(':memory:')
-    runtime = new OrcaRuntimeService()
+    runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     vi.spyOn(runtime, 'getTerminalPaneKey').mockReturnValue(
       'tab_worker:bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'

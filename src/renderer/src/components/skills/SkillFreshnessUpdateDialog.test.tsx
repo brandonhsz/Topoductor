@@ -131,10 +131,10 @@ afterEach(() => {
 describe('SkillFreshnessUpdateDialog', () => {
   it.each([false, true])('keeps Update available after recovery (mixed run: %s)', async (mixed) => {
     const repair = planOf([
-      sharedEntry('orca-cli', 'restore'),
+      sharedEntry('topo-cli', 'restore'),
       ...(mixed ? [sharedEntry('orchestration', 'update')] : [])
     ])
-    const update = planOf([sharedEntry('orca-cli', 'update')], '3'.repeat(64))
+    const update = planOf([sharedEntry('topo-cli', 'update')], '3'.repeat(64))
     mocks.plan = repair
     skillsApi.bundledExecute.mockResolvedValueOnce(doneResult(repair))
     render()

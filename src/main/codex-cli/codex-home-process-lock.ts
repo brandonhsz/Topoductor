@@ -2,7 +2,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { normalizeRuntimePathForComparison } from '../../shared/cross-platform-path'
 
-// Serialize Orca-owned spawns per home to prevent refresh-token rotation races; terminals are exempt.
+// Serialize Topo-owned spawns per home to prevent refresh-token rotation races; terminals are exempt.
 const lockTails = new Map<string, Promise<unknown>>()
 
 export function resolveCodexHomeProcessLockKey(codexHomePath?: string | null): string {
@@ -22,7 +22,7 @@ export function resolveCodexHomeProcessLockKeyForSpawnEnv(
       (env?.CODEX_HOME !== process.env.CODEX_HOME ? (env?.CODEX_HOME ?? null) : null)
     // Normalize Linux homes like probes' UNC paths; the sentinel serializes unknown distro defaults.
     return normalizeRuntimePathForComparison(
-      `//wsl$/${wslDistro}${codexHome ?? '/.orca-default-codex-home'}`
+      `//wsl$/${wslDistro}${codexHome ?? '/.topo-default-codex-home'}`
     )
   }
   // Explicit child envs can strip CODEX_HOME; do not restore it from the host environment.

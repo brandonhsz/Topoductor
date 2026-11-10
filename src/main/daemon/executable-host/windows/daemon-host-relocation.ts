@@ -68,8 +68,8 @@ function currentBuildFingerprint(
   return observed?.entrySourcePath === sources.entrySourcePath ? observed.fingerprint : null
 }
 
-// Keep runtimes out of roaming storage; match the NSIS uninstall root in config/nsis/orca-installer-hooks.nsh.
-const LOCAL_HOST_ROOT_NAME = 'Orca'
+// Keep runtimes out of roaming storage; match the NSIS uninstall root in config/nsis/topo-installer-hooks.nsh.
+const LOCAL_HOST_ROOT_NAME = 'Topo'
 
 // Match getDaemonEntryPath() so relocation copies the same entry the install runtime would fork.
 function resolveEntrySourcePath(resourcesPath: string, observedEntryPath?: string): string {
@@ -82,7 +82,7 @@ function resolveEntrySourcePath(resourcesPath: string, observedEntryPath?: strin
   return existsSync(nested) ? nested : (observedEntryPath ?? nested)
 }
 
-/** orcad is packaged plain Node; require an Electron asar root before attempting relocation. */
+/** topod is packaged plain Node; require an Electron asar root before attempting relocation. */
 function isPackagedElectronWin32(): boolean {
   const environment = getAppEnvironment()
   return (

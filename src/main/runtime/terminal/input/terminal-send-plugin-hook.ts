@@ -6,7 +6,7 @@ import type { TerminalInputSource } from './terminal-input-admission'
 type TerminalSendAction = { text?: string; enter?: boolean; interrupt?: boolean }
 
 /**
- * Whether `terminal.send` runs for this write: only text Orca, the CLI or a plugin sends. A person's
+ * Whether `terminal.send` runs for this write: only text Topo, the CLI or a plugin sends. A person's
  * typing (desktop, mobile, or an old client that does not say) is never delayed or rewritten.
  */
 export function terminalSendHookApplies(
@@ -101,7 +101,7 @@ export class TerminalPluginHookOrder {
   }
 }
 
-/** Whether `agent.prompt.before` runs: prompts Orca, the CLI or a plugin submits, as for
+/** Whether `agent.prompt.before` runs: prompts Topo, the CLI or a plugin submits, as for
  *  `terminal.send`; a person's own prompt is never held. */
 export function agentPromptHookApplies(options: { inputSource?: TerminalInputSource }): boolean {
   return (

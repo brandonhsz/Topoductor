@@ -1,6 +1,6 @@
 import type { AgentJournalMessageItem } from '../../../shared/agent-session/journal/agent-session-journal-types'
 import type { AgentSessionJournalIdentity } from '../../../shared/agent-session/journal/agent-session-journal-identity'
-import { ORCA_AGENT_SESSION_SPAWN_TOKEN_ENV } from '../../../shared/agent-session/lifecycle/agent-session-caller-env'
+import { TOPO_AGENT_SESSION_SPAWN_TOKEN_ENV } from '../../../shared/agent-session/lifecycle/agent-session-caller-env'
 import type {
   ClaudeStreamJsonConnection,
   ClaudeStreamJsonConnectionHandlers,
@@ -257,7 +257,7 @@ export function adapterAtPublishFor(
       cliFlag: async () => 'supported' as const,
       continuesChain: false,
       ...launch,
-      env: { ...launch.env, [ORCA_AGENT_SESSION_SPAWN_TOKEN_ENV]: spawnToken }
+      env: { ...launch.env, [TOPO_AGENT_SESSION_SPAWN_TOKEN_ENV]: spawnToken }
     }),
     onEvent: (event) => events.push(event),
     openConnection: claude.openConnection,

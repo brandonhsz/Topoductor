@@ -1,13 +1,13 @@
 import { randomBytes } from 'node:crypto'
 import { setTimeout as delay } from 'node:timers/promises'
 import { z } from 'zod'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import {
   forceTerminateProcessTree,
   signalProcessTree
-} from '@orca/process-host/process-tree-termination'
+} from '@topo/process-host/process-tree-termination'
 import { withTimeout } from '../../shared/promise-timeout-fallback'
-import { createOutputSink } from '@orca/process-host/bounded-output-sink'
+import { createOutputSink } from '@topo/process-host/bounded-output-sink'
 import { readFetchResponseJsonWithinLimit } from '../../shared/fetch-response-body'
 import { cancelUnreadResponseBody } from '../lib/unread-response-body'
 import type { ChildProcess } from 'node:child_process'
@@ -66,7 +66,7 @@ export async function probeOpenCodeLaunchModelContext(options: {
       OPENCODE_SERVER_PASSWORD: password
     },
     process.platform,
-    // opencode serve ignores stdin EOF; POSIX supervision must stop it with Orca.
+    // opencode serve ignores stdin EOF; POSIX supervision must stop it with Topo.
     { lifetime: 'one-shot' }
   )
   const child = spawnProcess({

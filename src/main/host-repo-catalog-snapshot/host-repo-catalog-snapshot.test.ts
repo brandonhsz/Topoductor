@@ -16,7 +16,7 @@ import { retireRemovedRuntimeEnvironment } from '../ipc/runtime-environments/run
 vi.mock('electron', () => ({
   app: {
     getPath: () => tmpdir(),
-    getName: () => 'orca-test',
+    getName: () => 'topo-test',
     getVersion: () => '0.0.0-test',
     isPackaged: false,
     on: () => {},
@@ -56,7 +56,7 @@ afterEach(async () => {
 })
 
 function profile() {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-host-repo-catalog-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-host-repo-catalog-'))
   directories.push(directory)
   const databasePath = join(directory, 'profile-state.db')
   const profileId = 'host-repo-catalog'
@@ -65,7 +65,7 @@ function profile() {
   )
   const open = () => {
     const store = new Store({
-      dataFile: join(directory, 'orca-data.json'),
+      dataFile: join(directory, 'topo-data.json'),
       profileStateAuthority: new ProfileStateSqliteAuthority(databasePath, profileId)
     })
     stores.push(store)
@@ -76,13 +76,13 @@ function profile() {
 
 const wslHost = {
   id: 'env-wsl',
-  orcadDeployment: { kind: 'wsl' as const, distro: 'Ubuntu', localPort: 41000, remotePort: 6768 }
+  topodDeployment: { kind: 'wsl' as const, distro: 'Ubuntu', localPort: 41000, remotePort: 6768 }
 }
 const otherWslHost = {
   id: 'env-wsl-2',
-  orcadDeployment: { kind: 'wsl' as const, distro: 'Debian', localPort: 41001, remotePort: 6768 }
+  topodDeployment: { kind: 'wsl' as const, distro: 'Debian', localPort: 41001, remotePort: 6768 }
 }
-const pairedServer = { id: 'env-paired', orcadDeployment: null }
+const pairedServer = { id: 'env-paired', topodDeployment: null }
 
 function repoListAnswer(repos: unknown[]): RuntimeRpcResponse<unknown> {
   return { id: 'repo.list', ok: true, result: { repos }, _meta: { runtimeId: 'server' } }

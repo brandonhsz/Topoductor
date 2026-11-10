@@ -18,7 +18,7 @@ export class PiRpcBackgroundWork {
     null
   private outstanding: Promise<AgentSessionIdleConfirmation> | null = null
 
-  /** A null folder means Orca launched this child without the bridge: unprotected, as before. */
+  /** A null folder means Topo launched this child without the bridge: unprotected, as before. */
   constructor(private readonly directory: string | null) {}
 
   /** Consumes the bridge's status frames before decoration is dropped; false for every other frame. */

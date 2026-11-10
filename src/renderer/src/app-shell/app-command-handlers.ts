@@ -77,7 +77,7 @@ export function createAppCommandHandlers(
   state: AppShortcutState,
   input?: ShortcutDispatchInput,
   keybindingContext: KeybindingContext = 'app',
-  /** A plugin's `commands.run`: Orca's own action, never a plugin replacement (no loops). */
+  /** A plugin's `commands.run`: Topo's own action, never a plugin replacement (no loops). */
   builtInOnly = false
 ): Map<KeybindingActionId, () => boolean> {
   const {
@@ -99,7 +99,7 @@ export function createAppCommandHandlers(
     if (
       input &&
       keybindingContext === 'terminal' &&
-      (terminalShortcutPolicy ?? 'orca-first') === 'orca-first'
+      (terminalShortcutPolicy ?? 'topo-first') === 'topo-first'
     ) {
       showTerminalShortcutCaptureNotification({
         actionId,

@@ -14,7 +14,7 @@ const hit = {
   executionHostId: 'ssh:build-01',
   sessionId: 'session-1',
   title: 'Terminal resize race',
-  cwd: '/src/orca',
+  cwd: '/src/topo',
   branch: 'main',
   updatedAt: '2026-09-12T18:04:11.000Z',
   messageCount: 214,
@@ -73,7 +73,7 @@ async function runSearch(
           )
         )
   const lines: string[] = []
-  const client = new RuntimeClient('/tmp/orca-search-test', 60_000, null, null)
+  const client = new RuntimeClient('/tmp/topo-search-test', 60_000, null, null)
   vi.spyOn(client, 'call').mockImplementation(call)
   vi.spyOn(client, 'isRemote', 'get').mockReturnValue(options.isRemote ?? false)
   vi.spyOn(console, 'log').mockImplementation((value: unknown) => {
@@ -88,7 +88,7 @@ async function runSearch(
   return { call, output: lines.join('\n') }
 }
 
-describe('orca search over the runtime RPC', () => {
+describe('topo search over the runtime RPC', () => {
   it('raises a malformed cursor through the CLI error channel', async () => {
     await expect(
       runSearch(

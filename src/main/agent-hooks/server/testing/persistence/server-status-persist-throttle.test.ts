@@ -34,7 +34,7 @@ describe('saved agent status cadence', () => {
       shouldAdvanceTime: true,
       toFake: ['setTimeout', 'clearTimeout', 'Date']
     })
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-persist-throttle-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-persist-throttle-'))
     server = new AgentHookServer()
     await server.start({ env: 'production', userDataPath })
   })

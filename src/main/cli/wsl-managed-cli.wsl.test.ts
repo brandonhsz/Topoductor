@@ -2,18 +2,18 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { removeTree } from '../../shared/windows-transient-lock-removal'
 import { buildWslExecArgs } from '../../shared/wsl-login-shell-command'
 import { installFakeAppEnvironment } from '../../../config/scripts/test-runtime/environment/vitest-host-ports-setup'
-import { addOrcaWslInteropEnv } from '../pty/shell-startup/wsl-orca-env'
+import { addTopoWslInteropEnv } from '../pty/shell-startup/wsl-topo-env'
 import { getManagedWslCliDir } from './wsl-managed-cli'
 import { buildLocalShellReadyWrapperFiles } from '../providers/local-pty/local-pty-shell-ready-wrapper-fileset'
 
 // Explicit opt-in: never require a developer's WSL installation for unit tests.
-const enabled = process.platform === 'win32' && process.env.ORCA_TEST_MANAGED_WSL === '1'
+const enabled = process.platform === 'win32' && process.env.TOPO_TEST_MANAGED_WSL === '1'
 const FIXTURE_CLI =
-  'if(process.argv.includes("--exit"))process.exit(23); console.error("bridge stderr"); console.log(JSON.stringify({argv:process.argv.slice(2),owner:process.env.ORCA_USER_DATA_PATH,handle:process.env.ORCA_TERMINAL_HANDLE}))'
+  'if(process.argv.includes("--exit"))process.exit(23); console.error("bridge stderr"); console.log(JSON.stringify({argv:process.argv.slice(2),owner:process.env.TOPO_USER_DATA_PATH,handle:process.env.TOPO_TERMINAL_HANDLE}))'
 
 async function withManagedCli(
   run: (fixture: {
@@ -24,10 +24,10 @@ async function withManagedCli(
     wsl: (args: string[], input?: string) => ReturnType<typeof runProcess>
   }) => Promise<void>
 ): Promise<void> {
-  const root = mkdtempSync(join(tmpdir(), "orca WSL's managed CLI "))
-  const distro = process.env.ORCA_TEST_WSL_DISTRO || undefined
+  const root = mkdtempSync(join(tmpdir(), "topo WSL's managed CLI "))
+  const distro = process.env.TOPO_TEST_WSL_DISTRO || undefined
   const userDataPath = join(root, 'user data 张三 O\u2019Brien')
-  const env: Record<string, string> = { ORCA_BACKGROUND_LAUNCH: '1' }
+  const env: Record<string, string> = { TOPO_BACKGROUND_LAUNCH: '1' }
   for (const [key, value] of Object.entries(process.env)) {
     if (value !== undefined) {
       env[key] = value
@@ -46,7 +46,7 @@ async function withManagedCli(
     wsl([
       'sh',
       '-c',
-      'for file in "$HOME/.profile" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.zshenv" "$HOME/.local/bin/orca" "$HOME/.local/bin/orca-ide" "$HOME/.local/bin/orca-dev" "$HOME/.local/share/orca/orca-wsl-bridge.ps1"; do if [ -f "$file" ]; then sha256sum "$file"; fi; done; printf "PATH=%s\\n" "$PATH"'
+      'for file in "$HOME/.profile" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.zshenv" "$HOME/.local/bin/topo" "$HOME/.local/bin/topo-ide" "$HOME/.local/bin/topo-dev" "$HOME/.local/share/topo/topo-wsl-bridge.ps1"; do if [ -f "$file" ]; then sha256sum "$file"; fi; done; printf "PATH=%s\\n" "$PATH"'
     ])
   try {
     const before = await snapshot()
@@ -63,11 +63,11 @@ async function withManagedCli(
     const directory = getManagedWslCliDir({ isPackaged: false, userDataPath })
     expect(directory).not.toBeNull()
     Object.assign(env, {
-      ORCA_WSL_CLI_DIR: directory ?? '',
-      ORCA_CLI_COMMAND: 'orca-dev',
-      ORCA_TERMINAL_HANDLE: 'term_managed_fixture'
+      TOPO_WSL_CLI_DIR: directory ?? '',
+      TOPO_CLI_COMMAND: 'topo-dev',
+      TOPO_TERMINAL_HANDLE: 'term_managed_fixture'
     })
-    addOrcaWslInteropEnv(env)
+    addTopoWslInteropEnv(env)
     await run({ env, guestRoot: translated.stdout.trim(), root, userDataPath, wsl })
     expect((await snapshot()).stdout).toBe(before.stdout)
   } finally {
@@ -92,15 +92,15 @@ it.skipIf(!enabled)(
           command
         ])
 
-      const result = await shell('orca-dev "two words" "literal $" | cat')
+      const result = await shell('topo-dev "two words" "literal $" | cat')
       expect(result.code, result.stderr).toBe(0)
       expect(result.stderr).toContain('bridge stderr')
       expect(result.stdout).toContain('"argv":["two words","literal $"]')
       expect(result.stdout).toContain(JSON.stringify(userDataPath))
       expect(result.stdout).toContain('"handle":"term_managed_fixture"')
-      expect((await shell('orca-dev --exit')).code).toBe(23)
+      expect((await shell('topo-dev --exit')).code).toBe(23)
 
-      env.ORCA_WSL_CLI_DIR = join(root, 'missing-cli')
+      env.TOPO_WSL_CLI_DIR = join(root, 'missing-cli')
       const missing = await shell('echo SHELL_CONTINUED')
       expect(missing.code).toBe(0)
       expect(missing.stdout).toContain('SHELL_CONTINUED')
@@ -129,7 +129,7 @@ it.skipIf(!enabled)(
           'zsh -l',
           '/dev/null'
         ],
-        `orca-dev "two words" > "$HOME/zsh-out"; print -r -- "path=$PATH" >> "$HOME/zsh-out"; exit\n`
+        `topo-dev "two words" > "$HOME/zsh-out"; print -r -- "path=$PATH" >> "$HOME/zsh-out"; exit\n`
       )
       expect(result.code, result.stderr).toBe(0)
       const output = await wsl(['cat', `${guestRoot}/zsh-out`])

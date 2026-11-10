@@ -7,8 +7,8 @@ it.each([
   ['sleep 30 && claude', 'claude'],
   [' sleep 30&&codex "do not sleep 30 && claude"', 'codex "do not sleep 30 && claude"'],
   [
-    '/bin/sleep .5 && /usr/bin/sleep 1m && "C:\\Program Files\\Orca\\codex.exe"',
-    '"C:\\Program Files\\Orca\\codex.exe"'
+    '/bin/sleep .5 && /usr/bin/sleep 1m && "C:\\Program Files\\Topo\\codex.exe"',
+    '"C:\\Program Files\\Topo\\codex.exe"'
   ]
 ])('extracts only the delayed launch hint from %s', (command, expected) => {
   expect(extractAgentLaunchCommand(command)).toBe(expected)

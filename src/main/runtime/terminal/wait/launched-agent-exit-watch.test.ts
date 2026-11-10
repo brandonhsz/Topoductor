@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   createTranscriptPane,
   TRANSCRIPT_PANE_PTY_ID
-} from '../../orca-runtime-tests/agent-transcript-pane-test-harness'
+} from '../../topo-runtime-tests/agent-transcript-pane-test-harness'
 import { waitForWorkerAgentReady } from './launched-agent-composer-readiness'
 import type { LaunchedAgentForeground } from './launched-agent-foreground'
 import { failOnLaunchedAgentExit, type LaunchedAgentExitRuntime } from './launched-agent-exit-watch'
@@ -14,7 +14,7 @@ vi.mock('electron', () => ({
   app: { getPath: vi.fn(() => '/tmp') }
 }))
 
-// Raw bytes from zsh under Orca's wrapper in a PTY.
+// Raw bytes from zsh under Topo's wrapper in a PTY.
 const ZSH_PROMPT = '\x1b]133;A\x07\r\x1b[0m\x1b[27m\x1b[24m\x1b[Jplain% \x1b[K\x1b[?2004h'
 const ZSH_RUNS_LAUNCH_LINE =
   "c\x08cursor-agent '--model' 'not-a-model'\x1b[?2004l\r\r\n\x1b]133;C\x07"
@@ -22,7 +22,7 @@ const REJECTION = 'Cannot use this model: not-a-model. Available models: auto, g
 const ZSH_PROMPT_AFTER_EXIT = [
   `\x1b[1m\x1b[7m%\x1b[27m\x1b[1m\x1b[0m${' '.repeat(79)}\r \r`,
   '\x1b]133;D;1\x07\x1b]133;A\x07\r\x1b[0m\x1b[27m\x1b[24m\x1b[Jplain% \x1b[K',
-  '\x1b]777;orca-shell-ready\x07\x1b[?2004h'
+  '\x1b]777;topo-shell-ready\x07\x1b[?2004h'
 ].join('')
 
 /** Past every re-read the watch makes after a shell return. */

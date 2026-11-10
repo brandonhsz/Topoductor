@@ -7,7 +7,7 @@ import {
   temporarilySetNavigatorUserAgent
 } from '../test-fixtures/pty-connection-test-dom'
 import { flushAsyncTicks } from '../test-fixtures/pty-connection-test-async'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import {
   bindsPaneInStore,
   expectWindowStartAskedMain,
@@ -196,7 +196,7 @@ export function registerPtyConnectionPtyExitTeardownTests(): void {
 
       expect(deps.clearExitedPanePtyLayoutBinding).toHaveBeenCalledWith(2, 'pty-pane-2')
       expect(deps.onPtyExitRef.current).not.toHaveBeenCalled()
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         await expectMainFrameClosesExitedSplitPaneOnce(manager)
       } else {
         expect(manager.closePane).toHaveBeenCalledWith(2)
@@ -493,7 +493,7 @@ export function registerPtyConnectionPtyExitTeardownTests(): void {
       )
       transportFactoryQueue.push(transport)
       installSleepingCodexResumeState('lost-pty')
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         await mainStartsPaneAs({
           ptyId: 'pty-main',
           bind: bindsPaneInStore(() => mockStoreState, 'tab-1', LEAF_1)
@@ -512,7 +512,7 @@ export function registerPtyConnectionPtyExitTeardownTests(): void {
       )
       await flushAsyncTicks(30)
       expect(callbacks).toHaveLength(2)
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         await expectWindowStartAskedMain(transport, makePaneKey('tab-1', LEAF_1))
         expect(currentPtyId).toBe('pty-main')
       }
@@ -668,7 +668,7 @@ export function registerPtyConnectionEstablishedPtyExitTests(): void {
       capturedDataCallback.current?.('shell prompt')
       onPtyExit?.('pty-pane-2')
 
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         await expectMainFrameClosesExitedSplitPaneOnce(manager)
       } else {
         expect(manager.closePane).toHaveBeenCalledWith(2)
@@ -735,7 +735,7 @@ export function registerPtyConnectionEstablishedPtyExitTests(): void {
       terminalInputHandler?.('exit\r')
       onPtyExit?.('pty-pane-2')
 
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         await expectMainFrameClosesExitedSplitPaneOnce(manager)
       } else {
         expect(manager.closePane).toHaveBeenCalledWith(2)

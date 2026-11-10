@@ -16,7 +16,7 @@ import {
 } from './runs/run-coordinator-mail-routing'
 import { createTables } from './schema/create-tables'
 import { migrate } from './schema/migrate'
-import { backfillStructuredWorkerOrcaSessionIds } from './schema/structured-worker-orca-session-backfill'
+import { backfillStructuredWorkerTopoSessionIds } from './schema/structured-worker-topo-session-backfill'
 import { reconcileSettledWorkerDispatches } from './worker-dispatch/worker-dispatch-settlement'
 
 class OrchestrationDbCore {
@@ -66,7 +66,7 @@ class OrchestrationDbCore {
     backfillFederatedStubHomeRuns(this.db)
     // After every open step that creates Runs, before any step that deletes work.
     installRemovedWorkCapture(this.db, removedWorkCaptureWasIntact)
-    backfillStructuredWorkerOrcaSessionIds(this.db)
+    backfillStructuredWorkerTopoSessionIds(this.db)
     this.db.exec(`
       DROP INDEX IF EXISTS idx_dispatch_creator_account_work;
       CREATE INDEX IF NOT EXISTS idx_dispatch_creator_mailbox_work

@@ -3,7 +3,7 @@ import { Badge } from '../../ui/badge'
 import { translate } from '../../../i18n/i18n'
 import { useTranslate, type Translate } from '@/i18n/use-translate'
 import { useAppStore } from '../../../store/index'
-import { useOrcaProfileAuthStatusRefresh } from '@/hooks/use-orca-profile-auth-status-refresh'
+import { useTopoProfileAuthStatusRefresh } from '@/hooks/use-topo-profile-auth-status-refresh'
 import { cn } from '@/lib/utils'
 import type {
   MobileRelayStatus,
@@ -54,7 +54,7 @@ export function MobilePairingConnectionOptions({
   relayMintRetrying?: boolean
 }): React.JSX.Element {
   const t = useTranslate()
-  const authStatus = useAppStore((state) => state.orcaProfileAuthStatus)
+  const authStatus = useAppStore((state) => state.topoProfileAuthStatus)
   const [relayStatus, setRelayStatus] = useState<MobileRelayStatusDetail>({ status: 'offline' })
   const signedIn = authStatus?.state === 'connected'
   const reconnectRequired = authStatus?.state === 'reconnect-required'
@@ -90,7 +90,7 @@ export function MobilePairingConnectionOptions({
 
   const relayCell = relayStatus.cellUrl ? relayCellLabel(relayStatus.cellUrl) : null
 
-  useOrcaProfileAuthStatusRefresh()
+  useTopoProfileAuthStatusRefresh()
 
   useEffect(() => {
     let receivedEvent = false
@@ -141,13 +141,13 @@ export function MobilePairingConnectionOptions({
           onSelect={() => onChange('automatic')}
           title={t(
             'auto.components.settings.MobilePairingConnectionOptions.anywhereTitle',
-            'Orca Relay'
+            'Topo Relay'
           )}
           description={
             relayUnavailable
               ? t(
                   'auto.components.settings.MobilePairingConnectionOptions.relayUnavailable',
-                  'Orca Relay isn’t available in this build. Use LAN.'
+                  'Topo Relay isn’t available in this build. Use LAN.'
                 )
               : t(
                   'auto.components.settings.MobilePairingConnectionOptions.anywhereDescription',

@@ -59,8 +59,8 @@ export type FirstWorkBranchRenameDeps = {
   getFolderWorkspacePath?: (worktreeId: string) => string | undefined
   isFolderWorkspaceWslMoveBlocked?: (worktreeId: string) => boolean
   isPendingFirstAgentMessageRename?: (worktreeId: string) => boolean
-  /** Require Orca creation provenance before renaming a branch. */
-  canRenameOrcaCreatedBranch: (worktreeId: string) => boolean
+  /** Require Topo creation provenance before renaming a branch. */
+  canRenameTopoCreatedBranch: (worktreeId: string) => boolean
   setDisplayName: (worktreeId: string, displayName: string) => void
   /** Best-effort local folder alignment after the branch rename. */
   renameWorktreeFolder?: (worktreeId: string, newLeaf: string) => Promise<boolean>
@@ -199,7 +199,7 @@ async function runAutoRename(
   if (!currentBranch || currentBranch === 'HEAD') {
     return retry(`no checked-out branch (${currentBranch || 'empty'})`)
   }
-  if (!deps.canRenameOrcaCreatedBranch(worktreeId)) {
+  if (!deps.canRenameTopoCreatedBranch(worktreeId)) {
     return stop(`worktree is not eligible for auto-rename`, true)
   }
   const leaf = currentBranch.slice(currentBranch.lastIndexOf('/') + 1)
@@ -251,7 +251,7 @@ async function runAutoRename(
 
   // An in-app branch switch can land during generation; recheck and rename under its lock.
   const renamed = await withCheckoutLock(worktreePath, async (): Promise<boolean | string> => {
-    if (!deps.canRenameOrcaCreatedBranch(worktreeId)) {
+    if (!deps.canRenameTopoCreatedBranch(worktreeId)) {
       return stop('worktree is not eligible for auto-rename', true)
     }
     // Generation can outlive a branch switch or publication.

@@ -56,7 +56,7 @@ export function useDraftRenameSheet({
         icon: ClockFading,
         text: t(
           'hostMutation.renameUnconfirmed',
-          'Not confirmed yet. Orca checks the name when {{host}} is back.',
+          'Not confirmed yet. Topo checks the name when {{host}} is back.',
           { host: hostName }
         )
       }

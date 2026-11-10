@@ -1,7 +1,7 @@
 import { CliSkillSetupTerminal } from './CliSkillSetupTerminal'
 import { AgentSkillSetupPanel } from '@/components/skills/setup/AgentSkillSetupPanel'
 import {
-  ORCA_CLI_SKILL_NAME,
+  TOPO_CLI_SKILL_NAME,
   ORCHESTRATION_SKILL_NAME
 } from '@/lib/skills/installation/agent-feature-skill-names'
 import { useActiveProjectSkillRuntime } from '@/hooks/useActiveProjectSkillRuntime'
@@ -12,7 +12,7 @@ import {
 } from '@/hooks/useInstalledAgentSkills'
 import { useTranslate } from '@/i18n/use-translate'
 
-const CLI_TIP_SKILL_NAMES = [ORCA_CLI_SKILL_NAME, ORCHESTRATION_SKILL_NAME] as const
+const CLI_TIP_SKILL_NAMES = [TOPO_CLI_SKILL_NAME, ORCHESTRATION_SKILL_NAME] as const
 
 function BundledCliSkillSetupPanel(): React.JSX.Element {
   const t = useTranslate()
@@ -37,7 +37,7 @@ function BundledCliSkillSetupPanel(): React.JSX.Element {
       title={t('auto.components.feature.tips.CliSkillSetupPanel.title', 'Skill setup')}
       description={t(
         'auto.components.feature.tips.CliSkillSetupPanel.description',
-        'Install the Orca CLI and orchestration skills for your agents.'
+        'Install the Topo CLI and orchestration skills for your agents.'
       )}
       skillNames={CLI_TIP_SKILL_NAMES}
       installed={installed}
@@ -51,7 +51,7 @@ function BundledCliSkillSetupPanel(): React.JSX.Element {
 
 export function CliSkillSetupPanel(): React.JSX.Element {
   const runtime = useActiveProjectSkillRuntime()
-  // COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+  // COMPAT(wsl-bridge): removed when WSL runs as an topod host.
   return runtime.agentRuntime?.runtime === 'wsl' ? (
     <CliSkillSetupTerminal />
   ) : (

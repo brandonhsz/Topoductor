@@ -2,8 +2,8 @@ import { hostname } from 'node:os'
 import { getAppEnvironment } from '../../shared/app-environment'
 import { admitConnectorAgent, CONNECTOR_AGENTS } from '../external-conversations/connector-agents'
 import { runtimeConversationHost } from '../external-conversations/external-conversation-seam'
-import { getOrcaCloudAuthConfig } from '../orca-profiles/profile-cloud-auth-config'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import { getTopoCloudAuthConfig } from '../topo-profiles/profile-cloud-auth-config'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import type { RuntimeStore } from '../runtime/construction/runtime-store-contract'
 import { ConnectorCloud } from './connector-cloud'
 import { resolveConnectorOrigin } from './connector-origin'
@@ -13,14 +13,14 @@ import { connectorAccount, desktopConnectorTokenMint } from './connector-token-m
 export type ConnectorCloudStore = ConnectorPlacesStore &
   Pick<RuntimeStore, 'getSettings' | 'onSettingsChanged'>
 
-/** Desktop only: the connector acts as the desktop's Orca account; `orca serve` has no sign-in yet. */
+/** Desktop only: the connector acts as the desktop's Topo account; `topo serve` has no sign-in yet. */
 export function createDesktopConnectorCloud(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   store: ConnectorCloudStore,
   userDataPath: string,
   isFenced: () => boolean
 ): ConnectorCloud | null {
-  const auth = getOrcaCloudAuthConfig()
+  const auth = getTopoCloudAuthConfig()
   if (!auth.configured) {
     return null
   }
@@ -33,7 +33,7 @@ export function createDesktopConnectorCloud(
     mintFor: (account) => desktopConnectorTokenMint(auth.config, userDataPath, account),
     machine: {
       runtime: 'desktop',
-      orcaVersion: environment.getVersion(),
+      topoVersion: environment.getVersion(),
       hostName: hostname(),
       seam: () => runtime.getExternalConversationSeam(),
       conversationHost: () => runtimeConversationHost(runtime),

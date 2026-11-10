@@ -1,4 +1,4 @@
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { mkdir, mkdtemp, realpath, rm, symlink } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { normalizeRuntimePathForComparison } from '../../../shared/cross-platform-path'
 import type { Repo } from '../../../shared/repo-types'
 import { RuntimeRepositoryRegistrationController } from './runtime-repository-registration-controller'
-import { partialRuntimeStore } from '../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../topo-runtime-tests/runtime-store-partial-fixture'
 
 vi.mock('../../repository-icons/repo-icon-autodetect', () => ({
   detectRepoIconAndUpstream: vi.fn().mockResolvedValue({})
@@ -55,7 +55,7 @@ describe('RuntimeRepositoryRegistrationController.add through a symlink alias', 
   let root: string
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-runtime-add-alias-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-runtime-add-alias-'))
   })
 
   afterEach(async () => {
@@ -130,7 +130,7 @@ describe('RuntimeRepositoryRegistrationController.add stores the checkout git li
 
   beforeEach(async () => {
     // Why realpath: macOS tmpdir is itself a symlink, and the expectations name git's resolved root.
-    root = await realpath(await mkdtemp(join(tmpdir(), 'orca-runtime-add-root-')))
+    root = await realpath(await mkdtemp(join(tmpdir(), 'topo-runtime-add-root-')))
   })
 
   afterEach(async () => {

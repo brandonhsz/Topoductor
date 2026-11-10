@@ -95,7 +95,7 @@ export async function subscribeWebRuntimeCrewAttempt(
         getPreferredWebRuntimeConnection(active).hostPublicKeyB64 !==
           getPreferredWebRuntimeConnection(environment).hostPublicKeyB64
       ) {
-        refuse('The paired Orca server changed while the request was in progress.', {
+        refuse('The paired Topo server changed while the request was in progress.', {
           kind: 'source-retired'
         })
       }
@@ -134,7 +134,7 @@ export async function subscribeWebRuntimeCrewAttempt(
       assertCurrent()
       assertVerified()
       if (webRuntimeState.activeClient !== client) {
-        refuse('The paired Orca server changed while the request was in progress.', {
+        refuse('The paired Topo server changed while the request was in progress.', {
           kind: 'source-retired'
         })
       }

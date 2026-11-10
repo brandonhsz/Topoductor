@@ -19,7 +19,7 @@ import { readRasterImageDimensions } from '../../../../shared/file-preview/raste
 import { acquireElectronDebugger } from '../../cdp/debugger/electron-debugger-lease'
 import { sendGuestCdpCommand } from '../../cdp/debugger/guest-cdp-command'
 import { AgentBrowserBridgeUtilityCommands } from './agent-browser-bridge-page-commands'
-import { ORCA_TAB_SESSION_PREFIX } from '../session-lifecycle/agent-browser-session-name'
+import { TOPO_TAB_SESSION_PREFIX } from '../session-lifecycle/agent-browser-session-name'
 import { captureRemoteCliBrowserWorkBound } from '../../../runtime/desktop-browser-bridge/remote-cli-browser-scope'
 import {
   throwIfSignalAborted,
@@ -125,7 +125,7 @@ export abstract class AgentBrowserBridgeCaptureCommands extends AgentBrowserBrid
           }
           if (!this.getWebContents(target.webContentsId)) {
             throw this.createPageUnavailableError(
-              `${ORCA_TAB_SESSION_PREFIX}${target.browserPageId}`
+              `${TOPO_TAB_SESSION_PREFIX}${target.browserPageId}`
             )
           }
           throw new BrowserError(

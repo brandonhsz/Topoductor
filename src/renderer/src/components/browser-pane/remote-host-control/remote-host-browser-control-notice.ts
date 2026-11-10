@@ -21,7 +21,7 @@ export function showRemoteHostBrowserControlNotice(
     toast.success(
       translate(
         'remoteHostBrowserControl.stopped',
-        '{{host}} stopped controlling browser tabs until Orca restarts.',
+        '{{host}} stopped controlling browser tabs until Topo restarts.',
         { host }
       )
     )
@@ -50,7 +50,7 @@ export function showRemoteHostBrowserControlNotice(
       id: remoteHostBrowserControlNoticeId(notice.targetId),
       description: translate(
         'remoteHostBrowserControl.description',
-        'Agents on this SSH host can open and use Orca browser tabs in its workspaces. Tabs it controls show its name. You can change this in Settings > SSH.'
+        'Agents on this SSH host can open and use Topo browser tabs in its workspaces. Tabs it controls show its name. You can change this in Settings > SSH.'
       ),
       duration: Number.POSITIVE_INFINITY,
       action: {

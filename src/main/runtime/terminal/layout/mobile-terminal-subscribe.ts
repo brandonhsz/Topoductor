@@ -1,6 +1,6 @@
-import { OrcaRuntimeWithApplyLayout } from './terminal-layout-application'
+import { TopoRuntimeWithApplyLayout } from './terminal-layout-application'
 
-export abstract class OrcaRuntimeWithHandleMobileSubscribe extends OrcaRuntimeWithApplyLayout {
+export abstract class TopoRuntimeWithHandleMobileSubscribe extends TopoRuntimeWithApplyLayout {
   protected abstract handleMobileSubscribeInternal(
     ptyId: string,
     clientId: string,

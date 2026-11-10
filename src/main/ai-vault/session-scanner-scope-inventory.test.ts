@@ -20,7 +20,7 @@ afterEach(async () => {
 })
 
 it('closes representative streams and inventory sources on cancellation before reading', async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-bucket-abort-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-bucket-abort-'))
   await writeJsonlFile(join(root, '-repo', 'a.jsonl'), [{ cwd: '/repo' }])
   const controller = new AbortController()
   const input = new PassThrough()

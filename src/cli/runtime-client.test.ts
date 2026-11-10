@@ -5,11 +5,11 @@ import { createServer, type Socket } from 'node:net'
 import { afterEach, describe, expect, it, onTestFinished, vi } from 'vitest'
 import '../shared/protocol-version'
 import { RuntimeClient } from './runtime-client'
-import { launchOrcaApp } from './runtime/launch'
+import { launchTopoApp } from './runtime/launch'
 import './cli-error'
 
 vi.mock('./runtime/launch', () => ({
-  launchOrcaApp: vi.fn()
+  launchTopoApp: vi.fn()
 }))
 
 const servers = new Set<ReturnType<typeof createServer>>()
@@ -17,7 +17,7 @@ const sockets = new Set<Socket>()
 
 afterEach(async () => {
   vi.useRealTimers()
-  vi.mocked(launchOrcaApp).mockClear()
+  vi.mocked(launchTopoApp).mockClear()
   for (const socket of sockets) {
     socket.destroy()
   }
@@ -34,7 +34,7 @@ afterEach(async () => {
 })
 
 function makeRuntimeClientFixture(): string {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-client-'))
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-client-'))
   onTestFinished(() => rmSync(userDataPath, { recursive: true, force: true }))
   return userDataPath
 }
@@ -46,7 +46,7 @@ function writeMetadata(
   pid = 123
 ): void {
   writeFileSync(
-    join(userDataPath, 'orca-runtime.json'),
+    join(userDataPath, 'topo-runtime.json'),
     JSON.stringify({
       runtimeId: 'runtime-1',
       pid,

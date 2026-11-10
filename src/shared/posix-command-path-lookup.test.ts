@@ -202,7 +202,7 @@ describe('buildPosixCommandPathLookupScript', () => {
         'set -e',
         buildPosixCommandPathLookupScript({
           kind: 'literal',
-          value: '__orca_missing_command_path_lookup__'
+          value: '__topo_missing_command_path_lookup__'
         }),
         `printf '%s\\n' survived`
       ].join('\n')
@@ -272,7 +272,7 @@ function withExecutableFixture(
   name: string,
   run: (directory: string, executable: string, root: string) => void
 ): void {
-  const root = mkdtempSync(join(tmpdir(), 'orca-path-lookup-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-path-lookup-'))
   const directory = join(root, 'bin')
   const executable = join(directory, name)
   try {

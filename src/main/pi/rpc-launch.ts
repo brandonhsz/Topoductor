@@ -1,5 +1,5 @@
-import { ORCA_AGENT_SESSION_SPAWN_TOKEN_ENV } from '../../shared/agent-session/lifecycle/agent-session-caller-env'
-import { ORCA_AGENT_SESSION_CALLER_ENV_KEYS } from '../ipc/pty/host-env/spawn-env-keys'
+import { TOPO_AGENT_SESSION_SPAWN_TOKEN_ENV } from '../../shared/agent-session/lifecycle/agent-session-caller-env'
+import { TOPO_AGENT_SESSION_CALLER_ENV_KEYS } from '../ipc/pty/host-env/spawn-env-keys'
 import {
   LEGACY_NATIVE_CHAT_VISUALS_DIR_ENV,
   NATIVE_CHAT_SCRATCH_DIR_ENV
@@ -19,20 +19,20 @@ export type PiRpcLaunchOptions = {
   envToDelete?: readonly string[]
   sessionFile?: string
   forkFile?: string
-  /** Orca's background-work bridge for this launch; absent when it could not be prepared. */
+  /** Topo's background-work bridge for this launch; absent when it could not be prepared. */
   backgroundWork?: PiBackgroundWorkLaunch
 }
 
 const CALLER_ENV_TO_DELETE = [
-  ...ORCA_AGENT_SESSION_CALLER_ENV_KEYS,
-  'ORCA_TERMINAL_HANDLE',
-  ORCA_AGENT_SESSION_SPAWN_TOKEN_ENV
+  ...TOPO_AGENT_SESSION_CALLER_ENV_KEYS,
+  'TOPO_TERMINAL_HANDLE',
+  TOPO_AGENT_SESSION_SPAWN_TOKEN_ENV
 ]
 
 /** Structured Pi has no scratch folder; an inherited one belongs to another chat. */
 export const PI_RPC_SESSION_ENV_TO_DELETE: readonly string[] = [
   ...STRUCTURED_CHILD_ENV_TO_DELETE,
-  'ORCA_TERMINAL_HANDLE',
+  'TOPO_TERMINAL_HANDLE',
   NATIVE_CHAT_SCRATCH_DIR_ENV,
   LEGACY_NATIVE_CHAT_VISUALS_DIR_ENV
 ]

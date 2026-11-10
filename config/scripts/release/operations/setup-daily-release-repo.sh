@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Provision stablyai/orca-daily for daily-mac-build.yml. Keep daily cuts out of hourly’s 72-entry retention window.
+# Provision brandonhsz/topo-daily for daily-mac-build.yml. Keep daily cuts out of hourly’s 72-entry retention window.
 # Reuse hourly’s App credentials; this only widens its installation.
 # Run once after setup-hourly-release-token.sh: bash config/scripts/release/operations/setup-daily-release-repo.sh
 #
 set -euo pipefail
 
-ORG="stablyai"
-DAILY_REPO="$ORG/orca-daily"
-MAIN_REPO="$ORG/orca"
-APP_SLUG="orca-hourly-release"
+ORG="brandonhsz"
+DAILY_REPO="$ORG/topo-daily"
+MAIN_REPO="$ORG/topo"
+APP_SLUG="topo-hourly-release"
 
 fail() {
   echo "error: $*" >&2
@@ -26,7 +26,7 @@ else
   # --add-readme supplies the commit required to create a release tag in a new repo.
   gh repo create "$DAILY_REPO" \
     --public \
-    --description "Daily macOS dev builds of Orca, cut from main each morning. Not a source repo." \
+    --description "Daily macOS dev builds of Topo, cut from main each morning. Not a source repo." \
     --add-readme \
     --disable-issues \
     --disable-wiki ||
@@ -63,7 +63,7 @@ Could not do it from here${INSTALL_ID:+ (needs an Organization Owner)}. Do it in
   1. Open:  https://github.com/organizations/$ORG/settings/installations
   2. Configure  ->  $APP_SLUG
   3. Repository access  ->  Only select repositories  ->  add $DAILY_REPO
-     (keep orca-hourly and orca-adhoc selected; all dev channels use this one App)
+     (keep topo-hourly and topo-adhoc selected; all dev channels use this one App)
   4. Save.
 EOF
 fi

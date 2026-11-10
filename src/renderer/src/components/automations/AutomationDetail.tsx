@@ -38,7 +38,7 @@ type AutomationDetailProps = {
   now: number
   onRunNow: (automation: Automation) => void
   onEdit: (automation: Automation) => void
-  /** Moves a row its host's Orca server now serves onto that server. */
+  /** Moves a row its host's Topo server now serves onto that server. */
   onMigrate?: (automation: Automation) => void
   isMigrating?: boolean
   onToggle: (automation: Automation) => void
@@ -270,7 +270,7 @@ export function AutomationDetail({
         <div className="rounded-md border border-border/50 bg-muted/50 p-3 text-sm text-muted-foreground shadow-sm">
           {t(
             'auto.components.automations.AutomationDetail.dbef8dc110',
-            'This SSH automation runs only while Orca can reach the SSH host. If reconnect needs interactive credentials or the host is unavailable, the run is recorded as skipped.'
+            'This SSH automation runs only while Topo can reach the SSH host. If reconnect needs interactive credentials or the host is unavailable, the run is recorded as skipped.'
           )}
         </div>
       ) : null}

@@ -5,7 +5,7 @@ import {
 } from '../../../shared/remote-runtime/e2ee/paired-e2ee-framing-policy'
 
 // Hosts (by pinned public key) that took capability-carrying v2 token auth from this browser.
-const STORAGE_KEY = 'orca.web.e2eeV2Hosts.v1'
+const STORAGE_KEY = 'topo.web.e2eeV2Hosts.v1'
 const MAX_LATCHED_HOSTS = 128
 
 function readLatchedHosts(): string[] {

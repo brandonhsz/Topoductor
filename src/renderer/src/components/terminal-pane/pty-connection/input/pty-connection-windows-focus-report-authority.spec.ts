@@ -75,7 +75,7 @@ export function registerPtyConnectionRemoteWindowsFocusReportTests(): void {
             {
               id: 'repo1',
               connectionId: null,
-              displayName: 'orca',
+              displayName: 'topo',
               executionHostId: 'runtime:owner-runtime'
             }
           ]

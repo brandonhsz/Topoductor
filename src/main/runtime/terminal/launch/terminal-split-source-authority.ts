@@ -1,5 +1,5 @@
 import type { TerminalIdentityReadContext } from '../query/terminal-identity-read-context'
-import { OrcaRuntimeWithSplitPaneInMain } from './terminal-split-in-main'
+import { TopoRuntimeWithSplitPaneInMain } from './terminal-split-in-main'
 import { resolveTerminalSessionWorktreeId } from '../../workspaces/catalog/runtime-worktree-path-identity'
 import { makePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import { terminalLayoutContainsLeaf } from '../../../../shared/workspace-session/workspace-session-pane-ownership'
@@ -19,7 +19,7 @@ import {
   SPLIT_PANE_START_TIMEOUT_MS
 } from './terminal-split-wait-timeout'
 
-export abstract class OrcaRuntimeWithResolveTerminalSplitSourceAuthority extends OrcaRuntimeWithSplitPaneInMain {
+export abstract class TopoRuntimeWithResolveTerminalSplitSourceAuthority extends TopoRuntimeWithSplitPaneInMain {
   abstract getTerminalHandleForPaneKey(
     paneKey: string,
     context?: TerminalIdentityReadContext
@@ -144,7 +144,7 @@ export abstract class OrcaRuntimeWithResolveTerminalSplitSourceAuthority extends
   }): Promise<{ env: Record<string, string> }> {
     const handle = this.getTerminalHandleForPaneKey(args.paneKey)
     if (!handle) {
-      throw new Error('claude_agent_teams_requires_orca_terminal')
+      throw new Error('claude_agent_teams_requires_topo_terminal')
     }
     return await this.prepareClaudeAgentTeamsLeaderForHandle({
       handle,

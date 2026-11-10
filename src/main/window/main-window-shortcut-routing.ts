@@ -76,7 +76,7 @@ export function installMainWindowShortcutRouting(args: {
 
     const capturedTerminalActionId =
       focusedShortcutContext.context === 'terminal' &&
-      focusedShortcutContext.terminalShortcutPolicy === 'orca-first' &&
+      focusedShortcutContext.terminalShortcutPolicy === 'topo-first' &&
       windowShortcutActionCapturesTerminal(action)
         ? getWindowShortcutActionId(action)
         : null
@@ -145,7 +145,7 @@ export function installMainWindowShortcutRouting(args: {
     }
 
     if (isMacAppPasteInput(input)) {
-      // Chat/terminal panes are not native editable controls; route Cmd+V through Orca paste ownership.
+      // Chat/terminal panes are not native editable controls; route Cmd+V through Topo paste ownership.
       event.preventDefault()
       mainWindow.webContents.send('ui:appMenuPaste')
       return

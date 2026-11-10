@@ -16,7 +16,7 @@ import {
   QueuedMessageNotConsumableError,
   QueuedMessageNotOwedError
 } from '../../agent-session-journal/queued-messages/queued-message-consume-error'
-import { refusingNewerOrcaJournal } from '../../agent-session-journal/replay/journal-open-failure'
+import { refusingNewerTopoJournal } from '../../agent-session-journal/replay/journal-open-failure'
 import {
   journalRowReceiptResult,
   type MutationPlan
@@ -74,7 +74,7 @@ export function mutateQueued<TValue>(
     context,
     caller,
     envelope,
-    { ...plan, run: (ctx) => refusingNewerOrcaJournal(plan.run(ctx)) },
+    { ...plan, run: (ctx) => refusingNewerTopoJournal(plan.run(ctx)) },
     openForWrite(context, envelope)
   )
 }
@@ -155,7 +155,7 @@ export function sendQueuedStructuredAgentMessage(
               refusal: refuse(
                 'execution_owner_reconciling',
                 { reason: 'mailOwnerUnconfirmed' },
-                "Orca can't confirm this queued mail is still owed to this chat."
+                "Topo can't confirm this queued mail is still owed to this chat."
               )
             }
           }

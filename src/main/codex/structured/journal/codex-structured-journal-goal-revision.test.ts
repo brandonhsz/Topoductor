@@ -88,10 +88,10 @@ function journalSink(journal: AgentSessionJournal) {
 
 describe('codex goal accounting revisions', () => {
   it('revises the goal row in place: one visible row, pinned sequence, fresh counters', async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-goal-revision-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-goal-revision-'))
     const journal = await journals.open({ identity: IDENTITY, stateDirectory: root })
     await journal.appendItem(
-      { provider: 'orca', clientMessageId: 'earlier' },
+      { provider: 'topo', clientMessageId: 'earlier' },
       { kind: 'status', text: 'Context compacted' },
       { fence: 1, turnScope: AGENT_JOURNAL_THREAD_SCOPE }
     )
@@ -102,7 +102,7 @@ describe('codex goal accounting revisions', () => {
     await drained()
     const [, created] = journal.snapshot().items
     await journal.appendItem(
-      { provider: 'orca', clientMessageId: 'later' },
+      { provider: 'topo', clientMessageId: 'later' },
       { kind: 'status', text: 'Something after the goal' },
       { fence: 1, turnScope: AGENT_JOURNAL_THREAD_SCOPE }
     )
@@ -126,9 +126,9 @@ describe('codex goal accounting revisions', () => {
 
     const items = journal.snapshot().items
     expect(items.map((item) => item.itemId)).toEqual([
-      'orca:earlier',
+      'topo:earlier',
       created?.itemId,
-      'orca:later'
+      'topo:later'
     ])
     const revised = items[1]
     expect(revised?.sequence).toBe(created?.sequence)

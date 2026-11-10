@@ -26,14 +26,14 @@ function makeWindow(destroyed = false): BrowserWindow & {
 describe('showWindowWithoutStealingFocus', () => {
   it('never reveals an explicitly background window', () => {
     const window = makeWindow()
-    showWindowWithoutStealingFocus(window, { ORCA_BACKGROUND_LAUNCH: '1' })
+    showWindowWithoutStealingFocus(window, { TOPO_BACKGROUND_LAUNCH: '1' })
     expect(window.showInactive).not.toHaveBeenCalled()
     expect(window.show).not.toHaveBeenCalled()
   })
 
   it('still reveals explicitly headful E2E without activation', () => {
     const window = makeWindow()
-    showWindowWithoutStealingFocus(window, { ORCA_E2E_HEADFUL: '1' })
+    showWindowWithoutStealingFocus(window, { TOPO_E2E_HEADFUL: '1' })
     expect(window.showInactive).toHaveBeenCalledOnce()
     expect(window.show).not.toHaveBeenCalled()
   })
@@ -69,14 +69,14 @@ describe('applyBackgroundActivationPolicy', () => {
     expect(
       applyServeDesktopWindowActivationPolicy({
         app,
-        env: { ORCA_BACKGROUND_LAUNCH: '1' },
+        env: { TOPO_BACKGROUND_LAUNCH: '1' },
         platform: 'darwin'
       })
     ).toBe(false)
     expect(
       applyServeDesktopWindowActivationPolicy({
         app,
-        env: { ORCA_E2E_HEADFUL: '1' },
+        env: { TOPO_E2E_HEADFUL: '1' },
         platform: 'darwin'
       })
     ).toBe(false)

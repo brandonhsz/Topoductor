@@ -6,10 +6,10 @@ import '../../../orchestration/db/contract-constants'
 import '../../../orchestration/db/messages/mailbox-routing-page'
 import '../../../orchestration/db/dispatch-row-writer'
 import '../../../orchestration/db/attempt-outcome-projection'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import type { TerminalHandleRecord } from '../../../terminal/identity/terminal-handle-records'
 
-class OrchestrationRpcRuntime extends OrcaRuntimeService {
+class OrchestrationRpcRuntime extends TopoRuntimeService {
   seedTerminalHandle(handle: string, record: TerminalHandleRecord): void {
     this.terminalIdentity.setHandle(handle, record)
   }
@@ -36,7 +36,7 @@ export function createOrchestrationRpcHarness() {
 
   function setup(
     withBoundRun = true,
-    store: ConstructorParameters<typeof OrcaRuntimeService>[0] = null,
+    store: ConstructorParameters<typeof TopoRuntimeService>[0] = null,
     path = ':memory:'
   ): OrchestrationRpcState {
     databasePath = path

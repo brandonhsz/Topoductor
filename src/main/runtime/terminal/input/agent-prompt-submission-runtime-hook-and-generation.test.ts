@@ -8,7 +8,7 @@ import {
   AGENT_PROMPT_TEST_WORKTREE_PATH,
   createAgentPromptSubmissionRuntime
 } from './agent-prompt-submission-runtime-test-fixture'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { makeStore } from '../../rpc/server/runtime-rpc-worktree-store-fixtures'
 
 const createPromptRuntime = createAgentPromptSubmissionRuntime
@@ -65,13 +65,13 @@ describe('agent prompt submission runtime hook and generation cases', () => {
     },
     launchAgent: 'antigravity' | 'kimi' | 'codex' = 'kimi'
   ): Promise<{
-    runtime: OrcaRuntimeService
+    runtime: TopoRuntimeService
     handle: string
     writes: string[]
   }> {
     let handle = ''
     const writes: string[] = []
-    const runtime = new OrcaRuntimeService(makeStore() as never, undefined, {
+    const runtime = new TopoRuntimeService(makeStore() as never, undefined, {
       getAgentStatusSnapshot: () => [
         {
           paneKey: 'prompt-pane',

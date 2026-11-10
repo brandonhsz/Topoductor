@@ -7,7 +7,7 @@ import { subscribeRemoteRuntimeTransport } from '../../../src/shared/remote-runt
 import { toWebTerminalSurfaceTabId } from '../../../src/shared/workspace-layout/terminal-surface-id'
 import type { PublishedWorkspaceLayout } from '../../../src/shared/workspace-layout/workspace-layout-published'
 import { readWorkspaceLayoutStreamFrame } from '../../../src/shared/workspace-layout/workspace-layout-stream-frames'
-import { expect } from './orca-app'
+import { expect } from './topo-app'
 import type { HeadlessPairedRuntimeHost } from './headless-paired-runtime-host'
 import type { PairedElectronClient } from './paired-electron-client'
 import { leafIdsInOrder } from './workspace-layout-oracle-model'

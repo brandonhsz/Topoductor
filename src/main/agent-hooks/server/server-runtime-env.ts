@@ -4,8 +4,8 @@ import {
   writeEndpointFile
 } from '../../../shared/agent-hook-listener/transport/endpoint-publication'
 import {
-  ORCA_HOOK_PROTOCOL_VERSION,
-  ORCA_HOOK_RAW_JSON_TRANSPORT
+  TOPO_HOOK_PROTOCOL_VERSION,
+  TOPO_HOOK_RAW_JSON_TRANSPORT
 } from '../../../shared/agent-hook-listener/configuration/agent-hook-types'
 import { AgentHookServerIngestRemote } from './server-ingest-remote'
 
@@ -15,16 +15,16 @@ export abstract class AgentHookServerRuntimeEnv extends AgentHookServerIngestRem
       return {}
     }
     const env: Record<string, string> = {
-      ORCA_AGENT_HOOK_PORT: String(this.port),
-      ORCA_AGENT_HOOK_TOKEN: this.token,
-      ORCA_AGENT_HOOK_ENV: this.env,
-      ORCA_AGENT_HOOK_VERSION: ORCA_HOOK_PROTOCOL_VERSION,
-      ORCA_AGENT_HOOK_OPENCODE_TUI: '1',
-      ORCA_AGENT_HOOK_TRANSPORT: ORCA_HOOK_RAW_JSON_TRANSPORT
+      TOPO_AGENT_HOOK_PORT: String(this.port),
+      TOPO_AGENT_HOOK_TOKEN: this.token,
+      TOPO_AGENT_HOOK_ENV: this.env,
+      TOPO_AGENT_HOOK_VERSION: TOPO_HOOK_PROTOCOL_VERSION,
+      TOPO_AGENT_HOOK_OPENCODE_TUI: '1',
+      TOPO_AGENT_HOOK_TRANSPORT: TOPO_HOOK_RAW_JSON_TRANSPORT
     }
     // Hooks read the endpoint on invocation; dev instances must not steal each other's hooks.
     if (this.endpointFileWritten && this.endpointFilePathCache) {
-      env.ORCA_AGENT_HOOK_ENDPOINT = this.endpointFilePathCache
+      env.TOPO_AGENT_HOOK_ENDPOINT = this.endpointFilePathCache
     }
     return env
   }
@@ -46,9 +46,9 @@ export abstract class AgentHookServerRuntimeEnv extends AgentHookServerIngestRem
       port: this.port,
       token: this.token,
       env: this.env,
-      version: ORCA_HOOK_PROTOCOL_VERSION,
+      version: TOPO_HOOK_PROTOCOL_VERSION,
       openCodeTui: true,
-      transport: ORCA_HOOK_RAW_JSON_TRANSPORT
+      transport: TOPO_HOOK_RAW_JSON_TRANSPORT
     })
     this.endpointFileWritten = ok
   }

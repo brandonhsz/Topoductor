@@ -9,7 +9,7 @@ const scriptPath = 'config/scripts/performance/measurement/compare-benchmark-art
 const tempDirs = []
 
 function makeTempDir() {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-benchmark-comparison-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-benchmark-comparison-'))
   tempDirs.push(dir)
   return dir
 }

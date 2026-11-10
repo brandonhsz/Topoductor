@@ -5,13 +5,13 @@ import type { RuntimeMobileSessionTerminalTab } from '../../../../shared/runtime
 import type { RuntimeMobileSessionCreateTerminalResult } from '../../../../shared/runtime-session-contracts'
 import type { RestoredPaneTrigger } from './restored-pane-start'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 // Preserve side-effect order: mocks, lifecycle, fixtures.
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
-const { electronMocks } = await import('../../orca-runtime-test-mocks/setup.spec')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
+const { electronMocks } = await import('../../topo-runtime-test-mocks/setup.spec')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const {
   HEADLESS_LEAF_ID,
   TEST_WINDOW_ID,
@@ -19,12 +19,12 @@ const {
   deferred,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} = await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
+} = await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
 
 const PANE_KEY = `host-tab:${HEADLESS_LEAF_ID}`
 const PANE = { worktreeId: TEST_WORKTREE_ID, tabId: 'host-tab', leafId: HEADLESS_LEAF_ID }
 
-class StatusRuntime extends OrcaRuntimeService {
+class StatusRuntime extends TopoRuntimeService {
   startsNoTerminal = false
   protected override materializePendingMobileSessionTerminal(
     worktreeId: string,

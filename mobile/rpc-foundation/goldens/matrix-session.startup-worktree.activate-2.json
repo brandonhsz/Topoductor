@@ -218,7 +218,7 @@
       "ordinal": 9,
       "value": {
         "durationMs": 3000,
-        "message": "Open Orca on the host to wake sleeping agents."
+        "message": "Open Topo on the host to wake sleeping agents."
       }
     },
     "4669e4d646e8": {
@@ -401,7 +401,7 @@
       "ordinal": 16,
       "value": {
         "durationMs": 3000,
-        "message": "Open Orca on the host to wake sleeping agents."
+        "message": "Open Topo on the host to wake sleeping agents."
       }
     },
     "9c2f614376b8": {

@@ -8,7 +8,7 @@ import { createClaudeInitProof } from '../claude-structured-init-proof'
 import { createClaudeStartupOutcome } from '../claude-structured-startup-outcome'
 import { claudeProviderHandleLink } from '../claude-structured-owner-identity'
 
-vi.mock('@orca/process-host', () => ({ runProcess: vi.fn() }))
+vi.mock('@topo/process-host', () => ({ runProcess: vi.fn() }))
 
 function sessionFor(setModel: ClaudeSession['connection']['setModel']): ClaudeSession {
   return {

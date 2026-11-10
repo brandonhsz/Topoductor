@@ -1,4 +1,4 @@
-import type { OrcaRuntimeWithScheduleMobileSessionTabsChanged } from '../../session-tabs/session-tabs-change-publication'
+import type { TopoRuntimeWithScheduleMobileSessionTabsChanged } from '../../session-tabs/session-tabs-change-publication'
 import type {
   RuntimeMarkdownReadTabResult,
   RuntimeMarkdownSaveTabResult
@@ -21,9 +21,9 @@ export abstract class RuntimeMarkdownTabOperations extends RuntimeMobileSessionT
 
   protected abstract resolveMobileMarkdownWorktreeId(
     ...args: Parameters<
-      OrcaRuntimeWithScheduleMobileSessionTabsChanged['resolveMobileMarkdownWorktreeId']
+      TopoRuntimeWithScheduleMobileSessionTabsChanged['resolveMobileMarkdownWorktreeId']
     >
-  ): ReturnType<OrcaRuntimeWithScheduleMobileSessionTabsChanged['resolveMobileMarkdownWorktreeId']>
+  ): ReturnType<TopoRuntimeWithScheduleMobileSessionTabsChanged['resolveMobileMarkdownWorktreeId']>
 
   async readMobileMarkdownTab(
     worktreeSelector: string,

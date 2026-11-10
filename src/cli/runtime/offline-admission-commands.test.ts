@@ -13,11 +13,11 @@ import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { setAppEnvironment } from '../../shared/app-environment'
 import { readAgentHookSettingsFromProfileState } from '../../main/persistence/profile-state/profile-state-offline-settings'
-import type * as ProcessHost from '@orca/process-host'
+import type * as ProcessHost from '@topo/process-host'
 import { main } from '../index'
 
 const { runChild } = vi.hoisted(() => ({ runChild: vi.fn() }))
-vi.mock('@orca/process-host', async (original) => ({
+vi.mock('@topo/process-host', async (original) => ({
   ...(await original<typeof ProcessHost>()),
   runProcess: runChild
 }))
@@ -41,24 +41,24 @@ let endpoint: string
 let server: ReturnType<typeof createServer> | undefined
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-offline-command-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-offline-command-'))
   profile = join(root, 'profiles', 'fixture')
   endpoint = join(root, 'runtime.sock')
   mkdirSync(profile, { recursive: true })
   writeFileSync(
-    join(root, 'orca-profile-index.json'),
+    join(root, 'topo-profile-index.json'),
     JSON.stringify({ activeProfileId: 'fixture', profiles: [{ id: 'fixture' }] })
   )
   writeFileSync(
-    join(profile, 'orca-data.json'),
+    join(profile, 'topo-data.json'),
     JSON.stringify({ settings: { agentStatusHooksEnabled: false }, retained: { value: 7 } })
   )
   for (const key of [
-    'ORCA_PAIRING_CODE',
-    'ORCA_REMOTE_PAIRING',
-    'ORCA_ENVIRONMENT',
+    'TOPO_PAIRING_CODE',
+    'TOPO_REMOTE_PAIRING',
+    'TOPO_ENVIRONMENT',
     'ELECTRON_RUN_AS_NODE',
-    'ORCA_APP_EXECUTABLE',
+    'TOPO_APP_EXECUTABLE',
     'WSL_DISTRO_NAME'
   ]) {
     vi.stubEnv(key, undefined)
@@ -74,7 +74,7 @@ beforeEach(() => {
   ]) {
     vi.stubEnv(key, join(root, key))
   }
-  vi.stubEnv('ORCA_USER_DATA_PATH', root)
+  vi.stubEnv('TOPO_USER_DATA_PATH', root)
   setAppEnvironment({
     getPath: () => root,
     getAppPath: () => root,
@@ -107,7 +107,7 @@ afterEach(async () => {
 
 function metadata(shape = 'complete', pid = 2147483647) {
   writeFileSync(
-    join(root, 'orca-runtime.json'),
+    join(root, 'topo-runtime.json'),
     JSON.stringify({
       runtimeId: 'runtime-before',
       pid,
@@ -121,7 +121,7 @@ function metadata(shape = 'complete', pid = 2147483647) {
 }
 function settings() {
   return readAgentHookSettingsFromProfileState({
-    dataFile: join(profile, 'orca-data.json'),
+    dataFile: join(profile, 'topo-data.json'),
     databaseFile: join(profile, 'profile-state.db'),
     profileId: 'fixture'
   })
@@ -150,7 +150,7 @@ describe.skipIf(process.platform === 'win32')(
         await main(['profile', 'state', 'rollback', '--current-json', '--json'], root)
         expect(process.exitCode).toBe(0)
         expect(output()).toMatchObject({ ok: true, result: { storage: 'json' } })
-        expect(JSON.parse(readFileSync(join(profile, 'orca-data.json'), 'utf8'))).toMatchObject({
+        expect(JSON.parse(readFileSync(join(profile, 'topo-data.json'), 'utf8'))).toMatchObject({
           retained: { value: 7 }
         })
         for (const enabled of [true, false]) {
@@ -168,14 +168,14 @@ describe.skipIf(process.platform === 'win32')(
           const config = JSON.parse(
             readFileSync(join(root, 'HOME', '.claude', 'settings.json'), 'utf8')
           )
-          expect(JSON.stringify(config.hooks ?? {}).includes('orca')).toBe(enabled)
+          expect(JSON.stringify(config.hooks ?? {}).includes('topo')).toBe(enabled)
         }
       }
     )
 
     it('refuses a visible PID without creating a database or changing profile and hook files', async () => {
       metadata('complete', process.pid)
-      const before = readFileSync(join(profile, 'orca-data.json'))
+      const before = readFileSync(join(profile, 'topo-data.json'))
       for (const args of [
         ['profile', 'state', 'rollback', '--current-json'],
         ['agent', 'hooks', 'on'],
@@ -185,7 +185,7 @@ describe.skipIf(process.platform === 'win32')(
         await main([...args, '--json'], root)
         expect(process.exitCode).toBe(1)
         expect(output()).toMatchObject({ ok: false, error: { code: 'runtime_error' } })
-        expect(readFileSync(join(profile, 'orca-data.json'))).toEqual(before)
+        expect(readFileSync(join(profile, 'topo-data.json'))).toEqual(before)
         expect(existsSync(join(profile, 'profile-state.db'))).toBe(false)
         expect(existsSync(join(root, 'HOME', '.claude'))).toBe(false)
       }
@@ -229,11 +229,11 @@ describe.skipIf(process.platform === 'win32')(
         })
         server = listener
         await new Promise<void>((resolve) => listener.listen(endpoint, resolve))
-        const before = readFileSync(join(profile, 'orca-data.json'))
+        const before = readFileSync(join(profile, 'topo-data.json'))
         await main(['agent', 'hooks', 'on', '--json'], root)
         expect(process.exitCode).toBe(1)
         expect(methods).toEqual(['status.get', 'settings.update'])
-        expect(readFileSync(join(profile, 'orca-data.json'))).toEqual(before)
+        expect(readFileSync(join(profile, 'topo-data.json'))).toEqual(before)
         expect(existsSync(join(profile, 'profile-state.db'))).toBe(false)
         expect(existsSync(join(root, 'HOME', '.claude'))).toBe(false)
       }

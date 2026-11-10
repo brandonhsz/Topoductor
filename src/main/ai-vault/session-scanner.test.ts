@@ -45,8 +45,8 @@ afterEach(async () => {
 })
 
 describe('scanAiVaultSessions', () => {
-  it('indexes Codex sessions from Orca runtime homes with resumable commands', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-ai-vault-codex-runtime-'))
+  it('indexes Codex sessions from Topo runtime homes with resumable commands', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'topo-ai-vault-codex-runtime-'))
     tempRoots.push(root)
     const roots = isolatedScanRoots(root)
     const runtimeHome = join(root, 'codex-runtime-home', 'home')
@@ -67,7 +67,7 @@ describe('scanAiVaultSessions', () => {
           type: 'session_meta',
           payload: {
             id: '019e9693-64fc-7370-9c18-7e625c595d0f',
-            cwd: '/Users/nwparker/orca/workspaces/orca/mem4'
+            cwd: '/Users/nwparker/topo/workspaces/topo/mem4'
           }
         },
         {
@@ -93,9 +93,9 @@ describe('scanAiVaultSessions', () => {
     expect(result.sessions[0]).toMatchObject({
       agent: 'codex',
       sessionId: '019e9693-64fc-7370-9c18-7e625c595d0f',
-      cwd: '/Users/nwparker/orca/workspaces/orca/mem4',
+      cwd: '/Users/nwparker/topo/workspaces/topo/mem4',
       codexHome: runtimeHome,
-      resumeCommand: `cd '/Users/nwparker/orca/workspaces/orca/mem4' && CODEX_HOME='${runtimeHome}' codex resume '019e9693-64fc-7370-9c18-7e625c595d0f'`
+      resumeCommand: `cd '/Users/nwparker/topo/workspaces/topo/mem4' && CODEX_HOME='${runtimeHome}' codex resume '019e9693-64fc-7370-9c18-7e625c595d0f'`
     })
   })
 })

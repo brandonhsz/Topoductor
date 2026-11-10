@@ -50,7 +50,7 @@ function tokenPattern(source: string): { match: RegExp; replaceAll: RegExp } {
 const TERMINAL_HOST_GONE = tokenPattern('(^|[^a-z0-9_])terminal_host_gone(?=$|[^a-z0-9_])')
 
 const LEGACY_TERMINAL_HOST_GONE_PATTERN =
-  /(^|[^a-z])connect (?:ENOENT|ECONNREFUSED) [^\r\n]*orca-terminal-host-v[^\r\n]*/i
+  /(^|[^a-z])connect (?:ENOENT|ECONNREFUSED) [^\r\n]*topo-terminal-host-v[^\r\n]*/i
 
 // Session-absence responses from SSH, relay and older daemons prove only that this pane lost its session, not that the shell died.
 const UNREATTACHABLE_SESSIONS = [
@@ -131,7 +131,7 @@ export function isPaneOwnerRecoveryError(error: string): boolean {
 function humanizeUnreattachableSession(error: string, t: Translate = translate): string {
   const explanation = t(
     'auto.components.terminal.pane.TerminalErrorToast.sessionUnavailable',
-    "Orca couldn't reattach to this pane's terminal session on the host. Open a new terminal to continue."
+    "Topo couldn't reattach to this pane's terminal session on the host. Open a new terminal to continue."
   )
   // Why a replacer: a translation containing `$&` or `$1` would otherwise be read as a substitution.
   return UNREATTACHABLE_SESSIONS.reduce(
@@ -165,18 +165,18 @@ export function humanizeTerminalError(
     const explanation = isPaneOwnerUnverifiedError(humanized)
       ? t(
           'auto.components.terminal.pane.TerminalErrorToast.42b283ecfc',
-          "Orca couldn't safely reconnect this terminal because the host couldn't verify its saved session. Orca left the saved session unchanged. Click Retry to try reconnecting now. If it still cannot reconnect, open a new terminal."
+          "Topo couldn't safely reconnect this terminal because the host couldn't verify its saved session. Topo left the saved session unchanged. Click Retry to try reconnecting now. If it still cannot reconnect, open a new terminal."
         )
       : t(
           'auto.components.terminal.pane.TerminalErrorToast.ownerUnknown',
-          "Orca couldn't verify this terminal's owner."
+          "Topo couldn't verify this terminal's owner."
         )
     humanized = humanized.replaceAll(PANE_OWNER_UNVERIFIED_MARKER, () => explanation)
   }
   humanized = humanized.replaceAll(PANE_OWNER_CHANGED_MARKER, () =>
     t(
       'auto.components.terminal.pane.TerminalErrorToast.ownerUnknown',
-      "Orca couldn't verify this terminal's owner."
+      "Topo couldn't verify this terminal's owner."
     )
   )
   humanized = humanized.replace(SOURCE_RESTORE_REQUIRED.replaceAll, () =>
@@ -188,7 +188,7 @@ export function humanizeTerminalError(
   humanized = humanized.replace(OWNER_HOST_MISMATCH.replaceAll, () =>
     t(
       'auto.components.terminal.pane.TerminalErrorToast.ownerHostMismatch',
-      "This terminal's saved session belongs to another host connection, so Orca can't reattach it here. Open a new terminal to continue."
+      "This terminal's saved session belongs to another host connection, so Topo can't reattach it here. Open a new terminal to continue."
     )
   )
   if (humanized.includes(REMOTE_TERMINAL_CLOSED_MARKER)) {

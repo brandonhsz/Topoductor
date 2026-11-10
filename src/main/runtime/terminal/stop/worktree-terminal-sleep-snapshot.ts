@@ -1,7 +1,7 @@
 import type { RuntimeClientEvent } from '../../../../shared/runtime-client-events'
-import { OrcaRuntimeWithSleepResolvedWorktreeTerminals } from './worktree-terminal-sleep'
+import { TopoRuntimeWithSleepResolvedWorktreeTerminals } from './worktree-terminal-sleep'
 
-export abstract class OrcaRuntimeWithTerminalSleepSnapshot extends OrcaRuntimeWithSleepResolvedWorktreeTerminals {
+export abstract class TopoRuntimeWithTerminalSleepSnapshot extends TopoRuntimeWithSleepResolvedWorktreeTerminals {
   getTerminalSleepClientEventSnapshot(): RuntimeClientEvent[] {
     const events: RuntimeClientEvent[] = []
     const sleepStates = [...this.terminalSleepStateByHostWorktree.values()].sort((a, b) =>

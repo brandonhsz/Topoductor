@@ -1,14 +1,14 @@
 import { getPiAgentStatusPostQueueSourceLines } from './agent-status-post-queue-source'
-// Pi has no settings hook surface; install a self-contained extension that posts through the pane's Orca endpoint.
+// Pi has no settings hook surface; install a self-contained extension that posts through the pane's Topo endpoint.
 import type { PiAgentKind } from '../../shared/pi-agent-kind'
 import { getPiAgentStatusHandlerSourceLines } from './agent-status-handler-source'
 import { getPiAgentStatusRuntimeDetectionSourceLines } from './agent-status-runtime-detection-source'
 import { getPiAgentStatusWslCurlSourceLines } from './agent-status-wsl-curl-source'
 import { getPiSubagentSnapshotSourceLines } from './agent-status-subagent-roster-source'
 
-export const ORCA_PI_AGENT_STATUS_EXTENSION_FILE = 'orca-agent-status.ts'
+export const TOPO_PI_AGENT_STATUS_EXTENSION_FILE = 'topo-agent-status.ts'
 
-/** Self-contained source runs inside Pi-family agents without Orca module imports. */
+/** Self-contained source runs inside Pi-family agents without Topo module imports. */
 export function getPiAgentStatusExtensionSource(kind: PiAgentKind = 'pi'): string {
   // OMP resumes by id; its persistent file path lets native chat skip discovery.
   const sessionMetadataSourceLines =
@@ -96,7 +96,7 @@ export function getPiAgentStatusExtensionSource(kind: PiAgentKind = 'pi'): strin
     "    if (!model || typeof model !== 'object') return",
     "    const provider = 'provider' in model && typeof model.provider === 'string' ? model.provider : ''",
     "    const id = 'id' in model && typeof model.id === 'string' ? model.id : ''",
-    "    if (provider && id) modelMetadata = { model: provider + '/' + id, ...(ompModelSwitchSupported ? { model_switch_command: 'orca-model' } : {}) }",
+    "    if (provider && id) modelMetadata = { model: provider + '/' + id, ...(ompModelSwitchSupported ? { model_switch_command: 'topo-model' } : {}) }",
     '  } catch {',
     '    // Throwing model getters cannot interrupt status delivery.',
     '  }',
@@ -109,7 +109,7 @@ export function getPiAgentStatusExtensionSource(kind: PiAgentKind = 'pi'): strin
       ? '    payload: { hook_event_name: hookEventName, ...(ompRuntime ? metadata : getPersistedSessionMetadata(metadata)), ...subagents, ...extra },'
       : '    payload: { hook_event_name: hookEventName, ...metadata, ...subagents, ...extra },'
 
-  // Read endpoint files after Orca restarts because PTY-spawn environment stays frozen.
+  // Read endpoint files after Topo restarts because PTY-spawn environment stays frozen.
   return [
     '// Pi/OMP share APIs but publish types under different package names.',
     '// Warn once so malformed endpoint files cannot flood the TUI on every event.',
@@ -128,7 +128,7 @@ export function getPiAgentStatusExtensionSource(kind: PiAgentKind = 'pi'): strin
     'let cachedEndpointValues: Record<string, string> | null = null',
     '',
     'function readEndpointFile(): Record<string, string> | null {',
-    '  const path = process.env.ORCA_AGENT_HOOK_ENDPOINT',
+    '  const path = process.env.TOPO_AGENT_HOOK_ENDPOINT',
     '  if (!path) return null',
     '  try {',
     "    const fs = require('fs')",
@@ -157,7 +157,7 @@ export function getPiAgentStatusExtensionSource(kind: PiAgentKind = 'pi'): strin
     '    const code = (err as { code?: string } | null)?.code',
     "    if (err && code !== 'ENOENT' && !warnedBadEndpoint) {",
     '      warnedBadEndpoint = true',
-    "      console.warn('[orca-pi-status] failed to parse endpoint file:', (err as Error).message)",
+    "      console.warn('[topo-pi-status] failed to parse endpoint file:', (err as Error).message)",
     '    }',
     '    return null',
     '  }',
@@ -166,10 +166,10 @@ export function getPiAgentStatusExtensionSource(kind: PiAgentKind = 'pi'): strin
     'function resolveHookCoords() {',
     '  const fileEnv = readEndpointFile() || {}',
     '  return {',
-    '    port: fileEnv.ORCA_AGENT_HOOK_PORT || process.env.ORCA_AGENT_HOOK_PORT,',
-    '    token: fileEnv.ORCA_AGENT_HOOK_TOKEN || process.env.ORCA_AGENT_HOOK_TOKEN,',
-    "    env: fileEnv.ORCA_AGENT_HOOK_ENV || process.env.ORCA_AGENT_HOOK_ENV || '',",
-    "    version: fileEnv.ORCA_AGENT_HOOK_VERSION || process.env.ORCA_AGENT_HOOK_VERSION || '',",
+    '    port: fileEnv.TOPO_AGENT_HOOK_PORT || process.env.TOPO_AGENT_HOOK_PORT,',
+    '    token: fileEnv.TOPO_AGENT_HOOK_TOKEN || process.env.TOPO_AGENT_HOOK_TOKEN,',
+    "    env: fileEnv.TOPO_AGENT_HOOK_ENV || process.env.TOPO_AGENT_HOOK_ENV || '',",
+    "    version: fileEnv.TOPO_AGENT_HOOK_VERSION || process.env.TOPO_AGENT_HOOK_VERSION || '',",
     '  }',
     '}',
     '',
@@ -213,14 +213,14 @@ export function getPiAgentStatusExtensionSource(kind: PiAgentKind = 'pi'): strin
     '  final: boolean',
     '): Promise<void> {',
     '  const coords = resolveHookCoords()',
-    '  const paneKey = process.env.ORCA_PANE_KEY',
+    '  const paneKey = process.env.TOPO_PANE_KEY',
     '  if (!coords.port || !coords.token || !paneKey) return',
     '  const url = `http://127.0.0.1:${coords.port}${resolveHookPath(ompRuntime)}`',
     '  const bodyWith = (subagents: Record<string, unknown>): string => JSON.stringify({',
     '    paneKey,',
-    "    launchToken: process.env.ORCA_AGENT_LAUNCH_TOKEN || '',",
-    "    tabId: process.env.ORCA_TAB_ID || '',",
-    "    worktreeId: process.env.ORCA_WORKTREE_ID || '',",
+    "    launchToken: process.env.TOPO_AGENT_LAUNCH_TOKEN || '',",
+    "    tabId: process.env.TOPO_TAB_ID || '',",
+    "    worktreeId: process.env.TOPO_WORKTREE_ID || '',",
     '    env: coords.env,',
     '    version: coords.version,',
     payloadLine,
@@ -232,7 +232,7 @@ export function getPiAgentStatusExtensionSource(kind: PiAgentKind = 'pi'): strin
     '  const timeoutPromise = new Promise<never>((_resolve, reject) => {',
     '    timeout = setTimeout(() => {',
     '      controller?.abort()',
-    "      reject(new Error('Orca hook delivery timed out'))",
+    "      reject(new Error('Topo hook delivery timed out'))",
     '    }, HOOK_POST_TIMEOUT_MS)',
     "    if (typeof timeout.unref === 'function') timeout.unref()",
     '  })',
@@ -242,14 +242,14 @@ export function getPiAgentStatusExtensionSource(kind: PiAgentKind = 'pi'): strin
     "        method: 'POST',",
     '        headers: {',
     "          'Content-Type': 'application/json',",
-    "          'X-Orca-Agent-Hook-Token': coords.token,",
+    "          'X-Topo-Agent-Hook-Token': coords.token,",
     '        },',
     '        body,',
     '        ...(controller ? { signal: controller.signal } : {}),',
     '      }),',
     '      timeoutPromise,',
     '    ])',
-    "    if (!response.ok) throw new Error('Orca hook HTTP ' + response.status)",
+    "    if (!response.ok) throw new Error('Topo hook HTTP ' + response.status)",
     '  } catch (error) {',
     '    // After WSL loopback failure, retry through host curl.exe.',
     '    if (!isWslRuntime()) throw error',

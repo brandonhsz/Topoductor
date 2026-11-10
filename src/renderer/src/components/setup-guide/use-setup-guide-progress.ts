@@ -8,7 +8,7 @@ import { hasEffectiveSetupCommand } from '@/lib/setup-script-status'
 import { getProviderRuntimeContextKey } from '@/runtime/hosts/observations/provider-runtime-context'
 import {
   COMPUTER_USE_SKILL_NAME,
-  ORCA_CLI_SKILL_NAME,
+  TOPO_CLI_SKILL_NAME,
   ORCHESTRATION_SKILL_NAME
 } from '@/lib/skills/installation/agent-feature-skill-names'
 import {
@@ -82,7 +82,7 @@ export function useSetupGuideProgress(
     sourceKinds: GLOBAL_AGENT_SKILL_SOURCE_KINDS
   }
   const { installed: detectedBrowserUseSkillInstalled, loading: detectedBrowserUseSkillLoading } =
-    useInstalledAgentSkill(ORCA_CLI_SKILL_NAME, skillOptions)
+    useInstalledAgentSkill(TOPO_CLI_SKILL_NAME, skillOptions)
   const { installed: computerUseSkillInstalled, loading: computerUseSkillLoading } =
     useInstalledAgentSkill(COMPUTER_USE_SKILL_NAME, skillOptions)
   const {

@@ -1,5 +1,5 @@
 import type { OrchestrationCompatibilityTerminalAuthority } from '../terminal-authority/orchestration-compatibility-authority'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { mainTerminalSourceInputs } from '../../terminal/surface/pty-pane-query'
 import { runtimeLayoutLoadContext } from '../../terminal/surface/workspace-layout-projection'
 import type {
@@ -41,7 +41,7 @@ export function watchCrewRuntimeSources(
       runtimeLayoutLoadContext(deps.store, id)
     )
   const topologyByHost = new Map(
-    ORCA_LAYOUT_OWNER_IS_MAIN ? hostIds().map((id) => [id, topology(id)]) : []
+    TOPO_LAYOUT_OWNER_IS_MAIN ? hostIds().map((id) => [id, topology(id)]) : []
   )
   const disposers = [
     deps.watchChanges(wake),
@@ -49,7 +49,7 @@ export function watchCrewRuntimeSources(
     deps.watchTransitions(() => wake(new Set(['status', 'names']))),
     deps.store?.onWorkspaceSessionWritten?.((hostId) => {
       for (const id of hostId === null ? hostIds() : [hostId]) {
-        if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+        if (TOPO_LAYOUT_OWNER_IS_MAIN) {
           const next = topology(id)
           if (!isDeepStrictEqual(topologyByHost.get(id), next)) {
             topologyByHost.set(id, next)

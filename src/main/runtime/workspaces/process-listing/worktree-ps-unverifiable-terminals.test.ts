@@ -8,11 +8,11 @@ vi.mock('electron', () => ({
   app: { getPath: vi.fn(() => '/tmp'), isPackaged: false }
 }))
 
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import {
   partialRuntimeStore,
   storeWorktreeMeta
-} from '../../orca-runtime-tests/runtime-store-partial-fixture'
+} from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
 // BUG-9: lost relay contact must report unverifiable, never live:0/pty:no for a surviving terminal.
 
@@ -52,8 +52,8 @@ function makeStore() {
 function makeRuntime(controller: {
   hasPty: () => boolean | null
   listProcesses: () => Promise<{ id: string; worktreeId: string }[]>
-}): OrcaRuntimeService {
-  const runtime = new OrcaRuntimeService(partialRuntimeStore(makeStore()))
+}): TopoRuntimeService {
+  const runtime = new TopoRuntimeService(partialRuntimeStore(makeStore()))
   runtime.setPtyController(
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: worktree.ps reaches only listProcesses and hasPty on this controller.
     {
@@ -69,7 +69,7 @@ function makeRuntime(controller: {
   return runtime
 }
 
-async function psRow(runtime: OrcaRuntimeService) {
+async function psRow(runtime: TopoRuntimeService) {
   const result = await runtime.getWorktreePs(100)
   return result.worktrees.find((row) => row.worktreeId === WORKTREE_ID)
 }

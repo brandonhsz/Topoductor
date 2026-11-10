@@ -1,7 +1,7 @@
 /** Keep terminal cgroups beside the daemon to isolate resource-limit failures; bind their slice to its lifetime. */
 import { accessSync, constants, existsSync } from 'node:fs'
 import { basename, delimiter, dirname, isAbsolute, join } from 'node:path'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { userManagerEnv } from './daemon-cgroup-scope'
 import {
   enforcedTerminalMemoryLimits,
@@ -15,7 +15,7 @@ import type {
   PtyProcessCeilingState
 } from '../../../shared/terminal/pty/native-process/pty-process-ceiling-state'
 
-export const PTY_PROCESS_CEILING_ENV = 'ORCA_TERMINAL_PROCESS_CEILING'
+export const PTY_PROCESS_CEILING_ENV = 'TOPO_TERMINAL_PROCESS_CEILING'
 /** Reserve tasks for shell hooks and a build step before accepting an opt-in ceiling. */
 const MIN_CEILING = 64
 const CGROUP_ROOT = '/sys/fs/cgroup'
@@ -69,7 +69,7 @@ const sanitizeId = (id: string): string => id.replace(/[^A-Za-z0-9]/g, '_')
 
 /** No dashes: systemd reads `a-b.slice` as a child of `a.slice`, and this one must be top-level. */
 export function terminalSliceName(launchId: string): string {
-  return `orca_ptys_${launchId}.slice`
+  return `topo_ptys_${launchId}.slice`
 }
 
 function findExecutableOnPath(name: string, path: string | undefined): string | null {

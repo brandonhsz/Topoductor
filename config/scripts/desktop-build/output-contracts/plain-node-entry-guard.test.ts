@@ -15,7 +15,7 @@ afterEach(() => {
 })
 
 function createOutputDir(): string {
-  outputDir = mkdtempSync(join(tmpdir(), 'orca-plain-node-entry-guard-'))
+  outputDir = mkdtempSync(join(tmpdir(), 'topo-plain-node-entry-guard-'))
   return outputDir
 }
 
@@ -103,7 +103,7 @@ describe('plain Node entry guard', () => {
       runWriteBundle(
         plugin,
         createOutputDir(),
-        'require("node:fs"); require("path"); require("@orca/process-host/spawn-observer"); require("node-pty")'
+        'require("node:fs"); require("path"); require("@topo/process-host/spawn-observer"); require("node-pty")'
       )
     ).not.toThrow()
   })

@@ -117,7 +117,7 @@ it('preserves markup in the edited paragraph through successive saves and reopen
         }
       })
       expect(result.markdown).toBe(expected)
-      expect(result.markdown).not.toContain('ORCA_RICH_MD:')
+      expect(result.markdown).not.toContain('TOPO_RICH_MD:')
       const reopened = createEditor(result.markdown)
       try {
         reopened.state.doc.check()

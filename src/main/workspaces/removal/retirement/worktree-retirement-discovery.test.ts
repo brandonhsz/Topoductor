@@ -12,7 +12,7 @@ describe('retirement discovery of Claude buckets', () => {
   let home: string
 
   beforeEach(async () => {
-    home = await mkdtemp(join(tmpdir(), 'orca-retire-claude-'))
+    home = await mkdtemp(join(tmpdir(), 'topo-retire-claude-'))
   })
 
   afterEach(async () => {

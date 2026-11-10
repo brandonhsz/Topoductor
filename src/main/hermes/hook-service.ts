@@ -16,10 +16,10 @@ import {
   disablePlugin,
   enablePlugin,
   getConfigEnablement,
-  installOrcaStatusContent,
+  installTopoStatusContent,
   parseHermesConfig,
-  refreshProfileOrcaStatusContent,
-  removeOrcaStatusContent,
+  refreshProfileTopoStatusContent,
+  removeTopoStatusContent,
   updateConfigContent
 } from './hermes-config-yaml'
 import { getHermesHome } from './hermes-default-home'
@@ -46,8 +46,8 @@ function buildStatus(configPath: string, config: HermesConfig): AgentHookInstall
   const details = [
     pluginFiles.detail,
     enablement.detail,
-    !enablement.enabled ? 'orca-status is not enabled in Hermes config.yaml' : null,
-    enablement.disabled ? 'orca-status is disabled in Hermes config.yaml' : null
+    !enablement.enabled ? 'topo-status is not enabled in Hermes config.yaml' : null,
+    enablement.disabled ? 'topo-status is disabled in Hermes config.yaml' : null
   ].filter((detail): detail is string => Boolean(detail))
 
   let state: AgentHookInstallState
@@ -73,7 +73,7 @@ function buildStatus(configPath: string, config: HermesConfig): AgentHookInstall
   }
 }
 
-// Why: each named profile loads plugins and client_env_passthrough from its own home, so a copy there must track Orca's.
+// Why: each named profile loads plugins and client_env_passthrough from its own home, so a copy there must track Topo's.
 function updateManagedProfiles(
   update: (content: string | null) => { content: string | null },
   onUpdated: (pluginDir: string) => void
@@ -86,7 +86,7 @@ function updateManagedProfiles(
       if (!parsed.ok || next.content === null) {
         continue
       }
-      // Config first: a failed write must not leave orca-status enabled without its plugin.
+      // Config first: a failed write must not leave topo-status enabled without its plugin.
       if (next.content !== parsed.content) {
         writeConfigFile(configPath, next.content)
       }
@@ -129,7 +129,7 @@ async function installRemoteManagedProfiles(sftp: SFTPWrapper, profilesDir: stri
         continue
       }
       const existing = await readTextFileRemote(sftp, `${home}/config.yaml`)
-      const next = refreshProfileOrcaStatusContent(existing)
+      const next = refreshProfileTopoStatusContent(existing)
       if (next.content !== null) {
         await writeRemoteHome(sftp, home, existing, next.content)
       }
@@ -172,7 +172,7 @@ export class HermesHookService {
       }
     }
 
-    const next = installOrcaStatusContent(parsed.content)
+    const next = installTopoStatusContent(parsed.content)
     if (next.content === null) {
       return {
         agent: 'hermes',
@@ -186,7 +186,7 @@ export class HermesHookService {
     if (next.content !== parsed.content) {
       writeConfigFile(configPath, next.content)
     }
-    updateManagedProfiles(refreshProfileOrcaStatusContent, writePluginFiles)
+    updateManagedProfiles(refreshProfileTopoStatusContent, writePluginFiles)
     return this.getStatus()
   }
 
@@ -195,7 +195,7 @@ export class HermesHookService {
     const remoteConfigPath = `${remoteRoot}/.hermes/config.yaml`
     try {
       const existing = await readTextFileRemote(sftp, remoteConfigPath)
-      const next = installOrcaStatusContent(existing)
+      const next = installTopoStatusContent(existing)
       if (next.content === null) {
         return {
           agent: 'hermes',
@@ -237,7 +237,7 @@ export class HermesHookService {
         detail: `Could not parse Hermes config.yaml: ${parsed.detail}`
       }
     }
-    const next = removeOrcaStatusContent(parsed.content)
+    const next = removeTopoStatusContent(parsed.content)
     if (next.content === null) {
       return {
         agent: 'hermes',
@@ -254,7 +254,7 @@ export class HermesHookService {
     if (getPluginFilesState(pluginDir).managed) {
       rmSync(pluginDir, { recursive: true, force: true })
     }
-    updateManagedProfiles(removeOrcaStatusContent, (dir) =>
+    updateManagedProfiles(removeTopoStatusContent, (dir) =>
       rmSync(dir, { recursive: true, force: true })
     )
     return this.getStatus()

@@ -56,7 +56,7 @@ vi.mock('@/lib/agent-session/structured-agent-session-provisional-tab', () => ({
 afterEach(cleanup)
 beforeEach(() => {
   __resetTrustPromptChainForTests()
-  useAppStore.setState({ trustedOrcaHooks: {} })
+  useAppStore.setState({ trustedTopoHooks: {} })
 })
 const item = {
   id: 'pr-42',
@@ -504,7 +504,7 @@ it('Start work reports one truthful recovery before a remote agent has been sele
     )
     await act(async () => view.result.current.startWork(row))
     expect(mocks.toastError).toHaveBeenCalledExactlyOnceWith(
-      'Update Orca on this workspace’s server, then try again.'
+      'Update Topo on this workspace’s server, then try again.'
     )
     expect(mocks.createWorktree).not.toHaveBeenCalled()
     expect(hostMocks.callRuntimeRpc).not.toHaveBeenCalled()

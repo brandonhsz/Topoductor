@@ -15,8 +15,8 @@ import {
   runtimeEnvironmentStatusFromSnapshot,
   type RuntimeHostStatusSnapshot
 } from '../../../shared/remote-runtime/host-status/runtime-host-status'
-import { OrcaRuntimeService } from '../orca-runtime'
-import { OrcaRuntimeRpcServer } from '../rpc/server/runtime-rpc'
+import { TopoRuntimeService } from '../topo-runtime'
+import { TopoRuntimeRpcServer } from '../rpc/server/runtime-rpc'
 import {
   authenticateMobileWsSession,
   createEncryptedWsResponseReader,
@@ -24,7 +24,7 @@ import {
 } from '../rpc/server/runtime-rpc-mobile-ws-test-harness'
 import { makeStore } from '../rpc/server/runtime-rpc-worktree-store-fixtures'
 import type { MobileDesktopRelayHosts } from './mobile-desktop-relay-hosts'
-import { partialRuntimeStore } from '../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../topo-runtime-tests/runtime-store-partial-fixture'
 
 vi.mock('../../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => {
   const listings = getWorktreeListingMocks()
@@ -73,10 +73,10 @@ describe('mobile relay hosts: phone -> desktop lists the servers it shows', () =
   })
 
   async function startRuntime() {
-    const runtime = new OrcaRuntimeService(partialRuntimeStore(makeStore()))
-    const server = new OrcaRuntimeRpcServer({
+    const runtime = new TopoRuntimeService(partialRuntimeStore(makeStore()))
+    const server = new TopoRuntimeRpcServer({
       runtime,
-      userDataPath: mkdtempSync(join(tmpdir(), 'orca-relay-hosts-')),
+      userDataPath: mkdtempSync(join(tmpdir(), 'topo-relay-hosts-')),
       enableWebSocket: true,
       wsPort: 0
     })
@@ -85,7 +85,7 @@ describe('mobile relay hosts: phone -> desktop lists the servers it shows', () =
     return server
   }
 
-  function pairingUrl(server: OrcaRuntimeRpcServer, scope: 'mobile' | 'runtime'): string {
+  function pairingUrl(server: TopoRuntimeRpcServer, scope: 'mobile' | 'runtime'): string {
     const offer = server.createPairingOffer({ address: '127.0.0.1', name: scope, scope })
     if (!offer.available) {
       throw new Error('pairing unavailable')

@@ -15,24 +15,24 @@ import {
   type WorktreeProofAccess
 } from './worktree-orphan-gitdir-proof'
 
-const ORCA_CREATION_SOURCES = new Set<NonNullable<WorktreeMeta['orcaCreationSource']>>([
+const TOPO_CREATION_SOURCES = new Set<NonNullable<WorktreeMeta['topoCreationSource']>>([
   'desktop',
   'runtime',
   'cli',
   'ssh'
 ])
-const ORCA_OWNED_PROVENANCE_META_KEYS = [
-  'orcaCreatedAt',
-  'orcaCreationSource',
-  'orcaCreationWorkspaceLayout',
+const TOPO_OWNED_PROVENANCE_META_KEYS = [
+  'topoCreatedAt',
+  'topoCreationSource',
+  'topoCreationWorkspaceLayout',
   'automationProvenance',
   'cliProvenance',
   'creatorProvenance'
 ] as const
-type UnregisteredOrcaCleanupMeta = Pick<
+type UnregisteredTopoCleanupMeta = Pick<
   WorktreeMeta,
-  | 'orcaCreatedAt'
-  | 'orcaCreationSource'
+  | 'topoCreatedAt'
+  | 'topoCreationSource'
   | 'createdAt'
   | 'createdWithAgent'
   | 'pushTarget'
@@ -156,33 +156,33 @@ export async function canSafelyRemoveOrphanedWorktreeDirectory(
   })
 }
 
-export function canCleanupUnregisteredOrcaWorktreeDirectory(args: {
-  meta: UnregisteredOrcaCleanupMeta | null | undefined
+export function canCleanupUnregisteredTopoWorktreeDirectory(args: {
+  meta: UnregisteredTopoCleanupMeta | null | undefined
 }): boolean {
-  if (hasCurrentOrcaCreationProvenance(args.meta)) {
+  if (hasCurrentTopoCreationProvenance(args.meta)) {
     return true
   }
 
-  if (hasLegacyOrcaCreationEvidence(args.meta)) {
+  if (hasLegacyTopoCreationEvidence(args.meta)) {
     return true
   }
 
-  // Users can create ordinary Git worktrees under Orca's root; path shape alone does not prove ownership.
+  // Users can create ordinary Git worktrees under Topo's root; path shape alone does not prove ownership.
   return false
 }
 
-function hasCurrentOrcaCreationProvenance(
-  meta: Pick<WorktreeMeta, 'orcaCreatedAt' | 'orcaCreationSource'> | null | undefined
+function hasCurrentTopoCreationProvenance(
+  meta: Pick<WorktreeMeta, 'topoCreatedAt' | 'topoCreationSource'> | null | undefined
 ): boolean {
   return (
-    typeof meta?.orcaCreatedAt === 'number' &&
-    !!meta.orcaCreationSource &&
-    ORCA_CREATION_SOURCES.has(meta.orcaCreationSource)
+    typeof meta?.topoCreatedAt === 'number' &&
+    !!meta.topoCreationSource &&
+    TOPO_CREATION_SOURCES.has(meta.topoCreationSource)
   )
 }
 
-function hasLegacyOrcaCreationEvidence(
-  meta: UnregisteredOrcaCleanupMeta | null | undefined
+function hasLegacyTopoCreationEvidence(
+  meta: UnregisteredTopoCleanupMeta | null | undefined
 ): boolean {
   return Boolean(
     meta?.createdAt ||
@@ -194,11 +194,11 @@ function hasLegacyOrcaCreationEvidence(
   )
 }
 
-export function stripOrcaProvenanceMetaUpdates(
+export function stripTopoProvenanceMetaUpdates(
   updates: Partial<WorktreeMeta> | null | undefined
 ): Partial<WorktreeMeta> {
   const sanitized = { ...updates }
-  for (const key of ORCA_OWNED_PROVENANCE_META_KEYS) {
+  for (const key of TOPO_OWNED_PROVENANCE_META_KEYS) {
     delete sanitized[key]
   }
   return sanitized

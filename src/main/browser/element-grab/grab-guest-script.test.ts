@@ -69,7 +69,7 @@ describe('awaitClick under a Zone.js-patched global Promise', () => {
     extractPayload?: () => unknown
     getCurrentElement?: () => unknown
   }): {
-    window: { __orcaGrab: Record<string, unknown> }
+    window: { __topoGrab: Record<string, unknown> }
     click: () => void
     contextmenu: () => void
     cancel: () => void
@@ -80,7 +80,7 @@ describe('awaitClick under a Zone.js-patched global Promise', () => {
       freezeHighlight(): void {},
       cleanup(): void {}
     }
-    const window = { __orcaGrab: grab }
+    const window = { __topoGrab: grab }
     // The overlay hands each real pointer pick to the awaiting script.
     const pick = (type: string): void => {
       const onPick = grab.onPick
@@ -92,7 +92,7 @@ describe('awaitClick under a Zone.js-patched global Promise', () => {
       window,
       click: () => pick('click'),
       contextmenu: () => pick('contextmenu'),
-      cancel: () => (window.__orcaGrab.cancelAwait as (() => void) | undefined)?.()
+      cancel: () => (window.__topoGrab.cancelAwait as (() => void) | undefined)?.()
     }
   }
 

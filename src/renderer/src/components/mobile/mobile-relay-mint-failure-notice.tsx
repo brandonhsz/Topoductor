@@ -28,7 +28,7 @@ export function MobileRelayMintFailureNotice({
   const providerMissing = failure.stage === 'provider_missing'
   // Why: a revoked cloud session fails every mint; "retry or use LAN" hides the one action that works.
   const reconnectRequired =
-    useAppStore((state) => state.orcaProfileAuthStatus?.state === 'reconnect-required') ||
+    useAppStore((state) => state.topoProfileAuthStatus?.state === 'reconnect-required') ||
     failure.code === 'relay_signed_out'
   const notEntitled = failure.code === 'relay_not_entitled'
   const [showBusyFeedback, setShowBusyFeedback] = useState(false)
@@ -42,21 +42,21 @@ export function MobileRelayMintFailureNotice({
   }, [busy])
   const visibleBusy = busy && showBusyFeedback
   const title = visibleBusy
-    ? t('auto.components.mobile.MobileRelayMintFailureNotice.retryingTitle', 'Retrying Orca Relay…')
+    ? t('auto.components.mobile.MobileRelayMintFailureNotice.retryingTitle', 'Retrying Topo Relay…')
     : providerMissing
       ? t(
           'auto.components.mobile.MobileRelayMintFailureNotice.unavailableTitle',
-          'Orca Relay isn’t available on this desktop.'
+          'Topo Relay isn’t available on this desktop.'
         )
       : reconnectRequired
         ? t(
             'auto.components.mobile.MobileRelayMintFailureNotice.reconnectTitle',
-            'Your Orca account session expired.'
+            'Your Topo account session expired.'
           )
         : notEntitled
           ? t(
               'auto.components.mobile.MobileRelayMintFailureNotice.notEntitledTitle',
-              'Orca Relay isn’t included with this Orca account.'
+              'Topo Relay isn’t included with this Topo account.'
             )
           : t(
               'auto.components.mobile.MobileRelayMintFailureNotice.title',
@@ -75,7 +75,7 @@ export function MobileRelayMintFailureNotice({
       : reconnectRequired
         ? t(
             'auto.components.mobile.MobileRelayMintFailureNotice.reconnectBody',
-            'Sign in again to use Orca Relay, or use LAN to pair over Tailscale or the same Wi‑Fi.'
+            'Sign in again to use Topo Relay, or use LAN to pair over Tailscale or the same Wi‑Fi.'
           )
         : notEntitled
           ? t(
@@ -85,7 +85,7 @@ export function MobileRelayMintFailureNotice({
           : failure.code === 'relay_rate_limited'
             ? t(
                 'auto.components.mobile.MobileRelayMintFailureNotice.rateLimitedBody',
-                'Orca Relay is busy. Wait a minute and retry, or use LAN to pair over Tailscale or the same Wi‑Fi.'
+                'Topo Relay is busy. Wait a minute and retry, or use LAN to pair over Tailscale or the same Wi‑Fi.'
               )
             : failure.code === 'relay_clock_skew' && failure.clockOffsetMs !== undefined
               ? relayClockSkewMessage(failure.clockOffsetMs, t)

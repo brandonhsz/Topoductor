@@ -37,7 +37,7 @@ export function AutomationsSettingsPane({
         title={t('auto.components.settings.automations.howItWorksTitle', 'How Automations work')}
         description={t(
           'auto.components.settings.automations.howItWorksDescription',
-          'Schedule agent work once, then let Orca create each run and keep its results together.'
+          'Schedule agent work once, then let Topo create each run and keep its results together.'
         )}
         bodyClassName="py-4"
       >
@@ -65,7 +65,7 @@ export function AutomationsSettingsPane({
               </span>
               <div className="min-w-0 flex-1 space-y-0.5">
                 <p className="text-sm font-medium">
-                  {t('auto.components.settings.automations.runStepTitle', 'Orca starts each run')}
+                  {t('auto.components.settings.automations.runStepTitle', 'Topo starts each run')}
                 </p>
                 <p className="text-xs leading-relaxed text-muted-foreground">
                   {t(

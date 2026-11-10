@@ -224,7 +224,7 @@ export const ORCHESTRATION_FEDERATION_ATTACH_METHODS = [
               taskId: params.taskId,
               dispatchId: params.dispatchId,
               taskSpec: params.taskSpec,
-              coordinatorHandle: 'Run home (relayed by Orca)',
+              coordinatorHandle: 'Run home (relayed by Topo)',
               workerHandle: terminalHandle,
               devMode: params.devMode,
               // Enforce the execution host's nesting cap using its own setting.

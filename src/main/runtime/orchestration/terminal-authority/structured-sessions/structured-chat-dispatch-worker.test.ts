@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { formatOrcaSessionAddress } from '../../../../../shared/orca-session-address'
-import { testOrcaSessionId } from '../../../../../shared/orca-session-address-test-fixture'
+import { formatTopoSessionAddress } from '../../../../../shared/topo-session-address'
+import { testTopoSessionId } from '../../../../../shared/topo-session-address-test-fixture'
 import { idOf } from '../../../rpc/orchestration-session-caller-test-fixture'
 import { sendChatTask } from '../../../rpc/methods/orchestration/chat-task-delivery'
 import {
@@ -25,7 +25,7 @@ import {
   turnText
 } from './structured-chat-coordinator-mail-rig.test-fixture'
 
-const WORKER = formatOrcaSessionAddress(testOrcaSessionId(PEER_CHAT))
+const WORKER = formatTopoSessionAddress(testTopoSessionId(PEER_CHAT))
 
 /** A person's turn in `sessionId`, started and still running; resolves to its end. */
 async function runningUserTurn(
@@ -98,9 +98,9 @@ describe('a chat as the assignee of orchestration dispatch', () => {
       senders: [
         {
           party: {
-            address: formatOrcaSessionAddress(testOrcaSessionId(COORDINATOR)),
+            address: formatTopoSessionAddress(testTopoSessionId(COORDINATOR)),
             terminalHandle: null,
-            orcaSessionId: COORDINATOR
+            topoSessionId: COORDINATOR
           }
         }
       ],
@@ -195,7 +195,7 @@ describe('a chat as the assignee of orchestration dispatch', () => {
 
     await vi.waitFor(() => expect(worker.turns).toHaveLength(1), WAIT)
     expect(turnText(worker.turns[0]!)).toMatch(
-      /Subject: also check the tests\n\[Reply: orca(-dev)? orchestration reply --id msg_\w+ --body "\.\.\."\]/
+      /Subject: also check the tests\n\[Reply: topo(-dev)? orchestration reply --id msg_\w+ --body "\.\.\."\]/
     )
     expect(await queuedCardTexts(PEER_CHAT)).toEqual([])
     await settleTurn(PEER_CHAT, 0)

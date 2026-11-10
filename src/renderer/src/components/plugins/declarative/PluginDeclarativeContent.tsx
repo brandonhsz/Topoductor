@@ -4,7 +4,7 @@ import { useTranslate } from '@/i18n/use-translate'
 import type { PluginDeclarativeProps } from '../../../../../shared/plugins/declarative/plugin-declarative-catalog'
 import { PluginDeclarativeIconGlyph } from './plugin-declarative-icons'
 
-/** Read-only code, colored by Orca's own highlighter (built-in and plugin-contributed grammars). */
+/** Read-only code, colored by Topo's own highlighter (built-in and plugin-contributed grammars). */
 export function PluginDeclarativeCodeView({
   props
 }: {
@@ -93,7 +93,7 @@ const CALLOUT_KIND = {
   danger: 'caution'
 } as const
 
-/** The same callout Orca's Markdown draws for `> [!NOTE]`, in the plugin's tone and title. */
+/** The same callout Topo's Markdown draws for `> [!NOTE]`, in the plugin's tone and title. */
 export function PluginDeclarativeCallout({
   props,
   children

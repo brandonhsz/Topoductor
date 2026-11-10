@@ -43,23 +43,23 @@ export function getSystemCodexHomePath(): string {
 }
 
 /** Path only; use when a read-only caller must not materialize the mirror. */
-export function resolveOrcaManagedCodexHomePath(): string {
-  return join(getOrcaUserDataPath(), 'codex-runtime-home', 'home')
+export function resolveTopoManagedCodexHomePath(): string {
+  return join(getTopoUserDataPath(), 'codex-runtime-home', 'home')
 }
 
-export function getOrcaManagedCodexHomePath(): string {
-  const managedHomePath = resolveOrcaManagedCodexHomePath()
+export function getTopoManagedCodexHomePath(): string {
+  const managedHomePath = resolveTopoManagedCodexHomePath()
   mkdirSync(managedHomePath, { recursive: true })
   return managedHomePath
 }
 
-/** Config files an Orca-launched local Codex reads trust from, in the hook installer's lock order. */
+/** Config files a Topo-launched local Codex reads trust from, in the hook installer's lock order. */
 export function getLocalCodexTrustConfigFiles(
   agentHome: string,
   launchCodexHome?: string | null
 ): string[] {
   const files = [
-    join(getOrcaManagedCodexHomePath(), 'config.toml'),
+    join(getTopoManagedCodexHomePath(), 'config.toml'),
     // Managed accounts launch on their own CODEX_HOME, the only config that launch reads (#27235).
     ...(launchCodexHome ? [join(launchCodexHome, 'config.toml')] : []),
     join(agentHome, '.codex', 'config.toml')
@@ -68,25 +68,25 @@ export function getLocalCodexTrustConfigFiles(
 }
 
 export function getCodexSessionBackfillStateDirPath(): string {
-  return join(getOrcaUserDataPath(), 'codex-session-backfill')
+  return join(getTopoUserDataPath(), 'codex-session-backfill')
 }
 
-export function getOrcaUserDataPath(): string {
-  if (process.env.ORCA_USER_DATA_PATH) {
-    return process.env.ORCA_USER_DATA_PATH
+export function getTopoUserDataPath(): string {
+  if (process.env.TOPO_USER_DATA_PATH) {
+    return process.env.TOPO_USER_DATA_PATH
   }
   // Offline CLI hooks run outside Electron and must resolve the same userData path.
   if (process.platform === 'darwin') {
-    return join(homedir(), 'Library', 'Application Support', 'orca')
+    return join(homedir(), 'Library', 'Application Support', 'topo')
   }
   if (process.platform === 'win32') {
-    return join(process.env.APPDATA ?? join(homedir(), 'AppData', 'Roaming'), 'orca')
+    return join(process.env.APPDATA ?? join(homedir(), 'AppData', 'Roaming'), 'topo')
   }
-  return join(process.env.XDG_CONFIG_HOME || join(homedir(), '.config'), 'orca')
+  return join(process.env.XDG_CONFIG_HOME || join(homedir(), '.config'), 'topo')
 }
 
 export function syncSystemCodexResourcesIntoManagedHome(managedHomePath?: string): void {
-  const targetHome = managedHomePath ?? getOrcaManagedCodexHomePath()
+  const targetHome = managedHomePath ?? getTopoManagedCodexHomePath()
   const systemHomePath = getSystemCodexHomePath()
   for (const entryName of CODEX_SYSTEM_RESOURCE_ENTRIES) {
     linkSystemCodexResource(systemHomePath, targetHome, entryName)

@@ -195,7 +195,7 @@ describe('web UI preload API', () => {
           return Promise.resolve({
             id: `call-${runtimeCalls.length}`,
             ok: true,
-            result: 'C:\\Users\\alice\\AppData\\Local\\Temp\\orca-paste-image.png',
+            result: 'C:\\Users\\alice\\AppData\\Local\\Temp\\topo-paste-image.png',
             _meta: { runtimeId: 'runtime-1' }
           })
         }
@@ -215,7 +215,7 @@ describe('web UI preload API', () => {
 
     await expect(
       globals.window.api.ui.saveClipboardImageAsTempFile({ connectionId: 'ssh-1' })
-    ).resolves.toBe('C:\\Users\\alice\\AppData\\Local\\Temp\\orca-paste-image.png')
+    ).resolves.toBe('C:\\Users\\alice\\AppData\\Local\\Temp\\topo-paste-image.png')
     expect(runtimeCalls).toEqual([
       {
         method: 'clipboard.startImageUpload',

@@ -33,7 +33,7 @@ const SHELL_HOST = {
 }
 const HANDLE = 'pty-handle-terminal-init'
 const TAB_ID = 'tab-terminal-init'
-const SCROLLBACK_MARKER = 'orca-terminal-init-marker'
+const SCROLLBACK_MARKER = 'topo-terminal-init-marker'
 
 const TABS_SNAPSHOT = {
   type: 'snapshot',
@@ -90,12 +90,12 @@ beforeAll(async () => {
   cspHeader = await readShellCsp()
   bridgeVersion = await readBridgeProtocolVersion()
   faultGrant = await readBridgeFaultGrant()
-  scratch = await mkdtemp(join(tmpdir(), 'orca-mobile-web-app-terminal-init-'))
+  scratch = await mkdtemp(join(tmpdir(), 'topo-mobile-web-app-terminal-init-'))
   const built = await buildMobileWebAppBundle({ outDir: join(scratch, 'bundle') })
   const served = await createBundleServer({ outDir: built.outDir, cspHeader })
   server = served.server
   origin = served.origin
-  const executablePath = process.env.ORCA_MOBILE_WEB_RENDER_BROWSER
+  const executablePath = process.env.TOPO_MOBILE_WEB_RENDER_BROWSER
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) })
 }, 600_000)
 
@@ -132,13 +132,13 @@ async function openSessionWithTerminalTab() {
   page.on('pageerror', (error) => errors.push(`${error.name}: ${error.message}`))
   await page.goto(`${origin}/`, { waitUntil: 'load' })
   await page.waitForFunction(
-    () => document.documentElement.dataset.orcaWebEntry === 'mounted',
+    () => document.documentElement.dataset.topoWebEntry === 'mounted',
     undefined,
     { timeout: 60_000, polling: 250 }
   )
   const tabs = await waitForSubscribe(page, 'session.tabs.subscribe')
   await page.evaluate(
-    ([id, event]) => globalThis.__orcaRenderCheckEmitEvent(id, event),
+    ([id, event]) => globalThis.__topoRenderCheckEmitEvent(id, event),
     [tabs.id, TABS_SNAPSHOT]
   )
   return { errors, page }
@@ -171,13 +171,13 @@ function readTerminalGrid() {
 async function waitForSubscribe(page, method) {
   try {
     await page.waitForFunction(
-      (name) => (globalThis.__orcaRenderCheckSubscribes ?? []).some((one) => one.method === name),
+      (name) => (globalThis.__topoRenderCheckSubscribes ?? []).some((one) => one.method === name),
       method,
       // Streams normally open within a second; bound failure reporting with headroom rather than adding fixed wait.
       { timeout: 30_000, polling: 100 }
     )
   } catch {
-    const opened = await page.evaluate(() => globalThis.__orcaRenderCheckSubscribes ?? [])
+    const opened = await page.evaluate(() => globalThis.__topoRenderCheckSubscribes ?? [])
     throw new Error(
       `the page never subscribed to ${method}; it opened: ${
         opened.map((one) => one.method).join(', ') || 'nothing'
@@ -185,7 +185,7 @@ async function waitForSubscribe(page, method) {
     )
   }
   const found = await page.evaluate(
-    (name) => (globalThis.__orcaRenderCheckSubscribes ?? []).find((one) => one.method === name),
+    (name) => (globalThis.__topoRenderCheckSubscribes ?? []).find((one) => one.method === name),
     method
   )
   return found
@@ -198,7 +198,7 @@ describeRender(
       const { errors, page } = await openSessionWithTerminalTab()
       const subscribe = await waitForSubscribe(page, 'terminal.subscribe')
       await page.evaluate(
-        ([id, event]) => globalThis.__orcaRenderCheckEmitEvent(id, event),
+        ([id, event]) => globalThis.__topoRenderCheckEmitEvent(id, event),
         [subscribe.id, SCROLLBACK_EVENT]
       )
       // Require xterm-screen created by init/term.open, not surface present at mount.

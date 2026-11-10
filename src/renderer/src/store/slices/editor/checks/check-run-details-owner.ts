@@ -29,7 +29,7 @@ import {
 import { resolveExactWorktreeRoute } from '@/lib/workspace/ownership/worktree-owner-route'
 import { onPairedWebClientHost } from '@/lib/paired-web-client-host'
 import { captureWorktreeOperationGenerationSnapshot } from '@/lib/workspace/ownership/worktree-operation-generation'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import {
   selectDetectedWorktreesByRepo,
   selectWorktreesByRepo
@@ -126,7 +126,7 @@ function getTabRoute(file: CheckRunDetailsOwnerFile): WorktreeOperationRoute {
 }
 
 function getFramedTabRoute(file: CheckRunDetailsOwnerFile): WorktreeOperationRoute | null {
-  if (!ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (!TOPO_LAYOUT_OWNER_IS_MAIN) {
     return null
   }
   const tabs = layoutFrameWorkspace(file.worktreeId)?.tabs.filter(

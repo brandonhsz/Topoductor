@@ -17,7 +17,7 @@ const PTY_ROUND_TRIP_TIMEOUT_MS = 20_000
 async function ensurePinnedNode(target) {
   const { ensurePinnedNodeExecutable } = await import(
     pathToFileURL(
-      resolve(__dirname, '../../orcad-distribution/prebuilds/pinned-node-downloads.mjs')
+      resolve(__dirname, '../../topod-distribution/prebuilds/pinned-node-downloads.mjs')
     ).href
   )
   return ensurePinnedNodeExecutable({ target })

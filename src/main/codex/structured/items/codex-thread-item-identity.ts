@@ -51,7 +51,7 @@ export function codexNonMessageIdentity(
   historyImport?: true
 ): AgentJournalItemIdentity {
   return {
-    provider: 'orca',
+    provider: 'topo',
     clientMessageId: historyImport
       ? `codex-history-item:${JSON.stringify([1, threadId, turnId, itemId])}`
       : `codex-item:${threadId}:${itemId}`

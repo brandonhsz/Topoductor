@@ -181,7 +181,7 @@ export function WindowsTerminalStep({
           <p className="text-[13px] leading-relaxed text-muted-foreground">
             {t(
               'auto.components.onboarding.WindowsTerminalStep.defaultShellDescription',
-              'Choose the shell Orca opens for new Windows terminal panes.'
+              'Choose the shell Topo opens for new Windows terminal panes.'
             )}
           </p>
         </div>

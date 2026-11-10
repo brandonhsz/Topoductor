@@ -4,16 +4,16 @@ import type {
   OrchestrationSessionAddressResult
 } from '../../../../../shared/orchestration/orchestration-caller-status'
 import {
-  formatOrcaSessionAddress,
-  isOrcaSessionId
-} from '../../../../../shared/orca-session-address'
+  formatTopoSessionAddress,
+  isTopoSessionId
+} from '../../../../../shared/topo-session-address'
 import { ORCHESTRATION_SESSION_CALLER_ERROR_CODES as CODES } from '../../../../../shared/orchestration/orchestration-session-caller-codes'
 import {
   PartyLocationParams,
   SessionAddressParams
 } from '../../../../../shared/rpc-contract/orchestration-params'
 import { OrchestrationError } from '../../../orchestration/orchestration-error'
-import { resolveOrcaSessionParty } from '../../../orchestration/addressing/orchestration-party'
+import { resolveTopoSessionParty } from '../../../orchestration/addressing/orchestration-party'
 import { locateOrchestrationParty } from '../../../orchestration/addressing/orchestration-party-location'
 import { readAgentSessionRecordStore } from '../../../orchestration/addressing/session-lineage/structured-session-lineage'
 import type { z } from 'zod'
@@ -71,7 +71,7 @@ export const ORCHESTRATION_CALLER_METHODS = [
     // Dispatch already admitted the environment's session; do not resolve another caller from params.
     handler: (_params, { orchestrationCaller }): OrchestrationCallerShowResult => ({
       caller: orchestrationCaller
-        ? { orcaSessionId: formatOrcaSessionAddress(orchestrationCaller.orcaSessionId), live: true }
+        ? { topoSessionId: formatTopoSessionAddress(orchestrationCaller.topoSessionId), live: true }
         : null
     })
   }),
@@ -81,15 +81,15 @@ export const ORCHESTRATION_CALLER_METHODS = [
     params: SessionAddressParams,
     // Only host records know the chat's /clear root.
     handler: (params, { runtime }): OrchestrationSessionAddressResult => {
-      if (!isOrcaSessionId(params.sessionId)) {
+      if (!isTopoSessionId(params.sessionId)) {
         throw new OrchestrationError(
           CODES.unknown,
-          `${params.sessionId} is not an Orca session ID.`,
+          `${params.sessionId} is not a Topo session ID.`,
           { effectsApplied: false }
         )
       }
-      const party = resolveOrcaSessionParty(params.sessionId, runtime.getOrchestrationDb())
-      return { orcaSessionId: formatOrcaSessionAddress(party.orcaSessionId) }
+      const party = resolveTopoSessionParty(params.sessionId, runtime.getOrchestrationDb())
+      return { topoSessionId: formatTopoSessionAddress(party.topoSessionId) }
     }
   }),
   defineMethod({
@@ -103,7 +103,7 @@ export const ORCHESTRATION_CALLER_METHODS = [
     name: 'orchestration.partyOpen',
     permission: 'workspace',
     params: PartyLocationParams,
-    // The lookup, except that a terminal worker Orca closed resumes its conversation in a new terminal.
+    // The lookup, except that a terminal worker Topo closed resumes its conversation in a new terminal.
     handler: async (params, ctx): Promise<OrchestrationPartyLocationResult> => {
       const located = await locateParty(params, ctx)
       const db = ctx.runtime.getOrchestrationDb()

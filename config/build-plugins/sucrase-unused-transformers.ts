@@ -4,10 +4,10 @@ import type { Plugin } from 'vite'
 const UNUSED_TRANSFORMERS = /^\.\/(?:FlowTransformer|ReactHotLoaderTransformer)(?:\.js)?$/
 const SUCRASE_TRANSFORMERS_DIR =
   /[\\/]node_modules[\\/]sucrase[\\/]dist[\\/](?:esm[\\/])?transformers[\\/]/
-const STUB_ID = '\0orca-sucrase-unused-transformer'
+const STUB_ID = '\0topo-sucrase-unused-transformer'
 
 export const SUCRASE_UNUSED_TRANSFORMER_STUB =
-  "export default class UnusedSucraseTransformer {\n  constructor() {\n    throw new Error('this sucrase transform is not bundled in Orca')\n  }\n}\n"
+  "export default class UnusedSucraseTransformer {\n  constructor() {\n    throw new Error('this sucrase transform is not bundled in Topo')\n  }\n}\n"
 
 /** The stub's id when sucrase's transformer index imports an unused transformer; else null. */
 export function resolveSucraseUnusedTransformer(
@@ -26,7 +26,7 @@ export function resolveSucraseUnusedTransformer(
  */
 export function createSucraseUnusedTransformersPlugin(): Plugin {
   return {
-    name: 'orca-sucrase-unused-transformers',
+    name: 'topo-sucrase-unused-transformers',
     enforce: 'pre',
     resolveId: resolveSucraseUnusedTransformer,
     load: (id) => (id === STUB_ID ? SUCRASE_UNUSED_TRANSFORMER_STUB : null)

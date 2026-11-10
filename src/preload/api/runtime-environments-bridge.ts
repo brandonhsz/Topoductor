@@ -14,9 +14,9 @@ import type { RemoteRuntimeSharedConnectionDiagnostics } from '../../shared/remo
 import { RUNTIME_ENVIRONMENT_DIAGNOSTICS_CHANNEL } from '../../shared/remote-runtime/host-catalog/runtime-environment-diagnostics'
 import { RUNTIME_ENVIRONMENT_CATALOG_CHANGED_CHANNEL } from '../../shared/remote-runtime/host-catalog/runtime-environment-catalog-channel'
 import {
-  WSL_ORCAD_ACCOUNT_NOT_APPLIED_CHANNEL,
-  type WslOrcadAccountNotAppliedEvent
-} from '../../shared/wsl-orcad-account-notice'
+  WSL_TOPOD_ACCOUNT_NOT_APPLIED_CHANNEL,
+  type WslTopodAccountNotAppliedEvent
+} from '../../shared/wsl-topod-account-notice'
 import {
   subscribeRuntimeEnvironmentFromPreload,
   subscribeCrewAttemptFromPreload,
@@ -24,7 +24,7 @@ import {
   type RuntimeEnvironmentSubscriptionHandle
 } from '../runtime-environment-subscriptions'
 import type { PreloadApi } from '../api-types'
-import { managedOrcadApi } from './managed-orcad-api'
+import { managedTopodApi } from './managed-topod-api'
 import { getWslHostsApi } from './wsl-hosts-api'
 
 export const runtimeEnvironmentsApi = {
@@ -101,14 +101,14 @@ export const runtimeEnvironmentsApi = {
     return () => ipcRenderer.removeListener(RUNTIME_ENVIRONMENT_DIAGNOSTICS_CHANNEL, listener)
   },
   onWslAccountNotApplied: (
-    callback: (event: WslOrcadAccountNotAppliedEvent) => void
+    callback: (event: WslTopodAccountNotAppliedEvent) => void
   ): (() => void) => {
     const listener = (
       _event: Electron.IpcRendererEvent,
-      data: WslOrcadAccountNotAppliedEvent
+      data: WslTopodAccountNotAppliedEvent
     ): void => callback(data)
-    ipcRenderer.on(WSL_ORCAD_ACCOUNT_NOT_APPLIED_CHANNEL, listener)
-    return () => ipcRenderer.removeListener(WSL_ORCAD_ACCOUNT_NOT_APPLIED_CHANNEL, listener)
+    ipcRenderer.on(WSL_TOPOD_ACCOUNT_NOT_APPLIED_CHANNEL, listener)
+    return () => ipcRenderer.removeListener(WSL_TOPOD_ACCOUNT_NOT_APPLIED_CHANNEL, listener)
   },
   prepareBrowserClientHostPlacement: (args) =>
     ipcRenderer.invoke('runtimeEnvironments:prepareBrowserClientHostPlacement', args),
@@ -144,6 +144,6 @@ export const runtimeEnvironmentsApi = {
     }
   ): Promise<RuntimeEnvironmentSubscriptionHandle> =>
     subscribeRuntimeEnvironmentFromPreload(ipcRenderer, args, callbacks),
-  managedOrcad: managedOrcadApi,
+  managedTopod: managedTopodApi,
   wslHosts: getWslHostsApi()
 } satisfies PreloadApi['runtimeEnvironments']

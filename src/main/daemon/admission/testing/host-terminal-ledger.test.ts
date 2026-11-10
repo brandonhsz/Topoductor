@@ -21,7 +21,7 @@ describe('HostTerminalLedger', () => {
   let now: number
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-host-terminals-'))
+    dir = mkdtempSync(join(tmpdir(), 'topo-host-terminals-'))
     alive = new Set([100, 200])
     now = 1_000_000
   })

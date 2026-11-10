@@ -12,7 +12,7 @@ type GuardState = { roots: string[]; violations: string[] }
 const AGENT_HOME_ENTRIES = [
   '.codex',
   '.claude',
-  '.orca',
+  '.topo',
   '.cursor',
   '.copilot',
   '.gemini',
@@ -20,22 +20,22 @@ const AGENT_HOME_ENTRIES = [
 ]
 // Guard Claude file/temp prefixes beside .claude directory, not only inside it.
 const AGENT_HOME_FILE_PREFIXES = ['.claude.json']
-// Capture live Orca/agent roots from terminal env before clearing inherited values.
+// Capture live Topo/agent roots from terminal env before clearing inherited values.
 const INHERITED_STATE_ENV = [
-  'ORCA_USER_DATA_PATH',
+  'TOPO_USER_DATA_PATH',
   'CODEX_HOME',
-  'ORCA_CODEX_HOME',
+  'TOPO_CODEX_HOME',
   'CLAUDE_CONFIG_DIR'
 ]
-// Why: an Orca terminal points this at the live app's CLI, which a test's child shell would run.
-const INHERITED_LIVE_CLI_ENV = ['ORCA_CODEX_LAUNCH_PREFLIGHT']
+// Why: a Topo terminal points this at the live app's CLI, which a test's child shell would run.
+const INHERITED_LIVE_CLI_ENV = ['TOPO_CODEX_LAUNCH_PREFLIGHT']
 // Real-agent opt-in suites intentionally use their own home and explicit switch.
 const REAL_AGENT_SUITE_SWITCHES = [
-  'ORCA_REAL_CLAUDE_SUPERVISED_STOP',
-  'ORCA_CODEX_CONTRACT_BINARY',
-  'ORCA_CODEX_NO_DAEMON_CONTRACT_BINARY',
-  'ORCA_CODEX_TRUST_CONTRACT_BINARY',
-  'ORCA_REPRO_CODEX_BINARY'
+  'TOPO_REAL_CLAUDE_SUPERVISED_STOP',
+  'TOPO_CODEX_CONTRACT_BINARY',
+  'TOPO_CODEX_NO_DAEMON_CONTRACT_BINARY',
+  'TOPO_CODEX_TRUST_CONTRACT_BINARY',
+  'TOPO_REPRO_CODEX_BINARY'
 ]
 const realAgentSuiteOptedIn = () => REAL_AGENT_SUITE_SWITCHES.some((name) => process.env[name])
 const foldCase = process.platform === 'darwin' || process.platform === 'win32'
@@ -56,13 +56,13 @@ function realHomes(): string[] {
   return homes.filter((home): home is string => Boolean(home))
 }
 
-/** Folder roots end in a separator so `~/.orca` never covers `~/.orca-relay`; file prefixes do not. */
+/** Folder roots end in a separator so `~/.topo` never covers `~/.topo-relay`; file prefixes do not. */
 function protectedRoots(): string[] {
   const folders = realHomes().flatMap((home) => [
     ...AGENT_HOME_ENTRIES.map((entry) => join(home, entry)),
-    join(home, 'Library', 'Application Support', 'orca'),
-    join(home, '.config', 'orca'),
-    join(home, 'AppData', 'Roaming', 'orca')
+    join(home, 'Library', 'Application Support', 'topo'),
+    join(home, '.config', 'topo'),
+    join(home, 'AppData', 'Roaming', 'topo')
   ])
   for (const name of INHERITED_STATE_ENV) {
     const value = process.env[name]
@@ -90,7 +90,7 @@ function targetPath(target: unknown): string | null {
 }
 
 function realClaudeTranscriptWriteOptedIn(path: string): boolean {
-  if (process.env.ORCA_REAL_CLAUDE_CLI_TEST !== '1') {
+  if (process.env.TOPO_REAL_CLAUDE_CLI_TEST !== '1') {
     return false
   }
   const homes = [
@@ -191,16 +191,16 @@ function install(): GuardState {
 
 declare global {
   // Wrap once per process; per-file wrapping stacks duplicate guards.
-  var orcaRealAgentHomeWriteGuard: GuardState | undefined
+  var topoRealAgentHomeWriteGuard: GuardState | undefined
 }
-const state = (globalThis.orcaRealAgentHomeWriteGuard ??= install())
+const state = (globalThis.topoRealAgentHomeWriteGuard ??= install())
 // Clear inherited paths only after capturing guarded roots; suites can supply test-local values.
 export function clearInheritedAgentStateEnv(): void {
   const inheritedEnvToUnset = realAgentSuiteOptedIn()
     ? []
     : [...INHERITED_STATE_ENV, ...INHERITED_LIVE_CLI_ENV]
   for (const name of inheritedEnvToUnset) {
-    if (name === 'CLAUDE_CONFIG_DIR' && process.env.ORCA_REAL_CLAUDE_CLI_TEST === '1') {
+    if (name === 'CLAUDE_CONFIG_DIR' && process.env.TOPO_REAL_CLAUDE_CLI_TEST === '1') {
       continue
     }
     delete process.env[name]

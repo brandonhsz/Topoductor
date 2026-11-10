@@ -16,7 +16,7 @@ const roots: string[] = []
 const WOFF2 = Buffer.from([0x77, 0x4f, 0x46, 0x32, 0, 1, 0, 0, 0, 0, 0, 0])
 
 async function fontPlugin(file: Buffer, path = 'fonts/mono.woff2') {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-fonts-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-fonts-'))
   roots.push(root)
   await mkdir(join(root, 'fonts'), { recursive: true })
   await writeFile(join(root, path), file)

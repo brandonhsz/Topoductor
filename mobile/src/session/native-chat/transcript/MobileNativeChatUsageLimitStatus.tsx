@@ -30,7 +30,7 @@ function useResetPassed(resetsAt: number | undefined): boolean {
   return useSyncExternalStore(subscribe, read, read)
 }
 
-/** Under a usage-limit headline: the reset and Orca's plan on one line, then the actions. */
+/** Under a usage-limit headline: the reset and Topo's plan on one line, then the actions. */
 export function MobileNativeChatUsageLimitStatus({
   notice,
   fontScale

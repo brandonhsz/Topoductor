@@ -22,7 +22,7 @@ vi.mock('./serve-update-supervisor', async (importOriginal) => ({
   superviseForegroundServe: superviseMock
 }))
 
-import { serveOrcaApp } from './launch'
+import { serveTopoApp } from './launch'
 
 let actualPreflight: typeof ServePreflight
 beforeAll(async () => {
@@ -42,7 +42,7 @@ describe.skipIf(process.platform === 'win32')(
     it.each(['absent', 'accepting'])(
       'reaches the existing launch/refusal seam for a %s endpoint',
       async (state) => {
-        const root = mkdtempSync(join(tmpdir(), 'orca-serve-launch-'))
+        const root = mkdtempSync(join(tmpdir(), 'topo-serve-launch-'))
         const endpoint = join(root, 'runtime.sock')
         const sockets = new Set<Socket>()
         const server = createServer((socket) => {
@@ -52,11 +52,11 @@ describe.skipIf(process.platform === 'win32')(
         })
         try {
           vi.clearAllMocks()
-          vi.stubEnv('ORCA_USER_DATA_PATH', root)
-          vi.stubEnv('ORCA_APP_EXECUTABLE', '/opt/orca/orca')
-          vi.stubEnv('ORCA_SERVE_RUNTIME', 'electron')
+          vi.stubEnv('TOPO_USER_DATA_PATH', root)
+          vi.stubEnv('TOPO_APP_EXECUTABLE', '/opt/topo/topo')
+          vi.stubEnv('TOPO_SERVE_RUNTIME', 'electron')
           writeFileSync(
-            join(root, 'orca-runtime.json'),
+            join(root, 'topo-runtime.json'),
             JSON.stringify({
               runtimeId: 'leftover',
               pid: 2147483647,
@@ -72,7 +72,7 @@ describe.skipIf(process.platform === 'win32')(
           superviseMock.mockResolvedValue(0)
           spawnMock.mockReturnValue(new FakeChildProcess())
           vi.spyOn(process.stderr, 'write').mockImplementation(() => true)
-          expect(await serveOrcaApp({})).toBe(state === 'absent' ? 0 : 3)
+          expect(await serveTopoApp({})).toBe(state === 'absent' ? 0 : 3)
           expect(spawnMock).toHaveBeenCalledTimes(state === 'absent' ? 1 : 0)
         } finally {
           for (const socket of sockets) {

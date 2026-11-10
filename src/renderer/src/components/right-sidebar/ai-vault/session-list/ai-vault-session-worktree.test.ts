@@ -12,7 +12,7 @@ const baseSession: AiVaultSession = {
   agent: 'codex',
   sessionId: 'session-1',
   title: 'Find the pane',
-  cwd: '/repo/orca/src',
+  cwd: '/repo/topo/src',
   branch: null,
   model: null,
   filePath: '/home/ada/.codex/session-1.jsonl',
@@ -31,10 +31,10 @@ const baseSession: AiVaultSession = {
 
 function makeWorktree(overrides: Partial<Worktree> = {}): Worktree {
   const worktree: Worktree = {
-    id: 'repo-1::/repo/orca',
+    id: 'repo-1::/repo/topo',
     repoId: 'repo-1',
-    displayName: 'orca',
-    path: '/repo/orca',
+    displayName: 'topo',
+    path: '/repo/topo',
     head: 'abc123',
     branch: 'main',
     isBare: false,
@@ -55,8 +55,8 @@ function makeWorktree(overrides: Partial<Worktree> = {}): Worktree {
 function makeRepo(overrides: Partial<Repo> = {}): Repo {
   return {
     id: 'repo-1',
-    path: '/repo/orca',
-    displayName: 'orca',
+    path: '/repo/topo',
+    displayName: 'topo',
     badgeColor: '#737373',
     addedAt: 1,
     connectionId: null,
@@ -102,23 +102,23 @@ describe('resolveAiVaultSessionWorktreeInfo', () => {
 
   it('uses the session host when multiple worktrees share the same path', () => {
     const localWorktree = makeWorktree({
-      id: 'repo-local::/srv/orca',
+      id: 'repo-local::/srv/topo',
       repoId: 'repo-local',
       displayName: 'local',
-      path: '/srv/orca',
+      path: '/srv/topo',
       hostId: 'local'
     })
     const sshWorktree = makeWorktree({
-      id: 'repo-ssh::/srv/orca',
+      id: 'repo-ssh::/srv/topo',
       repoId: 'repo-ssh',
       displayName: 'ssh',
-      path: '/srv/orca',
+      path: '/srv/topo',
       hostId: 'ssh:target-1'
     })
 
     expect(
       resolveAiVaultSessionWorktreeInfo({
-        session: { ...baseSession, cwd: '/srv/orca/src', executionHostId: 'ssh:target-1' },
+        session: { ...baseSession, cwd: '/srv/topo/src', executionHostId: 'ssh:target-1' },
         worktrees: [localWorktree, sshWorktree],
         activeWorktreeId: null
       })
@@ -130,15 +130,15 @@ describe('resolveAiVaultSessionWorktreeInfo', () => {
 
   it('uses repo host ownership when a legacy worktree lacks host metadata', () => {
     const worktree = makeWorktree({
-      id: 'repo-ssh::/srv/orca',
+      id: 'repo-ssh::/srv/topo',
       repoId: 'repo-ssh',
       displayName: 'ssh',
-      path: '/srv/orca'
+      path: '/srv/topo'
     })
 
     expect(
       resolveAiVaultSessionWorktreeInfo({
-        session: { ...baseSession, cwd: '/srv/orca/src', executionHostId: 'ssh:target-1' },
+        session: { ...baseSession, cwd: '/srv/topo/src', executionHostId: 'ssh:target-1' },
         repos: [makeRepo({ id: 'repo-ssh', connectionId: 'target-1', executionHostId: null })],
         worktrees: [worktree],
         activeWorktreeId: null

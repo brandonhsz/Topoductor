@@ -129,7 +129,7 @@ export function CreateStep({
         <DialogDescription>
           {t(
             'auto.components.sidebar.AddRepoCreateStep.b100311784',
-            'Name it and Orca will create a real project with sensible defaults.'
+            'Name it and Topo will create a real project with sensible defaults.'
           )}
         </DialogDescription>
       </DialogHeader>

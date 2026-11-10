@@ -57,7 +57,7 @@ function seedQueuedRestart(
   useAppStore.setState({
     settings: getDefaultSettings('/home/dev'),
     worktreesByRepo: {
-      repo1: [{ id: 'wt1', path: '/Users/dev/code/orca' }]
+      repo1: [{ id: 'wt1', path: '/Users/dev/code/topo' }]
     } as never,
     tabsByWorktree: {
       wt1: [

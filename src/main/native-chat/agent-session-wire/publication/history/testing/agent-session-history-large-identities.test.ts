@@ -153,7 +153,7 @@ describe('identity bounding at admission', () => {
       turnScope: AGENT_JOURNAL_THREAD_SCOPE
     })
     expect(appended.itemId.length).toBeLessThan(2048)
-    expect(appended.itemId).toContain('~orca-oversized~')
+    expect(appended.itemId).toContain('~topo-oversized~')
 
     const beforeTombstone = fixture.journal.cursor()
     await fixture.journal.appendTombstone(oversized, { fence: 1 })

@@ -28,9 +28,9 @@ describe('the Grok hook file backup after removal', () => {
   let backupPath: string
 
   beforeEach(() => {
-    homeDir = mkdtempSync(join(tmpdir(), 'orca-grok-backup-'))
+    homeDir = mkdtempSync(join(tmpdir(), 'topo-grok-backup-'))
     homedirMock.mockReturnValue(homeDir)
-    configPath = join(homeDir, '.grok', 'hooks', 'orca-status.json')
+    configPath = join(homeDir, '.grok', 'hooks', 'topo-status.json')
     backupPath = `${configPath}.bak`
   })
 
@@ -40,7 +40,7 @@ describe('the Grok hook file backup after removal', () => {
   })
 
   it.each(['sync', 'quit'] as const)(
-    'deletes a backup that held only Orca entries (%s path)',
+    'deletes a backup that held only Topo entries (%s path)',
     async (path) => {
       const service = new GrokHookService()
       expect(service.install().state).toBe('installed')
@@ -57,7 +57,7 @@ describe('the Grok hook file backup after removal', () => {
     }
   )
 
-  it("strips Orca's entries from a backup that also holds the user's own", () => {
+  it("strips Topo's entries from a backup that also holds the user's own", () => {
     const service = new GrokHookService()
     expect(service.install().state).toBe('installed')
     const config: { hooks: Record<string, unknown[]> } = JSON.parse(
@@ -71,7 +71,7 @@ describe('the Grok hook file backup after removal', () => {
 
     const backup = readFileSync(backupPath, 'utf8')
     expect(backup).toContain('my-own-hook')
-    expect(backup).not.toContain('orca')
+    expect(backup).not.toContain('topo')
   })
 
   it('leaves a symlinked backup alone', () => {
@@ -83,6 +83,6 @@ describe('the Grok hook file backup after removal', () => {
 
     removeGrokHookBackupEntries(configPath)
 
-    expect(readFileSync(target, 'utf8')).toContain('orca')
+    expect(readFileSync(target, 'utf8')).toContain('topo')
   })
 })

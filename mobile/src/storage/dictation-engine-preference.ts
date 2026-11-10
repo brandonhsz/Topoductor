@@ -5,7 +5,7 @@ import {
 } from '../mobile-web-shell/bridge/bridge-speech-verbs'
 
 // Where the phone transcribes dictation. Phone-only: the shell answers it to the page with the speech status.
-const DICTATION_ENGINE_PREFERENCE_KEY = 'orca:dictationEngine'
+const DICTATION_ENGINE_PREFERENCE_KEY = 'topo:dictationEngine'
 
 export const DEFAULT_DICTATION_ENGINE_PREFERENCE: DictationEnginePreference = 'automatic'
 

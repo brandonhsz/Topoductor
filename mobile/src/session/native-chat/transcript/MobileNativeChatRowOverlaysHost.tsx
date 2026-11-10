@@ -23,14 +23,14 @@ import { MobileNativeChatRewindDialog } from './MobileNativeChatRewindDialog'
 export function MobileNativeChatRowOverlaysHost({
   conversation,
   imageSource,
-  onOpenUrlInOrca,
+  onOpenUrlInTopo,
   rewind,
   children
 }: {
   conversation: MobileNativeChatConversation
   imageSource?: MobileNativeChatImageSource
   /** Absent where the host can't open a browser tab for this chat. */
-  onOpenUrlInOrca?: (url: string) => void
+  onOpenUrlInTopo?: (url: string) => void
   /** The chat's "Rewind to here"; absent where it can't rewind. */
   rewind?: AgentSessionRewindSurface
   children?: React.ReactNode
@@ -67,9 +67,9 @@ export function MobileNativeChatRowOverlaysHost({
     ) : shown?.actionsFor ? (
       <MobileNativeChatMessageActionsSheet message={shown.actionsFor} onClose={close} />
     ) : shown?.link ? (
-      <MobileLinkActionSheet url={shown.link} onClose={close} openInOrca={onOpenUrlInOrca} />
+      <MobileLinkActionSheet url={shown.link} onClose={close} openInTopo={onOpenUrlInTopo} />
     ) : null
-  }, [shown, setShown, onOpenUrlInOrca])
+  }, [shown, setShown, onOpenUrlInTopo])
   return (
     <MobileNativeChatRowOverlaysContext.Provider value={overlays}>
       <MarkdownLinkHandlerContext.Provider value={openLink}>

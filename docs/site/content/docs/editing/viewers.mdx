@@ -4,15 +4,15 @@ title: HTML, Mermaid, PDF & image viewers
 
 import { Callout } from '@/components/docs/prose'
 
-Orca includes built-in viewers for the formats that show up in most repos.
+Topo includes built-in viewers for the formats that show up in most repos.
 
 ## HTML
 
-Open a local, SSH, or paired-runtime `.html` file with **Open in Orca Browser** or **Open Preview to the Side**. Orca renders the document locally in a sandboxed browser tab and reads the file and its relative assets through the workspace's file connection, so a remote design document stays crisp without exposing your desktop filesystem.
+Open a local, SSH, or paired-runtime `.html` file with **Open in Topo Browser** or **Open Preview to the Side**. Topo renders the document locally in a sandboxed browser tab and reads the file and its relative assets through the workspace's file connection, so a remote design document stays crisp without exposing your desktop filesystem.
 
-The preview asks before reading additional folders, and grants only the folders you approve for that tab. External HTTP(S) links require confirmation and open in a normal Orca browser tab; downloads are disabled inside document previews. Use **Preview options** to reload from disk, open the source file, or copy its full or workspace-relative path.
+The preview asks before reading additional folders, and grants only the folders you approve for that tab. External HTTP(S) links require confirmation and open in a normal Topo browser tab; downloads are disabled inside document previews. Use **Preview options** to reload from disk, open the source file, or copy its full or workspace-relative path.
 
-On paired runtimes, HTML links can also preview files outside registered workspaces. Orca uses the server's per-file access grants; no project registration or web server is needed. For these documents, the preview initially reads only the opened file and asks before loading other files from its directory. Update an older paired server if it cannot grant the file. Very old paired servers may render documents without binary assets; update the server if remote images do not load.
+On paired runtimes, HTML links can also preview files outside registered workspaces. Topo uses the server's per-file access grants; no project registration or web server is needed. For these documents, the preview initially reads only the opened file and asks before loading other files from its directory. Update an older paired server if it cannot grant the file. Very old paired servers may render documents without binary assets; update the server if remote images do not load.
 
 ## Mermaid
 
@@ -20,7 +20,7 @@ Mermaid diagrams render inline inside markdown preview. Standalone `.mmd` files 
 
 ## PDF
 
-Scroll, zoom, and text selection. Useful for design docs checked into the repo. Scroll position is restored when you switch away from a PDF tab and come back (including close-and-reopen in the same session) — page plus mid-page offset, so you land where you left off. Positions are session-only and clear when Orca restarts.
+Scroll, zoom, and text selection. Useful for design docs checked into the repo. Scroll position is restored when you switch away from a PDF tab and come back (including close-and-reopen in the same session) — page plus mid-page offset, so you land where you left off. Positions are session-only and clear when Topo restarts.
 
 ## Images
 

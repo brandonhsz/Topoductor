@@ -14,7 +14,7 @@ import {
   requiredLabel
 } from './plugin-declarative-prop-schemas'
 
-/** Data components added in catalog 2 (Orca 1.4.247): their content is data, not child nodes. */
+/** Data components added in catalog 2 (Topo 1.4.247): their content is data, not child nodes. */
 
 const columnKey = z.string().min(1).max(64)
 const cell = z.union([

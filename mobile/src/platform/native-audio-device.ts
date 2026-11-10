@@ -5,7 +5,7 @@ import {
   speechFeed,
   tearDown,
   toggleRecording
-} from '@orca/expo-two-way-audio'
+} from '@topo/expo-two-way-audio'
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake'
 import { BRIDGE_AUDIO_INTERRUPTIONS } from '../mobile-web-shell/bridge/bridge-audio-verbs'
 import { createMicrophoneScreenLock } from './microphone-screen-lock'
@@ -16,7 +16,7 @@ import type { NativeAudioEngine } from './native-audio'
 // initialize() accepts no rate: both engines produce fixed 16 kHz, so report the actual rate instead of silently accepting another.
 export const NATIVE_AUDIO_DEVICE_SAMPLE_RATE = 16_000
 
-const MICROPHONE_SCREEN_LOCK_TAG = 'orca-microphone'
+const MICROPHONE_SCREEN_LOCK_TAG = 'topo-microphone'
 
 // Share one wake lock for the one microphone; native and bridge capture must not use independently releasable tags.
 export const nativeMicrophoneScreenLock = createMicrophoneScreenLock(

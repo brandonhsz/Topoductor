@@ -6,7 +6,7 @@ import {
   writeFileAtomically,
   writeFileAtomicallyIfUnchanged
 } from '../../../filesystem/atomic-file-publication'
-import { getOrcaManagedCodexHomePath, getSystemCodexHomePath } from '../homes/codex-home-paths'
+import { getTopoManagedCodexHomePath, getSystemCodexHomePath } from '../homes/codex-home-paths'
 import {
   rebaseBundledMarketplaceSources,
   rewriteRelativePathConfigValues
@@ -31,7 +31,7 @@ const RUNTIME_CONFIG_WRITE = { mode: 0o600 } as const
 
 export function syncSystemConfigIntoManagedCodexHome(
   homes: CodexSettingsPromotionHomes = {
-    runtimeHomePath: getOrcaManagedCodexHomePath(),
+    runtimeHomePath: getTopoManagedCodexHomePath(),
     systemHomePath: getSystemCodexHomePath()
   }
 ): void {
@@ -120,7 +120,7 @@ function writeCodexDaemonSocketGuard(runtimeHomePath: string, runtimeConfig: str
 /** One-way refresh for retained PTYs; promoting stale settings from this retired home could overwrite live config. */
 export function syncSystemConfigIntoLegacySharedCodexHome(
   homes: CodexSettingsPromotionHomes = {
-    runtimeHomePath: getOrcaManagedCodexHomePath(),
+    runtimeHomePath: getTopoManagedCodexHomePath(),
     systemHomePath: getSystemCodexHomePath()
   }
 ): void {

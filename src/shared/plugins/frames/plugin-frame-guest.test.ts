@@ -11,11 +11,11 @@ const KEY = pluginFrameKey('acme.charts')
 
 describe('plugin frame guest identity', () => {
   it('round-trips the partition and refuses look-alikes', () => {
-    expect(pluginFramePartition(KEY)).toBe(`persist:orca-plugin-${KEY}`)
+    expect(pluginFramePartition(KEY)).toBe(`persist:topo-plugin-${KEY}`)
     expect(readPluginFramePartitionKey(pluginFramePartition(KEY))).toBe(KEY)
-    expect(readPluginFramePartitionKey(`persist:orca-plugin-${KEY}x`)).toBeNull()
+    expect(readPluginFramePartitionKey(`persist:topo-plugin-${KEY}x`)).toBeNull()
     expect(readPluginFramePartitionKey(`orca-plugin-${KEY}`)).toBeNull()
-    expect(readPluginFramePartitionKey('persist:orca-plugin-../../x')).toBeNull()
+    expect(readPluginFramePartitionKey('persist:topo-plugin-../../x')).toBeNull()
   })
 })
 

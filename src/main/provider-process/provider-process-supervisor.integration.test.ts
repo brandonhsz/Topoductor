@@ -15,12 +15,12 @@ import { supervisedProviderSpawnFailure } from './provider-spawn-failure-report'
 // The provider leads its own group; its grandchild shares that group and ignores SIGTERM.
 const PROVIDER = String.raw`
   const { spawn } = require('node:child_process')
-  if (process.env.ORCA_TEST_PROVIDER_IGNORES_SIGTERM) {
+  if (process.env.TOPO_TEST_PROVIDER_IGNORES_SIGTERM) {
     process.on('SIGTERM', () => console.log(JSON.stringify({ sigterm: process.pid })))
   }
-  if (process.env.ORCA_TEST_PROVIDER_SIGNAL_FILE) {
+  if (process.env.TOPO_TEST_PROVIDER_SIGNAL_FILE) {
     process.on('SIGTERM', () => {
-      require('node:fs').writeFileSync(process.env.ORCA_TEST_PROVIDER_SIGNAL_FILE, 'SIGTERM')
+      require('node:fs').writeFileSync(process.env.TOPO_TEST_PROVIDER_SIGNAL_FILE, 'SIGTERM')
       process.exit(0)
     })
   }
@@ -32,7 +32,7 @@ const PROVIDER = String.raw`
   )
   grandchild.stdout.once('data', () => {
     process.stdout.write(JSON.stringify({ provider: process.pid, grandchild: grandchild.pid }) + '\n')
-    if (process.env.ORCA_TEST_PROVIDER_STREAMS_OUTPUT) setInterval(() => process.stdout.write('.'), 2)
+    if (process.env.TOPO_TEST_PROVIDER_STREAMS_OUTPUT) setInterval(() => process.stdout.write('.'), 2)
   })
   setInterval(() => {}, 60000)
 `
@@ -42,7 +42,7 @@ const CLEANS_UP_AFTER_SIGTERM_PROVIDER = String.raw`
   const { spawn } = require('node:child_process')
   const grandchild = spawn(
     process.execPath,
-    ['-e', "process.on('SIGTERM', () => setTimeout(() => { require('node:fs').writeFileSync(process.env.ORCA_TEST_CLEANUP_FILE, 'done'); process.exit(0) }, 300)); process.stdout.write('armed'); setInterval(() => {}, 60000)"],
+    ['-e', "process.on('SIGTERM', () => setTimeout(() => { require('node:fs').writeFileSync(process.env.TOPO_TEST_CLEANUP_FILE, 'done'); process.exit(0) }, 300)); process.stdout.write('armed'); setInterval(() => {}, 60000)"],
     { stdio: ['ignore', 'pipe', 'ignore'] }
   )
   grandchild.stdout.once('data', () =>
@@ -59,18 +59,18 @@ void String.raw`
 const FLUSHES_ON_STDIN_END_PROVIDER = String.raw`
   const { writeFileSync } = require('node:fs')
   process.on('SIGTERM', () => {
-    writeFileSync(process.env.ORCA_TEST_PROVIDER_SIGNAL_FILE, 'SIGTERM')
+    writeFileSync(process.env.TOPO_TEST_PROVIDER_SIGNAL_FILE, 'SIGTERM')
     process.exit(143)
   })
   process.stdin.on('end', () => setTimeout(() => {
-    writeFileSync(process.env.ORCA_TEST_PROVIDER_FLUSH_FILE, 'flushed')
+    writeFileSync(process.env.TOPO_TEST_PROVIDER_FLUSH_FILE, 'flushed')
     process.exit(0)
   }, 200)).resume()
   process.stdout.write(JSON.stringify({ provider: process.pid }) + '\n')
 `
 void String.raw`
   process.on('SIGTERM', () => {
-    require('node:fs').writeFileSync(process.env.ORCA_TEST_PROVIDER_SIGNAL_FILE, String(Date.now()))
+    require('node:fs').writeFileSync(process.env.TOPO_TEST_PROVIDER_SIGNAL_FILE, String(Date.now()))
   })
   process.stdout.write(JSON.stringify({ provider: process.pid }) + '\n')
   setInterval(() => {}, 60000)
@@ -79,26 +79,26 @@ void String.raw`
 // Answers a one-shot request only after the session stdin-end grace, then exits with its own code.
 const ONE_SHOT_PROVIDER = String.raw`
   process.on('SIGTERM', () => {
-    require('node:fs').writeFileSync(process.env.ORCA_TEST_PROVIDER_SIGNAL_FILE, 'SIGTERM')
+    require('node:fs').writeFileSync(process.env.TOPO_TEST_PROVIDER_SIGNAL_FILE, 'SIGTERM')
   })
   process.stdin.resume().on('end', () => {
     setTimeout(() => {
       process.stdout.write('ok')
       process.exitCode = 3
-    }, Number(process.env.ORCA_TEST_PROVIDER_ANSWER_DELAY_MS))
+    }, Number(process.env.TOPO_TEST_PROVIDER_ANSWER_DELAY_MS))
   })
 `
 
 // A sibling holds stdin open to isolate parent-death detection; other modes model clean quit and one-shot requests.
 const OWNER = String.raw`
   const { spawn } = require('node:child_process')
-  const quitsCleanly = Boolean(process.env.ORCA_TEST_OWNER_QUITS_CLEANLY)
-  const endsStdin = Boolean(process.env.ORCA_TEST_OWNER_ENDS_STDIN)
+  const quitsCleanly = Boolean(process.env.TOPO_TEST_OWNER_QUITS_CLEANLY)
+  const endsStdin = Boolean(process.env.TOPO_TEST_OWNER_ENDS_STDIN)
   if (quitsCleanly) process.on('SIGUSR2', () => process.exit(0))
-  const spec = JSON.parse(Buffer.from(process.env.ORCA_PROVIDER_SUPERVISOR_SPEC, 'base64').toString())
+  const spec = JSON.parse(Buffer.from(process.env.TOPO_PROVIDER_SUPERVISOR_SPEC, 'base64').toString())
   spec.ownerPid = process.pid
-  const supervisor = spawn(process.execPath, JSON.parse(process.env.ORCA_TEST_SUPERVISOR_ARGS), {
-    env: { ...process.env, ORCA_PROVIDER_SUPERVISOR_SPEC: Buffer.from(JSON.stringify(spec)).toString('base64') },
+  const supervisor = spawn(process.execPath, JSON.parse(process.env.TOPO_TEST_SUPERVISOR_ARGS), {
+    env: { ...process.env, TOPO_PROVIDER_SUPERVISOR_SPEC: Buffer.from(JSON.stringify(spec)).toString('base64') },
     stdio: ['pipe', 'pipe', 'ignore'],
     detached: true
   })
@@ -119,7 +119,7 @@ const SIGNAL_AFTER_SPAWN_PRELOAD = String.raw`
   const spawn = childProcess.spawn
   childProcess.spawn = (...args) => {
     const child = spawn(...args)
-    require('node:fs').writeFileSync(process.env.ORCA_TEST_PROVIDER_PID_FILE, String(child.pid))
+    require('node:fs').writeFileSync(process.env.TOPO_TEST_PROVIDER_PID_FILE, String(child.pid))
     process.kill(process.pid, 'SIGTERM')
     return child
   }
@@ -142,7 +142,7 @@ const recordedPids = new Set<number>()
 const tempDirs: string[] = []
 
 function tempDir(): string {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-supervisor-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-supervisor-'))
   tempDirs.push(dir)
   return dir
 }
@@ -233,7 +233,7 @@ async function launchUnderOwner(
     options
   )
   const owner = spawn(process.execPath, ['-e', OWNER], {
-    env: { ...launch.env, ORCA_TEST_SUPERVISOR_ARGS: JSON.stringify(launch.args) },
+    env: { ...launch.env, TOPO_TEST_SUPERVISOR_ARGS: JSON.stringify(launch.args) },
     stdio: ['ignore', 'pipe', 'ignore']
   })
   recordedPids.add(owner.pid!)
@@ -271,7 +271,7 @@ describe.runIf(process.platform !== 'win32')('POSIX provider supervisor processe
   })
 
   it('reaps the group at once when a stopping supervisor is asked to', async () => {
-    const { supervisor, exit } = launchSupervisor({}, { ORCA_TEST_PROVIDER_IGNORES_SIGTERM: '1' })
+    const { supervisor, exit } = launchSupervisor({}, { TOPO_TEST_PROVIDER_IGNORES_SIGTERM: '1' })
     const { provider, grandchild } = await readPids(supervisor, ['provider', 'grandchild'])
 
     // ast-grep-ignore: test-no-wall-clock -- the cut SIGTERM grace is the behaviour under test
@@ -293,7 +293,7 @@ describe.runIf(process.platform !== 'win32')('POSIX provider supervisor processe
     const cleanupFile = join(tempDir(), 'grandchild-cleaned-up')
     const { supervisor, exit } = launchSupervisor(
       {},
-      { ORCA_TEST_CLEANUP_FILE: cleanupFile },
+      { TOPO_TEST_CLEANUP_FILE: cleanupFile },
       { command: process.execPath, args: ['-e', CLEANS_UP_AFTER_SIGTERM_PROVIDER] }
     )
     await readPids(supervisor, ['provider', 'grandchild'])
@@ -311,7 +311,7 @@ describe.runIf(process.platform !== 'win32')('POSIX provider supervisor processe
     writeFileSync(preload, SIGNAL_AFTER_SPAWN_PRELOAD)
     const { exit } = launchSupervisor(
       { sigtermGraceMs: 300 },
-      { ORCA_TEST_PROVIDER_PID_FILE: pidFile },
+      { TOPO_TEST_PROVIDER_PID_FILE: pidFile },
       { command: process.execPath, args: ['-e', 'setInterval(() => {}, 60000)'] },
       ['--require', preload]
     )
@@ -332,14 +332,14 @@ describe.runIf(process.platform !== 'win32')('POSIX provider supervisor processe
         const childProcess = require('node:child_process')
         const spawn = childProcess.spawn
         childProcess.spawn = (...args) => {
-          require('node:fs').writeFileSync(process.env.ORCA_TEST_PROVIDER_PID_FILE, 'spawned')
+          require('node:fs').writeFileSync(process.env.TOPO_TEST_PROVIDER_PID_FILE, 'spawned')
           return spawn(...args)
         }
       `
     )
     const { exit } = launchSupervisor(
       { ownerPid: process.pid === 1 ? 2 : 1 },
-      { ORCA_TEST_PROVIDER_PID_FILE: marker },
+      { TOPO_TEST_PROVIDER_PID_FILE: marker },
       { command: 'touch', args: [join(dir, 'provider-started')] },
       ['--require', preload]
     )
@@ -351,7 +351,7 @@ describe.runIf(process.platform !== 'win32')('POSIX provider supervisor processe
   it.each([
     ['', {}],
     // Output after the owner's death meets a closed pipe, which must not end the supervisor first.
-    [' while the provider is writing output', { ORCA_TEST_PROVIDER_STREAMS_OUTPUT: '1' }]
+    [' while the provider is writing output', { TOPO_TEST_PROVIDER_STREAMS_OUTPUT: '1' }]
   ])('reaps the provider group when its owner dies%s', async (_, env) => {
     const graceMs = 300
     const { owner, pids } = await launchUnderOwner({ sigtermGraceMs: graceMs }, env)
@@ -371,7 +371,7 @@ describe.runIf(process.platform !== 'win32')('POSIX provider supervisor processe
     const flushFile = join(dir, 'provider-flushed')
     const { owner, pids } = await launchUnderOwner(
       { closeRequest: 'stdin-end' },
-      { ORCA_TEST_PROVIDER_SIGNAL_FILE: signalFile, ORCA_TEST_PROVIDER_FLUSH_FILE: flushFile },
+      { TOPO_TEST_PROVIDER_SIGNAL_FILE: signalFile, TOPO_TEST_PROVIDER_FLUSH_FILE: flushFile },
       { script: FLUSHES_ON_STDIN_END_PROVIDER, pids: ['provider'] }
     )
 
@@ -389,8 +389,8 @@ describe.runIf(process.platform !== 'win32')('POSIX provider supervisor processe
       const { supervisor, exit } = launchSupervisor(
         { lifetime: 'one-shot', stdinEndGraceMs: 100 },
         {
-          ORCA_TEST_PROVIDER_SIGNAL_FILE: signalFile,
-          ORCA_TEST_PROVIDER_ANSWER_DELAY_MS: '250'
+          TOPO_TEST_PROVIDER_SIGNAL_FILE: signalFile,
+          TOPO_TEST_PROVIDER_ANSWER_DELAY_MS: '250'
         },
         { command: process.execPath, args: ['-e', ONE_SHOT_PROVIDER] }
       )
@@ -406,14 +406,14 @@ describe.runIf(process.platform !== 'win32')('POSIX provider supervisor processe
 
     it.each([
       ['dies', 'SIGKILL', {}],
-      ['quits cleanly', 'SIGUSR2', { ORCA_TEST_OWNER_QUITS_CLEANLY: '1' }]
+      ['quits cleanly', 'SIGUSR2', { TOPO_TEST_OWNER_QUITS_CLEANLY: '1' }]
     ] as const)(
       'reaps a one-shot that ignores its stdin end when its owner %s',
       async (_, signal, env) => {
         const stdinEndGraceMs = 100
         const { owner, pids } = await launchUnderOwner(
           { lifetime: 'one-shot', stdinEndGraceMs, sigtermGraceMs: 300 },
-          { ORCA_TEST_OWNER_ENDS_STDIN: '1', ...env }
+          { TOPO_TEST_OWNER_ENDS_STDIN: '1', ...env }
         )
         // Past the session grace: a stdin end alone must not have stopped it.
         await new Promise((resolve) => setTimeout(resolve, stdinEndGraceMs + 150))

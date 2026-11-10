@@ -1,7 +1,7 @@
 import { formatTerminalStartFailure } from '../../../../../../shared/terminal/pty/lifecycle/terminal-start-failure'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import type { WorkerDispatchRow } from '../../../../orchestration/db/orchestration-records'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { tearDownFailedWorkerStart } from './failed-worker-start-teardown'
 import {
   isUnknownWorkerStartOutcome,
@@ -14,7 +14,7 @@ import { replaceDispatchCapabilities } from '../../../../orchestration/terminal-
 import { redactString } from '../../../../../observability/redactor'
 
 type WorkerStartFailureArgs = {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   structuredSession: Awaited<ReturnType<typeof createStructuredWorkerSessionForWorktree>> | null
   db: OrchestrationDb
   runId: string
@@ -106,14 +106,14 @@ function failedWorkerStartReceipt(args: WorkerStartFailureArgs): unknown {
     residualResources: JSON.parse(worker.residual_resources) as unknown[],
     ...(releasable
       ? {
-          recovery: `This start left a worker session open. Close it with: orca orchestration worker-release --dispatch ${args.dispatchId}`
+          recovery: `This start left a worker session open. Close it with: topo orchestration worker-release --dispatch ${args.dispatchId}`
         }
       : {}),
     ...(unknown
       ? {
           nextCommands: [
-            `orca orchestration worker-show --dispatch ${args.dispatchId} --json`,
-            `orca orchestration worker-abandon --dispatch ${args.dispatchId} --json`
+            `topo orchestration worker-show --dispatch ${args.dispatchId} --json`,
+            `topo orchestration worker-abandon --dispatch ${args.dispatchId} --json`
           ]
         }
       : {})

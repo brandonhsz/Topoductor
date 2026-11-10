@@ -1,7 +1,7 @@
 import type { IPtyProvider } from '../../../providers/pty-provider-contract'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 
-type UnstoppedPtyRuntime = Pick<OrcaRuntimeService, 'getPtyLivenessVerdict'>
+type UnstoppedPtyRuntime = Pick<TopoRuntimeService, 'getPtyLivenessVerdict'>
 import {
   UNSTOPPED_PTY_DETAIL_SEPARATOR,
   STILL_LIVE_DETAIL_PREFIX,

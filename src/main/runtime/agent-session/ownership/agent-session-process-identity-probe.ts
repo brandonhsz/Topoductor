@@ -7,7 +7,7 @@ import type {
   AgentSessionProcessIdentityField
 } from '../../../../shared/agent-session/lifecycle/agent-session-lease-adjudication'
 import type { AgentSessionProcessIdentity } from '../../../../shared/agent-session/lifecycle/agent-session-record'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { psLocaleEnvironment } from '../../../../shared/ps-locale-environment'
 import { runPsInProcess } from '../../../../shared/libproc-process-table'
 import {

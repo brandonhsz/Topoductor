@@ -46,8 +46,8 @@ async function writePluginSource(root: string): Promise<void> {
 
 /** Installs locally, then rewrites the lock so the install looks like it came from a catalog. */
 async function catalogInstall(): Promise<{ pluginsDir: string; sourcePath: string; key: string }> {
-  const sourcePath = await tempRoot('orca-plugin-source-')
-  const pluginsDir = await tempRoot('orca-plugin-installs-')
+  const sourcePath = await tempRoot('topo-plugin-source-')
+  const pluginsDir = await tempRoot('topo-plugin-installs-')
   await writePluginSource(sourcePath)
   const first = await installPluginFromLocalPath({ pluginsDir, sourcePath, hostVersion: '1.4.0' })
   if (!first.ok) {

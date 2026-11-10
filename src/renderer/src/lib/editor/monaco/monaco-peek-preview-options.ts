@@ -17,7 +17,7 @@ type ReferenceWidgetInstance = {
 
 type ReferenceWidgetConstructor = {
   prototype: ReferenceWidgetInstance & {
-    __orcaPeekPreviewOptionsInstalled?: true
+    __topoPeekPreviewOptionsInstalled?: true
   }
 }
 
@@ -30,7 +30,7 @@ export function installMonacoPeekReferencesPreviewOptions(
   referenceWidget: ReferenceWidgetConstructor = MonacoReferenceWidget as unknown as ReferenceWidgetConstructor
 ): void {
   const prototype = referenceWidget.prototype
-  if (prototype.__orcaPeekPreviewOptionsInstalled) {
+  if (prototype.__topoPeekPreviewOptionsInstalled) {
     return
   }
 
@@ -61,5 +61,5 @@ export function installMonacoPeekReferencesPreviewOptions(
     }
   }
 
-  prototype.__orcaPeekPreviewOptionsInstalled = true
+  prototype.__topoPeekPreviewOptionsInstalled = true
 }

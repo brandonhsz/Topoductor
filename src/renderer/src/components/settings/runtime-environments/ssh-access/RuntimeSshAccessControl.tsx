@@ -3,7 +3,7 @@ import { useId, useState } from 'react'
 import { toast } from 'sonner'
 import type { PublicKnownRuntimeEnvironment } from '../../../../../../shared/remote-runtime/host-catalog/runtime-environments'
 import type { SshTarget } from '../../../../../../shared/ssh-types'
-import type { ManagedOrcadPreloadApi } from '../../../../../../preload/api/managed-orcad-api'
+import type { ManagedTopodPreloadApi } from '../../../../../../preload/api/managed-topod-api'
 import { useTranslate } from '@/i18n/use-translate'
 import { createNonSecureContextUuid as createBrowserUuid } from '../../../../../../shared/non-secure-context-uuid'
 import { Button } from '../../../ui/button'
@@ -14,7 +14,7 @@ import { HostCombobox } from '../../../host-picker/HostCombobox'
 const DEFAULT_REMOTE_PORT = '6768'
 
 type RuntimeSshAccessControlProps = {
-  api: Pick<ManagedOrcadPreloadApi, 'linkSshAccess' | 'unlinkSshAccess'>
+  api: Pick<ManagedTopodPreloadApi, 'linkSshAccess' | 'unlinkSshAccess'>
   environment: PublicKnownRuntimeEnvironment
   targets: SshTarget[]
   onChanged: () => void

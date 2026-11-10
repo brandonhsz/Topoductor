@@ -10,7 +10,7 @@ import {
   savedIds
 } from './structured-agent-session-tab-authority.test-support'
 import * as publication from '../../session-tabs/structured-session-tab-publication'
-import { chatTabCommandsSettled } from '../../orca-runtime-tests/session-layout-apply.test-fixture'
+import { chatTabCommandsSettled } from '../../topo-runtime-tests/session-layout-apply.test-fixture'
 
 vi.mock('../../../claude/claude-cli-flag-prewarm', () => ({
   prewarmClaudeCliFlags: async () => undefined

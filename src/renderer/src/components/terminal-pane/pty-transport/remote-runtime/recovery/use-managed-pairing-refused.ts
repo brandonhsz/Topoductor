@@ -1,5 +1,5 @@
 import { parseExecutionHostId } from '../../../../../../../shared/execution-host'
-import { getOrcadSshDeployment } from '../../../../../../../shared/remote-runtime/host-catalog/runtime-environments'
+import { getTopodSshDeployment } from '../../../../../../../shared/remote-runtime/host-catalog/runtime-environments'
 import { workspaceOwnerHostId } from '@/lib/workspace/ownership/workspace-row-owner-host'
 import { useAppStore } from '@/store/index'
 import type { AppState } from '@/store/types'
@@ -17,7 +17,7 @@ export function selectManagedPairingRefusedEnvironmentId(
     return null
   }
   const environment = state.runtimeEnvironments.find((entry) => entry.id === host.environmentId)
-  if (!environment || !getOrcadSshDeployment(environment)) {
+  if (!environment || !getTopodSshDeployment(environment)) {
     return null
   }
   const snapshot = state.runtimeStatusByEnvironmentId.get(environment.id)?.snapshot

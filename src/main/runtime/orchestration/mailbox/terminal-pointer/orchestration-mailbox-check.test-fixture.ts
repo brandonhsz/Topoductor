@@ -1,5 +1,5 @@
 import { expect } from 'vitest'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../../../shared/orchestration/orchestration-runtime-capabilities'
 import { RpcDispatcher } from '../../../rpc/dispatcher'
 import { ORCHESTRATION_METHODS } from '../../../rpc/methods/orchestration/orchestration'
@@ -29,7 +29,7 @@ export type MailboxCheckOptions = {
 }
 
 export async function checkBoundMailbox(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   options: MailboxCheckOptions = {}
 ): Promise<MailboxCheckResult> {
   const response = await dispatchMailboxCheck(runtime, options)
@@ -41,7 +41,7 @@ export async function checkBoundMailbox(
 }
 
 export async function dispatchMailboxCheck(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   options: MailboxCheckOptions = {}
 ) {
   const terminal = options.terminal ?? TERMINAL_HANDLE

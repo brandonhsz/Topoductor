@@ -9,7 +9,7 @@ import { useTranslate } from '@/i18n/use-translate'
 import { useAppStore } from '@/store'
 import { hasFeatureInteraction } from '../../../../shared/feature-interactions'
 
-const WORKSPACE_BOARD_MOVED_HINT_STORAGE_KEY = 'orca.workspaceBoardMovedHintSeen.v1'
+const WORKSPACE_BOARD_MOVED_HINT_STORAGE_KEY = 'topo.workspaceBoardMovedHintSeen.v1'
 const WORKSPACE_BOARD_MOVED_HINT_DURATION_MS = 12000
 
 type SidebarToolbarProps = {

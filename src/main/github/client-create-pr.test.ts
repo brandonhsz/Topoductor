@@ -89,13 +89,13 @@ describe('createGitHubPullRequest', () => {
     // Creation targets the fork holding the unqualified head branch; reads can prefer upstream.
     getOwnerRepoForRemoteMock.mockImplementation(async (_repoPath: string, remoteName: string) =>
       remoteName === 'origin'
-        ? { owner: 'fsdwen', repo: 'orca' }
-        : { owner: 'stablyai', repo: 'orca' }
+        ? { owner: 'fsdwen', repo: 'topo' }
+        : { owner: 'brandonhsz', repo: 'topo' }
     )
     ghExecFileAsyncMock.mockResolvedValueOnce({
       stdout: JSON.stringify({
         number: 5,
-        url: 'https://github.com/fsdwen/orca/pull/5'
+        url: 'https://github.com/fsdwen/topo/pull/5'
       })
     })
 
@@ -113,11 +113,11 @@ describe('createGitHubPullRequest', () => {
     ).resolves.toEqual({
       ok: true,
       number: 5,
-      url: 'https://github.com/fsdwen/orca/pull/5'
+      url: 'https://github.com/fsdwen/topo/pull/5'
     })
 
     const [args] = ghExecFileAsyncMock.mock.calls[0]
-    expect(args[args.indexOf('--repo') + 1]).toBe('fsdwen/orca')
+    expect(args[args.indexOf('--repo') + 1]).toBe('fsdwen/topo')
     expect(args[args.indexOf('--head') + 1]).toBe('my-branch')
   })
 

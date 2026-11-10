@@ -34,7 +34,7 @@ vi.mock('../../sessions/profiles/browser-session-registry', () => ({
     clearPendingCookieImport: clearPendingCookieImportMock
   }
 }))
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   runProcess: runProcessMock
 }))
 vi.mock('node:fs', async (importOriginal) => ({ ...(await importOriginal<typeof NodeFs>()) }))
@@ -102,7 +102,7 @@ describe('importCookiesFromBrowser — undecryptable cookies', () => {
   let platformSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
-    tmpDir = mkdtempSync(join(tmpdir(), 'orca-linux-keyring-test-'))
+    tmpDir = mkdtempSync(join(tmpdir(), 'topo-linux-keyring-test-'))
     cookiesSetMock = vi.fn().mockResolvedValue(undefined)
     targetJar = []
     cookiesRemoveMock = vi.fn(async (_url: string, name: string) => {

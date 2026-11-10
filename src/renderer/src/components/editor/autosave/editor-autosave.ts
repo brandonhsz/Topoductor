@@ -11,21 +11,21 @@ import {
 import { clampNumber } from '@/lib/terminal-theme'
 import { isAutosavePausedForNonUtf8File } from './editor-non-utf8-autosave-pause'
 
-export const ORCA_EDITOR_QUIESCE_FILE_SAVES_EVENT = 'orca:editor-quiesce-file-saves'
-export const ORCA_EDITOR_EXTERNAL_FILE_CHANGE_EVENT = 'orca:editor-external-file-change'
-export const ORCA_EDITOR_SAVE_FILE_EVENT = 'orca:editor-save-file'
-export const ORCA_EDITOR_SAVE_AND_CLOSE_EVENT = 'orca:save-and-close'
-export const ORCA_EDITOR_FILE_SAVED_EVENT = 'orca:editor-file-saved'
+export const TOPO_EDITOR_QUIESCE_FILE_SAVES_EVENT = 'topo:editor-quiesce-file-saves'
+export const TOPO_EDITOR_EXTERNAL_FILE_CHANGE_EVENT = 'topo:editor-external-file-change'
+export const TOPO_EDITOR_SAVE_FILE_EVENT = 'topo:editor-save-file'
+export const TOPO_EDITOR_SAVE_AND_CLOSE_EVENT = 'topo:save-and-close'
+export const TOPO_EDITOR_FILE_SAVED_EVENT = 'topo:editor-file-saved'
 // Drop sibling content caches when their disk baseline advances without cached text.
-export const ORCA_EDITOR_FILE_CACHE_STALE_EVENT = 'orca:editor-file-cache-stale'
+export const TOPO_EDITOR_FILE_CACHE_STALE_EVENT = 'topo:editor-file-cache-stale'
 
 export function notifyEditorFileCacheStale(fileId: string): void {
   window.dispatchEvent(
-    new CustomEvent<{ fileId: string }>(ORCA_EDITOR_FILE_CACHE_STALE_EVENT, { detail: { fileId } })
+    new CustomEvent<{ fileId: string }>(TOPO_EDITOR_FILE_CACHE_STALE_EVENT, { detail: { fileId } })
   )
 }
-export const ORCA_EDITOR_REQUEST_CMD_SAVE_EVENT = 'orca:editor-request-cmd-save'
-export const ORCA_EDITOR_REQUEST_FILE_CLOSE_EVENT = 'orca:editor-request-file-close'
+export const TOPO_EDITOR_REQUEST_CMD_SAVE_EVENT = 'topo:editor-request-cmd-save'
+export const TOPO_EDITOR_REQUEST_FILE_CLOSE_EVENT = 'topo:editor-request-file-close'
 
 export type EditorPathMutationTarget = {
   worktreeId: string
@@ -183,7 +183,7 @@ export async function requestEditorSaveQuiesce(
   await new Promise<void>((resolve, reject) => {
     let claimed = false
     window.dispatchEvent(
-      new CustomEvent<EditorSaveQuiesceDetail>(ORCA_EDITOR_QUIESCE_FILE_SAVES_EVENT, {
+      new CustomEvent<EditorSaveQuiesceDetail>(TOPO_EDITOR_QUIESCE_FILE_SAVES_EVENT, {
         detail: {
           ...target,
           claim: () => {
@@ -209,7 +209,7 @@ export async function requestEditorFileSave(target: EditorSaveFileTarget): Promi
   await new Promise<void>((resolve, reject) => {
     let claimed = false
     window.dispatchEvent(
-      new CustomEvent<EditorSaveFileDetail>(ORCA_EDITOR_SAVE_FILE_EVENT, {
+      new CustomEvent<EditorSaveFileDetail>(TOPO_EDITOR_SAVE_FILE_EVENT, {
         detail: {
           ...target,
           claim: () => {
@@ -232,7 +232,7 @@ export function requestEditorFileClose(
   options?: Pick<EditorRequestFileCloseDetail, 'onClosed' | 'tabId'>
 ): void {
   window.dispatchEvent(
-    new CustomEvent<EditorRequestFileCloseDetail>(ORCA_EDITOR_REQUEST_FILE_CLOSE_EVENT, {
+    new CustomEvent<EditorRequestFileCloseDetail>(TOPO_EDITOR_REQUEST_FILE_CLOSE_EVENT, {
       detail: { fileId, ...options }
     })
   )
@@ -241,7 +241,7 @@ export function requestEditorFileClose(
 // CONTRACT: consumers must skip dirty files individually; this event can include dirty tabs whose drafts must survive reload.
 export function notifyEditorExternalFileChange(target: EditorPathMutationTarget): void {
   window.dispatchEvent(
-    new CustomEvent<EditorPathMutationTarget>(ORCA_EDITOR_EXTERNAL_FILE_CHANGE_EVENT, {
+    new CustomEvent<EditorPathMutationTarget>(TOPO_EDITOR_EXTERNAL_FILE_CHANGE_EVENT, {
       detail: target
     })
   )

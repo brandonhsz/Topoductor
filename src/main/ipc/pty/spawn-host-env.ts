@@ -14,9 +14,9 @@ import type { CodexSessionResumePreparation } from '../../codex/history/resume/c
 import type { CodexAccountSelectionTarget } from '../../codex-accounts/runtime-selection'
 import { isSafePtySessionId } from '../../daemon/sessions/pty-session-id'
 import type { IPtyProvider } from '../../providers/pty-provider-contract'
-import { stampWslOrchestrationCompatibilityHost } from '../../pty/shell-startup/wsl-orca-env'
+import { stampWslOrchestrationCompatibilityHost } from '../../pty/shell-startup/wsl-topo-env'
 import { getRuntimeSourceStamp } from '../../runtime/hosts/platform-probe/host-descriptor'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import { buildPtyHostEnv } from './host-env/assembly'
 import { blockedWslDistroForPath } from '../../wsl/filesystem/wsl-unc-access-gate'
 import { runAsWslLaunchUserAct } from '../../wsl/discovery/wsl-background-exec-gate'
@@ -25,7 +25,7 @@ import {
   getCompatibleSelectedCodexHomePath,
   resolveCodexHomeAfterManagedAuthReadiness,
   shouldSkipCodexHomeEnvForWindowsShell,
-  shouldStripInheritedOrcaCodexHome
+  shouldStripInheritedTopoCodexHome
 } from './host-env/codex-home'
 import type {
   CodexResumeLaunch,
@@ -63,14 +63,14 @@ export type PtySpawnHostEnv = {
   selectedCodexHomePath: string | null
   codexResumeHomeSelected: boolean
   skipCodexHomeEnv: boolean
-  stripInheritedOrcaCodexHome: boolean
+  stripInheritedTopoCodexHome: boolean
 }
 
 type PtySpawnHostEnvArgs = {
   launchAgent: TuiAgent | undefined
   command: string | undefined
   resumeProviderSession: AgentProviderSessionMetadata | undefined
-  /** The lane's spawn env before Orca's host env. */
+  /** The lane's spawn env before Topo's host env. */
   env: Record<string, string> | undefined
   cwd: string | undefined
   shellOverride: string | undefined
@@ -93,7 +93,7 @@ type PtySpawnHostEnvArgs = {
   requestedAgentTeamsPath: string | undefined
   provider: IPtyProvider
   deps: PtySpawnCodexResumeDeps & {
-    runtime?: OrcaRuntimeService
+    runtime?: TopoRuntimeService
     getSettings?: () => GlobalSettings | undefined
     getSelectedCodexHomePath?: GetSelectedCodexHomePath
   }
@@ -193,9 +193,9 @@ async function resolvePtySpawnHostEnvForAct(args: PtySpawnHostEnvArgs): Promise<
       codexResumeHome && codexHomePathsEqual(selectedCodexHomePath, codexResumeHome.codexHomePath)
     ),
     skipCodexHomeEnv,
-    stripInheritedOrcaCodexHome:
+    stripInheritedTopoCodexHome:
       args.isDaemonHostSpawn &&
-      shouldStripInheritedOrcaCodexHome({
+      shouldStripInheritedTopoCodexHome({
         target,
         selectedCodexHomePath,
         skipCodexHomeEnv,
@@ -247,7 +247,7 @@ async function resolvePtySpawnHostEnvForAct(args: PtySpawnHostEnvArgs): Promise<
       userDataPath: getAppEnvironment().getPath('userData'),
       selectedCodexHomePath,
       skipCodexHomeEnv,
-      stripInheritedOrcaCodexHome: hostEnv.stripInheritedOrcaCodexHome,
+      stripInheritedTopoCodexHome: hostEnv.stripInheritedTopoCodexHome,
       launchCommand,
       launchAgent: isTuiAgent(args.launchAgent) ? args.launchAgent : undefined,
       shellPath: args.shellOverride,

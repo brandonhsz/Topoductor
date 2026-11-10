@@ -1,8 +1,8 @@
-// Read-only Windows registry value enumeration for Orca.
+// Read-only Windows registry value enumeration for Topo.
 //
 // Vendored from windows-native-registry@3.2.2 (MIT, Eugene Pankov), reduced to the one
-// entry point Orca calls. The upstream write surface (setValue/createKey/deleteKey) is
-// deliberately absent: Orca only ever reads, and shipping RegDeleteTreeW in the app is
+// entry point Topo calls. The upstream write surface (setValue/createKey/deleteKey) is
+// deliberately absent: Topo only ever reads, and shipping RegDeleteTreeW in the app is
 // capability we have no use for.
 //
 // Two upstream defects are fixed here rather than carried over:
@@ -122,4 +122,4 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
   return exports;
 }
 
-NODE_API_MODULE(orca_windows_registry, Init)
+NODE_API_MODULE(topo_windows_registry, Init)

@@ -23,7 +23,7 @@ import {
 
 type Todo = { id: number; title: string; done: boolean }
 
-// Persisted for the plugin: the list survives closing the panel and restarting Orca.
+// Persisted for the plugin: the list survives closing the panel and restarting Topo.
 const todos = atom<Todo[]>(
   'todos',
   [
@@ -116,7 +116,7 @@ export default function Panel() {
         </Button>
       </Row>
       <Text muted size="xs">
-        Runs isolated with no network; Orca draws every control. Theme changes seen:{' '}
+        Runs isolated with no network; Topo draws every control. Theme changes seen:{' '}
         {read(seenThemes)}.
       </Text>
     </Stack>

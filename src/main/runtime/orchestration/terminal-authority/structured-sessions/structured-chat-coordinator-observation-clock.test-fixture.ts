@@ -1,6 +1,6 @@
 import { expect, vi } from 'vitest'
 import type { StructuredAgentSessionHost } from '../../../../native-chat/agent-session-wire/host/structured-agent-session-host'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { waitForStructuredAgentSessionRecovery } from '../../../agent-session/structured-agent-session-runtime'
 
 export function createCoordinatorMailObservationClock(
@@ -24,7 +24,7 @@ export function createCoordinatorMailObservationClock(
       await new Promise<void>((resolve) => setImmediate(resolve))
     },
     async edgesAnswered(
-      runtime: Pick<OrcaRuntimeService, 'onStructuredSessionStatusForMail'>,
+      runtime: Pick<TopoRuntimeService, 'onStructuredSessionStatusForMail'>,
       wait: { timeout: number }
     ): Promise<void> {
       // The lane reads each outstanding send by key; a session with none outstanding reads nothing.

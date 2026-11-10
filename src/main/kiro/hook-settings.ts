@@ -94,7 +94,7 @@ function buildManagedDefinition(event: string, command: string): HookDefinition 
 /** List-form entry, as in V3 hook files and agents `kiro-cli agent upgrade` rewrote. */
 export function buildKiroListHook(trigger: string, command: string): Record<string, unknown> {
   return {
-    name: `orca-agent-status-${trigger}`,
+    name: `topo-agent-status-${trigger}`,
     trigger,
     ...(KIRO_TOOL_EVENTS.has(trigger) ? { matcher: '*' } : {}),
     action: { type: 'command', command },
@@ -140,7 +140,7 @@ function applyManagedKiroListHooks(
     if (event === null) {
       return [entry]
     }
-    // Refresh the first Orca entry per event where it sits; drop duplicates.
+    // Refresh the first Topo entry per event where it sits; drop duplicates.
     return missing.delete(event) ? [buildKiroListHook(event, command)] : []
   })
   return [...kept, ...[...missing].map((event) => buildKiroListHook(event, command))]
@@ -174,7 +174,7 @@ function hasManagedDefinition(
   )
 }
 
-/** Preserve user hooks while converging to one Orca hook per event. */
+/** Preserve user hooks while converging to one Topo hook per event. */
 export function applyManagedKiroHooks(
   config: Record<string, unknown>,
   command: string,

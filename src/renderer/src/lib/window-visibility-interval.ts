@@ -1,4 +1,4 @@
-import { isOrcaWindowForegroundFocused } from '@/attention/orca-window-foreground-focus'
+import { isTopoWindowForegroundFocused } from '@/attention/topo-window-foreground-focus'
 
 export type WindowVisibilityIntervalTimer = ReturnType<typeof setInterval>
 export type WindowVisibilityJitterTimer = ReturnType<typeof setTimeout>
@@ -16,7 +16,7 @@ export function isWindowVisible(): boolean {
 }
 
 export function windowPollSlowdown(): number {
-  return isOrcaWindowForegroundFocused() ? 1 : UNFOCUSED_POLL_SLOWDOWN
+  return isTopoWindowForegroundFocused() ? 1 : UNFOCUSED_POLL_SLOWDOWN
 }
 
 export function installWindowVisibilityInterval(args: {

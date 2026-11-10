@@ -39,7 +39,7 @@ function LineLink({
   )
 }
 
-/** "CI failing on orca#3 at 8d5f74b": a one-line card per finished CI result, hideable like the other chat cards. */
+/** "CI failing on topo#3 at 8d5f74b": a one-line card per finished CI result, hideable like the other chat cards. */
 export function NativeChatPullRequestEventLine({
   block,
   messageId
@@ -85,7 +85,7 @@ export function NativeChatPullRequestEventLine({
           settingSectionId={NATIVE_CHAT_CI_RESULT_LINES_SETTING_SECTION_ID}
           hiddenMessage={t(
             'components.native-chat.ciResultLine.hidden',
-            "Orca won't show CI result lines anymore"
+            "Topo won't show CI result lines anymore"
           )}
           ariaLabel={t('components.native-chat.ciResultLine.hide', "Don't show CI result lines")}
         />

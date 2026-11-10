@@ -25,7 +25,7 @@ import type {
   RemoveManagedWorktreeOptions,
   RuntimeWorktreeRemovalTarget
 } from '../catalog/runtime-worktree-selection'
-import { OrcaRuntimeWithRemoveManagedWorktree } from './workspace-removal'
+import { TopoRuntimeWithRemoveManagedWorktree } from './workspace-removal'
 import { listWorktreesOnRemovalRoute } from './worktree-removal-route-listing'
 
 async function listRuntimeRemovalWorktrees(
@@ -112,7 +112,7 @@ async function removeRuntimeApprovedNestedWorktrees(args: {
   }
 }
 
-export abstract class RuntimeNestedWorktreeRemoval extends OrcaRuntimeWithRemoveManagedWorktree {
+export abstract class RuntimeNestedWorktreeRemoval extends TopoRuntimeWithRemoveManagedWorktree {
   async previewNestedManagedWorktreeRemoval(
     worktreeSelector: string,
     hostId?: string

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { ProcessResult } from '@orca/process-host/process-spec'
-import '@orca/process-host/wsl-distro-allowlist'
+import type { ProcessResult } from '@topo/process-host/process-spec'
+import '@topo/process-host/wsl-distro-allowlist'
 import {
   _resetWslCachesForTests,
   getWslHome,
@@ -14,7 +14,7 @@ const { runProcessMock, runProcessSyncMock } = vi.hoisted(() => ({
   runProcessSyncMock: vi.fn()
 }))
 
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   runProcess: runProcessMock,
   runProcessSync: runProcessSyncMock
 }))

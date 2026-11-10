@@ -41,15 +41,15 @@ afterEach(async () => {
   await harness.cleanup()
 })
 
-it('orcad resolves no roots while disabled and discovers late roots when enabled', async () => {
-  const { installOrcadSessionSearchService } = await import('../orcad/orcad-session-search')
-  installed = await installOrcadSessionSearchService({
+it('topod resolves no roots while disabled and discovers late roots when enabled', async () => {
+  const { installTopodSessionSearchService } = await import('../topod/topod-session-search')
+  installed = await installTopodSessionSearchService({
     userDataPath: harness.root,
     getSettings: () => ({ aiVaultSearch: { enabled: false, historyDays: null } })
   })
   expect(localAiVaultScanRoots).not.toHaveBeenCalled()
   installed?.dispose()
-  installed = await installOrcadSessionSearchService({
+  installed = await installTopodSessionSearchService({
     userDataPath: harness.root,
     getSettings: () => ({ aiVaultSearch: { enabled: true, historyDays: null } })
   })

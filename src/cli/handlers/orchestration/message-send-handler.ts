@@ -86,7 +86,7 @@ export const ORCHESTRATION_SEND_HANDLER: Record<string, CommandHandler> = {
     if (
       (type === 'worker_done' || type === 'heartbeat') &&
       !getOptionalStringFlag(flags, 'from') &&
-      !process.env.ORCA_TERMINAL_HANDLE &&
+      !process.env.TOPO_TERMINAL_HANDLE &&
       !readInjectedAgentSessionId()
     ) {
       // Focus cannot establish lifecycle ownership; never guess a worker for an identity-less subprocess.
@@ -109,7 +109,7 @@ export const ORCHESTRATION_SEND_HANDLER: Record<string, CommandHandler> = {
       senderPaneKey:
         from === undefined || readInjectedAgentSessionId()
           ? undefined
-          : process.env.ORCA_PANE_KEY || undefined,
+          : process.env.TOPO_PANE_KEY || undefined,
       waitForLifecycleSettlement: type === 'worker_done' ? true : undefined,
       devMode: isDevCliInvocation()
     }

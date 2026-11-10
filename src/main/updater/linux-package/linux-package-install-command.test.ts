@@ -81,7 +81,7 @@ describe('buildLinuxPackageInstallCommand', () => {
     install('/usr/bin/sudo')
     install('/usr/bin/apt')
     const { buildLinuxPackageInstallCommand } = await loadCommandModule()
-    for (const packagePath of ['orca.deb', './orca.deb', '--force-all', '-i']) {
+    for (const packagePath of ['topo.deb', './topo.deb', '--force-all', '-i']) {
       expect(buildLinuxPackageInstallCommand('deb', packagePath)).toEqual({
         ok: false,
         reason: 'invalid-package-path'

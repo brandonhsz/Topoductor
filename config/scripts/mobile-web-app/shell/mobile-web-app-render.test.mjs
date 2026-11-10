@@ -58,7 +58,7 @@ beforeAll(async () => {
   if (!bundles) {
     return
   }
-  scratch = await mkdtemp(join(tmpdir(), 'orca-mobile-web-app-render-'))
+  scratch = await mkdtemp(join(tmpdir(), 'topo-mobile-web-app-render-'))
   const built = await buildMobileWebAppBundle({ outDir: join(scratch, 'bundle') })
   const { outDir } = built
   routeChunks = built.routeChunks
@@ -87,7 +87,7 @@ beforeAll(async () => {
   server = served.server
   origin = served.origin
   // Use runner Chrome override to avoid CI browser downloads.
-  const executablePath = process.env.ORCA_MOBILE_WEB_RENDER_BROWSER
+  const executablePath = process.env.TOPO_MOBILE_WEB_RENDER_BROWSER
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) })
 }, 180_000)
 
@@ -165,14 +165,14 @@ async function waitForRoute({ page, errors, uncaught }, route, awaitText) {
     ])
   // Require committed Expo tree signal; root children can be an error/fallback. Timer polling works even when page never paints rAF.
   const cause = await race(
-    page.waitForFunction(() => document.documentElement.dataset.orcaWebEntry === 'mounted', {
+    page.waitForFunction(() => document.documentElement.dataset.topoWebEntry === 'mounted', {
       timeout: 30_000,
       polling: 250
     })
   )
   if (cause) {
     const state = await page.evaluate(
-      () => document.documentElement.dataset.orcaWebEntry ?? 'absent'
+      () => document.documentElement.dataset.topoWebEntry ?? 'absent'
     )
     throw named(cause, `never mounted (entry ${state})`)
   }
@@ -186,7 +186,7 @@ async function waitForRoute({ page, errors, uncaught }, route, awaitText) {
     throw named(paintCause, `mounted but never painted ${JSON.stringify(awaitText)}`)
   }
   // Fold boundary faults into asserted errors: caught throws emit no pageerror and may leave blank body.
-  for (const fault of await page.evaluate(() => globalThis.__orcaRenderCheckFaults ?? [])) {
+  for (const fault of await page.evaluate(() => globalThis.__topoRenderCheckFaults ?? [])) {
     errors.push(`page fault: ${fault}`)
   }
 }
@@ -199,8 +199,8 @@ async function render(route, awaitText, { shellRoute = { pathname: route }, ...s
   const text = await opened.page.evaluate(() => document.body.innerText)
   // Read page’s session identity to catch mounting without shell’s session or inventing one.
   const session = await opened.page.evaluate(() => ({
-    sessionId: document.documentElement.dataset.orcaWebSessionId ?? null,
-    buildId: document.documentElement.dataset.orcaWebBuildId ?? null
+    sessionId: document.documentElement.dataset.topoWebSessionId ?? null,
+    buildId: document.documentElement.dataset.topoWebBuildId ?? null
   }))
   // Require rewrite from / before render or every host route resolves to Unmatched.
   const url = await opened.page.evaluate(() => location.pathname + location.search)
@@ -218,7 +218,7 @@ async function render(route, awaitText, { shellRoute = { pathname: route }, ...s
 const paintReports = (page, name) =>
   page.evaluate(
     (paint) =>
-      (globalThis.__orcaRenderCheckNotifies ?? []).filter((frame) => frame.name === paint).length,
+      (globalThis.__topoRenderCheckNotifies ?? []).filter((frame) => frame.name === paint).length,
     name
   )
 
@@ -285,7 +285,7 @@ describeRender('the Route A page in a real browser', () => {
       const reported = await opened.page
         .waitForFunction(
           () => {
-            const faults = globalThis.__orcaRenderCheckFaults ?? []
+            const faults = globalThis.__topoRenderCheckFaults ?? []
             return faults.length > 0 ? faults : null
           },
           { timeout: 30_000, polling: 250 }
@@ -319,12 +319,12 @@ describeRender('the Route A page in a real browser', () => {
       const opened = await openPage({ shellRoute: { pathname: HOST_ROUTE } })
       await opened.page.goto(`${origin}/`, { waitUntil: 'load' })
       await opened.page.waitForFunction(
-        () => document.documentElement.dataset.orcaWebEntry === 'shell-ready',
+        () => document.documentElement.dataset.topoWebEntry === 'shell-ready',
         { timeout: 30_000, polling: 250 }
       )
       await waitForPageFrames(opened.page)
       // The page waits for its route's held chunk before it mounts, so nothing may mount or report a paint meanwhile.
-      expect(await opened.page.evaluate(() => document.documentElement.dataset.orcaWebEntry)).toBe(
+      expect(await opened.page.evaluate(() => document.documentElement.dataset.topoWebEntry)).toBe(
         'shell-ready'
       )
       expect(await paintReports(opened.page, paintName)).toBe(0)
@@ -333,7 +333,7 @@ describeRender('the Route A page in a real browser', () => {
       await waitForRoute(opened, HOST_ROUTE, SHELL_HOST.name)
       await opened.page.waitForFunction(
         (name) =>
-          (globalThis.__orcaRenderCheckNotifies ?? []).filter((frame) => frame.name === name)
+          (globalThis.__topoRenderCheckNotifies ?? []).filter((frame) => frame.name === name)
             .length > 0,
         paintName,
         { timeout: 30_000, polling: 250 }
@@ -377,7 +377,7 @@ describeRender('the Route A page in a real browser', () => {
       arrive()
       await opened.page.waitForFunction(
         (name) =>
-          (globalThis.__orcaRenderCheckNotifies ?? []).filter((frame) => frame.name === name)
+          (globalThis.__topoRenderCheckNotifies ?? []).filter((frame) => frame.name === name)
             .length > 0,
         paintName,
         { timeout: 30_000, polling: 250 }
@@ -403,10 +403,10 @@ describeRender('the Route A page in a real browser', () => {
     expect(text).toContain(SHELL_HOST.name)
     expect(text).not.toContain(UNMATCHED)
     // Require no notify as well as unchanged page; successful shell handoff also leaves document in place.
-    const notifies = await page.evaluate(() => globalThis.__orcaRenderCheckNotifies ?? [])
+    const notifies = await page.evaluate(() => globalThis.__topoRenderCheckNotifies ?? [])
     expect(notifies.filter((frame) => frame.name === 'navigate')).toEqual([])
     // Refused target declines navigation without faulting page.
-    expect(await page.evaluate(() => globalThis.__orcaRenderCheckFaults ?? [])).toEqual([])
+    expect(await page.evaluate(() => globalThis.__topoRenderCheckFaults ?? [])).toEqual([])
     expect(errors).toEqual([])
     await page.close()
   }, 60_000)
@@ -460,7 +460,7 @@ describeRender('the stack the page Back button rests on', () => {
     await expect
       .poll(() =>
         opened.page.evaluate(() =>
-          (globalThis.__orcaRenderCheckNotifies ?? []).filter((frame) => frame.name === 'navigate')
+          (globalThis.__topoRenderCheckNotifies ?? []).filter((frame) => frame.name === 'navigate')
         )
       )
       .toEqual([{ v: bridgeVersion, type: 'notify', name: 'navigate', href: '/' }])

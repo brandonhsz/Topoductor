@@ -1,14 +1,14 @@
 // A Claude plugin's status line and toasts never reach the chat transcript as raw provider rows.
 
 import { readFileSync } from 'node:fs'
-import { expect } from './helpers/orca-app'
+import { expect } from './helpers/topo-app'
 import { SUPPORTED, openStubChat, test } from './helpers/structured-claude-stub'
 
 test.describe('native chat plugin UI frames', () => {
   test.skip(!SUPPORTED, 'the Claude stub wrapper is POSIX-only')
 
   test('a focused plugin pane fails once and a follow-up completes on a fresh process', async ({
-    orcaPage: page,
+    topoPage: page,
     claudeStub
   }) => {
     const { reply, composer } = await openStubChat(page, claudeStub.command)

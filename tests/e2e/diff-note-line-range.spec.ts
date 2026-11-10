@@ -2,16 +2,16 @@ import { execFileSync } from 'node:child_process'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { pressShortcut } from './helpers/shortcuts'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 
 // Exercise real gutter ownership and pointer tracking: the range must survive composer open without starting Monaco selection.
 
-const BAND = '.orca-diff-comment-range-highlight'
-const COMPOSER = '.orca-diff-comment-popover'
-const COMPOSER_LABEL = '.orca-diff-comment-popover-label'
-const COMPOSER_TEXTAREA = '.orca-diff-comment-popover-textarea'
+const BAND = '.topo-diff-comment-range-highlight'
+const COMPOSER = '.topo-diff-comment-popover'
+const COMPOSER_LABEL = '.topo-diff-comment-popover-label'
+const COMPOSER_TEXTAREA = '.topo-diff-comment-popover-textarea'
 
 type StoredNote = { startLine?: number; lineNumber: number; body: string }
 
@@ -144,7 +144,7 @@ async function revealAddButton(
 ): Promise<{ x: number; y: number; top: string }> {
   const line = await gutterPoint(page, lineNumber)
   await page.mouse.move(line.x + 260, line.y)
-  const button = page.locator('.orca-diff-comment-add-btn')
+  const button = page.locator('.topo-diff-comment-add-btn')
   await expect(button, 'the "+" never appeared on the hovered line').toBeVisible()
   const box = await button.boundingBox()
   if (!box) {
@@ -185,109 +185,109 @@ async function submitNote(page: Page, body: string): Promise<void> {
 }
 
 test.describe('Diff note line range', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
   })
 
   test('dragging the gutter selects a range, keeps it lit, and saves one ranged note', async ({
-    orcaPage
+    topoPage
   }) => {
-    const worktreeId = await waitForActiveWorktree(orcaPage)
-    await seedDiffFile(orcaPage, worktreeId, 'src/diff-note-range-drag.ts')
+    const worktreeId = await waitForActiveWorktree(topoPage)
+    await seedDiffFile(topoPage, worktreeId, 'src/diff-note-range-drag.ts')
 
-    const from = await gutterPoint(orcaPage, 4)
-    const to = await gutterPoint(orcaPage, 9)
+    const from = await gutterPoint(topoPage, 4)
+    const to = await gutterPoint(topoPage, 9)
 
-    await orcaPage.mouse.move(from.x, from.y)
-    await orcaPage.mouse.down()
-    await expect(orcaPage.locator(BAND)).toHaveCount(1)
+    await topoPage.mouse.move(from.x, from.y)
+    await topoPage.mouse.down()
+    await expect(topoPage.locator(BAND)).toHaveCount(1)
 
-    await orcaPage.mouse.move(to.x, (from.y + to.y) / 2)
-    await orcaPage.mouse.move(to.x, to.y)
+    await topoPage.mouse.move(to.x, (from.y + to.y) / 2)
+    await topoPage.mouse.move(to.x, to.y)
     await expect(
-      orcaPage.locator(BAND),
+      topoPage.locator(BAND),
       'the band did not follow the pointer while the button was held'
     ).toHaveCount(6)
 
-    await orcaPage.mouse.up()
+    await topoPage.mouse.up()
 
-    await expect(orcaPage.locator(COMPOSER_LABEL)).toHaveText('Lines 4-9')
+    await expect(topoPage.locator(COMPOSER_LABEL)).toHaveText('Lines 4-9')
     await expect(
-      orcaPage.locator(BAND),
+      topoPage.locator(BAND),
       'the band should stay lit while the note is being written'
     ).toHaveCount(6)
     // The gutter press belongs to us, so Monaco never started a text selection under it.
-    expect(await orcaPage.evaluate(() => window.getSelection()?.toString() ?? '')).toBe('')
+    expect(await topoPage.evaluate(() => window.getSelection()?.toString() ?? '')).toBe('')
 
-    await submitNote(orcaPage, 'Collapse these six lines into a loop.')
+    await submitNote(topoPage, 'Collapse these six lines into a loop.')
 
-    expect(await readNotes(orcaPage, worktreeId)).toEqual([
+    expect(await readNotes(topoPage, worktreeId)).toEqual([
       { startLine: 4, lineNumber: 9, body: 'Collapse these six lines into a loop.' }
     ])
-    const card = orcaPage.locator('.orca-diff-comment-card').first()
+    const card = topoPage.locator('.topo-diff-comment-card').first()
     await expect(card, 'saved note card did not render').toBeVisible({ timeout: 15_000 })
     await expect(card).toContainText('lines 4-9')
-    await expect(orcaPage.locator(BAND)).toHaveCount(0)
+    await expect(topoPage.locator(BAND)).toHaveCount(0)
   })
 
   // Drag upward to prove anchor/focus stay distinct and commit in document order.
   test('dragging the gutter upward commits the same range as dragging down', async ({
-    orcaPage
+    topoPage
   }) => {
-    const worktreeId = await waitForActiveWorktree(orcaPage)
-    await seedDiffFile(orcaPage, worktreeId, 'src/diff-note-range-drag-up.ts')
+    const worktreeId = await waitForActiveWorktree(topoPage)
+    await seedDiffFile(topoPage, worktreeId, 'src/diff-note-range-drag-up.ts')
 
-    const from = await gutterPoint(orcaPage, 9)
-    const to = await gutterPoint(orcaPage, 4)
+    const from = await gutterPoint(topoPage, 9)
+    const to = await gutterPoint(topoPage, 4)
 
-    await orcaPage.mouse.move(from.x, from.y)
-    await orcaPage.mouse.down()
-    await expect(orcaPage.locator(BAND)).toHaveCount(1)
+    await topoPage.mouse.move(from.x, from.y)
+    await topoPage.mouse.down()
+    await expect(topoPage.locator(BAND)).toHaveCount(1)
 
-    await orcaPage.mouse.move(to.x, (from.y + to.y) / 2)
-    await orcaPage.mouse.move(to.x, to.y)
+    await topoPage.mouse.move(to.x, (from.y + to.y) / 2)
+    await topoPage.mouse.move(to.x, to.y)
     await expect(
-      orcaPage.locator(BAND),
+      topoPage.locator(BAND),
       'the band did not grow upward while the button was held'
     ).toHaveCount(6)
 
-    await orcaPage.mouse.up()
+    await topoPage.mouse.up()
 
-    await expect(orcaPage.locator(COMPOSER_LABEL)).toHaveText('Lines 4-9')
-    expect(await orcaPage.evaluate(() => window.getSelection()?.toString() ?? '')).toBe('')
+    await expect(topoPage.locator(COMPOSER_LABEL)).toHaveText('Lines 4-9')
+    expect(await topoPage.evaluate(() => window.getSelection()?.toString() ?? '')).toBe('')
 
-    await submitNote(orcaPage, 'Dragged bottom to top.')
+    await submitNote(topoPage, 'Dragged bottom to top.')
 
-    expect(await readNotes(orcaPage, worktreeId)).toEqual([
+    expect(await readNotes(topoPage, worktreeId)).toEqual([
       { startLine: 4, lineNumber: 9, body: 'Dragged bottom to top.' }
     ])
-    await expect(orcaPage.locator('.orca-diff-comment-card').first()).toContainText('lines 4-9')
+    await expect(topoPage.locator('.topo-diff-comment-card').first()).toContainText('lines 4-9')
   })
 
   // Start on the non-Monaco + node to exercise the hit-test path that previously lost the whole drag.
   test('dragging from the "+" itself selects a range and the button rides the selection', async ({
-    orcaPage
+    topoPage
   }) => {
-    const worktreeId = await waitForActiveWorktree(orcaPage)
-    await seedDiffFile(orcaPage, worktreeId, 'src/diff-note-range-button-drag.ts')
+    const worktreeId = await waitForActiveWorktree(topoPage)
+    await seedDiffFile(topoPage, worktreeId, 'src/diff-note-range-button-drag.ts')
 
-    const button = await revealAddButton(orcaPage, 4)
-    const to = await gutterPoint(orcaPage, 9)
+    const button = await revealAddButton(topoPage, 4)
+    const to = await gutterPoint(topoPage, 9)
 
-    await orcaPage.mouse.move(button.x, button.y)
-    await orcaPage.mouse.down()
-    await orcaPage.mouse.move(button.x, (button.y + to.y) / 2)
-    await orcaPage.mouse.move(button.x, to.y)
+    await topoPage.mouse.move(button.x, button.y)
+    await topoPage.mouse.down()
+    await topoPage.mouse.move(button.x, (button.y + to.y) / 2)
+    await topoPage.mouse.move(button.x, to.y)
 
     await expect(
-      orcaPage.locator(BAND),
+      topoPage.locator(BAND),
       'the drag stalled because the pointer stayed over the "+"'
     ).toHaveCount(6)
     await expect
       .poll(
         async () =>
-          orcaPage.locator('.orca-diff-comment-add-btn').evaluate((node) => {
+          topoPage.locator('.topo-diff-comment-add-btn').evaluate((node) => {
             if (!(node instanceof HTMLElement)) {
               throw new Error('the add button is not an HTMLElement')
             }
@@ -297,77 +297,77 @@ test.describe('Diff note line range', () => {
       )
       .not.toBe(button.top)
 
-    await orcaPage.mouse.up()
-    await expect(orcaPage.locator(COMPOSER_LABEL)).toHaveText('Lines 4-9')
-    await submitNote(orcaPage, 'Dragged straight off the plus button.')
+    await topoPage.mouse.up()
+    await expect(topoPage.locator(COMPOSER_LABEL)).toHaveText('Lines 4-9')
+    await submitNote(topoPage, 'Dragged straight off the plus button.')
 
-    expect(await readNotes(orcaPage, worktreeId)).toEqual([
+    expect(await readNotes(topoPage, worktreeId)).toEqual([
       { startLine: 4, lineNumber: 9, body: 'Dragged straight off the plus button.' }
     ])
   })
 
   test('a press with no drag still saves the single-line note it always did', async ({
-    orcaPage
+    topoPage
   }) => {
-    const worktreeId = await waitForActiveWorktree(orcaPage)
-    await seedDiffFile(orcaPage, worktreeId, 'src/diff-note-range-click.ts')
+    const worktreeId = await waitForActiveWorktree(topoPage)
+    await seedDiffFile(topoPage, worktreeId, 'src/diff-note-range-click.ts')
 
-    const point = await gutterPoint(orcaPage, 6)
-    await orcaPage.mouse.move(point.x, point.y)
-    await orcaPage.mouse.down()
-    await orcaPage.mouse.up()
+    const point = await gutterPoint(topoPage, 6)
+    await topoPage.mouse.move(point.x, point.y)
+    await topoPage.mouse.down()
+    await topoPage.mouse.up()
 
-    await expect(orcaPage.locator(COMPOSER_LABEL)).toHaveText('Line 6')
-    await expect(orcaPage.locator(BAND)).toHaveCount(1)
+    await expect(topoPage.locator(COMPOSER_LABEL)).toHaveText('Line 6')
+    await expect(topoPage.locator(BAND)).toHaveCount(1)
 
-    await submitNote(orcaPage, 'Single line still works.')
+    await submitNote(topoPage, 'Single line still works.')
 
-    expect(await readNotes(orcaPage, worktreeId)).toEqual([
+    expect(await readNotes(topoPage, worktreeId)).toEqual([
       { startLine: undefined, lineNumber: 6, body: 'Single line still works.' }
     ])
-    await expect(orcaPage.locator('.orca-diff-comment-card').first()).toContainText('line 6')
+    await expect(topoPage.locator('.topo-diff-comment-card').first()).toContainText('line 6')
   })
 
-  test('Escape abandons a drag without opening a composer', async ({ orcaPage }) => {
-    const worktreeId = await waitForActiveWorktree(orcaPage)
-    await seedDiffFile(orcaPage, worktreeId, 'src/diff-note-range-escape.ts')
+  test('Escape abandons a drag without opening a composer', async ({ topoPage }) => {
+    const worktreeId = await waitForActiveWorktree(topoPage)
+    await seedDiffFile(topoPage, worktreeId, 'src/diff-note-range-escape.ts')
 
-    const from = await gutterPoint(orcaPage, 3)
-    const to = await gutterPoint(orcaPage, 8)
-    await orcaPage.mouse.move(from.x, from.y)
-    await orcaPage.mouse.down()
-    await orcaPage.mouse.move(to.x, to.y)
-    await expect(orcaPage.locator(BAND)).toHaveCount(6)
+    const from = await gutterPoint(topoPage, 3)
+    const to = await gutterPoint(topoPage, 8)
+    await topoPage.mouse.move(from.x, from.y)
+    await topoPage.mouse.down()
+    await topoPage.mouse.move(to.x, to.y)
+    await expect(topoPage.locator(BAND)).toHaveCount(6)
 
-    await orcaPage.keyboard.press('Escape')
-    await expect(orcaPage.locator(BAND), 'Escape left the band behind').toHaveCount(0)
+    await topoPage.keyboard.press('Escape')
+    await expect(topoPage.locator(BAND), 'Escape left the band behind').toHaveCount(0)
 
-    await orcaPage.mouse.up()
+    await topoPage.mouse.up()
     await expect(
-      orcaPage.locator(COMPOSER),
+      topoPage.locator(COMPOSER),
       'a cancelled drag must not open a composer on release'
     ).toHaveCount(0)
-    expect(await readNotes(orcaPage, worktreeId)).toEqual([])
+    expect(await readNotes(topoPage, worktreeId)).toEqual([])
   })
 
   test('the Add Review Note chord turns an editor selection into a ranged note', async ({
-    orcaPage
+    topoPage
   }) => {
-    const worktreeId = await waitForActiveWorktree(orcaPage)
-    await seedDiffFile(orcaPage, worktreeId, 'src/diff-note-range-chord.ts')
+    const worktreeId = await waitForActiveWorktree(topoPage)
+    await seedDiffFile(topoPage, worktreeId, 'src/diff-note-range-chord.ts')
 
     // Click the code column, not the gutter: Monaco still owns that side.
-    const line = await gutterPoint(orcaPage, 5)
-    await orcaPage.mouse.click(line.x + 220, line.y)
-    await orcaPage.keyboard.press('Shift+ArrowDown')
-    await orcaPage.keyboard.press('Shift+ArrowDown')
+    const line = await gutterPoint(topoPage, 5)
+    await topoPage.mouse.click(line.x + 220, line.y)
+    await topoPage.keyboard.press('Shift+ArrowDown')
+    await topoPage.keyboard.press('Shift+ArrowDown')
 
-    await pressShortcut(orcaPage, 'KeyA', { shift: true })
+    await pressShortcut(topoPage, 'KeyA', { shift: true })
 
-    await expect(orcaPage.locator(COMPOSER_LABEL)).toHaveText('Lines 5-7')
-    await submitNote(orcaPage, 'Range from the keyboard.')
+    await expect(topoPage.locator(COMPOSER_LABEL)).toHaveText('Lines 5-7')
+    await submitNote(topoPage, 'Range from the keyboard.')
 
-    expect(await readNotes(orcaPage, worktreeId)).toEqual([
+    expect(await readNotes(topoPage, worktreeId)).toEqual([
       { startLine: 5, lineNumber: 7, body: 'Range from the keyboard.' }
     ])
   })

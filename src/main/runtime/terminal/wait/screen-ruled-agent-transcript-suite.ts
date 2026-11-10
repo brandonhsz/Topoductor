@@ -4,7 +4,7 @@ import {
   createTranscriptPane,
   TRANSCRIPT_PANE_PTY_ID,
   waitForTranscriptIdle
-} from '../../orca-runtime-tests/agent-transcript-pane-test-harness'
+} from '../../topo-runtime-tests/agent-transcript-pane-test-harness'
 import {
   finalReadProjection,
   finalReplayFrame,

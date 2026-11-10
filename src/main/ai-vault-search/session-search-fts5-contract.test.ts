@@ -18,7 +18,7 @@ afterEach(async () => {
 })
 
 async function openDatabase(): Promise<SyncDatabase> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-fts5-contract-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-fts5-contract-'))
   tempRoots.push(root)
   return openSessionSearchDatabase(join(root, 'index.sqlite'))
 }

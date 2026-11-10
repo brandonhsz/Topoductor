@@ -1,7 +1,7 @@
 import type { BrowserSlice, BrowserSliceGet, BrowserSliceSet } from '../browser-slice-contract'
 
 import { findWorkspace } from '../pages/browser-page-records'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import { sendBrowserLayoutCommand } from '../tabs/browser-layout-owner-commands'
 
 export function createBrowserProfileSwitchActions(
@@ -32,7 +32,7 @@ export function createBrowserProfileSwitchActions(
           return s
         })
       // Switch point: main switches the tab's profile; its frame shows the change.
-      const tab = ORCA_LAYOUT_OWNER_IS_MAIN
+      const tab = TOPO_LAYOUT_OWNER_IS_MAIN
         ? findWorkspace(get().browserTabsByWorktree, workspaceId)
         : null
       if (

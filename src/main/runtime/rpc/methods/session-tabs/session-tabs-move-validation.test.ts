@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../../../shared/runtime-session-contracts'
 
 function setMobileSessionSnapshot(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   snapshot: RuntimeMobileSessionTabsSnapshot
 ): void {
   ;(
@@ -51,7 +51,7 @@ function browserTab({
 
 describe('session tab move validation', () => {
   it('preserves a capability-hidden structured tab during an old-client reorder', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const moveSessionTab = vi.fn()
     runtime.setNotifier({ moveSessionTab } as never)
     setMobileSessionSnapshot(runtime, {
@@ -107,7 +107,7 @@ describe('session tab move validation', () => {
   })
 
   it('validates reorder moves against sanitized visible tab groups', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const moveSessionTab = vi.fn()
     runtime.setNotifier({ moveSessionTab } as never)
     runtime.setAgentBrowserBridge({
@@ -194,7 +194,7 @@ describe('session tab move validation', () => {
   })
 
   it('rejects moves into groups hidden from the sanitized session model', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const moveSessionTab = vi.fn()
     runtime.setNotifier({ moveSessionTab } as never)
     runtime.setAgentBrowserBridge({
@@ -234,7 +234,7 @@ describe('session tab move validation', () => {
   })
 
   it('rejects reorder moves when the moved tab is absent from the target order', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const moveSessionTab = vi.fn()
     runtime.setNotifier({ moveSessionTab } as never)
     runtime.setAgentBrowserBridge({

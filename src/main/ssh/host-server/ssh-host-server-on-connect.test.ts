@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { SshTarget } from '../../../shared/ssh-types'
 import {
-  OrcadHostUnsupportedError,
-  OrcadStdioBridgeUnavailableError
-} from '../../orcad/orcad-host-unavailable'
+  TopodHostUnsupportedError,
+  TopodStdioBridgeUnavailableError
+} from '../../topod/topod-host-unavailable'
 import {
   resolveHostServerOnConnect,
   type HostServerOnConnectDeps
@@ -16,7 +16,7 @@ const deps = hostServerDepsStub
 
 describe('which server an SSH host runs on connect', () => {
   it('keeps a host whose stopped server could not be started managed, with the reason', async () => {
-    const detail = 'orcad did not become ready.\nLast lines of orcad.log:\nboom'
+    const detail = 'topod did not become ready.\nLast lines of topod.log:\nboom'
     const d = deps({
       managedEnvironmentId: () => 'env-9',
       ensureServing: vi.fn(async () => ({ state: 'unverifiable' as const, detail }))
@@ -31,16 +31,16 @@ describe('which server an SSH host runs on connect', () => {
     expect(d.autoUpdate).not.toHaveBeenCalled()
   })
 
-  it('falls back to the relay ladder for good when orcad cannot run, and remembers why', async () => {
+  it('falls back to the relay ladder for good when topod cannot run, and remembers why', async () => {
     const d = deps({
       isEmptyHost: () => true,
       deploy: async () => {
-        throw new OrcadHostUnsupportedError('Packaged orcad template does not support x')
+        throw new TopodHostUnsupportedError('Packaged topod template does not support x')
       }
     })
     await expect(resolveHostServerOnConnect(target, d)).resolves.toEqual({
       route: 'unserved',
-      reason: 'orcad_unavailable',
+      reason: 'topod_unavailable',
       detail: 'unsupported_host'
     })
     expect(d.recordUnavailable).toHaveBeenCalledWith(target, 'unsupported_host')
@@ -52,12 +52,12 @@ describe('which server an SSH host runs on connect', () => {
       convert: async () => ({
         outcome: 'deferred' as const,
         candidateVersion: '1.0.0',
-        code: 'orcad_candidate_preflight_failed',
+        code: 'topod_candidate_preflight_failed',
         reason: 'glibc 2.17 is below the floor'
       })
     })
     await expect(resolveHostServerOnConnect(target, preflight)).resolves.toMatchObject({
-      reason: 'orcad_unavailable'
+      reason: 'topod_unavailable'
     })
     expect(preflight.recordUnavailable).toHaveBeenCalledWith(target, 'native_preflight')
     // Release failed-conversion fences before direct source can serve again.
@@ -65,7 +65,7 @@ describe('which server an SSH host runs on connect', () => {
 
     const remembered = deps({ recordedUnavailable: () => 'unsupported_host' })
     await expect(resolveHostServerOnConnect(target, remembered)).resolves.toMatchObject({
-      reason: 'orcad_unavailable'
+      reason: 'topod_unavailable'
     })
     expect(remembered.convert).not.toHaveBeenCalled()
   })
@@ -76,7 +76,7 @@ describe('which server an SSH host runs on connect', () => {
       resolveHostServerOnConnect(
         {
           ...target,
-          orcadFence: { environmentId: 'env-1', sourceChangedAt: '2026-10-05T00:00:00Z' }
+          topodFence: { environmentId: 'env-1', sourceChangedAt: '2026-10-05T00:00:00Z' }
         },
         changed
       )
@@ -103,7 +103,7 @@ describe('which server an SSH host runs on connect', () => {
     const d = deps({
       convert: async () => {
         throw new Error(
-          'orcad_migration_stage_failed:orcad_migration_repository_path_conflict:/root/migrepo'
+          'topod_migration_stage_failed:topod_migration_repository_path_conflict:/root/migrepo'
         )
       }
     })
@@ -126,7 +126,7 @@ describe('which server an SSH host runs on connect', () => {
     const conflict = deps({
       relayTerminals: bridgedTerminals,
       convert: async () => {
-        throw new Error('orcad_migration_repository_path_conflict:/root/migrepo')
+        throw new Error('topod_migration_repository_path_conflict:/root/migrepo')
       }
     })
     const refused = await resolveHostServerOnConnect(target, conflict)
@@ -136,7 +136,7 @@ describe('which server an SSH host runs on connect', () => {
       relayTerminals: bridgedTerminals,
       hasUnfinishedConversion: () => true,
       convert: async () => {
-        throw new Error('orcad_migration_linked_project_terminals:/root/my repo')
+        throw new Error('topod_migration_linked_project_terminals:/root/my repo')
       }
     })
     const heldResult = await resolveHostServerOnConnect(target, held)
@@ -150,12 +150,12 @@ describe('which server an SSH host runs on connect', () => {
     const d = deps({
       isEmptyHost: () => true,
       deploy: vi.fn(async () => {
-        throw new OrcadStdioBridgeUnavailableError('exit 127')
+        throw new TopodStdioBridgeUnavailableError('exit 127')
       })
     })
     await expect(resolveHostServerOnConnect(target, d)).resolves.toEqual({
       route: 'unserved',
-      reason: 'orcad_unavailable',
+      reason: 'topod_unavailable',
       detail: 'ssh_tunnel_unavailable'
     })
     expect(d.abandonDeploy).toHaveBeenCalledWith(target)
@@ -168,12 +168,12 @@ describe('which server an SSH host runs on connect', () => {
       managedEnvironmentId: () => 'env-9',
       isFencedBeforeStaging: () => true,
       ensureTunnel: vi.fn(async () => {
-        throw new OrcadStdioBridgeUnavailableError('exit 127')
+        throw new TopodStdioBridgeUnavailableError('exit 127')
       })
     })
     await expect(resolveHostServerOnConnect(target, d)).resolves.toEqual({
       route: 'unserved',
-      reason: 'orcad_unavailable',
+      reason: 'topod_unavailable',
       detail: 'ssh_tunnel_unavailable'
     })
     expect(d.releaseUnreachableSetup).toHaveBeenCalledWith(target)
@@ -181,7 +181,7 @@ describe('which server an SSH host runs on connect', () => {
   })
 
   it('keeps a staged or converted host fenced when its tunnel fails', async () => {
-    const failure = new OrcadStdioBridgeUnavailableError('exit 127')
+    const failure = new TopodStdioBridgeUnavailableError('exit 127')
     const d = deps({
       managedEnvironmentId: () => 'env-9',
       ensureTunnel: vi.fn(async () => {
@@ -197,13 +197,13 @@ describe('which server an SSH host runs on connect', () => {
       managedEnvironmentId: () => 'env-9',
       hasUnfinishedConversion: () => true,
       convert: vi.fn(async () => {
-        throw new Error('orcad_migration_source_changed')
+        throw new Error('topod_migration_source_changed')
       })
     })
     await expect(resolveHostServerOnConnect(target, d)).resolves.toMatchObject({
       route: 'unserved',
       reason: 'failed',
-      detail: 'orcad_migration_source_changed'
+      detail: 'topod_migration_source_changed'
     })
     expect(d.abandonConversion).toHaveBeenCalledWith(target)
   })

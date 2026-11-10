@@ -1,17 +1,17 @@
-/** ORCA_E2E_FAKE_WSL_HOSTS maps fake distros directly to a headless server pairing so any CI OS can test WSL host UI without wsl.exe. */
+/** TOPO_E2E_FAKE_WSL_HOSTS maps fake distros directly to a headless server pairing so any CI OS can test WSL host UI without wsl.exe. */
 import { appendFileSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { z } from 'zod'
 import { parsePairingCode } from '../../../shared/remote-runtime/pairing/pairing'
 import type { WslHostConnector } from './wsl-host-connector-contract'
 import type {
-  WslOrcadConnection,
-  WslOrcadConnectionDependencies
-} from '../orcad/wsl-orcad-connection-types'
+  WslTopodConnection,
+  WslTopodConnectionDependencies
+} from '../topod/wsl-topod-connection-types'
 import type {
-  WslOrcadConnectIntent,
-  WslOrcadConnectionStatus
-} from '../orcad/wsl-orcad-connection-status'
-import { defaultWslOrcadEnvironmentId } from '../orcad/wsl-orcad-deploy'
+  WslTopodConnectIntent,
+  WslTopodConnectionStatus
+} from '../topod/wsl-topod-connection-status'
+import { defaultWslTopodEnvironmentId } from '../topod/wsl-topod-deploy'
 import {
   stopWslHostServer,
   wslHostRuntimeStopSteps,
@@ -37,7 +37,7 @@ const fakeWslHostsSchema = () =>
     pairingCode: z.string().min(1),
     /** Each distro the fake is asked to start, one per line, so e2e can prove nothing respawns. */
     connectLogFile: z.string().optional(),
-    /** `missing` stands in for a build shipped without the orcad template. */
+    /** `missing` stands in for a build shipped without the topod template. */
     serverFiles: z.enum(['present', 'missing']).optional(),
     /** A stop the fake does not report, as when liveness sees only a quick reboot: a runtime call must. */
     stopSilently: z.boolean().optional()
@@ -46,7 +46,7 @@ const fakeWslHostsSchema = () =>
 type FakeWslHostsConfig = z.infer<ReturnType<typeof fakeWslHostsSchema>>
 
 export function readFakeWslHostsConfig(
-  raw = process.env.ORCA_E2E_FAKE_WSL_HOSTS
+  raw = process.env.TOPO_E2E_FAKE_WSL_HOSTS
 ): FakeWslHostsConfig | null {
   if (!raw) {
     return null
@@ -56,12 +56,12 @@ export function readFakeWslHostsConfig(
 
 export function createFakeWslHostConnector(
   config: FakeWslHostsConfig,
-  onChange: NonNullable<WslOrcadConnectionDependencies['onChange']>,
+  onChange: NonNullable<WslTopodConnectionDependencies['onChange']>,
   options: { isKnownDistro: (distro: string) => boolean; runtime: WslHostRuntimeAccess }
 ): WslHostConnector {
   const offer = parsePairingCode(config.pairingCode)
   const port = offer ? Number(new URL(offer.endpoint).port) : 0
-  const active = new Map<string, WslOrcadConnection>()
+  const active = new Map<string, WslTopodConnection>()
   const key = (distro: string): string => distro.toLowerCase()
   const readDistros = (): z.infer<ReturnType<typeof fakeDistrosSchema>> =>
     config.distrosFile
@@ -71,18 +71,18 @@ export function createFakeWslHostConnector(
   const isStopped = (distro: string): boolean =>
     Boolean(config.distrosFile) &&
     readDistros().some((entry) => key(entry.name) === key(distro) && entry.state === 'stopped')
-  const dropBridge = (distro: string, status: WslOrcadConnectionStatus): void => {
+  const dropBridge = (distro: string, status: WslTopodConnectionStatus): void => {
     if (active.delete(key(distro))) {
       onChange(distro, null, status)
     }
   }
   const connect = async (
     distro: string,
-    intent?: WslOrcadConnectIntent
-  ): Promise<WslOrcadConnection> => {
+    intent?: WslTopodConnectIntent
+  ): Promise<WslTopodConnection> => {
     // Same guard as the real connector: nothing starts for a host that is gone.
     if (!options.isKnownDistro(distro)) {
-      throw new Error(`${distro} is no longer a WSL host; Orca will not start anything for it.`)
+      throw new Error(`${distro} is no longer a WSL host; Topo will not start anything for it.`)
     }
     if (isStopped(distro)) {
       if (intent?.noBoot || !config.distrosFile) {
@@ -105,9 +105,9 @@ export function createFakeWslHostConnector(
       appendFileSync(config.connectLogFile, `${distro}\n`)
     }
     onChange(distro, null, { state: 'connecting' })
-    const connection: WslOrcadConnection = {
+    const connection: WslTopodConnection = {
       distro,
-      environmentId: defaultWslOrcadEnvironmentId(distro),
+      environmentId: defaultWslTopodEnvironmentId(distro),
       localPort: port,
       remotePort: port,
       fullVersion: 'e2e',
@@ -128,7 +128,7 @@ export function createFakeWslHostConnector(
         ...distro,
         id: `00000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`
       })),
-    readOrcadPublicKey: async () => null,
+    readTopodPublicKey: async () => null,
     connect,
     get: (distro) => active.get(key(distro)) ?? null,
     isReachable: async (distro) => !isStopped(distro) && active.has(key(distro)),

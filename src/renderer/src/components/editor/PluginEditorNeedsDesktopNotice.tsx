@@ -33,7 +33,7 @@ export function PluginEditorNeedsDesktopNotice({
   const t = useTranslate()
   const heading = t(
     'auto.components.editor.PluginEditorNeedsDesktopNotice.heading',
-    'This editor needs the Orca desktop app'
+    'This editor needs the Topo desktop app'
   )
   if (inline) {
     return (

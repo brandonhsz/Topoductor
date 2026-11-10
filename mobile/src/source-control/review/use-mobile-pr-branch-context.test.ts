@@ -20,7 +20,7 @@ describe('loadMobilePrBranchContext', () => {
         return { ok: false, error: { message: 'compare failed' } }
       }
       if (method === 'github.repoSlug') {
-        return { ok: true, result: { owner: 'stablyai', repo: 'orca' } }
+        return { ok: true, result: { owner: 'brandonhsz', repo: 'topo' } }
       }
       return { ok: false, error: { message: `unexpected ${method}` } }
     })

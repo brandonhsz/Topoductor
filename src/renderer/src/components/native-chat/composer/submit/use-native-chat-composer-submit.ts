@@ -59,9 +59,9 @@ export function useNativeChatComposerSubmit(args: {
   submitEmpty?: () => void
   sendPty: () => void
   sendStructured: NativeChatStructuredComposerSend
-  /** Runs a command Orca owns, like `/resume`; true means the draft never reaches the agent. */
-  consumeOrcaCommand?: (draft: string) => boolean
-  matchesOrcaCommand?: (draft: string) => boolean
+  /** Runs a command Topo owns, like `/resume`; true means the draft never reaches the agent. */
+  consumeTopoCommand?: (draft: string) => boolean
+  matchesTopoCommand?: (draft: string) => boolean
   setDraft: (value: string) => void
   setCaret: (caret: number) => void
 }): {
@@ -72,7 +72,7 @@ export function useNativeChatComposerSubmit(args: {
   const { caret, disabled, draft, draftScopeKey, imageAttachments, sendPty, sendStructured } = args
   const {
     agent,
-    consumeOrcaCommand,
+    consumeTopoCommand,
     setCaret,
     setDraft,
     structuredTransport,
@@ -87,7 +87,7 @@ export function useNativeChatComposerSubmit(args: {
     <TItem extends NativeChatPickerItem>(pick: (item: TItem) => void) =>
       (item: TItem) => {
         const mode =
-          item.kind === 'command' && item.orcaOwned
+          item.kind === 'command' && item.topoOwned
             ? agentSessionInteractionCommand(agent ?? '', item.token)
             : null
         const modePick =
@@ -198,7 +198,7 @@ export function useNativeChatComposerSubmit(args: {
   const send = useCallback(
     (intent?: NativeChatComposerSendIntent) => {
       // Before goal mode too: a navigation command must never become an objective.
-      if (consumeOrcaCommand?.(draft)) {
+      if (consumeTopoCommand?.(draft)) {
         return
       }
       if (
@@ -234,7 +234,7 @@ export function useNativeChatComposerSubmit(args: {
     [
       active,
       submitEmpty,
-      consumeOrcaCommand,
+      consumeTopoCommand,
       disabled,
       draft,
       draftScopeKey,
@@ -256,7 +256,7 @@ export function useNativeChatComposerSubmit(args: {
     : draft
   const messageDelivery =
     !(active && threadGoal !== undefined) &&
-    !args.matchesOrcaCommand?.(draft) &&
+    !args.matchesTopoCommand?.(draft) &&
     !(
       structuredTransport &&
       !promptHasInteractionModeSkill(

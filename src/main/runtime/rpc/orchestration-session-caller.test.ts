@@ -58,9 +58,9 @@ describe('orchestration session callers at the dispatch entry', () => {
           )
         )
       ).run
-      expect(h.db.getRunRaw(idOf(run))?.coordinator_orca_session_id).toBe(SESSION_X)
+      expect(h.db.getRunRaw(idOf(run))?.coordinator_topo_session_id).toBe(SESSION_X)
 
-      const stranger = 'orca_session_id:0b5e2d7c-9a41-4c3e-8f62-7d1a3e5b9c08'
+      const stranger = 'topo_session_id:0b5e2d7c-9a41-4c3e-8f62-7d1a3e5b9c08'
       const refused = await h.dispatch(
         orchestrationRequest(
           'orchestration.runCreate',

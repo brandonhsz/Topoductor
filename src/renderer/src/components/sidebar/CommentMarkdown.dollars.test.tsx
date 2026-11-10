@@ -14,7 +14,7 @@ beforeAll(async () => {
 
 it.each([false, true])('preserves prices and code (growing=%s)', (growing) => {
   const source = [
-    'Set $ORCA_HOME then run echo $PATH; $HOME and $PATH stay literal.',
+    'Set $TOPO_HOME then run echo $PATH; $HOME and $PATH stay literal.',
     'It costs $5 or $10; $5 + tax$ is the cost.',
     'Run `echo $HOME/bin:$PATH` and `$VAR`.'
   ].join('\n\n')
@@ -23,7 +23,7 @@ it.each([false, true])('preserves prices and code (growing=%s)', (growing) => {
   )
   expect(view.container.querySelector('.katex, .katex-error')).toBeNull()
   expect(Array.from(view.container.querySelectorAll('p'), (node) => node.textContent)).toEqual([
-    'Set $ORCA_HOME then run echo $PATH; $HOME and $PATH stay literal.',
+    'Set $TOPO_HOME then run echo $PATH; $HOME and $PATH stay literal.',
     'It costs $5 or $10; $5 + tax$ is the cost.',
     'Run echo $HOME/bin:$PATH and $VAR.'
   ])

@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithStoredMobileSnapshotHasStalePreservedTab } from './mobile-session-publication-preservation'
+import { TopoRuntimeWithStoredMobileSnapshotHasStalePreservedTab } from './mobile-session-publication-preservation'
 import type { BrowserTabInfo } from '../../../shared/browser/runtime/runtime-browser-contracts'
 import type {
   RuntimeMobileSessionClientTab,
@@ -16,7 +16,7 @@ import { readCreatedWorkspaceLaunch } from '../../agent-launch/agent-launch-crea
 import type { AgentSenderRevision } from '../../../shared/agent-sender-associations'
 import { worktreeIdsEqual } from '../../../shared/worktree/id'
 
-export abstract class OrcaRuntimeWithScheduleMobileSessionTabsChanged extends OrcaRuntimeWithStoredMobileSnapshotHasStalePreservedTab {
+export abstract class TopoRuntimeWithScheduleMobileSessionTabsChanged extends TopoRuntimeWithStoredMobileSnapshotHasStalePreservedTab {
   protected scheduleMobileSessionTabsChanged(worktreeId: string): void {
     this.pendingMobileSessionTabsChangeSequenceByWorktree.set(
       worktreeId,

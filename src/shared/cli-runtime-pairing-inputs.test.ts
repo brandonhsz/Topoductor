@@ -26,7 +26,7 @@ describe('advisory executable inspection cleanup', () => {
   ])(
     'preserves $kind runtime pairing when close reports EIO after releasing the handle',
     (input) => {
-      const root = fs.mkdtempSync(join(tmpdir(), 'orca-cli-close-'))
+      const root = fs.mkdtempSync(join(tmpdir(), 'topo-cli-close-'))
       onTestFinished(() => fs.rmSync(root, { recursive: true, force: true }))
       const command = join(root, 'codex')
       fs.writeFileSync(command, input.contents, { mode: 0o755 })
@@ -44,7 +44,7 @@ describe('advisory executable inspection cleanup', () => {
         released = true
         throw Object.assign(new Error('close failed'), { code: 'EIO' })
       })
-      const env = { PATH: join(root, 'other-runtime'), ORCA_TEST_ENV: 'preserved' }
+      const env = { PATH: join(root, 'other-runtime'), TOPO_TEST_ENV: 'preserved' }
       const paired = withCliRuntimeOnPath(command, env)
 
       expect(paired).toEqual(

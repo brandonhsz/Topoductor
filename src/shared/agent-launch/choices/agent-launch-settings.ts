@@ -68,7 +68,7 @@ export type AgentLaunchSettings = {
   autoPermissionMode?: true
   /** With Auto on: the combined mode of agents Auto doesn't cover. Absent from older hosts. */
   nonAutoPermissionMode?: 'manual' | 'yolo' | 'mixed'
-  /** Stored permission and user Arguments exclude Orca flags; agentDefaultArgs retains them for older clients. Absent on hosts storing permissions as text. */
+  /** Stored permission and user Arguments exclude Topo flags; agentDefaultArgs retains them for older clients. Absent on hosts storing permissions as text. */
   agentChoices?: { defaults: AgentLaunchChoices; userArgs: Partial<Record<TuiAgent, string>> }
   agentPermission?: {
     default: AgentPermissionChoice
@@ -99,7 +99,7 @@ export type AgentLaunchSettingsMutation =
   | { type: 'command'; agent: TuiAgent; value: string }
   /** The whole terminal text, flag included, as older clients see it. */
   | { type: 'arguments'; agent: TuiAgent; value: string }
-  /** Only the user's own text; a permission flag Orca recognizes in it becomes the choice. */
+  /** Only the user's own text; a permission flag Topo recognizes in it becomes the choice. */
   | { type: 'user-arguments'; agent: TuiAgent; value: string }
   | { type: 'launch-choices'; agent: TuiAgent; patch?: AgentChoicePatch; userArgs?: string }
   | { type: 'environment-set'; agent: TuiAgent; name: string; value: string }

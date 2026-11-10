@@ -8,11 +8,11 @@ import { readConnectionStatusProbe } from '../../transport/connection/runtime-st
 import { GITHUB_EXACT_WORK_ITEM_TARGET_RUNTIME_CAPABILITY } from '../../../../src/shared/source-control/runtime/source-control-runtime-capabilities'
 import { GITHUB_EXACT_OPERATION_UNSUPPORTED } from '../../../../src/shared/github/work-item-target'
 
-export const GITHUB_CONNECTION_CHANGED = 'The Orca server connection changed. Try again.'
-export const GITHUB_TARGET_CHECK_TIMED_OUT = 'Timed out confirming the executing Orca server.'
+export const GITHUB_CONNECTION_CHANGED = 'The Topo server connection changed. Try again.'
+export const GITHUB_TARGET_CHECK_TIMED_OUT = 'Timed out confirming the executing Topo server.'
 // The paired desktop relays to the executing server; when only it lacks the check, it is the one to update.
 export const GITHUB_DESKTOP_UPDATE_REQUIRED =
-  'Update Orca desktop to edit this item or load its repository options.'
+  'Update Topo desktop to edit this item or load its repository options.'
 const authorityStatusSchema = z.looseObject({
   runtimeId: z.string().optional(),
   hostDescriptor: z.looseObject({ installationId: z.string() }).optional(),

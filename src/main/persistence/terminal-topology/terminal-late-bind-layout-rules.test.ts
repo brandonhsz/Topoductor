@@ -15,7 +15,7 @@ import { WindowSession } from './terminal-topology-window-session-fixture'
 import { checkWorkspaceLayoutRules } from '../../../shared/workspace-layout/workspace-layout-rules'
 
 // Retire this rollback coverage with switch-off code.
-vi.mock('../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: false }))
+vi.mock('../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: false }))
 
 vi.mock('../../telemetry/client', () => ({ track: vi.fn() }))
 vi.mock('../../ssh/config/ssh-config-parser', () => ({
@@ -27,7 +27,7 @@ const WT = FIXTURE_GIT_WORKTREE_ID
 const directories: string[] = []
 
 async function openWithSplit(): Promise<{ store: Store; window: WindowSession }> {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-late-bind-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-late-bind-'))
   directories.push(directory)
   const store = await openTopologyStore(directory, emptyTerminalSessionProfile())
   const window = new WindowSession(structuredClone(store.getWorkspaceSession()))

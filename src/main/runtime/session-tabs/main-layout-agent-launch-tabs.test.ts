@@ -11,7 +11,7 @@ import { publishAgentLaunchTabEarly } from '../rpc/methods/agent-launch/agent-la
 
 import { resetAgentLaunchPanesForTests } from '../../agent-launch/agent-launch-pane-attachment'
 
-vi.mock('../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 const NEW_TAB = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
 const NEW_LEAF = '3f2504e0-4f89-41d3-9a0c-0305e82c3301'

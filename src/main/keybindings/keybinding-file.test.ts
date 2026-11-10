@@ -13,7 +13,7 @@ describe('keybinding-file', () => {
   let filePath: string
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-keybindings-'))
+    dir = mkdtempSync(join(tmpdir(), 'topo-keybindings-'))
     filePath = join(dir, 'keybindings.json')
   })
 

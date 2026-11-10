@@ -86,12 +86,12 @@ export function WslMoveProgressBody({
         {cancel === 'too-late'
           ? t(
               'wslMove.progress.tooLate',
-              'Too late to cancel: the host is already switching over. Keep Orca open until it finishes.'
+              'Too late to cancel: the host is already switching over. Keep Topo open until it finishes.'
             )
           : !cancellable
             ? t(
                 'wslMove.progress.switching',
-                'The switch cannot be cancelled. Keep Orca open until it finishes.'
+                'The switch cannot be cancelled. Keep Topo open until it finishes.'
               )
             : current > 0
               ? t(

@@ -82,7 +82,7 @@ export function harness(
     }
   }
   const resolve = vi.fn(resolveScope)
-  // Folders a listing ran in without a resolved CLI (undefined: wherever Orca itself runs).
+  // Folders a listing ran in without a resolved CLI (undefined: wherever Topo itself runs).
   const unresolvedRuns: (string | undefined)[] = []
   const probe: AgentModelCatalogProbe = Object.assign(
     async (_home: unknown, options?: { workspacePath?: string }) => {

@@ -108,7 +108,7 @@ describe('legacy coordinator fence jurisdiction', () => {
       error: {
         code: 'consumer_fenced',
         data: {
-          recoveryCommand: `orca orchestration run-use --id ${harness.adoptedRunId} --takeover-legacy`
+          recoveryCommand: `topo orchestration run-use --id ${harness.adoptedRunId} --takeover-legacy`
         }
       }
     })

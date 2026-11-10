@@ -3,7 +3,7 @@ import type { JournalReducerState } from '../projection/journal-reducer'
 
 export function retireRewoundJournalSubmission(state: JournalReducerState, itemId: string): void {
   const identity = parseAgentJournalItemKey(itemId)
-  if (identity?.provider !== 'orca') {
+  if (identity?.provider !== 'topo') {
     return
   }
   for (const [providerItemId, submissionItemId] of state.aliases) {

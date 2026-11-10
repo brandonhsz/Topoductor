@@ -5,8 +5,8 @@ import { cpSync, mkdirSync, mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import { parsePairingCode } from '../../../../shared/remote-runtime/pairing/pairing'
 import { DEVICE_REGISTRY_FILENAME } from './pairing/mobile-pairing-files'
 import '../../../../shared/remote-runtime/host-store/runtime-e2ee-keypair-file'
@@ -48,13 +48,13 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
   return { getWorktreeListingMocks: () => (listings ??= createWorktreeListingMocks()) }
 })
 
-describe('OrcaRuntimeRpcServer', () => {
-  it('gives a copy started with another ORCA_INSTANCE_ID its own key and drops copied tokens', async () => {
+describe('TopoRuntimeRpcServer', () => {
+  it('gives a copy started with another TOPO_INSTANCE_ID its own key and drops copied tokens', async () => {
     const pairingFrom = async (userDataPath: string, instanceId: string) => {
-      vi.stubEnv('ORCA_INSTANCE_ID', instanceId)
-      const server = new OrcaRuntimeRpcServer({
+      vi.stubEnv('TOPO_INSTANCE_ID', instanceId)
+      const server = new TopoRuntimeRpcServer({
         methods: [],
-        runtime: new OrcaRuntimeService(),
+        runtime: new TopoRuntimeService(),
         userDataPath,
         enableWebSocket: true,
         wsPort: 0
@@ -64,8 +64,8 @@ describe('OrcaRuntimeRpcServer', () => {
       return { server, parsed: offer.available ? parsePairingCode(offer.pairingUrl) : null }
     }
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const source = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const clone = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
+    const source = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const clone = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
     try {
       const original = await pairingFrom(source, 'vm-a')
       await original.server.stop()
@@ -90,10 +90,10 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('reports a registry persistence failure without retaining a ghost credential', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0

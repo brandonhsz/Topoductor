@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "android"],
+  "ios": {
+    "modules": ["TopoGzipUtf8CodecModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.topogziputf8codec.TopoGzipUtf8CodecModule"]
+  }
+}

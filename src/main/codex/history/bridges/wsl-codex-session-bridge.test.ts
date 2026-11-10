@@ -27,7 +27,7 @@ describe('buildWslCodexSessionBridgeShellCommand', () => {
   it.skipIf(process.platform === 'win32')(
     'publishes a verified guest-side copy across filesystems',
     () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-wsl-session-bridge-cross-fs-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-wsl-session-bridge-cross-fs-'))
       const sourceSessionsRoot = join(root, 'legacy', 'sessions')
       const managedSessionsRoot = join(root, 'managed', 'sessions')
       const binDir = join(root, 'bin')
@@ -72,7 +72,7 @@ exec /bin/ln "$@"
   it.skipIf(process.platform === 'win32')(
     'leaves an existing copied session to its current writer',
     () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-wsl-session-bridge-existing-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-wsl-session-bridge-existing-'))
       const sourceSessionsRoot = join(root, 'legacy', 'sessions')
       const managedSessionsRoot = join(root, 'managed', 'sessions')
       const relativePath = join('2026', '08', '26', 'retired.jsonl')
@@ -99,7 +99,7 @@ exec /bin/ln "$@"
   it.skipIf(process.platform === 'win32')(
     'fails in the guest shell when a missing session cannot be linked, then retries cleanly',
     () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-wsl-session-bridge-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-wsl-session-bridge-'))
       const sourceSessionsRoot = join(root, 'legacy', 'sessions')
       const managedSessionsRoot = join(root, 'managed', 'sessions')
       const relativePath = join('2026', '08', '26', 'retired.jsonl')

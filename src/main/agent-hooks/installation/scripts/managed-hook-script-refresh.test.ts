@@ -26,16 +26,16 @@ beforeEach(() => {
   vi.stubEnv('COPILOT_HOME', undefined)
   vi.stubEnv('KIRO_HOME', undefined)
   vi.stubEnv('XDG_CONFIG_HOME', undefined)
-  previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-  isolatedUserDataDir = mkdtempSync(join(tmpdir(), 'orca-hook-refresh-user-data-'))
-  process.env.ORCA_USER_DATA_PATH = isolatedUserDataDir
+  previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+  isolatedUserDataDir = mkdtempSync(join(tmpdir(), 'topo-hook-refresh-user-data-'))
+  process.env.TOPO_USER_DATA_PATH = isolatedUserDataDir
 })
 
 afterEach(() => {
   if (previousUserDataPath === undefined) {
-    delete process.env.ORCA_USER_DATA_PATH
+    delete process.env.TOPO_USER_DATA_PATH
   } else {
-    process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+    process.env.TOPO_USER_DATA_PATH = previousUserDataPath
   }
   rmSync(isolatedUserDataDir, { recursive: true, force: true })
   vi.unstubAllEnvs()
@@ -55,7 +55,7 @@ vi.mock('../../../codex/trust/hooks/codex-hook-hash-lookup', async (importOrigin
 
 vi.mock('electron', () => ({
   app: {
-    getPath: () => '/tmp/orca-user-data'
+    getPath: () => '/tmp/topo-user-data'
   }
 }))
 
@@ -72,7 +72,7 @@ import { ClaudeHookService } from '../../../claude/hook-service'
 
 describe('refreshManagedScriptIfPresent', () => {
   it('rewrites an existing script and refuses to create a missing one', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-hook-refresh-unit-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-hook-refresh-unit-'))
     try {
       const present = join(dir, 'present.cmd')
       writeFileSync(present, 'stale')
@@ -103,10 +103,10 @@ describe('managed hook script refresh', () => {
   it.skipIf(process.platform === 'win32')(
     'refreshes existing POSIX hook and statusline locale handling without a CLI config',
     async () => {
-      const home = mkdtempSync(join(tmpdir(), 'orca-hook-locale-refresh-'))
+      const home = mkdtempSync(join(tmpdir(), 'topo-hook-locale-refresh-'))
       homedirMock.mockReturnValue(home)
       try {
-        const hooksDir = join(home, '.orca', 'agent-hooks')
+        const hooksDir = join(home, '.topo', 'agent-hooks')
         mkdirSync(hooksDir, { recursive: true })
         for (const name of ['claude-hook.sh', 'claude-statusline.sh']) {
           writeFileSync(join(hooksDir, name), '#!/bin/sh\ncurl --connect-timeout 0.5\n')
@@ -118,7 +118,7 @@ describe('managed hook script refresh', () => {
             '/bin/sh',
             [
               '-c',
-              'curl() { printf "%s|%s" "$LC_ALL" "$LC_NUMERIC" > "$ORCA_TEST_CURL_LOCALE"; command -p cat >/dev/null; }; . "$1"',
+              'curl() { printf "%s|%s" "$LC_ALL" "$LC_NUMERIC" > "$TOPO_TEST_CURL_LOCALE"; command -p cat >/dev/null; }; . "$1"',
               'hook',
               join(hooksDir, name)
             ],
@@ -132,11 +132,11 @@ describe('managed hook script refresh', () => {
                 LC_NUMERIC: 'de_DE.UTF-8',
                 TMPDIR: home,
                 CLAUDE_JOB_DIR: '',
-                ORCA_AGENT_HOOK_ENDPOINT: '',
-                ORCA_AGENT_HOOK_PORT: '1',
-                ORCA_AGENT_HOOK_TOKEN: 'test-token',
-                ORCA_PANE_KEY: 'pane-1',
-                ORCA_TEST_CURL_LOCALE: observed
+                TOPO_AGENT_HOOK_ENDPOINT: '',
+                TOPO_AGENT_HOOK_PORT: '1',
+                TOPO_AGENT_HOOK_TOKEN: 'test-token',
+                TOPO_PANE_KEY: 'pane-1',
+                TOPO_TEST_CURL_LOCALE: observed
               }
             }
           )

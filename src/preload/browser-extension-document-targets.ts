@@ -1,7 +1,7 @@
 import type { BrowserExtensionMainWorldBridge } from './browser-extension-main-world'
 
-/** Main-only namespace listing a tab's frames with Orca's documentIds; never on `chrome`. */
-export const PRELOAD_DOCUMENT_TARGETS_NAMESPACE = 'orcaDocumentTargets'
+/** Main-only namespace listing a tab's frames with Topo's documentIds; never on `chrome`. */
+export const PRELOAD_DOCUMENT_TARGETS_NAMESPACE = 'topoDocumentTargets'
 
 type ApiObject = Record<string, unknown>
 type ExtensionCallable = (...args: unknown[]) => unknown
@@ -10,11 +10,11 @@ type ExtensionCallable = (...args: unknown[]) => unknown
 export const PRELOAD_FIRST_DISCARDED_TAB_ID = 1_000_000_000
 
 /**
- * Orca names documents itself in webNavigation and webRequest (Electron gives main no Chromium
+ * Topo names documents itself in webNavigation and webRequest (Electron gives main no Chromium
  * document id), but Electron's native scripting and tabs.sendMessage resolve only Chromium's ids.
- * Side-effect-free probes resolve Orca's ids to native document ids before dispatch. Only proven
+ * Side-effect-free probes resolve Topo's ids to native document ids before dispatch. Only proven
  * document pairs name executeScript results. It also answers calls to a
- * discarded tab, whose id only Orca knows, with Chrome's errors instead of Electron's "No tab".
+ * discarded tab, whose id only Topo knows, with Chrome's errors instead of Electron's "No tab".
  *
  * Self-contained for the same reason as installBrowserExtensionApis: pages serialize it.
  */
@@ -36,15 +36,15 @@ export function installBrowserExtensionDocumentTargets(
   const tabs = isObject(chromeApi.tabs) ? chromeApi.tabs : null
   const nativeSendMessage = tabs?.sendMessage
   const nativeMessages = isObject(runtime.onMessage) ? runtime.onMessage : null
-  const probeKey = 'orcaDocumentTargetProbe'
+  const probeKey = 'topoDocumentTargetProbe'
 
-  /** frameId → Orca's documentId for the tab's current documents. */
+  /** frameId → Topo's documentId for the tab's current documents. */
   const framesOf = async (tabId: unknown): Promise<Map<number, string>> => {
     const frames = new Map<number, string>()
     if (typeof tabId !== 'number') {
       return frames
     }
-    const reply = await bridge.call('orcaDocumentTargets', 'frames', [tabId]).catch(() => null)
+    const reply = await bridge.call('topoDocumentTargets', 'frames', [tabId]).catch(() => null)
     if (reply?.ok && Array.isArray(reply.value)) {
       for (const entry of reply.value) {
         if (
@@ -58,7 +58,7 @@ export function installBrowserExtensionDocumentTargets(
     }
     return frames
   }
-  const withOrcaDocumentIds = (documents: Map<string, string>, results: unknown): unknown =>
+  const withTopoDocumentIds = (documents: Map<string, string>, results: unknown): unknown =>
     Array.isArray(results)
       ? results.map((result) =>
           isObject(result) &&
@@ -172,15 +172,15 @@ export function installBrowserExtensionDocumentTargets(
       }
     }
     const current = selected.length > 0 ? await framesOf(tabId) : frames
-    const nativeByOrca = new Map<string, string>()
-    for (const [frameId, orcaId] of selected) {
+    const nativeByTopo = new Map<string, string>()
+    for (const [frameId, topoId] of selected) {
       const nativeId = resolved.get(frameId)
-      if (!nativeId || current.get(frameId) !== orcaId) {
-        throw new Error(`No matching document with id ${orcaId}`)
+      if (!nativeId || current.get(frameId) !== topoId) {
+        throw new Error(`No matching document with id ${topoId}`)
       }
-      nativeByOrca.set(orcaId, nativeId)
+      nativeByTopo.set(topoId, nativeId)
     }
-    return nativeByOrca
+    return nativeByTopo
   }
 
   /** Null when the call goes to native untouched (and synchronously). */
@@ -202,13 +202,13 @@ export function installBrowserExtensionDocumentTargets(
       if (error || !documentIds) {
         return { args, documents: new Map(), error }
       }
-      const nativeByOrca = await nativeDocuments(tabId, documentIds, false)
+      const nativeByTopo = await nativeDocuments(tabId, documentIds, false)
       const nativeIds = documentIds.map((id) =>
-        typeof id === 'string' ? (nativeByOrca.get(id) ?? id) : id
+        typeof id === 'string' ? (nativeByTopo.get(id) ?? id) : id
       )
       return {
         args: [{ ...injection, target: { ...target, documentIds: nativeIds } }, ...args.slice(1)],
-        documents: new Map([...nativeByOrca].map(([orcaId, nativeId]) => [nativeId, orcaId]))
+        documents: new Map([...nativeByTopo].map(([topoId, nativeId]) => [nativeId, topoId]))
       }
     })()
   }
@@ -226,12 +226,12 @@ export function installBrowserExtensionDocumentTargets(
       if (error || typeof documentId !== 'string' || !isObject(options)) {
         return { args, documents: new Map(), error }
       }
-      const nativeByOrca = await nativeDocuments(tabId, [documentId], true)
+      const nativeByTopo = await nativeDocuments(tabId, [documentId], true)
       return {
         args: [
           tabId,
           args[1],
-          { ...options, documentId: nativeByOrca.get(documentId) ?? documentId },
+          { ...options, documentId: nativeByTopo.get(documentId) ?? documentId },
           ...args.slice(3)
         ],
         documents: new Map()
@@ -264,7 +264,7 @@ export function installBrowserExtensionDocumentTargets(
     if (!isCallable(native) || wrapped.has(native)) {
       return
     }
-    const replacement = function orcaDocumentTarget(...input: unknown[]): unknown {
+    const replacement = function topoDocumentTarget(...input: unknown[]): unknown {
       const args = [...input]
       const callback = isCallable(args.at(-1)) ? args.pop() : undefined
       const prepared = retarget(args)
@@ -283,7 +283,7 @@ export function installBrowserExtensionDocumentTargets(
             try {
               native.call(owner, ...nativeArgs, (result: unknown) => {
                 calledBack = true
-                callback(mapsResults ? withOrcaDocumentIds(documents, result) : result)
+                callback(mapsResults ? withTopoDocumentIds(documents, result) : result)
               })
             } catch (error) {
               if (calledBack) {
@@ -302,7 +302,7 @@ export function installBrowserExtensionDocumentTargets(
           throw new Error(error)
         }
         const result: unknown = await native.apply(owner, nativeArgs)
-        return mapsResults ? withOrcaDocumentIds(documents, result) : result
+        return mapsResults ? withTopoDocumentIds(documents, result) : result
       })
     }
     wrapped.add(replacement)

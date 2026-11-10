@@ -1,1 +1,1 @@
-export const ORCA_TAB_SESSION_PREFIX = 'orca-tab-'
+export const TOPO_TAB_SESSION_PREFIX = 'topo-tab-'

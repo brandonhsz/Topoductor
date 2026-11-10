@@ -150,7 +150,7 @@ describe('registerWorkspaceSpaceHandlers', () => {
         totalRepoCount: 1,
         scannedRepoCount: 0,
         totalWorktreeCount: 2,
-        currentRepoDisplayName: 'orca',
+        currentRepoDisplayName: 'topo',
         currentWorktreeDisplayName: 'feature'
       }
       onProgress?.({ ...base, scannedWorktreeCount: 0 })

@@ -26,7 +26,7 @@ type RecipeCatalogEntry = Awaited<
 
 // Keep the nudge short; the skill owns provider choice, setup, authentication and validation.
 const AGENT_PROMPT =
-  'Use the orca-per-workspace-env skill to set up a per-workspace environment for this repo.'
+  'Use the topo-per-workspace-env skill to set up a per-workspace environment for this repo.'
 
 export function EphemeralVmsPane(): React.JSX.Element {
   const t = useTranslate()
@@ -189,7 +189,7 @@ export function EphemeralVmsPane(): React.JSX.Element {
           <WhatItem
             text={t(
               'auto.components.settings.EphemeralVmsPane.whatScaffold',
-              'Writes the recipe & scripts for your provider — connected over an Orca server or SSH.'
+              'Writes the recipe & scripts for your provider — connected over a Topo server or SSH.'
             )}
           />
           <WhatItem
@@ -219,7 +219,7 @@ export function EphemeralVmsPane(): React.JSX.Element {
             {setupRepo
               ? t(
                   'auto.components.settings.EphemeralVmsPane.setUpWithAgentHint',
-                  'Starts your default agent in {{repo}}. It edits orca.yaml, runs the doctors until they pass, and opens a PR.',
+                  'Starts your default agent in {{repo}}. It edits topo.yaml, runs the doctors until they pass, and opens a PR.',
                   { repo: setupRepo.displayName }
                 )
               : t(
@@ -269,7 +269,7 @@ export function EphemeralVmsPane(): React.JSX.Element {
             <p className="text-xs text-muted-foreground">
               {t(
                 'auto.components.settings.EphemeralVmsPane.recipesHelp',
-                'Recipes from orca.yaml and enabled plugins show up here, ready to launch a workspace on.'
+                'Recipes from topo.yaml and enabled plugins show up here, ready to launch a workspace on.'
               )}
             </p>
           </div>

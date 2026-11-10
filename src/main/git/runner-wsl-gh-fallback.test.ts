@@ -6,7 +6,7 @@ import {
   fakeSpawnReturning
 } from '../../shared/__fixtures__/fake-spawned-child'
 import type * as WslModule from '../wsl/discovery/distro-catalog'
-import { windowsSystem32Binary } from '@orca/process-host/windows-system-binary'
+import { windowsSystem32Binary } from '@topo/process-host/windows-system-binary'
 
 const { execFileSyncMock, spawnMock, getDefaultWslDistroMock } = vi.hoisted(() => ({
   execFileSyncMock: vi.fn(),
@@ -96,7 +96,7 @@ describe('ghExecFileAsync WSL fallback', () => {
     spawnMock.mockImplementation(fakeSpawnReturning({ stderr: TRANSIENT_502, code: 1 }))
 
     await expect(
-      ghExecFileAsync(['api', '-X', 'POST', 'repos/stablyai/orca/issues'])
+      ghExecFileAsync(['api', '-X', 'POST', 'repos/brandonhsz/Topoductor/issues'])
     ).rejects.toThrow('HTTP 502 Bad Gateway')
 
     expect(spawnMock).toHaveBeenCalledTimes(1)
@@ -121,7 +121,7 @@ describe('ghExecFileAsync WSL fallback', () => {
     spawnMock.mockImplementation(fakeSpawnReturning({ stderr: TRANSIENT_502, code: 1 }))
 
     await expect(
-      ghExecFileAsync(['issue', 'edit', '5', '--repo', 'stablyai/orca'])
+      ghExecFileAsync(['issue', 'edit', '5', '--repo', 'brandonhsz/Topoductor'])
     ).rejects.toThrow('HTTP 502 Bad Gateway')
 
     expect(spawnMock).toHaveBeenCalledTimes(1)
@@ -171,7 +171,7 @@ describe('ghExecFileAsync WSL fallback', () => {
     spawnMock.mockImplementation(fakeSpawnReturning({ stderr: TRANSIENT_502, code: 1 }))
 
     await expect(
-      glabExecFileAsync(['api', '-X', 'POST', 'projects/stablyai%2Forca/issues/5/notes'], {
+      glabExecFileAsync(['api', '-X', 'POST', 'projects/brandonhsz%2Ftopo/issues/5/notes'], {
         cwd: String.raw`C:\repo`
       })
     ).rejects.toThrow('HTTP 502 Bad Gateway')

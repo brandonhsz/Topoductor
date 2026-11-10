@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "Orca",
-    "slug": "orca-mobile",
+    "name": "Topo",
+    "slug": "topo-mobile",
     "version": "0.0.64",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "scheme": "orca",
+    "scheme": "topo",
     "newArchEnabled": true,
     "locales": {
       "en": "./locales/en.json",
@@ -28,14 +28,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.stably.orca.mobile",
+      "bundleIdentifier": "com.brandonhsz.topo.mobile",
       "buildNumber": "1",
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
-        "NSLocalNetworkUsageDescription": "Orca connects to the desktop app on your LAN.",
-        "NSMicrophoneUsageDescription": "Allow Orca to use your microphone for voice dictation, transcribed on this phone or on your paired computer.",
-        "NSPhotoLibraryUsageDescription": "Allow Orca to attach photos from your library to a terminal session on your paired desktop.",
-        "NSPhotoLibraryAddUsageDescription": "Allow Orca to save images from your sessions to Photos.",
+        "NSLocalNetworkUsageDescription": "Topo connects to the desktop app on your LAN.",
+        "NSMicrophoneUsageDescription": "Allow Topo to use your microphone for voice dictation, transcribed on this phone or on your paired computer.",
+        "NSPhotoLibraryUsageDescription": "Allow Topo to attach photos from your library to a terminal session on your paired desktop.",
+        "NSPhotoLibraryAddUsageDescription": "Allow Topo to save images from your sessions to Photos.",
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true,
           "NSExceptionDomains": {
@@ -89,7 +89,7 @@
       "usesCleartextTraffic": true,
       "allowBackup": false,
       "permissions": ["RECORD_AUDIO", "MODIFY_AUDIO_SETTINGS"],
-      "package": "com.stably.orca.mobile",
+      "package": "com.brandonhsz.topo.mobile",
       "versionCode": 28,
       "googleServicesFile": "./google-services.json"
     },
@@ -127,15 +127,15 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Orca to use the camera for QR code scanning.",
-          "microphonePermission": "Allow Orca to use your microphone for voice dictation sent to your paired desktop for transcription.",
+          "cameraPermission": "Allow Topo to use the camera for QR code scanning.",
+          "microphonePermission": "Allow Topo to use your microphone for voice dictation sent to your paired desktop for transcription.",
           "recordAudioAndroid": false
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow Orca to attach photos from your library to a terminal session on your paired desktop."
+          "photosPermission": "Allow Topo to attach photos from your library to a terminal session on your paired desktop."
         }
       ],
       [

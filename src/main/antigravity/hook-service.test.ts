@@ -43,7 +43,7 @@ describe('AntigravityHookService', () => {
   let homeDir: string
 
   beforeEach(() => {
-    homeDir = mkdtempSync(join(tmpdir(), 'orca-antigravity-home-'))
+    homeDir = mkdtempSync(join(tmpdir(), 'topo-antigravity-home-'))
     homedirMock.mockReturnValue(homeDir)
   })
 
@@ -59,15 +59,15 @@ describe('AntigravityHookService', () => {
 
       const result = spawnSync(
         '/bin/sh',
-        [join(homeDir, '.orca', 'agent-hooks', 'antigravity-hook.sh')],
+        [join(homeDir, '.topo', 'agent-hooks', 'antigravity-hook.sh')],
         {
           env: {
             ...process.env,
-            ORCA_ANTIGRAVITY_EVENT: 'PreToolUse',
-            ORCA_AGENT_HOOK_ENDPOINT: '',
-            ORCA_AGENT_HOOK_PORT: '',
-            ORCA_AGENT_HOOK_TOKEN: '',
-            ORCA_PANE_KEY: ''
+            TOPO_ANTIGRAVITY_EVENT: 'PreToolUse',
+            TOPO_AGENT_HOOK_ENDPOINT: '',
+            TOPO_AGENT_HOOK_PORT: '',
+            TOPO_AGENT_HOOK_TOKEN: '',
+            TOPO_PANE_KEY: ''
           },
           input: '{"toolCall":{"name":"run_command","args":{"CommandLine":"ls"}}}',
           encoding: 'utf8'
@@ -83,19 +83,19 @@ describe('AntigravityHookService', () => {
     'keeps answering the PreToolUse gate when the managed script is missing',
     () => {
       new AntigravityHookService().install()
-      rmSync(join(homeDir, '.orca', 'agent-hooks'), { recursive: true, force: true })
+      rmSync(join(homeDir, '.topo', 'agent-hooks'), { recursive: true, force: true })
 
       const config = JSON.parse(
         readFileSync(join(homeDir, '.gemini', 'config', 'hooks.json'), 'utf8')
-      ) as { 'orca-status': Record<string, { hooks?: { command: string }[] }[]> }
-      const command = config['orca-status'].PreToolUse[0].hooks?.[0]?.command
+      ) as { 'topo-status': Record<string, { hooks?: { command: string }[] }[]> }
+      const command = config['topo-status'].PreToolUse[0].hooks?.[0]?.command
 
       const result = spawnSync('/bin/sh', ['-c', command!], {
         input: '{"toolCall":{"name":"run_command"}}',
         encoding: 'utf8'
       })
 
-      // Config under .gemini can outlive managed scripts under .orca.
+      // Config under .gemini can outlive managed scripts under .topo.
       expect(result.status).toBe(0)
       expect(result.stdout).toBe(`${PRE_TOOL_USE_DECISION}\n`)
     }
@@ -105,15 +105,15 @@ describe('AntigravityHookService', () => {
     'leaves non-gate Antigravity events silent when the managed script is missing',
     () => {
       new AntigravityHookService().install()
-      rmSync(join(homeDir, '.orca', 'agent-hooks'), { recursive: true, force: true })
+      rmSync(join(homeDir, '.topo', 'agent-hooks'), { recursive: true, force: true })
 
       const config = JSON.parse(
         readFileSync(join(homeDir, '.gemini', 'config', 'hooks.json'), 'utf8')
       ) as {
-        'orca-status': Record<string, { command?: string; hooks?: { command: string }[] }[]>
+        'topo-status': Record<string, { command?: string; hooks?: { command: string }[] }[]>
       }
-      const postToolUse = config['orca-status'].PostToolUse[0].hooks?.[0]?.command
-      const preInvocation = config['orca-status'].PreInvocation[0].command
+      const postToolUse = config['topo-status'].PostToolUse[0].hooks?.[0]?.command
+      const preInvocation = config['topo-status'].PreInvocation[0].command
 
       for (const command of [postToolUse, preInvocation]) {
         const result = spawnSync('/bin/sh', ['-c', command!], { input: '{}', encoding: 'utf8' })
@@ -127,7 +127,7 @@ describe('AntigravityHookService', () => {
     withPlatform('win32', () => {
       const service = new AntigravityHookService()
       expect(service.install().state).toBe('installed')
-      const hookDir = join(homeDir, '.orca', 'agent-hooks')
+      const hookDir = join(homeDir, '.topo', 'agent-hooks')
       const readerPath = join(hookDir, 'antigravity-hook-post.cjs')
       const corePath = join(hookDir, 'antigravity-hook.cmd')
       const configPath = join(homeDir, '.gemini', 'config', 'hooks.json')
@@ -142,7 +142,7 @@ describe('AntigravityHookService', () => {
     })
   })
 
-  it('preserves user-authored hook bundles and entries in Orca bundle', () => {
+  it('preserves user-authored hook bundles and entries in Topo bundle', () => {
     const configPath = join(homeDir, '.gemini', 'config', 'hooks.json')
     mkdirSync(dirname(configPath), { recursive: true })
     writeFileSync(
@@ -152,8 +152,8 @@ describe('AntigravityHookService', () => {
           'user-hook': {
             PreInvocation: [{ type: 'command', command: '/usr/local/bin/user-hook' }]
           },
-          'orca-status': {
-            PreInvocation: [{ type: 'command', command: '/usr/local/bin/orca-extra' }]
+          'topo-status': {
+            PreInvocation: [{ type: 'command', command: '/usr/local/bin/topo-extra' }]
           }
         },
         null,
@@ -165,11 +165,11 @@ describe('AntigravityHookService', () => {
 
     const config = JSON.parse(readFileSync(configPath, 'utf8')) as {
       'user-hook': { PreInvocation: { command: string }[] }
-      'orca-status': { PreInvocation: { command: string }[] }
+      'topo-status': { PreInvocation: { command: string }[] }
     }
     expect(config['user-hook'].PreInvocation[0].command).toBe('/usr/local/bin/user-hook')
-    const commands = config['orca-status'].PreInvocation.map((entry) => entry.command)
-    expect(commands).toContain('/usr/local/bin/orca-extra')
+    const commands = config['topo-status'].PreInvocation.map((entry) => entry.command)
+    expect(commands).toContain('/usr/local/bin/topo-extra')
     expect(commands.some((command) => command.includes(ANTIGRAVITY_PRE_INVOCATION_COMMAND))).toBe(
       true
     )
@@ -182,7 +182,7 @@ describe('AntigravityHookService', () => {
       configPath,
       `${JSON.stringify(
         {
-          'orca-status': {
+          'topo-status': {
             OldEvent: [
               {
                 type: 'command',
@@ -205,23 +205,23 @@ describe('AntigravityHookService', () => {
     new AntigravityHookService().install()
 
     const config = JSON.parse(readFileSync(configPath, 'utf8')) as {
-      'orca-status': Record<string, { command?: string; hooks?: { command: string }[] }[]>
+      'topo-status': Record<string, { command?: string; hooks?: { command: string }[] }[]>
     }
-    expect(config['orca-status'].OldEvent).toBeUndefined()
-    const preToolCommands = config['orca-status'].PreToolUse.flatMap((definition) =>
+    expect(config['topo-status'].OldEvent).toBeUndefined()
+    const preToolCommands = config['topo-status'].PreToolUse.flatMap((definition) =>
       (definition.hooks ?? []).map((hook) => hook.command)
     )
     expect(preToolCommands).toHaveLength(1)
     expect(preToolCommands[0]).toContain(
-      join(homeDir, '.orca', 'agent-hooks', ANTIGRAVITY_PRE_TOOL_USE_COMMAND).replaceAll('\\', '/')
+      join(homeDir, '.topo', 'agent-hooks', ANTIGRAVITY_PRE_TOOL_USE_COMMAND).replaceAll('\\', '/')
     )
     expect(preToolCommands[0]).not.toContain('/tmp/old/agent-hooks/antigravity-hook.sh')
-    const commands = config['orca-status'].PostToolUse.flatMap((definition) =>
+    const commands = config['topo-status'].PostToolUse.flatMap((definition) =>
       (definition.hooks ?? []).map((hook) => hook.command)
     )
     expect(commands).toHaveLength(1)
     expect(commands[0]).toContain(
-      join(homeDir, '.orca', 'agent-hooks', ANTIGRAVITY_POST_TOOL_USE_COMMAND).replaceAll('\\', '/')
+      join(homeDir, '.topo', 'agent-hooks', ANTIGRAVITY_POST_TOOL_USE_COMMAND).replaceAll('\\', '/')
     )
   })
 
@@ -229,14 +229,14 @@ describe('AntigravityHookService', () => {
     withPlatform('win32', () => {
       const configPath = join(homeDir, '.gemini', 'config', 'hooks.json')
       // Git Bash strips backslashes from legacy bare paths.
-      const legacyStop = 'C:\\Users\\ada\\.orca\\agent-hooks\\antigravity-stop.cmd'
-      const legacyPreToolUse = 'C:\\Users\\ada\\.orca\\agent-hooks\\antigravity-pre-tool-use.cmd'
+      const legacyStop = 'C:\\Users\\ada\\.topo\\agent-hooks\\antigravity-stop.cmd'
+      const legacyPreToolUse = 'C:\\Users\\ada\\.topo\\agent-hooks\\antigravity-pre-tool-use.cmd'
       const userHook = { type: 'command', command: 'C:\\tools\\user-hook.cmd' }
       mkdirSync(dirname(configPath), { recursive: true })
       writeFileSync(
         configPath,
         `${JSON.stringify({
-          'orca-status': {
+          'topo-status': {
             Stop: [{ type: 'command', command: legacyStop }, userHook],
             PreToolUse: [{ matcher: '*', hooks: [{ type: 'command', command: legacyPreToolUse }] }]
           }
@@ -248,14 +248,14 @@ describe('AntigravityHookService', () => {
       expect(service.install().state).toBe('installed')
 
       const config = JSON.parse(readFileSync(configPath, 'utf8')) as {
-        'orca-status': Record<string, { command?: string; hooks?: { command: string }[] }[]>
+        'topo-status': Record<string, { command?: string; hooks?: { command: string }[] }[]>
       }
-      const [keptUserHook, stop] = config['orca-status'].Stop
-      expect(config['orca-status'].Stop).toHaveLength(2)
+      const [keptUserHook, stop] = config['topo-status'].Stop
+      expect(config['topo-status'].Stop).toHaveLength(2)
       expect(keptUserHook).toEqual(userHook)
       expect(stop.command).not.toBe(legacyStop)
       expect(createManagedCommandMatcher('antigravity-stop.cmd')(stop.command)).toBe(true)
-      const preToolUse = config['orca-status'].PreToolUse.flatMap((d) => d.hooks ?? [])
+      const preToolUse = config['topo-status'].PreToolUse.flatMap((d) => d.hooks ?? [])
       expect(preToolUse).toHaveLength(1)
       expect(preToolUse[0].command).not.toBe(legacyPreToolUse)
     })

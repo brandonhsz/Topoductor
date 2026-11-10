@@ -27,8 +27,8 @@ function requireCapturedOwner<T extends { owner?: AutomationOwnerRef | null }>(
   return request
 }
 
-/** Prioritize Orca work over queued external probes for the full operation lifetime. */
-function underOrcaPriority<T>(scheduler: ExternalAutomationProbeScheduler, run: () => T): T {
+/** Prioritize Topo work over queued external probes for the full operation lifetime. */
+function underTopoPriority<T>(scheduler: ExternalAutomationProbeScheduler, run: () => T): T {
   const release = scheduler.beginPriorityWork()
   let pending = false
   try {
@@ -56,7 +56,7 @@ export function registerAutomationHandlers(store: Store, service: AutomationServ
     cache: managerCache
   })
   // Runtime RPC CRUD takes the service-installed priority lease.
-  service.externalProbePriority = (run) => underOrcaPriority(probeScheduler, run)
+  service.externalProbePriority = (run) => underTopoPriority(probeScheduler, run)
   // Guard derives one host and manager ID from the captured owner.
   ipcMain.handle(
     'automations:listExternalManagerForOwner',

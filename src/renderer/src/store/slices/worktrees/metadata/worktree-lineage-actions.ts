@@ -125,7 +125,7 @@ export function createAssignWorktreeParent(
 }
 
 /** Set Parent to a workspace on another machine: each child's store saves a ref built from verified
- * ids. Every ref is built first, so a refusal (an older Orca, an unconfirmed parent) writes nothing. */
+ * ids. Every ref is built first, so a refusal (an older Topo, an unconfirmed parent) writes nothing. */
 export function createAssignCrossStoreWorktreeParent(
   set: WorktreeSliceSet,
   get: WorktreeSliceGet

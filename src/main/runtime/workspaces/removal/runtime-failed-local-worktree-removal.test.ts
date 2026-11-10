@@ -1,5 +1,5 @@
 import { installRealWorkerThreadChildProcesses } from '../../../worker-thread-child-process/worker-thread-child-process-real.test-fixtures'
-// Real Git may unregister before file deletion fails; retain leftovers as retryable Orca rows.
+// Real Git may unregister before file deletion fails; retain leftovers as retryable Topo rows.
 // macOS chflags uchg makes owner files undeletable; worktree-failed-removal.test.ts covers the same rules with mocked Git.
 import { execFile } from 'node:child_process'
 import { existsSync } from 'node:fs'
@@ -58,7 +58,7 @@ let worktreePath = ''
 let lockedFile = ''
 let worktreeId = ''
 let repo: Repo
-// Only Orca's follow-up delete names the locked file; Git's error names the checkout.
+// Only Topo's follow-up delete names the locked file; Git's error names the checkout.
 const LOCKED_FILE_ERROR = /LICENSE could not be deleted/
 
 async function git(args: string[], cwd = repoPath): Promise<string> {
@@ -93,8 +93,8 @@ function storeStub(pushTarget?: GitPushTarget) {
   }
 }
 
-/** A remote Orca added for a fork PR's push target, as worktree create does. */
-async function addOrcaPushTargetRemote(): Promise<GitPushTarget> {
+/** A remote Topo added for a fork PR's push target, as worktree create does. */
+async function addTopoPushTargetRemote(): Promise<GitPushTarget> {
   const pushTarget = {
     remoteName: 'pr-contributor',
     branchName: 'feature',
@@ -102,7 +102,7 @@ async function addOrcaPushTargetRemote(): Promise<GitPushTarget> {
     remoteCreated: true
   }
   await git(['remote', 'add', pushTarget.remoteName, pushTarget.remoteUrl])
-  await git(['config', `remote.${pushTarget.remoteName}.orca-created`, 'true'])
+  await git(['config', `remote.${pushTarget.remoteName}.topo-created`, 'true'])
   return pushTarget
 }
 
@@ -207,12 +207,12 @@ async function failInSession(): Promise<unknown> {
 
 describe.skipIf(process.platform !== 'darwin')('a worktree delete Git fails partway', () => {
   beforeEach(async () => {
-    // A git hook's GIT_DIR/GIT_INDEX_FILE would point the scratch repo's git, and Orca's, at the outer repo.
+    // A git hook's GIT_DIR/GIT_INDEX_FILE would point the scratch repo's git, and Topo's, at the outer repo.
     for (const key of Object.keys(process.env).filter((name) => name.startsWith('GIT_'))) {
       vi.stubEnv(key, undefined)
     }
     vi.spyOn(console, 'warn').mockImplementation(() => {})
-    scratchDir = await realpath(await mkdtemp(join(tmpdir(), 'orca-failed-removal-')))
+    scratchDir = await realpath(await mkdtemp(join(tmpdir(), 'topo-failed-removal-')))
     recordsDir = join(scratchDir, 'profile')
     repoPath = join(scratchDir, 'repo')
     worktreePath = join(scratchDir, 'workspaces', 'feature')
@@ -248,7 +248,7 @@ describe.skipIf(process.platform !== 'darwin')('a worktree delete Git fails part
     const error = await failStartupFinish()
 
     expect(String(error)).toMatch(LOCKED_FILE_ERROR)
-    // Git removed registration and merged branch but left checkout files and Orca metadata.
+    // Git removed registration and merged branch but left checkout files and Topo metadata.
     expect(await isRegistered(worktreePath)).toBe(false)
     expect(existsSync(lockedFile)).toBe(true)
     expect(await git(['branch', '--list', 'feature'])).toBe('')
@@ -336,8 +336,8 @@ describe.skipIf(process.platform !== 'darwin')('a worktree delete Git fails part
     expect(await git(['status', '--porcelain'], other)).toBe('?? wip.txt\n')
   })
 
-  it('removes the push-target remote Orca added when a runtime delete fails', async () => {
-    const pushTarget = await addOrcaPushTargetRemote()
+  it('removes the push-target remote Topo added when a runtime delete fails', async () => {
+    const pushTarget = await addTopoPushTargetRemote()
     const worktree = (await listWorktreesStrict(repoPath)).find((row) =>
       areWorktreePathsEqual(row.path, worktreePath)
     )!

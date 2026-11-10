@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import type * as preparationModule from './opencode-wsl-runtime-preparation'
 
 const mocks = vi.hoisted(() => ({
@@ -77,7 +77,7 @@ describe('WSL SQLite runtime preparation', () => {
     await prepared()
     const probe = mocks.run.mock.calls.find(([spec]) => spec.program === 'node')?.[0]
     expect(probe?.args[0]).toBe('-e')
-    const directory = await mkdtemp(join(tmpdir(), 'orca-wsl-sqlite-probe-'))
+    const directory = await mkdtemp(join(tmpdir(), 'topo-wsl-sqlite-probe-'))
     const runProbe = (preload: string) =>
       runProcess({
         program: process.execPath,
@@ -111,7 +111,7 @@ describe('WSL SQLite runtime preparation', () => {
     async (agent) => {
       await prepared()
       const script = mocks.run.mock.calls[0]?.[0].script
-      const directory = await mkdtemp(join(tmpdir(), 'orca-wsl-presence-'))
+      const directory = await mkdtemp(join(tmpdir(), 'topo-wsl-presence-'))
       try {
         const data =
           agent === 'zcode'

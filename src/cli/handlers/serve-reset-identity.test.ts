@@ -6,16 +6,16 @@ import { resetServeHostIdentity } from './serve-reset-identity'
 import { loadOrCreateE2EEKeypair } from '../../main/runtime/rpc/server/pairing/e2ee-keypair'
 import { DeviceRegistry } from '../../main/runtime/rpc/server/pairing/device-registry'
 import {
-  acquireOrcadInstanceLock,
-  ORCAD_LOCK_FILE_NAME
-} from '../../main/orcad/orcad-instance-lock'
+  acquireTopodInstanceLock,
+  TOPOD_LOCK_FILE_NAME
+} from '../../main/topod/topod-instance-lock'
 import {
   ensureHostInstanceIdentity,
   hostInstanceIdFromEnv
 } from '../../main/runtime/host-instance-identity'
 
 function pairedProfile() {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-reset-identity-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-reset-identity-'))
   chmodSync(dir, 0o700)
   const registry = new DeviceRegistry(dir)
   const { token } = registry.addDevice('Phone')
@@ -33,24 +33,24 @@ describe('resetServeHostIdentity', () => {
     expect(ensureHostInstanceIdentity(before.dir, null)).toEqual({ kind: 'unchanged' })
     // A variable adopted after the reset is only recorded.
     expect(
-      ensureHostInstanceIdentity(before.dir, hostInstanceIdFromEnv({ ORCA_INSTANCE_ID: 'vm-a' }))
+      ensureHostInstanceIdentity(before.dir, hostInstanceIdFromEnv({ TOPO_INSTANCE_ID: 'vm-a' }))
     ).toEqual({ kind: 'recorded' })
     expect(loadOrCreateE2EEKeypair(before.dir).publicKeyB64).toBe(publicKeyB64)
   })
 
   it('keeps the notice that the last run crashed, and leaves no lock after a clean one', async () => {
     const before = pairedProfile()
-    const lockPath = join(before.dir, ORCAD_LOCK_FILE_NAME)
+    const lockPath = join(before.dir, TOPOD_LOCK_FILE_NAME)
     await resetServeHostIdentity(before.dir)
     expect(existsSync(lockPath)).toBe(false)
 
-    // What an orcad killed before releasing its lock leaves behind; the pid is past any pid_max.
-    const crashed = acquireOrcadInstanceLock(before.dir)
+    // What an topod killed before releasing its lock leaves behind; the pid is past any pid_max.
+    const crashed = acquireTopodInstanceLock(before.dir)
     crashed.release()
     writeFileSync(lockPath, JSON.stringify({ ...crashed.record, pid: 99_999_999 }))
     await resetServeHostIdentity(before.dir)
 
-    const next = acquireOrcadInstanceLock(before.dir)
+    const next = acquireTopodInstanceLock(before.dir)
     try {
       expect(next.previousUnexpectedExit).toMatchObject({ pid: 99_999_999 })
     } finally {
@@ -58,11 +58,11 @@ describe('resetServeHostIdentity', () => {
     }
   })
 
-  it('refuses while an Orca holds the profile lock and changes nothing', async () => {
+  it('refuses while a Topo holds the profile lock and changes nothing', async () => {
     const before = pairedProfile()
-    const lock = acquireOrcadInstanceLock(before.dir)
+    const lock = acquireTopodInstanceLock(before.dir)
     try {
-      await expect(resetServeHostIdentity(before.dir)).rejects.toThrow(/Stop Orca/)
+      await expect(resetServeHostIdentity(before.dir)).rejects.toThrow(/Stop Topo/)
     } finally {
       lock.release()
     }
@@ -75,9 +75,9 @@ describe('resetServeHostIdentity', () => {
     async () => {
       const before = pairedProfile()
       chmodSync(before.dir, 0o755)
-      const lock = acquireOrcadInstanceLock(before.dir, { role: 'desktop' })
+      const lock = acquireTopodInstanceLock(before.dir, { role: 'desktop' })
       try {
-        await expect(resetServeHostIdentity(before.dir)).rejects.toThrow(/Stop Orca/)
+        await expect(resetServeHostIdentity(before.dir)).rejects.toThrow(/Stop Topo/)
       } finally {
         lock.release()
       }

@@ -107,7 +107,7 @@ export function hasLaunchModelFlags(flags: Flags): boolean {
 
 // An older host strips `surface` and follows its own setting, so an explicit pick never reaches it.
 export const SURFACE_UNSUPPORTED_MESSAGE =
-  'This Orca host cannot start an agent as a chat or a terminal on request. Update Orca on the execution host, or omit --surface.'
+  'This Topo host cannot start an agent as a chat or a terminal on request. Update Topo on the execution host, or omit --surface.'
 
 export async function getAgentLaunchCapabilities(
   client: RuntimeClient
@@ -134,7 +134,7 @@ export async function callAgentLaunch(
   if (launch.prompt && !capabilities.includes(AGENT_LAUNCH_PROMPT_CARRY_RUNTIME_CAPABILITY)) {
     throw new RuntimeClientError(
       'incompatible_runtime',
-      'This Orca host cannot safely carry launch prompts. Update Orca on the execution host.'
+      'This Topo host cannot safely carry launch prompts. Update Topo on the execution host.'
     )
   }
   if (launch.surface && !capabilities.includes(AGENT_LAUNCH_SURFACE_RUNTIME_CAPABILITY)) {
@@ -143,7 +143,7 @@ export async function callAgentLaunch(
   if (!capabilities.includes(AGENT_LAUNCH_LOCAL_PRESENTATION_RUNTIME_CAPABILITY)) {
     throw new RuntimeClientError(
       'incompatible_runtime',
-      'This Orca host cannot honor CLI launch focus or background behavior. Update Orca on the execution host.'
+      'This Topo host cannot honor CLI launch focus or background behavior. Update Topo on the execution host.'
     )
   }
   const operationId = replaySupported

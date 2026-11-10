@@ -1,4 +1,4 @@
-// COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+// COMPAT(wsl-bridge): removed when WSL runs as an topod host.
 import type { ProjectAgentSkillRuntime } from '@/lib/project-skill-runtime'
 
 export type OnboardingFeatureSetupRuntimeContext = {

@@ -2,8 +2,8 @@ import {
   isDurableMutation,
   isTerminalPromptMutation
 } from '../../../shared/orchestration/orchestration-rpc-contract'
-import type { OrcaRuntimeService } from '../orca-runtime'
-import type { OrcaSessionId } from '../../../shared/orca-session-address'
+import type { TopoRuntimeService } from '../topo-runtime'
+import type { TopoSessionId } from '../../../shared/topo-session-address'
 import { OrchestrationError } from '../orchestration/orchestration-error'
 import type { RpcRequest } from './core'
 import {
@@ -41,15 +41,15 @@ type InFlightMutation = {
 export class OrchestrationMutationExecutor {
   private readonly inFlight = new Map<string, InFlightMutation>()
 
-  constructor(private readonly runtime: OrcaRuntimeService) {}
+  constructor(private readonly runtime: TopoRuntimeService) {}
 
   async run(
     request: RpcRequest,
     params: unknown,
     invoke: (mutation?: DurableMutationInvocation) => unknown,
     callerFingerprintOverride?: string,
-    /** The resolved session's Orca session id; it joins the payload so another caller cannot replay it. */
-    callerOrcaSessionId?: OrcaSessionId
+    /** The resolved session's Topo session id; it joins the payload so another caller cannot replay it. */
+    callerTopoSessionId?: TopoSessionId
   ): Promise<unknown> {
     const requestId = request.orchestrationRequestId
     if (!requestId || !isDurableMutation(request.method, params)) {
@@ -60,7 +60,7 @@ export class OrchestrationMutationExecutor {
     const stableParams = replayStableCallerParams(
       this.runtime,
       params,
-      callerOrcaSessionId,
+      callerTopoSessionId,
       request.method
     )
     const basePayloadHash = hashCanonical({ method: request.method, params: stableParams })
@@ -202,7 +202,7 @@ export class OrchestrationMutationExecutor {
             ? {
                 requestId,
                 dispatchId: recovery.dispatchId,
-                recoveryCommand: `orca orchestration worker-show --dispatch ${recovery.dispatchId} --json`
+                recoveryCommand: `topo orchestration worker-show --dispatch ${recovery.dispatchId} --json`
               }
             : { requestId }
         )
@@ -266,10 +266,10 @@ export class OrchestrationMutationExecutor {
   }
 }
 
-const executorsByRuntime = new WeakMap<OrcaRuntimeService, OrchestrationMutationExecutor>()
+const executorsByRuntime = new WeakMap<TopoRuntimeService, OrchestrationMutationExecutor>()
 
 export function getOrchestrationMutationExecutor(
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
 ): OrchestrationMutationExecutor {
   const existing = executorsByRuntime.get(runtime)
   if (existing) {

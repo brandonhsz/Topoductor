@@ -3,13 +3,13 @@ import { atom, read, set } from './declarative-atoms'
 import { h } from './declarative-elements'
 import {
   createOrcaDeclarativeRuntime,
-  type OrcaBridge,
-  type OrcaPanelContext
+  type TopoBridge,
+  type TopoPanelContext
 } from './declarative-renderer'
 
 function hostBridge() {
   const handlers = new Map<string, (payload: unknown) => void>()
-  const bridge: OrcaBridge = {
+  const bridge: TopoBridge = {
     on: (name, handler) => {
       handlers.set(name, handler)
       return { dispose: () => handlers.delete(name) }
@@ -177,7 +177,7 @@ describe('components panel lifecycle', () => {
     const seen: { signal?: AbortSignal; visible?: boolean } = {}
     host.send('ui.hydrate', { panel: { id: 'todos' }, visible: false })
     await runtime.boot({
-      setup: (ctx: OrcaPanelContext) => {
+      setup: (ctx: TopoPanelContext) => {
         expect(ctx.panel).toEqual({ id: 'todos' })
         ctx.subscriptions.push({ dispose: disposed })
         seen.signal = ctx.signal

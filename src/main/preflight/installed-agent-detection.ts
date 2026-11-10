@@ -1,4 +1,4 @@
-// orca skills loads detection outside Electron; exclude integration-client dependencies.
+// topo skills loads detection outside Electron; exclude integration-client dependencies.
 import { homedir } from 'node:os'
 import path from 'node:path'
 import {

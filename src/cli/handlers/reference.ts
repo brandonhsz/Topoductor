@@ -36,7 +36,7 @@ async function callReference<TResult>(
     if (error instanceof RuntimeClientError && error.code === 'method_not_found') {
       throw new RuntimeClientError(
         'incompatible_runtime',
-        'This Orca host does not support reference commands yet. Update Orca on the execution host.'
+        'This Topo host does not support reference commands yet. Update Topo on the execution host.'
       )
     }
     throw error

@@ -187,7 +187,7 @@ describe('getWorkItemDetails PR file listing', () => {
   it('does not run bare PR detail commands when local host resolution fails', async () => {
     getWorkItemMock.mockResolvedValueOnce({
       ...pullRequestItem(9, 'Unresolved PR'),
-      prRepo: { owner: 'team', repo: 'orca' }
+      prRepo: { owner: 'team', repo: 'topo' }
     })
     getOwnerRepoMock.mockResolvedValue(null)
 

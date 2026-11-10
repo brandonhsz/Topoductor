@@ -28,7 +28,7 @@ afterEach(() => {
 })
 
 async function pipeline() {
-  const path = mkdtempSync(join(tmpdir(), 'orca-push-policy-'))
+  const path = mkdtempSync(join(tmpdir(), 'topo-push-policy-'))
   paths.push(path)
   const registry = new DeviceRegistry(path)
   const device = registry.addDevice('policy-phone', 'mobile')
@@ -106,7 +106,7 @@ it('carries the native idle boundary through replay and push dispatch', async ()
   )
 })
 
-it('decides headless away from attached desktops, so the away-only filter holds on orca serve', async () => {
+it('decides headless away from attached desktops, so the away-only filter holds on topo serve', async () => {
   const now = 1_800_000_000_000
   const clock = vi.spyOn(Date, 'now').mockReturnValue(now)
   setRuntimeDesktopSurface(null)

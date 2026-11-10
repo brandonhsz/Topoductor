@@ -27,7 +27,7 @@ import {
 // Off as the build ships; the desktop-created record exists only with it on.
 const layoutOwner = vi.hoisted(() => ({ on: false }))
 vi.mock('../../../../../shared/layout-owner-switch', () => ({
-  get ORCA_LAYOUT_OWNER_IS_MAIN() {
+  get TOPO_LAYOUT_OWNER_IS_MAIN() {
     return layoutOwner.on
   }
 }))

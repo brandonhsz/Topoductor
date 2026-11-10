@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { afterEach, describe, expect, it } from 'vitest'
-import * as currentProcessHost from '@orca/process-host'
+import * as currentProcessHost from '@topo/process-host'
 import { importReleaseCheckoutModule } from './release-checkout'
 import { extractReleaseCheckoutTree } from './release-checkout-tree'
 import { prepareReleaseSnapshotSource } from './release-checkout-prefetch'
@@ -46,7 +46,7 @@ const RELEASE_SKELETON: Record<string, string> = Object.fromEntries(
 )
 
 function commitRelease(files: Record<string, string>): { repo: string; commit: string } {
-  const repo = temporaryDirectory('orca-cross-version-release-repo-')
+  const repo = temporaryDirectory('topo-cross-version-release-repo-')
   for (const [path, source] of Object.entries({ ...RELEASE_SKELETON, ...files })) {
     mkdirSync(join(repo, path, '..'), { recursive: true })
     writeFileSync(join(repo, path), source)
@@ -97,7 +97,7 @@ function partialClone(repo: string): string {
   execFileSync('git', ['repack', '-a', '-d', '-b'], { cwd: repo })
   execFileSync('git', ['config', 'uploadpack.allowFilter', 'true'], { cwd: repo })
   execFileSync('git', ['config', 'uploadpack.allowAnySHA1InWant', 'true'], { cwd: repo })
-  const clone = join(temporaryDirectory('orca-cross-version-partial-'), 'clone')
+  const clone = join(temporaryDirectory('topo-cross-version-partial-'), 'clone')
   execFileSync('git', [
     'clone',
     '--quiet',
@@ -131,7 +131,7 @@ describe('historical snapshot acquisition', () => {
     await prepareReleaseSnapshotSource(clone, commit)
     expect(missingSnapshotObjects(clone, commit)).toEqual([])
     execFileSync('git', ['remote', 'set-url', 'origin', join(repo, 'unavailable')], { cwd: clone })
-    const staging = temporaryDirectory('orca-cross-version-prepared-')
+    const staging = temporaryDirectory('topo-cross-version-prepared-')
     await extractReleaseCheckoutTree(clone, staging, commit)
     expect(readFileSync(join(staging, 'src/main/released.ts'), 'utf8')).toContain('released = 42')
     expect(
@@ -147,7 +147,7 @@ describe('historical snapshot acquisition', () => {
     const { repo, commit } = commitRelease({})
     const clone = partialClone(repo)
     execFileSync('git', ['remote', 'set-url', 'origin', join(repo, 'unavailable')], { cwd: clone })
-    const staging = temporaryDirectory('orca-cross-version-unavailable-')
+    const staging = temporaryDirectory('topo-cross-version-unavailable-')
     await expect(extractReleaseCheckoutTree(clone, staging, commit)).rejects.toThrow(
       'Historical source preparation'
     )
@@ -185,12 +185,12 @@ describe('historical snapshot acquisition', () => {
 
 const RELEASE_PROCESS_HOST = {
   'src/packages/process-host/package.json': JSON.stringify({
-    name: '@orca/process-host',
+    name: '@topo/process-host',
     type: 'commonjs',
     exports: {
-      '.': { 'orca-source': './src/run-process.ts', default: './dist/run-process.js' },
+      '.': { 'topo-source': './src/run-process.ts', default: './dist/run-process.js' },
       './process-spec': {
-        'orca-source': './src/process-spec.ts',
+        'topo-source': './src/process-spec.ts',
         default: './dist/process-spec.js'
       }
     }
@@ -205,15 +205,15 @@ const RELEASE_PROCESS_HOST = {
     "export const describeSpec = () => 'release process-spec'\n",
   'src/packages/process-host/src/run-process.test.ts': 'throw new Error("stale spec")\n',
   'src/packages/release-tool/package.json': JSON.stringify({
-    name: '@orca/release-tool',
+    name: '@topo/release-tool',
     type: 'module',
     exports: {
-      '.': { 'orca-source': './src/index.mjs', default: './dist/index.js' },
+      '.': { 'topo-source': './src/index.mjs', default: './dist/index.js' },
       './private': { default: './dist/private.js' }
     }
   }),
   'src/packages/release-tool/src/index.mjs':
-    "import { runProcess } from '@orca/process-host'\nexport const tool = () => `tool:${runProcess()}`\n",
+    "import { runProcess } from '@topo/process-host'\nexport const tool = () => `tool:${runProcess()}`\n",
   'src/packages/release-tool/src/index.test.mjs': 'throw new Error("stale spec")\n'
 }
 
@@ -224,31 +224,31 @@ describe('release checkout workspace packages', () => {
       'pnpm-workspace.yaml': "packages:\n  - src/packages/*\n  - '!src/packages/ignored'\n",
       ...RELEASE_PROCESS_HOST,
       'src/main/consumer.ts': [
-        "import { runProcess, releaseOnlyExport } from '@orca/process-host'",
-        "import * as spec from '@orca/process-host/process-spec'",
-        'export { describeSpec as reexported } from "@orca/process-host/process-spec"',
+        "import { runProcess, releaseOnlyExport } from '@topo/process-host'",
+        "import * as spec from '@topo/process-host/process-spec'",
+        'export { describeSpec as reexported } from "@topo/process-host/process-spec"',
         'export const staticRun = runProcess()',
         'export const releaseOnly = releaseOnlyExport()',
         'export const specValue = spec.describeSpec()',
-        "export const lazyRun = async () => (await import('@orca/process-host')).runProcess()",
+        "export const lazyRun = async () => (await import('@topo/process-host')).runProcess()",
         ''
       ].join('\n'),
       'src/main/esm-consumer.mjs': [
-        "import { describeSpec } from '@orca/process-host/process-spec'",
-        "import { tool } from '@orca/release-tool'",
+        "import { describeSpec } from '@topo/process-host/process-spec'",
+        "import { tool } from '@topo/release-tool'",
         'export const esm = `${describeSpec()}|${tool()}`',
         ''
       ].join('\n'),
       'src/main/commonjs-consumer.cjs':
-        "module.exports = () => require('@orca/process-host/process-spec')\n",
+        "module.exports = () => require('@topo/process-host/process-spec')\n",
       'src/renderer/src/lib/view.ts': [
         "import { label } from '@/lib/label'",
-        "export const view = async () => `${label}:${(await import('@orca/process-host')).runProcess()}`",
+        "export const view = async () => `${label}:${(await import('@topo/process-host')).runProcess()}`",
         ''
       ].join('\n'),
       'src/renderer/src/lib/label.ts': "export const label = 'renderer'\n"
     })
-    const staging = temporaryDirectory('orca-cross-version-release-staging-')
+    const staging = temporaryDirectory('topo-cross-version-release-staging-')
 
     await extractReleaseCheckoutTree(repo, staging, commit)
     const checkout = { ref: 'v0.0.0-synthetic', commit, label: 'v0.0.0-synthetic', root: staging }
@@ -280,7 +280,7 @@ describe('release checkout workspace packages', () => {
     expect(existsSync(join(staging, 'node_modules'))).toBe(false)
   })
 
-  it.each(['@orca/process-host/internal', '@orca/release-tool/private', '@orca/not-in-release'])(
+  it.each(['@topo/process-host/internal', '@topo/release-tool/private', '@topo/not-in-release'])(
     'fails extraction rather than loading the current tree for %s',
     async (specifier) => {
       const { repo, commit } = commitRelease({
@@ -288,7 +288,7 @@ describe('release checkout workspace packages', () => {
         ...RELEASE_PROCESS_HOST,
         'src/main/private.ts': `import { x } from '${specifier}'\nexport { x }\n`
       })
-      const staging = temporaryDirectory('orca-cross-version-release-staging-')
+      const staging = temporaryDirectory('topo-cross-version-release-staging-')
 
       const failure = await extractReleaseCheckoutTree(repo, staging, commit).then(
         () => null,
@@ -296,7 +296,7 @@ describe('release checkout workspace packages', () => {
       )
 
       expect(failure).toMatch(/src[/\\]main[/\\]private\.ts: /)
-      expect(failure).toContain(`No public orca-source export for ${specifier}`)
+      expect(failure).toContain(`No public topo-source export for ${specifier}`)
     }
   )
 })

@@ -6,7 +6,7 @@ import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { ORCA_AGENT_SESSION_SPAWN_TOKEN_ENV } from '../../../../shared/agent-session/lifecycle/agent-session-caller-env'
+import { TOPO_AGENT_SESSION_SPAWN_TOKEN_ENV } from '../../../../shared/agent-session/lifecycle/agent-session-caller-env'
 import type { AgentSessionRecordStore } from '../records/agent-session-record-store'
 import { openTestAgentSessionRecordStore } from '../records/agent-session-record-store-test-harness'
 import type { AgentSessionReserveRequest } from './agent-session-reservation-admission'
@@ -45,7 +45,7 @@ const MINTED_TOKEN = 'spawn-minted-by-this-store'
 function environ(token: string | null): string {
   return [
     'PATH=/usr/bin',
-    ...(token ? [`${ORCA_AGENT_SESSION_SPAWN_TOKEN_ENV}=${token}`] : [])
+    ...(token ? [`${TOPO_AGENT_SESSION_SPAWN_TOKEN_ENV}=${token}`] : [])
   ].join('\0')
 }
 
@@ -75,7 +75,7 @@ const originalPlatform = process.platform
 let stateDirectory: string
 
 beforeEach(async () => {
-  stateDirectory = await mkdtemp(join(tmpdir(), 'orca-spawn-token-descendants-'))
+  stateDirectory = await mkdtemp(join(tmpdir(), 'topo-spawn-token-descendants-'))
   Object.defineProperty(process, 'platform', { configurable: true, value: 'linux' })
 })
 

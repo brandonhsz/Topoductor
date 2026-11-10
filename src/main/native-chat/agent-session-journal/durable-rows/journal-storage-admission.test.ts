@@ -13,7 +13,7 @@ import { codexProviderHandle } from '../../../../shared/agent-session/lifecycle/
 import {
   createTrackedJournalOpener,
   openTestJournalHostDatabase,
-  SAVED_BY_NEWER_ORCA
+  SAVED_BY_NEWER_TOPO
 } from '../store-lifecycle/journal-host-database-test-support'
 import { restoreJournal } from '../replay/journal-open'
 
@@ -35,7 +35,7 @@ const inputs = createTrackedJournalOpener({ legacyInputs: true })
 const journals = createTrackedJournalOpener()
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-journal-storage-admission-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-journal-storage-admission-'))
 })
 afterEach(async () => {
   await inputs.closeAll()
@@ -114,7 +114,7 @@ it("refuses a newer build's record with an undeclared nested key before adopting
 
   expect(restoreJournal(db(), IDENTITY.sessionId)).toMatchObject({ newer: { sequence: 1 } })
   // No handle exists for a refused chat, so nothing can replace, roll over or rewind its epoch.
-  await expect(open(journals)).rejects.toMatchObject(SAVED_BY_NEWER_ORCA)
+  await expect(open(journals)).rejects.toMatchObject(SAVED_BY_NEWER_TOPO)
   expect(savedBytes()).toEqual(before)
 })
 z.object({

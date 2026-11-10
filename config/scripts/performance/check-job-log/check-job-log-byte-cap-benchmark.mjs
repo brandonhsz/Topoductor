@@ -6,7 +6,7 @@ import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { performance } from 'node:perf_hooks'
 import { build } from 'esbuild'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { createCheckLogFixture } from './check-job-log-test-fixture.mjs'
 import {
   assertWatchdogExit,
@@ -30,7 +30,7 @@ const currentSourcePaths = {
 export const hash = (value) => createHash('sha256').update(value).digest('hex')
 export const nodeExecutable = () => {
   const executable = process.versions.bun
-    ? (process.env.ORCA_TEST_NODE_EXECUTABLE ?? process.env.npm_node_execpath)
+    ? (process.env.TOPO_TEST_NODE_EXECUTABLE ?? process.env.npm_node_execpath)
     : process.execPath
   assert(
     executable && path.isAbsolute(executable),
@@ -55,7 +55,7 @@ export async function prepareBenchmark(
   root = process.cwd(),
   { profile = false, compareBaseline = true } = {}
 ) {
-  const directory = await mkdtemp(path.join(os.tmpdir(), 'orca-check-log-benchmark-'))
+  const directory = await mkdtemp(path.join(os.tmpdir(), 'topo-check-log-benchmark-'))
   try {
     const baseline = new Map()
     const current = new Map()
@@ -71,7 +71,7 @@ export async function prepareBenchmark(
         cwd: root,
         timeoutMs: 10_000,
         maxOutputBytes: 64 * 1024,
-        env: { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' }
+        env: { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' }
       })
       assert(
         result.code === 0 && !result.signal && !result.timedOut && !result.outputTruncated,
@@ -292,7 +292,7 @@ export async function runDescriptor(context, descriptor) {
           JSON.stringify(identity)
         ],
         cwd: context.root,
-        env: { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' },
+        env: { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' },
         timeoutMs: 10_000,
         maxOutputBytes: 64 * 1024
       }),
@@ -574,7 +574,7 @@ export function auditResults(manifest, records, { compareBaseline = true } = {})
 if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {
   const context = await prepareBenchmark()
   const manifest = selectRequiredDescriptors(
-    createManifest({ capturePath: process.env.ORCA_CHECK_LOG_CAPTURE })
+    createManifest({ capturePath: process.env.TOPO_CHECK_LOG_CAPTURE })
   )
   const records = []
   try {
@@ -584,17 +584,17 @@ if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === imp
       } catch (error) {
         records.push({ id: descriptor.id, status: 'failed', reason: error.message.split('\n')[0] })
       }
-      if (process.env.ORCA_CHECK_LOG_REPORT) {
+      if (process.env.TOPO_CHECK_LOG_REPORT) {
         await writeFile(
-          process.env.ORCA_CHECK_LOG_REPORT,
+          process.env.TOPO_CHECK_LOG_REPORT,
           JSON.stringify({ identity: context.identity, records })
         )
       }
     }
     const summary = auditResults(manifest, records)
-    if (process.env.ORCA_CHECK_LOG_REPORT) {
+    if (process.env.TOPO_CHECK_LOG_REPORT) {
       await writeFile(
-        process.env.ORCA_CHECK_LOG_REPORT,
+        process.env.TOPO_CHECK_LOG_REPORT,
         JSON.stringify({ identity: context.identity, summary, records })
       )
     }

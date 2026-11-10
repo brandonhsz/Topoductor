@@ -26,12 +26,12 @@ const AGENT_CLI_NAMES = [
 ]
 // Real-agent opt-in suites intentionally run the installed CLIs.
 const REAL_AGENT_CLI_SWITCHES = [
-  'ORCA_REAL_CLAUDE_CLI_TEST',
-  'ORCA_REAL_CLAUDE_SUPERVISED_STOP',
-  'ORCA_CODEX_CONTRACT_BINARY',
-  'ORCA_CODEX_NO_DAEMON_CONTRACT_BINARY',
-  'ORCA_CODEX_TRUST_CONTRACT_BINARY',
-  'ORCA_REPRO_CODEX_BINARY'
+  'TOPO_REAL_CLAUDE_CLI_TEST',
+  'TOPO_REAL_CLAUDE_SUPERVISED_STOP',
+  'TOPO_CODEX_CONTRACT_BINARY',
+  'TOPO_CODEX_NO_DAEMON_CONTRACT_BINARY',
+  'TOPO_CODEX_TRUST_CONTRACT_BINARY',
+  'TOPO_REPRO_CODEX_BINARY'
 ]
 
 type GuardState = { dir: string; log: string }
@@ -44,7 +44,7 @@ function install(): GuardState | null {
   if (process.platform === 'win32' || REAL_AGENT_CLI_SWITCHES.some((name) => process.env[name])) {
     return null
   }
-  const dir = mkdtempSync(join(tmpdir(), 'orca-agent-cli-guard-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-agent-cli-guard-'))
   const log = join(dir, 'calls.log')
   writeFileSync(log, '')
   const script = [
@@ -68,12 +68,12 @@ function install(): GuardState | null {
 
 declare global {
   // Install once per process; per-file installs would stack PATH entries.
-  var orcaRealAgentCliGuard: GuardState | null | undefined
+  var topoRealAgentCliGuard: GuardState | null | undefined
 }
-if (globalThis.orcaRealAgentCliGuard === undefined) {
-  globalThis.orcaRealAgentCliGuard = install()
+if (globalThis.topoRealAgentCliGuard === undefined) {
+  globalThis.topoRealAgentCliGuard = install()
 }
-const state = globalThis.orcaRealAgentCliGuard
+const state = globalThis.topoRealAgentCliGuard
 
 /** Drains recorded calls; only the guard's own self-test should need this. */
 export function takeRealAgentCliCalls(): string[] {

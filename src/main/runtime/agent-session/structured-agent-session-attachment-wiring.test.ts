@@ -21,7 +21,7 @@ import {
 let stateDirectory: string
 
 beforeEach(async () => {
-  stateDirectory = await mkdtemp(join(tmpdir(), 'orca-attachment-wiring-'))
+  stateDirectory = await mkdtemp(join(tmpdir(), 'topo-attachment-wiring-'))
 })
 
 afterEach(async () => {
@@ -38,7 +38,7 @@ const records: Pick<AgentSessionRecordStore, 'getRecord' | 'isSessionUnreadable'
 }
 
 function install(directory = stateDirectory): void {
-  // Written by a newer Orca: the sweeps read no claims, so nothing here touches the connection.
+  // Written by a newer Topo: the sweeps read no claims, so nothing here touches the connection.
   const journal: Parameters<typeof installAgentSessionAttachments>[0]['journalDatabase'] = {
     writeAutocommit: () => {
       throw new Error('not opened in this test')

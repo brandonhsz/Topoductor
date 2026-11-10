@@ -26,7 +26,7 @@ export type MobileNativeChatOfflineSend = {
   readonly files: readonly PendingNativeChatFile[]
   readonly skills: readonly AgentJournalSkillRef[]
   readonly skillOrigin: string | null
-  /** Set once it may only go on a tap: its send didn't go through, or Orca closed before it went. */
+  /** Set once it may only go on a tap: its send didn't go through, or Topo closed before it went. */
   readonly paused?: 'failed' | 'closed'
   /** On its way: it keeps its place until the send settles, but takes no new action. */
   readonly sending?: true
@@ -143,7 +143,7 @@ export function settleMobileNativeChatOfflineSend(scope: string, id: string, sen
   )
 }
 
-/** Messages saved before Orca closed come back paused: nothing goes out later without a tap. */
+/** Messages saved before Topo closed come back paused: nothing goes out later without a tap. */
 export function restoreMobileNativeChatOfflineSends(
   scope: string,
   saved: readonly MobileNativeChatSavedQueuedSend[]

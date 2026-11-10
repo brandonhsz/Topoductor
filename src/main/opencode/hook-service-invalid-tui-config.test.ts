@@ -8,11 +8,11 @@ import { getOpenCodePluginSource, OpenCodeHookService } from './hook-service'
 let root: string
 let configDir: string
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-invalid-tui-config-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-invalid-tui-config-'))
   configDir = join(root, 'xdg', 'opencode')
   mkdirSync(configDir, { recursive: true })
   vi.stubEnv('XDG_CONFIG_HOME', join(root, 'xdg'))
-  vi.stubEnv('ORCA_OPENCODE_PLUGIN_API', 'v2')
+  vi.stubEnv('TOPO_OPENCODE_PLUGIN_API', 'v2')
   setAppEnvironment({
     getPath: () => join(root, 'profile'),
     getAppPath: () => process.cwd(),
@@ -40,7 +40,7 @@ it('installs into a source overlay without replacing the invalid user config', (
   if (!overlay) {
     throw new Error('No overlay')
   }
-  expect(readFileSync(join(overlay, 'plugins', 'orca-opencode-status.js'), 'utf8')).toBe(
+  expect(readFileSync(join(overlay, 'plugins', 'topo-opencode-status.js'), 'utf8')).toBe(
     getOpenCodePluginSource()
   )
   expect(readFileSync(join(source, 'tui.jsonc'), 'utf8')).toBe(text)

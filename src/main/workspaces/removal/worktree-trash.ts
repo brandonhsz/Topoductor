@@ -10,7 +10,7 @@ import type { Repo } from '../../../shared/repo-types'
 import { parseWslPath } from '../../wsl/filesystem/unc-path-access'
 import { getRepoRoutingConnectionId } from '../../../shared/execution-host'
 
-export const WORKTREE_TRASH_DIR_NAME = '.orca-worktree-trash'
+export const WORKTREE_TRASH_DIR_NAME = '.topo-worktree-trash'
 
 // Only names produced by the retired rename scheme qualify for cleanup.
 const TRASH_ENTRY_PATTERN = /^wt-\d+-[0-9a-f]{8}$/
@@ -76,7 +76,7 @@ async function collectExistingTrashRoots(workspaceRoots: readonly string[]): Pro
   return [...trashRoots]
 }
 
-/** Workspace roots of local git repos — the only places Orca ever created worktree trash. */
+/** Workspace roots of local git repos — the only places Topo ever created worktree trash. */
 export function collectWorktreeTrashSweepRoots(
   repos: readonly Repo[],
   settings: Pick<GlobalSettings, 'workspaceDir' | 'nestWorkspaces'>

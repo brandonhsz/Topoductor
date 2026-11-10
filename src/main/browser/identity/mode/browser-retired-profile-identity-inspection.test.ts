@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { getOrcaProfileBrowserSessionPartition } from '../../../../shared/orca-profiles'
+import { getTopoProfileBrowserSessionPartition } from '../../../../shared/topo-profiles'
 import { inspectRetiredBrowserSessionProfileUserAgentModes } from './browser-retired-profile-identity-inspection'
 
-const ORCA_PROFILE_ID = 'local-default'
+const TOPO_PROFILE_ID = 'local-default'
 const PROFILE_ID = '11111111-1111-4111-8111-111111111111'
 
 function profileWithMode(mode: unknown): Record<string, unknown> {
   return {
     id: PROFILE_ID,
     scope: 'isolated',
-    partition: getOrcaProfileBrowserSessionPartition(ORCA_PROFILE_ID, PROFILE_ID),
+    partition: getTopoProfileBrowserSessionPartition(TOPO_PROFILE_ID, PROFILE_ID),
     label: 'Existing',
     source: null,
     userAgentMode: mode
@@ -20,7 +20,7 @@ function unhydratableProfile(extra: Record<string, unknown> = {}): Record<string
   return {
     id: 'not-a-uuid',
     scope: 'isolated',
-    partition: 'persist:orca-browser-session-not-a-uuid',
+    partition: 'persist:topo-browser-session-not-a-uuid',
     label: 'Unhydratable',
     source: null,
     ...extra
@@ -31,7 +31,7 @@ describe('retired browser profile identity inspection', () => {
   it('detects an inspectable old choice without removing its bytes', () => {
     const profile = profileWithMode('native')
 
-    expect(inspectRetiredBrowserSessionProfileUserAgentModes([profile], ORCA_PROFILE_ID)).toEqual({
+    expect(inspectRetiredBrowserSessionProfileUserAgentModes([profile], TOPO_PROFILE_ID)).toEqual({
       noticePending: true,
       degraded: false
     })
@@ -46,9 +46,9 @@ describe('retired browser profile identity inspection', () => {
     }
   ])('turns $scenario into a degraded notice without throwing', ({ entry }) => {
     expect(() =>
-      inspectRetiredBrowserSessionProfileUserAgentModes([entry], ORCA_PROFILE_ID)
+      inspectRetiredBrowserSessionProfileUserAgentModes([entry], TOPO_PROFILE_ID)
     ).not.toThrow()
-    expect(inspectRetiredBrowserSessionProfileUserAgentModes([entry], ORCA_PROFILE_ID)).toEqual({
+    expect(inspectRetiredBrowserSessionProfileUserAgentModes([entry], TOPO_PROFILE_ID)).toEqual({
       noticePending: true,
       degraded: true
     })

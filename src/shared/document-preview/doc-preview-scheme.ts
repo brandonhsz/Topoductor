@@ -1,8 +1,8 @@
-/** Read workspace-owned local/remote disk over editor channels for orca-preview://grant/path; render remote HTML in local webviews without remote-browsing routing. */
-export const DOC_PREVIEW_SCHEME = 'orca-preview'
+/** Read workspace-owned local/remote disk over editor channels for topo-preview://grant/path; render remote HTML in local webviews without remote-browsing routing. */
+export const DOC_PREVIEW_SCHEME = 'topo-preview'
 
 /** Why: non-persistent and its own partition — preview bytes never share storage with user browsing or workspace browser profiles. */
-export const DOC_PREVIEW_PARTITION = 'orca-doc-preview'
+export const DOC_PREVIEW_PARTITION = 'topo-doc-preview'
 
 export const DOC_PREVIEW_MINT_GRANT_CHANNEL = 'docPreview:mintGrant'
 export const DOC_PREVIEW_REVOKE_GRANT_CHANNEL = 'docPreview:revokeGrant'

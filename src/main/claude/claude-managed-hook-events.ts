@@ -101,9 +101,9 @@ export type ManagedHookEvent = {
 
 export type ClaudeManagedHookPlan = {
   install: readonly ManagedHookEvent[]
-  /** Retire only Orca entries, preserving user hooks. */
+  /** Retire only Topo entries, preserving user hooks. */
   retire: readonly ManagedHookEvent[]
-  /** Retire removes only Orca's entry; leave preserves the entire slot. */
+  /** Retire removes only Topo's entry; leave preserves the entire slot. */
   statusLine: 'install' | 'retire' | 'leave'
 }
 

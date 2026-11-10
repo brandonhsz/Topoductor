@@ -18,7 +18,7 @@ import {
 } from './native-credential-backend'
 import { hasAntigravityMacOSCredential } from './native-macos-credentials'
 
-/** First release verified with Orca chats; it also leaves the chat's folder untouched. */
+/** First release verified with Topo chats; it also leaves the chat's folder untouched. */
 export const ANTIGRAVITY_HOST_ACP_MINIMUM_VERSION = '1.5.2'
 /** agy keeps its sign-in and conversations here and ignores GEMINI_HOME, so this only pins the chat. */
 const AGY_HOME_FOLDER = '.gemini'
@@ -136,7 +136,7 @@ export async function agyUsesApiKey(homePath: string): Promise<boolean> {
   }
 }
 
-/** Whether Orca's own Chat holds the managed server's personal sign-in token. */
+/** Whether Topo's own Chat holds the managed server's personal sign-in token. */
 export async function hasManagedAntigravityChatSignIn(managedHome: string): Promise<boolean> {
   const token = join(managedHome, ANTIGRAVITY_ACP_HOME, 'acp_token.json')
   return (await stat(token).catch(() => null)) !== null

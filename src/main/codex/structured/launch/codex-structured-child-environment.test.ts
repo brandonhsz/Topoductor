@@ -11,7 +11,7 @@ import type { AgentSessionJournalIdentity } from '../../../../shared/agent-sessi
 const DEV_CLI_BIN_FIRST = /^[^:;]*[\\/]cli[\\/]bin[:;]/
 const DEV_CLI_BIN_DIR = /^[^:;]*[\\/]cli[\\/]bin$/
 // Absolute launchers survive login-shell PATH reordering.
-const DEV_CLI_LAUNCHER = /^[^:;]*[\\/]cli[\\/]bin[\\/]orca-dev$/
+const DEV_CLI_LAUNCHER = /^[^:;]*[\\/]cli[\\/]bin[\\/]topo-dev$/
 
 async function codexChildEnv(
   env: Record<string, string>,
@@ -55,14 +55,14 @@ const ENV_REPORTING_APP_SERVER = String.raw`
       return send({
         id: message.id,
         result: {
-          sessionId: process.env.ORCA_AGENT_SESSION_ID ?? null,
-          cliCommand: process.env.ORCA_CLI_COMMAND ?? null,
+          sessionId: process.env.TOPO_AGENT_SESSION_ID ?? null,
+          cliCommand: process.env.TOPO_CLI_COMMAND ?? null,
           selectors: [
-            process.env.ORCA_ENVIRONMENT,
-            process.env.ORCA_PAIRING_CODE,
-            process.env.ORCA_REMOTE_PAIRING
+            process.env.TOPO_ENVIRONMENT,
+            process.env.TOPO_PAIRING_CODE,
+            process.env.TOPO_REMOTE_PAIRING
           ],
-          cliBinDir: process.env.ORCA_CLI_BIN_DIR ?? null,
+          cliBinDir: process.env.TOPO_CLI_BIN_DIR ?? null,
           path: process.env.PATH ?? process.env.Path ?? null
         }
       })
@@ -78,7 +78,7 @@ describe('the spawned Codex child', () => {
   it.skipIf(process.platform === 'win32')(
     'starts the persistent shebang CLI with its sibling Node over a competing PATH runtime',
     async () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-codex-shebang-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-codex-shebang-'))
       try {
         const selectedBin = join(root, 'selected', 'bin')
         const competingBin = join(root, 'other', 'bin')
@@ -111,12 +111,12 @@ describe('the spawned Codex child', () => {
     }
   )
 
-  it("runs with its own session id and this app's CLI, over an id inherited by Orca itself", async () => {
+  it("runs with its own session id and this app's CLI, over an id inherited by Topo itself", async () => {
     // Verify the actual child environment after the overlay merges with inherited process.env.
-    vi.stubEnv('ORCA_AGENT_SESSION_ID', 'a0b1c2d3-0000-4000-8000-00000000abcd')
-    vi.stubEnv('ORCA_ENVIRONMENT', 'stale-shell-selection')
-    vi.stubEnv('ORCA_PAIRING_CODE', 'stale-pairing')
-    vi.stubEnv('ORCA_REMOTE_PAIRING', 'stale-remote-pairing')
+    vi.stubEnv('TOPO_AGENT_SESSION_ID', 'a0b1c2d3-0000-4000-8000-00000000abcd')
+    vi.stubEnv('TOPO_ENVIRONMENT', 'stale-shell-selection')
+    vi.stubEnv('TOPO_PAIRING_CODE', 'stale-pairing')
+    vi.stubEnv('TOPO_REMOTE_PAIRING', 'stale-remote-pairing')
     const sessionId = 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d'
     const env = sealed(sessionId)
     const connection = await openCodexAppServerConnection({

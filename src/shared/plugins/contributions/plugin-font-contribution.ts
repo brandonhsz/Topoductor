@@ -101,7 +101,7 @@ export const pluginFontContributionSchema = z
       )
       .meta(
         pluginFieldDoc(
-          'Family name shown in the font pickers. Orca adds the plugin id, so a plugin font never replaces an installed or built-in font of the same name.',
+          'Family name shown in the font pickers. Topo adds the plugin id, so a plugin font never replaces an installed or built-in font of the same name.',
           SINCE,
           ['Geist']
         )
@@ -135,7 +135,7 @@ export function isPluginFontWeight(weight: string): boolean {
   return FONT_WEIGHT_RE.test(weight)
 }
 
-/** The CSS family Orca registers: the plugin key keeps it from matching any other font. */
+/** The CSS family Topo registers: the plugin key keeps it from matching any other font. */
 export function pluginFontFamilyName(pluginKey: string, family: string): string {
   return `${family} (${pluginKey})`
 }

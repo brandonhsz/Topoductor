@@ -9,7 +9,7 @@ import { ActionSheetContent } from '../components/ActionSheetModal'
 import { BottomDrawer } from '../components/bottom-drawer/BottomDrawer'
 import { BottomDrawerModalHost } from '../components/bottom-drawer/bottom-drawer-modal-host'
 import { ConfirmModal } from '../components/ConfirmModal'
-import { OrcaHookTrustDrawer } from '../components/OrcaHookTrustDrawer'
+import { TopoHookTrustDrawer } from '../components/TopoHookTrustDrawer'
 import { NewWorktreeModalController } from '../components/NewWorktreeModalController'
 import { hostNewWorktreeSessionRoute } from '../host-new-worktree-session-route'
 import { isWorktreePinned, type Worktree } from '../worktree/workspace-list-sections'
@@ -79,12 +79,12 @@ export function HostScreenOverlays({ controller }: { controller: HostScreenContr
                     {state.confirmDelete.recipeEnvironment.destroys === false
                       ? t(
                           'hostScreen.hostScreenOverlays.deleteKeepsEnvironment',
-                          'The environment "{{environment}}" that Orca created for it keeps running: its recipe has no destroy step.',
+                          'The environment "{{environment}}" that Topo created for it keeps running: its recipe has no destroy step.',
                           { environment: state.confirmDelete.recipeEnvironment.name }
                         )
                       : t(
                           'hostScreen.hostScreenOverlays.deleteDestroysEnvironment',
-                          'This also destroys the environment "{{environment}}" that Orca created for it, with any uncommitted work and running terminals on it.',
+                          'This also destroys the environment "{{environment}}" that Topo created for it, with any uncommitted work and running terminals on it.',
                           { environment: state.confirmDelete.recipeEnvironment.name }
                         )}
                   </Text>
@@ -209,7 +209,7 @@ export function HostScreenOverlays({ controller }: { controller: HostScreenContr
           )}
         </BottomDrawer>
 
-        <OrcaHookTrustDrawer
+        <TopoHookTrustDrawer
           visible={actions.archiveTrustRequest != null}
           prompt={actions.archiveTrustRequest?.prompt ?? null}
           onRunOnce={() => void actions.approveArchiveTrust(false)}

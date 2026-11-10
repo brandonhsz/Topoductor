@@ -2,7 +2,7 @@
 // chrome chords pressed inside them.
 
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   browserAddressBar,
@@ -61,7 +61,7 @@ async function openFloatingBrowser(
   await expect(page.locator(FLOATING_PANEL)).toHaveCount(1)
   const openPanel = page.locator(`${FLOATING_PANEL}[aria-hidden="false"]`)
   if ((await openPanel.count()) === 0) {
-    await page.evaluate(() => window.dispatchEvent(new Event('orca-toggle-floating-terminal')))
+    await page.evaluate(() => window.dispatchEvent(new Event('topo-toggle-floating-terminal')))
   }
   await expect(
     openPanel.locator(`[data-browser-overlay-tab-id="${floating.browserTabId}"]`)
@@ -93,22 +93,22 @@ async function focusChrome(page: Page, browserTabId: string): Promise<void> {
 }
 
 test.describe('floating browser shortcut scope', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
   })
 
-  test('chrome shortcuts act only in the pane that owns the key press', async ({ orcaPage }) => {
+  test('chrome shortcuts act only in the pane that owns the key press', async ({ topoPage }) => {
     const server = await startBrowserSplitPageServer()
     try {
-      const split = await createTerminalBrowserSplit(orcaPage, server.pageUrl('split', 1))
-      const floating = await openFloatingBrowser(orcaPage, server.pageUrl('float', 1))
-      await focusBrowserGroup(orcaPage, split.browserGroupId)
-      await waitForGuestUrl(orcaPage, split.browserTabId, server.pageUrl('split', 1))
-      await waitForGuestUrl(orcaPage, floating.browserTabId, server.pageUrl('float', 1))
-      await navigateGuest(orcaPage, split.browserTabId, server.pageUrl('split', 2))
-      await navigateGuest(orcaPage, floating.browserTabId, server.pageUrl('float', 2))
+      const split = await createTerminalBrowserSplit(topoPage, server.pageUrl('split', 1))
+      const floating = await openFloatingBrowser(topoPage, server.pageUrl('float', 1))
+      await focusBrowserGroup(topoPage, split.browserGroupId)
+      await waitForGuestUrl(topoPage, split.browserTabId, server.pageUrl('split', 1))
+      await waitForGuestUrl(topoPage, floating.browserTabId, server.pageUrl('float', 1))
+      await navigateGuest(topoPage, split.browserTabId, server.pageUrl('split', 2))
+      await navigateGuest(topoPage, floating.browserTabId, server.pageUrl('float', 2))
 
       const cases = [
         {
@@ -126,53 +126,53 @@ test.describe('floating browser shortcut scope', () => {
       ]
       for (const { name, owner, other, otherName } of cases) {
         await test.step(`keys pressed in the ${name} browser chrome`, async () => {
-          await focusChrome(orcaPage, owner)
-          await orcaPage.keyboard.press(backChord)
-          await waitForGuestUrl(orcaPage, owner, server.pageUrl(name, 1))
-          await waitForGuestIdle(orcaPage, other)
-          await waitForGuestUrl(orcaPage, other, server.pageUrl(otherName, 2))
-          await focusChrome(orcaPage, owner)
-          await orcaPage.keyboard.press(forwardChord)
-          await waitForGuestUrl(orcaPage, owner, server.pageUrl(name, 2))
-          await waitForGuestUrl(orcaPage, other, server.pageUrl(otherName, 2))
+          await focusChrome(topoPage, owner)
+          await topoPage.keyboard.press(backChord)
+          await waitForGuestUrl(topoPage, owner, server.pageUrl(name, 1))
+          await waitForGuestIdle(topoPage, other)
+          await waitForGuestUrl(topoPage, other, server.pageUrl(otherName, 2))
+          await focusChrome(topoPage, owner)
+          await topoPage.keyboard.press(forwardChord)
+          await waitForGuestUrl(topoPage, owner, server.pageUrl(name, 2))
+          await waitForGuestUrl(topoPage, other, server.pageUrl(otherName, 2))
 
-          await recordGuestLoadStarts(orcaPage, [owner, other])
-          await focusChrome(orcaPage, owner)
-          await orcaPage.keyboard.press(`${shortcutModifier}+r`)
-          await expect.poll(() => guestLoadStarts(orcaPage, owner)).toBeGreaterThan(0)
-          await waitForGuestIdle(orcaPage, owner)
-          expect(await guestLoadStarts(orcaPage, other)).toBe(0)
+          await recordGuestLoadStarts(topoPage, [owner, other])
+          await focusChrome(topoPage, owner)
+          await topoPage.keyboard.press(`${shortcutModifier}+r`)
+          await expect.poll(() => guestLoadStarts(topoPage, owner)).toBeGreaterThan(0)
+          await waitForGuestIdle(topoPage, owner)
+          expect(await guestLoadStarts(topoPage, other)).toBe(0)
 
-          await focusChrome(orcaPage, owner)
-          await orcaPage.keyboard.press(`${shortcutModifier}+f`)
-          await expect(findInput(orcaPage, owner)).toBeFocused()
-          await expect(findInput(orcaPage, other)).toBeHidden()
-          await orcaPage.keyboard.press('Escape')
-          await expect(findInput(orcaPage, owner)).toBeHidden()
+          await focusChrome(topoPage, owner)
+          await topoPage.keyboard.press(`${shortcutModifier}+f`)
+          await expect(findInput(topoPage, owner)).toBeFocused()
+          await expect(findInput(topoPage, other)).toBeHidden()
+          await topoPage.keyboard.press('Escape')
+          await expect(findInput(topoPage, owner)).toBeHidden()
 
-          await focusChrome(orcaPage, owner)
-          await orcaPage.keyboard.press(`${shortcutModifier}+l`)
-          await expect(browserAddressBar(orcaPage, owner)).toBeFocused()
+          await focusChrome(topoPage, owner)
+          await topoPage.keyboard.press(`${shortcutModifier}+l`)
+          await expect(browserAddressBar(topoPage, owner)).toBeFocused()
 
-          await focusChrome(orcaPage, owner)
-          await orcaPage.keyboard.press(`${shortcutModifier}+c`)
-          await expect(cancelGrabButton(orcaPage, owner)).toBeVisible()
-          await expect(cancelGrabButton(orcaPage, other)).toBeHidden()
-          await cancelGrabButton(orcaPage, owner).click()
-          await expect(cancelGrabButton(orcaPage, owner)).toBeHidden()
+          await focusChrome(topoPage, owner)
+          await topoPage.keyboard.press(`${shortcutModifier}+c`)
+          await expect(cancelGrabButton(topoPage, owner)).toBeVisible()
+          await expect(cancelGrabButton(topoPage, other)).toBeHidden()
+          await cancelGrabButton(topoPage, owner).click()
+          await expect(cancelGrabButton(topoPage, owner)).toBeHidden()
         })
       }
 
       await test.step('back pressed inside the floating page', async () => {
         await pressKeyInBrowserGuest(
-          orcaPage,
+          topoPage,
           floating.browserTabId,
           floating.browserPageId,
           isMac ? '[' : 'Left',
           [isMac ? 'meta' : 'alt']
         )
-        await waitForGuestUrl(orcaPage, floating.browserTabId, server.pageUrl('float', 1))
-        await waitForGuestUrl(orcaPage, split.browserTabId, server.pageUrl('split', 2))
+        await waitForGuestUrl(topoPage, floating.browserTabId, server.pageUrl('float', 1))
+        await waitForGuestUrl(topoPage, split.browserTabId, server.pageUrl('split', 2))
       })
     } finally {
       await server.close()

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  ORCA_EDITOR_FILE_CACHE_STALE_EVENT,
-  ORCA_EDITOR_SAVE_AND_CLOSE_EVENT,
+  TOPO_EDITOR_FILE_CACHE_STALE_EVENT,
+  TOPO_EDITOR_SAVE_AND_CLOSE_EVENT,
   requestEditorFileSave,
   type EditorSaveAndCloseDetail
 } from '../../autosave/editor-autosave'
@@ -115,7 +115,7 @@ describe('guarded editor saves under races', () => {
         dropped.push(event.detail.fileId)
       }
     }
-    window.addEventListener(ORCA_EDITOR_FILE_CACHE_STALE_EVENT, onStale)
+    window.addEventListener(TOPO_EDITOR_FILE_CACHE_STALE_EVENT, onStale)
 
     const cleanup = attachEditorAutosaveController(store)
     try {
@@ -129,7 +129,7 @@ describe('guarded editor saves under races', () => {
       expect(disk.files.get(GUARDED_PATH)).toBe('kept edits')
     } finally {
       cleanup()
-      window.removeEventListener(ORCA_EDITOR_FILE_CACHE_STALE_EVENT, onStale)
+      window.removeEventListener(TOPO_EDITOR_FILE_CACHE_STALE_EVENT, onStale)
     }
   })
 
@@ -142,7 +142,7 @@ describe('guarded editor saves under races', () => {
     try {
       const reason = await new Promise((resolve) => {
         const detail: EditorSaveAndCloseDetail = { fileId: GUARDED_PATH, onNotClosed: resolve }
-        window.dispatchEvent(new CustomEvent(ORCA_EDITOR_SAVE_AND_CLOSE_EVENT, { detail }))
+        window.dispatchEvent(new CustomEvent(TOPO_EDITOR_SAVE_AND_CLOSE_EVENT, { detail }))
       })
       expect(reason).toBe('blocked-stale')
       expect(store.getState().openFiles).toHaveLength(1)

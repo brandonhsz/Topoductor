@@ -78,7 +78,7 @@ async function launchedWithOtherPermissionMode(
   )
 }
 
-/** Orca mail notices are not the user's turn: they keep the running process and its choices. */
+/** Topo mail notices are not the user's turn: they keep the running process and its choices. */
 function picksNewLaunchModel(
   session: OutgrownChildReading,
   next: AgentJournalSubmission | undefined,

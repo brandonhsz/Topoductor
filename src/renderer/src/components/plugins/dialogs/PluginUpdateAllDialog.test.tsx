@@ -133,7 +133,7 @@ function workerUpdate(pluginKey: string, official: boolean): PluginMarketplaceHo
 
 async function renderDialog(
   entries: PluginListEntry[],
-  props: { onUpdated?: (keys: string[]) => Promise<void>; orcaVersion?: string } = {}
+  props: { onUpdated?: (keys: string[]) => Promise<void>; topoVersion?: string } = {}
 ): Promise<HTMLDivElement> {
   const container = document.createElement('div')
   document.body.appendChild(container)
@@ -143,7 +143,7 @@ async function renderDialog(
       <PluginUpdateAllDialog
         open
         entries={entries}
-        orcaVersion={props.orcaVersion}
+        topoVersion={props.topoVersion}
         onClose={vi.fn()}
         onUpdated={props.onUpdated ?? vi.fn().mockResolvedValue(undefined)}
       />

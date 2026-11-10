@@ -2,7 +2,7 @@ import type { Page } from '@stablyai/playwright-test'
 import type { RuntimeTerminalRead } from '../../../src/shared/runtime-types'
 import '../../../src/shared/protocol-version'
 import { TERMINAL_PAIRED_PARKING_RUNTIME_CAPABILITY } from '../../../src/shared/terminal/runtime-policy/terminal-runtime-capabilities'
-import { expect } from './orca-app'
+import { expect } from './topo-app'
 
 const INITIAL_TITLE = '⠋ Cursor Agent'
 const FINAL_TITLE = 'Cursor ready'

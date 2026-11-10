@@ -1,4 +1,4 @@
-// COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+// COMPAT(wsl-bridge): removed when WSL runs as an topod host.
 
 import { type LocalAgentRuntime, buildSkillSetupTerminalCommand } from './skill-runtime-command'
 

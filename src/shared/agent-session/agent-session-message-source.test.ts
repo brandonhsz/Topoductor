@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { readAgentMessageSource, type AgentMessageSource } from './agent-session-message-source'
-import { testOrcaSessionId } from '../orca-session-address-test-fixture'
+import { testTopoSessionId } from '../topo-session-address-test-fixture'
 
 const SESSION = '4a1f6c2e-8b3d-4e7a-9c15-0d2b6e8f1a37'
 
@@ -8,15 +8,15 @@ const FROM: AgentMessageSource = {
   kind: 'agent',
   senders: [
     {
-      party: { address: 'term_a', terminalHandle: 'term_a', orcaSessionId: null },
+      party: { address: 'term_a', terminalHandle: 'term_a', topoSessionId: null },
       name: 'Build tab',
       agent: 'claude'
     },
     {
       party: {
-        address: `orca_session_id:${SESSION}`,
+        address: `topo_session_id:${SESSION}`,
         terminalHandle: null,
-        orcaSessionId: testOrcaSessionId(SESSION)
+        topoSessionId: testTopoSessionId(SESSION)
       },
       name: null
     }
@@ -64,10 +64,10 @@ describe("a message's sender, read through its one reader", () => {
     const read = readAgentMessageSource({
       ...FROM,
       senders: [
-        { party: { address: 'term_a', terminalHandle: 'term_a', orcaSessionId: 'term_a' } },
-        { party: { address: 'term_b', terminalHandle: 'term_b', orcaSessionId: null }, name: 7 },
+        { party: { address: 'term_a', terminalHandle: 'term_a', topoSessionId: 'term_a' } },
+        { party: { address: 'term_b', terminalHandle: 'term_b', topoSessionId: null }, name: 7 },
         {
-          party: { address: 'term_c', terminalHandle: 'term_c', orcaSessionId: null },
+          party: { address: 'term_c', terminalHandle: 'term_c', topoSessionId: null },
           name: `a‮b\n${'x'.repeat(300)}`
         }
       ]

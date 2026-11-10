@@ -79,4 +79,4 @@
 # Vitest writes snapshots with LF, so checkout bytes must match on every host.
 **/__snapshots__/*.snap text eol=lf
 # Generated, minified bundles (config/scripts/build-plugin-declarative-runtime.mjs).
-/resources/plugins/declarative/orca-test*.mjs linguist-generated=true -diff
+/resources/plugins/declarative/topo-test*.mjs linguist-generated=true -diff

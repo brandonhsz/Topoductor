@@ -10,7 +10,7 @@ import '../orchestration/db/contract-constants'
 import '../orchestration/db/messages/mailbox-routing-page'
 import '../orchestration/db/dispatch-row-writer'
 import '../orchestration/db/attempt-outcome-projection'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 
 import type { RpcRequest } from './core'
 
@@ -75,7 +75,7 @@ describe('orchestration commit-notify recovery', () => {
 
   async function throwAfterCommitAndReplay(
     dispatcher: RpcDispatcher,
-    runtime: OrcaRuntimeService,
+    runtime: TopoRuntimeService,
     first: RpcRequest,
     retryRpcId: string
   ) {

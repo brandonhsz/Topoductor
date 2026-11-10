@@ -61,7 +61,7 @@ function unpatchedWindowsProcessTreeCommandLineSource() {
 
 // Pin autocrlf via temporary global HOME config: repair sets GIT_DIR, bypassing repo config, and host defaults (especially false) affect patch matching.
 export function gitLineEndingEnv(autocrlf) {
-  const home = mkdtempSync(join(tmpdir(), `orca-git-home-${autocrlf}-`))
+  const home = mkdtempSync(join(tmpdir(), `topo-git-home-${autocrlf}-`))
   writeFileSync(join(home, '.gitconfig'), `[core]\n\tautocrlf = ${autocrlf}\n`)
   return { HOME: home, USERPROFILE: home }
 }
@@ -82,7 +82,7 @@ export function writeWindowsProcessTreePatchFile(projectDir) {
 }
 
 export function mkTempProject() {
-  const projectDir = mkdtempSync(join(tmpdir(), 'orca-rebuild-native-deps-'))
+  const projectDir = mkdtempSync(join(tmpdir(), 'topo-rebuild-native-deps-'))
   mkdirSync(join(projectDir, 'config', 'scripts'), { recursive: true })
   copyScriptWithLocalModules(
     sourceScriptPath,
@@ -126,11 +126,11 @@ export function runRebuildScript(projectDir, extraEnv = {}, args = []) {
     ...process.env,
     npm_config_platform: 'linux',
     npm_config_arch: 'x64',
-    ORCA_ELECTRON_PACKAGE_EXTRACTOR: join(projectDir, 'fake-extractor.cjs')
+    TOPO_ELECTRON_PACKAGE_EXTRACTOR: join(projectDir, 'fake-extractor.cjs')
   }
   for (const key of Object.keys(env)) {
     if (
-      key.toLowerCase() === 'orca_strict_electron_install' ||
+      key.toLowerCase() === 'topo_strict_electron_install' ||
       key.toLowerCase() === 'npm_lifecycle_event' ||
       key.toLowerCase() === 'trackfileaccess'
     ) {
@@ -419,7 +419,7 @@ exports.loadNativeModule = function loadNativeModule(nativeName) {
 }
 
 export function writeFakeWindowsRegistry(projectDir) {
-  const registryDir = join(projectDir, 'node_modules', '@orca', 'windows-registry')
+  const registryDir = join(projectDir, 'node_modules', '@topo', 'windows-registry')
   mkdirSync(registryDir, { recursive: true })
   writeFileSync(
     join(registryDir, 'index.js'),
@@ -428,7 +428,7 @@ export function writeFakeWindowsRegistry(projectDir) {
 }
 
 export function writeFakeWindowsSecurity(projectDir) {
-  const securityDir = join(projectDir, 'node_modules', '@orca', 'windows-security')
+  const securityDir = join(projectDir, 'node_modules', '@topo', 'windows-security')
   mkdirSync(securityDir, { recursive: true })
   writeFileSync(
     join(securityDir, 'index.js'),

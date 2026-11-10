@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { Repo } from '../../../shared/repo-types'
 import * as repoSlugUpstream from '../../github/client/fetch/repo-slug-upstream'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { repoTarget } from '../../persistence/repo-host-target-matcher.test-fixture'
 
 vi.mock('../../github/client/fetch/repo-slug-upstream', async (importOriginal) => ({
@@ -33,7 +33,7 @@ function makeRepo(overrides: Partial<Repo> = {}): Repo {
   }
 }
 
-function attachStore(runtime: OrcaRuntimeService, repos: Repo[]) {
+function attachStore(runtime: TopoRuntimeService, repos: Repo[]) {
   const updateRepo = vi.fn((target: Pick<Repo, 'id'>, updates: Partial<Repo>) => {
     const index = repos.findIndex((repo) => repo.id === target.id)
     repos[index] = { ...repos[index], ...updates }
@@ -48,7 +48,7 @@ afterEach(() => {
 
 describe('startup fork-upstream backfill', () => {
   it('keeps an icon chosen while avatar detection is pending', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const repo = makeRepo()
     const repos = [repo]
     const updateRepo = attachStore(runtime, repos)

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { RpcDispatcher } from '../../dispatcher'
 import { FILE_METHODS } from './files'
 import { remoteRpcContentBudget } from '../../../../../shared/remote-rpc-content-budget'
@@ -20,7 +20,7 @@ describe('file path search RPC method', () => {
     const runtime = {
       getRuntimeId: () => 'test-runtime',
       searchQuickOpenFilePaths
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     const dispatcher = new RpcDispatcher({ runtime, methods: FILE_METHODS })
     const id = 'req-bounded-quick-open'
     const replies: string[] = []

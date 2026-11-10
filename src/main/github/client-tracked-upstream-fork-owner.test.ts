@@ -55,12 +55,12 @@ describe('getPRForBranch', () => {
   it('uses the tracked upstream remote owner for fork branch lookup', async () => {
     resolvePRRepositoryCandidatesMock.mockResolvedValueOnce({
       candidates: [
-        { owner: 'stablyai', repo: 'orca' },
-        { owner: 'origin-owner', repo: 'orca' }
+        { owner: 'brandonhsz', repo: 'topo' },
+        { owner: 'origin-owner', repo: 'topo' }
       ],
-      headRepo: { owner: 'origin-owner', repo: 'orca' }
+      headRepo: { owner: 'origin-owner', repo: 'topo' }
     })
-    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'fork-owner', repo: 'orca' })
+    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'fork-owner', repo: 'topo' })
     ghExecFileAsyncMock
       .mockResolvedValueOnce({ stdout: JSON.stringify([]) })
       .mockResolvedValueOnce({ stdout: JSON.stringify([]) })
@@ -70,7 +70,7 @@ describe('getPRForBranch', () => {
             number: 78,
             title: 'Fork upstream branch PR',
             state: 'open',
-            html_url: 'https://github.com/stablyai/orca/pull/78',
+            html_url: 'https://github.com/brandonhsz/topo/pull/78',
             updated_at: '2026-03-28T00:00:00Z',
             draft: false,
             mergeable: true,
@@ -84,7 +84,7 @@ describe('getPRForBranch', () => {
           number: 78,
           title: 'Hydrated fork upstream branch PR',
           state: 'OPEN',
-          url: 'https://github.com/stablyai/orca/pull/78',
+          url: 'https://github.com/brandonhsz/topo/pull/78',
           statusCheckRollup: [],
           updatedAt: '2026-03-28T00:00:00Z',
           isDraft: false,
@@ -107,7 +107,7 @@ describe('getPRForBranch', () => {
       3,
       [
         'api',
-        'repos/stablyai/orca/pulls?head=fork-owner%3Acontributor%2Foriginal&state=all&per_page=10',
+        'repos/brandonhsz/topo/pulls?head=fork-owner%3Acontributor%2Foriginal&state=all&per_page=10',
         '--include'
       ],
       { cwd: '/repo-root' }
@@ -115,20 +115,20 @@ describe('getPRForBranch', () => {
     expect(pr).toMatchObject({
       number: 78,
       title: 'Hydrated fork upstream branch PR',
-      prRepo: { owner: 'stablyai', repo: 'orca' },
-      headRepo: { owner: 'fork-owner', repo: 'orca' }
+      prRepo: { owner: 'brandonhsz', repo: 'topo' },
+      headRepo: { owner: 'fork-owner', repo: 'topo' }
     })
   })
 
   it('uses the tracked upstream remote owner when the fork branch name matches locally', async () => {
     resolvePRRepositoryCandidatesMock.mockResolvedValueOnce({
       candidates: [
-        { owner: 'stablyai', repo: 'orca' },
-        { owner: 'origin-owner', repo: 'orca' }
+        { owner: 'brandonhsz', repo: 'topo' },
+        { owner: 'origin-owner', repo: 'topo' }
       ],
-      headRepo: { owner: 'origin-owner', repo: 'orca' }
+      headRepo: { owner: 'origin-owner', repo: 'topo' }
     })
-    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'brennanb2025', repo: 'orca' })
+    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'brennanb2025', repo: 'topo' })
     ghExecFileAsyncMock
       .mockResolvedValueOnce({ stdout: JSON.stringify([]) })
       .mockResolvedValueOnce({ stdout: JSON.stringify([]) })
@@ -138,7 +138,7 @@ describe('getPRForBranch', () => {
             number: 6433,
             title: 'Recover Windows worktree deletes from long paths',
             state: 'open',
-            html_url: 'https://github.com/stablyai/orca/pull/6433',
+            html_url: 'https://github.com/brandonhsz/topo/pull/6433',
             updated_at: '2026-06-26T00:00:00Z',
             draft: false,
             mergeable: true,
@@ -155,7 +155,7 @@ describe('getPRForBranch', () => {
           number: 6433,
           title: 'Recover Windows worktree deletes from long paths',
           state: 'OPEN',
-          url: 'https://github.com/stablyai/orca/pull/6433',
+          url: 'https://github.com/brandonhsz/topo/pull/6433',
           statusCheckRollup: [],
           updatedAt: '2026-06-26T00:00:00Z',
           isDraft: false,
@@ -178,15 +178,15 @@ describe('getPRForBranch', () => {
       3,
       [
         'api',
-        'repos/stablyai/orca/pulls?head=brennanb2025%3Abrennanb2025%2Fworktree-remove-fix&state=all&per_page=10',
+        'repos/brandonhsz/topo/pulls?head=brennanb2025%3Abrennanb2025%2Fworktree-remove-fix&state=all&per_page=10',
         '--include'
       ],
       { cwd: '/repo-root' }
     )
     expect(pr).toMatchObject({
       number: 6433,
-      prRepo: { owner: 'stablyai', repo: 'orca' },
-      headRepo: { owner: 'brennanb2025', repo: 'orca' }
+      prRepo: { owner: 'brandonhsz', repo: 'topo' },
+      headRepo: { owner: 'brennanb2025', repo: 'topo' }
     })
   })
 })

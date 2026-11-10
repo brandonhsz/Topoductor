@@ -4,7 +4,7 @@ import { quotePowerShellLiteral as powerShellLiteral } from '../../../../shared/
 import { normalizeWindowsRemotePath } from '../../remote-host/ssh-remote-platform'
 
 /** Unique staging names avoid locks from prior writers: contact loss never proves their death (docs/reference/ssh-execution-boundary.md). */
-export const WINDOWS_STAGED_WRITE_SUFFIX = '.orca-partial'
+export const WINDOWS_STAGED_WRITE_SUFFIX = '.topo-partial'
 
 export function makeWindowsStagingPath(remotePath: string): string {
   return `${remotePath}${WINDOWS_STAGED_WRITE_SUFFIX}-${randomBytes(6).toString('hex')}`

@@ -36,7 +36,7 @@ vi.mock('@/runtime/rpc/calls/runtime-rpc-call', () => ({
 vi.mock('@/lib/web-client-location', () => ({ isWebClientLocation: () => mocks.web }))
 vi.mock('sonner', () => ({ toast: { success: vi.fn() } }))
 const path =
-  '/host/agent-session-attachments/12345678-1234-1234-1234-123456789abc/orca-paste-123-abc.txt'
+  '/host/agent-session-attachments/12345678-1234-1234-1234-123456789abc/topo-paste-123-abc.txt'
 const target = { kind: 'environment', environmentId: 'env-text' } as const
 const bytes = Buffer.from(['\ufeffstart\r\n', '🙂'.repeat(20_000), 'end'].join(''))
 let capable = true

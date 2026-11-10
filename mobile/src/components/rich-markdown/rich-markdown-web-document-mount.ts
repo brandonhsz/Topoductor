@@ -21,10 +21,10 @@ export type RichMarkdownWebDocumentHooks = {
   loadImageSource?: (path: string) => Promise<string>
 }
 
-const STYLE_ELEMENT_ID = 'orca-rich-markdown-document-style'
+const STYLE_ELEMENT_ID = 'topo-rich-markdown-document-style'
 
 /** The class the host carries, and the prefix every injected rule is held under. */
-export const RICH_MARKDOWN_HOST_CLASS = 'orca-rich-markdown-document-host'
+export const RICH_MARKDOWN_HOST_CLASS = 'topo-rich-markdown-document-host'
 
 // Plant sheet once per page, scoped to host class; move document-wide theme/color/font globals onto host itself.
 // Leave sheet in head on unmount: removing host class makes it inert, and next mount reuses it.

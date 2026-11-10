@@ -52,7 +52,7 @@ export function assertBrowserHostPageCommandAdmission(
   ) {
     throw new BrowserError(
       BROWSER_EXPECT_URL_UNSUPPORTED_CODE,
-      'The client hosting this page cannot check --expect-url. Update Orca on that client or drop the flag.'
+      'The client hosting this page cannot check --expect-url. Update Topo on that client or drop the flag.'
     )
   }
   if (

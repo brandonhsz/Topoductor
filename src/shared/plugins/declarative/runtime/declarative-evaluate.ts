@@ -4,14 +4,14 @@ import {
 } from '../plugin-declarative-message-names'
 import { Fragment, isOrcaElement, type OrcaComponent } from './declarative-elements'
 
-export type OrcaWireNode = {
+export type TopoWireNode = {
   type: string
   key: string
   props: Record<string, unknown>
-  children: (OrcaWireNode | string)[]
+  children: (TopoWireNode | string)[]
 }
-export type OrcaCallback = (...args: unknown[]) => unknown
-export type OrcaEvaluation = { tree: OrcaWireNode | null; callbacks: Map<string, OrcaCallback> }
+export type TopoCallback = (...args: unknown[]) => unknown
+export type TopoEvaluation = { tree: TopoWireNode | null; callbacks: Map<string, TopoCallback> }
 
 // Why: a clean error beats a guest stack overflow from a self-rendering component.
 const MAX_EVALUATION_DEPTH = 512
@@ -24,7 +24,7 @@ const IGNORED_PROPS: ReadonlySet<string> = new Set([
   PLUGIN_DECLARATIVE_EDIT_PROP
 ])
 
-function isCallback(value: unknown): value is OrcaCallback {
+function isCallback(value: unknown): value is TopoCallback {
   return typeof value === 'function'
 }
 
@@ -87,7 +87,7 @@ function withoutUndefined(value: unknown): unknown {
   return copy
 }
 
-function assertUniqueKeys(children: (OrcaWireNode | string)[], parent: string): void {
+function assertUniqueKeys(children: (TopoWireNode | string)[], parent: string): void {
   const seen = new Set<string>()
   for (const child of children) {
     if (typeof child !== 'string') {
@@ -120,8 +120,8 @@ export function evaluateOrcaTree(
   component: OrcaComponent,
   /** Newest edit id processed per value control's onChange callback. */
   editsSeen: ReadonlyMap<string, number> = new Map()
-): OrcaEvaluation {
-  const callbacks = new Map<string, OrcaCallback>()
+): TopoEvaluation {
+  const callbacks = new Map<string, TopoCallback>()
 
   function callbackId(path: string, prop: string): string {
     const base = hashId(`${path}|${prop}`)
@@ -138,11 +138,9 @@ export function evaluateOrcaTree(
     key: string,
     parentPath: string,
     depth: number
-  ): OrcaWireNode {
+  ): TopoWireNode {
     if (!/^[A-Z]/.test(type)) {
-      throw new TypeError(
-        `<${type.slice(0, 64)}> is not an Orca component; panels never render DOM`
-      )
+      throw new TypeError(`<${type.slice(0, 64)}> is not a Topo component; panels never render DOM`)
     }
     const path = `${parentPath}/${key}`
     const wireProps: Record<string, unknown> = {}
@@ -166,7 +164,7 @@ export function evaluateOrcaTree(
       wireProps[PLUGIN_DECLARATIVE_EDIT_PROP] =
         typeof id === 'string' ? (editsSeen.get(id) ?? 0) : 0
     }
-    const children: (OrcaWireNode | string)[] = []
+    const children: (TopoWireNode | string)[] = []
     const list = Array.isArray(props.children) ? props.children : [props.children]
     list.forEach((child, index) => emit(child, `#${index}`, '', children, path, depth + 1))
     assertUniqueKeys(children, `<${type}>`)
@@ -178,7 +176,7 @@ export function evaluateOrcaTree(
     value: unknown,
     slot: string,
     scope: string,
-    out: (OrcaWireNode | string)[],
+    out: (TopoWireNode | string)[],
     parentPath: string,
     depth: number
   ): void {
@@ -215,7 +213,7 @@ export function evaluateOrcaTree(
     }
   }
 
-  const root: (OrcaWireNode | string)[] = []
+  const root: (TopoWireNode | string)[] = []
   emit(component({}), '#0', '', root, '', 0)
   const nodes = root.map((child, index) =>
     typeof child === 'string'

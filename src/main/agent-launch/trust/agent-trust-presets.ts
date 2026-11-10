@@ -2,9 +2,9 @@ import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, realpathSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { writeFileAtomically } from '../../filesystem/atomic-file-publication'
-import { upsertOrcaCreatedProjectTrustLevel } from '../../codex/trust/toml/config-toml-trust'
+import { upsertTopoCreatedProjectTrustLevel } from '../../codex/trust/toml/config-toml-trust'
 import { runExclusivelyForCodexTrustConfig } from '../../codex/trust/toml/codex-trust-config-mutation-queue'
-import { recordOrcaCreatedAntigravityTrust } from './antigravity-workspace-trust-ownership'
+import { recordTopoCreatedAntigravityTrust } from './antigravity-workspace-trust-ownership'
 import type { TuiAgentConfig } from '../../../shared/agent-launch/catalog/tui-agent-config-types'
 
 export type AgentTrustPreset = NonNullable<TuiAgentConfig['preflightTrust']>
@@ -102,7 +102,7 @@ export function markAntigravityWorkspaceTrusted(
     mkdirSync(configDir, { recursive: true })
   }
   writeFileAtomically(configPath, `${JSON.stringify(config, null, 2)}\n`)
-  recordOrcaCreatedAntigravityTrust(configPath, workspacePath, absPath)
+  recordTopoCreatedAntigravityTrust(configPath, workspacePath, absPath)
 }
 
 /** Kimi Code 2.3.1 keeps one exact-folder record per cwd (workspaceTrust/trustRecord.ts). */
@@ -145,7 +145,7 @@ export function markCodexProjectTrusted(
     (inner, configFile) => () => runExclusivelyForCodexTrustConfig(configFile, inner),
     async () => {
       for (const configFile of configFiles) {
-        upsertOrcaCreatedProjectTrustLevel(configFile, absPath, 'trusted')
+        upsertTopoCreatedProjectTrustLevel(configFile, absPath, 'trusted')
       }
     }
   )

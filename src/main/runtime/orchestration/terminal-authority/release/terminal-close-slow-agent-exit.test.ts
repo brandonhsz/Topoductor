@@ -8,7 +8,7 @@ import type { PtyRuntimeControllerDeps } from '../../../../ipc/pty/runtime/contr
 import { stopAndWaitPtyFromRuntimeController } from '../../../../ipc/pty/runtime/kill'
 import type { OrchestrationDb } from '../../db/orchestration-db'
 import type { WorkerTerminalResourceRow } from './worker-terminal-ownership'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 
 import { completeWorkerTerminalRelease } from '../../../rpc/methods/orchestration/worker/worker-release-completion'
 
@@ -63,7 +63,7 @@ async function closeThroughDaemon(
     })),
     closeTerminal: (handle: string) => harness.runtime.closeTerminal(handle),
     notifyMessageArrived: vi.fn()
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: release calls only these db methods on the local terminal path.
   const db = {
     getWorkerDispatch: vi.fn(() => ({

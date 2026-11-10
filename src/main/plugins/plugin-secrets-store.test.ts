@@ -31,7 +31,7 @@ const roots: string[] = []
 const originalPlatform = process.platform
 
 async function tempRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-secrets-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-secrets-'))
   roots.push(root)
   return root
 }

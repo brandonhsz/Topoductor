@@ -27,17 +27,17 @@ describe('execution host registry', () => {
       // A VM-backed repo carries the hidden runtime-owned target on both fields.
       repos: [
         {
-          connectionId: 'runtime-ssh-orca-instance-1',
-          executionHostId: 'ssh:runtime-ssh-orca-instance-1'
+          connectionId: 'runtime-ssh-topo-instance-1',
+          executionHostId: 'ssh:runtime-ssh-topo-instance-1'
         },
         { connectionId: 'repo-ssh' }
       ],
       settings: { activeRuntimeEnvironmentId: null },
       // Stale labels must not reveal hidden runtime targets.
-      sshTargetLabels: new Map([['runtime-ssh-orca-instance-1', 'Hidden VM']])
+      sshTargetLabels: new Map([['runtime-ssh-topo-instance-1', 'Hidden VM']])
     })
 
-    expect(hosts.some((h) => h.id.includes('runtime-ssh-orca-instance-1'))).toBe(false)
+    expect(hosts.some((h) => h.id.includes('runtime-ssh-topo-instance-1'))).toBe(false)
     expect(hosts.some((h) => h.id === 'ssh:repo-ssh')).toBe(true)
   })
 

@@ -63,7 +63,7 @@ const target = {
   label: 'Target A',
   host: 'ssh.example.com',
   port: 2222,
-  username: 'orca',
+  username: 'topo',
   identityFile: '/tmp/id_ed25519'
 }
 

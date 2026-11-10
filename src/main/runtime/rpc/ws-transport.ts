@@ -1,4 +1,4 @@
-// WebSocket transport letting mobile clients reach the Orca runtime over LAN (ws://); auth is per-device tokens, and E2EE runs above this layer.
+// WebSocket transport letting mobile clients reach the Topo runtime over LAN (ws://); auth is per-device tokens, and E2EE runs above this layer.
 import { createServer as createHttpServer, type Server as HttpServer } from 'node:http'
 import type { Socket } from 'node:net'
 import { WebSocketServer, type WebSocket } from 'ws'
@@ -18,7 +18,7 @@ import { REMOTE_RUNTIME_MAX_INBOUND_FRAME_BYTES } from '../../../shared/remote-r
 import { classifyNetworkSource, type NetworkSourceClass } from './network-source-class'
 import { UnauthenticatedSourceCap } from './ws-unauthenticated-source-cap'
 import type { WebSocketSourceGuard } from './ws-network-source-guard'
-import { reserveBrowserTunnelOrcaListenerPort } from '../../browser/network/tunnels/browser-network-tunnel-destination-policy'
+import { reserveBrowserTunnelTopoListenerPort } from '../../browser/network/tunnels/browser-network-tunnel-destination-policy'
 
 export const WEBSOCKET_TRANSPORT_MAX_MESSAGE_BYTES = REMOTE_RUNTIME_MAX_INBOUND_FRAME_BYTES
 // Allow many remote-desktop streams so stale ones cannot starve control RPCs.
@@ -261,7 +261,7 @@ export class WebSocketTransport implements RpcTransport {
 
     this.httpServer = httpServer
     this.wss = wss
-    this.releaseTunnelReservation = reserveBrowserTunnelOrcaListenerPort(this.resolvedPort)
+    this.releaseTunnelReservation = reserveBrowserTunnelTopoListenerPort(this.resolvedPort)
   }
 
   async stop(): Promise<void> {

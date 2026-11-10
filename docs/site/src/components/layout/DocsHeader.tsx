@@ -5,7 +5,7 @@ import { ThemeSwitch } from 'fumadocs-ui/layouts/shared/slots/theme-switch'
 
 async function getGithubStars(): Promise<number | undefined> {
   try {
-    const response = await fetch('https://api.github.com/repos/stablyai/orca', {
+    const response = await fetch('https://api.github.com/repos/brandonhsz/Topoductor', {
       headers: { Accept: 'application/vnd.github+json' },
       next: { revalidate: 3600 }
     })
@@ -33,7 +33,7 @@ export async function DocsHeader() {
         <div className="flex shrink-0 items-center gap-6">
           <Link
             href="/docs"
-            aria-label="Orca docs"
+            aria-label="Topo docs"
             className="group flex shrink-0 items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <Image src="/docs/logo.svg" alt="" width={40} height={25} />
@@ -41,7 +41,7 @@ export async function DocsHeader() {
               aria-hidden="true"
               className="font-sans text-sm font-semibold tracking-tight text-foreground"
             >
-              ORCA
+              TOPO
             </span>
           </Link>
           <nav className="hidden items-center gap-5 sm:flex" aria-label="Primary navigation">
@@ -73,23 +73,23 @@ export async function DocsHeader() {
             target="_blank"
             rel="noopener noreferrer"
             className="hidden size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:flex"
-            aria-label="Join Orca on Discord"
+            aria-label="Join Topo on Discord"
           >
             <MessageCircle className="size-4" aria-hidden="true" />
           </a>
           <a
-            href="https://x.com/orca_build"
+            href="https://x.com/topo_build"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden size-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:flex"
-            aria-label="Follow Orca on X"
+            aria-label="Follow Topo on X"
           >
             <span aria-hidden="true" className="text-[15px] font-semibold leading-none">
               𝕏
             </span>
           </a>
           <a
-            href="https://github.com/stablyai/orca"
+            href="https://github.com/brandonhsz/Topoductor"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"

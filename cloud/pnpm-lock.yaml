@@ -169,7 +169,7 @@ importers:
 
   .:
     devDependencies:
-      '@orca/process-host':
+      '@topo/process-host':
         specifier: link:../src/packages/process-host
         version: link:../src/packages/process-host
       '@types/node':
@@ -190,10 +190,10 @@ importers:
       '@hono/node-server':
         specifier: ^2.1.5
         version: 2.1.5(hono@4.13.13)
-      '@orca-cloud/cloud-database':
+      '@topo-cloud/cloud-database':
         specifier: workspace:*
         version: link:../../packages/cloud-database
-      '@orca-cloud/push-contract':
+      '@topo-cloud/push-contract':
         specifier: workspace:*
         version: link:../../packages/push-contract
       google-auth-library:
@@ -233,10 +233,10 @@ importers:
       '@hono/node-server':
         specifier: ^2.1.5
         version: 2.1.5(hono@4.13.13)
-      '@orca-cloud/postgres-schema':
+      '@topo-cloud/postgres-schema':
         specifier: workspace:*
         version: link:../../packages/postgres-schema
-      '@orca-cloud/relay-contract':
+      '@topo-cloud/relay-contract':
         specifier: workspace:*
         version: link:../../packages/relay-contract
       hono:
@@ -350,7 +350,7 @@ importers:
 
   packages/cloud-database:
     dependencies:
-      '@orca-cloud/postgres-schema':
+      '@topo-cloud/postgres-schema':
         specifier: workspace:*
         version: link:../postgres-schema
       pg:
@@ -375,7 +375,7 @@ importers:
 
   packages/connector-contract:
     dependencies:
-      '@orca-cloud/push-contract':
+      '@topo-cloud/push-contract':
         specifier: workspace:*
         version: link:../push-contract
       zod:

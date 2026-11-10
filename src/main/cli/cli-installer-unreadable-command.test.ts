@@ -15,14 +15,14 @@ async function createUnreadableCommandFixture() {
   const fixture = await makeFixture()
   roots.push(fixture.root)
   const resourcesPath = await createPackagedMacLauncher(fixture.root)
-  await copyFile(join(resourcesPath, 'bin', 'orca'), join(resourcesPath, 'bin', 'orca-ide'))
+  await copyFile(join(resourcesPath, 'bin', 'topo'), join(resourcesPath, 'bin', 'topo-ide'))
   const defaultBin = join(fixture.root, 'default', 'bin')
   const foreignBin = join(fixture.root, 'foreign', 'bin')
   await mkdir(defaultBin, { recursive: true })
   await mkdir(foreignBin, { recursive: true })
-  const commandPath = join(defaultBin, 'orca')
-  const foreignPath = join(foreignBin, 'orca')
-  await symlink(join(resourcesPath, 'bin', 'orca'), commandPath)
+  const commandPath = join(defaultBin, 'topo')
+  const foreignPath = join(foreignBin, 'topo')
+  await symlink(join(resourcesPath, 'bin', 'topo'), commandPath)
   await writeFile(foreignPath, unreadableContents, { mode: 0o111 })
   return { ...fixture, resourcesPath, defaultBin, foreignBin, commandPath, foreignPath }
 }
@@ -36,7 +36,7 @@ describe.skipIf(process.platform === 'win32' || process.getuid?.() === 0)(
         ...fixture,
         platform: 'darwin',
         isPackaged: true,
-        execPath: join(fixture.root, 'Orca'),
+        execPath: join(fixture.root, 'Topo'),
         homePath: join(fixture.root, 'home'),
         defaultMacCommandPath: fixture.commandPath,
         processPathEnv: `${fixture.foreignBin}:${fixture.defaultBin}`
@@ -48,7 +48,7 @@ describe.skipIf(process.platform === 'win32' || process.getuid?.() === 0)(
         currentTarget: null,
         pathConfigured: true
       })
-      await expect(installer.install()).rejects.toThrow('Refusing to replace non-Orca command')
+      await expect(installer.install()).rejects.toThrow('Refusing to replace non-Topo command')
       await chmod(fixture.foreignPath, 0o600)
       expect(await readFile(fixture.foreignPath, 'utf8')).toBe(unreadableContents)
     })

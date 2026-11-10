@@ -35,7 +35,7 @@ describe('wsl login shell command helpers', () => {
   it.skipIf(process.platform === 'win32')(
     'resolves env-node launchers from the current login-shell PATH on every run',
     () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-wsl-login-codex-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-wsl-login-codex-'))
       const tools = join(root, 'tools')
       const loginBin = join(root, 'login')
       const v1Bin = join(root, 'nvm-v1')
@@ -47,11 +47,11 @@ describe('wsl login shell command helpers', () => {
       const loginShell = join(loginBin, 'bash')
       writeFileSync(
         join(tools, 'getent'),
-        `#!/bin/sh\nprintf '%s\\n' "user:x:1000:1000::/home/user:$ORCA_TEST_LOGIN_SHELL"\n`
+        `#!/bin/sh\nprintf '%s\\n' "user:x:1000:1000::/home/user:$TOPO_TEST_LOGIN_SHELL"\n`
       )
       writeFileSync(
         loginShell,
-        '#!/bin/sh\nexport PATH="$ORCA_TEST_CODEX_BIN:/usr/bin:/bin"\nexec /bin/sh -c "$2"\n'
+        '#!/bin/sh\nexport PATH="$TOPO_TEST_CODEX_BIN:/usr/bin:/bin"\nexec /bin/sh -c "$2"\n'
       )
       for (const [bin, label] of [
         [v1Bin, 'v1'],
@@ -72,8 +72,8 @@ describe('wsl login shell command helpers', () => {
           env: {
             ...process.env,
             PATH: `${tools}:/usr/bin:/bin`,
-            ORCA_TEST_LOGIN_SHELL: loginShell,
-            ORCA_TEST_CODEX_BIN: codexBin
+            TOPO_TEST_LOGIN_SHELL: loginShell,
+            TOPO_TEST_CODEX_BIN: codexBin
           }
         })
 
@@ -93,7 +93,7 @@ describe('wsl login shell command helpers', () => {
     }
 
     // Fence interactive rc/motd stdout before comparing command output byte-for-byte.
-    const captured = buildWslCapturedLoginShellCommand('orca_value=ok; printf "<%s>" "$orca_value"')
+    const captured = buildWslCapturedLoginShellCommand('topo_value=ok; printf "<%s>" "$topo_value"')
 
     expect(
       captured.readStdout(
@@ -158,13 +158,13 @@ describe('wsl login shell command helpers', () => {
 describe('in-guest wrapper root resolution', () => {
   it('resolves the published root ahead of the legacy path under a real shell', () => {
     const script = buildWslInteractiveLoginShellCommand()
-    const prologue = script.split('_orca_wsl_shell_name=')[0] as string
+    const prologue = script.split('_topo_wsl_shell_name=')[0] as string
     const probe = [
-      'ORCA_SHELL_READY_ROOT=/mnt/c/ud/shell-wrappers/deadbeefdeadbeef/shell-ready',
-      'ORCA_USER_DATA_PATH=/mnt/c/ud',
-      'export ORCA_SHELL_READY_ROOT ORCA_USER_DATA_PATH',
+      'TOPO_SHELL_READY_ROOT=/mnt/c/ud/shell-wrappers/deadbeefdeadbeef/shell-ready',
+      'TOPO_USER_DATA_PATH=/mnt/c/ud',
+      'export TOPO_SHELL_READY_ROOT TOPO_USER_DATA_PATH',
       prologue,
-      'printf "%s" "$_orca_shell_ready_root"'
+      'printf "%s" "$_topo_shell_ready_root"'
     ].join('\n')
     const result = spawnSync('sh', ['-c', probe], { encoding: 'utf8' })
     expect(result.status).toBe(0)

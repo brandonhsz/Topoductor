@@ -3,8 +3,8 @@ import { existsSync, mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
-import * as processRunner from '@orca/process-host'
-import { runProcess, spawnProcess } from '@orca/process-host'
+import * as processRunner from '@topo/process-host'
+import { runProcess, spawnProcess } from '@topo/process-host'
 import SyncDatabase from '../../../../sqlite/sync-database'
 import {
   appendTurns,
@@ -18,7 +18,7 @@ import {
 import type { AiVaultScanIssue } from '../../../../../shared/ai-vault/contracts/ai-vault-types'
 
 const executable = process.execPath
-const directory = mkdtempSync(join(tmpdir(), 'orca-opencode-process-'))
+const directory = mkdtempSync(join(tmpdir(), 'topo-opencode-process-'))
 const entry = join(directory, 'reader.cjs')
 const dbPath = join(directory, 'opencode.db')
 const oversizedPath = join(directory, 'oversized.db')

@@ -10,7 +10,7 @@ import {
   agentPaneWorkspace,
   type AgentPaneWorkspace
 } from '../agent-hooks/observations/agent-transition-detector'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { resolveUnlaunchedIntent } from '../runtime/rpc/methods/agent-launch/agent-launch-intent-resolution'
 import { agentLaunchSurfaceFactory } from '../runtime/rpc/methods/agent-launch/agent-launch-surfaces'
 import { agentLaunchWorkspaceFactory } from '../runtime/rpc/methods/agent-launch/agent-launch-worktree-creation'
@@ -33,7 +33,7 @@ export type ConversationLauncher = {
 }
 
 /** Reuse agent.launch so conversations support both git worktrees and folder workspaces. */
-export function runtimeConversationLauncher(runtime: OrcaRuntimeService): ConversationLauncher {
+export function runtimeConversationLauncher(runtime: TopoRuntimeService): ConversationLauncher {
   const context = { runtime }
   return {
     launch: async ({ agent, target, prompt }, onSurfacePublished, signal) => {

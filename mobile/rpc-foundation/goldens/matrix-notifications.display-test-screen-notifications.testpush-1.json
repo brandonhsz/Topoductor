@@ -291,7 +291,7 @@
         "Send test notification",
         "Troubleshooting",
         "Test push delivery, or a local notification when push is unavailable.",
-        "Accepted by Orca’s push service. Check for the notification."
+        "Accepted by Topo’s push service. Check for the notification."
       ]
     },
     "8a172d4948a9": {
@@ -347,7 +347,7 @@
         "Send test notification",
         "Troubleshooting",
         "Test push delivery, or a local notification when push is unavailable.",
-        "Could not send through Orca’s push service. Try again."
+        "Could not send through Topo’s push service. Try again."
       ]
     },
     "95172d96bab4": {
@@ -450,7 +450,7 @@
           "title": "Test notification"
         },
         "trigger": {
-          "channelId": "orca-desktop"
+          "channelId": "topo-desktop"
         }
       }
     },

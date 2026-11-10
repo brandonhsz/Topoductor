@@ -71,7 +71,7 @@ async function released(host: StructuredAgentSessionHost): Promise<void> {
   )
 }
 
-describe('a Claude start that Orca fails while the CLI is still running', () => {
+describe('a Claude start that Topo fails while the CLI is still running', () => {
   it('rejects a message held for it as a start that could not happen when init names another session', async () => {
     claude.behave(SESSION, { initHangs: true, initNamesForeignSession: true })
     const host = await claude.install()

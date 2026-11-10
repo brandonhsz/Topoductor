@@ -10,8 +10,8 @@ import {
 type ExecMock = Mock<GitRemoteExec>
 
 const REPO_PATH = '/repo-root'
-const FORK_URL = 'git@github.com:contributor/orca.git'
-const FORK_REMOTE = 'pr-contributor-orca'
+const FORK_URL = 'git@github.com:contributor/topo.git'
+const FORK_REMOTE = 'pr-contributor-topo'
 
 function forkTarget(overrides: Partial<GitPushTarget> = {}): GitPushTarget {
   return {
@@ -67,7 +67,7 @@ function removeCalls(exec: ExecMock): string[][] {
 }
 
 describe('cleanupUnusedWorktreePushTargetRemoteWithExec', () => {
-  it('keeps a remote Orca did not create (remoteCreated falsy)', async () => {
+  it('keeps a remote Topo did not create (remoteCreated falsy)', async () => {
     const exec = makeExec()
     await cleanupUnusedWorktreePushTargetRemoteWithExec(
       REPO_PATH,
@@ -79,7 +79,7 @@ describe('cleanupUnusedWorktreePushTargetRemoteWithExec', () => {
     expect(removeCalls(exec)).toEqual([])
     // Deferred materialization can omit store ownership; cleanup must also inspect Git config provenance.
     expect(exec).toHaveBeenCalledWith(
-      ['config', '--get', `remote.${FORK_REMOTE}.orca-created`],
+      ['config', '--get', `remote.${FORK_REMOTE}.topo-created`],
       REPO_PATH
     )
   })
@@ -128,7 +128,7 @@ describe('cleanupUnusedWorktreePushTargetRemoteWithExec', () => {
   })
 
   it('keeps the remote when its URL no longer matches the fork (repurposed by the user)', async () => {
-    const exec = makeExec({ getUrl: 'git@github.com:someone-else/orca.git' })
+    const exec = makeExec({ getUrl: 'git@github.com:someone-else/topo.git' })
     await cleanupUnusedWorktreePushTargetRemoteWithExec(
       REPO_PATH,
       'repo-1::/wt/a',

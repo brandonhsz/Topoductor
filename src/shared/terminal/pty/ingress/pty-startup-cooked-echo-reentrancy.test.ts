@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { PtyStartupIngress } from './pty-startup-ingress'
 const OPENCODE_STARTUP_QUERY_BURST = '\x1b]10;?\x07\x1b]11;?\x07\x1b]4;0;?\x07'
-const ORCA_TERMINAL_THEME = { foreground: '#ffffff', background: '#282c34' }
+const TOPO_TERMINAL_THEME = { foreground: '#ffffff', background: '#282c34' }
 const OSC10_REPLY = '\x1b]10;rgb:ffff/ffff/ffff\x1b\\'
 const OSC11_REPLY = '\x1b]11;rgb:2828/2c2c/3434\x1b\\'
 const LEAKED_COLOR_REPLY_TEXT = /\d\d;rgb:[0-9a-f]{4}\//
@@ -22,7 +22,7 @@ describe('PtyStartupIngress cooked echo reentrancy', () => {
       const emitted: string[] = []
       const writes: string[] = []
       const ingress = new PtyStartupIngress({
-        intent: { colors: ORCA_TERMINAL_THEME, deadlineMs: 5_000 },
+        intent: { colors: TOPO_TERMINAL_THEME, deadlineMs: 5_000 },
         ownerBackend,
         write: (data) => {
           writes.push(data)

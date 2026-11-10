@@ -1,12 +1,12 @@
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 
 test.use({ dismissOnboarding: false, seedTestRepo: false })
 
 test('Retry recovers a rejected language catalog request without reloading', async ({
   electronApp,
-  orcaPage
+  topoPage
 }, testInfo) => {
-  await orcaPage.evaluate(async () => {
+  await topoPage.evaluate(async () => {
     const store = window.__store
     if (!store) {
       throw new Error('Renderer store unavailable')
@@ -20,38 +20,38 @@ test('Retry recovers a rejected language catalog request without reloading', asy
       telemetry: { ...settings.telemetry, onboardingLanguageCohort: 'treatment' }
     })
   })
-  await orcaPage.getByRole('button', { name: 'Switch language' }).click()
-  await expect(orcaPage.getByRole('radio', { name: '日本語', exact: true })).toBeVisible()
+  await topoPage.getByRole('button', { name: 'Switch language' }).click()
+  await expect(topoPage.getByRole('radio', { name: '日本語', exact: true })).toBeVisible()
 
   await electronApp.evaluate(({ session }) => {
     session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
       callback({ cancel: /\/ja-[^/]+\.(?:json|js)(?:\?|$)/.test(details.url) })
     })
   })
-  const timeOrigin = await orcaPage.evaluate(() => performance.timeOrigin)
-  const rejected = orcaPage.waitForEvent('requestfailed', {
+  const timeOrigin = await topoPage.evaluate(() => performance.timeOrigin)
+  const rejected = topoPage.waitForEvent('requestfailed', {
     predicate: (request) => /\/ja-[^/]+\.(?:json|js)(?:\?|$)/.test(request.url())
   })
-  await orcaPage.getByRole('radio', { name: '日本語', exact: true }).click()
+  await topoPage.getByRole('radio', { name: '日本語', exact: true }).click()
   const failedRequest = await rejected
-  await expect(orcaPage.getByRole('alert')).toContainText('Could not load this language')
-  await expect(orcaPage.getByRole('radio', { name: 'English', exact: true })).toBeChecked()
-  await orcaPage.screenshot({ path: testInfo.outputPath('catalog-request-rejected.png') })
+  await expect(topoPage.getByRole('alert')).toContainText('Could not load this language')
+  await expect(topoPage.getByRole('radio', { name: 'English', exact: true })).toBeChecked()
+  await topoPage.screenshot({ path: testInfo.outputPath('catalog-request-rejected.png') })
 
   await electronApp.evaluate(({ session }) => {
     session.defaultSession.webRequest.onBeforeRequest(null)
   })
   expect(
-    await orcaPage.evaluate(async (url) => (await fetch(url)).status, failedRequest.url())
+    await topoPage.evaluate(async (url) => (await fetch(url)).status, failedRequest.url())
   ).toBe(200)
-  await orcaPage.getByRole('button', { name: 'Retry', exact: true }).click()
+  await topoPage.getByRole('button', { name: 'Retry', exact: true }).click()
 
-  await expect(orcaPage.getByRole('radio', { name: '日本語', exact: true })).toBeChecked()
-  await expect(orcaPage.getByRole('radiogroup', { name: '表示言語', exact: true })).toBeVisible()
-  await expect(orcaPage.getByRole('alert')).toHaveCount(0)
+  await expect(topoPage.getByRole('radio', { name: '日本語', exact: true })).toBeChecked()
+  await expect(topoPage.getByRole('radiogroup', { name: '表示言語', exact: true })).toBeVisible()
+  await expect(topoPage.getByRole('alert')).toHaveCount(0)
   await expect
-    .poll(() => orcaPage.evaluate(() => window.api.settings.get().then((s) => s.uiLanguage)))
+    .poll(() => topoPage.evaluate(() => window.api.settings.get().then((s) => s.uiLanguage)))
     .toBe('ja')
-  expect(await orcaPage.evaluate(() => performance.timeOrigin)).toBe(timeOrigin)
-  await orcaPage.screenshot({ path: testInfo.outputPath('catalog-retry-recovered.png') })
+  expect(await topoPage.evaluate(() => performance.timeOrigin)).toBe(timeOrigin)
+  await topoPage.screenshot({ path: testInfo.outputPath('catalog-retry-recovered.png') })
 })

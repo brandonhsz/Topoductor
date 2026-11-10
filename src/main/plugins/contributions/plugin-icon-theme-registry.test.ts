@@ -14,7 +14,7 @@ afterEach(async () => {
 })
 
 async function iconPlugin(svgs: Record<string, string>): Promise<ValidDiscoveredPlugin> {
-  const rootDir = await mkdtemp(join(tmpdir(), 'orca-plugin-icon-theme-'))
+  const rootDir = await mkdtemp(join(tmpdir(), 'topo-plugin-icon-theme-'))
   roots.push(rootDir)
   await mkdir(join(rootDir, 'icons'))
   for (const [name, svg] of Object.entries(svgs)) {

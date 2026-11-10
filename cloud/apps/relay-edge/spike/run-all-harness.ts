@@ -56,7 +56,7 @@ export function makeControl(
       const ws = new WebSocket(url, {
         headers: {
           authorization: `Bearer ${token}`,
-          'x-orca-host-capabilities': 'pending-conn-details,idle-regional-rehome-v1'
+          'x-topo-host-capabilities': 'pending-conn-details,idle-regional-rehome-v1'
         },
         perMessageDeflate: false,
         maxPayload: 64 * 1024

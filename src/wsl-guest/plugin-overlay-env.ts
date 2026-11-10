@@ -25,7 +25,7 @@ export function resolveOpenCodeSourceConfigDir(
   shell: string | undefined
 ): string | undefined {
   return firstNonEmpty(
-    env.ORCA_OPENCODE_SOURCE_CONFIG_DIR,
+    env.TOPO_OPENCODE_SOURCE_CONFIG_DIR,
     readStartupEnv('OPENCODE_CONFIG_DIR', env, shell),
     env.OPENCODE_CONFIG_DIR
   )
@@ -53,8 +53,8 @@ export function resolvePiSourceAgentDir(
     return firstNonEmpty(env[primaryKey])
   }
 
-  const overlayKey = kind === 'omp' ? 'ORCA_OMP_CODING_AGENT_DIR' : 'ORCA_PI_CODING_AGENT_DIR'
-  const otherOverlayKey = kind === 'omp' ? 'ORCA_PI_CODING_AGENT_DIR' : 'ORCA_OMP_CODING_AGENT_DIR'
+  const overlayKey = kind === 'omp' ? 'TOPO_OMP_CODING_AGENT_DIR' : 'TOPO_PI_CODING_AGENT_DIR'
+  const otherOverlayKey = kind === 'omp' ? 'TOPO_PI_CODING_AGENT_DIR' : 'TOPO_OMP_CODING_AGENT_DIR'
 
   // Reject another Pi-compatible agent’s inherited overlay so the chosen agent resolves its own home.
   if (

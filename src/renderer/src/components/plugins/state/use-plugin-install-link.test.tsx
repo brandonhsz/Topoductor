@@ -65,7 +65,7 @@ afterEach(() => {
 
 describe('usePluginInstallLink', () => {
   it('keeps the link while plugins are off, then opens the page once the catalog loads', async () => {
-    openPluginInstallLink('orca://plugins/acme.dusk')
+    openPluginInstallLink('topo://plugins/acme.dusk')
     // Plugins off: the catalog isn't mounted, so the link waits.
     expect(usePluginPreviewRequestStore.getState().link).not.toBeNull()
     await render([OFFICIAL], true)
@@ -77,7 +77,7 @@ describe('usePluginInstallLink', () => {
   })
 
   it('asks before adding an unknown catalog and fetches nothing until confirmed', async () => {
-    request('orca://plugins/acme.dusk?catalog=community')
+    request('topo://plugins/acme.dusk?catalog=community')
     await render([OFFICIAL])
     expect(open).not.toHaveBeenCalled()
     expect(addMarketplace).not.toHaveBeenCalled()

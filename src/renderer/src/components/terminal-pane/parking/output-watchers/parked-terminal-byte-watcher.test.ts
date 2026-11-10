@@ -293,7 +293,7 @@ describe('startParkedTerminalByteWatcher', () => {
   it('observes GitHub PR links across chunk boundaries', async () => {
     const { dispose } = await startWatcher()
 
-    emit('PR: https://github.com/orca-dev/orca/pull/42')
+    emit('PR: https://github.com/topo-dev/topo/pull/42')
     expect(mockStoreState.observeTerminalGitHubPullRequestLink).not.toHaveBeenCalled()
 
     emit('1\r\ndone')
@@ -301,9 +301,9 @@ describe('startParkedTerminalByteWatcher', () => {
     expect(mockStoreState.observeTerminalGitHubPullRequestLink).toHaveBeenCalledWith(
       WORKTREE_ID,
       expect.objectContaining({
-        url: 'https://github.com/orca-dev/orca/pull/421',
+        url: 'https://github.com/topo-dev/topo/pull/421',
         number: 421,
-        slug: { owner: 'orca-dev', repo: 'orca', host: 'github.com' }
+        slug: { owner: 'topo-dev', repo: 'topo', host: 'github.com' }
       }),
       expect.objectContaining({ tabId: TAB_ID, ptyId: PTY_ID })
     )

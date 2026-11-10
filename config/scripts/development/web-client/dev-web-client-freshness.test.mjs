@@ -28,7 +28,7 @@ afterEach(() => {
 })
 
 function fixture() {
-  const root = mkdtempSync(join(tmpdir(), 'orca-dev-web-freshness-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-dev-web-freshness-'))
   roots.push(root)
   const files = [
     'vite.web.config.ts',

@@ -1,4 +1,4 @@
-import { withDurableRuntimeStore } from '../../orca-runtime-tests/runtime-durable-store-fixture'
+import { withDurableRuntimeStore } from '../../topo-runtime-tests/runtime-durable-store-fixture'
 import { describe, expect, it } from 'vitest'
 import {
   spawnWorktreeTarget,
@@ -9,7 +9,7 @@ import type { RuntimeClientEvent } from '../../../../shared/runtime-client-event
 import '../../../../shared/workspace-layout/stable-pane-id'
 import type { WorkspaceSessionState } from '../../../../shared/workspace-session/workspace-session-state-types'
 import { FOLDER_WORKSPACE_INSTANCE_SEPARATOR } from '../../../../shared/worktree/id'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 
 // Folder workspaces share a directory; retain ::workspace:<uuid> to distinguish their PTYs.
 const REPO_ID = 'repo-1'
@@ -82,7 +82,7 @@ function createRuntimeInternals(
     setWorkspaceSession: () => {},
     flushOrThrow: () => {}
   }) as never
-  const runtime = new OrcaRuntimeService(store)
+  const runtime = new TopoRuntimeService(store)
   runtime.setPtyController({
     write: () => true,
     kill: () => true,

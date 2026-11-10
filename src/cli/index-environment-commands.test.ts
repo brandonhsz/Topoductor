@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 const {
   callMock,
   runtimeClientConstructorMock,
-  serveOrcaAppMock,
+  serveTopoAppMock,
   getDefaultUserDataPathMock,
   addEnvironmentFromPairingCodeMock,
   listEnvironmentsMock,
@@ -11,8 +11,8 @@ const {
 } = vi.hoisted(() => ({
   callMock: vi.fn(),
   runtimeClientConstructorMock: vi.fn(),
-  serveOrcaAppMock: vi.fn(),
-  getDefaultUserDataPathMock: vi.fn(() => '/tmp/orca-user-data'),
+  serveTopoAppMock: vi.fn(),
+  getDefaultUserDataPathMock: vi.fn(() => '/tmp/topo-user-data'),
   addEnvironmentFromPairingCodeMock: vi.fn(),
   listEnvironmentsMock: vi.fn(),
   spawnMock: vi.fn()
@@ -23,7 +23,7 @@ vi.mock('./runtime-client', async () => {
   return createRuntimeClientModuleMock({
     callMock,
     runtimeClientConstructorMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock
   })
 })
@@ -46,24 +46,24 @@ vi.mock('child_process', async () => {
 import { main } from './index'
 import { useWorktreeAwarenessEnvironment } from './index-test-harness'
 
-describe('orca cli worktree awareness', () => {
+describe('topo cli worktree awareness', () => {
   useWorktreeAwarenessEnvironment({
     callMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock,
     addEnvironmentFromPairingCodeMock,
     listEnvironmentsMock,
     spawnMock
   })
 
-  it('lists saved environments even when ORCA_ENVIRONMENT is set', async () => {
-    process.env.ORCA_ENVIRONMENT = 'stale-env'
+  it('lists saved environments even when TOPO_ENVIRONMENT is set', async () => {
+    process.env.TOPO_ENVIRONMENT = 'stale-env'
     listEnvironmentsMock.mockReturnValue([addEnvironmentFromPairingCodeMock()])
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
     await main(['environment', 'list', '--json'], '/tmp/repo')
 
-    expect(listEnvironmentsMock).toHaveBeenCalledWith('/tmp/orca-user-data')
+    expect(listEnvironmentsMock).toHaveBeenCalledWith('/tmp/topo-user-data')
     expect(callMock).not.toHaveBeenCalled()
     expect(JSON.parse(String(logSpy.mock.calls[0]?.[0]))).toMatchObject({
       ok: true,

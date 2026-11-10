@@ -180,7 +180,7 @@ export function bindWritePtyOutputToXterm(session: ConnectPanePtySession): void 
     return null
   }
 
-  // Orca-composed bytes (the drop sentinel's salvaged queries and mode releases) are not stream
+  // Topo-composed bytes (the drop sentinel's salvaged queries and mode releases) are not stream
   // bytes: they write as-is and leave xterm's parser somewhere the stream never was.
   session.admitRecoveryBytes = (data) => {
     if (data) {

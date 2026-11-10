@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { isSafePtySessionId } from '../pty-session-id'
 
-const USER_DATA = '/tmp/orca-userdata'
+const USER_DATA = '/tmp/topo-userdata'
 
 describe('isSafePtySessionId', () => {
   it('rejects ids that traverse out of userData via deep ..', () => {

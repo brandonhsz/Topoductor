@@ -39,7 +39,7 @@ export async function commandDiscoveryRig(
   overrides: Partial<AcpAtRestCommandDeps> = {},
   spec = OMP
 ) {
-  const root = await mkdtemp(join(tmpdir(), 'orca-31999-commands-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-31999-commands-'))
   const workspacePath = (id: string) => join(root, 'work', id)
   const children: CommandDiscoveryChild[] = []
   const catalog = new AcpAtRestCommandCatalog(spec, {

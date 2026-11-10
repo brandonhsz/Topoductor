@@ -17,7 +17,7 @@ export function getRepositoryGitWorktreeSearchEntries(
       ),
       description: t(
         'auto.components.settings.repository.search.externalWorktreesDescription',
-        'Override whether worktrees created outside Orca appear for this project.'
+        'Override whether worktrees created outside Topo appear for this project.'
       ),
       keywords: [
         repo.displayName,

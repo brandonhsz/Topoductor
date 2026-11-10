@@ -127,7 +127,7 @@ export function createBranchSwitchHost<P extends ConnectedPty>(
         probeProcess: sources.probeProcess
       })
     },
-    // Watchers only cover desktop-hosted local repos, so Orca's own switch updates every client
+    // Watchers only cover desktop-hosted local repos, so Topo's own switch updates every client
     // itself; the user's choice also ends first-work automatic branch naming.
     recordBranchSwitched: (
       worktree: Pick<Worktree, 'id' | 'hostId' | 'repoId'>,

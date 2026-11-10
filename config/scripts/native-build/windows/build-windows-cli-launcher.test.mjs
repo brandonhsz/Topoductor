@@ -10,7 +10,7 @@ import {
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { spawnSync } from 'node:child_process'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 const projectRoot = resolve(import.meta.dirname, '../../../..')
 const WINDOWS_LOCK_CODES = ['EBUSY', 'ENOTEMPTY', 'EPERM']
@@ -39,8 +39,8 @@ beforeAll(() => {
   if (process.platform !== 'win32') {
     return
   }
-  sharedLauncherRoot = mkdtempSync(join(tmpdir(), 'orca cli launcher build '))
-  sharedLauncherPath = join(sharedLauncherRoot, 'orca.exe')
+  sharedLauncherRoot = mkdtempSync(join(tmpdir(), 'topo cli launcher build '))
+  sharedLauncherPath = join(sharedLauncherRoot, 'topo.exe')
   const result = runProcessSync({
     program: process.execPath,
     args: ['config/scripts/native-build/windows/build-windows-cli-launcher.mjs'],
@@ -51,7 +51,7 @@ beforeAll(() => {
     throw new Error(`${result.stdout}\n${result.stderr}`)
   }
   copyFileSync(
-    join(projectRoot, 'native', 'windows-cli-launcher', '.build', 'orca.exe'),
+    join(projectRoot, 'native', 'windows-cli-launcher', '.build', 'topo.exe'),
     sharedLauncherPath
   )
 }, 300_000)
@@ -72,7 +72,7 @@ function copySharedLauncher(target) {
 
 describe('Windows CLI launcher', () => {
   itWindows('reuses the hook host target while invalidating changed inputs', () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-hook-target-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-hook-target-'))
     try {
       const hookScript = join(
         'config',
@@ -82,7 +82,7 @@ describe('Windows CLI launcher', () => {
         'build-windows-agent-hook.mjs'
       )
       const crate = join('native', 'windows-agent-hook')
-      const outputFile = join(crate, '.build', 'orca-agent-hook.exe')
+      const outputFile = join(crate, '.build', 'topo-agent-hook.exe')
       const outputPath = join(root, outputFile)
       const fingerprintPath = `${outputPath}.sha256`
       // Why the default output: it reuses a warm canonical prebuild; Cargo runs only when that is missing or stale.
@@ -165,21 +165,21 @@ describe('Windows CLI launcher', () => {
   })
 
   itWindows('preserves a multiline argument from PowerShell through the native launcher', () => {
-    const appRoot = mkdtempSync(join(tmpdir(), 'orca cli launcher '))
+    const appRoot = mkdtempSync(join(tmpdir(), 'topo cli launcher '))
     try {
       const resourcesPath = join(appRoot, 'resources')
-      const launcherPath = join(resourcesPath, 'bin', 'orca.exe')
+      const launcherPath = join(resourcesPath, 'bin', 'topo.exe')
       const cliPath = join(resourcesPath, 'app.asar.unpacked', 'out', 'cli', 'index.js')
       mkdirSync(join(resourcesPath, 'bin'), { recursive: true })
       mkdirSync(dirname(cliPath), { recursive: true })
-      copyFileSync(process.execPath, join(appRoot, 'Orca.exe'))
+      copyFileSync(process.execPath, join(appRoot, 'Topo.exe'))
       writeFileSync(
         cliPath,
         `process.stdout.write(JSON.stringify({
   argv: process.argv.slice(2),
   electronRunAsNode: process.env.ELECTRON_RUN_AS_NODE,
   nodeOptions: process.env.NODE_OPTIONS ?? null,
-  orcaNodeOptions: process.env.ORCA_NODE_OPTIONS ?? null
+  topoNodeOptions: process.env.TOPO_NODE_OPTIONS ?? null
 }))\n`,
         'utf8'
       )
@@ -193,15 +193,15 @@ describe('Windows CLI launcher', () => {
           '-NoProfile',
           '-NonInteractive',
           '-Command',
-          '& $env:ORCA_TEST_LAUNCHER orchestration send --body $env:ORCA_TEST_BODY --json'
+          '& $env:TOPO_TEST_LAUNCHER orchestration send --body $env:TOPO_TEST_BODY --json'
         ],
         {
           encoding: 'utf8',
           env: {
             ...process.env,
             NODE_OPTIONS: '--no-warnings',
-            ORCA_TEST_BODY: body,
-            ORCA_TEST_LAUNCHER: launcherPath
+            TOPO_TEST_BODY: body,
+            TOPO_TEST_LAUNCHER: launcherPath
           }
         }
       )
@@ -211,7 +211,7 @@ describe('Windows CLI launcher', () => {
         argv: ['orchestration', 'send', '--body', body, '--json'],
         electronRunAsNode: '1',
         nodeOptions: null,
-        orcaNodeOptions: '--no-warnings'
+        topoNodeOptions: '--no-warnings'
       })
     } finally {
       removeFixtureTree(appRoot)
@@ -221,23 +221,23 @@ describe('Windows CLI launcher', () => {
   itWindows(
     'keeps workspace-choice data in one argv value through native and supported PowerShell modes',
     () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca choice native argv '))
+      const root = mkdtempSync(join(tmpdir(), 'topo choice native argv '))
       try {
-        const launcher = join(root, 'bin', 'orca.exe')
+        const launcher = join(root, 'bin', 'topo.exe')
         const entry = join(root, 'argv.cjs')
         const script = join(root, 'choice.ps1')
         writeFileSync(entry, 'process.stdout.write(JSON.stringify(process.argv.slice(2)))')
         copySharedLauncher(launcher)
         writeFileSync(
-          join(dirname(launcher), 'orca-launcher.cfg'),
+          join(dirname(launcher), 'topo-launcher.cfg'),
           `node=${process.execPath}\ncli=${entry}\nuser-data=${root}\n`
         )
         writeFileSync(
           script,
           [
             '[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)',
-            '$PSNativeCommandArgumentPassing = $env:ORCA_CHOICE_MODE',
-            '& $env:ORCA_CHOICE_LAUNCHER worktree show --worktree $env:ORCA_CHOICE_SELECTOR --json',
+            '$PSNativeCommandArgumentPassing = $env:TOPO_CHOICE_MODE',
+            '& $env:TOPO_CHOICE_LAUNCHER worktree show --worktree $env:TOPO_CHOICE_SELECTOR --json',
             'exit $LASTEXITCODE'
           ].join('\n')
         )
@@ -269,9 +269,9 @@ describe('Windows CLI launcher', () => {
               args: ['-NoProfile', '-NonInteractive', '-File', script],
               env: {
                 ...process.env,
-                ORCA_CHOICE_MODE: mode,
-                ORCA_CHOICE_LAUNCHER: launcher,
-                ORCA_CHOICE_SELECTOR: selector
+                TOPO_CHOICE_MODE: mode,
+                TOPO_CHOICE_LAUNCHER: launcher,
+                TOPO_CHOICE_SELECTOR: selector
               }
             })
             expect(result.code, `${program}/${mode}: ${result.stderr}`).toBe(0)
@@ -285,26 +285,26 @@ describe('Windows CLI launcher', () => {
   )
 
   itWindows('runs a server profile CLI on pinned Node with argv and profile intact', () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca server launcher '))
+    const root = mkdtempSync(join(tmpdir(), 'topo server launcher '))
     try {
       const profile = join(root, 'server profile')
-      const launcherPath = join(profile, 'cli', 'bin', 'orca.exe')
+      const launcherPath = join(profile, 'cli', 'bin', 'topo.exe')
       const cliPath = join(root, 'server slot', 'out', 'cli', 'index.js')
       mkdirSync(dirname(cliPath), { recursive: true })
       writeFileSync(
         cliPath,
         `process.stdout.write(JSON.stringify({
   argv: process.argv.slice(2),
-  profile: process.env.ORCA_USER_DATA_PATH,
+  profile: process.env.TOPO_USER_DATA_PATH,
   electronRunAsNode: process.env.ELECTRON_RUN_AS_NODE ?? null,
   nodeOptions: process.env.NODE_OPTIONS ?? null,
-  desktopMarker: process.env.ORCA_WINDOWS_PACKAGED_CLI_LAUNCHER ?? null
+  desktopMarker: process.env.TOPO_WINDOWS_PACKAGED_CLI_LAUNCHER ?? null
 }))\n`,
         'utf8'
       )
       copySharedLauncher(launcherPath)
       writeFileSync(
-        join(dirname(launcherPath), 'orca-launcher.cfg'),
+        join(dirname(launcherPath), 'topo-launcher.cfg'),
         `node=${process.execPath}\ncli=${cliPath}\nuser-data=${profile}\n`
       )
 
@@ -312,9 +312,9 @@ describe('Windows CLI launcher', () => {
         ...process.env,
         ELECTRON_RUN_AS_NODE: '1',
         NODE_OPTIONS: '--require C:\\missing\\preload.js',
-        ORCA_USER_DATA_PATH: 'C:\\another\\owner',
-        ORCA_WINDOWS_PACKAGED_CLI_LAUNCHER: '1',
-        ORCA_TEST_LAUNCHER: launcherPath
+        TOPO_USER_DATA_PATH: 'C:\\another\\owner',
+        TOPO_WINDOWS_PACKAGED_CLI_LAUNCHER: '1',
+        TOPO_TEST_LAUNCHER: launcherPath
       }
       const expected = (body) => ({
         argv: ['orchestration', 'send', '--body', body, '--json'],
@@ -331,9 +331,9 @@ describe('Windows CLI launcher', () => {
           '-NoProfile',
           '-NonInteractive',
           '-Command',
-          '& $env:ORCA_TEST_LAUNCHER orchestration send --body $env:ORCA_TEST_BODY --json'
+          '& $env:TOPO_TEST_LAUNCHER orchestration send --body $env:TOPO_TEST_BODY --json'
         ],
-        { encoding: 'utf8', env: { ...inherited, ORCA_TEST_BODY: shellBody } }
+        { encoding: 'utf8', env: { ...inherited, TOPO_TEST_BODY: shellBody } }
       )
       expect(powershell.status, powershell.stderr).toBe(0)
       expect(JSON.parse(powershell.stdout)).toEqual(expected(shellBody))
@@ -351,10 +351,10 @@ describe('Windows CLI launcher', () => {
   })
 
   itWindows('survives an inherited environment block containing PATH and Path', () => {
-    const appRoot = mkdtempSync(join(tmpdir(), 'orca duplicate path launcher '))
+    const appRoot = mkdtempSync(join(tmpdir(), 'topo duplicate path launcher '))
     try {
       const resourcesPath = join(appRoot, 'resources')
-      const launcherPath = join(resourcesPath, 'bin', 'orca.exe')
+      const launcherPath = join(resourcesPath, 'bin', 'topo.exe')
       const cliPath = join(resourcesPath, 'app.asar.unpacked', 'out', 'cli', 'index.js')
       const outputPath = join(appRoot, 'child-result.json')
       const harnessSourcePath = join(
@@ -369,10 +369,10 @@ describe('Windows CLI launcher', () => {
       const harnessPath = join(appRoot, 'DuplicatePathLauncher.exe')
       mkdirSync(dirname(launcherPath), { recursive: true })
       mkdirSync(dirname(cliPath), { recursive: true })
-      copyFileSync(process.execPath, join(appRoot, 'Orca.exe'))
+      copyFileSync(process.execPath, join(appRoot, 'Topo.exe'))
       writeFileSync(
         cliPath,
-        `require('node:fs').writeFileSync(process.env.ORCA_TEST_OUTPUT, JSON.stringify({
+        `require('node:fs').writeFileSync(process.env.TOPO_TEST_OUTPUT, JSON.stringify({
   electronRunAsNode: process.env.ELECTRON_RUN_AS_NODE,
   pathKeys: Object.keys(process.env).filter((key) => key.toLowerCase() === 'path')
 }))\n`,

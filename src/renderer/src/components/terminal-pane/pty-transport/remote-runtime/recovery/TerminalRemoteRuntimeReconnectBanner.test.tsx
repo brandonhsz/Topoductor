@@ -130,7 +130,7 @@ describe('TerminalRemoteRuntimeReconnectBanner', () => {
       />
     )
 
-    expect(screen.getByText('This host runs a different Orca server')).toBeInTheDocument()
+    expect(screen.getByText('This host runs a different Topo server')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Reconnect' })).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Open server settings' }))
     expect(openSettings).toHaveBeenCalledOnce()

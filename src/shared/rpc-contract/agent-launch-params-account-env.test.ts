@@ -4,10 +4,10 @@ import { computeAgentLaunchFingerprint } from '../agent-launch/contracts/agent-l
 
 const BASE = { agent: 'claude', target: { kind: 'existing', worktree: 'id:wt-1' } }
 const ACCOUNT_ENV = {
-  CLAUDE_CONFIG_DIR: '/home/u/.orca-claude/a/config',
-  ORCA_CLAUDE_INJECTED_CONFIG_DIR: '/home/u/.orca-claude/a/config',
-  ORCA_CLAUDE_PROFILE_POINTER: '~/.orca-claude/pointer',
-  CODEX_HOME: '/home/u/.orca-codex/b'
+  CLAUDE_CONFIG_DIR: '/home/u/.topo-claude/a/config',
+  TOPO_CLAUDE_INJECTED_CONFIG_DIR: '/home/u/.topo-claude/a/config',
+  TOPO_CLAUDE_PROFILE_POINTER: '~/.topo-claude/pointer',
+  CODEX_HOME: '/home/u/.topo-codex/b'
 }
 
 describe('agent.launch accountEnv wire compatibility', () => {
@@ -32,7 +32,7 @@ describe('agent.launch accountEnv wire compatibility', () => {
     ['a home-relative non-pointer', { CLAUDE_CONFIG_DIR: '~/.claude' }],
     [
       'an injected marker for another folder',
-      { CLAUDE_CONFIG_DIR: '/home/u/a', ORCA_CLAUDE_INJECTED_CONFIG_DIR: '/home/u/b' }
+      { CLAUDE_CONFIG_DIR: '/home/u/a', TOPO_CLAUDE_INJECTED_CONFIG_DIR: '/home/u/b' }
     ]
   ])('refuses %s rather than starting another account', (_label, accountEnv) => {
     expect(AgentLaunch.safeParse({ ...BASE, accountEnv }).success).toBe(false)

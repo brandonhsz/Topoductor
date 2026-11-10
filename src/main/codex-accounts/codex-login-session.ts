@@ -59,7 +59,7 @@ type CodexLoginSessionDependencies = {
   setCancel: (cancel: () => boolean) => void
   /** The browser link codex printed, published as soon as it is complete. */
   onAuthUrl: (url: string) => void
-  /** Opens a WSL login's link on this computer; absent where Orca cannot open one. */
+  /** Opens a WSL login's link on this computer; absent where Topo cannot open one. */
   openWslAuthUrl?: ((url: string) => void) | null
   /** Runs `codex login --device-auth` on a Linux/macOS host for a person on another device. */
   deviceAuth?: { onPrompt: (prompt: { url: string; userCode: string }) => void }
@@ -121,7 +121,7 @@ async function runCodexLoginProcess(
       ? {
           command: dependencies.wslCommand,
           args: buildWslCodexLoginArgs(wslInfo.distro, wslInfo.linuxPath, {
-            orcaOpensSignInLink: openAuthUrl !== null
+            topoOpensSignInLink: openAuthUrl !== null
           }),
           env: process.env,
           codexCommand: 'codex',

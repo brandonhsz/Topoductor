@@ -3,13 +3,13 @@
 
 import { existsSync, readFileSync } from 'node:fs'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
-import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/orca-restart'
+import { test, expect } from './helpers/topo-app'
+import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/topo-restart'
 import { getStoreState, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import { TEST_REPO_PATH_FILE } from './global-setup'
 
 // Pin the storage key independently so renames fail the roundtrip.
-const LINEAR_ISSUE_VIEW_STORAGE_KEY = 'orca.linear.issue-view.v1'
+const LINEAR_ISSUE_VIEW_STORAGE_KEY = 'topo.linear.issue-view.v1'
 
 const WORKSPACE_A = {
   id: 'linear-workspace-a',
@@ -368,52 +368,52 @@ function seededRepoPathOrSkip(): string {
 }
 
 test.describe('Linear issue view persistence', () => {
-  test('keeps attribute filters scoped per Linear workspace', async ({ electronApp, orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test('keeps attribute filters scoped per Linear workspace', async ({ electronApp, topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
     await installLinearPersistenceBackend(electronApp, { multiWorkspace: true })
-    await openLinearTasks(orcaPage)
-    await waitForLinearIssuesChrome(orcaPage, ISSUE_A.title)
+    await openLinearTasks(topoPage)
+    await waitForLinearIssuesChrome(topoPage, ISSUE_A.title)
 
-    await applyPriorityFilter(orcaPage, 'High')
+    await applyPriorityFilter(topoPage, 'High')
     await expect(
-      orcaPage.getByRole('button', { name: 'Remove Priority filter' }).locator('..')
+      topoPage.getByRole('button', { name: 'Remove Priority filter' }).locator('..')
     ).toContainText('High')
 
-    await waitForLinearIssueViewPersisted(orcaPage, (view) => {
+    await waitForLinearIssueViewPersisted(topoPage, (view) => {
       const filter = view?.filtersByWorkspaceId?.[WORKSPACE_A.id]
       return Boolean(filter?.priorities?.includes(2))
     })
 
-    await switchLinearWorkspace(orcaPage, WORKSPACE_B.organizationName)
-    await waitForLinearIssuesChrome(orcaPage, ISSUE_B.title)
+    await switchLinearWorkspace(topoPage, WORKSPACE_B.organizationName)
+    await waitForLinearIssuesChrome(topoPage, ISSUE_B.title)
     // Workspace B starts unfiltered — Alpha's High must not leak.
-    await expect(orcaPage.getByRole('button', { name: 'Remove Priority filter' })).toHaveCount(0)
+    await expect(topoPage.getByRole('button', { name: 'Remove Priority filter' })).toHaveCount(0)
 
-    await applyPriorityFilter(orcaPage, 'Low')
+    await applyPriorityFilter(topoPage, 'Low')
     await expect(
-      orcaPage.getByRole('button', { name: 'Remove Priority filter' }).locator('..')
+      topoPage.getByRole('button', { name: 'Remove Priority filter' }).locator('..')
     ).toContainText('Low')
 
-    await waitForLinearIssueViewPersisted(orcaPage, (view) => {
+    await waitForLinearIssueViewPersisted(topoPage, (view) => {
       const a = view?.filtersByWorkspaceId?.[WORKSPACE_A.id]
       const b = view?.filtersByWorkspaceId?.[WORKSPACE_B.id]
       return Boolean(a?.priorities?.includes(2) && b?.priorities?.includes(4))
     })
 
-    await switchLinearWorkspace(orcaPage, WORKSPACE_A.organizationName)
-    await waitForLinearIssuesChrome(orcaPage, ISSUE_A.title)
+    await switchLinearWorkspace(topoPage, WORKSPACE_A.organizationName)
+    await waitForLinearIssuesChrome(topoPage, ISSUE_A.title)
     await expect(
-      orcaPage.getByRole('button', { name: 'Remove Priority filter' }).locator('..')
+      topoPage.getByRole('button', { name: 'Remove Priority filter' }).locator('..')
     ).toContainText('High')
     await expect(
-      orcaPage.getByRole('button', { name: 'Remove Priority filter' }).locator('..')
+      topoPage.getByRole('button', { name: 'Remove Priority filter' }).locator('..')
     ).not.toContainText('Low')
 
-    await switchLinearWorkspace(orcaPage, WORKSPACE_B.organizationName)
-    await waitForLinearIssuesChrome(orcaPage, ISSUE_B.title)
+    await switchLinearWorkspace(topoPage, WORKSPACE_B.organizationName)
+    await waitForLinearIssuesChrome(topoPage, ISSUE_B.title)
     await expect(
-      orcaPage.getByRole('button', { name: 'Remove Priority filter' }).locator('..')
+      topoPage.getByRole('button', { name: 'Remove Priority filter' }).locator('..')
     ).toContainText('Low')
   })
 })

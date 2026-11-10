@@ -57,11 +57,11 @@ export function listSessionDispatchesForPresentation(
     .prepare(`
     SELECT rowid AS presentation_order, ${DISPATCH_CONTEXT_COLUMN_LIST} FROM dispatch_contexts
       INDEXED BY idx_dispatch_session_presentation
-      WHERE assignee_orca_session_id IS NOT NULL AND status IN ('pending', 'dispatched')
+      WHERE assignee_topo_session_id IS NOT NULL AND status IN ('pending', 'dispatched')
     UNION ALL
     SELECT rowid AS presentation_order, ${DISPATCH_CONTEXT_COLUMN_LIST} FROM dispatch_contexts
       INDEXED BY idx_dispatch_session_presentation
-      WHERE assignee_orca_session_id IS NOT NULL
+      WHERE assignee_topo_session_id IS NOT NULL
         AND status IN ('completed', 'failed', 'circuit_broken') AND completed_at >= ?
   `)
     .all(lowerBound)
@@ -72,7 +72,7 @@ export function listSessionDispatchesForPresentation(
   for (const candidate of candidates) {
     // Include handled rows even when a newer non-public row later suppresses their address.
     if (candidate.status === 'pending' || candidate.status === 'dispatched') {
-      const session = candidate.assignee_orca_session_id
+      const session = candidate.assignee_topo_session_id
       if (session) {
         newestActiveOrderBySession.set(
           session,
@@ -81,8 +81,8 @@ export function listSessionDispatchesForPresentation(
       }
     }
     const address = presentationAddressKey(
-      candidate.assignee_handle ? 'assignee_handle' : 'assignee_orca_session_id',
-      candidate.assignee_handle || candidate.assignee_orca_session_id
+      candidate.assignee_handle ? 'assignee_handle' : 'assignee_topo_session_id',
+      candidate.assignee_handle || candidate.assignee_topo_session_id
     )
     const previous = selected.get(address)
     const active = candidate.status === 'pending' || candidate.status === 'dispatched'
@@ -105,7 +105,7 @@ export function listSessionDispatchesForPresentation(
   for (const [column, active] of [
     ['assignee_handle', true],
     ['assignee_handle', false],
-    ['assignee_orca_session_id', false]
+    ['assignee_topo_session_id', false]
   ] as const) {
     const addresses = eligible
       .filter(
@@ -136,7 +136,7 @@ export function listSessionDispatchesForPresentation(
     const active = dispatch.status === 'pending' || dispatch.status === 'dispatched'
     const latest =
       active && !candidate.assignee_handle
-        ? newestActiveOrderBySession.get(candidate.assignee_orca_session_id ?? '')
+        ? newestActiveOrderBySession.get(candidate.assignee_topo_session_id ?? '')
         : latestOrderByAddress.get(address)
     if (latest !== presentation_order) {
       continue

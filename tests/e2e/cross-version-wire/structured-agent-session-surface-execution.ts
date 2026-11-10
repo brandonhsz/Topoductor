@@ -2,7 +2,7 @@ import { availableRevealWorkspace } from '../../../src/main/runtime/session-tabs
 import { expect, vi } from 'vitest'
 import type { structuredHostStub } from './structured-agent-session-host-fixture'
 import { AGENT_SESSION_ITEM_DETAIL_RUNTIME_CAPABILITY } from '../../../src/shared/agent-session/agent-session-runtime-capabilities'
-import type { OrcaRuntimeService } from '../../../src/main/runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../src/main/runtime/topo-runtime'
 import type { StructuredSessionSurfaceRuntime } from '../../../src/main/runtime/agent-session/structured-agent-session-close'
 import { RuntimeSubscriptionRegistry } from '../../../src/main/runtime/client/runtime-subscription-registry'
 import { resetStructuredAgentSessionClosesBeforeCreateForTests } from '../../../src/main/runtime/rpc/methods/structured-sessions/creation/structured-agent-session-close-before-create'
@@ -77,7 +77,7 @@ export function runtimeStub(overrides: Record<string, unknown> = {}) {
       } = attachParams(null)
       return resolved
     },
-    publishStructuredAgentSessionTab: vi.fn<OrcaRuntimeService['publishStructuredAgentSessionTab']>(
+    publishStructuredAgentSessionTab: vi.fn<TopoRuntimeService['publishStructuredAgentSessionTab']>(
       async (input) =>
         input.capture?.({
           tableId: raw?.tabId ?? null,
@@ -120,7 +120,7 @@ export async function expectDeclaredSurfaceExecutes(
   hostCalls: ReturnType<typeof structuredHostStub>,
   clientCapabilities: readonly string[]
 ): Promise<void> {
-  const retirement = vi.fn<OrcaRuntimeService['acknowledgeNotificationAttention']>()
+  const retirement = vi.fn<TopoRuntimeService['acknowledgeNotificationAttention']>()
   const runtime = runtimeStub({ acknowledgeNotificationAttention: retirement })
   for (const { method, hostMethod, result, clientCapability } of STRUCTURED_CALLS) {
     const atRestCreate =

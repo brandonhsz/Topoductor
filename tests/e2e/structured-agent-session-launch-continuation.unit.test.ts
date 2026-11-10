@@ -14,7 +14,7 @@ import { createNonSecureContextUuid as createBrowserUuid } from '../../src/share
 import { mkdtemp, rm, realpath } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import '../../src/main/runtime/orca-runtime'
+import '../../src/main/runtime/topo-runtime'
 import '../../src/main/runtime/rpc/methods/structured-sessions/creation/structured-agent-session-create'
 
 import { setStructuredAgentSessionHost } from '../../src/main/native-chat/agent-session-wire/host/structured-agent-session-registry'
@@ -62,8 +62,8 @@ let root: string
 beforeEach(async () => {
   restore = resetCreateMessageFixture()
   mocks.exactSupport.mockResolvedValue(true)
-  root = await mkdtemp(join(await realpath(tmpdir()), 'orca-36210-continuation-'))
-  vi.stubEnv('ORCA_USER_DATA_PATH', join(root, 'profile'))
+  root = await mkdtemp(join(await realpath(tmpdir()), 'topo-36210-continuation-'))
+  vi.stubEnv('TOPO_USER_DATA_PATH', join(root, 'profile'))
 })
 afterEach(async () => {
   vi.unstubAllEnvs()

@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   createTranscriptPane,
   TRANSCRIPT_PANE_PTY_ID
-} from '../../orca-runtime-tests/agent-transcript-pane-test-harness'
+} from '../../topo-runtime-tests/agent-transcript-pane-test-harness'
 import type { RuntimeVisibleTerminalState } from '../records/runtime-terminal-state-records'
 
 vi.mock('electron', () => ({

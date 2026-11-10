@@ -8,7 +8,7 @@ import {
 } from './device-store-value-codec'
 
 // The device store's cache table for one host: `native.store.rows` in a page, the store itself in native Home.
-export type OrcaQueryStoreBackend = {
+export type TopoQueryStoreBackend = {
   // The page's bridge host, or the host native Home bound this storage to.
   readonly hostId: string
   read(
@@ -25,7 +25,7 @@ export type OrcaQueryStoreBackend = {
 // Holds records rather than strings so a refetch that kept the same data object can skip its write: the
 // stored string always differs, since every fetch moves `dataUpdatedAt`. Persisters over it pass identity
 // `serialize` and `deserialize`. No `entries()`: restore is by known key, and GC and wipes are the store's.
-export type OrcaQueryStorage = AsyncStorage<PersistedQuery> & {
+export type TopoQueryStorage = AsyncStorage<PersistedQuery> & {
   // Writes what is pending now; for hidden, Back and app background.
   flush(): Promise<void>
 }
@@ -39,7 +39,7 @@ type WrittenRecord = { readonly data: unknown; readonly buster: string; readonly
 
 // The store key of a TanStack storage key. A queryHash carries worktree paths and query inputs, so it can
 // pass the verb's 512-character key limit; a hash always fits. First-paint reads (Q4) map keys the same way.
-export function orcaQueryStoreKey(storageKey: string): string {
+export function topoQueryStoreKey(storageKey: string): string {
   return bytesToHex(sha256(storageKey))
 }
 
@@ -52,7 +52,7 @@ function keyNamesHost(storageKey: string, hostId: string): boolean {
   }
   try {
     const queryKey: unknown = JSON.parse(storageKey.slice(hashAt + 1))
-    return Array.isArray(queryKey) && queryKey[0] === 'orca' && queryKey[1] === hostId
+    return Array.isArray(queryKey) && queryKey[0] === 'topo' && queryKey[1] === hostId
   } catch {
     return false
   }
@@ -71,7 +71,7 @@ function encodeForStore(query: PersistedQuery): string | null {
   }
 }
 
-export function createOrcaQueryStorage(backend: OrcaQueryStoreBackend): OrcaQueryStorage {
+export function createTopoQueryStorage(backend: TopoQueryStoreBackend): TopoQueryStorage {
   // Latest record per key since the last flush; null removes the row.
   const pending = new Map<string, PersistedQuery | null>()
   const written = new Map<string, WrittenRecord>()
@@ -120,7 +120,7 @@ export function createOrcaQueryStorage(backend: OrcaQueryStoreBackend): OrcaQuer
       // A record too large or unencodable removes the stored one, which is older than memory, and is
       // remembered like a write so a refetch of the same data doesn't encode it again.
       const value = query === null ? null : encodeForStore(query)
-      ops.push({ key: orcaQueryStoreKey(key), value })
+      ops.push({ key: topoQueryStoreKey(key), value })
       sent.set(
         key,
         query === null
@@ -160,7 +160,7 @@ export function createOrcaQueryStorage(backend: OrcaQueryStoreBackend): OrcaQuer
       if (pending.has(key)) {
         return pending.get(key) ?? null
       }
-      const read = await backend.read([orcaQueryStoreKey(key)])
+      const read = await backend.read([topoQueryStoreKey(key)])
       const value = read.status === 'ok' ? read.values[0] : null
       if (value == null) {
         return null

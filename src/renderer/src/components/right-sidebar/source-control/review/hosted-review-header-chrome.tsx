@@ -68,7 +68,7 @@ export function HostedReviewHeaderLink({
         className={className}
         onClick={(e) => {
           e.stopPropagation()
-          // Keep review details in Orca’s Checks tab.
+          // Keep review details in Topo’s Checks tab.
           onOpenHostedReviewInChecks()
         }}
       >

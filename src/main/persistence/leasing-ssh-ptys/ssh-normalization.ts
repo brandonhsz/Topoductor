@@ -11,7 +11,7 @@ import {
   SSH_REMOTE_RUNTIMES
 } from '../../../shared/ssh-types'
 import { normalizeSshPendingPtyKill } from '../../../shared/ssh-pending-pty-kill'
-import { getLegacyManagedOrcadOwnerEnvironmentId } from '../../../shared/managed-orcad-ssh-owner'
+import { getLegacyManagedTopodOwnerEnvironmentId } from '../../../shared/managed-topod-ssh-owner'
 
 export type LegacySshTarget = SshTarget & {
   remoteWorkspaceSyncEnabled?: unknown
@@ -76,7 +76,7 @@ export function normalizeSshTarget(t: SshTarget): SshTarget {
     normalizeManagedServerMoveOffered(
       normalizeAppVersionNote(
         normalizeAppVersionNote(
-          migrateLegacyManagedOrcadOwner(normalized),
+          migrateLegacyManagedTopodOwner(normalized),
           'managedServerUnavailable'
         ),
         'managedServerUpdateFailure'
@@ -85,15 +85,15 @@ export function normalizeSshTarget(t: SshTarget): SshTarget {
   )
 }
 
-/** Move legacy owner fences to orcadFence so downgraded builds still show and reach the host. */
-function migrateLegacyManagedOrcadOwner(target: SshTarget): SshTarget {
-  const environmentId = getLegacyManagedOrcadOwnerEnvironmentId(target.owner)
+/** Move legacy owner fences to topodFence so downgraded builds still show and reach the host. */
+function migrateLegacyManagedTopodOwner(target: SshTarget): SshTarget {
+  const environmentId = getLegacyManagedTopodOwnerEnvironmentId(target.owner)
   if (!environmentId) {
-    return normalizeOrcadFence(target)
+    return normalizeTopodFence(target)
   }
   const { owner: _legacyOwner, ...rest } = target
-  const fenced = normalizeOrcadFence(rest)
-  return fenced.orcadFence ? fenced : { ...fenced, orcadFence: { environmentId } }
+  const fenced = normalizeTopodFence(rest)
+  return fenced.topodFence ? fenced : { ...fenced, topodFence: { environmentId } }
 }
 
 // Preserve unknown note fields from independently updated peers.
@@ -140,24 +140,24 @@ function normalizeManagedServerLeaveBehind(target: SshTarget): SshTarget {
   return rest
 }
 
-function normalizeOrcadFence(target: SshTarget): SshTarget {
-  if (target.orcadFence === undefined) {
+function normalizeTopodFence(target: SshTarget): SshTarget {
+  if (target.topodFence === undefined) {
     return target
   }
-  const fence = noteFields(target.orcadFence)
+  const fence = noteFields(target.topodFence)
   const environmentId = fence?.environmentId
   if (fence && typeof environmentId === 'string' && environmentId.length > 0) {
     const { sourceChangedAt, ...unknownAndId } = fence
     return {
       ...target,
-      orcadFence: {
+      topodFence: {
         ...unknownAndId,
         environmentId,
         ...(typeof sourceChangedAt === 'string' ? { sourceChangedAt } : {})
       }
     }
   }
-  const { orcadFence: _malformed, ...rest } = target
+  const { topodFence: _malformed, ...rest } = target
   return rest
 }
 
@@ -172,7 +172,7 @@ const SshRemoteRuntimeResolutionSchema = z
       .regex(/^\d+\.\d+$/)
       .nullable(),
     runtimeSha256: z.string().regex(/^[0-9a-f]{64}$/),
-    orcaMajor: z.number().int().nonnegative()
+    topoMajor: z.number().int().nonnegative()
   })
   .strict()
 

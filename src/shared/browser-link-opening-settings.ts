@@ -1,4 +1,4 @@
 export type BrowserLinkOpeningSettings = {
-  /** Links from Orca surfaces join the browser without taking focus from the pane they came from. */
+  /** Links from Topo surfaces join the browser without taking focus from the pane they came from. */
   openLinksInAppInBackground?: boolean
 }

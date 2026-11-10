@@ -20,9 +20,9 @@ const expansionFallbackAtMs = new BoundedMap<string, number>({ maxEntries: 256 }
 // Expansion fallbacks (many or out-of-cwd directories) tend to persist; retry the cheap scan only occasionally.
 const EXPANSION_FALLBACK_RETRY_MS = 60_000
 
-/** Rollback switch: `ORCA_GIT_STATUS_UNTRACKED_EXPANSION=0` restores the plain `-uall` scan. */
+/** Rollback switch: `TOPO_GIT_STATUS_UNTRACKED_EXPANSION=0` restores the plain `-uall` scan. */
 function isUntrackedExpansionEnabled(): boolean {
-  return process.env.ORCA_GIT_STATUS_UNTRACKED_EXPANSION !== '0'
+  return process.env.TOPO_GIT_STATUS_UNTRACKED_EXPANSION !== '0'
 }
 
 /** Stream porcelain v2 status listing every untracked file as `-uall` does; never rejects. */

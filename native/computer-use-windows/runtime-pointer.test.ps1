@@ -10,7 +10,7 @@ Add-Type -TypeDefinition @"
 using System;
 using System.Collections.Generic;
 
-public static class OrcaDesktopWin32 {
+public static class TopoDesktopWin32 {
     public static readonly List<string> Calls = new List<string>();
     public static bool AllowActivation;
     public static IntPtr Foreground;
@@ -61,23 +61,23 @@ $errors = $null
 $ast = [System.Management.Automation.Language.Parser]::ParseFile($RuntimePath, [ref]$tokens, [ref]$errors)
 if ($errors.Count) { throw ($errors | Out-String) }
 $functions = @(
-    "Test-OrcaWindowFocused", "Wait-OrcaWindowFocused", "Assert-OrcaKeyboardFocus",
-    "Assert-OrcaPointerFocus", "Restore-OrcaWindow", "Restore-OrcaPointerWindow", "Assert-OrcaWindowTarget",
-    "Get-OrcaRequiredNumber", "Get-OrcaPositiveInteger", "Get-OrcaPositiveNumber",
-    "Get-OrcaScreenPoint", "Get-OrcaElementScreenPoint", "Get-OrcaModifierVirtualKey",
-    "Get-OrcaClickModifierVirtualKeys", "Send-OrcaMouseClick", "Send-OrcaDrag", "Invoke-OrcaOperation"
+    "Test-TopoWindowFocused", "Wait-TopoWindowFocused", "Assert-TopoKeyboardFocus",
+    "Assert-TopoPointerFocus", "Restore-TopoWindow", "Restore-TopoPointerWindow", "Assert-TopoWindowTarget",
+    "Get-TopoRequiredNumber", "Get-TopoPositiveInteger", "Get-TopoPositiveNumber",
+    "Get-TopoScreenPoint", "Get-TopoElementScreenPoint", "Get-TopoModifierVirtualKey",
+    "Get-TopoClickModifierVirtualKeys", "Send-TopoMouseClick", "Send-TopoDrag", "Invoke-TopoOperation"
 )
 foreach ($definition in $ast.FindAll({ param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $false)) {
     if ($definition.Name -in $functions) { . ([scriptblock]::Create($definition.Extent.Text)) }
 }
 
 $MouseEvents = @{ LeftDown = 2; LeftUp = 4; RightDown = 8; RightUp = 16; MiddleDown = 32; MiddleUp = 64; Wheel = 2048; HorizontalWheel = 4096 }
-function Find-OrcaProcess { [pscustomobject]@{ MainWindowHandle = 101 } }
-function Get-OrcaRootElement { $null }
-function Get-OrcaWindowFrame { @{ x = [OrcaDesktopWin32]::WindowX; y = 200 } }
-function Find-OrcaElement($RootElement, $Record) { $Record }
-function Invoke-OrcaPrimaryAction($Element) { $null -ne $Element }
-function New-OrcaSnapshot { [pscustomobject]@{} }
+function Find-TopoProcess { [pscustomobject]@{ MainWindowHandle = 101 } }
+function Get-TopoRootElement { $null }
+function Get-TopoWindowFrame { @{ x = [TopoDesktopWin32]::WindowX; y = 200 } }
+function Find-TopoElement($RootElement, $Record) { $Record }
+function Invoke-TopoPrimaryAction($Element) { $null -ne $Element }
+function New-TopoSnapshot { [pscustomobject]@{} }
 
 foreach ($case in @(
     @{ tool = "click"; x = 5; y = 6 },
@@ -86,22 +86,22 @@ foreach ($case in @(
     @{ tool = "drag"; from_x = 5; from_y = 6; to_x = 25; to_y = 26 }
 )) {
     foreach ($activates in @($false, $true)) {
-        [OrcaDesktopWin32]::Reset($activates)
+        [TopoDesktopWin32]::Reset($activates)
         $operation = [pscustomobject]@{ app = "Fixture"; noScreenshot = $true; restoreWindow = $false }
         foreach ($key in $case.Keys) { $operation | Add-Member -NotePropertyName $key -NotePropertyValue $case[$key] }
         $denied = $false
         try {
-            $result = Invoke-OrcaOperation $operation
+            $result = Invoke-TopoOperation $operation
         } catch {
             if ($_.Exception.Message -notlike "window_not_focused:*") { throw }
             $denied = $true
         }
-        $inputCalls = @([OrcaDesktopWin32]::Calls | Where-Object { $_ -like "move:*" -or $_ -in @("mouse", "modified") })
+        $inputCalls = @([TopoDesktopWin32]::Calls | Where-Object { $_ -like "move:*" -or $_ -in @("mouse", "modified") })
         if ($activates) {
             Assert-TestEqual $denied $false "$($case.tool) successful activation"
             Assert-TestEqual $result.ok $true "$($case.tool) result"
             if ($inputCalls.Count -eq 0) { throw "$($case.tool) did not send pointer input after activation" }
-            if ([OrcaDesktopWin32]::FocusReads -lt 2) { throw "$($case.tool) did not wait for activation" }
+            if ([TopoDesktopWin32]::FocusReads -lt 2) { throw "$($case.tool) did not wait for activation" }
             Assert-TestEqual $inputCalls[0] "move:505,206" "$($case.tool) geometry after delayed activation"
         } else {
             Assert-TestEqual $denied $true "$($case.tool) denied activation"
@@ -110,8 +110,8 @@ foreach ($case in @(
     }
 }
 
-[OrcaDesktopWin32]::Reset($false)
-$result = Invoke-OrcaOperation ([pscustomobject]@{ tool = "click"; app = "Fixture"; element = [pscustomobject]@{ index = 1 } })
+[TopoDesktopWin32]::Reset($false)
+$result = Invoke-TopoOperation ([pscustomobject]@{ tool = "click"; app = "Fixture"; element = [pscustomobject]@{ index = 1 } })
 Assert-TestEqual $result.action.path "accessibility" "pattern click path"
-Assert-TestEqual ([OrcaDesktopWin32]::Calls.Count) 0 "pattern click bypasses activation and global input"
+Assert-TestEqual ([TopoDesktopWin32]::Calls.Count) 0 "pattern click bypasses activation and global input"
 Write-Output "windows-pointer-tests-ok"

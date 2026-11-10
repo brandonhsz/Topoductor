@@ -129,11 +129,11 @@ it('recovers silently after each later token expiry and ignores refreshes for ot
   expect(history!.error).toBeUndefined()
   getHistory.mockResolvedValue({ ...page, historyToken: 'refreshed' })
   await act(async () =>
-    window.dispatchEvent(new CustomEvent('orca:git-graph-refresh', { detail: 'other' }))
+    window.dispatchEvent(new CustomEvent('topo:git-graph-refresh', { detail: 'other' }))
   )
   expect(history!.result?.historyToken).toBe('third')
   await act(async () =>
-    window.dispatchEvent(new CustomEvent('orca:git-graph-refresh', { detail: workspaceId }))
+    window.dispatchEvent(new CustomEvent('topo:git-graph-refresh', { detail: workspaceId }))
   )
   expect(history!.result?.historyToken).toBe('refreshed')
   expect(getHistory.mock.calls.at(-1)?.[1].wakeWslDistro).toBe(false)
@@ -214,7 +214,7 @@ it('keeps an older selection, loaded depth and scroll through refresh', async ()
     .mockResolvedValueOnce(refreshedPage(50))
     .mockResolvedValueOnce(refreshedPage(100))
   await act(async () => {
-    window.dispatchEvent(new CustomEvent('orca:git-graph-refresh', { detail: workspaceId }))
+    window.dispatchEvent(new CustomEvent('topo:git-graph-refresh', { detail: workspaceId }))
     await controller.loadMore()
   })
   expect(container.querySelector('[data-current="true"]')?.textContent).toContain('Commit 110')

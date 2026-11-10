@@ -1,7 +1,7 @@
 import { chmod, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { quotePosixShell } from '../../shell/launch/shell-argument-quoting'
 import { describe, expect, it } from 'vitest'
 import { buildGitSshPolicyEnv, parseGitSshConfig } from './git-ssh-policy-env'
@@ -101,7 +101,7 @@ describe.skipIf(process.platform === 'win32')('SSH policy with a real POSIX shel
     String.raw` -i "C:\keys\work\\ key" -o "ProxyCommand=proxy \"C:\keys\proxy\\ key\" %h" -o "BatchMode no"`,
     String.raw` -i 'key (work); and literal & operators' -o 'ProxyCommand=proxy (work) <input> | other'`
   ])('preserves shell-produced arguments: %s', async (suffix) => {
-    const root = await mkdtemp(path.join(tmpdir(), 'orca-ssh-policy-'))
+    const root = await mkdtemp(path.join(tmpdir(), 'topo-ssh-policy-'))
     try {
       const directory = path.join(root, 'Program Files (x86)')
       await mkdir(directory)

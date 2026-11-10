@@ -3,7 +3,7 @@ import { defineFixture } from '../../../../component-fixtures/component-fixture'
 import { makeRepo, makeWorktree } from '../../../worktree-jump/worktree-jump-palette-test-fixtures'
 import WorktreeCard from '../surface/WorktreeCard'
 
-const repo = { ...makeRepo(), displayName: 'orca' }
+const repo = { ...makeRepo(), displayName: 'topo' }
 const worktree = makeWorktree('identity-fixture', 'Primary workspace', {
   branch: 'main',
   isMainWorktree: true,

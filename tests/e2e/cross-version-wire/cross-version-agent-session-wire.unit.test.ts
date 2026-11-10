@@ -343,7 +343,7 @@ describe('cross-version structured agent sessions', () => {
     let createMobileSessionTerminal: ReturnType<typeof vi.fn>
 
     beforeEach(async () => {
-      root = await mkdtemp(join(tmpdir(), 'orca-cross-version-ai-vault-'))
+      root = await mkdtemp(join(tmpdir(), 'topo-cross-version-ai-vault-'))
       store = await openTestAgentSessionRecordStore(root)
       const host: StructuredAgentSessionHost = new StructuredAgentSessionHost({
         agents: NO_STRUCTURED_AGENTS,
@@ -651,7 +651,7 @@ describe('cross-version structured agent sessions', () => {
       resetOperationIds()
       startGate = Promise.resolve()
       handshake = Promise.resolve()
-      root = await mkdtemp(join(tmpdir(), 'orca-cross-version-agent-session-'))
+      root = await mkdtemp(join(tmpdir(), 'topo-cross-version-agent-session-'))
       runtime = runtimeStub()
       await bootHost('a')
     })

@@ -52,7 +52,7 @@ function reportPreservedEdits(result: BundledSkillInstallResult | null): void {
         warnAboutEdits(
           translate(
             'auto.components.skills.skillFreshnessAutoUpdate.strandedTitle',
-            "Orca couldn't back up your edits to {{value0}}",
+            "Topo couldn't back up your edits to {{value0}}",
             { value0: skill.name }
           ),
           translate(
@@ -70,7 +70,7 @@ function reportPreservedEdits(result: BundledSkillInstallResult | null): void {
           ),
           translate(
             'auto.components.skills.skillFreshnessAutoUpdate.preservedDescription',
-            'Orca updated the skill and saved your edits to {{value0}}.',
+            'Topo updated the skill and saved your edits to {{value0}}.',
             { value0: op.backupPath }
           )
         )
@@ -96,7 +96,7 @@ function targetLabel(target: BundledSkillTarget): string {
 function skillBackupDirectory(homeDirectory: string): string {
   const separator = /^[a-z]:[\\/]|^\\\\/iu.test(homeDirectory) ? '\\' : '/'
   const home = homeDirectory.replace(/[\\/]+$/u, '')
-  return [home, '.agents', '.orca-skill-backups'].join(separator)
+  return [home, '.agents', '.topo-skill-backups'].join(separator)
 }
 
 /** A lost or timed-out reply may follow a committed swap, so its backups must not go unmentioned. */
@@ -104,19 +104,19 @@ function reportUncertainOutcome(target: BundledSkillTarget, plan: BundledSkillPl
   warnAboutEdits(
     translate(
       'auto.components.skills.skillFreshnessAutoUpdate.uncertainTitle',
-      "Orca couldn't confirm the skill update on {{value0}}",
+      "Topo couldn't confirm the skill update on {{value0}}",
       { value0: targetLabel(target) }
     ),
     translate(
       'auto.components.skills.skillFreshnessAutoUpdate.uncertainDescription',
-      "Orca may have updated skills on {{value0}} but couldn't confirm the result. If you edited a skill during the update, your copy is in {{value1}}.",
+      "Topo may have updated skills on {{value0}} but couldn't confirm the result. If you edited a skill during the update, your copy is in {{value1}}.",
       { value0: targetLabel(target), value1: skillBackupDirectory(plan.homeDirectory) }
     )
   )
 }
 
 /**
- * Silently updates each skill's hash-verified Orca copies, at most once per observed state.
+ * Silently updates each skill's hash-verified Topo copies, at most once per observed state.
  * Returns the skills a running update owns, so the nudge asks only about the rest.
  */
 export function autoUpdateUnmodifiedSkills(

@@ -30,7 +30,7 @@ describe('WslHostService pending removal', () => {
   }
 
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-wsl-host-pending-removal-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-wsl-host-pending-removal-'))
     published = []
     vi.clearAllMocks()
     vi.spyOn(console, 'warn').mockImplementation(() => {})

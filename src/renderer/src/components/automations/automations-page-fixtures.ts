@@ -173,8 +173,8 @@ export function makeScopedExternalManager(
 function makeRepo(): Repo {
   return {
     id: REPO_ID,
-    displayName: 'orca',
-    path: '/repos/orca',
+    displayName: 'topo',
+    path: '/repos/topo',
     badgeColor: '#000000',
     addedAt: 1,
     worktreeBaseRef: 'main'
@@ -188,8 +188,8 @@ function makeProjectHostSetup(): ProjectHostSetup {
     projectId: 'project-1',
     hostId: 'local',
     repoId: REPO_ID,
-    path: '/repos/orca',
-    displayName: 'orca',
+    path: '/repos/topo',
+    displayName: 'topo',
     setupState: 'ready',
     setupMethod: 'legacy-repo',
     createdAt: 1,
@@ -202,7 +202,7 @@ export function makeWorktree(overrides: Partial<Worktree> = {}): Worktree {
     id: WORKSPACE_ID,
     repoId: REPO_ID,
     displayName: 'main',
-    path: '/repos/orca',
+    path: '/repos/topo',
     branch: 'main',
     head: 'abc123',
     isBare: false,

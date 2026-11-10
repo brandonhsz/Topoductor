@@ -130,7 +130,7 @@ export function scanChromiumCookieRows(
     return {
       ok: false,
       reason:
-        'This Orca client cannot report cookies skipped for an unreadable site partition. Update Orca on this device and try again.'
+        'This Topo client cannot report cookies skipped for an unreadable site partition. Update Topo on this device and try again.'
     }
   }
   return null

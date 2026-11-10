@@ -123,7 +123,7 @@ it.each([
     openRoutedHttpLink('http://localhost:5180/', {
       worktreeId: WORKSPACE,
       sourceTabId: 'source',
-      forceDestination: 'orca'
+      forceDestination: 'topo'
     })
     expect(register).toHaveBeenCalledOnce()
     expect(useAppStore.getState().browserPagesByWorkspace).toEqual({})
@@ -143,7 +143,7 @@ it.each([
       useAppStore.setState({ activeWorkspaceExecutionHostId: 'local' })
     }
     const selected = useAppStore.getState()
-    const labeledUrl = 'http://main.orca.localhost:60016/'
+    const labeledUrl = 'http://main.topo.localhost:60016/'
     registration.resolve({ url: labeledUrl })
     const outcome = await completed
 
@@ -190,14 +190,14 @@ it('lets a newer link open normally while an older localhost registration comple
   const options = {
     worktreeId: WORKSPACE,
     sourceTabId: 'source',
-    forceDestination: 'orca' as const
+    forceDestination: 'topo' as const
   }
   openRoutedHttpLink('http://localhost:5180/', options)
   expect(register).toHaveBeenCalledOnce()
   openRoutedHttpLink(URL_TO_OPEN, options)
   const outcome = await completed
   expect(outcome).toMatchObject({ status: 'opened' })
-  registration.resolve({ url: 'http://main.orca.localhost:60016/' })
+  registration.resolve({ url: 'http://main.topo.localhost:60016/' })
   await registration.promise
 
   const state = useAppStore.getState()
@@ -227,7 +227,7 @@ it.each(['workspace', 'view'] as const)(
       useAppStore.getState().setActiveView('skills')
     }
     const selected = useAppStore.getState()
-    const labeledUrl = 'http://main.orca.localhost:60016/'
+    const labeledUrl = 'http://main.topo.localhost:60016/'
     registration.resolve({ url: labeledUrl })
     await completed
 

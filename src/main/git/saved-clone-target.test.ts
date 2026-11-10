@@ -7,7 +7,7 @@ import { LOCAL_EXECUTION_HOST_ID } from '../../shared/execution-host'
 import type { Repo } from '../../shared/repo-types'
 import { reuseSavedCloneTarget } from './saved-clone-target'
 
-const url = 'https://github.com/stablyai/orca.git'
+const url = 'https://github.com/brandonhsz/Topoductor.git'
 const roots: string[] = []
 
 function git(cwd: string, ...args: string[]): void {
@@ -16,9 +16,9 @@ function git(cwd: string, ...args: string[]): void {
 
 // finished=false models interrupted checkout; commits=false models a finished empty clone.
 function checkout(originUrl: string, { finished = true, commits = true } = {}): string {
-  const root = mkdtempSync(join(tmpdir(), 'orca-saved-clone-target-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-saved-clone-target-'))
   roots.push(root)
-  const path = join(root, 'orca')
+  const path = join(root, 'topo')
   if (finished && !commits) {
     const source = join(root, 'empty-source')
     execFileSync('git', ['init', '-q', source])
@@ -40,7 +40,7 @@ function saved(path: string, extra: Partial<Repo> = {}): Repo {
   return {
     id: 'saved',
     path,
-    displayName: 'orca',
+    displayName: 'topo',
     badgeColor: '#fff',
     addedAt: 1,
     kind: 'git',
@@ -64,8 +64,8 @@ describe('reuseSavedCloneTarget', () => {
   })
 
   it('reuses a finished clone of the same repo spelled differently', async () => {
-    const project = saved(checkout('git@github.com:stablyai/orca.git'))
-    await expect(decide(project, 'https://github.com/stablyai/orca')).resolves.toBe(project)
+    const project = saved(checkout('git@github.com:brandonhsz/Topoductor.git'))
+    await expect(decide(project, 'https://github.com/brandonhsz/Topoductor')).resolves.toBe(project)
   })
 
   it('reuses a finished clone of an empty repository, whose HEAD is unborn', async () => {
@@ -76,7 +76,7 @@ describe('reuseSavedCloneTarget', () => {
   it('refuses an unborn clone without tracking metadata, as Git 2.25 leaves during fetch', async () => {
     const path = checkout(url, { finished: false })
     git(path, 'symbolic-ref', 'HEAD', 'refs/heads/master')
-    await expect(decide(saved(path))).rejects.toThrow('already an Orca project')
+    await expect(decide(saved(path))).rejects.toThrow('already a Topo project')
   })
 
   it('matches the exact unborn branch when its name contains regex metacharacters', async () => {
@@ -88,19 +88,19 @@ describe('reuseSavedCloneTarget', () => {
     await expect(decide(saved(path))).resolves.toMatchObject({ path })
     git(path, 'config', '--unset', `branch.${branch}.remote`)
     git(path, 'config', 'branch.release/v1x222probe.remote', 'origin')
-    await expect(decide(saved(path))).rejects.toThrow('already an Orca project')
+    await expect(decide(saved(path))).rejects.toThrow('already a Topo project')
   })
 
   it('refuses an empty clone with duplicate origin URLs or incomplete tracking metadata', async () => {
     const path = checkout(url, { commits: false })
     git(path, 'remote', 'set-url', '--add', 'origin', url)
-    await expect(decide(saved(path))).rejects.toThrow('already an Orca project')
+    await expect(decide(saved(path))).rejects.toThrow('already a Topo project')
     git(path, 'config', '--replace-all', 'remote.origin.url', url)
     const head = execFileSync('git', ['-C', path, 'symbolic-ref', '--short', 'HEAD'], {
       encoding: 'utf8'
     }).trim()
     git(path, 'config', '--unset', `branch.${head}.merge`)
-    await expect(decide(saved(path))).rejects.toThrow('already an Orca project')
+    await expect(decide(saved(path))).rejects.toThrow('already a Topo project')
   })
 
   it('reuses a finished clone left on a detached HEAD', async () => {
@@ -111,22 +111,22 @@ describe('reuseSavedCloneTarget', () => {
   })
 
   it('does not reuse a folder nested inside a clone of an empty repository', async () => {
-    const nested = join(checkout(url, { commits: false }), 'orca')
+    const nested = join(checkout(url, { commits: false }), 'topo')
     mkdirSync(nested)
-    await expect(decide(saved(nested))).rejects.toThrow('already an Orca project')
+    await expect(decide(saved(nested))).rejects.toThrow('already a Topo project')
   })
 
   it('refuses a finished clone of a different URL with the same folder name', async () => {
-    const project = saved(checkout('https://github.com/me/orca.git'))
-    await expect(decide(project)).rejects.toThrow('"orca" is already an Orca project')
+    const project = saved(checkout('https://github.com/me/topo.git'))
+    await expect(decide(project)).rejects.toThrow('"topo" is already a Topo project')
   })
 
   it('says the recorded repository differs without disclosing its credential-bearing URL', async () => {
-    const project = saved(join(tmpdir(), 'orca-saved-clone-target-absent'), {
+    const project = saved(join(tmpdir(), 'topo-saved-clone-target-absent'), {
       gitRemoteIdentity: {
-        canonicalKey: 'github.com/someone/orca',
+        canonicalKey: 'github.com/someone/topo',
         remoteName: 'origin',
-        remoteUrl: 'https://synthetic-user:synthetic-secret@github.com/someone/orca.git'
+        remoteUrl: 'https://synthetic-user:synthetic-secret@github.com/someone/topo.git'
       }
     })
     const result = decide(project)
@@ -136,47 +136,47 @@ describe('reuseSavedCloneTarget', () => {
   })
 
   it('says it has no record of the repository when the project never stored an origin', async () => {
-    const project = saved(join(tmpdir(), 'orca-saved-clone-target-absent'))
+    const project = saved(join(tmpdir(), 'topo-saved-clone-target-absent'))
     await expect(decide(project)).rejects.toThrow('no record of which repository')
   })
 
   it('refuses a finished clone of a different local path, which does not normalize', async () => {
-    const project = saved(checkout('/srv/other/orca'))
-    await expect(decide(project, '/srv/mine/orca')).rejects.toThrow('already an Orca project')
+    const project = saved(checkout('/srv/other/topo'))
+    await expect(decide(project, '/srv/mine/topo')).rejects.toThrow('already a Topo project')
   })
 
   it('does not reuse a clone that was killed before it finished', async () => {
     const identity = {
-      canonicalKey: 'github.com/stablyai/orca',
+      canonicalKey: 'github.com/brandonhsz/Topoductor',
       remoteName: 'origin',
       remoteUrl: url
     }
     const path = checkout(url, { finished: false })
-    await expect(decide(saved(path))).rejects.toThrow('already an Orca project')
+    await expect(decide(saved(path))).rejects.toThrow('already a Topo project')
     await expect(decide(saved(path, { gitRemoteIdentity: identity }))).resolves.toBeNull()
   })
 
   it('does not reuse a clone whose origin also lists another URL', async () => {
-    const path = checkout('https://github.com/me/orca.git')
+    const path = checkout('https://github.com/me/topo.git')
     git(path, 'remote', 'set-url', '--add', 'origin', url)
-    await expect(decide(saved(path))).rejects.toThrow('already an Orca project')
+    await expect(decide(saved(path))).rejects.toThrow('already a Topo project')
   })
 
   it('refuses to re-clone into a fork project whose stored identity is its upstream', async () => {
-    const path = join(tmpdir(), 'orca-saved-clone-target-deleted-fork')
+    const path = join(tmpdir(), 'topo-saved-clone-target-deleted-fork')
     const upstream = {
-      canonicalKey: 'github.com/stablyai/orca',
+      canonicalKey: 'github.com/brandonhsz/Topoductor',
       remoteName: 'upstream',
       remoteUrl: url
     }
     await expect(decide(saved(path, { gitRemoteIdentity: upstream }))).rejects.toThrow(
-      'already an Orca project'
+      'already a Topo project'
     )
   })
 
   it('does not reuse a folder that only sits inside a clone of the URL', async () => {
-    const nested = join(checkout(url), 'orca')
+    const nested = join(checkout(url), 'topo')
     mkdirSync(nested)
-    await expect(decide(saved(nested))).rejects.toThrow('already an Orca project')
+    await expect(decide(saved(nested))).rejects.toThrow('already a Topo project')
   })
 })

@@ -63,7 +63,7 @@ export async function stagePluginGitInstall(input: {
   hostVersion: string
   blockedPluginReason?: (pluginKey: string) => string | null
 }): Promise<StagedPluginInstall> {
-  const stagingDir = await mkdtemp(join(tmpdir(), 'orca-plugin-cli-install-'))
+  const stagingDir = await mkdtemp(join(tmpdir(), 'topo-plugin-cli-install-'))
   const dispose = (): Promise<void> => rm(stagingDir, { recursive: true, force: true })
   try {
     const resolvedCommit = await checkoutPluginGitSource({

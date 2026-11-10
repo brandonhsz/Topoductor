@@ -12,7 +12,7 @@ import type {
   ComputerUsePermissionStatusResult
 } from '../../shared/computer-use-permissions-types'
 
-const DEFAULT_COMPUTER_USE_BUNDLE_ID = 'com.stablyai.orca.computer-use'
+const DEFAULT_COMPUTER_USE_BUNDLE_ID = 'com.brandonhsz.topo.computer-use'
 
 export { getComputerUsePermissionStatus } from './macos-computer-use-permission-status'
 
@@ -143,7 +143,7 @@ async function openComputerUsePermissionsAsync(
 
   const helperAppPath = resolveMacOSComputerUseAppPath()
   if (!helperAppPath) {
-    throw new RuntimeClientError('accessibility_error', 'Orca Computer Use.app was not found')
+    throw new RuntimeClientError('accessibility_error', 'Topo Computer Use.app was not found')
   }
   // Wait out a reset before reading status, so this Open never sees pre-reset grants.
   while (resetInProgress) {
@@ -158,7 +158,7 @@ async function openComputerUsePermissionsAsync(
     // An error rather than launchedHelper: false, which clients render as "setup complete".
     throw new RuntimeClientError(
       'accessibility_error',
-      'Computer Use setup was cancelled because permissions were reset or Orca is quitting'
+      'Computer Use setup was cancelled because permissions were reset or Topo is quitting'
     )
   }
 
@@ -217,7 +217,7 @@ async function resetComputerUsePermissionsAsync(): Promise<ComputerUsePermission
 
   const helperAppPath = resolveMacOSComputerUseAppPath()
   if (!helperAppPath) {
-    throw new RuntimeClientError('accessibility_error', 'Orca Computer Use.app was not found')
+    throw new RuntimeClientError('accessibility_error', 'Topo Computer Use.app was not found')
   }
 
   const unavailableReason = resolveComputerUseHelperUnavailableReason()
@@ -244,8 +244,8 @@ async function resetComputerUsePermissionsAsync(): Promise<ComputerUsePermission
 function closeExistingPermissionHelpers(): void {
   // Preserve concurrent status probes when replacing permission-setup helpers.
   const setupHelperPatterns = [
-    'orca-computer-use-macos[[:space:]]+--permission([[:space:]]|$)',
-    'orca-computer-use-macos[[:space:]]+--permissions([[:space:]]|$)'
+    'topo-computer-use-macos[[:space:]]+--permission([[:space:]]|$)',
+    'topo-computer-use-macos[[:space:]]+--permissions([[:space:]]|$)'
   ]
   for (const pattern of setupHelperPatterns) {
     spawnSync('/usr/bin/pkill', ['-f', pattern], {
@@ -272,5 +272,5 @@ function nextPermissionStep(
   if (!missing) {
     return null
   }
-  return `Grant ${missing.id === 'accessibility' ? 'Accessibility' : 'Screen Recording'} to Orca Computer Use, then retry get-app-state.`
+  return `Grant ${missing.id === 'accessibility' ? 'Accessibility' : 'Screen Recording'} to Topo Computer Use, then retry get-app-state.`
 }

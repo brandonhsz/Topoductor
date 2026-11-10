@@ -27,7 +27,7 @@ let workerDirectory: string
 let workerPath: string
 
 beforeAll(async () => {
-  workerDirectory = mkdtempSync(join(tmpdir(), 'orca-backup-worker-entry-'))
+  workerDirectory = mkdtempSync(join(tmpdir(), 'topo-backup-worker-entry-'))
   workerPath = join(workerDirectory, 'profile-state-backup-worker-entry.js')
   await build({
     entryPoints: [
@@ -51,7 +51,7 @@ afterEach(() => {
 afterAll(() => rmSync(workerDirectory, { recursive: true, force: true }))
 
 function fixture() {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-backup-worker-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-backup-worker-'))
   directories.push(directory)
   const job = {
     databasePath: join(directory, 'profile-state.db'),

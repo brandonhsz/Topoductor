@@ -18,7 +18,7 @@ function git(cwd, args) {
 }
 
 async function withGitRepo(run) {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-draft-release-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-draft-release-'))
   try {
     git(dir, ['init', '--initial-branch=main'])
     git(dir, ['config', 'user.name', 'Test Bot'])
@@ -73,7 +73,7 @@ describe('publishCompleteDraftReleases', () => {
         created_at: `2026-05-15T0${id}:31:19Z`,
         author: { login: 'github-actions[bot]' },
         assets: getRequiredReleaseAssetNames(`v1.4.2-rc.${id}`)
-          .filter((name) => id === 7 || name !== 'orca-windows-setup.exe')
+          .filter((name) => id === 7 || name !== 'topo-windows-setup.exe')
           .map((name, index) => ({ id: id * 100 + index, name, state: 'uploaded', size: 1 }))
       }))
       const manifestUrls = new Map(
@@ -81,9 +81,9 @@ describe('publishCompleteDraftReleases', () => {
           assets
             .filter(({ name }) => name.startsWith('latest'))
             .map(({ id, name }) => [
-              `https://api.github.com/repos/stablyai/orca/releases/assets/${id}`,
+              `https://api.github.com/repos/brandonhsz/Topoductor/releases/assets/${id}`,
               name === 'latest.yml'
-                ? 'path: orca-windows-setup.exe\n'
+                ? 'path: topo-windows-setup.exe\n'
                 : name === 'latest-mac.yml'
                   ? 'minimumSystemVersion: 22.0.0\n'
                   : ''
@@ -91,14 +91,14 @@ describe('publishCompleteDraftReleases', () => {
         )
       )
       const fetchImpl = vi.fn(async (url, options) => {
-        if (url === 'https://api.github.com/repos/stablyai/orca/releases?per_page=100') {
+        if (url === 'https://api.github.com/repos/brandonhsz/Topoductor/releases?per_page=100') {
           return jsonResponse(releases)
         }
         if (manifestUrls.has(url) && !options.method) {
           return jsonResponse(manifestUrls.get(url))
         }
         if (
-          url === 'https://api.github.com/repos/stablyai/orca/releases/7' &&
+          url === 'https://api.github.com/repos/brandonhsz/Topoductor/releases/7' &&
           options.method === 'PATCH'
         ) {
           return jsonResponse({ tag_name: 'v1.4.2-rc.7', draft: false })
@@ -108,7 +108,7 @@ describe('publishCompleteDraftReleases', () => {
       const fetch = vi.spyOn(globalThis, 'fetch').mockImplementation(fetchImpl)
       try {
         const result = await publishCompleteDraftReleases({
-          repo: 'stablyai/orca',
+          repo: 'brandonhsz/Topoductor',
           token: 'token',
           fetchImpl,
           isDraftBuiltFromCurrentRef: ({ tag }) => isTagBuiltFromCurrentRef(tag, { cwd: repo }),
@@ -122,7 +122,7 @@ describe('publishCompleteDraftReleases', () => {
         })
         expect(fetchImpl.mock.calls.filter(([, options]) => options.method === 'PATCH')).toEqual([
           [
-            'https://api.github.com/repos/stablyai/orca/releases/7',
+            'https://api.github.com/repos/brandonhsz/Topoductor/releases/7',
             expect.objectContaining({
               method: 'PATCH',
               body: JSON.stringify({ draft: false, prerelease: true })
@@ -159,7 +159,7 @@ describe('publishCompleteDraftReleases', () => {
       const fetch = vi.spyOn(globalThis, 'fetch').mockImplementation(fetchImpl)
       try {
         const result = await publishCompleteDraftReleases({
-          repo: 'stablyai/orca',
+          repo: 'brandonhsz/Topoductor',
           token: 'token',
           fetchImpl,
           isDraftBuiltFromCurrentRef: ({ tag }) => isTagBuiltFromCurrentRef(tag, { cwd: repo }),

@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { pathToFileURL } from 'node:url'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { scanAstGrep } from '../../static-analysis/structural-scan/ast-grep-scan.mjs'
 import { resolvePullRequestDiffBase } from '../../git/pr-diff-base/git-pull-request-diff-base.mjs'
 import { resolveOxlintInvocation } from '../../tool-invocation/oxlint-cli-invocation.mjs'
@@ -135,7 +135,7 @@ export function isRootCodeQualityPath(file) {
 function resolveBase(root, requestedBase) {
   for (const candidate of [
     requestedBase,
-    process.env.ORCA_CODE_QUALITY_BASE,
+    process.env.TOPO_CODE_QUALITY_BASE,
     'origin/main',
     'main'
   ]) {

@@ -1,13 +1,13 @@
 import { Play } from 'lucide-react'
 import type React from 'react'
-import type { OrcaHooks } from '../../../../../../shared/orca-yaml-hook-types'
+import type { TopoHooks } from '../../../../../../shared/topo-yaml-hook-types'
 import { Button } from '../../../ui/button'
 import { useTranslate } from '@/i18n/use-translate'
 
 type RecipeCatalogEntry = Awaited<
   ReturnType<typeof window.api.ephemeralVm.listRecipeCatalog>
 >[number]
-type Recipe = NonNullable<OrcaHooks['environmentRecipes']>[number]
+type Recipe = NonNullable<TopoHooks['environmentRecipes']>[number]
 
 export function EphemeralVmRecipeRow({
   entry,

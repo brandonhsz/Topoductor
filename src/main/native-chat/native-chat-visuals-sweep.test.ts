@@ -30,7 +30,7 @@ afterEach(() => {
 })
 
 function stateDirectory(): string {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-visuals-sweep-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-visuals-sweep-'))
   scratch.push(dir)
   return dir
 }
@@ -104,7 +104,7 @@ describe('the visuals folder sweep', () => {
     const root = nativeChatScratchRootFor(state)
     mkdirSync(join(root, 'notes'), { recursive: true })
     writeFileSync(join(root, 'f'.repeat(32)), 'a file, not a folder')
-    const target = mkdtempSync(join(tmpdir(), 'orca-visuals-target-'))
+    const target = mkdtempSync(join(tmpdir(), 'topo-visuals-target-'))
     scratch.push(target)
     writeFileSync(join(target, 'keep.txt'), 'keep')
     symlinkSync(target, join(root, 'e'.repeat(32)))
@@ -117,7 +117,7 @@ describe('the visuals folder sweep', () => {
 
   it('touches nothing under a visuals root that is a symlink', async () => {
     const state = stateDirectory()
-    const elsewhere = mkdtempSync(join(tmpdir(), 'orca-visuals-elsewhere-'))
+    const elsewhere = mkdtempSync(join(tmpdir(), 'topo-visuals-elsewhere-'))
     scratch.push(elsewhere)
     mkdirSync(join(elsewhere, 'a'.repeat(32)))
     symlinkSync(elsewhere, nativeChatScratchRootFor(state))

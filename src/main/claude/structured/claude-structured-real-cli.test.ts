@@ -131,10 +131,10 @@ describe.skipIf(!realClaudeAvailable)(suiteTitle, () => {
       const providerSessionId = randomUUID()
       const claudeConfigDir = process.env.CLAUDE_CONFIG_DIR?.trim() || join(homedir(), '.claude')
       const events: ClaudeStructuredSessionEvent[] = []
-      const cwd = await projectWithStartHook('orca-command-init-')
+      const cwd = await projectWithStartHook('topo-command-init-')
       await mkdir(join(cwd, '.claude', 'commands'), { recursive: true })
       await writeFile(
-        join(cwd, '.claude', 'commands', 'orca-init-catalog-proof.md'),
+        join(cwd, '.claude', 'commands', 'topo-init-catalog-proof.md'),
         '---\ndescription: Initialization catalog proof\n---\nReply with OK.\n'
       )
       const adapter = realAdapter(providerSessionId, claudeConfigDir, events, cwd)
@@ -157,7 +157,7 @@ describe.skipIf(!realClaudeAvailable)(suiteTitle, () => {
         expect(observedSubtypes).toContain('hook_started')
         expect(adapter.readCommands('real-cli-handshake')).toContainEqual(
           expect.objectContaining({
-            name: 'orca-init-catalog-proof',
+            name: 'topo-init-catalog-proof',
             kind: 'command',
             kindUnspecified: true
           })
@@ -179,7 +179,7 @@ describe.skipIf(!realClaudeAvailable)(suiteTitle, () => {
       const providerSessionId = randomUUID()
       const claudeConfigDir = process.env.CLAUDE_CONFIG_DIR?.trim() || join(homedir(), '.claude')
       const events: ClaudeStructuredSessionEvent[] = []
-      const cwd = await projectWithStartHook('orca-effort-readback-', { effortLevel: 'low' })
+      const cwd = await projectWithStartHook('topo-effort-readback-', { effortLevel: 'low' })
       const adapter = realAdapter(providerSessionId, claudeConfigDir, events, cwd)
 
       try {
@@ -313,7 +313,7 @@ describe.skipIf(!realClaudeAvailable)(suiteTitle, () => {
     async (permissionMode, cliPermissionMode) => {
       const providerSessionId = randomUUID()
       const claudeConfigDir = process.env.CLAUDE_CONFIG_DIR?.trim() || join(homedir(), '.claude')
-      const cwd = await mkdtemp(join(tmpdir(), 'orca-claude-permissions-'))
+      const cwd = await mkdtemp(join(tmpdir(), 'topo-claude-permissions-'))
       const events: ClaudeStructuredSessionEvent[] = []
       const adapter = realAdapter(
         providerSessionId,
@@ -460,7 +460,7 @@ describe.skipIf(!realClaudeAvailable)(suiteTitle, () => {
     async () => {
       const providerSessionId = randomUUID()
       const claudeConfigDir = process.env.CLAUDE_CONFIG_DIR?.trim() || join(homedir(), '.claude')
-      const cwd = await projectWithStartHook('orca-queued-stop-')
+      const cwd = await projectWithStartHook('topo-queued-stop-')
       const events: ClaudeStructuredSessionEvent[] = []
       const settlements: unknown[] = []
       const adapter = realAdapter(providerSessionId, claudeConfigDir, events, cwd, (settlement) =>
@@ -532,7 +532,7 @@ describe.skipIf(!realClaudeAvailable)(suiteTitle, () => {
     async () => {
       const providerSessionId = randomUUID()
       const claudeConfigDir = process.env.CLAUDE_CONFIG_DIR?.trim() || join(homedir(), '.claude')
-      const cwd = await mkdtemp(join(tmpdir(), 'orca-no-hooks-'))
+      const cwd = await mkdtemp(join(tmpdir(), 'topo-no-hooks-'))
       await mkdir(join(cwd, '.claude'), { recursive: true })
       await writeFile(
         join(cwd, '.claude', 'settings.json'),
@@ -575,7 +575,7 @@ describe.skipIf(!realClaudeAvailable)(suiteTitle, () => {
   )
 
   it('turns a real silent unauthenticated startup into sign-in guidance', async () => {
-    const claudeConfigDir = await mkdtemp(join(tmpdir(), 'orca-claude-no-auth-'))
+    const claudeConfigDir = await mkdtemp(join(tmpdir(), 'topo-claude-no-auth-'))
     const providerSessionId = randomUUID()
     const events: ClaudeStructuredSessionEvent[] = []
     const adapter = realAdapter(

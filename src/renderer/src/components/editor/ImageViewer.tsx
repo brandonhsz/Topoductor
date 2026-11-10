@@ -21,7 +21,7 @@ type ImageViewerProps = {
   content?: string
   /** SVG markup, for an SVG opened as text; wins over `content` and `src`. */
   svgSource?: string
-  /** An orca-media URL the image or PDF is read from by range; wins over `content`. */
+  /** An topo-media URL the image or PDF is read from by range; wins over `content`. */
   src?: string
   /** The file's size when `src` hides the bytes. */
   byteSize?: number

@@ -20,7 +20,7 @@ describe('LegacyRestoreRecords', () => {
   let now: number
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-legacy-restores-'))
+    dir = mkdtempSync(join(tmpdir(), 'topo-legacy-restores-'))
     path = join(dir, 'daemon-v44.legacy-restores.json')
     now = 1_000_000
   })

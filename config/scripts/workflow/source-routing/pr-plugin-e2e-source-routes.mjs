@@ -111,7 +111,7 @@ const SPECIFIC_PLUGIN_ROUTES = [
       `${STORE}panels`,
       'src\\/main\\/plugins\\/(?:panels\\/|workers\\/|plugin-(?:command-|event-delivery|agent-status-event|storage-store|secrets-store|log-buffer))',
       'src\\/shared\\/plugins\\/(?:frames\\/|workers\\/|events\\/|capabilities\\/|contributions\\/plugin-(?:command-|event-|panel-|execution-profile))',
-      'examples\\/plugins\\/(?:hello-orca|test-fixtures\\/hostile-panel)\\/'
+      'examples\\/plugins\\/(?:hello-topo|test-fixtures\\/hostile-panel)\\/'
     ].join('|'),
     'plugin-panel-navigation-observer|plugin-frame-guest'
   ),
@@ -144,14 +144,14 @@ const SPECIFIC_PLUGIN_ROUTES = [
     ].join('|'),
     'plugin-frame-guest|plugin-smoke'
   ),
-  // The component catalog: Orca draws each component, so the gallery exercises every one.
+  // The component catalog: Topo draws each component, so the gallery exercises every one.
   pluginRoute(
     'plugins.components-catalog',
     ['plugin-components-gallery'],
     [
       `${UI}declarative\\/`,
       'src\\/shared\\/plugins\\/declarative\\/plugin-declarative-(?:catalog|[a-z]+-props|prop-schemas|tree)',
-      'resources\\/plugins\\/declarative\\/orca-components',
+      'resources\\/plugins\\/declarative\\/topo-components',
       'src\\/main\\/plugins\\/panels\\/plugin-panel-image',
       'examples\\/plugins\\/components-gallery\\/'
     ].join('|'),
@@ -199,7 +199,7 @@ const SPECIFIC_PLUGIN_ROUTES = [
     ['plugin-worker-panel'],
     [
       'src\\/main\\/plugins\\/panels\\/plugin-panel-bridge',
-      'src\\/main\\/plugins\\/(?:plugin-declared-settings|workers\\/plugin-(?:worker-orca-api|host-panel-method-bindings|worker-requests))',
+      'src\\/main\\/plugins\\/(?:plugin-declared-settings|workers\\/plugin-(?:worker-topo-api|host-panel-method-bindings|worker-requests))',
       'src\\/main\\/ipc\\/plugin-(?:panel-push|settings)-ipc',
       'src\\/shared\\/plugins\\/(?:workers\\/plugin-panel-bridge-protocol|frames\\/plugin-panel-shell-facades|contributions\\/plugin-settings-)',
       'src\\/shared\\/plugins\\/declarative\\/runtime\\/declarative-(?:data-sdk|storage-sync)',
@@ -208,7 +208,7 @@ const SPECIFIC_PLUGIN_ROUTES = [
     ].join('|'),
     'plugin-frame-guest|plugin-smoke'
   ),
-  // `orca plugin open` / `shot`: renderer reveal, draw wait and main's capture of the panel rect.
+  // `topo plugin open` / `shot`: renderer reveal, draw wait and main's capture of the panel rect.
   pluginRoute(
     'plugins.view-shot',
     ['plugin-shot', 'plugin-shot-editor'],
@@ -222,7 +222,7 @@ const SPECIFIC_PLUGIN_ROUTES = [
       'src\\/renderer\\/src\\/hooks\\/(?:ipc-events\\/plugin-view-ipc-bridge|use-document-dark-theme)',
       'src\\/renderer\\/src\\/components\\/right-sidebar\\/(?:plugin-panels\\/health\\/(?:plugin-panel-draw-status|use-plugin-panel-draw-report)|right-sidebar-panel-content)'
     ].join('|'),
-    'plugin-frame-guest|plugin-smoke|compiled-orca-cli'
+    'plugin-frame-guest|plugin-smoke|compiled-topo-cli'
   ),
   // `shot --scenario`: the check child draws the tree, then the renderer replays it.
   pluginRoute(

@@ -7,9 +7,9 @@ import { rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { readRuntimeMetadata } from './runtime-metadata'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import { parsePairingCode } from '../../../../shared/remote-runtime/pairing/pairing'
 import '../../../../shared/remote-runtime/requests/remote-runtime-request-socket'
 import { subscribeRemoteRuntimeTransport } from '../../../../shared/remote-runtime/requests/remote-runtime-subscription-transport'
@@ -28,7 +28,7 @@ import {
   createEncryptedWsResponseReader
 } from './runtime-rpc-mobile-ws-test-harness'
 import { makeStore } from './runtime-rpc-worktree-store-fixtures'
-import { committingSpawn } from '../../orca-runtime-tests/bind-first-pane.test-fixture'
+import { committingSpawn } from '../../topo-runtime-tests/bind-first-pane.test-fixture'
 
 vi.mock('../../../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => {
   const listings = getWorktreeListingMocks()
@@ -66,11 +66,11 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
   return { getWorktreeListingMocks: () => (listings ??= createWorktreeListingMocks()) }
 })
 
-describe('OrcaRuntimeRpcServer', () => {
+describe('TopoRuntimeRpcServer', () => {
   it('streams laptop-created runtime terminals to a paired phone WebSocket client', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
     const writes: string[] = []
-    const runtime = new OrcaRuntimeService(makeStore() as never)
+    const runtime = new TopoRuntimeService(makeStore() as never)
     const spawn = vi.fn().mockResolvedValue({ id: 'paired-laptop-pty' })
     runtime.setPtyController({
       spawn: committingSpawn(runtime, spawn),
@@ -81,7 +81,7 @@ describe('OrcaRuntimeRpcServer', () => {
       kill: () => true,
       getForegroundProcess: async () => null
     })
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       runtime,
       userDataPath,
       enableWebSocket: true,
@@ -211,16 +211,16 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('opens a host file outside every workspace for a phone with no terminal context', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const runtime = new OrcaRuntimeService(makeStore() as never)
-    const server = new OrcaRuntimeRpcServer({
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const runtime = new TopoRuntimeService(makeStore() as never)
+    const server = new TopoRuntimeRpcServer({
       runtime,
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
     })
     // Never printed by any terminal: a chat link or typed path is enough.
-    const artifactPath = join(tmpdir(), `orca-outside-${process.pid}-${Date.now()}.md`)
+    const artifactPath = join(tmpdir(), `topo-outside-${process.pid}-${Date.now()}.md`)
     await writeFile(artifactPath, '# handoff')
 
     await server.start()
@@ -274,9 +274,9 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('keeps active runtime multiplex streams responsive while a background stream is ACK-limited over WebSocket', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
     const writes: { terminal: string; text: string }[] = []
-    const runtime = new OrcaRuntimeService(makeStore() as never)
+    const runtime = new TopoRuntimeService(makeStore() as never)
     const spawn = vi
       .fn()
       .mockResolvedValueOnce({ id: 'multiplex-background-pty' })
@@ -290,7 +290,7 @@ describe('OrcaRuntimeRpcServer', () => {
       kill: () => true,
       getForegroundProcess: async () => null
     })
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       runtime,
       userDataPath,
       enableWebSocket: true,

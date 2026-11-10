@@ -5,7 +5,7 @@ import { createManagedCommandMatcher } from '../../../agent-hooks/installation/c
 import type { HookDefinition } from '../../../agent-hooks/installation/configuration/hook-config-schema'
 import { readHooksJson } from '../../../agent-hooks/installation/configuration/hooks-json-read'
 import {
-  getOrcaManagedCodexHomePath,
+  getTopoManagedCodexHomePath,
   getSystemCodexHomePath
 } from '../../configuration/homes/codex-home-paths'
 import {
@@ -40,7 +40,7 @@ type HookTrustProvenanceFile = {
 }
 
 function getProvenancePath(runtimeHomePath: string): string {
-  return join(runtimeHomePath, '.orca-hook-trust-provenance.json')
+  return join(runtimeHomePath, '.topo-hook-trust-provenance.json')
 }
 
 /** Missing, unreadable or malformed provenance cannot establish an approval's origin. */
@@ -78,7 +78,7 @@ function readHookTrustProvenance(
   }
 }
 
-/** Preserve unreadable provenance so later snapshots cannot misclassify user approvals as Orca writes. */
+/** Preserve unreadable provenance so later snapshots cannot misclassify user approvals as Topo writes. */
 function provenanceIsUnreadable(provenancePath: string): boolean {
   try {
     readFileSync(provenancePath, 'utf-8')
@@ -88,9 +88,9 @@ function provenanceIsUnreadable(provenancePath: string): boolean {
   }
 }
 
-/** Snapshot after all trust writes to distinguish Orca changes from later user approvals. */
+/** Snapshot after all trust writes to distinguish Topo changes from later user approvals. */
 export function snapshotCodexRuntimeHookTrustProvenance(
-  runtimeHomePath: string = getOrcaManagedCodexHomePath()
+  runtimeHomePath: string = getTopoManagedCodexHomePath()
 ): void {
   if (provenanceIsUnreadable(getProvenancePath(runtimeHomePath))) {
     return
@@ -121,7 +121,7 @@ export function snapshotCodexRuntimeHookTrustProvenance(
 
 /** Promote user approvals into canonical config before the mirror replaces runtime trust. */
 export function promoteCodexRuntimeHookApprovalsToSystem(
-  runtimeHomePath: string = getOrcaManagedCodexHomePath()
+  runtimeHomePath: string = getTopoManagedCodexHomePath()
 ): void {
   try {
     promoteCodexRuntimeHookApprovalsToSystemUnsafe(runtimeHomePath)
@@ -175,7 +175,7 @@ function promoteCodexRuntimeHookApprovalsToSystemUnsafe(runtimeHomePath: string)
       previous.trustedHash === state.trustedHash &&
       (previous.enabled ?? true) === (state.enabled ?? true)
     ) {
-      // Unchanged Orca-written entries are not new user approvals.
+      // Unchanged Topo-written entries are not new user approvals.
       continue
     }
     const eventName = CODEX_EVENT_NAME_BY_LABEL[parsed.eventLabel]

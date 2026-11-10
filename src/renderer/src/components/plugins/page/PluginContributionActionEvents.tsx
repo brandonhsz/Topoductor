@@ -38,7 +38,7 @@ function eventTitle(event: PluginEventName, t: Translate = translate): string {
   }
 }
 
-/** One event subscription, in plain words; nothing to click, Orca delivers it on its own. */
+/** One event subscription, in plain words; nothing to click, Topo delivers it on its own. */
 export function PluginContributionEventRow({
   event
 }: {

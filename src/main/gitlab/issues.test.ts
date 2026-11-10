@@ -75,7 +75,10 @@ describe('gitlab issue operations', () => {
 
   // glab already-closed success exits 0; an already substring must not hide a real rejection.
   it('updateIssue reports a failed close even when its text says "already"', async () => {
-    getIssueProjectRefMock.mockResolvedValueOnce({ host: 'gitlab.com', path: 'stablyai/orca' })
+    getIssueProjectRefMock.mockResolvedValueOnce({
+      host: 'gitlab.com',
+      path: 'brandonhsz/Topoductor'
+    })
     glabExecFileAsyncMock.mockRejectedValueOnce(new Error('Issue is already closed'))
 
     await expect(updateIssue('/repo-root', 5, { state: 'closed' })).resolves.toMatchObject({

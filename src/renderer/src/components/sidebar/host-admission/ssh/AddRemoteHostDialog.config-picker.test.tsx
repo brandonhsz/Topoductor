@@ -55,7 +55,7 @@ function configHost(
     hostname: `${alias}.internal`,
     port: 22,
     username: 'deploy',
-    alreadyInOrca: false,
+    alreadyInTopo: false,
     ...overrides
   }
 }

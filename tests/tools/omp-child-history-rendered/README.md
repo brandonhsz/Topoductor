@@ -1,6 +1,6 @@
 # Child history resume proof
 
-Run `ORCA_BACKGROUND_LAUNCH=1 node tests/tools/omp-child-history-rendered/run.mjs`.
+Run `TOPO_BACKGROUND_LAUNCH=1 node tests/tools/omp-child-history-rendered/run.mjs`.
 The hidden Electron fixture renders the production virtual history list and styles with
 injected OMP, Claude and empty OMP transcripts. It opens eight generations lazily,
 resumes the deepest child into a folder target, and checks that Claude remains view-only.

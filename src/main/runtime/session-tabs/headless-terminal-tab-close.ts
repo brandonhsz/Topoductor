@@ -1,8 +1,8 @@
 import type { RuntimeHeadlessTabProperties as HeadlessTabPropertiesMethods } from './headless-tab-properties'
 import type { RuntimeHeadlessTabGroups as HeadlessTabGroupsMethods } from './headless-tab-group-moves'
 import type { RuntimeHeadlessTerminalTabTitles as PersistHeadlessTerminalTitleMethods } from './headless-terminal-tab-titles'
-import { OrcaRuntimeWithMainLayoutTabMoves } from './main-layout-session-tab-move'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TopoRuntimeWithMainLayoutTabMoves } from './main-layout-session-tab-move'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import type {
   RuntimeMobileSessionTabMove,
   RuntimeMobileSessionTabMoveResult,
@@ -18,7 +18,7 @@ import type { RuntimePtyWorktreeRecord } from '../terminal/records/runtime-termi
 import type { TerminalPaneLayoutNode } from '../../../shared/workspace-layout/terminal-tab-types'
 import type { RuntimeTerminalRename } from '../../../shared/runtime-terminal-contracts'
 
-export abstract class OrcaRuntimeWithCloseHeadlessMobileTerminalTab extends OrcaRuntimeWithMainLayoutTabMoves {
+export abstract class TopoRuntimeWithCloseHeadlessMobileTerminalTab extends TopoRuntimeWithMainLayoutTabMoves {
   protected abstract applyHeadlessTerminalPaneLayoutToSnapshot(
     ...args: Parameters<HeadlessTabPropertiesMethods['applyHeadlessTerminalPaneLayoutToSnapshot']>
   ): ReturnType<HeadlessTabPropertiesMethods['applyHeadlessTerminalPaneLayoutToSnapshot']>
@@ -215,7 +215,7 @@ export abstract class OrcaRuntimeWithCloseHeadlessMobileTerminalTab extends Orca
       ? (this.resolveMobileSessionHostTabId(snapshot, args.tabId) ?? args.tabId)
       : args.tabId
     // Main owns pane renames; pass only geometry onward.
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       args = await this.nameMainPanes(worktreeId, hostTabId, args)
     }
     // Attached renderers own geometry; forward only explicitly renamed panes so stale resent maps cannot overwrite host names.

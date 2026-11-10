@@ -117,7 +117,7 @@ export function observeClaudeSessionExit(
   }
 }
 
-/** Exited before the host-awaited open returned and before any turn; turns can settle without an Orca dispatch. */
+/** Exited before the host-awaited open returned and before any turn; turns can settle without a Topo dispatch. */
 function claudeStartDied(session: ClaudeSession): boolean {
   // Initialize can answer while a resume open still waits on transcript catch-up.
   return !session.initialization.startup.opened() && !claudeSessionHasTurnWork(session)

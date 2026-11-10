@@ -1,9 +1,9 @@
 import { expect, it } from 'vitest'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
-import { createStaleTabCloseHarness } from '../../__fixtures__/orca-runtime-terminal-close-continuity-fixtures'
-import { WORKTREE_ID } from '../../__fixtures__/orca-runtime-terminal-close-continuity-state-fixture'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { createStaleTabCloseHarness } from '../../__fixtures__/topo-runtime-terminal-close-continuity-fixtures'
+import { WORKTREE_ID } from '../../__fixtures__/topo-runtime-terminal-close-continuity-state-fixture'
 
-;(ORCA_LAYOUT_OWNER_IS_MAIN ? it.fails : it)(
+;(TOPO_LAYOUT_OWNER_IS_MAIN ? it.fails : it)(
   'keeps host retirement proof across a later renderer publication',
   async () => {
     const harness = await createStaleTabCloseHarness({ headless: true })

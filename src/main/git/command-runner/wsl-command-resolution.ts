@@ -1,4 +1,4 @@
-import { assertWslDistroAllowed } from '@orca/process-host/wsl-distro-allowlist'
+import { assertWslDistroAllowed } from '@topo/process-host/wsl-distro-allowlist'
 import { getDefaultWslDistro } from '../../wsl/discovery/distro-catalog'
 import { parseWslPath } from '../../wsl/filesystem/unc-path-access'
 import type { WslUncPathInfo as WslPathInfo } from '../../../shared/wsl-paths'
@@ -192,7 +192,7 @@ export function resolveCommand(
     {
       binary: 'wsl.exe',
       args: buildWslExecArgs(wsl.distro, ['bash', '-c', shellCmd]),
-      // Use a stable Win32 spawn cwd; inheriting Orca's deletable UNC cwd can break CreateProcessW.
+      // Use a stable Win32 spawn cwd; inheriting Topo's deletable UNC cwd can break CreateProcessW.
       cwd: resolveWslInteropSpawnCwd(),
       wsl,
       wslMode: 'non-login-shell'
@@ -236,7 +236,7 @@ export function withWslPreparation(
       '/bin/sh',
       '-c',
       preparation.script,
-      'orca-generation',
+      'topo-generation',
       ...preparation.args,
       ...command.args.slice(execIndex + 1)
     ]

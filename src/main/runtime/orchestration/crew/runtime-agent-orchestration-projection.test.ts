@@ -5,18 +5,18 @@ import '../../agent-session/records/agent-session-record-store-test-harness'
 import '../../../native-chat/agent-session-journal/store-lifecycle/journal-host-database-test-support'
 import '../../agent-session/records/agent-session-record-store-slot'
 import '../../../native-chat/agent-session-wire/host/testing/structured-agent-session-logger-test-support'
-import '../../orca-runtime'
+import '../../topo-runtime'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import '../../../../shared/agent-session/lifecycle/agent-session-conversation-view'
 import '../../rpc/orchestration-session-caller-test-fixture'
-import '../../../../shared/orca-session-address'
+import '../../../../shared/topo-session-address'
 
 const hostRef = vi.hoisted((): { current: unknown } => ({ current: null }))
 vi.mock('../../../native-chat/agent-session-wire/host/structured-agent-session-registry', () => ({
   getStructuredAgentSessionHost: () => hostRef.current
 }))
-import { testOrcaSessionId } from '../../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../../shared/topo-session-address-test-fixture'
 import {
   structuredAgentSessionPaneKey,
   structuredAgentSessionTabId
@@ -37,8 +37,8 @@ import {
   structuredWorkerProcessIncarnation
 } from '../terminal-authority/structured-sessions/structured-worker-identity'
 
-const COORDINATOR_CHAT = testOrcaSessionId('1b6f0c3a-7d2e-4a91-8c55-2e9d4b7a0f13')
-const WORKER_CHAT = testOrcaSessionId('9c3e5a17-4b2d-4f60-8e91-0d7a6c2b5e48')
+const COORDINATOR_CHAT = testTopoSessionId('1b6f0c3a-7d2e-4a91-8c55-2e9d4b7a0f13')
+const WORKER_CHAT = testTopoSessionId('9c3e5a17-4b2d-4f60-8e91-0d7a6c2b5e48')
 const TERMINAL_WORKER_HANDLE = 'term_worker'
 const TERMINAL_WORKER_PANE = 'tab_w:11111111-1111-4111-8111-111111111111'
 
@@ -63,14 +63,14 @@ describe('RuntimeAgentOrchestrationProjection chat lineage', () => {
       objective: 'chat run',
       coordinatorHandle: null,
       coordinatorPaneKey: null,
-      coordinatorOrcaSessionId: COORDINATOR_CHAT
+      coordinatorTopoSessionId: COORDINATOR_CHAT
     })
     const chatWorker = {
       handle: mintStructuredWorkerHandle(),
       sessionId: WORKER_CHAT,
       paneKey: mintStructuredWorkerPaneKey(WORKER_CHAT)
     }
-    const creator = { kind: 'session', orcaSessionId: COORDINATOR_CHAT } as const
+    const creator = { kind: 'session', topoSessionId: COORDINATOR_CHAT } as const
     db.createDispatchContext({
       taskId: db.createTask({ runId: run.id, spec: 'chat worker' }).id,
       assigneeHandle: chatWorker.handle,

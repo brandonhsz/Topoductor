@@ -22,7 +22,7 @@ function location(directory = stateDirectory) {
 }
 
 beforeEach(async () => {
-  stateDirectory = await mkdtemp(join(tmpdir(), 'orca-record-store-slot-'))
+  stateDirectory = await mkdtemp(join(tmpdir(), 'topo-record-store-slot-'))
 })
 
 afterEach(async () => {

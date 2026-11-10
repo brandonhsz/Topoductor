@@ -3,7 +3,7 @@ import {
   commandLineLength,
   MAX_COMMAND_LINE_CHARS
 } from '../../../shared/windows-command-line-budget'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { resolveWslInteropSpawnCwd } from './wsl-interop-spawn-directory'
 import { buildWslExecArgs } from '../../../shared/wsl-login-shell-command'
 import { getWslGuestEnvironment, type WslGuestEnvironment } from './wsl-guest-environment'
@@ -107,7 +107,7 @@ function withGuestCwd(cwd: string | undefined, argv: readonly string[]): string[
   if (argv.length === 0) {
     throw new Error('WSL invocation has no command to run')
   }
-  return ['sh', '-c', 'cd "$1" || exit 1; shift; exec "$@"', 'orca-wsl', cwd, ...argv]
+  return ['sh', '-c', 'cd "$1" || exit 1; shift; exec "$@"', 'topo-wsl', cwd, ...argv]
 }
 
 /** `<shell> -c`/`-s` for a script, otherwise the program itself. */

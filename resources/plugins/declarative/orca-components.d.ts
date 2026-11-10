@@ -1,4 +1,4 @@
-// Orca components panel catalog: the components `orca` exports and their props. Part of the `orca`
+// Topo components panel catalog: the components `orca` exports and their props. Part of the `orca`
 // module with orca.d.ts, orca-components-layout.d.ts and orca-components-data.d.ts; checked by
 // plugin-declarative-typings.test.ts.
 
@@ -127,7 +127,7 @@ declare module 'orca' {
     onPress?: Press
   }
   /**
-   * Orca keeps the text as the person types. `defaultValue` seeds it; a changed `value` replaces
+   * Topo keeps the text as the person types. `defaultValue` seeds it; a changed `value` replaces
    * it (an echo of what was typed does not). `value` without `onChange` is read-only.
    */
   export type InputProps = Leaf & {
@@ -171,7 +171,7 @@ declare module 'orca' {
   export type LinkProps = WithChildren & { href?: string; onPress?: Press }
   export type CodeProps = WithChildren & { block?: boolean }
 
-  // Catalog 2, since Orca 1.4.247: check `ui.has()` when your minimum Orca is older.
+  // Catalog 2, since Topo 1.4.247: check `ui.has()` when your minimum Topo is older.
   export type TextareaProps = Leaf & {
     label: string
     labelHidden?: boolean

@@ -46,7 +46,7 @@ export async function launchAgentWithPrompt(args: {
       kind: 'not-started',
       message: translate(
         'session.prAiTriageLaunch.updateRequired',
-        'Update Orca on your computer to start an agent from your phone.'
+        'Update Topo on your computer to start an agent from your phone.'
       )
     }
   }
@@ -110,7 +110,7 @@ export async function launchAgentWithPrompt(args: {
         kind: 'not-started',
         message: translate(
           'session.prAiTriageLaunch.updateRequired',
-          'Update Orca on your computer to start an agent from your phone.'
+          'Update Topo on your computer to start an agent from your phone.'
         )
       }
     case 'failed':

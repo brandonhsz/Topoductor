@@ -76,7 +76,7 @@ const peerConnectionScript = (
   "pc.createDataChannel('d'); pc.createOffer().then(function (o) { return pc.setLocalDescription(o) }) " +
   `} catch (error) { top.__probe.${tag} = 'threw:' + error }`
 
-// Loads the guest the way Orca does: the real session setup, protocol and per-guest policies.
+// Loads the guest the way Topo does: the real session setup, protocol and per-guest policies.
 const PROBE_MAIN = String.raw`
 const { app, BrowserWindow, protocol } = require('electron')
 const { readFileSync, writeFileSync } = require('node:fs')
@@ -168,7 +168,7 @@ function hostResolverEvents(netLogText: string, host: string): string[] {
 describe('plugin frame guest egress under Electron', () => {
   // Why 60s: a real Electron guest negotiates WebRTC against local relays and waits out prefetch.
   it('keeps WebRTC, DNS prefetch, preconnect and fetch off the network', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-frame-egress-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-frame-egress-'))
     roots.push(root)
     const pluginRoot = join(root, 'plugin')
     mkdirSync(pluginRoot)

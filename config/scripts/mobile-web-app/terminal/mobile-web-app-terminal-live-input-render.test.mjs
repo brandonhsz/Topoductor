@@ -51,7 +51,7 @@ beforeAll(async () => {
   const cspHeader = await readShellCsp()
   bridgeVersion = await readBridgeProtocolVersion()
   faultGrant = await readBridgeFaultGrant()
-  scratch = await mkdtemp(join(tmpdir(), 'orca-mobile-web-live-input-'))
+  scratch = await mkdtemp(join(tmpdir(), 'topo-mobile-web-live-input-'))
   const appDir = join(scratch, 'app')
   const routeDir = join(appDir, MOBILE_WEB_APP_ROUTE_ROOT)
   await mkdir(routeDir, { recursive: true })
@@ -72,7 +72,7 @@ beforeAll(async () => {
   const served = await createBundleServer({ outDir: built.outDir, cspHeader })
   server = served.server
   origin = served.origin
-  const executablePath = process.env.ORCA_MOBILE_WEB_RENDER_BROWSER
+  const executablePath = process.env.TOPO_MOBILE_WEB_RENDER_BROWSER
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) })
 }, 600_000)
 
@@ -110,17 +110,17 @@ async function openProbe({ userAgent } = {}) {
     }
   })
   await page.goto(`${origin}/`, { waitUntil: 'load' })
-  await page.waitForFunction(() => document.documentElement.dataset.orcaWebEntry === 'mounted', {
+  await page.waitForFunction(() => document.documentElement.dataset.topoWebEntry === 'mounted', {
     timeout: 60_000,
     polling: 250
   })
   await page.waitForFunction(
     () =>
-      globalThis.__orcaLiveInputProbe !== undefined ||
-      (globalThis.__orcaRenderCheckFaults ?? []).length > 0,
+      globalThis.__topoLiveInputProbe !== undefined ||
+      (globalThis.__topoRenderCheckFaults ?? []).length > 0,
     { timeout: 60_000, polling: 100 }
   )
-  const faults = await page.evaluate(() => globalThis.__orcaRenderCheckFaults ?? [])
+  const faults = await page.evaluate(() => globalThis.__topoRenderCheckFaults ?? [])
   return { errors, faults, page }
 }
 
@@ -144,12 +144,12 @@ describeRender(
       await page.keyboard.press('Enter')
 
       await page.waitForFunction(
-        () => (globalThis.__orcaLiveInputProbe.sent() ?? []).includes('\r'),
+        () => (globalThis.__topoLiveInputProbe.sent() ?? []).includes('\r'),
         undefined,
         { timeout: 30_000, polling: 100 }
       )
       // Require exact output once: RN-Web cancels submitted keydown, so page line-break binding must not send second CR.
-      expect(await page.evaluate(() => globalThis.__orcaLiveInputProbe.sent())).toEqual([
+      expect(await page.evaluate(() => globalThis.__topoLiveInputProbe.sent())).toEqual([
         'l',
         's',
         '\r'
@@ -179,11 +179,11 @@ describeRender(
 
       // Commit held composition before CR, matching native keystroke order.
       await page.waitForFunction(
-        () => globalThis.__orcaLiveInputProbe.sent().includes('\r'),
+        () => globalThis.__topoLiveInputProbe.sent().includes('\r'),
         undefined,
         { timeout: 30_000, polling: 100 }
       )
-      expect(await page.evaluate(() => globalThis.__orcaLiveInputProbe.sent())).toEqual([
+      expect(await page.evaluate(() => globalThis.__topoLiveInputProbe.sent())).toEqual([
         'ls',
         '\r'
       ])
@@ -207,16 +207,16 @@ describeRender(
         LIVE_INPUT_FIELD_ID,
         { timeout: 30_000, polling: 50 }
       )
-      expect(await page.evaluate(() => globalThis.__orcaLiveInputProbe.sent())).toEqual([])
+      expect(await page.evaluate(() => globalThis.__topoLiveInputProbe.sent())).toEqual([])
 
       await input.send('Input.insertText', { text: '日本語' })
 
       await page.waitForFunction(
-        () => globalThis.__orcaLiveInputProbe.sent().length > 0,
+        () => globalThis.__topoLiveInputProbe.sent().length > 0,
         undefined,
         { timeout: 30_000, polling: 50 }
       )
-      expect(await page.evaluate(() => globalThis.__orcaLiveInputProbe.sent())).toEqual(['日本語'])
+      expect(await page.evaluate(() => globalThis.__topoLiveInputProbe.sent())).toEqual(['日本語'])
       expect(await fieldValue(page)).toBe('日本語')
       expect(errors).toEqual([])
       await page.close()
@@ -226,7 +226,7 @@ describeRender(
       // Android WebView Latin keyboard keeps composing region mid-word; native Android reports no range and forwards ASCII immediately.
       const ANDROID_WEBVIEW_USER_AGENT =
         'Mozilla/5.0 (Linux; Android 16; Pixel 9 Pro Build/BP2A; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/140.0.0.0 Mobile Safari/537.36'
-      const sent = (page) => page.evaluate(() => globalThis.__orcaLiveInputProbe.sent())
+      const sent = (page) => page.evaluate(() => globalThis.__topoLiveInputProbe.sent())
 
       async function compose(input, text) {
         await input.send('Input.imeSetComposition', {
@@ -284,7 +284,7 @@ describeRender(
         await waitForField(page, 'the')
 
         await page.waitForFunction(
-          () => globalThis.__orcaLiveInputProbe.sent().length === 4,
+          () => globalThis.__topoLiveInputProbe.sent().length === 4,
           undefined,
           {
             timeout: 30_000,

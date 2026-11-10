@@ -50,8 +50,8 @@ type WslCliRegistrationReconciliationOptions = {
   createInstaller?: (distro: string) => ManagedWslCliInstaller
   getHostLauncherTarget?: () => Promise<string | null>
   registry?: WslCliRegistrationRegistry
-  /** Distros Orca deployed a WSL host into; only those may be inspected for an unrecorded registration. */
-  listOrcaHostDistros?: () => string[]
+  /** Distros Topo deployed a WSL host into; only those may be inspected for an unrecorded registration. */
+  listTopoHostDistros?: () => string[]
   listRunningDistros?: () => Promise<string[]>
   /** Settled read taken right before each repair spawns. */
   isDistroRunning?: (distro: string) => Promise<boolean>
@@ -117,7 +117,7 @@ export async function reconcileManagedWslCliRegistrations(
     : null
   const appVersion = options.appVersion ?? ''
   const inspectableDistros = (
-    options.listOrcaHostDistros ?? (() => orcaHostDistros(options.userDataPath))
+    options.listTopoHostDistros ?? (() => topoHostDistros(options.userDataPath))
   )()
   const candidates = await registry.getCandidates(availableDistros, {
     currentTarget,
@@ -217,7 +217,7 @@ export async function reconcileManagedWslCliRegistrations(
   return [...results, ...deferred]
 }
 
-function orcaHostDistros(userDataPath: string): string[] {
+function topoHostDistros(userDataPath: string): string[] {
   try {
     return readWslHostDeployments(userDataPath).deployments.map((record) => record.distro)
   } catch {

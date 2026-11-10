@@ -5,21 +5,21 @@ import { nativeChatShellEnvironmentPolicy } from '../../../../shared/native-chat
 import { claudeStructuredAuthPolicyForSettings } from '../../../claude-accounts/claude-structured-auth-policy'
 import { resolveStructuredAgentCommand } from '../../../native-chat/structured-agent-command-resolution'
 import { structuredAgentConfiguredArgs } from '../../../native-chat/structured-agent-configured-args'
-import { getProfileUserDataPath } from '../../../orca-profiles/profile-storage-paths'
+import { getProfileUserDataPath } from '../../../topo-profiles/profile-storage-paths'
 import { isTuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent-config'
 import { resolveTuiAgentLaunchEnv } from '../../../../shared/agent-launch/choices/tui-agent-launch-defaults'
 import type { GlobalSettings } from '../../../../shared/global-settings-types'
 import type { StructuredAgentId } from '../../../../shared/agent-session/lifecycle/agent-session-provider-handle'
 import type { RuntimeWorkspaceCatalog } from '../../workspaces/catalog/workspace-catalog'
-import type { OrcaRuntimeWithRefreshPtyWorktreeRecordsFromController } from '../../terminal/lifecycle/pty-worktree-refresh'
+import type { TopoRuntimeWithRefreshPtyWorktreeRecordsFromController } from '../../terminal/lifecycle/pty-worktree-refresh'
 import type { RuntimeAccountController } from '../environment/runtime-account-controller'
-import type { OrcaRuntimeWithPruneMobileSessionTabGroupLayout } from '../../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
-import type { OrcaRuntimeWithGetStructuredAgentSessionCreateSupport } from '../../session-tabs/structured-session-create-support'
+import type { TopoRuntimeWithPruneMobileSessionTabGroupLayout } from '../../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
+import type { TopoRuntimeWithGetStructuredAgentSessionCreateSupport } from '../../session-tabs/structured-session-create-support'
 import type { AgentSessionRecord } from '../../../../shared/agent-session/lifecycle/agent-session-record'
 import type { StructuredAgentSessionHostDeps } from '../../../native-chat/agent-session-wire/host/structured-agent-session-host-types'
-import { OrcaRuntimeWithStartTuiIdleVisibleReadProbe } from '../../terminal/wait/terminal-wait-visible-probe'
+import { TopoRuntimeWithStartTuiIdleVisibleReadProbe } from '../../terminal/wait/terminal-wait-visible-probe'
 
-export abstract class RuntimeStructuredAgentHost extends OrcaRuntimeWithStartTuiIdleVisibleReadProbe {
+export abstract class RuntimeStructuredAgentHost extends TopoRuntimeWithStartTuiIdleVisibleReadProbe {
   /** Apply the host-owning desktop's account overlay to configured agent environment. */
   protected structuredAgentLaunchEnv(
     agent: StructuredAgentId,
@@ -82,10 +82,10 @@ export abstract class RuntimeStructuredAgentHost extends OrcaRuntimeWithStartTui
 
   protected abstract refreshPtyWorktreeRecordsFromController(
     ...args: Parameters<
-      OrcaRuntimeWithRefreshPtyWorktreeRecordsFromController['refreshPtyWorktreeRecordsFromController']
+      TopoRuntimeWithRefreshPtyWorktreeRecordsFromController['refreshPtyWorktreeRecordsFromController']
     >
   ): ReturnType<
-    OrcaRuntimeWithRefreshPtyWorktreeRecordsFromController['refreshPtyWorktreeRecordsFromController']
+    TopoRuntimeWithRefreshPtyWorktreeRecordsFromController['refreshPtyWorktreeRecordsFromController']
   >
 
   protected abstract isWorktreeTerminalSleepHeld(workspaceId: string): boolean
@@ -104,34 +104,34 @@ export abstract class RuntimeStructuredAgentHost extends OrcaRuntimeWithStartTui
 
   abstract refreshStructuredConversationTabTitle(
     ...args: Parameters<
-      OrcaRuntimeWithPruneMobileSessionTabGroupLayout['refreshStructuredConversationTabTitle']
+      TopoRuntimeWithPruneMobileSessionTabGroupLayout['refreshStructuredConversationTabTitle']
     >
   ): ReturnType<
-    OrcaRuntimeWithPruneMobileSessionTabGroupLayout['refreshStructuredConversationTabTitle']
+    TopoRuntimeWithPruneMobileSessionTabGroupLayout['refreshStructuredConversationTabTitle']
   >
 
   abstract resolveStructuredAgentAccountHome(
     ...args: Parameters<
-      OrcaRuntimeWithGetStructuredAgentSessionCreateSupport['resolveStructuredAgentAccountHome']
+      TopoRuntimeWithGetStructuredAgentSessionCreateSupport['resolveStructuredAgentAccountHome']
     >
   ): ReturnType<
-    OrcaRuntimeWithGetStructuredAgentSessionCreateSupport['resolveStructuredAgentAccountHome']
+    TopoRuntimeWithGetStructuredAgentSessionCreateSupport['resolveStructuredAgentAccountHome']
   >
 
   abstract resolveStructuredAgentLaunchAccountHome(
     ...args: Parameters<
-      OrcaRuntimeWithGetStructuredAgentSessionCreateSupport['resolveStructuredAgentLaunchAccountHome']
+      TopoRuntimeWithGetStructuredAgentSessionCreateSupport['resolveStructuredAgentLaunchAccountHome']
     >
   ): ReturnType<
-    OrcaRuntimeWithGetStructuredAgentSessionCreateSupport['resolveStructuredAgentLaunchAccountHome']
+    TopoRuntimeWithGetStructuredAgentSessionCreateSupport['resolveStructuredAgentLaunchAccountHome']
   >
 
   abstract prepareStructuredAgentLaunchAccountHome(
     ...args: Parameters<
-      OrcaRuntimeWithGetStructuredAgentSessionCreateSupport['prepareStructuredAgentLaunchAccountHome']
+      TopoRuntimeWithGetStructuredAgentSessionCreateSupport['prepareStructuredAgentLaunchAccountHome']
     >
   ): ReturnType<
-    OrcaRuntimeWithGetStructuredAgentSessionCreateSupport['prepareStructuredAgentLaunchAccountHome']
+    TopoRuntimeWithGetStructuredAgentSessionCreateSupport['prepareStructuredAgentLaunchAccountHome']
   >
 
   protected abstract assertStructuredChatAcquireAdmissible(

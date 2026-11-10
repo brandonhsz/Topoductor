@@ -82,7 +82,7 @@ describe('recordProcessGoneCrash', () => {
     ] as const) {
       recordProcessGoneCrash(
         { record, attachDetails } as never,
-        utility('Orca Speech', reason, exitCode),
+        utility('Topo Speech', reason, exitCode),
         new ProcessGoneDedupe(),
         noMinidump
       )
@@ -134,7 +134,7 @@ describe('recordProcessGoneCrash', () => {
 
   it('durably records a sanitized crash-report persistence failure', async () => {
     const persistError = Object.assign(
-      new Error('EPERM at C:\\Users\\alice\\AppData\\Roaming\\Orca\\crash-reports.json'),
+      new Error('EPERM at C:\\Users\\alice\\AppData\\Roaming\\Topo\\crash-reports.json'),
       { code: 'EPERM' }
     )
     const record = vi.fn().mockRejectedValue(persistError)

@@ -140,7 +140,7 @@ describe('CodexRuntimeHomeService', () => {
         ...(await importOriginal<typeof WslCodexSessionBridge>()),
         startWslCodexSessionBridgeInBackground: vi.fn(() => Promise.resolve())
       }))
-      const retiredHome = join(guestHome, '.local', 'share', 'orca', 'codex-runtime-home', 'home')
+      const retiredHome = join(guestHome, '.local', 'share', 'topo', 'codex-runtime-home', 'home')
       const relativeSessionPath = join('sessions', '2026', '08', '26', 'retired.jsonl')
       const retiredSessionPath = join(retiredHome, relativeSessionPath)
       mkdirSync(join(retiredSessionPath, '..'), { recursive: true })

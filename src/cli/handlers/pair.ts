@@ -17,10 +17,10 @@ export function formatPairingOffer(offer: PairingCreateOfferResult): string {
     if (offer.qr) {
       lines.push(offer.qr.trimEnd(), '')
     }
-    lines.push('Scan with Orca Mobile (Pair), or paste this link:', offer.pairingUrl)
+    lines.push('Scan with Topo Mobile (Pair), or paste this link:', offer.pairingUrl)
   } else {
     lines.push(
-      'Paste this link in Orca: Settings → Remote Orca Servers → Add Server.',
+      'Paste this link in Topo: Settings → Remote Topo Servers → Add Server.',
       offer.pairingUrl
     )
     if (offer.webClientUrl) {
@@ -30,7 +30,7 @@ export function formatPairingOffer(offer: PairingCreateOfferResult): string {
   if (offer.endpoint) {
     lines.push('', `The client will connect to ${offer.endpoint}.`)
   }
-  lines.push('Treat the link like a password: it grants access to this Orca.')
+  lines.push('Treat the link like a password: it grants access to this Topo.')
   return lines.join('\n')
 }
 

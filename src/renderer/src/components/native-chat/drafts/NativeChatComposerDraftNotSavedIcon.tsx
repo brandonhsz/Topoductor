@@ -13,7 +13,7 @@ export function NativeChatComposerDraftNotSavedIcon({
   }
   const explanation = t(
     'components.native-chat.composer.draftNotSaved',
-    "This draft couldn't be saved yet. Orca keeps trying."
+    "This draft couldn't be saved yet. Topo keeps trying."
   )
   return (
     <Tooltip>

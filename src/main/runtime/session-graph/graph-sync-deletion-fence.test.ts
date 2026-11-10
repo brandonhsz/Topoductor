@@ -4,7 +4,7 @@ import type {
   RuntimeMobileSessionTabsResult,
   RuntimeMobileSessionTabsSnapshot
 } from '../../../shared/runtime-session-contracts'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 
 const WT = 'repo-1::/tmp/worktree-a'
 
@@ -86,7 +86,7 @@ describe('graph-sync deletion fence', () => {
         meta = undefined
       }
     }
-    const runtime = new OrcaRuntimeService(store as never)
+    const runtime = new TopoRuntimeService(store as never)
     const internals = runtime as unknown as FenceInternals
     const events: RuntimeMobileSessionTabsResult[] = []
     runtime.onMobileSessionTabsChanged((snapshot) => events.push(snapshot))

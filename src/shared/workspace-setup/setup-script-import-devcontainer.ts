@@ -26,8 +26,8 @@ const UNSUPPORTED_FIELDS = [
 const SHELL_SAFE_ARG = /^[A-Za-z0-9_@%+=:,./-]+$/
 
 const VARIABLE_REWRITES: [RegExp, string][] = [
-  [/\$\{(?:container|local)WorkspaceFolderBasename\}/g, '${ORCA_WORKSPACE_NAME}'],
-  [/\$\{(?:container|local)WorkspaceFolder\}/g, '${ORCA_WORKTREE_PATH}'],
+  [/\$\{(?:container|local)WorkspaceFolderBasename\}/g, '${TOPO_WORKSPACE_NAME}'],
+  [/\$\{(?:container|local)WorkspaceFolder\}/g, '${TOPO_WORKTREE_PATH}'],
   [/\$\{(?:local|container)Env:([A-Za-z_][A-Za-z0-9_]*)\}/g, '${$1}']
 ]
 

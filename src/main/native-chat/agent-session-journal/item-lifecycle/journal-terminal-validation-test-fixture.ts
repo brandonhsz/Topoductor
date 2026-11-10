@@ -22,7 +22,7 @@ export function createFixture() {
 
   let journal: AgentSessionJournal
 
-  const identity = { provider: 'orca' as const, clientMessageId: 'old-turn' }
+  const identity = { provider: 'topo' as const, clientMessageId: 'old-turn' }
 
   async function open() {
     return journals.open({
@@ -39,7 +39,7 @@ export function createFixture() {
   }
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-settlement-validation-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-settlement-validation-'))
     journal = await open()
   })
 
@@ -105,8 +105,8 @@ export function createFixture() {
   }) {
     await saveOldItems([
       saved,
-      { itemId: 'orca:advanceable', body: { kind: 'turn', turnId: 'other', state: 'running' } },
-      { itemId: 'orca:approval', body: pendingApproval() }
+      { itemId: 'topo:advanceable', body: { kind: 'turn', turnId: 'other', state: 'running' } },
+      { itemId: 'topo:approval', body: pendingApproval() }
     ])
     const before = journal.snapshot().items.find((item) => item.itemId === saved.itemId)
     const { db } = openTestJournalHostDatabase(root)
@@ -116,8 +116,8 @@ export function createFixture() {
     await expect(settle()).resolves.toBeGreaterThan(0)
     expect(commits).toHaveBeenCalledTimes(1)
     expect(journal.snapshot().items.find((item) => item.itemId === saved.itemId)).toEqual(before)
-    expect(journal.itemBody('orca:advanceable')).toMatchObject({ state: 'interrupted' })
-    expect(journal.itemBody('orca:approval')).toMatchObject({ resolution: { state: 'cancelled' } })
+    expect(journal.itemBody('topo:advanceable')).toMatchObject({ state: 'interrupted' })
+    expect(journal.itemBody('topo:approval')).toMatchObject({ resolution: { state: 'cancelled' } })
     expect(liveTestJournalRows(db, 'validation').slice(0, history.length)).toEqual(history)
     const settled = journal.snapshot()
     await settle()

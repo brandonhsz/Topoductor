@@ -53,7 +53,7 @@ const PLUGIN_MARKDOWN: CommentMarkdownExtension = {
   components
 }
 
-/** GitHub-flavoured Markdown through Orca's sanitized renderer, with plugin-safe links and images. */
+/** GitHub-flavoured Markdown through Topo's sanitized renderer, with plugin-safe links and images. */
 export function PluginDeclarativeMarkdown({ content }: { content: string }): React.JSX.Element {
   const gestureId = pluginDeclarativeGestureId.markdown(content)
   const trackRef = useGestureTrackRef(gestureId)

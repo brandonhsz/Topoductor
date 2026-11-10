@@ -42,8 +42,8 @@ export function getDirectWorkspaceSetupLabels(t: Translate = translate): Workspa
       }
     },
     sources: {
-      yaml: t('components.newWorkspace.directSetup.yamlSource', 'orca.yaml'),
-      both: t('components.newWorkspace.directSetup.bothSources', 'orca.yaml + local'),
+      yaml: t('components.newWorkspace.directSetup.yamlSource', 'topo.yaml'),
+      both: t('components.newWorkspace.directSetup.bothSources', 'topo.yaml + local'),
       local: t('components.newWorkspace.directSetup.localSource', 'local settings')
     },
     help: t(

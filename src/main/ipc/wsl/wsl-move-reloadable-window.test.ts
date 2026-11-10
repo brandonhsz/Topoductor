@@ -24,12 +24,12 @@ vi.mock('../../ssh/config/ssh-config-parser', () => ({
 
 async function openStore() {
   const { Store } = await import('../../persistence/loading-store/store')
-  return createSqliteTestStore(Store, { dataFile: join(testState.dir, 'orca-data.json') })
+  return createSqliteTestStore(Store, { dataFile: join(testState.dir, 'topo-data.json') })
 }
 
 describe('WSL move window reload landing', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-wsl-move-reload-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-wsl-move-reload-'))
   })
 
   afterEach(async () => {

@@ -16,7 +16,7 @@ import {
 import { bindPtyConnectionTestMocks } from '../test-fixtures/pty-connection-mocks.spec'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makePaneKey } from '../../../../../../shared/workspace-layout/stable-pane-id'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 
 import { flushAsyncTicks } from '../test-fixtures/pty-connection-test-async'
 import { UUID_RE } from '../test-fixtures/pty-connection-test-constants'
@@ -89,10 +89,10 @@ export function registerPtyConnectionSleepingRecordResumeTests(): void {
         agentArgs: '--model gpt-5 --reasoning-effort high',
         agentEnv: {
           CODEX_PROFILE: 'captured',
-          ORCA_PANE_KEY: 'wrong-pane',
-          ORCA_TAB_ID: 'wrong-tab',
-          ORCA_WORKTREE_ID: 'wrong-worktree',
-          ORCA_WORKSPACE_ID: 'wrong-workspace'
+          TOPO_PANE_KEY: 'wrong-pane',
+          TOPO_TAB_ID: 'wrong-tab',
+          TOPO_WORKTREE_ID: 'wrong-worktree',
+          TOPO_WORKSPACE_ID: 'wrong-workspace'
         }
       }
       mockStoreState = {
@@ -138,7 +138,7 @@ export function registerPtyConnectionSleepingRecordResumeTests(): void {
       await flushAsyncTicks(20)
       await vi.advanceTimersByTimeAsync(70)
 
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         // Main resumes the agent; the window only attaches to the cold-restored terminal and paints it.
         expect(transport.connect).toHaveBeenCalledWith(
           expect.objectContaining({ sessionId: 'lost-pty', attachOnlyView: true })
@@ -151,7 +151,7 @@ export function registerPtyConnectionSleepingRecordResumeTests(): void {
         ([args]) => args.sessionId === 'lost-pty'
       )?.[0]
       const launchToken = (reattachArgs?.env as Record<string, string> | undefined)
-        ?.ORCA_AGENT_LAUNCH_TOKEN
+        ?.TOPO_AGENT_LAUNCH_TOKEN
 
       expect(transport.sendInput).not.toHaveBeenCalled()
       expect(launchToken).toMatch(new RegExp(`^${UUID_RE}$`))
@@ -162,11 +162,11 @@ export function registerPtyConnectionSleepingRecordResumeTests(): void {
             "codex '--model' 'gpt-5' '--reasoning-effort' 'high' '-c' 'disable_paste_burst=true' 'resume' 'codex-session-1'",
           env: expect.objectContaining({
             CODEX_PROFILE: 'captured',
-            ORCA_PANE_KEY: paneKey,
-            ORCA_TAB_ID: 'tab-1',
-            ORCA_WORKTREE_ID: 'wt-1',
-            ORCA_WORKSPACE_ID: 'wt-1',
-            ORCA_AGENT_LAUNCH_TOKEN: launchToken
+            TOPO_PANE_KEY: paneKey,
+            TOPO_TAB_ID: 'tab-1',
+            TOPO_WORKTREE_ID: 'wt-1',
+            TOPO_WORKSPACE_ID: 'wt-1',
+            TOPO_AGENT_LAUNCH_TOKEN: launchToken
           })
         })
       )
@@ -279,7 +279,7 @@ export function registerPtyConnectionLiveResumeIdentityTests(): void {
       await flushAsyncTicks(20)
       await vi.advanceTimersByTimeAsync(70)
 
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         // Main resumes from the live entry; the window only attaches and paints.
         expect(transport.connect).toHaveBeenCalledWith(
           expect.objectContaining({ sessionId: 'lost-pty', attachOnlyView: true })
@@ -295,7 +295,7 @@ export function registerPtyConnectionLiveResumeIdentityTests(): void {
           command:
             "codex '--model' 'gpt-5-mini' '-c' 'disable_paste_burst=true' 'resume' 'codex-session-1'",
           env: expect.objectContaining({
-            ORCA_AGENT_LAUNCH_TOKEN: expect.stringMatching(new RegExp(`^${UUID_RE}$`))
+            TOPO_AGENT_LAUNCH_TOKEN: expect.stringMatching(new RegExp(`^${UUID_RE}$`))
           })
         })
       )
@@ -378,7 +378,7 @@ export function registerPtyConnectionLiveResumeIdentityTests(): void {
         await flushAsyncTicks(20)
         await vi.advanceTimersByTimeAsync(70)
 
-        if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+        if (TOPO_LAYOUT_OWNER_IS_MAIN) {
           // Main's start carries the one resume; the window's one connect is an attach.
           expect(transport.connect).toHaveBeenCalledTimes(1)
           expect(transport.connect).toHaveBeenCalledWith(
@@ -483,7 +483,7 @@ export function registerPtyConnectionLiveResumeIdentityTests(): void {
       await flushAsyncTicks(20)
       await vi.advanceTimersByTimeAsync(70)
 
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         // Main picks the resume recipe; the window neither builds nor registers one.
         expect(transport.connect).toHaveBeenCalledWith(
           expect.objectContaining({ sessionId: 'lost-pty', attachOnlyView: true })
@@ -588,7 +588,7 @@ export function registerPtyConnectionLiveResumeIdentityTests(): void {
         1,
         expect.objectContaining({ sessionId: staleSessionId })
       )
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         // A missing reattach asks main to start and preserve the resume record; the window cannot spawn its own shell.
         await expectWindowStartAskedMain(transport, paneKey, mockStoreState)
         expect(transport.connect).toHaveBeenLastCalledWith(

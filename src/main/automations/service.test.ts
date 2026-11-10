@@ -27,7 +27,7 @@ vi.mock('electron', () => ({
 
 /** Inject persisted drift that normal creation would resolve. */
 function mutateDataFile(mutate: (state: { automations: Record<string, unknown>[] }) => void): void {
-  const file = join(testState.dir, 'orca-data.json')
+  const file = join(testState.dir, 'topo-data.json')
   const state = JSON.parse(readPersistedStateJson(file))
   mutate(state)
   writePersistedStateJson(file, JSON.stringify(state))
@@ -58,7 +58,7 @@ const dailyAt9 = (name: string) => ({
 
 describe('AutomationService', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-automations-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-automations-test-'))
     vi.useFakeTimers()
   })
 
@@ -238,7 +238,7 @@ describe('AutomationService', () => {
     const poisonRun = reloaded.listAutomationRuns(poison.id)[0]
     expect(poisonRun?.status).toBe('skipped_unavailable')
     expect(poisonRun?.error).toBe(
-      'Orca could not evaluate this automation and skipped the occurrence.'
+      'Topo could not evaluate this automation and skipped the occurrence.'
     )
     expect(logged).toHaveBeenCalled()
   })
@@ -285,7 +285,7 @@ describe('AutomationService', () => {
     expect(launch.mock.calls[0]?.[0].automation.id).toBe(healthy.id)
     expect(reloaded.listAutomationRuns(healthy.id)[0]?.status).toBe('dispatched')
     expect(reloaded.listAutomationRuns(poison.id)[0]?.error).toBe(
-      'Orca could not evaluate this automation and skipped the occurrence.'
+      'Topo could not evaluate this automation and skipped the occurrence.'
     )
     expect(logged).toHaveBeenCalled()
   })
@@ -362,7 +362,7 @@ describe('AutomationService', () => {
     const store = await createStore()
     store.addRepo(makeRepo())
     const automation = store.createAutomation(dailyAt9('Quit between writes'))
-    // Orca quit after saving the run and before advancing the schedule.
+    // Topo quit after saving the run and before advancing the schedule.
     const retained = store.createAutomationRun(automation, automation.nextRunAt)
     vi.setSystemTime(new Date('2026-05-13T09:01:00'))
     const launch = vi.fn(async () => LAUNCHED)
@@ -385,7 +385,7 @@ describe('AutomationService', () => {
       expect.objectContaining({
         id: retained.id,
         status: 'dispatch_failed',
-        error: 'Orca stopped before this run could launch.'
+        error: 'Topo stopped before this run could launch.'
       })
     ])
     expect(launch).not.toHaveBeenCalled()

@@ -82,7 +82,7 @@ export function RepoWslDistroStoppedIndicator({
             <div className="text-muted-foreground">
               {t(
                 'auto.components.sidebar.RepoScanUnavailableIndicator.wslRetained',
-                'Showing the worktrees Orca already knew about. They refresh when Orca sees the distro running.'
+                'Showing the worktrees Topo already knew about. They refresh when Topo sees the distro running.'
               )}
             </div>
             <div className="text-muted-foreground">

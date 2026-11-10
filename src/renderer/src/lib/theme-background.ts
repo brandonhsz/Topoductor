@@ -13,13 +13,13 @@ const SIZE: Record<
 }
 
 const PROPERTIES = [
-  '--orca-theme-background-image',
-  '--orca-theme-background-size',
-  '--orca-theme-background-repeat',
-  '--orca-theme-background-video-fit',
-  '--orca-theme-background-position',
-  '--orca-theme-background-opacity',
-  '--orca-theme-background-surface-opacity'
+  '--topo-theme-background-image',
+  '--topo-theme-background-size',
+  '--topo-theme-background-repeat',
+  '--topo-theme-background-video-fit',
+  '--topo-theme-background-position',
+  '--topo-theme-background-opacity',
+  '--topo-theme-background-surface-opacity'
 ] as const
 
 /** Paints (or clears) the theme's image as the body's static background layer; see main.css.
@@ -41,13 +41,13 @@ export function applyThemeBackground(
   }
   const [size, repeat, videoFit] = SIZE[background.size ?? 'cover']
   // Why JSON quoting: registration only admits orca-plugin-image URLs, and a quoted CSS string cannot break out.
-  root.style.setProperty('--orca-theme-background-image', `url(${JSON.stringify(background.url)})`)
-  root.style.setProperty('--orca-theme-background-size', size)
-  root.style.setProperty('--orca-theme-background-repeat', repeat)
-  root.style.setProperty('--orca-theme-background-video-fit', videoFit)
-  root.style.setProperty('--orca-theme-background-position', background.position ?? 'center')
-  root.style.setProperty('--orca-theme-background-opacity', String(background.opacity ?? 1))
-  root.style.setProperty('--orca-theme-background-surface-opacity', String(surfaceOpacity))
+  root.style.setProperty('--topo-theme-background-image', `url(${JSON.stringify(background.url)})`)
+  root.style.setProperty('--topo-theme-background-size', size)
+  root.style.setProperty('--topo-theme-background-repeat', repeat)
+  root.style.setProperty('--topo-theme-background-video-fit', videoFit)
+  root.style.setProperty('--topo-theme-background-position', background.position ?? 'center')
+  root.style.setProperty('--topo-theme-background-opacity', String(background.opacity ?? 1))
+  root.style.setProperty('--topo-theme-background-surface-opacity', String(surfaceOpacity))
   root.dataset.themeBackground = ''
   useThemeBackgroundStore.setState({ active: true })
   syncWindowMaterialWithThemeBackground(true)

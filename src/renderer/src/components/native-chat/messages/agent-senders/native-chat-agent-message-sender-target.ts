@@ -29,7 +29,7 @@ export const GONE_TERMINAL_SENDER_CLICK: 'host-lookup' | 'plain' = 'host-lookup'
 /** The one answer a card's avatar, link and click read, on every host. */
 export type AgentMessageSenderTarget =
   | Exclude<AgentSenderResolution, { kind: 'legacy' }>
-  /** The host publishes nothing (an older Orca): what this window can place for it, if anything;
+  /** The host publishes nothing (an older Topo): what this window can place for it, if anything;
    *  the click still asks that host. */
   | { kind: 'legacy'; location?: SenderLocation }
   /** Its terminal now runs a different kind of agent than the card saved. */
@@ -54,7 +54,7 @@ function replacedAt(state: AppState, sender: AgentMessageSender, location: Sende
   // Without a saved kind nothing can veto, so the row isn't read.
   return Boolean(
     saved &&
-    !sender.party.orcaSessionId &&
+    !sender.party.topoSessionId &&
     knownDifferent(saved, readAgentMessageSenderRow(state, location)?.agentType)
   )
 }
@@ -155,7 +155,7 @@ export function agentMessageSenderUnavailableText(
     : target.kind === 'ambiguous'
       ? translate(
           'components.native-chat.agentMessage.senderAmbiguous',
-          "Orca can't tell which terminal {{name}} is running in. Open it from the sidebar.",
+          "Topo can't tell which terminal {{name}} is running in. Open it from the sidebar.",
           { name: subject }
         )
       : translate(
@@ -175,11 +175,11 @@ export function agentMessageSenderReplacedOnHandle(
 ): boolean {
   const location = locateLegacyAgentMessageSender(
     state,
-    { party: { address: handle, terminalHandle: handle, orcaSessionId: null }, name: null },
+    { party: { address: handle, terminalHandle: handle, topoSessionId: null }, name: null },
     host
   )
   return Boolean(
     location &&
-    replacedAt(state, { ...sender, party: { ...sender.party, orcaSessionId: null } }, location)
+    replacedAt(state, { ...sender, party: { ...sender.party, topoSessionId: null } }, location)
   )
 }

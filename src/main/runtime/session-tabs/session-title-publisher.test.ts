@@ -4,23 +4,23 @@ import type { RuntimeMobileSessionTerminalTab } from '../../../shared/runtime-mo
 
 const layoutOwner = vi.hoisted(() => ({ isMain: false }))
 vi.mock('../../../shared/layout-owner-switch', () => ({
-  get ORCA_LAYOUT_OWNER_IS_MAIN() {
+  get TOPO_LAYOUT_OWNER_IS_MAIN() {
     return layoutOwner.isMain
   }
 }))
 
 // Preserve side-effect order: mocks, lifecycle, fixtures.
-await import('../orca-runtime-tests/runtime-test-module-registration.spec')
-const { electronMocks } = await import('../orca-runtime-test-mocks/setup.spec')
-const { OrcaRuntimeService } = await import('../orca-runtime')
-await import('../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../topo-runtime-tests/runtime-test-module-registration.spec')
+const { electronMocks } = await import('../topo-runtime-test-mocks/setup.spec')
+const { TopoRuntimeService } = await import('../topo-runtime')
+await import('../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const {
   HEADLESS_LEAF_ID,
   TEST_WORKTREE_ID,
   makeHeadlessTerminalLayout,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} = await import('../orca-runtime-tests/orca-runtime-test-fixtures.spec')
+} = await import('../topo-runtime-tests/topo-runtime-test-fixtures.spec')
 
 const name = { agent: 'codex' as const, sessionId: 'session-1', title: 'Saved task' }
 const surface: RuntimeMobileSessionTerminalTab = {
@@ -52,7 +52,7 @@ describe.each([false, true])('session title publisher, main layout=%s', (isMain)
       [HEADLESS_LEAF_ID]: surface.ptyId!
     })
     const { runtimeStore } = makeRuntimeStoreWithWorkspaceSession(session)
-    const runtime = new OrcaRuntimeService(runtimeStore)
+    const runtime = new TopoRuntimeService(runtimeStore)
     runtime.syncWindowGraph(0, { tabs: [], leaves: [] })
     runtime.registerPty(surface.ptyId!, TEST_WORKTREE_ID, null, {
       tabId: surface.parentTabId,

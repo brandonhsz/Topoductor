@@ -12,7 +12,7 @@ export function getCodexTerminalServerIsolationTitle(t: Translate = translate): 
 export function getCodexTerminalServerIsolationDescription(t: Translate = translate): string {
   return t(
     'settings.agents.codexTerminalServerIsolation.description',
-    "Keeps Orca's status and closing tabs working correctly. Turn off to use Codex's shared server and its agents overview. Applies to new terminals."
+    "Keeps Topo's status and closing tabs working correctly. Turn off to use Codex's shared server and its agents overview. Applies to new terminals."
   )
 }
 

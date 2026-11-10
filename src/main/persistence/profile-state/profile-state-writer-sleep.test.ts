@@ -62,7 +62,7 @@ afterEach(async () => {
 
 /** Gate worker replies and exit through shared memory. */
 function createClient({ holdReplies = false, holdExit = false } = {}) {
-  const root = mkdtempSync(join(tmpdir(), 'orca-writer-sleep-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-writer-sleep-'))
   roots.push(root)
   const workerPath = join(root, 'writer.cjs')
   writeFileSync(

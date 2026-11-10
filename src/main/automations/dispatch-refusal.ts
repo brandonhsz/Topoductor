@@ -4,7 +4,7 @@ import type { Automation } from '../../shared/automations/automation-definition'
 import { resolveAutomationRunTarget, type AutomationRunTargetResult } from './run-target-resolution'
 import type { AutomationRunWriter } from './automation-run-writer'
 import { wslMoveRepoBackoff } from '../persistence/moving-wsl-projects/wsl-move-background-backoff'
-import { isOrcadFencedAutomation } from './orcad-fenced-automation'
+import { isTopodFencedAutomation } from './topod-fenced-automation'
 import { blockedWslDistroForPath } from '../wsl/filesystem/wsl-unc-access-gate'
 import { getLocalProjectWorktreeGitOptions } from '../workspaces/execution-host/project-runtime-git-options'
 import {
@@ -75,7 +75,7 @@ export async function recordRefusedAutomationRun(input: {
   automation: Automation
   allowRemoteHostScheduling: boolean
 }): Promise<void> {
-  if (isOrcadFencedAutomation(input.store, input.automation)) {
+  if (isTopodFencedAutomation(input.store, input.automation)) {
     return
   }
   const target = resolveAutomationRunTarget(input.store, input.automation, {

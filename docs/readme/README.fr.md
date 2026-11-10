@@ -1,13 +1,13 @@
 <h1 align="center">
-  <a href="https://onOrca.dev"><img src="../../resources/build/icon.png" alt="Orca" width="64" valign="middle" /></a> Orca
+  <a href="https://github.com/brandonhsz/Topoductor"><img src="../../resources/build/icon.png" alt="Topo" width="64" valign="middle" /></a> Topo
 </h1>
 
 <p align="center">
-  <a href="https://github.com/stablyai/orca"><img src="https://badgen.net/github/stars/stablyai/orca?label=%E2%98%85" alt="Étoiles GitHub" /></a>
-  <a href="https://github.com/stablyai/orca/releases"><img src="../assets/readme-downloads.svg" alt="Téléchargements totaux sur toutes les versions" /></a>
-  <img src="https://badgen.net/github/license/stablyai/orca" alt="Licence" />
-  <a href="https://discord.gg/fzjDKHxv8Q"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Rejoindre le Discord Orca" /></a>
-  <a href="https://x.com/orca_build"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="Suivre Orca sur X" /></a>
+  <a href="https://github.com/brandonhsz/Topoductor"><img src="https://badgen.net/github/stars/brandonhsz/Topoductor?label=%E2%98%85" alt="Étoiles GitHub" /></a>
+  <a href="https://github.com/brandonhsz/Topoductor/releases"><img src="../assets/readme-downloads.svg" alt="Téléchargements totaux sur toutes les versions" /></a>
+  <img src="https://badgen.net/github/license/brandonhsz/Topoductor" alt="Licence" />
+  <a href="https://discord.gg/fzjDKHxv8Q"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Rejoindre le Discord Topo" /></a>
+  <a href="https://x.com/topo_build"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="Suivre Topo sur X" /></a>
   <img src="https://img.shields.io/badge/macOS%20%7C%20Windows%20%7C%20Linux-4493F8?style=flat-square" alt="Plateformes prises en charge : macOS, Windows et Linux" />
 </p>
 
@@ -20,14 +20,14 @@
   Lancez Codex, Claude Code, OpenCode ou Pi côte à côte — chacun dans son propre worktree, le tout suivi au même endroit.
 </p>
 
-<h3 align="center"><a href="https://onorca.dev/download"><ins>Télécharger Orca</ins></a></h3>
+<h3 align="center"><a href="https://onorca.dev/download"><ins>Télécharger Topo</ins></a></h3>
 
 <p align="center">
-  <sub>Sous Windows ? Prenez la <a href="https://github.com/stablyai/orca/releases#release-v1.4.147-rc.3">dernière RC</a> — elle inclut des correctifs Windows.</sub>
+  <sub>Sous Windows ? Prenez la <a href="https://github.com/brandonhsz/Topoductor/releases#release-v1.4.147-rc.3">dernière RC</a> — elle inclut des correctifs Windows.</sub>
 </p>
 
 <p align="center">
-  <img src="../assets/readme-hero.jpg" alt="Application de bureau Orca exécutant des agents dans des worktrees parallèles, avec l'app companion mobile Orca dans le coin" width="960" />
+  <img src="../assets/readme-hero.jpg" alt="Application de bureau Topo exécutant des agents dans des worktrees parallèles, avec l'app companion mobile Topo dans le coin" width="960" />
 </p>
 
 ## Fonctionnalités
@@ -40,11 +40,11 @@
 
 Surveillez et pilotez vos agents depuis votre téléphone — soyez notifié quand un agent termine, et envoyez des instructions de suivi où que vous soyez.
 
-[App Store iOS](https://apps.apple.com/us/app/orca-ide/id6766130217) · [APK Android](https://www.onorca.dev/download/android) · [Docs →](https://www.onorca.dev/docs/mobile)
+[App Store iOS](https://apps.apple.com/us/app/topo-ide/id6766130217) · [APK Android](https://www.onorca.dev/download/android) · [Docs →](https://www.onorca.dev/docs/mobile)
 
 </td>
 <td width="50%">
-  <a href="https://www.onorca.dev/docs/mobile"><picture><source srcset="../assets/feature-wall/mobile-companion-app-showcase.gif" type="image/gif"><img src="../assets/feature-wall/mobile-companion-app-showcase.jpg" alt="Orca desktop avec l'app companion mobile" width="100%" /></picture></a>
+  <a href="https://www.onorca.dev/docs/mobile"><picture><source srcset="../assets/feature-wall/mobile-companion-app-showcase.gif" type="image/gif"><img src="../assets/feature-wall/mobile-companion-app-showcase.jpg" alt="Topo desktop avec l'app companion mobile" width="100%" /></picture></a>
 </td>
 </tr>
 <tr>
@@ -86,7 +86,7 @@ Cliquez sur n'importe quel élément d'UI dans une vraie fenêtre Chromium pour 
 
 </td>
 <td width="50%">
-  <a href="https://www.onorca.dev/docs/browser/design-mode"><picture><source srcset="../site/public/docs/orca-design-mode.gif" type="image/gif"><img src="../../resources/onboarding/feature-wall/tile-05.poster.jpg" alt="Navigateur intégré et Mode Design" width="100%" /></picture></a>
+  <a href="https://www.onorca.dev/docs/browser/design-mode"><picture><source srcset="../site/public/docs/topo-design-mode.gif" type="image/gif"><img src="../../resources/onboarding/feature-wall/tile-05.poster.jpg" alt="Navigateur intégré et Mode Design" width="100%" /></picture></a>
 </td>
 </tr>
 <tr>
@@ -100,7 +100,7 @@ Parcourez PRs, issues et boards de projet dans l'app — ouvrez un worktree depu
 
 </td>
 <td width="50%">
-  <a href="https://www.onorca.dev/docs/review/linear"><picture><source srcset="../../resources/onboarding/feature-wall/tile-03.webp" type="image/webp"><img src="../../resources/onboarding/feature-wall/tile-03.poster.jpg" alt="Workflows GitHub et Linear dans Orca" width="100%" /></picture></a>
+  <a href="https://www.onorca.dev/docs/review/linear"><picture><source srcset="../../resources/onboarding/feature-wall/tile-03.webp" type="image/webp"><img src="../../resources/onboarding/feature-wall/tile-03.poster.jpg" alt="Workflows GitHub et Linear dans Topo" width="100%" /></picture></a>
 </td>
 </tr>
 <tr>
@@ -122,7 +122,7 @@ Faites tourner des agents sur une machine distante costaude, avec édition de fi
 
 ### Annoter les diffs IA
 
-Posez des commentaires sur n'importe quelle ligne de diff et renvoyez-les à l'agent — review, édition et commit sans quitter Orca.
+Posez des commentaires sur n'importe quelle ligne de diff et renvoyez-les à l'agent — review, édition et commit sans quitter Topo.
 
 [Docs →](https://www.onorca.dev/docs/review/annotate-ai-diff)
 
@@ -148,15 +148,15 @@ L'éditeur VS Code avec autosave partout — glissez fichiers ou images directem
 <tr>
 <td width="50%" valign="middle">
 
-### Orca CLI
+### Topo CLI
 
-Les agents pilotent aussi Orca — scriptez n'importe quel workflow avec `orca worktree create`, `snapshot`, `click` et `fill`.
+Les agents pilotent aussi Topo — scriptez n'importe quel workflow avec `topo worktree create`, `snapshot`, `click` et `fill`.
 
 [Docs →](https://www.onorca.dev/docs/cli/overview)
 
 </td>
 <td width="50%">
-  <a href="https://www.onorca.dev/docs/cli/overview"><picture><source srcset="../../resources/onboarding/feature-wall/tile-09.webp" type="image/webp"><img src="../../resources/onboarding/feature-wall/tile-09.poster.jpg" alt="Scripter Orca depuis la CLI" width="100%" /></picture></a>
+  <a href="https://www.onorca.dev/docs/cli/overview"><picture><source srcset="../../resources/onboarding/feature-wall/tile-09.webp" type="image/webp"><img src="../../resources/onboarding/feature-wall/tile-09.poster.jpg" alt="Scripter Topo depuis la CLI" width="100%" /></picture></a>
 </td>
 </tr>
 </table>
@@ -168,13 +168,13 @@ Les agents pilotent aussi Orca — scriptez n'importe quel workflow avec `orca w
 - **[Aperçus riches du repo](https://www.onorca.dev/docs/editing/markdown)** — Prévisualisez Markdown, images, PDF et docs du repo dans le workspace.
 - **[Computer Use](https://www.onorca.dev/docs/cli/computer-use)** — Laissez les agents piloter des apps desktop et l'UI visible quand un workflow demande une vraie interaction.
 - **[Notifications et non-lus](https://www.onorca.dev/docs/notifications)** — Sachez quand un agent termine ou a besoin d'attention, puis marquez des fils comme non lus pour y revenir plus tard.
-- **Et bien plus encore** — on ship tous les jours, donc cette liste est toujours en retard. Le [changelog](https://github.com/stablyai/orca/releases) est la vraie liste des features.
+- **Et bien plus encore** — on ship tous les jours, donc cette liste est toujours en retard. Le [changelog](https://github.com/brandonhsz/Topoductor/releases) est la vraie liste des features.
 
 ---
 
 ## Agents pris en charge
 
-Fonctionne avec **n'importe quel agent CLI** — s'il tourne dans un terminal, il tourne dans Orca.
+Fonctionne avec **n'importe quel agent CLI** — s'il tourne dans un terminal, il tourne dans Topo.
 
 <p>
   <a href="https://docs.anthropic.com/claude/docs/claude-code"><kbd><img src="../assets/claude-logo.svg" alt="Logo Claude Code" width="16" valign="middle" /> Claude Code</kbd></a> &nbsp;
@@ -219,28 +219,28 @@ Fonctionne avec **n'importe quel agent CLI** — s'il tourne dans un terminal, i
 
 ### Desktop — macOS, Windows, Linux
 
-- **[Télécharger depuis onOrca.dev](https://onorca.dev/download)**
-- Ou récupérez un build directement : [macOS Apple Silicon](https://github.com/stablyai/orca/releases/latest/download/orca-macos-arm64.dmg) · [macOS Intel](https://github.com/stablyai/orca/releases/latest/download/orca-macos-x64.dmg) · [Windows (.exe)](https://github.com/stablyai/orca/releases/download/v1.4.147-rc.3/orca-windows-setup.exe) · [Linux AppImage](https://github.com/stablyai/orca/releases/latest/download/orca-linux.AppImage) · [Tous les builds](https://github.com/stablyai/orca/releases/latest)
-- **Sous Windows :** utilisez la [dernière RC (`v1.4.147-rc.3`)](https://github.com/stablyai/orca/releases#release-v1.4.147-rc.3) — elle inclut des correctifs Windows absents de la stable.
+- **[Télécharger depuis GitHub Releases](https://github.com/brandonhsz/Topoductor/releases)**
+- Ou récupérez un build directement : [macOS Apple Silicon](https://github.com/brandonhsz/Topoductor/releases/latest/download/topo-macos-arm64.dmg) · [macOS Intel](https://github.com/brandonhsz/Topoductor/releases/latest/download/topo-macos-x64.dmg) · [Windows (.exe)](https://github.com/brandonhsz/Topoductor/releases/download/v1.4.147-rc.3/topo-windows-setup.exe) · [Linux AppImage](https://github.com/brandonhsz/Topoductor/releases/latest/download/topo-linux.AppImage) · [Tous les builds](https://github.com/brandonhsz/Topoductor/releases/latest)
+- **Sous Windows :** utilisez la [dernière RC (`v1.4.147-rc.3`)](https://github.com/brandonhsz/Topoductor/releases#release-v1.4.147-rc.3) — elle inclut des correctifs Windows absents de la stable.
 
 _Ou via un gestionnaire de paquets :_
 
 ```bash
 # macOS (Homebrew)
-# Utilisez toujours le nom complet ; `orca` seul est un cask Plotly sans rapport.
-brew install --cask stablyai/orca/orca
+# Utilisez toujours le nom complet ; `topo` seul est un cask Plotly sans rapport.
+brew install --cask brandonhsz/Topoductor/topo
 # Mettre à jour une installation existante
-brew upgrade --cask stablyai/orca/orca
+brew upgrade --cask brandonhsz/Topoductor/topo
 
-# Arch Linux (AUR) — ou stably-orca-git pour compiler depuis les sources
-yay -S stably-orca-bin
+# Arch Linux (AUR) — ou topo-git pour compiler depuis les sources
+yay -S topo-bin
 ```
 
 ### Companion mobile — iOS, Android
 
 Associez-la à l'app de bureau pour surveiller et piloter vos agents depuis votre téléphone.
 
-- **iOS :** [Télécharger sur l'App Store](https://apps.apple.com/us/app/orca-ide/id6766130217)
+- **iOS :** [Télécharger sur l'App Store](https://apps.apple.com/us/app/topo-ide/id6766130217)
 - **Android :** [Télécharger l'APK](https://www.onorca.dev/download/android)
 
 ---
@@ -248,16 +248,16 @@ Associez-la à l'app de bureau pour surveiller et piloter vos agents depuis votr
 ## Communauté &amp; support
 
 - **Discord :** Rejoignez la communauté sur **[Discord](https://discord.gg/fzjDKHxv8Q)**.
-- **Twitter / X :** Suivez **[@orca_build](https://x.com/orca_build)** pour les news et annonces.
-- **WeChat :** Scannez pour rejoindre un groupe WeChat de la communauté Orca. Si un groupe est complet, rejoignez-en un autre.
+- **Twitter / X :** Suivez **[@topo_build](https://x.com/topo_build)** pour les news et annonces.
+- **WeChat :** Scannez pour rejoindre un groupe WeChat de la communauté Topo. Si un groupe est complet, rejoignez-en un autre.
 
-  <img src="../assets/wechat-qr-group14.jpg" alt="QR code du groupe WeChat de la communauté Orca" width="160" />
-  <img src="../assets/wechat-qr-group15.jpg" alt="QR code du groupe WeChat de la communauté Orca" width="160" />
-  <img src="../assets/wechat-qr-group16.jpg" alt="QR code du groupe WeChat de la communauté Orca" width="160" />
+  <img src="../assets/wechat-qr-group14.jpg" alt="QR code du groupe WeChat de la communauté Topo" width="160" />
+  <img src="../assets/wechat-qr-group15.jpg" alt="QR code du groupe WeChat de la communauté Topo" width="160" />
+  <img src="../assets/wechat-qr-group16.jpg" alt="QR code du groupe WeChat de la communauté Topo" width="160" />
 
-- **Feedback &amp; idées :** On ship vite. Il manque quelque chose ? [Demandez une feature](https://github.com/stablyai/orca/issues).
-- **Confidentialité :** Voir la [doc confidentialité &amp; télémétrie](https://www.onorca.dev/docs/telemetry) pour ce qu'Orca collecte en anonyme et comment désactiver la télémétrie.
-- **Soutenez-nous :** [Mettez une star](https://github.com/stablyai/orca) sur ce repo pour suivre nos ships quotidiens.
+- **Feedback &amp; idées :** On ship vite. Il manque quelque chose ? [Demandez une feature](https://github.com/brandonhsz/Topoductor/issues).
+- **Confidentialité :** Voir la [doc confidentialité &amp; télémétrie](https://www.onorca.dev/docs/telemetry) pour ce qu'Topo collecte en anonyme et comment désactiver la télémétrie.
+- **Soutenez-nous :** [Mettez une star](https://github.com/brandonhsz/Topoductor) sur ce repo pour suivre nos ships quotidiens.
 
 ---
 
@@ -265,12 +265,12 @@ Associez-la à l'app de bureau pour surveiller et piloter vos agents depuis votr
 
 Envie de contribuer ou de lancer le projet en local ? Consultez notre guide [CONTRIBUTING.md](../../.github/CONTRIBUTING.md).
 
-<a href="https://github.com/stablyai/orca/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=stablyai/orca" alt="Contributeurs Orca" />
+<a href="https://github.com/brandonhsz/Topoductor/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=brandonhsz/Topoductor" alt="Contributeurs Topo" />
 </a>
 
 <p align="center">
-  <img src="../assets/star-history.png" alt="Graphique d'historique des étoiles GitHub pour stablyai/orca" width="880" />
+  <img src="../assets/star-history.png" alt="Graphique d'historique des étoiles GitHub pour brandonhsz/Topoductor" width="880" />
 </p>
 
 ## Builds signés
@@ -279,4 +279,4 @@ Signature de code Windows sponsorisée / fournie par [SignPath.io](https://signp
 
 ## Licence
 
-Orca est libre et open source sous la [licence MIT](../../LICENSE).
+Topo est libre et open source sous la [licence MIT](../../LICENSE).

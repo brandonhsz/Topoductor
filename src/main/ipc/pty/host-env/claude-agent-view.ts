@@ -8,17 +8,17 @@ export function applyClaudeAgentViewEnv(
   opts: BuildPtyHostEnvOptions
 ): void {
   const previous =
-    env.ORCA_CLAUDE_AGENT_VIEW_PLUGIN_DIR ?? process.env.ORCA_CLAUDE_AGENT_VIEW_PLUGIN_DIR
+    env.TOPO_CLAUDE_AGENT_VIEW_PLUGIN_DIR ?? process.env.TOPO_CLAUDE_AGENT_VIEW_PLUGIN_DIR
   if (previous) {
     const paths = env.CLAUDE_CODE_PLUGIN_DIRS ?? process.env.CLAUDE_CODE_PLUGIN_DIRS
     if (paths?.split(delimiter).includes(previous)) {
       const remaining = paths.split(delimiter).filter((path) => path !== previous)
-      // An empty override is needed only to strip an inherited Orca path merged later by a daemon.
+      // An empty override is needed only to strip an inherited Topo path merged later by a daemon.
       env.CLAUDE_CODE_PLUGIN_DIRS = remaining.join(delimiter)
     }
   }
-  delete env.ORCA_CLAUDE_AGENT_VIEW_PLUGIN_DIR
-  delete env.ORCA_CLAUDE_CONFIG_DIR
+  delete env.TOPO_CLAUDE_AGENT_VIEW_PLUGIN_DIR
+  delete env.TOPO_CLAUDE_CONFIG_DIR
   if (
     !opts.agentStatusHooksEnabled ||
     opts.claudeSubagentNavigationEnabled === false ||
@@ -39,6 +39,6 @@ export function applyClaudeAgentViewEnv(
     paths.push(cached.pluginDir)
   }
   env.CLAUDE_CODE_PLUGIN_DIRS = paths.join(delimiter)
-  env.ORCA_CLAUDE_AGENT_VIEW_PLUGIN_DIR = cached.pluginDir
-  env.ORCA_CLAUDE_CONFIG_DIR = cached.configDir
+  env.TOPO_CLAUDE_AGENT_VIEW_PLUGIN_DIR = cached.pluginDir
+  env.TOPO_CLAUDE_CONFIG_DIR = cached.configDir
 }

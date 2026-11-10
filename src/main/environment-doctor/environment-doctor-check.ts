@@ -34,7 +34,7 @@ export type EnvironmentDoctorDeps = {
   exists: (path: string) => Promise<boolean>
   isDirectory: (path: string) => Promise<boolean>
   freeBytes: (path: string) => Promise<number | null>
-  /** Runs scripts.setup the way Orca's setup runner does; only called with runSetup. */
+  /** Runs scripts.setup the way Topo's setup runner does; only called with runSetup. */
   runSetupScript: (args: {
     worktreePath: string
     rootPath: string

@@ -26,9 +26,9 @@ import type {
   RuntimeClientEventStreamMessage
 } from '../../../../shared/runtime-client-events'
 
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 
 import { REMOTE_RUNTIME_SHARED_CONTROL_CAPABILITY } from '../../../../shared/host-runtime-capabilities'
 
@@ -44,7 +44,7 @@ describe('remote runtime request connection integration', () => {
     'delivers one host-authoritative sleep and ordered disposition to two remote clients',
     { timeout: REMOTE_RUNTIME_TEST_TIMEOUT_MS },
     async () => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-remote-sleep-'))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-remote-sleep-'))
       const clientEventListeners = new Set<(event: RuntimeClientEvent) => void>()
       const subscriptionCleanups = new Map<string, () => void>()
       const worktreeId = 'repo-1::C:\\repo\\feature'
@@ -125,8 +125,8 @@ describe('remote runtime request connection integration', () => {
             postStopVerified: true
           }
         }
-      } as unknown as OrcaRuntimeService
-      const server = new OrcaRuntimeRpcServer({
+      } as unknown as TopoRuntimeService
+      const server = new TopoRuntimeRpcServer({
         runtime,
         userDataPath,
         enableWebSocket: true,
@@ -258,7 +258,7 @@ describe('remote runtime request connection integration', () => {
     'multiplexes shared-control calls and passive subscriptions through the real runtime',
     { timeout: REMOTE_RUNTIME_TEST_TIMEOUT_MS },
     async () => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-shared-control-'))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-shared-control-'))
       const repoPath = join(userDataPath, 'repo')
       const repo: Repo = {
         id: 'repo-1',
@@ -395,8 +395,8 @@ describe('remote runtime request connection integration', () => {
           }
           return { worktree }
         }
-      } as unknown as OrcaRuntimeService
-      const server = new OrcaRuntimeRpcServer({
+      } as unknown as TopoRuntimeService
+      const server = new TopoRuntimeRpcServer({
         runtime,
         userDataPath,
         enableWebSocket: true,

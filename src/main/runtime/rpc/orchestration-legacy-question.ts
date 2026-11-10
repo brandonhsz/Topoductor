@@ -1,6 +1,6 @@
 import { clampOrchestrationAskTimeoutMs } from '../../../shared/orchestration/mailbox/orchestration-ask-timeout'
 import type { RpcRequest } from './core'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import { OrchestrationError } from '../orchestration/orchestration-error'
 import '../orchestration/db/orchestration-db'
 import { LEGACY_CONTRACT_VERSION } from '../orchestration/db/contract-constants'
@@ -16,7 +16,7 @@ import {
 } from './orchestration-legacy-operation'
 
 export async function handleLegacyAsk(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   authority: LegacyCompatibilityAuthority
   request: RpcRequest
   params: LegacyAskParams
@@ -76,7 +76,7 @@ export async function handleLegacyAsk(args: {
       )
       if (lostAnswer) {
         const cliCommand =
-          params.compatibilityCliCommand ?? params.compatibilityWindowsCommand ?? 'orca'
+          params.compatibilityCliCommand ?? params.compatibilityWindowsCommand ?? 'topo'
         throw new OrchestrationError(
           'operation_unknown',
           `A matching legacy answer may have been accepted before the update. Run ${cliCommand} orchestration check --terminal ${principal.terminal_handle} before asking again.`

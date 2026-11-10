@@ -44,7 +44,7 @@ describe('install-electron-package-binary', () => {
 
       expect(result.status, result.stderr).toBe(0)
       expect(readFileSync(join(projectDir, 'electron-get.log'), 'utf8')).toMatch(
-        /cacheRoot=.*orca-electron-.*cache/
+        /cacheRoot=.*topo-electron-.*cache/
       )
       expect(readFileSync(join(projectDir, 'electron-get.log'), 'utf8')).toContain('force=true')
       expect(readFileSync(join(projectDir, 'node_modules', 'electron', 'path.txt'), 'utf8')).toBe(
@@ -139,8 +139,8 @@ describe('install-electron-package-binary', () => {
       writeFileSync(join(cacheRoot, 'preserved.marker'), 'keep me')
 
       const result = runInstallScript(projectDir, {
-        ORCA_ELECTRON_PACKAGE_CACHE_ROOT: cacheRoot,
-        ORCA_ELECTRON_PACKAGE_RETRY_DELAYS_MS: '0,0'
+        TOPO_ELECTRON_PACKAGE_CACHE_ROOT: cacheRoot,
+        TOPO_ELECTRON_PACKAGE_RETRY_DELAYS_MS: '0,0'
       })
 
       expect(result.status, result.stderr).toBe(0)

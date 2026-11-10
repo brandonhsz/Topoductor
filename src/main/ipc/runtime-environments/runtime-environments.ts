@@ -25,18 +25,18 @@ import {
   handleManagedSharedControlRefusal,
   recoverRefusedManagedPairing
 } from './runtime-environment-managed-pairing-refusal'
-import { setManagedOrcadPairingRepairedListener } from '../../managed-server/lifecycle/orcad-managed-pairing-repaired-listener'
-import { forgetManagedOrcadAutomaticFailures } from '../../managed-server/lifecycle/orcad-managed-tunnel'
+import { setManagedTopodPairingRepairedListener } from '../../managed-server/lifecycle/topod-managed-pairing-repaired-listener'
+import { forgetManagedTopodAutomaticFailures } from '../../managed-server/lifecycle/topod-managed-tunnel'
 import { registerRuntimeEnvironmentRecoveryHandler } from './runtime-environment-recovery-handler'
 import { registerRuntimeEnvironmentRepairHandler } from './runtime-environment-repair-handler'
 import { advanceRuntimeEnvironmentTransportGeneration } from './runtime-environment-transport-generation'
 import { resetSharedControlSupport } from './runtime-environment-shared-control-support'
 import { RUNTIME_ENVIRONMENT_HANDLER_CHANNELS } from './runtime-environment-handler-channels'
-import { registerOrcadRuntimeLifecycleHandlers } from './orcad-runtime-lifecycle-handlers'
-import { registerOrcadRuntimeConversionHandlers } from './orcad-runtime-conversion-handlers'
-import { registerOrcadDeltaMoveHandlers } from './orcad-delta-move-handlers'
-import { registerOrcadLeaveBehindHandlers } from './orcad-leave-behind-handlers'
-import { registerOrcadRuntimeMaintenanceHandlers } from './orcad-runtime-maintenance-handlers'
+import { registerTopodRuntimeLifecycleHandlers } from './topod-runtime-lifecycle-handlers'
+import { registerTopodRuntimeConversionHandlers } from './topod-runtime-conversion-handlers'
+import { registerTopodDeltaMoveHandlers } from './topod-delta-move-handlers'
+import { registerTopodLeaveBehindHandlers } from './topod-leave-behind-handlers'
+import { registerTopodRuntimeMaintenanceHandlers } from './topod-runtime-maintenance-handlers'
 import { clearPublishedManagedServer } from '../ssh/ssh-renderer-broadcast'
 import { clearManagedServerNotes } from './runtime-environment-managed-tunnel'
 import { reconcileOrphanedRuntimeSessions } from './runtime-environment-session-reconcile'
@@ -157,13 +157,13 @@ export function registerRuntimeEnvironmentHandlers(store: Store): void {
   registerRuntimeEnvironmentPassiveHandlers(getUserDataPath, (environment, method, response) =>
     recordHostRepoCatalogAnswer(store, environment, method, response)
   )
-  setManagedOrcadPairingRepairedListener(invalidateRuntimeEnvironmentTransport)
+  setManagedTopodPairingRepairedListener(invalidateRuntimeEnvironmentTransport)
   setRefusedPairingHandlers({
     recover: (environmentId) => recoverRefusedManagedPairing(getUserDataPath(), environmentId),
     sharedControl: (environmentId) =>
       handleManagedSharedControlRefusal(getUserDataPath(), environmentId),
     connectRequested: (environmentId) =>
-      forgetManagedOrcadAutomaticFailures(getUserDataPath(), environmentId)
+      forgetManagedTopodAutomaticFailures(getUserDataPath(), environmentId)
   })
   for (const environment of listEnvironments(getUserDataPath())) {
     if (
@@ -177,11 +177,11 @@ export function registerRuntimeEnvironmentHandlers(store: Store): void {
     getUserDataPath,
     invalidateTransport: invalidateRuntimeEnvironmentTransport
   })
-  registerOrcadRuntimeLifecycleHandlers({ getUserDataPath })
-  registerOrcadRuntimeConversionHandlers(getUserDataPath)
-  registerOrcadDeltaMoveHandlers(getUserDataPath)
-  registerOrcadLeaveBehindHandlers()
-  registerOrcadRuntimeMaintenanceHandlers({
+  registerTopodRuntimeLifecycleHandlers({ getUserDataPath })
+  registerTopodRuntimeConversionHandlers(getUserDataPath)
+  registerTopodDeltaMoveHandlers(getUserDataPath)
+  registerTopodLeaveBehindHandlers()
+  registerTopodRuntimeMaintenanceHandlers({
     getUserDataPath,
     getActiveEnvironmentId: () => store.getSettings().activeRuntimeEnvironmentId,
     invalidateTransport: invalidateRuntimeEnvironmentTransport,

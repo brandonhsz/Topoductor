@@ -12,7 +12,7 @@ const { netRequestMock } = vi.hoisted(() => ({
 
 vi.mock('electron', () => ({
   app: {
-    getPath: () => '/tmp/orca-speech-models-test'
+    getPath: () => '/tmp/topo-speech-models-test'
   },
   net: {
     request: netRequestMock
@@ -150,7 +150,7 @@ describe('ModelManager download resume', () => {
 
   it('resumes an interrupted download with a Range request and assembles the full file', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       scriptRequest(() => ({
         statusCode: 200,
@@ -202,7 +202,7 @@ describe('ModelManager download resume', () => {
   })
 
   it('uses a complete file after a late transport failure without requesting past EOF', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       scriptRequest(() => ({
         statusCode: 200,
@@ -230,7 +230,7 @@ describe('ModelManager download resume', () => {
   })
 
   it('continues through more than eight advancing range segments', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       for (let offset = 1; offset <= 9; offset += 1) {
         scriptRequest((sentHeaders) => {
@@ -278,7 +278,7 @@ describe('ModelManager download resume', () => {
 
   it('keeps resuming a download that advances across many mid-stream drops', async () => {
     vi.useFakeTimers()
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       // Progress must reset the stall budget; the former fixed budget abandoned advancing downloads near attempt 8.
       const manager = managerInternals(dir)
@@ -316,7 +316,7 @@ describe('ModelManager download resume', () => {
   })
 
   it('keeps the known file total when Content-Range omits it', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       scriptRequest((sentHeaders) => {
         expect(sentHeaders.range).toBe('bytes=10-')
@@ -361,7 +361,7 @@ describe('ModelManager download resume', () => {
   })
 
   it('rejects and discards a partial when Content-Range does not match the offset', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       const mismatched = scriptRequest(() => ({
         statusCode: 206,
@@ -401,7 +401,7 @@ describe('ModelManager download resume', () => {
 
   it('restarts from scratch when the server ignores the Range request', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       scriptRequest(() => ({
         statusCode: 200,
@@ -446,7 +446,7 @@ describe('ModelManager download resume', () => {
   })
 
   it('does not retry non-transient failures', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       scriptRequest(() => ({ statusCode: 404 }))
       const manager = managerInternals(dir)
@@ -469,7 +469,7 @@ describe('ModelManager download resume', () => {
   })
 
   it('aborts an HTTP error response instead of draining it after rejection', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       const scripted = scriptRequest(() => ({
         statusCode: 429,
@@ -496,7 +496,7 @@ describe('ModelManager download resume', () => {
 
   it('honors Retry-After before issuing another request', async () => {
     vi.useFakeTimers()
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       const manager = managerInternals(dir)
       const filePath = join(dir, 'model.bin')
@@ -532,7 +532,7 @@ describe('ModelManager download resume', () => {
   })
 
   it('does not retry before an excessively long Retry-After window', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       const manager = managerInternals(dir)
       const rateLimitError = Object.assign(new Error('HTTP 429'), {
@@ -560,7 +560,7 @@ describe('ModelManager download resume', () => {
 
   it('gives up after repeated zero-progress failures with a diagnosable error', async () => {
     vi.useFakeTimers()
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       const manager = managerInternals(dir)
       const downloadFileMock = vi
@@ -604,7 +604,7 @@ describe('ModelManager download resume', () => {
   })
 
   it('stops retrying once the download is aborted', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-resume-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-resume-'))
     try {
       scriptRequest(() => ({
         statusCode: 200,

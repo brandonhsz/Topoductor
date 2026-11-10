@@ -38,7 +38,7 @@ type InstallOptions = {
 }
 
 type ApplyOptions = InstallOptions & {
-  /** Off means skip, never remove: another Orca's panes run on these same user-global entries. */
+  /** Off means skip, never remove: another Topo's panes run on these same user-global entries. */
   keepSharedEntries?: boolean
 }
 

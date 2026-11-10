@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-public static class OrcaDesktopWin32 {
+public static class TopoDesktopWin32 {
     // Default proxy discovery needs a typed caller before PowerShell's dynamic stack frames.
     [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
     public static void InitializeAutomation() {
@@ -156,7 +156,7 @@ public static class OrcaDesktopWin32 {
 }
 "@
 
-[OrcaDesktopWin32]::InitializeAutomation()
+[TopoDesktopWin32]::InitializeAutomation()
 
 $MaxNodes = 1200
 $MaxDepth = 64
@@ -199,32 +199,32 @@ $MouseEvents = @{
     HorizontalWheel = 0x01000
 }
 
-function Write-OrcaJson($Payload) {
+function Write-TopoJson($Payload) {
     $Payload | ConvertTo-Json -Depth 100 -Compress
 }
 
-function New-OrcaFrame([double]$X, [double]$Y, [double]$Width, [double]$Height) {
+function New-TopoFrame([double]$X, [double]$Y, [double]$Width, [double]$Height) {
     if ($Width -le 0 -or $Height -le 0) { return $null }
     [pscustomobject]@{ x = $X; y = $Y; width = $Width; height = $Height }
 }
 
-function Read-OrcaOperation([string]$Path) {
+function Read-TopoOperation([string]$Path) {
     Get-Content -Raw -Encoding UTF8 -Path $Path | ConvertFrom-Json
 }
 
-function ConvertTo-OrcaLParam([int]$X, [int]$Y) {
+function ConvertTo-TopoLParam([int]$X, [int]$Y) {
     [IntPtr]((($Y -band 0xffff) -shl 16) -bor ($X -band 0xffff))
 }
 
-function ConvertTo-OrcaWheelParam([int]$Delta) {
+function ConvertTo-TopoWheelParam([int]$Delta) {
     [IntPtr](($Delta -band 0xffff) -shl 16)
 }
 
-function Get-OrcaWindowProcesses {
+function Get-TopoWindowProcesses {
     @(Get-Process | Where-Object { $_.MainWindowHandle -ne 0 } | Sort-Object ProcessName, Id)
 }
 
-function Find-OrcaProcess([string]$Query) {
+function Find-TopoProcess([string]$Query) {
     $needle = ""
     if ($null -ne $Query) { $needle = $Query.Trim() }
     if ([string]::IsNullOrWhiteSpace($needle)) { throw 'appNotFound("")' }
@@ -233,11 +233,11 @@ function Find-OrcaProcess([string]$Query) {
     }
 
     $parsedProcessId = 0
-    $processes = Get-OrcaWindowProcesses
+    $processes = Get-TopoWindowProcesses
     if ([int]::TryParse($needle, [ref]$parsedProcessId)) {
         $match = $processes | Where-Object { $_.Id -eq $parsedProcessId } | Select-Object -First 1
         if ($null -ne $match) {
-            Assert-OrcaProcessAllowed $match
+            Assert-TopoProcessAllowed $match
             return $match
         }
     }
@@ -254,14 +254,14 @@ function Find-OrcaProcess([string]$Query) {
         $_.MainWindowTitle -ilike "*$needle*"
     } | Select-Object -First 1
     if ($null -ne $match) {
-        Assert-OrcaProcessAllowed $match
+        Assert-TopoProcessAllowed $match
         return $match
     }
 
     throw "appNotFound(`"$Query`")"
 }
 
-function Assert-OrcaProcessAllowed($Process) {
+function Assert-TopoProcessAllowed($Process) {
     $values = @($Process.ProcessName, $Process.MainWindowTitle) | ForEach-Object { ([string]$_).ToLowerInvariant() }
     foreach ($fragment in $BlockedAppFragments) {
         foreach ($value in $values) {
@@ -272,7 +272,7 @@ function Assert-OrcaProcessAllowed($Process) {
     }
 }
 
-function Test-OrcaBrowserProcess($Process) {
+function Test-TopoBrowserProcess($Process) {
     $name = ([string]$Process.ProcessName).ToLowerInvariant()
     $browserProcesses = @(
         "arc",
@@ -289,128 +289,128 @@ function Test-OrcaBrowserProcess($Process) {
     $browserProcesses -contains $name
 }
 
-function Get-OrcaRootElement($Process) {
+function Get-TopoRootElement($Process) {
     if ($Process.MainWindowHandle -eq 0) {
         throw "No top-level UI Automation window is available for $($Process.ProcessName)."
     }
     [Windows.Automation.AutomationElement]::FromHandle([IntPtr]$Process.MainWindowHandle)
 }
 
-function Get-OrcaWindowFrame($Process, $RootElement) {
-    $rect = New-Object OrcaDesktopWin32+RECT
-    if ([OrcaDesktopWin32]::GetWindowRect([IntPtr]$Process.MainWindowHandle, [ref]$rect)) {
-        return New-OrcaFrame $rect.Left $rect.Top ($rect.Right - $rect.Left) ($rect.Bottom - $rect.Top)
+function Get-TopoWindowFrame($Process, $RootElement) {
+    $rect = New-Object TopoDesktopWin32+RECT
+    if ([TopoDesktopWin32]::GetWindowRect([IntPtr]$Process.MainWindowHandle, [ref]$rect)) {
+        return New-TopoFrame $rect.Left $rect.Top ($rect.Right - $rect.Left) ($rect.Bottom - $rect.Top)
     }
 
     try {
         $bounds = $RootElement.Current.BoundingRectangle
         if (-not $bounds.IsEmpty) {
-            return New-OrcaFrame $bounds.X $bounds.Y $bounds.Width $bounds.Height
+            return New-TopoFrame $bounds.X $bounds.Y $bounds.Width $bounds.Height
         }
     } catch {}
     $null
 }
 
-function Get-OrcaWindowId($Process) {
+function Get-TopoWindowId($Process) {
     [int64]$Process.MainWindowHandle
 }
 
-function Get-OrcaAppName($Process) {
+function Get-TopoAppName($Process) {
     if ($Process.ProcessName -eq "ApplicationFrameHost" -and -not [string]::IsNullOrWhiteSpace($Process.MainWindowTitle)) {
         return [string]$Process.MainWindowTitle
     }
     [string]$Process.ProcessName
 }
 
-function New-OrcaAppRecord($Process) {
+function New-TopoAppRecord($Process) {
     [pscustomobject]@{
-        name = Get-OrcaAppName $Process
+        name = Get-TopoAppName $Process
         bundleIdentifier = $Process.ProcessName
         bundleId = $Process.ProcessName
         pid = [int]$Process.Id
     }
 }
 
-function Assert-OrcaWindowTarget($Process, $WindowId, $WindowIndex) {
+function Assert-TopoWindowTarget($Process, $WindowId, $WindowIndex) {
     if ($null -ne $WindowIndex -and [int]$WindowIndex -ne 0) {
         throw "windowNotFound(`"$WindowIndex`")"
     }
-    if ($null -ne $WindowId -and [int64]$WindowId -ne (Get-OrcaWindowId $Process)) {
+    if ($null -ne $WindowId -and [int64]$WindowId -ne (Get-TopoWindowId $Process)) {
         throw "windowNotFound(`"$WindowId`")"
     }
 }
 
-function Restore-OrcaWindow($Process) {
+function Restore-TopoWindow($Process) {
     if ($Process.MainWindowHandle -eq 0) { return }
-    [void][OrcaDesktopWin32]::ShowWindow([IntPtr]$Process.MainWindowHandle, 9)
-    [void][OrcaDesktopWin32]::SetForegroundWindow([IntPtr]$Process.MainWindowHandle)
+    [void][TopoDesktopWin32]::ShowWindow([IntPtr]$Process.MainWindowHandle, 9)
+    [void][TopoDesktopWin32]::SetForegroundWindow([IntPtr]$Process.MainWindowHandle)
 }
 
-function Test-OrcaWindowFocused([IntPtr]$WindowHandle) {
-    [OrcaDesktopWin32]::GetForegroundWindow() -eq $WindowHandle
+function Test-TopoWindowFocused([IntPtr]$WindowHandle) {
+    [TopoDesktopWin32]::GetForegroundWindow() -eq $WindowHandle
 }
 
-function Wait-OrcaWindowFocused([IntPtr]$WindowHandle, [int]$TimeoutMilliseconds) {
+function Wait-TopoWindowFocused([IntPtr]$WindowHandle, [int]$TimeoutMilliseconds) {
     $stopwatch = [Diagnostics.Stopwatch]::StartNew()
     while ($stopwatch.ElapsedMilliseconds -lt $TimeoutMilliseconds) {
-        if (Test-OrcaWindowFocused $WindowHandle) { return $true }
+        if (Test-TopoWindowFocused $WindowHandle) { return $true }
         Start-Sleep -Milliseconds 50
     }
-    Test-OrcaWindowFocused $WindowHandle
+    Test-TopoWindowFocused $WindowHandle
 }
 
-function Assert-OrcaKeyboardFocus([IntPtr]$WindowHandle, $Operation) {
-    if (Test-OrcaWindowFocused $WindowHandle) { return }
+function Assert-TopoKeyboardFocus([IntPtr]$WindowHandle, $Operation) {
+    if (Test-TopoWindowFocused $WindowHandle) { return }
     if ([bool]$Operation.restoreWindow) {
-        if (Wait-OrcaWindowFocused $WindowHandle 500) { return }
+        if (Wait-TopoWindowFocused $WindowHandle 500) { return }
         throw "window_not_focused: keyboard input requires the target window to be focused; restoreWindow was requested but the target window is still not focused; bring it forward manually or check desktop permissions"
     }
     throw "window_not_focused: keyboard input requires the target window to be focused; retry with --restore-window"
 }
 
-function Assert-OrcaPointerFocus([IntPtr]$WindowHandle) {
-    if (Wait-OrcaWindowFocused $WindowHandle 500) { return }
+function Assert-TopoPointerFocus([IntPtr]$WindowHandle) {
+    if (Wait-TopoWindowFocused $WindowHandle 500) { return }
     throw "window_not_focused: window activation did not focus the target window; no pointer input was sent"
 }
 
-function Restore-OrcaPointerWindow($Process, $RootElement) {
-    Restore-OrcaWindow $Process
-    Assert-OrcaPointerFocus ([IntPtr]$Process.MainWindowHandle)
-    Get-OrcaWindowFrame $Process $RootElement
+function Restore-TopoPointerWindow($Process, $RootElement) {
+    Restore-TopoWindow $Process
+    Assert-TopoPointerFocus ([IntPtr]$Process.MainWindowHandle)
+    Get-TopoWindowFrame $Process $RootElement
 }
 
-function Get-OrcaElementFrame($Element, $WindowFrame) {
+function Get-TopoElementFrame($Element, $WindowFrame) {
     try {
         $bounds = $Element.Current.BoundingRectangle
         if ($bounds.IsEmpty) { return $null }
         if ($null -eq $WindowFrame) {
-            return New-OrcaFrame $bounds.X $bounds.Y $bounds.Width $bounds.Height
+            return New-TopoFrame $bounds.X $bounds.Y $bounds.Width $bounds.Height
         }
-        New-OrcaFrame ($bounds.X - $WindowFrame.x) ($bounds.Y - $WindowFrame.y) $bounds.Width $bounds.Height
+        New-TopoFrame ($bounds.X - $WindowFrame.x) ($bounds.Y - $WindowFrame.y) $bounds.Width $bounds.Height
     } catch {
         $null
     }
 }
 
-function Get-OrcaProperty($Element, [string]$Name) {
+function Get-TopoProperty($Element, [string]$Name) {
     try { [string]$Element.Current.$Name } catch { "" }
 }
 
-function Get-OrcaRuntimeId($Element) {
+function Get-TopoRuntimeId($Element) {
     try { @($Element.GetRuntimeId()) } catch { @() }
 }
 
-function Test-OrcaSensitiveElement($Element) {
+function Test-TopoSensitiveElement($Element) {
     try {
         if ($Element.Current.IsPassword) { return $true }
     } catch {}
     $controlType = try { [string]$Element.Current.ControlType.ProgrammaticName } catch { "" }
     $parts = @(
-        (Get-OrcaProperty $Element "LocalizedControlType"),
+        (Get-TopoProperty $Element "LocalizedControlType"),
         $controlType,
-        (Get-OrcaProperty $Element "Name"),
-        (Get-OrcaProperty $Element "AutomationId"),
-        (Get-OrcaProperty $Element "ClassName")
+        (Get-TopoProperty $Element "Name"),
+        (Get-TopoProperty $Element "AutomationId"),
+        (Get-TopoProperty $Element "ClassName")
     )
     $haystack = (($parts -join " ") -replace "\s+", " ").ToLowerInvariant()
     foreach ($term in @("password", "passcode", "secret", "one-time code", "verification code")) {
@@ -419,9 +419,9 @@ function Test-OrcaSensitiveElement($Element) {
     $haystack -match "(^|[^a-z0-9])pin([^a-z0-9]|$)"
 }
 
-function Get-OrcaValueText($Element) {
+function Get-TopoValueText($Element) {
     try {
-        if (Test-OrcaSensitiveElement $Element) { return "[redacted]" }
+        if (Test-TopoSensitiveElement $Element) { return "[redacted]" }
         $pattern = $Element.GetCurrentPattern([Windows.Automation.ValuePattern]::Pattern)
         $rawValue = $pattern.Current.Value
         $text = if ($null -eq $rawValue) { "" } else { [string]$rawValue }
@@ -432,7 +432,7 @@ function Get-OrcaValueText($Element) {
     }
 }
 
-function Get-OrcaActions($Element) {
+function Get-TopoActions($Element) {
     $actions = New-Object System.Collections.Generic.List[string]
     foreach ($pattern in $Element.GetSupportedPatterns()) {
         $name = [string]$pattern.ProgrammaticName
@@ -445,18 +445,18 @@ function Get-OrcaActions($Element) {
     @($actions | Select-Object -Unique)
 }
 
-function Get-OrcaMeaningfulActions($Actions) {
+function Get-TopoMeaningfulActions($Actions) {
     $noisy = @("Invoke", "ScrollToVisible", "ShowMenu")
     @($Actions | Where-Object { $noisy -notcontains $_ })
 }
 
-function Format-OrcaSnapshotText([string]$Text) {
+function Format-TopoSnapshotText([string]$Text) {
     if ([string]::IsNullOrWhiteSpace($Text)) { return "" }
     (($Text -replace "\s+", " ").Trim())
 }
 
-function Format-OrcaValueSegment([string]$RoleKey, [string]$Title, [string]$Value) {
-    $clean = Format-OrcaSnapshotText $Value
+function Format-TopoValueSegment([string]$RoleKey, [string]$Title, [string]$Value) {
+    $clean = Format-TopoSnapshotText $Value
     if ([string]::IsNullOrWhiteSpace($clean) -or $clean -eq $Title) { return "" }
     if ($RoleKey -eq "heading" -and $clean -match "^\d+$") { return "" }
     if ($RoleKey -in @("text", "edit", "document", "scroll bar", "progress bar")) {
@@ -465,8 +465,8 @@ function Format-OrcaValueSegment([string]$RoleKey, [string]$Title, [string]$Valu
     ", Value: $clean"
 }
 
-function Test-OrcaSuppressChildren([string]$RoleKey, [string]$Title, [string]$Value, [string]$Summary) {
-    $hasCompactLabel = -not [string]::IsNullOrWhiteSpace($Title) -or -not [string]::IsNullOrWhiteSpace((Format-OrcaSnapshotText $Value)) -or -not [string]::IsNullOrWhiteSpace((Format-OrcaSnapshotText $Summary))
+function Test-TopoSuppressChildren([string]$RoleKey, [string]$Title, [string]$Value, [string]$Summary) {
+    $hasCompactLabel = -not [string]::IsNullOrWhiteSpace($Title) -or -not [string]::IsNullOrWhiteSpace((Format-TopoSnapshotText $Value)) -or -not [string]::IsNullOrWhiteSpace((Format-TopoSnapshotText $Summary))
     $hasCompactLabel -and $RoleKey -in @(
         "button",
         "check box",
@@ -480,15 +480,15 @@ function Test-OrcaSuppressChildren([string]$RoleKey, [string]$Title, [string]$Va
     )
 }
 
-function Get-OrcaTextSnippets($Element, [int]$Limit = 6, [int]$MaxDepth = 3) {
+function Get-TopoTextSnippets($Element, [int]$Limit = 6, [int]$MaxDepth = 3) {
     $values = New-Object System.Collections.Generic.List[string]
     $seen = New-Object System.Collections.Generic.HashSet[string]
 
-    function Visit-OrcaText($Node, [int]$Depth) {
+    function Visit-TopoText($Node, [int]$Depth) {
         if ($values.Count -ge $Limit -or $Depth -gt $MaxDepth) { return }
         $role = try { [string]$Node.Current.LocalizedControlType } catch { "" }
         if ($role -match "text|link|label") {
-            foreach ($raw in @((Get-OrcaProperty $Node "Name"), (Get-OrcaValueText $Node))) {
+            foreach ($raw in @((Get-TopoProperty $Node "Name"), (Get-TopoValueText $Node))) {
                 $value = (($raw -replace "\s+", " ").Trim())
                 if (-not [string]::IsNullOrWhiteSpace($value) -and $seen.Add($value)) {
                     if ($value.Length -gt 80) { $value = $value.Substring(0, 80) + "..." }
@@ -500,59 +500,59 @@ function Get-OrcaTextSnippets($Element, [int]$Limit = 6, [int]$MaxDepth = 3) {
         try {
             $children = $Node.FindAll([Windows.Automation.TreeScope]::Children, [Windows.Automation.Condition]::TrueCondition)
             for ($i = 0; $i -lt $children.Count; $i++) {
-                Visit-OrcaText $children.Item($i) ($Depth + 1)
+                Visit-TopoText $children.Item($i) ($Depth + 1)
                 if ($values.Count -ge $Limit) { return }
             }
         } catch {}
     }
 
-    Visit-OrcaText $Element 0
+    Visit-TopoText $Element 0
     @($values.ToArray())
 }
 
-function Test-OrcaPlainTextSubtree($Element, [int]$MaxDepth = 4) {
-    $script:sawOrcaText = $false
+function Test-TopoPlainTextSubtree($Element, [int]$MaxDepth = 4) {
+    $script:sawTopoText = $false
     $allowed = @("pane", "group", "custom", "unknown", "text", "link", "image")
 
-    function Visit-OrcaPlainText($Node, [int]$Depth) {
+    function Visit-TopoPlainText($Node, [int]$Depth) {
         if ($Depth -gt $MaxDepth) { return $false }
         $role = try { [string]$Node.Current.LocalizedControlType } catch { "" }
         $roleKey = $role.ToLowerInvariant()
         if ($allowed -notcontains $roleKey) { return $false }
-        if ($roleKey -match "text|link") { $script:sawOrcaText = $true }
-        if (@(Get-OrcaMeaningfulActions @(Get-OrcaActions $Node)).Count -gt 0) { return $false }
+        if ($roleKey -match "text|link") { $script:sawTopoText = $true }
+        if (@(Get-TopoMeaningfulActions @(Get-TopoActions $Node)).Count -gt 0) { return $false }
         try {
             $children = $Node.FindAll([Windows.Automation.TreeScope]::Children, [Windows.Automation.Condition]::TrueCondition)
             for ($i = 0; $i -lt $children.Count; $i++) {
-                if (-not (Visit-OrcaPlainText $children.Item($i) ($Depth + 1))) { return $false }
+                if (-not (Visit-TopoPlainText $children.Item($i) ($Depth + 1))) { return $false }
             }
         } catch {}
         return $true
     }
 
-    (Visit-OrcaPlainText $Element 0) -and $script:sawOrcaText
+    (Visit-TopoPlainText $Element 0) -and $script:sawTopoText
 }
 
-function New-OrcaElementRecord($Element, [int]$Index, $WindowFrame) {
+function New-TopoElementRecord($Element, [int]$Index, $WindowFrame) {
     $controlType = try { [string]$Element.Current.ControlType.ProgrammaticName } catch { "" }
     $nativeWindowHandle = try { [int64]$Element.Current.NativeWindowHandle } catch { 0 }
     [pscustomobject]@{
         index = $Index
-        runtimeId = @(Get-OrcaRuntimeId $Element)
-        automationId = Get-OrcaProperty $Element "AutomationId"
-        name = Get-OrcaProperty $Element "Name"
+        runtimeId = @(Get-TopoRuntimeId $Element)
+        automationId = Get-TopoProperty $Element "AutomationId"
+        name = Get-TopoProperty $Element "Name"
         controlType = $controlType
-        localizedControlType = Get-OrcaProperty $Element "LocalizedControlType"
-        className = Get-OrcaProperty $Element "ClassName"
-        value = Get-OrcaValueText $Element
-        isSelected = Test-OrcaElementSelected $Element
+        localizedControlType = Get-TopoProperty $Element "LocalizedControlType"
+        className = Get-TopoProperty $Element "ClassName"
+        value = Get-TopoValueText $Element
+        isSelected = Test-TopoElementSelected $Element
         nativeWindowHandle = $nativeWindowHandle
-        frame = Get-OrcaElementFrame $Element $WindowFrame
-        actions = @(Get-OrcaActions $Element)
+        frame = Get-TopoElementFrame $Element $WindowFrame
+        actions = @(Get-TopoActions $Element)
     }
 }
 
-function Test-OrcaElementSelected($Element) {
+function Test-TopoElementSelected($Element) {
     try {
         $pattern = $Element.GetCurrentPattern([Windows.Automation.SelectionItemPattern]::Pattern)
         return [bool]$pattern.Current.IsSelected
@@ -561,7 +561,7 @@ function Test-OrcaElementSelected($Element) {
     }
 }
 
-function Render-OrcaTree($RootElement, $WindowFrame, [bool]$CompactBrowserTabs = $false) {
+function Render-TopoTree($RootElement, $WindowFrame, [bool]$CompactBrowserTabs = $false) {
     $records = New-Object System.Collections.Generic.List[object]
     $lines = New-Object System.Collections.Generic.List[string]
     $seen = New-Object System.Collections.Generic.HashSet[string]
@@ -574,7 +574,7 @@ function Render-OrcaTree($RootElement, $WindowFrame, [bool]$CompactBrowserTabs =
     # Tab compaction shrinks records mid-walk, so $records.Count would reuse retained indexes.
     $nextIndex = [ref]0
 
-    function Visit-OrcaNode($Node, [int]$Depth) {
+    function Visit-TopoNode($Node, [int]$Depth) {
         if ($records.Count -ge $MaxNodes -or $Depth -gt $MaxDepth) {
             $truncation.truncated = $true
             if ($Depth -gt $MaxDepth) { $truncation.maxDepthReached = $true }
@@ -583,25 +583,25 @@ function Render-OrcaTree($RootElement, $WindowFrame, [bool]$CompactBrowserTabs =
         $identity = try { (@($Node.GetRuntimeId()) -join ".") } catch { [Guid]::NewGuid().ToString() }
         if (-not $seen.Add($identity)) { return }
 
-        $record = New-OrcaElementRecord $Node $nextIndex.Value $WindowFrame
+        $record = New-TopoElementRecord $Node $nextIndex.Value $WindowFrame
         $children = @()
         try {
             $children = @($Node.FindAll([Windows.Automation.TreeScope]::Children, [Windows.Automation.Condition]::TrueCondition))
         } catch {}
-        $meaningfulActions = @(Get-OrcaMeaningfulActions $record.actions)
+        $meaningfulActions = @(Get-TopoMeaningfulActions $record.actions)
         $title = if ([string]::IsNullOrWhiteSpace($record.name)) { $record.automationId } else { $record.name }
         $role = if ([string]::IsNullOrWhiteSpace($record.localizedControlType)) { $record.controlType } else { $record.localizedControlType }
         $roleKey = $role.ToLowerInvariant()
         $genericSummary = $null
         if (($roleKey -in @("pane", "group", "custom", "unknown")) -and [string]::IsNullOrWhiteSpace($title) -and [string]::IsNullOrWhiteSpace($record.value)) {
-            $snippets = @(Get-OrcaTextSnippets $Node 8 4)
-            if ($snippets.Count -ge 2 -and (Test-OrcaPlainTextSubtree $Node)) {
+            $snippets = @(Get-TopoTextSnippets $Node 8 4)
+            if ($snippets.Count -ge 2 -and (Test-TopoPlainTextSubtree $Node)) {
                 $genericSummary = ($snippets -join " ")
             }
         }
         if (($roleKey -in @("pane", "group", "custom", "unknown")) -and [string]::IsNullOrWhiteSpace($title) -and [string]::IsNullOrWhiteSpace($record.value) -and $meaningfulActions.Count -eq 0 -and $null -eq $genericSummary -and $children.Count -le 1) {
             for ($i = 0; $i -lt $children.Count; $i++) {
-                Visit-OrcaNode $children.Item($i) $Depth
+                Visit-TopoNode $children.Item($i) $Depth
             }
             return
         }
@@ -609,14 +609,14 @@ function Render-OrcaTree($RootElement, $WindowFrame, [bool]$CompactBrowserTabs =
         $records.Add($record)
         $nextIndex.Value++
 
-        $line = "$($record.index) $role $(Format-OrcaSnapshotText $title)".TrimEnd()
-        $line += Format-OrcaValueSegment $roleKey $title $record.value
+        $line = "$($record.index) $role $(Format-TopoSnapshotText $title)".TrimEnd()
+        $line += Format-TopoValueSegment $roleKey $title $record.value
         if (-not [string]::IsNullOrWhiteSpace($genericSummary) -and $genericSummary -ne $title) {
-            $line += ", Text: " + (Format-OrcaSnapshotText $genericSummary)
+            $line += ", Text: " + (Format-TopoSnapshotText $genericSummary)
         } elseif ($roleKey -in @("row", "data item", "list item")) {
-            $rowSummary = @((Get-OrcaTextSnippets $Node 6 3)) -join " "
+            $rowSummary = @((Get-TopoTextSnippets $Node 6 3)) -join " "
             if (-not [string]::IsNullOrWhiteSpace($rowSummary) -and $rowSummary -ne $title) {
-                $line += ", Text: " + (Format-OrcaSnapshotText $rowSummary)
+                $line += ", Text: " + (Format-TopoSnapshotText $rowSummary)
             }
         }
         if ($meaningfulActions.Count -gt 0) {
@@ -624,24 +624,24 @@ function Render-OrcaTree($RootElement, $WindowFrame, [bool]$CompactBrowserTabs =
         }
         $lines.Add(("`t" * $Depth) + $line)
 
-        if (-not [string]::IsNullOrWhiteSpace($genericSummary) -or (Test-OrcaSuppressChildren $roleKey $title $record.value $genericSummary)) { return }
+        if (-not [string]::IsNullOrWhiteSpace($genericSummary) -or (Test-TopoSuppressChildren $roleKey $title $record.value $genericSummary)) { return }
         $childLineStart = $lines.Count
         for ($i = 0; $i -lt $children.Count; $i++) {
-            Visit-OrcaNode $children.Item($i) ($Depth + 1)
+            Visit-TopoNode $children.Item($i) ($Depth + 1)
         }
         if ($CompactBrowserTabs) {
-            Compress-OrcaRenderedBrowserTabs $records $lines $childLineStart ($Depth + 1)
+            Compress-TopoRenderedBrowserTabs $records $lines $childLineStart ($Depth + 1)
         }
     }
 
-    Visit-OrcaNode $RootElement 0
+    Visit-TopoNode $RootElement 0
     [pscustomobject]@{ elements = @($records.ToArray()); lines = @($lines.ToArray()); truncation = $truncation }
 }
 
-function Compress-OrcaRenderedBrowserTabs($Records, $Lines, [int]$StartLine, [int]$Depth) {
+function Compress-TopoRenderedBrowserTabs($Records, $Lines, [int]$StartLine, [int]$Depth) {
     $tabLineIndexes = New-Object System.Collections.Generic.List[int]
     for ($lineIndex = $StartLine; $lineIndex -lt $Lines.Count; $lineIndex++) {
-        if (Test-OrcaDirectRenderedBrowserTabLine ([string]$Lines[$lineIndex]) $Depth) {
+        if (Test-TopoDirectRenderedBrowserTabLine ([string]$Lines[$lineIndex]) $Depth) {
             $tabLineIndexes.Add($lineIndex)
         }
     }
@@ -653,7 +653,7 @@ function Compress-OrcaRenderedBrowserTabs($Records, $Lines, [int]$StartLine, [in
     }
     $activeLineIndexes = New-Object System.Collections.Generic.HashSet[int]
     foreach ($lineIndex in $tabLineIndexes) {
-        if (Test-OrcaActiveRenderedBrowserTabLine ([string]$Lines[$lineIndex]) $Depth $recordsByIndex) {
+        if (Test-TopoActiveRenderedBrowserTabLine ([string]$Lines[$lineIndex]) $Depth $recordsByIndex) {
             [void]$activeLineIndexes.Add($lineIndex)
         }
     }
@@ -665,7 +665,7 @@ function Compress-OrcaRenderedBrowserTabs($Records, $Lines, [int]$StartLine, [in
     for ($i = $tabLineIndexes.Count - 1; $i -ge 0; $i--) {
         $lineIndex = $tabLineIndexes[$i]
         if ($activeLineIndexes.Contains($lineIndex)) { continue }
-        $recordIndex = Get-OrcaRenderedElementIndex ([string]$Lines[$lineIndex]) $Depth
+        $recordIndex = Get-TopoRenderedElementIndex ([string]$Lines[$lineIndex]) $Depth
         if ($null -ne $recordIndex) {
             [void]$omittedRecordIndexes.Add([int]$recordIndex)
         }
@@ -681,7 +681,7 @@ function Compress-OrcaRenderedBrowserTabs($Records, $Lines, [int]$StartLine, [in
     $Lines.Insert($insertionIndex, (("`t" * $Depth) + "... $omittedCount inactive browser tabs omitted"))
 }
 
-function Test-OrcaDirectRenderedBrowserTabLine([string]$Line, [int]$Depth) {
+function Test-TopoDirectRenderedBrowserTabLine([string]$Line, [int]$Depth) {
     $indent = "`t" * $Depth
     if (-not $Line.StartsWith($indent)) { return $false }
     $text = $Line.Substring($indent.Length)
@@ -689,21 +689,21 @@ function Test-OrcaDirectRenderedBrowserTabLine([string]$Line, [int]$Depth) {
     $text -match "^\d+ (page tab|tab item|tab)($|[ \(,])"
 }
 
-function Test-OrcaActiveRenderedBrowserTabLine([string]$Line, [int]$Depth, $RecordsByIndex) {
+function Test-TopoActiveRenderedBrowserTabLine([string]$Line, [int]$Depth, $RecordsByIndex) {
     if ($Line.Contains("(selected")) { return $true }
-    $recordIndex = Get-OrcaRenderedElementIndex $Line $Depth
+    $recordIndex = Get-TopoRenderedElementIndex $Line $Depth
     if ($null -eq $recordIndex -or -not $RecordsByIndex.ContainsKey([int]$recordIndex)) { return $false }
     $record = $RecordsByIndex[[int]$recordIndex]
-    [bool]$record.isSelected -or (Format-OrcaSnapshotText $record.value) -eq "1"
+    [bool]$record.isSelected -or (Format-TopoSnapshotText $record.value) -eq "1"
 }
 
-function Get-OrcaRenderedElementIndex([string]$Line, [int]$Depth) {
+function Get-TopoRenderedElementIndex([string]$Line, [int]$Depth) {
     $text = $Line.Substring(("`t" * $Depth).Length)
     if ($text -match "^(\d+)") { return [int]$Matches[1] }
     $null
 }
 
-function ConvertTo-OrcaPngBytes([System.Drawing.Image]$Image) {
+function ConvertTo-TopoPngBytes([System.Drawing.Image]$Image) {
     $stream = $null
     try {
         $stream = New-Object System.IO.MemoryStream
@@ -714,7 +714,7 @@ function ConvertTo-OrcaPngBytes([System.Drawing.Image]$Image) {
     }
 }
 
-function New-OrcaScreenshotPayload([byte[]]$Bytes, [int]$Width, [int]$Height, [double]$Scale) {
+function New-TopoScreenshotPayload([byte[]]$Bytes, [int]$Width, [int]$Height, [double]$Scale) {
     [pscustomobject]@{
         base64 = [Convert]::ToBase64String($Bytes)
         width = $Width
@@ -723,7 +723,7 @@ function New-OrcaScreenshotPayload([byte[]]$Bytes, [int]$Width, [int]$Height, [d
     }
 }
 
-function Resize-OrcaBitmap([System.Drawing.Bitmap]$Source, [int]$Width, [int]$Height) {
+function Resize-TopoBitmap([System.Drawing.Bitmap]$Source, [int]$Width, [int]$Height) {
     $resized = $null
     $graphics = $null
     try {
@@ -740,12 +740,12 @@ function Resize-OrcaBitmap([System.Drawing.Bitmap]$Source, [int]$Width, [int]$He
     }
 }
 
-function Get-OrcaBoundedScreenshotPayload([System.Drawing.Bitmap]$Bitmap) {
+function Get-TopoBoundedScreenshotPayload([System.Drawing.Bitmap]$Bitmap) {
     $originalWidth = [int][Math]::Max(1, $Bitmap.Width)
     $originalHeight = [int][Math]::Max(1, $Bitmap.Height)
-    $pngBytes = ConvertTo-OrcaPngBytes $Bitmap
+    $pngBytes = ConvertTo-TopoPngBytes $Bitmap
     if ($pngBytes.Length -le $MaxScreenshotPngBytes) {
-        return New-OrcaScreenshotPayload $pngBytes $originalWidth $originalHeight 1.0
+        return New-TopoScreenshotPayload $pngBytes $originalWidth $originalHeight 1.0
     }
 
     # Why: screenshots cross process boundaries as PNG base64 in JSON; cap noisy
@@ -761,10 +761,10 @@ function Get-OrcaBoundedScreenshotPayload([System.Drawing.Bitmap]$Bitmap) {
 
         $resized = $null
         try {
-            $resized = Resize-OrcaBitmap $Bitmap $width $height
-            $candidateBytes = ConvertTo-OrcaPngBytes $resized
+            $resized = Resize-TopoBitmap $Bitmap $width $height
+            $candidateBytes = ConvertTo-TopoPngBytes $resized
             if ($candidateBytes.Length -le $MaxScreenshotPngBytes) {
-                return New-OrcaScreenshotPayload $candidateBytes $width $height ($width / [double]$originalWidth)
+                return New-TopoScreenshotPayload $candidateBytes $width $height ($width / [double]$originalWidth)
             }
         } finally {
             if ($null -ne $resized) { $resized.Dispose() }
@@ -781,7 +781,7 @@ function Get-OrcaBoundedScreenshotPayload([System.Drawing.Bitmap]$Bitmap) {
     }
 }
 
-function Get-OrcaScreenshot([bool]$IncludeScreenshot, $WindowFrame) {
+function Get-TopoScreenshot([bool]$IncludeScreenshot, $WindowFrame) {
     if (-not $IncludeScreenshot -or $null -eq $WindowFrame) { return $null }
     $bitmap = $null
     $graphics = $null
@@ -791,7 +791,7 @@ function Get-OrcaScreenshot([bool]$IncludeScreenshot, $WindowFrame) {
         $bitmap = New-Object System.Drawing.Bitmap $width, $height
         $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
         $graphics.CopyFromScreen([int][Math]::Round($WindowFrame.x), [int][Math]::Round($WindowFrame.y), 0, 0, $bitmap.Size)
-        Get-OrcaBoundedScreenshotPayload $bitmap
+        Get-TopoBoundedScreenshotPayload $bitmap
     } catch {
         $null
     } finally {
@@ -800,20 +800,20 @@ function Get-OrcaScreenshot([bool]$IncludeScreenshot, $WindowFrame) {
     }
 }
 
-function New-OrcaSnapshot([string]$Query, [bool]$IncludeScreenshot, $WindowId = $null, $WindowIndex = $null, [bool]$RestoreWindow = $false) {
-    $process = Find-OrcaProcess $Query
-    if ($RestoreWindow) { Restore-OrcaWindow $process }
-    Assert-OrcaWindowTarget $process $WindowId $WindowIndex
-    $root = Get-OrcaRootElement $process
-    $windowFrame = Get-OrcaWindowFrame $process $root
-    $tree = Render-OrcaTree $root $windowFrame (Test-OrcaBrowserProcess $process)
-    $screenshot = Get-OrcaScreenshot $IncludeScreenshot $windowFrame
+function New-TopoSnapshot([string]$Query, [bool]$IncludeScreenshot, $WindowId = $null, $WindowIndex = $null, [bool]$RestoreWindow = $false) {
+    $process = Find-TopoProcess $Query
+    if ($RestoreWindow) { Restore-TopoWindow $process }
+    Assert-TopoWindowTarget $process $WindowId $WindowIndex
+    $root = Get-TopoRootElement $process
+    $windowFrame = Get-TopoWindowFrame $process $root
+    $tree = Render-TopoTree $root $windowFrame (Test-TopoBrowserProcess $process)
+    $screenshot = Get-TopoScreenshot $IncludeScreenshot $windowFrame
 
     [pscustomobject]@{
         snapshotId = [guid]::NewGuid().ToString()
-        app = New-OrcaAppRecord $process
+        app = New-TopoAppRecord $process
         windowTitle = $process.MainWindowTitle
-        windowId = Get-OrcaWindowId $process
+        windowId = Get-TopoWindowId $process
         windowBounds = $windowFrame
         screenshotPngBase64 = if ($null -ne $screenshot) { $screenshot.base64 } else { $null }
         screenshotWidth = if ($null -ne $screenshot) { $screenshot.width } else { $null }
@@ -830,16 +830,16 @@ function New-OrcaSnapshot([string]$Query, [bool]$IncludeScreenshot, $WindowId = 
     }
 }
 
-function Get-OrcaAppList {
-    @(Get-OrcaWindowProcesses | ForEach-Object {
-        New-OrcaAppRecord $_
+function Get-TopoAppList {
+    @(Get-TopoWindowProcesses | ForEach-Object {
+        New-TopoAppRecord $_
     })
 }
 
-function Get-OrcaWindowList([string]$Query) {
-    $process = Find-OrcaProcess $Query
-    $root = Get-OrcaRootElement $process
-    $windowFrame = Get-OrcaWindowFrame $process $root
+function Get-TopoWindowList([string]$Query) {
+    $process = Find-TopoProcess $Query
+    $root = Get-TopoRootElement $process
+    $windowFrame = Get-TopoWindowFrame $process $root
     $x = $null
     $y = $null
     $width = 0
@@ -850,13 +850,13 @@ function Get-OrcaWindowList([string]$Query) {
         $width = [int][Math]::Max(0, [Math]::Round($windowFrame.width))
         $height = [int][Math]::Max(0, [Math]::Round($windowFrame.height))
     }
-    $app = New-OrcaAppRecord $process
+    $app = New-TopoAppRecord $process
     [pscustomobject]@{
         app = $app
         windows = @([pscustomobject]@{
             index = 0
             app = $app
-            id = Get-OrcaWindowId $process
+            id = Get-TopoWindowId $process
             title = $process.MainWindowTitle
             x = $x
             y = $y
@@ -865,15 +865,15 @@ function Get-OrcaWindowList([string]$Query) {
             isMinimized = $false
             isOffscreen = $false
             screenIndex = $null
-            platform = [pscustomobject]@{ backend = "uia"; nativeWindowHandle = Get-OrcaWindowId $process }
+            platform = [pscustomobject]@{ backend = "uia"; nativeWindowHandle = Get-TopoWindowId $process }
         })
     }
 }
 
-function Get-OrcaHandshake {
+function Get-TopoHandshake {
     [pscustomobject]@{
         platform = "win32"
-        provider = "orca-computer-use-windows"
+        provider = "topo-computer-use-windows"
         providerVersion = "1.0.0"
         protocolVersion = 1
         supports = [pscustomobject]@{
@@ -896,7 +896,7 @@ function Get-OrcaHandshake {
     }
 }
 
-function Test-OrcaSameRuntimeId($Left, $Right) {
+function Test-TopoSameRuntimeId($Left, $Right) {
     if ($null -eq $Left -or $null -eq $Right -or $Left.Count -ne $Right.Count) { return $false }
     for ($i = 0; $i -lt $Left.Count; $i++) {
         if ([int]$Left[$i] -ne [int]$Right[$i]) { return $false }
@@ -904,7 +904,7 @@ function Test-OrcaSameRuntimeId($Left, $Right) {
     $true
 }
 
-function Find-OrcaElement($RootElement, $Record) {
+function Find-TopoElement($RootElement, $Record) {
     if ($null -eq $Record) { return $null }
     if ($Record.index -eq 0) { return $RootElement }
 
@@ -912,7 +912,7 @@ function Find-OrcaElement($RootElement, $Record) {
         $descendants = $RootElement.FindAll([Windows.Automation.TreeScope]::Descendants, [Windows.Automation.Condition]::TrueCondition)
         for ($i = 0; $i -lt $descendants.Count; $i++) {
             $candidate = $descendants.Item($i)
-            if (Test-OrcaSameRuntimeId @($candidate.GetRuntimeId()) @($Record.runtimeId)) {
+            if (Test-TopoSameRuntimeId @($candidate.GetRuntimeId()) @($Record.runtimeId)) {
                 return $candidate
             }
         }
@@ -920,7 +920,7 @@ function Find-OrcaElement($RootElement, $Record) {
     $null
 }
 
-function Invoke-OrcaPrimaryAction($Element) {
+function Invoke-TopoPrimaryAction($Element) {
     foreach ($pattern in @(
         [Windows.Automation.InvokePattern]::Pattern,
         [Windows.Automation.SelectionItemPattern]::Pattern,
@@ -936,7 +936,7 @@ function Invoke-OrcaPrimaryAction($Element) {
     $false
 }
 
-function Invoke-OrcaNamedAction($Element, [string]$Action) {
+function Invoke-TopoNamedAction($Element, [string]$Action) {
     $wanted = ""
     if ($null -ne $Action) { $wanted = $Action.Trim().ToLowerInvariant() }
     switch ($wanted) {
@@ -961,7 +961,7 @@ function Invoke-OrcaNamedAction($Element, [string]$Action) {
     }
 }
 
-function Set-OrcaElementValue($Element, [string]$Value) {
+function Set-TopoElementValue($Element, [string]$Value) {
     try {
         $pattern = $Element.GetCurrentPattern([Windows.Automation.ValuePattern]::Pattern)
         if (-not $pattern.Current.IsReadOnly) {
@@ -972,7 +972,7 @@ function Set-OrcaElementValue($Element, [string]$Value) {
     $false
 }
 
-function Get-OrcaRequiredNumber($Value, [string]$Name) {
+function Get-TopoRequiredNumber($Value, [string]$Name) {
     if ($null -eq $Value) { throw "$Name is required" }
     $number = [double]$Value
     if ([double]::IsNaN($number) -or [double]::IsInfinity($number)) {
@@ -981,40 +981,40 @@ function Get-OrcaRequiredNumber($Value, [string]$Name) {
     $number
 }
 
-function Get-OrcaPositiveInteger($Value, [string]$Name) {
+function Get-TopoPositiveInteger($Value, [string]$Name) {
     if ($null -eq $Value) { $Value = 1 }
     $number = [int]$Value
     if ($number -le 0) { throw "$Name must be a positive integer" }
     $number
 }
 
-function Get-OrcaPositiveNumber($Value, [string]$Name) {
+function Get-TopoPositiveNumber($Value, [string]$Name) {
     if ($null -eq $Value) { $Value = 1 }
-    $number = Get-OrcaRequiredNumber $Value $Name
+    $number = Get-TopoRequiredNumber $Value $Name
     if ($number -le 0) { throw "$Name must be a positive number" }
     $number
 }
 
-function Get-OrcaRequiredString($Value, [string]$Name) {
+function Get-TopoRequiredString($Value, [string]$Name) {
     if ($null -eq $Value) { throw "$Name is required" }
     $text = [string]$Value
     if ($text.Length -eq 0) { throw "$Name is required" }
     $text
 }
 
-function Get-OrcaScreenPoint($Operation, $WindowFrame) {
+function Get-TopoScreenPoint($Operation, $WindowFrame) {
     if ($null -ne $Operation.element) {
         throw "stale element frame; run get-app-state again and use a fresh element index"
     }
-    $x = Get-OrcaRequiredNumber $Operation.x "x"
-    $y = Get-OrcaRequiredNumber $Operation.y "y"
+    $x = Get-TopoRequiredNumber $Operation.x "x"
+    $y = Get-TopoRequiredNumber $Operation.y "y"
     @{
         x = [int][Math]::Round($WindowFrame.x + $x)
         y = [int][Math]::Round($WindowFrame.y + $y)
     }
 }
 
-function Get-OrcaElementScreenPoint($Element) {
+function Get-TopoElementScreenPoint($Element) {
     if ($null -eq $Element) { return $null }
     try {
         $rect = $Element.Current.BoundingRectangle
@@ -1028,8 +1028,8 @@ function Get-OrcaElementScreenPoint($Element) {
     $null
 }
 
-function Send-OrcaMouseClick([int]$ScreenX, [int]$ScreenY, [string]$Button, [int]$Count, [string]$Modifiers) {
-    [void][OrcaDesktopWin32]::SetCursorPos($ScreenX, $ScreenY)
+function Send-TopoMouseClick([int]$ScreenX, [int]$ScreenY, [string]$Button, [int]$Count, [string]$Modifiers) {
+    [void][TopoDesktopWin32]::SetCursorPos($ScreenX, $ScreenY)
     $buttonName = if ([string]::IsNullOrWhiteSpace($Button)) { "left" } else { $Button.ToLowerInvariant() }
     switch ($buttonName) {
         "left" { $down = $MouseEvents.LeftDown; $up = $MouseEvents.LeftUp }
@@ -1038,18 +1038,18 @@ function Send-OrcaMouseClick([int]$ScreenX, [int]$ScreenY, [string]$Button, [int
         default { throw "unsupported mouse button: $Button" }
     }
 
-    $modifierKeys = @(Get-OrcaClickModifierVirtualKeys $Modifiers)
-    $clickCount = Get-OrcaPositiveInteger $Count "click_count"
+    $modifierKeys = @(Get-TopoClickModifierVirtualKeys $Modifiers)
+    $clickCount = Get-TopoPositiveInteger $Count "click_count"
     if ($modifierKeys.Count -eq 0) {
         for ($i = 0; $i -lt $clickCount; $i++) {
-            [OrcaDesktopWin32]::mouse_event($down, 0, 0, 0, [UIntPtr]::Zero)
+            [TopoDesktopWin32]::mouse_event($down, 0, 0, 0, [UIntPtr]::Zero)
             Start-Sleep -Milliseconds 35
-            [OrcaDesktopWin32]::mouse_event($up, 0, 0, 0, [UIntPtr]::Zero)
+            [TopoDesktopWin32]::mouse_event($up, 0, 0, 0, [UIntPtr]::Zero)
         }
         return
     }
     for ($i = 0; $i -lt $clickCount; $i++) {
-        [OrcaDesktopWin32]::SendModifiedClick(
+        [TopoDesktopWin32]::SendModifiedClick(
             [byte[]]$modifierKeys,
             [uint32]$down,
             [uint32]$up
@@ -1058,39 +1058,39 @@ function Send-OrcaMouseClick([int]$ScreenX, [int]$ScreenY, [string]$Button, [int
     }
 }
 
-function Send-OrcaDrag($From, $To) {
+function Send-TopoDrag($From, $To) {
     $startX = [int]$From.x
     $startY = [int]$From.y
     $endX = [int]$To.x
     $endY = [int]$To.y
-    [void][OrcaDesktopWin32]::SetCursorPos($startX, $startY)
-    [OrcaDesktopWin32]::mouse_event($MouseEvents.LeftDown, 0, 0, 0, [UIntPtr]::Zero)
+    [void][TopoDesktopWin32]::SetCursorPos($startX, $startY)
+    [TopoDesktopWin32]::mouse_event($MouseEvents.LeftDown, 0, 0, 0, [UIntPtr]::Zero)
     for ($step = 1; $step -le 12; $step++) {
         $x = [int][Math]::Round($startX + (($endX - $startX) * $step / 12))
         $y = [int][Math]::Round($startY + (($endY - $startY) * $step / 12))
-        [void][OrcaDesktopWin32]::SetCursorPos($x, $y)
+        [void][TopoDesktopWin32]::SetCursorPos($x, $y)
         Start-Sleep -Milliseconds 20
     }
-    [OrcaDesktopWin32]::mouse_event($MouseEvents.LeftUp, 0, 0, 0, [UIntPtr]::Zero)
+    [TopoDesktopWin32]::mouse_event($MouseEvents.LeftUp, 0, 0, 0, [UIntPtr]::Zero)
 }
 
-function Send-OrcaText([IntPtr]$WindowHandle, [string]$Text) {
-    [void][OrcaDesktopWin32]::SetForegroundWindow($WindowHandle)
+function Send-TopoText([IntPtr]$WindowHandle, [string]$Text) {
+    [void][TopoDesktopWin32]::SetForegroundWindow($WindowHandle)
     $hasNonAscii = $false
     foreach ($character in $Text.ToCharArray()) {
         if ([int][char]$character -gt 0x7F) { $hasNonAscii = $true; break }
     }
     if ($hasNonAscii) {
         foreach ($character in $Text.ToCharArray()) {
-            [void][OrcaDesktopWin32]::PostMessage($WindowHandle, $WindowsMessages.Char, [IntPtr][int][char]$character, [IntPtr]::Zero)
+            [void][TopoDesktopWin32]::PostMessage($WindowHandle, $WindowsMessages.Char, [IntPtr][int][char]$character, [IntPtr]::Zero)
             Start-Sleep -Milliseconds 8
         }
         return
     }
-    [System.Windows.Forms.SendKeys]::SendWait((ConvertTo-OrcaSendKeysText $Text))
+    [System.Windows.Forms.SendKeys]::SendWait((ConvertTo-TopoSendKeysText $Text))
 }
 
-function Get-OrcaVirtualKey([string]$Key) {
+function Get-TopoVirtualKey([string]$Key) {
     $normalized = $Key.ToLowerInvariant()
     $map = @{
         "return" = 0x0D; "enter" = 0x0D; "tab" = 0x09; "escape" = 0x1B; "esc" = 0x1B
@@ -1102,12 +1102,12 @@ function Get-OrcaVirtualKey([string]$Key) {
     throw "Unsupported key: $Key"
 }
 
-function Send-OrcaKey([IntPtr]$WindowHandle, [string]$Key) {
-    [void][OrcaDesktopWin32]::SetForegroundWindow($WindowHandle)
-    [System.Windows.Forms.SendKeys]::SendWait((ConvertTo-OrcaSendKeysKey $Key))
+function Send-TopoKey([IntPtr]$WindowHandle, [string]$Key) {
+    [void][TopoDesktopWin32]::SetForegroundWindow($WindowHandle)
+    [System.Windows.Forms.SendKeys]::SendWait((ConvertTo-TopoSendKeysKey $Key))
 }
 
-function Get-OrcaModifierVirtualKey([string]$Modifier) {
+function Get-TopoModifierVirtualKey([string]$Modifier) {
     switch ($Modifier.ToLowerInvariant()) {
         { $_ -in @("ctrl", "control", "cmdorctrl", "commandorcontrol") } { return 0x11 }
         { $_ -in @("shift") } { return 0x10 }
@@ -1117,17 +1117,17 @@ function Get-OrcaModifierVirtualKey([string]$Modifier) {
     }
 }
 
-function Get-OrcaClickModifierVirtualKeys([string]$Modifiers) {
+function Get-TopoClickModifierVirtualKeys([string]$Modifiers) {
     if ([string]::IsNullOrWhiteSpace($Modifiers)) { return @() }
     $parts = @($Modifiers.Split("+") | ForEach-Object { $_.Trim() })
     $emptyParts = @($parts | Where-Object { [string]::IsNullOrWhiteSpace($_) })
     if ($parts.Count -eq 0 -or $emptyParts.Count -gt 0) {
         throw "Click modifiers require modifier keys only"
     }
-    @($parts | ForEach-Object { Get-OrcaModifierVirtualKey $_ })
+    @($parts | ForEach-Object { Get-TopoModifierVirtualKey $_ })
 }
 
-function ConvertTo-OrcaSendKeysHotkey([string]$KeySpec) {
+function ConvertTo-TopoSendKeysHotkey([string]$KeySpec) {
     $parts = @($KeySpec.Split("+") | ForEach-Object { $_.Trim() } | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
     if ($parts.Count -eq 0) { throw "Unsupported key: $KeySpec" }
     $key = $parts[$parts.Count - 1]
@@ -1136,19 +1136,19 @@ function ConvertTo-OrcaSendKeysHotkey([string]$KeySpec) {
         # SendKeys adds Shift for an uppercase letter, turning Ctrl+A into Ctrl+Shift+A.
         if ($key.Length -eq 1) { $key = $key.ToLowerInvariant() }
         foreach ($modifier in $parts[0..($parts.Count - 2)]) {
-            $prefix += ConvertTo-OrcaSendKeysModifier $modifier
+            $prefix += ConvertTo-TopoSendKeysModifier $modifier
         }
     }
-    $prefix + (ConvertTo-OrcaSendKeysKey $key)
+    $prefix + (ConvertTo-TopoSendKeysKey $key)
 }
 
-function Send-OrcaHotkey([IntPtr]$WindowHandle, [string]$KeySpec) {
-    $keys = ConvertTo-OrcaSendKeysHotkey $KeySpec
-    [void][OrcaDesktopWin32]::SetForegroundWindow($WindowHandle)
+function Send-TopoHotkey([IntPtr]$WindowHandle, [string]$KeySpec) {
+    $keys = ConvertTo-TopoSendKeysHotkey $KeySpec
+    [void][TopoDesktopWin32]::SetForegroundWindow($WindowHandle)
     [System.Windows.Forms.SendKeys]::SendWait($keys)
 }
 
-function ConvertTo-OrcaSendKeysText([string]$Text) {
+function ConvertTo-TopoSendKeysText([string]$Text) {
     $builder = New-Object System.Text.StringBuilder
     foreach ($character in $Text.ToCharArray()) {
         $value = [string]$character
@@ -1163,7 +1163,7 @@ function ConvertTo-OrcaSendKeysText([string]$Text) {
     $builder.ToString()
 }
 
-function ConvertTo-OrcaSendKeysKey([string]$Key) {
+function ConvertTo-TopoSendKeysKey([string]$Key) {
     switch ($Key.ToLowerInvariant()) {
         { $_ -in @("return", "enter") } { return "{ENTER}" }
         "tab" { return "{TAB}" }
@@ -1181,13 +1181,13 @@ function ConvertTo-OrcaSendKeysKey([string]$Key) {
         { $_ -in @("pagedown", "page_down") } { return "{PGDN}" }
         "insert" { return "{INSERT}" }
         default {
-            if ($Key.Length -eq 1) { return (ConvertTo-OrcaSendKeysText $Key) }
+            if ($Key.Length -eq 1) { return (ConvertTo-TopoSendKeysText $Key) }
             throw "Unsupported key: $Key"
         }
     }
 }
 
-function ConvertTo-OrcaSendKeysModifier([string]$Modifier) {
+function ConvertTo-TopoSendKeysModifier([string]$Modifier) {
     switch ($Modifier.ToLowerInvariant()) {
         { $_ -in @("ctrl", "control", "cmdorctrl", "commandorcontrol") } { return "^" }
         "shift" { return "+" }
@@ -1196,14 +1196,14 @@ function ConvertTo-OrcaSendKeysModifier([string]$Modifier) {
     }
 }
 
-function Send-OrcaPasteText([IntPtr]$WindowHandle, [string]$Text) {
+function Send-TopoPasteText([IntPtr]$WindowHandle, [string]$Text) {
     $previous = $null
     $hadPrevious = $false
     try { $previous = [System.Windows.Forms.Clipboard]::GetDataObject() } catch {}
     $hadPrevious = $null -ne $previous
     try {
         Set-Clipboard -Value $Text
-        Send-OrcaHotkey $WindowHandle "Ctrl+v"
+        Send-TopoHotkey $WindowHandle "Ctrl+v"
     } finally {
         if ($hadPrevious) {
             try { [System.Windows.Forms.Clipboard]::SetDataObject($previous, $true) } catch {}
@@ -1213,50 +1213,50 @@ function Send-OrcaPasteText([IntPtr]$WindowHandle, [string]$Text) {
     }
 }
 
-function Invoke-OrcaOperation($Operation) {
+function Invoke-TopoOperation($Operation) {
     $includeScreenshot = -not [bool]$Operation.noScreenshot
     if ($Operation.tool -eq "handshake") {
-        return [pscustomobject]@{ ok = $true; capabilities = Get-OrcaHandshake }
+        return [pscustomobject]@{ ok = $true; capabilities = Get-TopoHandshake }
     }
     if ($Operation.tool -eq "list_apps") {
-        return [pscustomobject]@{ ok = $true; apps = @(Get-OrcaAppList) }
+        return [pscustomobject]@{ ok = $true; apps = @(Get-TopoAppList) }
     }
     if ($Operation.tool -eq "list_windows") {
-        $list = Get-OrcaWindowList $Operation.app
+        $list = Get-TopoWindowList $Operation.app
         return [pscustomobject]@{ ok = $true; app = $list.app; windows = @($list.windows) }
     }
     if ($Operation.tool -eq "get_app_state") {
-        return [pscustomobject]@{ ok = $true; snapshot = New-OrcaSnapshot $Operation.app $includeScreenshot $Operation.windowId $Operation.windowIndex ([bool]$Operation.restoreWindow) }
+        return [pscustomobject]@{ ok = $true; snapshot = New-TopoSnapshot $Operation.app $includeScreenshot $Operation.windowId $Operation.windowIndex ([bool]$Operation.restoreWindow) }
     }
 
-    $process = Find-OrcaProcess $Operation.app
-    if ([bool]$Operation.restoreWindow) { Restore-OrcaWindow $process }
-    Assert-OrcaWindowTarget $process $Operation.windowId $Operation.windowIndex
-    $root = Get-OrcaRootElement $process
-    $windowFrame = if ($null -ne $Operation.windowBounds) { $Operation.windowBounds } else { Get-OrcaWindowFrame $process $root }
-    $element = Find-OrcaElement $root $Operation.element
-    $fromElement = Find-OrcaElement $root $Operation.fromElement
-    $toElement = Find-OrcaElement $root $Operation.toElement
+    $process = Find-TopoProcess $Operation.app
+    if ([bool]$Operation.restoreWindow) { Restore-TopoWindow $process }
+    Assert-TopoWindowTarget $process $Operation.windowId $Operation.windowIndex
+    $root = Get-TopoRootElement $process
+    $windowFrame = if ($null -ne $Operation.windowBounds) { $Operation.windowBounds } else { Get-TopoWindowFrame $process $root }
+    $element = Find-TopoElement $root $Operation.element
+    $fromElement = Find-TopoElement $root $Operation.fromElement
+    $toElement = Find-TopoElement $root $Operation.toElement
     $handle = [IntPtr]$process.MainWindowHandle
     if ($Operation.tool -in @("type_text", "press_key", "hotkey", "paste_text")) {
-        Assert-OrcaKeyboardFocus $handle $Operation
+        Assert-TopoKeyboardFocus $handle $Operation
     }
     $action = $null
 
     switch ($Operation.tool) {
         "click" {
             $handledByPattern = $false
-            $clickCount = Get-OrcaPositiveInteger $Operation.click_count "click_count"
+            $clickCount = Get-TopoPositiveInteger $Operation.click_count "click_count"
             $hasModifiers = -not [string]::IsNullOrWhiteSpace([string]$Operation.modifiers)
             if (-not $hasModifiers -and $null -ne $element -and $Operation.mouse_button -ne "right" -and $Operation.mouse_button -ne "middle" -and $clickCount -le 1) {
-                $handledByPattern = Invoke-OrcaPrimaryAction $element
+                $handledByPattern = Invoke-TopoPrimaryAction $element
             }
             if (-not $handledByPattern) {
                 # Why: mouse input lands on whichever window is on top at the point; UIA patterns need no focus.
-                $windowFrame = Restore-OrcaPointerWindow $process $root
-                $point = Get-OrcaElementScreenPoint $element
-                if ($null -eq $point) { $point = Get-OrcaScreenPoint $Operation $windowFrame }
-                Send-OrcaMouseClick $point.x $point.y $Operation.mouse_button $clickCount $Operation.modifiers
+                $windowFrame = Restore-TopoPointerWindow $process $root
+                $point = Get-TopoElementScreenPoint $element
+                if ($null -eq $point) { $point = Get-TopoScreenPoint $Operation $windowFrame }
+                Send-TopoMouseClick $point.x $point.y $Operation.mouse_button $clickCount $Operation.modifiers
                 $action = [pscustomobject]@{ path = "synthetic"; actionName = $null; fallbackReason = "actionUnsupported" }
             } else {
                 $action = [pscustomobject]@{ path = "accessibility"; actionName = "primaryAction"; fallbackReason = $null }
@@ -1264,13 +1264,13 @@ function Invoke-OrcaOperation($Operation) {
         }
         "perform_secondary_action" {
             if ($null -eq $element) { throw "unknown element_index" }
-            if (-not (Invoke-OrcaNamedAction $element $Operation.action)) {
+            if (-not (Invoke-TopoNamedAction $element $Operation.action)) {
                 throw "$($Operation.action) is not a valid secondary action"
             }
             $action = [pscustomobject]@{ path = "accessibility"; actionName = $Operation.action; fallbackReason = $null }
         }
         "scroll" {
-            $delta = 120 * [int][Math]::Ceiling((Get-OrcaPositiveNumber $Operation.pages "pages"))
+            $delta = 120 * [int][Math]::Ceiling((Get-TopoPositiveNumber $Operation.pages "pages"))
             $mouseEvent = $MouseEvents.Wheel
             if ($Operation.direction -eq "down") {
                 $delta = -1 * $delta
@@ -1282,52 +1282,52 @@ function Invoke-OrcaOperation($Operation) {
             } elseif ($Operation.direction -ne "up") {
                 throw "unsupported scroll direction: $($Operation.direction)"
             }
-            $windowFrame = Restore-OrcaPointerWindow $process $root
-            $point = Get-OrcaElementScreenPoint $element
-            if ($null -eq $point) { $point = Get-OrcaScreenPoint $Operation $windowFrame }
-            [void][OrcaDesktopWin32]::SetCursorPos([int]$point.x, [int]$point.y)
-            [OrcaDesktopWin32]::mouse_event($mouseEvent, 0, 0, $delta, [UIntPtr]::Zero)
+            $windowFrame = Restore-TopoPointerWindow $process $root
+            $point = Get-TopoElementScreenPoint $element
+            if ($null -eq $point) { $point = Get-TopoScreenPoint $Operation $windowFrame }
+            [void][TopoDesktopWin32]::SetCursorPos([int]$point.x, [int]$point.y)
+            [TopoDesktopWin32]::mouse_event($mouseEvent, 0, 0, $delta, [UIntPtr]::Zero)
             $action = [pscustomobject]@{ path = "synthetic"; actionName = "scroll"; fallbackReason = $null }
         }
         "drag" {
-            $windowFrame = Restore-OrcaPointerWindow $process $root
-            $from = Get-OrcaElementScreenPoint $fromElement
+            $windowFrame = Restore-TopoPointerWindow $process $root
+            $from = Get-TopoElementScreenPoint $fromElement
             if ($null -eq $from -and $null -ne $Operation.fromElement) { throw "stale element frame; run get-app-state again and use a fresh element index" }
             if ($null -eq $from) {
                 $from = @{
-                    x = $windowFrame.x + (Get-OrcaRequiredNumber $Operation.from_x "from_x")
-                    y = $windowFrame.y + (Get-OrcaRequiredNumber $Operation.from_y "from_y")
+                    x = $windowFrame.x + (Get-TopoRequiredNumber $Operation.from_x "from_x")
+                    y = $windowFrame.y + (Get-TopoRequiredNumber $Operation.from_y "from_y")
                 }
             }
-            $to = Get-OrcaElementScreenPoint $toElement
+            $to = Get-TopoElementScreenPoint $toElement
             if ($null -eq $to -and $null -ne $Operation.toElement) { throw "stale element frame; run get-app-state again and use a fresh element index" }
             if ($null -eq $to) {
                 $to = @{
-                    x = $windowFrame.x + (Get-OrcaRequiredNumber $Operation.to_x "to_x")
-                    y = $windowFrame.y + (Get-OrcaRequiredNumber $Operation.to_y "to_y")
+                    x = $windowFrame.x + (Get-TopoRequiredNumber $Operation.to_x "to_x")
+                    y = $windowFrame.y + (Get-TopoRequiredNumber $Operation.to_y "to_y")
                 }
             }
-            Send-OrcaDrag $from $to
+            Send-TopoDrag $from $to
             $action = [pscustomobject]@{ path = "synthetic"; actionName = "drag"; fallbackReason = $null }
         }
         "type_text" {
-            Send-OrcaText $handle (Get-OrcaRequiredString $Operation.text "text")
+            Send-TopoText $handle (Get-TopoRequiredString $Operation.text "text")
             $action = [pscustomobject]@{ path = "synthetic"; actionName = "typeText"; fallbackReason = $null; verification = [pscustomobject]@{ state = "unverified"; reason = "synthetic_input" } }
         }
         "press_key" {
-            Send-OrcaKey $handle (Get-OrcaRequiredString $Operation.key "key")
+            Send-TopoKey $handle (Get-TopoRequiredString $Operation.key "key")
             $action = [pscustomobject]@{ path = "synthetic"; actionName = "pressKey"; fallbackReason = $null; verification = [pscustomobject]@{ state = "unverified"; reason = "synthetic_input" } }
         }
         "hotkey" {
-            Send-OrcaHotkey $handle (Get-OrcaRequiredString $Operation.key "key")
+            Send-TopoHotkey $handle (Get-TopoRequiredString $Operation.key "key")
             $action = [pscustomobject]@{ path = "synthetic"; actionName = "hotkey"; fallbackReason = $null; verification = [pscustomobject]@{ state = "unverified"; reason = "synthetic_input" } }
         }
         "paste_text" {
-            Send-OrcaPasteText $handle (Get-OrcaRequiredString $Operation.text "text")
+            Send-TopoPasteText $handle (Get-TopoRequiredString $Operation.text "text")
             $action = [pscustomobject]@{ path = "clipboard"; actionName = "paste"; fallbackReason = $null; verification = [pscustomobject]@{ state = "unverified"; reason = "clipboard_paste" } }
         }
         "set_value" {
-            if ($null -eq $element -or -not (Set-OrcaElementValue $element ([string]$Operation.value))) {
+            if ($null -eq $element -or -not (Set-TopoElementValue $element ([string]$Operation.value))) {
                 throw "element value is not settable"
             }
             $action = [pscustomobject]@{ path = "accessibility"; actionName = "setValue"; fallbackReason = $null }
@@ -1338,18 +1338,18 @@ function Invoke-OrcaOperation($Operation) {
     }
 
     try {
-        $snapshot = New-OrcaSnapshot $Operation.app $includeScreenshot $Operation.windowId $Operation.windowIndex
+        $snapshot = New-TopoSnapshot $Operation.app $includeScreenshot $Operation.windowId $Operation.windowIndex
     } catch {
         if ($null -eq $Operation.windowId -and $null -eq $Operation.windowIndex) { throw }
         if ($null -eq $action.verification) {
             $action | Add-Member -NotePropertyName verification -NotePropertyValue ([pscustomobject]@{ state = "unverified"; reason = "window_changed" })
         }
-        $snapshot = New-OrcaSnapshot $Operation.app $includeScreenshot $null $null
+        $snapshot = New-TopoSnapshot $Operation.app $includeScreenshot $null $null
     }
     [pscustomobject]@{ ok = $true; action = $action; snapshot = $snapshot }
 }
 
-function Invoke-OrcaServeLoop {
+function Invoke-TopoServeLoop {
     # Announce readiness after Add-Type and before reading: absence proves no request ran and permits safe replay.
     # A missing response cannot prove that; replay could duplicate input.
     [Console]::Out.WriteLine('{"ready":true}')
@@ -1363,7 +1363,7 @@ function Invoke-OrcaServeLoop {
         try {
             $operation = $line | ConvertFrom-Json
             $requestId = $operation.requestId
-            $response = Invoke-OrcaOperation $operation
+            $response = Invoke-TopoOperation $operation
         } catch {
             $response = [pscustomobject]@{ ok = $false; error = [string]$_.Exception.Message }
             # ConvertFrom-Json can fail before reading id; recover it from raw input so the error reaches its request
@@ -1382,14 +1382,14 @@ function Invoke-OrcaServeLoop {
 }
 
 if ($Serve) {
-    Invoke-OrcaServeLoop
+    Invoke-TopoServeLoop
 } elseif ([string]::IsNullOrWhiteSpace($OperationPath)) {
-    Write-OrcaJson ([pscustomobject]@{ ok = $false; error = "runtime.ps1 requires an operation path or -Serve" })
+    Write-TopoJson ([pscustomobject]@{ ok = $false; error = "runtime.ps1 requires an operation path or -Serve" })
 } else {
     try {
-        $operation = Read-OrcaOperation $OperationPath
-        Write-OrcaJson (Invoke-OrcaOperation $operation)
+        $operation = Read-TopoOperation $OperationPath
+        Write-TopoJson (Invoke-TopoOperation $operation)
     } catch {
-        Write-OrcaJson ([pscustomobject]@{ ok = $false; error = [string]$_.Exception.Message })
+        Write-TopoJson ([pscustomobject]@{ ok = $false; error = [string]$_.Exception.Message })
     }
 }

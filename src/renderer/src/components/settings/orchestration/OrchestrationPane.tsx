@@ -118,7 +118,7 @@ export function OrchestrationPane({
             )}
             description={t(
               'auto.components.settings.OrchestrationPane.9bedd2a6e5',
-              'Enables agents to hand off context and coordinate work through Orca.'
+              'Enables agents to hand off context and coordinate work through Topo.'
             )}
             skillNames={[ORCHESTRATION_SKILL_NAME]}
             installed={orchestrationSkillDetected}
@@ -129,7 +129,7 @@ export function OrchestrationPane({
             onBeforeInstall={() => {
               useAppStore.getState().recordFeatureInteraction('agent-orchestration-setup')
             }}
-            // COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+            // COMPAT(wsl-bridge): removed when WSL runs as an topod host.
             actionHint={
               activeSkillRuntime.agentRuntime?.runtime === 'wsl' && !orchestrationSkillDetected ? (
                 <button
@@ -171,7 +171,7 @@ export function OrchestrationPane({
         ) : null}
       </SettingsGroup>
 
-      {/* COMPAT(wsl-bridge): removed when WSL runs as an orcad host. */}
+      {/* COMPAT(wsl-bridge): removed when WSL runs as an topod host. */}
       {activeSkillRuntime.agentRuntime?.runtime === 'wsl' ? (
         <OrchestrationSkillPromptDialog
           command={buildSkillCommandForRuntime(

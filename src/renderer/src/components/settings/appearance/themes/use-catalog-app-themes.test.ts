@@ -8,7 +8,7 @@ function themeListing(
 ): PluginMarketplaceHostListing {
   return {
     marketplaceSourceId: 'official',
-    marketplaceName: 'Orca Official Plugins',
+    marketplaceName: 'Topo Official Plugins',
     marketplaceOwner: 'stablyai',
     marketplaceCommit: 'abc123',
     pluginKey,
@@ -50,7 +50,7 @@ describe('catalogAppThemes', () => {
   it('offers only one-click themes for the slot mode that are not installed and run here', () => {
     const snapshot = {
       installed: [],
-      orcaVersion: '1.4.246',
+      topoVersion: '1.4.246',
       listings: [
         themeListing('stablyai.offered'),
         themeListing('stablyai.installed'),

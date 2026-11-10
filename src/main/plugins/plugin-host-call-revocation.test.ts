@@ -27,7 +27,7 @@ function gate() {
 
 /** A save whose dialog stays open until `dialog.open()`, then writes only if still active. */
 async function createSavingPlugin() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-revocation-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-revocation-'))
   const settings: { disabled: string[]; consents: Record<string, string> } = {
     disabled: [],
     consents: {}

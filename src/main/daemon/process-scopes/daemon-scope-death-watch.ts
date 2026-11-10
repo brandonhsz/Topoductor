@@ -1,6 +1,6 @@
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import type { ChildProcess } from 'node:child_process'
-import type { ProcessSpec } from '@orca/process-host/process-spec'
+import type { ProcessSpec } from '@topo/process-host/process-spec'
 
 // The pipe closes even on SIGKILL; a live/reused owner PID always vetoes cleanup.
 const SCOPE_DEATH_WATCH_SCRIPT = `
@@ -38,7 +38,7 @@ export function startDaemonScopeDeathWatch(options: ScopeDeathWatchOptions): Chi
   try {
     const child = (options.spawn ?? spawnProcess)({
       program: '/bin/sh',
-      args: ['-c', SCOPE_DEATH_WATCH_SCRIPT, 'orca-daemon-scope-watch', String(process.pid), unit],
+      args: ['-c', SCOPE_DEATH_WATCH_SCRIPT, 'topo-daemon-scope-watch', String(process.pid), unit],
       env,
       detached: true,
       stdio: ['pipe', 'ignore', 'ignore']

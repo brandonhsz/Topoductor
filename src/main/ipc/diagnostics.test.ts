@@ -89,9 +89,9 @@ describe('diagnostics IPC handlers', () => {
     deleteDiagnosticBundleMock.mockReset()
     getDiagnosticsStatusMock.mockReset()
     uploadDiagnosticBundleMock.mockReset()
-    delete (globalThis as { ORCA_BUILD_IDENTITY?: unknown }).ORCA_BUILD_IDENTITY
-    delete (globalThis as { ORCA_DIAGNOSTICS_TOKEN_URL?: unknown }).ORCA_DIAGNOSTICS_TOKEN_URL
-    process.env.ORCA_DIAGNOSTICS_TOKEN_URL = 'https://diagnostics.example.com/diagnostics/token'
+    delete (globalThis as { TOPO_BUILD_IDENTITY?: unknown }).TOPO_BUILD_IDENTITY
+    delete (globalThis as { TOPO_DIAGNOSTICS_TOKEN_URL?: unknown }).TOPO_DIAGNOSTICS_TOKEN_URL
+    process.env.TOPO_DIAGNOSTICS_TOKEN_URL = 'https://diagnostics.example.com/diagnostics/token'
     getDiagnosticsStatusMock.mockReturnValue({
       localFileEnabled: true,
       bundleEnabled: true,

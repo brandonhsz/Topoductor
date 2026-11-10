@@ -1,6 +1,6 @@
 import path from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient,
@@ -11,9 +11,9 @@ const HOST_NAME = 'Build server'
 const LONG_HOST_NAME = 'Shared GPU build server in us-east-1'
 const STATUS_BAR_HEIGHT = 28
 // Use a nonexistent Keychain account: HOME isolation alone does not hide the user-keyed macOS Claude login.
-const NO_CLAUDE_LOGIN_USER = 'orca-e2e-no-claude-login'
+const NO_CLAUDE_LOGIN_USER = 'topo-e2e-no-claude-login'
 
-test.use({ orcaAppExtraEnv: { USER: NO_CLAUDE_LOGIN_USER } })
+test.use({ topoAppExtraEnv: { USER: NO_CLAUDE_LOGIN_USER } })
 
 // Collect cropped screenshot evidence outside test output; full windows expose usernames in terminal prompts.
 async function shootStatusBar(
@@ -38,8 +38,8 @@ async function shootStatusBar(
 }
 
 function outputPathFor(name: string, outputPath: (name: string) => string): string {
-  return process.env.ORCA_E2E_SCREENSHOT_DIR
-    ? path.join(process.env.ORCA_E2E_SCREENSHOT_DIR, name)
+  return process.env.TOPO_E2E_SCREENSHOT_DIR
+    ? path.join(process.env.TOPO_E2E_SCREENSHOT_DIR, name)
     : outputPath(name)
 }
 

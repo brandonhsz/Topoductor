@@ -14,7 +14,7 @@ import {
 import { createClaudeJournalTranslator } from './structured/journal/claude-structured-journal-translation'
 
 const COMMAND_IDENTITY: AgentJournalItemIdentity = {
-  provider: 'orca',
+  provider: 'topo',
   clientMessageId: 'command-turn:cmd-1'
 }
 const COMMAND_KEY = agentJournalItemKey(COMMAND_IDENTITY)
@@ -24,7 +24,7 @@ const RUNNING = {
   kind: 'turn' as const,
   turnId: 'compact:cmd-1',
   state: 'running' as const,
-  userItemId: 'orca:submission:cmd-1',
+  userItemId: 'topo:submission:cmd-1',
   requestedAt: 900,
   startedAt: 1_000
 }
@@ -85,7 +85,7 @@ function harness() {
   const frame = (message: Record<string, unknown>, extra: Record<string, unknown> = {}) =>
     translator.handle({
       type: 'message',
-      sessionId: 'orca-session',
+      sessionId: 'topo-session',
       message: { session_id: CAPTURED_COMPACT_SESSION_ID, ...message },
       observedAt: 5_000,
       ...extra
@@ -95,7 +95,7 @@ function harness() {
       clientMessageId: 'cmd-1',
       turnId: RUNNING.turnId,
       identity: COMMAND_IDENTITY,
-      resultIdentity: { provider: 'orca', clientMessageId: 'command-result:cmd-1' },
+      resultIdentity: { provider: 'topo', clientMessageId: 'command-result:cmd-1' },
       running: RUNNING,
       providerSessionId: CAPTURED_COMPACT_SESSION_ID,
       sentUuid

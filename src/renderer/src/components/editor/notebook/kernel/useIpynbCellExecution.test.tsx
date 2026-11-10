@@ -134,8 +134,8 @@ describe('notebook cell execution', () => {
     [
       'a managed SSH workspace owned by its server',
       ownerRows(
-        { executionHostId: 'runtime:env-orcad' },
-        { hostId: 'runtime:env-orcad', runtimeOwnerEnvironmentId: 'env-orcad' }
+        { executionHostId: 'runtime:env-topod' },
+        { hostId: 'runtime:env-topod', runtimeOwnerEnvironmentId: 'env-topod' }
       )
     ],
     [
@@ -175,7 +175,7 @@ describe('notebook cell execution', () => {
 
     act(() => hook.result.current.runCell(1))
     expect(toastError).toHaveBeenCalledWith(
-      "Orca can't tell which computer this notebook is on yet, so its cells can't run."
+      "Topo can't tell which computer this notebook is on yet, so its cells can't run."
     )
     expect(applyContent).not.toHaveBeenCalled()
     expect(hook.result.current.pendingRun).toBeNull()

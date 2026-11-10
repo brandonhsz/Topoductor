@@ -11,7 +11,7 @@ const electronBuilderConfig = require('../../../electron-builder.config.cjs')
 const { darkBuildMarkers } = require('../../../dark-build-switches.cjs')
 
 async function withBundle(run) {
-  const scratch = await mkdtemp(join(tmpdir(), 'orca-mobile-web-guard-'))
+  const scratch = await mkdtemp(join(tmpdir(), 'topo-mobile-web-guard-'))
   const bundleDir = join(scratch, 'mobile-web')
   try {
     const { manifest } = await writeMobileWebBundleFixtureTree({ outDir: bundleDir })
@@ -78,7 +78,7 @@ describe('assertMobileWebBundleBuilt', () => {
 describe('electron-builder packaging wiring', () => {
   it('verifies a dark page build, and refuses to package it', async () => {
     await withBundle(async ({ bundleDir }) => {
-      const [marker] = darkBuildMarkers({ ORCA_SIDEBAR_INPUTS: 'main' })
+      const [marker] = darkBuildMarkers({ TOPO_SIDEBAR_INPUTS: 'main' })
       await writeFile(join(bundleDir, marker.fileName), marker.text, 'utf8')
       expect(() => assertMobileWebBundleBuilt(bundleDir)).not.toThrow()
       expect(() =>
@@ -86,7 +86,7 @@ describe('electron-builder packaging wiring', () => {
           { electronPlatformName: process.platform, arch: process.arch === 'arm64' ? 3 : 1 },
           bundleDir
         )
-      ).toThrow(`${bundleDir} holds an ORCA_SIDEBAR_INPUTS=main build`)
+      ).toThrow(`${bundleDir} holds an TOPO_SIDEBAR_INPUTS=main build`)
     })
   })
 })

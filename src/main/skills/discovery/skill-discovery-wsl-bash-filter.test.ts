@@ -17,7 +17,7 @@ describe('generated WSL skill name filter', () => {
   it.skipIf(process.platform !== 'linux')(
     'rejects only known scalar mismatches and passes uncertain names to TypeScript',
     async () => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-wsl-name-filter-'))
+      const root = await mkdtemp(join(tmpdir(), 'topo-wsl-name-filter-'))
       const scanRoot: SkillScanRoot = {
         id: 'home',
         owner: 'agents',

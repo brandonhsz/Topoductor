@@ -17,7 +17,7 @@ const ENVIRONMENTS = [{ id: '03ef704c-b180-4b10-998d-e28fbd5de9a3', name: 'awin'
 afterEach(() => vi.restoreAllMocks())
 
 function clientWithCall(call: RuntimeClient['call']): RuntimeClient {
-  const client = new RuntimeClient('/tmp/orca-host-alternatives-test', 60_000, null, null)
+  const client = new RuntimeClient('/tmp/topo-host-alternatives-test', 60_000, null, null)
   vi.spyOn(client, 'call').mockImplementation(call)
   return client
 }
@@ -59,7 +59,7 @@ describe('crossKindNextSteps', () => {
     const steps = crossKindNextSteps('awin', alternatives, 'ssh')
 
     expect(steps.join('\n')).toContain('--environment awin')
-    expect(steps.join('\n')).toContain('is a paired Orca server')
+    expect(steps.join('\n')).toContain('is a paired Topo server')
   })
 
   it('says nothing when the name exists on neither axis', () => {
@@ -104,7 +104,7 @@ describe('resolveSshHostTargetId', () => {
       resolveSshHostTargetId(clientReturning([]), 'openclaw', ENVIRONMENTS)
     ).rejects.toMatchObject({
       code: 'invalid_argument',
-      data: { nextSteps: expect.arrayContaining(['This Orca host has no SSH targets registered.']) }
+      data: { nextSteps: expect.arrayContaining(['This Topo host has no SSH targets registered.']) }
     })
   })
 })

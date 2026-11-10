@@ -1,5 +1,5 @@
 import { PNG } from 'pngjs'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import { ensureActiveWorktreePaneLoad } from './artificial-opencode-pane-interactions'
 import { waitForTerminalPtyDataInjector } from './helpers/terminal-pty-injection'
@@ -36,14 +36,14 @@ function decorationPixels(screenshot: Buffer): {
 }
 
 test('DOM block fills preserve underline, strikeout and link-hover pixels', async ({
-  orcaPage
+  topoPage
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await orcaPage.setViewportSize({ width: 1440, height: 900 })
-  const [target] = await ensureActiveWorktreePaneLoad(orcaPage, 1)
-  await waitForTerminalPtyDataInjector(orcaPage, target.paneKey)
-  await orcaPage.evaluate(async ({ paneKey }) => {
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await topoPage.setViewportSize({ width: 1440, height: 900 })
+  const [target] = await ensureActiveWorktreePaneLoad(topoPage, 1)
+  await waitForTerminalPtyDataInjector(topoPage, target.paneKey)
+  await topoPage.evaluate(async ({ paneKey }) => {
     const [tabId, leafId] = paneKey.split(':')
     const manager = window.__paneManagers!.get(tabId)!
     manager.setTerminalGpuAcceleration('off')
@@ -66,9 +66,9 @@ test('DOM block fills preserve underline, strikeout and link-hover pixels', asyn
       )
     )
   }, target)
-  const rows = orcaPage.locator('.xterm-rows:visible')
+  const rows = topoPage.locator('.xterm-rows:visible')
   await expect(rows).toContainText('BLOCK_DECORATION_DONE')
-  await orcaPage.mouse.move(1350, 700)
+  await topoPage.mouse.move(1350, 700)
   const block = (index: number) =>
     rows
       .locator(':scope > div')
@@ -80,7 +80,7 @@ test('DOM block fills preserve underline, strikeout and link-hover pixels', asyn
     if (!clip) {
       throw new Error('Terminal block has no rendered bounds')
     }
-    return orcaPage.screenshot({ clip })
+    return topoPage.screenshot({ clip })
   }
   const pixels = async (index: number) => decorationPixels(await screenshot(index))
 
@@ -95,7 +95,7 @@ test('DOM block fills preserve underline, strikeout and link-hover pixels', asyn
   if (!linkBounds) {
     throw new Error('Terminal link has no rendered bounds')
   }
-  await orcaPage.mouse.move(
+  await topoPage.mouse.move(
     linkBounds.x + linkBounds.width / 2,
     linkBounds.y + linkBounds.height / 2
   )
@@ -106,7 +106,7 @@ test('DOM block fills preserve underline, strikeout and link-hover pixels', asyn
     })
     .toBeGreaterThan(0.8)
   const screenshotPath = testInfo.outputPath('terminal-block-decorations.png')
-  await orcaPage.screenshot({ path: screenshotPath })
+  await topoPage.screenshot({ path: screenshotPath })
   await testInfo.attach('terminal-block-decorations', {
     path: screenshotPath,
     contentType: 'image/png'

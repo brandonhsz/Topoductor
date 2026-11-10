@@ -1,7 +1,7 @@
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
-import type { PipedProcessSpawner } from '@orca/process-host/process-spec'
+import type { PipedProcessSpawner } from '@topo/process-host/process-spec'
 import type { SpawnOptions as ClaudeAgentSdkSpawnOptions } from '@anthropic-ai/claude-agent-sdk'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import {
   spawnManagedProviderProcess,
   type ManagedProviderProcess
@@ -9,7 +9,7 @@ import {
 import { claudeChildClosePolicy, claudeChildCloseProven } from './claude-child-exit-proof-ladder'
 
 export type ClaudeCodeProcessSpawn = {
-  /** SDK spawn hook; Orca retains process ownership. */
+  /** SDK spawn hook; Topo retains process ownership. */
   spawn: (options: ClaudeAgentSdkSpawnOptions) => ChildProcessWithoutNullStreams
   readonly child: ChildProcessWithoutNullStreams | null
   readonly managed: ManagedProviderProcess | null
@@ -45,8 +45,8 @@ function observeStdoutWithReader(
   stdout.on('newListener', onSubscribe)
 }
 
-// Orca owns the child for PID-based exit proof and Windows .cmd quoting.
-// POSIX supervisors stop Claude if Orca dies; Windows spawns Claude directly.
+// Topo owns the child for PID-based exit proof and Windows .cmd quoting.
+// POSIX supervisors stop Claude if Topo dies; Windows spawns Claude directly.
 export function createClaudeCodeProcessSpawn(
   spawnImpl: PipedProcessSpawner = spawnProcess,
   platform: NodeJS.Platform = process.platform,
@@ -60,7 +60,7 @@ export function createClaudeCodeProcessSpawn(
       // The SDK runs script programs through a runtime, keeping the script at argv[0].
       const script = launch && /\.(?:js|mjs|ts|tsx|jsx)$/.test(launch.pathToClaudeCodeExecutable)
       args.splice(script ? 1 : 0, 0, ...(launch?.prefixArgs ?? []))
-      // SDK abort would kill the child outside Orca's ladder, losing observed exit proof.
+      // SDK abort would kill the child outside Topo's ladder, losing observed exit proof.
       managed = spawnManagedProviderProcess(
         {
           command: options.command,

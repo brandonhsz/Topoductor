@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithOnPtyExit } from '../lifecycle/pty-exit-lifecycle'
+import { TopoRuntimeWithOnPtyExit } from '../lifecycle/pty-exit-lifecycle'
 import type { PtyLivenessVerdict } from '../../../../shared/terminal/pty/lifecycle/pty-liveness-verdict'
 import type { RuntimeTerminalDriverState } from '../../../../shared/runtime-session-contracts'
 import {
@@ -12,7 +12,7 @@ import { getPtyTerminalState, getTerminalState } from '../wait/terminal-wait-res
 // Orphaned verdicts are bounded; active PTYs retain theirs until new evidence resolves them.
 const MAX_TRACKED_PTY_LIVENESS_VERDICTS = 256
 
-export abstract class OrcaRuntimeWithMarkPtyLivenessUnverifiable extends OrcaRuntimeWithOnPtyExit {
+export abstract class TopoRuntimeWithMarkPtyLivenessUnverifiable extends TopoRuntimeWithOnPtyExit {
   protected abstract leafExistsForPty(ptyId: string): boolean
   abstract recordRendererGeometry(ptyId: string, cols: number, rows: number): void
   abstract isResizeSuppressed(): boolean

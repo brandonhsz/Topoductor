@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import { copyFileSync, rmSync } from 'node:fs'
 import path from 'node:path'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient
@@ -12,18 +12,18 @@ import { openTerminalWorkspaceRootLink } from './helpers/terminal-workspace-root
 
 // #35968: a host file outside every workspace is read through its grant, which once allowed only a whole-file text read.
 test('a paired terminal link to a video outside every workspace plays it', async ({
-  orcaPage,
+  topoPage,
   testRepoPath
 }, testInfo) => {
   test.skip(process.platform === 'win32', 'The host grants terminal paths under /tmp')
   // Launches and pairs a second Electron client, then streams video through it; loaded CI needs the headroom.
   test.setTimeout(240_000)
-  const videoPath = `/tmp/orca-granted-${randomBytes(4).toString('hex')}.mp4`
+  const videoPath = `/tmp/topo-granted-${randomBytes(4).toString('hex')}.mp4`
   copyFileSync(path.join(process.cwd(), 'docs/site/public/docs/videos/tab-split.mp4'), videoPath)
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
   const client = await launchPairedElectronClient(
-    await createRuntimeDesktopPairingOffer(orcaPage),
+    await createRuntimeDesktopPairingOffer(topoPage),
     testInfo,
     'Granted video'
   )

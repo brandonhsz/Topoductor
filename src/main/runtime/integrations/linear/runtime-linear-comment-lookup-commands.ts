@@ -24,7 +24,7 @@ export class RuntimeLinearCommentLookupCommands extends RuntimeLinearWriteResult
           'linear_invalid_parent',
           'The reply target is not a comment on this issue.',
           {
-            nextSteps: ['Run `orca linear issue <id> --comments --json` to list valid comment ids.']
+            nextSteps: ['Run `topo linear issue <id> --comments --json` to list valid comment ids.']
           }
         )
       }
@@ -70,7 +70,7 @@ export class RuntimeLinearCommentLookupCommands extends RuntimeLinearWriteResult
     }
     if (isLinearAuthError(error)) {
       return linearError('linear_auth_expired', 'Linear authentication expired.', {
-        nextSteps: ['Reconnect Linear from Orca settings.']
+        nextSteps: ['Reconnect Linear from Topo settings.']
       })
     }
     return toLinearAccessError(error)

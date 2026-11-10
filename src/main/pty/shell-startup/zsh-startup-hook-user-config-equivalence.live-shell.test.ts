@@ -13,18 +13,18 @@ const itWithZsh = hasZsh ? it : it.skip
 function wrappedEnv(home: string): Record<string, string> {
   const features = selectShellStartupFeatures({
     shellPath: ZSH_PATH,
-    env: { HOME: home, ORCA_HISTFILE: join(home, 'scoped_history') },
+    env: { HOME: home, TOPO_HISTFILE: join(home, 'scoped_history') },
     hasStartupCommand: false,
     waitsForShellReady: false,
     emitsStartupIdentity: false
   })
   const launch = getShellLaunchConfig(ZSH_PATH, features)
   // Remove the real inherited config directory so these cases resolve only from the sandbox HOME.
-  const { ORCA_ORIG_ZDOTDIR: _dropped, ...env } = launch.env
+  const { TOPO_ORIG_ZDOTDIR: _dropped, ...env } = launch.env
   return {
     PATH: '/usr/bin:/bin',
     HOME: home,
-    ORCA_HISTFILE: join(home, 'scoped_history'),
+    TOPO_HISTFILE: join(home, 'scoped_history'),
     ...env
   }
 }
@@ -34,16 +34,16 @@ describe.skipIf(process.platform === 'win32')('the fixes the old wrapper was bui
   let previousUserDataPath: string | undefined
 
   beforeAll(() => {
-    previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-hook-regression-'))
-    process.env.ORCA_USER_DATA_PATH = userDataPath
+    previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-hook-regression-'))
+    process.env.TOPO_USER_DATA_PATH = userDataPath
   })
 
   afterAll(() => {
     if (previousUserDataPath === undefined) {
-      delete process.env.ORCA_USER_DATA_PATH
+      delete process.env.TOPO_USER_DATA_PATH
     } else {
-      process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+      process.env.TOPO_USER_DATA_PATH = previousUserDataPath
     }
     rmSync(userDataPath, { recursive: true, force: true })
   })
@@ -59,7 +59,7 @@ describe.skipIf(process.platform === 'win32')('the fixes the old wrapper was bui
     try {
       return await runZshPty({
         env: { ...env, ZDOTDIR: relocated },
-        report: ['ORCA_TEST_FROM_ZSHRC', 'ORCA_SHELL_FEATURES', 'HISTFILE']
+        report: ['TOPO_TEST_FROM_ZSHRC', 'TOPO_SHELL_FEATURES', 'HISTFILE']
       })
     } finally {
       if (existsSync(movedRoot)) {
@@ -72,12 +72,12 @@ describe.skipIf(process.platform === 'win32')('the fixes the old wrapper was bui
     'loads the user .zshrc when the wrapper is sourced from a relocated path (#8003)',
     async () => {
       // Relocate to model Windows-generated wrappers sourced through a different WSL /mnt path.
-      const home = makeZshHome({ '.zshrc': 'export ORCA_TEST_FROM_ZSHRC=1\n' })
+      const home = makeZshHome({ '.zshrc': 'export TOPO_TEST_FROM_ZSHRC=1\n' })
       try {
         const { values } = await runFromRelocatedRoot(home, `${userDataPath}-wsl-view`)
 
-        expect(values.ORCA_TEST_FROM_ZSHRC).toBe('1')
-        expect(values.ORCA_SHELL_FEATURES).toBe('UNSET')
+        expect(values.TOPO_TEST_FROM_ZSHRC).toBe('1')
+        expect(values.TOPO_SHELL_FEATURES).toBe('UNSET')
         expect(values.HISTFILE).toBe(join(home, 'scoped_history'))
       } finally {
         rmSync(home, { recursive: true, force: true })
@@ -87,7 +87,7 @@ describe.skipIf(process.platform === 'win32')('the fixes the old wrapper was bui
 
   itWithZsh('loads the user .zshrc from a non-ASCII wrapper path (#8003)', async () => {
     // Korean UTF-8 bytes overlap zsh's token range and can corrupt env-imported ZDOTDIR during startup.
-    const home = makeZshHome({ '.zshrc': 'export ORCA_TEST_FROM_ZSHRC=1\n' })
+    const home = makeZshHome({ '.zshrc': 'export TOPO_TEST_FROM_ZSHRC=1\n' })
     try {
       // A unique destination avoids collisions with directories left by killed test runs.
       const { values } = await runFromRelocatedRoot(
@@ -95,30 +95,30 @@ describe.skipIf(process.platform === 'win32')('the fixes the old wrapper was bui
         join(dirname(userDataPath), `홍길동-${basename(userDataPath)}`)
       )
 
-      expect(values.ORCA_TEST_FROM_ZSHRC).toBe('1')
-      expect(values.ORCA_SHELL_FEATURES).toBe('UNSET')
+      expect(values.TOPO_TEST_FROM_ZSHRC).toBe('1')
+      expect(values.TOPO_SHELL_FEATURES).toBe('UNSET')
       expect(values.HISTFILE).toBe(join(home, 'scoped_history'))
     } finally {
       rmSync(home, { recursive: true, force: true })
     }
   })
 
-  itWithZsh('refuses an inherited ZDOTDIR that is an Orca wrapper dir (#15258)', async () => {
-    // Older parents can supply stale ORCA_ORIG_ZDOTDIR without passing through Node's ownership check.
-    const home = makeZshHome({ '.zshrc': 'export ORCA_TEST_FROM_ZSHRC=1\n' })
+  itWithZsh('refuses an inherited ZDOTDIR that is a Topo wrapper dir (#15258)', async () => {
+    // Older parents can supply stale TOPO_ORIG_ZDOTDIR without passing through Node's ownership check.
+    const home = makeZshHome({ '.zshrc': 'export TOPO_TEST_FROM_ZSHRC=1\n' })
     const foreign = join(home, 'other-terminal', 'zsh')
     mkdirSync(foreign, { recursive: true })
-    writeFileSync(join(foreign, '.zshrc'), 'export ORCA_TEST_FROM_WRAPPER_DIR=1\n')
+    writeFileSync(join(foreign, '.zshrc'), 'export TOPO_TEST_FROM_WRAPPER_DIR=1\n')
     writeFileSync(join(foreign, ZSH_WRAPPER_DIR_MARKER_FILE), '')
     try {
       const { values } = await runZshPty({
-        env: { ...wrappedEnv(home), ORCA_ORIG_ZDOTDIR: foreign },
-        report: ['ZDOTDIR', 'ORCA_TEST_FROM_ZSHRC', 'ORCA_TEST_FROM_WRAPPER_DIR']
+        env: { ...wrappedEnv(home), TOPO_ORIG_ZDOTDIR: foreign },
+        report: ['ZDOTDIR', 'TOPO_TEST_FROM_ZSHRC', 'TOPO_TEST_FROM_WRAPPER_DIR']
       })
 
       expect(values.ZDOTDIR).toBe('UNSET')
-      expect(values.ORCA_TEST_FROM_ZSHRC).toBe('1')
-      expect(values.ORCA_TEST_FROM_WRAPPER_DIR).toBe('UNSET')
+      expect(values.TOPO_TEST_FROM_ZSHRC).toBe('1')
+      expect(values.TOPO_TEST_FROM_WRAPPER_DIR).toBe('UNSET')
     } finally {
       rmSync(home, { recursive: true, force: true })
     }

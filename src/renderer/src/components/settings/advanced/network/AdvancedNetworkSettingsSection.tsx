@@ -227,7 +227,7 @@ export function AdvancedNetworkSettingsSection({
       title={t('auto.components.settings.AdvancedNetworkSettingsSection.c46cdbbd4e', 'Network')}
       description={t(
         'auto.components.settings.AdvancedNetworkSettingsSection.823e0f15b1',
-        'Proxy URL for Orca network requests and local terminal children.'
+        'Proxy URL for Topo network requests and local terminal children.'
       )}
       keywords={[
         'proxy',

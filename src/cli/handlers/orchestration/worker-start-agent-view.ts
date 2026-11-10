@@ -80,7 +80,7 @@ export const WORKER_START_VIEW: OrchestrationAgentView<WorkerStartAgentReceipt, 
         nextCommands: value.state === 'ready' || unobserved ? undefined : value.nextCommands,
         keptOpen: value.keptOpen,
         next: unobserved
-          ? `Task typed in but the worker hasn't been seen starting; don't resend or abandon it. End your turn; Orca wakes you when it reports. If nothing arrives, run ${renderOrchestrationArgv(['orca', 'orchestration', 'worker-show', '--dispatch', value.dispatchId])}.`
+          ? `Task typed in but the worker hasn't been seen starting; don't resend or abandon it. End your turn; Topo wakes you when it reports. If nothing arrives, run ${renderOrchestrationArgv(['topo', 'orchestration', 'worker-show', '--dispatch', value.dispatchId])}.`
           : value.recovery
             ? value.recovery
             : value.next

@@ -15,7 +15,7 @@ import { subscribeCrew } from './crew-stream'
 import { fixture } from './crew-read-model.test-fixture'
 
 it('reconstructs old-writer stub parents after real receipt pruning and reopen, and separates reset scopes', async () => {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-crew-parent-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-crew-parent-'))
   const path = join(dir, 'orchestration.db')
   const { deps, handles } = fixture()
   const workerProcess = deps.processForHandle?.('term_worker')

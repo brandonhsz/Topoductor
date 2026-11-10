@@ -1,5 +1,5 @@
-import { runProcess } from '@orca/process-host'
-import { ORCA_TAB_SESSION_PREFIX } from './agent-browser-session-name'
+import { runProcess } from '@topo/process-host'
+import { TOPO_TAB_SESSION_PREFIX } from './agent-browser-session-name'
 
 const SWEEP_TIMEOUT_MS = 5_000
 const SWEEP_MAX_OUTPUT_BYTES = 256 * 1024
@@ -29,7 +29,7 @@ export async function sweepOrphanedAgentBrowserSessions(options: {
   ownsSocketDirectory: boolean
   isSessionLive?: (sessionName: string) => boolean
 }): Promise<string[]> {
-  if (!options.ownsSocketDirectory || process.env.ORCA_DISABLE_AGENT_BROWSER_SWEEP === '1') {
+  if (!options.ownsSocketDirectory || process.env.TOPO_DISABLE_AGENT_BROWSER_SWEEP === '1') {
     return []
   }
   let listed: string[]
@@ -48,7 +48,7 @@ export async function sweepOrphanedAgentBrowserSessions(options: {
 
   const closed: string[] = []
   for (const sessionName of listed) {
-    if (!sessionName.startsWith(ORCA_TAB_SESSION_PREFIX) || options.isSessionLive?.(sessionName)) {
+    if (!sessionName.startsWith(TOPO_TAB_SESSION_PREFIX) || options.isSessionLive?.(sessionName)) {
       continue
     }
     try {

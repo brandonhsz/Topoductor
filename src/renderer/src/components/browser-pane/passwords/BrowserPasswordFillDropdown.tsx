@@ -49,7 +49,7 @@ function anchorStyle(
   }
 }
 
-/** Orca-drawn list of saved logins for the focused field; the page can neither see nor click it. */
+/** Topo-drawn list of saved logins for the focused field; the page can neither see nor click it. */
 export function BrowserPasswordFillDropdown({
   browserPageId,
   isActive,
@@ -135,7 +135,7 @@ function BrowserPasswordFillList({
       selection="palette"
       onMouseDown={(event) => {
         event.preventDefault()
-        // Why on press: pressing Orca's UI blurs the page field, which closes this list before the click.
+        // Why on press: pressing Topo's UI blurs the page field, which closes this list before the click.
         if (event.button === 0) {
           choose(suggestion)
         }

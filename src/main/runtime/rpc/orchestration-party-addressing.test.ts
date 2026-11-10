@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { formatOrcaSessionAddress } from '../../../shared/orca-session-address'
-import { testOrcaSessionId } from '../../../shared/orca-session-address-test-fixture'
+import { formatTopoSessionAddress } from '../../../shared/topo-session-address'
+import { testTopoSessionId } from '../../../shared/topo-session-address-test-fixture'
 
 import {
   mintStructuredWorkerHandle,
@@ -27,8 +27,8 @@ vi.mock('../../native-chat/agent-session-wire/host/structured-agent-session-regi
 
 type Row = Record<string, unknown>
 
-const SESSION_Z = testOrcaSessionId('3f9a1c7e-6b2d-4e85-a0c4-9d1e7b3f5a26')
-const ADDRESS_Z = formatOrcaSessionAddress(SESSION_Z)
+const SESSION_Z = testTopoSessionId('3f9a1c7e-6b2d-4e85-a0c4-9d1e7b3f5a26')
+const ADDRESS_Z = formatTopoSessionAddress(SESSION_Z)
 
 /** Worker Y's two spellings; a chat has only its session address. */
 const handle = mintStructuredWorkerHandle()
@@ -86,7 +86,7 @@ describe('every target param resolves both spellings of a party to one canonical
 
       expect(dispatch).toMatchObject({
         assignee_handle: handle,
-        assignee_orca_session_id: SESSION_Y
+        assignee_topo_session_id: SESSION_Y
       })
       expect(await as(SESSION_Y, 'orchestration.check', { peek: true })).toMatchObject({
         dispatchId: idOf(dispatch)
@@ -94,7 +94,7 @@ describe('every target param resolves both spellings of a party to one canonical
     }
   )
 
-  it('dispatch: a chat named by its session address is the assignee, by its Orca session ID', async () => {
+  it('dispatch: a chat named by its session address is the assignee, by its Topo session ID', async () => {
     const runId = await chatRun()
     const task = h.db.createTask({ runId, spec: 'work' })
 
@@ -105,7 +105,7 @@ describe('every target param resolves both spellings of a party to one canonical
 
     expect(dispatch).toMatchObject({
       assignee_handle: ADDRESS_Z,
-      assignee_orca_session_id: SESSION_Z,
+      assignee_topo_session_id: SESSION_Z,
       assignee_pane_key: null,
       process_incarnation: null
     })

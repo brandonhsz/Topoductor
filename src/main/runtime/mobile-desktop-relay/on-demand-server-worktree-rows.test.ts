@@ -59,7 +59,7 @@ function fakeHosts(
     id: string
     name: string
     snapshot: RuntimeHostStatusSnapshot
-    orcadDeployment?: { sshTargetId: string }
+    topodDeployment?: { sshTargetId: string }
     runtimeId?: string | null
     pairedDeviceId?: string
   }[]
@@ -75,10 +75,10 @@ function fakeHosts(
   const hosts: MobileDesktopRelayHosts = {
     list: () => ({
       environments: state.environments.map(
-        ({ id, name, orcadDeployment, runtimeId, pairedDeviceId }) => ({
+        ({ id, name, topodDeployment, runtimeId, pairedDeviceId }) => ({
           id,
           name,
-          orcadDeployment,
+          topodDeployment,
           pairingRevision: state.pairingRevision,
           runtimeId: runtimeId === undefined ? 'runtime-a' : runtimeId,
           pairedDeviceId

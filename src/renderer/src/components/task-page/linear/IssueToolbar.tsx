@@ -72,7 +72,7 @@ export function TaskPageLinearIssueToolbar({
         ) : null}
         <div className="min-w-0 text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
           {activeLinearIssueContextLabel ??
-            (linearMode === 'in-orca'
+            (linearMode === 'in-topo'
               ? t('auto.components.TaskPage.linearModeHasWorktree', 'Has Workspace')
               : t('auto.components.TaskPage.60f68a2ef4', 'Linear issues'))}
         </div>

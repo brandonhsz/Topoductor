@@ -115,7 +115,7 @@ describe('the phone list from the sidebar feed', () => {
     const domains = feedDomains({
       workspaces: new Map([
         ...base.workspaces,
-        [feedKey('|orca::/w/solo'), feedRow({ id: 'orca::/w/solo', manualOrder: 4 })]
+        [feedKey('|topo::/w/solo'), feedRow({ id: 'topo::/w/solo', manualOrder: 4 })]
       ])
     })
     const built = buildSidebarFeedRows(domains, grouped, phoneFeedView(phoneView()))
@@ -136,7 +136,7 @@ describe('the phone list from the sidebar feed', () => {
       'school group depth=0',
       'inner group depth=1',
       'lab depth=2',
-      'orca depth=2'
+      'topo depth=2'
     ])
     expect(
       sections
@@ -156,7 +156,7 @@ describe('the phone list from the sidebar feed', () => {
       outline(sections).filter((line) => line.endsWith(' ACTIVE'))
 
     it('never matches a desktop row for a visit on a server of the same id', () => {
-      const lastVisited = { worktreeId: 'orca::/w/child', executionHost: 'runtime:env-1' as const }
+      const lastVisited = { worktreeId: 'topo::/w/child', executionHost: 'runtime:env-1' as const }
       expect(active(sectionsFor(phoneView(), { lastVisited }))).toEqual([])
     })
   })
@@ -173,15 +173,15 @@ describe('the phone list from the sidebar feed', () => {
     const built = buildSidebarFeedRows(
       feedDomains({
         workspaces: new Map([
-          [feedKey('|orca::/w/parent'), FEED_ROWS.parent],
-          [feedKey('|orca::/w/child'), feedChild]
+          [feedKey('|topo::/w/parent'), FEED_ROWS.parent],
+          [feedKey('|topo::/w/child'), feedChild]
         ])
       }),
       catalog,
       phoneFeedView(phoneView())
     )
     const stale = liveRow({
-      worktreeId: 'orca::/w/child',
+      worktreeId: 'topo::/w/child',
       displayName: 'old name',
       branch: 'old-branch',
       comment: 'old note',
@@ -200,7 +200,7 @@ describe('the phone list from the sidebar feed', () => {
     })
     expect(sections.flatMap((section) => section.data.map((item) => item.row))).toEqual([
       expect.objectContaining({
-        worktreeId: 'orca::/w/child',
+        worktreeId: 'topo::/w/child',
         displayName: 'new name',
         branch: 'new-branch',
         comment: 'new note',
@@ -225,9 +225,9 @@ describe('the phone list from the sidebar feed', () => {
 
 describe('the phone list before the first feed read', () => {
   const cached = [
-    liveRow({ worktreeId: 'orca::/w/b', displayName: 'beta' }),
-    liveRow({ worktreeId: 'orca::/w/a', displayName: 'alpha' }),
-    liveRow({ worktreeId: 'orca::/w/old', displayName: 'old', isArchived: true })
+    liveRow({ worktreeId: 'topo::/w/b', displayName: 'beta' }),
+    liveRow({ worktreeId: 'topo::/w/a', displayName: 'alpha' }),
+    liveRow({ worktreeId: 'topo::/w/old', displayName: 'old', isArchived: true })
   ]
   const preFeedVisiting = (
     search: string,
@@ -250,8 +250,8 @@ describe('the phone list before the first feed read', () => {
         ?.data.filter((row) => row.row.isActive)
         .map((row) => row.row.worktreeId)
     expect(highlighted(null)).toEqual([])
-    expect(highlighted({ worktreeId: 'orca::/w/a' })).toEqual(['orca::/w/a'])
-    expect(highlighted({ worktreeId: 'orca::/w/gone' })).toEqual([])
+    expect(highlighted({ worktreeId: 'topo::/w/a' })).toEqual(['topo::/w/a'])
+    expect(highlighted({ worktreeId: 'topo::/w/gone' })).toEqual([])
   })
 })
 

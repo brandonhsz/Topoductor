@@ -52,20 +52,20 @@ describe('github owner/repo resolution', () => {
         }
         return {
           stdout: options.wslDistro
-            ? 'git@github.com:wsl/orca.git\n'
-            : 'git@github.com:host/orca.git\n'
+            ? 'git@github.com:wsl/topo.git\n'
+            : 'git@github.com:host/topo.git\n'
         }
       }
     )
 
-    await expect(getOwnerRepo('/repo')).resolves.toEqual({ owner: 'host', repo: 'orca' })
+    await expect(getOwnerRepo('/repo')).resolves.toEqual({ owner: 'host', repo: 'topo' })
     await expect(getOwnerRepo('/repo', null, { wslDistro: 'Ubuntu' })).resolves.toEqual({
       owner: 'wsl',
-      repo: 'orca'
+      repo: 'topo'
     })
     await expect(getOwnerRepo('/repo', null, { wslDistro: 'Ubuntu' })).resolves.toEqual({
       owner: 'wsl',
-      repo: 'orca'
+      repo: 'topo'
     })
 
     // 2 runtimes x (1 remote list + 1 origin hit); repeat WSL call is cached.
@@ -83,7 +83,7 @@ describe('github owner/repo resolution', () => {
   })
 
   it('does not apply the long negative TTL when git remote get-url fails transiently', async () => {
-    const repoPath = await mkdtemp(join(tmpdir(), 'orca-gh-utils-'))
+    const repoPath = await mkdtemp(join(tmpdir(), 'topo-gh-utils-'))
     await mkdir(join(repoPath, '.git'))
     await writeFile(join(repoPath, '.git', 'config'), '[core]\n\trepositoryformatversion = 0\n')
     try {
@@ -103,7 +103,7 @@ describe('github owner/repo resolution', () => {
   })
 
   it('invalidates a cached local missing remote when an included git config changes', async () => {
-    const repoPath = await mkdtemp(join(tmpdir(), 'orca-gh-utils-'))
+    const repoPath = await mkdtemp(join(tmpdir(), 'topo-gh-utils-'))
     await mkdir(join(repoPath, '.git'))
     const includedConfigPath = join(repoPath, 'remote.inc')
     await writeFile(

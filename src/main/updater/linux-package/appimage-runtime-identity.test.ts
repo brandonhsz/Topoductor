@@ -27,11 +27,11 @@ function appImageHeader(machine: number): Buffer {
   return header
 }
 
-function createFixture(appDirName = '.mount_Orca123', machine = 0x3e) {
-  const root = mkdtempSync(join(tmpdir(), 'orca-appimage-identity-'))
-  const appImagePath = join(root, 'Applications', 'Orca.AppImage')
+function createFixture(appDirName = '.mount_Topo123', machine = 0x3e) {
+  const root = mkdtempSync(join(tmpdir(), 'topo-appimage-identity-'))
+  const appImagePath = join(root, 'Applications', 'Topo.AppImage')
   const appDirPath = join(root, appDirName)
-  const execPath = join(appDirPath, 'orca-ide')
+  const execPath = join(appDirPath, 'topo-ide')
   const resourcesPath = join(appDirPath, 'resources')
   const packageTypePath = join(resourcesPath, 'package-type')
   const packageMarkerPath = join(resourcesPath, 'app.asar.unpacked', 'out', 'package.json')
@@ -43,7 +43,7 @@ function createFixture(appDirName = '.mount_Orca123', machine = 0x3e) {
   writeFileSync(execPath, appImageHeader(machine), { mode: 0o755 })
   writeFileSync(
     packageMarkerPath,
-    JSON.stringify({ name: 'orca-compiled-output', type: 'commonjs', private: true })
+    JSON.stringify({ name: 'topo-compiled-output', type: 'commonjs', private: true })
   )
   return {
     root,
@@ -71,7 +71,7 @@ afterEach(() => {
 
 describe.skipIf(process.platform === 'win32')('resolveAppImageRuntimeIdentity', () => {
   it.each([
-    ['x64', 0x3e, '.mount_Orca123'],
+    ['x64', 0x3e, '.mount_Topo123'],
     ['ARM64 extract-and-run', 0xb7, 'appimage_extracted_123']
   ])('accepts a complete %s AppImage runtime', (_architecture, machine, appDirName) => {
     const fixture = createFixture(appDirName, machine)
@@ -94,7 +94,7 @@ describe.skipIf(process.platform === 'win32')('resolveAppImageRuntimeIdentity', 
     const externalMarker = join(fixture.root, 'foreign-package.json')
     writeFileSync(
       externalMarker,
-      JSON.stringify({ name: 'orca-compiled-output', type: 'commonjs' })
+      JSON.stringify({ name: 'topo-compiled-output', type: 'commonjs' })
     )
     rmSync(fixture.packageMarkerPath)
     symlinkSync(externalMarker, fixture.packageMarkerPath)

@@ -1,9 +1,9 @@
 import { getAppEnvironment } from '../../shared/app-environment'
 import { parseExecutionHostId, toSshExecutionHostId } from '../../shared/execution-host'
-import { getManagedOrcadFenceEnvironmentId } from '../../shared/managed-orcad-ssh-owner'
+import { getManagedTopodFenceEnvironmentId } from '../../shared/managed-topod-ssh-owner'
 import { listEnvironments } from '../../shared/remote-runtime/host-store/runtime-environment-store'
 import {
-  getOrcadSshDeployment,
+  getTopodSshDeployment,
   getRuntimeSshAccess,
   type KnownRuntimeEnvironment
 } from '../../shared/remote-runtime/host-catalog/runtime-environments'
@@ -12,7 +12,7 @@ import { fingerprintRuntimeSshTarget } from '../ssh/runtime-access/runtime-ssh-t
 
 export type ListRuntimeEnvironments = () => readonly Pick<
   KnownRuntimeEnvironment,
-  'id' | 'orcadDeployment' | 'sshAccess'
+  'id' | 'topodDeployment' | 'sshAccess'
 >[]
 
 export const listAppRuntimeEnvironments: ListRuntimeEnvironments = () =>
@@ -47,8 +47,8 @@ export function isEditorSshHostForOwner(
   if (target.generation !== link.sshTargetGeneration) {
     return false
   }
-  if (getOrcadSshDeployment(environment)) {
-    return getManagedOrcadFenceEnvironmentId(target) === environment.id
+  if (getTopodSshDeployment(environment)) {
+    return getManagedTopodFenceEnvironmentId(target) === environment.id
   }
   // Edits retain generation, so also pin the settings used to verify SSH access.
   const access = environment.sshAccess

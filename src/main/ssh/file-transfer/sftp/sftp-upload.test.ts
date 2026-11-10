@@ -35,7 +35,7 @@ function createSftpMock(): SFTPWrapper {
 
 describe('sftp-upload', () => {
   it('rejects sibling directories outside the upload root', async () => {
-    const localDir = await mkdtemp(join(tmpdir(), 'orca-sftp-upload-'))
+    const localDir = await mkdtemp(join(tmpdir(), 'topo-sftp-upload-'))
     const escapedDir = `${localDir}-sibling`
     await mkdir(escapedDir)
     await writeFile(join(escapedDir, 'asset.txt'), 'asset')
@@ -52,7 +52,7 @@ describe('sftp-upload', () => {
   })
 
   it('does not create the remote file when the local source is a symlink', async () => {
-    const localDir = await mkdtemp(join(tmpdir(), 'orca-sftp-upload-'))
+    const localDir = await mkdtemp(join(tmpdir(), 'topo-sftp-upload-'))
     const targetPath = join(localDir, process.platform === 'win32' ? 'target-dir' : 'target.txt')
     const linkPath = join(localDir, process.platform === 'win32' ? 'link-dir' : 'link.txt')
     if (process.platform === 'win32') {
@@ -71,7 +71,7 @@ describe('sftp-upload', () => {
   })
 
   it('joins local file-descriptor teardown when a live upload is aborted', async () => {
-    const localDir = await mkdtemp(join(tmpdir(), 'orca-sftp-upload-abort-'))
+    const localDir = await mkdtemp(join(tmpdir(), 'topo-sftp-upload-abort-'))
     const localPath = join(localDir, 'relay.js')
     const controller = new AbortController()
     const blockedWrite = new Writable({
@@ -156,7 +156,7 @@ describe('uploadFile over a high-latency link', () => {
   }
 
   it('fails, as contact lost, when the SSH session closes under a stalled upload', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'orca-sftp-upload-'))
+    const dir = await mkdtemp(join(tmpdir(), 'topo-sftp-upload-'))
     await writeFile(join(dir, 'node.tar.gz'), Buffer.alloc(8 * 1024 * 1024))
     const { sftp, written } = slowSftp(1, 4)
     try {

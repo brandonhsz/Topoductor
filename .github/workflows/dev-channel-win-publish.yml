@@ -26,7 +26,7 @@ concurrency:
 
 jobs:
   publish-win:
-    if: github.repository == 'stablyai/orca'
+    if: github.repository == 'brandonhsz/Topoductor'
     environment: adhoc-mac-build
     runs-on: ubuntu-latest
     timeout-minutes: 165
@@ -58,7 +58,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for required in orca-windows-setup.exe orca-windows-setup.exe.blockmap latest.yml; do
+          for required in topo-windows-setup.exe topo-windows-setup.exe.blockmap latest.yml; do
             if [[ ! -s "staged-windows/$required" ]]; then
               echo "::error::Missing or empty staged Windows artifact: $required"
               exit 1
@@ -92,8 +92,8 @@ jobs:
         with:
           app-id: ${{ secrets.HOURLY_RELEASE_APP_ID }}
           private-key: ${{ secrets.HOURLY_RELEASE_APP_PRIVATE_KEY }}
-          owner: stablyai
-          repositories: orca-${{ inputs.channel }}
+          owner: brandonhsz
+          repositories: topo-${{ inputs.channel }}
 
       - name: Confirm the target release is live
         shell: bash
@@ -101,7 +101,7 @@ jobs:
           GH_TOKEN: ${{ steps.app_token.outputs.token }}
         run: |
           set -euo pipefail
-          draft="$(gh release view "$TAG" --repo "stablyai/orca-$CHANNEL" --json isDraft --jq '.isDraft')"
+          draft="$(gh release view "$TAG" --repo "brandonhsz/topo-$CHANNEL" --json isDraft --jq '.isDraft')"
           if [[ "$draft" != false ]]; then
             echo "::error::Release $TAG is not live; refusing to publish Windows artifacts."
             exit 1
@@ -113,7 +113,7 @@ jobs:
           timeout_minutes: 5
           max_attempts: 2
           retry_wait_seconds: 10
-          command: gh release upload "$TAG" staged-windows/orca-windows-setup.exe staged-windows/orca-windows-setup.exe.blockmap staged-windows/latest.yml --clobber --repo "stablyai/orca-$CHANNEL"
+          command: gh release upload "$TAG" staged-windows/topo-windows-setup.exe staged-windows/topo-windows-setup.exe.blockmap staged-windows/latest.yml --clobber --repo "brandonhsz/topo-$CHANNEL"
         env:
           GH_TOKEN: ${{ steps.app_token.outputs.token }}
 
@@ -123,8 +123,8 @@ jobs:
           GH_TOKEN: ${{ steps.app_token.outputs.token }}
         run: |
           set -euo pipefail
-          assets="$(gh release view "$TAG" --repo "stablyai/orca-$CHANNEL" --json assets --jq '.assets[].name')"
-          for required in latest.yml orca-windows-setup.exe orca-windows-setup.exe.blockmap; do
+          assets="$(gh release view "$TAG" --repo "brandonhsz/topo-$CHANNEL" --json assets --jq '.assets[].name')"
+          for required in latest.yml topo-windows-setup.exe topo-windows-setup.exe.blockmap; do
             if ! grep -qx "$required" <<<"$assets"; then
               echo "::error::$TAG is missing $required; Windows could not install this build."
               exit 1

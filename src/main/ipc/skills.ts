@@ -1,5 +1,5 @@
 import type { Store } from '../persistence/loading-store/store'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import {
   SkillDiscoveryTargetSchema,
   type SkillDiscoveryResult,
@@ -21,7 +21,7 @@ import { runAsWslUserAct, wslDistroForPath } from '../wsl/filesystem/wsl-unc-acc
 import { registerSkillCloudIpcHandlers } from './skill-cloud-ipc-handlers'
 import { handleMainWindowSkillIpc } from './skill-ipc-main-window'
 
-export function registerSkillsHandlers(store: Store, runtime?: OrcaRuntimeService): void {
+export function registerSkillsHandlers(store: Store, runtime?: TopoRuntimeService): void {
   const discoverResolved = async (
     resolvedTarget: Awaited<ReturnType<typeof resolveSkillDiscoveryTarget>>,
     refresh: boolean,
@@ -73,7 +73,7 @@ export function registerSkillsHandlers(store: Store, runtime?: OrcaRuntimeServic
   }
   registerSkillCloudIpcHandlers(runtime, discoverForUserAct)
 
-  // Local host only; paired hosts plan Orca's skills over RPC.
+  // Local host only; paired hosts plan Topo's skills over RPC.
   handleMainWindowSkillIpc(
     'skills:bundledPlan',
     async (_event, value: unknown): Promise<BundledSkillPlan> =>

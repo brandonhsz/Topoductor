@@ -7,7 +7,7 @@ import {
 } from '@/store/plugins/catalog/plugin-contribution-catalog'
 import { isWorkspaceScopedPluginContext } from '../../../shared/plugins/contributions/plugin-command-contribution'
 
-/** Past this a replacing command's worker is not waited for: Orca's own action runs. */
+/** Past this a replacing command's worker is not waited for: Topo's own action runs. */
 export const PLUGIN_REPLACEMENT_TIMEOUT_MS = 2_000
 /** Extra wait for main's answer before falling back on our own, should main never answer. */
 export const PLUGIN_REPLACEMENT_UNANSWERED_GRACE_MS = 1_000
@@ -50,7 +50,7 @@ export function pluginReplacementFor(actionId: string): ActivePluginCommand | nu
 
 /**
  * Runs the plugin command that replaces `actionId`, or `builtIn` when none does. A worker that
- * fails, or answers after 2 s, gets Orca's own action instead.
+ * fails, or answers after 2 s, gets Topo's own action instead.
  */
 export function runBuiltInOrReplacement(actionId: string, builtIn: () => void): void {
   const command = pluginReplacementFor(actionId)

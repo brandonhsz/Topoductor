@@ -31,7 +31,7 @@ describe('host twin purge attribution', () => {
         hostId: 'ssh:removed',
         runtimeOwnerEnvironmentId
       }),
-      ownership: 'orca-managed' as const,
+      ownership: 'topo-managed' as const,
       selectedCheckout: false,
       visible: true
     })

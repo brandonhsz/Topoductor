@@ -17,7 +17,7 @@ import {
 } from '@/hooks/use-bundled-skill-install'
 import {
   LINEAR_AGENT_SKILL_NAMES,
-  ORCA_LINEAR_SKILL_NAME
+  TOPO_LINEAR_SKILL_NAME
 } from '@/lib/skills/installation/agent-feature-skill-names'
 import { getLinearAgentSkillUpdateTarget } from '@/lib/skills/installation/linear-agent-skill-update-target'
 import { cn } from '@/lib/utils'
@@ -80,7 +80,7 @@ function BundledLinearAgentSkillInstallCta({
       <div className="flex flex-wrap items-center gap-2">
         <p className="text-xs font-medium text-foreground">
           {t('auto.components.settings.linear.agent.skill.install.cta.skillLabel', 'Agent skill:')}{' '}
-          <span className="font-mono text-[11px]">{ORCA_LINEAR_SKILL_NAME}</span>
+          <span className="font-mono text-[11px]">{TOPO_LINEAR_SKILL_NAME}</span>
         </p>
         {unsupported ? (
           <SkillUnsupportedStatusPill reason={unsupported} />
@@ -147,8 +147,8 @@ function BundledLinearAgentSkillInstallCta({
                 ? t('auto.components.settings.AgentSkillSetupPanel.installing', 'Installing...')
                 : replacePaths
                   ? t(
-                      'auto.components.settings.AgentSkillSetupPanel.replaceWithOrcaCopy',
-                      "Replace with Orca's copy"
+                      'auto.components.settings.AgentSkillSetupPanel.replaceWithTopoCopy',
+                      "Replace with Topo's copy"
                     )
                   : action.kind === 'run' && action.changes
                     ? bundledSkillSetupActionLabel(action.changes, t)
@@ -182,7 +182,7 @@ export function LinearAgentSkillInstallCta(
   props: LinearAgentSkillInstallCtaProps
 ): React.JSX.Element {
   const activeRuntime = useActiveProjectSkillRuntime()
-  // COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+  // COMPAT(wsl-bridge): removed when WSL runs as an topod host.
   if (activeRuntime.agentRuntime?.runtime === 'wsl') {
     return <WslLinearAgentSkillInstallCta {...props} runtime={activeRuntime.agentRuntime} />
   }

@@ -36,7 +36,7 @@ import type {
   CustomEditorUnappliedEdit
 } from './plugin-custom-editor-host-types'
 
-/** The frame only ever holds the document: Orca owns the buffer, dirty state and save. */
+/** The frame only ever holds the document: Topo owns the buffer, dirty state and save. */
 export function createCustomEditorHost(options: CustomEditorHostOptions): CustomEditorHost {
   const budget =
     options.budget ??
@@ -203,7 +203,7 @@ export function createCustomEditorHost(options: CustomEditorHostOptions): Custom
   const refuseEdit = (data: unknown, refusal: CustomEditorEditRefusal): void => {
     options.onEditRefused?.(refusal)
     if (refusal === 'oversized') {
-      // The held edit stays: an edit Orca refuses carries nothing to replace it with.
+      // The held edit stays: an edit Topo refuses carries nothing to replace it with.
       lostAfterHeld ||= heldEdit !== null
       lostEdit = true
       answer(pluginRequestId(data), CUSTOM_EDITOR_TOO_LARGE)

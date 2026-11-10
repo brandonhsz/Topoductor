@@ -1,5 +1,5 @@
 import type { RuntimeHeadlessTabGroups as HeadlessTabGroupsMethods } from './headless-tab-group-moves'
-import { OrcaRuntimeWithCloseHeadlessMobileTerminalTab } from './headless-terminal-tab-close'
+import { TopoRuntimeWithCloseHeadlessMobileTerminalTab } from './headless-terminal-tab-close'
 import {
   recordPtySurface,
   spawnSurfaceClaimSequence
@@ -8,7 +8,7 @@ import { withSelectedTabs } from './headless-tab-group-selection'
 import type { RuntimeMobileSessionTabGroup } from '../../../shared/runtime-session-contracts'
 import { makePaneKey } from '../../../shared/workspace-layout/stable-pane-id'
 import { isValidHostTerminalTabId } from '../../../shared/workspace-layout/terminal-tab-id'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import {
   isTerminalLeafMoveRequest,
   type TerminalLeafMoveRequest,
@@ -18,7 +18,7 @@ import {
 /** Where the client dropped the new tab, in the host's group ids. */
 export type MovedPanePlacement = { targetGroupId: string; index?: number }
 
-export abstract class OrcaRuntimeWithHeadlessPaneMoveToNewTab extends OrcaRuntimeWithCloseHeadlessMobileTerminalTab {
+export abstract class TopoRuntimeWithHeadlessPaneMoveToNewTab extends TopoRuntimeWithCloseHeadlessMobileTerminalTab {
   protected abstract persistHeadlessTabGroups(
     ...args: Parameters<HeadlessTabGroupsMethods['persistHeadlessTabGroups']>
   ): ReturnType<HeadlessTabGroupsMethods['persistHeadlessTabGroups']>
@@ -37,7 +37,7 @@ export abstract class OrcaRuntimeWithHeadlessPaneMoveToNewTab extends OrcaRuntim
     if (this.getAvailableAuthoritativeWindow()) {
       // Switch point: the relay hands the move to a window that owns the layout. Where main owns
       // it, the window's move goes back through main and cannot keep the client's tab id.
-      if (ORCA_LAYOUT_OWNER_IS_MAIN || !this.notifier?.movePaneToNewTab) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN || !this.notifier?.movePaneToNewTab) {
         return { status: 'not_held' }
       }
       if (!isValidHostTerminalTabId(args.targetTabId)) {

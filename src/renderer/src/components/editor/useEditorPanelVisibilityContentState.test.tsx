@@ -54,7 +54,7 @@ vi.mock('@/store', () => ({
   )
 }))
 
-import { ORCA_EDITOR_EXTERNAL_FILE_CHANGE_EVENT } from './autosave/editor-autosave'
+import { TOPO_EDITOR_EXTERNAL_FILE_CHANGE_EVENT } from './autosave/editor-autosave'
 import { useEditorPanelContentState } from './useEditorPanelContentState'
 import { createTestStore } from '@/store/testing/app-store-test-fixture'
 
@@ -130,7 +130,7 @@ function Probe({
 function dispatchExternalChange(file: OpenFile): void {
   act(() => {
     window.dispatchEvent(
-      new CustomEvent(ORCA_EDITOR_EXTERNAL_FILE_CHANGE_EVENT, {
+      new CustomEvent(TOPO_EDITOR_EXTERNAL_FILE_CHANGE_EVENT, {
         detail: {
           worktreeId: file.worktreeId,
           worktreePath: '/repo',
@@ -144,7 +144,7 @@ function dispatchExternalChange(file: OpenFile): void {
 function ExternalChangeLayoutEmitter({ file }: { file: OpenFile }): null {
   useLayoutEffect(() => {
     window.dispatchEvent(
-      new CustomEvent(ORCA_EDITOR_EXTERNAL_FILE_CHANGE_EVENT, {
+      new CustomEvent(TOPO_EDITOR_EXTERNAL_FILE_CHANGE_EVENT, {
         detail: {
           worktreeId: file.worktreeId,
           worktreePath: '/repo',

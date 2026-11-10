@@ -1,11 +1,11 @@
 import { agentSessionRecordFixture } from '../../../native-chat/agent-session-record-test-fixture'
 import { agentSessionConversationView } from '../../../../shared/agent-session/lifecycle/agent-session-conversation-view'
-import { testOrcaSessionId } from '../../../../shared/orca-session-address-test-fixture'
-import { formatOrcaSessionAddress as address } from '../../../../shared/orca-session-address'
+import { testTopoSessionId } from '../../../../shared/topo-session-address-test-fixture'
+import { formatTopoSessionAddress as address } from '../../../../shared/topo-session-address'
 import { fixture } from './crew-read-model.test-fixture'
 
-export const SELF = testOrcaSessionId('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa')
-export const TARGET = testOrcaSessionId('bbbbbbbb-2222-4222-8222-bbbbbbbbbbbb')
+export const SELF = testTopoSessionId('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa')
+export const TARGET = testTopoSessionId('bbbbbbbb-2222-4222-8222-bbbbbbbbbbbb')
 
 export const crewRecord = (sessionId: string) =>
   agentSessionConversationView(agentSessionRecordFixture({ sessionId }))
@@ -14,7 +14,7 @@ export function deltaFixture(peers = 0) {
   const f = fixture()
   const records = new Map([[SELF.toString(), crewRecord(SELF)]])
   for (let i = 0; i < peers; i++) {
-    const id = testOrcaSessionId(`chat-delta-${i}`)
+    const id = testTopoSessionId(`chat-delta-${i}`)
     records.set(id, crewRecord(id))
     f.db.insertMessage({ from: address(id), to: address(SELF), subject: 'Peer', body: `peer ${i}` })
   }
@@ -33,11 +33,11 @@ export function remembered(f: ReturnType<typeof deltaFixture>, id = TARGET, coun
       objective: `history ${i}`,
       coordinatorHandle: null,
       coordinatorPaneKey: null,
-      coordinatorOrcaSessionId: id
+      coordinatorTopoSessionId: id
     })
   )
   f.db.unbindOtherRunsForCoordinator(
-    { terminalHandle: null, paneKey: null, orcaSessionId: id },
+    { terminalHandle: null, paneKey: null, topoSessionId: id },
     f.run.id
   )
   return runs

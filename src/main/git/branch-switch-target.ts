@@ -109,7 +109,7 @@ export async function resolveBranchSwitchTarget(
         throw error
       }
       throw new Error(
-        "Orca couldn't read this repository's remotes. Check its remote settings in a terminal, then try again."
+        "Topo couldn't read this repository's remotes. Check its remote settings in a terminal, then try again."
       )
     })
   ).stdout
@@ -149,16 +149,16 @@ export function branchSwitchFailure(error: unknown, branch: string): Error {
     return new Error(tracking)
   }
   return new Error(
-    "Orca couldn't switch branches. Check this repository in a terminal, then try again."
+    "Topo couldn't switch branches. Check this repository in a terminal, then try again."
   )
 }
 
 export function branchSwitchTrackingFailure(text: string, branch: string): string | null {
   if (/cannot set up tracking information/.test(text)) {
-    return `Orca couldn't set up tracking for ${branch} because this remote branch isn't included in the remote's fetch settings. Update that remote's fetch settings, fetch the branch, then try again.`
+    return `Topo couldn't set up tracking for ${branch} because this remote branch isn't included in the remote's fetch settings. Update that remote's fetch settings, fetch the branch, then try again.`
   }
   if (/could not lock config|config.*lock|config.lock/.test(text)) {
-    return "Orca couldn't set up tracking because another Git action is updating this repository. Wait for it to finish, then try again."
+    return "Topo couldn't set up tracking because another Git action is updating this repository. Wait for it to finish, then try again."
   }
   return null
 }

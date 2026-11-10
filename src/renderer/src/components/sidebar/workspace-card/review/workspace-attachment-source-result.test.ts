@@ -10,7 +10,7 @@ import {
 const repo: Repo = {
   id: 'repo',
   path: '/repo',
-  displayName: 'Orca',
+  displayName: 'Topo',
   badgeColor: '',
   addedAt: 1,
   connectionId: 'remote'
@@ -39,7 +39,7 @@ const review: WorkspaceAttachment = {
   provider: 'github',
   type: 'pr',
   number: 7,
-  url: 'https://github.com/acme/orca/pull/7',
+  url: 'https://github.com/acme/topo/pull/7',
   repoId: 'repo'
 }
 
@@ -68,7 +68,7 @@ describe('attachment source conversion', () => {
     expect(
       matchesWorkspaceAttachmentQuery(review, {
         ...review,
-        url: 'https://github.com/other/orca/pull/7'
+        url: 'https://github.com/other/topo/pull/7'
       })
     ).toBe(false)
   })

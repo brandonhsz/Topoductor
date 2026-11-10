@@ -75,7 +75,7 @@ describe('createSequencedSetupAgentCommands', () => {
 })
 
 function makeTempDir(): string {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-setup-sequencing-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-setup-sequencing-'))
   TEMP_DIRS.push(dir)
   return dir
 }

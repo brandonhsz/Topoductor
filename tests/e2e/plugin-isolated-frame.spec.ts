@@ -1,7 +1,7 @@
 /**
  * Invariant: on desktop a plugin panel is an isolated `<webview>` guest on its own partition and
  * origin. A multi-file plugin loads scripts, styles, fonts, WASM and a worker by URL, keeps
- * localStorage across a reload, still talks to Orca through window.orca, and cannot reach the
+ * localStorage across a reload, still talks to Topo through window.orca, and cannot reach the
  * network (a loopback HTTP listener sees nothing).
  */
 
@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
 import { PLUGIN_MANIFEST_V2_SINCE } from '../../src/shared/plugins/manifest/plugin-schema-field-docs'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { disablePluginSystem, enableDevPlugins } from './helpers/plugin-smoke'
 import {
   clickInGuest,
@@ -149,7 +149,7 @@ type ProbeResults = {
 
 test('a multi-file plugin panel runs as an isolated guest with assets by URL', async ({
   electronApp,
-  orcaPage
+  topoPage
 }) => {
   const requests: string[] = []
   const server = createServer((request, response) => {
@@ -163,16 +163,16 @@ test('a multi-file plugin panel runs as an isolated guest with assets by URL', a
     throw new Error('leak listener has no port')
   }
   const leakUrl = `http://127.0.0.1:${address.port}/leak`
-  const pluginRoot = await mkdtemp(join(tmpdir(), 'orca-asset-probe-'))
+  const pluginRoot = await mkdtemp(join(tmpdir(), 'topo-asset-probe-'))
   try {
     await writeAssetPlugin(pluginRoot, leakUrl)
-    await enableDevPlugins(orcaPage, [pluginRoot])
-    await openPanel(orcaPage)
+    await enableDevPlugins(topoPage, [pluginRoot])
+    await openPanel(topoPage)
 
-    const guest = pluginGuest(orcaPage, TITLE)
+    const guest = pluginGuest(topoPage, TITLE)
     await expect(guest).toBeVisible({ timeout: 15_000 })
-    await expect(guest).toHaveAttribute('partition', /^persist:orca-plugin-[0-9a-f]{16}$/)
-    await expect(orcaPage.locator(`iframe[title="${TITLE}"]`)).toHaveCount(0)
+    await expect(guest).toHaveAttribute('partition', /^persist:topo-plugin-[0-9a-f]{16}$/)
+    await expect(topoPage.locator(`iframe[title="${TITLE}"]`)).toHaveCount(0)
     await waitForGuestReady(guest)
 
     const read = () => evalInGuest<ProbeResults | null>(guest, 'window.__probe ?? null')
@@ -230,7 +230,7 @@ test('a multi-file plugin panel runs as an isolated guest with assets by URL', a
       }, guestId)
     }
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await new Promise<void>((resolve) => server.close(() => resolve()))
     await rm(pluginRoot, { recursive: true, force: true })
   }

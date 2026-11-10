@@ -6,13 +6,13 @@ import { encodePairingOffer } from '../../shared/remote-runtime/pairing/pairing'
 import { PAIRING_OFFER_VERSION } from '../../shared/remote-runtime/pairing/mobile-relay-pairing-offer'
 import { getEphemeralVmRuntimeStorePath } from '../../shared/ephemeral-vm-runtime-store'
 import { RollbackEphemeralVmRuntimeStoreSchema } from '../../shared/ephemeral-vm-runtimes'
-import type { OrcaVmRecipe } from '../../shared/orca-yaml-hook-types'
+import type { TopoVmRecipe } from '../../shared/topo-yaml-hook-types'
 import type { Store } from '../persistence/loading-store/store'
 import { provisionEphemeralVmRuntime } from './runtime-service'
 import { getRuntimeRecipeContext } from '../ipc/ephemeral-vm-recipe-context'
 
 const hooks = vi.hoisted(() => {
-  const recipes: OrcaVmRecipe[] = []
+  const recipes: TopoVmRecipe[] = []
   return { recipes }
 })
 vi.mock('../workspace-hooks/hooks', () => ({
@@ -45,8 +45,8 @@ describe('recipe timeoutSeconds and persisted runtimes', () => {
   })
 
   it('persists a runtime whose recipe sets timeoutSeconds in a shape older builds still read', async () => {
-    const userDataPath = makeDir('orca-vm-timeouts-user-data-')
-    const repoPath = makeDir('orca-vm-timeouts-repo-')
+    const userDataPath = makeDir('topo-vm-timeouts-user-data-')
+    const repoPath = makeDir('topo-vm-timeouts-repo-')
     const startPath = join(repoPath, 'start.js')
     const pairingCode = encodePairingOffer({
       v: PAIRING_OFFER_VERSION,
@@ -58,7 +58,7 @@ describe('recipe timeoutSeconds and persisted runtimes', () => {
       startPath,
       `console.log(JSON.stringify({ schemaVersion: 1, pairingCode: ${JSON.stringify(pairingCode)}, projectRoot: '/workspace/repo' }))\n`
     )
-    const recipe: OrcaVmRecipe = {
+    const recipe: TopoVmRecipe = {
       id: 'cloud-sandbox',
       name: 'Cloud Sandbox',
       create: `"${process.execPath}" "${startPath}"`,

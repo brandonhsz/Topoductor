@@ -9,7 +9,7 @@ import {
   encodePairingOffer
 } from '../../src/shared/remote-runtime/pairing/pairing'
 import { quotePosixShell } from '../../src/shared/shell/launch/shell-argument-quoting'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { launchHeadlessPairedRuntimeHost } from './helpers/headless-paired-runtime-host'
 import { cleanupE2EDaemons } from './helpers/electron-process-shutdown'
 import {
@@ -18,7 +18,7 @@ import {
 } from './helpers/paired-electron-client'
 import { startFreezableTcpProxy, type FreezableTcpProxy } from './helpers/freezable-tcp-proxy'
 
-const scratch = mkdtempSync(path.join(os.tmpdir(), 'orca-paired-terminal-outage-'))
+const scratch = mkdtempSync(path.join(os.tmpdir(), 'topo-paired-terminal-outage-'))
 const fixturePath = path.join(scratch, 'outage-terminal.mjs')
 
 writeFileSync(

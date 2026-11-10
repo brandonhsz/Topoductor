@@ -8,7 +8,7 @@ import '../../../../src/shared/protocol-version'
 import { PREFLIGHT_OTHER_RUNTIME_REFUSAL_RUNTIME_CAPABILITY } from '../../../../src/shared/preflight-runtime-capabilities'
 import type { ExecutionHostId } from '../../../../src/shared/execution-host'
 import { WorkspaceExecutionHostContext } from '../../navigation/workspace-execution-host'
-import { createOrcaQueryClient } from '../../query/orca-query-client'
+import { createTopoQueryClient } from '../../query/topo-query-client'
 import { settleQueryNotifications } from '../../test-support/rpc-recording/hook-mount'
 import type { MobileNewTabAgentOption } from './mobile-new-tab-agent-options'
 import type { MobileNewTabAgentLoadState } from './mobile-agent-load-state'
@@ -114,7 +114,7 @@ let queryClient: QueryClient
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date'] })
   vi.setSystemTime(1_000_000)
-  queryClient = createOrcaQueryClient()
+  queryClient = createTopoQueryClient()
 })
 
 afterEach(() => {

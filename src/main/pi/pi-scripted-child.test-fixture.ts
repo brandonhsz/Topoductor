@@ -63,7 +63,7 @@ class ScriptedPiConnection implements PiRpcConnection {
     this.file =
       sessionIndex !== -1
         ? launch.args[sessionIndex + 1]
-        : join(tmpdir(), 'orca-scripted-pi', `session-${number}.jsonl`)
+        : join(tmpdir(), 'topo-scripted-pi', `session-${number}.jsonl`)
     void this.handshake.promise.catch(() => undefined)
   }
 
@@ -261,7 +261,7 @@ export const piScriptedChild = (options: PiScriptOptions = {}): ScriptedPiChild 
           throw new Error('Scripted Pi received another provider handle')
         }
         return {
-          command: join(tmpdir(), 'orca-scripted-pi', 'fake-pi'),
+          command: join(tmpdir(), 'topo-scripted-pi', 'fake-pi'),
           cwd: tmpdir(),
           fullAccess: true,
           previous: handle

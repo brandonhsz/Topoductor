@@ -7,9 +7,9 @@ import { CrewReadModel } from '../../orchestration/crew/crew-read-model'
 import { getPublishedHostDescriptor } from '../../hosts/platform-probe/host-descriptor'
 import { existsSync } from 'node:fs'
 import type { OrchestrationDb } from '../../orchestration/db/orchestration-db'
-import { OrcaRuntimeWithOrchestrationDatabaseBinding } from './orchestration-database-binding'
+import { TopoRuntimeWithOrchestrationDatabaseBinding } from './orchestration-database-binding'
 
-export abstract class OrcaRuntimeWithCrewOperations extends OrcaRuntimeWithOrchestrationDatabaseBinding {
+export abstract class TopoRuntimeWithCrewOperations extends TopoRuntimeWithOrchestrationDatabaseBinding {
   abstract readonly agentTransitions: Pick<AgentTransitionDetector, 'subscribe'>
 
   private unwatchCrewDb: (() => void) | undefined

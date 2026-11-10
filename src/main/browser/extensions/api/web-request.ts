@@ -1,6 +1,6 @@
 import { registerBrowserExtensionNamespace } from '../api-runtime/browser-extension-namespace-registry'
 
-/** Events Orca forwards from its own session handlers (browser-extension-web-request.ts). */
+/** Events Topo forwards from its own session handlers (browser-extension-web-request.ts). */
 export const FORWARDED_WEB_REQUEST_EVENTS = [
   'onBeforeRequest',
   'onBeforeSendHeaders',

@@ -10,7 +10,7 @@ vi.mock('../../../../shared/app-environment', () => ({
   getAppEnvironment: () => ({ getPath: () => fixture.userData, onWillQuit: vi.fn() })
 }))
 vi.mock('../../../agent-hooks/server/agent-hook-server', () => ({
-  agentHookServer: { buildPtyEnv: () => ({ ORCA_AGENT_HOOK_PORT: '12345' }) }
+  agentHookServer: { buildPtyEnv: () => ({ TOPO_AGENT_HOOK_PORT: '12345' }) }
 }))
 vi.mock('../../../agent-hooks/wsl-relay/wsl-hook-relay-manager', () => ({
   wslHookRelayManager: {
@@ -24,10 +24,10 @@ vi.mock('../../../agent-hooks/wsl-relay/wsl-hook-relay-manager', () => ({
 vi.mock('../../../pi/titlebar-extension-service', () => ({
   piTitlebarExtensionService: { buildPtyEnv: () => ({}), buildFreshOmpEnv: () => ({}) }
 }))
-vi.mock('../../../cli/orca-cli-child-path', () => ({ prependOrcaCliDirToChildPath: () => {} }))
+vi.mock('../../../cli/topo-cli-child-path', () => ({ prependTopoCliDirToChildPath: () => {} }))
 vi.mock('../../../cli/wsl-managed-cli', () => ({
   getManagedWslCliDir: () => undefined,
-  getWslCliCommandName: () => 'orca-ide'
+  getWslCliCommandName: () => 'topo-ide'
 }))
 
 let root: string
@@ -35,7 +35,7 @@ let custom: string
 let options: BuildPtyHostEnvOptions
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-opencode-disabled-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-opencode-disabled-'))
   const home = join(root, 'home')
   const xdg = join(root, 'xdg')
   mkdirSync(home)
@@ -50,9 +50,9 @@ beforeEach(() => {
   vi.stubEnv('XDG_CONFIG_HOME', xdg)
   for (const key of [
     'OPENCODE_CONFIG_DIR',
-    'ORCA_OPENCODE_CONFIG_DIR',
-    'ORCA_OPENCODE_SOURCE_CONFIG_DIR',
-    'ORCA_OPENCODE_AGENT',
+    'TOPO_OPENCODE_CONFIG_DIR',
+    'TOPO_OPENCODE_SOURCE_CONFIG_DIR',
+    'TOPO_OPENCODE_AGENT',
     'ZDOTDIR'
   ]) {
     vi.stubEnv(key, undefined)
@@ -81,9 +81,9 @@ describe('OpenCode installation uses the current enabled agents', () => {
         'owned-launch',
         {
           OPENCODE_CONFIG_DIR: custom,
-          ORCA_OPENCODE_PLUGIN_API: 'v2',
-          ORCA_OPENCODE_STARTUP_PROMPT_NONCE: 'fixture-nonce',
-          ORCA_OPENCODE_STARTUP_PROMPT_BODY: 'original caller brief'
+          TOPO_OPENCODE_PLUGIN_API: 'v2',
+          TOPO_OPENCODE_STARTUP_PROMPT_NONCE: 'fixture-nonce',
+          TOPO_OPENCODE_STARTUP_PROMPT_BODY: 'original caller brief'
         },
         { ...options, agentStatusHooksEnabled: false }
       )

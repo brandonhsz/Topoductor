@@ -12,7 +12,7 @@ import {
 import { useTranslate } from '@/i18n/use-translate'
 import { useAppStore } from '@/store'
 
-// Families whose `Login Data` Orca can read; Firefox and Safari keep passwords elsewhere.
+// Families whose `Login Data` Topo can read; Firefox and Safari keep passwords elsewhere.
 const CHROMIUM_FAMILIES = new Set(['chrome', 'chromium', 'arc', 'edge', 'comet', 'helium'])
 
 export type BrowserPasswordImportSource = { browserFamily: string; profileDirectory: string }

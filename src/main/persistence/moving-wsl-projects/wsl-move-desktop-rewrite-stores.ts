@@ -1,11 +1,11 @@
 // Record each store only after durable rewrite so crashes retry the unfinished stores.
 import type { WslMoveCutover } from '../../../shared/wsl-move/wsl-move-cutover'
 import { WSL_MOVE_RENDERER_REWRITE_STORE_IDS } from '../../../shared/wsl-move/wsl-move-renderer-rewrite-types'
-import type { OrcadMigrationPathRewriter } from '../migrating-orcad-catalog/path-rewrite/orcad-migration-path-rewrite'
+import type { TopodMigrationPathRewriter } from '../migrating-topod-catalog/path-rewrite/topod-migration-path-rewrite'
 
 export type WslMoveDesktopRewriteContext = {
   cutover: Readonly<WslMoveCutover>
-  rewritePath: OrcadMigrationPathRewriter
+  rewritePath: TopodMigrationPathRewriter
   destinationHostId: `runtime:${string}`
   /** Durable before it returns; `cutover.seededHostWorkspaceIds` holds what earlier runs recorded. */
   recordSeededHostWorkspaceIds: (workspaceIds: readonly string[]) => void

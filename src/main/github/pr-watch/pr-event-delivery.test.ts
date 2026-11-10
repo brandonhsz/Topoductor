@@ -109,7 +109,7 @@ describe('deliverPendingPullRequestEvents', () => {
     database.transaction((db) => {
       insertPRChatAction(db, {
         chatId: 'chat-1',
-        anchor: { itemId: 'orca:anchor', revision: 1 },
+        anchor: { itemId: 'topo:anchor', revision: 1 },
         forgeHost: 'github.com',
         owner: 'acme',
         repo: 'repo',

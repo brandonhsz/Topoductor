@@ -2,7 +2,7 @@ import { BranchSwitchLandedWithWarningError } from '../../../../../git/branch-sw
 import { mapDispatcherError } from '../../../dispatcher-error-response'
 import '../../../unused-default-rpc-methods.test-fixture'
 import { describe, expect, it } from 'vitest'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { RpcDispatcher } from '../../../dispatcher'
 import { GIT_METHODS } from './git'
 import type { GitStatusResult } from '../../../../../../shared/git/status/git-status-types'
@@ -17,7 +17,7 @@ describe('git conflict replies', () => {
       getRuntimeGitStatus: async () => status,
       getRuntimeGitSubmoduleStatus: async () => status,
       getRuntimeGitConflictOperation: async () => 'revert'
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     const dispatcher = new RpcDispatcher({ runtime, methods: GIT_METHODS })
     for (const method of ['git.status', 'git.submoduleStatus', 'git.conflictOperation']) {
       const replies: string[] = []

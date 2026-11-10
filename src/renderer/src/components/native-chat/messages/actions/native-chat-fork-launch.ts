@@ -199,7 +199,7 @@ function forkFailureDetail(agentLabel: string, error: unknown): string {
   if (code === STRUCTURED_LAUNCH_FORK_UNSUPPORTED_REFUSAL) {
     return translate(
       'components.native-chat.fork.hostUnsupported',
-      'This host runs an older Orca. Update Orca on the host, then try again.'
+      'This host runs an older Topo. Update Topo on the host, then try again.'
     )
   }
   if (code === 'structured_agent_session_host_permission') {

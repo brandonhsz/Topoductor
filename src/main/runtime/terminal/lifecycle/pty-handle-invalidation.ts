@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithResolveKnownWorkspaceFileTarget } from '../../workspaces/known-workspace-file-target'
+import { TopoRuntimeWithResolveKnownWorkspaceFileTarget } from '../../workspaces/known-workspace-file-target'
 import type { PtyIncarnationId } from '../../../../shared/terminal/pty/lifecycle/pty-incarnation'
 import { getPtyExecutionHost } from '../../../../shared/terminal/pty/lifecycle/terminal-execution-host'
 import {
@@ -7,7 +7,7 @@ import {
 } from '../../../../shared/execution-host'
 import type { RuntimePtyWorktreeRecord } from '../records/runtime-terminal-state-records'
 
-export abstract class OrcaRuntimeWithInvalidateAllHandlesForPty extends OrcaRuntimeWithResolveKnownWorkspaceFileTarget {
+export abstract class TopoRuntimeWithInvalidateAllHandlesForPty extends TopoRuntimeWithResolveKnownWorkspaceFileTarget {
   protected abstract getOrCreatePtyWorktreeRecord(ptyId: string): RuntimePtyWorktreeRecord | null
 
   protected retirePredecessorPtyExitEvidence(pty: RuntimePtyWorktreeRecord): void {

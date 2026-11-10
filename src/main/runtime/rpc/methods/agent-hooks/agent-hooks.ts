@@ -10,12 +10,12 @@ export const AGENT_HOOK_METHODS = [
     params: PrepareCodexForWslPaneParams,
     handler: async (params, { runtime, clientKind }) => {
       if (clientKind !== undefined) {
-        throw new Error('Codex hook preparation is only available to the local Orca CLI.')
+        throw new Error('Codex hook preparation is only available to the local Topo CLI.')
       }
       return await prepareManagedWslCodexHomeBeforeShellLaunch({
         env: {
           CODEX_HOME: params.codexHome,
-          ORCA_CODEX_HOME: params.orcaCodexHome,
+          TOPO_CODEX_HOME: params.topoCodexHome,
           WSL_DISTRO_NAME: params.wslDistro
         },
         hooksEnabled: isAgentStatusHooksEnabledForAgent(

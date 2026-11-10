@@ -2,7 +2,7 @@
 // ↔ worker contract and the plugin's own storage, settings and secrets. Merges into module 'orca'
 // (orca.d.ts), which components panels import; 'orca/host' re-exports the shared types for frames
 // and workers. Mirrors declarative-sdk.ts, plugin-panel-shell-facades.ts and
-// plugin-worker-orca-api.ts.
+// plugin-worker-topo-api.ts.
 
 declare module 'orca' {
   /** Needs a press on one of the panel's controls; see "User gestures". */

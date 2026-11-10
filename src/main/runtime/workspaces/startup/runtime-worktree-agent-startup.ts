@@ -48,7 +48,7 @@ type StartupEnvironment = {
   /** An automation's saved extras, merged over the launch's arguments. */
   sessionOptions?: Readonly<Record<string, SessionOptionValue>>
   extraAgentArgs?: string
-  /** Orca, not a user, types into this agent once it starts. */
+  /** Topo, not a user, types into this agent once it starts. */
   suppressStartupUpdatePrompt?: boolean
   /** Caller-supplied telemetry attribution, validated leniently at the host boundary. */
   launchSource?: string

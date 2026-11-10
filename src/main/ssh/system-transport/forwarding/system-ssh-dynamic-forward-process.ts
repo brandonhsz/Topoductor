@@ -4,7 +4,7 @@ import type { SshTarget } from '../../../../shared/ssh-types'
 import { buildForwardProcessSshArgs, type SystemSshBuildArgsOptions } from '../system-ssh-args'
 import { findSystemSsh } from '../system-ssh-binary'
 import { waitForSystemSshForwardStop } from './system-ssh-forward-process'
-import { reserveBrowserTunnelOrcaListenerPort } from '../../../browser/network/tunnels/browser-network-tunnel-destination-policy'
+import { reserveBrowserTunnelTopoListenerPort } from '../../../browser/network/tunnels/browser-network-tunnel-destination-policy'
 
 const STARTUP_TIMEOUT_MS = 10_000
 const PROBE_INTERVAL_MS = 50
@@ -40,7 +40,7 @@ export async function startSystemSshDynamicForwardProcess(
     windowsHide: true
   })
   // The -D listener is an unauthenticated SOCKS proxy into the SSH target's network.
-  const releaseTunnelReservation = reserveBrowserTunnelOrcaListenerPort(localPort)
+  const releaseTunnelReservation = reserveBrowserTunnelTopoListenerPort(localPort)
   process.once('exit', releaseTunnelReservation)
   let stderr = ''
   const onStderr = (chunk: Buffer): void => {

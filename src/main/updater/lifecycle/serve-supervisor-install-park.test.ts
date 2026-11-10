@@ -29,9 +29,9 @@ describe('parkServeSupervisorsForInstall', () => {
   let dir: string
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-install-park-'))
-    const bundle = join(root, 'Orca.app')
-    executable = join(bundle, 'Contents', 'MacOS', 'Orca')
+    root = await mkdtemp(join(tmpdir(), 'topo-install-park-'))
+    const bundle = join(root, 'Topo.app')
+    executable = join(bundle, 'Contents', 'MacOS', 'Topo')
     await mkdir(join(bundle, 'Contents', 'MacOS'), { recursive: true })
     await writeFile(join(bundle, 'Contents', 'Info.plist'), 'v1')
     dir = bundleCoordinationDir(realpathSync(bundle), join(root, 'data'))
@@ -51,7 +51,7 @@ describe('parkServeSupervisorsForInstall', () => {
         pid: process.pid,
         childPid,
         heartbeatAt,
-        label: 'com.stablyai.orca.serve.default'
+        label: 'com.brandonhsz.topo.serve.default'
       })
     )
   }

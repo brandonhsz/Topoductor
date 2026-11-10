@@ -4,7 +4,7 @@ import {
   parseExecutionHostId
 } from '../../../../../shared/execution-host'
 import {
-  getOrcadSshDeployment,
+  getTopodSshDeployment,
   type PublicKnownRuntimeEnvironment
 } from '../../../../../shared/remote-runtime/host-catalog/runtime-environments'
 
@@ -22,7 +22,7 @@ export type SshWorkspaceBrowserRouteEligibility = {
 export function resolveSshWorkspaceBrowserRouteEligibility(
   executionHostId: string | null | undefined,
   settings: SshBrowserRoutingSettings | null | undefined,
-  environments?: readonly Pick<PublicKnownRuntimeEnvironment, 'id' | 'orcadDeployment'>[]
+  environments?: readonly Pick<PublicKnownRuntimeEnvironment, 'id' | 'topodDeployment'>[]
 ): SshWorkspaceBrowserRouteEligibility | null {
   const parsed = parseExecutionHostId(executionHostId)
   const environment =
@@ -30,7 +30,7 @@ export function resolveSshWorkspaceBrowserRouteEligibility(
       ? environments?.find((candidate) => candidate.id === parsed.environmentId)
       : undefined
   // WSL pages use the paired-runtime tunnel over wsl.exe, never SSH/localhost-forwarded routing.
-  const deployment = environment && getOrcadSshDeployment(environment)
+  const deployment = environment && getTopodSshDeployment(environment)
   const targetId = parsed?.kind === 'ssh' ? parsed.targetId : deployment?.sshTargetId
   // Why: a recipe VM's target is never a direct workspace host, but routes pages as its deployment's.
   if (!targetId || (parsed?.kind === 'ssh' && isRuntimeOwnedSshTargetId(targetId))) {

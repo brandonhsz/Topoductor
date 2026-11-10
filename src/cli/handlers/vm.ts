@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { CommandHandler } from '../dispatch'
 import { RuntimeClientError } from '../runtime-client'
-import { parseOrcaYaml } from '../../shared/orca-yaml'
+import { parseTopoYaml } from '../../shared/topo-yaml'
 import {
   getEphemeralVmRecipeResultProjectRoot,
   type EphemeralVmRecipeDoctorCheck,
@@ -18,7 +18,7 @@ import {
   runEphemeralVmRecipeCleanup,
   runEphemeralVmRecipeStart
 } from '../../shared/ephemeral-vm-recipe-runner'
-import type { OrcaVmRecipe } from '../../shared/orca-yaml-hook-types'
+import type { TopoVmRecipe } from '../../shared/topo-yaml-hook-types'
 
 export const VM_HANDLERS: Record<string, CommandHandler> = {
   'vm recipe doctor': async ({ flags, cwd, json }) => {
@@ -43,7 +43,7 @@ export const VM_HANDLERS: Record<string, CommandHandler> = {
 }
 
 function doctorRecipe(repoPath: string, recipeId: string): DoctorResult {
-  const yamlPath = join(repoPath, 'orca.yaml')
+  const yamlPath = join(repoPath, 'topo.yaml')
   if (!existsSync(yamlPath)) {
     return {
       recipeId,
@@ -51,21 +51,21 @@ function doctorRecipe(repoPath: string, recipeId: string): DoctorResult {
       ok: false,
       checks: [
         {
-          id: 'orca_yaml.exists',
+          id: 'topo_yaml.exists',
           status: 'fail',
-          message: `No orca.yaml found at ${yamlPath}`,
-          remediation: 'Add environmentRecipes to the repo orca.yaml.'
+          message: `No topo.yaml found at ${yamlPath}`,
+          remediation: 'Add environmentRecipes to the repo topo.yaml.'
         }
       ]
     }
   }
 
-  const hooks = parseOrcaYaml(readTextFile(yamlPath))
+  const hooks = parseTopoYaml(readTextFile(yamlPath))
   const parseCheck: EphemeralVmRecipeDoctorCheck = {
-    id: 'orca_yaml.parse',
+    id: 'topo_yaml.parse',
     status: hooks ? 'pass' : 'fail',
-    message: hooks ? 'orca.yaml parsed successfully.' : 'orca.yaml has no supported Orca config.',
-    ...(hooks ? {} : { remediation: 'Add an environmentRecipes entry to orca.yaml.' })
+    message: hooks ? 'topo.yaml parsed successfully.' : 'topo.yaml has no supported Topo config.',
+    ...(hooks ? {} : { remediation: 'Add an environmentRecipes entry to topo.yaml.' })
   }
   const result = doctorEphemeralVmRecipe({
     repoPath,
@@ -252,8 +252,8 @@ function buildProvisionFailureRemediation(stderr: string, stdout: string): strin
     : 'Check recipe stderr and ensure stdout contains the VM recipe result JSON.'
 }
 
-function loadRecipe(repoPath: string, recipeId: string): OrcaVmRecipe | null {
-  const hooks = parseOrcaYaml(readTextFile(join(repoPath, 'orca.yaml')))
+function loadRecipe(repoPath: string, recipeId: string): TopoVmRecipe | null {
+  const hooks = parseTopoYaml(readTextFile(join(repoPath, 'topo.yaml')))
   return hooks?.environmentRecipes?.find((entry) => entry.id === recipeId) ?? null
 }
 

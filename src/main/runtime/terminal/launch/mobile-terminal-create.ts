@@ -1,5 +1,5 @@
-import type { OrcaRuntimeWithScheduleMobileSessionTabsChanged as SessionTabsPublication } from '../../session-tabs/session-tabs-change-publication'
-import { OrcaRuntimeWithFailedStartPanes } from './failed-start-pane'
+import type { TopoRuntimeWithScheduleMobileSessionTabsChanged as SessionTabsPublication } from '../../session-tabs/session-tabs-change-publication'
+import { TopoRuntimeWithFailedStartPanes } from './failed-start-pane'
 import type { WorktreeStartupLaunch } from '../../../../shared/worktree/launch-types'
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
 import type {
@@ -78,7 +78,7 @@ export type OwnedMobileTerminalCreateOptions = {
   onPtyCreated?: (ptyId: string, result: RuntimeTerminalCreate) => void
 }
 
-export abstract class OrcaRuntimeWithCreateMobileSessionTerminal extends OrcaRuntimeWithFailedStartPanes {
+export abstract class TopoRuntimeWithCreateMobileSessionTerminal extends TopoRuntimeWithFailedStartPanes {
   protected abstract runCreateMobileSessionTerminal(
     worktreeSelector: string,
     opts?: MobileTerminalCreateOptions

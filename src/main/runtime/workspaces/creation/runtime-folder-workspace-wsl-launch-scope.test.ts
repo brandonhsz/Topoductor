@@ -8,15 +8,15 @@ vi.mock('node:fs/promises', async (importOriginal) => ({
 }))
 
 // Fragments stay side-effect ordered: mocks, then lifecycle, then fixtures.
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const {
   createFolderWorkspaceRuntimeStore,
   makeFolderProjectGroup,
   makeFolderWorkspace,
   TEST_FOLDER_WORKSPACE_KEY
-} = await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
+} = await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
 const { blockedWslDistroForPath } = await import('../../../wsl/filesystem/wsl-unc-access-gate')
 const { isWslUserActFor } = await import('../../../wsl/discovery/wsl-user-act-scope')
 const { wslDistroHoldMessage } = await import('../../../../shared/wsl-distro-stopped-hold')
@@ -26,8 +26,8 @@ const FOLDER = `${PARENT}\\notes`
 const hostPlatform = process.platform
 const statsInUserAct: boolean[] = []
 
-function makeRuntime(): InstanceType<typeof OrcaRuntimeService> {
-  return new OrcaRuntimeService(
+function makeRuntime(): InstanceType<typeof TopoRuntimeService> {
+  return new TopoRuntimeService(
     createFolderWorkspaceRuntimeStore(
       makeFolderWorkspace({ folderPath: FOLDER }),
       makeFolderProjectGroup({ parentPath: PARENT })

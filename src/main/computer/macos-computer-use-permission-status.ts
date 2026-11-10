@@ -43,7 +43,7 @@ async function getComputerUsePermissionStatusAsync(
   const unavailableReason = resolveComputerUseHelperUnavailableReason()
   if (!helperAppPath || unavailableReason) {
     return createUnavailablePermissionStatus(
-      unavailableReason ?? 'Orca Computer Use.app was not found',
+      unavailableReason ?? 'Topo Computer Use.app was not found',
       helperAppPath
     )
   }
@@ -65,10 +65,10 @@ async function getComputerUsePermissionStatusAsync(
 export function resolveComputerUseHelperUnavailableReason(): string | null {
   const helperAppPath = resolveMacOSComputerUseAppPath()
   if (!helperAppPath) {
-    return 'Orca Computer Use.app was not found'
+    return 'Topo Computer Use.app was not found'
   }
   if (!resolveMacOSComputerUseExecutablePath()) {
-    return `${helperAppPath}/Contents/MacOS/orca-computer-use-macos was not found`
+    return `${helperAppPath}/Contents/MacOS/topo-computer-use-macos was not found`
   }
   return null
 }
@@ -92,7 +92,7 @@ async function readPermissionStatusFromHelperApp(
   helperAppPath: string,
   onHelperSpawn: () => void
 ): Promise<Partial<Record<ComputerUsePermissionId, ComputerUsePermissionStatus>>> {
-  const tempDir = await mkdtemp(join(tmpdir(), 'orca-computer-use-permissions-'))
+  const tempDir = await mkdtemp(join(tmpdir(), 'topo-computer-use-permissions-'))
   const statusPath = join(tempDir, 'status.json')
   try {
     // Launch the helper app so TCC checks its identity instead of inheriting the parent's grants.

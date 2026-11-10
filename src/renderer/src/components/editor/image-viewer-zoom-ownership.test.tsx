@@ -127,7 +127,7 @@ describe('ImageViewer app zoom ownership', () => {
     render(
       <EditorCommandOwnerContext value={true}>
         <ImageViewer
-          src="orca-media://file/t?revision=1"
+          src="topo-media://file/t?revision=1"
           filePath="/repo/shot.png"
           mimeType="image/png"
         />
@@ -147,7 +147,7 @@ describe('ImageViewer app zoom ownership', () => {
     const image = (revision: number) => (
       <EditorCommandOwnerContext value={true}>
         <ImageViewer
-          src={`orca-media://file/t?revision=${revision}`}
+          src={`topo-media://file/t?revision=${revision}`}
           filePath="/repo/shot.png"
           mimeType="image/png"
         />

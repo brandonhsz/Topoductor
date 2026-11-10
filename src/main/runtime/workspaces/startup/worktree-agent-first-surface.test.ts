@@ -15,18 +15,18 @@ vi.mock('../../rpc/methods/structured-sessions/creation/structured-agent-session
   createStructuredAgentSessionForWorktree: createStructured
 }))
 
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
 const { computeWorktreePathMock, ensurePathWithinWorkspaceMock } =
-  await import('../../orca-runtime-test-mocks/setup.spec')
+  await import('../../topo-runtime-test-mocks/setup.spec')
 const { getEffectiveHooks } = await import('../../../workspace-hooks/hooks')
 const { getDefaultTabsLaunch } = await import('../../../workspace-hooks/effective-hook-config')
 const { createSetupRunnerScript } = await import('../../../workspace-hooks/worktree-runner-script')
 const { listWorktrees } = await import('../../../git/worktrees/catalog/worktree-scan-cache')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const { makeRuntimeStoreWithWorkspaceSession, store } =
-  await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
-const { committingSpawn } = await import('../../orca-runtime-tests/bind-first-pane.test-fixture')
+  await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
+const { committingSpawn } = await import('../../topo-runtime-tests/bind-first-pane.test-fixture')
 
 const DEFAULTS = {
   runCommands: true,
@@ -59,7 +59,7 @@ function chatCreateRuntime(args: {
     }
   }
   const { runtimeStore } = makeRuntimeStoreWithWorkspaceSession(getDefaultWorkspaceSession())
-  const runtime = new OrcaRuntimeService({
+  const runtime = new TopoRuntimeService({
     ...runtimeStore,
     getRepo: (id) => (id === repo.id ? repo : undefined),
     getRepos: () => [repo],

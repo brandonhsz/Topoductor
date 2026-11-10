@@ -6,7 +6,7 @@ import { dirname, join, relative, resolve } from 'node:path'
 const ISOLATION_REQUIRING_API = new RegExp(
   [
     // Opt-out for a file whose state leaks in ways the reset cannot see.
-    String.raw`@orca-isolated-worker\b`,
+    String.raw`@topo-isolated-worker\b`,
     String.raw`\bvi\.(?:doMock|unmock|doUnmock|resetModules)\(`,
     String.raw`@vitest-environment\s+(?!node\b)`,
     String.raw`\bglobalThis(?:\.\w+|\[[^\]]+\])\s*=[^=]`,

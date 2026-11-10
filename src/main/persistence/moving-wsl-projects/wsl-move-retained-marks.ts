@@ -1,12 +1,12 @@
 /**
- * Writes the `orcadRetained` mark on local project rows (mover design, section 4.5). Only this
+ * Writes the `topodRetained` mark on local project rows (mover design, section 4.5). Only this
  * machine's rows: the WSL host's own row carries the same id and is never marked.
  */
 import type { FolderWorkspace } from '../../../shared/folder-workspaces/folder-workspace-types'
 import {
-  sameOrcadRetainedMarker,
-  type OrcadRetainedMarker
-} from '../../../shared/orcad-retained-marker'
+  sameTopodRetainedMarker,
+  type TopodRetainedMarker
+} from '../../../shared/topod-retained-marker'
 import type { PersistedState } from '../../../shared/persisted-state-types'
 import type { Repo } from '../../../shared/repo-types'
 import { isLocalWslMoveRow } from './wsl-move-scope-guard'
@@ -15,7 +15,7 @@ import { isLocalWslMoveRow } from './wsl-move-scope-guard'
 export type WslMoveRetainedMark = {
   kind: 'repo' | 'folder'
   id: string
-  marker: OrcadRetainedMarker | null
+  marker: TopodRetainedMarker | null
 }
 
 /** Mutates the rows in place; returns how many changed so the caller saves only when needed. */
@@ -29,13 +29,13 @@ export function applyWslMoveRetainedMarks(
       mark.kind === 'repo' ? state.repos : (state.folderWorkspaces ?? [])
     const row = rows.find((entry) => entry.id === mark.id && isLocalWslMoveRow(entry))
     const next = mark.marker ?? undefined
-    if (!row || sameOrcadRetainedMarker(row.orcadRetained, next)) {
+    if (!row || sameTopodRetainedMarker(row.topodRetained, next)) {
       continue
     }
     if (next) {
-      row.orcadRetained = { ...next }
+      row.topodRetained = { ...next }
     } else {
-      delete row.orcadRetained
+      delete row.topodRetained
     }
     changed++
   }

@@ -25,7 +25,7 @@ const owner: NativeChatVisualOwner = {
   sessionId: 'session-alpha',
   worktreeId: 'wt-1'
 }
-const LINE = '::orca-visual{file="usage.html" title="Usage"}'
+const LINE = '::topo-visual{file="usage.html" title="Usage"}'
 
 function withOwner(children: ReactNode, value: NativeChatVisualOwner | null = owner): ReactNode {
   return (
@@ -86,7 +86,7 @@ describe('NativeChatMarkdown visuals', () => {
     rerender(
       withOwner(
         <NativeChatMarkdown
-          content={`Intro\n\n${LINE}\n\n\`\`\`text\nsettled\n\`\`\`\n\nMore text arriving now\n\n::orca-visual{file="../invalid.html"}\n\nend`}
+          content={`Intro\n\n${LINE}\n\n\`\`\`text\nsettled\n\`\`\`\n\nMore text arriving now\n\n::topo-visual{file="../invalid.html"}\n\nend`}
           visualMessageId="m1"
           growing
           streaming

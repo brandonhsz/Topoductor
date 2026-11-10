@@ -26,8 +26,8 @@ const {
 const electronBuilderConfig = require('../electron-builder.config.cjs')
 
 const usageDescriptions = electronBuilderConfig.mac.extendInfo
-const appInfo = { CFBundleIdentifier: 'com.stablyai.orca', CFBundleShortVersionString: '1.4.300' }
-const expectations = { appId: 'com.stablyai.orca', usageDescriptions, minimumOs: '13.5' }
+const appInfo = { CFBundleIdentifier: 'com.brandonhsz.topo', CFBundleShortVersionString: '1.4.300' }
+const expectations = { appId: 'com.brandonhsz.topo', usageDescriptions, minimumOs: '13.5' }
 
 describe('terminal host binary checks', () => {
   it('reads minos from the LC_BUILD_VERSION load command only', () => {
@@ -54,8 +54,8 @@ describe.skipIf(process.platform !== 'darwin')('terminal host assembly', () => {
   let appPath
 
   beforeEach(() => {
-    root = mkdtempSync(join(tmpdir(), 'orca-terminal-host-'))
-    appPath = join(root, 'Orca.app')
+    root = mkdtempSync(join(tmpdir(), 'topo-terminal-host-'))
+    appPath = join(root, 'Topo.app')
     const resources = join(appPath, 'Contents', 'Resources')
     const out = join(resources, 'app.asar.unpacked', 'out')
     mkdirSync(join(out, 'main', 'chunks'), { recursive: true })
@@ -89,7 +89,7 @@ describe.skipIf(process.platform !== 'darwin')('terminal host assembly', () => {
       info
     })
     expect(paths).toEqual(macTerminalHostPaths(appPath))
-    expect(paths.bundle).toBe(join(appPath, 'Contents', 'Helpers', 'Orca Terminal Host.app'))
+    expect(paths.bundle).toBe(join(appPath, 'Contents', 'Helpers', 'Topo Terminal Host.app'))
     expect(readFileSync(paths.executable, 'utf8')).toBe('pinned-node')
     expect(statSync(paths.executable).mode & 0o777).toBe(0o755)
     expect(statSync(paths.spawnHelper).mode & 0o777).toBe(0o755)
@@ -111,14 +111,14 @@ describe.skipIf(process.platform !== 'darwin')('terminal host assembly', () => {
     writeFileSync(join(main, 'daemon-entry.js'), "require('./chunks/kill.js')")
     writeFileSync(
       join(main, 'chunks', 'kill.js'),
-      "require(`node:fs`);require('os');require(`@orca/process-host/gate`)"
+      "require(`node:fs`);require('os');require(`@topo/process-host/gate`)"
     )
     // Main-process code shipped alongside is not part of the daemon.
     writeFileSync(join(main, 'index.js'), "require('unused');require(`electron`)")
     const modules = join(resources, 'node_modules')
-    mkdirSync(join(modules, '@orca', 'process-host', 'dist'), { recursive: true })
+    mkdirSync(join(modules, '@topo', 'process-host', 'dist'), { recursive: true })
     writeFileSync(
-      join(modules, '@orca', 'process-host', 'package.json'),
+      join(modules, '@topo', 'process-host', 'package.json'),
       '{"dependencies":{"retry":"1"}}'
     )
     mkdirSync(join(modules, 'retry'), { recursive: true })
@@ -133,9 +133,9 @@ describe.skipIf(process.platform !== 'darwin')('terminal host assembly', () => {
     })
     const helperModules = join(paths.daemon, 'node_modules')
     expect(daemonBareRequires(join(paths.daemon, 'out', 'main'))).toEqual([
-      '@orca/process-host/gate'
+      '@topo/process-host/gate'
     ])
-    expect(existsSync(join(helperModules, '@orca', 'process-host', 'package.json'))).toBe(true)
+    expect(existsSync(join(helperModules, '@topo', 'process-host', 'package.json'))).toBe(true)
     expect(existsSync(join(helperModules, 'retry', 'package.json'))).toBe(true)
     expect(existsSync(join(helperModules, 'unused'))).toBe(false)
     expect(existsSync(join(helperModules, 'electron'))).toBe(false)

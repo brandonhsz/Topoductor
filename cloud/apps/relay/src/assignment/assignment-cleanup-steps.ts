@@ -45,7 +45,7 @@ export async function runAssignmentCleanup(
   for (const [step, operation] of assignmentCleanupSteps(assignments)) {
     await runRelayBackgroundOperation(
       operation,
-      `[orca-relay] assignment cleanup failed: ${step}`,
+      `[topo-relay] assignment cleanup failed: ${step}`,
       warn
     )
   }

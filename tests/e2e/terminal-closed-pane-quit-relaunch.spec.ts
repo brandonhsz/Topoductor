@@ -2,8 +2,8 @@
 // macOS descendant kill grace can leave a dying daemon session listed live, which old startup adopted and respawned under its closed id.
 
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
-import { createRestartSession } from './helpers/orca-restart'
+import { test, expect } from './helpers/topo-app'
+import { createRestartSession } from './helpers/topo-restart'
 import {
   focusActiveTerminalInput,
   sendToTerminal,

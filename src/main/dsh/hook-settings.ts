@@ -52,7 +52,7 @@ export function getDshManagedHooksPath(): string {
 export function getDshRemoteManagedHooksPath(remoteHome: string): string {
   return pathPosix.join(
     remoteHome.replace(/\/$/, ''),
-    '.orca',
+    '.topo',
     'agent-hooks',
     DSH_MANAGED_HOOKS_FILE_NAME
   )
@@ -72,7 +72,7 @@ export function getDshManagedCommandMatcher(): (command: string | undefined) => 
   return createManagedCommandMatcher(getDshManagedScriptFileName())
 }
 
-/** This is Orca-owned config: DSH reads the explicit path rather than a user hooks.json convention. */
+/** This is Topo-owned config: DSH reads the explicit path rather than a user hooks.json convention. */
 export function buildDshManagedHooksFile(command: string): string {
   const hooks: Record<string, HookDefinition[]> = {}
   for (const event of DSH_HOOK_EVENTS) {

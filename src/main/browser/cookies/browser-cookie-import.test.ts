@@ -30,7 +30,7 @@ vi.mock('../sessions/profiles/browser-session-registry', () => ({
 }))
 
 // Mock credential output at the process wrapper; it owns timeouts and console hiding.
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   runProcess: runProcessMock
 }))
 vi.mock('node:fs', async (importOriginal) => {
@@ -164,7 +164,7 @@ describe('importCookiesFromBrowser Safari', () => {
   let cookieWriteMock: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
-    tmpDir = mkdtempSync(join(tmpdir(), 'orca-safari-cookie-test-'))
+    tmpDir = mkdtempSync(join(tmpdir(), 'topo-safari-cookie-test-'))
     cookieWriteMock = writeCookieIdentityMock
     cookieWriteMock.mockReset()
     cookieWriteMock.mockResolvedValue(undefined)
@@ -205,7 +205,7 @@ describe('importCookiesFromBrowser Chromium', () => {
   let setUserAgentMock: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
-    tmpDir = mkdtempSync(join(tmpdir(), 'orca-chromium-cookie-test-'))
+    tmpDir = mkdtempSync(join(tmpdir(), 'topo-chromium-cookie-test-'))
     cookieWriteMock = writeCookieIdentityMock
     cookieWriteMock.mockReset()
     cookieWriteMock.mockResolvedValue(undefined)

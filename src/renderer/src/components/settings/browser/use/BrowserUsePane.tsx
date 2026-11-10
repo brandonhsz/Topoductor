@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ORCA_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
+import { TOPO_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
 import { BROWSER_USE_ENABLED_STORAGE_KEY } from '@/lib/browser/browser-use-setup-state'
 import {
   GLOBAL_AGENT_SKILL_SOURCE_KINDS,
@@ -64,7 +64,7 @@ export function BrowserUseSetup({
     loading: skillLoading,
     error: skillError,
     refresh: refreshSkill
-  } = useInstalledAgentSkill(ORCA_CLI_SKILL_NAME, {
+  } = useInstalledAgentSkill(TOPO_CLI_SKILL_NAME, {
     enabled: browserUseEnabled,
     discoveryTarget: activeSkillRuntime.discoveryTarget,
     sourceKinds: GLOBAL_AGENT_SKILL_SOURCE_KINDS
@@ -151,7 +151,7 @@ export function BrowserUseSetup({
           )}
           description={t(
             'auto.components.settings.BrowserUsePane.68ea76eb71',
-            "Install the Browser Use skill so agents can operate Orca's browser."
+            "Install the Browser Use skill so agents can operate Topo's browser."
           )}
           keywords={getBrowserUsePaneSearchEntries()[0].keywords}
           className={cn(

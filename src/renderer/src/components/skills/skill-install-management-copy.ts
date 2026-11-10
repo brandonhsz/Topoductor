@@ -3,10 +3,10 @@ import type { Translate } from '@/i18n/use-translate'
 
 export function skillInstallManagementCopy(t: Translate = translate) {
   return {
-    title: t('auto.components.skills.SkillInstallManagementDialog.44d118a8f7', 'Installed by Orca'),
+    title: t('auto.components.skills.SkillInstallManagementDialog.44d118a8f7', 'Installed by Topo'),
     description: t(
       'auto.components.skills.SkillInstallManagementDialog.3677ae58e7',
-      'Skills Orca installed from a link. Reinstall, go back to an earlier version, or remove them.'
+      'Skills Topo installed from a link. Reinstall, go back to an earlier version, or remove them.'
     ),
     localMachine: t(
       'auto.components.skills.SkillInstallManagementDialog.6cb1fbe039',
@@ -19,7 +19,7 @@ export function skillInstallManagementCopy(t: Translate = translate) {
     ),
     noInstalls: t(
       'auto.components.skills.SkillInstallManagementDialog.64c71cf7b9',
-      'Orca has not installed any skills on this machine yet.'
+      'Topo has not installed any skills on this machine yet.'
     ),
     bundleResult: (installed: number, updated: number, keptLocal: number) =>
       t(

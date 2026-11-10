@@ -1,5 +1,5 @@
 import type { ChildProcess } from 'node:child_process'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { connect, createServer, type Socket } from 'node:net'
 import { tmpdir } from 'node:os'
@@ -28,7 +28,7 @@ async function unusedPort(): Promise<number> {
 }
 
 async function startRelay(port: number): Promise<ChildProcess> {
-  const dataDirectory = mkdtempSync(resolve(tmpdir(), 'orca-relay-sigterm-exit-'))
+  const dataDirectory = mkdtempSync(resolve(tmpdir(), 'topo-relay-sigterm-exit-'))
   const url = `http://127.0.0.1:${port}`
   const child = spawnProcess({
     program: process.execPath,
@@ -39,15 +39,15 @@ async function startRelay(port: number): Promise<ChildProcess> {
       PATH: process.env.PATH ?? '',
       ...(process.env.SystemRoot ? { SystemRoot: process.env.SystemRoot } : {}),
       PORT: String(port),
-      ORCA_RELAY_PUBLIC_URL: url,
-      ORCA_RELAY_CELL_URL: url,
-      ORCA_RELAY_AUTH_ISSUER: 'http://127.0.0.1:9',
-      ORCA_RELAY_JWKS_URL: 'http://127.0.0.1:9/jwks',
-      ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: 'test-assignment-key-with-at-least-32-bytes',
-      ORCA_RELAY_DATA_DIR: dataDirectory,
-      ORCA_RELAY_ADMIN_AUDIENCE: `${url}/v1/admin/drain`,
-      ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-      ORCA_RELAY_ADMIN_JWKS_URL: 'http://127.0.0.1:9/jwks'
+      TOPO_RELAY_PUBLIC_URL: url,
+      TOPO_RELAY_CELL_URL: url,
+      TOPO_RELAY_AUTH_ISSUER: 'http://127.0.0.1:9',
+      TOPO_RELAY_JWKS_URL: 'http://127.0.0.1:9/jwks',
+      TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: 'test-assignment-key-with-at-least-32-bytes',
+      TOPO_RELAY_DATA_DIR: dataDirectory,
+      TOPO_RELAY_ADMIN_AUDIENCE: `${url}/v1/admin/drain`,
+      TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+      TOPO_RELAY_ADMIN_JWKS_URL: 'http://127.0.0.1:9/jwks'
     },
     stdio: ['ignore', 'pipe', 'pipe']
   })
@@ -61,7 +61,7 @@ async function startRelay(port: number): Promise<ChildProcess> {
     let stderr = ''
     child.stderr?.on('data', (chunk: Buffer) => (stderr += chunk.toString()))
     child.stdout?.on('data', (chunk: Buffer) => {
-      if (chunk.toString().includes('[orca-relay] listening')) {
+      if (chunk.toString().includes('[topo-relay] listening')) {
         resolveReady()
       }
     })

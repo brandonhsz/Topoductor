@@ -1,4 +1,4 @@
-// Orca components panel catalog 2 (since Orca 1.4.247): data and content components. Part of the
+// Topo components panel catalog 2 (since Topo 1.4.247): data and content components. Part of the
 // `orca` module with orca.d.ts, orca-components.d.ts and orca-components-layout.d.ts.
 
 declare module 'orca' {
@@ -18,13 +18,13 @@ declare module 'orca' {
   }
   /** How a relative time reads: `long` "5 minutes ago", `short` "5m ago", `duration` "5m". */
   export type RelativeTimeFormat = 'long' | 'short' | 'duration'
-  /** A cell Orca keeps current, e.g. `{ type: 'relative', at: agent.stateStartedAt }`. */
+  /** A cell Topo keeps current, e.g. `{ type: 'relative', at: agent.stateStartedAt }`. */
   export type RelativeTimeCell = { type: 'relative'; at: number; format?: RelativeTimeFormat }
   export type TableCell = string | number | boolean | null | RelativeTimeCell
   export type TableRow = { key: string; cells: Record<string, TableCell>; disabled?: boolean }
   export type TableSort = { column: string; direction: 'asc' | 'desc' }
   /**
-   * Rows scroll inside the table and only those in view are drawn. Sorting is yours: Orca
+   * Rows scroll inside the table and only those in view are drawn. Sorting is yours: Topo
    * reports `onSortChange` and draws the rows in the order you give. With `hasMore`, scrolling
    * near the last row calls `onLoadMore` once per length of `rows`.
    */
@@ -63,7 +63,7 @@ declare module 'orca' {
     selected?: string
     defaultSelected?: string
     /**
-     * Open items, when the plugin keeps them (update it from `onToggle`). Orca's own record is lost
+     * Open items, when the plugin keeps them (update it from `onToggle`). Topo's own record is lost
      * when the Tree unmounts, for example on a tab switch.
      */
     expanded?: readonly string[]
@@ -75,7 +75,7 @@ declare module 'orca' {
   }
   /** GitHub-flavoured Markdown, sanitized. Links open like `Link`; images must be plugin files. */
   export type MarkdownProps = Leaf & { content: string }
-  /** Read-only code, highlighted when Orca knows `language` (built in or from a syntax plugin). */
+  /** Read-only code, highlighted when Topo knows `language` (built in or from a syntax plugin). */
   export type CodeViewProps = Leaf & {
     code: string
     language?: string
@@ -100,7 +100,7 @@ declare module 'orca' {
   }
   export type KeyValueProps = Leaf & { label?: string; items: readonly KeyValueItem[] }
   /**
-   * Since 1.4.247 (`ui.catalog` 3): a time Orca keeps current ("5m ago") with no polling. Inline:
+   * Since 1.4.247 (`ui.catalog` 3): a time Topo keeps current ("5m ago") with no polling. Inline:
    * it may sit inside `Text`.
    */
   export type RelativeTimeProps = Leaf & {

@@ -74,13 +74,13 @@ describe('worktree base directory watch target resolution', () => {
   // WSL-mirrored worktrees can have Windows Git metadata; UNC root refusal must preserve that watcher.
   it('keeps the Windows-side git-common watcher when only the workspace root is a WSL UNC path', async () => {
     const repo = makeRepo(0, {
-      path: 'C:\\Users\\alice\\orca',
+      path: 'C:\\Users\\alice\\topo',
       worktreeBasePath: '\\\\wsl.localhost\\Ubuntu\\home\\alice\\workspaces'
     })
 
     const targets = await buildWorktreeBaseDirectoryWatchTargets(makeStore([repo]) as never)
 
     expect([...targets.values()].map((target) => target.kind)).toEqual(['git-common'])
-    expect([...targets.values()][0]?.path).toBe('C:/Users/alice/orca/.git')
+    expect([...targets.values()][0]?.path).toBe('C:/Users/alice/topo/.git')
   })
 })

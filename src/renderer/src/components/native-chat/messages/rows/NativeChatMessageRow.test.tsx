@@ -66,7 +66,7 @@ function renderMessage(
 }
 
 describe('MessageRow control visibility', () => {
-  it('copies an assistant reply without its visual lines, which mean nothing outside Orca', async () => {
+  it('copies an assistant reply without its visual lines, which mean nothing outside Topo', async () => {
     const writeClipboardText = vi.fn().mockResolvedValue(undefined)
     Object.assign(window, { api: { ui: { writeClipboardText } } })
 
@@ -80,7 +80,7 @@ describe('MessageRow control visibility', () => {
           blocks: [
             {
               type: 'text',
-              text: 'Here it is.\n\n::orca-visual{file="usage.html" title="Usage"}\n\nDone.'
+              text: 'Here it is.\n\n::topo-visual{file="usage.html" title="Usage"}\n\nDone.'
             }
           ]
         }}

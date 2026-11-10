@@ -112,7 +112,7 @@ export function AgentSessionSourceHomeInput({
           <TooltipContent side="top" sideOffset={6} className="max-w-xs">
             {t(
               'auto.components.settings.AgentsPane.codexSessionSourceTooltip',
-              'Orca runs Codex in an isolated home. Point this at your existing Codex home to import that session history. Empty uses ~/.codex.'
+              'Topo runs Codex in an isolated home. Point this at your existing Codex home to import that session history. Empty uses ~/.codex.'
             )}
           </TooltipContent>
         </Tooltip>

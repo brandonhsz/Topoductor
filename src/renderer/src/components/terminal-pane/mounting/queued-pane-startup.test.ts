@@ -16,11 +16,11 @@ describe('paneOwnsQueuedStartup', () => {
 
     observeConnect()
     deps.startup = null
-    splitPaneWithOneShotStartup(deps, { command: 'orca setup' }, () => {
+    splitPaneWithOneShotStartup(deps, { command: 'topo setup' }, () => {
       observeConnect()
       return { id: 2 }
     })
-    splitPaneWithOneShotStartup(deps, { command: 'orca issue' }, () => {
+    splitPaneWithOneShotStartup(deps, { command: 'topo issue' }, () => {
       observeConnect()
       return { id: 3 }
     })

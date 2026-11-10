@@ -14,7 +14,7 @@ import { removeEphemeralVmRuntimeSshTarget } from './runtime-ssh-cleanup'
 import { removeRuntimeOwnedSshTarget } from './runtime-ssh'
 import { isEphemeralVmProvisionLive } from './runtime-provisioning-persistence'
 
-/** Destroys a recorded VM and releases what Orca holds for it. The one path for the desktop's
+/** Destroys a recorded VM and releases what Topo holds for it. The one path for the desktop's
  *  cleanup and a failed CLI create; concurrent calls share one destroy run. */
 export async function cleanupOwnedEphemeralVmRuntime(
   store: Store,

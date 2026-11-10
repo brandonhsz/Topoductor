@@ -19,7 +19,7 @@ vi.mock('electron', () => {
   }
 })
 
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import type { ExecutionHostId } from '../../../../shared/execution-host'
 import type { FolderWorkspace } from '../../../../shared/folder-workspaces/folder-workspace-types'
 import type { ProjectGroup } from '../../../../shared/project-group-types'
@@ -32,7 +32,7 @@ import {
   partialRuntimeStore,
   storeRepo,
   storeWorktreeMeta
-} from '../../orca-runtime-tests/runtime-store-partial-fixture'
+} from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
 type Session = Partial<
   Pick<
@@ -52,7 +52,7 @@ function git(cwd: string, ...args: string[]): void {
 }
 
 beforeAll(() => {
-  root = realpathSync(mkdtempSync(join(tmpdir(), 'orca-38653-')))
+  root = realpathSync(mkdtempSync(join(tmpdir(), 'topo-38653-')))
   repoPath = join(root, 'repo')
   linkedPath = join(root, 'linked')
   folderPath = join(root, 'folder')
@@ -107,7 +107,7 @@ function sshRows(repoId: string, worktreeId: string, displayName: string): Store
   }
 }
 
-function runtimeFor(session: Session, rows: StoredRows = localRows()): OrcaRuntimeService {
+function runtimeFor(session: Session, rows: StoredRows = localRows()): TopoRuntimeService {
   const { repos, meta, metaHostId } = rows
   const group: ProjectGroup = {
     id: 'group-1',
@@ -154,7 +154,7 @@ function runtimeFor(session: Session, rows: StoredRows = localRows()): OrcaRunti
     getFolderWorkspaces: () => [folder],
     getWorkspaceSession: () => ({ ...getDefaultWorkspaceSession(), ...session })
   })
-  return new OrcaRuntimeService(store)
+  return new TopoRuntimeService(store)
 }
 
 /** What resolveActiveWorktreeContext answered before #38653: the legacy id through the unscoped selector. */

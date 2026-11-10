@@ -268,7 +268,7 @@ export function registerPtyConnectionRuntimePaneTransportRoutingTests(): void {
       const transport = createMockTransport()
       transportFactoryQueue.push(transport)
       const setupWorktreeId =
-        'ephemeral-setup-terminal:settings-mobile-emulator-orca-cli-skill-terminal'
+        'ephemeral-setup-terminal:settings-mobile-emulator-topo-cli-skill-terminal'
       mockStoreState = {
         ...mockStoreState,
         tabsByWorktree: { [setupWorktreeId]: [{ id: 'tab-1', ptyId: null }] },
@@ -301,7 +301,7 @@ export function registerPtyConnectionRuntimePaneTransportRoutingTests(): void {
       const transport = createMockTransport()
       transportFactoryQueue.push(transport)
       const setupWorktreeId =
-        'ephemeral-setup-terminal:settings-mobile-emulator-orca-cli-skill-terminal'
+        'ephemeral-setup-terminal:settings-mobile-emulator-topo-cli-skill-terminal'
       mockStoreState = {
         ...mockStoreState,
         tabsByWorktree: { [setupWorktreeId]: [{ id: 'tab-1', ptyId: null }] },
@@ -372,14 +372,14 @@ export function registerPtyConnectionRuntimePaneTransportRoutingTests(): void {
         // Why: the worktree row exists (so the owner is not "ambiguous") but its repo has
         // not landed yet — exactly the window that used to fail open to local.
         worktreesByRepo: {
-          repo1: [{ id: 'wt-remote', repoId: 'repo1', path: '/tmp/orca-docker-relay-perf-repo' }]
+          repo1: [{ id: 'wt-remote', repoId: 'repo1', path: '/tmp/topo-docker-relay-perf-repo' }]
         },
         repos: []
       } as StoreState
 
       const deps = createDeps({
         worktreeId: 'wt-remote',
-        cwd: '/tmp/orca-docker-relay-perf-repo'
+        cwd: '/tmp/topo-docker-relay-perf-repo'
       })
       connectPanePty(
         createPane(1) as never,

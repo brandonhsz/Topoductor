@@ -196,7 +196,7 @@
     "2f5158a37621": {
       "name": "error",
       "ordinal": 21,
-      "value": "The Orca server connection changed. Try again."
+      "value": "The Topo server connection changed. Try again."
     },
     "38e625888db0": {
       "name": "mutatingStatus",
@@ -504,7 +504,7 @@
       }
     },
     "9a14ab19057c": {
-      "error": "Update Orca on the executing server to edit this item or load its repository options.",
+      "error": "Update Topo on the executing server to edit this item or load its repository options.",
       "item": {
         "provider": "github",
         "source": {
@@ -607,7 +607,7 @@
       "value": false
     },
     "af72cee469d2": {
-      "error": "The Orca server connection changed. Try again.",
+      "error": "The Topo server connection changed. Try again.",
       "item": {
         "provider": "github",
         "source": {
@@ -802,7 +802,7 @@
     "da210729f992": {
       "name": "error",
       "ordinal": 21,
-      "value": "Update Orca on the executing server to edit this item or load its repository options."
+      "value": "Update Topo on the executing server to edit this item or load its repository options."
     },
     "e0bebf1cd037": {
       "name": "status.get#1",

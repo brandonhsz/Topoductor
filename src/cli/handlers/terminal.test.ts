@@ -11,7 +11,7 @@ function terminalClient(
   call: RuntimeClient['call'],
   runtime?: CliStatusResult['runtime']
 ): RuntimeClient {
-  const client = new RuntimeClient('/tmp/orca-terminal-test', 60_000, null, null)
+  const client = new RuntimeClient('/tmp/topo-terminal-test', 60_000, null, null)
   vi.spyOn(client, 'call').mockImplementation(call)
   if (runtime) {
     vi.spyOn(client, 'getCliStatus').mockResolvedValue({

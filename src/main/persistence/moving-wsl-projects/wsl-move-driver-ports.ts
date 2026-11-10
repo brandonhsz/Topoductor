@@ -3,21 +3,21 @@
  * with fakes and the production wiring stays in one place (wsl-move-driver-wiring).
  */
 import type { WslMoveBrowserCookieFreshPartitionReason } from '../../../shared/wsl-move/wsl-move-browser-cookie-copy'
-import type { OrcadMigrationBlobDescriptor } from '../../../shared/orcad-migration/orcad-migration-blob-transfer'
+import type { TopodMigrationBlobDescriptor } from '../../../shared/topod-migration/topod-migration-blob-transfer'
 import type {
-  OrcadMigrationCatalogState,
-  OrcadMigrationManifest
-} from '../../../shared/orcad-migration/orcad-migration-manifest'
+  TopodMigrationCatalogState,
+  TopodMigrationManifest
+} from '../../../shared/topod-migration/topod-migration-manifest'
 import type { FolderWorkspace } from '../../../shared/folder-workspaces/folder-workspace-types'
 import type { ProjectGroup } from '../../../shared/project-group-types'
 import type { Repo } from '../../../shared/repo-types'
 import type { WslMoveProgressEvent } from '../../../shared/wsl-move/wsl-move-driver-types'
 import type {
-  OrcadMigrationBlobDestination,
-  OrcadMigrationBlobSource
-} from '../../managed-server/migration/transfers/orcad-migration-blob-coordinator'
-import type { OrcadMigrationDestinationCatalog } from '../../managed-server/migration/cutover/orcad-migration-cutover-coordinator'
-import type { OrcadMigrationSnapshotSource } from '../../managed-server/migration/transfers/orcad-migration-snapshot-coordinator'
+  TopodMigrationBlobDestination,
+  TopodMigrationBlobSource
+} from '../../managed-server/migration/transfers/topod-migration-blob-coordinator'
+import type { TopodMigrationDestinationCatalog } from '../../managed-server/migration/cutover/topod-migration-cutover-coordinator'
+import type { TopodMigrationSnapshotSource } from '../../managed-server/migration/transfers/topod-migration-snapshot-coordinator'
 import type { WslMoveHostHolding } from './wsl-move-delta-plan'
 import type { WslMoveQuiesceDeps } from './wsl-move-quiesce'
 import type { WslMoveSleptScrollback } from './wsl-move-slept-scrollback'
@@ -45,15 +45,15 @@ export type WslMoveHost = {
   /** The distro's registry id, which binds the move to this exact distro; absent when unknown. */
   distroGuid?: string
   capabilities: readonly string[]
-  /** Read after the connect re-saved the deployment link; absent when no Orca profile is active. */
+  /** Read after the connect re-saved the deployment link; absent when no Topo profile is active. */
   browserLoginsNotCarried?: WslMoveBrowserCookieFreshPartitionReason
-  catalog: OrcadMigrationDestinationCatalog
+  catalog: TopodMigrationDestinationCatalog
   /** Commit naming every blob sent, so the host refuses a commit missing one. */
   commitWithBlobs: (
-    manifest: OrcadMigrationManifest,
-    expectedBlobs: readonly OrcadMigrationBlobDescriptor[]
-  ) => Promise<OrcadMigrationCatalogState>
-  blobs: Pick<OrcadMigrationBlobDestination, 'stageChunk'>
+    manifest: TopodMigrationManifest,
+    expectedBlobs: readonly TopodMigrationBlobDescriptor[]
+  ) => Promise<TopodMigrationCatalogState>
+  blobs: Pick<TopodMigrationBlobDestination, 'stageChunk'>
   readHolding: () => Promise<WslMoveHostHolding>
 }
 
@@ -97,7 +97,7 @@ export type WslMoveDriverDeps = {
     WslMoveQuiesceDeps,
     'sleepWorkspaces' | 'livePtyIds' | 'captureRestoreHints' | 'proveExited' | 'wait'
   >
-  snapshots: OrcadMigrationSnapshotSource
+  snapshots: TopodMigrationSnapshotSource
   /**
    * After Sleep, each paused pane's daemon checkpoint as the buffer a terminal restores from. A
    * slept pane has no renderer snapshot, so this is its only scrollback.
@@ -114,7 +114,7 @@ export type WslMoveDriverDeps = {
   shellHistory: (
     distro: string,
     worktrees: WslMoveManifestExport['worktrees']
-  ) => Promise<{ descriptors: OrcadMigrationBlobDescriptor[]; source: OrcadMigrationBlobSource }>
+  ) => Promise<{ descriptors: TopodMigrationBlobDescriptor[]; source: TopodMigrationBlobSource }>
   /** After commit: rewrite this desktop's main-process stores; the renderer then reloads. */
   finishOnDesktop: () => Promise<void>
   progress: (event: WslMoveProgressEvent) => void

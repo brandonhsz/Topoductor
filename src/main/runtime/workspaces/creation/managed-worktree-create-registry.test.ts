@@ -1,7 +1,7 @@
 // Runtime creates must enter the host registry and name their workspace before announcement.
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('../../../../shared/sidebar-inputs-switch', () => ({ ORCA_SIDEBAR_INPUTS_IS_MAIN: true }))
+vi.mock('../../../../shared/sidebar-inputs-switch', () => ({ TOPO_SIDEBAR_INPUTS_IS_MAIN: true }))
 vi.mock('electron', () => ({
   BrowserWindow: { fromId: vi.fn(() => null) },
   webContents: { fromId: vi.fn(() => null) },
@@ -45,8 +45,8 @@ vi.mock('../../../ipc/worktrees/removal/registered-worktree-roots-scoped-invalid
   invalidateAuthorizedRootsCacheForRepo: vi.fn()
 }))
 
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { partialRuntimeStore } from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
 const gitRepo = {
   id: 'repo-1',
@@ -69,8 +69,8 @@ type RuntimeInternals = {
   emitWorktreeLifecycle: (event: unknown) => void
 }
 
-function makeRuntime(repo: Record<string, unknown> = gitRepo): OrcaRuntimeService {
-  const runtime = new OrcaRuntimeService(
+function makeRuntime(repo: Record<string, unknown> = gitRepo): TopoRuntimeService {
+  const runtime = new TopoRuntimeService(
     partialRuntimeStore({
       getSettings: () => ({ disabledTuiAgents: ['codex'], workspaceDir: '/worktrees' }),
       getProjectHostSetups: () => []
@@ -96,7 +96,7 @@ function makeRuntime(repo: Record<string, unknown> = gitRepo): OrcaRuntimeServic
 
 type LocalCreateArgs = { onWorktreeMetadataPersisted: (created: { id: string }) => unknown }
 
-function creationsOf(runtime: OrcaRuntimeService): Record<string, unknown> {
+function creationsOf(runtime: TopoRuntimeService): Record<string, unknown> {
   if (!runtime.workspaceLifecycle) {
     throw new Error('the switch is mocked on')
   }

@@ -11,7 +11,7 @@ import {
   parseExecutionHostId
 } from '../../../../../../shared/execution-host'
 import { parseWorkspaceKey } from '../../../../../../shared/workspace-scope'
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from '../../../../../../shared/sidebar-inputs-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from '../../../../../../shared/sidebar-inputs-switch'
 import {
   floatingWorkspaceToWorktree,
   isFloatingWorkspaceId
@@ -211,7 +211,7 @@ export function getFolderWorkspaceMetaUpdates(
   if (
     updates.comment !== undefined &&
     updates.lastActivityAt === undefined &&
-    !ORCA_SIDEBAR_INPUTS_IS_MAIN
+    !TOPO_SIDEBAR_INPUTS_IS_MAIN
   ) {
     next.lastActivityAt = Date.now()
   }

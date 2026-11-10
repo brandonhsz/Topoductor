@@ -86,7 +86,7 @@ export function ManagedDataAccountsSection({
     }
   }
 
-  const command = `orca account add --agent ${provider}`
+  const command = `topo account add --agent ${provider}`
   return (
     <SettingsGroup
       title={
@@ -96,7 +96,7 @@ export function ManagedDataAccountsSection({
       }
       description={t(
         'accounts.managedData.description',
-        'Add accounts by running this command in a terminal on the Orca host. Selection applies to new explicit agent launches on that host; direct SSH relay and Windows-hosted WSL launches use their own credentials.'
+        'Add accounts by running this command in a terminal on the Topo host. Selection applies to new explicit agent launches on that host; direct SSH relay and Windows-hosted WSL launches use their own credentials.'
       )}
     >
       <div className="space-y-3 py-3">
@@ -131,7 +131,7 @@ export function ManagedDataAccountsSection({
           <p className="text-xs text-muted-foreground">
             {t(
               'accounts.managedData.upgrade',
-              'If accounts do not appear, update or restart the Orca host.'
+              'If accounts do not appear, update or restart the Topo host.'
             )}
           </p>
         )}

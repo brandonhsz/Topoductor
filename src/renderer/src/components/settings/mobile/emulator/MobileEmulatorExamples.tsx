@@ -7,9 +7,9 @@ import { translate } from '@/i18n/i18n'
 import { useTranslate } from '@/i18n/use-translate'
 
 const EMULATOR_EXAMPLE_PROMPTS = [
-  'Using Orca CLI, attach to the active iPhone simulator, sign in with the test account, complete onboarding, and tell me where the flow feels confusing.',
-  'With Orca CLI, run through the mobile checkout flow from product search to confirmation, capture any broken screens, and summarize the exact step that fails.',
-  'Using Orca CLI, grant camera permission, scan a test QR code or inject a camera fixture, finish the account-linking flow, and report whether the app reaches the success state.'
+  'Using Topo CLI, attach to the active iPhone simulator, sign in with the test account, complete onboarding, and tell me where the flow feels confusing.',
+  'With Topo CLI, run through the mobile checkout flow from product search to confirmation, capture any broken screens, and summarize the exact step that fails.',
+  'Using Topo CLI, grant camera permission, scan a test QR code or inject a camera fixture, finish the account-linking flow, and report whether the app reaches the success state.'
 ] as const
 
 async function copyPrompt(prompt: string): Promise<void> {
@@ -56,7 +56,7 @@ export function MobileEmulatorExamples({
       <p className="mt-1 text-xs text-muted-foreground">
         {t(
           'auto.components.settings.MobileEmulatorExamples.4daa95f25a',
-          'Paste any of these into Claude Code, Codex, or another agent in a project where the Orca CLI skill is installed.'
+          'Paste any of these into Claude Code, Codex, or another agent in a project where the Topo CLI skill is installed.'
         )}
       </p>
       <ul className="mt-3 space-y-2">

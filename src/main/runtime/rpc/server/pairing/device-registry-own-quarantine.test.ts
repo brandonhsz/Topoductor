@@ -1,4 +1,4 @@
-// A load that drops an unreadable row (e.g. one a newer Orca wrote) quarantines the file at the
+// A load that drops an unreadable row (e.g. one a newer Topo wrote) quarantines the file at the
 // first save; that missing file is this process's own doing and must not revoke the valid rows.
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -11,7 +11,7 @@ import { DEVICE_REGISTRY_FILENAME } from './mobile-pairing-files'
 let dir: string
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-device-registry-quarantine-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-device-registry-quarantine-'))
 })
 
 afterEach(() => {

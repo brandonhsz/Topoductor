@@ -29,14 +29,14 @@ import type {
 import '../../../../../native-chat/agent-session-wire/options/structured-agent-session-options-read'
 import { structuredAgentSessionOptionOverridesRefusal } from '../../../../../native-chat/agent-session-wire/options/structured-agent-session-option-intent'
 import type { StructuredAgentSessionCreateOptions } from '../../../../../native-chat/agent-session-wire/acquisition/structured-agent-session-create'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import {
   captureStructuredAgentCliSource,
   type StructuredAgentCliSourceEvidence
 } from '../../../../../native-chat/structured-agent-cli-source'
 import type { StructuredAgentId } from '../../../../../../shared/agent-session/lifecycle/agent-session-provider-handle'
 import { resolveUncommittedStructuredCreate } from './structured-agent-session-precommit-refusal'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import { structuredAgentSessionClosedBeforeCreate } from './structured-agent-session-close-before-create'
 import type { ChatTabPlacement } from '../../../../agent-session/agent-session-tab-layout'
 
@@ -81,7 +81,7 @@ export function structuredAgentSessionCreateIntentFingerprint(params: {
 
 /** Run throwing pre-commit work inside resolveUncommittedStructuredCreate so clients receive a no-effects refusal. */
 export async function prepareStructuredAgentSessionCreateForWorktree(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   /** Installs the host lazily; called at the same point the RPC handler always installed it. */
   ensureHost: () => Promise<StructuredAgentSessionHost>
   envelope: AgentSessionMutationEnvelope
@@ -183,7 +183,7 @@ export async function prepareStructuredAgentSessionCreateForWorktree(args: {
 
 /** The commit half. Past `attach`, a failure no longer proves the session does not exist. */
 export async function commitStructuredAgentSessionCreate(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   caller: StructuredAgentSessionCaller
   prepared: PreparedStructuredAgentSessionCreate
   activate: boolean
@@ -216,7 +216,7 @@ export async function commitStructuredAgentSessionCreate(args: {
                 prepared.attachParams.surfaceTabId ?? structuredAgentSessionTabId(sessionId)
               args.capture?.({ tableId, presentation: { raw: null, saved: [] } })
               if (
-                ORCA_LAYOUT_OWNER_IS_MAIN &&
+                TOPO_LAYOUT_OWNER_IS_MAIN &&
                 structuredAgentSessionClosedBeforeCreate(sessionId)
               ) {
                 return Promise.resolve()
@@ -250,7 +250,7 @@ export async function commitStructuredAgentSessionCreate(args: {
   args.capture?.({ tableId: surfaceTabId, presentation: { raw: null, saved: [] } })
   // A chat closed while it was being made gets no tab to show before main closes it.
   if (
-    ORCA_LAYOUT_OWNER_IS_MAIN &&
+    TOPO_LAYOUT_OWNER_IS_MAIN &&
     structuredAgentSessionClosedBeforeCreate(result.value.sessionId)
   ) {
     return result
@@ -285,7 +285,7 @@ export async function commitStructuredAgentSessionCreate(args: {
 }
 
 export async function createStructuredAgentSessionForWorktree(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   ensureHost: () => Promise<StructuredAgentSessionHost>
   caller: StructuredAgentSessionCaller
   envelope: AgentSessionMutationEnvelope

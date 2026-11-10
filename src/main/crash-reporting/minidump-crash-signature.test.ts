@@ -289,12 +289,12 @@ describe('parseMinidumpCrashSignature', () => {
         {
           base: 0x7ff7_0000_0000n,
           size: 0x1000,
-          name: 'C:\\Program Files\\Orca\\Orca.exe'
+          name: 'C:\\Program Files\\Topo\\Topo.exe'
         },
         {
           base: 0x7ff8_0000_0000n,
           size: 0x10_0000,
-          name: 'C:\\Program Files\\Orca\\chrome_elf.dll'
+          name: 'C:\\Program Files\\Topo\\chrome_elf.dll'
         }
       ]
     })
@@ -311,7 +311,7 @@ describe('parseMinidumpCrashSignature', () => {
     const modules = Array.from({ length: 1042 }, (_, index) => ({
       base: 0x1_0000_0000n + BigInt(index) * 0x1_0000n,
       size: 0x1000,
-      name: `/Applications/Orca.app/Contents/Frameworks/lib${index}.dylib`
+      name: `/Applications/Topo.app/Contents/Frameworks/lib${index}.dylib`
     }))
     const { dump } = buildDump({
       exception: { code: 11, address: 0x1_0000_0000n + 1030n * 0x1_0000n + 0x24n },
@@ -327,7 +327,7 @@ describe('parseMinidumpCrashSignature', () => {
   it('still drops the module list when the claimed module count is absurd', async () => {
     const { dump } = buildDump({
       exception: { code: 11, address: 0x7ff7_0000_0010n },
-      modules: [{ base: 0x7ff7_0000_0000n, size: 0x1000, name: '/opt/orca/orca' }]
+      modules: [{ base: 0x7ff7_0000_0000n, size: 0x1000, name: '/opt/topo/topo' }]
     })
     const corrupt = Buffer.from(dump)
     corrupt.writeUInt32LE(0xffff_ffff, moduleListRva(corrupt))

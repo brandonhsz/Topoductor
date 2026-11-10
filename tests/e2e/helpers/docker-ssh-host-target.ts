@@ -8,7 +8,7 @@ import { quotePosixShell } from '../../../src/shared/shell/launch/shell-argument
 
 import type { TestInfo } from '@stablyai/playwright-test'
 
-export const DOCKER_SSH_HOST_REMOTE_REPO_PATH = '/tmp/orca-docker-relay-perf-repo'
+export const DOCKER_SSH_HOST_REMOTE_REPO_PATH = '/tmp/topo-docker-relay-perf-repo'
 
 export type DockerSshHostTarget = {
   containerName: string
@@ -108,10 +108,10 @@ function seedRemoteRepo(target: DockerSshHostTarget, repoPath: string): void {
       `cd ${quotePosixShell(repoPath)}`,
       'git init',
       'git config user.email e2e@test.local',
-      'git config user.name "Orca Docker SSH E2E"',
-      `printf '%s\\n' ${quotePosixShell(sentinel)} > .orca-e2e-destination-id`,
+      'git config user.name "Topo Docker SSH E2E"',
+      `printf '%s\\n' ${quotePosixShell(sentinel)} > .topo-e2e-destination-id`,
       `printf '%s\\n' ${quotePosixShell(`remote relay ${sentinel}`)} > README.md`,
-      'git add README.md .orca-e2e-destination-id',
+      'git add README.md .topo-e2e-destination-id',
       'git commit -m initial'
     ].join(' && ')
   )
@@ -180,18 +180,18 @@ export function startDockerSshHostTarget(
   /** A Docker volume mounted as `/root`, so several containers share one home as on NFS. */
   options: { sharedHomeVolume?: string } = {}
 ): DockerSshHostTarget {
-  const host = process.env.ORCA_E2E_SSH_TARGET_HOST?.trim() || '127.0.0.1'
+  const host = process.env.TOPO_E2E_SSH_TARGET_HOST?.trim() || '127.0.0.1'
   if (host === 'localhost' || host === '::1' || host.startsWith('127.')) {
-    if (process.env.ORCA_E2E_SSH_TARGET_HOST) {
-      throw new Error(`ORCA_E2E_SSH_TARGET_HOST must be non-loopback: ${host}`)
+    if (process.env.TOPO_E2E_SSH_TARGET_HOST) {
+      throw new Error(`TOPO_E2E_SSH_TARGET_HOST must be non-loopback: ${host}`)
     }
   }
   const bindHost = host === '127.0.0.1' ? host : '0.0.0.0'
-  const tempDir = mkdtempSync(path.join(os.tmpdir(), 'orca-ssh-docker-'))
+  const tempDir = mkdtempSync(path.join(os.tmpdir(), 'topo-ssh-docker-'))
   const identityFile = path.join(tempDir, 'id_ed25519')
   run('ssh-keygen', ['-t', 'ed25519', '-N', '', '-f', identityFile, '-q'])
   const publicKey = readFileSync(`${identityFile}.pub`, 'utf8').trim()
-  const containerName = `orca-ssh-e2e-${testInfo.workerIndex}-${Date.now()}-${randomUUID().slice(0, 8)}`
+  const containerName = `topo-ssh-e2e-${testInfo.workerIndex}-${Date.now()}-${randomUUID().slice(0, 8)}`
   let target: DockerSshHostTarget | null = null
 
   try {
@@ -225,7 +225,7 @@ export function startDockerSshHostTarget(
           `printf "%s\\n" "$AUTHORIZED_KEY" ${options.sharedHomeVolume ? '>>' : '>'} /root/.ssh/authorized_keys`,
           'chmod 600 /root/.ssh/authorized_keys',
           'git config --global user.email e2e@test.local',
-          'git config --global user.name "Orca Docker SSH E2E"',
+          'git config --global user.name "Topo Docker SSH E2E"',
           'exec /usr/sbin/sshd -D -e'
         ].join(' && ')
       ],

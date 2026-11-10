@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { atom, read, set } from './declarative-atoms'
 import { h } from './declarative-elements'
 import { createOrcaDeclarativeRuntime } from './declarative-renderer'
-import type { OrcaBridge } from './declarative-runtime-types'
+import type { TopoBridge } from './declarative-runtime-types'
 
 function storageBridge(initial: Record<string, unknown>) {
   const values = new Map(Object.entries(initial))
@@ -17,7 +17,7 @@ function storageBridge(initial: Record<string, unknown>) {
       return { dispose: () => listeners.delete(listener) }
     }
   }
-  const bridge: OrcaBridge = { on: () => ({ dispose: () => undefined }), storage }
+  const bridge: TopoBridge = { on: () => ({ dispose: () => undefined }), storage }
   const workerWrites = (key: string, value: unknown) => {
     values.set(key, value)
     for (const listener of listeners) {

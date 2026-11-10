@@ -14,7 +14,7 @@ import { getBrowserExtensionSyncStorageStore } from './browser-extension-sync-st
 /** Where Chromium keeps chrome.storage.local, one folder per extension id (checked on disk). */
 const EXTENSION_SETTINGS_FOLDER = 'Local Extension Settings'
 /** Left in an uninstalled extension's open storage folder so the next launch deletes it. */
-const UNINSTALLED_MARKER = 'orca-uninstalled'
+const UNINSTALLED_MARKER = 'topo-uninstalled'
 const STORAGE_CLEAR_TIMEOUT_MS = 5_000
 /** Extensions each session loaded this run; Chromium keeps their storage open until quit. */
 const storageOpenedBySession = new WeakMap<Electron.Session, Set<string>>()
@@ -50,7 +50,7 @@ export function throwIfBrowserExtensionStorageAwaitingRestart(
   extensionId: string
 ): void {
   if (isStorageAwaitingRestart(sess, extensionId)) {
-    throw new Error("Restart Orca to finish removing this extension's old data, then try again")
+    throw new Error("Restart Topo to finish removing this extension's old data, then try again")
   }
 }
 
@@ -134,7 +134,7 @@ export async function clearBrowserExtensionProfileSessionData(
  * Attach-time cleanup, like Chrome's extension garbage collector: before anything opens them,
  * delete what uninstalled extensions left in this profile, including storage marked at uninstall
  * whose id was installed again since. Uninstall reaches only the profiles open then, so another
- * Orca profile's leftovers go here. A disabled extension keeps its data.
+ * Topo profile's leftovers go here. A disabled extension keeps its data.
  */
 export function removeUninstalledBrowserExtensionData(
   sess: Electron.Session,

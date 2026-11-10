@@ -76,7 +76,7 @@ export function createFixture() {
     kind: 'agent',
     senders: [
       {
-        party: { address: 'agent:coordinator', terminalHandle: null, orcaSessionId: null },
+        party: { address: 'agent:coordinator', terminalHandle: null, topoSessionId: null },
         name: null
       }
     ],
@@ -148,7 +148,7 @@ export function createFixture() {
 
   beforeEach(async () => {
     epochs = 0
-    root = await mkdtemp(join(tmpdir(), 'orca-unsent-hold-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-unsent-hold-'))
   })
 
   afterEach(async () => {

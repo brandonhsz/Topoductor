@@ -22,7 +22,7 @@ describe('Claude agent view delivery', () => {
       action: 'register',
       view: { agentId: 'previous', revision: 1 },
       keybindings: JSON.stringify({
-        bindings: [{ context: 'Chat', bindings: { 'ctrl+alt+g': 'command:orca-agent-view' } }]
+        bindings: [{ context: 'Chat', bindings: { 'ctrl+alt+g': 'command:topo-agent-view' } }]
       })
     })
     expect(await bridge.view({ ...identity, sessionId: 'another-session', trigger })).toEqual({
@@ -50,7 +50,7 @@ describe('Claude agent view delivery', () => {
       action: 'register',
       view: { agentId: 'previous', revision: 1 },
       keybindings: JSON.stringify({
-        bindings: [{ context: 'Chat', bindings: { 'ctrl+alt+g': 'command:orca-agent-view' } }]
+        bindings: [{ context: 'Chat', bindings: { 'ctrl+alt+g': 'command:topo-agent-view' } }]
       })
     })
     const child = bridge.view({ ...identity, agentId: 'child', trigger: async () => true })
@@ -73,7 +73,7 @@ describe('Claude agent view delivery', () => {
       action: 'register',
       view: { agentId: 'previous', revision: 1 },
       keybindings: JSON.stringify({
-        bindings: [{ context: 'Chat', bindings: { 'ctrl+alt+g': 'command:orca-agent-view' } }]
+        bindings: [{ context: 'Chat', bindings: { 'ctrl+alt+g': 'command:topo-agent-view' } }]
       })
     })
     const result = bridge.view({ ...identity, agentId: 'child', trigger: async () => true })

@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   waitForActivePaneHookDescriptor,
@@ -20,7 +20,7 @@ import {
 
 test.use({
   minimumSeededWorktreeCount: 1,
-  orcaAppExtraEnv: { ORCA_BACKGROUND_LAUNCH: '1' }
+  topoAppExtraEnv: { TOPO_BACKGROUND_LAUNCH: '1' }
 })
 
 const SILENT_CALL_COUNT = 32
@@ -96,7 +96,7 @@ function pairingTranscript(sessionId: string): string {
 
 test('keeps named output owners and accepted tasks while retaining a standalone orphan', async ({
   electronApp,
-  orcaPage
+  topoPage
 }, testInfo) => {
   const launch = await electronApp.evaluate(({ app, BrowserWindow }) => ({
     appPath: app.getAppPath(),
@@ -115,36 +115,36 @@ test('keeps named output owners and accepted tasks while retaining a standalone 
     contentType: 'application/json'
   })
 
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage, 30_000)
-  const boundPane = await waitForPaneIdentitySnapshot(orcaPage, 1)
-  const ptyId = await waitForActivePanePtyId(orcaPage)
-  await waitForPtyShellEcho(orcaPage, ptyId, 15_000)
-  const descriptor = await waitForActivePaneHookDescriptor(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage, 30_000)
+  const boundPane = await waitForPaneIdentitySnapshot(topoPage, 1)
+  const ptyId = await waitForActivePanePtyId(topoPage)
+  await waitForPtyShellEcho(topoPage, ptyId, 15_000)
+  const descriptor = await waitForActivePaneHookDescriptor(topoPage)
   expect(descriptor.paneKey).toBe(`${boundPane.tabId}:${boundPane.activeLeafId}`)
   const [tabId] = descriptor.paneKey.split(':')
   const sessionId = `e2e-tool-pairing-${randomUUID()}`
-  const scratchDir = mkdtempSync(path.join(os.tmpdir(), 'orca-e2e-tool-pairing-'))
+  const scratchDir = mkdtempSync(path.join(os.tmpdir(), 'topo-e2e-tool-pairing-'))
   const transcriptPath = path.join(scratchDir, `${sessionId}.jsonl`)
 
-  const finishLifetime = await observeTranscriptPaneLifetime(orcaPage, {
+  const finishLifetime = await observeTranscriptPaneLifetime(topoPage, {
     tabId,
     worktreeId: descriptor.worktreeId,
     paneKey: descriptor.paneKey
   })
   try {
     writeFileSync(transcriptPath, pairingTranscript(sessionId))
-    await seedClaudeProviderSession(orcaPage, {
+    await seedClaudeProviderSession(topoPage, {
       paneKey: descriptor.paneKey,
       worktreeId: descriptor.worktreeId,
       sessionId,
       transcriptPath
     })
-    await toggleTerminalTabToChatView(orcaPage, { tabId, worktreeId: descriptor.worktreeId })
+    await toggleTerminalTabToChatView(topoPage, { tabId, worktreeId: descriptor.worktreeId })
 
-    const chat = orcaPage.locator('[data-native-chat-root="true"]')
+    const chat = topoPage.locator('[data-native-chat-root="true"]')
     await expect(chat).toBeVisible({ timeout: 15_000 })
     const runs = chat.locator('[data-native-chat-tool-run-state]')
     await expect(runs).toHaveCount(2, { timeout: 30_000 })
@@ -178,7 +178,7 @@ test('keeps named output owners and accepted tasks while retaining a standalone 
       )
     })
     const outputsScreenshot = testInfo.outputPath('named-tool-outputs.png')
-    await orcaPage.screenshot({ path: outputsScreenshot })
+    await topoPage.screenshot({ path: outputsScreenshot })
     await testInfo.attach('named-tool-outputs', {
       path: outputsScreenshot,
       contentType: 'image/png'
@@ -194,7 +194,7 @@ test('keeps named output owners and accepted tasks while retaining a standalone 
     await expect(composerTaskList.getByText(ACCEPTED_TASK, { exact: true })).toBeVisible()
     await expect(composerTaskList.getByText(REJECTED_TASK, { exact: true })).toHaveCount(0)
     const tasksScreenshot = testInfo.outputPath('accepted-task-list.png')
-    await orcaPage.screenshot({ path: tasksScreenshot })
+    await topoPage.screenshot({ path: tasksScreenshot })
     await testInfo.attach('accepted-task-list', {
       path: tasksScreenshot,
       contentType: 'image/png'
@@ -224,7 +224,7 @@ test('keeps named output owners and accepted tasks while retaining a standalone 
       )
     })
     const orphanScreenshot = testInfo.outputPath('orphan-result-and-retained-tasks.png')
-    await orcaPage.screenshot({ path: orphanScreenshot })
+    await topoPage.screenshot({ path: orphanScreenshot })
     await testInfo.attach('orphan-result-and-retained-tasks', {
       path: orphanScreenshot,
       contentType: 'image/png'
@@ -234,7 +234,7 @@ test('keeps named output owners and accepted tasks while retaining a standalone 
         BrowserWindow.getAllWindows().every((window) => !window.isVisible() && !window.isFocused())
       )
     ).toBe(true)
-    const finalPane = await waitForPaneIdentitySnapshot(orcaPage, 1)
+    const finalPane = await waitForPaneIdentitySnapshot(topoPage, 1)
     expect(finalPane.tabId).toBe(boundPane.tabId)
     expect(finalPane.activeLeafId).toBe(boundPane.activeLeafId)
     expect(finalPane.ptyIdsByLeafId).toEqual(boundPane.ptyIdsByLeafId)

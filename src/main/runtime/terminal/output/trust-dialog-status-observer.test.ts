@@ -5,7 +5,7 @@ import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent
 import {
   createTranscriptPane,
   TRANSCRIPT_PANE_PTY_ID
-} from '../../orca-runtime-tests/agent-transcript-pane-test-harness'
+} from '../../topo-runtime-tests/agent-transcript-pane-test-harness'
 
 function fixture(name: string): { recording: string; cols: number; rows: number } {
   const url = (ext: string) => new URL(`../../__fixtures__/${name}.${ext}`, import.meta.url)

@@ -1,6 +1,6 @@
 import {
   type PublicKnownRuntimeEnvironment,
-  getOrcadSshDeployment
+  getTopodSshDeployment
 } from '../../../../../../shared/remote-runtime/host-catalog/runtime-environments'
 
 import type { SshTarget } from '../../../../../../shared/ssh-types'
@@ -19,7 +19,7 @@ export function getRuntimeServerRoute(
 ): string | null {
   const targetLabel = (targetId: string): string =>
     targets.find((target) => target.id === targetId)?.label ?? targetId
-  const deployment = getOrcadSshDeployment(environment)
+  const deployment = getTopodSshDeployment(environment)
   if (deployment) {
     // Why not the host: the row's title already names it.
     return t('auto.components.settings.serverList.overYourSsh', 'Over your SSH connection')
@@ -104,7 +104,7 @@ export function getRuntimeServerProblemLine(
   }
   if (remoteUpdate?.phase === 'manual') {
     return {
-      text: t('auto.components.settings.serverList.manualUpdate', 'Update Orca on the server host'),
+      text: t('auto.components.settings.serverList.manualUpdate', 'Update Topo on the server host'),
       destructive: false
     }
   }

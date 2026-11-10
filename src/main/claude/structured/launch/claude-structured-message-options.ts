@@ -84,7 +84,7 @@ export async function dispatchClaudeMessage(
   const outcome = await dispatchClaudeTurn(session, input, async () => {
     try {
       input.signal?.throwIfAborted()
-      // Input joining a running turn, and Orca mail notices, run on the choices Claude already has;
+      // Input joining a running turn, and Topo mail notices, run on the choices Claude already has;
       // new choices apply at the next new turn.
       const messageOptions =
         session.translator?.openTurnHasInputWork ||

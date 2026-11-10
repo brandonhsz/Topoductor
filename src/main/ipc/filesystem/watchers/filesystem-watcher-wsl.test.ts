@@ -6,7 +6,7 @@ const { spawnMock } = vi.hoisted(() => ({
   spawnMock: vi.fn()
 }))
 
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   spawnProcess: spawnMock
 }))
 

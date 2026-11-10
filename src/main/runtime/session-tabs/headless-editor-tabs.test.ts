@@ -5,7 +5,7 @@ import { retireHeadlessEditorTab } from './headless-editor-tabs'
 
 const mocks = vi.hoisted(() => ({ layoutOwnerIsMain: true }))
 vi.mock('../../../shared/layout-owner-switch', () => ({
-  get ORCA_LAYOUT_OWNER_IS_MAIN() {
+  get TOPO_LAYOUT_OWNER_IS_MAIN() {
     return mocks.layoutOwnerIsMain
   }
 }))
@@ -14,8 +14,8 @@ beforeEach(() => {
   mocks.layoutOwnerIsMain = true
 })
 
-const WT = 'repo-1::/Users/dev/orca'
-const FILE = '/Users/dev/orca/notes.ts'
+const WT = 'repo-1::/Users/dev/topo'
+const FILE = '/Users/dev/topo/notes.ts'
 
 function ownedSession(): WorkspaceSessionState {
   return {

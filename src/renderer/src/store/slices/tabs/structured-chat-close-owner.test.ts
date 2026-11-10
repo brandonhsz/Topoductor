@@ -3,7 +3,7 @@ import type { Tab } from '../../../../../shared/tab-types'
 import { createTestStore, seedStore } from '../../testing/app-store-test-fixture'
 import { makeWorktree } from '../worktrees/worktree.test-fixture'
 import { drawTabsFromMain, type TabsDrawnFromMain } from './tabs-drawn-from-main.test-fixture'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
 
 const mocks = vi.hoisted(() => ({ beginClose: vi.fn() }))
@@ -88,7 +88,7 @@ describe('closing a structured chat from outside its workspace', () => {
     store.getState().closeUnifiedTab('agent-session:chat-1')
     await main.settle()
 
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       expect(mocks.beginClose).toHaveBeenCalledWith(
         expect.objectContaining({ target: { kind: 'local' }, sessionId: 'chat-1' })
       )

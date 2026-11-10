@@ -10,7 +10,7 @@ vi.mock('os', async () => {
 })
 
 import { GrokHookService } from './hook-service'
-// Hookless Orca-owned remnants must not masquerade as deliberate user opt-outs and block reinstall.
+// Hookless Topo-owned remnants must not masquerade as deliberate user opt-outs and block reinstall.
 const SCHEMA = 'https://grok.example/hooks.schema.json'
 
 describe('Grok hook removal leaves no remnant that blocks reinstall', () => {
@@ -18,9 +18,9 @@ describe('Grok hook removal leaves no remnant that blocks reinstall', () => {
   let configPath: string
 
   beforeEach(() => {
-    homeDir = mkdtempSync(join(tmpdir(), 'orca-grok-remnant-'))
+    homeDir = mkdtempSync(join(tmpdir(), 'topo-grok-remnant-'))
     homedirMock.mockReturnValue(homeDir)
-    configPath = join(homeDir, '.grok', 'hooks', 'orca-status.json')
+    configPath = join(homeDir, '.grok', 'hooks', 'topo-status.json')
   })
 
   afterEach(() => {

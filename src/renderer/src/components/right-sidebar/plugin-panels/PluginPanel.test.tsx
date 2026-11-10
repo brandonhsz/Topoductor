@@ -112,7 +112,7 @@ async function renderPanel(tabKey: string): Promise<void> {
 describe('PluginPanel', () => {
   it('remounts a guest that main closed at an unchanged URL, then gives up after a few tries', async () => {
     const guest = {
-      partition: 'persist:orca-plugin-0123456789abcdef',
+      partition: 'persist:topo-plugin-0123456789abcdef',
       url: 'orca-plugin-frame://0123456789abcdef/panel.html'
     }
     readPanelEntryMock.mockResolvedValue({ html: '', sessionToken: SESSION_TOKEN, guest })
@@ -140,7 +140,7 @@ describe('PluginPanel', () => {
     readPanelEntryMock.mockResolvedValue({
       html: '',
       sessionToken: SESSION_TOKEN,
-      guest: { partition: 'persist:orca-plugin-0123456789abcdef', url: 'orca-plugin-frame://x/y' },
+      guest: { partition: 'persist:topo-plugin-0123456789abcdef', url: 'orca-plugin-frame://x/y' },
       ui: 'components'
     })
     await renderPanel('plugin:samples.my-plugin/dashboard')
@@ -179,7 +179,7 @@ describe('PluginPanel', () => {
 
   it('hot reloads a dev components panel: last good tree on a broken save, memory atoms handed over', async () => {
     const devGuest = (rev: number) => ({
-      partition: 'persist:orca-plugin-0123456789abcdef',
+      partition: 'persist:topo-plugin-0123456789abcdef',
       url: `orca-plugin-frame://0123456789abcdef/__orca/declarative-host.html?entry=p.tsx&rev=dev-${rev}`,
       dev: true
     })

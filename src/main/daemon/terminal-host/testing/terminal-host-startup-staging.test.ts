@@ -30,7 +30,7 @@ function mockSubprocess(shellPath: string): SubprocessHandle {
 }
 
 beforeEach(() => {
-  tempDir = mkdtempSync(join(tmpdir(), 'orca-daemon-staging-'))
+  tempDir = mkdtempSync(join(tmpdir(), 'topo-daemon-staging-'))
   vi.stubEnv('TMPDIR', tempDir)
   exitSubprocess = undefined
 })

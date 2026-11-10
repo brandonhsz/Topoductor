@@ -46,8 +46,8 @@ const RECORD = JSON.stringify({ pid: 42, startedAtMs: 1_700_000_000_000, launchN
 
 beforeEach(async () => {
   vi.clearAllMocks()
-  runtimeDir = mkdtempSync(join(tmpdir(), 'orca-newer-daemon-'))
-  otherProfileDir = mkdtempSync(join(tmpdir(), 'orca-newer-daemon-other-'))
+  runtimeDir = mkdtempSync(join(tmpdir(), 'topo-newer-daemon-'))
+  otherProfileDir = mkdtempSync(join(tmpdir(), 'topo-newer-daemon-other-'))
   probes.identity.mockResolvedValue('match')
   probes.endpoint.mockResolvedValue('connected')
   probes.kill.mockResolvedValue({ killed: true, liveOwnerSurvived: false })

@@ -4,12 +4,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { recoverMacBrowserSidecars } from './mac-browser-sidecar-recovery'
 
 const { run } = vi.hoisted(() => ({ run: vi.fn() }))
-vi.mock('@orca/process-host', () => ({ runProcess: run }))
+vi.mock('@topo/process-host', () => ({ runProcess: run }))
 
-const executable = '/Applications/Orca Test.app/Contents/MacOS/Orca Test'
+const executable = '/Applications/Topo Test.app/Contents/MacOS/Topo Test'
 const command = `${
   executable
-} --serve --serve-port 5000 --serve-json --serve-no-pairing --user-data-dir=/tmp/orcad-browser-test`
+} --serve --serve-port 5000 --serve-json --serve-no-pairing --user-data-dir=/tmp/topod-browser-test`
 const startedAt = 'Tue Oct 13 21:00:00 2026'
 const actualUid = process.getuid?.() ?? 501
 const row = { pid: 123, parentPid: 1, uid: 501, startedAt, command }
@@ -37,7 +37,7 @@ describe('macOS browser leftovers during updates', () => {
     expect(await recoverMacBrowserSidecars(executable, [123, 456], deps)).toEqual([456])
     expect(deps.signal).toHaveBeenCalledExactlyOnceWith(123)
     expect(deps.readProcesses.mock.calls).toEqual([[[123, 456]], [[123]]])
-    expect(deps.isOwnedSidecar).toHaveBeenCalledWith('/tmp/orcad-browser-test', 123, 501)
+    expect(deps.isOwnedSidecar).toHaveBeenCalledWith('/tmp/topod-browser-test', 123, 501)
     expect(deps.listBlockers).toHaveBeenCalledTimes(2)
   })
 
@@ -46,7 +46,7 @@ describe('macOS browser leftovers during updates', () => {
     { ...row, uid: 999 },
     { ...row, pid: 456 },
     { ...row, command: executable },
-    { ...row, command: command.replace('/tmp/orcad-browser-test', '/tmp/user-server') },
+    { ...row, command: command.replace('/tmp/topod-browser-test', '/tmp/user-server') },
     { ...row, command: `${command} --extra-option` },
     { ...row, command: command.replace(executable, '/Applications/Other.app/Contents/MacOS/Other') }
   ])('leaves live, foreign, ordinary and ambiguous processes alone: %j', async (candidate) => {
@@ -89,13 +89,13 @@ describe('macOS browser leftovers during updates', () => {
   it.skipIf(process.platform === 'win32').each([123, 999, '123', null])(
     'validates the real profile metadata before recovery (%s)',
     async (pid) => {
-      const profile = await mkdtemp('/tmp/orcad-browser-')
+      const profile = await mkdtemp('/tmp/topod-browser-')
       try {
-        await writeFile(join(profile, 'orca-runtime.json'), JSON.stringify({ pid }))
+        await writeFile(join(profile, 'topo-runtime.json'), JSON.stringify({ pid }))
         vi.stubGlobal('process', { ...process, getuid: () => actualUid })
         const deps = setup()
         deps.readProcesses.mockResolvedValue([
-          { ...row, uid: actualUid, command: command.replace('/tmp/orcad-browser-test', profile) }
+          { ...row, uid: actualUid, command: command.replace('/tmp/topod-browser-test', profile) }
         ])
         const { isOwnedSidecar: _mockedVerifier, ...realVerification } = deps
         void _mockedVerifier

@@ -5,7 +5,7 @@ import {
 
 /** Codex answered the call and refused it, rather than timing out or exiting. */
 export class CodexAppServerRequestError extends Error {
-  /** Codex's own `error.message`, kept apart from the Orca text around it. */
+  /** Codex's own `error.message`, kept apart from the Topo text around it. */
   readonly providerDiagnostic?: ProviderDiagnostic
   readonly data?: unknown
 

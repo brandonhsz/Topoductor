@@ -7,7 +7,7 @@ import { AgentLaunchTabClosedError } from '../../../../shared/agent-launch/contr
 import { trackRunningAgentLaunchPane } from '../../../agent-launch/agent-launch-pane-attachment'
 import { agentLaunchTokenFor } from '../../../agent-launch/agent-launch-token'
 import { resolveUnlaunchedIntent } from '../../../runtime/rpc/methods/agent-launch/agent-launch-intent-resolution'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import type { Store } from '../../../persistence/loading-store/store'
 import { resolveEarlyPaneKey } from './spawn-begin'
 import type { PtyIpcSpawnState } from './spawn-state'
@@ -26,7 +26,7 @@ function closedInSession(store: Store | undefined, paneKey: string): boolean {
 
 function withPlannedLaunch(
   args: PtySpawnIpcArgs,
-  planned: Awaited<ReturnType<OrcaRuntimeService['planAgentPaneLaunch']>>
+  planned: Awaited<ReturnType<TopoRuntimeService['planAgentPaneLaunch']>>
 ): PtySpawnIpcArgs {
   const {
     agentLaunch: _launch,
@@ -52,7 +52,7 @@ function withPlannedLaunch(
           env: {
             ...args.env,
             ...planned.env,
-            ...(launchToken ? { ORCA_AGENT_LAUNCH_TOKEN: launchToken } : {})
+            ...(launchToken ? { TOPO_AGENT_LAUNCH_TOKEN: launchToken } : {})
           }
         }
       : {}),

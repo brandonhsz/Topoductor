@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithForegroundInspection } from './workspace-foreground-inspection'
+import { TopoRuntimeWithForegroundInspection } from './workspace-foreground-inspection'
 import {
   type RuntimeNavigationTarget,
   navigationTargetsClients,
@@ -42,7 +42,7 @@ import {
   type FreshComposerPtyHost
 } from '../../terminal/wait/launch-composer-watch'
 
-export abstract class OrcaRuntimeWithActivateManagedWorktree extends OrcaRuntimeWithForegroundInspection {
+export abstract class TopoRuntimeWithActivateManagedWorktree extends TopoRuntimeWithForegroundInspection {
   protected abstract toAgentSessionOptions(
     preferences: AgentLaunchPreferences | undefined
   ): Record<string, string> | undefined

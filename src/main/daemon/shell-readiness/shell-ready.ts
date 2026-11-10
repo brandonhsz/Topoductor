@@ -27,17 +27,17 @@ import {
 } from '../../pty/shell-startup/zsh-wrapper-dir-ownership'
 import { SHELL_READY_MARKER } from './daemon-shell-ready-marker'
 
-const ORCA_USER_DATA_PATH_ENV = 'ORCA_USER_DATA_PATH'
+const TOPO_USER_DATA_PATH_ENV = 'TOPO_USER_DATA_PATH'
 
 function getShellReadyWrapperBaseDir(): string {
-  const userDataPath = process.env[ORCA_USER_DATA_PATH_ENV]
+  const userDataPath = process.env[TOPO_USER_DATA_PATH_ENV]
   // Isolate content-addressed trees from older daemons that overwrite the legacy shell-ready directory.
-  // Temp fallback serves old/test launchers; production supplies ORCA_USER_DATA_PATH.
+  // Temp fallback serves old/test launchers; production supplies TOPO_USER_DATA_PATH.
   // Only file sizes are checked, so do not use the shared-temp fallback in production.
-  return join(userDataPath || tmpdir(), userDataPath ? 'shell-wrappers' : 'orca-shell-wrappers')
+  return join(userDataPath || tmpdir(), userDataPath ? 'shell-wrappers' : 'topo-shell-wrappers')
 }
 
-// Cache the digest per base directory so changing ORCA_USER_DATA_PATH selects a fresh root.
+// Cache the digest per base directory so changing TOPO_USER_DATA_PATH selects a fresh root.
 let cachedShellReadyWrapperRoot: { baseDir: string; root: string } | null = null
 
 export function getShellReadyWrapperRoot(): string {
@@ -87,7 +87,7 @@ function ensureShellReadyWrappers(): boolean {
 
 export function resolvePtyShellPath(env: Record<string, string>): string {
   if (process.platform === 'win32') {
-    return env.ORCA_TERMINAL_WINDOWS_SHELL || 'powershell.exe'
+    return env.TOPO_TERMINAL_WINDOWS_SHELL || 'powershell.exe'
   }
   return env.SHELL || process.env.SHELL || '/bin/zsh'
 }

@@ -1,4 +1,4 @@
-import type * as OrcaStarModule from '../../github/client/fetch/orca-star'
+import type * as TopoStarModule from '../../github/client/fetch/topo-star'
 import type * as AuthenticatedViewerModule from '../../github/client/fetch/authenticated-viewer'
 import type * as IssueCommentModule from '../../github/issue-comment'
 import type * as IssueFieldOptionsModule from '../../github/issue-field-options'
@@ -33,10 +33,10 @@ const mocks = await vi.hoisted(async () => {
 vi.mock('electron', () => mocks.electron)
 vi.mock('../../github/client', () => mocks.client)
 
-vi.mock('../../github/client/fetch/orca-star', async (importOriginal) => ({
-  ...(await importOriginal<typeof OrcaStarModule>()),
-  checkOrcaStarred: mocks.client.checkOrcaStarred,
-  starOrca: mocks.client.starOrca
+vi.mock('../../github/client/fetch/topo-star', async (importOriginal) => ({
+  ...(await importOriginal<typeof TopoStarModule>()),
+  checkTopoStarred: mocks.client.checkTopoStarred,
+  starTopo: mocks.client.starTopo
 }))
 
 vi.mock('../../github/client/fetch/authenticated-viewer', async (importOriginal) => ({

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from '../../../dispatcher'
 import type { RpcRequest } from '../../../core'
-import '../../../../orca-runtime'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import '../../../../topo-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 
 import { GITLAB_METHODS } from './gitlab'
 import '../../../../../../shared/rpc-contract/gitlab-params'
@@ -22,7 +22,7 @@ describe('gitlab RPC methods', () => {
     const runtime = {
       getRuntimeId: () => 'test-runtime',
       getGitLabRepoJobTrace: vi.fn().mockResolvedValue({ ok: true, trace: noisyTrace })
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     const dispatcher = new RpcDispatcher({ runtime, methods: GITLAB_METHODS })
 
     const raw = await dispatcher.dispatch(

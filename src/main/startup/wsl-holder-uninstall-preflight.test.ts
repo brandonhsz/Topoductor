@@ -6,7 +6,7 @@ const { exit, stopServers, releaseAll } = vi.hoisted(() => ({
   releaseAll: vi.fn(async (): Promise<{ distro: string; state: string }[]> => [])
 }))
 vi.mock('electron', () => ({
-  app: { exit, getPath: () => 'C:\\Users\\u\\AppData\\Roaming\\orca' }
+  app: { exit, getPath: () => 'C:\\Users\\u\\AppData\\Roaming\\topo' }
 }))
 vi.mock('./windows-app-data-path', () => ({ ensureWindowsAppDataPath: vi.fn() }))
 vi.mock('../wsl/discovery/wsl-distro-holder', () => ({
@@ -78,7 +78,7 @@ describe('runWslHolderUninstallPreflight', () => {
   })
 
   it('leaves the servers alone unless the uninstaller says this is the last install', async () => {
-    expect(runWslHolderUninstallPreflight(['Orca.exe', WSL_HOLDER_UNINSTALL_FLAG])).toBe(true)
+    expect(runWslHolderUninstallPreflight(['Topo.exe', WSL_HOLDER_UNINSTALL_FLAG])).toBe(true)
     await vi.waitFor(() => expect(exit).toHaveBeenCalledWith(0))
 
     expect(stopServers).not.toHaveBeenCalled()
@@ -86,7 +86,7 @@ describe('runWslHolderUninstallPreflight', () => {
 
   it('stops the servers when the uninstaller adds the server flag', async () => {
     runWslHolderUninstallPreflight([
-      'Orca.exe',
+      'Topo.exe',
       WSL_HOLDER_UNINSTALL_FLAG,
       WSL_SERVER_UNINSTALL_FLAG
     ])

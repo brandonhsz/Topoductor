@@ -50,14 +50,14 @@ function lateWriterFilesystem(home: SkillHome): BundledSkillFilesystem {
     ...nativeBundledSkillFilesystem,
     rename: async (source, destination) => {
       await nativeBundledSkillFilesystem.rename(source, destination)
-      if (source === target && basename(destination).startsWith('.alpha.orca-old')) {
+      if (source === target && basename(destination).startsWith('.alpha.topo-old')) {
         await writeFile(join(destination, 'SKILL.md'), text('alpha', 'late edit'))
       }
     }
   }
 }
 
-describe('per-skill silent update of unedited Orca copies', () => {
+describe('per-skill silent update of unedited Topo copies', () => {
   it('updates every unedited skill, including CRLF legacy copies, and leaves nothing to ask', async () => {
     const home = await makeSkillHome()
     for (const name of NAMES) {
@@ -80,8 +80,8 @@ describe('per-skill silent update of unedited Orca copies', () => {
   it('updates only the unedited skill and leaves a repair and an edited copy to ask about', async () => {
     const home = await makeSkillHome()
     await writeCopy(skillPath(home, 'shared', 'alpha'), text('alpha', 'old'))
-    // An interrupted swap: the target is gone and Orca's old copy waits to be restored.
-    await writeCopy(join(dirname(home.shared), '.bravo.orca-old-1'), text('bravo', 'old'))
+    // An interrupted swap: the target is gone and Topo's old copy waits to be restored.
+    await writeCopy(join(dirname(home.shared), '.bravo.topo-old-1'), text('bravo', 'old'))
     await writeCopy(skillPath(home, 'shared', 'charlie'), text('charlie', 'my own notes'))
 
     const result = await autoUpdateInstalledBundledSkills({ ...input(home), names: NAMES })
@@ -154,7 +154,7 @@ describe('per-skill silent update of unedited Orca copies', () => {
     const outcome = result.skills[0]?.ops[0]
     expect(outcome).toMatchObject({ status: 'failed', error: 'EACCES' })
     const stranded = outcome?.strandedPath ?? ''
-    expect(basename(stranded)).toMatch(/^\.alpha\.orca-old/u)
+    expect(basename(stranded)).toMatch(/^\.alpha\.topo-old/u)
     expect(await readFile(join(stranded, 'SKILL.md'), 'utf8')).toBe(text('alpha', 'late edit'))
     expect(await readSkill(home, 'shared', 'alpha')).toBe(text('alpha', 'new'))
 

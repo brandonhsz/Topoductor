@@ -23,8 +23,8 @@ export async function installCopilotHooksRemote(
   remoteHome: string
 ): Promise<AgentHookInstallStatus> {
   const home = remoteHome.replace(/\/$/, '')
-  const remoteConfigPath = `${home}/.copilot/hooks/orca.json`
-  const remoteScriptPath = `${home}/.orca/agent-hooks/copilot-hook.sh`
+  const remoteConfigPath = `${home}/.copilot/hooks/topo.json`
+  const remoteScriptPath = `${home}/.topo/agent-hooks/copilot-hook.sh`
 
   try {
     const config = await readHooksJsonRemote(sftp, remoteConfigPath)
@@ -34,7 +34,7 @@ export async function installCopilotHooksRemote(
         state: 'error',
         configPath: remoteConfigPath,
         managedHooksPresent: false,
-        detail: 'Could not parse remote Copilot hooks/orca.json'
+        detail: 'Could not parse remote Copilot hooks/topo.json'
       }
     }
 
@@ -60,7 +60,7 @@ export async function installCopilotHooksRemote(
       nextHooks[eventName] = [
         ...cleaned,
         getRemoteManagedHookDefinition(
-          wrapPosixHookCommand(remoteScriptPath, { ORCA_COPILOT_HOOK_EVENT: eventName })
+          wrapPosixHookCommand(remoteScriptPath, { TOPO_COPILOT_HOOK_EVENT: eventName })
         )
       ]
     }

@@ -22,7 +22,7 @@ import { useMobileTranslation } from '../i18n/use-mobile-translation'
 import { styles } from './mobile-session-styles'
 import type { MobileSessionController } from './use-mobile-session-controller'
 import { useMobileSessionContentKeyboardLift } from '../terminal/session/use-mobile-session-keyboard-lift'
-import { useOpenUrlInOrca } from '../browser/use-open-url-in-orca'
+import { useOpenUrlInTopo } from '../browser/use-open-url-in-topo'
 import { useWorkspaceExecutionHost } from '../navigation/workspace-execution-host'
 import { useOpenHostAccounts } from '../accounts/use-open-mobile-accounts'
 import { useHostProfile } from '../transport/hosts/use-host-profile'
@@ -118,7 +118,7 @@ export function MobileSessionActiveContent({
   } = controller
   const { keyboardLift, activeTerminalKeyboardLift, toastAnimatedStyle } =
     useMobileSessionContentKeyboardLift(controller)
-  const openUrlInOrca = useOpenUrlInOrca(controller)
+  const openUrlInTopo = useOpenUrlInTopo(controller)
   const hostProfile = useHostProfile(hostId)
   const hostTitle = useHostDisplay(hostProfile).title
   const nativeChatHostOutage = mobileSessionNativeChatHostOutage(controller, hostTitle, t)
@@ -370,7 +370,7 @@ export function MobileSessionActiveContent({
                 keyboardInset={keyboardLift}
                 // A workspace routed to another server stops with that server, whose name the phone lacks.
                 hostName={executionHost === undefined && hostProfile ? hostTitle : null}
-                onOpenUrlInOrca={openUrlInOrca}
+                onOpenUrlInTopo={openUrlInTopo}
                 hostOutage={nativeChatHostOutage}
                 onRunInTerminal={(command) =>
                   void controller.handleCreateTerminal(undefined, {

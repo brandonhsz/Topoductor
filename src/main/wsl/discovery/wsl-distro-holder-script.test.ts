@@ -12,9 +12,9 @@ import { tmpdir, userInfo } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import {
-  ORCAD_WSL_HOLDER_BLOCKED_FILENAME,
-  ORCAD_WSL_HOLDER_RELEASE_FILENAME
-} from '../../../shared/orcad-idle-exit'
+  TOPOD_WSL_HOLDER_BLOCKED_FILENAME,
+  TOPOD_WSL_HOLDER_RELEASE_FILENAME
+} from '../../../shared/topod-idle-exit'
 import { buildWslDistroHolderScript, WSL_DISTRO_HOLDER_MARKER } from './wsl-distro-holder-command'
 
 // The script runs inside the distro; any POSIX sh here exercises the same text. A fake /proc stands
@@ -25,8 +25,8 @@ let children: ChildProcess[]
 const me = userInfo().uid
 
 beforeEach(() => {
-  home = mkdtempSync(join(tmpdir(), 'orca-holder-script-'))
-  mkdirSync(join(home, '.orca'))
+  home = mkdtempSync(join(tmpdir(), 'topo-holder-script-'))
+  mkdirSync(join(home, '.topo'))
   proc = join(home, 'proc')
   mkdirSync(proc)
   children = []
@@ -81,12 +81,12 @@ const POLL_SECONDS = 0.1
 /** Several polls: a holder that would let go has done so by then. */
 const HOLDING_MS = 500
 
-/** The holder found the request and now waits out the requesting orcad (its `sleep 1` loop). */
-function waitingOnOrcad(holder: ChildProcess): boolean {
+/** The holder found the request and now waits out the requesting topod (its `sleep 1` loop). */
+function waitingOnTopod(holder: ChildProcess): boolean {
   return spawnSync('pgrep', ['-P', String(holder.pid), '-f', '^sleep 1$']).status === 0
 }
 
-const releasePath = (): string => join(home, '.orca', ORCAD_WSL_HOLDER_RELEASE_FILENAME)
+const releasePath = (): string => join(home, '.topo', TOPOD_WSL_HOLDER_RELEASE_FILENAME)
 
 /** One fake /proc entry, as the kernel writes its status file. */
 function fakeProcess(
@@ -103,7 +103,7 @@ function fakeProcess(
   return dir
 }
 
-const blockedPath = (): string => join(home, '.orca', ORCAD_WSL_HOLDER_BLOCKED_FILENAME)
+const blockedPath = (): string => join(home, '.topo', TOPOD_WSL_HOLDER_BLOCKED_FILENAME)
 
 const readBlocked = (): string =>
   existsSync(blockedPath()) ? readFileSync(blockedPath(), 'utf8') : ''
@@ -124,44 +124,44 @@ async function startHolderReady(
   return holder
 }
 
-/** A holder past its start-up cleanup, then a request from an orcad that has exited. */
+/** A holder past its start-up cleanup, then a request from an topod that has exited. */
 async function holderWithRequest(options: { procReadable?: boolean; path?: string } = {}) {
   const holder = await startHolderReady(
     { HOME: home, PATH: options.path ?? process.env.PATH },
     options
   )
-  const orcad = track(spawn('/bin/sh', ['-c', 'exit 0'], { stdio: 'ignore' }))
-  await new Promise((resolve) => orcad.once('exit', resolve))
-  writeFileSync(releasePath(), `${orcad.pid}\n`)
+  const topod = track(spawn('/bin/sh', ['-c', 'exit 0'], { stdio: 'ignore' }))
+  await new Promise((resolve) => topod.once('exit', resolve))
+  writeFileSync(releasePath(), `${topod.pid}\n`)
   return holder
 }
 
 describe.skipIf(process.platform === 'win32')('WSL distro holder script', () => {
-  it('waits for the requesting orcad to exit, then claims the request and ends', async () => {
+  it('waits for the requesting topod to exit, then claims the request and ends', async () => {
     const holder = await startHolderReady()
-    const orcad = track(spawn('/bin/sh', ['-c', 'sleep 30'], { stdio: 'ignore' }))
-    writeFileSync(releasePath(), `${orcad.pid}\n`)
+    const topod = track(spawn('/bin/sh', ['-c', 'sleep 30'], { stdio: 'ignore' }))
+    writeFileSync(releasePath(), `${topod.pid}\n`)
 
-    await expect.poll(() => waitingOnOrcad(holder.child), { timeout: 15_000 }).toBe(true)
+    await expect.poll(() => waitingOnTopod(holder.child), { timeout: 15_000 }).toBe(true)
     expect(await within(HOLDING_MS, holder.exited)).toBe('running')
-    orcad.kill('SIGKILL')
+    topod.kill('SIGKILL')
     expect(await within(RELEASE_BOUND_MS, holder.exited)).toBe(0)
     expect(existsSync(releasePath())).toBe(false)
   })
 
-  it('keeps holding when a starting orcad withdrew the request first', async () => {
+  it('keeps holding when a starting topod withdrew the request first', async () => {
     const holder = await startHolderReady()
-    const orcad = track(spawn('/bin/sh', ['-c', 'sleep 30'], { stdio: 'ignore' }))
-    writeFileSync(releasePath(), `${orcad.pid}\n`)
-    await expect.poll(() => waitingOnOrcad(holder.child), { timeout: 15_000 }).toBe(true)
+    const topod = track(spawn('/bin/sh', ['-c', 'sleep 30'], { stdio: 'ignore' }))
+    writeFileSync(releasePath(), `${topod.pid}\n`)
+    await expect.poll(() => waitingOnTopod(holder.child), { timeout: 15_000 }).toBe(true)
     rmSync(releasePath())
-    orcad.kill('SIGKILL')
+    topod.kill('SIGKILL')
     // Its `sleep 1` ends within a second of the kill; then it finds the request gone.
     expect(await within(1_000 + HOLDING_MS, holder.exited)).toBe('running')
   })
 
   it('keeps the distro while the user still runs something, and lets go once it ends', async () => {
-    // e.g. a detached tmux server or a nohup'd job started from an Orca terminal.
+    // e.g. a detached tmux server or a nohup'd job started from a Topo terminal.
     const job = fakeProcess(4242)
     const { exited } = await holderWithRequest()
     // Its note says it decided to hold.

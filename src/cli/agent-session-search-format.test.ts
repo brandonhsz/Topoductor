@@ -13,7 +13,7 @@ const localHit: AiVaultSearchHit = {
   executionHostId: 'ssh:build-01',
   sessionId: 'session-1',
   title: 'Terminal resize race on Windows',
-  cwd: 'C:\\src\\orca',
+  cwd: 'C:\\src\\topo',
   branch: 'main',
   updatedAt: '2026-09-12T18:04:11.000Z',
   messageCount: 214,

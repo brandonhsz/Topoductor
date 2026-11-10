@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { OrchestrationCompatibilityEvidence } from '../../../shared/orchestration/orchestration-compatibility-evidence'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../shared/orchestration/orchestration-runtime-capabilities'
 import Database from '../../sqlite/sync-database'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { OrchestrationDb } from '../orchestration/db/orchestration-db'
 import '../orchestration/db/contract-constants'
 import '../orchestration/db/messages/mailbox-routing-page'
@@ -26,7 +26,7 @@ const CURRENT_COORDINATOR_PANE = 'tab_current:55555555-5555-4555-8555-5555555555
 
 type Harness = {
   db: OrchestrationDb
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   dispatcher: RpcDispatcher
   adoptedRunId: string
   taskId: string
@@ -46,7 +46,7 @@ afterEach(() => {
 })
 
 function createHarness(): Harness {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-legacy-takeover-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-legacy-takeover-'))
   tempDirs.push(dir)
   const dbPath = join(dir, 'orchestration.db')
   const before = new OrchestrationDb(dbPath)
@@ -73,7 +73,7 @@ function createHarness(): Harness {
   const db = new OrchestrationDb(dbPath)
   databases.push(db)
   const adoptedRunId = db.getLegacyAdoption()?.adopted_run_id as string
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(db)
   vi.spyOn(runtime, 'getTerminalPaneKey').mockImplementation((handle) =>
     handle === COORDINATOR_HANDLE
@@ -396,7 +396,7 @@ describe('injected dispatch from a legacy-adopted coordinator', () => {
         : null
     )
     vi.spyOn(harness.runtime, 'isTerminalRunningAgent').mockResolvedValue(true)
-    vi.spyOn(harness.runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('orca')
+    vi.spyOn(harness.runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('topo')
     const sendPrompt = vi
       .spyOn(harness.runtime, 'sendTerminalAgentPrompt')
       .mockResolvedValue({ handle: COORDINATOR_ALIAS_HANDLE, accepted: true, bytesWritten: 1 })

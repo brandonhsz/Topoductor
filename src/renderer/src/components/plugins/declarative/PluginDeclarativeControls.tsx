@@ -13,7 +13,7 @@ import type { PluginDeclarativeProps } from '../../../../../shared/plugins/decla
 import type { PluginDeclarativeEventArg } from '../../../../../shared/plugins/declarative/plugin-declarative-messages'
 import { usePluginDeclarativeHostValue } from './plugin-declarative-host-value'
 
-/** A press on one of Orca's own controls, which may grant the panel one user gesture. */
+/** A press on one of Topo's own controls, which may grant the panel one user gesture. */
 export type PluginDeclarativePress = {
   control: 'Button' | 'IconButton' | 'ListItem' | 'Link'
   /** Which tracked element the press landed on, for the settle check. */

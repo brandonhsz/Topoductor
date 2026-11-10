@@ -148,7 +148,7 @@ export function assertLinkedWorkItemSourceContextMatch(
   }
 }
 
-/** A create's caller context, resolved by the caller's own Orca as its same-machine create would. */
+/** A create's caller context, resolved by the caller's own Topo as its same-machine create would. */
 export const WorktreeResolveCallerParent = z.object({
   envParentWorkspace: OptionalString,
   callerTerminalHandle: OptionalString,
@@ -243,7 +243,7 @@ export const WorktreeRemove = WorktreeSelector.extend({
     .min(1)
     .max(1_000)
     .optional(),
-  // The caller showed that this also destroys the recipe environment Orca created for the workspace.
+  // The caller showed that this also destroys the recipe environment Topo created for the workspace.
   // Absent: today's removal, which leaves that environment running. Older hosts strip it.
   destroyHost: z.literal(true).optional()
 })

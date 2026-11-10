@@ -34,7 +34,7 @@ export function pullRequestEventClientMessageId(event: PullRequestEventIdentity)
 
 export function parsePullRequestEventItemId(itemId: string): PullRequestEventIdentity | null {
   const identity = parseAgentJournalItemKey(itemId)
-  if (identity?.provider !== 'orca') {
+  if (identity?.provider !== 'topo') {
     return null
   }
   const match = ID_PATTERN.exec(identity.clientMessageId)

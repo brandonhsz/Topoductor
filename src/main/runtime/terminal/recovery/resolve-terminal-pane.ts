@@ -1,6 +1,6 @@
 import { terminalLaunchFacts } from '../../../../shared/agent-session/lifecycle/agent-session-resume'
-import type { OrcaRuntimeWithCreateTerminal } from '../launch/terminal-create'
-import { OrcaRuntimeWithRestoredHandlePaneStart } from '../surface/restored-handle-pane-start'
+import type { TopoRuntimeWithCreateTerminal } from '../launch/terminal-create'
+import { TopoRuntimeWithRestoredHandlePaneStart } from '../surface/restored-handle-pane-start'
 import type {
   RuntimeTerminalRead,
   RuntimeTerminalResolvePane,
@@ -23,13 +23,13 @@ import {
 } from '../output/tail/terminal-tail-read'
 import { getTerminalState } from '../wait/terminal-wait-results'
 import { readStructuredWorkerTerminal } from '../../orchestration/terminal-authority/structured-sessions/structured-worker-terminal-read'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 
-export abstract class OrcaRuntimeWithResolveTerminalPane extends OrcaRuntimeWithRestoredHandlePaneStart {
+export abstract class TopoRuntimeWithResolveTerminalPane extends TopoRuntimeWithRestoredHandlePaneStart {
   protected abstract assertLiveTerminalHandleTargetsPty(handle: string, expectedPtyId: string): void
   abstract createTerminal(
-    ...args: Parameters<OrcaRuntimeWithCreateTerminal['createTerminal']>
-  ): ReturnType<OrcaRuntimeWithCreateTerminal['createTerminal']>
+    ...args: Parameters<TopoRuntimeWithCreateTerminal['createTerminal']>
+  ): ReturnType<TopoRuntimeWithCreateTerminal['createTerminal']>
 
   abstract getTerminalHandleForPaneKey(paneKey: string): string | null
   abstract getPtyExecutionHostMetadata(
@@ -101,7 +101,7 @@ export abstract class OrcaRuntimeWithResolveTerminalPane extends OrcaRuntimeWith
     if (handlePaneKey === paneKey) {
       return true
     }
-    if (!ORCA_LAYOUT_OWNER_IS_MAIN || handlePaneKey !== null) {
+    if (!TOPO_LAYOUT_OWNER_IS_MAIN || handlePaneKey !== null) {
       return false
     }
     // A pane-resolved handle may learn its connected replacement only after its own terminal ended; never spawn here.
@@ -245,7 +245,7 @@ export abstract class OrcaRuntimeWithResolveTerminalPane extends OrcaRuntimeWith
       return { ...structured, source: opts.screen ? 'screen-unavailable' : 'stream' }
     }
     // Switch point: a saved pane main holds with no terminal yet starts first (once, shared).
-    const starting = ORCA_LAYOUT_OWNER_IS_MAIN ? this.startRestoredHandlePane(handle) : null
+    const starting = TOPO_LAYOUT_OWNER_IS_MAIN ? this.startRestoredHandlePane(handle) : null
     if (starting) {
       const target = await starting
       return { ...(await this.readTerminal(target, opts, providerSnapshot)), handle }

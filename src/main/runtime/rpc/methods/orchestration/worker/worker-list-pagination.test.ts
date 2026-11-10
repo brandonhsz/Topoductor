@@ -6,7 +6,7 @@ import '../../../../orchestration/db/messages/mailbox-routing-page'
 import '../../../../orchestration/db/dispatch-row-writer'
 import '../../../../orchestration/db/attempt-outcome-projection'
 import type { FederatedDispatchRow } from '../../../../orchestration/db/orchestration-records'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { encodeWorkerListCursor } from './worker-list-cursor'
 import { ORCHESTRATION_WORKER_LIST_METHOD } from './worker-list-method'
 
@@ -27,7 +27,7 @@ describe('orchestration worker-list pagination', () => {
 
   it('returns a complete filtered legacy result while current clients page above 100 rows', async () => {
     db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     const run = db.createRun({
       objective: 'Mixed-version worker inventory',
@@ -67,7 +67,7 @@ describe('orchestration worker-list pagination', () => {
 
   it('opens on the newest Dispatches, warns that the page truncated, and pages down', async () => {
     db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     const run = db.createRun({
       objective: 'Newest-first worker inventory',
@@ -105,7 +105,7 @@ describe('orchestration worker-list pagination', () => {
 
   it('expires a pre-rowid cursor whose anchor row a reset deleted', async () => {
     db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     const run = db.createRun({
       objective: 'Old cursor',
@@ -136,7 +136,7 @@ describe('orchestration worker-list pagination', () => {
 
   it('keeps filtered snapshot membership when a later worker changes state', async () => {
     db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     const run = db.createRun({
       objective: 'Stable filtered inventory',
@@ -172,7 +172,7 @@ describe('orchestration worker-list pagination', () => {
 
   it('keeps an include-remote filtered page pinned across 32 concurrent snapshot allocations', async () => {
     db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     const run = db.createRun({
       objective: 'Pinned filtered inventory',
@@ -246,7 +246,7 @@ describe('orchestration worker-list pagination', () => {
 
   it('does not allocate filtered snapshots when the first page has no more rows', async () => {
     db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     const run = db.createRun({
       objective: 'Snapshot-free terminal page',
@@ -281,7 +281,7 @@ describe('orchestration worker-list pagination', () => {
 
   it('never re-emits a row whose worker registers between pages', async () => {
     db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     const run = db.createRun({
       objective: 'Stable order key',
@@ -320,7 +320,7 @@ describe('orchestration worker-list pagination', () => {
 
   it('counts only the rows a pinned filtered cursor can still reach', async () => {
     db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     const run = db.createRun({
       objective: 'Pinned filtered counts',
@@ -374,7 +374,7 @@ describe('orchestration worker-list pagination', () => {
     // Both shapes used to resolve to a rowid past Run A's rows and report a finished, empty page.
     it('expires a v2 cursor that must be resolved from a foreign anchor', async () => {
       const { runA } = twoRuns()
-      const runtime = new OrcaRuntimeService()
+      const runtime = new TopoRuntimeService()
       runtime.setOrchestrationDb(db!)
       const foreign = encodeWorkerListCursor({
         version: 2,
@@ -389,7 +389,7 @@ describe('orchestration worker-list pagination', () => {
 
     it('expires a v2 cursor that carries a foreign rowid', async () => {
       const { runA } = twoRuns()
-      const runtime = new OrcaRuntimeService()
+      const runtime = new TopoRuntimeService()
       runtime.setOrchestrationDb(db!)
       const foreign = encodeWorkerListCursor({
         version: 2,
@@ -405,7 +405,7 @@ describe('orchestration worker-list pagination', () => {
 })
 
 async function callWorkerList(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   params: Record<string, unknown>
 ): Promise<WorkerListResult> {
   const parsed = ORCHESTRATION_WORKER_LIST_METHOD.params?.parse(params)

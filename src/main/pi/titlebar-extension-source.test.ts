@@ -22,10 +22,10 @@ type Harness = {
   callHook: (name: string, event?: unknown) => Promise<void>
 }
 
-const CWD = '/repo/orca-app'
+const CWD = '/repo/topo-app'
 const SESSION = 'omp-session'
-const IDLE_TITLE = `π - ${SESSION} - orca-app`
-const PROMPT_TITLE = `π ! ${SESSION} - orca-app`
+const IDLE_TITLE = `π - ${SESSION} - topo-app`
+const PROMPT_TITLE = `π ! ${SESSION} - topo-app`
 
 function createHarness(
   options: {
@@ -64,8 +64,8 @@ function createHarness(
     module,
     exports: module.exports,
     process: {
-      env: { ORCA_PANE_KEY: options.paneKey ?? 'pane-1', ...options.env },
-      pid: options.env?.ORCA_PI_TITLE_MARKER_OWNED === undefined ? 111 : 222,
+      env: { TOPO_PANE_KEY: options.paneKey ?? 'pane-1', ...options.env },
+      pid: options.env?.TOPO_PI_TITLE_MARKER_OWNED === undefined ? 111 : 222,
       title: options.processTitle ?? 'pi',
       argv: ['node', 'pi'],
       cwd: options.cwdImpl ?? (() => CWD)
@@ -171,7 +171,7 @@ describe('getPiTitlebarExtensionSource', () => {
 
   it('leaves the needs-input marker to the process that owns the pane', async () => {
     // Child agents inherit pane identity; only its owning process may assert needs-input.
-    const harness = createHarness({ env: { ORCA_PI_TITLE_MARKER_OWNED: '111' } })
+    const harness = createHarness({ env: { TOPO_PI_TITLE_MARKER_OWNED: '111' } })
 
     await harness.callHook('agent_start')
     await harness.callHook('ui_prompt_start')

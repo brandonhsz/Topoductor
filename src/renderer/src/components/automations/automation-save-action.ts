@@ -14,10 +14,10 @@ import {
   getDraftExtraAgentArgsError,
   parseDraftTime
 } from './automation-draft-model'
-import { saveOrcaAutomation } from './automation-orca-save'
+import { saveTopoAutomation } from './automation-topo-save'
 import type { AutomationSaveContext } from './automation-save-context'
 
-/** Validates editor input then runs the Orca save transaction. */
+/** Validates editor input then runs the Topo save transaction. */
 export function createAutomationSaveAction(context: AutomationSaveContext) {
   return async function saveAutomation(now = Date.now()): Promise<void> {
     const { store, local, destinationForm, destination } = context
@@ -144,7 +144,7 @@ export function createAutomationSaveAction(context: AutomationSaveContext) {
         )
         return
       }
-      await saveOrcaAutomation(context, { hour, minute, now, surface })
+      await saveTopoAutomation(context, { hour, minute, now, surface })
     } catch (error) {
       toast.error(
         error instanceof Error

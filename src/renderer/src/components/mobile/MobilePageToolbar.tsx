@@ -55,7 +55,7 @@ export function MobilePageToolbar({
             onClick={onClose}
             aria-label={t(
               'auto.components.mobile.MobilePageToolbar.9883b58693',
-              'Close Orca Mobile'
+              'Close Topo Mobile'
             )}
           >
             <X className="size-4" />

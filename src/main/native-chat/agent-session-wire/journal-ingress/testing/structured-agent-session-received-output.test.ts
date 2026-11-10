@@ -16,7 +16,7 @@ it('saves every tool result past 1,024 in one received Claude message, through r
   const count = 1025
   const root = await mkdtemp(join(tmpdir(), 'sta-10949-'))
   const identity = {
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     workspaceId: 'workspace',
     hostId: 'host',
     agent: 'claude' as const,
@@ -38,7 +38,7 @@ it('saves every tool result past 1,024 in one received Claude message, through r
   try {
     translator.handle({
       type: 'message',
-      sessionId: 'orca-session',
+      sessionId: 'topo-session',
       message: {
         type: 'user',
         uuid: 'tool-results',

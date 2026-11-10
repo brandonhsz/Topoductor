@@ -12,7 +12,7 @@ import { legacyRelayBridgePtyIdForPane } from '../../pty-transport/legacy-relay/
 import type { ConnectPanePtySession } from '../connect-pane-pty-session'
 import type { PtyTransport } from '../../pty-transport/pty-transport-types'
 
-/** COMPAT(legacy-relay-bridge, revisit 2027-01-15): a pane an older Orca's relay still runs. */
+/** COMPAT(legacy-relay-bridge, revisit 2027-01-15): a pane an older Topo's relay still runs. */
 function withLegacyRelayBridge(session: ConnectPanePtySession, inner: PtyTransport): PtyTransport {
   const leafId = session.deps.restoredLeafId ?? session.pane.leafId
   const ptyId = legacyRelayBridgePtyIdForPane({

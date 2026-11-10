@@ -36,8 +36,8 @@ describe('closing a kept host-loss tab after a relaunch', () => {
 
   beforeEach(async () => {
     newerHold.held = false
-    historyDir = mkdtempSync(join(tmpdir(), 'orca-lost-close-history-'))
-    runtimeDir = mkdtempSync(join(tmpdir(), 'orca-lost-close-runtime-'))
+    historyDir = mkdtempSync(join(tmpdir(), 'topo-lost-close-history-'))
+    runtimeDir = mkdtempSync(join(tmpdir(), 'topo-lost-close-runtime-'))
     let subprocess: ReturnType<typeof createMockSubprocess> | undefined
     const harness = await startDaemonAdapterHarness(
       () => {

@@ -30,7 +30,7 @@ describe('hook title evidence and completion recovery', () => {
   // Synthetic: Codex's done hook, then a final native spinner that only the timer clears (#19243).
   it('delivers mail to a live Codex behind a fresh done hook and a stale spinner', async () => {
     vi.useFakeTimers()
-    const db = createDatabase('orca-stale-title-completion-')
+    const db = createDatabase('topo-stale-title-completion-')
     const hook: AgentStatusIpcPayload = {
       paneKey: PANE_KEY,
       terminalHandle: TERMINAL_HANDLE,
@@ -66,7 +66,7 @@ describe('hook title evidence and completion recovery', () => {
 
   it('delivers mail to a program that reports its status but never sets a title', async () => {
     vi.useFakeTimers()
-    const db = createDatabase('orca-titleless-program-status-')
+    const db = createDatabase('topo-titleless-program-status-')
     const { runtime, write } = createRuntime(db, { launchAgent: 'antigravity' })
     const run = createBoundRun(db, 'Titleless Run')
     await runtime.listTerminals()

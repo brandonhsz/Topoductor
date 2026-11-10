@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 
 import { publishHeadlessRuntimeGraph } from '../../session-graph/headless-runtime-graph'
 
-import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
 // Headless hosts keep a parked viewer's grid until another viewer or phone takes it (#15997).
 
@@ -18,7 +18,7 @@ function createRuntime({ headless }: { headless: boolean }) {
     getWorktreeMeta: () => undefined,
     getSettings: () => ({ workspaceDir: '/tmp/workspaces', mobileAutoRestoreFitMs: 5_000 })
   }
-  const runtime = new OrcaRuntimeService(partialRuntimeStore(store))
+  const runtime = new TopoRuntimeService(partialRuntimeStore(store))
   const sizes = new Map([[PTY, { ...SPAWN_GRID }]])
   runtime.setPtyController({
     write: () => true,

@@ -54,7 +54,7 @@ describe('the host records the legacy restores it refuses', () => {
   }
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-legacy-restore-gate-'))
+    dir = mkdtempSync(join(tmpdir(), 'topo-legacy-restore-gate-'))
     records = new LegacyRestoreRecords(join(dir, 'records.json'), { log: vi.fn() })
     pressure = 'ok'
     nextPid = 3000
@@ -72,7 +72,7 @@ describe('the host records the legacy restores it refuses', () => {
       cols: 80,
       rows: 24,
       cwd: dir,
-      env: { ORCA_AGENT_HOOK_TOKEN: 'secret' },
+      env: { TOPO_AGENT_HOOK_TOKEN: 'secret' },
       command: `claude --resume ${sessionId}`,
       launchAgent: 'claude',
       historySeedChunks: ['seed'],

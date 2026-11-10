@@ -1,6 +1,6 @@
 import { useBundledSkillInstallAction } from '@/hooks/use-bundled-skill-install-action'
 import { bundledSkillSetupActionLabel } from '../skills/setup/bundled-skill-setup-copy'
-import { ORCA_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
+import { TOPO_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
 import { useOnboardingSkillRuntime } from '@/hooks/use-onboarding-skill-runtime'
 import { FeatureSetupInlineTerminal } from '../onboarding/FeatureSetupInlineTerminal'
 import { buildAgentFeatureSkillInstallCommand } from '@/lib/skills/installation/agent-feature-install-commands'
@@ -118,7 +118,7 @@ function BrowserSkillInstallForRuntime({
   const legacyWsl = activeRuntime.agentRuntime?.runtime === 'wsl'
   const skillInstall = useBundledSkillInstall({ target: activeRuntime.bundledSkillTarget })
   const installSkills = skillInstall.install
-  const installAction = useBundledSkillInstallAction([ORCA_CLI_SKILL_NAME], {
+  const installAction = useBundledSkillInstallAction([TOPO_CLI_SKILL_NAME], {
     enabled: !legacyWsl,
     target: activeRuntime.bundledSkillTarget,
     refreshKey: skillInstall.state.kind
@@ -132,7 +132,7 @@ function BrowserSkillInstallForRuntime({
     try {
       const result = await runOnboardingFeatureSetup(BROWSER_ONLY_FEATURE_SETUP)
       recordFeatureInteraction('agent-browser-setup')
-      // COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+      // COMPAT(wsl-bridge): removed when WSL runs as an topod host.
       if (legacyWsl) {
         const command = buildAgentFeatureSkillInstallCommand(result.skillNames)
         await window.api.ui.writeClipboardText(
@@ -193,7 +193,7 @@ function BrowserSkillInstallForRuntime({
     }
   }, [activeRuntime, busy, installAction, installSkills, legacyWsl, recordFeatureInteraction])
 
-  // COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+  // COMPAT(wsl-bridge): removed when WSL runs as an topod host.
   if (wslSetup) {
     return (
       <FeatureSetupInlineTerminal
@@ -252,8 +252,8 @@ function BrowserSkillInstallForRuntime({
           ? t('auto.components.feature.wall.FeatureWallBrowserAction.5f97caf76b', 'Installing…')
           : installAction.kind === 'replace'
             ? t(
-                'auto.components.settings.AgentSkillSetupPanel.replaceWithOrcaCopy',
-                "Replace with Orca's copy"
+                'auto.components.settings.AgentSkillSetupPanel.replaceWithTopoCopy',
+                "Replace with Topo's copy"
               )
             : installAction.kind === 'run' && installAction.changes
               ? bundledSkillSetupActionLabel(installAction.changes, t)

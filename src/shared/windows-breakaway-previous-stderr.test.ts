@@ -7,7 +7,7 @@ import { keepPreviousStderrLog } from './windows-breakaway-launcher'
 
 let dir: string | undefined
 function makeDir(): string {
-  dir = mkdtempSync(join(tmpdir(), 'orca-breakaway-log-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-breakaway-log-'))
   return dir
 }
 afterEach(() => {
@@ -17,9 +17,9 @@ afterEach(() => {
   }
 })
 
-describe('keeping the previous orcad.log on Windows', () => {
+describe('keeping the previous topod.log on Windows', () => {
   it('moves the last run log to .1, replacing an older one', () => {
-    const log = join(makeDir(), 'orcad.log')
+    const log = join(makeDir(), 'topod.log')
     writeFileSync(`${log}.1`, 'two runs ago')
     writeFileSync(log, 'crash: listen EADDRINUSE')
     keepPreviousStderrLog(log)
@@ -28,7 +28,7 @@ describe('keeping the previous orcad.log on Windows', () => {
   })
 
   it('keeps only the tail of an oversized log', () => {
-    const log = join(makeDir(), 'orcad.log')
+    const log = join(makeDir(), 'topod.log')
     writeFileSync(log, `${'x'.repeat(100)}last error`)
     keepPreviousStderrLog(log, 10)
     expect(readFileSync(`${log}.1`, 'utf8')).toBe('last error')

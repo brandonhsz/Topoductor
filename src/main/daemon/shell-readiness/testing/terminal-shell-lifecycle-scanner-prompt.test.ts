@@ -14,7 +14,7 @@ const APP_ZONE_TRANSCRIPT = readFileSync(
   join(__dirname, '../../../runtime/__fixtures__/omp-user-bubble-osc133-zone.txt'),
   'utf8'
 )
-// Orca's bash wrapper bytes: prompt, typed command echo, C, output, D;exit, next prompt.
+// Topo's bash wrapper bytes: prompt, typed command echo, C, output, D;exit, next prompt.
 const shellRuns = (command: string, output: string, end = D0): string =>
   `${A}$ ${B}${command}\r\n${C}${output}\r\n${end}`
 const PROMPT = `${A}$ ${B}`

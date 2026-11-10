@@ -147,7 +147,7 @@ export function MacNotificationPermissionCard({
               <div className="text-sm font-medium text-foreground">
                 {t(
                   'auto.components.onboarding.NotificationStep.95d99b52fa',
-                  'Allow notifications for Orca'
+                  'Allow notifications for Topo'
                 )}
               </div>
               <p className="max-w-[58ch] text-[13px] leading-relaxed text-muted-foreground">
@@ -183,13 +183,13 @@ export function MacNotificationPermissionCard({
               <div className="text-sm font-medium text-foreground">
                 {t(
                   'auto.components.onboarding.NotificationStep.90b5d2e363',
-                  'macOS is not delivering Orca notifications'
+                  'macOS is not delivering Topo notifications'
                 )}
               </div>
               <p className="max-w-[58ch] text-[13px] leading-relaxed text-muted-foreground">
                 {t(
                   'auto.components.onboarding.mac.notification.permission.card.721d2bedb6',
-                  'Turn on Allow notifications for Orca in System Settings.'
+                  'Turn on Allow notifications for Topo in System Settings.'
                 )}
               </p>
             </div>

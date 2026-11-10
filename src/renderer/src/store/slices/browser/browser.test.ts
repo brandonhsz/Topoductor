@@ -6,7 +6,7 @@ import {
 } from '../../../../../shared/browser/element-grab/browser-grab-types'
 import { makeAnnotation } from './annotations/browser-annotation-test-fixture'
 import { getDefaultSettings } from '../../../../../shared/constants'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import type { BrowserSessionProfile } from '../../../../../shared/browser-workspace-types'
 import type { ManagedBrowserProfileOwner } from '../../../../../shared/browser/profiles/browser-profile-scope'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
@@ -119,14 +119,14 @@ describe('createBrowserSlice annotations', () => {
     ])
     expect(store.getState().managedBrowserProfileStatusById[placeholderId]).toBe('pending')
     // A placeholder that outlives this run must load nowhere, never on the shared Default jar.
-    expect(first.sessionPartition).toBe(`persist:orca-browser-unminted-${placeholderId}`)
+    expect(first.sessionPartition).toBe(`persist:topo-browser-unminted-${placeholderId}`)
     store.getState().closeBrowserTab(sibling.id)
     await main.settle()
 
     const profile: BrowserSessionProfile = {
       id: 'minted-by-main',
       scope: 'isolated',
-      partition: 'persist:orca-browser-session-minted-by-main',
+      partition: 'persist:topo-browser-session-minted-by-main',
       label: 'Repo: repo-a',
       source: null,
       owner: { kind: 'repo', id: 'repo-a' }
@@ -221,7 +221,7 @@ describe('createBrowserSlice closed browser workspaces', () => {
     expect(activePage?.title).toBe('Second copy')
     // A layout-owner build's main closed the tab, then reopened it with both pages.
     expect(layoutApplyTestTransport.sent.map((command) => command.type)).toEqual(
-      ORCA_LAYOUT_OWNER_IS_MAIN
+      TOPO_LAYOUT_OWNER_IS_MAIN
         ? ['openBrowserTab', 'openBrowserPage', 'closeTabs', 'openBrowserTab', 'openBrowserPage']
         : []
     )

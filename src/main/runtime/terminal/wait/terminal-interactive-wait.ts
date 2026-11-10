@@ -1,6 +1,6 @@
 import type { TerminalIdentityReadContext } from '../query/terminal-identity-read-context'
 import { getRepoRoutingConnectionId } from '../../../../shared/execution-host'
-import { OrcaRuntimeWithAdoptTerminalOrphansFromInventory } from '../adoption/adopt-terminal-orphans-from-inventory'
+import { TopoRuntimeWithAdoptTerminalOrphansFromInventory } from '../adoption/adopt-terminal-orphans-from-inventory'
 import type {
   RuntimeTerminalAgentStatus,
   RuntimeTerminalInteractiveWait,
@@ -42,7 +42,7 @@ import { resolveOpenCodeModelLaunchRoute } from '../../../opencode/opencode-mode
 import type { RuntimePtyWorktreeRecord } from '../records/runtime-terminal-state-records'
 import type { OrchestrationDb } from '../../orchestration/db/orchestration-db'
 
-export abstract class OrcaRuntimeWithGetTerminalInteractiveWait extends OrcaRuntimeWithAdoptTerminalOrphansFromInventory {
+export abstract class TopoRuntimeWithGetTerminalInteractiveWait extends TopoRuntimeWithAdoptTerminalOrphansFromInventory {
   protected abstract getTerminalAgentStatusPtyId(handle: string): string
 
   protected abstract getTerminalWaitPermissionInputs(

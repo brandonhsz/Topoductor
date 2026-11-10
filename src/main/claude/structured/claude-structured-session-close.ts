@@ -15,7 +15,7 @@ import { AgentSessionPreSpawnError } from '../../native-chat/agent-session-wire/
 import type { ClaudeStreamJsonConnection } from '../claude-stream-json-connection'
 import type { ClaudeJournalTranslator } from '../claude-journal-translator-contract'
 import type { ClaudePromptRegistry } from '../claude-prompt-registry'
-import { closeProcessRegistry } from '@orca/process-host/close-process-registry'
+import { closeProcessRegistry } from '@topo/process-host/close-process-registry'
 import { retireClaudeDispatchWaiters } from './claude-structured-dispatch'
 import { claudeHeldSends } from '../claude-command-lifecycle'
 import { settledClaudeTurnEndLeaf } from './claude-structured-resume-point'

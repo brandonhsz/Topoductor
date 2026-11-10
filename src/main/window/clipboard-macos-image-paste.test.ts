@@ -53,7 +53,7 @@ const event = {
   sender: {
     id: 17,
     getType: () => 'window',
-    getURL: () => 'file:///orca/index.html',
+    getURL: () => 'file:///topo/index.html',
     isDestroyed: () => false
   }
 }

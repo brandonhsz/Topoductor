@@ -9,7 +9,7 @@ import type { LocalProjectWorktreeGitOptions } from '../../../workspaces/executi
 import { preservedBranchCleanupScopeKey } from '../../../../shared/git/branches/preserved-branch-cleanup'
 import {
   assertWorktreeDoesNotContainRegisteredWorktree,
-  canCleanupUnregisteredOrcaWorktreeDirectory,
+  canCleanupUnregisteredTopoWorktreeDirectory,
   canSafelyRemoveOrphanedWorktreeDirectory,
   isDangerousWorktreeRemovalPath,
   ORPHANED_WORKTREE_DIRECTORY_MESSAGE,
@@ -51,7 +51,7 @@ export async function removeUnregisteredWorktree(
   const removalHome = resolveWorktreeRemovalHomeForHost(removalHostId)
   let canCleanOrphanedDirectory = false
   if (
-    canCleanupUnregisteredOrcaWorktreeDirectory({
+    canCleanupUnregisteredTopoWorktreeDirectory({
       meta: removedMeta
     })
   ) {
@@ -118,7 +118,7 @@ export async function removeUnregisteredWorktree(
       // Without persisted ownership, require renderer recovery approval before deleting unregistered state.
       throw new Error(UNREGISTERED_MISSING_WORKTREE_MESSAGE)
     }
-    // Persisted metadata proves an already-missing path was Orca-owned; cleanup needs no force.
+    // Persisted metadata proves an already-missing path was Topo-owned; cleanup needs no force.
     await cleanupUnusedWorktreePushTargetRemote(
       repo.path,
       args.worktreeId,

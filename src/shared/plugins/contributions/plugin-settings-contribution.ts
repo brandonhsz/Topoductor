@@ -14,7 +14,7 @@ const scalar = z.union([
 ])
 
 /**
- * One setting Orca shows under the plugin in Settings, described with a subset of JSON Schema.
+ * One setting Topo shows under the plugin in Settings, described with a subset of JSON Schema.
  * Code reads it with `settings.get(key)` (the `settings:own` capability) and hears changes with
  * `settings.onDidChange`; an unset setting reads as its `default`.
  */

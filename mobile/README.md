@@ -1,15 +1,15 @@
-# Orca Mobile
+# Topo Mobile
 
-React Native companion app for Orca. Monitor worktrees, view terminal output, and send commands from your phone.
+React Native companion app for Topo. Monitor worktrees, view terminal output, and send commands from your phone.
 
 Local development uses two processes:
 
-- Orca desktop/Electron from the repo root. This hosts the mobile WebSocket RPC server on port `6768`.
+- Topo desktop/Electron from the repo root. This hosts the mobile WebSocket RPC server on port `6768`.
 - Expo Metro from `mobile/`. This serves the React Native app on port `8081`.
 
 Unless a command says otherwise, run mobile app commands from the `mobile/` directory.
 
-The Node commands `pnpm rpc:diff` and `pnpm rpc:record` use a development dependency linked to `../src/packages/process-host`. Mobile's install supplies the link, and `tsx` runs its source with the `orca-source` condition, so these command wrappers do not require a desktop install or package build. Keep that source directory in sparse checkouts. The recording suites still need root dependencies when they exercise desktop modules. The React Native app does not import this host package.
+The Node commands `pnpm rpc:diff` and `pnpm rpc:record` use a development dependency linked to `../src/packages/process-host`. Mobile's install supplies the link, and `tsx` runs its source with the `topo-source` condition, so these command wrappers do not require a desktop install or package build. Keep that source directory in sparse checkouts. The recording suites still need root dependencies when they exercise desktop modules. The React Native app does not import this host package.
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ The Node commands `pnpm rpc:diff` and `pnpm rpc:record` use a development depend
 - Expo Go on your phone, or a development client build when native modules are needed
 - Phone and desktop on the same LAN when testing a physical phone
 
-## Start Desktop Orca
+## Start Desktop Topo
 
 From the repository root:
 
@@ -58,9 +58,9 @@ pnpm start --dev-client
 simulator or the running emulator in a few seconds. On a **MISS** it regenerates `ios/` or `android/`,
 runs `expo run:<platform>`, and caches the result. `--rebuild` forces a fresh build.
 
-Builds are cached per fingerprint in the user cache directory (`~/Library/Caches/orca-mobile/native-builds`
-on macOS, `$XDG_CACHE_HOME/orca-mobile/native-builds` on Linux, `%LOCALAPPDATA%\orca-mobile\native-builds`
-on Windows, or `ORCA_MOBILE_NATIVE_BUILD_CACHE_DIR`), so every worktree reuses them. The newest three
+Builds are cached per fingerprint in the user cache directory (`~/Library/Caches/topo-mobile/native-builds`
+on macOS, `$XDG_CACHE_HOME/topo-mobile/native-builds` on Linux, `%LOCALAPPDATA%\topo-mobile\native-builds`
+on Windows, or `TOPO_MOBILE_NATIVE_BUILD_CACHE_DIR`), so every worktree reuses them. The newest three
 per platform are kept. `app.config.js` also registers the cache as Expo's `buildCacheProvider`, so a
 plain `pnpm ios` / `pnpm android` installs a cached build instead of compiling. Only `ensure` writes to
 the cache, because `expo run` reuses an existing `ios/` or `android/` directory even when it was
@@ -69,9 +69,9 @@ generated from older inputs. Expo caches iOS Simulator builds only, not physical
 `pnpm native fingerprint` prints the current hashes. On pull requests, the `Mobile native fingerprint`
 job reports in its summary whether the PR changes them, which means dev clients need a native rebuild.
 
-## Pair With Desktop Orca
+## Pair With Desktop Topo
 
-1. Open Orca desktop.
+1. Open Topo desktop.
 2. Go to Settings > Mobile.
 3. Scan the pairing QR code from the mobile app.
 4. Confirm the mobile host endpoint is `ws://<desktop-ip>:6768`.
@@ -99,10 +99,10 @@ If the phone has a stale host entry, remove it from the app and pair again.
 The phone can be inspected through the connected device tooling:
 
 ```bash
-orca snapshot --json
-orca click --element @e3 --json
-orca fill --element @e1 --value "ls" --json
-orca screenshot --json
+topo snapshot --json
+topo click --element @e3 --json
+topo fill --element @e1 --value "ls" --json
+topo screenshot --json
 ```
 
 Use `snapshot` first to find the current element refs, then click/fill those refs. After mobile file edits, Metro usually hot reloads automatically, but navigating out of and back into the session screen can be useful because it re-runs `terminal.subscribe`.
@@ -113,7 +113,7 @@ Use this when terminal output does not render on device and you need to split se
 
 ```bash
 cd mobile
-ORCA_MOBILE_WS_URL=ws://127.0.0.1:6768 pnpm exec tsx scripts/test-subscribe.ts <deviceToken> <serverPublicKeyB64>
+TOPO_MOBILE_WS_URL=ws://127.0.0.1:6768 pnpm exec tsx scripts/test-subscribe.ts <deviceToken> <serverPublicKeyB64>
 ```
 
 You can pass a worktree selector as the third argument:
@@ -139,7 +139,7 @@ Use this when terminal colors disappear after switching tabs. Open a Claude Code
 
 ```bash
 cd mobile
-ORCA_MOBILE_WS_URL=ws://127.0.0.1:6768 pnpm exec tsx scripts/repro-terminal-colors.ts \
+TOPO_MOBILE_WS_URL=ws://127.0.0.1:6768 pnpm exec tsx scripts/repro-terminal-colors.ts \
   <deviceToken> <serverPublicKeyB64> "id:<worktreeId>"
 ```
 
@@ -189,25 +189,25 @@ other catalogs may lag and fall back to English. `pnpm verify:mobile-localizatio
 ## Android Release Signing
 
 `plugins/android-release-signing.js` adds a `release` signing config to the generated
-`android/app/build.gradle`. It reads `ORCA_ANDROID_KEYSTORE_PATH`, `ORCA_ANDROID_KEYSTORE_PASSWORD`,
-`ORCA_ANDROID_KEY_ALIAS` and `ORCA_ANDROID_KEY_PASSWORD` at build time; nothing is written into the
+`android/app/build.gradle`. It reads `TOPO_ANDROID_KEYSTORE_PATH`, `TOPO_ANDROID_KEYSTORE_PASSWORD`,
+`TOPO_ANDROID_KEY_ALIAS` and `TOPO_ANDROID_KEY_PASSWORD` at build time; nothing is written into the
 project. Without them, local release builds keep Expo's debug key.
 
 `.github/workflows/mobile-android-release.yml` turns release signing on once the
-`ORCA_ANDROID_RELEASE_CERT_SHA256` repository variable (or `ORCA_ANDROID_REQUIRE_RELEASE_SIGNING=true`)
+`TOPO_ANDROID_RELEASE_CERT_SHA256` repository variable (or `TOPO_ANDROID_REQUIRE_RELEASE_SIGNING=true`)
 is set. Until then it signs with the debug key as before and adds a warning to the run. Once it is
 on, the workflow fails before building if any of these is missing:
 
 | Name                               | Kind     | Value                                                   |
 | ---------------------------------- | -------- | ------------------------------------------------------- |
-| `ORCA_ANDROID_KEYSTORE_BASE64`     | secret   | the release keystore, base64-encoded                    |
-| `ORCA_ANDROID_KEYSTORE_PASSWORD`   | secret   | keystore password                                       |
-| `ORCA_ANDROID_KEY_ALIAS`           | secret   | key alias                                               |
-| `ORCA_ANDROID_KEY_PASSWORD`        | secret   | key password (same as the keystore password for PKCS12) |
-| `ORCA_ANDROID_RELEASE_CERT_SHA256` | variable | the key's certificate SHA-256 fingerprint               |
+| `TOPO_ANDROID_KEYSTORE_BASE64`     | secret   | the release keystore, base64-encoded                    |
+| `TOPO_ANDROID_KEYSTORE_PASSWORD`   | secret   | keystore password                                       |
+| `TOPO_ANDROID_KEY_ALIAS`           | secret   | key alias                                               |
+| `TOPO_ANDROID_KEY_PASSWORD`        | secret   | key password (same as the keystore password for PKCS12) |
+| `TOPO_ANDROID_RELEASE_CERT_SHA256` | variable | the key's certificate SHA-256 fingerprint               |
 
 After a release-signed build, the workflow checks that the APK's signing certificate matches
-`ORCA_ANDROID_RELEASE_CERT_SHA256` and is not the debug key, and publishes the fingerprint in the
+`TOPO_ANDROID_RELEASE_CERT_SHA256` and is not the debug key, and publishes the fingerprint in the
 release notes. Android only installs an update signed by the same key as the installed app, so
 the keystore must be backed up: losing it means no existing install can be updated in place.
 
@@ -244,7 +244,7 @@ To exercise the block screen locally: set `MIN_COMPATIBLE_DESKTOP_VERSION = 999`
 
 ## Mock Server
 
-Develop the mobile app without a running Orca desktop instance:
+Develop the mobile app without a running Topo desktop instance:
 
 ```bash
 pnpm mock-server           # starts mock WebSocket server on port 6768
@@ -262,14 +262,14 @@ Connect from the app using endpoint `ws://localhost:6768` and token `mock-device
 
 Read on every request, so behaviour can be flipped mid-session without a restart (a restart would re-key E2EE and force a re-pair). Write the mode into the file, or delete it for the default.
 
-- `MOCK_SEND_MODE_FILE` (default `orca-mock-send-mode` in the system temporary directory) — `accept` (default) accepts the send, `error` fails it with `mobile_input_floor_unavailable`, anything else reports the send as rejected.
-- `MOCK_TERMINAL_LIST_MODE_FILE` (default `orca-mock-terminal-list-mode` in the system temporary directory) — `omit` returns an empty terminal list, `other` returns a list that omits the chat handle, anything else lists it.
-- `MOCK_TERMINAL_STREAM_MODE_FILE` (default `orca-mock-terminal-stream-mode` in the system temporary directory) — `dead` answers a subscribe with `subscribed` then `end` (a gone PTY), which is what exercises the rearm bound and terminal prune; anything else streams normally.
+- `MOCK_SEND_MODE_FILE` (default `topo-mock-send-mode` in the system temporary directory) — `accept` (default) accepts the send, `error` fails it with `mobile_input_floor_unavailable`, anything else reports the send as rejected.
+- `MOCK_TERMINAL_LIST_MODE_FILE` (default `topo-mock-terminal-list-mode` in the system temporary directory) — `omit` returns an empty terminal list, `other` returns a list that omits the chat handle, anything else lists it.
+- `MOCK_TERMINAL_STREAM_MODE_FILE` (default `topo-mock-terminal-stream-mode` in the system temporary directory) — `dead` answers a subscribe with `subscribed` then `end` (a gone PTY), which is what exercises the rearm bound and terminal prune; anything else streams normally.
 
-## Connecting to Real Orca
+## Connecting to Real Topo
 
-1. Start Orca desktop with WebSocket transport enabled
-2. In Orca, go to Settings > Mobile and scan the QR code with this app
+1. Start Topo desktop with WebSocket transport enabled
+2. In Topo, go to Settings > Mobile and scan the QR code with this app
 3. The QR encodes the connection endpoint, device token, and TLS fingerprint
 
 ## Project Structure

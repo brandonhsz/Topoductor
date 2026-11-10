@@ -24,7 +24,7 @@ const ShippedStoreSchema = z.object({
   environments: z.array(ShippedEnvironmentSchema)
 })
 
-/** Rewrites orca-environments.json the way a downgraded build does, stripping unknown keys. */
+/** Rewrites topo-environments.json the way a downgraded build does, stripping unknown keys. */
 export function shippedBuildRewrite(
   userDataPath: string,
   edit: (environments: z.infer<typeof ShippedEnvironmentSchema>[]) => void = () => {}

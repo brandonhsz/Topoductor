@@ -3,7 +3,7 @@ import { RpcDispatcher } from './dispatcher'
 import type { RpcDispatchStreamingOptions } from './dispatcher-stream-options'
 import { z } from 'zod'
 import { TERMINAL_METHODS } from './methods/terminal/terminal'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import type { RuntimeTerminalSend } from '../../../shared/runtime-terminal-send-contract'
 
 const mobile = { clientId: 'phone', caller: { kind: 'paired-device', deviceId: 'device' } } as const
@@ -14,7 +14,7 @@ function fixture() {
   const writes: string[] = []
   let release = (): void => {}
   let outcome: 'accepted' | 'refused' | 'unverifiable' = 'accepted'
-  const sendTerminal: OrcaRuntimeService['sendTerminal'] = vi.fn(async (handle, input, options) => {
+  const sendTerminal: TopoRuntimeService['sendTerminal'] = vi.fn(async (handle, input, options) => {
     await options?.beforeWrite?.('pty')
     if (input.text === 'held') {
       await new Promise<void>((resolve) => {
@@ -46,7 +46,7 @@ function fixture() {
     ensureStructuredAgentSessionHost: async () => null,
     sendTerminal,
     beginMobileInputFloor: () => ({ commit: async () => {}, rollback: () => {} })
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   const dispatcher = new RpcDispatcher({ runtime, methods: TERMINAL_METHODS })
   let id = 0
   const call = (method: string, params: unknown, options: RpcDispatchStreamingOptions = mobile) =>

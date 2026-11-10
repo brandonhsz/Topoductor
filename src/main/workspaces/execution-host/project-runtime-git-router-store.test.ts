@@ -70,7 +70,7 @@ describe('project runtime Git routing on the real Store', () => {
     expect(distroFor(REPO)).toBeUndefined()
   })
 
-  // A block published while Orca runs undoes Stage 1 at once, as turning the setting off does.
+  // A block published while Topo runs undoes Stage 1 at once, as turning the setting off does.
   it('uninstalls the router the moment a live policy block lands', async () => {
     const { store } = await fixture()
     store.updateSettings({

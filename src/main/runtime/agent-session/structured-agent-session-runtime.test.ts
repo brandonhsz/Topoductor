@@ -74,7 +74,7 @@ describe('structured agent-session runtime install', () => {
   it.each([false, true])(
     'backfills before the host is readable and keeps startup nonfatal on a failed write (%s)',
     async (failWrite) => {
-      stateDirectory = await mkdtemp(join(tmpdir(), 'orca-structured-runtime-backfill-'))
+      stateDirectory = await mkdtemp(join(tmpdir(), 'topo-structured-runtime-backfill-'))
       await seedTestAgentSessionRecordStore(stateDirectory, { records: [oldChat('codex')] })
       if (failWrite) {
         openTestJournalHostDatabase(stateDirectory).db.exec(
@@ -98,7 +98,7 @@ describe('structured agent-session runtime install', () => {
   )
 
   it('moves pre-rename chat visuals under the current root before the host is readable', async () => {
-    stateDirectory = await mkdtemp(join(tmpdir(), 'orca-structured-runtime-visuals-'))
+    stateDirectory = await mkdtemp(join(tmpdir(), 'topo-structured-runtime-visuals-'))
     await seedTestAgentSessionRecordStore(stateDirectory, { records: [oldChat('codex')] })
     const current = nativeChatScratchFolderFor(stateDirectory, 'old-codex')
     const legacy = join(stateDirectory, 'native-chat-visuals', basename(current))

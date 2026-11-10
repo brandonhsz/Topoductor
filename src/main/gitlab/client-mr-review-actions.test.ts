@@ -117,7 +117,7 @@ describe('gitlab client — review lookups after a merge request write', () => {
     glabExecFileAsyncMock.mockResolvedValue({ stdout: '', stderr: '' })
   })
 
-  // Issue #14377: "I press Squash and merge" in Orca, and the card stayed Open while a poll was in flight.
+  // Issue #14377: "I press Squash and merge" in Topo, and the card stayed Open while a poll was in flight.
   it.each(Object.entries(writes))(
     '%s: the follow-up read starts after the write instead of joining an older poll',
     async (_name, write) => {

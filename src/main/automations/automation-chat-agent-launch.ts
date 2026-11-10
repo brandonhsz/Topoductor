@@ -2,7 +2,7 @@ import { automationCanonicalLaunchSetup } from '../../shared/automations/launch/
 import { automationLaunchInputs } from '../../shared/automations/launch/automation-launch-choices'
 import type { Automation } from '../../shared/automations/automation-definition'
 import type { AutomationRun } from '../../shared/automations/history/automation-run'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { launchAgentOnHost } from '../runtime/rpc/methods/agent-launch/agent-launch'
 import { reuseAutomationChat } from './automation-chat-session-reuse'
 import { buildHeadlessAutomationWorkspaceName } from './automation-workspace-create'
@@ -29,7 +29,7 @@ export type AutomationChatLaunchRequest = {
 }
 
 export async function launchAutomationChatAgent(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   request: AutomationChatLaunchRequest
 ): Promise<AutomationChatAgentLaunch> {
   try {
@@ -46,7 +46,7 @@ export async function launchAutomationChatAgent(
 }
 
 async function launchChat(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   request: AutomationChatLaunchRequest
 ): Promise<AutomationChatAgentLaunch> {
   const { automation, run, target } = request
@@ -105,7 +105,7 @@ async function launchChat(
     )
     if (result.prompt?.outcome !== 'journaled' && result.prompt?.outcome !== 'handed-to-terminal') {
       throw new AutomationRunLaunchError(
-        `${tuiAgentDisplayName(automation.agentId)} started, but Orca could not confirm this run's prompt. Open the run before trying again.`,
+        `${tuiAgentDisplayName(automation.agentId)} started, but Topo could not confirm this run's prompt. Open the run before trying again.`,
         published ?? publishedLaunchTarget(runtime, result)
       )
     }

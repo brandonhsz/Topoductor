@@ -170,7 +170,7 @@ export function BrowserSessionCookiesSection({
           <p className="text-xs text-muted-foreground">
             {t(
               'browser.googleCookieClear.explanation',
-              "Google ties its sign-ins to the browser they were made in, so Orca doesn't import Google cookies from other browsers. If Google is stuck on the wrong account or keeps signing you out, clear Google cookies from the active profile, then sign in to Google again in Orca. Other sites stay signed in."
+              "Google ties its sign-ins to the browser they were made in, so Topo doesn't import Google cookies from other browsers. If Google is stuck on the wrong account or keeps signing you out, clear Google cookies from the active profile, then sign in to Google again in Topo. Other sites stay signed in."
             )}
           </p>
           {googleCookieClear.available === false ? (

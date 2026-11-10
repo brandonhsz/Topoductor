@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Needs bash 4+ (mapfile); on macOS use Homebrew bash.
-# Mirror Orca release assets from GitHub Releases to the public R2 bucket
+# Mirror Topo release assets from GitHub Releases to the public R2 bucket
 # served at https://downloads.onorca.dev. onorca.dev's "Download started" page
 # offers these as an opt-in "mirror link" for when GitHub returns 5xx.
 # Run by .github/workflows/release-mirror-r2.yml after each published release.
@@ -20,17 +20,17 @@
 # Requires: gh (authenticated), curl, jq, and an uploader:
 #   - aws CLI + R2 S3 keys (R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY): preferred,
 #     multipart uploads, no size limit. Create keys in Cloudflare dashboard →
-#     R2 → Manage API tokens (Object Read & Write on orca-downloads).
+#     R2 → Manage API tokens (Object Read & Write on topo-downloads).
 #   - otherwise wrangler (authenticated), which caps each file at 300 MiB.
 # Downloads are retried aggressively and resumed, and every file is checked
 # against the size and sha256 digest GitHub reports before upload.
 
 set -euo pipefail
 
-REPO="${REPO:-stablyai/orca}"
-BUCKET="${BUCKET:-orca-downloads}"
+REPO="${REPO:-brandonhsz/Topoductor}"
+BUCKET="${BUCKET:-topo-downloads}"
 PUBLIC_BASE="${PUBLIC_BASE:-https://downloads.onorca.dev}"
-WEBSITE_ASSETS=(orca-macos-arm64.dmg orca-macos-x64.dmg orca-windows-setup.exe orca-linux.AppImage)
+WEBSITE_ASSETS=(topo-macos-arm64.dmg topo-macos-x64.dmg topo-windows-setup.exe topo-linux.AppImage)
 CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-57e6ddd3bb755dbf8e8dc7ff557e9014}"
 R2_ENDPOINT="https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com"
 # wrangler r2 object put caps single uploads at 300 MiB; the S3 path has no such cap.
@@ -71,7 +71,7 @@ RELEASE_JSON="$(retry 10 gh api "repos/$REPO/releases/tags/$TAG")"
 
 if (( ${#REQUESTED_ASSETS[@]} == 0 )); then
   if [[ "${ALL_ASSETS:-0}" == "1" ]]; then
-    mapfile -t REQUESTED_ASSETS < <(jq -r '.assets[].name | select(startswith("orca-sourcemaps") | not)' <<<"$RELEASE_JSON")
+    mapfile -t REQUESTED_ASSETS < <(jq -r '.assets[].name | select(startswith("topo-sourcemaps") | not)' <<<"$RELEASE_JSON")
   elif [[ "$TAG" == v* ]]; then
     REQUESTED_ASSETS=("${WEBSITE_ASSETS[@]}")
   else
@@ -88,7 +88,7 @@ else
   ALIAS_PREFIX=""
 fi
 
-WORK_DIR="${WORK_DIR:-${TMPDIR:-/tmp}/orca-release-mirror/$TAG}"
+WORK_DIR="${WORK_DIR:-${TMPDIR:-/tmp}/topo-release-mirror/$TAG}"
 mkdir -p "$WORK_DIR"
 log "working dir: $WORK_DIR"
 

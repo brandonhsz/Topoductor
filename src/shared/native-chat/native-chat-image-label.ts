@@ -13,20 +13,20 @@ export const NATIVE_CHAT_IMAGE_LABEL_ENGLISH: NativeChatImageLabelCopy = {
 }
 
 const PASTED_IMAGE_NAME = new RegExp(
-  `^orca-paste-.+${AGENT_SESSION_PASTED_IMAGE_SUFFIX_SOURCE}$`,
+  `^topo-paste-.+${AGENT_SESSION_PASTED_IMAGE_SUFFIX_SOURCE}$`,
   'i'
 )
 
-/** Use friendly UI labels for Orca clipboard-image temp filenames. */
+/** Use friendly UI labels for Topo clipboard-image temp filenames. */
 export function isNativeChatPastedImagePath(path: string): boolean {
   const base = path.split(/[\\/]/).findLast(Boolean) ?? path
   return PASTED_IMAGE_NAME.test(base)
 }
 
-/** True for a long text paste Orca saved as a file (`orca-paste-<ts>-<uuid>.txt`). */
+/** True for a long text paste Topo saved as a file (`topo-paste-<ts>-<uuid>.txt`). */
 export function isNativeChatPastedTextPath(path: string): boolean {
   const base = path.split(/[\\/]/).findLast(Boolean) ?? path
-  return /^orca-paste-.+\.txt$/i.test(base)
+  return /^topo-paste-.+\.txt$/i.test(base)
 }
 
 /** What a chat image is called where it is not drawn: its alt text, else its file's name. */

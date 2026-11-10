@@ -106,7 +106,7 @@ describe('MobileNativeChatMessage status notices', () => {
           createElement(MobileNativeChatMessage, {
             message: {
               // The journal key percent-encodes the line's client message id.
-              id: 'orca:pr-event%3Agithub.com%2Facme%2Frepo%233%3A8d5f74b0c1%3A1',
+              id: 'topo:pr-event%3Agithub.com%2Facme%2Frepo%233%3A8d5f74b0c1%3A1',
               role: 'system',
               blocks: [
                 {

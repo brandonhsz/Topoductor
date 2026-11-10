@@ -51,7 +51,7 @@ async function failedStart(
   script: ScriptedAgentChild,
   unanswered = false
 ) {
-  directory = await mkdtemp(join(tmpdir(), 'orca-adapter-start-failure-'))
+  directory = await mkdtemp(join(tmpdir(), 'topo-adapter-start-failure-'))
   const root = directory
   const host = await ensureStructuredAgentSessionHost({
     logger: createStructuredAgentSessionLogger(),

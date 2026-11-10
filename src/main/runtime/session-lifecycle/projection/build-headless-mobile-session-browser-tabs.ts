@@ -1,5 +1,5 @@
-import type { OrcaRuntimeWithStoredMobileSnapshotHasStalePreservedTab as BrowserOwnership } from '../../session-tabs/mobile-session-publication-preservation'
-import { OrcaRuntimeWithPersistTerminalSurfaceRetirements } from '../../session-tabs/terminal-surface-retirements'
+import type { TopoRuntimeWithStoredMobileSnapshotHasStalePreservedTab as BrowserOwnership } from '../../session-tabs/mobile-session-publication-preservation'
+import { TopoRuntimeWithPersistTerminalSurfaceRetirements } from '../../session-tabs/terminal-surface-retirements'
 import type {
   RuntimeMobileSessionBrowserTab,
   RuntimeMobileSessionTerminalTab
@@ -30,7 +30,7 @@ import { captureAcknowledgedTerminalTabRetirement } from '../../terminal/surface
 import { closeLeafOrTab } from '../../../persistence/terminal-topology/terminal-topology-commit'
 import { markAgentLaunchesClosedByUser } from '../../../agent-launch/agent-launch-pane-attachment'
 
-export abstract class OrcaRuntimeWithBuildHeadlessMobileSessionBrowserTabs extends OrcaRuntimeWithPersistTerminalSurfaceRetirements {
+export abstract class TopoRuntimeWithBuildHeadlessMobileSessionBrowserTabs extends TopoRuntimeWithPersistTerminalSurfaceRetirements {
   protected abstract getRendererOwnedBrowserPageIds(
     ...args: Parameters<BrowserOwnership['getRendererOwnedBrowserPageIds']>
   ): ReturnType<BrowserOwnership['getRendererOwnedBrowserPageIds']>

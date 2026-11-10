@@ -2,19 +2,19 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   withDurableRuntimeStore,
   withRuntimePaneAdmission
-} from '../../orca-runtime-tests/runtime-durable-store-fixture'
+} from '../../topo-runtime-tests/runtime-durable-store-fixture'
 import { getDefaultWorkspaceSession } from '../../../../shared/constants'
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../../shared/runtime-session-contracts'
 import type { RuntimeMobileSessionTerminalTab } from '../../../../shared/runtime-mobile-session-tab-contracts'
 import type { TerminalLayoutSnapshot } from '../../../../shared/workspace-layout/terminal-tab-types'
 import type { WorkspaceSessionState } from '../../../../shared/workspace-session/workspace-session-state-types'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import type { ExecutionHostId } from '../../../../shared/execution-host'
 import type { LayoutCommand } from '../../../../shared/workspace-layout/workspace-layout-command-types'
 import { applyCommandToSession } from '../../../persistence/terminal-topology/terminal-pane-admission'
-import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 const REPO_ID = 'repo-1'
 const WORKTREE_ID = `${REPO_ID}::/workspace`
@@ -165,7 +165,7 @@ function setup(listing: WindowListing, pinned = false) {
       flushOrThrow: () => undefined
     })
   )
-  const runtime = new OrcaRuntimeService(partialRuntimeStore(store))
+  const runtime = new TopoRuntimeService(partialRuntimeStore(store))
   Object.assign(runtime, {
     resolveTerminalWorkspaceLaunchScope: vi.fn(async () => ({
       id: WORKTREE_ID,
@@ -237,7 +237,7 @@ function setup(listing: WindowListing, pinned = false) {
     )
   )
   runtime.registerPty(SOURCE_PTY_ID, WORKTREE_ID, null, { tabId: TAB_ID, leafId: SOURCE_LEAF_ID })
-  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: both members are declared on OrcaRuntimeService's inheritance chain.
+  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: both members are declared on TopoRuntimeService's inheritance chain.
   const internals = runtime as unknown as {
     issuePtyHandle: (pty: unknown) => string
     ptysById: Map<string, unknown>

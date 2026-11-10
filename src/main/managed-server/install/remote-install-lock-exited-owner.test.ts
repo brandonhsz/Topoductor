@@ -11,7 +11,7 @@ import {
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { tryStealInstallLockCommand } from './remote-install-lock-commands'
 import { decodeRemotePowerShellScript } from '../../ssh/remote-exec/ssh-remote-powershell'
 import {
@@ -19,7 +19,7 @@ import {
   type RemoteHostPlatform
 } from '../../ssh/remote-host/ssh-remote-platform'
 
-const OWNER = '.orca-fence-owner'
+const OWNER = '.topo-fence-owner'
 const successor = { fileName: OWNER, token: 't-relaunch' }
 const exitedOwner = { fileName: OWNER, token: 't-exited', quietSeconds: 180 }
 const powerShell51 =
@@ -39,7 +39,7 @@ afterEach(() => {
 })
 
 function lockOwnedBy(owner: string, quietMinutes: number): string {
-  const root = mkdtempSync(join(tmpdir(), 'orca-exited-owner-steal-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-exited-owner-steal-'))
   roots.push(root)
   const lock = join(root, '.install-lock')
   mkdirSync(lock)
@@ -83,7 +83,7 @@ describe.each([
     'takes a fence only while no state-mutation lock exists, and releases it',
     async () => {
       const lock = lockOwnedBy('t-exited', 10)
-      const mutationLock = join(lock, '..', 'orcad-state-mutation.lock')
+      const mutationLock = join(lock, '..', 'topod-state-mutation.lock')
       mkdirSync(mutationLock)
       expect(await steal(host, lock, mutationLock)).toBe('BUSY')
       expect(readFileSync(join(lock, OWNER), 'utf8')).toBe('t-exited')

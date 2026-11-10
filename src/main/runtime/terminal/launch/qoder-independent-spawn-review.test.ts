@@ -6,10 +6,10 @@ import { tmpdir } from 'node:os'
 
 import { join } from 'node:path'
 
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
 const {
   store,
   TEST_WORKTREE_PATH,
@@ -17,8 +17,8 @@ const {
   createFolderWorkspaceRuntimeStore,
   makeFolderWorkspace,
   makeFolderProjectGroup
-} = await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
-const { committingSpawn } = await import('../../orca-runtime-tests/bind-first-pane.test-fixture')
+} = await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
+const { committingSpawn } = await import('../../topo-runtime-tests/bind-first-pane.test-fixture')
 const { detectAgentCommandsOnHost } = await import('../../../preflight/agent-command-detection')
 beforeEach(() =>
   vi
@@ -43,7 +43,7 @@ it('a modern-only repo-less folder start reaches the same production spawn bound
       makeFolderWorkspace({ folderPath }),
       makeFolderProjectGroup({ parentPath: folderPath })
     )
-    const runtime = new OrcaRuntimeService({
+    const runtime = new TopoRuntimeService({
       ...folderStore,
       getSettings: () => ({ ...store.getSettings(), disabledTuiAgents: [], agentCmdOverrides: {} })
     })
@@ -84,7 +84,7 @@ it('host discovery refusal prevents any production spawn', async () => {
     new Error('execution host unavailable')
   )
   const spawn = vi.fn()
-  const runtime = new OrcaRuntimeService(store)
+  const runtime = new TopoRuntimeService(store)
   runtime.setPtyController({
     spawn,
     write: () => true,
@@ -104,8 +104,8 @@ it.each(['offline', 'legacy-identity'])(
   'refuses a Qoder command-bearing create with unverifiable inventory: %s',
   async (state) => {
     const { TEST_WORKTREE_ID } =
-      await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
-    const runtime = new OrcaRuntimeService(store)
+      await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
+    const runtime = new TopoRuntimeService(store)
     runtime.syncWindowGraph(0, { tabs: [], leaves: [] })
     const spawn = vi.fn()
     const kill = vi.fn()
@@ -145,11 +145,11 @@ it.each(['offline', 'legacy-identity'])(
 
 it('reconciles after the reply-cache expires and isolates deliberate forks and paired callers', async () => {
   const { TEST_WORKTREE_ID } =
-    await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
+    await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
   vi.useFakeTimers()
   try {
     // Copy the fixture store so main-owned bindings cannot leak into shared tests.
-    const runtime = new OrcaRuntimeService({ ...store })
+    const runtime = new TopoRuntimeService({ ...store })
     runtime.syncWindowGraph(0, { tabs: [], leaves: [] })
     const live: {
       id: string

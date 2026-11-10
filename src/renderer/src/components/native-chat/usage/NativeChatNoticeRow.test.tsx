@@ -18,24 +18,24 @@ import { TranslationScopeProvider } from '@/i18n/translation-scope-provider'
 import { agentSessionFailureWords } from '../../../../../shared/agent-session/failures/agent-session-failure-words'
 
 import {
-  NativeChatOrcaStopContext,
-  type NativeChatOrcaStopView
-} from '@/components/native-chat/messages/notices/native-chat-orca-stop-context'
+  NativeChatTopoStopContext,
+  type NativeChatTopoStopView
+} from '@/components/native-chat/messages/notices/native-chat-topo-stop-context'
 
 afterEach(async () => {
   cleanup()
   await i18n.changeLanguage('en')
 })
 
-type ContinueOffer = Pick<NativeChatOrcaStopView, 'offeredTurnItemId' | 'continueNow'> &
-  Partial<Pick<NativeChatOrcaStopView, 'usageLimitTurnItemId' | 'continueUsageLimit'>>
+type ContinueOffer = Pick<NativeChatTopoStopView, 'offeredTurnItemId' | 'continueNow'> &
+  Partial<Pick<NativeChatTopoStopView, 'usageLimitTurnItemId' | 'continueUsageLimit'>>
 
-function orcaStopView(
+function topoStopView(
   hostLabel: string | null,
   continueAvailable: boolean,
   remoteHost: boolean,
   offer: ContinueOffer
-): NativeChatOrcaStopView {
+): NativeChatTopoStopView {
   return {
     hostLabel,
     remoteHost,
@@ -68,10 +68,10 @@ function renderStatus(
       turnScope: { kind: 'turn', turnItemId: 'cut-turn' }
     }
   ])
-  const view = orcaStopView(hostLabel, continueAvailable, remoteHost, offer)
+  const view = topoStopView(hostLabel, continueAvailable, remoteHost, offer)
   return render(
     <TooltipProvider>
-      <NativeChatOrcaStopContext.Provider value={view}>
+      <NativeChatTopoStopContext.Provider value={view}>
         <NativeChatSignInContext.Provider value={signIn}>
           <MessageRow
             message={message!}
@@ -80,7 +80,7 @@ function renderStatus(
             onScrollMessageToTop={vi.fn()}
           />
         </NativeChatSignInContext.Provider>
-      </NativeChatOrcaStopContext.Provider>
+      </NativeChatTopoStopContext.Provider>
     </TooltipProvider>,
     { wrapper: TranslationScopeProvider }
   )
@@ -102,14 +102,14 @@ describe('usage-limit reset clock changes', () => {
   })
 
   function notice(resetsAt?: number, count = 1) {
-    const view = orcaStopView(null, false, false, {
+    const view = topoStopView(null, false, false, {
       ...NO_OFFER,
       usageLimitTurnItemId: 'cut-turn',
       continueUsageLimit
     })
     return (
       <TooltipProvider>
-        <NativeChatOrcaStopContext.Provider value={view}>
+        <NativeChatTopoStopContext.Provider value={view}>
           {Array.from({ length: count }, (_, index) => (
             <NativeChatNoticeRow
               key={`chat-${index}`}
@@ -123,7 +123,7 @@ describe('usage-limit reset clock changes', () => {
               }}
             />
           ))}
-        </NativeChatOrcaStopContext.Provider>
+        </NativeChatTopoStopContext.Provider>
       </TooltipProvider>
     )
   }

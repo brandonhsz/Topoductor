@@ -10,7 +10,7 @@ import { TEST_REPO } from '@/store/repos/repo.test-fixture'
 import type { TerminalLayoutSnapshot } from '../../../../../../shared/workspace-layout/terminal-tab-types'
 import type { AgentStatusEntry } from '../../../../../../shared/agent-status/contracts/agent-status-types'
 import type { AgentMessageSenderView } from '../../../../../../shared/agent-session/agent-message-presentation'
-import { parseOrcaSessionAddress } from '../../../../../../shared/orca-session-address'
+import { parseTopoSessionAddress } from '../../../../../../shared/topo-session-address'
 import * as presentation from '@/lib/program-status/agent-row-presentation'
 import * as senderTargets from './native-chat-agent-message-sender-target'
 import '@/components/sidebar/workspace-card/activity/worktree-agent-row-selectors'
@@ -42,7 +42,7 @@ function Probe({
       party: {
         address: `term_${sourceId}`,
         terminalHandle: `term_${sourceId}`,
-        orcaSessionId: null
+        topoSessionId: null
       },
       name: 'Sender',
       ...(proof === 'gone' ? { agent: 'claude' } : {})
@@ -226,7 +226,7 @@ it.each(['run:coordinator', 'dispatch:past'])(
     const saved = {
       name: 'Known A',
       agent: 'codex',
-      party: { address, terminalHandle: null, orcaSessionId: null }
+      party: { address, terminalHandle: null, topoSessionId: null }
     }
     const past = renderHook(() => useAgentMessageSenderView(saved, 'workspace', { kind: 'local' }))
     const current = renderHook(() =>
@@ -234,7 +234,7 @@ it.each(['run:coordinator', 'dispatch:past'])(
         {
           name: 'Known B',
           agent: 'codex',
-          party: { address: 'term_0', terminalHandle: 'term_0', orcaSessionId: null }
+          party: { address: 'term_0', terminalHandle: 'term_0', topoSessionId: null }
         },
         'workspace',
         { kind: 'local' }
@@ -252,7 +252,7 @@ it('shows only a proved Dispatch invocation and withdraws proof without changing
   const saved = {
     name: 'Worker',
     agent: 'codex' as const,
-    party: { address: 'dispatch:worker', terminalHandle: 'term_0', orcaSessionId: null }
+    party: { address: 'dispatch:worker', terminalHandle: 'term_0', topoSessionId: null }
   }
   const publish = (proved: boolean, revision: number) =>
     useAppStore.getState().setAgentSenderPublication('local', {
@@ -295,7 +295,7 @@ it('shows only a proved Dispatch invocation and withdraws proof without changing
   const ordinary = {
     name: 'Worker',
     agent: 'codex' as const,
-    party: { address: 'term_old', terminalHandle: 'term_old', orcaSessionId: null }
+    party: { address: 'term_old', terminalHandle: 'term_old', topoSessionId: null }
   }
   const alias = renderHook(() =>
     useAgentMessageSenderView(ordinary, 'workspace', { kind: 'local' })
@@ -322,14 +322,14 @@ it('shows only a proved Dispatch invocation and withdraws proof without changing
 
 it('never falls from a missing saved session to the later occupant of its handle, while keeping navigation', () => {
   write(0, { agentType: 'codex' })
-  const session = parseOrcaSessionAddress('orca_session_id:codex_original_sender')
+  const session = parseTopoSessionAddress('topo_session_id:codex_original_sender')
   if (!session) {
     throw new Error('invalid fixture session')
   }
   const saved = {
     name: 'Original sender',
     agent: 'codex',
-    party: { address: 'term_0', terminalHandle: 'term_0', orcaSessionId: session }
+    party: { address: 'term_0', terminalHandle: 'term_0', topoSessionId: session }
   }
   useAppStore.getState().setAgentSenderPublication('local', {
     associations: [
@@ -350,7 +350,7 @@ it('never falls from a missing saved session to the later occupant of its handle
     useAppStore.getState().setAgentSenderPublication('local', {
       associations: [
         {
-          identity: `orca_session_id:${session}`,
+          identity: `topo_session_id:${session}`,
           sessionId: session,
           paneKey: status(0).paneKey,
           worktreeId: 'workspace'

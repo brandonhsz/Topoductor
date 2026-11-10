@@ -43,7 +43,7 @@ describe('RuntimePairingGeneratorForm', () => {
   it('hides generated links after the selected address changes', () => {
     const markup = renderForm('another', '100.76.32.125', {
       address: '192.168.1.10',
-      runtimePairingUrl: 'orca://pair?code=stale-secret',
+      runtimePairingUrl: 'topo://pair?code=stale-secret',
       webClientUrl: 'https://example.test/?pair=stale-secret'
     })
 
@@ -54,7 +54,7 @@ describe('RuntimePairingGeneratorForm', () => {
   it('replaces an expired unused link with a notice instead of a copyable secret', () => {
     const generated = {
       address: '100.76.32.125',
-      runtimePairingUrl: 'orca://pair?code=old-secret',
+      runtimePairingUrl: 'topo://pair?code=old-secret',
       webClientUrl: 'https://example.test/?pair=old-secret'
     }
     const live = renderForm('another', '100.76.32.125', generated, { kind: 'expires', at: 0 })

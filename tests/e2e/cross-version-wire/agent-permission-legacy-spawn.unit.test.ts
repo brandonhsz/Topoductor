@@ -3,16 +3,16 @@ import { composeAgentLaunchProfile } from '../../../src/shared/agent-launch/choi
 import { tokenizeStartupCommand } from '../../../src/shared/agent-launch/startup/tui-agent-startup-shell'
 import * as startupInputs from '../../../src/shared/agent-launch/startup/agent-startup-plan-inputs'
 import { resolveBaselineAgentStartupPlanInputs } from '../../../src/shared/agent-launch/startup/agent-startup-plan-inputs-baseline-test-fixture'
-import '../../../src/main/runtime/orca-runtime-tests/runtime-test-module-registration.spec'
-import { OrcaRuntimeService } from '../../../src/main/runtime/orca-runtime'
+import '../../../src/main/runtime/topo-runtime-tests/runtime-test-module-registration.spec'
+import { TopoRuntimeService } from '../../../src/main/runtime/topo-runtime'
 import { getDefaultWorkspaceSession } from '../../../src/shared/constants'
-import '../../../src/main/runtime/orca-runtime-tests/orca-runtime-test-lifecycle.spec'
+import '../../../src/main/runtime/topo-runtime-tests/topo-runtime-test-lifecycle.spec'
 import {
   TEST_WORKTREE_ID,
   TEST_WORKTREE_PATH,
   makeRuntimeStoreWithWorkspaceSession
-} from '../../../src/main/runtime/orca-runtime-tests/orca-runtime-test-fixtures.spec'
-import { committingSpawn } from '../../../src/main/runtime/orca-runtime-tests/bind-first-pane.test-fixture'
+} from '../../../src/main/runtime/topo-runtime-tests/topo-runtime-test-fixtures.spec'
+import { committingSpawn } from '../../../src/main/runtime/topo-runtime-tests/bind-first-pane.test-fixture'
 import type { RuntimePtyController } from '../../../src/main/runtime/terminal/lifecycle/runtime-pty-controller-contract'
 import { RpcDispatcher } from '../../../src/main/runtime/rpc/dispatcher'
 import { SESSION_TAB_METHODS } from '../../../src/main/runtime/rpc/methods/session-tabs/session-tabs'
@@ -175,7 +175,7 @@ describe('createWebRuntimeSessionTerminal', () => {
       })
     )
     const { runtimeStore } = makeRuntimeStoreWithWorkspaceSession(getDefaultWorkspaceSession())
-    const runtime = new OrcaRuntimeService({
+    const runtime = new TopoRuntimeService({
       ...runtimeStore,
       getSettings: () => ({ ...runtimeStore.getSettings(), ...settings })
     })

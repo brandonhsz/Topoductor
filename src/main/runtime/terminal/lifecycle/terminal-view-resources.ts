@@ -5,7 +5,7 @@ import type {
 import type { CrewRuntimeReaders } from '../../orchestration/crew/crew-runtime-watch'
 import { TerminalIdentitySource } from '../identity/terminal-identity-source'
 import type { WaitBlockedCheckState } from '../wait/wait-blocked-check-state'
-import { OrcaRuntimeWithStopRequestedPtyIds } from '../../construction/runtime-service-state'
+import { TopoRuntimeWithStopRequestedPtyIds } from '../../construction/runtime-service-state'
 import { RuntimeSubscriptionRegistry } from '../../client/runtime-subscription-registry'
 import { RuntimeMobileNotificationController } from '../../push/notifications/runtime-mobile-notification-controller'
 import type {
@@ -21,7 +21,7 @@ import { RuntimeTerminalViewSubscribers } from '../view/runtime-terminal-view-su
 import { MainDaemonAttachments } from './main-daemon-attachments'
 import { parseAppSshPtyId } from '../../../../shared/ssh-pty-id'
 
-export abstract class OrcaRuntimeWithFitOverrideListeners extends OrcaRuntimeWithStopRequestedPtyIds {
+export abstract class TopoRuntimeWithFitOverrideListeners extends TopoRuntimeWithStopRequestedPtyIds {
   protected readonly terminalIdentity = new TerminalIdentitySource(this.crewChanges.notify)
   protected readonly ptysById = this.terminalIdentity.ptys
   readonly handles = this.terminalIdentity.handles

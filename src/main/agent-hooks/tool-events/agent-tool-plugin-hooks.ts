@@ -9,10 +9,10 @@ import {
 } from '../../plugins/hooks/plugin-hook-dispatch'
 import { readAgentToolCall, type AgentToolCallOwner } from './agent-tool-call-reader'
 
-/** Sent by hook scripts that print Orca's answer as Claude Code's PreToolUse decision. */
-export const AGENT_TOOL_DECISION_HEADER = 'x-orca-hook-decision'
+/** Sent by hook scripts that print Topo's answer as Claude Code's PreToolUse decision. */
+export const AGENT_TOOL_DECISION_HEADER = 'x-topo-hook-decision'
 export const CLAUDE_PRE_TOOL_USE_DECISION = 'claude-pre-tool-use-v1'
-// Why 6 s: the script waits 8 s at most, so Orca answers (or passes) before it gives up.
+// Why 6 s: the script waits 8 s at most, so Topo answers (or passes) before it gives up.
 const DECISION_BUDGET_MS = 6_000
 
 function record(value: unknown): Record<string, unknown> | null {
@@ -28,7 +28,7 @@ function claudePreToolUse(fields: Record<string, unknown>): string {
 /**
  * Runs `agent.tool.before`/`.after` for one hook post. Returns Claude Code's PreToolUse answer
  * when the script asked for one (`deny`, or changed input that still goes through the person's
- * usual approval), else null: Orca then answers 204 and the agent carries on. Fails open.
+ * usual approval), else null: Topo then answers 204 and the agent carries on. Fails open.
  */
 export async function answerAgentToolPluginHooks(
   source: AgentHookSource,

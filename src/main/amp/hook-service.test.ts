@@ -21,7 +21,7 @@ describe('AmpHookService', () => {
   let homeDir: string
 
   beforeEach(() => {
-    homeDir = mkdtempSync(join(tmpdir(), 'orca-amp-home-'))
+    homeDir = mkdtempSync(join(tmpdir(), 'topo-amp-home-'))
     homedirMock.mockReturnValue(homeDir)
   })
 
@@ -45,7 +45,7 @@ describe('AmpHookService', () => {
     expect(readFileSync(pluginPath, 'utf-8')).toBe('export default function userPlugin() {}\n')
   })
 
-  it('removes only Orca-managed Amp plugin files', () => {
+  it('removes only Topo-managed Amp plugin files', () => {
     const service = new AmpHookService()
     const installed = service.install()
     expect(existsSync(installed.configPath)).toBe(true)

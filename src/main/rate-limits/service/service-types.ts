@@ -28,7 +28,7 @@ export type OpenCodeGoRateLimitConfig = {
 }
 
 export type OpenCodeGoResolvedConfig = OpenCodeGoRateLimitConfig & {
-  /** Explicit Orca override; empty means fall back to OpenCode's own store and env. */
+  /** Explicit Topo override; empty means fall back to OpenCode's own store and env. */
   apiKey: string
   /** Set when the saved override exists but cannot be decrypted. */
   apiKeyError: string | null

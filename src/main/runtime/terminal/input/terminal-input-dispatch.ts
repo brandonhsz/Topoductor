@@ -6,7 +6,7 @@ import type {
   RuntimeTerminalPromptDelivery,
   RuntimeTerminalSend
 } from '../../../../shared/runtime-terminal-send-contract'
-import { OrcaRuntimeWithResolveTerminalPane } from '../recovery/resolve-terminal-pane'
+import { TopoRuntimeWithResolveTerminalPane } from '../recovery/resolve-terminal-pane'
 import { wrapTerminalBracketedPasteText } from '../../../../shared/terminal/input/terminal-bracketed-paste-text'
 import { PROVEN_ABSENT_LEAF_PTY_TTL_MS } from './proven-absent-leaf-pty'
 import { pruneExpiredProvenAbsentLeafPtyVerdicts } from './proven-absent-leaf-pty-verdicts'
@@ -20,9 +20,9 @@ import {
   agentPromptTakesLeadLine,
   buildAgentPromptPasteBytes
 } from '../../../../shared/agent-launch/startup/agent-prompt-injection'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 
-export abstract class OrcaRuntimeWithControllerKnowsPtyIsLive extends OrcaRuntimeWithResolveTerminalPane {
+export abstract class TopoRuntimeWithControllerKnowsPtyIsLive extends TopoRuntimeWithResolveTerminalPane {
   protected abstract writeTerminalAction(
     ptyId: string,
     action: { text?: string; enter?: boolean; interrupt?: boolean },
@@ -141,7 +141,7 @@ export abstract class OrcaRuntimeWithControllerKnowsPtyIsLive extends OrcaRuntim
     options: RuntimeTerminalWriteOptions
   ): Promise<RuntimeTerminalSend> {
     // Switch point: a saved pane main holds with no terminal yet starts first (once, shared).
-    const starting = ORCA_LAYOUT_OWNER_IS_MAIN
+    const starting = TOPO_LAYOUT_OWNER_IS_MAIN
       ? this.startRestoredHandlePane(handle, { signal: options.signal })
       : null
     if (starting) {
@@ -248,7 +248,7 @@ export abstract class OrcaRuntimeWithControllerKnowsPtyIsLive extends OrcaRuntim
       )
     }
     // Switch point: a saved pane main holds with no terminal yet starts first (once, shared).
-    const starting = ORCA_LAYOUT_OWNER_IS_MAIN
+    const starting = TOPO_LAYOUT_OWNER_IS_MAIN
       ? this.startRestoredHandlePane(handle, { signal: agentPromptObservationSignal(options) })
       : null
     if (starting) {

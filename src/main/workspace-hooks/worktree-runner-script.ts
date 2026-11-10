@@ -25,7 +25,7 @@ import { buildPosixRunnerScript, buildWindowsRunnerScript } from './setup-runner
 
 import type { Repo } from '../../shared/repo-types'
 import type { WorktreeSetupLaunch } from '../../shared/worktree/launch-types'
-import type { SetupAgentStartupPolicy } from '../../shared/orca-yaml-hook-types'
+import type { SetupAgentStartupPolicy } from '../../shared/topo-yaml-hook-types'
 import type { ProjectExecutionRuntimeResolution } from '../../shared/execution-host/project-execution-runtime'
 
 type SetupRunnerShellSettings = Record<string, unknown> | undefined
@@ -95,7 +95,7 @@ async function createWorktreeRunnerScript(args: {
       : undefined
   // Linked worktrees have .git files; resolve the per-worktree gitdir through Git.
   const runnerExtension = runnerShell.family === 'cmd' ? 'cmd' : 'sh'
-  const gitRelPath = `orca/${runnerBaseName}.${runnerExtension}`
+  const gitRelPath = `topo/${runnerBaseName}.${runnerExtension}`
   // Read the link with the D1c Git router (if WSL Git made the worktree, host Git can't). A worktree
   // inside a distro never runs synchronous Git: that would be a synchronous wsl.exe on the main thread.
   const fromLink = isWslPath(worktreePath)

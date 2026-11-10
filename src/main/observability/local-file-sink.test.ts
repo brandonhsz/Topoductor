@@ -7,7 +7,7 @@ import { createLocalFileSink } from './local-file-sink'
 let dir: string
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-sink-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-sink-'))
 })
 afterEach(() => {
   rmSync(dir, { recursive: true, force: true })

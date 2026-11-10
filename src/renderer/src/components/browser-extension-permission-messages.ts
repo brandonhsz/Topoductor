@@ -97,7 +97,7 @@ function hostMessage(hostPermissions: string[], t: Translate = translate): strin
   )
 }
 
-/** Why skip unsupported ones: "It can" must not promise what Orca does not do; they get their own line. */
+/** Why skip unsupported ones: "It can" must not promise what Topo does not do; they get their own line. */
 export function describeBrowserExtensionAccess(
   permissions: string[],
   hostPermissions: string[],
@@ -120,7 +120,7 @@ function featureLabel(feature: UnsupportedBrowserExtensionFeature): string {
   }
 }
 
-/** One calm line naming what the extension asks for that Orca cannot do yet, or null. */
+/** One calm line naming what the extension asks for that Topo cannot do yet, or null. */
 export function describeUnsupportedBrowserExtensionFeatures(
   permissions: string[],
   t: Translate = translate
@@ -129,7 +129,7 @@ export function describeUnsupportedBrowserExtensionFeatures(
   if (features.length === 0) {
     return null
   }
-  return t('browserExtensions.unsupported.line', 'Not available in Orca yet: {{features}}.', {
+  return t('browserExtensions.unsupported.line', 'Not available in Topo yet: {{features}}.', {
     features: features.map(featureLabel).join(', ')
   })
 }

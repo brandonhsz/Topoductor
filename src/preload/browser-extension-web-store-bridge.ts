@@ -4,7 +4,7 @@ import {
   type ChromeWebStoreBridgeReply,
   type ChromeWebStoreMainWorldBridge
 } from './browser-extension-web-store-main-world'
-import { adaptChromeWebStoreWordingForOrca } from './browser-extension-web-store-wording'
+import { adaptChromeWebStoreWordingForTopo } from './browser-extension-web-store-wording'
 
 /**
  * Written out here (a test pins them to src/shared/browser-extension-webstore.ts): this module is
@@ -17,7 +17,7 @@ export const PRELOAD_WEB_STORE_EVENT_CHANNEL = 'browserExtension:webStoreEvent'
 
 /**
  * The store page's "Add to Chrome" bridge. Main re-checks the sender (exact origin, top frame,
- * Orca browser tab in a local profile) on every call; this side only relays.
+ * Topo browser tab in a local profile) on every call; this side only relays.
  */
 export function installChromeWebStoreBridge(): void {
   const electron: { contextBridge: ContextBridge; ipcRenderer: IpcRenderer } = require('electron')
@@ -40,7 +40,7 @@ export function installChromeWebStoreBridge(): void {
         )
         return reply
       } catch {
-        return { error: 'Orca could not handle this request' }
+        return { error: 'Topo could not handle this request' }
       }
     },
     onEvent: (handler) => {
@@ -51,5 +51,5 @@ export function installChromeWebStoreBridge(): void {
     func: installChromeWebStoreApis,
     args: [bridge, typeof process !== 'undefined' ? (process.versions.chrome ?? '') : '']
   })
-  contextBridge.executeInMainWorld({ func: adaptChromeWebStoreWordingForOrca })
+  contextBridge.executeInMainWorld({ func: adaptChromeWebStoreWordingForTopo })
 }

@@ -9,7 +9,7 @@ import type {
 // URL, model and key are sealed together so a key can never be sent to a host it wasn't saved for.
 const store = createEncryptedApiKeyFileStore({
   fileName: 'openai-compatible-speech-provider.enc',
-  envelopePrefix: 'orca-openai-compatible-speech:v1:',
+  envelopePrefix: 'topo-openai-compatible-speech:v1:',
   providerLabel: 'OpenAI-compatible speech provider',
   logScope: 'speech'
 })
@@ -47,7 +47,7 @@ export function openAiCompatibleTranscriptionUrl(baseUrl: string): string {
 }
 
 export function readOpenAiCompatibleSpeechProvider(): OpenAiCompatibleSpeechProvider | null {
-  // The store caches what it read; another process (desktop vs orca serve) may have removed the file since.
+  // The store caches what it read; another process (desktop vs topo serve) may have removed the file since.
   const raw = store.has() ? store.read() : null
   if (raw === null) {
     return null

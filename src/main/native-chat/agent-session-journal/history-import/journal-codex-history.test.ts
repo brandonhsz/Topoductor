@@ -24,7 +24,7 @@ const CHILD = '01a17c81-30d1-72f0-b84e-002ddfe6fd47'
 const MIDDLE = '01a17c80-30d1-72f0-b84e-002ddfe6fd47'
 let root: string
 beforeEach(async () => {
-  const account = await mkdtemp(join(tmpdir(), 'orca-codex-lineage-'))
+  const account = await mkdtemp(join(tmpdir(), 'topo-codex-lineage-'))
   root = join(account, 'sessions')
   await mkdir(root)
   await mkdir(join(account, 'archived_sessions'))
@@ -217,7 +217,7 @@ it.each(['a', 'b', 'r24'] as const)(
         callId: 'exec-422971fb-5f49-4f00-8701-a031ef77f289',
         input: {
           command: "/bin/zsh -lc 'sleep 60'",
-          cwd: '/Users/brennanbenson/orca/workspaces/orca/qa-codex-exec-import-qg/codex-exec-import/run/workspace'
+          cwd: '/Users/brennanbenson/topo/workspaces/topo/qa-codex-exec-import-qg/codex-exec-import/run/workspace'
         },
         state: 'failed',
         endedAs: 'interrupted'
@@ -232,7 +232,7 @@ it.each(['a', 'b', 'r24'] as const)(
         input: {
           command:
             "/bin/zsh -lc \"printf '%s\\\\n' \\\"qa a'b\\\" 'C:\\\\qa\\\\path' 'Authorization: Bearer [REDACTED_SECRET]'\"",
-          cwd: '/Users/brennanbenson/orca/workspaces/orca/qa-codex-exec-import-qg/codex-exec-import/run/workspace'
+          cwd: '/Users/brennanbenson/topo/workspaces/topo/qa-codex-exec-import-qg/codex-exec-import/run/workspace'
         },
         state: 'completed',
         exitCode: 0,
@@ -295,7 +295,7 @@ it('imports recorded patch revisions and parsed read through canonical bodies', 
     name: 'read',
     state: 'completed',
     input: {
-      path: '/Users/brennanbenson/orca/workspaces/orca/qa-codex-exec-import-qg/codex-exec-import/run/workspace/codex-exec-import-sample.txt'
+      path: '/Users/brennanbenson/topo/workspaces/topo/qa-codex-exec-import-qg/codex-exec-import/run/workspace/codex-exec-import-sample.txt'
     },
     output: { head: 'after\n' }
   })

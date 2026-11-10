@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 const electronApp = vi.hoisted(() => ({
   isPackaged: false,
   on: vi.fn(),
-  getPath: vi.fn(() => '/tmp/orca-user-data'),
+  getPath: vi.fn(() => '/tmp/topo-user-data'),
   getVersion: vi.fn(() => '0.0.0-test'),
   isReady: vi.fn(() => true),
   focus: vi.fn()
@@ -14,18 +14,18 @@ const launchHooks = vi.hoisted(() => ({
 }))
 
 vi.mock('electron', () => ({ app: electronApp, powerMonitor: { on: vi.fn() } }))
-vi.mock('../orca-profiles/profile-cloud-auth-config', () => ({
-  getOrcaCloudAuthConfig: () => ({ configured: false })
+vi.mock('../topo-profiles/profile-cloud-auth-config', () => ({
+  getTopoCloudAuthConfig: () => ({ configured: false })
 }))
-vi.mock('../orca-profiles/profile-storage-paths', () => ({ getProfileUserDataPath: vi.fn() }))
+vi.mock('../topo-profiles/profile-storage-paths', () => ({ getProfileUserDataPath: vi.fn() }))
 vi.mock('../persistence/loading-store/user-data-path', () => ({
-  getCanonicalUserDataPath: () => '/tmp/orca-user-data',
+  getCanonicalUserDataPath: () => '/tmp/topo-user-data',
   migrateMobilePairingDataToCanonicalUserDataPath: vi.fn()
 }))
 const launchOrder = vi.hoisted((): string[] => [])
 const rpcOptions = vi.hoisted((): Record<string, unknown>[] => [])
 vi.mock('../runtime/rpc/server/runtime-rpc', () => ({
-  OrcaRuntimeRpcServer: class {
+  TopoRuntimeRpcServer: class {
     constructor(options: Record<string, unknown>) {
       rpcOptions.push(options)
     }
@@ -90,7 +90,7 @@ vi.mock('../runtime/rpc/server/runtime-rpc-startup-failure', () => ({
   showRuntimeRpcStartupFailureDialog: vi.fn()
 }))
 vi.mock('../cli/cli-installer', () => ({ CliInstaller: class {} }))
-vi.mock('../cli/linux-bare-orca-dispatcher', () => ({ installLinuxBareOrcaDispatcher: vi.fn() }))
+vi.mock('../cli/linux-bare-topo-dispatcher', () => ({ installLinuxBareTopoDispatcher: vi.fn() }))
 vi.mock('../pty/history/terminal-history-deletion', () => ({
   scheduleAllPendingHistoryTreeRemovals: vi.fn()
 }))
@@ -110,10 +110,10 @@ vi.mock('../browser/identity/mode/browser-identity-mode-store', () => ({
   getBrowserIdentityModeStatus: vi.fn()
 }))
 const showWindowWithoutStealingFocus = vi.hoisted(() => vi.fn())
-const isOrcadSidecarLaunch = vi.hoisted(() => vi.fn(() => false))
+const isTopodSidecarLaunch = vi.hoisted(() => vi.fn(() => false))
 vi.mock('../window/foreground-activation-policy', () => ({
   isBackgroundLaunch: () => true,
-  isOrcadSidecarLaunch,
+  isTopodSidecarLaunch,
   isWindowlessLaunch: () => false,
   showWindowWithoutStealingFocus
 }))
@@ -196,7 +196,7 @@ describe('desktop startup activation', () => {
   beforeEach(() => {
     windows = []
     showWindowWithoutStealingFocus.mockClear()
-    isOrcadSidecarLaunch.mockReturnValue(false)
+    isTopodSidecarLaunch.mockReturnValue(false)
     ipcHandles = new Set()
     trustedRendererId = null
     firstLoadListeners = []

@@ -24,7 +24,7 @@ let root: string
 let storage: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-account-removal-recovery-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-account-removal-recovery-'))
   storage = join(root, 'managed')
   vi.spyOn(console, 'warn').mockImplementation(() => {})
 })

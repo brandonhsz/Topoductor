@@ -61,7 +61,7 @@ export async function loadAutomationTargets(client: RpcClient, limit = 200) {
   const sshTargets = automationSshTargetsRead.interpret(ssh).targets
   return {
     setups: automationSetupsRead.interpret(setups).setups.flatMap((setup) => {
-      // A managed SSH host's automations live on its Orca server; pick that host instead.
+      // A managed SSH host's automations live on its Topo server; pick that host instead.
       const host = parseExecutionHostId(setup.hostId)
       if (
         host?.kind === 'ssh' &&

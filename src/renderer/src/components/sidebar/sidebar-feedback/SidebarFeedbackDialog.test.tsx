@@ -113,7 +113,7 @@ describe('SidebarFeedbackDialog environment prefill', () => {
     textarea.setSelectionRange(textarea.value.length, textarea.value.length)
     await act(async () => finishVersion?.('1.4.178-rc.2'))
 
-    await waitFor(() => expect(textarea.value).toContain('Orca: 1.4.178-rc.2'))
+    await waitFor(() => expect(textarea.value).toContain('Topo: 1.4.178-rc.2'))
     expect(textarea.value).toContain('Typed before loading')
     expect(textarea.selectionStart).toBe('Typed before loading'.length)
   })
@@ -132,7 +132,7 @@ describe('SidebarFeedbackDialog image submission', () => {
       .mockResolvedValueOnce({ images: [], errors: ['No room for second.png'], notices: [] })
     const { container } = render(<SidebarFeedbackDialog open onOpenChange={vi.fn()} />)
     const textarea = screen.getByPlaceholderText<HTMLTextAreaElement>('What could we improve?')
-    await waitFor(() => expect(textarea.value).toContain('Orca:'))
+    await waitFor(() => expect(textarea.value).toContain('Topo:'))
     fireEvent.change(textarea, { target: { value: 'before after' } })
     const retina = new File(['x'], 'retina.png', { type: 'image/png' })
     const gif = new File(['x'], 'anim.gif', { type: 'image/gif' })

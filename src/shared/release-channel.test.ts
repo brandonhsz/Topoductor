@@ -77,7 +77,7 @@ describe('release channel', () => {
       channel: 'hourly',
       name: null,
       publishedAt: null,
-      releaseUrl: `https://github.com/stablyai/orca-hourly/releases/tag/v${version}`,
+      releaseUrl: `https://github.com/brandonhsz/topo-hourly/releases/tag/v${version}`,
       installerUrl: null
     })
     const sorted = sortReleaseBuildsNewestFirst([
@@ -120,7 +120,7 @@ describe('release channel', () => {
       channel: 'adhoc',
       name: null,
       publishedAt: null,
-      releaseUrl: `https://github.com/stablyai/orca-adhoc/releases/tag/v${version}`,
+      releaseUrl: `https://github.com/brandonhsz/topo-adhoc/releases/tag/v${version}`,
       installerUrl: null
     })
     const sorted = sortReleaseBuildsNewestFirst([
@@ -142,7 +142,7 @@ describe('release channel', () => {
       channel: 'adhoc',
       name: null,
       publishedAt: null,
-      releaseUrl: `https://github.com/stablyai/orca-adhoc/releases/tag/v${version}`,
+      releaseUrl: `https://github.com/brandonhsz/topo-adhoc/releases/tag/v${version}`,
       installerUrl: null
     })
     const sorted = sortReleaseBuildsNewestFirst([

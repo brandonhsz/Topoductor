@@ -33,7 +33,7 @@ describe('deleteWslFishHistoryFile', () => {
         settle = () => resolve(okResult)
       })
     )
-    const session = 'orca_0123456789abcdef'
+    const session = 'topo_0123456789abcdef'
 
     const first = deleteWslFishHistoryFile('Ubuntu', session, run, running)
     const second = deleteWslFishHistoryFile('Ubuntu', session, run, running)
@@ -49,7 +49,7 @@ describe('deleteWslFishHistoryFile', () => {
       .fn()
       .mockRejectedValueOnce(new Error('distro offline'))
       .mockResolvedValue(okResult)
-    const session = 'orca_0123456789abcdef'
+    const session = 'topo_0123456789abcdef'
 
     await expect(deleteWslFishHistoryFile('Ubuntu', session, run, running)).rejects.toThrow(
       'distro offline'
@@ -62,7 +62,7 @@ describe('deleteWslFishHistoryFile', () => {
     const run = vi.fn().mockResolvedValue(okResult)
 
     await expect(
-      deleteWslFishHistoryFile('Ubuntu', 'orca_0123456789abcdef', run, async () => false)
+      deleteWslFishHistoryFile('Ubuntu', 'topo_0123456789abcdef', run, async () => false)
     ).resolves.toBe('distro-stopped')
     expect(run).not.toHaveBeenCalled()
   })

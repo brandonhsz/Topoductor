@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { toAppSshPtyId } from '../../../../shared/ssh-pty-id'
 import Database from '../../../sqlite/sync-database'
-import { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import { OrchestrationDb } from '../../../runtime/orchestration/db/orchestration-db'
 import '../../../runtime/orchestration/db/contract-constants'
 import '../../../runtime/orchestration/db/messages/mailbox-routing-page'
@@ -24,9 +24,9 @@ const COORDINATOR_PANE = 'tab_c:44444444-4444-4444-8444-444444444444'
 const COORDINATOR_PTY = toAppSshPtyId(TARGET, 'pty-8')
 const UNRELATED_PANE = 'tab_u:66666666-6666-4666-8666-666666666666'
 const coordinatorEnv = () => ({
-  ORCA_TERMINAL_HANDLE: COORDINATOR,
-  ORCA_PANE_KEY: COORDINATOR_PANE,
-  ORCA_AGENT_LAUNCH_TOKEN: 'coordinator-token'
+  TOPO_TERMINAL_HANDLE: COORDINATOR,
+  TOPO_PANE_KEY: COORDINATOR_PANE,
+  TOPO_AGENT_LAUNCH_TOKEN: 'coordinator-token'
 })
 const escalationArgv = (taskId: string, dispatchId: string) => [
   'orchestration',
@@ -50,9 +50,9 @@ const messageId = (sent: { body: Record<string, unknown> }): string => {
   return message && typeof message === 'object' && 'id' in message ? String(message.id) : ''
 }
 const WORKER_ENV = {
-  ORCA_TERMINAL_HANDLE: WORKER,
-  ORCA_PANE_KEY: WORKER_PANE,
-  ORCA_AGENT_LAUNCH_TOKEN: 'worker-token'
+  TOPO_TERMINAL_HANDLE: WORKER,
+  TOPO_PANE_KEY: WORKER_PANE,
+  TOPO_AGENT_LAUNCH_TOKEN: 'worker-token'
 }
 
 let dir: string | undefined
@@ -69,12 +69,12 @@ afterEach(() => {
 
 /** A desktop whose orchestration records predate the current contract (schema 18). */
 function legacyRuntime(): {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   database: OrchestrationDb
   taskId: string
   dispatchId: string
 } {
-  dir = mkdtempSync(join(tmpdir(), 'orca-legacy-relay-records-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-legacy-relay-records-'))
   const path = join(dir, 'orchestration.db')
   const before = new OrchestrationDb(path)
   const task = before.createTask({
@@ -97,13 +97,13 @@ function legacyRuntime(): {
   raw.close()
   const database = new OrchestrationDb(path)
   db = database
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(database)
   vi.spyOn(runtime, 'notifyMessageArrived').mockImplementation(() => {})
   return { runtime, database, taskId: task.id, dispatchId: dispatch.id }
 }
 
-function serverFor(runtime: OrcaRuntimeService) {
+function serverFor(runtime: TopoRuntimeService) {
   const panes = new Map([
     [WORKER_PANE, { ptyId: PTY_ID, incarnationId: 'inc-1', terminalHandle: WORKER }],
     [COORDINATOR_PANE, { ptyId: COORDINATOR_PTY, incarnationId: 'inc-2' }],
@@ -118,7 +118,7 @@ function serverFor(runtime: OrcaRuntimeService) {
 }
 
 async function run(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   argv: string[],
   env: Record<string, string> = WORKER_ENV
 ): Promise<{ exitCode: unknown; body: Record<string, unknown> }> {
@@ -128,7 +128,7 @@ async function run(
   return { exitCode: 'exitCode' in fields ? fields.exitCode : undefined, body: JSON.parse(stdout) }
 }
 
-describe('the relay-era orca CLI on migrated legacy orchestration records', () => {
+describe('the relay-era topo CLI on migrated legacy orchestration records', () => {
   it('never lets a host pane adopt the unbound legacy coordinator by naming its handle', async () => {
     const { runtime, database, taskId, dispatchId } = legacyRuntime()
     const escalation = await run(runtime, escalationArgv(taskId, dispatchId))
@@ -136,7 +136,7 @@ describe('the relay-era orca CLI on migrated legacy orchestration records', () =
     const adoptedRunId = database.getLegacyAdoption()?.adopted_run_id ?? ''
     // The real coordinator pane, still unbound after migration, and an unrelated leased pane alike.
     for (const paneKey of [COORDINATOR_PANE, UNRELATED_PANE]) {
-      const env = { ...coordinatorEnv(), ORCA_PANE_KEY: paneKey }
+      const env = { ...coordinatorEnv(), TOPO_PANE_KEY: paneKey }
       await expect(run(runtime, ['orchestration', 'check', '--json'], env)).rejects.toThrow(
         LEGACY_RELAY_CLI_UNVERIFIED
       )
@@ -181,7 +181,7 @@ describe('the relay-era orca CLI on migrated legacy orchestration records', () =
     await expect(
       run(runtime, ['orchestration', 'check', '--json'], {
         ...coordinatorEnv(),
-        ORCA_PANE_KEY: UNRELATED_PANE
+        TOPO_PANE_KEY: UNRELATED_PANE
       })
     ).rejects.toThrow(LEGACY_RELAY_CLI_UNVERIFIED)
   })

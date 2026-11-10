@@ -39,7 +39,7 @@ const turnEnd = {
 
 beforeEach(() => {
   vi.useFakeTimers()
-  userDataPath = mkdtempSync(join(tmpdir(), 'orca-connector-cloud-'))
+  userDataPath = mkdtempSync(join(tmpdir(), 'topo-connector-cloud-'))
   outbox = join(userDataPath, 'connector-turn-outbox.json')
   fake = new FakeConnectorCloud()
   enabled = true
@@ -120,7 +120,7 @@ describe('ConnectorCloud', () => {
     expect(fake.events).toEqual([{ kind: 'snapshot', conversations: [] }])
   })
 
-  it('stops when Orca quits or relaunches into another profile, keeping pending turn ends', async () => {
+  it('stops when Topo quits or relaunches into another profile, keeping pending turn ends', async () => {
     writeFileSync(outbox, JSON.stringify({ account: 'ada', turnEnds: [turnEnd] }))
     fake.forced.set(CONNECTOR_PATHS.events, { status: 503 })
     const cloud = connectorCloud()

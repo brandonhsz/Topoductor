@@ -12,7 +12,7 @@ afterEach(() => {
 })
 
 function fixture(): string {
-  const root = mkdtempSync(join(tmpdir(), 'orca-resolution-key-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-resolution-key-'))
   roots.push(root)
   mkdirSync(join(root, 'src/lib/foo'), { recursive: true })
   writeFileSync(join(root, 'src/lib/foo/index.ts'), '')

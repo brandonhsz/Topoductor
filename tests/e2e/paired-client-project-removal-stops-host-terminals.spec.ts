@@ -3,14 +3,14 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { TEST_REPO_PATH_FILE } from './global-setup'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient,
   type PairedElectronClient
 } from './helpers/paired-electron-client'
-import { createRestartSession } from './helpers/orca-restart'
+import { createRestartSession } from './helpers/topo-restart'
 import { readFreshTerminalInventory } from './helpers/terminal-inventory-observation'
 import type { RuntimeTerminalListResult } from '../../src/shared/runtime-types'
 
@@ -67,7 +67,7 @@ test('removing a project from a paired client stops its shells on the host', asy
   test.skip(process.platform === 'win32', 'reads the shell pid through POSIX `sh`')
   test.setTimeout(240_000)
   const repoPath = seededRepoPathOrSkip()
-  const stage = mkdtempSync(join(tmpdir(), 'orca-project-removal-'))
+  const stage = mkdtempSync(join(tmpdir(), 'topo-project-removal-'))
   const markerPath = join(stage, 'shell.pid')
   const session = createRestartSession(testInfo)
   let host: ElectronApplication | null = null

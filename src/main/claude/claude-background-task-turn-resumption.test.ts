@@ -48,7 +48,7 @@ function projected(items: readonly AgentJournalRenderItem[]): string {
 function systemFrame(uuid: string, fields: Record<string, unknown>) {
   return {
     type: 'message' as const,
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     message: { type: 'system', uuid, session_id: SESSION, ...fields }
   }
 }
@@ -56,7 +56,7 @@ function systemFrame(uuid: string, fields: Record<string, unknown>) {
 function spawnToolCall(translator: ReturnType<typeof harness>['translator']) {
   translator.handle({
     type: 'message' as const,
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     message: {
       type: 'assistant',
       uuid: 'a1',
@@ -73,7 +73,7 @@ function spawnToolCall(translator: ReturnType<typeof harness>['translator']) {
 function settleTurn(translator: ReturnType<typeof harness>['translator']) {
   translator.handle({
     type: 'message' as const,
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     message: {
       type: 'result',
       subtype: 'success',

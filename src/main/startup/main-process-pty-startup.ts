@@ -171,7 +171,7 @@ export function startTerminalRuntimeStartupServices(): WindowsDesktopStartupServ
       state.codexRuntimeHome?.reconcileLegacySharedHomeForRetainedPanes()
       logStartupMilestone('startup-service-done', { service: 'daemon-pty-provider' })
     },
-    // Restored PTYs need live ORCA_AGENT_HOOK_* endpoint state before reconnecting.
+    // Restored PTYs need live TOPO_AGENT_HOOK_* endpoint state before reconnecting.
     startAgentHookServer: async () => {
       const settings = state.store?.getSettings()
       logStartupMilestone('startup-service-start', { service: 'agent-hook-server' })
@@ -182,7 +182,7 @@ export function startTerminalRuntimeStartupServices(): WindowsDesktopStartupServ
       await agentHookServer.start({
         statusHooksEnabled: isAgentStatusHooksEnabled(settings),
         env: app.isPackaged ? 'production' : 'development',
-        // Hooks read this file at invocation to reach the new process after restart; namespace dev worktrees sharing orca-dev.
+        // Hooks read this file at invocation to reach the new process after restart; namespace dev worktrees sharing topo-dev.
         userDataPath: app.getPath('userData'),
         endpointNamespace: state.devAgentHookEndpointNamespace
       })

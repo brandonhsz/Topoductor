@@ -9,7 +9,7 @@ import { createAgentStatusExtensionHarness } from './agent-status-extension-test
 
 let root: string
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-omp-metadata-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-omp-metadata-'))
 })
 afterEach(async () => {
   await rm(root, { recursive: true, force: true })

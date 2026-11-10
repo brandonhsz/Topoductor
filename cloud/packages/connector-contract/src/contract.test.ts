@@ -35,7 +35,7 @@ describe('hello and replies', () => {
     const hello = ConnectorHelloRequestSchema.parse({
       v: 1,
       contract: 1,
-      orcaVersion: '1.4.230',
+      topoVersion: '1.4.230',
       platform: 'linux',
       runtime: 'serve',
       hostName: 'build-box',
@@ -44,7 +44,7 @@ describe('hello and replies', () => {
       features: ['answer', 'future-feature'],
       sources: ['slack', 'future-source'],
       projects: [
-        { placeId: 'pl_1', name: 'orca', kind: 'git', where: { kind: 'ssh', label: 'openclaw' } }
+        { placeId: 'pl_1', name: 'topo', kind: 'git', where: { kind: 'ssh', label: 'openclaw' } }
       ]
     })
     expect(hello.features).toEqual(['answer', 'future-feature'])
@@ -62,7 +62,7 @@ describe('hello and replies', () => {
       ConnectorHelloRequestSchema.safeParse({
         v: 1,
         contract: 1,
-        orcaVersion: '1.4.230',
+        topoVersion: '1.4.230',
         platform: 'linux',
         runtime: 'desktop',
         hostName: 'build-box',
@@ -78,7 +78,7 @@ describe('hello and replies', () => {
     ).toBe(true)
     expect(hello([project(`${longest}x`)])).toBe(false)
     expect(
-      hello(Array.from({ length: CONNECTOR_LIMITS.maxHelloProjects + 1 }, () => project('orca')))
+      hello(Array.from({ length: CONNECTOR_LIMITS.maxHelloProjects + 1 }, () => project('topo')))
     ).toBe(false)
   })
 })

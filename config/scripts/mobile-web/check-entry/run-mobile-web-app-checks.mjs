@@ -6,7 +6,7 @@ import { createRequire } from 'node:module'
 import { mobileWebAppModuleClosure } from '../../build/mobile-web-app/build-mobile-web-app-bundle.mjs'
 import { readRouteSnapshot } from '../../mobile-web-app/mobile-web-app-route-snapshot.mjs'
 import { PAGE_ROUTE_MODULES } from '../../mobile-web-app/mobile-web-app-page-route-modules.mjs'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 
 const require = createRequire(new URL('../../run-mobile-web-app-checks.mjs', import.meta.url))
 const mobileWebCheckArgs = [
@@ -47,7 +47,7 @@ export async function withPreparedRouteSnapshot(file, run) {
 }
 
 export async function withRouteSnapshot(run, collect = mobileWebAppModuleClosure) {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-route-snapshot-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-route-snapshot-'))
   try {
     const file = join(directory, 'routes.json')
     await prepareRouteSnapshot(file, collect)
@@ -66,7 +66,7 @@ function runTests(file) {
         ...mobileWebCheckArgs,
         ...process.argv.slice(2)
       ],
-      env: { ...process.env, ORCA_BACKGROUND_LAUNCH: '1', ORCA_MOBILE_WEB_ROUTE_SNAPSHOT: file },
+      env: { ...process.env, TOPO_BACKGROUND_LAUNCH: '1', TOPO_MOBILE_WEB_ROUTE_SNAPSHOT: file },
       stdio: 'inherit'
     })
     child.once('error', reject)
@@ -86,8 +86,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       throw new Error('Expected --prepare-route-snapshot FILE')
     }
     await prepareRouteSnapshot(process.argv[3])
-  } else if (process.env.ORCA_MOBILE_WEB_PREPARED_ROUTE_SNAPSHOT) {
-    await withPreparedRouteSnapshot(process.env.ORCA_MOBILE_WEB_PREPARED_ROUTE_SNAPSHOT, runTests)
+  } else if (process.env.TOPO_MOBILE_WEB_PREPARED_ROUTE_SNAPSHOT) {
+    await withPreparedRouteSnapshot(process.env.TOPO_MOBILE_WEB_PREPARED_ROUTE_SNAPSHOT, runTests)
   } else {
     await withRouteSnapshot(runTests)
   }

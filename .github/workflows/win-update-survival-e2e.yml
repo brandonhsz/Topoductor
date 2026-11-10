@@ -76,7 +76,7 @@ jobs:
         id: cache-installer
         uses: actions/cache/restore@v4
         with:
-          path: dist/orca-windows-setup.exe
+          path: dist/topo-windows-setup.exe
           key: branch-installer-${{ inputs.trace_installer && format('trace-{0}-', hashFiles('tests/tools/win-update-e2e/trace-installer-branches.mjs')) || '' }}${{ hashFiles('src/**', 'config/**', 'native/**', 'resources/**', 'mobile/**', 'patches/**', 'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml') }}
 
       - name: Install dependencies
@@ -106,7 +106,7 @@ jobs:
         if: steps.cache-installer.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
-          path: dist/orca-windows-setup.exe
+          path: dist/topo-windows-setup.exe
           key: ${{ steps.cache-installer.outputs.cache-primary-key }}
 
       # A released base also exercises its old uninstaller; default runs isolate this branch.
@@ -114,16 +114,16 @@ jobs:
         id: harness
         shell: pwsh
         env:
-          ORCA_E2E_DIAG_DIR: artifacts/diag
-          ORCA_BACKGROUND_LAUNCH: '1'
+          TOPO_E2E_DIAG_DIR: artifacts/diag
+          TOPO_BACKGROUND_LAUNCH: '1'
           DEBUG: 'pw:browser'
-          ORCA_E2E_NSIS_TRACE: ${{ github.workspace }}\artifacts\nsis-process-trace.log
-          ORCA_E2E_PROCESS_POLICY: ${{ inputs.policy || 'inherited' }}
+          TOPO_E2E_NSIS_TRACE: ${{ github.workspace }}\artifacts\nsis-process-trace.log
+          TOPO_E2E_PROCESS_POLICY: ${{ inputs.policy || 'inherited' }}
           FROM_RELEASE: ${{ inputs.from_release }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           New-Item -ItemType Directory -Force artifacts | Out-Null
-          $exe = "dist/orca-windows-setup.exe"
+          $exe = "dist/topo-windows-setup.exe"
           if (-not (Test-Path $exe)) { throw "Installer not found at $exe" }
           $log = "artifacts/survival-output.log"
           $harnessArgs = @('--to', $exe, '--expect', $env:EXPECT, '--soak-seconds', '60')
@@ -134,7 +134,7 @@ jobs:
           }
           # Only the harness and its children inherit the test policy.
           $launch = @'
-          if (process.env.ORCA_E2E_PROCESS_POLICY === 'Restricted') {
+          if (process.env.TOPO_E2E_PROCESS_POLICY === 'Restricted') {
             process.env.PSExecutionPolicyPreference = 'Restricted'
           }
           console.log('Harness child process policy: ' + (process.env.PSExecutionPolicyPreference || 'inherited'))

@@ -13,10 +13,10 @@ vi.mock('./client', () => ({
 import { resolveGitHubPrStartPoint } from './pr-start-point'
 import { reviewHeadRemoteRefComponent } from '../../shared/review-head-tracking-ref'
 
-const ORIGIN_URL = 'git@github.com:acme/orca.git'
+const ORIGIN_URL = 'git@github.com:acme/topo.git'
 const ORIGIN_COMPONENT = reviewHeadRemoteRefComponent('origin', ORIGIN_URL)
 const durablePrLocalRef = (prNumber: number): string =>
-  `refs/orca/pull/${ORIGIN_COMPONENT}/${prNumber}`
+  `refs/topo/pull/${ORIGIN_COMPONENT}/${prNumber}`
 const durablePrRev = (prNumber: number): string => `${durablePrLocalRef(prNumber)}^{commit}`
 const remoteGetUrl = (args: string[]): { stdout: string; stderr: string } | null =>
   args[0] === 'remote' && args[1] === 'get-url' ? { stdout: `${ORIGIN_URL}\n`, stderr: '' } : null
@@ -36,7 +36,7 @@ describe('resolveGitHubPrStartPoint', () => {
   it('captures the fork PR head from a dedicated ref, not the shared FETCH_HEAD', async () => {
     getPullRequestPushTargetMock.mockRejectedValue(new Error('head repo is unavailable'))
     const fetchRemoteTrackingRef = vi.fn(async () => {})
-    // Concurrent fetches can clobber FETCH_HEAD; the durable Orca ref must remain authoritative.
+    // Concurrent fetches can clobber FETCH_HEAD; the durable Topo ref must remain authoritative.
     const gitExec = vi.fn(async (args: string[]) => {
       if (args[0] === 'rev-parse') {
         const ref = args.at(-1)
@@ -122,7 +122,7 @@ describe('resolveGitHubPrStartPoint', () => {
     ["fatal: couldn't find remote ref refs/pull/1849/head", 'deleted PR / cleaned fork'],
     ['Authentication failed. Check your remote credentials.', 'auth failure'],
     [
-      'This SSH host is running an older Orca relay that cannot fetch pull request heads. Reconnect to deploy the latest relay, then try again.',
+      'This SSH host is running an older Topo relay that cannot fetch pull request heads. Reconnect to deploy the latest relay, then try again.',
       'stale relay'
     ]
   ])('fails hard instead of soft-keeping the durable PR head on: %s', async (message) => {

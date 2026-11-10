@@ -6,7 +6,7 @@ import {
   getPreferredPairedRuntimeConnection,
   type KnownRuntimeEnvironment
 } from '../../../shared/remote-runtime/host-catalog/runtime-environments'
-import { managedOrcadRefusalNeedingUserCode } from '../../managed-server/lifecycle/orcad-managed-tunnel-identity'
+import { managedTopodRefusalNeedingUserCode } from '../../managed-server/lifecycle/topod-managed-tunnel-identity'
 import { recoverRefusedPairing } from './runtime-environment-pairing-refusal-registry'
 import { recordRuntimeEnvironmentUsage } from '../../../shared/remote-runtime/host-store/runtime-environment-usage-record'
 import { RuntimeHostStatusOwner } from '../../../shared/remote-runtime/host-status/runtime-host-status-owner'
@@ -56,7 +56,7 @@ async function answerRefusedPairing(
   try {
     outcome = await recovery
   } catch (error) {
-    const code = managedOrcadRefusalNeedingUserCode(error)
+    const code = managedTopodRefusalNeedingUserCode(error)
     return code && error instanceof Error
       ? runtimeHostStatusFailure(code, error.message)
       : runtimeHostStatusError(error)
@@ -93,7 +93,7 @@ export function createRuntimeEnvironmentStatusOwner(
       try {
         await resolveManagedRuntimeEnvironment(userDataPath, environment.id)
       } catch (error) {
-        const code = managedOrcadRefusalNeedingUserCode(error)
+        const code = managedTopodRefusalNeedingUserCode(error)
         if (code && error instanceof Error) {
           return runtimeHostStatusFailure(code, error.message)
         }

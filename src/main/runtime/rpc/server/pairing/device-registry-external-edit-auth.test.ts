@@ -1,4 +1,4 @@
-// An admin's removal on disk must stop authentication within a second, not at orcad's next save.
+// An admin's removal on disk must stop authentication within a second, not at topod's next save.
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -10,7 +10,7 @@ import { DEVICE_REGISTRY_FILENAME } from './mobile-pairing-files'
 let dir: string
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-device-registry-auth-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-device-registry-auth-'))
   vi.useFakeTimers({ toFake: ['performance'] })
 })
 

@@ -9,7 +9,7 @@ import { resolveSessionFilePath } from '../../../native-chat/session-file-resolv
 
 const roots: string[] = []
 function fixture() {
-  const home = mkdtempSync(join(tmpdir(), 'orca-omp-roots-'))
+  const home = mkdtempSync(join(tmpdir(), 'topo-omp-roots-'))
   roots.push(home)
   return { home, xdg: join(home, 'data'), legacy: join(home, '.omp', 'agent', 'sessions') }
 }

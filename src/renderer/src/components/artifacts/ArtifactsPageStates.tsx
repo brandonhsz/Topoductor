@@ -1,7 +1,7 @@
 import { ArrowRight, Files, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useTranslate } from '@/i18n/use-translate'
-import { OrcaSignInButton, OrcaSignInWaitNotice } from '../OrcaSignInProgress'
+import { TopoSignInButton, TopoSignInWaitNotice } from '../TopoSignInProgress'
 
 export function ArtifactsPageErrorBanner({
   error,
@@ -39,7 +39,7 @@ export function ArtifactsPageAuthState({
       <div className="space-y-1">
         <h2 className="text-sm font-semibold">
           {needsReconnect
-            ? t('auto.components.artifacts.ArtifactsPage.reconnectHeading', 'Sign in to Orca again')
+            ? t('auto.components.artifacts.ArtifactsPage.reconnectHeading', 'Sign in to Topo again')
             : t(
                 'auto.components.artifacts.ArtifactsPage.shareSignInHeading',
                 'Sign in to share artifacts'
@@ -53,25 +53,25 @@ export function ArtifactsPageAuthState({
               )
             : t(
                 'auto.components.artifacts.ArtifactsPage.shareSignInCopy',
-                'Use your Orca account to upload artifacts and manage their public links.'
+                'Use your Topo account to upload artifacts and manage their public links.'
               )}
         </p>
       </div>
       {configured ? (
         <>
-          <OrcaSignInButton size="sm">
+          <TopoSignInButton size="sm">
             {needsReconnect
               ? t('auto.components.artifacts.ArtifactsPage.signInAgainAction', 'Sign in again')
-              : t('auto.components.artifacts.ArtifactsPage.signIn', 'Sign in to Orca')}
-          </OrcaSignInButton>
-          <OrcaSignInWaitNotice className="justify-center" />
+              : t('auto.components.artifacts.ArtifactsPage.signIn', 'Sign in to Topo')}
+          </TopoSignInButton>
+          <TopoSignInWaitNotice className="justify-center" />
         </>
       ) : (
         <div className="flex flex-col items-center gap-2">
           <p className="max-w-sm text-xs leading-5 text-muted-foreground">
             {t(
               'auto.components.artifacts.ArtifactsPage.unconfiguredCopy',
-              'Orca account sign-in is not configured on this machine yet.'
+              'Topo account sign-in is not configured on this machine yet.'
             )}
           </p>
           <Button variant="outline" size="sm" onClick={onOpenAccountSettings}>

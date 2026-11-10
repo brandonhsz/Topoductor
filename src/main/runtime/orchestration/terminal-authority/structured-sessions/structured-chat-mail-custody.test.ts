@@ -4,8 +4,8 @@
 import { describe, expect, it, vi } from 'vitest'
 import { computeAgentSessionPayloadFingerprint } from '../../../../../shared/agent-session/lifecycle/agent-session-mutation-envelope'
 import { structuredAgentSessionMessageSendMutation } from '../../../../../shared/agent-session/requests/structured-agent-session-send-mutation'
-import { formatOrcaSessionAddress } from '../../../../../shared/orca-session-address'
-import { testOrcaSessionId } from '../../../../../shared/orca-session-address-test-fixture'
+import { formatTopoSessionAddress } from '../../../../../shared/topo-session-address'
+import { testTopoSessionId } from '../../../../../shared/topo-session-address-test-fixture'
 import type { AgentSessionJournal } from '../../../../native-chat/agent-session-journal/journal-store'
 import type { AgentMessageSource } from '../../../../../shared/agent-session/agent-session-message-source'
 import { agentSessionRefusalNotice } from '../../../../../shared/agent-session/failures/agent-session-refusal-notice'
@@ -74,7 +74,7 @@ describe('a queued mail card runs only while its chat still owes it', () => {
     const { taskId } = await coordinatorRunAndTask()
     const { dispatch } = await call(
       'orchestration.dispatch',
-      { task: taskId, to: formatOrcaSessionAddress(testOrcaSessionId(PEER_CHAT)) },
+      { task: taskId, to: formatTopoSessionAddress(testTopoSessionId(PEER_CHAT)) },
       { sessionId: COORDINATOR }
     )
     const dispatchId = idOf(dispatch)
@@ -262,7 +262,7 @@ describe('a queued mail card runs only while its chat still owes it', () => {
     await vi.waitFor(() => expect(work.working()).toBe(false), WAIT)
     const record = host.deps.store.getRecord(COORDINATOR)
     expect(nextStructuredQueuedMessage({ journal, record, work })).toBeNull()
-    // The person's Send of that card says what happened, never that Orca restarted.
+    // The person's Send of that card says what happened, never that Topo restarted.
     const card = journal.queuedMessages.list().find((row) => row.state === 'waiting')
     const fields = { messageId: card!.messageId }
     const sent = await host.queuedMessageSend(
@@ -288,7 +288,7 @@ describe('a queued mail card runs only while its chat still owes it', () => {
     const write = agentSessionWriteKindForMethod('agentSession.queuedMessageSend', fields)
     for (const retryControl of [false, true]) {
       expect(agentSessionRefusalNotice(sent.refusal, write, { retryControl })).toBe(
-        "Orca couldn't confirm this message is still meant for this chat. Your message was not sent. Try again."
+        "Topo couldn't confirm this message is still meant for this chat. Your message was not sent. Try again."
       )
     }
     expect(chat.turns).toHaveLength(1)

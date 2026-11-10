@@ -17,8 +17,8 @@ const mocks = vi.hoisted(() => ({
   browserWindowMock: {
     getAllWindows: vi.fn<() => TestWindow[]>(() => [])
   },
-  checkOrcaStarredMock: vi.fn(),
-  starOrcaMock: vi.fn(),
+  checkTopoStarredMock: vi.fn(),
+  starTopoMock: vi.fn(),
   trackMock: vi.fn(),
   getCohortAtEmitMock: vi.fn(() => ({ nth_repo_added: 3 })),
   ipcMainHandleMock: vi.fn()
@@ -33,8 +33,8 @@ vi.mock('electron', () => ({
 }))
 
 vi.mock('../github/client', () => ({
-  checkOrcaStarred: mocks.checkOrcaStarredMock,
-  starOrca: mocks.starOrcaMock
+  checkTopoStarred: mocks.checkTopoStarredMock,
+  starTopo: mocks.starTopoMock
 }))
 
 vi.mock('../telemetry/client', () => ({
@@ -45,7 +45,7 @@ vi.mock('../telemetry/cohort-classifier', () => ({
   getCohortAtEmit: mocks.getCohortAtEmitMock
 }))
 
-const { browserWindowMock, checkOrcaStarredMock } = mocks
+const { browserWindowMock, checkTopoStarredMock } = mocks
 const getIpcHandler = createIpcHandlerLookup(mocks.ipcMainHandleMock)
 
 describe('StarNagService', () => {
@@ -64,7 +64,7 @@ describe('StarNagService', () => {
     const window = createWindow()
     browserWindowMock.getAllWindows.mockReturnValue([window])
     const deferredStarCheck = createDeferred<boolean | null>()
-    checkOrcaStarredMock.mockReturnValue(deferredStarCheck.promise)
+    checkTopoStarredMock.mockReturnValue(deferredStarCheck.promise)
     const { service, emitAgentStarted, ui } = createHarness()
 
     service.start()

@@ -73,7 +73,7 @@ export async function imageClipboardPngDataUrl(
   size: PanZoomSize,
   background: string | null
 ): Promise<string> {
-  // Sources fetch can't read (e.g. orca-media://) still draw through an <img> at natural size.
+  // Sources fetch can't read (e.g. topo-media://) still draw through an <img> at natural size.
   const blob = await fetchImageBlob(src)
   const type = blob?.type.split(';', 1)[0] ?? ''
   if (blob && type.startsWith('image/') && type !== 'image/svg+xml') {

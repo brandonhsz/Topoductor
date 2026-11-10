@@ -52,7 +52,7 @@ export function createPanelActions({
   dispatch,
   settled
 }: Dependencies) {
-  /** Expanded Tree items, per Tree, seeded from `defaultExpanded` as Orca seeds them. */
+  /** Expanded Tree items, per Tree, seeded from `defaultExpanded` as Topo seeds them. */
   const expanded = new Map<string, Set<string>>()
   const expandedOf = (tree: TestElement): Set<string> => {
     let keys = expanded.get(tree.path)
@@ -96,7 +96,7 @@ export function createPanelActions({
       const element = resolve(target, 'press')
       const { href, onPress } = element.props
       if (element.type === 'Link' && typeof href === 'string') {
-        // Orca opens a Link's href itself, spending the press; onPress then runs without one.
+        // Topo opens a Link's href itself, spending the press; onPress then runs without one.
         host.grantGesture()
         void host.bridge.call('shell.openExternal', { url: href }).catch(() => undefined)
       } else if (onPress === undefined) {
@@ -212,7 +212,7 @@ export function createPanelActions({
       dispatch(tree.props.onAction, [{ key }])
       await settled()
     },
-    /** Which Tree items Orca shows expanded. */
+    /** Which Tree items Topo shows expanded. */
     expandedOf: (target: Target): string[] => {
       const tree = resolve(target, 'expandedOf')
       expectType(tree, 'Tree', 'expandedOf')
@@ -220,7 +220,7 @@ export function createPanelActions({
         .map((item) => item.key)
         .filter((key) => expandedOf(tree).has(key))
     },
-    /** The keys of a Table's columns Orca shows at `width` px (wide when omitted), after `hideBelow`. */
+    /** The keys of a Table's columns Topo shows at `width` px (wide when omitted), after `hideBelow`. */
     columnsOf: (target: Target, view: { width?: number } = {}): string[] => {
       const table = resolve(target, 'columnsOf')
       expectType(table, 'Table', 'columnsOf')
@@ -245,7 +245,7 @@ export function createPanelActions({
         (column) => column.key
       )
     },
-    /** The keys of a Table's rows, in the order Orca draws them. */
+    /** The keys of a Table's rows, in the order Topo draws them. */
     rowsOf: (target: Target): string[] => {
       const table = resolve(target, 'rowsOf')
       expectType(table, 'Table', 'rowsOf')

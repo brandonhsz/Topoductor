@@ -14,7 +14,7 @@ import {
 
 /**
  * Author diagnostics for plugin `<webview>` guests: console errors, warnings and uncaught
- * exceptions go to the plugin's log buffer (`orca plugin logs`), and `orca plugin dev inspect`
+ * exceptions go to the plugin's log buffer (`topo plugin logs`), and `topo plugin dev inspect`
  * opens DevTools for its live guests.
  */
 
@@ -62,7 +62,7 @@ export function shortenPluginFrameUrls(text: string, frameKey: string): string {
   })
 }
 
-/** Plugin-relative `file:line`; null outside this plugin's origin or in an Orca-shipped file,
+/** Plugin-relative `file:line`; null outside this plugin's origin or in a Topo-shipped file,
  *  whose message carries the author's stack instead. */
 export function pluginFrameSourceLocation(
   sourceId: string,
@@ -77,16 +77,16 @@ export function pluginFrameSourceLocation(
   return lineNumber > 0 ? `${path}:${lineNumber}` : path
 }
 
-// After shortening, Orca's own guest files read `__orca/…`; authors only need their own frames.
-const ORCA_STACK_FRAME = new RegExp(`^\\s+at (?:.*\\()?${PLUGIN_FRAME_RESERVED_SEGMENT}/`)
+// After shortening, Topo's own guest files read `__orca/…`; authors only need their own frames.
+const TOPO_STACK_FRAME = new RegExp(`^\\s+at (?:.*\\()?${PLUGIN_FRAME_RESERVED_SEGMENT}/`)
 // `at Array.forEach (<anonymous>)`, `at new Promise (<anonymous>)`: engine frames with no source.
 const SOURCELESS_STACK_FRAME = /^\s+at (?:.*\((?:<anonymous>|native)\)|<anonymous>|native)\s*$/
 
-/** Drops stack lines inside Orca's guest runtime (`__orca/orca-runtime.mjs`) and the engine's. */
-export function withoutOrcaStackFrames(text: string): string {
+/** Drops stack lines inside Topo's guest runtime (`__orca/orca-runtime.mjs`) and the engine's. */
+export function withoutTopoStackFrames(text: string): string {
   return text
     .split('\n')
-    .filter((line) => !ORCA_STACK_FRAME.test(line) && !SOURCELESS_STACK_FRAME.test(line))
+    .filter((line) => !TOPO_STACK_FRAME.test(line) && !SOURCELESS_STACK_FRAME.test(line))
     .join('\n')
 }
 
@@ -98,7 +98,7 @@ export function formatPluginFrameConsoleLine(
   if (!level) {
     return null
   }
-  let message = withoutOrcaStackFrames(shortenPluginFrameUrls(details.message, frameKey))
+  let message = withoutTopoStackFrames(shortenPluginFrameUrls(details.message, frameKey))
   if (message.length > MESSAGE_CHAR_LIMIT) {
     message = `${message.slice(0, MESSAGE_CHAR_LIMIT)}… (truncated)`
   }
@@ -226,7 +226,7 @@ export function openPluginFrameGuestDevTools(pluginKey: string): number {
   return opened
 }
 
-/** The plugin's live guests, for `orca plugin shot` to wait on the one it captures. */
+/** The plugin's live guests, for `topo plugin shot` to wait on the one it captures. */
 export function livePluginFrameGuests(pluginKey: string): WebContents[] {
   return [...(guestsByPlugin.get(pluginKey) ?? [])].filter((guest) => !guest.isDestroyed())
 }

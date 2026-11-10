@@ -40,7 +40,7 @@ describe('BrowserPane webview preferences', () => {
   it('remounts the webview in a refreshed container when the stored resolved partition changes', () => {
     const staleContainer = createContainer('stale')
     const staleWebview = document.createElement('webview') as Electron.WebviewTag
-    staleWebview.setAttribute('partition', 'persist:orca-browser')
+    staleWebview.setAttribute('partition', 'persist:topo-browser')
     staleContainer.appendChild(staleWebview)
     registryMocks.webviewRegistry.set('browser-page-1', staleWebview)
 
@@ -62,7 +62,7 @@ describe('BrowserPane webview preferences', () => {
       browserTabId: 'browser-page-1',
       container: staleContainer,
       inputLocked: true,
-      webviewPartition: 'persist:orca-browser-session-profile-1',
+      webviewPartition: 'persist:topo-browser-session-profile-1',
       resolveContainer
     })
 
@@ -73,7 +73,7 @@ describe('BrowserPane webview preferences', () => {
     expect(ensuredWebview?.container).toBe(refreshedContainer)
     expect(ensuredWebview?.webview).not.toBe(staleWebview)
     expect(ensuredWebview?.webview.getAttribute('partition')).toBe(
-      'persist:orca-browser-session-profile-1'
+      'persist:topo-browser-session-profile-1'
     )
     expect(ensuredWebview?.webview.style.pointerEvents).toBe('none')
     expect(refreshedContainer.lastElementChild).toBe(ensuredWebview?.webview as unknown as Element)
@@ -82,7 +82,7 @@ describe('BrowserPane webview preferences', () => {
   it('keeps a replacement viewport while rebuilding a parent-drifted webview (STA-3228)', () => {
     const staleContainer = createContainer('stale')
     const staleWebview = document.createElement('webview') as Electron.WebviewTag
-    staleWebview.setAttribute('partition', 'persist:orca-browser')
+    staleWebview.setAttribute('partition', 'persist:topo-browser')
     staleContainer.appendChild(staleWebview)
     registryMocks.webviewRegistry.set('browser-page-1', staleWebview)
     const requestedContainer = createContainer('requested')
@@ -98,7 +98,7 @@ describe('BrowserPane webview preferences', () => {
       browserTabId: 'browser-page-1',
       container: requestedContainer,
       inputLocked: false,
-      webviewPartition: 'persist:orca-browser',
+      webviewPartition: 'persist:topo-browser',
       resolveContainer
     })
 

@@ -9,7 +9,7 @@ import {
   getDefaultUserDataPath
 } from '../runtime-client'
 import type { AgentHookInstallStatus } from '../../shared/agent-hook-listener/configuration/agent-hook-types'
-import { DEFAULT_LOCAL_ORCA_PROFILE_ID } from '../../shared/orca-profiles'
+import { DEFAULT_LOCAL_TOPO_PROFILE_ID } from '../../shared/topo-profiles'
 import type { GlobalSettings } from '../../shared/global-settings-types'
 import type { ProfileStateOfflineLocation } from '../../main/persistence/profile-state/profile-state-offline-settings'
 
@@ -25,7 +25,7 @@ const WSL_CODEX_PREPARE_TIMEOUT_MS = 50_000
 
 async function getDataPath(): Promise<string> {
   return (
-    (await getProfileStateLocation())?.dataFile ?? join(getDefaultUserDataPath(), 'orca-data.json')
+    (await getProfileStateLocation())?.dataFile ?? join(getDefaultUserDataPath(), 'topo-data.json')
   )
 }
 
@@ -37,9 +37,9 @@ async function getProfileStateLocation(): Promise<ProfileStateOfflineLocation | 
 function legacyProfileStateLocation(): ProfileStateOfflineLocation {
   const userDataPath = getDefaultUserDataPath()
   return {
-    dataFile: join(userDataPath, 'orca-data.json'),
+    dataFile: join(userDataPath, 'topo-data.json'),
     databaseFile: join(userDataPath, 'profile-state.db'),
-    profileId: DEFAULT_LOCAL_ORCA_PROFILE_ID
+    profileId: DEFAULT_LOCAL_TOPO_PROFILE_ID
   }
 }
 
@@ -101,9 +101,9 @@ async function updateAdmittedEnabledOnDisk(enabled: boolean): Promise<{
     }
     // Validate retained recovery evidence and source bytes before creating the index.
     readAgentHookSettingsFromProfileState(legacy)
-    const { ensureActiveOrcaProfile } =
-      await import('../../main/orca-profiles/profile-index-store.js')
-    const profile = ensureActiveOrcaProfile(getDefaultUserDataPath())
+    const { ensureActiveTopoProfile } =
+      await import('../../main/topo-profiles/profile-index-store.js')
+    const profile = ensureActiveTopoProfile(getDefaultUserDataPath())
     location = {
       dataFile: profile.dataFile,
       databaseFile: profile.stateDatabaseFile,
@@ -119,7 +119,7 @@ async function updateRunningRuntime(client: RuntimeClient, enabled: boolean): Pr
     if (status.legacyPidRunning) {
       throw new RuntimeClientError(
         'runtime_error',
-        'Orca is running but unavailable. Retry when it responds, or stop Orca before changing agent hooks offline.'
+        'Topo is running but unavailable. Retry when it responds, or stop Topo before changing agent hooks offline.'
       )
     }
     return false
@@ -190,7 +190,7 @@ export const AGENT_HOOK_HANDLERS: Record<string, CommandHandler> = {
         'agentHooks.prepareCodexForWslPane',
         {
           codexHome: process.env.CODEX_HOME ?? '',
-          orcaCodexHome: process.env.ORCA_CODEX_HOME ?? '',
+          topoCodexHome: process.env.TOPO_CODEX_HOME ?? '',
           wslDistro: process.env.WSL_DISTRO_NAME
         },
         { timeoutMs: WSL_CODEX_PREPARE_TIMEOUT_MS }

@@ -10,7 +10,7 @@ vi.mock('node:os', async (importOriginal) => {
   return { ...actual, homedir: () => home.dir }
 })
 
-home.dir = realpathSync(mkdtempSync(join(tmpdir(), 'orca-ai-vault-host-delete-')))
+home.dir = realpathSync(mkdtempSync(join(tmpdir(), 'topo-ai-vault-host-delete-')))
 
 const { RpcDispatcher } = await import('../../dispatcher')
 const { AI_VAULT_METHODS } = await import('./ai-vault')

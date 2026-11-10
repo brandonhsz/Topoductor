@@ -151,7 +151,7 @@ export async function installSkillBundle(
     expectedVersionId: input.versionId
   }).destinationRoot
   await mkdir(destinationRoot, { recursive: true })
-  const stateDirectory = join(input.orcaStateDirectory, 'skill-installs')
+  const stateDirectory = join(input.topoStateDirectory, 'skill-installs')
   const recovery = await beginSkillExtractionRecovery(
     stateDirectory,
     destinationRoot,

@@ -5,7 +5,7 @@ import type { RuntimeTerminalCreate } from '../../../../../shared/runtime-termin
 import { callerLaunchSource } from '../../../../agent-launch/agent-started-telemetry'
 import { buildCliWorkspaceProvenance } from '../../../../../shared/cli-workspace-provenance'
 import type { TuiAgent } from '../../../../../shared/agent-launch/catalog/tui-agent'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import {
   finishAutomationWorkspaceProvenanceRequest,
   releaseAutomationWorkspaceProvenanceRequest,
@@ -160,8 +160,8 @@ function withoutHostActivation(params: WorktreeCreateParams): WorktreeCreatePara
 }
 
 async function waitForStructuredSetup(
-  runtime: Pick<OrcaRuntimeService, 'waitForSetupTerminalCompletion'>,
-  receipt: Awaited<ReturnType<OrcaRuntimeService['createManagedWorktree']>>['setupReceipt']
+  runtime: Pick<TopoRuntimeService, 'waitForSetupTerminalCompletion'>,
+  receipt: Awaited<ReturnType<TopoRuntimeService['createManagedWorktree']>>['setupReceipt']
 ): Promise<void> {
   if (
     !receipt ||

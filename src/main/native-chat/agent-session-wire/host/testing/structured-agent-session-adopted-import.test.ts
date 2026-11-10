@@ -145,7 +145,7 @@ function adapter(): StructuredAgentSessionAdapter {
 
 describe('adopting a provider conversation on create', () => {
   it('leaves the conversation writable when the import fails after acquiring', async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-adopt-host-failure-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-adopt-host-failure-'))
     const transcriptPath = join(root, 'rollout.jsonl')
     await writeCodexRollout(transcriptPath, 'valid source')
     store = await openTestAgentSessionRecordStore(root)

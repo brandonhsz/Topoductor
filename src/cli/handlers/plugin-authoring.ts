@@ -43,7 +43,7 @@ function formatGrants(report: PluginValidationReport): string[] {
   return [
     ...formatPluginGrantLines(plugin),
     plugin.needsApproval
-      ? '  Loading or enabling it needs --approve <fingerprint>; Orca prints the fingerprint.'
+      ? '  Loading or enabling it needs --approve <fingerprint>; Topo prints the fingerprint.'
       : '  Content only: loads without approval.'
   ]
 }
@@ -57,7 +57,7 @@ function invalidError(report: PluginValidationReport): RuntimeClientError {
     ].join('\n'),
     {
       ...report,
-      nextSteps: ['Fix the listed problems, then run `orca plugin validate` again.']
+      nextSteps: ['Fix the listed problems, then run `topo plugin validate` again.']
     }
   )
 }
@@ -124,7 +124,7 @@ export const PLUGIN_AUTHORING_HANDLERS: Record<string, CommandHandler> = {
           ? [`  ${created.typeFiles.join(', ')} (generated typings, ignored by Git)`]
           : []),
         ...formatGrants(report),
-        'Next: orca plugin dev load <dir>'
+        'Next: topo plugin dev load <dir>'
       ].join('\n')
     )
   },
@@ -143,7 +143,7 @@ export const PLUGIN_AUTHORING_HANDLERS: Record<string, CommandHandler> = {
       ctx,
       { path: dir, files },
       [
-        `Wrote Orca plugin typings into ${dir}:`,
+        `Wrote Topo plugin typings into ${dir}:`,
         ...files.map((file) => `  ${file}`),
         'Extend them from tsconfig.json: { "extends": "./.orca/types/tsconfig.json" }'
       ].join('\n')
@@ -160,7 +160,7 @@ export const PLUGIN_AUTHORING_HANDLERS: Record<string, CommandHandler> = {
     if (files.length === 0) {
       throw new RuntimeClientError('invalid_argument', `No *.test.ts(x) files under ${dir}.`, {
         nextSteps: [
-          'Add one next to the panel, e.g. src/panel.test.tsx; see `orca plugin create --template components`.'
+          'Add one next to the panel, e.g. src/panel.test.tsx; see `topo plugin create --template components`.'
         ]
       })
     }

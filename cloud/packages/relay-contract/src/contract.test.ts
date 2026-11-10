@@ -58,14 +58,14 @@ describe('relay protocol contract', () => {
     length.writeUInt32BE(transcript.byteLength)
     expect(Buffer.from(challenge)).toEqual(
       Buffer.concat([
-        Buffer.from('orca-relay-host-challenge/v1\0'),
+        Buffer.from('topo-relay-host-challenge/v1\0'),
         length,
         Buffer.from(transcript),
         Buffer.alloc(32, 3)
       ])
     )
     expect(Buffer.from(proofInput)).toEqual(
-      Buffer.concat([Buffer.from('orca-relay-host-proof/v1\0ack\0'), Buffer.from(transcript)])
+      Buffer.concat([Buffer.from('topo-relay-host-proof/v1\0ack\0'), Buffer.from(transcript)])
     )
     expect(() => buildHostChallengePlaintext(transcript, new Uint8Array(31))).toThrow(
       'challengeSecret must be 32 bytes'

@@ -32,7 +32,7 @@ export function RemoteViewportHeldChip({ onFitHere }: { onFitHere: () => void })
       role="group"
       aria-labelledby={labelId}
       // Sits below the pane's title strip and top banners so it never covers their corner controls.
-      className="absolute right-2 top-[calc(var(--orca-pane-title-height)+var(--orca-pane-top-banner-height,0px)+0.5rem)] z-50 flex items-center gap-1.5 rounded-full border border-border bg-card px-2 py-1 text-xs font-medium text-card-foreground shadow-xs"
+      className="absolute right-2 top-[calc(var(--topo-pane-title-height)+var(--topo-pane-top-banner-height,0px)+0.5rem)] z-50 flex items-center gap-1.5 rounded-full border border-border bg-card px-2 py-1 text-xs font-medium text-card-foreground shadow-xs"
     >
       <Monitor className="size-3 text-muted-foreground" aria-hidden="true" />
       <span id={labelId} className="px-1">

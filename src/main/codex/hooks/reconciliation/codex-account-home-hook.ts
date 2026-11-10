@@ -4,7 +4,7 @@ import {
   readKnownCodexHookAnswer,
   resolveCodexHookAnswerForLaunch
 } from '../../trust/hooks/codex-hook-hash-lookup'
-import { getInPlaceCodexHookHome } from '../../trust/hooks/codex-hook-orca-approvals'
+import { getInPlaceCodexHookHome } from '../../trust/hooks/codex-hook-topo-approvals'
 import {
   reconcileCodexHookEntriesInHome,
   removeRealHomeCodexHookForOptOut

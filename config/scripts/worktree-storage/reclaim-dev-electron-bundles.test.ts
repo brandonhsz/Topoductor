@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, mkdtempSync, rmSync, utimesSync, writeFileSync }
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { DEV_BUNDLE_MARKER_FILENAME } from '../development/electron-bundle-cache/dev-electron-bundle-cache.mjs'
 
 const roots: string[] = []
@@ -14,7 +14,7 @@ afterEach(() => {
 })
 
 function makeWorktree(bundles: { name: string; marker: boolean }[]): string {
-  const worktree = mkdtempSync(path.join(tmpdir(), 'orca-dev-bundles-'))
+  const worktree = mkdtempSync(path.join(tmpdir(), 'topo-dev-bundles-'))
   roots.push(worktree)
   for (const bundle of bundles) {
     const dir = path.join(worktree, 'out', 'electron-dev', bundle.name)

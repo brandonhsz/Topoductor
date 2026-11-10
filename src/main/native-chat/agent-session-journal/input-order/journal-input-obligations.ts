@@ -267,7 +267,7 @@ export function journalInputPresentationMember(
 ): boolean {
   const identity = parseAgentJournalItemKey(itemId)
   return (
-    identity?.provider !== 'orca' ||
+    identity?.provider !== 'topo' ||
     !state.inputs.rejections.has(identity.clientMessageId) ||
     state.inputs.presentations.has(identity.clientMessageId)
   )

@@ -57,7 +57,7 @@ describe.skipIf(process.platform === 'win32')(
   'preflight selection in native provider commands',
   () => {
     beforeEach(async () => {
-      root = await mkdtemp(path.join(tmpdir(), 'orca-22975-provider-'))
+      root = await mkdtemp(path.join(tmpdir(), 'topo-22975-provider-'))
       vi.stubEnv('HOME', root)
     })
 
@@ -178,7 +178,7 @@ describe.skipIf(process.platform === 'win32')(
 
 describe.runIf(process.platform === 'win32')('native provider batch selection', () => {
   beforeEach(async () => {
-    root = await mkdtemp(path.join(tmpdir(), 'orca-22975-provider-cmd-'))
+    root = await mkdtemp(path.join(tmpdir(), 'topo-22975-provider-cmd-'))
   })
 
   afterEach(async () => {

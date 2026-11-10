@@ -155,7 +155,7 @@ export const hostViewSettingsSchema = z
 // headlessActivationNeedsHostRenderer is a total guard inside a fire-and-forget startup task: a throwing reader would cause an unhandled rejection and skip terminal loading.
 export const hostScreenUnreadReplySchema = z.unknown()
 
-// null: no orca.yaml archive script needs trust. Absent (older host) or malformed: unknown, so the hook does not run.
+// null: no topo.yaml archive script needs trust. Absent (older host) or malformed: unknown, so the hook does not run.
 export const worktreeArchiveHookTrustSchema = z
   .looseObject({
     archiveTrust: salvagedOptional(

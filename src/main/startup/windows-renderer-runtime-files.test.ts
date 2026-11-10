@@ -22,8 +22,8 @@ let installDir: string
 let execPath: string
 
 beforeEach(() => {
-  installDir = mkdtempSync(join(os.tmpdir(), 'orca-renderer-runtime-files-'))
-  execPath = join(installDir, 'Orca.exe')
+  installDir = mkdtempSync(join(os.tmpdir(), 'topo-renderer-runtime-files-'))
+  execPath = join(installDir, 'Topo.exe')
 })
 
 afterEach(() => {

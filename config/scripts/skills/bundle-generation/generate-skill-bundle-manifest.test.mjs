@@ -19,7 +19,7 @@ import { collectPackageFiles } from './generate-skill-bundle-manifest.mjs'
 const temporaryDirectories = []
 
 async function createPackage() {
-  const directory = await mkdtemp(path.join(tmpdir(), 'orca-skill-manifest-'))
+  const directory = await mkdtemp(path.join(tmpdir(), 'topo-skill-manifest-'))
   temporaryDirectories.push(directory)
   return directory
 }

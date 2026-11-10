@@ -44,7 +44,7 @@ async function main(): Promise<void> {
   const jwt = await new SignJWT({ purpose: 'host-control', prof: identity.profileId, relayHostId })
     .setProtectedHeader({ alg: 'ES256', kid: 'spike' })
     .setSubject(identity.userId)
-    .setAudience('orca-relay')
+    .setAudience('topo-relay')
     .setIssuedAt()
     .setExpirationTime('5m')
     .sign(privateKey)

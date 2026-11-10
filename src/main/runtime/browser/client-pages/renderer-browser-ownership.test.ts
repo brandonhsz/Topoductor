@@ -1,17 +1,17 @@
-import '../../orca-runtime-tests/orca-runtime-test-lifecycle.spec'
+import '../../topo-runtime-tests/topo-runtime-test-lifecycle.spec'
 import { expect, it, vi } from 'vitest'
 
-import '../../orca-runtime-tests/runtime-test-module-registration.spec'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import '../../topo-runtime-tests/runtime-test-module-registration.spec'
+import { TopoRuntimeService } from '../../topo-runtime'
 
-import { electronMocks } from '../../orca-runtime-test-mocks/setup.spec'
+import { electronMocks } from '../../topo-runtime-test-mocks/setup.spec'
 
-import { TEST_WORKTREE_ID, store } from '../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+import { TEST_WORKTREE_ID, store } from '../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../../shared/runtime-session-contracts'
 
 it('drops renderer browser rows once the serve desktop window closes', async () => {
-  const runtime = new OrcaRuntimeService(store)
+  const runtime = new TopoRuntimeService(store)
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: Test harness mocks partial OffscreenBrowserBackend.
   runtime.setOffscreenBrowserBackend({ closeTab: vi.fn(), ownsTab: () => true } as never)
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: Test harness mocks partial AgentBrowserBridge.

@@ -81,7 +81,7 @@ describe('runtimeEnvironments:repairFromPairingCode', () => {
   }
 
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-env-repair-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-env-repair-'))
     getPathMock.mockReturnValue(userDataPath)
     handleMock.mockReset()
     sendRemoteRuntimeRequestMock.mockReset()
@@ -178,7 +178,7 @@ describe('runtimeEnvironments:repairFromPairingCode', () => {
     expect(environmentStore.resolveEnvironment(userDataPath, 'desk')).toEqual(before)
   })
 
-  it('declines a server another Orca service pairs', async () => {
+  it('declines a server another Topo service pairs', async () => {
     environmentStore.addEnvironmentFromPairingCode(userDataPath, {
       name: 'vm',
       pairingCode: pairingCode(ENDPOINT, { deviceToken: 'vm-token', keyByte: 2 }),

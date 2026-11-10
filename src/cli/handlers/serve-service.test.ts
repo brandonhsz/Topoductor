@@ -12,20 +12,20 @@ import {
 import { resolveServiceCommand } from '../runtime/serve-app-launcher'
 import { serveSupervisorBrakePath } from '../runtime/serve-supervisor-brake'
 
-describe('orca serve service', () => {
+describe('topo serve service', () => {
   let home: string
   let bin: string
   let calls: string[]
   let answers: Map<string, { code: number | null; out: string }>
 
   beforeEach(async () => {
-    home = await mkdtemp(join(tmpdir(), 'orca-serve-service-'))
+    home = await mkdtemp(join(tmpdir(), 'topo-serve-service-'))
     bin = join(home, 'bin')
     await mkdir(bin)
-    await writeFile(join(bin, 'orca'), '#!/bin/sh\n')
-    await chmod(join(bin, 'orca'), 0o755)
-    await writeFile(join(bin, 'orca-ide'), '#!/bin/sh\n')
-    await chmod(join(bin, 'orca-ide'), 0o755)
+    await writeFile(join(bin, 'topo'), '#!/bin/sh\n')
+    await chmod(join(bin, 'topo'), 0o755)
+    await writeFile(join(bin, 'topo-ide'), '#!/bin/sh\n')
+    await chmod(join(bin, 'topo-ide'), 0o755)
     calls = []
     answers = new Map()
   })
@@ -38,7 +38,7 @@ describe('orca serve service', () => {
     platform,
     env: {
       PATH: `/nonexistent:${bin}`,
-      ORCA_USER_DATA_PATH: join(home, 'profile'),
+      TOPO_USER_DATA_PATH: join(home, 'profile'),
       ELECTRON_RUN_AS_NODE: '1'
     },
     homeDir: home,
@@ -55,9 +55,9 @@ describe('orca serve service', () => {
     await writeFile(serveSupervisorBrakePath(join(home, 'profile')), '{}')
     const result = await installServeService({ command: null, dryRun: false }, deps('darwin'))
     const unitPath = String(result.unitPath)
-    expect(await readFile(unitPath, 'utf8')).toContain(`<string>${join(bin, 'orca')}</string>`)
+    expect(await readFile(unitPath, 'utf8')).toContain(`<string>${join(bin, 'topo')}</string>`)
     expect(calls).toEqual([
-      expect.stringMatching(/^launchctl bootout gui\/501\/com\.stablyai\.orca\.serve\./),
+      expect.stringMatching(/^launchctl bootout gui\/501\/com\.brandonhsz\.topo\.serve\./),
       `launchctl bootstrap gui/501 ${unitPath}`
     ])
     expect(existsSync(serveSupervisorBrakePath(join(home, 'profile')))).toBe(false)
@@ -109,26 +109,26 @@ describe('orca serve service', () => {
     ])
   })
 
-  it('skips a profile launcher and refuses a bare Linux orca', async () => {
+  it('skips a profile launcher and refuses a bare Linux topo', async () => {
     const scoped = join(home, 'profile', 'cli', 'bin')
     await mkdir(scoped, { recursive: true })
-    await writeFile(join(scoped, 'orca'), '#!/bin/sh\n')
-    await chmod(join(scoped, 'orca'), 0o755)
+    await writeFile(join(scoped, 'topo'), '#!/bin/sh\n')
+    await chmod(join(scoped, 'topo'), 0o755)
     expect(
       resolveServiceCommand(null, {
         platform: 'darwin',
-        env: { PATH: `${scoped}:${bin}`, ORCA_USER_DATA_PATH: join(home, 'profile') }
+        env: { PATH: `${scoped}:${bin}`, TOPO_USER_DATA_PATH: join(home, 'profile') }
       })
-    ).toBe(join(bin, 'orca'))
-    // Linux takes only orca-ide, never a bare `orca` (often the screen reader).
-    const onlyOrca = join(home, 'only-orca')
-    await mkdir(onlyOrca)
-    await writeFile(join(onlyOrca, 'orca'), '#!/bin/sh\n')
-    await chmod(join(onlyOrca, 'orca'), 0o755)
+    ).toBe(join(bin, 'topo'))
+    // Linux takes only topo-ide, never a bare `topo` (often the screen reader).
+    const onlyTopo = join(home, 'only-topo')
+    await mkdir(onlyTopo)
+    await writeFile(join(onlyTopo, 'topo'), '#!/bin/sh\n')
+    await chmod(join(onlyTopo, 'topo'), 0o755)
     expect(() =>
       resolveServiceCommand(null, {
         platform: 'linux',
-        env: { PATH: onlyOrca, ORCA_USER_DATA_PATH: join(home, 'profile') }
+        env: { PATH: onlyTopo, TOPO_USER_DATA_PATH: join(home, 'profile') }
       })
     ).toThrow(/PATH/)
   })
@@ -139,8 +139,8 @@ describe('orca serve service', () => {
     d.env = {
       ...d.env,
       PATH: [
-        '/tmp/.mount_orca-lonOeOb',
-        '/tmp/.mount_orca-lonOeOb/usr/sbin',
+        '/tmp/.mount_topo-lonOeOb',
+        '/tmp/.mount_topo-lonOeOb/usr/sbin',
         '/tmp/appimage_extracted_0f3a/usr/bin',
         profileBin,
         'relative/bin',
@@ -148,21 +148,21 @@ describe('orca serve service', () => {
         bin
       ].join(':')
     }
-    const result = await installServeService({ command: join(bin, 'orca-ide'), dryRun: true }, d)
+    const result = await installServeService({ command: join(bin, 'topo-ide'), dryRun: true }, d)
     expect(String(result.content)).toContain(`Environment=PATH=/usr/local/bin:${bin}\n`)
   })
 
-  it('refuses a --command tied to one Orca version', async () => {
+  it('refuses a --command tied to one Topo version', async () => {
     const scoped = join(home, 'profile', 'cli', 'bin')
     await mkdir(scoped, { recursive: true })
-    await writeFile(join(scoped, 'orca'), '#!/bin/sh\n')
-    await chmod(join(scoped, 'orca'), 0o755)
+    await writeFile(join(scoped, 'topo'), '#!/bin/sh\n')
+    await chmod(join(scoped, 'topo'), 0o755)
     expect(() =>
-      resolveServiceCommand(join(scoped, 'orca'), {
+      resolveServiceCommand(join(scoped, 'topo'), {
         platform: 'darwin',
-        env: { ORCA_USER_DATA_PATH: join(home, 'profile') }
+        env: { TOPO_USER_DATA_PATH: join(home, 'profile') }
       })
-    ).toThrow(/one Orca version/)
+    ).toThrow(/one Topo version/)
   })
 
   it('refuses a --command inside an extract-and-run AppImage copy', async () => {
@@ -173,8 +173,8 @@ describe('orca serve service', () => {
     expect(() =>
       resolveServiceCommand(join(extracted, 'AppRun'), {
         platform: 'linux',
-        env: { ORCA_USER_DATA_PATH: join(home, 'profile') }
+        env: { TOPO_USER_DATA_PATH: join(home, 'profile') }
       })
-    ).toThrow(/one Orca version/)
+    ).toThrow(/one Topo version/)
   })
 })

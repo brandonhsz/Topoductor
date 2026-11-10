@@ -1,4 +1,4 @@
-/** Opt-in code-editor typography; every unset key keeps the rendering Orca had before it existed. */
+/** Opt-in code-editor typography; every unset key keeps the rendering Topo had before it existed. */
 export type EditorTypographySettings = {
   /** Opt-in code-editor font; empty (the default) keeps following `terminalFontFamily`. */
   editorFontFamily?: string

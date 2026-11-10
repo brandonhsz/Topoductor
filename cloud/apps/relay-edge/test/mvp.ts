@@ -60,7 +60,7 @@ async function mint(key: KeyLike, relayHostId: string, issuer = ISSUER): Promise
     .setProtectedHeader({ alg: 'ES256', kid: 'mvp' })
     .setSubject(USER)
     .setIssuer(issuer)
-    .setAudience('orca-relay')
+    .setAudience('topo-relay')
     .setIssuedAt()
     .setExpirationTime('5m')
     .sign(key)
@@ -85,7 +85,7 @@ function control(host: Host, jwt: string, epoch = EPOCH) {
     onClose: (code) => events.closes.push(code),
     createSocket: (url, token) =>
       new WebSocket(url, {
-        headers: { authorization: `Bearer ${token}`, 'x-orca-host-capabilities': 'pending-conn-details,idle-regional-rehome-v1' },
+        headers: { authorization: `Bearer ${token}`, 'x-topo-host-capabilities': 'pending-conn-details,idle-regional-rehome-v1' },
         perMessageDeflate: false,
         maxPayload: 64 * 1024
       })

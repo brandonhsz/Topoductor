@@ -6,7 +6,7 @@ import {
 
 describe('legacy AppImage CLI wrapper', () => {
   it('rejects a wrapper with a changed command body', () => {
-    const wrapper = buildLegacyAppImageCliWrapper('/tmp/Orca.AppImage')
+    const wrapper = buildLegacyAppImageCliWrapper('/tmp/Topo.AppImage')
     expect(
       extractLegacyAppImageCliWrapperTarget(wrapper.replace('set -euo pipefail', 'set -u'))
     ).toBe(null)

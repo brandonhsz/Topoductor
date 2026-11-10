@@ -13,7 +13,7 @@ import { resolveEnvironment } from '../../../shared/remote-runtime/host-store/ru
 
 const TIMEOUT_MS = 15_000
 const UPDATE_REQUIRED_MESSAGE =
-  'Update Orca on the paired machine to preview files outside its workspaces.'
+  'Update Topo on the paired machine to preview files outside its workspaces.'
 
 function isFilePreview(value: unknown): value is RuntimeFilePreviewResult {
   return (

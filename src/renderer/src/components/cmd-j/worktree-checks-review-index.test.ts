@@ -8,8 +8,8 @@ import { buildWorktreeChecksReviewIndex } from './worktree-checks-review-index'
 
 const repo: Repo = {
   id: 'repo-1',
-  path: '/remote/orca',
-  displayName: 'orca',
+  path: '/remote/topo',
+  displayName: 'topo',
   badgeColor: '#000000',
   addedAt: 0,
   executionHostId: 'ssh:staging'
@@ -18,7 +18,7 @@ const repo: Repo = {
 const worktree: Worktree = {
   id: 'worktree-1',
   repoId: repo.id,
-  path: '/remote/orca-worktrees/search',
+  path: '/remote/topo-worktrees/search',
   head: 'abc123',
   branch: 'refs/heads/feature/search',
   isBare: false,
@@ -41,7 +41,7 @@ function makePR(overrides: Partial<PRInfo> = {}): PRInfo {
     number: 42,
     title: 'Search worktrees by their pull requests',
     state: 'open',
-    url: 'https://github.com/acme/orca/pull/42',
+    url: 'https://github.com/acme/topo/pull/42',
     checksStatus: 'success',
     updatedAt: '2026-07-12T00:00:00Z',
     mergeable: 'MERGEABLE',
@@ -53,7 +53,7 @@ describe('buildWorktreeChecksReviewIndex', () => {
   it('keeps same-id worktrees isolated across execution hosts', () => {
     const localRepo: Repo = {
       ...repo,
-      path: '/local/orca',
+      path: '/local/topo',
       executionHostId: 'local'
     }
     const localWorktree: Worktree = { ...worktree, hostId: 'local' }

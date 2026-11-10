@@ -45,7 +45,7 @@ it.each([
 ] as const)(
   'resolves a selected-account rollout with %s metadata before at-rest publication',
   async (_kind, metadataId) => {
-    vi.stubEnv('ORCA_USER_DATA_PATH', join(fixture.rig.root, 'host-data'))
+    vi.stubEnv('TOPO_USER_DATA_PATH', join(fixture.rig.root, 'host-data'))
     const accountHome = { variable: 'CODEX_HOME', path: join(fixture.rig.root, 'selected-account') }
     const sessions = join(accountHome.path, 'sessions')
     await mkdir(sessions, { recursive: true })

@@ -8,7 +8,7 @@ import { notifyPluginHook, pluginHookWanted, runPluginHook } from './plugin-hook
 type WorkspaceCreateRequest = { name: string; branchNameOverride?: string; baseBranch?: string }
 
 /**
- * `workspace.create.before`: the request Orca should create, as plugins changed it. Runs before
+ * `workspace.create.before`: the request Topo should create, as plugins changed it. Runs before
  * anything is created or sent to an SSH host; throws PluginHookDeniedError on a deny.
  */
 export async function applyWorkspaceCreatePluginHook<Request extends WorkspaceCreateRequest>(
@@ -30,7 +30,7 @@ export async function applyWorkspaceCreatePluginHook<Request extends WorkspaceCr
       ...(!folder && request.baseBranch ? { base: request.baseBranch } : {})
     }
   )
-  // A cleared `branch` or `base` means Orca's default, as when the request left it out.
+  // A cleared `branch` or `base` means Topo's default, as when the request left it out.
   return folder
     ? { ...request, name: decided.name }
     : {
@@ -41,7 +41,7 @@ export async function applyWorkspaceCreatePluginHook<Request extends WorkspaceCr
       }
 }
 
-/** `workspace.create.after`, folders included; Orca does not wait for it. */
+/** `workspace.create.after`, folders included; Topo does not wait for it. */
 export function notifyWorkspaceCreatedPluginHook(event: {
   worktreeId: string
   path: string
@@ -72,7 +72,7 @@ export async function createFolderWorkspaceWithPluginHooks<
       PLUGIN_HOOK_SPECS['workspace.create.before'].payload,
       { kind: 'folder', projectId: input.projectGroupId, name: requestedName || 'workspace' }
     )
-    // Why compare: an unnamed request keeps Orca's default name unless a plugin chose one.
+    // Why compare: an unnamed request keeps Topo's default name unless a plugin chose one.
     if (requestedName || decided.name !== 'workspace') {
       request = { ...input, name: decided.name }
     }

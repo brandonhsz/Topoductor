@@ -8,7 +8,7 @@ import {
   restoreReleaseJavascript
 } from './release-javascript-artifact.mjs'
 import { resolvePnpmCliInvocation } from '../../tool-invocation/pnpm-cli-invocation.mjs'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { describeProcessFailure } from '../../tool-invocation/process-failure-message.mjs'
 import {
   annotateJavascriptParityFiles,
@@ -27,7 +27,7 @@ function runBuild(script) {
     cwd: root,
     timeoutMs: 1_200_000,
     maxOutputBytes: 64 * 1024 * 1024,
-    env: { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' }
+    env: { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' }
   })
   const milliseconds = performance.now() - started
   process.stdout.write(result.stdout)

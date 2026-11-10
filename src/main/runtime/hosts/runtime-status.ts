@@ -13,9 +13,9 @@ import {
   runtimeBrowserUnavailableCause
 } from '../browser/installation/runtime-browser-commands-factory'
 import { isBrowserIdentityModeStoreInitialized } from '../../browser/identity/mode/browser-identity-mode-store'
-import { servesLocalWslMigrationSource } from '../../orcad/orcad-migration-wsl-destination'
-import { ORCAD_MIGRATION_LOCAL_WSL_SOURCE_RUNTIME_CAPABILITY } from '../../../shared/orcad-runtime-capabilities'
-import { advertisedOrcadMigrationDestinationCapabilities } from '../../orcad/orcad-migration-destination-capabilities'
+import { servesLocalWslMigrationSource } from '../../topod/topod-migration-wsl-destination'
+import { TOPOD_MIGRATION_LOCAL_WSL_SOURCE_RUNTIME_CAPABILITY } from '../../../shared/topod-runtime-capabilities'
+import { advertisedTopodMigrationDestinationCapabilities } from '../../topod/topod-migration-destination-capabilities'
 import { USAGE_CREDENTIALS_RUNTIME_CAPABILITY } from '../../../shared/account-runtime-capabilities'
 import {
   MIN_COMPATIBLE_RUNTIME_CLIENT_VERSION,
@@ -60,7 +60,7 @@ import { darkSwitchRuntimeCapabilities } from '../construction/dark-switch-runti
 import { supportsDurableTerminalPromptDelivery } from '../terminal/input/durable-terminal-prompt-delivery-support'
 import { RuntimeWorkspaceChangeEvents } from '../workspaces/catalog/runtime-workspace-change-events'
 
-export abstract class OrcaRuntimeWithGetStatus extends RuntimeWorkspaceChangeEvents {
+export abstract class TopoRuntimeWithGetStatus extends RuntimeWorkspaceChangeEvents {
   getStatus(): RuntimeStatus {
     // Advertise screencast for renderer/offscreen backends; headless ownership prevents client-local fallback.
     const hasRenderer = Boolean(this.getAvailableAuthoritativeWindow())
@@ -82,11 +82,11 @@ export abstract class OrcaRuntimeWithGetStatus extends RuntimeWorkspaceChangeEve
           hasHeadlessCommands ||
           canHostClientPages) &&
         // Nested-runtime E2E exercises legacy transport without maintaining an old binary.
-        (process.env.ORCA_E2E_DISABLE_RUNTIME_SHARED_CONTROL !== '1' ||
+        (process.env.TOPO_E2E_DISABLE_RUNTIME_SHARED_CONTROL !== '1' ||
           capability !== REMOTE_RUNTIME_SHARED_CONTROL_CAPABILITY) &&
-        (process.env.ORCA_E2E_DISABLE_PAIRED_TERMINAL_PARKING !== '1' ||
+        (process.env.TOPO_E2E_DISABLE_PAIRED_TERMINAL_PARKING !== '1' ||
           capability !== TERMINAL_PAIRED_PARKING_RUNTIME_CAPABILITY) &&
-        (process.env.ORCA_E2E_DISABLE_AUTHORITATIVE_SESSION_TABS_INVENTORY !== '1' ||
+        (process.env.TOPO_E2E_DISABLE_AUTHORITATIVE_SESSION_TABS_INVENTORY !== '1' ||
           capability !== SESSION_TABS_AUTHORITATIVE_INVENTORY_RUNTIME_CAPABILITY) &&
         (capability !== TERMINAL_PROMPT_DELIVERY_RUNTIME_CAPABILITY ||
           supportsDurableTerminalPromptDelivery()) &&
@@ -102,10 +102,10 @@ export abstract class OrcaRuntimeWithGetStatus extends RuntimeWorkspaceChangeEve
     }
     // Only the daemon inside a distro can receive that distro's projects.
     if (servesLocalWslMigrationSource()) {
-      capabilities.push(ORCAD_MIGRATION_LOCAL_WSL_SOURCE_RUNTIME_CAPABILITY)
+      capabilities.push(TOPOD_MIGRATION_LOCAL_WSL_SOURCE_RUNTIME_CAPABILITY)
     }
     // Advertise only installed blob kinds; senders refuse unsupported kinds instead of silently losing staged data.
-    capabilities.push(...advertisedOrcadMigrationDestinationCapabilities())
+    capabilities.push(...advertisedTopodMigrationDestinationCapabilities())
     // Certificate proceed belongs to whichever process hosts the page, renderer or offscreen.
     if (canBrowse) {
       capabilities.push(BROWSER_CERTIFICATE_TRUST_RUNTIME_CAPABILITY)

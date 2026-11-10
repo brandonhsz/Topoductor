@@ -9,7 +9,7 @@ import { closeTerminalTabInWorkspaceSession } from '../../../shared/workspace-se
 import { ProfileStateSqliteAuthority } from '../../persistence/profile-state/profile-state-sqlite-authority'
 import { DelayedAuthority } from '../../persistence/loading-store/profile-state-delayed-authority-fixture'
 import { Store } from '../../persistence/loading-store/store'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { buildHeadlessMobileSessionTerminalTabs } from '../terminal/surface/mobile-session-terminal-projection'
 import { setRuntimeDesktopSurface } from '../construction/runtime-desktop-surface'
 import { advanceTerminalTopologyRevision } from '../../persistence/terminal-topology/terminal-topology-membership'
@@ -30,13 +30,13 @@ function deferred(): { promise: Promise<void>; resolve: () => void } {
 }
 
 export function createAcknowledgedTabRetirementFixture(bound = false) {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-close-ack-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-close-ack-'))
   const databasePath = join(directory, 'profile-state.db')
   const authority = new DelayedAuthority(
     new ProfileStateSqliteAuthority(databasePath, 'ack-retirement')
   )
   const store = new Store({
-    dataFile: join(directory, 'orca-data.json'),
+    dataFile: join(directory, 'topo-data.json'),
     profileStateAuthority: authority
   })
   store.addRepo({
@@ -97,7 +97,7 @@ export function createAcknowledgedTabRetirementFixture(bound = false) {
     onIpc: () => {},
     removeIpcListener: () => {}
   })
-  const runtime = new OrcaRuntimeService(store)
+  const runtime = new TopoRuntimeService(store)
   runtime.attachWindow(1)
   if (bound) {
     runtime.registerPty('pty-a', ACK_WORKTREE, null, {

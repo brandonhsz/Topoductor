@@ -30,7 +30,7 @@ function parse(raw: unknown): PluginDeclarativeNode {
 export type SentEvent = { callback: string; args: unknown[]; edit?: number }
 
 /**
- * A fake guest under Orca's real drawn view: `build` is its render, `handle` its callbacks, and
+ * A fake guest under Topo's real drawn view: `build` is its render, `handle` its callbacks, and
  * each callback re-renders it, as a real guest's do. `run` drives it as `shot --act` would.
  */
 export function mountActGuest(build: () => unknown, handle: (event: SentEvent) => void = () => {}) {

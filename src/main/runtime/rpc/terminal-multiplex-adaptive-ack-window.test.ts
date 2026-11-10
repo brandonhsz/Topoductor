@@ -93,7 +93,7 @@ describe('terminal multiplex adaptive ACK window', () => {
   })
 
   it('returns paced headroom once the queue drains, so later output overflows at the legacy cap', async () => {
-    vi.stubEnv('ORCA_TERMINAL_ADAPTIVE_ACK_WINDOW', '1')
+    vi.stubEnv('TOPO_TERMINAL_ADAPTIVE_ACK_WINDOW', '1')
     measureSlowLink()
     const stream = await openAltScreenStream()
     // 64KB goes out; 448KB waits within the paced headroom instead of overflowing.

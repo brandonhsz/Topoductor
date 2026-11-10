@@ -44,7 +44,7 @@ on:
       - 'native/computer-use-linux/**'
       - 'native/computer-use-windows/**'
       - 'native/windows-cli-launcher/**'
-      - 'skills/orca-computer-use/SKILL.md'
+      - 'skills/topo-computer-use/SKILL.md'
       - 'src/cli/**'
       - 'src/main/computer/**'
       - 'src/main/runtime/rpc/dispatcher.ts'
@@ -127,7 +127,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 180
     env:
-      ORCA_COMPUTER_E2E: '1'
+      TOPO_COMPUTER_E2E: '1'
       ACCESSIBILITY_ENABLED: '1'
     steps:
       - uses: actions/checkout@v6
@@ -147,7 +147,7 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 180
     env:
-      ORCA_COMPUTER_E2E: '1'
+      TOPO_COMPUTER_E2E: '1'
     steps:
       - uses: actions/checkout@v6
         with:

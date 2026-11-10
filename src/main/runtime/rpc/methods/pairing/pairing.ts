@@ -4,11 +4,11 @@ import {
   DelegatedMobileDeviceSyncParamsSchema
 } from '../../../../../shared/delegated-mobile-device-contract'
 import {
-  ORCAD_DECLARE_CLIENT_METHOD,
-  ORCAD_PEER_DESKTOPS_METHOD,
-  OrcadDeclareClientParamsSchema,
-  OrcadPeerDesktopsParamsSchema
-} from '../../../../../shared/orcad-peer-desktops-contract'
+  TOPOD_DECLARE_CLIENT_METHOD,
+  TOPOD_PEER_DESKTOPS_METHOD,
+  TopodDeclareClientParamsSchema,
+  TopodPeerDesktopsParamsSchema
+} from '../../../../../shared/topod-peer-desktops-contract'
 import { RegisterDeviceKeyParamsSchema } from '../../../../../shared/remote-runtime/pairing/device-key-registration-contract'
 import { REGISTER_DEVICE_KEY_METHOD } from '../../../../../shared/remote-runtime/pairing/device-key-capability'
 import { EXCHANGE_PAIRING_TICKET_METHOD } from '../../../../../shared/remote-runtime/pairing/ticket-exchange-capability'
@@ -80,10 +80,10 @@ export const PAIRING_METHODS = [
     }
   }),
   defineMethod({
-    name: ORCAD_PEER_DESKTOPS_METHOD,
+    name: TOPOD_PEER_DESKTOPS_METHOD,
     // Paired desktops lack pairing-admin; they learn only other desktops' names, never credentials.
     permission: 'workspace',
-    params: OrcadPeerDesktopsParamsSchema,
+    params: TopodPeerDesktopsParamsSchema,
     handler: (params, ctx) => {
       if (!ctx.peerDesktops) {
         throw new Error('runtime_device_required')
@@ -92,9 +92,9 @@ export const PAIRING_METHODS = [
     }
   }),
   defineMethod({
-    name: ORCAD_DECLARE_CLIENT_METHOD,
+    name: TOPOD_DECLARE_CLIENT_METHOD,
     permission: 'workspace',
-    params: OrcadDeclareClientParamsSchema,
+    params: TopodDeclareClientParamsSchema,
     handler: (params, ctx) => {
       if (!ctx.peerDesktops) {
         throw new Error('runtime_device_required')

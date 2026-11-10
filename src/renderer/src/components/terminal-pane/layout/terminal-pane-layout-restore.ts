@@ -9,7 +9,7 @@ import type { TerminalPaneLifecycleRefs } from '../mounting/use-terminal-pane-li
 import type { UseTerminalPaneLifecycleDeps } from '../mounting/terminal-pane-lifecycle-types'
 import type { PtyConnectionDeps } from '../pty-connection/pty-connection-deps'
 import { resolveParkRevealLiveTuiLeafIds } from '../parking/lifecycle/park-reveal-live-tui-leaves'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import { mapRestoredPaneTitlesByPaneId } from '../titles/restored-pane-titles'
 import { replayLayoutWithOneShotParkIntent } from '../parking/one-shot-park-replay'
 
@@ -31,10 +31,10 @@ export function restoreTerminalPaneLayout(args: {
     replayTerminalLayout(manager, initialLayoutRef.current, isActive)
   )
   // Switch point: history comes only from the terminal's host (L236), never the window's copy.
-  const localOnlyBuffers = ORCA_LAYOUT_OWNER_IS_MAIN
+  const localOnlyBuffers = TOPO_LAYOUT_OWNER_IS_MAIN
     ? undefined
     : useAppStore.getState().localOnlyScrollbackByTabId[tabId]
-  const restoredBuffers = ORCA_LAYOUT_OWNER_IS_MAIN
+  const restoredBuffers = TOPO_LAYOUT_OWNER_IS_MAIN
     ? undefined
     : resolveLeafScrollbackBuffers({
         shared: initialLayoutRef.current,

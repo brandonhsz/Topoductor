@@ -63,7 +63,7 @@ afterEach(() => {
 })
 
 describe('a built-in action a plugin replaces', () => {
-  it("runs Orca's own when main gives up at the deadline, and only once", async () => {
+  it("runs Topo's own when main gives up at the deadline, and only once", async () => {
     const builtIn = vi.fn()
     invokeCommand.mockReturnValueOnce(
       new Promise((_resolve, reject) =>
@@ -88,7 +88,7 @@ describe('a built-in action a plugin replaces', () => {
     expect(builtIn).not.toHaveBeenCalled()
   })
 
-  it("runs Orca's own when main never answers, and only once", async () => {
+  it("runs Topo's own when main never answers, and only once", async () => {
     const builtIn = vi.fn()
     let answer: (value: unknown) => void = () => {}
     invokeCommand.mockReturnValueOnce(new Promise((resolve) => (answer = resolve)))

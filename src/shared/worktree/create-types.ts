@@ -145,7 +145,7 @@ export type CreateWorktreeArgs = {
   parentWorkspace?: WorkspaceKey
   /** The workspace note; a task id in it names the parent the same way it does for a CLI create. */
   comment?: string
-  /** A parent in another Orca store, named by that store's verified installationId (buildCrossStoreParentRef). */
+  /** A parent in another Topo store, named by that store's verified installationId (buildCrossStoreParentRef). */
   crossStoreParent?: CrossStoreParentRef
   /** Agent selected in the create surface. Omitted for blank-shell creates. */
   createdWithAgent?: TuiAgent
@@ -193,7 +193,7 @@ export type CreateWorktreeResult = {
   }
   lineage?: WorktreeLineage | null
   workspaceLineage?: WorkspaceLineage | null
-  /** A parent in another Orca store; older hosts never write one. */
+  /** A parent in another Topo store; older hosts never write one. */
   crossStoreLineage?: CrossStoreWorkspaceLineage | null
   warnings?: WorktreeLineageWarning[]
   setup?: WorktreeSetupLaunch

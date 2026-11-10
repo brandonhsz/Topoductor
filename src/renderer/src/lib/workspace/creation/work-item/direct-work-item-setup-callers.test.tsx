@@ -270,7 +270,7 @@ it('retains an edited Fix checks request through the PR-page Start handoff', asy
 })
 
 it.each(['Start work', 'Use item'])(
-  'keeps the project %s action in Orca when setup asks',
+  'keeps the project %s action in Topo when setup asks',
   async (entry) => {
     render(<ProjectViewWrapper selectedRepoIds={new Set(['repo-1'])} sourceHostId="local" />)
     if (entry === 'Use item') {

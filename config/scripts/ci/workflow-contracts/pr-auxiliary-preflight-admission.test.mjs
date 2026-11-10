@@ -10,7 +10,7 @@ import {
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { parse } from 'yaml'
 
 const workflow = parse(readFileSync('.github/workflows/pr.yml', 'utf8'))
@@ -27,7 +27,7 @@ function createMobileCiScopeRepository(
   toolPath = 'config/scripts/mobile-web/check-entry/run-mobile-ci-tests.mjs',
   companionPaths = []
 ) {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-mobile-ci-scope-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-mobile-ci-scope-'))
   mobileCiScopeDirectories.push(directory)
   const root = resolve(import.meta.dirname, '../../../..')
   for (const file of [
@@ -99,7 +99,7 @@ function createMobileCiScopeRepository(
         BASE_SHA: base,
         GITHUB_EVENT_NAME: 'pull_request',
         GITHUB_OUTPUT: output,
-        ORCA_BACKGROUND_LAUNCH: '1'
+        TOPO_BACKGROUND_LAUNCH: '1'
       }
     })
     return { result, output }

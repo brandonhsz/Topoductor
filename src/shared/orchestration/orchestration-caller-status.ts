@@ -1,7 +1,7 @@
-/** Host-resolved Orca session identity comes from the injected environment, never flags. Terminal agents lack it;
- * orca status --json publishes it as caller. */
+/** Host-resolved Topo session identity comes from the injected environment, never flags. Terminal agents lack it;
+ * topo status --json publishes it as caller. */
 export type OrchestrationCallerSession = {
-  orcaSessionId: string
+  topoSessionId: string
   live: boolean
 }
 
@@ -14,11 +14,11 @@ export type OrchestrationCallerRefusal = {
 /** Absent for non-session callers, unreachable runtimes or hosts predating orchestration.callerShow. */
 export type CliStatusCaller = OrchestrationCallerSession | OrchestrationCallerRefusal
 
-/** `null`: the caller is not an Orca session. */
+/** `null`: the caller is not a Topo session. */
 export type OrchestrationCallerShowResult = { caller: OrchestrationCallerSession | null }
 
-/** `orchestration.sessionAddress`: a session's Orca session ID, its `/clear` root's. */
-export type OrchestrationSessionAddressResult = { orcaSessionId: string }
+/** `orchestration.sessionAddress`: a session's Topo session ID, its `/clear` root's. */
+export type OrchestrationSessionAddressResult = { topoSessionId: string }
 
 /** Where a party is now: a chat at its `/clear` lineage's live session, or a terminal. */
 export type OrchestrationPartyLocation =

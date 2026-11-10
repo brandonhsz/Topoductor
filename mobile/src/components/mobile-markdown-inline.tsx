@@ -35,7 +35,7 @@ export function openMarkdownHref(
 ): void {
   const route = routeMarkdownHref(href)
   if (route.kind === 'web') {
-    // Mail links skip the screen's choices: the Orca browser can't open them.
+    // Mail links skip the screen's choices: the Topo browser can't open them.
     if (/^mailto:/i.test(route.url)) {
       // Use link-opening seam: RN Linking inside shell page resolves without opening anything.
       openExternalLink(route.url)

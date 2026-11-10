@@ -1,7 +1,7 @@
 // Keep the default workspace reachable under Hide sleeping while sweeping sleeping feature workspaces (#8873).
 
 import type { Page, TestInfo } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { addRepoWithWorkspaces, writeWorkspaceMeta } from './helpers/repo-with-workspaces'
 import { waitForSessionReady } from './helpers/store'
 import { worktreeRow } from './worktree-row-locators'
@@ -42,21 +42,21 @@ async function seedSidebarVisibilityScenario(
 test.use({ seedTestRepo: false })
 
 test.describe('Default branch visibility', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
   })
 
   test('keeps the default branch visible when sleeping workspaces are hidden', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
-    const { defaultBranchId, featureId } = await seedSidebarVisibilityScenario(orcaPage, testInfo)
-    const defaultBranchRow = worktreeRow(orcaPage, defaultBranchId)
-    const featureRow = worktreeRow(orcaPage, featureId)
+    const { defaultBranchId, featureId } = await seedSidebarVisibilityScenario(topoPage, testInfo)
+    const defaultBranchRow = worktreeRow(topoPage, defaultBranchId)
+    const featureRow = worktreeRow(topoPage, featureId)
 
     // Poll rather than set once: hydration can land after the seed and reset the filters.
     await expect
       .poll(() =>
-        orcaPage.evaluate(
+        topoPage.evaluate(
           ({ defaultBranchId, featureId }) => {
             const state = window.__store?.getState()
             state?.setShowSleepingWorkspaces(false)
@@ -93,20 +93,20 @@ test.describe('Default branch visibility', () => {
     await expect(featureRow).toHaveCount(0)
 
     // Opting out of the exemption is the only way back to the pre-#8873 sweep.
-    await orcaPage.evaluate(() => {
+    await topoPage.evaluate(() => {
       window.__store?.getState().setAlwaysShowDefaultBranchWorkspace(false)
     })
 
     await expect(defaultBranchRow).toHaveCount(0)
 
-    await orcaPage.evaluate(() => {
+    await topoPage.evaluate(() => {
       window.__store?.getState().setAlwaysShowDefaultBranchWorkspace(true)
     })
 
     await expect(defaultBranchRow).toBeVisible()
 
     // The explicit hide filter still outranks the exemption.
-    await orcaPage.evaluate(() => {
+    await topoPage.evaluate(() => {
       window.__store?.getState().setHideDefaultBranchWorkspace(true)
     })
 

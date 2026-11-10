@@ -20,7 +20,7 @@ export function useShellPageStorageRefresh(refresh: () => Promise<unknown>, publ
       }
       const stopWatching = TERMINAL_SETTINGS_STORAGE_KEYS.map((key) =>
         subscribeMirroredKey(key, (_value, source) => {
-          if (focused && (source === 'persisted' || key === 'orca:terminalTextScale')) {
+          if (focused && (source === 'persisted' || key === 'topo:terminalTextScale')) {
             publish()
           }
         })

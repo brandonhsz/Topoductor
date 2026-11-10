@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { callMock, runtimeClientConstructorMock, serveOrcaAppMock, getDefaultUserDataPathMock } =
+const { callMock, runtimeClientConstructorMock, serveTopoAppMock, getDefaultUserDataPathMock } =
   vi.hoisted(() => ({
     callMock: vi.fn(),
     runtimeClientConstructorMock: vi.fn(),
-    serveOrcaAppMock: vi.fn(),
-    getDefaultUserDataPathMock: vi.fn(() => '/tmp/orca-user-data')
+    serveTopoAppMock: vi.fn(),
+    getDefaultUserDataPathMock: vi.fn(() => '/tmp/topo-user-data')
   }))
 
 vi.mock('../runtime-client', async () => {
@@ -13,7 +13,7 @@ vi.mock('../runtime-client', async () => {
   return createRuntimeClientModuleMock({
     callMock,
     runtimeClientConstructorMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock
   })
 })
@@ -103,7 +103,7 @@ describe('--expect-url', () => {
 
       await main(
         [...path.split(' '), ...args, '--page', 'page-1', '--expect-url', EXPECT_URL, '--json'],
-        '/tmp/not-an-orca-worktree'
+        '/tmp/not-an-topo-worktree'
       )
 
       const call = callMock.mock.calls.find(([called]) => called === method)
@@ -119,7 +119,7 @@ describe('--expect-url', () => {
 
     await main(
       ['click', '--element', '@e1', '--page', 'page-1', '--expect-url', EXPECT_URL, '--json'],
-      '/tmp/not-an-orca-worktree'
+      '/tmp/not-an-topo-worktree'
     )
 
     expect(callMock.mock.calls.map(([method]) => method)).toEqual(['status.get'])
@@ -142,7 +142,7 @@ describe('--expect-url', () => {
           '--expect-url',
           ...(value === undefined ? [] : [value])
         ],
-        '/tmp/not-an-orca-worktree'
+        '/tmp/not-an-topo-worktree'
       )
 
       expect(callMock).not.toHaveBeenCalled()

@@ -21,7 +21,7 @@ function install(dir: string): string {
 }
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-guest-native-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-guest-native-'))
   native = join(root, 'home', '.local', 'bin')
   // Stands in for a Windows drive mount such as /mnt/c.
   drive = join(root, 'c')

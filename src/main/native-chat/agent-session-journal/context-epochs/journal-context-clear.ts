@@ -37,7 +37,7 @@ export function appendJournalContextClear(input: {
         return [
           journalItemRowBuilder(
             state,
-            { provider: 'orca', clientMessageId: `context-clear:${boundary.operationId}` },
+            { provider: 'topo', clientMessageId: `context-clear:${boundary.operationId}` },
             {
               kind: 'status',
               text: 'Context cleared',

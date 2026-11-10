@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Link2 } from 'lucide-react'
 import {
-  getOrcadSshDeployment,
+  getTopodSshDeployment,
   type PublicKnownRuntimeEnvironment
 } from '../../../../../../shared/remote-runtime/host-catalog/runtime-environments'
 import type { SshTarget } from '../../../../../../shared/ssh-types'
-import type { ManagedOrcadPreloadApi } from '../../../../../../preload/api/managed-orcad-api'
+import type { ManagedTopodPreloadApi } from '../../../../../../preload/api/managed-topod-api'
 import type { RemoteServerUpdateEntry } from '@/runtime/hosts/updates/remote-server-update-coordinator'
 import type { UpdateCheckOptions } from '../../../../../../shared/update-status-types'
 import { getRuntimeServerProblemLine, getRuntimeServerRoute } from './runtime-server-row-meta'
@@ -62,7 +62,7 @@ type RuntimeServerRowProps = {
   removing: boolean
   isBusy: boolean
   /** The SSH-access API and hosts; absent where managed servers aren't available (web). */
-  sshAccessApi?: Pick<ManagedOrcadPreloadApi, 'linkSshAccess' | 'unlinkSshAccess'> | null
+  sshAccessApi?: Pick<ManagedTopodPreloadApi, 'linkSshAccess' | 'unlinkSshAccess'> | null
   sshTargets?: SshTarget[]
   managed?: ManagedServerLifecycle | null
   onOpenUpdate: () => void
@@ -74,7 +74,7 @@ type RuntimeServerRowProps = {
   onChanged?: () => void
   /** Re-reads SSH hosts; the route dialog lists them. */
   onRefreshSshTargets?: () => void
-  /** Re-probes every server; offered when the host answered but Orca didn't. */
+  /** Re-probes every server; offered when the host answered but Topo didn't. */
   onRecheck?: () => void
   rechecking?: boolean
 }
@@ -117,7 +117,7 @@ export function RuntimeServerRow({
   // Revoked access-link tokens fail every Connect; only Re-pair can restore access.
   const canConnect = !(row.accessRevoked && repairable)
   const updateActionable = remoteUpdate?.phase === 'available' || remoteUpdate?.phase === 'failed'
-  const deployment = getOrcadSshDeployment(environment)
+  const deployment = getTopodSshDeployment(environment)
   const sshAccess = environment.sshAccess
   const pendingSshAccess = environment.pendingSshAccessOperation
 

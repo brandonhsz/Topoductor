@@ -15,7 +15,7 @@ export function registerPluginEditorSaveHookHandler(): void {
       const schema = PLUGIN_HOOK_SPECS['editor.save.before'].payload
       const parsed = schema.safeParse(payload)
       if (!parsed.success) {
-        // Why pass: a buffer the hook cannot carry (say, too large) saves as Orca would without it.
+        // Why pass: a buffer the hook cannot carry (say, too large) saves as Topo would without it.
         return { kind: 'continue', text: null }
       }
       try {

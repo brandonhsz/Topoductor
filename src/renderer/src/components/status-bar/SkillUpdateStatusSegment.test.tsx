@@ -64,7 +64,7 @@ async function finish(result: BundledSkillInstallResult): Promise<void> {
   })
 }
 
-function ran(status: 'done' | 'failed', name = 'orca-cli'): BundledSkillInstallResult {
+function ran(status: 'done' | 'failed', name = 'topo-cli'): BundledSkillInstallResult {
   return {
     scope: 'global',
     skills: [
@@ -100,7 +100,7 @@ describe('SkillUpdateStatusSegment', () => {
 
   it('shows a green check on success, then retires itself', async () => {
     await render()
-    await start(['orca-cli'])
+    await start(['topo-cli'])
     await finish(ran('done'))
 
     expect(container?.textContent).toContain('Skills updated')
@@ -114,7 +114,7 @@ describe('SkillUpdateStatusSegment', () => {
 
   it('keeps a run with problems visible instead of auto-clearing it', async () => {
     await render()
-    await start(['orca-cli'])
+    await start(['topo-cli'])
     await finish(ran('failed'))
 
     await act(async () => {

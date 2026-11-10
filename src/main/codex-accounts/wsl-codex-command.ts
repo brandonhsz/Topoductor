@@ -58,7 +58,7 @@ export function buildWslCodexAppServerArgs(
 export function buildWslCodexLoginArgs(
   distro: string,
   linuxHomePath: string,
-  options: { orcaOpensSignInLink?: boolean } = {}
+  options: { topoOpensSignInLink?: boolean } = {}
 ): string[] {
   const command = [
     buildCodexPathLookup(),
@@ -67,8 +67,8 @@ export function buildWslCodexLoginArgs(
     '  exit 127',
     'fi',
     `export CODEX_HOME=${quotePosixShell(linuxHomePath)}`,
-    // Avoid a second tab when Orca opens the link.
-    ...(options.orcaOpensSignInLink ? ['export BROWSER=true'] : []),
+    // Avoid a second tab when Topo opens the link.
+    ...(options.topoOpensSignInLink ? ['export BROWSER=true'] : []),
     'exec "$resolved" login'
   ].join('\n')
   return buildWslCodexShellArgs(distro, command)

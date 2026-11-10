@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithPtyControllerInventoryListing } from './pty-controller-inventory-listing'
+import { TopoRuntimeWithPtyControllerInventoryListing } from './pty-controller-inventory-listing'
 
 import type * as PtyControllerContract from './runtime-pty-controller-contract'
 import { FLOATING_TERMINAL_WORKTREE_ID } from '../../../../shared/constants'
@@ -23,13 +23,13 @@ import {
 import { parseAppSshPtyId } from '../../../../shared/ssh-pty-id'
 import { indexFloatingSnapshotPtyBindings } from './floating-snapshot-pty-bindings'
 import { NO_OBSERVING_PROVIDER_REASON } from '../../../../shared/terminal/pty/lifecycle/pty-liveness-verdict'
-import { buildControllerTerminalIdentities } from './orca-runtime-build-controller-terminal-identities'
+import { buildControllerTerminalIdentities } from './topo-runtime-build-controller-terminal-identities'
 import { retireOrchestrationAuthorityAbsentFromInventory } from '../../orchestration/terminal-authority/runtime-restored-orchestration-authority-sweep'
 import { worktreeIdsEqual } from '../../../../shared/worktree/id'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { exitingPtyIdsOf } from '../adoption/unshown-live-terminal-placement'
 
-export abstract class OrcaRuntimeWithRefreshPtyWorktreeRecordsWithControllerInventory extends OrcaRuntimeWithPtyControllerInventoryListing {
+export abstract class TopoRuntimeWithRefreshPtyWorktreeRecordsWithControllerInventory extends TopoRuntimeWithPtyControllerInventoryListing {
   protected async refreshPtyWorktreeRecordsWithControllerInventory(
     resolvedWorktrees: ResolvedWorktree[],
     targetWorktreeId: string | null = null,
@@ -279,7 +279,7 @@ export abstract class OrcaRuntimeWithRefreshPtyWorktreeRecordsWithControllerInve
       terminalIdentityByPtyId: controllerIdentityByPtyId,
       queriedHostIds,
       // Switch point: main places live terminals itself and must skip ones being killed.
-      ...(ORCA_LAYOUT_OWNER_IS_MAIN ? { exitingPtyIds: exitingPtyIdsOf(sessions) } : {})
+      ...(TOPO_LAYOUT_OWNER_IS_MAIN ? { exitingPtyIds: exitingPtyIdsOf(sessions) } : {})
     }
   }
 }

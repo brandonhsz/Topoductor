@@ -94,7 +94,7 @@ describe('filesystem auth worktree roots', () => {
   })
 
   it('survives a rebuild that was already in flight when the create recovered', async () => {
-    const scratch = await mkdtemp(join(await realpath(tmpdir()), 'orca-recovered-race-'))
+    const scratch = await mkdtemp(join(await realpath(tmpdir()), 'topo-recovered-race-'))
     const recovered = join(scratch, 'feature')
     await mkdir(recovered)
     const store = makeStore()
@@ -138,7 +138,7 @@ describe('filesystem auth worktree roots', () => {
 
 describe('filesystem-auth path containment', () => {
   it('does not authorize SSH-only folder workspace roots as local paths', async () => {
-    const tempRoot = await mkdtemp(join(tmpdir(), 'orca-auth-remote-folder-workspace-'))
+    const tempRoot = await mkdtemp(join(tmpdir(), 'topo-auth-remote-folder-workspace-'))
     try {
       const folderPath = join(tempRoot, 'remote-platform')
       const repoPath = join(folderPath, 'web')
@@ -160,7 +160,7 @@ describe('filesystem-auth path containment', () => {
   })
 
   it('does not authorize repo-less SSH-provenance folder roots as local paths', async () => {
-    const tempRoot = await mkdtemp(join(tmpdir(), 'orca-auth-remote-folder-provenance-'))
+    const tempRoot = await mkdtemp(join(tmpdir(), 'topo-auth-remote-folder-provenance-'))
     try {
       const folderPath = join(tempRoot, 'remote-platform')
       await mkdir(folderPath, { recursive: true })
@@ -184,7 +184,7 @@ describe('filesystem-auth path containment', () => {
   it.skipIf(process.platform === 'win32')(
     'rejects paths through a symlink out of the repo, and any dangling symlink',
     async () => {
-      const tempRoot = await mkdtemp(join(tmpdir(), 'orca-auth-symlink-'))
+      const tempRoot = await mkdtemp(join(tmpdir(), 'topo-auth-symlink-'))
       try {
         const repoPath = join(tempRoot, 'repo')
         const outsidePath = join(tempRoot, 'outside')

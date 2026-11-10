@@ -1,4 +1,4 @@
-import { forkProcess } from '@orca/process-host/fork-process'
+import { forkProcess } from '@topo/process-host/fork-process'
 import { getSttWorkerPath } from './stt-worker-paths'
 import {
   logSttWorkerStderr,
@@ -7,7 +7,7 @@ import {
   type SttWorkerProcess
 } from './stt-worker-process'
 
-/** For orcad, which has no Electron utility processes. */
+/** For topod, which has no Electron utility processes. */
 export function spawnSttForkedProcess(options: { cpuOnly: boolean }): SttWorkerProcess {
   const child = forkProcess({
     modulePath: getSttWorkerPath(),
@@ -25,7 +25,7 @@ export function spawnSttForkedProcess(options: { cpuOnly: boolean }): SttWorkerP
     send: (message) => child.connected && child.send(message, () => undefined),
     kill
   })
-  // A child stuck in native code can't hear the IPC disconnect, so orcad's exit takes it down.
+  // A child stuck in native code can't hear the IPC disconnect, so topod's exit takes it down.
   process.once('exit', kill)
   child.once('close', () => process.off('exit', kill))
   logSttWorkerStderr(child.stderr)

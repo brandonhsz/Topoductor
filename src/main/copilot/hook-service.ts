@@ -35,7 +35,7 @@ function getCopilotHome(): string {
 }
 
 function getConfigPath(): string {
-  return join(getCopilotHome(), 'hooks', 'orca.json')
+  return join(getCopilotHome(), 'hooks', 'topo.json')
 }
 
 export class CopilotHookService {
@@ -53,7 +53,7 @@ export class CopilotHookService {
         state: 'error',
         configPath,
         managedHooksPresent: false,
-        detail: 'Could not parse Copilot hooks/orca.json'
+        detail: 'Could not parse Copilot hooks/topo.json'
       }
     }
 
@@ -120,7 +120,7 @@ export class CopilotHookService {
         state: 'error',
         configPath,
         managedHooksPresent: false,
-        detail: 'Could not parse Copilot hooks/orca.json'
+        detail: 'Could not parse Copilot hooks/topo.json'
       }
     }
 
@@ -173,7 +173,7 @@ export class CopilotHookService {
         state: 'error',
         configPath,
         managedHooksPresent: false,
-        detail: 'Could not parse Copilot hooks/orca.json'
+        detail: 'Could not parse Copilot hooks/topo.json'
       }
     }
 

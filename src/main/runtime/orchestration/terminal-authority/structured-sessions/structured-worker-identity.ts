@@ -16,7 +16,7 @@ import {
   makePaneKey,
   parsePaneKey
 } from '../../../../../shared/workspace-layout/stable-pane-id'
-import { isOrcaSessionId, type OrcaSessionId } from '../../../../../shared/orca-session-address'
+import { isTopoSessionId, type TopoSessionId } from '../../../../../shared/topo-session-address'
 import type { TuiAgent } from '../../../../../shared/agent-launch/catalog/tui-agent'
 import {
   STRUCTURED_WORKER_HANDLE_PREFIX,
@@ -96,12 +96,12 @@ export function sessionIdFromStructuredWorkerIncarnation(
   return sessionId.length > 0 ? sessionId : null
 }
 
-/** The Orca session id a `structured:<sessionId>` incarnation names; null for any other. */
-export function structuredWorkerOrcaSessionIdForIncarnation(
+/** The Topo session id a `structured:<sessionId>` incarnation names; null for any other. */
+export function structuredWorkerTopoSessionIdForIncarnation(
   processIncarnation: string | null | undefined
-): OrcaSessionId | null {
+): TopoSessionId | null {
   const sessionId = sessionIdFromStructuredWorkerIncarnation(processIncarnation)
-  return sessionId !== null && isOrcaSessionId(sessionId) ? sessionId : null
+  return sessionId !== null && isTopoSessionId(sessionId) ? sessionId : null
 }
 
 /** Structured sessions can only exist local and outside WSL; anything else is not our authority. */

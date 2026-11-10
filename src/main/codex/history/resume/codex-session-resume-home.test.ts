@@ -77,7 +77,7 @@ describe('resolveTrustedCodexSessionResumeHome', () => {
   })
 
   it('requires the transcript provenance to name a regular rollout file', () => {
-    const homePath = mkdtempSync(join(tmpdir(), 'orca-codex-resume-home-'))
+    const homePath = mkdtempSync(join(tmpdir(), 'topo-codex-resume-home-'))
     tempRoots.push(homePath)
     const rolloutDirectory = join(homePath, 'sessions', '2026', '07', '20', 'rollout-a.jsonl')
     mkdirSync(rolloutDirectory, { recursive: true })
@@ -100,7 +100,7 @@ describe('resolveTrustedCodexSessionResumeHome', () => {
   })
 
   it('follows Codex when a persisted plain rollout was compressed in place', async () => {
-    const homePath = mkdtempSync(join(tmpdir(), 'orca-codex-resume-home-'))
+    const homePath = mkdtempSync(join(tmpdir(), 'topo-codex-resume-home-'))
     tempRoots.push(homePath)
     const plainPath = join(
       homePath,
@@ -135,7 +135,7 @@ describe('resolveTrustedCodexSessionResumeHome', () => {
   })
 
   it('finds compressed rollouts for legacy records without transcript provenance', async () => {
-    const homePath = mkdtempSync(join(tmpdir(), 'orca-codex-resume-home-'))
+    const homePath = mkdtempSync(join(tmpdir(), 'topo-codex-resume-home-'))
     tempRoots.push(homePath)
     const sessionId = '019f81b9-19a9-7651-a8d1-352d9420bd11'
     const compressedPath = join(
@@ -181,7 +181,7 @@ describe('resolveTrustedCodexSessionResumeHome', () => {
 
 describe('resolveCodexSessionResumeProvenance', () => {
   function writeRollout(sessionId: string): { homePath: string; rolloutPath: string } {
-    const homePath = mkdtempSync(join(tmpdir(), 'orca-codex-resume-provenance-'))
+    const homePath = mkdtempSync(join(tmpdir(), 'topo-codex-resume-provenance-'))
     tempRoots.push(homePath)
     const rolloutPath = join(
       homePath,
@@ -196,10 +196,10 @@ describe('resolveCodexSessionResumeProvenance', () => {
     return { homePath, rolloutPath }
   }
 
-  it('starts fresh for a rollout file that really exists under a home Orca no longer trusts', async () => {
+  it('starts fresh for a rollout file that really exists under a home Topo no longer trusts', async () => {
     const sessionId = '019f81b9-19a9-7651-a8d1-352d9420bd11'
     const removed = writeRollout(sessionId)
-    const trusted = mkdtempSync(join(tmpdir(), 'orca-codex-resume-provenance-'))
+    const trusted = mkdtempSync(join(tmpdir(), 'topo-codex-resume-provenance-'))
     tempRoots.push(trusted)
 
     await expect(

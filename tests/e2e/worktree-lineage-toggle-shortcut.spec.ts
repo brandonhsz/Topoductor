@@ -1,10 +1,10 @@
 import type { Page } from '@stablyai/playwright-test'
 import { mkdirSync } from 'node:fs'
 import { join } from 'node:path'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import { readPaneIdentitySnapshot } from './helpers/terminal'
-import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/orca-restart'
+import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/topo-restart'
 import {
   addRepoWithWorkspaces,
   linkWorkspaces,
@@ -13,7 +13,7 @@ import {
 import { dismissSetupScriptPrompts } from './helpers/sidebar-setup-prompt'
 import { seedLineageScenario } from './worktree-lineage-state'
 
-test.use({ launchEnv: { ORCA_BACKGROUND_LAUNCH: '1' } })
+test.use({ launchEnv: { TOPO_BACKGROUND_LAUNCH: '1' } })
 
 const ACTION_ID = 'sidebar.childWorkspaces.toggle' as const
 const CHORD = 'ControlOrMeta+Alt+KeyH'
@@ -48,7 +48,7 @@ async function waitForLineageWorktrees(page: Page): Promise<void> {
 }
 
 async function captureEvidence(page: Page, name: string): Promise<void> {
-  if (process.env.ORCA_CAPTURE_EVIDENCE !== '1') {
+  if (process.env.TOPO_CAPTURE_EVIDENCE !== '1') {
     return
   }
   const directory = join(process.cwd(), 'pr-evidence')
@@ -93,9 +93,9 @@ async function observeShortcutClaim(page: Page): Promise<void> {
 }
 
 test.describe('Toggle Child Workspaces shortcut', () => {
-  test.beforeEach(async ({ orcaPage, electronApp }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage, electronApp }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
     expect(
       await electronApp.evaluate(({ BrowserWindow }) =>
         BrowserWindow.getAllWindows().every((window) => !window.isVisible())
@@ -103,116 +103,116 @@ test.describe('Toggle Child Workspaces shortcut', () => {
     ).toBe(true)
   })
 
-  test.afterEach(async ({ orcaPage }) => {
-    await setToggleBinding(orcaPage, null)
+  test.afterEach(async ({ topoPage }) => {
+    await setToggleBinding(topoPage, null)
   })
 
-  test('hides and shows children of the active or hovered workspace', async ({ orcaPage }) => {
-    const { parentId, childId } = await seedLineageScenario(orcaPage)
-    await setToggleBinding(orcaPage, ['Mod+Alt+H'])
-    const parentRow = sidebarWorktreeRow(orcaPage, parentId)
-    const childRow = sidebarWorktreeRow(orcaPage, childId)
+  test('hides and shows children of the active or hovered workspace', async ({ topoPage }) => {
+    const { parentId, childId } = await seedLineageScenario(topoPage)
+    await setToggleBinding(topoPage, ['Mod+Alt+H'])
+    const parentRow = sidebarWorktreeRow(topoPage, parentId)
+    const childRow = sidebarWorktreeRow(topoPage, childId)
 
     await parentRow.click()
     await expect(parentRow).toHaveAttribute('aria-current', 'page')
     await expect(childRow).toBeVisible()
-    await captureEvidence(orcaPage, 'child-toggle-sidebar-expanded.png')
+    await captureEvidence(topoPage, 'child-toggle-sidebar-expanded.png')
 
     // No hovered card: the active parent is the target.
-    await movePointerOffSidebar(orcaPage)
-    await orcaPage.keyboard.press(CHORD)
+    await movePointerOffSidebar(topoPage)
+    await topoPage.keyboard.press(CHORD)
     await expect(childRow).toBeHidden()
     await expect(parentRow.getByRole('button', { name: 'Show 1 child workspace' })).toBeVisible()
-    await captureEvidence(orcaPage, 'child-toggle-sidebar-collapsed.png')
+    await captureEvidence(topoPage, 'child-toggle-sidebar-collapsed.png')
 
-    await orcaPage.keyboard.press(CHORD)
+    await topoPage.keyboard.press(CHORD)
     await expect(childRow).toBeVisible()
     await expect(parentRow.getByRole('button', { name: 'Hide 1 child workspace' })).toBeVisible()
 
     await childRow.click()
     await expect(childRow).toHaveAttribute('aria-current', 'page')
-    await movePointerOffSidebar(orcaPage)
-    await orcaPage.keyboard.press(CHORD)
+    await movePointerOffSidebar(topoPage)
+    await topoPage.keyboard.press(CHORD)
     await expect(childRow).toBeHidden()
-    await orcaPage.keyboard.press(CHORD)
+    await topoPage.keyboard.press(CHORD)
     await expect(childRow).toBeVisible()
     await parentRow.click()
 
     // A hovered leaf child folds its parent.
     await childRow.hover()
-    await orcaPage.keyboard.press(CHORD)
+    await topoPage.keyboard.press(CHORD)
     await expect(childRow).toBeHidden()
     await expect(parentRow.getByRole('button', { name: 'Show 1 child workspace' })).toBeVisible()
 
     // A hovered parent unfolds its own children.
     await parentRow.hover()
-    await orcaPage.keyboard.press(CHORD)
+    await topoPage.keyboard.press(CHORD)
     await expect(childRow).toBeVisible()
   })
 
   test('a modal keeps its shortcut input while the parent chip is visible', async ({
-    orcaPage
+    topoPage
   }) => {
-    const { parentId, childId } = await seedLineageScenario(orcaPage)
-    await setToggleBinding(orcaPage, ['Mod+Alt+H'])
-    await orcaPage.evaluate(() => window.__store?.getState().openModal('worktree-palette'))
-    await expect(orcaPage.getByRole('dialog')).toBeVisible()
-    await orcaPage.getByRole('dialog').evaluate((dialog) => {
+    const { parentId, childId } = await seedLineageScenario(topoPage)
+    await setToggleBinding(topoPage, ['Mod+Alt+H'])
+    await topoPage.evaluate(() => window.__store?.getState().openModal('worktree-palette'))
+    await expect(topoPage.getByRole('dialog')).toBeVisible()
+    await topoPage.getByRole('dialog').evaluate((dialog) => {
       dialog.setAttribute('tabindex', '-1')
       dialog.focus()
     })
-    await orcaPage.keyboard.press(CHORD)
+    await topoPage.keyboard.press(CHORD)
     await expect(
-      sidebarWorktreeRow(orcaPage, parentId).getByRole('button', {
+      sidebarWorktreeRow(topoPage, parentId).getByRole('button', {
         name: 'Hide 1 child workspace',
         includeHidden: true
       })
     ).toBeVisible()
-    await expect(sidebarWorktreeRow(orcaPage, childId)).toBeVisible()
-    await orcaPage.keyboard.press('Escape')
+    await expect(sidebarWorktreeRow(topoPage, childId)).toBeVisible()
+    await topoPage.keyboard.press('Escape')
   })
 
   test('a hovered parent takes precedence over another active family', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
-    const { childId } = await seedLineageScenario(orcaPage)
-    await setToggleBinding(orcaPage, ['Mod+Alt+H'])
-    const otherRepo = await addRepoWithWorkspaces(orcaPage, testInfo, 2)
+    const { childId } = await seedLineageScenario(topoPage)
+    await setToggleBinding(topoPage, ['Mod+Alt+H'])
+    const otherRepo = await addRepoWithWorkspaces(topoPage, testInfo, 2)
     const other = { parentId: otherRepo.ids[0]!, childId: otherRepo.ids[1]! }
-    await writeWorkspaceMeta(orcaPage, [
+    await writeWorkspaceMeta(topoPage, [
       { worktreeId: other.parentId, updates: { displayName: 'Another parent' } },
       { worktreeId: other.childId, updates: { displayName: 'Another child' } }
     ])
-    await linkWorkspaces(orcaPage, [other])
-    await expect(sidebarWorktreeRow(orcaPage, other.childId)).toBeVisible()
-    await sidebarWorktreeRow(orcaPage, other.parentId).hover()
-    await orcaPage.keyboard.press(CHORD)
-    await expect(sidebarWorktreeRow(orcaPage, other.childId)).toBeHidden()
-    await expect(sidebarWorktreeRow(orcaPage, childId)).toBeVisible()
-    await captureEvidence(orcaPage, 'child-toggle-hover-precedence.png')
+    await linkWorkspaces(topoPage, [other])
+    await expect(sidebarWorktreeRow(topoPage, other.childId)).toBeVisible()
+    await sidebarWorktreeRow(topoPage, other.parentId).hover()
+    await topoPage.keyboard.press(CHORD)
+    await expect(sidebarWorktreeRow(topoPage, other.childId)).toBeHidden()
+    await expect(sidebarWorktreeRow(topoPage, childId)).toBeVisible()
+    await captureEvidence(topoPage, 'child-toggle-hover-precedence.png')
   })
 
-  test('a focused floating workspace keeps the shortcut input', async ({ orcaPage }) => {
-    const { parentId, childId } = await seedLineageScenario(orcaPage)
-    await setToggleBinding(orcaPage, ['Mod+Alt+H'])
-    await orcaPage.getByRole('button', { name: 'Show floating workspace', exact: true }).click()
-    const panel = orcaPage.locator('[data-floating-terminal-panel][aria-hidden="false"]')
+  test('a focused floating workspace keeps the shortcut input', async ({ topoPage }) => {
+    const { parentId, childId } = await seedLineageScenario(topoPage)
+    await setToggleBinding(topoPage, ['Mod+Alt+H'])
+    await topoPage.getByRole('button', { name: 'Show floating workspace', exact: true }).click()
+    const panel = topoPage.locator('[data-floating-terminal-panel][aria-hidden="false"]')
     await expect(panel).toBeVisible()
     await panel.locator('[data-floating-terminal-shortcut-surface]').first().focus()
-    await orcaPage.keyboard.press(CHORD)
+    await topoPage.keyboard.press(CHORD)
     await expect(
-      sidebarWorktreeRow(orcaPage, parentId).getByRole('button', { name: 'Hide 1 child workspace' })
+      sidebarWorktreeRow(topoPage, parentId).getByRole('button', { name: 'Hide 1 child workspace' })
     ).toBeVisible()
-    await expect(sidebarWorktreeRow(orcaPage, childId)).toBeVisible()
-    await captureEvidence(orcaPage, 'child-toggle-floating-guard.png')
+    await expect(sidebarWorktreeRow(topoPage, childId)).toBeVisible()
+    await captureEvidence(topoPage, 'child-toggle-floating-guard.png')
   })
 
   test('folder cards pass the chord through while another family has a chip', async ({
-    orcaPage
+    topoPage
   }) => {
-    const { parentId, childId } = await seedLineageScenario(orcaPage)
-    await setToggleBinding(orcaPage, ['Mod+Alt+H'])
-    const folderKey = await orcaPage.evaluate(async () => {
+    const { parentId, childId } = await seedLineageScenario(topoPage)
+    await setToggleBinding(topoPage, ['Mod+Alt+H'])
+    const folderKey = await topoPage.evaluate(async () => {
       const store = window.__store
       const repo = store?.getState().repos[0]
       if (!store || !repo) {
@@ -237,34 +237,34 @@ test.describe('Toggle Child Workspaces shortcut', () => {
       }
       return `folder:${folder.id}`
     })
-    const folder = sidebarWorktreeRow(orcaPage, folderKey)
+    const folder = sidebarWorktreeRow(topoPage, folderKey)
     await expect(folder).toBeVisible()
     await expect(folder.getByRole('button', { name: /child workspace/ })).toHaveCount(0)
-    await dismissSetupScriptPrompts(orcaPage)
-    await sidebarWorktreeRow(orcaPage, parentId).click()
-    await orcaPage.locator('[data-worktree-sidebar]').focus()
+    await dismissSetupScriptPrompts(topoPage)
+    await sidebarWorktreeRow(topoPage, parentId).click()
+    await topoPage.locator('[data-worktree-sidebar]').focus()
     await folder.hover()
-    await observeShortcutClaim(orcaPage)
-    await orcaPage.keyboard.press(CHORD)
-    await expect(orcaPage.locator('body')).toHaveAttribute('data-child-toggle-claimed', 'false')
-    await expect(sidebarWorktreeRow(orcaPage, childId)).toBeVisible()
+    await observeShortcutClaim(topoPage)
+    await topoPage.keyboard.press(CHORD)
+    await expect(topoPage.locator('body')).toHaveAttribute('data-child-toggle-claimed', 'false')
+    await expect(sidebarWorktreeRow(topoPage, childId)).toBeVisible()
     await folder.click()
     await expect(folder).toHaveAttribute('aria-current', 'page')
-    await orcaPage.locator('[data-worktree-sidebar]').focus()
-    await movePointerOffSidebar(orcaPage)
-    await orcaPage.keyboard.press(CHORD)
-    await expect(orcaPage.locator('body')).toHaveAttribute('data-child-toggle-claimed', 'false')
-    await expect(sidebarWorktreeRow(orcaPage, childId)).toBeVisible()
+    await topoPage.locator('[data-worktree-sidebar]').focus()
+    await movePointerOffSidebar(topoPage)
+    await topoPage.keyboard.press(CHORD)
+    await expect(topoPage.locator('body')).toHaveAttribute('data-child-toggle-claimed', 'false')
+    await expect(sidebarWorktreeRow(topoPage, childId)).toBeVisible()
     await expect
       .poll(async () => {
-        if ((await orcaPage.locator('[data-terminal-error-toast]').count()) > 0) {
+        if ((await topoPage.locator('[data-terminal-error-toast]').count()) > 0) {
           return 'error'
         }
-        const snapshot = await readPaneIdentitySnapshot(orcaPage)
+        const snapshot = await readPaneIdentitySnapshot(topoPage)
         if (!snapshot) {
           return 'pending'
         }
-        const folderOwnsTab = await orcaPage.evaluate(
+        const folderOwnsTab = await topoPage.evaluate(
           ({ folderKey, tabId }) => {
             const state = window.__store?.getState()
             return (
@@ -282,8 +282,8 @@ test.describe('Toggle Child Workspaces shortcut', () => {
           : 'pending'
       })
       .not.toBe('pending')
-    await expect(orcaPage.locator('[data-terminal-error-toast]')).toHaveCount(0)
-    await captureEvidence(orcaPage, 'child-toggle-folder-pass-through.png')
+    await expect(topoPage.locator('[data-terminal-error-toast]')).toHaveCount(0)
+    await captureEvidence(topoPage, 'child-toggle-folder-pass-through.png')
   })
 })
 

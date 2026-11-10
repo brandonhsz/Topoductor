@@ -39,11 +39,11 @@ describe('CodexAccountService config sync', () => {
   it('preserves WSL account-home project trust while refreshing canonical settings', async () => {
     const wslManagedHomePath = join(testState.userDataDir, 'wsl-account', 'home')
     const wslCanonicalHomePath = join(testState.userDataDir, 'wsl-home', '.codex')
-    const wslLinuxHomePath = '/home/alice/.local/share/orca/codex-accounts/account-1/home'
+    const wslLinuxHomePath = '/home/alice/.local/share/topo/codex-accounts/account-1/home'
     const wslLinuxCanonicalHomePath = '/home/alice/.codex'
     mkdirSync(wslManagedHomePath, { recursive: true })
     mkdirSync(wslCanonicalHomePath, { recursive: true })
-    writeFileSync(join(wslManagedHomePath, '.orca-managed-home'), 'account-1\n', 'utf-8')
+    writeFileSync(join(wslManagedHomePath, '.topo-managed-home'), 'account-1\n', 'utf-8')
     writeFileSync(
       join(wslManagedHomePath, 'config.toml'),
       'approval_policy = "untrusted"\n[projects."/workspace"]\ntrust_level = "trusted"\n',

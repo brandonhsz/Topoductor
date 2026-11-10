@@ -19,12 +19,12 @@ on:
       - '.github/actions/restore-pnpm-verification/**'
       - '.github/actions/prepare-headless-compiler/**'
       - '.github/actions/prepare-native-runtime/**'
-      - '.github/actions/prepare-orcad-prebuilds/**'
+      - '.github/actions/prepare-topod-prebuilds/**'
       - '.github/workflows/node-server-tests.yml'
   workflow_dispatch:
     inputs:
       build_template:
-        description: Also merge every lane's slot into the desktop orcad template artifact
+        description: Also merge every lane's slot into the desktop topod template artifact
         type: boolean
         default: false
       fast_runners:
@@ -39,7 +39,7 @@ on:
         type: string
         default: ''
       build_template:
-        description: Upload each lane's release slot and merge them into the orcad-template artifact
+        description: Upload each lane's release slot and merge them into the topod-template artifact
         type: boolean
         default: false
       fast_runners:
@@ -159,7 +159,7 @@ jobs:
       ${{ inputs.fast_runners && fromJSON('{"ubuntu-22.04":"blacksmith-8vcpu-ubuntu-2204","ubuntu-24.04-arm":"blacksmith-8vcpu-ubuntu-2404-arm","macos-15":"blacksmith-6vcpu-macos-15"}')[matrix.os] || matrix.os }}
     timeout-minutes: 20
     env:
-      ORCA_BACKGROUND_LAUNCH: '1'
+      TOPO_BACKGROUND_LAUNCH: '1'
       JOBS: ${{ (inputs.fast_runners || github.event_name == 'pull_request' || github.event_name == 'schedule') && 'max' || '' }}
     steps:
       - name: Parallelize Windows checkout
@@ -180,7 +180,7 @@ jobs:
           # Template qualification must not wait for large download-cache uploads.
           cache-pnpm-store: ${{ !inputs.build_template && runner.os != 'Windows' }}
           cache-pnpm-store-lookup-only: 'true'
-      # Design D7 upgrade and rollback: the last Bun orcad, built from a main commit that shipped
+      # Design D7 upgrade and rollback: the last Bun topod, built from a main commit that shipped
       # it, using the current Bun pin beside this checkout's Node slot; hand-over skips once PROTOCOL_VERSION
       # moves past the Bun daemon's. Install its pinned dependencies independently of this checkout.
       - name: Find installed Bun
@@ -198,23 +198,23 @@ jobs:
         with:
           bun-version-file: config/.bun-version
           no-cache: true
-      - name: Build the last Bun orcad for the cross-runtime tests
-        id: bun-orcad
+      - name: Build the last Bun topod for the cross-runtime tests
+        id: bun-topod
         background: true
         shell: bash
         env:
-          BUN_ORCAD_COMMIT: f4092c06d639ee13ad446261dcabc78b27a21fbc
+          BUN_TOPOD_COMMIT: f4092c06d639ee13ad446261dcabc78b27a21fbc
         run: |
           if [ "$RUNNER_OS" != Linux ]; then exit 0; fi
-          git fetch --no-tags --depth=1 origin "$BUN_ORCAD_COMMIT"
-          git worktree add --detach "$RUNNER_TEMP/bun-orcad-source" "$BUN_ORCAD_COMMIT"
-          pnpm --dir "$RUNNER_TEMP/bun-orcad-source" install --frozen-lockfile --ignore-scripts
-          node "$RUNNER_TEMP/bun-orcad-source/config/scripts/build-orcad-bun.mjs" --out-dir "$RUNNER_TEMP/bun-orcad"
-          echo "slot=$RUNNER_TEMP/bun-orcad" >> "$GITHUB_OUTPUT"
+          git fetch --no-tags --depth=1 origin "$BUN_TOPOD_COMMIT"
+          git worktree add --detach "$RUNNER_TEMP/bun-topod-source" "$BUN_TOPOD_COMMIT"
+          pnpm --dir "$RUNNER_TEMP/bun-topod-source" install --frozen-lockfile --ignore-scripts
+          node "$RUNNER_TEMP/bun-topod-source/config/scripts/build-topod-bun.mjs" --out-dir "$RUNNER_TEMP/bun-topod"
+          echo "slot=$RUNNER_TEMP/bun-topod" >> "$GITHUB_OUTPUT"
           echo "executable=$(command -v bun)" >> "$GITHUB_OUTPUT"
       # Linux release slots come from the floor and Alpine lanes; this slot serves local tests.
-      - uses: ./.github/actions/prepare-orcad-prebuilds
-        id: orcad-prebuild
+      - uses: ./.github/actions/prepare-topod-prebuilds
+        id: topod-prebuild
         with:
           resolve-windows-cache: >-
             ${{ inputs.fast_runners || (!inputs.build_template && inputs.ref == '' &&
@@ -229,28 +229,28 @@ jobs:
       - uses: actions/download-artifact@v8
         if: needs.changes.outputs.qualification != 'false'
         with:
-          name: orcad-mobile-web-bundle
+          name: topod-mobile-web-bundle
           path: out/mobile-web
       # Narrow test-only runs skip the shared producer but still need a page.
       - uses: ./.github/actions/build-mobile-web-bundle
         if: needs.changes.outputs.qualification == 'false'
-      - run: pnpm build:orcad
+      - run: pnpm build:topod
         env:
-          ORCA_REUSE_PREPARED_WINDOWS_SECURITY: ${{ runner.os == 'Windows' && steps.dependencies.outcome == 'success' }}
-      - wait: bun-orcad
+          TOPO_REUSE_PREPARED_WINDOWS_SECURITY: ${{ runner.os == 'Windows' && steps.dependencies.outcome == 'success' }}
+      - wait: bun-topod
       - run: pnpm test:node-server --artifact ${{ runner.os == 'Linux' && '--cross-runtime' || '' }}
         env:
-          ORCA_BUN_ORCAD_SLOT: ${{ steps.bun-orcad.outputs.slot }}
-          BUN_EXECUTABLE: ${{ steps.bun-orcad.outputs.executable }}
+          TOPO_BUN_TOPOD_SLOT: ${{ steps.bun-topod.outputs.slot }}
+          BUN_EXECUTABLE: ${{ steps.bun-topod.outputs.executable }}
       - name: Build the host-target desktop server template
         if: runner.os == 'Linux'
-        run: node "$(if [ -f config/scripts/orcad-distribution/template/build-orcad-template.mjs ]; then printf %s config/scripts/orcad-distribution/template/build-orcad-template.mjs; else printf %s config/scripts/build-orcad-template.mjs; fi)" --targets linux-${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}-glibc
+        run: node "$(if [ -f config/scripts/topod-distribution/template/build-topod-template.mjs ]; then printf %s config/scripts/topod-distribution/template/build-topod-template.mjs; else printf %s config/scripts/build-topod-template.mjs; fi)" --targets linux-${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}-glibc
       - name: Verify a structured chat from the desktop server template
         if: runner.os == 'Linux'
-        run: pnpm test:node-server --artifact src/main/orcad/orcad-packaged-structured-chat.integration.test.ts --maxWorkers=2
+        run: pnpm test:node-server --artifact src/main/topod/topod-packaged-structured-chat.integration.test.ts --maxWorkers=2
       # Only a Windows runner compiles it; arm64 cross-compiles here.
       # Before the Node 18 check below: the build script imports TypeScript, which Node 18 cannot load.
-      # orcad's instance lock and stop proof read a PID's creation time through it; the x64 binary this
+      # topod's instance lock and stop proof read a PID's creation time through it; the x64 binary this
       # runner loads must answer it, and answer nothing for a missing PID rather than a stale time.
       - name: Build the Windows process-table addons for the desktop template
         if: inputs.build_template && matrix.os == 'windows-2022'
@@ -272,7 +272,7 @@ jobs:
         if: inputs.build_template && matrix.os == 'windows-2022'
         uses: actions/upload-artifact@v7
         with:
-          name: orcad-windows-process-tree
+          name: topod-windows-process-tree
           path: .build/windows-process-tree/
           include-hidden-files: true
           if-no-files-found: error
@@ -282,12 +282,12 @@ jobs:
         if: inputs.build_template && matrix.os == 'windows-2022'
         uses: actions/upload-artifact@v7
         with:
-          name: orcad-windows-cli-launcher
+          name: topod-windows-cli-launcher
           path: .build/windows-cli-launcher/
           if-no-files-found: error
           retention-days: 7
           overwrite: true
-      # orcad's data-root privacy check fails closed without it, so every Windows slot needs one.
+      # topod's data-root privacy check fails closed without it, so every Windows slot needs one.
       # Older requested refs use the previous security implementation and have no addon builder.
       - name: Build the Windows security addons for the desktop template
         if: inputs.build_template && matrix.os == 'windows-2022' && hashFiles('config/scripts/native-build/windows/build-windows-security-addon.mjs', 'config/scripts/build-windows-security-addon.mjs') != ''
@@ -300,7 +300,7 @@ jobs:
         if: inputs.build_template && matrix.os == 'windows-2022' && hashFiles('config/scripts/native-build/windows/build-windows-security-addon.mjs', 'config/scripts/build-windows-security-addon.mjs') != ''
         uses: actions/upload-artifact@v7
         with:
-          name: orcad-windows-security
+          name: topod-windows-security
           path: .build/windows-security/*/windows-security.node
           if-no-files-found: error
           retention-days: 7
@@ -313,8 +313,8 @@ jobs:
         if: runner.arch == 'X64'
         shell: bash
         run: |
-          node out/orcad/orcad.js --orcad-smoke-load-check
-          node out/orcad/orcad.js --orcad-profile-state-preflight 00000000-0000-4000-8000-000000000018 | tee "$RUNNER_TEMP/preflight.json"
+          node out/topod/topod.js --topod-smoke-load-check
+          node out/topod/topod.js --topod-profile-state-preflight 00000000-0000-4000-8000-000000000018 | tee "$RUNNER_TEMP/preflight.json"
           node -e "const r=JSON.parse(require('fs').readFileSync(process.argv[1],'utf8'));if(r.runtime!=='node'||!/^24\./.test(r.runtimeVersion))process.exit(1)" "$RUNNER_TEMP/preflight.json"
       - name: Save the freshly qualified Windows server prebuild
         if: >-
@@ -322,20 +322,20 @@ jobs:
           ((inputs.fast_runners && github.event_name == 'workflow_dispatch') ||
           (!inputs.build_template && inputs.ref == '' && github.ref == 'refs/heads/main' &&
           contains(fromJSON('["push","schedule","workflow_dispatch"]'), github.event_name))) &&
-          steps.orcad-prebuild.outputs.cache-identity-outcome == 'success' &&
-          steps.orcad-prebuild.outputs.cache-key != ''
+          steps.topod-prebuild.outputs.cache-identity-outcome == 'success' &&
+          steps.topod-prebuild.outputs.cache-key != ''
         continue-on-error: true
         uses: actions/cache/save@v5
         with:
-          path: ${{ steps.orcad-prebuild.outputs.cache-path }}
-          key: ${{ steps.orcad-prebuild.outputs.cache-key }}
+          path: ${{ steps.topod-prebuild.outputs.cache-path }}
+          key: ${{ steps.topod-prebuild.outputs.cache-key }}
       # Linux release slots come from the floor and Alpine lanes; these runners own the rest.
       - name: Keep this runner's qualified slot for the desktop template
         if: inputs.build_template && runner.os != 'Linux'
         uses: actions/upload-artifact@v7
         with:
-          name: orcad-prebuild-${{ matrix.os }}
-          path: out/orcad-prebuilds/
+          name: topod-prebuild-${{ matrix.os }}
+          path: out/topod-prebuilds/
           if-no-files-found: error
           retention-days: 7
           # A rerun attempt re-uploads under the same name, which v4 otherwise refuses.
@@ -359,7 +359,7 @@ jobs:
       - uses: ./.github/actions/build-mobile-web-bundle
       - uses: actions/upload-artifact@v7
         with:
-          name: orcad-mobile-web-bundle
+          name: topod-mobile-web-bundle
           path: out/mobile-web/
           if-no-files-found: error
           retention-days: 1
@@ -395,7 +395,7 @@ jobs:
     container: ${{ matrix.image }}
     timeout-minutes: 25
     env:
-      ORCA_BACKGROUND_LAUNCH: '1'
+      TOPO_BACKGROUND_LAUNCH: '1'
       # The image puts /opt/clang first on PATH; the slot is built with its gcc-toolset.
       CC: gcc
       CXX: g++
@@ -425,21 +425,21 @@ jobs:
           cache-pnpm-store: 'false'
       - name: Build and smoke this runner's node-pty prebuild slot under the pinned Node
         run: |
-          pnpm build:orcad-prebuilds
-          pnpm build:orcad-prebuilds --require-slots "$(node "$(if [ -f config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs ]; then printf %s config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs; else printf %s config/scripts/build-orcad-prebuilds.mjs; fi)" --print-slot)"
-          pnpm build:orcad-prebuilds --smoke
+          pnpm build:topod-prebuilds
+          pnpm build:topod-prebuilds --require-slots "$(node "$(if [ -f config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs ]; then printf %s config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs; else printf %s config/scripts/build-topod-prebuilds.mjs; fi)" --print-slot)"
+          pnpm build:topod-prebuilds --smoke
       - uses: actions/download-artifact@v8
         with:
-          name: orcad-mobile-web-bundle
+          name: topod-mobile-web-bundle
           path: out/mobile-web
-      - run: pnpm build:orcad
+      - run: pnpm build:topod
       - run: pnpm test:node-server --artifact
       - name: Keep this runner's glibc 2.28 slot for the desktop template
         if: inputs.build_template
         uses: actions/upload-artifact@v7
         with:
-          name: orcad-prebuild-glibc-${{ matrix.os }}
-          path: out/orcad-prebuilds/
+          name: topod-prebuild-glibc-${{ matrix.os }}
+          path: out/topod-prebuilds/
           if-no-files-found: error
           retention-days: 7
           overwrite: true
@@ -459,7 +459,7 @@ jobs:
     runs-on: ${{ inputs.fast_runners && 'blacksmith-8vcpu-ubuntu-2204' || 'ubuntu-22.04' }}
     timeout-minutes: 20
     env:
-      ORCA_BACKGROUND_LAUNCH: '1'
+      TOPO_BACKGROUND_LAUNCH: '1'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -472,13 +472,13 @@ jobs:
       # smokes with that Node. devtoolset-10 supplies C++20; the slot links libstdc++ statically.
       - name: Build and smoke the glibc 2.17 compat slot under the glibc-217 Node
         run: |
-          compat_node="$(node "$(if [ -f config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs ]; then printf %s config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs; else printf %s config/scripts/build-orcad-prebuilds.mjs; fi)" --slot=linux-x64-glibc217 --print-runtime)"
+          compat_node="$(node "$(if [ -f config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs ]; then printf %s config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs; else printf %s config/scripts/build-topod-prebuilds.mjs; fi)" --slot=linux-x64-glibc217 --print-runtime)"
           case "$compat_node" in
             "$GITHUB_WORKSPACE"/*) ;;
             *) echo "glibc-217 Node cached outside the workspace: $compat_node" >&2; exit 1 ;;
           esac
           docker run --rm --init -i \
-            -e ORCA_BACKGROUND_LAUNCH=1 \
+            -e TOPO_BACKGROUND_LAUNCH=1 \
             -e COMPAT_NODE="/work/${compat_node#"$GITHUB_WORKSPACE"/}" \
             -e CC=gcc -e CXX=g++ \
             -e PYTHON=/opt/python/cp312-cp312/bin/python3 \
@@ -486,17 +486,17 @@ jobs:
             quay.io/pypa/manylinux2014_x86_64@sha256:6f74cabeac2432570aa4bfdb29f7c1f30313d4d6654d764c44e574b6ffdd4ed5 bash -s <<'GLIBC217_COMPAT_SLOT'
           set -eu
           export PATH="$(dirname "$COMPAT_NODE"):$PATH"
-          node "$(if [ -f config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs ]; then printf %s config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs; else printf %s config/scripts/build-orcad-prebuilds.mjs; fi)" --slot=linux-x64-glibc217
-          node "$(if [ -f config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs ]; then printf %s config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs; else printf %s config/scripts/build-orcad-prebuilds.mjs; fi)" --require-slots linux-x64-glibc217
+          node "$(if [ -f config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs ]; then printf %s config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs; else printf %s config/scripts/build-topod-prebuilds.mjs; fi)" --slot=linux-x64-glibc217
+          node "$(if [ -f config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs ]; then printf %s config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs; else printf %s config/scripts/build-topod-prebuilds.mjs; fi)" --require-slots linux-x64-glibc217
           # The image's devtoolset LD_LIBRARY_PATH must not stand in for a host C++ runtime.
-          env -u LD_LIBRARY_PATH node "$(if [ -f config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs ]; then printf %s config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs; else printf %s config/scripts/build-orcad-prebuilds.mjs; fi)" --slot=linux-x64-glibc217 --smoke
+          env -u LD_LIBRARY_PATH node "$(if [ -f config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs ]; then printf %s config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs; else printf %s config/scripts/build-topod-prebuilds.mjs; fi)" --slot=linux-x64-glibc217 --smoke
           GLIBC217_COMPAT_SLOT
       - name: Keep the glibc 2.17 compat slot for the desktop template
         if: inputs.build_template
         uses: actions/upload-artifact@v7
         with:
-          name: orcad-prebuild-glibc217
-          path: out/orcad-prebuilds/
+          name: topod-prebuild-glibc217
+          path: out/topod-prebuilds/
           if-no-files-found: error
           retention-days: 7
           overwrite: true
@@ -521,7 +521,7 @@ jobs:
     runs-on: ${{ inputs.fast_runners && (matrix.os == 'ubuntu-22.04' && 'blacksmith-8vcpu-ubuntu-2204' || 'blacksmith-8vcpu-ubuntu-2404-arm') || matrix.os }}
     timeout-minutes: 20
     env:
-      ORCA_BACKGROUND_LAUNCH: '1'
+      TOPO_BACKGROUND_LAUNCH: '1'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -538,41 +538,41 @@ jobs:
           touch "$VERIFICATION_CACHE_PATH"
           mkdir -p out/mobile-web
           # Multi-arch index digest of the tag; re-resolve it whenever NODE_RUNTIME_PIN moves.
-          docker run --rm --init --detach --name orcad-alpine \
-            -e ORCA_BACKGROUND_LAUNCH=1 \
+          docker run --rm --init --detach --name topod-alpine \
+            -e TOPO_BACKGROUND_LAUNCH=1 \
             -v "$VERIFICATION_CACHE_PATH:/root/.cache/pnpm/lockfile-verified.jsonl" \
             -v "$GITHUB_WORKSPACE:/work" -w /work \
             node:24.22.1-alpine@sha256:6a1c190e17215d844926b0677f4bf87273ff7d5e54db06d3b5b5863ab0b09a3d sleep infinity
-          docker exec -i orcad-alpine sh -s <<'NODE_SERVER_PREPARATION'
+          docker exec -i topod-alpine sh -s <<'NODE_SERVER_PREPARATION'
           set -eu
           apk add --no-cache bash git libstdc++ python3 make g++
           git config --global --add safe.directory /work
           npm install -g "$(node -p "require('./package.json').packageManager.split('+')[0]")"
           pnpm install --frozen-lockfile --ignore-scripts
-          pnpm build:orcad-prebuilds
-          pnpm build:orcad-prebuilds --require-slots "$(node "$(if [ -f config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs ]; then printf %s config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs; else printf %s config/scripts/build-orcad-prebuilds.mjs; fi)" --print-slot)"
-          pnpm build:orcad-prebuilds --smoke
+          pnpm build:topod-prebuilds
+          pnpm build:topod-prebuilds --require-slots "$(node "$(if [ -f config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs ]; then printf %s config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs; else printf %s config/scripts/build-topod-prebuilds.mjs; fi)" --print-slot)"
+          pnpm build:topod-prebuilds --smoke
           NODE_SERVER_PREPARATION
       - uses: actions/download-artifact@v8
         with:
-          name: orcad-mobile-web-bundle
+          name: topod-mobile-web-bundle
           path: out/mobile-web
       - name: Verify native Alpine artifact and persistence
         run: |
-          docker exec -i orcad-alpine sh -s <<'NODE_SERVER_QUALIFICATION'
+          docker exec -i topod-alpine sh -s <<'NODE_SERVER_QUALIFICATION'
           set -eu
-          pnpm build:orcad
+          pnpm build:topod
           pnpm test:node-server --artifact
           NODE_SERVER_QUALIFICATION
       - name: Clean up the Alpine qualification container
         if: always()
-        run: docker rm --force orcad-alpine
+        run: docker rm --force topod-alpine
       - name: Keep this runner's musl slot for the desktop template
         if: inputs.build_template
         uses: actions/upload-artifact@v7
         with:
-          name: orcad-prebuild-musl-${{ matrix.os }}
-          path: out/orcad-prebuilds/
+          name: topod-prebuild-musl-${{ matrix.os }}
+          path: out/topod-prebuilds/
           if-no-files-found: error
           retention-days: 7
           overwrite: true
@@ -634,50 +634,50 @@ jobs:
       - name: Collect every lane's slot
         uses: actions/download-artifact@v8
         with:
-          pattern: orcad-prebuild-*
-          path: ${{ runner.temp }}/orcad-prebuild-lanes
+          pattern: topod-prebuild-*
+          path: ${{ runner.temp }}/topod-prebuild-lanes
       - name: Collect the Windows process-table addons
         uses: actions/download-artifact@v8
         with:
-          name: orcad-windows-process-tree
+          name: topod-windows-process-tree
           path: .build/windows-process-tree
       - name: Collect the Windows CLI launchers
         uses: actions/download-artifact@v8
         with:
-          name: orcad-windows-cli-launcher
+          name: topod-windows-cli-launcher
           path: .build/windows-cli-launcher
       - name: Collect the Windows security addons
         if: hashFiles('config/scripts/native-build/windows/build-windows-security-addon.mjs', 'config/scripts/build-windows-security-addon.mjs') != ''
         uses: actions/download-artifact@v8
         with:
-          name: orcad-windows-security
+          name: topod-windows-security
           path: .build/windows-security
       - name: Merge the lanes and gate the full slot matrix
         shell: bash
         run: |
-          node "$(if [ -f config/scripts/orcad-distribution/prebuilds/merge-orcad-prebuilds.mjs ]; then printf %s config/scripts/orcad-distribution/prebuilds/merge-orcad-prebuilds.mjs; else printf %s config/scripts/merge-orcad-prebuilds.mjs; fi)" "$RUNNER_TEMP"/orcad-prebuild-lanes/*
-          pnpm build:orcad-prebuilds --require-slots
-          pnpm build:orcad-prebuilds --require-slots linux-x64-glibc217
+          node "$(if [ -f config/scripts/topod-distribution/prebuilds/merge-topod-prebuilds.mjs ]; then printf %s config/scripts/topod-distribution/prebuilds/merge-topod-prebuilds.mjs; else printf %s config/scripts/merge-topod-prebuilds.mjs; fi)" "$RUNNER_TEMP"/topod-prebuild-lanes/*
+          pnpm build:topod-prebuilds --require-slots
+          pnpm build:topod-prebuilds --require-slots linux-x64-glibc217
       # The page the qualification lanes tested, not a rebuild.
       - uses: actions/download-artifact@v8
         with:
-          name: orcad-mobile-web-bundle
+          name: topod-mobile-web-bundle
           path: out/mobile-web
-      - run: pnpm build:orcad-template
+      - run: pnpm build:topod-template
       - name: Report the template size
         shell: bash
         run: |
           {
-            echo '### orcad template'
+            echo '### topod template'
             echo '```'
-            du -sh out/orcad-template
-            du -sh out/orcad-template/targets/*
+            du -sh out/topod-template
+            du -sh out/topod-template/targets/*
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
         with:
-          name: orcad-template
-          path: out/orcad-template/
+          name: topod-template
+          path: out/topod-template/
           # The per-target .server-target and .runtime-node markers are dotfiles.
           include-hidden-files: true
           if-no-files-found: error

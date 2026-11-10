@@ -1,12 +1,12 @@
 import { create } from 'zustand'
 
-/** What `orca plugin shot` changes for one capture: never written to settings or the layout. */
+/** What `topo plugin shot` changes for one capture: never written to settings or the layout. */
 type PluginViewCaptureState = {
   /** Right-sidebar panel width in CSS pixels, or null for the user's own. */
   panelWidth: number | null
-  /** Paint Orca dark (true) or light (false), or null for the Appearance setting. */
+  /** Paint Topo dark (true) or light (false), or null for the Appearance setting. */
   dark: boolean | null
-  /** A capture is running: Orca's floating controls stay out of the picture. */
+  /** A capture is running: Topo's floating controls stay out of the picture. */
   capturing: boolean
   /** `shot --editor`: the open file whose editor is sized to `editorSize` for the capture. */
   editorFileId: string | null

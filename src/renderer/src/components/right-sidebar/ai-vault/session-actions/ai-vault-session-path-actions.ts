@@ -16,7 +16,7 @@ export function canUseLocalAiVaultSessionPathActions(
 }
 
 /** File viewing needs a conversation resource on this computer, not a session storage locator. */
-export function canOpenAiVaultSessionLogInOrca(
+export function canOpenAiVaultSessionLogInTopo(
   session: Pick<AiVaultSession, 'agent' | 'filePath' | 'executionHostId'>
 ): boolean {
   return (

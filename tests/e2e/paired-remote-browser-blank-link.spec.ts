@@ -7,7 +7,7 @@ import {
   focusMaterializedRemoteBrowserPane,
   waitForMaterializedRemoteBrowserPane
 } from './helpers/materialized-remote-browser-pane'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   launchPairedElectronClient,
   type PairedElectronClient
@@ -15,7 +15,7 @@ import {
 import { waitForPairedClientWorktree } from './helpers/paired-client-host-session'
 import { readHostBrowserPageIds } from './helpers/host-session-tabs'
 
-// #36804: a click on a target=_blank link in a streamed server page opens a new Orca tab.
+// #36804: a click on a target=_blank link in a streamed server page opens a new Topo tab.
 
 async function startLinkServer(): Promise<{ server: Server; origin: string }> {
   const server = createServer((request, response) => {
@@ -37,7 +37,7 @@ async function startLinkServer(): Promise<{ server: Server; origin: string }> {
   return { server, origin: `http://127.0.0.1:${address.port}` }
 }
 
-test('a target=_blank click in a streamed server page opens a new Orca tab', async ({
+test('a target=_blank click in a streamed server page opens a new Topo tab', async ({
   testRepoPath
 }, testInfo) => {
   // Boots a headless host and a paired client, then waits on two streamed tab opens.
@@ -67,7 +67,7 @@ test('a target=_blank click in a streamed server page opens a new Orca tab', asy
       worktreeId
     })
     const remoteFrame = page.getByTestId('remote-browser-frame').first()
-    const addressBar = page.locator('[data-orca-browser-address-bar="true"]:visible')
+    const addressBar = page.locator('[data-topo-browser-address-bar="true"]:visible')
     await expect(remoteFrame).toBeVisible({ timeout: 60_000 })
     await expect(addressBar).toHaveValue(`${origin}/`, { timeout: 60_000 })
 

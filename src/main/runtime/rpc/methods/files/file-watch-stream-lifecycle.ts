@@ -1,11 +1,11 @@
 import { isWatcherProcessFailure } from '../../../../ipc/filesystem/watcher-process/parcel-watcher-process-failure'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { createFileWatchEventBatcher } from './file-watch-event-batcher'
 import { dirListingPageCache } from './files-read-dir-page'
 import type { FileWatchBatchCadence } from '../../../../../shared/rpc-contract/files-target-params'
 
 export async function runFileWatchStream(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   worktree: string
   batchCadence?: FileWatchBatchCadence
   connectionId?: string

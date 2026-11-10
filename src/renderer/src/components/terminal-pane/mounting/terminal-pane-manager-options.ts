@@ -32,7 +32,7 @@ import {
 import { resolveTerminalLayoutActiveLeafId } from '../layout/ownership/terminal-layout-active-leaf'
 import type { TerminalPaneManagerOptionsContext } from './terminal-pane-mount-context'
 import { resolveTerminalInlineImagesEnabled } from '../../../../../shared/terminal/images/terminal-inline-images-settings'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import { layoutOwnerPaneGestures } from '../layout/ownership/terminal-pane-layout-owner-gestures'
 
 export function createTerminalPaneManagerOptions(
@@ -109,7 +109,7 @@ export function createTerminalPaneManagerOptions(
     },
     resolveExternalPaneDropTarget,
     onExternalPaneDrop,
-    ...(ORCA_LAYOUT_OWNER_IS_MAIN
+    ...(TOPO_LAYOUT_OWNER_IS_MAIN
       ? layoutOwnerPaneGestures({
           worktreeId,
           tabId,

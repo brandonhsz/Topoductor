@@ -21,7 +21,7 @@ import {
 import { listRemoteInstallBaseDirsCommand } from '../../managed-server/install/remote-install-gc-listing-command'
 import { probeRemoteInstallCompleteCommand } from '../../managed-server/install/remote-install-completeness-command'
 import {
-  ORCAD_INSTALL_MODEL,
+  TOPOD_INSTALL_MODEL,
   RELAY_INSTALL_MODEL
 } from '../../managed-server/install/remote-install-model'
 import { getRemoteHostPlatform } from '../remote-host/ssh-remote-platform'
@@ -32,7 +32,7 @@ const nativePosix = getRemoteHostPlatform(
 )
 const windows = getRemoteHostPlatform('win32-x64')
 const powerShellExecutable = [
-  process.env.ORCA_POWERSHELL_EXECUTABLE,
+  process.env.TOPO_POWERSHELL_EXECUTABLE,
   ...(process.platform === 'win32' ? ['pwsh.exe', 'powershell.exe'] : ['pwsh'])
 ].find((candidate) => {
   if (!candidate) {
@@ -54,10 +54,10 @@ const powerShell51Executable =
 const listRelayBaseDirsCommand = (host: typeof posix, baseDir: string): string =>
   listRemoteInstallBaseDirsCommand(host, baseDir, RELAY_INSTALL_MODEL)
 
-function probeOrcadInstalledCommand(host: typeof posix, dir: string): string {
+function probeTopodInstalledCommand(host: typeof posix, dir: string): string {
   return probeRemoteInstallCompleteCommand(host, dir, [
-    ...ORCAD_INSTALL_MODEL.requiredArtifacts(host),
-    ORCAD_INSTALL_MODEL.installCompleteFilename
+    ...TOPOD_INSTALL_MODEL.requiredArtifacts(host),
+    TOPOD_INSTALL_MODEL.installCompleteFilename
   ])
 }
 
@@ -119,24 +119,24 @@ function runPowerShellCommand(executable: string, script: string): Promise<strin
 
 describe('ssh remote command builders', () => {
   // Stage a complete install, then remove one artifact: the probe must flip.
-  function stageOrcadInstall(host: typeof posix): { dir: string; artifact: string } {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-install-probe-'))
-    const artifacts = ORCAD_INSTALL_MODEL.requiredArtifacts(host)
+  function stageTopodInstall(host: typeof posix): { dir: string; artifact: string } {
+    const dir = mkdtempSync(join(tmpdir(), 'topo-install-probe-'))
+    const artifacts = TOPOD_INSTALL_MODEL.requiredArtifacts(host)
     for (const filename of artifacts) {
       mkdirSync(dirname(join(dir, filename)), { recursive: true })
       writeFileSync(join(dir, filename), '')
     }
-    writeFileSync(join(dir, ORCAD_INSTALL_MODEL.installCompleteFilename), '')
+    writeFileSync(join(dir, TOPOD_INSTALL_MODEL.installCompleteFilename), '')
     return { dir, artifact: artifacts.at(-1)! }
   }
 
   it.skipIf(process.platform === 'win32')(
     'answers a POSIX install complete only with every artifact present, in its own dir',
     async () => {
-      const { dir, artifact } = stageOrcadInstall(nativePosix)
+      const { dir, artifact } = stageTopodInstall(nativePosix)
       try {
         const run = async (installDir: string): Promise<string> =>
-          (await runShellCommand(probeOrcadInstalledCommand(nativePosix, installDir))).trim()
+          (await runShellCommand(probeTopodInstalledCommand(nativePosix, installDir))).trim()
         expect(await run(dir)).toBe('OK')
         // The relative test must not resolve against the caller's working directory.
         expect(await run(join(dir, 'missing slot'))).toBe('MISSING')
@@ -149,8 +149,8 @@ describe('ssh remote command builders', () => {
   )
 
   it.skipIf(!powerShellExecutable)('rejects a Windows install missing one artifact', async () => {
-    const { dir, artifact } = stageOrcadInstall(windows)
-    const probe = (): string => decodePowerShellCommand(probeOrcadInstalledCommand(windows, dir))
+    const { dir, artifact } = stageTopodInstall(windows)
+    const probe = (): string => decodePowerShellCommand(probeTopodInstalledCommand(windows, dir))
     try {
       expect((await runPowerShellCommand(powerShellExecutable!, probe())).trim()).toBe('OK')
 
@@ -164,7 +164,7 @@ describe('ssh remote command builders', () => {
   it.runIf(process.platform !== 'win32')(
     'fails closed when real POSIX GC enumeration fails',
     async () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-relay-gc-failure-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-relay-gc-failure-'))
       try {
         const command = `find() { return 23; }\n${listRelayBaseDirsCommand(posix, root)}`
         await expect(runShellCommand(command)).rejects.toThrow('shell exited 1')
@@ -180,7 +180,7 @@ describe('ssh remote command builders', () => {
       const script = decodePowerShellCommand(
         tryStealInstallLockCommand(
           windows,
-          'C:/Users/orca-missing/.orca-remote/relay/.install-lock',
+          'C:/Users/topo-missing/.topo-remote/relay/.install-lock',
           20 * 60
         )
       )
@@ -199,7 +199,7 @@ describe('ssh remote command builders', () => {
   it.runIf(powerShell51Executable)(
     'lets only one Windows PowerShell 5.1 caller acquire an install lock',
     async () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-install-lock-windows-race-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-install-lock-windows-race-'))
       try {
         const lockPath = join(root, '.install-lock')
         const script = decodePowerShellCommand(tryCreateInstallLockCommand(windows, lockPath))
@@ -221,7 +221,7 @@ describe('ssh remote command builders', () => {
   it.runIf(powerShell51Executable)(
     'atomically replaces a fresh Windows lock only after the remote boot changes',
     async () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-install-lock-windows-reboot-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-install-lock-windows-reboot-'))
       try {
         const lockPath = join(root, '.install-lock')
         const acquire = decodePowerShellCommand(tryCreateInstallLockCommand(windows, lockPath))
@@ -257,7 +257,7 @@ describe('ssh remote command builders', () => {
   it.runIf(powerShell51Executable)(
     'recovers a stale Windows lock past abandoned steal generations',
     async () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-install-lock-windows-stale-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-install-lock-windows-stale-'))
       try {
         const lockPath = join(root, '.install-lock')
         mkdirSync(lockPath)
@@ -289,7 +289,7 @@ describe('ssh remote command builders', () => {
   it.runIf(powerShell51Executable)(
     'lets only one Windows PowerShell 5.1 caller replace a stale lock',
     async () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-install-lock-windows-steal-race-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-install-lock-windows-steal-race-'))
       try {
         const lockPath = join(root, '.install-lock')
         mkdirSync(lockPath)
@@ -317,11 +317,11 @@ describe('ssh remote command builders', () => {
   it.runIf(powerShellExecutable)(
     'keeps a new Windows lock visible to the previous directory-only GC probe',
     async () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-install-lock-windows-compat-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-install-lock-windows-compat-'))
       try {
         const lockPath = join(root, '.install-lock')
         const acquire = decodePowerShellCommand(tryCreateInstallLockCommand(windows, lockPath))
-        // The directory-only lock probe older Orca builds still run against this host.
+        // The directory-only lock probe older Topo builds still run against this host.
         const legacyProbe = `if (Test-Path -LiteralPath '${lockPath}' -PathType Container) { 'LOCKED' } else { 'OPEN' }`
 
         await expect(runPowerShellCommand(powerShellExecutable!, acquire)).resolves.toMatch(/OK/)
@@ -338,7 +338,7 @@ describe('ssh remote command builders', () => {
   it.runIf(process.platform !== 'win32')(
     'recovers and cleans more than eight orphaned numbered steal claims',
     () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-install-lock-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-install-lock-'))
       try {
         const lockDir = join(root, '.install-lock')
         mkdirSync(lockDir)
@@ -367,7 +367,7 @@ describe('ssh remote command builders', () => {
   it.runIf(process.platform !== 'win32')(
     'atomically replaces a fresh POSIX lock only after the execution host changes',
     async () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-install-lock-reboot-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-install-lock-reboot-'))
       try {
         const lockDir = join(root, '.install-lock')
         const acquire = tryCreateInstallLockCommand(nativePosix, lockDir)
@@ -397,7 +397,7 @@ describe('ssh remote command builders', () => {
   it.runIf(process.platform !== 'win32')(
     'keeps a fresh legacy POSIX lock when no boot identity is available',
     async () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-install-lock-legacy-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-install-lock-legacy-'))
       try {
         const lockDir = join(root, '.install-lock')
         mkdirSync(lockDir)
@@ -422,7 +422,7 @@ describe('ssh remote command builders', () => {
   it.runIf(process.platform !== 'win32')(
     'lets only one POSIX caller move and recreate a stale install lock',
     async () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-install-lock-race-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-install-lock-race-'))
       try {
         const lockDir = join(root, '.install-lock')
         mkdirSync(lockDir)

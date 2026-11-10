@@ -7,8 +7,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 import WebSocket from 'ws'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import { WebSocketTransport } from '../ws-transport'
 import { DeviceRegistry } from './pairing/device-registry'
 import './pairing/mobile-pairing-files'
@@ -49,22 +49,22 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
   return { getWorktreeListingMocks: () => (listings ??= createWorktreeListingMocks()) }
 })
 
-describe('OrcaRuntimeRpcServer WebSocket bind host (STA-2370)', () => {
-  const wsTransportOf = (server: OrcaRuntimeRpcServer): WebSocketTransport | undefined =>
+describe('TopoRuntimeRpcServer WebSocket bind host (STA-2370)', () => {
+  const wsTransportOf = (server: TopoRuntimeRpcServer): WebSocketTransport | undefined =>
     (server['activeTransports'] as unknown[]).find(
       (transport): transport is WebSocketTransport => transport instanceof WebSocketTransport
     )
 
   it('stays on loopback at startup after a "This computer only" grant has connected', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
     // Local-only browser grants also get lastSeenAt; counting them would expose every interface on next launch against the chosen policy.
     const registry = new DeviceRegistry(userDataPath)
     const device = registry.getOrCreatePendingDevice('Runtime local', 'runtime', 'this-computer')
     registry.updateLastSeen(device.deviceId)
 
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -79,10 +79,10 @@ describe('OrcaRuntimeRpcServer WebSocket bind host (STA-2370)', () => {
   })
 
   it('upgrades a reused pending grant to network reach so its link survives a relaunch', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -111,9 +111,9 @@ describe('OrcaRuntimeRpcServer WebSocket bind host (STA-2370)', () => {
       await server.stop()
     }
 
-    const relaunched = new OrcaRuntimeRpcServer({
+    const relaunched = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -127,10 +127,10 @@ describe('OrcaRuntimeRpcServer WebSocket bind host (STA-2370)', () => {
   })
 
   it('keeps the pinned port when a later widen tears down a live loopback client', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -165,11 +165,11 @@ describe('OrcaRuntimeRpcServer WebSocket bind host (STA-2370)', () => {
   })
 
   it('reports pairing unavailable but keeps a serving loopback listener when the widen bind fails', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -212,11 +212,11 @@ describe('OrcaRuntimeRpcServer WebSocket bind host (STA-2370)', () => {
   })
 
   it('keeps the widened listener tracked when persisting pairing metadata fails', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -256,11 +256,11 @@ describe('OrcaRuntimeRpcServer WebSocket bind host (STA-2370)', () => {
   })
 
   it('does not strand a wide listener when stop() races an in-flight widen', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -308,11 +308,11 @@ describe('OrcaRuntimeRpcServer WebSocket bind host (STA-2370)', () => {
   })
 
   it('refuses a runtime-widening pairing offer while the bind is pinned to loopback', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0,

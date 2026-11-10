@@ -25,7 +25,7 @@ const code = ({ children, sourceLine }: { children?: React.ReactNode; sourceLine
   <pre data-source-line={sourceLine}>{children}</pre>
 )
 
-const directive = (i = 0) => `::orca-visual{file="v${i}.html"}`
+const directive = (i = 0) => `::topo-visual{file="v${i}.html"}`
 const prefix = '```text\nsettled\n```\n\nNext'
 
 it('keeps selected fade nodes and their clocks through a declined tail and completion', () => {

@@ -89,12 +89,12 @@ vi.mock('electron', () => ({
   nativeTheme: nativeThemeMock
 }))
 
-vi.mock('../../../resources/tray/orca-menu-barTemplate.png?asset&asarUnpack', () => ({
-  default: '/assets/orca-menu-barTemplate.png'
+vi.mock('../../../resources/tray/topo-menu-barTemplate.png?asset&asarUnpack', () => ({
+  default: '/assets/topo-menu-barTemplate.png'
 }))
 
-vi.mock('../../../resources/tray/orca-menu-barTemplate@2x.png?asset&asarUnpack', () => ({
-  default: '/assets/orca-menu-barTemplate@2x.png'
+vi.mock('../../../resources/tray/topo-menu-barTemplate@2x.png?asset&asarUnpack', () => ({
+  default: '/assets/topo-menu-barTemplate@2x.png'
 }))
 
 vi.mock('../window/desktop-integration/app-icon', () => ({
@@ -200,8 +200,8 @@ describe('createSystemTray', () => {
 
     expect(trayInstances).toHaveLength(1)
     expect(trayInstances[0].image).toBe(resizedImage)
-    expect(trayInstances[0].setToolTip).toHaveBeenCalledWith('Orca')
-    expect(builtMenuItems().map((item) => item.label)).toEqual(['Open Orca', undefined, 'Quit'])
+    expect(trayInstances[0].setToolTip).toHaveBeenCalledWith('Topo')
+    expect(builtMenuItems().map((item) => item.label)).toEqual(['Open Topo', undefined, 'Quit'])
     const clickHandler = trayInstances[0].on.mock.calls.find((call) => call[0] === 'click')?.[1]
     expect(clickHandler).toBeTypeOf('function')
 
@@ -227,7 +227,7 @@ describe('createSystemTray', () => {
       dataURL: 'data:image/png;base64,mac-retina'
     })
     expect(builtMenuItems().map((item) => item.label)).toEqual([
-      'Open Orca',
+      'Open Topo',
       undefined,
       'Settings',
       'Check for Updates...',
@@ -238,7 +238,7 @@ describe('createSystemTray', () => {
     expect(nativeThemeMock.on).toHaveBeenCalledWith('updated', expect.any(Function))
 
     for (const [label, callback] of [
-      ['Open Orca', options.onOpen],
+      ['Open Topo', options.onOpen],
       ['Settings', options.onOpenSettings],
       ['Check for Updates...', options.onCheckForUpdates],
       ['Quit', options.onQuit]
@@ -262,7 +262,7 @@ describe('createSystemTray', () => {
       expect(builtMenuItems().map((item) => item.label)).toEqual(
         platform === 'darwin'
           ? [
-              'Open Orca',
+              'Open Topo',
               undefined,
               'Settings',
               'Check for Updates...',
@@ -270,7 +270,7 @@ describe('createSystemTray', () => {
               'Quit Completely...',
               'Quit'
             ]
-          : ['Open Orca', undefined, 'Quit Completely...', 'Quit']
+          : ['Open Topo', undefined, 'Quit Completely...', 'Quit']
       )
       builtMenuItems().at(-2)?.click?.()
       expect(options.onQuitAndStopAllSessions).toHaveBeenCalledOnce()
@@ -374,13 +374,13 @@ describe('setTrayAttention', () => {
     })
     expect(attentionImage.setTemplateImage).toHaveBeenCalledWith(false)
     expect(created.setImage).toHaveBeenCalledWith(attentionImage)
-    expect(created.setToolTip).toHaveBeenCalledWith('Orca - activity waiting')
+    expect(created.setToolTip).toHaveBeenCalledWith('Topo - activity waiting')
 
     setTrayAttention(false)
     flushTraySceneMutation()
     expect(baseMacImage.setTemplateImage).toHaveBeenLastCalledWith(true)
     expect(created.setImage).toHaveBeenLastCalledWith(baseMacImage)
-    expect(created.setToolTip).toHaveBeenLastCalledWith('Orca')
+    expect(created.setToolTip).toHaveBeenLastCalledWith('Topo')
   })
 
   it('recomposes active macOS attention when the system appearance changes', async () => {
@@ -545,7 +545,7 @@ describe('macOS hardening', () => {
     setTrayAttention(true)
     expect(() => flushTraySceneMutation()).not.toThrow()
     expect(created.setImage).toHaveBeenLastCalledWith(baseMacImage)
-    expect(created.setToolTip).toHaveBeenLastCalledWith('Orca')
+    expect(created.setToolTip).toHaveBeenLastCalledWith('Topo')
     expect(warn).toHaveBeenCalledWith(
       '[system-tray] macOS attention icon failed; showing plain icon',
       expect.any(Error)
@@ -578,16 +578,16 @@ describe('language changes', () => {
       await setMainUiLanguage('en')
       const options = { ...createOptions(), onQuitAndStopAllSessions: vi.fn() }
       createSystemTray(options)
-      expect(builtMenuItems()[0].label).toBe('Open Orca')
+      expect(builtMenuItems()[0].label).toBe('Open Topo')
 
       await setMainUiLanguage('ja')
       rebuildSystemTrayMenu()
-      expect(builtMenuItems()[0].label).toBe('Open Orca')
+      expect(builtMenuItems()[0].label).toBe('Open Topo')
       flushTraySceneMutation()
 
       expect(trayInstances).toHaveLength(1)
       expect(trayInstances[0].setContextMenu).toHaveBeenCalledTimes(2)
-      expect(builtMenuItems()[0].label).toBe('Orca を開く')
+      expect(builtMenuItems()[0].label).toBe('Topo を開く')
       expect(builtMenuItems().at(-2)?.label).toBe('完全に終了…')
       expect(builtMenuItems().at(-1)?.label).toBe('終了')
       builtMenuItems()[0].click?.()
@@ -622,15 +622,15 @@ describe('language changes', () => {
     rebuildSystemTrayMenu()
     flushTraySceneMutation()
     expect(trayInstances[0].setToolTip).toHaveBeenLastCalledWith(
-      'Orca DEV (language-test) - 件のアクティビティが待機中'
+      'Topo DEV (language-test) - 件のアクティビティが待機中'
     )
-    expect(builtMenuItems()[0].label).toBe('Orca DEV (language-test)')
+    expect(builtMenuItems()[0].label).toBe('Topo DEV (language-test)')
     expect(composeAttentionMock).toHaveBeenCalled()
 
-    mainI18n.addResource('ja', 'translation', 'tray.openOrca', 'Orca を表示')
+    mainI18n.addResource('ja', 'translation', 'tray.openTopo', 'Topo を表示')
     rebuildSystemTrayMenu()
     flushTraySceneMutation()
-    expect(builtMenuItems()[2].label).toBe('Orca を表示')
+    expect(builtMenuItems()[2].label).toBe('Topo を表示')
   })
 
   it('does nothing without a tray or when destroyed before the deferred refresh', async () => {

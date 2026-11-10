@@ -1,15 +1,15 @@
 import type {
-  OrcadManagedPendingMigrationRow,
-  OrcadManagedRuntimeStatus
-} from '../../../../../../shared/orcad-managed-runtime'
-import type { OrcadMigrationBlocker } from '../../../../../../shared/orcad-migration/orcad-migration-preflight'
+  TopodManagedPendingMigrationRow,
+  TopodManagedRuntimeStatus
+} from '../../../../../../shared/topod-managed-runtime'
+import type { TopodMigrationBlocker } from '../../../../../../shared/topod-migration/topod-migration-preflight'
 import { translate } from '@/i18n/i18n'
 import type { Translate } from '@/i18n/use-translate'
-import { ORCAD_UPDATE_WSL_MOVE_RUNNING_CODE } from '../../../../../../shared/wsl-host-types'
+import { TOPOD_UPDATE_WSL_MOVE_RUNNING_CODE } from '../../../../../../shared/wsl-host-types'
 import { dependencyKindLabel } from './managed-server-dependency-kinds'
 
 export function migrationPhaseLabel(
-  phase: OrcadManagedPendingMigrationRow['phase'],
+  phase: TopodManagedPendingMigrationRow['phase'],
   t: Translate = translate
 ): string {
   switch (phase) {
@@ -25,7 +25,7 @@ export function migrationPhaseLabel(
 }
 
 export function recoveryLabel(
-  recovery: NonNullable<OrcadManagedRuntimeStatus['recovery']>,
+  recovery: NonNullable<TopodManagedRuntimeStatus['recovery']>,
   t: Translate = translate
 ): string {
   switch (recovery.operation) {
@@ -49,7 +49,7 @@ export function recoveryLabel(
 
 /** `null` counts are unknown, never zero: the server did not answer. */
 export function terminalCensusLabel(
-  terminals: OrcadManagedRuntimeStatus['terminals'],
+  terminals: TopodManagedRuntimeStatus['terminals'],
   t: Translate = translate
 ): string {
   if (terminals.liveSessions === null) {
@@ -69,41 +69,41 @@ export function terminalCensusLabel(
 export function forceUpdateMessage(t: Translate = translate): string {
   return t(
     'auto.components.settings.managedServers.row.forceUpdate',
-    'Terminals are running on this host. They keep running through the update, and their panes reconnect when Orca’s server restarts.'
+    'Terminals are running on this host. They keep running through the update, and their panes reconnect when Topo’s server restarts.'
   )
 }
 
-export function conversionBlockerLabel(blocker: OrcadMigrationBlocker): string {
+export function conversionBlockerLabel(blocker: TopodMigrationBlocker): string {
   switch (blocker.code) {
-    case 'orcad_migration_target_not_found':
+    case 'topod_migration_target_not_found':
       return translate(
         'auto.components.settings.managedServers.blocker.notFound',
         'The SSH host is gone.'
       )
-    case 'orcad_migration_target_owned':
-    case 'orcad_migration_owner_unrecorded':
+    case 'topod_migration_target_owned':
+    case 'topod_migration_owner_unrecorded':
       return translate(
         'auto.components.settings.managedServers.blocker.owned',
-        'Orca already runs on this SSH host.'
+        'Topo already runs on this SSH host.'
       )
-    case 'orcad_migration_direct_ssh_repositories':
-    case 'orcad_migration_direct_ssh_folder_workspaces':
+    case 'topod_migration_direct_ssh_repositories':
+    case 'topod_migration_direct_ssh_folder_workspaces':
       return translate(
         'auto.components.settings.managedServers.blocker.catalog',
         'Projects on this host cannot move yet.'
       )
-    case 'orcad_migration_direct_ssh_terminal_leases':
+    case 'topod_migration_direct_ssh_terminal_leases':
       return translate(
         'auto.components.settings.managedServers.blocker.terminals',
         'Terminals on this host are still running ({{count}}). Close them first.',
         { count: blocker.terminalLeases.length }
       )
-    case 'orcad_migration_saved_port_forwards':
+    case 'topod_migration_saved_port_forwards':
       return translate(
         'auto.components.settings.managedServers.blocker.portForwards',
         'Saved port forwards stay with the SSH host.'
       )
-    case 'orcad_migration_dependent_state':
+    case 'topod_migration_dependent_state':
       return translate(
         'auto.components.settings.managedServers.blocker.dependents',
         'State that cannot move yet: {{kinds}}.',
@@ -113,10 +113,10 @@ export function conversionBlockerLabel(blocker: OrcadMigrationBlocker): string {
             .join(', ')
         }
       )
-    case 'orcad_migration_dependency_unverifiable':
+    case 'topod_migration_dependency_unverifiable':
       return translate(
         'auto.components.settings.managedServers.blocker.unverifiable',
-        'Orca could not read its saved {{sources}}, so it cannot tell what would move.',
+        'Topo could not read its saved {{sources}}, so it cannot tell what would move.',
         { sources: blocker.sources.map(dependencyKindLabel).join(', ') }
       )
   }
@@ -124,30 +124,30 @@ export function conversionBlockerLabel(blocker: OrcadMigrationBlocker): string {
 
 // Main's refusal codes, grouped by what the user does next; its English `reason` never reaches UI.
 const LIVE_TERMINAL_CODES = new Set([
-  'orcad_initial_runtime_live',
-  'orcad_update_strands_live_terminals',
-  'orcad_update_terminals_running',
-  'orcad_update_ends_in_process_terminals',
-  'orcad_rollback_orphans_live_terminals',
-  'orcad_rollback_strands_live_terminals',
-  'orcad_recovery_orphans_live_terminals',
-  'orcad_stop_still_running'
+  'topod_initial_runtime_live',
+  'topod_update_strands_live_terminals',
+  'topod_update_terminals_running',
+  'topod_update_ends_in_process_terminals',
+  'topod_rollback_orphans_live_terminals',
+  'topod_rollback_strands_live_terminals',
+  'topod_recovery_orphans_live_terminals',
+  'topod_stop_still_running'
 ])
 const UNVERIFIABLE_CODES = new Set([
-  'orcad_initial_runtime_unverifiable',
-  'orcad_update_terminal_census_unavailable',
-  'orcad_update_daemon_protocol_unverifiable',
-  'orcad_rollback_active_identity_unverifiable',
-  'orcad_rollback_census_unavailable',
-  'orcad_rollback_daemon_protocol_unverifiable',
-  'orcad_rollback_snapshot_unverifiable',
-  'orcad_recovery_census_required',
-  'orcad_recovery_unverifiable',
-  'orcad_stop_cancel_unverifiable'
+  'topod_initial_runtime_unverifiable',
+  'topod_update_terminal_census_unavailable',
+  'topod_update_daemon_protocol_unverifiable',
+  'topod_rollback_active_identity_unverifiable',
+  'topod_rollback_census_unavailable',
+  'topod_rollback_daemon_protocol_unverifiable',
+  'topod_rollback_snapshot_unverifiable',
+  'topod_recovery_census_required',
+  'topod_recovery_unverifiable',
+  'topod_stop_cancel_unverifiable'
 ])
 const MIGRATION_CODES = new Set([
-  'orcad_rollback_migration_in_progress',
-  'orcad_rollback_crosses_migration'
+  'topod_rollback_migration_in_progress',
+  'topod_rollback_crosses_migration'
 ])
 
 export function managedServerOutcomeLabel(
@@ -159,7 +159,7 @@ export function managedServerOutcomeLabel(
   t: Translate = translate
 ): string {
   const code = result.code ?? ''
-  if (code === 'orcad_stop_active_environment') {
+  if (code === 'topod_stop_active_environment') {
     return t(
       'auto.components.settings.managedServers.outcome.defaultServer',
       'Not done: this server is the default host for new projects. Choose another one under New projects open on before stopping it.'
@@ -174,13 +174,13 @@ export function managedServerOutcomeLabel(
   if (result.verdict === 'unverifiable' || UNVERIFIABLE_CODES.has(code)) {
     return t(
       'auto.components.settings.managedServers.outcome.unverifiable',
-      'Not done: Orca couldn’t confirm what is running on this server. Try again when the host is reachable.'
+      'Not done: Topo couldn’t confirm what is running on this server. Try again when the host is reachable.'
     )
   }
-  if (code === ORCAD_UPDATE_WSL_MOVE_RUNNING_CODE) {
+  if (code === TOPOD_UPDATE_WSL_MOVE_RUNNING_CODE) {
     return t(
       'auto.components.settings.managedServers.outcome.wslMoveRunning',
-      'Not done: a project is moving onto this server. Orca updates it once the move finishes.'
+      'Not done: a project is moving onto this server. Topo updates it once the move finishes.'
     )
   }
   if (MIGRATION_CODES.has(code)) {
@@ -197,6 +197,6 @@ export function managedServerOutcomeLabel(
   }
   return t(
     'auto.components.settings.managedServers.outcome.failed',
-    'Orca couldn’t finish this on the server. Try again.'
+    'Topo couldn’t finish this on the server. Try again.'
   )
 }

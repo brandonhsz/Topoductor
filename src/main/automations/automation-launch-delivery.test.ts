@@ -57,7 +57,7 @@ async function heldLaunch(hold: 'launch' | 'delivery') {
 
 describe('headless dispatch prompt delivery', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-automation-delivery-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-automation-delivery-'))
   })
   afterEach(async () => {
     await closeTestStores()
@@ -74,13 +74,13 @@ describe('headless dispatch prompt delivery', () => {
         terminalPtyId: 'pty-1'
       })
     )
-    await settle("Aider started, but Orca could not send this run's prompt.")
+    await settle("Aider started, but Topo could not send this run's prompt.")
 
     expect(row()).toMatchObject({
       status: 'dispatch_failed',
       terminalPaneKey: 'tab-1:9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
       terminalPtyId: 'pty-1',
-      error: "Aider started, but Orca could not send this run's prompt."
+      error: "Aider started, but Topo could not send this run's prompt."
     })
     service.stop()
   })

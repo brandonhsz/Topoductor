@@ -3,7 +3,7 @@ import type * as WorktreeListingModule from '../../git/worktrees/catalog/worktre
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { settledWriteStub } from '../../providers/settled-pty-write-stub'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { makeStore } from './server/runtime-rpc-worktree-store-fixtures'
 import { AGENT_PROMPT_TEST_WORKTREE_PATH } from '../terminal/input/agent-prompt-submission-runtime-test-fixture'
 import { RpcDispatcher } from './dispatcher'
@@ -60,7 +60,7 @@ const CLAUDE_TRUST_DIALOG_OUTPUT =
   ' ❯ No, exit\r\n   Yes, I trust this folder\r\n\r\n Enter to confirm · Esc to cancel\r\n'
 
 async function launchClaude(command: string | undefined, ordered = false) {
-  const runtime = new OrcaRuntimeService(
+  const runtime = new TopoRuntimeService(
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: partial store double; terminal create and send read only its repo and worktree members.
     makeStore() as never
   )

@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { EventEmitter } from 'node:events'
-import { RELAY_CLOSE_CODE } from '@orca-cloud/relay-contract/close-codes'
+import { RELAY_CLOSE_CODE } from '@topo-cloud/relay-contract/close-codes'
 import { SignJWT } from 'jose'
 import nacl from 'tweetnacl'
 import { describe, expect, it, vi } from 'vitest'
@@ -184,7 +184,7 @@ function config(): RelayConfig {
     publicUrl: 'https://c7.relay.example.test',
     cellUrl: 'https://c7.relay.example.test',
     authIssuer: 'https://auth.example.test',
-    authAudience: 'orca-relay',
+    authAudience: 'topo-relay',
     jwksUrl: 'https://auth.example.test/jwks',
     assignmentSigningKey: KEY,
     role: 'cell',

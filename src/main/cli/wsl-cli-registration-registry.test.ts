@@ -11,7 +11,7 @@ describe('WSL CLI registration registry', () => {
   let userDataPath: string
 
   beforeEach(async () => {
-    userDataPath = await mkdtemp(join(tmpdir(), 'orca-wsl-cli-registry-'))
+    userDataPath = await mkdtemp(join(tmpdir(), 'topo-wsl-cli-registry-'))
   })
 
   afterEach(async () => {

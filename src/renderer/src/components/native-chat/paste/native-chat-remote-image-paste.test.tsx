@@ -140,7 +140,7 @@ beforeEach(async () => {
   mocks.readClipboardImageThumbnail.mockResolvedValue(null)
   mocks.clipboardHasImage.mockResolvedValue(true)
   mocks.readClipboardFilePaths.mockResolvedValue([])
-  mocks.saveClipboardImageAsTempFile.mockResolvedValue('/tmp/orca-paste-remote.png')
+  mocks.saveClipboardImageAsTempFile.mockResolvedValue('/tmp/topo-paste-remote.png')
 })
 
 afterEach(() => {
@@ -163,7 +163,7 @@ describe('clipboard image paste into a remote terminal-backed chat', () => {
         runtimeEnvironmentId: 'env-1'
       })
       expect(latest().attachments.imageAttachments).toMatchObject([
-        { path: '/tmp/orca-paste-remote.png' }
+        { path: '/tmp/topo-paste-remote.png' }
       ])
       expect(latest().attachments.imageAttachments[0]?.pending).toBeUndefined()
       expect(latest().notice).toBeNull()
@@ -173,7 +173,7 @@ describe('clipboard image paste into a remote terminal-backed chat', () => {
   it('inserts the server path as a reference for an agent that takes no images', async () => {
     const latest = await render(() => SERVER_OWNER, false)
     await act(async () => latest().paste.handlePaste(imagePasteEvent()))
-    expect(latest().draft).toContain('/tmp/orca-paste-remote.png')
+    expect(latest().draft).toContain('/tmp/topo-paste-remote.png')
     expect(latest().notice).toBeNull()
   })
 

@@ -10,7 +10,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { getPowerShellAgentWrappers } from './powershell-agent-wrappers'
 import {
   getPowerShellEscapeNativeArgsFunction,
@@ -44,7 +44,7 @@ async function captureNativeArgv(
 it.skipIf(process.platform !== 'win32')(
   'passes a multi-line value to a native program exactly as the single-quoted form did',
   async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-ps-multiline-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-ps-multiline-'))
     const capture = (quoted: string): Promise<string[]> =>
       captureNativeArgv(root, 'powershell.exe', (native) => `${native} ${quoted}`)
     try {
@@ -78,10 +78,10 @@ const POWERSHELLS = [
 ]
 
 describe.each(POWERSHELLS)(
-  '__OrcaEscapeNativeArgs under $name',
+  '__TopoEscapeNativeArgs under $name',
   ({ powershell, prelude, available }) => {
     it.skipIf(!available)('delivers embedded quotes and backslashes exactly', async () => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-ps-native-args-'))
+      const root = await mkdtemp(join(tmpdir(), 'topo-ps-native-args-'))
       try {
         for (const value of [
           'say "hi" to "bob"',
@@ -108,7 +108,7 @@ describe.each(POWERSHELLS)(
             powershell,
             (native) =>
               `${prelude}\n${getPowerShellEscapeNativeArgsFunction()}\n` +
-              `function agent { $a = @(__OrcaEscapeNativeArgs 'node.exe' $args); ${native} @a }\n` +
+              `function agent { $a = @(__TopoEscapeNativeArgs 'node.exe' $args); ${native} @a }\n` +
               `agent ${quotePowerShellLiteral(value)}`
           )
           expect(argv).toEqual([value])
@@ -124,7 +124,7 @@ describe.each(POWERSHELLS)('agent wrappers under $name', ({ powershell, prelude,
   it.skipIf(!available)(
     'hand a quoted prompt to a .cmd shim intact, without cmd running any of it',
     async () => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-ps-agent-wrappers-'))
+      const root = await mkdtemp(join(tmpdir(), 'topo-ps-agent-wrappers-'))
       try {
         await writeFile(
           join(root, 'capture.js'),
@@ -200,8 +200,8 @@ describe.each(POWERSHELLS)('agent wrappers under $name', ({ powershell, prelude,
           env: {
             ...process.env,
             PATH: `${root};${process.env.PATH ?? ''}`,
-            ORCA_CODEX_ISOLATE: '0',
-            ORCA_CLAUDE_PROFILE_POINTER: join(root, 'no-pointer')
+            TOPO_CODEX_ISOLATE: '0',
+            TOPO_CLAUDE_PROFILE_POINTER: join(root, 'no-pointer')
           }
         })
 

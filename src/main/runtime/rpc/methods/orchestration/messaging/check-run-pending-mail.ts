@@ -1,6 +1,6 @@
 import type { MessageType, RunRow } from '../../../../orchestration/db/orchestration-records'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { interruptedAcknowledgedCheck } from '../routing'
 import { checkWorkerMailbox } from './check-worker'
 import { acknowledgedOnlyReceipt, handsOverBatch } from './mailbox-message-receipt'
@@ -13,7 +13,7 @@ import type { z } from 'zod'
 
 export async function checkRunPendingMail(args: {
   params: z.infer<typeof CheckParams>
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   run: RunRow
   handle: string
@@ -77,8 +77,8 @@ export async function checkRunPendingMail(args: {
   if (
     residual &&
     residual.run_id !== run.id &&
-    (residual.assignee_orca_session_id === null ||
-      residual.assignee_orca_session_id === caller.orcaSessionId) &&
+    (residual.assignee_topo_session_id === null ||
+      residual.assignee_topo_session_id === caller.topoSessionId) &&
     callerHoldsDispatchPane(residual, paneKey) &&
     currentDispatchAssigneeRun(runtime, db, residual)?.id === run.id &&
     (residualAck || !db.hasOutstandingMailboxDelivery(address))

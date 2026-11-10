@@ -31,7 +31,7 @@ export async function loadAnsiConsumers(root = process.cwd()) {
     format: 'esm',
     write: false
   })
-  const directory = await mkdtemp(path.join(os.tmpdir(), 'orca-check-log-consumers-'))
+  const directory = await mkdtemp(path.join(os.tmpdir(), 'topo-check-log-consumers-'))
   try {
     const filename = path.join(directory, 'consumers.mjs')
     await writeFile(filename, bundle.outputFiles[0].text)

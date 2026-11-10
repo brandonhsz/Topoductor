@@ -7,7 +7,7 @@ import type { RemoteCommandChannel } from '../../managed-server/install/remote-i
 // setsid preserves per-command process-group isolation. Fresh output files keep background writers attached to old inodes, never the next command.
 export const WSL_COMMAND_LOOP_SCRIPT = [
   'm="$1"',
-  'd=$(mktemp -d "${TMPDIR:-/tmp}/orca-wsl-exec.XXXXXX") || exit 97',
+  'd=$(mktemp -d "${TMPDIR:-/tmp}/topo-wsl-exec.XXXXXX") || exit 97',
   'trap \'rm -rf "$d"\' EXIT',
   "trap 'exit 129' HUP INT TERM",
   '[ "$(printf eA== | base64 -d 2>/dev/null)" = x ] || exit 98',
@@ -24,7 +24,7 @@ export const WSL_COMMAND_LOOP_SCRIPT = [
   'done'
 ].join('\n')
 
-export const WSL_COMMAND_LOOP_ARGV0 = 'orca-wsl-exec-loop'
+export const WSL_COMMAND_LOOP_ARGV0 = 'topo-wsl-exec-loop'
 
 const BASE64_LINE = /^[A-Za-z0-9+/=]*$/u
 
@@ -50,7 +50,7 @@ export type WslCommandLoop = {
 }
 
 export function wslCommandLoopMarker(): string {
-  return `__ORCA_WSL_EXEC_${randomUUID().replaceAll('-', '')}__`
+  return `__TOPO_WSL_EXEC_${randomUUID().replaceAll('-', '')}__`
 }
 
 export function startWslCommandLoop(

@@ -5,7 +5,7 @@ import type {
 } from '../../../../../shared/agent-session/journal/agent-journal-creation-facts'
 import type { AgentMessageSender } from '../../../../../shared/agent-session/agent-session-message-source'
 import type { AgentType } from '../../../../../shared/agent-status/contracts/agent-status-types'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import type { OrchestrationSessionCaller } from '../../addressing/orchestration-caller-identity'
 
 export type AgentCreationCard = AgentJournalAgentStartItem | AgentJournalAgentHandoffItem
@@ -37,7 +37,7 @@ export function prepareAgentCreationCard(
 
 /** The started agent's sender, keeping the kind the launch knows when the lookup can't find it. */
 export function startedAgentSender(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   address: string,
   agent: AgentType | null,
   dispatchId?: string
@@ -47,7 +47,7 @@ export function startedAgentSender(
 }
 
 export function prepareWorkerStartCard(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   callerSession: OrchestrationSessionCaller | undefined
 ): (args: {
   dispatchId: string

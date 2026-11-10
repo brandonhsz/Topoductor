@@ -2,7 +2,7 @@
 
 import { createServer, type Server } from 'node:http'
 import { evalInPage, rpc } from './helpers/browser-agent-focus-scenarios'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, getActiveWorktreeId, waitForActiveWorktree } from './helpers/store'
 
 const PAGE_HTML = `<!doctype html>
@@ -43,13 +43,13 @@ test.describe('browser grab over top-layer content', () => {
   let server: Awaited<ReturnType<typeof startProbeServer>>
   let pageId: string
 
-  test.beforeEach(async ({ orcaPage }) => {
+  test.beforeEach(async ({ topoPage }) => {
     server = await startProbeServer()
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
-    const worktreeId = await getActiveWorktreeId(orcaPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
+    const worktreeId = await getActiveWorktreeId(topoPage)
     expect(worktreeId).toBeTruthy()
-    const created = await orcaPage.evaluate(
+    const created = await topoPage.evaluate(
       ({ targetWorktreeId, targetUrl }) =>
         window.__store?.getState().createBrowserTab(targetWorktreeId, targetUrl, {
           title: 'Grab top layer probe',
@@ -62,7 +62,7 @@ test.describe('browser grab over top-layer content', () => {
     }
     pageId = created
     await expect
-      .poll(() => evalInPage(orcaPage, pageId, 'document.readyState + window.__presses'), {
+      .poll(() => evalInPage(topoPage, pageId, 'document.readyState + window.__presses'), {
         timeout: 20_000
       })
       .toBe('complete0')
@@ -87,16 +87,16 @@ test.describe('browser grab over top-layer content', () => {
       targetId: 'in-popover'
     }
   ]) {
-    test(`picks an element inside a ${name} opened after grab arms`, async ({ orcaPage }) => {
+    test(`picks an element inside a ${name} opened after grab arms`, async ({ topoPage }) => {
       await expect(
-        orcaPage.evaluate(
+        topoPage.evaluate(
           (id) => window.api.browser.setGrabMode({ browserPageId: id, enabled: true }),
           pageId
         )
       ).resolves.toMatchObject({ ok: true })
       const [x, y] = String(
         await evalInPage(
-          orcaPage,
+          topoPage,
           pageId,
           `${open}; (() => { const r = document.getElementById('${targetId}').getBoundingClientRect(); return (r.x + r.width / 2) + ',' + (r.y + r.height / 2) })()`
         )
@@ -104,25 +104,25 @@ test.describe('browser grab over top-layer content', () => {
         .split(',')
         .map(Number)
 
-      const selection = orcaPage.evaluate(
+      const selection = topoPage.evaluate(
         (id) => window.api.browser.awaitGrabSelection({ browserPageId: id, opId: 'e2e-top-layer' }),
         pageId
       )
       await expect
-        .poll(() => evalInPage(orcaPage, pageId, 'typeof window.__orcaGrab?.cancelAwait'))
+        .poll(() => evalInPage(topoPage, pageId, 'typeof window.__topoGrab?.cancelAwait'))
         .toBe('function')
-      await rpc(orcaPage, 'browser.mouseMove', { page: pageId, x: x - 4, y })
-      await rpc(orcaPage, 'browser.mouseMove', { page: pageId, x, y })
-      await rpc(orcaPage, 'browser.mouseDown', { page: pageId, button: 'left' })
-      await rpc(orcaPage, 'browser.mouseUp', { page: pageId, button: 'left' })
+      await rpc(topoPage, 'browser.mouseMove', { page: pageId, x: x - 4, y })
+      await rpc(topoPage, 'browser.mouseMove', { page: pageId, x, y })
+      await rpc(topoPage, 'browser.mouseDown', { page: pageId, button: 'left' })
+      await rpc(topoPage, 'browser.mouseUp', { page: pageId, button: 'left' })
 
       expect(await selection).toMatchObject({
         kind: 'selected',
         payload: { target: { selector: expect.stringContaining(targetId) } }
       })
       // The pick must not reach the page as a press or close what it picked from.
-      expect(await evalInPage(orcaPage, pageId, 'window.__presses')).toBe('0')
-      expect(await evalInPage(orcaPage, pageId, isOpen)).toBe('true')
+      expect(await evalInPage(topoPage, pageId, 'window.__presses')).toBe('0')
+      expect(await evalInPage(topoPage, pageId, isOpen)).toBe('true')
     })
   }
 })

@@ -93,11 +93,11 @@ export function getWslHostsPausedShortLabel(t: Translate = translate): string {
   )
 }
 
-/** Explain missing orcad templates in dialogs; without them WSL hosts cannot run. */
+/** Explain missing topod templates in dialogs; without them WSL hosts cannot run. */
 export function getWslHostServerFilesMissingLabel(t: Translate = translate): string {
   return t(
     'auto.components.sidebar.wslHostRowStatus.serverFilesMissing',
-    'This build of Orca can’t run WSL hosts (server files missing).'
+    'This build of Topo can’t run WSL hosts (server files missing).'
   )
 }
 

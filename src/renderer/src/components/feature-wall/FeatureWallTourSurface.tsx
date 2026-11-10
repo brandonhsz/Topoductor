@@ -66,7 +66,7 @@ export function FeatureWallTourSurface({
     footerTextOverride === undefined
       ? t(
           'auto.components.feature.wall.FeatureWallTourSurface.reopenHint',
-          'Reopen any time from Help > Explore Orca.'
+          'Reopen any time from Help > Explore Topo.'
         )
       : footerTextOverride
   const settings = useAppStore((s) => s.settings)

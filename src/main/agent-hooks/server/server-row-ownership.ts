@@ -53,7 +53,7 @@ export abstract class AgentHookServerRowOwnership extends AgentHookServerListene
   /** Set only for the direct applyNormalizedStatus call of applyRestatedStatus. */
   protected restatingStatus = false
 
-  /** Orca's own restatement of a row (an inferred settle, a timer or poll republish) carries the
+  /** Topo's own restatement of a row (an inferred settle, a timer or poll republish) carries the
    *  row's evidence; only the agent's own events may name or replace the pane's owner. */
   protected applyRestatedStatus(
     incoming: AgentHookEventPayload

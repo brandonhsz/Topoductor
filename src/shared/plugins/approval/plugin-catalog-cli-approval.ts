@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { pluginRepositoryOrigin } from '../catalog/plugin-repository-link'
 import { PLUGIN_APPROVAL_REQUIRED_CODE, PLUGIN_APPROVAL_STALE_CODE } from './plugin-cli-approval'
 
-/** Adding a catalog widens what Orca installs by name and auto-updates, so it needs `--approve` too. */
+/** Adding a catalog widens what Topo installs by name and auto-updates, so it needs `--approve` too. */
 
 export type PluginCatalogApprovalRequest = {
   kind: 'catalog'
@@ -33,14 +33,14 @@ export function buildPluginCatalogApprovalRequest(source: {
     catalog: { url: source.url, ref: source.ref, owner, repository: origin?.repository ?? null },
     approvalFingerprint,
     grants: [
-      `Orca lists this catalog's plugins in Settings → Plugins, and \`orca plugin install <publisher.id>\` installs them by name.`,
-      'With plugin auto-update on, Orca installs new versions of plugins you installed from it without asking, as long as they ask for no new access.',
+      `Topo lists this catalog's plugins in Settings → Plugins, and \`topo plugin install <publisher.id>\` installs them by name.`,
+      'With plugin auto-update on, Topo installs new versions of plugins you installed from it without asking, as long as they ask for no new access.',
       'Adding it installs and enables nothing by itself; each plugin that runs code still needs its own approval.'
     ],
-    why: `A catalog decides which repositories Orca installs and updates plugins from. It is published by ${owner ?? 'its owner'}, not Orca, so only add it if you trust ${owner ?? 'its owner'}.`,
+    why: `A catalog decides which repositories Topo installs and updates plugins from. It is published by ${owner ?? 'its owner'}, not Topo, so only add it if you trust ${owner ?? 'its owner'}.`,
     approveFlag,
     nextSteps: [
-      'Adding a catalog changes where Orca installs plugins from. Confirm with your user first unless they asked for exactly this catalog.',
+      'Adding a catalog changes where Topo installs plugins from. Confirm with your user first unless they asked for exactly this catalog.',
       `To approve, run the same command again with ${approveFlag}`
     ]
   }

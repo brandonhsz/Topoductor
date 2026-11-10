@@ -41,19 +41,19 @@ export class ClaudeAgentTeamsService {
       TMUX_PANE: leaderPane,
       TERM: 'screen-256color',
       COLORTERM: args.baseEnv.COLORTERM || 'truecolor',
-      ORCA_AGENT_TEAMS_TEAM_ID: teamId,
-      ORCA_AGENT_TEAMS_TOKEN: token,
-      ORCA_AGENT_TEAMS_LEADER_PANE: leaderPane,
-      ORCA_AGENT_TEAMS_SHIM_DIR: args.shimDir
+      TOPO_AGENT_TEAMS_TEAM_ID: teamId,
+      TOPO_AGENT_TEAMS_TOKEN: token,
+      TOPO_AGENT_TEAMS_LEADER_PANE: leaderPane,
+      TOPO_AGENT_TEAMS_SHIM_DIR: args.shimDir
     }
     if (args.shimBin) {
-      env.ORCA_AGENT_TEAMS_SHIM_BIN = args.shimBin
+      env.TOPO_AGENT_TEAMS_SHIM_BIN = args.shimBin
     }
-    if (args.baseEnv.ORCA_PAIRING_CODE) {
-      env.ORCA_PAIRING_CODE = args.baseEnv.ORCA_PAIRING_CODE
+    if (args.baseEnv.TOPO_PAIRING_CODE) {
+      env.TOPO_PAIRING_CODE = args.baseEnv.TOPO_PAIRING_CODE
     }
-    if (args.baseEnv.ORCA_ENVIRONMENT) {
-      env.ORCA_ENVIRONMENT = args.baseEnv.ORCA_ENVIRONMENT
+    if (args.baseEnv.TOPO_ENVIRONMENT) {
+      env.TOPO_ENVIRONMENT = args.baseEnv.TOPO_ENVIRONMENT
     }
 
     const leader: TeamPane = { fakePaneId: leaderPane, handle: args.leaderHandle, index: 0 }
@@ -62,7 +62,7 @@ export class ClaudeAgentTeamsService {
       token,
       leaderPane,
       leaderHandle: args.leaderHandle,
-      sessionName: 'orca',
+      sessionName: 'topo',
       windowIndex: '0',
       tmuxValue,
       baseEnv: env,

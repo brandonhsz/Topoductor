@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import '../../native-chat/agent-session-wire/host/structured-agent-session-registry'
 
-class GraphRuntime extends OrcaRuntimeService {
+class GraphRuntime extends TopoRuntimeService {
   get graphTabs() {
     return this.tabs
   }

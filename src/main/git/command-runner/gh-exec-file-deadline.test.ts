@@ -46,13 +46,13 @@ describe('gh exec deadline', () => {
       const child = mockChild()
       spawnMock.mockReturnValue(child)
 
-      const pending = ghExecFileAsync(['api', '--include', 'user/starred/stablyai/orca'], {
+      const pending = ghExecFileAsync(['api', '--include', 'user/starred/brandonhsz/Topoductor'], {
         timeout: 15_000
       })
       const rejection = expect(pending).rejects.toThrow('timed out')
       await vi.waitFor(() => expect(spawnMock).toHaveBeenCalledOnce())
 
-      // A detached group keeps cleanup signals from reaching Orca's own process group.
+      // A detached group keeps cleanup signals from reaching Topo's own process group.
       expect(spawnMock.mock.calls[0][2].detached).toBe(true)
       expect(processKillMock).not.toHaveBeenCalled()
 
@@ -72,7 +72,10 @@ describe('gh exec deadline', () => {
     })
 
     await expect(
-      ghExecFileAsync(['api', 'repos/stablyai/orca/issues'], { timeout: 15_000, maxBuffer: 8 })
+      ghExecFileAsync(['api', 'repos/brandonhsz/Topoductor/issues'], {
+        timeout: 15_000,
+        maxBuffer: 8
+      })
     ).rejects.toThrow('more than 8 bytes')
   })
 })

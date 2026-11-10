@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import { sendToTerminal, waitForActivePanePtyId } from './helpers/terminal'
 import { compareTerminalScreenshots } from './terminal-screenshot-diff'
@@ -9,7 +9,7 @@ const FLOATING_WORKTREE_ID = 'global-floating-terminal'
 const PANEL_SELECTOR = '[data-floating-terminal-panel]'
 
 // Dispatch the same toggle event as the status bar and shortcut.
-const TOGGLE_EVENT = 'orca-toggle-floating-terminal'
+const TOGGLE_EVENT = 'topo-toggle-floating-terminal'
 
 // Block shell prompt repaints so screenshot comparisons stay stable.
 const SILENT_FOREGROUND_COMMAND = 'node -e "setInterval(() => {}, 1000)"\r'
@@ -305,24 +305,24 @@ async function captureWorkspaceAfterTrigger(
 
 test.describe('floating workspace shared glyph atlas @headful', () => {
   test('switching floating workspace tabs keeps workspace terminal glyphs intact', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
     // Resuming a floating renderer clears shared atlas pages; sibling models must invalidate their old glyph coordinates.
-    const scenario = await setUpSharedAtlasScenario(orcaPage)
+    const scenario = await setUpSharedAtlasScenario(topoPage)
     test.skip(!scenario, 'WebGL inactive or terminals do not share a glyph atlas')
     const { baseline, floatingTabIds } = scenario!
 
-    await toggleFloatingPanel(orcaPage, true)
-    await activateFloatingTab(orcaPage, floatingTabIds[1])
+    await toggleFloatingPanel(topoPage, true)
+    await activateFloatingTab(topoPage, floatingTabIds[1])
     // Require WebGL attachment to prove the tab switch actually resumed rendering.
     expect(
-      await waitForWebglOnTab(orcaPage, floatingTabIds[1]),
+      await waitForWebglOnTab(topoPage, floatingTabIds[1]),
       'switched-to floating tab should resume WebGL'
     ).toBe(true)
-    await settleAtlasActivity(orcaPage)
-    await toggleFloatingPanel(orcaPage, false)
+    await settleAtlasActivity(topoPage)
+    await toggleFloatingPanel(topoPage, false)
 
-    const afterSwitch = await captureWorkspaceAfterTrigger(orcaPage, scenario!)
+    const afterSwitch = await captureWorkspaceAfterTrigger(topoPage, scenario!)
     await testInfo.attach('baseline', { body: baseline, contentType: 'image/png' })
     await testInfo.attach('after-tab-switch', { body: afterSwitch, contentType: 'image/png' })
     // Allow antialiasing noise below 1.5%; stale-model blanking affects ~3% of pixels.
@@ -338,19 +338,19 @@ test.describe('floating workspace shared glyph atlas @headful', () => {
   })
 
   test('a sibling terminal clearing the shared atlas leaves workspace glyphs intact', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
     // Clear the floating manager directly: reveal’s global reset would heal every pane and mask missing sibling invalidation.
-    const scenario = await setUpSharedAtlasScenario(orcaPage)
+    const scenario = await setUpSharedAtlasScenario(topoPage)
     test.skip(!scenario, 'WebGL inactive or terminals do not share a glyph atlas')
     const { baseline, workspacePtyId, floatingTabIds } = scenario!
 
     // The panel stays closed: the workspace terminal must be the only thing repainting.
-    await resetAtlasOnTab(orcaPage, floatingTabIds[0])
+    await resetAtlasOnTab(topoPage, floatingTabIds[0])
 
     // Refresh without rebuilding to exercise vertices still pointing into the wiped atlas.
-    await refreshTerminalOnTab(orcaPage, scenario!.workspaceTabId)
-    const afterSiblingClear = await captureStableWorkspaceShot(orcaPage, workspacePtyId)
+    await refreshTerminalOnTab(topoPage, scenario!.workspaceTabId)
+    const afterSiblingClear = await captureStableWorkspaceShot(topoPage, workspacePtyId)
 
     await testInfo.attach('baseline', { body: baseline, contentType: 'image/png' })
     await testInfo.attach('after-sibling-clear', {
@@ -369,18 +369,18 @@ test.describe('floating workspace shared glyph atlas @headful', () => {
   })
 
   test('reopening the floating workspace keeps workspace terminal glyphs intact', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
     // Panel reopen also resumes a renderer and clears shared pages, so siblings must invalidate then too.
-    const scenario = await setUpSharedAtlasScenario(orcaPage)
+    const scenario = await setUpSharedAtlasScenario(topoPage)
     test.skip(!scenario, 'WebGL inactive or terminals do not share a glyph atlas')
     const { baseline } = scenario!
 
-    await toggleFloatingPanel(orcaPage, true)
-    await settleAtlasActivity(orcaPage)
-    await toggleFloatingPanel(orcaPage, false)
+    await toggleFloatingPanel(topoPage, true)
+    await settleAtlasActivity(topoPage)
+    await toggleFloatingPanel(topoPage, false)
 
-    const afterReopen = await captureWorkspaceAfterTrigger(orcaPage, scenario!)
+    const afterReopen = await captureWorkspaceAfterTrigger(topoPage, scenario!)
     await testInfo.attach('baseline', { body: baseline, contentType: 'image/png' })
     await testInfo.attach('after-reopen', { body: afterReopen, contentType: 'image/png' })
     const afterReopenDiff = compareTerminalScreenshots(baseline, afterReopen)

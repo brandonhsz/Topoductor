@@ -145,7 +145,7 @@ describe('CodexAccountService config sync', () => {
       )
 
       await expect(service.addAccount()).rejects.toThrow(
-        'Orca cannot add a Codex OAuth account while ~/.codex/config.toml pins the custom provider "codex-lb". Keep using the system-default account for this provider, or remove model_provider (or set it to "openai") before adding an OAuth account. Orca left your config unchanged.'
+        'Topo cannot add a Codex OAuth account while ~/.codex/config.toml pins the custom provider "codex-lb". Keep using the system-default account for this provider, or remove model_provider (or set it to "openai") before adding an OAuth account. Topo left your config unchanged.'
       )
 
       expect(spawnMock).not.toHaveBeenCalled()
@@ -172,8 +172,8 @@ describe('CodexAccountService config sync', () => {
     const spawnMock = vi.fn(
       (_command: string, _args: string[], options: { env: NodeJS.ProcessEnv }) => {
         const loginHome = options.env.CODEX_HOME
-        expect(loginHome).toMatch(/[\\/]account-1[\\/]home[\\/]\.orca-reauth-login$/)
-        expect(readFileSync(join(managedHomePath, '.orca-managed-home'), 'utf-8')).toBe(
+        expect(loginHome).toMatch(/[\\/]account-1[\\/]home[\\/]\.topo-reauth-login$/)
+        expect(readFileSync(join(managedHomePath, '.topo-managed-home'), 'utf-8')).toBe(
           'account-1\n'
         )
         expect(readFileSync(join(loginHome!, 'config.toml'), 'utf-8')).toBe(canonicalConfig)

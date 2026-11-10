@@ -1,6 +1,6 @@
 import { expect, it, vi } from 'vitest'
 import { AGENT_STATUS_STALE_AFTER_MS } from '../../../../shared/agent-status/contracts/agent-status-freshness'
-import { testOrcaSessionId } from '../../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../../shared/topo-session-address-test-fixture'
 import type { OrchestrationCoordinatorKey } from '../addressing/orchestration-caller-identity'
 import { createCrewSourceInputs } from './crew-source-inputs'
 import { fixture } from './crew-read-model.test-fixture'
@@ -120,8 +120,8 @@ it('refreshes every overlapping alias mailbox while retaining unrelated reads, t
 
 it('keeps owned Run facts distinct when a coordinator shares only a handle, pane, or session', () => {
   const f = fixture()
-  const sessionA = testOrcaSessionId('owned-cache-a')
-  const sessionB = testOrcaSessionId('owned-cache-b')
+  const sessionA = testTopoSessionId('owned-cache-a')
+  const sessionB = testTopoSessionId('owned-cache-b')
   const workerRun = f.db.createRun({
     objective: 'Other remembered handle',
     coordinatorHandle: 'term_worker',
@@ -137,13 +137,13 @@ it('keeps owned Run facts distinct when a coordinator shares only a handle, pane
       objective: 'Native owner',
       coordinatorHandle: null,
       coordinatorPaneKey: null,
-      coordinatorOrcaSessionId: session
+      coordinatorTopoSessionId: session
     })
   )
   const base: OrchestrationCoordinatorKey = {
     terminalHandle: 'term_coord',
     paneKey: f.handles.get('term_coord')!,
-    orcaSessionId: sessionA
+    topoSessionId: sessionA
   }
   const cases: { party: OrchestrationCoordinatorKey; ids: string[] }[] = [
     { party: base, ids: [f.run.id, sessionRuns[0].id] },
@@ -155,7 +155,7 @@ it('keeps owned Run facts distinct when a coordinator shares only a handle, pane
       party: { ...base, paneKey: f.handles.get('term_peer')! },
       ids: [f.run.id, peerRun.id, sessionRuns[0].id]
     },
-    { party: { ...base, orcaSessionId: sessionB }, ids: [f.run.id, sessionRuns[1].id] }
+    { party: { ...base, topoSessionId: sessionB }, ids: [f.run.id, sessionRuns[1].id] }
   ]
   const source = createCrewSourceInputs(f.db)
   for (const { party, ids } of cases) {

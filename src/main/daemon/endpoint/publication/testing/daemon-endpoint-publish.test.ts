@@ -24,7 +24,7 @@ const unixIt = it.skipIf(process.platform === 'win32')
 type Listener = { server: Server; connections: () => number }
 
 function makeTempDir(): string {
-  return mkdtempSync(join(tmpdir(), 'orca-p-'))
+  return mkdtempSync(join(tmpdir(), 'topo-p-'))
 }
 
 async function listen(socketPath: string): Promise<Listener> {

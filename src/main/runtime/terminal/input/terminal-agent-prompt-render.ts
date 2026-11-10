@@ -1,9 +1,9 @@
-import { OrcaRuntimeWithSubmitTerminalAgentPrompt } from './terminal-agent-prompt-submit'
+import { TopoRuntimeWithSubmitTerminalAgentPrompt } from './terminal-agent-prompt-submit'
 import type {
   RuntimeTerminalWait,
   RuntimeTerminalWaitCondition
 } from '../../../../shared/runtime-terminal-contracts'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { isCompleteAgentPromptDraft } from '../../../../shared/agent-launch/startup/agent-prompt-injection'
 import { readTerminalComposerTypedText } from '../../../../shared/terminal/input/terminal-composer-draft'
 const CLAUDE_AGENT_PROMPT_RENDER_TIMEOUT_MS = 8000
@@ -16,7 +16,7 @@ const AGENT_PROMPT_RENDER_DRAFT_SETTLE_MS = 300
 // Claude shows its cursor before composer rendering settles.
 const CLAUDE_AGENT_PROMPT_RENDER_MARKER = '\x1b[?25h'
 
-export abstract class OrcaRuntimeWithCreateAgentPromptRenderGate extends OrcaRuntimeWithSubmitTerminalAgentPrompt {
+export abstract class TopoRuntimeWithCreateAgentPromptRenderGate extends TopoRuntimeWithSubmitTerminalAgentPrompt {
   protected createAgentPromptRenderGate(
     ptyId: string,
     pasteIngestMs: number,
@@ -200,7 +200,7 @@ export abstract class OrcaRuntimeWithCreateAgentPromptRenderGate extends OrcaRun
     }
   ): Promise<RuntimeTerminalWait> {
     // Switch point: a saved pane main holds with no terminal yet starts first (once, shared).
-    const starting = ORCA_LAYOUT_OWNER_IS_MAIN
+    const starting = TOPO_LAYOUT_OWNER_IS_MAIN
       ? this.startRestoredHandlePane(handle, options ?? {})
       : null
     if (starting) {

@@ -1,5 +1,5 @@
-/** Set by `orca serve` on its orcad child: '1' when a service manager supervises it, '' otherwise. */
-export const ORCA_SERVE_SUPERVISED_ENV = 'ORCA_SERVE_SUPERVISED'
+/** Set by `topo serve` on its topod child: '1' when a service manager supervises it, '' otherwise. */
+export const TOPO_SERVE_SUPERVISED_ENV = 'TOPO_SERVE_SUPERVISED'
 
-/** EX_TEMPFAIL: a supervised orcad had no terminal daemon, so its terminals would die on restart. */
-export const ORCAD_EXIT_TERMINALS_NOT_DURABLE = 75
+/** EX_TEMPFAIL: a supervised topod had no terminal daemon, so its terminals would die on restart. */
+export const TOPOD_EXIT_TERMINALS_NOT_DURABLE = 75

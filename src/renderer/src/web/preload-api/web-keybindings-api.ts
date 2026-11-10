@@ -39,8 +39,8 @@ export type WebKeybindingsApi = NonNullable<PreloadApi['keybindings']>
 
 export const webKeybindingListeners = new Set<(snapshot: KeybindingFileSnapshot) => void>()
 
-const SEARCH_DEFAULTS_STORAGE_KEY = 'orca.web.searchKeybindingSeed.v1'
-const NON_MAC_SEARCH_DEFAULTS_STORAGE_KEY = 'orca.web.nonMacSearchKeybindingSeed.v1'
+const SEARCH_DEFAULTS_STORAGE_KEY = 'topo.web.searchKeybindingSeed.v1'
+const NON_MAC_SEARCH_DEFAULTS_STORAGE_KEY = 'topo.web.nonMacSearchKeybindingSeed.v1'
 let legacySearchDefaults = false
 
 function migrateWebSearchKeybindings(): void {

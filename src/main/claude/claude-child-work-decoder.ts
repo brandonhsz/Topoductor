@@ -23,7 +23,7 @@ import {
 } from './claude-background-task-frames'
 import { isClaudeSubagentTask } from './claude-subagent-task-frames'
 import { ClaudeAgentWaitCalls } from './claude-agent-wait-calls'
-import { ORCA_ORCHESTRATION_WAIT_COMMAND } from '../../shared/orca-cli-invocations'
+import { TOPO_ORCHESTRATION_WAIT_COMMAND } from '../../shared/topo-cli-invocations'
 import {
   claudeChildWorkOutcome,
   claudeTaskProgressFacts,
@@ -38,7 +38,7 @@ type DecodedClaudeTask = {
   name?: string
   description?: string
   toolUseId?: string
-  /** Runs `orca orchestration check --wait`: waiting on worker agents, so agent work. */
+  /** Runs `topo orchestration check --wait`: waiting on worker agents, so agent work. */
   awaitsAgents?: true
 }
 
@@ -58,7 +58,7 @@ function observation(
     : task.awaitsAgents
       ? {
           toolName: 'Bash',
-          input: ORCA_ORCHESTRATION_WAIT_COMMAND,
+          input: TOPO_ORCHESTRATION_WAIT_COMMAND,
           basis: 'reported',
           observedAt
         }

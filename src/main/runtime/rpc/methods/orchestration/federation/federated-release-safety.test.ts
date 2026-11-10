@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../../../../shared/orchestration/orchestration-runtime-capabilities'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -16,11 +16,11 @@ const TERMINAL_HANDLE = 'term_remote'
 
 describe('federated worker release ownership', () => {
   let db: OrchestrationDb
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
 
   beforeEach(() => {
     db = new OrchestrationDb(':memory:')
-    runtime = new OrcaRuntimeService()
+    runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     vi.spyOn(runtime, 'getTerminalPaneKey').mockReturnValue(PANE_KEY)
     vi.spyOn(runtime, 'getTerminalProcessIncarnation').mockReturnValue(PROCESS_INCARNATION)

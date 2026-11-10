@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { OnboardingInlineCommandTerminal } from './OnboardingInlineCommandTerminal'
 
 import {
-  ORCA_TERMINAL_COMMAND_FINISHED_EVENT,
+  TOPO_TERMINAL_COMMAND_FINISHED_EVENT,
   type TerminalCommandFinishedEventDetail
 } from '@/hooks/terminal-command-finished-event'
 
@@ -52,7 +52,7 @@ vi.mock('@/lib/focus-terminal-tab-surface', () => ({
 
 function dispatchCommandFinished(worktreeId: string, exitCode: number | null): void {
   window.dispatchEvent(
-    new CustomEvent<TerminalCommandFinishedEventDetail>(ORCA_TERMINAL_COMMAND_FINISHED_EVENT, {
+    new CustomEvent<TerminalCommandFinishedEventDetail>(TOPO_TERMINAL_COMMAND_FINISHED_EVENT, {
       detail: { worktreeId, exitCode }
     })
   )

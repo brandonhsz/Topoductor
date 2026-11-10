@@ -16,7 +16,7 @@ const MODEL_ROW = {
 
 describe('codex model catalog probe', () => {
   it.each([[[]]])(
-    "lists a command line with arguments %j from Orca's folder for every chat",
+    "lists a command line with arguments %j from Topo's folder for every chat",
     async (prefixArgs) => {
       // The chat's repo never picks the list, so no listing runs in a chat's folder.
       const invocations: CodexAppServerInvocation[] = []
@@ -42,7 +42,7 @@ describe('codex model catalog probe', () => {
       for (const folder of ['/chat-a', '/chat-b']) {
         const resolved = await probe.resolve?.(
           { variable: 'CODEX_HOME', path: '/homes/a' },
-          '/orca-probe',
+          '/topo-probe',
           'snapshot',
           undefined,
           folder
@@ -51,19 +51,19 @@ describe('codex model catalog probe', () => {
         await resolved?.run()
       }
       expect(invocations.map((invocation) => invocation.cwd)).toEqual([
-        '/orca-probe',
-        '/orca-probe'
+        '/topo-probe',
+        '/topo-probe'
       ])
       expect(invocations[0]?.args.slice(0, prefixArgs.length + 2)).toEqual([
         ...prefixArgs,
         '-c',
         'project_root_markers=[]'
       ])
-      expect(identities[0]).toMatchObject({ cwd: '/orca-probe' })
+      expect(identities[0]).toMatchObject({ cwd: '/topo-probe' })
       expect(identities[1]).toEqual(identities[0])
-      // The account's configured default is read for Orca's folder, never the project's.
+      // The account's configured default is read for Topo's folder, never the project's.
       expect(configReads).toEqual(
-        expect.arrayContaining([expect.objectContaining({ cwd: '/orca-probe' })])
+        expect.arrayContaining([expect.objectContaining({ cwd: '/topo-probe' })])
       )
     }
   )

@@ -82,8 +82,8 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 202, 'squash', undefined, {
-        owner: 'stablyai',
-        repo: 'orca',
+        owner: 'brandonhsz',
+        repo: 'topo',
         host: 'github.com'
       })
     ).resolves.toEqual({ ok: false, error: 'socket closed after request submission' })
@@ -390,7 +390,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
           number: 202,
           title: 'Stack API',
           state: 'OPEN',
-          url: 'https://github.com/stablyai/orca/pull/202',
+          url: 'https://github.com/brandonhsz/topo/pull/202',
           statusCheckRollup: [],
           updatedAt: '2026-08-10T00:00:00Z',
           isDraft: false,
@@ -403,20 +403,20 @@ describe('GitHub GraphQL rate-limit guard', () => {
       .mockResolvedValueOnce({ stdout: '', stderr: '' })
 
     const result = await mergePR(scenario.repoPath, 202, 'squash', scenario.connectionId, {
-      owner: 'stablyai',
-      repo: 'orca',
+      owner: 'brandonhsz',
+      repo: 'topo',
       host: scenario.expectedOptions.host
     })
 
     expect.soft(result).toEqual({ ok: false, error: scenario.expectedError })
     expect
       .soft(metadataRequests.mock.calls.map(([args]) => args))
-      .toEqual([['api', 'repos/stablyai/orca/pulls/202', '--include']])
+      .toEqual([['api', 'repos/brandonhsz/topo/pulls/202', '--include']])
     expect.soft(metadataRequests.mock.calls[0]?.[1]).toEqual(scenario.expectedOptions)
     expect
       .soft(
         metadataRequests.mock.calls.some(([args]) =>
-          args.includes('repos/stablyai/orca/pulls/202/merge-async')
+          args.includes('repos/brandonhsz/topo/pulls/202/merge-async')
         )
       )
       .toBe(false)
@@ -428,7 +428,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
     expect
       .soft(consoleWarnSpy)
       .toHaveBeenCalledWith(
-        'mergePR stack metadata probe failed for stablyai/orca#202:',
+        'mergePR stack metadata probe failed for brandonhsz/topo#202:',
         scenario.expectedDiagnostic
       )
     expect.soft(consoleWarnSpy).toHaveBeenCalledTimes(1)

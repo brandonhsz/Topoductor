@@ -23,7 +23,7 @@ describe('ArtifactPreview', () => {
   beforeEach(() => {
     Object.assign(window, {
       api: {
-        browser: { sessionResolvePartition: vi.fn().mockResolvedValue('persist:orca-default') }
+        browser: { sessionResolvePartition: vi.fn().mockResolvedValue('persist:topo-default') }
       }
     })
   })

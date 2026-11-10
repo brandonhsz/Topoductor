@@ -1,9 +1,9 @@
 import { retireMobileSessionTabSelection } from './mobile-session-tab-selection'
 import { LOCAL_EXECUTION_HOST_ID } from '../../../shared/execution-host'
-import type { OrcaRuntimeWithStoredMobileSnapshotHasStalePreservedTab as BrowserOwnership } from './mobile-session-publication-preservation'
-import type { OrcaRuntimeWithPruneMobileSessionTabGroupLayout as PruneMobileSessionTabGroupLayoutMethods } from '../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
+import type { TopoRuntimeWithStoredMobileSnapshotHasStalePreservedTab as BrowserOwnership } from './mobile-session-publication-preservation'
+import type { TopoRuntimeWithPruneMobileSessionTabGroupLayout as PruneMobileSessionTabGroupLayoutMethods } from '../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
 import type { RuntimeHeadlessTabGroups as HeadlessTabGroupsMethods } from './headless-tab-group-moves'
-import { OrcaRuntimeWithStructuredSessionTabProjection } from './restored-chat-tab-changes'
+import { TopoRuntimeWithStructuredSessionTabProjection } from './restored-chat-tab-changes'
 import type { BrowserTabInfo } from '../../../shared/browser/runtime/runtime-browser-contracts'
 import type {
   RuntimeMobileSessionAgentTab,
@@ -27,7 +27,7 @@ import {
 } from '../agent-session/agent-session-tab-layout'
 import { createChatTabLayoutQueue } from '../agent-session/agent-session-tab-layout-queue'
 import type * as LayoutCommands from '../terminal/layout/runtime-layout-apply'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import type { LayoutApplyReply } from '../../../shared/workspace-layout/workspace-layout-command-types'
 import {
   captureStructuredSessionPresentation,
@@ -40,7 +40,7 @@ import {
   type StructuredSessionSurface
 } from '../agent-session/structured-agent-session-close'
 
-export abstract class OrcaRuntimeWithCloseStructuredAgentSessionTab extends OrcaRuntimeWithStructuredSessionTabProjection {
+export abstract class TopoRuntimeWithCloseStructuredAgentSessionTab extends TopoRuntimeWithStructuredSessionTabProjection {
   protected abstract isHeadlessOwnedMobileBrowserTab(
     ...args: Parameters<BrowserOwnership['isHeadlessOwnedMobileBrowserTab']>
   ): ReturnType<BrowserOwnership['isHeadlessOwnedMobileBrowserTab']>
@@ -276,7 +276,7 @@ export abstract class OrcaRuntimeWithCloseStructuredAgentSessionTab extends Orca
       currentRaw: () => this.currentLocalStructuredSessionPresentation(sessionId),
       eligible: () => this.passiveStructuredSessionTabChangeEligible({ close: sessionId })
     })
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       this.queueChatTabChanges(changesNow)
     } else {
       for (const queued of changesNow()) {
@@ -292,7 +292,7 @@ export abstract class OrcaRuntimeWithCloseStructuredAgentSessionTab extends Orca
     eligible?: (change: ChatTabChange) => boolean
   ): Promise<void> {
     // Main-owned layouts place chat tabs with or without a window.
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       return this.queueChatTabChanges(
         changes.map((change) => ({
           worktreeId,

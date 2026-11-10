@@ -8,7 +8,7 @@ import {
   parseHostPluginManifest,
   parsePluginManifest,
   qualifiedPluginKey,
-  satisfiesOrcaEngineRange,
+  satisfiesTopoEngineRange,
   type PluginManifest
 } from '../../shared/plugins/manifest/plugin-manifest'
 import {
@@ -119,11 +119,11 @@ async function readManifestDir(
     installedPublisher ?? localPluginPublisher(parsed.manifest.publisher)
   )
   const pluginKey = qualifiedPluginKey(manifest)
-  if (!satisfiesOrcaEngineRange(hostVersion, manifest.engines.orca)) {
+  if (!satisfiesTopoEngineRange(hostVersion, manifest.engines.orca)) {
     return {
       pluginKey,
       rootDir,
-      error: `requires Orca ${manifest.engines.orca} (this is ${hostVersion})`,
+      error: `requires Topo ${manifest.engines.orca} (this is ${hostVersion})`,
       isDev
     }
   }

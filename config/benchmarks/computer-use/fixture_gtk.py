@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""GTK3 target for the cua-vs-Orca background bench. Writes state.json every 30 ms; obeys cmd."""
+"""GTK3 target for the cua-vs-Topo background bench. Writes state.json every 30 ms; obeys cmd."""
 import json
 import os
 import sys
 
-if os.environ.get("ORCA_COMPUTER_BENCH_ISOLATED") != "1" or os.environ.get("GITHUB_ACTIONS") != "true":
+if os.environ.get("TOPO_COMPUTER_BENCH_ISOLATED") != "1" or os.environ.get("GITHUB_ACTIONS") != "true":
     raise SystemExit("fixture requires isolated CI desktop")
 
 import gi

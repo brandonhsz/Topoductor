@@ -39,7 +39,7 @@ export class CdpPageNavigationCommands {
     if (unsupportedParam) {
       this.responder.sendError(
         clientId,
-        `Page.reload parameter "${unsupportedParam}" is not supported for Orca tab reloads`,
+        `Page.reload parameter "${unsupportedParam}" is not supported for Topo tab reloads`,
         client
       )
       return

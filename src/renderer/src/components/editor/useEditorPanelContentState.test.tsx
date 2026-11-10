@@ -78,7 +78,7 @@ vi.mock('@/store', () => ({
 import { useEditorPanelContentState } from './useEditorPanelContentState'
 import { createTestStore } from '@/store/testing/app-store-test-fixture'
 
-import { ORCA_EDITOR_EXTERNAL_FILE_CHANGE_EVENT } from './autosave/editor-autosave'
+import { TOPO_EDITOR_EXTERNAL_FILE_CHANGE_EVENT } from './autosave/editor-autosave'
 import { registerEditorPanelHostContentRecoveryTests } from './editor-panel-host-content-recovery.spec'
 
 type Deferred<T> = {
@@ -100,7 +100,7 @@ function createDeferred<T>(): Deferred<T> {
 function dispatchExternalFileChange(file: OpenFile, worktreePath: string): void {
   act(() => {
     window.dispatchEvent(
-      new CustomEvent(ORCA_EDITOR_EXTERNAL_FILE_CHANGE_EVENT, {
+      new CustomEvent(TOPO_EDITOR_EXTERNAL_FILE_CHANGE_EVENT, {
         detail: {
           worktreeId: file.worktreeId,
           worktreePath,

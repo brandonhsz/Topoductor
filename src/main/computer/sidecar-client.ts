@@ -16,7 +16,7 @@ import { validateComputerSidecarPasteText } from './computer-sidecar-paste-valid
 import { RuntimeClientError } from './runtime-client-error'
 import { getForkedChildEntryPath } from '../worker-threads/forked-child-entry-path'
 
-// Bundled beside orcad.js on servers and under out/main on desktop.
+// Bundled beside topod.js on servers and under out/main on desktop.
 export const COMPUTER_SIDECAR_ENTRY_FILENAME = 'computer-sidecar.js'
 
 type ComputerSidecarMethod =
@@ -107,7 +107,7 @@ function getComputerSidecar(): ComputerSidecarProcess {
 }
 
 export function computerSidecarMissingMessage(entryPath: string): string {
-  return `Computer use isn't available on this host: its Orca install has no computer-use sidecar (${entryPath}). On an Orca server installed before computer use shipped with it, update or reprovision the server.`
+  return `Computer use isn't available on this host: its Topo install has no computer-use sidecar (${entryPath}). On a Topo server installed before computer use shipped with it, update or reprovision the server.`
 }
 
 class ComputerSidecarProcess {
@@ -214,7 +214,7 @@ class ComputerSidecarProcess {
       env: {
         ...process.env,
         ELECTRON_RUN_AS_NODE: '1',
-        ORCA_COMPUTER_SIDECAR: '1'
+        TOPO_COMPUTER_SIDECAR: '1'
       },
       ...(process.platform === 'win32' ? { windowsHide: true } : {})
     })

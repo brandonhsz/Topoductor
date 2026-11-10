@@ -82,7 +82,7 @@ describe('workspace.rename', () => {
     )
   })
 
-  it('reports a conflict when Orca keeps the old name, as during a WSL move', async () => {
+  it('reports a conflict when Topo keeps the old name, as during a WSL move', async () => {
     const rpc = vi.fn().mockResolvedValue({ worktree: { displayName: 'old' } })
     expect(await call('workspace.rename', { workspaceId: 'id-1', name: 'new' }, rpc)).toMatchObject(
       { ok: false, code: 'conflict' }

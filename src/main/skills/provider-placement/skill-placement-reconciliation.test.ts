@@ -43,7 +43,7 @@ afterEach(async () => {
 
 describe('skill provider placement reconciliation', () => {
   it('creates a verified independent copy when native alias creation is denied', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-placement-test-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-placement-test-'))
     temporaryDirectories.push(root)
     const canonicalPath = join(root, 'canonical', 'private-skill')
     const providerRoot = join(root, 'provider')
@@ -66,7 +66,7 @@ describe('skill provider placement reconciliation', () => {
   })
 
   it('updates an owned copy even when host alias inspection returns false', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-placement-test-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-placement-test-'))
     temporaryDirectories.push(root)
     const canonicalPath = join(root, 'canonical', 'private-skill')
     const providerRoot = join(root, 'provider')
@@ -103,7 +103,7 @@ describe('skill provider placement reconciliation', () => {
   })
 
   it('does not update a byte-identical copy previously recorded as skipped', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-placement-test-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-placement-test-'))
     temporaryDirectories.push(root)
     const canonicalPath = join(root, 'canonical', 'private-skill')
     const providerRoot = join(root, 'provider')

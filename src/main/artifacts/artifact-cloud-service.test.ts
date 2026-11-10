@@ -8,25 +8,25 @@ vi.mock('electron', () => ({
   safeStorage: { isEncryptionAvailable: () => false }
 }))
 
-import type { OrcaProfileCloudSummary } from '../../shared/orca-profiles'
-import { ensureActiveOrcaProfile } from '../orca-profiles/profile-index-store'
+import type { TopoProfileCloudSummary } from '../../shared/topo-profiles'
+import { ensureActiveTopoProfile } from '../topo-profiles/profile-index-store'
 import {
-  linkOrcaProfileToCloud,
-  unlinkOrcaProfileFromCloud
-} from '../orca-profiles/profile-cloud-index'
-import { signOutCloudSession } from '../orca-profiles/profile-cloud-session-owner'
+  linkTopoProfileToCloud,
+  unlinkTopoProfileFromCloud
+} from '../topo-profiles/profile-cloud-index'
+import { signOutCloudSession } from '../topo-profiles/profile-cloud-session-owner'
 
 import { ArtifactCloudService } from './artifact-cloud-service'
 
 const createdPaths: string[] = []
 const apiUrl = 'http://localhost:3000'
-const cloudA: OrcaProfileCloudSummary = {
+const cloudA: TopoProfileCloudSummary = {
   cloudProfileId: 'cloud-a',
   userId: 'user-a',
   email: 'a@example.com',
   linkedAt: 1
 }
-const cloudB: OrcaProfileCloudSummary = {
+const cloudB: TopoProfileCloudSummary = {
   cloudProfileId: 'cloud-b',
   userId: 'user-b',
   email: 'b@example.com',
@@ -64,10 +64,10 @@ async function setup(sharingEnabled: { value: boolean } = { value: true }): Prom
   profileId: string
   service: ArtifactCloudService
 }> {
-  const userDataPath = await mkdtemp(join(tmpdir(), 'orca-artifact-service-'))
+  const userDataPath = await mkdtemp(join(tmpdir(), 'topo-artifact-service-'))
   createdPaths.push(userDataPath)
-  const active = ensureActiveOrcaProfile(userDataPath)
-  linkOrcaProfileToCloud(active.profile.id, cloudA, userDataPath)
+  const active = ensureActiveTopoProfile(userDataPath)
+  linkTopoProfileToCloud(active.profile.id, cloudA, userDataPath)
   return {
     userDataPath,
     profileId: active.profile.id,
@@ -107,8 +107,8 @@ describe('ArtifactCloudService record authorization', () => {
     await service.share(writeRequest)
 
     signOutCloudSession(profileId, userDataPath)
-    unlinkOrcaProfileFromCloud(profileId, userDataPath)
-    linkOrcaProfileToCloud(profileId, cloudB, userDataPath)
+    unlinkTopoProfileFromCloud(profileId, userDataPath)
+    linkTopoProfileToCloud(profileId, cloudB, userDataPath)
 
     await expect(service.update({ ...writeRequest, authToken: 'token-b' })).rejects.toThrow(
       /has not been shared/
@@ -134,8 +134,8 @@ describe('ArtifactCloudService record authorization', () => {
     await vi.waitFor(() => expect(resolvePost).toBeTypeOf('function'))
 
     signOutCloudSession(profileId, userDataPath)
-    unlinkOrcaProfileFromCloud(profileId, userDataPath)
-    linkOrcaProfileToCloud(profileId, cloudB, userDataPath)
+    unlinkTopoProfileFromCloud(profileId, userDataPath)
+    linkTopoProfileToCloud(profileId, cloudB, userDataPath)
     resolvePost?.(createResponse())
 
     await expect(pending).rejects.toThrow(/account changed/)
@@ -159,7 +159,7 @@ describe('ArtifactCloudService record authorization', () => {
     const pending = service.share(writeRequest)
     await vi.waitFor(() => expect(resolvePost).toBeTypeOf('function'))
 
-    linkOrcaProfileToCloud(
+    linkTopoProfileToCloud(
       profileId,
       { ...cloudA, displayName: 'Updated name', linkedAt: 99 },
       userDataPath

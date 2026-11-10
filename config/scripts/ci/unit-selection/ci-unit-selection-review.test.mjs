@@ -28,7 +28,7 @@ const record = (index, file, state) => ({
 })
 
 it('reviews deferred shadow plans without masking shard plans or accepting another source', () => {
-  const root = mkdtempSync(join(tmpdir(), 'orca-deferred-selection-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-deferred-selection-'))
   try {
     const fallback = join(root, 'deferred-plan.json')
     writeFileSync(fallback, JSON.stringify(plan))

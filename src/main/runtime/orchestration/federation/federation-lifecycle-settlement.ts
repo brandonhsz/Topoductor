@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 
 export type FederatedLifecycleSettlement =
   | { action: 'completed' | 'failed'; authority: 'run_home' }
@@ -17,10 +17,10 @@ export function areFederatedLifecycleSettlementsEqual(
 
 type Waiter = (settlement: FederatedLifecycleSettlement) => void
 
-const waitersByRuntime = new WeakMap<OrcaRuntimeService, Map<string, Set<Waiter>>>()
+const waitersByRuntime = new WeakMap<TopoRuntimeService, Map<string, Set<Waiter>>>()
 
 export function publishFederatedLifecycleSettlement(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   dispatchId: string,
   sequence: number,
   settlement: FederatedLifecycleSettlement
@@ -32,7 +32,7 @@ export function publishFederatedLifecycleSettlement(
 }
 
 export function waitForFederatedLifecycleSettlement(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   dispatchId: string,
   sequence: number,
   options: { timeoutMs: number; signal?: AbortSignal }
@@ -66,7 +66,7 @@ export function waitForFederatedLifecycleSettlement(
   })
 }
 
-function getRuntimeWaiters(runtime: OrcaRuntimeService): Map<string, Set<Waiter>> {
+function getRuntimeWaiters(runtime: TopoRuntimeService): Map<string, Set<Waiter>> {
   const existing = waitersByRuntime.get(runtime)
   if (existing) {
     return existing

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslate } from '@/i18n/use-translate'
 
-/** A diff side past the 10 MB read cap: Orca leaves it unread, so there is nothing to compare. */
+/** A diff side past the 10 MB read cap: Topo leaves it unread, so there is nothing to compare. */
 export function DiffTooLargeNotice(): React.JSX.Element {
   const t = useTranslate()
   return (
@@ -13,7 +13,7 @@ export function DiffTooLargeNotice(): React.JSX.Element {
         <div className="text-xs text-muted-foreground">
           {t(
             'editor.diffTooLarge.detail',
-            'One version of this file is over 10 MB, so Orca doesn’t load it for a text diff.'
+            'One version of this file is over 10 MB, so Topo doesn’t load it for a text diff.'
           )}
         </div>
       </div>

@@ -178,8 +178,8 @@ describe('a chat a shipped release wrote, carried on by this build', () => {
   ] as const)(
     'admits every row %s wrote for a %s chat, opens it as the newest release does, then edits, sends and rewinds it',
     async (build, agent) => {
-      const directory = mkdtempSync(join(tmpdir(), 'orca-released-chat-upgrade-'))
-      const shipped = mkdtempSync(join(tmpdir(), 'orca-released-chat-shipped-'))
+      const directory = mkdtempSync(join(tmpdir(), 'topo-released-chat-upgrade-'))
+      const shipped = mkdtempSync(join(tmpdir(), 'topo-released-chat-shipped-'))
       const identity = identityOf(agent)
       try {
         const written = await writeReleasedChat(RELEASES[build](), agent, directory)

@@ -3,11 +3,11 @@
 import { app } from 'electron'
 import { writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
-import type * as WindowsSecurity from '@orca/windows-security'
+import type * as WindowsSecurity from '@topo/windows-security'
 import {
   setIsolatedSpawner,
   spawnDetachedWithoutInheritance
-} from '@orca/process-host/isolated-detached-spawn'
+} from '@topo/process-host/isolated-detached-spawn'
 
 const [addonPath, mode, holderMs, resultFile] = process.argv.slice(-4)
 const addon: typeof WindowsSecurity = createRequire(__filename)(addonPath)

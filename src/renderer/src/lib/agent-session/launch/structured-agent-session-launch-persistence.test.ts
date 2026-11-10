@@ -27,7 +27,7 @@ describe('structured agent launch persistence', () => {
 
   it('normalizes pending launches after a renderer reload', () => {
     localStorage.setItem(
-      'orca:structuredAgentLaunches:v1',
+      'topo:structuredAgentLaunches:v1',
       JSON.stringify([
         {
           sessionId: 'codex_session',
@@ -110,9 +110,9 @@ describe('structured agent launch persistence', () => {
       expectedRuntimeFence: null,
       failedAt: 42_000
     })
-    const stored = JSON.parse(localStorage.getItem('orca:structuredAgentLaunches:v1') ?? '[]')
+    const stored = JSON.parse(localStorage.getItem('topo:structuredAgentLaunches:v1') ?? '[]')
     localStorage.setItem(
-      'orca:structuredAgentLaunches:v1',
+      'topo:structuredAgentLaunches:v1',
       JSON.stringify([
         ...stored,
         // Written by a build that did not save the failure time.

@@ -104,10 +104,10 @@ describe('#10284 SSH Host alias → github.com owner/repo', () => {
     })
 
     await expect(
-      resolveGitHubOwnerRepoFromRemoteUrl('git@forge-work:team/orca.git')
-    ).resolves.toEqual({ owner: 'team', repo: 'orca' })
+      resolveGitHubOwnerRepoFromRemoteUrl('git@forge-work:team/topo.git')
+    ).resolves.toEqual({ owner: 'team', repo: 'topo' })
     await expect(
-      resolveGitHubOwnerRepoFromRemoteUrl('git@forge-work:team/orca.git', {
+      resolveGitHubOwnerRepoFromRemoteUrl('git@forge-work:team/topo.git', {
         repoPath: REPO,
         wslDistro: 'Ubuntu'
       })
@@ -118,7 +118,7 @@ describe('#10284 SSH Host alias → github.com owner/repo', () => {
 
   it('does not pin an SSH-config-dependent miss to the Git config signature', async () => {
     vi.useFakeTimers()
-    mockRemoteUrl('git@forge-work:team/orca.git')
+    mockRemoteUrl('git@forge-work:team/topo.git')
     resolveWithSshGMock
       .mockResolvedValueOnce(sshConfig('gitlab.com'))
       .mockResolvedValueOnce(sshConfig('github.com'))
@@ -127,7 +127,7 @@ describe('#10284 SSH Host alias → github.com owner/repo', () => {
     await vi.advanceTimersByTimeAsync(60_001)
     await expect(getOwnerRepoForRemote(REPO, 'origin')).resolves.toEqual({
       owner: 'team',
-      repo: 'orca'
+      repo: 'topo'
     })
   })
 
@@ -137,13 +137,13 @@ describe('#10284 SSH Host alias → github.com owner/repo', () => {
     )
 
     await expect(
-      classifyGitHubOwnerRepoFromRemoteUrl('git@GitHub-Work:team/orca.git')
+      classifyGitHubOwnerRepoFromRemoteUrl('git@GitHub-Work:team/topo.git')
     ).resolves.toEqual({
       kind: 'github',
-      ownerRepo: { owner: 'team', repo: 'orca' }
+      ownerRepo: { owner: 'team', repo: 'topo' }
     })
     await expect(
-      classifyGitHubOwnerRepoFromRemoteUrl('git@github-work:team/orca.git')
+      classifyGitHubOwnerRepoFromRemoteUrl('git@github-work:team/topo.git')
     ).resolves.toEqual({
       kind: 'not-github',
       cacheWithGitConfigSignature: false

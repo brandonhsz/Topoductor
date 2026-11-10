@@ -45,7 +45,7 @@ afterEach(async () => {
 })
 
 async function servePluginTheme(background: unknown) {
-  const rootDir = await mkdtemp(join(tmpdir(), 'orca-plugin-image-protocol-'))
+  const rootDir = await mkdtemp(join(tmpdir(), 'topo-plugin-image-protocol-'))
   roots.push(rootDir)
   const theme = {
     base: 'dark',

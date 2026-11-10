@@ -197,7 +197,7 @@ export function MobileHeroPairingStep({
             i18n={i18n}
             defaults={t(
               'auto.components.mobile.MobileHero.openAppAndScan',
-              'Open Orca Mobile, tap <strong>Pair Desktop</strong>, and scan the code.'
+              'Open Topo Mobile, tap <strong>Pair Desktop</strong>, and scan the code.'
             )}
             components={{ strong: <strong /> }}
           />
@@ -273,7 +273,7 @@ export function MobileHeroPairingStep({
             <span className="min-w-0">
               {t(
                 'auto.components.mobile.MobileHero.pairingQrError',
-                'This pairing code couldn’t be rendered as a QR code. Copy it into Orca Mobile instead.'
+                'This pairing code couldn’t be rendered as a QR code. Copy it into Topo Mobile instead.'
               )}
             </span>
           </p>

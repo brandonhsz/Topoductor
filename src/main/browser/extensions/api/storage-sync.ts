@@ -10,16 +10,16 @@ import { getBrowserExtensionSyncStorageStore } from '../profile-storage/browser-
 import type { BrowserExtensionProfileDocumentItems } from '../profile-storage/browser-extension-profile-document-store'
 
 /**
- * Electron disables chrome.storage.sync ("not available in this instance of Chrome"), so Orca
+ * Electron disables chrome.storage.sync ("not available in this instance of Chrome"), so Topo
  * backs it here, on this machine, as Chrome does for a user who is not signed in. Main is the only
  * writer, so every change carries exact old values. A write returns its changes to the caller,
  * which fires its own listeners (a starting worker's write can reach main before its listen
  * does); onChanged goes to the extension's other pages and its worker in the session.
  * The preload installs it as chrome.storage.sync (src/preload/browser-extension-storage-sync.ts).
  */
-const STORAGE_SYNC_NAMESPACE = 'orcaStorageSync'
+const STORAGE_SYNC_NAMESPACE = 'topoStorageSync'
 
-/** Chrome's sync limits Orca enforces; the preload exposes them (and the write rates) to extensions. */
+/** Chrome's sync limits Topo enforces; the preload exposes them (and the write rates) to extensions. */
 export const STORAGE_SYNC_QUOTAS = {
   QUOTA_BYTES: 102_400,
   QUOTA_BYTES_PER_ITEM: 8192,

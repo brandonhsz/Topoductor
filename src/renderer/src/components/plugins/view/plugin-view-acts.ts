@@ -147,7 +147,7 @@ async function runFormAct(act: PluginShotAct, context: PluginPanelActContext): P
   return false
 }
 
-/** Runs each act on what Orca draws, as the test kit's verbs do; stops at the first failure. */
+/** Runs each act on what Topo draws, as the test kit's verbs do; stops at the first failure. */
 export async function runPluginPanelActs(
   acts: readonly PluginShotAct[],
   deps: PluginPanelActDeps

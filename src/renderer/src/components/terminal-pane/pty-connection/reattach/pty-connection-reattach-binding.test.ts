@@ -2,7 +2,7 @@ import type * as React from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { getEagerPtyBufferHandle } from '../../pty-transport/delivery/pty-dispatcher'
 import { flushAsyncTicks, createDeferred } from '../test-fixtures/pty-connection-test-async'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import {
   bindsPaneInStore,
   expectWindowStartAskedMain,
@@ -812,7 +812,7 @@ describe('connectPanePty', () => {
       restoredLeafId: LEAF_2,
       restoredPtyIdByLeafId: { [LEAF_2]: 'stale-pty' }
     })
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       await mainStartsPaneAs({
         ptyId: 'pty-main',
         bind: bindsPaneInStore(() => mockStoreState, 'tab-1', LEAF_2),
@@ -832,7 +832,7 @@ describe('connectPanePty', () => {
       1,
       expect.objectContaining({ sessionId: 'stale-pty' })
     )
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       // Main starts the pane whose terminal is gone; the window attaches, and spawns no shell.
       await flushAsyncTicks()
       await expectWindowStartAskedMain(transport, `tab-1:${LEAF_2}`)

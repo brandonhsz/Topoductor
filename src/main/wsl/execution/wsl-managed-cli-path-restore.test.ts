@@ -2,17 +2,17 @@ import { chmodSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { WSL_MANAGED_CLI_PATH_RESTORE } from './wsl-managed-cli-path-restore'
 
 const posix = process.platform !== 'win32'
 const hasZsh = posix && runProcessSync({ program: 'sh', args: ['-c', 'command -v zsh'] }).code === 0
-const root = posix ? mkdtempSync(join(tmpdir(), 'orca managed cli restore ')) : ''
+const root = posix ? mkdtempSync(join(tmpdir(), 'topo managed cli restore ')) : ''
 if (posix) {
-  writeFileSync(join(root, 'orca-dev'), '#!/bin/sh\n')
-  chmodSync(join(root, 'orca-dev'), 0o755)
-  writeFileSync(join(root, 'orca-ide'), '#!/bin/sh\n')
-  chmodSync(join(root, 'orca-ide'), 0o644)
+  writeFileSync(join(root, 'topo-dev'), '#!/bin/sh\n')
+  chmodSync(join(root, 'topo-dev'), 0o755)
+  writeFileSync(join(root, 'topo-ide'), '#!/bin/sh\n')
+  chmodSync(join(root, 'topo-ide'), 0o644)
 }
 afterAll(() => {
   if (root) {
@@ -26,7 +26,7 @@ const SHELLS = [
   {
     name: 'zsh',
     enabled: hasZsh,
-    args: (body: string) => ['-fuc', `__orca_hook() {\n  emulate -L zsh\n${body}\n}\n__orca_hook`]
+    args: (body: string) => ['-fuc', `__topo_hook() {\n  emulate -L zsh\n${body}\n}\n__topo_hook`]
   }
 ] as const
 
@@ -43,13 +43,13 @@ function run(
 
 describe.each(SHELLS)('WSL_MANAGED_CLI_PATH_RESTORE in $name', (shell) => {
   it.skipIf(!shell.enabled)('leads PATH with a directory holding an executable CLI', () => {
-    const result = run(shell, { ORCA_WSL_CLI_DIR: root, ORCA_CLI_COMMAND: 'orca-dev' })
+    const result = run(shell, { TOPO_WSL_CLI_DIR: root, TOPO_CLI_COMMAND: 'topo-dev' })
     expect(result).toMatchObject({ code: 0, stdout: `${root}:/usr/bin:/bin`, stderr: '' })
   })
 
   it.skipIf(!shell.enabled)('warns and keeps PATH when the CLI cannot run', () => {
-    const result = run(shell, { ORCA_WSL_CLI_DIR: root, ORCA_CLI_COMMAND: 'orca-ide' })
+    const result = run(shell, { TOPO_WSL_CLI_DIR: root, TOPO_CLI_COMMAND: 'topo-ide' })
     expect(result).toMatchObject({ code: 0, stdout: '/usr/bin:/bin' })
-    expect(result.stderr).toContain('Orca CLI unavailable')
+    expect(result.stderr).toContain('Topo CLI unavailable')
   })
 })

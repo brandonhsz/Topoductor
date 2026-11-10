@@ -40,22 +40,22 @@ it.each([
 ] as const)(
   'reviews a skipped $reason copy before and after installing for other agents (hideHeader=$hideHeader)',
   async ({ reason, hideHeader }) => {
-    const keptCopy = planOp('leave', '/home/u/.claude/skills/orca-cli', {
+    const keptCopy = planOp('leave', '/home/u/.claude/skills/topo-cli', {
       reason,
       replaceable: true,
       observed: { kind: 'folder', entries: ['SKILL.md:file'], skillDigest: 'c'.repeat(64) }
     })
     const pending = planOf([
-      planEntry('orca-cli', [
-        planOp('write', '/home/u/.agents/skills/orca-cli'),
+      planEntry('topo-cli', [
+        planOp('write', '/home/u/.agents/skills/topo-cli'),
         keptCopy,
-        planOp('link', '/home/u/.cursor/skills/orca-cli', { agents: ['cursor'] }),
-        planOp('link', '/home/u/.codex/skills/orca-cli', { agents: ['codex'] })
+        planOp('link', '/home/u/.cursor/skills/topo-cli', { agents: ['cursor'] }),
+        planOp('link', '/home/u/.codex/skills/topo-cli', { agents: ['codex'] })
       ])
     ])
     const installed = planOf([
       planEntry(
-        'orca-cli',
+        'topo-cli',
         pending.skills[0].ops.map((op) =>
           op.kind === 'leave' ? op : { ...op, kind: 'keep' as const }
         )
@@ -70,7 +70,7 @@ it.each([
       <AgentSkillSetupPanel
         title="Browser Use"
         description={null}
-        skillNames={['orca-cli']}
+        skillNames={['topo-cli']}
         installed
         loading={false}
         error={null}
@@ -87,7 +87,7 @@ it.each([
 
     fireEvent.click(install)
 
-    await screen.findByRole('button', { name: "Replace with Orca's copy" })
+    await screen.findByRole('button', { name: "Replace with Topo's copy" })
     expect(screen.getByText('Review skill')).toBeDefined()
     expect(screen.getByRole('button', { name: 'Details' })).toBeDefined()
     expect(mocks.execute).toHaveBeenCalledOnce()

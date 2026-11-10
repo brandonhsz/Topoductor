@@ -75,7 +75,7 @@ export async function startAcpStructuredSession(
       // Wait briefly for process exit so startup failures include final diagnostics.
       await waitForAcpExit(connection, graceMs(), attempt.signal)
     }
-    // Orca closing the connection first, such as on a sign-in line it cannot read, is the start's
+    // Topo closing the connection first, such as on a sign-in line it cannot read, is the start's
     // cause; the exit its cleanup then causes is not the agent ending unanswered. Capture
     // spontaneous exit before close can classify it as requested.
     const exitedOnItsOwn =

@@ -3,7 +3,7 @@
 import type { AgentType } from '../../../../../../shared/agent-status/contracts/agent-status-types'
 import type { NativeChatMessage } from '../../../../../../shared/native-chat/native-chat-types'
 import type { OrchestrationWorkerReadTranscriptResult } from '../../../../../../shared/orchestration/workers/orchestration-worker-output'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import {
@@ -72,7 +72,7 @@ export type StructuredWorkerStopOutcome = {
 export async function stopStructuredWorker(
   identity: StructuredWorkerIdentity,
   runtime?: StructuredSessionSurfaceRuntime &
-    Pick<OrcaRuntimeService, 'forgetStructuredSessionMail'>,
+    Pick<TopoRuntimeService, 'forgetStructuredSessionMail'>,
   admitClose?: () => boolean
 ): Promise<StructuredWorkerStopOutcome> {
   const closed = new Set<string>()

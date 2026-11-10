@@ -13,10 +13,10 @@ import { createWorkspaceSourceResolver } from '../../workspace/source-exports/wo
 const ROOT = path.join(import.meta.dirname, '../../..', '..')
 
 const ENTRY_POINTS = [
-  path.join(ROOT, 'src', 'main', 'runtime', 'orca-runtime.ts'),
+  path.join(ROOT, 'src', 'main', 'runtime', 'topo-runtime.ts'),
   path.join(ROOT, 'src', 'main', 'runtime', 'rpc', 'server', 'runtime-rpc.ts'),
-  // orcad imports ipc/pty directly; checking only runtime entries once missed regressions in its larger graph.
-  path.join(ROOT, 'src', 'main', 'orcad', 'main.ts'),
+  // topod imports ipc/pty directly; checking only runtime entries once missed regressions in its larger graph.
+  path.join(ROOT, 'src', 'main', 'topod', 'main.ts'),
   // Why the CLI: it runs under ELECTRON_RUN_AS_NODE, and its tsconfig follows imports into src/main.
   path.join(ROOT, 'src', 'cli', 'index.ts')
 ]
@@ -99,7 +99,7 @@ export async function collectElectronImporters(entryPoints, { plugins = [] } = {
   const workspaceSources = {
     name: 'runtime-workspace-sources',
     setup(pluginBuild) {
-      pluginBuild.onResolve({ filter: /^@orca\// }, ({ path: specifier }) => {
+      pluginBuild.onResolve({ filter: /^@topo\// }, ({ path: specifier }) => {
         const source = workspace.resolve(specifier)
         return source ? { path: source.path } : undefined
       })
@@ -148,10 +148,10 @@ export async function main({ plugins = [] } = {}) {
   })
   if (current.length > 0) {
     console.error(
-      `[runtime-electron-ratchet] ${current.length} module(s) reachable from the Orca runtime, the CLI or structured-chat code import electron:
+      `[runtime-electron-ratchet] ${current.length} module(s) reachable from the Topo runtime, the CLI or structured-chat code import electron:
 ${current.map((file) => `  + ${file}`).join('\n')}
 
-The runtime and structured chat must run in orcad, the headless runtime, and the CLI runs on
+The runtime and structured chat must run in topod, the headless runtime, and the CLI runs on
 plain Node; Electron is unavailable in both. That holds for structured-chat code the runtime
 doesn't load yet, so renaming or moving the file is not a fix. Put the Electron facility behind a port in src/main/host/ and
 depend on the port, or drop the import that pulls Electron in.`

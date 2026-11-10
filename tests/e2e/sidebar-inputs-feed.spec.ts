@@ -1,4 +1,4 @@
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { SIDEBAR_INPUTS_BUILD } from './helpers/sidebar-inputs-build'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import { createDesktopMobilePairingOffer } from './helpers/paired-electron-client'
@@ -38,15 +38,15 @@ function pinned(state: SidebarInputsFeedState): unknown {
 test.describe('switch on', () => {
   test.skip(
     !SIDEBAR_INPUTS_BUILD,
-    'sidebarInputs.read exists only in an ORCA_SIDEBAR_INPUTS=main build'
+    'sidebarInputs.read exists only in an TOPO_SIDEBAR_INPUTS=main build'
   )
 
   test('the host’s own phone reads a whole snapshot, then a delta after a change', async ({
-    orcaPage
+    topoPage
   }) => {
-    await waitForSessionReady(orcaPage)
-    const worktreeId = await waitForActiveWorktree(orcaPage)
-    const phone = pairMobileClient(await createDesktopMobilePairingOffer(orcaPage))
+    await waitForSessionReady(topoPage)
+    const worktreeId = await waitForActiveWorktree(topoPage)
+    const phone = pairMobileClient(await createDesktopMobilePairingOffer(topoPage))
     try {
       const socket = await phone.openSocket()
       socket.send('events', 'runtime.clientEvents.subscribe', null)
@@ -57,7 +57,7 @@ test.describe('switch on', () => {
       expect(installed?.domains.get('temporal')?.has('retention')).toBe(true)
       expect(pinned(first.state)).not.toContain(worktreeId)
 
-      await orcaPage.evaluate(
+      await topoPage.evaluate(
         (id) =>
           window.api.runtime.call({
             method: 'worktree.set',

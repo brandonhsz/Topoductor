@@ -128,7 +128,7 @@ export function SshHostFields({
           <p className="text-xs text-muted-foreground">
             {t(
               'auto.components.sidebar.AddRemoteHostDialog.identityFileFromConfigHint',
-              'Left empty on purpose: Orca uses every key ~/.ssh/config resolves for {{value0}}. Type a path to use just that key.',
+              'Left empty on purpose: Topo uses every key ~/.ssh/config resolves for {{value0}}. Type a path to use just that key.',
               { value0: configIdentityAlias }
             )}
           </p>
@@ -186,7 +186,7 @@ export function RemoteServerFields({
     >
       <div className="space-y-1.5">
         <Label htmlFor="add-server-name">
-          {t('auto.components.sidebar.AddRemoteHostDialog.nameInOrca', 'Name in Orca')}
+          {t('auto.components.sidebar.AddRemoteHostDialog.nameInTopo', 'Name in Topo')}
         </Label>
         <Input
           id="add-server-name"
@@ -213,14 +213,14 @@ export function RemoteServerFields({
           onChange={(event) => onPairingCodeChange(event.target.value)}
           placeholder={t(
             'auto.components.sidebar.AddRemoteHostDialog.pairingCodePlaceholder',
-            'orca://pair?code=...'
+            'topo://pair?code=...'
           )}
           className="font-mono"
         />
         <p id="add-server-pairing-code-help" className="text-xs text-muted-foreground">
           {t(
             'auto.components.sidebar.AddRemoteHostDialog.pairingHelpShareComputer',
-            'Create this under Settings → Remote Orca Servers → Share this computer on the other computer.'
+            'Create this under Settings → Remote Topo Servers → Share this computer on the other computer.'
           )}
         </p>
         {inputError ? (

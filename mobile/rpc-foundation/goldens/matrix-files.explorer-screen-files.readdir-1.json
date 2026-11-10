@@ -135,7 +135,7 @@
       },
       "labels": ["Back to session"],
       "rows": [],
-      "text": ["Files", "orca-files", "Unable to Load", "Unable to load files", "Retry"]
+      "text": ["Files", "topo-files", "Unable to Load", "Unable to load files", "Retry"]
     },
     "34bd55d6f194": {
       "name": "files.readDir#1",
@@ -197,7 +197,7 @@
       "rows": [],
       "text": [
         "Files",
-        "orca-files",
+        "topo-files",
         "Unable to Load",
         "The host sent a reply this app could not read (files.readDir)",
         "Retry"
@@ -256,7 +256,7 @@
       },
       "labels": ["Back to session"],
       "rows": [],
-      "text": ["Files", "orca-files", "Unable to Load", "outer refused", "Retry"]
+      "text": ["Files", "topo-files", "Unable to Load", "outer refused", "Retry"]
     },
     "835009844467": {
       "name": "files.readDir#1",
@@ -315,7 +315,7 @@
       },
       "labels": ["Back to session", "Filter files"],
       "rows": ["dir:src", "file:README.md"],
-      "text": ["Files", "orca-files - Showing first 5000"]
+      "text": ["Files", "topo-files - Showing first 5000"]
     },
     "9f1a5ca359ab": {
       "crash": {
@@ -338,7 +338,7 @@
       },
       "labels": ["Back to session", "Filter files"],
       "rows": ["dir:src", "file:README.md"],
-      "text": ["Files", "orca-files"]
+      "text": ["Files", "topo-files"]
     },
     "a0f5e1e0ad66": {
       "name": "files.readDir#1",
@@ -471,7 +471,7 @@
       },
       "labels": ["Back to session"],
       "rows": [],
-      "text": ["Files", "orca-files", "Loading files…"]
+      "text": ["Files", "topo-files", "Loading files…"]
     },
     "ca13345ac236": {
       "name": "files.readDir#1",

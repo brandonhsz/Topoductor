@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events'
-import { ASSIGNMENT_LIMITS } from '@orca-cloud/relay-contract/assignment-invariants'
-import { RELAY_CLOSE_CODE } from '@orca-cloud/relay-contract/close-codes'
+import { ASSIGNMENT_LIMITS } from '@topo-cloud/relay-contract/assignment-invariants'
+import { RELAY_CLOSE_CODE } from '@topo-cloud/relay-contract/close-codes'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type WebSocket from 'ws'
 import { RelayAssignmentStore } from '../assignment/assignment-store.js'
@@ -13,7 +13,7 @@ import type { RelayRuntimeObserver } from '../observability/relay-observability.
 import type { RelayTokenClaims } from '../authentication/relay-token-verifier.js'
 import { ProcessQueuedByteBudget } from '../connections/splice-forwarder.js'
 
-const databaseUrl = process.env.ORCA_RELAY_TEST_POSTGRES_URL
+const databaseUrl = process.env.TOPO_RELAY_TEST_POSTGRES_URL
 const describePostgres = databaseUrl ? describe : describe.skip
 
 const sourceCell = {

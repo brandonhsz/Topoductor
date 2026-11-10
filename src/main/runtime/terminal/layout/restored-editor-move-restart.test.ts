@@ -15,9 +15,9 @@ import {
   openTopologyStore,
   reopenTopologyStore
 } from '../../../persistence/terminal-topology/terminal-topology-profile-fixture'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 vi.mock('../../../telemetry/client', () => ({ track: vi.fn() }))
 vi.mock('../../../ssh/config/ssh-config-parser', () => ({
   loadUserSshConfig: () => ({ hosts: [] }),
@@ -40,7 +40,7 @@ afterEach(async () => {
 
 /** A git worktree and a folder workspace, one terminal each, saved by a window. */
 async function harness() {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-restored-editor-move-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-restored-editor-move-'))
   directories.push(directory)
   const store = await openTopologyStore(directory, emptyTerminalSessionProfile())
   stores.push(store)
@@ -53,16 +53,16 @@ async function harness() {
 }
 
 /** Main's published layout of every workspace, as a window's frame sync starts from it. */
-function published(runtime: OrcaRuntimeService) {
+function published(runtime: TopoRuntimeService) {
   const reader = runtime.subscribeWorkspaceLayouts(() => {})
   reader.unsubscribe()
   return new Map(reader.snapshot.map(({ key, layout }) => [key, layout]))
 }
 
-describe('an editor tab Orca moved survives restart', () => {
+describe('an editor tab Topo moved survives restart', () => {
   it('main loads the moved tab and its file record in the new workspace only', async () => {
     const { store, directory } = await harness()
-    const runtime = new OrcaRuntimeService(store)
+    const runtime = new TopoRuntimeService(store)
     const subscription = runtime.subscribeWorkspaceLayouts(() => {})
     const opened = await runtime.applyLayoutCommand({
       type: 'openEditorTab',
@@ -94,7 +94,7 @@ describe('an editor tab Orca moved survives restart', () => {
     ])
     expect(saved.openFilesByWorktree?.[WT] ?? []).toEqual([])
 
-    const layouts = published(new OrcaRuntimeService(reopened))
+    const layouts = published(new TopoRuntimeService(reopened))
     const editorTabs = [...layouts].flatMap(([key, layout]) =>
       layout.tabs.filter((tab) => tab.kind === 'editor').map((tab) => ({ key, tab }))
     )

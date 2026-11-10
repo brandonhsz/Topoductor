@@ -25,10 +25,10 @@ afterEach(() => {
 
 describe('upsertHookTrustEntries', () => {
   it('collapses duplicate blocks for the same hook key while preserving unrelated hook state', () => {
-    const sourcePath = 'C:\\Users\\me\\AppData\\Roaming\\orca\\codex-runtime-home\\home\\hooks.json'
+    const sourcePath = 'C:\\Users\\me\\AppData\\Roaming\\topo\\codex-runtime-home\\home\\hooks.json'
     const key = `${sourcePath}:session_start:0:0`
     const unrelatedSourcePath =
-      'C:\\Users\\me\\AppData\\Roaming\\orca\\codex-runtime-home\\home\\hooks.json'
+      'C:\\Users\\me\\AppData\\Roaming\\topo\\codex-runtime-home\\home\\hooks.json'
     const unrelatedKey = `${unrelatedSourcePath}:stop:0:0`
     const original = [
       `[hooks.state."${escapeTomlString(key)}"]`,

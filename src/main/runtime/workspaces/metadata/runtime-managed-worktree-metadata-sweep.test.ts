@@ -54,7 +54,7 @@ describe('runtime detected-worktree listing sweeps missing local metadata', () =
   let repoPath = ''
 
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-runtime-sweep-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-runtime-sweep-'))
     repoPath = join(testState.dir, 'repo')
     mkdirSync(repoPath, { recursive: true })
   })

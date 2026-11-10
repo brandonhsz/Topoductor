@@ -10,7 +10,7 @@ import {
 
 const result: EphemeralVmRuntimeRecord['recipeResult'] = {
   schemaVersion: 1,
-  pairingCode: 'orca://pair/test',
+  pairingCode: 'topo://pair/test',
   projectRoot: '/workspace/repo'
 }
 

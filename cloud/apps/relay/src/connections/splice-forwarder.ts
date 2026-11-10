@@ -1,5 +1,5 @@
-import { RELAY_ADMISSION_BUDGETS } from '@orca-cloud/relay-contract/admission-budgets'
-import { RELAY_CLOSE_CODE } from '@orca-cloud/relay-contract/close-codes'
+import { RELAY_ADMISSION_BUDGETS } from '@topo-cloud/relay-contract/admission-budgets'
+import { RELAY_CLOSE_CODE } from '@topo-cloud/relay-contract/close-codes'
 import type WebSocket from 'ws'
 import type { RawData } from 'ws'
 import { closeRelayWebSocket } from './relay-websocket-close.js'

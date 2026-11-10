@@ -95,8 +95,8 @@ export function createOrdinaryCrewCommandFixture(
     const response = await h.dispatch(
       orchestrationRequest(method, z.record(z.string(), z.unknown()).parse(params), {
         evidence: readOrchestrationCompatibilityEvidence({
-          ORCA_TERMINAL_HANDLE: process.env.ORCA_TERMINAL_HANDLE,
-          ORCA_PANE_KEY: process.env.ORCA_PANE_KEY
+          TOPO_TERMINAL_HANDLE: process.env.TOPO_TERMINAL_HANDLE,
+          TOPO_PANE_KEY: process.env.TOPO_PANE_KEY
         })
       })
     )
@@ -107,9 +107,9 @@ export function createOrdinaryCrewCommandFixture(
     return { ...response, result: response.result, _meta: { runtimeId: h.runtime.getRuntimeId() } }
   })
   const command = async (from: string, name: string, entries: [string, string | boolean][]) => {
-    vi.stubEnv('ORCA_AGENT_SESSION_ID', '')
-    vi.stubEnv('ORCA_TERMINAL_HANDLE', from)
-    vi.stubEnv('ORCA_PANE_KEY', panes.get(from) ?? '')
+    vi.stubEnv('TOPO_AGENT_SESSION_ID', '')
+    vi.stubEnv('TOPO_TERMINAL_HANDLE', from)
+    vi.stubEnv('TOPO_PANE_KEY', panes.get(from) ?? '')
     await dispatch(['orchestration', name], {
       client,
       flags: new Map<string, string | boolean>([...entries, ['from', from]]),

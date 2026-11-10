@@ -2,7 +2,7 @@
 import { Terminal } from '@xterm/headless'
 import { SerializeAddon } from '@xterm/addon-serialize'
 import { Unicode11Addon } from '@xterm/addon-unicode11'
-import { activateOrcaTerminalUnicodeProvider } from '../../appearance/terminal-unicode-provider'
+import { activateTopoTerminalUnicodeProvider } from '../../appearance/terminal-unicode-provider'
 import { DESKTOP_TERMINAL_SCROLLBACK_ROWS_DEFAULT } from '../terminal-scrollback-policy'
 import {
   readSavedCursorRegister,
@@ -18,7 +18,7 @@ export type ParityTerminal = {
   serializeAddon: SerializeAddon
 }
 
-/** Match renderer buffer state: scrollback/Kitty options, Unicode11 and Orca ZWJ. Font/cursor/render options do not affect cells. */
+/** Match renderer buffer state: scrollback/Kitty options, Unicode11 and Topo ZWJ. Font/cursor/render options do not affect cells. */
 export function createRendererParityTerminal(dims: { cols: number; rows: number }): ParityTerminal {
   const terminal = new Terminal({
     cols: dims.cols,
@@ -30,7 +30,7 @@ export function createRendererParityTerminal(dims: { cols: number; rows: number 
   const serializeAddon = new SerializeAddon()
   terminal.loadAddon(serializeAddon)
   terminal.loadAddon(new Unicode11Addon())
-  activateOrcaTerminalUnicodeProvider(terminal)
+  activateTopoTerminalUnicodeProvider(terminal)
   return { terminal, serializeAddon }
 }
 
@@ -181,7 +181,7 @@ export type ParityMainSnapshot = {
   pendingEscapeTailAnsi?: string
 }
 
-/** Mirror HeadlessEmulator snapshot composition and OrcaRuntime normal/alt separation; renderer fuzz cannot import main/daemon sources. */
+/** Mirror HeadlessEmulator snapshot composition and TopoRuntime normal/alt separation; renderer fuzz cannot import main/daemon sources. */
 export function buildParityMainBufferSnapshot(
   parity: ParityTerminal,
   seq: number,

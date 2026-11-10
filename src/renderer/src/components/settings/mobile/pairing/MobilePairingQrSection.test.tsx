@@ -31,7 +31,7 @@ describe('MobilePairingQrSection', () => {
       <MobilePairingQrSection
         {...props}
         qrDataUrl="data:image/png;base64,qr"
-        pairingUrl="orca://pair#ready"
+        pairingUrl="topo://pair#ready"
       />
     )
 
@@ -65,7 +65,7 @@ describe('MobilePairingQrSection', () => {
         <MobilePairingQrSection
           {...props}
           qrDataUrl="data:image/png;base64,qr"
-          pairingUrl="orca://pair#ready"
+          pairingUrl="topo://pair#ready"
         />
       </>
     )

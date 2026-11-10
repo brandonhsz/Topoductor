@@ -17,7 +17,7 @@ afterEach(async () => {
 })
 
 async function plugin(): Promise<ValidDiscoveredPlugin> {
-  const rootDir = await mkdtemp(join(tmpdir(), 'orca-plugin-worker-controller-'))
+  const rootDir = await mkdtemp(join(tmpdir(), 'topo-plugin-worker-controller-'))
   roots.push(rootDir)
   await writeFile(join(rootDir, 'main.mjs'), 'export default function activate() {}')
   return {

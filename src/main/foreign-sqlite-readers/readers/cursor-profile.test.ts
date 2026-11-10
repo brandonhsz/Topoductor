@@ -8,7 +8,7 @@ import { readCursorProfile } from './cursor-profile'
 let dir = ''
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-cursor-profile-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-cursor-profile-'))
 })
 
 afterEach(() => {

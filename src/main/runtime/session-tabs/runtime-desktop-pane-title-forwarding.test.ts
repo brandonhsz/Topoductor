@@ -1,4 +1,4 @@
-import '../orca-runtime-tests/orca-runtime-test-lifecycle.spec'
+import '../topo-runtime-tests/topo-runtime-test-lifecycle.spec'
 import { describe, expect, it, vi } from 'vitest'
 import {
   HEADLESS_LEAF_ID,
@@ -6,11 +6,11 @@ import {
   TEST_WORKTREE_ID,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} from '../orca-runtime-tests/orca-runtime-test-fixtures.spec'
-import '../orca-runtime-tests/runtime-test-module-registration.spec'
-import { electronMocks } from '../orca-runtime-test-mocks/setup.spec'
-import { OrcaRuntimeService } from '../orca-runtime'
-import { createMobileCreateTestNotifier } from '../orca-runtime-tests/orca-runtime-test-scenario-builders.spec'
+} from '../topo-runtime-tests/topo-runtime-test-fixtures.spec'
+import '../topo-runtime-tests/runtime-test-module-registration.spec'
+import { electronMocks } from '../topo-runtime-test-mocks/setup.spec'
+import { TopoRuntimeService } from '../topo-runtime'
+import { createMobileCreateTestNotifier } from '../topo-runtime-tests/topo-runtime-test-scenario-builders.spec'
 import '../rpc/dispatcher'
 import '../rpc/methods/session-tabs/session-tabs'
 import '../rpc/methods/structured-sessions/protocol/structured-agent-session-rpc.test-fixture'
@@ -29,7 +29,7 @@ function desktopHostRuntime() {
   const { runtimeStore, getSession } = makeRuntimeStoreWithWorkspaceSession(
     makeWorkspaceSessionWithHeadlessTerminal()
   )
-  const runtime = new OrcaRuntimeService(runtimeStore)
+  const runtime = new TopoRuntimeService(runtimeStore)
   runtime.attachWindow(1)
   const setPaneTitle = vi.fn(() => true)
   const renameTerminal = vi.fn()

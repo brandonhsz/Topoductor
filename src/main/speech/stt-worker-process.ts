@@ -4,7 +4,7 @@ import type { WorkerRequestTransport } from '../worker-threads/worker-thread-tra
 import type { SttRecognizerInit } from './stt-recognizer'
 
 /** Electron reports it as the utility process's name when it exits. */
-export const STT_UTILITY_PROCESS_NAME = 'Orca Speech'
+export const STT_UTILITY_PROCESS_NAME = 'Topo Speech'
 
 export const STT_WORKER_EXITED_ERROR = 'The speech engine stopped unexpectedly. Try again.'
 export const STT_WORKER_HUNG_ERROR = 'The speech engine stopped responding. Try again.'
@@ -17,7 +17,7 @@ export type SttWorkerRequest =
   | { type: 'attach-audio'; streamId: string }
 
 export type SttWorkerProcess = Omit<WorkerRequestTransport, 'unref'> & {
-  /** False when the process can't take a port (orcad's forked child), so audio stays on IPC. */
+  /** False when the process can't take a port (topod's forked child), so audio stays on IPC. */
   attachAudioPort(streamId: string, port: MessagePortMain): boolean
 }
 export type SpawnSttWorkerProcess = () => SttWorkerProcess

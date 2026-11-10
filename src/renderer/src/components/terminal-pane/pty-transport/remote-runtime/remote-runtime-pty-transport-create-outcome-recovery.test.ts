@@ -44,7 +44,7 @@ describe('createRemoteRuntimePtyTransport', () => {
       runtimeCall.mockImplementation(async (args: { method: string }) => {
         if (args.method === 'status.get') {
           if (!reachable) {
-            throw Object.assign(new Error('Timed out waiting for the remote Orca runtime.'), {
+            throw Object.assign(new Error('Timed out waiting for the remote Topo runtime.'), {
               code: 'runtime_timeout'
             })
           }
@@ -99,7 +99,7 @@ describe('createRemoteRuntimePtyTransport', () => {
       if (args.method === 'terminal.create') {
         createCalls += 1
         if (createCalls === 1) {
-          throw Object.assign(new Error('Timed out waiting for the remote Orca runtime.'), {
+          throw Object.assign(new Error('Timed out waiting for the remote Topo runtime.'), {
             code: 'runtime_timeout'
           })
         }
@@ -153,7 +153,7 @@ describe('createRemoteRuntimePtyTransport', () => {
         if (args.method === 'terminal.create') {
           createCalls += 1
           if (createCalls === 1) {
-            throw Object.assign(new Error('Timed out waiting for the remote Orca runtime.'), {
+            throw Object.assign(new Error('Timed out waiting for the remote Topo runtime.'), {
               code: 'runtime_timeout'
             })
           }
@@ -184,7 +184,7 @@ describe('createRemoteRuntimePtyTransport', () => {
       if (args.method === 'status.get') {
         return { ok: true, result: { capabilities: [] } }
       }
-      throw Object.assign(new Error('Timed out waiting for the remote Orca runtime.'), {
+      throw Object.assign(new Error('Timed out waiting for the remote Topo runtime.'), {
         code: 'runtime_timeout'
       })
     })
@@ -209,7 +209,7 @@ describe('createRemoteRuntimePtyTransport', () => {
           code: 'unauthorized'
         })
       }
-      throw Object.assign(new Error('Timed out waiting for the remote Orca runtime.'), {
+      throw Object.assign(new Error('Timed out waiting for the remote Topo runtime.'), {
         code: 'runtime_timeout'
       })
     })
@@ -237,7 +237,7 @@ describe('createRemoteRuntimePtyTransport', () => {
             return new Promise((_, reject) => {
               setTimeout(() => {
                 reject(
-                  Object.assign(new Error('Timed out waiting for the remote Orca runtime.'), {
+                  Object.assign(new Error('Timed out waiting for the remote Topo runtime.'), {
                     code: 'runtime_timeout'
                   })
                 )
@@ -252,7 +252,7 @@ describe('createRemoteRuntimePtyTransport', () => {
         if (args.method === 'terminal.create' && reachable) {
           return { ok: true, result: { terminal: { handle: 'terminal-recovered' } } }
         }
-        throw Object.assign(new Error('Timed out waiting for the remote Orca runtime.'), {
+        throw Object.assign(new Error('Timed out waiting for the remote Topo runtime.'), {
           code: 'runtime_timeout'
         })
       })
@@ -328,7 +328,7 @@ describe('createRemoteRuntimePtyTransport', () => {
             }
           }
         }
-        throw Object.assign(new Error('Timed out waiting for the remote Orca runtime.'), {
+        throw Object.assign(new Error('Timed out waiting for the remote Topo runtime.'), {
           code: 'runtime_timeout'
         })
       })

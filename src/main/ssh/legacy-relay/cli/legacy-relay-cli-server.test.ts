@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CONNECTOR_REPLY_UNAVAILABLE } from '../../../../shared/rpc-contract/connector-params'
 import { toAppSshPtyId } from '../../../../shared/ssh-pty-id'
 import '../../../../shared/ssh-remote-cli-control'
-import { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import { OrchestrationDb } from '../../../runtime/orchestration/db/orchestration-db'
 import '../../../runtime/orchestration/db/contract-constants'
 import '../../../runtime/orchestration/db/messages/mailbox-routing-page'
@@ -25,13 +25,13 @@ const WORKER_PANE = 'tab_w:33333333-3333-4333-8333-333333333333'
 const COORDINATOR = 'term_local_coord'
 const COORDINATOR_PANE = 'tab_c:44444444-4444-4444-8444-444444444444'
 const PTY_ID = toAppSshPtyId(TARGET, 'pty-7')
-const ENV = { ORCA_TERMINAL_HANDLE: WORKER, ORCA_PANE_KEY: WORKER_PANE }
+const ENV = { TOPO_TERMINAL_HANDLE: WORKER, TOPO_PANE_KEY: WORKER_PANE }
 
 type Result = { stdout: string; stderr: string; exitCode: number }
 
 let dir: string
 let db: OrchestrationDb
-let runtime: OrcaRuntimeService
+let runtime: TopoRuntimeService
 let allowed: boolean
 let panes: Map<string, LegacyRelayLivePane>
 let ids: { runId: string; taskId: string; dispatchId: string }
@@ -59,9 +59,9 @@ function json(result: Result): { ok: boolean; result?: Record<string, unknown> }
 }
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-legacy-relay-cli-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-legacy-relay-cli-'))
   db = new OrchestrationDb(join(dir, 'orchestration.db'))
-  runtime = new OrcaRuntimeService()
+  runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(db)
   vi.spyOn(runtime, 'notifyMessageArrived').mockImplementation(() => {})
   allowed = true
@@ -111,7 +111,7 @@ const workerDone = () => [
   '--json'
 ]
 
-describe('the relay-era orca CLI on the desktop runtime', () => {
+describe('the relay-era topo CLI on the desktop runtime', () => {
   it("serves a retained worker's inbox check and worker_done as that worker", async () => {
     const mail = db.insertMessage({
       runId: ids.runId,
@@ -160,11 +160,11 @@ describe('the relay-era orca CLI on the desktop runtime', () => {
       () => panes.set(WORKER_PANE, { ptyId: PTY_ID, terminalHandle: 'term_other' }),
       ENV
     ],
-    ['no pane key', () => {}, { ORCA_TERMINAL_HANDLE: WORKER }],
+    ['no pane key', () => {}, { TOPO_TERMINAL_HANDLE: WORKER }],
     [
       'a handle the desktop records do not bind to the pane',
       () => {},
-      { ORCA_TERMINAL_HANDLE: COORDINATOR, ORCA_PANE_KEY: WORKER_PANE }
+      { TOPO_TERMINAL_HANDLE: COORDINATOR, TOPO_PANE_KEY: WORKER_PANE }
     ],
     [
       'a handle this runtime hosts in another pane',

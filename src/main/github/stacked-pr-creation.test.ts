@@ -28,14 +28,14 @@ import {
   registerGitHubStackedPullRequest
 } from './stacked-pr-creation'
 
-const repository = { owner: 'acme', repo: 'orca', host: 'github.com' }
-const parentReview = { number: 41, url: 'https://github.com/acme/orca/pull/41' }
-const currentReview = { number: 42, url: 'https://github.com/acme/orca/pull/42' }
+const repository = { owner: 'acme', repo: 'topo', host: 'github.com' }
+const parentReview = { number: 41, url: 'https://github.com/acme/topo/pull/41' }
+const currentReview = { number: 42, url: 'https://github.com/acme/topo/pull/42' }
 
 function pullRequest(number: number, head: string, base: string) {
   return {
     number,
-    html_url: `https://github.com/acme/orca/pull/${number}`,
+    html_url: `https://github.com/acme/topo/pull/${number}`,
     head: { ref: head },
     base: { ref: base }
   }

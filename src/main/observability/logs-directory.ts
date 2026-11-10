@@ -10,12 +10,12 @@ function getUserDataDir(): string {
   }
   const home = homedir()
   if (platform() === 'darwin') {
-    return join(home, 'Library', 'Application Support', 'Orca')
+    return join(home, 'Library', 'Application Support', 'Topo')
   }
   if (platform() === 'win32') {
-    return join(process.env.APPDATA ?? home, 'Orca')
+    return join(process.env.APPDATA ?? home, 'Topo')
   }
-  return join(home, '.config', 'Orca')
+  return join(home, '.config', 'Topo')
 }
 
 export function getLogsDirectory(): string {
@@ -26,8 +26,8 @@ export function getTraceFilePath(): string {
   return join(getLogsDirectory(), 'main.trace.ndjson')
 }
 
-export function getOrcadTraceFilePath(): string {
-  return join(getLogsDirectory(), 'orcad.trace.ndjson')
+export function getTopodTraceFilePath(): string {
+  return join(getLogsDirectory(), 'topod.trace.ndjson')
 }
 
 export function getDaemonLogFilePath(): string {

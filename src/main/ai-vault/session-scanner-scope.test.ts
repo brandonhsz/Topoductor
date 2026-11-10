@@ -74,7 +74,7 @@ async function writeClaudeSession(args: {
 
 describe('scanAiVaultSessions scope inclusion', () => {
   it('surfaces in-scope sessions older than the global recency cap', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-ai-vault-scope-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-ai-vault-scope-'))
     tempRoots.push(root)
     const claudeRoot = join(root, 'claude-projects')
 
@@ -118,7 +118,7 @@ describe('scanAiVaultSessions scope inclusion', () => {
   })
 
   it('does not assign a native transcript to a WSL distro from cwd alone', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-ai-vault-scope-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-ai-vault-scope-'))
     tempRoots.push(root)
     const claudeRoot = join(root, 'claude-projects')
 
@@ -171,7 +171,7 @@ describe('scanAiVaultSessions scope inclusion', () => {
       cwd: LONG_PATH
     }
   ])('finds older in-scope Claude sessions for $layout', async ({ scopePath, dirName, cwd }) => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-ai-vault-scope-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-ai-vault-scope-'))
     tempRoots.push(root)
     const claudeRoot = join(root, 'claude-projects')
     await writeOldClaudeSessionBehindRecentOnes(claudeRoot, { dirName, cwd })
@@ -187,7 +187,7 @@ describe('scanAiVaultSessions scope inclusion', () => {
   it.skipIf(process.platform === 'win32' || process.getuid?.() === 0)(
     'reports an unreadable in-scope folder instead of listing it as empty',
     async () => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-ai-vault-scope-'))
+      const root = await mkdtemp(join(tmpdir(), 'topo-ai-vault-scope-'))
       tempRoots.push(root)
       const claudeRoot = join(root, 'claude-projects')
       await writeOldClaudeSessionBehindRecentOnes(claudeRoot, {

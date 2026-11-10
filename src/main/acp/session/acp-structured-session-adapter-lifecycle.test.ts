@@ -58,7 +58,7 @@ describe('ACP connection loss', () => {
     expect(rig.child().closes).toBe(1)
   })
 
-  it('ends the turn as failed on an answer Orca cannot read, and sends the next message', async () => {
+  it('ends the turn as failed on an answer Topo cannot read, and sends the next message', async () => {
     const rig = await openAcpAdapterRig()
     await rig.acquire()
     await sendHello(rig, 'garbled')

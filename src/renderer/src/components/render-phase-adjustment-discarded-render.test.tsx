@@ -80,9 +80,9 @@ function CloneDestination({ workspaceDir }: { workspaceDir?: string }) {
 it('fills the clone destination once settings hydrate', async () => {
   await renderThenDiscardUpdate(
     <CloneDestination />,
-    <CloneDestination workspaceDir="/home/dev/orca" />
+    <CloneDestination workspaceDir="/home/dev/topo" />
   )
-  expect(screen.getByTestId('destination').textContent).toBe('/home/dev/orca')
+  expect(screen.getByTestId('destination').textContent).toBe('/home/dev/topo')
 })
 
 it('seeds the save-as dialog with the opened file name', async () => {

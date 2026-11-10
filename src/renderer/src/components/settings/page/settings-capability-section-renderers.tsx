@@ -66,7 +66,7 @@ export function renderAccountsSettingsSection(
       title={t('auto.components.settings.Settings.ad6c529693', 'AI Provider Accounts')}
       description={t(
         'auto.components.settings.Settings.21f09426ea',
-        'Optional. Orca works with your existing provider logins; add accounts only if you want Orca to help switch between them.'
+        'Optional. Topo works with your existing provider logins; add accounts only if you want Topo to help switch between them.'
       )}
       badge={t('auto.hooks.useSettingsNavigationMetadata.7c79d3b7bf', 'Optional')}
       searchEntries={navigation.getSectionSearchEntries('accounts')}
@@ -74,7 +74,7 @@ export function renderAccountsSettingsSection(
       {!view.isSectionMounted('accounts') ? null : !model.settingsHostScope.available ? (
         <SettingsHostScopeUnavailableNotice />
       ) : wslHostDistro ? (
-        // A WSL host's orcad has no account services; this desktop owns its distro's accounts.
+        // A WSL host's topod has no account services; this desktop owns its distro's accounts.
         <AccountsPane
           key={wslHostDistro ?? getProviderAccountsOwnerKey(model.settingsHostScope.target)}
           nativeAccounts={model.nativeAccounts}
@@ -121,7 +121,7 @@ export function renderOrchestrationSettingsSection(
       title={t('auto.components.settings.Settings.00c3a7950d', 'Orchestration')}
       description={t(
         'auto.components.settings.Settings.475980f53d',
-        'Coordinate multiple coding agents through Orca.'
+        'Coordinate multiple coding agents through Topo.'
       )}
       searchEntries={navigation.getSectionSearchEntries('orchestration')}
     >
@@ -144,7 +144,7 @@ export function renderLinearSettingsSection(
       title={t('auto.components.settings.Settings.linearTitle', 'Linear')}
       description={t(
         'auto.components.settings.Settings.linearDescription',
-        'How Linear works in Orca, setup checklist, agent skill, and example prompts.'
+        'How Linear works in Topo, setup checklist, agent skill, and example prompts.'
       )}
       searchEntries={navigation.getSectionSearchEntries('linear')}
     >

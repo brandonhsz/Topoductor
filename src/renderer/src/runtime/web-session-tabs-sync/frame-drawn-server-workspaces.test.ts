@@ -30,7 +30,7 @@ const hoisted = vi.hoisted(() => ({
 }))
 
 vi.mock('../../../../shared/layout-owner-switch', () => ({
-  get ORCA_LAYOUT_OWNER_IS_MAIN() {
+  get TOPO_LAYOUT_OWNER_IS_MAIN() {
     return hoisted.layoutOwnerIsMain
   }
 }))

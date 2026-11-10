@@ -16,7 +16,7 @@ afterEach(async () => {
 
 describe('scanAiVaultSessions harness-injected title seeding', () => {
   it('uses Claude last-prompt metadata instead of injected and tool-result user records', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-ai-vault-claude-last-prompt-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-ai-vault-claude-last-prompt-'))
     tempRoots.push(root)
     const roots = isolatedScanRoots(root)
     await mkdir(join(roots.claudeProjectsDir, 'project'), { recursive: true })

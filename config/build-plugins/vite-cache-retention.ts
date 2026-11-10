@@ -4,7 +4,7 @@ import { retainViteCache } from '../scripts/worktree-storage/vite-cache-activity
 
 export function createViteCacheRetentionPlugin(cacheRoot = resolve('.cache/vite')): Plugin {
   return {
-    name: 'orca-vite-cache-retention',
+    name: 'topo-vite-cache-retention',
     apply: 'serve',
     async configureServer(server) {
       const release = await retainViteCache(cacheRoot)

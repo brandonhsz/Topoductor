@@ -1,6 +1,6 @@
 name: Homebrew Cask Bump
 
-# Update desktop stable/RC casks in stablyai/homebrew-orca with release DMG hashes through release-cut workflow_call or manual backfill. Avoid release.published because mobile/non-desktop releases lack those DMGs and must never rewrite casks.
+# Update desktop stable/RC casks in brandonhsz/homebrew-topo with release DMG hashes through release-cut workflow_call or manual backfill. Avoid release.published because mobile/non-desktop releases lack those DMGs and must never rewrite casks.
 
 on:
   workflow_call:
@@ -27,7 +27,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Checkout orca
+      - name: Checkout topo
         uses: actions/checkout@v6
 
       - name: Resolve tag and version
@@ -54,11 +54,11 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
-            token="orca@rc"
-            branch_token="orca-rc"
+            token="topo@rc"
+            branch_token="topo-rc"
           elif [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            token="orca"
-            branch_token="orca"
+            token="topo"
+            branch_token="topo"
           else
             echo "::error::Unsupported desktop tag shape: $TAG" >&2
             exit 1
@@ -85,11 +85,11 @@ jobs:
           mkdir -p dmgs
           gh release download "$TAG" \
             --repo "${{ github.repository }}" \
-            --pattern 'orca-macos-arm64.dmg' \
-            --pattern 'orca-macos-x64.dmg' \
+            --pattern 'topo-macos-arm64.dmg' \
+            --pattern 'topo-macos-x64.dmg' \
             --dir dmgs
-          arm=$(sha256sum dmgs/orca-macos-arm64.dmg | awk '{print $1}')
-          intel=$(sha256sum dmgs/orca-macos-x64.dmg  | awk '{print $1}')
+          arm=$(sha256sum dmgs/topo-macos-arm64.dmg | awk '{print $1}')
+          intel=$(sha256sum dmgs/topo-macos-x64.dmg  | awk '{print $1}')
           echo "arm=$arm"     >>"$GITHUB_OUTPUT"
           echo "intel=$intel" >>"$GITHUB_OUTPUT"
 
@@ -123,13 +123,13 @@ jobs:
         with:
           app-id: 2590194
           private-key: ${{ secrets.BUFO_BOT_PRIVATE_KEY }}
-          owner: stablyai
-          repositories: homebrew-orca
+          owner: brandonhsz
+          repositories: homebrew-topo
 
       - name: Checkout tap
         uses: actions/checkout@v6
         with:
-          repository: stablyai/homebrew-orca
+          repository: brandonhsz/homebrew-topo
           path: tap
           token: ${{ steps.app-token.outputs.token }}
 
@@ -165,7 +165,7 @@ jobs:
           # Backfills can race an existing branch; update its PR title when creation finds one.
           gh pr create \
             --title "$TITLE" \
-            --body "Automated bump of $CASK_PATH from stablyai/orca release $TAG." \
+            --body "Automated bump of $CASK_PATH from brandonhsz/Topoductor release $TAG." \
             --base main \
             --head "$branch" \
             || gh pr edit "$branch" --title "$TITLE"

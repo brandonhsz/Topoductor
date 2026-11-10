@@ -22,7 +22,7 @@ describe('OMP model command', () => {
     })
     await harness.callHook('agent_start')
     await harness.callHook('agent_end', {}, { isIdle: () => true })
-    await harness.commands['orca-model'].handler('openai/test-model', commandContext())
+    await harness.commands['topo-model'].handler('openai/test-model', commandContext())
     release(new Response('', { status: 200 }))
     await vi.waitFor(() => expect(harness.fetchMock).toHaveBeenCalledTimes(2))
     expect(JSON.parse(String(harness.fetchMock.mock.calls[1][1]?.body)).payload).toMatchObject({

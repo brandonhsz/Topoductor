@@ -29,14 +29,14 @@ export function useMobileTasksClientSettingsActions(model: ProjectRepositoryReso
     setGithubSourceFallbacks,
     setGithubCountedTotalPages,
     setItems,
-    setOrcaYamlTrustPrompt,
+    setTopoYamlTrustPrompt,
     setSetupPrompt,
     setShowWorkspaceAdvanced,
     setShowWorkspaceAgentPicker,
     setShowWorkspaceBaseBranchPicker,
     setShowWorkspaceCreateRepoPicker,
     setShowWorkspaceSparsePicker,
-    setTrustedOrcaHooks,
+    setTrustedTopoHooks,
     setWorkspaceAgent,
     setWorkspaceAgentOverridden,
     setWorkspaceBaseBranch,
@@ -63,7 +63,7 @@ export function useMobileTasksClientSettingsActions(model: ProjectRepositoryReso
     setWorkspaceSshState,
     taskResumeRef,
     taskUiReady,
-    trustedOrcaHooks
+    trustedTopoHooks
   } = model
   const queryClient = useQueryClient()
   // Each write also lands in the kept hydration, so the next visit opens where this one left.
@@ -212,15 +212,15 @@ export function useMobileTasksClientSettingsActions(model: ProjectRepositoryReso
       }
       const trusted = await persistSetupHookTrustApproval({
         client,
-        trust: trustedOrcaHooks,
+        trust: trustedTopoHooks,
         repoId,
         contentHash,
         alwaysTrust
       })
-      setTrustedOrcaHooks(trusted)
-      keepUi({ trustedOrcaHooks: trusted })
+      setTrustedTopoHooks(trusted)
+      keepUi({ trustedTopoHooks: trusted })
     },
-    [client, keepUi, trustedOrcaHooks]
+    [client, keepUi, trustedTopoHooks]
   )
 
   const resetWorkspaceCreateState = useCallback((): void => {
@@ -254,7 +254,7 @@ export function useMobileTasksClientSettingsActions(model: ProjectRepositoryReso
     setShowWorkspaceBaseBranchPicker(false)
     setShowWorkspaceSparsePicker(false)
     setSetupPrompt(null)
-    setOrcaYamlTrustPrompt(null)
+    setTopoYamlTrustPrompt(null)
   }, [])
   return Object.assign(model, {
     keepSettings,

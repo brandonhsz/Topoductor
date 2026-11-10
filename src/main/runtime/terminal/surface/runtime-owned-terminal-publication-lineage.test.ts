@@ -2,18 +2,18 @@ import { expect, it, vi } from 'vitest'
 import type { RuntimeMobileSessionTabsResult } from '../../../../shared/runtime-session-contracts'
 
 // Fragments stay side-effect ordered: mocks, then lifecycle, then fixtures.
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const { store, TEST_WORKTREE_ID } =
-  await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
-const { committingSpawn } = await import('../../orca-runtime-tests/bind-first-pane.test-fixture')
+  await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
+const { committingSpawn } = await import('../../topo-runtime-tests/bind-first-pane.test-fixture')
 
 it.each(['renderer:active-generation', 'headless:active-generation'])(
   'keeps %s live when runtime-owned creation supplements its inventory',
   async (publicationEpoch) => {
     // Its own copy: layout-owner builds bind the created pane into this store's session.
-    const runtime = new OrcaRuntimeService({ ...store })
+    const runtime = new TopoRuntimeService({ ...store })
     runtime.setPtyController({
       spawn: committingSpawn(
         runtime,

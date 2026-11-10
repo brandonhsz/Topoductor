@@ -1,19 +1,19 @@
 // Real clicks must reach React note controls inside Monaco view zones; propagation or overlay regressions escape store-only tests.
 
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForSessionReady, waitForActiveWorktree } from './helpers/store'
 
 test.describe('Diff note delete', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
   })
 
-  test('clicking the trash button removes the saved note', async ({ orcaPage }) => {
-    const worktreeId = await waitForActiveWorktree(orcaPage)
+  test('clicking the trash button removes the saved note', async ({ topoPage }) => {
+    const worktreeId = await waitForActiveWorktree(topoPage)
 
     // Modify a tracked fixture so Monaco renders a real diff instead of an empty state.
-    const { relativePath } = await orcaPage.evaluate(async (wId) => {
+    const { relativePath } = await topoPage.evaluate(async (wId) => {
       const store = window.__store
       if (!store) {
         throw new Error('window.__store is not available — is the app in dev mode?')
@@ -36,7 +36,7 @@ test.describe('Diff note delete', () => {
     }, worktreeId)
 
     // Seed the note directly to isolate delete from the separate gutter-hover interaction.
-    const addResult = await orcaPage.evaluate(
+    const addResult = await topoPage.evaluate(
       async ({ wId, rel }) => {
         const store = window.__store
         if (!store) {
@@ -65,7 +65,7 @@ test.describe('Diff note delete', () => {
     expect(addResult, 'addDiffComment returned null').not.toBeNull()
     const commentId = addResult!.id
 
-    await orcaPage.evaluate(
+    await topoPage.evaluate(
       ({ wId, rel }) => {
         const store = window.__store
         if (!store) {
@@ -85,7 +85,7 @@ test.describe('Diff note delete', () => {
     )
 
     // Wait for the trash button itself to prove the React root inside Monaco’s zone mounted.
-    const deleteButton = orcaPage.getByTitle('Delete note').first()
+    const deleteButton = topoPage.getByTitle('Delete note').first()
     await expect(deleteButton).toBeVisible({ timeout: 15_000 })
 
     await deleteButton.click()
@@ -93,7 +93,7 @@ test.describe('Diff note delete', () => {
     await expect
       .poll(
         async () =>
-          orcaPage.evaluate((id: string) => {
+          topoPage.evaluate((id: string) => {
             const store = window.__store
             if (!store) {
               return null
@@ -110,7 +110,7 @@ test.describe('Diff note delete', () => {
       )
       .toBe(false)
 
-    await expect(orcaPage.getByTitle('Delete note')).toHaveCount(0, {
+    await expect(topoPage.getByTitle('Delete note')).toHaveCount(0, {
       timeout: 5_000
     })
   })

@@ -49,7 +49,7 @@ afterEach(async () => {
 })
 
 it('restores separate pause and cancellation owners from complete format-3 scalars and logical replacement', async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-pause-restore-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-pause-restore-'))
   let journal = await current.open(options())
   await journal.queuedMessages.insert({ messageId: 'W', body: message, unattended: false })
   await journal.appendStopEvent({ reason: 'user-stop', turnId: 'original' }, 0)
@@ -81,7 +81,7 @@ it('restores separate pause and cancellation owners from complete format-3 scala
 it.each(['raw-prefix', 'old-format-3-layout'] as const)(
   'adopts the surviving Stop before a replacing write from %s, only on commit',
   async (layout) => {
-    root = await mkdtemp(join(tmpdir(), 'orca-pause-adopt-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-pause-adopt-'))
     let journal = await (layout === 'raw-prefix' ? historical : current).open(options())
     await journal.queuedMessages.insert({ messageId: 'W', body: message })
     await journal.appendStopEvent({ reason: 'user-stop', turnId: 'original' }, 0)
@@ -121,7 +121,7 @@ it.each(['raw-prefix', 'old-format-3-layout'] as const)(
 )
 
 it('does not revive a superseded historical Stop, and distinguishes explicit null from an absent mark', async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-pause-historical-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-pause-historical-'))
   let journal = await historical.open(options())
   await journal.appendStopEvent({ reason: 'user-stop' }, 0)
   await journal.appendStopEvent({ reason: 'host-stop' }, 0)
@@ -142,7 +142,7 @@ it('does not revive a superseded historical Stop, and distinguishes explicit nul
 })
 
 it('refuses unknown pause members as newer and damaged declared members as corrupt', async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-pause-strict-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-pause-strict-'))
   const journal = await current.open(options())
   await journal.appendStopEvent({ reason: 'user-stop' }, 0)
   const row = db()

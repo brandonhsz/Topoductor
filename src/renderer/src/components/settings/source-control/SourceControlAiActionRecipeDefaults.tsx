@@ -220,7 +220,7 @@ export function SourceControlAiActionRecipeDefaults({
         <p className="text-xs text-muted-foreground">
           {t(
             'auto.components.settings.SourceControlAiActionRecipeDefaults.bf84dea6af',
-            'Use variables only when you want Orca to inject context. Leave the agent as default to follow your normal agent preference.'
+            'Use variables only when you want Topo to inject context. Leave the agent as default to follow your normal agent preference.'
           )}
         </p>
       </div>

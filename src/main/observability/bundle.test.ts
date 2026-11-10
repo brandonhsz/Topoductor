@@ -9,7 +9,7 @@ let dir: string
 let traceFile: string
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-bundle-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-bundle-'))
   traceFile = join(dir, 'main.trace.ndjson')
 })
 afterEach(() => {
@@ -47,7 +47,7 @@ describe('bundle — collection', () => {
       platform: 'darwin',
       arch: 'arm64',
       osRelease: '24',
-      orcaChannel: 'dev'
+      topoChannel: 'dev'
     })
 
     expect(bundle.spanCount).toBe(1)

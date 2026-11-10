@@ -2,11 +2,11 @@
  * Mail reaches agents at rest and starts them, so routing ignores process liveness. Resolve clear successors for every worker-level operation. */
 
 import type { AgentSessionConversationView } from '../../../../../shared/agent-session/lifecycle/agent-session-conversation-view'
-import { isOrcaSessionId, type OrcaSessionId } from '../../../../../shared/orca-session-address'
+import { isTopoSessionId, type TopoSessionId } from '../../../../../shared/topo-session-address'
 import { ORCHESTRATION_SESSION_CALLER_ERROR_CODES as CODES } from '../../../../../shared/orchestration/orchestration-session-caller-codes'
 import type { RuntimeTerminalState } from '../../../../../shared/runtime-terminal-contracts'
 import { getStructuredAgentSessionHost } from '../../../../native-chat/agent-session-wire/host/structured-agent-session-registry'
-import { canonicalOrcaSessionId } from '../../addressing/session-lineage/canonical-orca-session-id'
+import { canonicalTopoSessionId } from '../../addressing/session-lineage/canonical-topo-session-id'
 import type { OrchestrationDb } from '../../db/orchestration-db'
 import { OrchestrationError } from '../../orchestration-error'
 import {
@@ -80,10 +80,10 @@ export function resolveStructuredWorkerIdentityForSession(
   db: OrchestrationDb | null | undefined
 ): StructuredWorkerIdentity | null {
   const exact = structuredWorkerIdentities.getBySessionId(sessionId)
-  if (exact || !isOrcaSessionId(sessionId)) {
+  if (exact || !isTopoSessionId(sessionId)) {
     return exact ?? resolveStructuredWorkerIdentityForRoot(sessionId, db)
   }
-  return resolveStructuredWorkerIdentityForRoot(canonicalOrcaSessionId(sessionId), db)
+  return resolveStructuredWorkerIdentityForRoot(canonicalTopoSessionId(sessionId), db)
 }
 
 /** The worker minted for a lineage root session, rehydrated from its durable row after a restart. */
@@ -103,14 +103,14 @@ export function resolveStructuredWorkerIdentityForRoot(
 
 /** Recorded workers must retain handle identity; a missing handle cannot turn one into an ordinary chat caller. */
 export function isRecordedStructuredWorkerSession(
-  sessionId: OrcaSessionId,
+  sessionId: TopoSessionId,
   db: OrchestrationDb
 ): boolean {
   return Boolean(
     db.db
       .prepare(
         `SELECT 1 FROM dispatch_contexts
-         WHERE assignee_orca_session_id = ? AND process_incarnation = ? LIMIT 1`
+         WHERE assignee_topo_session_id = ? AND process_incarnation = ? LIMIT 1`
       )
       .get(sessionId, structuredWorkerProcessIncarnation(sessionId))
   )

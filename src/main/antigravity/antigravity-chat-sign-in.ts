@@ -180,7 +180,7 @@ async function signIn(current: Flow, host: AntigravityChatSignInHost): Promise<v
   const launch = await prepareAcpLaunch(resolve, closed)
   const connect = await acpPrivateTempConnect(deps, closed)
   const home = launch.env.GEMINI_HOME
-  const cwd = await mkdtemp(join(tmpdir(), 'orca-antigravity-sign-in-'))
+  const cwd = await mkdtemp(join(tmpdir(), 'topo-antigravity-sign-in-'))
   let connection: AcpAgentConnection | null = null
   // Wait for proven exit and session ownership before deleting files.
   const owned = { sessionId: '', exited: false, done: false, disposed: false }
@@ -198,7 +198,7 @@ async function signIn(current: Flow, host: AntigravityChatSignInHost): Promise<v
     connection = connect(
       { ...launch, args: launch.spec.args({ fullAccess: false, pluginDir: null }), cwd },
       {
-        clientInfo: { name: 'orca', version: '1' },
+        clientInfo: { name: 'topo', version: '1' },
         signIn: { ...ANTIGRAVITY_LAUNCH_SPEC.signIn, link: (link) => receiveLink(current, link) }
       }
     )

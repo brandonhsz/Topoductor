@@ -6,7 +6,7 @@ import type {
   DispatchContextRow,
   DispatchStatus
 } from '../../../../orchestration/db/orchestration-records'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { resolveOrchestrationParty } from '../../../../orchestration/addressing/orchestration-party'
 import { isEquivalentPaneKey } from '../../../../orchestration/db/pane-key-match'
 import type { OrchestrationCoordinatorKey } from '../../../../orchestration/addressing/orchestration-caller-identity'
@@ -24,7 +24,7 @@ const ACTIVE_DISPATCH_STATUSES: readonly DispatchStatus[] = ['pending', 'dispatc
 
 /** Reject settled Dispatch mailboxes: no active reader remains and check never reroutes their mail. Federation checks its own liveness. */
 export function assertDispatchMailboxDeliverable(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   db: OrchestrationDb,
   dispatchId: string
 ): void {
@@ -58,7 +58,7 @@ export function assertDispatchMailboxDeliverable(
 
 // A saved pane alone cannot identify its occupant after reuse.
 export function currentDispatchAssigneeRun(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   db: OrchestrationDb,
   dispatch: DispatchContextRow
 ) {
@@ -70,7 +70,7 @@ export function currentDispatchAssigneeRun(
   )
   return !key
     ? undefined
-    : key.orcaSessionId !== null
+    : key.topoSessionId !== null
       ? db.getCurrentRunForCoordinator(key)
       : key.paneKey
         ? db.getCurrentRunForPane(key.paneKey)
@@ -83,7 +83,7 @@ export function dispatchAssigneeCoordinatorKey(
     | 'contract_version'
     | 'assignee_handle'
     | 'assignee_pane_key'
-    | 'assignee_orca_session_id'
+    | 'assignee_topo_session_id'
     | 'process_incarnation'
   >,
   federated: () => boolean,
@@ -93,11 +93,11 @@ export function dispatchAssigneeCoordinatorKey(
   if (dispatch.contract_version !== CURRENT_CONTRACT_VERSION || federated()) {
     return undefined
   }
-  if (dispatch.assignee_orca_session_id !== null) {
+  if (dispatch.assignee_topo_session_id !== null) {
     return {
       terminalHandle: dispatch.assignee_handle,
       paneKey: null,
-      orcaSessionId: dispatch.assignee_orca_session_id
+      topoSessionId: dispatch.assignee_topo_session_id
     }
   }
   if (dispatch.assignee_handle === null) {
@@ -112,12 +112,12 @@ export function dispatchAssigneeCoordinatorKey(
   ) {
     return undefined
   }
-  return { terminalHandle: dispatch.assignee_handle, paneKey, orcaSessionId: null }
+  return { terminalHandle: dispatch.assignee_handle, paneKey, topoSessionId: null }
 }
 
 // Nested coordinators receive new mail where their current Run check waits.
 export function resolveRunBoundDispatchRecipient(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   db: OrchestrationDb,
   dispatchId: string,
   explicitRunId?: string
@@ -160,7 +160,7 @@ export function selectRunBoundDispatchRecipient(
 
 // Replies share send routing; an unresolvable bare sender is refused rather than stored where nothing reads.
 export function resolveReplyRecipient(params: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   originalFrom: string
   originalRunId: string | undefined
@@ -228,7 +228,7 @@ export type BareRecipientResolution =
     }
 
 export function resolveBareOrchestrationRecipient(params: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   handle: string
   senderRunId?: string
@@ -252,7 +252,7 @@ export function resolveBareOrchestrationRecipient(params: {
     ...params,
     handle,
     boundRuns: () =>
-      party.orcaSessionId !== null
+      party.topoSessionId !== null
         ? db.runsBoundToCoordinator(party)
         : paneKey
           ? db.runsBoundToPane(paneKey)

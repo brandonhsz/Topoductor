@@ -27,7 +27,7 @@ function parseRows(source: string) {
 let rows: ReturnType<typeof parseRows>
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-fork-claude-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-fork-claude-'))
   oldHome = join(root, 'old')
   selectedHome = join(root, 'selected')
   accounts.homes = [oldHome]
@@ -48,7 +48,7 @@ afterEach(async () => {
 function copy(uuid: string, settled: boolean, before?: string, opener?: string, source = SOURCE) {
   return copyClaudeConversation({
     identity: {
-      sessionId: 'orca-source',
+      sessionId: 'topo-source',
       workspaceId: 'workspace',
       hostId: 'local',
       agent: 'claude',

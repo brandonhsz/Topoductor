@@ -51,13 +51,13 @@ export function aiVaultSessionDeleteBlockedReason(
   if (isSyntheticAiVaultSessionPath(session.filePath)) {
     return t(
       'auto.components.right.sidebar.AiVaultSessionRow.deleteReasonSyntheticPath',
-      "This session can't be deleted from Orca."
+      "This session can't be deleted from Topo."
     )
   }
   if (!isAiVaultDeletableAgent(session.agent)) {
     return t(
       'auto.components.right.sidebar.AiVaultSessionRow.deleteReasonUnsupportedAgent',
-      "{{value0}} sessions can't be deleted from Orca.",
+      "{{value0}} sessions can't be deleted from Topo.",
       { value0: agentLabel(session.agent) }
     )
   }

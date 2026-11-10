@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 import type { RpcAnyMethodDeclaration } from '../core'
 import type { DeviceRegistry } from './pairing/device-registry'
 import type { E2EEKeypair } from './pairing/e2ee-keypair'
@@ -29,8 +29,8 @@ export function formatWsEndpoint(host: string, port: number): string {
   return `ws://${host.includes(':') ? `[${host}]` : host}:${port}`
 }
 
-export type OrcaRuntimeRpcServerOptions = {
-  runtime: OrcaRuntimeService
+export type TopoRuntimeRpcServerOptions = {
+  runtime: TopoRuntimeService
   userDataPath: string
   pid?: number
   platform?: NodeJS.Platform
@@ -44,7 +44,7 @@ export type OrcaRuntimeRpcServerOptions = {
   exposeNetworkByDefault?: boolean
   /** Explicit address pins govern the whole process: override startup exposure and reconnect defaults, and refuse pairing-time widening. Loopback must survive pairing and restart. */
   pinnedBindHost?: string
-  // `orca serve` only: refuse public source addresses unless allowed (desktop listeners never filter).
+  // `topo serve` only: refuse public source addresses unless allowed (desktop listeners never filter).
   serveNetworkSources?: ServeNetworkSourceOptions
   webClientRoot?: string
   // Test-only timing overrides; production keeps design §3.1 defaults.
@@ -98,9 +98,9 @@ export function pairingUnavailable(
 }
 
 export const DEVICE_REGISTRY_UNAVAILABLE_GUIDANCE =
-  'The pairing registry is unavailable. Verify that the Orca data directory is writable.'
+  'The pairing registry is unavailable. Verify that the Topo data directory is writable.'
 export const E2EE_KEY_UNAVAILABLE_GUIDANCE =
-  'The E2EE identity is unavailable. Verify that the Orca data directory is writable.'
+  'The E2EE identity is unavailable. Verify that the Topo data directory is writable.'
 
 export type MobileRelayPairingProvider = {
   createPairingRelay(

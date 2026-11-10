@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithStopTerminalsForProject } from '../terminal/stop/project-terminal-stop'
+import { TopoRuntimeWithStopTerminalsForProject } from '../terminal/stop/project-terminal-stop'
 import { HEADLESS_RUNTIME_WINDOW_ID } from '../../../shared/runtime-session-contracts'
 
 export type SessionTitlePublisher = {
@@ -9,7 +9,7 @@ export type SessionTitlePublisher = {
 
 export type SessionTitleAuthority = ReadonlyMap<string, ReadonlySet<string>>
 
-export abstract class OrcaRuntimeWithSessionTitleAuthority extends OrcaRuntimeWithStopTerminalsForProject {
+export abstract class TopoRuntimeWithSessionTitleAuthority extends TopoRuntimeWithStopTerminalsForProject {
   private currentSessionTitlePublisher(worktreeId: string): SessionTitlePublisher | undefined {
     const publisher = this.acceptedRendererMobileSnapshotByWorktree.get(worktreeId)?.titlePublisher
     return (

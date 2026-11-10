@@ -13,7 +13,7 @@ describe.each([
   ['CommonJS', commonJsFindKeys]
 ])('localization extraction through %s', (_name, extractKeys) => {
   it('preserves cross-file namespaces, source locations and fresh plugin transformations', async () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-extraction-passes-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-extraction-passes-'))
     const file = join(directory, 'a-consumer.ts')
     const config = {
       locales: ['en'],

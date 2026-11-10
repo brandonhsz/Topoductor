@@ -14,7 +14,7 @@ import {
 
 const GRANTED_COMPUTER_USE_STATUS: ComputerUsePermissionStatusResult = {
   platform: 'darwin',
-  helperAppPath: '/Applications/Orca Computer Use.app',
+  helperAppPath: '/Applications/Topo Computer Use.app',
   helperUnavailableReason: null,
   permissions: [
     { id: 'accessibility', status: 'granted' },
@@ -24,7 +24,7 @@ const GRANTED_COMPUTER_USE_STATUS: ComputerUsePermissionStatusResult = {
 
 const OPENED_COMPUTER_USE_SETUP: ComputerUsePermissionSetupResult = {
   platform: 'darwin',
-  helperAppPath: '/Applications/Orca.app',
+  helperAppPath: '/Applications/Topo.app',
   openedSettings: true,
   launchedHelper: true
 }
@@ -80,7 +80,7 @@ describe('onboarding feature setup runner', () => {
     const unavailableStatus: ComputerUsePermissionStatusResult = {
       platform: 'darwin',
       helperAppPath: null,
-      helperUnavailableReason: 'Orca Computer Use.app was not found',
+      helperUnavailableReason: 'Topo Computer Use.app was not found',
       permissions: [
         { id: 'accessibility', status: 'not-granted' },
         { id: 'screenshots', status: 'not-granted' }
@@ -98,16 +98,16 @@ describe('onboarding feature setup runner', () => {
     )
 
     expect(result.skillNames).toEqual([
-      'orca-cli',
-      'orca-computer-use',
+      'topo-cli',
+      'topo-computer-use',
       'orchestration',
-      'orca-linear'
+      'topo-linear'
     ])
     expect(result.computerUsePermissionsOpened).toBe(false)
     expect(openComputerUsePermissionSetup).not.toHaveBeenCalled()
     expect(result.warnings).toContainEqual({
       featureId: 'computerUse',
-      message: 'Orca Computer Use.app was not found'
+      message: 'Topo Computer Use.app was not found'
     })
   })
 })

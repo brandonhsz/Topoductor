@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ClaudeUsagePersistedState } from './types'
 
 const { getPathMock } = vi.hoisted(() => ({
-  getPathMock: vi.fn(() => '/tmp/orca-test-userdata')
+  getPathMock: vi.fn(() => '/tmp/topo-test-userdata')
 }))
 
 vi.mock('electron', () => ({
@@ -90,7 +90,7 @@ describe('ClaudeUsageStore', () => {
   let tempUserData: string
 
   beforeEach(() => {
-    tempUserData = mkdtempSync(join(tmpdir(), 'orca-claude-usage-store-'))
+    tempUserData = mkdtempSync(join(tmpdir(), 'topo-claude-usage-store-'))
     getPathMock.mockReturnValue(tempUserData)
     initClaudeUsagePath()
     vi.mocked(scanClaudeUsageFilesViaWorker).mockReset()

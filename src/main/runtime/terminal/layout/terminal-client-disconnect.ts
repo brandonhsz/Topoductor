@@ -1,8 +1,8 @@
-import { OrcaRuntimeWithHasRecentTerminalOutputPath } from '../output/terminal-output-path'
+import { TopoRuntimeWithHasRecentTerminalOutputPath } from '../output/terminal-output-path'
 import type { RuntimeTerminalDriverState } from '../../../../shared/runtime-session-contracts'
 import type { RuntimeFileCommandSurface } from '../../construction/runtime-file-command-surface'
 
-export abstract class OrcaRuntimeWithOnClientDisconnected extends OrcaRuntimeWithHasRecentTerminalOutputPath {
+export abstract class TopoRuntimeWithOnClientDisconnected extends TopoRuntimeWithHasRecentTerminalOutputPath {
   abstract getMobileDisplayMode(ptyId: string): 'auto' | 'desktop'
   protected abstract pickMostRecentActor(
     inner: Map<string, { clientId: string; lastActedAt: number }>

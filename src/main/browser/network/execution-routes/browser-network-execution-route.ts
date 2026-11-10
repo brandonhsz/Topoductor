@@ -46,7 +46,7 @@ const nativeDialer: BrowserNetworkTunnelDialer = {
   openTransport: openConnectedSocket
 }
 
-// Paired clients choose these destinations, so the host refuses metadata and its own Orca listeners.
+// Paired clients choose these destinations, so the host refuses metadata and its own Topo listeners.
 const guardedNativeDialer: BrowserNetworkTunnelDialer = {
   connect: (target) =>
     connect({

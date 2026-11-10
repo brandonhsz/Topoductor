@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { AGENT_STATUS_STALE_AFTER_MS } from '../../../../shared/agent-status/contracts/agent-status-freshness'
 import type { OrchestrationCoordinatorKey } from '../addressing/orchestration-caller-identity'
 import type { OrchestrationDb } from '../db/orchestration-db'
-import { currentRunCoordinatorOrcaSessionIdSql } from '../db/runs/run-coordinator-orca-session'
+import { currentRunCoordinatorTopoSessionIdSql } from '../db/runs/run-coordinator-topo-session'
 
 const nullable = z.string().nullable()
 export const CrewAssignment = z.object({
@@ -12,10 +12,10 @@ export const CrewAssignment = z.object({
   task_id: z.string(),
   assignee_handle: nullable,
   assignee_pane_key: nullable,
-  assignee_orca_session_id: nullable,
+  assignee_topo_session_id: nullable,
   creator_handle: nullable,
   creator_pane_key: nullable,
-  creator_orca_session_id: nullable,
+  creator_topo_session_id: nullable,
   creator_dispatch_id: nullable,
   status: z.string(),
   completed_at: nullable,
@@ -36,11 +36,11 @@ export const CrewAssignment = z.object({
 export type CrewAssignmentRow = z.infer<typeof CrewAssignment>
 
 const assignmentColumns = `d.rowid AS ordinal, d.id, d.run_id, d.task_id,
-  d.assignee_handle, d.assignee_pane_key, d.assignee_orca_session_id,
-  d.creator_handle, d.creator_pane_key, d.creator_orca_session_id, d.creator_dispatch_id,
+  d.assignee_handle, d.assignee_pane_key, d.assignee_topo_session_id,
+  d.creator_handle, d.creator_pane_key, d.creator_topo_session_id, d.creator_dispatch_id,
   d.status, d.completed_at, t.spec, t.task_title, t.display_name, t.status AS task_status,
   r.coordinator_handle, r.coordinator_pane_key,
-  ${currentRunCoordinatorOrcaSessionIdSql('r')} AS coordinator_session,
+  ${currentRunCoordinatorTopoSessionIdSql('r')} AS coordinator_session,
   d.process_incarnation AS assignee_process, w.stage, json_extract(w.start_options, '$.agent') AS agent, f.environment_name AS host_label, resource.process_incarnation AS resource_incarnation,
   resource.host_scope AS resource_host_scope`
 const assignmentJoins = `JOIN tasks t ON t.id = d.task_id JOIN runs r ON r.id = d.run_id
@@ -55,12 +55,12 @@ export function readCrewAssignments(db: OrchestrationDb, now: number): CrewAssig
     db.db
       .prepare(`
     SELECT ${assignmentColumns} FROM dispatch_contexts d ${assignmentJoins}
-    WHERE d.assignee_orca_session_id IS NULL AND d.status IN ('pending', 'dispatched')
+    WHERE d.assignee_topo_session_id IS NULL AND d.status IN ('pending', 'dispatched')
     UNION ALL
     SELECT ${assignmentColumns} FROM dispatch_contexts d ${assignmentJoins}
-    WHERE d.assignee_orca_session_id IS NULL AND d.status NOT IN ('pending', 'dispatched') AND julianday(d.completed_at) >= julianday(?)
+    WHERE d.assignee_topo_session_id IS NULL AND d.status NOT IN ('pending', 'dispatched') AND julianday(d.completed_at) >= julianday(?)
       AND NOT EXISTS (SELECT 1 FROM dispatch_contexts newer WHERE newer.rowid > d.rowid
-        AND ((d.assignee_orca_session_id IS NOT NULL AND newer.assignee_orca_session_id = d.assignee_orca_session_id)
+        AND ((d.assignee_topo_session_id IS NOT NULL AND newer.assignee_topo_session_id = d.assignee_topo_session_id)
           OR (d.assignee_handle IS NOT NULL AND newer.assignee_handle = d.assignee_handle)))
     UNION ALL
     SELECT ${assignmentColumns} FROM dispatch_contexts d ${assignmentJoins}
@@ -93,15 +93,15 @@ const Traffic = z.object({
 })
 export type CrewTraffic = z.infer<typeof Traffic>
 
-// Only an agent's own words can be a row's latest line: Orca's failure notices (escalations), empty setup
+// Only an agent's own words can be a row's latest line: Topo's failure notices (escalations), empty setup
 // receipts and rejected lifecycle rewrites carry IDs or nothing. Heartbeat stays its own term so the
 // partial message indexes still match; octet_length avoids reading long bodies.
 const ADMITTED_TRAFFIC = `type <> 'heartbeat'
   AND type IN ('status', 'dispatch', 'worker_done', 'merge_ready', 'handoff', 'decision_gate', 'question')
   AND octet_length(body) > 0
   AND NOT (payload IS NOT NULL AND json_valid(payload)
-    AND json_type(payload, '$._orcaLifecycleRejection.code') IS 'text'
-    AND json_type(payload, '$._orcaLifecycleRejection.reason') IS 'text')`
+    AND json_type(payload, '$._topoLifecycleRejection.code') IS 'text'
+    AND json_type(payload, '$._topoLifecycleRejection.reason') IS 'text')`
 
 /** Pair maxima follow enumeration, so a busy mailbox cannot crowd out its quieter peers. */
 export function readCrewTraffic(
@@ -154,7 +154,7 @@ export function readCrewRuns(db: OrchestrationDb, addresses: string[]) {
     .parse(
       db.db
         .prepare(`SELECT id, coordinator_handle AS handle, coordinator_pane_key AS pane,
-      ${currentRunCoordinatorOrcaSessionIdSql('runs')} AS session FROM runs
+      ${currentRunCoordinatorTopoSessionIdSql('runs')} AS session FROM runs
       WHERE id IN (SELECT value FROM json_each(?))`)
         .all(JSON.stringify(ids))
     )

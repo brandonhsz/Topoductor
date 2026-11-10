@@ -144,7 +144,7 @@ export class HostRelay extends HostRelayPhones {
       phase: 'hello',
       claims,
       origin,
-      caps: [...parseRelayHostCapabilities(request.headers.get('x-orca-host-capabilities') ?? '')],
+      caps: [...parseRelayHostCapabilities(request.headers.get('x-topo-host-capabilities') ?? '')],
       deadline: Date.now() + RELAY_PROTOCOL_LIMITS.firstFrameDeadlineMs
     })
     await this.reschedule()

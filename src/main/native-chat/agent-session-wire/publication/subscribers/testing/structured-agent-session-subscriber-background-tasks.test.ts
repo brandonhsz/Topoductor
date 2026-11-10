@@ -25,7 +25,7 @@ let root: string
 const journals = createTrackedJournalOpener()
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-subscriber-roster-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-subscriber-roster-'))
 })
 
 afterEach(async () => {
@@ -48,7 +48,7 @@ function openJournal(name: string): Promise<AgentSessionJournal> {
 
 async function appendRow(journal: AgentSessionJournal, id: string): Promise<void> {
   await journal.appendItem(
-    { provider: 'orca', clientMessageId: id },
+    { provider: 'topo', clientMessageId: id },
     { kind: 'status', text: id },
     { fence: 1, turnScope: AGENT_JOURNAL_THREAD_SCOPE }
   )

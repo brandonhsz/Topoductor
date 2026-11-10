@@ -6,7 +6,7 @@ import { mkdtempSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   waitForActivePaneHookDescriptor,
@@ -57,7 +57,7 @@ async function readGuestGrab(page: Page, browserTabId: string, expression: strin
 // Hover like a user: the banner shows before the picker arms, which records hover a frame later.
 async function hoverGuestGrabTarget(page: Page, browserTabId: string, x: number, y: number) {
   await expect
-    .poll(() => readGuestGrab(page, browserTabId, 'Boolean(window.__orcaGrab?.onPick)'))
+    .poll(() => readGuestGrab(page, browserTabId, 'Boolean(window.__topoGrab?.onPick)'))
     .toBe(true)
   await page.evaluate(
     async ({ tabId, x, y }) => {
@@ -70,7 +70,7 @@ async function hoverGuestGrabTarget(page: Page, browserTabId: string, x: number,
   )
   await expect
     .poll(() =>
-      readGuestGrab(page, browserTabId, 'Boolean(window.__orcaGrab?.getCurrentElement())')
+      readGuestGrab(page, browserTabId, 'Boolean(window.__topoGrab?.getCurrentElement())')
     )
     .toBe(true)
 }
@@ -143,7 +143,7 @@ async function openNativeChatTranscript(
 ): Promise<void> {
   const sessionId = `e2e-split-grab-${randomUUID()}`
   const transcriptPath = path.join(
-    mkdtempSync(path.join(os.tmpdir(), 'orca-e2e-split-grab-')),
+    mkdtempSync(path.join(os.tmpdir(), 'topo-e2e-split-grab-')),
     `${sessionId}.jsonl`
   )
   writeFileSync(transcriptPath, claudeTranscript(sessionId, args.reply))
@@ -194,13 +194,13 @@ test.describe('browser split grab shortcut', () => {
   let server: BrowserSplitPageServer
   let savedClipboard: string | null = null
 
-  test.beforeEach(async ({ electronApp, orcaPage }) => {
+  test.beforeEach(async ({ electronApp, topoPage }) => {
     server = await startBrowserSplitPageServer()
     // Why: the copy assertions read the real system clipboard; put the user's text back after.
     savedClipboard = await readClipboard(electronApp)
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
   })
 
   test.afterEach(async ({ electronApp }) => {
@@ -210,59 +210,59 @@ test.describe('browser split grab shortcut', () => {
     await server.close()
   })
 
-  test('copy chord from one split toolbar arms grab only in that split', async ({ orcaPage }) => {
-    const fixture = await createBrowserSplit(orcaPage, {
+  test('copy chord from one split toolbar arms grab only in that split', async ({ topoPage }) => {
+    const fixture = await createBrowserSplit(topoPage, {
       first: server.pageUrl('a', 1),
       second: server.pageUrl('b', 1, 'localhost')
     })
-    await waitForGuestUrl(orcaPage, fixture.firstBrowserTabId, server.pageUrl('a', 1))
-    await waitForGuestUrl(orcaPage, fixture.secondBrowserTabId, server.pageUrl('b', 1, 'localhost'))
+    await waitForGuestUrl(topoPage, fixture.firstBrowserTabId, server.pageUrl('a', 1))
+    await waitForGuestUrl(topoPage, fixture.secondBrowserTabId, server.pageUrl('b', 1, 'localhost'))
 
     // Why: the active terminal refits a frame after the splits mount and can take focus back.
-    const firstReloadButton = reloadButton(orcaPage, fixture.firstBrowserTabId)
+    const firstReloadButton = reloadButton(topoPage, fixture.firstBrowserTabId)
     await expect(async () => {
       await firstReloadButton.focus()
-      await waitForFocusedGroup(orcaPage, fixture.firstBrowserGroupId)
+      await waitForFocusedGroup(topoPage, fixture.firstBrowserGroupId)
       await expect(firstReloadButton).toBeFocused({ timeout: 1_000 })
     }).toPass({ timeout: 30_000 })
-    await orcaPage.keyboard.press(copyChord)
+    await topoPage.keyboard.press(copyChord)
 
-    await expect(grabBanner(orcaPage, fixture.firstBrowserTabId)).toBeVisible()
-    await expect(grabBanner(orcaPage, fixture.secondBrowserTabId)).toBeHidden()
+    await expect(grabBanner(topoPage, fixture.firstBrowserTabId)).toBeVisible()
+    await expect(grabBanner(topoPage, fixture.secondBrowserTabId)).toBeHidden()
   })
 
   test('annotate chord typed in one guest arms annotate only in that split', async ({
-    orcaPage
+    topoPage
   }) => {
-    const fixture = await createBrowserSplit(orcaPage, {
+    const fixture = await createBrowserSplit(topoPage, {
       first: server.pageUrl('a', 1),
       second: server.pageUrl('b', 1, 'localhost')
     })
-    await waitForGuestUrl(orcaPage, fixture.firstBrowserTabId, server.pageUrl('a', 1))
-    await waitForGuestUrl(orcaPage, fixture.secondBrowserTabId, server.pageUrl('b', 1, 'localhost'))
+    await waitForGuestUrl(topoPage, fixture.firstBrowserTabId, server.pageUrl('a', 1))
+    await waitForGuestUrl(topoPage, fixture.secondBrowserTabId, server.pageUrl('b', 1, 'localhost'))
 
     await pressKeyInBrowserGuest(
-      orcaPage,
+      topoPage,
       fixture.firstBrowserTabId,
       fixture.firstBrowserPageId,
       annotateGuestChord.keyCode,
       annotateGuestChord.modifiers
     )
 
-    await expect(annotateBanner(orcaPage, fixture.firstBrowserTabId)).toBeVisible()
-    await expect(annotateBanner(orcaPage, fixture.secondBrowserTabId)).toBeHidden()
+    await expect(annotateBanner(topoPage, fixture.firstBrowserTabId)).toBeVisible()
+    await expect(annotateBanner(topoPage, fixture.secondBrowserTabId)).toBeHidden()
   })
 
-  test('escape typed in the page exits grab, the copy toast and find', async ({ orcaPage }) => {
-    const fixture = await createBrowserSplit(orcaPage, {
+  test('escape typed in the page exits grab, the copy toast and find', async ({ topoPage }) => {
+    const fixture = await createBrowserSplit(topoPage, {
       first: server.pageUrl('a', 1),
       second: server.pageUrl('b', 1, 'localhost')
     })
-    await waitForGuestUrl(orcaPage, fixture.firstBrowserTabId, server.pageUrl('a', 1))
-    const overlay = browserOverlay(orcaPage, fixture.firstBrowserTabId)
+    await waitForGuestUrl(topoPage, fixture.firstBrowserTabId, server.pageUrl('a', 1))
+    const overlay = browserOverlay(topoPage, fixture.firstBrowserTabId)
     const pressInGuest = (keyCode: string, modifiers: GuestModifier[] = []): Promise<void> =>
       pressKeyInBrowserGuest(
-        orcaPage,
+        topoPage,
         fixture.firstBrowserTabId,
         fixture.firstBrowserPageId,
         keyCode,
@@ -270,15 +270,15 @@ test.describe('browser split grab shortcut', () => {
       )
 
     await pressInGuest('C', [guestModifier])
-    await expect(grabBanner(orcaPage, fixture.firstBrowserTabId)).toBeVisible()
+    await expect(grabBanner(topoPage, fixture.firstBrowserTabId)).toBeVisible()
     await pressInGuest('Escape')
-    await expect(grabBanner(orcaPage, fixture.firstBrowserTabId)).toBeHidden()
+    await expect(grabBanner(topoPage, fixture.firstBrowserTabId)).toBeHidden()
 
     // Why: a click-copy rearms the picker when its toast closes; outlasting the toast proves Escape ended it.
     await pressInGuest('C', [guestModifier])
-    await expect(grabBanner(orcaPage, fixture.firstBrowserTabId)).toBeVisible()
-    await hoverGuestGrabTarget(orcaPage, fixture.firstBrowserTabId, 60, 30)
-    await orcaPage.evaluate(async (browserTabId) => {
+    await expect(grabBanner(topoPage, fixture.firstBrowserTabId)).toBeVisible()
+    await hoverGuestGrabTarget(topoPage, fixture.firstBrowserTabId, 60, 30)
+    await topoPage.evaluate(async (browserTabId) => {
       const webview = document.querySelector<Electron.WebviewTag>(
         `[data-browser-overlay-tab-id="${browserTabId}"] webview`
       )
@@ -300,7 +300,7 @@ test.describe('browser split grab shortcut', () => {
     await expect(overlay.getByText('Copied').first()).toBeVisible()
     await pressInGuest('Escape')
     await expect(overlay.getByText('Copied').first()).toBeHidden()
-    await expect(grabBanner(orcaPage, fixture.firstBrowserTabId)).toBeHidden()
+    await expect(grabBanner(topoPage, fixture.firstBrowserTabId)).toBeHidden()
 
     await pressInGuest('F', [guestModifier])
     const findInput = overlay.getByPlaceholder('Find in page...')
@@ -311,48 +311,48 @@ test.describe('browser split grab shortcut', () => {
 
   test('copy chord with native chat text selected copies instead of arming grab', async ({
     electronApp,
-    orcaPage
+    topoPage
   }) => {
-    await waitForActiveTerminalManager(orcaPage, 30_000)
-    const boundPane = await waitForPaneIdentitySnapshot(orcaPage, 1)
-    const ptyId = await waitForActivePanePtyId(orcaPage)
-    await waitForPtyShellEcho(orcaPage, ptyId, 15_000)
-    const descriptor = await waitForActivePaneHookDescriptor(orcaPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
+    const boundPane = await waitForPaneIdentitySnapshot(topoPage, 1)
+    const ptyId = await waitForActivePanePtyId(topoPage)
+    await waitForPtyShellEcho(topoPage, ptyId, 15_000)
+    const descriptor = await waitForActivePaneHookDescriptor(topoPage)
     expect(descriptor.paneKey).toBe(`${boundPane.tabId}:${boundPane.activeLeafId}`)
-    const fixture = await createTerminalBrowserSplit(orcaPage, server.pageUrl('a', 1))
-    await waitForGuestUrl(orcaPage, fixture.browserTabId, server.pageUrl('a', 1))
+    const fixture = await createTerminalBrowserSplit(topoPage, server.pageUrl('a', 1))
+    await waitForGuestUrl(topoPage, fixture.browserTabId, server.pageUrl('a', 1))
     const reply = `Selectable transcript reply ${randomUUID()}`
-    await openNativeChatTranscript(orcaPage, {
+    await openNativeChatTranscript(topoPage, {
       paneKey: descriptor.paneKey,
       worktreeId: descriptor.worktreeId,
       reply
     })
     await writeClipboard(electronApp, 'clipboard before copy')
 
-    const replyText = orcaPage.locator('[data-native-chat-window]').getByText(reply)
+    const replyText = topoPage.locator('[data-native-chat-window]').getByText(reply)
     await replyText.click({ clickCount: 3 })
     await expect
-      .poll(() => orcaPage.evaluate(() => window.getSelection()?.toString()))
+      .poll(() => topoPage.evaluate(() => window.getSelection()?.toString()))
       .toContain(reply)
-    await orcaPage.keyboard.press(copyChord)
+    await topoPage.keyboard.press(copyChord)
 
     await expect.poll(() => readClipboard(electronApp)).toContain(reply)
-    await expect(grabBanner(orcaPage, fixture.browserTabId)).toBeHidden()
+    await expect(grabBanner(topoPage, fixture.browserTabId)).toBeHidden()
 
     // Why: with the browser split focused, only the live-selection check can tell this is a copy.
     await writeClipboard(electronApp, 'clipboard before copy')
-    await reloadButton(orcaPage, fixture.browserTabId).focus()
-    await waitForFocusedGroup(orcaPage, fixture.browserGroupId)
-    expect(await orcaPage.evaluate(() => window.getSelection()?.toString())).toContain(reply)
-    await orcaPage.keyboard.press(copyChord)
+    await reloadButton(topoPage, fixture.browserTabId).focus()
+    await waitForFocusedGroup(topoPage, fixture.browserGroupId)
+    expect(await topoPage.evaluate(() => window.getSelection()?.toString())).toContain(reply)
+    await topoPage.keyboard.press(copyChord)
     await expect.poll(() => readClipboard(electronApp)).toContain(reply)
-    await expect(grabBanner(orcaPage, fixture.browserTabId)).toBeHidden()
+    await expect(grabBanner(topoPage, fixture.browserTabId)).toBeHidden()
 
-    await expectToolbarCopyChordArmsGrab(orcaPage, fixture.browserTabId)
-    const finalPane = await waitForPaneIdentitySnapshot(orcaPage, 1)
+    await expectToolbarCopyChordArmsGrab(topoPage, fixture.browserTabId)
+    const finalPane = await waitForPaneIdentitySnapshot(topoPage, 1)
     expect(finalPane.tabId).toBe(boundPane.tabId)
     expect(finalPane.activeLeafId).toBe(boundPane.activeLeafId)
     expect(finalPane.ptyIdsByLeafId).toEqual(boundPane.ptyIdsByLeafId)
-    await expect(orcaPage.locator('[data-native-chat-root="true"]')).toBeVisible()
+    await expect(topoPage.locator('[data-native-chat-root="true"]')).toBeVisible()
   })
 })

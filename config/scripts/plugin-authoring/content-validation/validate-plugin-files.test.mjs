@@ -2,7 +2,7 @@ import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import process from 'node:process'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { afterEach, describe, expect, it } from 'vitest'
 import { createPluginFromTemplate } from '../../../../src/cli/plugin-authoring/plugin-create'
 
@@ -10,7 +10,7 @@ const SCRIPT = path.join(import.meta.dirname, './validate-plugin-files.mjs')
 const roots = []
 
 async function tempRoot() {
-  const root = await mkdtemp(path.join(tmpdir(), 'orca-validate-plugin-files-'))
+  const root = await mkdtemp(path.join(tmpdir(), 'topo-validate-plugin-files-'))
   roots.push(root)
   return root
 }

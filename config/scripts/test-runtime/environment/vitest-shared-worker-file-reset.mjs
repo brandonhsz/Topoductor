@@ -6,7 +6,7 @@ import { afterAll, vi } from 'vitest'
 
 const VITEST_INTERNAL = /\/vitest\/dist\/|\/@vitest\/|vitest-virtual-/
 // Registries their owners create on first use and look up again on every access.
-const LAZY_GLOBAL_REGISTRY = /^(?:Symbol\(orca\.|__zod_global)/
+const LAZY_GLOBAL_REGISTRY = /^(?:Symbol\(topo\.|__zod_global)/
 const PROCESS_KEYS = ['platform', 'arch', 'execPath', 'argv', 'exitCode', 'env']
 
 function resetNode(node) {
@@ -82,8 +82,8 @@ function trackTimers(state) {
 
 // The mocker lives across files, unlike this module, so it carries the once-per-worker state.
 function installOnce(mocker) {
-  if (mocker.orcaSharedWorkerState) {
-    return mocker.orcaSharedWorkerState
+  if (mocker.topoSharedWorkerState) {
+    return mocker.topoSharedWorkerState
   }
   const mockPath = mocker.mockPath.bind(mocker)
   // Modules cached by an earlier file hold the real binding; re-run them against this file's mock.
@@ -103,7 +103,7 @@ function installOnce(mocker) {
   }
   const state = { pendingTimers: new Set(), clearTimer: () => {} }
   trackTimers(state)
-  mocker.orcaSharedWorkerState = state
+  mocker.topoSharedWorkerState = state
   return state
 }
 

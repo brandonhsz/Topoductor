@@ -29,7 +29,7 @@ const confirmedReview = (number: number): HostedReviewInfo => ({
   state: 'open',
   status: 'success',
   mergeable: 'MERGEABLE',
-  url: `https://github.com/acme/orca/pull/${number}`,
+  url: `https://github.com/acme/topo/pull/${number}`,
   updatedAt: '2026-01-01'
 })
 
@@ -73,7 +73,7 @@ describe('worktree remote runtime mutations', () => {
     const wt = makeWorktree({
       id: 'repo1::/path/wt1',
       repoId: 'repo1',
-      path: '/worktrees/orca',
+      path: '/worktrees/topo',
       branch: 'refs/heads/feature/pr-link',
       linkedPR: null,
       pushTarget: {
@@ -83,14 +83,14 @@ describe('worktree remote runtime mutations', () => {
     })
     store.setState({
       repos: [
-        { id: 'repo1', path: '/repos/orca', displayName: 'orca', badgeColor: '#000', addedAt: 0 }
+        { id: 'repo1', path: '/repos/topo', displayName: 'topo', badgeColor: '#000', addedAt: 0 }
       ],
       worktreesByRepo: { repo1: [wt] }
     })
 
     store.getState().observeTerminalGitHubPullRequestLink(wt.id, {
-      url: 'https://github.com/acme/orca/pull/42',
-      slug: { owner: 'acme', repo: 'orca' },
+      url: 'https://github.com/acme/topo/pull/42',
+      slug: { owner: 'acme', repo: 'topo' },
       number: 42
     })
     await vi.dynamicImportSettled()
@@ -118,7 +118,7 @@ describe('worktree remote runtime mutations', () => {
     const wt = makeWorktree({
       id: 'repo1::/path/wt1',
       repoId: 'repo1',
-      path: '/worktrees/orca',
+      path: '/worktrees/topo',
       branch: 'refs/heads/feature/pr-link',
       pushTarget: {
         remoteName: 'origin',
@@ -127,14 +127,14 @@ describe('worktree remote runtime mutations', () => {
     })
     store.setState({
       repos: [
-        { id: 'repo1', path: '/repos/orca', displayName: 'orca', badgeColor: '#000', addedAt: 0 }
+        { id: 'repo1', path: '/repos/topo', displayName: 'topo', badgeColor: '#000', addedAt: 0 }
       ],
       worktreesByRepo: { repo1: [wt] }
     })
 
     store.getState().observeTerminalGitHubPullRequestLink(wt.id, {
-      url: 'https://github.com/acme/orca/pull/42',
-      slug: { owner: 'acme', repo: 'orca' },
+      url: 'https://github.com/acme/topo/pull/42',
+      slug: { owner: 'acme', repo: 'topo' },
       number: 42
     })
     expect(mockApi.worktrees.updateMeta).not.toHaveBeenCalled()
@@ -173,19 +173,19 @@ describe('worktree remote runtime mutations', () => {
     const wt = makeWorktree({
       id: 'repo1::/path/wt1',
       repoId: 'repo1',
-      path: '/worktrees/orca',
+      path: '/worktrees/topo',
       branch: 'refs/heads/feature/pr-link'
     })
     store.setState({
       repos: [
-        { id: 'repo1', path: '/repos/orca', displayName: 'orca', badgeColor: '#000', addedAt: 0 }
+        { id: 'repo1', path: '/repos/topo', displayName: 'topo', badgeColor: '#000', addedAt: 0 }
       ],
       worktreesByRepo: { repo1: [wt] }
     })
 
     store.getState().observeTerminalGitHubPullRequestLink(wt.id, {
-      url: 'https://github.com/acme/orca/pull/42',
-      slug: { owner: 'acme', repo: 'orca' },
+      url: 'https://github.com/acme/topo/pull/42',
+      slug: { owner: 'acme', repo: 'topo' },
       number: 42
     })
 
@@ -219,13 +219,13 @@ describe('worktree remote runtime mutations', () => {
     const wt = makeWorktree({
       id: 'repo1::/path/wt1',
       repoId: 'repo1',
-      path: '/worktrees/orca',
+      path: '/worktrees/topo',
       branch: 'refs/heads/feature/pr-link'
     })
     mockApi.worktrees.resolvePrBase.mockResolvedValueOnce({ baseBranch: 'main' })
     store.setState({
       repos: [
-        { id: 'repo1', path: '/repos/orca', displayName: 'orca', badgeColor: '#000', addedAt: 0 }
+        { id: 'repo1', path: '/repos/topo', displayName: 'topo', badgeColor: '#000', addedAt: 0 }
       ],
       worktreesByRepo: { repo1: [wt] }
     })
@@ -239,7 +239,7 @@ describe('worktree remote runtime mutations', () => {
     expect(store.getState().worktreesByRepo.repo1[0]?.linkedPR).toBeNull()
     await vi.waitFor(() => expect(readHostedReview).toHaveBeenCalled())
     expect(readHostedReview).toHaveBeenCalledWith({
-      repoPath: '/repos/orca',
+      repoPath: '/repos/topo',
       branch: 'feature/pr-link',
       force: true,
       repoId: 'repo1',

@@ -12,7 +12,7 @@ afterEach(async () => {
 })
 
 async function stagedRoot(stagedName: string): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-staging-visibility-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-staging-visibility-'))
   roots.push(root)
   const staged = join(root, stagedName)
   await mkdir(staged, { recursive: true })

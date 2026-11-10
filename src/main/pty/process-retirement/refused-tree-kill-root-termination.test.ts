@@ -19,7 +19,7 @@ import {
   type AppEnvironment
 } from '../../../shared/app-environment'
 import { installMainProcessTreeKillGate } from './own-chromium-tree-kill-guard'
-import { setProcessTreeKillGate } from '@orca/process-host/process-tree-kill-gate'
+import { setProcessTreeKillGate } from '@topo/process-host/process-tree-kill-gate'
 import { resetSelfInitiatedTreeKillLogForTest } from '../../crash-reporting/self-initiated-tree-kill-log'
 import {
   clearCrashBreadcrumbsForTest,
@@ -27,7 +27,7 @@ import {
 } from '../../crash-reporting/crash-breadcrumb-store'
 import { _resetTracerForTests, setActiveSink } from '../../observability/tracer'
 
-import { signalProcessTree } from '@orca/process-host/process-tree-termination'
+import { signalProcessTree } from '@topo/process-host/process-tree-termination'
 
 const RENDERER_PID = 1001
 
@@ -87,7 +87,7 @@ describe('a refused tree-kill still terminates the root it owns', () => {
     expect(windowsChild.kill).toHaveBeenCalledWith('SIGKILL')
   })
 
-  it('still signals the POSIX process group: a group only holds what Orca put in it', async () => {
+  it('still signals the POSIX process group: a group only holds what Topo put in it', async () => {
     // Stale Electron metrics must not orphan an owned POSIX process group.
     setPlatform('linux')
     const posixChild = { pid: RENDERER_PID, kill: vi.fn(), exitCode: null, signalCode: null }

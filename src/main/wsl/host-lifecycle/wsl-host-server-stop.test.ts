@@ -1,14 +1,14 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { OrcadDecommissionResult } from '../../../shared/orcad-decommission'
-import type { OrcadTerminalCensus } from '../../../shared/orcad-terminal-census'
+import type { TopodDecommissionResult } from '../../../shared/topod-decommission'
+import type { TopodTerminalCensus } from '../../../shared/topod-terminal-census'
 import { stopWslHostServer, type WslHostServerStopSteps } from './wsl-host-server-stop'
 import type { WslHostPeerDesktops } from './wsl-host-peer-desktops'
 
-function census(liveSessions: number | null): OrcadTerminalCensus {
+function census(liveSessions: number | null): TopodTerminalCensus {
   return { liveSessions, startedSinceActivation: liveSessions, daemonProtocolVersion: 1 }
 }
 
-const RETIRED: OrcadDecommissionResult = {
+const RETIRED: TopodDecommissionResult = {
   outcome: 'decommissioned',
   version: '1.0.0',
   retirement: 'retired'
@@ -44,16 +44,16 @@ function steps(overrides: Partial<WslHostServerStopSteps> = {}) {
 }
 
 describe('stopWslHostServer', () => {
-  it('keeps a server another Orca shares: only this desktop lets go, nothing ends', async () => {
+  it('keeps a server another Topo shares: only this desktop lets go, nothing ends', async () => {
     const { all, order } = steps({
       peerDesktops: vi.fn(async (): Promise<WslHostPeerDesktops> => ({
         kind: 'shared',
-        names: ['Orca Dev']
+        names: ['Topo Dev']
       }))
     })
     await expect(stopWslHostServer(all)).resolves.toEqual({
       stopped: true,
-      keptForOtherDesktops: ['Orca Dev']
+      keptForOtherDesktops: ['Topo Dev']
     })
     expect(order).toEqual(['closeBridge'])
   })
@@ -67,7 +67,7 @@ describe('stopWslHostServer', () => {
     await expect(stopWslHostServer(all)).resolves.toMatchObject({
       stopped: false,
       verdict: 'unverifiable',
-      reason: expect.stringContaining('another Orca on this computer')
+      reason: expect.stringContaining('another Topo on this computer')
     })
     expect(order).toEqual(['closeBridge'])
   })

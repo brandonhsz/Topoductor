@@ -1,6 +1,6 @@
 import { prepareStructuredWorkspaceAuthority } from './structured-workspace-authority'
 import type { AgentSessionExecutionLocation } from '../../../shared/agent-session/lifecycle/agent-session-record'
-import { OrcaRuntimeWithStructuredSessionAccountHome } from './structured-session-account-home'
+import { TopoRuntimeWithStructuredSessionAccountHome } from './structured-session-account-home'
 import {
   isNativeLocalLocation,
   LOCAL_EXECUTION_HOST_ID,
@@ -17,19 +17,19 @@ import { parseWorkspaceKey } from '../../../shared/workspace-scope'
 import { composeWorktreeId, splitWorktreeIdForFilesystem } from '../../../shared/worktree/id'
 import { resolveWorktreeHostRouting } from '../workspaces/catalog/worktree-launch-host-repo'
 import type { RuntimeWorkspaceFileTargets } from '../workspaces/workspace-file-session-targets'
-import type { OrcaRuntimeWithTransitionGraphReloadToTerminalState } from '../session-graph/session-graph-authority'
+import type { TopoRuntimeWithTransitionGraphReloadToTerminalState } from '../session-graph/session-graph-authority'
 import type { RuntimeWorkspaceCatalog } from '../workspaces/catalog/workspace-catalog'
 import type { RuntimeWorkspaceSelectors } from '../workspaces/workspace-selectors'
 import { getStructuredAgentSessionHost } from '../../native-chat/agent-session-wire/host/structured-agent-session-registry'
 import type { NotificationAttentionAcknowledgement } from '../../../shared/notification-settings-types'
 
-export abstract class StructuredSessionWorkspaceScope extends OrcaRuntimeWithStructuredSessionAccountHome {
+export abstract class StructuredSessionWorkspaceScope extends TopoRuntimeWithStructuredSessionAccountHome {
   protected abstract resolveFolderWorkspaceSelector(
     ...args: Parameters<
-      OrcaRuntimeWithTransitionGraphReloadToTerminalState['resolveFolderWorkspaceSelector']
+      TopoRuntimeWithTransitionGraphReloadToTerminalState['resolveFolderWorkspaceSelector']
     >
   ): ReturnType<
-    OrcaRuntimeWithTransitionGraphReloadToTerminalState['resolveFolderWorkspaceSelector']
+    TopoRuntimeWithTransitionGraphReloadToTerminalState['resolveFolderWorkspaceSelector']
   >
 
   protected abstract buildResolvedWorktreeFromId(
@@ -76,7 +76,7 @@ export abstract class StructuredSessionWorkspaceScope extends OrcaRuntimeWithStr
     const repo = routing.kind === 'resolved' ? routing.repo : null
     const folderScope = parseWorkspaceKey(target.worktree.id)
     // The floating workspace is a plain directory with no repo git options, which is exactly what
-    // `folder` denotes here — it describes how Orca manages the place, not whether git is in it.
+    // `folder` denotes here — it describes how Topo manages the place, not whether git is in it.
     const folderWorkspace =
       folderScope?.type === 'folder' || isFloatingWorkspaceId(target.worktree.id)
     // WSL routing describes *this* machine; no remote or runtime host may inherit

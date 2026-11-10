@@ -2,7 +2,7 @@ import { app, BaseWindow, BrowserWindow, protocol, session, webContents } from '
 import { renameSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import '../../../../shared/constants'
-import { ORCA_BROWSER_PARTITION } from '../../../../shared/browser/browser-session-partition'
+import { TOPO_BROWSER_PARTITION } from '../../../../shared/browser/browser-session-partition'
 import { applyBackgroundActivationPolicy } from '../../../window/foreground-activation-policy'
 import { browserManager } from '../../guest-lifecycle/manager/browser-manager'
 import { browserSessionRegistry } from '../../sessions/profiles/browser-session-registry'
@@ -13,9 +13,9 @@ import { addUnpackedBrowserExtension } from '../browser-extension-management'
 import { recordActiveBrowserPage } from '../tabs-and-windows/browser-extension-tab-model'
 import { trackBrowserExtensionMainWindow } from '../tabs-and-windows/browser-extension-window-model'
 
-const statusPath = process.env.ORCA_EXTENSION_FIXTURE_STATUS
-const extensionDirectory = process.env.ORCA_EXTENSION_FIXTURE_DIR
-if (!statusPath || !extensionDirectory || process.env.ORCA_BACKGROUND_LAUNCH !== '1') {
+const statusPath = process.env.TOPO_EXTENSION_FIXTURE_STATUS
+const extensionDirectory = process.env.TOPO_EXTENSION_FIXTURE_DIR
+if (!statusPath || !extensionDirectory || process.env.TOPO_BACKGROUND_LAUNCH !== '1') {
   throw new Error(
     'Extension fixture requires a status path, an extension folder and background launch'
   )
@@ -23,7 +23,7 @@ if (!statusPath || !extensionDirectory || process.env.ORCA_BACKGROUND_LAUNCH !==
 const fixtureStatusPath = statusPath
 const fixtureExtensionDirectory = extensionDirectory
 
-// Orca's preflight registers this before ready; the worker shim calls main through it.
+// Topo's preflight registers this before ready; the worker shim calls main through it.
 protocol.registerSchemesAsPrivileged([BROWSER_EXTENSION_API_CUSTOM_SCHEME])
 
 const presentationCalls: string[] = []
@@ -51,16 +51,16 @@ function writeStatus(): void {
 
 function captureResult(message: string): void {
   for (const [prefix, key] of [
-    ['ORCA_EXT_WORKER ', 'worker'],
-    ['ORCA_EXT_PAGE ', 'page'],
-    ['ORCA_EXT_STORAGE ', 'storage'],
-    ['ORCA_EXT_SYNC_WORKER ', 'syncWorker'],
-    ['ORCA_EXT_SYNC_PAGE ', 'syncPage'],
-    ['ORCA_EXT_SYNC_CONTENT ', 'syncContent'],
-    ['ORCA_EXT_CONTENT_APIS ', 'contentApis'],
-    ['ORCA_EXT_FRAME ', 'frame'],
-    ['ORCA_EXT_WEB_FRAME ', 'webFrame'],
-    ['ORCA_EXT_SANDBOX ', 'sandbox']
+    ['TOPO_EXT_WORKER ', 'worker'],
+    ['TOPO_EXT_PAGE ', 'page'],
+    ['TOPO_EXT_STORAGE ', 'storage'],
+    ['TOPO_EXT_SYNC_WORKER ', 'syncWorker'],
+    ['TOPO_EXT_SYNC_PAGE ', 'syncPage'],
+    ['TOPO_EXT_SYNC_CONTENT ', 'syncContent'],
+    ['TOPO_EXT_CONTENT_APIS ', 'contentApis'],
+    ['TOPO_EXT_FRAME ', 'frame'],
+    ['TOPO_EXT_WEB_FRAME ', 'webFrame'],
+    ['TOPO_EXT_SANDBOX ', 'sandbox']
   ] as const) {
     if (message.startsWith(prefix)) {
       const result: unknown = JSON.parse(message.slice(prefix.length))
@@ -94,7 +94,7 @@ async function run(): Promise<void> {
   initializeBrowserExtensionSupport({ enabled: true })
   const profile = browserSessionRegistry.getDefaultProfile()
   attachBrowserExtensionsToProfileSession(profile, [])
-  const extensionSession = session.fromPartition(ORCA_BROWSER_PARTITION)
+  const extensionSession = session.fromPartition(TOPO_BROWSER_PARTITION)
   extensionSession.serviceWorkers.on('console-message', (_event, details) =>
     captureResult(details.message)
   )
@@ -102,7 +102,7 @@ async function run(): Promise<void> {
     contents.on('console-message', (details) => captureResult(details.message))
   })
 
-  // Orca's main window with one registered browser tab, made active the way the renderer does.
+  // Topo's main window with one registered browser tab, made active the way the renderer does.
   const host = new BrowserWindow({
     show: false,
     webPreferences: { contextIsolation: true, sandbox: true, webviewTag: true }
@@ -124,7 +124,7 @@ async function run(): Promise<void> {
   })
   await host.loadURL(
     `data:text/html,${encodeURIComponent(
-      `<webview partition="${ORCA_BROWSER_PARTITION}" src="data:text/html,<title>tab</title>"></webview>`
+      `<webview partition="${TOPO_BROWSER_PARTITION}" src="data:text/html,<title>tab</title>"></webview>`
     )}`
   )
   await attached
@@ -138,11 +138,11 @@ async function run(): Promise<void> {
   const extensionId = extensionSession.extensions.getAllExtensions()[0]?.id
   const sandboxPage = new BrowserWindow({
     show: false,
-    webPreferences: { partition: ORCA_BROWSER_PARTITION, sandbox: true }
+    webPreferences: { partition: TOPO_BROWSER_PARTITION, sandbox: true }
   })
   void sandboxPage.loadURL(`chrome-extension://${extensionId}/sandboxed.html`)
   status.webPageCall = await guest?.executeJavaScript(
-    `fetch('orca-extension-api://api/call', { method: 'POST', body: JSON.stringify({ token: 'guess', request: { type: 'call', namespace: 'windows', method: 'getAll', args: [] } }) }).then((r) => r.status, () => 'failed')`
+    `fetch('topo-extension-api://api/call', { method: 'POST', body: JSON.stringify({ token: 'guess', request: { type: 'call', namespace: 'windows', method: 'getAll', args: [] } }) }).then((r) => r.status, () => 'failed')`
   )
   writeStatus()
 
@@ -157,11 +157,11 @@ async function run(): Promise<void> {
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
   const address = server.address()
   const port = typeof address === 'object' && address ? address.port : 0
-  // Subframe preloads as Orca's browser guests get them in a profile that runs extensions.
+  // Subframe preloads as Topo's browser guests get them in a profile that runs extensions.
   const webPage = new BrowserWindow({
     show: false,
     webPreferences: {
-      partition: ORCA_BROWSER_PARTITION,
+      partition: TOPO_BROWSER_PARTITION,
       sandbox: true,
       nodeIntegrationInSubFrames: true
     }

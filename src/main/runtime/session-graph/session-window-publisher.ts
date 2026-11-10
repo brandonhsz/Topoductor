@@ -1,11 +1,11 @@
-import { OrcaRuntimeWithAttachWindow } from './session-graph-promotion'
+import { TopoRuntimeWithAttachWindow } from './session-graph-promotion'
 import type {
   RuntimeRendererSyncWindowGraph,
   RuntimeSyncWindowGraph
 } from '../../../shared/runtime-session-contracts'
 import { HEADLESS_RUNTIME_WINDOW_ID } from '../../../shared/runtime-session-contracts'
 
-export abstract class OrcaRuntimeWithAdmitWindowPublisher extends OrcaRuntimeWithAttachWindow {
+export abstract class TopoRuntimeWithAdmitWindowPublisher extends TopoRuntimeWithAttachWindow {
   protected admitWindowPublisher(
     windowId: number,
     graph: RuntimeSyncWindowGraph | RuntimeRendererSyncWindowGraph

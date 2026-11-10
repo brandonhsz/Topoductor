@@ -1,6 +1,6 @@
 /** Verify emulator reply parity, per-chunk ownership, replay silence and capture races. */
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { HeadlessEmulator } from '../../../daemon/emulation/headless-emulator'
 import {
   _resetHiddenRendererPtyDeliveryGateForTest,
@@ -57,7 +57,7 @@ const store = {
 type RendererBufferStub = { data: string; cols: number; rows: number }
 
 function createResponderRuntime(opts: { rendererBuffer?: RendererBufferStub } = {}) {
-  const runtime = new OrcaRuntimeService(store)
+  const runtime = new TopoRuntimeService(store)
   const replies: { ptyId: string; data: string }[] = []
   const inputKinds: TerminalInputKind[] = []
   runtime.setPtyController({
@@ -82,7 +82,7 @@ function createResponderRuntime(opts: { rendererBuffer?: RendererBufferStub } = 
 
 /** Awaits the per-PTY emulator writeChain so queued chunk links (and the
  *  replies they forward) have settled. */
-async function settle(runtime: OrcaRuntimeService, ptyId: string): Promise<void> {
+async function settle(runtime: TopoRuntimeService, ptyId: string): Promise<void> {
   await runtime.serializeMainTerminalBuffer(ptyId)
 }
 

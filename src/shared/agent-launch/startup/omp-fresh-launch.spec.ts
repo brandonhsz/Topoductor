@@ -37,8 +37,8 @@ describe('OMP fresh launch intent', () => {
       cmdOverrides: {},
       platform: 'linux'
     })
-    expect(plan?.launchCommand).toContain('--config "$ORCA_OMP_FRESH_CONFIG"')
-    expect(JSON.stringify(plan?.launchConfig)).not.toContain('ORCA_OMP_FRESH_CONFIG')
+    expect(plan?.launchCommand).toContain('--config "$TOPO_OMP_FRESH_CONFIG"')
+    expect(JSON.stringify(plan?.launchConfig)).not.toContain('TOPO_OMP_FRESH_CONFIG')
     expect(plan?.env).toBeUndefined()
   })
 })

@@ -1,30 +1,30 @@
 /**
- * Ownership for the [projects."<path>"] tables Orca's preflight trust writes:
+ * Ownership for the [projects."<path>"] tables Topo's preflight trust writes:
  * a removed worktree's entry must die with the worktree, while a table that
- * existed at the path before Orca first wrote it stays the user's.
+ * existed at the path before Topo first wrote it stays the user's.
  */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
-  removeOrcaCreatedProjectTrustEntries,
-  upsertOrcaCreatedProjectTrustLevel
+  removeTopoCreatedProjectTrustEntries,
+  upsertTopoCreatedProjectTrustLevel
 } from './trust/toml/config-toml-trust'
 
 const PROJECT = '/tmp/worktrees/feature-r1'
 const OTHER = '/tmp/worktrees/other-r1'
 
-describe('Orca-created project trust lifecycle', () => {
+describe('Topo-created project trust lifecycle', () => {
   let userDataDir: string
   let managedConfigPath: string
   let accountConfigPath: string
   let previousUserDataPath: string | undefined
 
   beforeEach(() => {
-    userDataDir = mkdtempSync(join(tmpdir(), 'orca-pretrust-ownership-'))
-    previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-    process.env.ORCA_USER_DATA_PATH = userDataDir
+    userDataDir = mkdtempSync(join(tmpdir(), 'topo-pretrust-ownership-'))
+    previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+    process.env.TOPO_USER_DATA_PATH = userDataDir
     const managedHome = join(userDataDir, 'codex-runtime-home', 'home')
     const accountHome = join(userDataDir, 'codex-accounts', 'acct-1', 'home')
     mkdirSync(managedHome, { recursive: true })
@@ -36,39 +36,39 @@ describe('Orca-created project trust lifecycle', () => {
   afterEach(() => {
     rmSync(userDataDir, { recursive: true, force: true })
     if (previousUserDataPath === undefined) {
-      delete process.env.ORCA_USER_DATA_PATH
+      delete process.env.TOPO_USER_DATA_PATH
     } else {
-      process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+      process.env.TOPO_USER_DATA_PATH = previousUserDataPath
     }
   })
 
-  it('removes the tables Orca created for a removed worktree, per account, and keeps other paths', async () => {
-    upsertOrcaCreatedProjectTrustLevel(managedConfigPath, PROJECT, 'trusted')
-    upsertOrcaCreatedProjectTrustLevel(accountConfigPath, PROJECT, 'trusted')
-    upsertOrcaCreatedProjectTrustLevel(managedConfigPath, OTHER, 'trusted')
+  it('removes the tables Topo created for a removed worktree, per account, and keeps other paths', async () => {
+    upsertTopoCreatedProjectTrustLevel(managedConfigPath, PROJECT, 'trusted')
+    upsertTopoCreatedProjectTrustLevel(accountConfigPath, PROJECT, 'trusted')
+    upsertTopoCreatedProjectTrustLevel(managedConfigPath, OTHER, 'trusted')
     expect(readFileSync(managedConfigPath, 'utf-8')).toContain(`[projects."${PROJECT}"]`)
 
-    await removeOrcaCreatedProjectTrustEntries(PROJECT)
+    await removeTopoCreatedProjectTrustEntries(PROJECT)
 
     for (const configPath of [managedConfigPath, accountConfigPath]) {
       expect(readFileSync(configPath, 'utf-8')).not.toContain(`[projects."${PROJECT}"]`)
     }
     expect(readFileSync(managedConfigPath, 'utf-8')).toContain(`[projects."${OTHER}"]`)
     // The record was forgotten, so removing again cannot touch surviving entries.
-    await removeOrcaCreatedProjectTrustEntries(PROJECT)
+    await removeTopoCreatedProjectTrustEntries(PROJECT)
     expect(readFileSync(managedConfigPath, 'utf-8')).toContain(`[projects."${OTHER}"]`)
   })
 
-  it('keeps a table that existed at the path before Orca wrote it', async () => {
+  it('keeps a table that existed at the path before Topo wrote it', async () => {
     const userTable = [`[projects."${PROJECT}"]`, 'trust_level = "untrusted"', ''].join('\n')
     writeFileSync(managedConfigPath, userTable)
     writeFileSync(accountConfigPath, userTable)
 
     // The preflight grant still rewrites the trust line it always did…
-    upsertOrcaCreatedProjectTrustLevel(managedConfigPath, PROJECT, 'trusted')
+    upsertTopoCreatedProjectTrustLevel(managedConfigPath, PROJECT, 'trusted')
 
     // …but the worktree removal must not delete the pre-existing tables.
-    await removeOrcaCreatedProjectTrustEntries(PROJECT)
+    await removeTopoCreatedProjectTrustEntries(PROJECT)
 
     expect(readFileSync(managedConfigPath, 'utf-8')).toBe(
       [`[projects."${PROJECT}"]`, 'trust_level = "trusted"', ''].join('\n')
@@ -78,8 +78,8 @@ describe('Orca-created project trust lifecycle', () => {
     )
   })
 
-  it('does not delete a table the user replaced after Orca created the original', async () => {
-    upsertOrcaCreatedProjectTrustLevel(managedConfigPath, PROJECT, 'trusted')
+  it('does not delete a table the user replaced after Topo created the original', async () => {
+    upsertTopoCreatedProjectTrustLevel(managedConfigPath, PROJECT, 'trusted')
     const replacement = [
       `[projects."${PROJECT}"]`,
       'trust_level = "trusted"',
@@ -88,11 +88,11 @@ describe('Orca-created project trust lifecycle', () => {
     ].join('\n')
     writeFileSync(managedConfigPath, replacement)
 
-    await removeOrcaCreatedProjectTrustEntries(PROJECT)
+    await removeTopoCreatedProjectTrustEntries(PROJECT)
 
     expect(readFileSync(managedConfigPath, 'utf-8')).toBe(replacement)
     // The spent record is dropped, so a later pass cannot delete the user's table either.
-    await removeOrcaCreatedProjectTrustEntries(PROJECT)
+    await removeTopoCreatedProjectTrustEntries(PROJECT)
     expect(readFileSync(managedConfigPath, 'utf-8')).toBe(replacement)
   })
 })

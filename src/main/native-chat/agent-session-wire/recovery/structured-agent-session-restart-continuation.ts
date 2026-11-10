@@ -1,4 +1,4 @@
-// Continue interrupted work only after opt-in; verify prior actions and attribute the instruction to Orca.
+// Continue interrupted work only after opt-in; verify prior actions and attribute the instruction to Topo.
 
 import {
   AGENT_JOURNAL_THREAD_SCOPE,
@@ -113,7 +113,7 @@ function restartNoteWriter(
     }
     await session.journal.appendItem(
       {
-        provider: 'orca',
+        provider: 'topo',
         clientMessageId: `${RESTART_CONTINUATION_ROW_PREFIX}${sessionId}:${host.now()}`
       },
       { kind: 'status', text, ...(tone ? { tone } : {}) },

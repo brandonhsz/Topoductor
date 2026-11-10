@@ -5,12 +5,12 @@ import { Badge } from '../../ui/badge'
 import { SettingsGroup } from '../section-layout/SettingsGroup'
 import { showDeleteWorktreeFailureToast } from '../../sidebar/workspace-actions/deletion/delete-worktree-failure-toast'
 import { showLocalBaseRefUpdateSuggestionToast } from '../../sidebar/workspace-creation/base-ref-update/local-base-ref-suggestion-toast'
-import { useOrcaProfileAuthStatusRefresh } from '@/hooks/use-orca-profile-auth-status-refresh'
+import { useTopoProfileAuthStatusRefresh } from '@/hooks/use-topo-profile-auth-status-refresh'
 import { translate } from '@/i18n/i18n'
 import { useTranslate } from '@/i18n/use-translate'
 import { useAppStore } from '@/store/index'
 import type { AppState } from '@/store/types'
-import { OrcaSignInButton, OrcaSignInWaitNotice } from '../../OrcaSignInProgress'
+import { TopoSignInButton, TopoSignInWaitNotice } from '../../TopoSignInProgress'
 
 const LONG_WORKSPACE_NAME = 'feature/dev-toast-layout-with-a-long-workspace-name'
 const DEV_TOAST_DESCRIPTION =
@@ -137,21 +137,21 @@ function showDeleteFailureToast(): void {
 }
 
 // Preview Cloud auth under dev environment flags while packaged account switchers remain hidden.
-function OrcaCloudDevSubsection(): React.JSX.Element {
+function TopoCloudDevSubsection(): React.JSX.Element {
   const t = useTranslate()
-  const authStatus = useAppStore((s) => s.orcaProfileAuthStatus)
-  const signOut = useAppStore((s) => s.signOutCurrentOrcaProfile)
-  const refresh = useAppStore((s) => s.fetchOrcaProfileAuthStatus)
+  const authStatus = useAppStore((s) => s.topoProfileAuthStatus)
+  const signOut = useAppStore((s) => s.signOutCurrentTopoProfile)
+  const refresh = useAppStore((s) => s.fetchTopoProfileAuthStatus)
   const configured = authStatus?.configured === true
   const connected = authStatus?.state === 'connected'
-  useOrcaProfileAuthStatusRefresh()
+  useTopoProfileAuthStatusRefresh()
 
   return (
     <SettingsGroup
-      title={t('auto.components.settings.DevToolsPane.orcaCloud', 'Orca Cloud')}
+      title={t('auto.components.settings.DevToolsPane.topoCloud', 'Topo Cloud')}
       description={t(
-        'auto.components.settings.DevToolsPane.orcaCloudDescription',
-        'Dev-only preview of first-party cloud sign-in. Hidden in production; in dev it also appears in the sidebar account switcher once ORCA_CLOUD_API_URL and ORCA_CLOUD_CLIENT_ID are set.'
+        'auto.components.settings.DevToolsPane.topoCloudDescription',
+        'Dev-only preview of first-party cloud sign-in. Hidden in production; in dev it also appears in the sidebar account switcher once TOPO_CLOUD_API_URL and TOPO_CLOUD_CLIENT_ID are set.'
       )}
       action={
         <Badge variant="outline">
@@ -163,22 +163,22 @@ function OrcaCloudDevSubsection(): React.JSX.Element {
       {configured ? (
         <div className="space-y-2">
           <p className="text-xs text-muted-foreground">
-            {t('auto.components.settings.DevToolsPane.orcaCloudStatus', 'Status')}:{' '}
+            {t('auto.components.settings.DevToolsPane.topoCloudStatus', 'Status')}:{' '}
             <span className="font-medium text-foreground">{authStatus?.state}</span>
           </p>
           <div className="flex flex-wrap gap-2">
             {connected ? (
               <Button type="button" variant="outline" size="sm" onClick={() => void signOut()}>
-                {t('auto.components.settings.DevToolsPane.orcaCloudSignOut', 'Sign out')}
+                {t('auto.components.settings.DevToolsPane.topoCloudSignOut', 'Sign out')}
               </Button>
             ) : (
-              <OrcaSignInButton variant="outline" size="sm">
-                {t('auto.components.settings.DevToolsPane.orcaCloudConnect', 'Connect profile')}
-              </OrcaSignInButton>
+              <TopoSignInButton variant="outline" size="sm">
+                {t('auto.components.settings.DevToolsPane.topoCloudConnect', 'Connect profile')}
+              </TopoSignInButton>
             )}
-            {connected ? null : <OrcaSignInWaitNotice className="basis-full" />}
+            {connected ? null : <TopoSignInWaitNotice className="basis-full" />}
             <Button type="button" variant="ghost" size="sm" onClick={() => void refresh()}>
-              {t('auto.components.settings.DevToolsPane.orcaCloudRefresh', 'Refresh status')}
+              {t('auto.components.settings.DevToolsPane.topoCloudRefresh', 'Refresh status')}
             </Button>
           </div>
         </div>
@@ -186,8 +186,8 @@ function OrcaCloudDevSubsection(): React.JSX.Element {
         <p className="text-xs text-muted-foreground">
           {authStatus?.setupMessage ??
             t(
-              'auto.components.settings.DevToolsPane.orcaCloudNotConfigured',
-              'Set ORCA_CLOUD_API_URL and ORCA_CLOUD_CLIENT_ID to preview Orca Cloud sign-in in this dev build.'
+              'auto.components.settings.DevToolsPane.topoCloudNotConfigured',
+              'Set TOPO_CLOUD_API_URL and TOPO_CLOUD_CLIENT_ID to preview Topo Cloud sign-in in this dev build.'
             )}
         </p>
       )}
@@ -305,7 +305,7 @@ export function DevToolsPane(): React.JSX.Element {
         </div>
       </SettingsGroup>
 
-      <OrcaCloudDevSubsection />
+      <TopoCloudDevSubsection />
     </div>
   )
 }

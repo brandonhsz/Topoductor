@@ -59,12 +59,12 @@ beforeAll(async () => {
   bridgeVersion = await readBridgeProtocolVersion()
   faultGrant = await readBridgeFaultGrant()
   backNames = await readBridgeBackNames()
-  scratch = await mkdtemp(join(tmpdir(), 'orca-mobile-web-app-open-target-'))
+  scratch = await mkdtemp(join(tmpdir(), 'topo-mobile-web-app-open-target-'))
   const { outDir } = await buildMobileWebAppBundle({ outDir: join(scratch, 'bundle') })
   const served = await createBundleServer({ outDir, cspHeader })
   server = served.server
   origin = served.origin
-  const executablePath = process.env.ORCA_MOBILE_WEB_RENDER_BROWSER
+  const executablePath = process.env.TOPO_MOBILE_WEB_RENDER_BROWSER
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) })
 }, 180_000)
 
@@ -104,7 +104,7 @@ async function openHostDocument({
   if (backOnFirstClaim) {
     // Press Back the moment the page first claims it, before the target's paint releases the stack.
     await page.addInitScript((claim) => {
-      const channel = globalThis.orcaBridge
+      const channel = globalThis.topoBridge
       const post = channel.postMessage
       let pressed = false
       channel.postMessage = (json) => {
@@ -112,7 +112,7 @@ async function openHostDocument({
         const frame = JSON.parse(json)
         if (!pressed && frame.name === claim && frame.claimed === true) {
           pressed = true
-          queueMicrotask(() => globalThis.__orcaRenderCheckSendBack())
+          queueMicrotask(() => globalThis.__topoRenderCheckSendBack())
         }
         return result
       }
@@ -120,14 +120,14 @@ async function openHostDocument({
   }
   await page.addInitScript(() => {
     globalThis.__openTargetBeforePaint = null
-    const channel = globalThis.orcaBridge
+    const channel = globalThis.topoBridge
     const post = channel.postMessage
     channel.postMessage = (json) => {
       const frame = JSON.parse(json)
       if (frame.name === 'painted' && globalThis.__openTargetBeforePaint === null) {
         globalThis.__openTargetBeforePaint = {
           pathname: location.pathname,
-          requests: globalThis.__orcaRenderCheckRequests.map((request) => request.method)
+          requests: globalThis.__topoRenderCheckRequests.map((request) => request.method)
         }
       }
       return post(json)
@@ -146,7 +146,7 @@ async function openHostDocument({
 function notifies(page, name) {
   return page.evaluate(
     (wanted) =>
-      (globalThis.__orcaRenderCheckNotifies ?? []).filter((frame) => frame.name === wanted),
+      (globalThis.__topoRenderCheckNotifies ?? []).filter((frame) => frame.name === wanted),
     name
   )
 }
@@ -154,14 +154,14 @@ function notifies(page, name) {
 async function pressBack(page) {
   await page.waitForFunction(
     (claim) =>
-      (globalThis.__orcaRenderCheckNotifies ?? []).some(
+      (globalThis.__topoRenderCheckNotifies ?? []).some(
         (frame) => frame.name === claim && frame.claimed === true
       ),
     backNames.claim,
     { timeout: 10_000, polling: 100 }
   )
   await page.evaluate(() => {
-    globalThis.__orcaRenderCheckSendBack()
+    globalThis.__topoRenderCheckSendBack()
   })
 }
 

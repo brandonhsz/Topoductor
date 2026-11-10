@@ -46,12 +46,12 @@ export function nodeDownloadBlockedText(
     case 'unset':
       return t(
         'auto.components.settings.sshHostServer.nodeDownloadBlocked',
-        'Neither this computer nor this host could download Node.js, which Orca’s server needs. Use a Node.js mirror, or check the network on both machines.'
+        'Neither this computer nor this host could download Node.js, which Topo’s server needs. Use a Node.js mirror, or check the network on both machines.'
       )
     case 'unsupported':
       return t(
         'auto.components.settings.sshHostServer.nodeDownloadBlockedNoMirror',
-        'Neither this computer nor this host could download Node.js, which Orca’s server needs. Check the network or proxy on both machines, then connect again.'
+        'Neither this computer nor this host could download Node.js, which Topo’s server needs. Check the network or proxy on both machines, then connect again.'
       )
     case 'tried':
       return t(

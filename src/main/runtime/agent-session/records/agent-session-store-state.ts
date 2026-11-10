@@ -5,7 +5,7 @@ import {
 import { agentSessionRefusalError } from '../../../../shared/agent-session/failures/agent-session-wire-refusals'
 import type { AgentSessionOperationRow } from '../../../../shared/agent-session/lifecycle/agent-session-operation-ledger'
 import type { AgentSessionRecord } from '../../../../shared/agent-session/lifecycle/agent-session-record'
-import type { AgentSessionOrcaStopCause } from '../../../../shared/agent-session/lifecycle/agent-session-orca-stop'
+import type { AgentSessionTopoStopCause } from '../../../../shared/agent-session/lifecycle/agent-session-topo-stop'
 import type { AgentSessionTabTable } from '../agent-session-tab-table'
 
 export type RetiredAgentSessionClaimKey = { keyId: string; retiredAt: number }
@@ -21,8 +21,8 @@ export type AgentSessionStoreState = {
   >
   /** Chat tab id → the conversation it shows; null until this store first records a tab. */
   sessionTabs: AgentSessionTabTable | null
-  /** Prior runtime endings, read at load; missing/null evidence attributes no death to Orca. */
-  runtimeEnds?: ReadonlyMap<string, AgentSessionOrcaStopCause> | null
+  /** Prior runtime endings, read at load; missing/null evidence attributes no death to Topo. */
+  runtimeEnds?: ReadonlyMap<string, AgentSessionTopoStopCause> | null
 }
 
 export function heldAgentSessionIds(state: AgentSessionStoreState): string[] {

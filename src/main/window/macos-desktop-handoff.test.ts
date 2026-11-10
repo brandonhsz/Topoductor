@@ -5,12 +5,12 @@ const { spawnProcessMock } = vi.hoisted(() => ({ spawnProcessMock: vi.fn() }))
 
 vi.mock('electron', () => ({
   app: {
-    getPath: () => '/Applications/Orca.app/Contents/MacOS/Orca',
+    getPath: () => '/Applications/Topo.app/Contents/MacOS/Topo',
     dock: { hide: vi.fn() },
     setActivationPolicy: vi.fn()
   }
 }))
-vi.mock('@orca/process-host', () => ({ spawnProcess: spawnProcessMock }))
+vi.mock('@topo/process-host', () => ({ spawnProcess: spawnProcessMock }))
 
 const { createDesktopHandoff, handOffToDesktopApp } = await import('./macos-desktop-handoff')
 
@@ -36,7 +36,7 @@ describe('handOffToDesktopApp', () => {
 
     expect(spawnProcessMock).toHaveBeenCalledWith({
       program: '/usr/bin/open',
-      args: ['-n', '/Applications/Orca.app'],
+      args: ['-n', '/Applications/Topo.app'],
       env: {},
       detached: true,
       stdio: 'ignore'
@@ -47,18 +47,18 @@ describe('handOffToDesktopApp', () => {
   it('passes buffered links and documents to the new instance', () => {
     spawnProcessMock.mockReturnValue(makeChild())
 
-    handOffToDesktopApp(['orca://skills/share/abc', '/Users/me/notes.md'], {
+    handOffToDesktopApp(['topo://skills/share/abc', '/Users/me/notes.md'], {
       platform: 'darwin',
       env: {},
-      executablePath: '/Users/me/Applications/Orca.app/Contents/MacOS/Orca',
+      executablePath: '/Users/me/Applications/Topo.app/Contents/MacOS/Topo',
       reapplyActivationPolicy: vi.fn()
     })
 
     expect(spawnProcessMock.mock.calls[0][0].args).toEqual([
       '-n',
-      '/Users/me/Applications/Orca.app',
+      '/Users/me/Applications/Topo.app',
       '--args',
-      'orca://skills/share/abc',
+      'topo://skills/share/abc',
       '/Users/me/notes.md'
     ])
   })
@@ -94,7 +94,7 @@ describe('handOffToDesktopApp', () => {
     expect(warn).toHaveBeenCalledOnce()
   })
 
-  it.each([{ ORCA_BACKGROUND_LAUNCH: '1' }, { ORCA_E2E_USER_DATA_DIR: '/tmp/e2e' }])(
+  it.each([{ TOPO_BACKGROUND_LAUNCH: '1' }, { TOPO_E2E_USER_DATA_DIR: '/tmp/e2e' }])(
     'never launches the real desktop app from an automated sidecar (%o)',
     (env) => {
       const reapplyActivationPolicy = vi.fn()

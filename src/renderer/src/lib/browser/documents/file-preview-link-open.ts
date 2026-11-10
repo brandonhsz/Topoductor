@@ -3,7 +3,7 @@ import { activateAndRevealWorkspace } from '../../workspace/activation/worktree-
 import type { AppState } from '@/store/types'
 import { LOCAL_EXECUTION_HOST_ID, type ExecutionHostId } from '../../../../../shared/execution-host'
 import '../../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
 import type { WorkspaceFilePreviewPlan } from './file-preview'
 import type {
   BrowserLinkOpenContext,
@@ -84,7 +84,7 @@ export async function openPlannedFileBrowserLink(
           ? { kind: 'document', docLocation }
           : { kind: 'local-file', url: plan.url }
     },
-    url: plan.status === 'doc-preview' ? ORCA_BROWSER_BLANK_URL : plan.url,
+    url: plan.status === 'doc-preview' ? TOPO_BROWSER_BLANK_URL : plan.url,
     options: plan.status === 'doc-preview' ? { docLocation } : { title: plan.title },
     reveal: () => {
       activateAndRevealWorkspace(placementWorkspaceId, {

@@ -8,7 +8,7 @@ describe('Windows remote command line limit', () => {
   it('carries an oversized script through gzip without altering it', () => {
     const script = Array.from(
       { length: 200 },
-      (_unused, index) => `Write-Output ${index}; $slot = 'C:\\Users\\orca\\stage-${index}'`
+      (_unused, index) => `Write-Output ${index}; $slot = 'C:\\Users\\topo\\stage-${index}'`
     ).join('\n')
     const command = powerShellCommand(script)
     expect(command.length).toBeLessThanOrEqual(CMD_EXE_COMMAND_LINE_MAX_CHARS)
@@ -19,6 +19,6 @@ describe('Windows remote command line limit', () => {
     ).toString('utf16le')
     const payload = bootstrap.match(/FromBase64String\('([A-Za-z0-9+/=]+)'\)/u)?.[1] ?? ''
     expect(gunzipSync(Buffer.from(payload, 'base64')).toString('utf-8')).toBe(script)
-    expect(bootstrap).toContain('Invoke-Expression $OrcaScriptText')
+    expect(bootstrap).toContain('Invoke-Expression $TopoScriptText')
   })
 })

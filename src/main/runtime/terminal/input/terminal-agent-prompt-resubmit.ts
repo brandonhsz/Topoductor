@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithTitlelessPaneAgentIdentity } from '../wait/titleless-pane-agent-identity'
+import { TopoRuntimeWithTitlelessPaneAgentIdentity } from '../wait/titleless-pane-agent-identity'
 import type { RuntimeAgentPromptWriteOptions } from './agent-prompt-write-options'
 import {
   AGENT_PROMPT_SUBMIT,
@@ -18,7 +18,7 @@ type HeldAgentPrompt = {
   heldBudgetMs: number
 }
 
-export abstract class OrcaRuntimeWithResubmitHeldAgentPrompt extends OrcaRuntimeWithTitlelessPaneAgentIdentity {
+export abstract class TopoRuntimeWithResubmitHeldAgentPrompt extends TopoRuntimeWithTitlelessPaneAgentIdentity {
   /** Retry blind Enter and drafts held by Windows input-record pastes or unopened dsh launchpads; retries cannot fail a submitted prompt. */
   protected async resubmitHeldAgentPrompt(
     ptyId: string,

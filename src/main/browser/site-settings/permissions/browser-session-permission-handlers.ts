@@ -102,7 +102,7 @@ export function installBrowserSessionPermissionHandlers(
         () => resolvePermissionNoticeUrl(webContents, details) || null
       )
     ) {
-      // Orca launches approved apps itself; deny Chromium's duplicate launch.
+      // Topo launches approved apps itself; deny Chromium's duplicate launch.
       callback(false)
       return
     }

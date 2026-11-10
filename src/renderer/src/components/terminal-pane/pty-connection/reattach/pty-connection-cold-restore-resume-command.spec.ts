@@ -1,7 +1,7 @@
 import { bindPtyConnectionTestMocks } from '../test-fixtures/pty-connection-mocks.spec'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makePaneKey } from '../../../../../../shared/workspace-layout/stable-pane-id'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import {
   expectNoWindowStart,
   expectWindowStartAskedMain,
@@ -146,7 +146,7 @@ export function registerPtyConnectionColdRestoreResumeCommandTests(): void {
         }
         await flushAsyncTicks(10)
 
-        if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+        if (TOPO_LAYOUT_OWNER_IS_MAIN) {
           // Only main replaces the contentless shell and resumes the agent; the window drops its old view and asks main.
           expect(transport.disconnect).toHaveBeenCalled()
           await expectWindowStartAskedMain(transport, paneKey)
@@ -162,8 +162,8 @@ export function registerPtyConnectionColdRestoreResumeCommandTests(): void {
           expect.objectContaining({
             command: "codex '-c' 'disable_paste_burst=true' 'resume' 'codex-session-1'",
             env: expect.objectContaining({
-              ORCA_PANE_KEY: paneKey,
-              ORCA_AGENT_LAUNCH_TOKEN: expect.stringMatching(new RegExp(`^${UUID_RE}$`))
+              TOPO_PANE_KEY: paneKey,
+              TOPO_AGENT_LAUNCH_TOKEN: expect.stringMatching(new RegExp(`^${UUID_RE}$`))
             })
           })
         )
@@ -184,7 +184,7 @@ export function registerPtyConnectionColdRestoreResumeCommandTests(): void {
 
     // Main-owned resume must type no window-generated command.
     const windowResumeCommand = (command: string): string | undefined =>
-      ORCA_LAYOUT_OWNER_IS_MAIN ? undefined : command
+      TOPO_LAYOUT_OWNER_IS_MAIN ? undefined : command
 
     // Cold restore must quote for the recorded shell; PowerShell quotes break cmd.exe resume argv (#12320).
     async function runWindowsColdRestoreResume(args: {

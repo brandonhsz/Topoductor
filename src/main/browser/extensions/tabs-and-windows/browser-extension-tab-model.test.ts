@@ -50,7 +50,7 @@ const { openBrowserExtensionTab } = await import('./browser-extension-tab-model'
 const { watchBrowserMainWindowReadiness } =
   await import('../../guest-lifecycle/browser-main-window-readiness')
 
-/** Orca's main window; its renderer reports readiness on the per-window IPC channel. */
+/** Topo's main window; its renderer reports readiness on the per-window IPC channel. */
 function mainWindow() {
   const contents = Object.assign(new EventEmitter(), { ipc: new EventEmitter() })
   const window = { id: 1, webContents: contents, isDestroyed: () => false }
@@ -68,7 +68,7 @@ beforeEach(() => {
   mainWindow().rendererReady()
 })
 
-describe('an extension tab opened while Orca starts', () => {
+describe('an extension tab opened while Topo starts', () => {
   afterEach(() => {
     vi.useRealTimers()
   })

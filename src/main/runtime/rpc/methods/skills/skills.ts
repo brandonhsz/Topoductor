@@ -32,7 +32,7 @@ import {
   resolveSkillDiscoveryTarget
 } from '../../../../skills/discovery/skill-discovery-target'
 import { SKILL_INSTALL_RESULT_V2_CAPABILITY } from '../../../../../shared/skill-install-capability'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { parseExecutionHostId } from '../../../../../shared/execution-host'
 import {
   AGENT_SKILL_SHARING_UNSUPPORTED_ENVIRONMENT_CODE,
@@ -50,7 +50,7 @@ import { runAsWslUserAct, wslDistroForPath } from '../../../../wsl/filesystem/ws
 // Use the same target resolution for discovery and delete-plan roots, including WSL.
 export function resolveDiscoveryTarget(
   params: z.infer<typeof SkillDiscoveryTargetSchema>,
-  runtime: Pick<OrcaRuntimeService, 'resolveProjectRuntimeForWorktree'>,
+  runtime: Pick<TopoRuntimeService, 'resolveProjectRuntimeForWorktree'>,
   options: { refuseStoppedWslDistro?: boolean } = {}
 ) {
   const target = params.projectRuntime
@@ -65,7 +65,7 @@ export function resolveDiscoveryTarget(
 // A caller naming only the workspace gets its folder from the host, which refuses SSH workspaces like desktop.
 async function withWorkspaceCwd(
   params: z.infer<typeof SkillsDiscoverParams>,
-  runtime: Pick<OrcaRuntimeService, 'resolveRuntimeFileTarget'>
+  runtime: Pick<TopoRuntimeService, 'resolveRuntimeFileTarget'>
 ): Promise<z.infer<typeof SkillsDiscoverParams>> {
   if (params.cwd?.trim() || !params.worktreeId) {
     return params
@@ -78,7 +78,7 @@ async function withWorkspaceCwd(
 }
 
 function skillDeleteDependencies(
-  runtime: Pick<OrcaRuntimeService, 'listRepos' | 'resolveSkillDiscoveryProviderRoots'>
+  runtime: Pick<TopoRuntimeService, 'listRepos' | 'resolveSkillDiscoveryProviderRoots'>
 ): SkillDeleteRequestDependencies {
   return {
     repos: () => runtime.listRepos(),
@@ -128,21 +128,21 @@ export const SKILL_METHODS = [
         skillDeleteDependencies(runtime)
       )
   }),
-  // The host plans Orca's skills on its own disk; a paired client never sends a WSL target.
+  // The host plans Topo's skills on its own disk; a paired client never sends a WSL target.
   defineMethod({
-    name: 'skills.planBundledOrca',
+    name: 'skills.planBundledTopo',
     permission: 'workspace',
     params: BundledSkillPlanRequestSchema,
     handler: (params, { runtime }) => runtime.planLocalBundledSkills(params)
   }),
   defineMethod({
-    name: 'skills.executeBundledOrca',
+    name: 'skills.executeBundledTopo',
     permission: 'skills-admin',
     params: BundledSkillExecuteRequestSchema,
     handler: (params, { runtime }) => runtime.executeLocalBundledSkills(params)
   }),
   defineMethod({
-    name: 'skills.autoUpdateBundledOrca',
+    name: 'skills.autoUpdateBundledTopo',
     permission: 'skills-admin',
     params: BundledSkillAutoUpdateRequestSchema,
     handler: (params, { runtime }) => runtime.autoUpdateLocalBundledSkills(params)
@@ -156,14 +156,14 @@ export const SKILL_METHODS = [
       if (clientKind !== undefined) {
         throw new AgentSkillSharingError(
           AGENT_SKILL_SHARING_UNSUPPORTED_ENVIRONMENT_CODE,
-          'Publishing skills through a paired client is not supported. Run the command from Orca on the machine that stores the skills.'
+          'Publishing skills through a paired client is not supported. Run the command from Topo on the machine that stores the skills.'
         )
       }
       const resolvedTarget = await resolveDiscoveryTarget(params.target ?? {}, runtime)
       if (resolvedTarget.kind !== 'native-host') {
         throw new AgentSkillSharingError(
           AGENT_SKILL_SHARING_UNSUPPORTED_ENVIRONMENT_CODE,
-          'Publishing skills from a forwarded WSL session is not supported yet. Run the command from Orca on the machine that stores the skills.'
+          'Publishing skills from a forwarded WSL session is not supported yet. Run the command from Topo on the machine that stores the skills.'
         )
       }
       // Sharing named skills is a user act: it may start the workspace's distro.

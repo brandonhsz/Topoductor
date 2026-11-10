@@ -69,7 +69,7 @@ export function endStructuredAgentSessionReleasedChild(
   const session = context.sessions.get(sessionId)
   const child = session?.child
   if (child) {
-    context.runtimeState.startupAttempts.childEnded(sessionId, child, { byOrca: true })
+    context.runtimeState.startupAttempts.childEnded(sessionId, child, { byTopo: true })
   }
   if (
     !session ||

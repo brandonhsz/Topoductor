@@ -5,7 +5,7 @@ export type ReportFollowUpAction =
   | { kind: 'worker_start_on'; server: string }
   | { kind: 'worker_start' }
 
-export function formatReportFollowUpCommand(action: ReportFollowUpAction, cli = 'orca'): string {
+export function formatReportFollowUpCommand(action: ReportFollowUpAction, cli = 'topo'): string {
   switch (action.kind) {
     case 'send':
       return `${cli} orchestration send --to dispatch:${action.dispatchId} --subject "..." --body "..."`
@@ -22,7 +22,7 @@ function quoteServerName(name: string): string {
 }
 
 /** The action line every view prints under a finished task's report, and the refusal repeats. */
-export function formatReportFollowUpLine(action: ReportFollowUpAction, cli = 'orca'): string {
+export function formatReportFollowUpLine(action: ReportFollowUpAction, cli = 'topo'): string {
   const command = formatReportFollowUpCommand(action, cli)
   switch (action.kind) {
     case 'send':

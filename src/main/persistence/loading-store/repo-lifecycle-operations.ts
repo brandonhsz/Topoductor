@@ -6,7 +6,7 @@ import type { GhAccountBinding } from '../../../shared/github/account-binding'
 import {
   removeRepoFromHostWorkspaceSessions,
   removeRepoFromWorkspaceSession
-} from '../../orca-profiles/profile-project-session-state'
+} from '../../topo-profiles/profile-project-session-state'
 import {
   getRepoExecutionHostId,
   parseExecutionHostId,
@@ -31,7 +31,7 @@ import type { StoreRuntimeState } from './store-runtime-state'
 import { type WriteSchedulingOperations, scheduleSave } from './write-scheduling'
 import { pruneDeregisteredRepoUiResidue } from './repo-lifecycle-ui-residue'
 import { isWslMoveProjectSessionFrozen } from '../moving-wsl-projects/wsl-move-scope-guard'
-import { dropOrcadTerminalRestoreHintsForWorktrees } from '../migrating-orcad-catalog/orcad-terminal-restore-hint-store'
+import { dropTopodTerminalRestoreHintsForWorktrees } from '../migrating-topod-catalog/topod-terminal-restore-hint-store'
 import { getRepoIdFromWorktreeId } from '../../../shared/worktree/id'
 import { applyNewWindowsDriveProjectDefault } from '../../wsl/filesystem/wsl-drive-project-new-default'
 
@@ -59,7 +59,7 @@ type RepoLifecycleOperationsRuntime = Pick<
   | 'repoOrderOperations'
   | 'repoUpdateOperations'
   | 'state'
-  | 'orcadTerminalRestoreHints'
+  | 'topodTerminalRestoreHints'
 >
 
 const repoLifecycleOperationsContext = Symbol('RepoLifecycleOperations')
@@ -212,8 +212,8 @@ export class RepoLifecycleOperations {
 }
 
 function dropRepoRestoreHints(owner: RepoLifecycleOperations, repoId: string): void {
-  dropOrcadTerminalRestoreHintsForWorktrees(
-    owner[repoLifecycleOperationsContext].runtime.orcadTerminalRestoreHints,
+  dropTopodTerminalRestoreHintsForWorktrees(
+    owner[repoLifecycleOperationsContext].runtime.topodTerminalRestoreHints,
     (worktreeId) => getRepoIdFromWorktreeId(worktreeId) === repoId
   )
 }

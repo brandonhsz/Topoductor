@@ -1,4 +1,4 @@
-// COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+// COMPAT(wsl-bridge): removed when WSL runs as an topod host.
 import { Copy } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'

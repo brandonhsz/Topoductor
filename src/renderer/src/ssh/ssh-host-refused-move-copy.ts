@@ -5,7 +5,7 @@ import type { SshHostServerStatusLine } from './ssh-host-server-status-copy'
 // Why a cap: a refusal can list every blocking tab; the whole text stays behind "Details".
 export const REFUSAL_INLINE_CHARS = 280
 
-// Main's refusal reason (orcad-migration-refusal-reason.ts) lists the blocking items after this lead.
+// Main's refusal reason (topod-migration-refusal-reason.ts) lists the blocking items after this lead.
 const REFUSAL_LEAD = /^This SSH host cannot move yet:\s*/
 
 /** A refusal Move anyway clears: say what stays on this computer, so moving is the obvious next step. */
@@ -22,12 +22,12 @@ export function leaveBehindLine(
     text: inline
       ? t(
           'auto.components.settings.sshHostServer.refusedLeaveBehind',
-          'Some saved items for this host can’t move to its Orca server: {{items}}. Move anyway connects the host and keeps them on this computer.',
+          'Some saved items for this host can’t move to its Topo server: {{items}}. Move anyway connects the host and keeps them on this computer.',
           { items: inline }
         )
       : t(
           'auto.components.settings.sshHostServer.refusedLeaveBehindUnnamed',
-          'Some saved items for this host can’t move to its Orca server. Move anyway connects the host and keeps them on this computer.'
+          'Some saved items for this host can’t move to its Topo server. Move anyway connects the host and keeps them on this computer.'
         ),
     ...(reason ? { detail: reason } : {})
   }
@@ -45,7 +45,7 @@ export function refusedLine(
       tone: 'destructive',
       text: t(
         'auto.components.settings.sshHostServer.refusedBlocked',
-        'Orca isn’t set up on this host yet: something on the host stops the move.'
+        'Topo isn’t set up on this host yet: something on the host stops the move.'
       )
     }
   }
@@ -54,7 +54,7 @@ export function refusedLine(
     tone: 'destructive',
     text: t(
       'auto.components.settings.sshHostServer.refusedBlockedReason',
-      'Orca isn’t set up on this host yet. {{reason}}',
+      'Topo isn’t set up on this host yet. {{reason}}',
       { reason: inline }
     ),
     detail: reason

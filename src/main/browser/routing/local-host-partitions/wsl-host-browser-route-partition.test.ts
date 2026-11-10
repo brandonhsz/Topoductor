@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type {
   KnownRuntimeEnvironment,
-  OrcadDeploymentLink
+  TopodDeploymentLink
 } from '../../../../shared/remote-runtime/host-catalog/runtime-environments'
 
 const bindings = vi.hoisted(() => ({ filePath: '' }))
@@ -45,7 +45,7 @@ import { BrowserRoutePartitionBindingStore } from '../partitions/browser-route-p
 import { resolveBrowserRoutePartitionBinding } from '../partitions/browser-route-partition-migration'
 import {
   closePairedRuntimeBrowserClientHostEnvironment,
-  configurePairedRuntimeBrowserClientHostsForOrcaProfile,
+  configurePairedRuntimeBrowserClientHostsForTopoProfile,
   getPairedRuntimeBrowserClientRouteIdentity,
   startPairedRuntimeBrowserClientHost,
   type ClientHostRouteIdentity
@@ -55,8 +55,8 @@ import {
   wslHostBrowserRouteStorage
 } from './wsl-host-browser-route-partition'
 
-const ORCA_PROFILE = 'profile-a'
-const WSL_DEPLOYMENT: OrcadDeploymentLink = {
+const TOPO_PROFILE = 'profile-a'
+const WSL_DEPLOYMENT: TopodDeploymentLink = {
   kind: 'wsl',
   distro: 'Ubuntu',
   localPort: 9999,
@@ -65,7 +65,7 @@ const WSL_DEPLOYMENT: OrcadDeploymentLink = {
 
 function environment(
   pairing: { revision: number; device: string },
-  orcadDeployment: OrcadDeploymentLink | null = WSL_DEPLOYMENT,
+  topodDeployment: TopodDeploymentLink | null = WSL_DEPLOYMENT,
   id = 'wsl:Ubuntu'
 ): KnownRuntimeEnvironment {
   return {
@@ -77,7 +77,7 @@ function environment(
     runtimeId: null,
     pairingRevision: pairing.revision,
     pairedDeviceId: pairing.device,
-    ...(orcadDeployment ? { orcadDeployment } : {}),
+    ...(topodDeployment ? { topodDeployment } : {}),
     preferredEndpointId: 'endpoint-a',
     endpoints: [
       {
@@ -93,7 +93,7 @@ function environment(
 }
 
 function stableStorage(env: KnownRuntimeEnvironment) {
-  const result = wslHostBrowserRouteStorage(ORCA_PROFILE, env)
+  const result = wslHostBrowserRouteStorage(TOPO_PROFILE, env)
   if (result.kind !== 'stable') {
     throw new Error(`expected a stable partition, got ${result.reason}`)
   }
@@ -121,7 +121,7 @@ async function pagePartition(
 ): Promise<string> {
   const identity = await liveRouteIdentity(env, authorityRuntimeId)
   const page = (authorityConnectionIdentity: string, executionHostIdentity: string) => ({
-    orcaProfileId: identity.orcaProfileId,
+    topoProfileId: identity.topoProfileId,
     browserProfileId,
     authorityConnectionIdentity,
     executionHostIdentity
@@ -157,7 +157,7 @@ async function pagePartition(
 let directory: string
 
 beforeEach(() => {
-  configurePairedRuntimeBrowserClientHostsForOrcaProfile({ orcaProfileId: ORCA_PROFILE })
+  configurePairedRuntimeBrowserClientHostsForTopoProfile({ topoProfileId: TOPO_PROFILE })
   directory = realpathSync(mkdtempSync(join(realpathSync(tmpdir()), 'wsl-host-route-')))
   bindings.filePath = join(directory, 'bindings.json')
 })
@@ -166,7 +166,7 @@ afterEach(() => {
 })
 
 describe('WSL host browser route partition', () => {
-  it('is the partition the host pages later use, across an orcad relaunch and re-pair', async () => {
+  it('is the partition the host pages later use, across an topod relaunch and re-pair', async () => {
     const seeded = bindWslHostBrowserRoutePartition(
       stableStorage(environment({ revision: 10, device: 'a' })),
       'default'

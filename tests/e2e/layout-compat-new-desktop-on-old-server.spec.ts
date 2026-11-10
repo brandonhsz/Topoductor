@@ -1,14 +1,14 @@
 // P3 frozen adapter: compare current desktop split/resize/rename/restart observations against a pinned released headless server.
-// Requires ORCA_CROSS_VERSION_PACKAGED_EXECUTABLE (packaged-browser-e2e.yml layout-compat).
+// Requires TOPO_CROSS_VERSION_PACKAGED_EXECUTABLE (packaged-browser-e2e.yml layout-compat).
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { launchPairedElectronClient } from './helpers/paired-electron-client'
 import {
   launchPackagedServeHost,
   packagedExecutable,
   packagedExecutableMissing,
   PACKAGED_EXECUTABLE_ENV
-} from './helpers/packaged-old-orca'
+} from './helpers/packaged-old-topo'
 import {
   expectLayoutCompatBaseline,
   expectReconnectedPaneEcho,
@@ -72,7 +72,7 @@ async function dragDivider(page: Page): Promise<void> {
 }
 
 test.describe('layout compat: current desktop on a released server', () => {
-  test.skip(packagedExecutableMissing, `${PACKAGED_EXECUTABLE_ENV} must point at a released Orca`)
+  test.skip(packagedExecutableMissing, `${PACKAGED_EXECUTABLE_ENV} must point at a released Topo`)
 
   test('new-desktop-on-old-server: split, divider drag, pane rename, reconnect', async ({
     testRepoPath

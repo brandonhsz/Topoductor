@@ -181,7 +181,7 @@ export function getWindowsManagedLifecycleHook(scriptPath: string): HookCommandC
 
 function getWindowsPowerShellLifecycleCommand(scriptPath: string): string {
   const scriptFileName = win32.basename(scriptPath)
-  const quotedRelativePath = quotePowerShellLiteral(`.orca\\agent-hooks\\${scriptFileName}`)
+  const quotedRelativePath = quotePowerShellLiteral(`.topo\\agent-hooks\\${scriptFileName}`)
   return (
     `$scriptPath = Join-Path $env:USERPROFILE ${quotedRelativePath}; ` +
     'if (Test-Path -LiteralPath $scriptPath -PathType Leaf) { & $scriptPath; exit $LASTEXITCODE }; ' +
@@ -283,7 +283,7 @@ export function getStatusLineInstallMarkerPath(settings = CLAUDE_HOOK_SETTINGS):
   return getSharedManagedScriptPath(`${getStatusLineScriptBaseName(settings)}.installed`)
 }
 
-// A user-owned status line takes precedence over Orca's usage feed.
+// A user-owned status line takes precedence over Topo's usage feed.
 export function applyManagedStatusLine(
   config: HooksConfig,
   command: string,

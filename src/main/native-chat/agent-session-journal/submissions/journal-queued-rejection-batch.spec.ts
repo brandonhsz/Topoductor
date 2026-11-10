@@ -23,14 +23,14 @@ export function registerJournalQueuedRejectionBatchTests(): void {
   const START_FAILED = agentSessionFailureWords(agentSessionFailureFact('providerStartFailed'), {
     surface: 'rejection'
   })
-  const ERROR_ROW = { provider: 'orca', clientMessageId: 'start-failure:gen-1' } as const
+  const ERROR_ROW = { provider: 'topo', clientMessageId: 'start-failure:gen-1' } as const
 
   let root: string
   let clock = 1_000
   const journals = createTrackedJournalOpener()
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-queued-rejection-batch-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-queued-rejection-batch-'))
   })
 
   afterEach(async () => {
@@ -87,7 +87,7 @@ export function registerJournalQueuedRejectionBatchTests(): void {
     expect(order).toEqual([
       agentJournalSubmissionKey('first'),
       agentJournalSubmissionKey('second'),
-      'orca:start-failure%3Agen-1'
+      'topo:start-failure%3Agen-1'
     ])
   })
 

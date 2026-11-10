@@ -5,12 +5,12 @@ import {
   type PendingPrompt
 } from '../../../../shared/agent-status/contracts/agent-pending-prompt'
 import type { AgentStatusIpcPayload } from '../../../../shared/agent-status/contracts/agent-status-ipc-payload'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 import { writeFencedAgentKeys } from './terminal-agent-fenced-keys'
 import type { AgentPromptExpectedBinding } from './agent-prompt-write-options'
 
 export type TerminalAgentPromptAnswerRuntime = Pick<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   'getTerminalHandleForPaneKey' | 'getTerminalPromptRequestBinding' | 'sendTerminal'
 >
 

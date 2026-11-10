@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { RelayRegion } from '@orca-cloud/relay-contract/relay-regions'
+import type { RelayRegion } from '@topo-cloud/relay-contract/relay-regions'
 import type { CellReserveClient } from '../../cell/reservations/cell-reserve-client.js'
 import {
   ReserveAssignment,
@@ -669,9 +669,9 @@ describe('reserve assignment on a director', () => {
       expect(await assignment.plan(OTHER, ask)).toMatchObject({ lane: 'sticky' })
       now.value += 60_000
       await assignment.plan({ ...HOST, relayHostId: 'flushflushflush1' }, ask)
-      expect(lines.filter((line) => line.event === 'orca_relay_reserve_rehome')).toEqual([
-        { event: 'orca_relay_reserve_rehome', fromRegion: US, toRegion: ASIA, count: 0, skippedByRule: { 'source-budget': 1 } },
-        { event: 'orca_relay_reserve_rehome', fromRegion: US, toRegion: ASIA, count: 1, skippedByRule: { 'source-budget': 1 } }
+      expect(lines.filter((line) => line.event === 'topo_relay_reserve_rehome')).toEqual([
+        { event: 'topo_relay_reserve_rehome', fromRegion: US, toRegion: ASIA, count: 0, skippedByRule: { 'source-budget': 1 } },
+        { event: 'topo_relay_reserve_rehome', fromRegion: US, toRegion: ASIA, count: 1, skippedByRule: { 'source-budget': 1 } }
       ])
     })
   })
@@ -739,7 +739,7 @@ describe('reserve assignment on a director', () => {
     const outcomes = (lines: string[]) =>
       lines
         .map((line) => JSON.parse(line))
-        .filter((entry) => entry.event === 'orca_relay_reserve_demote_outcome')
+        .filter((entry) => entry.event === 'topo_relay_reserve_demote_outcome')
 
     it('logs the answer by host digest and leaves the seat to the feed', async () => {
       const lines: string[] = []
@@ -749,7 +749,7 @@ describe('reserve assignment on a director', () => {
         demote: () => 'not-seated',
         log: (line) => {
           lines.push(line)
-          if (JSON.parse(line).event === 'orca_relay_reserve_demote_outcome') {
+          if (JSON.parse(line).event === 'topo_relay_reserve_demote_outcome') {
             logged.resolve()
           }
         }
@@ -797,7 +797,7 @@ describe('reserve assignment on a director', () => {
       await expect(
         paced.assignment.plan(HOST, { reconnect: false, region: US })
       ).rejects.toMatchObject({ drained: false })
-      expect(events(lines, 'orca_relay_reserve_drain_replaced')).toEqual([])
+      expect(events(lines, 'topo_relay_reserve_drain_replaced')).toEqual([])
     })
 
   })

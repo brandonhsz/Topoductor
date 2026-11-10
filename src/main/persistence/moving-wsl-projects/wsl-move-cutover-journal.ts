@@ -5,12 +5,12 @@ import {
   parseWslMoveCutover,
   type WslMoveCutover
 } from '../../../shared/wsl-move/wsl-move-cutover'
-import { isRecord } from '../../../shared/orcad-migration/orcad-migration-manifest-fields'
-import { assertOrcadMigrationManifestDigest } from '../../orcad/orcad-migration-manifest-digest'
+import { isRecord } from '../../../shared/topod-migration/topod-migration-manifest-fields'
+import { assertTopodMigrationManifestDigest } from '../../topod/topod-migration-manifest-digest'
 import {
   createMigrationJournalDirectory,
   orderMigrationJournalChain
-} from '../migrating-orcad-catalog/migration-journal-directory'
+} from '../migrating-topod-catalog/migration-journal-directory'
 import { assertWslMoveManifestFits } from './wsl-move-manifest-budget'
 import {
   isWslMoveDesktopRewriteRegistryComplete,
@@ -33,7 +33,7 @@ export function onWslMoveJournalChange(listener: (userDataPath: string) => void)
 }
 
 const journals = createMigrationJournalDirectory({
-  directoryName: 'orcad-migration-cutovers-wsl',
+  directoryName: 'topod-migration-cutovers-wsl',
   // Journals embed catalog/session manifests; blobs use a separate channel.
   maxFileBytes: 16 * 1024 * 1024,
   parse: parseVerifiedWslMoveCutover,
@@ -64,7 +64,7 @@ export function scanWslMoveCutovers(userDataPath: string): readonly Readonly<Wsl
 function parseVerifiedWslMoveCutover(value: unknown): WslMoveCutover {
   const cutover = parseWslMoveCutover(value)
   // Verify raw fields: parsing drops fields signed by newer builds.
-  assertOrcadMigrationManifestDigest(isRecord(value) ? value.manifest : undefined)
+  assertTopodMigrationManifestDigest(isRecord(value) ? value.manifest : undefined)
   return cutover
 }
 

@@ -53,10 +53,10 @@ export function assertPluginSystemEnabled(service: {
   if (!service.options.isPluginSystemEnabled()) {
     throw new PluginCliError(
       PLUGIN_SYSTEM_DISABLED_CODE,
-      'Plugins are turned off on this Orca host.',
+      'Plugins are turned off on this Topo host.',
       {
         nextSteps: [
-          'Ask the user to click "Turn on plugins" in Orca Settings → Plugins (or, on a host with no window such as `orca serve`, to run `orca plugin system on` against it), then run the command again.'
+          'Ask the user to click "Turn on plugins" in Topo Settings → Plugins (or, on a host with no window such as `topo serve`, to run `topo plugin system on` against it), then run the command again.'
         ]
       }
     )
@@ -72,16 +72,16 @@ export async function resolveHostPluginFolder(path: string): Promise<string> {
   if (!isAbsolute(path)) {
     throw new PluginCliError(
       'invalid_argument',
-      `${path} is not an absolute path on the Orca host.`,
+      `${path} is not an absolute path on the Topo host.`,
       {
-        nextSteps: ['Pass the plugin folder as an absolute path on the machine that runs Orca.']
+        nextSteps: ['Pass the plugin folder as an absolute path on the machine that runs Topo.']
       }
     )
   }
   const real = await realpath(path).catch(() => null)
   if (!real || !(await stat(real)).isDirectory()) {
-    throw new PluginCliError('invalid_argument', `${path} is not a folder on the Orca host.`, {
-      nextSteps: ['Check the path; development folders must be on the machine that runs Orca.']
+    throw new PluginCliError('invalid_argument', `${path} is not a folder on the Topo host.`, {
+      nextSteps: ['Check the path; development folders must be on the machine that runs Topo.']
     })
   }
   return real
@@ -158,8 +158,8 @@ async function loadAddedDevFolder(
       path,
       error,
       nextSteps: [
-        'Run `orca plugin validate <dir>` for every problem, fix them, then `orca plugin dev reload <dir>`.',
-        'The folder stays in the development list; `orca plugin dev unload <dir>` removes it.'
+        'Run `topo plugin validate <dir>` for every problem, fix them, then `topo plugin dev reload <dir>`.',
+        'The folder stays in the development list; `topo plugin dev unload <dir>` removes it.'
       ]
     })
   }
@@ -180,7 +180,7 @@ async function loadAddedDevFolder(
           ...error.data,
           nextSteps: [
             ...error.data.nextSteps,
-            'Until then the folder stays loaded but nothing in it runs; `orca plugin dev unload <dir>` removes it.'
+            'Until then the folder stays loaded but nothing in it runs; `topo plugin dev unload <dir>` removes it.'
           ]
         },
         error.code !== 'approval_required'
@@ -231,7 +231,7 @@ export async function unloadPluginDevFolder(input: {
       {
         loaded: [...stored],
         nextSteps: [
-          'Pass the absolute folder path or plugin key shown by `orca plugin list --json`.'
+          'Pass the absolute folder path or plugin key shown by `topo plugin list --json`.'
         ]
       }
     )

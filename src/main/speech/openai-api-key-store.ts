@@ -15,19 +15,19 @@ type StoredOpenAiKey = {
 const OPENAI_SPEECH_TOKEN_FILE = 'openai-speech-token.enc'
 let cachedOpenAiSpeechApiKey: string | null = null
 
-function getOrcaDir(): string {
-  return join(homedir(), '.orca')
+function getTopoDir(): string {
+  return join(homedir(), '.topo')
 }
 
-function ensureOrcaDir(): void {
-  const dir = getOrcaDir()
+function ensureTopoDir(): void {
+  const dir = getTopoDir()
   if (!existsSync(dir)) {
     mkdirSync(dir, { recursive: true })
   }
 }
 
 export function getOpenAiKeyPath(): string {
-  return join(getOrcaDir(), OPENAI_SPEECH_TOKEN_FILE)
+  return join(getTopoDir(), OPENAI_SPEECH_TOKEN_FILE)
 }
 
 function readLegacyJsonStoredOpenAiKey(): StoredOpenAiKey | null {
@@ -51,7 +51,7 @@ export function hasOpenAiSpeechApiKey(): boolean {
   return existsSync(getOpenAiKeyPath())
 }
 
-/** Check host decryption: orcad may not open a desktop safeStorage key even when its file exists. */
+/** Check host decryption: topod may not open a desktop safeStorage key even when its file exists. */
 export function canReadOpenAiSpeechApiKey(): boolean {
   if (!hasOpenAiSpeechApiKey()) {
     return false
@@ -78,7 +78,7 @@ export function saveOpenAiSpeechApiKey(apiKey: string): void {
   if (!trimmed) {
     throw new Error('OpenAI API key is required')
   }
-  ensureOrcaDir()
+  ensureTopoDir()
   if (getSecretStore().isEncryptionAvailable()) {
     writeFileSync(getOpenAiKeyPath(), getSecretStore().encryptString(trimmed), { mode: 0o600 })
     cachedOpenAiSpeechApiKey = trimmed

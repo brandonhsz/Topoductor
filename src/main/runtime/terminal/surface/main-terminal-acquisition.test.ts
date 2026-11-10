@@ -1,8 +1,8 @@
-import '../../orca-runtime-tests/runtime-test-module-registration.spec'
+import '../../topo-runtime-tests/runtime-test-module-registration.spec'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { OrchestrationDb } from '../../orchestration/db/orchestration-db'
 import '../../orchestration/db/contract-constants'
 import '../../orchestration/db/messages/mailbox-routing-page'
@@ -17,9 +17,9 @@ import { WindowSession } from '../../../persistence/terminal-topology/terminal-t
 import { expect, it, vi } from 'vitest'
 import { getDefaultWorkspaceSession } from '../../../../shared/constants'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
-class MainCrewRuntime extends OrcaRuntimeService {
+class MainCrewRuntime extends TopoRuntimeService {
   seedPty(id: string, handle: string): void {
     this.recordPtyWorktree(id, FIXTURE_GIT_WORKTREE_ID, { connected: true })
     this.terminalIdentity.bindPty(id, handle)
@@ -38,7 +38,7 @@ class MainCrewRuntime extends OrcaRuntimeService {
 
 it('retires raw main bindings on real Store-only writes with Crew as sole observer and no installed graph', async () => {
   for (const population of [3, 30]) {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-pr34890-main-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-pr34890-main-'))
     const { store, authority } = await openTopologyStoreWithAuthority(
       directory,
       emptyTerminalSessionProfile()
@@ -98,7 +98,7 @@ it('retires raw main bindings on real Store-only writes with Crew as sole observ
       })
       expect(read().label).toBe(
         runtime.orchestrationSenderNames.nameOf(
-          { address: 'term_main_0', terminalHandle: 'term_main_0', orcaSessionId: null },
+          { address: 'term_main_0', terminalHandle: 'term_main_0', topoSessionId: null },
           undefined,
           'Main worker',
           null

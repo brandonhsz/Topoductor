@@ -44,7 +44,7 @@ export function invalidateGitReadCaches(): void {
   resolvedUpstreamNameCache.clear()
 }
 
-// A change made outside Orca: later status reads must neither join a read begun before it nor reuse its line counts.
+// A change made outside Topo: later status reads must neither join a read begun before it nor reuse its line counts.
 // `null` means the changed checkouts are unknown.
 export function invalidateGitStatusReads(worktreePaths: readonly string[] | null): void {
   if (worktreePaths === null) {

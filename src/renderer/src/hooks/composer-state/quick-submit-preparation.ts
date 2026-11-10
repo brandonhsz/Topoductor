@@ -6,7 +6,7 @@ import {
   getLinkedWorkItemProvider,
   canUseIssueCommandForLinkedItemProvider
 } from '@/lib/new-workspace'
-import { getSetupConfig } from '../../../../shared/orca-hook-setup-config'
+import { getSetupConfig } from '../../../../shared/topo-hook-setup-config'
 import {
   deriveWorkspaceSetupState,
   readWorkspaceSetupInspection,

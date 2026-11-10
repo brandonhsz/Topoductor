@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithOnPtyData } from '../output/pty-output-ingestion'
+import { TopoRuntimeWithOnPtyData } from '../output/pty-output-ingestion'
 
 import {
   appendWaitBlockedCarry,
@@ -16,9 +16,9 @@ import type { ProcessedAgentStatusChunk } from '../../../../shared/agent-status/
 import { createTerminalAgentStatusProcessor } from '../../../../shared/program-status/terminal-agent-status-processor'
 import type { RuntimePtyTitleTrackerEntry } from '../records/runtime-terminal-state-records'
 
-import type { OrcaRuntimeWithRecordAgentPromptLifecycleState } from '../output/terminal-output-generation'
-import type { OrcaRuntimeWithEmitDaemonPtyTransientFact } from '../output/terminal-transient-facts'
-import type { OrcaRuntimeWithGetUnpersistedTrackedTitleForPty } from '../output/terminal-title-tracker'
+import type { TopoRuntimeWithRecordAgentPromptLifecycleState } from '../output/terminal-output-generation'
+import type { TopoRuntimeWithEmitDaemonPtyTransientFact } from '../output/terminal-transient-facts'
+import type { TopoRuntimeWithGetUnpersistedTrackedTitleForPty } from '../output/terminal-title-tracker'
 const WAIT_BLOCKED_CHECK_MIN_INTERVAL_MS = 50
 
 // New-chunk/short-carry prompt matches bypass throttling so blocked status publishes immediately.
@@ -27,24 +27,24 @@ const WAIT_BLOCKED_KEYWORD_PATTERN =
 
 const WAIT_BLOCKED_KEYWORD_CARRY_CHARS = 31
 
-export abstract class OrcaRuntimeWithScheduleWaitBlockedCheck extends OrcaRuntimeWithOnPtyData {
+export abstract class TopoRuntimeWithScheduleWaitBlockedCheck extends TopoRuntimeWithOnPtyData {
   protected abstract recordAgentPromptPermissionObservation(
     ...args: Parameters<
-      OrcaRuntimeWithRecordAgentPromptLifecycleState['recordAgentPromptPermissionObservation']
+      TopoRuntimeWithRecordAgentPromptLifecycleState['recordAgentPromptPermissionObservation']
     >
   ): ReturnType<
-    OrcaRuntimeWithRecordAgentPromptLifecycleState['recordAgentPromptPermissionObservation']
+    TopoRuntimeWithRecordAgentPromptLifecycleState['recordAgentPromptPermissionObservation']
   >
 
   protected abstract emitTerminalSideEffectBatch(
-    ...args: Parameters<OrcaRuntimeWithEmitDaemonPtyTransientFact['emitTerminalSideEffectBatch']>
-  ): ReturnType<OrcaRuntimeWithEmitDaemonPtyTransientFact['emitTerminalSideEffectBatch']>
+    ...args: Parameters<TopoRuntimeWithEmitDaemonPtyTransientFact['emitTerminalSideEffectBatch']>
+  ): ReturnType<TopoRuntimeWithEmitDaemonPtyTransientFact['emitTerminalSideEffectBatch']>
 
   protected abstract getOrCreatePtyTitleTrackerEntry(
     ...args: Parameters<
-      OrcaRuntimeWithGetUnpersistedTrackedTitleForPty['getOrCreatePtyTitleTrackerEntry']
+      TopoRuntimeWithGetUnpersistedTrackedTitleForPty['getOrCreatePtyTitleTrackerEntry']
     >
-  ): ReturnType<OrcaRuntimeWithGetUnpersistedTrackedTitleForPty['getOrCreatePtyTitleTrackerEntry']>
+  ): ReturnType<TopoRuntimeWithGetUnpersistedTrackedTitleForPty['getOrCreatePtyTitleTrackerEntry']>
 
   protected scheduleWaitBlockedCheck(ptyId: string, appendedText: string, at: number): void {
     let state = this.waitBlockedCheckStateByPtyId.get(ptyId)

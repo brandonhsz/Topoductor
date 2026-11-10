@@ -65,7 +65,7 @@ beforeEach(async () => {
   // Floating paths use AppEnvironment in desktop and headless runtimes.
   installFakeAppEnvironment({ getPath: () => userData.path })
   invalidateAuthorizedRootsCache()
-  base = await mkdtemp(join(await realpath(tmpdir()), 'orca-file-access-'))
+  base = await mkdtemp(join(await realpath(tmpdir()), 'topo-file-access-'))
   project = join(base, 'project')
   outside = join(base, 'outside')
   userData.path = join(base, 'user-data')
@@ -245,7 +245,7 @@ describe('project-folder-link listings', () => {
     ).resolves.toBe(join(outside, 'guides'))
   })
 
-  it('refuse links in Orca floating folder, which is not a project', async () => {
+  it('refuse links in Topo floating folder, which is not a project', async () => {
     const floatingLink = join(userData.path, 'floating-workspace', 'linked')
     await symlink(outside, floatingLink, 'dir')
 

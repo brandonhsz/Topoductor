@@ -295,7 +295,7 @@ export class PluginService {
     }
   }
 
-  /** The real event path; `orca plugin dev emit` reuses it for one development plugin. */
+  /** The real event path; `topo plugin dev emit` reuses it for one development plugin. */
   readonly eventDelivery: PluginEventDeliveryContext = {
     plugins: () => this.installed.discovered,
     ensureWorker: (plugin) => this.workerController.ensure(plugin),

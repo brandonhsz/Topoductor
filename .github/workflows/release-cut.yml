@@ -46,7 +46,7 @@ concurrency:
 jobs:
   cut:
     # Limit version/tag mutations to canonical repo; fork schedules must not diverge their main and conflict upstream.
-    if: github.repository == 'stablyai/orca'
+    if: github.repository == 'brandonhsz/Topoductor'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -60,7 +60,7 @@ jobs:
       source_ref: ${{ steps.resolve.outputs.ref }}
       source_sha: ${{ steps.resolve.outputs.sha }}
       source_short_sha: ${{ steps.resolve.outputs.short_sha }}
-      ships_orcad_template: ${{ steps.orcad-template-support.outputs.ships }}
+      ships_topod_template: ${{ steps.topod-template-support.outputs.ships }}
     steps:
       # Render dispatch audit summary locally rather than run mutable external action beside write token/secrets; parse env JSON with jq as data.
       - name: Summarize workflow inputs
@@ -633,19 +633,19 @@ jobs:
           fi
           git push origin "$TAG"
 
-      # Why: a patch cut from a base older than #24155 has no orcad template to build or ship.
-      - name: Detect whether the tag ships the orcad template
-        id: orcad-template-support
+      # Why: a patch cut from a base older than #24155 has no topod template to build or ship.
+      - name: Detect whether the tag ships the topod template
+        id: topod-template-support
         if: steps.tag.outputs.tag != '' || steps.version.outputs.recovered_tag != ''
         env:
           TAG: ${{ steps.tag.outputs.tag || steps.version.outputs.recovered_tag }}
         run: |
           set -euo pipefail
-          if git cat-file -e "refs/tags/${TAG}^{commit}:config/scripts/orcad-distribution/template/packaged-orcad-template.cjs" 2>/dev/null || git cat-file -e "refs/tags/${TAG}^{commit}:config/scripts/packaged-orcad-template.cjs" 2>/dev/null; then
+          if git cat-file -e "refs/tags/${TAG}^{commit}:config/scripts/topod-distribution/template/packaged-topod-template.cjs" 2>/dev/null || git cat-file -e "refs/tags/${TAG}^{commit}:config/scripts/packaged-topod-template.cjs" 2>/dev/null; then
             echo "ships=true" >>"$GITHUB_OUTPUT"
           else
             echo "ships=false" >>"$GITHUB_OUTPUT"
-            echo "::notice::$TAG predates the orcad template; skipping its build and download."
+            echo "::notice::$TAG predates the topod template; skipping its build and download."
           fi
 
       - name: Release E2E signal summary
@@ -777,32 +777,32 @@ jobs:
       - name: Run terminal rendering golden on Linux
         if: runner.os == 'Linux'
         run: |
-          xvfb-run --auto-servernum env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:workspace-session-golden
-          xvfb-run --auto-servernum env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run test:e2e:terminal-rendering-golden
-          xvfb-run --auto-servernum env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:posix-profile-index-golden
+          xvfb-run --auto-servernum env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:workspace-session-golden
+          xvfb-run --auto-servernum env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run test:e2e:terminal-rendering-golden
+          xvfb-run --auto-servernum env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:posix-profile-index-golden
 
       - name: Run source-control golden on Linux
         if: runner.os == 'Linux'
-        run: xvfb-run --auto-servernum env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:source-control-golden
+        run: xvfb-run --auto-servernum env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:source-control-golden
 
       - name: Run terminal rendering golden on macOS
         if: runner.os == 'macOS'
         run: |
-          env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:workspace-session-golden
-          env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run test:e2e:terminal-rendering-golden
-          env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:posix-profile-index-golden
+          env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:workspace-session-golden
+          env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run test:e2e:terminal-rendering-golden
+          env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:posix-profile-index-golden
 
       - name: Run agent TUI golden on Linux
         if: runner.os == 'Linux'
-        run: xvfb-run --auto-servernum env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:agent-tui-golden
+        run: xvfb-run --auto-servernum env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:agent-tui-golden
 
       - name: Run agent TUI golden on macOS
         if: runner.os == 'macOS'
-        run: env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:agent-tui-golden
+        run: env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:agent-tui-golden
 
       - name: Run source-control golden on macOS
         if: runner.os == 'macOS'
-        run: env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:source-control-golden
+        run: env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run --if-present test:e2e:source-control-golden
 
       - name: Upload Playwright traces
         if: failure()
@@ -865,8 +865,8 @@ jobs:
 
       - name: Run skill package, transaction, and compatibility suites
         env:
-          ORCA_REAL_PROCESS_SKILL_TEST: '1'
-          ORCA_REAL_WINDOWS_SKILL_TEST: ${{ runner.os == 'Windows' && '1' || '0' }}
+          TOPO_REAL_PROCESS_SKILL_TEST: '1'
+          TOPO_REAL_WINDOWS_SKILL_TEST: ${{ runner.os == 'Windows' && '1' || '0' }}
         run: pnpm test:skill-sharing:release --reporter=json --outputFile=skill-sharing-release-results.json
 
       - name: Archive bounded skill-sharing results
@@ -924,7 +924,7 @@ jobs:
 
       - name: Run skill package, transaction, and compatibility suites
         env:
-          ORCA_REAL_PROCESS_SKILL_TEST: '1'
+          TOPO_REAL_PROCESS_SKILL_TEST: '1'
         run: pnpm test:skill-sharing:release --reporter=json --outputFile=skill-sharing-release-results.json
 
       - name: Archive bounded skill-sharing results
@@ -1004,18 +1004,18 @@ jobs:
 
       - name: Run terminal rendering evidence on Linux
         if: runner.os == 'Linux'
-        run: xvfb-run --auto-servernum env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run test:e2e:terminal-rendering-release-evidence
+        run: xvfb-run --auto-servernum env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run test:e2e:terminal-rendering-release-evidence
 
       - name: Run terminal rendering evidence on macOS
         if: runner.os == 'macOS'
-        run: env SKIP_BUILD=1 ORCA_E2E_FORWARD_APP_LOGS=1 pnpm run test:e2e:terminal-rendering-release-evidence
+        run: env SKIP_BUILD=1 TOPO_E2E_FORWARD_APP_LOGS=1 pnpm run test:e2e:terminal-rendering-release-evidence
 
       - name: Run terminal rendering evidence on Windows
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           $env:SKIP_BUILD = '1'
-          $env:ORCA_E2E_FORWARD_APP_LOGS = '1'
+          $env:TOPO_E2E_FORWARD_APP_LOGS = '1'
           pnpm run test:e2e:terminal-rendering-release-evidence
 
       - name: Upload Playwright traces
@@ -1027,32 +1027,32 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
-  # Build every target’s qualified orcad slot at the tag beside release gates; unsigned template consumes no signing quota.
-  orcad-template:
+  # Build every target’s qualified topod slot at the tag beside release gates; unsigned template consumes no signing quota.
+  topod-template:
     needs: cut
-    if: needs.cut.outputs.should_release == 'true' && needs.cut.outputs.ships_orcad_template == 'true'
+    if: needs.cut.outputs.should_release == 'true' && needs.cut.outputs.ships_topod_template == 'true'
     permissions:
       contents: read
       actions: read
-    uses: ./.github/workflows/qualified-orcad-template.yml
+    uses: ./.github/workflows/qualified-topod-template.yml
     with:
       ref: refs/tags/${{ needs.cut.outputs.tag }}
       fast_runners: false
 
   # Server-only Linux tarballs from the same qualified template. Nothing depends on this job, so a
   # failure here never holds the desktop release.
-  orca-server-artifact:
+  topo-server-artifact:
     needs:
       - cut
-      - orcad-template
-    if: ${{ !cancelled() && needs.cut.outputs.should_release == 'true' && needs.orcad-template.result == 'success' }}
+      - topod-template
+    if: ${{ !cancelled() && needs.cut.outputs.should_release == 'true' && needs.topod-template.result == 'success' }}
     permissions:
       contents: read
       actions: read
-    uses: ./.github/workflows/orca-server-artifact.yml
+    uses: ./.github/workflows/topo-server-artifact.yml
     with:
       ref: refs/tags/${{ needs.cut.outputs.tag }}
-      template_artifact: orcad-template
+      template_artifact: topod-template
 
   # Gate SignPath artifact requests behind blocking tests to avoid approvals for unpublishable builds.
   release-preflight:
@@ -1085,17 +1085,17 @@ jobs:
       ref: refs/tags/${{ needs.cut.outputs.tag }}
       runner: ubuntu-latest
     secrets:
-      ORCA_POSTHOG_WRITE_KEY: ${{ secrets.ORCA_POSTHOG_WRITE_KEY }}
+      TOPO_POSTHOG_WRITE_KEY: ${{ secrets.TOPO_POSTHOG_WRITE_KEY }}
 
   build:
     needs:
       - cut
       - create-release
-      - orcad-template
+      - topod-template
       - release-preflight
       - release-javascript
       - build-mac
-    # Why not the implicit success(): a tag without the orcad template skips that job on purpose.
+    # Why not the implicit success(): a tag without the topod template skips that job on purpose.
     if: >-
       !cancelled() &&
       needs.cut.result == 'success' &&
@@ -1104,11 +1104,11 @@ jobs:
       needs.release-preflight.result == 'success' &&
       needs.release-javascript.result == 'success' &&
       needs.build-mac.result == 'success' &&
-      (needs.orcad-template.result == 'success' ||
-        (needs.orcad-template.result == 'skipped' && needs.cut.outputs.ships_orcad_template == 'false'))
+      (needs.topod-template.result == 'success' ||
+        (needs.topod-template.result == 'skipped' && needs.cut.outputs.ships_topod_template == 'false'))
     env:
       # beforePack and afterPack fail the package when the template is absent.
-      ORCA_REQUIRE_ORCAD_TEMPLATE: '1'
+      TOPO_REQUIRE_TOPOD_TEMPLATE: '1'
     strategy:
       fail-fast: false
       matrix:
@@ -1130,7 +1130,7 @@ jobs:
               ~/.cache/electron-builder
           - os: ubuntu-24.04-arm
             platform: linux-arm64
-            release_command: node "$(if [ -f config/scripts/native-build/node-addons/ensure-native-runtime.mjs ]; then printf %s config/scripts/native-build/node-addons/ensure-native-runtime.mjs; else printf %s config/scripts/ensure-native-runtime.mjs; fi)" --runtime=electron && ORCA_LINUX_ARM64_RELEASE=1 pnpm exec electron-builder --config config/electron-builder.config.cjs --linux AppImage deb rpm --arm64 --publish always -c.publish.releaseType=draft
+            release_command: node "$(if [ -f config/scripts/native-build/node-addons/ensure-native-runtime.mjs ]; then printf %s config/scripts/native-build/node-addons/ensure-native-runtime.mjs; else printf %s config/scripts/ensure-native-runtime.mjs; fi)" --runtime=electron && TOPO_LINUX_ARM64_RELEASE=1 pnpm exec electron-builder --config config/electron-builder.config.cjs --linux AppImage deb rpm --arm64 --publish always -c.publish.releaseType=draft
             unpacked_dir: dist/linux-arm64-unpacked
             eb_cache_path: |
               ~/.cache/electron
@@ -1318,19 +1318,19 @@ jobs:
           # Why: Vite's web build crossed Node's default old-space ceiling on
           # the macOS release runner, leaving v1.4.2-rc.8 as an incomplete draft.
           NODE_OPTIONS: --max-old-space-size=4096
-          ORCA_BUILD_IDENTITY: ${{ steps.tag-classify.outputs.identity }}
+          TOPO_BUILD_IDENTITY: ${{ steps.tag-classify.outputs.identity }}
           SHARED_JAVASCRIPT: ${{ needs.release-javascript.outputs.supported }}
-          ORCA_RELEASE_JAVASCRIPT_SOURCE_SHA: ${{ needs.release-javascript.outputs.source_sha }}
-          ORCA_DIAGNOSTICS_TOKEN_URL: https://www.onorca.dev/diagnostics/token
-          ORCA_POSTHOG_WRITE_KEY: ${{ secrets.ORCA_POSTHOG_WRITE_KEY }}
+          TOPO_RELEASE_JAVASCRIPT_SOURCE_SHA: ${{ needs.release-javascript.outputs.source_sha }}
+          TOPO_DIAGNOSTICS_TOKEN_URL: https://www.onorca.dev/diagnostics/token
+          TOPO_POSTHOG_WRITE_KEY: ${{ secrets.TOPO_POSTHOG_WRITE_KEY }}
 
       # After the app build so nothing that cleans out/ can drop it; electron-builder ships it.
-      - name: Download the orcad deployment template
-        if: needs.cut.outputs.ships_orcad_template == 'true'
+      - name: Download the topod deployment template
+        if: needs.cut.outputs.ships_topod_template == 'true'
         uses: actions/download-artifact@v8
         with:
-          name: orcad-template
-          path: out/orcad-template
+          name: topod-template
+          path: out/topod-template
 
       - name: Gate runtime file-watcher process isolation
         if: runner.os == 'Linux'
@@ -1360,8 +1360,8 @@ jobs:
           fi
           echo "has_maps=true" >>"$GITHUB_OUTPUT"
           # All-negation builder files prepend **/*; stage outside checkout to avoid packing maps into app.asar.
-          find out/main -name '*.js.map' -print | sort | zip -q -X "$RUNNER_TEMP/orca-sourcemaps-$TAG.zip" -@
-          ls -l "$RUNNER_TEMP/orca-sourcemaps-$TAG.zip"
+          find out/main -name '*.js.map' -print | sort | zip -q -X "$RUNNER_TEMP/topo-sourcemaps-$TAG.zip" -@
+          ls -l "$RUNNER_TEMP/topo-sourcemaps-$TAG.zip"
 
       - name: Publish main-process source maps
         if: matrix.platform == 'linux-x64' && steps.bundle-main-sourcemaps.outputs.has_maps == 'true'
@@ -1370,7 +1370,7 @@ jobs:
           timeout_minutes: 10
           max_attempts: 3
           retry_wait_seconds: 30
-          command: gh release upload "${{ needs.cut.outputs.tag }}" "${{ runner.temp }}/orca-sourcemaps-${{ needs.cut.outputs.tag }}.zip" --clobber --repo "${{ github.repository }}"
+          command: gh release upload "${{ needs.cut.outputs.tag }}" "${{ runner.temp }}/topo-sourcemaps-${{ needs.cut.outputs.tag }}.zip" --clobber --repo "${{ github.repository }}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -1409,9 +1409,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # The release command prepares and verifies this host's Electron native modules first.
-          ORCA_REUSE_PREPARED_NATIVE_RUNTIME: '1'
+          TOPO_REUSE_PREPARED_NATIVE_RUNTIME: '1'
           # Capture NSIS uninstaller in sign hook before builder embeds/deletes it, including it in inner-binary signing. Keep capture under runner.temp: all-negation files includes checkout leftovers, and retry would pack unsigned uninstaller into app.asar.
-          ORCA_WIN_UNINSTALLER_EXPORT_PATH: ${{ runner.temp }}\uninstaller-signing\unsigned\orca-uninstaller.exe
+          TOPO_WIN_UNINSTALLER_EXPORT_PATH: ${{ runner.temp }}\uninstaller-signing\unsigned\topo-uninstaller.exe
 
       - name: Verify Windows node-pty ConPTY runtime
         if: matrix.platform == 'win' && github.run_attempt == 1
@@ -1452,9 +1452,9 @@ jobs:
             Where-Object { $_.Extension -in '.exe', '.dll', '.node' } |
             ForEach-Object {
               $relative = [System.IO.Path]::GetRelativePath($root, $_.FullName)
-              # The orcad template's Linux/macOS addons are data for SSH hosts, not PE files.
-              if ($relative -match '^resources[\\/]orcad-template[\\/]targets[\\/](?!win32-)') {
-                $skipped.Add("$relative  <non-Windows orcad template payload>")
+              # The topod template's Linux/macOS addons are data for SSH hosts, not PE files.
+              if ($relative -match '^resources[\\/]topod-template[\\/]targets[\\/](?!win32-)') {
+                $skipped.Add("$relative  <non-Windows topod template payload>")
                 return
               }
               $signature = Get-AuthenticodeSignature -FilePath $_.FullName
@@ -1468,8 +1468,8 @@ jobs:
               $list.Add($relative)
             }
 
-          if (-not ($list -contains 'Orca.exe')) {
-            throw 'Orca.exe was not staged for signing; unpacked layout changed?'
+          if (-not ($list -contains 'Topo.exe')) {
+            throw 'Topo.exe was not staged for signing; unpacked layout changed?'
           }
           if (-not ($list | Where-Object { $_ -like '*conpty_console_list.node' })) {
             throw 'node-pty conpty_console_list.node was not staged; this is the file from issue #7785.'
@@ -1481,23 +1481,23 @@ jobs:
           Write-Host "Skipped $($skipped.Count) already-signed files:"
           $skipped | ForEach-Object { Write-Host "  $_" }
 
-          # Include MDE-flagged old-uninstaller.exe/Uninstall Orca.exe in this approval without another wait.
+          # Include MDE-flagged old-uninstaller.exe/Uninstall Topo.exe in this approval without another wait.
           # Exclude it from win-unpacked’s copy-back list; the sign hook re-injects it during rebuild.
-          $exportedUninstaller = Join-Path $env:RUNNER_TEMP 'uninstaller-signing\unsigned\orca-uninstaller.exe'
+          $exportedUninstaller = Join-Path $env:RUNNER_TEMP 'uninstaller-signing\unsigned\topo-uninstaller.exe'
           if (-not (Test-Path -LiteralPath $exportedUninstaller)) {
             throw "No exported NSIS uninstaller at $exportedUninstaller."
           }
-          $uninstallerStagePath = Join-Path $stage.FullName 'uninstaller\orca-uninstaller.exe'
+          $uninstallerStagePath = Join-Path $stage.FullName 'uninstaller\topo-uninstaller.exe'
           New-Item -ItemType Directory -Force -Path (Split-Path $uninstallerStagePath) -ErrorAction Stop | Out-Null
           Copy-Item -LiteralPath $exportedUninstaller -Destination $uninstallerStagePath -Force -ErrorAction Stop
-          Write-Host 'Staged the NSIS uninstaller for signing: uninstaller\orca-uninstaller.exe'
+          Write-Host 'Staged the NSIS uninstaller for signing: uninstaller\topo-uninstaller.exe'
 
       - name: Upload unsigned inner binaries for SignPath
         id: upload-unsigned-inner
         if: matrix.platform == 'win' && github.run_attempt == 1 && steps.stage-inner.outcome == 'success'
         uses: actions/upload-artifact@v7
         with:
-          name: orca-windows-inner-unsigned-${{ needs.cut.outputs.tag }}
+          name: topo-windows-inner-unsigned-${{ needs.cut.outputs.tag }}
           path: signing-stage/**
           if-no-files-found: error
 
@@ -1525,7 +1525,7 @@ jobs:
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: c37aa192-a27a-4377-9c90-5d6c95912dc0
-          project-slug: orca
+          project-slug: topo
           signing-policy-slug: release-signing
           artifact-configuration-slug: windows-inner-binaries-zip
           github-artifact-id: ${{ steps.upload-unsigned-inner.outputs.artifact-id }}
@@ -1578,7 +1578,7 @@ jobs:
           } else {
             'unknown'
           }
-          $message = "Orca Windows release ``$($env:TAG)`` inner-binaries signing request (1 of 2) is ready for SignPath approval.`nSource: ``$sourceRef`` @ $commitLink · cut by $cutBy`n<$requestUrl|Open SignPath signing request>`n<$($env:GITHUB_RUN_URL)|Open GitHub Actions run>"
+          $message = "Topo Windows release ``$($env:TAG)`` inner-binaries signing request (1 of 2) is ready for SignPath approval.`nSource: ``$sourceRef`` @ $commitLink · cut by $cutBy`n<$requestUrl|Open SignPath signing request>`n<$($env:GITHUB_RUN_URL)|Open GitHub Actions run>"
           $payload = @{
             text = $message
             blocks = @(
@@ -1649,10 +1649,10 @@ jobs:
           }
 
       # Recompute template checksums after SignPath rewrites Windows binaries so materialization validates signed bytes.
-      - name: Reseal the orcad template over its signed binaries
-        id: reseal-orcad-template
-        if: matrix.platform == 'win' && github.run_attempt == 1 && steps.restore-signed-inner.outcome == 'success' && needs.cut.outputs.ships_orcad_template == 'true'
-        run: node $(if (Test-Path config/scripts/orcad-distribution/template/packaged-orcad-template.cjs) { "config/scripts/orcad-distribution/template/packaged-orcad-template.cjs" } else { "config/scripts/packaged-orcad-template.cjs" }) --reseal-signed dist/win-unpacked inner-signing-list.txt
+      - name: Reseal the topod template over its signed binaries
+        id: reseal-topod-template
+        if: matrix.platform == 'win' && github.run_attempt == 1 && steps.restore-signed-inner.outcome == 'success' && needs.cut.outputs.ships_topod_template == 'true'
+        run: node $(if (Test-Path config/scripts/topod-distribution/template/packaged-topod-template.cjs) { "config/scripts/topod-distribution/template/packaged-topod-template.cjs" } else { "config/scripts/packaged-topod-template.cjs" }) --reseal-signed dist/win-unpacked inner-signing-list.txt
 
       # The uninstaller must return signed before rebuilding the installer.
       - name: Restore signed uninstaller for the installer rebuild
@@ -1664,11 +1664,11 @@ jobs:
         run: |
           $requireValid = $env:SIGNING_POLICY -ne 'test-signing'
           $candidates = @(
-            (Join-Path 'signed-inner' 'uninstaller\orca-uninstaller.exe'),
-            (Join-Path 'signed-inner/signing-stage' 'uninstaller\orca-uninstaller.exe')
+            (Join-Path 'signed-inner' 'uninstaller\topo-uninstaller.exe'),
+            (Join-Path 'signed-inner/signing-stage' 'uninstaller\topo-uninstaller.exe')
           ) | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf }
           if (@($candidates).Count -ne 1) {
-            throw 'Missing or ambiguous uninstaller/orca-uninstaller.exe in the signed artifact; check the windows-inner-binaries-zip configuration.'
+            throw 'Missing or ambiguous uninstaller/topo-uninstaller.exe in the signed artifact; check the windows-inner-binaries-zip configuration.'
           }
           $signed = Get-Item -LiteralPath @($candidates)[0]
           $signature = Get-AuthenticodeSignature -FilePath $signed.FullName
@@ -1677,7 +1677,7 @@ jobs:
           }
           $signedDir = Join-Path $env:RUNNER_TEMP 'uninstaller-signing\signed'
           New-Item -ItemType Directory -Force -Path $signedDir | Out-Null
-          Copy-Item -LiteralPath $signed.FullName -Destination (Join-Path $signedDir 'orca-uninstaller.exe') -Force
+          Copy-Item -LiteralPath $signed.FullName -Destination (Join-Path $signedDir 'topo-uninstaller.exe') -Force
           Write-Host ("{0,-14} uninstaller  <{1}>" -f $signature.Status, $signature.SignerCertificate.Subject)
 
       # Builder recopies cached elevate.exe on every NSIS pack, clobbering signature in v1.4.129-rc.4; replace cache copy with signed bytes before rebuild. Persisted timestamped signatures may skip later staging; shipped-installer evidence still checks them. Scripted lookup fails missing cache paths: old nonexistent <cache>/nsis plus silent success shipped unsigned elevate.exe in v1.4.193/v1.4.194.
@@ -1714,12 +1714,12 @@ jobs:
         if: matrix.platform == 'win' && github.run_attempt == 1 && steps.restore-signed-inner.outcome == 'success'
         shell: pwsh
         env:
-          ORCA_WIN_UNINSTALLER_SIGNED_PATH: ${{ runner.temp }}\uninstaller-signing\signed\orca-uninstaller.exe
+          TOPO_WIN_UNINSTALLER_SIGNED_PATH: ${{ runner.temp }}\uninstaller-signing\signed\topo-uninstaller.exe
         run: |
           pnpm exec electron-builder --config config/electron-builder.config.cjs --win --publish never --prepackaged "$env:GITHUB_WORKSPACE\dist\win-unpacked"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          if (-not (Test-Path 'dist/orca-windows-setup.exe')) {
-            throw 'electron-builder --prepackaged did not produce dist/orca-windows-setup.exe'
+          if (-not (Test-Path 'dist/topo-windows-setup.exe')) {
+            throw 'electron-builder --prepackaged did not produce dist/topo-windows-setup.exe'
           }
 
       # ── End Windows inner-binary signing ───────────────────────────────
@@ -1728,8 +1728,8 @@ jobs:
         id: upload-unsigned-windows-installer
         uses: actions/upload-artifact@v7
         with:
-          name: orca-windows-unsigned-${{ needs.cut.outputs.tag }}
-          path: dist/orca-windows-setup.exe
+          name: topo-windows-unsigned-${{ needs.cut.outputs.tag }}
+          path: dist/topo-windows-setup.exe
           compression-level: 0
           if-no-files-found: error
 
@@ -1742,7 +1742,7 @@ jobs:
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: c37aa192-a27a-4377-9c90-5d6c95912dc0
-          project-slug: orca
+          project-slug: topo
           signing-policy-slug: release-signing
           artifact-configuration-slug: github-actions-windows-installer
           github-artifact-id: ${{ steps.upload-unsigned-windows-installer.outputs.artifact-id }}
@@ -1796,7 +1796,7 @@ jobs:
           } else {
             'unknown'
           }
-          $message = "Orca Windows release ``$($env:TAG)`` $stage is ready for SignPath approval.`nSource: ``$sourceRef`` @ $commitLink · cut by $cutBy`n<$requestUrl|Open SignPath signing request>`n<$($env:GITHUB_RUN_URL)|Open GitHub Actions run>"
+          $message = "Topo Windows release ``$($env:TAG)`` $stage is ready for SignPath approval.`nSource: ``$sourceRef`` @ $commitLink · cut by $cutBy`n<$requestUrl|Open SignPath signing request>`n<$($env:GITHUB_RUN_URL)|Open GitHub Actions run>"
           $payload = @{
             text = $message
             blocks = @(
@@ -1834,17 +1834,17 @@ jobs:
         if: matrix.platform == 'win' && github.run_attempt == 1
         shell: pwsh
         run: |
-          $signedInstaller = Get-ChildItem -Path signed-windows -Recurse -File -Filter 'orca-windows-setup.exe' | Select-Object -First 1
+          $signedInstaller = Get-ChildItem -Path signed-windows -Recurse -File -Filter 'topo-windows-setup.exe' | Select-Object -First 1
           if ($null -eq $signedInstaller) {
             throw 'Signed Windows installer was not returned by SignPath.'
           }
 
-          Copy-Item -Path $signedInstaller.FullName -Destination 'dist/orca-windows-setup.exe' -Force
-          node config/scripts/desktop-distribution/windows/generate-windows-blockmap.mjs 'dist/orca-windows-setup.exe' 'dist/orca-windows-setup.exe.blockmap'
+          Copy-Item -Path $signedInstaller.FullName -Destination 'dist/topo-windows-setup.exe' -Force
+          node config/scripts/desktop-distribution/windows/generate-windows-blockmap.mjs 'dist/topo-windows-setup.exe' 'dist/topo-windows-setup.exe.blockmap'
           if ($LASTEXITCODE -ne 0) { throw "blockmap generation failed with exit code $LASTEXITCODE" }
 
-          $installer = Get-Item 'dist/orca-windows-setup.exe'
-          $blockmap = Get-Item 'dist/orca-windows-setup.exe.blockmap'
+          $installer = Get-Item 'dist/topo-windows-setup.exe'
+          $blockmap = Get-Item 'dist/topo-windows-setup.exe.blockmap'
           $stream = [System.IO.File]::OpenRead($installer.FullName)
           try {
             $sha512 = [System.Security.Cryptography.SHA512]::Create()
@@ -1865,13 +1865,13 @@ jobs:
           $latestYml = $latestYml -replace '(?m)^    blockMapSize: \d+$', "    blockMapSize: $($blockmap.Length)"
           Set-Content -Path 'dist/latest.yml' -Value $latestYml -NoNewline
 
-          Get-Item 'dist/orca-windows-setup.exe', 'dist/orca-windows-setup.exe.blockmap', 'dist/latest.yml'
+          Get-Item 'dist/topo-windows-setup.exe', 'dist/topo-windows-setup.exe.blockmap', 'dist/latest.yml'
 
       - name: Verify signed Windows installer
         if: matrix.platform == 'win' && github.run_attempt == 1
         shell: pwsh
         run: |
-          $signature = Get-AuthenticodeSignature -FilePath 'dist/orca-windows-setup.exe'
+          $signature = Get-AuthenticodeSignature -FilePath 'dist/topo-windows-setup.exe'
           if ($signature.Status -ne 'Valid') {
             throw ($signature | Format-List * | Out-String)
           }
@@ -1880,16 +1880,16 @@ jobs:
           }
           $signature.SignerCertificate | Format-List Subject,Issuer,NotBefore,NotAfter,Thumbprint
 
-      # #7785 evidence extracts every staged exe/dll/node from shipped installer, superseding #7170’s Orca.exe-only gate; unsigned assets block publish.
+      # #7785 evidence extracts every staged exe/dll/node from shipped installer, superseding #7170’s Topo.exe-only gate; unsigned assets block publish.
       - name: Verify Windows inner binary signatures
         if: matrix.platform == 'win' && github.run_attempt == 1
         shell: pwsh
         env:
-          ORCA_WINDOWS_INNER_SIGNATURE_REQUIRED: 'true'
+          TOPO_WINDOWS_INNER_SIGNATURE_REQUIRED: 'true'
           INNER_SIGNING_COMPLETED: ${{ steps.rebuild-nsis-signed.outcome == 'success' }}
           UNINSTALLER_SIGNING_COMPLETED: ${{ steps.restore-signed-uninstaller.outcome == 'success' }}
         run: |
-          $required = $env:ORCA_WINDOWS_INNER_SIGNATURE_REQUIRED -eq 'true'
+          $required = $env:TOPO_WINDOWS_INNER_SIGNATURE_REQUIRED -eq 'true'
 
           # Keep diagnostics best-effort so they cannot mask a signature failure.
           function Add-GateEvidence([string]$line) {
@@ -1945,14 +1945,14 @@ jobs:
               throw "The 7za resolver returned an invalid path for the inner-binary evidence gate: $7za"
             }
             New-Item -ItemType Directory -Path inner-evidence-extract -Force | Out-Null
-            & $7za x 'dist/orca-windows-setup.exe' '-oinner-evidence-extract' -y | Out-Null
+            & $7za x 'dist/topo-windows-setup.exe' '-oinner-evidence-extract' -y | Out-Null
             if ($LASTEXITCODE -ne 0) { throw 'Could not extract the shipped installer payload.' }
 
             $root = Resolve-Path 'inner-evidence-extract'
             # Verify the CLI even when a cached signed copy bypassed staging (#23383).
             # Always verify elevate.exe, even when cached signatures skipped staging; NSIS rebuild can clobber it.
             $targets = @(Get-Content 'inner-signing-list.txt')
-            foreach ($requiredTarget in @('Orca.exe', 'resources\bin\orca.exe', 'resources\bin\orca-agent-hook.exe')) {
+            foreach ($requiredTarget in @('Topo.exe', 'resources\bin\topo.exe', 'resources\bin\topo-agent-hook.exe')) {
               if ($targets -notcontains $requiredTarget) { $targets += $requiredTarget }
             }
             if ($targets -notcontains 'resources\elevate.exe') {
@@ -1962,7 +1962,7 @@ jobs:
             # A receipt proves the sign-hook import ran, not the installed bytes; its digest equality is by construction.
             # Check that input’s signature here; windows-signing-rehearsal installs/inspects the actual shipped uninstaller.
             if ($env:UNINSTALLER_SIGNING_COMPLETED -eq 'true') {
-              $signedUninstaller = Join-Path $env:RUNNER_TEMP 'uninstaller-signing\signed\orca-uninstaller.exe'
+              $signedUninstaller = Join-Path $env:RUNNER_TEMP 'uninstaller-signing\signed\topo-uninstaller.exe'
               $receipt = "$signedUninstaller.embedded-sha256"
               if (-not (Test-Path -LiteralPath $receipt)) {
                 $failures.Add('the sign hook did not embed the signed uninstaller into the rebuilt installer')
@@ -1971,13 +1971,13 @@ jobs:
                 $actual = (Get-FileHash -LiteralPath $signedUninstaller -Algorithm SHA256).Hash.ToLowerInvariant()
                 $signature = Get-AuthenticodeSignature -FilePath $signedUninstaller
                 $subject = if ($null -eq $signature.SignerCertificate) { '<none>' } else { $signature.SignerCertificate.Subject }
-                $line = "{0,-14} {1}  <{2}>" -f $signature.Status, 'Uninstall Orca.exe (embedded)', $subject
+                $line = "{0,-14} {1}  <{2}>" -f $signature.Status, 'Uninstall Topo.exe (embedded)', $subject
                 $report.Add($line)
                 Write-Host $line
                 if ($embedded -ne $actual) {
                   $failures.Add("the rebuilt installer embedded different uninstaller bytes than the signed one ($embedded vs $actual)")
                 } elseif ($signature.Status -ne 'Valid' -or $subject -notlike '*CN=SignPath Foundation*') {
-                  $failures.Add("not signed by SignPath Foundation: Uninstall Orca.exe ($($signature.Status), $subject)")
+                  $failures.Add("not signed by SignPath Foundation: Uninstall Topo.exe ($($signature.Status), $subject)")
                 }
               }
             } else {
@@ -2007,7 +2007,7 @@ jobs:
               if ($required) {
                 $policyFailure = $message
               } else {
-                Write-Host "::warning::$message Fail-open until ORCA_WINDOWS_INNER_SIGNATURE_REQUIRED is 'true'."
+                Write-Host "::warning::$message Fail-open until TOPO_WINDOWS_INNER_SIGNATURE_REQUIRED is 'true'."
               }
               Add-GateEvidence "VERDICT: FAILED — $message"
               Add-GateSummary "FAILED — $message"
@@ -2046,7 +2046,7 @@ jobs:
           if ($env:INSTALLER_SUBMISSION_OUTCOME -in @('success', 'failure')) {
             $stage = 'installer signing or final signature verification'
           }
-          $message = "Orca Windows release ``$($env:TAG)`` failed during $stage (including approval timeouts). Publication is blocked.`n<$($env:GITHUB_RUN_URL)|Open failed GitHub Actions run>"
+          $message = "Topo Windows release ``$($env:TAG)`` failed during $stage (including approval timeouts). Publication is blocked.`n<$($env:GITHUB_RUN_URL)|Open failed GitHub Actions run>"
           foreach ($request in @(
             @{ Id = $env:INNER_REQUEST_ID; Label = 'Inner-binary signing request' },
             @{ Id = $env:INSTALLER_REQUEST_ID; Label = 'Installer signing request' }
@@ -2063,7 +2063,7 @@ jobs:
         if: always() && matrix.platform == 'win' && github.run_attempt == 1
         uses: actions/upload-artifact@v7
         with:
-          name: orca-windows-inner-signing-evidence-${{ needs.cut.outputs.tag }}
+          name: topo-windows-inner-signing-evidence-${{ needs.cut.outputs.tag }}
           path: |
             inner-signing-evidence.txt
             inner-signing-list.txt
@@ -2077,7 +2077,7 @@ jobs:
           timeout_minutes: 10
           max_attempts: 3
           retry_wait_seconds: 30
-          command: gh release upload "${{ needs.cut.outputs.tag }}" "dist/orca-windows-setup.exe" "dist/orca-windows-setup.exe.blockmap" "dist/latest.yml" --clobber --repo "${{ github.repository }}"
+          command: gh release upload "${{ needs.cut.outputs.tag }}" "dist/topo-windows-setup.exe" "dist/topo-windows-setup.exe.blockmap" "dist/latest.yml" --clobber --repo "${{ github.repository }}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -2097,10 +2097,10 @@ jobs:
     needs:
       - cut
       - create-release
-      - orcad-template
+      - topod-template
       - release-preflight
       - release-javascript
-    # Why not the implicit success(): a tag without the orcad template skips that job on purpose.
+    # Why not the implicit success(): a tag without the topod template skips that job on purpose.
     if: >-
       !cancelled() &&
       needs.cut.result == 'success' &&
@@ -2108,8 +2108,8 @@ jobs:
       needs.create-release.result == 'success' &&
       needs.release-preflight.result == 'success' &&
       needs.release-javascript.result == 'success' &&
-      (needs.orcad-template.result == 'success' ||
-        (needs.orcad-template.result == 'skipped' && needs.cut.outputs.ships_orcad_template == 'false'))
+      (needs.topod-template.result == 'success' ||
+        (needs.topod-template.result == 'skipped' && needs.cut.outputs.ships_topod_template == 'false'))
     # Keep every SignPath workflow job GitHub-hosted; separate release-mac-build allows Blacksmith outside Windows provenance.
     runs-on: ubuntu-latest
     permissions:
@@ -2189,7 +2189,7 @@ jobs:
       - skill-sharing-linux-floor-release-gate
       - skill-sharing-release-gate
       - terminal-rendering-golden
-    # Why explicit: a skipped orcad-template (tags that predate it) would skip every job after it.
+    # Why explicit: a skipped topod-template (tags that predate it) would skip every job after it.
     if: >-
       !cancelled() &&
       needs.cut.result == 'success' &&
@@ -2258,12 +2258,12 @@ jobs:
 
   # After publish: the draft's asset checks and undraft never see these, and a failure here only
   # leaves the server tarballs missing from an already published release.
-  publish-orca-server-artifact:
+  publish-topo-server-artifact:
     needs:
       - cut
       - publish-release
-      - orca-server-artifact
-    if: ${{ !cancelled() && needs.publish-release.result == 'success' && needs.orca-server-artifact.result == 'success' && needs.orca-server-artifact.outputs.packed == 'true' && needs.cut.outputs.tag != '' }}
+      - topo-server-artifact
+    if: ${{ !cancelled() && needs.publish-release.result == 'success' && needs.topo-server-artifact.result == 'success' && needs.topo-server-artifact.outputs.packed == 'true' && needs.cut.outputs.tag != '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -2271,29 +2271,29 @@ jobs:
     steps:
       - uses: actions/download-artifact@v8
         with:
-          pattern: orca-server-linux-*
-          path: orca-server
+          pattern: topo-server-linux-*
+          path: topo-server
           merge-multiple: true
       - name: Write the checksum manifest and upload
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ needs.cut.outputs.tag }}
-        working-directory: orca-server
+        working-directory: topo-server
         run: |
           set -euo pipefail
-          cat orca-server-linux-x64.tar.gz.sha256 orca-server-linux-arm64.tar.gz.sha256 > orca-server-sha256sums.txt
-          sha256sum -c orca-server-sha256sums.txt
+          cat topo-server-linux-x64.tar.gz.sha256 topo-server-linux-arm64.tar.gz.sha256 > topo-server-sha256sums.txt
+          sha256sum -c topo-server-sha256sums.txt
           gh release upload "$TAG" \
-            orca-server-linux-x64.tar.gz \
-            orca-server-linux-arm64.tar.gz \
-            orca-server-sha256sums.txt \
+            topo-server-linux-x64.tar.gz \
+            topo-server-linux-arm64.tar.gz \
+            topo-server-sha256sums.txt \
             --clobber --repo "$GITHUB_REPOSITORY"
 
   post-release-e2e:
     needs:
       - cut
       - publish-release
-    # Why explicit: a skipped orcad-template (tags that predate it) would skip every job after it.
+    # Why explicit: a skipped topod-template (tags that predate it) would skip every job after it.
     if: ${{ !cancelled() && needs.publish-release.result == 'success' && needs.cut.outputs.tag != '' }}
     runs-on: ubuntu-latest
     permissions:
@@ -2323,7 +2323,7 @@ jobs:
     # A release created with GITHUB_TOKEN does not reliably emit a release
     # event to other workflows. Dispatch the trusted default-branch workflow;
     # it validates and checks out the released tag before deploying.
-    # Why explicit: a skipped orcad-template (tags that predate it) would skip every job after it.
+    # Why explicit: a skipped topod-template (tags that predate it) would skip every job after it.
     if: ${{ !cancelled() && needs.publish-release.result == 'success' && needs.cut.outputs.tag != '' }}
     runs-on: ubuntu-latest
     permissions:
@@ -2379,7 +2379,7 @@ jobs:
     needs:
       - cut
       - publish-release
-    # Why explicit: a skipped orcad-template (tags that predate it) would skip every job after it.
+    # Why explicit: a skipped topod-template (tags that predate it) would skip every job after it.
     if: ${{ !cancelled() && needs.publish-release.result == 'success' && needs.cut.outputs.tag != '' && startsWith(needs.cut.outputs.tag, 'v') }}
     uses: ./.github/workflows/homebrew-bump.yml
     with:

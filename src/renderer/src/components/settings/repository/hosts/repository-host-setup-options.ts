@@ -10,7 +10,7 @@ import type {
 import { translate } from '@/i18n/i18n'
 import type { Translate } from '@/i18n/use-translate'
 import { getHostSetupUnavailableDetail } from '@/lib/project-host-setup-options'
-import { pickerExecutionHosts } from '../../../../../../shared/execution-host/managed-orcad-execution-host'
+import { pickerExecutionHosts } from '../../../../../../shared/execution-host/managed-topod-execution-host'
 
 export type SetupHostOption = {
   id: ExecutionHostId

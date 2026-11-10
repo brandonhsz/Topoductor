@@ -72,7 +72,7 @@ export const PLUGIN_PANEL_ICONS = [
   'link'
 ] as const
 
-/** Icons added after the first set; older Orcas refuse them, so they raise the engine floor. */
+/** Icons added after the first set; older Topos refuse them, so they raise the engine floor. */
 const PLUGIN_PANEL_ICON_SINCE: Record<string, string> = Object.fromEntries(
   PLUGIN_PANEL_ICONS.slice(PLUGIN_PANEL_ICONS.indexOf('add')).map((name) => [
     name,
@@ -92,7 +92,7 @@ export function canonicalPluginPanelIcon(name: string): PluginPanelIconName | nu
 }
 
 /** `html`: the entry is a web page in an isolated frame. `components`: the entry is a module whose
- *  component tree Orca draws with its own controls. */
+ *  component tree Topo draws with its own controls. */
 export const PLUGIN_PANEL_UI_KINDS = ['html', 'components'] as const
 export type PluginPanelUi = (typeof PLUGIN_PANEL_UI_KINDS)[number]
 const COMPONENTS_PANEL_ENTRY = /\.(?:m?js|tsx?|mts|jsx)$/i
@@ -124,7 +124,7 @@ export const pluginPanelContributionSchema = z
       }),
     entry: pluginRelativePathSchema.meta(
       pluginPathFieldDoc(
-        `What the panel runs: an HTML page for \`ui: "html"\`, a \`.js\`/\`.mjs\` module for \`ui: "components"\`. Either may instead be a \`.ts\`/\`.tsx\`/\`.mts\`/\`.jsx\` file, which Orca transpiles when it loads (needs \`engines.orca\` \`>=${PLUGIN_SOURCE_MODULES_SINCE}\`; an \`html\` panel then gets a generated page around it). It is trusted code: install panels you trust.`,
+        `What the panel runs: an HTML page for \`ui: "html"\`, a \`.js\`/\`.mjs\` module for \`ui: "components"\`. Either may instead be a \`.ts\`/\`.tsx\`/\`.mts\`/\`.jsx\` file, which Topo transpiles when it loads (needs \`engines.orca\` \`>=${PLUGIN_SOURCE_MODULES_SINCE}\`; an \`html\` panel then gets a generated page around it). It is trusted code: install panels you trust.`,
         PLUGIN_SCHEMA_SINCE_V1,
         ['dist/panel.html']
       )
@@ -134,7 +134,7 @@ export const pluginPanelContributionSchema = z
       .optional()
       .meta(
         pluginFieldDoc(
-          'How the panel draws its UI. `html` (default) shows `entry` as a web page in an isolated frame; `components` runs `entry` as a hidden module and Orca draws the component tree it returns with its own controls.',
+          'How the panel draws its UI. `html` (default) shows `entry` as a web page in an isolated frame; `components` runs `entry` as a hidden module and Topo draws the component tree it returns with its own controls.',
           PLUGIN_PANEL_UI_SINCE,
           ['components']
         )

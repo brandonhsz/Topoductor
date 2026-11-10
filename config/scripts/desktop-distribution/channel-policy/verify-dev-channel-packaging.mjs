@@ -2,7 +2,7 @@
 // Why this exists: the dev-channel workflows run from main, but they build (and
 // therefore read `config/electron-builder.config.cjs` from) whatever ref was
 // asked for. A branch cut before Windows dev builds landed has a config that
-// ignores ORCA_WIN_*, which would resolve `publish.repo` to the *main* repo and
+// ignores TOPO_WIN_*, which would resolve `publish.repo` to the *main* repo and
 // leave the release identity signed-looking. Publishing would then fail deep
 // inside electron-builder with a 404 from a token scoped to the dev repo — or,
 // worse, succeed against a repo it was never meant to touch.
@@ -16,15 +16,15 @@ import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 const CHANNEL_REPOS = {
-  hourly: 'orca-hourly',
-  daily: 'orca-daily',
-  adhoc: 'orca-adhoc'
+  hourly: 'topo-hourly',
+  daily: 'topo-daily',
+  adhoc: 'topo-adhoc'
 }
 
 const CHANNEL_VERSION_ENV = {
-  hourly: 'ORCA_HOURLY_BUILD_VERSION',
-  daily: 'ORCA_DAILY_BUILD_VERSION',
-  adhoc: 'ORCA_ADHOC_BUILD_VERSION'
+  hourly: 'TOPO_HOURLY_BUILD_VERSION',
+  daily: 'TOPO_DAILY_BUILD_VERSION',
+  adhoc: 'TOPO_ADHOC_BUILD_VERSION'
 }
 
 export function collectDevChannelPackagingProblems({ channel, platform, config, env }) {
@@ -113,7 +113,7 @@ function main() {
     process.exit(1)
   }
   console.log(
-    `Dev-channel packaging verified: ${channel} on ${platform} → stablyai/${CHANNEL_REPOS[channel]} @ ${config.extraMetadata?.version}`
+    `Dev-channel packaging verified: ${channel} on ${platform} → brandonhsz/${CHANNEL_REPOS[channel]} @ ${config.extraMetadata?.version}`
   )
 }
 

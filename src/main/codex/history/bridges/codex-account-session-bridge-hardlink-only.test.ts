@@ -42,7 +42,7 @@ const ROLLOUT = join(
 let root = ''
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-hardlink-only-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-hardlink-only-'))
   mkdirSync(join(root, 'account', 'sessions', '2026', '10', '28'), { recursive: true })
   writeFileSync(join(root, 'account', 'sessions', ROLLOUT), '{"type":"session_meta"}\n')
   mkdirSync(join(root, 'codex'))
@@ -67,7 +67,7 @@ it('skips a cross-volume rollout for a hardlink-only target, creating nothing', 
   expect(existsSync(join(root, 'codex', 'sessions'))).toBe(false)
 })
 
-it('still falls back to a symlink between Orca-managed homes', async () => {
+it('still falls back to a symlink between Topo-managed homes', async () => {
   const summary = await bridgeCodexSessionsIntoAccountHome({
     targetCodexHomePath: join(root, 'codex'),
     sourceCodexHomePaths: [join(root, 'account')]

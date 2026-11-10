@@ -55,7 +55,7 @@ vi.mock('../telemetry/cohort-classifier', () => ({
 
 describe('Store', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-test-'))
     trackMock.mockReset()
     getCohortAtEmitMock.mockReset()
     getCohortAtEmitMock.mockReturnValue({ nth_repo_added: 2 })
@@ -139,7 +139,7 @@ describe('Store.migrateWorktreeIdentity', () => {
   const NEW = 'repo1::/ws/worktree-creation-spinner'
 
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-test-'))
   })
 
   afterEach(async () => {

@@ -158,7 +158,7 @@ function SetupGuideModalContent({
           <DialogDescription className="text-sm text-muted-foreground">
             {t(
               'auto.components.setup.guide.SetupGuideModal.3598a3ca0c',
-              'Finish the core workflows that make Orca useful for parallel agent work.'
+              'Finish the core workflows that make Topo useful for parallel agent work.'
             )}
           </DialogDescription>
         </DialogHeader>

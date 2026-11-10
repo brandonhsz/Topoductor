@@ -1,8 +1,8 @@
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import {
   forceTerminateProcessTree,
   signalProcessTree
-} from '@orca/process-host/process-tree-termination'
+} from '@topo/process-host/process-tree-termination'
 import { mkdtempSync, mkdirSync, realpathSync, rmSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { availableParallelism, tmpdir } from 'node:os'
@@ -27,14 +27,14 @@ export async function runRelayTests({
   const workerBudget = Math.max(parallelism - 1, 1)
   // Explicit selectors and alternate database fixtures retain their existing execution path.
   const serial =
-    args.length > 0 || workerBudget <= 1 || env.ORCA_IDLE_REHOME_POSTGRES_URL || env.DATABASE_URL
+    args.length > 0 || workerBudget <= 1 || env.TOPO_IDLE_REHOME_POSTGRES_URL || env.DATABASE_URL
   const roles = serial
     ? [{ name: 'all', args }]
     : [
         { name: 'relay', args: ['--project=relay', `--maxWorkers=${workerBudget - 1}`] },
         { name: 'relay-postgres', args: ['--project=relay-postgres', '--maxWorkers=1'] }
       ]
-  const scratch = realpathSync(mkdtempSync(join(scratchParent, 'orca-relay-tests-')))
+  const scratch = realpathSync(mkdtempSync(join(scratchParent, 'topo-relay-tests-')))
   const abort = new AbortController()
   const closed = new Set()
   const terminatedTrees = new Set()
@@ -63,8 +63,8 @@ export async function runRelayTests({
           TMPDIR: owned,
           TMP: owned,
           TEMP: owned,
-          ORCA_BACKGROUND_LAUNCH: '1',
-          ORCA_RELAY_TEST_CACHE_DIR: join(owned, 'cache')
+          TOPO_BACKGROUND_LAUNCH: '1',
+          TOPO_RELAY_TEST_CACHE_DIR: join(owned, 'cache')
         },
         stdio: 'inherit',
         timeoutMs: null,

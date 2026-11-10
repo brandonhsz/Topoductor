@@ -17,8 +17,8 @@ const claimKey = (row: CrewParentClaim) => JSON.stringify([row.family, row.home,
 
 function sameWorker(a: CrewParentClaim, b: CrewParentClaim, registry: Registry): boolean {
   if (a.session && b.session) {
-    const identity = registry.addressOf(`orca_session_id:${a.session}`)
-    return Boolean(identity && identity === registry.addressOf(`orca_session_id:${b.session}`))
+    const identity = registry.addressOf(`topo_session_id:${a.session}`)
+    return Boolean(identity && identity === registry.addressOf(`topo_session_id:${b.session}`))
   }
   return Boolean(
     a.process &&
@@ -49,7 +49,7 @@ export function crewParentRelations(
       return false
     }
     if (row.session) {
-      return registry.addressOf(`orca_session_id:${row.session}`) === self.address
+      return registry.addressOf(`topo_session_id:${row.session}`) === self.address
     }
     return Boolean(
       (row.handle && registry.addressOf(row.handle) === self.address) ||
@@ -150,7 +150,7 @@ export function crewParentRelations(
   for (const row of maximal.sort((a, b) => claimKey(a).localeCompare(claimKey(b)))) {
     if (row.family === 'remote') {
       const address = `run:${row.run}`
-      const parent: Party = { address, terminalHandle: null, orcaSessionId: null, paneKey: null }
+      const parent: Party = { address, terminalHandle: null, topoSessionId: null, paneKey: null }
       const key = JSON.stringify([row.home, address])
       managers.set(key, { parent, address, key })
       continue

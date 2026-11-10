@@ -12,7 +12,7 @@ const TOOLS = [
   {
     name: 'list_fixtures',
     description:
-      'List Orca renderer component fixtures (*.fixture.tsx). Ids look like "sidebar/DeleteWorktreeDirtyChangeHint:dirty".',
+      'List Topo renderer component fixtures (*.fixture.tsx). Ids look like "sidebar/DeleteWorktreeDirtyChangeHint:dirty".',
     inputSchema: {
       type: 'object',
       properties: {
@@ -105,7 +105,7 @@ async function handleRequest(message) {
           ? requested
           : SUPPORTED_PROTOCOL_VERSIONS[0],
         capabilities: { tools: {} },
-        serverInfo: { name: 'orca-component-fixtures', version: '0.1.0' }
+        serverInfo: { name: 'topo-component-fixtures', version: '0.1.0' }
       }
     }
     case 'ping':

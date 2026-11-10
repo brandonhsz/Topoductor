@@ -23,7 +23,7 @@ let cwd: string
 const imagePath = 'images/create-worktree-closed-field.png'
 
 beforeEach(async () => {
-  root = await realpath(await mkdtemp(join(tmpdir(), 'orca-grok-media-')))
+  root = await realpath(await mkdtemp(join(tmpdir(), 'topo-grok-media-')))
   home = join(root, 'account')
   cwd = join(root, 'workspace')
   await mkdir(cwd, { recursive: true })
@@ -67,7 +67,7 @@ async function image(directory: string, value = 'session image') {
 function setup(ids = ['provider-1']) {
   const record = agentSessionConversationView(
     agentSessionRecordFixture({
-      sessionId: 'orca-chat',
+      sessionId: 'topo-chat',
       provider: 'grok',
       location: { workspaceId: 'workspace-1' },
       accountHome: { variable: 'GROK_HOME', path: home },
@@ -91,7 +91,7 @@ function setup(ids = ['provider-1']) {
     worktreePath: cwd,
     executionHostId: 'local',
     pathText: imagePath,
-    context: { tabId: 'chat-tab', sessionId: 'orca-chat' }
+    context: { tabId: 'chat-tab', sessionId: 'topo-chat' }
   }
   return { record, sources, request, resolve: () => resolveNativeChatMediaPath(request, sources) }
 }

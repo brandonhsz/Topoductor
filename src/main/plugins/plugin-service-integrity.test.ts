@@ -21,7 +21,7 @@ async function createInstalledPlugin(options: { worker: boolean }): Promise<{
   manifest: PluginManifest
   contentHash: string
 }> {
-  const userDataPath = await mkdtemp(join(tmpdir(), 'orca-plugin-service-integrity-'))
+  const userDataPath = await mkdtemp(join(tmpdir(), 'topo-plugin-service-integrity-'))
   roots.push(userDataPath)
   const pluginKey = 'samples.demo'
   const pluginDir = join(userDataPath, 'plugins', pluginKey)

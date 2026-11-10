@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto'
 import os from 'node:os'
 import path from 'node:path'
 import type { Page, TestInfo } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient
@@ -24,7 +24,7 @@ import { quotePosixShell } from '../../src/shared/shell/launch/shell-argument-qu
 
 const PARK_DELAY_MS = 2_000
 const PAINT_BUDGET_MS = 30_000
-const scratch = mkdtempSync(path.join(os.tmpdir(), 'orca-parked-scrollback-'))
+const scratch = mkdtempSync(path.join(os.tmpdir(), 'topo-parked-scrollback-'))
 
 // Send the token only through stdin: startup/argv text reappears on respawn, while only the old buffer can retain this echo.
 const fixturePath = path.join(scratch, 'parked-scrollback-terminal.mjs')
@@ -233,20 +233,20 @@ async function runParkRevealScenario(args: {
 }
 
 async function runScenario(
-  orcaPage: Page,
+  topoPage: Page,
   testInfo: TestInfo,
   clientName: string,
   parkKind: ParkKind
 ): Promise<ParkRevealOutcome> {
-  const offer = await createRuntimeDesktopPairingOffer(orcaPage)
+  const offer = await createRuntimeDesktopPairingOffer(topoPage)
   const client = await launchPairedElectronClient(offer, testInfo, clientName, {
     extraEnv: {
-      ORCA_E2E_TERMINAL_PARKING_DELAY_MS: String(PARK_DELAY_MS)
+      TOPO_E2E_TERMINAL_PARKING_DELAY_MS: String(PARK_DELAY_MS)
     }
   })
   const createdTerminals: string[] = []
   try {
-    const worktreeIds = await readHostWorktreeIds(orcaPage)
+    const worktreeIds = await readHostWorktreeIds(topoPage)
     await expect
       .poll(
         () =>
@@ -299,10 +299,10 @@ const RESTORED_LOCAL_ONLY: ParkRevealOutcome = {
 
 test.describe('host retains the buffer', () => {
   test('a cold-parked remote terminal restores its scrollback on reveal', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
     test.setTimeout(600_000)
-    expect(await runScenario(orcaPage, testInfo, 'host-retains', 'ordinary')).toEqual(
+    expect(await runScenario(topoPage, testInfo, 'host-retains', 'ordinary')).toEqual(
       RESTORED_LOCAL_ONLY
     )
   })
@@ -310,14 +310,14 @@ test.describe('host retains the buffer', () => {
 
 test.describe('host retains nothing', () => {
   test.use({
-    orcaAppExtraEnv: { ORCA_E2E_FORCE_REMOTE_TERMINAL_SNAPSHOT_UNAVAILABLE: '1' }
+    topoAppExtraEnv: { TOPO_E2E_FORCE_REMOTE_TERMINAL_SNAPSHOT_UNAVAILABLE: '1' }
   })
 
   test('a cold-parked remote terminal keeps its scrollback when the host cannot answer', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
     test.setTimeout(600_000)
-    expect(await runScenario(orcaPage, testInfo, 'host-empty', 'ordinary')).toEqual(
+    expect(await runScenario(topoPage, testInfo, 'host-empty', 'ordinary')).toEqual(
       RESTORED_LOCAL_ONLY
     )
   })

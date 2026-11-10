@@ -11,7 +11,7 @@ type ExecMock = Mock<GitRemoteExec>
 
 const REPO_PATH = '/repo-root'
 const REPO_ID = 'repo-1'
-const FORK_REMOTE = 'pr-contributor-orca'
+const FORK_REMOTE = 'pr-contributor-topo'
 
 function worktreeId(suffix: string): string {
   return `${REPO_ID}::${suffix}`
@@ -21,7 +21,7 @@ function forkTarget(overrides: Partial<GitPushTarget> = {}): GitPushTarget {
   return {
     remoteName: FORK_REMOTE,
     branchName: 'contributor/fix',
-    remoteUrl: 'git@github.com:contributor/orca.git',
+    remoteUrl: 'git@github.com:contributor/topo.git',
     remoteCreated: true,
     ...overrides
   }
@@ -131,8 +131,8 @@ function makeExec(script: ExecScript = {}): ExecMock {
 describe('migrateForkRemoteRefspecsWithExec', () => {
   it('skips a remote with no provenance evidence (no metadata entry has remoteCreated: true)', async () => {
     const exec = makeExec({
-      urlByRemote: { [FORK_REMOTE]: 'git@github.com:contributor/orca.git\n' },
-      fetchByRemote: { [FORK_REMOTE]: ['+refs/heads/*:refs/remotes/pr-contributor-orca/*'] }
+      urlByRemote: { [FORK_REMOTE]: 'git@github.com:contributor/topo.git\n' },
+      fetchByRemote: { [FORK_REMOTE]: ['+refs/heads/*:refs/remotes/pr-contributor-topo/*'] }
     })
 
     const migrated = await migrateForkRemoteRefspecsWithExec(
@@ -148,8 +148,8 @@ describe('migrateForkRemoteRefspecsWithExec', () => {
 
   it('abandons and cleans up a remote reclaimed concurrently by #17842 reconciliation mid-migration', async () => {
     const exec = makeExec({
-      urlByRemote: { [FORK_REMOTE]: 'git@github.com:contributor/orca.git\n' },
-      fetchByRemote: { [FORK_REMOTE]: ['+refs/heads/*:refs/remotes/pr-contributor-orca/*'] },
+      urlByRemote: { [FORK_REMOTE]: 'git@github.com:contributor/topo.git\n' },
+      fetchByRemote: { [FORK_REMOTE]: ['+refs/heads/*:refs/remotes/pr-contributor-topo/*'] },
       removeUrlAfterFirstCheck: new Set([FORK_REMOTE])
     })
 
@@ -173,12 +173,12 @@ describe('migrateForkRemoteRefspecsWithExec', () => {
   })
 
   it('leaves a zero-provenance pr-* remote alone if its refspec is not the stock wide default', async () => {
-    const CUSTOM_REMOTE = 'pr-custom-orca'
+    const CUSTOM_REMOTE = 'pr-custom-topo'
     const exec = makeExec({
       remoteNames: [CUSTOM_REMOTE],
-      urlByRemote: { [CUSTOM_REMOTE]: 'git@github.com:custom/orca.git\n' },
+      urlByRemote: { [CUSTOM_REMOTE]: 'git@github.com:custom/topo.git\n' },
       fetchByRemote: {
-        [CUSTOM_REMOTE]: ['+refs/heads/some-branch:refs/remotes/pr-custom-orca/some-branch']
+        [CUSTOM_REMOTE]: ['+refs/heads/some-branch:refs/remotes/pr-custom-topo/some-branch']
       }
     })
 

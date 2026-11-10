@@ -2,7 +2,7 @@
 export type PluginNameCandidate = {
   key: string
   name: string
-  /** Orca-derived publisher (the repository owner); null when there is none to show. */
+  /** Topo-derived publisher (the repository owner); null when there is none to show. */
   publisher: string | null
   official: boolean
 }

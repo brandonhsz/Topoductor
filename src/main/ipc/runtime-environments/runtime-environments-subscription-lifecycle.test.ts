@@ -84,7 +84,7 @@ describe('registerRuntimeEnvironmentHandlers', () => {
   }
 
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-env-ipc-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-env-ipc-'))
     activeRuntimeEnvironmentId = null
     store = {
       getSettings: () => ({ activeRuntimeEnvironmentId }),

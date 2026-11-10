@@ -28,13 +28,13 @@ describe.skipIf(process.platform === 'win32')('default terminal shell', () => {
       if (spawnSync(shell, ['--version']).status !== 0) {
         skip('Shell is not installed')
       }
-      const home = mkdtempSync(join(tmpdir(), 'orca-profile-argv-'))
-      vi.stubEnv('ORCA_USER_DATA_PATH', home)
+      const home = mkdtempSync(join(tmpdir(), 'topo-profile-argv-'))
+      vi.stubEnv('TOPO_USER_DATA_PATH', home)
       vi.stubEnv('ZDOTDIR', home)
       try {
-        writeFileSync(join(home, '.bash_profile'), 'export ORCA_TEST_STARTUP=profile\n')
-        writeFileSync(join(home, 'custom rc'), 'export ORCA_TEST_STARTUP=custom\n')
-        writeFileSync(join(home, '.zshrc'), 'export ORCA_TEST_STARTUP=zshrc\n')
+        writeFileSync(join(home, '.bash_profile'), 'export TOPO_TEST_STARTUP=profile\n')
+        writeFileSync(join(home, 'custom rc'), 'export TOPO_TEST_STARTUP=custom\n')
+        writeFileSync(join(home, '.zshrc'), 'export TOPO_TEST_STARTUP=zshrc\n')
         const terminalShellArgs = shellArgs.map((arg) =>
           arg === 'custom rc' ? join(home, arg) : arg
         )
@@ -53,12 +53,12 @@ describe.skipIf(process.platform === 'win32')('default terminal shell', () => {
             ...plan.shellArgs,
             '-i',
             '-c',
-            'login=off; if [ -n "${ZSH_VERSION:-}" ]; then [[ -o login ]] && login=on; else shopt -q login_shell && login=on; fi; printf "\\nORCA_STARTUP_RESULT=%s:%s\\n" "${ORCA_TEST_STARTUP:-unset}" "$login"'
+            'login=off; if [ -n "${ZSH_VERSION:-}" ]; then [[ -o login ]] && login=on; else shopt -q login_shell && login=on; fi; printf "\\nTOPO_STARTUP_RESULT=%s:%s\\n" "${TOPO_TEST_STARTUP:-unset}" "$login"'
           ],
           { env, encoding: 'utf8', timeout: 10_000 }
         )
         expect(result.status, result.stderr).toBe(0)
-        expect(result.stdout.match(/^ORCA_STARTUP_RESULT=(.*)$/m)?.[1]).toBe(expected)
+        expect(result.stdout.match(/^TOPO_STARTUP_RESULT=(.*)$/m)?.[1]).toBe(expected)
       } finally {
         rmSync(home, { recursive: true, force: true })
       }

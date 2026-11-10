@@ -32,7 +32,7 @@ export function applyEphemeralVmHostLifecycles(
     const host = hosts.get(hostId)
     const vmState = getEphemeralVmHostState(lifecycle.status, lifecycle.waking)
     // A server that answers (even one that refuses us) is up whatever the record says: resumed
-    // outside Orca, or a suspend step that exited 0 without suspending. Only an unreachable
+    // outside Topo, or a suspend step that exited 0 without suspending. Only an unreachable
     // server takes the VM's state.
     const answering =
       host?.health === 'available' ||

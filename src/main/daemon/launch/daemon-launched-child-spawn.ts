@@ -1,5 +1,5 @@
-import { forkProcess, type ForkSpec } from '@orca/process-host/fork-process'
-import { spawnProcess } from '@orca/process-host'
+import { forkProcess, type ForkSpec } from '@topo/process-host/fork-process'
+import { spawnProcess } from '@topo/process-host'
 import type { ChildProcess } from 'node:child_process'
 import { getAppEnvironment } from '../../../shared/app-environment'
 import { removeChromiumDisabledSessionBus } from '../../pty/shell-startup/chromium-session-bus-env'
@@ -95,7 +95,7 @@ export function spawnDaemonChildProcess(
     ELECTRON_RUN_AS_NODE: '1',
     ...hostMallocTunablesDaemonEnv(),
     // The detached daemon lacks AppEnvironment; rcfiles must stay outside swept temporary directories.
-    ORCA_USER_DATA_PATH: userDataPath
+    TOPO_USER_DATA_PATH: userDataPath
   }
   // Every PTY inherits this environment (#21119).
   removeChromiumDisabledSessionBus(daemonEnv)
@@ -111,7 +111,7 @@ export function spawnDaemonChildProcess(
       ...childOptions,
       modulePath: forkEntryPath,
       args: scriptArgs,
-      // Keep the byte-identical Orca.exe outside the updater's kill zone.
+      // Keep the byte-identical Topo.exe outside the updater's kill zone.
       ...(relocatedExecPath ? { execPath: relocatedExecPath } : {}),
       execArgv: [...process.execArgv, ...DAEMON_V8_FLAGS],
       env: daemonEnv

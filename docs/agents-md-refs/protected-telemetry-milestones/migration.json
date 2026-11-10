@@ -1,7 +1,7 @@
 {
   "project_id": 406068,
   "prepared": "2026-11-08",
-  "event_contract": "implementation worktree /tmp/orca-protected-telemetry/event-contract.json version 3 (implemented-locally-not-deployed)",
+  "event_contract": "implementation worktree /tmp/topo-protected-telemetry/event-contract.json version 3 (implemented-locally-not-deployed)",
   "applied": {
     "insights": [
       {
@@ -40,8 +40,8 @@
         "dashboards": [1552346],
         "name": "Any app activity daily active installs",
         "field": "description",
-        "before": "Daily distinct installs with any Orca desktop app activity, including background app events. Requires install_id and orca_channel; website traffic and telemetry_opted_out events excluded. Not total installed base; telemetry-disabled installs are invisible.",
-        "after": "Daily distinct installs with any Orca desktop app activity, including background app events. Requires install_id and orca_channel; website traffic and telemetry_opted_out events excluded. Not total installed base; telemetry-disabled installs are invisible. Background events include daemon_audit_eligibility, 0.1% sampled from 1.4.248 (2026-11-04); not meaningful use.",
+        "before": "Daily distinct installs with any Topo desktop app activity, including background app events. Requires install_id and topo_channel; website traffic and telemetry_opted_out events excluded. Not total installed base; telemetry-disabled installs are invisible.",
+        "after": "Daily distinct installs with any Topo desktop app activity, including background app events. Requires install_id and topo_channel; website traffic and telemetry_opted_out events excluded. Not total installed base; telemetry-disabled installs are invisible. Background events include daemon_audit_eligibility, 0.1% sampled from 1.4.248 (2026-11-04); not meaningful use.",
         "refresh_check": "ok"
       },
       {
@@ -119,26 +119,26 @@
       {
         "id": 1795002,
         "url": "https://us.posthog.com/project/406068/dashboard/1795002",
-        "name": "Orca detailed retention",
+        "name": "Topo detailed retention",
         "field": "description",
-        "before": "Investor review dashboard for fresh-install retention: D1/D3/D7/D30/D60/D90 active return, weekly cohorts, platform split, and repo-cohort retention. D60/D90 are expected to show no eligible users until cohorts mature. Active means any app telemetry event after day 0; telemetry opt-outs excluded. Scope: Orca Electron app events with install_id and orca_channel; excludes onorca.dev website traffic.",
-        "after": "Investor review dashboard for fresh-install retention: D1/D3/D7/D30/D60/D90 active return, weekly cohorts, platform split, and repo-cohort retention. D60/D90 are expected to show no eligible users until cohorts mature. Active means any app telemetry event after day 0; telemetry opt-outs excluded. Scope: Orca Electron app events with install_id and orca_channel; excludes onorca.dev website traffic. LEGACY note (2026-11-08): 'any app telemetry/event' also counts background-only days (e.g. daemon_audit_eligibility, 0.1% sampled from 1.4.248 since 2026-11-04) and launch-only days, so this is not meaningful-use retention. No meaningful-activity retention metric is live yet. Comeback tiles' agent_prompt_sent input is 1% sampled from 1.4.248."
+        "before": "Investor review dashboard for fresh-install retention: D1/D3/D7/D30/D60/D90 active return, weekly cohorts, platform split, and repo-cohort retention. D60/D90 are expected to show no eligible users until cohorts mature. Active means any app telemetry event after day 0; telemetry opt-outs excluded. Scope: Topo Electron app events with install_id and topo_channel; excludes onorca.dev website traffic.",
+        "after": "Investor review dashboard for fresh-install retention: D1/D3/D7/D30/D60/D90 active return, weekly cohorts, platform split, and repo-cohort retention. D60/D90 are expected to show no eligible users until cohorts mature. Active means any app telemetry event after day 0; telemetry opt-outs excluded. Scope: Topo Electron app events with install_id and topo_channel; excludes onorca.dev website traffic. LEGACY note (2026-11-08): 'any app telemetry/event' also counts background-only days (e.g. daemon_audit_eligibility, 0.1% sampled from 1.4.248 since 2026-11-04) and launch-only days, so this is not meaningful-use retention. No meaningful-activity retention metric is live yet. Comeback tiles' agent_prompt_sent input is 1% sampled from 1.4.248."
       },
       {
         "id": 1997904,
         "url": "https://us.posthog.com/project/406068/dashboard/1997904",
-        "name": "Orca 2-week / 30-day / 2-month retention",
+        "name": "Topo 2-week / 30-day / 2-month retention",
         "field": "description",
-        "before": "Fresh-install window retention by platform. 2-week = any app event on days 8-14, 30-day = 24-30, 2-month = 54-60. Not 'any return by day N'. Weekly trends are split macOS/Windows/Linux (20+ mature users per series). Volume tile is mix only. Anchored on first onboarding_started cohort=fresh_install from 2026-05-09; opt-outs excluded. Scope: Orca Electron app events with install_id and orca_channel; excludes onorca.dev website traffic.",
-        "after": "Fresh-install window retention by platform. 2-week = any app event on days 8-14, 30-day = 24-30, 2-month = 54-60. Not 'any return by day N'. Weekly trends are split macOS/Windows/Linux (20+ mature users per series). Volume tile is mix only. Anchored on first onboarding_started cohort=fresh_install from 2026-05-09; opt-outs excluded. Scope: Orca Electron app events with install_id and orca_channel; excludes onorca.dev website traffic. LEGACY note (2026-11-08): 'any app telemetry/event' also counts background-only days (e.g. daemon_audit_eligibility, 0.1% sampled from 1.4.248 since 2026-11-04) and launch-only days, so this is not meaningful-use retention. No meaningful-activity retention metric is live yet."
+        "before": "Fresh-install window retention by platform. 2-week = any app event on days 8-14, 30-day = 24-30, 2-month = 54-60. Not 'any return by day N'. Weekly trends are split macOS/Windows/Linux (20+ mature users per series). Volume tile is mix only. Anchored on first onboarding_started cohort=fresh_install from 2026-05-09; opt-outs excluded. Scope: Topo Electron app events with install_id and topo_channel; excludes onorca.dev website traffic.",
+        "after": "Fresh-install window retention by platform. 2-week = any app event on days 8-14, 30-day = 24-30, 2-month = 54-60. Not 'any return by day N'. Weekly trends are split macOS/Windows/Linux (20+ mature users per series). Volume tile is mix only. Anchored on first onboarding_started cohort=fresh_install from 2026-05-09; opt-outs excluded. Scope: Topo Electron app events with install_id and topo_channel; excludes onorca.dev website traffic. LEGACY note (2026-11-08): 'any app telemetry/event' also counts background-only days (e.g. daemon_audit_eligibility, 0.1% sampled from 1.4.248 since 2026-11-04) and launch-only days, so this is not meaningful-use retention. No meaningful-activity retention metric is live yet."
       },
       {
         "id": 1570255,
         "url": "https://us.posthog.com/project/406068/dashboard/1570255",
-        "name": "Orca retention",
+        "name": "Topo retention",
         "field": "description",
-        "before": "Fresh-install retention from first onboarding_started cohort=fresh_install. D1/D3/D7 active means any app telemetry event on the exact calendar day after start, including app_opened. Agent-started chart limits denominator to users who reached agent_started. All retention tiles exclude telemetry opt-outs. Scope: Orca Electron app events with install_id and orca_channel; excludes onorca.dev website traffic.",
-        "after": "Fresh-install retention from first onboarding_started cohort=fresh_install. D1/D3/D7 active means any app telemetry event on the exact calendar day after start, including app_opened. Agent-started chart limits denominator to users who reached agent_started. All retention tiles exclude telemetry opt-outs. Scope: Orca Electron app events with install_id and orca_channel; excludes onorca.dev website traffic. LEGACY note (2026-11-08): 'any app telemetry/event' also counts background-only days (e.g. daemon_audit_eligibility, 0.1% sampled from 1.4.248 since 2026-11-04) and launch-only days, so this is not meaningful-use retention. No meaningful-activity retention metric is live yet."
+        "before": "Fresh-install retention from first onboarding_started cohort=fresh_install. D1/D3/D7 active means any app telemetry event on the exact calendar day after start, including app_opened. Agent-started chart limits denominator to users who reached agent_started. All retention tiles exclude telemetry opt-outs. Scope: Topo Electron app events with install_id and topo_channel; excludes onorca.dev website traffic.",
+        "after": "Fresh-install retention from first onboarding_started cohort=fresh_install. D1/D3/D7 active means any app telemetry event on the exact calendar day after start, including app_opened. Agent-started chart limits denominator to users who reached agent_started. All retention tiles exclude telemetry opt-outs. Scope: Topo Electron app events with install_id and topo_channel; excludes onorca.dev website traffic. LEGACY note (2026-11-08): 'any app telemetry/event' also counts background-only days (e.g. daemon_audit_eligibility, 0.1% sampled from 1.4.248 since 2026-11-04) and launch-only days, so this is not meaningful-use retention. No meaningful-activity retention metric is live yet."
       },
       {
         "id": 2258914,
@@ -151,14 +151,14 @@
       {
         "id": 1562016,
         "url": "https://us.posthog.com/project/406068/dashboard/1562016",
-        "name": "Orca onboarding funnel (new users)",
+        "name": "Topo onboarding funnel (new users)",
         "field": "description",
-        "before": "Fresh-install onboarding analysis anchored on first onboarding_started where cohort=fresh_install, grouped by PostHog distinct_id as install identity. Completion is not workspace_created alone: corrected completion is repo workspace through onboarding + folder completion + git completion without onboarding workspace. Folder completion is a real success path; git-completed/no-onboarding-workspace is a separate handoff bucket. workspace_created source=onboarding is linked git worktree create success, not workspace availability. D1+/D3+ means app_opened >=24h/>=72h after start with mature denominators. Scope: Orca Electron app events with install_id and orca_channel; excludes onorca.dev website traffic.",
-        "after": "Fresh-install onboarding analysis anchored on first onboarding_started where cohort=fresh_install, grouped by PostHog distinct_id as install identity. Completion is not workspace_created alone: corrected completion is repo workspace through onboarding + folder completion + git completion without onboarding workspace. Folder completion is a real success path; git-completed/no-onboarding-workspace is a separate handoff bucket. workspace_created source=onboarding is linked git worktree create success, not workspace availability. D1+/D3+ means app_opened >=24h/>=72h after start with mature denominators. Scope: Orca Electron app events with install_id and orca_channel; excludes onorca.dev website traffic. Note (2026-11-08): agent_prompt_sent is randomly 1% sampled per event from 1.4.248 (first seen 2026-11-04 02:37 UTC); prompt-based rates for later cohorts undercount and cannot be rescaled to installs. onboarding_completed has not carried is_git_repo since 2026-06-11 (it moved to repo_added.is_git_repo); tiles splitting completion by that field miss later folder/git completions."
+        "before": "Fresh-install onboarding analysis anchored on first onboarding_started where cohort=fresh_install, grouped by PostHog distinct_id as install identity. Completion is not workspace_created alone: corrected completion is repo workspace through onboarding + folder completion + git completion without onboarding workspace. Folder completion is a real success path; git-completed/no-onboarding-workspace is a separate handoff bucket. workspace_created source=onboarding is linked git worktree create success, not workspace availability. D1+/D3+ means app_opened >=24h/>=72h after start with mature denominators. Scope: Topo Electron app events with install_id and topo_channel; excludes onorca.dev website traffic.",
+        "after": "Fresh-install onboarding analysis anchored on first onboarding_started where cohort=fresh_install, grouped by PostHog distinct_id as install identity. Completion is not workspace_created alone: corrected completion is repo workspace through onboarding + folder completion + git completion without onboarding workspace. Folder completion is a real success path; git-completed/no-onboarding-workspace is a separate handoff bucket. workspace_created source=onboarding is linked git worktree create success, not workspace availability. D1+/D3+ means app_opened >=24h/>=72h after start with mature denominators. Scope: Topo Electron app events with install_id and topo_channel; excludes onorca.dev website traffic. Note (2026-11-08): agent_prompt_sent is randomly 1% sampled per event from 1.4.248 (first seen 2026-11-04 02:37 UTC); prompt-based rates for later cohorts undercount and cannot be rescaled to installs. onboarding_completed has not carried is_git_repo since 2026-06-11 (it moved to repo_added.is_git_repo); tiles splitting completion by that field miss later folder/git completions."
       }
     ],
     "unchanged": "queries, names, tiles, filters, dashboard membership, experiments",
-    "checks": "PATCH responses matched new descriptions; query, name and dashboards byte-identical to backups; dashboard tiles and filters unchanged. Backups: /tmp/orca-protected-telemetry/dashboard-backups-2026-11-08/."
+    "checks": "PATCH responses matched new descriptions; query, name and dashboards byte-identical to backups; dashboard tiles and filters unchanged. Backups: /tmp/topo-protected-telemetry/dashboard-backups-2026-11-08/."
   },
   "staged_insights": [
     {
@@ -355,7 +355,7 @@
       {
         "id": 8417929,
         "short_id": "PUSiijPG",
-        "name": "Daily active installs (by orca_channel)",
+        "name": "Daily active installs (by topo_channel)",
         "dashboards": [],
         "kind": "TrendsQuery",
         "depends_on": ["app_opened"]
@@ -1168,7 +1168,7 @@
       "hogql_default_row_limit": 100
     },
     "validation": "Full-history async /query/ runs succeeded for every new query before save; legacy-window (2026-05-20..27) old vs new identical for 8838695, 8923273, 9050198 (old columns), 8923127 (label only); small legacy deltas on 8923532/9104872 come from legacy-start installs completing on current-flow builds. OOM equivalence on a 2h window (joins restricted to cohort ids on both sides): 9108955 and 8471904 identical; 9052828 identical to the LEFT JOIN reading of the original.",
-    "backups": "/tmp/orca-protected-telemetry/dashboard-backups-2026-11-08/onboarding-git-repair/",
+    "backups": "/tmp/topo-protected-telemetry/dashboard-backups-2026-11-08/onboarding-git-repair/",
     "dashboard_1562016_description": "note replaced with the repaired git/folder rule",
     "insights": [
       {

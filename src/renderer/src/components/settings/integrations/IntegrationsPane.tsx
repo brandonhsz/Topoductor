@@ -34,7 +34,7 @@ export function IntegrationsPane(): React.JSX.Element {
           title={t('auto.components.settings.IntegrationsPane.298c65ecac', 'Review providers')}
           description={t(
             'auto.components.settings.IntegrationsPane.1683acbac4',
-            'Connect the source hosts Orca can use for pull requests, merge requests, checks, and review status.'
+            'Connect the source hosts Topo can use for pull requests, merge requests, checks, and review status.'
           )}
         >
           <ProviderRow>
@@ -58,7 +58,7 @@ export function IntegrationsPane(): React.JSX.Element {
           title={t('auto.components.settings.IntegrationsPane.70e885705b', 'Task providers')}
           description={t(
             'auto.components.settings.IntegrationsPane.3ba07f933b',
-            'Connect issue trackers Orca can use to browse tasks and start workspaces with linked context.'
+            'Connect issue trackers Topo can use to browse tasks and start workspaces with linked context.'
           )}
         >
           <ProviderRow>

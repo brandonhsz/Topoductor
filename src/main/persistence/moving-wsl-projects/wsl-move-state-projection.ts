@@ -14,7 +14,7 @@ import {
 } from '../../../shared/worktree/host-qualified-identity'
 import { getRepoIdFromWorktreeId } from '../../../shared/worktree/id'
 import { getAllWorktreeMetaForHost } from '../loading-store/worktree-identity-metadata'
-import { collectProjectGroups } from '../migrating-orcad-catalog/orcad-source-catalog'
+import { collectProjectGroups } from '../migrating-topod-catalog/topod-source-catalog'
 import {
   canonicalizeWslMoveValue,
   createWslMoveStringNormalizer,

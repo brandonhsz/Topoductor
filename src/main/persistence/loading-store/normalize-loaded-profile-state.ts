@@ -3,9 +3,9 @@ import type { SshRemotePtyLease } from '../../../shared/ssh-types'
 import { normalizeFeatureInteractionTelemetryBuckets } from '../../../shared/feature-interactions'
 import { normalizeFolderWorkspaceDiffComments } from '../../workspaces/catalog/folder-workspace-diff-comments'
 import { normalizeFolderWorkspaces } from '../../../shared/folder-workspaces/folder-workspaces'
-import { normalizeOrcadMigrationEvictedReceipts } from '../../../shared/orcad-migration/orcad-migration-evicted-receipts'
-import { normalizeOrcadMigrationImportReceipts } from '../../../shared/orcad-migration/orcad-migration-manifest-validation'
-import { normalizeOrcadMigrationStagedCatalogs } from '../../../shared/orcad-migration/orcad-migration-staged-catalog-validation'
+import { normalizeTopodMigrationEvictedReceipts } from '../../../shared/topod-migration/topod-migration-evicted-receipts'
+import { normalizeTopodMigrationImportReceipts } from '../../../shared/topod-migration/topod-migration-manifest-validation'
+import { normalizeTopodMigrationStagedCatalogs } from '../../../shared/topod-migration/topod-migration-staged-catalog-validation'
 import { normalizeWorkspaceLineageByChildKey } from '../applying-settings/ui-interaction-merge'
 import { dropInferredParentsOverFolderParents } from './folder-parent-lineage-persistence'
 import { normalizeCrossStoreLineageByChildKey } from '../../../shared/worktree/cross-store-lineage-records'
@@ -119,14 +119,14 @@ export function normalizeLoadedProfileState(
     legacyPaneKeyAliasEntries: normalizeLegacyPaneKeyAliasEntries(parsed.legacyPaneKeyAliasEntries),
     automations: Array.isArray(parsed.automations) ? parsed.automations : [],
     automationRuns: normalizeLoadedAutomationRuns(parsed, markNeedsSave),
-    orcadMigrationImportReceipts: normalizeOrcadMigrationImportReceipts(
-      parsed.orcadMigrationImportReceipts
+    topodMigrationImportReceipts: normalizeTopodMigrationImportReceipts(
+      parsed.topodMigrationImportReceipts
     ),
-    orcadMigrationEvictedReceipts: normalizeOrcadMigrationEvictedReceipts(
-      parsed.orcadMigrationEvictedReceipts
+    topodMigrationEvictedReceipts: normalizeTopodMigrationEvictedReceipts(
+      parsed.topodMigrationEvictedReceipts
     ),
-    orcadMigrationStagedCatalogs: normalizeOrcadMigrationStagedCatalogs(
-      parsed.orcadMigrationStagedCatalogs
+    topodMigrationStagedCatalogs: normalizeTopodMigrationStagedCatalogs(
+      parsed.topodMigrationStagedCatalogs
     ),
     onboarding: normalizedOnboarding
   }

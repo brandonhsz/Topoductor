@@ -55,15 +55,15 @@ function makeSetup(
 
 describe('project-host workspace target resolution', () => {
   it('matches duplicate repo ids to the setup execution host', () => {
-    const localRepo = makeRepo('orca', { path: '/local/orca' })
-    const sshRepo = makeRepo('orca', {
-      path: '/remote/orca',
+    const localRepo = makeRepo('topo', { path: '/local/topo' })
+    const sshRepo = makeRepo('topo', {
+      path: '/remote/topo',
       connectionId: 'builder'
     })
-    const projects = [makeProject('github:stablyai/orca', ['orca'])]
+    const projects = [makeProject('github:brandonhsz/Topoductor', ['topo'])]
     const projectHostSetups = [
-      makeSetup('local-setup', 'github:stablyai/orca', 'local', 'orca'),
-      makeSetup('ssh-setup', 'github:stablyai/orca', 'ssh:builder', 'orca')
+      makeSetup('local-setup', 'github:brandonhsz/Topoductor', 'local', 'topo'),
+      makeSetup('ssh-setup', 'github:brandonhsz/Topoductor', 'ssh:builder', 'topo')
     ]
 
     const resolution = resolveWorkspaceCreationTarget({
@@ -77,39 +77,39 @@ describe('project-host workspace target resolution', () => {
       status: 'ready',
       target: {
         hostId: 'ssh:builder',
-        repo: { path: '/remote/orca', connectionId: 'builder' }
+        repo: { path: '/remote/topo', connectionId: 'builder' }
       }
     })
   })
 
   it('keeps an explicit setup for a second checkout of the project on the same host', () => {
     // Two clones of one remote share a project; the picker lists each, so the chosen one must be created in.
-    const repos = [makeRepo('orca-main'), makeRepo('orca-review')]
-    const projects = [makeProject('github:stablyai/orca', ['orca-main', 'orca-review'])]
+    const repos = [makeRepo('topo-main'), makeRepo('topo-review')]
+    const projects = [makeProject('github:brandonhsz/Topoductor', ['topo-main', 'topo-review'])]
     const projectHostSetups = [
-      makeSetup('orca-main', 'github:stablyai/orca', 'local', 'orca-main'),
-      makeSetup('orca-review', 'github:stablyai/orca', 'local', 'orca-review')
+      makeSetup('topo-main', 'github:brandonhsz/Topoductor', 'local', 'topo-main'),
+      makeSetup('topo-review', 'github:brandonhsz/Topoductor', 'local', 'topo-review')
     ]
 
     const resolution = resolveWorkspaceCreationTarget({
       eligibleRepos: repos,
       projects,
       projectHostSetups,
-      projectHostSetupId: 'orca-review'
+      projectHostSetupId: 'topo-review'
     })
 
     expect(resolution).toMatchObject({
       status: 'ready',
-      target: { projectHostSetupId: 'orca-review', repoId: 'orca-review', hostId: 'local' }
+      target: { projectHostSetupId: 'topo-review', repoId: 'topo-review', hostId: 'local' }
     })
   })
 
   it('does not fall back to another host when only a host is selected', () => {
-    const localRepo = makeRepo('orca-local')
-    const remoteRepo = makeRepo('orca-ssh', { connectionId: 'builder' })
-    const projects = [makeProject('github:stablyai/orca', ['orca-local', 'orca-ssh'])]
+    const localRepo = makeRepo('topo-local')
+    const remoteRepo = makeRepo('topo-ssh', { connectionId: 'builder' })
+    const projects = [makeProject('github:brandonhsz/Topoductor', ['topo-local', 'topo-ssh'])]
     const projectHostSetups = [
-      makeSetup('orca-local', 'github:stablyai/orca', 'local', 'orca-local')
+      makeSetup('topo-local', 'github:brandonhsz/Topoductor', 'local', 'topo-local')
     ]
 
     expect(
@@ -117,7 +117,7 @@ describe('project-host workspace target resolution', () => {
         eligibleRepos: [localRepo, remoteRepo],
         projects,
         projectHostSetups,
-        draftRepoId: 'orca-local',
+        draftRepoId: 'topo-local',
         hostId: 'ssh:builder',
         actionableHostIds: new Set(['local', 'ssh:builder'])
       })
@@ -130,10 +130,10 @@ describe('project-host workspace target resolution', () => {
   it('does not silently switch an explicit setup id to an actionable sibling host', () => {
     const remoteRepo = makeRepo('remote-repo', { connectionId: 'removed' })
     const localRepo = makeRepo('local-repo')
-    const projects = [makeProject('repo:orca', ['remote-repo', 'local-repo'])]
+    const projects = [makeProject('repo:topo', ['remote-repo', 'local-repo'])]
     const projectHostSetups = [
-      makeSetup('removed-setup', 'repo:orca', 'ssh:removed', 'remote-repo'),
-      makeSetup('local-setup', 'repo:orca', 'local', 'local-repo')
+      makeSetup('removed-setup', 'repo:topo', 'ssh:removed', 'remote-repo'),
+      makeSetup('local-setup', 'repo:topo', 'local', 'local-repo')
     ]
 
     expect(

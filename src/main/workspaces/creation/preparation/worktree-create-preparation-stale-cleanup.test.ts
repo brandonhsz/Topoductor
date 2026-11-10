@@ -18,7 +18,7 @@ function probe(overrides: Partial<PreparationOwnerProbe> = {}): PreparationOwner
 }
 
 const reasonFrom = (machine: string | null): string =>
-  `orca-create-preparation:v1:4242:4242-11111111-1111-4111-8111-111111111111${
+  `topo-create-preparation:v1:4242:4242-11111111-1111-4111-8111-111111111111${
     machine ? `:machine=${machine}` : ''
   }`
 

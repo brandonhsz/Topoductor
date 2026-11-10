@@ -26,7 +26,7 @@ function runtimeRecord(
   overrides: Partial<EphemeralVmRuntimeRecord> = {}
 ): EphemeralVmRuntimeRecord {
   return {
-    id: 'orca-instance-1',
+    id: 'topo-instance-1',
     recipeId: 'cloud-sandbox',
     projectId: 'project-1',
     workspaceId: 'workspace-1',
@@ -64,7 +64,7 @@ describe('ephemeral VM runtime store', () => {
   })
 
   function makeUserDataPath(): string {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-ephemeral-vm-store-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-ephemeral-vm-store-'))
     tempDirs.push(userDataPath)
     return userDataPath
   }
@@ -73,7 +73,7 @@ describe('ephemeral VM runtime store', () => {
     const userDataPath = makeUserDataPath()
     upsertEphemeralVmRuntime(userDataPath, runtimeRecord())
 
-    const failed = updateEphemeralVmRuntimeStatus(userDataPath, 'orca-instance-1', {
+    const failed = updateEphemeralVmRuntimeStatus(userDataPath, 'topo-instance-1', {
       status: 'cleanup_failed',
       cleanupStatus: 'failed',
       cleanupLastAttemptAt: 3_000,
@@ -89,7 +89,7 @@ describe('ephemeral VM runtime store', () => {
       updatedAt: 3_000
     })
 
-    const recovered = updateEphemeralVmRuntimeStatus(userDataPath, 'orca-instance-1', {
+    const recovered = updateEphemeralVmRuntimeStatus(userDataPath, 'topo-instance-1', {
       status: 'cleaned',
       cleanupStatus: 'succeeded',
       cleanupLastError: null,

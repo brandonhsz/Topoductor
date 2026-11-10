@@ -63,7 +63,7 @@ export function pluginLanguageResourceId(id: `plugin:${string}`): string {
   ).join('')
   const subtags = encoded.match(/.{1,8}/g) ?? []
   // The real base locale lets Intl and i18next pick the pack's plural rules natively.
-  return `${pluginPackBaseLocale(id.slice(id.lastIndexOf('/') + 1))}-x-orcapk-${subtags.join('-')}`
+  return `${pluginPackBaseLocale(id.slice(id.lastIndexOf('/') + 1))}-x-topopk-${subtags.join('-')}`
 }
 
 function pluginPackBaseLocale(locale: string): string {
@@ -132,7 +132,7 @@ function hasUnsafeCatalogKeyCharacter(key: string): boolean {
   return false
 }
 
-// Why tolerant at load: Orca protects more copy and tightens string rules over time, so a pack
+// Why tolerant at load: Topo protects more copy and tightens string rules over time, so a pack
 // published earlier must still load, with offending entries left in English; validate:plugin is strict.
 export function parsePluginLanguagePackArtifact(
   raw: string,
@@ -168,7 +168,7 @@ export function checkPluginLanguagePackCatalog(
 }
 
 // Why ignore, not reject: loading always drops protected copy, so a pack that translates it is
-// usable; authors and the directory only need to hear that Orca keeps its own text there.
+// usable; authors and the directory only need to hear that Topo keeps its own text there.
 /** Author-time check: strict on everything except protected copy, which is counted instead. */
 export function checkPluginLanguagePackForAuthoring(
   raw: string,

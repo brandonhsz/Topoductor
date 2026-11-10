@@ -10,6 +10,6 @@ FROM events
 WHERE event IN ('meaningful_activity_day', 'app_opened')
   AND timestamp >= toDateTime('2026-11-08 00:00:00')
   AND timestamp < toDateTime(formatDateTime(now(), '%Y-%m-%d 00:00:00'))
-  AND properties.install_id IS NOT NULL AND properties.orca_channel IS NOT NULL
+  AND properties.install_id IS NOT NULL AND properties.topo_channel IS NOT NULL
 GROUP BY day
 ORDER BY day

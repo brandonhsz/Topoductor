@@ -4,7 +4,7 @@ import type {
   AgentLaunchTarget,
   AgentLaunchModeReceipt
 } from '../../shared/agent-launch/contracts/agent-launch-intent'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import type { readAgentLaunchModeSettings, AgentLaunchModeVocabulary } from './agent-launch-mode'
 
 import type {
@@ -16,7 +16,7 @@ import type {
 type AgentLaunchPublishedSurface = AgentLaunchResult
 
 type AgentLaunchExecutionBase = {
-  runtime: Pick<OrcaRuntimeService, 'getStructuredAgentSessionCreateSupport'> &
+  runtime: Pick<TopoRuntimeService, 'getStructuredAgentSessionCreateSupport'> &
     Parameters<typeof readAgentLaunchModeSettings>[0]
   vocabulary?: AgentLaunchModeVocabulary
   /** False if the client cannot display this chat; host callers may omit it. */

@@ -5,13 +5,13 @@ import {
 import type { RemoteRuntimeSharedConnectionDiagnostics } from '../../../shared/remote-runtime/control/remote-runtime-shared-control-types'
 
 /**
- * How long a paired server must go unanswered, with no answer in between, before Orca treats its
+ * How long a paired server must go unanswered, with no answer in between, before Topo treats its
  * host as possibly gone (#34089). Minutes, like the SSH reconnect ladder running out: a network
  * blip or a server restart is answered well within it.
  */
 export const RUNTIME_CONTACT_LOST_AFTER_MS = 3 * 60_000
 const MIN_FAILED_CONTACTS = 3
-/** Longest quiet spell between failures that still counts as one outage. Orca's slowest retry is
+/** Longest quiet spell between failures that still counts as one outage. Topo's slowest retry is
  *  5 minutes apart; a longer gap means it was not trying (the computer slept), so the old
  *  failures say nothing about now. */
 const MAX_FAILURE_GAP_MS = 6 * 60_000
@@ -31,7 +31,7 @@ type Outage = {
   reconnectAttempt?: number
 }
 
-/** Environment id → its current run of failed contacts. Only fed by dials Orca already makes. */
+/** Environment id → its current run of failed contacts. Only fed by dials Topo already makes. */
 const outages = new Map<string, Outage>()
 
 function noteReached(environmentId: string): void {
@@ -55,7 +55,7 @@ function noteUnreached(environmentId: string, now: number, reconnectAttempt?: nu
 }
 
 /** A health probe's outcome. A refusal (revoked pairing, replaced server) still came from the
- *  server, so it counts as reached; Orca's own refusals (asleep, disconnected) count as nothing. */
+ *  server, so it counts as reached; Topo's own refusals (asleep, disconnected) count as nothing. */
 export function noteRuntimeEnvironmentStatusContact(
   environmentId: string,
   response: RuntimeHostStatusResponse,

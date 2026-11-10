@@ -9,7 +9,7 @@ export function getClaudeSubagentNavigationTitle(t: Translate = translate): stri
 export function getClaudeSubagentNavigationDescription(t: Translate = translate): string {
   return t(
     'auto.components.settings.claudeSubagentNavigation.description',
-    'Open Claude subagents from the sidebar. Adds a shortcut to Claude’s keybindings.json and loads an Orca mod in new Orca panes. Requires Claude 2.1.300+ and status hooks. Turning off removes Orca’s shortcut; shortcuts you delete stay deleted.'
+    'Open Claude subagents from the sidebar. Adds a shortcut to Claude’s keybindings.json and loads a Topo mod in new Topo panes. Requires Claude 2.1.300+ and status hooks. Turning off removes Topo’s shortcut; shortcuts you delete stay deleted.'
   )
 }
 

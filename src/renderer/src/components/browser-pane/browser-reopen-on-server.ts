@@ -1,6 +1,6 @@
 import { normalizeBrowserNavigationUrl } from '../../../../shared/browser-url'
 import '../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../shared/browser/browser-blank-page'
 import { createWebRuntimeSessionBrowserTab } from '@/runtime/browser/creation/web-runtime-browser-creation'
 
 /** Restore only committed web URLs across engines; other destinations reopen blank and request bodies are never reconstructed. */
@@ -16,7 +16,7 @@ export function resolveBrowserReopenOnServerUrl(
   } catch {
     return undefined
   }
-  if (!normalized || normalized === ORCA_BROWSER_BLANK_URL || normalized.startsWith('file:')) {
+  if (!normalized || normalized === TOPO_BROWSER_BLANK_URL || normalized.startsWith('file:')) {
     return undefined
   }
   return normalized

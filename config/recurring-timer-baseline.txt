@@ -38,10 +38,10 @@
 1 src/main/native-chat/agent-session-wire/recovery/structured-agent-session-usage-limit-continue.ts
 1 src/main/native-chat/agent-session-wire/termination/structured-agent-session-idle-sweep.ts
 1 src/main/notifications/desktop-presence-reporter.ts
-1 src/main/orcad/orcad-browser-install-park.ts
-1 src/main/orcad/orcad-event-loop-watchdog.ts
-1 src/main/orcad/orcad-lock-clone-machine.ts
-1 src/main/orcad/orcad-stop-request-listener.ts
+1 src/main/topod/topod-browser-install-park.ts
+1 src/main/topod/topod-event-loop-watchdog.ts
+1 src/main/topod/topod-lock-clone-machine.ts
+1 src/main/topod/topod-stop-request-listener.ts
 1 src/main/plugins/catalog/plugin-auto-updater.ts
 1 src/main/plugins/catalog/plugin-kill-list-service.ts
 1 src/main/plugins/installation/plugin-git-repository.ts
@@ -68,7 +68,7 @@
 1 src/main/startup/synthetic-title-runtime.ts
 1 src/main/telemetry/wsl-usage-reporter.ts
 1 src/main/wsl/host-lifecycle/wsl-hosts-policy-live-update.ts
-1 src/main/wsl/orcad/wsl-orcad-connect-stop-fence.ts
+1 src/main/wsl/topod/wsl-topod-connect-stop-fence.ts
 1 src/renderer/src/app-shell/use-app-session-persistence.ts
 1 src/renderer/src/components/browser-pane/browser-client-page-position-driver.ts
 1 src/renderer/src/components/contextual-tours/use-contextual-tour.ts

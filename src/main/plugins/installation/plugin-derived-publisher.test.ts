@@ -60,15 +60,15 @@ afterEach(async () => {
 
 describe('derived plugin publishers', () => {
   it('keeps the key of an install made before publishers were derived', async () => {
-    const source = await tempRoot('orca-derived-git-')
-    const pluginsDir = await tempRoot('orca-derived-installs-')
+    const source = await tempRoot('topo-derived-git-')
+    const pluginsDir = await tempRoot('topo-derived-installs-')
     await writeThemePlugin(source, 'brand-name')
     await commitRepository(source)
-    await serveRepositoriesOverTestSsh(await tempRoot('orca-derived-ssh-'), {
+    await serveRepositoriesOverTestSsh(await tempRoot('topo-derived-ssh-'), {
       '/acme/dusk.git': source
     })
     const url = 'ssh://git@plugin.test/acme/dusk.git'
-    // Why staged directly: it records `brand-name.dusk` from a Git source, as older Orca did.
+    // Why staged directly: it records `brand-name.dusk` from a Git source, as older Topo did.
     const legacy = await installStagedPluginTree({
       pluginsDir,
       stagingDir: source,
@@ -86,10 +86,10 @@ describe('derived plugin publishers', () => {
   })
 
   it('discovers installed and development plugins under their derived publisher', async () => {
-    const installedSource = await tempRoot('orca-derived-installed-')
-    const devFolder = await tempRoot('orca-derived-dev-')
-    const legacyDevFolder = await tempRoot('orca-derived-legacy-dev-')
-    const pluginsDir = await tempRoot('orca-derived-installs-')
+    const installedSource = await tempRoot('topo-derived-installed-')
+    const devFolder = await tempRoot('topo-derived-dev-')
+    const legacyDevFolder = await tempRoot('topo-derived-legacy-dev-')
+    const pluginsDir = await tempRoot('topo-derived-installs-')
     await writeThemePlugin(installedSource)
     await writeThemePlugin(devFolder)
     await writeThemePlugin(legacyDevFolder, 'acme')

@@ -1,40 +1,40 @@
-/** Stop terminals by handle, then managed-decommission orcad/daemon. Claim stopped only with zero-session census, exact serving-orcad identity and retired daemon evidence. */
+/** Stop terminals by handle, then managed-decommission topod/daemon. Claim stopped only with zero-session census, exact serving-topod identity and retired daemon evidence. */
 import { z } from 'zod'
 import { errorMessage } from '../../../shared/error-message'
-import type { OrcadDecommissionResult } from '../../../shared/orcad-decommission'
-import { ORCAD_MANAGED_REMOTE_PORT } from '../../../shared/orcad-managed-runtime'
-import type { OrcadTerminalCensus } from '../../../shared/orcad-terminal-census'
+import type { TopodDecommissionResult } from '../../../shared/topod-decommission'
+import { TOPOD_MANAGED_REMOTE_PORT } from '../../../shared/topod-managed-runtime'
+import type { TopodTerminalCensus } from '../../../shared/topod-terminal-census'
 import type { RuntimeTerminalListResult } from '../../../shared/runtime-terminal-contracts'
 import { wslHostServerStopReason } from '../../../shared/wsl-host-failure-copy'
 import type { WslHostServerStop } from '../../../shared/wsl-host-types'
-import type { OrcadHostTransport } from '../../managed-server/install/orcad-host-transport'
-import { readRemoteOrcadManagedStopTarget } from '../../managed-server/lifecycle/orcad-managed-remote-stop'
-import { managedOrcadSlot } from '../../managed-server/lifecycle/orcad-managed-runtime-context'
-import { resolveOrcadRemoteContext } from '../../managed-server/install/orcad-remote-context'
-import { decommissionRemoteOrcad } from '../../managed-server/install/orcad-remote-decommission'
-import type { WslOrcadHostTarget } from '../orcad/wsl-orcad-host-target'
+import type { TopodHostTransport } from '../../managed-server/install/topod-host-transport'
+import { readRemoteTopodManagedStopTarget } from '../../managed-server/lifecycle/topod-managed-remote-stop'
+import { managedTopodSlot } from '../../managed-server/lifecycle/topod-managed-runtime-context'
+import { resolveTopodRemoteContext } from '../../managed-server/install/topod-remote-context'
+import { decommissionRemoteTopod } from '../../managed-server/install/topod-remote-decommission'
+import type { WslTopodHostTarget } from '../topod/wsl-topod-host-target'
 import { readWslHostPeerDesktops, type WslHostPeerDesktops } from './wsl-host-peer-desktops'
 
 const CENSUS_ATTEMPTS = 20
 const CENSUS_INTERVAL_MS = 250
 
-/** A terminal Orca asked to close but that may still run, named so the user can find it. */
+/** A terminal Topo asked to close but that may still run, named so the user can find it. */
 export type WslHostTerminalLeftover = { handle: string; worktreeId: string; reason: string }
 
 export type WslHostServerStopSteps = {
   /** Which other desktops share this server; throws when it can't say. */
   peerDesktops: () => Promise<WslHostPeerDesktops>
-  /** Closes every terminal orcad runs; returns the ones that refused instead of stopping. */
+  /** Closes every terminal topod runs; returns the ones that refused instead of stopping. */
   endTerminals: () => Promise<WslHostTerminalLeftover[]>
-  census: () => Promise<OrcadTerminalCensus>
-  /** The runtime id of the orcad the bridge is serving; read before the bridge closes. */
+  census: () => Promise<TopodTerminalCensus>
+  /** The runtime id of the topod the bridge is serving; read before the bridge closes. */
   servingRuntimeId: () => Promise<string | null>
   /** After the bridge closed: liveness must not see this exit as a crash to recover. */
   closeBridge: () => Promise<void>
   decommission: (
-    census: OrcadTerminalCensus,
+    census: TopodTerminalCensus,
     servingRuntimeId: string | null
-  ) => Promise<OrcadDecommissionResult>
+  ) => Promise<TopodDecommissionResult>
   sleep?: (ms: number) => Promise<void>
   /** A census that already waits on its own needs no retries; default 20, 250 ms apart. */
   censusAttempts?: number
@@ -51,7 +51,7 @@ export async function stopWslHostServer(steps: WslHostServerStopSteps): Promise<
   const problems: string[] = []
   // Anything proven still running makes the stop `live`; only doubt leaves it `unverifiable`.
   let provenLive = false
-  // Another Orca using this server keeps it: only this desktop lets go (R39).
+  // Another Topo using this server keeps it: only this desktop lets go (R39).
   let peers: WslHostPeerDesktops
   try {
     peers = await steps.peerDesktops()
@@ -69,14 +69,14 @@ export async function stopWslHostServer(steps: WslHostServerStopSteps): Promise<
   }
   if (peers.kind === 'unsupported') {
     console.warn(
-      '[wsl-hosts] This WSL host’s server predates the shared-host check; removing it ends its terminals for every Orca using it.'
+      '[wsl-hosts] This WSL host’s server predates the shared-host check; removing it ends its terminals for every Topo using it.'
     )
   }
   let leftovers: WslHostTerminalLeftover[] = []
   try {
     leftovers = await steps.endTerminals()
   } catch (error) {
-    problems.push(`Orca couldn’t list the host’s terminals: ${errorMessage(error)}`)
+    problems.push(`Topo couldn’t list the host’s terminals: ${errorMessage(error)}`)
   }
   // PTY close is not shell-exit proof; wait for zero-session census.
   let census = await steps.census()
@@ -105,10 +105,10 @@ export async function stopWslHostServer(steps: WslHostServerStopSteps): Promise<
   const result = await steps.decommission(census, servingRuntimeId)
   if (result.outcome === 'refused') {
     provenLive ||= result.verdict === 'live'
-    problems.push(`Orca’s server kept running: ${result.reason}`)
+    problems.push(`Topo’s server kept running: ${result.reason}`)
   } else if (result.retirement !== 'retired') {
     provenLive ||= result.retirement === 'live'
-    problems.push('Orca’s server stopped, but its terminal daemon is still running.')
+    problems.push('Topo’s server stopped, but its terminal daemon is still running.')
   }
   return problems.length === 0
     ? { stopped: true }
@@ -123,7 +123,7 @@ export async function stopWslHostServer(steps: WslHostServerStopSteps): Promise<
 export type WslHostRuntimeAccess = {
   isReady?: (environmentId: string) => boolean
   call: (environmentId: string, method: string, params: unknown) => Promise<unknown>
-  census: (environmentId: string) => Promise<OrcadTerminalCensus>
+  census: (environmentId: string) => Promise<TopodTerminalCensus>
 }
 
 // Only what removal reads from each live terminal.
@@ -135,7 +135,7 @@ const TerminalHandlesSchema = z.object({
 
 const RuntimeIdSchema = z.object({ runtimeId: z.string().min(1) })
 
-/** Closing terminals, counting what is left and naming the serving orcad, all through its RPC. */
+/** Closing terminals, counting what is left and naming the serving topod, all through its RPC. */
 export function wslHostRuntimeStopSteps(
   access: WslHostRuntimeAccess,
   environmentId: string
@@ -164,28 +164,28 @@ export function wslHostRuntimeStopSteps(
   }
 }
 
-/** After bridge close, decommission via wsl.exe only if recorded active orcad matches the previously serving runtime; re-add may have adopted another instance. */
-export function decommissionWslHostOrcad(
-  target: WslOrcadHostTarget,
-  transport: OrcadHostTransport
+/** After bridge close, decommission via wsl.exe only if recorded active topod matches the previously serving runtime; re-add may have adopted another instance. */
+export function decommissionWslHostTopod(
+  target: WslTopodHostTarget,
+  transport: TopodHostTransport
 ): WslHostServerStopSteps['decommission'] {
   return async (census, servingRuntimeId) => {
-    const context = await resolveOrcadRemoteContext(target, transport)
-    const slot = managedOrcadSlot(context, ORCAD_MANAGED_REMOTE_PORT)
+    const context = await resolveTopodRemoteContext(target, transport)
+    const slot = managedTopodSlot(context, TOPOD_MANAGED_REMOTE_PORT)
     const active = context.activationRecord.active
     if (active) {
-      const stopTarget = await readRemoteOrcadManagedStopTarget(slot, active)
+      const stopTarget = await readRemoteTopodManagedStopTarget(slot, active)
       const recordedRuntimeId = stopTarget.state === 'ready' ? stopTarget.context.runtimeId : null
       if (!servingRuntimeId || recordedRuntimeId !== servingRuntimeId) {
         return {
           outcome: 'refused',
           verdict: 'unverifiable',
-          code: 'orcad_wsl_host_serving_instance_unproven',
+          code: 'topod_wsl_host_serving_instance_unproven',
           reason:
-            'the orcad this computer was connected to is not the one the distro records as active, so Orca could not prove it stopped.'
+            'the topod this computer was connected to is not the one the distro records as active, so Topo could not prove it stopped.'
         }
       }
     }
-    return decommissionRemoteOrcad({ ...slot, record: context.activationRecord, census })
+    return decommissionRemoteTopod({ ...slot, record: context.activationRecord, census })
   }
 }

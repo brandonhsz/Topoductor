@@ -11,7 +11,7 @@ import { createTerminalTabNavigationActions } from './terminal-tab-navigation'
 import { createTerminalTabPresentationActions } from './terminal-tab-presentation'
 import { createTerminalTabAppearanceActions } from './terminal-tab-appearance'
 import { routeTerminalTabChangesThroughLayoutOwner } from './terminal-tab-layout-owner-actions'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { createTerminalPtyBindingActions } from './terminal-pty-bindings'
 import { createTerminalPtyReleaseActions } from './terminal-pty-release'
 import { createTerminalUnverifiedPtyLossActions } from './terminal-unverified-pty-loss'
@@ -109,7 +109,7 @@ export const createTerminalSlice: (
 function withLayoutOwnerTerminalTabChanges<
   T extends Parameters<typeof routeTerminalTabChangesThroughLayoutOwner>[0]
 >(actions: T, get: TerminalStoreGet): T {
-  return ORCA_LAYOUT_OWNER_IS_MAIN
+  return TOPO_LAYOUT_OWNER_IS_MAIN
     ? { ...actions, ...routeTerminalTabChangesThroughLayoutOwner(actions, get) }
     : actions
 }

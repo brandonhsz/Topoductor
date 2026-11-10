@@ -37,7 +37,7 @@ import {
 } from '../../../shared/agent-session/lifecycle/agent-session-record.test-fixture'
 import '../orchestration/terminal-authority/structured-sessions/structured-worker-identity'
 
-import { testOrcaSessionId } from '../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../shared/topo-session-address-test-fixture'
 
 import '../rpc/methods/session-tabs/session-tabs-inventory'
 import { AGENT_SENDER_PANE_READS } from './runtime-agent-sender-worker-history'
@@ -130,7 +130,7 @@ function harness(n = 1, records: AgentSessionRecordReader | null = null) {
     return senders
   }
   let projection = start()
-  /** A worker Dispatch in tab-i whose terminal Orca holds on that very process. */
+  /** A worker Dispatch in tab-i whose terminal Topo holds on that very process. */
   const worker = (i: number, incarnation: string | null = `pty-${i}:inc-1`) => {
     const dispatch = createRootDispatch(
       db,
@@ -212,7 +212,7 @@ it('withdraws worker aliases on a failed read and retries only on the next ident
     getRecord: (id) => chats.find((r) => r.sessionId === id) ?? null,
     listRecords: () => chats
   })
-  const priorSession = testOrcaSessionId('55555555-5555-4555-8555-555555555555')
+  const priorSession = testTopoSessionId('55555555-5555-4555-8555-555555555555')
   chats.push(
     agentSessionConversationView(
       agentSessionRecordFixture(agentSessionLeaseFixture({ sessionId: priorSession }))
@@ -254,7 +254,7 @@ it('withdraws worker aliases on a failed read and retries only on the next ident
   expect(identityReads(h).historyReads).toBe(2)
   // A chat opens in the same refresh as another failing read: the chat is published beside the
   // last good terminal rows.
-  const chat = testOrcaSessionId('33333333-3333-4333-8333-333333333333')
+  const chat = testTopoSessionId('33333333-3333-4333-8333-333333333333')
   chats.push(
     agentSessionConversationView(
       agentSessionRecordFixture(agentSessionLeaseFixture({ sessionId: chat }))
@@ -267,14 +267,14 @@ it('withdraws worker aliases on a failed read and retries only on the next ident
   expect(withChat.filter((r) => !r.sessionId)).toEqual(
     safe.associations.filter((r) => !r.sessionId)
   )
-  expect(withChat.map((r) => r.identity)).toContain(`orca_session_id:${chat}`)
+  expect(withChat.map((r) => r.identity)).toContain(`topo_session_id:${chat}`)
   // The failure still reaches the build's warning.
   expect(warn.mock.calls.length).toBe(warned + 1)
   vi.mocked(h.db.db.prepare).mockRestore()
   const fourth = h.worker(3)
   expect(h.located(`dispatch:${fourth.id}`)).toBe(pane('tab-3'))
   expect(h.located(`dispatch:${unaffected.id}`)).toBe(pane('tab-1'))
-  expect(h.located(`orca_session_id:${chat}`)).toBeDefined()
+  expect(h.located(`topo_session_id:${chat}`)).toBeDefined()
   expect(h.projection.build().associations.some((r) => r.identity === `dispatch:${first.id}`)).toBe(
     false
   )

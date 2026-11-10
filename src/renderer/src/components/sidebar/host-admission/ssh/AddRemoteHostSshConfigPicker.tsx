@@ -25,7 +25,7 @@ export function AddRemoteHostSshConfigPicker({
   onQueryChange,
   onRetry,
   onBack,
-  onAddAllToOrca
+  onAddAllToTopo
 }: {
   hosts: SshConfigHostSummary[]
   totalHostCount: number
@@ -40,7 +40,7 @@ export function AddRemoteHostSshConfigPicker({
   onQueryChange: (query: string) => void
   onRetry: () => void
   onBack: () => void
-  onAddAllToOrca: () => void
+  onAddAllToTopo: () => void
 }): React.JSX.Element {
   const t = useTranslate()
   const [query, setQuery] = useState('')
@@ -72,7 +72,7 @@ export function AddRemoteHostSshConfigPicker({
         <DialogDescription>
           {t(
             'auto.components.sidebar.AddRemoteHostDialog.sshConfigPickerImportDescription',
-            'Pick a host to fill the form, or add every new host to Orca’s host list.'
+            'Pick a host to fill the form, or add every new host to Topo’s host list.'
           )}
         </DialogDescription>
       </DialogHeader>
@@ -160,7 +160,7 @@ export function AddRemoteHostSshConfigPicker({
               <li key={host.alias}>
                 <button
                   type="button"
-                  disabled={picksDisabled || host.alreadyInOrca}
+                  disabled={picksDisabled || host.alreadyInTopo}
                   className={cn(
                     'flex w-full items-start justify-between gap-3 px-3 py-2.5 text-left',
                     'hover:bg-accent focus-visible:bg-accent focus-visible:outline-none',
@@ -188,14 +188,14 @@ export function AddRemoteHostSshConfigPicker({
                         'Reading…'
                       )}
                     </span>
-                  ) : host.alreadyInOrca ? (
+                  ) : host.alreadyInTopo ? (
                     <Badge
                       variant="outline"
                       className="mt-0.5 shrink-0 border-emerald-500/40 text-[10.5px] text-emerald-400"
                     >
                       {t(
-                        'auto.components.sidebar.AddRemoteHostDialog.sshConfigPickerInOrca',
-                        'In Orca'
+                        'auto.components.sidebar.AddRemoteHostDialog.sshConfigPickerInTopo',
+                        'In Topo'
                       )}
                     </Badge>
                   ) : host.previouslyRemoved ? (
@@ -205,7 +205,7 @@ export function AddRemoteHostSshConfigPicker({
                     >
                       {t(
                         'auto.components.sidebar.AddRemoteHostDialog.sshConfigPickerPreviouslyRemoved',
-                        'Removed from Orca'
+                        'Removed from Topo'
                       )}
                     </Badge>
                   ) : null}
@@ -231,7 +231,7 @@ export function AddRemoteHostSshConfigPicker({
           type="button"
           variant="secondary"
           disabled={!canAddAll}
-          onClick={onAddAllToOrca}
+          onClick={onAddAllToTopo}
           className="w-full sm:w-auto"
         >
           {isBulkImporting
@@ -242,7 +242,7 @@ export function AddRemoteHostSshConfigPicker({
             : newHostCount > 0
               ? t(
                   'auto.components.sidebar.AddRemoteHostDialog.sshConfigPickerAddAll',
-                  'Add all {{value0}} to Orca',
+                  'Add all {{value0}} to Topo',
                   { value0: newHostCount }
                 )
               : // Remaining hosts may be saved or tombstoned; copy must not assume either.
@@ -253,7 +253,7 @@ export function AddRemoteHostSshConfigPicker({
                   )
                 : t(
                     'auto.components.sidebar.AddRemoteHostDialog.sshConfigPickerAddAllEmpty',
-                    'Add all to Orca'
+                    'Add all to Topo'
                   )}
         </Button>
         <Button

@@ -147,7 +147,7 @@ it('offers an inherited OpenCode tip after the child advances and submits its di
           { ...reply, itemId: copied.id, sequence: 5 },
           {
             ...reply,
-            itemId: 'orca:forked-from',
+            itemId: 'topo:forked-from',
             sequence: 6,
             body: { kind: 'status', presentation: 'forked-from', text: 'Forked from source' }
           },

@@ -39,14 +39,14 @@ export const REMOVED_WORK_LINEAGE_FIELDS = {
     creatorDispatchId: text,
     creatorHandle: text,
     creatorPaneKey: text,
-    creatorOrcaSessionId: text,
+    creatorTopoSessionId: text,
     assigneeHandle: text,
     assigneePaneKey: text,
-    assigneeOrcaSessionId: text,
+    assigneeTopoSessionId: text,
     hostScope: text,
     depth: int,
     status: text,
-    // Null when no exit was ever recorded; an exit Orca could not certify is saved as 'unknown'.
+    // Null when no exit was ever recorded; an exit Topo could not certify is saved as 'unknown'.
     terminationReason: text,
     createdAt: text
   },

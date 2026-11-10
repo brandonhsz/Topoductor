@@ -19,7 +19,7 @@ export function BrowserLocalhostWorktreeLabelsSetting({
   )
   const description = t(
     'auto.components.settings.BrowserLocalhostWorktreeLabelsSetting.1db3c8b983',
-    'Open workspace ports as worktree-specific Orca localhost URLs so browser tabs are easier to tell apart.'
+    'Open workspace ports as worktree-specific Topo localhost URLs so browser tabs are easier to tell apart.'
   )
 
   return (

@@ -3,11 +3,11 @@ import type { BrowserSessionRegistryProfileOptions } from './profiles/browser-se
 import { collectOrphanedBrowserRoutePartitionStorage } from '../routing/partitions/browser-route-partition-storage-runtime'
 // Initialize route registries and ownership probes before profile startup.
 import '../routing/sessions/browser-route-session-runtime'
-import { configureBrowserRoutePartitionBindingsForOrcaProfile } from '../routing/partitions/browser-route-partition-binding-runtime'
+import { configureBrowserRoutePartitionBindingsForTopoProfile } from '../routing/partitions/browser-route-partition-binding-runtime'
 import { configureBrowserSitePermissionStore } from '../site-settings/permissions/browser-site-permission-store'
 import { configureBrowserSiteDisplayStore } from '../site-settings/display/browser-site-display-store'
 import { configureBrowserExtensionProfileDataDirectory } from '../extensions/profile-storage/browser-extension-profile-data-directory'
-import { configurePairedRuntimeBrowserClientHostsForOrcaProfile } from '../client-hosts/lifecycle/paired-runtime-browser-client-host-runtime'
+import { configurePairedRuntimeBrowserClientHostsForTopoProfile } from '../client-hosts/lifecycle/paired-runtime-browser-client-host-runtime'
 import { configureBrowserPasswordVaults } from '../../browser-passwords/browser-password-vaults'
 
 let initialized = false
@@ -22,17 +22,17 @@ export function initializeBrowserSessionsForApp(
   }
 
   if (activeProfile) {
-    browserSessionRegistry.configureForOrcaProfile(activeProfile)
+    browserSessionRegistry.configureForTopoProfile(activeProfile)
     configureBrowserSitePermissionStore(activeProfile.profileDirectory)
     configureBrowserSiteDisplayStore(activeProfile.profileDirectory)
     configureBrowserExtensionProfileDataDirectory(activeProfile.profileDirectory)
     configureBrowserPasswordVaults(activeProfile.profileDirectory)
-    configureBrowserRoutePartitionBindingsForOrcaProfile({
-      orcaProfileId: activeProfile.orcaProfileId,
+    configureBrowserRoutePartitionBindingsForTopoProfile({
+      topoProfileId: activeProfile.topoProfileId,
       profileDirectory: activeProfile.profileDirectory
     })
-    configurePairedRuntimeBrowserClientHostsForOrcaProfile({
-      orcaProfileId: activeProfile.orcaProfileId
+    configurePairedRuntimeBrowserClientHostsForTopoProfile({
+      topoProfileId: activeProfile.topoProfileId
     })
     void collectOrphanedBrowserRoutePartitionStorage(activeProfile.listLocalSshTargetIds).catch(
       (error) => {

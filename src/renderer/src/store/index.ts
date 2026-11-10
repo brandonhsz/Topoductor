@@ -45,7 +45,7 @@ import { createCommitMessageGenerationSlice } from './slices/hosted-review/gener
 import { createPinnedTabCloseConfirmSlice } from './slices/tabs/pinned-tab-close-confirm'
 import { createRecentlyClosedTerminalTabsSlice } from './terminals/recently-closed-terminal-tabs'
 import { createRecentlyClosedTabsSlice } from './slices/tabs/recently-closed-tabs'
-import { createOrcaProfilesSlice } from './slices/orca-profiles/create-orca-profiles-slice'
+import { createTopoProfilesSlice } from './slices/topo-profiles/create-topo-profiles-slice'
 import { createNewIssueDraftSlice } from './slices/task-creation/new-issue-draft'
 import { createFeedbackDraftSlice } from './slices/feedback/feedback-draft'
 import { createTaskCreationDraftsSlice } from './slices/task-creation/task-creation-drafts'
@@ -65,7 +65,7 @@ import {
 import { registerAppHttpLinkStateAccessor } from '@/lib/browser/navigation/app-http-link-open'
 import { installStoreListenerCensus } from './diagnostics/store-listener-census'
 import { installSettledSortEpoch } from './slices/ui/settled-sort-epoch'
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from '../../../shared/sidebar-inputs-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from '../../../shared/sidebar-inputs-switch'
 import { withReactCommitCascadeWriteProbe } from './diagnostics/react-commit-cascade-write-probe'
 import { withStoreIdentityChurnProbe } from './diagnostics/store-identity-churn-probe'
 import { withEditorBufferRecords } from './slices/editor/buffers/editor-buffer-record-lifecycle'
@@ -95,7 +95,7 @@ export const useAppStore = create<AppState>()(
       withReactCommitCascadeWriteProbe((...a) => {
         // Why first: settling inside the bump's own notify means hook subscribers never see it unsettled.
         // Switch point: the stamp-sorted list reads no settled epoch.
-        if (!ORCA_SIDEBAR_INPUTS_IS_MAIN) {
+        if (!TOPO_SIDEBAR_INPUTS_IS_MAIN) {
           installSettledSortEpoch(a[2])
         }
         // Why: the inner api is only reachable here, before create() copies subscribe onto the hook.
@@ -142,7 +142,7 @@ export const useAppStore = create<AppState>()(
           ...createPinnedTabCloseConfirmSlice(...a),
           ...createRecentlyClosedTerminalTabsSlice(...a),
           ...createRecentlyClosedTabsSlice(...a),
-          ...createOrcaProfilesSlice(...a),
+          ...createTopoProfilesSlice(...a),
           ...createNewIssueDraftSlice(...a),
           ...createFeedbackDraftSlice(...a),
           ...createTaskCreationDraftsSlice(...a),

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events'
 import { PassThrough } from 'node:stream'
 import { describe, expect, it, vi } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { wrapRemoteCommandForPosixShell } from './ssh-posix-command-wrapper'
 import type { SshExecOptions } from '../connection/ssh-exec-options'
 import { execCommand } from './remote-exec-command'

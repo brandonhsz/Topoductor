@@ -35,11 +35,11 @@ function worktree(id: string, hostId?: string): Worktree {
 }
 
 function wslHost(distro: string): PublicKnownRuntimeEnvironment {
-  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the lookup reads only name and orcadDeployment.
+  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the lookup reads only name and topodDeployment.
   return {
     id: `wsl:${distro.toLowerCase()}`,
     name: `${distro} (WSL)`,
-    orcadDeployment: { kind: 'wsl', distro, localPort: 1, remotePort: 2 }
+    topodDeployment: { kind: 'wsl', distro, localPort: 1, remotePort: 2 }
   } as PublicKnownRuntimeEnvironment
 }
 

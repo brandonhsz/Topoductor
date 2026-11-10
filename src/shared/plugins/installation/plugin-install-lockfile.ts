@@ -100,7 +100,7 @@ export const pluginLockEntrySchema = z
     contentHash: z.string().regex(PLUGIN_CONTENT_HASH_PATTERN),
     /** New descriptive name, accepted for forward compatibility. */
     consentFingerprint: z.string().min(1).max(256).optional(),
-    /** v1 on-disk name retained so existing Orca builds can read new lockfiles. */
+    /** v1 on-disk name retained so existing Topo builds can read new lockfiles. */
     capabilityHash: z.string().min(1).max(256).optional(),
     /** The catalog's repository claim for this release; not verified authorship. */
     authorRepository: z.string().max(2048).optional().catch(undefined),

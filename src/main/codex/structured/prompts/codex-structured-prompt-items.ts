@@ -211,7 +211,7 @@ function questionOptions(
   return mapped
 }
 
-/** Use Orca keys for nonpersisted prompts; one tool item can issue several distinct asks. */
+/** Use Topo keys for nonpersisted prompts; one tool item can issue several distinct asks. */
 export function codexPromptIdentity(input: {
   threadId: string
   promptKey: string
@@ -221,7 +221,7 @@ export function codexPromptIdentity(input: {
   const threadId = codexJournalPromptIdPart(input.threadId)
   const promptKey = codexJournalPromptIdPart(input.promptKey)
   return {
-    provider: 'orca',
+    provider: 'topo',
     clientMessageId: `codex-prompt:${threadId}:${promptKey}${suffix}`
   }
 }

@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient,
@@ -38,14 +38,14 @@ async function openWorkspaceFile(
 
 // The same checkout path is open on the paired client's own host and on the runtime host it is paired with.
 test('keeps same-path host models and undo history separate', async ({
-  orcaPage,
+  topoPage,
   testRepoPath,
   registerPostElectronShutdownCleanup
 }, testInfo) => {
   // Launching and pairing a second Electron client takes most of this budget.
   test.setTimeout(240_000)
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
   const filePath = path.join(testRepoPath, `host-model-${randomUUID()}.txt`)
   await writeFile(filePath, 'MARKER', 'utf8')
   registerPostElectronShutdownCleanup(() => rm(filePath, { force: true }))
@@ -53,7 +53,7 @@ test('keeps same-path host models and undo history separate', async ({
   let client: PairedElectronClient | null = null
   try {
     client = await launchPairedElectronClient(
-      await createRuntimeDesktopPairingOffer(orcaPage),
+      await createRuntimeDesktopPairingOffer(topoPage),
       testInfo,
       'Host model isolation'
     )

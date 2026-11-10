@@ -17,7 +17,7 @@ function sinkState() {
 function userMessageWith(part: unknown) {
   return {
     type: 'message' as const,
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     startsTurn: true as const,
     message: {
       type: 'user',

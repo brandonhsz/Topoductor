@@ -21,7 +21,7 @@ vi.mock('../catalog/native-chat-session-option-discovery', () => ({
 const storeState: {
   settings: Record<string, unknown>
   updateSettings: () => Promise<undefined>
-  agentStatusByPaneKey: Record<string, { model?: string; modelSwitchCommand?: 'orca-model' }>
+  agentStatusByPaneKey: Record<string, { model?: string; modelSwitchCommand?: 'topo-model' }>
 } = {
   settings: {},
   updateSettings: async () => undefined,

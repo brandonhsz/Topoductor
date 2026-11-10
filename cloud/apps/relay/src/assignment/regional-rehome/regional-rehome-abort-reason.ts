@@ -1,4 +1,4 @@
-import { ASSIGNMENT_LIMITS } from '@orca-cloud/relay-contract/assignment-invariants'
+import { ASSIGNMENT_LIMITS } from '@topo-cloud/relay-contract/assignment-invariants'
 
 // Why an attempt was rolled back to its source. Attempts settled by the
 // migration-side abort paths, and every row aborted before the column existed,

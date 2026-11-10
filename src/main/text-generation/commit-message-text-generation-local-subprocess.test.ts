@@ -107,7 +107,7 @@ describe('generateCommitMessageFromContext on the Windows direct-child path', ()
       expect(result).toMatchObject({
         success: false,
         error:
-          "C:/tools/agent.cmd runs through a Windows batch script that cannot take the multi-line prompt as an argument. Point Settings at the agent's executable, or use a custom command without {prompt} so Orca sends the prompt on stdin."
+          "C:/tools/agent.cmd runs through a Windows batch script that cannot take the multi-line prompt as an argument. Point Settings at the agent's executable, or use a custom command without {prompt} so Topo sends the prompt on stdin."
       })
       expect(spawnMock).not.toHaveBeenCalled()
     })

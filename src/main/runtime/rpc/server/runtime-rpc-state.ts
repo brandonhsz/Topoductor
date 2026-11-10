@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import type { RuntimeTransportMetadata } from '../../../../shared/runtime-bootstrap'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 import { RpcDispatcher } from '../dispatcher'
 import { ALL_RPC_METHODS } from '../methods/rpc-method-registry'
 import type { RpcTransport } from '../transport'
@@ -31,7 +31,7 @@ import {
 import {
   type MobilePairingOffer,
   type MobileRelayPairingProvider,
-  type OrcaRuntimeRpcServerOptions,
+  type TopoRuntimeRpcServerOptions,
   type PairingOfferUnavailable,
   DEFAULT_WS_PORT
 } from './runtime-rpc-pairing-types'
@@ -41,7 +41,7 @@ import type { ServeNetworkSourceOptions } from './serve-network-source-policy'
 import type { WebSocketSourceGuard } from '../ws-network-source-guard'
 
 export class RuntimeRpcState {
-  protected readonly runtime: OrcaRuntimeService
+  protected readonly runtime: TopoRuntimeService
   protected readonly dispatcher: RpcDispatcher
   protected readonly userDataPath: string
   protected readonly pid: number
@@ -132,7 +132,7 @@ export class RuntimeRpcState {
     longPollCap = LONG_POLL_CAP,
     metadataOwnershipPollMs = RUNTIME_METADATA_OWNERSHIP_POLL_MS,
     methods
-  }: OrcaRuntimeRpcServerOptions) {
+  }: TopoRuntimeRpcServerOptions) {
     this.runtime = runtime
     this.dispatcher = new RpcDispatcher({ runtime, methods: methods ?? ALL_RPC_METHODS })
     this.userDataPath = userDataPath

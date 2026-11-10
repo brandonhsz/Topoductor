@@ -78,7 +78,7 @@ function parseObjectPayload(msg: MessageRow, onInvalidJson: () => void): Record<
 function getPersistedLifecycleRejection(
   payload: Record<string, unknown>
 ): LifecycleRejectionResult | undefined {
-  const rejection = payload._orcaLifecycleRejection
+  const rejection = payload._topoLifecycleRejection
   if (
     !rejection ||
     typeof rejection !== 'object' ||

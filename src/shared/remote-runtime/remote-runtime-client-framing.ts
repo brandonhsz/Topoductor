@@ -183,8 +183,8 @@ async function latchedHostPredatesV2Token(
 
 function latchedHostRefusalError(error: unknown): Error {
   const message =
-    'This remote Orca runtime used newer encryption (E2EE v2) before and now refuses it. ' +
-    'Update Orca on that host. If it is already up to date, something between this computer ' +
+    'This remote Topo runtime used newer encryption (E2EE v2) before and now refuses it. ' +
+    'Update Topo on that host. If it is already up to date, something between this computer ' +
     'and the host is interfering with the connection.'
   return error instanceof RemoteRuntimeClientError
     ? new RemoteRuntimeClientError(error.code, message, {

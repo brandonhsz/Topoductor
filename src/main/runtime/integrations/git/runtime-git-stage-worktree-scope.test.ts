@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import * as path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 import { RpcDispatcher } from '../../rpc/dispatcher'
 import { GIT_METHODS } from '../../rpc/methods/source-control/git/git'
 import { RuntimeGitStagingCommands } from './runtime-git-staging-commands'
@@ -31,8 +31,8 @@ function names(repo: string, args: string[]): string[] {
 }
 
 async function createSharedLinkWorktree(): Promise<string> {
-  const repo = await mkdtemp(path.join(tmpdir(), 'orca-runtime-stage-scope-'))
-  const owner = await mkdtemp(path.join(tmpdir(), 'orca-runtime-stage-owner-'))
+  const repo = await mkdtemp(path.join(tmpdir(), 'topo-runtime-stage-scope-'))
+  const owner = await mkdtemp(path.join(tmpdir(), 'topo-runtime-stage-owner-'))
   tempRoots.push(repo, owner)
   const git = (args: string[]): string => execFileSync('git', args, { cwd: repo, encoding: 'utf8' })
   git(['init', '-q', '-b', 'main'])
@@ -64,7 +64,7 @@ function dispatcherFor(target: StagingTargetStub): RpcDispatcher {
     bulkStageRuntimeGitPaths: commands.bulkStageRuntimeGitPaths.bind(commands)
   }
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: git.bulkStage dispatch reads only the two members stubbed here.
-  const runtimeService = runtime as unknown as OrcaRuntimeService
+  const runtimeService = runtime as unknown as TopoRuntimeService
   return new RpcDispatcher({ runtime: runtimeService, methods: GIT_METHODS })
 }
 

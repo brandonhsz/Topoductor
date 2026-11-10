@@ -22,7 +22,7 @@ import { addWorkspace, emptySession, GIT_KEY } from './workspace-layout-session.
 
 const mocks = vi.hoisted(() => ({ layoutOwnerIsMain: true }))
 vi.mock('../layout-owner-switch', () => ({
-  get ORCA_LAYOUT_OWNER_IS_MAIN() {
+  get TOPO_LAYOUT_OWNER_IS_MAIN() {
     return mocks.layoutOwnerIsMain
   }
 }))

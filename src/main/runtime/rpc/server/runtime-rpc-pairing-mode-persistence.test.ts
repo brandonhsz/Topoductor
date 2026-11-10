@@ -4,8 +4,8 @@ import { mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import { parsePairingCode } from '../../../../shared/remote-runtime/pairing/pairing'
 import './runtime-rpc-mobile-ws-test-harness'
 
@@ -45,11 +45,11 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
   return { getWorktreeListingMocks: () => (listings ??= createWorktreeListingMocks()) }
 })
 
-describe('OrcaRuntimeRpcServer', () => {
+describe('TopoRuntimeRpcServer', () => {
   it('revokes and rotates a pending Relay code when switching it to local-only', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
-      runtime: new OrcaRuntimeService(),
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -103,9 +103,9 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('rotates a pending local-only code when switching it back to Anywhere', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
-      runtime: new OrcaRuntimeService(),
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0

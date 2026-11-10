@@ -3,12 +3,12 @@
  * reaches that host's runtime over its own tunnel, which the client has no route to. Adding or
  * cloning there says so plainly instead of failing with a TypeError or "not connected" (#33124).
  */
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { launchHeadlessPairedRuntimeHost } from './helpers/headless-paired-runtime-host'
 import { launchPairedWebClient } from './helpers/paired-electron-client'
 import { toSshExecutionHostId } from '../../src/shared/execution-host'
 
-const REFUSAL = "This Orca server can't add projects on its SSH hosts."
+const REFUSAL = "This Topo server can't add projects on its SSH hosts."
 
 test('a paired client refuses project setup on its server’s SSH host with a clear reason', async () => {
   // Boots a headless server and a paired Electron client before the refusal is observable.

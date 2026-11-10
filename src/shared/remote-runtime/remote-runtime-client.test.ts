@@ -138,7 +138,7 @@ describe('subscribeRemoteRuntimeRequest', () => {
 })
 
 describe('sendRemoteRuntimeRequest', () => {
-  it('classifies a non-Orca handshake as a host identity mismatch', async () => {
+  it('classifies a non-Topo handshake as a host identity mismatch', async () => {
     const server = await createInvalidHandshakeServer()
 
     await expect(
@@ -364,7 +364,7 @@ async function createInvalidHandshakeServer(): Promise<{ pairing: PairedRuntimeC
   const wss = new WebSocketServer({ host: '127.0.0.1', port: 0 })
   servers.push(wss)
   wss.on('connection', (ws) => {
-    ws.once('message', () => ws.send(JSON.stringify({ type: 'not_orca' })))
+    ws.once('message', () => ws.send(JSON.stringify({ type: 'not_topo' })))
   })
 
   await new Promise<void>((resolve) => wss.once('listening', resolve))

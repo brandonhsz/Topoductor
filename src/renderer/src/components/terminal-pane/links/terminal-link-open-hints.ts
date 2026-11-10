@@ -1,5 +1,5 @@
 import {
-  canSourceOwnerOpenInOrca,
+  canSourceOwnerOpenInTopo,
   type HttpLinkActionDestinations
 } from '@/lib/browser/navigation/http-link-destinations'
 import type { HttpLinkSourceOwner } from '@/lib/browser/navigation/http-link-routing'
@@ -19,11 +19,11 @@ export function getTerminalFileOpenHint(showActions = true): string {
     : `${prefix}Ctrl+click to open, or Shift+Ctrl+click for default app`
 }
 
-export function getTerminalOrcaFileOpenHint(showActions = true): string {
+export function getTerminalTopoFileOpenHint(showActions = true): string {
   const prefix = showActions ? 'Click for actions or ' : ''
   return isMacPlatform()
-    ? `${prefix}⌘+click to open in Orca`
-    : `${prefix}Ctrl+click to open in Orca`
+    ? `${prefix}⌘+click to open in Topo`
+    : `${prefix}Ctrl+click to open in Topo`
 }
 
 // Why: Shift+modifier on a local HTML file always takes the other link-routing destination.
@@ -32,7 +32,7 @@ export function getTerminalHtmlFileOpenHint(
   showActions = true
 ): string {
   return getTerminalUrlOpenHint({
-    openLinksInApp: destinations.primary === 'orca',
+    openLinksInApp: destinations.primary === 'topo',
     modifierInverts: true,
     showActions
   })
@@ -44,7 +44,7 @@ export type TerminalUrlOpenHintOptions = {
   showActions?: boolean
 }
 
-// Why: remote owners advertise Orca only when their existing browser route is eligible.
+// Why: remote owners advertise Topo only when their existing browser route is eligible.
 export function terminalUrlOpenHintOptionsFor(
   settings:
     | {
@@ -57,23 +57,23 @@ export function terminalUrlOpenHintOptionsFor(
   sourceOwner?: HttpLinkSourceOwner,
   canOpenOwnedBrowser = false
 ): TerminalUrlOpenHintOptions {
-  const sourceCanOpenInOrca = sourceOwner
-    ? canSourceOwnerOpenInOrca(sourceOwner, canOpenOwnedBrowser)
+  const sourceCanOpenInTopo = sourceOwner
+    ? canSourceOwnerOpenInTopo(sourceOwner, canOpenOwnedBrowser)
     : !settings?.activeRuntimeEnvironmentId?.trim()
   return {
     openLinksInApp: settings?.openLinksInApp === true,
-    modifierInverts: settings?.openLinksInAppModifierInverts === true && sourceCanOpenInOrca
+    modifierInverts: settings?.openLinksInAppModifierInverts === true && sourceCanOpenInTopo
   }
 }
 
 // With inversion, Shift means the other destination; name the resolved one instead of always promising the system browser.
 export function getTerminalUrlOpenHint(options: TerminalUrlOpenHintOptions = {}): string {
-  const invertsToOrca = options.modifierInverts === true && options.openLinksInApp !== true
+  const invertsToTopo = options.modifierInverts === true && options.openLinksInApp !== true
   const prefix = terminalLinkActionHintPrefix(options.showActions !== false)
-  if (invertsToOrca) {
+  if (invertsToTopo) {
     return isMacPlatform()
-      ? `${prefix}⌘+click to open, or ⇧⌘+click to open in Orca`
-      : `${prefix}Ctrl+click to open, or Shift+Ctrl+click to open in Orca`
+      ? `${prefix}⌘+click to open, or ⇧⌘+click to open in Topo`
+      : `${prefix}Ctrl+click to open, or Shift+Ctrl+click to open in Topo`
   }
   return isMacPlatform()
     ? `${prefix}⌘+click to open, or ⇧⌘+click for system browser`
@@ -85,8 +85,8 @@ export function getTerminalUrlSystemBrowserHint(): string {
 }
 
 // Invert the hint too when plain click already opens the system browser.
-export function getTerminalUrlOrcaBrowserHint(): string {
-  return isMacPlatform() ? '⇧⌘+click to open in Orca' : 'Shift+Ctrl+click to open in Orca'
+export function getTerminalUrlTopoBrowserHint(): string {
+  return isMacPlatform() ? '⇧⌘+click to open in Topo' : 'Shift+Ctrl+click to open in Topo'
 }
 
 export function getTerminalWorktreePathOpenHint(

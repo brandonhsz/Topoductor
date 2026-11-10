@@ -11,21 +11,21 @@ describe('WslHostMark', () => {
   it('is a penguin named for screen readers, with the full host in its tooltip', async () => {
     const view = render(
       <TooltipProvider delayDuration={0}>
-        <WslHostMark distro="orca-demo" />
+        <WslHostMark distro="topo-demo" />
       </TooltipProvider>
     )
     const mark = view.getByRole('img', {
-      name: 'Runs on WSL: orca-demo (Linux)'
+      name: 'Runs on WSL: topo-demo (Linux)'
     })
     expect(mark.querySelector('svg')).toBeTruthy()
-    expect(view.queryByText('orca-demo (WSL)')).toBeNull()
+    expect(view.queryByText('topo-demo (WSL)')).toBeNull()
     // Keyboard users reach it with Tab; focus alone opens the tooltip.
     expect(mark.tabIndex).toBe(0)
     act(() => mark.focus())
     expect(document.activeElement).toBe(mark)
     await vi.waitFor(() =>
       expect(document.querySelector('[data-slot="tooltip-content"]')?.textContent).toContain(
-        'Runs on WSL: orca-demo (Linux)'
+        'Runs on WSL: topo-demo (Linux)'
       )
     )
   })

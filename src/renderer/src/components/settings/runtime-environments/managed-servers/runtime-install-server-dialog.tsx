@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import type { ManagedOrcadPreloadApi } from '../../../../../../preload/api/managed-orcad-api'
+import type { ManagedTopodPreloadApi } from '../../../../../../preload/api/managed-topod-api'
 import type { SshTarget } from '../../../../../../shared/ssh-types'
 import { useMountedRef } from '@/hooks/useMountedRef'
 import { useTranslate } from '@/i18n/use-translate'
@@ -22,7 +22,7 @@ import { HostCombobox } from '../../../host-picker/HostCombobox'
 
 type RuntimeInstallServerDialogProps = {
   open: boolean
-  api: ManagedOrcadPreloadApi
+  api: ManagedTopodPreloadApi
   emptyTargets: SshTarget[]
   loadFailed: boolean
   onOpenChange: (open: boolean) => void
@@ -67,7 +67,7 @@ export function RuntimeInstallServerDialog({
         toast.message(managedServerOutcomeLabel(result))
       } else {
         toast.success(
-          t('auto.components.settings.serverList.setUpDone', 'Orca is set up on {{name}}.', {
+          t('auto.components.settings.serverList.setUpDone', 'Topo is set up on {{name}}.', {
             name: result.environment.name
           })
         )
@@ -95,7 +95,7 @@ export function RuntimeInstallServerDialog({
       toast.message(
         t(
           'auto.components.settings.serverList.settingUpInBackground',
-          'Setting up Orca on {{name}} in the background. It appears in the list when it’s ready.',
+          'Setting up Topo on {{name}} in the background. It appears in the list when it’s ready.',
           { name: serverName }
         )
       )
@@ -120,7 +120,7 @@ export function RuntimeInstallServerDialog({
             <DialogTitle>
               {t(
                 'auto.components.settings.serverList.setUpOnSshHost',
-                'Set up Orca on an SSH host'
+                'Set up Topo on an SSH host'
               )}
             </DialogTitle>
             <DialogDescription asChild>
@@ -128,14 +128,14 @@ export function RuntimeInstallServerDialog({
                 <p>
                   {t(
                     'auto.components.settings.managedServers.description',
-                    'Orca installs itself on an empty SSH host and keeps itself up to date.'
+                    'Topo installs itself on an empty SSH host and keeps itself up to date.'
                   )}
                 </p>
                 {}
                 <p>
                   {t(
                     'auto.components.settings.managedServers.reassurance',
-                    'Runs on each host, reached over your own SSH connection. Your code and files stay where they are. Only Orca’s list of projects, tabs and terminals moves to the host.'
+                    'Runs on each host, reached over your own SSH connection. Your code and files stay where they are. Only Topo’s list of projects, tabs and terminals moves to the host.'
                   )}
                 </p>
               </div>
@@ -152,18 +152,18 @@ export function RuntimeInstallServerDialog({
               onChange={setTargetId}
               placeholder={t(
                 'auto.components.settings.serverList.installHostPlaceholder',
-                'Choose an SSH host without Orca'
+                'Choose an SSH host without Topo'
               )}
             />
             <p className="text-xs text-muted-foreground">
               {emptyTargets.length === 0
                 ? t(
                     'auto.components.settings.serverList.installNoHosts',
-                    'No SSH hosts without an Orca server.'
+                    'No SSH hosts without a Topo server.'
                   )
                 : t(
                     'auto.components.settings.serverList.installHostHelp',
-                    'Only hosts without an Orca server.'
+                    'Only hosts without a Topo server.'
                   )}{' '}
               <button
                 type="button"
@@ -180,7 +180,7 @@ export function RuntimeInstallServerDialog({
               <p className="text-xs text-destructive">
                 {t(
                   'auto.components.settings.managedServers.loadFailed',
-                  'Orca couldn’t load SSH hosts and unfinished moves. Reopen Settings to try again.'
+                  'Topo couldn’t load SSH hosts and unfinished moves. Reopen Settings to try again.'
                 )}
               </p>
             ) : null}
@@ -216,7 +216,7 @@ export function RuntimeInstallServerDialog({
               {deploying
                 ? t(
                     'auto.components.settings.sshHostServer.deploying',
-                    'Setting up Orca on {{host}}…',
+                    'Setting up Topo on {{host}}…',
                     {
                       host: targetLabel
                     }

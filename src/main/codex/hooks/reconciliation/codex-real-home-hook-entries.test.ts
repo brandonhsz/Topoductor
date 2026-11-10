@@ -93,12 +93,12 @@ let userData: string
 const hooksPath = (): string => join(home, '.codex', 'hooks.json')
 const configPath = (): string => join(home, '.codex', 'config.toml')
 const frozen = (): string => getCodexManagedHookInstallMaterial().command
-const orcaGroup = (command: string = frozen()): HookDefinition => ({
+const topoGroup = (command: string = frozen()): HookDefinition => ({
   hooks: [buildCodexManagedHook(command, 'Stop')]
 })
 
 function olderBuildCommand(): string {
-  const script = join(home, '.orca', 'agent-hooks', 'codex-hook.sh')
+  const script = join(home, '.topo', 'agent-hooks', 'codex-hook.sh')
   return process.platform === 'win32' ? script : wrapPosixHookCommand(script)
 }
 
@@ -128,7 +128,7 @@ async function reconcile(
 ): Promise<'written' | 'unchanged'> {
   const hashes = options.hashes === undefined ? CODEX_HASHES : options.hashes
   if (options.userDataPath) {
-    vi.stubEnv('ORCA_USER_DATA_PATH', options.userDataPath)
+    vi.stubEnv('TOPO_USER_DATA_PATH', options.userDataPath)
   }
   // Seed the cached lookup answer from a previous run.
   memoizeCodexHookAnswer(
@@ -169,11 +169,11 @@ function trustAt(entry: CodexTrustEntry): { trustedHash?: string; enabled?: bool
   return readHookTrustEntries(configPath()).get(computeTrustKey(entry))
 }
 
-function expectOrcaApprovedAt(
+function expectTopoApprovedAt(
   groupIndex: number,
   hash: string | null | undefined = CODEX_HASHES.stop
 ): void {
-  expect(trustAt(stopEntryAt(groupIndex, orcaGroup()))).toEqual({
+  expect(trustAt(stopEntryAt(groupIndex, topoGroup()))).toEqual({
     trustedHash: hash,
     enabled: true
   })
@@ -181,7 +181,7 @@ function expectOrcaApprovedAt(
 
 beforeEach(() => {
   // Resolve macOS /var symlinks so the temp root adds no extra approval-key spelling.
-  root = realpathSync.native(mkdtempSync(join(tmpdir(), 'orca-real-home-entries-')))
+  root = realpathSync.native(mkdtempSync(join(tmpdir(), 'topo-real-home-entries-')))
   home = join(root, 'home')
   userData = join(root, 'user-data')
   mkdirSync(home)
@@ -190,7 +190,7 @@ beforeEach(() => {
   mocks.beforeHooksJsonGuard = null
   mocks.hooksJsonWrites = 0
   vi.stubEnv('CODEX_HOME', '')
-  vi.stubEnv('ORCA_USER_DATA_PATH', userData)
+  vi.stubEnv('TOPO_USER_DATA_PATH', userData)
 })
 
 afterEach(() => {
@@ -201,14 +201,14 @@ afterEach(() => {
 
 describe('reconcileRealHomeCodexHookEntries', () => {
   it("converts an older build's entry once, in its slot, with one pristine backup", async () => {
-    const olderRaw = writeHooks({ hooks: { Stop: [USER_A, orcaGroup(olderBuildCommand())] } })
+    const olderRaw = writeHooks({ hooks: { Stop: [USER_A, topoGroup(olderBuildCommand())] } })
 
     expect(await reconcile()).toBe('written')
     const converted = identity(hooksPath())
-    expect(readHooks().hooks.Stop).toEqual([USER_A, orcaGroup()])
-    expectOrcaApprovedAt(1)
+    expect(readHooks().hooks.Stop).toEqual([USER_A, topoGroup()])
+    expectTopoApprovedAt(1)
     expect(
-      readFileSync(join(userData, 'codex-real-home-hooks', 'hooks.json.pre-orca'), 'utf-8')
+      readFileSync(join(userData, 'codex-real-home-hooks', 'hooks.json.pre-topo'), 'utf-8')
     ).toBe(olderRaw)
 
     const otherInstance = join(root, 'second-user-data')
@@ -235,15 +235,15 @@ describe('reconcileRealHomeCodexHookEntries', () => {
   })
 
   it('never rewrites a newer build form or appends beside it', async () => {
-    const newer = `: orca-agent-hook-form=2; /bin/sh "\${HOME-}/.orca/agent-hooks/codex-hook.sh"`
-    writeHooks({ hooks: { Stop: [orcaGroup(newer)] } })
+    const newer = `: topo-agent-hook-form=2; /bin/sh "\${HOME-}/.topo/agent-hooks/codex-hook.sh"`
+    writeHooks({ hooks: { Stop: [topoGroup(newer)] } })
 
     await reconcile()
 
-    expect(readHooks().hooks.Stop).toEqual([orcaGroup(newer)])
+    expect(readHooks().hooks.Stop).toEqual([topoGroup(newer)])
   })
 
-  it("keeps the approval of Orca's entry in an event this Codex does not list", async () => {
+  it("keeps the approval of Topo's entry in an event this Codex does not list", async () => {
     const interrupt: HookDefinition = { hooks: [buildCodexManagedHook(frozen(), 'Interrupt')] }
     writeHooks({ hooks: { Interrupt: [interrupt] } })
     // Simulate approval by a newer Codex sharing the same home.
@@ -269,24 +269,24 @@ describe('reconcileRealHomeCodexHookEntries', () => {
   })
 
   it('keeps one copy, alone and last, moving the approvals of user hooks that shift', async () => {
-    writeHooks({ hooks: { Stop: [USER_A, orcaGroup(), USER_B, orcaGroup(), USER_C, orcaGroup()] } })
+    writeHooks({ hooks: { Stop: [USER_A, topoGroup(), USER_B, topoGroup(), USER_C, topoGroup()] } })
     upsertHookTrustEntries(configPath(), [
       { ...stopEntryAt(2, USER_B), trustedHash: 'sha256:user-b' },
       { ...stopEntryAt(4, USER_C), trustedHash: 'sha256:user-c' },
-      { ...stopEntryAt(3, orcaGroup()), trustedHash: CODEX_HASHES.stop, enabled: true }
+      { ...stopEntryAt(3, topoGroup()), trustedHash: CODEX_HASHES.stop, enabled: true }
     ])
 
     expect(await reconcile()).toBe('written')
 
-    expect(readHooks().hooks.Stop).toEqual([USER_A, orcaGroup(), USER_B, USER_C])
-    expectOrcaApprovedAt(1)
+    expect(readHooks().hooks.Stop).toEqual([USER_A, topoGroup(), USER_B, USER_C])
+    expectTopoApprovedAt(1)
     expect(trustAt(stopEntryAt(2, USER_B))?.trustedHash).toBe('sha256:user-b')
     expect(trustAt(stopEntryAt(3, USER_C))?.trustedHash).toBe('sha256:user-c')
     expect(trustAt(stopEntryAt(4, USER_C))).toBeUndefined()
     expect(await reconcile()).toBe('unchanged')
   })
 
-  it("moves Orca's handler out of a user's matcher group, with the shifted user approvals", async () => {
+  it("moves Topo's handler out of a user's matcher group, with the shifted user approvals", async () => {
     const userGroup: HookDefinition = {
       matcher: 'Bash',
       hooks: [
@@ -311,7 +311,7 @@ describe('reconcileRealHomeCodexHookEntries', () => {
     ])
     expect(trustAt(lintAt(0))?.trustedHash).toBe('sha256:lint')
     expect(trustAt(lintAt(1))).toBeUndefined()
-    const orca = createCodexHookTrustEntry(
+    const topo = createCodexHookTrustEntry(
       hooksPath(),
       'PreToolUse',
       1,
@@ -319,10 +319,10 @@ describe('reconcileRealHomeCodexHookEntries', () => {
       after[1]!,
       after[1]!.hooks![0]!
     )!
-    expect(trustAt(orca)).toEqual({ trustedHash: CODEX_HASHES.pre_tool_use, enabled: true })
+    expect(trustAt(topo)).toEqual({ trustedHash: CODEX_HASHES.pre_tool_use, enabled: true })
   })
 
-  it("drops Orca's approval at the slot its copy left in a user's matcher group", async () => {
+  it("drops Topo's approval at the slot its copy left in a user's matcher group", async () => {
     const lint = { type: 'command' as const, command: 'lint.sh' }
     const userGroup: HookDefinition = {
       matcher: 'Bash',
@@ -360,9 +360,9 @@ describe('reconcileRealHomeCodexHookEntries', () => {
     expect(await reconcile()).toBe('written')
 
     expect(mocks.hooksJsonWrites).toBe(0)
-    expectOrcaApprovedAt(2)
-    // The former Orca slot now names a user hook.
-    expect(trustAt(stopEntryAt(1, orcaGroup()))).toBeUndefined()
+    expectTopoApprovedAt(2)
+    // The former Topo slot now names a user hook.
+    expect(trustAt(stopEntryAt(1, topoGroup()))).toBeUndefined()
     expect(trustAt(stopEntryAt(0, USER_B))?.trustedHash).toBe('sha256:b')
     expect(await reconcile()).toBe('unchanged')
   })
@@ -376,9 +376,9 @@ describe('reconcileRealHomeCodexHookEntries', () => {
 
     expect(await reconcile()).toBe('written')
 
-    expect(readHooks().hooks.Stop).toEqual([USER_A, USER_B, orcaGroup()])
-    expectOrcaApprovedAt(2)
-    expect(trustAt(stopEntryAt(1, orcaGroup()))).toBeUndefined()
+    expect(readHooks().hooks.Stop).toEqual([USER_A, USER_B, topoGroup()])
+    expectTopoApprovedAt(2)
+    expect(trustAt(stopEntryAt(1, topoGroup()))).toBeUndefined()
   })
 
   it.each([

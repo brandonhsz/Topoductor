@@ -13,7 +13,7 @@ import {
 } from '../../../../../shared/remote-server-update'
 
 import {
-  getOrcadSshDeployment,
+  getTopodSshDeployment,
   type PublicKnownRuntimeEnvironment
 } from '../../../../../shared/remote-runtime/host-catalog/runtime-environments'
 import type { RuntimeStatus } from '../../../../../shared/runtime-session-contracts'
@@ -99,7 +99,7 @@ export function checkingRemoteServerUpdateEntry(
     liveLeafCount: 0,
     support: null,
     error: null,
-    managedOverSsh: Boolean(getOrcadSshDeployment(environment))
+    managedOverSsh: Boolean(getTopodSshDeployment(environment))
   }
 }
 

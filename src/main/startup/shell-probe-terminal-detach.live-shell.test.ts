@@ -1,4 +1,4 @@
-/** A process started from an interactive terminal (`orca serve`) must keep running while it probes the login shell. */
+/** A process started from an interactive terminal (`topo serve`) must keep running while it probes the login shell. */
 import { build } from 'esbuild'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -7,9 +7,9 @@ import * as pty from 'node-pty'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { hasZsh, ZSH_PATH } from '../pty/shell-startup/zsh-startup-hook-pty-harness'
 
-const DONE = 'ORCA-PROBE-PARENT-DONE'
+const DONE = 'TOPO-PROBE-PARENT-DONE'
 
-// The parent touches its terminal mid-probe, as orcad's inherited stdio does during startup.
+// The parent touches its terminal mid-probe, as topod's inherited stdio does during startup.
 function fixtureSource(probe: 'login-environment' | 'path'): string {
   const call =
     probe === 'login-environment'
@@ -28,7 +28,7 @@ describe.runIf(hasZsh)('login shell probes run from an interactive terminal', ()
   let workDir: string
 
   beforeEach(() => {
-    workDir = mkdtempSync(join(tmpdir(), 'orca-shell-probe-tty-'))
+    workDir = mkdtempSync(join(tmpdir(), 'topo-shell-probe-tty-'))
     // A slow rc keeps the probe shell alive while the parent touches the terminal.
     writeFileSync(join(workDir, '.zshrc'), 'sleep 1\n')
   })

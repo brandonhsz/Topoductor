@@ -1,18 +1,18 @@
 import type { OrchestrationCliCommand } from './orchestration-cli-command'
 import type { RuntimeAgentPromptWriteOptions } from '../../../terminal/input/agent-prompt-write-options'
-import { ORCA_DISPATCH_PROMPT_LEAD_LINE } from '../../../../../shared/orca-dispatch-status-prompt'
-import { ORCA_SESSION_ADDRESS_PREFIX } from '../../../../../shared/orca-session-address-prefix'
+import { TOPO_DISPATCH_PROMPT_LEAD_LINE } from '../../../../../shared/topo-dispatch-status-prompt'
+import { TOPO_SESSION_ADDRESS_PREFIX } from '../../../../../shared/topo-session-address-prefix'
 
 export type PreambleParams = {
   taskId: string
   // Dispatch ids fence completion authority across retries of one Task.
   dispatchId: string
   taskSpec: string
-  /** A terminal handle, or a session's `orca_session_id:<id>`; each is labelled by its kind. */
+  /** A terminal handle, or a session's `topo_session_id:<id>`; each is labelled by its kind. */
   coordinatorHandle: string
   workerHandle: string
   devMode?: boolean
-  // Packaged WSL uses orca-ide; other hosts retain their existing launcher.
+  // Packaged WSL uses topo-ide; other hosts retain their existing launcher.
   cliCommand?: OrchestrationCliCommand
   // Supply actual preflight drift only; spurious warnings train workers to ignore stale-base evidence.
   baseDrift?: {
@@ -32,26 +32,26 @@ export type PreambleParams = {
 
 /** A session address names a chat worker; any other handle is a terminal. */
 function isSessionHandle(handle: string): boolean {
-  return handle.startsWith(ORCA_SESSION_ADDRESS_PREFIX)
+  return handle.startsWith(TOPO_SESSION_ADDRESS_PREFIX)
 }
 
-/** Terminal agents keep their handle's wording; only a session is named by its Orca session ID. */
+/** Terminal agents keep their handle's wording; only a session is named by its Topo session ID. */
 function dispatchIdentityLines(params: PreambleParams): string {
   return [
     isSessionHandle(params.coordinatorHandle)
-      ? `Your coordinator's Orca session ID is: ${params.coordinatorHandle}`
+      ? `Your coordinator's Topo session ID is: ${params.coordinatorHandle}`
       : `Your coordinator's terminal handle is: ${params.coordinatorHandle}`,
     `Your task ID is: ${params.taskId}`,
     ...(isSessionHandle(params.workerHandle)
-      ? [`Your Orca session ID is: ${params.workerHandle}`]
+      ? [`Your Topo session ID is: ${params.workerHandle}`]
       : [])
   ].join('\n')
 }
 
 // Place behavior rules beside CLI examples, where agent readers use them.
 export function buildDispatchPreamble(params: PreambleParams): string {
-  // Dev agents must reach the dev socket through orca-dev.
-  const cli = params.devMode ? 'orca-dev' : (params.cliCommand ?? 'orca')
+  // Dev agents must reach the dev socket through topo-dev.
+  const cli = params.devMode ? 'topo-dev' : (params.cliCommand ?? 'topo')
   const chat = isSessionHandle(params.workerHandle)
   const surface = chat ? 'chat' : 'terminal'
   const postDoneInstructions = buildPostWorkerDoneInstructions({
@@ -61,7 +61,7 @@ export function buildDispatchPreamble(params: PreambleParams): string {
   })
 
   // Use one-line recipes across POSIX/PowerShell/cmd; fence comments and use plain reasons to avoid misleading Chat rendering (STA-8200).
-  const header = `You are working inside Orca, a multi-agent IDE. You are a dispatched worker.
+  const header = `You are working inside Topo, a multi-agent IDE. You are a dispatched worker.
 ${dispatchIdentityLines(params)}
 
 The coordinator cannot see this ${surface}. Reach it with the \`${cli} orchestration\` commands
@@ -83,7 +83,7 @@ ${
 
 `
     : ''
-}  # Ask the coordinator, then end your turn; Orca wakes you with the answer.
+}  # Ask the coordinator, then end your turn; Topo wakes you with the answer.
   # Never use a local question prompt such as AskUserQuestion; the
   # coordinator cannot see or answer it.
   ${cli} orchestration ask --from ${params.workerHandle} --question "<your question>"
@@ -126,7 +126,7 @@ export function dispatchPreambleSendOptions(requestId: string): DispatchPreamble
   // Why: a delayed provider hook must not revoke an accepted Dispatch.
   return {
     inputKind: 'orchestration',
-    leadLine: ORCA_DISPATCH_PROMPT_LEAD_LINE,
+    leadLine: TOPO_DISPATCH_PROMPT_LEAD_LINE,
     acceptQueued: true,
     observationTimeoutMs: 0,
     requestId
@@ -157,7 +157,7 @@ do NOT run a sleep/poll loop, and do NOT keep calling
 \`${cli} orchestration check\`.
 
 Exit the shell after completion. Bare-shell workers have no idle agent prompt
-for Orca to reuse.`
+for Topo to reuse.`
   }
 
   return `=== AFTER YOU SEND worker_done ===

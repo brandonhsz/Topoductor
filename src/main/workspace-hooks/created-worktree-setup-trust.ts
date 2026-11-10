@@ -1,15 +1,15 @@
 import { createHash } from 'node:crypto'
 import { resolveHookCommandSourcePolicy } from '../../shared/hook-command-source-policy'
-import { getSetupTrustContent } from '../../shared/orca-hook-setup-config'
-import type { OrcaHooks } from '../../shared/orca-yaml-hook-types'
+import { getSetupTrustContent } from '../../shared/topo-hook-setup-config'
+import type { TopoHooks } from '../../shared/topo-yaml-hook-types'
 import type { Repo } from '../../shared/repo-types'
 import type { SetupDecision, SetupTrustMismatch } from '../../shared/worktree/create-types'
 import type { ApprovedSetupHashes } from '../../shared/worktree/approved-setup-hashes'
 import type { WorktreeDefaultTabsLaunch } from '../../shared/worktree/launch-types'
 import { shouldRunSetupForCreate } from './effective-hook-config'
 
-/** Same digest as the renderer's hashOrcaHookScript, so host and prompt hashes compare. */
-export function hashOrcaHookTrustContent(content: string): string {
+/** Same digest as the renderer's hashTopoHookScript, so host and prompt hashes compare. */
+export function hashTopoHookTrustContent(content: string): string {
   return createHash('sha256').update(content.trim()).digest('hex')
 }
 
@@ -19,7 +19,7 @@ export function hashOrcaHookTrustContent(content: string): string {
  */
 export function checkCreatedWorktreeSetupTrust(
   repo: Repo,
-  createdYamlHooks: OrcaHooks | null,
+  createdYamlHooks: TopoHooks | null,
   decision: SetupDecision | undefined,
   approved: ApprovedSetupHashes
 ): SetupTrustMismatch | undefined {
@@ -34,7 +34,7 @@ export function checkCreatedWorktreeSetupTrust(
   if (policy === 'local-only' || !scriptContent || !wouldRunSetup(repo, decision)) {
     return undefined
   }
-  const contentHash = hashOrcaHookTrustContent(scriptContent)
+  const contentHash = hashTopoHookTrustContent(scriptContent)
   const matches = contentHash === approvedSetupHash || approvedSetupHashes?.includes(contentHash)
   return matches ? undefined : { contentHash, scriptContent }
 }

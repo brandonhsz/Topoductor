@@ -6,7 +6,7 @@ import { makeTab } from './terminal-tab.test-fixture'
 import { makeWorktree } from '../slices/worktrees/worktree.test-fixture'
 import { createStoreCascadesMockApi } from '../testing/app-store-cascade-api.test-fixture'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 
 vi.mock('@/runtime/rpc/calls/runtime-rpc-call', async (importOriginal) =>
   (
@@ -20,7 +20,7 @@ type CloseReason = 'user' | 'cleanup'
 function sentCloses(
   closeTerminalSurface: ReturnType<typeof vi.fn>
 ): { worktreeId: string; tabId: string; reason: CloseReason }[] {
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     // Main hears each close once: never also through today's call.
     expect(closeTerminalSurface).not.toHaveBeenCalled()
     return layoutApplyTestTransport.sentOfType('closeTabs').map((command) => ({

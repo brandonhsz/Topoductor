@@ -122,7 +122,7 @@ describe('plugin theme settings', () => {
     })
   })
 
-  it('keeps the sidebar value in step with the slots so older Orca still matches the terminal', () => {
+  it('keeps the sidebar value in step with the slots so older Topo still matches the terminal', () => {
     const current = {
       leftSidebarAppearanceMode: 'match-terminal' as const,
       pluginAppThemeLight: 'match-terminal' as const,

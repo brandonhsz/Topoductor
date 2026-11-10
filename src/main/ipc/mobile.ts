@@ -13,7 +13,7 @@ import {
   type DefaultRouteInterfaceLookup,
   type NetworkInterface
 } from '../runtime/rpc/server/pairing/network/pairing-network-interfaces'
-import type { OrcaRuntimeRpcServer } from '../runtime/rpc/server/runtime-rpc'
+import type { TopoRuntimeRpcServer } from '../runtime/rpc/server/runtime-rpc'
 import type { MobileRelayStatusDetail } from '../../shared/remote-runtime/relay/mobile-relay-status'
 import {
   encodeMobilePairingQr,
@@ -56,7 +56,7 @@ export type MobileHandlerDependencies = {
 }
 
 export function registerMobileHandlers(
-  rpcServer: OrcaRuntimeRpcServer,
+  rpcServer: TopoRuntimeRpcServer,
   dependencies: MobileHandlerDependencies = {}
 ): void {
   const firewallEnvironment = dependencies.firewallEnvironment ?? {

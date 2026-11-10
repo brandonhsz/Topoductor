@@ -17,7 +17,7 @@ afterEach(async () => {
 
 describe('Kimi session index reader cache', () => {
   it('reloads a grown index after its mtime is restored', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-kimi-index-mutation-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-kimi-index-mutation-'))
     tempDirs.push(root)
     const indexPath = join(root, 'session_index.jsonl')
     await writeFile(indexPath, `${JSON.stringify({ sessionId: 'session-old', workDir: '/old' })}\n`)

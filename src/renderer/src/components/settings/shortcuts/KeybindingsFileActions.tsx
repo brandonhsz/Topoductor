@@ -68,7 +68,7 @@ export function KeybindingsFileActions(): React.JSX.Element {
     return snapshot?.path ?? keybindingSnapshot?.path ?? null
   }
 
-  const editKeybindingsInOrca = async (): Promise<void> => {
+  const editKeybindingsInTopo = async (): Promise<void> => {
     try {
       const filePath = await prepareKeybindingsPath()
       if (!filePath) {
@@ -112,7 +112,7 @@ export function KeybindingsFileActions(): React.JSX.Element {
           ? error.message
           : t(
               'auto.components.settings.KeybindingsFileActions.dd532a01ce',
-              'Failed to open keybindings in Orca.'
+              'Failed to open keybindings in Topo.'
             )
       )
     }
@@ -160,10 +160,10 @@ export function KeybindingsFileActions(): React.JSX.Element {
         variant="ghost"
         size="xs"
         className="rounded-none border-0 shadow-none"
-        onClick={() => void editKeybindingsInOrca()}
+        onClick={() => void editKeybindingsInTopo()}
       >
         <FileText className="size-3" />
-        {t('auto.components.settings.KeybindingsFileActions.1c2be2b2c6', 'Edit File in Orca')}
+        {t('auto.components.settings.KeybindingsFileActions.1c2be2b2c6', 'Edit File in Topo')}
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

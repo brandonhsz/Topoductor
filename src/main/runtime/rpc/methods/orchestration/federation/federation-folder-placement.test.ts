@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -14,7 +14,7 @@ describe('orchestration federated folder placement', () => {
 
   it('rejects a new folder workspace before accepting the remote attachment', async () => {
     db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     vi.spyOn(runtime, 'validateOrchestrationAgentLauncher').mockImplementation(() => {})
     vi.spyOn(runtime, 'showRepo').mockResolvedValue({

@@ -11,10 +11,10 @@ import { getCodexManagedScriptFileName } from '../definitions/codex-hook-identit
 import {
   getRealHomeCodexHookHome,
   type CodexHookHome
-} from '../../trust/hooks/codex-hook-orca-approvals'
+} from '../../trust/hooks/codex-hook-topo-approvals'
 import { mutateRealHomeHooksPreservingUserTrust } from '../../trust/hooks/codex-user-hook-trust-moves'
 
-/** Move shifted user approvals; the caller removes Orca's own approvals. */
+/** Move shifted user approvals; the caller removes Topo's own approvals. */
 export function sweepRealHomeCodexHook(
   home: CodexHookHome = getRealHomeCodexHookHome()
 ): 'removed' | 'unavailable' {

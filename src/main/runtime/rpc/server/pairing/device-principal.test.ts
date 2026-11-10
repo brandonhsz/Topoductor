@@ -8,8 +8,8 @@ import { DeviceRegistry } from './device-registry'
 
 import type { DeviceEntry } from './device-entry'
 import './mobile-pairing-files'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
-import { OrcaRuntimeRpcServer } from '../runtime-rpc'
+import type { TopoRuntimeService } from '../../../topo-runtime'
+import { TopoRuntimeRpcServer } from '../runtime-rpc'
 import type { AuthenticatedMobileSocket } from '../../mobile-socket-wiring'
 
 function socketFor(device: DeviceEntry): AuthenticatedMobileSocket {
@@ -26,14 +26,14 @@ function socketFor(device: DeviceEntry): AuthenticatedMobileSocket {
 
 describe('device principal', () => {
   it('dispatches an old phone with its token as client id and refuses it once re-credentialed', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-device-principal-rpc-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-device-principal-rpc-'))
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: status.get only reads these three members.
     const runtime = {
       configureNotificationDismissalStore: () => {},
       getRuntimeId: () => 'test-runtime',
       getStatus: vi.fn().mockResolvedValue({ graphStatus: 'ok' })
-    } as unknown as OrcaRuntimeService
-    const server = new OrcaRuntimeRpcServer({ runtime, userDataPath, enableWebSocket: false })
+    } as unknown as TopoRuntimeService
+    const server = new TopoRuntimeRpcServer({ runtime, userDataPath, enableWebSocket: false })
     const registry = new DeviceRegistry(userDataPath)
     server['deviceRegistry'] = registry
     const phone = registry.addDevice('phone', 'mobile')

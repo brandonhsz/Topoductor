@@ -79,7 +79,7 @@ function unfencedBlock(t: Translate = translate): AutomationActionBlock {
     reason: 'unfenced',
     message: t(
       'auto.components.automations.capturedOwner.unfenced',
-      'Orca on this host needs an update before you can view run history or manage this automation. Scheduled runs may still continue on the host.'
+      'Topo on this host needs an update before you can view run history or manage this automation. Scheduled runs may still continue on the host.'
     ),
     recovery: 'update-server'
   }

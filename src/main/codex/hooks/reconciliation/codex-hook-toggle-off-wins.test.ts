@@ -46,7 +46,7 @@ import {
   CODEX_EVENT_LABEL,
   getCodexManagedHookInstallMaterial
 } from '../definitions/codex-hook-definition'
-import { getOrcaManagedCodexHomePath } from '../../configuration/homes/codex-home-paths'
+import { getTopoManagedCodexHomePath } from '../../configuration/homes/codex-home-paths'
 import type { CodexHookHashes } from '../../trust/hooks/codex-hook-trust-derivation'
 import { readHookTrustEntries } from '../../trust/toml/config-toml-trust'
 
@@ -61,7 +61,7 @@ const CODEX_HASHES: CodexHookHashes = Object.fromEntries(
 const installCodex = MANAGED_AGENT_HOOK_INSTALLERS.find(([agent]) => agent === 'codex')![1]
 const removeCodex = MANAGED_AGENT_HOOK_REMOVERS.find(([agent]) => agent === 'codex')![1]
 
-function expectNoOrcaHook(codexHome: string): void {
+function expectNoTopoHook(codexHome: string): void {
   const hooksPath = join(codexHome, 'hooks.json')
   if (existsSync(hooksPath)) {
     expect(readFileSync(hooksPath, 'utf-8')).not.toContain(
@@ -73,12 +73,12 @@ function expectNoOrcaHook(codexHome: string): void {
 
 beforeEach(() => {
   // Resolve macOS /var symlinks to avoid a second trust-key spelling.
-  root = realpathSync.native(mkdtempSync(join(tmpdir(), 'orca-codex-toggle-')))
+  root = realpathSync.native(mkdtempSync(join(tmpdir(), 'topo-codex-toggle-')))
   home = join(root, 'home')
   const userData = join(root, 'user-data')
   mkdirSync(home)
   mkdirSync(userData)
-  vi.stubEnv('ORCA_USER_DATA_PATH', userData)
+  vi.stubEnv('TOPO_USER_DATA_PATH', userData)
   vi.stubEnv('CODEX_HOME', '')
   mocks.homedir.mockReturnValue(home)
   mocks.codexPath = join(userData, 'codex')
@@ -98,7 +98,7 @@ describe('turning hooks off while turning them on still waits for Codex', () => 
   it.each([
     ['~/.codex', true],
     ['a custom CODEX_HOME', false]
-  ])('leaves no Orca entry or approval with %s selected', async (_name, realHome) => {
+  ])('leaves no Topo entry or approval with %s selected', async (_name, realHome) => {
     usesRealHome = realHome
     let answer!: () => void
     mocks.deriveCodexHookHashes.mockReturnValue(
@@ -130,7 +130,7 @@ describe('turning hooks off while turning them on still waits for Codex', () => 
     await on
     await _internals.settledForTesting()
 
-    expectNoOrcaHook(join(home, '.codex'))
-    expectNoOrcaHook(getOrcaManagedCodexHomePath())
+    expectNoTopoHook(join(home, '.codex'))
+    expectNoTopoHook(getTopoManagedCodexHomePath())
   })
 })

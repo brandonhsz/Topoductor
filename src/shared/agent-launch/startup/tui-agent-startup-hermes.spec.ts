@@ -57,7 +57,7 @@ describe('hermes startup plans', () => {
     expect(unwrapPosixShellScript(plan?.launchCommand)).toContain("'--profile' 'chat'")
   })
 
-  it('keeps Orca ownership of the Hermes startup query and TUI mode', () => {
+  it('keeps Topo ownership of the Hermes startup query and TUI mode', () => {
     const plan = buildAgentStartupPlan({
       agent: 'hermes',
       prompt: 'automation prompt',
@@ -71,7 +71,7 @@ describe('hermes startup plans', () => {
     expect(script).not.toContain('override')
     expect(script).not.toContain("'--cli'")
     expect(script.match(/'--tui'/g)).toHaveLength(1)
-    expect(plan?.env?.ORCA_HERMES_STARTUP_QUERY).toBe('automation prompt')
+    expect(plan?.env?.TOPO_HERMES_STARTUP_QUERY).toBe('automation prompt')
   })
 
   it('selects the final Hermes executable token in a wrapper', () => {
@@ -158,7 +158,7 @@ describe('hermes startup plans', () => {
     })
 
     expect(unwrapPowerShellScript(plan?.launchCommand)).toContain(
-      "& 'hermes' 'chat' \"--query=$orcaHermesNativeQuery\" '--tui'"
+      "& 'hermes' 'chat' \"--query=$topoHermesNativeQuery\" '--tui'"
     )
   })
 

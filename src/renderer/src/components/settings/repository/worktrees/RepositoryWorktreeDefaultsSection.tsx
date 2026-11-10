@@ -60,9 +60,9 @@ export function RepositoryWorktreeDefaultsSection({
         title={t('auto.components.settings.RepositoryPane.externalWorktrees', 'External worktrees')}
         description={t(
           'auto.components.settings.RepositoryPane.externalWorktreesDescription',
-          'Override whether worktrees created outside Orca appear for this project.'
+          'Override whether worktrees created outside Topo appear for this project.'
         )}
-        keywords={[repo.displayName, 'external', 'non-Orca', 'visibility', 'sidebar']}
+        keywords={[repo.displayName, 'external', 'non-Topo', 'visibility', 'sidebar']}
         className="space-y-2 py-3"
         forceVisible={forceVisible}
       >

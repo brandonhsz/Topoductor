@@ -16,9 +16,9 @@ import {
   type AutomationListResult
 } from '../../../../shared/automations/ownership/automation-list-scope'
 import type { AutomationService } from '../../../automations/service'
-import { OrcaRuntimeWithCrewOperations } from './crew-operations'
+import { TopoRuntimeWithCrewOperations } from './crew-operations'
 
-export abstract class OrcaRuntimeWithAutomationApiOperations extends OrcaRuntimeWithCrewOperations {
+export abstract class TopoRuntimeWithAutomationApiOperations extends TopoRuntimeWithCrewOperations {
   abstract notifyAutomationsChanged(payload?: AutomationsChangedPayload): void
 
   private readAutomationRuns<T>(

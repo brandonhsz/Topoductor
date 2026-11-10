@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import type { LegacyCoordinatorAuthorityProof, RpcRequest } from './core'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import type { OrchestrationCompatibilityCallerAuthority } from '../orchestration/terminal-authority/orchestration-compatibility-authority'
 import '../orchestration/db/orchestration-db'
 import '../orchestration/db/contract-constants'
@@ -58,7 +58,7 @@ export class OrchestrationLegacyCompatibility {
   private readonly authority: LegacyCompatibilityAuthority
   private readonly coordinatorAuthority: LegacyCoordinatorAuthority
 
-  constructor(private readonly runtime: OrcaRuntimeService) {
+  constructor(private readonly runtime: TopoRuntimeService) {
     this.authority = new LegacyCompatibilityAuthority(runtime)
     this.coordinatorAuthority = new LegacyCoordinatorAuthority(runtime)
   }

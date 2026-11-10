@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from '../../../dispatcher'
 import type { RpcRequest } from '../../../core'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { JIRA_METHODS } from './jira'
 
 function makeRequest(method: string, params?: unknown): RpcRequest {
@@ -18,7 +18,7 @@ describe('jira RPC methods', () => {
     }
     const dispatcher = new RpcDispatcher({
       // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: This dispatcher test only invokes the three methods implemented by the fixture.
-      runtime: runtime as unknown as OrcaRuntimeService,
+      runtime: runtime as unknown as TopoRuntimeService,
       methods: JIRA_METHODS
     })
     await dispatcher.dispatch(
@@ -66,7 +66,7 @@ describe('jira RPC methods', () => {
     const runtime = {
       getRuntimeId: () => 'test-runtime',
       jiraGetIssue: vi.fn().mockResolvedValue({ key: 'ABC-3', description })
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     const dispatcher = new RpcDispatcher({ runtime, methods: JIRA_METHODS })
     const replies: string[] = []
 
@@ -95,7 +95,7 @@ describe('Jira title generation RPC', () => {
       jiraCancelGenerateIssueSummary: cancel
     }
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: these methods only use the three supplied runtime operations.
-    const runtime = stub as unknown as OrcaRuntimeService
+    const runtime = stub as unknown as TopoRuntimeService
     const dispatcher = new RpcDispatcher({ runtime, methods: JIRA_METHODS })
     const args = { siteId: 'site-1', requestId: 'req-1', draftId: 'draft-1', description: 'Draft' }
     const abort = new AbortController()

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { executeReleaseMacBuildMode } from '../operations/run-release-mac-build-workflow.mjs'
 
 const splitEnvironment = {
-  GITHUB_REPOSITORY: 'stablyai/orca',
+  GITHUB_REPOSITORY: 'brandonhsz/Topoductor',
   GITHUB_RUN_ID: '777',
   GITHUB_TOKEN: 'token',
   GITHUB_OUTPUT: '/tmp/mac-build-output',
@@ -21,7 +21,7 @@ const splitRun = {
   path: '.github/workflows/release-mac-build.yml',
   event: 'workflow_dispatch',
   display_title: 'Mac release build v1.2.3-rc.4 (777)',
-  html_url: 'https://github.test/stablyai/orca/actions/runs/123',
+  html_url: 'https://github.test/brandonhsz/Topoductor/actions/runs/123',
   updated_at: '2026-06-30T12:10:00Z',
   status: 'completed',
   conclusion: 'success'

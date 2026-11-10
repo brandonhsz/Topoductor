@@ -99,7 +99,7 @@ describe('readSidebarProjectCatalog', () => {
   })
 
   it("files a server's copy of a grouped project under that group, as the window does", () => {
-    const upstream = { owner: 'stablyai', repo: 'school-app' }
+    const upstream = { owner: 'brandonhsz', repo: 'school-app' }
     const copy = repo('copy', { executionHostId: 'runtime:hub', upstream })
     const catalog = readSidebarProjectCatalog(
       store([repo('a', { projectGroupId: 'school', upstream })], [group('school')]),

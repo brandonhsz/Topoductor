@@ -1,13 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
-import '../orca-runtime-tests/runtime-test-module-registration.spec'
-import { OrcaRuntimeService } from '../orca-runtime'
+import '../topo-runtime-tests/runtime-test-module-registration.spec'
+import { TopoRuntimeService } from '../topo-runtime'
 
 import {
   HEADLESS_LEAF_ID,
   TEST_WORKTREE_ID,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} from '../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import type { RuntimeStore } from '../construction/runtime-store-contract'
 
 import { planTerminalLeafMove } from '../../persistence/terminal-topology/terminal-leaf-move'
@@ -65,7 +65,7 @@ async function setup(
     return plan.result
   })
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: The shared fixture implements RuntimeStore for this runtime.
-  const runtime = new OrcaRuntimeService(runtimeStore as RuntimeStore)
+  const runtime = new TopoRuntimeService(runtimeStore as RuntimeStore)
   await runtime.listMobileSessionTabs(`id:${TEST_WORKTREE_ID}`)
   const published: unknown[] = []
   runtime.onMobileSessionTabsChanged((snapshot) => published.push(snapshot))

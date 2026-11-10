@@ -230,7 +230,7 @@ export const PLUGIN_METHODS = [
       const service = requirePluginService()
       await service.whenReady()
       if (!pluginFrameDevToolsForRpc) {
-        throw new Error('Plugin frame DevTools are only available in the Orca desktop app')
+        throw new Error('Plugin frame DevTools are only available in the Topo desktop app')
       }
       return { pluginKey: params.pluginKey, opened: pluginFrameDevToolsForRpc(params.pluginKey) }
     }
@@ -272,7 +272,7 @@ export const PLUGIN_METHODS = [
     handler: async (params) => {
       const service = requirePluginService()
       await service.whenReady()
-      // Why `cursor` even without `after`: `orca plugin dev watch` takes a baseline, then follows.
+      // Why `cursor` even without `after`: `topo plugin dev watch` takes a baseline, then follows.
       const { lines, cursor } = service.getLogsSince(params.pluginKey, params.after)
       return { pluginKey: params.pluginKey, lines, cursor }
     }

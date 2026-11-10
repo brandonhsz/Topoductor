@@ -11,7 +11,7 @@ const { existsSyncMock, userInfoMock, runProcessMock, ptyProbeMock } = vi.hoiste
 vi.mock('node:fs', () => ({ existsSync: existsSyncMock }))
 vi.mock('node:os', () => ({ userInfo: userInfoMock }))
 // Process-host owns encoding/signals/caps; this suite checks PAM argv and verdicts.
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   runProcess: (...args: unknown[]) => Promise.resolve(runProcessMock(...args))
 }))
 vi.mock('./macos-login-session-pty-probe', async (importOriginal) => ({
@@ -29,7 +29,7 @@ import {
 const ACCEPTED_RESULT = {
   code: 0,
   signal: null,
-  stdout: 'ORCA_LOGIN_PREFLIGHT_OK',
+  stdout: 'TOPO_LOGIN_PREFLIGHT_OK',
   stderr: '',
   timedOut: false
 }
@@ -48,14 +48,14 @@ describe('probeMacosLoginSessionAlive', () => {
 
   beforeEach(() => {
     origPlatform = Object.getOwnPropertyDescriptor(process, 'platform')
-    origDisable = process.env.ORCA_DISABLE_MACOS_LOGIN_SHELL
-    delete process.env.ORCA_DISABLE_MACOS_LOGIN_SHELL
+    origDisable = process.env.TOPO_DISABLE_MACOS_LOGIN_SHELL
+    delete process.env.TOPO_DISABLE_MACOS_LOGIN_SHELL
     existsSyncMock.mockReturnValue(true)
     userInfoMock.mockReturnValue({ username: 'ada', homedir: '/Users/ada' })
     runProcessMock.mockResolvedValue({
       code: 0,
       signal: null,
-      stdout: 'ORCA_LOGIN_PREFLIGHT_OK',
+      stdout: 'TOPO_LOGIN_PREFLIGHT_OK',
       stderr: '',
       timedOut: false
     })
@@ -68,9 +68,9 @@ describe('probeMacosLoginSessionAlive', () => {
       Object.defineProperty(process, 'platform', origPlatform)
     }
     if (origDisable === undefined) {
-      delete process.env.ORCA_DISABLE_MACOS_LOGIN_SHELL
+      delete process.env.TOPO_DISABLE_MACOS_LOGIN_SHELL
     } else {
-      process.env.ORCA_DISABLE_MACOS_LOGIN_SHELL = origDisable
+      process.env.TOPO_DISABLE_MACOS_LOGIN_SHELL = origDisable
     }
     vi.restoreAllMocks()
     vi.clearAllMocks()

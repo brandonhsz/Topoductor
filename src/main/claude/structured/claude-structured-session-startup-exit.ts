@@ -32,7 +32,7 @@ export async function claudeStartupAnswerAfterExit(
   ])
 }
 
-/** Orca's own record of the exit an SDK report describes, which carries what ended it, such as a
+/** Topo's own record of the exit an SDK report describes, which carries what ended it, such as a
  *  missing CLI; the start's verdict weighs it against the report. */
 export async function claudeExitForReport(
   connection: Pick<ClaudeStreamJsonConnection, 'exited'>,

@@ -17,7 +17,7 @@ type ArtifactPublishButtonMocks = {
   openPopover: ((open: boolean) => void) | null
   closePopover: ((event: Event) => void) | null
   state: {
-    orcaProfileAuthStatus: Record<string, unknown>
+    topoProfileAuthStatus: Record<string, unknown>
     settings: { artifactSharingEnabled: boolean }
   }
 }
@@ -33,7 +33,7 @@ const mocks = vi.hoisted<ArtifactPublishButtonMocks>(() => ({
   openPopover: null,
   closePopover: null,
   state: {
-    orcaProfileAuthStatus: { configured: true, state: 'connected' },
+    topoProfileAuthStatus: { configured: true, state: 'connected' },
     settings: { artifactSharingEnabled: true }
   }
 }))
@@ -42,7 +42,7 @@ vi.mock('@/store', () => ({
   useAppStore: (selector: (state: Record<string, unknown>) => unknown) =>
     selector({
       ...mocks.state,
-      connectCurrentOrcaProfile: mocks.connect,
+      connectCurrentTopoProfile: mocks.connect,
       openSettingsPage: mocks.openSettingsPage,
       openSettingsTarget: mocks.openSettingsTarget
     })
@@ -109,7 +109,7 @@ describe('ArtifactPublishButton', () => {
     mocks.copyLink.mockResolvedValue(true)
     mocks.openPopover = null
     mocks.closePopover = null
-    mocks.state.orcaProfileAuthStatus = { configured: true, state: 'connected' }
+    mocks.state.topoProfileAuthStatus = { configured: true, state: 'connected' }
     mocks.state.settings = { artifactSharingEnabled: true }
   })
 

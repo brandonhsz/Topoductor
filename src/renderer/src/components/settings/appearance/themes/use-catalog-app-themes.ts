@@ -3,7 +3,7 @@ import type { PluginHostListEntry } from '../../../../../../shared/plugins/plugi
 import type { PluginMarketplaceHostListing } from '../../../../../../preload/api/plugin-host-api'
 import type { PluginThemeRegistration } from '../../../../../../shared/plugins/artifacts/plugin-theme-artifact'
 import { pluginHostVersion } from '../../../../../../shared/plugins/installation/plugin-host-version'
-import { buildPluginListEntries, needsNewerOrca } from '../../../plugins/list/plugin-list-entries'
+import { buildPluginListEntries, needsNewerTopo } from '../../../plugins/list/plugin-list-entries'
 import { applyPluginAppThemeToSlot } from '../../../plugins/state/plugin-theme-apply'
 import { createPluginPagePreviewCache } from '../../../plugins/state/use-plugin-catalog'
 import { usePluginInstallAction } from '../../../plugins/state/use-plugin-install-action'
@@ -12,7 +12,7 @@ import { useTranslate, type Translate } from '../../../../i18n/use-translate'
 type CatalogSnapshot = {
   installed: readonly PluginHostListEntry[]
   listings: readonly PluginMarketplaceHostListing[]
-  orcaVersion: string
+  topoVersion: string
 }
 
 /** One app theme a catalog offers, as its release previews it. */
@@ -43,7 +43,7 @@ export function catalogAppThemes(
         listing.blockedByKillList ||
         // Why content only: anything that runs code is reviewed on its plugin page first.
         release.execution !== 'data' ||
-        needsNewerOrca(entry.minimumOrca, snapshot.orcaVersion)
+        needsNewerTopo(entry.minimumOrca, snapshot.topoVersion)
       ) {
         return []
       }
@@ -88,7 +88,7 @@ function useCatalogSnapshot(): {
     void Promise.all([plugins.list(), plugins.listMarketplacePlugins(), updater.getVersion()])
       .then(([installed, listings, version]) => {
         if (requestId === requestRef.current) {
-          setSnapshot({ installed, listings, orcaVersion: pluginHostVersion(version) })
+          setSnapshot({ installed, listings, topoVersion: pluginHostVersion(version) })
         }
       })
       .catch((cause: unknown) => console.warn('[plugins] catalog themes unavailable:', cause))

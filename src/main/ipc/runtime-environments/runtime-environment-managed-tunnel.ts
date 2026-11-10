@@ -1,6 +1,6 @@
 import { resolveEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-store'
 import {
-  getOrcadSshDeployment,
+  getTopodSshDeployment,
   type KnownRuntimeEnvironment
 } from '../../../shared/remote-runtime/host-catalog/runtime-environments'
 import { classifyRuntimeEnvironmentHost } from '../../../shared/remote-runtime/host-catalog/runtime-environment-host-kind'
@@ -11,23 +11,23 @@ import type {
 } from '../../../shared/ssh-types'
 import { managedServerUpdateDeps } from '../../ssh/host-server/managed-server-update-deps'
 import {
-  ensureOrcadManagedTunnel,
-  rebuildOrcadManagedTunnel
-} from '../../managed-server/lifecycle/orcad-managed-tunnel'
-import { verifyOrcadManagedServing } from '../../managed-server/lifecycle/orcad-managed-serving-verify'
+  ensureTopodManagedTunnel,
+  rebuildTopodManagedTunnel
+} from '../../managed-server/lifecycle/topod-managed-tunnel'
+import { verifyTopodManagedServing } from '../../managed-server/lifecycle/topod-managed-serving-verify'
 import {
-  getManagedOrcadCrashLoopBrake,
-  OrcadCrashLoopError
-} from '../../managed-server/lifecycle/orcad-managed-crash-loop'
+  getManagedTopodCrashLoopBrake,
+  TopodCrashLoopError
+} from '../../managed-server/lifecycle/topod-managed-crash-loop'
 import {
-  MANAGED_ORCAD_NOT_ACTIVATED_DETAIL,
-  setManagedOrcadStartListener,
-  type OrcadManagedServing
-} from '../../managed-server/lifecycle/orcad-managed-serving'
+  MANAGED_TOPOD_NOT_ACTIVATED_DETAIL,
+  setManagedTopodStartListener,
+  type TopodManagedServing
+} from '../../managed-server/lifecycle/topod-managed-serving'
 import {
-  redeployStoppedManagedOrcad,
-  updateManagedOrcadOnRestore
-} from '../../managed-server/lifecycle/orcad-managed-update-on-restore'
+  redeployStoppedManagedTopod,
+  updateManagedTopodOnRestore
+} from '../../managed-server/lifecycle/topod-managed-update-on-restore'
 import {
   getSshHostServerStatus,
   setSshHostServerStatus
@@ -126,7 +126,7 @@ async function prepareWslHostForCall(
     const gate = getWslHostPhoneGate()
     if (!gate) {
       const distro =
-        environment.orcadDeployment?.kind === 'wsl' ? environment.orcadDeployment.distro : null
+        environment.topodDeployment?.kind === 'wsl' ? environment.topodDeployment.distro : null
       throw wslHostPhoneRefusal('unavailable', distro ?? environment.id)
     }
     await gate.requireRunningWithoutStart(environment.id)
@@ -140,38 +140,38 @@ async function prepareNetworkServerForCall(
   userDataPath: string,
   environment: KnownRuntimeEnvironment
 ): Promise<void> {
-  await ensureOrcadManagedTunnel(userDataPath, environment.id)
+  await ensureTopodManagedTunnel(userDataPath, environment.id)
   restoreForwardsOverTunnel(environment)
   // Calls must restart managed servers stopped by idle timeout, kill or host reboot.
-  const serving = await verifyOrcadManagedServing(userDataPath, environment.id)
+  const serving = await verifyTopodManagedServing(userDataPath, environment.id)
   const crashLoop =
-    serving.state === 'unverifiable' ? getManagedOrcadCrashLoopBrake().detail(environment.id) : null
+    serving.state === 'unverifiable' ? getManagedTopodCrashLoopBrake().detail(environment.id) : null
   if (crashLoop) {
     // Fail with the reason instead of waiting out the status timeout against a stopped server.
-    throw new OrcadCrashLoopError(crashLoop)
+    throw new TopodCrashLoopError(crashLoop)
   }
   const createDeps = () => ({
     ...managedServerUpdateDeps(userDataPath),
     target: () => {
-      const targetId = getOrcadSshDeployment(environment)?.sshTargetId
+      const targetId = getTopodSshDeployment(environment)?.sshTargetId
       return targetId ? (getSshTargetRegistryStore()?.getTarget(targetId) ?? null) : null
     },
     publish: publishRestoreUpdate
   })
   if (isStoppedElsewhere(serving)) {
     // Await redeployment: another desktop can stop the server mid-session.
-    if (await redeployStoppedManagedOrcad(environment.id, createDeps)) {
-      const targetId = getOrcadSshDeployment(environment)?.sshTargetId
+    if (await redeployStoppedManagedTopod(environment.id, createDeps)) {
+      const targetId = getTopodSshDeployment(environment)?.sshTargetId
       if (targetId) {
         await forgetLaunchSessionVerdictLazily(targetId)
       }
       // Redeployment may change the server port behind the existing forward.
-      await rebuildOrcadManagedTunnel(userDataPath, environment.id)
+      await rebuildTopodManagedTunnel(userDataPath, environment.id)
     }
   } else {
     // Auto-restored hosts may never get an SSH connect to trigger their update.
-    const update = updateManagedOrcadOnRestore(environment.id, createDeps)
-    const targetId = getOrcadSshDeployment(environment)?.sshTargetId
+    const update = updateManagedTopodOnRestore(environment.id, createDeps)
+    const targetId = getTopodSshDeployment(environment)?.sshTargetId
     if (targetId) {
       // Publish the warning after update status settles; import lazily to break the publishing cycle.
       void Promise.resolve(update)
@@ -186,7 +186,7 @@ async function prepareNetworkServerForCall(
 
 // The tunnel proves the host served even when no update check or start publishes its status (#32484).
 function restoreForwardsOverTunnel(environment: KnownRuntimeEnvironment): void {
-  const targetId = getOrcadSshDeployment(environment)?.sshTargetId
+  const targetId = getTopodSshDeployment(environment)?.sshTargetId
   if (targetId) {
     void restoreManagedHostPortForwards(targetId, { tunnelUp: true })
   }
@@ -198,8 +198,8 @@ async function forgetLaunchSessionVerdictLazily(targetId: string): Promise<void>
   forgetLaunchSessionVerdict(targetId)
 }
 
-function isStoppedElsewhere(serving: OrcadManagedServing): boolean {
-  return serving.state === 'unverifiable' && serving.detail === MANAGED_ORCAD_NOT_ACTIVATED_DETAIL
+function isStoppedElsewhere(serving: TopodManagedServing): boolean {
+  return serving.state === 'unverifiable' && serving.detail === MANAGED_TOPOD_NOT_ACTIVATED_DETAIL
 }
 
 function publishRestoreUpdate(
@@ -216,8 +216,8 @@ function publishRestoreUpdate(
   )
 }
 
-export function installManagedOrcadStartStatus(): void {
-  setManagedOrcadStartListener({
+export function installManagedTopodStartStatus(): void {
+  setManagedTopodStartListener({
     starting: (target) =>
       publishHostServerStatus(target.id, { kind: 'setting-up', phase: 'starting' }),
     settled: (target, environmentId, serving) => {

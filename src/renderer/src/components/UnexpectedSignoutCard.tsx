@@ -7,7 +7,7 @@ import { Button } from './ui/button'
 import { Card } from './ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible'
 import { shouldShowUnexpectedSignoutCard } from './unexpected-signout/unexpected-signout-visibility'
-import { OrcaSignInButton, OrcaSignInWaitNotice } from './OrcaSignInProgress'
+import { TopoSignInButton, TopoSignInWaitNotice } from './TopoSignInProgress'
 
 function readPreviewFlag(): boolean {
   if (!import.meta.env.DEV) {
@@ -17,7 +17,7 @@ function readPreviewFlag(): boolean {
     if (new URLSearchParams(window.location.search).get('showSignoutCard') === '1') {
       return true
     }
-    return window.localStorage.getItem('orca-debug-show-signout-card') === '1'
+    return window.localStorage.getItem('topo-debug-show-signout-card') === '1'
   } catch {
     return false
   }
@@ -45,7 +45,7 @@ function FeatureRow({
 
 export function UnexpectedSignoutCard(): React.JSX.Element | null {
   const t = useTranslate()
-  const authStatus = useAppStore((s) => s.orcaProfileAuthStatus)
+  const authStatus = useAppStore((s) => s.topoProfileAuthStatus)
   const persistedUIReady = useAppStore((s) => s.persistedUIReady)
   const persistedDismissedVersion = useAppStore((s) => s.dismissedUnexpectedSignoutVersion)
   const dismissedVersions = useAppStore((s) => s.unexpectedSignoutDismissedVersions)
@@ -65,7 +65,7 @@ export function UnexpectedSignoutCard(): React.JSX.Element | null {
       attempts += 1
       void useAppStore
         .getState()
-        .fetchOrcaProfileAuthStatus()
+        .fetchTopoProfileAuthStatus()
         .then((status) => {
           if (cancelled) {
             return
@@ -178,12 +178,12 @@ export function UnexpectedSignoutCard(): React.JSX.Element | null {
             {email
               ? t(
                   'auto.components.UnexpectedSignoutCard.7b4d9e1f2a',
-                  'Sign in again as {{value0}} to restore Artifact sharing, Orca Relay, and skill sharing.',
+                  'Sign in again as {{value0}} to restore Artifact sharing, Topo Relay, and skill sharing.',
                   { value0: email }
                 )
               : t(
                   'auto.components.UnexpectedSignoutCard.5a1c8d3e6f',
-                  'Sign in again to restore Artifact sharing, Orca Relay, and skill sharing.'
+                  'Sign in again to restore Artifact sharing, Topo Relay, and skill sharing.'
                 )}
           </p>
 
@@ -207,15 +207,15 @@ export function UnexpectedSignoutCard(): React.JSX.Element | null {
                 title={t('auto.components.UnexpectedSignoutCard.8d2e4f7a1b', 'Artifact sharing')}
                 description={t(
                   'auto.components.UnexpectedSignoutCard.2c9a5b6e8d',
-                  'Publish HTML and Markdown files and manage every shared link from Orca.'
+                  'Publish HTML and Markdown files and manage every shared link from Topo.'
                 )}
               />
               <FeatureRow
                 icon={Smartphone}
-                title={t('auto.components.UnexpectedSignoutCard.6e3f1a9c5b', 'Orca Relay')}
+                title={t('auto.components.UnexpectedSignoutCard.6e3f1a9c5b', 'Topo Relay')}
                 description={t(
                   'auto.components.UnexpectedSignoutCard.4b7d2e8f1a',
-                  'Connect Orca Mobile to this desktop across cellular or any Wi-Fi.'
+                  'Connect Topo Mobile to this desktop across cellular or any Wi-Fi.'
                 )}
               />
               <FeatureRow
@@ -230,11 +230,11 @@ export function UnexpectedSignoutCard(): React.JSX.Element | null {
           </Collapsible>
 
           <div className="mt-0.5 flex gap-2">
-            <OrcaSignInButton variant="default" size="sm" className="flex-1" disabled={!canConnect}>
-              {t('auto.components.UnexpectedSignoutCard.c5b3e8a17d', 'Sign in to Orca')}
-            </OrcaSignInButton>
+            <TopoSignInButton variant="default" size="sm" className="flex-1" disabled={!canConnect}>
+              {t('auto.components.UnexpectedSignoutCard.c5b3e8a17d', 'Sign in to Topo')}
+            </TopoSignInButton>
           </div>
-          <OrcaSignInWaitNotice />
+          <TopoSignInWaitNotice />
         </div>
       </Card>
     </div>

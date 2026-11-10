@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
-import { OrcaRuntimeService } from '../../runtime/orca-runtime'
-import { partialRuntimeStore } from '../../runtime/orca-runtime-tests/runtime-store-partial-fixture'
+import { TopoRuntimeService } from '../../runtime/topo-runtime'
+import { partialRuntimeStore } from '../../runtime/topo-runtime-tests/runtime-store-partial-fixture'
 import type { AgentStartupSettings } from '../../../shared/agent-launch/startup/agent-startup-plan-inputs'
 import type { PtySpawnIpcArgs } from './ipc/spawn-types'
 import { createPtyIpcSpawnState } from './ipc/spawn-state'
@@ -21,7 +21,7 @@ export async function planQueuedPaneAgentLaunch(
     'connectionId' | 'commandDelivery' | 'startupCommandDelivery' | 'trustWorktreeId' | 'cwd'
   > = {}
 ): Promise<PtySpawnIpcArgs> {
-  const runtime = new OrcaRuntimeService(partialRuntimeStore({ getSettings: () => settings }))
+  const runtime = new TopoRuntimeService(partialRuntimeStore({ getSettings: () => settings }))
   const discovery = vi.spyOn(runtime, 'resolveTerminalWorkspaceLaunchScope').mockResolvedValue({
     id: coordinates.worktreeId,
     path: '/synthetic/project',

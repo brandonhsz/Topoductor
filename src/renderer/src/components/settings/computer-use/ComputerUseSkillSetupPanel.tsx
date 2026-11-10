@@ -25,7 +25,7 @@ export function ComputerUseSkillSetupPanel(): React.JSX.Element {
   return (
     <AgentSkillSetupPanel
       variant="inline"
-      title={t('auto.components.settings.ComputerUsePane.93255aaf18', 'Orca Computer Use skill')}
+      title={t('auto.components.settings.ComputerUsePane.93255aaf18', 'Topo Computer Use skill')}
       description={t(
         'auto.components.settings.ComputerUsePane.1735461723',
         'Enables agents to inspect and operate local desktop apps.'

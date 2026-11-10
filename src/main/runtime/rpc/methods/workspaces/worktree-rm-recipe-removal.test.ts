@@ -1,6 +1,6 @@
 import '../../unused-default-rpc-methods.test-fixture'
 import { describe, expect, it, vi } from 'vitest'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { RpcDispatcher } from '../../dispatcher'
 import { WORKTREE_METHODS } from './worktree'
 import { classifyRuntimeLongPoll } from '../../server/runtime-rpc-long-poll'
@@ -18,11 +18,11 @@ function makeRuntime(owned: boolean) {
     ownsRecipeWorkspaceRemoval: vi.fn().mockReturnValue(owned),
     removeRecipeWorkspace,
     removeManagedWorktree
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   return { runtime, removeRecipeWorkspace, removeManagedWorktree }
 }
 
-async function removeOverRpc(runtime: OrcaRuntimeService) {
+async function removeOverRpc(runtime: TopoRuntimeService) {
   const dispatcher = new RpcDispatcher({ runtime, methods: WORKTREE_METHODS })
   return dispatcher.dispatch({
     id: 'req-1',

@@ -7,7 +7,7 @@ import { ClaudeDiffPanelNoticeBanner } from '../provider-notices/claude-diff-pan
 import { NewerDaemonHoldBanner } from '../session-restore/newer-daemon/NewerDaemonHoldBanner'
 import { WorkerAutoCloseBanner } from '../../orchestration-crew/WorkerAutoCloseBanner'
 import { WslDistroStoppedHoldCard } from '../session-restore/wsl-distro/WslDistroStoppedHoldCard'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import type { TerminalPaneController } from './use-terminal-pane-controller'
 
 export function TerminalPaneCodexRestartPortals({
@@ -49,7 +49,7 @@ export function TerminalPaneCodexRestartPortals({
         )
         if (!ptyId) {
           // Switch point: a server's held pane has no terminal handle to bind until it reopens.
-          return ORCA_LAYOUT_OWNER_IS_MAIN
+          return TOPO_LAYOUT_OWNER_IS_MAIN
             ? createPortal(holdBanner, pane.container, `codex-restart-${pane.id}`)
             : null
         }

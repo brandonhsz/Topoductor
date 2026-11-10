@@ -6,7 +6,7 @@ import { createOrchestrationRpcHarness } from '../rpc-test-harness'
 
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 
 import '../../../../../../shared/orchestration/mailbox/orchestration-ask-timeout'
 import { createRootDispatch } from '../../../../orchestration/db/root-dispatch-test-fixture'
@@ -19,7 +19,7 @@ describe('orchestration RPC methods', () => {
   const h = createOrchestrationRpcHarness()
   const { coordinatorPaneKey, findMethod } = h
   let db: OrchestrationDb
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
   let ctx: RpcContext
   let activeRunId: string | undefined
 

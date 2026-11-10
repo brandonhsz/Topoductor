@@ -1,7 +1,7 @@
 // Edge cohort membership, move errors, epoch floor and the relay_devices row mapping shared by
 // the director's edge moves (edge-relay.ts).
 import { createHash } from 'node:crypto'
-import { RELAY_DEFAULT_REGION, type RelayRegion } from '@orca-cloud/relay-contract/relay-regions'
+import { RELAY_DEFAULT_REGION, type RelayRegion } from '@topo-cloud/relay-contract/relay-regions'
 import type { SqlRow } from './database/database.js'
 import { z } from 'zod'
 import type { EdgeDeviceRow } from './edge-admin-client.js'

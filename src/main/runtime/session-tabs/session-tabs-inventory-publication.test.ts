@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { RuntimeGraphStatus } from '../../../shared/runtime-session-contracts'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 
-class InventoryPublicationRuntime extends OrcaRuntimeService {
+class InventoryPublicationRuntime extends TopoRuntimeService {
   setGraph(status: RuntimeGraphStatus, epoch: number): void {
     this.graphStatus = status
     if (this.rendererGraphEpoch !== epoch) {

@@ -7,7 +7,7 @@ import type { AlertsEnv, Counts } from './alerts-rules'
 
 const GRAPHQL_URL = 'https://api.cloudflare.com/client/v4/graphql'
 const OK_STATUSES = new Set(['success', 'clientDisconnected', 'responseStreamDisconnected'])
-export const DEFAULT_SCRIPT_NAME = 'orca-relay-edge'
+export const DEFAULT_SCRIPT_NAME = 'topo-relay-edge'
 
 type Group = { sum?: { requests?: number }; dimensions?: { status?: string; namespaceId?: string } }
 

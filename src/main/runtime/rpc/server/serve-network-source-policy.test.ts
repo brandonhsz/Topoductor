@@ -16,7 +16,7 @@ describe('createServeNetworkSourceGuard', () => {
   let userDataPath: string
 
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-serve-network-source-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-serve-network-source-'))
     vi.spyOn(console, 'log').mockImplementation(() => {})
   })
 

@@ -7,7 +7,7 @@ import type { WslHostConnector, WslHostServiceDependencies } from './wsl-host-co
 import { wslHostNotConnectedMessage } from './wsl-host-add-admission'
 import { wslHostStoppedMessage } from '../../../shared/wsl-host-stopped-message'
 import { admitConnectToPendingHost } from './wsl-host-removal'
-import type { WslOrcadConnection } from '../orcad/wsl-orcad-connection-types'
+import type { WslTopodConnection } from '../topod/wsl-topod-connection-types'
 
 export type WslHostRuntimeCallPort = {
   record: WslHostDeploymentRecord | null
@@ -21,7 +21,7 @@ export type WslHostRuntimeCallPort = {
   readyGeneration: () => number
   /** Shown as liveness shows a stop, so the host's panes offer Start. */
   publishStopped: (record: WslHostDeploymentRecord) => void
-  publishReady: (record: WslHostDeploymentRecord, connection: WslOrcadConnection) => void
+  publishReady: (record: WslHostDeploymentRecord, connection: WslTopodConnection) => void
   /** The same call again, once the distro is confirmed running. */
   retry: () => Promise<void>
 }

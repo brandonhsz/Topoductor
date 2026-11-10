@@ -65,13 +65,13 @@ const phaseContext = (state) => ({
 })
 
 function withReporterOutputs(run) {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-unit-phases-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-unit-phases-'))
   const timingPath = join(directory, 'unit-timings.json')
   const phasePath = join(directory, 'unit-phase-diagnostics.json')
-  vi.stubEnv('ORCA_UNIT_TIMING_REPORT', timingPath)
-  vi.stubEnv('ORCA_UNIT_PHASE_REPORT', undefined)
-  vi.stubEnv('ORCA_UNIT_SELECTION_PLAN', join(directory, 'missing-selection.json'))
-  vi.stubEnv('ORCA_SHARD_SOURCE_SHA', 'phase-source')
+  vi.stubEnv('TOPO_UNIT_TIMING_REPORT', timingPath)
+  vi.stubEnv('TOPO_UNIT_PHASE_REPORT', undefined)
+  vi.stubEnv('TOPO_UNIT_SELECTION_PLAN', join(directory, 'missing-selection.json'))
+  vi.stubEnv('TOPO_SHARD_SOURCE_SHA', 'phase-source')
   vi.stubEnv('GITHUB_RUN_ID', 'phase-run')
   vi.stubEnv('GITHUB_RUN_ATTEMPT', '3')
   try {
@@ -146,7 +146,7 @@ describe('optional unit phase diagnostics', () => {
         reporter.onTestRunEnd(modules, [], 'passed')
         const timing = readFileSync(timingPath, 'utf8')
         vi.stubEnv(
-          'ORCA_UNIT_PHASE_REPORT',
+          'TOPO_UNIT_PHASE_REPORT',
           target === 'unwritable' ? `${timingPath}/unwritable.json` : timingPath
         )
         expect(() => reporter.onTestRunEnd(modules, [], 'passed')).not.toThrow()

@@ -7,7 +7,7 @@ import type { ClaudeUsageStore } from '../claude-usage/store'
 import type { CodexUsageStore } from '../codex-usage/store'
 import type { Store } from '../persistence/loading-store/store'
 import type { AutomationRun } from '../../shared/automations/history/automation-run'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { AutomationService } from './service'
 import { createRunTerminalRetention, type RunTerminalRetention } from './run-terminal-retention'
 import {
@@ -27,7 +27,7 @@ const MAX_REMEMBERED_LAUNCHES = 256
 
 export function createRuntimeAutomationService(input: {
   store: Store
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   claudeUsage?: ClaudeUsageStore
   codexUsage?: CodexUsageStore
   /** Only server processes execute remote_host_service schedules. */
@@ -90,7 +90,7 @@ export function createRuntimeAutomationService(input: {
             if (!receipt) {
               return {
                 status: 'dispatch_failed',
-                error: `${agent} could not confirm this run after Orca restarted. Open its workspace before running again.`
+                error: `${agent} could not confirm this run after Topo restarted. Open its workspace before running again.`
               }
             }
             const target =
@@ -209,7 +209,7 @@ export function createRuntimeAutomationService(input: {
 }
 
 /** A desktop visit stamps the shown tab's focus; main-created run tabs start unstamped. */
-function runTabWasFocused(runtime: OrcaRuntimeService, run: AutomationRun): boolean {
+function runTabWasFocused(runtime: TopoRuntimeService, run: AutomationRun): boolean {
   const tabs = run.workspaceId
     ? runtime.getWorkspaceSessionForWorktree(run.workspaceId)?.unifiedTabs?.[run.workspaceId]
     : undefined
@@ -221,7 +221,7 @@ function runTabWasFocused(runtime: OrcaRuntimeService, run: AutomationRun): bool
 function createRuntimeRunTerminalRetention(
   service: AutomationService,
   store: Store,
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
 ): RunTerminalRetention {
   return createRunTerminalRetention({
     listRuns: () => store.listAutomationRuns(),

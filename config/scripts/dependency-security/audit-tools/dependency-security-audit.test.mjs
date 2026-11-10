@@ -47,7 +47,7 @@ function audit(severity = 'high', versions = ['1.2.3']) {
   }
 }
 function patchedWorkspace() {
-  const root = mkdtempSync(join(tmpdir(), 'orca-dependency-security-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-dependency-security-'))
   roots.push(root)
   writeFileSync(join(root, 'example.patch'), patch)
   writeFileSync(

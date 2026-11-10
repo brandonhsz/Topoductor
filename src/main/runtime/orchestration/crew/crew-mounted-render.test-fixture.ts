@@ -3,15 +3,15 @@ import { fixture } from './crew-read-model.test-fixture'
 import { subscribeCrew } from './crew-stream'
 import { agentSessionRecordFixture } from '../../../native-chat/agent-session-record-test-fixture'
 import { agentSessionConversationView } from '../../../../shared/agent-session/lifecycle/agent-session-conversation-view'
-import { testOrcaSessionId } from '../../../../shared/orca-session-address-test-fixture'
-import { formatOrcaSessionAddress } from '../../../../shared/orca-session-address'
+import { testTopoSessionId } from '../../../../shared/topo-session-address-test-fixture'
+import { formatTopoSessionAddress } from '../../../../shared/topo-session-address'
 import type { MountedCrewProducerModule } from '../../../../shared/orchestration/orchestration-crew-mounted.test-fixture'
 
 export const createMountedCrewProducer: MountedCrewProducerModule['createMountedCrewProducer'] =
   () => {
     const f = fixture()
-    const sessionId = testOrcaSessionId('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa')
-    const address = formatOrcaSessionAddress(sessionId)
+    const sessionId = testTopoSessionId('aaaaaaaa-1111-4111-8111-aaaaaaaaaaaa')
+    const address = formatTopoSessionAddress(sessionId)
     const record = agentSessionConversationView(agentSessionRecordFixture({ sessionId }))
     f.deps.records = {
       listRecords: () => [record],
@@ -30,14 +30,14 @@ export const createMountedCrewProducer: MountedCrewProducerModule['createMounted
             objective: 'Remembered owner',
             coordinatorHandle: null,
             coordinatorPaneKey: null,
-            coordinatorOrcaSessionId: sessionId
+            coordinatorTopoSessionId: sessionId
           })
         }
         f.db.unbindOtherRunsForCoordinator(
           {
             terminalHandle: null,
             paneKey: null,
-            orcaSessionId: sessionId
+            topoSessionId: sessionId
           },
           f.run.id
         )

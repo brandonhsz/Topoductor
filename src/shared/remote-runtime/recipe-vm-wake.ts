@@ -1,5 +1,5 @@
 /**
- * A recipe VM workspace runs on its VM's own Orca server, which is unreachable while the VM is
+ * A recipe VM workspace runs on its VM's own Topo server, which is unreachable while the VM is
  * suspended. Only a request that opens the workspace wakes it: background traffic (status
  * probes, listings, event streams) must never undo a sleep the user asked for.
  */

@@ -19,7 +19,7 @@ export function getEphemeralVmRecipeResultWarnings(
   result: EphemeralVmRecipeResult
 ): EphemeralVmRecipeResultWarning[] {
   const connection = getEphemeralVmRecipeResultConnection(result)
-  if (connection.type !== 'orca-server') {
+  if (connection.type !== 'topo-server') {
     return []
   }
   const pairing = parsePairingCode(connection.pairingCode)
@@ -50,14 +50,14 @@ export function redactEphemeralVmRecipeResultForDiagnostics(
   }
   return {
     ...result,
-    pairingCode: 'orca://pair?code=[redacted]',
+    pairingCode: 'topo://pair?code=[redacted]',
     ...(userData ? { userData } : {})
   }
 }
 
 function redactConnection(connection: EphemeralVmRecipeConnection): EphemeralVmRecipeConnection {
-  if (connection.type === 'orca-server') {
-    return { ...connection, pairingCode: 'orca://pair?code=[redacted]' }
+  if (connection.type === 'topo-server') {
+    return { ...connection, pairingCode: 'topo://pair?code=[redacted]' }
   }
   return {
     ...connection,

@@ -47,7 +47,7 @@ vi.mock('../../telemetry/cohort-classifier', () => ({
 
 describe('Store', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-test-'))
     trackMock.mockReset()
     getCohortAtEmitMock.mockReset()
     getCohortAtEmitMock.mockReturnValue({ nth_repo_added: 2 })
@@ -83,7 +83,7 @@ describe('Store', () => {
   it('treats undefined update fields as omitted, never as explicit clears', async () => {
     // Renderer patches can carry explicit undefined for untouched fields; only null clears them.
     const store = await createStore()
-    store.addRepo(makeRepo({ upstream: { owner: 'stablyai', repo: 'orca' } }))
+    store.addRepo(makeRepo({ upstream: { owner: 'brandonhsz', repo: 'topo' } }))
     const automation = store.createAutomation({
       name: 'Nightly',
       prompt: 'Run checks',
@@ -122,7 +122,7 @@ describe('Store', () => {
 
   it('stores its own contexts over a client-perspective create runContext', async () => {
     const store = await createStore()
-    store.addRepo(makeRepo({ upstream: { owner: 'stablyai', repo: 'orca' } }))
+    store.addRepo(makeRepo({ upstream: { owner: 'brandonhsz', repo: 'topo' } }))
 
     const automation = store.createAutomation({
       name: 'Nightly',
@@ -136,7 +136,7 @@ describe('Store', () => {
       // Client-assigned runtime IDs have no meaning in the owning host’s namespace.
       runContext: {
         kind: 'workspace-run',
-        projectId: 'github:stablyai/orca',
+        projectId: 'github:brandonhsz/Topoductor',
         hostId: toRuntimeExecutionHostId('client-env'),
         projectHostSetupId: 'client-setup',
         repoId: 'client-repo',

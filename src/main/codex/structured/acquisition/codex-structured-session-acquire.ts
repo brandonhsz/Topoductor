@@ -172,7 +172,7 @@ export async function acquireCodexStructuredSession(input: {
         onExit: (error, exit) => {
           acquisition.appliedSettings.end()
           try {
-            // Orca's own close or cancel ends no start; Codex ending on its own does, from the
+            // Topo's own close or cancel ends no start; Codex ending on its own does, from the
             // moment its process is seen, before spawn bookkeeping finishes.
             if (!exit?.expected && !attempt.cancelled) {
               exitedOnItsOwn ??= error
@@ -217,8 +217,8 @@ export async function acquireCodexStructuredSession(input: {
               sessionId,
               connection: acquisition.connection,
               error,
-              // A previously unproven Orca close still owns this exit.
-              ...(exit?.expected ? { closedByOrca: true as const } : {}),
+              // A previously unproven Topo close still owns this exit.
+              ...(exit?.expected ? { closedByTopo: true as const } : {}),
               ...(deps.logger ? { logger: deps.logger } : {}),
               prompts: acquisition.prompts,
               ...(deps.onEvent ? { onEvent: deps.onEvent } : {})

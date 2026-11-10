@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { usePluginViewCaptureStore } from '@/store/plugins/capture/plugin-view-capture'
 
-/** What `orca plugin shot --editor` waits on, per open file: the frame's load and its document. */
+/** What `topo plugin shot --editor` waits on, per open file: the frame's load and its document. */
 export type PluginEditorCaptureStatus = {
   frame: 'loading' | 'ready' | 'error' | 'unresponsive'
   /** The isolated guest's URL, so main captures that guest; null for an in-page frame. */

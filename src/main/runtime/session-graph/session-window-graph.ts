@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithAdmitWindowPublisher } from './session-window-publisher'
+import { TopoRuntimeWithAdmitWindowPublisher } from './session-window-publisher'
 import type {
   RuntimeRendererSyncWindowGraph,
   RuntimeSyncedTab,
@@ -8,7 +8,7 @@ import type {
 import { HEADLESS_RUNTIME_WINDOW_ID } from '../../../shared/runtime-session-contracts'
 import type { RuntimeLeafRecord } from '../terminal/records/runtime-terminal-state-records'
 
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 
 type Graph = RuntimeSyncWindowGraph
 
@@ -23,7 +23,7 @@ function assertUniqueRuntimeGraphTabIds(tabs: readonly RuntimeSyncedTab[]): void
   }
 }
 
-export abstract class OrcaRuntimeWithSyncWindowGraph extends OrcaRuntimeWithAdmitWindowPublisher {
+export abstract class TopoRuntimeWithSyncWindowGraph extends TopoRuntimeWithAdmitWindowPublisher {
   /** Layout-owner builds: main's panes in place of the window's (session-tabs-inventory.ts). */
   protected abstract withMainSurfaces(windowId: number, graph: Graph): Graph
   declare protected terminalGroupGridSizes?: RuntimeSyncWindowGraph['terminalGroupGridSizes']
@@ -60,7 +60,7 @@ export abstract class OrcaRuntimeWithSyncWindowGraph extends OrcaRuntimeWithAdmi
       this.servesHeadlessGraph = true
       this.rendererGeneration = null
     }
-    graph = ORCA_LAYOUT_OWNER_IS_MAIN ? this.withMainSurfaces(windowId, graph) : graph
+    graph = TOPO_LAYOUT_OWNER_IS_MAIN ? this.withMainSurfaces(windowId, graph) : graph
 
     if (graph.terminalGroupGridSizes) {
       // Merged, not replaced: a group in a worktree the window is not showing keeps its last size.

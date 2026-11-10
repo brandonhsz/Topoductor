@@ -69,7 +69,7 @@ export function UpdateCardStateContent({
           unsupported
             ? t(
                 'macosUpdateRequirement.settingsStatus',
-                'Orca {{version}} requires macOS {{macos}} or later. This is the latest version for this Mac.',
+                'Topo {{version}} requires macOS {{macos}} or later. This is the latest version for this Mac.',
                 { version: unsupported.version, macos: unsupported.minimumMacosVersion }
               )
             : t('auto.components.UpdateCard.ea2a41adbe', "You're on the latest version.")
@@ -108,7 +108,7 @@ export function UpdateCardStateContent({
           <p className="text-sm text-muted-foreground">
             {t(
               'updates.installBlock.preparingSummary',
-              'Checking running Orca instances before restarting.'
+              'Checking running Topo instances before restarting.'
             )}
           </p>
         </div>

@@ -1,9 +1,9 @@
 import { createServer, type Server, type Socket } from 'node:net'
 import type { Duplex } from 'node:stream'
-import { GrowingByteBuffer } from '@orca/process-host/growing-byte-buffer'
+import { GrowingByteBuffer } from '@topo/process-host/growing-byte-buffer'
 import { BROWSER_NETWORK_TUNNEL_MAX_STREAMS } from './browser-network-tunnel-stream-state'
 import { pipeUpstreamToClient } from './remote-browser-socks-upstream'
-import { reserveBrowserTunnelOrcaListenerPort } from './browser-network-tunnel-destination-policy'
+import { reserveBrowserTunnelTopoListenerPort } from './browser-network-tunnel-destination-policy'
 
 const SOCKS_VERSION = 5
 const SOCKS_NO_AUTH = 0
@@ -71,7 +71,7 @@ export class RemoteBrowserSocksServer {
           this.state = 'listening'
         }
         // Unauthenticated SOCKS on loopback must not be chained through another client's tunnel.
-        this.releaseTunnelReservation = reserveBrowserTunnelOrcaListenerPort(address.port)
+        this.releaseTunnelReservation = reserveBrowserTunnelTopoListenerPort(address.port)
         resolve({ host: '127.0.0.1', port: address.port })
       })
     })

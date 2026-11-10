@@ -5,8 +5,8 @@ import { mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 
 vi.mock('../../../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => ({
   ...(await importOriginal<typeof WorktreeScanCacheModule>()),
@@ -22,13 +22,13 @@ const TTL = 10 * 60_000
 const T0 = Date.UTC(2026, 10, 3)
 
 async function startRelayServer(): Promise<{
-  server: OrcaRuntimeRpcServer
+  server: TopoRuntimeRpcServer
   revoked: string[]
 }> {
-  const server = new OrcaRuntimeRpcServer({
+  const server = new TopoRuntimeRpcServer({
     methods: [],
-    runtime: new OrcaRuntimeService(),
-    userDataPath: mkdtempSync(join(tmpdir(), 'orca-offer-expiry-rpc-')),
+    runtime: new TopoRuntimeService(),
+    userDataPath: mkdtempSync(join(tmpdir(), 'topo-offer-expiry-rpc-')),
     enableWebSocket: true,
     wsPort: 0
   })
@@ -55,7 +55,7 @@ async function startRelayServer(): Promise<{
   return { server, revoked }
 }
 
-async function mint(server: OrcaRuntimeRpcServer, rotate = false): Promise<string> {
+async function mint(server: TopoRuntimeRpcServer, rotate = false): Promise<string> {
   const offer = await server.createMobilePairingOffer({
     address: '100.64.1.20',
     offerTtlMs: TTL,

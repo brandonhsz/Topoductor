@@ -1,11 +1,11 @@
-import { OrcaRuntimeWithMigrationCatalog } from '../../hosts/migration/runtime-migration-catalog'
+import { TopoRuntimeWithMigrationCatalog } from '../../hosts/migration/runtime-migration-catalog'
 import type { SessionReadTerminalScrollbackResult } from '../../../../shared/rpc-contract/session-terminal-scrollback-params'
 import {
   readHostTerminalScrollback,
   type HostTerminalScrollbackReadRequest
 } from './host-terminal-scrollback-read'
 
-export abstract class OrcaRuntimeWithClientTerminalScrollback extends OrcaRuntimeWithMigrationCatalog {
+export abstract class TopoRuntimeWithClientTerminalScrollback extends TopoRuntimeWithMigrationCatalog {
   /** A migrated pane's stored scrollback, for a client whose own copy is gone or never existed. */
   async readTerminalScrollbackForClient(
     request: HostTerminalScrollbackReadRequest

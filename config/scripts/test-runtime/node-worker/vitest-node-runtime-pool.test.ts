@@ -5,7 +5,7 @@ import { join, resolve } from 'node:path'
 import { PassThrough } from 'node:stream'
 import { afterAll, afterEach, beforeAll, expect, it, onTestFinished, vi } from 'vitest'
 import { createVitest, type PoolOptions, type Vitest } from 'vitest/node'
-import * as processes from '@orca/process-host'
+import * as processes from '@topo/process-host'
 import type { ChildProcess } from 'node:child_process'
 import { nodeRuntimePool } from './vitest-node-runtime-pool'
 
@@ -40,7 +40,7 @@ function options(executable = process.execPath): PoolOptions {
     method: 'run',
     environment: { name: 'node', options: null },
     execArgv: [],
-    env: { ...process.env, ORCA_TEST_NODE_EXECUTABLE: executable }
+    env: { ...process.env, TOPO_TEST_NODE_EXECUTABLE: executable }
   }
 }
 
@@ -91,9 +91,9 @@ it('reports a failed kill within its deadline rather than hanging teardown', asy
 })
 
 it('reports a test file that fails to load as a failed file instead of crashing the run', async () => {
-  const dir = await mkdtemp(join(tmpdir(), 'orca-node-runtime-pool-'))
+  const dir = await mkdtemp(join(tmpdir(), 'topo-node-runtime-pool-'))
   onTestFinished(() => rm(dir, { recursive: true, force: true }))
-  await writeFile(join(dir, 'load-failure.test.ts'), "import './orca-missing-module'\n")
+  await writeFile(join(dir, 'load-failure.test.ts'), "import './topo-missing-module'\n")
   const nested = await createVitest(
     'test',
     {
@@ -104,7 +104,7 @@ it('reports a test file that fails to load as a failed file instead of crashing 
       pool: 'node-runtime',
       poolRunner: nodeRuntimePool,
       reporters: [],
-      env: { ORCA_TEST_NODE_EXECUTABLE: process.execPath }
+      env: { TOPO_TEST_NODE_EXECUTABLE: process.execPath }
     },
     {},
     { stdout: new PassThrough(), stderr: new PassThrough() }
@@ -113,7 +113,7 @@ it('reports a test file that fails to load as a failed file instead of crashing 
     await nested.start()
     const [file] = nested.state.getFiles()
     expect(file.result?.state).toBe('fail')
-    expect(file.result?.errors?.[0]?.message).toContain('orca-missing-module')
+    expect(file.result?.errors?.[0]?.message).toContain('topo-missing-module')
     expect(nested.state.getUnhandledErrors()).toEqual([])
   } finally {
     await nested.close()

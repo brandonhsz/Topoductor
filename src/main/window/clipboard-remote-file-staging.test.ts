@@ -30,7 +30,7 @@ const TTL_MS = 60 * 60 * 1000
 const NOW_MS = 1_760_000_000_000
 const TEMP_ROOT = resolve('fixture-temp')
 const UID_SUFFIX = typeof process.getuid === 'function' ? `-${process.getuid()}` : ''
-const STAGING_ROOT = join(TEMP_ROOT, `orca-clipboard-files${UID_SUFFIX}`)
+const STAGING_ROOT = join(TEMP_ROOT, `topo-clipboard-files${UID_SUFFIX}`)
 
 type MockDirent = { name: string; isDirectory: () => boolean }
 

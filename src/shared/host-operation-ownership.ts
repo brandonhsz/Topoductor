@@ -47,7 +47,7 @@ export const HOST_OPERATION_OWNERSHIP = {
   nativeChat: 'host',
   network: 'host',
   notifications: 'host',
-  orcad: 'host',
+  topod: 'host',
   orchestration: 'host',
   pairing: 'host',
   plugins: 'host',

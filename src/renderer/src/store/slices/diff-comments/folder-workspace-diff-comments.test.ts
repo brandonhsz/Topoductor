@@ -552,7 +552,7 @@ describe('folder workspace diff comment rollback convergence', () => {
   })
 
   it('drops a queued folder save once its catalog endpoint is replaced, touching no other copy', async () => {
-    Object.assign(globalThis, { __ORCA_WEB_CLIENT__: true })
+    Object.assign(globalThis, { __TOPO_WEB_CLIENT__: true })
     try {
       const store = createTestStore()
       const key = folderWorkspaceKey('folder-1')
@@ -586,7 +586,7 @@ describe('folder workspace diff comment rollback convergence', () => {
       expect(folderWorkspacesUpdate).not.toHaveBeenCalled()
       expect(store.getState().folderWorkspaces).toEqual([replacement])
     } finally {
-      Reflect.deleteProperty(globalThis, '__ORCA_WEB_CLIENT__')
+      Reflect.deleteProperty(globalThis, '__TOPO_WEB_CLIENT__')
     }
   })
 

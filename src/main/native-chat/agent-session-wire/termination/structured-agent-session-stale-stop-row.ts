@@ -9,7 +9,7 @@ import type {
 import type { AgentSessionDeathEvidence } from '../../../../shared/agent-session/lifecycle/agent-session-death-evidence'
 import { readAgentJournalTurn } from '../../../../shared/agent-session/lifecycle/agent-session-turn-record'
 import type { AgentSessionReplacedRuntime } from '../../../runtime/agent-session/agent-session-replaced-runtime'
-import { orcaStopRowBody } from './structured-agent-session-orca-stop-row'
+import { topoStopRowBody } from './structured-agent-session-topo-stop-row'
 
 export type StaleCut = { by: 'death' } | { by: 'replaced'; fence: number } | null
 
@@ -28,20 +28,20 @@ export function staleStopRow(
   cutBy: (item: AgentJournalRenderItem) => StaleCut
 ): {
   kind: 'item'
-  identity: { provider: 'orca'; clientMessageId: string }
+  identity: { provider: 'topo'; clientMessageId: string }
   body: AgentJournalStatusItem
 } | null {
   const cuts = items.map(cutBy)
   const evidence = input.deathEvidence
-  // Death diagnostics stay in logs; show only provider stop and associated Orca shutdown cause.
+  // Death diagnostics stay in logs; show only provider stop and associated Topo shutdown cause.
   if (evidence && cuts.some((cut) => cut?.by === 'death')) {
     return {
       kind: 'item',
       identity: {
-        provider: 'orca',
+        provider: 'topo',
         clientMessageId: `${STALE_SESSION_ROW_PREFIX}${input.sessionId}:death-${evidence.ownerFence ?? 'unowned'}-${evidence.observedAt}`
       },
-      body: orcaStopRowBody(input.failureTextContext, evidence.runtimeEnd)
+      body: topoStopRowBody(input.failureTextContext, evidence.runtimeEnd)
     }
   }
   const fences = cuts.flatMap((cut) => (cut?.by === 'replaced' ? [cut.fence] : []))
@@ -53,10 +53,10 @@ export function staleStopRow(
     kind: 'item',
     // Stable owner identity lets later runtimes find the same notice.
     identity: {
-      provider: 'orca',
+      provider: 'topo',
       clientMessageId: `${STALE_SESSION_ROW_PREFIX}${input.sessionId}:replaced-${fence}`
     },
-    body: orcaStopRowBody(
+    body: topoStopRowBody(
       input.failureTextContext,
       fence === input.replaced.fence ? input.replaced.runtimeEnd : undefined
     )

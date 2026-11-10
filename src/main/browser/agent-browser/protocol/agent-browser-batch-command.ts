@@ -11,7 +11,7 @@ export type AgentBrowserEnvelope = { success?: boolean; data?: unknown; error?: 
 
 type AgentBrowserBatchEntry = { result?: unknown }
 
-/** Parses --json output; Orca's own one-command batch reply becomes the single-command envelope. */
+/** Parses --json output; Topo's own one-command batch reply becomes the single-command envelope. */
 export function parseAgentBrowserJsonOutput(
   stdout: string,
   { cliArgv = false }: { cliArgv?: boolean } = {}

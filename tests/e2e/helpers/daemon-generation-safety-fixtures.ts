@@ -98,7 +98,7 @@ export async function launchDaemonGeneration(options: {
         ...process.env,
         ELECTRON_RUN_AS_NODE: '1',
         NODE_PATH: path.join(process.cwd(), 'node_modules'),
-        ORCA_USER_DATA_PATH: runtime.userDataDir
+        TOPO_USER_DATA_PATH: runtime.userDataDir
       },
       stdio: ['ignore', 'ignore', 'pipe', 'ipc']
     }
@@ -175,7 +175,7 @@ export async function spawnGenerationCanary(options: {
   const label = `${generation.label}-${role}`
   const nonce = randomUUID()
   // Use production’s durable ownership prefix so live-host adjudication cannot degrade to unknown.
-  const sessionId = `${worktreeId}@@orca-9749-${label}-${randomUUID().slice(0, 8)}`
+  const sessionId = `${worktreeId}@@topo-9749-${label}-${randomUUID().slice(0, 8)}`
   const adapter = new DaemonPtyAdapter({
     socketPath: generation.socketPath,
     tokenPath: generation.tokenPath,
@@ -200,9 +200,9 @@ export async function spawnGenerationCanary(options: {
     throw new Error(`${label} canary did not expose its root PID`)
   }
   await waitForCondition(`${label} canary readiness`, () =>
-    output.includes(`ORCA_GENERATION_CANARY_READY ${label} ${nonce}`)
+    output.includes(`TOPO_GENERATION_CANARY_READY ${label} ${nonce}`)
   )
-  const match = new RegExp(`ORCA_GENERATION_CANARY_READY ${label} ${nonce} (\\d+)`).exec(output)
+  const match = new RegExp(`TOPO_GENERATION_CANARY_READY ${label} ${nonce} (\\d+)`).exec(output)
   const descendantPid = Number(match?.[1])
   if (!Number.isInteger(descendantPid) || descendantPid <= 0) {
     throw new Error(`${label} canary did not report its descendant PID`)
@@ -228,7 +228,7 @@ export async function spawnGenerationCanary(options: {
 
 export async function pingGenerationCanary(canary: GenerationCanary, nonce: string): Promise<void> {
   const label = `${canary.generation.label}-${canary.role}`
-  const expected = `ORCA_GENERATION_CANARY_ACK ${label} ${nonce}`
+  const expected = `TOPO_GENERATION_CANARY_ACK ${label} ${nonce}`
   canary.adapter.write(canary.sessionId, `PING ${label} ${nonce}\r`)
   await waitForCondition(`${label} canary reply`, () => canary.output().includes(expected))
 }

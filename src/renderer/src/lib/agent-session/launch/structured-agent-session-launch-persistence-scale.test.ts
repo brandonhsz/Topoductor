@@ -33,7 +33,7 @@ import {
   type StructuredAgentSessionPendingSend
 } from '@/components/native-chat/session/structured/delivery/structured-agent-session-pending-sends'
 
-const KEY = 'orca:structuredAgentLaunches:v1'
+const KEY = 'topo:structuredAgentLaunches:v1'
 const refusal = {
   ok: false,
   refusal: {

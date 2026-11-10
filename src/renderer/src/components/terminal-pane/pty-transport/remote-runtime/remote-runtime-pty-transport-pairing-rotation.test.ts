@@ -74,7 +74,7 @@ function managedServer(pairingRevision: number, hostKey: string) {
       { id: 'ws', kind: 'websocket' as const, label: 'Box', endpoint: 'ws://127.0.0.1:46768/' }
     ],
     preferredEndpointId: 'ws',
-    orcadDeployment: {
+    topodDeployment: {
       sshTargetId: 'box',
       sshTargetGeneration: 1,
       localPort: 46768,
@@ -94,7 +94,7 @@ async function installRepairableMain(): Promise<{
   let mainHostKey = 'host-A'
   let reachable = true
   const unreachable = (): Error =>
-    Object.assign(new Error('Could not connect to the remote Orca runtime.'), {
+    Object.assign(new Error('Could not connect to the remote Topo runtime.'), {
       code: 'remote_runtime_unavailable'
     })
   const store = await createCatalogStore()

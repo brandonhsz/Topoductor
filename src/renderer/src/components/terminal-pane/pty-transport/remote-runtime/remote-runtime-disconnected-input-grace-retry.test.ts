@@ -46,7 +46,7 @@ const {
 })
 
 const unreachable = (): Error =>
-  Object.assign(new Error('Could not connect to the remote Orca runtime.'), {
+  Object.assign(new Error('Could not connect to the remote Topo runtime.'), {
     code: 'remote_runtime_unavailable'
   })
 

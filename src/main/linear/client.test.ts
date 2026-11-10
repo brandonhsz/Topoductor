@@ -35,10 +35,10 @@ function writeLegacyLinearFiles(token: string, viewer: Record<string, unknown>):
 }
 
 function writeLegacyLinearToken(token: string | Buffer, viewer: Record<string, unknown>): void {
-  const orcaDir = join(tempHome, '.orca')
-  mkdirSync(orcaDir, { recursive: true })
-  writeFileSync(join(orcaDir, 'linear-token.enc'), token)
-  writeFileSync(join(orcaDir, 'linear-viewer.json'), JSON.stringify(viewer), {
+  const topoDir = join(tempHome, '.topo')
+  mkdirSync(topoDir, { recursive: true })
+  writeFileSync(join(topoDir, 'linear-token.enc'), token)
+  writeFileSync(join(topoDir, 'linear-viewer.json'), JSON.stringify(viewer), {
     encoding: 'utf-8'
   })
 }
@@ -46,7 +46,7 @@ function writeLegacyLinearToken(token: string | Buffer, viewer: Record<string, u
 function workspaceTokenPath(workspaceId: string): string {
   return join(
     tempHome,
-    '.orca',
+    '.topo',
     'linear-tokens',
     `${Buffer.from(workspaceId).toString('base64url')}.enc`
   )
@@ -56,10 +56,10 @@ function writeMultiWorkspaceFiles(
   workspaces: { id: string; token: string | Buffer; credentialRevision?: number }[],
   selectedWorkspaceId: string
 ): void {
-  const orcaDir = join(tempHome, '.orca')
-  mkdirSync(join(orcaDir, 'linear-tokens'), { recursive: true })
+  const topoDir = join(tempHome, '.topo')
+  mkdirSync(join(topoDir, 'linear-tokens'), { recursive: true })
   writeFileSync(
-    join(orcaDir, 'linear-workspaces.json'),
+    join(topoDir, 'linear-workspaces.json'),
     JSON.stringify({
       version: 1,
       activeWorkspaceId: workspaces[0]?.id ?? null,
@@ -125,7 +125,7 @@ async function loadClientModule(options: SafeStorageMockOptions = {}) {
 }
 
 beforeEach(() => {
-  tempHome = mkdtempLike('orca-linear-client-')
+  tempHome = mkdtempLike('topo-linear-client-')
   fixtures = new Map([
     [
       'token-alpha',
@@ -219,8 +219,8 @@ describe('Linear client workspace storage', () => {
       workspaces: [{ id: 'org-alpha', organizationName: 'Alpha' }]
     })
     expect(status.workspaces?.some((workspace) => workspace.id === 'legacy')).toBe(false)
-    expect(existsSync(join(tempHome, '.orca', 'linear-token.enc'))).toBe(false)
-    expect(readFileSync(join(tempHome, '.orca', 'linear-workspaces.json'), 'utf-8')).toContain(
+    expect(existsSync(join(tempHome, '.topo', 'linear-token.enc'))).toBe(false)
+    expect(readFileSync(join(tempHome, '.topo', 'linear-workspaces.json'), 'utf-8')).toContain(
       'org-alpha'
     )
   })
@@ -247,7 +247,7 @@ describe('Linear client workspace storage', () => {
   })
 
   it('does not pass encrypted safeStorage bytes to the Linear SDK when encryption is unavailable', async () => {
-    const tokenPath = join(tempHome, '.orca', 'linear-token.enc')
+    const tokenPath = join(tempHome, '.topo', 'linear-token.enc')
     writeLegacyLinearToken(Buffer.from([0x76, 0x31, 0x30, 0xff, 0xfe]), {
       displayName: 'Ada',
       email: 'ada@example.com',
@@ -272,7 +272,7 @@ describe('Linear client workspace storage', () => {
   })
 
   it('does not clear the Linear token when safeStorage decryption fails', async () => {
-    const tokenPath = join(tempHome, '.orca', 'linear-token.enc')
+    const tokenPath = join(tempHome, '.topo', 'linear-token.enc')
     writeLegacyLinearToken(Buffer.from([0x76, 0x31, 0x30, 0xff, 0xfe]), {
       displayName: 'Ada',
       email: 'ada@example.com',
@@ -429,7 +429,7 @@ describe('Linear workspace file cross-process visibility', () => {
     })
     const linear = await loadClientModule()
     expect(linear.getClients('legacy')[0]?.apiKey).toBe('token-alpha')
-    const path = join(tempHome, '.orca', 'linear-token.enc')
+    const path = join(tempHome, '.topo', 'linear-token.enc')
     writeFileSync(path, 'token-beta')
     expect(linear.getClients('legacy')[0]?.apiKey).toBe('token-beta')
     rmSync(path)
@@ -443,7 +443,7 @@ describe('Linear workspace file cross-process visibility', () => {
       'ws-alpha'
     )
     // Equal timestamps isolate credential revisions from filesystem clock resolution.
-    utimesSync(join(tempHome, '.orca', 'linear-workspaces.json'), 1, 1)
+    utimesSync(join(tempHome, '.topo', 'linear-workspaces.json'), 1, 1)
     const linear = await loadClientModule()
     const signal = new AbortController().signal
     const captured = linear.getClients('ws-alpha', signal)[0]
@@ -469,8 +469,8 @@ describe('Linear workspace file cross-process visibility', () => {
     writeMultiWorkspaceFiles([], '')
     expect(linear.getStatus()).toMatchObject({ connected: false, workspaces: [] })
   })
-  it('picks up a workspace connected by another Orca process', async () => {
-    // Shared ~/.orca metadata must refresh without restarting other Orca processes.
+  it('picks up a workspace connected by another Topo process', async () => {
+    // Shared ~/.topo metadata must refresh without restarting other Topo processes.
     const linear = await loadClientModule()
     expect(linear.getStatus()).toMatchObject({ connected: false })
 

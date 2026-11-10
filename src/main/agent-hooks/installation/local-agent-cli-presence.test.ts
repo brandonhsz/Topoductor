@@ -37,7 +37,7 @@ describe('detectLocalManagedAgentCliPresence', () => {
   it.runIf(process.platform !== 'win32')(
     'accepts executable symlinks and rejects broken symlinks',
     async () => {
-      tmpDir = mkdtempSync(join(tmpdir(), 'orca-cli-presence-'))
+      tmpDir = mkdtempSync(join(tmpdir(), 'topo-cli-presence-'))
       const binDir = join(tmpDir, 'bin')
       mkdirSync(binDir)
       const targetPath = join(tmpDir, 'codex-real')

@@ -1,4 +1,4 @@
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { readTerminalImeBoundaryTrace } from './terminal-ime-boundary-probe'
 import {
   createTerminalImeByteReader,
@@ -18,15 +18,15 @@ import { applyImePlatformPolicy } from './terminal-ime-platform-policy'
 
 // CDP exercises Linux renderer policy and PTY bytes; it does not simulate native fcitx5/Wayland.
 test('Linux direct IME punctuation reaches the PTY before and after composition', async ({
-  orcaPage,
+  topoPage,
   testRepoPath
 }, testInfo) => {
-  await applyImePlatformPolicy(orcaPage, 'linux')
-  const arena = await openTerminalImePaneArena(orcaPage)
+  await applyImePlatformPolicy(topoPage, 'linux')
+  const arena = await openTerminalImePaneArena(topoPage)
   const reader = createTerminalImeByteReader(testRepoPath, 1)
   let completed = false
   try {
-    await startTerminalImeByteReader(orcaPage, arena.ptyId, reader)
+    await startTerminalImeByteReader(topoPage, arena.ptyId, reader)
     for (const precedingComposition of [false, true]) {
       if (precedingComposition) {
         await setImeComposition(arena.session, 'ni')
@@ -50,10 +50,10 @@ test('Linux direct IME punctuation reaches the PTY before and after composition'
       }
     }
     await dispatchPlainEnter(arena.session)
-    expect(await waitForTerminalImeBytes(orcaPage, reader)).toEqual([
+    expect(await waitForTerminalImeBytes(topoPage, reader)).toEqual([
       Buffer.from('，。你，。\n').toString('hex')
     ])
-    const trace = await readTerminalImeBoundaryTrace(orcaPage)
+    const trace = await readTerminalImeBoundaryTrace(topoPage)
     expect(trace.onData.join('')).toBe('，。你，。\r')
     expect(trace.dom.filter((event) => event.type === 'compositionstart')).toHaveLength(1)
     completed = true

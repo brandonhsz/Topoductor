@@ -3,7 +3,7 @@ import type {
   MessageType
 } from '../../../../orchestration/db/orchestration-records'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import { resolveGroupAddress } from '../../../../orchestration/addressing/groups/group-addressing'
 import { isEquivalentPaneKey } from '../../../../orchestration/db/pane-key-match'
@@ -33,7 +33,7 @@ type GroupCandidate = OrchestrationAddressableAgent & { mailbox?: { to: string; 
 
 function listRunGroupCandidates(args: {
   db: OrchestrationDb
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   senderRunId: string
   groupAddress: string
   agents: readonly GroupAgentSnapshot[]
@@ -56,7 +56,7 @@ function listRunGroupCandidates(args: {
         warnings.push({
           code: 'recipient_unreachable',
           recipient: to,
-          message: `${to} runs on a remote Orca server; group fan-out does not relay there. Send --to ${to} instead.`
+          message: `${to} runs on a remote Topo server; group fan-out does not relay there. Send --to ${to} instead.`
         })
       }
       return []
@@ -98,7 +98,7 @@ function listRunGroupCandidates(args: {
 
 export async function sendGroupMessage(args: {
   params: SendParamsInput
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   from: string
   groupAddress: string

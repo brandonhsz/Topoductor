@@ -13,7 +13,7 @@ import { getLinearSourceScope } from '@/store/slices/linear/linear-slice-scope'
 
 import type { LinearIssue } from '../../src/shared/linear/issue-types'
 
-import { useTaskPageLinearInOrcaEffects } from '../../src/renderer/src/components/task-page/linear/use-task-page-linear-in-orca-effects'
+import { useTaskPageLinearInTopoEffects } from '../../src/renderer/src/components/task-page/linear/use-task-page-linear-in-topo-effects'
 import { useTaskPageDetailRouting } from '../../src/renderer/src/components/task-page/use-task-page-detail-routing'
 import { useLinearIssueWorkspaceDetail } from '../../src/renderer/src/components/linear-issue-workspace-detail-state'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
@@ -43,12 +43,12 @@ it('retains ordered linked source provenance when two hosts return the same UUID
     ...s.getState(),
     taskResumeApplied: true,
     taskSource: 'linear',
-    linearMode: 'in-orca',
+    linearMode: 'in-topo',
     linearConnected: true,
     linearRefreshNonce: 0,
     lastLinearRequestRef: { current: null },
-    inOrcaLinkedLinearRefsRef: { current: refs },
-    inOrcaLinkedLinearRefsSignature: 'two-hosts',
+    inTopoLinkedLinearRefsRef: { current: refs },
+    inTopoLinkedLinearRefsSignature: 'two-hosts',
     setLinearLoading: vi.fn(),
     setLinearError: vi.fn(),
     setLinearIssuesHasMore: vi.fn()
@@ -61,7 +61,7 @@ it('retains ordered linked source provenance when two hosts return the same UUID
     )
     // SAFETY: fixture supplies the linked loader fields.
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: this fixture supplies the real consumer's exercised fields and actions; unrelated full-page/provider services are intentionally absent.
-    useTaskPageLinearInOrcaEffects({
+    useTaskPageLinearInTopoEffects({
       ...base,
       linearIssueResult: result,
       setLinearIssues: result.setData

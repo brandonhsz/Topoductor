@@ -12,7 +12,7 @@ import {
   createFakeWslHostConnector,
   readFakeWslHostsConfig
 } from '../../wsl/host-lifecycle/wsl-host-e2e-fake-connector'
-import { hasOrcadTemplate } from '../../orcad/orcad-artifact-materializer'
+import { hasTopodTemplate } from '../../topod/topod-artifact-materializer'
 import { WslHostService } from '../../wsl/host-lifecycle/wsl-host-service'
 import { WslHostVisibleWorkByWindow } from './wsl-host-visible-work-windows'
 import type { WslHostAutomationWake } from '../../wsl/host-lifecycle/wsl-host-automation-wake'
@@ -37,13 +37,13 @@ import { isRemoteRuntimeConnectionReady } from '../runtime-environments/runtime-
 import { resolveEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-store'
 import { reconcileWslHostBridgePorts } from '../../../shared/remote-runtime/host-store/runtime-environment-wsl-host-store'
 import { getPreferredPairedRuntimeConnection } from '../../../shared/remote-runtime/host-catalog/runtime-environments'
-import { requestOrcadTerminalCensus } from '../../managed-server/lifecycle/orcad-terminal-census-client'
+import { requestTopodTerminalCensus } from '../../managed-server/lifecycle/topod-terminal-census-client'
 import type { WslHostRuntimeAccess } from '../../wsl/host-lifecycle/wsl-host-server-stop'
 import {
   changesWslHostAccounts,
-  pushWslOrcadHostAccountEnv
-} from '../../wsl/orcad/wsl-orcad-host-account-push'
-import { wslOrcadHostSupports } from '../../wsl/orcad/wsl-orcad-host-environments'
+  pushWslTopodHostAccountEnv
+} from '../../wsl/topod/wsl-topod-host-account-push'
+import { wslTopodHostSupports } from '../../wsl/topod/wsl-topod-host-environments'
 import { wslHostConnectOptions } from '../../wsl/host-lifecycle/wsl-host-connect-request'
 import { wireWslNodeRuntimePrefetch } from '../../wsl/execution/wsl-node-runtime-prefetch'
 
@@ -78,7 +78,7 @@ function wslHostRuntimeAccess(getUserDataPath: () => string): WslHostRuntimeAcce
       return response.result
     },
     census: (environmentId) =>
-      requestOrcadTerminalCensus(
+      requestTopodTerminalCensus(
         getPreferredPairedRuntimeConnection(resolveEnvironment(getUserDataPath(), environmentId)),
         0
       )
@@ -92,12 +92,12 @@ function pushHostAccounts(
 ): void {
   const call = (method: string, params: unknown) =>
     callRuntimeEnvironment(getUserDataPath(), environmentId, method, params)
-  void pushWslOrcadHostAccountEnv({
+  void pushWslTopodHostAccountEnv({
     environmentId,
     distro,
     call,
     hostSupports: (capability) =>
-      wslOrcadHostSupports(environmentId, capability, () => call('status.get', undefined))
+      wslTopodHostSupports(environmentId, capability, () => call('status.get', undefined))
   })
 }
 
@@ -128,7 +128,7 @@ function createService(args: WslHostHandlerArgs): WslHostService | null {
   let automationWake: WslHostAutomationWake | null = null
   const runGate = {
     isEnabled: () => args.store.getSettings().experimentalWslHosts === true,
-    hasServerFiles: fake ? () => fake.serverFiles !== 'missing' : hasOrcadTemplate
+    hasServerFiles: fake ? () => fake.serverFiles !== 'missing' : hasTopodTemplate
   }
   const created = new WslHostService({
     userDataPath: args.getUserDataPath,
@@ -217,7 +217,7 @@ let gatedOffHoldersReleased = false
 
 /**
  * With the gate closed, a launch still releases orphans (no host record, or a pending Remove)
- * but keeps every host's holder: a tester reopening Orca without the gate must not end a live
+ * but keeps every host's holder: a tester reopening Topo without the gate must not end a live
  * host's sessions. With no holder recorded it touches nothing beyond one folder check.
  */
 function releaseHoldersWhileGatedOff(userDataPath: string): void {

@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithVisibleSnapshotPreview } from './terminal-visible-state'
+import { TopoRuntimeWithVisibleSnapshotPreview } from './terminal-visible-state'
 import { TERMINAL_INTERACTIVE_WAIT_PROBE_TIMEOUT_MS } from '../wait/terminal-interactive-probe-budget'
 import { withTimeout } from '../../../../shared/promise-timeout-fallback'
 import { showsClaudeDialog } from '../wait/claude-open-dialog-hold'
@@ -7,7 +7,7 @@ import { selectFreshExplicitAgentStatusRow } from '../../workspaces/process-list
 
 /** A permission dialog open when the runtime went down is still open after reattach, since no input reached
  *  the pane meanwhile (#35962); its restored hook row stands until a current screen rules the dialog out. */
-export abstract class OrcaRuntimeWithRestoredAgentDialogScreen extends OrcaRuntimeWithVisibleSnapshotPreview {
+export abstract class TopoRuntimeWithRestoredAgentDialogScreen extends TopoRuntimeWithVisibleSnapshotPreview {
   /** The screen that can rule a restored dialog out right now without provider I/O; null when only a read can tell.
    *  A provider-preferred grid may hold only the bytes since reattach, so there only the provider's frame counts. */
   private readCurrentDialogScreenWithoutRead(ptyId: string): readonly string[] | null {

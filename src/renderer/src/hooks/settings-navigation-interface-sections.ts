@@ -109,7 +109,7 @@ export function buildInterfaceSettingsSections(
       title: t('auto.hooks.useSettingsNavigationMetadata.d72a58b5b9', 'Stats & Usage'),
       description: t(
         'auto.hooks.useSettingsNavigationMetadata.b351014180',
-        'Orca stats plus Claude, Codex, OpenCode, Muse token analytics and Grok subscription usage.'
+        'Topo stats plus Claude, Codex, OpenCode, Muse token analytics and Grok subscription usage.'
       ),
       icon: BarChart3,
       searchEntries: getStatsPaneSearchEntries(),

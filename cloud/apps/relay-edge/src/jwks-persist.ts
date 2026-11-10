@@ -8,7 +8,7 @@ import { createLocalJWKSet, type FetchImplementation, type JSONWebKeySet, type J
 // longer here during an auth outage. Covers only isolates that have no set at all, and never
 // extends a live socket past its token's own expiry (+60 s grace).
 export const PERSISTED_JWKS_MAX_STALE_MS = 30 * 60 * 1000
-const STORED_AT_HEADER = 'x-orca-jwks-stored-at'
+const STORED_AT_HEADER = 'x-topo-jwks-stored-at'
 
 function edgeCache(): Cache | null {
   try {

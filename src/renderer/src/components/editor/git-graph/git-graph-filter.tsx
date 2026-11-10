@@ -215,7 +215,7 @@ function GitGraphFilterForOwner({
       </Popover>
       {capable === false || (supported === false && capable === true) ? (
         <span className="text-xs text-muted-foreground">
-          {t('gitGraph.oldServer', "This server's Orca version shows only the current branch")}
+          {t('gitGraph.oldServer', "This server's Topo version shows only the current branch")}
         </span>
       ) : null}
     </div>

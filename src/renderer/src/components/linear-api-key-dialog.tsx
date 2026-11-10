@@ -133,12 +133,12 @@ export function LinearApiKeyDialog({
     (workspace
       ? t(
           'taskProviders.linear.workspaceApiKeyHint',
-          'Paste a Personal API key for {{workspace}}. If this workspace is already connected, Orca replaces its stored key.',
+          'Paste a Personal API key for {{workspace}}. If this workspace is already connected, Topo replaces its stored key.',
           { workspace: workspace.organizationName }
         )
       : t(
           'taskProviders.linear.apiKeyHint',
-          'Paste a Personal API key for the Linear workspace you want Orca to use. If that workspace is already connected, Orca replaces its stored key.'
+          'Paste a Personal API key for the Linear workspace you want Topo to use. If that workspace is already connected, Topo replaces its stored key.'
         ))
   const storageCopy =
     runtimeTarget.kind === 'environment'
@@ -214,7 +214,7 @@ export function LinearApiKeyDialog({
             <p>
               {t(
                 'auto.components.linear.api.key.dialog.d56d3629f4',
-                'Prefer full access when Orca should show every team the account can access in that workspace. Restricted keys only expose permitted teams, and private teams require the key owner to have access.'
+                'Prefer full access when Topo should show every team the account can access in that workspace. Restricted keys only expose permitted teams, and private teams require the key owner to have access.'
               )}
             </p>
             <p>

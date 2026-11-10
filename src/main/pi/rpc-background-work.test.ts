@@ -22,12 +22,12 @@ const [ready, busy, idle, gone] = readFileSync(
   .map((line): JsonlRpcRecord => JSON.parse(JSON.parse(line).raw))
 
 function probeFolder(): string {
-  const folder = mkdtempSync(join(tmpdir(), 'orca-pi-probe-'))
+  const folder = mkdtempSync(join(tmpdir(), 'topo-pi-probe-'))
   folders.push(folder)
   return folder
 }
 
-/** Answer Orca's pending request with a recorded reply, carrying the nonce Orca chose. */
+/** Answer Topo's pending request with a recorded reply, carrying the nonce Topo chose. */
 async function answer(work: PiRpcBackgroundWork, folder: string, recorded: JsonlRpcRecord) {
   await vi.waitFor(() =>
     expect(readdirSync(folder).some((name) => name.endsWith('.probe'))).toBe(true)

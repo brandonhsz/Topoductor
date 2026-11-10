@@ -4,7 +4,7 @@ import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { stagePackagedProcessHost } from '../../../config/scripts/desktop-distribution/runtime-verification/packaged-process-host-fixture.mjs'
 
 const require = createRequire(import.meta.url)
@@ -33,12 +33,12 @@ describe('packaged node-pty launcher-surviving grandchild', () => {
     })
 
     expect(result).toMatchObject({ code: 0, timedOut: false })
-    expect(result.stdout).toBe('ORCA_ONE_SHOT_EVIDENCE=flushed\n')
+    expect(result.stdout).toBe('TOPO_ONE_SHOT_EVIDENCE=flushed\n')
     expect(result.stderr).toBe('')
   })
 
   it('loads spawnProcess from the private out/ copy of a package that predates the public one', async () => {
-    const resourcesDir = await mkdtemp(join(tmpdir(), 'orca-pty-capability-legacy-'))
+    const resourcesDir = await mkdtemp(join(tmpdir(), 'topo-pty-capability-legacy-'))
     try {
       const legacy = await stageLegacyRunProcess(resourcesDir)
       const entry = packagedProcessHostPath(resourcesDir)
@@ -51,7 +51,7 @@ describe('packaged node-pty launcher-surviving grandchild', () => {
   })
 
   it('fails on a broken public package rather than loading the legacy copy', async () => {
-    const resourcesDir = await mkdtemp(join(tmpdir(), 'orca-pty-capability-broken-'))
+    const resourcesDir = await mkdtemp(join(tmpdir(), 'topo-pty-capability-broken-'))
     try {
       const legacy = await stageLegacyRunProcess(resourcesDir)
       const packageDir = await stagePackagedProcessHost(resourcesDir)
@@ -63,7 +63,7 @@ describe('packaged node-pty launcher-surviving grandchild', () => {
 
       await rm(join(packageDir, 'package.json'))
       expect(() => packagedProcessHostPath(resourcesDir)).toThrow(
-        /packaged @orca\/process-host has no package\.json/
+        /packaged @topo\/process-host has no package\.json/
       )
     } finally {
       await rm(resourcesDir, { recursive: true, force: true })

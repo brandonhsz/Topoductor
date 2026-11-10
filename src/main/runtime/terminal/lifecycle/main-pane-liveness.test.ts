@@ -3,15 +3,15 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const layoutOwner = vi.hoisted(() => ({ isMain: true }))
 vi.mock('../../../../shared/layout-owner-switch', () => ({
-  get ORCA_LAYOUT_OWNER_IS_MAIN() {
+  get TOPO_LAYOUT_OWNER_IS_MAIN() {
     return layoutOwner.isMain
   }
 }))
 
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
 const { toAppSshPtyId } = await import('../../../../shared/ssh-pty-id')
 const {
   HEADLESS_LEAF_ID,
@@ -21,9 +21,9 @@ const {
   makeHeadlessTerminalLayout,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} = await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
+} = await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
 
-const { registerBoundPty } = await import('../../orca-runtime-tests/bind-first-pane.test-fixture')
+const { registerBoundPty } = await import('../../topo-runtime-tests/bind-first-pane.test-fixture')
 
 const SSH_PTY = toAppSshPtyId('ssh-target', 'relay-pty')
 
@@ -46,7 +46,7 @@ function hostController(host: Host, cwd: string, worktreeId: string) {
 
 /** One inventory sweep of a single provider, as a workspace listing or a relay refresh runs it. */
 async function sweepProvider(
-  runtime: InstanceType<typeof OrcaRuntimeService>,
+  runtime: InstanceType<typeof TopoRuntimeService>,
   connectionId: string | null
 ): Promise<void> {
   await runtime['refreshPtyWorktreeRecordsWithControllerInventory'](
@@ -84,7 +84,7 @@ function savedPaneHost(ptyId: string, opts: { windowed?: boolean; splitPtyId?: s
       }
     })
   )
-  const runtime = new OrcaRuntimeService(runtimeStore)
+  const runtime = new TopoRuntimeService(runtimeStore)
   runtime.setPtyController(hostController(host, TEST_WORKTREE_PATH, TEST_WORKTREE_ID))
   const graph = {
     tabs: [
@@ -117,13 +117,13 @@ function savedPaneHost(ptyId: string, opts: { windowed?: boolean; splitPtyId?: s
   return { runtime, host, publishWindowGraph }
 }
 
-async function rowStatus(runtime: InstanceType<typeof OrcaRuntimeService>, worktree: string) {
+async function rowStatus(runtime: InstanceType<typeof TopoRuntimeService>, worktree: string) {
   const listed = await runtime.listMobileSessionTabs(`id:${worktree}`)
   const row = listed.tabs.find((tab) => tab.type === 'terminal')
   return row?.type === 'terminal' ? row.status : null
 }
 
-const record = (runtime: InstanceType<typeof OrcaRuntimeService>, ptyId: string) =>
+const record = (runtime: InstanceType<typeof TopoRuntimeService>, ptyId: string) =>
   runtime['ptysById'].get(ptyId)
 
 afterEach(() => {

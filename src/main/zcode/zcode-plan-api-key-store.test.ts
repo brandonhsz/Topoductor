@@ -36,9 +36,9 @@ vi.mock('../../shared/secure-storage/secure-file', () => ({
   writeSecureFile: writeSecureFileMock
 }))
 
-const storePath = '/home/test/.orca/zcode-plan-api-key.enc'
+const storePath = '/home/test/.topo/zcode-plan-api-key.enc'
 const envelope = (kind: 'encrypted' | 'plaintext', value: string): string =>
-  `orca-zcode-plan-api-key:v1:${kind}:${Buffer.from(value, 'utf8').toString('base64')}`
+  `topo-zcode-plan-api-key:v1:${kind}:${Buffer.from(value, 'utf8').toString('base64')}`
 
 async function loadStore(): Promise<typeof ZcodePlanApiKeyStore> {
   return await import('./zcode-plan-api-key-store')

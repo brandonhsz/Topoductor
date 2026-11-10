@@ -1,13 +1,13 @@
 import { app, type BrowserWindow } from 'electron'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../shared/layout-owner-switch'
 import { placeUnshownLiveTerminalsBestEffort } from '../runtime/terminal/adoption/unshown-live-terminal-placement'
 import {
   getCanonicalUserDataPath,
   migrateMobilePairingDataToCanonicalUserDataPath
 } from '../persistence/loading-store/user-data-path'
-import { OrcaRuntimeRpcServer } from '../runtime/rpc/server/runtime-rpc'
+import { TopoRuntimeRpcServer } from '../runtime/rpc/server/runtime-rpc'
 import { resolveServePinnedBindHost } from './serve-pinned-bind-host'
-import { isOrcadSidecarLaunch } from '../window/foreground-activation-policy'
+import { isTopodSidecarLaunch } from '../window/foreground-activation-policy'
 import { registerMobileHandlers } from '../ipc/mobile'
 import { createRuntimeEnvironmentMobileRelayHosts } from '../ipc/runtime-environments/runtime-environment-mobile-relay-hosts'
 import { getLocalPtyProvider } from '../ipc/pty/provider/registry'
@@ -76,8 +76,8 @@ function settleDesktopActivation(): void {
 function e2eHeadlessServeWithoutBrowser(): boolean {
   return (
     !app.isPackaged &&
-    process.env.ORCA_E2E_HEADLESS === '1' &&
-    process.env.ORCA_E2E_HEADLESS_SERVE_WITHOUT_BROWSER === '1'
+    process.env.TOPO_E2E_HEADLESS === '1' &&
+    process.env.TOPO_E2E_HEADLESS_SERVE_WITHOUT_BROWSER === '1'
   )
 }
 
@@ -85,23 +85,23 @@ function e2eHeadlessServeWithoutBrowser(): boolean {
 function installRuntimeRpc(
   runtime: RuntimeService,
   serveOptions: ReturnType<typeof getServeOptions> | null
-): OrcaRuntimeRpcServer {
+): TopoRuntimeRpcServer {
   // Migrate pairing credentials from late-resolved userData before switching to the canonical path.
   migrateMobilePairingDataToCanonicalUserDataPath(app.getPath('userData'))
   // Use OS-assigned ports for concurrent E2E Electron instances to avoid EADDRINUSE.
-  const isE2E = Boolean(process.env.ORCA_E2E_USER_DATA_DIR)
-  const requestedE2EWsPort = process.env.ORCA_E2E_RUNTIME_WS_PORT
+  const isE2E = Boolean(process.env.TOPO_E2E_USER_DATA_DIR)
+  const requestedE2EWsPort = process.env.TOPO_E2E_RUNTIME_WS_PORT
   const e2eWsPort = requestedE2EWsPort === undefined ? 0 : Number(requestedE2EWsPort)
   if (isE2E && (!Number.isInteger(e2eWsPort) || e2eWsPort < 0 || e2eWsPort > 65_535)) {
-    throw new Error(`Invalid ORCA_E2E_RUNTIME_WS_PORT value: ${requestedE2EWsPort}`)
+    throw new Error(`Invalid TOPO_E2E_RUNTIME_WS_PORT value: ${requestedE2EWsPort}`)
   }
-  // STA-1511: separate dev port from packaged Orca so pairing/repro URLs do not fall back unpredictably.
+  // STA-1511: separate dev port from packaged Topo so pairing/repro URLs do not fall back unpredictably.
   const devWsPort = !app.isPackaged && !isE2E ? 6769 : undefined
   const pinnedBindHost = resolveServePinnedBindHost({
-    orcadSidecar: isOrcadSidecarLaunch(),
+    topodSidecar: isTopodSidecarLaunch(),
     serveOptions
   })
-  const runtimeRpc = new OrcaRuntimeRpcServer({
+  const runtimeRpc = new TopoRuntimeRpcServer({
     runtime,
     // Pairing must use pre-setName canonical userData or restarts can lose devices.
     userDataPath: getCanonicalUserDataPath(),
@@ -161,7 +161,7 @@ function installRuntimeRpc(
 
 async function launchServeMode(
   runtime: RuntimeService,
-  runtimeRpc: OrcaRuntimeRpcServer,
+  runtimeRpc: TopoRuntimeRpcServer,
   serveOptions: NonNullable<ReturnType<typeof getServeOptions>>
 ): Promise<void> {
   // Headless serve has no first paint to prioritize; apply persisted proxy before relay/CLI/RPC fetchers.
@@ -187,7 +187,7 @@ async function launchServeMode(
   await runtime.refreshRestoredOrchestrationAuthority()
   await runtime.reconcileLegacyWorkerTerminals()
   // Main places unshown live terminals before any client attaches.
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     await placeUnshownLiveTerminalsBestEffort(runtime)
   }
   // Headless hosts need display-backed offscreen WebContents; advertise browser capability only when usable.
@@ -228,7 +228,7 @@ async function launchServeMode(
 }
 
 async function launchDesktopMode(
-  runtimeRpc: OrcaRuntimeRpcServer,
+  runtimeRpc: TopoRuntimeRpcServer,
   shellPathReady: Promise<void>,
   desktopWindow: BrowserWindow | null,
   openMainWindow: MainProcessRuntimeLaunchOptions['openMainWindow']

@@ -1,61 +1,61 @@
 import type {
-  OrcadMigrationCatalogAbortResult,
-  OrcadMigrationCatalogReference,
-  OrcadMigrationCatalogReferenceAbortResult,
-  OrcadMigrationCatalogState,
-  OrcadMigrationManifest
-} from '../../../../shared/orcad-migration/orcad-migration-manifest'
+  TopodMigrationCatalogAbortResult,
+  TopodMigrationCatalogReference,
+  TopodMigrationCatalogReferenceAbortResult,
+  TopodMigrationCatalogState,
+  TopodMigrationManifest
+} from '../../../../shared/topod-migration/topod-migration-manifest'
 import type {
-  OrcadMigrationSnapshotChunkRequest,
-  OrcadMigrationSnapshotChunkResult
-} from '../../../../shared/orcad-migration/orcad-migration-scrollback'
+  TopodMigrationSnapshotChunkRequest,
+  TopodMigrationSnapshotChunkResult
+} from '../../../../shared/topod-migration/topod-migration-scrollback'
 import type {
-  OrcadMigrationBlobChunkRequest,
-  OrcadMigrationBlobChunkResult,
-  OrcadMigrationBlobDescriptor
-} from '../../../../shared/orcad-migration/orcad-migration-blob-transfer'
+  TopodMigrationBlobChunkRequest,
+  TopodMigrationBlobChunkResult,
+  TopodMigrationBlobDescriptor
+} from '../../../../shared/topod-migration/topod-migration-blob-transfer'
 import {
-  abortStagedOrcadMigrationCatalogByReferenceDurably,
-  abortStagedOrcadMigrationCatalogDurably,
-  commitStagedOrcadMigrationCatalogDurably,
-  getOrcadMigrationCatalogState,
-  stageOrcadMigrationCatalogDurably
-} from './orcad-migration-catalog-import'
-import { OrcaRuntimeWithResolveExitWaiters } from '../../terminal/wait/terminal-wait-settlements'
+  abortStagedTopodMigrationCatalogByReferenceDurably,
+  abortStagedTopodMigrationCatalogDurably,
+  commitStagedTopodMigrationCatalogDurably,
+  getTopodMigrationCatalogState,
+  stageTopodMigrationCatalogDurably
+} from './topod-migration-catalog-import'
+import { TopoRuntimeWithResolveExitWaiters } from '../../terminal/wait/terminal-wait-settlements'
 import type { RuntimeStore } from '../../construction/runtime-store-contract'
 
 type MigrationStoreKey =
-  | 'stageOrcadMigrationCatalog'
-  | 'commitStagedOrcadMigrationCatalog'
-  | 'stageOrcadMigrationSnapshotChunk'
-  | 'stageOrcadMigrationBlobChunk'
-  | 'abortStagedOrcadMigrationCatalog'
-  | 'abortStagedOrcadMigrationCatalogByReference'
-  | 'getOrcadMigrationCatalogState'
+  | 'stageTopodMigrationCatalog'
+  | 'commitStagedTopodMigrationCatalog'
+  | 'stageTopodMigrationSnapshotChunk'
+  | 'stageTopodMigrationBlobChunk'
+  | 'abortStagedTopodMigrationCatalog'
+  | 'abortStagedTopodMigrationCatalogByReference'
+  | 'getTopodMigrationCatalogState'
   | 'flushPendingOrThrowAsync'
 
-export abstract class OrcaRuntimeWithMigrationCatalog extends OrcaRuntimeWithResolveExitWaiters {
-  async stageOrcadMigrationCatalog(
-    manifest: OrcadMigrationManifest,
+export abstract class TopoRuntimeWithMigrationCatalog extends TopoRuntimeWithResolveExitWaiters {
+  async stageTopodMigrationCatalog(
+    manifest: TopodMigrationManifest,
     options: { signal?: AbortSignal } = {}
-  ): Promise<OrcadMigrationCatalogState> {
-    return stageOrcadMigrationCatalogDurably({
-      store: this.requireMigrationStore('stageOrcadMigrationCatalog', 'flushPendingOrThrowAsync'),
+  ): Promise<TopodMigrationCatalogState> {
+    return stageTopodMigrationCatalogDurably({
+      store: this.requireMigrationStore('stageTopodMigrationCatalog', 'flushPendingOrThrowAsync'),
       manifest,
       signal: options.signal
     })
   }
 
-  async commitStagedOrcadMigrationCatalog(
-    manifest: OrcadMigrationManifest,
+  async commitStagedTopodMigrationCatalog(
+    manifest: TopodMigrationManifest,
     options: {
       signal?: AbortSignal
-      expectedBlobs?: readonly OrcadMigrationBlobDescriptor[]
+      expectedBlobs?: readonly TopodMigrationBlobDescriptor[]
     } = {}
-  ): Promise<OrcadMigrationCatalogState> {
-    return commitStagedOrcadMigrationCatalogDurably({
+  ): Promise<TopodMigrationCatalogState> {
+    return commitStagedTopodMigrationCatalogDurably({
       store: this.requireMigrationStore(
-        'commitStagedOrcadMigrationCatalog',
+        'commitStagedTopodMigrationCatalog',
         'flushPendingOrThrowAsync'
       ),
       manifest,
@@ -69,30 +69,30 @@ export abstract class OrcaRuntimeWithMigrationCatalog extends OrcaRuntimeWithRes
     })
   }
 
-  stageOrcadMigrationSnapshotChunk(
-    request: OrcadMigrationSnapshotChunkRequest
-  ): OrcadMigrationSnapshotChunkResult {
+  stageTopodMigrationSnapshotChunk(
+    request: TopodMigrationSnapshotChunkRequest
+  ): TopodMigrationSnapshotChunkResult {
     // SAFETY: The virtual Store may differ from the checked Store; preserve its native failure.
-    return this.requireMigrationStore('stageOrcadMigrationSnapshotChunk')
-      .stageOrcadMigrationSnapshotChunk!(request)
+    return this.requireMigrationStore('stageTopodMigrationSnapshotChunk')
+      .stageTopodMigrationSnapshotChunk!(request)
   }
 
-  stageOrcadMigrationBlobChunk(
-    request: OrcadMigrationBlobChunkRequest
-  ): OrcadMigrationBlobChunkResult {
+  stageTopodMigrationBlobChunk(
+    request: TopodMigrationBlobChunkRequest
+  ): TopodMigrationBlobChunkResult {
     // SAFETY: The virtual Store may differ from the checked Store; preserve its native failure.
-    return this.requireMigrationStore('stageOrcadMigrationBlobChunk').stageOrcadMigrationBlobChunk!(
+    return this.requireMigrationStore('stageTopodMigrationBlobChunk').stageTopodMigrationBlobChunk!(
       request
     )
   }
 
-  async abortStagedOrcadMigrationCatalog(
-    manifest: OrcadMigrationManifest,
+  async abortStagedTopodMigrationCatalog(
+    manifest: TopodMigrationManifest,
     options: { signal?: AbortSignal } = {}
-  ): Promise<OrcadMigrationCatalogAbortResult> {
-    return abortStagedOrcadMigrationCatalogDurably({
+  ): Promise<TopodMigrationCatalogAbortResult> {
+    return abortStagedTopodMigrationCatalogDurably({
       store: this.requireMigrationStore(
-        'abortStagedOrcadMigrationCatalog',
+        'abortStagedTopodMigrationCatalog',
         'flushPendingOrThrowAsync'
       ),
       manifest,
@@ -100,13 +100,13 @@ export abstract class OrcaRuntimeWithMigrationCatalog extends OrcaRuntimeWithRes
     })
   }
 
-  async abortStagedOrcadMigrationCatalogByReference(
-    reference: OrcadMigrationCatalogReference,
+  async abortStagedTopodMigrationCatalogByReference(
+    reference: TopodMigrationCatalogReference,
     options: { signal?: AbortSignal } = {}
-  ): Promise<OrcadMigrationCatalogReferenceAbortResult> {
-    return abortStagedOrcadMigrationCatalogByReferenceDurably({
+  ): Promise<TopodMigrationCatalogReferenceAbortResult> {
+    return abortStagedTopodMigrationCatalogByReferenceDurably({
       store: this.requireMigrationStore(
-        'abortStagedOrcadMigrationCatalogByReference',
+        'abortStagedTopodMigrationCatalogByReference',
         'flushPendingOrThrowAsync'
       ),
       reference,
@@ -114,21 +114,21 @@ export abstract class OrcaRuntimeWithMigrationCatalog extends OrcaRuntimeWithRes
     })
   }
 
-  getOrcadMigrationCatalogState(manifest: OrcadMigrationManifest): OrcadMigrationCatalogState {
-    return getOrcadMigrationCatalogState({
-      store: this.requireMigrationStore('getOrcadMigrationCatalogState'),
+  getTopodMigrationCatalogState(manifest: TopodMigrationManifest): TopodMigrationCatalogState {
+    return getTopodMigrationCatalogState({
+      store: this.requireMigrationStore('getTopodMigrationCatalogState'),
       manifest,
       worktreeHasLiveShells: this.migrationWorktreeHasLiveShells
     })
   }
 
   /** Install deferred migrated history after host-shell discovery; unanswered inventory retries on the next catalog query. */
-  async installPendingOrcadMigrationShellHistory(): Promise<void> {
+  async installPendingTopodMigrationShellHistory(): Promise<void> {
     const store = this.store
     // Every daemon start calls this; no pending blobs must cost no inventory.
     if (
-      !store?.installPendingOrcadMigrationReceivedBlobs ||
-      !store.hasPendingOrcadMigrationShellHistory?.()
+      !store?.installPendingTopodMigrationReceivedBlobs ||
+      !store.hasPendingTopodMigrationShellHistory?.()
     ) {
       return
     }
@@ -139,26 +139,26 @@ export abstract class OrcaRuntimeWithMigrationCatalog extends OrcaRuntimeWithRes
         ...(await this.getResolvedWorktreeMap()).values()
       ]))
     ) {
-      console.warn('[orcad-migration] shell history waits: the terminal inventory did not answer')
+      console.warn('[topod-migration] shell history waits: the terminal inventory did not answer')
       return
     }
-    store.installPendingOrcadMigrationReceivedBlobs({
+    store.installPendingTopodMigrationReceivedBlobs({
       worktreeHasLiveShells: this.migrationWorktreeHasLiveShells
     })
   }
 
   override onPtyExit(
-    ...args: Parameters<OrcaRuntimeWithResolveExitWaiters['onPtyExit']>
-  ): ReturnType<OrcaRuntimeWithResolveExitWaiters['onPtyExit']> {
+    ...args: Parameters<TopoRuntimeWithResolveExitWaiters['onPtyExit']>
+  ): ReturnType<TopoRuntimeWithResolveExitWaiters['onPtyExit']> {
     const worktreeId = this.ptysById.get(args[0])?.worktreeId
     const result = super.onPtyExit(...args)
     if (worktreeId) {
       try {
-        this.store?.installDeferredOrcadMigrationShellHistory?.(worktreeId, {
+        this.store?.installDeferredTopodMigrationShellHistory?.(worktreeId, {
           worktreeHasLiveShells: this.migrationWorktreeHasLiveShells
         })
       } catch (error) {
-        console.error('[orcad-migration] installing deferred shell history failed:', error)
+        console.error('[topod-migration] installing deferred shell history failed:', error)
       }
     }
     return result

@@ -1,6 +1,6 @@
 import { openSidebarWorkspaceComposer } from './helpers/sidebar-project-dialog'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import type { LinearIssue } from '../../src/shared/linear/issue-types'
 import type { LinearConnectionStatus } from '../../src/shared/linear/workspace-types'
@@ -119,28 +119,28 @@ async function openJumpPalette(electronApp: ElectronApplication): Promise<void> 
 }
 
 test.describe('Linear URL workspace entry', () => {
-  test.beforeEach(async ({ electronApp, orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ electronApp, topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
     // Why: Create worktree reads Linear status from its repo's host, not the store.
     await electronApp.evaluate(({ ipcMain }, status) => {
       ipcMain.removeHandler('linear:status')
       ipcMain.handle('linear:status', () => status)
     }, LINEAR_STATUS)
-    await installLinearFixture(electronApp, orcaPage)
+    await installLinearFixture(electronApp, topoPage)
   })
 
   test('pasting into the composer selects the Linear issue without ArrowDown', async ({
     electronApp,
-    orcaPage
+    topoPage
   }, testInfo) => {
-    await installLinearFixture(electronApp, orcaPage, LINEAR_ISSUE, true)
-    await openSidebarWorkspaceComposer(orcaPage)
-    const dialog = orcaPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
+    await installLinearFixture(electronApp, topoPage, LINEAR_ISSUE, true)
+    await openSidebarWorkspaceComposer(topoPage)
+    const dialog = topoPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
     const input = dialog.locator('[data-workspace-name-input="true"]')
     await expect(input).toBeVisible()
 
-    await pasteLinearUrl(orcaPage, input)
+    await pasteLinearUrl(topoPage, input)
     await expect
       .poll(() =>
         electronApp.evaluate(
@@ -153,11 +153,11 @@ test.describe('Linear URL workspace entry', () => {
     await expect(dialog.locator('[data-workspace-source-pill="true"]')).toHaveCount(0)
     await releaseHeldLinearLookup(electronApp)
 
-    const issueRow = orcaPage.getByRole('option', {
+    const issueRow = topoPage.getByRole('option', {
       name: `${LINEAR_ISSUE.identifier} ${LINEAR_ISSUE.title}`,
       exact: true
     })
-    const useNameRow = orcaPage.getByRole('option', {
+    const useNameRow = topoPage.getByRole('option', {
       name: `Use "${LINEAR_URL}" as workspace name`,
       exact: true
     })
@@ -183,15 +183,15 @@ test.describe('Linear URL workspace entry', () => {
 
   test('a Linear URL lookup miss falls back to an arbitrary workspace name', async ({
     electronApp,
-    orcaPage
+    topoPage
   }) => {
-    await installLinearFixture(electronApp, orcaPage, null)
-    await openSidebarWorkspaceComposer(orcaPage)
-    const dialog = orcaPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
+    await installLinearFixture(electronApp, topoPage, null)
+    await openSidebarWorkspaceComposer(topoPage)
+    const dialog = topoPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
     const input = dialog.locator('[data-workspace-name-input="true"]')
 
-    await pasteLinearUrl(orcaPage, input)
-    const useNameRow = orcaPage.getByRole('option', {
+    await pasteLinearUrl(topoPage, input)
+    const useNameRow = topoPage.getByRole('option', {
       name: `Use "${LINEAR_URL}" as workspace name`,
       exact: true
     })
@@ -212,16 +212,16 @@ test.describe('Linear URL workspace entry', () => {
 
   test('pasting into Cmd+J previews the Linear issue and opens the linked composer', async ({
     electronApp,
-    orcaPage
+    topoPage
   }, testInfo) => {
     await openJumpPalette(electronApp)
-    const palette = orcaPage.getByRole('dialog', { name: 'Jump to...' })
+    const palette = topoPage.getByRole('dialog', { name: 'Jump to...' })
     const input = palette.getByPlaceholder(
       'Search chats, terminals, workspaces, tasks, settings, and actions...'
     )
     await expect(input).toBeVisible()
 
-    await pasteLinearUrl(orcaPage, input)
+    await pasteLinearUrl(topoPage, input)
 
     const preview = palette.locator(
       '[data-cmd-j-linear-issue-preview="true"][data-cmd-j-linear-issue-state="resolved"]'
@@ -235,7 +235,7 @@ test.describe('Linear URL workspace entry', () => {
     })
 
     await input.press('Enter')
-    const dialog = orcaPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
+    const dialog = topoPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
     const sourcePill = dialog.locator('[data-workspace-source-pill="true"]')
     await expect(sourcePill).toContainText(LINEAR_ISSUE.title)
     await expect(dialog.getByPlaceholder('Workspace name')).toHaveValue(EXPECTED_WORKSPACE_NAME)

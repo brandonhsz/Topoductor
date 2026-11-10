@@ -27,7 +27,7 @@ import {
 import { omitRecordKeys } from '../worktrees/teardown/record-key-omission'
 import { removeTabsAttention } from '../workspace-attention/subject-attention-transitions'
 import { settleAttentionRemovedBy } from '../workspace-attention/attention-removal-follow-up'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import { closeContentTabThroughLayoutOwner } from './content-tab-close-through-layout-owner'
 import { isEditorTabContentType } from '../editor/tabs/editor-tab-content-type'
 import type { TuiAgent } from '../../../../../shared/agent-launch/catalog/tui-agent'
@@ -92,7 +92,7 @@ export function createTabsCloseActions(
             provisional,
             layoutOwner: state,
             // Switch point: main's frames draw this machine's chats, so main opens it again.
-            ...(ORCA_LAYOUT_OWNER_IS_MAIN &&
+            ...(TOPO_LAYOUT_OWNER_IS_MAIN &&
             target.kind === 'local' &&
             tab.agentSessionAgent &&
             isTuiAgent(tab.agentSessionAgent)
@@ -210,7 +210,7 @@ export function createTabsCloseActions(
         )
       // Switch point: main closes an editor, browser, chat or simulator tab first; its frame drops it.
       if (
-        ORCA_LAYOUT_OWNER_IS_MAIN &&
+        TOPO_LAYOUT_OWNER_IS_MAIN &&
         closeContentTabThroughLayoutOwner(get, tab, {
           nextActiveTabId,
           closeHere: () => {

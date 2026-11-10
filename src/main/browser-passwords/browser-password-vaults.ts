@@ -5,11 +5,11 @@ import type { BrowserPasswordStoreResult } from './browser-password-vault-file'
 
 const BROWSER_PASSWORD_VAULT_DIRECTORY = 'browser-passwords'
 
-// Why keyed by file path: the same browser profile id ('default') exists in every Orca profile.
+// Why keyed by file path: the same browser profile id ('default') exists in every Topo profile.
 const vaults = new Map<string, BrowserPasswordStore>()
 let profileDirectory: string | null = null
 
-/** Points vaults at the active Orca profile, beside its browser-session metadata. */
+/** Points vaults at the active Topo profile, beside its browser-session metadata. */
 export function configureBrowserPasswordVaults(directory: string): void {
   profileDirectory = directory
 }

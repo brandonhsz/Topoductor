@@ -8,7 +8,7 @@ import {
   type HeadlessPairedRuntimeHost
 } from './helpers/headless-paired-runtime-host'
 import { readHostBrowserPageUrls } from './helpers/host-session-tabs'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   launchPairedElectronClient,
   type PairedElectronClient
@@ -297,9 +297,9 @@ async function openLinkFromRemotePaneContextMenu(page: Page): Promise<void> {
   await remoteFrame.click({ button: 'right', position: { x: 60, y: 60 }, force: true })
   await expect(page.getByTestId('remote-browser-context-menu')).toBeVisible({ timeout: 30_000 })
   // The menu appears only after remote anchor hit-testing resolves.
-  const openInOrca = page.getByRole('menuitem', { name: 'Open Link In Orca Browser' })
-  await expect(openInOrca).toBeVisible({ timeout: 30_000 })
-  await openInOrca.click()
+  const openInTopo = page.getByRole('menuitem', { name: 'Open Link In Topo Browser' })
+  await expect(openInTopo).toBeVisible({ timeout: 30_000 })
+  await openInTopo.click()
 }
 
 test('opens a remote pane link on the pane runtime and refuses to fall back to the client', async ({

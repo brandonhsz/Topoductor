@@ -10,7 +10,7 @@ export function sourceControlVariableDescription(
     case 'basePrompt':
       return t(
         'sourceControl.variables.basePrompt',
-        'Orca’s built-in prompt for this action, including the context Orca knows how to gather safely.'
+        'Topo’s built-in prompt for this action, including the context Topo knows how to gather safely.'
       )
     case 'branch':
       return t('sourceControl.variables.branch', 'The current source-control branch name.')
@@ -62,7 +62,7 @@ export function sourceControlVariableDescription(
     case 'assistantMessage':
       return t(
         'sourceControl.variables.assistantMessage',
-        'The initial agent response, when Orca has one available.'
+        'The initial agent response, when Topo has one available.'
       )
     case 'linkedIssue':
       return t(

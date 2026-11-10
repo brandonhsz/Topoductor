@@ -10,7 +10,7 @@ const head = JSON.stringify({
   to: { model: 'claude-opus-4-8' }
 })
 const raw = {
-  text: 'Claude sent content Orca cannot display yet',
+  text: 'Claude sent content Topo cannot display yet',
   providerFrame: {
     provider: 'claude',
     kind: 'message:assistant:content:fallback',

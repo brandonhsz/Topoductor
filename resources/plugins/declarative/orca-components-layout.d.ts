@@ -1,10 +1,10 @@
-// Orca components panel catalog 2 (since Orca 1.4.247) and later: layout and feedback components.
+// Topo components panel catalog 2 (since Topo 1.4.247) and later: layout and feedback components.
 // Part of the `orca` module with orca.d.ts, orca-components.d.ts and orca-components-data.d.ts.
 
 declare module 'orca' {
   import type { Align, Gap, IconName, Leaf, OrcaComponent, Tone, WithChildren } from 'orca'
 
-  /** Holds only `Tab`; Orca draws the selected tab's children. */
+  /** Holds only `Tab`; Topo draws the selected tab's children. */
   export type TabsProps = WithChildren & {
     label: string
     value?: string

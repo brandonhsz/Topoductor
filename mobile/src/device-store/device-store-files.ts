@@ -10,7 +10,7 @@ import {
   type DeviceStoreValueBinding
 } from './device-store-seal'
 
-// cache: <Caches>/orca-store/v1 (purgeable, never backed up); draft: <Documents>/orca-drafts/v1.
+// cache: <Caches>/topo-store/v1 (purgeable, never backed up); draft: <Documents>/topo-drafts/v1.
 export type DeviceStoreRoots = Readonly<Record<DeviceStoreTable, string>>
 
 export const DEVICE_STORE_TABLES: readonly DeviceStoreTable[] = ['cache', 'draft']

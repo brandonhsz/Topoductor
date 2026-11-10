@@ -79,7 +79,7 @@ function makeRepo(overrides: Partial<Repo> = {}): Repo {
   return {
     id: 'repo-1',
     path: '/repo',
-    displayName: 'orca',
+    displayName: 'topo',
     badgeColor: '#000000',
     addedAt: Date.UTC(2026, 4, 24),
     externalWorktreeVisibility: 'hide',
@@ -319,7 +319,7 @@ describe('WorktreeVisibilityDialog', () => {
     await click(sourceSwitch())
 
     expect(document.querySelector('[role="alert"]')?.textContent).toContain(
-      "This host doesn't support source-specific worktree visibility. Update Orca on the host to change this setting."
+      "This host doesn't support source-specific worktree visibility. Update Topo on the host to change this setting."
     )
     expect(document.querySelector('[role="alert"]')?.textContent).not.toContain('Try again')
     expect(mocks.state.fetchWorktrees).not.toHaveBeenCalled()

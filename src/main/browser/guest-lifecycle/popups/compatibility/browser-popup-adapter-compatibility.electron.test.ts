@@ -43,7 +43,7 @@ async function childAt(url: string): Promise<Page> {
 }
 
 async function configure(page: Page, path: CreationPath): Promise<void> {
-  await page.evaluate((path) => console.log(`orca-popup-fixture:probe-${path}`), path)
+  await page.evaluate((path) => console.log(`topo-popup-fixture:probe-${path}`), path)
 }
 
 describe('Electron popup adapter API limits (not an admission safety gate)', () => {
@@ -151,7 +151,7 @@ async function exerciseSandboxControls(
         )
         .toBe(true)
     }
-    await page.evaluate('console.log("orca-popup-fixture:snapshot")')
+    await page.evaluate('console.log("topo-popup-fixture:snapshot")')
     const creation = eventsSince(offset).find(
       (event) => event.event === (path === 'adopted' ? 'createWindow' : 'did-create-window')
     )

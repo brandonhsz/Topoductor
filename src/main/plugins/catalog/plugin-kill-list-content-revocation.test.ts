@@ -36,7 +36,7 @@ function contentManifest(): PluginManifest {
 }
 
 async function pluginRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-kill-content-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-kill-content-'))
   roots.push(root)
   await Promise.all([mkdir(join(root, 'locales')), mkdir(join(root, 'recipes'))])
   await Promise.all([

@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithAgentSessionResumeOwnership } from './agent-session-resume-ownership'
+import { TopoRuntimeWithAgentSessionResumeOwnership } from './agent-session-resume-ownership'
 import { makePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import {
   agentProviderSessionsEqual,
@@ -10,7 +10,7 @@ import {
   getConnectionExecutionHostId,
   type ExecutionHostId
 } from '../../../../shared/execution-host'
-import type { OrcaRuntimeWithCreateRuntimeOwnedMobileSessionTerminal as OwnedMobileTerminalCreate } from '../../terminal/launch/mobile-terminal-owned-create'
+import type { TopoRuntimeWithCreateRuntimeOwnedMobileSessionTerminal as OwnedMobileTerminalCreate } from '../../terminal/launch/mobile-terminal-owned-create'
 import { deterministicAgentSessionUuid } from '../../terminal/launch/runtime-agent-launch-resolution'
 import { isUnclaimedRunningSleepRecord } from './sleep-record-pane-claim'
 import type { ResumedAgentSession } from './agent-session-resume-claims'
@@ -31,7 +31,7 @@ export type AgentSessionResumeResult =
   /** A WSL host found only a Windows copy of the agent CLI; message says how to fix it. */
   | { ok: false; reason: 'windows_only_cli'; message: string }
 
-export abstract class OrcaRuntimeWithResumeAgentSessionInWorkspace extends OrcaRuntimeWithAgentSessionResumeOwnership {
+export abstract class TopoRuntimeWithResumeAgentSessionInWorkspace extends TopoRuntimeWithAgentSessionResumeOwnership {
   protected abstract createRuntimeOwnedMobileSessionTerminal(
     ...args: Parameters<OwnedMobileTerminalCreate['createRuntimeOwnedMobileSessionTerminal']>
   ): ReturnType<OwnedMobileTerminalCreate['createRuntimeOwnedMobileSessionTerminal']>

@@ -32,7 +32,7 @@ export function useNativeChatComposerCommandPicker(
        *  lists its workspace's skills. */
       mode?: 'edit' | 'launch'
     }
-): { picker: NativeChatPickerState; orcaCommands: NativeChatResumeCommand } {
+): { picker: NativeChatPickerState; topoCommands: NativeChatResumeCommand } {
   const { structuredTransport, editor, setNotice, mode, ...pickerArgs } = args
   const { agent, terminalTabId } = pickerArgs
   const { agentCommands, sessionSkills } = useNativeChatComposerCatalog(agent, structuredTransport)
@@ -77,7 +77,7 @@ export function useNativeChatComposerCommandPicker(
     matchesDraft: resumeMatches,
     interceptPick: resumeIntercept
   } = resume
-  const orcaCommands = useMemo(
+  const topoCommands = useMemo(
     (): NativeChatResumeCommand => ({
       matchesDraft: (draft) => sideMatches(draft) || resumeMatches(draft),
       consume: (draft) => sideConsume(draft) || resumeConsume(draft),
@@ -85,5 +85,5 @@ export function useNativeChatComposerCommandPicker(
     }),
     [resumeConsume, resumeIntercept, resumeMatches, sideConsume, sideIntercept, sideMatches]
   )
-  return { picker, orcaCommands }
+  return { picker, topoCommands }
 }

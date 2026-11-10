@@ -341,7 +341,7 @@ export function RemoteBrowserPagePane({
         <RemoteBrowserPageContextMenu
           contextMenu={contextMenu}
           onDismiss={() => setContextMenu(null)}
-          onOpenLinkInOrcaBrowser={() => {
+          onOpenLinkInTopoBrowser={() => {
             const linkUrl = contextMenu.linkUrl!
             setContextMenu(null)
             const sourceUnifiedTab = resolveBrowserSourceUnifiedTab(

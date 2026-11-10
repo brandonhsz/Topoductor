@@ -1,4 +1,4 @@
-import type { RelayRegion } from '@orca-cloud/relay-contract/relay-regions'
+import type { RelayRegion } from '@topo-cloud/relay-contract/relay-regions'
 import { CELL_INTAKE_BURST, CELL_RESERVE_TTL_MS, type ReserveOutcome } from '../../cell/reservations/cell-reserve-contract.js'
 
 // Directors estimate/pick from their own maps; cells decide bookings. Simulation drives this same pure logic.

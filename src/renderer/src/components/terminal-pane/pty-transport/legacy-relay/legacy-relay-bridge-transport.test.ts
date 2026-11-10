@@ -1,4 +1,4 @@
-// @orca-isolated-worker: the module-level pane subscription captures this file's bridge.
+// @topo-isolated-worker: the module-level pane subscription captures this file's bridge.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { LegacyRelayBridgedPane } from '../../../../../../shared/legacy-relay-bridge-contract'
 import type { PtyTransport } from '../pty-transport-types'
@@ -206,7 +206,7 @@ describe('a runtime pane bridged to an older relay’s terminal', () => {
     expect(inner.setOutputPaused).not.toHaveBeenCalled()
   })
 
-  it('reports a terminal the relay no longer runs as an expired session, then spawns on orcad', async () => {
+  it('reports a terminal the relay no longer runs as an expired session, then spawns on topod', async () => {
     bridge.attach.mockResolvedValue({ status: 'exited' })
     const inner = innerTransport()
     const transport = createLegacyRelayBridgeTransport(PTY, inner)
@@ -220,7 +220,7 @@ describe('a runtime pane bridged to an older relay’s terminal', () => {
     expect(transport.getPtyId()).toBe('remote:env-1@@t-1')
   })
 
-  it('leaves a bridged pane’s host-return reopen alone, and forwards it once the pane runs on orcad', async () => {
+  it('leaves a bridged pane’s host-return reopen alone, and forwards it once the pane runs on topod', async () => {
     bridge.attach.mockResolvedValueOnce({ status: 'attached', replay: 'SCREEN', acquisitionId: 1 })
     const bridgedInner = innerTransport()
     bridgedInner.reopenAfterHostReturned = vi.fn(() => true)

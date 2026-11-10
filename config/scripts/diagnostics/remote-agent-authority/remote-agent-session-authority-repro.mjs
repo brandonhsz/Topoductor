@@ -38,7 +38,7 @@ const binPath = path.join(scratch, 'bin')
 const spawnMarkerPath = path.join(scratch, 'agent-spawns.txt')
 const inputMarkerPath = path.join(scratch, 'agent-input.txt')
 const exitTriggerPath = path.join(scratch, 'exit-agent')
-const agentSessionToken = '--orca-repro-agent-session'
+const agentSessionToken = '--topo-repro-agent-session'
 const childProcesses = new Set()
 let server = null
 let activePairingCode = null
@@ -55,9 +55,9 @@ try {
       '-C',
       projectPath,
       '-c',
-      'user.name=Orca Repro',
+      'user.name=Topo Repro',
       '-c',
-      'user.email=orca-repro@example.invalid',
+      'user.email=topo-repro@example.invalid',
       'commit',
       '--allow-empty',
       '-m',
@@ -67,7 +67,7 @@ try {
   )
   const fixtureAgentPath = installFixtureAgent(binPath)
   writeFileSync(
-    path.join(profilePath, 'orca-data.json'),
+    path.join(profilePath, 'topo-data.json'),
     JSON.stringify({
       settings: { agentCmdOverrides: { codex: quoteFixtureAgentCommand(fixtureAgentPath) } }
     })
@@ -365,12 +365,12 @@ async function startServer(port) {
   const env = {
     ...process.env,
     [pathKey]: `${binPath}${pathDelimiter}${process.env[pathKey] ?? ''}`,
-    ORCA_DEV_USER_DATA_PATH: profilePath,
-    ORCA_USER_DATA_PATH: profilePath,
-    ORCA_REPRO_SPAWN_MARKER: spawnMarkerPath,
-    ORCA_REPRO_EXIT_TRIGGER: exitTriggerPath,
-    ORCA_REPRO_INPUT_MARKER: inputMarkerPath,
-    ORCA_REPRO_AGENT_SESSION_TOKEN: agentSessionToken,
+    TOPO_DEV_USER_DATA_PATH: profilePath,
+    TOPO_USER_DATA_PATH: profilePath,
+    TOPO_REPRO_SPAWN_MARKER: spawnMarkerPath,
+    TOPO_REPRO_EXIT_TRIGGER: exitTriggerPath,
+    TOPO_REPRO_INPUT_MARKER: inputMarkerPath,
+    TOPO_REPRO_AGENT_SESSION_TOKEN: agentSessionToken,
     ...(process.platform === 'linux' ? { ELECTRON_DISABLE_SANDBOX: '1' } : {})
   }
   server = spawn(
@@ -399,7 +399,7 @@ async function startServer(port) {
     lines.on('line', (line) => {
       try {
         const parsed = JSON.parse(line)
-        if (parsed.type === 'orca_server_ready' && parsed.pairing?.url) {
+        if (parsed.type === 'topo_server_ready' && parsed.pairing?.url) {
           clearTimeout(timeout)
           resolve(parsed)
         }

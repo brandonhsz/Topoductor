@@ -3,20 +3,20 @@ import { lstat, rm, writeFile } from 'node:fs/promises'
 import { readHooksJsonWithRaw } from '../agent-hooks/installation/configuration/hooks-json-read'
 import type { HooksConfig } from '../agent-hooks/installation/configuration/hook-config-schema'
 import { hasErrorCode } from '../daemon/endpoint/identity/daemon-process-inspection'
-import { isOrcaOwnedRemnant, removeManagedGrokHookEntries } from './grok-hook-config-cleanup'
+import { isTopoOwnedRemnant, removeManagedGrokHookEntries } from './grok-hook-config-cleanup'
 import { readGrokHookConfigSnapshot } from './grok-hook-config-file'
 import { getGrokManagedScriptFileName } from './grok-hook-script'
 
 type BackupAction = { kind: 'delete' } | { kind: 'rewrite'; contents: string } | null
 
-/** Our writes keep a rolling `.bak` of the hook file, which still names Orca's script after
- * removal: delete it when only Orca's entries were in it, otherwise strip just those. */
+/** Our writes keep a rolling `.bak` of the hook file, which still names Topo's script after
+ * removal: delete it when only Topo's entries were in it, otherwise strip just those. */
 function backupAction(config: HooksConfig | null, raw: string | null): BackupAction {
   if (!config || raw === null) {
     return null
   }
   const cleanup = removeManagedGrokHookEntries(config, getGrokManagedScriptFileName())
-  if (isOrcaOwnedRemnant(cleanup.config)) {
+  if (isTopoOwnedRemnant(cleanup.config)) {
     return { kind: 'delete' }
   }
   return cleanup.removedAny

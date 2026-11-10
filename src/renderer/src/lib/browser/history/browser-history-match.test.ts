@@ -38,13 +38,13 @@ const GIT_CORPUS = [
   entry({ url: 'https://example.com/?ref=git', title: 'Example', visitCount: 50 }),
   entry({ url: 'https://example.org/hooks', title: 'Configure git hooks', visitCount: 50 }),
   entry({ url: 'https://docs.legit.dev/api', title: 'API', visitCount: 50 }),
-  entry({ url: 'https://github.com/acme/orca', title: 'acme/orca', visitCount: 50 })
+  entry({ url: 'https://github.com/acme/topo', title: 'acme/topo', visitCount: 50 })
 ]
 
 describe('browser history match', () => {
   it('orders host-prefix above host-substring above title above url-tail', () => {
     expect(match(GIT_CORPUS, 'git')).toEqual([
-      { tier: 'host-prefix', url: 'https://github.com/acme/orca' },
+      { tier: 'host-prefix', url: 'https://github.com/acme/topo' },
       { tier: 'host-substring', url: 'https://docs.legit.dev/api' },
       { tier: 'title', url: 'https://example.org/hooks' },
       { tier: 'url-tail', url: 'https://example.com/?ref=git' }
@@ -57,9 +57,9 @@ describe('rankBrowserTopSites', () => {
     const ranked = rankBrowserTopSites({
       prepared: prepareBrowserHistoryEntries([
         entry({ url: 'https://react.dev/', visitCount: 3, lastVisitedAt: NOW - 48 * HOUR }),
-        entry({ url: 'https://github.com/acme/orca', visitCount: 2, lastVisitedAt: NOW }),
+        entry({ url: 'https://github.com/acme/topo', visitCount: 2, lastVisitedAt: NOW }),
         entry({ url: 'http://localhost:5173/', visitCount: 40 }),
-        entry({ url: 'http://web.orca.localhost:3000/', visitCount: 40 }),
+        entry({ url: 'http://web.topo.localhost:3000/', visitCount: 40 }),
         entry({ url: 'file:///tmp/notes.html', visitCount: 40 }),
         entry({ url: 'https://example.com/', visitCount: 1, lastVisitedAt: NOW - 48 * HOUR })
       ]),
@@ -68,7 +68,7 @@ describe('rankBrowserTopSites', () => {
     })
 
     expect(ranked.map((page) => page.url)).toEqual([
-      'https://github.com/acme/orca',
+      'https://github.com/acme/topo',
       'https://react.dev/'
     ])
   })

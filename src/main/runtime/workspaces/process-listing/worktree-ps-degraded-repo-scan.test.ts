@@ -31,14 +31,14 @@ const listWorktreesStrictMock = vi.hoisted(() => vi.fn())
 import type { WorktreeMeta } from '../../../../shared/worktree/meta-types'
 import type { WorktreeLineage } from '../../../../shared/worktree/lineage-types'
 import { worktreeWorkspaceKey } from '../../../../shared/workspace-scope'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 
 import type { HostWorktreeTarget } from '../../../../shared/worktree/host-qualified-identity'
 import {
   partialRuntimeStore,
   storeRepo,
   storeWorktreeMeta
-} from '../../orca-runtime-tests/runtime-store-partial-fixture'
+} from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
 const REPO_ID = 'repo-remote'
 const REPO_PATH = '/home/user/projects/app'
@@ -151,7 +151,7 @@ describe('worktree.ps on a degraded repo scan', () => {
   // withTimeout also falls back on rejection; absorb real scan failures before they can restore stale rows.
   it('treats a rejected scan as a real answer instead of restoring persisted worktrees', async () => {
     listWorktreesStrictMock.mockRejectedValue(new Error('git unavailable'))
-    const runtime = new OrcaRuntimeService(partialRuntimeStore(makeStore()))
+    const runtime = new TopoRuntimeService(partialRuntimeStore(makeStore()))
 
     const result = await runtime.getWorktreePs(10_000)
 
@@ -162,7 +162,7 @@ describe('worktree.ps on a degraded repo scan', () => {
     vi.useFakeTimers()
     try {
       listWorktreesStrictMock.mockImplementation(neverSettles)
-      const runtime = new OrcaRuntimeService(
+      const runtime = new TopoRuntimeService(
         partialRuntimeStore(
           makeStore({
             metaById: {

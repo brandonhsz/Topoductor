@@ -1,5 +1,5 @@
 import { WORKSPACE_ATTACHMENT_RUNTIME_CAPABILITIES } from './workspace-attachments/workspace-attachment-capabilities'
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from './sidebar-inputs-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from './sidebar-inputs-switch'
 
 export const WORKTREE_RENAME_ERROR_DISMISS_RUNTIME_CAPABILITY =
   'worktree.rename-error-dismiss.v1' as const
@@ -35,7 +35,7 @@ export const WORKTREE_CREATE_IDEMPOTENCY_RUNTIME_CAPABILITY =
   'worktree.create-idempotency.v1' as const
 export const WORKTREE_REMOVE_BRANCH_POLICY_RUNTIME_CAPABILITY =
   'worktree.remove-branch-policy.v1' as const
-// A failed running archive hook blocks deletion. This does not prove a hook was found: unreadable SSH orca.yaml is indistinguishable from absence (#20196).
+// A failed running archive hook blocks deletion. This does not prove a hook was found: unreadable SSH topo.yaml is indistinguishable from absence (#20196).
 // Advertise the gate so callers need not risk their checkout by probing a failure (#19334).
 export const WORKTREE_ARCHIVE_FAILURE_BLOCKING_RUNTIME_CAPABILITY =
   'worktree.archive-failure-blocking.v1' as const
@@ -54,7 +54,7 @@ export const WORKTREE_CLIENT_AUTOMATION_PROVENANCE_RUNTIME_CAPABILITY =
 export const WORKTREE_CREATE_AGENT_OPTIONS_RUNTIME_CAPABILITY =
   'worktree.create-agent-options.v1' as const
 
-// Hosts that save a parent from another Orca store; older hosts strip `crossStoreParent` and write no link.
+// Hosts that save a parent from another Topo store; older hosts strip `crossStoreParent` and write no link.
 export const WORKTREE_CROSS_STORE_LINEAGE_RUNTIME_CAPABILITY =
   'worktree.lineage.crossMachine' as const
 
@@ -69,7 +69,7 @@ export function assertCrossStoreLineageSupported(
 ): void {
   if (!supportsCrossStoreLineage(capabilities)) {
     throw new Error(
-      `Update Orca on ${hostLabel} to nest workspaces under a parent on another machine. Nothing was changed.`
+      `Update Topo on ${hostLabel} to nest workspaces under a parent on another machine. Nothing was changed.`
     )
   }
 }
@@ -89,7 +89,7 @@ export function assertFolderParentSetSupported(
 ): void {
   if (!supportsFolderParent(capabilities)) {
     throw new Error(
-      `Update Orca on ${hostLabel} to attach a worktree to a folder workspace. Nothing was changed.`
+      `Update Topo on ${hostLabel} to attach a worktree to a folder workspace. Nothing was changed.`
     )
   }
 }
@@ -136,5 +136,5 @@ export const WORKTREE_RUNTIME_CAPABILITIES = [
   WORKSPACE_SELECTOR_FOLDER_MATCH_RUNTIME_CAPABILITY,
   WORKTREE_RUN_APPROVED_SETUP_RUNTIME_CAPABILITY,
   WORKTREE_CREATE_EXACT_NAME_RUNTIME_CAPABILITY,
-  ...(ORCA_SIDEBAR_INPUTS_IS_MAIN ? [] : [WORKTREE_ROWS_CHANGED_EVENT_RUNTIME_CAPABILITY])
+  ...(TOPO_SIDEBAR_INPUTS_IS_MAIN ? [] : [WORKTREE_ROWS_CHANGED_EVENT_RUNTIME_CAPABILITY])
 ] as const

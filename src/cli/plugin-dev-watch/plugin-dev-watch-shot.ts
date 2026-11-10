@@ -15,7 +15,7 @@ export type PluginDevWatchShot = {
   pendingRequests?: number
 }
 
-/** What `--shot` asks of the Orca host; the handler binds it to RPC. */
+/** What `--shot` asks of the Topo host; the handler binds it to RPC. */
 export type PluginDevWatchShotHost = {
   /** `--shot-panel`, else the plugin's first panel; null when it has none. Throws on an unknown id. */
   panelOf(entry: PluginHostListEntry | null): string | null
@@ -25,13 +25,13 @@ export type PluginDevWatchShotHost = {
   take(pluginKey: string, panelId: string): Promise<PluginDevWatchShot | { notShown: string }>
 }
 
-/** Statuses whose panels Orca draws; an errored or invalid reload has nothing new to show. */
+/** Statuses whose panels Topo draws; an errored or invalid reload has nothing new to show. */
 export const PLUGIN_DEV_WATCH_SHOOTABLE = new Set(['running', 'idle', 'restarting'])
 
 /** A host that cannot capture now never will this session: too old, or no desktop window. */
 export function isLastingShotFailure(error: unknown): boolean {
   if (error instanceof RuntimeRpcFailureError) {
-    return error.response.error.message.includes('only available in the Orca desktop app')
+    return error.response.error.message.includes('only available in the Topo desktop app')
   }
   return error instanceof RuntimeClientError && error.code === 'runtime_unsupported'
 }

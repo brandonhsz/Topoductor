@@ -13,9 +13,9 @@ import {
 
 /** Main refuses to remove a host its managed server still holds; only Stop or Forget frees it. */
 export function isManagedServerSshHost(
-  target: Pick<SshTarget, 'orcadFence' | 'orcadProvisioning'>
+  target: Pick<SshTarget, 'topodFence' | 'topodProvisioning'>
 ): boolean {
-  return target.orcadFence !== undefined || target.orcadProvisioning !== undefined
+  return target.topodFence !== undefined || target.topodProvisioning !== undefined
 }
 
 export function SshManagedHostRemoveDialog({
@@ -45,7 +45,7 @@ export function SshManagedHostRemoveDialog({
           <DialogDescription>
             {t(
               'auto.components.settings.sshManagedHostRemove.descriptionServerHost',
-              'Orca runs on {{label}}. In Remote Orca Servers, open the ⋯ menu on {{label}} and choose Stop… to remove Orca from the host, or Forget… if the host is gone. Then you can remove this SSH host.',
+              'Topo runs on {{label}}. In Remote Topo Servers, open the ⋯ menu on {{label}} and choose Stop… to remove Topo from the host, or Forget… if the host is gone. Then you can remove this SSH host.',
               { label: label ?? '' }
             )}
           </DialogDescription>
@@ -57,7 +57,7 @@ export function SshManagedHostRemoveDialog({
           <Button onClick={openManagedServers}>
             {t(
               'auto.components.settings.sshManagedHostRemove.openServers',
-              'Open Remote Orca Servers'
+              'Open Remote Topo Servers'
             )}
           </Button>
         </DialogFooter>

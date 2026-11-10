@@ -28,7 +28,7 @@ export type HostHeaderMenuInput = {
   sshConnected?: boolean
   compatibility?: RuntimeCompatVerdict
   blockedReason?: RuntimeHostBlockedReason
-  /** False for a server Orca pairs itself (over SSH), whose repair is Connect, not an access link. */
+  /** False for a server Topo pairs itself (over SSH), whose repair is Connect, not an access link. */
   repairableWithAccessLink?: boolean
   /** A WSL host whose distro is stopped; Start is the one act that boots it (E9). */
   wslDistroStopped?: boolean

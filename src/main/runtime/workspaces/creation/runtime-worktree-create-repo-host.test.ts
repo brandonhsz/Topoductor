@@ -5,8 +5,8 @@ import type { RpcRequest } from '../../rpc/core'
 import { REPO_METHODS } from '../../rpc/methods/projects/repo'
 import { WORKTREE_METHODS } from '../../rpc/methods/workspaces/worktree'
 import '../../rpc/methods/agent-launch/agent-launch-worktree-creation'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { partialRuntimeStore } from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
 // Projects copied between hosts retain their repo id.
 const REPOS: Repo[] = [
@@ -30,8 +30,8 @@ const REPOS: Repo[] = [
   }
 ]
 
-function createRuntime(): OrcaRuntimeService {
-  return new OrcaRuntimeService(
+function createRuntime(): TopoRuntimeService {
+  return new TopoRuntimeService(
     partialRuntimeStore({
       getRepos: () => REPOS,
       getRepo: (id: string) => REPOS.find((repo) => repo.id === id),
@@ -48,7 +48,7 @@ function stopAtResolvedProject() {
   return vi
     .spyOn(
       // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: spies on the private step that receives the resolved repo; it exists on the prototype.
-      OrcaRuntimeService.prototype as unknown as {
+      TopoRuntimeService.prototype as unknown as {
         createInResolvedProject: (args: unknown, repo: Repo) => Promise<never>
       },
       'createInResolvedProject'

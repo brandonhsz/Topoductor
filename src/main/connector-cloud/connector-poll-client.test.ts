@@ -16,7 +16,7 @@ const SERVER_NOW = 1_800_000_000_000
 const conversation = { source: 'slack', externalId: 'T1:C9:1792.9:U5' } as const
 const [project] = connectorProjects({
   getRepos: () => [
-    { id: 'orca', path: '/src/orca', displayName: 'orca', badgeColor: '#000', addedAt: 1 }
+    { id: 'topo', path: '/src/topo', displayName: 'topo', badgeColor: '#000', addedAt: 1 }
   ],
   getProjectGroups: () => [],
   getFolderWorkspaces: () => [],
@@ -63,7 +63,7 @@ beforeEach(() => {
     toFake: ['setTimeout', 'clearTimeout', 'Date', 'performance'],
     now: SERVER_NOW
   })
-  userDataPath = mkdtempSync(join(tmpdir(), 'orca-connector-client-'))
+  userDataPath = mkdtempSync(join(tmpdir(), 'topo-connector-client-'))
   fake = new FakeConnectorCloud()
 })
 

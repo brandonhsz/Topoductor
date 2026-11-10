@@ -32,7 +32,7 @@ export type SidebarFeedWorkspace = {
   facts: SidebarFeedRowFacts
   /** Set on a folder row: the builder lists folder workspaces apart from worktrees. */
   folderWorkspace: FolderWorkspace | null
-  /** The row's saved parent in another Orca store, resolved over every store (sidebar-feed-rows.ts). */
+  /** The row's saved parent in another Topo store, resolved over every store (sidebar-feed-rows.ts). */
   crossStoreParent?: CrossStoreWorkspaceLineage
   /** Its folder workspace parent in its own store. */
   workspaceLineage?: WorkspaceLineageEdge

@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 const {
   callMock,
   runtimeClientConstructorMock,
-  serveOrcaAppMock,
+  serveTopoAppMock,
   getDefaultUserDataPathMock,
   addEnvironmentFromPairingCodeMock,
   listEnvironmentsMock,
@@ -13,8 +13,8 @@ const {
 } = vi.hoisted(() => ({
   callMock: vi.fn(),
   runtimeClientConstructorMock: vi.fn(),
-  serveOrcaAppMock: vi.fn(),
-  getDefaultUserDataPathMock: vi.fn(() => '/tmp/orca-user-data'),
+  serveTopoAppMock: vi.fn(),
+  getDefaultUserDataPathMock: vi.fn(() => '/tmp/topo-user-data'),
   addEnvironmentFromPairingCodeMock: vi.fn(),
   listEnvironmentsMock: vi.fn(),
   spawnMock: vi.fn()
@@ -28,7 +28,7 @@ vi.mock('../../../../../cli/runtime-client', async () => {
   return createRuntimeClientModuleMock({
     callMock,
     runtimeClientConstructorMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock
   })
 })
@@ -81,18 +81,18 @@ import { RpcDispatcher } from '../../dispatcher'
 import { UnixSocketTransport } from '../../unix-socket-transport'
 import { AGENT_LAUNCH_METHODS } from './agent-launch'
 import { WORKTREE_METHODS } from '../workspaces/worktree'
-import '../../../orca-runtime-tests/runtime-test-module-registration.spec'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import '../../../topo-runtime-tests/runtime-test-module-registration.spec'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import { addWorktree } from '../../../../git/worktrees/creation/worktree-add'
 import { listWorktrees } from '../../../../git/worktrees/catalog/worktree-scan-cache'
-import { MOCK_GIT_WORKTREES } from '../../../orca-runtime-test-mocks/setup.spec'
-import '../../../orca-runtime-tests/orca-runtime-test-lifecycle.spec'
+import { MOCK_GIT_WORKTREES } from '../../../topo-runtime-test-mocks/setup.spec'
+import '../../../topo-runtime-tests/topo-runtime-test-lifecycle.spec'
 import {
   store as runtimeStore,
   TEST_WORKTREE_ID,
   createFolderWorkspaceRuntimeStore,
   makeFolderWorkspace
-} from '../../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import {
   openTestAgentSessionRecordStore,
   readPersistedTestAgentSessionStore
@@ -109,7 +109,7 @@ import { AgentLaunchReplay } from '../../../../../shared/rpc-contract/agent-laun
 
 configureWorktreeAwarenessEnvironment({
   callMock,
-  serveOrcaAppMock,
+  serveTopoAppMock,
   getDefaultUserDataPathMock,
   addEnvironmentFromPairingCodeMock,
   listEnvironmentsMock,
@@ -140,9 +140,9 @@ describe('CLI cwd refusal through production creation and durable failed receipt
   let transport: UnixSocketTransport
   let prior: typeof process.exitCode
   beforeEach(async () => {
-    vi.stubEnv('ORCA_AGENT_SESSION_ID', undefined)
-    vi.stubEnv('ORCA_STRUCTURED_SESSION', undefined)
-    directory = await mkdtemp(join(tmpdir(), 'orca-cwd-receipt-'))
+    vi.stubEnv('TOPO_AGENT_SESSION_ID', undefined)
+    vi.stubEnv('TOPO_STRUCTURED_SESSION', undefined)
+    directory = await mkdtemp(join(tmpdir(), 'topo-cwd-receipt-'))
     prior = process.exitCode
     const saved = runtimeStore.getAllWorktreeMeta()
     const metadata = {
@@ -171,7 +171,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
   ] as const)('keeps original code/text once through %s and actual close/reopen', async (route) => {
     const records = await openTestAgentSessionRecordStore(directory)
     const rpcRoute = route === 'structured' ? 'agent.launchReplay' : route
-    const runtime = new OrcaRuntimeService(runtimeStore)
+    const runtime = new TopoRuntimeService(runtimeStore)
     vi.spyOn(runtime, 'openAgentSessionRecordStore').mockResolvedValue(records)
     vi.spyOn(runtime, 'getClientSettings').mockReturnValue({
       ...runtime.getClientSettings()
@@ -199,7 +199,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
     const publish = vi.spyOn(runtime, 'publishAgentLaunchTab')
     const endpoint =
       process.platform === 'win32'
-        ? `\\\\.\\pipe\\orca-cwd-${randomUUID()}`
+        ? `\\\\.\\pipe\\topo-cwd-${randomUUID()}`
         : join(directory, 'rpc.sock')
     transport = new UnixSocketTransport({
       endpoint,
@@ -262,7 +262,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
       ...(route === 'worktree.create' ? [] : ['--agent', 'codex']),
       ...(route === 'structured' ? ['--surface', 'chat'] : [])
     ]
-    process.env.ORCA_TERMINAL_HANDLE = 'term_X'
+    process.env.TOPO_TERMINAL_HANDLE = 'term_X'
     const message = formatAmbiguousCwdParentMessage(
       route === 'worktree.create' ? undefined : 'codex'
     )
@@ -288,7 +288,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
         expect(output).toBe(message)
       }
       expect(output).not.toContain('Next step:')
-      expect(output).not.toContain('orca repo list')
+      expect(output).not.toContain('topo repo list')
       expect(output).not.toContain('could not confirm the launch')
     }
     expect(create).toHaveBeenCalled()
@@ -367,7 +367,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
     expect(publish).not.toHaveBeenCalled()
     await closeTestJournalHostDatabase(directory)
     const reopened = await openTestAgentSessionRecordStore(directory)
-    const restarted = new OrcaRuntimeService(runtimeStore)
+    const restarted = new TopoRuntimeService(runtimeStore)
     vi.spyOn(restarted, 'openAgentSessionRecordStore').mockResolvedValue(reopened)
     const replayCreate = vi.spyOn(restarted, 'createManagedWorktree')
     const replayTerminal = vi.spyOn(restarted, 'showTerminal')
@@ -403,7 +403,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
     expect(replayPublish).not.toHaveBeenCalled()
     expect(showTerminal).toHaveBeenCalled()
     const failedWriteId = `${Date.now()}-${randomUUID().replaceAll('-', '')}`
-    const failingHost = new OrcaRuntimeService(runtimeStore)
+    const failingHost = new TopoRuntimeService(runtimeStore)
     vi.spyOn(failingHost, 'openAgentSessionRecordStore').mockResolvedValue(reopened)
     vi.spyOn(failingHost, 'getClientSettings').mockReturnValue({
       ...failingHost.getClientSettings()
@@ -428,7 +428,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
     ).toEqual({ code: 'LINEAGE_PARENT_AMBIGUOUS', message })
     await closeTestJournalHostDatabase(directory)
     const uncertainRecords = await openTestAgentSessionRecordStore(directory)
-    const uncertainHost = new OrcaRuntimeService(runtimeStore)
+    const uncertainHost = new TopoRuntimeService(runtimeStore)
     vi.spyOn(uncertainHost, 'openAgentSessionRecordStore').mockResolvedValue(uncertainRecords)
     const uncertainCreate = vi.spyOn(uncertainHost, 'createManagedWorktree')
     dispatcher = new RpcDispatcher({ runtime: uncertainHost, methods: AGENT_LAUNCH_METHODS })
@@ -466,7 +466,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
     })
     const endpoint =
       process.platform === 'win32'
-        ? `\\\\.\\pipe\\orca-t-${randomUUID()}`
+        ? `\\\\.\\pipe\\topo-t-${randomUUID()}`
         : join(directory, 't.sock')
     transport = new UnixSocketTransport({
       endpoint,
@@ -521,7 +521,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
     })
     const log = vi.spyOn(console, 'log').mockImplementation(() => {})
     const error = vi.spyOn(console, 'error').mockImplementation(() => {})
-    process.env.ORCA_TERMINAL_HANDLE = host.caller
+    process.env.TOPO_TERMINAL_HANDLE = host.caller
     const argv = [
       'worktree',
       'create',
@@ -566,7 +566,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
     }
     await closeTestJournalHostDatabase(directory)
     records = await openTestAgentSessionRecordStore(directory)
-    const restarted = new OrcaRuntimeService(host.runtimeStore)
+    const restarted = new TopoRuntimeService(host.runtimeStore)
     vi.spyOn(restarted, 'openAgentSessionRecordStore').mockResolvedValue(records)
     const replayCreate = vi.spyOn(restarted, 'createManagedWorktree')
     const replayTerminal = vi.spyOn(restarted, 'showTerminal')
@@ -733,7 +733,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
       ).toMatchObject({ ok: false, error: { code: 'agent_launch_replay_unsupported' } })
       await closeTestJournalHostDatabase(directory)
       records = await openTestAgentSessionRecordStore(directory)
-      const restarted = new OrcaRuntimeService(host.runtimeStore)
+      const restarted = new TopoRuntimeService(host.runtimeStore)
       vi.spyOn(restarted, 'openAgentSessionRecordStore').mockResolvedValue(records)
       const noExecution = [
         vi.spyOn(restarted, 'createManagedWorktree'),
@@ -777,7 +777,7 @@ describe('CLI cwd refusal through production creation and durable failed receipt
   })
   it('inspects the exact native recovery value through public CLI, RPC and actual folder resolver', async () => {
     const folder = makeFolderWorkspace({ folderPath: directory })
-    const runtime = new OrcaRuntimeService(createFolderWorkspaceRuntimeStore(folder))
+    const runtime = new TopoRuntimeService(createFolderWorkspaceRuntimeStore(folder))
     const shown = vi.spyOn(runtime, 'showManagedWorktree')
     const catalog = vi.spyOn(runtime, 'listManagedWorktrees')
     const dispatcher = new RpcDispatcher({ runtime, methods: WORKTREE_METHODS })

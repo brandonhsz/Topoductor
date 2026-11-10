@@ -1,25 +1,25 @@
 import { createHash } from 'node:crypto'
 import { isTerminalPromptMutation } from '../../../shared/orchestration/orchestration-rpc-contract'
 import { parsePaneKey } from '../../../shared/workspace-layout/stable-pane-id'
-import type { OrcaRuntimeService } from '../orca-runtime'
-import type { OrcaSessionId } from '../../../shared/orca-session-address'
+import type { TopoRuntimeService } from '../topo-runtime'
+import type { TopoSessionId } from '../../../shared/topo-session-address'
 
 export const EFFECT_FREE_WORKER_DONE_CHECKPOINT = JSON.stringify({
   pending: { effectFree: 'worker_done' }
 })
 
-const REPLAY_NUDGE_KEY = '__orcaReplayNudge'
+const REPLAY_NUDGE_KEY = '__topoReplayNudge'
 
 export type MutationReplayNudge =
   | { kind: 'messages'; targets: { to: string; type: string }[] }
   | { kind: 'federation'; runId?: string }
 
-const CALLER_ORCA_SESSION_ID_KEY = '__orcaCallerOrcaSessionId'
+const CALLER_TOPO_SESSION_ID_KEY = '__topoCallerTopoSessionId'
 
 export function replayStableCallerParams(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   params: unknown,
-  callerOrcaSessionId?: OrcaSessionId,
+  callerTopoSessionId?: TopoSessionId,
   method?: string
 ): unknown {
   if (!params || typeof params !== 'object' || Array.isArray(params)) {
@@ -27,8 +27,8 @@ export function replayStableCallerParams(
   }
   const source = params as Record<string, unknown>
   // Absent for terminal callers, so their payload hashes are unchanged.
-  const result: Record<string, unknown> = callerOrcaSessionId
-    ? { ...source, [CALLER_ORCA_SESSION_ID_KEY]: callerOrcaSessionId }
+  const result: Record<string, unknown> = callerTopoSessionId
+    ? { ...source, [CALLER_TOPO_SESSION_ID_KEY]: callerTopoSessionId }
     : { ...source }
   if (method === 'orchestration.federationImport' && Array.isArray(result.items)) {
     result.items = result.items.map((item: Record<string, unknown>) => {

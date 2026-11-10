@@ -17,7 +17,7 @@ import type { RuntimeStore } from '../../../construction/runtime-store-contract'
 
 import '../../../../../shared/workspace-layout/workspace-layout-client-visibility'
 import '../../server/runtime-rpc-mobile-method-allowlist'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 
 import '../../core'
 import './workspace-layout'
@@ -25,10 +25,10 @@ import '../rpc-method-registry'
 import {
   partialRuntimeStore,
   type PartialRuntimeStore
-} from '../../../orca-runtime-tests/runtime-store-partial-fixture'
+} from '../../../topo-runtime-tests/runtime-store-partial-fixture'
 
-// Pin a window-owned build even under `ORCA_LAYOUT_OWNER=main`, so the default registry omits layout commands.
-vi.mock('../../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: false }))
+// Pin a window-owned build even under `TOPO_LAYOUT_OWNER=main`, so the default registry omits layout commands.
+vi.mock('../../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: false }))
 
 const frozen = vi.hoisted(() => ({ workspaces: new Set<string>() }))
 vi.mock(
@@ -111,7 +111,7 @@ describe('layout.apply', () => {
       }),
       applyTabRenames
     }
-    const runtime = new OrcaRuntimeService(partialRuntimeStore(store))
+    const runtime = new TopoRuntimeService(partialRuntimeStore(store))
     const titled = (tabId: string) => ({ workspace: WORKTREE, tabId, title: `Title ${tabId}` })
 
     const reply = await runtime.applyLayoutCommand({
@@ -156,7 +156,7 @@ describe('layout.apply', () => {
         return { ok: true, result: { leafId: 'minted' } }
       })
     }
-    const runtime = new OrcaRuntimeService(partialRuntimeStore(store))
+    const runtime = new TopoRuntimeService(partialRuntimeStore(store))
     const sent: number[] = []
     const { seq } = runtime.subscribeWorkspaceLayouts((event) => {
       order.push('frame')

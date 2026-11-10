@@ -5,7 +5,7 @@ export type HostGoodPath = 'direct' | 'relay'
 
 type HostPathRecord = { path: HostGoodPath; fingerprint: string }
 
-const STORAGE_KEY_PREFIX = 'orca:host-path:v1:'
+const STORAGE_KEY_PREFIX = 'topo:host-path:v1:'
 
 // True only when this host's last good connection was direct on the network the phone is on now.
 export async function lastGoodPathWasDirectHere(hostId: string): Promise<boolean> {

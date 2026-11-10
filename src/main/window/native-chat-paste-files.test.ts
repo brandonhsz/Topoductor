@@ -35,7 +35,7 @@ describe('native-chat paste folder on disk', () => {
   let folder: string
 
   beforeEach(() => {
-    root = mkdtempSync(path.join(tmpdir(), 'orca-native-chat-pastes-'))
+    root = mkdtempSync(path.join(tmpdir(), 'topo-native-chat-pastes-'))
     folder = path.join(root, 'native-chat-pastes')
     mkdirSync(folder)
     installFakeAppEnvironment({ getPath: () => root })
@@ -46,21 +46,21 @@ describe('native-chat paste folder on disk', () => {
   })
 
   it('keeps only files really inside the folder, and never throws on a bad path', async () => {
-    const kept = path.join(folder, 'orca-paste-1.png')
+    const kept = path.join(folder, 'topo-paste-1.png')
     writeFileSync(kept, 'png')
     const outside = path.join(root, 'outside.png')
     writeFileSync(outside, 'png')
-    const linkOut = path.join(folder, 'orca-paste-2.png')
+    const linkOut = path.join(folder, 'topo-paste-2.png')
     symlinkSync(outside, linkOut)
-    mkdirSync(path.join(folder, 'orca-paste-dir.png'))
+    mkdirSync(path.join(folder, 'topo-paste-dir.png'))
 
     const results = await restoreNativeChatPastes([
       kept,
       linkOut,
       path.join(folder, '..', 'outside.png'),
-      path.join(folder, 'orca-paste-dir.png'),
-      path.join(folder, 'orca-paste-missing.png'),
-      'relative/orca-paste-3.png',
+      path.join(folder, 'topo-paste-dir.png'),
+      path.join(folder, 'topo-paste-missing.png'),
+      'relative/topo-paste-3.png',
       '',
       42
     ])
@@ -69,23 +69,23 @@ describe('native-chat paste folder on disk', () => {
       { path: kept, kept: true, exists: true },
       { path: linkOut, kept: false, exists: false },
       { path: path.join(folder, '..', 'outside.png'), kept: false, exists: false },
-      { path: path.join(folder, 'orca-paste-dir.png'), kept: false, exists: false },
-      { path: path.join(folder, 'orca-paste-missing.png'), kept: false, exists: false },
-      { path: 'relative/orca-paste-3.png', kept: false, exists: false },
+      { path: path.join(folder, 'topo-paste-dir.png'), kept: false, exists: false },
+      { path: path.join(folder, 'topo-paste-missing.png'), kept: false, exists: false },
+      { path: 'relative/topo-paste-3.png', kept: false, exists: false },
       { path: '', kept: false, exists: false }
     ])
     await expect(restoreNativeChatPastes('not a list')).resolves.toEqual([])
   })
 
   it('keeps a paste reached through a symlinked alias of the folder, as /var is of /private/var', async () => {
-    const kept = path.join(folder, 'orca-paste-1.png')
+    const kept = path.join(folder, 'topo-paste-1.png')
     writeFileSync(kept, 'png')
-    const alias = path.join(tmpdir(), `orca-native-chat-pastes-alias-${process.pid}`)
+    const alias = path.join(tmpdir(), `topo-native-chat-pastes-alias-${process.pid}`)
     rmSync(alias, { force: true })
     symlinkSync(root, alias)
     try {
       installFakeAppEnvironment({ getPath: () => alias })
-      const viaAlias = path.join(alias, 'native-chat-pastes', 'orca-paste-1.png')
+      const viaAlias = path.join(alias, 'native-chat-pastes', 'topo-paste-1.png')
 
       await expect(restoreNativeChatPastes([viaAlias, realpathSync(kept)])).resolves.toEqual([
         { path: viaAlias, kept: true, exists: true },
@@ -102,7 +102,7 @@ describe('native-chat paste folder on disk', () => {
     const secret = path.join(root, 'outside', 'id_rsa')
     mkdirSync(path.dirname(secret), { recursive: true })
     writeFileSync(secret, 'PRIVATE KEY')
-    const paste = path.join(folder, 'orca-paste-1.png')
+    const paste = path.join(folder, 'topo-paste-1.png')
     writeFileSync(paste, 'png')
     // `s/..` resolves through a link for real, but by text it climbs to the secret.
     const workspace = path.join(root, 'ws')
@@ -132,29 +132,29 @@ describe('native-chat paste folder on disk', () => {
     const sub = path.join(folder, 'sub')
     mkdirSync(sub)
     mkdirSync(path.join(sub, 'deeper'))
-    writeFileSync(path.join(sub, 'orca-paste-y.png'), 'png')
+    writeFileSync(path.join(sub, 'topo-paste-y.png'), 'png')
     symlinkSync(path.join(sub, 'deeper'), path.join(folder, 'link'))
-    symlinkSync(secret, path.join(folder, 'orca-paste-y.png'))
-    const restored = `${folder}/link/../orca-paste-y.png`
-    expect(realpathSync.native(restored)).toBe(realpathSync(path.join(sub, 'orca-paste-y.png')))
+    symlinkSync(secret, path.join(folder, 'topo-paste-y.png'))
+    const restored = `${folder}/link/../topo-paste-y.png`
+    expect(realpathSync.native(restored)).toBe(realpathSync(path.join(sub, 'topo-paste-y.png')))
 
     await expect(restoreNativeChatPastes([restored])).resolves.toEqual([
       { path: restored, kept: true, exists: true }
     ])
     expect(await chatImageReadable(secret)).toBe(false)
     expect(await chatImageReadable(realpathSync(secret))).toBe(false)
-    expect(await chatImageReadable(path.join(folder, 'orca-paste-y.png'))).toBe(false)
+    expect(await chatImageReadable(path.join(folder, 'topo-paste-y.png'))).toBe(false)
   })
 
   it('does not restore from a paste folder that is itself a link', async () => {
     const outside = path.join(root, 'Documents')
     mkdirSync(outside)
-    writeFileSync(path.join(outside, 'orca-paste-1.png'), 'x')
+    writeFileSync(path.join(outside, 'topo-paste-1.png'), 'x')
     rmSync(folder, { recursive: true })
     symlinkSync(outside, folder)
 
-    await expect(restoreNativeChatPastes([path.join(folder, 'orca-paste-1.png')])).resolves.toEqual(
-      [{ path: path.join(folder, 'orca-paste-1.png'), kept: false, exists: false }]
+    await expect(restoreNativeChatPastes([path.join(folder, 'topo-paste-1.png')])).resolves.toEqual(
+      [{ path: path.join(folder, 'topo-paste-1.png'), kept: false, exists: false }]
     )
   })
 })

@@ -11,11 +11,11 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { expect, it } from 'vitest'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { FULL_SHARD_COUNT } from './ci-unit-matrix.mjs'
 
 it('emits the full matrix from a sparse checkout without dependencies or test discovery', () => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), 'orca-unit-matrix-')))
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'topo-unit-matrix-')))
   try {
     const script = join(root, 'matrix.mjs')
     copyFileSync(new URL('./ci-unit-matrix.mjs', import.meta.url), script)
@@ -27,7 +27,7 @@ it('emits the full matrix from a sparse checkout without dependencies or test di
         cwd: root,
         env: {
           ...process.env,
-          ORCA_UNIT_FULL_SHARD_COUNT: count,
+          TOPO_UNIT_FULL_SHARD_COUNT: count,
           GITHUB_OUTPUT: output
         }
       })
@@ -51,7 +51,7 @@ it.each([
 ])(
   'plans from a real Git diff, retaining full coverage for incomplete package evidence: %j',
   ({ withParent, unresolvedPackage }) => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-unit-plan-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-unit-plan-'))
     const git = (args) => {
       const result = runProcessSync({ program: 'git', args, cwd: root })
       expect(result.code, result.stderr).toBe(0)
@@ -62,7 +62,7 @@ it.each([
       writeFileSync(join(root, 'src/value.ts'), 'export const value = 1')
       writeFileSync(
         join(root, 'src/consumer.test.ts'),
-        unresolvedPackage ? "import '@orca/missing-package'" : "import './value'"
+        unresolvedPackage ? "import '@topo/missing-package'" : "import './value'"
       )
       writeFileSync(join(root, 'src/unrelated.test.ts'), 'export const unrelated = true')
       git(['init', '--quiet'])
@@ -92,12 +92,12 @@ it.each([
         cwd: root,
         env: {
           ...process.env,
-          ORCA_BACKGROUND_LAUNCH: '1',
-          ORCA_UNIT_SELECTION_MODE: 'selected',
+          TOPO_BACKGROUND_LAUNCH: '1',
+          TOPO_UNIT_SELECTION_MODE: 'selected',
           GITHUB_EVENT_NAME: 'pull_request',
-          ORCA_PULL_REQUEST_DRAFT: 'true',
+          TOPO_PULL_REQUEST_DRAFT: 'true',
           GITHUB_SHA: sourceSha,
-          ORCA_SHARD_SOURCE_SHA: sourceSha,
+          TOPO_SHARD_SOURCE_SHA: sourceSha,
           GITHUB_OUTPUT: join(root, 'outputs'),
           GITHUB_STEP_SUMMARY: join(root, 'summary')
         }
@@ -114,7 +114,7 @@ it.each([
         !withParent
           ? 'Error: Changed paths unavailable'
           : unresolvedPackage
-            ? 'Error: No public orca-source export for @orca/missing-package'
+            ? 'Error: No public topo-source export for @topo/missing-package'
             : 'Transitive imports plus indirect-input consumers'
       )
       expect(plan.shards).toHaveLength(selected ? 1 : FULL_SHARD_COUNT)

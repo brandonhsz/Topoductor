@@ -17,7 +17,7 @@ import type { CodexEventLabel, CodexTrustEntry } from '../../trust/toml/config-t
 
 type HooksByEvent = Record<string, HookDefinition[]>
 
-// Codex hashes group matchers, so Orca needs a dedicated matcher-free group to match its approval.
+// Codex hashes group matchers, so Topo needs a dedicated matcher-free group to match its approval.
 export type RealHomeCodexHookEntryPlan =
   /** Pruning can shift user hooks and their positional approval keys. */
   | { kind: 'prune'; hooks: HooksByEvent }
@@ -32,21 +32,21 @@ export type RealHomeCodexHookEntryPlan =
       untouchedLabels: ReadonlySet<CodexEventLabel>
     }
 
-type OrcaHandler = {
+type TopoHandler = {
   groupIndex: number
   hook: HookCommandConfig
   form: number
 }
 
-function findOrcaHandlers(
+function findTopoHandlers(
   definitions: HookDefinition[],
-  isOrcaCommand: (command: string | undefined) => boolean,
+  isTopoCommand: (command: string | undefined) => boolean,
   command: string
-): OrcaHandler[] {
+): TopoHandler[] {
   return definitions.flatMap((definition, groupIndex) =>
     Array.isArray(definition.hooks)
       ? definition.hooks.flatMap((hook) =>
-          isOrcaCommand(hook.command)
+          isTopoCommand(hook.command)
             ? [{ groupIndex, hook, form: readCodexHookCommandForm(hook.command, command) }]
             : []
         )
@@ -54,18 +54,18 @@ function findOrcaHandlers(
   )
 }
 
-function isOrcaOnlyGroup(
+function isTopoOnlyGroup(
   definition: HookDefinition,
-  isOrcaCommand: (command: string | undefined) => boolean
+  isTopoCommand: (command: string | undefined) => boolean
 ): boolean {
   return (
     Object.keys(definition).every((key) => key === 'hooks') &&
     Array.isArray(definition.hooks) &&
-    definition.hooks.every((hook) => isOrcaCommand(hook.command))
+    definition.hooks.every((hook) => isTopoCommand(hook.command))
   )
 }
 
-// Match every field Codex hashes so modified hooks cannot reuse Orca's approval.
+// Match every field Codex hashes so modified hooks cannot reuse Topo's approval.
 function isSameHook(left: HookCommandConfig, right: HookCommandConfig): boolean {
   const keys = new Set([...Object.keys(left), ...Object.keys(right)])
   return [...keys].every((key) => JSON.stringify(left[key]) === JSON.stringify(right[key]))
@@ -81,11 +81,11 @@ export function planRealHomeCodexHookEntries(args: {
   hooks: HooksByEvent
   sourcePath: string
   material: Pick<CodexManagedHookInstallMaterial, 'events' | 'command'>
-  isOrcaCommand: (command: string | undefined) => boolean
+  isTopoCommand: (command: string | undefined) => boolean
   /** Convert older forms at startup/opt-in, never on launch. */
   convertOlderForms: boolean
 }): RealHomeCodexHookEntryPlan {
-  const { material, isOrcaCommand, sourcePath } = args
+  const { material, isTopoCommand, sourcePath } = args
   const command = material.command
   // Preserve unplanned events, which may belong to a newer build.
   const pruned: HooksByEvent = { ...args.hooks }
@@ -98,10 +98,10 @@ export function planRealHomeCodexHookEntries(args: {
   for (const eventName of material.events) {
     const label = CODEX_EVENT_LABEL[eventName]
     const current = Array.isArray(args.hooks[eventName]) ? args.hooks[eventName] : []
-    const handlers = findOrcaHandlers(current, isOrcaCommand, command)
+    const handlers = findTopoHandlers(current, isTopoCommand, command)
     const holdsOlderForm =
       current.some((definition) =>
-        [definition.command, definition.bash, definition.powershell].some(isOrcaCommand)
+        [definition.command, definition.bash, definition.powershell].some(isTopoCommand)
       ) || handlers.some((handler) => handler.hook.command !== command)
     if (
       handlers.some((handler) => handler.form > CODEX_HOOK_COMMAND_FORM) ||
@@ -111,12 +111,12 @@ export function planRealHomeCodexHookEntries(args: {
       continue
     }
     const keeper = handlers.find((handler) =>
-      isOrcaOnlyGroup(current[handler.groupIndex]!, isOrcaCommand)
+      isTopoOnlyGroup(current[handler.groupIndex]!, isTopoCommand)
     )
-    const rest = removeManagedCommands(current, isOrcaCommand)
+    const rest = removeManagedCommands(current, isTopoCommand)
     // Keep the surviving group in place to preserve user approval keys.
     const slot = keeper
-      ? removeManagedCommands(current.slice(0, keeper.groupIndex), isOrcaCommand).length
+      ? removeManagedCommands(current.slice(0, keeper.groupIndex), isTopoCommand).length
       : rest.length
     const keptGroup = keeper && current[keeper.groupIndex]!
     const prunedDefinitions = keptGroup

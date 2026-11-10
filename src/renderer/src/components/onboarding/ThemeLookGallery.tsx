@@ -28,12 +28,12 @@ export function useThemeLooks(
       return { dark: [], light: [] }
     }
     const labels = {
-      orca: t('components.onboarding.theme.looks.sourceBuiltIn', 'Built in'),
+      topo: t('components.onboarding.theme.looks.sourceBuiltIn', 'Built in'),
       community: t('components.onboarding.theme.looks.sourceCommunity', 'Terminal palette'),
       builtIn: (base: ThemeLookBase) =>
         base === 'dark'
-          ? t('components.onboarding.theme.looks.orcaDark', 'Orca Dark')
-          : t('components.onboarding.theme.looks.orcaLight', 'Orca Light')
+          ? t('components.onboarding.theme.looks.topoDark', 'Topo Dark')
+          : t('components.onboarding.theme.looks.topoLight', 'Topo Light')
     }
     const build = (base: ThemeLookBase): ThemeLook[] =>
       buildThemeLooks({ base, pluginThemes, pluginTerminalThemes, baseline, labels }, t)

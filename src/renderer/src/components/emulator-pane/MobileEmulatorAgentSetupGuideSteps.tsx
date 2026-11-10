@@ -1,5 +1,5 @@
 import { useAppStore } from '@/store'
-import { ORCA_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
+import { TOPO_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
 import { AgentSkillSetupPanel } from '../skills/setup/AgentSkillSetupPanel'
 import type { useMobileEmulatorAgentSetupState } from './use-mobile-emulator-agent-setup-state'
 import { useTranslate } from '@/i18n/use-translate'
@@ -19,7 +19,7 @@ export function MobileEmulatorAgentSetupGuideSteps({
       <p className="text-sm font-medium">
         {t(
           'auto.components.emulator.pane.MobileEmulatorAgentSetupGuideSteps.21f5687c07',
-          'Orca CLI skill'
+          'Topo CLI skill'
         )}
       </p>
       <AgentSkillSetupPanel
@@ -28,13 +28,13 @@ export function MobileEmulatorAgentSetupGuideSteps({
         className="min-w-0"
         title={t(
           'auto.components.emulator.pane.MobileEmulatorAgentSetupGuideSteps.21f5687c07',
-          'Orca CLI skill'
+          'Topo CLI skill'
         )}
         description={t(
           'auto.components.emulator.pane.MobileEmulatorAgentSetupGuideSteps.64fb057667',
-          'Teaches agents the orca emulator commands for this worktree.'
+          'Teaches agents the topo emulator commands for this worktree.'
         )}
-        skillNames={[ORCA_CLI_SKILL_NAME]}
+        skillNames={[TOPO_CLI_SKILL_NAME]}
         target={setup.skillRuntime.bundledSkillTarget}
         terminalRuntime={setup.skillRuntime.agentRuntime}
         installDisabled={Boolean(setup.skillRuntime.installDisabledReason)}

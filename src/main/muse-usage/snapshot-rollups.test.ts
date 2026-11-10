@@ -86,13 +86,13 @@ const session: MuseUsageSession = {
 
 describe('Muse usage snapshot rollups', () => {
   it('counts a session only toward models it used inside the selected scope', () => {
-    const orcaRows = buildMuseUsageBreakdownRows(
+    const topoRows = buildMuseUsageBreakdownRows(
       'model',
-      'orca',
+      'topo',
       [daily('a', 'worktree:wt-1', 'wt-1')],
       [session]
     )
-    expect(orcaRows.map((row) => [row.key, row.sessions])).toEqual([['a', 1]])
+    expect(topoRows.map((row) => [row.key, row.sessions])).toEqual([['a', 1]])
 
     const allRows = buildMuseUsageBreakdownRows(
       'model',

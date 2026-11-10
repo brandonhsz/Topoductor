@@ -3,8 +3,8 @@ import os from 'node:os'
 import path from 'node:path'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
 import { TEST_REPO_PATH_FILE } from './global-setup'
-import { test, expect } from './helpers/orca-app'
-import { createRestartSession } from './helpers/orca-restart'
+import { test, expect } from './helpers/topo-app'
+import { createRestartSession } from './helpers/topo-restart'
 import {
   mutateStoppedProfileState,
   readPersistedProfileState
@@ -16,7 +16,7 @@ import { WorkspaceRowsSnapshotSchema } from '../../src/shared/sidebar-list/works
 
 test.skip(
   !SIDEBAR_INPUTS_BUILD,
-  'the host stamps sort keys only in an ORCA_SIDEBAR_INPUTS=main build'
+  'the host stamps sort keys only in an TOPO_SIDEBAR_INPUTS=main build'
 )
 
 function storedTiers(userDataDir: string, ids: readonly string[]): Record<string, unknown> {
@@ -61,7 +61,7 @@ test('a restart clears a tier nothing backs, keeps a hook row’s and an SSH hos
       return result.repo.id
     }, repoPath)
     const hookId = `${repoId}::${repoPath}`
-    const folderPath = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'orca-sort-stamps-')))
+    const folderPath = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'topo-sort-stamps-')))
     const goneFolderId = await first.page.evaluate(async (parentPath) => {
       const store = window.__store!
       const group = await window.api.projectGroups.create({
@@ -111,7 +111,7 @@ test('a restart clears a tier nothing backs, keeps a hook row’s and an SSH hos
               : folder
           )
         : state.folderWorkspaces
-      // Keep the folder terminal’s recorded id after its daemon session died while Orca was closed.
+      // Keep the folder terminal’s recorded id after its daemon session died while Topo was closed.
       const session =
         state.workspaceSession && typeof state.workspaceSession === 'object'
           ? state.workspaceSession

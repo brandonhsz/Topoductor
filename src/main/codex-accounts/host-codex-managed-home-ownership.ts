@@ -127,7 +127,7 @@ function evaluate({
     }
   }
 
-  const markerPath = join(canonicalCandidate, '.orca-managed-home')
+  const markerPath = join(canonicalCandidate, '.topo-managed-home')
   let markerIsRegularFile: boolean
   let markerContents: string
   try {
@@ -136,7 +136,7 @@ function evaluate({
   } catch (error) {
     // A missing ownership marker disproves trust; an unreadable one leaves it unknown.
     if (isDefinitiveAbsence(error)) {
-      return { kind: 'untrusted', reason: 'Managed Codex home is missing Orca ownership marker.' }
+      return { kind: 'untrusted', reason: 'Managed Codex home is missing Topo ownership marker.' }
     }
     return { kind: 'indeterminate', error }
   }

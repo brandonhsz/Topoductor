@@ -35,7 +35,7 @@ export function HostedReviewUnlinkMenuItem({
       <TooltipContent side="left" sideOffset={8} className="max-w-72 text-pretty">
         {t(
           'auto.components.HostedReviewUnlinkMenuItem.description',
-          'Orca will hide {{value0}} {{value1}} details for this workspace. The {{value0}} and branch on {{value2}} won’t be changed.',
+          'Topo will hide {{value0}} {{value1}} details for this workspace. The {{value0}} and branch on {{value2}} won’t be changed.',
           { value0: reviewLabel, value1: reviewIdentifier, value2: providerLabel }
         )}
       </TooltipContent>

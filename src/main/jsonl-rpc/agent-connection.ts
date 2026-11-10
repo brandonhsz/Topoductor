@@ -1,5 +1,5 @@
-import type { PipedProcessSpawner } from '@orca/process-host/process-spec'
-import { spawnProcess } from '@orca/process-host'
+import type { PipedProcessSpawner } from '@topo/process-host/process-spec'
+import { spawnProcess } from '@topo/process-host'
 import {
   providerDiagnostic,
   withProviderDiagnostic
@@ -171,7 +171,7 @@ export class JsonlRpcAgentConnection {
     return this.managed.lastCloseResult
   }
 
-  /** `requested`: Orca was closing the agent when it exited. */
+  /** `requested`: Topo was closing the agent when it exited. */
   onExit(listener: (requested?: boolean) => void): void {
     this.managed.onExit(() => listener(this.closing))
   }

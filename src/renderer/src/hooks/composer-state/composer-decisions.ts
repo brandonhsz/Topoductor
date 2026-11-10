@@ -125,7 +125,7 @@ export function getInitialAutoManagedWorkspaceName({
   initialLinkedWorkItem?: LinkedWorkItemSummary | null
   jiraIssueKeyCasing?: JiraIssueKeyCasing
 }): string {
-  // Why: a prefilled name counts as user input unless it exactly matches the linked-item seed Orca generated.
+  // Why: a prefilled name counts as user input unless it exactly matches the linked-item seed Topo generated.
   const candidateName = draftName ?? initialName
   const seedName = getLinkedWorkItemSeedName(
     draftLinkedWorkItem ?? initialLinkedWorkItem,

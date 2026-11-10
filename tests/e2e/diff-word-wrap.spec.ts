@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 import path from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   cleanupGoldenWorktree,
   createGoldenWorktree,
@@ -51,7 +51,7 @@ async function expectWrappedParagraphs(page: Page): Promise<void> {
 
 for (const surface of ['file', 'combined'] as const) {
   test(`${surface} diff word wrap applies to both panes after toggles and narrow inline layout`, async ({
-    orcaPage,
+    topoPage,
     testRepoPath,
     registerPostElectronShutdownCleanup
   }, testInfo) => {
@@ -74,16 +74,16 @@ for (const surface of ['file', 'combined'] as const) {
       content.replaceAll('original', 'modified').replaceAll('Original', 'Modified')
     )
 
-    await orcaPage.setViewportSize({ width: 1600, height: 850 })
-    await waitForSessionReady(orcaPage)
-    await orcaPage.evaluate(async () => {
+    await topoPage.setViewportSize({ width: 1600, height: 850 })
+    await waitForSessionReady(topoPage)
+    await topoPage.evaluate(async () => {
       await window.__store?.getState().updateSettings({
         diffDefaultView: 'side-by-side',
         diffWordWrap: false
       })
     })
-    await openGoldenSourceControl(orcaPage, testRepoPath, fixture)
-    const changes = orcaPage.getByRole('button', { name: /^Changes \d+$/ }).locator('..')
+    await openGoldenSourceControl(topoPage, testRepoPath, fixture)
+    const changes = topoPage.getByRole('button', { name: /^Changes \d+$/ }).locator('..')
     await (
       surface === 'combined'
         ? changes.getByRole('button', { name: 'View all', exact: true })
@@ -92,26 +92,26 @@ for (const surface of ['file', 'combined'] as const) {
             .locator('[data-testid="source-control-entry"]')
             .filter({ hasText: 'README.md' })
     ).click()
-    await orcaPage.evaluate(() => window.__store?.getState().setRightSidebarOpen(false))
-    const diff = orcaPage.locator('.monaco-diff-editor')
+    await topoPage.evaluate(() => window.__store?.getState().setRightSidebarOpen(false))
+    const diff = topoPage.locator('.monaco-diff-editor')
     await expect(diff).toHaveClass(/side-by-side/)
-    await toggleWordWrap(orcaPage, surface)
-    await orcaPage.screenshot({ path: testInfo.outputPath('wrap-on.png') })
-    await expectWrappedParagraphs(orcaPage)
+    await toggleWordWrap(topoPage, surface)
+    await topoPage.screenshot({ path: testInfo.outputPath('wrap-on.png') })
+    await expectWrappedParagraphs(topoPage)
 
-    await orcaPage.setViewportSize({ width: 1000, height: 850 })
+    await topoPage.setViewportSize({ width: 1000, height: 850 })
     await expect(diff).not.toHaveClass(/side-by-side/)
-    await orcaPage.setViewportSize({ width: 1600, height: 850 })
+    await topoPage.setViewportSize({ width: 1600, height: 850 })
     await expect(diff).toHaveClass(/side-by-side/)
-    await expectWrappedParagraphs(orcaPage)
+    await expectWrappedParagraphs(topoPage)
 
-    await toggleWordWrap(orcaPage, surface)
+    await toggleWordWrap(topoPage, surface)
     for (const side of ['original', 'modified']) {
       await expect
-        .poll(() => orcaPage.locator(`.${side}-in-monaco-diff-editor .view-line`).count())
+        .poll(() => topoPage.locator(`.${side}-in-monaco-diff-editor .view-line`).count())
         .toBeLessThanOrEqual(6)
     }
-    await toggleWordWrap(orcaPage, surface)
-    await expectWrappedParagraphs(orcaPage)
+    await toggleWordWrap(topoPage, surface)
+    await expectWrappedParagraphs(topoPage)
   })
 }

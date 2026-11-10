@@ -3,7 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { activeProviderContext } from '../../../shared/agent-session/agent-session-provider-context'
-import { isOrcaSessionId } from '../../../shared/orca-session-address'
+import { isTopoSessionId } from '../../../shared/topo-session-address'
 import { getRuntimeMetadataPath } from '../../../shared/runtime-bootstrap'
 import { structuredAgentSessionTabId } from '../../../shared/agent-session/view/structured-agent-session-projection'
 import * as versionProbe from '../../agent-launch/preflight/agent-cli-version-probe'
@@ -17,9 +17,9 @@ import '../orchestration/db/contract-constants'
 import '../orchestration/db/messages/mailbox-routing-page'
 import '../orchestration/db/dispatch-row-writer'
 import '../orchestration/db/attempt-outcome-projection'
-import { storeRepo } from '../orca-runtime-tests/runtime-store-partial-fixture'
-import { scriptedCodexTransport } from '../orca-runtime-tests/scripted-codex-transport.test-fixture'
-import { chatTabCommandsSettled } from '../orca-runtime-tests/session-layout-apply.test-fixture'
+import { storeRepo } from '../topo-runtime-tests/runtime-store-partial-fixture'
+import { scriptedCodexTransport } from '../topo-runtime-tests/scripted-codex-transport.test-fixture'
+import { chatTabCommandsSettled } from '../topo-runtime-tests/session-layout-apply.test-fixture'
 import {
   AuthorityRuntime,
   authorityProfile,
@@ -148,16 +148,16 @@ beforeEach(async () => {
   })
   vi.spyOn(runtime, 'getLocalProvider').mockReturnValue(removalPtyProvider([]).provider)
   for (const key of [
-    'ORCA_PAIRING_CODE',
-    'ORCA_ENVIRONMENT',
-    'ORCA_TERMINAL_HANDLE',
-    'ORCA_PANE_KEY',
-    'ORCA_AGENT_SESSION_ID',
-    'ORCA_ORCHESTRATION_RUN_ID'
+    'TOPO_PAIRING_CODE',
+    'TOPO_ENVIRONMENT',
+    'TOPO_TERMINAL_HANDLE',
+    'TOPO_PANE_KEY',
+    'TOPO_AGENT_SESSION_ID',
+    'TOPO_ORCHESTRATION_RUN_ID'
   ]) {
     vi.stubEnv(key, undefined)
   }
-  vi.stubEnv('ORCA_USER_DATA_PATH', root)
+  vi.stubEnv('TOPO_USER_DATA_PATH', root)
   vi.spyOn(console, 'log').mockImplementation(() => {})
   vi.spyOn(console, 'error').mockImplementation(() => {})
   const dispatcher = new RpcDispatcher({
@@ -174,7 +174,7 @@ beforeEach(async () => {
   const kind = process.platform === 'win32' ? 'named-pipe' : 'unix'
   const endpoint =
     process.platform === 'win32'
-      ? String.raw`\\.\pipe\orca-structured-cli-${randomUUID()}`
+      ? String.raw`\\.\pipe\topo-structured-cli-${randomUUID()}`
       : join(root, 'rpc.sock')
   socket = new UnixSocketTransport({ kind, endpoint })
   socket.onMessage((message, reply) => {
@@ -242,20 +242,20 @@ async function launch() {
   const ids = host.deps.store.getVisibleSessionTabIndex().sessionIds
   expect(ids).toHaveLength(1)
   const sessionId = ids[0]!
-  expect(isOrcaSessionId(sessionId)).toBe(true)
-  if (!isOrcaSessionId(sessionId)) {
+  expect(isTopoSessionId(sessionId)).toBe(true)
+  if (!isTopoSessionId(sessionId)) {
     throw new Error('invalid created session identity')
   }
   expect(result).toMatchObject({
     worktreeId: rig.workspace,
     outcome: { kind: 'structured', sessionId }
   })
-  vi.stubEnv('ORCA_AGENT_SESSION_ID', sessionId)
+  vi.stubEnv('TOPO_AGENT_SESSION_ID', sessionId)
   runId = db.createRun({
     objective: 'CLI lifecycle',
     coordinatorHandle: null,
     coordinatorPaneKey: null,
-    coordinatorOrcaSessionId: sessionId
+    coordinatorTopoSessionId: sessionId
   }).id
   await chatTabCommandsSettled()
   expect(savedIds(rig)).toContain(sessionId)
@@ -653,7 +653,7 @@ it('worker-abandon settles and fences consumption, releases the existing binding
     expect(db.getDeliveryRaw(outstanding.delivery.id)?.acknowledged_at).toBeNull()
   }
   unconsumed()
-  vi.stubEnv('ORCA_AGENT_SESSION_ID', worker.identity.sessionId)
+  vi.stubEnv('TOPO_AGENT_SESSION_ID', worker.identity.sessionId)
   const refused = await cli(['orchestration', 'check'])
   expect(refused.code, refused.stdout + refused.stderr).toBe(1)
   expect(refused.output).toMatchObject({ ok: false, error: { code: 'consumer_fenced' } })

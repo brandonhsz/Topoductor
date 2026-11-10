@@ -19,7 +19,7 @@ import {
 } from '../presentation/plugin-contributions'
 import { statusBarItemTitles } from '../presentation/plugin-contribution-row-labels'
 
-/** What an installed plugin adds right now, from Orca's live registrations; empty for others. */
+/** What an installed plugin adds right now, from Topo's live registrations; empty for others. */
 function useInstalledPluginContributionSource(
   plugin: PluginHostListEntry | null
 ): PluginContributionSource {

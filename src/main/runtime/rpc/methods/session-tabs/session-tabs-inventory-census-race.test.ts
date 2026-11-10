@@ -6,10 +6,10 @@ import type {
   RuntimeMobileSessionTabsResult
 } from '../../../../../shared/runtime-session-contracts'
 
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import { subscribeSessionTabsInventory } from './session-tabs-inventory'
 
-const runningBaselineOracle = process.env.ORCA_TEST_BASELINE_SESSION_TABS_CENSUS_ORACLE === '1'
+const runningBaselineOracle = process.env.TOPO_TEST_BASELINE_SESSION_TABS_CENSUS_ORACLE === '1'
 
 type Inventory = {
   snapshots: RuntimeMobileSessionTabsResult[]
@@ -119,7 +119,7 @@ function deferredPtyInventory(): {
 }
 
 function createRuntimeHarness(initialSnapshots: RuntimeMobileSessionTabsSnapshot[] = []) {
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.syncWindowGraph(0, { tabs: [], leaves: [], mobileSessionTabs: initialSnapshots })
   const census = deferredPtyInventory()
   const internals = runtime as unknown as RuntimeInventoryInternals
@@ -177,7 +177,7 @@ function createHarness() {
       cleanup.mockImplementation(nextCleanup)
     ),
     cleanupSubscription: vi.fn()
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
 
   return {
     census,
@@ -376,7 +376,7 @@ describe.skipIf(runningBaselineOracle)('real runtime session tabs census boundar
   })
 
   it('preserves caller-only follow intent when a later shared snapshot is buffered', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.syncWindowGraph(0, { tabs: [], leaves: [], mobileSessionTabs: [] })
     const census = deferredInventory()
     vi.spyOn(runtime, 'listAllMobileSessionTabsInventoryWithChangeSequence').mockImplementation(
@@ -441,7 +441,7 @@ describe.skipIf(runningBaselineOracle)('real runtime session tabs census boundar
   })
 
   it('aborts the census and removes the real runtime listener on disconnect', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.syncWindowGraph(0, { tabs: [], leaves: [], mobileSessionTabs: [] })
     const census = deferredPtyInventory()
     const internals = runtime as unknown as RuntimeInventoryInternals
@@ -556,7 +556,7 @@ describe('session tabs inventory census boundary', () => {
       ),
       registerSubscriptionCleanup: vi.fn(),
       cleanupSubscription: vi.fn()
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     const pending = subscribeSessionTabsInventory(
       {
         runtime,
@@ -609,7 +609,7 @@ describe('session tabs inventory census boundary', () => {
         cleanup = vi.fn(nextCleanup)
       }),
       cleanupSubscription: vi.fn(() => cleanup())
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     const pending = subscribeSessionTabsInventory(
       {
         runtime,

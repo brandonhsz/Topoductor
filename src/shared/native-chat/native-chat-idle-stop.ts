@@ -1,5 +1,5 @@
 export type NativeChatIdleStopSettings = {
-  /** Minutes a chat sits idle before Orca stops its agent process; 0 never stops it. */
+  /** Minutes a chat sits idle before Topo stops its agent process; 0 never stops it. */
   nativeChatIdleStopMinutes?: number
 }
 
@@ -26,7 +26,7 @@ export function nativeChatIdleStopMinutes(
     : DEFAULT_NATIVE_CHAT_IDLE_STOP_MINUTES
 }
 
-/** Idle window before Orca stops a chat's agent; null never stops it. */
+/** Idle window before Topo stops a chat's agent; null never stops it. */
 export function nativeChatIdleStopMs(
   settings: { readonly nativeChatIdleStopMinutes?: unknown } | null | undefined
 ): number | null {

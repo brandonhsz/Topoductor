@@ -12,7 +12,7 @@ import {
   stageWindowsProcessTreeNodeAddonApiHeaders,
   windowsProcessTreeAddonPath
 } from '../windows/windows-process-tree-gyp-rebuild.mjs'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { describeProcessFailure } from '../../tool-invocation/process-failure-message.mjs'
 import {
   isSharedNativePackage,
@@ -41,7 +41,7 @@ const forceRebuild = process.argv.includes('--force')
 const NATIVE_MODULES = [
   'node-pty',
   ...(process.platform === 'win32'
-    ? ['@orca/windows-registry', '@orca/windows-security', '@vscode/windows-process-tree']
+    ? ['@topo/windows-registry', '@topo/windows-security', '@vscode/windows-process-tree']
     : [])
 ]
 const NODE_PTY_CONPTY_RUNTIME_FILES = ['conpty.dll', 'OpenConsole.exe']
@@ -292,13 +292,13 @@ function loadNativeModule(moduleName) {
     }
     return
   }
-  if (moduleName === '@orca/windows-registry') {
+  if (moduleName === '@topo/windows-registry') {
     const registry = require(moduleName)
     // Why: the package defers loading its .node addon until the first registry call.
     registry.getRegistryKey(registry.HK.CU, 'Environment')
     return
   }
-  if (moduleName === '@orca/windows-security') {
+  if (moduleName === '@topo/windows-security') {
     const security = require(moduleName)
     // currentUserSid loads the addon; a stale build that still loads lacks the newest export.
     if (!security.currentUserSid() || !security.hasNativeExport('isolatedSpawnBreaksAwayFromJob')) {
@@ -326,7 +326,7 @@ function loadNodePtyNativeModule() {
   assertNodePtyJobOwnership({ nativeName, native, addonPath })
   if (requiresPatchedNodePtySourceBuild() && !isSourceBuildDir(native?.dir)) {
     throw new Error(
-      `node-pty resolved to ${native.dir}; expected build/Release so Orca's node-pty patch is active`
+      `node-pty resolved to ${native.dir}; expected build/Release so Topo's node-pty patch is active`
     )
   }
 }
@@ -349,7 +349,7 @@ function getPatchedNodePtyRebuildReason() {
     return null
   }
 
-  // Loadable upstream prebuilds lack Orca patches; require source-built build/Release artifacts on both platforms.
+  // Loadable upstream prebuilds lack Topo patches; require source-built build/Release artifacts on both platforms.
   const nodePtyDir = resolve(projectDir, 'node_modules', 'node-pty')
   const artifactPaths = nodePtyBuildArtifactPaths(nodePtyDir)
   const missingArtifact = artifactPaths.find((artifactPath) => !existsSync(artifactPath))

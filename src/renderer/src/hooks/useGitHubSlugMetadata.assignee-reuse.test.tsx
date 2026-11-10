@@ -21,7 +21,7 @@ let root: Root
 function Probe({
   id = 'row',
   seeds,
-  repo = 'orca',
+  repo = 'topo',
   host,
   target
 }: {
@@ -31,7 +31,7 @@ function Probe({
   host?: string
   target?: RuntimeClientTarget
 }): null {
-  results.set(id, useRepoAssigneesBySlug('stablyai', repo, seeds, target, host))
+  results.set(id, useRepoAssigneesBySlug('brandonhsz', repo, seeds, target, host))
   return null
 }
 
@@ -87,8 +87,8 @@ describe('repository assignee reuse across row seeds', () => {
     )
 
     expect(listUsers).toHaveBeenCalledExactlyOnceWith({
-      owner: 'stablyai',
-      repo: 'orca',
+      owner: 'brandonhsz',
+      repo: 'topo',
       host: 'github.com'
     })
     expect(logins('a')).toEqual(['member', 'alpha', 'zeta'])

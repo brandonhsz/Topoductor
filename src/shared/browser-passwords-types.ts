@@ -1,5 +1,5 @@
 /**
- * Contract for Orca's built-in password manager.
+ * Contract for Topo's built-in password manager.
  *
  * Trust layout: the guest preload only describes forms and applies a fill it was handed; main owns
  * every secret, origin and save decision; the renderer sees ids, origins and usernames, and a
@@ -175,7 +175,7 @@ export type BrowserPasswordImportSummary = {
   conflicts: number
   /** Rows without a usable http(s) URL or password. */
   invalid: number
-  /** Chromium rows Orca cannot decrypt (Windows app-bound encryption); export a CSV instead. */
+  /** Chromium rows Topo cannot decrypt (Windows app-bound encryption); export a CSV instead. */
   undecryptable: number
 }
 

@@ -87,7 +87,7 @@ function deferred<T>(): {
   return { promise, resolve, reject }
 }
 
-const LINEAR_AGENT_SKILL_NAMES = ['orca-linear', 'linear-tickets'] as const
+const LINEAR_AGENT_SKILL_NAMES = ['topo-linear', 'linear-tickets'] as const
 
 function Probe({ discoveryTarget }: { discoveryTarget?: SkillDiscoveryTarget }): null {
   latestState = useInstalledAgentSkillNames(LINEAR_AGENT_SKILL_NAMES, {
@@ -207,7 +207,7 @@ describe('useInstalledAgentSkill', () => {
     })
 
     await renderProbe()
-    scan.resolve(discoveryResult([skill({ name: 'orca-linear' })], [unavailableSource()]))
+    scan.resolve(discoveryResult([skill({ name: 'topo-linear' })], [unavailableSource()]))
     await act(async () => {
       await scan.promise
     })
@@ -259,7 +259,7 @@ describe('useInstalledAgentSkill', () => {
     })
 
     await renderProbe()
-    firstScan.resolve(discoveryResult([skill({ name: 'orca-linear' })]))
+    firstScan.resolve(discoveryResult([skill({ name: 'topo-linear' })]))
     await act(async () => {
       await firstScan.promise
     })
@@ -278,7 +278,7 @@ describe('useInstalledAgentSkill', () => {
     await flushMicrotasks()
     expect(latestState?.loading).toBe(false)
 
-    forcedScan.resolve(discoveryResult([skill({ name: 'orca-linear' })]))
+    forcedScan.resolve(discoveryResult([skill({ name: 'topo-linear' })]))
     await act(async () => {
       await forcedScan.promise
     })
@@ -298,7 +298,7 @@ describe('useInstalledAgentSkill', () => {
     })
 
     await renderProbe()
-    hostScan.resolve(discoveryResult([skill({ name: 'orca-linear' })]))
+    hostScan.resolve(discoveryResult([skill({ name: 'topo-linear' })]))
     await act(async () => {
       await hostScan.promise
     })

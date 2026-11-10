@@ -102,7 +102,7 @@ export class PluginPanelBridge {
     const events = this.subscriptions.get(panelId) ?? new Set<PluginEventName>()
     events.add(event)
     this.subscriptions.set(panelId, events)
-    // Why: a panel that subscribes after the last change (or before Orca focused a workspace)
+    // Why: a panel that subscribes after the last change (or before Topo focused a workspace)
     // would otherwise show nothing until the next one.
     if (event === 'workspace.changed') {
       const owed = this.replays.get(panelId) ?? new Set<PluginEventName>()

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from './dispatcher'
 import type { RpcRequest } from './core'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import { TERMINAL_METHODS } from './methods/terminal/terminal'
 import { createSubscriptionRegistryDouble } from './subscription-registry-test-double'
 import type { RuntimeTerminalWait } from '../../../shared/runtime-terminal-contracts'
@@ -12,7 +12,7 @@ import {
   decodeTerminalStreamText
 } from '../../../shared/terminal/stream/terminal-stream-protocol'
 
-function stubRuntime(overrides: Partial<OrcaRuntimeService> = {}): OrcaRuntimeService {
+function stubRuntime(overrides: Partial<TopoRuntimeService> = {}): TopoRuntimeService {
   const registry = createSubscriptionRegistryDouble()
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: This partial runtime supplies the terminal RPC methods these tests invoke.
   return {
@@ -23,7 +23,7 @@ function stubRuntime(overrides: Partial<OrcaRuntimeService> = {}): OrcaRuntimeSe
     registerRemoteTerminalViewSubscriber: () => () => {},
     requestRendererTerminalTabMount: () => false,
     ...overrides
-  } as OrcaRuntimeService
+  } as TopoRuntimeService
 }
 
 const makeRequest = (method: string, params?: unknown): RpcRequest => ({

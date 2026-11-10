@@ -15,7 +15,7 @@ import { claimPluginReplacedActionRun } from '../plugin-command-replacement-dead
 import type { PluginHostRendererActions } from '../view/plugin-host-renderer-actions'
 import { folderWorkspaceKey, parseWorkspaceKey } from '../../../shared/workspace-scope'
 
-/** The runtime RPC the `orca` CLI calls, run in process; rejects with the runtime's error.
+/** The runtime RPC the `topo` CLI calls, run in process; rejects with the runtime's error.
  *  `beforeEffect` runs right before the runtime acts, after its own waits; a throw refuses it. */
 export type PluginRuntimeRpc = (
   method: string,
@@ -75,14 +75,14 @@ const agentLaunchAnswer = z.object({
 
 function renderer(services: PluginHostServices): PluginHostRendererActions {
   if (!services.renderer) {
-    throw new PluginHostCallError('unavailable', 'only the Orca desktop app can do this')
+    throw new PluginHostCallError('unavailable', 'only the Topo desktop app can do this')
   }
   return services.renderer
 }
 
 function rpc(services: PluginHostServices): PluginRuntimeRpc {
   if (!services.runtimeRpc) {
-    throw new PluginHostCallError('unavailable', 'this Orca host cannot run workspace actions')
+    throw new PluginHostCallError('unavailable', 'this Topo host cannot run workspace actions')
   }
   return services.runtimeRpc
 }
@@ -159,7 +159,7 @@ export const PLUGIN_WORKSPACE_ACTION_HANDLERS = {
   'workspace.open': bind(api['workspace.open'], async ({ workspaceId }, ctx) => {
     const scope = parseWorkspaceKey(workspaceId)
     if (scope?.type === 'folder') {
-      // The runtime activates Git worktrees only; Orca's window shows a folder workspace.
+      // The runtime activates Git worktrees only; Topo's window shows a folder workspace.
       ctx.scope.assertActive()
       await renderer(ctx.services).openFolderWorkspace(scope.folderWorkspaceId)
       return { opened: true as const }
@@ -195,7 +195,7 @@ export const PLUGIN_WORKSPACE_ACTION_HANDLERS = {
     if (renamed === undefined) {
       throw new PluginHostCallError('action_failed', 'no workspace has this id')
     }
-    // Orca keeps the old name while the workspace is moving to or from WSL.
+    // Topo keeps the old name while the workspace is moving to or from WSL.
     if (renamed !== trimmed) {
       throw new PluginHostCallError('conflict', 'the workspace cannot be renamed right now')
     }
@@ -262,7 +262,7 @@ export const PLUGIN_WORKSPACE_ACTION_HANDLERS = {
   'commands.run': bind(api['commands.run'], async ({ action }, { pluginId, services, scope }) => {
     scope.assertActive()
     claimPluginReplacedActionRun(pluginId, action)
-    // Always Orca's own action, never a plugin command that replaces it: a replacement that
+    // Always Topo's own action, never a plugin command that replaces it: a replacement that
     // calls commands.run for the original would otherwise call itself.
     await renderer(services).runAction(action)
     return { ran: true as const }

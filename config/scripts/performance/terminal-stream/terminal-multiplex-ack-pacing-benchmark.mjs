@@ -45,7 +45,7 @@ async function run({
   echoAtMs,
   endMs
 }) {
-  process.env.ORCA_TERMINAL_ADAPTIVE_ACK_WINDOW = mode === 'legacy' ? '' : '1'
+  process.env.TOPO_TERMINAL_ADAPTIVE_ACK_WINDOW = mode === 'legacy' ? '' : '1'
   clock = 0
   let seq = 0
   let screen = 'flood'

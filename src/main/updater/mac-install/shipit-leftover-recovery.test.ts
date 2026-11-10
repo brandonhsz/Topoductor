@@ -10,7 +10,7 @@ import {
   type ShipItStagingDeps
 } from './shipit-leftover-recovery'
 
-const SHIPIT = '/Applications/Orca Beta.app/Contents/Frameworks/Squirrel.framework/Resources/ShipIt'
+const SHIPIT = '/Applications/Topo Beta.app/Contents/Frameworks/Squirrel.framework/Resources/ShipIt'
 
 describe('prepareShipItStaging', () => {
   let root: string
@@ -18,10 +18,10 @@ describe('prepareShipItStaging', () => {
   let coordinationDir: string
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-shipit-recovery-'))
-    cacheDir = join(root, 'Caches', 'com.stablyai.orca.ShipIt')
+    root = await mkdtemp(join(tmpdir(), 'topo-shipit-recovery-'))
+    cacheDir = join(root, 'Caches', 'com.brandonhsz.topo.ShipIt')
     coordinationDir = join(root, 'coordination')
-    await mkdir(join(cacheDir, 'update.6rnCgPu', 'Orca.app'), { recursive: true })
+    await mkdir(join(cacheDir, 'update.6rnCgPu', 'Topo.app'), { recursive: true })
     await writeFile(join(cacheDir, 'ShipItState.plist'), '<plist/>')
     await writeFile(join(cacheDir, 'ShipIt_stderr.log'), 'Code=-9 "App Still Running Error"')
   })
@@ -31,7 +31,7 @@ describe('prepareShipItStaging', () => {
   })
 
   const deps = (overrides: Partial<ShipItStagingDeps> = {}): ShipItStagingDeps => ({
-    bundleId: 'com.stablyai.orca',
+    bundleId: 'com.brandonhsz.topo',
     cacheDir,
     coordinationDir,
     pid: 500,
@@ -54,7 +54,7 @@ describe('prepareShipItStaging', () => {
     expect(await readdir(shipItStagingOwnersDir(coordinationDir))).toEqual(['500'])
   })
 
-  it('leaves the cache alone while another live Orca owns staged state', async () => {
+  it('leaves the cache alone while another live Topo owns staged state', async () => {
     await mkdir(shipItStagingOwnersDir(coordinationDir), { recursive: true })
     await writeFile(join(shipItStagingOwnersDir(coordinationDir), '600'), '')
     const live = deps({ isProcessAlive: (pid) => pid === 500 || pid === 600 })
@@ -76,7 +76,7 @@ describe('prepareShipItStaging', () => {
   })
 
   it('never clears while ShipIt runs, or when that cannot be checked', async () => {
-    const running = deps({ listProcesses: async () => `${SHIPIT} com.stablyai.orca.ShipIt\n` })
+    const running = deps({ listProcesses: async () => `${SHIPIT} com.brandonhsz.topo.ShipIt\n` })
     await expect(prepareShipItStaging(running)).resolves.toEqual({
       kind: 'skipped',
       reason: 'installer-running'

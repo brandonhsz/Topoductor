@@ -1,4 +1,4 @@
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   ensureTerminalVisible,
   getAllWorktreeIds,
@@ -13,19 +13,19 @@ import {
 } from './helpers/terminal'
 
 test('Cmd+J focuses the terminal after waking a sleeping workspace', async ({
-  orcaPage
+  topoPage
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  const source = await waitForActiveWorktree(orcaPage)
-  const target = (await getAllWorktreeIds(orcaPage)).find((id) => id !== source)
+  await waitForSessionReady(topoPage)
+  const source = await waitForActiveWorktree(topoPage)
+  const target = (await getAllWorktreeIds(topoPage)).find((id) => id !== source)
   if (!target) {
     throw new Error('Expected a second seeded workspace')
   }
-  await switchToWorktree(orcaPage, target)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage)
-  await waitForActivePanePtyId(orcaPage)
-  const targetName = await orcaPage.evaluate((id) => {
+  await switchToWorktree(topoPage, target)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage)
+  await waitForActivePanePtyId(topoPage)
+  const targetName = await topoPage.evaluate((id) => {
     const state = window.__store!.getState()
     const worktree = state.getKnownWorktreeById(id)
     if (!worktree) {
@@ -33,11 +33,11 @@ test('Cmd+J focuses the terminal after waking a sleeping workspace', async ({
     }
     return worktree.branch.replace(/^refs\/heads\//, '')
   }, target)
-  await switchToWorktree(orcaPage, source)
-  await orcaPage.evaluate(async (id) => {
+  await switchToWorktree(topoPage, source)
+  await topoPage.evaluate(async (id) => {
     await window.__store!.getState().shutdownWorktreeTerminals(id, { keepIdentifiers: true })
   }, target)
-  await orcaPage.evaluate(() => {
+  await topoPage.evaluate(() => {
     const listSessions = window.api.pty.listSessions
     window.api.pty.listSessions = async (...args) => {
       await new Promise((resolve) => setTimeout(resolve, 100))
@@ -45,24 +45,24 @@ test('Cmd+J focuses the terminal after waking a sleeping workspace', async ({
     }
   })
   // Native menu accelerators require OS focus; open the same palette in the hidden renderer.
-  await orcaPage.evaluate(() => window.__store!.getState().openModal('worktree-palette'))
-  const dialog = orcaPage.getByRole('dialog', { name: 'Jump to...' })
+  await topoPage.evaluate(() => window.__store!.getState().openModal('worktree-palette'))
+  const dialog = topoPage.getByRole('dialog', { name: 'Jump to...' })
   await expect(dialog).toBeVisible()
   await dialog.getByRole('combobox').fill(targetName)
   await expect(dialog.locator('[cmdk-item][data-selected="true"]')).toContainText(targetName)
-  const cdp = await orcaPage.context().newCDPSession(orcaPage)
+  const cdp = await topoPage.context().newCDPSession(topoPage)
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 8 })
-  await orcaPage.keyboard.press('Enter')
+  await topoPage.keyboard.press('Enter')
   await expect(dialog).toBeHidden()
-  await waitForActiveTerminalManager(orcaPage)
-  await waitForActivePanePtyId(orcaPage)
-  const terminal = orcaPage.locator('[data-terminal-tab-id]:visible .xterm-helper-textarea').first()
-  await orcaPage.screenshot({ path: testInfo.outputPath('wake-focus.png') })
+  await waitForActiveTerminalManager(topoPage)
+  await waitForActivePanePtyId(topoPage)
+  const terminal = topoPage.locator('[data-terminal-tab-id]:visible .xterm-helper-textarea').first()
+  await topoPage.screenshot({ path: testInfo.outputPath('wake-focus.png') })
   await expect(terminal).toBeFocused()
   await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
   await cdp.detach()
-  await orcaPage.keyboard.type('echo WAKE_KEYBOARD_OK')
-  await orcaPage.keyboard.press('Enter')
-  await waitForTerminalOutput(orcaPage, 'WAKE_KEYBOARD_OK')
-  await orcaPage.screenshot({ path: testInfo.outputPath('wake-typing.png') })
+  await topoPage.keyboard.type('echo WAKE_KEYBOARD_OK')
+  await topoPage.keyboard.press('Enter')
+  await waitForTerminalOutput(topoPage, 'WAKE_KEYBOARD_OK')
+  await topoPage.screenshot({ path: testInfo.outputPath('wake-typing.png') })
 })

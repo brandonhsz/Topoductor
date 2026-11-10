@@ -1,9 +1,9 @@
 import type { ConnectorCloud } from '../connector-cloud/connector-cloud'
 import { createDesktopConnectorCloud } from '../connector-cloud/connector-cloud-install'
-import { getProfileUserDataPath } from '../orca-profiles/profile-storage-paths'
+import { getProfileUserDataPath } from '../topo-profiles/profile-storage-paths'
 import { mainProcessState as state } from './main-process-state'
 
-// Desktop only: the connector acts as the signed-in Orca account, which `orca serve` does not have yet.
+// Desktop only: the connector acts as the signed-in Topo account, which `topo serve` does not have yet.
 // Created before the window exists, so its sign-in and sign-out hooks always find it.
 export function installDesktopConnectorCloud(): void {
   if (!state.runtime || !state.store) {

@@ -16,14 +16,14 @@ beforeEach(() => {
   callMock.mockReset()
   getTerminalHandleMock.mockReset()
   vi.mocked(printResult).mockReset()
-  vi.stubEnv('ORCA_TERMINAL_HANDLE', undefined)
-  vi.stubEnv('ORCA_PANE_KEY', undefined)
-  vi.stubEnv('ORCA_STRUCTURED_SESSION', undefined)
-  vi.stubEnv('ORCA_AGENT_SESSION_ID', undefined)
-  vi.stubEnv('ORCA_CLI_COMMAND', undefined)
-  vi.stubEnv('ORCA_WINDOWS_PACKAGED_CLI_LAUNCHER', undefined)
-  vi.stubEnv('ORCA_DEV_CLI_INVOCATION', undefined)
-  vi.stubEnv('ORCA_USER_DATA_PATH', undefined)
+  vi.stubEnv('TOPO_TERMINAL_HANDLE', undefined)
+  vi.stubEnv('TOPO_PANE_KEY', undefined)
+  vi.stubEnv('TOPO_STRUCTURED_SESSION', undefined)
+  vi.stubEnv('TOPO_AGENT_SESSION_ID', undefined)
+  vi.stubEnv('TOPO_CLI_COMMAND', undefined)
+  vi.stubEnv('TOPO_WINDOWS_PACKAGED_CLI_LAUNCHER', undefined)
+  vi.stubEnv('TOPO_DEV_CLI_INVOCATION', undefined)
+  vi.stubEnv('TOPO_USER_DATA_PATH', undefined)
   process.exitCode = undefined
 })
 
@@ -49,7 +49,7 @@ describe('orchestration send structured payload flags', () => {
     } as never)
 
   it('refuses a structured session without naming a handle it could pass', async () => {
-    process.env.ORCA_STRUCTURED_SESSION = '1'
+    process.env.TOPO_STRUCTURED_SESSION = '1'
     getTerminalHandleMock.mockResolvedValue('term_sibling_pane')
 
     // --from bypasses this guard and could select another pane; never recommend it as recovery.
@@ -81,7 +81,7 @@ describe('orchestration timeout flag validation', () => {
     } as never)
 
   it('fails --peek --wait against a runtime that returned only read rows', async () => {
-    process.env.ORCA_TERMINAL_HANDLE = 'term_worker'
+    process.env.TOPO_TERMINAL_HANDLE = 'term_worker'
     callMock.mockResolvedValue({
       result: {
         messages: [{ id: 'msg_old', from_handle: 'a', subject: 'seen', read: 1 }],

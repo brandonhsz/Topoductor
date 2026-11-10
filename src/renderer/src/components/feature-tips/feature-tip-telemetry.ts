@@ -4,27 +4,27 @@ import type { EventProps } from '../../../../shared/telemetry-events'
 import type { ChatUiLaunchTipVariant } from '../../../../shared/native-chat/chat-ui-launch-tip-audience'
 import type { GlobalSettings } from '../../../../shared/global-settings-types'
 
-export type OrcaCliFeatureTipSource = EventProps<'orca_cli_feature_tip_shown'>['source']
-export type OrcaCliFeatureTipSetupResult = EventProps<'orca_cli_feature_tip_setup_result'>['result']
+export type TopoCliFeatureTipSource = EventProps<'topo_cli_feature_tip_shown'>['source']
+export type TopoCliFeatureTipSetupResult = EventProps<'topo_cli_feature_tip_setup_result'>['result']
 export type CmdJPaletteFeatureTipSource = EventProps<'cmd_j_palette_feature_tip_shown'>['source']
 
-export function getOrcaCliFeatureTipTelemetrySource(value: unknown): OrcaCliFeatureTipSource {
+export function getTopoCliFeatureTipTelemetrySource(value: unknown): TopoCliFeatureTipSource {
   return value === 'app_open' ? 'app_open' : 'manual'
 }
 
-export function trackOrcaCliFeatureTipShown(source: OrcaCliFeatureTipSource): void {
-  track('orca_cli_feature_tip_shown', { source })
+export function trackTopoCliFeatureTipShown(source: TopoCliFeatureTipSource): void {
+  track('topo_cli_feature_tip_shown', { source })
 }
 
-export function trackOrcaCliFeatureTipSetupClicked(source: OrcaCliFeatureTipSource): void {
-  track('orca_cli_feature_tip_setup_clicked', { source })
+export function trackTopoCliFeatureTipSetupClicked(source: TopoCliFeatureTipSource): void {
+  track('topo_cli_feature_tip_setup_clicked', { source })
 }
 
-export function trackOrcaCliFeatureTipSetupResult(
-  source: OrcaCliFeatureTipSource,
-  result: OrcaCliFeatureTipSetupResult
+export function trackTopoCliFeatureTipSetupResult(
+  source: TopoCliFeatureTipSource,
+  result: TopoCliFeatureTipSetupResult
 ): void {
-  track('orca_cli_feature_tip_setup_result', { source, result })
+  track('topo_cli_feature_tip_setup_result', { source, result })
 }
 
 export function trackCmdJPaletteFeatureTipShown(source: CmdJPaletteFeatureTipSource): void {

@@ -25,7 +25,7 @@ import type { JournalOperationReceipt } from '../../agent-session-journal/writin
 import type { StructuredAgentSessionAdapter } from '../providers/structured-agent-session-adapter'
 import {
   classifyJournalOpenFailure,
-  isJournalWrittenByNewerOrca,
+  isJournalWrittenByNewerTopo,
   journalOpenRefusal
 } from '../../agent-session-journal/replay/journal-open-failure'
 import type { StructuredAgentSessionLogger } from '../host/structured-agent-session-logger'
@@ -111,7 +111,7 @@ export function agentSessionAdmissionWriteRefusal(
   if (
     isAgentSessionRefusalError(error) ||
     classifyJournalOpenFailure(error) === 'journalCorrupt' ||
-    isJournalWrittenByNewerOrca(error)
+    isJournalWrittenByNewerTopo(error)
   ) {
     return { ok: false, refusal: journalOpenRefusal(error) }
   }

@@ -16,7 +16,7 @@ const originalEnv = {
 }
 
 beforeEach(() => {
-  home = mkdtempSync(join(tmpdir(), 'orca-kiro-standalone-'))
+  home = mkdtempSync(join(tmpdir(), 'topo-kiro-standalone-'))
   process.env.HOME = home
   process.env.USERPROFILE = home
   delete process.env.KIRO_HOME
@@ -36,7 +36,7 @@ afterEach(() => {
 type HooksFileEntry = { name: string; trigger: string; action: { type: string; command: string } }
 type HooksFile = { version?: string; hooks?: HooksFileEntry[] }
 
-const hooksFilePath = (): string => join(home, '.kiro', 'hooks', 'orca-agent-status.json')
+const hooksFilePath = (): string => join(home, '.kiro', 'hooks', 'topo-agent-status.json')
 const agentPath = (kiroHome: string, name: string): string =>
   join(kiroHome, 'agents', `${name}.json`)
 
@@ -59,10 +59,10 @@ const USER_HOOK = {
   trigger: 'Stop',
   action: { type: 'command', command: 'notify.sh' }
 }
-const ORCA_HOOK = {
-  name: 'orca-agent-status-Stop',
+const TOPO_HOOK = {
+  name: 'topo-agent-status-Stop',
   trigger: 'Stop',
-  action: { type: 'command', command: '/home/dev/.orca/agent-hooks/kiro-hook.sh' }
+  action: { type: 'command', command: '/home/dev/.topo/agent-hooks/kiro-hook.sh' }
 }
 
 describe('Kiro V3 standalone hooks file', () => {
@@ -88,13 +88,13 @@ describe('Kiro V3 standalone hooks file', () => {
     process.env.KIRO_HOME = kiroHome
 
     expect(new KiroHookService().install().state).toBe('installed')
-    expect(existsSync(join(kiroHome, 'hooks', 'orca-agent-status.json'))).toBe(true)
+    expect(existsSync(join(kiroHome, 'hooks', 'topo-agent-status.json'))).toBe(true)
     expect(existsSync(hooksFilePath())).toBe(false)
   })
 
   it.each([
     ['unparsable JSON', '{ "version": "v1", "hooks": '],
-    ['a hook Orca did not write', JSON.stringify({ version: 'v1', hooks: [ORCA_HOOK, USER_HOOK] })]
+    ['a hook Topo did not write', JSON.stringify({ version: 'v1', hooks: [TOPO_HOOK, USER_HOOK] })]
   ])('leaves a same-named file with %s untouched and reports it', (_label, userFile) => {
     writeAgent(defaultKiroHome(), 'plain')
     writeHooksFile(userFile)
@@ -108,7 +108,7 @@ describe('Kiro V3 standalone hooks file', () => {
   })
 
   it('strips only its own hooks from a file that mixes in hooks someone else added', () => {
-    installKiroStandaloneHooks(ORCA_HOOK.action.command)
+    installKiroStandaloneHooks(TOPO_HOOK.action.command)
     const file = readHooksFile()
     writeHooksFile(JSON.stringify({ ...file, hooks: [...(file.hooks ?? []), USER_HOOK] }))
 

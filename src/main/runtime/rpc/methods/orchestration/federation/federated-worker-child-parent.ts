@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationSessionCaller } from '../../../../orchestration/addressing/orchestration-caller-identity'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import { readCallerStoreInstallationId } from '../../../../hosts/platform-probe/host-descriptor'
@@ -14,7 +14,7 @@ import { resolveDispatchCallerWorktreeId } from '../orchestration-caller-workspa
  */
 export async function resolveFederatedChildParent(args: {
   runtime: Pick<
-    OrcaRuntimeService,
+    TopoRuntimeService,
     | 'showTerminal'
     | 'getOrchestrationDispatchAuthority'
     | 'showManagedWorktree'
@@ -38,7 +38,7 @@ export async function resolveFederatedChildParent(args: {
       .then((worktree) => worktree.displayName || worktree.id)
       .catch(() => callerId)
     return {
-      warning: `Not nested under ${name}: ${args.serverName} needs an Orca update to nest across machines, so the worktree was created top-level.`
+      warning: `Not nested under ${name}: ${args.serverName} needs a Topo update to nest across machines, so the worktree was created top-level.`
     }
   }
   const resolved = await runtime.resolveCallerParentForAnotherStore(

@@ -79,7 +79,7 @@ describe('mutation receipt capacity schema', () => {
   })
 
   it('keeps the row limit exact across independent database connections', () => {
-    tempDir = mkdtempSync(join(tmpdir(), 'orca-mutation-receipt-concurrency-'))
+    tempDir = mkdtempSync(join(tmpdir(), 'topo-mutation-receipt-concurrency-'))
     const dbPath = join(tempDir, 'orchestration.db')
     db = new OrchestrationDb(dbPath)
     secondDb = new OrchestrationDb(dbPath)

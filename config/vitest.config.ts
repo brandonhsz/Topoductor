@@ -21,8 +21,8 @@ import { vitestReactCompiler } from './build-plugins/vitest-react-compiler'
 const nodeRuntimeInclude = process.versions.bun
   ? getNodeRuntimeInclude({ filters: readRunFilters() })
   : []
-const balancedShards = process.env.ORCA_BALANCE_UNIT_SHARDS === '1'
-const moduleCachePath = process.env.ORCA_UNIT_MODULE_CACHE_PATH
+const balancedShards = process.env.TOPO_BALANCE_UNIT_SHARDS === '1'
+const moduleCachePath = process.env.TOPO_UNIT_MODULE_CACHE_PATH
 const phoneContractPattern = /\/mobile\/src\/.*\.(?:ts|tsx)(?:\?.*)?$/
 const transforms = {
   // Auto-discovery climbs past the repo for files no in-repo tsconfig owns, into an enclosing checkout.
@@ -61,16 +61,16 @@ const transforms = {
     }
   ],
   define: {
-    ORCA_FEATURE_WALL_ENABLED: 'true',
+    TOPO_FEATURE_WALL_ENABLED: 'true',
     // Why: tests only interpolate it; they must not depend on the checkout's HEAD.
-    ORCA_BUILD_COMMIT: JSON.stringify('0'.repeat(40)),
-    // A dark switch set to 'main' in the env (`ORCA_LAYOUT_OWNER=main pnpm vitest`) is on in tests.
+    TOPO_BUILD_COMMIT: JSON.stringify('0'.repeat(40)),
+    // A dark switch set to 'main' in the env (`TOPO_LAYOUT_OWNER=main pnpm vitest`) is on in tests.
     ...createRequire(import.meta.url)('./dark-build-switches.cjs').turnedOnDarkBuildDefines()
   },
   resolve: {
     alias: [
-      ...(process.env.ORCA_UNIT_ZOD_BUNDLE
-        ? [{ find: /^zod$/, replacement: process.env.ORCA_UNIT_ZOD_BUNDLE }]
+      ...(process.env.TOPO_UNIT_ZOD_BUNDLE
+        ? [{ find: /^zod$/, replacement: process.env.TOPO_UNIT_ZOD_BUNDLE }]
         : []),
       ...createWorkspaceSourceResolver().aliases,
       { find: '@renderer', replacement: resolve('src/renderer/src') },
@@ -88,7 +88,7 @@ const testOptions = {
   // Keyed by ci-unit-module-cache.mjs in CI and vitest-local-module-cache.mjs locally.
   fsModuleCache: Boolean(moduleCachePath),
   ...(moduleCachePath ? { fsModuleCachePath: moduleCachePath } : {}),
-  env: { ORCA_VITEST_RUNTIME: 'node' },
+  env: { TOPO_VITEST_RUNTIME: 'node' },
   server: { deps: { inline: ['zod'] } },
   // Node's storage globals and V8 retention checks require the existing child flags.
   execArgv: ['--no-experimental-webstorage', '--expose-gc'],
@@ -104,7 +104,7 @@ const nodeProject = {
   test: {
     ...testOptions,
     name: process.versions.bun ? 'node-runtime' : 'node',
-    env: { ORCA_VITEST_RUNTIME: process.versions.bun ? 'node-runtime' : 'node' },
+    env: { TOPO_VITEST_RUNTIME: process.versions.bun ? 'node-runtime' : 'node' },
     include: process.versions.bun ? nodeRuntimeInclude : UNIT_INCLUDE,
     sequence: { groupOrder: 1 },
     ...(process.versions.bun
@@ -118,18 +118,18 @@ const bunProject = {
   test: {
     ...testOptions,
     name: 'bun',
-    env: { ORCA_VITEST_RUNTIME: 'bun' },
+    env: { TOPO_VITEST_RUNTIME: 'bun' },
     pool: 'forks',
     exclude: [...testOptions.exclude, ...nodeRuntimeInclude],
     sequence: { groupOrder: 1 }
   }
 }
 // Files whose state the per-file reset can undo share one worker's module cache instead of
-// re-importing thousands of modules each. ORCA_VITEST_ISOLATE_EVERY_FILE=1 turns it off.
+// re-importing thousands of modules each. TOPO_VITEST_ISOLATE_EVERY_FILE=1 turns it off.
 const runtimeProject = process.versions.bun ? bunProject : nodeProject
 const nodeRuntimeFiles = new Set(nodeRuntimeInclude.map((file) => file.replaceAll('\\', '/')))
 const sharedWorkerFiles =
-  process.env.ORCA_VITEST_ISOLATE_EVERY_FILE === '1'
+  process.env.TOPO_VITEST_ISOLATE_EVERY_FILE === '1'
     ? []
     : filesSafeToShareWorker(
         process.cwd(),

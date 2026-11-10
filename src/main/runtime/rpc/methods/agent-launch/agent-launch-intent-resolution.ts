@@ -6,7 +6,7 @@ import type {
   AgentLaunchTarget,
   AgentLaunchModeReceipt
 } from '../../../../../shared/agent-launch/contracts/agent-launch-intent'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { assertTerminalLaunchAdmissible } from '../../../../agent-launch/agent-launch-surface-factories'
 import type { AgentLaunchParams } from '../../../../../shared/rpc-contract/agent-launch-params'
 import { resolveAgentLaunchModeOnHost } from '../../../../agent-launch/agent-launch-mode'
@@ -21,7 +21,7 @@ type ResolvedAgentLaunchIntent = Omit<AgentLaunchIntent, 'sessionOptions'> & {
  * Use launch scope: floating workspaces have no Git worktree record, and folder rows are synthetic. */
 async function agentLaunchTarget(
   params: AgentLaunchParams,
-  runtime: Pick<OrcaRuntimeService, 'showTerminalWorkspaceLaunchScope'>
+  runtime: Pick<TopoRuntimeService, 'showTerminalWorkspaceLaunchScope'>
 ): Promise<AgentLaunchTarget> {
   if (params.target.kind !== 'existing') {
     return { kind: params.target.kind, create: { ...params.target.create } }
@@ -37,7 +37,7 @@ async function agentLaunchTarget(
 
 async function agentLaunchIntent(
   params: AgentLaunchParams,
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   /** The pane of a tab already shown for this launch; the spawn must land in it. */
   publishedPaneKey: string | undefined
 ): Promise<ResolvedAgentLaunchIntent> {
@@ -65,7 +65,7 @@ async function agentLaunchIntent(
 
 async function validateReusedTerminal(
   intent: AgentLaunchIntent,
-  runtime: Pick<OrcaRuntimeService, 'showTerminal' | 'isTerminalRunningAgent'>
+  runtime: Pick<TopoRuntimeService, 'showTerminal' | 'isTerminalRunningAgent'>
 ): Promise<void> {
   if (!intent.reuseTerminal) {
     return
@@ -85,7 +85,7 @@ async function validateReusedTerminal(
 /** Resolve and validate before creation so a throw proves failed rather than unknown in the ledger. */
 export async function resolveUnlaunchedIntent(
   params: AgentLaunchParams,
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   early: EarlyAgentLaunchTab | null,
   modeOptions: { terminalOnly?: boolean; callerRendersStructured?: boolean } = {}
 ): Promise<{ intent: ResolvedAgentLaunchIntent; decidedMode: AgentLaunchModeReceipt }> {

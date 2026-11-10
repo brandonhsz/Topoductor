@@ -51,7 +51,7 @@ const STATE_TEXT_TONE: Record<GitHubWorkItem['state'], string> = {
   closed: 'text-rose-600 dark:text-rose-300'
 }
 
-/** `orca#3`, or `owner/other#5` for another repo than the chat's own, which the card can't read. */
+/** `topo#3`, or `owner/other#5` for another repo than the chat's own, which the card can't read. */
 function pullRequestName(
   pullRequest: NativeChatOpenedPullRequest,
   githubRepo: NativeChatGitHubRepo | null
@@ -210,7 +210,7 @@ function OpenedPullRequestRow({
   )
 }
 
-/** "Opened orca#3": the pull requests a turn's own commands opened, each opening on click. */
+/** "Opened topo#3": the pull requests a turn's own commands opened, each opening on click. */
 export function NativeChatOpenedPullRequestCard({
   pullRequests
 }: {
@@ -244,7 +244,7 @@ export function NativeChatOpenedPullRequestCard({
           settingSectionId={NATIVE_CHAT_OPENED_PULL_REQUESTS_SETTING_SECTION_ID}
           hiddenMessage={t(
             'components.native-chat.openedPullRequests.hidden',
-            "Orca won't show opened pull requests anymore"
+            "Topo won't show opened pull requests anymore"
           )}
         />
       </div>

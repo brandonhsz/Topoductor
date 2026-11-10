@@ -22,7 +22,7 @@ describe('pairing a server that is already saved', () => {
   beforeEach(() => {
     // Why: this suite tests store contents, while secure-file tests cover Windows ACLs.
     Object.defineProperty(process, 'platform', { configurable: true, value: 'linux' })
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-env-same-server-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-env-same-server-'))
   })
   afterEach(() => {
     if (originalPlatform) {

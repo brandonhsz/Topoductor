@@ -68,7 +68,7 @@ describe('mockEditorHost', () => {
   })
 })
 
-describe('mockEditorHost saves as Orca does', () => {
+describe('mockEditorHost saves as Topo does', () => {
   it('blocks a save after an oversized edit until a later edit lands', async () => {
     host = mockEditorHost({ text: 'a' })
     const { document } = host.orca

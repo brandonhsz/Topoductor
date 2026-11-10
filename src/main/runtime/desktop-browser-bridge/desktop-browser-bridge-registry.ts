@@ -1,4 +1,4 @@
-/** orcad forwards through its newest desktop attachment; older ones resume only after it detaches. */
+/** topod forwards through its newest desktop attachment; older ones resume only after it detaches. */
 import { randomUUID } from 'node:crypto'
 import { BrowserError } from '../../browser/browser-error'
 import {
@@ -124,7 +124,7 @@ export class DesktopBrowserBridgeRegistry {
           requestId,
           method: request.method,
           params: request.params,
-          // Leave transit margin for desktop refusal before orcad's deadline.
+          // Leave transit margin for desktop refusal before topod's deadline.
           timeoutMs: Math.max(
             MIN_DESKTOP_DEADLINE_MS,
             options.timeoutMs - DESKTOP_DEADLINE_MARGIN_MS
@@ -172,7 +172,7 @@ export class DesktopBrowserBridgeRegistry {
         pending.reject(
           new BrowserError(
             DESKTOP_BROWSER_BRIDGE_UNAVAILABLE_CODE,
-            'The Orca desktop stopped sharing its browser before it answered.'
+            'The Topo desktop stopped sharing its browser before it answered.'
           )
         )
       }

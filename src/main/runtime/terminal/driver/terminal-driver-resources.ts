@@ -1,5 +1,5 @@
 import type { RuntimeServiceCommandSurface } from '../../construction/runtime-service-command-surface'
-import type { OrcaRuntimeWithCloseStructuredAgentSessionTab as ChatPresentation } from '../../session-tabs/structured-session-tab-close'
+import type { TopoRuntimeWithCloseStructuredAgentSessionTab as ChatPresentation } from '../../session-tabs/structured-session-tab-close'
 import {
   remoteCliBrowserScopeWorkspaceId,
   resolveRemoteCliBrowserScopeSelector
@@ -19,7 +19,7 @@ import type {
 } from '../../../../shared/runtime-terminal-contracts'
 import type { ExactWorkerProviderSession } from '../../../../shared/orchestration/workers/orchestration-worker-output'
 import type { RuntimeProviderSnapshotReadOptions } from '../output/provider-snapshot-read-options'
-import { OrcaRuntimeWithFitOverrideListeners } from '../lifecycle/terminal-view-resources'
+import { TopoRuntimeWithFitOverrideListeners } from '../lifecycle/terminal-view-resources'
 import type { RuntimeTerminalDriverState } from '../../../../shared/runtime-session-contracts'
 import type {
   ApplyLayoutResult,
@@ -46,10 +46,10 @@ import { readBrowserTabBar } from '../../browser/tabs/browser-tab-listing'
 import { parseWorkspaceKey } from '../../../../shared/workspace-scope'
 import { getRepoIdFromWorktreeId } from '../../../../shared/worktree/id'
 import type { ServeBrowserPageState } from '../../browser/headless/serve-browser-tab-layout'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import type { LayoutCommand } from '../../../../shared/workspace-layout/workspace-layout-command-types'
 
-export abstract class OrcaRuntimeWithTerminalDrivers extends OrcaRuntimeWithFitOverrideListeners {
+export abstract class TopoRuntimeWithTerminalDrivers extends TopoRuntimeWithFitOverrideListeners {
   abstract currentLocalStructuredSessionPresentation(
     ...args: Parameters<ChatPresentation['currentLocalStructuredSessionPresentation']>
   ): ReturnType<ChatPresentation['currentLocalStructuredSessionPresentation']>
@@ -160,7 +160,7 @@ export abstract class OrcaRuntimeWithTerminalDrivers extends OrcaRuntimeWithFitO
     hostId: (worktreeId) => this.getWorkspaceSessionHostIdForWorktree(worktreeId),
     save: (worktreeId, session) => this.setWorkspaceSessionForWorktree(worktreeId, session),
     // Switch point: a layout-owner build writes served tabs through `layout.apply`.
-    ...(ORCA_LAYOUT_OWNER_IS_MAIN
+    ...(TOPO_LAYOUT_OWNER_IS_MAIN
       ? {
           applyLayout: async (command: LayoutCommand, hostId: ExecutionHostId) => {
             const store = this.requireStore()

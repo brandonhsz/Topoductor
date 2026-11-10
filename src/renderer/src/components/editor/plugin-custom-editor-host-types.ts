@@ -16,7 +16,7 @@ export type CustomEditorBinaryDocument = { bytes: Uint8Array<ArrayBuffer>; fileT
 
 export type CustomEditorHostOptions = {
   getFrameWindow: () => PluginFrameWindow | null
-  /** The buffer as Orca holds it now. */
+  /** The buffer as Topo holds it now. */
   getDocument: () => { text: string; readOnly: boolean }
   /** Binary editors only: the document's bytes, or null while they load. */
   getBinaryDocument?: () => CustomEditorBinaryDocument | null
@@ -28,7 +28,7 @@ export type CustomEditorHostOptions = {
   onUnappliedEdit?: (state: CustomEditorUnappliedEdit) => void
   /** `context.userActivation`: the chord rode real input in the frame. */
   onKeyChord?: (chord: CustomEditorKeyChord, context: PluginFrameMessageContext) => void
-  /** The frame got a document, or asked for one; `orca plugin shot --editor` waits on both. */
+  /** The frame got a document, or asked for one; `topo plugin shot --editor` waits on both. */
   onFrameProgress?: (step: 'delivered' | 'subscribed') => void
   /** The frame's document session merges outside changes; set once per frame. */
   onMergesOutside?: () => void

@@ -13,10 +13,10 @@ import '../db/attempt-outcome-projection'
 import { createRootDispatch } from '../db/root-dispatch-test-fixture'
 import type { RuntimeMobileSessionTabsResult } from '../../../../shared/runtime-session-contracts'
 import { AgentHookServer } from '../../../agent-hooks/server/agent-hook-server'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { makeStore } from '../../rpc/server/runtime-rpc-worktree-store-fixtures'
 import { spawnedPtyEnv } from '../../terminal/launch/spawned-pty-env-fixtures'
-import { committingSpawn } from '../../orca-runtime-tests/bind-first-pane.test-fixture'
+import { committingSpawn } from '../../topo-runtime-tests/bind-first-pane.test-fixture'
 
 // STA-4557: deferred OpenCode foreground reads retained/revived finished authority (#14866, reverted in #14943).
 
@@ -71,7 +71,7 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
 })
 
 type LaunchedOpenCodePane = {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   ptyId: string
   paneKey: string
   tabId: string
@@ -83,13 +83,13 @@ async function launchOpenCodePane(options: {
   ptyId: string
   getForegroundProcess: () => Promise<string | null>
   retireAgentHookCompatibilityAuthority?: (paneKey: string) => void
-  attestAgentHookCompatibilityAuthority?: OrcaRuntimeServiceDeps['attestAgentHookCompatibilityAuthority']
+  attestAgentHookCompatibilityAuthority?: TopoRuntimeServiceDeps['attestAgentHookCompatibilityAuthority']
 }): Promise<LaunchedOpenCodePane> {
   const spawn = vi.fn(async (_args: { worktreeId?: string; tabId?: string; leafId?: string }) => ({
     id: options.ptyId,
     incarnationId: 'incarnation-1'
   }))
-  const runtime = new OrcaRuntimeService(makeStore() as never, undefined, {
+  const runtime = new TopoRuntimeService(makeStore() as never, undefined, {
     attestAgentHookCompatibilityAuthority:
       options.attestAgentHookCompatibilityAuthority ??
       ((candidate) => ({ paneKey: candidate.paneKey, source: 'current_hook' as const })),
@@ -109,8 +109,8 @@ async function launchOpenCodePane(options: {
     launchAgent: 'opencode'
   })
   const env = spawnedPtyEnv(spawn.mock.calls[0]?.[0])
-  const paneKey = env.ORCA_PANE_KEY
-  const launchToken = env.ORCA_AGENT_LAUNCH_TOKEN
+  const paneKey = env.TOPO_PANE_KEY
+  const launchToken = env.TOPO_AGENT_LAUNCH_TOKEN
   expect(paneKey).toBeTruthy()
   expect(launchToken).toBeTruthy()
   return {
@@ -123,7 +123,7 @@ async function launchOpenCodePane(options: {
   }
 }
 
-type OrcaRuntimeServiceDeps = NonNullable<ConstructorParameters<typeof OrcaRuntimeService>[2]>
+type TopoRuntimeServiceDeps = NonNullable<ConstructorParameters<typeof TopoRuntimeService>[2]>
 
 async function settle(ticks = 40): Promise<void> {
   for (let tick = 0; tick < ticks; tick += 1) {
@@ -161,11 +161,11 @@ describe('OpenCode finished-session launch authority (STA-4557)', () => {
     })
     const hookEnv = server.buildPtyEnv()
     const post = (payload: Record<string, unknown>): Promise<Response> =>
-      fetch(`http://127.0.0.1:${hookEnv.ORCA_AGENT_HOOK_PORT}/hook/opencode`, {
+      fetch(`http://127.0.0.1:${hookEnv.TOPO_AGENT_HOOK_PORT}/hook/opencode`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Orca-Agent-Hook-Token': hookEnv.ORCA_AGENT_HOOK_TOKEN
+          'X-Topo-Agent-Hook-Token': hookEnv.TOPO_AGENT_HOOK_TOKEN
         },
         body: JSON.stringify({
           paneKey: pane.paneKey,
@@ -220,11 +220,11 @@ describe('OpenCode finished-session launch authority (STA-4557)', () => {
     const hookEnv = server.buildPtyEnv()
     // Both sessions inherit the PTY launch token; only sessionID distinguishes them.
     const post = (sessionId: string): Promise<Response> =>
-      fetch(`http://127.0.0.1:${hookEnv.ORCA_AGENT_HOOK_PORT}/hook/opencode`, {
+      fetch(`http://127.0.0.1:${hookEnv.TOPO_AGENT_HOOK_PORT}/hook/opencode`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Orca-Agent-Hook-Token': hookEnv.ORCA_AGENT_HOOK_TOKEN
+          'X-Topo-Agent-Hook-Token': hookEnv.TOPO_AGENT_HOOK_TOKEN
         },
         body: JSON.stringify({
           paneKey: pane.paneKey,
@@ -256,7 +256,7 @@ describe('OpenCode finished-session launch authority (STA-4557)', () => {
   })
 
   it('does not rehydrate a finished session token as restored authority after a restart', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-sta4557-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-sta4557-'))
     tempDirs.push(userDataPath)
     const first = new AgentHookServer()
     servers.push(first)
@@ -267,11 +267,11 @@ describe('OpenCode finished-session launch authority (STA-4557)', () => {
       retireAgentHookCompatibilityAuthority: (paneKey) => first.retirePaneAuthority(paneKey)
     })
     const hookEnv = first.buildPtyEnv()
-    await fetch(`http://127.0.0.1:${hookEnv.ORCA_AGENT_HOOK_PORT}/hook/opencode`, {
+    await fetch(`http://127.0.0.1:${hookEnv.TOPO_AGENT_HOOK_PORT}/hook/opencode`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Orca-Agent-Hook-Token': hookEnv.ORCA_AGENT_HOOK_TOKEN
+        'X-Topo-Agent-Hook-Token': hookEnv.TOPO_AGENT_HOOK_TOKEN
       },
       body: JSON.stringify({
         paneKey: pane.paneKey,

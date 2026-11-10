@@ -2,7 +2,7 @@ import { recognizeAgentLaunchCommand } from '../../agent-launch/startup/agent-co
 import { gitCredentialPromptGuardEnv } from '../../git/commands/git-credential-prompt-env'
 
 export const TERMINAL_GIT_CREDENTIAL_GUARD_POLICY_ENV =
-  'ORCA_INTERNAL_TERMINAL_GIT_CREDENTIAL_GUARD_POLICY'
+  'TOPO_INTERNAL_TERMINAL_GIT_CREDENTIAL_GUARD_POLICY'
 
 /** Disable credential UI only for recognized agents and marked automation. */
 export function applyTerminalGitCredentialPromptGuard(

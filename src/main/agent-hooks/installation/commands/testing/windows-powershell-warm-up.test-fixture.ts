@@ -1,4 +1,4 @@
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { expect } from 'vitest'
 import { wrapWindowsHookCommand } from '../windows-hook-command'
 
@@ -8,7 +8,7 @@ export const WINDOWS_POWERSHELL_WARM_UP_TIMEOUT_MS = 90_000
 export async function warmWindowsEncodedPowerShell(env: NodeJS.ProcessEnv): Promise<void> {
   const warm = await runProcess({
     program: 'cmd.exe',
-    args: ['/d', '/c', wrapWindowsHookCommand('C:\\missing\\orca-hook.cmd')],
+    args: ['/d', '/c', wrapWindowsHookCommand('C:\\missing\\topo-hook.cmd')],
     env,
     timeoutMs: WINDOWS_POWERSHELL_WARM_UP_TIMEOUT_MS - 5_000
   })

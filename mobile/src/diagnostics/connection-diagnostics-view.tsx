@@ -106,7 +106,7 @@ export function ConnectionDiagnosticsView({
                 </Text>
                 <Text style={styles.diagnosisText}>{diagnosis.likelyCause}</Text>
                 <Text style={styles.diagnosisNext}>{diagnosis.nextStep}</Text>
-                {diagnosis.reportability === 'orca-relay' && (
+                {diagnosis.reportability === 'topo-relay' && (
                   <>
                     <Text style={styles.privacyHint}>
                       {t(
@@ -136,7 +136,7 @@ export function ConnectionDiagnosticsView({
                                 )
                               : t(
                                   'diagnostics.connectionDiagnosticsView.sendDiagnostics',
-                                  'Send diagnostics to Orca'
+                                  'Send diagnostics to Topo'
                                 )}
                       </Text>
                     </Pressable>

@@ -11,44 +11,44 @@ import {
 
 describe('parseNativeChatVisualDirectiveLine', () => {
   it('accepts up to 3 leading spaces, trailing whitespace, and CRLF or LF endings', () => {
-    expect(parseNativeChatVisualDirectiveLine('   ::orca-visual{file="a.html"}  \t\r\n')).toEqual({
+    expect(parseNativeChatVisualDirectiveLine('   ::topo-visual{file="a.html"}  \t\r\n')).toEqual({
       file: 'a.html',
       title: null
     })
-    expect(parseNativeChatVisualDirectiveLine('::orca-visual{file="a.html"}\n')).not.toBeNull()
-    expect(parseNativeChatVisualDirectiveLine('    ::orca-visual{file="a.html"}')).toBeNull()
-    expect(parseNativeChatVisualDirectiveLine('\t::orca-visual{file="a.html"}')).toBeNull()
+    expect(parseNativeChatVisualDirectiveLine('::topo-visual{file="a.html"}\n')).not.toBeNull()
+    expect(parseNativeChatVisualDirectiveLine('    ::topo-visual{file="a.html"}')).toBeNull()
+    expect(parseNativeChatVisualDirectiveLine('\t::topo-visual{file="a.html"}')).toBeNull()
   })
 
   it('ignores unknown attributes but refuses a repeated one', () => {
-    expect(parseNativeChatVisualDirectiveLine('::orca-visual{file="a.html" height="300"}')).toEqual(
+    expect(parseNativeChatVisualDirectiveLine('::topo-visual{file="a.html" height="300"}')).toEqual(
       { file: 'a.html', title: null }
     )
     expect(
-      parseNativeChatVisualDirectiveLine('::orca-visual{file="a.html" file="b.html"}')
+      parseNativeChatVisualDirectiveLine('::topo-visual{file="a.html" file="b.html"}')
     ).toBeNull()
     expect(
-      parseNativeChatVisualDirectiveLine('::orca-visual{file="a.html" title="x" title="y"}')
+      parseNativeChatVisualDirectiveLine('::topo-visual{file="a.html" title="x" title="y"}')
     ).toBeNull()
   })
 
   it.each([
-    ['missing file', '::orca-visual{title="T"}'],
-    ['empty braces', '::orca-visual{}'],
-    ['no braces', '::orca-visual'],
-    ['unclosed', '::orca-visual{file="a.html"'],
-    ['text after the line', '::orca-visual{file="a.html"} see above'],
-    ['text before the marker', 'Chart: ::orca-visual{file="a.html"}'],
-    ['wrong case', '::Orca-Visual{file="a.html"}'],
-    ['single quotes', "::orca-visual{file='a.html'}"],
-    ['unquoted value', '::orca-visual{file=a.html}'],
-    ['escaped quote', '::orca-visual{file="a.html" title="say \\"hi\\""}'],
-    ['backslash', '::orca-visual{file="a.html" title="a\\b"}'],
-    ['control character', '::orca-visual{file="a.html" title="a\u0007b"}'],
-    ['attributes glued together', '::orca-visual{file="a.html"title="T"}'],
-    ['uppercase key', '::orca-visual{FILE="a.html"}'],
-    ['embedded newline', '::orca-visual{file="a.html"\ntitle="T"}'],
-    ['three colons', ':::orca-visual{file="a.html"}']
+    ['missing file', '::topo-visual{title="T"}'],
+    ['empty braces', '::topo-visual{}'],
+    ['no braces', '::topo-visual'],
+    ['unclosed', '::topo-visual{file="a.html"'],
+    ['text after the line', '::topo-visual{file="a.html"} see above'],
+    ['text before the marker', 'Chart: ::topo-visual{file="a.html"}'],
+    ['wrong case', '::Topo-Visual{file="a.html"}'],
+    ['single quotes', "::topo-visual{file='a.html'}"],
+    ['unquoted value', '::topo-visual{file=a.html}'],
+    ['escaped quote', '::topo-visual{file="a.html" title="say \\"hi\\""}'],
+    ['backslash', '::topo-visual{file="a.html" title="a\\b"}'],
+    ['control character', '::topo-visual{file="a.html" title="a\u0007b"}'],
+    ['attributes glued together', '::topo-visual{file="a.html"title="T"}'],
+    ['uppercase key', '::topo-visual{FILE="a.html"}'],
+    ['embedded newline', '::topo-visual{file="a.html"\ntitle="T"}'],
+    ['three colons', ':::topo-visual{file="a.html"}']
   ])('refuses %s', (_name, line) => {
     expect(parseNativeChatVisualDirectiveLine(line)).toBeNull()
   })
@@ -56,13 +56,13 @@ describe('parseNativeChatVisualDirectiveLine', () => {
   it('refuses lines and titles past their length caps', () => {
     const title = 'x'.repeat(NATIVE_CHAT_VISUAL_TITLE_MAX_LENGTH)
     expect(
-      parseNativeChatVisualDirectiveLine(`::orca-visual{file="a.html" title="${title}"}`)
+      parseNativeChatVisualDirectiveLine(`::topo-visual{file="a.html" title="${title}"}`)
     ).not.toBeNull()
     expect(
-      parseNativeChatVisualDirectiveLine(`::orca-visual{file="a.html" title="${title}x"}`)
+      parseNativeChatVisualDirectiveLine(`::topo-visual{file="a.html" title="${title}x"}`)
     ).toBeNull()
     const padding = ' '.repeat(NATIVE_CHAT_VISUAL_DIRECTIVE_MAX_LINE_LENGTH)
-    expect(parseNativeChatVisualDirectiveLine(`::orca-visual{file="a.html"}${padding}`)).toBeNull()
+    expect(parseNativeChatVisualDirectiveLine(`::topo-visual{file="a.html"}${padding}`)).toBeNull()
   })
 })
 
@@ -103,20 +103,20 @@ describe('isNativeChatVisualFileName', () => {
 
 describe('streaming tail', () => {
   it('drops only the pending final line', () => {
-    expect(withoutPendingNativeChatVisualDirectiveTail('Intro\n::orca-visual{file="a')).toBe(
+    expect(withoutPendingNativeChatVisualDirectiveTail('Intro\n::topo-visual{file="a')).toBe(
       'Intro\n'
     )
-    expect(withoutPendingNativeChatVisualDirectiveTail('::orca-vis')).toBe('')
+    expect(withoutPendingNativeChatVisualDirectiveTail('::topo-vis')).toBe('')
     expect(withoutPendingNativeChatVisualDirectiveTail('Intro\nMore text')).toBe('Intro\nMore text')
     // A finished line (followed by a newline) is no longer the tail.
-    expect(withoutPendingNativeChatVisualDirectiveTail('::orca-visual{file="a.html"}\n')).toBe(
-      '::orca-visual{file="a.html"}\n'
+    expect(withoutPendingNativeChatVisualDirectiveTail('::topo-visual{file="a.html"}\n')).toBe(
+      '::topo-visual{file="a.html"}\n'
     )
   })
 })
 
 describe('withoutNativeChatVisualDirectiveLines', () => {
-  const LINE = '::orca-visual{file="usage.html" title="Usage"}'
+  const LINE = '::topo-visual{file="usage.html" title="Usage"}'
 
   it('keeps the line inside fenced code and anything that is not a whole directive line', () => {
     const fenced = `\`\`\`\n${LINE}\n\`\`\`\nafter`

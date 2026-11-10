@@ -1,8 +1,8 @@
 /// <reference types="chrome" />
 import { matchesExtensionMatchPattern } from '../permissions/browser-extension-match-pattern'
 
-/** Query keys Orca answers; the preload strips them before Electron's native query runs. */
-export type OrcaTabQuery = {
+/** Query keys Topo answers; the preload strips them before Electron's native query runs. */
+export type TopoTabQuery = {
   active?: boolean
   highlighted?: boolean
   currentWindow?: boolean
@@ -17,7 +17,7 @@ export type OrcaTabQuery = {
   groupId?: number
 }
 
-export type OrcaTabQueryContext = {
+export type TopoTabQueryContext = {
   callerWindowId: number | null
   lastFocusedWindowId: number | null
   windowTypeById: ReadonlyMap<number, string>
@@ -34,10 +34,10 @@ function windowMatches(
 }
 
 /** chrome.tabs.query semantics for the fields Electron cannot know (window, activation, status). */
-export function matchesOrcaTabQuery(
+export function matchesTopoTabQuery(
   tab: chrome.tabs.Tab,
-  query: OrcaTabQuery,
-  context: OrcaTabQueryContext
+  query: TopoTabQuery,
+  context: TopoTabQueryContext
 ): boolean {
   if (query.active !== undefined && tab.active !== query.active) {
     return false
@@ -72,7 +72,7 @@ export function matchesOrcaTabQuery(
   if (query.discarded !== undefined && tab.discarded !== query.discarded) {
     return false
   }
-  // Orca has no pinned, frozen or grouped tabs.
+  // Topo has no pinned, frozen or grouped tabs.
   if (query.pinned === true || query.frozen === true) {
     return false
   }

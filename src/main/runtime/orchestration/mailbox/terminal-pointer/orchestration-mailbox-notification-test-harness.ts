@@ -6,14 +6,14 @@ import { vi } from 'vitest'
 import type { AgentStatusIpcPayload } from '../../../../../shared/agent-status/contracts/agent-status-ipc-payload'
 import type { TuiAgent } from '../../../../../shared/agent-launch/catalog/tui-agent'
 import type Database from '../../../../sqlite/sync-database'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import { OrchestrationDb } from '../../db/orchestration-db'
 import type { RuntimeStore } from '../../../construction/runtime-store-contract'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import {
   bindPaneFirst,
   registerBoundPty
-} from '../../../orca-runtime-tests/bind-first-pane.test-fixture'
+} from '../../../topo-runtime-tests/bind-first-pane.test-fixture'
 import { publishHeadlessRuntimeGraph } from '../../../session-graph/headless-runtime-graph'
 
 export const TAB_ID = '11111111-1111-4111-8111-111111111111'
@@ -76,7 +76,7 @@ export function insertDirectRunMessage(db: OrchestrationDb, runId: string, subje
   return db.getMessageById(message.id)!
 }
 
-class MailboxRuntime extends OrcaRuntimeService {
+class MailboxRuntime extends TopoRuntimeService {
   get idleEvidenceSource() {
     return this.tuiIdleEvidenceSource
   }
@@ -122,7 +122,7 @@ export function createRuntime(
   } = {}
 ): MailboxNotificationHarness {
   const runtime = new MailboxRuntime(
-    ORCA_LAYOUT_OWNER_IS_MAIN ? mailboxLayoutStore() : null,
+    TOPO_LAYOUT_OWNER_IS_MAIN ? mailboxLayoutStore() : null,
     undefined,
     {
       getAgentStatusSnapshot: options.getAgentStatusSnapshot,
@@ -191,7 +191,7 @@ export function createRuntime(
 }
 
 export function registerSecondPane(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   leafId = SECOND_LEAF_ID,
   includeFirstPane = true
 ): void {
@@ -246,7 +246,7 @@ export function registerSecondPane(
   })
 }
 
-export async function driveToLiveIdle(runtime: OrcaRuntimeService): Promise<void> {
+export async function driveToLiveIdle(runtime: TopoRuntimeService): Promise<void> {
   await runtime.listTerminals()
   runtime.onPtyData(PTY_ID, '\x1b]0;Codex done\x07', 1)
   // Await the model's write chain so the chunk is parsed.

@@ -1,8 +1,8 @@
 import type { TuiAgent } from './tui-agent'
 import {
-  getOrcaCliCommandNameForPlatform,
-  skipsLinuxOrcaCliRename
-} from '../../orca-cli-command-name'
+  getTopoCliCommandNameForPlatform,
+  skipsLinuxTopoCliRename
+} from '../../topo-cli-command-name'
 import type { TuiAgentConfig, TuiAgentConfigSource } from './tui-agent-config-types'
 
 function resolveTuiAgentConfig(source: TuiAgentConfigSource): TuiAgentConfig {
@@ -18,7 +18,7 @@ const TUI_AGENT_CONFIG_SOURCE: Record<TuiAgent, TuiAgentConfigSource> = {
     detectCmd: 'claude',
     promptInjectionMode: 'argv',
     pasteNeedsTypedRequest: true,
-    // Native --prefill avoids paste-after-ready races (https://github.com/stablyai/orca/pull/926).
+    // Native --prefill avoids paste-after-ready races (https://github.com/brandonhsz/Topoductor/pull/926).
     draftPromptFlag: '--prefill',
     preflightTrust: 'claude',
     // Why: CLAUDE_CODE_DISABLE_TERMINAL_TITLE drops the `✳` title tui-idle waits on (#22655).
@@ -28,17 +28,17 @@ const TUI_AGENT_CONFIG_SOURCE: Record<TuiAgent, TuiAgentConfigSource> = {
     ctrlEnterEncoding: 'csi-u'
   },
   'claude-agent-teams': {
-    // This launch mode uses Orca’s CLI wrapper rather than a separate agent binary.
-    detectCmd: 'orca',
-    detectCmdAliases: ['orca-dev', 'orca-ide'],
-    // Orca’s always-present shim alone must not report installed Agent Teams without Claude.
+    // This launch mode uses Topo’s CLI wrapper rather than a separate agent binary.
+    detectCmd: 'topo',
+    detectCmdAliases: ['topo-dev', 'topo-ide'],
+    // Topo’s always-present shim alone must not report installed Agent Teams without Claude.
     detectRequiredCommands: ['claude'],
     // Windows/WSL use Claude’s in-process fallback, not this native-pane/tmux wrapper.
     detectUnsupportedRuntimes: ['win32', 'wsl'],
-    launchCmd: 'orca claude-teams',
+    launchCmd: 'topo claude-teams',
     launchCmdByPlatform: {
-      linux: `${getOrcaCliCommandNameForPlatform('linux')} claude-teams`,
-      win32: `${getOrcaCliCommandNameForPlatform('win32')} claude-teams`
+      linux: `${getTopoCliCommandNameForPlatform('linux')} claude-teams`,
+      win32: `${getTopoCliCommandNameForPlatform('win32')} claude-teams`
     },
     expectedProcess: 'claude',
     promptInjectionMode: 'stdin-after-start',
@@ -125,14 +125,14 @@ const TUI_AGENT_CONFIG_SOURCE: Record<TuiAgent, TuiAgentConfigSource> = {
     detectCmd: 'pi',
     promptInjectionMode: 'argv',
     // Pi has no prefill flag; the managed extension seeds env to avoid its long startup paste race.
-    draftPromptEnvVar: 'ORCA_PI_PREFILL',
+    draftPromptEnvVar: 'TOPO_PI_PREFILL',
     // Why: Pi decodes CSI-u; Esc+CR submits after tool subprocesses reset live KKP state (#9703).
     windowsShiftEnterEncoding: 'csi-u'
   },
   omp: {
     detectCmd: 'omp',
     promptInjectionMode: 'argv',
-    draftPromptEnvVar: 'ORCA_OMP_PREFILL',
+    draftPromptEnvVar: 'TOPO_OMP_PREFILL',
     // OMP embeds Pi’s CSI-u reader; preserve newline encoding after live Kitty state resets.
     windowsShiftEnterEncoding: 'csi-u'
   },
@@ -352,7 +352,7 @@ export function getTuiAgentLaunchCommand(
   platform: NodeJS.Platform,
   opts?: { isRemote?: boolean }
 ): string {
-  if (platform === 'linux' && skipsLinuxOrcaCliRename(opts?.isRemote)) {
+  if (platform === 'linux' && skipsLinuxTopoCliRename(opts?.isRemote)) {
     return config.launchCmd
   }
   return config.launchCmdByPlatform?.[platform] ?? config.launchCmd

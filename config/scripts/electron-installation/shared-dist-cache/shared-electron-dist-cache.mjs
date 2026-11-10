@@ -14,7 +14,7 @@ import { isSharedPackageDir } from '../../native-build/node-addons/native-build-
 
 const IDENTITY_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/
 // Sibling of path.txt, never inside dist: an install replaces dist wholesale.
-const MARKER_FILENAME = '.orca-shared-dist'
+const MARKER_FILENAME = '.topo-shared-dist'
 
 // Return repository-wide shared Electron location or null for normal install; folder workspaces also use normal install.
 export function resolveSharedElectronDistEntry(options) {
@@ -37,7 +37,7 @@ export function resolveSharedElectronDistEntry(options) {
   } catch {
     return null // Folder workspace, or no Git on PATH.
   }
-  const cacheRoot = path.join(gitCommonDir, 'orca-cache', 'electron')
+  const cacheRoot = path.join(gitCommonDir, 'topo-cache', 'electron')
   return {
     cacheRoot,
     entryPath: path.join(cacheRoot, `${version}-${targetPlatform}-${targetArch}`),

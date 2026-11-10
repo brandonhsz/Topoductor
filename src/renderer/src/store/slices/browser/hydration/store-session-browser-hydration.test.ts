@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type * as AgentStatusModule from '@/lib/agent-status/aggregation/worktree-agent-status'
 import type { BrowserPage } from '../../../../../../shared/browser-workspace-types'
 import '../../../../../../shared/constants'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import {
   RemoteBrowserPageSession,
   type RemoteBrowserPageSessionDeps
@@ -166,7 +166,7 @@ describe('hydrateBrowserSession remote page handle seeding', () => {
     expect(closeMissingRemotePage).not.toHaveBeenCalled()
     // Switch-on first probes the row id with tabShow; the restarted runtime has no such page.
     expect(callRpc.mock.calls.map(([, method]) => method)).toEqual(
-      ORCA_LAYOUT_OWNER_IS_MAIN ? ['browser.tabShow', 'browser.tabCreate'] : ['browser.tabCreate']
+      TOPO_LAYOUT_OWNER_IS_MAIN ? ['browser.tabShow', 'browser.tabCreate'] : ['browser.tabCreate']
     )
     expect(callRpc.mock.calls.at(-1)?.[2]).toMatchObject({ url: 'https://example.com/saved' })
     expect(resolved).toBe('remote-page-2')

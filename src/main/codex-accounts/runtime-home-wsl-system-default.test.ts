@@ -62,7 +62,7 @@ describe('CodexRuntimeHomeService', () => {
             managedHomePath,
             managedHomeRuntime: 'wsl',
             wslDistro: 'Ubuntu',
-            wslLinuxHomePath: '/home/alice/.local/share/orca/codex-accounts/wsl-account/home',
+            wslLinuxHomePath: '/home/alice/.local/share/topo/codex-accounts/wsl-account/home',
             providerAccountId: 'acct-wsl',
             workspaceLabel: null,
             workspaceAccountId: 'acct-wsl',
@@ -125,7 +125,7 @@ describe('CodexRuntimeHomeService', () => {
       wslHome,
       '.local',
       'share',
-      'orca',
+      'topo',
       'codex-runtime-home',
       'home'
     )

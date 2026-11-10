@@ -5,7 +5,7 @@ import { mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   execInTerminal,
   sendToTerminal,
@@ -14,7 +14,7 @@ import {
   waitForPaneCount
 } from './helpers/terminal'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
-import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/orca-restart'
+import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/topo-restart'
 
 const VISIBLE_TUI_FIXTURE_PATH = path.join(
   process.cwd(),
@@ -26,15 +26,15 @@ const WHEEL_DOWN_REPORT = '\x1b[<65;10;10M'
 
 // Own the seed repo: concurrent globalTeardown can delete the machine-global pointer’s repo mid-restart.
 function createIsolatedProofRepo(): string {
-  // Why realpathSync: macOS tmpdir symlinks through /private and Orca canonicalizes repo.path.
-  const repoDir = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'orca-mouse-reattach-repo-')))
+  // Why realpathSync: macOS tmpdir symlinks through /private and Topo canonicalizes repo.path.
+  const repoDir = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'topo-mouse-reattach-repo-')))
   const git = (...args: string[]): void => {
     execFileSync('git', args, { cwd: repoDir, stdio: 'pipe' })
   }
   git('init', '-q')
   git('config', 'user.email', 'e2e@test.local')
   git('config', 'user.name', 'E2E Test')
-  writeFileSync(path.join(repoDir, 'README.md'), '# Orca mouse-mode reattach proof repo\n')
+  writeFileSync(path.join(repoDir, 'README.md'), '# Topo mouse-mode reattach proof repo\n')
   git('add', '-A')
   git('commit', '-q', '-m', 'Seed commit for the reattach mouse-mode proof')
   return repoDir
@@ -200,7 +200,7 @@ test.describe('terminal reattach mouse mode', () => {
       await dragAcrossTuiRows(secondLaunch.page, afterReattach.screen)
       const afterDrag = await readTerminalSurface(secondLaunch.page)
       // Capture a screenshot: restart prevents video WebM flush; the frame must show no row-selection overlay on the live TUI.
-      const proofShot = process.env.ORCA_E2E_PROOF_SCREENSHOT
+      const proofShot = process.env.TOPO_E2E_PROOF_SCREENSHOT
       if (proofShot) {
         await secondLaunch.page.screenshot({ path: proofShot })
       }

@@ -1,4 +1,4 @@
-import { RELAY_ADMISSION_BUDGETS } from '@orca-cloud/relay-contract/admission-budgets'
+import { RELAY_ADMISSION_BUDGETS } from '@topo-cloud/relay-contract/admission-budgets'
 import type { RelayCellConfig } from '../../config.js'
 import type { RelayDatabase, SqlRow } from '../../database/database.js'
 
@@ -91,7 +91,7 @@ export async function recordReportedHardCap(
   if (reportedHardCap < configuredHardCap) {
     console.warn(
       JSON.stringify({
-        event: 'orca_relay_cell_reported_cap_below_configured',
+        event: 'topo_relay_cell_reported_cap_below_configured',
         cellId,
         reportedHardCap,
         configuredHardCap

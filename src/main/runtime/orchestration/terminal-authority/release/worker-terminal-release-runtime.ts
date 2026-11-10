@@ -1,9 +1,9 @@
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import type { StructuredSessionSurfaceRuntime } from '../../../agent-session/structured-agent-session-close'
 
 export type WorkerTerminalReleaseRuntime = StructuredSessionSurfaceRuntime &
   Pick<
-    OrcaRuntimeService,
+    TopoRuntimeService,
     | 'forgetStructuredSessionMail'
     | 'resolveOrchestrationWorkerServer'
     | 'callOrchestrationWorkerServer'

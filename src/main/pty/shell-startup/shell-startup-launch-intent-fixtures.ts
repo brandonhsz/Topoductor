@@ -11,7 +11,7 @@ export const STARTUP_COMMAND_FEATURES = selectShellStartupFeatures({
 
 export const OVERLAY_ONLY_FEATURES = selectShellStartupFeatures({
   shellPath: 'zsh',
-  env: { ORCA_CODEX_HOME: '/tmp/orca-codex-home' },
+  env: { TOPO_CODEX_HOME: '/tmp/topo-codex-home' },
   hasStartupCommand: false,
   waitsForShellReady: false,
   emitsStartupIdentity: false

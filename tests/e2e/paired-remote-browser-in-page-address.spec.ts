@@ -4,7 +4,7 @@ import {
   type HeadlessPairedRuntimeHost
 } from './helpers/headless-paired-runtime-host'
 import { focusMaterializedRemoteBrowserPane } from './helpers/materialized-remote-browser-pane'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   launchPairedElectronClient,
   type PairedElectronClient
@@ -53,7 +53,7 @@ test('history updates and hash links in a server page reach the paired address b
       remotePageId: created.browserPageId,
       worktreeId
     })
-    const addressBar = page.locator('[data-orca-browser-address-bar="true"]:visible')
+    const addressBar = page.locator('[data-topo-browser-address-bar="true"]:visible')
     await expect(page.getByTestId('remote-browser-frame').first()).toBeVisible({ timeout: 60_000 })
     await expect(addressBar).toHaveValue(`${origin}/`, { timeout: 60_000 })
 

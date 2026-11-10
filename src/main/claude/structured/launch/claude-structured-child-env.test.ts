@@ -4,14 +4,14 @@ import { join } from 'node:path'
 import { afterEach, expect, it, vi } from 'vitest'
 import {
   resolveClaudeChildEnvSources,
-  withOrcaClaudeEntrypoint
+  withTopoClaudeEntrypoint
 } from './claude-structured-child-env'
 import { resolveStructuredAgentCommand } from '../../../native-chat/structured-agent-command-resolution'
 
 afterEach(() => vi.unstubAllEnvs())
 
 it('resolves a custom Claude command against the login shell PATH', async () => {
-  const root = mkdtempSync(join(tmpdir(), 'orca-shell-only-cli-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-shell-only-cli-'))
   try {
     const binary = join(root, process.platform === 'win32' ? 'claude-custom.cmd' : 'claude-custom')
     writeFileSync(binary, '#!/bin/sh\nexit 0\n')
@@ -31,13 +31,13 @@ it('resolves a custom Claude command against the login shell PATH', async () => 
   }
 })
 
-it('keeps a differently cased Windows launch value over the Orca default', () => {
+it('keeps a differently cased Windows launch value over the Topo default', () => {
   const inherited = { Claude_Code_Entrypoint: 'cli', PATH: 'C:\\bin' }
   expect(
-    withOrcaClaudeEntrypoint(inherited, { claude_code_entrypoint: 'company-client' }, 'win32')
+    withTopoClaudeEntrypoint(inherited, { claude_code_entrypoint: 'company-client' }, 'win32')
   ).toEqual({ PATH: 'C:\\bin', CLAUDE_CODE_ENTRYPOINT: 'company-client' })
-  expect(withOrcaClaudeEntrypoint(inherited, undefined, 'win32')).toEqual({
+  expect(withTopoClaudeEntrypoint(inherited, undefined, 'win32')).toEqual({
     PATH: 'C:\\bin',
-    CLAUDE_CODE_ENTRYPOINT: 'orca'
+    CLAUDE_CODE_ENTRYPOINT: 'topo'
   })
 })

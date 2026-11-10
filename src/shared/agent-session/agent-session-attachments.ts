@@ -136,16 +136,16 @@ type AgentSessionPastedImageExtension = (typeof AGENT_SESSION_PASTED_IMAGE_EXTEN
 /** Matches the `.png`, `.jpg`… suffix of a pasted image's name. */
 export const AGENT_SESSION_PASTED_IMAGE_SUFFIX_SOURCE = `\\.(?:${AGENT_SESSION_PASTED_IMAGE_EXTENSIONS.join('|')})`
 
-/** `orca-paste-…<ext>`, the name every pasted image gets, so it reads as "Pasted image". */
+/** `topo-paste-…<ext>`, the name every pasted image gets, so it reads as "Pasted image". */
 export function agentSessionPastedImageName(
   now: number,
   unique: string,
   extension: AgentSessionPastedImageExtension = 'png'
 ): string {
-  return `orca-paste-${now}-${unique}.${extension}`
+  return `topo-paste-${now}-${unique}.${extension}`
 }
 
-/** `orca-paste-…txt`, the name a long text paste saved as a file gets, so it reads as "Pasted text". */
+/** `topo-paste-…txt`, the name a long text paste saved as a file gets, so it reads as "Pasted text". */
 export function agentSessionPastedTextName(now: number, unique: string): string {
-  return `orca-paste-${now}-${unique}.txt`
+  return `topo-paste-${now}-${unique}.txt`
 }

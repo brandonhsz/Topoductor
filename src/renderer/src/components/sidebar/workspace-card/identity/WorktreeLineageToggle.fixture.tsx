@@ -10,8 +10,8 @@ import WorktreeCard from '../surface/WorktreeCard'
 
 const repo: Repo = {
   id: 'lineage-preview',
-  path: '/preview/orca',
-  displayName: 'orca',
+  path: '/preview/topo',
+  displayName: 'topo',
   badgeColor: '',
   addedAt: 1
 }
@@ -20,7 +20,7 @@ function worktree(id: string, displayName: string): Worktree {
     id,
     displayName,
     repoId: repo.id,
-    path: `/preview/orca/${id}`,
+    path: `/preview/topo/${id}`,
     branch: id,
     head: 'abc123',
     isBare: false,

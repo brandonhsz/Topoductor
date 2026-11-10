@@ -57,7 +57,7 @@ describe('findSecureDaclViolation', () => {
     )
   })
 
-  // An inherit-only rule grants the directory itself nothing, so Orca could not write into it.
+  // An inherit-only rule grants the directory itself nothing, so Topo could not write into it.
   it('rejects a path the user cannot actually use', () => {
     const missing = `missing full control for ${USER}`
     expect(directoryViolation(`D:P(A;OICIIO;FA;;;${USER})(A;OICI;FA;;;SY)`)).toBe(missing)

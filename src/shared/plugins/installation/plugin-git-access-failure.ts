@@ -78,7 +78,7 @@ export function classifyPluginGitAccessFailure(input: {
         ]
   nextSteps.push(
     `Check with \`git ls-remote ${input.url}\` on ${on}; it must work without asking for a password.`,
-    'Never put a token or password in the URL; Orca refuses URLs that carry credentials.'
+    'Never put a token or password in the URL; Topo refuses URLs that carry credentials.'
   )
   return { url: input.url, transport, gitHost, executionHost: on, detail, nextSteps }
 }

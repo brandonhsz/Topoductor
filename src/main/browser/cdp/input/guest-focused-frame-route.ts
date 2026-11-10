@@ -18,8 +18,8 @@ export type FocusedFrameRoute =
 
 // Deeper nesting uses the focus-borrowing fallback.
 const MAX_FRAME_DEPTH = 6
-const PROBE_OBJECT_GROUP = 'orca-focused-frame-probe'
-const PROBE_WORLD_NAME = 'orca-focused-frame-probe'
+const PROBE_OBJECT_GROUP = 'topo-focused-frame-probe'
+const PROBE_WORLD_NAME = 'topo-focused-frame-probe'
 
 const FOCUSED_FRAME_ELEMENT_EXPRESSION = `(() => {
   let element = document.activeElement

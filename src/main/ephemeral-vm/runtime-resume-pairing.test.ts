@@ -54,8 +54,8 @@ describe('resuming a recipe VM server', () => {
   beforeEach(() => {
     // Why: store contents are under test; secure-file tests cover Windows ACLs.
     Object.defineProperty(process, 'platform', { configurable: true, value: 'linux' })
-    desktopDataPath = mkdtempSync(join(tmpdir(), 'orca-resume-desktop-'))
-    serverDataPath = mkdtempSync(join(tmpdir(), 'orca-resume-server-'))
+    desktopDataPath = mkdtempSync(join(tmpdir(), 'topo-resume-desktop-'))
+    serverDataPath = mkdtempSync(join(tmpdir(), 'topo-resume-server-'))
   })
   afterEach(() => {
     if (originalPlatform) {
@@ -131,7 +131,7 @@ describe('resuming a recipe VM server', () => {
     const environmentId = provision()
     const original = resolveEnvironmentPairingOffer(desktopDataPath, environmentId)
     rmSync(serverDataPath, { recursive: true, force: true })
-    serverDataPath = mkdtempSync(join(tmpdir(), 'orca-resume-server-'))
+    serverDataPath = mkdtempSync(join(tmpdir(), 'topo-resume-server-'))
     const probeSavedPairing = vi.fn()
 
     const outcome = await applyResumedRuntimePairing({
@@ -160,7 +160,7 @@ describe('resuming a recipe VM server', () => {
     const original = resolveEnvironmentPairingOffer(desktopDataPath, environmentId)
     const before = listEnvironments(desktopDataPath)[0]!
     rmSync(serverDataPath, { recursive: true, force: true })
-    serverDataPath = mkdtempSync(join(tmpdir(), 'orca-resume-server-'))
+    serverDataPath = mkdtempSync(join(tmpdir(), 'topo-resume-server-'))
     const invalidateTransport = vi.fn()
 
     const outcome = await resume(

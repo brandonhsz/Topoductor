@@ -4,7 +4,7 @@ import {
   STRUCTURED_CHAT_START_TELEMETRY_CLIENT_CAPABILITY
 } from '../../../../../shared/structured-chat-dispatch-telemetry'
 import { recordStructuredChatPromptAccepted } from '../../../../telemetry/structured-chat-dispatch'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { eraseRpcMethods, isStreamingMethod, type RpcContext } from '../../core'
 // Import the registry to avoid client-events' module-init cycle through ipc/ssh.
 import { ALL_RPC_METHODS } from '../rpc-method-registry'
@@ -24,7 +24,7 @@ function open(overrides: Partial<RpcContext> = {}) {
     }
   }
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the stream reads only these runtime members.
-  const runtime = fake as unknown as OrcaRuntimeService
+  const runtime = fake as unknown as TopoRuntimeService
   const done = subscribe.handler(
     {},
     {

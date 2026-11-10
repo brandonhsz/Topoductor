@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import {
   TERMINAL_ORDERED_INPUT_MAX_BYTES,
   TERMINAL_ORDERED_INPUT_MAX_WAITERS,
@@ -266,10 +266,10 @@ function rememberUnknown(session: Session, seq: number): void {
   }
 }
 
-const ledgers = new WeakMap<OrcaRuntimeService, TerminalInputSequenceLedger>()
+const ledgers = new WeakMap<TopoRuntimeService, TerminalInputSequenceLedger>()
 
 export function getTerminalInputSequenceLedger(
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
 ): TerminalInputSequenceLedger {
   let ledger = ledgers.get(runtime)
   if (!ledger) {

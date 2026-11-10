@@ -27,7 +27,7 @@ export type WorktreeAgentActivitySummary = {
   hasFailed: boolean
   /** Fresh interrupted completion, kept separate from clean done outcomes. */
   hasInterrupted: boolean
-  /** A fresh end Orca cannot prove, likewise never a clean done. */
+  /** A fresh end Topo cannot prove, likewise never a clean done. */
   hasUnconfirmed: boolean
   hasLiveDone: boolean
   hasRetainedDone: boolean

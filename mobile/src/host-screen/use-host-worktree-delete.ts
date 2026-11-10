@@ -1,12 +1,12 @@
 import { useCallback, useRef, useState } from 'react'
-import type { PersistedTrustedOrcaHooks } from '../../../src/shared/orca-yaml-hook-types'
+import type { PersistedTrustedTopoHooks } from '../../../src/shared/topo-yaml-hook-types'
 import { ARCHIVE_HOOK_FAILED_REMOVAL_CODE } from '../../../src/shared/worktree/archive-hook-removal-gate'
-import type { OrcaHookTrustPrompt } from '../components/OrcaHookTrustDrawer'
+import type { TopoHookTrustPrompt } from '../components/TopoHookTrustDrawer'
 import { newWorkspaceUiStateRead } from '../components/new-workspace-operations'
-import { canUseRepoWideTrust } from '../../../src/shared/orca-hook-trust-entries'
+import { canUseRepoWideTrust } from '../../../src/shared/topo-hook-trust-entries'
 import {
-  persistOrcaHookTrustApproval,
-  wasOrcaHookPreviouslyApproved
+  persistTopoHookTrustApproval,
+  wasTopoHookPreviouslyApproved
 } from '../tasks/setup-hook-trust'
 import { triggerError, triggerSuccess } from '../platform/haptics'
 import type { RpcClient } from '../transport/rpc/rpc-client-contract'
@@ -18,7 +18,7 @@ import type { HostScreenState } from './use-host-screen-state'
 
 type ArchiveHookDecision =
   | { kind: 'run' | 'skip' }
-  | { kind: 'ask'; prompt: OrcaHookTrustPrompt; trust: PersistedTrustedOrcaHooks }
+  | { kind: 'ask'; prompt: TopoHookTrustPrompt; trust: PersistedTrustedTopoHooks }
 
 // Keep the clients the delete started on, so a host switch cannot redirect a pending approval.
 type RowClients = { rowClient: RpcClient; desktopClient: RpcClient }
@@ -28,8 +28,8 @@ type ArchiveHookWaiver = { allowFailedArchiveHook?: true }
 
 export type ArchiveHookTrustRequest = RowClients & {
   item: Worktree
-  prompt: OrcaHookTrustPrompt
-  trust: PersistedTrustedOrcaHooks
+  prompt: TopoHookTrustPrompt
+  trust: PersistedTrustedTopoHooks
   waiver: ArchiveHookWaiver
 }
 
@@ -58,7 +58,7 @@ async function decideArchiveHookRun(
     if (!ui.accepted) {
       return { kind: 'skip' }
     }
-    const trust = ui.value?.trustedOrcaHooks ?? {}
+    const trust = ui.value?.trustedTopoHooks ?? {}
     if (
       trust[repoId]?.archive?.contentHash === archiveTrust.contentHash ||
       (args.repos && canUseRepoWideTrust(trust, args.repos, repoId))
@@ -74,7 +74,7 @@ async function decideArchiveHookRun(
         repoName: args.item.repo,
         scriptContent: archiveTrust.scriptContent,
         contentHash: archiveTrust.contentHash,
-        previouslyApproved: wasOrcaHookPreviouslyApproved(trust, repoId, 'archive')
+        previouslyApproved: wasTopoHookPreviouslyApproved(trust, repoId, 'archive')
       }
     }
   } catch {
@@ -230,7 +230,7 @@ export function useHostWorktreeDelete(args: {
         return
       }
       try {
-        await persistOrcaHookTrustApproval({
+        await persistTopoHookTrustApproval({
           client: request.desktopClient,
           trust: request.trust,
           repoId: request.prompt.repoId,

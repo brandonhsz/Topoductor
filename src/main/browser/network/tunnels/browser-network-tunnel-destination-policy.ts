@@ -4,10 +4,10 @@ import { networkInterfaces, type NetworkInterfaceInfo } from 'node:os'
 
 /** Host-side escape hatch: `1` restores the unrestricted pre-policy behavior. */
 export const BROWSER_TUNNEL_ALLOW_ALL_DESTINATIONS_ENV =
-  'ORCA_BROWSER_TUNNEL_ALLOW_ALL_DESTINATIONS'
+  'TOPO_BROWSER_TUNNEL_ALLOW_ALL_DESTINATIONS'
 export const BROWSER_TUNNEL_DESTINATION_BLOCKED = 'destination_blocked'
 
-export type BrowserTunnelDestinationBlockReason = 'link_local' | 'orca_listener'
+export type BrowserTunnelDestinationBlockReason = 'link_local' | 'topo_listener'
 
 export class BrowserTunnelDestinationBlockedError extends Error {
   constructor(readonly reason: BrowserTunnelDestinationBlockReason) {
@@ -69,7 +69,7 @@ export function inetAtonIPv4(host: string): string | null {
   return [24, 16, 8, 0].map((shift) => Math.floor(packed / 2 ** shift) % 256).join('.')
 }
 
-// Unspecified addresses dial the host itself, so they count as self for Orca's own listeners.
+// Unspecified addresses dial the host itself, so they count as self for Topo's own listeners.
 const SELF_RULES: readonly BlockRule[] = [
   ['127.0.0.0', 8, 'ipv4'],
   ['::ffff:127.0.0.0', 104, 'ipv6'],
@@ -123,22 +123,22 @@ function ownAddressList(interfaces: NodeJS.Dict<NetworkInterfaceInfo[]>): BlockL
   return list
 }
 
-const orcaListenerPorts = new Map<number, number>()
+const topoListenerPorts = new Map<number, number>()
 
-/** Marks a host port as an Orca control/proxy listener that paired browser tunnels must not reach. */
-export function reserveBrowserTunnelOrcaListenerPort(port: number): () => void {
-  orcaListenerPorts.set(port, (orcaListenerPorts.get(port) ?? 0) + 1)
+/** Marks a host port as a Topo control/proxy listener that paired browser tunnels must not reach. */
+export function reserveBrowserTunnelTopoListenerPort(port: number): () => void {
+  topoListenerPorts.set(port, (topoListenerPorts.get(port) ?? 0) + 1)
   let released = false
   return () => {
     if (released) {
       return
     }
     released = true
-    const count = (orcaListenerPorts.get(port) ?? 1) - 1
+    const count = (topoListenerPorts.get(port) ?? 1) - 1
     if (count <= 0) {
-      orcaListenerPorts.delete(port)
+      topoListenerPorts.delete(port)
     } else {
-      orcaListenerPorts.set(port, count)
+      topoListenerPorts.set(port, count)
     }
   }
 }
@@ -159,8 +159,8 @@ export function browserTunnelAddressBlockReason(
   if ((linkLocalAddresses ??= buildBlockList(LINK_LOCAL_RULES)).check(address, type)) {
     return 'link_local'
   }
-  if (orcaListenerPorts.has(port) && isHostOwnAddress(address, type)) {
-    return 'orca_listener'
+  if (topoListenerPorts.has(port) && isHostOwnAddress(address, type)) {
+    return 'topo_listener'
   }
   return null
 }
@@ -194,10 +194,10 @@ export function browserTunnelTargetBlockReason(
     return 'link_local'
   }
   if (
-    orcaListenerPorts.has(port) &&
+    topoListenerPorts.has(port) &&
     (normalized === 'localhost' || normalized.endsWith('.localhost'))
   ) {
-    return 'orca_listener'
+    return 'topo_listener'
   }
   return browserTunnelAddressBlockReason(
     isIP(host) === 0 ? (inetAtonIPv4(normalized) ?? host) : host,

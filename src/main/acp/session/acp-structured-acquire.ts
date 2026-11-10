@@ -104,7 +104,7 @@ export async function acquireAcpStructuredSession(input: {
       envToDelete: launch.envToDelete
     },
     {
-      clientInfo: { name: 'orca', version: '1' },
+      clientInfo: { name: 'topo', version: '1' },
       clientCapabilities: spec.dialect.clientCapabilities,
       retryBusyPrompts: spec.agent === 'omp',
       ...(spec.signIn ? { signIn: spec.signIn } : {}),
@@ -217,7 +217,7 @@ export async function acquireAcpStructuredSession(input: {
       onFailed: (reason) =>
         input.forceClose(
           sessionId,
-          `Orca stopped ${agentName} after its chat journal refused a write (${reason})`
+          `Topo stopped ${agentName} after its chat journal refused a write (${reason})`
         )
     })
     slot.lane = lane

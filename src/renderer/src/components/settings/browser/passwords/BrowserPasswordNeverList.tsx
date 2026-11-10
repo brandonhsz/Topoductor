@@ -4,7 +4,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { useTranslate } from '@/i18n/use-translate'
 import { browserPasswordHostOf } from './browser-passwords-copy'
 
-/** Sites the user told the save offer to skip; removing one lets Orca offer again there. */
+/** Sites the user told the save offer to skip; removing one lets Topo offer again there. */
 export function BrowserPasswordNeverList({
   origins,
   onRemove

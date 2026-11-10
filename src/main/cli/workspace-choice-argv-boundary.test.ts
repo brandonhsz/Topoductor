@@ -1,7 +1,7 @@
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { describe, expect, it } from 'vitest'
 import { buildUnixCliLauncher, buildWindowsDevLauncher } from './cli-dev-launcher'
 
@@ -19,10 +19,10 @@ describe('workspace recovery data at the actual shell/launcher argv boundary', (
   it.skipIf(process.platform === 'win32')(
     'passes quoted data through the production POSIX launcher',
     async () => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-choice-argv-'))
+      const root = await mkdtemp(join(tmpdir(), 'topo-choice-argv-'))
       try {
         const entry = join(root, 'argv.cjs')
-        const launcher = join(root, 'orca')
+        const launcher = join(root, 'topo')
         await writeFile(entry, 'process.stdout.write(JSON.stringify(process.argv.slice(2)))')
         await writeFile(launcher, buildUnixCliLauncher(process.execPath, entry, root, 'node'), {
           mode: 0o755
@@ -55,10 +55,10 @@ describe('workspace recovery data at the actual shell/launcher argv boundary', (
   it.skipIf(process.platform !== 'win32')(
     'passes data through the production development cmd launcher within its no-line-break domain',
     async () => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-choice-cmd-'))
+      const root = await mkdtemp(join(tmpdir(), 'topo-choice-cmd-'))
       try {
         const entry = join(root, 'argv.cjs')
-        const launcher = join(root, 'orca.cmd')
+        const launcher = join(root, 'topo.cmd')
         await writeFile(entry, 'process.stdout.write(JSON.stringify(process.argv.slice(2)))')
         await writeFile(launcher, buildWindowsDevLauncher(process.execPath, entry, root))
         for (const selector of selectors.filter((value) => !value.includes('\n'))) {

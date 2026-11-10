@@ -1,7 +1,7 @@
 // Where wsl.exe drops redirected list output (#35509) it still writes to a console, so ask through one.
 import { createRequire } from 'node:module'
 import type * as pty from 'node-pty'
-import { windowsSystem32Binary } from '@orca/process-host/windows-system-binary'
+import { windowsSystem32Binary } from '@topo/process-host/windows-system-binary'
 import { stripAnsiEscapeSequences } from '../../../shared/ansi-escape-sequences'
 import { resolveWslInteropSpawnCwd } from '../execution/wsl-interop-spawn-directory'
 

@@ -37,7 +37,7 @@ describe('reminted $$ pane keys on the OMP hook pipeline', () => {
   let userDataPath: string
 
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-reminted-pane-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-reminted-pane-'))
   })
 
   afterEach(() => {

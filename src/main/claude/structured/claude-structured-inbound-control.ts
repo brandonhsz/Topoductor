@@ -32,7 +32,7 @@ function needsUserAnswer(toolName: string, options: Parameters<CanUseTool>[2]): 
 function denySafeResult(toolUseId: string | undefined): PermissionResult {
   return {
     behavior: 'deny',
-    message: 'Orca could not decode this permission request.',
+    message: 'Topo could not decode this permission request.',
     ...(toolUseId ? { toolUseID: toolUseId } : {})
   }
 }
@@ -102,7 +102,7 @@ export function buildClaudePermissionCallbacks(deps: ClaudePermissionCallbackDep
 
 type ClaudeExitHandler = NonNullable<ClaudeStreamJsonConnectionHandlers['onExit']>
 
-/** One process's permission handlers. Only Orca's Full access launch grants auto-allow; Own settings
+/** One process's permission handlers. Only Topo's Full access launch grants auto-allow; Own settings
  *  never does, whatever Claude reports, and no other process's launch or reports carry over. */
 export function claudeLaunchPermissions(
   deps: Omit<ClaudePermissionCallbackDeps, 'fullAccessAt'>,

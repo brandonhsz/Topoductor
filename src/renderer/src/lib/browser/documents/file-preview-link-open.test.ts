@@ -43,7 +43,7 @@ beforeEach(() => {
   })
   mocks.mint.mockReset().mockImplementation(async (request: { browserPageId: string }) => ({
     grantId: `grant-${request.browserPageId}`,
-    url: `orca-preview://grant-${request.browserPageId}/`
+    url: `topo-preview://grant-${request.browserPageId}/`
   }))
   mocks.revoke.mockReset().mockResolvedValue(undefined)
   store = createBrowserLinkTestStore()

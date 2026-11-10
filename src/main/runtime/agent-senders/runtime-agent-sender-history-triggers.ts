@@ -10,7 +10,7 @@ const HISTORY_TRIGGERS = [
   {
     table: 'dispatch_contexts',
     columns:
-      'status, assignee_handle, assignee_pane_key, assignee_orca_session_id, follow_up_of_dispatch_id, process_incarnation, host_scope, launch_token_hash',
+      'status, assignee_handle, assignee_pane_key, assignee_topo_session_id, follow_up_of_dispatch_id, process_incarnation, host_scope, launch_token_hash',
     panes: ['assignee_pane_key'],
     // Its own row, and its parent's follow-up lookup.
     dispatches: ['id', 'follow_up_of_dispatch_id']

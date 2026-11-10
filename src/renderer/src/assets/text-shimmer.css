@@ -92,7 +92,7 @@
   --shimmer-duration: calc(--value(integer) * 1ms);
 }
 
-/* Orca: steps cap repaints for long-lived shimmers; background-position animates on the main thread. */
+/* Topo: steps cap repaints for long-lived shimmers; background-position animates on the main thread. */
 @utility shimmer-steps-* {
   --shimmer-timing: steps(--value(integer));
 }

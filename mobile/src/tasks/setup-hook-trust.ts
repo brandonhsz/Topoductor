@@ -1,10 +1,10 @@
-import type { PersistedTrustedOrcaHooks } from '../../../src/shared/orca-yaml-hook-types'
+import type { PersistedTrustedTopoHooks } from '../../../src/shared/topo-yaml-hook-types'
 import {
   canUseRepoWideTrust,
-  type OrcaHookTrustKind,
-  withOrcaHookRepoAlwaysTrusted,
-  withOrcaHookScriptConfirmed
-} from '../../../src/shared/orca-hook-trust-entries'
+  type TopoHookTrustKind,
+  withTopoHookRepoAlwaysTrusted,
+  withTopoHookScriptConfirmed
+} from '../../../src/shared/topo-hook-trust-entries'
 import type { RpcClient } from '../transport/rpc/rpc-client-contract'
 import { taskUiStateWrite } from './mobile-task-runtime-operations'
 
@@ -13,11 +13,11 @@ export type SetupHookTrust = {
   scriptContent: string
 }
 
-export function isOrcaHookTrusted(
-  trust: PersistedTrustedOrcaHooks,
+export function isTopoHookTrusted(
+  trust: PersistedTrustedTopoHooks,
   repos: readonly { id: string }[],
   repoId: string,
-  kind: OrcaHookTrustKind,
+  kind: TopoHookTrustKind,
   contentHash: string
 ): boolean {
   return (
@@ -26,58 +26,58 @@ export function isOrcaHookTrusted(
 }
 
 export function isSetupHookTrusted(
-  trust: PersistedTrustedOrcaHooks,
+  trust: PersistedTrustedTopoHooks,
   repos: readonly { id: string }[],
   repoId: string,
   contentHash: string
 ): boolean {
-  return isOrcaHookTrusted(trust, repos, repoId, 'setup', contentHash)
+  return isTopoHookTrusted(trust, repos, repoId, 'setup', contentHash)
 }
 
-export function wasOrcaHookPreviouslyApproved(
-  trust: PersistedTrustedOrcaHooks,
+export function wasTopoHookPreviouslyApproved(
+  trust: PersistedTrustedTopoHooks,
   repoId: string,
-  kind: OrcaHookTrustKind
+  kind: TopoHookTrustKind
 ): boolean {
   return Boolean(trust[repoId]?.[kind]?.contentHash)
 }
 
 export function wasSetupHookPreviouslyApproved(
-  trust: PersistedTrustedOrcaHooks,
+  trust: PersistedTrustedTopoHooks,
   repoId: string
 ): boolean {
-  return wasOrcaHookPreviouslyApproved(trust, repoId, 'setup')
+  return wasTopoHookPreviouslyApproved(trust, repoId, 'setup')
 }
 
 type HookTrustApproval = {
   client: RpcClient
-  trust: PersistedTrustedOrcaHooks
+  trust: PersistedTrustedTopoHooks
   repoId: string
   contentHash: string
   alwaysTrust: boolean
 }
 
-export async function persistOrcaHookTrustApproval(
-  args: HookTrustApproval & { kind: OrcaHookTrustKind }
-): Promise<PersistedTrustedOrcaHooks> {
+export async function persistTopoHookTrustApproval(
+  args: HookTrustApproval & { kind: TopoHookTrustKind }
+): Promise<PersistedTrustedTopoHooks> {
   // Repo-wide trust is ignored when the repo id is on two hosts, so keep this script's approval too.
-  const confirmed = withOrcaHookScriptConfirmed(
+  const confirmed = withTopoHookScriptConfirmed(
     args.trust,
     args.repoId,
     args.kind,
     args.contentHash
   )
-  const next = args.alwaysTrust ? withOrcaHookRepoAlwaysTrusted(confirmed, args.repoId) : confirmed
+  const next = args.alwaysTrust ? withTopoHookRepoAlwaysTrusted(confirmed, args.repoId) : confirmed
   taskUiStateWrite.interpret(
-    await taskUiStateWrite.request(args.client, { trustedOrcaHooks: next })
+    await taskUiStateWrite.request(args.client, { trustedTopoHooks: next })
   )
   return next
 }
 
 export function persistSetupHookTrustApproval(
   args: HookTrustApproval
-): Promise<PersistedTrustedOrcaHooks> {
-  return persistOrcaHookTrustApproval({ ...args, kind: 'setup' })
+): Promise<PersistedTrustedTopoHooks> {
+  return persistTopoHookTrustApproval({ ...args, kind: 'setup' })
 }
 
 // Hooks may omit setupTrust; validate the pair here while preserving other host fields.
@@ -92,7 +92,7 @@ export function normalizeSetupHookTrust(
   return { ...setupTrust, contentHash, scriptContent }
 }
 
-// New hosts send setupConfig (orca.yaml setup plus defaultTabs commands); older ones only the effective setup script.
+// New hosts send setupConfig (topo.yaml setup plus defaultTabs commands); older ones only the effective setup script.
 export function readRepoHooksSetupCommand(reply: {
   hooks?: { scripts?: { setup?: string } } | null
   setupConfig?: { command: string } | null

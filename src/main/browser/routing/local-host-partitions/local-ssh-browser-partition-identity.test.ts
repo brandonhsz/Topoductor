@@ -7,11 +7,11 @@ import {
 } from '../partitions/browser-route-identity'
 import { localSshBrowserAuthorityConnectionIdentity } from './local-ssh-browser-partitions'
 
-function derive(orcaProfileId: string, browserProfileId: string, targetId: string) {
+function derive(topoProfileId: string, browserProfileId: string, targetId: string) {
   return deriveBrowserRoutePartition({
-    orcaProfileId,
+    topoProfileId,
     browserProfileId,
-    authorityConnectionIdentity: localSshBrowserAuthorityConnectionIdentity(orcaProfileId),
+    authorityConnectionIdentity: localSshBrowserAuthorityConnectionIdentity(topoProfileId),
     executionHostIdentity: sshExecutionHostStorageIdentity(targetId)
   })
 }
@@ -20,7 +20,7 @@ describe('local ssh browser partition identity', () => {
   it('pins the golden partition so no per-boot value can sneak into the name', () => {
     // Changing this cookie-storage identity requires a migration.
     expect(derive('local-default', 'default', 'ssh-target-1').partition).toBe(
-      'persist:orca-browser-v1-5bd50510715cb753c62637e02be1e3e480ce8a5b1d8fc5d8b71205a2ff6181a4'
+      'persist:topo-browser-v1-7462c1b6e5de4158f801f337af48a807e142599db57cd8ad8fe4f00babc2fae1'
     )
   })
 
@@ -35,12 +35,12 @@ describe('local ssh browser partition identity', () => {
   it('separates the local-ssh storage scope domain from environment scopes', () => {
     expect(
       deriveLocalSshBrowserRoutePartitionStorageScope({
-        orcaProfileId: 'local-default',
+        topoProfileId: 'local-default',
         targetId: 'same-id'
       })
     ).not.toBe(
       deriveBrowserRoutePartitionStorageScope({
-        orcaProfileId: 'local-default',
+        topoProfileId: 'local-default',
         environmentId: 'same-id'
       })
     )

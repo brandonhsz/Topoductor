@@ -6,7 +6,7 @@ import type * as DurableFileWrite from '../filesystem/durable-file-write'
 import { JIRA_IMAGE_SCHEME } from '../../shared/jira/jira-attachment-image'
 
 const ORIGINAL_PLATFORM = process.platform
-const ORCA_PROFILE_ID = 'local-default'
+const TOPO_PROFILE_ID = 'local-default'
 const RETIRED_PROFILE_ID = '11111111-1111-4111-8111-111111111111'
 
 const mocks = vi.hoisted(() => ({
@@ -16,7 +16,7 @@ const mocks = vi.hoisted(() => ({
   setAppUserModelId: vi.fn(),
   profileDirectory: '',
   state: {
-    devInstanceIdentity: { appUserModelId: 'app.id', appName: 'Orca' },
+    devInstanceIdentity: { appUserModelId: 'app.id', appName: 'Topo' },
     isServeMode: false,
     mainProcessI18nReady: Promise.resolve(),
     managedWslCliReconciliationStatus: 'settled',
@@ -126,9 +126,9 @@ vi.mock('../browser/guest-lifecycle/manager/browser-manager', () => ({
     setSiteDisplayController: vi.fn()
   }
 }))
-vi.mock('../orca-profiles/profile-index-store', () => ({
-  ensureActiveOrcaProfile: () => ({
-    profile: { id: ORCA_PROFILE_ID },
+vi.mock('../topo-profiles/profile-index-store', () => ({
+  ensureActiveTopoProfile: () => ({
+    profile: { id: TOPO_PROFILE_ID },
     profileDirectory: mocks.profileDirectory,
     dataFile: join(mocks.profileDirectory, 'data.json')
   })
@@ -183,12 +183,12 @@ vi.mock(
   '../browser/routing/partitions/browser-route-partition-binding-runtime',
   async (importOriginal) => ({
     ...(await importOriginal<Record<string, unknown>>()),
-    configureBrowserRoutePartitionBindingsForOrcaProfile: vi.fn()
+    configureBrowserRoutePartitionBindingsForTopoProfile: vi.fn()
   })
 )
 vi.mock('../browser/routing/sessions/browser-route-session-runtime', () => ({}))
 vi.mock('../browser/client-hosts/lifecycle/paired-runtime-browser-client-host-runtime', () => ({
-  configurePairedRuntimeBrowserClientHostsForOrcaProfile: vi.fn()
+  configurePairedRuntimeBrowserClientHostsForTopoProfile: vi.fn()
 }))
 vi.mock('../browser/routing/partitions/browser-route-partition-storage-runtime', () => ({
   collectOrphanedBrowserRoutePartitionStorage: vi.fn(async () => {})
@@ -253,7 +253,7 @@ import {
   readBrowserIdentityModeRecord
 } from '../browser/identity/mode/browser-identity-mode-record'
 import { BROWSER_SESSION_META_FILE_NAME } from '../browser/sessions/profiles/browser-session-meta-store'
-import { getOrcaProfileBrowserSessionPartition } from '../../shared/orca-profiles'
+import { getTopoProfileBrowserSessionPartition } from '../../shared/topo-profiles'
 // Transform the ready graph at collection, outside any test timeout; tests re-evaluate it after resetModules.
 import './main-process-ready'
 
@@ -281,7 +281,7 @@ function seedRetiredProfile(): void {
         {
           id: RETIRED_PROFILE_ID,
           scope: 'isolated',
-          partition: getOrcaProfileBrowserSessionPartition(ORCA_PROFILE_ID, RETIRED_PROFILE_ID),
+          partition: getTopoProfileBrowserSessionPartition(TOPO_PROFILE_ID, RETIRED_PROFILE_ID),
           label: 'Existing',
           source: null,
           userAgentMode: 'native'
@@ -316,8 +316,8 @@ function identityRecordWrites(): unknown[] {
 
 describe('ready-phase browser identity authority', () => {
   beforeAll(() => {
-    mocks.userDataPath = mkdtempSync(join(tmpdir(), 'orca-ready-identity-'))
-    mocks.profileDirectory = mkdtempSync(join(tmpdir(), 'orca-ready-identity-profile-'))
+    mocks.userDataPath = mkdtempSync(join(tmpdir(), 'topo-ready-identity-'))
+    mocks.profileDirectory = mkdtempSync(join(tmpdir(), 'topo-ready-identity-profile-'))
   })
 
   beforeEach(() => {

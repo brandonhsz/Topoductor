@@ -23,7 +23,7 @@ import type { WorktreeMeta } from '../../../../shared/worktree/meta-types'
 import { isFolderRepo } from '../../../../shared/repo-kind'
 import {
   applyMetadataFallbackVisibility,
-  buildKnownOrcaWorkspaceLayouts,
+  buildKnownTopoWorkspaceLayouts,
   toDetectedWorktree
 } from '../../../../shared/worktree/ownership'
 import { isLegacyRepoForExternalWorktreeVisibility } from '../../../../shared/external-worktree-visibility'
@@ -277,7 +277,7 @@ export class RuntimeManagedWorktreeQueries {
             : undefined
           : (providedMeta ?? undefined),
       settings: { ...settings, worktreeVisibilityDefaults: visibilityDefaults },
-      knownOrcaLayouts: buildKnownOrcaWorkspaceLayouts(settings, repo),
+      knownTopoLayouts: buildKnownTopoWorkspaceLayouts(settings, repo),
       isLegacyRepoForVisibility: isLegacyRepoForExternalWorktreeVisibility(repo),
       worktreeVisibilitySourceMatcher: matcher
     })

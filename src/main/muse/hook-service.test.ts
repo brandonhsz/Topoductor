@@ -12,7 +12,7 @@ let originalXdg: string | undefined
 let originalProfile: string | undefined
 
 beforeEach(() => {
-  home = mkdtempSync(join(tmpdir(), 'orca-muse-hook-'))
+  home = mkdtempSync(join(tmpdir(), 'topo-muse-hook-'))
   originalProfile = process.env.USERPROFILE
   process.env.USERPROFILE = home
   originalHome = process.env.HOME

@@ -223,7 +223,7 @@ function transitionHookPresence(
         agentPresence: { ...kept, ...incoming.agentPresence, ...(session ? { session } : {}) }
       }
     }
-    // Why: nested agents inherit ORCA_PANE_KEY; their hooks update status, never ownership.
+    // Why: nested agents inherit TOPO_PANE_KEY; their hooks update status, never ownership.
     return incoming.agentPresence === owner ? incoming : { ...incoming, agentPresence: owner }
   }
   if (exit) {

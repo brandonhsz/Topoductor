@@ -219,7 +219,7 @@ describe('createExternalWatchEventHandler tombstone coalescing', () => {
     vi.stubGlobal('window', { api: { fs: { readFile } } })
     const { handleFsChanged, dispose } = createExternalWatchEventHandler(findTarget)
 
-    recordSelfWrite('/repo/notes.md', 'orca save')
+    recordSelfWrite('/repo/notes.md', 'topo save')
     handleFsChanged(payload([{ kind: 'update', absolutePath: '/repo/notes.md' }]))
     await vi.advanceTimersByTimeAsync(100)
 
@@ -232,18 +232,18 @@ describe('createExternalWatchEventHandler tombstone coalescing', () => {
     dispose()
   })
 
-  it('still suppresses the watcher echo from Orca self-writes', async () => {
+  it('still suppresses the watcher echo from Topo self-writes', async () => {
     vi.mocked(useAppStore.getState).mockReturnValue({
       ...createTestStore().getState(),
       openFiles: [fileNotes],
       setExternalMutation
     })
     vi.mocked(getOpenFilesForExternalFileChange).mockReturnValue([fileNotes] as never)
-    const readFile = vi.fn().mockResolvedValue({ content: 'orca save', isBinary: false })
+    const readFile = vi.fn().mockResolvedValue({ content: 'topo save', isBinary: false })
     vi.stubGlobal('window', { api: { fs: { readFile } } })
     const { handleFsChanged, dispose } = createExternalWatchEventHandler(findTarget)
 
-    recordSelfWrite('/repo/notes.md', 'orca save')
+    recordSelfWrite('/repo/notes.md', 'topo save')
     handleFsChanged(payload([{ kind: 'update', absolutePath: '/repo/notes.md' }]))
     await vi.advanceTimersByTimeAsync(100)
 
@@ -444,7 +444,7 @@ describe('createExternalWatchEventHandler tombstone coalescing', () => {
     dispose()
   })
 
-  it('does not mark a dirty tab for the echo of Orca’s own save', async () => {
+  it('does not mark a dirty tab for the echo of Topo’s own save', async () => {
     const dirtyFile = {
       ...fileNotes,
       isDirty: true
@@ -455,11 +455,11 @@ describe('createExternalWatchEventHandler tombstone coalescing', () => {
       setExternalMutation
     })
     vi.mocked(getOpenFilesForExternalFileChange).mockReturnValue([dirtyFile] as never)
-    const readFile = vi.fn().mockResolvedValue({ content: 'orca save', isBinary: false })
+    const readFile = vi.fn().mockResolvedValue({ content: 'topo save', isBinary: false })
     vi.stubGlobal('window', { api: { fs: { readFile } } })
     const { handleFsChanged, dispose } = createExternalWatchEventHandler(findTarget)
 
-    recordSelfWrite('/repo/notes.md', 'orca save')
+    recordSelfWrite('/repo/notes.md', 'topo save')
     handleFsChanged(payload([{ kind: 'update', absolutePath: '/repo/notes.md' }]))
     await vi.advanceTimersByTimeAsync(100)
 
@@ -482,7 +482,7 @@ describe('createExternalWatchEventHandler tombstone coalescing', () => {
     vi.stubGlobal('window', { api: { fs: { readFile } } })
     const { handleFsChanged, dispose } = createExternalWatchEventHandler(findTarget)
 
-    recordSelfWrite('/repo/notes.md', 'orca save')
+    recordSelfWrite('/repo/notes.md', 'topo save')
     handleFsChanged(payload([{ kind: 'update', absolutePath: '/repo/notes.md' }]))
     await vi.advanceTimersByTimeAsync(100)
 

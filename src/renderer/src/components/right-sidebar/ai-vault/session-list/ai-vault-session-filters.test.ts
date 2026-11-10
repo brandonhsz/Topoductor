@@ -94,7 +94,7 @@ describe('filterAiVaultSessions', () => {
     const projectSession = { ...baseSession, id: 'claude:project', cwd: '/repo/project' }
     const otherSession = { ...baseSession, id: 'claude:other', cwd: '/repo/other' }
     const sessionProjectById = new Map([
-      [projectSession.id, { kind: 'repo' as const, key: 'project:orca', label: 'Orca' }],
+      [projectSession.id, { kind: 'repo' as const, key: 'project:topo', label: 'Topo' }],
       [otherSession.id, { kind: 'repo' as const, key: 'project:other', label: 'Other' }]
     ])
 
@@ -105,7 +105,7 @@ describe('filterAiVaultSessions', () => {
         scope: 'project',
         sort: 'updated',
         activeWorktreePaths: [],
-        activeProjectKey: 'project:orca',
+        activeProjectKey: 'project:topo',
         sessionProjectById,
         hideEmptySessions: true
       }).map((session) => session.id)
@@ -114,9 +114,9 @@ describe('filterAiVaultSessions', () => {
 
   it('matches repo: queries against resolved project labels before folder fallback', () => {
     const sessionProjectById = new Map([
-      [baseSession.id, { kind: 'repo' as const, key: 'project:orca', label: 'Canonical Orca' }]
+      [baseSession.id, { kind: 'repo' as const, key: 'project:topo', label: 'Canonical Topo' }]
     ])
-    const projectLabelByKey = new Map([['project:orca', 'Canonical Orca']])
+    const projectLabelByKey = new Map([['project:topo', 'Canonical Topo']])
 
     expect(
       filterAiVaultSessions([baseSession], {
@@ -138,30 +138,30 @@ describe('deriveAiVaultWorkspaceScopePaths', () => {
     expect(
       deriveAiVaultWorkspaceScopePaths(
         {
-          id: 'repo1::/Users/ada/workspaces/orca/fix-agent-history',
+          id: 'repo1::/Users/ada/workspaces/topo/fix-agent-history',
           repoId: 'repo1',
-          path: '/Users/ada/workspaces/orca/fix-agent-history',
+          path: '/Users/ada/workspaces/topo/fix-agent-history',
           priorWorktreeIds: [
-            'repo1::/Users/ada/workspaces/orca/bream',
-            'repo1::/Users/ada/workspaces/orca/unclaimed-old-path'
+            'repo1::/Users/ada/workspaces/topo/bream',
+            'repo1::/Users/ada/workspaces/topo/unclaimed-old-path'
           ]
         },
         [
           {
-            id: 'repo1::/Users/ada/workspaces/orca/fix-agent-history',
+            id: 'repo1::/Users/ada/workspaces/topo/fix-agent-history',
             repoId: 'repo1',
-            path: '/Users/ada/workspaces/orca/fix-agent-history'
+            path: '/Users/ada/workspaces/topo/fix-agent-history'
           },
           {
-            id: 'repo1::/Users/ada/workspaces/orca/bream',
+            id: 'repo1::/Users/ada/workspaces/topo/bream',
             repoId: 'repo1',
-            path: '/Users/ada/workspaces/orca/bream'
+            path: '/Users/ada/workspaces/topo/bream'
           }
         ]
       )
     ).toEqual([
-      '/Users/ada/workspaces/orca/fix-agent-history',
-      '/Users/ada/workspaces/orca/unclaimed-old-path'
+      '/Users/ada/workspaces/topo/fix-agent-history',
+      '/Users/ada/workspaces/topo/unclaimed-old-path'
     ])
   })
 })
@@ -171,25 +171,25 @@ describe('deriveAiVaultScopeSessionPaths', () => {
     expect(
       deriveAiVaultScopeSessionPaths(
         {
-          id: 'repo1::/Users/ada/workspaces/orca/app',
+          id: 'repo1::/Users/ada/workspaces/topo/app',
           repoId: 'repo1',
-          path: '/Users/ada/workspaces/orca/app',
+          path: '/Users/ada/workspaces/topo/app',
           priorWorktreeIds: []
         },
         [
           {
-            id: 'repo2::/Users/ada/workspaces/orca/docs-worktree',
+            id: 'repo2::/Users/ada/workspaces/topo/docs-worktree',
             repoId: 'repo2',
-            path: '/Users/ada/workspaces/orca/docs-worktree'
+            path: '/Users/ada/workspaces/topo/docs-worktree'
           }
         ],
         {
-          activeProjectKey: 'project:orca',
+          activeProjectKey: 'project:topo',
           projectHostSetupProjection: {
             projects: [
               {
-                id: 'orca',
-                displayName: 'Orca',
+                id: 'topo',
+                displayName: 'Topo',
                 badgeColor: '#2563eb',
                 sourceRepoIds: ['repo1', 'repo2'],
                 createdAt: 1,
@@ -199,11 +199,11 @@ describe('deriveAiVaultScopeSessionPaths', () => {
             setups: [
               {
                 id: 'setup-1',
-                projectId: 'orca',
+                projectId: 'topo',
                 hostId: 'local',
                 repoId: 'repo2',
                 displayName: 'Docs',
-                path: '/Users/ada/workspaces/orca/docs',
+                path: '/Users/ada/workspaces/topo/docs',
                 setupState: 'ready',
                 setupMethod: 'imported-existing-folder',
                 createdAt: 1,
@@ -226,9 +226,9 @@ describe('deriveAiVaultScopeSessionPaths', () => {
         }
       )
     ).toEqual([
-      '/Users/ada/workspaces/orca/app',
-      '/Users/ada/workspaces/orca/docs-worktree',
-      '/Users/ada/workspaces/orca/docs'
+      '/Users/ada/workspaces/topo/app',
+      '/Users/ada/workspaces/topo/docs-worktree',
+      '/Users/ada/workspaces/topo/docs'
     ])
   })
 })

@@ -1,4 +1,4 @@
-import { OrcaRuntimeService } from '../../../../runtime/orca-runtime'
+import { TopoRuntimeService } from '../../../../runtime/topo-runtime'
 import { forkTestSource } from './structured-agent-session-fork.test-fixture'
 import { resolveUncommittedStructuredCreate } from '../../../../runtime/rpc/methods/structured-sessions/creation/structured-agent-session-precommit-refusal'
 import { handleStructuredAgentSessionCreate } from '../../../../runtime/rpc/methods/structured-sessions/creation/structured-agent-session-create-handler'
@@ -164,7 +164,7 @@ it('coalesces concurrent fork create replay and refuses a conflicting fork inten
   })
   rig.host.deps.adapter.copyConversation = test.copy
   setStructuredAgentSessionHost(rig.host)
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   vi.spyOn(runtime, 'resolveStructuredAgentSessionLocation').mockResolvedValue(test.record.location)
   vi.spyOn(runtime, 'publishStructuredAgentSessionTab').mockResolvedValue(undefined)
   const ctx = { runtime, clientId: 'device-1' }

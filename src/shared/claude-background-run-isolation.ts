@@ -1,6 +1,6 @@
 const ENTERPRISE_REFUSAL =
   'You cannot use --strict-mcp-config when an enterprise MCP config is present'
-// Commander's refusal on every CLI that runs Orca's other flags but predates `dontAsk` (1.0.69-2.0.42).
+// Commander's refusal on every CLI that runs Topo's other flags but predates `dontAsk` (1.0.69-2.0.42).
 const TOOL_POLICY_REFUSAL = "argument 'dontAsk' is invalid"
 
 /** Built-in tools text generation may call: prompts carry their context, but saved templates may name repo files to read. */

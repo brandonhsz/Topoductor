@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 const {
   callMock,
   runtimeClientConstructorMock,
-  serveOrcaAppMock,
+  serveTopoAppMock,
   getDefaultUserDataPathMock,
   addEnvironmentFromPairingCodeMock,
   listEnvironmentsMock,
@@ -11,8 +11,8 @@ const {
 } = vi.hoisted(() => ({
   callMock: vi.fn(),
   runtimeClientConstructorMock: vi.fn(),
-  serveOrcaAppMock: vi.fn(),
-  getDefaultUserDataPathMock: vi.fn(() => '/tmp/orca-user-data'),
+  serveTopoAppMock: vi.fn(),
+  getDefaultUserDataPathMock: vi.fn(() => '/tmp/topo-user-data'),
   addEnvironmentFromPairingCodeMock: vi.fn(),
   listEnvironmentsMock: vi.fn(),
   spawnMock: vi.fn()
@@ -23,7 +23,7 @@ vi.mock('./runtime-client', async () => {
   return createRuntimeClientModuleMock({
     callMock,
     runtimeClientConstructorMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock
   })
 })
@@ -46,10 +46,10 @@ vi.mock('child_process', async () => {
 import { main } from './index'
 import { useWorktreeAwarenessEnvironment } from './index-test-harness'
 
-describe('orca cli worktree awareness', () => {
+describe('topo cli worktree awareness', () => {
   useWorktreeAwarenessEnvironment({
     callMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock,
     addEnvironmentFromPairingCodeMock,
     listEnvironmentsMock,
@@ -102,7 +102,7 @@ describe('orca cli worktree awareness', () => {
   })
 
   it('exits nonzero when terminal wait returns an unsatisfied blocked result', async () => {
-    process.env.ORCA_TERMINAL_HANDLE = 'term_worker'
+    process.env.TOPO_TERMINAL_HANDLE = 'term_worker'
     callMock.mockResolvedValueOnce({
       id: 'req_terminal_wait',
       ok: true,

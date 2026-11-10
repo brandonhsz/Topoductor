@@ -192,7 +192,7 @@ export function isExpectedAgentProcess(
   )
 }
 
-/** Agents whose process names (orca, acli, cn, vibe) also belong to ordinary tools. */
+/** Agents whose process names (topo, acli, cn, vibe) also belong to ordinary tools. */
 export const GENERIC_PROCESS_NAME_AGENTS: ReadonlySet<TerminalAgent> = new Set([
   'claude-agent-teams',
   'rovo',
@@ -226,7 +226,7 @@ export function recognizeAgentProcessFromCommandLine(
   if (firstNormalized === 'qoder' && tokens[1] && !tokens[1].startsWith('-')) {
     return null
   }
-  // Why: the generic Orca CLI is not an agent; only this subcommand launches its TUI mode.
+  // Why: the generic Topo CLI is not an agent; only this subcommand launches its TUI mode.
   if (direct?.agent === 'claude-agent-teams' && tokens[1]?.toLowerCase() !== 'claude-teams') {
     direct = null
   }

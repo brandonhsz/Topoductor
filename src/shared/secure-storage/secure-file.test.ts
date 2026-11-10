@@ -53,7 +53,7 @@ describe('POSIX secure files', () => {
   })
 
   function tempDir(): string {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-secure-file-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-secure-file-'))
     tempDirs.push(dir)
     return dir
   }
@@ -84,7 +84,7 @@ describe('POSIX secure files', () => {
     expect(statMode(userDataPath)).toBe(0o700)
   })
 
-  /** Claude Code's Bash sandbox denies chmod on userData; `orca worktree list` failed reading it (#20937). */
+  /** Claude Code's Bash sandbox denies chmod on userData; `topo worktree list` failed reading it (#20937). */
   posixModeIt(
     'lets readers proceed when a sandbox denies hardening, but not on other errors',
     () => {

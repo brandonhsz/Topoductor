@@ -57,8 +57,8 @@ function getWorktreeVisibilityMenuLabel(
   )
   return visibility === 'show'
     ? t(
-        'auto.components.sidebar.repoHeaderProjectActions.hideNonOrcaWorktrees',
-        'Hide non-Orca worktrees'
+        'auto.components.sidebar.repoHeaderProjectActions.hideNonTopoWorktrees',
+        'Hide non-Topo worktrees'
       )
     : t(
         'auto.components.sidebar.repoHeaderProjectActions.showHiddenWorktrees',

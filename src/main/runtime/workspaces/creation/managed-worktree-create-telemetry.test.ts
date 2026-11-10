@@ -44,11 +44,11 @@ vi.mock('../../../ipc/worktrees/removal/registered-worktree-roots-scoped-invalid
   invalidateAuthorizedRootsCacheForRepo: vi.fn()
 }))
 
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import type { WorktreeCreateTimingRecorder } from '../../../workspaces/creation/worktree-create-timing'
 import type { PreparationRearmHolder } from '../../../workspaces/creation/preparation/worktree-create-preparation'
 import { _resetWorktreeCreateConcurrencyForTests } from '../../../workspaces/creation/worktree-create-concurrency'
-import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
 const gitRepo = {
   id: 'repo-1',
@@ -71,8 +71,8 @@ type RuntimeInternals = {
   emitWorktreeLifecycle: (event: unknown) => void
 }
 
-function makeRuntime(repo: Record<string, unknown> = gitRepo): OrcaRuntimeService {
-  const runtime = new OrcaRuntimeService(
+function makeRuntime(repo: Record<string, unknown> = gitRepo): TopoRuntimeService {
+  const runtime = new TopoRuntimeService(
     partialRuntimeStore({
       getSettings: () => ({ disabledTuiAgents: ['codex'], workspaceDir: '/worktrees' }),
       getProjectHostSetups: () => []

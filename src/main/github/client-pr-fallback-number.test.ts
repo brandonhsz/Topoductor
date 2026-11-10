@@ -69,30 +69,30 @@ describe('getPRForBranch', () => {
 
   it('lets fallback PR number recovery win after fallback branch queries throw', async () => {
     resolvePRRepositoryCandidatesMock.mockResolvedValueOnce({
-      candidates: [{ owner: 'stablyai', repo: 'orca' }],
+      candidates: [{ owner: 'brandonhsz', repo: 'topo' }],
       headRepo: null
     })
     mockLookupRoutes([
       [
-        'list:stablyai/orca:feature/test',
+        'list:brandonhsz/topo:feature/test',
         async () => {
           throw new Error('HTTP 429: API rate limit exceeded')
         }
       ],
       [
-        'repos/stablyai/orca/pulls?head=stablyai%3Afeature%2Ftest&state=all&per_page=10',
+        'repos/brandonhsz/topo/pulls?head=brandonhsz%3Afeature%2Ftest&state=all&per_page=10',
         async () => {
           throw new Error('HTTP 502: Bad Gateway')
         }
       ],
       [
-        'view:stablyai/orca:42',
+        'view:brandonhsz/topo:42',
         async () => ({
           stdout: JSON.stringify({
             number: 42,
             title: 'Fallback number recovered PR',
             state: 'OPEN',
-            url: 'https://github.com/stablyai/orca/pull/42',
+            url: 'https://github.com/brandonhsz/topo/pull/42',
             statusCheckRollup: [],
             updatedAt: '2026-03-28T00:00:00Z',
             isDraft: false,
@@ -121,7 +121,7 @@ describe('getPRForBranch', () => {
         'view',
         '42',
         '--repo',
-        'stablyai/orca',
+        'brandonhsz/topo',
         '--json',
         'number,title,state,url,updatedAt,isDraft,mergeable,reviewDecision,mergeStateStatus,autoMergeRequest,baseRefName,headRefName,baseRefOid,headRefOid,headRepositoryOwner,headRepository,isCrossRepository'
       ],
@@ -132,23 +132,23 @@ describe('getPRForBranch', () => {
   it('keeps a pending fallback branch error when a later candidate cleanly misses', async () => {
     resolvePRRepositoryCandidatesMock.mockResolvedValueOnce({
       candidates: [
-        { owner: 'stablyai', repo: 'orca' },
-        { owner: 'fork', repo: 'orca' }
+        { owner: 'brandonhsz', repo: 'topo' },
+        { owner: 'fork', repo: 'topo' }
       ],
       headRepo: null
     })
     mockLookupRoutes([
       [
-        'list:stablyai/orca:feature/test',
+        'list:brandonhsz/topo:feature/test',
         async () => {
           throw new Error('HTTP 429: API rate limit exceeded')
         }
       ],
       [
-        'repos/stablyai/orca/pulls?head=stablyai%3Afeature%2Ftest&state=all&per_page=10',
+        'repos/brandonhsz/topo/pulls?head=brandonhsz%3Afeature%2Ftest&state=all&per_page=10',
         async () => ({ stdout: JSON.stringify([]) })
       ],
-      ['list:fork/orca:feature/test', async () => ({ stdout: JSON.stringify([]) })]
+      ['list:fork/topo:feature/test', async () => ({ stdout: JSON.stringify([]) })]
     ])
 
     const outcome = await getPRForBranchOutcome('/repo-root', 'feature/test')
@@ -162,7 +162,7 @@ describe('getPRForBranch', () => {
         'pr',
         'list',
         '--repo',
-        'fork/orca',
+        'fork/topo',
         '--head',
         'feature/test',
         '--state',

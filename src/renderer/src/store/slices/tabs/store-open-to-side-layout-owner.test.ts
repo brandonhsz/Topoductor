@@ -9,7 +9,7 @@ import { openContentTabThroughLayoutOwner } from '@/runtime/workspace-layout/int
 import { contentTabOpenPlacement } from './content-tab-open-placement'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
 import type { TabGroupLayoutNode } from '../../../../../shared/tab-types'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import type { LayoutCommand } from '../../../../../shared/workspace-layout/workspace-layout-command-types'
 import { drawTabsFromMain, type TabsDrawnFromMain } from './tabs-drawn-from-main.test-fixture'
 
@@ -109,7 +109,7 @@ function onlyTabOf(groupId: string): string {
   return group.tabOrder[0]!
 }
 
-describe.runIf(ORCA_LAYOUT_OWNER_IS_MAIN)('open to the side in a layout-owner build', () => {
+describe.runIf(TOPO_LAYOUT_OWNER_IS_MAIN)('open to the side in a layout-owner build', () => {
   it('makes each new split in main with its tab, so main and the window agree after every step', async () => {
     openFile('/a.ts')
     await settledSent()

@@ -90,7 +90,7 @@ export const createProjectRowActions = (
 
     // Labels/assignees use issue endpoints for both kinds; title/body require PR-versus-issue endpoints.
     let envelope: GitHubProjectMutationResult = { ok: true }
-    // Why: slug-only Project rows have no registered Orca repo, so fall back to the view source in the cache key, not the focused host.
+    // Why: slug-only Project rows have no registered Topo repo, so fall back to the view source in the cache key, not the focused host.
     const target = runtimeTargetForProjectRowOwner(
       get(),
       owner,

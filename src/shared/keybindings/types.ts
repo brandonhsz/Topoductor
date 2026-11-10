@@ -16,7 +16,7 @@ export type KeybindingContext = 'app' | 'terminal' | 'browser'
 
 export type KeybindingPlatform = 'darwin' | 'linux' | 'win32'
 
-export type TerminalShortcutPolicy = 'orca-first' | 'terminal-first'
+export type TerminalShortcutPolicy = 'topo-first' | 'terminal-first'
 
 export type KeybindingMatchOptions = {
   context?: KeybindingContext
@@ -136,7 +136,7 @@ export type KeybindingFileDiagnostic = {
   /** Semantic id of `message`; renderers translate by it and fall back to `message`. */
   code?: string
   params?: Record<string, string | number>
-  /** Code of params.reason when that reason is an Orca sentence, not verbatim text. */
+  /** Code of params.reason when that reason is a Topo sentence, not verbatim text. */
   reasonCode?: string
   /** Actions named by a conflict diagnostic, so renderers can show localized titles. */
   actionIds?: string[]

@@ -1,8 +1,8 @@
 import type { PtyControllerInventory } from '../terminal/lifecycle/runtime-pty-controller-contract'
 import { parseExecutionHostId } from '../../../shared/execution-host'
-import { OrcaRuntimeWithCollectMobileVisibleGraphChangedWorktrees } from './session-tabs-inventory'
+import { TopoRuntimeWithCollectMobileVisibleGraphChangedWorktrees } from './session-tabs-inventory'
 
-export abstract class RuntimeSessionTabsInventoryPublication extends OrcaRuntimeWithCollectMobileVisibleGraphChangedWorktrees {
+export abstract class RuntimeSessionTabsInventoryPublication extends TopoRuntimeWithCollectMobileVisibleGraphChangedWorktrees {
   protected waitForSessionTabsInventoryPublication(signal?: AbortSignal): Promise<void> {
     if (this.getAuthoritativeSessionTabsInventoryEpoch() !== null) {
       return Promise.resolve()

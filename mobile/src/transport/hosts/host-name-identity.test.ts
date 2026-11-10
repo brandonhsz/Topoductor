@@ -42,7 +42,7 @@ import { updateHostDescriptor } from './host-descriptor-persistence'
 import { resetMobileRelayHostOverlayStoreForTests } from './mobile-relay-host-overlay-store'
 import { StoredHostProfileSchema, type StoredHostProfile } from './host-profile'
 
-const HOSTS_STORAGE_KEY = 'orca:hosts'
+const HOSTS_STORAGE_KEY = 'topo:hosts'
 
 const GENERATED_HOST = {
   id: 'host-1',

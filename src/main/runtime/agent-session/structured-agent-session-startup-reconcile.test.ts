@@ -13,7 +13,7 @@ import {
   seedTestAgentSessionStoreFromNewerBuild
 } from './records/agent-session-record-store-test-harness'
 import { closeTestJournalHostDatabases } from '../../native-chat/agent-session-journal/store-lifecycle/journal-host-database-test-support'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import {
   ensureStructuredAgentSessionHost,
   stopStructuredAgentSessionRuntime
@@ -38,7 +38,7 @@ vi.mock('./records/agent-session-record-rows', async (importOriginal) => {
 let root: string
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-startup-reconcile-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-startup-reconcile-'))
 })
 
 afterEach(async () => {
@@ -49,7 +49,7 @@ afterEach(async () => {
   await rm(root, { recursive: true, force: true })
 })
 
-/** A profile with one chat whose last owner is gone; `newer` stamps it as a newer Orca's. */
+/** A profile with one chat whose last owner is gone; `newer` stamps it as a newer Topo's. */
 async function seedChat(options: { newer?: boolean } = {}) {
   const record = agentSessionRecordFixture()
   await seedTestAgentSessionRecordStore(root, { records: [record] })
@@ -61,7 +61,7 @@ async function seedChat(options: { newer?: boolean } = {}) {
 }
 
 function startupRuntime(log = recordingStructuredAgentSessionLogger()) {
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: these are the runtime's own protected members; the test roots the host at `root` and stubs the PTY daemon.
   const internal = runtime as unknown as {
     hasPersistedStructuredAgentSessionStore(): boolean
@@ -84,7 +84,7 @@ function startupRuntime(log = recordingStructuredAgentSessionLogger()) {
   return runtime
 }
 
-it('finishes startup over records a newer Orca wrote, reads them, and writes nothing', async () => {
+it('finishes startup over records a newer Topo wrote, reads them, and writes nothing', async () => {
   const { path, sessionId } = await seedChat({ newer: true })
   const bytes = await readFile(path)
   const log = recordingStructuredAgentSessionLogger()
@@ -120,7 +120,7 @@ it('finishes startup when the reconcile cannot write, and reports it', async () 
   expect(getStructuredAgentSessionHost()?.sessionAgent(sessionId)).toBe('claude')
 })
 
-it('closes a chat tab over records a newer Orca wrote, reporting the index it cannot write', async () => {
+it('closes a chat tab over records a newer Topo wrote, reporting the index it cannot write', async () => {
   const { sessionId } = await seedChat({ newer: true })
   const log = recordingStructuredAgentSessionLogger()
   const runtime = startupRuntime(log)
@@ -155,7 +155,7 @@ it('closes a chat tab over records a newer Orca wrote, reporting the index it ca
       scope: 'tab-close-hide',
       sessionId,
       error: expect.objectContaining({
-        refusal: expect.objectContaining({ details: { reason: 'journalWrittenByNewerOrca' } })
+        refusal: expect.objectContaining({ details: { reason: 'journalWrittenByNewerTopo' } })
       })
     }
   })

@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible } from './helpers/store'
 import { waitForActiveTerminalManager } from './helpers/terminal'
 import { setPaneTitleFromTerminalMenu } from './helpers/terminal-pane-title-actions'
@@ -27,20 +27,20 @@ function readTerminalInsets(
     })
 }
 
-test('terminal padding insets both edges of each axis', async ({ orcaPage }) => {
-  await ensureTerminalVisible(orcaPage, 30_000)
-  await waitForActiveTerminalManager(orcaPage, 30_000)
-  await orcaPage.evaluate(async () => {
+test('terminal padding insets both edges of each axis', async ({ topoPage }) => {
+  await ensureTerminalVisible(topoPage, 30_000)
+  await waitForActiveTerminalManager(topoPage, 30_000)
+  await topoPage.evaluate(async () => {
     await window.__store?.getState().updateSettings({ terminalPaddingX: 40, terminalPaddingY: 20 })
   })
 
   await expect
-    .poll(() => readTerminalInsets(orcaPage))
+    .poll(() => readTerminalInsets(topoPage))
     .toEqual({ left: 40, right: 40, top: 20, bottom: 20 })
 
   // A pane title replaces the top padding but must keep the bottom inset.
-  await setPaneTitleFromTerminalMenu(orcaPage, 'Padding check')
+  await setPaneTitleFromTerminalMenu(topoPage, 'Padding check')
   await expect
-    .poll(() => readTerminalInsets(orcaPage))
+    .poll(() => readTerminalInsets(topoPage))
     .toEqual({ left: 40, right: 40, top: 24, bottom: 20 })
 })

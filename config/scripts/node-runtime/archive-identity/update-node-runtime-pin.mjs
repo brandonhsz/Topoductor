@@ -24,9 +24,9 @@ import {
   nodeRuntimeExecutablePath,
   nodeRuntimeReleaseUrl
 } from '../../../../src/shared/node-runtime-pin.ts'
-import { currentTarget } from '../../orcad-distribution/prebuilds/server-build-target.mjs'
+import { currentTarget } from '../../topod-distribution/prebuilds/server-build-target.mjs'
 import { nodeDistArchiveName, windowsImportLibFile } from './node-dist-archive-name.mjs'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import {
   getTarProgram,
   getZipExtractorCommand
@@ -324,7 +324,7 @@ async function main() {
   }
   const workParent = argument('--work-dir') ?? tmpdir()
   mkdirSync(workParent, { recursive: true })
-  const workDir = mkdtempSync(join(workParent, 'orca-node-runtime-pin-'))
+  const workDir = mkdtempSync(join(workParent, 'topo-node-runtime-pin-'))
   try {
     const shasumsPath = join(workDir, 'SHASUMS256.txt')
     await download(nodeRuntimeReleaseUrl('official', 'SHASUMS256.txt', version), shasumsPath)

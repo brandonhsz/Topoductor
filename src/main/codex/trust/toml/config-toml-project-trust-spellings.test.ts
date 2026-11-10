@@ -58,7 +58,7 @@ describe('project trust writes recognise every spelling of the project table', (
       argsLine: `args = ["-c", """printf "ok""""]`
     }
   ])('updates the project table after $label', ({ argsLine }) => {
-    const project = '/tmp/orca-toml-repro'
+    const project = '/tmp/topo-toml-repro'
     const original = [
       '[mcp_servers.repro]',
       'command = "sh"',
@@ -92,7 +92,7 @@ describe('the config mirror treats every spelling as one project table', () => {
     let systemHomePath: string
 
     beforeEach(() => {
-      root = mkdtempSync(join(tmpdir(), 'orca-project-spellings-'))
+      root = mkdtempSync(join(tmpdir(), 'topo-project-spellings-'))
       runtimeHomePath = join(root, 'runtime')
       systemHomePath = join(root, 'system')
       mkdirSync(runtimeHomePath)

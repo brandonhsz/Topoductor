@@ -23,14 +23,14 @@ afterEach(async () => {
 it.each([{}, { claudeSubagentNavigationEnabled: true }])(
   'prepares navigation automatically, serializing config changes and respecting shortcut removals: %j',
   async (enabled) => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-agent-view-service-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-agent-view-service-'))
     roots.push(root)
     const config = join(root, 'default')
     vi.stubEnv('CLAUDE_CONFIG_DIR', config)
     const profile = join(root, 'account')
     const reconcileConfig = vi.fn(reconcileClaudeAgentViewConfig)
     const ensurePlugin = vi.fn(ensureClaudeAgentViewPluginAsync)
-    const service = new ClaudeAgentViewService(join(root, 'orca'), {
+    const service = new ClaudeAgentViewService(join(root, 'topo'), {
       reconcileConfig,
       ensurePlugin,
       listProfiles: async () => [profile],
@@ -40,17 +40,17 @@ it.each([{}, { claudeSubagentNavigationEnabled: true }])(
     expect(reconcileConfig).toHaveBeenCalledTimes(2)
     expect(ensurePlugin).toHaveBeenCalledOnce()
     expect(service.read(config)?.pluginDir).toBeTruthy()
-    expect(service.read(config)?.pluginDir).toBe(ensureClaudeAgentViewPlugin(join(root, 'orca')))
+    expect(service.read(config)?.pluginDir).toBe(ensureClaudeAgentViewPlugin(join(root, 'topo')))
     await writeFile(join(profile, 'keybindings.json'), '{"bindings":[]}')
     await service.reconcile({ claudeSubagentNavigationEnabled: false })
     expect(service.read(config)).toBeUndefined()
     expect(
       claudeAgentViewChord(await readFile(join(config, 'keybindings.json'), 'utf8'))
     ).toBeUndefined()
-    expect(JSON.parse(await readFile(join(config, 'orca-agent-view.json'), 'utf8')).setup).toBe(
+    expect(JSON.parse(await readFile(join(config, 'topo-agent-view.json'), 'utf8')).setup).toBe(
       'pending'
     )
-    expect(JSON.parse(await readFile(join(profile, 'orca-agent-view.json'), 'utf8')).setup).toBe(
+    expect(JSON.parse(await readFile(join(profile, 'topo-agent-view.json'), 'utf8')).setup).toBe(
       'attempted'
     )
     await reconcileClaudeAgentViewConfig(join(config, 'settings.json'), false)
@@ -74,7 +74,7 @@ it.each([{}, { claudeSubagentNavigationEnabled: true }])(
 )
 
 it('cleans an owned shortcut in a cached login-shell config on a fresh disabled service', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'orca-agent-view-cached-home-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-agent-view-cached-home-'))
   roots.push(root)
   const config = join(root, 'process-config')
   const cachedConfig = join(root, 'shell-config')
@@ -85,7 +85,7 @@ it('cleans an owned shortcut in a cached login-shell config on a fresh disabled 
   const bindings = join(cachedConfig, 'keybindings.json')
   expect(claudeAgentViewChord(await readFile(bindings, 'utf8'))).toBe('ctrl+alt+g')
   const loginEnv = vi.fn(resolveLoginShellEnvironment)
-  const service = new ClaudeAgentViewService(join(root, 'orca'), {
+  const service = new ClaudeAgentViewService(join(root, 'topo'), {
     reconcileConfig: reconcileClaudeAgentViewConfig,
     ensurePlugin: ensureClaudeAgentViewPluginAsync,
     listProfiles: async () => [],
@@ -93,7 +93,7 @@ it('cleans an owned shortcut in a cached login-shell config on a fresh disabled 
   })
   await service.reconcile({ claudeSubagentNavigationEnabled: false })
   expect(claudeAgentViewChord(await readFile(bindings, 'utf8'))).toBeUndefined()
-  expect(JSON.parse(await readFile(join(cachedConfig, 'orca-agent-view.json'), 'utf8')).setup).toBe(
+  expect(JSON.parse(await readFile(join(cachedConfig, 'topo-agent-view.json'), 'utf8')).setup).toBe(
     'pending'
   )
   expect(loginEnv.mock.calls).toEqual([[{ cachedOnly: true }]])

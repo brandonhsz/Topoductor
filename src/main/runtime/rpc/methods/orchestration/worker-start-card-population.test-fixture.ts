@@ -23,7 +23,7 @@ export function expectWorkerStartPopulation(input: {
         party: {
           address: fact.workerAddress,
           terminalHandle: fact.workerAddress,
-          orcaSessionId: null
+          topoSessionId: null
         },
         name: fact.name
       }

@@ -12,7 +12,7 @@ import {
 } from '../../../../../shared/browser-url'
 import type { BrowserLoadError } from '../../../../../shared/browser-workspace-types'
 import '../../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
 import { BROWSER_GUEST_RECOVERY_ERROR_CODE } from '../host-guest/browser-page-guest-recovery'
 import {
   getBrowserDisplayTitle,
@@ -83,7 +83,7 @@ export function navigateBrowserPageToUrl({
       ? { committed: false, started: false, targetUrl: normalizedBrowserModelUrl }
       : null
     webview.src = targetUrl
-    if (targetUrl !== ORCA_BROWSER_BLANK_URL) {
+    if (targetUrl !== TOPO_BROWSER_BLANK_URL) {
       focusWebviewNow()
     }
   }

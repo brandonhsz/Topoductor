@@ -17,7 +17,7 @@ const target: SshTarget = {
 }
 // Real OpenSSH: the drift is in how ssh_config matches, which only OpenSSH can answer.
 describe.skipIf(findSystemSsh() === null)('admitSystemSshLoopbackRoute with real ssh -G', () => {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-loopback-admission-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-loopback-admission-'))
   afterAll(() => rmSync(dir, { recursive: true, force: true }))
 
   function writeConfig(name: string, body: string): string {
@@ -48,7 +48,7 @@ describe.skipIf(findSystemSsh() === null)('admitSystemSshLoopbackRoute with real
 
   it.each([
     ['a %h token, which a routed login expands to 127.0.0.1', '~/.ssh/id_%h'],
-    ['an environment reference ssh -G leaves unexpanded', '${ORCA_TEST_KEY_DIR}/id_sk']
+    ['an environment reference ssh -G leaves unexpanded', '${TOPO_TEST_KEY_DIR}/id_sk']
   ])('refuses a route with %s', async (_name, identityFile) => {
     const configFile = writeConfig(
       `token-${identityFile.length}`,
@@ -105,7 +105,7 @@ describe.skipIf(findSystemSsh() === null)('admitSystemSshLoopbackRoute with real
         '  Port 2200',
         '  IdentityAgent none',
         'Host bastion',
-        '  IdentityFile /nonexistent/orca-admission-key',
+        '  IdentityFile /nonexistent/topo-admission-key',
         '  IdentityAgent none',
         ''
       ].join('\n')
@@ -135,7 +135,7 @@ describe.skipIf(findSystemSsh() === null)('admitSystemSshLoopbackRoute with real
         '  ProxyJump bastion',
         '  IdentityAgent none',
         'Host bastion',
-        '  IdentityFile /nonexistent/orca-admission-key',
+        '  IdentityFile /nonexistent/topo-admission-key',
         '  IdentityAgent none',
         ''
       ].join('\n')

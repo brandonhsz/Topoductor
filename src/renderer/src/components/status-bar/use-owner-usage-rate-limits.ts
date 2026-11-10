@@ -31,7 +31,7 @@ type OwnedUsage = {
   failure: OwnerUsageFailureReason | null
 }
 
-/** A remote host (SSH-managed server or paired Orca) that owns the shown usage. */
+/** A remote host (SSH-managed server or paired Topo) that owns the shown usage. */
 export type RemoteUsageOwner = {
   environmentId: string
   label: string

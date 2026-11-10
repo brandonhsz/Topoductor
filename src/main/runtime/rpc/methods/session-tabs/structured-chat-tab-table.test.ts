@@ -9,7 +9,7 @@ import {
   hostTestOperationId
 } from '../../../../native-chat/agent-session-wire/host/testing/structured-agent-session-host-test-data'
 import { seedTestAgentSessionStoreFromNewerBuild } from '../../../agent-session/records/agent-session-record-store-test-harness'
-import { OrcaRuntimeRpcServer } from '../../server/runtime-rpc'
+import { TopoRuntimeRpcServer } from '../../server/runtime-rpc'
 import { DeviceRegistry } from '../../server/pairing/device-registry'
 import WebSocket from 'ws'
 import { SESSION_TAB_METHODS } from './session-tabs'
@@ -199,7 +199,7 @@ describe('other clients after a clear', () => {
   ]
   it('clears through the authenticated mobile WebSocket allowlist without replacing the tab', async () => {
     await createChat(HOST_TEST_SESSION)
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       runtime,
       userDataPath: directory,
       enableWebSocket: false,
@@ -368,7 +368,7 @@ describe('a create that reserves its tab', () => {
   })
 })
 
-describe('a chat tab over records a newer Orca wrote', () => {
+describe('a chat tab over records a newer Topo wrote', () => {
   it("opens a closed chat's tab from history, whose chat does not load", async () => {
     await createChat(HOST_TEST_SESSION)
     await host.close(HOST_TEST_SESSION, 'user-close')

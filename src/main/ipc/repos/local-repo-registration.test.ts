@@ -30,7 +30,7 @@ describe('addLocalRepoFromPath through a symlink alias', () => {
   let root: string
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-local-add-alias-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-local-add-alias-'))
   })
 
   afterEach(async () => {

@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path'
 
 // Mark fallback copies so sync can refresh/remove them without touching user-created resources.
 function getResourceCopyMarkerPath(managedHomePath: string, entryName: string): string {
-  return join(managedHomePath, '.orca-resource-copies', `${entryName}.json`)
+  return join(managedHomePath, '.topo-resource-copies', `${entryName}.json`)
 }
 
 export function markCopiedResource(
@@ -43,7 +43,7 @@ function readCopiedResourceSourcePath(managedHomePath: string, entryName: string
   }
 }
 
-/** The source an Orca fallback copy mirrors; null when the entry is a link or the user's own. */
+/** The source a Topo fallback copy mirrors; null when the entry is a link or the user's own. */
 export async function readCopiedResourceSource(
   managedHomePath: string,
   entryName: string

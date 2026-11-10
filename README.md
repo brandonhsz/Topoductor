@@ -1,13 +1,13 @@
 <h1 align="center">
-  <a href="https://onOrca.dev"><img src="resources/build/icon.png" alt="Orca" width="64" valign="middle" /></a> Orca
+  <a href="https://github.com/brandonhsz/Topoductor"><img src="resources/build/icon.png" alt="Topo" width="64" valign="middle" /></a> Topo
 </h1>
 
 <p align="center">
-  <a href="https://github.com/stablyai/orca"><img src="https://img.shields.io/github/stars/stablyai/orca?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="GitHub stars" /></a>
-  <a href="https://github.com/stablyai/orca/releases"><img src="docs/assets/readme-downloads.svg" alt="Total downloads across all releases" /></a>
+  <a href="https://github.com/brandonhsz/Topoductor"><img src="https://img.shields.io/github/stars/brandonhsz/Topoductor?style=flat&amp;label=%E2%98%85&amp;color=08C" alt="GitHub stars" /></a>
+  <a href="https://github.com/brandonhsz/Topoductor/releases"><img src="docs/assets/readme-downloads.svg" alt="Total downloads across all releases" /></a>
   <img src="https://img.shields.io/badge/license-MIT-08C?style=flat" alt="License: MIT" />
-  <a href="https://discord.gg/fzjDKHxv8Q"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Join the Orca Discord" /></a>
-  <a href="https://x.com/orca_build"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="Follow Orca on X" /></a>
+  <a href="https://discord.gg/fzjDKHxv8Q"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Join the Topo Discord" /></a>
+  <a href="https://x.com/topo_build"><img src="https://img.shields.io/badge/X-000000?logo=x&logoColor=white" alt="Follow Topo on X" /></a>
   <img src="https://img.shields.io/badge/macOS%20%7C%20Windows%20%7C%20Linux-4493F8?style=flat-square" alt="Supported platforms: macOS, Windows, and Linux" />
 </p>
 
@@ -20,10 +20,10 @@
   Run Claude Code, Codex, and any other coding agent in parallel, each in its own worktree. Chat or terminal, on your laptop or in the cloud, with diffs, a browser, and a CLI in one app.
 </p>
 
-<h3 align="center"><a href="https://onorca.dev/download"><ins>Download Orca</ins></a></h3>
+<h3 align="center"><a href="https://onorca.dev/download"><ins>Download Topo</ins></a></h3>
 
 <p align="center">
-  <img src="docs/assets/readme-hero.jpg" alt="Orca desktop app with a coordinator agent running worker agents in parallel workspaces, and the Orca mobile app in the corner" width="960" />
+  <img src="docs/assets/readme-hero.jpg" alt="Topo desktop app with a coordinator agent running worker agents in parallel workspaces, and the Topo mobile app in the corner" width="960" />
 </p>
 
 ## Features
@@ -62,7 +62,7 @@ Hand a big task to one agent. It splits the work, starts worker agents in their 
 
 ### Run Anywhere
 
-Pair a Remote Orca Server, work on any SSH host, or give a worktree its own cloud VM. Your agents keep running when your laptop sleeps.
+Pair a Remote Topo Server, work on any SSH host, or give a worktree its own cloud VM. Your agents keep running when your laptop sleeps.
 
 [Docs →](https://www.onorca.dev/docs/ways-to-run)
 
@@ -76,13 +76,13 @@ Pair a Remote Orca Server, work on any SSH host, or give a worktree its own clou
 
 ### Mobile App
 
-Pair Orca with the mobile app to get pinged when an agent needs you, reply in chat, and keep work moving on any of your machines when you are away from your desk.
+Pair Topo with the mobile app to get pinged when an agent needs you, reply in chat, and keep work moving on any of your machines when you are away from your desk.
 
-[iOS App Store](https://apps.apple.com/us/app/orca-ide/id6766130217) · [Android APK](https://www.onorca.dev/download/android) · [Docs →](https://www.onorca.dev/docs/mobile)
+[iOS App Store](https://apps.apple.com/us/app/topo-ide/id6766130217) · [Android APK](https://www.onorca.dev/download/android) · [Docs →](https://www.onorca.dev/docs/mobile)
 
 </td>
 <td width="50%">
-  <a href="https://www.onorca.dev/docs/mobile"><picture><source srcset="docs/assets/readme-features/mobile-companion.webp" type="image/webp"><img src="docs/assets/readme-features/mobile-companion.poster.jpg" alt="The Orca mobile app getting a notification that Claude needs input, opening the session, and replying so the agent opens the PR" width="100%" /></picture></a>
+  <a href="https://www.onorca.dev/docs/mobile"><picture><source srcset="docs/assets/readme-features/mobile-companion.webp" type="image/webp"><img src="docs/assets/readme-features/mobile-companion.poster.jpg" alt="The Topo mobile app getting a notification that Claude needs input, opening the session, and replying so the agent opens the PR" width="100%" /></picture></a>
 </td>
 </tr>
 <tr>
@@ -132,13 +132,13 @@ Quickly split tasks into isolated environments, so multiple agents can work side
 
 ### Design Mode
 
-Click any element in Orca's browser to copy its HTML, styles, and selector, then paste it into your agent's chat.
+Click any element in Topo's browser to copy its HTML, styles, and selector, then paste it into your agent's chat.
 
 [Docs →](https://www.onorca.dev/docs/browser/design-mode)
 
 </td>
 <td width="50%">
-  <a href="https://www.onorca.dev/docs/browser/design-mode"><picture><source srcset="docs/assets/readme-features/design-mode.webp" type="image/webp"><img src="docs/assets/readme-features/design-mode.poster.jpg" alt="Picking a button in Orca's browser and sending it to the agent's chat" width="100%" /></picture></a>
+  <a href="https://www.onorca.dev/docs/browser/design-mode"><picture><source srcset="docs/assets/readme-features/design-mode.webp" type="image/webp"><img src="docs/assets/readme-features/design-mode.poster.jpg" alt="Picking a button in Topo's browser and sending it to the agent's chat" width="100%" /></picture></a>
 </td>
 </tr>
 <tr>
@@ -152,21 +152,21 @@ See your GitHub and Linear tasks in one place, and start a workspace for each wh
 
 </td>
 <td width="50%">
-  <a href="https://www.onorca.dev/docs/review/linear"><picture><source srcset="docs/assets/readme-features/github-linear-tasks.webp" type="image/webp"><img src="docs/assets/readme-features/github-linear-tasks.poster.jpg" alt="GitHub and Linear issues in Orca, with a workspace started from a Linear issue" width="100%" /></picture></a>
+  <a href="https://www.onorca.dev/docs/review/linear"><picture><source srcset="docs/assets/readme-features/github-linear-tasks.webp" type="image/webp"><img src="docs/assets/readme-features/github-linear-tasks.poster.jpg" alt="GitHub and Linear issues in Topo, with a workspace started from a Linear issue" width="100%" /></picture></a>
 </td>
 </tr>
 <tr>
 <td width="50%" valign="middle">
 
-### Orca CLI
+### Topo CLI
 
-Anything you can do in Orca, your agents can do too: create worktrees, start workers, drive the browser and desktop apps, and schedule automations, all from the command line.
+Anything you can do in Topo, your agents can do too: create worktrees, start workers, drive the browser and desktop apps, and schedule automations, all from the command line.
 
 [Docs →](https://www.onorca.dev/docs/cli/overview)
 
 </td>
 <td width="50%">
-  <a href="https://www.onorca.dev/docs/cli/overview"><picture><source srcset="docs/assets/readme-features/orca-cli.webp" type="image/webp"><img src="docs/assets/readme-features/orca-cli.poster.jpg" alt="An agent running orca worktree create to start a worker in a new worktree" width="100%" /></picture></a>
+  <a href="https://www.onorca.dev/docs/cli/overview"><picture><source srcset="docs/assets/readme-features/topo-cli.webp" type="image/webp"><img src="docs/assets/readme-features/topo-cli.poster.jpg" alt="An agent running topo worktree create to start a worker in a new worktree" width="100%" /></picture></a>
 </td>
 </tr>
 <tr>
@@ -180,7 +180,7 @@ Themes, editors, languages, and panels from the community, installed in a click.
 
 </td>
 <td width="50%">
-  <a href="https://www.onorca.dev/plugins"><picture><source srcset="docs/assets/readme-features/plugins.webp" type="image/webp"><img src="docs/assets/readme-features/plugins.poster.jpg" alt="Installing the Orca Midnight theme from the plugin catalog" width="100%" /></picture></a>
+  <a href="https://www.onorca.dev/plugins"><picture><source srcset="docs/assets/readme-features/plugins.webp" type="image/webp"><img src="docs/assets/readme-features/plugins.poster.jpg" alt="Installing the Topo Midnight theme from the plugin catalog" width="100%" /></picture></a>
 </td>
 </tr>
 <tr>
@@ -205,17 +205,17 @@ Put agents, terminals, browsers, and diffs side by side in split panes shaped to
 - **[Jump Anywhere](https://www.onorca.dev/docs/model/quick-open)**: one shortcut jumps to any workspace or tab across every repo and host.
 - **[Rich Previews](https://www.onorca.dev/docs/editing/viewers)**: open images, PDFs, and Markdown right in the workspace, next to the agent that made them.
 - **[Mobile Emulator](https://www.onorca.dev/docs/cli/overview#mobile-emulator)**: run an iOS Simulator or Android emulator beside your agent, and let it tap, type, and check its own work.
-- **[Dictation](https://www.onorca.dev/docs/settings#voice)**: press a shortcut and talk. Orca types what you say into the agent's prompt or terminal.
+- **[Dictation](https://www.onorca.dev/docs/settings#voice)**: press a shortcut and talk. Topo types what you say into the agent's prompt or terminal.
 - **[Usage &amp; Accounts](https://www.onorca.dev/docs/agents/usage-tracking)**: see how much of your agent limits you've used and when they reset, and switch accounts without logging out.
 - **[Automations](https://www.onorca.dev/docs/cli/automations)**: schedule prompts to run on any repo: nightly dependency bumps, weekly triage, flaky-test sweeps.
 - **[Computer Use](https://www.onorca.dev/docs/cli/computer-use)**: when there's no CLI or API, agents can see and drive desktop apps and external browsers.
-- **And many, many more**: we ship daily, so this list is perpetually behind. The [changelog](https://github.com/stablyai/orca/releases) is the real feature list.
+- **And many, many more**: we ship daily, so this list is perpetually behind. The [changelog](https://github.com/brandonhsz/Topoductor/releases) is the real feature list.
 
 ---
 
 ## Supported Agents
 
-Works with **any CLI agent** — if it runs in a terminal, it runs in Orca.
+Works with **any CLI agent** — if it runs in a terminal, it runs in Topo.
 
 <p>
   <a href="https://docs.anthropic.com/claude/docs/claude-code"><kbd><img src="docs/assets/claude-logo.svg" alt="Claude Code logo" width="16" valign="middle" /> Claude Code</kbd></a> &nbsp;
@@ -261,27 +261,27 @@ Works with **any CLI agent** — if it runs in a terminal, it runs in Orca.
 
 ### Desktop — macOS, Windows, Linux
 
-- **[Download from onOrca.dev](https://onorca.dev/download)**
-- Or grab a build directly: [macOS Apple Silicon](https://github.com/stablyai/orca/releases/latest/download/orca-macos-arm64.dmg) · [macOS Intel](https://github.com/stablyai/orca/releases/latest/download/orca-macos-x64.dmg) · [Windows (.exe)](https://github.com/stablyai/orca/releases/latest/download/orca-windows-setup.exe) · [Linux AppImage](https://github.com/stablyai/orca/releases/latest/download/orca-linux.AppImage) · [All builds](https://github.com/stablyai/orca/releases/latest)
+- **[Download from GitHub Releases](https://github.com/brandonhsz/Topoductor/releases)**
+- Or grab a build directly: [macOS Apple Silicon](https://github.com/brandonhsz/Topoductor/releases/latest/download/topo-macos-arm64.dmg) · [macOS Intel](https://github.com/brandonhsz/Topoductor/releases/latest/download/topo-macos-x64.dmg) · [Windows (.exe)](https://github.com/brandonhsz/Topoductor/releases/latest/download/topo-windows-setup.exe) · [Linux AppImage](https://github.com/brandonhsz/Topoductor/releases/latest/download/topo-linux.AppImage) · [All builds](https://github.com/brandonhsz/Topoductor/releases/latest)
 
 _Or via a package manager:_
 
 ```bash
 # macOS (Homebrew)
-# Always use the full name; bare `orca` is an unrelated Plotly cask.
-brew install --cask stablyai/orca/orca
+# Always use the full name; bare `topo` is an unrelated Plotly cask.
+brew install --cask brandonhsz/Topoductor/topo
 # Upgrade an existing install
-brew upgrade --cask stablyai/orca/orca
+brew upgrade --cask brandonhsz/Topoductor/topo
 
-# Arch Linux (AUR) — or stably-orca-git to build from source
-yay -S stably-orca-bin
+# Arch Linux (AUR) — or topo-git to build from source
+yay -S topo-bin
 ```
 
 ### Mobile App — iOS, Android
 
 Pair with your desktop app to monitor and steer your agents from your phone.
 
-- **iOS:** [Download on the App Store](https://apps.apple.com/us/app/orca-ide/id6766130217)
+- **iOS:** [Download on the App Store](https://apps.apple.com/us/app/topo-ide/id6766130217)
 - **Android:** [Download APK](https://www.onorca.dev/download/android) · [Install guide](https://www.onorca.dev/docs/android-apk)
 
 ---
@@ -289,16 +289,16 @@ Pair with your desktop app to monitor and steer your agents from your phone.
 ## Community &amp; Support
 
 - **Discord:** Join the community on **[Discord](https://discord.gg/fzjDKHxv8Q)**.
-- **Twitter / X:** Follow **[@orca_build](https://x.com/orca_build)** for updates and announcements.
-- **WeChat:** Scan to join an Orca community WeChat group. If one group is full, join another.
+- **Twitter / X:** Follow **[@topo_build](https://x.com/topo_build)** for updates and announcements.
+- **WeChat:** Scan to join a Topo community WeChat group. If one group is full, join another.
 
-  <img src="docs/assets/wechat-qr-group14.jpg" alt="WeChat QR code for the Orca community" width="160" />
-  <img src="docs/assets/wechat-qr-group15.jpg" alt="WeChat QR code for the Orca community" width="160" />
-  <img src="docs/assets/wechat-qr-group16.jpg" alt="WeChat QR code for the Orca community" width="160" />
+  <img src="docs/assets/wechat-qr-group14.jpg" alt="WeChat QR code for the Topo community" width="160" />
+  <img src="docs/assets/wechat-qr-group15.jpg" alt="WeChat QR code for the Topo community" width="160" />
+  <img src="docs/assets/wechat-qr-group16.jpg" alt="WeChat QR code for the Topo community" width="160" />
 
-- **Feedback &amp; Ideas:** We ship fast. Missing something? [Request a new feature](https://github.com/stablyai/orca/issues).
-- **Privacy:** See the [privacy &amp; telemetry docs](https://www.onorca.dev/docs/telemetry) for what anonymous usage data Orca collects and how to opt out.
-- **Show Support:** [Star](https://github.com/stablyai/orca) this repo to follow along with our daily ships.
+- **Feedback &amp; Ideas:** We ship fast. Missing something? [Request a new feature](https://github.com/brandonhsz/Topoductor/issues).
+- **Privacy:** See the [privacy &amp; telemetry docs](https://www.onorca.dev/docs/telemetry) for what anonymous usage data Topo collects and how to opt out.
+- **Show Support:** [Star](https://github.com/brandonhsz/Topoductor) this repo to follow along with our daily ships.
 
 ---
 
@@ -306,12 +306,12 @@ Pair with your desktop app to monitor and steer your agents from your phone.
 
 Want to contribute or run locally? See our [CONTRIBUTING.md](.github/CONTRIBUTING.md) guide.
 
-<a href="https://github.com/stablyai/orca/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=stablyai/orca&max=500&columns=30" alt="Orca contributors" />
+<a href="https://github.com/brandonhsz/Topoductor/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=brandonhsz/Topoductor&max=500&columns=30" alt="Topo contributors" />
 </a>
 
 <p align="center">
-  <img src="docs/assets/star-history.png" alt="GitHub star history chart for stablyai/orca" width="880" />
+  <img src="docs/assets/star-history.png" alt="GitHub star history chart for brandonhsz/Topoductor" width="880" />
 </p>
 
 ## Signed Builds
@@ -320,4 +320,4 @@ Windows code signing sponsored/provided by [SignPath.io](https://signpath.io), c
 
 ## License
 
-Orca is free and open source under the [MIT License](LICENSE).
+Topo is free and open source under the [MIT License](LICENSE).

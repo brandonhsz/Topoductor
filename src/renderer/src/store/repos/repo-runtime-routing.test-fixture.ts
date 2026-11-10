@@ -27,7 +27,7 @@ export const remoteRepo: Repo = {
 
 export const sshRepo: Repo = {
   id: 'ssh-repo',
-  path: '/home/orca/project',
+  path: '/home/topo/project',
   displayName: 'SSH',
   badgeColor: '#222',
   addedAt: 3,
@@ -51,7 +51,7 @@ export const projectGroupsMoveProject: Mock = vi.fn()
 export const ptyKill: Mock = vi.fn()
 export const runtimeEnvironmentCall: Mock = vi.fn()
 export const runtimeEnvironmentTransportCall: Mock = vi.fn()
-export const orcaProfileFindProjectProfiles: Mock = vi.fn()
+export const topoProfileFindProjectProfiles: Mock = vi.fn()
 export const uiSet: Mock = vi.fn()
 export const ephemeralVmListRuntimes: Mock = vi.fn()
 export const ephemeralVmCleanup: Mock = vi.fn()
@@ -80,7 +80,7 @@ export function installReposRuntimeRoutingHarness(): void {
     projectsUpdate.mockReset()
     projectGroupsMoveProject.mockReset()
     ptyKill.mockReset()
-    orcaProfileFindProjectProfiles.mockReset()
+    topoProfileFindProjectProfiles.mockReset()
     runtimeEnvironmentCall.mockReset()
     runtimeEnvironmentTransportCall.mockReset()
     uiSet.mockReset()
@@ -113,8 +113,8 @@ export function installReposRuntimeRoutingHarness(): void {
         projectGroups: {
           moveProject: projectGroupsMoveProject
         },
-        orcaProfiles: {
-          findProjectProfiles: orcaProfileFindProjectProfiles
+        topoProfiles: {
+          findProjectProfiles: topoProfileFindProjectProfiles
         },
         pty: { kill: ptyKill },
         runtimeEnvironments: {

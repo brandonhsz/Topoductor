@@ -25,7 +25,7 @@ const COLLAPSED_INPUT_LABEL = new RegExp(
 export function planNativeChatTerminalDraftPickup(args: {
   tabId: string
   agent: TuiAgent
-  /** The tab's launch draft, unless one Orca typed still owns the input line. */
+  /** The tab's launch draft, unless one Topo typed still owns the input line. */
   current: NativeChatLaunchDraft | null
   /** The user's text on the agent's input line: '' when it is empty, null when unreadable. */
   terminalText: string | null
@@ -94,25 +94,25 @@ export function useNativeChatTerminalDraftPickup(args: {
   const ownsTabWideLaunchDraft = launchSeed?.ownsTabWideLaunchDraft === true
   const readTerminalDraft = launchSeed?.readTerminalDraft
   const pickedUpRef = useRef(false)
-  const waitedForOrcaDraftRef = useRef(false)
+  const waitedForTopoDraftRef = useRef(false)
   useEffect(() => {
     // Once per chat-view entry: a later read could catch a chat send's own body mid-paste.
     if (pickedUpRef.current) {
       return
     }
-    const orcaDraft = launchDraft && !launchDraft.fromTerminal ? launchDraft : null
-    const orcaDraftResolved = orcaDraft !== null && launchDraftResolved
-    // Whether a draft Orca typed was already sent is only known from a ready transcript.
-    if (orcaDraft && !orcaDraftResolved && !transcriptReady) {
-      waitedForOrcaDraftRef.current = true
+    const topoDraft = launchDraft && !launchDraft.fromTerminal ? launchDraft : null
+    const topoDraftResolved = topoDraft !== null && launchDraftResolved
+    // Whether a draft Topo typed was already sent is only known from a ready transcript.
+    if (topoDraft && !topoDraftResolved && !transcriptReady) {
+      waitedForTopoDraftRef.current = true
       return
     }
     pickedUpRef.current = true
-    // An unresolved draft Orca typed owns the line, and one gone unresolved was taken by a chat send whose clear may not have landed.
+    // An unresolved draft Topo typed owns the line, and one gone unresolved was taken by a chat send whose clear may not have landed.
     // The seed is keyed by tab, so only its owning pane may read one (#16695).
     if (
-      (orcaDraft && !orcaDraftResolved) ||
-      (waitedForOrcaDraftRef.current && !orcaDraft) ||
+      (topoDraft && !topoDraftResolved) ||
+      (waitedForTopoDraftRef.current && !topoDraft) ||
       !ownsTabWideLaunchDraft ||
       !readTerminalDraft ||
       !isTuiAgent(agent)

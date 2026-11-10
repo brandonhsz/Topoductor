@@ -15,7 +15,7 @@ import type {
 } from '../../../shared/skill-install-contract'
 import type { SkillCloudDownloadGrant } from '../../../shared/skill-cloud-contract'
 import { getRuntimeEnvironmentStatus } from '../../ipc/runtime-environments/runtime-environment-status-probe'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import { skillInstallFailureFromError } from '../install/skill-install-operation-error'
 import { recordSkillCapabilityAbsence } from '../observability/skill-operation-observability'
 import {
@@ -71,7 +71,7 @@ function bundleFailureResult(
 }
 
 export async function installSkillBundleCloudGrant(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   grant: SkillCloudDownloadGrant,
   input: SkillBundleCloudGrantInstallInput,
   signal?: AbortSignal,
@@ -142,7 +142,7 @@ export async function installSkillBundleCloudGrant(
 }
 
 export async function installSkillCloudGrant(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   grant: SkillCloudDownloadGrant,
   input: SkillCloudGrantInstallInput,
   signal?: AbortSignal

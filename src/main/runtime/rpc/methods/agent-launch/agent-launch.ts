@@ -13,7 +13,7 @@ import {
 } from '../../../../../shared/new-workspace/worktree-create-collision'
 import { executeAgentLaunch } from '../../../../agent-launch/agent-launch-executor'
 import { trackTerminalSpawnDispatch } from '../../../../agent-launch/agent-launch-not-started'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { defineMethod, type RpcContext } from '../../core'
 import {
   admitAgentLaunchOperation,
@@ -132,11 +132,11 @@ type ActiveAgentLaunch = {
 }
 
 const activeAgentLaunchesByRuntime = new WeakMap<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   Map<string, ActiveAgentLaunch>
 >()
 
-function activeAgentLaunchesFor(runtime: OrcaRuntimeService): Map<string, ActiveAgentLaunch> {
+function activeAgentLaunchesFor(runtime: TopoRuntimeService): Map<string, ActiveAgentLaunch> {
   let active = activeAgentLaunchesByRuntime.get(runtime)
   if (!active) {
     active = new Map()

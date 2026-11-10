@@ -117,7 +117,7 @@ async function openInExternalEditor(
 /**
  * Open a linked file with the OS default app unless that would run it. Launchable binaries and
  * bundles are revealed; launchable text (scripts) is revealed too, or with `textInEditor` left to
- * the caller to show in Orca. Main decides; the renderer only learns the outcome.
+ * the caller to show in Topo. Main decides; the renderer only learns the outcome.
  */
 async function openWithSystemDefault(
   pathValue: string,
@@ -196,7 +196,7 @@ export function registerShellHandlers(
     'shell:openFileUri',
     async (_event, rawUri: string, ownerHostId: unknown): Promise<ShellOpenFileResult> => {
       const filePath = localFileUriPath(rawUri)
-      // Callers of this channel show `open-in-editor` results in an Orca editor tab.
+      // Callers of this channel show `open-in-editor` results in a Topo editor tab.
       return filePath === null ? 'failed' : openWithSystemDefault(filePath, ownerHostId, true)
     }
   )

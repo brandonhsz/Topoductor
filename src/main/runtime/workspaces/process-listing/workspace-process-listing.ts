@@ -38,7 +38,7 @@ import { maybeAutoRenameWorkspaceOnFirstStructuredTurn } from '../../../agent-ho
 import { firstWorkRenameDeps } from '../../../agent-hooks/first-work/first-work-rename-runtime'
 import { createStructuredChatNamingHandler } from '../../../native-chat/structured-chat-naming'
 import { structuredChatNamingDeps } from '../../agent-session/naming/structured-chat-naming-runtime'
-import { getProfileUserDataPath } from '../../../orca-profiles/profile-storage-paths'
+import { getProfileUserDataPath } from '../../../topo-profiles/profile-storage-paths'
 import { LOCAL_EXECUTION_HOST_ID } from '../../../../shared/execution-host'
 import { chatWorkerTurnStopReporter } from '../../orchestration/workers/turn-stops/chat-worker-turn-stops'
 import { buildWorktreeListingPage } from '../catalog/worktree-listing-host-scope'
@@ -62,7 +62,7 @@ import { prWatchWorkspaceSources } from '../../agent-session/pr-watch-workspace-
 import { startPRWatchRuntime } from '../../agent-session/pr-watch-runtime'
 const DEFAULT_WORKTREE_PS_LIMIT = 200
 
-export abstract class OrcaRuntimeWithGetWorktreePs extends RuntimeChatWorkerEvents {
+export abstract class TopoRuntimeWithGetWorktreePs extends RuntimeChatWorkerEvents {
   protected readonly workerAutoReleaseActivity = new WorkerAutoReleaseActivity(
     () => this._orchestrationDb
   )

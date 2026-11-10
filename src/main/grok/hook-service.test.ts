@@ -47,14 +47,14 @@ type WindowsGrokHookRun = {
 
 function createWindowsGrokHookEnvironment(grokHome?: string): NodeJS.ProcessEnv {
   const env = { ...process.env } as NodeJS.ProcessEnv
-  delete env.ORCA_AGENT_HOOK_ENDPOINT
+  delete env.TOPO_AGENT_HOOK_ENDPOINT
   if (grokHome === undefined) {
     delete env.GROK_HOME
   } else {
     env.GROK_HOME = grokHome
   }
-  env.ORCA_AGENT_HOOK_TOKEN = 'test-token'
-  env.ORCA_PANE_KEY = 'pane-test'
+  env.TOPO_AGENT_HOOK_TOKEN = 'test-token'
+  env.TOPO_PANE_KEY = 'pane-test'
   return env
 }
 
@@ -86,7 +86,7 @@ async function runWindowsGrokHook(
   if (!address || typeof address === 'string') {
     throw new Error('Could not resolve Windows Grok hook test listener port')
   }
-  env.ORCA_AGENT_HOOK_PORT = String(address.port)
+  env.TOPO_AGENT_HOOK_PORT = String(address.port)
   try {
     const result = await new Promise<Omit<WindowsGrokHookRun, 'request'>>((resolve, reject) => {
       const child = spawn(process.env.ComSpec ?? 'cmd.exe', ['/d', '/c', scriptPath], {
@@ -115,7 +115,7 @@ describe('GrokHookService', () => {
   let homeDir: string
 
   beforeEach(() => {
-    homeDir = mkdtempSync(join(tmpdir(), 'orca-grok-home-'))
+    homeDir = mkdtempSync(join(tmpdir(), 'topo-grok-home-'))
     homedirMock.mockReturnValue(homeDir)
   })
 
@@ -213,7 +213,7 @@ describe('GrokHookService', () => {
 
   it('does not restore a user-cleared global hook config on the next launch', () => {
     const service = new GrokHookService()
-    const configPath = join(homeDir, '.grok', 'hooks', 'orca-status.json')
+    const configPath = join(homeDir, '.grok', 'hooks', 'topo-status.json')
     const userClearedConfig = '{  "hooks" : {}  }\n'
 
     expect(service.install().state).toBe('installed')
@@ -226,7 +226,7 @@ describe('GrokHookService', () => {
 
   it('preserves a user-cleared config during session cleanup', () => {
     const service = new GrokHookService()
-    const configPath = join(homeDir, '.grok', 'hooks', 'orca-status.json')
+    const configPath = join(homeDir, '.grok', 'hooks', 'topo-status.json')
     const userClearedConfig = '{  "hooks" : {}  }\n'
 
     expect(service.install().state).toBe('installed')
@@ -238,7 +238,7 @@ describe('GrokHookService', () => {
 
   it('removes the managed config even when a non-hook key remains', () => {
     const service = new GrokHookService()
-    const configPath = join(homeDir, '.grok', 'hooks', 'orca-status.json')
+    const configPath = join(homeDir, '.grok', 'hooks', 'topo-status.json')
 
     expect(service.install().state).toBe('installed')
     const withSchema = JSON.parse(readFileSync(configPath, 'utf8')) as Record<string, unknown>
@@ -255,7 +255,7 @@ describe('GrokHookService', () => {
 
   it('restores a user-cleared config when the user turns hooks back on', () => {
     const service = new GrokHookService()
-    const configPath = join(homeDir, '.grok', 'hooks', 'orca-status.json')
+    const configPath = join(homeDir, '.grok', 'hooks', 'topo-status.json')
     const userCleared = '{  "hooks" : {}  }\n'
 
     expect(service.install().state).toBe('installed')
@@ -270,8 +270,8 @@ describe('GrokHookService', () => {
   // Strip managed entries through symlinks so user dotfile links stay connected.
   it('writes through a symlinked config instead of destroying the link', async () => {
     const service = new GrokHookService()
-    const configPath = join(homeDir, '.grok', 'hooks', 'orca-status.json')
-    const realConfig = join(homeDir, 'dotfiles', 'orca-status.json')
+    const configPath = join(homeDir, '.grok', 'hooks', 'topo-status.json')
+    const realConfig = join(homeDir, 'dotfiles', 'topo-status.json')
 
     expect(service.install().state).toBe('installed')
     mkdirSync(dirname(realConfig), { recursive: true })
@@ -287,8 +287,8 @@ describe('GrokHookService', () => {
 
   it('respects an empty user-managed symlink as an opt-out', () => {
     const service = new GrokHookService()
-    const configPath = join(homeDir, '.grok', 'hooks', 'orca-status.json')
-    const realConfig = join(homeDir, 'dotfiles', 'orca-status.json')
+    const configPath = join(homeDir, '.grok', 'hooks', 'topo-status.json')
+    const realConfig = join(homeDir, 'dotfiles', 'topo-status.json')
     const userCleared = '{"hooks":{}}\n'
     mkdirSync(dirname(configPath), { recursive: true })
     mkdirSync(dirname(realConfig), { recursive: true })
@@ -302,8 +302,8 @@ describe('GrokHookService', () => {
 
   it('writes through a symlinked config on the sync remove path too', () => {
     const service = new GrokHookService()
-    const configPath = join(homeDir, '.grok', 'hooks', 'orca-status.json')
-    const realConfig = join(homeDir, 'dotfiles', 'orca-status.json')
+    const configPath = join(homeDir, '.grok', 'hooks', 'topo-status.json')
+    const realConfig = join(homeDir, 'dotfiles', 'topo-status.json')
 
     expect(service.install().state).toBe('installed')
     mkdirSync(dirname(realConfig), { recursive: true })
@@ -317,11 +317,11 @@ describe('GrokHookService', () => {
     expect(service.getStatus().managedHooksPresent).toBe(false)
   })
 
-  // Identify Orca's prior emptying separately from a deliberate user opt-out after restart.
+  // Identify Topo's prior emptying separately from a deliberate user opt-out after restart.
   it('reinstalls into a symlinked config on the launch after a quit', async () => {
     const service = new GrokHookService()
-    const configPath = join(homeDir, '.grok', 'hooks', 'orca-status.json')
-    const realConfig = join(homeDir, 'dotfiles', 'orca-status.json')
+    const configPath = join(homeDir, '.grok', 'hooks', 'topo-status.json')
+    const realConfig = join(homeDir, 'dotfiles', 'topo-status.json')
 
     expect(service.install().state).toBe('installed')
     mkdirSync(dirname(realConfig), { recursive: true })
@@ -337,8 +337,8 @@ describe('GrokHookService', () => {
     expect(service.getStatus().managedHooksPresent).toBe(true)
   })
 
-  it('preserves user-authored hook entries in the Orca Grok config file', () => {
-    const configPath = join(homeDir, '.grok', 'hooks', 'orca-status.json')
+  it('preserves user-authored hook entries in the Topo Grok config file', () => {
+    const configPath = join(homeDir, '.grok', 'hooks', 'topo-status.json')
     mkdirSync(dirname(configPath), { recursive: true })
     writeFileSync(
       configPath,

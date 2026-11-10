@@ -13,7 +13,7 @@ async function fixture(): Promise<{
   canonicalPath: string
   packageDigest: string
 }> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-skill-alias-repair-test-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-skill-alias-repair-test-'))
   roots.push(root)
   const canonicalRoot = join(root, 'canonical')
   const canonicalPath = join(canonicalRoot, 'private-skill')
@@ -61,7 +61,7 @@ afterEach(async () => {
 })
 
 describe('skill provider alias reconciliation', () => {
-  it('repairs a broken Orca-owned alias', async () => {
+  it('repairs a broken Topo-owned alias', async () => {
     const value = await fixture()
     const providerRoot = join(value.root, 'provider')
     const placementPath = join(providerRoot, 'private-skill')

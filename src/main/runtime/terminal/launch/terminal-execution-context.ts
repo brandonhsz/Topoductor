@@ -1,6 +1,6 @@
-import { OrcaRuntimeWithRegisterPty } from '../lifecycle/pty-registration'
+import { TopoRuntimeWithRegisterPty } from '../lifecycle/pty-registration'
 
-export abstract class OrcaRuntimeWithPreparePtyExecutionContext extends OrcaRuntimeWithRegisterPty {
+export abstract class TopoRuntimeWithPreparePtyExecutionContext extends TopoRuntimeWithRegisterPty {
   protected abstract disposeHeadlessTerminal(ptyId: string): void
 
   protected abstract replaceHeadlessTerminalAfterExecutionContextChange(ptyId: string): void

@@ -137,7 +137,7 @@ export function createPtyIpcSuiteEnvironment(): PtyIpcSuiteEnvironment {
     chmodSyncMock.mockReset()
     linuxCliShimMock.mockReset()
     linuxCliShimMock.mockImplementation((options: { userDataPath: string }) =>
-      join(options.userDataPath, 'linux-orca-cli-shim')
+      join(options.userDataPath, 'linux-topo-cli-shim')
     )
     getPathMock.mockReset()
     loginPreflightExecFileMock.mockReset()
@@ -198,37 +198,37 @@ export function createPtyIpcSuiteEnvironment(): PtyIpcSuiteEnvironment {
         }
       }
     })
-    getPathMock.mockReturnValue('/tmp/orca-user-data')
+    getPathMock.mockReturnValue('/tmp/topo-user-data')
     // Wrapper roots must use the same userData path as the mocked app.
-    process.env.ORCA_USER_DATA_PATH = '/tmp/orca-user-data'
+    process.env.TOPO_USER_DATA_PATH = '/tmp/topo-user-data'
     existsSyncMock.mockReturnValue(true)
     // Generated shell wrapper validation rejects empty files.
     statSyncMock.mockReturnValue({ isDirectory: () => true, mode: 0o755, size: 1 })
     readFileSyncMock.mockReturnValue('')
     openCodeBuildPtyEnvMock.mockImplementation((_ptyId: string, existingConfigDir?: string) => ({
-      ORCA_OPENCODE_HOOK_PORT: '4567',
-      ORCA_OPENCODE_HOOK_TOKEN: 'opencode-token',
-      ORCA_OPENCODE_PTY_ID: 'test-pty',
+      TOPO_OPENCODE_HOOK_PORT: '4567',
+      TOPO_OPENCODE_HOOK_TOKEN: 'opencode-token',
+      TOPO_OPENCODE_PTY_ID: 'test-pty',
       OPENCODE_CONFIG_DIR: existingConfigDir
-        ? '/tmp/orca-opencode-overlay'
-        : '/tmp/orca-opencode-config'
+        ? '/tmp/topo-opencode-overlay'
+        : '/tmp/topo-opencode-config'
     }))
     openCode2BuildPtyEnvMock.mockImplementation((_ptyId: string, existingConfigDir?: string) => ({
-      ORCA_OPENCODE_HOOK_PORT: '4567',
-      ORCA_OPENCODE_HOOK_TOKEN: 'opencode2-token',
-      ORCA_OPENCODE_PTY_ID: 'test-pty',
+      TOPO_OPENCODE_HOOK_PORT: '4567',
+      TOPO_OPENCODE_HOOK_TOKEN: 'opencode2-token',
+      TOPO_OPENCODE_PTY_ID: 'test-pty',
       OPENCODE_CONFIG_DIR: existingConfigDir
-        ? '/tmp/orca-opencode2-overlay'
-        : '/tmp/orca-opencode2-config'
+        ? '/tmp/topo-opencode2-overlay'
+        : '/tmp/topo-opencode2-config'
     }))
     mimoCodeBuildPtyEnvMock.mockImplementation((_ptyId: string, existingConfigDir?: string) => ({
       MIMOCODE_CONFIG_DIR: existingConfigDir
-        ? '/tmp/orca-mimocode-overlay'
-        : '/tmp/orca-mimocode-shared'
+        ? '/tmp/topo-mimocode-overlay'
+        : '/tmp/topo-mimocode-shared'
     }))
     buildAgentHookEnvMock.mockReturnValue({
-      ORCA_AGENT_HOOK_PORT: '5678',
-      ORCA_AGENT_HOOK_TOKEN: 'agent-token'
+      TOPO_AGENT_HOOK_PORT: '5678',
+      TOPO_AGENT_HOOK_TOKEN: 'agent-token'
     })
     piBuildPtyEnvMock.mockImplementation(
       (
@@ -242,13 +242,13 @@ export function createPtyIpcSuiteEnvironment(): PtyIpcSuiteEnvironment {
           // Bare shells keep OMP status under userData without creating ~/.omp (#10196).
           if (!existingAgentDir && !materializeDefaultHome) {
             return {
-              ORCA_OMP_STATUS_EXTENSION:
-                '/tmp/orca-user-data/omp-managed-status-extension/orca-agent-status.ts'
+              TOPO_OMP_STATUS_EXTENSION:
+                '/tmp/topo-user-data/omp-managed-status-extension/topo-agent-status.ts'
             }
           }
           return {
-            ORCA_OMP_SOURCE_AGENT_DIR: existingAgentDir ?? '/tmp/default-omp-agent',
-            ORCA_OMP_STATUS_EXTENSION: `${existingAgentDir ?? '/tmp/default-omp-agent'}/extensions/orca-agent-status.ts`
+            TOPO_OMP_SOURCE_AGENT_DIR: existingAgentDir ?? '/tmp/default-omp-agent',
+            TOPO_OMP_STATUS_EXTENSION: `${existingAgentDir ?? '/tmp/default-omp-agent'}/extensions/topo-agent-status.ts`
           }
         }
         if (kind === 'prime-agent') {
@@ -256,14 +256,14 @@ export function createPtyIpcSuiteEnvironment(): PtyIpcSuiteEnvironment {
             return {}
           }
           return {
-            ORCA_PRIME_AGENT_SOURCE_AGENT_DIR: existingAgentDir ?? '/tmp/default-prime-agent'
+            TOPO_PRIME_AGENT_SOURCE_AGENT_DIR: existingAgentDir ?? '/tmp/default-prime-agent'
           }
         }
         if (!existingAgentDir && !materializeDefaultHome) {
           return {}
         }
         return {
-          ORCA_PI_SOURCE_AGENT_DIR: existingAgentDir ?? '/tmp/default-pi-agent'
+          TOPO_PI_SOURCE_AGENT_DIR: existingAgentDir ?? '/tmp/default-pi-agent'
         }
       }
     )

@@ -1,6 +1,6 @@
-import { ASSIGNMENT_LIMITS } from '@orca-cloud/relay-contract/assignment-invariants'
-import { RELAY_CLOSE_CODE } from '@orca-cloud/relay-contract/close-codes'
-import { RELAY_DEFAULT_REGION, RELAY_REGIONS, type RelayRegion } from '@orca-cloud/relay-contract/relay-regions'
+import { ASSIGNMENT_LIMITS } from '@topo-cloud/relay-contract/assignment-invariants'
+import { RELAY_CLOSE_CODE } from '@topo-cloud/relay-contract/close-codes'
+import { RELAY_DEFAULT_REGION, RELAY_REGIONS, type RelayRegion } from '@topo-cloud/relay-contract/relay-regions'
 import type { AssignOptions, RelayAssignment } from '../assignment-store.js'
 import { CELL_RESERVE_TTL_MS } from '../../cell/reservations/cell-reserve-contract.js'
 import type { CellReserveClient } from '../../cell/reservations/cell-reserve-client.js'
@@ -315,7 +315,7 @@ export class ReserveAssignment {
     this.summary.drainReplaced[fromCellId] = (this.summary.drainReplaced[fromCellId] ?? 0) + 1
     this.log(
       JSON.stringify({
-        event: 'orca_relay_reserve_drain_replaced',
+        event: 'topo_relay_reserve_drain_replaced',
         fromCellId,
         toCellId: placed.cellId,
         region: placed.region
@@ -727,7 +727,7 @@ export class ReserveAssignment {
         joinedAt: seat.joinedAt
       })
       .then((outcome) => this.settleDemote(seat, via, outcome))
-      .catch(() => console.warn('[orca-relay] reserve demote outcome not recorded'))
+      .catch(() => console.warn('[topo-relay] reserve demote outcome not recorded'))
     return true
   }
 
@@ -735,7 +735,7 @@ export class ReserveAssignment {
   private settleDemote(seat: DemotedSeat, via: DemoteVia, outcome: string | null): void {
     this.log(
       JSON.stringify({
-        event: 'orca_relay_reserve_demote_outcome',
+        event: 'topo_relay_reserve_demote_outcome',
         via,
         cellId: seat.cellId,
         epoch: seat.epoch,
@@ -768,7 +768,7 @@ export class ReserveAssignment {
     this.summary.supersedes += 1
     this.log(
       JSON.stringify({
-        event: 'orca_relay_reserve_supersede',
+        event: 'topo_relay_reserve_supersede',
         relayHostIdDigest: relayHostLogDigest(seat.relayHostId),
         fromCellId: seat.cellId,
         toCellId,
@@ -797,7 +797,7 @@ export class ReserveAssignment {
     const { spills, rehomes, ...counts } = this.summary
     this.log(
       JSON.stringify({
-        event: 'orca_relay_reserve_placement_summary',
+        event: 'topo_relay_reserve_placement_summary',
         mode: this.input.mode,
         ...counts,
         dryRun: { outcomes, count: latenciesMs.length, p50Ms: percentile(0.5), p99Ms: percentile(0.99), cells }
@@ -805,11 +805,11 @@ export class ReserveAssignment {
     )
     for (const [key, count] of Object.entries(spills)) {
       const [fromRegion, toRegion] = key.split('>')
-      this.log(JSON.stringify({ event: 'orca_relay_reserve_spill', fromRegion, toRegion, count }))
+      this.log(JSON.stringify({ event: 'topo_relay_reserve_spill', fromRegion, toRegion, count }))
     }
     for (const [key, record] of Object.entries(rehomes)) {
       const [fromRegion, toRegion] = key.split('>')
-      this.log(JSON.stringify({ event: 'orca_relay_reserve_rehome', fromRegion, toRegion, ...record }))
+      this.log(JSON.stringify({ event: 'topo_relay_reserve_rehome', fromRegion, toRegion, ...record }))
     }
     this.summary = emptySummary()
   }

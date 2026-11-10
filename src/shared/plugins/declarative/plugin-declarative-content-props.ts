@@ -14,11 +14,11 @@ import {
   tone
 } from './plugin-declarative-prop-schemas'
 
-/** Content and feedback components added in catalog 2 (Orca 1.4.247). */
+/** Content and feedback components added in catalog 2 (Topo 1.4.247). */
 
 const documentText = z.string().max(LIMITS.maxDocumentLength)
 
-// The formats Orca checks from their header before any decoder runs (plugin-image-format.ts).
+// The formats Topo checks from their header before any decoder runs (plugin-image-format.ts).
 const IMAGE_EXTENSION = /\.(?:png|jpe?g|webp)$/i
 
 /** A file inside the plugin: relative, `/`-separated, no `.`/`..` segments, never a URL. */
@@ -35,7 +35,7 @@ const markdownProps = z.object({ content: documentText }).strict()
 const codeViewProps = z
   .object({
     code: documentText,
-    /** A language id Orca highlights (built in or from a syntax plugin); unknown ones stay plain. */
+    /** A language id Topo highlights (built in or from a syntax plugin); unknown ones stay plain. */
     language: z
       .string()
       .regex(/^[A-Za-z0-9_+#.-]{1,64}$/)
@@ -79,7 +79,7 @@ const keyValueProps = z
 const calloutProps = z.object({ tone, title: label.optional(), icon: icon.optional() }).strict()
 const relativeTimeProps = z
   .object({
-    /** Milliseconds since the epoch (`Date.now()`); Orca keeps the words current. */
+    /** Milliseconds since the epoch (`Date.now()`); Topo keeps the words current. */
     at: pluginRelativeTimeAt,
     format: z.enum(PLUGIN_RELATIVE_TIME_FORMATS).optional(),
     tone,

@@ -111,10 +111,10 @@ beforeEach(() => {
   fsMockState.failSymlink = false
   fsMockState.trackedReadCount = 0
   fsMockState.trackedReadPath = null
-  fakeHomeDir = mkdtempSync(join(tmpdir(), 'orca-codex-resource-home-'))
-  userDataDir = mkdtempSync(join(tmpdir(), 'orca-codex-resource-user-data-'))
-  previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-  process.env.ORCA_USER_DATA_PATH = userDataDir
+  fakeHomeDir = mkdtempSync(join(tmpdir(), 'topo-codex-resource-home-'))
+  userDataDir = mkdtempSync(join(tmpdir(), 'topo-codex-resource-user-data-'))
+  previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+  process.env.TOPO_USER_DATA_PATH = userDataDir
   homedirMock.mockReturnValue(fakeHomeDir)
   getPathMock.mockImplementation((name: string) => {
     if (name === 'userData') {
@@ -129,9 +129,9 @@ afterEach(() => {
   rmSync(fakeHomeDir, { recursive: true, force: true })
   rmSync(userDataDir, { recursive: true, force: true })
   if (previousUserDataPath === undefined) {
-    delete process.env.ORCA_USER_DATA_PATH
+    delete process.env.TOPO_USER_DATA_PATH
   } else {
-    process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+    process.env.TOPO_USER_DATA_PATH = previousUserDataPath
   }
   vi.clearAllMocks()
 })
@@ -192,20 +192,20 @@ describe('syncSystemCodexResourcesIntoManagedHome', () => {
 
     // Codex loads sorted paths and later network/host_executable rules win, so account files must sort last.
     expect(readdirSync(perAccountRulesPath).sort()).toEqual([
-      '_orca-global-default.rules',
+      '_topo-global-default.rules',
       'default.rules'
     ])
     expect(readFileSync(join(perAccountRulesPath, 'default.rules'), 'utf-8')).toBe(
       'account approval\n'
     )
-    expect(readFileSync(join(perAccountRulesPath, '_orca-global-default.rules'), 'utf-8')).toBe(
+    expect(readFileSync(join(perAccountRulesPath, '_topo-global-default.rules'), 'utf-8')).toBe(
       'global\n'
     )
 
     rmSync(join(systemRulesPath, 'default.rules'))
     syncSystemCodexResourcesIntoManagedHome(dirname(perAccountRulesPath))
 
-    expect(existsSync(join(perAccountRulesPath, '_orca-global-default.rules'))).toBe(false)
+    expect(existsSync(join(perAccountRulesPath, '_topo-global-default.rules'))).toBe(false)
     expect(readFileSync(join(perAccountRulesPath, 'default.rules'), 'utf-8')).toBe(
       'account approval\n'
     )
@@ -224,7 +224,7 @@ describe('syncSystemCodexResourcesIntoManagedHome', () => {
 
     syncSystemCodexResourcesIntoManagedHome()
 
-    expect(existsSync(join(systemRulesPath, '_orca-global-default.rules'))).toBe(false)
+    expect(existsSync(join(systemRulesPath, '_topo-global-default.rules'))).toBe(false)
   })
 
   // Windows file symlinks require developer mode; the integration test still checks real copies.
@@ -234,7 +234,7 @@ describe('syncSystemCodexResourcesIntoManagedHome', () => {
     const managedHomePath = join(userDataDir, 'wsl-runtime-home')
     writeFileSync(join(systemHomePath, 'AGENTS.md'), 'system\n')
     mkdirSync(managedHomePath, { recursive: true })
-    writeFileSync(join(managedHomePath, '.orca-resource-copies'), 'blocks marker directory\n')
+    writeFileSync(join(managedHomePath, '.topo-resource-copies'), 'blocks marker directory\n')
 
     syncCodexGlobalInstructionsIntoManagedHome({ systemHomePath, managedHomePath })
 

@@ -7,10 +7,10 @@ import { resolveAiVaultSessionResumeState } from './ai-vault-session-resume'
 
 function makeWorktree(overrides: Partial<Worktree> = {}): Worktree {
   return {
-    id: 'repo-1::/repo/orca',
+    id: 'repo-1::/repo/topo',
     repoId: 'repo-1',
-    displayName: 'orca',
-    path: '/repo/orca',
+    displayName: 'topo',
+    path: '/repo/topo',
     head: 'abc123',
     branch: 'main',
     isBare: false,
@@ -31,8 +31,8 @@ function makeWorktree(overrides: Partial<Worktree> = {}): Worktree {
 function makeRepo(overrides: Partial<Repo> = {}): Repo {
   return {
     id: 'repo-1',
-    path: '/repo/orca',
-    displayName: 'orca',
+    path: '/repo/topo',
+    displayName: 'topo',
     badgeColor: '#000000',
     addedAt: 1,
     ...overrides
@@ -44,13 +44,13 @@ function makeWorktreeInfo(
 ): AiVaultSessionWorktreeInfo {
   return {
     status,
-    label: 'orca',
-    path: '/repo/orca',
-    ...(status === 'unavailable' ? {} : { worktreeId: 'repo-1::/repo/orca' })
+    label: 'topo',
+    path: '/repo/topo',
+    ...(status === 'unavailable' ? {} : { worktreeId: 'repo-1::/repo/topo' })
   }
 }
 
-const HOST_SESSION_FILE = '/Users/ada/.claude/projects/-repo-orca/session-1.jsonl'
+const HOST_SESSION_FILE = '/Users/ada/.claude/projects/-repo-topo/session-1.jsonl'
 
 describe('resolveAiVaultSessionResumeState', () => {
   it('prefers the session worktree over the active workspace', () => {
@@ -67,7 +67,7 @@ describe('resolveAiVaultSessionResumeState', () => {
       })
     ).toEqual({
       blocked: false,
-      worktreeId: 'repo-1::/repo/orca',
+      worktreeId: 'repo-1::/repo/topo',
       usesSessionWorktree: true
     })
   })

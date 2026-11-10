@@ -7,7 +7,7 @@ import { createBrowserRoutePartitionBindingStoreFake } from '../../routing/parti
 import { BrowserRouteSessionRegistry } from '../../routing/sessions/browser-route-session-registry'
 import { BrowserRouteWebContentsRegistry } from '../../routing/guest-authority/browser-route-webcontents-registry'
 
-const partition = `persist:orca-browser-v1-${'b'.repeat(64)}`
+const partition = `persist:topo-browser-v1-${'b'.repeat(64)}`
 
 describe('BrowserClientPageCommandExecutor integration', () => {
   it('composes exact route, Session, navigation, and spontaneous destroyed cleanup', async () => {
@@ -45,7 +45,7 @@ describe('BrowserClientPageCommandExecutor integration', () => {
     })
     const rendererRekey = vi.fn(async () => {})
     const executor = new BrowserClientPageCommandExecutor({
-      orcaProfileId: 'orca-profile-a',
+      topoProfileId: 'topo-profile-a',
       authorityConnectionIdentity: 'authority-record-a',
       pairingAuthorityConnectionIdentity: 'pairing-authority-record-a',
       legacyAuthorityConnectionIdentity: 'legacy-authority-record-a',

@@ -17,7 +17,7 @@ import {
 } from '../../../../../shared/agent-session/agent-session-runtime-capabilities'
 import type { RuntimeCapability } from '../../../../../shared/protocol-version'
 import { attachFingerprintFields } from '../../../../native-chat/agent-session-wire/acquisition/structured-agent-session-attach'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import type { RpcRequest, RpcResponse } from '../../core'
 import { RpcDispatcher } from '../../dispatcher'
 import { STRUCTURED_AGENT_SESSION_METHODS } from './structured-agent-session'
@@ -26,7 +26,7 @@ import {
   stopStructuredAgentSessionRuntime
 } from '../../../agent-session/structured-agent-session-runtime'
 import { createStructuredAgentSessionLogger } from '../../../../native-chat/agent-session-wire/host/structured-agent-session-logger'
-import { scriptedCodexTransport } from '../../../orca-runtime-tests/scripted-codex-transport.test-fixture'
+import { scriptedCodexTransport } from '../../../topo-runtime-tests/scripted-codex-transport.test-fixture'
 
 export const SESSION = 'session-integration-1'
 export const THREAD = 'thread-integration'
@@ -190,7 +190,7 @@ export async function openStructuredCodexRpcHarness(
     ...transport
   }
   let operations = 0
-  const root = await mkdtemp(join(tmpdir(), 'orca-structured-integration-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-structured-integration-'))
   const codex = fakeCodex()
   // Use ledger-shaped ids with its clock; future-dated ids are refused.
   const operationId = (): string => {
@@ -246,7 +246,7 @@ export async function openStructuredCodexRpcHarness(
     }))
   }
   const dispatcher = new RpcDispatcher({
-    runtime: runtime as unknown as OrcaRuntimeService,
+    runtime: runtime as unknown as TopoRuntimeService,
     methods: STRUCTURED_AGENT_SESSION_METHODS
   })
   const call: StructuredCodexRpcHarness['call'] = async (method, params) => {

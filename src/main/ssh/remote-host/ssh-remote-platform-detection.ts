@@ -18,7 +18,7 @@ import { isSshSessionLimitError } from '../connection/ssh-session-limit-error'
 
 import { powerShellCommand } from '../remote-exec/ssh-remote-powershell'
 
-const PLATFORM_PROBE_MARKER = '__ORCA_REMOTE_PLATFORM__'
+const PLATFORM_PROBE_MARKER = '__TOPO_REMOTE_PLATFORM__'
 /** The probe's marker-backed line starts with this. */
 export const UNAME_PLATFORM_PROBE_MARKER = `${PLATFORM_PROBE_MARKER} `
 const MAX_UNAME_FIELD_CHARS = 64

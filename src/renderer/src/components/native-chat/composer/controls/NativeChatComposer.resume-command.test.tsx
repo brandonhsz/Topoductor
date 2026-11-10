@@ -160,7 +160,7 @@ const USAGE: CommandItem = {
   name: 'usage',
   token: '/usage',
   skillCollision: false,
-  orcaOwned: true
+  topoOwned: true
 }
 
 const MODE: SessionOptionDescriptor = {
@@ -364,7 +364,7 @@ describe('structured composer control picks', () => {
       name: 'default',
       token: '/default',
       skillCollision: false,
-      orcaOwned: true
+      topoOwned: true
     }
     // No rerender: this callback still holds the enabled descriptor from before Plan was issued.
     act(() => choose(leave))

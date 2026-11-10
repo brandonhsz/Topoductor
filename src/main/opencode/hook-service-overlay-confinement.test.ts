@@ -20,7 +20,7 @@ let source: string
 let service: OpenCodeHookService
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-overlay-confinement-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-overlay-confinement-'))
   source = join(root, 'source')
   mkdirSync(join(source, 'plugins'), { recursive: true })
   writeFileSync(join(source, 'plugins', 'user.js'), 'export default {}')
@@ -35,7 +35,7 @@ beforeEach(() => {
     getAppMetrics: () => []
   })
   service = new OpenCodeHookService({
-    pluginFileName: 'orca-test.js',
+    pluginFileName: 'topo-test.js',
     legacyHooksDir: 'legacy-test',
     overlayDir: 'overlay-test',
     pluginSource: () => 'export default {}'

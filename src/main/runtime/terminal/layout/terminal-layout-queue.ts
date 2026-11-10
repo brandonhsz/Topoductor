@@ -1,7 +1,7 @@
-import { OrcaRuntimeWithReclaimTerminalForDesktop } from './terminal-desktop-reclaim'
+import { TopoRuntimeWithReclaimTerminalForDesktop } from './terminal-desktop-reclaim'
 import type { ApplyLayoutResult, PtyLayoutState, PtyLayoutTarget } from './terminal-layout-state'
 
-export abstract class OrcaRuntimeWithPickMostRecentActor extends OrcaRuntimeWithReclaimTerminalForDesktop {
+export abstract class TopoRuntimeWithPickMostRecentActor extends TopoRuntimeWithReclaimTerminalForDesktop {
   protected abstract applyLayout(ptyId: string, target: PtyLayoutTarget): Promise<ApplyLayoutResult>
 
   // Most-recent mobile actor owns phone-fit dimensions (docs/mobile-presence-lock.md).

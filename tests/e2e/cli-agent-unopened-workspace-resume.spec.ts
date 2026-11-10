@@ -4,10 +4,10 @@ import path from 'node:path'
 import { RuntimeClient } from '../../src/cli/runtime-client'
 import { makePaneKey } from '../../src/shared/workspace-layout/stable-pane-id'
 import { PROTOCOL_VERSION } from '../../src/main/daemon/protocol/daemon-protocol-version'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { TEST_REPO_PATH_FILE } from './global-setup'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
-import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/orca-restart'
+import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/topo-restart'
 import { emitCodexHookStatus, readHookEndpoint } from './helpers/agent-hook-endpoint'
 import {
   mutateStoppedProfileState,
@@ -62,7 +62,7 @@ test('a CLI agent in a never-opened workspace resumes after quit and relaunch', 
   writeFileSync(resumeLog, '')
   writeFileSync(
     fakeAgent,
-    `#!/bin/sh\nprintf '%s\\n' "$ORCA_PANE_KEY" >> '${resumeLog}'\nexec sleep 3600\n`
+    `#!/bin/sh\nprintf '%s\\n' "$TOPO_PANE_KEY" >> '${resumeLog}'\nexec sleep 3600\n`
   )
   chmodSync(fakeAgent, 0o755)
   const resumedPaneKeys = (): string[] =>

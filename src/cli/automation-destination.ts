@@ -9,7 +9,7 @@ import type { RuntimeWorktreeRecord } from '../shared/runtime-types'
 import type { SshTargetSummary } from '../shared/ssh-types'
 import type { Repo } from '../shared/repo-types'
 import { getRepoRoutingConnectionId } from '../shared/execution-host'
-import { getManagedOrcadSshTargetId } from '../shared/execution-host/managed-orcad-execution-host'
+import { getManagedTopodSshTargetId } from '../shared/execution-host/managed-topod-execution-host'
 import { listEnvironments } from '../shared/remote-runtime/host-store/runtime-environment-store'
 import { RuntimeClient } from './runtime-client'
 import { fetchSshTargetSummaries } from './host-selector-alternatives'
@@ -88,7 +88,7 @@ export async function resolveAutomationDestination(
   return (await resolveAutomationWriteTarget(client, target)).destination
 }
 
-/** A local CLI creates a managed SSH host's automation on its Orca server (#24863), by the ids both share. */
+/** A local CLI creates a managed SSH host's automation on its Topo server (#24863), by the ids both share. */
 export async function routeAutomationCreate<
   TCreate extends { repo?: string; workspace?: string; runContext?: unknown }
 >(
@@ -102,7 +102,7 @@ export async function routeAutomationCreate<
   const server =
     repo && connectionId && client.isRemote === false
       ? listEnvironments(client.userDataPath).find(
-          (environment) => getManagedOrcadSshTargetId(environment) === connectionId
+          (environment) => getManagedTopodSshTargetId(environment) === connectionId
         )
       : undefined
   if (!repo || !server) {

@@ -31,9 +31,9 @@ vi.mock('../runtime/types', () => {
 vi.mock('../runtime-client', async () => {
   class RuntimeClient {
     call = callMock
-    userDataPath = '/tmp/orca-dev-profile'
+    userDataPath = '/tmp/topo-dev-profile'
     getCliStatus = vi.fn()
-    openOrca = vi.fn()
+    openTopo = vi.fn()
   }
 
   const { RuntimeClientError, RuntimeRpcFailureError } =
@@ -49,7 +49,7 @@ vi.mock('../runtime-client', async () => {
 import { main } from '../index'
 import { okFixture, queueFixtures } from '../test-fixtures'
 
-describe('orca cli browser page targeting', () => {
+describe('topo cli browser page targeting', () => {
   beforeEach(() => {
     callMock.mockReset()
   })
@@ -60,8 +60,8 @@ describe('orca cli browser page targeting', () => {
   })
 
   it('saves screenshots where the CLI runs and prints the path instead of base64', async () => {
-    const screenshotDir = mkdtempSync(join(tmpdir(), 'orca-browser-shot-'))
-    vi.stubEnv('ORCA_BROWSER_SCREENSHOT_TMPDIR', screenshotDir)
+    const screenshotDir = mkdtempSync(join(tmpdir(), 'topo-browser-shot-'))
+    vi.stubEnv('TOPO_BROWSER_SCREENSHOT_TMPDIR', screenshotDir)
     queueFixtures(
       callMock,
       okFixture('req_shot', { data: Buffer.from('png-bytes').toString('base64'), format: 'png' }),
@@ -70,8 +70,8 @@ describe('orca cli browser page targeting', () => {
     const log = vi.spyOn(console, 'log').mockImplementation(() => {})
 
     try {
-      await main(['screenshot', '--page', 'page-1', '--json'], '/tmp/not-an-orca-worktree')
-      await main(['screenshot', '--page', 'page-1', '--if-changed'], '/tmp/not-an-orca-worktree')
+      await main(['screenshot', '--page', 'page-1', '--json'], '/tmp/not-an-topo-worktree')
+      await main(['screenshot', '--page', 'page-1', '--if-changed'], '/tmp/not-an-topo-worktree')
 
       const saved = JSON.parse(String(log.mock.calls[0][0])).result
       expect(saved.data).toBeUndefined()

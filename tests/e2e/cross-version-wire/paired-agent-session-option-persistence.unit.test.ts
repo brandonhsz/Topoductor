@@ -3,8 +3,8 @@ import { sendRemoteRuntimeRequestOnSocket } from '../../../src/shared/remote-run
 import { parsePairingCode } from '../../../src/shared/remote-runtime/pairing/pairing'
 import { pairedRuntimeConnectionFromOffer } from '../../../src/shared/remote-runtime/pairing/paired-runtime-connection'
 import { ELECTRON_REMOTE_RUNTIME_CLIENT_CAPABILITIES } from '../../../src/shared/electron-remote-runtime-client-capabilities'
-import { OrcaRuntimeService } from '../../../src/main/runtime/orca-runtime'
-import { OrcaRuntimeRpcServer } from '../../../src/main/runtime/rpc/server/runtime-rpc'
+import { TopoRuntimeService } from '../../../src/main/runtime/topo-runtime'
+import { TopoRuntimeRpcServer } from '../../../src/main/runtime/rpc/server/runtime-rpc'
 import { RuntimeClientSettingsController } from '../../../src/main/runtime/client/settings/runtime-client-settings'
 import type { RuntimeClientSettings } from '../../../src/main/runtime/client/settings/runtime-client-settings-shape'
 import { AgentModelCatalogStore } from '../../../src/main/native-chat/agent-model-catalog/agent-model-catalog-store'
@@ -106,11 +106,11 @@ it('pairs to host-owned options and persists only a genuine pick on that host', 
     getSettings: () => settings,
     updateSettings
   })
-  const runtime = Object.assign(new OrcaRuntimeService(), runtimeStub(), {
+  const runtime = Object.assign(new TopoRuntimeService(), runtimeStub(), {
     getClientSettings: () => controller.get(),
     updateClientNativeChatSessionOptions: controller.updateNativeChatSessionOptions.bind(controller)
   })
-  const server = new OrcaRuntimeRpcServer({
+  const server = new TopoRuntimeRpcServer({
     runtime,
     userDataPath: rig.root,
     methods: [...STATUS_METHODS, ...CLIENT_UI_METHODS, ...STRUCTURED_AGENT_SESSION_METHODS],

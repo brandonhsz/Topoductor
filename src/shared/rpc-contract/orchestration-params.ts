@@ -42,7 +42,7 @@ export const CheckParams = z
     ack: OptionalString,
     compatibilityAck: OptionalString,
     compatibilityQuestionAck: OptionalString,
-    compatibilityCliCommand: z.enum(['orca', 'orca-ide', 'orca-dev']).optional(),
+    compatibilityCliCommand: z.enum(['topo', 'topo-ide', 'topo-dev']).optional(),
     run: OptionalString,
     wait: OptionalBoolean,
     timeoutMs: OptionalFiniteNumber
@@ -106,7 +106,7 @@ export const DispatchParams = z.object({
   run: OptionalString
 })
 
-/** An Orca agent session id; the answer is its conversation's Orca session ID. */
+/** A Topo agent session id; the answer is its conversation's Topo session ID. */
 export const SessionAddressParams = z.object({
   sessionId: requiredString('Missing sessionId')
 })
@@ -135,8 +135,8 @@ export const AskParams = z
     wait: OptionalBoolean,
     from: OptionalString,
     run: OptionalString,
-    compatibilityCliCommand: z.enum(['orca', 'orca-ide', 'orca-dev']).optional(),
-    compatibilityWindowsCommand: z.enum(['orca', 'orca-ide']).optional()
+    compatibilityCliCommand: z.enum(['topo', 'topo-ide', 'topo-dev']).optional(),
+    compatibilityWindowsCommand: z.enum(['topo', 'topo-ide']).optional()
   })
   .superRefine((params, ctx) => {
     if ((params.question ? 1 : 0) + (params.resume ? 1 : 0) !== 1) {

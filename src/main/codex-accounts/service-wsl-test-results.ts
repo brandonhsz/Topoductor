@@ -16,8 +16,8 @@ export function withOwnershipCheck(
 ) {
   return vi.fn(async (spec: WslSpec) => {
     const script = String(spec.script)
-    const begin = /printf %s (__ORCA_WSL_CAPTURE_BEGIN_) (\S+__)/.exec(script)
-    const end = /printf %s (__ORCA_WSL_CAPTURE_END_) (\S+__)/.exec(script)
+    const begin = /printf %s (__TOPO_WSL_CAPTURE_BEGIN_) (\S+__)/.exec(script)
+    const end = /printf %s (__TOPO_WSL_CAPTURE_END_) (\S+__)/.exec(script)
     if (!begin || !end || !script.includes('readlink -f')) {
       return rest(spec)
     }

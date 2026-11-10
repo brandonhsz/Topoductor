@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { buildPluginPanelShellHtml } from './plugin-panel-shell'
 
 type Disposable = { dispose: () => void }
-type FrameOrca = {
+type FrameTopo = {
   on: (event: string, handler: (payload: unknown) => unknown) => Disposable
   plugin: {
     request: (name: string, input?: unknown, options?: { timeoutMs?: number }) => Promise<unknown>
@@ -30,7 +30,7 @@ function mountShell() {
     /<script>\n([\s\S]*?)<\/script>/
   )?.[1]
   window.eval(script!.replaceAll('configurable: false', 'configurable: true'))
-  const orca: FrameOrca = Object.getOwnPropertyDescriptor(window, 'orca')?.value
+  const orca: FrameTopo = Object.getOwnPropertyDescriptor(window, 'orca')?.value
   const fromHost = (data: unknown) =>
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the shim only compares source identity.
     window.dispatchEvent(new MessageEvent('message', { data, source: parent as never as Window }))

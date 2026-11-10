@@ -1,6 +1,6 @@
 import { DOC_PREVIEW_PARTITION } from '../../../../../shared/document-preview/doc-preview-scheme'
 import { publishNativeChatVisualGuestTheme } from '@/components/native-chat/media/visuals/NativeChatVisualGuestThemePublisher'
-import { ORCA_BROWSER_PAGE_GUEST_WEB_PREFERENCES_ATTRIBUTE } from '../../../../../shared/browser/guest-lifecycle/browser-guest-web-preferences'
+import { TOPO_BROWSER_PAGE_GUEST_WEB_PREFERENCES_ATTRIBUTE } from '../../../../../shared/browser/guest-lifecycle/browser-guest-web-preferences'
 import {
   moveFocusToRendererBeforeWebviewDetach,
   registerPersistentWebview,
@@ -35,7 +35,7 @@ export function attachDocPreviewWebview({
   // Trusted link clicks are intercepted by preload; target=_blank needs no popup permission.
   webview.setAttribute('partition', DOC_PREVIEW_PARTITION)
   // Why opaque: Chromium paints its dark canvas for dark-scheme documents (JSON, text) only then.
-  webview.setAttribute('webpreferences', ORCA_BROWSER_PAGE_GUEST_WEB_PREFERENCES_ATTRIBUTE)
+  webview.setAttribute('webpreferences', TOPO_BROWSER_PAGE_GUEST_WEB_PREFERENCES_ATTRIBUTE)
   webview.setAttribute('aria-label', ariaLabel)
   webview.style.display = 'flex'
   webview.style.width = '100%'

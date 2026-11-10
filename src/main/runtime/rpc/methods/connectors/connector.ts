@@ -19,12 +19,12 @@ import {
   runtimeConversationHost,
   type ExternalConversationSeam
 } from '../../../../external-conversations/external-conversation-seam'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { defineMethod } from '../../core'
 import { assertAgentLaunchTargetAuthorized } from '../agent-launch/agent-launch-target-authorization'
 
 export function requireSeam(
-  runtime: Pick<OrcaRuntimeService, 'getExternalConversationSeam'>
+  runtime: Pick<TopoRuntimeService, 'getExternalConversationSeam'>
 ): ExternalConversationSeam {
   const seam = runtime.getExternalConversationSeam()
   if (!seam) {
@@ -95,7 +95,7 @@ export const CONNECTOR_METHODS = [
         deliveryId
       )
   }),
-  // `orca connector reply`: the calling pane names its cloud conversation and turn; Orca Cloud posts it.
+  // `topo connector reply`: the calling pane names its cloud conversation and turn; Topo Cloud posts it.
   defineMethod({
     name: 'connector.reply',
     permission: 'workspace',

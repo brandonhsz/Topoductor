@@ -47,7 +47,7 @@ afterEach(() => {
 })
 
 function fixture() {
-  const root = mkdtempSync(join(tmpdir(), 'orca-opencode-paired-pages-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-opencode-paired-pages-'))
   roots.push(root)
   state.path = join(root, 'opencode.db')
   const db = new Database(state.path)

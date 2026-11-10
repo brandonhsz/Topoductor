@@ -29,13 +29,13 @@ test.describe('Source Control Create PR intent worktree switching', () => {
   test.describe.configure({ mode: 'serial' })
 
   test('carries unavailable dirty intent through push to the final create preflight', async ({
-    orcaPage,
+    topoPage,
     registerPostElectronShutdownCleanup
   }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    const { prWorktreeId, prWorktreePath } = await seedCreatePrComposer(orcaPage)
-    const remoteRoot = mkdtempSync(path.join(os.tmpdir(), 'orca-e2e-create-pr-remote-'))
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    const { prWorktreeId, prWorktreePath } = await seedCreatePrComposer(topoPage)
+    const remoteRoot = mkdtempSync(path.join(os.tmpdir(), 'topo-e2e-create-pr-remote-'))
     const remotePath = path.join(remoteRoot, 'origin.git')
     execFileSync('git', ['init', '--bare', remotePath])
     // Why: the seeded worktree may already define origin, so make the add idempotent.
@@ -48,7 +48,7 @@ test.describe('Source Control Create PR intent worktree switching', () => {
     createStagedCommitMessageChange(prWorktreePath)
 
     const finalCreateError = 'Unavailable lookup intent reached final create preflight'
-    await orcaPage.evaluate(
+    await topoPage.evaluate(
       ({ prWorktreeId, finalCreateError }) => {
         const store =
           window.__store ??
@@ -75,9 +75,9 @@ test.describe('Source Control Create PR intent worktree switching', () => {
               ? {
                   ...repo,
                   gitRemoteIdentity: {
-                    canonicalKey: 'github.com/acme/orca',
+                    canonicalKey: 'github.com/acme/topo',
                     remoteName: 'origin',
-                    remoteUrl: 'https://github.com/acme/orca.git'
+                    remoteUrl: 'https://github.com/acme/topo.git'
                   }
                 }
               : repo
@@ -112,21 +112,21 @@ test.describe('Source Control Create PR intent worktree switching', () => {
       { prWorktreeId, finalCreateError }
     )
 
-    await openSourceControl(orcaPage, prWorktreeId)
-    await expect(orcaPage.getByText('e2e-commit-message-generation.txt')).toBeVisible({
+    await openSourceControl(topoPage, prWorktreeId)
+    await expect(topoPage.getByText('e2e-commit-message-generation.txt')).toBeVisible({
       timeout: 10_000
     })
-    await orcaPage
+    await topoPage
       .getByRole('textbox', { name: 'Commit message' })
       .fill('Exercise unavailable Create PR intent')
-    const createPr = orcaPage.getByRole('button', { name: 'Create PR' }).first()
+    const createPr = topoPage.getByRole('button', { name: 'Create PR' }).first()
     await expect(createPr).toBeEnabled()
     await createPr.click()
 
     await expect
       .poll(
         () =>
-          orcaPage.evaluate(
+          topoPage.evaluate(
             () =>
               (window as unknown as { __unavailableIntentPushFinished: boolean })
                 .__unavailableIntentPushFinished
@@ -134,6 +134,6 @@ test.describe('Source Control Create PR intent worktree switching', () => {
         { timeout: 10_000 }
       )
       .toBe(true)
-    await expect(orcaPage.getByText(finalCreateError)).toBeVisible({ timeout: 10_000 })
+    await expect(topoPage.getByText(finalCreateError)).toBeVisible({ timeout: 10_000 })
   })
 })

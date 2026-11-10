@@ -15,9 +15,9 @@ import type {
 import { getLatestPtyTitle } from '../../workspaces/process-listing/runtime-worktree-status-projection'
 import { worktreeIdsEqual } from '../../../../shared/worktree/id'
 import { forgetPtySurface } from '../../terminal/surface/pty-recorded-surface-topology'
-import { OrcaRuntimeWithRestoredTerminalPlacement } from '../../workspaces/persisted-surfaces/restored-terminal-placement'
+import { TopoRuntimeWithRestoredTerminalPlacement } from '../../workspaces/persisted-surfaces/restored-terminal-placement'
 
-export abstract class LegacyWorkerTerminalSurface extends OrcaRuntimeWithRestoredTerminalPlacement {
+export abstract class LegacyWorkerTerminalSurface extends TopoRuntimeWithRestoredTerminalPlacement {
   protected abstract rebuildLeafPtyIndex(): void
 
   protected abstract getWorkspaceSessionHostIdForWorktree(worktreeId: string): ExecutionHostId

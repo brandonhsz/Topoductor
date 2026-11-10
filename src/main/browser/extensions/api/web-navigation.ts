@@ -75,8 +75,8 @@ const getFrameSchema = z
   .loose()
 const getAllFramesSchema = z.object({ tabId: z.number().int() }).loose()
 
-// Preload-only (see browser-extension-document-targets.ts): Orca's ids for native scripting targets.
-const DOCUMENT_TARGETS_NAMESPACE = 'orcaDocumentTargets'
+// Preload-only (see browser-extension-document-targets.ts): Topo's ids for native scripting targets.
+const DOCUMENT_TARGETS_NAMESPACE = 'topoDocumentTargets'
 
 function tabFrames(caller: BrowserExtensionCaller, tabId: number): Electron.WebFrameMain[] | null {
   const entry = resolveBrowserExtensionTab(tabId)
@@ -102,7 +102,7 @@ function findFrame(
         )
       : (tabFrames(caller, tabId) ?? [])
   // Why the frame-tree id too: Electron's native sender gives an unloading outermost frame that id
-  // (documentLifecycle 'pending_deletion'); Orca names every outermost frame 0.
+  // (documentLifecycle 'pending_deletion'); Topo names every outermost frame 0.
   return (
     frames.find(
       (frame) =>
@@ -149,7 +149,7 @@ export function registerWebNavigationNamespace(): void {
   })
   registerBrowserExtensionNamespace(DOCUMENT_TARGETS_NAMESPACE, {
     methods: {
-      // Only extensions that can learn Orca's ids (webNavigation, webRequest) need them mapped.
+      // Only extensions that can learn Topo's ids (webNavigation, webRequest) need them mapped.
       frames: defineBrowserExtensionMethod(z.tuple([z.number().int()]), (caller, tabId) =>
         ['webNavigation', 'webRequest'].some((permission) =>
           extensionHasPermission(caller.extension, permission, caller.session)

@@ -17,15 +17,15 @@ afterEach(async () => {
 
 describe('claude agent teams shim env', () => {
   it.skipIf(process.platform === 'win32')(
-    'never runs a cwd-resolved orca when the shim bin is unqualified',
+    'never runs a cwd-resolved topo when the shim bin is unqualified',
     async () => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-agent-teams-shim-'))
+      const root = await mkdtemp(join(tmpdir(), 'topo-agent-teams-shim-'))
       roots.push(root)
       await ensureClaudeAgentTeamsShimDir(root)
-      const cwd = await mkdtemp(join(tmpdir(), 'orca-agent-teams-cwd-'))
+      const cwd = await mkdtemp(join(tmpdir(), 'topo-agent-teams-cwd-'))
       roots.push(cwd)
       const marker = join(cwd, 'hijacked')
-      for (const name of ['orca', 'orca-ide']) {
+      for (const name of ['topo', 'topo-ide']) {
         const decoy = join(cwd, name)
         await writeFile(decoy, `#!/usr/bin/env sh\ntouch ${JSON.stringify(marker)}\n`, 'utf8')
         await chmod(decoy, 0o755)
@@ -41,12 +41,12 @@ describe('claude agent teams shim env', () => {
       expect(hijack.stderr).toContain('absolute path')
       expect(existsSync(marker)).toBe(false)
 
-      const cli = join(cwd, 'fake-orca')
+      const cli = join(cwd, 'fake-topo')
       await writeFile(cli, '#!/usr/bin/env sh\necho "ran $*"\n', 'utf8')
       await chmod(cli, 0o755)
       const qualified = spawnSync(join(root, 'tmux'), ['list-panes'], {
         cwd,
-        env: { PATH: `.:${process.env.PATH ?? ''}`, ORCA_AGENT_TEAMS_SHIM_BIN: cli },
+        env: { PATH: `.:${process.env.PATH ?? ''}`, TOPO_AGENT_TEAMS_SHIM_BIN: cli },
         encoding: 'utf8'
       })
 

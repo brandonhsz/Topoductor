@@ -130,7 +130,7 @@ export class AcpTextTasks {
         signal
       )
       home = launch.env.GEMINI_HOME ?? ''
-      cwd = await mkdtemp(join(tmpdir(), 'orca-chat-name-'))
+      cwd = await mkdtemp(join(tmpdir(), 'topo-chat-name-'))
       if (spec.agent === 'grok') {
         cwd = await realpath(cwd)
       }
@@ -156,7 +156,7 @@ export class AcpTextTasks {
             envToDelete: [...launch.envToDelete, ...TASK_ENV_TO_DELETE]
           },
           {
-            clientInfo: { name: 'orca-chat-naming', version: '1' },
+            clientInfo: { name: 'topo-chat-naming', version: '1' },
             signIn: spec.signIn,
             onPermission: (request) =>
               spec.agent === 'antigravity' ? denyAcpTextTaskPermission(request) : reject(),

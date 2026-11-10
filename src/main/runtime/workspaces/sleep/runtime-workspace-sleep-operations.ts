@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithRestoreStructuredAgentSessionTabsOnce } from '../../session-tabs/structured-session-tab-restoration'
+import { TopoRuntimeWithRestoreStructuredAgentSessionTabsOnce } from '../../session-tabs/structured-session-tab-restoration'
 import type { RuntimeWorktreeTerminalSleepResult } from '../../../../shared/runtime-terminal-contracts'
 import type {
   WorkspaceSleepNotice,
@@ -19,7 +19,7 @@ import {
 } from '../lifecycle/workspace-lifecycle-commands'
 import { getRuntimeWorktreeRemovalOptionsKey } from '../catalog/runtime-worktree-selection'
 import { parseExecutionHostId } from '../../../../shared/execution-host'
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from '../../../../shared/sidebar-inputs-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from '../../../../shared/sidebar-inputs-switch'
 import type {
   RecipeWorkspaceRemoval,
   RecipeWorkspaceRemoveParams
@@ -32,9 +32,9 @@ export type RecipeWorkspaceRemovalHooks = {
   describe: (hostId: string) => ReadonlyMap<string, RecipeEnvironmentDescription>
 }
 
-export abstract class RuntimeWorkspaceSleepOperations extends OrcaRuntimeWithRestoreStructuredAgentSessionTabsOnce {
+export abstract class RuntimeWorkspaceSleepOperations extends TopoRuntimeWithRestoreStructuredAgentSessionTabsOnce {
   // Switch point: only a build where main produces the sidebar's inputs queues lifecycle commands.
-  readonly workspaceLifecycle = ORCA_SIDEBAR_INPUTS_IS_MAIN ? new WorkspaceLifecycleQueue() : null
+  readonly workspaceLifecycle = TOPO_SIDEBAR_INPUTS_IS_MAIN ? new WorkspaceLifecycleQueue() : null
   private recipeWorkspaceRemoval: RecipeWorkspaceRemovalHooks | null = null
 
   setRecipeWorkspaceRemoval(hooks: RecipeWorkspaceRemovalHooks): void {
@@ -48,7 +48,7 @@ export abstract class RuntimeWorkspaceSleepOperations extends OrcaRuntimeWithRes
 
   removeRecipeWorkspace(params: RecipeWorkspaceRemoveParams): Promise<RecipeWorkspaceRemoval> {
     if (!this.recipeWorkspaceRemoval) {
-      throw new Error('This Orca host cannot remove recipe workspaces.')
+      throw new Error('This Topo host cannot remove recipe workspaces.')
     }
     return this.recipeWorkspaceRemoval.remove(params)
   }

@@ -25,7 +25,7 @@ export function JiraConnectPrompt({
       iconElement={<TaskProviderLogo provider="jira" size={24} color={colors.textMuted} />}
       title={
         unavailableReason
-          ? t('components.jiraConnectPrompt.updateDesktop', 'Update Orca desktop')
+          ? t('components.jiraConnectPrompt.updateDesktop', 'Update Topo desktop')
           : t('components.jiraConnectPrompt.connectOnDesktop', 'Connect Jira on your desktop')
       }
       message={
@@ -38,7 +38,7 @@ export function JiraConnectPrompt({
             )
           : t(
               'components.jiraConnectPrompt.connectHint',
-              'Add your Jira site in Orca desktop under Settings → Integrations, then check again.'
+              'Add your Jira site in Topo desktop under Settings → Integrations, then check again.'
             ))
       }
       action={

@@ -1,6 +1,6 @@
-/** Absolute cap for any one translation, including keys this Orca has no English text for. */
+/** Absolute cap for any one translation, including keys this Topo has no English text for. */
 export const PLUGIN_TRANSLATION_MAX_CHARACTERS = 8192
-// Why relative: a pack speaks with Orca's voice, so it must not turn "Retry" into a paragraph of instructions.
+// Why relative: a pack speaks with Topo's voice, so it must not turn "Retry" into a paragraph of instructions.
 const SOURCE_LENGTH_FLOOR = 64
 const SOURCE_LENGTH_MULTIPLIER = 4
 const PLURAL_SUFFIX_RE = /_(?:zero|one|two|few|many|other)$/

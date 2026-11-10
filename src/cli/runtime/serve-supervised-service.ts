@@ -1,6 +1,6 @@
 import { SINGLE_INSTANCE_ALREADY_RUNNING_EXIT_CODE } from '../../shared/single-instance-exit-code'
-import { ORCAD_EXIT_TERMINALS_NOT_DURABLE } from '../../shared/serve-supervised-terminal-durability'
-import { orcadStaleLockReclaimCommand } from '../../shared/orcad-stale-lock-reclaim'
+import { TOPOD_EXIT_TERMINALS_NOT_DURABLE } from '../../shared/serve-supervised-terminal-durability'
+import { topodStaleLockReclaimCommand } from '../../shared/topod-stale-lock-reclaim'
 import {
   brakeForBuild,
   clearServeSupervisorBrake,
@@ -75,7 +75,7 @@ export function getServeSuperviseValidationError(input: {
     return null
   }
   if ((input.platform ?? process.platform) === 'win32') {
-    return '--supervise is not supported on Windows yet. Run `orca serve` under your own service wrapper instead.'
+    return '--supervise is not supported on Windows yet. Run `topo serve` under your own service wrapper instead.'
   }
   if (input.recipeJson) {
     return '--recipe-json starts a detached server and returns; it cannot be combined with --supervise.'
@@ -217,7 +217,7 @@ export async function superviseServeService(options: SupervisedServeOptions): Pr
         if (held?.reason !== evidence.reason) {
           hold.current = { reason: evidence.reason, since: now(), reportedStuck: false }
           log(
-            `[serve] Waiting before starting Orca serve: ${SERVE_INSTALL_HOLD_REASON_TEXT[evidence.reason]}.`
+            `[serve] Waiting before starting Topo serve: ${SERVE_INSTALL_HOLD_REASON_TEXT[evidence.reason]}.`
           )
         } else if (
           evidence.reason === 'bundle-missing' &&
@@ -225,7 +225,7 @@ export async function superviseServeService(options: SupervisedServeOptions): Pr
         ) {
           // Let the service manager find the updated app through its stable launcher.
           log(
-            '[serve] The Orca executable this service started from is gone; exiting so the service manager starts the installed Orca.'
+            '[serve] The Topo executable this service started from is gone; exiting so the service manager starts the installed Topo.'
           )
           return 1
         } else if (!held.reportedStuck && now() - held.since >= SERVE_INSTALL_HOLD_STUCK_MS) {
@@ -273,19 +273,19 @@ export async function superviseServeService(options: SupervisedServeOptions): Pr
           // An occupied profile warrants standby, not a crash-brake failure.
           const delayMs = standbyDelayMs(standbyAttempt++, random)
           log(
-            `[serve] Another Orca serves this profile, or holds it and cannot be shown to have stopped; checking again in ${Math.round(delayMs / 1000)}s.${process.platform === 'linux' ? ` If its message says it may have stopped, \`${orcadStaleLockReclaimCommand(options.userDataPath, null)}\` checks it.` : ''}`
+            `[serve] Another Topo serves this profile, or holds it and cannot be shown to have stopped; checking again in ${Math.round(delayMs / 1000)}s.${process.platform === 'linux' ? ` If its message says it may have stopped, \`${topodStaleLockReclaimCommand(options.userDataPath, null)}\` checks it.` : ''}`
           )
           await sleep(delayMs)
           continue
         }
         failure =
-          code === ORCAD_EXIT_TERMINALS_NOT_DURABLE
-            ? `exited with code ${code}: the terminal daemon did not start, and terminals outside it would not survive a restart (orcad's log above has the cause)`
+          code === TOPOD_EXIT_TERMINALS_NOT_DURABLE
+            ? `exited with code ${code}: the terminal daemon did not start, and terminals outside it would not survive a restart (topod's log above has the cause)`
             : `exited with code ${code}`
       } else {
         const error: unknown = attempt.settled.reason
         failure = (error instanceof Error ? error.message : String(error))
-          .replace(/^Orca serve /, '')
+          .replace(/^Topo serve /, '')
           .replace(/\.$/, '')
       }
       standbyAttempt = 0
@@ -297,7 +297,7 @@ export async function superviseServeService(options: SupervisedServeOptions): Pr
         return 0
       }
       log(
-        `[serve] Orca serve ${failure}; restarting in ${Math.max(1, Math.round(next.action.delayMs / 1000))}s.`
+        `[serve] Topo serve ${failure}; restarting in ${Math.max(1, Math.round(next.action.delayMs / 1000))}s.`
       )
       await sleep(next.action.delayMs)
     }

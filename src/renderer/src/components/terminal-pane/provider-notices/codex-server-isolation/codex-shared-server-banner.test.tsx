@@ -166,7 +166,7 @@ describe('CodexSharedServerBanner', () => {
     await advance(1_000)
     await act(async () => button('Dismiss').click())
     expect(paneElement.textContent).toBe('')
-    expect(paneElement.style.getPropertyValue('--orca-pane-top-banner-height')).toBe('')
+    expect(paneElement.style.getPropertyValue('--topo-pane-top-banner-height')).toBe('')
     expect(updateSettings).not.toHaveBeenCalled()
 
     act(() => root.unmount())

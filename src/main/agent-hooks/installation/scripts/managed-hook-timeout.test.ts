@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { spawn, spawnSync } from 'node:child_process'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { buildPosixAgentHookPostCommand } from './hook-post-command'
 import { createServer, type Server, type Socket } from 'node:net'
 import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
@@ -14,7 +14,7 @@ const { homedirMock } = vi.hoisted(() => ({
 
 vi.mock('electron', () => ({
   app: {
-    getPath: () => '/tmp/orca-user-data'
+    getPath: () => '/tmp/topo-user-data'
   }
 }))
 
@@ -35,7 +35,7 @@ describe('managed agent hook timeouts', () => {
   it.skipIf(process.platform === 'win32').each(['raw-json-v1', ''])(
     'scopes the C numeric locale to the custom curl command for transport %s',
     (transport) => {
-      const tmpDir = mkdtempSync(join(tmpdir(), 'orca-custom-curl-locale-'))
+      const tmpDir = mkdtempSync(join(tmpdir(), 'topo-custom-curl-locale-'))
       try {
         const curlPath = join(tmpDir, 'curl with spaces')
         const observed = join(tmpDir, 'curl-locale')
@@ -43,15 +43,15 @@ describe('managed agent hook timeouts', () => {
         const payloadPath = join(tmpDir, 'custom-curl-payload')
         writeFileSync(
           curlPath,
-          '#!/bin/sh\nprintf "%s|%s" "$LC_ALL" "$LC_NUMERIC" > "$ORCA_TEST_CURL_LOCALE"\ncat > "$ORCA_TEST_CURL_PAYLOAD"\n'
+          '#!/bin/sh\nprintf "%s|%s" "$LC_ALL" "$LC_NUMERIC" > "$TOPO_TEST_CURL_LOCALE"\ncat > "$TOPO_TEST_CURL_PAYLOAD"\n'
         )
         chmodSync(curlPath, 0o755)
         const payload = '{"prompt":"漢字 $HOME & quoted"}'
         const command = [
-          'payload="$ORCA_TEST_PAYLOAD"',
-          'curl_bin="$ORCA_TEST_CURL_BIN"',
+          'payload="$TOPO_TEST_PAYLOAD"',
+          'curl_bin="$TOPO_TEST_CURL_BIN"',
           ...buildPosixAgentHookPostCommand('codex', { curlCommand: '"$curl_bin"' }),
-          'printf "%s|%s" "$LC_ALL" "$LC_NUMERIC" > "$ORCA_TEST_SHELL_LOCALE"'
+          'printf "%s|%s" "$LC_ALL" "$LC_NUMERIC" > "$TOPO_TEST_SHELL_LOCALE"'
         ].join('\n')
         const result = runProcessSync({
           program: '/bin/sh',
@@ -60,14 +60,14 @@ describe('managed agent hook timeouts', () => {
             PATH: '/usr/bin:/bin',
             LC_ALL: 'de_DE.UTF-8',
             LC_NUMERIC: 'de_DE.UTF-8',
-            ORCA_AGENT_HOOK_TRANSPORT: transport,
-            ORCA_AGENT_HOOK_PORT: '1234',
-            ORCA_AGENT_HOOK_TOKEN: 'token',
-            ORCA_TEST_CURL_BIN: curlPath,
-            ORCA_TEST_CURL_LOCALE: observed,
-            ORCA_TEST_SHELL_LOCALE: shellObserved,
-            ORCA_TEST_CURL_PAYLOAD: payloadPath,
-            ORCA_TEST_PAYLOAD: payload
+            TOPO_AGENT_HOOK_TRANSPORT: transport,
+            TOPO_AGENT_HOOK_PORT: '1234',
+            TOPO_AGENT_HOOK_TOKEN: 'token',
+            TOPO_TEST_CURL_BIN: curlPath,
+            TOPO_TEST_CURL_LOCALE: observed,
+            TOPO_TEST_SHELL_LOCALE: shellObserved,
+            TOPO_TEST_CURL_PAYLOAD: payloadPath,
+            TOPO_TEST_PAYLOAD: payload
           },
           timeoutMs: 5000
         })
@@ -111,12 +111,12 @@ describe('managed agent hook timeouts', () => {
         const child = spawn('sh', [scriptPath], {
           env: {
             ...process.env,
-            ORCA_AGENT_HOOK_ENDPOINT: '',
-            ORCA_AGENT_HOOK_PORT: String(port),
-            ORCA_AGENT_HOOK_TOKEN: 'test-token',
-            ORCA_PANE_KEY: 'pane-1',
-            ORCA_TAB_ID: 'tab-1',
-            ORCA_WORKTREE_ID: 'wt-1',
+            TOPO_AGENT_HOOK_ENDPOINT: '',
+            TOPO_AGENT_HOOK_PORT: String(port),
+            TOPO_AGENT_HOOK_TOKEN: 'test-token',
+            TOPO_PANE_KEY: 'pane-1',
+            TOPO_TAB_ID: 'tab-1',
+            TOPO_WORKTREE_ID: 'wt-1',
             CLAUDE_JOB_DIR: ''
           },
           stdio: ['pipe', 'ignore', 'ignore']
@@ -143,9 +143,9 @@ describe('managed agent hook timeouts', () => {
       async () => {
         const { sftp, fs } = createFakeSftp()
         await new CodexHookService().installRemote(sftp, REMOTE_HOME)
-        const wrapperBody = fs.files.get(`${REMOTE_HOME}/.orca/agent-hooks/codex-hook.sh`)!
+        const wrapperBody = fs.files.get(`${REMOTE_HOME}/.topo/agent-hooks/codex-hook.sh`)!
 
-        tempDir = mkdtempSync(join(tmpdir(), 'orca-hook-timeout-'))
+        tempDir = mkdtempSync(join(tmpdir(), 'topo-hook-timeout-'))
         const scriptPath = join(tempDir, 'codex-hook.sh')
         writeFileSync(scriptPath, wrapperBody, 'utf8')
         chmodSync(scriptPath, 0o755)

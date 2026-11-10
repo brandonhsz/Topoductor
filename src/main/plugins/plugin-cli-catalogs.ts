@@ -63,7 +63,7 @@ export async function addPluginCatalogFromCli(
     throw new PluginCliError(
       'invalid_argument',
       parsed.reason === 'git-url-credentials'
-        ? "Remove the username or token from the URL. Orca uses the Orca host's own Git sign-in."
+        ? "Remove the username or token from the URL. Topo uses the Topo host's own Git sign-in."
         : 'Pass the catalog repository as owner/repo, an https:// or ssh:// URL, or git@host:owner/repo.git.',
       { nextSteps: ['Fix the URL and run the command again.'] }
     )
@@ -86,7 +86,7 @@ export async function addPluginCatalogFromCli(
   return { added: true, catalog: pluginCliCatalogEntry(added) }
 }
 
-/** Removing a catalog only takes trust away, so it needs no approval. Orca's own cannot be removed. */
+/** Removing a catalog only takes trust away, so it needs no approval. Topo's own cannot be removed. */
 export async function removePluginCatalogFromCli(
   deps: CatalogDeps,
   selector: string
@@ -99,14 +99,14 @@ export async function removePluginCatalogFromCli(
     throw new PluginCliError(
       matches.length === 0 ? PLUGIN_NOT_FOUND_CODE : 'invalid_argument',
       matches.length === 0
-        ? `No catalog on this Orca host matches ${selector}.`
+        ? `No catalog on this Topo host matches ${selector}.`
         : `${selector} matches more than one catalog; pass its id.`,
-      { nextSteps: ['`orca plugin catalog list` shows each catalog id.'] }
+      { nextSteps: ['`topo plugin catalog list` shows each catalog id.'] }
     )
   }
   const [state] = matches
   if (state.official) {
-    throw new PluginCliError('invalid_argument', "Orca's official catalog cannot be removed.", {
+    throw new PluginCliError('invalid_argument', "Topo's official catalog cannot be removed.", {
       nextSteps: []
     })
   }

@@ -1,22 +1,22 @@
-import type { OrcaCloudAuthConfig } from '../../orca-profiles/profile-cloud-auth-config'
-import { ensureActiveOrcaProfile } from '../../orca-profiles/profile-index-store'
-import { readFreshOrcaCloudSession } from '../../orca-profiles/profile-cloud-session-refresh'
+import type { TopoCloudAuthConfig } from '../../topo-profiles/profile-cloud-auth-config'
+import { ensureActiveTopoProfile } from '../../topo-profiles/profile-index-store'
+import { readFreshTopoCloudSession } from '../../topo-profiles/profile-cloud-session-refresh'
 import type { RelayAuthContext } from './relay-auth-identity'
 
 export async function readRelayAuthContext(
-  authConfig: OrcaCloudAuthConfig,
+  authConfig: TopoCloudAuthConfig,
   userDataPath: string
 ): Promise<RelayAuthContext | null> {
-  const active = ensureActiveOrcaProfile(userDataPath)
+  const active = ensureActiveTopoProfile(userDataPath)
   if (!active.profile.cloud) {
     return null
   }
-  const session = await readFreshOrcaCloudSession(authConfig, active, userDataPath)
+  const session = await readFreshTopoCloudSession(authConfig, active, userDataPath)
   if (session.status !== 'found') {
     return null
   }
   // Refresh/org selection can change linkage; derive identity from post-refresh profile state.
-  const refreshed = ensureActiveOrcaProfile(userDataPath)
+  const refreshed = ensureActiveTopoProfile(userDataPath)
   const cloud = refreshed.profile.cloud
   if (!cloud || refreshed.profile.id !== active.profile.id) {
     return null

@@ -37,7 +37,7 @@ vi.mock('./github-api-repository', async (importOriginal) =>
   )
 )
 
-import { __resetOrcaStarCheckForTests, checkOrcaStarred } from './client/fetch/orca-star'
+import { __resetTopoStarCheckForTests, checkTopoStarred } from './client/fetch/topo-star'
 
 import { resetOriginRepositoryCache } from './client-test-harness'
 
@@ -49,7 +49,7 @@ async function flushMicrotasks(): Promise<void> {
   }
 }
 
-describe('checkOrcaStarred', () => {
+describe('checkTopoStarred', () => {
   beforeEach(async () => {
     resetOriginRepositoryCache()
     execFileAsyncMock.mockReset()
@@ -57,7 +57,7 @@ describe('checkOrcaStarred', () => {
     acquireMock.mockReset()
     releaseMock.mockReset()
     acquireMock.mockResolvedValue(undefined)
-    __resetOrcaStarCheckForTests()
+    __resetTopoStarCheckForTests()
   })
 
   it('coalesces concurrent checks onto one gh child', async () => {
@@ -68,9 +68,9 @@ describe('checkOrcaStarred', () => {
       })
     )
 
-    const first = checkOrcaStarred()
-    const second = checkOrcaStarred()
-    const third = checkOrcaStarred()
+    const first = checkTopoStarred()
+    const second = checkTopoStarred()
+    const third = checkTopoStarred()
     await flushMicrotasks()
 
     expect(ghExecFileAsyncMock).toHaveBeenCalledTimes(1)
@@ -85,8 +85,8 @@ describe('checkOrcaStarred', () => {
       .mockResolvedValueOnce({ stdout: 'HTTP/2.0 404 Not Found\r\n', stderr: '' })
       .mockResolvedValueOnce({ stdout: 'HTTP/2.0 204 No Content\r\n', stderr: '' })
 
-    await checkOrcaStarred()
-    await expect(checkOrcaStarred()).resolves.toBe(true)
+    await checkTopoStarred()
+    await expect(checkTopoStarred()).resolves.toBe(true)
     expect(ghExecFileAsyncMock).toHaveBeenCalledTimes(2)
   })
 })

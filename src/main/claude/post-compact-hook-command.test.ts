@@ -1,4 +1,4 @@
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -8,7 +8,7 @@ import { getManagedEventHook } from './hook-settings'
 
 vi.mock('electron', () => ({ app: { getPath: () => '/tmp/userData' } }))
 
-const SCRIPT_PATH = '/home/test/.orca/agent-hooks/claude-hook.sh'
+const SCRIPT_PATH = '/home/test/.topo/agent-hooks/claude-hook.sh'
 
 // Claude echoes the full command after /compact, so keep it short.
 
@@ -18,7 +18,7 @@ describe.skipIf(process.platform === 'win32')('PostCompact command execution', (
   let home: string
 
   beforeEach(() => {
-    home = mkdtempSync(join(tmpdir(), 'orca-post-compact-'))
+    home = mkdtempSync(join(tmpdir(), 'topo-post-compact-'))
   })
 
   afterEach(() => rmSync(home, { recursive: true, force: true }))
@@ -34,10 +34,10 @@ describe.skipIf(process.platform === 'win32')('PostCompact command execution', (
   }
 
   it('runs the HOME script with the agent pid captured', async () => {
-    const dir = join(home, '.orca', 'agent-hooks')
+    const dir = join(home, '.topo', 'agent-hooks')
     mkdirSync(dir, { recursive: true })
     const script = join(dir, 'claude-hook.sh')
-    writeFileSync(script, '#!/bin/sh\ncat >/dev/null\nprintf "%s" "$ORCA_HOOK_AGENT_PID"\nexit 7\n')
+    writeFileSync(script, '#!/bin/sh\ncat >/dev/null\nprintf "%s" "$TOPO_HOOK_AGENT_PID"\nexit 7\n')
     chmodSync(script, 0o755)
 
     const result = await run(getManagedEventHook('PostCompact', SCRIPT_PATH).command, {

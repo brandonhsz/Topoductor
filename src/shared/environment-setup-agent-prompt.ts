@@ -10,7 +10,7 @@ export type EnvironmentSetupFailureContext = {
 const MAX_LOG_LINES = 40
 const MAX_LOG_CHARS = 4_000
 const MAX_ERROR_CHARS = 500
-// Recipe ids are orca.yaml keys; anything else would break the inline code span.
+// Recipe ids are topo.yaml keys; anything else would break the inline code span.
 const SAFE_RECIPE_ID = /^[A-Za-z0-9._-]{1,128}$/
 // Unquoted secrets common in provisioning output; the shared redactor covers URLs and JSON fields.
 const BEARER_TOKEN = /\b(authorization\s*:\s*(?:bearer|token|basic)\s+)\S+/gi
@@ -24,14 +24,14 @@ export function buildEnvironmentSetupAgentPrompt(args: {
 }): string {
   const recipeDoctor =
     args.recipeId && SAFE_RECIPE_ID.test(args.recipeId)
-      ? `\`orca vm recipe doctor ${args.recipeId} --json\``
-      : '`orca vm recipe doctor <recipe-id> --json`'
+      ? `\`topo vm recipe doctor ${args.recipeId} --json\``
+      : '`topo vm recipe doctor <recipe-id> --json`'
   const lines = [
-    'Use the orca-per-workspace-env skill to make this repo run in a per-workspace environment. If the skill is not installed, load it with `orca skills get orca-per-workspace-env`.',
+    'Use the topo-per-workspace-env skill to make this repo run in a per-workspace environment. If the skill is not installed, load it with `topo skills get topo-per-workspace-env`.',
     '',
-    'Goal: write or repair `environmentRecipes` and `scripts.setup` in orca.yaml, plus any scripts they call.',
+    'Goal: write or repair `environmentRecipes` and `scripts.setup` in topo.yaml, plus any scripts they call.',
     `- Run ${recipeDoctor} and fix every failing check.`,
-    '- Inside the environment, run `orca vm env doctor --run-setup --json` and fix what fails: missing CLIs, agent sign-in, Git access, the setup script, disk space.',
+    '- Inside the environment, run `topo vm env doctor --run-setup --json` and fix what fails: missing CLIs, agent sign-in, Git access, the setup script, disk space.',
     '- Re-run both doctors after each fix until no check fails, and resolve or explain every warning.',
     '- Follow the skill: ask before any paid or interactive step, and never write a secret into a file or commit.',
     '- Work on a new branch. Finish with a commit and open a pull request that explains what changed.'

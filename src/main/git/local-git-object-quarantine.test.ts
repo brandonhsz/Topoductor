@@ -117,7 +117,7 @@ describe('inheritedLocalObjectStore', () => {
       const env = {
         GIT_ALTERNATE_OBJECT_DIRECTORIES: 'C:\\shared',
         GIT_OBJECT_DIRECTORY: 'C:\\objects',
-        WSLENV: `ORCA_X/u:${token}`
+        WSLENV: `TOPO_X/u:${token}`
       }
 
       expect(inheritedLocalObjectStore('Ubuntu', env, 'win32')).toBeUndefined()

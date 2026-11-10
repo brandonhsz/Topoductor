@@ -68,7 +68,7 @@ export function useTerminalPrimarySelectionActions({
       if (!targetPane) {
         return
       }
-      // Always arm suppression for Chromium’s mouseup paste; forward tracking-mode reports unless the selection modifier makes Orca the sole paste owner.
+      // Always arm suppression for Chromium’s mouseup paste; forward tracking-mode reports unless the selection modifier makes Topo the sole paste owner.
       event.preventDefault()
       armPrimarySelectionNativePasteSuppression()
       if (

@@ -31,7 +31,7 @@ describe('web pairing input', () => {
 
     expect(parseWebPairingInput(oversizedRawCode)).toBeNull()
     expect(
-      parseWebPairingInput(`orca://pair${oversizedQuery.replace('pairing=', 'code=')}`)
+      parseWebPairingInput(`topo://pair${oversizedQuery.replace('pairing=', 'code=')}`)
     ).toBeNull()
     expect(readPairingInputFromLocation(location)).toBeNull()
   })
@@ -47,9 +47,9 @@ describe('web pairing input', () => {
     expect(parseWebPairingInput(alias)).toEqual(paddedOffer)
   })
 
-  it('rejects orca URLs outside the exact pairing route', () => {
-    expect(parseWebPairingInput(`orca://pairing?code=${encodeOffer()}`)).toBeNull()
-    expect(parseWebPairingInput(`orca://pair-extra?code=${encodeOffer()}`)).toBeNull()
+  it('rejects topo URLs outside the exact pairing route', () => {
+    expect(parseWebPairingInput(`topo://pairing?code=${encodeOffer()}`)).toBeNull()
+    expect(parseWebPairingInput(`topo://pair-extra?code=${encodeOffer()}`)).toBeNull()
   })
 
   it('auto-saves a runtime link only when it targets the saved server', () => {

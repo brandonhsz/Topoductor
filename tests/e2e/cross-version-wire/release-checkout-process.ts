@@ -18,7 +18,7 @@ export async function runCheckoutProcess(
     throw new Error(`${program} ${operation} timed out after ${timeoutMs}ms`)
   }
   // Kept lazy so plain Node 24 contention children never load Vite's TS graph.
-  const { runProcess } = await import('@orca/process-host')
+  const { runProcess } = await import('@topo/process-host')
   const result = await runProcess({
     program,
     args,

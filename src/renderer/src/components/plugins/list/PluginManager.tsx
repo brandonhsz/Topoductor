@@ -39,7 +39,7 @@ import {
   type PluginListFilter
 } from './plugin-list-filter'
 import { PluginDetailPage } from '../page/PluginDetailPage'
-import { useOrcaVersion, type PluginPageNavigation } from '../state/use-plugin-page-navigation'
+import { useTopoVersion, type PluginPageNavigation } from '../state/use-plugin-page-navigation'
 import type { PluginLogsState } from '../state/use-plugin-logs'
 
 function resultCountLabel(count: number, t: Translate = translate): string {
@@ -131,12 +131,12 @@ export function PluginManager({
     isFromInstallLink
   })
   const prefetch = usePluginHoverPrefetch(catalog.fetchPreview)
-  const orcaVersion = useOrcaVersion()
+  const topoVersion = useTopoVersion()
   const entries = usePluginManagerEntries(
     plugins,
     catalog.listings,
     catalog.sources,
-    orcaVersion,
+    topoVersion,
     t
   )
   const query = search.trim()
@@ -176,7 +176,7 @@ export function PluginManager({
     install,
     prefetch,
     openEntry,
-    orcaVersion,
+    topoVersion,
     refreshing: catalog.refreshBusy,
     installedHandlers: rowHandlers,
     busyPluginKeys
@@ -266,7 +266,7 @@ export function PluginManager({
         key={updateDialog.opens}
         open={updateDialog.entries !== null}
         entries={updateDialog.entries ?? []}
-        orcaVersion={orcaVersion}
+        topoVersion={topoVersion}
         onClose={updateDialog.close}
         onUpdated={onInstalled}
       />
@@ -298,7 +298,7 @@ export function PluginManager({
           key={openedEntry.pluginKey}
           entry={openedEntry}
           busy={busyPluginKeys.has(openedEntry.pluginKey)}
-          orcaVersion={orcaVersion}
+          topoVersion={topoVersion}
           logsState={logsByPlugin[openedEntry.pluginKey]}
           handlers={rowHandlers}
           fetchPreview={catalog.fetchPreview}

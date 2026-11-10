@@ -1,10 +1,10 @@
 import type { EphemeralVmRuntimeRecord } from '../../shared/ephemeral-vm-runtimes'
-import { removeManagedOrcadEnvironment } from '../../shared/remote-runtime/host-store/runtime-environment-managed-orcad-store'
+import { removeManagedTopodEnvironment } from '../../shared/remote-runtime/host-store/runtime-environment-managed-topod-store'
 import {
   listEnvironments,
   removeEnvironment
 } from '../../shared/remote-runtime/host-store/runtime-environment-store'
-import { getOrcadSshDeployment } from '../../shared/remote-runtime/host-catalog/runtime-environments'
+import { getTopodSshDeployment } from '../../shared/remote-runtime/host-catalog/runtime-environments'
 
 /** Remove destroyed VM servers so managed tunnels stop reconnecting. */
 export async function releaseEphemeralVmRuntimeEnvironments(
@@ -18,18 +18,18 @@ export async function releaseEphemeralVmRuntimeEnvironments(
     (entry) =>
       entry.id === runtime.runtimeEnvironmentId ||
       (runtime.sshTargetId !== undefined &&
-        getOrcadSshDeployment(entry)?.sshTargetId === runtime.sshTargetId)
+        getTopodSshDeployment(entry)?.sshTargetId === runtime.sshTargetId)
   )
   for (const environment of environments) {
-    if (!environment.orcadDeployment) {
+    if (!environment.topodDeployment) {
       removeEnvironment(userDataPath, environment.id)
       retireRemovedEnvironment(environment.id)
       continue
     }
-    const { closeOrcadManagedTunnel } =
-      await import('../managed-server/lifecycle/orcad-managed-tunnel')
-    await closeOrcadManagedTunnel(environment.id).catch(() => undefined)
-    removeManagedOrcadEnvironment(userDataPath, environment.id)
+    const { closeTopodManagedTunnel } =
+      await import('../managed-server/lifecycle/topod-managed-tunnel')
+    await closeTopodManagedTunnel(environment.id).catch(() => undefined)
+    removeManagedTopodEnvironment(userDataPath, environment.id)
     retireRemovedEnvironment(environment.id)
   }
 }

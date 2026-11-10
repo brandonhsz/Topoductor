@@ -107,7 +107,7 @@ async function writeClaudeFixture(): Promise<{
   roots: ReturnType<typeof isolatedScanRoots>
   transcript: string
 }> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-transcript-consumers-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-transcript-consumers-'))
   tempRoots.push(root)
   const roots = isolatedScanRoots(root)
   const transcript = join(roots.claudeProjectsDir, 'project', 'claude-session.jsonl')
@@ -278,7 +278,7 @@ it('serializes overlapping parses of one path so no consumer read is orphaned', 
 })
 
 it('reports the transcript size, not the cache key, as a whole-file read offset', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'orca-transcript-cline-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-transcript-cline-'))
   tempRoots.push(root)
   const roots = isolatedScanRoots(root)
   // Cline’s cache key includes its sibling file, while this read covers only the transcript.

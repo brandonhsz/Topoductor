@@ -16,8 +16,8 @@ import {
   serializeRemoteRuntimeRpcRequest
 } from '../../../../../shared/remote-runtime/remote-runtime-memory-limits'
 import { DeviceRegistry } from '../../server/pairing/device-registry'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
-import { OrcaRuntimeRpcServer } from '../../server/runtime-rpc'
+import type { TopoRuntimeService } from '../../../topo-runtime'
+import { TopoRuntimeRpcServer } from '../../server/runtime-rpc'
 import { MobileSocketWiring, type MobileSocketTransport } from '../../mobile-socket-wiring'
 import { AGENT_LAUNCH_METHODS } from './agent-launch'
 import { FILE_MUTATION_METHODS } from '../files/files-mutation-methods'
@@ -53,9 +53,9 @@ class CwdTransport implements MobileSocketTransport {
   }
 }
 
-export function managedCwdMobileFixture(runtime: OrcaRuntimeService, directory: string) {
+export function managedCwdMobileFixture(runtime: TopoRuntimeService, directory: string) {
   const registry = new DeviceRegistry(directory)
-  let server = new OrcaRuntimeRpcServer({
+  let server = new TopoRuntimeRpcServer({
     runtime,
     userDataPath: directory,
     methods: [...AGENT_LAUNCH_METHODS, ...FILE_MUTATION_METHODS],
@@ -162,8 +162,8 @@ export function managedCwdMobileFixture(runtime: OrcaRuntimeService, directory: 
   return {
     registry,
     connect,
-    restart(next: OrcaRuntimeService) {
-      server = new OrcaRuntimeRpcServer({
+    restart(next: TopoRuntimeService) {
+      server = new TopoRuntimeRpcServer({
         runtime: next,
         userDataPath: directory,
         methods: [...AGENT_LAUNCH_METHODS, ...FILE_MUTATION_METHODS],

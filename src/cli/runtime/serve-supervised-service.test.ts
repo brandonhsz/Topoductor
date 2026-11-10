@@ -12,7 +12,7 @@ function harness(overrides: Partial<SupervisedServeOptions> & { userDataPath: st
   const logs: string[] = []
   let stopListener: (() => void) | null = null
   const options: SupervisedServeOptions = {
-    executable: '/opt/orca/orca',
+    executable: '/opt/topo/topo',
     force: false,
     runOnce: async () => 1,
     readInstallEvidence: async () => ({ kind: 'clear' }),
@@ -49,7 +49,7 @@ describe('superviseServeService', () => {
   let userDataPath: string
 
   beforeEach(async () => {
-    userDataPath = await mkdtemp(join(tmpdir(), 'orca-supervise-'))
+    userDataPath = await mkdtemp(join(tmpdir(), 'topo-supervise-'))
   })
 
   afterEach(async () => {

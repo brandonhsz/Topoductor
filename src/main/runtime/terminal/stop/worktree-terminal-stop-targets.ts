@@ -1,5 +1,5 @@
 import { setTimeout as delay } from 'node:timers/promises'
-import { OrcaRuntimeWithTerminalSleepSnapshot } from './worktree-terminal-sleep-snapshot'
+import { TopoRuntimeWithTerminalSleepSnapshot } from './worktree-terminal-sleep-snapshot'
 import { setsEqual } from '../identity/runtime-worktree-binding-index'
 import type { RuntimeLeafRecord } from '../records/runtime-terminal-state-records'
 import { worktreeIdsEqual } from '../../../../shared/worktree/id'
@@ -7,7 +7,7 @@ import {
   worktreePtyBelongsToHost,
   type WorktreePtyHostFence
 } from '../../workspaces/removal/worktree-pty-host-fence'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { mainHoldsTerminal } from '../surface/main-pane-verdict'
 import type { ResolvedWorktree } from '../../workspaces/catalog/runtime-worktree-path-identity'
 import { PTY_CONTROLLER_LIST_TIMEOUT_MS } from '../lifecycle/pty-controller-inventory-budget'
@@ -16,7 +16,7 @@ import { PTY_CONTROLLER_LIST_TIMEOUT_MS } from '../lifecycle/pty-controller-inve
 const POST_STOP_LIVENESS_RETRY_MS = PTY_CONTROLLER_LIST_TIMEOUT_MS
 const POST_STOP_LIVENESS_RETRY_DELAY_MS = 100
 
-export abstract class OrcaRuntimeWithStopExactTerminalsForWorktree extends OrcaRuntimeWithTerminalSleepSnapshot {
+export abstract class TopoRuntimeWithStopExactTerminalsForWorktree extends TopoRuntimeWithTerminalSleepSnapshot {
   protected abstract issueHandle(leaf: RuntimeLeafRecord): string
 
   async stopExactTerminalsForWorktree(
@@ -158,7 +158,7 @@ export abstract class OrcaRuntimeWithStopExactTerminalsForWorktree extends OrcaR
       }
     }
     // Main-bound terminals can survive listing gaps; only certified exits or fresh inventory remove them.
-    for (const pty of ORCA_LAYOUT_OWNER_IS_MAIN ? this.ptysById.values() : []) {
+    for (const pty of TOPO_LAYOUT_OWNER_IS_MAIN ? this.ptysById.values() : []) {
       if (
         worktreeIdsEqual(pty.worktreeId, worktreeId) &&
         mainHoldsTerminal(this, pty.ptyId) &&

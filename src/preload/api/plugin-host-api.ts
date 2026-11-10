@@ -215,7 +215,7 @@ export type PluginsApi = {
   refreshMarketplaces: (args?: { sourceId?: string }) => Promise<PluginMarketplaceHostSourceState[]>
   listMarketplacePlugins: () => Promise<PluginMarketplaceHostListing[]>
   /** A catalog plugin that opens this file type, from cached catalogs only; never installs. */
-  /** `editor` for a file Orca already opens as text: only custom editors are suggested. */
+  /** `editor` for a file Topo already opens as text: only custom editors are suggested. */
   suggestForFileType: (
     fileType: string,
     purpose?: 'open' | 'editor'
@@ -252,7 +252,7 @@ export type PluginsApi = {
   /** Re-discovers after settings edits (feature flag, dev paths). */
   refresh: () => Promise<PluginHostListEntry[]>
   onChanged: (callback: (event: PluginChangeEvent) => void) => () => void
-  /** `orca plugin open` / `shot`: main asks this window to show a plugin view. Desktop only. */
+  /** `topo plugin open` / `shot`: main asks this window to show a plugin view. Desktop only. */
   onViewRequest?: (callback: (request: PluginViewRequest) => void) => () => void
   answerViewRequest?: (reply: PluginViewReply) => void
   /** What automatic updates last did. Older hosts reject the call; treat that as nothing. */

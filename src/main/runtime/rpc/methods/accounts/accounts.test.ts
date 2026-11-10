@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { eraseRpcMethods, isStreamingMethod, type RpcContext } from '../../core'
 import { ACCOUNT_METHODS } from './accounts'
 import type {
@@ -35,7 +35,7 @@ describe('account RPC methods', () => {
         }
       )
       // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the sign-in methods call only this runtime member.
-      const runtime = { runHostAccountSignIn } as unknown as OrcaRuntimeService
+      const runtime = { runHostAccountSignIn } as unknown as TopoRuntimeService
       const device = {
         runtime,
         clientKind: 'runtime' as const,

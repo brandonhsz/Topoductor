@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithCloseMobileRowInMainLayout } from './close-mobile-row-in-main-layout'
+import { TopoRuntimeWithCloseMobileRowInMainLayout } from './close-mobile-row-in-main-layout'
 import type { RuntimeMobileSessionTerminalTab } from '../../../../shared/runtime-mobile-session-tab-contracts'
 import {
   adjudicateAbsentMobileSessionTabClose,
@@ -17,11 +17,11 @@ import type { RuntimeEdgeCommandSurface } from '../../construction/runtime-edge-
 import { rendererPublicationThrottle } from '../../../window/renderer-publication-throttle'
 import { retireHeadlessMobileSessionEditorTab } from '../../session-tabs/headless-editor-tabs'
 import { LOCAL_EXECUTION_HOST_ID } from '../../../../shared/execution-host'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { closeMobileStructuredSessionPresentation } from '../../session-tabs/structured-session-tab-presentation'
-import type { OrcaRuntimeWithCloseStructuredAgentSessionTab as ChatPresentation } from '../../session-tabs/structured-session-tab-close'
+import type { TopoRuntimeWithCloseStructuredAgentSessionTab as ChatPresentation } from '../../session-tabs/structured-session-tab-close'
 
-export abstract class OrcaRuntimeWithCloseMobileSessionTab extends OrcaRuntimeWithCloseMobileRowInMainLayout {
+export abstract class TopoRuntimeWithCloseMobileSessionTab extends TopoRuntimeWithCloseMobileRowInMainLayout {
   abstract retireStructuredAgentSessionTabFromSnapshot(
     sessionId: string,
     expectedTabId?: string,
@@ -162,7 +162,7 @@ export abstract class OrcaRuntimeWithCloseMobileSessionTab extends OrcaRuntimeWi
         }
       }
       if (
-        ORCA_LAYOUT_OWNER_IS_MAIN &&
+        TOPO_LAYOUT_OWNER_IS_MAIN &&
         (await this.closeMobileRowInMainLayout(worktreeId, tabId, tab, options))
       ) {
         return finishCommittedClose()

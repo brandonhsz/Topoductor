@@ -22,7 +22,7 @@ const sources: StructuredSessionOpenSource[] = [
   { kind: 'notification', sessionId: 'historical', worktreeId: 'old' },
   {
     kind: 'sender',
-    party: { address: 'dispatch:worker', terminalHandle: null, orcaSessionId: null },
+    party: { address: 'dispatch:worker', terminalHandle: null, topoSessionId: null },
     messageIds: ['mail-1']
   }
 ]
@@ -69,7 +69,7 @@ it.each(sources)(
     )
     expect(deps.activate).toHaveBeenCalledWith(row, target)
     expect(deps.locate).toHaveBeenCalledWith(
-      source.kind === 'sender' ? source.party.address : 'orca_session_id:historical',
+      source.kind === 'sender' ? source.party.address : 'topo_session_id:historical',
       source.kind === 'sender' ? ['mail-1'] : []
     )
   }

@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { delimiter, join } from 'node:path'
 import { parse } from 'yaml'
 import { describe, expect, it } from 'vitest'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 
 const workflow = parse(readFileSync('.github/workflows/e2e.yml', 'utf8'))
 const build = workflow.jobs.build.steps.find((step) => step.id === 'e2e-cli')
@@ -14,7 +14,7 @@ describe('shared E2E CLI capability', () => {
     [true, 0, 0],
     [true, 7, 7]
   ])('supported=%s build status=%s exits=%s', (supported, buildStatus, exitStatus) => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-e2e-cli-capability-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-e2e-cli-capability-'))
     const marker = join(directory, 'build-requested')
     try {
       writeFileSync(

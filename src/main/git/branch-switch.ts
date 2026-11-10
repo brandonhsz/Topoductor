@@ -20,7 +20,7 @@ import { gitExecFileAsync, gitOptionalLocksDisabledEnv } from './runner'
 import { parseCheckoutSkippedPaths } from './checkout-skipped-paths'
 import { readGitCommandFailureStderr } from '../../shared/git/commands/git-command-failure-text'
 
-/** A switch Orca refused before touching the checkout; the message is shown to the user as-is. */
+/** A switch Topo refused before touching the checkout; the message is shown to the user as-is. */
 export class BranchSwitchRefusedError extends Error {
   constructor(message: string) {
     super(message)
@@ -43,7 +43,7 @@ export class BranchSwitchLandedWithWarningError extends Error {
 function filesLeftBehindMessage(branch: string, skippedPaths: readonly string[]): string {
   const files = skippedPaths.length === 1 ? '1 file' : `${skippedPaths.length} files`
   const pronoun = skippedPaths.length === 1 ? 'it' : 'them'
-  return `Switched to ${branch}, but ${files} kept the old branch's content because another program has ${pronoun} open (${skippedPaths[0]}). Close that program, then discard the changes Orca shows for ${pronoun} to finish the switch.`
+  return `Switched to ${branch}, but ${files} kept the old branch's content because another program has ${pronoun} open (${skippedPaths[0]}). Close that program, then discard the changes Topo shows for ${pronoun} to finish the switch.`
 }
 
 /** Git's own progress lines on stderr; never the reason a switch reported an error. */
@@ -61,7 +61,7 @@ export function gitFailureLine(stderr: string): string | null {
 }
 
 export type BranchSwitchDeps = {
-  /** Status as the panel reads it, so Orca's own shared-path symlinks don't count as changes. */
+  /** Status as the panel reads it, so Topo's own shared-path symlinks don't count as changes. */
   getStatus: () => Promise<GitStatusResult>
   /** The provider's checkout, so the user's switch keeps the interactive git queue. */
   checkout: (branch: string, creation?: BranchSwitchCreation) => Promise<{ skippedPaths: string[] }>
@@ -112,7 +112,7 @@ function changedFilesReason(status: GitStatusResult): string {
   if (submodule) {
     return `Commit, stash or clean the changes inside submodule ${submodule.path} before switching branches.`
   }
-  if (first && first.path.startsWith('.orca/browser-downloads/')) {
+  if (first && first.path.startsWith('.topo/browser-downloads/')) {
     return `Move or delete the downloaded file ${first.path} before switching branches.`
   }
   const files = count === 1 ? `1 changed file (${first?.path ?? ''})` : `${count} changed files`
@@ -174,7 +174,7 @@ async function readRefusal(
   const status = await deps.getStatus()
   if (status.readError !== undefined) {
     return {
-      refusal: `Orca couldn't read this checkout's changes, so it didn't switch branches. ${status.readError}`,
+      refusal: `Topo couldn't read this checkout's changes, so it didn't switch branches. ${status.readError}`,
       previousBranch: null,
       alreadyOnTarget: false
     }
@@ -208,7 +208,7 @@ async function readRefusal(
       }
     } catch (error) {
       return refuse(
-        `Orca couldn't read this checkout's changes, so it didn't switch branches. ${error instanceof Error ? error.message : String(error)}`
+        `Topo couldn't read this checkout's changes, so it didn't switch branches. ${error instanceof Error ? error.message : String(error)}`
       )
     }
   }
@@ -292,7 +292,7 @@ export async function switchBranchGuarded(
         if (commitTarget) {
           throw new Error(
             gitFailureLine(readGitCommandFailureStderr(error) ?? '') ??
-              "Orca couldn't check out this commit. Check this repository in a terminal, then try again."
+              "Topo couldn't check out this commit. Check this repository in a terminal, then try again."
           )
         }
         throw typeof target === 'string' ? error : branchSwitchFailure(error, branch)

@@ -20,7 +20,7 @@ let originalUserProfile: string | undefined
 let originalDshHome: string | undefined
 
 beforeEach(() => {
-  home = mkdtempSync(join(tmpdir(), 'orca-dsh-hook-'))
+  home = mkdtempSync(join(tmpdir(), 'topo-dsh-hook-'))
   originalHome = process.env.HOME
   originalUserProfile = process.env.USERPROFILE
   originalDshHome = process.env.DSH_HOME
@@ -49,7 +49,7 @@ afterEach(() => {
 })
 
 const configPath = (): string => join(home, '.dsh', 'cordis.patch.yml')
-const managedHooksPath = (): string => join(home, '.orca', 'agent-hooks', 'dsh-hooks.json')
+const managedHooksPath = (): string => join(home, '.topo', 'agent-hooks', 'dsh-hooks.json')
 
 function readManagedHooks(): { hooks: Record<string, unknown[]> } {
   const parsed: { hooks: Record<string, unknown[]> } = JSON.parse(

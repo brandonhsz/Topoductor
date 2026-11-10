@@ -21,7 +21,7 @@ let directory: string
 const forward = vi.fn()
 const unavailable = vi.fn()
 beforeEach(async () => {
-  directory = mkdtempSync(join(tmpdir(), 'orca-tmux-canonical-'))
+  directory = mkdtempSync(join(tmpdir(), 'topo-tmux-canonical-'))
   forward.mockClear()
   unavailable.mockClear()
   probe.mockResolvedValue({ clients: [{ pid: 101, pane: '%0' }], rows: TMUX_TEST_ROWS })
@@ -41,7 +41,7 @@ async function post(body: unknown = tmuxTestBody(), source = 'opencode') {
   const coordinates = server.getCoordinates()
   return fetch(`http://127.0.0.1:${coordinates.port}/hook/${source}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Orca-Agent-Hook-Token': coordinates.token },
+    headers: { 'Content-Type': 'application/json', 'X-Topo-Agent-Hook-Token': coordinates.token },
     body: JSON.stringify(body)
   })
 }

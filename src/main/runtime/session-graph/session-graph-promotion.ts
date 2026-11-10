@@ -1,16 +1,16 @@
-import type { OrcaRuntimeWithResolveExitWaiters as ResolveExitWaitersMethods } from '../terminal/wait/terminal-wait-settlements'
-import type { OrcaRuntimeWithHasTerminalsForWorktree as HasTerminalsForWorktreeMethods } from './session-graph-reload-lifecycle'
-import type { OrcaRuntimeWithBindPtyIncarnationHandle as BindPtyIncarnationHandleMethods } from '../terminal/identity/terminal-handle-bindings'
-import type { OrcaRuntimeWithCollectMobileVisibleGraphChangedWorktrees as CollectMobileVisibleGraphChangedWorktreesMethods } from '../session-tabs/session-tabs-inventory'
-import type { OrcaRuntimeWithGetPtyRecordForPaneKey as GetPtyRecordForPaneKeyMethods } from '../orchestration/mailbox/routing/terminal-pane-mail-routing'
-import type { OrcaRuntimeWithMarkPtyLivenessUnverifiable as MarkPtyLivenessUnverifiableMethods } from '../terminal/layout/terminal-input-floor'
-import type { OrcaRuntimeWithRecordPtyWorktree as RecordPtyWorktreeMethods } from '../terminal/identity/pty-worktree-record'
+import type { TopoRuntimeWithResolveExitWaiters as ResolveExitWaitersMethods } from '../terminal/wait/terminal-wait-settlements'
+import type { TopoRuntimeWithHasTerminalsForWorktree as HasTerminalsForWorktreeMethods } from './session-graph-reload-lifecycle'
+import type { TopoRuntimeWithBindPtyIncarnationHandle as BindPtyIncarnationHandleMethods } from '../terminal/identity/terminal-handle-bindings'
+import type { TopoRuntimeWithCollectMobileVisibleGraphChangedWorktrees as CollectMobileVisibleGraphChangedWorktreesMethods } from '../session-tabs/session-tabs-inventory'
+import type { TopoRuntimeWithGetPtyRecordForPaneKey as GetPtyRecordForPaneKeyMethods } from '../orchestration/mailbox/routing/terminal-pane-mail-routing'
+import type { TopoRuntimeWithMarkPtyLivenessUnverifiable as MarkPtyLivenessUnverifiableMethods } from '../terminal/layout/terminal-input-floor'
+import type { TopoRuntimeWithRecordPtyWorktree as RecordPtyWorktreeMethods } from '../terminal/identity/pty-worktree-record'
 import type { RuntimeSessionTabsInventoryPublication as SessionTabsInventoryPublicationMethods } from '../session-tabs/session-tabs-inventory-publication'
-import type { OrcaRuntimeWithRefreshFloatingWorkspacePtyLiveness as RefreshFloatingWorkspacePtyLivenessMethods } from '../terminal/lifecycle/floating-session-liveness'
-import type { OrcaRuntimeWithTouchMobileSessionTabsForWorktree as TouchMobileSessionTabsForWorktreeMethods } from '../session-tabs/mobile-session-membership'
-import type { OrcaRuntimeWithScheduleMobileSessionTabsChanged as ScheduleMobileSessionTabsChangedMethods } from '../session-tabs/session-tabs-change-publication'
-import type { OrcaRuntimeWithSyncMobileSessionTabs as SyncMobileSessionTabsMethods } from '../session-tabs/mobile-session-reconciliation'
-import { OrcaRuntimeWithNotifySshStateChanged } from '../workspaces/workspace-host-notifications'
+import type { TopoRuntimeWithRefreshFloatingWorkspacePtyLiveness as RefreshFloatingWorkspacePtyLivenessMethods } from '../terminal/lifecycle/floating-session-liveness'
+import type { TopoRuntimeWithTouchMobileSessionTabsForWorktree as TouchMobileSessionTabsForWorktreeMethods } from '../session-tabs/mobile-session-membership'
+import type { TopoRuntimeWithScheduleMobileSessionTabsChanged as ScheduleMobileSessionTabsChangedMethods } from '../session-tabs/session-tabs-change-publication'
+import type { TopoRuntimeWithSyncMobileSessionTabs as SyncMobileSessionTabsMethods } from '../session-tabs/mobile-session-reconciliation'
+import { TopoRuntimeWithNotifySshStateChanged } from '../workspaces/workspace-host-notifications'
 import { HEADLESS_RUNTIME_WINDOW_ID } from '../../../shared/runtime-session-contracts'
 import { ActiveGroupViewFacts } from '../view-facts/active-group-view-facts'
 import type { ExecutionHostId } from '../../../shared/execution-host'
@@ -18,7 +18,7 @@ import type { WorkspaceSessionState } from '../../../shared/workspace-session/wo
 import type { RuntimePtyWorktreeRecord } from '../terminal/records/runtime-terminal-state-records'
 import type { SessionTitleAuthority } from '../session-tabs/session-title-publisher'
 
-export abstract class OrcaRuntimeWithAttachWindow extends OrcaRuntimeWithNotifySshStateChanged {
+export abstract class TopoRuntimeWithAttachWindow extends TopoRuntimeWithNotifySshStateChanged {
   protected abstract captureSessionTitleAuthority(): SessionTitleAuthority
   protected abstract republishSessionTitleAuthorityChanges(
     before: SessionTitleAuthority,

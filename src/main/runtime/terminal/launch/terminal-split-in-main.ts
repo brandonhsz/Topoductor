@@ -1,8 +1,8 @@
 // Main writes and starts its owned splits under the proposed pane id; every view attaches to that terminal.
-import { OrcaRuntimeWithSplitPtyBackedTerminal } from './terminal-split-surface'
+import { TopoRuntimeWithSplitPtyBackedTerminal } from './terminal-split-surface'
 import type { RuntimeTerminalSplit } from '../../../../shared/runtime-terminal-contracts'
 import { mainOwnsTabLayout } from './main-owned-tab-layout'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import {
   recordPtySurface,
   spawnSurfaceClaimSequence
@@ -34,7 +34,7 @@ export type SplitPaneInMainOptions = {
   wslUserAct?: true
 }
 
-export abstract class OrcaRuntimeWithSplitPaneInMain extends OrcaRuntimeWithSplitPtyBackedTerminal {
+export abstract class TopoRuntimeWithSplitPaneInMain extends TopoRuntimeWithSplitPtyBackedTerminal {
   /** Whether main's layout holds the tab, so main writes and starts its splits. */
   protected ownsTabLayout(worktreeId: string, tabId: string): boolean {
     return mainOwnsTabLayout(this.getWorkspaceSessionHostIdsForTab(worktreeId, tabId))
@@ -79,7 +79,7 @@ export abstract class OrcaRuntimeWithSplitPaneInMain extends OrcaRuntimeWithSpli
     source: SplitPaneSource,
     opts: SplitPaneInMainOptions
   ): Promise<RuntimeTerminalSplit> {
-    if (!ORCA_LAYOUT_OWNER_IS_MAIN || !this.ownsTabLayout(source.worktreeId, source.tabId)) {
+    if (!TOPO_LAYOUT_OWNER_IS_MAIN || !this.ownsTabLayout(source.worktreeId, source.tabId)) {
       // The window then splits it as before (a paired server's tab, or the window-owned build).
       throw new Error('host_not_owned')
     }

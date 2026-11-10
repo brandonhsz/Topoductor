@@ -1,4 +1,4 @@
-import type { ManagedOrcadDeploymentSummary } from '../../../shared/execution-host/managed-orcad-execution-host'
+import type { ManagedTopodDeploymentSummary } from '../../../shared/execution-host/managed-topod-execution-host'
 import type { PairingOffer } from '../../../shared/remote-runtime/pairing/mobile-relay-pairing-offer'
 import type { RuntimeEnvironmentSource } from '../../../shared/remote-runtime/host-catalog/runtime-environments'
 import type { RuntimeEnvironmentStatus } from '../../../shared/remote-runtime/host-status/runtime-host-status'
@@ -23,7 +23,7 @@ export type MobileDesktopRelayHostListing = {
   id: string
   name: string
   source?: RuntimeEnvironmentSource
-  orcadDeployment?: ManagedOrcadDeploymentSummary | null
+  topodDeployment?: ManagedTopodDeploymentSummary | null
   pairingRevision: number
   runtimeId: string | null
   /** The desktop's own device id on that server, as pairing recorded it. */

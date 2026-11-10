@@ -2,7 +2,7 @@ import { useCallback, useLayoutEffect, useMemo, useRef } from 'react'
 import { Platform } from 'react-native'
 import { File as FsFile } from 'expo-file-system'
 import { useFocusEffect, useNavigation } from 'expo-router'
-import { presentPdf } from '../../modules/orca-mobile-web-shell/src'
+import { presentPdf } from '../../modules/topo-mobile-web-shell/src'
 import { getRuntimePathBasename } from '../../../src/shared/cross-platform-path'
 import { PDF_MIME_TYPE } from '../files/mobile-file-media'
 import {
@@ -56,7 +56,7 @@ export function createNativePdfViewer(
     current?.abort()
     const controller = new AbortController()
     current = controller
-    const folder = freshCacheFolder('orca-pdf')
+    const folder = freshCacheFolder('topo-pdf')
     const uri = await downloadMobileFileMedia(
       executionHost ? scopeRpcClientToExecutionHost(client, executionHost) : client,
       { worktreeId, relativePath, mimeType: PDF_MIME_TYPE },

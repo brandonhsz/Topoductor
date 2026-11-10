@@ -87,7 +87,7 @@ export const createMobileCommandMenuHostFixture: MobileCommandMenuHostFixtureMod
       await import('../../options/at-rest-command-context')
     const { recordingStructuredAgentSessionLogger } =
       await import('./structured-agent-session-logger-test-support')
-    const root = await mkdtemp(join(tmpdir(), 'orca-35069-phone-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-35069-phone-'))
     const cwd = join(root, 'workspace')
     await mkdir(cwd)
     const { clientRequestsCommands } =

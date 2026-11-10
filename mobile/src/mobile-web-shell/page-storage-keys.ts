@@ -6,7 +6,7 @@
  * again on the next remount. A pin that silently forgets itself is worse than one that cannot be
  * set, so the page's store is the app's, reached over the `storage` grant.
  *
- * An allowlist and not a passthrough. Everything the app keeps under `orca:` is in one namespace —
+ * An allowlist and not a passthrough. Everything the app keeps under `topo:` is in one namespace —
  * paired hosts, push registrations — and a page that could write any of them could rewrite state
  * the native app owns. A prefix is listed only where the key carries an id the desktop chooses; the
  * rest are exact.
@@ -17,32 +17,32 @@
  * (rulings-ota-c7.md ruling 7).
  */
 export const TERMINAL_SHORTCUT_STORAGE_KEYS = [
-  'orca:terminal-accessory-layout',
-  'orca:custom-accessory-keys'
+  'topo:terminal-accessory-layout',
+  'topo:custom-accessory-keys'
 ] as const
 
 export const TERMINAL_SETTINGS_STORAGE_KEYS = [
   ...TERMINAL_SHORTCUT_STORAGE_KEYS,
-  'orca:terminalTextScale',
-  'orca:terminalAutocompleteEnabled',
-  'orca:terminalLinkOpenMode'
+  'topo:terminalTextScale',
+  'topo:terminalAutocompleteEnabled',
+  'topo:terminalLinkOpenMode'
 ] as const
 
 export const PAGE_STORAGE_EXACT_KEYS = [
-  'orca:last-visited-worktree',
-  'orca:hostSidebarWidth',
-  'orca:hostDockWidth',
-  'orca:terminal-accessory-layout',
-  'orca:custom-accessory-keys',
-  'orca:defaultSessionView',
+  'topo:last-visited-worktree',
+  'topo:hostSidebarWidth',
+  'topo:hostDockWidth',
+  'topo:terminal-accessory-layout',
+  'topo:custom-accessory-keys',
+  'topo:defaultSessionView',
   /** Legacy journal access for embedded pages served by older hosts. */
-  'orca:mobileStructuredSendOperations:v1',
-  'orca:terminalTextScale',
-  'orca:terminalAutocompleteEnabled',
-  /** Whether a terminal link opens in Orca's browser or the phone's. */
-  'orca:terminalLinkOpenMode',
+  'topo:mobileStructuredSendOperations:v1',
+  'topo:terminalTextScale',
+  'topo:terminalAutocompleteEnabled',
+  /** Whether a terminal link opens in Topo's browser or the phone's. */
+  'topo:terminalLinkOpenMode',
   /** The split terminal's chosen direction. */
-  'orca:terminalSplitLayout'
+  'topo:terminalSplitLayout'
 ] as const
 
 /**
@@ -50,7 +50,7 @@ export const PAGE_STORAGE_EXACT_KEYS = [
  * reader refines each key against its own list and refuses the whole frame on one it lacks, so
  * the host sends these only to a page whose `ready` named them in `storageKeys`.
  */
-export const NEGOTIATED_PAGE_STORAGE_KEYS = ['orca:terminalSplitLayout'] as const
+export const NEGOTIATED_PAGE_STORAGE_KEYS = ['topo:terminalSplitLayout'] as const
 
 /** Whether a page that declared `storageKeys` (null: declared nothing) reads this key in `init`. */
 export function pageReadsStorageKey(key: string, declared: readonly string[] | null): boolean {
@@ -74,10 +74,10 @@ export function pageStorageForReader(
 }
 
 export const PAGE_STORAGE_KEY_PREFIXES = [
-  'orca:pins:',
-  'orca:nativeChatTabs:',
-  'orca:terminalLiveInputDisabled:',
-  'orca:terminalDrafts:'
+  'topo:pins:',
+  'topo:nativeChatTabs:',
+  'topo:terminalLiveInputDisabled:',
+  'topo:terminalDrafts:'
 ] as const
 
 export const PAGE_STORAGE_MAX_VALUE_CHARS = 16 * 1024
@@ -116,9 +116,9 @@ export function pageRouteWorkspace(
 }
 
 const WORKSPACE_KEY_PREFIXES = [
-  'orca:nativeChatTabs:',
-  'orca:terminalLiveInputDisabled:',
-  'orca:terminalDrafts:'
+  'topo:nativeChatTabs:',
+  'topo:terminalLiveInputDisabled:',
+  'topo:terminalDrafts:'
 ] as const
 
 export function workspaceScopedKey(prefix: string, hostId: string, worktreeId: string): string {
@@ -145,7 +145,7 @@ export function pageStorageKeysForRoute(hostId: string, routePathname: string): 
       : WORKSPACE_KEY_PREFIXES.map((prefix) =>
           workspaceScopedKey(prefix, hostId, workspace.worktreeId)
         )
-  return [...PAGE_STORAGE_EXACT_KEYS, `orca:pins:${hostId}`, ...scoped].filter(isPageStorageKey)
+  return [...PAGE_STORAGE_EXACT_KEYS, `topo:pins:${hostId}`, ...scoped].filter(isPageStorageKey)
 }
 
 // Narrow key shapes to this host/workspace; host-area pages additionally reach this host’s other workspaces.

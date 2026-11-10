@@ -1,7 +1,7 @@
 import { createFakePipedChild } from '../../shared/__fixtures__/fake-spawned-child'
 import { describe, expect, it, vi } from 'vitest'
 import type { SpawnOptions as SdkSpawnOptions } from '@anthropic-ai/claude-agent-sdk'
-import type { PipedProcessSpawner, ProcessSpec } from '@orca/process-host/process-spec'
+import type { PipedProcessSpawner, ProcessSpec } from '@topo/process-host/process-spec'
 
 import type * as ProviderSupervisor from '../provider-process/provider-process-supervisor'
 import { createProviderSpawnSpec } from '../provider-process/provider-process-supervisor'

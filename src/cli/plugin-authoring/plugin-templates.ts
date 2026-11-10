@@ -1,4 +1,4 @@
-/** Starter plugins for `orca plugin create`. Each one validates as-is and runs no build step. */
+/** Starter plugins for `topo plugin create`. Each one validates as-is and runs no build step. */
 
 import { iconTheme, languagePack, syntax, terminalTheme, theme } from './plugin-content-templates'
 import { panel } from './plugin-frame-templates'

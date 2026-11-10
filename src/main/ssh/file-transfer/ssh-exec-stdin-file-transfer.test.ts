@@ -14,7 +14,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Duplex } from 'node:stream'
 import { afterEach, describe, expect, it } from 'vitest'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import type { SshConnection } from '../connection/ssh-connection'
 import {
   uploadDirectoryViaExecStdin,

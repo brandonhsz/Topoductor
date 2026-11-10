@@ -13,7 +13,7 @@ afterEach(() => {
 })
 
 it('removes only idle profiles whose worktree of this repository is gone', async () => {
-  const root = realpathSync(mkdtempSync(path.join(tmpdir(), 'orca-dev-profiles-')))
+  const root = realpathSync(mkdtempSync(path.join(tmpdir(), 'topo-dev-profiles-')))
   roots.push(root)
   const commonDirectory = path.join(root, 'repo', '.git')
   const otherCommonDirectory = path.join(root, 'other', '.git')
@@ -21,7 +21,7 @@ it('removes only idle profiles whose worktree of this repository is gone', async
   mkdirSync(commonDirectory, { recursive: true })
   mkdirSync(otherCommonDirectory, { recursive: true })
   mkdirSync(liveWorktree)
-  const profilesRoot = path.join(root, 'orca-dev-wt')
+  const profilesRoot = path.join(root, 'topo-dev-wt')
   const profile = (name, repoRoot, gitCommonDir) => {
     const dir = path.join(profilesRoot, name)
     writeWorktreeProfileMarker(dir, { repoRoot, instanceKey: repoRoot, gitCommonDir })
@@ -31,7 +31,7 @@ it('removes only idle profiles whose worktree of this repository is gone', async
   const live = profile('bbbbbbbbbb', liveWorktree, commonDirectory)
   const otherRepo = profile('cccccccccc', path.join(root, 'gone-other'), otherCommonDirectory)
   const running = profile('dddddddddd', path.join(root, 'removed-running'), commonDirectory)
-  writeFileSync(path.join(running, 'orca-runtime.json'), JSON.stringify({ pid: 4242 }))
+  writeFileSync(path.join(running, 'topo-runtime.json'), JSON.stringify({ pid: 4242 }))
 
   const result = await reclaimDevWorktreeProfiles({
     apply: true,

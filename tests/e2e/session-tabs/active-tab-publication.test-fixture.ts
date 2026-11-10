@@ -7,9 +7,9 @@ import { listWorktreesStrict } from '../../../src/main/git/worktrees/catalog/wor
 import {
   MOCK_GIT_WORKTREES,
   scanLocalRepoWorktreesForResolutionMock
-} from '../../../src/main/runtime/orca-runtime-test-mocks/setup.spec'
-import '../../../src/main/runtime/orca-runtime-tests/runtime-test-module-registration.spec'
-import { OrcaRuntimeService } from '../../../src/main/runtime/orca-runtime'
+} from '../../../src/main/runtime/topo-runtime-test-mocks/setup.spec'
+import '../../../src/main/runtime/topo-runtime-tests/runtime-test-module-registration.spec'
+import { TopoRuntimeService } from '../../../src/main/runtime/topo-runtime'
 import {
   HEADLESS_LEAF_ID,
   TEST_WORKTREE_ID as WT,
@@ -17,7 +17,7 @@ import {
   makeHeadlessTerminalLayout,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} from '../../../src/main/runtime/orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../../../src/main/runtime/topo-runtime-tests/topo-runtime-test-fixtures.spec'
 
 export function createRuntimeFixture(attached = true) {
   vi.mocked(listWorktrees).mockResolvedValue(MOCK_GIT_WORKTREES)
@@ -57,7 +57,7 @@ export function createRuntimeFixture(attached = true) {
     }
   })
   const { runtimeStore, getSession, setSession } = makeRuntimeStoreWithWorkspaceSession(session)
-  const runtime = new OrcaRuntimeService(runtimeStore)
+  const runtime = new TopoRuntimeService(runtimeStore)
   runtime.setPtyController({
     write: () => true,
     kill: () => true,

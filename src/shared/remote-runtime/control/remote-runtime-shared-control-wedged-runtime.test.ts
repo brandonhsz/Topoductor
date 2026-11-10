@@ -1,4 +1,4 @@
-// @orca-isolated-worker: mixes real socket deadlines with faked intervals, so timer state left by an
+// @topo-isolated-worker: mixes real socket deadlines with faked intervals, so timer state left by an
 // earlier file in a shared worker can stop the probe deadline from ever firing.
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { RemoteRuntimeSharedControlConnection } from './remote-runtime-shared-control-connection'

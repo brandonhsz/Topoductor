@@ -1,10 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { resolveWslExecutablePath } from '../../wsl/execution/wsl-executable-path'
 import { WslSkillInstallFilesystem } from '../filesystem/skill-wsl-install-filesystem'
 
-const DISTRO = process.env.ORCA_REAL_WSL_SKILL_DISTRO ?? 'Ubuntu-24.04'
-const RUN_REAL_WSL = process.platform === 'win32' && process.env.ORCA_REAL_WSL_SKILL_TEST === '1'
+const DISTRO = process.env.TOPO_REAL_WSL_SKILL_DISTRO ?? 'Ubuntu-24.04'
+const RUN_REAL_WSL = process.platform === 'win32' && process.env.TOPO_REAL_WSL_SKILL_TEST === '1'
 
 async function runWsl(...args: string[]): Promise<string> {
   const result = await runProcess({
@@ -29,8 +29,8 @@ describe.runIf(RUN_REAL_WSL)('real WSL skill deletion primitives', () => {
   let skillsRoot = ''
 
   beforeAll(async () => {
-    guestRoot = await runWsl('mktemp', '-d', '/tmp/orca-skill-delete.XXXXXX')
-    if (!guestRoot.startsWith('/tmp/orca-skill-delete.')) {
+    guestRoot = await runWsl('mktemp', '-d', '/tmp/topo-skill-delete.XXXXXX')
+    if (!guestRoot.startsWith('/tmp/topo-skill-delete.')) {
       throw new Error('unexpected-wsl-integration-root')
     }
     skillsRoot = `${guestRoot}/home/.agents/skills`
@@ -48,7 +48,7 @@ describe.runIf(RUN_REAL_WSL)('real WSL skill deletion primitives', () => {
   })
 
   afterAll(async () => {
-    if (guestRoot.startsWith('/tmp/orca-skill-delete.')) {
+    if (guestRoot.startsWith('/tmp/topo-skill-delete.')) {
       await runWsl('rm', '-rf', '--', guestRoot)
     }
   })
@@ -96,7 +96,7 @@ describe.runIf(RUN_REAL_WSL)('real WSL skill deletion primitives', () => {
   it('renames a placement to a hidden sibling and removes it', async () => {
     const filesystem = new WslSkillInstallFilesystem(DISTRO, [uncPath(`${guestRoot}/home`)])
     const source = `${skillsRoot}/demo`
-    const staged = `${skillsRoot}/.demo.orca-skill-delete-integration`
+    const staged = `${skillsRoot}/.demo.topo-skill-delete-integration`
     await filesystem.rename(uncPath(source), uncPath(staged))
     expect(await runWsl('sh', '-c', `[ -d '${staged}' ] && printf yes`)).toBe('yes')
     await filesystem.remove(uncPath(staged))

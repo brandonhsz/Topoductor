@@ -191,9 +191,9 @@ it('denies a workspace pinned local under a group carrying only a legacy connect
 
 describe('workspace-directory fallback', () => {
   it.each([
-    ['bare name', 'orca-ws'],
+    ['bare name', 'topo-ws'],
     ['parent traversal', '..'],
-    ['relative traversal', '../orca-ws']
+    ['relative traversal', '../topo-ws']
   ])('grants nothing for a repo-relative %s with no repo to anchor it', async (_case, dir) => {
     // `resolve` would anchor these to the main-process cwd, granting an unrelated tree.
     expect(await getAllowedRoots(storeFor([], [], [], { workspaceDir: dir }))).toEqual([])

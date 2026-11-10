@@ -16,13 +16,13 @@
     "allowImportingTsExtensions": false,
     "baseUrl": ".",
     "paths": {
-      "@orca-cloud/relay-contract": [
+      "@topo-cloud/relay-contract": [
         "../../packages/relay-contract/src/index.ts"
       ],
-      "@orca-cloud/relay-contract/*": [
+      "@topo-cloud/relay-contract/*": [
         "../../packages/relay-contract/src/*.ts"
       ],
-      "@orca-cloud/postgres-schema": [
+      "@topo-cloud/postgres-schema": [
         "../../packages/postgres-schema/src/index.ts"
       ]
     }

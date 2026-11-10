@@ -25,7 +25,7 @@ export function BrowserPasswordPreferences({
         label={t('settings.browser.passwords.offerToSave', 'Offer to save passwords')}
         description={t(
           'settings.browser.passwords.offerToSaveDescription',
-          'After you sign in to a site in Orca’s browser, offer to save the login.'
+          'After you sign in to a site in Topo’s browser, offer to save the login.'
         )}
         checked={offerToSave}
         onChange={() => updateSettings({ browserPasswordsOfferToSave: !offerToSave })}
@@ -41,7 +41,7 @@ export function BrowserPasswordPreferences({
             : reauthMethod === 'touch-id-unavailable'
               ? t(
                   'settings.browser.passwords.reauthUnavailable',
-                  'Touch ID can’t be used right now, so Orca won’t show, copy or fill a password that needs it.'
+                  'Touch ID can’t be used right now, so Topo won’t show, copy or fill a password that needs it.'
                 )
               : t(
                   'settings.browser.passwords.noReauth',

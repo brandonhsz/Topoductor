@@ -17,13 +17,13 @@ import {
   CODEX_HOOK_TRUST_KEY,
   escapeTomlBasicString
 } from '../../configuration/toml/config-toml-syntax'
-import { repairOrcaDuplicateTrustTables } from './config-toml-project-duplicate-repair'
+import { repairTopoDuplicateTrustTables } from './config-toml-project-duplicate-repair'
 
 export function upsertHookTrustContent(
   existingContent: string,
   entries: readonly CodexTrustEntry[]
 ): string {
-  const existing = repairOrcaDuplicateTrustTables(stripLeadingBom(existingContent))
+  const existing = repairTopoDuplicateTrustTables(stripLeadingBom(existingContent))
   let updated = entries.some((entry) =>
     usesWindowsCodexPathSeparators(normalizeCodexTrustSourcePath(entry.sourcePath))
   )

@@ -1,6 +1,6 @@
-import { OrcaRuntimeWithHandleMobileSubscribeInternal } from './mobile-terminal-subscribe-internal'
+import { TopoRuntimeWithHandleMobileSubscribeInternal } from './mobile-terminal-subscribe-internal'
 
-export abstract class OrcaRuntimeWithHandleMobileUnsubscribe extends OrcaRuntimeWithHandleMobileSubscribeInternal {
+export abstract class TopoRuntimeWithHandleMobileUnsubscribe extends TopoRuntimeWithHandleMobileSubscribeInternal {
   // Only the last subscriber schedules restore; surviving peers retain the floor and elect their most recent actor. Debounce avoids tab-switch resize thrashing.
   handleMobileUnsubscribe(ptyId: string, clientId: string): void {
     const inner = this.mobileSubscribers.get(ptyId)

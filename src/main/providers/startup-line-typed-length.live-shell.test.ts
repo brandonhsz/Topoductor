@@ -44,8 +44,8 @@ function promptLines(lineCount: number, perLine: number): string {
 let home = ''
 
 beforeEach(() => {
-  home = mkdtempSync(join(tmpdir(), 'orca-typed-line-home-'))
-  setTestUserDataPath(mkdtempSync(join(tmpdir(), 'orca-typed-line-ud-')))
+  home = mkdtempSync(join(tmpdir(), 'topo-typed-line-home-'))
+  setTestUserDataPath(mkdtempSync(join(tmpdir(), 'topo-typed-line-ud-')))
 })
 
 afterEach(() => {
@@ -84,7 +84,7 @@ async function typeIntoZsh(text: string, userConfigSeconds: number): Promise<str
     rows: 40,
     cwd: home,
     // Keep user config inside the fixture home.
-    env: { ...env, ...launch.env, ORCA_ORIG_ZDOTDIR: home, TERM: 'xterm-256color' }
+    env: { ...env, ...launch.env, TOPO_ORIG_ZDOTDIR: home, TERM: 'xterm-256color' }
   })
   const scan = createShellStartupOutputScanState()
   let resolveReady: ((signal: { postMarkerBytesObserved: boolean }) => void) | null = null

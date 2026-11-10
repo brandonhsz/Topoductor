@@ -9,7 +9,7 @@ import {
 } from './check-runtime-launcher-protocol-ratchet.mjs'
 import { DAEMON_PROTOCOL_SOURCE_PATH } from '../schema-facts/daemon-protocol-facts.mjs'
 const repos = []
-const LAUNCHER = 'src/main/managed-server/install/orcad-remote-runtime.ts'
+const LAUNCHER = 'src/main/managed-server/install/topod-remote-runtime.ts'
 
 function git(repo, args) {
   return execFileSync('git', args, {

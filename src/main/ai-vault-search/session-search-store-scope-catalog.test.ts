@@ -33,7 +33,7 @@ function store() {
       'local-repo::/work/one': meta('local'),
       'ssh-repo::/srv/one': meta('ssh:box')
     }),
-    getSettings: () => ({ workspaceDir: '/home/me/orca/workspaces', nestWorkspaces: true })
+    getSettings: () => ({ workspaceDir: '/home/me/topo/workspaces', nestWorkspaces: true })
   }
 }
 

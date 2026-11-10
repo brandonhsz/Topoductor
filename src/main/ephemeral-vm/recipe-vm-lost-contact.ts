@@ -15,13 +15,13 @@ export type RecipeVmContactEvidence = {
 }
 
 /**
- * A VM recorded as up whose host Orca gave up reaching, so the provider likely stopped or
+ * A VM recorded as up whose host Topo gave up reaching, so the provider likely stopped or
  * reclaimed it on its own (#34089). The recipe's resume is then what brings it back.
  * - SSH: the reconnect ladder spent every attempt, minutes of failures.
- * - Orca server: every health probe and control-socket reconnect failed for minutes.
+ * - Topo server: every health probe and control-socket reconnect failed for minutes.
  * A blip, a reconnect still under way, a host the user disconnected or one never dialed this
  * session is not evidence, and is left to the normal reconnects. Nothing here dials: the
- * evidence comes from dials Orca already makes, and none are made to a VM the user suspended.
+ * evidence comes from dials Topo already makes, and none are made to a VM the user suspended.
  */
 export function isRecipeVmLostContact(
   runtime: Pick<
@@ -40,7 +40,7 @@ export function isRecipeVmLostContact(
     )
   }
   return (
-    runtime.connectionMode === 'orca-server' &&
+    runtime.connectionMode === 'topo-server' &&
     runtime.runtimeEnvironmentId !== undefined &&
     evidence.isServerContactLost(runtime.runtimeEnvironmentId)
   )

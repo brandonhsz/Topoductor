@@ -3,7 +3,7 @@ import type { RuntimeClient } from './runtime-client'
 import { RuntimeClientError } from './runtime/types'
 import { quoteCliCommandArgument } from './shell-command-quote'
 
-/** `--environment local`: the caller's own Orca, even over an ambient ORCA_ENVIRONMENT or pairing code. */
+/** `--environment local`: the caller's own Topo, even over an ambient TOPO_ENVIRONMENT or pairing code. */
 export const LOCAL_ENVIRONMENT = 'local'
 
 export function isLocalEnvironmentSelector(value: unknown): value is string {
@@ -21,7 +21,7 @@ export async function savedEnvironmentNamedLocal(): Promise<{ id: string } | und
   )
 }
 
-/** `orca environment …` takes --environment as a saved entry to act on; local is not one. */
+/** `topo environment …` takes --environment as a saved entry to act on; local is not one. */
 export async function refuseLocalManagementSelector(
   commandPath: readonly string[],
   flags: Map<string, string | boolean>
@@ -32,13 +32,13 @@ export async function refuseLocalManagementSelector(
   const named = await savedEnvironmentNamedLocal()
   throw new RuntimeClientError(
     'invalid_argument',
-    `--environment local names this machine's own Orca, not a saved environment, so \`orca ${commandPath.join(' ')}\` cannot act on it.`,
+    `--environment local names this machine's own Topo, not a saved environment, so \`topo ${commandPath.join(' ')}\` cannot act on it.`,
     {
       nextSteps: [
         ...(named
           ? [`A saved environment named local is reached by its id: --environment ${named.id}.`]
           : []),
-        'Run `orca environment list` to see saved environments.'
+        'Run `topo environment list` to see saved environments.'
       ]
     }
   )
@@ -48,12 +48,12 @@ export function refuseReservedEnvironmentName(name: string): void {
   if (isLocalEnvironmentSelector(name)) {
     throw new RuntimeClientError(
       'invalid_argument',
-      '`local` is reserved: --environment local always means this machine’s own Orca. Save the environment under another name.'
+      '`local` is reserved: --environment local always means this machine’s own Topo. Save the environment under another name.'
     )
   }
 }
 
-/** cwd shortcuts (current, active) resolve only on the caller's own Orca. */
+/** cwd shortcuts (current, active) resolve only on the caller's own Topo. */
 export function assertLocalCwdWorktreeSelector(selector: string, client: RuntimeClient): void {
   if (!client.isRemote) {
     return
@@ -66,8 +66,8 @@ export function assertLocalCwdWorktreeSelector(selector: string, client: Runtime
     {
       nextSteps: [
         environment
-          ? `List that environment's workspaces: \`orca worktree ps --environment ${quoteCliCommandArgument(environment)} --json\`, then copy a row's address.`
-          : 'Save this connection with `orca environment add --name <name> --pairing-code <code>`, then list its workspaces with `orca worktree ps --environment <name> --json`.',
+          ? `List that environment's workspaces: \`topo worktree ps --environment ${quoteCliCommandArgument(environment)} --json\`, then copy a row's address.`
+          : 'Save this connection with `topo environment add --name <name> --pairing-code <code>`, then list its workspaces with `topo worktree ps --environment <name> --json`.',
         `For this machine's own workspace, rerun with --environment local.`
       ]
     }

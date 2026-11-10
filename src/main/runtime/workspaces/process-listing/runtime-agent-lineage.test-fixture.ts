@@ -8,7 +8,7 @@ import { RuntimeAgentOrchestrationProjection } from '../../orchestration/crew/ru
 import { attachRuntimeWorktreeAgentRows } from './runtime-worktree-agent-rows'
 import type { RuntimeWorktreePsSummary } from '../../../../shared/runtime-worktree-contracts'
 import type { RuntimeWorktreeAgentSource } from './runtime-worktree-agent-source'
-import { testOrcaSessionId } from '../../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../../shared/topo-session-address-test-fixture'
 import {
   structuredAgentSessionPaneKey,
   structuredAgentSessionTabId
@@ -19,8 +19,8 @@ import {
   structuredWorkerProcessIncarnation
 } from '../../orchestration/terminal-authority/structured-sessions/structured-worker-identity'
 
-export const LINEAGE_PARENT = testOrcaSessionId('ca1f6c2e-8b3d-4e7a-9c15-0d2b6e8f1a37')
-export const LINEAGE_CHILD = testOrcaSessionId('ce3b9d15-2c4a-4f86-a0b1-5c9e2d7f3b64')
+export const LINEAGE_PARENT = testTopoSessionId('ca1f6c2e-8b3d-4e7a-9c15-0d2b6e8f1a37')
+export const LINEAGE_CHILD = testTopoSessionId('ce3b9d15-2c4a-4f86-a0b1-5c9e2d7f3b64')
 export const canonicalChatRow = (id: string): string =>
   structuredAgentSessionPaneKey(structuredAgentSessionTabId(id), id)
 
@@ -33,7 +33,7 @@ export function publicLineageFixture(worktreeId = 'repo::/workspace') {
     objective: 'lineage',
     coordinatorHandle: null,
     coordinatorPaneKey: null,
-    coordinatorOrcaSessionId: LINEAGE_PARENT
+    coordinatorTopoSessionId: LINEAGE_PARENT
   })
   db.createDispatchContext({
     taskId: db.createTask({ runId: run.id, spec: 'Build the worker result' }).id,

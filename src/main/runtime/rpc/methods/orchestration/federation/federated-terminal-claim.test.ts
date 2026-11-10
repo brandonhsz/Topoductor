@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -25,7 +25,7 @@ describe('a paired-server worker start onto a terminal another Dispatch holds', 
   function workerHost() {
     const db = new OrchestrationDb(':memory:')
     databases.push(db)
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     configureFederationWorkerRuntime(runtime, TERMINAL)
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the attach reads only the workspace id in this rig.
@@ -39,7 +39,7 @@ describe('a paired-server worker start onto a terminal another Dispatch holds', 
     return { db, runtime }
   }
 
-  function attach(runtime: OrcaRuntimeService, dispatchId: string): Promise<unknown> {
+  function attach(runtime: TopoRuntimeService, dispatchId: string): Promise<unknown> {
     const method = ORCHESTRATION_METHODS.find(
       (candidate) => candidate.name === 'orchestration.federationAttachStart'
     )!

@@ -1,13 +1,13 @@
 import { orchestrationDbFile } from '../../orchestration/db/orchestration-db-file'
 import { getAppEnvironment } from '../../../../shared/app-environment'
-import { OrcaRuntimeWithPtyForegroundProcessReads } from '../../client/runtime-client-state'
+import { TopoRuntimeWithPtyForegroundProcessReads } from '../../client/runtime-client-state'
 import { getWorkerTerminalAutoReleaseScheduler } from '../../orchestration/terminal-authority/release/worker-terminal-auto-release-scheduler'
 import type { OrchestrationDb } from '../../orchestration/db/orchestration-db'
 
 // Keyed by runtime, not a field: the database can open while the runtime is still constructing.
 const runtimesWatchingAutoReleaseSetting = new WeakSet<object>()
 
-export abstract class OrcaRuntimeWithOrchestrationDatabaseBinding extends OrcaRuntimeWithPtyForegroundProcessReads {
+export abstract class TopoRuntimeWithOrchestrationDatabaseBinding extends TopoRuntimeWithPtyForegroundProcessReads {
   protected orchestrationDbPath(): string {
     return orchestrationDbFile(getAppEnvironment().getPath('userData'))
   }

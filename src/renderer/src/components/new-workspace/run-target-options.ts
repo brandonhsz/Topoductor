@@ -1,4 +1,4 @@
-import type { OrcaHooks } from '../../../../shared/orca-yaml-hook-types'
+import type { TopoHooks } from '../../../../shared/topo-yaml-hook-types'
 import {
   getProjectHostSetupSelectionKey,
   type NeedsSetupProjectHostOption,
@@ -9,7 +9,7 @@ import { translate } from '@/i18n/i18n'
 import type { Translate } from '@/i18n/use-translate'
 import { boundHostList } from '@/components/host-picker/bounded-host-list'
 
-export type EphemeralVmRecipeOption = NonNullable<OrcaHooks['environmentRecipes']>[number]
+export type EphemeralVmRecipeOption = NonNullable<TopoHooks['environmentRecipes']>[number]
 
 export const RUN_TARGET_ADD_HOST_KEY = 'add-host'
 export const RUN_TARGET_RECIPES_KEY = 'per-workspace-env'

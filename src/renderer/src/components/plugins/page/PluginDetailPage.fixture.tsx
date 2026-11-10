@@ -15,7 +15,7 @@ function communityListing(
 ): PluginMarketplaceHostListing {
   return {
     marketplaceSourceId: 'community',
-    marketplaceName: 'Orca Community Plugins',
+    marketplaceName: 'Topo Community Plugins',
     marketplaceOwner: 'stablyai',
     marketplaceCommit: 'c',
     pluginKey: `octocat.${id}`,
@@ -56,7 +56,7 @@ function entryFor(listing: PluginMarketplaceHostListing): PluginListEntry {
 const main = entryFor(
   communityListing(
     'monospace-themes',
-    'Monospace Light and Dark themes for Orca, with app colors, editor syntax highlighting, and matching terminal palettes.',
+    'Monospace Light and Dark themes for Topo, with app colors, editor syntax highlighting, and matching terminal palettes.',
     ['app-theme', 'terminal-theme']
   )
 )
@@ -75,7 +75,7 @@ function render(entries: readonly PluginListEntry[], entry = main): React.JSX.El
       <PluginDetailPage
         entry={entry}
         busy={false}
-        orcaVersion="1.4.250"
+        topoVersion="1.4.250"
         logsState={undefined}
         handlers={{
           onOpen: () => undefined,

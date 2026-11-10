@@ -7,7 +7,7 @@ function desktopOnlyExtensionsResult(): { ok: false; error: string } {
     ok: false,
     error: translate(
       'settings.browser.extensions.desktopOnly',
-      'Browser extensions run only in the Orca desktop app.'
+      'Browser extensions run only in the Topo desktop app.'
     )
   }
 }
@@ -39,7 +39,7 @@ export function createBrowserApi(): NonNullable<Partial<PreloadApi>['browser']> 
     onNavigationUpdate: () => noopUnsubscribe,
     onActivateView: () => noopUnsubscribe,
     onPaneFocus: () => noopUnsubscribe,
-    onOpenLinkInOrcaTab: () => noopUnsubscribe,
+    onOpenLinkInTopoTab: () => noopUnsubscribe,
     cancelDownload: () => Promise.resolve(false),
     setGrabMode: () =>
       Promise.resolve({

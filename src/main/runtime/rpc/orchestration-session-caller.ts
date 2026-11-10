@@ -1,26 +1,26 @@
 /** Resolve session identity before params, compatibility, receipts and dispatch branching; ids identify same-user callers, not credentials.
  * Refuse paired/SSH/WSL claims, provider ids that rotate on /clear, and non-live leases; a released (sleeping) one may act except as NEEDS_RUNNING_AGENT lists. Session identity overrides declarations and maps workers to minted handles/panes.
- * Without session evidence, a declared orca_session_id: may resolve a worker handle; a chat address alone identifies no caller. */
+ * Without session evidence, a declared topo_session_id: may resolve a worker handle; a chat address alone identifies no caller. */
 import {
   agentSessionLeaseAdmitsWriter,
   agentSessionLeaseIsReleased
 } from '../../../shared/agent-session/lifecycle/agent-session-lease-adjudication'
 import type { AgentSessionRecord } from '../../../shared/agent-session/lifecycle/agent-session-record'
-import { ORCA_AGENT_SESSION_ID_ENV } from '../../../shared/agent-session/lifecycle/agent-session-caller-env'
-import { ORCA_SESSION_ADDRESS_PREFIX } from '../../../shared/orca-session-address-prefix'
-import { isOrcaSessionId, parseOrcaSessionAddress } from '../../../shared/orca-session-address'
+import { TOPO_AGENT_SESSION_ID_ENV } from '../../../shared/agent-session/lifecycle/agent-session-caller-env'
+import { TOPO_SESSION_ADDRESS_PREFIX } from '../../../shared/topo-session-address-prefix'
+import { isTopoSessionId, parseTopoSessionAddress } from '../../../shared/topo-session-address'
 import { ORCHESTRATION_SESSION_CALLER_ERROR_CODES as CODES } from '../../../shared/orchestration/orchestration-session-caller-codes'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import type { OrchestrationSessionCaller } from '../orchestration/addressing/orchestration-caller-identity'
 import { OrchestrationError } from '../orchestration/orchestration-error'
-import { canonicalOrcaSessionId } from '../orchestration/addressing/session-lineage/canonical-orca-session-id'
+import { canonicalTopoSessionId } from '../orchestration/addressing/session-lineage/canonical-topo-session-id'
 import type { OrchestrationDb } from '../orchestration/db/orchestration-db'
 import {
   resolveDeclaredCallerParty,
-  resolveOrcaSessionParty,
+  resolveTopoSessionParty,
   resolveOrchestrationParty
 } from '../orchestration/addressing/orchestration-party'
-import { lookupOrcaAgentSession } from '../orchestration/mailbox/routing/structured-session-mail-address'
+import { lookupTopoAgentSession } from '../orchestration/mailbox/routing/structured-session-mail-address'
 import { conversationRecordReader } from '../orchestration/addressing/session-lineage/structured-session-lineage'
 import type { AgentSessionRecordStore } from '../agent-session/records/agent-session-record-store'
 import { getStructuredAgentSessionHost } from '../../native-chat/agent-session-wire/host/structured-agent-session-registry'
@@ -89,12 +89,12 @@ function declaredSessionAddress(request: RpcRequest): string | undefined {
   }
   const values: Record<string, unknown> = { ...params }
   const declared = values[name]
-  return typeof declared === 'string' && parseOrcaSessionAddress(declared) ? declared : undefined
+  return typeof declared === 'string' && parseTopoSessionAddress(declared) ? declared : undefined
 }
 
 /** Only for a request `needsOrchestrationCallerResolution` accepts. Throws the refusal, if any. */
 export async function resolveOrchestrationSessionCaller(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   request: RpcRequest,
   route: OrchestrationRequestRoute | undefined
 ): Promise<ResolvedOrchestrationRequest> {
@@ -105,18 +105,18 @@ export async function resolveOrchestrationSessionCaller(
   const claimed: unknown = evidence?.agentSessionId
   if (route?.pairedDeviceId !== undefined) {
     throw hostBoundary(
-      'This request reached Orca from a paired client, and an Orca session ID identifies a caller only on the host that runs that session.'
+      'This request reached Topo from a paired client, and a Topo session ID identifies a caller only on the host that runs that session.'
     )
   }
   if (evidence?.host) {
     throw hostBoundary(
-      `This command ran in ${evidence.host.kind === 'ssh' ? 'an SSH' : 'a WSL'} environment, and an Orca session ID identifies a caller only on the host that runs that session.`
+      `This command ran in ${evidence.host.kind === 'ssh' ? 'an SSH' : 'a WSL'} environment, and a Topo session ID identifies a caller only on the host that runs that session.`
     )
   }
-  if (typeof claimed !== 'string' || !isOrcaSessionId(claimed)) {
+  if (typeof claimed !== 'string' || !isTopoSessionId(claimed)) {
     throw new OrchestrationError(
       CODES.unknown,
-      'The caller named an ID that is not an Orca session ID. No effects were applied.',
+      'The caller named an ID that is not a Topo session ID. No effects were applied.',
       NO_EFFECTS
     )
   }
@@ -125,7 +125,7 @@ export async function resolveOrchestrationSessionCaller(
   assertSessionCanAct(sessionId, record, request.method)
   const db = runtime.getOrchestrationDb()
   const caller: OrchestrationSessionCaller = Object.freeze({
-    ...resolveOrcaSessionParty(sessionId, db),
+    ...resolveTopoSessionParty(sessionId, db),
     sessionId,
     workspaceId: record.location.workspaceId
   })
@@ -141,7 +141,7 @@ export async function resolveOrchestrationSessionCaller(
 }
 
 async function readSessionRecord(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   sessionId: string
 ): Promise<AgentSessionRecord> {
   let store: AgentSessionRecordStore | null
@@ -154,24 +154,24 @@ async function readSessionRecord(
   if (!store) {
     throw new OrchestrationError(
       CODES.notLive,
-      `Agent session ${sessionId} cannot be verified: this Orca is not running its agent-session host. No effects were applied.`,
+      `Agent session ${sessionId} cannot be verified: this Topo is not running its agent-session host. No effects were applied.`,
       NO_EFFECTS
     )
   }
-  const found = lookupOrcaAgentSession(conversationRecordReader(store), sessionId)
+  const found = lookupTopoAgentSession(conversationRecordReader(store), sessionId)
   if (found.kind === 'found') {
     return store.requireWritableRecord(found.record.sessionId)
   }
   if (found.kind === 'provider-id') {
     throw new OrchestrationError(
       CODES.providerId,
-      `${sessionId} is the provider's own session id, which changes on /clear. This session's Orca session ID is ${ORCA_SESSION_ADDRESS_PREFIX}${found.orcaSessionId}; set ${ORCA_AGENT_SESSION_ID_ENV}=${found.orcaSessionId} instead. No effects were applied.`,
-      { ...NO_EFFECTS, orcaSessionId: found.orcaSessionId }
+      `${sessionId} is the provider's own session id, which changes on /clear. This session's Topo session ID is ${TOPO_SESSION_ADDRESS_PREFIX}${found.topoSessionId}; set ${TOPO_AGENT_SESSION_ID_ENV}=${found.topoSessionId} instead. No effects were applied.`,
+      { ...NO_EFFECTS, topoSessionId: found.topoSessionId }
     )
   }
   throw new OrchestrationError(
     CODES.unknown,
-    `No Orca agent session ${sessionId} exists on this host. No effects were applied.`,
+    `No Topo agent session ${sessionId} exists on this host. No effects were applied.`,
     NO_EFFECTS
   )
 }
@@ -179,7 +179,7 @@ async function readSessionRecord(
 function assertSessionCanAct(sessionId: string, record: AgentSessionRecord, method: string): void {
   if (!structuredWorkerHostScope(record.location)) {
     throw hostBoundary(
-      `Agent session ${sessionId} runs on another host, and an Orca session ID identifies a caller only on the host that runs that session.`
+      `Agent session ${sessionId} runs on another host, and a Topo session ID identifies a caller only on the host that runs that session.`
     )
   }
   const { lease } = record
@@ -201,7 +201,7 @@ function assertSessionCanAct(sessionId: string, record: AgentSessionRecord, meth
   )
 }
 
-/** A request with no session id that declares an `orca_session_id:` caller: a worker's is its handle. */
+/** A request with no session id that declares an `topo_session_id:` caller: a worker's is its handle. */
 function bindDeclaredSessionAddress(db: OrchestrationDb, request: RpcRequest): RpcRequest {
   const name = ORCHESTRATION_CALLER_PARAM[request.method]
   const declared = declaredSessionAddress(request)
@@ -222,8 +222,8 @@ function declaredNamesCaller(
   if (typeof declared !== 'string') {
     return false
   }
-  if (isOrcaSessionId(declared)) {
-    return canonicalOrcaSessionId(declared) === caller.orcaSessionId
+  if (isTopoSessionId(declared)) {
+    return canonicalTopoSessionId(declared) === caller.topoSessionId
   }
   try {
     return resolveOrchestrationParty(declared, db).address === caller.address

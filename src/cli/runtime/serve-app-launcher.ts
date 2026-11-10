@@ -5,28 +5,28 @@ import { resolveLaunchUserDataPath } from './launch-user-data-path'
 import { appImageEphemeralRootOf } from '../../shared/appimage-ephemeral-root'
 
 /** A remote server’s Node-based CLI cannot start a local app server. */
-export function canStartOrcaServer(env: NodeJS.ProcessEnv): boolean {
-  const override = env.ORCA_APP_EXECUTABLE
+export function canStartTopoServer(env: NodeJS.ProcessEnv): boolean {
+  const override = env.TOPO_APP_EXECUTABLE
   return (
     (typeof override === 'string' && override.trim().length > 0) || env.ELECTRON_RUN_AS_NODE === '1'
   )
 }
 
-/** Linux installs the app's CLI as `orca-ide`: a bare `orca` there is often the screen reader. */
+/** Linux installs the app's CLI as `topo-ide`: a bare `topo` there is often the screen reader. */
 export function appCliName(platform: NodeJS.Platform): string {
-  return platform === 'linux' ? 'orca-ide' : 'orca'
+  return platform === 'linux' ? 'topo-ide' : 'topo'
 }
 
 const NOT_AN_APP_CLI =
-  "This `orca` command isn't running from an installed Orca app. On a host Orca reaches over SSH, it belongs to that connection's server and can't start one of its own."
+  "This `topo` command isn't running from an installed Topo app. On a host Topo reaches over SSH, it belongs to that connection's server and can't start one of its own."
 
 export function serverOnlyServeMessage(platform: NodeJS.Platform): string {
-  return `${NOT_AN_APP_CLI} Install the Orca app on this machine and run \`${appCliName(platform)} serve\` from a plain login shell, or set ORCA_APP_EXECUTABLE to the Orca app executable.`
+  return `${NOT_AN_APP_CLI} Install the Topo app on this machine and run \`${appCliName(platform)} serve\` from a plain login shell, or set TOPO_APP_EXECUTABLE to the Topo app executable.`
 }
 
 function serverOnlyServiceInstallMessage(platform: NodeJS.Platform): string {
   const name = appCliName(platform)
-  return `Could not find the installed Orca app's \`${name}\` command on PATH. ${NOT_AN_APP_CLI} Install the Orca app on this machine, then run \`${name} serve service install\` from a plain login shell so the service uses the app's own profile, or pass --command <absolute path to the app's ${name}>.`
+  return `Could not find the installed Topo app's \`${name}\` command on PATH. ${NOT_AN_APP_CLI} Install the Topo app on this machine, then run \`${name} serve service install\` from a plain login shell so the service uses the app's own profile, or pass --command <absolute path to the app's ${name}>.`
 }
 
 function isVersionScopedDir(dir: string, userData: string): boolean {
@@ -34,12 +34,12 @@ function isVersionScopedDir(dir: string, userData: string): boolean {
   return (
     inside === '' ||
     (!inside.startsWith('..') && !isAbsolute(inside)) ||
-    dir.includes('orcad-artifacts') ||
+    dir.includes('topod-artifacts') ||
     appImageEphemeralRootOf(dir) !== null
   )
 }
 
-/** PATH for a persisted service: entries tied to one Orca version or AppImage launch are gone by its next start. */
+/** PATH for a persisted service: entries tied to one Topo version or AppImage launch are gone by its next start. */
 export function resolveServicePath(env: NodeJS.ProcessEnv): string {
   const userData = resolveLaunchUserDataPath(env)
   const durable = (env.PATH ?? '')
@@ -72,7 +72,7 @@ export function resolveServiceCommand(
     if (isVersionScopedDir(dirname(explicit), userData)) {
       throw new RuntimeClientError(
         'invalid_argument',
-        `--command points at a launcher tied to one Orca version, which the next update replaces: ${explicit}. Pass the installed Orca app's \`${appCliName(deps.platform)}\` instead.`
+        `--command points at a launcher tied to one Topo version, which the next update replaces: ${explicit}. Pass the installed Topo app's \`${appCliName(deps.platform)}\` instead.`
       )
     }
     return explicit
@@ -86,8 +86,8 @@ export function resolveServiceCommand(
   }
   throw new RuntimeClientError(
     'cli_not_found',
-    canStartOrcaServer(deps.env)
-      ? `Could not find the \`${name}\` command on PATH. Install it from Orca Settings, or pass --command <absolute path>.`
+    canStartTopoServer(deps.env)
+      ? `Could not find the \`${name}\` command on PATH. Install it from Topo Settings, or pass --command <absolute path>.`
       : serverOnlyServiceInstallMessage(deps.platform)
   )
 }

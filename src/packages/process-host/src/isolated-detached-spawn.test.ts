@@ -152,7 +152,7 @@ describe('spawnDetachedWithoutInheritance', () => {
 
   it('rejects a WSL distro outside the allowlist before spawning', () => {
     onPlatform('win32')
-    vi.stubEnv('ORCA_INTERNAL_WSL_DISTRO_ALLOWLIST', 'allowed-distro')
+    vi.stubEnv('TOPO_INTERNAL_WSL_DISTRO_ALLOWLIST', 'allowed-distro')
     const spawner = vi.fn<IsolatedSpawner>()
     setIsolatedSpawner(spawner)
 

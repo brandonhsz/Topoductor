@@ -83,7 +83,7 @@ describe('protected telemetry milestones', () => {
     expect(first).toHaveLength(1)
     expect(first[0].properties).toEqual({
       ...BASE_COMMON,
-      source: 'orca_send',
+      source: 'topo_send',
       agent_kind: 'claude-code',
       install_cohort: 'fresh',
       $process_person_profile: false
@@ -170,7 +170,7 @@ describe('protected telemetry milestones', () => {
     const rawPrompt = { ...sidebarSend, prompt: 'private text' }
     track('agent_prompt_sent', rawPrompt)
     const rawMilestone = {
-      source: 'orca_send',
+      source: 'topo_send',
       agent_kind: 'codex',
       install_cohort: 'fresh',
       prompt: 'private text'

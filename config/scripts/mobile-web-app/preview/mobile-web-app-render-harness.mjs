@@ -30,7 +30,7 @@ export async function readShellCsp() {
   const source = await readFile(
     join(
       projectDir,
-      'mobile/modules/orca-mobile-web-shell/android/src/main/java/expo/modules/orcamobilewebshell/MobileWebShellCsp.kt'
+      'mobile/modules/topo-mobile-web-shell/android/src/main/java/expo/modules/topomobilewebshell/MobileWebShellCsp.kt'
     ),
     'utf8'
   )
@@ -42,7 +42,7 @@ export async function readShellDocumentHeaders() {
   const source = await readFile(
     join(
       projectDir,
-      'mobile/modules/orca-mobile-web-shell/android/src/main/java/expo/modules/orcamobilewebshell/MobileWebShellResponseHeaders.kt'
+      'mobile/modules/topo-mobile-web-shell/android/src/main/java/expo/modules/topomobilewebshell/MobileWebShellResponseHeaders.kt'
     ),
     'utf8'
   )
@@ -211,20 +211,20 @@ export function installShellDouble({
   ownsHostArea = false
 }) {
   // Capture boundary faults so blank route reports own error instead of timing out.
-  globalThis.__orcaRenderCheckFaults = []
+  globalThis.__topoRenderCheckFaults = []
   // Keep grant-gated notifies in order to distinguish shell handoff from no action.
-  globalThis.__orcaRenderCheckNotifies = []
+  globalThis.__topoRenderCheckNotifies = []
   // Keep full request verbs/geometry to assert gesture’s actual host effect.
-  globalThis.__orcaRenderCheckRequests = []
+  globalThis.__topoRenderCheckRequests = []
   // Record wantsBinary on accepted subscriptions; absent request cannot be inferred from absent frames.
-  globalThis.__orcaRenderCheckSubscribes = []
+  globalThis.__topoRenderCheckSubscribes = []
   // Count host-cap frame drops so page can prove stream survives rejected frame.
-  globalThis.__orcaRenderCheckDroppedFrames = []
+  globalThis.__topoRenderCheckDroppedFrames = []
   // Record ack sequence: page paint alone cannot prove every frame acknowledged.
-  globalThis.__orcaRenderCheckAcks = []
+  globalThis.__topoRenderCheckAcks = []
   const openStreams = new Map()
   // Shell owns Back delivery; expose explicit injection because document cannot generate this host frame.
-  globalThis.__orcaRenderCheckSendBack = () => {
+  globalThis.__topoRenderCheckSendBack = () => {
     if (backFrame === null) {
       throw new Error('this shell double was not given the back frame name')
     }
@@ -260,7 +260,7 @@ export function installShellDouble({
     ...(ownsHostArea ? { ownsHostArea: true } : {}),
     ...patch
   })
-  globalThis.__orcaRenderCheckResendInit = (patch) => {
+  globalThis.__topoRenderCheckResendInit = (patch) => {
     channel.onmessage?.({ data: JSON.stringify(initFrame(patch)) })
   }
   const channel = {
@@ -277,15 +277,15 @@ export function installShellDouble({
         return
       }
       if (frame.type === 'notify') {
-        globalThis.__orcaRenderCheckNotifies.push(frame)
+        globalThis.__topoRenderCheckNotifies.push(frame)
         if (frame.name === faultGrant) {
-          globalThis.__orcaRenderCheckFaults.push(frame.error.message)
+          globalThis.__topoRenderCheckFaults.push(frame.error.message)
         }
         return
       }
       // Only named caller fixtures answer; all other methods must follow refusal path.
       if (frame.type === 'subscribe' && streams.includes(frame.method)) {
-        globalThis.__orcaRenderCheckSubscribes.push({
+        globalThis.__topoRenderCheckSubscribes.push({
           id: frame.id,
           method: frame.method,
           params: frame.params,
@@ -308,7 +308,7 @@ export function installShellDouble({
             acked += 1
           }
           stream.unacked.splice(0, acked)
-          globalThis.__orcaRenderCheckAcks.push(frame.seq)
+          globalThis.__topoRenderCheckAcks.push(frame.seq)
         }
         return
       }
@@ -317,7 +317,7 @@ export function installShellDouble({
         return
       }
       if (frame.type === 'request') {
-        globalThis.__orcaRenderCheckRequests.push({ method: frame.method, params: frame.params })
+        globalThis.__topoRenderCheckRequests.push({ method: frame.method, params: frame.params })
       }
       if (frame.type === 'request' && replies && Object.hasOwn(replies, frame.method)) {
         answer({
@@ -345,7 +345,7 @@ export function installShellDouble({
   }
   // Match all host canCarry bounds: message cap, inflight frame count and inflight bytes; uncarriable frames drop without closing stream.
   // Long stream requires actual page acks to reopen same ledger, not artificial unlimited delivery.
-  globalThis.__orcaRenderCheckEmitBinary = (id, binary) => {
+  globalThis.__topoRenderCheckEmitBinary = (id, binary) => {
     const stream = openStreams.get(id)
     if (!stream) {
       return 'no-stream'
@@ -359,7 +359,7 @@ export function installShellDouble({
         stream.unacked.length < windowCaps.maxUnackedFrames &&
         stream.unackedBytes + bytes <= windowCaps.maxUnackedBytes)
     if (!carries) {
-      globalThis.__orcaRenderCheckDroppedFrames.push(binary.frameSeq)
+      globalThis.__topoRenderCheckDroppedFrames.push(binary.frameSeq)
       return 'dropped'
     }
     stream.seq = seq
@@ -370,7 +370,7 @@ export function installShellDouble({
   }
   // Session/terminal streams arrive as JSON: native client decodes terminal binary before bridge. Fixture events are below cap, so do not invent drop.
   // Still charge bytes to shared ledger: ack subtracts them, and uncharged JSON once made byte count negative/unbounded.
-  globalThis.__orcaRenderCheckEmitEvent = (id, payload) => {
+  globalThis.__topoRenderCheckEmitEvent = (id, payload) => {
     const stream = openStreams.get(id)
     if (!stream) {
       return 'no-stream'
@@ -384,13 +384,13 @@ export function installShellDouble({
     channel.onmessage?.({ data: json })
     return 'posted'
   }
-  globalThis.__orcaRenderCheckWindow = (id) => {
+  globalThis.__topoRenderCheckWindow = (id) => {
     const stream = openStreams.get(id)
     return stream === undefined
       ? null
       : { frames: stream.unacked.length, unackedBytes: stream.unackedBytes }
   }
-  globalThis.orcaBridge = channel
+  globalThis.topoBridge = channel
 }
 
 const RECORDED_REQUEST_MS = 30_000
@@ -403,7 +403,7 @@ export async function waitForRecordedRequests(
 ) {
   const started = Date.now()
   for (;;) {
-    const requests = await page.evaluate(() => globalThis.__orcaRenderCheckRequests ?? [])
+    const requests = await page.evaluate(() => globalThis.__topoRenderCheckRequests ?? [])
     const missing = methods.filter((method) => !requests.some((one) => one.method === method))
     if (missing.length === 0) {
       return requests
@@ -476,12 +476,12 @@ export async function createBundleServer({
 // Install page-owned onerror sentinel before terminal; identity-check within page since function cannot survive evaluate serialization.
 // Return false to preserve normal reporting; null-only checks miss terminal overwriting another consumer’s handler.
 export function installPageErrorSentinel() {
-  globalThis.__orcaSentinelCalls = []
+  globalThis.__topoSentinelCalls = []
   const sentinel = (message) => {
-    globalThis.__orcaSentinelCalls.push(String(message))
+    globalThis.__topoSentinelCalls.push(String(message))
     return false
   }
-  globalThis.__orcaSentinel = sentinel
+  globalThis.__topoSentinel = sentinel
   window.onerror = sentinel
 }
 
@@ -491,7 +491,7 @@ export function installListenerRecorder({ selector } = {}) {
   const elements = new WeakMap()
   let nextElement = 0
   const live = new Map()
-  globalThis.__orcaListeners = {
+  globalThis.__topoListeners = {
     snapshot: () =>
       Object.fromEntries(
         [...live.entries()]
@@ -535,9 +535,9 @@ export function installListenerRecorder({ selector } = {}) {
 }
 
 export function installCspViolationRecorder() {
-  globalThis.__orcaCspViolations = []
+  globalThis.__topoCspViolations = []
   document.addEventListener('securitypolicyviolation', (event) => {
-    globalThis.__orcaCspViolations.push(
+    globalThis.__topoCspViolations.push(
       `${event.violatedDirective}: ${event.blockedURI || 'inline'} @ ${event.sourceFile ?? '?'}:${String(event.lineNumber ?? 0)}`
     )
   })
@@ -562,12 +562,12 @@ export async function readRootComputedStyles(page) {
 export async function terminalStyleReach(page) {
   return await page.evaluate(() => {
     const sheet = [...document.styleSheets].find(
-      (one) => one.ownerNode?.id === 'orca-terminal-document-style'
+      (one) => one.ownerNode?.id === 'topo-terminal-document-style'
     )
     if (!sheet) {
       return { rules: 0, outside: ['the terminal stylesheet is not in the head'] }
     }
-    const host = document.querySelector('.orca-terminal-document-host')
+    const host = document.querySelector('.topo-terminal-document-host')
     const outside = []
     for (const rule of sheet.cssRules) {
       for (const element of document.querySelectorAll(rule.selectorText)) {

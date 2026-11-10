@@ -30,7 +30,7 @@
       },
       "labels": ["Back to session", "Filter files"],
       "rows": ["dir:src", "file:README.md"],
-      "text": ["Files", "orca-files"]
+      "text": ["Files", "topo-files"]
     },
     "c60ce6016166": {
       "name": "files.readDir#1",
@@ -89,7 +89,7 @@
       },
       "labels": ["Back to session"],
       "rows": [],
-      "text": ["Files", "orca-files", "Loading files…"]
+      "text": ["Files", "topo-files", "Loading files…"]
     },
     "ca13345ac236": {
       "name": "files.readDir#1",

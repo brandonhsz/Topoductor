@@ -1,7 +1,7 @@
 import { app, clipboard, dialog, type BrowserWindow } from 'electron'
-import { isRoutedOrcaDeepLink } from './startup/orca-deep-link-url'
+import { isRoutedTopoDeepLink } from './startup/topo-deep-link-url'
 import { createMacAppActivationHandler } from './window/macos-app-activation'
-import { isBackgroundLaunch, isOrcadSidecarLaunch } from './window/foreground-activation-policy'
+import { isBackgroundLaunch, isTopodSidecarLaunch } from './window/foreground-activation-policy'
 import { createDesktopHandoff, desktopHandoffArguments } from './window/macos-desktop-handoff'
 import {
   focusExistingWindow as focusExistingWindowAction,
@@ -35,13 +35,13 @@ import { profileStateDesktopRecoveryArgs } from './startup/profile-state-recover
 import { profileStateRepairSectionApproval } from '../shared/profile-state-recovery-command'
 import { prepareEarlyMainUiLanguage, translateMain } from './i18n/main-i18n'
 import { ProfileStateRecoveryRequiredError } from './persistence/profile-state/profile-state-recovery-required'
-import { getProfileUserDataPath } from './orca-profiles/profile-storage-paths'
+import { getProfileUserDataPath } from './topo-profiles/profile-storage-paths'
 import { leaseAppImageGenerationForCurrentProcess } from './cli/appimage-generation-lease'
 import { deleteLegacyWslHostWakeList } from './wsl/host-lifecycle/wsl-host-early-wake'
 import { configureWslHostsGateFromDisk } from './wsl/host-lifecycle/wsl-host-gate-startup'
 import { configureRemoteRuntimeE2EEV2HostLatch } from '../shared/remote-runtime/e2ee/node/remote-runtime-e2ee-v2-host-latch'
 import { ignoreInheritedWslHostsGateState } from '../shared/wsl-host-internal-gate'
-import { registerOrcaProtocolClient } from './startup/orca-protocol-registration'
+import { registerTopoProtocolClient } from './startup/topo-protocol-registration'
 import { clearWindowsStdHandleInheritance } from './startup/windows-std-handle-inheritance'
 import { installWindowsIsolatedSpawner } from './startup/windows-isolated-spawner'
 import { dropE2eSpawnLogOutsideE2e } from './startup/e2e-spawn-log-env'
@@ -76,7 +76,7 @@ function requestDesktopActivation(argv: readonly string[] = []): void {
     return
   }
   // The sidecar’s throwaway profile must never become the user’s window.
-  if (isOrcadSidecarLaunch()) {
+  if (isTopodSidecarLaunch()) {
     requestDesktopHandoff()
     return
   }
@@ -115,7 +115,7 @@ const handleMacAppActivation = createMacAppActivationHandler({
   requestActivation: requestDesktopActivation
 })
 
-// Before anything spawns: no child may inherit Orca's std handles.
+// Before anything spawns: no child may inherit Topo's std handles.
 clearWindowsStdHandleInheritance()
 installWindowsIsolatedSpawner()
 // A relaunch or installer inherits the parent's published WSL gate state; this process recomputes.
@@ -142,7 +142,7 @@ if (preflightReady) {
     deleteLegacyWslHostWakeList(app.getPath('userData'))
   }
   app.on('open-url', (event, url) => {
-    if (!isRoutedOrcaDeepLink(url)) {
+    if (!isRoutedTopoDeepLink(url)) {
       return
     }
     event.preventDefault()
@@ -155,13 +155,13 @@ if (preflightReady) {
     }
     event.preventDefault()
     // Cold-start activation must wait for Electron readiness; sidecars have no pending window.
-    if (app.isReady() || isOrcadSidecarLaunch()) {
+    if (app.isReady() || isTopodSidecarLaunch()) {
       requestDesktopActivation()
     }
   })
-  registerOrcaProtocolClient(app, {
+  registerTopoProtocolClient(app, {
     platform: process.platform,
-    desktopLaunch: !state.isServeMode && !isBackgroundLaunch() && !isOrcadSidecarLaunch()
+    desktopLaunch: !state.isServeMode && !isBackgroundLaunch() && !isTopodSidecarLaunch()
   })
   state.skillShareDeepLinks.capture(process.argv)
   state.pluginInstallLinks.capture(process.argv)
@@ -178,7 +178,7 @@ if (preflightReady) {
     } catch (error) {
       const detail = error instanceof Error ? error.message : String(error)
       const message =
-        formatProfileStateStartupFailure(error) ?? `Orca could not finish starting: ${detail}`
+        formatProfileStateStartupFailure(error) ?? `Topo could not finish starting: ${detail}`
       const failureClass = profileStateStartupFailureClass(error)
       if (failureClass !== undefined) {
         recordDurableCrashBreadcrumb('profile_state_startup_failed', {
@@ -239,11 +239,11 @@ if (preflightReady) {
               formatProfileStateStartupFailure(error, translateMain) ??
               translateMain(
                 'startupFailure.finishFailed',
-                'Orca could not finish starting: {{detail}}',
+                'Topo could not finish starting: {{detail}}',
                 { detail }
               ),
             ...(failureClass === 'recovery-required' || failureClass === 'ambiguous-authority'
-              ? { recoveryCommand: 'orca profile state exports' }
+              ? { recoveryCommand: 'topo profile state exports' }
               : {}),
             showMessageBox: (options) => dialog.showMessageBox(options),
             copyToClipboard: (text) => clipboard.writeText(text),

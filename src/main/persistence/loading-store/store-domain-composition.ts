@@ -6,7 +6,7 @@ import { LoadedStateParsingOperations } from './loaded-state-parsing'
 import { StateSerializationSecretHandlingOperations } from './state-serialization-secret-handling'
 import { PrimaryStateWriteOperations } from './primary-state-writes'
 import { scheduleSave, WriteSchedulingOperations } from './write-scheduling'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { WriteFlushBarrierOperations } from './write-flush-barriers'
 import { ProfilePreferences } from './profile-preferences'
 import { RepoLifecycleOperations } from './repo-lifecycle-operations'
@@ -27,9 +27,9 @@ import { LayoutCommandPersistence } from '../terminal-topology/layout-command-pe
 import { SshProfileOperations } from './ssh-profile-operations'
 import { RetiredWorktreeNamePersistence } from './retired-worktree-name-persistence'
 import { SshLeaseRecoveryOperations } from './ssh-lease-recovery-operations'
-import { OrcadSourceExportPersistence } from '../migrating-orcad-catalog/orcad-source-export'
-import { OrcadCatalogImportPersistence } from '../migrating-orcad-catalog/orcad-catalog-import'
-import { OrcadMigrationBlobInstallPersistence } from '../migrating-orcad-catalog/orcad-migration-blob-install-persistence'
+import { TopodSourceExportPersistence } from '../migrating-topod-catalog/topod-source-export'
+import { TopodCatalogImportPersistence } from '../migrating-topod-catalog/topod-catalog-import'
+import { TopodMigrationBlobInstallPersistence } from '../migrating-topod-catalog/topod-migration-blob-install-persistence'
 
 export type StoreDomainOperations = WriteSchedulingOperations &
   PrimaryStateWriteOperations &
@@ -51,9 +51,9 @@ export type StoreDomainOperations = WriteSchedulingOperations &
   SshProfileOperations &
   RetiredWorktreeNamePersistence &
   SshLeaseRecoveryOperations &
-  OrcadSourceExportPersistence &
-  OrcadCatalogImportPersistence &
-  OrcadMigrationBlobInstallPersistence &
+  TopodSourceExportPersistence &
+  TopodCatalogImportPersistence &
+  TopodMigrationBlobInstallPersistence &
   WriteFlushBarrierOperations
 
 export type StoreDomains = {
@@ -83,9 +83,9 @@ export type StoreDomains = {
   sshProfiles: SshProfileOperations
   retiredWorktreeNames: RetiredWorktreeNamePersistence
   sshLeases: SshLeaseRecoveryOperations
-  orcadSourceExport: OrcadSourceExportPersistence
-  orcadCatalogImports: OrcadCatalogImportPersistence
-  orcadMigrationBlobInstalls: OrcadMigrationBlobInstallPersistence
+  topodSourceExport: TopodSourceExportPersistence
+  topodCatalogImports: TopodCatalogImportPersistence
+  topodMigrationBlobInstalls: TopodMigrationBlobInstallPersistence
 }
 
 export const STORE_DOMAIN_OPERATION_CLASSES = [
@@ -109,9 +109,9 @@ export const STORE_DOMAIN_OPERATION_CLASSES = [
   SshProfileOperations,
   RetiredWorktreeNamePersistence,
   SshLeaseRecoveryOperations,
-  OrcadSourceExportPersistence,
-  OrcadCatalogImportPersistence,
-  OrcadMigrationBlobInstallPersistence,
+  TopodSourceExportPersistence,
+  TopodCatalogImportPersistence,
+  TopodMigrationBlobInstallPersistence,
   WriteFlushBarrierOperations
 ] as const
 
@@ -158,7 +158,7 @@ export function createStoreDomains(runtime: StoreRuntimeState): StoreDomains {
     bindingRecovery,
     scheduling
   )
-  const orcadCatalogImports = new OrcadCatalogImportPersistence(runtime, repos, scheduling)
+  const topodCatalogImports = new TopodCatalogImportPersistence(runtime, repos, scheduling)
   return {
     adaptation,
     cohorts,
@@ -186,13 +186,13 @@ export function createStoreDomains(runtime: StoreRuntimeState): StoreDomains {
       runtime,
       sessions,
       // Retry persistence for terminal closes retained after failed writes.
-      ORCA_LAYOUT_OWNER_IS_MAIN ? () => scheduleSave(scheduling) : undefined
+      TOPO_LAYOUT_OWNER_IS_MAIN ? () => scheduleSave(scheduling) : undefined
     ),
     sshProfiles,
     retiredWorktreeNames,
     sshLeases,
-    orcadSourceExport: new OrcadSourceExportPersistence(runtime),
-    orcadCatalogImports,
-    orcadMigrationBlobInstalls: new OrcadMigrationBlobInstallPersistence(runtime)
+    topodSourceExport: new TopodSourceExportPersistence(runtime),
+    topodCatalogImports,
+    topodMigrationBlobInstalls: new TopodMigrationBlobInstallPersistence(runtime)
   }
 }

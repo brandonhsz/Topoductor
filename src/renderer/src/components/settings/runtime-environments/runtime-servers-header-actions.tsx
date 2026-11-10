@@ -12,7 +12,7 @@ import {
 } from '../../ui/dropdown-menu'
 import { useRuntimeServersPage } from './runtime-servers-page-context'
 import { RuntimeShareComputerButton } from './pairing/runtime-share-computer-button'
-import { getManagedOrcadApi } from '../../../runtime/hosts/installation/managed-orcad-api-availability'
+import { getManagedTopodApi } from '../../../runtime/hosts/installation/managed-topod-api-availability'
 
 function AddServerMenuItem({
   icon,
@@ -55,7 +55,7 @@ export function RuntimeServersHeaderActions({
   const setRemoteServerUpdateDialogOpen = useAppStore(
     (state) => state.setRemoteServerUpdateDialogOpen
   )
-  const canInstall = getManagedOrcadApi() !== undefined
+  const canInstall = getManagedTopodApi() !== undefined
   let availableCount = 0
   for (const entry of remoteServerUpdates.values()) {
     if (entry.phase === 'available') {
@@ -110,7 +110,7 @@ export function RuntimeServersHeaderActions({
               label={t('auto.components.settings.serverList.pasteAccessLink', 'Paste access link')}
               description={t(
                 'auto.components.settings.serverList.pasteAccessLinkHelp',
-                'Pair with Orca already running on another machine.'
+                'Pair with Topo already running on another machine.'
               )}
               onSelect={() => setDialog('add')}
             />
@@ -119,11 +119,11 @@ export function RuntimeServersHeaderActions({
                 icon={<TerminalSquare />}
                 label={t(
                   'auto.components.settings.serverList.setUpOnSshHost',
-                  'Set up Orca on an SSH host'
+                  'Set up Topo on an SSH host'
                 )}
                 description={t(
                   'auto.components.settings.managedServers.description',
-                  'Orca installs itself on an empty SSH host and keeps itself up to date.'
+                  'Topo installs itself on an empty SSH host and keeps itself up to date.'
                 )}
                 onSelect={() => setDialog('install')}
               />

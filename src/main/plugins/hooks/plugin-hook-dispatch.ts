@@ -6,7 +6,7 @@ import {
 import type { PluginHookChainOutcome } from '../../../shared/plugins/workers/plugin-hook-chain'
 
 /**
- * Where Orca's own code meets plugin hooks. Hooks run in the plugin workers of the Orca process
+ * Where Topo's own code meets plugin hooks. Hooks run in the plugin workers of the Topo process
  * handling the request, before it acts: an SSH or WSL terminal or workspace is decided on the
  * desktop before the work is sent to its host; a paired client's request is decided by the server
  * it reaches.
@@ -44,7 +44,7 @@ export class PluginHookDeniedError extends Error {
   }
 }
 
-/** The payload Orca should act on; throws {@link PluginHookDeniedError} when a plugin refuses. */
+/** The payload Topo should act on; throws {@link PluginHookDeniedError} when a plugin refuses. */
 export async function runPluginHook<S extends z.ZodType>(
   event: PluginHookName,
   schema: S,
@@ -62,7 +62,7 @@ export async function runPluginHook<S extends z.ZodType>(
   return parsed.success ? parsed.data : payload
 }
 
-/** Observe-only hooks: Orca never waits on them. */
+/** Observe-only hooks: Topo never waits on them. */
 export function notifyPluginHook(event: PluginHookName, payload: unknown): void {
   if (runner?.wants(event)) {
     void runner.run(event, payload).catch(() => undefined)

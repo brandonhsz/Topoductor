@@ -10,7 +10,7 @@ import {
   type TerminalReadinessCreation,
   type LaunchedAgentReadinessRuntime
 } from '../../../terminal/wait/launched-agent-composer-readiness'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { assertAgentPromptRequestActive } from '../../../terminal/input/agent-prompt-signals'
 import {
   createLaunchedAgentWriteGuard,
@@ -25,7 +25,7 @@ const BLOCKED_RECHECK_MS = 1_000
 
 export type TerminalPromptRuntime = LaunchedAgentReadinessRuntime &
   LaunchedAgentWriteGuardRuntime &
-  Pick<OrcaRuntimeService, 'sendTerminalAgentPrompt'>
+  Pick<TopoRuntimeService, 'sendTerminalAgentPrompt'>
 
 type ReadinessClock = { now: () => number; sleep: (ms: number) => Promise<void> }
 

@@ -1,10 +1,10 @@
-import '../../../src/main/runtime/orca-runtime-tests/runtime-test-module-registration.spec'
+import '../../../src/main/runtime/topo-runtime-tests/runtime-test-module-registration.spec'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { setRuntimeBrowserCommandsFactory } from '../../../src/main/runtime/browser/installation/runtime-browser-commands-factory'
 import { RuntimeBrowserCommands } from '../../../src/main/runtime/browser/commands/browser-commands'
 import { withOpenedServeBrowserTab } from '../../../src/main/runtime/browser/headless/serve-browser-tab-layout'
-import type { OrcaRuntimeService } from '../../../src/main/runtime/orca-runtime'
-import { TEST_WORKTREE_ID as WT } from '../../../src/main/runtime/orca-runtime-tests/orca-runtime-test-fixtures.spec'
+import type { TopoRuntimeService } from '../../../src/main/runtime/topo-runtime'
+import { TEST_WORKTREE_ID as WT } from '../../../src/main/runtime/topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import { createRuntimeFixture } from './active-tab-publication.test-fixture'
 import type {
   RuntimeMobileSessionTabsResult,
@@ -14,9 +14,9 @@ import { getDefaultWorkspaceSession } from '../../../src/shared/constants'
 
 const A = 'agent-session:chat-a'
 const B = 'agent-session:chat-b'
-const list = (runtime: OrcaRuntimeService) => runtime.listMobileSessionTabs(`id:${WT}`)
+const list = (runtime: TopoRuntimeService) => runtime.listMobileSessionTabs(`id:${WT}`)
 const createRuntime = () => createRuntimeFixture().runtime
-async function publish(runtime: OrcaRuntimeService, id: string, activate = true) {
+async function publish(runtime: TopoRuntimeService, id: string, activate = true) {
   await runtime.publishStructuredAgentSessionTab({
     workspaceId: WT,
     sessionId: id.slice('agent-session:'.length),
@@ -24,7 +24,7 @@ async function publish(runtime: OrcaRuntimeService, id: string, activate = true)
     activate
   })
 }
-function accept(runtime: OrcaRuntimeService, frame: RuntimeMobileSessionTabsSnapshot) {
+function accept(runtime: TopoRuntimeService, frame: RuntimeMobileSessionTabsSnapshot) {
   runtime.syncWindowGraph(1, { tabs: [], leaves: [], mobileSessionTabs: [frame] })
 }
 function expectSelection(

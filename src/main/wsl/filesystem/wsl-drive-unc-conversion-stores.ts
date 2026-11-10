@@ -6,7 +6,7 @@
 import { existsSync, readdirSync, readFileSync, renameSync } from 'node:fs'
 import { join } from 'node:path'
 import { PTY_SESSION_ID_SEPARATOR } from '../../../shared/terminal/pty/lifecycle/pty-session-id-format'
-import { isRecord } from '../../../shared/orcad-migration/orcad-migration-manifest-fields'
+import { isRecord } from '../../../shared/topod-migration/topod-migration-manifest-fields'
 import { getHistorySessionDirName } from '../../daemon/history/storage/history-paths'
 import {
   durableWriteTempPath,

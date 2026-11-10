@@ -12,7 +12,7 @@ afterEach(async () => {
 
 describe('plugin release first-seen store', () => {
   it('keeps the first sighting across restarts and restarts the clock for a new release', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-plugin-first-seen-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-plugin-first-seen-'))
     roots.push(root)
     expect(await new PluginReleaseFirstSeenStore(root).firstSeen('a.b', '1.1.0@c', 100)).toBe(100)
     const reopened = new PluginReleaseFirstSeenStore(root)

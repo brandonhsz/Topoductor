@@ -1,8 +1,8 @@
 import { claudeStartupAnswerObservation } from './claude-startup-answer-observation'
-import type { PipedProcessSpawner } from '@orca/process-host/process-spec'
+import type { PipedProcessSpawner } from '@topo/process-host/process-spec'
 import type * as ClaudeAgentSdk from '@anthropic-ai/claude-agent-sdk'
 import type { CanUseTool, OnUserDialog, SDKUserMessage } from '@anthropic-ai/claude-agent-sdk'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { buildClaudeChildProcessEnv } from './claude-child-process-environment'
 import { withoutInheritedClaudeConfigDir } from './claude-config-dir-pin'
 import { withoutRejectedClaudeApiKey } from './claude-rejected-api-key'
@@ -45,7 +45,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 export type ClaudeStreamJsonLaunch = {
-  /** Orca's resolved user CLI; the SDK falls back to a bundled binary that is not installed. */
+  /** Topo's resolved user CLI; the SDK falls back to a bundled binary that is not installed. */
   pathToClaudeCodeExecutable: string
   prefixArgs?: readonly string[]
   options: ClaudeStructuredSdkOptions

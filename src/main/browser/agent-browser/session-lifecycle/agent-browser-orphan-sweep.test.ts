@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const runProcessMock = vi.fn()
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   runProcess: (spec: unknown) => runProcessMock(spec)
 }))
 
@@ -9,9 +9,9 @@ import { sweepOrphanedAgentBrowserSessions } from './agent-browser-orphan-sweep'
 
 type Spec = { args?: readonly string[] }
 
-const BIN = '/opt/orca/agent-browser'
+const BIN = '/opt/topo/agent-browser'
 const SCOPED = {
-  env: { AGENT_BROWSER_SOCKET_DIR: '/tmp/orca-ab-0123456789abcdef' },
+  env: { AGENT_BROWSER_SOCKET_DIR: '/tmp/topo-ab-0123456789abcdef' },
   ownsSocketDirectory: true
 }
 
@@ -41,31 +41,31 @@ describe('agent-browser orphan sweep', () => {
     runProcessMock.mockReset()
   })
 
-  it('never closes a daemon outside Orca tab naming', async () => {
-    respond(['default', 'agent1', 'orca-orcad-deadbeef', 'orca-tab-aaa'])
+  it('never closes a daemon outside Topo tab naming', async () => {
+    respond(['default', 'agent1', 'topo-topod-deadbeef', 'topo-tab-aaa'])
 
     await sweepOrphanedAgentBrowserSessions({ binaryPath: BIN, ...SCOPED })
 
-    expect(closedArgs()).toEqual([['--session', 'orca-tab-aaa', 'close']])
+    expect(closedArgs()).toEqual([['--session', 'topo-tab-aaa', 'close']])
   })
 
   it('leaves sessions this run already owns alone', async () => {
-    respond(['orca-tab-live', 'orca-tab-orphan'])
+    respond(['topo-tab-live', 'topo-tab-orphan'])
 
     await sweepOrphanedAgentBrowserSessions({
       binaryPath: BIN,
       ...SCOPED,
-      isSessionLive: (name) => name === 'orca-tab-live'
+      isSessionLive: (name) => name === 'topo-tab-live'
     })
 
-    expect(closedArgs()).toEqual([['--session', 'orca-tab-orphan', 'close']])
+    expect(closedArgs()).toEqual([['--session', 'topo-tab-orphan', 'close']])
   })
 
   it.each([
     ['no socket directory at all', { PATH: 'C:\\Windows' }],
-    ['a socket directory Orca inherited', { AGENT_BROWSER_SOCKET_DIR: '/tmp/shared-ab' }]
+    ['a socket directory Topo inherited', { AGENT_BROWSER_SOCKET_DIR: '/tmp/shared-ab' }]
   ])('does not enumerate with %s', async (_label, env) => {
-    respond(['orca-tab-aaa'])
+    respond(['topo-tab-aaa'])
 
     const closed = await sweepOrphanedAgentBrowserSessions({
       binaryPath: BIN,
@@ -98,12 +98,12 @@ describe('agent-browser orphan sweep', () => {
         return Promise.resolve({
           code: 0,
           signal: null,
-          stdout: JSON.stringify({ data: { sessions: ['orca-tab-aaa', 'orca-tab-bbb'] } }),
+          stdout: JSON.stringify({ data: { sessions: ['topo-tab-aaa', 'topo-tab-bbb'] } }),
           stderr: '',
           timedOut: false
         })
       }
-      if (spec.args?.[1] === 'orca-tab-aaa') {
+      if (spec.args?.[1] === 'topo-tab-aaa') {
         return Promise.reject(new Error('spawn failed'))
       }
       return Promise.resolve({ code: 0, signal: null, stdout: '', stderr: '', timedOut: false })
@@ -111,23 +111,23 @@ describe('agent-browser orphan sweep', () => {
 
     const closed = await sweepOrphanedAgentBrowserSessions({ binaryPath: BIN, ...SCOPED })
 
-    expect(closed).toEqual(['orca-tab-bbb'])
+    expect(closed).toEqual(['topo-tab-bbb'])
   })
 })
 
 describe('sweep kill switch', () => {
-  const previous = process.env.ORCA_DISABLE_AGENT_BROWSER_SWEEP
+  const previous = process.env.TOPO_DISABLE_AGENT_BROWSER_SWEEP
 
   afterEach(() => {
     if (previous === undefined) {
-      delete process.env.ORCA_DISABLE_AGENT_BROWSER_SWEEP
+      delete process.env.TOPO_DISABLE_AGENT_BROWSER_SWEEP
     } else {
-      process.env.ORCA_DISABLE_AGENT_BROWSER_SWEEP = previous
+      process.env.TOPO_DISABLE_AGENT_BROWSER_SWEEP = previous
     }
   })
 
-  it('enumerates nothing when disabled, even when Orca owns the socket directory', async () => {
-    process.env.ORCA_DISABLE_AGENT_BROWSER_SWEEP = '1'
+  it('enumerates nothing when disabled, even when Topo owns the socket directory', async () => {
+    process.env.TOPO_DISABLE_AGENT_BROWSER_SWEEP = '1'
     runProcessMock.mockClear()
 
     const closed = await sweepOrphanedAgentBrowserSessions({

@@ -1,5 +1,5 @@
-// Author typings for Orca components panels (`"ui": "components"`): the runtime API.
-// `orca plugin types` joins this file with orca-components*.d.ts (the catalog) and installs
+// Author typings for Topo components panels (`"ui": "components"`): the runtime API.
+// `topo plugin types` joins this file with orca-components*.d.ts (the catalog) and installs
 // types/orca-services.d.ts, which adds `shell`, `files`, `on`, `plugin`, `storage`, `settings` and
 // `secrets` to this module. Mirrors src/shared/plugins/declarative/ (checked by
 // plugin-declarative-typings.test.ts); host methods are generated from the host API.
@@ -103,9 +103,9 @@ declare module 'orca' {
     "settings.get": { params: Record<string, never> | undefined; result: { settings: Record<string, JsonValue> } }
     /** Writes one setting the plugin owns. */
     "settings.set": { params: { key: string; value: JsonValue }; result: { ok: true } }
-    /** Opens an http:, https: or mailto: URL in the default browser. Needs a click or key press in the frame; desktop app only. Orca asks the person before an http(s) host the plugin was not allowed; `opened` is false if they cancel. */
+    /** Opens an http:, https: or mailto: URL in the default browser. Needs a click or key press in the frame; desktop app only. Topo asks the person before an http(s) host the plugin was not allowed; `opened` is false if they cancel. */
     "shell.openExternal": { params: { url: string }; result: { opened: boolean; reason?: "cancelled" | "consent-unavailable" } }
-    /** Offers data (a string or ArrayBuffer, up to 64 MiB) in Orca's save dialog; the plugin never learns the path. Needs a click or key press in the frame; desktop app only. */
+    /** Offers data (a string or ArrayBuffer, up to 64 MiB) in Topo's save dialog; the plugin never learns the path. Needs a click or key press in the frame; desktop app only. */
     "files.saveAs": { params: { suggestedName?: string; mimeType?: string; data: string | ArrayBuffer }; result: { status: "saved" | "cancelled" } }
     /** Asks the plugin's own worker to run the handler it registered with `orca.panels.handle(name)`, starting the worker if needed; resolves with what the handler returned. `unknown_method` when no handler has that name. */
     "plugin.request": { params: { name: string; input?: JsonValue; timeoutMs?: number }; result: { output: JsonValue } }
@@ -120,7 +120,7 @@ declare module 'orca' {
     "workspace.created": { workspaceId: string; kind: "worktree" | "folder"; path: string; branch: string }
     /** A worktree workspace was removed. */
     "workspace.removed": { workspaceId: string; kind: "worktree" | "folder"; path: string }
-    /** An agent in a terminal pane changed status; `workspaceId` is null when Orca cannot tie the pane to a workspace, and `terminalId` names its terminal when Orca lists it. */
+    /** An agent in a terminal pane changed status; `workspaceId` is null when Topo cannot tie the pane to a workspace, and `terminalId` names its terminal when Topo lists it. */
     "agent.status.changed": { workspaceId: string | null; paneKey: string; terminalId?: string; title?: string; state: "working" | "blocked" | "waiting" | "done"; receivedAt: number; mainAgent?: { state: "working" | "blocked" | "waiting" | "done"; outcome?: "success" | "failure" | "cancellation" | "superseded" | "interruption" | "unconfirmed"; stateStartedAt: number } }
     /** The focused workspace changed, or its terminals were opened, closed or renamed; `context` is what `workspace.readContext` now answers. Each new subscriber first gets the current context. */
     "workspace.changed": { context: { branch: string; displayName: string; terminals: { id: string; title?: string }[] } | null }
@@ -134,13 +134,13 @@ declare module 'orca' {
         ? [params?: HostMethods[K]['params'], options?: HostCallOptions]
         : [params: HostMethods[K]['params'], options?: HostCallOptions]
     ): Promise<HostMethods[K]['result']>
-    /** Whether this Orca offers `method` to this panel. */
+    /** Whether this Topo offers `method` to this panel. */
     has(method: string): boolean
   }
-  /** The host API this Orca implements. */
+  /** The host API this Topo implements. */
   export const api: { readonly major: number; readonly minor: number }
   export const env: {
-    /** Orca's UI language (BCP-47). */
+    /** Topo's UI language (BCP-47). */
     readonly locale: string
     /** Reading it while rendering re-renders on light/dark switches. */
     readonly theme: Theme
@@ -149,7 +149,7 @@ declare module 'orca' {
   export const ui: {
     /** Grows with the component catalog. */
     readonly catalog: number
-    /** Whether this Orca draws `component` (and accepts `prop` on it, when given). */
+    /** Whether this Topo draws `component` (and accepts `prop` on it, when given). */
     has(component: string, prop?: string): boolean
   }
 }

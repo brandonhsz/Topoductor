@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { createServer, type Server } from 'node:http'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { findGitBash } from '../agent-hooks/installation/commands/testing/windows-git-bash-path.test-fixture'
 
 const { homedirMock } = vi.hoisted(() => ({
@@ -75,10 +75,10 @@ function runRegisteredCursorHook(
     timeout: HOOK_RUN_TIMEOUT_MS,
     env: {
       ...process.env,
-      ORCA_AGENT_HOOK_ENDPOINT: '',
-      ORCA_AGENT_HOOK_PORT: '',
-      ORCA_AGENT_HOOK_TOKEN: '',
-      ORCA_PANE_KEY: '',
+      TOPO_AGENT_HOOK_ENDPOINT: '',
+      TOPO_AGENT_HOOK_PORT: '',
+      TOPO_AGENT_HOOK_TOKEN: '',
+      TOPO_PANE_KEY: '',
       ...extraEnv
     }
   })
@@ -90,7 +90,7 @@ describe('CursorHookService', () => {
   let homeDir: string
 
   beforeEach(() => {
-    homeDir = mkdtempSync(join(tmpdir(), 'orca-cursor-home-'))
+    homeDir = mkdtempSync(join(tmpdir(), 'topo-cursor-home-'))
     homedirMock.mockReturnValue(homeDir)
   })
 
@@ -110,10 +110,10 @@ describe('CursorHookService', () => {
           hooks: {
             beforeSubmitPrompt: [
               { command: '/usr/local/bin/user-hook' },
-              { command: '/old/path/.orca/agent-hooks/cursor-hook.sh' }
+              { command: '/old/path/.topo/agent-hooks/cursor-hook.sh' }
             ],
             retiredEvent: [
-              { command: '/old/path/.orca/agent-hooks/cursor-hook.sh' },
+              { command: '/old/path/.topo/agent-hooks/cursor-hook.sh' },
               { command: '/usr/local/bin/retired-user-hook' }
             ]
           }
@@ -176,7 +176,7 @@ describe('CursorHookService', () => {
       homedirMock.mockReturnValue(installHome)
       expect(new CursorHookService().install().state).toBe('installed')
       const config = readInstalledCursorHooks(installHome)
-      unlinkSync(join(installHome, '.orca', 'agent-hooks', CURSOR_SCRIPT_FILE_NAME))
+      unlinkSync(join(installHome, '.topo', 'agent-hooks', CURSOR_SCRIPT_FILE_NAME))
 
       for (const eventName of CURSOR_EVENTS) {
         const command = requireRegisteredCommand(config, eventName)
@@ -203,9 +203,9 @@ describe('CursorHookService', () => {
           command,
           JSON.stringify({ hook_event_name: eventName, tool_name: 'Write' }),
           {
-            ORCA_AGENT_HOOK_PORT: '59999',
-            ORCA_AGENT_HOOK_TOKEN: 'token',
-            ORCA_PANE_KEY: 'tab:leaf'
+            TOPO_AGENT_HOOK_PORT: '59999',
+            TOPO_AGENT_HOOK_TOKEN: 'token',
+            TOPO_PANE_KEY: 'tab:leaf'
           }
         )
         expect(result.status, `${eventName} dead-listener exit`).toBe(0)
@@ -258,10 +258,10 @@ describe('CursorHookService', () => {
           timeoutMs: HOOK_RUN_TIMEOUT_MS,
           env: {
             ...process.env,
-            ORCA_AGENT_HOOK_ENDPOINT: '',
-            ORCA_AGENT_HOOK_PORT: String(port),
-            ORCA_AGENT_HOOK_TOKEN: 'token',
-            ORCA_PANE_KEY: 'tab:leaf'
+            TOPO_AGENT_HOOK_ENDPOINT: '',
+            TOPO_AGENT_HOOK_PORT: String(port),
+            TOPO_AGENT_HOOK_TOKEN: 'token',
+            TOPO_PANE_KEY: 'tab:leaf'
           }
         })
         expect(result.code).toBe(0)
@@ -293,10 +293,10 @@ describe('CursorHookService', () => {
             timeout: HOOK_RUN_TIMEOUT_MS,
             env: {
               ...process.env,
-              ORCA_AGENT_HOOK_ENDPOINT: '',
-              ORCA_AGENT_HOOK_PORT: '',
-              ORCA_AGENT_HOOK_TOKEN: '',
-              ORCA_PANE_KEY: '',
+              TOPO_AGENT_HOOK_ENDPOINT: '',
+              TOPO_AGENT_HOOK_PORT: '',
+              TOPO_AGENT_HOOK_TOKEN: '',
+              TOPO_PANE_KEY: '',
               USERPROFILE: homeDir
             }
           })

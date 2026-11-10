@@ -197,7 +197,7 @@ export function createCreateWorktree(
               : WORKTREE_OPEN_EXISTING_BRANCH_RUNTIME_CAPABILITY
         if (!(await runtimeTargetSupportsCapability(target, capability))) {
           throw new Error(
-            'Update Orca on the workspace host to reuse a branch or explicitly create a separate branch.'
+            'Update Topo on the workspace host to reuse a branch or explicitly create a separate branch.'
           )
         }
         request.branchIntent = options.branchIntent

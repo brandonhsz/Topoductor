@@ -7,17 +7,17 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import nacl from 'tweetnacl'
 import { encodeDeviceProofMessage } from '../../../../shared/remote-runtime/pairing/device-key-proof'
 import { SimulatedMobileE2EEV2Peer } from '../../mobile-cloud-relay/simulated-mobile-e2ee-v2-peer'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { DeviceRegistry } from './pairing/device-registry'
 import { DEVICE_REGISTRY_FILENAME } from './pairing/mobile-pairing-files'
 import { makeStore } from './runtime-rpc-worktree-store-fixtures'
-import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../topo-runtime-tests/runtime-store-partial-fixture'
 import {
   TerminalStreamOpcode,
   encodeTerminalStreamFrame,
   encodeTerminalStreamText
 } from '../../../../shared/terminal/stream/terminal-stream-protocol'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import {
   encodePairingOffer,
   parsePairingCode
@@ -99,7 +99,7 @@ async function authenticateKeyedWs(offer: PairingOffer, deviceId: string, key: n
   return { ws, peer }
 }
 
-describe('OrcaRuntimeRpcServer', () => {
+describe('TopoRuntimeRpcServer', () => {
   afterEach(() => {
     vi.useRealTimers()
   })
@@ -111,9 +111,9 @@ describe('OrcaRuntimeRpcServer', () => {
   ] as const)(
     'revoking a %s bearer, removed on disk %s, removes descendants and closes their sockets',
     async (scope, removedOnDisk) => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-fork-revoke-'))
-      const server = new OrcaRuntimeRpcServer({
-        runtime: new OrcaRuntimeService(),
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-fork-revoke-'))
+      const server = new TopoRuntimeRpcServer({
+        runtime: new TopoRuntimeService(),
         userDataPath,
         enableWebSocket: true,
         wsPort: 0
@@ -196,8 +196,8 @@ describe('OrcaRuntimeRpcServer', () => {
     'retires an established keyed terminal subscription through %s revocation',
     async (kind) => {
       vi.useFakeTimers({ toFake: ['performance'] })
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-fork-stream-revoke-'))
-      const runtime = new OrcaRuntimeService(partialRuntimeStore(makeStore()))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-fork-stream-revoke-'))
+      const runtime = new TopoRuntimeService(partialRuntimeStore(makeStore()))
       const write = vi.fn(() => true)
       runtime.setPtyController({
         spawn: vi.fn().mockResolvedValue({ id: 'fork-stream-pty' }),
@@ -206,7 +206,7 @@ describe('OrcaRuntimeRpcServer', () => {
         getForegroundProcess: async () => null
       })
       const cleanup = vi.spyOn(runtime, 'cleanupSubscriptionsForConnection')
-      const server = new OrcaRuntimeRpcServer({
+      const server = new TopoRuntimeRpcServer({
         runtime,
         userDataPath,
         enableWebSocket: true,

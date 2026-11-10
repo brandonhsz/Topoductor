@@ -19,7 +19,7 @@ function rejected(fields: Partial<AgentJournalSubmission> = {}): AgentJournalSub
     payloadFingerprint: 'fingerprint-kept',
     dispatchState: 'rejected',
     providerItemId: null,
-    reason: 'Orca restarted before this message was sent.',
+    reason: 'Topo restarted before this message was sent.',
     rejection: { kind: 'hostRestarted' },
     submittedAt: 1,
     resolvedAt: 2,

@@ -1,6 +1,6 @@
 import type { ChildProcess } from 'node:child_process'
 import { delimiter, win32 as pathWin32 } from 'node:path'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { stripAnsiEscapeSequences } from '../../shared/ansi-escape-sequences'
 import type { ShellHydrationFailureReason } from '../../shared/shell/launch/shell-path-hydration-types'
 import { resolveWindowsShellStartupFamily } from '../../shared/windows-terminal-shell'
@@ -29,7 +29,7 @@ const LAUNCH_PATH_KEY =
   process.platform === 'win32' && process.env.Path !== undefined ? 'Path' : 'PATH'
 const LAUNCH_PATH = process.env[LAUNCH_PATH_KEY] ?? null
 // Allow heavy rc files to recognize the probe and skip multiplexers/prompts.
-export const PROBE_MARKER_ENV_VAR = 'ORCA_SHELL_PATH_PROBE'
+export const PROBE_MARKER_ENV_VAR = 'TOPO_SHELL_PATH_PROBE'
 let launchPathOverride: { key: string; value: string } | null = null
 let configuredWindowsShell = 'powershell.exe'
 let configuredWindowsGitBashPath: string | null = null
@@ -124,7 +124,7 @@ function shellProbeEnv(): NodeJS.ProcessEnv {
   return env
 }
 
-/** Run a synchronous launcher without passing Orca's seeded PATH to its child. */
+/** Run a synchronous launcher without passing Topo's seeded PATH to its child. */
 export function runWithLaunchPath<T>(action: () => T): T {
   const key = launchPathOverride?.key ?? LAUNCH_PATH_KEY
   const value = launchPathOverride?.value ?? LAUNCH_PATH

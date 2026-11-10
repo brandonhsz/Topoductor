@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { spawn } from 'node:child_process'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { tmpdir } from 'node:os'
@@ -25,7 +25,7 @@ describe('CommandCodeHookService', () => {
   let homeDir: string
 
   beforeEach(() => {
-    homeDir = mkdtempSync(join(tmpdir(), 'orca-command-code-home-'))
+    homeDir = mkdtempSync(join(tmpdir(), 'topo-command-code-home-'))
     homedirMock.mockReturnValue(homeDir)
   })
 
@@ -58,7 +58,7 @@ const [hook, disabled, stage] = process.argv.slice(2)
 const env = { PATH: process.env.PATH, HOME: process.env.HOME }
 const child = stage === 'ancestor'
   ? spawn(process.execPath, [__filename, hook, disabled, 'background'], {
-      env: { ...env, ORCA_AGENT_HOOKS_DISABLED: disabled },
+      env: { ...env, TOPO_AGENT_HOOKS_DISABLED: disabled },
       stdio: ['ignore', 'inherit', 'inherit']
     })
   : spawn('/bin/sh', [hook], { env, stdio: ['pipe', 'inherit', 'inherit'] })
@@ -75,20 +75,20 @@ child.on('close', code => { process.exitCode = code ?? 1 })
             program: process.execPath,
             args: [
               ancestor,
-              join(homeDir, '.orca', 'agent-hooks', 'command-code-hook.sh'),
+              join(homeDir, '.topo', 'agent-hooks', 'command-code-hook.sh'),
               disabled,
               'ancestor'
             ],
             env: {
               ...process.env,
               HOME: homeDir,
-              ORCA_AGENT_HOOKS_DISABLED: '0',
-              ORCA_AGENT_HOOK_PORT: String(address.port),
-              ORCA_AGENT_HOOK_TOKEN: 'test-token',
-              ORCA_PANE_KEY: 'recovered-tab:leaf',
-              ORCA_TAB_ID: 'recovered-tab',
-              ORCA_WORKTREE_ID: 'folder-workspace',
-              ORCA_AGENT_LAUNCH_TOKEN: 'parent-launch'
+              TOPO_AGENT_HOOKS_DISABLED: '0',
+              TOPO_AGENT_HOOK_PORT: String(address.port),
+              TOPO_AGENT_HOOK_TOKEN: 'test-token',
+              TOPO_PANE_KEY: 'recovered-tab:leaf',
+              TOPO_TAB_ID: 'recovered-tab',
+              TOPO_WORKTREE_ID: 'folder-workspace',
+              TOPO_AGENT_LAUNCH_TOKEN: 'parent-launch'
             },
             stdio: ['ignore', 'ignore', 'pipe']
           })
@@ -117,10 +117,10 @@ child.on('close', code => { process.exitCode = code ?? 1 })
     writeFileSync(
       staleEndpointPath,
       [
-        'ORCA_AGENT_HOOK_PORT=9',
-        'ORCA_AGENT_HOOK_TOKEN=stale-token',
-        'ORCA_AGENT_HOOK_ENV=development',
-        'ORCA_AGENT_HOOK_VERSION=1',
+        'TOPO_AGENT_HOOK_PORT=9',
+        'TOPO_AGENT_HOOK_TOKEN=stale-token',
+        'TOPO_AGENT_HOOK_ENV=development',
+        'TOPO_AGENT_HOOK_VERSION=1',
         ''
       ].join('\n')
     )
@@ -135,7 +135,7 @@ child.on('close', code => { process.exitCode = code ?? 1 })
       req.on('end', () => {
         requests.push({
           body,
-          token: req.headers['x-orca-agent-hook-token']
+          token: req.headers['x-topo-agent-hook-token']
         })
         res.statusCode = 204
         res.end()
@@ -145,19 +145,19 @@ child.on('close', code => { process.exitCode = code ?? 1 })
     try {
       await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
       const address = server.address() as AddressInfo
-      const scriptPath = join(homeDir, '.orca', 'agent-hooks', 'command-code-hook.sh')
+      const scriptPath = join(homeDir, '.topo', 'agent-hooks', 'command-code-hook.sh')
       const child = spawn('/bin/sh', [scriptPath], {
         env: {
           ...process.env,
           HOME: homeDir,
-          ORCA_AGENT_HOOK_ENDPOINT: staleEndpointPath,
-          ORCA_AGENT_HOOK_PORT: String(address.port),
-          ORCA_AGENT_HOOK_TOKEN: 'current-token',
-          ORCA_PANE_KEY: 'tab:leaf',
-          ORCA_TAB_ID: 'tab',
-          ORCA_WORKTREE_ID: 'worktree',
-          ORCA_AGENT_HOOK_ENV: 'development',
-          ORCA_AGENT_HOOK_VERSION: '1'
+          TOPO_AGENT_HOOK_ENDPOINT: staleEndpointPath,
+          TOPO_AGENT_HOOK_PORT: String(address.port),
+          TOPO_AGENT_HOOK_TOKEN: 'current-token',
+          TOPO_PANE_KEY: 'tab:leaf',
+          TOPO_TAB_ID: 'tab',
+          TOPO_WORKTREE_ID: 'worktree',
+          TOPO_AGENT_HOOK_ENV: 'development',
+          TOPO_AGENT_HOOK_VERSION: '1'
         },
         stdio: ['pipe', 'ignore', 'pipe']
       })

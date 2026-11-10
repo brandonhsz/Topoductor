@@ -4,7 +4,7 @@ import {
   type BrowserExtensionCaller
 } from '../api-runtime/browser-extension-namespace-registry'
 
-/** Resolves an extension-requested URL through Orca's rules; extension pages must be loaded in `sess`. */
+/** Resolves an extension-requested URL through Topo's rules; extension pages must be loaded in `sess`. */
 export function requireOpenableUrl(
   caller: BrowserExtensionCaller,
   rawUrl: string | undefined,

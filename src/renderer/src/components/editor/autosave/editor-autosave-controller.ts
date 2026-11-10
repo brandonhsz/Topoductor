@@ -1,8 +1,8 @@
 import {
-  ORCA_EDITOR_EXTERNAL_FILE_CHANGE_EVENT,
-  ORCA_EDITOR_QUIESCE_FILE_SAVES_EVENT,
-  ORCA_EDITOR_SAVE_AND_CLOSE_EVENT,
-  ORCA_EDITOR_SAVE_FILE_EVENT,
+  TOPO_EDITOR_EXTERNAL_FILE_CHANGE_EVENT,
+  TOPO_EDITOR_QUIESCE_FILE_SAVES_EVENT,
+  TOPO_EDITOR_SAVE_AND_CLOSE_EVENT,
+  TOPO_EDITOR_SAVE_FILE_EVENT,
   type EditorSaveAndCloseDetail,
   type EditorSaveFileDetail,
   type EditorSaveQuiesceDetail
@@ -24,8 +24,8 @@ import { createEditorRestartSaveHandlers } from './editor-restart-save-handlers'
 import { createEditorExternalChangeTabReset } from '../external-changes/editor-external-change-tab-reset'
 import { hasEditorBytesDraft } from '../save/bytes/editor-bytes-documents'
 import {
-  ORCA_EDITOR_PREPARE_HOT_EXIT_EVENT,
-  ORCA_EDITOR_SAVE_DIRTY_FILES_EVENT
+  TOPO_EDITOR_PREPARE_HOT_EXIT_EVENT,
+  TOPO_EDITOR_SAVE_DIRTY_FILES_EVENT
 } from '../../../../../shared/editor-save-events'
 
 const NOT_SAVED_MESSAGE = "The file wasn't saved. Try saving again."
@@ -169,34 +169,34 @@ export function attachEditorAutosaveController(store: AppStoreApi): () => void {
   })
   syncAutoSave()
 
-  window.addEventListener(ORCA_EDITOR_SAVE_DIRTY_FILES_EVENT, handleSaveDirtyFiles as EventListener)
-  window.addEventListener(ORCA_EDITOR_PREPARE_HOT_EXIT_EVENT, handlePrepareHotExit as EventListener)
-  window.addEventListener(ORCA_EDITOR_SAVE_AND_CLOSE_EVENT, handleSaveAndClose as EventListener)
-  window.addEventListener(ORCA_EDITOR_SAVE_FILE_EVENT, handleSaveFile as EventListener)
-  window.addEventListener(ORCA_EDITOR_QUIESCE_FILE_SAVES_EVENT, handleQuiesce as EventListener)
+  window.addEventListener(TOPO_EDITOR_SAVE_DIRTY_FILES_EVENT, handleSaveDirtyFiles as EventListener)
+  window.addEventListener(TOPO_EDITOR_PREPARE_HOT_EXIT_EVENT, handlePrepareHotExit as EventListener)
+  window.addEventListener(TOPO_EDITOR_SAVE_AND_CLOSE_EVENT, handleSaveAndClose as EventListener)
+  window.addEventListener(TOPO_EDITOR_SAVE_FILE_EVENT, handleSaveFile as EventListener)
+  window.addEventListener(TOPO_EDITOR_QUIESCE_FILE_SAVES_EVENT, handleQuiesce as EventListener)
   window.addEventListener(
-    ORCA_EDITOR_EXTERNAL_FILE_CHANGE_EVENT,
+    TOPO_EDITOR_EXTERNAL_FILE_CHANGE_EVENT,
     handleExternalFileChange as EventListener
   )
 
   return () => {
     unsubscribe()
     window.removeEventListener(
-      ORCA_EDITOR_SAVE_DIRTY_FILES_EVENT,
+      TOPO_EDITOR_SAVE_DIRTY_FILES_EVENT,
       handleSaveDirtyFiles as EventListener
     )
     window.removeEventListener(
-      ORCA_EDITOR_PREPARE_HOT_EXIT_EVENT,
+      TOPO_EDITOR_PREPARE_HOT_EXIT_EVENT,
       handlePrepareHotExit as EventListener
     )
     window.removeEventListener(
-      ORCA_EDITOR_SAVE_AND_CLOSE_EVENT,
+      TOPO_EDITOR_SAVE_AND_CLOSE_EVENT,
       handleSaveAndClose as EventListener
     )
-    window.removeEventListener(ORCA_EDITOR_SAVE_FILE_EVENT, handleSaveFile as EventListener)
-    window.removeEventListener(ORCA_EDITOR_QUIESCE_FILE_SAVES_EVENT, handleQuiesce as EventListener)
+    window.removeEventListener(TOPO_EDITOR_SAVE_FILE_EVENT, handleSaveFile as EventListener)
+    window.removeEventListener(TOPO_EDITOR_QUIESCE_FILE_SAVES_EVENT, handleQuiesce as EventListener)
     window.removeEventListener(
-      ORCA_EDITOR_EXTERNAL_FILE_CHANGE_EVENT,
+      TOPO_EDITOR_EXTERNAL_FILE_CHANGE_EVENT,
       handleExternalFileChange as EventListener
     )
     saveQueue.dispose()

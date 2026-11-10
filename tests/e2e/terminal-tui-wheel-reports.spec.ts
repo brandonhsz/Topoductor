@@ -1,7 +1,7 @@
 import type { XtermWithRenderDimensions } from './helpers/xterm-render-dimensions'
 import type { Page } from '@stablyai/playwright-test'
 import path from 'node:path'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   execInTerminal,
@@ -214,7 +214,7 @@ async function startTuiFixture(page: Page): Promise<void> {
 test.describe('terminal TUI wheel reports', () => {
   test('fullscreen mouse-reporting TUI scroll distance follows wheel magnitude @headful', async ({
     electronApp,
-    orcaPage
+    topoPage
   }) => {
     await electronApp.evaluate(({ BrowserWindow }) => {
       const win = BrowserWindow.getAllWindows()[0]
@@ -235,30 +235,30 @@ test.describe('terminal TUI wheel reports', () => {
         )
       )
       .toBe(true)
-    await orcaPage.waitForTimeout(1200)
+    await topoPage.waitForTimeout(1200)
 
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
-    await waitForActiveTerminalManager(orcaPage, 30_000)
-    await orcaPage.evaluate(() =>
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
+    await topoPage.evaluate(() =>
       window.__store?.getState().updateSettings({ terminalTuiScrollSensitivity: 1 })
     )
 
-    await startTuiFixture(orcaPage)
+    await startTuiFixture(topoPage)
 
-    await dispatchTuiWheel(orcaPage, {
+    await dispatchTuiWheel(topoPage, {
       deltaY: 10,
       wheelDeltaY: PHYSICAL_MOUSE_WHEEL_DELTA
     })
     await expect
-      .poll(() => readVisibleTuiOffset(orcaPage), {
+      .poll(() => readVisibleTuiOffset(topoPage), {
         timeout: 5_000,
         message: 'single notched wheel tick did not visibly scroll the TUI'
       })
       .toBe(1)
 
-    const cellHeight = await orcaPage.evaluate(() => {
+    const cellHeight = await topoPage.evaluate(() => {
       const state = window.__store?.getState()
       const worktreeId = state?.activeWorktreeId
       const tabId =
@@ -276,36 +276,36 @@ test.describe('terminal TUI wheel reports', () => {
       return screen.getBoundingClientRect().height / pane.terminal.rows
     })
 
-    await dispatchTuiWheel(orcaPage, {
+    await dispatchTuiWheel(topoPage, {
       deltaY: cellHeight * 12,
       wheelDeltaY: PHYSICAL_MOUSE_WHEEL_DELTA * 12
     })
 
     await expect
-      .poll(() => readVisibleTuiOffset(orcaPage), {
+      .poll(() => readVisibleTuiOffset(topoPage), {
         timeout: 5_000,
         message: 'larger wheel movement did not visibly move the TUI farther'
       })
       .toBe(7)
   })
 
-  test('TUI scroll setting scales notched mouse wheel reports', async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
-    await waitForActiveTerminalManager(orcaPage, 30_000)
-    await orcaPage.evaluate(() =>
+  test('TUI scroll setting scales notched mouse wheel reports', async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
+    await topoPage.evaluate(() =>
       window.__store?.getState().updateSettings({ terminalTuiScrollSensitivity: 5 })
     )
 
-    await startTuiFixture(orcaPage)
-    const slow = await probeTimedSmallMouseWheelReports(orcaPage, {
+    await startTuiFixture(topoPage)
+    const slow = await probeTimedSmallMouseWheelReports(topoPage, {
       drainWaitMs: 120,
       intervalMs: 220,
       ticks: 5
     })
-    await orcaPage.waitForTimeout(220)
-    const paced = await probeTimedSmallMouseWheelReports(orcaPage, {
+    await topoPage.waitForTimeout(220)
+    const paced = await probeTimedSmallMouseWheelReports(topoPage, {
       drainWaitMs: 220,
       intervalMs: 80,
       ticks: 5

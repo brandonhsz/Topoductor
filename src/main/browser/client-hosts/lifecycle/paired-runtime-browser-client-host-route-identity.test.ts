@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type {
   KnownRuntimeEnvironment,
-  OrcadDeploymentLink
+  TopodDeploymentLink
 } from '../../../../shared/remote-runtime/host-catalog/runtime-environments'
 
 vi.mock('electron', () => ({
@@ -49,13 +49,13 @@ import { deriveBrowserRoutePartition } from '../../routing/partitions/browser-ro
 import { BrowserRoutePartitionBindingStore } from '../../routing/partitions/browser-route-partition-binding-store'
 import { resolveBrowserRoutePartitionBinding } from '../../routing/partitions/browser-route-partition-migration'
 import {
-  configurePairedRuntimeBrowserClientHostsForOrcaProfile,
+  configurePairedRuntimeBrowserClientHostsForTopoProfile,
   getPairedRuntimeBrowserClientRouteIdentity,
   startPairedRuntimeBrowserClientHost,
   type ClientHostRouteIdentity
 } from './paired-runtime-browser-client-host-runtime'
 
-const SSH_DEPLOYMENT: OrcadDeploymentLink = {
+const SSH_DEPLOYMENT: TopodDeploymentLink = {
   sshTargetId: 'target-a',
   sshTargetGeneration: 1,
   localPort: 9999,
@@ -69,7 +69,7 @@ function pairedEnvironment(
     publicKeyB64?: string
     pairedDeviceId?: string
     deviceToken?: string
-    orcadDeployment?: OrcadDeploymentLink
+    topodDeployment?: TopodDeploymentLink
   } = {}
 ): KnownRuntimeEnvironment {
   return {
@@ -83,9 +83,9 @@ function pairedEnvironment(
       ? {}
       : { pairingRevision: overrides.pairingRevision }),
     ...(overrides.pairedDeviceId === undefined ? {} : { pairedDeviceId: overrides.pairedDeviceId }),
-    ...(overrides.orcadDeployment === undefined
+    ...(overrides.topodDeployment === undefined
       ? {}
-      : { orcadDeployment: overrides.orcadDeployment }),
+      : { topodDeployment: overrides.topodDeployment }),
     preferredEndpointId: 'endpoint-a',
     endpoints: [
       {
@@ -118,7 +118,7 @@ function pageIdentity(
   executionHostIdentity: string
 ) {
   return {
-    orcaProfileId: identity.orcaProfileId,
+    topoProfileId: identity.topoProfileId,
     browserProfileId: 'default',
     authorityConnectionIdentity,
     executionHostIdentity
@@ -186,7 +186,7 @@ function resolvePartitionAsOlderBuild(filePath: string, identity: ClientHostRout
 
 function bindingStorePath(): string {
   return join(
-    realpathSync(mkdtempSync(join(realpathSync(tmpdir()), 'orca-re-pair-partition-'))),
+    realpathSync(mkdtempSync(join(realpathSync(tmpdir()), 'topo-re-pair-partition-'))),
     'bindings.json'
   )
 }
@@ -195,12 +195,12 @@ beforeEach(() => {
   compositions.length = 0
 })
 
-describe('client host identity for a server Orca re-pairs in place', () => {
+describe('client host identity for a server Topo re-pairs in place', () => {
   it('adopts a per-process jar under the fingerprint an older build reads', async () => {
-    configurePairedRuntimeBrowserClientHostsForOrcaProfile({ orcaProfileId: 'profile-a' })
+    configurePairedRuntimeBrowserClientHostsForTopoProfile({ topoProfileId: 'profile-a' })
     const filePath = bindingStorePath()
     const identity = await routeIdentity(
-      pairedEnvironment('environment-runtime-era', { orcadDeployment: SSH_DEPLOYMENT }),
+      pairedEnvironment('environment-runtime-era', { topodDeployment: SSH_DEPLOYMENT }),
       'runtime-a'
     )
     const legacy = deriveBrowserRoutePartition(

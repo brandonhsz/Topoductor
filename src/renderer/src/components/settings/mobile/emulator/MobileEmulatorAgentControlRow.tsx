@@ -1,5 +1,5 @@
 import { Import } from 'lucide-react'
-import { ORCA_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
+import { TOPO_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
 import { useMobileEmulatorAgentSetupState } from '../../../emulator-pane/use-mobile-emulator-agent-setup-state'
 import { AgentSkillSetupPanel } from '../../../skills/setup/AgentSkillSetupPanel'
 import { MobileEmulatorExamples } from './MobileEmulatorExamples'
@@ -7,10 +7,10 @@ import { useTranslate } from '@/i18n/use-translate'
 import { SettingsGroup } from '../../section-layout/SettingsGroup'
 
 const EMULATOR_CLI_COMMANDS = [
-  'orca emulator list --json',
-  'orca emulator attach "iPhone 16 Pro" --json',
-  'orca emulator tap 0.5 0.7 --json',
-  'orca emulator type "hello" --json'
+  'topo emulator list --json',
+  'topo emulator attach "iPhone 16 Pro" --json',
+  'topo emulator tap 0.5 0.7 --json',
+  'topo emulator type "hello" --json'
 ] as const
 
 export function MobileEmulatorAgentControlRow(): React.JSX.Element {
@@ -26,7 +26,7 @@ export function MobileEmulatorAgentControlRow(): React.JSX.Element {
       )}
       description={t(
         'auto.components.settings.MobileEmulatorAgentControlRow.ff4b7e65d6',
-        'Let coding agents control the active mobile emulator with Orca CLI commands.'
+        'Let coding agents control the active mobile emulator with Topo CLI commands.'
       )}
     >
       <div className="divide-y divide-border">
@@ -35,13 +35,13 @@ export function MobileEmulatorAgentControlRow(): React.JSX.Element {
             variant="inline"
             title={t(
               'auto.components.settings.MobileEmulatorAgentControlRow.67e19ee03c',
-              'Orca CLI skill'
+              'Topo CLI skill'
             )}
             description={t(
               'auto.components.settings.MobileEmulatorAgentControlRow.d94ca6a623',
-              'Enables agents to use Orca CLI commands, including mobile emulator control.'
+              'Enables agents to use Topo CLI commands, including mobile emulator control.'
             )}
-            skillNames={[ORCA_CLI_SKILL_NAME]}
+            skillNames={[TOPO_CLI_SKILL_NAME]}
             target={activeSkillRuntime.bundledSkillTarget}
             terminalRuntime={activeSkillRuntime.agentRuntime}
             installDisabled={Boolean(activeSkillRuntime.installDisabledReason)}
@@ -50,7 +50,7 @@ export function MobileEmulatorAgentControlRow(): React.JSX.Element {
             error={setup.cliSkillError}
             onRecheck={setup.refreshCliSkill}
             freshnessSkillName={
-              activeSkillRuntime.canUseSkillFreshness ? ORCA_CLI_SKILL_NAME : undefined
+              activeSkillRuntime.canUseSkillFreshness ? TOPO_CLI_SKILL_NAME : undefined
             }
           />
         </div>

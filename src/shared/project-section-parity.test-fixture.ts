@@ -8,20 +8,20 @@ import {
 import type { Repo } from './repo-types'
 import type { RuntimeClientTarget } from './runtime-client-target'
 
-const orcaRemote = {
-  canonicalKey: 'github.com/stablyai/orca',
+const topoRemote = {
+  canonicalKey: 'github.com/brandonhsz/Topoductor',
   remoteName: 'origin',
-  remoteUrl: 'git@github.com:stablyai/orca.git'
+  remoteUrl: 'git@github.com:brandonhsz/Topoductor.git'
 }
 
-function hostRepo(id: string, path: string, displayName = 'orca'): Repo {
+function hostRepo(id: string, path: string, displayName = 'topo'): Repo {
   return {
     id,
     path,
     displayName,
     badgeColor: '#737373',
     addedAt: 1,
-    ...(displayName === 'orca' ? { gitRemoteIdentity: orcaRemote } : {})
+    ...(displayName === 'topo' ? { gitRemoteIdentity: topoRemote } : {})
   }
 }
 
@@ -35,11 +35,11 @@ export type ParityHostAnswer = {
 }
 
 const localRepos = [
-  hostRepo('local-stably', '/Users/jinwoo/stably/orca'),
+  hostRepo('local-stably', '/Users/jinwoo/stably/topo'),
   hostRepo('local-assets', '/Users/jinwoo/design-assets', 'design-assets'),
-  hostRepo('local-workspace', '/Users/jinwoo/orca/workspaces/orca/orca')
+  hostRepo('local-workspace', '/Users/jinwoo/topo/workspaces/topo/topo')
 ]
-const windowsRepo = hostRepo('win-orca', 'C:/Users/jinwo/orca/orca')
+const windowsRepo = hostRepo('win-topo', 'C:/Users/jinwo/topo/topo')
 
 // Several local checkouts plus copies of the same project on two servers.
 export const PROJECT_SECTION_PARITY_HOSTS: readonly ParityHostAnswer[] = [
@@ -57,10 +57,10 @@ export const PROJECT_SECTION_PARITY_HOSTS: readonly ParityHostAnswer[] = [
     lists: {
       projects: [
         {
-          id: 'github:stablyai/orca',
-          displayName: 'Orca',
+          id: 'github:brandonhsz/Topoductor',
+          displayName: 'Topo',
           badgeColor: '#737373',
-          providerIdentity: { provider: 'github', owner: 'stablyai', repo: 'orca' },
+          providerIdentity: { provider: 'github', owner: 'brandonhsz', repo: 'topo' },
           sourceRepoIds: [windowsRepo.id],
           createdAt: 5,
           updatedAt: 5
@@ -69,11 +69,11 @@ export const PROJECT_SECTION_PARITY_HOSTS: readonly ParityHostAnswer[] = [
       setups: [
         {
           id: 'win-setup',
-          projectId: 'github:stablyai/orca',
+          projectId: 'github:brandonhsz/Topoductor',
           hostId: 'local',
           repoId: windowsRepo.id,
           path: windowsRepo.path,
-          displayName: 'orca',
+          displayName: 'topo',
           setupState: 'ready',
           setupMethod: 'imported-existing-folder',
           createdAt: 5,
@@ -86,8 +86,8 @@ export const PROJECT_SECTION_PARITY_HOSTS: readonly ParityHostAnswer[] = [
     target: { kind: 'environment', environmentId: 'm4air' },
     hostId: 'runtime:m4air',
     repos: [
-      hostRepo('m4-orca', '/Users/m4air/orca/orca'),
-      hostRepo('m4-orca-two', '/Users/m4air/orca-two/orca')
+      hostRepo('m4-topo', '/Users/m4air/topo/topo'),
+      hostRepo('m4-topo-two', '/Users/m4air/topo-two/topo')
     ],
     lists: null
   }
@@ -99,28 +99,28 @@ export const PROJECT_SECTION_PARITY_ROWS: readonly {
   repoId: string
   lastActivityAt: number
 }[] = [
-  { id: 'wt-m4-two', repoId: 'm4-orca-two', lastActivityAt: 90 },
-  { id: 'wt-win', repoId: 'win-orca', lastActivityAt: 70 },
+  { id: 'wt-m4-two', repoId: 'm4-topo-two', lastActivityAt: 90 },
+  { id: 'wt-win', repoId: 'win-topo', lastActivityAt: 70 },
   { id: 'wt-workspace', repoId: 'local-workspace', lastActivityAt: 50 },
   { id: 'wt-stably', repoId: 'local-stably', lastActivityAt: 30 },
-  { id: 'wt-m4', repoId: 'm4-orca', lastActivityAt: 10 }
+  { id: 'wt-m4', repoId: 'm4-topo', lastActivityAt: 10 }
 ]
 
 // Same-host checkouts still need path prefixes; other machines do not.
 const STABLY = {
-  key: 'project:github:stablyai/orca::setup:local-stably',
-  label: 'stably/orca'
+  key: 'project:github:brandonhsz/Topoductor::setup:local-stably',
+  label: 'stably/topo'
 }
 const WORKSPACE = {
-  key: 'project:github:stablyai/orca::setup:local-workspace',
-  label: 'orca/orca'
+  key: 'project:github:brandonhsz/Topoductor::setup:local-workspace',
+  label: 'topo/topo'
 }
-// Why 'orca', not the server's 'Orca': the later host's derived project name wins the merge.
-const WINDOWS = { key: 'project:github:stablyai/orca', label: 'orca' }
-const M4 = { key: 'project:github:stablyai/orca::setup:m4-orca', label: 'orca/orca' }
+// Why 'topo', not the server's 'Topo': the later host's derived project name wins the merge.
+const WINDOWS = { key: 'project:github:brandonhsz/Topoductor', label: 'topo' }
+const M4 = { key: 'project:github:brandonhsz/Topoductor::setup:m4-topo', label: 'topo/topo' }
 const M4_TWO = {
-  key: 'project:github:stablyai/orca::setup:m4-orca-two',
-  label: 'orca-two/orca'
+  key: 'project:github:brandonhsz/Topoductor::setup:m4-topo-two',
+  label: 'topo-two/topo'
 }
 const ASSETS = { key: 'project:repo:local-assets', label: 'design-assets' }
 
@@ -134,8 +134,8 @@ export const PROJECT_SECTION_PARITY_SERVED: MobileProjectSectionCatalog = {
   repos: [
     {
       id: 'local-stably',
-      displayName: 'orca',
-      path: '/Users/jinwoo/stably/orca',
+      displayName: 'topo',
+      path: '/Users/jinwoo/stably/topo',
       badgeColor: '#737373',
       addedAt: 1,
       executionHostId: 'local'
@@ -150,32 +150,32 @@ export const PROJECT_SECTION_PARITY_SERVED: MobileProjectSectionCatalog = {
     },
     {
       id: 'local-workspace',
-      displayName: 'orca',
-      path: '/Users/jinwoo/orca/workspaces/orca/orca',
+      displayName: 'topo',
+      path: '/Users/jinwoo/topo/workspaces/topo/topo',
       badgeColor: '#737373',
       addedAt: 1,
       executionHostId: 'local'
     },
     {
-      id: 'win-orca',
-      displayName: 'orca',
-      path: 'C:/Users/jinwo/orca/orca',
+      id: 'win-topo',
+      displayName: 'topo',
+      path: 'C:/Users/jinwo/topo/topo',
       badgeColor: '#737373',
       addedAt: 1,
       executionHostId: 'runtime:windows2'
     },
     {
-      id: 'm4-orca',
-      displayName: 'orca',
-      path: '/Users/m4air/orca/orca',
+      id: 'm4-topo',
+      displayName: 'topo',
+      path: '/Users/m4air/topo/topo',
       badgeColor: '#737373',
       addedAt: 1,
       executionHostId: 'runtime:m4air'
     },
     {
-      id: 'm4-orca-two',
-      displayName: 'orca',
-      path: '/Users/m4air/orca-two/orca',
+      id: 'm4-topo-two',
+      displayName: 'topo',
+      path: '/Users/m4air/topo-two/topo',
       badgeColor: '#737373',
       addedAt: 1,
       executionHostId: 'runtime:m4air'
@@ -183,16 +183,16 @@ export const PROJECT_SECTION_PARITY_SERVED: MobileProjectSectionCatalog = {
   ],
   projects: [
     { id: 'repo:local-assets', displayName: 'design-assets' },
-    { id: 'github:stablyai/orca', displayName: 'orca' }
+    { id: 'github:brandonhsz/Topoductor', displayName: 'topo' }
   ],
   setups: [
     {
       id: 'local-stably',
-      projectId: 'github:stablyai/orca',
+      projectId: 'github:brandonhsz/Topoductor',
       hostId: 'local',
       repoId: 'local-stably',
-      path: '/Users/jinwoo/stably/orca',
-      displayName: 'orca',
+      path: '/Users/jinwoo/stably/topo',
+      displayName: 'topo',
       setupMethod: 'legacy-repo'
     },
     {
@@ -206,41 +206,41 @@ export const PROJECT_SECTION_PARITY_SERVED: MobileProjectSectionCatalog = {
     },
     {
       id: 'local-workspace',
-      projectId: 'github:stablyai/orca',
+      projectId: 'github:brandonhsz/Topoductor',
       hostId: 'local',
       repoId: 'local-workspace',
-      path: '/Users/jinwoo/orca/workspaces/orca/orca',
-      displayName: 'orca',
+      path: '/Users/jinwoo/topo/workspaces/topo/topo',
+      displayName: 'topo',
       setupMethod: 'legacy-repo'
     },
     {
       id: 'win-setup',
-      projectId: 'github:stablyai/orca',
+      projectId: 'github:brandonhsz/Topoductor',
       hostId: 'runtime:windows2',
-      repoId: 'win-orca',
-      path: 'C:/Users/jinwo/orca/orca',
-      displayName: 'orca',
+      repoId: 'win-topo',
+      path: 'C:/Users/jinwo/topo/topo',
+      displayName: 'topo',
       setupMethod: 'imported-existing-folder',
       connectionId: null,
       executionHostId: 'runtime:windows2'
     },
     {
-      id: 'm4-orca',
-      projectId: 'github:stablyai/orca',
+      id: 'm4-topo',
+      projectId: 'github:brandonhsz/Topoductor',
       hostId: 'runtime:m4air',
-      repoId: 'm4-orca',
-      path: '/Users/m4air/orca/orca',
-      displayName: 'orca',
+      repoId: 'm4-topo',
+      path: '/Users/m4air/topo/topo',
+      displayName: 'topo',
       setupMethod: 'legacy-repo',
       executionHostId: 'runtime:m4air'
     },
     {
-      id: 'm4-orca-two',
-      projectId: 'github:stablyai/orca',
+      id: 'm4-topo-two',
+      projectId: 'github:brandonhsz/Topoductor',
       hostId: 'runtime:m4air',
-      repoId: 'm4-orca-two',
-      path: '/Users/m4air/orca-two/orca',
-      displayName: 'orca',
+      repoId: 'm4-topo-two',
+      path: '/Users/m4air/topo-two/topo',
+      displayName: 'topo',
       setupMethod: 'legacy-repo',
       executionHostId: 'runtime:m4air'
     }

@@ -51,7 +51,7 @@ export function TerminalSessionStateSaveFailureDialog({
                 )
               : t(
                   'terminal.sessionSaveFailure.unknown',
-                  'Orca could not save the terminal state. Try again. If this continues, share the Orca logs with support so we can identify the cause.'
+                  'Topo could not save the terminal state. Try again. If this continues, share the Topo logs with support so we can identify the cause.'
                 )}
           </DialogDescription>
         </DialogHeader>

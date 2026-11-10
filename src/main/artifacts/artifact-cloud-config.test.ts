@@ -9,14 +9,14 @@ describe('resolveArtifactCloudApiUrl', () => {
     expect(
       resolveArtifactCloudApiUrl(
         undefined,
-        { ORCA_ARTIFACTS_API_URL: 'http://127.0.0.1:45961' },
+        { TOPO_ARTIFACTS_API_URL: 'http://127.0.0.1:45961' },
         false
       )
     ).toBe('http://127.0.0.1:45961')
     expect(() => resolveArtifactCloudApiUrl('http://127.0.0.1:45961', {}, true)).toThrow(/HTTPS/)
   })
 
-  it('rejects origins that could receive an Orca access token', () => {
+  it('rejects origins that could receive a Topo access token', () => {
     expect(() => resolveArtifactCloudApiUrl('https://example.com', {}, false)).toThrow(
       /onorca\.dev/
     )

@@ -8,7 +8,7 @@ import { RuntimeClient } from '../runtime-client'
 import { DATA_ACCOUNT_RUNTIME_CAPABILITY } from '../../shared/account-runtime-capabilities'
 import { addDataAccount } from './data-account-commands'
 
-const client = new RuntimeClient(join(tmpdir(), 'orca-login-test'), 1000, null, null)
+const client = new RuntimeClient(join(tmpdir(), 'topo-login-test'), 1000, null, null)
 const context = {
   client,
   cwd: tmpdir(),

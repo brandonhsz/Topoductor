@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { deflateSync } from 'node:zlib'
 import { PLUGIN_MANIFEST_V2_SINCE } from '../../src/shared/plugins/manifest/plugin-schema-field-docs'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { disablePluginSystem, enableDevPlugins } from './helpers/plugin-smoke'
 import { pluginGuest, readInGuest, ISOLATED_FRAMES_E2E } from './helpers/plugin-frame-guest'
 
@@ -104,23 +104,23 @@ async function writeSketchPlugin(root: string): Promise<void> {
 }
 
 test('a plugin new file is created from the + menu and opens in its editor', async ({
-  orcaPage,
+  topoPage,
   seededRepoPath
 }) => {
-  const pluginRoot = await mkdtemp(join(tmpdir(), 'orca-new-file-'))
+  const pluginRoot = await mkdtemp(join(tmpdir(), 'topo-new-file-'))
   const filePath = join(seededRepoPath, 'untitled.sketch')
   try {
     await writeSketchPlugin(pluginRoot)
-    await enableDevPlugins(orcaPage, [pluginRoot])
+    await enableDevPlugins(topoPage, [pluginRoot])
 
-    await orcaPage.getByRole('button', { name: 'New tab' }).first().click()
-    const item = orcaPage.getByRole('menuitem', { name: 'New sketch' })
+    await topoPage.getByRole('button', { name: 'New tab' }).first().click()
+    const item = topoPage.getByRole('menuitem', { name: 'New sketch' })
     await expect(item).toBeVisible({ timeout: 15_000 })
     await expect(item.locator('img[src^="orca-plugin-image://"]')).toBeVisible()
     await item.click()
 
     await expect.poll(() => readFile(filePath, 'utf8').catch(() => null)).toBe(TEMPLATE)
-    const guest = pluginGuest(orcaPage, 'Sketch Pad')
+    const guest = pluginGuest(topoPage, 'Sketch Pad')
     await expect(guest).toBeVisible({ timeout: 15_000 })
     await expect
       .poll(() => readInGuest<string>(guest, `document.getElementById('doc').value`), {
@@ -128,11 +128,11 @@ test('a plugin new file is created from the + menu and opens in its editor', asy
       })
       .toBe(TEMPLATE)
 
-    const tab = orcaPage.locator('[data-tab-id]').filter({ hasText: 'untitled.sketch' }).first()
+    const tab = topoPage.locator('[data-tab-id]').filter({ hasText: 'untitled.sketch' }).first()
     const icon = tab.locator('img[src*="/editor-0"]')
     await expect(icon).toBeVisible()
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(filePath, { force: true })
     await rm(pluginRoot, { recursive: true, force: true })
   }

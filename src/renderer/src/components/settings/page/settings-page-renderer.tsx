@@ -21,7 +21,7 @@ import {
   renderGeneralSettingsSection,
   renderIntegrationsSettingsSection,
   renderMobileSettingsSection,
-  renderOrcaAccountSettingsSection,
+  renderTopoAccountSettingsSection,
   renderSetupGuideSettingsSection,
   renderShareSkillsSettingsSection
 } from './settings-setup-workflow-section-renderers'
@@ -143,7 +143,7 @@ export function renderSettingsPage(
                   {renderOrchestrationSettingsSection(context, t)}
                   {renderLinearSettingsSection(context, t)}
                   {renderDesktopCapabilitySettingsSections(context, t)}
-                  {renderOrcaAccountSettingsSection(context, t)}
+                  {renderTopoAccountSettingsSection(context, t)}
                   {renderSetupGuideSettingsSection(context, t)}
                   {renderGeneralSettingsSection(context, t)}
                   {renderIntegrationsSettingsSection(context, t)}

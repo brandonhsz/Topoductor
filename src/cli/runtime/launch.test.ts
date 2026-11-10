@@ -17,7 +17,7 @@ vi.mock('child_process', () => ({
   spawn: spawnMock,
   spawnSync: spawnSyncMock
 }))
-import { serveOrcaApp } from './launch'
+import { serveTopoApp } from './launch'
 
 class FakeChildProcess extends EventEmitter {
   stdout = new EventEmitter()
@@ -36,7 +36,7 @@ const RECIPE_JSON = JSON.stringify({
   }),
   projectRoot: '/workspace/repo'
 })
-const SERVE_INSTALL_STATUS = '[serve] orca CLI install: installed'
+const SERVE_INSTALL_STATUS = '[serve] topo CLI install: installed'
 const SSH_PRIVATE_KEY = 'TOP-SECRET-PRIVATE-KEY'
 const SSH_AUTHORIZATION = 'Bearer TOP-SECRET-AUTHORIZATION'
 const SSH_PASSPHRASE = 'TOP-SECRET-PASSPHRASE'
@@ -71,30 +71,30 @@ function startRecipeJsonServer() {
   spawnMock.mockReturnValue(child)
   const stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
   const stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true)
-  const result = serveOrcaApp({
+  const result = serveTopoApp({
     recipeJson: true,
     projectRoot: '/workspace/repo'
   })
   return { child, result, stdoutSpy, stderrSpy }
 }
 
-describe('serveOrcaApp', () => {
+describe('serveTopoApp', () => {
   const temporaryDirectories: string[] = []
 
   beforeEach(() => {
     spawnMock.mockReset()
     spawnSyncMock.mockReset()
-    process.env.ORCA_APP_EXECUTABLE = '/Applications/Orca.app/Contents/MacOS/Orca'
-    process.env.ORCA_SERVE_RUNTIME = 'electron'
-    process.env.ORCA_USER_DATA_PATH = PROFILE
+    process.env.TOPO_APP_EXECUTABLE = '/Applications/Topo.app/Contents/MacOS/Topo'
+    process.env.TOPO_SERVE_RUNTIME = 'electron'
+    process.env.TOPO_USER_DATA_PATH = PROFILE
   })
 
   afterEach(() => {
     vi.restoreAllMocks()
-    delete process.env.ORCA_SERVE_RUNTIME
-    delete process.env.ORCA_APP_EXECUTABLE
-    delete process.env.ORCA_APP_EXECUTABLE_NEEDS_APP_ROOT
-    delete process.env.ORCA_USER_DATA_PATH
+    delete process.env.TOPO_SERVE_RUNTIME
+    delete process.env.TOPO_APP_EXECUTABLE
+    delete process.env.TOPO_APP_EXECUTABLE_NEEDS_APP_ROOT
+    delete process.env.TOPO_USER_DATA_PATH
     return Promise.all(
       temporaryDirectories.splice(0).map((directory) => rm(directory, { recursive: true }))
     )

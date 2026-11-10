@@ -5,7 +5,7 @@ import type { RuntimeBrowserClientPlacement } from '../../../../shared/runtime-b
 import type { WorkspaceSessionState } from '../../../../shared/workspace-session/workspace-session-state-types'
 import { getBrowserHostLeaseRegistry } from '../../browser-host/leases/browser-host-lease-registry-instance'
 import { isRestoredClientHostedBrowserPlacement } from './client-hosted-browser-page-persistence'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { getRuntimeBrowserPageRegistry } from './runtime-browser-page-registry'
 
 const WT = 'repo-1::/tmp/worktree-a'
@@ -62,13 +62,13 @@ function createProfile() {
   }
 }
 
-function startRuntime(profile: ReturnType<typeof createProfile>): OrcaRuntimeService {
-  const runtime = new OrcaRuntimeService(profile.store, undefined, {})
+function startRuntime(profile: ReturnType<typeof createProfile>): TopoRuntimeService {
+  const runtime = new TopoRuntimeService(profile.store, undefined, {})
   runtime.rehydrateClientHostedBrowserPages()
   return runtime
 }
 
-function placeAndPublish(runtime: OrcaRuntimeService, browserPageId: string): void {
+function placeAndPublish(runtime: TopoRuntimeService, browserPageId: string): void {
   const placement = getBrowserHostLeaseRegistry(runtime).placeClientPage(browserPageId, 'host-a')
   if (placement.kind !== 'client') {
     throw new Error('expected client placement')
@@ -87,7 +87,7 @@ function placeAndPublish(runtime: OrcaRuntimeService, browserPageId: string): vo
   })
 }
 
-function attachHost(runtime: OrcaRuntimeService) {
+function attachHost(runtime: TopoRuntimeService) {
   return getBrowserHostLeaseRegistry(runtime).attach({
     browserHostClientId: 'host-a',
     connectionId: 'connection-host-a',

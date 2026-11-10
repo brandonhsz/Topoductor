@@ -13,7 +13,7 @@ const ABANDONED_LOCK_AGE_MS = PACK_REFS_TIMEOUT_MS
 const PID_REUSE_HORIZON_MS = 24 * 60 * 60_000
 
 /**
- * Recover locks attributed by an Orca marker only after an age and owner-liveness check.
+ * Recover locks attributed by a Topo marker only after an age and owner-liveness check.
  * Markers can outlive their locks; the age gate avoids removing a newly created foreign lock.
  * Beyond the PID-reuse horizon, the recorded PID no longer prevents packed-refs recovery.
  */
@@ -24,7 +24,7 @@ export class PackRefsLockOwnership {
   constructor(gitCommonDir: string) {
     const path = isWindowsAbsolutePathLike(gitCommonDir) ? win32 : posix
     this.lockPath = path.join(gitCommonDir, 'packed-refs.lock')
-    this.markerPath = path.join(gitCommonDir, 'packed-refs.orca-owner')
+    this.markerPath = path.join(gitCommonDir, 'packed-refs.topo-owner')
   }
 
   async claim(now = Date.now()): Promise<PackRefsLockClaim> {

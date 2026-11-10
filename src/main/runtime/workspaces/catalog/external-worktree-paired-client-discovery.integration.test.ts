@@ -10,7 +10,7 @@ import { scheduleWorktreeBaseNotification } from '../../../ipc/worktrees/creatio
 import { createWorktreeHeadIdentityRefreshState } from '../../../ipc/worktrees/creation/worktree-head-identity-refresh'
 import { EMPTY_HEAD_IDENTITY_SCOPE } from '../../../ipc/worktrees/creation/worktree-head-identity-scope'
 import { setWorktreeCatalogRemoteClientNotifier } from '../../../ipc/watched-worktree-catalog-notification'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import {
   authenticate,
   createReader,
@@ -21,7 +21,7 @@ import {
   type PairedSession,
   type ResponseReader
 } from '../../client/navigation/paired-client-navigation-test-harness'
-import { OrcaRuntimeRpcServer } from '../../rpc/server/runtime-rpc'
+import { TopoRuntimeRpcServer } from '../../rpc/server/runtime-rpc'
 
 vi.mock('../../../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => {
   const facade = getWorktreeListingMocks()
@@ -90,7 +90,7 @@ function catalogPaths(response: Record<string, unknown>): string[] {
 }
 
 describe('external worktree discovery for paired clients', () => {
-  const servers: OrcaRuntimeRpcServer[] = []
+  const servers: TopoRuntimeRpcServer[] = []
   const sessions: PairedSession[] = []
   const readers: ResponseReader[] = []
   const tempDirs: string[] = []
@@ -114,11 +114,11 @@ describe('external worktree discovery for paired clients', () => {
   it('publishes one host-scoped catalog invalidation to two paired clients', async () => {
     vi.mocked(listWorktrees).mockResolvedValue([initialWorktree])
     vi.mocked(listWorktreesStrict).mockResolvedValue([initialWorktree])
-    const runtime = new OrcaRuntimeService(makeStore() as never)
+    const runtime = new TopoRuntimeService(makeStore() as never)
     setWorktreeCatalogRemoteClientNotifier(runtime)
     const userDataPath = mkdtempSync(join(tmpdir(), 'o-ewd-'))
     tempDirs.push(userDataPath)
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       runtime,
       userDataPath,
       enableWebSocket: true,
@@ -298,11 +298,11 @@ describe('external worktree discovery for paired clients', () => {
     let scanCount = 0
     vi.mocked(listWorktrees).mockResolvedValue([initialWorktree])
     vi.mocked(listWorktreesStrict).mockResolvedValue([initialWorktree, externalWorktree])
-    const runtime = new OrcaRuntimeService(makeStore() as never)
+    const runtime = new TopoRuntimeService(makeStore() as never)
     setWorktreeCatalogRemoteClientNotifier(runtime)
     const userDataPath = mkdtempSync(join(tmpdir(), 'o-ewd-race-'))
     tempDirs.push(userDataPath)
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       runtime,
       userDataPath,
       enableWebSocket: true,
@@ -420,7 +420,7 @@ describe('external worktree discovery for paired clients', () => {
       ...store.getRepos(),
       { ...localRepo, path: '/remote/repo', connectionId: 'ssh-target-1' }
     ]
-    const runtime = new OrcaRuntimeService({
+    const runtime = new TopoRuntimeService({
       ...store,
       getRepo: (id: string) => collidingRepos.find((repo) => repo.id === id),
       getRepos: () => collidingRepos
@@ -428,7 +428,7 @@ describe('external worktree discovery for paired clients', () => {
     setWorktreeCatalogRemoteClientNotifier(runtime)
     const userDataPath = mkdtempSync(join(tmpdir(), 'o-ewd-collision-'))
     tempDirs.push(userDataPath)
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       runtime,
       userDataPath,
       enableWebSocket: true,

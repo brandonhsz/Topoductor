@@ -3,7 +3,7 @@ import type { AiVaultSession } from '../../../../../../shared/ai-vault/contracts
 import { translate } from '@/i18n/i18n'
 import { formatClipboardFilePath } from '@/lib/clipboard-file-path'
 import { useLatestHandler } from '@/lib/use-latest-handler'
-import { openAiVaultSessionLogInOrca } from './ai-vault-session-log-open'
+import { openAiVaultSessionLogInTopo } from './ai-vault-session-log-open'
 import { revealAiVaultSessionPath } from './ai-vault-session-path-actions'
 
 async function copyText(text: string, label: string): Promise<void> {
@@ -26,7 +26,7 @@ const staticRowHandlers = {
       formatClipboardFilePath(session.filePath, session.executionHostId),
       translate('auto.components.right.sidebar.AiVaultPanel.logPath', 'Log path')
     ),
-  onOpenLog: (session: AiVaultSession) => void openAiVaultSessionLogInOrca(session),
+  onOpenLog: (session: AiVaultSession) => void openAiVaultSessionLogInTopo(session),
   onRevealLog: (session: AiVaultSession) =>
     void revealAiVaultSessionPath(session, session.filePath),
   onOpenCwd: (session: AiVaultSession) => void revealAiVaultSessionPath(session, session.cwd),

@@ -1,9 +1,9 @@
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { MAX_TERMINAL_READ_LIMIT } from '../../../terminal/output/tail/terminal-tail-limits'
 import { redactWorkerTerminalView } from '../../terminal-authority/views/worker-terminal-redaction'
 
 export async function readWorkerTerminalArchive(
-  runtime: Pick<OrcaRuntimeService, 'readTerminal'>,
+  runtime: Pick<TopoRuntimeService, 'readTerminal'>,
   handle: string
 ) {
   // Cursor reads retain completed history; the screen read also preserves partial output/drafts.

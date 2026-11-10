@@ -14,7 +14,7 @@ afterEach(async () => {
 
 /** A login profile that defines the command only as an unexported function and sets its own values. */
 function guestHome() {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), 'orca-opencode-login-')))
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'topo-opencode-login-')))
   roots.push(root)
   const home = join(root, 'home')
   const bin = join(root, 'bin')
@@ -27,13 +27,13 @@ function guestHome() {
     [
       'echo Profile startup banner',
       'export OPENCODE_CONFIG=rc OPENCODE_SERVER_USERNAME=opencode OPENCODE_SERVER_PASSWORD=rc OPENCODE_PASSWORD=rc OPENCODE_DISABLE_SHARE=0',
-      `orca_fixture_opencode() { if [ "$1" = --version ]; then printf '1.18.31\\n'; else printf 'function:%s cwd:%s config:%s password:%s username:%s v2:%s share:%s\\n' "$*" "$(pwd)" "$OPENCODE_CONFIG" "$OPENCODE_SERVER_PASSWORD" "$OPENCODE_SERVER_USERNAME" "$OPENCODE_PASSWORD" "$OPENCODE_DISABLE_SHARE"; fi; }`
+      `topo_fixture_opencode() { if [ "$1" = --version ]; then printf '1.18.31\\n'; else printf 'function:%s cwd:%s config:%s password:%s username:%s v2:%s share:%s\\n' "$*" "$(pwd)" "$OPENCODE_CONFIG" "$OPENCODE_SERVER_PASSWORD" "$OPENCODE_SERVER_USERNAME" "$OPENCODE_PASSWORD" "$OPENCODE_DISABLE_SHARE"; fi; }`
     ].join('\n')
   )
   writeFileSync(join(home, '.zprofile'), "emulate sh -c '. ~/.profile'\n")
   // `/usr/bin/env` cannot call a function; the old route then reached PATH, as this one must.
   // A fixture-only name keeps a real installed OpenCode from ever running here.
-  const executable = join(bin, 'orca_fixture_opencode')
+  const executable = join(bin, 'topo_fixture_opencode')
   writeFileSync(
     executable,
     `#!/bin/sh\nprintf 'path:%s config:%s password:%s\\n' "$*" "$OPENCODE_CONFIG" "$OPENCODE_SERVER_PASSWORD"\n`
@@ -68,7 +68,7 @@ describe.skipIf(process.platform === 'win32')('guestLoginShellLaunch', () => {
     const guest = guestHome()
     const launch = guestLoginShellLaunch(
       {
-        binary: 'orca_fixture_opencode',
+        binary: 'topo_fixture_opencode',
         args: ['serve', '--port', '0'],
         cwd: guest.repo,
         env: { ...guest.env, OPENCODE_SERVER_PASSWORD: 'task-secret-7f3' },
@@ -99,7 +99,7 @@ describe.skipIf(process.platform === 'win32')('guestLoginShellLaunch', () => {
     const guest = guestHome()
     const launch = guestLoginShellLaunch(
       {
-        binary: 'orca_fixture_opencode',
+        binary: 'topo_fixture_opencode',
         args: ['--version'],
         cwd: guest.repo,
         env: guest.env,
@@ -120,7 +120,7 @@ it.skipIf(process.platform === 'win32')(
     const guest = guestHome()
     const launch = guestLoginShellLaunch(
       {
-        binary: 'orca_fixture_opencode',
+        binary: 'topo_fixture_opencode',
         args: ['--version'],
         cwd: guest.repo,
         env: guest.env,

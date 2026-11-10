@@ -1,4 +1,4 @@
-import type { OrcaVmRecipe } from '../../shared/orca-yaml-hook-types'
+import type { TopoVmRecipe } from '../../shared/topo-yaml-hook-types'
 import {
   listEphemeralVmRuntimes,
   updateEphemeralVmRuntimeStatus
@@ -28,7 +28,7 @@ import {
 export type ProvisionEphemeralVmRuntimeArgs = {
   userDataPath: string
   repoPath: string
-  recipe: OrcaVmRecipe
+  recipe: TopoVmRecipe
   repoId?: string
   projectId?: string
   workspaceId?: string
@@ -37,7 +37,7 @@ export type ProvisionEphemeralVmRuntimeArgs = {
   branch?: string
   ref?: string
   expectedRefHead?: string
-  orcaVersion?: string
+  topoVersion?: string
   now?: number
   signal?: AbortSignal
   onStdout?: (chunk: string) => void
@@ -58,7 +58,7 @@ export type ProvisionEphemeralVmRuntimeResult =
 export type CleanupEphemeralVmRuntimeArgs = {
   userDataPath: string
   repoPath: string
-  recipe: OrcaVmRecipe
+  recipe: TopoVmRecipe
   runtimeId: string
   now?: number
   signal?: AbortSignal
@@ -106,7 +106,7 @@ export async function provisionEphemeralVmRuntime(
         branch: args.branch,
         ref: args.ref,
         expectedRefHead: args.expectedRefHead,
-        orcaVersion: args.orcaVersion,
+        topoVersion: args.topoVersion,
         instanceId: writeAhead.instanceId
       },
       signal: args.signal,

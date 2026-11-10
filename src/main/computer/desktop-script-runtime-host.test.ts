@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { ProcessSpec } from '@orca/process-host/process-spec'
+import type { ProcessSpec } from '@topo/process-host/process-spec'
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
 import { DesktopScriptRuntimeHost, isRuntimeHostUnavailable } from './desktop-script-runtime-host'
 
@@ -87,7 +87,7 @@ function createHost(
   const children: FakeRuntimeChild[] = []
   const specs: ProcessSpec[] = []
   const warnings: string[] = []
-  const host = new DesktopScriptRuntimeHost('C:\\orca\\runtime.ps1', {
+  const host = new DesktopScriptRuntimeHost('C:\\topo\\runtime.ps1', {
     ...options,
     powerShellPath: () => 'C:\\Windows\\System32\\powershell.exe',
     warn: (message) => warnings.push(message),

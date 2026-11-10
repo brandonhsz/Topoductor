@@ -93,7 +93,7 @@ vi.mock('electron', () => ({
 vi.mock('../profile-storage/browser-extension-profile-data-directory', () => ({
   getBrowserExtensionProfileDataDirectory: () => mocks.directory
 }))
-mocks.directory = mkdtempSync(join(tmpdir(), 'orca-content-script-persistence-'))
+mocks.directory = mkdtempSync(join(tmpdir(), 'topo-content-script-persistence-'))
 
 const registry = await import('./browser-extension-namespace-registry')
 const { registerScriptingNamespaces } = await import('../api/scripting')

@@ -1,4 +1,4 @@
-import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../topo-runtime-tests/runtime-store-partial-fixture'
 import type { WorkspaceSessionState } from '../../../../shared/workspace-session/workspace-session-state-types'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -32,7 +32,7 @@ import {
   seedTestAgentSessionRecordStore,
   seedTestAgentSessionStoreFromNewerBuild
 } from './agent-session-record-store-test-harness'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import {
   ensureStructuredAgentSessionHost,
   stopStructuredAgentSessionRuntime
@@ -64,7 +64,7 @@ const PROMPT = 'add a retry'
 let root: string
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-startup-tab-restore-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-startup-tab-restore-'))
 })
 
 afterEach(async () => {
@@ -185,7 +185,7 @@ function startupRuntime(options: { afterInstall?: () => void; profileChats?: str
       }))
     }
   }
-  class StartupRuntime extends OrcaRuntimeService {
+  class StartupRuntime extends TopoRuntimeService {
     protected override hasPersistedStructuredAgentSessionStore() {
       return true
     }

@@ -11,11 +11,11 @@ import {
   DialogHeader,
   DialogTitle
 } from '../../../ui/dialog'
-import { getManagedOrcadApi } from '../../../../runtime/hosts/installation/managed-orcad-api-availability'
+import { getManagedTopodApi } from '../../../../runtime/hosts/installation/managed-topod-api-availability'
 
 /** Offer migration of changes made by an older build or retain the managed server’s version. */
 export function hasSshHostSourceChanged(target: SshTarget): boolean {
-  return Boolean(getManagedOrcadApi() && target.orcadFence?.sourceChangedAt)
+  return Boolean(getManagedTopodApi() && target.topodFence?.sourceChangedAt)
 }
 
 export function SshHostKeepServerVersionDialog({
@@ -30,7 +30,7 @@ export function SshHostKeepServerVersionDialog({
   onChanged: () => void
 }): React.JSX.Element | null {
   const t = useTranslate()
-  const api = getManagedOrcadApi()
+  const api = getManagedTopodApi()
   const mountedRef = useMountedRef()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -38,7 +38,7 @@ export function SshHostKeepServerVersionDialog({
     setError(null)
     onOpenChange(next)
   }
-  if (!api || !target.orcadFence?.sourceChangedAt) {
+  if (!api || !target.topodFence?.sourceChangedAt) {
     return null
   }
   const keepServerVersion = async (): Promise<void> => {
@@ -70,7 +70,7 @@ export function SshHostKeepServerVersionDialog({
           <DialogDescription>
             {t(
               'auto.components.settings.keepServer.description',
-              'This host keeps using its Orca server as it is. What the older version of Orca added or changed here is not moved; it stays only in this computer’s saved settings until they are cleaned up.'
+              'This host keeps using its Topo server as it is. What the older version of Topo added or changed here is not moved; it stays only in this computer’s saved settings until they are cleaned up.'
             )}
           </DialogDescription>
         </DialogHeader>

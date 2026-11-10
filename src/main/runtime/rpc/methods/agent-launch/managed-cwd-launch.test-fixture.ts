@@ -7,19 +7,19 @@ import type { WorktreeLineage } from '../../../../../shared/worktree/lineage-typ
 import type { Repo } from '../../../../../shared/repo-types'
 import type { WorktreeMeta } from '../../../../../shared/worktree/meta-types'
 import type { AgentSessionRecordStore } from '../../../agent-session/records/agent-session-record-store'
-import '../../../orca-runtime-tests/runtime-test-module-registration.spec'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import '../../../topo-runtime-tests/runtime-test-module-registration.spec'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import { addWorktree } from '../../../../git/worktrees/creation/worktree-add'
 import {
   computeWorktreePathMock,
   ensurePathWithinWorkspaceMock
-} from '../../../orca-runtime-test-mocks/setup.spec'
+} from '../../../topo-runtime-test-mocks/setup.spec'
 import { listWorktrees } from '../../../../git/worktrees/catalog/worktree-scan-cache'
 import {
   store,
   makeWorktreeMeta
-} from '../../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
-import { registerLivePty } from '../../../orca-runtime-tests/bind-first-pane.test-fixture'
+} from '../../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
+import { registerLivePty } from '../../../topo-runtime-tests/bind-first-pane.test-fixture'
 import type { HostWorktreeTarget } from '../../../../../shared/worktree/host-qualified-identity'
 import { mergeWorktreeMetaForWrite } from '../../../../persistence/loading-store/worktree-meta-write-normalization'
 
@@ -118,7 +118,7 @@ export function managedCwdLaunchFixture(
       return value
     }
   }
-  const runtime = new OrcaRuntimeService(runtimeStore)
+  const runtime = new TopoRuntimeService(runtimeStore)
   vi.spyOn(runtime, 'openAgentSessionRecordStore').mockResolvedValue(records)
   vi.spyOn(runtime, 'getClientSettings').mockReturnValue({
     ...runtime.getClientSettings()

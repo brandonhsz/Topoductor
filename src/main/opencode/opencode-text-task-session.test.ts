@@ -99,7 +99,7 @@ it('v2 rejects an unexpected permission and reads final text across fragmented C
     })
   ).resolves.toBe('Harbor Lantern')
   expect(requests.get('POST /api/session')).toEqual({
-    title: expect.stringMatching(/^Orca text generation /),
+    title: expect.stringMatching(/^Topo text generation /),
     location: { directory: '/workspace' },
     model: { providerID: 'opencode', id: 'crouton-alpha-free', variant: 'low' },
     permissions: [

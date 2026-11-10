@@ -100,7 +100,7 @@ export const AgentSessionRewindRecordSchema = z.object({
 export type AgentSessionRewindRecord = z.infer<typeof AgentSessionRewindRecordSchema>
 export type AgentSessionRewindFork = NonNullable<AgentSessionRewindRecord['providerFork']>
 
-// Accepted messages keep Orca's key until a rewind rebuilds the epoch with provider keys.
+// Accepted messages keep Topo's key until a rewind rebuilds the epoch with provider keys.
 export function savedRewindKeys(submissions: readonly AgentJournalSubmission[]) {
   const providerKeys = new Map<string, string>()
   const omitted = new Set<string>()

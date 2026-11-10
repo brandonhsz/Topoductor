@@ -3,7 +3,7 @@
 import { generatedTabTitleForStatus } from '../../../../shared/agent-status/presentation/agent-generated-tab-title-rules'
 import type { AgentStatusIpcPayload } from '../../../../shared/agent-status/contracts/agent-status-ipc-payload'
 import type { AgentStatusOrchestrationContext } from '../../../../shared/agent-status/contracts/agent-status-types'
-import { isOrcaDispatchPrompt } from '../../../../shared/agent-status/presentation/agent-row-primary-text'
+import { isTopoDispatchPrompt } from '../../../../shared/agent-status/presentation/agent-row-primary-text'
 import type { GeneratedTitleTab } from '../../../../shared/agent-status/presentation/agent-generated-tab-title-rules'
 import type {
   GeneratedTabTitle,
@@ -63,7 +63,7 @@ export class AgentGeneratedTabTitles {
     // Later statuses in the batch must read earlier generated titles, matching window batching.
     const renames = new Map<string, GeneratedTabTitle>()
     // Read once per batch, and only for a dispatch: it scans every dispatch record.
-    const orchestration = rows.some((row) => isOrcaDispatchPrompt(row.prompt))
+    const orchestration = rows.some((row) => isTopoDispatchPrompt(row.prompt))
       ? this.deps.orchestrationByPaneKey()
       : undefined
     for (const row of rows) {

@@ -23,7 +23,7 @@ export function WslDistroStoppedCard({
         unverifiable
           ? t(
               'components.native-chat.hostOutage.unverifiable',
-              "Orca couldn't check whether {{distro}} is running",
+              "Topo couldn't check whether {{distro}} is running",
               { distro }
             )
           : t('components.native-chat.hostOutage.stopped', '{{distro}} is stopped', {

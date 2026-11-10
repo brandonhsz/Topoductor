@@ -251,7 +251,7 @@ export function WorkspaceDirectorySetting({
         <p className="text-xs text-muted-foreground">
           {t(
             'auto.components.settings.WorkspaceDirectorySetting.6f7a8b9cad',
-            'Use a relative path (e.g. .orca/worktrees) for a per-project location, or an absolute path for one shared folder.'
+            'Use a relative path (e.g. .topo/worktrees) for a per-project location, or an absolute path for one shared folder.'
           )}
         </p>
       )}

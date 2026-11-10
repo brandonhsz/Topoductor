@@ -2,13 +2,13 @@ import { openSidebarWorkspaceComposer } from './helpers/sidebar-project-dialog'
 import type { ElectronApplication, Locator, Page } from '@stablyai/playwright-test'
 import type { GitHubWorkItem } from '../../src/shared/github/work-item-types'
 import type { GitLabWorkItem } from '../../src/shared/gitlab-types'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 
-const TARGET_URL = 'https://github.com/stablyai/orca/issues/4242'
+const TARGET_URL = 'https://github.com/brandonhsz/Topoductor/issues/4242'
 const WRONG_TITLE = 'Wrong cached issue'
 const TARGET_TITLE = 'Exact pasted issue'
-const GITLAB_TARGET_URL = 'https://gitlab.example.test/stablyai/orca/-/merge_requests/4242'
+const GITLAB_TARGET_URL = 'https://gitlab.example.test/brandonhsz/Topoductor/-/merge_requests/4242'
 const GITLAB_WRONG_TITLE = 'Wrong cached merge request'
 const GITLAB_TARGET_TITLE = 'Exact pasted merge request'
 const MIN_PASTED_FRAMES = 2
@@ -20,7 +20,7 @@ const WRONG_ITEM: GitHubWorkItem = {
   number: 17,
   title: WRONG_TITLE,
   state: 'open',
-  url: 'https://github.com/stablyai/orca/issues/17',
+  url: 'https://github.com/brandonhsz/Topoductor/issues/17',
   labels: [],
   updatedAt: '2026-08-01T00:00:00.000Z',
   author: 'e2e',
@@ -42,7 +42,7 @@ const GITLAB_WRONG_ITEM: GitLabWorkItem = {
   number: 17,
   title: GITLAB_WRONG_TITLE,
   state: 'opened',
-  url: 'https://gitlab.example.test/stablyai/orca/-/merge_requests/17',
+  url: 'https://gitlab.example.test/brandonhsz/Topoductor/-/merge_requests/17',
   labels: [],
   updatedAt: '2026-08-01T00:00:00.000Z',
   author: 'e2e',
@@ -177,7 +177,7 @@ async function installHeldGitHubLookup(
     }
     fixture.__githubUrlLookupStarted = false
     ipcMain.removeHandler('gh:repoSlug')
-    ipcMain.handle('gh:repoSlug', () => ({ owner: 'stablyai', repo: 'orca' }))
+    ipcMain.handle('gh:repoSlug', () => ({ owner: 'brandonhsz', repo: 'topo' }))
     ipcMain.removeHandler('gh:workItemByOwnerRepo')
     ipcMain.handle('gh:workItemByOwnerRepo', () => {
       fixture.__githubUrlLookupStarted = true
@@ -269,31 +269,31 @@ async function releaseGitLabLookup(electronApp: ElectronApplication): Promise<vo
 
 test('a pasted GitHub URL never selects a stale cached issue', async ({
   electronApp,
-  orcaPage
+  topoPage
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await installHeldGitHubLookup(electronApp, orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await installHeldGitHubLookup(electronApp, topoPage)
 
-  await openSidebarWorkspaceComposer(orcaPage)
-  const dialog = orcaPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
+  await openSidebarWorkspaceComposer(topoPage)
+  const dialog = topoPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
   const input = dialog.locator('[data-workspace-name-input="true"]')
   await expect(input).toBeVisible()
   await input.click()
 
-  const wrongOption = orcaPage.getByRole('option', { name: `#17 ${WRONG_TITLE}`, exact: true })
-  const targetOption = orcaPage.getByRole('option', {
+  const wrongOption = topoPage.getByRole('option', { name: `#17 ${WRONG_TITLE}`, exact: true })
+  const targetOption = topoPage.getByRole('option', {
     name: `#4242 ${TARGET_TITLE}`,
     exact: true
   })
   await expect(wrongOption).toBeVisible()
 
   const frameKey: TransitionFrameKey = '__githubUrlTransitionFrames'
-  await startTransitionCapture(orcaPage, frameKey, WRONG_TITLE, TARGET_TITLE)
+  await startTransitionCapture(topoPage, frameKey, WRONG_TITLE, TARGET_TITLE)
 
-  await orcaPage.evaluate((text) => window.api.ui.writeClipboardText(text), TARGET_URL)
+  await topoPage.evaluate((text) => window.api.ui.writeClipboardText(text), TARGET_URL)
   await input.focus()
-  await orcaPage.keyboard.press(pasteChord())
+  await topoPage.keyboard.press(pasteChord())
   await expect
     .poll(() =>
       electronApp.evaluate(() => {
@@ -302,47 +302,47 @@ test('a pasted GitHub URL never selects a stale cached issue', async ({
       })
     )
     .toBe(true)
-  await expectLookupHeldWithoutStaleRow(orcaPage, frameKey, TARGET_URL, wrongOption, targetOption)
+  await expectLookupHeldWithoutStaleRow(topoPage, frameKey, TARGET_URL, wrongOption, targetOption)
 
   await releaseGitHubLookup(electronApp)
-  await expectExactTargetAfterLookup(orcaPage, frameKey, TARGET_URL, targetOption)
+  await expectExactTargetAfterLookup(topoPage, frameKey, TARGET_URL, targetOption)
 
   await testInfo.attach('github-url-smart-input-fixed.png', {
-    body: await orcaPage.screenshot(),
+    body: await topoPage.screenshot(),
     contentType: 'image/png'
   })
 })
 
 test('a pasted GitLab URL never selects a stale cached merge request', async ({
   electronApp,
-  orcaPage
+  topoPage
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await installHeldGitLabLookup(electronApp, orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await installHeldGitLabLookup(electronApp, topoPage)
 
-  await openSidebarWorkspaceComposer(orcaPage)
-  const dialog = orcaPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
+  await openSidebarWorkspaceComposer(topoPage)
+  const dialog = topoPage.getByRole('dialog', { name: /Create (Workspace|Worktree)/i })
   const input = dialog.locator('[data-workspace-name-input="true"]')
   await expect(input).toBeVisible()
   await input.click()
 
-  const wrongOption = orcaPage.getByRole('option', {
+  const wrongOption = topoPage.getByRole('option', {
     name: `!17 ${GITLAB_WRONG_TITLE}`,
     exact: true
   })
-  const targetOption = orcaPage.getByRole('option', {
+  const targetOption = topoPage.getByRole('option', {
     name: `!4242 ${GITLAB_TARGET_TITLE}`,
     exact: true
   })
   await expect(wrongOption).toBeVisible()
 
   const frameKey: TransitionFrameKey = '__gitlabUrlTransitionFrames'
-  await startTransitionCapture(orcaPage, frameKey, GITLAB_WRONG_TITLE, GITLAB_TARGET_TITLE)
+  await startTransitionCapture(topoPage, frameKey, GITLAB_WRONG_TITLE, GITLAB_TARGET_TITLE)
 
-  await orcaPage.evaluate((text) => window.api.ui.writeClipboardText(text), GITLAB_TARGET_URL)
+  await topoPage.evaluate((text) => window.api.ui.writeClipboardText(text), GITLAB_TARGET_URL)
   await input.focus()
-  await orcaPage.keyboard.press(pasteChord())
+  await topoPage.keyboard.press(pasteChord())
   await expect
     .poll(() =>
       electronApp.evaluate(() => {
@@ -352,7 +352,7 @@ test('a pasted GitLab URL never selects a stale cached merge request', async ({
     )
     .toBe(true)
   await expectLookupHeldWithoutStaleRow(
-    orcaPage,
+    topoPage,
     frameKey,
     GITLAB_TARGET_URL,
     wrongOption,
@@ -360,10 +360,10 @@ test('a pasted GitLab URL never selects a stale cached merge request', async ({
   )
 
   await releaseGitLabLookup(electronApp)
-  await expectExactTargetAfterLookup(orcaPage, frameKey, GITLAB_TARGET_URL, targetOption)
+  await expectExactTargetAfterLookup(topoPage, frameKey, GITLAB_TARGET_URL, targetOption)
 
   await testInfo.attach('gitlab-url-smart-input-fixed.png', {
-    body: await orcaPage.screenshot(),
+    body: await topoPage.screenshot(),
     contentType: 'image/png'
   })
 })

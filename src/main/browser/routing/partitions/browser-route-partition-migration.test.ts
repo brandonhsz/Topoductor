@@ -8,28 +8,28 @@ import { BrowserRoutePartitionBindingStore } from './browser-route-partition-bin
 import { BrowserRouteSessionRegistry } from '../sessions/browser-route-session-registry'
 import type { BrowserRouteElectronSession } from '../sessions/browser-route-session-policy'
 
-const orcaProfileId = 'orca/profile:alpha'
+const topoProfileId = 'topo/profile:alpha'
 const browserProfileId = 'default'
 const storageScope = 'e'.repeat(64)
 const identity = {
-  orcaProfileId,
+  topoProfileId,
   browserProfileId,
   authorityConnectionIdentity: 'paired-runtime:durable-authority',
-  executionHostIdentity: '["orca-browser-execution-host-storage",1,"authority","env-a"]'
+  executionHostIdentity: '["topo-browser-execution-host-storage",1,"authority","env-a"]'
 }
 
 function legacyIdentityFor(runtimeId: string): typeof identity {
   return {
-    orcaProfileId,
+    topoProfileId,
     browserProfileId,
     authorityConnectionIdentity: `paired-runtime:authority-with-${runtimeId}`,
-    executionHostIdentity: `["orca-browser-execution-host-storage",1,"native","${runtimeId}"]`
+    executionHostIdentity: `["topo-browser-execution-host-storage",1,"native","${runtimeId}"]`
   }
 }
 
 function createStorePath(): string {
   return join(
-    realpathSync(mkdtempSync(join(realpathSync(tmpdir()), 'orca-browser-partition-migration-'))),
+    realpathSync(mkdtempSync(join(realpathSync(tmpdir()), 'topo-browser-partition-migration-'))),
     'bindings.json'
   )
 }

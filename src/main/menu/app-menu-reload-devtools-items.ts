@@ -35,7 +35,7 @@ export function createAppMenuReloadAndDevToolsItems(options: {
       click: () => reloadFocusedWindow(true)
     },
     {
-      // Browser pages use Orca's dock lifecycle; other contents retain Electron's native routing.
+      // Browser pages use Topo's dock lifecycle; other contents retain Electron's native routing.
       label: translateMain('menu.toggleDevTools', 'Toggle Developer Tools'),
       accelerator: nativeDevToolsItem.accelerator ?? undefined,
       click: (_item, window, event) => {

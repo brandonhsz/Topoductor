@@ -45,7 +45,7 @@ export type TerminalCreateOptions = {
   /** Override Settings arguments for this agent (null means none); plan input is not a caller-supplied command and does not take launch ownership. */
   agentArgs?: string | null
   extraAgentArgs?: string
-  /** Main-internal: Orca, not a user, types into this `startupAgent` once it starts. */
+  /** Main-internal: Topo, not a user, types into this `startupAgent` once it starts. */
   suppressStartupUpdatePrompt?: boolean
   /** Host-only runtime fact used to quote this launch; spawn must take its shell from that same fact, never client input. */
   launchRuntime?: AgentLaunchRuntime

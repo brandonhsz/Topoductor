@@ -52,7 +52,7 @@ function findRecipeRemovalOwner(
     params.worktree.slice(3),
     params.hostId
   )
-  // Without a serving Orca host there is nobody to ask for Git removal; SSH-only workspaces keep the ordinary path.
+  // Without a serving Topo host there is nobody to ask for Git removal; SSH-only workspaces keep the ordinary path.
   return owner?.runtimeEnvironmentId ? owner : undefined
 }
 
@@ -71,7 +71,7 @@ function recipeDestroys(runtime: EphemeralVmRuntimeRecord): boolean {
   if (runtime.cleanupDisabled === true || runtime.recipe?.destroyDisabled === true) {
     return false
   }
-  // Older records carry no recipe snapshot; the destroy then reads orca.yaml, so assume it has one.
+  // Older records carry no recipe snapshot; the destroy then reads topo.yaml, so assume it has one.
   return runtime.recipe ? Boolean(runtime.recipe.destroy) : true
 }
 
@@ -143,7 +143,7 @@ function rpcFailure(response: Extract<RuntimeRpcResponse<unknown>, { ok: false }
 }
 
 /**
- * The provisioning host runs the destroy; the environment's own Orca still owns Git and process
+ * The provisioning host runs the destroy; the environment's own Topo still owns Git and process
  * teardown. Only a positive answer from the environment counts as removed, and the destroy runs
  * only once its last workspace is gone.
  */
@@ -171,7 +171,7 @@ export async function removeRecipeWorkspace(
   let checkoutResult: Record<string, unknown> = {}
   // A provisioned root is the VM's primary checkout, protected from ordinary Git deletion.
   if (!isProvisionedRootRuntime(runtime)) {
-    // The checkout lives on the environment's own Orca, which has to be awake to remove it.
+    // The checkout lives on the environment's own Topo, which has to be awake to remove it.
     if (runtime.status === 'suspended') {
       throw new Error(
         "This workspace's environment is asleep. Open the workspace to wake it, then delete it again."
@@ -190,14 +190,14 @@ export async function removeRecipeWorkspace(
     }
     if (response.ok) {
       const removed = Removed.parse(response.result)
-      // An older environment Orca answers on acceptance; wait for the checkout to disappear, since
+      // An older environment Topo answers on acceptance; wait for the checkout to disappear, since
       // afterwards the phone can no longer find the row to ask again.
       if (
         (removed.removing === true || removed.removed !== true) &&
         !(await waitForCheckoutGone(ports, environmentId, params.worktree, waitForRemoval))
       ) {
         throw new Error(
-          'The checkout is still being removed. Its environment was not destroyed; destroy it from Settings > Cloud VMs in Orca once removal finishes.'
+          'The checkout is still being removed. Its environment was not destroyed; destroy it from Settings > Cloud VMs in Topo once removal finishes.'
         )
       }
       checkoutResult = { ...removed, removed: true }
@@ -222,7 +222,7 @@ export async function removeRecipeWorkspace(
   if (cleaned.status !== 'cleaned') {
     throw new RecipeWorkspaceRemovalError(
       'recipe_host_destroy_failed',
-      `${cleaned.cleanupLastError ?? 'Environment destroy failed.'} The environment (runtime ${runtime.id}) may still be running; retry the cleanup from Settings > Cloud VMs in Orca.`,
+      `${cleaned.cleanupLastError ?? 'Environment destroy failed.'} The environment (runtime ${runtime.id}) may still be running; retry the cleanup from Settings > Cloud VMs in Topo.`,
       { runtimeId: runtime.id }
     )
   }

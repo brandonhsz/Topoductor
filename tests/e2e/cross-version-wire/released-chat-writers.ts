@@ -230,7 +230,7 @@ async function stopAndRemove(
   release: Released,
   clock: { at: number }
 ): Promise<void> {
-  const stopped = { provider: 'orca', clientMessageId: 'stopped-turn' } as const
+  const stopped = { provider: 'topo', clientMessageId: 'stopped-turn' } as const
   const scope = { fence: FENCE, turnScope: AGENT_JOURNAL_THREAD_SCOPE }
   await journal.appendItem(stopped, { kind: 'turn', turnId: 'stop-turn', state: 'running' }, scope)
   if (release.stopEvents) {
@@ -258,7 +258,7 @@ async function stopAndRemove(
     journal.stopMarks.settled(settle)
     await journal.appendQueueResume(FENCE)
   }
-  const removed = { provider: 'orca', clientMessageId: 'removed-note' } as const
+  const removed = { provider: 'topo', clientMessageId: 'removed-note' } as const
   await journal.appendItem(removed, { kind: 'status', text: 'removed' }, scope)
   await journal.appendTombstone(removed, { fence: FENCE })
 }

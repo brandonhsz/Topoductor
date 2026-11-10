@@ -124,7 +124,7 @@ export const WorktreeCardMetaBadges = React.forwardRef<
       )}
       {cliProvenance && (
         <MetaIconBadge
-          label={t('auto.components.sidebar.WorktreeCardMeta.cliCreated', 'Created by Orca CLI')}
+          label={t('auto.components.sidebar.WorktreeCardMeta.cliCreated', 'Created by Topo CLI')}
         >
           <SquareTerminal className="text-muted-foreground" />
         </MetaIconBadge>

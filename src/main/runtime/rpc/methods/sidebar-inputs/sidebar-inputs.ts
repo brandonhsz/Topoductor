@@ -9,7 +9,7 @@ import { SetCollapsedParams } from '../../../../../shared/rpc-contract/workspace
 import { setCollapsedSection } from '../../../sidebar-inputs/workspace-view-collapse-writes'
 import { ClientWorkspaceViewParams } from '../../../../../shared/rpc-contract/client-workspace-view-params'
 
-// Registered only with ORCA_SIDEBAR_INPUTS=main, so the producers below always exist.
+// Registered only with TOPO_SIDEBAR_INPUTS=main, so the producers below always exist.
 
 export const SIDEBAR_INPUT_METHODS = [
   defineMethod({

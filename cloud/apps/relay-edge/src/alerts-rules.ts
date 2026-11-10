@@ -15,7 +15,7 @@ export type AlertsEnv = {
   // reconnect-surge fires at max(3x the previous window, this) control hellos. Default 50.
   RECONNECT_SURGE_MIN?: string
   // cloudflare-errors (alerts-cloudflare.ts): skipped while CF_GRAPHQL_TOKEN (secret, Account
-  // Analytics: Read) is unset. Script defaults to 'orca-relay-edge'; CF_DO_NAMESPACE_IDS
+  // Analytics: Read) is unset. Script defaults to 'topo-relay-edge'; CF_DO_NAMESPACE_IDS
   // (comma-separated) adds the edge's Durable Object namespaces. Fires above CF_ERRORS_MIN (20)
   // errors and CF_ERRORS_PCT (1) percent of invocations per window.
   CF_GRAPHQL_TOKEN?: string

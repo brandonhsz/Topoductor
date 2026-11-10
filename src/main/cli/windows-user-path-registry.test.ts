@@ -38,12 +38,12 @@ describe('WindowsUserPathRegistryReader', () => {
   ])('preserves whether registry type $type expands variables', async ({ type, expandable }) => {
     const reader = new WindowsUserPathRegistryReader({
       platform: 'win32',
-      registryLoader: async () => registryModule('%LOCALAPPDATA%\\Orca', type)
+      registryLoader: async () => registryModule('%LOCALAPPDATA%\\Topo', type)
     })
 
     await expect(reader.read()).resolves.toEqual({
       state: 'success',
-      value: '%LOCALAPPDATA%\\Orca',
+      value: '%LOCALAPPDATA%\\Topo',
       expandable
     })
   })

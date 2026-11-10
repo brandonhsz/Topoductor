@@ -16,7 +16,7 @@ import { worktreeIdsEqual } from '../../../../shared/worktree/id'
 import type { AgentSessionRecordReader } from '../addressing/session-lineage/structured-session-lineage'
 import { createOrchestrationProjectionScope } from './runtime-agent-orchestration-scope'
 import { isRecentPresentationDispatch } from '../db/dispatch-context/dispatch-lookup'
-import { currentRunCoordinatorOrcaSessionId } from '../db/runs/run-coordinator-orca-session'
+import { currentRunCoordinatorTopoSessionId } from '../db/runs/run-coordinator-topo-session'
 import type { DispatchContextRow } from '../db/orchestration-records'
 import type { PtyPaneOf } from '../../terminal/surface/pty-pane-query'
 import {
@@ -247,10 +247,10 @@ export class RuntimeAgentOrchestrationProjection {
       sameCreatorPane
         ? (creatorPaneHandle ?? undefined)
         : undefined
-    const selfSession = dispatch.assignee_orca_session_id
+    const selfSession = dispatch.assignee_topo_session_id
     const selfPane = selfSession ? scope.resolve(selfSession) : paneKey
     const coordinatorSession =
-      owningRun?.legacy === 0 ? currentRunCoordinatorOrcaSessionId(owningRun) : null
+      owningRun?.legacy === 0 ? currentRunCoordinatorTopoSessionId(owningRun) : null
     // Why: a chat party nests by its visible row; its handle and minted pane key match no row.
     const coordinator: { handle?: string; paneKey?: string } = coordinatorSession
       ? { paneKey: scope.resolve(coordinatorSession) }
@@ -259,8 +259,8 @@ export class RuntimeAgentOrchestrationProjection {
           owningRun?.legacy === 0 ? owningRun.coordinator_pane_key : null
         )
     const creatorSession =
-      dispatch.creator_orca_session_id && dispatch.creator_orca_session_id !== selfSession
-        ? dispatch.creator_orca_session_id
+      dispatch.creator_topo_session_id && dispatch.creator_topo_session_id !== selfSession
+        ? dispatch.creator_topo_session_id
         : null
     const creator: { handle?: string; paneKey?: string } | undefined = creatorSession
       ? { paneKey: scope.resolve(creatorSession) }

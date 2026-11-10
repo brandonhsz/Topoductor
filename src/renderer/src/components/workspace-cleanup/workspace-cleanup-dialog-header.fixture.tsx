@@ -97,7 +97,7 @@ export const selected = defineFixture({ width: 900, render: () => <Top selected=
 
 export const scanningSizes = defineFixture({
   width: 900,
-  render: () => <Top scanning query="orca" />
+  render: () => <Top scanning query="topo" />
 })
 
 export const sizesMeasured = defineFixture({ width: 900, render: () => <Top sizes={false} /> })

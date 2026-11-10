@@ -110,7 +110,7 @@ function run(entry, argv, env) {
   if (result.error) {
     if (result.error.code === 'ETIMEDOUT') {
       throw new Error(
-        `orca ${argv.join(' ')} did not exit within ${RUN_TIMEOUT_MS} ms — it reached a blocking command`
+        `topo ${argv.join(' ')} did not exit within ${RUN_TIMEOUT_MS} ms — it reached a blocking command`
       )
     }
     throw result.error
@@ -124,7 +124,7 @@ function run(entry, argv, env) {
 
 // Require identical bytes; empty user-data dirs make runtime-dependent cases deterministically report not running.
 function buildCases(isolatedUserData) {
-  const isolated = { ORCA_USER_DATA_PATH: isolatedUserData }
+  const isolated = { TOPO_USER_DATA_PATH: isolatedUserData }
   const cases = [
     // Paths that must never load the runtime client at all.
     [[], {}],
@@ -135,7 +135,7 @@ function buildCases(isolatedUserData) {
     [['worktree', '--help'], {}],
     [['help', 'no-such-command'], {}],
     [['no-such-command'], {}],
-    [['no-such-command'], { ORCA_PAIRING_CODE: 'garbage' }],
+    [['no-such-command'], { TOPO_PAIRING_CODE: 'garbage' }],
     [['wrktree', 'list'], {}],
     [['agent-context'], {}],
     [['agent-context', '--json'], {}],
@@ -148,18 +148,18 @@ function buildCases(isolatedUserData) {
     [['status', '--pairing-code', 'x', '--environment', 'y', '--json'], isolated],
     [['status', '--pairing-code', 'not-a-pairing-code'], isolated],
     [['status', '--pairing-code', 'not-a-pairing-code', '--json'], isolated],
-    [['status', '--pairing-code', 'orca://pair?code=zzzz'], isolated],
+    [['status', '--pairing-code', 'topo://pair?code=zzzz'], isolated],
     [['status', '--environment', 'no-such-environment'], isolated],
     [['status', '--environment', 'no-such-environment', '--json'], isolated],
     [['worktree', 'list', '--environment', 'no-such-environment', '--json'], isolated],
     // The env-var fallback must stay live for non-suppressed commands...
-    [['status', '--json'], { ...isolated, ORCA_PAIRING_CODE: 'not-a-pairing-code' }],
-    [['status', '--json'], { ...isolated, ORCA_REMOTE_PAIRING: 'not-a-pairing-code' }],
-    [['status', '--json'], { ...isolated, ORCA_ENVIRONMENT: 'no-such-environment' }],
-    // Keep suppression for local-only groups. Do not invoke agent hooks on/off: they modify real ~/.claude configuration outside ORCA_USER_DATA_PATH.
-    [['environment', 'list', '--json'], { ...isolated, ORCA_ENVIRONMENT: 'no-such-environment' }],
-    [['environment', 'list', '--json'], { ...isolated, ORCA_PAIRING_CODE: 'not-a-pairing-code' }],
-    [['agent-context', '--json'], { ...isolated, ORCA_PAIRING_CODE: 'not-a-pairing-code' }],
+    [['status', '--json'], { ...isolated, TOPO_PAIRING_CODE: 'not-a-pairing-code' }],
+    [['status', '--json'], { ...isolated, TOPO_REMOTE_PAIRING: 'not-a-pairing-code' }],
+    [['status', '--json'], { ...isolated, TOPO_ENVIRONMENT: 'no-such-environment' }],
+    // Keep suppression for local-only groups. Do not invoke agent hooks on/off: they modify real ~/.claude configuration outside TOPO_USER_DATA_PATH.
+    [['environment', 'list', '--json'], { ...isolated, TOPO_ENVIRONMENT: 'no-such-environment' }],
+    [['environment', 'list', '--json'], { ...isolated, TOPO_PAIRING_CODE: 'not-a-pairing-code' }],
+    [['agent-context', '--json'], { ...isolated, TOPO_PAIRING_CODE: 'not-a-pairing-code' }],
     // Runtime-unavailable reporting (RuntimeClientError formatting).
     [['status'], isolated],
     [['status', '--json'], isolated],
@@ -183,7 +183,7 @@ function buildCases(isolatedUserData) {
     '--pairing-code',
     '--environment',
     '--worktree',
-    'orca://pair?code=!!!',
+    'topo://pair?code=!!!',
     '',
     '-',
     '--',
@@ -331,7 +331,7 @@ const MUTATING_TOKENS = [
 
 const UNSAFE_TOKENS = new Map([
   ...FOREGROUND_TOKENS.map((token) => [token, 'runs in the foreground or spawns a process']),
-  ...MUTATING_TOKENS.map((token) => [token, 'can write outside ORCA_USER_DATA_PATH'])
+  ...MUTATING_TOKENS.map((token) => [token, 'can write outside TOPO_USER_DATA_PATH'])
 ])
 
 // Deny lists miss new verbs (serve once escaped); require explicit read-only allowlisting for every pool token too.
@@ -353,7 +353,7 @@ const READ_ONLY_FUZZ_TOKENS = new Set([
   '--pairing-code',
   '--environment',
   '--worktree',
-  'orca://pair?code=!!!',
+  'topo://pair?code=!!!',
   '',
   '-',
   '--',

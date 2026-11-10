@@ -3,7 +3,7 @@ import { cpSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { availableParallelism, totalmem } from 'node:os'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { measurePreflightCommand } from './preflight-benchmark-command.mjs'
 import { buildCounterbalancedSchedule } from '../../performance/measurement/counterbalanced-benchmark-schedule.mjs'
 import { summarizeBenchmarkSamples } from '../../performance/measurement/benchmark-sample-summary.mjs'
@@ -15,7 +15,7 @@ if (!['smoke', 'sync-spawn', 'typecheck'].includes(comparison) || process.argv.l
 const root = fileURLToPath(new URL('../../../..', import.meta.url))
 const output = path.join(root, '.build/preflight-benchmark')
 mkdirSync(output, { recursive: true })
-const env = { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' }
+const env = { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' }
 const report = {
   sourceSha: process.env.GITHUB_SHA ?? null,
   comparison,
@@ -60,9 +60,9 @@ function baselineScriptPath(file) {
 const baselineCurrentDependencies = {
   './ratchet-baseline.mjs': 'config/scripts/static-analysis/ratchet-baseline/ratchet-baseline.mjs',
   './pinned-bun-executable.mjs': 'config/scripts/tool-invocation/pinned-bun-executable.mjs',
-  './build-orcad-node.mjs': 'config/scripts/orcad-distribution/prebuilds/build-orcad-node.mjs',
+  './build-topod-node.mjs': 'config/scripts/topod-distribution/prebuilds/build-topod-node.mjs',
   './server-build-target.mjs':
-    'config/scripts/orcad-distribution/prebuilds/server-build-target.mjs',
+    'config/scripts/topod-distribution/prebuilds/server-build-target.mjs',
   './tsrs-typecheck-compiler.mjs':
     'config/scripts/typecheck/project-execution/tsrs-typecheck-compiler.mjs',
   './test-only-source-path.mjs':
@@ -194,18 +194,18 @@ try {
         ['config/scripts/native-build/node-addons/ensure-native-runtime.mjs', '--runtime=node']
       ],
       ['pnpm', ['run', 'build:cli']],
-      ['pnpm', ['run', 'build:orcad']],
-      [process.execPath, [baselineFile, '--target', 'orcad']]
+      ['pnpm', ['run', 'build:topod']],
+      [process.execPath, [baselineFile, '--target', 'topod']]
     ]
     writeFileSync(
       runnerFile,
-      `import { runProcessSync } from '@orca/process-host';
+      `import { runProcessSync } from '@topo/process-host';
 for (const [program, args] of ${JSON.stringify(steps)}) {
   const result = runProcessSync({ program, args, cwd: ${JSON.stringify(root)}, stdio: 'inherit', timeoutMs: null });
   if (result.code !== 0 || result.signal) process.exit(result.code || 1);
 }\n`
     )
-    await command('pnpm', ['run', 'build:orcad'], 'critical-path-smoke-warmup')
+    await command('pnpm', ['run', 'build:topod'], 'critical-path-smoke-warmup')
     report.parity =
       'Both clients must pass pairing, worktree, PTY and execution-host CLI round trips.'
   } else {
@@ -224,7 +224,7 @@ for (const [program, args] of ${JSON.stringify(steps)}) {
         result =
           arm === 'baseline'
             ? await command(process.execPath, [runnerFile], `smoke-${pair}-${arm}`)
-            : await command('pnpm', ['run', 'smoke:orcad-terminal'], `smoke-${pair}-${arm}`)
+            : await command('pnpm', ['run', 'smoke:topod-terminal'], `smoke-${pair}-${arm}`)
         for (const marker of [
           'terminal round trip OK',
           'execution host CLI round trip OK',

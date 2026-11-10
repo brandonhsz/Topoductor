@@ -1,6 +1,6 @@
 import { parseWorkspaceKey, worktreeWorkspaceKey } from '../../../shared/workspace-scope'
 import type { FolderWorkspace } from '../../../shared/folder-workspaces/folder-workspace-types'
-import type { OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree } from '../terminal/launch/terminal-workspace-scope'
+import type { TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree } from '../terminal/launch/terminal-workspace-scope'
 import type { RuntimeWorktreeListResult } from '../../../shared/runtime-worktree-contracts'
 import type { DetectedWorktreeListResult, Worktree } from '../../../shared/worktree/types'
 import type { Repo } from '../../../shared/repo-types'
@@ -12,7 +12,7 @@ import type { TerminalWorkspaceLaunchScope } from '../orchestration/terminal-aut
 import type { ExecutionHostId } from '../../../shared/execution-host'
 import { RuntimeWorkspacePortOperations } from './ports/runtime-workspace-port-operations'
 const DEFAULT_WORKTREE_LIST_LIMIT = 200
-export abstract class OrcaRuntimeWithListManagedWorktrees extends RuntimeWorkspacePortOperations {
+export abstract class TopoRuntimeWithListManagedWorktrees extends RuntimeWorkspacePortOperations {
   protected abstract resolveFolderWorkspaceSelector(
     selector: string,
     requiredHostId?: ExecutionHostId
@@ -20,10 +20,10 @@ export abstract class OrcaRuntimeWithListManagedWorktrees extends RuntimeWorkspa
 
   protected abstract resolveTerminalWorkspaceLaunchTarget(
     ...args: Parameters<
-      OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['resolveTerminalWorkspaceLaunchTarget']
+      TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['resolveTerminalWorkspaceLaunchTarget']
     >
   ): ReturnType<
-    OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['resolveTerminalWorkspaceLaunchTarget']
+    TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['resolveTerminalWorkspaceLaunchTarget']
   >
 
   listManagedWorktrees(

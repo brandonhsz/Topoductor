@@ -12,7 +12,7 @@ afterEach(() => {
 })
 
 function resourcesWith(files: string[]): string {
-  const resources = mkdtempSync(join(tmpdir(), 'orca-serve-speech-'))
+  const resources = mkdtempSync(join(tmpdir(), 'topo-serve-speech-'))
   roots.push(resources)
   for (const file of files) {
     const path = join(resources, 'node_modules', file)
@@ -23,14 +23,14 @@ function resourcesWith(files: string[]): string {
 }
 
 describe("finding the app's speech engines (#31174)", () => {
-  it('hands orcad the node_modules a packaged app ships its sherpa recognizer in', () => {
+  it('hands topod the node_modules a packaged app ships its sherpa recognizer in', () => {
     const resources = resourcesWith(['sherpa-onnx-darwin-x64/sherpa-onnx.node'])
     expect(findAppSpeechRecognizerDir(join(resources, 'app.asar.unpacked'), 'darwin', 'x64')).toBe(
       join(resources, 'node_modules')
     )
   })
 
-  it('hands orcad the node_modules holding transcribe-cpp and its native package', () => {
+  it('hands topod the node_modules holding transcribe-cpp and its native package', () => {
     const resources = resourcesWith([
       'transcribe-cpp/package.json',
       '@transcribe-cpp/linux-arm64-cpu-vulkan/contract.json'
@@ -51,8 +51,8 @@ describe("finding the app's speech engines (#31174)", () => {
     ).toBeUndefined()
   })
 
-  // A loaded addon is locked on Windows; orcad holding the app's copy would block app updates.
-  it('never hands orcad the engines on Windows', () => {
+  // A loaded addon is locked on Windows; topod holding the app's copy would block app updates.
+  it('never hands topod the engines on Windows', () => {
     const resources = resourcesWith(['sherpa-onnx-win-x64/sherpa-onnx.node'])
     expect(
       findAppSpeechRecognizerDir(join(resources, 'app.asar.unpacked'), 'win32', 'x64')

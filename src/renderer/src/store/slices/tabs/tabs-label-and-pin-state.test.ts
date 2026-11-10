@@ -6,7 +6,7 @@ import { makeOpenFile } from '../editor/types/open-file.test-fixture'
 import { drawTabsFromMain } from './tabs-drawn-from-main.test-fixture'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
 import { withLayoutOwnerTabProps } from '@/components/tab-bar/tab-bar-layout-owner-props'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 
 vi.mock('sonner', () => ({ toast: { info: vi.fn(), success: vi.fn(), error: vi.fn() } }))
 
@@ -60,7 +60,7 @@ vi.mock('@/runtime/workspace-layout/frames/runtime-layout-client', async (import
         try {
           const pin = (): void => store.getState().pinTab(tab.id)
           // A layout-owner build pins through main first, as the tab bar does; then main promotes.
-          if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+          if (TOPO_LAYOUT_OWNER_IS_MAIN) {
             withLayoutOwnerTabProps(
               {
                 togglePinned: pin,
@@ -81,8 +81,8 @@ vi.mock('@/runtime/workspace-layout/frames/runtime-layout-client', async (import
 
           const updated = store.getState().unifiedTabsByWorktree[WT][0]
           expect(updated.isPinned).toBe(true)
-          expect(updated.isPreview).toBe(ORCA_LAYOUT_OWNER_IS_MAIN ? undefined : false)
-          if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+          expect(updated.isPreview).toBe(TOPO_LAYOUT_OWNER_IS_MAIN ? undefined : false)
+          if (TOPO_LAYOUT_OWNER_IS_MAIN) {
             expect(layoutApplyTestTransport.sentOfType('promotePreviewTab')).toEqual([
               { type: 'promotePreviewTab', workspace: WT, tabId: tab.id }
             ])

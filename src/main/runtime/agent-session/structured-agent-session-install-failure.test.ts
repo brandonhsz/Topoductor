@@ -52,7 +52,7 @@ function install(): ReturnType<typeof ensureStructuredAgentSessionHost> {
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-structured-install-failure-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-structured-install-failure-'))
 })
 
 afterEach(async () => {

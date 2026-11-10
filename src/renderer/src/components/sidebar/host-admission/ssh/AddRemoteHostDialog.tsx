@@ -16,7 +16,7 @@ import { AddRemoteHostServerFormPanel } from './AddRemoteHostServerFormPanel'
 import { AddWslHostDialogBody } from '../wsl/AddWslHostDialogBody'
 import { remoteServerPairingFailureMessage } from '@/lib/remote-server-pairing-error-copy'
 import {
-  addAllSshConfigHostsToOrca,
+  addAllSshConfigHostsToTopo,
   loadSshConfigHostsForPicker,
   prefillFormFromSshConfigHost,
   saveNewSshHostFromForm
@@ -214,10 +214,10 @@ export function AddRemoteHostDialog({
     )
   }
 
-  const addAllConfigHostsToOrca = async () => {
+  const addAllConfigHostsToTopo = async () => {
     setIsBulkImporting(true)
     try {
-      const result = await addAllSshConfigHostsToOrca({
+      const result = await addAllSshConfigHostsToTopo({
         ssh: window.api.ssh,
         recordSshRepoReadoptions,
         setSshTargetsMetadata,
@@ -342,7 +342,7 @@ export function AddRemoteHostDialog({
               onQueryChange={(query) => void loadSshConfigHosts(query)}
               onRetry={() => void loadSshConfigHosts(configSearchQuery.current, { refresh: true })}
               onBack={leaveSshConfigPicker}
-              onAddAllToOrca={() => void addAllConfigHostsToOrca()}
+              onAddAllToTopo={() => void addAllConfigHostsToTopo()}
             />
           </div>
         ) : renderMode === 'wsl' ? (

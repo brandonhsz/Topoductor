@@ -14,7 +14,7 @@ export function tabsOf(tabs: TestElement, elements: readonly TestElement[]): Tes
   )
 }
 
-/** The tab Orca shows: the value when one of the tabs has it, else the first enabled tab. */
+/** The tab Topo shows: the value when one of the tabs has it, else the first enabled tab. */
 export function activeTab(
   tabs: TestElement,
   elements: readonly TestElement[],
@@ -24,7 +24,7 @@ export function activeTab(
   return items.find((tab) => tab.props.value === value) ?? items.find((tab) => !tab.disabled)
 }
 
-/** What Orca draws: no content of unselected tabs or closed Collapsibles. */
+/** What Topo draws: no content of unselected tabs or closed Collapsibles. */
 export function visibleElements(
   elements: readonly TestElement[],
   valueOf: (element: TestElement) => ControlValue

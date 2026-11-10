@@ -1,4 +1,4 @@
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { randomUUID } from 'node:crypto'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { createServer } from 'node:net'
@@ -9,10 +9,10 @@ import { WINDOWS_PIPE_ACCESS_JS } from './ssh-host-relay-windows-inventory'
 
 describe('Windows relay pipe probe lifetime', () => {
   it('lets the actual Node probe exit after answering live and missing pipes', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-pipe-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-pipe-'))
     const socketPath =
       process.platform === 'win32'
-        ? `\\\\.\\pipe\\orca-test-${randomUUID()}`
+        ? `\\\\.\\pipe\\topo-test-${randomUUID()}`
         : join(dir, 'probe.sock')
     const missingPath = `${socketPath}-missing`
     const server = createServer((socket) => socket.on('error', () => socket.destroy()))

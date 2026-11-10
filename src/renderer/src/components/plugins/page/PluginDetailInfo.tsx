@@ -136,7 +136,7 @@ export function PluginDetailInfo({
               label={t('auto.components.settings.PluginDetailPage.requires', 'Requires')}
               value={t(
                 'auto.components.settings.PluginDetailPage.requiresValue',
-                'Orca {{value0}} or later',
+                'Topo {{value0}} or later',
                 { value0: entry.minimumOrca }
               )}
             />

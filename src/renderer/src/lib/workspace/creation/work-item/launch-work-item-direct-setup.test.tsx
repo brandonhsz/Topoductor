@@ -43,7 +43,7 @@ describe('direct work item setup preparation', () => {
       useAppStore.setState({ activeModal, modalData })
     )
     useAppStore.setState({
-      trustedOrcaHooks: { 'repo-1': { all: { approvedAt: 1 } } },
+      trustedTopoHooks: { 'repo-1': { all: { approvedAt: 1 } } },
       repos: [
         {
           ...useAppStore.getState().repos[0],
@@ -145,13 +145,13 @@ describe('direct work item setup preparation', () => {
   )
 
   it('aborts the actual trust prompt, releases its queue, and permits a fresh launch', async () => {
-    useAppStore.setState({ trustedOrcaHooks: {} })
+    useAppStore.setState({ trustedTopoHooks: {} })
     hostMocks.checkRuntimeHooks.mockResolvedValue({ hasHooks: true, hooks })
     const abort = new AbortController()
     const launch = launchWorkItemDirect({ ...args, signal: abort.signal })
     await chooseSetup()
     await vi.waitFor(() =>
-      expect(useAppStore.getState().activeModal).toBe('confirm-orca-yaml-hooks')
+      expect(useAppStore.getState().activeModal).toBe('confirm-topo-yaml-hooks')
     )
     const lateResolve = useAppStore.getState().modalData.onResolve
     abort.abort()
@@ -161,7 +161,7 @@ describe('direct work item setup preparation', () => {
     const fresh = launchWorkItemDirect(args)
     await chooseSetup()
     await vi.waitFor(() =>
-      expect(useAppStore.getState().activeModal).toBe('confirm-orca-yaml-hooks')
+      expect(useAppStore.getState().activeModal).toBe('confirm-topo-yaml-hooks')
     )
     const successor = useAppStore.getState().modalData
     if (typeof lateResolve !== 'function') {
@@ -179,13 +179,13 @@ describe('direct work item setup preparation', () => {
   })
 
   it('keeps a replacement modal when the evicted actual trust attempt later aborts', async () => {
-    useAppStore.setState({ trustedOrcaHooks: {} })
+    useAppStore.setState({ trustedTopoHooks: {} })
     hostMocks.checkRuntimeHooks.mockResolvedValue({ hasHooks: true, hooks })
     const abort = new AbortController()
     const launch = launchWorkItemDirect({ ...args, signal: abort.signal })
     await chooseSetup()
     await vi.waitFor(() =>
-      expect(useAppStore.getState().activeModal).toBe('confirm-orca-yaml-hooks')
+      expect(useAppStore.getState().activeModal).toBe('confirm-topo-yaml-hooks')
     )
     useAppStore.getState().openModal('quick-open', { successor: true })
     abort.abort()

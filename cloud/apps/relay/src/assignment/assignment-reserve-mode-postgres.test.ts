@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { ASSIGNMENT_LIMITS } from '@orca-cloud/relay-contract/assignment-invariants'
+import { ASSIGNMENT_LIMITS } from '@topo-cloud/relay-contract/assignment-invariants'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { CELL_ADMIT_EFFECTIVE_FRESH_MS, RelayAssignmentStore } from './assignment-store.js'
 import type { RelayCellConfig } from '../config.js'
@@ -7,7 +7,7 @@ import { openRelayDatabase, type RelayDatabase } from '../database/database.js'
 
 // Exercise admit-mode SQL, locked open-flow checks and live-reserve pins on PostgreSQL, not SQLite alone.
 
-const databaseUrl = process.env.ORCA_RELAY_TEST_POSTGRES_URL
+const databaseUrl = process.env.TOPO_RELAY_TEST_POSTGRES_URL
 const describePostgres = databaseUrl ? describe : describe.skip
 
 const run = randomUUID().slice(0, 8)

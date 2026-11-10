@@ -95,7 +95,7 @@ window.asyncRead = function () {
 describe('plugin frame guest clipboard under Electron', () => {
   // Why 60s: a real Electron app boots and loads the guest.
   it('copies on a user gesture only, and never through the async Clipboard API', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-frame-clipboard-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-frame-clipboard-'))
     roots.push(root)
     const pluginRoot = join(root, 'plugin')
     mkdirSync(pluginRoot)

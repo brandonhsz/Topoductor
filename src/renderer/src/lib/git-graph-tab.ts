@@ -29,7 +29,7 @@ import {
   type ExecutionHostId
 } from '../../../shared/execution-host'
 
-export const GIT_GRAPH_REFRESH_EVENT = 'orca:git-graph-refresh'
+export const GIT_GRAPH_REFRESH_EVENT = 'topo:git-graph-refresh'
 
 type ScopeState = WorktreeOperationRouteState &
   Pick<ReturnType<typeof useAppStore.getState>, 'repos' | 'worktreesByRepo'>
@@ -114,7 +114,7 @@ export function gitGraphUpdateMessage(worktreeId: string, t: Translate = transla
     scope?.target.kind === 'environment'
       ? state.runtimeEnvironments?.find((entry) => entry.id === environmentId)
       : undefined
-  return t('gitGraph.updateHost', 'Update Orca on {{host}} to open the Git Graph', {
+  return t('gitGraph.updateHost', 'Update Topo on {{host}} to open the Git Graph', {
     host: environment?.name ?? scope?.route.executionHostId ?? ''
   })
 }

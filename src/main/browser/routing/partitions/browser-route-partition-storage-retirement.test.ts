@@ -5,7 +5,7 @@ import { retireBrowserRoutePartitionStorageForEnvironment } from './browser-rout
 import { PairedRuntimeBrowserClientHostComposition } from '../../client-hosts/lifecycle/paired-runtime-browser-client-host-composition'
 import { PairedRuntimeBrowserClientHostRegistry } from '../../client-hosts/lifecycle/paired-runtime-browser-client-host-registry'
 
-const partition = `persist:orca-browser-v1-${'a'.repeat(64)}`
+const partition = `persist:topo-browser-v1-${'a'.repeat(64)}`
 
 const leaseAuthority: BrowserClientHostLeaseAuthority = {
   authorityRuntimeId: 'runtime-a',

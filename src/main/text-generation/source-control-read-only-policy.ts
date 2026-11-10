@@ -52,9 +52,9 @@ async function recipeFile(
       distro,
       cwd,
       loginPath: 'preferred',
-      ...(home !== undefined ? { env: { ORCA_TEXT_TASK_HOME: home } } : {}),
+      ...(home !== undefined ? { env: { TOPO_TEXT_TASK_HOME: home } } : {}),
       script:
-        'if [ "${ORCA_TEXT_TASK_HOME+x}" ]; then HOME=$ORCA_TEXT_TASK_HOME; fi; case "$1" in "~/"*) file=$HOME/${1#??} ;; *) file=$1 ;; esac; cat -- "$file"',
+        'if [ "${TOPO_TEXT_TASK_HOME+x}" ]; then HOME=$TOPO_TEXT_TASK_HOME; fi; case "$1" in "~/"*) file=$HOME/${1#??} ;; *) file=$1 ;; esac; cat -- "$file"',
       args: [file],
       timeoutMs: 10_000,
       maxOutputBytes: 1024 * 1024
@@ -160,13 +160,13 @@ async function antigravityPolicy(
 }
 
 function dshPolicy(plan: CommitMessagePlan): CommitMessagePlan {
-  const plugin = `export const inject = ['tools']\nexport function apply(ctx) {\n  ctx.tools.guard(exec => exec.name === 'read' ? undefined : 'This text task permits only file reads')\n  ctx.provide('orcaTextReadPolicy', Object.freeze({}))\n}\n`
+  const plugin = `export const inject = ['tools']\nexport function apply(ctx) {\n  ctx.tools.guard(exec => exec.name === 'read' ? undefined : 'This text task permits only file reads')\n  ctx.provide('topoTextReadPolicy', Object.freeze({}))\n}\n`
   const patch = JSON.stringify([
     { id: 'tools', config: { mode: 'native' } },
     {
-      insert: [{ id: 'orca-text-read-policy', name: `${TEXT_TASK_DIRECTORY}/text-task-policy.mjs` }]
+      insert: [{ id: 'topo-text-read-policy', name: `${TEXT_TASK_DIRECTORY}/text-task-policy.mjs` }]
     },
-    { id: 'headless-runner', inject: ['headlessStartup', 'orcaTextReadPolicy'] }
+    { id: 'headless-runner', inject: ['headlessStartup', 'topoTextReadPolicy'] }
   ])
   // Launcher overlays must precede its task operand and follow the user's overlays.
   const args = [...plan.args]

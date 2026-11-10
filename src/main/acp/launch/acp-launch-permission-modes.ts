@@ -1,7 +1,7 @@
 import type { AgentChatPermissionMode } from '../../../shared/agent-launch/permissions/agent-chat-permission-mode'
 import type { AcpLaunchSpec } from './acp-launch-contract'
 
-/** The session modes a launch reports as Orca's: a full-access launch holds only that mode. */
+/** The session modes a launch reports as Topo's: a full-access launch holds only that mode. */
 export function acpLaunchPermissionModes(
   spec: Pick<AcpLaunchSpec, 'permissionModeConfig'>,
   fullAccess: boolean

@@ -67,7 +67,7 @@ export function findPluginCommandForKeybinding(
       continue
     }
     const definition = pluginCommandKeybindingDefinition(command)
-    // Why: plugin chords obey the terminal shortcut policy exactly as Orca's own app shortcuts do (#15642).
+    // Why: plugin chords obey the terminal shortcut policy exactly as Topo's own app shortcuts do (#15642).
     if (!keybindingIsActiveInContext(definition, options)) {
       continue
     }

@@ -4,7 +4,7 @@ import { AutomationsSettingsPane } from '../automations/AutomationsSettingsPane'
 import { GeneralPane } from '../general/GeneralPane'
 import { IntegrationsPane } from '../integrations/IntegrationsPane'
 import { MobileSettingsPane } from '../mobile/MobileSettingsPane'
-import { OrcaAccountSettingsPane } from '../accounts/orca/OrcaAccountSettingsPane'
+import { TopoAccountSettingsPane } from '../accounts/topo/TopoAccountSettingsPane'
 import { SettingsSetupGuidePane } from '../setup-guide/SettingsSetupGuidePane'
 import { ShareSkillsSettingsPane } from '../skills/sharing/ShareSkillsSettingsPane'
 import { SettingsSection } from '../section-layout/SettingsSection'
@@ -12,22 +12,22 @@ import { translate } from '@/i18n/i18n'
 import type { Translate } from '@/i18n/use-translate'
 import type { SettingsRenderContext } from './settings-render-context'
 
-export function renderOrcaAccountSettingsSection(
+export function renderTopoAccountSettingsSection(
   context: SettingsRenderContext,
   t: Translate = translate
 ): React.JSX.Element | null {
   const { model, navigation, view } = context
   return model.showDesktopOnlySettings ? (
     <SettingsSection
-      id="orca-account"
-      title={t('auto.components.settings.orcaAccount.title', 'Orca Account')}
+      id="topo-account"
+      title={t('auto.components.settings.topoAccount.title', 'Topo Account')}
       description={t(
-        'auto.components.settings.orcaAccount.description',
-        'Share work instantly and reach your desktop from Orca Mobile wherever you are.'
+        'auto.components.settings.topoAccount.description',
+        'Share work instantly and reach your desktop from Topo Mobile wherever you are.'
       )}
-      searchEntries={navigation.getSectionSearchEntries('orca-account')}
+      searchEntries={navigation.getSectionSearchEntries('topo-account')}
     >
-      {view.isSectionMounted('orca-account') ? <OrcaAccountSettingsPane /> : null}
+      {view.isSectionMounted('topo-account') ? <TopoAccountSettingsPane /> : null}
     </SettingsSection>
   ) : null
 }
@@ -43,7 +43,7 @@ export function renderSetupGuideSettingsSection(
       title={t('auto.components.settings.Settings.6d119427ef', 'Onboarding checklist')}
       description={t(
         'auto.components.settings.Settings.6855b0f77d',
-        'Finish the core workflows that make Orca useful for parallel agent work.'
+        'Finish the core workflows that make Topo useful for parallel agent work.'
       )}
       searchEntries={navigation.getSectionSearchEntries('setup-guide')}
       bodyClassName="overflow-hidden rounded-none border-0 bg-transparent p-0 shadow-none"
@@ -211,7 +211,7 @@ export function renderSessionHistorySettingsSection(
       title={t('sessionHistory.settings.title', 'Agent Session Search')}
       description={t(
         'sessionHistory.settings.description',
-        'Search everything your agents have said and done, on this computer and on any paired Orca server.'
+        'Search everything your agents have said and done, on this computer and on any paired Topo server.'
       )}
       searchEntries={navigation.getSectionSearchEntries('session-history')}
     >

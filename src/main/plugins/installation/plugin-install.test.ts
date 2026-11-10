@@ -53,8 +53,8 @@ afterEach(async () => {
 
 describe('installPluginFromLocalPath', () => {
   it('restores the previous current pointer when lockfile publication fails', async () => {
-    const sourcePath = await tempRoot('orca-plugin-source-')
-    const pluginsDir = await tempRoot('orca-plugin-installs-')
+    const sourcePath = await tempRoot('topo-plugin-source-')
+    const pluginsDir = await tempRoot('topo-plugin-installs-')
     await writePluginSource(sourcePath)
     const first = await installPluginFromLocalPath({ pluginsDir, sourcePath, hostVersion: '1.4.0' })
     expect(first.ok).toBe(true)
@@ -78,9 +78,9 @@ describe('installPluginFromLocalPath', () => {
   })
 
   it('preserves legacy lock provenance during a same-content reinstall', async () => {
-    const firstSource = await tempRoot('orca-plugin-source-')
-    const secondSource = await tempRoot('orca-plugin-source-')
-    const pluginsDir = await tempRoot('orca-plugin-installs-')
+    const firstSource = await tempRoot('topo-plugin-source-')
+    const secondSource = await tempRoot('topo-plugin-source-')
+    const pluginsDir = await tempRoot('topo-plugin-installs-')
     await writePluginSource(firstSource)
     await writePluginSource(secondSource)
     const first = await installPluginFromLocalPath({
@@ -110,9 +110,9 @@ describe('installPluginFromLocalPath', () => {
   })
 
   it('serializes concurrent installs so lockfile entries are not lost', async () => {
-    const firstSource = await tempRoot('orca-plugin-source-')
-    const secondSource = await tempRoot('orca-plugin-source-')
-    const pluginsDir = await tempRoot('orca-plugin-installs-')
+    const firstSource = await tempRoot('topo-plugin-source-')
+    const secondSource = await tempRoot('topo-plugin-source-')
+    const pluginsDir = await tempRoot('topo-plugin-installs-')
     await writePluginSource(firstSource, { id: 'first' })
     await writePluginSource(secondSource, { id: 'second' })
 
@@ -130,9 +130,9 @@ describe('installPluginFromLocalPath', () => {
 
 describe('removeInstalledPlugin', () => {
   it('rejects a resolved uninstall target outside its root', async () => {
-    const pluginsDir = await tempRoot('orca-plugin-installs-')
-    const pluginsDataDir = await tempRoot('orca-plugin-data-')
-    const outside = await tempRoot('orca-plugin-outside-')
+    const pluginsDir = await tempRoot('topo-plugin-installs-')
+    const pluginsDataDir = await tempRoot('topo-plugin-data-')
+    const outside = await tempRoot('topo-plugin-outside-')
     const marker = join(outside, 'keep.txt')
     await writeFile(marker, 'keep')
     await symlink(
@@ -152,8 +152,8 @@ describe('removeInstalledPlugin', () => {
   })
 
   it('runs beforeRemove before deleting files and keeps them when it fails', async () => {
-    const pluginsDir = await tempRoot('orca-plugin-installs-')
-    const pluginsDataDir = await tempRoot('orca-plugin-data-')
+    const pluginsDir = await tempRoot('topo-plugin-installs-')
+    const pluginsDataDir = await tempRoot('topo-plugin-data-')
     const key = 'samples.demo'
     await mkdir(join(pluginsDir, key))
     await writeFile(join(pluginsDir, key, 'content'), 'installed')

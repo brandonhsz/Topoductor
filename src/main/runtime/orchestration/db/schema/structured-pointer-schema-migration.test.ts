@@ -35,7 +35,7 @@ describe('structured pointer schema migration', () => {
   })
 
   it('admits the structured archive kind and keeps existing rows', () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-structured-migration-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-structured-migration-'))
     tempRoots.push(root)
     const path = join(root, 'orchestration.db')
     seedLegacyDatabase(path)
@@ -59,7 +59,7 @@ describe('structured pointer schema migration', () => {
   })
 
   it('keeps sends an unreleased build saved with a fence, and takes new ones', () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-structured-migration-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-structured-migration-'))
     tempRoots.push(root)
     const path = join(root, 'orchestration.db')
     const seeded = new Database(path)

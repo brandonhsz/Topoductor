@@ -112,7 +112,7 @@ afterEach(async () => {
 })
 
 async function createCursorHome(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-cursor-chat-meta-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-cursor-chat-meta-'))
   tempRoots.push(root)
   const cursorHome = join(root, '.cursor')
   await mkdir(cursorHome, { recursive: true })

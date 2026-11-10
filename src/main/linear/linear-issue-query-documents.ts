@@ -111,7 +111,7 @@ export const LINEAR_ISSUE_NODE_FIELDS = `
 `
 
 export const SEARCH_ISSUES_QUERY = `
-  query OrcaLinearIssueSearch($term: String!, $first: Int) {
+  query TopoLinearIssueSearch($term: String!, $first: Int) {
     searchIssues(term: $term, first: $first) {
       nodes {
         ${LINEAR_ISSUE_NODE_FIELDS}
@@ -121,7 +121,7 @@ export const SEARCH_ISSUES_QUERY = `
 `
 
 export const ALL_ISSUES_QUERY = `
-  query OrcaLinearIssues(
+  query TopoLinearIssues(
     $first: Int,
     $after: String,
     $filter: IssueFilter,
@@ -140,7 +140,7 @@ export const ALL_ISSUES_QUERY = `
 `
 
 export const VIEWER_ASSIGNED_ISSUES_QUERY = `
-  query OrcaLinearViewerAssignedIssues(
+  query TopoLinearViewerAssignedIssues(
     $first: Int,
     $after: String,
     $filter: IssueFilter,
@@ -161,7 +161,7 @@ export const VIEWER_ASSIGNED_ISSUES_QUERY = `
 `
 
 export const VIEWER_CREATED_ISSUES_QUERY = `
-  query OrcaLinearViewerCreatedIssues(
+  query TopoLinearViewerCreatedIssues(
     $first: Int,
     $after: String,
     $filter: IssueFilter,
@@ -200,7 +200,7 @@ export const AGENT_ISSUE_WRITE_FIELDS = `
 `
 
 export const ISSUE_BY_UUID_QUERY = `
-  query OrcaLinearIssueByUuid($id: String!) {
+  query TopoLinearIssueByUuid($id: String!) {
     issue(id: $id) {
       ${AGENT_ISSUE_WRITE_FIELDS}
     }
@@ -208,7 +208,7 @@ export const ISSUE_BY_UUID_QUERY = `
 `
 
 export const COMMENT_BY_UUID_QUERY = `
-  query OrcaLinearCommentByUuid($id: String!) {
+  query TopoLinearCommentByUuid($id: String!) {
     comment(id: $id) {
       id
       url
@@ -220,7 +220,7 @@ export const COMMENT_BY_UUID_QUERY = `
 `
 
 export const ATTACHMENT_BY_UUID_QUERY = `
-  query OrcaLinearAttachmentByUuid($id: String!) {
+  query TopoLinearAttachmentByUuid($id: String!) {
     attachment(id: $id) {
       id
       title
@@ -232,7 +232,7 @@ export const ATTACHMENT_BY_UUID_QUERY = `
 
 // Fetch authors with comments to avoid SDK per-author requests holding the shared concurrency slot; retain its 50-comment page size.
 export const ISSUE_COMMENTS_QUERY = `
-  query OrcaLinearIssueComments($id: String!) {
+  query TopoLinearIssueComments($id: String!) {
     issue(id: $id) {
       comments(first: 50) {
         nodes {

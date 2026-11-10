@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { defineMethod } from '../runtime/rpc/core'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { pluginHostCallRevoked } from './workers/plugin-host-call-scope'
 import { pluginRuntimeRpc } from './plugin-runtime-rpc'
 
@@ -11,7 +11,7 @@ function harness() {
   const runtime = {
     getRuntimeId: () => 'rt',
     recordFeatureInteraction: vi.fn()
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   const methods = [
     defineMethod({
       name: 'terminal.create',

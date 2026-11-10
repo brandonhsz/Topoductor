@@ -9,11 +9,11 @@ import { BrowserClientPageCommandExecutor } from '../execution/browser-client-pa
 import { BrowserClientUploadStaging } from '../../client-hosts/file-transfers/browser-client-upload-staging'
 import type { BrowserRoutePageGuestIdentity } from '../../routing/guest-authority/browser-route-page-authority'
 
-const partition = `persist:orca-browser-v1-${'a'.repeat(64)}`
+const partition = `persist:topo-browser-v1-${'a'.repeat(64)}`
 let stagingRoot = ''
 
 beforeEach(async () => {
-  stagingRoot = await realpath(await mkdtemp(path.join(tmpdir(), 'orca-upload-routing-')))
+  stagingRoot = await realpath(await mkdtemp(path.join(tmpdir(), 'topo-upload-routing-')))
 })
 
 afterEach(async () => {
@@ -84,7 +84,7 @@ function createHarness(
   const releaseRouteSession = vi.fn(() => {})
   const releaseNetworkRoute = vi.fn(async () => {})
   const executor = new BrowserClientPageCommandExecutor({
-    orcaProfileId: 'orca-profile-a',
+    topoProfileId: 'topo-profile-a',
     authorityConnectionIdentity: 'authority-a',
     retainNetworkRoute: async () => ({
       key: 'execution-a',

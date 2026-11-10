@@ -8,8 +8,8 @@ type ExecMock = Mock<GitRemoteExec>
 
 const REPO_PATH = '/repo-root'
 const REPO_ID = 'repo-1'
-const FORK_URL = 'git@github.com:contributor/orca.git'
-const FORK_REMOTE = 'pr-contributor-orca'
+const FORK_URL = 'git@github.com:contributor/topo.git'
+const FORK_REMOTE = 'pr-contributor-topo'
 
 function worktreeId(suffix: string): string {
   return `${REPO_ID}::${suffix}`
@@ -75,8 +75,8 @@ function removeCalls(exec: ExecMock): string[][] {
 }
 
 describe('reconcileOrphanedPrRemotesWithExec', () => {
-  it('leaves a remote alone when no worktree metadata ever proves Orca created it (user-created, ambiguous)', async () => {
-    // Remote naming alone does not establish Orca ownership.
+  it('leaves a remote alone when no worktree metadata ever proves Topo created it (user-created, ambiguous)', async () => {
+    // Remote naming alone does not establish Topo ownership.
     const exec = makeExec({ remotes: remoteLines([{ name: FORK_REMOTE, url: FORK_URL }]) })
     const reclaimed = await reconcileOrphanedPrRemotesWithExec(
       REPO_PATH,

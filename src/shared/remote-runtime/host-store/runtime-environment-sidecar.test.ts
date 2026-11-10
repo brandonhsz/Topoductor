@@ -28,7 +28,7 @@ const tunnel = { sshTargetId: 'target', sshTargetGeneration: 3, localPort: 41000
 describe('runtime environment sidecar across a downgrade', () => {
   let userDataPath: string
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-environment-sidecar-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-environment-sidecar-'))
   })
   afterEach(() => {
     rmSync(userDataPath, { recursive: true, force: true })
@@ -59,7 +59,7 @@ describe('runtime environment sidecar across a downgrade', () => {
     })
   }
 
-  it('keeps SSH access after a shipped build rewrites orca-environments.json', () => {
+  it('keeps SSH access after a shipped build rewrites topo-environments.json', () => {
     const access = linked()
     shippedBuildRewrite(userDataPath, (environments) => {
       environments[0]!.lastUsedAt = 500
@@ -91,6 +91,6 @@ describe('runtime environment sidecar across a downgrade', () => {
   it('fails closed on an unreadable sidecar instead of dropping a pinned host key', () => {
     linked()
     writeFileSync(getRuntimeEnvironmentSidecarPath(userDataPath), '{not json')
-    expect(() => listEnvironments(userDataPath)).toThrow('Orca environment links')
+    expect(() => listEnvironments(userDataPath)).toThrow('Topo environment links')
   })
 })

@@ -5,10 +5,10 @@ import type {
 } from '../external-conversations/external-conversation-seam'
 import type { ConnectorAccountTransport } from './connector-transport'
 
-/** What the connector needs from this Orca; the seam exists exactly while connectors are on. */
+/** What the connector needs from this Topo; the seam exists exactly while connectors are on. */
 export type ConnectorMachine = {
   runtime: 'desktop'
-  orcaVersion: string
+  topoVersion: string
   hostName: string
   seam: () => ExternalConversationSeam | null
   conversationHost: () => ExternalConversationHost

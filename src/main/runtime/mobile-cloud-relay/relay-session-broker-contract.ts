@@ -1,5 +1,5 @@
 import type WebSocket from 'ws'
-import type { OrcaCloudAuthConfig } from '../../orca-profiles/profile-cloud-auth-config'
+import type { TopoCloudAuthConfig } from '../../topo-profiles/profile-cloud-auth-config'
 import type { MobileRelayStatusPublisher } from '../../../shared/remote-runtime/relay/mobile-relay-status'
 import type { E2EEKeypair } from '../rpc/server/pairing/e2ee-keypair'
 import type { MobileSocketWiring } from '../rpc/mobile-socket-wiring'
@@ -19,7 +19,7 @@ export type RelayAccessTokenRefresh =
   | { accessToken: null; hostCloseReason?: RelayHostCloseReason }
 
 export type RelaySessionBrokerOptions = {
-  authConfig: OrcaCloudAuthConfig
+  authConfig: TopoCloudAuthConfig
   accessToken: string
   identity: RelayIdentity
   keypair: E2EEKeypair

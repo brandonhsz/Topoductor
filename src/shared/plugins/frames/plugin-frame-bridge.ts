@@ -21,7 +21,7 @@ export const FRAME_EVENTS = {
   theme: 'theme',
   ping: 'ping',
   pong: 'pong',
-  /** frame → host: a modifier chord, so Orca's save shortcut works inside an editor. */
+  /** frame → host: a modifier chord, so Topo's save shortcut works inside an editor. */
   editorKeydown: 'editor.keydown',
   /** host → frame: the document, on ready and whenever it changes outside the frame. */
   editorDocument: 'editor.document',
@@ -49,7 +49,7 @@ export type PluginFrameHello = {
   api: { major: number; minor: number }
   methods: string[]
   theme: PluginFrameTheme
-  /** Orca's UI locale (BCP-47); Chromium's `navigator.language` does not follow it. */
+  /** Topo's UI locale (BCP-47); Chromium's `navigator.language` does not follow it. */
   locale?: string
 }
 
@@ -91,7 +91,7 @@ export type PluginFrameEntry = {
   sessionToken: string
   /** Desktop IPC only: browser clients never get one and keep the srcdoc iframe. */
   guest?: PluginFrameGuest
-  /** A declarative panel: the guest runs a module and Orca renders its tree; `html` is empty. */
+  /** A declarative panel: the guest runs a module and Topo renders its tree; `html` is empty. */
   ui?: 'components'
 }
 

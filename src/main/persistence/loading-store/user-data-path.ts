@@ -11,21 +11,21 @@ let _userDataDir: string | null = null
 export function initDataPath(): void {
   const userDataDir = getAppEnvironment().getPath('userData')
   _userDataDir = userDataDir
-  _dataFile = join(userDataDir, 'orca-data.json')
+  _dataFile = join(userDataDir, 'topo-data.json')
 }
 
 export function getDataFile(): string {
   if (!_dataFile) {
     const userDataDir = getAppEnvironment().getPath('userData')
     _userDataDir = userDataDir
-    _dataFile = join(userDataDir, 'orca-data.json')
+    _dataFile = join(userDataDir, 'topo-data.json')
   }
   return _dataFile
 }
 
 // Cache polls use a disposable sidecar to avoid full-profile rewrites; snapshots accelerate next-launch badges.
 export function getGithubCacheFile(dataFile = getDataFile()): string {
-  return join(dirname(dataFile), 'orca-github-cache.json')
+  return join(dirname(dataFile), 'topo-github-cache.json')
 }
 
 /** Reuse the path captured before app.setName; late resolution can change casing and strand paired devices. */

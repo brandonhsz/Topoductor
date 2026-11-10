@@ -8,10 +8,10 @@ import { hasClosedTerminalTabRecord } from '../../../shared/workspace-layout/clo
 import type { ExecutionHostId } from '../../../shared/execution-host'
 import { Store } from '../../persistence/loading-store/store'
 import { closeTestStores, createSqliteTestStore } from '../../persistence/persistence-test-harness'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { TERMINAL_LIFECYCLE_METHODS } from '../rpc/methods/terminal/terminal-lifecycle-methods'
 
-vi.mock('../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: false }))
+vi.mock('../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: false }))
 
 const directories: string[] = []
 afterEach(async () => {
@@ -24,9 +24,9 @@ afterEach(async () => {
 const createMethod = TERMINAL_LIFECYCLE_METHODS.find((method) => method.name === 'terminal.create')
 
 async function persistedTab(hostId: ExecutionHostId, close = true) {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-closed-create-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-closed-create-'))
   directories.push(directory)
-  const dataFile = join(directory, 'orca-data.json')
+  const dataFile = join(directory, 'topo-data.json')
   const store = createSqliteTestStore(Store, { dataFile })
   const repo = {
     id: 'repo-1',
@@ -66,7 +66,7 @@ async function persistedTab(hostId: ExecutionHostId, close = true) {
     },
     hostId
   )
-  const runtime = new OrcaRuntimeService(store)
+  const runtime = new TopoRuntimeService(store)
   if (close) {
     await runtime.closeTerminalSurfaceFromRenderer({
       worktreeId,
@@ -91,7 +91,7 @@ async function persistedTab(hostId: ExecutionHostId, close = true) {
       worktreeId
     )
   ).toBe(close)
-  const restarted = new OrcaRuntimeService(reloaded)
+  const restarted = new TopoRuntimeService(reloaded)
   Object.assign(restarted, {
     resolveTerminalWorkspaceLaunchScope: vi.fn(async () => ({
       id: worktreeId,

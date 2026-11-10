@@ -2,7 +2,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import * as workerTranscriptRead from '../transcripts/worker-transcript-read'
 import { captureWorkerOutputArchive } from './worker-output-archive'
 
@@ -19,7 +19,7 @@ describe('worker output archive WSL routing', () => {
   let transcriptReadSpy: { mockRestore: () => void } | undefined
 
   beforeEach(async () => {
-    directory = await mkdtemp(join(tmpdir(), 'orca-worker-archive-'))
+    directory = await mkdtemp(join(tmpdir(), 'topo-worker-archive-'))
     transcriptPath = join(directory, 'session.jsonl')
     await writeFile(transcriptPath, `${codexMessage('wsl', 'WSL archive output')}\n`)
   })
@@ -49,7 +49,7 @@ describe('worker output archive WSL routing', () => {
         truncated: false,
         status: 'live'
       })
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
 
     const result = await captureWorkerOutputArchive({
       runtime,

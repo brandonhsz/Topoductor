@@ -46,7 +46,7 @@ describe('plugin install trust', () => {
     plugin: { url: plugin, ref: 'main' }
   })
   const refused = (key: string): string =>
-    `${key} uses a name reserved for official Orca plugins; Orca installs it only from its official catalog`
+    `${key} uses a name reserved for official Topo plugins; Topo installs it only from its official catalog`
 
   it.each<[string, PluginInstallSource, boolean]>([
     [
@@ -81,8 +81,8 @@ describe('plugin install trust', () => {
   })
 
   it('rejects locally installed reserved identities before publication', async () => {
-    const sourcePath = await tempRoot('orca-reserved-plugin-')
-    const pluginsDir = await tempRoot('orca-plugin-installs-')
+    const sourcePath = await tempRoot('topo-reserved-plugin-')
+    const pluginsDir = await tempRoot('topo-plugin-installs-')
     await writePlugin(sourcePath, 'stablyai', 'orca-skills')
 
     await expect(
@@ -95,8 +95,8 @@ describe('plugin install trust', () => {
   })
 
   it('allows the app-bundled path only for the complete official identity', async () => {
-    const sourcePath = await tempRoot('orca-bundled-plugin-')
-    const pluginsDir = await tempRoot('orca-plugin-installs-')
+    const sourcePath = await tempRoot('topo-bundled-plugin-')
+    const pluginsDir = await tempRoot('topo-plugin-installs-')
     await writePlugin(sourcePath, 'stablyai', 'orca-skills')
 
     const result = await installBundledPlugin({
@@ -115,8 +115,8 @@ describe('plugin install trust', () => {
   })
 
   it('blocks a killed plugin even when the caller bypasses marketplace UI', async () => {
-    const sourcePath = await tempRoot('orca-killed-plugin-')
-    const pluginsDir = await tempRoot('orca-plugin-installs-')
+    const sourcePath = await tempRoot('topo-killed-plugin-')
+    const pluginsDir = await tempRoot('topo-plugin-installs-')
     await writePlugin(sourcePath, 'community', 'unsafe')
 
     await expect(
@@ -129,7 +129,7 @@ describe('plugin install trust', () => {
       })
     ).resolves.toEqual({
       ok: false,
-      error: "plugin is blocked by Orca's safety list: Security incident"
+      error: "plugin is blocked by Topo's safety list: Security incident"
     })
   })
 })

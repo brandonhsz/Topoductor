@@ -71,7 +71,7 @@ export function useWorktreeCardSecondaryDetails({
     agentActivityDisplayMode === 'compact' &&
     compactInlineAgentRows.length > 0
   const showAggregateCacheTimer = !compactCards && !compactInlineAgentRowsVisible
-  const handleOpenGitHubIssueInOrca = useCallback(
+  const handleOpenGitHubIssueInTopo = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
       const issueUrl = hoverIssue && 'url' in hoverIssue ? hoverIssue.url : undefined
@@ -94,7 +94,7 @@ export function useWorktreeCardSecondaryDetails({
     },
     [hoverIssue, openTaskPage, repo]
   )
-  const handleOpenReviewInOrca = useCallback(
+  const handleOpenReviewInTopo = useCallback(
     (e: React.MouseEvent, review: WorktreeCardPrDisplay | null = hoverReview) => {
       e.stopPropagation()
       if (!repo || !review?.url || review.provider !== 'github') {
@@ -215,7 +215,7 @@ export function useWorktreeCardSecondaryDetails({
     },
     [hoverReview, hoverReviewProvider, updateWorktreeMeta, worktree]
   )
-  const handleOpenLinearIssueInOrca = useCallback(
+  const handleOpenLinearIssueInTopo = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation()
       if (!linearIssue) {
@@ -258,14 +258,14 @@ export function useWorktreeCardSecondaryDetails({
     metaComment,
     showInlineAgentList,
     compactInlineAgentRows,
-    handleOpenGitHubIssueInOrca,
+    handleOpenGitHubIssueInTopo,
     handleOpenIssueInBrowser,
-    handleOpenReviewInOrca,
+    handleOpenReviewInTopo,
     canUnlinkReview,
     handleOpenReviewInBrowser,
     hasExplicitLinkedReview,
     handleUnlinkReview,
-    handleOpenLinearIssueInOrca,
+    handleOpenLinearIssueInTopo,
     hasDetails,
     hasPorts,
     cacheStartedAt,

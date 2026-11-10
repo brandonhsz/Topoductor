@@ -43,7 +43,7 @@ async function settleTombstoneDirectoryReads(): Promise<void> {
 
 describe('tombstoned history removal retries', () => {
   beforeEach(() => {
-    userDataDir = mkdtempSync(join(tmpdir(), 'orca-history-retry-'))
+    userDataDir = mkdtempSync(join(tmpdir(), 'topo-history-retry-'))
     installFakeAppEnvironment({ getPath: () => userDataDir })
     removeHostTreeMock.mockReset()
     deleteWslFishHistoryFileMock.mockReset()

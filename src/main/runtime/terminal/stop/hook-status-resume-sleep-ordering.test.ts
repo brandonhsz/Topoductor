@@ -6,18 +6,18 @@ import type { LayoutApplyOutcome } from '../../../../shared/workspace-layout/wor
 import { applyCommandToSession } from '../../../persistence/terminal-topology/terminal-pane-admission'
 import type { WorktreeSleepResumeCapture } from './worktree-sleep-resume-records'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 // Preserve side-effect order: mocks, lifecycle, fixtures.
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const {
   HEADLESS_LEAF_ID,
   TEST_WORKTREE_ID,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} = await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
+} = await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
 
 const PANE_KEY = `host-tab:${HEADLESS_LEAF_ID}`
 const PTY_ID = 'pty-slept'
@@ -67,7 +67,7 @@ function makeRuntimeWithSlowFirstWrite() {
       return { ok: true, result: {} }
     }
   )
-  const runtime = new OrcaRuntimeService(Object.assign(runtimeStore, { applyLayoutCommand }))
+  const runtime = new TopoRuntimeService(Object.assign(runtimeStore, { applyLayoutCommand }))
   runtime.syncWindowGraph(0, { tabs: [], leaves: [] })
   return { runtime, getSession, releaseFirstWrite, firstWriteEntered: firstWriteEntered.promise }
 }

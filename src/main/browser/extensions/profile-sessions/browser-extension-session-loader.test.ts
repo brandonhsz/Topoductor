@@ -61,7 +61,7 @@ vi.mock('electron', () => ({
   app: { on: vi.fn(), getPath: () => mocks.userData },
   session: {
     fromPartition: (partition: string) =>
-      partition === 'persist:orca-browser-retired'
+      partition === 'persist:topo-browser-retired'
         ? {
             ...mocks.session,
             extensions: {
@@ -89,7 +89,7 @@ vi.mock('../installation/browser-extension-load-directory', () => ({
     mocks.prepareCalls++
     await mocks.prepareGate.held
     return {
-      directory: '/orca/copy',
+      directory: '/topo/copy',
       extensionId: 'a'.repeat(32),
       workerSignature: mocks.prepared.signature,
       hasWorker: mocks.prepared.hasWorker
@@ -97,7 +97,7 @@ vi.mock('../installation/browser-extension-load-directory', () => ({
   }
 }))
 
-mocks.userData = mkdtempSync(join(tmpdir(), 'orca-extension-loader-'))
+mocks.userData = mkdtempSync(join(tmpdir(), 'topo-extension-loader-'))
 
 const { setBrowserExtensionSupportEnabled } = await import('../browser-extension-support')
 const loader = await import('./browser-extension-session-loader')
@@ -126,7 +126,7 @@ describe('profile changes while startup loads are in flight', () => {
   const profile = {
     id: 'default',
     scope: 'default' as const,
-    partition: 'persist:orca-browser',
+    partition: 'persist:topo-browser',
     label: 'Default',
     source: null
   }
@@ -199,7 +199,7 @@ describe('deleted profile action state', () => {
     const profile = {
       id: profileId,
       scope: 'isolated' as const,
-      partition: `persist:orca-${profileId}`,
+      partition: `persist:topo-${profileId}`,
       label: 'Retired',
       source: null
     }
@@ -250,7 +250,7 @@ describe('deleted profile action state', () => {
   })
 })
 
-it('does not restore stale enablement after uninstall and reinstall in another Orca profile', async () => {
+it('does not restore stale enablement after uninstall and reinstall in another Topo profile', async () => {
   setBrowserExtensionSupportEnabled(true)
   await loader.detachBrowserExtensionsFromAllProfileSessions()
   loader.setBrowserExtensionSessionHooks({
@@ -268,7 +268,7 @@ it('does not restore stale enablement after uninstall and reinstall in another O
     {
       id: 'inactive-profile',
       scope: 'isolated',
-      partition: 'persist:orca-browser-inactive',
+      partition: 'persist:topo-browser-inactive',
       label: 'Inactive',
       source: null
     },
@@ -280,7 +280,7 @@ it('does not restore stale enablement after uninstall and reinstall in another O
 
   await expect(
     loader.loadBrowserExtensionIntoProfile('inactive-profile', installed)
-  ).rejects.toThrow('Restart Orca')
+  ).rejects.toThrow('Restart Topo')
   expect(mocks.session.extensions.loadExtension).not.toHaveBeenCalled()
   await loader.detachBrowserExtensionsFromAllProfileSessions()
 })

@@ -137,7 +137,7 @@ export function useTabBarRuntimeModel({
     }
     return s.sshConnectionStates.get(worktreeConnectionId)?.remotePlatform ?? null
   })
-  const isWebClient = (globalThis as { __ORCA_WEB_CLIENT__?: boolean }).__ORCA_WEB_CLIENT__ === true
+  const isWebClient = (globalThis as { __TOPO_WEB_CLIENT__?: boolean }).__TOPO_WEB_CLIENT__ === true
   const windowsTerminalCapabilityOwnerKey = getWindowsTerminalCapabilityOwnerKey(
     activeRuntimeEnvironmentId,
     worktreeConnectionId

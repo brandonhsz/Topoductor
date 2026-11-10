@@ -124,7 +124,7 @@ function createStubRequest(
   },
   onTestFinished?: TestContext['onTestFinished']
 ): { request: CodexHookTrustGrantRequest; recordFile: string; pidFile: string } {
-  const root = mkdtempSync(join(tmpdir(), 'orca-codex-stub-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-codex-stub-'))
   if (onTestFinished) {
     onTestFinished(() => rmSync(root, { recursive: true, force: true }))
   } else {
@@ -160,7 +160,7 @@ function createStubRequest(
   }
 }
 
-const MANAGED_COMMAND = "/bin/sh '/tmp/orca/codex-hook.sh'"
+const MANAGED_COMMAND = "/bin/sh '/tmp/topo/codex-hook.sh'"
 // Allow loaded hosts to start the supervisor and stub before the spawn-time deadline expires
 // (they arm in well under 100ms on a loaded dev host; this is ~50x that).
 const STUB_START_DEADLINE_MS = 5_000

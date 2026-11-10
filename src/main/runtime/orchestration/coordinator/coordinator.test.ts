@@ -31,7 +31,7 @@ function createMockRuntime(): CoordinatorRuntime & {
   createdTerminalOptions: { title?: string }[]
   probeDriftCalls: string[]
   probeDriftResult: DriftResult
-  cliCommand: 'orca' | 'orca-ide'
+  cliCommand: 'topo' | 'topo-ide'
   setProbeDrift(result: DriftResult): void
   throwProbeDrift: Error | null
 } {
@@ -48,7 +48,7 @@ function createMockRuntime(): CoordinatorRuntime & {
     createdTerminalOptions: [] as { title?: string }[],
     probeDriftCalls: [] as string[],
     probeDriftResult: null as DriftResult,
-    cliCommand: 'orca' as 'orca' | 'orca-ide',
+    cliCommand: 'topo' as 'topo' | 'topo-ide',
     throwProbeDrift: null as Error | null,
     setProbeDrift(result: DriftResult): void {
       mock.probeDriftResult = result
@@ -156,7 +156,7 @@ describe('Coordinator', () => {
   it('dispatches a ready task to an available terminal', async () => {
     db = new OrchestrationDb(':memory:')
     const runtime = createMockRuntime()
-    runtime.cliCommand = 'orca-ide'
+    runtime.cliCommand = 'topo-ide'
     runtime.terminals = [{ handle: 'term_a', worktreeId: 'wt1', connected: true, writable: true }]
 
     const task = db.createTask({
@@ -180,7 +180,7 @@ describe('Coordinator', () => {
     expect(result.status).toBe('completed')
     expect(result.completedTasks).toContain(task.id)
     expect(runtime.sentMessages.length).toBeGreaterThan(0)
-    expect(runtime.sentMessages[0].text).toContain('orca-ide orchestration send')
+    expect(runtime.sentMessages[0].text).toContain('topo-ide orchestration send')
     expect(runtime.sentMessages[0].options).toEqual(dispatchPreambleSendOptions(expect.any(String)))
   })
 

@@ -16,14 +16,14 @@ const getFeatureTipCopyById = createLocalizedCatalog(
       ),
       ctaLabel: translate('featureTips.sessionSearch.cta', 'Turn on session search')
     },
-    'orca-cli': {
+    'topo-cli': {
       eyebrow: translate('featureTips.eyebrowTip', 'Tip'),
-      title: translate('featureTips.orcaCli.title', 'Let agents drive Orca with the Orca CLI'),
+      title: translate('featureTips.topoCli.title', 'Let agents drive Topo with the Topo CLI'),
       description: translate(
-        'featureTips.orcaCli.description',
+        'featureTips.topoCli.description',
         'Enable agents to coordinate child worktrees and communicate between worktrees.'
       ),
-      ctaLabel: translate('featureTips.orcaCli.cta', 'Install CLI & Skills')
+      ctaLabel: translate('featureTips.topoCli.cta', 'Install CLI & Skills')
     },
     'cmd-j-palette': {
       eyebrow: translate('featureTips.eyebrowTip', 'Tip'),

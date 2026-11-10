@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@stablyai/playwright-test'
 import type { Editor, JSONContent } from '@tiptap/core'
 import type { MarkdownManager } from '@tiptap/markdown'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   cleanupMarkdownFixture,
   createMarkdownFixture,
@@ -10,7 +10,7 @@ import {
   waitForRichMarkdownEditor
 } from './helpers/markdown-editor-fixture'
 
-const PARAGRAPH_COUNT = Number(process.env.ORCA_MARKDOWN_REVIEW_PERF_PARAGRAPHS ?? '500')
+const PARAGRAPH_COUNT = Number(process.env.TOPO_MARKDOWN_REVIEW_PERF_PARAGRAPHS ?? '500')
 const targetIndex = Math.floor(PARAGRAPH_COUNT / 2)
 const paragraph = (index: number) =>
   `Paragraph ${index}. Ordinary editing and selection of plain prose.`
@@ -60,22 +60,22 @@ async function measure(editor: Locator, reset = false): Promise<ReviewSelectionM
 }
 
 test('selection and scrolling reuse Markdown review source lines', async ({
-  orcaPage,
+  topoPage,
   registerPostElectronShutdownCleanup
 }, testInfo) => {
   test.setTimeout(180_000)
   expect(Buffer.byteLength(SOURCE)).toBeLessThan(600 * 1024)
-  const context = await getActiveWorktreeContext(orcaPage)
+  const context = await getActiveWorktreeContext(topoPage)
   const filePath = await createMarkdownFixture(
     context,
-    '.orca-e2e-markdown-review-perf',
+    '.topo-e2e-markdown-review-perf',
     'review-selection',
     testInfo.workerIndex,
     SOURCE
   )
   registerPostElectronShutdownCleanup(() => cleanupMarkdownFixture(filePath))
-  await openMarkdownFixture(orcaPage, context, filePath)
-  const editor = await waitForRichMarkdownEditor(orcaPage)
+  await openMarkdownFixture(topoPage, context, filePath)
+  const editor = await waitForRichMarkdownEditor(topoPage)
   await expect(editor.locator('p')).toHaveCount(PARAGRAPH_COUNT, { timeout: 60_000 })
   await editor.evaluate((element) => {
     const editorElement =
@@ -154,29 +154,29 @@ test('selection and scrolling reuse Markdown review source lines', async ({
       const rect = range.getBoundingClientRect()
       return { x: rect.left, y: rect.top + rect.height / 2 }
     })
-    await orcaPage.mouse.click(point.x, point.y)
-    await orcaPage.keyboard.press('Shift+ArrowRight')
+    await topoPage.mouse.click(point.x, point.y)
+    await topoPage.keyboard.press('Shift+ArrowRight')
     await expect(
-      orcaPage.getByRole('button', { name: 'Add review note', exact: true })
+      topoPage.getByRole('button', { name: 'Add review note', exact: true })
     ).toBeVisible()
-    await frames(orcaPage)
+    await frames(topoPage)
     const cold = await measure(editor)
     await measure(editor, true)
     for (let index = 0; index < 20; index++) {
-      await orcaPage.keyboard.press('Shift+ArrowRight')
-      await frames(orcaPage)
+      await topoPage.keyboard.press('Shift+ArrowRight')
+      await frames(topoPage)
     }
     const selection = await measure(editor)
-    expect(await orcaPage.evaluate(() => window.getSelection()?.toString())).toBe(
+    expect(await topoPage.evaluate(() => window.getSelection()?.toString())).toBe(
       paragraph(targetIndex).slice(0, 21)
     )
-    const viewport = orcaPage.locator('.rich-markdown-editor-shell .overflow-auto')
+    const viewport = topoPage.locator('.rich-markdown-editor-shell .overflow-auto')
     await measure(editor, true)
     for (let index = 0; index < 10; index++) {
       await viewport.evaluate((element, index) => {
         element.scrollTop += index % 2 ? -8 : 8
       }, index)
-      await frames(orcaPage)
+      await frames(topoPage)
     }
     const scroll = await measure(editor)
     const result = {
@@ -192,9 +192,9 @@ test('selection and scrolling reuse Markdown review source lines', async ({
     })
     process.stdout.write(`${JSON.stringify(result)}\n`)
     await expect(editor).toBeFocused()
-    const tab = orcaPage.locator('[data-tab-id]').filter({ hasText: 'review-selection' }).last()
+    const tab = topoPage.locator('[data-tab-id]').filter({ hasText: 'review-selection' }).last()
     await expect(tab.locator('span.rounded-full')).toHaveCount(0)
-    await orcaPage.screenshot({ path: testInfo.outputPath('review-selection.png') })
+    await topoPage.screenshot({ path: testInfo.outputPath('review-selection.png') })
     expect(selection.calls).toBe(0)
     expect(selection.jsonCalls).toBe(0)
     expect(scroll.calls).toBe(0)

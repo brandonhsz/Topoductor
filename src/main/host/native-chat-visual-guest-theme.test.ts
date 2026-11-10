@@ -27,7 +27,7 @@ const { ipc, classify, display, profileForSession, sshProfileForSession } = vi.h
   }
 }))
 vi.mock('electron', () => ({ ipcMain: ipc }))
-vi.mock('../orca-profiles/profile-storage-paths', () => ({
+vi.mock('../topo-profiles/profile-storage-paths', () => ({
   getProfileUserDataPath: () => '/profile'
 }))
 vi.mock('../native-chat/native-chat-scratch-folder', () => ({
@@ -120,7 +120,7 @@ describe('visual guest theme handoff', () => {
   })
 
   it('applies saved media at the authenticated frame URL before every synchronous reply', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-visual-media-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-visual-media-'))
     configureBrowserSiteDisplayStore(directory)
     updateBrowserSiteDisplay('work', 'file://', { colorScheme: 'light' })
     const controller = new BrowserSiteDisplayController()

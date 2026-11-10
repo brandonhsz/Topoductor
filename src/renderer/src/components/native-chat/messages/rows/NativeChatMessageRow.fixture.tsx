@@ -137,7 +137,7 @@ export const dollars = defineFixture({
             {
               type: 'text',
               text: [
-                'Set $ORCA_HOME then run echo $PATH. Use `$HOME/bin:$PATH` or `$HOME/${PATH}`. In PowerShell, use `$env:PATH;$env:TEMP`.',
+                'Set $TOPO_HOME then run echo $PATH. Use `$HOME/bin:$PATH` or `$HOME/${PATH}`. In PowerShell, use `$env:PATH;$env:TEMP`.',
                 'Prices: $5 + tax$ stays as written. Inline code stays literal: `echo $HOME`.',
                 String.raw`Real math: the $n$th term, $x^2$, $5+2$, and \(5 + 2\).`,
                 '$$5 + 2$$'

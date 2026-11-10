@@ -82,7 +82,7 @@ export function candidateHost(deps: PluginCliInstallDeps): PluginCliCandidateHos
 const GIT_INPUT_ERRORS: Record<string, string> = {
   'missing-git-url': 'Pass a repository such as owner/repo or a Git URL.',
   'git-url-credentials':
-    "Remove the username or token from the URL. Orca uses the Orca host's own Git sign-in (credential helper or SSH agent).",
+    "Remove the username or token from the URL. Topo uses the Topo host's own Git sign-in (credential helper or SSH agent).",
   'invalid-git-url':
     'Use owner/repo, an https:// or ssh:// repository URL, git@host:owner/repo.git, or a release, tag or tree page URL.',
   'invalid-git-ref': "The version after @ or # isn't a valid tag, branch or commit name."
@@ -134,7 +134,7 @@ function locationOf(source: PluginInstallSource): PluginInstallLocation | null {
 
 function locationLabel(location: PluginInstallLocation | null): string {
   if (!location) {
-    return 'Orca (bundled)'
+    return 'Topo (bundled)'
   }
   return location.kind === 'folder' ? location.path : pluginSourceLabel(location)
 }

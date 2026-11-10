@@ -20,7 +20,7 @@ export type SaveClipboardImageAsTempFileArgs = {
   runtimeEnvironmentId?: string | null
   /** With `runtimeEnvironmentId`: store the image as an attachment of this structured chat. */
   agentSessionAttachment?: AgentSessionAttachmentClipboardTarget
-  /** A native-chat composer paste: kept in Orca's paste folder so its draft can bring it back. */
+  /** A native-chat composer paste: kept in Topo's paste folder so its draft can bring it back. */
   forNativeChatDraft?: boolean
   /** With forNativeChatDraft, sends claim local structured-chat pastes from the chat attachment store. */
   forStructuredChat?: boolean
@@ -49,7 +49,7 @@ export async function saveClipboardImageBufferAsTempFile(
   }
   // A picked file keeps its own name, so the paste gets a folder to stay unique.
   const tempPath = args?.fileName
-    ? path.join(folder, `orca-paste-${randomUUID()}`, shellInertFileName(args.fileName))
+    ? path.join(folder, `topo-paste-${randomUUID()}`, shellInertFileName(args.fileName))
     : path.join(
         folder,
         // Phone library picks are often JPEG; agents trust the extension over the bytes.

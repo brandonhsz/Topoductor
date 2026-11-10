@@ -61,7 +61,7 @@ vi.mock('../../telemetry/cohort-classifier', () => ({
 
 describe('Store', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-test-'))
     trackMock.mockReset()
     getCohortAtEmitMock.mockReset()
     getCohortAtEmitMock.mockReturnValue({ nth_repo_added: 2 })
@@ -229,7 +229,7 @@ describe('Store', () => {
       const directory = join(testState.dir, 'profiles', 'recovery-test')
       mkdirSync(directory, { recursive: true })
       return {
-        dataFile: join(directory, 'orca-data.json'),
+        dataFile: join(directory, 'topo-data.json'),
         databaseFile: join(directory, 'profile-state.db'),
         profileId: 'recovery-test'
       }

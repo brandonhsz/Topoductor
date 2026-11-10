@@ -123,7 +123,7 @@ describe('PluginDevWatcher', () => {
   })
 
   it('fences a pending binding check after disposal or restart', async () => {
-    aliasedRoot = await createAliasedWatcherRoot('orca-plugin-dev-late-binding-')
+    aliasedRoot = await createAliasedWatcherRoot('topo-plugin-dev-late-binding-')
     const { watcher } = startDevWatcher(undefined, undefined, [aliasedRoot.realRoot])
     const { promise, resolve: resolveBinding } = Promise.withResolvers<string>()
     vi.mocked(realpath).mockReturnValueOnce(promise)

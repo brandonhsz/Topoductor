@@ -1,5 +1,5 @@
 import type { ChildProcess } from 'node:child_process'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { connect } from 'node:net'
 import { createSshOperationAbortError } from '../../connection/ssh-exec-options'
 import { buildForwardProcessSshArgs, type SystemSshBuildArgsOptions } from '../system-ssh-args'
@@ -36,7 +36,7 @@ export function spawnSystemSshPortForward(
     )
   }
   const args = buildSystemSshPortForwardArgs(target, localPort, remoteHost, remotePort, options)
-  // No Orca credential prompts are wired here; forward authentication belongs to OpenSSH.
+  // No Topo credential prompts are wired here; forward authentication belongs to OpenSSH.
   return spawnProcess({
     program: sshPath,
     args,

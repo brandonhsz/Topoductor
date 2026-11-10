@@ -3,7 +3,7 @@ import { Terminal } from '@xterm/headless'
 import { createRequire } from 'node:module'
 import { SerializeAddon } from '@xterm/addon-serialize'
 import { Unicode11Addon } from '@xterm/addon-unicode11'
-import { activateOrcaTerminalUnicodeProvider } from '../../../../shared/terminal/appearance/terminal-unicode-provider'
+import { activateTopoTerminalUnicodeProvider } from '../../../../shared/terminal/appearance/terminal-unicode-provider'
 import {
   readSavedCursorRegister,
   serializeWithAbsoluteCursor
@@ -30,9 +30,9 @@ export function loadOldSerializer(path: string): NamedSerializer {
   return loadSerializerBuild('old', path)
 }
 
-// ORCA_NEW_SERIALIZE_ADDON compares two arbitrary refs without reinstalling node_modules.
-export const NEW_SERIALIZER: NamedSerializer = process.env.ORCA_NEW_SERIALIZE_ADDON
-  ? loadSerializerBuild('new', process.env.ORCA_NEW_SERIALIZE_ADDON)
+// TOPO_NEW_SERIALIZE_ADDON compares two arbitrary refs without reinstalling node_modules.
+export const NEW_SERIALIZER: NamedSerializer = process.env.TOPO_NEW_SERIALIZE_ADDON
+  ? loadSerializerBuild('new', process.env.TOPO_NEW_SERIALIZE_ADDON)
   : { name: 'new', create: () => new SerializeAddon() }
 
 export type SerializeCheckResult = {
@@ -68,7 +68,7 @@ export function createFuzzTerminal(opts: {
     ...(opts.conpty ? { windowsPty: { backend: 'conpty', buildNumber: 19041 } } : {})
   })
   terminal.loadAddon(new Unicode11Addon())
-  activateOrcaTerminalUnicodeProvider(terminal)
+  activateTopoTerminalUnicodeProvider(terminal)
   return terminal
 }
 

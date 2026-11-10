@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { encodePairingOffer } from '../pairing/pairing'
-import { addManagedOrcadEnvironment } from './runtime-environment-managed-orcad-store'
+import { addManagedTopodEnvironment } from './runtime-environment-managed-topod-store'
 import { addEnvironmentFromPairingCode, listEnvironments } from './runtime-environment-store'
 import {
   getWslHostDeploymentStorePath,
@@ -43,7 +43,7 @@ function wslRecord(overrides: Partial<WslHostDeploymentRecord> = {}): WslHostDep
 describe('WSL host deployment store', () => {
   let userDataPath: string
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-wsl-host-deployments-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-wsl-host-deployments-'))
     vi.spyOn(console, 'warn').mockImplementation(() => {})
   })
   afterEach(() => {
@@ -53,11 +53,11 @@ describe('WSL host deployment store', () => {
   })
 
   function addSshManaged() {
-    return addManagedOrcadEnvironment(userDataPath, {
+    return addManagedTopodEnvironment(userDataPath, {
       id: 'ssh-managed',
       name: 'Build box',
       pairingCode: encodePairingOffer({ ...pairing, endpoint: 'ws://127.0.0.1:41000/runtime' }),
-      orcadDeployment: sshTunnel,
+      topodDeployment: sshTunnel,
       now: 100
     })
   }
@@ -199,7 +199,7 @@ describe('WSL host deployment store', () => {
     )
     const [environment] = listEnvironments(userDataPath)
     expect(environment?.id).toBe(wslId)
-    expect(environment?.orcadDeployment).toBeUndefined()
+    expect(environment?.topodDeployment).toBeUndefined()
   })
 
   it('ignores a record written for another server re-paired under the same id and port', () => {
@@ -208,6 +208,6 @@ describe('WSL host deployment store', () => {
     )
     const [environment] = listEnvironments(userDataPath)
     expect(environment?.id).toBe(wslId)
-    expect(environment?.orcadDeployment).toBeUndefined()
+    expect(environment?.topodDeployment).toBeUndefined()
   })
 })

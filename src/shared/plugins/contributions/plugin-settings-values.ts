@@ -1,7 +1,7 @@
 import type { PluginJsonValue } from '../workers/plugin-host-api'
 import type { PluginSettingContribution } from './plugin-settings-contribution'
 
-/** What Orca's Settings shows under a plugin. */
+/** What Topo's Settings shows under a plugin. */
 export type PluginDeclaredSettingsSnapshot = {
   settings: readonly PluginSettingContribution[]
   /** Every declared setting's current value: the person's, else its default. */

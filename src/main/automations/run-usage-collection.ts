@@ -101,7 +101,7 @@ export async function collectAutomationRunUsage({
       completedAt: collectedAt
     })
   }
-  return unavailable(null, 'provider_unsupported', 'This agent does not report usage to Orca yet.')
+  return unavailable(null, 'provider_unsupported', 'This agent does not report usage to Topo yet.')
 }
 
 export async function writeAutomationRunUsage(input: {

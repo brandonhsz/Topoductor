@@ -3,29 +3,29 @@ import { existsSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from 'n
 import net from 'node:net'
 import path from 'node:path'
 
-export const SHARED_DEV_PROFILE_DIR_NAME = 'orca-dev'
-// Why the "orca-dev" prefix: CLI/orchestration dev-mode checks match "orca-dev" in ORCA_USER_DATA_PATH.
+export const SHARED_DEV_PROFILE_DIR_NAME = 'topo-dev'
+// Why the "topo-dev" prefix: CLI/orchestration dev-mode checks match "topo-dev" in TOPO_USER_DATA_PATH.
 // Why short: runtime sockets live in userData and macOS caps socket paths at 104 bytes.
-export const WORKTREE_DEV_PROFILES_DIR_NAME = 'orca-dev-wt'
-export const WORKTREE_PROFILE_MARKER_FILE = 'orca-dev-worktree.json'
+export const WORKTREE_DEV_PROFILES_DIR_NAME = 'topo-dev-wt'
+export const WORKTREE_PROFILE_MARKER_FILE = 'topo-dev-worktree.json'
 export const WORKTREE_PROFILE_NAME_PATTERN = /^[\da-f]{10}$/
 export const DEV_PROFILE_MODES = ['shared', 'worktree']
 
-// Why these ranges: clear of Vite's 5173+ (common in projects opened inside dev Orca),
-// Chrome's 9222, and Orca's production ports (pairing WebSocket 6768).
+// Why these ranges: clear of Vite's 5173+ (common in projects opened inside dev Topo),
+// Chrome's 9222, and Topo's production ports (pairing WebSocket 6768).
 export const RENDERER_PORT_RANGE = { base: 15200, spread: 200 }
 export const CDP_PORT_RANGE = { base: 9333, spread: 200 }
 const PORT_SWEEP = 64
 
-// Values the runner derives per worktree; a dev Orca exports them to every terminal it spawns.
+// Values the runner derives per worktree; a dev Topo exports them to every terminal it spawns.
 const RUNNER_DERIVED_ENV_KEYS = [
-  'ORCA_DEV_REPO_ROOT',
-  'ORCA_DEV_INSTANCE_KEY',
-  'ORCA_DEV_BRANCH',
-  'ORCA_DEV_WORKTREE_NAME',
-  'ORCA_DEV_INSTANCE_LABEL',
-  'ORCA_DEV_DOCK_TITLE',
-  'ORCA_DEV_RENDERER_PORT'
+  'TOPO_DEV_REPO_ROOT',
+  'TOPO_DEV_INSTANCE_KEY',
+  'TOPO_DEV_BRANCH',
+  'TOPO_DEV_WORKTREE_NAME',
+  'TOPO_DEV_INSTANCE_LABEL',
+  'TOPO_DEV_DOCK_TITLE',
+  'TOPO_DEV_RENDERER_PORT'
 ]
 
 export function getAppDataDir(env = process.env, platform = process.platform) {
@@ -72,20 +72,20 @@ function isLinkedWorktree(repoRoot) {
 
 // Nested dev launches must derive their own worktree identity instead of inheriting the parent's.
 export function dropInheritedDevInstanceEnv(env, repoRoot) {
-  const inheritedRoot = env.ORCA_DEV_REPO_ROOT
+  const inheritedRoot = env.TOPO_DEV_REPO_ROOT
   if (!inheritedRoot || sameFilesystemPath(inheritedRoot, repoRoot)) {
     return
   }
   // An explicit override differs from the parent app's own userData; an inherited one matches it.
-  if (env.ORCA_DEV_USER_DATA_PATH && env.ORCA_DEV_USER_DATA_PATH === env.ORCA_USER_DATA_PATH) {
-    delete env.ORCA_DEV_USER_DATA_PATH
+  if (env.TOPO_DEV_USER_DATA_PATH && env.TOPO_DEV_USER_DATA_PATH === env.TOPO_USER_DATA_PATH) {
+    delete env.TOPO_DEV_USER_DATA_PATH
   }
   for (const key of RUNNER_DERIVED_ENV_KEYS) {
     delete env[key]
   }
 }
 
-/** Precedence: ORCA_DEV_USER_DATA_PATH, then --shared/--worktree-profile or ORCA_DEV_PROFILE, then checkout type. */
+/** Precedence: TOPO_DEV_USER_DATA_PATH, then --shared/--worktree-profile or TOPO_DEV_PROFILE, then checkout type. */
 export function resolveDevProfile({
   repoRoot,
   instanceKey = repoRoot,
@@ -93,16 +93,16 @@ export function resolveDevProfile({
   env = process.env,
   platform = process.platform
 }) {
-  if (env.ORCA_DEV_USER_DATA_PATH) {
-    return { kind: 'custom', userDataPath: path.resolve(env.ORCA_DEV_USER_DATA_PATH) }
+  if (env.TOPO_DEV_USER_DATA_PATH) {
+    return { kind: 'custom', userDataPath: path.resolve(env.TOPO_DEV_USER_DATA_PATH) }
   }
-  const requested = mode ?? (env.ORCA_DEV_PROFILE || undefined)
+  const requested = mode ?? (env.TOPO_DEV_PROFILE || undefined)
   if (requested !== undefined && !DEV_PROFILE_MODES.includes(requested)) {
     throw new Error(
-      `ORCA_DEV_PROFILE must be one of ${DEV_PROFILE_MODES.join(', ')} (got ${JSON.stringify(requested)})`
+      `TOPO_DEV_PROFILE must be one of ${DEV_PROFILE_MODES.join(', ')} (got ${JSON.stringify(requested)})`
     )
   }
-  // Why the main checkout keeps orca-dev: it is the long-lived profile developers already use.
+  // Why the main checkout keeps topo-dev: it is the long-lived profile developers already use.
   const kind = requested ?? (isLinkedWorktree(repoRoot) ? 'worktree' : 'shared')
   return kind === 'shared'
     ? { kind, userDataPath: getSharedDevUserDataPath(env, platform) }
@@ -159,16 +159,16 @@ export function resolveDevCliUserDataPath({
   platform = process.platform
 }) {
   dropInheritedDevInstanceEnv(env, repoRoot)
-  if (env.ORCA_DEV_USER_DATA_PATH || env.ORCA_DEV_PROFILE) {
-    return resolveDevProfile({ repoRoot, instanceKey: env.ORCA_DEV_INSTANCE_KEY, env, platform })
+  if (env.TOPO_DEV_USER_DATA_PATH || env.TOPO_DEV_PROFILE) {
+    return resolveDevProfile({ repoRoot, instanceKey: env.TOPO_DEV_INSTANCE_KEY, env, platform })
       .userDataPath
   }
   const record = readDevInstanceRecord(repoRoot)
-  // Custom profiles are often temporary; they keep requiring an explicit ORCA_DEV_USER_DATA_PATH.
+  // Custom profiles are often temporary; they keep requiring an explicit TOPO_DEV_USER_DATA_PATH.
   if (record && record.profile !== 'custom' && existsSync(record.userData)) {
     return record.userData
   }
-  return resolveDevProfile({ repoRoot, instanceKey: env.ORCA_DEV_INSTANCE_KEY, env, platform })
+  return resolveDevProfile({ repoRoot, instanceKey: env.TOPO_DEV_INSTANCE_KEY, env, platform })
     .userDataPath
 }
 
@@ -220,7 +220,7 @@ async function resolveEnvOrPickedPort(env, envName, seedKey, range) {
       return port
     }
     console.error(
-      `[orca-dev] Ignoring invalid ${envName}=${JSON.stringify(raw)}; falling back to probe.`
+      `[topo-dev] Ignoring invalid ${envName}=${JSON.stringify(raw)}; falling back to probe.`
     )
   }
   return pickInstancePort(seedKey, range)
@@ -239,7 +239,7 @@ function readUserPassedDebugPort(forwardedArgs) {
   return null
 }
 
-// Allocate discoverable dev ports for browser agents; Electron Vite reads ORCA_DEV_RENDERER_PORT.
+// Allocate discoverable dev ports for browser agents; Electron Vite reads TOPO_DEV_RENDERER_PORT.
 export async function resolveDevInstancePorts({ forwardedArgs, instanceKey, env = process.env }) {
   // Why: exact match (or `=` form) avoids false positives on `--remote-debugging-port-*` flags;
   // `--remote-debugging-pipe` opts into pipe-based debugging, so no port is injected.
@@ -262,25 +262,25 @@ export async function resolveDevInstancePorts({ forwardedArgs, instanceKey, env 
       forwardedExtras = [`--remote-debugging-port=${cdpPort}`]
     } else {
       console.error(
-        '[orca-dev] No free debug port found in sweep; starting without --remote-debugging-port.'
+        '[topo-dev] No free debug port found in sweep; starting without --remote-debugging-port.'
       )
     }
   }
   const rendererPort = await resolveEnvOrPickedPort(
     env,
-    'ORCA_DEV_RENDERER_PORT',
+    'TOPO_DEV_RENDERER_PORT',
     `renderer:${instanceKey}`,
     RENDERER_PORT_RANGE
   )
   if (rendererPort !== null) {
-    env.ORCA_DEV_RENDERER_PORT = String(rendererPort)
+    env.TOPO_DEV_RENDERER_PORT = String(rendererPort)
   } else {
-    delete env.ORCA_DEV_RENDERER_PORT
+    delete env.TOPO_DEV_RENDERER_PORT
   }
   return { cdpPort, rendererPort, forwardedExtras }
 }
 
-/** Prints one `ORCA_DEV_INSTANCE {json}` stdout line and mirrors it to out/dev-instance.json. */
+/** Prints one `TOPO_DEV_INSTANCE {json}` stdout line and mirrors it to out/dev-instance.json. */
 export function announceDevInstance({ repoRoot, profile, cdpPort, rendererPort }) {
   // Why 127.0.0.1: matches the interface probed (localhost may resolve to ::1 on IPv6-first hosts).
   const instance = {
@@ -294,11 +294,11 @@ export function announceDevInstance({ repoRoot, profile, cdpPort, rendererPort }
     runnerPid: process.pid
   }
   if (cdpPort !== null) {
-    console.error(`[orca-dev] Remote debugging on ${instance.cdpUrl}`)
+    console.error(`[topo-dev] Remote debugging on ${instance.cdpUrl}`)
   }
-  console.error(`[orca-dev] Profile (${profile.kind}): ${profile.userDataPath}`)
+  console.error(`[topo-dev] Profile (${profile.kind}): ${profile.userDataPath}`)
   writeDevInstanceRecord(repoRoot, instance)
-  // Why stdout: agents grep `ORCA_DEV_INSTANCE ` to find the profile and CDP endpoint.
-  console.log(`ORCA_DEV_INSTANCE ${JSON.stringify(instance)}`)
+  // Why stdout: agents grep `TOPO_DEV_INSTANCE ` to find the profile and CDP endpoint.
+  console.log(`TOPO_DEV_INSTANCE ${JSON.stringify(instance)}`)
   return instance
 }

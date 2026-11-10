@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/context-menu'
 import { TabHoverCard } from './TabHoverCard'
 import '../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../shared/browser/browser-blank-page'
 import { redactKagiSessionToken } from '../../../../shared/browser-url'
 import type { BrowserWorkspace } from '../../../../shared/browser-workspace-types'
 import { CLOSE_ALL_CONTEXT_MENUS_EVENT } from '@/lib/close-all-context-menus'
@@ -43,7 +43,7 @@ import { CloseSplitPaneMenuItem } from './CloseSplitPaneMenuItem'
 import { useAppStore } from '@/store'
 
 export function formatBrowserTabUrlLabel(url: string, t: Translate = translate): string {
-  if (url === ORCA_BROWSER_BLANK_URL || url === 'about:blank') {
+  if (url === TOPO_BROWSER_BLANK_URL || url === 'about:blank') {
     return t('auto.components.browser.pane.BrowserPane.366bf5d62c', 'New Tab')
   }
   try {
@@ -58,7 +58,7 @@ export function getBrowserTabLabel(tab: BrowserWorkspace, t?: Translate): string
   if (
     !tab.title ||
     tab.title === tab.url ||
-    tab.title === ORCA_BROWSER_BLANK_URL ||
+    tab.title === TOPO_BROWSER_BLANK_URL ||
     tab.title === 'about:blank'
   ) {
     return formatBrowserTabUrlLabel(tab.url, t)
@@ -67,7 +67,7 @@ export function getBrowserTabLabel(tab: BrowserWorkspace, t?: Translate): string
 }
 
 function isBlankBrowserTab(tab: BrowserWorkspace): boolean {
-  return tab.url === ORCA_BROWSER_BLANK_URL || tab.url === 'about:blank'
+  return tab.url === TOPO_BROWSER_BLANK_URL || tab.url === 'about:blank'
 }
 
 export default function BrowserTab({

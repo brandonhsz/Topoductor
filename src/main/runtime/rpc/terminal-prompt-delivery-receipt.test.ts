@@ -70,7 +70,7 @@ function request(
       enter: true,
       agentPrompt: true,
       waitSubmitMs,
-      client: { id: 'orca-cli', type: 'desktop' }
+      client: { id: 'topo-cli', type: 'desktop' }
     }
   }
 }

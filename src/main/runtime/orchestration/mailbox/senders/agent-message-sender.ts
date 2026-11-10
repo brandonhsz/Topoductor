@@ -4,7 +4,7 @@ import {
   orchestrationSenderAgent,
   type SenderNamingSources
 } from './orchestration-sender-name'
-import { parseOrcaSessionAddress } from '../../../../../shared/orca-session-address'
+import { parseTopoSessionAddress } from '../../../../../shared/topo-session-address'
 import {
   agentMessageSenderName,
   type AgentMessageSender
@@ -56,20 +56,20 @@ function senderParty(address: string, db: OrchestrationDb | null): AgentMessageS
     return {
       address,
       terminalHandle: null,
-      orcaSessionId: db?.getFederatedDispatch(id)
+      topoSessionId: db?.getFederatedDispatch(id)
         ? null
-        : (db?.getDispatchContextById(id)?.assignee_orca_session_id ?? null)
+        : (db?.getDispatchContextById(id)?.assignee_topo_session_id ?? null)
     }
   }
   if (address.startsWith('run:')) {
-    return { address, terminalHandle: null, orcaSessionId: null }
+    return { address, terminalHandle: null, topoSessionId: null }
   }
   try {
     const { paneKey: _credential, ...party } = resolveOrchestrationParty(address, db)
     return party
   } catch {
     // If worker identity is lost, retain only what its address proves.
-    return { address, terminalHandle: null, orcaSessionId: parseOrcaSessionAddress(address) }
+    return { address, terminalHandle: null, topoSessionId: parseTopoSessionAddress(address) }
   }
 }
 

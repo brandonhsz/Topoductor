@@ -11,7 +11,7 @@ import '../orchestration/db/contract-constants'
 import '../orchestration/db/messages/mailbox-routing-page'
 import '../orchestration/db/dispatch-row-writer'
 import '../orchestration/db/attempt-outcome-projection'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import type { RpcRequest } from './core'
 import { RpcDispatcher } from './dispatcher'
 import { ORCHESTRATION_METHODS } from './methods/orchestration/orchestration'
@@ -39,7 +39,7 @@ function createHarness(options?: { seedCutoverQuestion?: boolean; seedCutoverAns
   cutoverQuestionId?: string
   cutoverAnswerId?: string
 } {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-legacy-question-takeover-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-legacy-question-takeover-'))
   tempDirs.push(dir)
   const dbPath = join(dir, 'orchestration.db')
   const before = new OrchestrationDb(dbPath)
@@ -90,7 +90,7 @@ function createHarness(options?: { seedCutoverQuestion?: boolean; seedCutoverAns
 
   const db = new OrchestrationDb(dbPath)
   databases.push(db)
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(db)
   vi.spyOn(runtime, 'getTerminalPaneKey').mockImplementation((handle) =>
     handle === WORKER_HANDLE

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import '../../../../../shared/protocol-version'
 import { SESSION_TABS_RETIREMENT_PROOF_DELTA_RUNTIME_CAPABILITY } from '../../../../../shared/session-tabs-runtime-capabilities'
 import type {
@@ -57,7 +57,7 @@ describe('session.tabs.subscribe retirement proof payload', () => {
           return () => {}
         }
       )
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     const dispatcher = new RpcDispatcher({ runtime, methods: SESSION_TAB_METHODS })
     const messages: string[] = []
     await dispatcher.dispatchStreaming(

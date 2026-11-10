@@ -19,7 +19,7 @@ import { useTranslate } from '@/i18n/use-translate'
 
 const MACOS_UPDATE_GUIDE_URL = 'https://support.apple.com/en-us/108382'
 const VENTURA_COMPATIBILITY_URL = 'https://support.apple.com/en-us/102861'
-const MACOS_SUPPORT_DISCUSSION_URL = 'https://github.com/stablyai/orca/discussions/38765'
+const MACOS_SUPPORT_DISCUSSION_URL = 'https://github.com/brandonhsz/Topoductor/discussions/38765'
 
 export function MacosUpdateRequirementDialog({
   open,
@@ -62,14 +62,14 @@ export function MacosUpdateRequirementDialog({
       >
         <DialogHeader>
           <DialogTitle size="display" className="mr-6">
-            {t('macosUpdateRequirement.title', 'Orca updates now need macOS {{macos}}', {
+            {t('macosUpdateRequirement.title', 'Topo updates now need macOS {{macos}}', {
               macos
             })}
           </DialogTitle>
           <DialogDescription>
             {t(
               'macosUpdateRequirement.description',
-              'Orca {{version}} requires macOS {{macos}} or later. This version keeps working, but it won’t get new updates on this Mac.',
+              'Topo {{version}} requires macOS {{macos}} or later. This version keeps working, but it won’t get new updates on this Mac.',
               { version: requirement.version, macos }
             )}
           </DialogDescription>
@@ -82,7 +82,7 @@ export function MacosUpdateRequirementDialog({
               : canUpgrade
                 ? t(
                     'macosUpdateRequirement.upgradeDescription',
-                    'Your Mac can upgrade. Update macOS to get the latest Orca.'
+                    'Your Mac can upgrade. Update macOS to get the latest Topo.'
                   )
                 : cannotUpgrade
                   ? t(
@@ -110,7 +110,7 @@ export function MacosUpdateRequirementDialog({
               <p>
                 {t(
                   'macosUpdateRequirement.whyIntro',
-                  'We updated parts of Orca’s foundation, like Electron and the on-device speech engine, to bring:'
+                  'We updated parts of Topo’s foundation, like Electron and the on-device speech engine, to bring:'
                 )}
               </p>
               <ul className="list-disc space-y-2 pl-4">

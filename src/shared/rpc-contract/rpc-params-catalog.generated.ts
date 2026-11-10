@@ -32,13 +32,6 @@ import {
   DesktopBrowserBridgeResultParams
 } from '../desktop-browser-bridge-protocol'
 import { MobileWebBundleChunkParamsSchema } from '../mobile-web-bundle/bundle-rpc-contract'
-import { OrcadMigrationBlobChunkRequestSchema } from '../orcad-migration/orcad-migration-blob-transfer'
-import { OrcadMigrationSnapshotChunkRequestSchema } from '../orcad-migration/orcad-migration-scrollback'
-import {
-  OrcadDeclareClientParamsSchema,
-  OrcadPeerDesktopsParamsSchema
-} from '../orcad-peer-desktops-contract'
-import { OrcadTerminalCensusParamsSchema } from '../orcad-terminal-census'
 import { CrewSubscribeParams } from '../orchestration/orchestration-crew'
 import { RegisterDeviceKeyParamsSchema } from '../remote-runtime/pairing/device-key-registration-contract'
 import { PairingCreateOfferParamsSchema } from '../remote-runtime/pairing/pairing-create-offer-contract'
@@ -470,11 +463,6 @@ import {
   NotificationsSubscribeParams
 } from './notifications-params'
 import {
-  OrcadMigrationCatalogParams,
-  OrcadMigrationCatalogReferenceParams,
-  OrcadMigrationCommitCatalogParams
-} from './orcad-migration-params'
-import {
   FederationDispatchParams,
   FederationFleetSnapshotParams,
   FederationOutputReadParams,
@@ -709,6 +697,11 @@ import {
   TerminalUnsubscribe,
   TerminalUpdateViewport
 } from './terminal-viewport-schemas-params'
+import {
+  TopodMigrationCatalogParams,
+  TopodMigrationCatalogReferenceParams,
+  TopodMigrationCommitCatalogParams
+} from './topod-migration-params'
 import { UpdaterCheckParams } from './updater-params'
 import {
   UsageCredentialApiKeyParams,
@@ -764,6 +757,13 @@ import {
   SkillUploadChunkRequestSchema,
   SkillUploadCommitRequestSchema
 } from '../skill-upload-session-contract'
+import { TopodMigrationBlobChunkRequestSchema } from '../topod-migration/topod-migration-blob-transfer'
+import { TopodMigrationSnapshotChunkRequestSchema } from '../topod-migration/topod-migration-scrollback'
+import {
+  TopodDeclareClientParamsSchema,
+  TopodPeerDesktopsParamsSchema
+} from '../topod-peer-desktops-contract'
+import { TopodTerminalCensusParamsSchema } from '../topod-terminal-census'
 
 // Why: the host parses params with these schemas, so a client that matches this map
 // matches the dispatcher. Clients must import it for types only — parsing a params
@@ -1207,9 +1207,9 @@ export const RPC_PARAMS_BY_METHOD = {
   'gitlab.updateMRState': UpdateMrState,
   'gitlab.workItemByPath': WorkItemByPath,
   'gitlab.workItemDetails': WorkItemDetailsOfGitlabParams,
-  'host.declareClient': OrcadDeclareClientParamsSchema,
+  'host.declareClient': TopodDeclareClientParamsSchema,
   'host.gitBash.isAvailable': null,
-  'host.peerDesktops': OrcadPeerDesktopsParamsSchema,
+  'host.peerDesktops': TopodPeerDesktopsParamsSchema,
   'host.platform': null,
   'host.pwsh.isAvailable': null,
   'host.wsl.isAvailable': null,
@@ -1327,14 +1327,6 @@ export const RPC_PARAMS_BY_METHOD = {
   'notifications.testPush': null,
   'notifications.unregisterPush': null,
   'notifications.unsubscribe': NotificationUnsubscribeParams,
-  'orcad.migration.abortCatalog': OrcadMigrationCatalogParams,
-  'orcad.migration.abortCatalogByReference': OrcadMigrationCatalogReferenceParams,
-  'orcad.migration.catalogState': OrcadMigrationCatalogParams,
-  'orcad.migration.commitCatalog': OrcadMigrationCommitCatalogParams,
-  'orcad.migration.stageBlobChunk': OrcadMigrationBlobChunkRequestSchema,
-  'orcad.migration.stageCatalog': OrcadMigrationCatalogParams,
-  'orcad.migration.stageSnapshotChunk': OrcadMigrationSnapshotChunkRequestSchema,
-  'orcad.terminalCensus': OrcadTerminalCensusParamsSchema,
   'orchestration.ask': AskParams,
   'orchestration.callerShow': null,
   'orchestration.check': CheckParams,
@@ -1500,19 +1492,19 @@ export const RPC_PARAMS_BY_METHOD = {
   'sidebarInputs.workspaceCreations': null,
   'sidebarInputs.workspaceRows': null,
   'sidebarSession.begin': SidebarSessionBeginParams,
-  'skills.autoUpdateBundledOrca': BundledSkillAutoUpdateRequestSchema,
+  'skills.autoUpdateBundledTopo': BundledSkillAutoUpdateRequestSchema,
   'skills.beginUpload': SkillUploadBeginRequestSchema,
   'skills.cancelInstall': SkillsCancelInstallParams,
   'skills.cancelUpload': SkillUploadCommitRequestSchema,
   'skills.commitUpload': SkillUploadCommitRequestSchema,
   'skills.delete': SkillDeleteRequestSchema,
   'skills.discover': SkillsDiscoverParams,
-  'skills.executeBundledOrca': BundledSkillExecuteRequestSchema,
+  'skills.executeBundledTopo': BundledSkillExecuteRequestSchema,
   'skills.getInstallProgress': SkillsGetInstallProgressParams,
   'skills.install': SkillInstallRequestSchema,
   'skills.installBundle': SkillBundleInstallRequestSchema,
   'skills.listManagedInstalls': null,
-  'skills.planBundledOrca': BundledSkillPlanRequestSchema,
+  'skills.planBundledTopo': BundledSkillPlanRequestSchema,
   'skills.previewDelete': SkillDeleteRequestSchema,
   'skills.previewInstall': SkillInstallPreviewRequestSchema,
   'skills.removeInstall': SkillRemoveRequestSchema,
@@ -1590,6 +1582,14 @@ export const RPC_PARAMS_BY_METHOD = {
   'terminalDaemon.restartSevered': TerminalDaemonRestartSeveredParams,
   'terminalDaemon.setLimit': TerminalLimitUpdateParams,
   'terminalDaemon.severedStatus': null,
+  'topod.migration.abortCatalog': TopodMigrationCatalogParams,
+  'topod.migration.abortCatalogByReference': TopodMigrationCatalogReferenceParams,
+  'topod.migration.catalogState': TopodMigrationCatalogParams,
+  'topod.migration.commitCatalog': TopodMigrationCommitCatalogParams,
+  'topod.migration.stageBlobChunk': TopodMigrationBlobChunkRequestSchema,
+  'topod.migration.stageCatalog': TopodMigrationCatalogParams,
+  'topod.migration.stageSnapshotChunk': TopodMigrationSnapshotChunkRequestSchema,
+  'topod.terminalCensus': TopodTerminalCensusParamsSchema,
   'ui.get': null,
   'ui.getJiraQuickFilters': null,
   'ui.getJiraSavedFilters': null,

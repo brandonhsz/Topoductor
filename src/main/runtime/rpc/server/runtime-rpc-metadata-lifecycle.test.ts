@@ -5,12 +5,12 @@ import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import * as runtimeMetadataModule from './runtime-metadata'
 import { readRuntimeMetadata, writeRuntimeMetadata } from './runtime-metadata'
 import { shortDaemonSocketDir } from '../../../daemon/endpoint/publication/daemon-socket-endpoint-path'
 import { createRuntimeTransportMetadata } from './runtime-rpc-socket-metadata'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 
 import type { RuntimeMetadata } from '../../../../shared/runtime-bootstrap'
 
@@ -50,12 +50,12 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
   return { getWorktreeListingMocks: () => (listings ??= createWorktreeListingMocks()) }
 })
 
-describe('OrcaRuntimeRpcServer', () => {
+describe('TopoRuntimeRpcServer', () => {
   it('reclaims runtime metadata clobbered by a second instance that has since died', async () => {
     // A second instance can replace metadata then exit; reclaim it so CLI finds this still-serving runtime (#7848).
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const runtime = new OrcaRuntimeService()
-    const server = new OrcaRuntimeRpcServer({ methods: [], runtime, userDataPath })
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const runtime = new TopoRuntimeService()
+    const server = new TopoRuntimeRpcServer({ methods: [], runtime, userDataPath })
     await server.start()
     const published = readRuntimeMetadata(userDataPath)
 
@@ -74,11 +74,11 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('leaves runtime metadata owned by a live sibling runtime untouched', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
     // Use a synthetic owned pid and process.pid as live sibling; Windows never assigns pid 1.
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       pid: 4242
     })
@@ -100,9 +100,9 @@ describe('OrcaRuntimeRpcServer', () => {
 
   it('drops a republish from an ownership read that lands after the server stopped', async () => {
     // In-flight async reads can outlive stop; activeTransports must prevent late republish.
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const runtime = new OrcaRuntimeService()
-    const server = new OrcaRuntimeRpcServer({ methods: [], runtime, userDataPath, pid: 1001 })
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const runtime = new TopoRuntimeService()
+    const server = new TopoRuntimeRpcServer({ methods: [], runtime, userDataPath, pid: 1001 })
     await server.start()
 
     let releaseRead: (record: RuntimeMetadata | null) => void = () => {}
@@ -131,9 +131,9 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('closes the socket if metadata publication fails during startup', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const runtime = new OrcaRuntimeService()
-    const server = new OrcaRuntimeRpcServer({ methods: [], runtime, userDataPath })
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const runtime = new TopoRuntimeService()
+    const server = new TopoRuntimeRpcServer({ methods: [], runtime, userDataPath })
     const writeMetadataSpy = vi
       .spyOn(runtimeMetadataModule, 'writeRuntimeMetadata')
       .mockImplementationOnce(() => {
@@ -158,15 +158,15 @@ describe('OrcaRuntimeRpcServer', () => {
   it.skipIf(process.platform === 'win32')(
     'never sweeps inside a relocated socket dir that is not private to this user',
     async () => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
       const relocatedDir = shortDaemonSocketDir(userDataPath, process.getuid!())
       mkdirSync(dirname(relocatedDir), { recursive: true, mode: 0o700 })
       mkdirSync(relocatedDir, { recursive: true, mode: 0o755 })
       const deadSocket = join(relocatedDir, 'o-99999999-dead.sock')
       writeFileSync(deadSocket, '')
-      const server = new OrcaRuntimeRpcServer({
+      const server = new TopoRuntimeRpcServer({
         methods: [],
-        runtime: new OrcaRuntimeService(),
+        runtime: new TopoRuntimeService(),
         userDataPath
       })
       try {

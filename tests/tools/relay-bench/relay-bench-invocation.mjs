@@ -2,8 +2,8 @@
 // Vet director-supplied probe/cell destinations too, preventing private/loopback requests.
 import { lookup as dnsLookup } from 'node:dns/promises'
 
-export const LIVE_ENV_VAR = 'ORCA_RELAY_BENCH_LIVE'
-export const DIRECTOR_ENV_VAR = 'ORCA_RELAY_BENCH_DIRECTOR'
+export const LIVE_ENV_VAR = 'TOPO_RELAY_BENCH_LIVE'
+export const DIRECTOR_ENV_VAR = 'TOPO_RELAY_BENCH_DIRECTOR'
 
 export function parseArgs(argv) {
   const flags = new Set()

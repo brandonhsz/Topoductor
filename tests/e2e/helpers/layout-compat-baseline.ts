@@ -2,7 +2,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import type { Page, TestInfo } from '@stablyai/playwright-test'
-import { expect } from './orca-app'
+import { expect } from './topo-app'
 import type { RuntimeClient } from '../../../src/cli/runtime/client'
 import { decodePairingOffer } from '../../../src/shared/remote-runtime/pairing/pairing'
 import { pairedRuntimeConnectionFromOffer } from '../../../src/shared/remote-runtime/pairing/paired-runtime-connection'
@@ -20,7 +20,7 @@ import { readWorkspaceLayoutStreamFrame } from '../../../src/shared/workspace-la
 
 const BASELINE_FILE = path.join(process.cwd(), 'tests', 'e2e', 'layout-compat-baselines.json')
 /** Also writes each observation here, one file per scenario and platform, to record a baseline. */
-export const LAYOUT_COMPAT_REPORT_DIR_ENV = 'ORCA_LAYOUT_COMPAT_REPORT_DIR'
+export const LAYOUT_COMPAT_REPORT_DIR_ENV = 'TOPO_LAYOUT_COMPAT_REPORT_DIR'
 
 type BaselineFile = { scenarios: Record<string, Partial<Record<NodeJS.Platform, unknown>>> }
 

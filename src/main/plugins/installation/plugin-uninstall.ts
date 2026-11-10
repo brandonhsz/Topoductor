@@ -26,7 +26,7 @@ export function canRemoveInstalledPlugin(
 
 /**
  * Removes an installed plugin with its approval, disabled flag and theme choices. Shared by the
- * Plugins page and `orca plugin uninstall`; false when the key is bundled, dev-only or unknown.
+ * Plugins page and `topo plugin uninstall`; false when the key is bundled, dev-only or unknown.
  */
 export async function uninstallInstalledPlugin(input: {
   pluginService: UninstallingPluginService
@@ -41,7 +41,7 @@ export async function uninstallInstalledPlugin(input: {
   if (!canRemoveInstalledPlugin(pluginService, pluginKey, lock)) {
     return false
   }
-  // Why: Orca republishes a copy it ships on the next launch; it must come back off, not on.
+  // Why: Topo republishes a copy it ships on the next launch; it must come back off, not on.
   const { bundledPluginRoot } = pluginService.options
   const shipped =
     bundledPluginRoot !== undefined && (await isBundledPluginKey(bundledPluginRoot, pluginKey))

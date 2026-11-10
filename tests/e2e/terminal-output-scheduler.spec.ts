@@ -1,7 +1,7 @@
 // Recover hidden overflow from main-owned terminal state when the tab becomes visible.
 
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   ensureTerminalVisible,
   getActiveTabId,
@@ -126,24 +126,24 @@ async function mainSnapshotContains(page: Page, ptyId: string, text: string): Pr
 
 test.describe('Terminal output scheduler', () => {
   test('hidden overflow restores from main-owned terminal state when the tab becomes visible', async ({
-    orcaPage
+    topoPage
   }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
-    await waitForActiveTerminalManager(orcaPage, 30_000)
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
 
-    const foregroundTabId = await getActiveTabId(orcaPage)
+    const foregroundTabId = await getActiveTabId(topoPage)
     if (!foregroundTabId) {
       throw new Error('Expected an initial terminal tab')
     }
-    const hiddenTabId = await createTerminalTab(orcaPage)
-    await waitForActiveTerminalManager(orcaPage, 30_000)
-    const hiddenPtyId = await waitForTabPtyId(orcaPage, hiddenTabId)
+    const hiddenTabId = await createTerminalTab(topoPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
+    const hiddenPtyId = await waitForTabPtyId(topoPage, hiddenTabId)
 
-    await tabLocator(orcaPage, foregroundTabId).click()
+    await tabLocator(topoPage, foregroundTabId).click()
     await expect
-      .poll(() => getDomActiveTabId(orcaPage), {
+      .poll(() => getDomActiveTabId(topoPage), {
         timeout: 5_000,
         message: 'Foreground terminal tab did not become active before hidden flood'
       })
@@ -154,30 +154,30 @@ test.describe('Terminal output scheduler', () => {
       `for (let i = 0; i < 55000; i++) console.log('RECOVER_FILL_' + i + '_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'); console.log('${marker}')`
     )
 
-    await sendPtyCommands(orcaPage, [{ ptyId: hiddenPtyId, command: floodCommand }])
+    await sendPtyCommands(topoPage, [{ ptyId: hiddenPtyId, command: floodCommand }])
 
     await expect
-      .poll(async () => mainSnapshotContains(orcaPage, hiddenPtyId, marker), {
+      .poll(async () => mainSnapshotContains(topoPage, hiddenPtyId, marker), {
         timeout: 30_000,
         message: 'Main-owned terminal snapshot did not capture the hidden flood marker'
       })
       .toBe(true)
 
-    await tabLocator(orcaPage, hiddenTabId).click()
+    await tabLocator(topoPage, hiddenTabId).click()
     await expect
-      .poll(() => getDomActiveTabId(orcaPage), {
+      .poll(() => getDomActiveTabId(topoPage), {
         timeout: 5_000,
         message: 'Hidden terminal tab did not become visible for recovery verification'
       })
       .toBe(hiddenTabId)
 
     await expect
-      .poll(async () => (await getTerminalContent(orcaPage)).includes(marker), {
+      .poll(async () => (await getTerminalContent(topoPage)).includes(marker), {
         timeout: 10_000,
         message: 'Hidden terminal did not restore the marker from main-owned state'
       })
       .toBe(true)
 
-    expect(await getTerminalContent(orcaPage)).not.toContain('Orca skipped hidden terminal output')
+    expect(await getTerminalContent(topoPage)).not.toContain('Topo skipped hidden terminal output')
   })
 })

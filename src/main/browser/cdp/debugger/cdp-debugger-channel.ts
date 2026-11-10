@@ -4,7 +4,7 @@ import { acquireElectronDebugger, type ElectronDebuggerLease } from './electron-
 import type { CdpClientResponseWriter } from '../transport/cdp-client-response-writer'
 import type { CdpSyntheticSessionRegistry } from '../transport/cdp-synthetic-session-registry'
 import { sendGuestCdpCommand } from './guest-cdp-command'
-import { isOrcaFrameSessionTraffic } from '../input/guest-frame-input-sessions'
+import { isTopoFrameSessionTraffic } from '../input/guest-frame-input-sessions'
 
 export class CdpDebuggerChannel {
   private nativeDebugger: WebContents['debugger'] | null = null
@@ -42,8 +42,8 @@ export class CdpDebuggerChannel {
         Record<string, unknown>,
         string | undefined
       ]
-      // Hide Orca-owned frame sessions that the client did not request.
-      if (isOrcaFrameSessionTraffic(this.webContents, method, params, sessionId || undefined)) {
+      // Hide Topo-owned frame sessions that the client did not request.
+      if (isTopoFrameSessionTraffic(this.webContents, method, params, sessionId || undefined)) {
         return
       }
       const client = this.getClient()

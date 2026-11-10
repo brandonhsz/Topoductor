@@ -30,15 +30,15 @@ afterEach(() => {
 })
 
 async function profileWithNewerSaves(extra: Record<string, unknown> = {}) {
-  const root = mkdtempSync(join(tmpdir(), 'orca-section-repair-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-section-repair-'))
   roots.push(root)
   const directory = join(root, 'profiles', profileId)
   mkdirSync(directory, { recursive: true })
   writeFileSync(
-    join(root, 'orca-profile-index.json'),
+    join(root, 'topo-profile-index.json'),
     JSON.stringify({ activeProfileId: profileId, profiles: [{ id: profileId }] })
   )
-  const dataFile = join(directory, 'orca-data.json')
+  const dataFile = join(directory, 'topo-data.json')
   const databaseFile = join(directory, 'profile-state.db')
   const initialJson = JSON.stringify({
     ...extra,

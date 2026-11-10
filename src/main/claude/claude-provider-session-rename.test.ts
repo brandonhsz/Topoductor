@@ -11,7 +11,7 @@ let home: string
 let conversation: string
 let transcript: string
 beforeEach(async () => {
-  home = await fs.mkdtemp(join(tmpdir(), 'orca-claude-rename-'))
+  home = await fs.mkdtemp(join(tmpdir(), 'topo-claude-rename-'))
   conversation = randomUUID()
   const project = join(home, 'projects', 'workspace')
   await fs.mkdir(project, { recursive: true })

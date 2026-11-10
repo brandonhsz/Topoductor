@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import type { CreateHostedReviewResult } from '../../src/shared/source-control/hosted-review/hosted-review-contracts'
 
@@ -126,7 +126,7 @@ async function seedCreatePREligibleBranch(
       number: 73,
       title: 'Create PR from E2E',
       state: 'open' as const,
-      url: 'https://github.com/acme/orca/pull/73',
+      url: 'https://github.com/acme/topo/pull/73',
       checksStatus: 'pending' as const,
       updatedAt: '2026-05-15T00:00:00.000Z',
       mergeable: 'UNKNOWN' as const
@@ -193,7 +193,7 @@ async function seedCreatePREligibleBranch(
         return {
           ok: true as const,
           number: 73,
-          url: 'https://github.com/acme/orca/pull/73'
+          url: 'https://github.com/acme/topo/pull/73'
         }
       }
     }))
@@ -205,40 +205,40 @@ async function seedCreatePREligibleBranch(
 }
 
 test.describe('Source Control create pull request', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
   })
 
   test('surfaces create failures without clearing the pull request composer', async ({
-    orcaPage
+    topoPage
   }) => {
     const failureMessage = 'Create PR failed: GitHub API rate limit exceeded'
-    const { branch, worktreeId } = await seedCreatePREligibleBranch(orcaPage, {
+    const { branch, worktreeId } = await seedCreatePREligibleBranch(topoPage, {
       createResult: {
         ok: false,
         code: 'unknown',
         error: failureMessage
       }
     })
-    await openSourceControl(orcaPage, worktreeId)
-    await forceCreatePREligibleStatus(orcaPage, worktreeId, branch)
+    await openSourceControl(topoPage, worktreeId)
+    await forceCreatePREligibleStatus(topoPage, worktreeId, branch)
 
-    const titleInput = orcaPage.getByRole('textbox', { name: 'Pull request title' })
-    const descriptionInput = orcaPage.getByRole('textbox', {
+    const titleInput = topoPage.getByRole('textbox', { name: 'Pull request title' })
+    const descriptionInput = topoPage.getByRole('textbox', {
       name: 'Pull request description'
     })
-    const createButton = getCreatePRComposerSubmitButton(orcaPage)
+    const createButton = getCreatePRComposerSubmitButton(topoPage)
     await expect(createButton).toBeVisible({ timeout: 10_000 })
     await titleInput.fill('Failing PR from E2E')
     await descriptionInput.fill('This draft should survive a failed create attempt.')
     await expect(createButton).toBeEnabled()
     await createButton.click()
 
-    await expect(orcaPage.getByText(failureMessage)).toBeVisible()
+    await expect(topoPage.getByText(failureMessage)).toBeVisible()
     await expect(titleInput).toHaveValue('Failing PR from E2E')
     await expect(descriptionInput).toHaveValue('This draft should survive a failed create attempt.')
-    await expect(orcaPage.getByRole('combobox', { name: 'Pull request base branch' })).toHaveValue(
+    await expect(topoPage.getByRole('combobox', { name: 'Pull request base branch' })).toHaveValue(
       'main'
     )
     await expect(createButton).toBeEnabled()

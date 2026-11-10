@@ -43,7 +43,7 @@ it('keeps the current attempt pinned when a superseded attempt finishes its trus
         finishStaleRead = resolve
       })
   )
-  installMock.mockResolvedValue({ rejection: null, pinnedByOrcaStore: true })
+  installMock.mockResolvedValue({ rejection: null, pinnedByTopoStore: true })
   const conn = new SshConnection(createTarget(), createCallbacks())
   const stale = conn.connect().catch(() => {})
   await vi.waitFor(() => expect(installMock).toHaveBeenCalledTimes(1))
@@ -51,7 +51,7 @@ it('keeps the current attempt pinned when a superseded attempt finishes its trus
   await vi.waitFor(() => expect(clientInstances).toHaveLength(1))
   const currentClient = clientInstances[0]
 
-  finishStaleRead({ rejection: null, pinnedByOrcaStore: true })
+  finishStaleRead({ rejection: null, pinnedByTopoStore: true })
   await vi.waitFor(() => expect(clientInstances).toHaveLength(2))
   clientInstances[1].emit('error', new Error('stale attempt failed'))
   await stale

@@ -115,7 +115,7 @@ export function useNativeChatLaunchDraftAdoption(args: {
     if (!ownsTabWideLaunchDraft) {
       return
     }
-    // Mark before copying so composer text that declined an Orca seed keeps declining it after clearing.
+    // Mark before copying so composer text that declined a Topo seed keeps declining it after clearing.
     useAppStore.getState().markNativeChatLaunchDraftAdopted(terminalTabId)
     if (draft === '' || draft === launchDraft.replacesText) {
       // Do not persist the untouched copy; after reload its seed can no longer replace the TUI input.

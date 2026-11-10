@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FolderInput, Plus, TerminalSquare, Trash2 } from 'lucide-react'
 import {
-  ORCAD_HOST_NEWER_DEFERRAL_CODE,
+  TOPOD_HOST_NEWER_DEFERRAL_CODE,
   type WslHostConnectIntent,
   type WslHostStatus
 } from '../../../../../../shared/wsl-host-types'
@@ -82,7 +82,7 @@ function getWslHostRowStatus(
   }
 }
 
-/** Settings → Orca servers: the WSL distros added as hosts (Windows, experimental). */
+/** Settings → Topo servers: the WSL distros added as hosts (Windows, experimental). */
 export function WslHostsSection({
   onChanged
 }: {
@@ -146,7 +146,7 @@ export function WslHostsSection({
                 ? getWslHostsPausedLabel(t)
                 : t(
                     'auto.components.settings.wslHosts.description',
-                    'Orca runs a server inside each distro. Opening a project never starts a stopped distro: click Start, open a new terminal, or connect it here.'
+                    'Topo runs a server inside each distro. Opening a project never starts a stopped distro: click Start, open a new terminal, or connect it here.'
                   ))}
           </p>
         </div>
@@ -180,7 +180,7 @@ export function WslHostsSection({
             const deferred = unavailableLabel ? null : status?.deferredUpdate
             const connectDisabled =
               unavailableLabel !== null || connectingId !== null || status?.state === 'connecting'
-            const distro = environment.orcadDeployment.distro
+            const distro = environment.topodDeployment.distro
             const moveLine = unavailableLabel
               ? null
               : wslMoveOrchestratorLine(wslMoveOrchestratorRecordFor(moveRecords, distro), t)
@@ -213,8 +213,8 @@ export function WslHostsSection({
                 status={getWslHostRowStatus(status, unavailableLabel !== null, t)}
                 footer={moveLine ? <WslMoveOrchestratorStatusLine distro={distro} /> : undefined}
                 primaryAction={
-                  // A newer Orca's host refuses Update; Force stays in the menu.
-                  deferred && deferred.code !== ORCAD_HOST_NEWER_DEFERRAL_CODE ? (
+                  // A newer Topo's host refuses Update; Force stays in the menu.
+                  deferred && deferred.code !== TOPOD_HOST_NEWER_DEFERRAL_CODE ? (
                     <Button
                       type="button"
                       size="xs"
@@ -250,7 +250,7 @@ export function WslHostsSection({
                       </DropdownMenuItem>
                     ) : null}
                     {deferred &&
-                    deferred.code !== ORCAD_HOST_NEWER_DEFERRAL_CODE &&
+                    deferred.code !== TOPOD_HOST_NEWER_DEFERRAL_CODE &&
                     !(ready && !unavailableLabel) ? (
                       <DropdownMenuItem
                         disabled={connectDisabled}
@@ -261,7 +261,7 @@ export function WslHostsSection({
                     ) : null}
                     {unavailableLabel || !acceptsNewWork ? null : (
                       <DropdownMenuItem
-                        onSelect={() => openWslMoveDialogFor(environment.orcadDeployment.distro)}
+                        onSelect={() => openWslMoveDialogFor(environment.topodDeployment.distro)}
                       >
                         <FolderInput />
                         {t('wslMove.entry.hostRow', 'Move projects from this distro…')}

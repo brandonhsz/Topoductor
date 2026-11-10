@@ -9,7 +9,7 @@ import {
   AgentSessionPreSpawnError
 } from '../../../../native-chat/agent-session-wire/providers/structured-agent-session-adapter-errors'
 import type { AgentSessionJournal } from '../../../../native-chat/agent-session-journal/journal-store'
-import { currentRunCoordinatorOrcaSessionId } from '../../db/runs/run-coordinator-orca-session'
+import { currentRunCoordinatorTopoSessionId } from '../../db/runs/run-coordinator-topo-session'
 import { idOf } from '../../../rpc/orchestration-session-caller-test-fixture'
 import { operationId, providerFaults } from './structured-chat-coordinator-fake-codex-fixture'
 
@@ -204,7 +204,7 @@ describe('a worker result reaches the structured chat that coordinates it', () =
     expect(unread(`run:${runId}`)).toHaveLength(1)
   })
 
-  it('keeps a report in doubt across an Orca restart without restarting its agent', async () => {
+  it('keeps a report in doubt across a Topo restart without restarting its agent', async () => {
     observationClock.start()
     await openChat(COORDINATOR)
     const { runId, taskId } = await coordinatorRunAndTask()
@@ -418,8 +418,8 @@ describe('a worker result reaches the structured chat that coordinates it', () =
     const ctx = orchestrationTestContext(
       transport,
       new Map([
-        ['from', `orca_session_id:${PEER_CHAT}`],
-        ['to', `orca_session_id:${COORDINATOR}`],
+        ['from', `topo_session_id:${PEER_CHAT}`],
+        ['to', `topo_session_id:${COORDINATOR}`],
         ['subject', 'Need your decision'],
         ['body', 'Worker question'],
         ['retry-request', '25d73135-2415-489b-96fa-a232854333d0']
@@ -501,7 +501,7 @@ describe('a /clear keeps the chat its orchestration address', () => {
     ).resolves.toMatchObject({ run: { id: runId } })
     await vi.waitFor(() => expect(unread(`run:${runId}`)).toEqual([]), WAIT)
     expect(db.getRunRaw(runId)).toMatchObject({
-      coordinator_orca_session_id: COORDINATOR,
+      coordinator_topo_session_id: COORDINATOR,
       consumer_generation: generation
     })
   })
@@ -530,8 +530,8 @@ describe('a /clear keeps the chat its orchestration address', () => {
 
   it('binds a Run a cleared chat creates or uses to the same conversation at the current generation', async () => {
     const root = COORDINATOR
-    const boundOrcaSessionId = (runId: string): string | null =>
-      currentRunCoordinatorOrcaSessionId(db.getRunRaw(runId)!)
+    const boundTopoSessionId = (runId: string): string | null =>
+      currentRunCoordinatorTopoSessionId(db.getRunRaw(runId)!)
     await openChat(COORDINATOR)
     const firstClear = await clearChat(COORDINATOR)
     await startClearedContext(firstClear)
@@ -539,24 +539,24 @@ describe('a /clear keeps the chat its orchestration address', () => {
       (await call('orchestration.runCreate', { objective: 'first' }, { sessionId: firstClear })).run
     )
     expect(db.getRunRaw(first)).toMatchObject({
-      coordinator_orca_session_id: root,
-      coordinator_orca_session_id_generation: db.getRunRaw(first)!.consumer_generation
+      coordinator_topo_session_id: root,
+      coordinator_topo_session_id_generation: db.getRunRaw(first)!.consumer_generation
     })
-    expect(boundOrcaSessionId(first)).toBe(root)
+    expect(boundTopoSessionId(first)).toBe(root)
     const second = idOf(
       (await call('orchestration.runCreate', { objective: 'second' }, { sessionId: firstClear }))
         .run
     )
     // A later run-create keeps the earlier Run; the run-use below keeps only the one it names.
-    expect(boundOrcaSessionId(first)).toBe(root)
+    expect(boundTopoSessionId(first)).toBe(root)
 
     const cleared = await clearChat(firstClear)
     await startClearedContext(cleared)
     await call('orchestration.runUse', { id: first }, { sessionId: cleared })
     const rebound = db.getRunRaw(first)!
-    expect(rebound.coordinator_orca_session_id).toBe(root)
-    expect(rebound.coordinator_orca_session_id_generation).toBe(rebound.consumer_generation)
-    expect(boundOrcaSessionId(second)).toBeNull()
+    expect(rebound.coordinator_topo_session_id).toBe(root)
+    expect(rebound.coordinator_topo_session_id_generation).toBe(rebound.consumer_generation)
+    expect(boundTopoSessionId(second)).toBeNull()
     await expect(
       call('orchestration.runCurrent', {}, { sessionId: cleared })
     ).resolves.toMatchObject({ run: { id: first } })
@@ -570,7 +570,7 @@ describe('any live session is addressable by its id', () => {
     const response = await dispatcher.dispatch(
       request('orchestration.send', {
         from: 'term_worker',
-        to: `orca_session_id:${PEER_CHAT}`,
+        to: `topo_session_id:${PEER_CHAT}`,
         subject: 'ping'
       })
     )

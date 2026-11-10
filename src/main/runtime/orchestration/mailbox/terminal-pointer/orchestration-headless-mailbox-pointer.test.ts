@@ -4,7 +4,7 @@ import '../../db/contract-constants'
 import '../../db/messages/mailbox-routing-page'
 import '../../db/dispatch-row-writer'
 import '../../db/attempt-outcome-projection'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import {
   createRuntime,
   PANE_KEY,
@@ -47,7 +47,7 @@ async function coordinator(host: Host = 'headless') {
   return { db, runtime, write, sendRunMail }
 }
 
-async function goIdle(runtime: OrcaRuntimeService): Promise<void> {
+async function goIdle(runtime: TopoRuntimeService): Promise<void> {
   runtime.onPtyData(PTY_ID, '\x1b]0;Codex working\x07', 1)
   runtime.onPtyData(PTY_ID, '\x1b]0;Codex done\x07', 2)
   await runtime.serializeMainTerminalBuffer(PTY_ID)

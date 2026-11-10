@@ -12,7 +12,7 @@ afterEach(async () => {
 })
 
 async function tempPluginsDir(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-discovery-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-discovery-'))
   roots.push(root)
   return root
 }
@@ -69,6 +69,6 @@ describe('installed plugin discovery identity', () => {
 
     // An older host still names the version gap rather than a schema error.
     const [old] = await discoverPlugins({ pluginsDir, devPluginPaths: [], hostVersion: '1.4.200' })
-    expect(old && 'error' in old ? old.error : '').toBe('requires Orca >=1.4.244 (this is 1.4.200)')
+    expect(old && 'error' in old ? old.error : '').toBe('requires Topo >=1.4.244 (this is 1.4.200)')
   })
 })

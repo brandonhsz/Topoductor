@@ -21,7 +21,7 @@ afterEach(async () => {
 })
 
 async function fixture(options: { installed: boolean }): Promise<ValidDiscoveredPlugin> {
-  const rootDir = await mkdtemp(join(tmpdir(), 'orca-frame-source-'))
+  const rootDir = await mkdtemp(join(tmpdir(), 'topo-frame-source-'))
   roots.push(rootDir)
   await mkdir(join(rootDir, 'src'), { recursive: true })
   await writeFile(

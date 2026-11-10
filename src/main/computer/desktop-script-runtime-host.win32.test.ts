@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { DesktopScriptRuntimeHost } from './desktop-script-runtime-host'
 
 /** Exercise real PowerShell framing and flushing; fake-child unit tests cannot verify them. */
@@ -34,7 +34,7 @@ describeOnWindows('runtime.ps1 serve mode', () => {
 
     await expect(runtime.request({ tool: 'handshake' })).resolves.toMatchObject({
       ok: true,
-      capabilities: { protocolVersion: 1, provider: 'orca-computer-use-windows' }
+      capabilities: { protocolVersion: 1, provider: 'topo-computer-use-windows' }
     })
 
     const apps = await runtime.request({ tool: 'list_apps' })

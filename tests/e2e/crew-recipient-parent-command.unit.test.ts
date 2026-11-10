@@ -1,6 +1,6 @@
 import { afterEach, expect, it, vi } from 'vitest'
 import { z } from 'zod'
-import { partialRuntimeStore } from '../../src/main/runtime/orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../src/main/runtime/topo-runtime-tests/runtime-store-partial-fixture'
 import { RuntimeClientError } from '../../src/cli/runtime-client'
 import { releaseAgentSessionRecordStore } from '../../src/main/runtime/agent-session/records/agent-session-record-store-slot'
 import { createOrdinaryCrewCommandFixture } from './crew-recipient-public-command.test-fixture'
@@ -106,7 +106,7 @@ it('executes the actual published Managed by address after its genuine foreign p
       status: 'running',
       exitCode: null
     }))
-    vi.spyOn(f.runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('orca')
+    vi.spyOn(f.runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('topo')
     const prompt = vi
       .spyOn(f.runtime, 'sendTerminalAgentPrompt')
       .mockImplementation(async (handle) => ({

@@ -46,7 +46,7 @@ function devEmit() {
 }
 
 async function realService() {
-  const root = await realpath(await mkdtemp(join(tmpdir(), 'orca-dev-emit-rpc-')))
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'topo-dev-emit-rpc-')))
   roots.push(root)
   await writeFile(join(root, 'orca-plugin.json'), JSON.stringify(manifest))
   await writeFile(join(root, 'worker.js'), 'export function activate() {}')

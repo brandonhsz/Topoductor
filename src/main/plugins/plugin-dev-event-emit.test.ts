@@ -47,7 +47,7 @@ function plugin(rootDir: string, raw: Record<string, unknown> = {}): ValidDiscov
 async function harness(
   options: { plugin?: ValidDiscoveredPlugin; approved?: boolean; openPanels?: number } = {}
 ) {
-  const folder = await realpath(await mkdtemp(join(tmpdir(), 'orca-dev-emit-')))
+  const folder = await realpath(await mkdtemp(join(tmpdir(), 'topo-dev-emit-')))
   roots.push(folder)
   const target = options.plugin ?? plugin(folder)
   const deliverEvent = vi.fn()
@@ -126,7 +126,7 @@ describe('emitPluginDevEvent', () => {
   })
 
   it('reaches a panel-only plugin without starting a worker', async () => {
-    const folder = await realpath(await mkdtemp(join(tmpdir(), 'orca-dev-emit-panel-')))
+    const folder = await realpath(await mkdtemp(join(tmpdir(), 'topo-dev-emit-panel-')))
     roots.push(folder)
     const panelOnly = plugin(folder, {
       execution: 'sandboxed-ui',

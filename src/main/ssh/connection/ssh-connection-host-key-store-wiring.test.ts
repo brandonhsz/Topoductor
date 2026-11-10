@@ -86,8 +86,8 @@ beforeEach(() => {
   eventHandlers = new Map()
   presentedHostKey = VALID_ED25519_HOST_KEY
   hostKeyAccepted = undefined
-  profileDir = mkdtempSync(join(tmpdir(), 'orca-ssh-store-'))
-  initSshHostKeyStoreFile(join(profileDir, 'orca.json'))
+  profileDir = mkdtempSync(join(tmpdir(), 'topo-ssh-store-'))
+  initSshHostKeyStoreFile(join(profileDir, 'topo.json'))
 })
 
 afterEach(() => {

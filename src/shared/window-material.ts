@@ -1,7 +1,7 @@
 /** What sits behind the main window's translucent surfaces: nothing, the desktop, or the blurred desktop. */
 export type WindowMaterial = 'off' | 'translucent' | 'blur'
 
-const WINDOW_MATERIAL_ARGUMENT_PREFIX = '--orca-window-material='
+const WINDOW_MATERIAL_ARGUMENT_PREFIX = '--topo-window-material='
 
 export type WindowMaterialSettings = {
   /** Main-window backdrop shown through translucent terminals; creation-time, so changes need a restart. */

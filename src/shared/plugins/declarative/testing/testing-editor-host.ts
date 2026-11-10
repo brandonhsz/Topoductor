@@ -25,7 +25,7 @@ import {
 } from '../../frames/plugin-protocol'
 
 /**
- * A stand-in for Orca's custom editor host: runs the frame shell's real `window.orca` (document
+ * A stand-in for Topo's custom editor host: runs the frame shell's real `window.orca` (document
  * API and session included) against an in-memory file, so editor sync logic tests in plain Node.
  */
 
@@ -46,7 +46,7 @@ export type MockEditorEdit = {
 export type MockEditorHost = {
   /** The frame API, also installed as `globalThis.orca`. */
   readonly orca: MockEditorFrameApi
-  /** The file as Orca holds it now: text, or undefined for a bytes file. */
+  /** The file as Topo holds it now: text, or undefined for a bytes file. */
   readonly text: string | undefined
   readonly bytes: Uint8Array | undefined
   /** Rises with each document sent to the editor. */
@@ -58,7 +58,7 @@ export type MockEditorHost = {
   /** Refuses the next edit with `conflict`, after landing `outside` first when given. */
   conflictNext(outside?: string | ArrayBuffer | Uint8Array): void
   /** As a save does: asks the editor to post pending edits, and waits for its answer; rejects
-   *  after an edit too large to apply, as Orca then refuses to save. */
+   *  after an edit too large to apply, as Topo then refuses to save. */
   flush(): Promise<void>
   setTheme(colorScheme: 'light' | 'dark'): void
   dispose(): void
@@ -135,7 +135,7 @@ export function mockEditorHost(
   }
   const theme = () => ({ colorScheme, tokens: '' })
 
-  // As Orca's host: an oversized edit is refused before it is read, and blocks saving until a
+  // As Topo's host: an oversized edit is refused before it is read, and blocks saving until a
   // later edit lands, because the buffer lacks the editor's newest change.
   let lostEdit = false
   const applyEdit = (message: FrameMessage): PluginError | null => {
@@ -268,7 +268,7 @@ export function mockEditorHost(
           if (error) {
             reject(new Error(`editor.flush failed: ${JSON.stringify(error)}`))
           } else if (lostEdit) {
-            reject(new Error("Orca would not save: the editor's newest edit was too large"))
+            reject(new Error("Topo would not save: the editor's newest edit was too large"))
           } else {
             resolve()
           }

@@ -103,9 +103,9 @@ export function ResourcePtyPanel({
         <div className="text-xs text-muted-foreground">
           {inventory.observedAt === null
             ? t('resourceManager.pty.thisComputer', 'This computer')
-            : t('resourceManager.pty.localOwnedCount', '{{count}} Orca PTYs on this computer', {
+            : t('resourceManager.pty.localOwnedCount', '{{count}} Topo PTYs on this computer', {
                 count: sessions.length,
-                defaultValue_one: '{{count}} Orca PTY on this computer'
+                defaultValue_one: '{{count}} Topo PTY on this computer'
               })}
           {inventory.observedAt !== null && unbound > 0 && (
             <span>
@@ -186,7 +186,7 @@ export function ResourcePtyPanel({
         )}
         {inventory.observedAt !== null && sessions.length === 0 && (
           <p className="p-3 text-xs text-muted-foreground">
-            {t('resourceManager.pty.noLocalOrcaPtys', 'No local Orca PTYs')}
+            {t('resourceManager.pty.noLocalTopoPtys', 'No local Topo PTYs')}
           </p>
         )}
         <ResourcePtyList

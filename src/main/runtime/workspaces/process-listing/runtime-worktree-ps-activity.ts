@@ -189,7 +189,7 @@ function addTerminalTitleEvidence(
   }
 }
 
-/** The host a PTY record proves: its SSH connection, else this Orca. A missing record proves none. */
+/** The host a PTY record proves: its SSH connection, else this Topo. A missing record proves none. */
 export function ptyRecordHostId(
   pty: Pick<RuntimePtyWorktreeRecord, 'connectionId'> | undefined
 ): ExecutionHostId | undefined {

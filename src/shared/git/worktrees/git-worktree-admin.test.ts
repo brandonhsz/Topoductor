@@ -15,7 +15,7 @@ let repo = ''
 let common = ''
 let linked = ''
 let admin = ''
-const preparationReason = 'orca-create-preparation:v1:12345:lease'
+const preparationReason = 'topo-create-preparation:v1:12345:lease'
 
 function rows(): GitWorktreeInfo[] {
   return [
@@ -25,10 +25,10 @@ function rows(): GitWorktreeInfo[] {
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(path.join(tmpdir(), 'orca-admin-safety-'))
+  root = await mkdtemp(path.join(tmpdir(), 'topo-admin-safety-'))
   repo = path.join(root, 'repo')
   common = path.join(repo, '.git')
-  linked = path.join(root, '.orca-preparing', 'checkout')
+  linked = path.join(root, '.topo-preparing', 'checkout')
   admin = path.join(common, 'worktrees', 'checkout')
   await mkdir(admin, { recursive: true })
   await mkdir(linked, { recursive: true })

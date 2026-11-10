@@ -4,7 +4,7 @@ import { FolderOpen, RefreshCw } from 'lucide-react'
 import { toast } from 'sonner'
 import type { CliInstallStatus } from '../../../../../../shared/cli-install-types'
 import type { GlobalSettings } from '../../../../../../shared/global-settings-types'
-import { ORCA_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
+import { TOPO_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
 import {
   GLOBAL_AGENT_SKILL_SOURCE_KINDS,
   useInstalledAgentSkill
@@ -47,19 +47,19 @@ function getRevealLabel(platform: string, t: Translate = translate): string {
 
 function getInstallDescription(platform: string): string {
   if (platform === 'darwin') {
-    return 'Register `orca` in /usr/local/bin.'
+    return 'Register `topo` in /usr/local/bin.'
   }
   if (platform === 'linux') {
-    return 'Register `orca-ide` in ~/.local/bin.'
+    return 'Register `topo-ide` in ~/.local/bin.'
   }
   if (platform === 'win32') {
-    return 'Register `orca` in your user PATH.'
+    return 'Register `topo` in your user PATH.'
   }
   return 'CLI registration is not yet available on this platform.'
 }
 
 function getFallbackCommandName(platform: string): string {
-  return platform === 'linux' ? 'orca-ide' : 'orca'
+  return platform === 'linux' ? 'topo-ide' : 'topo'
 }
 
 export function CliSection({
@@ -93,7 +93,7 @@ export function CliSection({
     loading: cliSkillLoading,
     error: cliSkillError,
     refresh: refreshCliSkill
-  } = useInstalledAgentSkill(ORCA_CLI_SKILL_NAME, {
+  } = useInstalledAgentSkill(TOPO_CLI_SKILL_NAME, {
     discoveryTarget: skillRuntime.discoveryTarget,
     runtimeTarget: skillRuntime.discoveryRuntimeTarget,
     sourceKinds: GLOBAL_AGENT_SKILL_SOURCE_KINDS
@@ -158,10 +158,10 @@ export function CliSection({
   return (
     <div data-settings-section="cli">
       <SettingsGroup
-        title={t('auto.components.settings.CliSection.c5c0f2641d', 'Orca CLI')}
+        title={t('auto.components.settings.CliSection.c5c0f2641d', 'Topo CLI')}
         description={t(
-          'auto.components.settings.CliSection.outsideOrcaDescription',
-          'Orca terminals already have `orca`. Turn this on to use `orca` from other terminals outside Orca.'
+          'auto.components.settings.CliSection.outsideTopoDescription',
+          'Topo terminals already have `topo`. Turn this on to use `topo` from other terminals outside Topo.'
         )}
       >
         <div data-settings-row="" className="space-y-3 py-3">
@@ -295,7 +295,7 @@ export function CliSection({
               <p className="text-xs text-muted-foreground">
                 {t(
                   'auto.components.settings.CliSection.36a6f919ba',
-                  'Give agents Orca-aware workspace, terminal, and progress workflows.'
+                  'Give agents Topo-aware workspace, terminal, and progress workflows.'
                 )}
               </p>
             </div>
@@ -306,11 +306,11 @@ export function CliSection({
               title={t('auto.components.settings.CliSection.6053cf736c', 'CLI skill')}
               description={t(
                 'auto.components.settings.CliSection.e8012c03a1',
-                'Enables agents to use Orca workspace, terminal, and progress commands.'
+                'Enables agents to use Topo workspace, terminal, and progress commands.'
               )}
-              skillNames={[ORCA_CLI_SKILL_NAME]}
+              skillNames={[TOPO_CLI_SKILL_NAME]}
               target={skillRuntime.bundledSkillTarget}
-              // COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+              // COMPAT(wsl-bridge): removed when WSL runs as an topod host.
               terminalRuntime={agentRuntime}
               installed={cliSkillDetected}
               loading={cliSkillLoading}

@@ -17,12 +17,12 @@ export function nativeChatPasteNotSavedNotice(t: Translate = translate): string 
 }
 
 /** Captures each token, so text split around them has the tokens at odd indices. */
-export const NATIVE_CHAT_PASTED_TEXT_TOKEN = /(\[Pasted text\]\(orca-paste:[0-9a-f-]{36}\))/
+export const NATIVE_CHAT_PASTED_TEXT_TOKEN = /(\[Pasted text\]\(topo-paste:[0-9a-f-]{36}\))/
 
 export function nativeChatPastedTextToken(id: string): string {
-  return `[Pasted text](orca-paste:${id})`
+  return `[Pasted text](topo-paste:${id})`
 }
 
 export function nativeChatPastedTextId(token: string): string | null {
-  return /^\[Pasted text\]\(orca-paste:([0-9a-f-]{36})\)$/.exec(token)?.[1] ?? null
+  return /^\[Pasted text\]\(topo-paste:([0-9a-f-]{36})\)$/.exec(token)?.[1] ?? null
 }

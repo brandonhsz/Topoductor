@@ -13,7 +13,7 @@ import { setStructuredAgentSessionSendNotice } from './structured-agent-session-
 // Return legacy unsent copies to the composer only if the host holds neither message nor card; delete only after durable hand-back.
 // On the first release on/after 2027-04-01, replace legacy recovery with one-time prefix-key removal.
 
-const LEGACY_OUTBOX_PREFIX = 'orca:desktopStructuredAgentSessionOutbox:v1:'
+const LEGACY_OUTBOX_PREFIX = 'topo:desktopStructuredAgentSessionOutbox:v1:'
 
 type LegacyOutboxMessage = { clientMessageId: string; body: AgentJournalMessageItem }
 

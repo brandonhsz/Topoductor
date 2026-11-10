@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '../ui/dialog'
-import { getManagedOrcadApi } from '../../runtime/hosts/installation/managed-orcad-api-availability'
+import { getManagedTopodApi } from '../../runtime/hosts/installation/managed-topod-api-availability'
 
 /** Offered only for a refusal that saved state alone causes. */
 export function canMoveSshHostAnyway(status: SshManagedServerStatus | undefined): boolean {
@@ -21,7 +21,7 @@ export function canMoveSshHostAnyway(status: SshManagedServerStatus | undefined)
     status?.kind === 'relay' &&
     status.reason === 'refused' &&
     status.canLeaveBehind &&
-    getManagedOrcadApi()
+    getManagedTopodApi()
   )
 }
 
@@ -40,7 +40,7 @@ export function SshHostMoveAnywayDialog({
   onChanged: () => void
 }): React.JSX.Element | null {
   const t = useTranslate()
-  const api = getManagedOrcadApi()
+  const api = getManagedTopodApi()
   const mountedRef = useMountedRef()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -84,7 +84,7 @@ export function SshHostMoveAnywayDialog({
               <p>
                 {t(
                   'auto.components.settings.moveAnyway.description',
-                  'Orca sets itself up on {{host}} without the saved items below. They stay on this computer and don’t appear on {{host}}. Unsaved edits are kept, never deleted.',
+                  'Topo sets itself up on {{host}} without the saved items below. They stay on this computer and don’t appear on {{host}}. Unsaved edits are kept, never deleted.',
                   { host: target.label }
                 )}
               </p>

@@ -28,7 +28,7 @@ vi.mock('../plugins/panels/plugin-frame-guest-sessions', () => ({
 }))
 const guestSetup = vi.hoisted(() => {
   const setup: { result: { partition: string; url: string } | null } = {
-    result: { partition: 'persist:orca-plugin-test', url: 'x' }
+    result: { partition: 'persist:topo-plugin-test', url: 'x' }
   }
   return setup
 })
@@ -42,7 +42,7 @@ const SUCCESSOR = 'orca-samples.successor'
 // Why srcdoc by default: these cases pin ownership across a slow, verified entry load.
 beforeEach(() => {
   mocks.handlers.clear()
-  vi.stubEnv('ORCA_PLUGIN_ISOLATED_FRAMES', '0')
+  vi.stubEnv('TOPO_PLUGIN_ISOLATED_FRAMES', '0')
 })
 afterEach(async () => {
   for (const sender of senders.splice(0)) {
@@ -57,7 +57,7 @@ afterEach(async () => {
 })
 
 async function plugin(id: string): Promise<ValidDiscoveredPlugin> {
-  const rootDir = await mkdtemp(join(tmpdir(), 'orca-panel-document-'))
+  const rootDir = await mkdtemp(join(tmpdir(), 'topo-panel-document-'))
   roots.push(rootDir)
   await writeFile(join(rootDir, 'panel.html'), `<h1>${id}</h1>`)
   return {
@@ -148,13 +148,13 @@ function open(contents: ReturnType<typeof sender>, pluginKey = SUCCESSOR) {
 
 describe('plugin panel document ownership', () => {
   it('fails closed when the isolated guest cannot be set up', async () => {
-    vi.stubEnv('ORCA_PLUGIN_ISOLATED_FRAMES', '1')
+    vi.stubEnv('TOPO_PLUGIN_ISOLATED_FRAMES', '1')
     await harness()
     guestSetup.result = null
     try {
       await expect(open(sender())).resolves.toBeNull()
     } finally {
-      guestSetup.result = { partition: 'persist:orca-plugin-test', url: 'x' }
+      guestSetup.result = { partition: 'persist:topo-plugin-test', url: 'x' }
     }
   })
 })

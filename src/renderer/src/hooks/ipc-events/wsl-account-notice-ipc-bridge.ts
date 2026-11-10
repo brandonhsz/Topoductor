@@ -1,8 +1,8 @@
 import { toast } from 'sonner'
 import { translate } from '@/i18n/i18n'
-import type { WslOrcadAccountNotAppliedEvent } from '../../../../shared/wsl-orcad-account-notice'
+import type { WslTopodAccountNotAppliedEvent } from '../../../../shared/wsl-topod-account-notice'
 
-export function showWslAccountNotAppliedNotice({ distro }: WslOrcadAccountNotAppliedEvent): void {
+export function showWslAccountNotAppliedNotice({ distro }: WslTopodAccountNotAppliedEvent): void {
   toast.info(
     translate(
       'accounts.wslAccountNotApplied.title',
@@ -14,7 +14,7 @@ export function showWslAccountNotAppliedNotice({ distro }: WslOrcadAccountNotApp
       id: `wsl-account-not-applied:${distro.toLowerCase()}`,
       description: translate(
         'accounts.wslAccountNotApplied.description',
-        "Agents there use the distro's default Claude and Codex accounts until Orca in WSL is updated."
+        "Agents there use the distro's default Claude and Codex accounts until Topo in WSL is updated."
       )
     }
   )

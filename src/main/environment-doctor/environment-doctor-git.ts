@@ -10,7 +10,7 @@ import {
 
 const NETWORK_TIMEOUT_MS = 20_000
 // dry-run never writes refs, so this name exists only to avoid non-fast-forward noise.
-const PUSH_PROBE_REF = 'refs/heads/orca-env-doctor-push-probe'
+const PUSH_PROBE_REF = 'refs/heads/topo-env-doctor-push-probe'
 
 export type GitCheckoutProbe =
   | { kind: 'checkout'; root: string; commonDir: string }

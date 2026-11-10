@@ -1,7 +1,7 @@
 import { resolveRuntimeNavigationTarget } from '../../../../../shared/runtime-navigation'
 import { resolveChatTabActivation } from '../../../agent-session/agent-session-tab-identity'
 import { commitLeafMoveAndRekey } from '../../../../ipc/pty/ipc/leaf-move'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import type { MovedPanePlacement } from '../../../session-tabs/headless-pane-move-to-new-tab'
 import { defineMethod } from '../../core'
 import {
@@ -167,7 +167,7 @@ export const SESSION_TAB_MUTATION_METHODS = [
  * `session.tabs.move` translates it. A group the client cannot name leaves the tab appended.
  */
 async function resolveMovedPanePlacement(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   params: { worktree: string; sourceTabId: string; targetGroupId?: string; index?: number },
   pairedDeviceId: string | undefined,
   clientKind: 'mobile' | 'runtime' | undefined,
@@ -207,7 +207,7 @@ async function resolveMovedPanePlacement(
 const projectSessionTabsForMutationClient = projectSessionTabsForClient
 
 async function assertVisibleMutationTab(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   worktree: string,
   tabId: string,
   pairedDeviceId: string | undefined,

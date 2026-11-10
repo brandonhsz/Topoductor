@@ -1,11 +1,11 @@
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import { completeWorkerTerminalRelease } from './worker-release-completion'
 
 /** Release the failed attempt's terminal on retry-of: archive output, preserve user takeover and retain interrupted cleanup for recovery.
  * Best-effort only; cleanup never blocks or fails the new start. */
 export function releaseRetriedWorkerTerminal(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   db: OrchestrationDb,
   start: { retryOf?: string; terminal?: string }
 ): void {

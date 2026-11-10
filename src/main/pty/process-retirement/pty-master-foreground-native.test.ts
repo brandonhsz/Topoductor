@@ -14,7 +14,7 @@ describe.skipIf(process.platform === 'win32')('native PTY foreground group', () 
   it.skipIf(!process.env.CI && !supported)(
     'reads the live master and retires it before a subsequent terminal can reuse it',
     async () => {
-      const home = mkdtempSync(join(tmpdir(), 'orca-foreground-native-'))
+      const home = mkdtempSync(join(tmpdir(), 'topo-foreground-native-'))
       let term: pty.IPty | undefined
       let ended = false
       try {

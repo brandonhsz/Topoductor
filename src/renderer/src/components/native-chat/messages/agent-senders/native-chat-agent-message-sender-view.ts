@@ -13,7 +13,7 @@ import {
   agentMessageSenderOpens,
   resolveAgentMessageSenderTarget
 } from './native-chat-agent-message-sender-target'
-import { parseOrcaSessionAddress } from '../../../../../../shared/orca-session-address'
+import { parseTopoSessionAddress } from '../../../../../../shared/topo-session-address'
 import { agentMessageSavedKind } from '../../../../../../shared/agent-session/agent-message-presentation'
 
 /** A terminal may outlive its sender; only a saved actor reference selects current activity. */
@@ -24,16 +24,16 @@ function activitySender(
   if (!sender) {
     return
   }
-  const session = sender.party.orcaSessionId ?? parseOrcaSessionAddress(sender.party.address)
+  const session = sender.party.topoSessionId ?? parseTopoSessionAddress(sender.party.address)
   const address = session
-    ? `orca_session_id:${session}`
+    ? `topo_session_id:${session}`
     : dispatchId
       ? `dispatch:${dispatchId}`
       : sender.party.address.startsWith('dispatch:')
         ? sender.party.address
         : undefined
   return address
-    ? { ...sender, party: { address, orcaSessionId: session, terminalHandle: null } }
+    ? { ...sender, party: { address, topoSessionId: session, terminalHandle: null } }
     : undefined
 }
 
@@ -61,7 +61,7 @@ function useSenderLocation(
   dispatchId: string | undefined
 ) {
   const address = sender?.party.address
-  const sessionId = sender?.party.orcaSessionId
+  const sessionId = sender?.party.topoSessionId
   const handle = sender?.party.terminalHandle
   const savedAgent = agentMessageSavedKind(sender)
   const targetKind = target?.kind
@@ -79,7 +79,7 @@ function useSenderLocation(
     () =>
       address
         ? {
-            party: { address, orcaSessionId: sessionId ?? null, terminalHandle: handle ?? null },
+            party: { address, topoSessionId: sessionId ?? null, terminalHandle: handle ?? null },
             name: null,
             ...(savedAgent ? { agent: savedAgent } : {})
           }

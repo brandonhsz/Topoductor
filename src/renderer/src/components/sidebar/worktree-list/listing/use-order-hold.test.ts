@@ -5,7 +5,7 @@ import type { SortBy } from '../../../../../../shared/sidebar-list/smart-sort'
 import { useOrderHeldWhileEngaged } from './use-order-hold'
 
 vi.mock('../../../../../../shared/sidebar-inputs-switch', () => ({
-  ORCA_SIDEBAR_INPUTS_IS_MAIN: true
+  TOPO_SIDEBAR_INPUTS_IS_MAIN: true
 }))
 
 function mountList() {

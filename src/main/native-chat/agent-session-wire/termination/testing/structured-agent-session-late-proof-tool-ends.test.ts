@@ -37,7 +37,7 @@ let journals: ReturnType<typeof createTrackedJournalOpener>
 let journal: AgentSessionJournal
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-late-proof-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-late-proof-'))
   journals = createTrackedJournalOpener()
   journal = await journals.open({
     identity: {

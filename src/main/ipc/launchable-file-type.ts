@@ -1,7 +1,7 @@
 import { posix, win32 } from 'node:path'
 import { PLUGIN_SAVE_AS_BLOCKED_EXTENSIONS } from '../../shared/plugins/frames/plugin-save-as-extensions'
 
-/** What a link click may do with a local file: hand it to the OS, show it as text in Orca, or reveal it. */
+/** What a link click may do with a local file: hand it to the OS, show it as text in Topo, or reveal it. */
 export type LinkedFileAction = 'open' | 'view-as-text' | 'reveal'
 
 export type LinkedFileFacts = {
@@ -138,7 +138,7 @@ function isTextContent(head: Uint8Array): boolean {
 }
 
 /**
- * Decide what a link click does. Opening in Orca's editor never runs anything, so a launchable
+ * Decide what a link click does. Opening in Topo's editor never runs anything, so a launchable
  * file that is readable text is shown there; launchable binaries, bundles and archives are revealed.
  */
 export function classifyLinkedFile(

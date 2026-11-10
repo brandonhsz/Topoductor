@@ -34,7 +34,7 @@ async function loadClient() {
 }
 
 beforeEach(() => {
-  tempHome = mkdtempSync(join(tmpdir(), 'orca-jira-scoped-'))
+  tempHome = mkdtempSync(join(tmpdir(), 'topo-jira-scoped-'))
 })
 
 afterEach(async () => {

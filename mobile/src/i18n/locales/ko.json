@@ -37,7 +37,7 @@
       "title": "Agent 세션 기록",
       "unavailable": "에이전트 세션 기록 사용 불가",
       "unknownHostPlatform": "호스트 플랫폼을 확인할 수 없습니다.",
-      "updateHost": "에이전트 세션 기록을 보려면 이 호스트의 Orca를 업데이트하세요.",
+      "updateHost": "에이전트 세션 기록을 보려면 이 호스트의 Topo를 업데이트하세요.",
       "waitingForHost": "호스트 대기 중…",
       "workspace": "워크스페이스"
     },
@@ -73,7 +73,7 @@
       "stepProgress": "{{total}}단계 중 {{step}}단계"
     },
     "notifications": {
-      "description": "앱을 닫아도 에이전트 알림을 받을 수 있습니다. 알림은 Orca의 푸시 서비스와 Apple 또는 Google을 통해 전달됩니다."
+      "description": "앱을 닫아도 에이전트 알림을 받을 수 있습니다. 알림은 Topo의 푸시 서비스와 Apple 또는 Google을 통해 전달됩니다."
     },
     "pair": {
       "backToHome": "홈으로 돌아가기",
@@ -92,19 +92,19 @@
     "pairScan": {
       "cameraDisabledDescription": "설정에서 카메라 접근을 허용하거나 페어링 코드를 붙여넣으세요.",
       "cameraDisabledTitle": "카메라 접근 비활성화",
-      "cameraPermissionDescription": "데스크톱의 Orca에 표시된 QR 코드를 스캔하거나 페어링 코드를 붙여넣으세요.",
+      "cameraPermissionDescription": "데스크톱의 Topo에 표시된 QR 코드를 스캔하거나 페어링 코드를 붙여넣으세요.",
       "connectTimedOut": "{{seconds}}초 내에 연결하지 못했습니다. 어느 단계에서 멈췄는지 아래 로그를 확인하세요.",
       "connecting": "연결 중…",
       "invalidPairingCode": "유효한 페어링 코드가 아닙니다. 컴퓨터에서 코드를 복사해 다시 붙여넣으세요.",
-      "invalidQrCode": "유효한 Orca QR 코드가 아닙니다.",
+      "invalidQrCode": "유효한 Topo QR 코드가 아닙니다.",
       "downloadQrCode": "다운로드용 코드입니다. 데스크톱의 2단계에 있는 페어링 코드를 스캔하세요.",
-      "openDesktopStep": "컴퓨터에서 Orca를 실행하세요",
+      "openDesktopStep": "컴퓨터에서 Topo를 실행하세요",
       "openMobileSettingsStep": "설정 → 모바일로 이동하세요",
       "openSettings": "설정 열기",
       "pairingFailed": "페어링 실패: {{error}}",
       "pairingLog": "페어링 로그",
       "pasteCodeMessage": "컴퓨터의 QR 코드 아래에 표시된 코드를 복사하세요.",
-      "pasteCodePlaceholder": "orca://pair?code=... 또는 코드 붙여넣기",
+      "pasteCodePlaceholder": "topo://pair?code=... 또는 코드 붙여넣기",
       "pasteCodeTitle": "페어링 코드 붙여넣기",
       "pasteInstead": "대신 코드 붙여넣기",
       "pastePairingCode": "또는 페어링 코드 붙여넣기",
@@ -119,7 +119,7 @@
       "largeText": "크게 (125%)",
       "largerText": "더 크게 (150%)",
       "largestText": "가장 크게 (200%)",
-      "leaveAppDescription": "휴대폰에서 터미널을 사용하는 동안 Orca는 화면에 맞게 터미널을 축소합니다. 앱을 닫거나 다른 앱으로 전환할 때, 대화형 CLI 도구의 화면 배치가 바뀌지 않도록 휴대폰 크기를 유지할지 데스크톱 크기로 되돌릴지 설정합니다. 데스크톱 배너의 '복원'을 눌러 언제든 직접 크기를 조정할 수 있습니다.",
+      "leaveAppDescription": "휴대폰에서 터미널을 사용하는 동안 Topo는 화면에 맞게 터미널을 축소합니다. 앱을 닫거나 다른 앱으로 전환할 때, 대화형 CLI 도구의 화면 배치가 바뀌지 않도록 휴대폰 크기를 유지할지 데스크톱 크기로 되돌릴지 설정합니다. 데스크톱 배너의 '복원'을 눌러 언제든 직접 크기를 조정할 수 있습니다.",
       "leaveAppHeading": "앱을 벗어날 때",
       "noPairedDesktops": "아직 페어링된 데스크톱이 없습니다. 터미널 동작을 설정하려면 데스크톱을 페어링하세요.",
       "restoreAfterMinutes_one": "{{count}}분 후",
@@ -242,7 +242,7 @@
       "copyFailed": "이미지를 복사할 수 없습니다",
       "saveFailed": "이미지를 저장할 수 없습니다",
       "shareFailed": "이미지를 공유할 수 없습니다",
-      "photosAccessDenied": "설정에서 Orca의 사진 추가를 허용하세요",
+      "photosAccessDenied": "설정에서 Topo의 사진 추가를 허용하세요",
       "imageTooLarge": "이미지가 너무 큽니다"
     },
     "nativeChatProse": {
@@ -313,13 +313,13 @@
       "greenLead": "CI 통과:",
       "at": "커밋"
     },
-    "orcaStop": {
+    "topoStop": {
       "canContinue": "이 대화에서 계속할 수 있습니다.",
-      "crash": "이 응답이 진행되는 동안 {{machine}}의 Orca가 예기치 않게 중지되었습니다.",
-      "quit": "이 응답이 진행되는 동안 {{machine}}의 Orca가 종료되었습니다.",
-      "remote": "이 응답이 진행되는 동안 {{machine}}의 Orca가 중지되었습니다.",
+      "crash": "이 응답이 진행되는 동안 {{machine}}의 Topo가 예기치 않게 중지되었습니다.",
+      "quit": "이 응답이 진행되는 동안 {{machine}}의 Topo가 종료되었습니다.",
+      "remote": "이 응답이 진행되는 동안 {{machine}}의 Topo가 중지되었습니다.",
       "unnamedServer": "원격 서버",
-      "update": "이 응답이 진행되는 동안 {{machine}}의 Orca가 업데이트를 위해 다시 시작되었습니다."
+      "update": "이 응답이 진행되는 동안 {{machine}}의 Topo가 업데이트를 위해 다시 시작되었습니다."
     },
     "interruptedContinue": {
       "failed": "이 채팅을 계속할 수 없습니다. 다시 시도하거나 메시지를 보내세요.",
@@ -330,7 +330,7 @@
     },
     "permission": {
       "needsAccessTo": "접근이 필요한 경로: ",
-      "newerVersionRequired": "이 요청에는 최신 버전의 Orca가 필요합니다.",
+      "newerVersionRequired": "이 요청에는 최신 버전의 Topo가 필요합니다.",
       "planFile": "계획 파일: {{filePath}}",
       "reason": "이유: "
     },
@@ -364,7 +364,7 @@
       "waitingFor": "{{host}}에 다시 연결되면 보냅니다",
       "waiting": "데스크톱에 다시 연결되면 보냅니다",
       "behind": "대기 중 — 앞의 메시지를 확인해야 합니다",
-      "closed": "Orca가 닫히기 전에 보내지 못했습니다"
+      "closed": "Topo가 닫히기 전에 보내지 못했습니다"
     },
     "receipt": {
       "cancelled": "취소",
@@ -566,9 +566,9 @@
       "autoContinueCancel": "계속하지 않기",
       "statusResetAt": "{{time}}에 재설정됨",
       "statusResetsAt": "{{time}}에 재설정",
-      "statusContinuesShortly": "Orca가 곧 계속합니다",
-      "statusContinuesThen": "그때 Orca가 계속합니다",
-      "statusWontContinue": "Orca가 자동으로 계속하지 않습니다"
+      "statusContinuesShortly": "Topo가 곧 계속합니다",
+      "statusContinuesThen": "그때 Topo가 계속합니다",
+      "statusWontContinue": "Topo가 자동으로 계속하지 않습니다"
     },
     "useImageUpload": {
       "attachFailed": "첨부 실패",
@@ -585,7 +585,7 @@
       "incompleteReply": "첨부 파일이 변경되었거나 응답이 불완전합니다. 닫고 다시 시도하세요.",
       "notText": "이 파일은 텍스트로 미리 볼 수 없습니다. 저장한 후 다른 앱에서 여세요.",
       "openFailed": "첨부 파일을 열 수 없습니다. 다시 시도하세요.",
-      "hostUpdate": "이 호스트는 아직 텍스트 첨부 파일을 열 수 없습니다. 해당 호스트에서 Orca를 업데이트한 후 다시 시도하세요.",
+      "hostUpdate": "이 호스트는 아직 텍스트 첨부 파일을 열 수 없습니다. 해당 호스트에서 Topo를 업데이트한 후 다시 시도하세요.",
       "copyTooLarge": "파일이 너무 커서 복사할 수 없습니다. 대신 저장하세요.",
       "connectionChanged": "연결이 변경되었습니다. 첨부 파일을 다시 열어 보세요.",
       "hostChanged": "첨부 파일의 호스트가 변경되었습니다. 닫은 후 다시 여세요.",
@@ -633,10 +633,10 @@
       "historyLimit": "이 대화는 너무 길어 되돌아갈 수 없습니다. 변경된 내용은 없습니다.",
       "providerRefused": "에이전트가 이 메시지로 돌아갈 수 없었습니다.",
       "proofMismatch": "에이전트의 기록이 이 채팅과 일치하지 않았습니다. 계속하기 전에 대화를 확인하세요.",
-      "outcomeUnknown": "Orca가 대화가 이전 메시지로 돌아갔는지 확인하지 못했습니다. 다음 메시지가 전송되기 전에 확인합니다.",
-      "refused": "Orca가 이 메시지로 돌아갈 수 없었습니다. 계속하기 전에 대화를 확인하세요.",
+      "outcomeUnknown": "Topo가 대화가 이전 메시지로 돌아갔는지 확인하지 못했습니다. 다음 메시지가 전송되기 전에 확인합니다.",
+      "refused": "Topo가 이 메시지로 돌아갈 수 없었습니다. 계속하기 전에 대화를 확인하세요.",
       "unavailable": "채팅 연결이 완료될 때까지 기다리세요.",
-      "outcomeUnknownReturned": "Orca가 대화가 이 메시지로 돌아갔는지 확인하지 못했습니다. 메시지가 입력창으로 돌아왔으며, Orca는 다음 메시지가 전송되기 전에 대화를 확인합니다.",
+      "outcomeUnknownReturned": "Topo가 대화가 이 메시지로 돌아갔는지 확인하지 못했습니다. 메시지가 입력창으로 돌아왔으며, Topo는 다음 메시지가 전송되기 전에 대화를 확인합니다.",
       "timeout": "이 메시지로 돌아간 후 채팅이 업데이트되지 않았습니다. 최신 내용을 보려면 다시 열세요.",
       "pending": "대화가 이전 메시지로 돌아갈 때까지 기다리세요."
     },
@@ -644,7 +644,7 @@
       "busy": "다른 채팅이나 터미널을 여는 중입니다. 기다린 다음 {{agent}} 채팅을 다시 분기하세요.",
       "unconfirmed": "{{agent}}이(가) 분기를 확인하지 못했습니다. 채팅이 열렸을 수 있습니다. 다시 분기하기 전에 세션 기록을 확인하세요.",
       "failed": "{{agent}}이(가) 이 채팅을 분기하지 못했습니다. {{detail}}",
-      "unsupported": "이 호스트에서 이전 버전의 Orca가 실행 중입니다. 호스트의 Orca를 업데이트하고 다시 시도하세요."
+      "unsupported": "이 호스트에서 이전 버전의 Topo가 실행 중입니다. 호스트의 Topo를 업데이트하고 다시 시도하세요."
     }
   },
   "common": {
@@ -677,7 +677,7 @@
       "copyFailed": "복사하지 못함",
       "copyPrompt": "프롬프트 복사",
       "statusUnreadable": "이 호스트의 상태를 읽을 수 없습니다. 다시 시도 중…",
-      "updateRequired": "휴대폰에서 에이전트를 시작하려면 컴퓨터의 Orca를 업데이트하세요."
+      "updateRequired": "휴대폰에서 에이전트를 시작하려면 컴퓨터의 Topo를 업데이트하세요."
     },
     "agentSpinner": {
       "monitoring": "백그라운드 작업 모니터링 중",
@@ -692,7 +692,7 @@
     },
     "authFailedBannerActions": {
       "repair": "다시 페어링",
-      "webNote": "Orca 앱에서 이 호스트에 다시 연결하거나 호스트를 제거하세요."
+      "webNote": "Topo 앱에서 이 호스트에 다시 연결하거나 호스트를 제거하세요."
     },
     "codexResetCredit": {
       "alreadyAppliedTitle": "이미 재설정됨",
@@ -808,7 +808,7 @@
       "terminalLabel": "{{title}} ({{id}})",
       "unsentNotes_one": "미전송 메모 {{count}}개",
       "unsentNotes_other": "미전송 메모 {{count}}개",
-      "updateRequired": "컴퓨터에서 Orca를 업데이트하세요"
+      "updateRequired": "컴퓨터에서 Topo를 업데이트하세요"
     },
     "diffReviewFileSummary": {
       "changed": "변경됨",
@@ -869,10 +869,10 @@
     },
     "jiraConnectPrompt": {
       "checkAgain": "다시 확인",
-      "connectHint": "Orca 데스크톱의 설정 → 연동에서 Jira 사이트를 추가한 뒤 다시 확인하세요.",
+      "connectHint": "Topo 데스크톱의 설정 → 연동에서 Jira 사이트를 추가한 뒤 다시 확인하세요.",
       "connectOnDesktop": "데스크톱에서 Jira 연결",
       "credentialUnreadable": "Jira 인증 정보가 저장되어 있지만 읽을 수 없습니다: {{credentialError}}",
-      "updateDesktop": "Orca 데스크톱 업데이트"
+      "updateDesktop": "Topo 데스크톱 업데이트"
     },
     "markdownBlocks": {
       "copyCode": "코드 복사",
@@ -937,20 +937,20 @@
     },
     "protocolBlockScreen": {
       "backToHosts": "호스트로 돌아가기",
-      "desktopTooOldBody": "페어링된 데스크톱 앱의 버전이 오래되어 현재 Orca 모바일 앱과 호환되지 않습니다. 컴퓨터에서 Orca를 업데이트한 후 이 호스트에 다시 연결하세요.",
-      "getVersion": "Orca {{version}} 받기",
-      "mobileTooOldAppStore": "이 데스크톱에는 더 최신 버전의 Orca 모바일 앱이 필요합니다. App Store에서 Orca 모바일을 업데이트한 후 이 호스트에 다시 연결하세요.",
-      "mobileTooOldGitHubReleases": "이 데스크톱에는 더 최신 버전의 Orca 모바일 앱이 필요합니다. GitHub Releases에서 Orca 모바일을 업데이트한 후 이 호스트에 다시 연결하세요.",
+      "desktopTooOldBody": "페어링된 데스크톱 앱의 버전이 오래되어 현재 Topo 모바일 앱과 호환되지 않습니다. 컴퓨터에서 Topo를 업데이트한 후 이 호스트에 다시 연결하세요.",
+      "getVersion": "Topo {{version}} 받기",
+      "mobileTooOldAppStore": "이 데스크톱에는 더 최신 버전의 Topo 모바일 앱이 필요합니다. App Store에서 Topo 모바일을 업데이트한 후 이 호스트에 다시 연결하세요.",
+      "mobileTooOldGitHubReleases": "이 데스크톱에는 더 최신 버전의 Topo 모바일 앱이 필요합니다. GitHub Releases에서 Topo 모바일을 업데이트한 후 이 호스트에 다시 연결하세요.",
       "openAppStore": "App Store 열기",
       "openGitHubReleases": "GitHub Releases 열기",
       "refreshRecoveryNote": "이 메시지가 계속 표시되면 이 호스트를 제거한 후 다시 페어링하세요.",
       "refreshWorkspaceBody": "이 호스트용으로 캐시된 워크스페이스가 데스크톱에서 요구하는 버전보다 오래되었습니다. 이 호스트에 다시 연결하여 최신 버전을 다운로드하세요.",
       "refreshWorkspaceTitle": "모바일 워크스페이스 새로고침",
-      "updateDesktopTitle": "컴퓨터의 Orca 업데이트",
-      "updateMobileTitle": "Orca 모바일 업데이트",
+      "updateDesktopTitle": "컴퓨터의 Topo 업데이트",
+      "updateMobileTitle": "Topo 모바일 업데이트",
       "updateRecoveryNote": "이미 업데이트하셨습니까? 호스트 화면으로 돌아가 연결을 새로고침하세요. 이 메시지가 계속 표시되면 이 호스트를 제거한 후 다시 페어링하세요.",
-      "workspaceNeedsUpdateAppStore": "이 데스크톱의 모바일 워크스페이스에는 더 최신 버전의 Orca 모바일 앱이 필요합니다. App Store에서 Orca 모바일을 업데이트한 후 이 호스트에 다시 연결하세요.",
-      "workspaceNeedsUpdateGitHubReleases": "이 데스크톱의 모바일 워크스페이스에는 더 최신 버전의 Orca 모바일 앱이 필요합니다. GitHub Releases에서 Orca 모바일을 업데이트한 후 이 호스트에 다시 연결하세요."
+      "workspaceNeedsUpdateAppStore": "이 데스크톱의 모바일 워크스페이스에는 더 최신 버전의 Topo 모바일 앱이 필요합니다. App Store에서 Topo 모바일을 업데이트한 후 이 호스트에 다시 연결하세요.",
+      "workspaceNeedsUpdateGitHubReleases": "이 데스크톱의 모바일 워크스페이스에는 더 최신 버전의 Topo 모바일 앱이 필요합니다. GitHub Releases에서 Topo 모바일을 업데이트한 후 이 호스트에 다시 연결하세요."
     },
     "richMarkdownEditor": {
       "imageUrl": "이미지 URL",
@@ -979,7 +979,7 @@
     },
     "setupHookTrustDrawer": {
       "alwaysTrustAndRun": "항상 신뢰하고 실행",
-      "description": "워크스페이스가 시작되기 전에 이 저장소의 orca.yaml이 실행됩니다. 이 저장소를 신뢰하는 경우에만 실행하세요.",
+      "description": "워크스페이스가 시작되기 전에 이 저장소의 topo.yaml이 실행됩니다. 이 저장소를 신뢰하는 경우에만 실행하세요.",
       "dontRun": "실행 안 함",
       "newScriptLabel": "새 설정 스크립트",
       "runHooks": "후크 실행",
@@ -1111,7 +1111,7 @@
       "disconnected": "연결 끊김",
       "hostFallback": "호스트",
       "hostOffline": "{{host}} 오프라인",
-      "hostOfflineDetail": "컴퓨터가 절전 모드가 아닌지, Orca가 실행 중인지, 로그인되어 있는지 확인하세요.",
+      "hostOfflineDetail": "컴퓨터가 절전 모드가 아닌지, Topo가 실행 중인지, 로그인되어 있는지 확인하세요.",
       "labelWithHint": "{{label}} — {{hint}}",
       "pairingInvalid": "페어링이 유효하지 않습니다. 데스크톱과 다시 페어링하세요.",
       "rePairDetail": "데스크톱과 다시 페어링하세요.",
@@ -1119,7 +1119,7 @@
       "relayAccessExpired": "{{host}}의 Relay 접근 권한 만료",
       "relayConnectFailed": "Relay를 통해 연결할 수 없음",
       "relayUnreachable": "Relay에 연결할 수 없음",
-      "signInDetail": "다시 연결하려면 데스크톱에서 Orca에 로그인하세요.",
+      "signInDetail": "다시 연결하려면 데스크톱에서 Topo에 로그인하세요.",
       "signInRequired": "{{host}}에서 로그인 필요",
       "tailscaleHint": "Tailscale 확인"
     },
@@ -1164,7 +1164,7 @@
       "privacyHint": "호스트 이름, 엔드포인트, 버전, 연결 상태, 이벤트를 포함하되 민감한 정보를 가리고 크기를 제한한 보고서를 전송합니다. 터미널 내용이나 인증 정보는 절대 포함하지 않습니다.",
       "reconnecting": "재연결 중",
       "retrySending": "다시 보내기",
-      "sendDiagnostics": "Orca에 진단 정보 보내기",
+      "sendDiagnostics": "Topo에 진단 정보 보내기",
       "sending": "전송 중…",
       "sent": "진단 정보를 보냈습니다",
       "stateWithAttempt": "{{state}} · {{attempts}}번째 시도",
@@ -1187,21 +1187,21 @@
       "title": "워크스페이스 업데이트"
     },
     "troubleshootCommonIssues": {
-      "allowNotifications": "시스템 설정에서 Orca 알림이 허용되어 있고 집중 모드나 방해 금지 모드가 꺼져 있는지 확인하세요.",
+      "allowNotifications": "시스템 설정에서 Topo 알림이 허용되어 있고 집중 모드나 방해 금지 모드가 꺼져 있는지 확인하세요.",
       "checkTailnet": "데스크톱이 절전 모드가 아니며 tailnet에 연결된 상태로 표시되는지 확인하세요.",
       "desktopTitle": "데스크톱 앱이 실행되지 않음",
       "disableVpn": "해당 VPN을 끄거나 분할 터널링 / \"LAN 허용\"을 켜세요.",
       "firewallTitle": "방화벽에서 포트 {{port}} 차단",
       "linuxFirewall": "Linux: sudo ufw allow {{port}}",
       "keepTailscaleOn": "100.x.x.x나 *.ts.net 같은 호스트 주소는 Tailscale을 통해 연결되므로 Tailscale을 켜 두세요.",
-      "macosFirewall": "macOS: 시스템 설정 → 네트워크 → 방화벽에서 Orca를 허용하세요.",
+      "macosFirewall": "macOS: 시스템 설정 → 네트워크 → 방화벽에서 Topo를 허용하세요.",
       "notificationNetwork": "모바일 데이터나 다른 Wi-Fi 네트워크를 사용해 보세요. 전환 후 알림이 도착한다면 기존 네트워크에서 알림 전달이 지연되고 있을 수 있습니다.",
       "notificationsTitle": "푸시 알림",
-      "openDesktop": "연결을 받으려면 데스크톱에서 Orca가 실행 중이어야 합니다.",
+      "openDesktop": "연결을 받으려면 데스크톱에서 Topo가 실행 중이어야 합니다.",
       "pairAfterUpdate": "업데이트 후에는 QR 코드로 다시 페어링해야 할 수 있습니다.",
       "reconnectWifi": "두 기기에서 WiFi를 다시 연결해 보세요.",
       "restartBothApps": "시간 초과가 계속되면 두 앱을 모두 다시 시작하세요.",
-      "restartDesktop": "Orca를 다시 시작해 보세요. 앱 실행 시 모바일 연동 서버가 시작됩니다.",
+      "restartDesktop": "Topo를 다시 시작해 보세요. 앱 실행 시 모바일 연동 서버가 시작됩니다.",
       "restartTailscale": "iOS/Android에서 별도 알림 없이 터널이 멈출 수 있습니다. Tailscale 앱에서 Tailscale을 껐다가 다시 켜세요.",
       "restrictedNetwork": "회사나 학교 네트워크는 P2P를 차단할 수 있습니다. 개인용 핫스팟을 사용해 보세요.",
       "retryHost": "호스트 목록으로 돌아가 호스트를 탭하여 다시 시도하세요.",
@@ -1214,7 +1214,7 @@
       "vpnTitle": "다른 VPN의 간섭",
       "wifiSignal": "휴대폰의 WiFi 신호 강도를 확인하세요.",
       "wifiTitle": "서로 다른 WiFi 네트워크",
-      "windowsFirewall": "Windows: Defender 방화벽 → 앱 허용에서 개인 네트워크에 대해 Orca를 허용하세요."
+      "windowsFirewall": "Windows: Defender 방화벽 → 앱 허용에서 개인 네트워크에 대해 Topo를 허용하세요."
     },
     "troubleshootView": {
       "commonIssues": "일반적인 문제",
@@ -1288,15 +1288,15 @@
   },
   "dictation": {
     "setup": {
-      "alreadyActive": "컴퓨터나 다른 휴대폰에서 이미 받아쓰기를 사용 중입니다. 여러 기기에서 동시에 받아쓰려면 컴퓨터의 Orca를 업데이트하세요.",
+      "alreadyActive": "컴퓨터나 다른 휴대폰에서 이미 받아쓰기를 사용 중입니다. 여러 기기에서 동시에 받아쓰려면 컴퓨터의 Topo를 업데이트하세요.",
       "cloudModelNeedsKey": "OpenAI 키 필요",
       "deleteFailed": "모델을 삭제하지 못했습니다.",
-      "desktopUpdateRequired": "모바일 음성 설정을 사용하려면 페어링된 데스크톱의 Orca 앱을 업데이트하세요.",
+      "desktopUpdateRequired": "모바일 음성 설정을 사용하려면 페어링된 데스크톱의 Topo 앱을 업데이트하세요.",
       "downloadFailed": "다운로드를 시작하지 못했습니다.",
       "loadFailed": "받아쓰기 모델을 로드하지 못했습니다.",
       "modelBusy": "다른 기기가 다른 음성 모델로 받아쓰기 중입니다. 끝나면 다시 시도하세요.",
       "repairRequired": "받아쓰기를 사용하려면 이 휴대폰을 컴퓨터와 다시 페어링하세요.",
-      "serverUpdateRequired": "음성 받아쓰기를 사용하려면 이 서버의 Orca를 업데이트하세요.",
+      "serverUpdateRequired": "음성 받아쓰기를 사용하려면 이 서버의 Topo를 업데이트하세요.",
       "sessionLimit": "이 컴퓨터에서 받아쓰기 중인 기기가 너무 많습니다. 하나가 끝나면 다시 시도하세요.",
       "sessionLost": "받아쓰기 중 컴퓨터와의 연결이 끊어졌습니다. 다시 시도하세요.",
       "updateFailed": "받아쓰기 설정을 업데이트하지 못했습니다."
@@ -1430,7 +1430,7 @@
       "open": "PDF 열기",
       "openFailed": "이 PDF를 열 수 없습니다.",
       "opening": "PDF 여는 중…",
-      "updateRequired": "PDF를 열려면 Orca 모바일을 업데이트하세요."
+      "updateRequired": "PDF를 열려면 Topo 모바일을 업데이트하세요."
     },
     "unsavedEditsOffer": {
       "changedSince": "{{time}} 편집 이후 데스크톱에서 변경됨",
@@ -1442,9 +1442,9 @@
   },
   "home": {
     "appUpdateCard": {
-      "dismissAccessibilityLabel": "Orca {{version}} 업데이트 알림 닫기",
-      "title": "Orca {{version}} 업데이트 가능",
-      "updateAccessibilityLabel": "Orca {{version}} 업데이트가 있습니다. 탭하여 업데이트하세요."
+      "dismissAccessibilityLabel": "Topo {{version}} 업데이트 알림 닫기",
+      "title": "Topo {{version}} 업데이트 가능",
+      "updateAccessibilityLabel": "Topo {{version}} 업데이트가 있습니다. 탭하여 업데이트하세요."
     },
     "automationsTab": {
       "connectDesktop": "자동화를 보고 실행하려면 {{desktop}}에 연결하세요.",
@@ -1458,14 +1458,14 @@
       "scheduled": "예약됨",
       "showFor": "자동화를 볼 데스크톱",
       "toggleFailed": "{{name}}을(를) 업데이트할 수 없습니다",
-      "updateDesktop": "자동화를 사용하려면 {{desktop}}의 Orca를 업데이트하세요."
+      "updateDesktop": "자동화를 사용하려면 {{desktop}}의 Topo를 업데이트하세요."
     },
     "emptyState": {
       "connectedDescription": "데스크톱이 여기에 표시됩니다. 모든 데이터는 종단 간 암호화로 보호됩니다.",
       "connectedTitle": "연결 완료",
-      "description": "컴퓨터의 Orca와 페어링하여 에이전트 상태를 확인하고, 원하는 터미널에 접속하고, 휴대폰으로 작업을 진행하세요.",
+      "description": "컴퓨터의 Topo와 페어링하여 에이전트 상태를 확인하고, 원하는 터미널에 접속하고, 휴대폰으로 작업을 진행하세요.",
       "openDesktopDescription": "설정 → 모바일에서 페어링 QR 코드를 생성하세요.",
-      "openDesktopTitle": "Orca 데스크톱 앱 열기",
+      "openDesktopTitle": "Topo 데스크톱 앱 열기",
       "scanCodeTitle": "코드 스캔",
       "title": "데스크톱을 연결하세요"
     },
@@ -1564,8 +1564,8 @@
     },
     "hostScreenOverlays": {
       "deleteConfirmMessage": "\"{{name}}\" ({{branch}})을(를) 삭제하시겠습니까?",
-      "deleteDestroysEnvironment": "Orca가 이 작업 트리용으로 만든 환경 \"{{environment}}\"도 커밋되지 않은 작업과 실행 중인 터미널과 함께 삭제됩니다.",
-      "deleteKeepsEnvironment": "Orca가 이 작업 트리용으로 만든 환경 \"{{environment}}\"은(는) 계속 실행됩니다. 레시피에 삭제 단계가 없습니다.",
+      "deleteDestroysEnvironment": "Topo가 이 작업 트리용으로 만든 환경 \"{{environment}}\"도 커밋되지 않은 작업과 실행 중인 터미널과 함께 삭제됩니다.",
+      "deleteKeepsEnvironment": "Topo가 이 작업 트리용으로 만든 환경 \"{{environment}}\"은(는) 계속 실행됩니다. 레시피에 삭제 단계가 없습니다.",
       "deleteWorktree": "작업 트리 삭제",
       "pin": "고정",
       "primaryWorktreeDeleteHint": "기본 작업 트리는 삭제할 수 없습니다. 대신 프로젝트를 제거하세요.",
@@ -1582,7 +1582,7 @@
       "closed": "닫힘",
       "createdByAutomation": "자동화가 생성함",
       "createdByNamedAutomation": "자동화 “{{name}}”이(가) 생성함",
-      "createdFromCli": "Orca CLI에서 생성됨",
+      "createdFromCli": "Topo CLI에서 생성됨",
       "draft": "초안",
       "merged": "병합됨",
       "openLink": "{{label}} 열기",
@@ -1691,7 +1691,7 @@
   "notifications": {
     "desktopChannel": {
       "name": "데스크톱 알림",
-      "silentName": "Orca 무음 알림"
+      "silentName": "Topo 무음 알림"
     },
     "notificationDeliverySection": {
       "footer": "알림 유형은 페어링된 각 데스크톱의 알림 설정을 따릅니다. 이 앱을 7일 동안 사용하지 않으면 알림이 일시 중지됩니다. 다시 받으려면 앱을 열고 다시 연결하세요.",
@@ -1716,7 +1716,7 @@
       "keepTerminal": "터미널 유지",
       "notNow": "나중에",
       "notificationsDescription": "앱을 사용하지 않아도 에이전트가 작업을 마치거나 대기 중이면 이 휴대폰으로 알림을 받습니다.",
-      "notificationsDisclosure": "데스크톱을 3분 동안 사용하지 않으면 Orca 푸시 서비스를 통해 알림이 전달됩니다. 언제든지 설정에서 변경할 수 있습니다.",
+      "notificationsDisclosure": "데스크톱을 3분 동안 사용하지 않으면 Topo 푸시 서비스를 통해 알림이 전달됩니다. 언제든지 설정에서 변경할 수 있습니다.",
       "notificationsTitle": "에이전트의 요청을 놓치지 마세요",
       "openInChatUi": "채팅 UI에서 세션 열기",
       "openInTerminal": "터미널에서 세션 열기",
@@ -2038,7 +2038,7 @@
       "committedChangesFailed": "커밋된 변경 사항을 불러오지 못했습니다.",
       "committedChangesUnavailable": "커밋된 변경 사항을 사용할 수 없습니다.",
       "committedDiffUnavailable": "커밋된 차이점을 사용할 수 없습니다.",
-      "desktopUpdateRequired": "모바일에서 변경 사항을 리뷰하려면 데스크톱의 Orca를 업데이트하세요.",
+      "desktopUpdateRequired": "모바일에서 변경 사항을 리뷰하려면 데스크톱의 Topo를 업데이트하세요.",
       "diffLoadFailed": "차이점을 불러올 수 없습니다.",
       "reviewNotesLoadFailed": "리뷰 메모를 불러올 수 없습니다."
     },
@@ -2054,7 +2054,7 @@
     },
     "failure": {
       "accountSwitchInProgress": "이 호스트에서 {{agent}} 설정을 변경하는 중입니다. 완료된 후 다시 시도하세요.",
-      "agentCommandNotRunnable": "{{agent}}의 설정 → 에이전트 → 명령은 Orca가 찾을 수 있는 프로그램 경로나 이름이어야 하며, 인수나 변수를 포함할 수 없습니다. 변경하거나 재설정하세요.",
+      "agentCommandNotRunnable": "{{agent}}의 설정 → 에이전트 → 명령은 Topo가 찾을 수 있는 프로그램 경로나 이름이어야 하며, 인수나 변수를 포함할 수 없습니다. 변경하거나 재설정하세요.",
       "agentCommandNotSignedIn": "이 채팅을 실행하는 컴퓨터에서 `{{loginCommand}}`으로 {{agent}}에 로그인하세요.",
       "agentNotSignedIn": "{{agent}}에 로그인하세요.",
       "agentStarting": "에이전트가 아직 시작 중입니다.",
@@ -2115,13 +2115,13 @@
       "fullAccessAsRoot": "{{agent}}은(는) root로 실행되는 동안 전체 액세스를 사용하지 않습니다. 이 채팅을 실행하는 컴퓨터의 설정 → 에이전트에서 {{agent}}에 다른 권한을 선택한 다음 새 채팅을 시작하세요.",
       "historyInOtherAccount": "이 채팅의 기록은 다른 Claude 계정에 있습니다. 계속하려면 해당 계정으로 다시 전환하세요.",
       "historyTooLarge": "이 대화의 기록이 너무 커서 여기에서 복원할 수 없습니다.",
-      "hostFault": "Orca에 문제가 발생하여 이 작업이 완료되지 않았습니다.",
-      "hostFaultTryAgain": "Orca에 문제가 발생하여 이 작업이 완료되지 않았습니다. 다시 시도하세요.",
-      "hostRestarted": "이 메시지가 전송되기 전에 Orca가 다시 시작되었습니다.",
-      "hostStopped": "{{agent}}이(가) 시작을 마치지 못해 Orca가 중지했습니다.",
+      "hostFault": "Topo에 문제가 발생하여 이 작업이 완료되지 않았습니다.",
+      "hostFaultTryAgain": "Topo에 문제가 발생하여 이 작업이 완료되지 않았습니다. 다시 시도하세요.",
+      "hostRestarted": "이 메시지가 전송되기 전에 Topo가 다시 시작되었습니다.",
+      "hostStopped": "{{agent}}이(가) 시작을 마치지 못해 Topo가 중지했습니다.",
       "interactiveAgentNotSignedIn": "이 채팅을 실행하는 컴퓨터에서 `{{loginCommand}}` 명령을 실행하고 `{{slashCommand}}`을 사용해 {{agent}}에 로그인하세요.",
       "launchFolderMissing": "이 채팅이 실행되던 폴더가 더 이상 존재하지 않습니다. 이 채팅을 계속하려면 폴더를 복원하세요.",
-      "launchPreparationFailed": "Orca가 이 채팅을 실행하는 컴퓨터에서 {{agent}} 시작을 준비하지 못했습니다.",
+      "launchPreparationFailed": "Topo가 이 채팅을 실행하는 컴퓨터에서 {{agent}} 시작을 준비하지 못했습니다.",
       "managedAccountEnvOverride": "이 Claude 실행은 자체 Anthropic 로그인 변수를 설정합니다. 관리되는 Claude 계정을 사용하려면 해당 변수를 제거하세요.",
       "managedAccountUnsupported": "WSL에 Claude 계정이 추가되어 있는 동안에는 Claude 채팅에 Windows Claude 계정이 필요합니다.",
       "modelUnavailable": "{{agent}}이(가) {{detail}}을(를) 사용하지 못했습니다. 다른 모델을 선택하고 다시 보내세요.",
@@ -2149,7 +2149,7 @@
       "quitTerminalAgent": "여기에서 채팅을 계속하려면 해당 에이전트를 종료하세요.",
       "runCommandAgain": "/{{command}}을(를) 다시 실행하세요.",
       "runCommandWhenDone": "작업이 끝나면 /{{command}}을(를) 실행하세요.",
-      "runtimeNotInstalled": "{{agent}}이(가) 이 채팅을 실행하는 컴퓨터에 설치되어 있지 않습니다. 최신 버전의 Orca에서 채팅을 통해 설치하세요.",
+      "runtimeNotInstalled": "{{agent}}이(가) 이 채팅을 실행하는 컴퓨터에 설치되어 있지 않습니다. 최신 버전의 Topo에서 채팅을 통해 설치하세요.",
       "sendAgainToTryOnceMore": "메시지를 다시 보내 한 번 더 시도하세요.",
       "sendToTryAgain": "다시 시도하려면 메시지를 보내세요.",
       "sessionNotRestored": "{{agent}}이(가) 이전 세션을 다시 열 수 없어 이 채팅은 새 세션에서 계속됩니다. {{agent}}은(는) 이전 메시지를 기억하지 않습니다.",
@@ -2174,7 +2174,7 @@
       "usageLimitWindowWeeklyModel": "모델별 주간",
       "waitForBackgroundTasks": "백그라운드 작업이 끝날 때까지 기다리세요.",
       "waitForStart": "에이전트가 시작을 마칠 때까지 기다리세요.",
-      "writeFailed": "Orca가 이 메시지를 에이전트에 전달하지 못해 전송되지 않았습니다.",
+      "writeFailed": "Topo가 이 메시지를 에이전트에 전달하지 못해 전송되지 않았습니다.",
       "pluginInputRequired": "\"{{plugin}}\" 플러그인이 터미널 창에서 입력을 기다리고 있어 {{agent}}이(가) 중지되었습니다. 채팅 세션에서 플러그인을 비활성화하거나 {{agent}} 터미널에서 작업을 실행하세요."
     },
     "fileReader": {
@@ -2283,7 +2283,7 @@
       "emptyPrompt": "이 작업에 저장된 프롬프트가 비어 있습니다. 컴퓨터에서 소스 제어 AI 설정을 업데이트하세요.",
       "loadFailed": "사용 가능한 에이전트를 로드하지 못했습니다.",
       "promptNotSent": "에이전트가 시작되었지만 프롬프트가 전송되지 않았습니다.",
-      "updateRequired": "휴대폰에서 에이전트를 시작하려면 컴퓨터의 Orca를 업데이트하세요."
+      "updateRequired": "휴대폰에서 에이전트를 시작하려면 컴퓨터의 Topo를 업데이트하세요."
     },
     "prSidebarState": {
       "loadFailed": "PR을 로드할 수 없습니다."
@@ -2323,7 +2323,7 @@
       "globalScope": "글로벌",
       "label": "레이블",
       "labelPlaceholder": "개발 서버 시작",
-      "olderHostPromptTooLong": "이 호스트에는 너무 깁니다. 더 긴 프롬프트를 저장하려면 호스트의 Orca를 업데이트하세요.",
+      "olderHostPromptTooLong": "이 호스트에는 너무 깁니다. 더 긴 프롬프트를 저장하려면 호스트의 Topo를 업데이트하세요.",
       "projectScope": "프로젝트",
       "prompt": "프롬프트",
       "promptHint": "스킬, 파일 경로, 기본 제공 명령을 지원합니다.",
@@ -2573,7 +2573,7 @@
       "liveInputInterrupted": "실시간 입력이 중단되었습니다. 입력란을 비웠습니다. 계속하기 전에 터미널을 확인하세요."
     },
     "useStartup": {
-      "wakeAgents": "슬립 중인 에이전트를 활성화하려면 호스트에서 Orca를 실행하세요."
+      "wakeAgents": "슬립 중인 에이전트를 활성화하려면 호스트에서 Topo를 실행하세요."
     },
     "useTerminalCreateActions": {
       "createFailed": "터미널을 만들지 못했습니다.",
@@ -2608,10 +2608,10 @@
       "attachmentExpired": "이 첨부 파일이 만료되었습니다.",
       "backgroundTasksRunning": "백그라운드 작업이 아직 실행 중입니다.",
       "cancelNotSaved": "이 질문 또는 승인 요청을 취소하지 못했습니다.",
-      "cannotRunHere": "Orca는 여기에서 이 에이전트를 채팅으로 실행할 수 없습니다.",
-      "capacity": "이 채팅을 실행하는 컴퓨터의 Orca가 요청 한도에 도달했습니다. 해당 컴퓨터에서 Orca를 업데이트한 다음 다시 시도하세요.",
-      "chatNotFound": "Orca에서 이 채팅을 찾을 수 없습니다.",
-      "chatSavedByNewerOrca": "이 채팅은 최신 버전의 Orca에서 저장되었습니다.",
+      "cannotRunHere": "Topo는 여기에서 이 에이전트를 채팅으로 실행할 수 없습니다.",
+      "capacity": "이 채팅을 실행하는 컴퓨터의 Topo가 요청 한도에 도달했습니다. 해당 컴퓨터에서 Topo를 업데이트한 다음 다시 시도하세요.",
+      "chatNotFound": "Topo에서 이 채팅을 찾을 수 없습니다.",
+      "chatSavedByNewerTopo": "이 채팅은 최신 버전의 Topo에서 저장되었습니다.",
       "clearAfterAnswer": "에이전트의 질문 또는 승인 요청에 응답한 다음 /clear를 실행하세요.",
       "clearAfterRetry": "이전 메시지 전송을 다시 시도한 다음 /clear를 실행하세요.",
       "clearAfterSending": "이전 메시지를 아직 보내는 중입니다. 전송이 끝나면 /clear를 실행하세요.",
@@ -2623,10 +2623,10 @@
       "continuationSuperseded": "이 채팅은 계속 진행되었습니다. 계속하기 전에 최신 메시지를 확인하세요.",
       "conversationCleared": "이 대화는 지워졌습니다.",
       "goalsUnsupported": "이 에이전트는 목표를 지원하지 않습니다.",
-      "historyUnavailable": "Orca가 지금 이 채팅의 기록을 열지 못했습니다.",
-      "historyUnreadable": "Orca가 이 채팅의 저장된 기록을 읽지 못했습니다.",
+      "historyUnavailable": "Topo가 지금 이 채팅의 기록을 열지 못했습니다.",
+      "historyUnreadable": "Topo가 이 채팅의 저장된 기록을 읽지 못했습니다.",
       "historyUnusable": "이 채팅을 불러올 수 없습니다.",
-      "hostReconciling": "Orca가 다시 시작된 후 이 채팅을 아직 확인하고 있습니다.",
+      "hostReconciling": "Topo가 다시 시작된 후 이 채팅을 아직 확인하고 있습니다.",
       "messageNotSaved": "메시지를 저장할 수 없습니다.",
       "messageTooLarge": "메시지 하나의 한도인 256KB를 초과합니다.",
       "messagesUnsettled": "앞서 보낸 메시지가 아직 확인되지 않았습니다.",
@@ -2643,7 +2643,7 @@
       "notDoneStopTasks": "백그라운드 작업이 중지되지 않았습니다.",
       "openCurrentConversation": "계속하려면 현재 대화를 여세요.",
       "optionRejected": "에이전트가 이 설정을 받아들이지 않았습니다.",
-      "outcomeUnknown": "Orca가 무슨 일이 있었는지 확인하지 못했습니다. 채팅을 확인하세요.",
+      "outcomeUnknown": "Topo가 무슨 일이 있었는지 확인하지 못했습니다. 채팅을 확인하세요.",
       "ownerUnproven": "이 채팅의 이전 에이전트가 아직 실행 중일 수 있습니다.",
       "pendingWork": "남은 작업과 메시지 처리가 끝날 때까지 기다린 후 이 명령을 사용하세요.",
       "promptPending": "에이전트가 질문 또는 승인 요청에 대한 응답을 기다리고 있습니다.",
@@ -2652,14 +2652,14 @@
       "quitTerminalAgent": "여기에서 채팅을 계속하려면 해당 에이전트를 종료하세요.",
       "reattachFile": "제거한 후 다시 첨부하세요.",
       "reattachFiles": "제거한 후 다시 첨부하세요.",
-      "recordFailed": "Orca가 이 내용을 채팅 기록에 저장하지 못했습니다.",
-      "recordUnreadable": "Orca가 이 채팅의 저장된 상태를 읽지 못했습니다.",
+      "recordFailed": "Topo가 이 내용을 채팅 기록에 저장하지 못했습니다.",
+      "recordUnreadable": "Topo가 이 채팅의 저장된 상태를 읽지 못했습니다.",
       "reopenChat": "다시 확인하려면 채팅을 다시 여세요.",
       "restartFailed": "에이전트를 다시 시작하지 못했습니다.",
       "runClearWhenDone": "작업이 끝나면 /clear를 실행하세요.",
       "runCompactWhenDone": "작업이 끝나면 /compact를 실행하세요.",
-      "savedByNewerOrca": "채팅이 최신 버전의 Orca에서 저장되었습니다.",
-      "sendOutcomeLost": "Orca가 메시지가 에이전트에 전달되었는지 확인하지 못했습니다. 채팅을 확인하고 필요하면 다시 보내세요.",
+      "savedByNewerTopo": "채팅이 최신 버전의 Topo에서 저장되었습니다.",
+      "sendOutcomeLost": "Topo가 메시지가 에이전트에 전달되었는지 확인하지 못했습니다. 채팅을 확인하고 필요하면 다시 보내세요.",
       "settleEarlierMessage": "앞서 보낸 메시지가 전달될 때까지 기다리거나 다시 시도하세요.",
       "shortenMessage": "줄이거나 나눈 다음 다시 보내세요.",
       "shrinkQueue": "대기 중인 메시지를 삭제하거나 전달될 때까지 기다린 후 다시 시도하세요.",
@@ -2668,10 +2668,10 @@
       "tryAgain": "다시 시도하세요.",
       "tryAgainComposerSend": "다시 보내세요.",
       "turnActive": "에이전트가 아직 응답 중입니다.",
-      "unreachable": "Orca가 에이전트에 연결하지 못했습니다.",
-      "unsupported": "이 채팅을 실행 중인 컴퓨터에 최신 버전의 Orca가 필요합니다. 해당 컴퓨터에서 Orca를 업데이트한 후 다시 시도하세요.",
-      "updateOrcaToKeepUsing": "계속 사용하려면 Orca를 업데이트하세요.",
-      "updateOrcaToOpenChat": "열려면 Orca를 업데이트하세요.",
+      "unreachable": "Topo가 에이전트에 연결하지 못했습니다.",
+      "unsupported": "이 채팅을 실행 중인 컴퓨터에 최신 버전의 Topo가 필요합니다. 해당 컴퓨터에서 Topo를 업데이트한 후 다시 시도하세요.",
+      "updateTopoToKeepUsing": "계속 사용하려면 Topo를 업데이트하세요.",
+      "updateTopoToOpenChat": "열려면 Topo를 업데이트하세요.",
       "waitForBackgroundTasks": "백그라운드 작업이 끝날 때까지 기다리세요.",
       "waitForCommand": "/compact 또는 /clear가 끝날 때까지 기다리세요.",
       "waitForStart": "에이전트가 시작을 마칠 때까지 기다리세요.",
@@ -2728,11 +2728,11 @@
   "settings": {
     "aboutScreen": {
       "openLinkFailed": "링크를 열지 못했습니다. 다시 시도하세요.",
-      "socialProfile": "Orca X 프로필",
-      "sourceCode": "Orca 소스 코드",
+      "socialProfile": "Topo X 프로필",
+      "sourceCode": "Topo 소스 코드",
       "tagline": "100배의 성과를 내는 개발자를 위한 오픈 소스 에이전트 IDE",
       "title": "정보",
-      "website": "Orca 웹사이트"
+      "website": "Topo 웹사이트"
     },
     "appUpdateSettingsRows": {
       "checkFailed": "확인 실패",
@@ -2750,7 +2750,7 @@
       "neverChecked": "확인한 적 없음",
       "upToDate": "최신 상태",
       "update": "업데이트",
-      "updateToVersion": "Orca {{version}} 버전으로 업데이트"
+      "updateToVersion": "Topo {{version}} 버전으로 업데이트"
     },
     "appearance": {
       "language": {
@@ -2768,7 +2768,7 @@
       "title": "모양"
     },
     "browserSettingsScreen": {
-      "desktopBrowser": "데스크톱 Orca 브라우저",
+      "desktopBrowser": "데스크톱 Topo 브라우저",
       "desktopBrowserDescription": "페어링된 데스크톱에서 스트리밍되는 브라우저로 엽니다.",
       "linksDescription": "터미널 출력의 HTTP(S) 링크를 탭했을 때 열 브라우저를 선택하세요.",
       "linksHeading": "링크",
@@ -2807,13 +2807,13 @@
       "updateDesktopHint": "이 휴대폰에서 알림을 받으려면 업데이트된 데스크톱을 페어링하세요."
     },
     "notificationDisplayTest": {
-      "accepted": "Orca 푸시 서비스에서 요청을 접수했습니다. 알림이 도착했는지 확인하세요.",
+      "accepted": "Topo 푸시 서비스에서 요청을 접수했습니다. 알림이 도착했는지 확인하세요.",
       "connectDesktop": "데스크톱에 연결한 후 다시 시도하세요.",
       "description": "푸시 알림 전달을 테스트하거나, 푸시를 사용할 수 없으면 로컬 알림을 테스트합니다.",
       "desktopUnreachable": "데스크톱에 연결하지 못했습니다. 다시 시도하세요.",
       "loadFailed": "페어링된 데스크톱 목록을 불러오지 못했습니다.",
       "pairDesktop": "데스크톱을 페어링한 후 다시 시도하세요.",
-      "pushServiceFailed": "Orca 푸시 서비스를 통해 전송하지 못했습니다. 다시 시도하세요.",
+      "pushServiceFailed": "Topo 푸시 서비스를 통해 전송하지 못했습니다. 다시 시도하세요.",
       "rateLimited": "알림이 너무 많습니다. 나중에 다시 시도하세요.",
       "sendButton": "테스트 알림 보내기",
       "sendFailed": "테스트 푸시 알림을 전송하지 못했습니다.",
@@ -2823,12 +2823,12 @@
       "localTitle": "테스트 알림",
       "localBody": "이 휴대전화의 로컬 알림 테스트입니다.",
       "localScheduled": "{{reason}} 로컬 테스트를 예약했습니다. 알림을 확인하세요. 이 테스트는 표시만 확인하며 Agent 알림 전달은 확인하지 않습니다.",
-      "disabled": "Orca에서 알림이 꺼져 있습니다. 알림을 켜고 다시 시도하세요.",
+      "disabled": "Topo에서 알림이 꺼져 있습니다. 알림을 켜고 다시 시도하세요.",
       "osDisabled": "시스템 설정에서 알림이 꺼져 있습니다. 알림을 허용하고 다시 시도하세요.",
       "noToken": "이 휴대전화에서 사용할 수 있는 푸시 토큰이 없습니다.",
       "unsupportedHost": "이 데스크톱은 푸시 알림을 지원하지 않습니다. 푸시를 받으려면 업데이트하세요.",
       "registrationPending": "이 데스크톱의 푸시 등록이 아직 준비되지 않았습니다. 잠시 후 다시 시도하세요.",
-      "liveFallbackScheduled": "{{reason}} 로컬 테스트를 예약했습니다. 알림을 확인하세요. Orca가 실행 중이고 연결되어 있는 동안 실시간 알림을 받을 수 있습니다."
+      "liveFallbackScheduled": "{{reason}} 로컬 테스트를 예약했습니다. 알림을 확인하세요. Topo가 실행 중이고 연결되어 있는 동안 실시간 알림을 받을 수 있습니다."
     },
     "notificationSettingsScreen": {
       "description": "에이전트가 입력을 요청하거나 작업을 완료하면 이 기기에서 알림을 받으세요.",
@@ -3125,7 +3125,7 @@
     "loaders": {
       "connectingToDesktop": "데스크톱에 연결 중…",
       "loadFailed": "소스 제어를 로드할 수 없습니다.",
-      "updateDesktop": "모바일에서 소스 제어를 사용하려면 Orca 데스크톱 앱을 업데이트하세요.",
+      "updateDesktop": "모바일에서 소스 제어를 사용하려면 Topo 데스크톱 앱을 업데이트하세요.",
       "waitingForDesktop": "데스크톱 연결 대기 중…"
     },
     "modals": {
@@ -3144,7 +3144,7 @@
     "prCreate": {
       "authRequired": "{{reviewLabel}} 생성 전에 인증하세요.",
       "baseNotOnRemote": "{{reviewLabel}}을(를) 생성하기 전에 기본 브랜치를 푸시하세요.",
-      "createdNotRefreshed": "{{titleLabel}}을(를) 만들었지만 Orca가 아직 새로고침하지 못했습니다.",
+      "createdNotRefreshed": "{{titleLabel}}을(를) 만들었지만 Topo가 아직 새로고침하지 못했습니다.",
       "defaultBranch": "{{reviewLabel}}을(를) 만들기 전에 기능 브랜치로 전환하세요.",
       "detachedHead": "{{reviewLabel}}을(를) 만들기 전에 브랜치를 체크아웃하세요.",
       "dirty": "{{reviewLabel}} 생성 전에 변경 사항을 커밋하세요.",
@@ -3152,7 +3152,7 @@
       "existingNumber": "{{titleLabel}} #{{number}}이(가) 이미 열려 있습니다.",
       "existingReview": "이 브랜치에 대한 {{reviewLabel}}이(가) 이미 있습니다.",
       "forkHeadUnsupported": "이 포크에서는 {{reviewLabel}} 생성을 지원하지 않습니다.",
-      "lookupUnconfirmed": "Orca가 이 브랜치에 {{reviewLabel}}이(가) 이미 있는지 확인하지 못했습니다. 잠시 후 다시 시도하세요.",
+      "lookupUnconfirmed": "Topo가 이 브랜치에 {{reviewLabel}}이(가) 이미 있는지 확인하지 못했습니다. 잠시 후 다시 시도하세요.",
       "needsSync": "{{reviewLabel}} 생성 전에 이 브랜치를 동기화하세요.",
       "noUpstream": "{{reviewLabel}} 생성 전에 커밋을 게시하세요.",
       "notReady": "이 브랜치는 아직 {{reviewLabel}} 생성 준비가 되지 않았습니다.",
@@ -3290,7 +3290,7 @@
       "kimiSessionNotFound": "Kimi가 요청한 세션을 찾지 못했습니다. 기존 세션을 사용하거나 새 세션을 시작하세요.",
       "kimiSessionOccupied": "다른 클라이언트에서 활성 상태인 세션이므로 Kimi가 이 세션을 사용할 수 없습니다. 해당 클라이언트에서 세션을 중지하거나 클라이언트를 종료한 후 다시 시도하세요.",
       "kimiSessionOtherDirectory": "이 Kimi 세션은 다른 디렉터리에 속합니다. 해당 디렉터리에서 재개하거나 이 워크스페이스용으로 만든 세션을 사용하세요.",
-      "kimiUnreadableOutput": "Kimi가 Orca에서 읽을 수 없는 출력을 반환했습니다. 다시 시도하세요.",
+      "kimiUnreadableOutput": "Kimi가 Topo에서 읽을 수 없는 출력을 반환했습니다. 다시 시도하세요.",
       "noBranchChanges": "요약할 브랜치 변경 사항이 없습니다.",
       "noModelForAgent": "{{label}}에서 사용할 수 있는 모델이 없습니다.",
       "noStagedChanges": "요약할 스테이징된 변경 사항이 없습니다.",
@@ -3308,7 +3308,7 @@
       "sourceControlCustomCommandEmpty": "사용자 지정 명령이 비어 있습니다. 설정 -> Git -> 소스 제어 AI에서 추가하세요.",
       "stagedChangesReadFailed": "스테이징된 변경 사항을 읽을 수 없습니다.",
       "timedOut": "생성 제한 시간({{seconds}}초)을 초과했습니다.",
-      "windowsBatchUnsafeArguments": "{{label}}은(는) 여러 줄 프롬프트를 인수로 받을 수 없는 Windows 배치 스크립트를 통해 실행됩니다. 설정에서 에이전트 실행 파일을 지정하거나, Orca가 프롬프트를 stdin으로 보내도록 {prompt}가 없는 사용자 지정 명령을 사용하세요."
+      "windowsBatchUnsafeArguments": "{{label}}은(는) 여러 줄 프롬프트를 인수로 받을 수 없는 Windows 배치 스크립트를 통해 실행됩니다. 설정에서 에이전트 실행 파일을 지정하거나, Topo가 프롬프트를 stdin으로 보내도록 {prompt}가 없는 사용자 지정 명령을 사용하세요."
     },
     "useMobileCommitFailureRecovery": {
       "launchFailed": "에이전트를 실행하지 못했습니다.",
@@ -3324,7 +3324,7 @@
       "waitingForDesktop": "데스크톱 연결 대기 중…"
     },
     "conflictActions": {
-      "needsNewerHost": "휴대전화에서 병합 충돌을 해결하려면 이 워크스페이스를 실행 중인 컴퓨터의 Orca를 업데이트하세요.",
+      "needsNewerHost": "휴대전화에서 병합 충돌을 해결하려면 이 워크스페이스를 실행 중인 컴퓨터의 Topo를 업데이트하세요.",
       "markResolved": "해결됨으로 표시",
       "keepFile": "파일 유지",
       "keepDeletion": "삭제 유지",
@@ -3406,7 +3406,7 @@
       "searchProjects": "프로젝트 검색",
       "subtitle": "작업 페이지에 표시할 프로젝트 보기를 선택하세요.",
       "title": "GitHub 프로젝트",
-      "unsupportedLayout": "Orca는 아직 이 GitHub 프로젝트 레이아웃을 지원하지 않습니다.",
+      "unsupportedLayout": "Topo는 아직 이 GitHub 프로젝트 레이아웃을 지원하지 않습니다.",
       "view": "프로젝트 보기"
     },
     "githubViewControls": {
@@ -3502,7 +3502,7 @@
       "connectLinearTitle": "Linear 계정 연결",
       "jiraStatusFailed": "Jira 상태를 읽지 못했습니다.",
       "updateDesktopMessage": "모바일 작업 화면을 사용하려면 더 최신 버전의 데스크톱 런타임이 필요합니다.",
-      "updateDesktopTitle": "Orca 데스크톱 업데이트"
+      "updateDesktopTitle": "Topo 데스크톱 업데이트"
     },
     "options": {
       "all": "모두",
@@ -3599,7 +3599,7 @@
       "show": "표시"
     },
     "projectDetailDrawer": {
-      "addRepositoryFromDesktop": "{{repository}}이(가) Orca에 추가되지 않았습니다. 데스크톱 앱에서 이 저장소를 추가한 후 모바일의 작업 화면을 새로고침하세요.",
+      "addRepositoryFromDesktop": "{{repository}}이(가) Topo에 추가되지 않았습니다. 데스크톱 앱에서 이 저장소를 추가한 후 모바일의 작업 화면을 새로고침하세요.",
       "clearType": "유형 해제",
       "closeItem": "항목 닫기",
       "copyGitHubLink": "GitHub 링크 복사",
@@ -3610,7 +3610,7 @@
       "issueType": "이슈 유형",
       "loadingIssueTypes": "이슈 유형 로드 중…",
       "mergePullRequest": "PR 병합",
-      "mergeRepositoryRequirement": "병합하려면 이 저장소가 Orca에 추가되어 있어야 합니다.",
+      "mergeRepositoryRequirement": "병합하려면 이 저장소가 Topo에 추가되어 있어야 합니다.",
       "noIssueTypes": "이 저장소에 설정된 이슈 유형이 없습니다.",
       "noType": "유형 없음",
       "openInGitHub": "GitHub에서 열기",
@@ -3618,7 +3618,7 @@
       "projectSubtitle": "GitHub 프로젝트 · {{repository}}{{itemNumber}}",
       "pullRequest": "PR",
       "reopenItem": "항목 다시 열기",
-      "repositoryNotInOrca": "Orca에 없는 저장소",
+      "repositoryNotInTopo": "Topo에 없는 저장소",
       "status": "상태",
       "type": "유형",
       "workspaceCreationRequirement": "워크스페이스는 GitHub 이슈와 PR에서만 생성할 수 있습니다."
@@ -3851,7 +3851,7 @@
       "setupTitle": "설정 스크립트를 실행하시겠습니까?",
       "skipSetupAndCreate": "설정 건너뛰고 만들기",
       "trustFailed": "설정 스크립트 신뢰 설정에 실패했습니다.",
-      "trustSubtitle": "워크스페이스가 시작되기 전에 이 저장소의 orca.yaml이 컴퓨터에서 실행됩니다. 이 저장소를 신뢰하는 경우에만 실행하세요."
+      "trustSubtitle": "워크스페이스가 시작되기 전에 이 저장소의 topo.yaml이 컴퓨터에서 실행됩니다. 이 저장소를 신뢰하는 경우에만 실행하세요."
     },
     "worktreeCreateRetry": {
       "createFailed": "워크스페이스를 생성하지 못했습니다."
@@ -3917,7 +3917,7 @@
       "automaticName": "자동 이름",
       "existing": "기존 브랜치",
       "existingHint": "새 커밋이 이 브랜치에 추가됩니다.",
-      "hostUpdateRequired": "브랜치를 재사용하거나 별도의 브랜치를 명시적으로 생성하려면 워크스페이스 호스트의 Orca를 업데이트하세요.",
+      "hostUpdateRequired": "브랜치를 재사용하거나 별도의 브랜치를 명시적으로 생성하려면 워크스페이스 호스트의 Topo를 업데이트하세요.",
       "newHint": "새 로컬 브랜치 만들기",
       "newName": "새 브랜치 이름",
       "title": "이 워크트리의 브랜치"
@@ -3945,7 +3945,7 @@
       "working": "작업 중"
     },
     "hostWorkspaceListStates": {
-      "checkHost": "컴퓨터가 절전 모드가 아니며 Orca가 실행 중인지 확인하세요.",
+      "checkHost": "컴퓨터가 절전 모드가 아니며 Topo가 실행 중인지 확인하세요.",
       "empty": "워크스페이스가 없습니다.",
       "loadFailed": "이 호스트에서 워크스페이스를 불러오지 못했습니다.",
       "noFilterMatches": "필터에 맞는 워크스페이스가 없습니다.",
@@ -4104,7 +4104,7 @@
       "invalidDestination": "이 관리 주체에서 해당 호스트를 더 이상 사용할 수 없습니다. 호스트를 선택하고 다시 시도하세요.",
       "agentDiscoveryUnavailable": "이 프로젝트 호스트에서 에이전트 검색을 사용할 수 없습니다. 저장된 선택은 유지됩니다.",
       "agentVerificationUnavailable": "이 호스트는 이 프로젝트의 에이전트를 확인할 수 없습니다. 호스트를 업데이트하고 다시 시도하세요.",
-      "hostUnavailable": "이 호스트에서 자동화를 사용할 수 없습니다. 해당 호스트의 Orca를 업데이트하고 다시 연결하세요.",
+      "hostUnavailable": "이 호스트에서 자동화를 사용할 수 없습니다. 해당 호스트의 Topo를 업데이트하고 다시 연결하세요.",
       "hostUnreachable": "이 호스트에 연결하지 못했습니다. 다시 연결한 후 새로 고쳐 현재 상태를 확인하세요.",
       "actionFailed": "호스트에서 이 작업을 완료하지 못했습니다. 새로 고친 후 다시 시도하세요.",
       "dispatched": "전송됨",
@@ -4133,19 +4133,19 @@
       "workspaceHostAmbiguous": "작업 공간이 여러 호스트에 걸쳐 있어 소유자를 하나로 정할 수 없습니다."
     },
     "runFailures": {
-      "noDispatchHost": "자동화를 시작할 수 있는 Orca 창이 없었습니다.",
-      "unevaluableSchedule": "Orca가 이 자동화를 평가할 수 없어 이번 실행을 건너뛰었습니다.",
+      "noDispatchHost": "자동화를 시작할 수 있는 Topo 창이 없었습니다.",
+      "unevaluableSchedule": "Topo가 이 자동화를 평가할 수 없어 이번 실행을 건너뛰었습니다.",
       "noRunnableHost": "이 자동화에는 실행할 호스트가 없습니다.",
-      "wslMoveInProgress": "이 자동화의 프로젝트를 WSL 호스트로 옮기는 중이어서 Orca가 이번 실행을 건너뛰었습니다. 이동이 끝나면 실행이 재개됩니다.",
-      "wslMoveOwnedByHost": "이 자동화의 프로젝트는 이제 WSL 호스트에서 실행되며, 해당 호스트가 그곳에서 이 자동화를 실행합니다. Orca는 더 이상 이 로컬 사본을 실행하지 않습니다.",
+      "wslMoveInProgress": "이 자동화의 프로젝트를 WSL 호스트로 옮기는 중이어서 Topo가 이번 실행을 건너뛰었습니다. 이동이 끝나면 실행이 재개됩니다.",
+      "wslMoveOwnedByHost": "이 자동화의 프로젝트는 이제 WSL 호스트에서 실행되며, 해당 호스트가 그곳에서 이 자동화를 실행합니다. Topo는 더 이상 이 로컬 사본을 실행하지 않습니다.",
       "managedHostServer": "{{host}}(으)로 마이그레이션 필요",
-      "missedGraceWindow": "Orca가 다시 확인했을 때 이 실행을 보충할 수 있는 유예 시간이 이미 지나 있었습니다.",
+      "missedGraceWindow": "Topo가 다시 확인했을 때 이 실행을 보충할 수 있는 유예 시간이 이미 지나 있었습니다.",
       "targetMissing": "자동화 호스트가 더 이상 등록되어 있지 않아 이 자동화를 실행할 곳이 없습니다.",
       "targetReplaced": "자동화 호스트가 제거된 후 다시 등록되었으므로, 이 자동화를 실행하려면 다시 연결해야 합니다.",
-      "workspaceHostAmbiguous": "자동화 워크스페이스가 여러 호스트에 걸쳐 있어 Orca가 어느 호스트에서 실행해야 할지 판단할 수 없습니다.",
-      "legacyTwinHosts": "이 자동화는 Orca가 실행 호스트를 기록하기 전에 저장되었으며, 프로젝트가 여러 호스트에 있습니다. 자동화를 열고 실행할 호스트를 선택하세요.",
+      "workspaceHostAmbiguous": "자동화 워크스페이스가 여러 호스트에 걸쳐 있어 Topo가 어느 호스트에서 실행해야 할지 판단할 수 없습니다.",
+      "legacyTwinHosts": "이 자동화는 Topo가 실행 호스트를 기록하기 전에 저장되었으며, 프로젝트가 여러 호스트에 있습니다. 자동화를 열고 실행할 호스트를 선택하세요.",
       "targetUnavailable": "자동화 실행 대상을 더 이상 사용할 수 없습니다.",
-      "remoteSchedulingUnavailable": "이 Orca 클라이언트에서는 아직 원격 서버의 자동화 예약을 사용할 수 없습니다. 원격 서버에서 이 자동화를 실행하거나, 영속적인 원격 예약 기능이 제공되면 Orca를 업데이트하세요.",
+      "remoteSchedulingUnavailable": "이 Topo 클라이언트에서는 아직 원격 서버의 자동화 예약을 사용할 수 없습니다. 원격 서버에서 이 자동화를 실행하거나, 영속적인 원격 예약 기능이 제공되면 Topo를 업데이트하세요.",
       "projectSetupMissing": "선택한 자동화 호스트에 프로젝트가 더 이상 설정되어 있지 않습니다.",
       "targetSetupMismatch": "자동화 실행 대상이 프로젝트에서 선택한 호스트 설정과 더 이상 일치하지 않습니다.",
       "repoUnavailable": "선택한 자동화 호스트의 리포지토리를 더 이상 사용할 수 없습니다.",
@@ -4156,7 +4156,7 @@
       "hooksReviewBlocked": "에이전트가 새로 추가되거나 변경된 훅을 누군가 검토하기를 기다리고 있습니다(\"Hooks need review\"). 이 실행을 열고 해당 훅을 신뢰하거나 제거하세요. 예약된 실행은 계속되며, 검토할 항목이 없어지면 성공합니다.",
       "agentNeverStarted": "프롬프트를 제출한 후 자동화 에이전트가 시작되지 않았습니다.",
       "agentNoCompletion": "자동화 에이전트가 완료를 보고하지 않았습니다.",
-      "watchTimedOut": "완료 신호 없이 6시간이 지나 Orca가 이 실행의 모니터링을 중단했습니다.",
+      "watchTimedOut": "완료 신호 없이 6시간이 지나 Topo가 이 실행의 모니터링을 중단했습니다.",
       "projectSetupState": {
         "notSetUp": "선택한 자동화 호스트에 프로젝트가 설정되어 있지 않습니다.",
         "settingUp": "선택한 자동화 호스트에서 아직 프로젝트를 설정 중입니다.",

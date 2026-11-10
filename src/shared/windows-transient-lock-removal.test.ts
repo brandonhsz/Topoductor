@@ -33,7 +33,7 @@ describe('transient lock removal options', () => {
     })
     rmSyncMock.mockImplementationOnce(() => undefined)
 
-    expect(() => removeTreeSync('C:\\temp\\orca-host-job')).not.toThrow()
+    expect(() => removeTreeSync('C:\\temp\\topo-host-job')).not.toThrow()
     expect(rmSyncMock).toHaveBeenCalledTimes(2)
     expect(rmSyncMock.mock.calls[0]?.[1]).toEqual(
       expect.objectContaining({ recursive: true, force: true, maxRetries: WINDOWS_RM_MAX_RETRIES })

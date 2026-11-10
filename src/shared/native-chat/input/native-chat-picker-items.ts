@@ -15,7 +15,7 @@ export type NativeChatPickerItem =
       /** How the provider says the command is invoked, e.g. `<objective>`. */
       argumentHint?: string
       skillCollision: boolean
-      orcaOwned?: true
+      topoOwned?: true
       /** The provider reported this as its built-in command. */
       builtin?: true
     }
@@ -96,18 +96,18 @@ export function buildNativeChatPickerItems(
   const available = commandAvailable
     ? commands.filter(({ name }) => commandAvailable(name))
     : commands
-  const orcaNames = new Set(available.filter((c) => c.orcaOwned).map((command) => command.name))
+  const topoNames = new Set(available.filter((c) => c.topoOwned).map((command) => command.name))
   const resolvedCommands = available.filter(
     (command) =>
-      command.orcaOwned ||
+      command.topoOwned ||
       !(
-        orcaNames.has(command.name) ||
+        topoNames.has(command.name) ||
         (sharedSigil && command.kindUnspecified && skillNames.has(command.name))
       )
   )
-  // Orca runs its own rows whatever the skills are called, so a namesake skill keeps its row.
+  // Topo runs its own rows whatever the skills are called, so a namesake skill keeps its row.
   const commandNames = new Set(
-    resolvedCommands.filter((command) => !command.orcaOwned).map((command) => command.name)
+    resolvedCommands.filter((command) => !command.topoOwned).map((command) => command.name)
   )
   const commandItems = rankItems(
     resolvedCommands.map((command, index) => ({
@@ -121,8 +121,8 @@ export function buildNativeChatPickerItems(
         argumentHint: command.argumentHint
           ? sanitizePickerText(command.argumentHint, 80)
           : undefined,
-        skillCollision: sharedSigil && !command.orcaOwned && skillNames.has(command.name),
-        ...(command.orcaOwned ? { orcaOwned: true as const } : {}),
+        skillCollision: sharedSigil && !command.topoOwned && skillNames.has(command.name),
+        ...(command.topoOwned ? { topoOwned: true as const } : {}),
         ...(command.builtin ? { builtin: true as const } : {})
       },
       stableOrder: index

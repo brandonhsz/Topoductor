@@ -34,7 +34,7 @@ export class WebRuntimeRequestRegistry {
       ) {
         this.pending.delete(id)
         window.clearTimeout(timeout)
-        reject(new Error('Remote Orca runtime is not connected.'))
+        reject(new Error('Remote Topo runtime is not connected.'))
       }
     })
   }
@@ -99,7 +99,7 @@ export class WebRuntimeRequestRegistry {
         this.pending.delete(id)
         window.clearTimeout(timeout)
         cleanup()
-        reject(new Error('Remote Orca runtime is not connected.'))
+        reject(new Error('Remote Topo runtime is not connected.'))
       }
     })
   }

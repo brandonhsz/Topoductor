@@ -10,7 +10,7 @@ export type RecipeEnvironmentDescription = {
   destroys: boolean
 }
 
-/** What removing a recipe workspace did to the environment Orca created for it. */
+/** What removing a recipe workspace did to the environment Topo created for it. */
 export type RecipeHostRemovalState =
   | 'destroyed'
   // Other workspaces still live on it, or the environment couldn't say it was empty.

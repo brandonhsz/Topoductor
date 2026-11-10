@@ -15,7 +15,7 @@ import { isLocalHookConnectionId } from '../../../../../shared/wsl-hook-relay-co
 import type { DispatchContextRow } from '../orchestration-records'
 import type { WorkerTerminalResourceRow } from '../../terminal-authority/release/worker-terminal-ownership'
 import type { OrchestrationDb } from '../orchestration-db'
-import { parseOrcaSessionAddress } from '../../../../../shared/orca-session-address'
+import { parseTopoSessionAddress } from '../../../../../shared/topo-session-address'
 import { isStructuredWorkerHandle } from '../../../../../shared/orchestration/workers/structured-worker-handle'
 
 /** The conversation a closed terminal worker reopens in, as the resume path takes it. */
@@ -176,10 +176,10 @@ export function takeFollowUpMail(
   markUnreadFollowUpMail(db, toDispatchId)
 }
 
-/** A chat worker, assigned by session or started by Orca, gets mail whole rather than a pointer at `check`. */
+/** A chat worker, assigned by session or started by Topo, gets mail whole rather than a pointer at `check`. */
 export function receivesMailWhole(assigneeHandle: string | null | undefined): boolean {
   return (
-    parseOrcaSessionAddress(assigneeHandle) !== null || isStructuredWorkerHandle(assigneeHandle)
+    parseTopoSessionAddress(assigneeHandle) !== null || isStructuredWorkerHandle(assigneeHandle)
   )
 }
 
@@ -210,7 +210,7 @@ export function listDispatchesWithFollowUpMail(db: OrchestrationDb): string[] {
   return rows.map((row) => row.id)
 }
 
-/** The worker resource Orca still holds for a pane, whose conversation a provider-session change moves. */
+/** The worker resource Topo still holds for a pane, whose conversation a provider-session change moves. */
 export function findHeldWorkerResourceForPane(
   db: OrchestrationDb,
   paneKey: string

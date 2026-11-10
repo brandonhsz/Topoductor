@@ -85,7 +85,7 @@ describe('useMobileNativeChatSessionOptions', () => {
         agent,
         scopeKey: 'owner\0worktree\0tab',
         reportedModel: 'retired',
-        modelSwitchCommand: 'orca-model',
+        modelSwitchCommand: 'topo-model',
         writeSettings: writeOwner,
         discoveredModels: cached ? discoveredModels : null
       })

@@ -47,7 +47,7 @@ async function fakeAgy(
   list: unknown = SIGNED_IN_LIST,
   flags = ['--dangerously-skip-permissions']
 ): Promise<string> {
-  const folder = await mkdtemp(join(tmpdir(), 'orca-agy-host-test-'))
+  const folder = await mkdtemp(join(tmpdir(), 'topo-agy-host-test-'))
   folders.push(folder)
   const agy = join(folder, 'agy')
   await writeFile(
@@ -71,13 +71,13 @@ require('node:readline').createInterface({ input: process.stdin }).on('line', (l
 }
 
 it.skipIf(process.platform === 'win32')(
-  "new chats pin the host's agy only when it is compatible, signed in, and Orca's Chat is not",
+  "new chats pin the host's agy only when it is compatible, signed in, and Topo's Chat is not",
   async () => {
     vi.stubEnv('ELECTRON_RUN_AS_NODE', '1')
-    const stateDirectory = await mkdtemp(join(tmpdir(), 'orca-agy-state-test-'))
+    const stateDirectory = await mkdtemp(join(tmpdir(), 'topo-agy-state-test-'))
     folders.push(stateDirectory)
     // An empty home, so agy's settings there select no API-key provider.
-    const home = await mkdtemp(join(tmpdir(), 'orca-agy-home-test-'))
+    const home = await mkdtemp(join(tmpdir(), 'topo-agy-home-test-'))
     folders.push(home)
     const select = async (result: unknown, list?: unknown, flags?: string[]) =>
       selectAcpHostAccountHome(
@@ -97,7 +97,7 @@ it.skipIf(process.platform === 'win32')(
     await expect(select(older)).resolves.toBeNull()
     const managed = { ...HOST_INITIALIZE, agentInfo: { name: 'antigravity-acp', version: '1.5.2' } }
     await expect(select(managed)).resolves.toBeNull()
-    // Full access chats launch with the flag, so a build without it keeps chats on Orca's runtime.
+    // Full access chats launch with the flag, so a build without it keeps chats on Topo's runtime.
     await expect(select(HOST_INITIALIZE, SIGNED_IN_LIST, [])).resolves.toBeNull()
     await expect(
       selectAcpHostAccountHome(
@@ -114,7 +114,7 @@ it.skipIf(process.platform === 'win32')(
     // A keychain item agy cannot sign in from silently.
     await expect(select(HOST_INITIALIZE, SIGNED_OUT_LIST)).resolves.toBeNull()
 
-    // Someone already signed in to Orca's own Chat keeps it.
+    // Someone already signed in to Topo's own Chat keeps it.
     const managedAcp = join(stateDirectory, 'antigravity-chat', 'antigravity-acp')
     await mkdir(managedAcp, { recursive: true })
     await expect(select(HOST_INITIALIZE)).resolves.not.toBeNull()
@@ -124,12 +124,12 @@ it.skipIf(process.platform === 'win32')(
 )
 
 it.skipIf(process.platform === 'win32')(
-  "a saved Gemini Enterprise choice keeps new chats on Orca's runtime",
+  "a saved Gemini Enterprise choice keeps new chats on Topo's runtime",
   async () => {
     vi.stubEnv('ELECTRON_RUN_AS_NODE', '1')
-    const stateDirectory = await mkdtemp(join(tmpdir(), 'orca-agy-state-test-'))
+    const stateDirectory = await mkdtemp(join(tmpdir(), 'topo-agy-state-test-'))
     folders.push(stateDirectory)
-    const home = await mkdtemp(join(tmpdir(), 'orca-agy-home-test-'))
+    const home = await mkdtemp(join(tmpdir(), 'topo-agy-home-test-'))
     folders.push(home)
     const shellEnv = { PATH: await fakeAgy(HOST_INITIALIZE), HOME: home }
     const select = (settings: AcpHostBackendSettings) =>
@@ -150,11 +150,11 @@ it.skipIf(process.platform === 'win32')(
 )
 
 it.skipIf(process.platform === 'win32')(
-  "agy's API-key mode keeps new chats on Orca's runtime, since host chats drop the key",
+  "agy's API-key mode keeps new chats on Topo's runtime, since host chats drop the key",
   async () => {
     vi.stubEnv('ELECTRON_RUN_AS_NODE', '1')
-    const stateDirectory = await mkdtemp(join(tmpdir(), 'orca-agy-state-test-'))
-    const home = await mkdtemp(join(tmpdir(), 'orca-agy-home-test-'))
+    const stateDirectory = await mkdtemp(join(tmpdir(), 'topo-agy-state-test-'))
+    const home = await mkdtemp(join(tmpdir(), 'topo-agy-home-test-'))
     folders.push(stateDirectory, home)
     const settingsFolder = join(home, '.gemini', 'antigravity-cli')
     await mkdir(settingsFolder, { recursive: true })

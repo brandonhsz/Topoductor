@@ -7,7 +7,7 @@ import { join } from 'node:path'
 import { hasControlByte, TYPED_STARTUP_LINE_PROMPT_BUDGET_BYTES } from './startup-line-prompt-carry'
 import { quoteStartupArg } from './agent-launch/startup/tui-agent-startup-shell'
 
-export const STAGED_STARTUP_COMMAND_PREFIX = 'orca-launch-'
+export const STAGED_STARTUP_COMMAND_PREFIX = 'topo-launch-'
 
 /** Which delivery ran for a spawn's typed startup line, decided by the host that owns the PTY. */
 export type StartupLineDelivery = 'typed' | 'staged' | 'typed-after-stage-failed'
@@ -25,7 +25,7 @@ export type StartupCommandStaging = {
   failure?: string
 }
 
-// Only these shells preserve Orca’s portable quoting directly. Other shells use /bin/sh for nonplain Orca-built lines;
+// Only these shells preserve Topo’s portable quoting directly. Other shells use /bin/sh for nonplain Topo-built lines;
 // user-authored commands retain their target shell’s syntax.
 const STAGING_SHELLS = new Set(['bash', 'zsh', 'sh', 'dash', 'fish', 'ksh', 'mksh'])
 
@@ -47,8 +47,8 @@ export function shouldStageStartupCommand(args: {
   command: string
   shellPath: string | undefined
   platform: NodeJS.Platform
-  /** An agent launch line Orca built with POSIX quoting, which sh can run in any shell. */
-  orcaBuiltLine?: boolean
+  /** An agent launch line Topo built with POSIX quoting, which sh can run in any shell. */
+  topoBuiltLine?: boolean
 }): boolean {
   if (args.platform === 'win32') {
     return false
@@ -59,9 +59,9 @@ export function shouldStageStartupCommand(args: {
     hasControlByte(body) || encoder.encode(body).byteLength > TYPED_STARTUP_LINE_PROMPT_BUDGET_BYTES
   if (shellName === null) {
     // tcsh mutates backslashes/!! and nu rejects POSIX apostrophe escapes; type plain lines directly to retain foreground-job detection.
-    return args.orcaBuiltLine === true && (needsStaging || /[!\\"`$]/.test(body))
+    return args.topoBuiltLine === true && (needsStaging || /[!\\"`$]/.test(body))
   }
-  return needsStaging && (SOURCING_SHELLS.has(shellName) || args.orcaBuiltLine === true)
+  return needsStaging && (SOURCING_SHELLS.has(shellName) || args.topoBuiltLine === true)
 }
 
 function stagedScriptLine(shellName: string | null, quotedPath: string): string {
@@ -79,7 +79,7 @@ let staleSweepStarted = false
 export function stageStartupCommand(args: {
   command: string
   shellPath: string | undefined
-  orcaBuiltLine?: boolean
+  topoBuiltLine?: boolean
   platform?: NodeJS.Platform
   directory?: string
 }): StartupCommandStaging {
@@ -128,7 +128,7 @@ export function startupStagingFailureNotice(staging: StartupCommandStaging): str
   const reason = [...staging.failure]
     .map((char) => (char < ' ' || char === '\x7f' ? ' ' : char))
     .join('')
-  return `\r\n[orca] Could not stage the launch command (${reason}); typed it in full. If the shell shows quote> or waits for more input, press Ctrl-C and launch again.\r\n`
+  return `\r\n[topo] Could not stage the launch command (${reason}); typed it in full. If the shell shows quote> or waits for more input, press Ctrl-C and launch again.\r\n`
 }
 
 export function discardStagedStartupCommand(staging: StartupCommandStaging | undefined): void {

@@ -17,7 +17,7 @@ function builderFor(marker: string): ShellWrapperFileBuilder {
 }
 
 function makeBase(): string {
-  return mkdtempSync(join(tmpdir(), 'orca-wrapper-address-'))
+  return mkdtempSync(join(tmpdir(), 'topo-wrapper-address-'))
 }
 
 describe('resolveShellWrapperRoot', () => {

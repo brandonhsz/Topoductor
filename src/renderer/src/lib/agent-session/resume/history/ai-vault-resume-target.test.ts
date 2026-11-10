@@ -27,7 +27,7 @@ describe('ai vault resume target ownership', () => {
         makeState({
           repos: [{ id: 'repo-1', connectionId: null, executionHostId: 'runtime:env-1' }]
         }),
-        'repo-1::/repo/orca'
+        'repo-1::/repo/topo'
       )
     ).toBe('runtime')
   })
@@ -37,11 +37,11 @@ describe('ai vault resume target ownership', () => {
       getAiVaultResumeWorkspaceTargetStatus(
         makeState({
           worktreesByRepo: {
-            'repo-1': [{ id: 'repo-1::/repo/orca', repoId: 'repo-1', hostId: 'runtime:env-1' }]
+            'repo-1': [{ id: 'repo-1::/repo/topo', repoId: 'repo-1', hostId: 'runtime:env-1' }]
           },
           repos: [{ id: 'repo-1', connectionId: 'ssh-1', executionHostId: 'ssh:ssh-1' }]
         }),
-        'worktree:repo-1::/repo/orca'
+        'worktree:repo-1::/repo/topo'
       )
     ).toBe('runtime')
   })

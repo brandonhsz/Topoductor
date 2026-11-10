@@ -13,7 +13,7 @@ import '../../../../../shared/agent-launch/contracts/agent-launch-surface'
 import '../../../../opencode/opencode-model-startup-plan'
 import type { AgentSessionRecordStore } from '../../../agent-session/records/agent-session-record-store'
 import { openTestAgentSessionRecordStore } from '../../../agent-session/records/agent-session-record-store-test-harness'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import '../../../workspaces/lineage/runtime-worktree-lineage-resolution'
 import '../../../../agent-launch/agent-launch-not-started'
 import './agent-launch-failure-code'
@@ -75,7 +75,7 @@ describe('a launch whose terminal fails', () => {
   const dispatchers = new WeakMap<AgentLaunchRuntimeStub, RpcDispatcher>()
 
   beforeEach(async () => {
-    directory = await mkdtemp(join(tmpdir(), 'orca-agent-launch-prestart-'))
+    directory = await mkdtemp(join(tmpdir(), 'topo-agent-launch-prestart-'))
     store = await openTestAgentSessionRecordStore(directory)
     setAgentLaunchRecordStore(store)
   })
@@ -100,7 +100,7 @@ describe('a launch whose terminal fails', () => {
     if (!dispatcher) {
       dispatcher = new RpcDispatcher({
         // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the fixture implements every runtime method reached by agent.launch and dispatcher metadata.
-        runtime: { ...runtime, getRuntimeId: () => 'runtime-1' } as unknown as OrcaRuntimeService,
+        runtime: { ...runtime, getRuntimeId: () => 'runtime-1' } as unknown as TopoRuntimeService,
         methods: AGENT_LAUNCH_METHODS
       })
       dispatchers.set(runtime, dispatcher)

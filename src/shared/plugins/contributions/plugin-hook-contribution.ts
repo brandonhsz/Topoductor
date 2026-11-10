@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { PLUGIN_ENUM_SINCE_KEY } from '../manifest/plugin-engine-floor-keys'
 import { pluginFieldDoc, PLUGIN_HOOKS_SINCE } from '../manifest/plugin-schema-field-docs'
 
-/** Points where a worker can change or stop what Orca is about to do. Closed set: Orca waits
+/** Points where a worker can change or stop what Topo is about to do. Closed set: Topo waits
  *  only on plugins whose manifest lists the hook. */
 export const PLUGIN_HOOK_NAMES = [
   'terminal.send',
@@ -48,7 +48,7 @@ export const pluginHookContributionSchema = z
       .optional()
       .meta(
         pluginFieldDoc(
-          "What Orca does when this plugin's hook throws, times out, crashes or does not start: `pass` (the default) carries on as if it passed; `deny` refuses the action, naming the plugin, so a guard fails closed. Ignored for hooks that only observe.",
+          "What Topo does when this plugin's hook throws, times out, crashes or does not start: `pass` (the default) carries on as if it passed; `deny` refuses the action, naming the plugin, so a guard fails closed. Ignored for hooks that only observe.",
           PLUGIN_HOOKS_SINCE
         )
       )
@@ -57,7 +57,7 @@ export const pluginHookContributionSchema = z
   .meta({
     id: 'HookContribution',
     description:
-      'A hook Orca runs through the worker before (or after) it acts. Requires `main` and the `trusted-worker` execution profile.'
+      'A hook Topo runs through the worker before (or after) it acts. Requires `main` and the `trusted-worker` execution profile.'
   })
 
 export type PluginHookContribution = z.infer<typeof pluginHookContributionSchema>

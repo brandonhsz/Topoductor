@@ -58,7 +58,7 @@ export function itemStep(
 }
 
 export async function rig() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-transition-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-transition-'))
   roots.push(root)
   const journal: AgentSessionJournal = await journals.open({
     identity: {

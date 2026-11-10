@@ -111,7 +111,7 @@ beforeEach(async () => {
   attachOperationIds.length = 0
   attachCallerKeys.length = 0
   createStructuredSession.mockClear()
-  directory = await mkdtemp(join(tmpdir(), 'orca-agent-launch-replay-'))
+  directory = await mkdtemp(join(tmpdir(), 'topo-agent-launch-replay-'))
   store = await openTestAgentSessionRecordStore(directory)
   // The ledger alone, as admission opens it: no chat host is installed.
   setAgentLaunchRecordStore(store)

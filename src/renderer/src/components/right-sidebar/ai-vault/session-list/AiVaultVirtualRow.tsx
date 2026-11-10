@@ -25,7 +25,7 @@ import {
   type AiVaultSessionWorktreeInfo
 } from '../../../../../../shared/ai-vault/session-display/ai-vault-session-worktree'
 import {
-  canOpenAiVaultSessionLogInOrca,
+  canOpenAiVaultSessionLogInTopo,
   canUseLocalAiVaultSessionPathActions
 } from '../session-actions/ai-vault-session-path-actions'
 import { canContinueAiVaultSessionInNewSession } from '../session-actions/ai-vault-session-continuation'
@@ -185,7 +185,7 @@ export const AiVaultVirtualRow = memo(function AiVaultVirtualRow({
   const canOpenLocalSessionPaths =
     row.type === 'session' && canUseLocalAiVaultSessionPathActions(row.session.executionHostId)
   // File viewing needs a conversation resource; Reveal/CWD retain their own path semantics.
-  const canOpenLogInOrca = row.type === 'session' && canOpenAiVaultSessionLogInOrca(row.session)
+  const canOpenLogInTopo = row.type === 'session' && canOpenAiVaultSessionLogInTopo(row.session)
   const searchResumeAllowed = searchHit ? canResumeAiVaultSearchHit(searchHit) : true
   const searchPathAllowed = searchHit ? hasAiVaultSearchHitPath(searchHit) : true
   const usesLegacyResumeCommand = row.type === 'session' && !row.session.structuredSession
@@ -298,7 +298,7 @@ export const AiVaultVirtualRow = memo(function AiVaultVirtualRow({
           onCopyId={() => onCopyId(row.session)}
           onCopyPath={searchPathAllowed ? () => onCopyPath(row.session) : undefined}
           onOpenLog={
-            searchPathAllowed && canOpenLogInOrca ? () => onOpenLog(row.session) : undefined
+            searchPathAllowed && canOpenLogInTopo ? () => onOpenLog(row.session) : undefined
           }
           onRevealLog={
             searchPathAllowed && canOpenLocalSessionPaths

@@ -25,14 +25,14 @@ vi.mock('./repo-worktree-admin-fingerprint', () => ({
   readRepoWorktreeAdminFingerprint: vi.fn(async () => null)
 }))
 
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import type { GitWorktreeInfo } from '../../../../shared/worktree/types'
 import type { HostWorktreeTarget } from '../../../../shared/worktree/host-qualified-identity'
 import {
   partialRuntimeStore,
   storeWorktreeMeta,
   type PartialRuntimeStore
-} from '../../orca-runtime-tests/runtime-store-partial-fixture'
+} from '../../topo-runtime-tests/runtime-store-partial-fixture'
 import type { WorktreeMeta } from '../../../../shared/worktree/meta-types'
 
 const REPO_ID = 'repo-local'
@@ -46,7 +46,7 @@ const MAIN_ROW = {
   isMainWorktree: true
 }
 
-function makeRuntime(options: { connectionId?: string } = {}): OrcaRuntimeService {
+function makeRuntime(options: { connectionId?: string } = {}): TopoRuntimeService {
   const metaById: Record<string, WorktreeMeta> = {}
   const repos = [
     {
@@ -78,14 +78,14 @@ function makeRuntime(options: { connectionId?: string } = {}): OrcaRuntimeServic
     }),
     getProjects: () => []
   }
-  return new OrcaRuntimeService(partialRuntimeStore(store))
+  return new TopoRuntimeService(partialRuntimeStore(store))
 }
 
 function gitLists(worktrees: GitWorktreeInfo[]): void {
   localScanMock.mockResolvedValue({ ok: true, worktrees })
 }
 
-async function listedRows(runtime: OrcaRuntimeService): Promise<string[]> {
+async function listedRows(runtime: TopoRuntimeService): Promise<string[]> {
   const listed = await runtime.listManagedWorktrees()
   return listed.worktrees.map((worktree) => `${worktree.id} ${worktree.branch}`)
 }

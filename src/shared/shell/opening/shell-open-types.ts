@@ -42,6 +42,6 @@ export type ShellOpenExternalEditorResult =
 
 /**
  * Outcome of opening a linked local file. `open-in-editor`: main did not hand the file to the OS
- * because it is a script or launcher that is readable text; the caller shows it in Orca instead.
+ * because it is a script or launcher that is readable text; the caller shows it in Topo instead.
  */
 export type ShellOpenFileResult = 'opened' | 'revealed' | 'open-in-editor' | 'failed'

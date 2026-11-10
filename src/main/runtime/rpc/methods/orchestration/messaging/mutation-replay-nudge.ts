@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import {
   attachMutationReplayNudge,
   type MutationReplayNudge
@@ -52,7 +52,7 @@ export function messageReplayNudge(receipt: unknown): MutationReplayNudge | unde
 }
 
 export function replayMutationNudge(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   replayNudge: MutationReplayNudge
 ): void {
   if (replayNudge.kind === 'federation') {

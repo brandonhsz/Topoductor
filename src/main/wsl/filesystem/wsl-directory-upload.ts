@@ -19,8 +19,8 @@ import {
   ustarPaddingBytes
 } from '../../archive/ustar-entry-header'
 
-export const WSL_GUEST_SOURCE_UNAVAILABLE = 'ORCA_WSL_GUEST_SOURCE_UNAVAILABLE'
-export const WSL_UPLOAD_PROMOTED = 'ORCA_WSL_UPLOAD_PROMOTED'
+export const WSL_GUEST_SOURCE_UNAVAILABLE = 'TOPO_WSL_GUEST_SOURCE_UNAVAILABLE'
+export const WSL_UPLOAD_PROMOTED = 'TOPO_WSL_UPLOAD_PROMOTED'
 
 type UploadOptions = { signal?: AbortSignal }
 
@@ -179,7 +179,7 @@ export async function uploadDirectoryIntoWsl(
     signal
   )
   const manifest = await digestManifest(plan, signal)
-  const stage = `${remoteDir.replace(/\/+$/, '')}/.orca-upload-${randomBytes(8).toString('hex')}`
+  const stage = `${remoteDir.replace(/\/+$/, '')}/.topo-upload-${randomBytes(8).toString('hex')}`
   // Cold runtime deployment exceeds the 30s probe default; use the deploy timeout.
   const execOptions = { signal, timeoutMs: REMOTE_INSTALL_TIMEOUT_MS }
   const stagedFromGuest =

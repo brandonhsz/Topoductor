@@ -59,7 +59,7 @@ export function readPiHistoryJournalView(
     }
     if (
       body.kind === 'turn' ||
-      (identity?.provider === 'orca' &&
+      (identity?.provider === 'topo' &&
         body.kind === 'message' &&
         !(
           journal.inputOrder.inputForItem(itemId) &&

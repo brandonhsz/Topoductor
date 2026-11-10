@@ -56,7 +56,7 @@ export default function LiveInputProbeRoute() {
   }, [clearPendingLiveInputCommit])
 
   useEffect(() => {
-    globalThis.__orcaLiveInputProbe = {
+    globalThis.__topoLiveInputProbe = {
       sent: () => [...sentRef.current]
     }
   }, [])

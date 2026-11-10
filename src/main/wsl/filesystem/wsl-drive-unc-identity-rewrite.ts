@@ -18,9 +18,9 @@ import {
   WSL_MOVE_FREE_TEXT_KEYS
 } from '../../persistence/moving-wsl-projects/wsl-move-canonical-form'
 import {
-  rewriteOrcadMigrationPathValue,
-  type OrcadMigrationPathRewriter
-} from '../../persistence/migrating-orcad-catalog/path-rewrite/orcad-migration-path-rewrite'
+  rewriteTopodMigrationPathValue,
+  type TopodMigrationPathRewriter
+} from '../../persistence/migrating-topod-catalog/path-rewrite/topod-migration-path-rewrite'
 import { wslUncDrivePathToWindows } from '../../../shared/wsl-paths'
 
 export type WslDriveUncRewriteScope = {
@@ -76,7 +76,7 @@ export function createWslDriveUncRewriter(scope: WslDriveUncRewriteScope): WslDr
     return { drive, tail, extra: match[2] ?? '' }
   }
   // Any drive path of the distro: an id's owner was checked first.
-  const drive: OrcadMigrationPathRewriter = {
+  const drive: TopodMigrationPathRewriter = {
     path: (value, form) => {
       if (form === 'relative') {
         return value
@@ -121,17 +121,17 @@ export function createWslDriveUncRewriter(scope: WslDriveUncRewriteScope): WslDr
     const editor = parseEditorFileId(value)
     if (editor) {
       return ownerInScope(editor[0])
-        ? rewriteOrcadMigrationPathValue(value, 'editor-file-id', drive)
+        ? rewriteTopodMigrationPathValue(value, 'editor-file-id', drive)
         : value
     }
     const session = value.lastIndexOf(PTY_SESSION_ID_SEPARATOR)
     if (session > 0) {
       return ownerInScope(value.slice(0, session))
-        ? rewriteOrcadMigrationPathValue(value, 'pty-session-id', drive)
+        ? rewriteTopodMigrationPathValue(value, 'pty-session-id', drive)
         : value
     }
     if (parseWorkspaceKey(value) || value.includes(WORKTREE_ID_SEPARATOR)) {
-      return ownerInScope(value) ? rewriteOrcadMigrationPathValue(value, 'owner-key', drive) : value
+      return ownerInScope(value) ? rewriteTopodMigrationPathValue(value, 'owner-key', drive) : value
     }
     if (/^file:/i.test(value)) {
       const parsed = fileUrlDrivePath(value)

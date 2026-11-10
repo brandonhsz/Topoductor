@@ -39,7 +39,7 @@ async function interruptedUpdate(phase: SkillInstallJournalV1['phase']): Promise
   stateDirectory: string
   journal: SkillInstallJournalV1
 }> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-skill-recovery-test-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-skill-recovery-test-'))
   roots.push(root)
   const first = await packageVersion(root, 'version_1', '# First')
   const second = await packageVersion(root, 'version_2', '# Second')
@@ -61,9 +61,9 @@ async function interruptedUpdate(phase: SkillInstallJournalV1['phase']): Promise
   if (!previous) {
     throw new Error('fixture receipt missing')
   }
-  const extractionPath = join(destinationRoot, '.orca-skill-extract-recovery')
-  const stagingPath = join(destinationRoot, '.recovery-skill.orca-staging-recovery')
-  const backupPath = join(destinationRoot, '.recovery-skill.orca-backup-recovery')
+  const extractionPath = join(destinationRoot, '.topo-skill-extract-recovery')
+  const stagingPath = join(destinationRoot, '.recovery-skill.topo-staging-recovery')
+  const backupPath = join(destinationRoot, '.recovery-skill.topo-backup-recovery')
   await extractSkillPackageArchive({
     archivePath: second.archivePath,
     destinationDirectory: extractionPath,

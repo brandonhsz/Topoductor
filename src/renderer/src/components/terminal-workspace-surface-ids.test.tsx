@@ -26,8 +26,8 @@ describe('workspace surface ids', () => {
     const localFolder: FolderWorkspace = {
       id: 'folder-shared',
       projectGroupId: 'group-shared',
-      name: 'orca',
-      folderPath: '/work/orca-local',
+      name: 'topo',
+      folderPath: '/work/topo-local',
       connectionId: null,
       executionHostId: 'local',
       linkedTask: null,
@@ -42,7 +42,7 @@ describe('workspace surface ids', () => {
     }
     const runtimeFolder: FolderWorkspace = {
       ...localFolder,
-      folderPath: '/remote/orca',
+      folderPath: '/remote/topo',
       executionHostId: 'runtime:env-1'
     }
     useAppStore.setState({
@@ -53,7 +53,7 @@ describe('workspace surface ids', () => {
 
     const { result } = renderHook(() => useTerminalWorkspaceFoundation())
     expect(result.current.workspaceSurfaces).toEqual([
-      { id: 'folder:folder-shared', path: '/remote/orca' }
+      { id: 'folder:folder-shared', path: '/remote/topo' }
     ])
 
     // Leaving folder scope must drop its host tie-break and recompute first-wins selection.
@@ -64,7 +64,7 @@ describe('workspace surface ids', () => {
       })
     })
     expect(result.current.workspaceSurfaces).toEqual([
-      { id: 'folder:folder-shared', path: '/work/orca-local' }
+      { id: 'folder:folder-shared', path: '/work/topo-local' }
     ])
     warn.mockRestore()
   })

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../../../../shared/orchestration/orchestration-runtime-capabilities'
 import type { RuntimeTerminalSummary } from '../../../../../../shared/runtime-terminal-contracts'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { RpcContext, RpcRequest } from '../../../core'
 import { RpcDispatcher } from '../../../dispatcher'
 import { ORCHESTRATION_METHODS } from '../orchestration'
@@ -27,7 +27,7 @@ type GroupSendResult = {
 describe('orchestration recipient routing oracle', () => {
   const harness = createOrchestrationRpcHarness()
   let db: OrchestrationDb
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
   let ctx: RpcContext
   let senderRunId: string
 

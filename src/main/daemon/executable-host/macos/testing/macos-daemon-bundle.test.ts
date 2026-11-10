@@ -12,18 +12,18 @@ import {
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
-import type { ProcessResult, ProcessSpec } from '@orca/process-host/process-spec'
+import type { ProcessResult, ProcessSpec } from '@topo/process-host/process-spec'
 
 const { runProcessMock, inspectMock } = vi.hoisted(() => ({
   runProcessMock: vi.fn<(spec: ProcessSpec) => Promise<ProcessResult>>(),
   inspectMock: vi.fn()
 }))
-vi.mock('@orca/process-host', () => ({ runProcess: runProcessMock }))
+vi.mock('@topo/process-host', () => ({ runProcess: runProcessMock }))
 vi.mock('../daemon-mac-code-identity', () => ({ inspectMacProcessCodeIdentity: inspectMock }))
 
 import { materializeMacDaemonBundle } from '../macos-daemon-bundle'
 
-const APP_REQUIREMENT = 'identifier "com.stablyai.orca" and anchor apple generic'
+const APP_REQUIREMENT = 'identifier "com.brandonhsz.topo" and anchor apple generic'
 const ok: ProcessResult = { code: 0, signal: null, stdout: '', stderr: '', timedOut: false }
 let root: string
 let source: string
@@ -35,13 +35,13 @@ let verifyCode: number
 let onCopy: (() => Promise<void>) | null
 
 const signal = (): AbortSignal => new AbortController().signal
-const helperExecutable = (): string => join(helper, 'Contents', 'MacOS', 'orca-terminal-host')
+const helperExecutable = (): string => join(helper, 'Contents', 'MacOS', 'topo-terminal-host')
 
 beforeEach(async () => {
-  root = await realpath(await mkdtemp(join(tmpdir(), 'orca-mac-runtime-')))
+  root = await realpath(await mkdtemp(join(tmpdir(), 'topo-mac-runtime-')))
   // Model an update that moved the running bundle and replaced its original path.
-  source = join(root, 'com.stablyai.orca.ShipIt.old', 'Orca.app')
-  helper = join(source, 'Contents', 'Helpers', 'Orca Terminal Host.app')
+  source = join(root, 'com.brandonhsz.topo.ShipIt.old', 'Topo.app')
+  helper = join(source, 'Contents', 'Helpers', 'Topo Terminal Host.app')
   copies = join(root, 'profile', 'daemon-host', 'macos')
   await mkdir(join(source, 'Contents', 'MacOS'), { recursive: true })
   await mkdir(join(helper, 'Contents', 'MacOS'), { recursive: true })
@@ -57,7 +57,7 @@ beforeEach(async () => {
   onCopy = null
   inspectMock.mockReset().mockResolvedValue({
     identity: 'parked',
-    executablePath: join(source, 'Contents', 'MacOS', 'Orca')
+    executablePath: join(source, 'Contents', 'MacOS', 'Topo')
   })
   runProcessMock.mockReset().mockImplementation(async (spec) => {
     const args = spec.args ?? []
@@ -104,10 +104,10 @@ it('publishes one verified copy per helper build, from the running app rather th
     join(
       copy.directory,
       'app.noindex',
-      'Orca Terminal Host.app',
+      'Topo Terminal Host.app',
       'Contents',
       'MacOS',
-      'orca-terminal-host'
+      'topo-terminal-host'
     )
   )
   expect(await readFile(copy.execPath, 'utf8')).toBe('signed-node')
@@ -136,9 +136,9 @@ it("rejects a copy that does not satisfy the running app's requirement and publi
 it('keeps the winning copy when a concurrent publisher renames first', async () => {
   onCopy = async () => {
     onCopy = null
-    const winner = join(copies, `terminal-host-${cdhash}`, 'app.noindex', 'Orca Terminal Host.app')
+    const winner = join(copies, `terminal-host-${cdhash}`, 'app.noindex', 'Topo Terminal Host.app')
     await cp(helper, winner, { recursive: true })
-    await writeFile(join(winner, 'Contents', 'MacOS', 'orca-terminal-host'), 'winner')
+    await writeFile(join(winner, 'Contents', 'MacOS', 'topo-terminal-host'), 'winner')
   }
   const copy = await materializeMacDaemonBundle(copies, signal())
   expect(await readFile(copy.execPath, 'utf8')).toBe('winner')
@@ -155,7 +155,7 @@ it('stops at the shared deadline and removes the staging copy', async () => {
     return controller.signal.aborted ? { ...ok, code: null } : (signed?.(spec) ?? ok)
   })
   await expect(materializeMacDaemonBundle(copies, controller.signal)).rejects.toThrow(
-    'Could not copy Orca Terminal Host.app'
+    'Could not copy Topo Terminal Host.app'
   )
   expect(await readdir(copies)).toEqual([])
 })
@@ -165,7 +165,7 @@ it('copies the app behind a symbolic link rather than retaining a link to the up
   await symlink(source, alias, 'junction')
   inspectMock.mockResolvedValue({
     identity: 'resolved',
-    executablePath: join(alias, 'Contents', 'MacOS', 'Orca')
+    executablePath: join(alias, 'Contents', 'MacOS', 'Topo')
   })
   const copy = await materializeMacDaemonBundle(copies, signal())
   await rm(alias)

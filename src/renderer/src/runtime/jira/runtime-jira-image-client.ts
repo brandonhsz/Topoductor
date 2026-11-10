@@ -147,7 +147,7 @@ export async function readRuntimeJiraImage(
 }
 
 export function jiraImageProtocolUrl(reference: string): string {
-  const url = `orca-jira-image://attachment/${reference}`
+  const url = `topo-jira-image://attachment/${reference}`
   if (!jiraImageReference(url)) {
     throw new Error('Invalid Jira image reference.')
   }

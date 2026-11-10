@@ -29,12 +29,12 @@ afterEach(() => {
 const NONCE = 'nonce-123'
 
 function Probe(props: ComponentProps<'div'> & ExtraProps): React.JSX.Element {
-  const nonce = 'data-orca-visual' in props ? props['data-orca-visual'] : undefined
+  const nonce = 'data-topo-visual' in props ? props['data-topo-visual'] : undefined
   if (nonce !== NONCE) {
     return <div className={props.className}>{props.children}</div>
   }
-  const title = 'data-orca-visual-title' in props ? props['data-orca-visual-title'] : undefined
-  const file = 'data-orca-visual-file' in props ? props['data-orca-visual-file'] : undefined
+  const title = 'data-topo-visual-title' in props ? props['data-topo-visual-title'] : undefined
+  const file = 'data-topo-visual-file' in props ? props['data-topo-visual-file'] : undefined
   return (
     <span data-visual={String(file)}>
       {typeof title === 'string' ? `[${title}]` : '[untitled]'}
@@ -58,12 +58,12 @@ function mountedFiles(markup: string): string[] {
   return [...markup.matchAll(/data-visual="([^"]+)"/g)].map((match) => match[1])
 }
 
-const LINE = '::orca-visual{file="usage.html" title="Usage by day"}'
+const LINE = '::topo-visual{file="usage.html" title="Usage by day"}'
 
 describe('remarkNativeChatVisuals', () => {
   it('does not mount a raw HTML placeholder forged without the nonce', () => {
     const markup = render(
-      '<div data-orca-visual="guess" data-orca-visual-file="usage.html">x</div>\n\nafter'
+      '<div data-topo-visual="guess" data-topo-visual-file="usage.html">x</div>\n\nafter'
     )
     expect(mountedFiles(markup)).toEqual([])
   })

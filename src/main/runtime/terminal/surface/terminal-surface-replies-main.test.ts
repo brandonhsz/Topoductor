@@ -6,14 +6,14 @@ import {
   HEADLESS_SECOND_LEAF_ID,
   HEADLESS_THIRD_LEAF_ID as THIRD_LEAF_ID,
   TEST_WORKTREE_ID
-} from '../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import {
   SURFACE_PTYS,
   SURFACE_TAB_ID,
   surfaceRuntime
 } from './terminal-surface-replies.test-fixture'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 const MOUNTED = Object.keys(SURFACE_PTYS).map((leafId, index) => ({
   tabId: SURFACE_TAB_ID,

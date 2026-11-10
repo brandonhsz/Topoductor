@@ -22,8 +22,8 @@ const loadedAt = Date.now()
 
 const README = `## Components Gallery
 
-Everything here is drawn by Orca from plain data. Links such as
-[the components guide](https://github.com/stablyai/orca) open in your browser.
+Everything here is drawn by Topo from plain data. Links such as
+[the components guide](https://github.com/brandonhsz/Topoductor) open in your browser.
 
 - **Tables** page and sort
 - **Trees** load children lazily
@@ -49,7 +49,7 @@ export function ContentTab() {
         <IconButton icon="settings" label="Settings" tooltip="Gallery settings" />
       </Toolbar>
       <Callout tone="accent" title="Catalog 2">
-        <Text>These components need Orca 1.4.247 or newer (ui.catalog {ui.catalog}).</Text>
+        <Text>These components need Topo 1.4.247 or newer (ui.catalog {ui.catalog}).</Text>
         <Text muted size="xs">
           Opened <RelativeTime at={loadedAt} format="long" />
         </Text>

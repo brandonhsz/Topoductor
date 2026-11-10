@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 const mocks = vi.hoisted(() => ({
   callMock: vi.fn(),
   runtimeClientConstructorMock: vi.fn(),
-  serveOrcaAppMock: vi.fn(),
-  getDefaultUserDataPathMock: vi.fn(() => '/tmp/orca-user-data')
+  serveTopoAppMock: vi.fn(),
+  getDefaultUserDataPathMock: vi.fn(() => '/tmp/topo-user-data')
 }))
 vi.mock('./runtime-client', async () => {
   const { createRuntimeClientModuleMock } = await import('./index-test-harness.js')
@@ -44,7 +44,7 @@ describe('file commands on a server with no app window', () => {
     await main(['file', 'open', 'src/App.tsx', '--worktree', 'id:wt-1'], '/tmp/repo')
 
     const printed = String(vi.mocked(console.error).mock.calls[0]?.[0])
-    expect(printed).toContain('This Orca server has no app window')
+    expect(printed).toContain('This Topo server has no app window')
     expect(printed).toContain('Next step: Open the file from the file explorer')
     expect(printed.split('\n')[0]).not.toBe('renderer_unavailable')
     expect(process.exitCode).toBe(1)
@@ -91,7 +91,7 @@ describe('file commands on a server with no app window', () => {
     ])
 
     expect(String(vi.mocked(console.error).mock.calls[0]?.[0])).toContain(
-      'This Orca server has no app window'
+      'This Topo server has no app window'
     )
   })
 

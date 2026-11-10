@@ -4,7 +4,7 @@ import type { PluginHookChainOutcome } from '../../../shared/plugins/workers/plu
 import { setPluginHookRunner } from '../../plugins/hooks/plugin-hook-dispatch'
 import { answerAgentToolPluginHooks } from './agent-tool-plugin-hooks'
 
-const DECIDES = { 'x-orca-hook-decision': 'claude-pre-tool-use-v1' }
+const DECIDES = { 'x-topo-hook-decision': 'claude-pre-tool-use-v1' }
 
 function installRunner(
   decide: (payload: unknown) => PluginHookChainOutcome | Promise<PluginHookChainOutcome>

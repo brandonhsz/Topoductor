@@ -58,7 +58,7 @@ export function WorkspaceSpaceChanges({
           <p className="text-xs text-muted-foreground">
             {t(
               'workspaceSpace.changes.description',
-              'Uncommitted files · Click a file to view its changes in Orca.'
+              'Uncommitted files · Click a file to view its changes in Topo.'
             )}
           </p>
           <Input

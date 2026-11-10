@@ -195,32 +195,32 @@ overrides:
 
 packageExtensionsChecksum: sha256-TrarseUCmMKP0lVjkfyLP2TAvkGZMZzvzPxjKY48nrY=
 
-pnpmfileChecksum: sha256-6l6qdgUHKyTLYIQLx/UGfGRnEiFXxIaSlGMgK4mttEw=
+pnpmfileChecksum: sha256-W3eNt7wfJyDVz4XlEQ9c44v7DQIpcrWFOYbdNHF8HI8=
 
 patchedDependencies:
-  '@tiptap/extension-list@3.31.3': afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299
+  '@tiptap/extension-list@3.31.3': fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9
   '@tiptap/markdown@3.31.3': 4fe6aebb0d868ea9e8977f371bd088e96d5018ea8cf83a7ae3f3f924b87ee7cf
-  '@vscode/windows-process-tree@0.8.0': a09f2e8b2b4e73ef20c317af91f9e06c09abf62fa2c891d99b16f53047f596fd
+  '@vscode/windows-process-tree@0.8.0': c2daf1e420d2750b655fb16507db9ba4bdc5cd293c9f17ab6d2dde118421c1e7
   '@xterm/addon-image@0.10.0-beta.331': f088c9207dac42844a542b9da8078be52351cee60585725ef189b9fd30f33f34
   '@xterm/addon-ligatures@0.11.0-beta.330': 47405b9994b5acf1b4e90b49250358c1ca03649854d59560e7732b72fe336920
   '@xterm/addon-search@0.17.0-beta.330': eee5338dd2621ece46e79c61ec06766cd7fadaf79ffdb24e2a8ab68e97ef31f0
-  '@xterm/addon-serialize@0.15.0-beta.330': 17ca66ab9c7f52fc2fee94053b3b587c1210da468f3ddc7c4f5dba50b521c93e
-  '@xterm/addon-webgl@0.20.0-beta.329': 0d63e956bc68b3f56942e2ed9325e2bf2b1dab76ab403a0690b94232b5ef4aab
-  '@xterm/xterm@6.1.0-beta.336': 4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c
+  '@xterm/addon-serialize@0.15.0-beta.330': 2030aa21af2b191c3550d84cdbfd4fb362032b45b354282c2fa93d04aa521ca9
+  '@xterm/addon-webgl@0.20.0-beta.329': 05c8d4361ff5b8c808fcb657ebb02897f0b8fb81221fd729d81ff6d318b87ade
+  '@xterm/xterm@6.1.0-beta.336': 40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b
   glob@13.0.6: 163edae2cab27bf7a8cf791c9a0ee368b596bfef898e490b3b77e7e44a8f0223
   i18next-cli@1.74.2: 2ee32eef742615cd133e1a6940f027deb3723a8430bb7953bba3a6769b0aac47
   lint-staged@16.4.0: 7333b3837f80a7fbd045964db6d76ba4fc118e49134bdbabb00585b6b7b60673
   minimatch@10.2.5: 4324868e550a69eee9addc4801001bee415e98339c9b2b88d6ab4fc6028741c6
   minimatch@10.2.6: 4324868e550a69eee9addc4801001bee415e98339c9b2b88d6ab4fc6028741c6
   minimatch@9.0.9: c356feccb9147b4d6a1cc72b10270defcb95d14cb42ee74ddfe7219341417161
-  monaco-editor@0.55.1: 53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636
-  node-pty@1.1.0: 37dc98d9a4bcfc67153fa2fbf30689563ff49dcf8e6f0578484cbacdf1e38af5
+  monaco-editor@0.55.1: 0d6e07474b92e097be60b0ebb97e594847d2a9494d47621f4e69397cc93e11bd
+  node-pty@1.1.0: e1a2516c26c3efc8604b224fa21576f29f15686ca2df5980c635c34e5889d507
   oxlint-plugin-anti-slop@0.1.2: c10c871702365a0c2c59e9f1c5fb92df97cae5755d534c0a3d83c6368f6feafe
   pdfjs-dist@6.3.289: 424fde648e16c965ce45c55bdda49ecb3a4aa992c856900714c841c3f13f8415
   prosemirror-view@1.42.3: 3340ccbcc4e3302f3ae1c0eda3911015966add2e7e0df76abd89fbef4f3902f7
   sprintf-js@1.1.3: 05316a8b01f155fe19a1e0cb4042c81d43d798a76755c407684e1199a18b1e08
   vitest@5.0.5: 166c034c864f98267e7d479f083b8d37ea9a7b08d6662313dd38e7c69c9a3eb4
-  ws@8.22.0: 9393e04dd9a90b01eb7aa35fcd5b1431b5038ce999fbbd82651136193ba51f14
+  ws@8.22.0: 0dc3532a9f51604c46a68dafc544ae17e6ae594823b9fc839aeafa55a42430ac
 
 importers:
 
@@ -235,15 +235,15 @@ importers:
       '@linear/sdk':
         specifier: ^97.0.0
         version: 97.0.0(graphql@16.14.2)
-      '@orca/process-host':
-        specifier: workspace:*
-        version: link:src/packages/process-host
       '@parcel/watcher':
         specifier: ^2.5.6
         version: 2.5.6
+      '@topo/process-host':
+        specifier: workspace:*
+        version: link:src/packages/process-host
       '@xterm/addon-serialize':
         specifier: 0.15.0-beta.330
-        version: 0.15.0-beta.330(patch_hash=17ca66ab9c7f52fc2fee94053b3b587c1210da468f3ddc7c4f5dba50b521c93e)(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))
+        version: 0.15.0-beta.330(patch_hash=2030aa21af2b191c3550d84cdbfd4fb362032b45b354282c2fa93d04aa521ca9)(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))
       '@xterm/headless':
         specifier: 6.1.0-beta.334
         version: 6.1.0-beta.334
@@ -267,7 +267,7 @@ importers:
         version: 3.0.2
       node-pty:
         specifier: ^1.1.0
-        version: 1.1.0(patch_hash=37dc98d9a4bcfc67153fa2fbf30689563ff49dcf8e6f0578484cbacdf1e38af5)
+        version: 1.1.0(patch_hash=e1a2516c26c3efc8604b224fa21576f29f15686ca2df5980c635c34e5889d507)
       posthog-node:
         specifier: ^5.52.5
         version: 5.52.5
@@ -303,7 +303,7 @@ importers:
         version: 1.0.3
       ws:
         specifier: ^8.22.0
-        version: 8.22.0(patch_hash=9393e04dd9a90b01eb7aa35fcd5b1431b5038ce999fbbd82651136193ba51f14)
+        version: 8.22.0(patch_hash=0dc3532a9f51604c46a68dafc544ae17e6ae594823b9fc839aeafa55a42430ac)
       yaml:
         specifier: ^2.9.1
         version: 2.9.1
@@ -334,7 +334,7 @@ importers:
         version: 4.2.1(supports-color@7.2.0)
       '@monaco-editor/react':
         specifier: ^4.7.0
-        version: 4.7.0(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(monaco-editor@0.55.1(patch_hash=53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636))(react-dom@19.2.8(@types/react@19.2.18)(react@19.2.8))(react@19.2.8)
+        version: 4.7.0(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(monaco-editor@0.55.1(patch_hash=0d6e07474b92e097be60b0ebb97e594847d2a9494d47621f4e69397cc93e11bd))(react-dom@19.2.8(@types/react@19.2.18)(react@19.2.8))(react@19.2.8)
       '@noble/hashes':
         specifier: 1.8.0
         version: 1.8.0
@@ -385,7 +385,7 @@ importers:
         version: 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
       '@tiptap/extension-list':
         specifier: 3.31.3
-        version: 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+        version: 3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
       '@tiptap/extension-mathematics':
         specifier: 3.31.3
         version: 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/katex@0.16.8)(katex@0.18.10)
@@ -445,28 +445,28 @@ importers:
         version: 1.18.0
       '@xterm/addon-fit':
         specifier: 0.12.0-beta.332
-        version: 0.12.0-beta.332(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))
+        version: 0.12.0-beta.332(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))
       '@xterm/addon-image':
         specifier: 0.10.0-beta.331
-        version: 0.10.0-beta.331(patch_hash=f088c9207dac42844a542b9da8078be52351cee60585725ef189b9fd30f33f34)(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))
+        version: 0.10.0-beta.331(patch_hash=f088c9207dac42844a542b9da8078be52351cee60585725ef189b9fd30f33f34)(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))
       '@xterm/addon-ligatures':
         specifier: 0.11.0-beta.330
-        version: 0.11.0-beta.330(patch_hash=47405b9994b5acf1b4e90b49250358c1ca03649854d59560e7732b72fe336920)(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))
+        version: 0.11.0-beta.330(patch_hash=47405b9994b5acf1b4e90b49250358c1ca03649854d59560e7732b72fe336920)(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))
       '@xterm/addon-search':
         specifier: 0.17.0-beta.330
-        version: 0.17.0-beta.330(patch_hash=eee5338dd2621ece46e79c61ec06766cd7fadaf79ffdb24e2a8ab68e97ef31f0)(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))
+        version: 0.17.0-beta.330(patch_hash=eee5338dd2621ece46e79c61ec06766cd7fadaf79ffdb24e2a8ab68e97ef31f0)(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))
       '@xterm/addon-unicode11':
         specifier: 0.10.0-beta.330
-        version: 0.10.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))
+        version: 0.10.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))
       '@xterm/addon-web-links':
         specifier: 0.13.0-beta.330
-        version: 0.13.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))
+        version: 0.13.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))
       '@xterm/addon-webgl':
         specifier: 0.20.0-beta.329
-        version: 0.20.0-beta.329(patch_hash=0d63e956bc68b3f56942e2ed9325e2bf2b1dab76ab403a0690b94232b5ef4aab)(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))
+        version: 0.20.0-beta.329(patch_hash=05c8d4361ff5b8c808fcb657ebb02897f0b8fb81221fd729d81ff6d318b87ade)(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))
       '@xterm/xterm':
         specifier: 6.1.0-beta.336
-        version: 6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c)
+        version: 6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b)
       ajv:
         specifier: 8.20.0
         version: 8.20.0
@@ -559,7 +559,7 @@ importers:
         version: 11.17.2
       monaco-editor:
         specifier: ^0.55.1
-        version: 0.55.1(patch_hash=53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636)
+        version: 0.55.1(patch_hash=0d6e07474b92e097be60b0ebb97e594847d2a9494d47621f4e69397cc93e11bd)
       node-gyp:
         specifier: 12.3.0
         version: 12.3.0
@@ -696,10 +696,10 @@ importers:
         specifier: ^5.0.15
         version: 5.0.15(@types/react@19.2.18)(@types/use-sync-external-store@0.0.6)(react@19.2.8)(use-sync-external-store@1.6.0(@types/react@19.2.18)(react@19.2.8))
     optionalDependencies:
-      '@orca/windows-registry':
+      '@topo/windows-registry':
         specifier: workspace:*
         version: link:native/windows-registry
-      '@orca/windows-security':
+      '@topo/windows-security':
         specifier: workspace:*
         version: link:native/windows-security
       '@transcribe-cpp/darwin-arm64-metal':
@@ -716,7 +716,7 @@ importers:
         version: 0.4.1
       '@vscode/windows-process-tree':
         specifier: 0.8.0
-        version: 0.8.0(patch_hash=a09f2e8b2b4e73ef20c317af91f9e06c09abf62fa2c891d99b16f53047f596fd)
+        version: 0.8.0(patch_hash=c2daf1e420d2750b655fb16507db9ba4bdc5cd293c9f17ab6d2dde118421c1e7)
       sherpa-onnx-darwin-arm64:
         specifier: 1.12.37
         version: 1.12.37
@@ -9287,10 +9287,10 @@ snapshots:
     dependencies:
       state-local: 1.0.7
 
-  '@monaco-editor/react@4.7.0(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(monaco-editor@0.55.1(patch_hash=53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636))(react-dom@19.2.8(@types/react@19.2.18)(react@19.2.8))(react@19.2.8)':
+  '@monaco-editor/react@4.7.0(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(monaco-editor@0.55.1(patch_hash=0d6e07474b92e097be60b0ebb97e594847d2a9494d47621f4e69397cc93e11bd))(react-dom@19.2.8(@types/react@19.2.18)(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@monaco-editor/loader': 1.7.0
-      monaco-editor: 0.55.1(patch_hash=53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636)
+      monaco-editor: 0.55.1(patch_hash=0d6e07474b92e097be60b0ebb97e594847d2a9494d47621f4e69397cc93e11bd)
       react: 19.2.8
       react-dom: 19.2.8(@types/react@19.2.18)(react@19.2.8)
     optionalDependencies:
@@ -10991,9 +10991,9 @@ snapshots:
       '@tiptap/pm': 3.31.3
     optional: true
 
-  '@tiptap/extension-bullet-list@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
+  '@tiptap/extension-bullet-list@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
     dependencies:
-      '@tiptap/extension-list': 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+      '@tiptap/extension-list': 3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
 
   '@tiptap/extension-code-block-lowlight@3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/extension-code-block@3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(highlight.js@11.11.1)(lowlight@3.3.0)':
     dependencies:
@@ -11064,15 +11064,15 @@ snapshots:
       '@tiptap/pm': 3.31.3
       linkifyjs: 4.3.3
 
-  '@tiptap/extension-list-item@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
+  '@tiptap/extension-list-item@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
     dependencies:
-      '@tiptap/extension-list': 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+      '@tiptap/extension-list': 3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
 
-  '@tiptap/extension-list-keymap@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
+  '@tiptap/extension-list-keymap@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
     dependencies:
-      '@tiptap/extension-list': 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+      '@tiptap/extension-list': 3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
 
-  '@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)':
+  '@tiptap/extension-list@3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)':
     dependencies:
       '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
       '@tiptap/pm': 3.31.3
@@ -11086,9 +11086,9 @@ snapshots:
     optionalDependencies:
       '@types/katex': 0.16.8
 
-  '@tiptap/extension-ordered-list@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
+  '@tiptap/extension-ordered-list@3.31.3(@tiptap/extension-list@3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))':
     dependencies:
-      '@tiptap/extension-list': 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+      '@tiptap/extension-list': 3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
 
   '@tiptap/extension-paragraph@3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))':
     dependencies:
@@ -11169,7 +11169,7 @@ snapshots:
       '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
       '@tiptap/extension-blockquote': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
       '@tiptap/extension-bold': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-bullet-list': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
+      '@tiptap/extension-bullet-list': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
       '@tiptap/extension-code': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
       '@tiptap/extension-code-block': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
       '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
@@ -11180,10 +11180,10 @@ snapshots:
       '@tiptap/extension-horizontal-rule': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
       '@tiptap/extension-italic': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
       '@tiptap/extension-link': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
-      '@tiptap/extension-list': 3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
-      '@tiptap/extension-list-item': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
-      '@tiptap/extension-list-keymap': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
-      '@tiptap/extension-ordered-list': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=afc553bf4f7cb888dfcdc30d52b7fed589176fd1987736fd72fd1f4f7173f299)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
+      '@tiptap/extension-list': 3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)
+      '@tiptap/extension-list-item': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
+      '@tiptap/extension-list-keymap': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
+      '@tiptap/extension-ordered-list': 3.31.3(@tiptap/extension-list@3.31.3(patch_hash=fa94ea29b2fc1e1d8c0489e8e37f2db74c14a46fb1dfb0a1ebcfa2e495c409c9)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3))
       '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
       '@tiptap/extension-strike': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
       '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
@@ -11573,50 +11573,50 @@ snapshots:
 
   '@vscode/ripgrep-universal@1.18.0': {}
 
-  '@vscode/windows-process-tree@0.8.0(patch_hash=a09f2e8b2b4e73ef20c317af91f9e06c09abf62fa2c891d99b16f53047f596fd)':
+  '@vscode/windows-process-tree@0.8.0(patch_hash=c2daf1e420d2750b655fb16507db9ba4bdc5cd293c9f17ab6d2dde118421c1e7)':
     dependencies:
       node-addon-api: 7.1.0
     optional: true
 
   '@xmldom/xmldom@0.8.15': {}
 
-  '@xterm/addon-fit@0.12.0-beta.332(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))':
+  '@xterm/addon-fit@0.12.0-beta.332(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b)
 
-  '@xterm/addon-image@0.10.0-beta.331(patch_hash=f088c9207dac42844a542b9da8078be52351cee60585725ef189b9fd30f33f34)(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))':
+  '@xterm/addon-image@0.10.0-beta.331(patch_hash=f088c9207dac42844a542b9da8078be52351cee60585725ef189b9fd30f33f34)(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b)
 
-  '@xterm/addon-ligatures@0.11.0-beta.330(patch_hash=47405b9994b5acf1b4e90b49250358c1ca03649854d59560e7732b72fe336920)(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))':
+  '@xterm/addon-ligatures@0.11.0-beta.330(patch_hash=47405b9994b5acf1b4e90b49250358c1ca03649854d59560e7732b72fe336920)(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b)
       lru-cache: 11.5.1
       opentype.js: 2.0.0
 
-  '@xterm/addon-search@0.17.0-beta.330(patch_hash=eee5338dd2621ece46e79c61ec06766cd7fadaf79ffdb24e2a8ab68e97ef31f0)(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))':
+  '@xterm/addon-search@0.17.0-beta.330(patch_hash=eee5338dd2621ece46e79c61ec06766cd7fadaf79ffdb24e2a8ab68e97ef31f0)(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b)
 
-  '@xterm/addon-serialize@0.15.0-beta.330(patch_hash=17ca66ab9c7f52fc2fee94053b3b587c1210da468f3ddc7c4f5dba50b521c93e)(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))':
+  '@xterm/addon-serialize@0.15.0-beta.330(patch_hash=2030aa21af2b191c3550d84cdbfd4fb362032b45b354282c2fa93d04aa521ca9)(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b)
 
-  '@xterm/addon-unicode11@0.10.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))':
+  '@xterm/addon-unicode11@0.10.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b)
 
-  '@xterm/addon-web-links@0.13.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))':
+  '@xterm/addon-web-links@0.13.0-beta.330(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b)
 
-  '@xterm/addon-webgl@0.20.0-beta.329(patch_hash=0d63e956bc68b3f56942e2ed9325e2bf2b1dab76ab403a0690b94232b5ef4aab)(@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c))':
+  '@xterm/addon-webgl@0.20.0-beta.329(patch_hash=05c8d4361ff5b8c808fcb657ebb02897f0b8fb81221fd729d81ff6d318b87ade)(@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b))':
     dependencies:
-      '@xterm/xterm': 6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c)
+      '@xterm/xterm': 6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b)
 
   '@xterm/headless@6.1.0-beta.334': {}
 
-  '@xterm/xterm@6.1.0-beta.336(patch_hash=4b7fbfe7a7f626843ab88535cc6e2181872ea7c107876b15406a295182bc3c2c)': {}
+  '@xterm/xterm@6.1.0-beta.336(patch_hash=40782ca30db64c0098ef0b0a28cf7dbeb9cac1cb9d34768bead44dd17517456b)': {}
 
   abbrev@4.0.0: {}
 
@@ -12979,7 +12979,7 @@ snapshots:
       buffer-image-size: 0.6.4
       entities: 7.0.1
       whatwg-mimetype: 3.0.0
-      ws: 8.22.0(patch_hash=9393e04dd9a90b01eb7aa35fcd5b1431b5038ce999fbbd82651136193ba51f14)
+      ws: 8.22.0(patch_hash=0dc3532a9f51604c46a68dafc544ae17e6ae594823b9fc839aeafa55a42430ac)
     transitivePeerDependencies:
       - '@types/bufferutil'
       - '@types/utf-8-validate'
@@ -14174,7 +14174,7 @@ snapshots:
       pkg-types: 1.3.1
       ufo: 1.6.4
 
-  monaco-editor@0.55.1(patch_hash=53b71f7d8a7c00b76ffdb73ce83d18e31692f193f5fafa6a390e48f5b3fdd636):
+  monaco-editor@0.55.1(patch_hash=0d6e07474b92e097be60b0ebb97e594847d2a9494d47621f4e69397cc93e11bd):
     dependencies:
       dompurify: 3.4.17
       marked: 14.0.0
@@ -14283,7 +14283,7 @@ snapshots:
 
   node-int64@0.4.0: {}
 
-  node-pty@1.1.0(patch_hash=37dc98d9a4bcfc67153fa2fbf30689563ff49dcf8e6f0578484cbacdf1e38af5):
+  node-pty@1.1.0(patch_hash=e1a2516c26c3efc8604b224fa21576f29f15686ca2df5980c635c34e5889d507):
     dependencies:
       node-addon-api: 7.1.1
 
@@ -15211,7 +15211,7 @@ snapshots:
     dependencies:
       inspect-webkit: 0.0.5(typescript@7.0.2)
       sonner: 2.0.8(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(@types/react@19.2.18)(react@19.2.8))(react@19.2.8)
-      ws: 8.22.0(patch_hash=9393e04dd9a90b01eb7aa35fcd5b1431b5038ce999fbbd82651136193ba51f14)
+      ws: 8.22.0(patch_hash=0dc3532a9f51604c46a68dafc544ae17e6ae594823b9fc839aeafa55a42430ac)
     transitivePeerDependencies:
       - '@types/bufferutil'
       - '@types/react'
@@ -15895,7 +15895,7 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  ws@8.22.0(patch_hash=9393e04dd9a90b01eb7aa35fcd5b1431b5038ce999fbbd82651136193ba51f14): {}
+  ws@8.22.0(patch_hash=0dc3532a9f51604c46a68dafc544ae17e6ae594823b9fc839aeafa55a42430ac): {}
 
   xmlbuilder@15.1.1: {}
 

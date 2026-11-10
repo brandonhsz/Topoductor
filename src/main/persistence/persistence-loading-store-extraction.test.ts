@@ -56,7 +56,7 @@ vi.mock('node:fs', async (importOriginal) => {
 
 describe('loading Store extraction seams', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-loading-store-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-loading-store-'))
   })
 
   afterEach(async () => {
@@ -108,7 +108,7 @@ describe('loading Store extraction seams', () => {
     const { Store } = await import('./loading-store/store')
     const { setMigrationUnsupportedPty } =
       await import('../agent-hooks/observations/migration-unsupported-pty-state')
-    const secondDataFile = join(testState.dir, 'second-profile', 'orca-data.json')
+    const secondDataFile = join(testState.dir, 'second-profile', 'topo-data.json')
     const second = createSqliteTestStore(Store, { dataFile: secondDataFile })
 
     setMigrationUnsupportedPty({

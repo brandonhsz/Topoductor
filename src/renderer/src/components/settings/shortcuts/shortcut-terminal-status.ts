@@ -51,7 +51,7 @@ export function getShortcutTerminalStatus(
   })
   return activeInTerminal
     ? {
-        label: t('auto.components.settings.ShortcutsPane.2a0e8aeccf', 'Orca first'),
+        label: t('auto.components.settings.ShortcutsPane.2a0e8aeccf', 'Topo first'),
         description: t(
           'auto.components.settings.ShortcutsPane.dfa8ff612f',
           'Also runs while a terminal or TUI has keyboard focus.'

@@ -3,7 +3,7 @@ import type {
   AgentJournalRenderItem,
   AgentJournalSubmission
 } from '../../../src/shared/agent-session/journal/agent-session-journal-types'
-import { latestNativeChatOrcaStopCut } from '../../../src/shared/native-chat/native-chat-orca-stop-cut'
+import { latestNativeChatTopoStopCut } from '../../../src/shared/native-chat/native-chat-topo-stop-cut'
 import {
   failNativeChatInterruptedContinue,
   nativeChatInterruptedContinueState,
@@ -25,7 +25,7 @@ export type MobileStructuredInterruptedContinue = {
   dismissFailure: () => void
 }
 
-// Desktop's Continue on an Orca-stopped turn; the host rechecks the cut before it sends anything.
+// Desktop's Continue on a Topo-stopped turn; the host rechecks the cut before it sends anything.
 export function useMobileStructuredInterruptedContinue(
   input: {
     client: RpcClient | null
@@ -50,7 +50,7 @@ export function useMobileStructuredInterruptedContinue(
   const relayed = useRouteRelaysCapability(
     AGENT_SESSION_PHONE_CONTINUE_INTERRUPTED_RUNTIME_CAPABILITY
   )
-  const cut = useMemo(() => latestNativeChatOrcaStopCut(items, submissions), [items, submissions])
+  const cut = useMemo(() => latestNativeChatTopoStopCut(items, submissions), [items, submissions])
   const { continueAvailable, offeredTurnItemId, failed } = nativeChatInterruptedContinueState({
     capability: !input.hostSupport
       ? 'unknown'

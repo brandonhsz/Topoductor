@@ -42,7 +42,7 @@ describe('CodexHookService', () => {
       linkedUserDataDir,
       process.platform === 'win32' ? 'junction' : 'dir'
     )
-    process.env.ORCA_USER_DATA_PATH = linkedUserDataDir
+    process.env.TOPO_USER_DATA_PATH = linkedUserDataDir
 
     const service = new CodexHookService()
     expect((await service.install()).state).toBe('installed')

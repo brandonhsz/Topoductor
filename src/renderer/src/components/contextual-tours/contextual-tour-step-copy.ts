@@ -121,7 +121,7 @@ const LOCALIZED_STEP_COPY: Partial<Record<string, StepCopyThunk>> = {
     ),
     body: translate(
       'auto.components.contextual.tours.contextual.tour.step.copy.browser.logins.body',
-      'Bring your existing logins into Orca to stay signed in immediately.'
+      'Bring your existing logins into Topo to stay signed in immediately.'
     )
   }),
   'client-hosted-browser-intro': () => ({
@@ -219,7 +219,7 @@ const LOCALIZED_STEP_COPY: Partial<Record<string, StepCopyThunk>> = {
     ),
     body: translate(
       'auto.components.contextual.tours.contextual.tour.step.copy.workspace.creation.project.body',
-      'Orca isolates each task in its own worktree, branched off your base.'
+      'Topo isolates each task in its own worktree, branched off your base.'
     )
   }),
   'workspace-creation-name': () => ({

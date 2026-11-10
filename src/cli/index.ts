@@ -8,7 +8,7 @@ import {
   specPaths,
   validateCommandAndFlags
 } from './args'
-import { readOrcaCliVersion } from './cli-version'
+import { readTopoCliVersion } from './cli-version'
 import { dispatch } from './dispatch'
 import {
   resolveEnvironmentSelectorForStore,
@@ -39,9 +39,9 @@ async function loadRuntimeClientClass(): Promise<typeof RuntimeClient> {
   return (await import('./runtime-client.js')).RuntimeClient
 }
 
-// The SSH bridge runs here, but ORCA_CLI_CWD carries the remote caller's directory.
+// The SSH bridge runs here, but TOPO_CLI_CWD carries the remote caller's directory.
 function resolveInvocationCwd(): string {
-  const override = process.env.ORCA_CLI_CWD
+  const override = process.env.TOPO_CLI_CWD
   return typeof override === 'string' && override.length > 0 ? override : process.cwd()
 }
 
@@ -51,9 +51,9 @@ export async function main(
 ): Promise<void> {
   // Why: version audits use the bundled launcher; Electron intercepts direct binary version flags.
   if (argv.length === 1 && (argv[0] === '--version' || argv[0] === '-v')) {
-    const version = readOrcaCliVersion()
+    const version = readTopoCliVersion()
     if (!version) {
-      process.stderr.write('Could not determine the Orca version for this build.\n')
+      process.stderr.write('Could not determine the Topo version for this build.\n')
       process.exitCode = 1
       return
     }
@@ -108,7 +108,7 @@ export async function main(
     const ignoreRemoteSelection = ignoresRemoteSelection(parsed.commandPath)
     const pairingCode = ignoreRemoteSelection ? null : parsed.flags.get('pairing-code')
     const environmentSelector = ignoreRemoteSelection ? null : parsed.flags.get('environment')
-    // An explicit local route suppresses ambient ORCA_ENVIRONMENT and pairing codes.
+    // An explicit local route suppresses ambient TOPO_ENVIRONMENT and pairing codes.
     const explicitLocal = isLocalEnvironmentSelector(environmentSelector)
     if (explicitLocal && typeof pairingCode === 'string') {
       throw new RuntimeClientError(
@@ -139,15 +139,15 @@ export async function main(
           environmentSelector:
             typeof environmentSelector === 'string'
               ? { value: environmentSelector, label: '--environment' }
-              : process.env.ORCA_ENVIRONMENT
-                ? { value: process.env.ORCA_ENVIRONMENT, label: 'ORCA_ENVIRONMENT' }
+              : process.env.TOPO_ENVIRONMENT
+                ? { value: process.env.TOPO_ENVIRONMENT, label: 'TOPO_ENVIRONMENT' }
                 : null
         })
     // Stored host identities use ids, so canonicalize names before any downstream comparison.
     if (hostEnvironmentId !== null) {
       parsed.flags.set('host', `runtime:${hostEnvironmentId}`)
     }
-    // null suppresses RuntimeClient's ORCA_PAIRING_CODE / ORCA_ENVIRONMENT default parameters.
+    // null suppresses RuntimeClient's TOPO_PAIRING_CODE / TOPO_ENVIRONMENT default parameters.
     const suppressed = ignoreRemoteSelection || explicitLocal ? null : undefined
     // An explicit runtime host overrides an ambient pairing code.
     const remotePairingCode =
@@ -185,7 +185,7 @@ export async function main(
         (parsed.flags.has('environment') ||
           parsed.flags.has('pairing-code') ||
           (typeof hostFlag === 'string' && hostFlag.startsWith('runtime:')) ||
-          Boolean(process.env.ORCA_ENVIRONMENT?.trim() || process.env.ORCA_PAIRING_CODE?.trim())),
+          Boolean(process.env.TOPO_ENVIRONMENT?.trim() || process.env.TOPO_PAIRING_CODE?.trim())),
       conciseOrchestration: parsed.commandPath[0] === 'orchestration' && !parsed.flags.has('full')
     })
     process.exitCode = cliErrorExitCode(error, parsed.commandPath)
@@ -194,7 +194,7 @@ export async function main(
 
 async function runClaudeTeams(argv: string[], cwd: string): Promise<void> {
   try {
-    // Forward Claude Code arguments verbatim so new flags work without Orca changes.
+    // Forward Claude Code arguments verbatim so new flags work without Topo changes.
     const client = new (await loadRuntimeClientClass())(undefined, undefined, null, null)
     await dispatch(['claude-teams'], {
       flags: new Map(),
@@ -217,8 +217,8 @@ async function runAgentTeamsTmuxShim(argv: string[]): Promise<void> {
     }>(
       'agentTeams.tmuxCompat',
       {
-        teamId: process.env.ORCA_AGENT_TEAMS_TEAM_ID,
-        token: process.env.ORCA_AGENT_TEAMS_TOKEN,
+        teamId: process.env.TOPO_AGENT_TEAMS_TEAM_ID,
+        token: process.env.TOPO_AGENT_TEAMS_TOKEN,
         envPane: process.env.TMUX_PANE,
         cwd: process.cwd(),
         argv

@@ -13,7 +13,7 @@ function measureChrome(region: PluginChromeRegion): Rect | null {
     const { clientWidth: width, clientHeight: height } = document.documentElement
     return width > 0 && height > 0 ? { x: 0, y: 0, width, height } : null
   }
-  const bar = document.querySelector('[data-orca-status-bar]')
+  const bar = document.querySelector('[data-topo-status-bar]')
   if (!bar) {
     return null
   }
@@ -21,7 +21,7 @@ function measureChrome(region: PluginChromeRegion): Rect | null {
   return width > 0 && height > 0 ? { x, y, width, height } : null
 }
 
-/** Paints Orca in the asked theme, then measures the status bar or the whole window. */
+/** Paints Topo in the asked theme, then measures the status bar or the whole window. */
 export async function captureChrome(
   request: Extract<PluginViewRequest, { kind: 'capture-chrome' }>
 ): Promise<PluginViewReply> {
@@ -42,8 +42,8 @@ export async function captureChrome(
       code: 'chrome_hidden',
       message:
         region === 'status-bar'
-          ? "Orca's status bar is hidden; turn on Appearance > Show Status Bar, then shoot again."
-          : "Orca's window has no area to capture."
+          ? "Topo's status bar is hidden; turn on Appearance > Show Status Bar, then shoot again."
+          : "Topo's window has no area to capture."
     }
   }
   const dark = document.documentElement.classList.contains('dark')

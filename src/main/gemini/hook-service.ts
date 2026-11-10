@@ -34,7 +34,7 @@ import {
 } from '../agent-hooks/installation/scripts/hook-stdin-contract'
 import { posixCurlCommand } from '../agent-hooks/installation/scripts/hook-post-command'
 
-// Gemini has no permission-prompt hook, so approvals cannot produce an Orca waiting state.
+// Gemini has no permission-prompt hook, so approvals cannot produce a Topo waiting state.
 // Gemini uses BeforeTool; remove stale Claude-style PreToolUse registrations below.
 const GEMINI_EVENTS = ['BeforeAgent', 'AfterAgent', 'AfterTool', 'BeforeTool'] as const
 
@@ -63,8 +63,8 @@ function getManagedScript(target: 'local' | 'posix' = 'local'): string {
       'setlocal',
       // Reply before guards can exit so Gemini always receives valid hook JSON.
       'echo {}',
-      // Refresh endpoint credentials for PTYs that outlive an Orca restart.
-      'if defined ORCA_AGENT_HOOK_ENDPOINT if exist "%ORCA_AGENT_HOOK_ENDPOINT%" call "%ORCA_AGENT_HOOK_ENDPOINT%" 2>nul',
+      // Refresh endpoint credentials for PTYs that outlive a Topo restart.
+      'if defined TOPO_AGENT_HOOK_ENDPOINT if exist "%TOPO_AGENT_HOOK_ENDPOINT%" call "%TOPO_AGENT_HOOK_ENDPOINT%" 2>nul',
       ...buildWindowsHookEnvironmentGuardLines(),
       buildWindowsAgentHookPostCommand('gemini'),
       'exit /b 0',
@@ -78,25 +78,25 @@ function getManagedScript(target: 'local' | 'posix' = 'local'): string {
     'printf "{}\\n"',
     ...buildPosixHookPayloadCapture(),
     ...buildPosixHookSpoolLines('gemini'),
-    // Refresh endpoint credentials for PTYs that outlive an Orca restart.
-    'if [ -n "$ORCA_AGENT_HOOK_ENDPOINT" ] && [ -r "$ORCA_AGENT_HOOK_ENDPOINT" ]; then',
-    '  . "$ORCA_AGENT_HOOK_ENDPOINT" 2>/dev/null || :',
+    // Refresh endpoint credentials for PTYs that outlive a Topo restart.
+    'if [ -n "$TOPO_AGENT_HOOK_ENDPOINT" ] && [ -r "$TOPO_AGENT_HOOK_ENDPOINT" ]; then',
+    '  . "$TOPO_AGENT_HOOK_ENDPOINT" 2>/dev/null || :',
     'fi',
-    'if [ -z "$ORCA_AGENT_HOOK_PORT" ] || [ -z "$ORCA_AGENT_HOOK_TOKEN" ] || [ -z "$ORCA_PANE_KEY" ]; then',
+    'if [ -z "$TOPO_AGENT_HOOK_PORT" ] || [ -z "$TOPO_AGENT_HOOK_TOKEN" ] || [ -z "$TOPO_PANE_KEY" ]; then',
     '  spool_hook_event',
     '  exit 0',
     'fi',
     // Form encoding handles quotes/newlines in paths; stdin keeps large payloads off the command line.
-    `printf '%s' "$payload" | ${posixCurlCommand()} -sS -X POST "http://127.0.0.1:\${ORCA_AGENT_HOOK_PORT}/hook/gemini" \\`,
+    `printf '%s' "$payload" | ${posixCurlCommand()} -sS -X POST "http://127.0.0.1:\${TOPO_AGENT_HOOK_PORT}/hook/gemini" \\`,
     '  --connect-timeout 0.5 --max-time 1.5 \\',
     '  -H "Content-Type: application/x-www-form-urlencoded" \\',
-    '  -H "X-Orca-Agent-Hook-Token: ${ORCA_AGENT_HOOK_TOKEN}" \\',
-    '  --data-urlencode "paneKey=${ORCA_PANE_KEY}" \\',
-    '  --data-urlencode "tabId=${ORCA_TAB_ID}" \\',
-    '  --data-urlencode "launchToken=${ORCA_AGENT_LAUNCH_TOKEN}" \\',
-    '  --data-urlencode "worktreeId=${ORCA_WORKTREE_ID}" \\',
-    '  --data-urlencode "env=${ORCA_AGENT_HOOK_ENV}" \\',
-    '  --data-urlencode "version=${ORCA_AGENT_HOOK_VERSION}" \\',
+    '  -H "X-Topo-Agent-Hook-Token: ${TOPO_AGENT_HOOK_TOKEN}" \\',
+    '  --data-urlencode "paneKey=${TOPO_PANE_KEY}" \\',
+    '  --data-urlencode "tabId=${TOPO_TAB_ID}" \\',
+    '  --data-urlencode "launchToken=${TOPO_AGENT_LAUNCH_TOKEN}" \\',
+    '  --data-urlencode "worktreeId=${TOPO_WORKTREE_ID}" \\',
+    '  --data-urlencode "env=${TOPO_AGENT_HOOK_ENV}" \\',
+    '  --data-urlencode "version=${TOPO_AGENT_HOOK_VERSION}" \\',
     '  --data-urlencode "payload@-" >/dev/null 2>&1 || spool_hook_event',
     'exit 0',
     ''
@@ -208,7 +208,7 @@ export class GeminiHookService {
   // Remote hooks use POSIX paths and the same event/config contract as local installation.
   async installRemote(sftp: SFTPWrapper, remoteHome: string): Promise<AgentHookInstallStatus> {
     const remoteConfigPath = `${remoteHome.replace(/\/$/, '')}/.gemini/settings.json`
-    const remoteScriptPath = `${remoteHome.replace(/\/$/, '')}/.orca/agent-hooks/gemini-hook.sh`
+    const remoteScriptPath = `${remoteHome.replace(/\/$/, '')}/.topo/agent-hooks/gemini-hook.sh`
     try {
       const config = await readHooksJsonRemote(sftp, remoteConfigPath)
       if (!config) {

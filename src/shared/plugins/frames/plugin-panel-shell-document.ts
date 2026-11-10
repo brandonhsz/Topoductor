@@ -3,7 +3,7 @@
  * `session()`, the document sync every editor otherwise rebuilds. Uses the shell's `call`, `on`,
  * `latest`, `waiting`, `starting` and `helloSeen`.
  *
- * The baseline (`base`, `baseVersion`, `baseContent`) moves only when Orca accepts an edit or sends
+ * The baseline (`base`, `baseVersion`, `baseContent`) moves only when Topo accepts an edit or sends
  * a document while nothing is unaccepted, so a refused edit leaves a draft that is still dirty
  * (except a conflict without merge, where the outside document replaces it).
  */
@@ -18,7 +18,7 @@ export const PLUGIN_FRAME_DOCUMENT_SCRIPT = `
   function applyEdit(edit) {
     var base = edit && edit.baseVersion
     var content = edit && edit.content ? Object.assign({}, edit.content) : null
-    // Copied: the caller may reuse its buffer, and get() must keep what Orca accepted.
+    // Copied: the caller may reuse its buffer, and get() must keep what Topo accepted.
     if (content && content.bytes instanceof ArrayBuffer) content.bytes = content.bytes.slice(0)
     return call(C.editor.applyEdit, edit).then(function (result) {
       // Accepted edits keep their version, so get() takes the content without a new version.
@@ -193,11 +193,11 @@ export const PLUGIN_FRAME_DOCUMENT_SCRIPT = `
         value = rebase(next)
         emitReplace(value)
       })
-      // Orca drains its held edits during a save, so waiting here fits its deadline.
+      // Topo drains its held edits during a save, so waiting here fits its deadline.
       var flushes = on(C.editor.flush, function () {
         return disposed || doc.readOnly ? undefined : flush()
       })
-      // Orca then hands this session disk changes made under unsaved edits, instead of a banner.
+      // Topo then hands this session disk changes made under unsaved edits, instead of a banner.
       if (merge) post({ kind: 'evt', event: E.editorMerges, payload: {} })
       return Object.freeze({
         get value() { return value },

@@ -64,13 +64,13 @@ beforeAll(async () => {
   cspHeader = await readShellCsp()
   bridgeVersion = await readBridgeProtocolVersion()
   faultGrant = await readBridgeFaultGrant()
-  scratch = await mkdtemp(join(tmpdir(), 'orca-mobile-web-app-session-'))
+  scratch = await mkdtemp(join(tmpdir(), 'topo-mobile-web-app-session-'))
   const built = await buildMobileWebAppBundle({ outDir: join(scratch, 'bundle') })
   routeChunks = built.routeChunks
   const served = await createBundleServer({ outDir: built.outDir, cspHeader })
   server = served.server
   origin = served.origin
-  const executablePath = process.env.ORCA_MOBILE_WEB_RENDER_BROWSER
+  const executablePath = process.env.TOPO_MOBILE_WEB_RENDER_BROWSER
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) })
 }, 240_000)
 
@@ -133,7 +133,7 @@ async function waitForRoute({ page, errors }, route, awaitText) {
   const named = (what) =>
     new Error(`${route} ${what}: ${errors.join(' | ') || 'no page or console error'}`)
   try {
-    await page.waitForFunction(() => document.documentElement.dataset.orcaWebEntry === 'mounted', {
+    await page.waitForFunction(() => document.documentElement.dataset.topoWebEntry === 'mounted', {
       timeout: 60_000,
       polling: 250
     })
@@ -149,7 +149,7 @@ async function waitForRoute({ page, errors }, route, awaitText) {
     throw named(`mounted but never painted ${JSON.stringify(awaitText)}`)
   }
   // Report boundary-caught route fault directly instead of timing out on mount.
-  for (const fault of await page.evaluate(() => globalThis.__orcaRenderCheckFaults ?? [])) {
+  for (const fault of await page.evaluate(() => globalThis.__topoRenderCheckFaults ?? [])) {
     errors.push(`page fault: ${fault}`)
   }
 }
@@ -207,7 +207,7 @@ describeRender(
     }, 120_000)
 
     it('writes no storage key it was never handed, on a mount that read the host status', async () => {
-      // Answer status.get: host-status-gates once wrote unlisted orca:host-app-version key only after readable reply, invisible to no-RPC cases.
+      // Answer status.get: host-status-gates once wrote unlisted topo:host-app-version key only after readable reply, invisible to no-RPC cases.
       const opened = await openRoute(SESSION_ROUTE, 'Terminal', {
         'status.get': {
           protocolVersion: 9,

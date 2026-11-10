@@ -101,7 +101,7 @@ vi.mock('./releases/updater-prerelease-feed', () => ({
     .fn()
     .mockResolvedValue({ tags: ['v1.4.241'], state: 'ready' }),
   getReleaseDownloadUrl: (tag: string) =>
-    `https://github.com/stablyai/orca/releases/download/${tag}`
+    `https://github.com/brandonhsz/Topoductor/releases/download/${tag}`
 }))
 vi.mock('./releases/updater-release-readiness', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
@@ -223,7 +223,7 @@ describe('quitAndInstall failure carries the updater cause', () => {
     autoUpdaterMock.quitAndInstall.mockImplementation(() => {
       autoUpdaterMock.emit(
         'error',
-        new Error(`${escape}[31mdpkg -i '${home}/.cache/orca-updater/pending/orca.deb'${escape}[0m`)
+        new Error(`${escape}[31mdpkg -i '${home}/.cache/topo-updater/pending/topo.deb'${escape}[0m`)
       )
     })
 
@@ -237,6 +237,6 @@ describe('quitAndInstall failure carries the updater cause', () => {
     const message = status.state === 'error' ? status.message : ''
     expect(message).not.toContain(home)
     expect(message).not.toContain(escape)
-    expect(message).toContain("<home>/.cache/orca-updater/pending/orca.deb'")
+    expect(message).toContain("<home>/.cache/topo-updater/pending/topo.deb'")
   })
 })

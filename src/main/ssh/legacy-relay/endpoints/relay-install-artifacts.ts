@@ -1,5 +1,5 @@
-/** Classify legacy relay installs (≤1.4.224) left by older clients; Orca no longer builds/deploys them. Retire this inventory with the host census. */
-import { ORCAD_WINDOWS_PROCESS_TREE_FILENAME } from '../../../../shared/orcad-artifacts'
+/** Classify legacy relay installs (≤1.4.224) left by older clients; Topo no longer builds/deploys them. Retire this inventory with the host census. */
+import { TOPOD_WINDOWS_PROCESS_TREE_FILENAME } from '../../../../shared/topod-artifacts'
 import { OPENCODE_SQLITE_READER_FILENAME } from '../../../../shared/remote-bundle-artifacts'
 
 type RelayArtifact = {
@@ -21,7 +21,7 @@ const RELAY_ARTIFACTS: readonly RelayArtifact[] = [
   { filename: 'node-pty-1.1.0-console-list-agent-patch.cjs', windowsOnly: true },
   { filename: 'node-pty-1.1.0-windows-pty-teardown-patch.cjs', windowsOnly: true },
   { filename: 'node-pty-1.1.0-master-cloexec-patch.cjs' },
-  { filename: ORCAD_WINDOWS_PROCESS_TREE_FILENAME, windowsOnly: true, optional: true }
+  { filename: TOPOD_WINDOWS_PROCESS_TREE_FILENAME, windowsOnly: true, optional: true }
 ]
 
 /** Unmatched children remain user work or unknown; either keeps the relay unreapable. */

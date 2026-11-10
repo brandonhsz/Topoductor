@@ -3,7 +3,7 @@
 import { findPaneSleepingRecord } from './pane-sleeping-record'
 import { hookRowPaneResumeRecord, isPaneLocalHookRow } from './hook-row-pane-resume-record'
 import { makePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
-import { OrcaRuntimeWithApplyMobileSessionTabNavigation } from './apply-mobile-session-tab-navigation'
+import { TopoRuntimeWithApplyMobileSessionTabNavigation } from './apply-mobile-session-tab-navigation'
 import type { RuntimeMobileSessionTerminalTab } from '../../../../shared/runtime-mobile-session-tab-contracts'
 import {
   agentProviderSessionsEqual,
@@ -11,10 +11,10 @@ import {
 } from '../../../../shared/agent-session/lifecycle/agent-session-resume'
 import type {
   MobileTerminalResumeCommand,
-  OrcaRuntimeWithResolveMobileSessionTerminalCommand as MobileTerminalStartup
+  TopoRuntimeWithResolveMobileSessionTerminalCommand as MobileTerminalStartup
 } from '../../terminal/launch/mobile-terminal-startup'
-import type { OrcaRuntimeWithMarkPtyLivenessUnverifiable as PtyExitFloor } from '../../terminal/layout/terminal-input-floor'
-import type { OrcaRuntimeWithStopTerminalsForWorktree as SessionEditHost } from '../../terminal/stop/worktree-terminal-stop'
+import type { TopoRuntimeWithMarkPtyLivenessUnverifiable as PtyExitFloor } from '../../terminal/layout/terminal-input-floor'
+import type { TopoRuntimeWithStopTerminalsForWorktree as SessionEditHost } from '../../terminal/stop/worktree-terminal-stop'
 import { claimSleepRecordForPane, isUnclaimedRunningSleepRecord } from './sleep-record-pane-claim'
 import {
   AgentSessionResumeClaims,
@@ -27,7 +27,7 @@ import {
 export type PaneResumeStartup = MobileTerminalResumeCommand & {
   resumeClaim: AgentSessionResumeClaim
 }
-export abstract class OrcaRuntimeWithAgentSessionResumeOwnership extends OrcaRuntimeWithApplyMobileSessionTabNavigation {
+export abstract class TopoRuntimeWithAgentSessionResumeOwnership extends TopoRuntimeWithApplyMobileSessionTabNavigation {
   protected abstract resolveMobileSessionResumeCommand(
     ...args: Parameters<MobileTerminalStartup['resolveMobileSessionResumeCommand']>
   ): ReturnType<MobileTerminalStartup['resolveMobileSessionResumeCommand']>

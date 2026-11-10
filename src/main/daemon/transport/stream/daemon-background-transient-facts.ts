@@ -10,7 +10,7 @@ import {
 } from '../../../../shared/terminal/protocol/queries/terminal-color-scheme-protocol'
 import type { DaemonTransientFact } from '../../protocol/daemon-stream-events'
 
-export const BACKGROUND_STREAM_DROP_ENABLED = process.env.ORCA_DAEMON_BACKGROUND_STREAM_DROP !== '0'
+export const BACKGROUND_STREAM_DROP_ENABLED = process.env.TOPO_DAEMON_BACKGROUND_STREAM_DROP !== '0'
 
 export class BackgroundTransientFactRelay {
   private trackersBySessionId = new Map<string, TerminalTitleTracker>()

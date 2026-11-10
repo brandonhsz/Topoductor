@@ -48,7 +48,7 @@ vi.mock('node:fs/promises', async (importOriginal) => {
 })
 
 async function createTempHome(): Promise<string> {
-  const home = await mkdtemp(join(tmpdir(), 'orca-managed-hook-lock-'))
+  const home = await mkdtemp(join(tmpdir(), 'topo-managed-hook-lock-'))
   tempHomes.push(home)
   return home
 }
@@ -91,7 +91,7 @@ describe.skipIf(process.platform === 'win32')('withManagedHookInstallLock', () =
 
   it('does not let a late release delete a replacement owner lock', async () => {
     const home = await createTempHome()
-    const lockPath = join(home, '.orca', 'managed-hook-install.lock')
+    const lockPath = join(home, '.topo', 'managed-hook-install.lock')
     let releaseFirst!: () => void
     let markFirstStarted!: () => void
     const firstStarted = new Promise<void>((resolve) => (markFirstStarted = resolve))

@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { AddressInfo } from 'node:net'
 import type { ElectronApplication, Locator, Page, TestInfo } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   clickInGuest,
   evalInGuest,
@@ -38,7 +38,7 @@ type GuestNavigationObservation = {
   willFrameNavigations: { defaultPrevented: boolean; isMainFrame: boolean; url: string }[]
   didFrameNavigations: string[]
   externalUrls: string[]
-  /** Orca's "wants to open" prompts, answered from `promptAnswers` (default Cancel). */
+  /** Topo's "wants to open" prompts, answered from `promptAnswers` (default Cancel). */
   prompts: { message: string; detail: string; checkboxLabel: string }[]
   promptAnswers: { response: number; checkboxChecked: boolean }[]
 }
@@ -85,7 +85,7 @@ async function startPermissiveProbeServer(): Promise<ProbeServer> {
 }
 
 async function materializeHostilePlugin(origin: string): Promise<string> {
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-hostile-panel-e2e-'))
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-hostile-panel-e2e-'))
   const pluginRoot = join(tempRoot, 'hostile-panel')
   await cp(
     join(process.cwd(), 'examples', 'plugins', 'test-fixtures', 'hostile-panel'),
@@ -264,22 +264,22 @@ function readProbe(guest: Locator, probe: string): Promise<string | null> {
 
 test('contains hostile panel network and navigation probes', async ({
   electronApp,
-  orcaPage
+  topoPage
 }, testInfo) => {
   testInfo.annotations.push({ type: 'maturity', description: 'experimental' })
   const server = await startPermissiveProbeServer()
   const pluginRoot = await materializeHostilePlugin(server.origin)
   const tempRoot = join(pluginRoot, '..')
-  const appUrl = orcaPage.url()
+  const appUrl = topoPage.url()
   const guestDocuments: GuestDocumentSnapshot[] = []
   let observation: GuestNavigationObservation | null = null
   let observing = false
   try {
-    const panel = await installApprovedPanel(orcaPage, pluginRoot)
-    const guest = await openPanel(orcaPage, panel)
+    const panel = await installApprovedPanel(topoPage, pluginRoot)
+    const guest = await openPanel(topoPage, panel)
 
-    await expect(guest).toHaveAttribute('partition', /^persist:orca-plugin-[0-9a-f]{16}$/)
-    await expect(orcaPage.locator(`iframe[title="${panel.title}"]`)).toHaveCount(0)
+    await expect(guest).toHaveAttribute('partition', /^persist:topo-plugin-[0-9a-f]{16}$/)
+    await expect(topoPage.locator(`iframe[title="${panel.title}"]`)).toHaveCount(0)
     expect(await readGuestCsp(guest)).toMatch(/connect-src 'self' data: blob:.*frame-src 'none'/)
 
     for (const probe of ['fetch-exfil', 'img-beacon']) {
@@ -295,7 +295,7 @@ test('contains hostile panel network and navigation probes', async ({
     // Why the host's code: the renderer checks only the shape, the host gates the method.
     expect(bridgeErrorCode).toBe('unknown_method')
     expect(server.requests).toEqual([])
-    expect(orcaPage.url()).toBe(appUrl)
+    expect(topoPage.url()).toBe(appUrl)
 
     await startGuestObserver(electronApp, await guestWebContentsId(guest))
     observing = true
@@ -321,7 +321,7 @@ test('contains hostile panel network and navigation probes', async ({
       guestDocuments.push(current)
       expect(current).toEqual({ url: initial.url, marker: documentId, fixture: true })
       expect(server.requests).toEqual([])
-      expect(orcaPage.url()).toBe(appUrl)
+      expect(topoPage.url()).toBe(appUrl)
     }
 
     const guardDestination = `${server.origin}/frame-guard-navigation`
@@ -351,7 +351,7 @@ test('contains hostile panel network and navigation probes', async ({
     )
     expect(observation.externalUrls).toEqual([])
     expect(server.requests).toEqual([])
-    expect(orcaPage.url()).toBe(appUrl)
+    expect(topoPage.url()).toBe(appUrl)
 
     // Bridge budgets on the guest path: oversized and flooded calls get real refusals.
     await clickInGuest(guest, '#bridge')
@@ -388,17 +388,17 @@ test('contains hostile panel network and navigation probes', async ({
 
 test('shell.openExternal from a panel needs a real gesture in the guest', async ({
   electronApp,
-  orcaPage
+  topoPage
 }, testInfo) => {
   testInfo.annotations.push({ type: 'maturity', description: 'experimental' })
   const server = await startPermissiveProbeServer()
   const pluginRoot = await materializeHostilePlugin(server.origin)
   const tempRoot = join(pluginRoot, '..')
-  const target = 'https://example.com/orca-open-external-probe'
+  const target = 'https://example.com/topo-open-external-probe'
   let observing = false
   try {
-    const panel = await installApprovedPanel(orcaPage, pluginRoot)
-    const guest = await openPanel(orcaPage, panel)
+    const panel = await installApprovedPanel(topoPage, pluginRoot)
+    const guest = await openPanel(topoPage, panel)
     await startGuestObserver(electronApp, await guestWebContentsId(guest))
     observing = true
 
@@ -485,18 +485,18 @@ test('shell.openExternal from a panel needs a real gesture in the guest', async 
 
 test('detects and suspends a busy-looping panel in an isolated renderer', async ({
   electronApp,
-  orcaPage
+  topoPage
 }, testInfo) => {
   testInfo.annotations.push({ type: 'maturity', description: 'experimental' })
   const server = await startPermissiveProbeServer()
   const pluginRoot = await materializeHostilePlugin(server.origin)
   const tempRoot = join(pluginRoot, '..')
-  const appUrl = orcaPage.url()
+  const appUrl = topoPage.url()
   let processes: { main: number | null; guest: number | null; guestUrl: string | null } | null =
     null
   try {
-    const panel = await installApprovedPanel(orcaPage, pluginRoot)
-    const guest = await openPanel(orcaPage, panel)
+    const panel = await installApprovedPanel(topoPage, pluginRoot)
+    const guest = await openPanel(topoPage, panel)
 
     const guestId = await guestWebContentsId(guest)
     processes = await electronApp.evaluate(
@@ -523,12 +523,12 @@ test('detects and suspends a busy-looping panel in an isolated renderer', async 
     await evalInGuest(guest, `setTimeout(() => document.getElementById('busy').click(), 0)`)
 
     await expect(
-      orcaPage.getByText('This plugin panel stopped responding and was suspended.')
+      topoPage.getByText('This plugin panel stopped responding and was suspended.')
     ).toBeVisible({ timeout: 20_000 })
     await expect(
-      orcaPage.getByRole('button', { name: new RegExp(`${panel.title}.*Error`) })
+      topoPage.getByRole('button', { name: new RegExp(`${panel.title}.*Error`) })
     ).toBeVisible()
-    expect(orcaPage.url()).toBe(appUrl)
+    expect(topoPage.url()).toBe(appUrl)
     expect(server.requests).toEqual([])
   } finally {
     await testInfo.attach('hostile-panel-processes', {

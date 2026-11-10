@@ -1,9 +1,9 @@
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import type { AgentStatusObservedPaneIdentities } from '../../runtime/terminal/identity/agent-status-observed-pane-identity'
 import type { AgentHookServer } from '../server/agent-hook-server'
 import { isAgentStatusHooksEnabled } from '../../../shared/agent-hook-listener/configuration/agent-status-hooks-setting'
 
-type RuntimeDeps = NonNullable<ConstructorParameters<typeof OrcaRuntimeService>[2]>
+type RuntimeDeps = NonNullable<ConstructorParameters<typeof TopoRuntimeService>[2]>
 
 export function agentHookRuntimeDeps(
   server: AgentHookServer,

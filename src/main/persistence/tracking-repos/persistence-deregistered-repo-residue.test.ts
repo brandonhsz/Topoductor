@@ -64,7 +64,7 @@ const sessionFor = (worktreeId: string, tabId = 'tab-1') => ({
 
 describe('deregistered repo residue', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-orphan-sweep-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-orphan-sweep-'))
   })
 
   afterEach(async () => {

@@ -1,8 +1,8 @@
-import type { OrcadDeltaMoveRow } from '../../../../../../shared/orcad-managed-runtime'
+import type { TopodDeltaMoveRow } from '../../../../../../shared/topod-managed-runtime'
 import { translate } from '@/i18n/i18n'
 import type { Translate } from '@/i18n/use-translate'
 
-export function deltaMoveRowLabel(row: OrcadDeltaMoveRow, t: Translate = translate): string {
+export function deltaMoveRowLabel(row: TopodDeltaMoveRow, t: Translate = translate): string {
   switch (row.kind) {
     case 'repository':
       return t('auto.components.settings.deltaMove.kind.repository', 'Repository {{name}}', {

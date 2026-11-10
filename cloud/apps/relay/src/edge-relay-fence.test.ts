@@ -132,8 +132,8 @@ describe('relay edge pending fence retries', () => {
     expect(await h.retry()).toBe(false)
     expect(h.edge.calls).toEqual([{ body: { userId: USER, relayHostId: HOST, cellId: 'us-c2', assignmentEpoch: 11 } }])
     expect(await h.pending()).toEqual([])
-    expect(logged(warn, 'orca_relay_edge_fence_retried')).toEqual([
-      { event: 'orca_relay_edge_fence_retried', outcome: 'applied', cellId: 'us-c2', assignmentEpoch: 11, attempts: 1 }
+    expect(logged(warn, 'topo_relay_edge_fence_retried')).toEqual([
+      { event: 'topo_relay_edge_fence_retried', outcome: 'applied', cellId: 'us-c2', assignmentEpoch: 11, attempts: 1 }
     ])
   })
 

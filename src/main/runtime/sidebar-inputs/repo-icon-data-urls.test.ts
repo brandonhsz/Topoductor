@@ -8,7 +8,7 @@ import { pngHeader } from './repo-icon-image-fixture'
 
 const AVATAR: RepoIcon = {
   type: 'image',
-  src: 'https://github.com/stablyai.png?size=64',
+  src: 'https://github.com/brandonhsz.png?size=64',
   source: 'github'
 }
 
@@ -46,7 +46,7 @@ function setup(
 const ENCODED = new Uint8Array([1, 2, 3])
 const ENCODED_URL = 'data:image/png;base64,AQID'
 
-describe('RepoIconDataUrls without an encoder (orcad)', () => {
+describe('RepoIconDataUrls without an encoder (topod)', () => {
   it('passes a small fetched image through as a data URL', async () => {
     const bytes = pngHeader(64, 64)
     const { icons } = setup([repo('a', AVATAR)])
@@ -111,7 +111,7 @@ describe('RepoIconDataUrls with an encoder (desktop)', () => {
     expect(encoder.mock.calls.map(([, edge]) => edge)).toEqual([64, 32])
   })
 
-  it('passes a small image the decoder cannot read through, as orcad would', async () => {
+  it('passes a small image the decoder cannot read through, as topod would', async () => {
     const { icons } = setup([repo('a', AVATAR)], { encoder: () => null })
     expect((await icons.read([repoIconId(AVATAR)!])).icons[0].dataUrl).toMatch(
       /^data:image\/png;base64,/

@@ -105,7 +105,7 @@ export const NativeChatComposerPane = forwardRef<ComposerHandle, C.NativeChatCom
       disabled ||
       (structuredTransport?.runtime === 'remote' && structuredTransport.sessionPending === true)
 
-    const { picker, orcaCommands } = useNativeChatComposerCommandPicker({
+    const { picker, topoCommands } = useNativeChatComposerCommandPicker({
       mode: editSession ? 'edit' : launchPrompt || pending ? 'launch' : undefined,
       agent,
       terminalTabId,
@@ -271,8 +271,8 @@ export const NativeChatComposerPane = forwardRef<ComposerHandle, C.NativeChatCom
       sendPty,
       sendStructured,
       submitEmpty: launchPrompt?.onEmptySubmit,
-      consumeOrcaCommand: pending || launchPrompt ? undefined : orcaCommands.consume,
-      matchesOrcaCommand: pending || launchPrompt ? undefined : orcaCommands.matchesDraft,
+      consumeTopoCommand: pending || launchPrompt ? undefined : topoCommands.consume,
+      matchesTopoCommand: pending || launchPrompt ? undefined : topoCommands.matchesDraft,
       setDraft,
       setCaret
     })
@@ -289,7 +289,7 @@ export const NativeChatComposerPane = forwardRef<ComposerHandle, C.NativeChatCom
       editSession,
       isWorking,
       canStop: hasPty && onStop !== undefined,
-      orcaCommand: !pending && !launchPrompt && orcaCommands.matchesDraft(draft),
+      topoCommand: !pending && !launchPrompt && topoCommands.matchesDraft(draft),
       goalMode: goalMode.active
     })
 
@@ -330,7 +330,7 @@ export const NativeChatComposerPane = forwardRef<ComposerHandle, C.NativeChatCom
       completePickerItem: editSession ? chooseEditItem : goalMode.interceptPick(completeItem),
       dispatchPickerCommand: editSession
         ? chooseEditItem
-        : goalMode.interceptPick(orcaCommands.interceptPick(dispatchPickerCommand)),
+        : goalMode.interceptPick(topoCommands.interceptPick(dispatchPickerCommand)),
       dismissPicker: dismiss,
       interrupt: editSession?.cancel ?? interrupt,
       send,
@@ -386,7 +386,7 @@ export const NativeChatComposerPane = forwardRef<ComposerHandle, C.NativeChatCom
           onKeyDown={handleKeyDown}
           onPaste={handlePasteEvent}
           pickerListboxId={picker.listboxId}
-          onChoosePickerItem={goalMode.interceptPick(orcaCommands.interceptPick(completeItem))}
+          onChoosePickerItem={goalMode.interceptPick(topoCommands.interceptPick(completeItem))}
           goalMode={goalMode}
           onRetrySkills={picker.retrySkills}
           onChooseMentionFile={completeMention}

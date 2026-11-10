@@ -7,15 +7,15 @@ import type { JournalStopEvent, JournalTombstoneRow } from '../durable-rows/jour
 
 // Reserve IDs that no real item uses.
 const JOURNAL_STOP_EVENT_ITEM_ID = agentJournalItemKey({
-  provider: 'orca',
+  provider: 'topo',
   clientMessageId: 'stop-event'
 })
 const JOURNAL_QUEUE_RESUME_ITEM_ID = agentJournalItemKey({
-  provider: 'orca',
+  provider: 'topo',
   clientMessageId: 'queue-resume'
 })
 const JOURNAL_QUEUE_REOPEN_ITEM_ID = agentJournalItemKey({
-  provider: 'orca',
+  provider: 'topo',
   clientMessageId: 'queue-reopen'
 })
 
@@ -26,7 +26,7 @@ export function buildJournalQueueClearRow(
 ): JournalTombstoneRow {
   return {
     kind: 'tombstone',
-    itemId: agentJournalItemKey({ provider: 'orca', clientMessageId: 'queue-context-clear' }),
+    itemId: agentJournalItemKey({ provider: 'topo', clientMessageId: 'queue-context-clear' }),
     revision: 1,
     queueClear: input.clear,
     ...journalRowBase(input.state.epoch, input.seq, input.fence, input.ts)

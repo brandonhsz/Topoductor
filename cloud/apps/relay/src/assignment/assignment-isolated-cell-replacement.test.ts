@@ -16,7 +16,7 @@ import {
   type SqlRow
 } from '../database/database.js'
 
-// migration-only also holds evacuation targets, Asia rollback and failed-wave/new cells; only same-cap isolate writes rollIsolatedCells, and restore clears its stamp atomically (orca-relay-operations.md).
+// migration-only also holds evacuation targets, Asia rollback and failed-wave/new cells; only same-cap isolate writes rollIsolatedCells, and restore clears its stamp atomically (topo-relay-operations.md).
 const HEARTBEAT_TTL_MS = 45_000
 const START_MS = 100
 const IDENTITY = { userId: 'user-a', relayHostId: 'host000000000001' }
@@ -471,9 +471,9 @@ describe('re-placing a host off a cell isolated for a roll', () => {
       cellId: 'asia-c1',
       assignmentEpoch: first.assignmentEpoch + 1
     })
-    expect(jsonEvents(warn, 'orca_relay_sticky_replaced_off_isolated_cell')).toEqual([
+    expect(jsonEvents(warn, 'topo_relay_sticky_replaced_off_isolated_cell')).toEqual([
       {
-        event: 'orca_relay_sticky_replaced_off_isolated_cell',
+        event: 'topo_relay_sticky_replaced_off_isolated_cell',
         fromCellId: first.cellId,
         fromRegion: 'us-central1',
         admissionState: 'migration-only',
@@ -497,15 +497,15 @@ describe('re-placing a host off a cell isolated for a roll', () => {
       cellId: first.cellId,
       assignmentEpoch: first.assignmentEpoch
     })
-    expect(jsonEvents(warn, 'orca_relay_sticky_replacement_deferred')).toEqual([
+    expect(jsonEvents(warn, 'topo_relay_sticky_replacement_deferred')).toEqual([
       {
-        event: 'orca_relay_sticky_replacement_deferred',
+        event: 'topo_relay_sticky_replacement_deferred',
         reason: 'no_same_region_headroom',
         cellId: first.cellId,
         region: 'us-central1'
       }
     ])
-    expect(jsonEvents(warn, 'orca_relay_sticky_replaced_off_isolated_cell')).toEqual([])
+    expect(jsonEvents(warn, 'topo_relay_sticky_replaced_off_isolated_cell')).toEqual([])
   })
 
   it('prefers its own region over a less loaded cell elsewhere', async () => {
@@ -554,7 +554,7 @@ describe('re-placing a host off a cell isolated for a roll', () => {
         assignmentEpoch: first.assignmentEpoch + 1
       })
       expect(regionReserve).toHaveBeenCalledOnce()
-      expect(jsonEvents(warn, 'orca_relay_sticky_replaced_off_isolated_cell')).toMatchObject([
+      expect(jsonEvents(warn, 'topo_relay_sticky_replaced_off_isolated_cell')).toMatchObject([
         { fromCellId: first.cellId, region: 'us-central1' }
       ])
     })
@@ -669,7 +669,7 @@ describe('re-placing a host off a cell isolated for a roll', () => {
       'injected_placement_write_failure'
     )
 
-    expect(jsonEvents(warn, 'orca_relay_sticky_replaced_off_isolated_cell')).toEqual([])
+    expect(jsonEvents(warn, 'topo_relay_sticky_replaced_off_isolated_cell')).toEqual([])
     // Prove the move rolled back so the missing event is required, not merely delayed.
     expect(await store.resolve(IDENTITY)).toMatchObject({
       cellId: first.cellId,
@@ -680,7 +680,7 @@ describe('re-placing a host off a cell isolated for a roll', () => {
     warn.mockClear()
     const moved = await store.assign(IDENTITY, 'us-central1')
     expect(moved.cellId).not.toBe(first.cellId)
-    expect(jsonEvents(warn, 'orca_relay_sticky_replaced_off_isolated_cell')).toHaveLength(1)
+    expect(jsonEvents(warn, 'topo_relay_sticky_replaced_off_isolated_cell')).toHaveLength(1)
   })
   describe('a host whose leases span two cells after the move', () => {
     const NEIGHBOUR = { userId: 'user-b', relayHostId: 'host000000000002' }
@@ -843,7 +843,7 @@ describe('classifying a reconnect whose home is isolated for a roll', () => {
     const moved = await store.assign(IDENTITY, 'us-central1')
     expect(moved.cellId).not.toBe(first.cellId)
     expect(moved.assignmentEpoch).toBe(first.assignmentEpoch + 1)
-    expect(jsonEvents(warn, 'orca_relay_sticky_replaced_off_isolated_cell')).toMatchObject([
+    expect(jsonEvents(warn, 'topo_relay_sticky_replaced_off_isolated_cell')).toMatchObject([
       { fromCellId: first.cellId, toCellId: moved.cellId }
     ])
   })

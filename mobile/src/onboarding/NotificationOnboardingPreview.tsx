@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Animated, Easing, Text, View } from 'react-native'
-import { OrcaLogo } from '../components/OrcaLogo'
+import { TopoLogo } from '../components/TopoLogo'
 import type { Translate } from '../i18n/mobile-i18n'
 import { useMobileTranslation } from '../i18n/use-mobile-translation'
 import { colors, radii, spacing, typography } from '../theme/mobile-theme'
@@ -110,11 +110,11 @@ function SampleBanner({
   return (
     <View style={styles.card}>
       <View style={styles.appIcon}>
-        <OrcaLogo size={14} />
+        <TopoLogo size={14} />
       </View>
       <View style={styles.cardCopy}>
         <View style={styles.cardMeta}>
-          <Text style={styles.appName}>Orca</Text>
+          <Text style={styles.appName}>Topo</Text>
           <Text style={styles.now}>{t('onboarding.notificationOnboardingPreview.now', 'now')}</Text>
         </View>
         <Text style={styles.cardTitle} numberOfLines={1}>

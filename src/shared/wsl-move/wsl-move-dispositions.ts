@@ -1,5 +1,5 @@
 /** Exhaustive state dispositions for local WSL project moves. Typed stores are compile-checked; tests census localStorage/SQLite. Sibling tables cover UI, storage and out-of-store state.
- * Item numbers refer to docs/design/wsl-via-orcad-lossless-mover.md §2. */
+ * Item numbers refer to docs/design/wsl-via-topod-lossless-mover.md §2. */
 import type { PersistedState } from '../persisted-state-types'
 import type { WorkspaceSessionState } from '../workspace-session/workspace-session-state-types'
 
@@ -99,9 +99,9 @@ export const PERSISTED_STATE_DISPOSITIONS = {
   automationRuns: moveDisposition(19, {
     note: "An in-flight run in scope blocks the move. The desktop's history stays as written, beside its automation."
   }),
-  orcadMigrationImportReceipts: notApplicableDisposition(67, 'Mover-owned.'),
-  orcadMigrationEvictedReceipts: notApplicableDisposition(67, 'Mover-owned.'),
-  orcadMigrationStagedCatalogs: notApplicableDisposition(68, 'Mover-owned.'),
+  topodMigrationImportReceipts: notApplicableDisposition(67, 'Mover-owned.'),
+  topodMigrationEvictedReceipts: notApplicableDisposition(67, 'Mover-owned.'),
+  topodMigrationStagedCatalogs: notApplicableDisposition(68, 'Mover-owned.'),
   onboarding: notApplicableDisposition(62),
   featureInteractionTelemetryBuckets: notApplicableDisposition(62),
   codexResetCreditAttemptLedger: notApplicableDisposition(62),

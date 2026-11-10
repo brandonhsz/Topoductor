@@ -120,7 +120,7 @@ function startOf(pid: number): string {
   return `Sun Nov  1 00:${String(pid % 60).padStart(2, '0')}:23 2026`
 }
 
-// Shaped like the Claude hook's X-Orca-Agent-Process capture.
+// Shaped like the Claude hook's X-Topo-Agent-Process capture.
 export function capture(pid: number): AgentProcessIdentity {
   return { pid, platform: 'darwin', startTime: startOf(pid) }
 }

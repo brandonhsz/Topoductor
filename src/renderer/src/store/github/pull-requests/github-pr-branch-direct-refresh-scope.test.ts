@@ -163,7 +163,7 @@ describe('createGitHubSlice.fetchPRForBranch', () => {
       number: 12,
       title: 'Same-ms external hosted review status',
       state: 'open',
-      url: 'https://github.com/acme/orca/pull/12',
+      url: 'https://github.com/acme/topo/pull/12',
       status: 'success',
       updatedAt: '2026-03-28T00:00:00Z',
       mergeable: 'MERGEABLE'

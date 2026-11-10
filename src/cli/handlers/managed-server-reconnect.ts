@@ -1,5 +1,5 @@
 // Updates can close this connection mid-call; report the outcome from status after the runtime returns.
-import type { OrcadManagedRuntimeStatus } from '../../shared/orcad-managed-runtime'
+import type { TopodManagedRuntimeStatus } from '../../shared/topod-managed-runtime'
 import type { HandlerContext } from '../dispatch'
 import { printResult } from '../format'
 import { RuntimeClientError, type RuntimeRpcSuccess } from '../runtime-client'
@@ -14,9 +14,9 @@ export async function reportAfterClosedConnection(
 ): Promise<void> {
   for (let attempt = 0; attempt < STATUS_ATTEMPTS; attempt++) {
     await sleep(STATUS_RETRY_MS)
-    let response: RuntimeRpcSuccess<OrcadManagedRuntimeStatus>
+    let response: RuntimeRpcSuccess<TopodManagedRuntimeStatus>
     try {
-      response = await client.call<OrcadManagedRuntimeStatus>('managedServer.status', selector)
+      response = await client.call<TopodManagedRuntimeStatus>('managedServer.status', selector)
     } catch {
       continue
     }
@@ -24,7 +24,7 @@ export async function reportAfterClosedConnection(
     if (status.recovery) {
       throw new RuntimeClientError(
         'managed_server_interrupted',
-        `The ${status.recovery.operation} of ${status.recovery.version} was interrupted. Run \`orca environment recover\`.`,
+        `The ${status.recovery.operation} of ${status.recovery.version} was interrupted. Run \`topo environment recover\`.`,
         status
       )
     }
@@ -41,6 +41,6 @@ export async function reportAfterClosedConnection(
   }
   throw new RuntimeClientError(
     'managed_server_in_progress',
-    'The connection closed while the server restarted, and it has not answered since. Check `orca environment status`.'
+    'The connection closed while the server restarted, and it has not answered since. Check `topo environment status`.'
   )
 }

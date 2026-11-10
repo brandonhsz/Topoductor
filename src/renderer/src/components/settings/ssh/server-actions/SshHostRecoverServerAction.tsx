@@ -1,12 +1,12 @@
 import { Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import type { OrcadManagedStaleLockReclaimResult } from '../../../../../../shared/orcad-managed-runtime'
+import type { TopodManagedStaleLockReclaimResult } from '../../../../../../shared/topod-managed-runtime'
 import {
-  ORCAD_RECLAIM_STALE_LOCK_FLAG,
-  type OrcadStaleLockEvidence
-} from '../../../../../../shared/orcad-stale-lock-reclaim'
+  TOPOD_RECLAIM_STALE_LOCK_FLAG,
+  type TopodStaleLockEvidence
+} from '../../../../../../shared/topod-stale-lock-reclaim'
 import type { SshManagedServerStatus } from '../../../../../../shared/ssh-types'
-import type { ManagedOrcadPreloadApi } from '../../../../../../preload/api/managed-orcad-api'
+import type { ManagedTopodPreloadApi } from '../../../../../../preload/api/managed-topod-api'
 import { quotePosixShellUnlessPlain } from '../../../../../../shared/shell/launch/shell-argument-quoting'
 import { useMountedRef } from '@/hooks/useMountedRef'
 import { formatUiRelativeTime } from '@/i18n/relative-time-format'
@@ -22,15 +22,15 @@ import {
   DialogTitle
 } from '../../../ui/dialog'
 import { Label } from '../../../ui/label'
-import { getManagedOrcadApi } from '../../../../runtime/hosts/installation/managed-orcad-api-availability'
+import { getManagedTopodApi } from '../../../../runtime/hosts/installation/managed-topod-api-availability'
 
 /** Offered only when the slot's own refusal named the command, so that build supports it. */
 export function canRecoverSshHostServer(status: SshManagedServerStatus | undefined): boolean {
   return Boolean(
-    getManagedOrcadApi() &&
+    getManagedTopodApi() &&
     status?.kind === 'managed' &&
     status.serving?.state === 'unverifiable' &&
-    status.serving.detail.includes(ORCAD_RECLAIM_STALE_LOCK_FLAG)
+    status.serving.detail.includes(TOPOD_RECLAIM_STALE_LOCK_FLAG)
   )
 }
 
@@ -39,7 +39,7 @@ export function staleLockReclaimCommandFrom(detail: string): string | null {
   return (
     detail
       .match(/`([^`]*)`/g)
-      ?.find((quoted) => quoted.includes(ORCAD_RECLAIM_STALE_LOCK_FLAG))
+      ?.find((quoted) => quoted.includes(TOPOD_RECLAIM_STALE_LOCK_FLAG))
       ?.slice(1, -1) ?? null
   )
 }
@@ -56,7 +56,7 @@ export function SshHostRecoverServerDialog({
   onOpenChange: (open: boolean) => void
   onChanged: () => void
 }): React.JSX.Element | null {
-  const api = getManagedOrcadApi()
+  const api = getManagedTopodApi()
   if (!api || !open) {
     return null
   }
@@ -76,7 +76,7 @@ function OpenRecoverServerDialog({
   onOpenChange,
   onChanged
 }: {
-  api: ManagedOrcadPreloadApi
+  api: ManagedTopodPreloadApi
   status: SshManagedServerStatus | undefined
   onOpenChange: (open: boolean) => void
   onChanged: () => void
@@ -89,7 +89,7 @@ function OpenRecoverServerDialog({
       : null
   )
   const mountedRef = useMountedRef()
-  const [check, setCheck] = useState<OrcadManagedStaleLockReclaimResult | null>(null)
+  const [check, setCheck] = useState<TopodManagedStaleLockReclaimResult | null>(null)
   const [confirmed, setConfirmed] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -142,12 +142,12 @@ function OpenRecoverServerDialog({
       <DialogContent surface="security" showCloseButton={!busy}>
         <DialogHeader>
           <DialogTitle>
-            {t('auto.components.settings.recoverServer.title', 'Recover Orca’s server')}
+            {t('auto.components.settings.recoverServer.title', 'Recover Topo’s server')}
           </DialogTitle>
           <DialogDescription>
             {t(
               'auto.components.settings.recoverServer.description',
-              'Orca’s server on this host won’t start because a lock from an earlier run is still in place.'
+              'Topo’s server on this host won’t start because a lock from an earlier run is still in place.'
             )}
           </DialogDescription>
         </DialogHeader>
@@ -169,7 +169,7 @@ function OpenRecoverServerDialog({
             <Label htmlFor="ssh-host-recover-server-confirm">
               {t(
                 'auto.components.settings.recoverServer.confirmCheck',
-                'No other machine sharing this home is running Orca'
+                'No other machine sharing this home is running Topo'
               )}
             </Label>
           </div>
@@ -204,7 +204,7 @@ function OpenRecoverServerDialog({
 function EligibleLock({
   evidence
 }: {
-  evidence: OrcadStaleLockEvidence | undefined
+  evidence: TopodStaleLockEvidence | undefined
 }): React.JSX.Element {
   const t = useTranslate()
   const intlLocale = useIntlLocale()
@@ -213,7 +213,7 @@ function EligibleLock({
       <p>
         {t(
           'auto.components.settings.recoverServer.eligible',
-          'Nothing answers on this machine at its old address, but Orca can’t rule out another machine with the same name that shares this home folder.'
+          'Nothing answers on this machine at its old address, but Topo can’t rule out another machine with the same name that shares this home folder.'
         )}
       </p>
       {evidence ? (
@@ -239,7 +239,7 @@ function EligibleLock({
       <p className="font-medium text-status-warning">
         {t(
           'auto.components.settings.recoverServer.warning',
-          'Only continue if no other machine sharing this home runs Orca for this profile.'
+          'Only continue if no other machine sharing this home runs Topo for this profile.'
         )}
       </p>
     </div>
@@ -250,7 +250,7 @@ function CheckOutcome({
   check,
   detail
 }: {
-  check: OrcadManagedStaleLockReclaimResult
+  check: TopodManagedStaleLockReclaimResult
   detail: string
 }): React.JSX.Element {
   const t = useTranslate()
@@ -260,7 +260,7 @@ function CheckOutcome({
         <p>
           {t(
             'auto.components.settings.recoverServer.reclaimedNotStarted',
-            'The lock was cleared, but Orca’s server did not start.'
+            'The lock was cleared, but Topo’s server did not start.'
           )}
         </p>
         {check.notRestarted ? <p className="text-destructive">{check.notRestarted}</p> : null}
@@ -272,7 +272,7 @@ function CheckOutcome({
       <p className="text-sm text-muted-foreground">
         {t(
           'auto.components.settings.recoverServer.none',
-          'There is no lock to clear any more. Reconnect to start this host’s Orca server.'
+          'There is no lock to clear any more. Reconnect to start this host’s Topo server.'
         )}
       </p>
     )
@@ -338,7 +338,7 @@ function ManualLockDelete({ lockPath }: { lockPath: string | undefined }): React
       <p className="font-medium text-status-warning">
         {t(
           'auto.components.settings.recoverServer.manualDeleteWarning',
-          'Only do this if no other machine sharing this home runs Orca for this profile.'
+          'Only do this if no other machine sharing this home runs Topo for this profile.'
         )}
       </p>
     </div>

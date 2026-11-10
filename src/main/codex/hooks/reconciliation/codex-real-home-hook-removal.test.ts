@@ -47,28 +47,28 @@ function readHooks(): { hooks?: Record<string, unknown[]> } {
   return JSON.parse(readFileSync(hooksJsonPath(), 'utf-8'))
 }
 
-function orcaHandler(): { type: string; command: string; timeout: number } {
+function topoHandler(): { type: string; command: string; timeout: number } {
   return { type: 'command', command: getCodexManagedHookInstallMaterial().command, timeout: 10 }
 }
 
-function orcaStopAt(sourcePath: string, groupIndex = 0): CodexTrustEntry {
+function topoStopAt(sourcePath: string, groupIndex = 0): CodexTrustEntry {
   return {
     sourcePath,
     eventLabel: 'stop',
     groupIndex,
     handlerIndex: 0,
-    command: orcaHandler().command
+    command: topoHandler().command
   }
 }
 
 beforeEach(() => {
   // Resolve macOS /var symlinks so the temp root adds no extra approval-key spelling.
-  root = realpathSync.native(mkdtempSync(join(tmpdir(), 'orca-real-home-removal-')))
+  root = realpathSync.native(mkdtempSync(join(tmpdir(), 'topo-real-home-removal-')))
   home = join(root, 'home')
   userDataDir = join(root, 'user-data')
   mkdirSync(home)
   mkdirSync(userDataDir)
-  vi.stubEnv('ORCA_USER_DATA_PATH', userDataDir)
+  vi.stubEnv('TOPO_USER_DATA_PATH', userDataDir)
   vi.stubEnv('CODEX_HOME', '')
   homedirMock.mockReturnValue(home)
 })
@@ -79,9 +79,9 @@ afterEach(() => {
 })
 
 describe('removeRealHomeCodexHookForOptOut', () => {
-  it("keeps a malformed hooks.json's bytes, Orca's trust and its ledger", async () => {
+  it("keeps a malformed hooks.json's bytes, Topo's trust and its ledger", async () => {
     mkdirSync(join(home, '.codex'))
-    const entry: CodexTrustEntry = { ...orcaStopAt(hooksJsonPath()), timeoutSec: 10 }
+    const entry: CodexTrustEntry = { ...topoStopAt(hooksJsonPath()), timeoutSec: 10 }
     writeFileSync(configTomlPath(), upsertHookTrustEntriesInContent('', [entry]), 'utf-8')
     writeCodexTrustGrantLedgerHome(join(home, '.codex'), { binary: null, entries: {} })
     writeFileSync(hooksJsonPath(), '{ not json', 'utf-8')
@@ -93,12 +93,12 @@ describe('removeRealHomeCodexHookForOptOut', () => {
     expect(readCodexTrustGrantLedgerHome(join(home, '.codex'))).not.toBeNull()
   })
 
-  it('removes only hash-proven Orca trust from a mixed hook group', async () => {
+  it('removes only hash-proven Topo trust from a mixed hook group', async () => {
     mkdirSync(join(home, '.codex'))
     const userCommand = 'my-user-hook.sh'
     writeFileSync(
       hooksJsonPath(),
-      `${JSON.stringify({ hooks: { Stop: [{ hooks: [{ type: 'command', command: userCommand }, orcaHandler()] }] } }, null, 2)}\n`
+      `${JSON.stringify({ hooks: { Stop: [{ hooks: [{ type: 'command', command: userCommand }, topoHandler()] }] } }, null, 2)}\n`
     )
     const entries: CodexTrustEntry[] = [
       {
@@ -113,7 +113,7 @@ describe('removeRealHomeCodexHookForOptOut', () => {
         eventLabel: 'stop',
         groupIndex: 0,
         handlerIndex: 1,
-        command: orcaHandler().command,
+        command: topoHandler().command,
         timeoutSec: 10
       }
     ]
@@ -129,13 +129,13 @@ describe('removeRealHomeCodexHookForOptOut', () => {
     expect(trust.has(computeTrustKey(entries[1]!))).toBe(false)
   })
 
-  it("moves the approval of a user hook that sat after Orca's, so it stays approved", async () => {
+  it("moves the approval of a user hook that sat after Topo's, so it stays approved", async () => {
     mkdirSync(join(home, '.codex'))
     const before = { type: 'command', command: 'before.sh' }
     const after = { type: 'command', command: 'after.sh' }
     writeFileSync(
       hooksJsonPath(),
-      `${JSON.stringify({ hooks: { Stop: [{ hooks: [before] }, { hooks: [orcaHandler()] }, { hooks: [after] }] } }, null, 2)}\n`
+      `${JSON.stringify({ hooks: { Stop: [{ hooks: [before] }, { hooks: [topoHandler()] }, { hooks: [after] }] } }, null, 2)}\n`
     )
     const afterAt = (groupIndex: number): CodexTrustEntry => ({
       sourcePath: hooksJsonPath(),
@@ -159,12 +159,12 @@ describe('removeRealHomeCodexHookForOptOut', () => {
   it("removes approvals left after the entry is gone, by Codex's hash", async () => {
     mkdirSync(join(home, '.codex'))
     writeFileSync(hooksJsonPath(), `${JSON.stringify({ hooks: {} }, null, 2)}\n`)
-    const orcaAt = orcaStopAt(hooksJsonPath())
-    upsertHookTrustEntries(configTomlPath(), [{ ...orcaAt, trustedHash: 'sha256:codex-stop' }])
+    const topoAt = topoStopAt(hooksJsonPath())
+    upsertHookTrustEntries(configTomlPath(), [{ ...topoAt, trustedHash: 'sha256:codex-stop' }])
 
     expect(await removeRealHomeCodexHookForOptOut([{ stop: 'sha256:codex-stop' }])).toBe('removed')
 
-    expect(readHookTrustEntries(configTomlPath()).has(computeTrustKey(orcaAt))).toBe(false)
+    expect(readHookTrustEntries(configTomlPath()).has(computeTrustKey(topoAt))).toBe(false)
   })
 })
 
@@ -176,7 +176,7 @@ describe('turning hooks off', () => {
     const resolvedHooksPath = join(target, 'hooks.json')
     writeFileSync(
       hooksJsonPath(),
-      `${JSON.stringify({ hooks: { Stop: [{ hooks: [orcaHandler()] }] } }, null, 2)}\n`
+      `${JSON.stringify({ hooks: { Stop: [{ hooks: [topoHandler()] }] } }, null, 2)}\n`
     )
     const command = getCodexManagedHookInstallMaterial().command
     // The cache retains the older Codex version that approved this hook.
@@ -191,15 +191,15 @@ describe('turning hooks off', () => {
       hashes: { stop: 'sha256:codex-new-stop' }
     })
     upsertHookTrustEntries(configTomlPath(), [
-      { ...orcaStopAt(hooksJsonPath()), trustedHash: 'sha256:codex-old-stop' },
-      { ...orcaStopAt(resolvedHooksPath), trustedHash: 'sha256:codex-old-stop' }
+      { ...topoStopAt(hooksJsonPath()), trustedHash: 'sha256:codex-old-stop' },
+      { ...topoStopAt(resolvedHooksPath), trustedHash: 'sha256:codex-old-stop' }
     ])
 
     await new CodexHookService().remove()
 
     expect(readHooks().hooks?.Stop).toBeUndefined()
     const trust = readHookTrustEntries(configTomlPath())
-    expect(trust.has(computeTrustKey(orcaStopAt(hooksJsonPath())))).toBe(false)
-    expect(trust.has(computeTrustKey(orcaStopAt(resolvedHooksPath)))).toBe(false)
+    expect(trust.has(computeTrustKey(topoStopAt(hooksJsonPath())))).toBe(false)
+    expect(trust.has(computeTrustKey(topoStopAt(resolvedHooksPath)))).toBe(false)
   })
 })

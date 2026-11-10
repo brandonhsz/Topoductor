@@ -2,7 +2,7 @@ import { isAgentInjectingInput } from '../../../cdp/input/agent-input-injection'
 
 type GuestEscapeTarget = { browserPageId: string; renderer: Electron.WebContents }
 
-// A focused page keeps its keys, so Orca modes over it (grab, find, password list) never see Escape.
+// A focused page keeps its keys, so Topo modes over it (grab, find, password list) never see Escape.
 export function setupGuestEscapeForwarding(args: {
   guest: Electron.WebContents
   resolveTarget: () => GuestEscapeTarget | null

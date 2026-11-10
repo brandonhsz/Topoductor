@@ -57,8 +57,8 @@ function addLedgerRecognizedHashes(
   }
 }
 
-/** Read Codex's recorded hashes only for matching Orca hook signatures. */
-export function readLedgerOrcaHashes(
+/** Read Codex's recorded hashes only for matching Topo hook signatures. */
+export function readLedgerTopoHashes(
   runtimeHomePath: string,
   command: string,
   timeoutSec: number

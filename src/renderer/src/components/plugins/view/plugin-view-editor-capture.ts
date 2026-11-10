@@ -90,7 +90,7 @@ export async function captureOpenEditor(
     return refuse(
       requestId,
       'editor_flush_failed',
-      'The open editor did not hand over its latest edits, so Orca did not reload it for the shot. Save or wait, then shoot again.'
+      'The open editor did not hand over its latest edits, so Topo did not reload it for the shot. Save or wait, then shoot again.'
     )
   }
   const wantDark = capture.colorScheme === undefined ? null : capture.colorScheme === 'dark'
@@ -127,7 +127,7 @@ export async function captureOpenEditor(
       message:
         frame === 'error'
           ? 'The editor could not be loaded.'
-          : 'The editor stopped responding to Orca.'
+          : 'The editor stopped responding to Topo.'
     }
   }
   const subscription = load.met

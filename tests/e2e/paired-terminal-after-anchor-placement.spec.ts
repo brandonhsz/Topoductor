@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedWebClient
@@ -94,14 +94,14 @@ async function tabWindow(page: Page, anchor: string) {
 
 test('paired web creation places a terminal after its anchor on both host and client', async ({
   electronApp,
-  orcaPage
+  topoPage
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  const offer = await createRuntimeDesktopPairingOffer(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  const offer = await createRuntimeDesktopPairingOffer(topoPage)
   const client = await launchPairedWebClient(electronApp, offer)
   try {
-    const worktreeId = await orcaPage.evaluate(() => window.__store?.getState().activeWorktreeId)
+    const worktreeId = await topoPage.evaluate(() => window.__store?.getState().activeWorktreeId)
     if (!worktreeId) {
       throw new Error('Paired worktree is missing')
     }
@@ -118,7 +118,7 @@ test('paired web creation places a terminal after its anchor on both host and cl
       title: ['Anchor A', 'Successor B', 'Inserted C'][index]
     }))
     for (const [page, web] of [
-      [orcaPage, false],
+      [topoPage, false],
       [client.page, true]
     ] as const) {
       await page.evaluate(
@@ -131,7 +131,7 @@ test('paired web creation places a terminal after its anchor on both host and cl
       )
     }
     await expect
-      .poll(() => tabWindow(orcaPage, first.parentTabId), { timeout: 15_000 })
+      .poll(() => tabWindow(topoPage, first.parentTabId), { timeout: 15_000 })
       .toEqual([first.parentTabId, inserted.parentTabId, second.parentTabId])
     const clientIds = [first, inserted, second].map((tab) =>
       toWebTerminalSurfaceTabId(tab.parentTabId)
@@ -141,7 +141,7 @@ test('paired web creation places a terminal after its anchor on both host and cl
       .toEqual(clientIds)
   } finally {
     await testInfo.attach('host-tab-placement', {
-      body: await orcaPage.screenshot({ path: testInfo.outputPath('host-tab-placement.png') }),
+      body: await topoPage.screenshot({ path: testInfo.outputPath('host-tab-placement.png') }),
       contentType: 'image/png'
     })
     await testInfo.attach('client-tab-placement', {

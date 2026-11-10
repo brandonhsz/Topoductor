@@ -16,7 +16,7 @@ let replays = 0
 
 const NOT_DRAWN = 'replay_not_drawn'
 
-/** For the CLI's error output, like the other view replies; never shown in Orca's UI. */
+/** For the CLI's error output, like the other view replies; never shown in Topo's UI. */
 function fail(requestId: string, code: string, message: string): PluginViewReply {
   return { requestId, ok: false, code, message }
 }
@@ -76,7 +76,7 @@ export async function replayPluginPanel(
   replays += 1
   usePluginShotReplayStore.getState().show({ tree: parsed.tree, width, id: replays })
   if (!(await waitForSurface(replay.timeoutMs))) {
-    return fail(requestId, NOT_DRAWN, 'Orca did not draw the scenario preview in time.')
+    return fail(requestId, NOT_DRAWN, 'Topo did not draw the scenario preview in time.')
   }
   await waitForColorScheme(wantDark)
   const rect = measurePluginShotReplay()

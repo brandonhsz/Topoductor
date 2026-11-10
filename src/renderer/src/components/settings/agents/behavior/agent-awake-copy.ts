@@ -45,7 +45,7 @@ export function getAgentAwakeDescription(
 
   return t(
     AGENT_AWAKE_DESCRIPTION_DEFAULT_KEY,
-    'Choose On, Agent, or Off. Agent mode stays awake while agents are working. Orca also asks this device to stay awake when the lid is closed, subject to its power policy.'
+    'Choose On, Agent, or Off. Agent mode stays awake while agents are working. Topo also asks this device to stay awake when the lid is closed, subject to its power policy.'
   )
 }
 
@@ -67,7 +67,7 @@ export function getAgentAwakeLidNote(
   }
   return t(
     'auto.components.settings.agent-awake-copy.lidNoteDefault',
-    'Orca also asks this device to stay awake when the lid is closed, subject to its power policy.'
+    'Topo also asks this device to stay awake when the lid is closed, subject to its power policy.'
   )
 }
 

@@ -5,7 +5,7 @@ export type AgentWorkspaceTrustSettings = {
   agentWorkspaceTrustExistingReposMigrated?: boolean
 }
 
-/** Per-repo answer to "should Orca pre-trust this repo for agents?"; worktrees share their repo's answer. */
+/** Per-repo answer to "should Topo pre-trust this repo for agents?"; worktrees share their repo's answer. */
 export type AgentWorkspaceTrustDecision = 'pre-trust' | 'agent-asks'
 
 export function sanitizeAgentWorkspaceTrustDecision(

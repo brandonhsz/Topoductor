@@ -113,12 +113,12 @@ async function resolvePortsTarget(
   if (!options.needsWorktreePath) {
     return { selector, worktreePath: null }
   }
-  // Why refuse: Orca ties listeners only to repo-backed workspaces, and host-wide rows would hand
+  // Why refuse: Topo ties listeners only to repo-backed workspaces, and host-wide rows would hand
   // scripts another workspace's dev server.
   if (isNativeFolderSelector(selector)) {
     throw new RuntimeClientError(
       'invalid_argument',
-      'Orca does not tie ports to native folder workspaces yet. Run `orca ports --all` to list every listener on the host.'
+      'Topo does not tie ports to native folder workspaces yet. Run `topo ports --all` to list every listener on the host.'
     )
   }
   const shown = await client.call<{ worktree: RuntimeWorktreeRecord }>('worktree.show', {
@@ -140,7 +140,7 @@ async function scanPortsOnWorkspaceHost(
     if (error instanceof RuntimeClientError && error.code === 'method_not_found') {
       throw new RuntimeClientError(
         'incompatible_runtime',
-        'This Orca runtime cannot list workspace ports yet. Update Orca and try again.'
+        'This Topo runtime cannot list workspace ports yet. Update Topo and try again.'
       )
     }
     throw error

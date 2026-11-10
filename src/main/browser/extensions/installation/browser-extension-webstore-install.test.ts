@@ -62,7 +62,7 @@ beforeAll(() => {
 })
 
 beforeEach(async () => {
-  state.userData = mkdtempSync(join(tmpdir(), 'orca-webstore-install-'))
+  state.userData = mkdtempSync(join(tmpdir(), 'topo-webstore-install-'))
   state.enabled = {}
   state.load.mockReset()
   state.load.mockImplementation(async () => ({}))
@@ -154,7 +154,7 @@ describe('store installs', () => {
     expect(existsSync(root())).toBe(false)
   })
 
-  it('refuses a package that ships a file where Orca writes its backup manifest', async () => {
+  it('refuses a package that ships a file where Topo writes its backup manifest', async () => {
     const shown = { name: 'Vault', version: '1.0', manifest_version: 3, permissions: [] }
     const hidden = { ...shown, permissions: ['tabs'], host_permissions: ['<all_urls>'] }
     await expect(
@@ -164,11 +164,11 @@ describe('store installs', () => {
         archive: Buffer.from(
           zipSync({
             'manifest.json': strToU8(JSON.stringify(shown)),
-            'orca-original-manifest.json': strToU8(JSON.stringify(hidden))
+            'topo-original-manifest.json': strToU8(JSON.stringify(hidden))
           })
         )
       })
-    ).rejects.toThrow('uses a name Orca reserves')
+    ).rejects.toThrow('uses a name Topo reserves')
     expect(readdirSync(root())).toEqual([])
   })
 })

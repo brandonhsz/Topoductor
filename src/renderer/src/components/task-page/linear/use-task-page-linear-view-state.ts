@@ -9,7 +9,7 @@ import { buildLinearIssueWorkspaceAttachmentIndex } from '@/lib/work-items/linea
 import {
   collectLinkedLinearIssueRefsFromWorktrees,
   linkedLinearIssueRefsSignature
-} from '@/components/task-page/linear/task-page-linear-in-orca-issues'
+} from '@/components/task-page/linear/task-page-linear-in-topo-issues'
 import type { LinearMode } from '@/components/task-page/task-page-localized-options'
 import {
   type LinearViewMode,
@@ -73,7 +73,7 @@ export function useTaskPageLinearViewStatePrelude(model: TaskPageDetailRoutingMo
     () => buildLinearIssueWorkspaceAttachmentIndex(linearAttachmentWorkspaces),
     [linearAttachmentWorkspaces]
   )
-  const inOrcaLinkedLinearRefs = useMemo(
+  const inTopoLinkedLinearRefs = useMemo(
     () =>
       collectLinkedLinearIssueRefsFromWorktrees(linearAttachmentWorkspaces, {
         workspaceId: selectedLinearWorkspaceId,
@@ -81,15 +81,15 @@ export function useTaskPageLinearViewStatePrelude(model: TaskPageDetailRoutingMo
       }),
     [linearAttachmentWorkspaces, linearStatus.workspaces, selectedLinearWorkspaceId]
   )
-  const inOrcaLinkedLinearRefsSignature = useMemo(
-    () => linkedLinearIssueRefsSignature(inOrcaLinkedLinearRefs),
-    [inOrcaLinkedLinearRefs]
+  const inTopoLinkedLinearRefsSignature = useMemo(
+    () => linkedLinearIssueRefsSignature(inTopoLinkedLinearRefs),
+    [inTopoLinkedLinearRefs]
   )
-  const inOrcaLinkedLinearRefsRef = useRef(inOrcaLinkedLinearRefs)
-  // Keep latest linked refs for the in-orca loader without re-running it on identity churn.
+  const inTopoLinkedLinearRefsRef = useRef(inTopoLinkedLinearRefs)
+  // Keep latest linked refs for the in-topo loader without re-running it on identity churn.
   useEffect(() => {
-    inOrcaLinkedLinearRefsRef.current = inOrcaLinkedLinearRefs
-  }, [inOrcaLinkedLinearRefs])
+    inTopoLinkedLinearRefsRef.current = inTopoLinkedLinearRefs
+  }, [inTopoLinkedLinearRefs])
 
   const source = model.linearTaskSourceContext ?? defaultScopeSource(model.settings)
   const scopeKey = useAppStore(() => getLinearSourceScope(source).contextKey)
@@ -102,7 +102,7 @@ export function useTaskPageLinearViewStatePrelude(model: TaskPageDetailRoutingMo
       appliedLinearSearch,
       linearIssueLimit,
       linearAttributeFilter,
-      linearMode === 'in-orca' ? inOrcaLinkedLinearRefsSignature : null
+      linearMode === 'in-topo' ? inTopoLinkedLinearRefsSignature : null
     ]),
     [],
     scope
@@ -171,9 +171,9 @@ export function useTaskPageLinearViewStatePrelude(model: TaskPageDetailRoutingMo
   const nextModel = Object.assign(model, {
     linearAttachmentWorkspaces,
     linearIssueAttachmentIndex,
-    inOrcaLinkedLinearRefs,
-    inOrcaLinkedLinearRefsSignature,
-    inOrcaLinkedLinearRefsRef,
+    inTopoLinkedLinearRefs,
+    inTopoLinkedLinearRefsSignature,
+    inTopoLinkedLinearRefsRef,
 
     linearMode: linearMode,
     setLinearMode: setLinearMode,

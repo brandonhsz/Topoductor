@@ -1,6 +1,6 @@
 /** STA-1840 regression: known blank-terminal handles request a bounded renderer mount. */
 import { describe, expect, it } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 
 export function registerTerminalMobileSubscribeTabMountTests(): void {
   type HandleSeed = {
@@ -29,7 +29,7 @@ export function registerTerminalMobileSubscribeTabMountTests(): void {
 
   describe('mobile terminal subscribe tab mount', () => {
     it('keeps a waiting real-tab handle usable when the mount binds its first PTY', async () => {
-      const runtime = new OrcaRuntimeService()
+      const runtime = new TopoRuntimeService()
       const syncGraph = (ptyId: string | null): void => {
         runtime.syncWindowGraph(1, {
           tabs: [

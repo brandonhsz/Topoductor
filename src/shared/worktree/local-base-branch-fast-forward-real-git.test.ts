@@ -35,7 +35,7 @@ type Fixture = {
 
 // `main` is checked out one commit behind `refs/remotes/origin/main`, which edits version.txt and adds added.txt.
 async function createBehindRepo(): Promise<Fixture> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-local-base-ff-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-local-base-ff-'))
   tempRoots.push(root)
   await writeFile(join(root, 'empty-gitconfig'), '')
   const env = isolatedGitEnv(root)
@@ -145,7 +145,7 @@ describe('fastForwardLocalBaseBranch against real Git', () => {
     expect(existsSync(marker)).toBe(true)
   })
 
-  // Control commands prove each merge setting is active; Orca must still fast-forward exactly to the target.
+  // Control commands prove each merge setting is active; Topo must still fast-forward exactly to the target.
   it.each([
     ['merge.verifySignatures', 'true', 'refuses'],
     ['branch.main.mergeOptions', '--verify-signatures', 'refuses'],
@@ -231,7 +231,7 @@ describe('fastForwardLocalBaseBranch against real Git', () => {
     expect(real.merges()).toBe(0)
     expect(fixture.git(['rev-parse', 'main'])).toBe(fixture.remoteOid)
     expect(fixture.git(['reflog', 'show', '--format=%gs', '-1', 'main'])).toBe(
-      'orca: fast-forward to refs/remotes/origin/main'
+      'topo: fast-forward to refs/remotes/origin/main'
     )
     expect(fixture.git(['symbolic-ref', 'HEAD'])).toBe('refs/heads/develop')
     expect(await readFile(join(fixture.repoPath, 'version.txt'), 'utf8')).toBe('one\n')

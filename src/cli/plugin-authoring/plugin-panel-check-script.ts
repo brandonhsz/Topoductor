@@ -1,12 +1,12 @@
 /**
  * Runs inside the plugin's Node process with the test hooks: for each components panel, and each
  * scenario its `<entry>.check.ts` defines (else one plain run), mount the worker (`main`) and the
- * panel on one mock host, so the panel's `plugin.request` reaches the worker as in Orca.
+ * panel on one mock host, so the panel's `plugin.request` reaches the worker as in Topo.
  */
 export const PLUGIN_PANEL_CHECK_SCRIPT = `
 const { mount, mockHost, mountWorker } = await import('orca/testing')
 const { panels, main, scenario: only, drawnTree, listOnly } = JSON.parse(
-  process.env.ORCA_PLUGIN_CHECK_PANELS
+  process.env.TOPO_PLUGIN_CHECK_PANELS
 )
 const results = []
 let stray = []
@@ -76,7 +76,7 @@ for (const { panel, entry, url, fixture } of panels) {
       if (drawnTree) result.drawnTree = mounted.drawnTree()
       result.issues.push(...mounted.errors)
       result.warnings.push(...mounted.warnings)
-      // Refused even when the code caught it: in Orca the call fails the same way.
+      // Refused even when the code caught it: in Topo the call fails the same way.
       result.warnings.push(...refused(mounted.refusals))
       await mounted.unmount()
     } catch (error) {
@@ -93,5 +93,5 @@ for (const { panel, entry, url, fixture } of panels) {
     results.push(result)
   }
 }
-process.stdout.write('\\n__ORCA_CHECK__' + JSON.stringify(results))
+process.stdout.write('\\n__TOPO_CHECK__' + JSON.stringify(results))
 `

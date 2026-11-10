@@ -1,6 +1,6 @@
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 
-export function getSessionTabsInventoryPublication(runtime: OrcaRuntimeService) {
+export function getSessionTabsInventoryPublication(runtime: TopoRuntimeService) {
   return {
     get epoch(): number | null {
       const epoch: unknown = Object.getOwnPropertyDescriptor(

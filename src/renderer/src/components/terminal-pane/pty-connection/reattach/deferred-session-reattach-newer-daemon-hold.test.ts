@@ -9,7 +9,7 @@ import {
   reopenHeldTerminals
 } from '../../session-restore/newer-daemon/newer-daemon-hold-state'
 import { startDeferredSessionReattach } from './deferred-session-reattach-connect'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import type { FreshSpawnOptions } from '../startup/fresh-spawn-types'
 import type { ConnectPanePtySession } from '../connect-pane-pty-session'
 import { PANE_NOT_LIVE_ERROR } from '../../../../../../shared/pane-attach-only-view'
@@ -86,7 +86,7 @@ function createSession(opts: { runtimeEnvironmentId?: string } = {}) {
 }
 
 /** Switch on, main's start resumes the agent, so the window's reattach claims no resume. */
-const windowResumedDescription = ORCA_LAYOUT_OWNER_IS_MAIN
+const windowResumedDescription = TOPO_LAYOUT_OWNER_IS_MAIN
   ? undefined
   : { description: '1 agent session resumed.' }
 
@@ -130,7 +130,7 @@ describe('restored pane refused for a newer daemon', () => {
     await reopenHeldTerminals('tab:leaf')
     expect(transport.connect).toHaveBeenLastCalledWith(
       expect.objectContaining(
-        ORCA_LAYOUT_OWNER_IS_MAIN
+        TOPO_LAYOUT_OWNER_IS_MAIN
           ? { sessionId: 'restored-pty', attachOnlyView: true }
           : { sessionId: 'restored-pty', command: 'claude --resume c1' }
       )
@@ -211,7 +211,7 @@ describe('restored pane refused for a newer daemon', () => {
       expect(toast.success).toHaveBeenCalledWith(
         'Reopened 1 terminal',
         // Switch off, the window's own resume counts, whatever main published.
-        ORCA_LAYOUT_OWNER_IS_MAIN ? description : { description: '1 agent session resumed.' }
+        TOPO_LAYOUT_OWNER_IS_MAIN ? description : { description: '1 agent session resumed.' }
       )
       useAppStore.setState({ terminalPaneResumeOutcomesByPaneKey: {} })
     }

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useAppStore } from '@/store/index'
 import type { OpenFile } from '@/store/slices/editor/types/open-file'
 import {
-  ORCA_EDITOR_REQUEST_CMD_SAVE_EVENT,
+  TOPO_EDITOR_REQUEST_CMD_SAVE_EVENT,
   type EditorRequestCmdSaveDetail
 } from '../../autosave/editor-autosave'
 import type { FileContent } from '../../editor-panel-content-types'
@@ -71,7 +71,7 @@ export function useEditorCmdSaveRequest({
         draft ?? (activeFile.mode === 'markdown-preview' ? loaded?.content : cleanCodeContent) ?? ''
       void handleSave(fallbackContent)
     }
-    window.addEventListener(ORCA_EDITOR_REQUEST_CMD_SAVE_EVENT, handler)
-    return () => window.removeEventListener(ORCA_EDITOR_REQUEST_CMD_SAVE_EVENT, handler)
+    window.addEventListener(TOPO_EDITOR_REQUEST_CMD_SAVE_EVENT, handler)
+    return () => window.removeEventListener(TOPO_EDITOR_REQUEST_CMD_SAVE_EVENT, handler)
   }, [activeFile, enabled, fileContents, handleSave, openFiles])
 }

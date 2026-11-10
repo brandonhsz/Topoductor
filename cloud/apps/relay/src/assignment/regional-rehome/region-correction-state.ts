@@ -1,7 +1,7 @@
 import { relayHostLogDigest } from '../../observability/relay-host-log-digest.js'
 import { hostCohortBucket } from '../host-cohort-bucket.js'
-import type { RegionCorrectionRequest, RegionCorrectionResponse } from '@orca-cloud/relay-contract/region-correction'
-import type { RelayRegion } from '@orca-cloud/relay-contract/relay-regions'
+import type { RegionCorrectionRequest, RegionCorrectionResponse } from '@topo-cloud/relay-contract/region-correction'
+import type { RelayRegion } from '@topo-cloud/relay-contract/relay-regions'
 import type { RelayDatabase } from '../../database/database.js'
 
 type Identity = { userId: string; relayHostId: string }
@@ -116,7 +116,7 @@ export async function exchangeRegionCorrection(
     if (Number.parseInt(digest.slice(0, 8), 16) % 10 === 0) {
       console.log(
         JSON.stringify({
-          event: 'orca_relay_region_comparison',
+          event: 'topo_relay_region_comparison',
           relayHostIdDigest: digest,
           assignmentEpoch,
           generation: request.generation,

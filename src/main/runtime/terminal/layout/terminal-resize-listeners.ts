@@ -1,7 +1,7 @@
 import { sessionIdFromStructuredWorkerIncarnation } from '../../orchestration/terminal-authority/structured-sessions/structured-worker-identity'
 import '../../rpc/methods/orchestration/structured-workers/orchestration-structured-worker-lifecycle'
 import { observeStructuredWorker } from '../../orchestration/terminal-authority/structured-sessions/structured-worker-authority'
-import { OrcaRuntimeWithApplyMobileDisplayMode } from './terminal-display-mode'
+import { TopoRuntimeWithApplyMobileDisplayMode } from './terminal-display-mode'
 import { addListenerToMap } from './terminal-listener-map'
 import { notifyRuntimeListeners } from '../../events/runtime-listener-delivery'
 import { withTimeoutResult } from '../../../../shared/promise-timeout-fallback'
@@ -27,7 +27,7 @@ import { reportWorkerTurnStop } from '../../orchestration/workers/turn-stops/wor
 import { LOCAL_EXECUTION_HOST_ID, toSshExecutionHostId } from '../../../../shared/execution-host'
 import type { OrchestrationDb } from '../../orchestration/db/orchestration-db'
 
-export abstract class OrcaRuntimeWithSubscribeToTerminalResize extends OrcaRuntimeWithApplyMobileDisplayMode {
+export abstract class TopoRuntimeWithSubscribeToTerminalResize extends TopoRuntimeWithApplyMobileDisplayMode {
   subscribeToTerminalResize(
     ptyId: string,
     listener: (event: {

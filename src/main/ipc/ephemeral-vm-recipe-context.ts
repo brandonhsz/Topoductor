@@ -4,7 +4,7 @@ import type { EphemeralVmRecipeDoctorResult } from '../../shared/ephemeral-vm-re
 import { listEphemeralVmRuntimes } from '../../shared/ephemeral-vm-runtime-store'
 import type { EphemeralVmRuntimeRecord } from '../../shared/ephemeral-vm-runtimes'
 import { isFolderRepo, isGitRepoKind } from '../../shared/repo-kind'
-import type { OrcaVmRecipe } from '../../shared/orca-yaml-hook-types'
+import type { TopoVmRecipe } from '../../shared/topo-yaml-hook-types'
 import {
   EphemeralVmFailureError,
   ephemeralVmFailure,
@@ -14,7 +14,7 @@ import {
 export type EphemeralVmRecipeListResult = {
   status: 'ok' | 'error'
   repoPath: string | null
-  recipes: OrcaVmRecipe[]
+  recipes: TopoVmRecipe[]
   diagnostics: NonNullable<ReturnType<typeof loadHooks>>['environmentRecipeDiagnostics']
   message?: string
   messageCode?: string
@@ -25,7 +25,7 @@ export type EphemeralVmRecipeCatalogEntry = {
   repoId: string
   repoName: string
   repoPath: string
-  recipes: OrcaVmRecipe[]
+  recipes: TopoVmRecipe[]
   diagnostics: NonNullable<ReturnType<typeof loadHooks>>['environmentRecipeDiagnostics']
 }
 
@@ -41,7 +41,7 @@ export type RecipeRepoResult =
 export function listRecipes(
   store: Store,
   repoId: string,
-  pluginRecipes: readonly OrcaVmRecipe[] = []
+  pluginRecipes: readonly TopoVmRecipe[] = []
 ): EphemeralVmRecipeListResult {
   const repo = store.getRepo(repoId)
   if (!repo || isFolderRepo(repo)) {
@@ -61,7 +61,7 @@ export function listRecipes(
 
 export function listRecipeCatalog(
   store: Store,
-  pluginRecipes: readonly OrcaVmRecipe[] = []
+  pluginRecipes: readonly TopoVmRecipe[] = []
 ): EphemeralVmRecipeCatalogEntry[] {
   return store
     .getRepos()
@@ -97,7 +97,7 @@ export function getRuntimeRecipeContext(
 ): {
   runtime: EphemeralVmRuntimeRecord
   repoPath: string
-  recipe: OrcaVmRecipe
+  recipe: TopoVmRecipe
 } {
   const runtime = listEphemeralVmRuntimes(userDataPath).find((entry) => entry.id === runtimeId)
   if (!runtime) {
@@ -106,7 +106,7 @@ export function getRuntimeRecipeContext(
   const repo = runtime.repoId ? getRecipeRepo(store, runtime.repoId) : null
   if (!repo?.ok) {
     // Why: a re-added or removed repo must not strand the VM; the snapshot plus recorded checkout
-    // path are everything destroy needs (stablyai/orca#17293). Only trust the path while it still
+    // path are everything destroy needs (brandonhsz/Topoductor#17293). Only trust the path while it still
     // holds the same recipe, so a different checkout later placed there can't run its scripts.
     const fallback = runtime.recipe && runtime.repoPath ? runtime.recipe : null
     if (fallback && runtime.repoPath) {
@@ -144,8 +144,8 @@ export function getRuntimeRecipeContext(
 export function resolveRecipeForRepo(
   repoPath: string,
   recipeId: string,
-  pluginRecipes: readonly OrcaVmRecipe[] = []
-): OrcaVmRecipe | null {
+  pluginRecipes: readonly TopoVmRecipe[] = []
+): TopoVmRecipe | null {
   return (
     combineEphemeralVmRecipes(loadHooks(repoPath)?.environmentRecipes ?? [], pluginRecipes).find(
       (recipe) => recipe.id === recipeId
@@ -156,9 +156,9 @@ export function resolveRecipeForRepo(
 /** Project-owned recipes are authoritative for their repository and shadow
  * same-id global plugin recipes without disabling the rest of the pack. */
 export function combineEphemeralVmRecipes(
-  repoRecipes: readonly OrcaVmRecipe[],
-  pluginRecipes: readonly OrcaVmRecipe[]
-): OrcaVmRecipe[] {
+  repoRecipes: readonly TopoVmRecipe[],
+  pluginRecipes: readonly TopoVmRecipe[]
+): TopoVmRecipe[] {
   const repoIds = new Set(repoRecipes.map((recipe) => recipe.id))
   return [...repoRecipes, ...pluginRecipes.filter((recipe) => !repoIds.has(recipe.id))]
 }

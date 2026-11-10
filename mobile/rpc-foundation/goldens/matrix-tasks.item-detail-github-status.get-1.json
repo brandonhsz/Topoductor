@@ -205,7 +205,7 @@
       }
     },
     "383dd2eb8a74": {
-      "error": "Update Orca on the executing server to edit this item or load its repository options.",
+      "error": "Update Topo on the executing server to edit this item or load its repository options.",
       "item": {
         "key": "github:repo-1:pr:12",
         "provider": "github",
@@ -298,7 +298,7 @@
     "42dbdd0ee40f": {
       "name": "detailError",
       "ordinal": 10,
-      "value": "The Orca server connection changed. Try again."
+      "value": "The Topo server connection changed. Try again."
     },
     "46643bb88ce4": {
       "name": "github.workItemDetails#1",
@@ -325,7 +325,7 @@
     "7cd8e40bc7e7": {
       "name": "detailError",
       "ordinal": 10,
-      "value": "Update Orca on the executing server to edit this item or load its repository options."
+      "value": "Update Topo on the executing server to edit this item or load its repository options."
     },
     "88caa02cb9f2": {
       "name": "status.get#1",
@@ -615,7 +615,7 @@
       }
     },
     "cfc7024af888": {
-      "error": "The Orca server connection changed. Try again.",
+      "error": "The Topo server connection changed. Try again.",
       "item": {
         "key": "github:repo-1:pr:12",
         "provider": "github",

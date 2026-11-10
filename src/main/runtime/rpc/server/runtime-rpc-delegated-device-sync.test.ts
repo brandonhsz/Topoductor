@@ -5,8 +5,8 @@ import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import type { DeviceRegistry } from './pairing/device-registry'
 
 vi.mock('../../../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => {
@@ -34,14 +34,14 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
   return { getWorktreeListingMocks: () => (listings ??= createWorktreeListingMocks()) }
 })
 
-let server: OrcaRuntimeRpcServer
+let server: TopoRuntimeRpcServer
 let registry: DeviceRegistry
 let parentDeviceId: string
 
 beforeEach(async () => {
-  server = new OrcaRuntimeRpcServer({
-    runtime: new OrcaRuntimeService(),
-    userDataPath: mkdtempSync(join(tmpdir(), 'orca-delegated-sync-')),
+  server = new TopoRuntimeRpcServer({
+    runtime: new TopoRuntimeService(),
+    userDataPath: mkdtempSync(join(tmpdir(), 'topo-delegated-sync-')),
     enableWebSocket: true,
     wsPort: 0
   })

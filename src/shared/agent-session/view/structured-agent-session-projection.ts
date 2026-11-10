@@ -42,7 +42,7 @@ import {
   agentSessionCurrentContextBody,
   agentSessionCurrentContextRows
 } from '../agent-session-context-clear'
-import { nativeChatStatusTurnOutcome } from '../../native-chat/native-chat-orca-stop-cut'
+import { nativeChatStatusTurnOutcome } from '../../native-chat/native-chat-topo-stop-cut'
 
 /** Only transport-clipped output has a fetchable remainder; older saved truncations have none. */
 function toolResult(
@@ -61,7 +61,7 @@ function toolResult(
 /** Anchor truncation markers at the end so body lookalikes remain content. */
 const BOUNDED_TEXT_MARKERS = [
   /\n\u2026 \(\d+ bytes\)$/,
-  /\n\[Orca: output truncated \u2014 \d+ bytes total, digest [0-9a-f]+\]$/
+  /\n\[Topo: output truncated \u2014 \d+ bytes total, digest [0-9a-f]+\]$/
 ]
 
 /** Strip clipping markers and retain truncation state; otherwise file viewers render the marker as a real numbered line and claim completeness. */

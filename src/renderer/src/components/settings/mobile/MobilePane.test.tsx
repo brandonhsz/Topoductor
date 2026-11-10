@@ -18,7 +18,7 @@ type PairedDevicesProps = {
 }
 
 type StoreState = {
-  orcaProfileAuthStatus: { state: 'connected' | 'local' }
+  topoProfileAuthStatus: { state: 'connected' | 'local' }
   settingsSearchQuery: string
   settings: {
     mobileAutoRestoreFitMs: number | null
@@ -28,7 +28,7 @@ type StoreState = {
   }
   updateSettings: (patch: Record<string, unknown>) => Promise<void>
   recordFeatureInteraction: (feature: string) => void
-  fetchOrcaProfileAuthStatus: () => Promise<unknown>
+  fetchTopoProfileAuthStatus: () => Promise<unknown>
 }
 
 const mocks = vi.hoisted(() => {
@@ -172,7 +172,7 @@ describe('MobilePane pairing connection mode', () => {
     getPairingQR.mockReset().mockResolvedValue({
       available: true,
       qrDataUrl: 'data:image/png;base64,qr',
-      pairingUrl: 'orca://pair',
+      pairingUrl: 'topo://pair',
       endpoint: 'ws://host',
       connectionMode: 'automatic'
     })
@@ -181,12 +181,12 @@ describe('MobilePane pairing connection mode', () => {
     mocks.revokeDevice.mockReset().mockResolvedValue({ revoked: true })
     updateSettings.mockReset().mockResolvedValue(undefined)
     mocks.holder.state = {
-      orcaProfileAuthStatus: { state: 'connected' },
+      topoProfileAuthStatus: { state: 'connected' },
       settingsSearchQuery: '',
       settings: { mobileAutoRestoreFitMs: null },
       updateSettings,
       recordFeatureInteraction: vi.fn(),
-      fetchOrcaProfileAuthStatus: vi.fn().mockResolvedValue(null)
+      fetchTopoProfileAuthStatus: vi.fn().mockResolvedValue(null)
     }
     Object.defineProperty(window, 'api', {
       configurable: true,

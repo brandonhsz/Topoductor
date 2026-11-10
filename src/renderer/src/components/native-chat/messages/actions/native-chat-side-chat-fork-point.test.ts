@@ -172,7 +172,7 @@ it('offers inherited ancestor replies in a fork of a fork while the child is run
       body: { kind: 'message', role: 'assistant', blocks: [{ type: 'text', text: 'copied' }] }
     },
     {
-      itemId: 'orca:forked-from',
+      itemId: 'topo:forked-from',
       sequence: 4,
       body: { kind: 'status', text: 'Forked from source', presentation: 'forked-from' }
     },
@@ -254,7 +254,7 @@ it('carries current target-host proof into desktop response and side-chat offers
       body: { kind: 'message', role: 'assistant', blocks: copied.blocks }
     },
     {
-      itemId: 'orca:forked-from',
+      itemId: 'topo:forked-from',
       sequence: 1,
       revision: 1,
       observedAt: 1,

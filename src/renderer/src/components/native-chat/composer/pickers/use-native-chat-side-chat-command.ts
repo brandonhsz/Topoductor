@@ -37,7 +37,7 @@ export function withNativeChatSideChatRows(
 
 export type NativeChatSideChatCommand = {
   matchesDraft: (draft: string) => boolean
-  /** Starts a side chat for a `/side` or `/btw` draft; false means the draft is not Orca's. */
+  /** Starts a side chat for a `/side` or `/btw` draft; false means the draft is not Topo's. */
   consume: (draft: string) => boolean
   /** Choosing the row completes `/btw ` for the question; only Send runs it. */
   interceptPick: <TItem extends NativeChatPickerItem>(
@@ -118,7 +118,7 @@ export function useNativeChatSideChatCommand(args: {
     <TItem extends NativeChatPickerItem>(pick: (item: TItem) => void) =>
       (item: TItem) => {
         const leading = autocomplete.mode === 'slash' && autocomplete.dispatchable === true
-        const name = item.kind === 'command' && item.orcaOwned ? item.name : null
+        const name = item.kind === 'command' && item.topoOwned ? item.name : null
         if (leading && sideChat && isNativeChatSideChatCommand(name)) {
           // An unavailable row says why; picking it does nothing, as the common pattern does.
           if (sideChat.notReadyReason === null) {

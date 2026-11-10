@@ -9,11 +9,11 @@ import {
 
 // Captured from log stream on macOS 26.5 while displaying and denying a real consent dialog.
 const REAL_PROMPT_LINE =
-  '2026-07-27 15:35:26.136 Df tccd[79149:c81551c] [com.apple.TCC:access] AUTHREQ_PROMPTING: msgID=80871.81, service=kTCCServiceSystemPolicyDocumentsFolder, subject=Sub:{com.orca.tccprobe.shapecapture}Resp:{TCCDProcess: identifier=com.orca.tccprobe.shapecapture, pid=74171, auid=501, euid=501, binary_path=/private/tmp/tccprobe/TccProbe.app/Contents/MacOS/TccProbe},'
+  '2026-07-27 15:35:26.136 Df tccd[79149:c81551c] [com.apple.TCC:access] AUTHREQ_PROMPTING: msgID=80871.81, service=kTCCServiceSystemPolicyDocumentsFolder, subject=Sub:{com.topo.tccprobe.shapecapture}Resp:{TCCDProcess: identifier=com.topo.tccprobe.shapecapture, pid=74171, auid=501, euid=501, binary_path=/private/tmp/tccprobe/TccProbe.app/Contents/MacOS/TccProbe},'
 
-// Derived fixture: an agent accesses files while Orca is held responsible (#9756).
-const ORCA_APPDATA_LINE =
-  '2026-07-27 15:40:02.001 Df tccd[79149:c81551c] [com.apple.TCC:access] AUTHREQ_PROMPTING: msgID=80871.99, service=kTCCServiceSystemPolicyAppData, subject=Sub:{node-5555494487fbc7467d473fd8b0a397018cbf954b}Resp:{TCCDProcess: identifier=com.stablyai.orca, pid=47548, auid=501, euid=501, binary_path=/opt/homebrew/Cellar/node/26.5.0/bin/node},'
+// Derived fixture: an agent accesses files while Topo is held responsible (#9756).
+const TOPO_APPDATA_LINE =
+  '2026-07-27 15:40:02.001 Df tccd[79149:c81551c] [com.apple.TCC:access] AUTHREQ_PROMPTING: msgID=80871.99, service=kTCCServiceSystemPolicyAppData, subject=Sub:{node-5555494487fbc7467d473fd8b0a397018cbf954b}Resp:{TCCDProcess: identifier=com.brandonhsz.topo, pid=47548, auid=501, euid=501, binary_path=/opt/homebrew/Cellar/node/26.5.0/bin/node},'
 
 // Preflight checks dominate the TCC subsystem and must never count as a dialog.
 const PREFLIGHT_LINE =
@@ -23,15 +23,15 @@ describe('parseTccPromptEvent', () => {
   it('parses a real captured AUTHREQ_PROMPTING line', () => {
     expect(parseTccPromptEvent(REAL_PROMPT_LINE)).toEqual({
       service: 'kTCCServiceSystemPolicyDocumentsFolder',
-      accessingIdentifier: 'com.orca.tccprobe.shapecapture',
-      responsibleIdentifier: 'com.orca.tccprobe.shapecapture',
+      accessingIdentifier: 'com.topo.tccprobe.shapecapture',
+      responsibleIdentifier: 'com.topo.tccprobe.shapecapture',
       binaryPath: '/private/tmp/tccprobe/TccProbe.app/Contents/MacOS/TccProbe'
     })
   })
 
   it('separates the accessing binary from the responsible app', () => {
-    const event = parseTccPromptEvent(ORCA_APPDATA_LINE)
-    expect(event?.responsibleIdentifier).toBe('com.stablyai.orca')
+    const event = parseTccPromptEvent(TOPO_APPDATA_LINE)
+    expect(event?.responsibleIdentifier).toBe('com.brandonhsz.topo')
     expect(event?.accessingIdentifier).toBe('node-5555494487fbc7467d473fd8b0a397018cbf954b')
     expect(event?.binaryPath).toBe('/opt/homebrew/Cellar/node/26.5.0/bin/node')
   })
@@ -92,7 +92,7 @@ describe('MacosTccPromptWatch', () => {
     expect(spawnLogStream).not.toHaveBeenCalled()
   })
 
-  it('reports only Orca-attributed dialogs from a live stream', async () => {
+  it('reports only Topo-attributed dialogs from a live stream', async () => {
     const { child, stdout } = createFakeLogStream()
     const onPrompt = vi.fn()
     const watch = new MacosTccPromptWatch({ onPrompt, spawnLogStream: () => child })
@@ -101,7 +101,7 @@ describe('MacosTccPromptWatch', () => {
     stdout.write('Filtering the log data using "subsystem == ..."\n')
     stdout.write(`${PREFLIGHT_LINE}\n`)
     stdout.write(`${REAL_PROMPT_LINE}\n`) // another app is responsible
-    stdout.write(`${ORCA_APPDATA_LINE}\n`)
+    stdout.write(`${TOPO_APPDATA_LINE}\n`)
     await new Promise((resolve) => {
       setImmediate(resolve)
     })
@@ -109,7 +109,7 @@ describe('MacosTccPromptWatch', () => {
     expect(onPrompt).toHaveBeenCalledTimes(1)
     expect(onPrompt.mock.calls[0][0]).toMatchObject({
       service: 'kTCCServiceSystemPolicyAppData',
-      responsibleIdentifier: 'com.stablyai.orca'
+      responsibleIdentifier: 'com.brandonhsz.topo'
     })
     watch.stop()
   })

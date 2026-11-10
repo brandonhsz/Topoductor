@@ -1,6 +1,6 @@
 import { spawn, type SpawnOptions } from 'node:child_process'
-import { spawnProcess } from '@orca/process-host'
-import type { ProcessSpec } from '@orca/process-host/process-spec'
+import { spawnProcess } from '@topo/process-host'
+import type { ProcessSpec } from '@topo/process-host/process-spec'
 import {
   SERVE_UPDATE_HANDOFF_PATH_ENV,
   getServeUpdateHandoffPath
@@ -24,14 +24,14 @@ import { RuntimeClientError } from './types'
 import {
   getExecutableAppArgs,
   resolveAppRoot,
-  resolveForegroundOrcaExecutable,
+  resolveForegroundTopoExecutable,
   stripElectronRunAsNode
-} from './orca-app-executable'
-import { SERVE_RUNTIME_ELECTRON, SERVE_RUNTIME_ENV } from '../../shared/orcad-local-serve-selection'
+} from './topo-app-executable'
+import { SERVE_RUNTIME_ELECTRON, SERVE_RUNTIME_ENV } from '../../shared/topod-local-serve-selection'
 import { findBundledWebClientRoot } from '../../shared/bundled-web-client-root'
-import { resolveLocalServeRuntime, serveWithOrcad } from './serve-orcad-launch'
+import { resolveLocalServeRuntime, serveWithTopod } from './serve-topod-launch'
 import { findAppSpeechRecognizerDir } from './serve-speech-recognizer'
-import { serveOptionArgs, type ServeOrcaAppArgs } from '../../shared/orcad-serve-argv'
+import { serveOptionArgs, type ServeTopoAppArgs } from '../../shared/topod-serve-argv'
 import { waitForRecipeJson } from './serve-recipe-json'
 import {
   preflightElectronServe,
@@ -57,16 +57,16 @@ import {
 
 const STARTUP_ABORT_MS = 30_000
 
-export function launchOrcaApp(): void {
-  const overrideCommand = process.env.ORCA_OPEN_COMMAND
+export function launchTopoApp(): void {
+  const overrideCommand = process.env.TOPO_OPEN_COMMAND
   if (typeof overrideCommand === 'string' && overrideCommand.trim().length > 0) {
     spawnDetached(overrideCommand, [], { shell: true })
     return
   }
 
-  // Launch on the same profile whose metadata openOrca awaits.
+  // Launch on the same profile whose metadata openTopo awaits.
   const userDataPath = resolveLaunchUserDataPath()
-  const overrideExecutable = process.env.ORCA_APP_EXECUTABLE
+  const overrideExecutable = process.env.TOPO_APP_EXECUTABLE
   if (typeof overrideExecutable === 'string' && overrideExecutable.trim().length > 0) {
     const pinned = pinLaunchUserDataPath(
       getExecutableAppArgs(overrideExecutable),
@@ -103,7 +103,7 @@ export function launchOrcaApp(): void {
 
   throw new RuntimeClientError(
     'runtime_open_failed',
-    'Could not determine how to launch Orca. Start Orca manually and try again.'
+    'Could not determine how to launch Topo. Start Topo manually and try again.'
   )
 }
 
@@ -121,17 +121,17 @@ function spawnDetached(command: string, args: string[], options: SpawnOptions): 
     stdio: 'ignore',
     ...options
   })
-  // Handle asynchronous spawn errors; openOrca reports startup failure via its timeout.
+  // Handle asynchronous spawn errors; openTopo reports startup failure via its timeout.
   child.once('error', () => {})
   child.unref()
 }
 
-export function serveOrcaApp(args: ServeOrcaAppArgs = {}): Promise<number> {
+export function serveTopoApp(args: ServeTopoAppArgs = {}): Promise<number> {
   // Install the PID 1 reaper before spawning so orphaned descendants are collected.
   reexecThisServeUnderInitReaper()
   noteServeSupervisorStart()
-  const executable = resolveForegroundOrcaExecutable()
-  // Runtime selection, orcad, and Electron must use the same profile.
+  const executable = resolveForegroundTopoExecutable()
+  // Runtime selection, topod, and Electron must use the same profile.
   const userDataPath = resolveLaunchUserDataPath()
   if (args.supervise) {
     // Successful relocation replaces this process and never resolves.
@@ -159,7 +159,7 @@ export function serveOrcaApp(args: ServeOrcaAppArgs = {}): Promise<number> {
 
 function serveOnce(
   executable: string,
-  args: ServeOrcaAppArgs,
+  args: ServeTopoAppArgs,
   userDataPath: string
 ): Promise<number> {
   if (process.env[SERVE_RUNTIME_ENV] === SERVE_RUNTIME_ELECTRON) {
@@ -170,7 +170,7 @@ function serveOnce(
 
 async function serveWithSelectedRuntime(
   executable: string,
-  args: ServeOrcaAppArgs,
+  args: ServeTopoAppArgs,
   userDataPath: string
 ): Promise<number> {
   const selection = await resolveLocalServeRuntime({
@@ -179,14 +179,14 @@ async function serveWithSelectedRuntime(
     userDataPath,
     usesMacUpdateHandoff: args.recipeJson !== true && getMacAppBundlePath(executable) !== null
   })
-  if (selection.kind === 'orcad') {
-    // Exit 3 waits for the profile owner; orcad’s exit 78 would count against the crash brake.
+  if (selection.kind === 'topod') {
+    // Exit 3 waits for the profile owner; topod’s exit 78 would count against the crash brake.
     const refusal = args.supervise ? await refuseIfProfileServed(args, userDataPath) : null
     if (refusal !== null) {
       return refusal
     }
-    process.stderr.write(`[serve] running on orcad ${selection.version}\n`)
-    return serveWithOrcad(
+    process.stderr.write(`[serve] running on topod ${selection.version}\n`)
+    return serveWithTopod(
       selection,
       args,
       userDataPath,
@@ -203,7 +203,7 @@ async function serveWithSelectedRuntime(
 
 function serveWithElectron(
   executable: string,
-  args: ServeOrcaAppArgs,
+  args: ServeTopoAppArgs,
   userDataPath: string
 ): Promise<number> {
   const preflight = preflightElectronServe(args, userDataPath)
@@ -217,7 +217,7 @@ function serveWithElectron(
 
 function spawnElectronServe(
   executable: string,
-  args: ServeOrcaAppArgs,
+  args: ServeTopoAppArgs,
   userDataPath: string
 ): Promise<number> {
   const pinned = pinServeUserDataPath(

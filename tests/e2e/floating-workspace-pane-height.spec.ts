@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 
 // Assert real pane geometry: jsdom cannot detect group bodies and anchored panes collapsing to zero height.
 
@@ -8,7 +8,7 @@ const FLOATING_WORKTREE_ID = 'global-floating-terminal'
 const PANEL_SELECTOR = '[data-floating-terminal-panel]'
 const OPEN_PANEL_SELECTOR = `${PANEL_SELECTOR}[aria-hidden="false"]`
 const GROUP_BODY_SELECTOR = '[data-tab-group-body-id]'
-const TOGGLE_EVENT = 'orca-toggle-floating-terminal'
+const TOGGLE_EVENT = 'topo-toggle-floating-terminal'
 // The default panel is 560px tall with a 36px titlebar; anything near zero is the regression.
 const MIN_PANE_EDGE_PX = 100
 
@@ -45,7 +45,7 @@ type E2EWindow = typeof window & {
 async function seedFloatingSimulatorTabs(page: Page, count = 2): Promise<E2EUnifiedTab[]> {
   const tabs = await page.evaluate(
     ({ worktreeId, count }) => {
-      // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: `__store` is the dev/e2e store handle Orca injects on window; the cast only names it.
+      // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: `__store` is the dev/e2e store handle Topo injects on window; the cast only names it.
       const store = (window as E2EWindow).__store
       if (!store) {
         throw new Error('Store unavailable')
@@ -97,12 +97,12 @@ async function openFloatingPanel(page: Page): Promise<void> {
 }
 
 test('floating panel group bodies and panes own real pixels, single group and split', async ({
-  orcaPage
+  topoPage
 }) => {
-  const [first, second] = await seedFloatingSimulatorTabs(orcaPage)
-  await openFloatingPanel(orcaPage)
+  const [first, second] = await seedFloatingSimulatorTabs(topoPage)
+  await openFloatingPanel(topoPage)
 
-  const openPanel = orcaPage.locator(OPEN_PANEL_SELECTOR).first()
+  const openPanel = topoPage.locator(OPEN_PANEL_SELECTOR).first()
   const soleBody = openPanel.locator(GROUP_BODY_SELECTOR)
   await expect(soleBody).toHaveCount(1)
   const soleBox = await soleBody.boundingBox()
@@ -116,9 +116,9 @@ test('floating panel group bodies and panes own real pixels, single group and sp
   expect(paneBox!.height).toBeGreaterThan(MIN_PANE_EDGE_PX)
 
   // Move Tab to Split → Right (the context-menu path dispatches this same store action).
-  const moved = await orcaPage.evaluate(
+  const moved = await topoPage.evaluate(
     ({ tabId, groupId }) => {
-      // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: `__store` is the dev/e2e store handle Orca injects on window; the cast only names it.
+      // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: `__store` is the dev/e2e store handle Topo injects on window; the cast only names it.
       const store = (window as E2EWindow).__store
       if (!store) {
         throw new Error('Store unavailable')
@@ -144,12 +144,12 @@ test('floating panel group bodies and panes own real pixels, single group and sp
   const firstBodyBox = await firstBody.boundingBox()
   expect(firstBodyBox).not.toBeNull()
   // Click body coordinates because its anchored overlay owns the same focus-group pointer handler.
-  await orcaPage.mouse.click(firstBodyBox!.x + 20, firstBodyBox!.y + 20)
+  await topoPage.mouse.click(firstBodyBox!.x + 20, firstBodyBox!.y + 20)
   await expect(openPanel.locator(`[data-tab-id="${first.id}"]`)).toBeVisible()
 })
 
 test('floating tabs keep their preferred width and share constrained space before overflowing', async ({
-  orcaPage
+  topoPage
 }) => {
   const titles = [
     'A very long conversation title '.repeat(12),
@@ -157,7 +157,7 @@ test('floating tabs keep their preferred width and share constrained space befor
     'Another long conversation title '.repeat(3)
   ]
   const seedFloatingTerminalTabs = (count: number): Promise<string[]> =>
-    orcaPage.evaluate(
+    topoPage.evaluate(
       ({ count, titles, worktreeId }) => {
         const store = window.__store!
         store.setState((state) => ({
@@ -183,8 +183,8 @@ test('floating tabs keep their preferred width and share constrained space befor
       { count, titles, worktreeId: FLOATING_WORKTREE_ID }
     )
   const [first] = await seedFloatingTerminalTabs(1)
-  await openFloatingPanel(orcaPage)
-  const panel = orcaPage.locator(OPEN_PANEL_SELECTOR).first()
+  await openFloatingPanel(topoPage)
+  const panel = topoPage.locator(OPEN_PANEL_SELECTOR).first()
   await panel.evaluate((element) => {
     element.style.maxWidth = '660px'
   })
@@ -238,13 +238,13 @@ test('floating tabs keep their preferred width and share constrained space befor
 
 // Real pointer capture requires the isolated visible-window project.
 test('@headful floating header keeps a drag and maximize target with expanded and overflowing tabs', async ({
-  orcaPage
+  topoPage
 }) => {
   for (const count of [1, 16]) {
-    await seedFloatingSimulatorTabs(orcaPage, count)
-    await openFloatingPanel(orcaPage)
+    await seedFloatingSimulatorTabs(topoPage, count)
+    await openFloatingPanel(topoPage)
 
-    const panel = orcaPage.locator(OPEN_PANEL_SELECTOR).first()
+    const panel = topoPage.locator(OPEN_PANEL_SELECTOR).first()
     const handle = panel.locator('[data-floating-terminal-drag-handle]')
     const strip = panel.locator('.terminal-tab-strip').first()
     await expect
@@ -260,10 +260,10 @@ test('@headful floating header keeps a drag and maximize target with expanded an
 
     const x = grab!.x + grab!.width / 2
     const y = grab!.y + grab!.height / 2
-    await orcaPage.mouse.move(x, y)
-    await orcaPage.mouse.down()
-    await orcaPage.mouse.move(x - 40, y + 24, { steps: 4 })
-    await orcaPage.mouse.up()
+    await topoPage.mouse.move(x, y)
+    await topoPage.mouse.down()
+    await topoPage.mouse.move(x - 40, y + 24, { steps: 4 })
+    await topoPage.mouse.up()
     await expect
       .poll(() => panel.evaluate((element) => element.getBoundingClientRect().x))
       .toBeCloseTo(before!.x - 40, 0)
@@ -280,7 +280,7 @@ test('@headful floating header keeps a drag and maximize target with expanded an
     await expect(
       panel.getByRole('button', { name: 'Maximize floating workspace' })
     ).toHaveAttribute('aria-pressed', 'false')
-    expect(await orcaPage.evaluate(() => window.getSelection()?.isCollapsed ?? true)).toBe(true)
+    expect(await topoPage.evaluate(() => window.getSelection()?.isCollapsed ?? true)).toBe(true)
     await expect
       .poll(() => panel.evaluate((element) => element.getBoundingClientRect().x))
       .toBeCloseTo(before!.x - 40, 0)

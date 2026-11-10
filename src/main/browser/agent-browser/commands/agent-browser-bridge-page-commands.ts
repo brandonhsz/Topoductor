@@ -132,7 +132,7 @@ export abstract class AgentBrowserBridgeUtilityCommands extends AgentBrowserBrid
     })
   }
 
-  // Orca's will-download handler picks every save path, so agent-browser's own download
+  // Topo's will-download handler picks every save path, so agent-browser's own download
   // (CDP download behavior + rename) never sees the file; claim the download here instead.
   async download(
     selector: string,

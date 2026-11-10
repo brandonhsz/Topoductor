@@ -7,7 +7,7 @@ import type { AgentSessionAccountHome } from '../../../../shared/agent-session/l
 
 export type StructuredAgentDefinition = AgentSessionStoredAgent & {
   capabilities: AgentSessionCapabilities
-  /** Absent means Orca never supplies this agent’s managed runtime. */
+  /** Absent means Topo never supplies this agent’s managed runtime. */
   managedRuntime?: () => boolean
   /** Whether a chat pinned to `home` runs a program the host has rather than the managed runtime. */
   runsHostProgram?: (home: AgentSessionAccountHome) => boolean

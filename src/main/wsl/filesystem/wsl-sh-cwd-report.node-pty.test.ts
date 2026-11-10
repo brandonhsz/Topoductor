@@ -76,7 +76,7 @@ describe.skipIf(process.platform === 'win32')('a WSL bridge sh pane reports its 
       `#!/bin/sh\nprintf '%s\\n' "user:x:1000:1000::${home}:${shell}"\n`
     )
     chmodSync(path.join(bin, 'getent'), 0o755)
-    return { PATH: `${bin}:/usr/bin:/bin`, HOME: home, ORCA_SHELL_READY_ROOT: root }
+    return { PATH: `${bin}:/usr/bin:/bin`, HOME: home, TOPO_SHELL_READY_ROOT: root }
   }
 
   async function runBridge(shell: string, env: Record<string, string>): Promise<string> {

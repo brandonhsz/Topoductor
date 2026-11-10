@@ -56,7 +56,7 @@ export async function resetUninstallFixtures(): Promise<void> {
 }
 
 export async function createUninstallFixture() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-uninstall-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-uninstall-'))
   roots.push(root)
   let settings: {
     pluginConsents: Record<string, string>

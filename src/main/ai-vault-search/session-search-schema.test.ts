@@ -34,7 +34,7 @@ afterEach(async () => {
 })
 
 async function tempDatabasePath(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-session-search-schema-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-session-search-schema-'))
   roots.push(root)
   return join(root, 'index.sqlite')
 }

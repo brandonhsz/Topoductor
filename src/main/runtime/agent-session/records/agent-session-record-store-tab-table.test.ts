@@ -26,7 +26,7 @@ let directory: string
 let counter = 0
 
 beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), 'orca-agent-session-tab-table-'))
+  directory = await mkdtemp(join(tmpdir(), 'topo-agent-session-tab-table-'))
 })
 
 afterEach(async () => {

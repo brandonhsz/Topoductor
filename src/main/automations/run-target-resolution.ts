@@ -22,10 +22,10 @@ import {
 } from '../../shared/automations/history/automation-run-failure-copy'
 import { AutomationDispatchCancelledError } from './automation-dispatch-cancelled-error'
 import {
-  isOrcadFencedAutomation,
-  managedOrcadHostOf,
-  ORCAD_FENCED_AUTOMATION
-} from './orcad-fenced-automation'
+  isTopodFencedAutomation,
+  managedTopodHostOf,
+  TOPOD_FENCED_AUTOMATION
+} from './topod-fenced-automation'
 
 export type AutomationRunTargetResult =
   | { ok: true; cwd: string; repo: Repo; setup?: ProjectHostSetup }
@@ -138,8 +138,8 @@ export function captureLegacyRunTarget(
   allowRemoteHostScheduling: boolean
 ): Automation {
   // The scheduler's first write; a fenced row must stay as the move exported it.
-  if (isOrcadFencedAutomation(store, automation)) {
-    throw new AutomationDispatchCancelledError(ORCAD_FENCED_AUTOMATION)
+  if (isTopodFencedAutomation(store, automation)) {
+    throw new AutomationDispatchCancelledError(TOPOD_FENCED_AUTOMATION)
   }
   const runContext = findLegacyAutomationRunContextStamp(store, automation, {
     allowRemoteHostScheduling
@@ -157,7 +157,7 @@ export function resolveAutomationRunTarget(
   automation: Automation,
   options: AutomationRunTargetOptions = {}
 ): AutomationRunTargetResult {
-  const managedHost = managedOrcadHostOf(store, automation)
+  const managedHost = managedTopodHostOf(store, automation)
   if (managedHost) {
     return { ok: false, ...automationRunFailure('managedHostServer', { host: managedHost.label }) }
   }

@@ -58,7 +58,7 @@ async function realService(options: {
 }) {
   const raw = options.raw ?? WORKER_MANIFEST
   const manifest = pluginManifestSchema.parse(raw)
-  const root = await realpath(await mkdtemp(join(tmpdir(), 'orca-dev-request-rpc-')))
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'topo-dev-request-rpc-')))
   roots.push(root)
   await writeFile(join(root, 'orca-plugin.json'), JSON.stringify(raw))
   await writeFile(join(root, 'worker.js'), 'export function activate() {}')

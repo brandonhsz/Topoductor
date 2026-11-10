@@ -55,7 +55,7 @@ export type NativeChatClipboardImageFailureCause = 'serverTooOld' | 'failed'
 export async function saveNativeChatClipboardImage(
   owner: NativeChatAttachmentOwner,
   report: {
-    /** `errorText`: the failure's own words, kept apart from Orca's notice. */
+    /** `errorText`: the failure's own words, kept apart from Topo's notice. */
     setNotice: (
       notice: string,
       cause: NativeChatClipboardImageFailureCause,

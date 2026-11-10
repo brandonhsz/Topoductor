@@ -1,53 +1,53 @@
 ---
 name: orchestration
 description: >-
-  Run work in separate Orca worker agents and get their results back. Use when
-  the user asks for Orca workers or supervision (monitor, task DAGs, ask/reply,
+  Run work in separate Topo worker agents and get their results back. Use when
+  the user asks for Topo workers or supervision (monitor, task DAGs, ask/reply,
   decision gates), or when the work needs something your own subagents cannot
-  give: a different agent (such as Codex from Claude) or its own Orca workspace.
-  "Have Codex (or Claude) review this and report back" means an Orca worker of
+  give: a different agent (such as Codex from Claude) or its own Topo workspace.
+  "Have Codex (or Claude) review this and report back" means a Topo worker of
   that agent, even when you have your own model subagents.
   Also use when you are a dispatched worker (a prompt with Task and Dispatch
   IDs: ask, worker_done). Otherwise prefer your own subagents,
-  including for long or parallel work. Use `orca-cli` to hand work off with
+  including for long or parallel work. Use `topo-cli` to hand work off with
   nothing expected back ("hand off", "handover", "give this to another agent",
   "another worktree"), and for terminal control, shell commands, worktree
   management, and reading or waiting on terminals.
 ---
 
-# Orca orchestration
+# Topo orchestration
 
 If your prompt has a preamble with Task and Dispatch IDs, you are a worker:
 follow the preamble. To ask your coordinator, run `ask`, then end your turn;
-Orca wakes you with the answer. To hand work off with nothing back, use `orca-cli`.
+Topo wakes you with the answer. To hand work off with nothing back, use `topo-cli`.
 
 ## Recipe
 
-`ORCA` stands for the executable you used to run `skills get`; type it in its
+`TOPO` stands for the executable you used to run `skills get`; type it in its
 place and use it for every command.
 
 ```text
-ORCA orchestration worker-start --spec "<task>" --worktree current --agent codex
+TOPO orchestration worker-start --spec "<task>" --worktree current --agent codex
 ```
 
 - Start every independent worker, then **end your turn**. "Report back" and
-  "tell me when it's done" still mean end your turn; Orca wakes you and you
+  "tell me when it's done" still mean end your turn; Topo wakes you and you
   report then.
-- If a receipt has `next`, follow it. When Orca has nothing for you, end your
+- If a receipt has `next`, follow it. When Topo has nothing for you, end your
   turn.
 - `--worktree current` uses your workspace. Use a new one only when the user
   asks or sharing would conflict: `--worktree new-child --name <short-name>`
   nests it under yours. For one with no parent, use
   `--worktree new-top-level --repo id:<repoId> --name <short-name>`
-  (`ORCA repo list --json` gives the id). If nothing needs to come back to you
+  (`TOPO repo list --json` gives the id). If nothing needs to come back to you
   (the user will work in those chats), don't start workers; per workspace run
-  `ORCA worktree create --name <name> --no-parent --agent <agent> --prompt "<brief>" --json`
+  `TOPO worktree create --name <name> --no-parent --agent <agent> --prompt "<brief>" --json`
   and end your turn.
 - Add `--model` only if the user named one.
 - If `worker-start` fails, do not rerun it; read `failedStage` and load
   `references/recovery-and-cleanup.md`.
 - To talk to a worker, use
-  `ORCA orchestration send --to dispatch:<dispatch_id> --subject "<topic>" --body "<message>"`
+  `TOPO orchestration send --to dispatch:<dispatch_id> --subject "<topic>" --body "<message>"`
   in any state: a working worker gets it when its current turn ends; a finished
   or closed one gets it as a follow-up Task and reports with `worker_done`. The
   receipt says which.
@@ -58,23 +58,23 @@ ORCA orchestration worker-start --spec "<task>" --worktree current --agent codex
 Never:
 
 - Poll or run watch scripts: a script's plain `check` takes your mail, so it is
-  hidden from you and Orca has nothing to wake you with. Orca wakes you.
+  hidden from you and Topo has nothing to wake you with. Topo wakes you.
 - Steer through a worker's terminal; use `send`.
 - Make checkouts yourself; let `worker-start` create a worker's workspace.
 
-## When Orca wakes you
+## When Topo wakes you
 
 - In a chat, each message arrives whole as its own message: act on it. A wake
   that names a `check` command (a terminal, or one message too large for a chat
   message) means run that command. Answer a `question` with
-  `ORCA orchestration reply --id <message_id> --body "<answer>"` when the answer
+  `TOPO orchestration reply --id <message_id> --body "<answer>"` when the answer
   follows from the task or the user's instructions; otherwise ask the user first.
 - An `escalation` with `stopReason` means the worker stopped without
   `worker_done`: steer it with `send`, stop and retry it, or tell the user.
 - A `worker_done` settles its Task; never mark a reported failure completed.
 - When every worker has settled, report to the user per Task: outcome,
   evidence, open blockers.
-- Lost track? `ORCA orchestration inbox --terminal run:<run_id> --limit 50`
+- Lost track? `TOPO orchestration inbox --terminal run:<run_id> --limit 50`
   shows mail `check` already handled.
 
 Finished workers close on their own unless `worker-list` gives one a `next`; follow
@@ -83,7 +83,7 @@ it. Kept-open workers, including new-workspace ones, stay open for the user.
 Start a worker in your workspace with `--keep-open` when the user will keep using
 its chat after it reports: they want to watch it or talk to it. To keep one already
 started, run
-`ORCA orchestration worker-keep-open --dispatch <dispatch_id>`.
+`TOPO orchestration worker-keep-open --dispatch <dispatch_id>`.
 
 ## Task spec
 
@@ -104,7 +104,7 @@ assignment does not prove its agent stopped.
 
 ## References
 
-`ORCA skills get orchestration --reference references/<file>.md`
+`TOPO skills get orchestration --reference references/<file>.md`
 
 | Situation                                      | Reference                            |
 | ---------------------------------------------- | ------------------------------------ |

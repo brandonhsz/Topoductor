@@ -1,4 +1,4 @@
-/** Share flags between main launch scripts and Windows relay/orcad one-shot modes that escape the SSH job; separators/report markers remain program-specific. */
+/** Share flags between main launch scripts and Windows relay/topod one-shot modes that escape the SSH job; separators/report markers remain program-specific. */
 
 export const WINDOWS_BREAKAWAY_LAUNCH_FLAG = '--windows-breakaway-launch'
 export const WINDOWS_BREAKAWAY_STDOUT_FLAG = '--stdout-file'
@@ -17,12 +17,12 @@ export type WindowsBreakawayLaunchContract = {
   reportMarker: string
 }
 
-export const ORCAD_WINDOWS_BREAKAWAY_CONTRACT: WindowsBreakawayLaunchContract = {
-  argsFlag: '--orcad-args',
-  reportMarker: 'ORCA_ORCAD_LAUNCH'
+export const TOPOD_WINDOWS_BREAKAWAY_CONTRACT: WindowsBreakawayLaunchContract = {
+  argsFlag: '--topod-args',
+  reportMarker: 'TOPO_TOPOD_LAUNCH'
 }
 
-/** Unavailable means missing/old addon or denied breakaway; legacy relay scripts may fall back to WMI, while orcad refuses. */
+/** Unavailable means missing/old addon or denied breakaway; legacy relay scripts may fall back to WMI, while topod refuses. */
 export const WINDOWS_BREAKAWAY_EXIT_CODES = {
   launched: 0,
   failed: 1,

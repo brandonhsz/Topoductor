@@ -35,7 +35,7 @@ export const terminalSendHandler: CommandHandler = async ({ flags, client, cwd, 
     if (!status.result.runtime.reachable) {
       throw new RuntimeClientError(
         'runtime_unavailable',
-        'Orca could not verify prompt-delivery support, so no input was sent. Wait for the execution host to become reachable and retry.'
+        'Topo could not verify prompt-delivery support, so no input was sent. Wait for the execution host to become reachable and retry.'
       )
     }
     promptDeliverySupported =
@@ -46,13 +46,13 @@ export const terminalSendHandler: CommandHandler = async ({ flags, client, cwd, 
   if (retryRequest && !promptDeliverySupported) {
     throw new RuntimeClientError(
       'incompatible_runtime',
-      'This Orca host cannot honor --retry-request and never recorded this request ID. This attempt sent no input, but an earlier prompt may have been delivered; inspect the terminal and do not resend unless you independently prove it was not delivered, because updating the host cannot make this specific retry idempotent.'
+      'This Topo host cannot honor --retry-request and never recorded this request ID. This attempt sent no input, but an earlier prompt may have been delivered; inspect the terminal and do not resend unless you independently prove it was not delivered, because updating the host cannot make this specific retry idempotent.'
     )
   }
   if (waitSubmitMs && !promptDeliverySupported) {
     throw new RuntimeClientError(
       'incompatible_runtime',
-      'This Orca host does not support --wait-submit. No input was sent; update Orca on the execution host, or omit only --wait-submit for a legacy prompt whose delivery cannot be observed or retried safely.'
+      'This Topo host does not support --wait-submit. No input was sent; update Topo on the execution host, or omit only --wait-submit for a legacy prompt whose delivery cannot be observed or retried safely.'
     )
   }
   const params = {
@@ -66,7 +66,7 @@ export const terminalSendHandler: CommandHandler = async ({ flags, client, cwd, 
           ...(waitSubmitMs ? { waitSubmitMs } : {})
         }
       : {}),
-    client: { id: 'orca-cli', type: 'desktop' }
+    client: { id: 'topo-cli', type: 'desktop' }
   }
   const options = promptDeliverySupported
     ? {
@@ -86,7 +86,7 @@ export const terminalSendHandler: CommandHandler = async ({ flags, client, cwd, 
     throw attachUnverifiedTerminalPromptRecovery(
       new RuntimeClientError(
         'incompatible_runtime',
-        'The Orca host changed after prompt-delivery support was verified and accepted input without returning a durable prompt receipt.'
+        'The Topo host changed after prompt-delivery support was verified and accepted input without returning a durable prompt receipt.'
       )
     )
   }

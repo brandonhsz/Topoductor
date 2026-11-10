@@ -1,5 +1,5 @@
 import type { SshPendingPtyKill } from './ssh-pending-pty-kill'
-import type { OrcadSshProvisioningIntent } from './orcad-ssh-provisioning'
+import type { TopodSshProvisioningIntent } from './topod-ssh-provisioning'
 import type { NodeDistMirrorAttempt } from './node-dist-mirror'
 
 export const MIN_SSH_RELAY_GRACE_PERIOD_SECONDS = 60
@@ -14,16 +14,16 @@ export type SshRemoteRuntime = (typeof SSH_REMOTE_RUNTIMES)[number]
 export const SSH_REMOTE_RUNTIME_RUNGS = ['A', 'B', 'C', 'D', 'legacy'] as const
 export type SshRemoteRuntimeRung = (typeof SSH_REMOTE_RUNTIME_RUNGS)[number]
 
-/** Main-owned ladder cache; changes to glibc, pinned-runtime hash or Orca major invalidate it. */
+/** Main-owned ladder cache; changes to glibc, pinned-runtime hash or Topo major invalidate it. */
 export type SshRemoteRuntimeResolution = {
   rung: SshRemoteRuntimeRung
-  /** The classified refusal that stepped off Orca's pinned Node, when one did. */
+  /** The classified refusal that stepped off Topo's pinned Node, when one did. */
   pinnedRefusal?: string
   /** Epoch ms the refusal was proved; a refusal the host can lose expires from it. */
   refusedAt?: number
   glibc: string | null
   runtimeSha256: string
-  orcaMajor: number
+  topoMajor: number
 }
 
 /** Who created a hidden target as an implementation detail, and so owns its lifecycle. */
@@ -80,8 +80,8 @@ export type SshTarget = {
   /** Main-owned registration incarnation fences automation reuse after create/re-create/re-adopt; connect state never advances it. */
   generation?: number
   /** Main-owned provisioning intent; never fall back to a relay while it exists. */
-  orcadProvisioning?: OrcadSshProvisioningIntent
-  /** Main-owned: managed orcad can't run on this host; retried once this app version changes. */
+  topodProvisioning?: TopodSshProvisioningIntent
+  /** Main-owned: managed topod can't run on this host; retried once this app version changes. */
   managedServerUnavailable?: { reason: string; appVersion: string }
   /** Retired with the move offer (hosts convert on connect); kept so a downgraded build doesn't re-offer. */
   managedServerMoveOffered?: { appVersion: string }
@@ -91,7 +91,7 @@ export type SshTarget = {
   managedServerUpdateFailure?: { reason: string; appVersion: string }
   /** Main-owned: the user stopped and removed this host's server; only an explicit Connect deploys again. */
   managedServerRemoved?: { removedAt: string }
-  orcadFence?: {
+  topodFence?: {
     environmentId: string
     /** The retained source holds projects no move took: the host is unserved until moved again. */
     sourceChangedAt?: string
@@ -103,8 +103,8 @@ export type SshTargetCreateInput = Omit<
   SshTarget,
   | 'id'
   | 'generation'
-  | 'orcadProvisioning'
-  | 'orcadFence'
+  | 'topodProvisioning'
+  | 'topodFence'
   | 'managedServerUnavailable'
   | 'managedServerMoveOffered'
   | 'managedServerLeaveBehind'
@@ -162,8 +162,8 @@ export type SshConfigHostSummary = {
   identityFile?: string
   proxyCommand?: string
   jumpHost?: string
-  /** True when an Orca SSH target already uses this config alias. */
-  alreadyInOrca: boolean
+  /** True when a Topo SSH target already uses this config alias. */
+  alreadyInTopo: boolean
   /** Deleted alias remains explicitly selectable; passive/Add all import excludes it until re-adoption or save. */
   previouslyRemoved?: boolean
 }
@@ -245,7 +245,7 @@ export type SshConnectionState = {
   supportsFolderDownload?: boolean
   /** Remote OS detected by the SSH relay once available. */
   remotePlatform?: SshRemotePlatform
-  /** Set while connected without the Orca remote server (runtime ladder rung D). */
+  /** Set while connected without the Topo remote server (runtime ladder rung D). */
   plainSsh?: SshPlainSshMode
   /** Set while the relay runs on the opt-in host-Node runtime, an unsupported configuration. */
   hostNodeRuntime?: boolean
@@ -285,11 +285,11 @@ export type SshManagedServerLinkedProject = {
   automations: number
 }
 
-/** A managed server that did not answer and was not proven serving, with why (and orcad.log's tail). */
+/** A managed server that did not answer and was not proven serving, with why (and topod.log's tail). */
 export type SshManagedServerServingNote = { state: 'unverifiable'; detail: string }
 
 export const SSH_MANAGED_SERVER_RELAY_REASONS = [
-  'orcad_unavailable',
+  'topod_unavailable',
   'relay_terminals_live',
   'relay_terminals_unverifiable',
   'source_changed',
@@ -318,7 +318,7 @@ export type SshManagedServerStatus =
       launchSessionEnded?: true
     }
   | { kind: 'setting-up'; phase: (typeof SSH_MANAGED_SERVER_PHASES)[number] }
-  /** `detail` names the blocker for a refusal, or why orcad can't run on the host. */
+  /** `detail` names the blocker for a refusal, or why topod can't run on the host. */
   | {
       kind: 'relay'
       reason: SshManagedServerRelayReason
@@ -327,7 +327,7 @@ export type SshManagedServerStatus =
       code?: string
       /** Relay terminals still running, when that is what keeps the host on the relay. */
       terminals?: number
-      /** Those terminals belong to another Orca desktop or session, so this one offers no move. */
+      /** Those terminals belong to another Topo desktop or session, so this one offers no move. */
       terminalsElsewhere?: boolean
       /** The refusal is only saved state the user may leave on this desktop ("Move anyway"). */
       canLeaveBehind?: true

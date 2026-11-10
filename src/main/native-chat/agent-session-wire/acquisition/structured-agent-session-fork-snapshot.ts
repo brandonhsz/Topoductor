@@ -253,8 +253,8 @@ function mapBodyLinks(
         ...(block.usageLimitTurnItemId !== undefined
           ? { usageLimitTurnItemId: link(block.usageLimitTurnItemId) }
           : {}),
-        ...(block.orcaStop?.turnItemId !== undefined
-          ? { orcaStop: { ...block.orcaStop, turnItemId: link(block.orcaStop.turnItemId) } }
+        ...(block.topoStop?.turnItemId !== undefined
+          ? { topoStop: { ...block.topoStop, turnItemId: link(block.topoStop.turnItemId) } }
           : {})
       }
     })

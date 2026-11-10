@@ -1,4 +1,4 @@
-/** Desktop-selected accounts are pushed to owned WSL orcad hosts without account services (D10).
+/** Desktop-selected accounts are pushed to owned WSL topod hosts without account services (D10).
  * Host-originated CLI/orchestration/automation/chat/generation/bare launches use the same per-distro account environment as desktop-originated launches. */
 import { z } from 'zod'
 import { AgentLaunchAccountEnv } from './agent-launch-account-env'
@@ -28,5 +28,5 @@ export function hostAccountLaunchEnvFor(
 }
 
 export function hostAccountsManagedByDesktopMessage(wslDistro: string): string {
-  return `Accounts for this WSL host are managed in the Orca desktop app: Settings → AI Provider Accounts, with the ${wslDistro} (WSL) host selected.`
+  return `Accounts for this WSL host are managed in the Topo desktop app: Settings → AI Provider Accounts, with the ${wslDistro} (WSL) host selected.`
 }

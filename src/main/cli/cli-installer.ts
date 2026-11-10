@@ -14,7 +14,7 @@ import {
 } from './appimage-extracted-root'
 import { isAppImageStableLauncherReady } from './appimage-stable-launcher'
 import { CliPathRegistration } from './cli-path-registration'
-import { removeLinuxBareOrcaDispatcher } from './linux-bare-orca-dispatcher'
+import { removeLinuxBareTopoDispatcher } from './linux-bare-topo-dispatcher'
 
 export class CliInstaller extends CliPathRegistration {
   isAppImageRegistrationOwnedBySibling(status: CliInstallStatus): boolean {
@@ -52,11 +52,11 @@ export class CliInstaller extends CliPathRegistration {
     const launcherPath = await this.resolveLauncherPath()
     if (!launcherPath) {
       const detail = this.hasUnverifiedAppImageRuntime
-        ? 'Orca could not verify the inherited AppImage runtime identity, so CLI registration is unavailable.'
+        ? 'Topo could not verify the inherited AppImage runtime identity, so CLI registration is unavailable.'
         : this.isLinuxAppImage() && this.appImagePath
           ? `The AppImage file at ${this.appImagePath} is missing. Move it back or re-run CLI registration from the current AppImage location.`
           : this.isPackaged
-            ? 'The bundled CLI launcher is missing from this Orca build.'
+            ? 'The bundled CLI launcher is missing from this Topo build.'
             : 'Development mode uses a generated launcher for validation only.'
       return {
         platform: this.platform,
@@ -95,7 +95,7 @@ export class CliInstaller extends CliPathRegistration {
         ? {
             ...inspectedStatus,
             state: 'stale' as const,
-            detail: `${spec.commandPath} does not point to the current Orca AppImage payload.`
+            detail: `${spec.commandPath} does not point to the current Topo AppImage payload.`
           }
         : inspectedStatus
     const pathDirectory = dirname(spec.commandPath)
@@ -119,7 +119,7 @@ export class CliInstaller extends CliPathRegistration {
     }
     if (initialStatus.state === 'conflict') {
       throw new Error(
-        `Refusing to replace non-Orca command at ${initialStatus.commandPath}. Remove it and register again if it is no longer needed.`
+        `Refusing to replace non-Topo command at ${initialStatus.commandPath}. Remove it and register again if it is no longer needed.`
       )
     }
     const extractedRoot = await this.ensureLinuxAppImagePayload()
@@ -131,7 +131,7 @@ export class CliInstaller extends CliPathRegistration {
     }
     if (status.state === 'conflict') {
       throw new Error(
-        `Refusing to replace non-Orca command at ${status.commandPath}. Remove it and register again if it is no longer needed.`
+        `Refusing to replace non-Topo command at ${status.commandPath}. Remove it and register again if it is no longer needed.`
       )
     }
 
@@ -139,7 +139,7 @@ export class CliInstaller extends CliPathRegistration {
       await this.installSymlink(status)
       await this.removeLegacyLinuxCommandIfManaged(status.launcherPath)
     } else if (this.isWindowsPackagedBundledCommand(status.commandPath, status.launcherPath)) {
-      // Why: packaged Windows already ships resources/bin/orca.exe; registration only owns the PATH entry.
+      // Why: packaged Windows already ships resources/bin/topo.exe; registration only owns the PATH entry.
     } else {
       await mkdir(dirname(status.commandPath), { recursive: true })
       await this.installWindowsWrapper(status.commandPath, status.launcherPath)
@@ -165,7 +165,7 @@ export class CliInstaller extends CliPathRegistration {
   }
 
   private async removeUnlocked(): Promise<CliInstallStatus> {
-    await this.removeLinuxBareOrcaDispatcher()
+    await this.removeLinuxBareTopoDispatcher()
     const status = await this.getStatus()
     if (!status.supported || !status.commandPath || !status.launcherPath || !status.installMethod) {
       await this.removeLinuxAppImagePayloads()
@@ -181,10 +181,10 @@ export class CliInstaller extends CliPathRegistration {
       return status
     }
     if (status.state === 'conflict') {
-      throw new Error(`Refusing to remove non-Orca command at ${status.commandPath}.`)
+      throw new Error(`Refusing to remove non-Topo command at ${status.commandPath}.`)
     }
     if (status.state === 'stale' && status.installMethod !== 'symlink') {
-      throw new Error(`Refusing to remove a command not owned by Orca at ${status.commandPath}.`)
+      throw new Error(`Refusing to remove a command not owned by Topo at ${status.commandPath}.`)
     }
 
     if (status.state === 'stale' && this.isAppImageRegistrationOwnedBySibling(status)) {
@@ -206,16 +206,16 @@ export class CliInstaller extends CliPathRegistration {
     return this.getStatus()
   }
 
-  // Removing the `orca` command also retires the bare-name dispatcher headless serve installed.
-  private async removeLinuxBareOrcaDispatcher(): Promise<void> {
+  // Removing the `topo` command also retires the bare-name dispatcher headless serve installed.
+  private async removeLinuxBareTopoDispatcher(): Promise<void> {
     if (this.platform !== 'linux' || this.commandPathOverride) {
       return
     }
     try {
-      await removeLinuxBareOrcaDispatcher(this.homePath)
+      await removeLinuxBareTopoDispatcher(this.homePath)
     } catch (error) {
       console.warn(
-        '[cli] Could not remove the bare orca dispatcher:',
+        '[cli] Could not remove the bare topo dispatcher:',
         error instanceof Error ? error.message : String(error)
       )
     }

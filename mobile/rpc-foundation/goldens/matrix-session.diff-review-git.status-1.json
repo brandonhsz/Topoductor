@@ -71,7 +71,7 @@
       "settledAt": 0,
       "value": {
         "kind": "unavailable",
-        "message": "Update Orca desktop to review changes on mobile."
+        "message": "Update Topo desktop to review changes on mobile."
       }
     },
     "1f10fad6906c": {
@@ -283,7 +283,7 @@
       "diff": "unloaded",
       "snapshot": {
         "kind": "unavailable",
-        "message": "Update Orca desktop to review changes on mobile."
+        "message": "Update Topo desktop to review changes on mobile."
       }
     },
     "5a46fcc976ac": {

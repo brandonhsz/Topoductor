@@ -32,13 +32,13 @@ import {
   verifyAgentPromptSubmission
 } from './agent-prompt-submission-verification'
 import { AgentPromptPermissionReturnedError } from './agent-prompt-permission-hold'
-import { OrcaRuntimeWithResubmitHeldAgentPrompt } from './terminal-agent-prompt-resubmit'
-import type { OrcaRuntimeWithCreateAgentPromptRenderGate } from './terminal-agent-prompt-render'
+import { TopoRuntimeWithResubmitHeldAgentPrompt } from './terminal-agent-prompt-resubmit'
+import type { TopoRuntimeWithCreateAgentPromptRenderGate } from './terminal-agent-prompt-render'
 
-export abstract class OrcaRuntimeWithWriteTerminalAgentPrompt extends OrcaRuntimeWithResubmitHeldAgentPrompt {
+export abstract class TopoRuntimeWithWriteTerminalAgentPrompt extends TopoRuntimeWithResubmitHeldAgentPrompt {
   protected abstract createAgentPromptRenderGate(
-    ...args: Parameters<OrcaRuntimeWithCreateAgentPromptRenderGate['createAgentPromptRenderGate']>
-  ): ReturnType<OrcaRuntimeWithCreateAgentPromptRenderGate['createAgentPromptRenderGate']>
+    ...args: Parameters<TopoRuntimeWithCreateAgentPromptRenderGate['createAgentPromptRenderGate']>
+  ): ReturnType<TopoRuntimeWithCreateAgentPromptRenderGate['createAgentPromptRenderGate']>
 
   protected assertAgentPromptExpectedBinding(
     handle: string,

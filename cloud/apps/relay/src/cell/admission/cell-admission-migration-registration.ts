@@ -1,5 +1,5 @@
-import { isRelayCellConnectionHardCap, relayCellAdmissionBounds, type RelayCellConnectionHardCap } from '@orca-cloud/relay-contract/admission-budgets'
-import { RELAY_DEFAULT_REGION, RELAY_REGIONS, type RelayRegion } from '@orca-cloud/relay-contract/relay-regions'
+import { isRelayCellConnectionHardCap, relayCellAdmissionBounds, type RelayCellConnectionHardCap } from '@topo-cloud/relay-contract/admission-budgets'
+import { RELAY_DEFAULT_REGION, RELAY_REGIONS, type RelayRegion } from '@topo-cloud/relay-contract/relay-regions'
 import {
   decodeMembership,
   encodeMembership,

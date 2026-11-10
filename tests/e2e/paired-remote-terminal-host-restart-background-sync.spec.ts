@@ -7,19 +7,19 @@ import {
   HOST_TERMINAL_SURFACE_SEPARATOR,
   toWebTerminalSurfaceTabId
 } from '../../src/shared/workspace-layout/terminal-surface-id'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { TEST_REPO_PATH_FILE } from './global-setup'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient,
   type PairedElectronClient
 } from './helpers/paired-electron-client'
-import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/orca-restart'
+import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/topo-restart'
 import { waitForTabParked } from './helpers/terminal-hidden-parking'
 import { quotePosixShell } from '../../src/shared/shell/launch/shell-argument-quoting'
 
 const PARK_DELAY_MS = 2_000
-const scratch = mkdtempSync(path.join(os.tmpdir(), 'orca-paired-host-restart-background-'))
+const scratch = mkdtempSync(path.join(os.tmpdir(), 'topo-paired-host-restart-background-'))
 const fixturePath = path.join(scratch, 'paired-host-restart-terminal.mjs')
 const backlogPath = path.join(scratch, 'daemon-stream-backlog.jsonl')
 
@@ -322,10 +322,10 @@ test('foregrounds a preserved daemon PTY after the paired host relaunches', asyn
   test.setTimeout(360_000)
   const repoPath = seededRepoPathOrSkip()
   writeFileSync(backlogPath, '')
-  const previousParkDelay = process.env.ORCA_E2E_TERMINAL_PARKING_DELAY_MS
-  process.env.ORCA_E2E_TERMINAL_PARKING_DELAY_MS = String(PARK_DELAY_MS)
+  const previousParkDelay = process.env.TOPO_E2E_TERMINAL_PARKING_DELAY_MS
+  process.env.TOPO_E2E_TERMINAL_PARKING_DELAY_MS = String(PARK_DELAY_MS)
   const session = createRestartSession(testInfo, {
-    ORCA_DAEMON_STREAM_BACKLOG_FILE: backlogPath
+    TOPO_DAEMON_STREAM_BACKLOG_FILE: backlogPath
   })
   let firstHost: ElectronApplication | null = null
   let secondHost: ElectronApplication | null = null
@@ -459,9 +459,9 @@ test('foregrounds a preserved daemon PTY after the paired host relaunches', asyn
     }
     await session.dispose()
     if (previousParkDelay === undefined) {
-      delete process.env.ORCA_E2E_TERMINAL_PARKING_DELAY_MS
+      delete process.env.TOPO_E2E_TERMINAL_PARKING_DELAY_MS
     } else {
-      process.env.ORCA_E2E_TERMINAL_PARKING_DELAY_MS = previousParkDelay
+      process.env.TOPO_E2E_TERMINAL_PARKING_DELAY_MS = previousParkDelay
     }
   }
 })

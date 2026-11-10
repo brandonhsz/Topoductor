@@ -39,11 +39,11 @@ describe('mobile clipboard image paste helpers', () => {
   it('falls back to the legacy single-frame image save method when needed', async () => {
     const client = clientWithResponses([
       fail('start', 'method_not_found', 'missing'),
-      ok('save', '/tmp/orca-paste-image.png')
+      ok('save', '/tmp/topo-paste-image.png')
     ])
 
     await expect(saveMobileClipboardImageAsTempFile(client, 'aGVsbG8=')).resolves.toBe(
-      '/tmp/orca-paste-image.png'
+      '/tmp/topo-paste-image.png'
     )
 
     expect(client.calls).toEqual([

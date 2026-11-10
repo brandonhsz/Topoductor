@@ -11,7 +11,7 @@ import { rememberWindowMaterial } from './window-material-suppression'
 import { markSystemSessionEnding } from '../crash-reporting/expected-teardown-state'
 import { recordDurableCrashBreadcrumb } from '../crash-reporting/durable-crash-breadcrumb'
 import { clearTrustedUIRendererWebContentsId, setTrustedUIRendererWebContentsId } from '../ipc/ui'
-import { flushUnsavedCloudSessions } from '../orca-profiles/profile-cloud-session-owner'
+import { flushUnsavedCloudSessions } from '../topo-profiles/profile-cloud-session-owner'
 import type { Store } from '../persistence/loading-store/store'
 import { closeDashboardPopout } from './dashboard-popout-window'
 import { closeWorkspaceSpaceWindow } from './workspace-space-window'
@@ -117,7 +117,7 @@ export function createMainWindow(
     ...(savedBounds ? { x: savedBounds.x, y: savedBounds.y } : {}),
     minWidth: MIN_WIDTH,
     minHeight: MIN_HEIGHT,
-    title: opts?.title ?? 'Orca',
+    title: opts?.title ?? 'Topo',
     show: false,
     // Deliver the app-activating click on macOS instead of requiring a second click.
     acceptFirstMouse: true,

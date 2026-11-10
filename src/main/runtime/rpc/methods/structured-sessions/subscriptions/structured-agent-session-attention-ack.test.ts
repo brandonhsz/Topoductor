@@ -23,7 +23,7 @@ let directory: string
 let hostController: RuntimeMobileNotificationController | undefined
 beforeEach(() => {
   installStructuredHostStub()
-  directory = mkdtempSync(join(tmpdir(), 'orca-attention-ack-'))
+  directory = mkdtempSync(join(tmpdir(), 'topo-attention-ack-'))
 })
 afterEach(async () => {
   clearStructuredHostStub()

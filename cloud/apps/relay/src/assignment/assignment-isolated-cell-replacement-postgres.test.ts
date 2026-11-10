@@ -1,4 +1,4 @@
-import { ASSIGNMENT_LIMITS } from '@orca-cloud/relay-contract/assignment-invariants'
+import { ASSIGNMENT_LIMITS } from '@topo-cloud/relay-contract/assignment-invariants'
 import { createHash } from 'node:crypto'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { RelayAssignmentRowBusyError, RelayAssignmentStore } from './assignment-store.js'
@@ -10,7 +10,7 @@ import {
 import type { RelayCellConfig } from '../config.js'
 import { openRelayDatabase, type RelayDatabase } from '../database/database.js'
 
-const databaseUrl = process.env.ORCA_RELAY_TEST_POSTGRES_URL
+const databaseUrl = process.env.TOPO_RELAY_TEST_POSTGRES_URL
 const describePostgres = databaseUrl ? describe : describe.skip
 
 const USER_PREFIX = 'isolated-replacement-postgres'

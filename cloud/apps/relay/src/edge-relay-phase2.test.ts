@@ -38,7 +38,7 @@ function config(): RelayConfig {
     cellUrl: 'https://relay.example.test',
     region: 'us-central1',
     authIssuer: 'https://auth.example.test',
-    authAudience: 'orca-relay',
+    authAudience: 'topo-relay',
     jwksUrl: 'https://auth.example.test/jwks',
     assignmentSigningKey: new TextEncoder().encode('assignment-key-with-at-least-32-bytes'),
     role: 'director',
@@ -204,7 +204,7 @@ describe('relay edge phase 2: the director moves host data with the host', () =>
   it('503s a leaving host while the edge export is unavailable, until it has failed for 120 s', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    const skipped = () => warn.mock.calls.filter(([line]) => String(line).includes('orca_relay_edge_export_skipped'))
+    const skipped = () => warn.mock.calls.filter(([line]) => String(line).includes('topo_relay_edge_export_skipped'))
     const h = await harness()
     await h.insertDevice(device('phone-a'))
     await h.assign()
@@ -227,7 +227,7 @@ describe('relay edge phase 2: the director moves host data with the host', () =>
     expect(await h.postgresDevices()).toEqual([])
     expect(skipped()).toHaveLength(1)
     expect(JSON.parse(String(skipped()[0]![0]))).toEqual({
-      event: 'orca_relay_edge_export_skipped',
+      event: 'topo_relay_edge_export_skipped',
       reason: 'relay_edge_admin_unavailable:network',
       failingForMs: EDGE_EXPORT_SKIP_AFTER_MS,
       devicesRemoved: 1
@@ -276,8 +276,8 @@ describe('relay edge phase 2: the director moves host data with the host', () =>
     expect(await h.postgresDevices()).toEqual([])
     const skipped = warn.mock.calls
       .map(([line]) => JSON.parse(String(line)) as Record<string, unknown>)
-      .filter((line) => line.event === 'orca_relay_edge_export_skipped')
-    expect(skipped).toEqual([{ event: 'orca_relay_edge_export_skipped', reason: 'mode_down', devicesRemoved: 2 }])
+      .filter((line) => line.event === 'topo_relay_edge_export_skipped')
+    expect(skipped).toEqual([{ event: 'topo_relay_edge_export_skipped', reason: 'mode_down', devicesRemoved: 2 }])
     // One fence try, recorded for the sweep to retry.
     expect(assign).toHaveBeenCalledTimes(1)
     const pending = await h.database.query(`SELECT cell_id, assignment_epoch FROM relay_edge_fence_pending`)

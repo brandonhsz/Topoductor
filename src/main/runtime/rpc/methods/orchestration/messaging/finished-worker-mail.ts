@@ -10,7 +10,7 @@ import type { MessageRouting } from '../routing'
 
 /** A terminal also proves its process, so a new process in the same pane is not taken for the old worker;
  *  a session caller is already bound to its own identity. */
-type FinishedSender = Pick<OrchestrationCallerIdentity, 'address' | 'paneKey' | 'orcaSessionId'> & {
+type FinishedSender = Pick<OrchestrationCallerIdentity, 'address' | 'paneKey' | 'topoSessionId'> & {
   processIncarnation: () => string | undefined
 }
 
@@ -34,7 +34,7 @@ export function finishedWorkerDispatch(
     dispatch.status === 'pending' ||
     dispatch.status === 'dispatched' ||
     !isDispatchAssignee(dispatch, sender.address, sender.paneKey) ||
-    (!sender.orcaSessionId &&
+    (!sender.topoSessionId &&
       dispatch.process_incarnation &&
       !db.isDispatchProcessCurrent({
         dispatchId: dispatch.id,

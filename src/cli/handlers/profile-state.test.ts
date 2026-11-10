@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os'
 import { basename, join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type * as ProcessHostModule from '@orca/process-host'
+import type * as ProcessHostModule from '@topo/process-host'
 import * as durableFileWrite from '../../main/filesystem/durable-file-write'
 import * as http1Marker from '../../main/startup/http1-compatibility-marker'
 import { readPersistedHttp1CompatibilityMode } from '../../main/startup/http1-compatibility-profile-state'
@@ -37,7 +37,7 @@ const {
 }))
 
 // Only the bundled-recovery case stubs the child; other cases keep the real process host.
-vi.mock('@orca/process-host', async (importOriginal) => {
+vi.mock('@topo/process-host', async (importOriginal) => {
   const actual = await importOriginal<typeof ProcessHostModule>()
   runProcessMock.mockImplementation(actual.runProcess)
   return { ...actual, runProcess: runProcessMock }
@@ -100,17 +100,17 @@ function createProfile(): {
   databaseFile: string
   exportPath: string
 } {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-profile-state-cli-'))
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-profile-state-cli-'))
   temporaryDirectories.push(userDataPath)
   const profileId = 'profile-cli-recovery'
   const profileDirectory = join(userDataPath, 'profiles', profileId)
   mkdirSync(profileDirectory, { recursive: true })
   writeFileSync(
-    join(userDataPath, 'orca-profile-index.json'),
+    join(userDataPath, 'topo-profile-index.json'),
     JSON.stringify({ activeProfileId: profileId, profiles: [{ id: profileId }] }),
     'utf8'
   )
-  const dataFile = join(profileDirectory, 'orca-data.json')
+  const dataFile = join(profileDirectory, 'topo-data.json')
   const databaseFile = profileStateDatabaseFile(profileDirectory)
   const exportPath = profileStateJsonExportPath(dataFile, 1)
   writeFileSync(dataFile, JSON.stringify({ settings: { theme: 'old' } }), 'utf8')
@@ -156,8 +156,8 @@ describe('profile-state CLI recovery', () => {
     process.exitCode = 0
     runtimeClientConstructorMock.mockReset()
     getDefaultUserDataPathMock.mockReset()
-    vi.stubEnv('ORCA_PAIRING_CODE', undefined)
-    vi.stubEnv('ORCA_ENVIRONMENT', undefined)
+    vi.stubEnv('TOPO_PAIRING_CODE', undefined)
+    vi.stubEnv('TOPO_ENVIRONMENT', undefined)
     getCliStatusMock.mockReset().mockResolvedValue({
       id: 'status',
       ok: true,
@@ -204,7 +204,7 @@ describe('profile-state CLI recovery', () => {
   it('prints kept and backup-restored sections returned by the bundled recovery process', async () => {
     const profile = createProfile()
     getDefaultUserDataPathMock.mockReturnValue(profile.userDataPath)
-    vi.stubEnv('ORCA_APP_EXECUTABLE', '/packaged/Orca')
+    vi.stubEnv('TOPO_APP_EXECUTABLE', '/packaged/Topo')
     const result = {
       profileId: 'profile-cli-recovery',
       dataFile: profile.dataFile,
@@ -335,8 +335,8 @@ describe('profile-state CLI recovery', () => {
   it('keeps profile-state recovery local when remote selection is configured', async () => {
     const profile = createProfile()
     getDefaultUserDataPathMock.mockReturnValue(profile.userDataPath)
-    vi.stubEnv('ORCA_PAIRING_CODE', 'remote-pairing-code')
-    vi.stubEnv('ORCA_ENVIRONMENT', 'stale-environment')
+    vi.stubEnv('TOPO_PAIRING_CODE', 'remote-pairing-code')
+    vi.stubEnv('TOPO_ENVIRONMENT', 'stale-environment')
 
     await main(['profile', 'state', 'rollback', '--revision', '1', '--json'], profile.userDataPath)
 
@@ -503,7 +503,7 @@ describe('profile-state CLI recovery', () => {
       expect(readFileSync(profile.dataFile, 'utf8')).toBe(
         JSON.stringify({ settings: { theme: 'old' } })
       )
-      expect(vi.mocked(console.error).mock.calls.at(-1)?.[0]).toContain('Stop Orca')
+      expect(vi.mocked(console.error).mock.calls.at(-1)?.[0]).toContain('Stop Topo')
     }
   )
 
@@ -633,6 +633,6 @@ describe('profile-state CLI recovery', () => {
 
     expect(process.exitCode).toBe(1)
     expect(readFileSync(profile.databaseFile, 'utf8')).toBe('damaged sqlite primary')
-    expect(String(vi.mocked(console.log).mock.calls.at(-1)?.[0])).toContain('Stop Orca')
+    expect(String(vi.mocked(console.log).mock.calls.at(-1)?.[0])).toContain('Stop Topo')
   })
 })

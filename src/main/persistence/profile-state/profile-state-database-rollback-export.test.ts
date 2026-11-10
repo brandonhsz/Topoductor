@@ -12,7 +12,7 @@ import { restoreProfileStateDatabaseBackup } from './profile-state-database-reco
 vi.mock('electron', () => ({
   app: {
     getPath: () => tmpdir(),
-    getName: () => 'orca-test',
+    getName: () => 'topo-test',
     getVersion: () => '0.0.0-test',
     isPackaged: false,
     on: () => {},
@@ -36,11 +36,11 @@ vi.mock('../../ssh/config/ssh-config-parser', () => ({
 }))
 
 it('can publish an explicit JSON export at a reused revision after SQLite rollback', async () => {
-  const root = mkdtempSync(join(tmpdir(), 'orca-database-rollback-export-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-database-rollback-export-'))
   const directory = join(root, 'profiles', 'rollback-export')
   mkdirSync(directory, { recursive: true })
   const databasePath = join(directory, 'profile-state.db')
-  const dataFile = join(directory, 'orca-data.json')
+  const dataFile = join(directory, 'topo-data.json')
   const profileId = 'rollback-export'
   const stores: Store[] = []
   try {

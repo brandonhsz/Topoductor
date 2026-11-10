@@ -5,14 +5,14 @@ import { normalizeRuntimePathForComparison } from '../../../../shared/cross-plat
 import { dedupeInFlightRun } from '../../../runtime/concurrency/in-flight-run-dedupe'
 import { refreshManagedScriptIfPresent } from '../../../agent-hooks/installation/scripts/managed-hook-script-refresh'
 import { writeManagedScript } from '../../../agent-hooks/installation/scripts/managed-hook-script-write'
-import { getOrcaManagedCodexHomePath } from '../../configuration/homes/codex-home-paths'
+import { getTopoManagedCodexHomePath } from '../../configuration/homes/codex-home-paths'
 import { getManagedScriptPath } from '../definitions/codex-hook-definition'
 import { buildCodexHookCommand as getManagedCommand } from '../definitions/codex-hook-command-form'
 import { installCodexHooksExclusively } from './codex-hook-local-install'
 import {
   getManagedCodexHookHome,
-  readStopgapOrcaHashes
-} from '../../trust/hooks/codex-hook-orca-approvals'
+  readStopgapTopoHashes
+} from '../../trust/hooks/codex-hook-topo-approvals'
 import {
   refreshCodexRuntimeUserHooksExclusively,
   removeCodexHooksExclusively
@@ -235,7 +235,7 @@ export class CodexHookService {
 
   // Managed accounts pass their own CODEX_HOME; plain terminal launches skip waiting for Codex's answer.
   async install(
-    runtimeHomePath: string = getOrcaManagedCodexHomePath(),
+    runtimeHomePath: string = getTopoManagedCodexHomePath(),
     launchesCodex = true,
     isHooksEnabled: () => boolean = () => true
   ): Promise<AgentHookInstallStatus> {
@@ -253,7 +253,7 @@ export class CodexHookService {
       const hashes =
         answer.kind === 'hashes'
           ? answer.hashes
-          : readStopgapOrcaHashes(
+          : readStopgapTopoHashes(
               getManagedCodexHookHome(runtimeHomePath),
               getManagedCommand(getManagedScriptPath())
             )
@@ -269,7 +269,7 @@ export class CodexHookService {
     launchesCodex: boolean,
     isHooksEnabled: () => boolean
   ): Promise<AgentHookInstallStatus> {
-    const homePath = runtimeHomePath ?? getOrcaManagedCodexHomePath()
+    const homePath = runtimeHomePath ?? getTopoManagedCodexHomePath()
     return dedupeInFlightRun(
       this.launchPrepInFlight,
       launchPrepKey(launchesCodex ? 'codex-launch' : 'install', homePath),
@@ -278,7 +278,7 @@ export class CodexHookService {
   }
 
   refreshRuntimeUserHooksForLaunchPrep(runtimeHomePath?: string): Promise<AgentHookInstallStatus> {
-    const homePath = runtimeHomePath ?? getOrcaManagedCodexHomePath()
+    const homePath = runtimeHomePath ?? getTopoManagedCodexHomePath()
     return dedupeInFlightRun(this.launchPrepInFlight, launchPrepKey('refresh', homePath), () =>
       this.refreshRuntimeUserHooks(homePath)
     )
@@ -293,7 +293,7 @@ export class CodexHookService {
   }
 
   refreshRuntimeUserHooks(
-    runtimeHomePath: string = getOrcaManagedCodexHomePath()
+    runtimeHomePath: string = getTopoManagedCodexHomePath()
   ): Promise<AgentHookInstallStatus> {
     return runExclusivelyForRuntimeAndSystemTrustConfig(runtimeHomePath, () =>
       this.refreshRuntimeUserHooksExclusively(runtimeHomePath)
@@ -309,7 +309,7 @@ export class CodexHookService {
   }
 
   remove(): Promise<AgentHookInstallStatus> {
-    return runExclusivelyForRuntimeAndSystemTrustConfig(getOrcaManagedCodexHomePath(), () =>
+    return runExclusivelyForRuntimeAndSystemTrustConfig(getTopoManagedCodexHomePath(), () =>
       this.removeExclusively()
     )
   }

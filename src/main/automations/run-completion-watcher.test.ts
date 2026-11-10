@@ -85,7 +85,7 @@ function createObserver(
 
 describe('authority-owned automation run completion', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-automation-completion-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-automation-completion-'))
     ipcHandlers.clear()
   })
 

@@ -23,8 +23,8 @@ import {
 } from '../tabs-and-windows/browser-extension-tab-model'
 import {
   matchesDiscardedTabNativeQuery,
-  matchesOrcaTabQuery,
-  type OrcaTabQuery
+  matchesTopoTabQuery,
+  type TopoTabQuery
 } from '../tabs-and-windows/browser-extension-tab-query'
 import {
   activateBrowserExtensionDiscardedTab,
@@ -102,7 +102,7 @@ function mergeCallerTab(
 
 function queryTabs(
   caller: BrowserExtensionCaller,
-  query: OrcaTabQuery,
+  query: TopoTabQuery,
   nativeTabs: Record<string, unknown>[]
 ): chrome.tabs.Tab[] {
   const context = {
@@ -125,7 +125,7 @@ function queryTabs(
         : []
     })
     .concat(discarded)
-    .filter((tab) => matchesOrcaTabQuery(tab, query, context))
+    .filter((tab) => matchesTopoTabQuery(tab, query, context))
     .sort((a, b) => a.windowId - b.windowId || a.index - b.index)
 }
 
@@ -153,7 +153,7 @@ export function registerTabsNamespace(): void {
         z.tuple([queryInfoSchema.optional(), z.array(nativeTabSchema)]),
         (caller, queryInfo, nativeTabs) => queryTabs(caller, queryInfo ?? {}, nativeTabs)
       ),
-      // Why a null native result: Electron's get fails for a discarded tab, which only Orca knows.
+      // Why a null native result: Electron's get fails for a discarded tab, which only Topo knows.
       get: defineBrowserExtensionMethod(
         z.tuple([tabIdSchema, nativeTabSchema.nullable()]),
         (caller, tabId, nativeTab) => {
@@ -198,7 +198,7 @@ export function registerTabsNamespace(): void {
           }
         }
       ),
-      // Why main-side: Electron's native update navigates without Orca's URL rules.
+      // Why main-side: Electron's native update navigates without Topo's URL rules.
       update: defineBrowserExtensionMethod(
         z.union([
           z.tuple([updatePropertiesSchema]),

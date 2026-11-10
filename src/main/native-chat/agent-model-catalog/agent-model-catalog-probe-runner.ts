@@ -1,8 +1,8 @@
 import type { ClaudeBackgroundFailedExit } from '../../../shared/claude-background-run-isolation'
-import type { PipedProcessSpawner } from '@orca/process-host/process-spec'
+import type { PipedProcessSpawner } from '@topo/process-host/process-spec'
 import { withTimeout } from '../../../shared/promise-timeout-fallback'
 
-import { createOutputSink } from '@orca/process-host/bounded-output-sink'
+import { createOutputSink } from '@topo/process-host/bounded-output-sink'
 import { spawnManagedProviderProcess } from '../../provider-process/managed-provider-process'
 import type { ProviderProcessClosePolicy } from '../../provider-process/provider-process-close'
 import type { ProviderProcessLaunch } from '../../provider-process/provider-process-launch'

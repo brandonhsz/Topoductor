@@ -2,8 +2,8 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
-import { windowsPowerShellPath } from '@orca/process-host/windows-system-binary'
+import { runProcess } from '@topo/process-host'
+import { windowsPowerShellPath } from '@topo/process-host/windows-system-binary'
 import { parseOrchestrationTaskDepsFlag } from '../runtime/orchestration/coordinator/dispatch/task-deps-flag'
 
 const PARENT_TASK_ID = 'task_b2a580db74d8'
@@ -12,7 +12,7 @@ describe('native CLI PowerShell argv boundary', () => {
   it.skipIf(process.platform !== 'win32')(
     'recovers ConvertTo-Json dependencies after PowerShell 5.1 builds native argv',
     async () => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-native-powershell-argv-'))
+      const root = await mkdtemp(join(tmpdir(), 'topo-native-powershell-argv-'))
       const scriptPath = join(root, 'invoke-deps.ps1')
       const targetPath = join(root, 'argv-target.cjs')
 

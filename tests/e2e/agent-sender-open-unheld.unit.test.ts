@@ -39,7 +39,7 @@ import {
   resetSenderStore,
   status
 } from '@/components/native-chat/messages/agent-senders/native-chat-agent-sender.test-fixture'
-import { OrcaRuntimeService } from '../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../src/main/runtime/topo-runtime'
 import { RpcDispatcher } from '../../src/main/runtime/rpc/dispatcher'
 import { TERMINAL_QUERY_METHODS } from '../../src/main/runtime/rpc/methods/terminal/terminal-query-methods'
 import { MIRROR_LEAVES_STEP_1 } from '../../src/main/runtime/terminal/records/runtime-leaf-record-projection.test-fixture'
@@ -55,7 +55,7 @@ const pane = (tab: string) => `${tab}:${LEAF}`
 
 /** A real host runtime whose terminals are leaves; its RPC server answers the window. */
 function hostRuntime() {
-  const runtime = new OrcaRuntimeService(null)
+  const runtime = new TopoRuntimeService(null)
   const dispatcher = new RpcDispatcher({ runtime, methods: TERMINAL_QUERY_METHODS })
   const open = (tabId: string, worktreeId: string): string => {
     const leaf = {
@@ -97,7 +97,7 @@ let calls: { target: unknown; method: string; params: unknown }[] = []
 let duringLookup = () => {}
 
 const worker = (address: string): AgentMessageSender => ({
-  party: { address, terminalHandle: address, orcaSessionId: null },
+  party: { address, terminalHandle: address, topoSessionId: null },
   name: 'Worker',
   agent: 'claude'
 })

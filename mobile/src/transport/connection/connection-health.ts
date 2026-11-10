@@ -32,7 +32,7 @@ function relayHostCopy(): Record<
         }),
       detail: translate(
         'connection.connectionHealth.signInDetail',
-        'Sign in to Orca on your desktop to reconnect'
+        'Sign in to Topo on your desktop to reconnect'
       )
     },
     'host-offline': {
@@ -41,7 +41,7 @@ function relayHostCopy(): Record<
         translate('connection.connectionHealth.hostOffline', '{{host}} is offline', { host }),
       detail: translate(
         'connection.connectionHealth.hostOfflineDetail',
-        "Check it's awake, Orca is running, and you're signed in"
+        "Check it's awake, Topo is running, and you're signed in"
       )
     },
     // Re-pairing repairs refused credentials even when direct rotation is unavailable.

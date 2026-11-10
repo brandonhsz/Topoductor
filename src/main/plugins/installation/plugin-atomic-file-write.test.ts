@@ -36,7 +36,7 @@ describe('writePluginFileAtomically', () => {
   let dir: string
 
   beforeEach(async () => {
-    dir = await mkdtemp(join(tmpdir(), 'orca-plugin-atomic-'))
+    dir = await mkdtemp(join(tmpdir(), 'topo-plugin-atomic-'))
   })
 
   afterEach(async () => {

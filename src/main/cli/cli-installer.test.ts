@@ -26,7 +26,7 @@ import { buildLegacyAppImageCliWrapper } from './legacy-appimage-cli-wrapper'
 async function fakeAppImageExtractRunner(_appImagePath: string, cwd: string): Promise<void> {
   const launcherDir = join(cwd, 'squashfs-root', 'resources', 'bin')
   await mkdir(launcherDir, { recursive: true })
-  await writeFile(join(launcherDir, 'orca-ide'), '#!/usr/bin/env bash\n', {
+  await writeFile(join(launcherDir, 'topo-ide'), '#!/usr/bin/env bash\n', {
     encoding: 'utf8',
     mode: 0o755
   })
@@ -43,7 +43,7 @@ describe('CliInstaller', () => {
   })
 
   it.skipIf(process.platform === 'win32')(
-    'uses a separate orca-dev command for default development installs',
+    'uses a separate topo-dev command for default development installs',
     async () => {
       const fixture = await makeFixture()
       const homePath = join(fixture.root, 'home')
@@ -52,7 +52,7 @@ describe('CliInstaller', () => {
         platform: 'linux',
         isPackaged: false,
         userDataPath: fixture.userDataPath,
-        execPath: '/opt/Orca/orca-ide',
+        execPath: '/opt/Topo/topo-ide',
         appPath: fixture.appPath,
         homePath,
         processPathEnv: commandDir
@@ -60,12 +60,12 @@ describe('CliInstaller', () => {
 
       const installed = await installer.install()
       expect(installed.state).toBe('installed')
-      expect(installed.commandName).toBe('orca-dev')
-      expect(installed.commandPath).toBe(join(commandDir, 'orca-dev'))
-      expect(installed.launcherPath).toBe(join(fixture.userDataPath, 'cli', 'bin', 'orca-dev'))
+      expect(installed.commandName).toBe('topo-dev')
+      expect(installed.commandPath).toBe(join(commandDir, 'topo-dev'))
+      expect(installed.launcherPath).toBe(join(fixture.userDataPath, 'cli', 'bin', 'topo-dev'))
       await expect(readlink(installed.commandPath as string)).resolves.toBe(installed.launcherPath)
       await expect(
-        readFile(join(fixture.userDataPath, 'cli', 'bin', 'orca'), 'utf8')
+        readFile(join(fixture.userDataPath, 'cli', 'bin', 'topo'), 'utf8')
       ).resolves.toBe(await readFile(installed.launcherPath as string, 'utf8'))
     }
   )
@@ -75,8 +75,8 @@ describe('CliInstaller', () => {
     async () => {
       const fixture = await makeFixture()
       const commandDir = join(fixture.root, '.local', 'bin')
-      const installPath = join(commandDir, 'orca-ide')
-      const appImagePath = join(fixture.root, 'Orca.AppImage')
+      const installPath = join(commandDir, 'topo-ide')
+      const appImagePath = join(fixture.root, 'Topo.AppImage')
       const cacheRootPath = join(fixture.root, 'cache')
       await writeFile(appImagePath, '#!/usr/bin/env bash\n', {
         encoding: 'utf8',
@@ -121,8 +121,8 @@ describe('CliInstaller', () => {
     async () => {
       const fixture = await makeFixture()
       const commandDir = join(fixture.root, '.local', 'bin')
-      const installPath = join(commandDir, 'orca-ide')
-      const appImagePath = join(fixture.root, "Orca's AppImage.AppImage")
+      const installPath = join(commandDir, 'topo-ide')
+      const appImagePath = join(fixture.root, "Topo's AppImage.AppImage")
       const cacheRootPath = join(fixture.root, 'cache')
       await mkdir(commandDir, { recursive: true })
       await writeFile(appImagePath, '#!/usr/bin/env bash\n', { encoding: 'utf8', mode: 0o755 })
@@ -165,8 +165,8 @@ describe('CliInstaller', () => {
       const fixture = await makeFixture()
       const homePath = join(fixture.root, 'home')
       const commandDir = join(homePath, '.local', 'bin')
-      const legacyCommandPath = join(commandDir, 'orca')
-      const appImagePath = join(fixture.root, 'Orca.AppImage')
+      const legacyCommandPath = join(commandDir, 'topo')
+      const appImagePath = join(fixture.root, 'Topo.AppImage')
       const foreignAppImagePath = join(fixture.root, 'Other.AppImage')
       const cacheRootPath = join(fixture.root, 'cache')
       await mkdir(commandDir, { recursive: true })

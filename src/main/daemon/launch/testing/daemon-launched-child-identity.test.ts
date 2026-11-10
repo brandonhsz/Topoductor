@@ -122,7 +122,7 @@ describe('launchDaemonChild durable-scope fallback', () => {
 
 describe('launchDaemonChild AppImage fallback', () => {
   const APPIMAGE_LAUNCH = {
-    appImagePath: '/apps/Orca.AppImage',
+    appImagePath: '/apps/Topo.AppImage',
     entryPathInAppDir: 'resources/app.asar.unpacked/out/main/daemon-entry.js',
     appPathInAppDir: 'resources/app.asar',
     appVersion: '1.0.0'
@@ -152,7 +152,7 @@ describe('launchDaemonChild AppImage fallback', () => {
 
 describe('launchDaemonChild on the extracted AppImage copy', () => {
   const APPIMAGE_LAUNCH = {
-    appImagePath: '/apps/Orca.AppImage',
+    appImagePath: '/apps/Topo.AppImage',
     entryPathInAppDir: 'resources/app.asar.unpacked/out/main/daemon-entry.js',
     appPathInAppDir: 'resources/app.asar',
     appVersion: '1.0.0'
@@ -161,7 +161,7 @@ describe('launchDaemonChild on the extracted AppImage copy', () => {
     generationRoot: '/cache/ns/gen',
     nodePath: '/cache/ns/gen/resources/node-runtime/bin/node',
     entryPath: '/cache/ns/gen/resources/app.asar.unpacked/out/main/daemon-entry.js',
-    identityPath: '/apps/Orca.AppImage/resources/app.asar.unpacked/out/main/daemon-entry.js'
+    identityPath: '/apps/Topo.AppImage/resources/app.asar.unpacked/out/main/daemon-entry.js'
   }
 
   it('never starts a second daemon beside a copy that lost the endpoint race', async () => {

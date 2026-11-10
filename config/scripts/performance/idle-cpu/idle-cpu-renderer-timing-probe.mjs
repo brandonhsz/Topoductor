@@ -100,7 +100,7 @@ export async function startRendererTimingProbe(page) {
       return result
     }
     scheduleTimer()
-    window.__orcaIdleCpuTimingProbe = {
+    window.__topoIdleCpuTimingProbe = {
       snapshot: () => snapshot(true),
       stop: () => {
         if (timerId !== null) {
@@ -115,11 +115,11 @@ export async function startRendererTimingProbe(page) {
 }
 
 export async function snapshotRendererTimingProbe(page) {
-  return page.evaluate(() => window.__orcaIdleCpuTimingProbe?.snapshot() ?? null)
+  return page.evaluate(() => window.__topoIdleCpuTimingProbe?.snapshot() ?? null)
 }
 
 export async function stopRendererTimingProbe(page) {
-  return page.evaluate(() => window.__orcaIdleCpuTimingProbe?.stop() ?? null)
+  return page.evaluate(() => window.__topoIdleCpuTimingProbe?.stop() ?? null)
 }
 
 export async function runZustandPublications(page, count, intervalMs) {

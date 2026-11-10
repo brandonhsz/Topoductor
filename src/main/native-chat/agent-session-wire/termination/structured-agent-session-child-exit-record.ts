@@ -10,8 +10,8 @@ export type StructuredAgentSessionChildExit = {
   failure?: SubmissionRejectionFact
   observedAt?: number
   startupUnanswered?: true
-  /** Orca stopped the agent after its own failure; the exit stays unexpected for the turn. */
-  closedByOrca?: true
+  /** Topo stopped the agent after its own failure; the exit stays unexpected for the turn. */
+  closedByTopo?: true
 }
 
 export function structuredAgentSessionEndedEventExit(
@@ -24,6 +24,6 @@ export function structuredAgentSessionEndedEventExit(
     ...(event.failure ? { failure: event.failure } : {}),
     ...(event.observedAt === undefined ? {} : { observedAt: event.observedAt }),
     ...(event.startupUnanswered ? { startupUnanswered: event.startupUnanswered } : {}),
-    ...(event.closedByOrca ? { closedByOrca: true as const } : {})
+    ...(event.closedByTopo ? { closedByTopo: true as const } : {})
   }
 }

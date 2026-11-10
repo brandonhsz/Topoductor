@@ -12,7 +12,7 @@ let runtimeHomePath: string
 let systemHomePath: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-mcp-ownership-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-mcp-ownership-'))
   runtimeHomePath = join(root, 'runtime')
   systemHomePath = join(root, 'system')
   mkdirSync(runtimeHomePath)
@@ -21,7 +21,7 @@ beforeEach(() => {
 
 afterEach(() => rmSync(root, { recursive: true, force: true }))
 
-const BASELINE_FILE = '.orca-config-settings-baseline.json'
+const BASELINE_FILE = '.topo-config-settings-baseline.json'
 
 describe('canonical MCP ownership during config mirroring', () => {
   it('preserves deletion after a canonical inline server is rewritten by the runtime', () => {
@@ -50,7 +50,7 @@ describe('canonical MCP ownership during config mirroring', () => {
 
 describe('MCP ownership migration', () => {
   it('leaves the retained shared home untouched when its baseline cannot be read', () => {
-    const runtimeConfig = 'model = "retained"\n[mcp_servers.demo-mcp]\ncommand = "orca-only"\n'
+    const runtimeConfig = 'model = "retained"\n[mcp_servers.demo-mcp]\ncommand = "topo-only"\n'
     writeFileSync(join(runtimeHomePath, 'config.toml'), runtimeConfig)
     writeFileSync(join(systemHomePath, 'config.toml'), 'model = "system"\n')
     mkdirSync(join(runtimeHomePath, BASELINE_FILE))

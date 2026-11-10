@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { afterEach, expect, it } from 'vitest'
 import { classifyNodeServerChanges, collectNodeServerInputs } from './node-server-change-scope.mjs'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { NODE_SERVER_RUNNERS } from './node-server-qualification.mjs'
 
 const temporaryDirs = []
@@ -24,26 +24,26 @@ function moduleTree(files) {
   return root
 }
 
-function workspaceTree(imported = '@orca/process-host') {
+function workspaceTree(imported = '@topo/process-host') {
   const manifest = (name, source) =>
     JSON.stringify({
       name,
-      exports: { '.': { 'orca-source': source, default: './dist/index.js' } }
+      exports: { '.': { 'topo-source': source, default: './dist/index.js' } }
     })
   return moduleTree({
     'entry.ts': `export * from '${imported}'`,
     'pnpm-workspace.yaml': 'packages:\n  - src/packages/*\n',
     'src/packages/process-host/package.json': manifest(
-      '@orca/process-host',
+      '@topo/process-host',
       './src/run-process.ts'
     ),
     'src/packages/process-host/src/run-process.ts':
-      "import('@orca/byte-buffer'); require('./private'); export const value = 1",
+      "import('@topo/byte-buffer'); require('./private'); export const value = 1",
     'src/packages/process-host/src/private.ts': 'module.exports = 2',
     'src/packages/process-host/dist/index.js': "require('./missing-stale-output')",
-    'src/packages/byte-buffer/package.json': manifest('@orca/byte-buffer', './src/byte-buffer.ts'),
+    'src/packages/byte-buffer/package.json': manifest('@topo/byte-buffer', './src/byte-buffer.ts'),
     'src/packages/byte-buffer/src/byte-buffer.ts': 'export const value = 3',
-    'src/packages/unrelated/package.json': manifest('@orca/unrelated', './src/unrelated.ts'),
+    'src/packages/unrelated/package.json': manifest('@topo/unrelated', './src/unrelated.ts'),
     'src/packages/unrelated/src/unrelated.ts': 'throw Error("unrelated")'
   })
 }
@@ -76,7 +76,7 @@ it('tracks workspace source and manifest closures without trusting dist or widen
   ).toBe(false)
 })
 
-it.each(['@orca/unknown', '@orca/process-host/private'])(
+it.each(['@topo/unknown', '@topo/process-host/private'])(
   'retains qualification for an unresolved internal package export: %s',
   async (specifier) => {
     const root = workspaceTree(specifier)
@@ -86,7 +86,7 @@ it.each(['@orca/unknown', '@orca/process-host/private'])(
     )
     expect(result.shouldRun).toBe(true)
     expect(result.graphUnavailable).toBe(true)
-    expect(result.reason).toContain('No public orca-source export')
+    expect(result.reason).toContain('No public topo-source export')
   }
 )
 

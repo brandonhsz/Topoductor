@@ -38,9 +38,9 @@ export function ensureWindowsRendererRuntimeFiles(isServeMode: boolean): boolean
     return true
   }
   const message =
-    `Orca's installation is incomplete: ${fileName} is missing, empty, or in use. ` +
-    'If Orca is updating, wait for the installer to finish, then open Orca again. ' +
-    'Otherwise, reinstall Orca.'
+    `Topo's installation is incomplete: ${fileName} is missing, empty, or in use. ` +
+    'If Topo is updating, wait for the installer to finish, then open Topo again. ' +
+    'Otherwise, reinstall Topo.'
   console.error(`[startup] ${message}`)
   handleMainProcessPreflightFailure(new Error(message))
   return false

@@ -17,7 +17,7 @@ export type EnvironmentProviderDriverContractHarness = {
   driver: EnvironmentProviderDriver
   /** Ids the backing provider still holds; destroy must leave none behind. */
   liveEnvironmentIds: () => Promise<readonly string[]>
-  /** A fresh driver over the same backing provider, as after an Orca restart. */
+  /** A fresh driver over the same backing provider, as after a Topo restart. */
   reopenDriver: () => EnvironmentProviderDriver
 }
 
@@ -35,7 +35,7 @@ export function runEnvironmentProviderDriverContract(
     function expectReady(driver: EnvironmentProviderDriver, ready: EnvironmentReady): void {
       expect(ready.handle.driverId).toBe(driver.id)
       expect(ready.handle.environmentId).not.toBe('')
-      expect(['orca-server', 'ssh']).toContain(
+      expect(['topo-server', 'ssh']).toContain(
         getEphemeralVmRecipeResultConnection(ready.result).type
       )
       expect(isAbsoluteRuntimePath(getEphemeralVmRecipeResultProjectRoot(ready.result))).toBe(true)

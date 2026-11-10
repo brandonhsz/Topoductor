@@ -212,7 +212,7 @@ function historicalAnswerSender(
   const party = {
     address: message.from_handle,
     terminalHandle: actor.terminalHandle,
-    orcaSessionId: actor.orcaSessionId
+    topoSessionId: actor.topoSessionId
   }
   const known = snapshot(party)
   return {

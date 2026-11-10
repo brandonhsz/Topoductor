@@ -14,15 +14,15 @@ vi.mock('../../ssh/remote-exec/remote-exec-command', () => ({ execCommand }))
 const { transportOptions } = vi.hoisted((): { transportOptions: unknown[] } => ({
   transportOptions: []
 }))
-vi.mock('../orcad/wsl-orcad-host-transport', () => ({
-  createWslOrcadHostTransport: (options: unknown) => {
+vi.mock('../topod/wsl-topod-host-transport', () => ({
+  createWslTopodHostTransport: (options: unknown) => {
     transportOptions.push(options)
     return { dispose }
   }
 }))
 vi.mock('./wsl-host-server-stop', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  decommissionWslHostOrcad: () => decommission
+  decommissionWslHostTopod: () => decommission
 }))
 
 import {
@@ -102,13 +102,13 @@ describe('guest commands under a real POSIX shell', () => {
   describeOnPosix('with a fake server CLI', () => {
     let home: string
     beforeEach(() => {
-      home = mkdtempSync(join(tmpdir(), 'orca-uninstall-guest-'))
-      mkdirSync(join(home, '.orca', 'cli', 'bin'), { recursive: true })
+      home = mkdtempSync(join(tmpdir(), 'topo-uninstall-guest-'))
+      mkdirSync(join(home, '.topo', 'cli', 'bin'), { recursive: true })
     })
     afterEach(() => rmSync(home, { recursive: true, force: true }))
 
     function fakeCli(script: string): void {
-      const path = join(home, '.orca', 'cli', 'bin', 'orca')
+      const path = join(home, '.topo', 'cli', 'bin', 'topo')
       writeFileSync(path, `#!/bin/sh\n${script}\n`)
       chmodSync(path, 0o755)
     }

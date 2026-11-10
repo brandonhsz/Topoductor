@@ -165,10 +165,10 @@ export function AppSection({
           className="pl-2 py-2 pr-0.5 transition-colors hover:bg-muted/50"
           aria-label={
             isCollapsed
-              ? t('auto.components.status.bar.ResourceUsageStatusSegment.e419d27083', 'Expand Orca')
+              ? t('auto.components.status.bar.ResourceUsageStatusSegment.e419d27083', 'Expand Topo')
               : t(
                   'auto.components.status.bar.ResourceUsageStatusSegment.53dd5560ae',
-                  'Collapse Orca'
+                  'Collapse Topo'
                 )
           }
           aria-expanded={!isCollapsed}
@@ -181,7 +181,7 @@ export function AppSection({
         </button>
         <div className="flex-1 min-w-0 py-2 pr-3 flex items-center justify-between">
           <span className="text-[11px] font-semibold uppercase tracking-wide truncate text-muted-foreground">
-            {t('auto.components.status.bar.ResourceUsageStatusSegment.288a4dd177', 'Orca')}
+            {t('auto.components.status.bar.ResourceUsageStatusSegment.288a4dd177', 'Topo')}
           </span>
           <div className="flex items-center gap-2 shrink-0">
             <Sparkline samples={app.history} />

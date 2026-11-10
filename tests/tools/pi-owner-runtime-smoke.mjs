@@ -8,11 +8,11 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { build } from 'esbuild'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 
 const piRoot = resolve(process.argv[2] || '')
 assert.ok(process.argv[2], 'Pass an installed pi-coding-agent package directory')
-const scratch = await mkdtemp(join(tmpdir(), 'orca-pi-owner-'))
+const scratch = await mkdtemp(join(tmpdir(), 'topo-pi-owner-'))
 const received = []
 const server = createServer(async (request, response) => {
   let body = ''
@@ -23,7 +23,7 @@ const server = createServer(async (request, response) => {
   response.end('{}')
 })
 try {
-  const bundle = join(scratch, 'orca.cjs')
+  const bundle = join(scratch, 'topo.cjs')
   await build({
     stdin: {
       contents:
@@ -69,7 +69,7 @@ try {
   const results = []
   for (const kind of ['pi', 'omp', 'prime-agent']) {
     const ownerKey =
-      kind === 'prime-agent' ? 'ORCA_PRIME_AGENT_STATUS_OWNED' : 'ORCA_PI_STATUS_OWNED'
+      kind === 'prime-agent' ? 'TOPO_PRIME_AGENT_STATUS_OWNED' : 'TOPO_PI_STATUS_OWNED'
     for (const scenario of ['baseline-dead', 'fixed-dead', 'fixed-live']) {
       let source = getPiAgentStatusExtensionSource(kind)
       if (scenario === 'baseline-dead') {
@@ -90,14 +90,14 @@ try {
         cwd: scratch,
         env: {
           ...process.env,
-          ORCA_BACKGROUND_LAUNCH: '1',
-          ORCA_PANE_KEY: 'owner-proof',
-          ORCA_AGENT_HOOK_PORT: String(server.address().port),
-          ORCA_AGENT_HOOK_TOKEN: 'isolated-proof-token',
-          ORCA_AGENT_HOOK_ENV: 'proof',
-          ORCA_AGENT_HOOK_ENDPOINT: '',
-          ORCA_PI_STATUS_OWNED: '',
-          ORCA_PRIME_AGENT_STATUS_OWNED: '',
+          TOPO_BACKGROUND_LAUNCH: '1',
+          TOPO_PANE_KEY: 'owner-proof',
+          TOPO_AGENT_HOOK_PORT: String(server.address().port),
+          TOPO_AGENT_HOOK_TOKEN: 'isolated-proof-token',
+          TOPO_AGENT_HOOK_ENV: 'proof',
+          TOPO_AGENT_HOOK_ENDPOINT: '',
+          TOPO_PI_STATUS_OWNED: '',
+          TOPO_PRIME_AGENT_STATUS_OWNED: '',
           PRIME_AGENT_INTERNAL_DAEMON_WORKER: kind === 'prime-agent' ? '1' : '',
           [ownerKey]: String(owner)
         },

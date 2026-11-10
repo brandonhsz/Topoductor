@@ -42,7 +42,7 @@ export function NativeChatApprovalCard({
   const cardRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const neededPath = approvalBlockedPathToShow(approval)
-  // A newer Orca's subject: its detail is shown, and only the card's cancel answers.
+  // A newer Topo's subject: its detail is shown, and only the card's cancel answers.
   const newerSubject = isNewerApprovalSubject(approval.subject)
   const hasContext = Boolean(
     approval.description ||
@@ -149,10 +149,10 @@ export function NativeChatApprovalCard({
                   />
                 ) : null}
                 {newerSubject ? (
-                  <p data-native-chat-approval-needs-newer-orca="true" className="break-words">
+                  <p data-native-chat-approval-needs-newer-topo="true" className="break-words">
                     {t(
-                      'components.native-chat.approval.needsNewerOrca',
-                      'This request needs a newer version of Orca.'
+                      'components.native-chat.approval.needsNewerTopo',
+                      'This request needs a newer version of Topo.'
                     )}
                   </p>
                 ) : null}

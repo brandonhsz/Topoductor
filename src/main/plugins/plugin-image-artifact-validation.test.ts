@@ -12,7 +12,7 @@ import {
 const roots: string[] = []
 
 async function pluginWith(files: Record<string, Buffer>, fields: Record<string, unknown>) {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-images-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-images-'))
   roots.push(root)
   for (const [path, bytes] of Object.entries(files)) {
     await mkdir(join(root, path, '..'), { recursive: true })

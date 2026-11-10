@@ -69,7 +69,7 @@ export type TerminalShortcutAction =
   | { type: 'trackNativeOptionDeadKey' }
   | { type: 'switchInputSource' }
 
-/** Resolve platform-aware Orca shortcuts and byte fallbacks before xterm encoding. */
+/** Resolve platform-aware Topo shortcuts and byte fallbacks before xterm encoding. */
 export function resolveTerminalShortcutAction(
   event: TerminalShortcutEvent,
   isMac: boolean,
@@ -88,7 +88,7 @@ export function resolveTerminalShortcutAction(
   // Why: keybindings follow the client OS, but byte protocols follow the PTY host — they differ for macOS clients on Windows runtimes.
   isWindowsTerminalHost: () => boolean = () => isWindows,
   // Why: terminal-first yields editing and TUI chords before xterm encodes them.
-  terminalShortcutPolicy: TerminalShortcutPolicy = 'orca-first',
+  terminalShortcutPolicy: TerminalShortcutPolicy = 'topo-first',
   // Why: query-only Droid/Grok consumers need CSI-u even when the live kitty flags remain inactive.
   hasCtrlEnterCsiUAuthority?: () => boolean,
   // Why: pi arms modifyOtherKeys when its kitty query goes unanswered; see encodeModifyOtherKeysEnter.

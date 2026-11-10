@@ -45,7 +45,7 @@ const { applyAgentSessionRestartAdjudication } =
   await import('../../../agent-session/ownership/agent-session-restart-lease-transitions')
 const { openTestAgentSessionRecordStore } =
   await import('../../../agent-session/records/agent-session-record-store-test-harness')
-const { OrcaRuntimeService } = await import('../../../orca-runtime')
+const { TopoRuntimeService } = await import('../../../topo-runtime')
 const { OrchestrationDb } = await import('../../db/orchestration-db')
 const { rpcRuntime } = await import('./structured-worker-rpc.test-support')
 await import('./structured-worker-custody')
@@ -331,7 +331,7 @@ let db: Db
 
 beforeEach(() => {
   // This fixture has no raw layout; visibility and lease proof remain host-owned.
-  const p = OrcaRuntimeService.prototype
+  const p = TopoRuntimeService.prototype
   vi.spyOn(p, 'captureStructuredAgentSessionPresentation').mockReturnValue({ raw: null, saved: [] })
   vi.spyOn(p, 'currentLocalStructuredSessionPresentation').mockReturnValue(null)
   structuredWorkerIdentities.clear()
@@ -390,7 +390,7 @@ describe.each(['live', 'at-rest'] as const)(
       // Never-started successors have no death evidence; retiring their tab must still let release prove exit.
       structuredWorkerIdentities.clear()
       await expect(
-        new OrcaRuntimeService().inspectTerminalProcessIncarnationLiveness(
+        new TopoRuntimeService().inspectTerminalProcessIncarnationLiveness(
           identity.processIncarnation,
           JSON.stringify(LOCAL_SCOPE)
         )
@@ -440,7 +440,7 @@ describe('a released session whose start was attempted stays unverifiable withou
   let directory: string
 
   beforeEach(async () => {
-    directory = await mkdtemp(join(tmpdir(), 'orca-cleared-successor-'))
+    directory = await mkdtemp(join(tmpdir(), 'topo-cleared-successor-'))
     installClearedWorker('at-rest')
     visibleTabs = []
   })
@@ -657,7 +657,7 @@ describe('a running session that cannot be verified is refused, never declared e
     const identity = registerWorker()
     expect(observeStructuredWorker(identity).status).toBe('unverifiable')
     await expect(
-      new OrcaRuntimeService().inspectTerminalProcessIncarnationLiveness(
+      new TopoRuntimeService().inspectTerminalProcessIncarnationLiveness(
         identity.processIncarnation,
         JSON.stringify(LOCAL_SCOPE)
       )

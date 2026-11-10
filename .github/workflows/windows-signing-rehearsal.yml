@@ -18,18 +18,18 @@ on:
 
 jobs:
   # Ship the same qualified template as release-cut so the reseal over SignPath-rewritten binaries is rehearsed too.
-  orcad-template:
+  topod-template:
     permissions:
       contents: read
       actions: read
-    uses: ./.github/workflows/qualified-orcad-template.yml
+    uses: ./.github/workflows/qualified-topod-template.yml
     with:
       ref: ${{ github.sha }}
       # SignPath origin verification covers reusable-workflow jobs, so they stay GitHub-hosted.
       fast_runners: false
 
   rehearse:
-    needs: orcad-template
+    needs: topod-template
     # Why: SignPath origin verification requires GitHub-hosted runners, and
     # windows-2022 matches the real release job's build environment.
     runs-on: windows-2022
@@ -38,7 +38,7 @@ jobs:
       actions: read
       contents: read
     env:
-      ORCA_REQUIRE_ORCAD_TEMPLATE: '1'
+      TOPO_REQUIRE_TOPOD_TEMPLATE: '1'
 
     steps:
       - name: Checkout
@@ -100,28 +100,28 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
 
       # After the app build so nothing that cleans out/ can drop it; electron-builder ships it.
-      - name: Download the orcad deployment template
+      - name: Download the topod deployment template
         uses: actions/download-artifact@v8
         with:
-          name: orcad-template
-          path: out/orcad-template
+          name: topod-template
+          path: out/topod-template
 
       # Build full --win: --dir never creates the NSIS uninstaller needed for MDE evidence.
       - name: Package Windows app and export the NSIS uninstaller
         shell: pwsh
         env:
           # Keep capture under runner.temp; all-negation files would include checkout leftovers in app.asar.
-          ORCA_WIN_UNINSTALLER_EXPORT_PATH: ${{ runner.temp }}\uninstaller-signing\unsigned\orca-uninstaller.exe
+          TOPO_WIN_UNINSTALLER_EXPORT_PATH: ${{ runner.temp }}\uninstaller-signing\unsigned\topo-uninstaller.exe
         run: |
           node config/scripts/native-build/node-addons/ensure-native-runtime.mjs --runtime=electron
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           pnpm exec electron-builder --config config/electron-builder.config.cjs --win --publish never
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          if (-not (Test-Path 'dist/win-unpacked/Orca.exe')) {
-            throw 'electron-builder --win did not produce dist/win-unpacked/Orca.exe'
+          if (-not (Test-Path 'dist/win-unpacked/Topo.exe')) {
+            throw 'electron-builder --win did not produce dist/win-unpacked/Topo.exe'
           }
-          if (-not (Test-Path -LiteralPath $env:ORCA_WIN_UNINSTALLER_EXPORT_PATH)) {
-            throw "The sign hook did not export the NSIS uninstaller to $env:ORCA_WIN_UNINSTALLER_EXPORT_PATH"
+          if (-not (Test-Path -LiteralPath $env:TOPO_WIN_UNINSTALLER_EXPORT_PATH)) {
+            throw "The sign hook did not export the NSIS uninstaller to $env:TOPO_WIN_UNINSTALLER_EXPORT_PATH"
           }
 
       # Sign only unsigned PE files; retain vendor signatures such as Microsoft OpenConsole.
@@ -138,9 +138,9 @@ jobs:
             Where-Object { $_.Extension -in '.exe', '.dll', '.node' } |
             ForEach-Object {
               $relative = [System.IO.Path]::GetRelativePath($root, $_.FullName)
-              # The orcad template's Linux/macOS addons are data for SSH hosts, not PE files.
-              if ($relative -match '^resources[\\/]orcad-template[\\/]targets[\\/](?!win32-)') {
-                $skipped.Add("$relative  <non-Windows orcad template payload>")
+              # The topod template's Linux/macOS addons are data for SSH hosts, not PE files.
+              if ($relative -match '^resources[\\/]topod-template[\\/]targets[\\/](?!win32-)') {
+                $skipped.Add("$relative  <non-Windows topod template payload>")
                 return
               }
               $signature = Get-AuthenticodeSignature -FilePath $_.FullName
@@ -154,8 +154,8 @@ jobs:
               $list.Add($relative)
             }
 
-          if (-not ($list -contains 'Orca.exe')) {
-            throw 'Orca.exe was not staged for signing; unpacked layout changed?'
+          if (-not ($list -contains 'Topo.exe')) {
+            throw 'Topo.exe was not staged for signing; unpacked layout changed?'
           }
           if (-not ($list | Where-Object { $_ -like '*conpty_console_list.node' })) {
             throw 'node-pty conpty_console_list.node was not staged; this is the file from issue #7785.'
@@ -169,17 +169,17 @@ jobs:
 
           # The uninstaller is re-injected by the sign hook, outside win-unpacked’s copy-back list.
           # Fail staging loudly: rehearsal proves the flow and needs no release-job recovery catch.
-          $exportedUninstaller = Join-Path $env:RUNNER_TEMP 'uninstaller-signing\unsigned\orca-uninstaller.exe'
-          $uninstallerStagePath = Join-Path $stage.FullName 'uninstaller\orca-uninstaller.exe'
+          $exportedUninstaller = Join-Path $env:RUNNER_TEMP 'uninstaller-signing\unsigned\topo-uninstaller.exe'
+          $uninstallerStagePath = Join-Path $stage.FullName 'uninstaller\topo-uninstaller.exe'
           New-Item -ItemType Directory -Force -Path (Split-Path $uninstallerStagePath) | Out-Null
           Copy-Item -LiteralPath $exportedUninstaller -Destination $uninstallerStagePath -Force
-          Write-Host 'Staged the NSIS uninstaller for signing: uninstaller\orca-uninstaller.exe'
+          Write-Host 'Staged the NSIS uninstaller for signing: uninstaller\topo-uninstaller.exe'
 
       - name: Upload unsigned inner binaries for SignPath
         id: upload-unsigned-inner
         uses: actions/upload-artifact@v7
         with:
-          name: orca-windows-inner-unsigned-${{ github.run_id }}
+          name: topo-windows-inner-unsigned-${{ github.run_id }}
           path: signing-stage/**
           if-no-files-found: error
 
@@ -192,7 +192,7 @@ jobs:
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: c37aa192-a27a-4377-9c90-5d6c95912dc0
-          project-slug: orca
+          project-slug: topo
           signing-policy-slug: ${{ inputs.signing-policy-slug || 'test-signing' }}
           artifact-configuration-slug: ${{ inputs.inner-artifact-configuration-slug || 'windows-inner-binaries-zip' }}
           github-artifact-id: ${{ steps.upload-unsigned-inner.outputs.artifact-id }}
@@ -247,8 +247,8 @@ jobs:
           }
 
       # Recompute template checksums over the signed bytes, then verify the template as release-cut does.
-      - name: Reseal the orcad template over its signed binaries
-        run: node config/scripts/orcad-distribution/template/packaged-orcad-template.cjs --reseal-signed dist/win-unpacked inner-signing-list.txt
+      - name: Reseal the topod template over its signed binaries
+        run: node config/scripts/topod-distribution/template/packaged-topod-template.cjs --reseal-signed dist/win-unpacked inner-signing-list.txt
 
       - name: Restore signed uninstaller for the installer rebuild
         shell: pwsh
@@ -257,11 +257,11 @@ jobs:
         run: |
           $requireValid = $env:SIGNING_POLICY -ne 'test-signing'
           $candidates = @(
-            (Join-Path 'signed-inner' 'uninstaller\orca-uninstaller.exe'),
-            (Join-Path 'signed-inner/signing-stage' 'uninstaller\orca-uninstaller.exe')
+            (Join-Path 'signed-inner' 'uninstaller\topo-uninstaller.exe'),
+            (Join-Path 'signed-inner/signing-stage' 'uninstaller\topo-uninstaller.exe')
           ) | Where-Object { Test-Path -LiteralPath $_ -PathType Leaf }
           if (@($candidates).Count -ne 1) {
-            throw 'Missing or ambiguous uninstaller/orca-uninstaller.exe in the signed artifact; check the windows-inner-binaries-zip configuration.'
+            throw 'Missing or ambiguous uninstaller/topo-uninstaller.exe in the signed artifact; check the windows-inner-binaries-zip configuration.'
           }
           $signed = Get-Item -LiteralPath @($candidates)[0]
           $signature = Get-AuthenticodeSignature -FilePath $signed.FullName
@@ -270,26 +270,26 @@ jobs:
           }
           $signedDir = Join-Path $env:RUNNER_TEMP 'uninstaller-signing\signed'
           New-Item -ItemType Directory -Force -Path $signedDir | Out-Null
-          Copy-Item -LiteralPath $signed.FullName -Destination (Join-Path $signedDir 'orca-uninstaller.exe') -Force
+          Copy-Item -LiteralPath $signed.FullName -Destination (Join-Path $signedDir 'topo-uninstaller.exe') -Force
           Write-Host ("{0,-14} uninstaller  <{1}>" -f $signature.Status, $signature.SignerCertificate.Subject)
 
       - name: Build NSIS installer from signed unpacked app
         shell: pwsh
         env:
-          ORCA_WIN_UNINSTALLER_SIGNED_PATH: ${{ runner.temp }}\uninstaller-signing\signed\orca-uninstaller.exe
+          TOPO_WIN_UNINSTALLER_SIGNED_PATH: ${{ runner.temp }}\uninstaller-signing\signed\topo-uninstaller.exe
         run: |
           pnpm exec electron-builder --config config/electron-builder.config.cjs --win --publish never --prepackaged "$env:GITHUB_WORKSPACE\dist\win-unpacked"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          if (-not (Test-Path 'dist/orca-windows-setup.exe')) {
-            throw 'electron-builder --prepackaged did not produce dist/orca-windows-setup.exe'
+          if (-not (Test-Path 'dist/topo-windows-setup.exe')) {
+            throw 'electron-builder --prepackaged did not produce dist/topo-windows-setup.exe'
           }
 
       - name: Upload unsigned Windows installer for SignPath
         id: upload-unsigned-installer
         uses: actions/upload-artifact@v7
         with:
-          name: orca-windows-installer-unsigned-${{ github.run_id }}
-          path: dist/orca-windows-setup.exe
+          name: topo-windows-installer-unsigned-${{ github.run_id }}
+          path: dist/topo-windows-setup.exe
           compression-level: 0
           if-no-files-found: error
 
@@ -299,7 +299,7 @@ jobs:
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: c37aa192-a27a-4377-9c90-5d6c95912dc0
-          project-slug: orca
+          project-slug: topo
           signing-policy-slug: ${{ inputs.signing-policy-slug || 'test-signing' }}
           artifact-configuration-slug: github-actions-windows-installer
           github-artifact-id: ${{ steps.upload-unsigned-installer.outputs.artifact-id }}
@@ -326,16 +326,16 @@ jobs:
       - name: Stage signed Windows installer and regenerate updater metadata
         shell: pwsh
         run: |
-          $signedInstaller = Get-ChildItem -Path signed-windows -Recurse -File -Filter 'orca-windows-setup.exe' | Select-Object -First 1
+          $signedInstaller = Get-ChildItem -Path signed-windows -Recurse -File -Filter 'topo-windows-setup.exe' | Select-Object -First 1
           if ($null -eq $signedInstaller) {
             throw 'Signed Windows installer was not returned by SignPath.'
           }
-          Copy-Item -Path $signedInstaller.FullName -Destination 'dist/orca-windows-setup.exe' -Force
-          node config/scripts/desktop-distribution/windows/generate-windows-blockmap.mjs 'dist/orca-windows-setup.exe' 'dist/orca-windows-setup.exe.blockmap'
+          Copy-Item -Path $signedInstaller.FullName -Destination 'dist/topo-windows-setup.exe' -Force
+          node config/scripts/desktop-distribution/windows/generate-windows-blockmap.mjs 'dist/topo-windows-setup.exe' 'dist/topo-windows-setup.exe.blockmap'
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-          $installer = Get-Item 'dist/orca-windows-setup.exe'
-          $blockmap = Get-Item 'dist/orca-windows-setup.exe.blockmap'
+          $installer = Get-Item 'dist/topo-windows-setup.exe'
+          $blockmap = Get-Item 'dist/topo-windows-setup.exe.blockmap'
           $stream = [System.IO.File]::OpenRead($installer.FullName)
           try {
             $sha512 = [System.Security.Cryptography.SHA512]::Create()
@@ -388,7 +388,7 @@ jobs:
             }
           }
 
-          Test-Signature 'installer: orca-windows-setup.exe' 'dist/orca-windows-setup.exe'
+          Test-Signature 'installer: topo-windows-setup.exe' 'dist/topo-windows-setup.exe'
 
           # Extract/verify shipped bytes, including #7785. Builder 26.9+ removed bundled 7zip-bin (#6487).
           $7zaOutput = node config/scripts/archives/seven-zip/resolve-7za-path.mjs
@@ -401,17 +401,17 @@ jobs:
             throw "The 7za resolver returned an invalid path for the signing rehearsal: $7za"
           }
           New-Item -ItemType Directory -Path extracted-app -Force | Out-Null
-          & $7za x 'dist/orca-windows-setup.exe' '-oextracted-app' -y | Out-Null
+          & $7za x 'dist/topo-windows-setup.exe' '-oextracted-app' -y | Out-Null
 
           $root = Resolve-Path 'extracted-app'
           # The receipt proves import, not NSIS embedding: the uninstaller lies outside the app 7z payload.
           # Unlike publishing release jobs, rehearsal can install silently and inspect the actual MDE-flagged file.
-          $signedUninstaller = Join-Path $env:RUNNER_TEMP 'uninstaller-signing\signed\orca-uninstaller.exe'
+          $signedUninstaller = Join-Path $env:RUNNER_TEMP 'uninstaller-signing\signed\topo-uninstaller.exe'
           $receipt = "$signedUninstaller.embedded-sha256"
           if (-not (Test-Path -LiteralPath $receipt)) {
             $failures.Add('the sign hook did not embed the signed uninstaller into the rebuilt installer')
           } else {
-            Test-Signature 'relayed: orca-uninstaller.exe' $signedUninstaller
+            Test-Signature 'relayed: topo-uninstaller.exe' $signedUninstaller
           }
 
           # Try full 7z.exe’s NSIS handler non-invasively first; reduced 7za lacks it. Fall back to a real silent install.
@@ -421,7 +421,7 @@ jobs:
           $full7z = 'C:\Program Files\7-Zip\7z.exe'
           if (Test-Path -LiteralPath $full7z) {
             New-Item -ItemType Directory -Path nsis-extract -Force | Out-Null
-            & $full7z x -tnsis 'dist/orca-windows-setup.exe' '-onsis-extract' -y 2>&1 | Out-Null
+            & $full7z x -tnsis 'dist/topo-windows-setup.exe' '-onsis-extract' -y 2>&1 | Out-Null
             $installedUninstaller = Get-ChildItem -Path nsis-extract -Recurse -File -Filter 'Uninstall*.exe' -ErrorAction SilentlyContinue |
               Select-Object -First 1
             # NSIS extraction can be partial/garbled: trust 7z only when its digest matches embedded bytes,
@@ -441,24 +441,24 @@ jobs:
 
           if ($null -eq $installedUninstaller) {
             # No artifacts are published, so installation is safe here. Bound -PassThru waits; -Wait could hang on a prompt for 360 minutes.
-            $installerProcess = Start-Process -FilePath (Resolve-Path 'dist/orca-windows-setup.exe') -ArgumentList '/S' -PassThru
+            $installerProcess = Start-Process -FilePath (Resolve-Path 'dist/topo-windows-setup.exe') -ArgumentList '/S' -PassThru
             if (-not $installerProcess.WaitForExit(300000)) {
               $installerProcess | Stop-Process -Force -ErrorAction SilentlyContinue
               $failures.Add('the silent install did not exit within 5 minutes; it is likely prompting')
             }
-            # Poll app shutdown: oneClick can launch Orca after installer exit, leaving app/daemon handles in LOCALAPPDATA\Programs.
+            # Poll app shutdown: oneClick can launch Topo after installer exit, leaving app/daemon handles in LOCALAPPDATA\Programs.
             for ($attempt = 0; $attempt -lt 20; $attempt++) {
-              $running = @(Get-Process -Name 'Orca' -ErrorAction SilentlyContinue)
+              $running = @(Get-Process -Name 'Topo' -ErrorAction SilentlyContinue)
               if ($running.Count -gt 0) {
                 $running | Stop-Process -Force -ErrorAction SilentlyContinue
                 break
               }
               Start-Sleep -Milliseconds 500
             }
-            Get-Process -Name 'orca-terminal-daemon' -ErrorAction SilentlyContinue |
+            Get-Process -Name 'topo-terminal-daemon' -ErrorAction SilentlyContinue |
               Stop-Process -Force -ErrorAction SilentlyContinue
             $installedUninstaller = Get-ChildItem -Path "$env:LOCALAPPDATA\Programs" -Recurse -File -Filter 'Uninstall*.exe' -ErrorAction SilentlyContinue |
-              Where-Object { $_.FullName -like '*Orca*' } |
+              Where-Object { $_.FullName -like '*Topo*' } |
               Select-Object -First 1
             if ($null -ne $installedUninstaller) { $installedVia = 'a silent install' }
           }
@@ -474,11 +474,11 @@ jobs:
                 $failures.Add("the uninstaller the installer ships is not the relayed one (via $installedVia): $shippedDigest vs $expectedDigest")
               }
             }
-            Test-Signature "shipped: Uninstall Orca.exe (via $installedVia)" $installedUninstaller.FullName
+            Test-Signature "shipped: Uninstall Topo.exe (via $installedVia)" $installedUninstaller.FullName
           }
 
           $targets = @(Get-Content 'inner-signing-list.txt')
-          foreach ($requiredTarget in @('Orca.exe', 'resources\bin\orca.exe', 'resources\bin\orca-agent-hook.exe')) {
+          foreach ($requiredTarget in @('Topo.exe', 'resources\bin\topo.exe', 'resources\bin\topo-agent-hook.exe')) {
             if ($targets -notcontains $requiredTarget) { $targets += $requiredTarget }
           }
           foreach ($relative in $targets) {
@@ -491,7 +491,7 @@ jobs:
             # With no certificate, CopyElevateHelper.signIf signs nothing; this predates the uninstaller relay.
             # release-cut pre-seeds only Valid, SignPath-signed cache bytes; test certificates deliberately fail that guard.
             # DO NOT relax it: rehearsal shares electron-builder-win-<Electron+builder versions> with real releases and would poison
-            # their cache with “Test certificate for Orca agent ide [OSS]”. Fix the UAC helper separately with proper scrutiny.
+            # their cache with “Test certificate for Topo agent ide [OSS]”. Fix the UAC helper separately with proper scrutiny.
             if ($relative -eq 'resources\elevate.exe') {
               Test-Signature "installed: $relative" $path -Advisory
             } else {
@@ -519,7 +519,7 @@ jobs:
           path: |
             signing-evidence.txt
             inner-signing-list.txt
-            dist/orca-windows-setup.exe
-            dist/orca-windows-setup.exe.blockmap
+            dist/topo-windows-setup.exe
+            dist/topo-windows-setup.exe.blockmap
             dist/latest.yml
           retention-days: 7

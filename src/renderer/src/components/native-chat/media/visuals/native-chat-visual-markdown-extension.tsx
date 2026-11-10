@@ -18,9 +18,9 @@ type DivProps = ComponentPropsWithoutRef<'div'> & ExtraProps
 
 function placeholderAttributes(props: DivProps): { nonce: unknown; file: unknown; title: unknown } {
   return {
-    nonce: 'data-orca-visual' in props ? props['data-orca-visual'] : undefined,
-    file: 'data-orca-visual-file' in props ? props['data-orca-visual-file'] : undefined,
-    title: 'data-orca-visual-title' in props ? props['data-orca-visual-title'] : undefined
+    nonce: 'data-topo-visual' in props ? props['data-topo-visual'] : undefined,
+    file: 'data-topo-visual-file' in props ? props['data-topo-visual-file'] : undefined,
+    title: 'data-topo-visual-title' in props ? props['data-topo-visual-title'] : undefined
   }
 }
 

@@ -18,7 +18,7 @@ describe('fish history deletion', () => {
   let fishDir: string
 
   beforeEach(() => {
-    root = mkdtempSync(join(tmpdir(), 'orca-fish-history-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-fish-history-'))
     fishDir = join(root, 'fish')
     mkdirSync(fishDir, { recursive: true })
   })
@@ -48,7 +48,7 @@ describe('orphaned fish history sweep', () => {
   let fishDir: string
 
   beforeEach(() => {
-    root = mkdtempSync(join(tmpdir(), 'orca-fish-sweep-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-fish-sweep-'))
     fishDir = join(root, 'fish')
     mkdirSync(fishDir, { recursive: true })
   })
@@ -72,7 +72,7 @@ describe('relay fish history naming', () => {
   let relayRoot: string
 
   beforeEach(() => {
-    relayRoot = mkdtempSync(join(tmpdir(), 'orca-fish-relay-'))
+    relayRoot = mkdtempSync(join(tmpdir(), 'topo-fish-relay-'))
   })
 
   afterEach(() => {

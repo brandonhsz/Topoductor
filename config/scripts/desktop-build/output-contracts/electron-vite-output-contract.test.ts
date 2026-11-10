@@ -64,7 +64,7 @@ function failBootstrapWithBanner(options: {
 
 describe('Electron Vite output contract', () => {
   it('records the bootstrap failure it exits on, since the guard hides Electron dialog', () => {
-    const logDirectory = mkdtempSync(join(tmpdir(), 'orca-bootstrap-fatal-'))
+    const logDirectory = mkdtempSync(join(tmpdir(), 'topo-bootstrap-fatal-'))
     const logPath = join(logDirectory, 'fatal.log')
     const stderrWrites: string[] = []
 
@@ -85,7 +85,7 @@ describe('Electron Vite output contract', () => {
   })
 
   it('creates the parent directory an overridden log path names but does not have', () => {
-    const logDirectory = mkdtempSync(join(tmpdir(), 'orca-bootstrap-fatal-'))
+    const logDirectory = mkdtempSync(join(tmpdir(), 'topo-bootstrap-fatal-'))
     const logPath = join(logDirectory, 'nested', 'diagnostics', 'fatal.log')
 
     try {
@@ -101,7 +101,7 @@ describe('Electron Vite output contract', () => {
   })
 
   it('falls back to the default location when the overridden log path is unwritable', () => {
-    const logDirectory = mkdtempSync(join(tmpdir(), 'orca-bootstrap-fatal-'))
+    const logDirectory = mkdtempSync(join(tmpdir(), 'topo-bootstrap-fatal-'))
     const fallbackDirectory = join(logDirectory, 'fallback')
 
     try {

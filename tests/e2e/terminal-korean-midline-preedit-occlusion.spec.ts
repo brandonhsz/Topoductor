@@ -2,7 +2,7 @@
 // Compare real overlay/grid geometry; textContent and zero-rect DOM emulators cannot distinguish occlusion.
 // CDP drives composition without native IME; write the grid directly because this tests drawing rather than PTY delivery.
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { closeTerminalImePaneArena, openTerminalImePaneArena } from './terminal-ime-pane-arena'
 import { setImeComposition } from './terminal-ime-cdp-composition'
 import {
@@ -42,14 +42,14 @@ function rendersEverythingItCovers(sample: MidlinePreeditOcclusionSample): boole
 
 test.describe('Terminal mid-line Korean preedit occlusion', () => {
   test('masks a semantically owned Codex placeholder during its first Korean preedit', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
-    const arena = await openTerminalImePaneArena(orcaPage)
+    const arena = await openTerminalImePaneArena(topoPage)
     let completed = false
     try {
       const placeholder = 'Ask Codex to do anything'
       await writeToActiveTerminal(
-        orcaPage,
+        topoPage,
         [
           '\x1b[2J\x1b[H\x1b[1m›\x1b[22m \x1b7',
           `\x1b[2m${placeholder}\x1b[22m`,
@@ -58,7 +58,7 @@ test.describe('Terminal mid-line Korean preedit occlusion', () => {
       )
       await setImeComposition(arena.session, '아')
 
-      const sample = await sampleOpenComposition(orcaPage, '아')
+      const sample = await sampleOpenComposition(topoPage, '아')
       expect(sample.cursorColumn, 'the cursor is not after the Codex prompt').toBe(2)
       expect(sample.rowTailFromCursor, 'the Codex placeholder is not under the cursor').toBe(
         placeholder
@@ -82,16 +82,16 @@ test.describe('Terminal mid-line Korean preedit occlusion', () => {
   })
 
   test('renders the row tail it covers, so the character after the cursor stays readable', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
-    const arena = await openTerminalImePaneArena(orcaPage)
+    const arena = await openTerminalImePaneArena(topoPage)
     let completed = false
     try {
       // 안녕하세요 then CUB 6 places the cursor on 하 (two cells per syllable).
-      await writeToActiveTerminal(orcaPage, '\x1b[2J\x1b[H안녕하세요\x1b[6D')
+      await writeToActiveTerminal(topoPage, '\x1b[2J\x1b[H안녕하세요\x1b[6D')
       await setImeComposition(arena.session, '가')
 
-      const sample = await sampleOpenComposition(orcaPage)
+      const sample = await sampleOpenComposition(topoPage)
       expect(sample.cursorColumn, 'the cursor is not sitting on 하').toBe(4)
       expect(sample.rowTailFromCursor, 'the row under the overlay is not the repro').toBe('하세요')
       expect(sample.coveredColumns, 'the overlay covers no grid columns to assert about').not.toBe(

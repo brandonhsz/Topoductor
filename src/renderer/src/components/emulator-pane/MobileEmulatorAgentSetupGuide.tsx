@@ -58,7 +58,7 @@ export function MobileEmulatorAgentSetupGuide({
               </span>
               {t(
                 'auto.components.emulator.pane.MobileEmulatorAgentSetupGuide.installSkillPrompt',
-                'Install the Orca CLI skill when you want agents to drive this simulator.'
+                'Install the Topo CLI skill when you want agents to drive this simulator.'
               )}
             </>
           )}

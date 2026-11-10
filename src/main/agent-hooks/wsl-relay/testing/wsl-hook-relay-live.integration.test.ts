@@ -40,7 +40,7 @@ describe.skipIf(process.platform === 'win32')(
   () => {
     let fakeHome: string
     let manager: WslHookRelayManager | null
-    let orcaServer: AgentHookServer | null
+    let topoServer: AgentHookServer | null
     let child: ChildProcessWithoutNullStreams | null
 
     beforeAll(() => {
@@ -58,7 +58,7 @@ describe.skipIf(process.platform === 'win32')(
 
     afterEach(() => {
       manager?.disposeAll()
-      orcaServer?.stop()
+      topoServer?.stop()
       child?.kill()
       rmSync(fakeHome, { recursive: true, force: true })
     })
@@ -78,27 +78,27 @@ describe.skipIf(process.platform === 'win32')(
       const preferredPort = await pickFreePort()
       const version = readFileSync(join(BUNDLE_DIR, '.version'), 'utf8').trim()
 
-      orcaServer = new AgentHookServer()
+      topoServer = new AgentHookServer()
       const events: { paneKey: string; payload: unknown; connectionId: string | null }[] = []
-      orcaServer.setListener((event) => {
+      topoServer.setListener((event) => {
         events.push({
           paneKey: event.paneKey,
           payload: event.payload,
           connectionId: event.connectionId
         })
       })
-      const server = orcaServer
+      const server = topoServer
 
       const warns: string[] = []
-      const codexHome = join(fakeHome, '.local', 'share', 'orca', 'codex-runtime-home', 'home')
+      const codexHome = join(fakeHome, '.local', 'share', 'topo', 'codex-runtime-home', 'home')
       manager = new WslHookRelayManager({
         platform: () => 'win32',
         remoteHooksEnabled: () => true,
         hookCoordsEnv: () => ({
-          ORCA_AGENT_HOOK_PORT: String(preferredPort),
-          ORCA_AGENT_HOOK_TOKEN: 'live-token',
-          ORCA_AGENT_HOOK_ENV: 'production',
-          ORCA_AGENT_HOOK_VERSION: '1'
+          TOPO_AGENT_HOOK_PORT: String(preferredPort),
+          TOPO_AGENT_HOOK_TOKEN: 'live-token',
+          TOPO_AGENT_HOOK_ENV: 'production',
+          TOPO_AGENT_HOOK_VERSION: '1'
         }),
         instanceKey: () => 'liveinstance',
         resolveBundle: () => ({ jsPath: BUNDLE_JS, version }),
@@ -150,7 +150,7 @@ describe.skipIf(process.platform === 'win32')(
         { timeout: 15_000 }
       )
       const claudeScript = readFileSync(
-        join(fakeHome, '.orca', 'agent-hooks', 'claude-hook.sh'),
+        join(fakeHome, '.topo', 'agent-hooks', 'claude-hook.sh'),
         'utf8'
       )
       expect(claudeScript).toContain('/hook/claude')
@@ -161,15 +161,15 @@ describe.skipIf(process.platform === 'win32')(
       // Read the actual endpoint because the preferred port may have been occupied.
       const endpointFile = join(
         fakeHome,
-        '.orca-wsl',
+        '.topo-wsl',
         'agent-hooks',
         'instance-liveinstance',
         'endpoint.env'
       )
       expect(existsSync(endpointFile)).toBe(true)
       const endpointText = readFileSync(endpointFile, 'utf8')
-      const port = Number(/ORCA_AGENT_HOOK_PORT=['"]?(\d+)/.exec(endpointText)?.[1])
-      const token = /ORCA_AGENT_HOOK_TOKEN=['"]?([A-Za-z0-9-]+)/.exec(endpointText)?.[1]
+      const port = Number(/TOPO_AGENT_HOOK_PORT=['"]?(\d+)/.exec(endpointText)?.[1])
+      const token = /TOPO_AGENT_HOOK_TOKEN=['"]?([A-Za-z0-9-]+)/.exec(endpointText)?.[1]
       expect(port).toBeGreaterThan(0)
       expect(token).toBe('live-token')
 
@@ -179,7 +179,7 @@ describe.skipIf(process.platform === 'win32')(
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Orca-Agent-Hook-Token': token ?? ''
+            'X-Topo-Agent-Hook-Token': token ?? ''
           },
           body: JSON.stringify({
             paneKey,

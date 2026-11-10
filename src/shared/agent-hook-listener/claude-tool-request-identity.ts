@@ -24,7 +24,7 @@ export type ClaudeToolCall = ClaudeToolRequestFields & {
 
 /**
  * Something on screen that waits on the user and carries no tool_use_id: an MCP dialog, identified by its
- * owner, server and elicitation id, or a blocker whose request Orca cannot identify.
+ * owner, server and elicitation id, or a blocker whose request Topo cannot identify.
  */
 export type ClaudeUserWait = ClaudeToolRequestFields & {
   kind: 'elicitation' | 'unidentified'

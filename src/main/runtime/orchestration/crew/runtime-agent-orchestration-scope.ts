@@ -23,10 +23,10 @@ export function createOrchestrationProjectionScope(
         ReturnType<OrchestrationDb['listSessionDispatchesForPresentation']>[number]
       >()
       for (const candidate of db?.listSessionDispatchesForPresentation(now) ?? []) {
-        if (!candidate.dispatch.assignee_orca_session_id) {
+        if (!candidate.dispatch.assignee_topo_session_id) {
           continue
         }
-        const paneKey = resolve(candidate.dispatch.assignee_orca_session_id)
+        const paneKey = resolve(candidate.dispatch.assignee_topo_session_id)
         const previous = destinations.get(paneKey)
         const active =
           candidate.dispatch.status === 'pending' || candidate.dispatch.status === 'dispatched'

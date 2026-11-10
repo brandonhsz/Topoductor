@@ -142,7 +142,7 @@ describe('interrupted swaps', () => {
     const input = serviceInput(home, { force: [home.shared] })
     const plan = await previewBundledSkillInstall(input)
     await installBundledSkills({ ...input, filesystem: crashingFilesystem(2) }, plan.planDigest)
-    const backups = join(home.home, '.agents', '.orca-skill-backups')
+    const backups = join(home.home, '.agents', '.topo-skill-backups')
     const [backup] = await readdir(backups)
     expect(await readFile(join(backups, backup, 'SKILL.md'), 'utf8')).toContain('mine')
     expect(sharedOp(await previewBundledSkillInstall({ ...input, force: [] }))).toEqual({
@@ -175,7 +175,7 @@ describe('the disk changing under a plan', () => {
     expect(result.skills[0].ops.map((op) => [op.kind, op.status])).toEqual([['replace', 'changed']])
     expect(await readFile(join(home.shared, 'SKILL.md'), 'utf8')).toBe(text)
     expect(await readFile(auxiliaryPath, 'utf8')).toBe('raced\n')
-    expect(await readdir(join(home.home, '.agents', '.orca-skill-backups'))).toEqual([])
+    expect(await readdir(join(home.home, '.agents', '.topo-skill-backups'))).toEqual([])
     expect(await leftoverSiblings(home.shared)).toEqual([])
   })
 
@@ -226,7 +226,7 @@ describe('the disk changing under a plan', () => {
       ...nativeBundledSkillFilesystem,
       rename: async (source, target) => {
         await nativeBundledSkillFilesystem.rename(source, target)
-        if (target.includes('.orca-old-')) {
+        if (target.includes('.topo-old-')) {
           await writeFile(join(target, 'SKILL.md'), 'raced\n')
         }
       }

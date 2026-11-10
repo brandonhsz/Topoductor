@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import {
   orchestrationMutationRecoveryError,
   renderCommand
@@ -31,18 +31,18 @@ describe('orchestration mutation recovery', () => {
   it.each([
     [
       'split',
-      ['orca', 'orchestration', 'send', '--pairing-code', 'split-secret', '--subject', 'status'],
+      ['topo', 'orchestration', 'send', '--pairing-code', 'split-secret', '--subject', 'status'],
       'split-secret'
     ],
     [
       'equals',
-      ['orca', 'orchestration', 'send', '--pairing-code=equals-secret', '--subject', 'status'],
+      ['topo', 'orchestration', 'send', '--pairing-code=equals-secret', '--subject', 'status'],
       'equals-secret'
     ],
     [
       'dispatch split',
       [
-        'orca',
+        'topo',
         'orchestration',
         'send',
         '--dispatch-capability',
@@ -55,7 +55,7 @@ describe('orchestration mutation recovery', () => {
     [
       'dispatch equals',
       [
-        'orca',
+        'topo',
         'orchestration',
         'send',
         '--dispatch-capability=equals-dispatch-secret',

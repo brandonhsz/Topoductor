@@ -29,7 +29,7 @@ export function preservedDaemonProcessExited(pid: number | undefined): boolean {
   return pid !== undefined && inspectProcessSignal(pid) === 'missing'
 }
 
-/** Decide whether a daemon Orca cannot respawn is gone for good, so its PTYs can end as host loss. */
+/** Decide whether a daemon Topo cannot respawn is gone for good, so its PTYs can end as host loss. */
 export async function confirmPreservedEndpointLoss(args: {
   connect: () => Promise<void>
   shouldContinue: () => boolean

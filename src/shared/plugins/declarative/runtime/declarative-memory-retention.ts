@@ -1,4 +1,4 @@
-import { memoryEntry, watchMemoryAtoms, type OrcaAtom } from './declarative-atoms'
+import { memoryEntry, watchMemoryAtoms, type TopoAtom } from './declarative-atoms'
 import { assertPlainJson } from './declarative-evaluate'
 
 // Why short: the guest is gone right after the save that replaces it, before a longer wait ends.
@@ -6,19 +6,19 @@ const RETAIN_DEBOUNCE_MS = 50
 // The host's `ui.retain` schema takes at most this many entries per message.
 const RETAIN_BATCH = 64
 
-export type OrcaRetainedEntry = { key: string; version: number; value?: unknown }
+export type TopoRetainedEntry = { key: string; version: number; value?: unknown }
 
 /**
  * Dev hot reload: once the host asks (`ui.hydrate` with `retain`), posts keyed memory atoms that
  * change, so the next guest of this panel starts from them. A value that is not plain JSON is
  * posted without `value`, which makes the next guest start that atom over.
  */
-export function createMemoryRetention(post: (entries: OrcaRetainedEntry[]) => void): {
+export function createMemoryRetention(post: (entries: TopoRetainedEntry[]) => void): {
   start: () => void
   flush: () => void
   stop: () => void
 } {
-  const pending = new Set<OrcaAtom<unknown>>()
+  const pending = new Set<TopoAtom<unknown>>()
   let timer: ReturnType<typeof setTimeout> | null = null
   let started = false
 
@@ -27,7 +27,7 @@ export function createMemoryRetention(post: (entries: OrcaRetainedEntry[]) => vo
       clearTimeout(timer)
       timer = null
     }
-    const entries: OrcaRetainedEntry[] = []
+    const entries: TopoRetainedEntry[] = []
     for (const target of pending) {
       const entry = memoryEntry(target)
       if (!entry) {
@@ -47,7 +47,7 @@ export function createMemoryRetention(post: (entries: OrcaRetainedEntry[]) => vo
     }
   }
 
-  function add(target: OrcaAtom<unknown>): void {
+  function add(target: TopoAtom<unknown>): void {
     pending.add(target)
     timer ??= setTimeout(flush, RETAIN_DEBOUNCE_MS)
   }

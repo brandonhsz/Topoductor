@@ -38,7 +38,7 @@
       "title": "Histórico de Sessões de Agente",
       "unavailable": "Histórico de Sessões de Agente Indisponível",
       "unknownHostPlatform": "Não foi possível determinar a plataforma do host.",
-      "updateHost": "Atualize o Orca neste host para consultar o histórico de sessões de agente.",
+      "updateHost": "Atualize o Topo neste host para consultar o histórico de sessões de agente.",
       "waitingForHost": "Aguardando host…",
       "workspace": "Espaço de Trabalho"
     },
@@ -75,7 +75,7 @@
       "stepProgress": "Etapa {{step}} de {{total}}"
     },
     "notifications": {
-      "description": "Receba alertas dos agentes mesmo com o app fechado. Enviados pelo serviço de notificações push do Orca e pela Apple ou pelo Google."
+      "description": "Receba alertas dos agentes mesmo com o app fechado. Enviados pelo serviço de notificações push do Topo e pela Apple ou pelo Google."
     },
     "pair": {
       "backToHome": "Voltar ao início",
@@ -94,19 +94,19 @@
     "pairScan": {
       "cameraDisabledDescription": "Ative o acesso à câmera nas Configurações ou cole o código de pareamento.",
       "cameraDisabledTitle": "Acesso à câmera desativado",
-      "cameraPermissionDescription": "Escaneie o código QR do Orca no seu desktop ou cole o código de pareamento.",
+      "cameraPermissionDescription": "Escaneie o código QR do Topo no seu desktop ou cole o código de pareamento.",
       "connectTimedOut": "Não foi possível conectar em {{seconds}}s — veja no log abaixo em que etapa a conexão parou",
       "connecting": "Conectando…",
       "invalidPairingCode": "Código de pareamento inválido — copie-o do seu computador e cole novamente",
-      "invalidQrCode": "Código QR do Orca inválido",
+      "invalidQrCode": "Código QR do Topo inválido",
       "downloadQrCode": "Esse é o código de download. Leia o código de pareamento na etapa 2 no seu computador.",
-      "openDesktopStep": "Abra o Orca no seu computador",
+      "openDesktopStep": "Abra o Topo no seu computador",
       "openMobileSettingsStep": "Vá para Configurações → Mobile",
       "openSettings": "Abrir Configurações",
       "pairingFailed": "Falha no pareamento: {{error}}",
       "pairingLog": "Log de pareamento",
       "pasteCodeMessage": "Copie o código que aparece abaixo do QR no seu computador.",
-      "pasteCodePlaceholder": "orca://pair?code=... ou cole o código",
+      "pasteCodePlaceholder": "topo://pair?code=... ou cole o código",
       "pasteCodeTitle": "Colar código de pareamento",
       "pasteInstead": "Colar código em vez disso",
       "pastePairingCode": "Ou colar o código de pareamento",
@@ -121,7 +121,7 @@
       "largeText": "Grande (125%)",
       "largerText": "Maior (150%)",
       "largestText": "Máximo (200%)",
-      "leaveAppDescription": "Enquanto você usa um terminal no celular, o Orca o reduz para caber na tela. Ao fechar o app ou alternar para outro, esta opção define se o terminal mantém o tamanho do celular (evitando que ferramentas de CLI interativas reorganizem o conteúdo) ou volta ao tamanho do desktop. Você pode usar Restaurar no banner do desktop a qualquer momento para redimensioná-lo manualmente.",
+      "leaveAppDescription": "Enquanto você usa um terminal no celular, o Topo o reduz para caber na tela. Ao fechar o app ou alternar para outro, esta opção define se o terminal mantém o tamanho do celular (evitando que ferramentas de CLI interativas reorganizem o conteúdo) ou volta ao tamanho do desktop. Você pode usar Restaurar no banner do desktop a qualquer momento para redimensioná-lo manualmente.",
       "leaveAppHeading": "AO SAIR DO APP",
       "noPairedDesktops": "Nenhum desktop pareado ainda. Pareie um para controlar o comportamento do terminal.",
       "restoreAfterMinutes_many": "Após {{count}} minutos",
@@ -246,7 +246,7 @@
       "copyFailed": "Não foi possível copiar a imagem",
       "saveFailed": "Não foi possível salvar a imagem",
       "shareFailed": "Não foi possível compartilhar a imagem",
-      "photosAccessDenied": "Permita que o Orca adicione fotos em Ajustes",
+      "photosAccessDenied": "Permita que o Topo adicione fotos em Ajustes",
       "imageTooLarge": "Esta imagem é grande demais"
     },
     "nativeChatProse": {
@@ -317,13 +317,13 @@
       "greenLead": "CI verde em",
       "at": "em"
     },
-    "orcaStop": {
+    "topoStop": {
       "canContinue": "Você pode continuar nesta conversa.",
-      "crash": "O Orca ({{machine}}) parou inesperadamente enquanto esta resposta estava em andamento.",
-      "quit": "O Orca ({{machine}}) foi fechado enquanto esta resposta estava em andamento.",
-      "remote": "O Orca ({{machine}}) parou enquanto esta resposta estava em andamento.",
+      "crash": "O Topo ({{machine}}) parou inesperadamente enquanto esta resposta estava em andamento.",
+      "quit": "O Topo ({{machine}}) foi fechado enquanto esta resposta estava em andamento.",
+      "remote": "O Topo ({{machine}}) parou enquanto esta resposta estava em andamento.",
       "unnamedServer": "o servidor remoto",
-      "update": "O Orca ({{machine}}) reiniciou para uma atualização enquanto esta resposta estava em andamento."
+      "update": "O Topo ({{machine}}) reiniciou para uma atualização enquanto esta resposta estava em andamento."
     },
     "interruptedContinue": {
       "failed": "Não foi possível continuar este chat. Tente novamente ou envie uma mensagem.",
@@ -334,7 +334,7 @@
     },
     "permission": {
       "needsAccessTo": "Precisa de acesso a: ",
-      "newerVersionRequired": "Esta solicitação requer uma versão mais recente do Orca.",
+      "newerVersionRequired": "Esta solicitação requer uma versão mais recente do Topo.",
       "planFile": "Arquivo do plano: {{filePath}}",
       "reason": "Motivo: "
     },
@@ -368,7 +368,7 @@
       "waitingFor": "Será enviada quando {{host}} voltar",
       "waiting": "Será enviada quando o computador voltar",
       "behind": "Aguardando — uma mensagem anterior precisa de atenção",
-      "closed": "Não enviada antes de o Orca fechar"
+      "closed": "Não enviada antes de o Topo fechar"
     },
     "receipt": {
       "cancelled": "Cancelado",
@@ -605,9 +605,9 @@
       "autoContinueCancel": "Não continuar",
       "statusResetAt": "Redefinido às {{time}}",
       "statusResetsAt": "Redefine às {{time}}",
-      "statusContinuesShortly": "O Orca continuará em breve",
-      "statusContinuesThen": "O Orca continuará então",
-      "statusWontContinue": "O Orca não continuará automaticamente"
+      "statusContinuesShortly": "O Topo continuará em breve",
+      "statusContinuesThen": "O Topo continuará então",
+      "statusWontContinue": "O Topo não continuará automaticamente"
     },
     "useImageUpload": {
       "attachFailed": "Falha ao anexar",
@@ -624,7 +624,7 @@
       "incompleteReply": "O anexo foi alterado ou a resposta estava incompleta. Feche-o e tente novamente.",
       "notText": "Não é possível visualizar este arquivo como texto. Salve-o para abri-lo em outro aplicativo.",
       "openFailed": "Não foi possível abrir o anexo. Tente novamente.",
-      "hostUpdate": "Este host ainda não pode abrir anexos de texto. Atualize o Orca nesse host e tente novamente.",
+      "hostUpdate": "Este host ainda não pode abrir anexos de texto. Atualize o Topo nesse host e tente novamente.",
       "copyTooLarge": "Este arquivo é grande demais para copiar. Salve-o em vez disso.",
       "connectionChanged": "A conexão mudou. Tente abrir o anexo novamente.",
       "hostChanged": "O host do anexo mudou. Feche-o e abra-o novamente.",
@@ -672,10 +672,10 @@
       "historyLimit": "Esta conversa é longa demais para voltar a uma mensagem anterior. Nada foi alterado.",
       "providerRefused": "O agente não conseguiu voltar a esta mensagem.",
       "proofMismatch": "O histórico do agente não corresponde a este chat. Confira a conversa antes de continuar.",
-      "outcomeUnknown": "O Orca não conseguiu confirmar se a conversa voltou a uma mensagem anterior. Ele verifica antes de enviar sua próxima mensagem.",
-      "refused": "O Orca não conseguiu voltar a esta mensagem. Confira a conversa antes de continuar.",
+      "outcomeUnknown": "O Topo não conseguiu confirmar se a conversa voltou a uma mensagem anterior. Ele verifica antes de enviar sua próxima mensagem.",
+      "refused": "O Topo não conseguiu voltar a esta mensagem. Confira a conversa antes de continuar.",
       "unavailable": "Aguarde o término da conexão do chat.",
-      "outcomeUnknownReturned": "O Orca não conseguiu confirmar se a conversa voltou a esta mensagem. Sua mensagem está de volta no campo de texto, e o Orca verifica a conversa antes de enviar sua próxima mensagem.",
+      "outcomeUnknownReturned": "O Topo não conseguiu confirmar se a conversa voltou a esta mensagem. Sua mensagem está de volta no campo de texto, e o Topo verifica a conversa antes de enviar sua próxima mensagem.",
       "timeout": "O chat não foi atualizado depois de voltar a esta mensagem. Abra novamente para ver a versão mais recente.",
       "pending": "Aguarde a conversa voltar à mensagem anterior."
     },
@@ -683,7 +683,7 @@
       "busy": "Outro chat ou terminal está abrindo. Aguarde e tente ramificar o chat do {{agent}} novamente.",
       "unconfirmed": "{{agent}} não conseguiu confirmar a ramificação. Ela pode ter sido aberta; confira o histórico de sessões antes de tentar novamente.",
       "failed": "{{agent}} não conseguiu ramificar este chat. {{detail}}",
-      "unsupported": "Este host executa uma versão antiga do Orca. Atualize o Orca no host e tente novamente."
+      "unsupported": "Este host executa uma versão antiga do Topo. Atualize o Topo no host e tente novamente."
     }
   },
   "common": {
@@ -716,7 +716,7 @@
       "copyFailed": "Não foi possível copiar",
       "copyPrompt": "Copiar prompt",
       "statusUnreadable": "Não foi possível ler o status deste host. Tentando novamente…",
-      "updateRequired": "Atualize o Orca no seu computador para iniciar um agente pelo celular."
+      "updateRequired": "Atualize o Topo no seu computador para iniciar um agente pelo celular."
     },
     "agentSpinner": {
       "monitoring": "Monitorando tarefas em segundo plano",
@@ -731,7 +731,7 @@
     },
     "authFailedBannerActions": {
       "repair": "Parear novamente",
-      "webNote": "Reconecte ou remova este host pelo aplicativo Orca."
+      "webNote": "Reconecte ou remova este host pelo aplicativo Topo."
     },
     "codexResetCredit": {
       "alreadyAppliedTitle": "Redefinição já aplicada",
@@ -849,7 +849,7 @@
       "unsentNotes_many": "{{count}} notas não enviadas",
       "unsentNotes_one": "{{count}} nota não enviada",
       "unsentNotes_other": "{{count}} notas não enviadas",
-      "updateRequired": "Atualize o Orca no seu computador"
+      "updateRequired": "Atualize o Topo no seu computador"
     },
     "diffReviewFileSummary": {
       "changed": "Alterado",
@@ -911,10 +911,10 @@
     },
     "jiraConnectPrompt": {
       "checkAgain": "Verificar novamente",
-      "connectHint": "Adicione seu site do Jira no Orca para desktop em Configurações → Integrações e verifique novamente.",
+      "connectHint": "Adicione seu site do Jira no Topo para desktop em Configurações → Integrações e verifique novamente.",
       "connectOnDesktop": "Conecte o Jira no seu desktop",
       "credentialUnreadable": "Não foi possível ler as credenciais salvas do Jira: {{credentialError}}",
-      "updateDesktop": "Atualize o Orca no desktop"
+      "updateDesktop": "Atualize o Topo no desktop"
     },
     "markdownBlocks": {
       "copyCode": "Copiar código",
@@ -979,20 +979,20 @@
     },
     "protocolBlockScreen": {
       "backToHosts": "Voltar para hosts",
-      "desktopTooOldBody": "A versão do app desktop pareado é antiga demais para a sua versão atual do Orca Mobile. Atualize o Orca no seu computador e tente se conectar a este host novamente.",
-      "getVersion": "Baixar o Orca {{version}}",
-      "mobileTooOldAppStore": "Este desktop precisa de uma versão mais recente do Orca Mobile. Atualize o Orca Mobile pela App Store e tente se conectar a este host novamente.",
-      "mobileTooOldGitHubReleases": "Este desktop precisa de uma versão mais recente do Orca Mobile. Atualize o Orca Mobile pelo GitHub Releases e tente se conectar a este host novamente.",
+      "desktopTooOldBody": "A versão do app desktop pareado é antiga demais para a sua versão atual do Topo Mobile. Atualize o Topo no seu computador e tente se conectar a este host novamente.",
+      "getVersion": "Baixar o Topo {{version}}",
+      "mobileTooOldAppStore": "Este desktop precisa de uma versão mais recente do Topo Mobile. Atualize o Topo Mobile pela App Store e tente se conectar a este host novamente.",
+      "mobileTooOldGitHubReleases": "Este desktop precisa de uma versão mais recente do Topo Mobile. Atualize o Topo Mobile pelo GitHub Releases e tente se conectar a este host novamente.",
       "openAppStore": "Abrir a App Store",
       "openGitHubReleases": "Abrir GitHub Releases",
       "refreshRecoveryNote": "Se esta mensagem persistir, remova este host e faça o pareamento novamente.",
       "refreshWorkspaceBody": "O espaço de trabalho em cache deste host é mais antigo do que o desktop espera. Reconecte-se a este host para baixar a versão atual.",
       "refreshWorkspaceTitle": "Atualizar o espaço de trabalho mobile",
-      "updateDesktopTitle": "Atualizar o Orca no seu computador",
-      "updateMobileTitle": "Atualizar o Orca Mobile",
+      "updateDesktopTitle": "Atualizar o Topo no seu computador",
+      "updateMobileTitle": "Atualizar o Topo Mobile",
       "updateRecoveryNote": "Já atualizou? Volte para Hosts e atualize a conexão. Se esta mensagem persistir, remova este host e faça o pareamento novamente.",
-      "workspaceNeedsUpdateAppStore": "O espaço de trabalho mobile deste desktop precisa de uma versão mais recente do Orca Mobile. Atualize o Orca Mobile pela App Store e tente se conectar a este host novamente.",
-      "workspaceNeedsUpdateGitHubReleases": "O espaço de trabalho mobile deste desktop precisa de uma versão mais recente do Orca Mobile. Atualize o Orca Mobile pelo GitHub Releases e tente se conectar a este host novamente."
+      "workspaceNeedsUpdateAppStore": "O espaço de trabalho mobile deste desktop precisa de uma versão mais recente do Topo Mobile. Atualize o Topo Mobile pela App Store e tente se conectar a este host novamente.",
+      "workspaceNeedsUpdateGitHubReleases": "O espaço de trabalho mobile deste desktop precisa de uma versão mais recente do Topo Mobile. Atualize o Topo Mobile pelo GitHub Releases e tente se conectar a este host novamente."
     },
     "richMarkdownEditor": {
       "imageUrl": "URL da imagem",
@@ -1021,7 +1021,7 @@
     },
     "setupHookTrustDrawer": {
       "alwaysTrustAndRun": "Sempre confiar e executar",
-      "description": "O orca.yaml deste repositório é executado antes de o espaço de trabalho iniciar. Só o execute se você confiar neste repositório.",
+      "description": "O topo.yaml deste repositório é executado antes de o espaço de trabalho iniciar. Só o execute se você confiar neste repositório.",
       "dontRun": "Não executar",
       "newScriptLabel": "Novo script de configuração",
       "runHooks": "Executar hooks",
@@ -1154,7 +1154,7 @@
       "disconnected": "Desconectado",
       "hostFallback": "Host",
       "hostOffline": "{{host}} está off-line",
-      "hostOfflineDetail": "Verifique se o computador não está suspenso, se o Orca está em execução e se você entrou na sua conta",
+      "hostOfflineDetail": "Verifique se o computador não está suspenso, se o Topo está em execução e se você entrou na sua conta",
       "labelWithHint": "{{label}} — {{hint}}",
       "pairingInvalid": "Pareamento inválido — pareie novamente com seu desktop",
       "rePairDetail": "Pareie novamente com seu desktop",
@@ -1162,7 +1162,7 @@
       "relayAccessExpired": "Acesso ao Relay expirado para {{host}}",
       "relayConnectFailed": "Não foi possível conectar via Relay",
       "relayUnreachable": "Não foi possível acessar o Relay",
-      "signInDetail": "Entre no Orca no seu desktop para se reconectar",
+      "signInDetail": "Entre no Topo no seu desktop para se reconectar",
       "signInRequired": "Login necessário em {{host}}",
       "tailscaleHint": "verifique o Tailscale"
     },
@@ -1207,7 +1207,7 @@
       "privacyHint": "Envia um relatório de tamanho limitado com dados sensíveis ocultados, incluindo nome do host, endereço de conexão, versões, estado da conexão e eventos — nunca o conteúdo do terminal ou credenciais.",
       "reconnecting": "reconectando",
       "retrySending": "Tentar enviar novamente",
-      "sendDiagnostics": "Enviar diagnóstico ao Orca",
+      "sendDiagnostics": "Enviar diagnóstico ao Topo",
       "sending": "Enviando…",
       "sent": "Diagnóstico enviado",
       "stateWithAttempt": "{{state}} · tentativa {{attempts}}",
@@ -1230,21 +1230,21 @@
       "title": "Atualizações de espaços de trabalho"
     },
     "troubleshootCommonIssues": {
-      "allowNotifications": "Verifique se as configurações do sistema permitem notificações do Orca e se o modo Foco ou Não Perturbe está desativado.",
+      "allowNotifications": "Verifique se as configurações do sistema permitem notificações do Topo e se o modo Foco ou Não Perturbe está desativado.",
       "checkTailnet": "Verifique se o desktop está fora do modo de suspensão e aparece como conectado na sua tailnet.",
       "desktopTitle": "App desktop não está em execução",
       "disableVpn": "Desative essa VPN ou ative o tunelamento dividido / \"Permitir LAN\".",
       "firewallTitle": "Firewall bloqueando a porta {{port}}",
       "linuxFirewall": "Linux: sudo ufw allow {{port}}",
       "keepTailscaleOn": "Hosts com endereços como 100.x.x.x ou *.ts.net se conectam via Tailscale — mantenha-o ATIVADO.",
-      "macosFirewall": "macOS: Ajustes do Sistema → Rede → Firewall — permita o Orca.",
+      "macosFirewall": "macOS: Ajustes do Sistema → Rede → Firewall — permita o Topo.",
       "notificationNetwork": "Tente usar os dados móveis ou outra rede Wi-Fi. Se os alertas chegarem após a troca, sua rede pode estar atrasando a entrega.",
       "notificationsTitle": "Notificações push",
-      "openDesktop": "O Orca precisa estar aberto no seu desktop para aceitar conexões.",
+      "openDesktop": "O Topo precisa estar aberto no seu desktop para aceitar conexões.",
       "pairAfterUpdate": "Após uma atualização, pode ser necessário parear novamente usando um código QR.",
       "reconnectWifi": "Tente reconectar o Wi-Fi nos dois dispositivos.",
       "restartBothApps": "Reinicie os dois apps se os erros de tempo limite persistirem.",
-      "restartDesktop": "Tente reiniciar o Orca — o servidor de conexão com o celular inicia junto com o app.",
+      "restartDesktop": "Tente reiniciar o Topo — o servidor de conexão com o celular inicia junto com o app.",
       "restartTailscale": "O iOS e o Android podem travar o túnel sem aviso: desative e reative o Tailscale no app Tailscale.",
       "restrictedNetwork": "Redes corporativas ou escolares podem bloquear P2P — tente usar um ponto de acesso pessoal.",
       "retryHost": "Volte à lista de hosts e toque no seu host para tentar novamente.",
@@ -1257,7 +1257,7 @@
       "vpnTitle": "Interferência de outra VPN",
       "wifiSignal": "Verifique a intensidade do sinal Wi-Fi no seu celular.",
       "wifiTitle": "Redes Wi-Fi diferentes",
-      "windowsFirewall": "Windows: Firewall do Windows Defender → Permitir um aplicativo — habilite o Orca para redes privadas."
+      "windowsFirewall": "Windows: Firewall do Windows Defender → Permitir um aplicativo — habilite o Topo para redes privadas."
     },
     "troubleshootView": {
       "commonIssues": "Problemas comuns",
@@ -1331,15 +1331,15 @@
   },
   "dictation": {
     "setup": {
-      "alreadyActive": "O ditado já está em uso no computador ou em outro celular. Atualize o Orca no computador para ditar em vários dispositivos ao mesmo tempo.",
+      "alreadyActive": "O ditado já está em uso no computador ou em outro celular. Atualize o Topo no computador para ditar em vários dispositivos ao mesmo tempo.",
       "cloudModelNeedsKey": "Requer uma chave da OpenAI",
       "deleteFailed": "Falha ao excluir o modelo",
-      "desktopUpdateRequired": "Atualize o app Orca no desktop pareado para usar as configurações de voz do celular.",
+      "desktopUpdateRequired": "Atualize o app Topo no desktop pareado para usar as configurações de voz do celular.",
       "downloadFailed": "Falha ao iniciar o download",
       "loadFailed": "Falha ao carregar os modelos de ditado",
       "modelBusy": "Outro dispositivo está ditando com um modelo de voz diferente. Tente de novo quando ele terminar.",
       "repairRequired": "Pareie este celular novamente com o computador para usar o ditado.",
-      "serverUpdateRequired": "Atualize o Orca neste servidor para usar o ditado por voz.",
+      "serverUpdateRequired": "Atualize o Topo neste servidor para usar o ditado por voz.",
       "sessionLimit": "Há dispositivos demais ditando neste computador. Tente de novo quando um deles terminar.",
       "sessionLost": "O ditado perdeu a conexão com o computador. Tente novamente.",
       "updateFailed": "Falha ao atualizar as configurações de ditado"
@@ -1475,7 +1475,7 @@
       "open": "Abrir PDF",
       "openFailed": "Não foi possível abrir este PDF",
       "opening": "Abrindo PDF…",
-      "updateRequired": "Atualize o Orca Mobile para abrir PDFs"
+      "updateRequired": "Atualize o Topo Mobile para abrir PDFs"
     },
     "unsavedEditsOffer": {
       "changedSince": "Alterado no desktop desde suas edições de {{time}}",
@@ -1487,9 +1487,9 @@
   },
   "home": {
     "appUpdateCard": {
-      "dismissAccessibilityLabel": "Descartar atualização do Orca {{version}}",
-      "title": "Orca {{version}} está disponível",
-      "updateAccessibilityLabel": "Orca {{version}} está disponível, toque para atualizar"
+      "dismissAccessibilityLabel": "Descartar atualização do Topo {{version}}",
+      "title": "Topo {{version}} está disponível",
+      "updateAccessibilityLabel": "Topo {{version}} está disponível, toque para atualizar"
     },
     "automationsTab": {
       "connectDesktop": "Conecte {{desktop}} para ver e executar automações.",
@@ -1503,14 +1503,14 @@
       "scheduled": "Agendadas",
       "showFor": "Mostrar automações de",
       "toggleFailed": "Não foi possível atualizar {{name}}",
-      "updateDesktop": "Atualize o Orca em {{desktop}} para usar automações."
+      "updateDesktop": "Atualize o Topo em {{desktop}} para usar automações."
     },
     "emptyState": {
       "connectedDescription": "Seu desktop aparecerá aqui. Tudo é criptografado de ponta a ponta.",
       "connectedTitle": "Você está conectado",
-      "description": "Pareie com o Orca no seu computador para acompanhar seus agentes, acessar qualquer terminal e gerenciar o trabalho pelo celular.",
+      "description": "Pareie com o Topo no seu computador para acompanhar seus agentes, acessar qualquer terminal e gerenciar o trabalho pelo celular.",
       "openDesktopDescription": "Vá para Configurações → Mobile e gere um código QR de pareamento.",
-      "openDesktopTitle": "Abra o Orca no desktop",
+      "openDesktopTitle": "Abra o Topo no desktop",
       "scanCodeTitle": "Escaneie o código",
       "title": "Conecte seu desktop"
     },
@@ -1609,8 +1609,8 @@
     },
     "hostScreenOverlays": {
       "deleteConfirmMessage": "Excluir \"{{name}}\" ({{branch}})?",
-      "deleteDestroysEnvironment": "Isto também destrói o ambiente \"{{environment}}\" que o Orca criou para ele, com as alterações não confirmadas e os terminais em execução nele.",
-      "deleteKeepsEnvironment": "O ambiente \"{{environment}}\" que o Orca criou para ele continua em execução: a receita não tem um passo de destruição.",
+      "deleteDestroysEnvironment": "Isto também destrói o ambiente \"{{environment}}\" que o Topo criou para ele, com as alterações não confirmadas e os terminais em execução nele.",
+      "deleteKeepsEnvironment": "O ambiente \"{{environment}}\" que o Topo criou para ele continua em execução: a receita não tem um passo de destruição.",
       "deleteWorktree": "Excluir Worktree",
       "pin": "Fixar",
       "primaryWorktreeDeleteHint": "Worktree primária — não pode ser excluída. Remova o projeto em vez disso.",
@@ -1627,7 +1627,7 @@
       "closed": "Fechado",
       "createdByAutomation": "Criado por automação",
       "createdByNamedAutomation": "Criado pela automação “{{name}}”",
-      "createdFromCli": "Criado via Orca CLI",
+      "createdFromCli": "Criado via Topo CLI",
       "draft": "Rascunho",
       "merged": "Mergeado",
       "openLink": "Abrir {{label}}",
@@ -1736,7 +1736,7 @@
   "notifications": {
     "desktopChannel": {
       "name": "Notificações do desktop",
-      "silentName": "Notificações silenciosas do Orca"
+      "silentName": "Notificações silenciosas do Topo"
     },
     "notificationDeliverySection": {
       "footer": "Os tipos de alerta seguem as configurações de notificação de cada desktop pareado. As notificações são pausadas após 7 dias sem usar este app; abra-o e reconecte-se para retomá-las.",
@@ -1761,7 +1761,7 @@
       "keepTerminal": "Manter terminal",
       "notNow": "Agora não",
       "notificationsDescription": "Receba uma notificação neste celular quando um agente terminar ou estiver aguardando — mesmo sem usar o app.",
-      "notificationsDisclosure": "Enviadas pelo serviço de notificações push do Orca após 3 minutos de inatividade do seu desktop. Altere isso a qualquer momento em Configurações.",
+      "notificationsDisclosure": "Enviadas pelo serviço de notificações push do Topo após 3 minutos de inatividade do seu desktop. Altere isso a qualquer momento em Configurações.",
       "notificationsTitle": "Saiba quando um agente precisar de você",
       "openInChatUi": "Abrir sessões na interface de chat",
       "openInTerminal": "Abrir sessões no terminal",
@@ -2110,7 +2110,7 @@
       "committedChangesFailed": "Falha ao carregar alterações commitadas",
       "committedChangesUnavailable": "Alterações commitadas indisponíveis",
       "committedDiffUnavailable": "Diff de alterações commitadas indisponível",
-      "desktopUpdateRequired": "Atualize o Orca no desktop para revisar alterações no celular.",
+      "desktopUpdateRequired": "Atualize o Topo no desktop para revisar alterações no celular.",
       "diffLoadFailed": "Não foi possível carregar o diff",
       "reviewNotesLoadFailed": "Não foi possível carregar as notas de revisão"
     },
@@ -2126,7 +2126,7 @@
     },
     "failure": {
       "accountSwitchInProgress": "A configuração de {{agent}} está sendo alterada neste host. Tente novamente quando terminar.",
-      "agentCommandNotRunnable": "O Comando de {{agent}} em Configurações → Agentes deve ser o caminho ou nome de um programa que o Orca possa encontrar, sem argumentos nem variáveis. Altere-o ou redefina-o.",
+      "agentCommandNotRunnable": "O Comando de {{agent}} em Configurações → Agentes deve ser o caminho ou nome de um programa que o Topo possa encontrar, sem argumentos nem variáveis. Altere-o ou redefina-o.",
       "agentCommandNotSignedIn": "Entre na conta de {{agent}} com `{{loginCommand}}` no computador que executa este chat.",
       "agentNotSignedIn": "Entre na conta de {{agent}}.",
       "agentStarting": "O agente ainda está iniciando.",
@@ -2187,13 +2187,13 @@
       "fullAccessAsRoot": "{{agent}} não usará Acesso total enquanto for executado como root. Escolha outra permissão para {{agent}} em Configurações → Agentes para o computador que executa este chat e inicie um novo chat.",
       "historyInOtherAccount": "O histórico deste chat está em outra conta do Claude. Volte para essa conta para continuar.",
       "historyTooLarge": "O histórico desta conversa é grande demais para ser restaurado aqui.",
-      "hostFault": "O Orca encontrou um problema, por isso isto não foi concluído.",
-      "hostFaultTryAgain": "O Orca encontrou um problema, por isso isto não foi concluído. Tente novamente.",
-      "hostRestarted": "O Orca reiniciou antes de esta mensagem ser enviada.",
-      "hostStopped": "{{agent}} não terminou de iniciar, por isso o Orca o parou.",
+      "hostFault": "O Topo encontrou um problema, por isso isto não foi concluído.",
+      "hostFaultTryAgain": "O Topo encontrou um problema, por isso isto não foi concluído. Tente novamente.",
+      "hostRestarted": "O Topo reiniciou antes de esta mensagem ser enviada.",
+      "hostStopped": "{{agent}} não terminou de iniciar, por isso o Topo o parou.",
       "interactiveAgentNotSignedIn": "Entre na conta de {{agent}} executando `{{loginCommand}}` e usando `{{slashCommand}}` no computador que executa este chat.",
       "launchFolderMissing": "A pasta em que este chat foi executado não existe mais. Restaure-a para continuar este chat.",
-      "launchPreparationFailed": "O Orca não conseguiu preparar a inicialização de {{agent}} no computador que executa este chat.",
+      "launchPreparationFailed": "O Topo não conseguiu preparar a inicialização de {{agent}} no computador que executa este chat.",
       "managedAccountEnvOverride": "Esta inicialização do Claude define suas próprias variáveis de login da Anthropic. Remova-as para usar uma conta gerenciada do Claude.",
       "managedAccountUnsupported": "Embora uma conta do Claude tenha sido adicionada no WSL, os chats do Claude precisam de uma conta do Claude no Windows.",
       "modelUnavailable": "{{agent}} não conseguiu usar {{detail}}. Selecione outro modelo e envie novamente.",
@@ -2221,7 +2221,7 @@
       "quitTerminalAgent": "Encerre esse agente para continuar o chat aqui.",
       "runCommandAgain": "Execute /{{command}} novamente.",
       "runCommandWhenDone": "Execute /{{command}} quando terminar.",
-      "runtimeNotInstalled": "{{agent}} não está instalado no computador que executa este chat. Instale-o pelo chat em uma versão atual do Orca.",
+      "runtimeNotInstalled": "{{agent}} não está instalado no computador que executa este chat. Instale-o pelo chat em uma versão atual do Topo.",
       "sendAgainToTryOnceMore": "Envie sua mensagem novamente para fazer outra tentativa.",
       "sendToTryAgain": "Envie sua mensagem para tentar novamente.",
       "sessionNotRestored": "{{agent}} não conseguiu reabrir sua sessão anterior, por isso este chat continua em uma nova sessão. {{agent}} não se lembra das mensagens anteriores.",
@@ -2246,7 +2246,7 @@
       "usageLimitWindowWeeklyModel": "uso semanal do modelo",
       "waitForBackgroundTasks": "Aguarde a conclusão das tarefas em segundo plano.",
       "waitForStart": "Aguarde o agente terminar de iniciar.",
-      "writeFailed": "O Orca não conseguiu repassar esta mensagem ao agente, por isso ela não foi enviada.",
+      "writeFailed": "O Topo não conseguiu repassar esta mensagem ao agente, por isso ela não foi enviada.",
       "pluginInputRequired": "{{agent}} parou porque o plugin \"{{plugin}}\" está aguardando uma entrada em um painel de terminal. Desative o plugin para sessões de chat ou execute a tarefa em um terminal {{agent}}."
     },
     "fileReader": {
@@ -2356,7 +2356,7 @@
       "emptyPrompt": "O prompt salvo para esta ação está vazio. Atualize as configurações de IA do Controle de Versão no seu computador.",
       "loadFailed": "Não foi possível carregar os agentes disponíveis.",
       "promptNotSent": "O agente foi iniciado, mas o prompt não foi enviado.",
-      "updateRequired": "Atualize o Orca no seu computador para iniciar um agente pelo seu celular."
+      "updateRequired": "Atualize o Topo no seu computador para iniciar um agente pelo seu celular."
     },
     "prSidebarState": {
       "loadFailed": "Não foi possível carregar o pull request"
@@ -2397,7 +2397,7 @@
       "globalScope": "Global",
       "label": "Rótulo",
       "labelPlaceholder": "Iniciar servidor de desenvolvimento",
-      "olderHostPromptTooLong": "Longo demais para este host. Atualize o Orca no host para salvar prompts mais longos.",
+      "olderHostPromptTooLong": "Longo demais para este host. Atualize o Topo no host para salvar prompts mais longos.",
       "projectScope": "Projeto",
       "prompt": "Prompt",
       "promptHint": "Suporta skills, caminhos de arquivo e comandos integrados.",
@@ -2647,7 +2647,7 @@
       "liveInputInterrupted": "A entrada ao vivo foi interrompida. O campo foi limpo; verifique o terminal antes de continuar."
     },
     "useStartup": {
-      "wakeAgents": "Abra o Orca no host para ativar os agentes suspensos."
+      "wakeAgents": "Abra o Topo no host para ativar os agentes suspensos."
     },
     "useTerminalCreateActions": {
       "createFailed": "Falha ao criar o terminal",
@@ -2682,10 +2682,10 @@
       "attachmentExpired": "Este anexo expirou.",
       "backgroundTasksRunning": "Ainda há tarefas em segundo plano em execução.",
       "cancelNotSaved": "Não foi possível cancelar esta pergunta ou pedido de aprovação.",
-      "cannotRunHere": "O Orca não pode executar este agente em um chat aqui.",
-      "capacity": "O Orca no computador que executa este chat atingiu um limite de requisições. Atualize o Orca lá e tente novamente.",
-      "chatNotFound": "O Orca não consegue encontrar este chat.",
-      "chatSavedByNewerOrca": "Este chat foi salvo por uma versão mais recente do Orca.",
+      "cannotRunHere": "O Topo não pode executar este agente em um chat aqui.",
+      "capacity": "O Topo no computador que executa este chat atingiu um limite de requisições. Atualize o Topo lá e tente novamente.",
+      "chatNotFound": "O Topo não consegue encontrar este chat.",
+      "chatSavedByNewerTopo": "Este chat foi salvo por uma versão mais recente do Topo.",
       "clearAfterAnswer": "Responda à pergunta ou ao pedido de aprovação do agente e execute /clear.",
       "clearAfterRetry": "Tente enviar sua mensagem anterior novamente e execute /clear.",
       "clearAfterSending": "Sua mensagem anterior ainda está sendo enviada. Execute /clear após o envio.",
@@ -2697,10 +2697,10 @@
       "continuationSuperseded": "Este chat avançou. Confira as mensagens mais recentes antes de continuar.",
       "conversationCleared": "Esta conversa foi limpa.",
       "goalsUnsupported": "Este agente não aceita objetivos.",
-      "historyUnavailable": "O Orca não conseguiu abrir o histórico deste chat agora.",
-      "historyUnreadable": "O Orca não conseguiu ler o histórico salvo deste chat.",
+      "historyUnavailable": "O Topo não conseguiu abrir o histórico deste chat agora.",
+      "historyUnreadable": "O Topo não conseguiu ler o histórico salvo deste chat.",
       "historyUnusable": "Não foi possível carregar este chat.",
-      "hostReconciling": "O Orca ainda está verificando este chat após reiniciar.",
+      "hostReconciling": "O Topo ainda está verificando este chat após reiniciar.",
       "messageNotSaved": "Não foi possível salvar sua mensagem.",
       "messageTooLarge": "Ela ultrapassa o limite de 256 KB por mensagem.",
       "messagesUnsettled": "Uma mensagem enviada anteriormente ainda não foi confirmada.",
@@ -2717,7 +2717,7 @@
       "notDoneStopTasks": "As tarefas em segundo plano não foram interrompidas.",
       "openCurrentConversation": "Abra a conversa atual para continuar.",
       "optionRejected": "O agente não aceitou esta configuração.",
-      "outcomeUnknown": "O Orca não conseguiu confirmar o que aconteceu. Verifique o chat.",
+      "outcomeUnknown": "O Topo não conseguiu confirmar o que aconteceu. Verifique o chat.",
       "ownerUnproven": "O agente anterior deste chat pode ainda estar em execução.",
       "pendingWork": "Aguarde a conclusão do trabalho e das mensagens pendentes antes de usar este comando.",
       "promptPending": "O agente está aguardando uma resposta a uma pergunta ou pedido de aprovação.",
@@ -2726,14 +2726,14 @@
       "quitTerminalAgent": "Encerre esse agente para continuar o chat aqui.",
       "reattachFile": "Remova-o e anexe-o novamente.",
       "reattachFiles": "Remova-os e anexe-os novamente.",
-      "recordFailed": "O Orca não conseguiu salvar isto no histórico do chat.",
-      "recordUnreadable": "O Orca não conseguiu ler o estado salvo deste chat.",
+      "recordFailed": "O Topo não conseguiu salvar isto no histórico do chat.",
+      "recordUnreadable": "O Topo não conseguiu ler o estado salvo deste chat.",
       "reopenChat": "Reabra o chat para verificar novamente.",
       "restartFailed": "Não foi possível reiniciar o agente.",
       "runClearWhenDone": "Execute /clear quando terminar.",
       "runCompactWhenDone": "Execute /compact quando terminar.",
-      "savedByNewerOrca": "Os chats foram salvos por uma versão mais recente do Orca.",
-      "sendOutcomeLost": "O Orca não conseguiu confirmar que sua mensagem chegou ao agente. Verifique o chat e envie-a novamente, se necessário.",
+      "savedByNewerTopo": "Os chats foram salvos por uma versão mais recente do Topo.",
+      "sendOutcomeLost": "O Topo não conseguiu confirmar que sua mensagem chegou ao agente. Verifique o chat e envie-a novamente, se necessário.",
       "settleEarlierMessage": "Aguarde o envio da sua mensagem anterior ou tente enviá-la novamente.",
       "shortenMessage": "Encurte ou divida a mensagem e envie novamente.",
       "shrinkQueue": "Exclua uma mensagem da fila ou aguarde o envio de uma delas e tente novamente.",
@@ -2742,10 +2742,10 @@
       "tryAgain": "Tente novamente.",
       "tryAgainComposerSend": "Envie-a novamente.",
       "turnActive": "O agente ainda está respondendo.",
-      "unreachable": "O Orca não conseguiu se conectar ao agente.",
-      "unsupported": "Isto exige uma versão mais recente do Orca no computador que executa este chat. Atualize o Orca lá e tente novamente.",
-      "updateOrcaToKeepUsing": "Atualize o Orca para continuar usando-os.",
-      "updateOrcaToOpenChat": "Atualize o Orca para abri-lo.",
+      "unreachable": "O Topo não conseguiu se conectar ao agente.",
+      "unsupported": "Isto exige uma versão mais recente do Topo no computador que executa este chat. Atualize o Topo lá e tente novamente.",
+      "updateTopoToKeepUsing": "Atualize o Topo para continuar usando-os.",
+      "updateTopoToOpenChat": "Atualize o Topo para abri-lo.",
       "waitForBackgroundTasks": "Aguarde a conclusão das tarefas em segundo plano.",
       "waitForCommand": "Aguarde a conclusão do /compact ou /clear.",
       "waitForStart": "Aguarde o agente terminar de iniciar.",
@@ -2802,11 +2802,11 @@
   "settings": {
     "aboutScreen": {
       "openLinkFailed": "Não foi possível abrir o link. Tente novamente.",
-      "socialProfile": "Orca no X",
-      "sourceCode": "Código-fonte do Orca",
+      "socialProfile": "Topo no X",
+      "sourceCode": "Código-fonte do Topo",
       "tagline": "IDE de código aberto com agentes para quem cria 100x mais",
       "title": "Sobre",
-      "website": "Site do Orca"
+      "website": "Site do Topo"
     },
     "appUpdateSettingsRows": {
       "checkFailed": "Falha ao verificar",
@@ -2827,7 +2827,7 @@
       "neverChecked": "Nunca",
       "upToDate": "Atualizado",
       "update": "Atualizar",
-      "updateToVersion": "Atualizar para o Orca {{version}}"
+      "updateToVersion": "Atualizar para o Topo {{version}}"
     },
     "appearance": {
       "language": {
@@ -2845,7 +2845,7 @@
       "title": "Aparência"
     },
     "browserSettingsScreen": {
-      "desktopBrowser": "Navegador do Orca no desktop",
+      "desktopBrowser": "Navegador do Topo no desktop",
       "desktopBrowserDescription": "Abrir no navegador transmitido pelo seu desktop pareado.",
       "linksDescription": "Escolha onde abrir os links HTTP(S) ao tocar neles na saída do terminal.",
       "linksHeading": "LINKS",
@@ -2884,13 +2884,13 @@
       "updateDesktopHint": "Pareie um desktop atualizado para receber notificações neste celular."
     },
     "notificationDisplayTest": {
-      "accepted": "O serviço de notificações push do Orca aceitou o teste. Verifique se a notificação chegou.",
+      "accepted": "O serviço de notificações push do Topo aceitou o teste. Verifique se a notificação chegou.",
       "connectDesktop": "Conecte um desktop e tente novamente.",
       "description": "Teste a entrega de notificações push ou uma notificação local quando o push não estiver disponível.",
       "desktopUnreachable": "Não foi possível acessar o desktop. Tente novamente.",
       "loadFailed": "Não foi possível carregar os desktops pareados.",
       "pairDesktop": "Pareie um desktop e tente novamente.",
-      "pushServiceFailed": "Não foi possível enviar pelo serviço de notificações push do Orca. Tente novamente.",
+      "pushServiceFailed": "Não foi possível enviar pelo serviço de notificações push do Topo. Tente novamente.",
       "rateLimited": "Notificações demais. Tente novamente mais tarde.",
       "sendButton": "Enviar Notificação de Teste",
       "sendFailed": "Não foi possível enviar o teste de notificação push.",
@@ -2900,12 +2900,12 @@
       "localTitle": "Notificação de teste",
       "localBody": "Teste de notificação local deste telefone.",
       "localScheduled": "{{reason}} Teste local agendado. Verifique a notificação. Este teste verifica apenas a exibição, não a entrega de alertas dos agentes.",
-      "disabled": "As notificações estão desativadas no Orca. Ative-as e tente novamente.",
+      "disabled": "As notificações estão desativadas no Topo. Ative-as e tente novamente.",
       "osDisabled": "As notificações estão desativadas nas configurações do sistema. Permita-as e tente novamente.",
       "noToken": "Nenhum token push está disponível neste telefone.",
       "unsupportedHost": "Este computador não oferece suporte a notificações push. Atualize-o para recebê-las.",
       "registrationPending": "O registro push ainda não está pronto neste computador. Tente novamente em instantes.",
-      "liveFallbackScheduled": "{{reason}} Teste local agendado. Verifique a notificação. Os alertas ao vivo estão disponíveis enquanto o Orca estiver em execução e conectado."
+      "liveFallbackScheduled": "{{reason}} Teste local agendado. Verifique a notificação. Os alertas ao vivo estão disponíveis enquanto o Topo estiver em execução e conectado."
     },
     "notificationSettingsScreen": {
       "description": "Receba notificações neste dispositivo quando um agente precisar da sua resposta ou concluir uma tarefa.",
@@ -3217,7 +3217,7 @@
     "loaders": {
       "connectingToDesktop": "Conectando ao desktop…",
       "loadFailed": "Não foi possível carregar o controle de versão",
-      "updateDesktop": "Atualize o Orca no desktop para usar o controle de versão no celular.",
+      "updateDesktop": "Atualize o Topo no desktop para usar o controle de versão no celular.",
       "waitingForDesktop": "Aguardando o desktop…"
     },
     "modals": {
@@ -3236,7 +3236,7 @@
     "prCreate": {
       "authRequired": "Autentique-se antes de criar um {{reviewLabel}}.",
       "baseNotOnRemote": "Faça push da branch base antes de criar um {{reviewLabel}}.",
-      "createdNotRefreshed": "{{titleLabel}} criado, mas o Orca ainda não conseguiu atualizá-lo.",
+      "createdNotRefreshed": "{{titleLabel}} criado, mas o Topo ainda não conseguiu atualizá-lo.",
       "defaultBranch": "Mude para uma branch de funcionalidade antes de criar um {{reviewLabel}}.",
       "detachedHead": "Faça checkout de uma branch antes de criar um {{reviewLabel}}.",
       "dirty": "Faça commit das alterações antes de criar um {{reviewLabel}}.",
@@ -3244,7 +3244,7 @@
       "existingNumber": "{{titleLabel}} #{{number}} já está aberto.",
       "existingReview": "Já existe um(a) {{reviewLabel}} para esta branch.",
       "forkHeadUnsupported": "Não há suporte à criação de um {{reviewLabel}} a partir deste fork.",
-      "lookupUnconfirmed": "O Orca não conseguiu confirmar se esta branch já tem um {{reviewLabel}}. Tente novamente em instantes.",
+      "lookupUnconfirmed": "O Topo não conseguiu confirmar se esta branch já tem um {{reviewLabel}}. Tente novamente em instantes.",
       "needsSync": "Sincronize esta branch antes de criar um {{reviewLabel}}.",
       "noUpstream": "Publique os commits antes de criar um {{reviewLabel}}.",
       "notReady": "Esta branch ainda não está pronta para um {{reviewLabel}}.",
@@ -3382,7 +3382,7 @@
       "kimiSessionNotFound": "Kimi não encontrou a sessão solicitada. Use uma sessão existente ou inicie uma nova.",
       "kimiSessionOccupied": "Kimi não pôde usar esta sessão porque ela está ativa em outro cliente. Pare a sessão nesse cliente ou saia dele e tente novamente.",
       "kimiSessionOtherDirectory": "Esta sessão do Kimi pertence a outro diretório. Retome-a lá ou use uma sessão criada para este espaço de trabalho.",
-      "kimiUnreadableOutput": "Kimi retornou uma saída que o Orca não conseguiu ler. Tente novamente.",
+      "kimiUnreadableOutput": "Kimi retornou uma saída que o Topo não conseguiu ler. Tente novamente.",
       "noBranchChanges": "Não há alterações na branch para resumir.",
       "noModelForAgent": "Nenhum modelo está disponível para {{label}}.",
       "noStagedChanges": "Não há alterações no stage para resumir.",
@@ -3400,7 +3400,7 @@
       "sourceControlCustomCommandEmpty": "O comando personalizado está vazio. Adicione um em Configurações -> Git -> IA de Controle de Versão.",
       "stagedChangesReadFailed": "Não foi possível ler as alterações no stage.",
       "timedOut": "A geração excedeu o tempo limite de {{seconds}} s.",
-      "windowsBatchUnsafeArguments": "{{label}} é executado por um script em lote do Windows que não aceita o prompt de várias linhas como argumento. Em Configurações, indique o executável do agente ou use um comando personalizado sem {prompt} para que o Orca envie o prompt pelo stdin."
+      "windowsBatchUnsafeArguments": "{{label}} é executado por um script em lote do Windows que não aceita o prompt de várias linhas como argumento. Em Configurações, indique o executável do agente ou use um comando personalizado sem {prompt} para que o Topo envie o prompt pelo stdin."
     },
     "useMobileCommitFailureRecovery": {
       "launchFailed": "Falha ao iniciar o agente",
@@ -3416,7 +3416,7 @@
       "waitingForDesktop": "Aguardando o desktop…"
     },
     "conflictActions": {
-      "needsNewerHost": "Atualize o Orca no computador que executa este espaço de trabalho para resolver conflitos de mesclagem pelo celular.",
+      "needsNewerHost": "Atualize o Topo no computador que executa este espaço de trabalho para resolver conflitos de mesclagem pelo celular.",
       "markResolved": "Marcar como resolvido",
       "keepFile": "Manter arquivo",
       "keepDeletion": "Manter exclusão",
@@ -3501,7 +3501,7 @@
       "searchProjects": "Buscar projetos",
       "subtitle": "Selecione uma visualização de projeto para a página Tarefas.",
       "title": "GitHub Projects",
-      "unsupportedLayout": "O Orca ainda não oferece suporte a este layout de projeto do GitHub.",
+      "unsupportedLayout": "O Topo ainda não oferece suporte a este layout de projeto do GitHub.",
       "view": "Visualização do projeto"
     },
     "githubViewControls": {
@@ -3597,8 +3597,8 @@
       "connectLinearMessage": "Veja as issues do Linear atribuídas a você e comece a trabalhar nelas diretamente em Tarefas.",
       "connectLinearTitle": "Conecte sua conta do Linear",
       "jiraStatusFailed": "Falha ao ler o status do Jira",
-      "updateDesktopMessage": "Esta visualização de Tarefas no celular requer uma versão mais recente do Orca no desktop.",
-      "updateDesktopTitle": "Atualize o Orca no desktop"
+      "updateDesktopMessage": "Esta visualização de Tarefas no celular requer uma versão mais recente do Topo no desktop.",
+      "updateDesktopTitle": "Atualize o Topo no desktop"
     },
     "options": {
       "all": "Todos",
@@ -3698,7 +3698,7 @@
       "show": "Mostrar"
     },
     "projectDetailDrawer": {
-      "addRepositoryFromDesktop": "{{repository}} não foi adicionado ao Orca. Adicione este repositório pelo app desktop e depois atualize Tarefas no celular.",
+      "addRepositoryFromDesktop": "{{repository}} não foi adicionado ao Topo. Adicione este repositório pelo app desktop e depois atualize Tarefas no celular.",
       "clearType": "Limpar tipo",
       "closeItem": "Fechar item",
       "copyGitHubLink": "Copiar link do GitHub",
@@ -3709,7 +3709,7 @@
       "issueType": "Tipo de issue",
       "loadingIssueTypes": "Carregando tipos de issue…",
       "mergePullRequest": "Fazer merge do pull request",
-      "mergeRepositoryRequirement": "Para fazer merge, este repositório precisa estar no Orca.",
+      "mergeRepositoryRequirement": "Para fazer merge, este repositório precisa estar no Topo.",
       "noIssueTypes": "Nenhum tipo de issue configurado para este repositório.",
       "noType": "Sem tipo",
       "openInGitHub": "Abrir no GitHub",
@@ -3717,7 +3717,7 @@
       "projectSubtitle": "Projeto do GitHub · {{repository}}{{itemNumber}}",
       "pullRequest": "Pull request",
       "reopenItem": "Reabrir item",
-      "repositoryNotInOrca": "Repositório não está no Orca",
+      "repositoryNotInTopo": "Repositório não está no Topo",
       "status": "Status",
       "type": "Tipo",
       "workspaceCreationRequirement": "Espaços de trabalho só podem ser criados a partir de issues e pull requests do GitHub."
@@ -3952,7 +3952,7 @@
       "setupTitle": "Executar script de configuração?",
       "skipSetupAndCreate": "Pular configuração e criar",
       "trustFailed": "Falha ao marcar o script de configuração como confiável.",
-      "trustSubtitle": "O orca.yaml deste repositório é executado no seu computador antes de iniciar o espaço de trabalho. Execute-o apenas se você confiar neste repositório."
+      "trustSubtitle": "O topo.yaml deste repositório é executado no seu computador antes de iniciar o espaço de trabalho. Execute-o apenas se você confiar neste repositório."
     },
     "worktreeCreateRetry": {
       "createFailed": "Falha ao criar espaço de trabalho"
@@ -4018,7 +4018,7 @@
       "automaticName": "Nome automático",
       "existing": "Branch existente",
       "existingHint": "Novos commits são adicionados a esta branch.",
-      "hostUpdateRequired": "Atualize o Orca no host do espaço de trabalho para reutilizar uma branch ou criar explicitamente uma branch separada.",
+      "hostUpdateRequired": "Atualize o Topo no host do espaço de trabalho para reutilizar uma branch ou criar explicitamente uma branch separada.",
       "newHint": "Criar uma nova branch local",
       "newName": "Nome da nova branch",
       "title": "Branch para esta árvore de trabalho"
@@ -4049,7 +4049,7 @@
       "working": "Trabalhando"
     },
     "hostWorkspaceListStates": {
-      "checkHost": "Verifique se o computador não está suspenso e se o Orca está em execução",
+      "checkHost": "Verifique se o computador não está suspenso e se o Topo está em execução",
       "empty": "Nenhum espaço de trabalho",
       "loadFailed": "Não foi possível carregar os espaços de trabalho deste host",
       "noFilterMatches": "Nenhum espaço de trabalho corresponde aos filtros",
@@ -4208,7 +4208,7 @@
       "invalidDestination": "Esse host não está mais disponível nesta instância. Escolha um host e tente novamente.",
       "agentDiscoveryUnavailable": "A descoberta de agentes está indisponível para o host deste projeto. As escolhas salvas são preservadas.",
       "agentVerificationUnavailable": "Este host não pode verificar os agentes deste projeto. Atualize o host e tente novamente.",
-      "hostUnavailable": "As automações estão indisponíveis neste host. Atualize o Orca nesse host e reconecte.",
+      "hostUnavailable": "As automações estão indisponíveis neste host. Atualize o Topo nesse host e reconecte.",
       "hostUnreachable": "Não foi possível acessar este host. Reconecte e atualize para verificar o estado atual.",
       "actionFailed": "Não foi possível concluir esta ação no host. Atualize e tente novamente.",
       "dispatched": "Enviada",
@@ -4237,19 +4237,19 @@
       "workspaceHostAmbiguous": "Seu espaço de trabalho abrange mais de um host, portanto não tem um único proprietário."
     },
     "runFailures": {
-      "noDispatchHost": "Nenhuma janela do Orca estava disponível para iniciar a automação.",
-      "unevaluableSchedule": "O Orca não conseguiu avaliar esta automação e ignorou esta execução.",
+      "noDispatchHost": "Nenhuma janela do Topo estava disponível para iniciar a automação.",
+      "unevaluableSchedule": "O Topo não conseguiu avaliar esta automação e ignorou esta execução.",
       "noRunnableHost": "Esta automação não tem host onde ser executada.",
-      "wslMoveInProgress": "O projeto desta automação está sendo movido para seu host WSL, por isso o Orca ignorou esta execução. As execuções serão retomadas quando a movimentação terminar.",
-      "wslMoveOwnedByHost": "O projeto desta automação agora é executado em seu host WSL, que também executa esta automação. O Orca não executa mais esta cópia local.",
+      "wslMoveInProgress": "O projeto desta automação está sendo movido para seu host WSL, por isso o Topo ignorou esta execução. As execuções serão retomadas quando a movimentação terminar.",
+      "wslMoveOwnedByHost": "O projeto desta automação agora é executado em seu host WSL, que também executa esta automação. O Topo não executa mais esta cópia local.",
       "managedHostServer": "Requer migração para {{host}}",
-      "missedGraceWindow": "Quando o Orca verificou novamente, o período de tolerância para recuperar esta execução perdida já havia expirado.",
+      "missedGraceWindow": "Quando o Topo verificou novamente, o período de tolerância para recuperar esta execução perdida já havia expirado.",
       "targetMissing": "O host da automação não está mais registrado, então esta automação não tem onde ser executada.",
       "targetReplaced": "O host da automação foi removido e registrado novamente, então esta automação precisa ser vinculada novamente antes de poder ser executada.",
-      "workspaceHostAmbiguous": "O espaço de trabalho da automação abrange mais de um host, então o Orca não consegue determinar em qual deles executá-la.",
-      "legacyTwinHosts": "Esta automação foi salva antes de o Orca registrar em qual host ela é executada, e seu projeto está em mais de um host. Abra a automação e escolha o host em que ela deve ser executada.",
+      "workspaceHostAmbiguous": "O espaço de trabalho da automação abrange mais de um host, então o Topo não consegue determinar em qual deles executá-la.",
+      "legacyTwinHosts": "Esta automação foi salva antes de o Topo registrar em qual host ela é executada, e seu projeto está em mais de um host. Abra a automação e escolha o host em que ela deve ser executada.",
       "targetUnavailable": "O destino de execução da automação não está mais disponível.",
-      "remoteSchedulingUnavailable": "O agendamento de automações em servidores remotos ainda não está disponível neste cliente do Orca. Execute esta automação no servidor remoto ou atualize o Orca quando o agendamento remoto persistente estiver disponível.",
+      "remoteSchedulingUnavailable": "O agendamento de automações em servidores remotos ainda não está disponível neste cliente do Topo. Execute esta automação no servidor remoto ou atualize o Topo quando o agendamento remoto persistente estiver disponível.",
       "projectSetupMissing": "O projeto não está mais configurado no host selecionado para a automação.",
       "targetSetupMismatch": "O destino de execução da automação não corresponde mais à configuração do host selecionado para o projeto.",
       "repoUnavailable": "O repositório do host selecionado para a automação não está mais disponível.",
@@ -4260,7 +4260,7 @@
       "hooksReviewBlocked": "O agente está aguardando alguém revisar os hooks novos ou alterados (“Hooks need review”). Abra esta execução e confie neles ou remova-os. As execuções agendadas continuam e serão bem-sucedidas assim que não houver mais nada para revisar.",
       "agentNeverStarted": "O agente da automação nunca foi iniciado após o envio do prompt.",
       "agentNoCompletion": "O agente da automação não informou a conclusão.",
-      "watchTimedOut": "O Orca parou de monitorar esta execução após 6 horas sem um sinal de conclusão.",
+      "watchTimedOut": "O Topo parou de monitorar esta execução após 6 horas sem um sinal de conclusão.",
       "projectSetupState": {
         "notSetUp": "O projeto não está configurado no host selecionado para a automação.",
         "settingUp": "O projeto ainda está sendo configurado no host selecionado para a automação.",

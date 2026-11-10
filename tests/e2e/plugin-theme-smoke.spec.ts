@@ -1,13 +1,13 @@
 /**
  * Invariant: a plugin app theme fills the Dark theme slot and an icon theme applies live from
- * Settings, and disabling the plugin restores Orca's colors and the built-in icons.
+ * Settings, and disabling the plugin restores Topo's colors and the built-in icons.
  */
 
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   disablePluginSystem,
   editorTokenColor,
@@ -80,62 +80,62 @@ const background = (page: Page): Promise<string> =>
   page.evaluate(() => document.documentElement.style.getPropertyValue('--background'))
 
 test('plugin themes apply live and fall back when the plugin goes away', async ({
-  orcaPage,
+  topoPage,
   seededRepoPath
 }) => {
-  const pluginRoot = await mkdtemp(join(tmpdir(), 'orca-theme-smoke-'))
-  const themeBefore = await orcaPage.evaluate(() => window.__store?.getState().settings?.theme)
+  const pluginRoot = await mkdtemp(join(tmpdir(), 'topo-theme-smoke-'))
+  const themeBefore = await topoPage.evaluate(() => window.__store?.getState().settings?.theme)
   try {
     await writeThemePlugin(pluginRoot)
-    await enableDevPlugins(orcaPage, [pluginRoot])
-    await openAppearance(orcaPage)
+    await enableDevPlugins(topoPage, [pluginRoot])
+    await openAppearance(topoPage)
 
-    await orcaPage
+    await topoPage
       .getByRole('radiogroup', { name: 'Theme', exact: true })
       .getByRole('radio', { name: 'Dark', exact: true })
       .click()
-    await choose(orcaPage, 'Dark theme', 'Smoke Dusk')
-    await expect.poll(() => background(orcaPage)).toBe('#1b1430')
+    await choose(topoPage, 'Dark theme', 'Smoke Dusk')
+    await expect.poll(() => background(topoPage)).toBe('#1b1430')
     // The left sidebar's surface, its only edge against the canvas, follows the theme.
     await expect
       .poll(() =>
-        orcaPage.evaluate(() =>
+        topoPage.evaluate(() =>
           document.documentElement.style.getPropertyValue('--worktree-sidebar')
         )
       )
       .toBe('#271d45')
     await expect
-      .poll(() => orcaPage.evaluate(() => window.__store?.getState().settings?.pluginAppThemeDark))
+      .poll(() => topoPage.evaluate(() => window.__store?.getState().settings?.pluginAppThemeDark))
       .toBe('plugin:samples.theme-smoke/dusk')
 
     // The theme's tokenColors color code in the editor.
     await writeFile(join(seededRepoPath, CODE_FILE), 'export const answer = 42\n')
-    await orcaPage.evaluate(() => window.__store?.getState().closeSettingsPage())
-    await openRepoFile(orcaPage, seededRepoPath, CODE_FILE)
+    await topoPage.evaluate(() => window.__store?.getState().closeSettingsPage())
+    await openRepoFile(topoPage, seededRepoPath, CODE_FILE)
     await expect
-      .poll(() => editorTokenColor(orcaPage, 'export'), { timeout: 15_000 })
+      .poll(() => editorTokenColor(topoPage, 'export'), { timeout: 15_000 })
       .toBe(THEME_KEYWORD)
-    await openAppearance(orcaPage)
+    await openAppearance(topoPage)
 
-    await choose(orcaPage, 'Icon theme', 'Smoke Blocks')
-    await orcaPage.evaluate(() => {
+    await choose(topoPage, 'Icon theme', 'Smoke Blocks')
+    await topoPage.evaluate(() => {
       const state = window.__store?.getState()
       state?.closeSettingsPage()
       state?.showRightSidebarFiles()
       state?.setRightSidebarOpen(true)
     })
-    await expect.poll(() => orcaPage.locator('[data-plugin-icon]').count()).toBeGreaterThan(0)
+    await expect.poll(() => topoPage.locator('[data-plugin-icon]').count()).toBeGreaterThan(0)
 
-    await disablePluginSystem(orcaPage)
-    await expect.poll(() => background(orcaPage)).toBe('')
-    await expect.poll(() => orcaPage.locator('[data-plugin-icon]').count()).toBe(0)
-    await openRepoFile(orcaPage, seededRepoPath, CODE_FILE)
+    await disablePluginSystem(topoPage)
+    await expect.poll(() => background(topoPage)).toBe('')
+    await expect.poll(() => topoPage.locator('[data-plugin-icon]').count()).toBe(0)
+    await openRepoFile(topoPage, seededRepoPath, CODE_FILE)
     await expect
-      .poll(() => editorTokenColor(orcaPage, 'export'), { timeout: 15_000 })
+      .poll(() => editorTokenColor(topoPage, 'export'), { timeout: 15_000 })
       .not.toBe(THEME_KEYWORD)
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
-    await orcaPage.evaluate(
+    await disablePluginSystem(topoPage).catch(() => undefined)
+    await topoPage.evaluate(
       (theme) =>
         window.api.settings.set({
           theme: theme ?? 'system',

@@ -70,7 +70,7 @@ app.whenReady().then(() => {
 describe('content-policy refusals from the bundled Electron', () => {
   // Why longer: launching Electron alone can pass the default; the launcher kills it at 30s.
   it('reads every refusal it prints as a blocked origin', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-frame-csp-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-frame-csp-'))
     roots.push(root)
     const mainPath = join(root, 'main.cjs')
     writeFileSync(mainPath, MAIN)

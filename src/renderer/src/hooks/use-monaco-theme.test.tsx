@@ -17,12 +17,12 @@ it('uses the built-in theme until the plugin theme is defined, then switches to 
   expect(result.current).toBe('vs-dark')
 
   const data = { base: 'vs-dark' as const, inherit: true, rules: [], colors: {} }
-  useCodeEditorThemeStore.setState({ monaco: { name: 'orca-plugin-test', data } })
+  useCodeEditorThemeStore.setState({ monaco: { name: 'topo-plugin-test', data } })
   rerender()
-  await waitFor(() => expect(result.current).toBe('orca-plugin-test'))
+  await waitFor(() => expect(result.current).toBe('topo-plugin-test'))
   // Why markdown rules: Monaco's inherit reads only its stock themes, not the redefined ones.
   expect(defineTheme).toHaveBeenCalledWith(
-    'orca-plugin-test',
+    'topo-plugin-test',
     expect.objectContaining({
       rules: expect.arrayContaining([expect.objectContaining({ token: 'md.markup.heading' })])
     })

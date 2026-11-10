@@ -30,7 +30,7 @@ function readConfig(): ZCodeConfigFile {
 }
 
 beforeEach(() => {
-  hoisted.home = mkdtempSync(join(tmpdir(), 'orca-zcode-'))
+  hoisted.home = mkdtempSync(join(tmpdir(), 'topo-zcode-'))
 })
 afterEach(() => {
   rmSync(hoisted.home, { recursive: true, force: true })
@@ -101,7 +101,7 @@ describe('ZCodeHookService', () => {
     expect(() => JSON.parse(readFileSync(getZCodeConfigPath(), 'utf-8'))).not.toThrow()
   })
 
-  it('removes only Orca-managed entries and leaves the user their hooks', () => {
+  it('removes only Topo-managed entries and leaves the user their hooks', () => {
     const configPath = getZCodeConfigPath()
     mkdirSync(join(hoisted.home, '.zcode', 'cli'), { recursive: true })
     writeFileSync(
@@ -126,7 +126,7 @@ describe('ZCodeHookService', () => {
   it('leaves an unrelated empty event key alone while removing its own', () => {
     const configPath = getZCodeConfigPath()
     mkdirSync(join(hoisted.home, '.zcode', 'cli'), { recursive: true })
-    // Keep unrelated empty Notification entries; Orca never owned them.
+    // Keep unrelated empty Notification entries; Topo never owned them.
     writeFileSync(
       configPath,
       JSON.stringify({ hooks: { enabled: true, events: { Notification: [] } } })
@@ -157,10 +157,10 @@ describe('ZCodeHookService', () => {
 
   it('registers a forward-slash cmd path on Windows and replaces the legacy backslash entry', () => {
     vi.spyOn(process, 'platform', 'get').mockReturnValue('win32')
-    const scriptPath = 'C:\\Users\\ada\\.orca\\agent-hooks\\zcode-hook.cmd'
+    const scriptPath = 'C:\\Users\\ada\\.topo\\agent-hooks\\zcode-hook.cmd'
     const command = getZCodeManagedCommand(scriptPath)
     // Forward slashes survive Git Bash, which strips bare-path backslashes.
-    expect(command).toBe('C:/Users/ada/.orca/agent-hooks/zcode-hook.cmd')
+    expect(command).toBe('C:/Users/ada/.topo/agent-hooks/zcode-hook.cmd')
 
     const next = applyZCodeManagedHooks(
       {
@@ -186,7 +186,7 @@ describe('ZCodeHookService', () => {
     zcodeHookService.install()
     const scriptPath = join(
       hoisted.home,
-      '.orca',
+      '.topo',
       'agent-hooks',
       process.platform === 'win32' ? 'zcode-hook.cmd' : 'zcode-hook.sh'
     )

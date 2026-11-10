@@ -1,5 +1,5 @@
 /**
- * Reports where a focused credential field sits so Orca can anchor its dropdown, and hides the
+ * Reports where a focused credential field sits so Topo can anchor its dropdown, and hides the
  * dropdown the moment that position could be stale (blur, scroll, resize).
  */
 import type {
@@ -68,7 +68,7 @@ export function createBrowserPasswordFocusTracker(
       ...(reason ? { reason } : {})
     }
     if (reason === 'focusout') {
-      // Keep viewport invalidation for Orca's picker, but never republish this blurred field.
+      // Keep viewport invalidation for Topo's picker, but never republish this blurred field.
       focused.focusedAt = Number.NEGATIVE_INFINITY
     } else {
       focused = null

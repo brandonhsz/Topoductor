@@ -31,8 +31,8 @@ describe('process-host runtime import boundary', () => {
   })
 
   it('keeps package export restrictions for type-only imports', () => {
-    expect(assess("import type { Private } from '@orca/process-host/private'").violations).toEqual([
-      `${file}: @orca/process-host/private is not a public process-host export`
+    expect(assess("import type { Private } from '@topo/process-host/private'").violations).toEqual([
+      `${file}: @topo/process-host/private is not a public process-host export`
     ])
   })
 

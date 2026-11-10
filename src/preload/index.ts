@@ -4,7 +4,7 @@ import { installHiddenWindowFramePump } from './hidden-window-frame-pump'
 import type { PreloadApi } from './api-types'
 import { installBrowserFindListener } from './preload-runtime-support'
 import { appApi } from './api/app-bridge'
-import { orcaProfilesApi } from './api/orca-profiles-bridge'
+import { topoProfilesApi } from './api/topo-profiles-bridge'
 import { platformApi } from './api/platform-bridge'
 import { wslApi } from './api/wsl-bridge'
 import { wslMoveApi } from './api/wsl-move-bridge'
@@ -106,7 +106,7 @@ const telemetryGetConsentStateApi: PreloadApi['telemetryGetConsentState'] = () =
 
 const api = {
   app: appApi,
-  orcaProfiles: orcaProfilesApi,
+  topoProfiles: topoProfilesApi,
   platform: platformApi,
   wsl: wslApi,
   wslMove: wslMoveApi,

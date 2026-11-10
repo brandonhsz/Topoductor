@@ -59,7 +59,7 @@ it('does not collapse background dismissals with visible alerts', async () => {
   })
   const alert = delivery()
   await apns.send(
-    { ...alert, orca: { ...alert.orca, kind: 'dismiss' } },
+    { ...alert, topo: { ...alert.topo, kind: 'dismiss' } },
     {
       token: 'test',
       apnsEnvironment: 'sandbox'

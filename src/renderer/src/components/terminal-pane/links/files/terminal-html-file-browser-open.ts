@@ -2,7 +2,7 @@ import { absolutePathToFileUri } from '@/components/editor/markdown/link-routing
 import { activateAndRevealWorktree } from '@/lib/workspace/activation/worktree-activation'
 import { useAppStore } from '@/store/index'
 
-/** Renders a linked local HTML file in an Orca browser tab of the workspace. */
+/** Renders a linked local HTML file in a Topo browser tab of the workspace. */
 export function openHtmlFileInBrowser(
   filePath: string,
   worktreeId: string,

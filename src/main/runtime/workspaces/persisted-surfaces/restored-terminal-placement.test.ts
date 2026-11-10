@@ -2,9 +2,9 @@ import { describe, expect, it, vi } from 'vitest'
 import type { FolderWorkspace } from '../../../../shared/folder-workspaces/folder-workspace-types'
 import { getDefaultWorkspaceSession } from '../../../../shared/constants'
 import { folderWorkspaceKey } from '../../../../shared/workspace-scope'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 const FOLDER: FolderWorkspace = {
   id: 'notes-1',
@@ -41,7 +41,7 @@ function runtimeWithCwdOnlyTerminal() {
     }))
   }
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the startup pass reads only these store methods.
-  const runtime = new OrcaRuntimeService(store as never)
+  const runtime = new TopoRuntimeService(store as never)
   const stopAndWait = vi.fn(async () => true)
   runtime.setPtyController({
     stopAndWait,

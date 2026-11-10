@@ -20,7 +20,7 @@ export function OrchestrationSetupCard(props: {
       title={t('auto.components.settings.OrchestrationSetupCard.2777ff0fdc', 'Orchestration skill')}
       description={t(
         'auto.components.settings.OrchestrationSetupCard.e7d2a5146c',
-        'Enables agents to hand off context and coordinate work through Orca.'
+        'Enables agents to hand off context and coordinate work through Topo.'
       )}
       skillNames={[ORCHESTRATION_SKILL_NAME]}
       installed={skill.installed}

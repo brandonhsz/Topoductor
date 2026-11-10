@@ -32,7 +32,7 @@ const GIT_UNKNOWN = { clean: null, upstreamAhead: null, upstreamBehind: null, ch
 
 // "unlisted" is deliberately absent: a repo the renderer has not loaded falls back to the default color.
 const REPOS: Record<string, Pick<Repo, 'badgeColor' | 'repoIcon'>> = {
-  orca: { badgeColor: REPO_COLORS[0] },
+  topo: { badgeColor: REPO_COLORS[0] },
   halibut: { badgeColor: REPO_COLORS[2] },
   'sf-flyover': { badgeColor: REPO_COLORS[4] },
   notes: { badgeColor: REPO_COLORS[6] }
@@ -166,7 +166,7 @@ const SINGLE_HOST: Scenario[] = [
     status: 'In progress'
   },
   {
-    candidate: ws('main', 'orca', {
+    candidate: ws('main', 'topo', {
       blockers: ['main-worktree', 'active-workspace', 'running-terminal'],
       git: GIT_UNKNOWN,
       localContext: { ...NO_CONTEXT, terminalTabCount: 2 }
@@ -179,23 +179,23 @@ const SINGLE_HOST: Scenario[] = [
 /** Same names across machines: the host label appears and tells them apart. */
 const MULTI_HOST: Scenario[] = [
   {
-    candidate: ws('main', 'orca', { blockers: ['main-worktree'] }),
+    candidate: ws('main', 'topo', { blockers: ['main-worktree'] }),
     activity: '2h ago',
     size: '4.8 GB'
   },
   {
-    candidate: ws('main', 'orca', { executionHostId: DEVBOX, blockers: ['main-worktree'] }),
+    candidate: ws('main', 'topo', { executionHostId: DEVBOX, blockers: ['main-worktree'] }),
     activity: '3d ago',
     size: '5.1 GB'
   },
   {
-    candidate: ws('fix-login', 'orca', { executionHostId: DEVBOX }),
+    candidate: ws('fix-login', 'topo', { executionHostId: DEVBOX }),
     activity: '40d ago',
     size: '88 MB',
     review: { hasReview: true, label: 'PR #812', state: 'merged', provider: 'github' }
   },
   {
-    candidate: ws('fix-login', 'orca', { executionHostId: CLOUD }),
+    candidate: ws('fix-login', 'topo', { executionHostId: CLOUD }),
     activity: '12d ago'
   },
   {
@@ -211,8 +211,8 @@ const MULTI_HOST: Scenario[] = [
 
 /** Transient and failure states during or after deletion. */
 const STATES: Scenario[] = [
-  { candidate: ws('old-ui', 'orca'), activity: '30d ago', deletionPhase: 'deleting' },
-  { candidate: ws('old-api', 'orca'), activity: '31d ago', deletionPhase: 'queued' },
+  { candidate: ws('old-ui', 'topo'), activity: '30d ago', deletionPhase: 'deleting' },
+  { candidate: ws('old-api', 'topo'), activity: '31d ago', deletionPhase: 'queued' },
   {
     candidate: ws('flaky', 'halibut', { git: GIT_UNKNOWN }),
     activity: '9d ago',
@@ -223,9 +223,9 @@ const STATES: Scenario[] = [
     activity: '9d ago',
     failure: { message: 'Workspace is locked by another process.' }
   },
-  { candidate: ws('checking', 'orca', { git: GIT_UNKNOWN }), activity: '2d ago', gitPending: true },
+  { candidate: ws('checking', 'topo', { git: GIT_UNKNOWN }), activity: '2d ago', gitPending: true },
   {
-    candidate: ws('mystery', 'orca', {
+    candidate: ws('mystery', 'topo', {
       executionHostId: undefined,
       blockers: ['git-status-error'],
       git: GIT_UNKNOWN
@@ -237,13 +237,13 @@ const STATES: Scenario[] = [
 /** Git, review, project, and naming variety. */
 const VARIETY: Scenario[] = [
   {
-    candidate: ws('feature/payments-v2', 'orca'),
+    candidate: ws('feature/payments-v2', 'topo'),
     activity: '5d ago',
     size: '120 MB',
     review: { hasReview: true, label: 'PR #904', state: 'open', provider: 'github' }
   },
   {
-    candidate: ws('draft-experiment', 'orca', { git: { ...GIT_CLEAN, clean: false } }),
+    candidate: ws('draft-experiment', 'topo', { git: { ...GIT_CLEAN, clean: false } }),
     activity: '7d ago',
     size: '64 MB',
     review: { hasReview: true, label: 'PR #911', state: 'draft', provider: 'github' }
@@ -275,8 +275,8 @@ const VARIETY: Scenario[] = [
 ]
 
 const OVERFLOW_ROW: Scenario = {
-  candidate: ws('main', 'orca', {
-    worktreeId: 'orca::/repo/main#overflow',
+  candidate: ws('main', 'topo', {
+    worktreeId: 'topo::/repo/main#overflow',
     blockers: ['main-worktree', 'pinned', 'active-workspace', 'running-terminal', 'live-agent'],
     git: GIT_UNKNOWN,
     localContext: {

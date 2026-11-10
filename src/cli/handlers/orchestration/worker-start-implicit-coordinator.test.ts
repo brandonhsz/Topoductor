@@ -3,7 +3,7 @@ import { ORCHESTRATION_HANDLERS } from '../orchestration'
 import { RuntimeClient } from '../../runtime-client'
 import { okFixture } from '../../test-fixtures'
 
-const client = new RuntimeClient('/tmp/orca-implicit-coordinator', 60_000, null, null)
+const client = new RuntimeClient('/tmp/topo-implicit-coordinator', 60_000, null, null)
 const COORDINATOR_WORKTREE = { id: 'repo::/tmp/coord', repoId: 'repo', path: '/tmp/coord' }
 
 describe('worker-start infers its coordinator from the caller, not the worker placement (#33579)', () => {
@@ -11,10 +11,10 @@ describe('worker-start infers its coordinator from the caller, not the worker pl
 
   beforeEach(() => {
     calls.length = 0
-    vi.stubEnv('ORCA_TERMINAL_HANDLE', '')
-    vi.stubEnv('ORCA_PANE_KEY', '')
-    vi.stubEnv('ORCA_AGENT_SESSION_ID', undefined)
-    vi.stubEnv('ORCA_STRUCTURED_SESSION', '')
+    vi.stubEnv('TOPO_TERMINAL_HANDLE', '')
+    vi.stubEnv('TOPO_PANE_KEY', '')
+    vi.stubEnv('TOPO_AGENT_SESSION_ID', undefined)
+    vi.stubEnv('TOPO_STRUCTURED_SESSION', '')
     vi.spyOn(console, 'log').mockImplementation(() => {})
     vi.spyOn(client, 'call').mockImplementation(async (method: string, params?: unknown) => {
       calls.push({ method, params })

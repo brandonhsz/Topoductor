@@ -2,19 +2,19 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { AgentStatusIpcPayload } from '../../../../shared/agent-status/contracts/agent-status-ipc-payload'
 import type { WorkspaceSessionState } from '../../../../shared/workspace-session/workspace-session-state-types'
-import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
 // Preserve side-effect order: mocks, lifecycle, fixtures.
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const {
   HEADLESS_LEAF_ID,
   TEST_WORKTREE_ID,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} = await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
-const { committingSpawn } = await import('../../orca-runtime-tests/bind-first-pane.test-fixture')
+} = await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
+const { committingSpawn } = await import('../../topo-runtime-tests/bind-first-pane.test-fixture')
 
 const PANE_KEY = `host-tab:${HEADLESS_LEAF_ID}`
 const SESSION_ID = '0bc9e9f8-192c-4bd4-beb8-8b745c59c8b0'
@@ -57,7 +57,7 @@ function makeRuntime(
       id: 'restored-pty'
     })
   )
-  const runtime = new OrcaRuntimeService(partialRuntimeStore(runtimeStore), undefined, {
+  const runtime = new TopoRuntimeService(partialRuntimeStore(runtimeStore), undefined, {
     getAgentProviderSessionSnapshot: () => rows,
     getAgentProviderSessionRowsForPane: (paneKey: string) =>
       rows.filter((row) => row.paneKey === paneKey),
@@ -79,7 +79,7 @@ function expectFreshLaunch(command: string | undefined): void {
   expect(command).toContain('codex')
 }
 
-async function restore(runtime: InstanceType<typeof OrcaRuntimeService>): Promise<void> {
+async function restore(runtime: InstanceType<typeof TopoRuntimeService>): Promise<void> {
   await runtime.activateMobileSessionTab(`id:${TEST_WORKTREE_ID}`, 'host-tab', HEADLESS_LEAF_ID, {
     notifyClients: false,
     navigation: 'caller',

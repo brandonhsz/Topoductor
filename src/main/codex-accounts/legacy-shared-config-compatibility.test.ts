@@ -42,7 +42,7 @@ let sharedRuntimeHome: string
 let systemCodexHome: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-legacy-codex-home-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-legacy-codex-home-'))
   sharedRuntimeHome = join(root, 'codex-runtime-home', 'home')
   systemCodexHome = join(root, 'system-home', '.codex')
   mkdirSync(sharedRuntimeHome, { recursive: true })
@@ -74,7 +74,7 @@ describe('legacy shared Codex config compatibility', () => {
       [
         'model_provider = "stale-provider"',
         '',
-        '[hooks.state."orca:stop:0:0"]',
+        '[hooks.state."topo:stop:0:0"]',
         'enabled = true',
         ''
       ].join('\n')
@@ -86,13 +86,13 @@ describe('legacy shared Codex config compatibility', () => {
     expect(sharedConfig).toContain('model_provider = "codex-lb"')
     expect(sharedConfig).toContain('requires_openai_auth = true')
     expect(sharedConfig).not.toContain('stale-provider')
-    expect(sharedConfig).toContain('[hooks.state."orca:stop:0:0"]')
+    expect(sharedConfig).toContain('[hooks.state."topo:stop:0:0"]')
     expect(readFileSync(join(systemCodexHome, 'config.toml'), 'utf-8')).toBe(systemConfig)
     expect(readFileSync(join(sharedRuntimeHome, 'auth.json'), 'utf-8')).toBe(staleSharedAuth)
   })
 
-  it('keeps an Orca-added MCP server while settings and trust still refresh', () => {
-    const baselinePath = join(sharedRuntimeHome, '.orca-config-settings-baseline.json')
+  it('keeps a Topo-added MCP server while settings and trust still refresh', () => {
+    const baselinePath = join(sharedRuntimeHome, '.topo-config-settings-baseline.json')
     const baseline = JSON.stringify({ version: 3, settings: {}, mcpServers: [] })
     writeFileSync(baselinePath, baseline)
     writeFileSync(
@@ -106,13 +106,13 @@ describe('legacy shared Codex config compatibility', () => {
       [
         'model = "stale"',
         '',
-        '[projects."/trusted-in-orca"]',
+        '[projects."/trusted-in-topo"]',
         'trust_level = "trusted"',
         '',
         '[projects."/revoked"]',
         'trust_level = "trusted"',
         '',
-        '[hooks.state."orca:stop:0:0"]',
+        '[hooks.state."topo:stop:0:0"]',
         'enabled = true',
         '',
         '[mcp_servers.demo-mcp]',
@@ -126,10 +126,10 @@ describe('legacy shared Codex config compatibility', () => {
     const sharedConfig = readFileSync(join(sharedRuntimeHome, 'config.toml'), 'utf-8')
     expect(sharedConfig).toContain('model = "canonical"')
     expect(sharedConfig).not.toContain('model = "stale"')
-    expect(sharedConfig).toContain('[projects."/trusted-in-orca"]\ntrust_level = "trusted"')
+    expect(sharedConfig).toContain('[projects."/trusted-in-topo"]\ntrust_level = "trusted"')
     expect(sharedConfig).toContain('[projects."/revoked"]\ntrust_level = "untrusted"')
     expect(sharedConfig).not.toContain('[projects."/revoked"]\ntrust_level = "trusted"')
-    expect(sharedConfig).toContain('[hooks.state."orca:stop:0:0"]')
+    expect(sharedConfig).toContain('[hooks.state."topo:stop:0:0"]')
     expect(sharedConfig).toContain('[mcp_servers.demo-mcp]\ncommand = "demo"')
     expect(readFileSync(baselinePath, 'utf-8')).toBe(baseline)
   })

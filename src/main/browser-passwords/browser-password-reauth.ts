@@ -1,5 +1,5 @@
 import { systemPreferences } from 'electron'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { browserPasswordSettings } from './browser-password-vault-access'
 import type { BrowserPasswordReauthMethod } from '../../shared/browser-passwords-types'
 
@@ -33,7 +33,7 @@ export async function browserPasswordReauthMethod(): Promise<BrowserPasswordReau
 
 /**
  * Asks the OS to confirm the user before a password leaves the vault for display or the clipboard.
- * Why this is a confirmation step, not encryption: Touch ID here only gates Orca's own UI (Electron's
+ * Why this is a confirmation step, not encryption: Touch ID here only gates Topo's own UI (Electron's
  * promptTouchID releases no key). Windows Hello and Linux have no Electron API, so they pass; the
  * Settings page says so.
  */

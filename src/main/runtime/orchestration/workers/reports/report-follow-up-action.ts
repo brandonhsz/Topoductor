@@ -33,7 +33,7 @@ export function completionReportDispatchId(
   if (
     typeof payload !== 'object' ||
     payload === null ||
-    '_orcaLifecycleRejection' in payload ||
+    '_topoLifecycleRejection' in payload ||
     !('dispatchId' in payload) ||
     typeof payload.dispatchId !== 'string' ||
     !('taskId' in payload)

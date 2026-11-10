@@ -26,11 +26,11 @@ import {
   type ClaudeProfileSurfaceOutcome
 } from './claude-profile-report'
 
-export const CLAUDE_PROFILE_MERGE_SUFFIX = '.orca-profile-merge'
+export const CLAUDE_PROFILE_MERGE_SUFFIX = '.topo-profile-merge'
 const HISTORY = 'history.jsonl'
 const PENDING = `${HISTORY}${CLAUDE_PROFILE_MERGE_SUFFIX}`
 // Track Windows hardlink identity to detect replacement of the shared file.
-const LINK_RECORD = `${HISTORY}.orca-profile-link`
+const LINK_RECORD = `${HISTORY}.topo-profile-link`
 
 export function lstatIfPresent(file: string): Stats | undefined {
   try {
@@ -206,7 +206,7 @@ export function mergeClaudeProfilePromptHistory(
   }
   let aside: string | undefined
   if (current) {
-    aside = nextFreePath(join(profile, replaced ? `${HISTORY}.orca-profile-conflict` : PENDING))
+    aside = nextFreePath(join(profile, replaced ? `${HISTORY}.topo-profile-conflict` : PENDING))
     renameFileWithWindowsRetry(source, aside)
   }
   try {

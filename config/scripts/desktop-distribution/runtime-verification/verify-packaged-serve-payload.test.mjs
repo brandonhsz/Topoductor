@@ -23,7 +23,7 @@ function packagedResources({ index, assets = [], cli = true }) {
   const webDir = join(outDir, 'renderer')
   mkdirSync(join(webDir, 'assets'), { recursive: true })
   writeFileSync(
-    join(webDir, '.orca-web-client-files.json'),
+    join(webDir, '.topo-web-client-files.json'),
     JSON.stringify(['web-index.html', ...assets])
   )
   if (index !== undefined) {
@@ -57,7 +57,7 @@ describe('assertPackagedWebClient', () => {
       assets: ['assets/web.js', 'assets/web.css']
     })
     writeFileSync(
-      join(resourcesDir, 'app.asar.unpacked/out/renderer/.orca-web-client-files.json'),
+      join(resourcesDir, 'app.asar.unpacked/out/renderer/.topo-web-client-files.json'),
       JSON.stringify([
         'web-index.html',
         'assets/web.js',

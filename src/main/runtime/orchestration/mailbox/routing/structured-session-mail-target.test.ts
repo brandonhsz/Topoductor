@@ -18,8 +18,8 @@ import {
   agentSessionLeaseFixture,
   agentSessionRecordFixture
 } from '../../../../../shared/agent-session/lifecycle/agent-session-record.test-fixture'
-import { formatOrcaSessionAddress } from '../../../../../shared/orca-session-address'
-import { testOrcaSessionId } from '../../../../../shared/orca-session-address-test-fixture'
+import { formatTopoSessionAddress } from '../../../../../shared/topo-session-address'
+import { testTopoSessionId } from '../../../../../shared/topo-session-address-test-fixture'
 
 const hostRef: { current: unknown } = { current: null }
 
@@ -30,9 +30,9 @@ vi.mock(
   })
 )
 
-const { OrcaRuntimeWithGetPtyRecordForPaneKey } = await import('./terminal-pane-mail-routing')
+const { TopoRuntimeWithGetPtyRecordForPaneKey } = await import('./terminal-pane-mail-routing')
 const { OrchestrationDb } = await import('../../db/orchestration-db')
-const { resolveOrcaSessionParty } = await import('../../addressing/orchestration-party')
+const { resolveTopoSessionParty } = await import('../../addressing/orchestration-party')
 const {
   mintStructuredWorkerHandle,
   mintStructuredWorkerPaneKey,
@@ -40,11 +40,11 @@ const {
   structuredWorkerProcessIncarnation
 } = await import('../../terminal-authority/structured-sessions/structured-worker-identity')
 
-const CHAT = testOrcaSessionId('4a1f6c2e-8b3d-4e7a-9c15-0d2b6e8f1a37')
-const CHAT_ADDRESS = formatOrcaSessionAddress(CHAT)
+const CHAT = testTopoSessionId('4a1f6c2e-8b3d-4e7a-9c15-0d2b6e8f1a37')
+const CHAT_ADDRESS = formatTopoSessionAddress(CHAT)
 
 /** The real methods through the real prototype chain; a re-declared copy would pin nothing. */
-abstract class MailTargetProbe extends OrcaRuntimeWithGetPtyRecordForPaneKey {
+abstract class MailTargetProbe extends TopoRuntimeWithGetPtyRecordForPaneKey {
   target(mailboxHandle: string): unknown {
     return this.resolveStructuredMailboxTarget(mailboxHandle)
   }
@@ -104,7 +104,7 @@ function chatCoordinatedRun(): string {
     objective: 'o',
     coordinatorHandle: null,
     coordinatorPaneKey: null,
-    coordinatorOrcaSessionId: CHAT
+    coordinatorTopoSessionId: CHAT
   }).id
 }
 
@@ -146,7 +146,7 @@ describe('the idle edge after a restart, before any orchestration call', () => {
   let previousEnvironment: AppEnvironment | null
 
   beforeEach(() => {
-    userData = mkdtempSync(join(tmpdir(), 'orca-idle-edge-db-'))
+    userData = mkdtempSync(join(tmpdir(), 'topo-idle-edge-db-'))
     previousEnvironment = hasAppEnvironment() ? getAppEnvironment() : null
     setAppEnvironment({
       getPath: () => userData,
@@ -186,7 +186,7 @@ describe('the idle edge after a restart, before any orchestration call', () => {
       objective: 'o',
       coordinatorHandle: null,
       coordinatorPaneKey: null,
-      coordinatorOrcaSessionId: CHAT
+      coordinatorTopoSessionId: CHAT
     }).id
     stored.close()
     const delivered: string[] = []
@@ -213,8 +213,8 @@ describe('the idle edge after a restart, before any orchestration call', () => {
 })
 
 describe('a coordinator chat continued by /clear', () => {
-  const MIDDLE = testOrcaSessionId('clear-fedcba9876543210fedcba9876543210fedcba98')
-  const SUCCESSOR = testOrcaSessionId('clear-0123456789abcdef0123456789abcdef01234567')
+  const MIDDLE = testTopoSessionId('clear-fedcba9876543210fedcba9876543210fedcba98')
+  const SUCCESSOR = testTopoSessionId('clear-0123456789abcdef0123456789abcdef01234567')
 
   function sessionRecord(sessionId: string, clearedInto?: string): AgentSessionRecord {
     const record = agentSessionRecordFixture(
@@ -267,11 +267,11 @@ describe('a coordinator chat continued by /clear', () => {
     expect(idleEdge(SUCCESSOR)).toContain(`run:${runId}`)
 
     expect(db.getRunRaw(runId)).toMatchObject({
-      coordinator_orca_session_id: CHAT,
+      coordinator_topo_session_id: CHAT,
       consumer_generation: generation
     })
     for (const member of [CHAT, MIDDLE, SUCCESSOR]) {
-      expect(db.getCurrentRunForCoordinator(resolveOrcaSessionParty(member, db))?.id).toBe(runId)
+      expect(db.getCurrentRunForCoordinator(resolveTopoSessionParty(member, db))?.id).toBe(runId)
     }
     expect(probe().target(`run:${runId}`)).toEqual({ sessionId: SUCCESSOR, dispatchId: null })
   })
@@ -279,11 +279,11 @@ describe('a coordinator chat continued by /clear', () => {
   it('reaches the live session through any spelling of the conversation, and stores one', () => {
     installLineage(MIDDLE, SUCCESSOR)
     for (const member of [CHAT, MIDDLE, SUCCESSOR]) {
-      expect(resolveOrcaSessionParty(member, db)).toMatchObject({
-        orcaSessionId: CHAT,
+      expect(resolveTopoSessionParty(member, db)).toMatchObject({
+        topoSessionId: CHAT,
         address: CHAT_ADDRESS
       })
-      expect(probe().target(`orca_session_id:${member}`)).toEqual({
+      expect(probe().target(`topo_session_id:${member}`)).toEqual({
         sessionId: SUCCESSOR,
         dispatchId: null
       })
@@ -300,8 +300,8 @@ describe('a coordinator chat continued by /clear', () => {
 })
 
 describe('a structured worker continued by /clear', () => {
-  const WORKER = testOrcaSessionId('9c2e4a61-3f7b-4d8e-b105-6a2d8e4f1c93')
-  const WORKER_SUCCESSOR = testOrcaSessionId('clear-a1b2c3d4e5f60718293a4b5c6d7e8f9012345678')
+  const WORKER = testTopoSessionId('9c2e4a61-3f7b-4d8e-b105-6a2d8e4f1c93')
+  const WORKER_SUCCESSOR = testTopoSessionId('clear-a1b2c3d4e5f60718293a4b5c6d7e8f9012345678')
 
   afterEach(() => {
     structuredWorkerIdentities.clear()

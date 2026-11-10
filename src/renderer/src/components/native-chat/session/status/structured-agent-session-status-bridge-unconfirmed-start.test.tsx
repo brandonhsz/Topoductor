@@ -98,7 +98,7 @@ vi.mock('@/lib/launch-structured-agent-session', () => {
 })
 
 import { StructuredAgentSessionStatusBridge } from './StructuredAgentSessionStatusBridge'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 
 import { startStructuredAgentLaunch } from '@/lib/agent-session/launch/structured-agent-session-launch'
 import {
@@ -342,7 +342,7 @@ describe('a chat whose start was never confirmed', () => {
     hostIsReachableAgain()
     await flush()
     expect(recreated(CLAUDE_SESSION)).toBe(0)
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       // Switch-on, main's host is told to close the chat instead of the window keeping a tombstone.
       expect(mocks.history).toHaveBeenCalledWith({ kind: 'local' }, 'agentSession.close', {
         sessionId: CLAUDE_SESSION

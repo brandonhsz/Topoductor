@@ -9,7 +9,7 @@ import { E2EE_KEYPAIR_FILENAME } from '../../../../../shared/remote-runtime/host
 
 describe('loadOrCreateE2EEKeypair', () => {
   it('advertises the public key derived from the stored secret, leaving the file untouched', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-e2ee-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-e2ee-'))
     const real = nacl.box.keyPair()
     const other = nacl.box.keyPair()
     const file = join(userDataPath, E2EE_KEYPAIR_FILENAME)

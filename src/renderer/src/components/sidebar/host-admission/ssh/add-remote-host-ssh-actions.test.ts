@@ -19,7 +19,7 @@ describe('SSH config picker response admission', () => {
       hostname: `host-${index}`,
       port: 22,
       username: '',
-      alreadyInOrca: index === 0
+      alreadyInTopo: index === 0
     }))
     const result = await loadSshConfigHostsForPicker({
       listConfigHosts: vi.fn().mockResolvedValue(hosts)

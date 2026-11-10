@@ -281,10 +281,10 @@ export function CrewPanelContent({
           // (their frame stops there); terminals keep the bottom quarter, where the CLI's prompt sits.
           // The header (and its collapse button) always shows: in a pane too short for both, it wins.
           className={cn(
-            'pointer-events-auto absolute right-2.5 top-[calc(var(--orca-pane-title-height)+var(--spacing)*2)] flex min-h-[calc(var(--spacing)*9+2px)] w-78 max-w-[calc(100%-var(--spacing)*5)] flex-col overflow-hidden rounded-[12px] border border-(--crew-border) bg-(--crew-surface) text-card-foreground shadow-floating',
+            'pointer-events-auto absolute right-2.5 top-[calc(var(--topo-pane-title-height)+var(--spacing)*2)] flex min-h-[calc(var(--spacing)*9+2px)] w-78 max-w-[calc(100%-var(--spacing)*5)] flex-col overflow-hidden rounded-[12px] border border-(--crew-border) bg-(--crew-surface) text-card-foreground shadow-floating',
             surface === 'terminal'
-              ? 'max-h-[calc(75%-var(--orca-pane-title-height)-var(--spacing)*2)]'
-              : 'max-h-[calc(100%-var(--orca-pane-title-height)-var(--spacing)*4)]'
+              ? 'max-h-[calc(75%-var(--topo-pane-title-height)-var(--spacing)*2)]'
+              : 'max-h-[calc(100%-var(--topo-pane-title-height)-var(--spacing)*4)]'
           )}
         >
           {/* The collapse button keeps its room in the narrowest panes: the title truncates and the side padding shrinks first. */}
@@ -343,7 +343,7 @@ export function CrewPanelContent({
               ref={tab}
               variant="orchestration-tab"
               size="xs"
-              className="pointer-events-auto absolute top-[calc(var(--orca-pane-title-height)+var(--spacing)*2)] right-0 max-w-[min(20rem,100%)]"
+              className="pointer-events-auto absolute top-[calc(var(--topo-pane-title-height)+var(--spacing)*2)] right-0 max-w-[min(20rem,100%)]"
               aria-label={t('components.orchestrationCrew.show', 'Show orchestration: {{counts}}', {
                 counts: summary.counts
               })}

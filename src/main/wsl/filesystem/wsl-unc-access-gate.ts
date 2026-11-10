@@ -15,7 +15,7 @@ import {
 } from '../discovery/wsl-background-distro-gate'
 
 // Any 9P touch of `\\wsl.localhost\<distro>` boots a stopped distro, so background reads ask first.
-// Most stops are signalled (watcher or relay exit, or a read that saw it), but one with no Orca
+// Most stops are signalled (watcher or relay exit, or a read that saw it), but one with no Topo
 // process in the distro is not, so a running read is trusted only this long: at most four wsl.exe a minute.
 export const WSL_UNC_RUNNING_LEASE_MS = 15_000
 

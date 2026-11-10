@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { FsChangeEvent } from '../../../../../../shared/file-watch/filesystem-change-event'
 import type { MarkdownDocument } from '../../../../../../shared/file-listing/file-document'
 import type { OpenFile } from '@/store/slices/editor/types/open-file'
-import { ORCA_WORKTREE_FILE_CHANGE_EVENT } from '@/hooks/worktree-file-change-event'
+import { TOPO_WORKTREE_FILE_CHANGE_EVENT } from '@/hooks/worktree-file-change-event'
 import type * as ConnectionOwnerResolution from '@/lib/workspace/ownership/connection-owner-resolution'
 import { useMarkdownDocuments } from './useMarkdownDocuments'
 
@@ -86,7 +86,7 @@ function change(
   rootPath = '/repo'
 ): void {
   window.dispatchEvent(
-    new CustomEvent(ORCA_WORKTREE_FILE_CHANGE_EVENT, {
+    new CustomEvent(TOPO_WORKTREE_FILE_CHANGE_EVENT, {
       detail: { runtimeEnvironmentId: owner, payload: { worktreePath: rootPath, events } }
     })
   )

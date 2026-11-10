@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { basename, dirname, join } from 'node:path'
 import { PassThrough } from 'node:stream'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { PipedProcessSpawner } from '@orca/process-host/process-spec'
+import type { PipedProcessSpawner } from '@topo/process-host/process-spec'
 import { createFakePipedChild } from '../../shared/__fixtures__/fake-spawned-child'
 import { PROVIDER_SUPERVISOR_MAX_STOP_MS } from './provider-process-supervisor'
 import { spawnManagedProviderProcess } from './managed-provider-process'
@@ -91,7 +91,7 @@ describe('managed provider process', () => {
   it.each(['win32', 'linux'] as const)(
     'names a deleted working folder, not the CLI, when a real %s spawn fails there',
     async (platform) => {
-      const parent = mkdtempSync(join(tmpdir(), 'orca-provider-cwd-'))
+      const parent = mkdtempSync(join(tmpdir(), 'topo-provider-cwd-'))
       try {
         // Found on PATH, so only the missing folder can fail the spawn.
         const managed = spawnManagedProviderProcess(

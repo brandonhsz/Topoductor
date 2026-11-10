@@ -1,4 +1,4 @@
-/** Google publishes no Windows Antigravity chat server Orca can run (#30817); relax this once one ships. */
+/** Google publishes no Windows Antigravity chat server Topo can run (#30817); relax this once one ships. */
 export function structuredChatUnavailableOnPlatform(
   agent: string,
   platform: string | null | undefined

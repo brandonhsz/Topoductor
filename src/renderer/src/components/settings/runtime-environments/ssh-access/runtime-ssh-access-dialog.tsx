@@ -1,6 +1,6 @@
 import type { PublicKnownRuntimeEnvironment } from '../../../../../../shared/remote-runtime/host-catalog/runtime-environments'
 import type { SshTarget } from '../../../../../../shared/ssh-types'
-import type { ManagedOrcadPreloadApi } from '../../../../../../preload/api/managed-orcad-api'
+import type { ManagedTopodPreloadApi } from '../../../../../../preload/api/managed-topod-api'
 import { useTranslate } from '@/i18n/use-translate'
 import { Button } from '../../../ui/button'
 import {
@@ -21,7 +21,7 @@ export function RuntimeSshAccessDialog({
   onChanged
 }: {
   open: boolean
-  api: Pick<ManagedOrcadPreloadApi, 'linkSshAccess' | 'unlinkSshAccess'>
+  api: Pick<ManagedTopodPreloadApi, 'linkSshAccess' | 'unlinkSshAccess'>
   environment: PublicKnownRuntimeEnvironment
   targets: SshTarget[]
   onOpenChange: (open: boolean) => void
@@ -42,7 +42,7 @@ export function RuntimeSshAccessDialog({
           <DialogDescription>
             {t(
               'auto.components.settings.serverList.sshDialogDescription',
-              'Use this when the server isn’t reachable directly. Orca opens a tunnel through an SSH host.'
+              'Use this when the server isn’t reachable directly. Topo opens a tunnel through an SSH host.'
             )}
           </DialogDescription>
         </DialogHeader>

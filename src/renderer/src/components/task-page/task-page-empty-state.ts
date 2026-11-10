@@ -24,7 +24,7 @@ export function getRepoBackedTaskEmptyState(
       ),
       description: t(
         'auto.components.taskPageEmptyState.noProjectSourcesDescription',
-        'Select at least one project source so Orca knows which host/account to fetch tasks from.'
+        'Select at least one project source so Topo knows which host/account to fetch tasks from.'
       )
     }
   }

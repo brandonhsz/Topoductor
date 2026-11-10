@@ -378,7 +378,7 @@
         "View": 8
       },
       "labels": ["Back", "Refresh agent sessions"],
-      "text": ["Agent Session History", "orca-history", "Loading agent sessions…"]
+      "text": ["Agent Session History", "topo-history", "Loading agent sessions…"]
     },
     "7c48e0564605": {
       "name": "status.get#1",
@@ -410,7 +410,7 @@
         "View": 8
       },
       "labels": ["Back", "Refresh agent sessions"],
-      "text": ["Agent Session History", "orca-history", "Unable to Load", "outer refused", "Retry"]
+      "text": ["Agent Session History", "topo-history", "Unable to Load", "outer refused", "Retry"]
     },
     "891e447698e7": {
       "name": "status.get#1",
@@ -462,7 +462,7 @@
       "labels": ["Back", "Refresh agent sessions"],
       "text": [
         "Agent Session History",
-        "orca-history",
+        "topo-history",
         "Unable to Load",
         "The host sent a reply this app could not read (status.get)",
         "Retry"
@@ -587,7 +587,7 @@
         "View": 8
       },
       "labels": ["Back", "Refresh agent sessions"],
-      "text": ["Agent Session History", "orca-history", "Unable to Load", "Unknown method", "Retry"]
+      "text": ["Agent Session History", "topo-history", "Unable to Load", "Unknown method", "Retry"]
     },
     "d126597611a2": {
       "name": "worktree.ps#1",
@@ -610,9 +610,9 @@
       "labels": ["Back", "Refresh agent sessions"],
       "text": [
         "Agent Session History",
-        "orca-history",
+        "topo-history",
         "Agent Session History Unavailable",
-        "Update Orca on this host to browse agent session history."
+        "Update Topo on this host to browse agent session history."
       ]
     },
     "dffc0668b556": {
@@ -728,7 +728,7 @@
       "labels": ["Back", "Refresh agent sessions"],
       "text": [
         "Agent Session History",
-        "orca-history",
+        "topo-history",
         "Unable to Load",
         "Unable to reach host",
         "Retry"

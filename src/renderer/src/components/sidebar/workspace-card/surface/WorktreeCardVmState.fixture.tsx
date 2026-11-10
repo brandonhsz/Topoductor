@@ -5,7 +5,7 @@ import { makeRepo, makeWorktree } from '../../../worktree-jump/worktree-jump-pal
 import type { EphemeralVmWorkspaceRuntime } from '@/store/slices/ephemeral-vm/ephemeral-vm-lifecycle'
 import WorktreeCard from './WorktreeCard'
 
-const repo = { ...makeRepo(), displayName: 'orca' }
+const repo = { ...makeRepo(), displayName: 'topo' }
 
 const cases: {
   id: string

@@ -10,7 +10,7 @@ import {
   makeRepo
 } from '../../src/main/persistence/persistence-test-harness'
 import { getDefaultPersistedState } from '../../src/shared/constants'
-import { OrcaRuntimeService } from '../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../src/main/runtime/topo-runtime'
 import { resolveAutomationRunTarget } from '../../src/main/automations/run-target-resolution'
 import { buildAutomationWorktreeCreateArgs } from '../../src/main/automations/automation-workspace-create'
 
@@ -24,7 +24,7 @@ vi.mock('../../src/main/telemetry/cohort-classifier', () => ({
 }))
 
 beforeEach(() => {
-  testState.dir = mkdtempSync(join(tmpdir(), 'orca-target-dispatch-'))
+  testState.dir = mkdtempSync(join(tmpdir(), 'topo-target-dispatch-'))
 })
 afterEach(async () => {
   await closeTestStores()
@@ -54,7 +54,7 @@ describe('persisted automation target dispatch', () => {
         ]
       })
       const store = await createStore()
-      const runtime = new OrcaRuntimeService(store)
+      const runtime = new TopoRuntimeService(store)
       const ids: string[] = []
       for (const hostId of ['local', 'ssh:box'] as const) {
         const setup = store

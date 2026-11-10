@@ -29,7 +29,7 @@ export function usePluginFrameHost(options: {
   sessionToken: string | null
   editor?: PluginFrameEditorChannel
   declarative?: PluginFrameDeclarativeChannel
-  /** Must be stable: a one-shot grant from presses on Orca's own controls. */
+  /** Must be stable: a one-shot grant from presses on Topo's own controls. */
   consumeHostActivation?: () => boolean
   /** Must be stable: counts the panel's host calls in flight. */
   trackHostCall?: () => () => void

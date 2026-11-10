@@ -6,7 +6,7 @@ import { join } from 'node:path'
 import { createServer } from 'node:http'
 import { z } from 'zod'
 import { tokenizeCommandLine } from '../../shared/agent-status/process/agent-command-line-entrypoint'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { AntigravityHookService } from './hook-service'
 import { ANTIGRAVITY_PRE_TOOL_USE_DECISION } from './hook-events'
 import { wrapPosixHookCommand } from '../agent-hooks/installation/commands/posix-hook-command'
@@ -24,7 +24,7 @@ vi.mock('node:os', async (importOriginal) => ({
 }))
 
 const hooksSchema = z.object({
-  'orca-status': z.record(
+  'topo-status': z.record(
     z.string(),
     z.array(
       z.object({
@@ -41,7 +41,7 @@ function installedCommand(home: string, event: string): string {
   const config = hooksSchema.parse(
     JSON.parse(readFileSync(join(home, '.gemini', 'config', 'hooks.json'), 'utf8'))
   )
-  const hook = config['orca-status'][event]?.[0]
+  const hook = config['topo-status'][event]?.[0]
   const command = hook?.command ?? hook?.hooks?.[0]?.command
   if (!command) {
     throw new Error(`Missing ${event} hook`)
@@ -89,7 +89,7 @@ describe.skipIf(process.platform === 'win32')('Antigravity POSIX hook executable
   it.each(['current', 'old'] as const)(
     'delivers UTF-8 JSON and %s command ownership with open stdin',
     async (version) => {
-      home = mkdtempSync(join(tmpdir(), "orca-agy-hook-'quoted-"))
+      home = mkdtempSync(join(tmpdir(), "topo-agy-hook-'quoted-"))
       const payload = JSON.stringify({
         tool_name: 'run_command',
         tool_input: { command: 'echo café 日本語 😀' }
@@ -116,14 +116,14 @@ describe.skipIf(process.platform === 'win32')('Antigravity POSIX hook executable
         const command =
           version === 'current'
             ? currentCommand
-            : `/bin/sh -c ${quotePosixShell(wrapPosixHookCommand(join(home, '.orca', 'agent-hooks', 'antigravity-hook.sh'), { ORCA_ANTIGRAVITY_EVENT: 'PreToolUse' }, { fallbackStdout: ANTIGRAVITY_PRE_TOOL_USE_DECISION }))}`
+            : `/bin/sh -c ${quotePosixShell(wrapPosixHookCommand(join(home, '.topo', 'agent-hooks', 'antigravity-hook.sh'), { TOPO_ANTIGRAVITY_EVENT: 'PreToolUse' }, { fallbackStdout: ANTIGRAVITY_PRE_TOOL_USE_DECISION }))}`
         const result = await invoke(command, payload, {
           ...process.env,
-          ORCA_AGENT_HOOK_ENDPOINT: '',
-          ORCA_AGENT_HOOK_PORT: String(address.port),
-          ORCA_AGENT_HOOK_TOKEN: 'test-only-token',
-          ORCA_PANE_KEY: 'test-pane',
-          ORCA_HOOK_AGENT_PID: version === 'current' ? '2' : '',
+          TOPO_AGENT_HOOK_ENDPOINT: '',
+          TOPO_AGENT_HOOK_PORT: String(address.port),
+          TOPO_AGENT_HOOK_TOKEN: 'test-only-token',
+          TOPO_PANE_KEY: 'test-pane',
+          TOPO_HOOK_AGENT_PID: version === 'current' ? '2' : '',
           TMUX: '/tmp/agy-test.sock,123,0',
           TMUX_PANE: '%4'
         })
@@ -153,16 +153,16 @@ describe.skipIf(process.platform === 'win32')('Antigravity POSIX hook executable
   )
 
   it('preserves process and tmux evidence in startup spool bodies', async () => {
-    home = mkdtempSync(join(tmpdir(), 'orca-agy-spool-'))
+    home = mkdtempSync(join(tmpdir(), 'topo-agy-spool-'))
     const endpoint = join(home, 'endpoint.sh')
     writeFileSync(endpoint, '# endpoint not ready\n')
     const result = await invoke(installedCommand(home, 'PreInvocation'), '{}', {
       ...process.env,
-      ORCA_AGENT_HOOK_ENDPOINT: endpoint,
-      ORCA_AGENT_HOOK_PORT: '',
-      ORCA_AGENT_HOOK_TOKEN: '',
-      ORCA_PANE_KEY: 'test-pane',
-      ORCA_HOOK_AGENT_PID: '2',
+      TOPO_AGENT_HOOK_ENDPOINT: endpoint,
+      TOPO_AGENT_HOOK_PORT: '',
+      TOPO_AGENT_HOOK_TOKEN: '',
+      TOPO_PANE_KEY: 'test-pane',
+      TOPO_HOOK_AGENT_PID: '2',
       TMUX: '/tmp/agy-test.sock,123,0',
       TMUX_PANE: '%4'
     })
@@ -177,13 +177,13 @@ describe.skipIf(process.platform === 'win32')('Antigravity POSIX hook executable
   })
 
   it('returns after a bounded wait when stdin has no bytes and remains open', async () => {
-    home = mkdtempSync(join(tmpdir(), 'orca-agy-empty-hook-'))
+    home = mkdtempSync(join(tmpdir(), 'topo-agy-empty-hook-'))
     const result = await invoke(installedCommand(home, 'PreInvocation'), '', {
       ...process.env,
-      ORCA_AGENT_HOOK_ENDPOINT: '',
-      ORCA_AGENT_HOOK_PORT: '',
-      ORCA_AGENT_HOOK_TOKEN: '',
-      ORCA_PANE_KEY: ''
+      TOPO_AGENT_HOOK_ENDPOINT: '',
+      TOPO_AGENT_HOOK_PORT: '',
+      TOPO_AGENT_HOOK_TOKEN: '',
+      TOPO_PANE_KEY: ''
     })
     expect(result.code).toBe(0)
     expect(result.stdout).toBe('{}')

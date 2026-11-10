@@ -23,7 +23,7 @@ const mint = (key: CryptoKey = privateKey, kid = 'k1') =>
     .setProtectedHeader({ alg: 'ES256', kid })
     .setSubject('u')
     .setIssuer(ISSUER)
-    .setAudience('orca-relay')
+    .setAudience('topo-relay')
     .setExpirationTime('5m')
     .sign(key)
 
@@ -48,7 +48,7 @@ async function coldVerifier() {
 }
 
 function envFor(url: string): Env {
-  return { RELAY_JWKS_URL: url, RELAY_AUTH_ISSUER: ISSUER, RELAY_JWT_AUDIENCE: 'orca-relay' } as Env
+  return { RELAY_JWKS_URL: url, RELAY_AUTH_ISSUER: ISSUER, RELAY_JWT_AUDIENCE: 'topo-relay' } as Env
 }
 
 function authUp(up: () => boolean) {

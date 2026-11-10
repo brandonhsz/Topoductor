@@ -127,10 +127,10 @@ export function seedLegacyTestJournal(
   })
 }
 
-export const SAVED_BY_NEWER_ORCA = {
+export const SAVED_BY_NEWER_TOPO = {
   refusal: {
     code: 'agent_session_journal_unreadable',
-    details: { reason: 'journalWrittenByNewerOrca' }
+    details: { reason: 'journalWrittenByNewerTopo' }
   }
 }
 

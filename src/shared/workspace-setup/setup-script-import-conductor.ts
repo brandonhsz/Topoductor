@@ -11,7 +11,7 @@ const CONDUCTOR_SETTINGS_PATH = '.conductor/settings.toml'
 const CONDUCTOR_LOCAL_SETTINGS_PATH = '.conductor/settings.local.toml'
 const CONDUCTOR_LEGACY_CONFIG_PATH = 'conductor.json'
 
-// Run actions and per-workspace env have no Orca setup-script equivalent; list them as skipped.
+// Run actions and per-workspace env have no Topo setup-script equivalent; list them as skipped.
 const SETTINGS_UNSUPPORTED_SCRIPT_FIELDS = ['run', 'run_mode', 'auto_run_after_setup'] as const
 const SETTINGS_UNSUPPORTED_ROOT_FIELDS = ['environment_variables', 'file_include_globs'] as const
 

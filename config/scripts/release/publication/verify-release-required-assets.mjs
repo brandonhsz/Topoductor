@@ -11,22 +11,22 @@ export function getRequiredReleaseAssetNames(tag) {
     'latest-linux-arm64.yml',
     'latest-mac.yml',
     'latest.yml',
-    'orca-linux.AppImage',
-    'orca-linux-arm64.AppImage',
-    `orca-ide_${version}_amd64.deb`,
-    `orca-ide_${version}_arm64.deb`,
-    `orca-ide-${version}.x86_64.rpm`,
-    `orca-ide-${version}.aarch64.rpm`,
-    'orca-windows-setup.exe',
-    'orca-windows-setup.exe.blockmap',
-    `Orca-${version}-mac.zip`,
-    `Orca-${version}-mac.zip.blockmap`,
-    `Orca-${version}-arm64-mac.zip`,
-    `Orca-${version}-arm64-mac.zip.blockmap`,
-    'orca-macos-x64.dmg',
-    'orca-macos-x64.dmg.blockmap',
-    'orca-macos-arm64.dmg',
-    'orca-macos-arm64.dmg.blockmap'
+    'topo-linux.AppImage',
+    'topo-linux-arm64.AppImage',
+    `topo-ide_${version}_amd64.deb`,
+    `topo-ide_${version}_arm64.deb`,
+    `topo-ide-${version}.x86_64.rpm`,
+    `topo-ide-${version}.aarch64.rpm`,
+    'topo-windows-setup.exe',
+    'topo-windows-setup.exe.blockmap',
+    `Topo-${version}-mac.zip`,
+    `Topo-${version}-mac.zip.blockmap`,
+    `Topo-${version}-arm64-mac.zip`,
+    `Topo-${version}-arm64-mac.zip.blockmap`,
+    'topo-macos-x64.dmg',
+    'topo-macos-x64.dmg.blockmap',
+    'topo-macos-arm64.dmg',
+    'topo-macos-arm64.dmg.blockmap'
   ]
 }
 
@@ -156,7 +156,7 @@ async function main() {
   if (!token) {
     throw new Error('GH_TOKEN or GITHUB_TOKEN must be set')
   }
-  const repo = process.env.GITHUB_REPOSITORY || 'stablyai/orca'
+  const repo = process.env.GITHUB_REPOSITORY || 'brandonhsz/Topoductor'
   const result = await verifyRequiredReleaseAssets({ repo, tag, token })
   console.log(`Verified ${result.checked.length} required release assets for ${repo}@${tag}`)
 }

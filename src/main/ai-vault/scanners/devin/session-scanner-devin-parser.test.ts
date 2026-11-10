@@ -41,7 +41,7 @@ describe('parseDevinSessionFile', () => {
   )(
     'preserves $length-character $payloadKind messages before display limits',
     async ({ fields, length }) => {
-      const dir = await mkdtemp(join(tmpdir(), 'orca-devin-content-'))
+      const dir = await mkdtemp(join(tmpdir(), 'topo-devin-content-'))
       tempDirs.push(dir)
       const path = join(dir, 'content.json')
       const text = `  first line\n${'x'.repeat(length)}\nlast line  `

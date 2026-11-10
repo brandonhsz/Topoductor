@@ -41,7 +41,7 @@ function basename(path: string): string {
 }
 
 // Fish needs a writable HOME for universal variables or every launch warns.
-const SANDBOX_HOME = mkdtempSync(path.join(tmpdir(), 'orca-shell-portability-'))
+const SANDBOX_HOME = mkdtempSync(path.join(tmpdir(), 'topo-shell-portability-'))
 
 function sandboxEnv(): NodeJS.ProcessEnv {
   return {
@@ -73,15 +73,15 @@ describe.skipIf(process.platform === 'win32')(
     describe.each(SHELLS)('$name', (shell) => {
       // Keep -g: erasing a lone universal would permanently change future fish sessions, including clipboard launches without injected env.
       it.runIf(shell.name === 'fish')('never deletes a lone universal variable', () => {
-        const clear = clearEnvCommand('ORCA_PI_PREFILL', 'posix')
-        const probe = `set -Ux ORCA_PI_PREFILL persisted; ${clear}; set -q ORCA_PI_PREFILL; and echo "RESULT=$ORCA_PI_PREFILL"; or echo RESULT=DESTROYED; set -Ue ORCA_PI_PREFILL`
+        const clear = clearEnvCommand('TOPO_PI_PREFILL', 'posix')
+        const probe = `set -Ux TOPO_PI_PREFILL persisted; ${clear}; set -q TOPO_PI_PREFILL; and echo "RESULT=$TOPO_PI_PREFILL"; or echo RESULT=DESTROYED; set -Ue TOPO_PI_PREFILL`
         expect(runInShell(shell, probe)).toContain('RESULT=persisted')
       })
 
       // Erase the injected global so the user’s shadowed universal reappears.
       it.runIf(shell.name === 'fish')('reveals a shadowed universal instead of deleting it', () => {
-        const clear = clearEnvCommand('ORCA_PI_PREFILL', 'posix')
-        const probe = `set -Ux ORCA_PI_PREFILL mine; set -gx ORCA_PI_PREFILL injected; ${clear}; echo "RESULT=$ORCA_PI_PREFILL"; set -Ue ORCA_PI_PREFILL`
+        const clear = clearEnvCommand('TOPO_PI_PREFILL', 'posix')
+        const probe = `set -Ux TOPO_PI_PREFILL mine; set -gx TOPO_PI_PREFILL injected; ${clear}; echo "RESULT=$TOPO_PI_PREFILL"; set -Ue TOPO_PI_PREFILL`
         expect(runInShell(shell, probe)).toContain('RESULT=mine')
       })
     })

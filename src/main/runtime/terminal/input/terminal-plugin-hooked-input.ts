@@ -1,7 +1,7 @@
 import type { RuntimeTerminalSend } from '../../../../shared/runtime-terminal-send-contract'
 import { assertLegacyAiVaultResumeCommandAllowed } from '../../../ai-vault/structured-session-ownership'
 import type { RuntimeTerminalWriteOptions } from './runtime-terminal-writer'
-import { OrcaRuntimeWithControllerKnowsPtyIsLive } from './terminal-input-dispatch'
+import { TopoRuntimeWithControllerKnowsPtyIsLive } from './terminal-input-dispatch'
 import type { RuntimeAgentPromptWriteOptions } from './agent-prompt-write-options'
 import {
   agentPromptHookApplies,
@@ -14,10 +14,10 @@ import {
 
 type TerminalSendAction = { text?: string; enter?: boolean; interrupt?: boolean }
 
-/** Text and prompts Orca writes to terminals pass plugin hooks first (`terminal.send`,
+/** Text and prompts Topo writes to terminals pass plugin hooks first (`terminal.send`,
  *  `agent.prompt.before`), in order per terminal; with no plugin listing one, a write adds no
  *  await. */
-export abstract class OrcaRuntimeWithPluginHookedTerminalInput extends OrcaRuntimeWithControllerKnowsPtyIsLive {
+export abstract class TopoRuntimeWithPluginHookedTerminalInput extends TopoRuntimeWithControllerKnowsPtyIsLive {
   protected readonly pluginHookOrder = new TerminalPluginHookOrder()
 
   async sendTerminal(

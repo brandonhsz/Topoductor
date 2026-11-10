@@ -46,17 +46,17 @@ export function NativeChatResumeDialogHeader({
           (remote
             ? t(
                 'auto.components.NativeChatResumeOnRestartModal.serverBody',
-                'These chats were working when Orca on {{machine}} restarted. Resuming restores each one where it stopped and asks the agent to carry on. Your own prompt is not re-sent.',
+                'These chats were working when Topo on {{machine}} restarted. Resuming restores each one where it stopped and asks the agent to carry on. Your own prompt is not re-sent.',
                 { machine: machineName }
               )
             : interruptedByUpdate
               ? t(
                   'auto.components.NativeChatResumeOnRestartModal.updateBody',
-                  'These chats were working when Orca installed an update. Resuming restores each one where it stopped, with its full context, and asks the agent to check what it was doing before carrying on. Your own prompt is not re-sent.'
+                  'These chats were working when Topo installed an update. Resuming restores each one where it stopped, with its full context, and asks the agent to check what it was doing before carrying on. Your own prompt is not re-sent.'
                 )
               : t(
                   'auto.components.NativeChatResumeOnRestartModal.body',
-                  'These chats were working when Orca closed. Resuming restores each one where it stopped, with its full context, and asks the agent to check what it was doing before carrying on. Your own prompt is not re-sent.'
+                  'These chats were working when Topo closed. Resuming restores each one where it stopped, with its full context, and asks the agent to check what it was doing before carrying on. Your own prompt is not re-sent.'
                 ))}
       </DialogDescription>
       {runPanel?.summary}

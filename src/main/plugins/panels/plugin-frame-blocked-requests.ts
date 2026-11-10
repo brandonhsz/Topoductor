@@ -1,5 +1,5 @@
 /**
- * Requests a plugin frame tried and Orca refused: the guest session cancels everything off the
+ * Requests a plugin frame tried and Topo refused: the guest session cancels everything off the
  * plugin's origin, and the guest's content policy refuses some first. One page can try hundreds
  * (a font CDN, say), so they are counted per kind and origin and logged once per flush, outside
  * the console's line budget, instead of crowding out the plugin's real errors.

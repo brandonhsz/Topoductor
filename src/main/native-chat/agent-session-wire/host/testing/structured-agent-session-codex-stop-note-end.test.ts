@@ -38,7 +38,7 @@ let launch: { resumeThreadId?: string | null }
 let adapter: CodexStructuredSessionAdapter
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-codex-stop-row-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-codex-stop-row-'))
   resetHostTestOperationIds()
   codex = fakeCodex()
   store = await openTestAgentSessionRecordStore(root)
@@ -86,9 +86,9 @@ it('isolates legacy acquired history from live matching and saves exact proof be
     await journal().resolveDispatch({ clientMessageId: id, state: 'unknown', fence: 1 })
   }
   await journal().replaceEpochItems('handle_forked', store.getRecord(SESSION)!.lease.runtimeFence, [
-    { identity: { provider: 'orca', clientMessageId: 'U' }, body, ownerFence: 1 }
+    { identity: { provider: 'topo', clientMessageId: 'U' }, body, ownerFence: 1 }
   ])
-  expect(journal().item('orca:U')?.revision).toBeGreaterThan(1)
+  expect(journal().item('topo:U')?.revision).toBeGreaterThan(1)
   const user = (id: string | null) => ({
     type: 'userMessage',
     id: 'old-user',

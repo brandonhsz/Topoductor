@@ -2,15 +2,15 @@
 set -euo pipefail
 
 signal_name=${1:?signal name is required}
-app_root=${ORCA_TEST_APP_ROOT:-/artifacts/root}
-signal_target_kind=${ORCA_SIGNAL_TARGET:-app}
-entrypoint_kind=${ORCA_TEST_ENTRYPOINT:-app}
-int_delivery=${ORCA_INT_DELIVERY:-foreground-process-group}
+app_root=${TOPO_TEST_APP_ROOT:-/artifacts/root}
+signal_target_kind=${TOPO_SIGNAL_TARGET:-app}
+entrypoint_kind=${TOPO_TEST_ENTRYPOINT:-app}
+int_delivery=${TOPO_INT_DELIVERY:-foreground-process-group}
 # Allow cold CI’s ~90s Electron startup plus log delivery before the observer deadline.
-startup_timeout_seconds=${ORCA_STARTUP_TIMEOUT_SECONDS:-180}
+startup_timeout_seconds=${TOPO_STARTUP_TIMEOUT_SECONDS:-180}
 
 if ((EUID == 0)); then
-  exec runuser --user orca --preserve-environment -- "$0" "$@"
+  exec runuser --user topo --preserve-environment -- "$0" "$@"
 fi
 
 case "$signal_name" in
@@ -18,7 +18,7 @@ case "$signal_name" in
   *) echo "unsupported signal: $signal_name" >&2; exit 64 ;;
 esac
 
-state_dir=$(mktemp -d "/tmp/orca-shutdown-${signal_name}.XXXXXX")
+state_dir=$(mktemp -d "/tmp/topo-shutdown-${signal_name}.XXXXXX")
 stdout_log="$state_dir/stdout.log"
 stderr_log="$state_dir/stderr.log"
 ulimit -c 0
@@ -38,15 +38,15 @@ export XDG_CACHE_HOME="$state_dir/cache"
 export XDG_RUNTIME_DIR="$state_dir/runtime"
 export LIBGL_ALWAYS_SOFTWARE=1
 # Every entrypoint must serve the profile the caller chose, not the default one.
-export ORCA_USER_DATA_PATH="$state_dir/profile"
+export TOPO_USER_DATA_PATH="$state_dir/profile"
 mkdir -p "$HOME" "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_RUNTIME_DIR"
 chmod 700 "$XDG_RUNTIME_DIR"
 
 case "$entrypoint_kind" in
   app) entrypoint=("$app_root/AppRun" --no-sandbox) ;;
-  appimage) entrypoint=(/input/orca.AppImage --appimage-extract-and-run --no-sandbox) ;;
+  appimage) entrypoint=(/input/topo.AppImage --appimage-extract-and-run --no-sandbox) ;;
   launcher)
-    entrypoint=("$app_root/resources/bin/orca-ide")
+    entrypoint=("$app_root/resources/bin/topo-ide")
     ;;
   *) echo "unsupported entrypoint: $entrypoint_kind" >&2; exit 64 ;;
 esac
@@ -59,7 +59,7 @@ app_start_ticks=$(awk '{print $22}' "/proc/$app_pid/stat")
 # Poll finite snapshots: jq inputs waits for EOF under first(), leaking tail -F observers past the timeout.
 read_ready_line() {
   sed -u -n 's/^[^{]*//p' "$stdout_log" \
-    | jq --unbuffered -Rnc 'first(inputs | fromjson? | select(.type == "orca_server_ready" and .schemaVersion == 1))'
+    | jq --unbuffered -Rnc 'first(inputs | fromjson? | select(.type == "topo_server_ready" and .schemaVersion == 1))'
 }
 
 ready_line=''
@@ -76,35 +76,35 @@ if [[ -z "$ready_line" ]]; then
 fi
 if [[ -z "$ready_line" ]]; then
   cat "$stdout_log" "$stderr_log" >&2
-  echo "FAIL: entrypoint exited or timed out before orca_server_ready" >&2
+  echo "FAIL: entrypoint exited or timed out before topo_server_ready" >&2
   exit 1
 fi
 
-if [[ ! -f "$ORCA_USER_DATA_PATH/orca-runtime.json" || -e "$XDG_CONFIG_HOME/orca/orca-runtime.json" ]]; then
-  ls -la "$ORCA_USER_DATA_PATH" "$XDG_CONFIG_HOME" >&2 || true
-  echo "FAIL: serve ignored ORCA_USER_DATA_PATH; its runtime metadata is not in $ORCA_USER_DATA_PATH" >&2
+if [[ ! -f "$TOPO_USER_DATA_PATH/topo-runtime.json" || -e "$XDG_CONFIG_HOME/topo/topo-runtime.json" ]]; then
+  ls -la "$TOPO_USER_DATA_PATH" "$XDG_CONFIG_HOME" >&2 || true
+  echo "FAIL: serve ignored TOPO_USER_DATA_PATH; its runtime metadata is not in $TOPO_USER_DATA_PATH" >&2
   exit 1
 fi
 
 registered_cli_verified=false
 if [[ "$entrypoint_kind" == appimage ]]; then
-  registered_cli="$HOME/.local/bin/orca-ide"
-  expected_target="$XDG_CACHE_HOME/orca/appimage/launcher/orca-ide"
+  registered_cli="$HOME/.local/bin/topo-ide"
+  expected_target="$XDG_CACHE_HOME/topo/appimage/launcher/topo-ide"
   actual_target=$(readlink "$registered_cli" 2>/dev/null || true)
   if [[ "$actual_target" != "$expected_target" ]]; then
     echo "FAIL: registered CLI target is ${actual_target:-missing}; expected $expected_target" >&2
     exit 1
   fi
   if ! registered_help=$("$registered_cli" --help 2>&1) \
-    || [[ "$registered_help" != *'Usage: orca <command>'* ]]; then
+    || [[ "$registered_help" != *'Usage: topo <command>'* ]]; then
     echo "FAIL: registered CLI did not execute the packaged help command" >&2
     printf '%s\n' "$registered_help" >&2
     exit 1
   fi
   # Pre-lease builds prune every generation under sha256(AppImage path); this build must not extract there.
-  installed_target=$(readlink "$XDG_CACHE_HOME/orca/appimage/launcher/installed" 2>/dev/null || true)
+  installed_target=$(readlink "$XDG_CACHE_HOME/topo/appimage/launcher/installed" 2>/dev/null || true)
   installed_namespace=$(basename "$(dirname "$(dirname "$(dirname "$(dirname "$installed_target")")")")")
-  legacy_namespace=$(printf '%s' /input/orca.AppImage | sha256sum | cut -c1-24)
+  legacy_namespace=$(printf '%s' /input/topo.AppImage | sha256sum | cut -c1-24)
   if [[ ! -x "$installed_target" || "$installed_namespace" == "$legacy_namespace" ]]; then
     echo "FAIL: installed CLI payload ${installed_target:-missing} is in the legacy namespace or missing" >&2
     exit 1
@@ -210,7 +210,7 @@ for shutdown_poll in {0..50}; do
     fi
   done
   owned_residue=$(ps -eo pid=,ppid=,stat=,args= | awk -v state="$state_dir" \
-    '($0 ~ state || $0 ~ /\/artifacts\/root\/orca-ide/ || $0 ~ /[X]vfb :99 /) && $0 !~ /awk -v state=/ {print}' || true)
+    '($0 ~ state || $0 ~ /\/artifacts\/root\/topo-ide/ || $0 ~ /[X]vfb :99 /) && $0 !~ /awk -v state=/ {print}' || true)
   if [[ -z "$listener_after" && -z "$owned_residue" ]] \
     && ((${#survivors[@]} == 0)); then
     break

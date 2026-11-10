@@ -111,7 +111,7 @@ describe('projectResolvedWorktreeLineage', () => {
   it('accepts legacy records when only one side has host or project identity', () => {
     const legacyChild = worktree('child', 'child-instance', {
       hostId: 'local',
-      projectId: 'github:stablyai/orca'
+      projectId: 'github:brandonhsz/Topoductor'
     })
 
     const projected = projectResolvedWorktreeLineage([legacyChild, parent], {

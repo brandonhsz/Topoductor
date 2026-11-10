@@ -22,7 +22,7 @@ export function runInteractiveBashRcfile(
         ...process.env,
         ...inheritedEnv,
         HOME: tempDir,
-        ORCA_SHELL_FEATURES: 'ready',
+        TOPO_SHELL_FEATURES: 'ready',
         TERM: process.env.TERM || 'xterm'
       },
       timeout: 5000

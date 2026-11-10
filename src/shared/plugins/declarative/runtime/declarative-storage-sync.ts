@@ -2,10 +2,10 @@ import {
   applyStorageValue,
   watchPersistedAtoms,
   watchStorageAtoms,
-  type OrcaPersistedEntry
+  type TopoPersistedEntry
 } from './declarative-atoms'
 import { createPersistQueue } from './declarative-persist-queue'
-import type { OrcaBridge, OrcaDisposable } from './declarative-runtime-types'
+import type { TopoBridge, TopoDisposable } from './declarative-runtime-types'
 
 /**
  * `persist: 'storage'` atoms: loaded from the plugin's storage when created, written back under
@@ -13,11 +13,11 @@ import type { OrcaBridge, OrcaDisposable } from './declarative-runtime-types'
  * as they are, without a version, so the worker reads `storage.get(key)` directly.
  */
 export function createDeclarativeStorageSync(options: {
-  bridge: OrcaBridge | null
+  bridge: TopoBridge | null
   report: (error: unknown) => void
 }): {
   /** Persist entries that are not storage atoms, after writing those that are. */
-  write(entries: OrcaPersistedEntry[]): OrcaPersistedEntry[]
+  write(entries: TopoPersistedEntry[]): TopoPersistedEntry[]
   /** Resolves once atoms created so far have their stored values. */
   loaded(): Promise<void>
   dispose(): void
@@ -49,14 +49,14 @@ export function createDeclarativeStorageSync(options: {
     generation += 1
     load(key)
   })
-  const subscription: OrcaDisposable | undefined = storage?.onDidChange(({ key }) => {
+  const subscription: TopoDisposable | undefined = storage?.onDidChange(({ key }) => {
     generation += 1
     load(key)
   })
 
   return {
     write(entries) {
-      const rest: OrcaPersistedEntry[] = []
+      const rest: TopoPersistedEntry[] = []
       for (const entry of entries) {
         if (entry.scope !== 'storage') {
           rest.push(entry)
@@ -78,11 +78,11 @@ export function createDeclarativeStorageSync(options: {
   }
 }
 
-/** Persisted atoms that change: `storage` ones go to the plugin's storage, the rest to Orca. */
+/** Persisted atoms that change: `storage` ones go to the plugin's storage, the rest to Topo. */
 export function createDeclarativePersistence(options: {
-  bridge: OrcaBridge | null
+  bridge: TopoBridge | null
   report: (error: unknown) => void
-  post: (entries: OrcaPersistedEntry[]) => void
+  post: (entries: TopoPersistedEntry[]) => void
 }): { flush: () => void; loaded: () => Promise<void>; dispose: () => void } {
   const storageSync = createDeclarativeStorageSync(options)
   const queue = createPersistQueue({

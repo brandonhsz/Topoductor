@@ -11,7 +11,7 @@ vi.mock('./web-runtime-calls', () => ({ callEnvironmentEnvelope: mocks.callEnvir
 vi.mock('./web-runtime-session', () => ({
   resolveEnvironment: (selector: string) => {
     if (selector !== mocks.activeEnvironment.id) {
-      throw new Error(`Unknown Orca runtime environment: ${selector}`)
+      throw new Error(`Unknown Topo runtime environment: ${selector}`)
     }
     return mocks.activeEnvironment
   }
@@ -62,7 +62,7 @@ describe('uploadBrowserFilesToWebAgentSessionAttachments', () => {
 
     const result = await uploadBrowserFilesToWebAgentSessionAttachments({
       ...target,
-      paths: [token!, 'orca-browser-file:gone/old.txt']
+      paths: [token!, 'topo-browser-file:gone/old.txt']
     })
 
     expect(token).toMatch(/\/notes\.txt$/)
@@ -81,7 +81,7 @@ describe('uploadBrowserFilesToWebAgentSessionAttachments', () => {
     ])
     // A token is claimed once; one nothing holds fails instead of attaching nothing silently.
     expect(result.failed.map(({ sourcePath }) => sourcePath)).toEqual([
-      'orca-browser-file:gone/old.txt'
+      'topo-browser-file:gone/old.txt'
     ])
   })
 })

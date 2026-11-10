@@ -46,8 +46,8 @@ export function translatePluginRpcError(
   if (code === 'method_not_found') {
     return new RuntimeClientError(
       'runtime_unsupported',
-      `The Orca host this command reached is too old for \`${method}\`.`,
-      { nextSteps: ['Update Orca on that host, then run the command again.'] }
+      `The Topo host this command reached is too old for \`${method}\`.`,
+      { nextSteps: ['Update Topo on that host, then run the command again.'] }
     )
   }
   const fingerprint = approvalFingerprintOf(data)
@@ -85,12 +85,12 @@ export async function callPlugins<T>(
   }
 }
 
-/** Development folders are paths on the Orca host, which may not be this machine. */
+/** Development folders are paths on the Topo host, which may not be this machine. */
 export function resolveHostPluginPath(ctx: HandlerContext, value: string): string {
-  if (process.env.ORCA_CLI_CWD) {
+  if (process.env.TOPO_CLI_CWD) {
     throw new RuntimeClientError(
       'invalid_environment',
-      'This shell forwards orca to an Orca host on another machine, which cannot read this folder. Run the command on the machine that runs Orca, or pass --environment for an Orca server that has the folder.'
+      'This shell forwards topo to a Topo host on another machine, which cannot read this folder. Run the command on the machine that runs Topo, or pass --environment for a Topo server that has the folder.'
     )
   }
   if (isAbsolute(value)) {
@@ -99,7 +99,7 @@ export function resolveHostPluginPath(ctx: HandlerContext, value: string): strin
   if (ctx.client.isRemote) {
     throw new RuntimeClientError(
       'invalid_argument',
-      'Pass an absolute path on the Orca server; a relative path names a folder on this machine.'
+      'Pass an absolute path on the Topo server; a relative path names a folder on this machine.'
     )
   }
   return resolve(ctx.cwd, value)
@@ -131,7 +131,7 @@ function formatDevLoad(result: DevLoadResult): string {
   return [
     `${result.added ? 'Loaded' : 'Reloaded'} ${result.pluginKey} from ${result.path} (${how}).`,
     result.plugin ? formatPluginRow(result.plugin) : '',
-    'Orca reloads it (and restarts its worker) when its files change; `orca plugin logs` shows what it printed.'
+    'Topo reloads it (and restarts its worker) when its files change; `topo plugin logs` shows what it printed.'
   ]
     .filter(Boolean)
     .join('\n')
@@ -171,7 +171,7 @@ export function requirePluginKey(ctx: HandlerContext): string {
   if (!key || !isQualifiedPluginKey(key)) {
     throw new RuntimeClientError(
       'invalid_argument',
-      'Pass a plugin key such as acme.dusk; `orca plugin list` shows them.'
+      'Pass a plugin key such as acme.dusk; `topo plugin list` shows them.'
     )
   }
   return key
@@ -268,7 +268,7 @@ export const PLUGIN_RUNTIME_HANDLERS: Record<string, CommandHandler> = {
       ctx,
       result,
       result.opened === 0
-        ? `${result.pluginKey} has no open panel or editor; open one in Orca, then run this again.`
+        ? `${result.pluginKey} has no open panel or editor; open one in Topo, then run this again.`
         : `Opened DevTools for ${result.opened} ${result.pluginKey} frame(s).`
     )
   },

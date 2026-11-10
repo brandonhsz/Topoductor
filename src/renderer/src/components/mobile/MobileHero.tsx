@@ -138,7 +138,7 @@ export function HeroFlow({
               <p className="mp-lead-sm">
                 {t(
                   'auto.components.mobile.MobileHero.e75647ace0',
-                  "Scan this download QR with your phone's camera. Already have Orca Mobile? Continue to step 2 for the pairing QR."
+                  "Scan this download QR with your phone's camera. Already have Topo Mobile? Continue to step 2 for the pairing QR."
                 )}
               </p>
               <div className="mp-tab-toggle">

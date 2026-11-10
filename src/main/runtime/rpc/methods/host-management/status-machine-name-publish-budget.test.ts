@@ -1,13 +1,13 @@
 import os from 'node:os'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import { MACHINE_NAME_PUBLISH_WAIT_MS } from '../../../hosts/platform-probe/runtime-machine-name'
 import { STATUS_METHODS } from './status'
-import { partialRuntimeStore } from '../../../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../../topo-runtime-tests/runtime-store-partial-fixture'
 
 // Use a fresh process before its memoized scutil lookup completes; control completion to exercise the publish deadline.
 const runProcessMock = vi.hoisted(() => vi.fn())
-vi.mock('@orca/process-host', () => ({ runProcess: runProcessMock }))
+vi.mock('@topo/process-host', () => ({ runProcess: runProcessMock }))
 
 vi.mock('electron', () => ({
   BrowserWindow: { fromId: vi.fn(() => null) },
@@ -40,7 +40,7 @@ describe('status.get publish budget', () => {
           })
         : Promise.resolve({ code: 1, signal: null, stdout: '', stderr: '', timedOut: false })
     )
-    const runtime = new OrcaRuntimeService(partialRuntimeStore({ getSettings: () => ({}) }))
+    const runtime = new TopoRuntimeService(partialRuntimeStore({ getSettings: () => ({}) }))
     expect(finishLookup).toBeTypeOf('function')
 
     // The lookup outlives the budget: the answer is the hostname, not a probe that reads as "down".

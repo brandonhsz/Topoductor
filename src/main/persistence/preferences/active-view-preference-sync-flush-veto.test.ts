@@ -52,7 +52,7 @@ describe('ActiveViewPreference sync flush vs. parked async rename', () => {
   const viewFile = (): string => join(dir, 'active-view.json')
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-active-view-'))
+    dir = mkdtempSync(join(tmpdir(), 'topo-active-view-'))
     gate.blockRename = false
     gate.blockAfterRename = false
     gate.waiters = []
@@ -78,7 +78,7 @@ describe('ActiveViewPreference sync flush vs. parked async rename', () => {
 
   it('a write parked on its rename cannot overwrite a later flushOrThrow', async () => {
     const { ActiveViewPreference } = await import('./active-view-preference')
-    const pref = new ActiveViewPreference(join(dir, 'orca-data.json'), 'terminal')
+    const pref = new ActiveViewPreference(join(dir, 'topo-data.json'), 'terminal')
     preferences.add(pref)
 
     gate.blockRename = true
@@ -101,7 +101,7 @@ describe('ActiveViewPreference sync flush vs. parked async rename', () => {
 
   it('an unlink veto failure queues a newest-value correction', async () => {
     const { ActiveViewPreference } = await import('./active-view-preference')
-    const pref = new ActiveViewPreference(join(dir, 'orca-data.json'), 'terminal')
+    const pref = new ActiveViewPreference(join(dir, 'topo-data.json'), 'terminal')
     preferences.add(pref)
 
     gate.blockRename = true
@@ -123,7 +123,7 @@ describe('ActiveViewPreference sync flush vs. parked async rename', () => {
 
   it('a completed stale rename cannot regress the persisted marker', async () => {
     const { ActiveViewPreference } = await import('./active-view-preference')
-    const pref = new ActiveViewPreference(join(dir, 'orca-data.json'), 'terminal')
+    const pref = new ActiveViewPreference(join(dir, 'topo-data.json'), 'terminal')
     preferences.add(pref)
     const renameCompleted = new Promise<void>((resolve) => gate.renameCompleted.push(resolve))
 

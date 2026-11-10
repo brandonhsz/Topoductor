@@ -37,7 +37,7 @@ const LISTED = `${JSON.stringify({
   type: 'control_response',
   response: {
     subtype: 'success',
-    request_id: 'orca-model-discovery',
+    request_id: 'topo-model-discovery',
     response: {
       models: [
         {
@@ -53,7 +53,7 @@ const LISTED = `${JSON.stringify({
 
 describe('claude model catalog probe', () => {
   it.each([
-    [[], [], ['/orca-probe', '/orca-probe'], 'user,project,local'],
+    [[], [], ['/topo-probe', '/topo-probe'], 'user,project,local'],
     [['node_modules/claude/cli.js'], [], ['/chat-a', '/chat-b'], 'user'],
     [[], ['--settings', 'settings.json'], ['/chat-a', '/chat-b'], 'user']
   ])(
@@ -75,7 +75,7 @@ describe('claude model catalog probe', () => {
       for (const folder of ['/chat-a', '/chat-b']) {
         const resolved = await probe.resolve?.(
           HOME('/homes/a'),
-          '/orca-probe',
+          '/topo-probe',
           'snapshot',
           undefined,
           folder
@@ -97,7 +97,7 @@ describe('claude model catalog probe', () => {
   it.runIf(process.platform !== 'win32')(
     'lists through a supervised one-shot that answers after its input ends',
     async () => {
-      const folder = mkdtempSync(join(tmpdir(), 'orca-claude-probe-'))
+      const folder = mkdtempSync(join(tmpdir(), 'topo-claude-probe-'))
       try {
         const parentFile = join(folder, 'parent-pid')
         const standIn = join(folder, 'claude')
@@ -137,7 +137,7 @@ process.stdin.on('end', () => setTimeout(() => {
 
 describe('Claude catalog availability', () => {
   it('says the CLI is missing when the resolved executable is not there', async () => {
-    const folder = mkdtempSync(join(tmpdir(), 'orca-claude-missing-'))
+    const folder = mkdtempSync(join(tmpdir(), 'topo-claude-missing-'))
     try {
       const missing = join(folder, 'claude with spaces', 'claude')
       const probe = createClaudeModelCatalogProbe({

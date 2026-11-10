@@ -8,7 +8,7 @@ import { sessionSearchScopeCatalogFromStore } from '../ai-vault-search/session-s
 import { getCanonicalUserDataPath } from '../persistence/loading-store/user-data-path'
 import { app } from 'electron'
 import { translateMain } from '../i18n/main-i18n'
-import { OrcaRuntimeService } from '../runtime/orca-runtime'
+import { TopoRuntimeService } from '../runtime/topo-runtime'
 import { getLocalPtyProvider } from '../ipc/pty/provider/registry'
 import { clearProviderPtyState } from '../ipc/pty/provider/state-cleanup'
 import { agentHookServer } from '../agent-hooks/server/agent-hook-server'
@@ -16,7 +16,7 @@ import { toAgentStatusIpcPayload } from '../agent-hooks/server/server-status-ide
 import { browserManager } from '../browser/guest-lifecycle/manager/browser-manager'
 import { browserSessionRegistry } from '../browser/sessions/profiles/browser-session-registry'
 import { loadAgentSessionClaimSigner } from '../runtime/agent-session/ownership/agent-session-claim-identity'
-import { getProfileUserDataPath } from '../orca-profiles/profile-storage-paths'
+import { getProfileUserDataPath } from '../topo-profiles/profile-storage-paths'
 import { codexAiVaultSessionResumePreparation } from '../codex/history/resume/codex-ai-vault-session-resume'
 import { prepareCodexPinnedLaunchHome } from './codex-session-resume-launch'
 import { resolveHostCodexSessionSourceHome } from '../codex/history/rollouts/codex-session-source-home'
@@ -43,7 +43,7 @@ import {
 import { openRecipeVmEnvironment } from '../ipc/runtime-environments/runtime-environment-recipe-vm-wake'
 import { resolveEnvironment } from '../../shared/remote-runtime/host-store/runtime-environment-store'
 import { findWorkspaceEphemeralVmRuntime } from '../../shared/ephemeral-vm-workspace-runtime'
-import { installWslOrcadAccountShim } from './wsl-orcad-account-env-wiring'
+import { installWslTopodAccountShim } from './wsl-topod-account-env-wiring'
 import {
   codexStructuredLaunchHomeResolvers,
   prepareCodexRuntimeHomeForLaunch
@@ -59,7 +59,7 @@ import {
 } from '../runtime/terminal/identity/agent-status-observed-pane-identity'
 import { startAgentStateRulesLiveUpdates } from '../runtime/agent-state-rules/agent-state-rules-live-update'
 import { recordDurableCrashBreadcrumb } from '../crash-reporting/durable-crash-breadcrumb'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../shared/layout-owner-switch'
 import { getRuntimeEnvironmentRegistryRoot } from '../ipc/runtime-environments/runtime-environment-registry-root'
 import { openOffscreenBrowserPageLink } from '../runtime/browser/commands/offscreen-browser-page-link'
 
@@ -72,7 +72,7 @@ export function getDesktopWindowStatus(): RuntimeDesktopWindowStatus {
   return value === 'ready' ? 'openable' : value
 }
 
-export function initializeMainProcessRuntime(): OrcaRuntimeService {
+export function initializeMainProcessRuntime(): TopoRuntimeService {
   const store = state.store
   const stats = state.stats
   if (!store || !stats) {
@@ -80,7 +80,7 @@ export function initializeMainProcessRuntime(): OrcaRuntimeService {
   }
   // Process-scope subscription covers desktop, headless serve and fleet status.
   const observedPaneIdentities = new AgentStatusObservedPaneIdentities()
-  const runtime = new OrcaRuntimeService(store, stats, {
+  const runtime = new TopoRuntimeService(store, stats, {
     getSetupTerminalTitle: () => translateMain('worktree.setupTerminalTitle', 'Setup'),
     ...agentHookRuntimeDeps(agentHookServer, observedPaneIdentities, () =>
       state.store?.getSettings()
@@ -180,7 +180,7 @@ export function initializeMainProcessRuntime(): OrcaRuntimeService {
   )
   agentHookServer.setCliWriterExecutionMatcher(observedPaneIdentities, runtime)
   // Main records pane resume state from accepted status.
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     agentHookServer.subscribeEnrichedStatus((enriched) =>
       runtime.recordHookStatusResume(toAgentStatusIpcPayload(enriched))
     )
@@ -202,7 +202,7 @@ export function initializeMainProcessRuntime(): OrcaRuntimeService {
   return runtime
 }
 
-export function configureRuntimeServices(runtime: OrcaRuntimeService): void {
+export function configureRuntimeServices(runtime: TopoRuntimeService): void {
   const store = state.store
   const claudeAccounts = state.claudeAccounts
   const codexAccounts = state.codexAccounts
@@ -217,7 +217,7 @@ export function configureRuntimeServices(runtime: OrcaRuntimeService): void {
   )
   runtime.setSkillCloudService(new SkillCloudService(app.getPath('userData')))
   runtime.setAccountServices({ claudeAccounts, codexAccounts, rateLimits })
-  installWslOrcadAccountShim(store)
+  installWslTopodAccountShim(store)
   runtime.setCommitMessageAgentEnvironmentResolvers({
     // Resolve every Codex launch through runtime-home, including default-account hooks/auth.
     prepareForCodexLaunch: prepareCodexRuntimeHomeForLaunch,

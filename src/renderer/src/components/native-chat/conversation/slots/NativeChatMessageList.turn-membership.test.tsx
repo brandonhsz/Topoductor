@@ -158,7 +158,7 @@ import type { NativeChatMessage } from '../../../../../../shared/native-chat/nat
     it('draws a message waiting behind /compact after the compaction, never above it', () => {
       const compactEntry = agentJournalSubmissionKey('cmd-1')
       const commandTurn = agentJournalItemKey({
-        provider: 'orca',
+        provider: 'topo',
         clientMessageId: 'command-turn:cmd-1'
       })
       const held = agentJournalSubmissionKey('held')
@@ -263,7 +263,7 @@ import type { NativeChatMessage } from '../../../../../../shared/native-chat/nat
     it('draws a message waiting behind a running /compact after its live activity', () => {
       const compactEntry = agentJournalSubmissionKey('cmd-1')
       const commandTurn = agentJournalItemKey({
-        provider: 'orca',
+        provider: 'topo',
         clientMessageId: 'command-turn:cmd-1'
       })
       const held = agentJournalSubmissionKey('held')

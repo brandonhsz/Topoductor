@@ -9,7 +9,7 @@ import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
 import '../../../../orchestration/db/dispatch-row-writer'
 import '../../../../orchestration/db/attempt-outcome-projection'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import {
   encodeFederatedControlMessage,
   importFederatedControlMessage
@@ -44,7 +44,7 @@ describe('orchestration.check on a federated attachment across a restart', () =>
 
   function launch(path: string): RpcContext {
     db = new OrchestrationDb(path)
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     vi.spyOn(runtime, 'getTerminalPaneKey').mockImplementation((handle) =>
       handle === WORKER_HANDLE ? WORKER_PANE : null
@@ -100,7 +100,7 @@ describe('orchestration.check on a federated attachment across a restart', () =>
   }
 
   it('keeps a handled coordinator instruction handled and acks idempotently after the app restarts', async () => {
-    directory = mkdtempSync(join(tmpdir(), 'orca-federated-check-'))
+    directory = mkdtempSync(join(tmpdir(), 'topo-federated-check-'))
     const path = join(directory, 'orchestration.db')
 
     const first = launch(path)

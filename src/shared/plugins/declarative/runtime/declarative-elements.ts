@@ -3,15 +3,15 @@
 export const ORCA_ELEMENT = Symbol.for('orca.declarative.element')
 export const Fragment = Symbol.for('orca.declarative.fragment')
 
-export type OrcaProps = Record<string, unknown>
+export type TopoProps = Record<string, unknown>
 /** Loosely typed on purpose: author-facing prop types live in the published `orca` typings. */
-export type OrcaComponent = (props: OrcaProps) => unknown
-export type OrcaElementType = string | typeof Fragment | OrcaComponent
+export type OrcaComponent = (props: TopoProps) => unknown
+export type TopoElementType = string | typeof Fragment | OrcaComponent
 
 export type OrcaElement = {
   readonly $$typeof: typeof ORCA_ELEMENT
-  readonly type: OrcaElementType
-  readonly props: OrcaProps
+  readonly type: TopoElementType
+  readonly props: TopoProps
   readonly key: string | undefined
 }
 
@@ -24,7 +24,7 @@ export function isOrcaElement(value: unknown): value is OrcaElement {
   )
 }
 
-function createElement(type: OrcaElementType, props: OrcaProps, key: unknown): OrcaElement {
+function createElement(type: TopoElementType, props: TopoProps, key: unknown): OrcaElement {
   return Object.freeze({
     $$typeof: ORCA_ELEMENT,
     type,
@@ -34,15 +34,15 @@ function createElement(type: OrcaElementType, props: OrcaProps, key: unknown): O
 }
 
 /** Automatic runtime (`jsx`/`jsxs`/`jsxDEV`): children arrive inside `props`. */
-export function jsx(type: OrcaElementType, props: OrcaProps | null, key?: unknown): OrcaElement {
+export function jsx(type: TopoElementType, props: TopoProps | null, key?: unknown): OrcaElement {
   const { key: propKey, ...rest } = props ?? {}
   return createElement(type, rest, key ?? propKey)
 }
 
 /** Classic runtime (`h`, `jsxFactory`): children arrive as trailing arguments. */
 export function h(
-  type: OrcaElementType,
-  props: OrcaProps | null,
+  type: TopoElementType,
+  props: TopoProps | null,
   ...children: unknown[]
 ): OrcaElement {
   const { key, ...rest } = props ?? {}

@@ -2,7 +2,7 @@ import { afterEach, expect, vi } from 'vitest'
 import { mkdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fixture } from '../../src/main/persistence/loading-store/profile-state-delayed-authority-fixture'
-import { OrcaRuntimeService } from '../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../src/main/runtime/topo-runtime'
 import {
   LocalPtyProvider,
   _resetLocalPtyProviderStateForTest
@@ -76,14 +76,14 @@ export async function retainedPrefillHost() {
     'XDG_CACHE_HOME',
     'CLAUDE_CONFIG_DIR',
     'CODEX_HOME',
-    'ORCA_USER_DATA_PATH'
+    'TOPO_USER_DATA_PATH'
   ]) {
     const path = join(root, key.toLowerCase())
     mkdirSync(path, { recursive: true })
     vi.stubEnv(key, path)
   }
   vi.stubEnv('SHELL', '/bin/zsh')
-  vi.stubEnv('ORCA_DISABLE_MACOS_LOGIN_SHELL', '1')
+  vi.stubEnv('TOPO_DISABLE_MACOS_LOGIN_SHELL', '1')
   store.updateSettings({
     agentLaunchChoices: {},
     agentPermissionDefault: 'ask',
@@ -145,7 +145,7 @@ export async function retainedPrefillHost() {
     isHistoryEnabled: () => false
   })
   setLocalPtyProvider(provider)
-  const runtime = new OrcaRuntimeService(store, undefined, { getLocalProvider: () => provider })
+  const runtime = new TopoRuntimeService(store, undefined, { getLocalProvider: () => provider })
   const deps: PtyRuntimeControllerDeps = {
     runtime,
     store,

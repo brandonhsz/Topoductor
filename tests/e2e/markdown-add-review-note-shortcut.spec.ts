@@ -1,4 +1,4 @@
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   cleanupMarkdownFixture,
@@ -9,15 +9,15 @@ import {
 } from './helpers/markdown-ordered-list-exit'
 
 test.describe('Markdown add-review-note shortcut', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
   })
 
   test('opens the review-note composer for the current selection in the rich editor', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
-    const context = await getActiveWorktreeContext(orcaPage)
+    const context = await getActiveWorktreeContext(topoPage)
     let filePath: string | null = null
 
     try {
@@ -27,14 +27,14 @@ test.describe('Markdown add-review-note shortcut', () => {
         testInfo.workerIndex,
         'A paragraph to annotate with a review note.\n'
       )
-      await openMarkdownFixture(orcaPage, context, filePath)
-      const editor = await waitForRichMarkdownEditor(orcaPage)
+      await openMarkdownFixture(topoPage, context, filePath)
+      const editor = await waitForRichMarkdownEditor(topoPage)
       await editor.click()
-      await orcaPage.keyboard.press('ControlOrMeta+A')
+      await topoPage.keyboard.press('ControlOrMeta+A')
 
-      await orcaPage.keyboard.press('ControlOrMeta+Shift+A')
+      await topoPage.keyboard.press('ControlOrMeta+Shift+A')
 
-      await expect(orcaPage.getByPlaceholder('Add note for the AI')).toBeVisible({
+      await expect(topoPage.getByPlaceholder('Add note for the AI')).toBeVisible({
         timeout: 5_000
       })
     } finally {
@@ -43,9 +43,9 @@ test.describe('Markdown add-review-note shortcut', () => {
   })
 
   test('opens the composer for the current selection in the Monaco source editor', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
-    const context = await getActiveWorktreeContext(orcaPage)
+    const context = await getActiveWorktreeContext(topoPage)
     let filePath: string | null = null
 
     try {
@@ -55,9 +55,9 @@ test.describe('Markdown add-review-note shortcut', () => {
         testInfo.workerIndex,
         'A paragraph to annotate from the source editor.\n'
       )
-      await openMarkdownFixture(orcaPage, context, filePath)
-      await waitForRichMarkdownEditor(orcaPage)
-      await orcaPage.evaluate(() => {
+      await openMarkdownFixture(topoPage, context, filePath)
+      await waitForRichMarkdownEditor(topoPage)
+      await topoPage.evaluate(() => {
         // Set source mode through the production store action; the tested shortcut is independent of the toolbar menu.
         const store = window.__store
         if (!store) {
@@ -69,14 +69,14 @@ test.describe('Markdown add-review-note shortcut', () => {
         }
         state.setMarkdownViewMode(state.activeFileId, 'source')
       })
-      const monaco = orcaPage.locator('.monaco-editor').first()
+      const monaco = topoPage.locator('.monaco-editor').first()
       await expect(monaco).toBeVisible({ timeout: 25_000 })
       await monaco.click()
-      await orcaPage.keyboard.press('ControlOrMeta+A')
+      await topoPage.keyboard.press('ControlOrMeta+A')
 
-      await orcaPage.keyboard.press('ControlOrMeta+Shift+A')
+      await topoPage.keyboard.press('ControlOrMeta+Shift+A')
 
-      await expect(orcaPage.getByPlaceholder('Add note for the AI')).toBeVisible({
+      await expect(topoPage.getByPlaceholder('Add note for the AI')).toBeVisible({
         timeout: 5_000
       })
     } finally {
@@ -85,9 +85,9 @@ test.describe('Markdown add-review-note shortcut', () => {
   })
 
   test('opens the inline composer for the selected block in the markdown preview', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
-    const context = await getActiveWorktreeContext(orcaPage)
+    const context = await getActiveWorktreeContext(topoPage)
     let filePath: string | null = null
 
     try {
@@ -97,9 +97,9 @@ test.describe('Markdown add-review-note shortcut', () => {
         testInfo.workerIndex,
         'A paragraph to annotate from the preview.\n'
       )
-      await openMarkdownFixture(orcaPage, context, filePath)
-      await waitForRichMarkdownEditor(orcaPage)
-      await orcaPage.evaluate(() => {
+      await openMarkdownFixture(topoPage, context, filePath)
+      await waitForRichMarkdownEditor(topoPage)
+      await topoPage.evaluate(() => {
         // Open the separate markdown-preview file mode through its production action.
         const store = window.__store
         if (!store) {
@@ -121,11 +121,11 @@ test.describe('Markdown add-review-note shortcut', () => {
           { sourceFileId: file.id }
         )
       })
-      await expect(orcaPage.locator('[data-annotation-block-key]').first()).toBeVisible({
+      await expect(topoPage.locator('[data-annotation-block-key]').first()).toBeVisible({
         timeout: 25_000
       })
 
-      await orcaPage.evaluate(() => {
+      await topoPage.evaluate(() => {
         // Model reader selection in the focusable preview root and its rendered block.
         const block = document.querySelector<HTMLElement>('[data-annotation-block-key]')
         if (!block) {
@@ -144,9 +144,9 @@ test.describe('Markdown add-review-note shortcut', () => {
         selection?.addRange(range)
       })
 
-      await orcaPage.keyboard.press('ControlOrMeta+Shift+A')
+      await topoPage.keyboard.press('ControlOrMeta+Shift+A')
 
-      await expect(orcaPage.getByPlaceholder('Add note for the AI')).toBeVisible({
+      await expect(topoPage.getByPlaceholder('Add note for the AI')).toBeVisible({
         timeout: 5_000
       })
     } finally {
@@ -154,8 +154,8 @@ test.describe('Markdown add-review-note shortcut', () => {
     }
   })
 
-  test('does not open the composer without a text selection', async ({ orcaPage }, testInfo) => {
-    const context = await getActiveWorktreeContext(orcaPage)
+  test('does not open the composer without a text selection', async ({ topoPage }, testInfo) => {
+    const context = await getActiveWorktreeContext(topoPage)
     let filePath: string | null = null
 
     try {
@@ -165,13 +165,13 @@ test.describe('Markdown add-review-note shortcut', () => {
         testInfo.workerIndex,
         'A paragraph without any selection.\n'
       )
-      await openMarkdownFixture(orcaPage, context, filePath)
-      const editor = await waitForRichMarkdownEditor(orcaPage)
+      await openMarkdownFixture(topoPage, context, filePath)
+      const editor = await waitForRichMarkdownEditor(topoPage)
       await editor.click()
 
-      await orcaPage.keyboard.press('ControlOrMeta+Shift+A')
+      await topoPage.keyboard.press('ControlOrMeta+Shift+A')
 
-      await expect(orcaPage.getByPlaceholder('Add note for the AI')).toHaveCount(0)
+      await expect(topoPage.getByPlaceholder('Add note for the AI')).toHaveCount(0)
     } finally {
       await cleanupMarkdownFixture(filePath)
     }

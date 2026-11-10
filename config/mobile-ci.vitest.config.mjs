@@ -15,7 +15,7 @@ const nodeFiles = [
   'src/test-support/rpc-recording/family-recordings.test.ts'
 ]
 
-const config = mergeConfig(original, { cacheDir: process.env.ORCA_MOBILE_CI_CACHE_DIR })
+const config = mergeConfig(original, { cacheDir: process.env.TOPO_MOBILE_CI_CACHE_DIR })
 
 // Assign include after merging: mergeConfig concatenates arrays.
 export default {

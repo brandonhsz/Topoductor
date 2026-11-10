@@ -34,7 +34,7 @@ function firstLoadApprovalOf(error: unknown): FirstLoadApproval | null {
 
 export function pluginDevWatchApprovalQuestion(approval: FirstLoadApproval): string {
   return [
-    `${approval.name} needs your approval before Orca runs it. Approving grants:`,
+    `${approval.name} needs your approval before Topo runs it. Approving grants:`,
     ...formatPluginGrantLines(approval),
     ...(approval.why ? [approval.why] : []),
     'Approve and load? [y/N] '

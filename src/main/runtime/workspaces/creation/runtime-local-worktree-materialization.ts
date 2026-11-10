@@ -80,9 +80,9 @@ export async function materializeRuntimeLocalWorktree<T>(args: {
       ...getProjectHostSetupWorktreeMeta(store.getProjectHostSetups?.() ?? [], repo),
       lastActivityAt: now,
       createdAt: now,
-      orcaCreatedAt: now,
-      orcaCreationSource: 'runtime',
-      orcaCreationWorkspaceLayout: getWorktreeCreationLayout(repo, settings),
+      topoCreatedAt: now,
+      topoCreationSource: 'runtime',
+      topoCreationWorkspaceLayout: getWorktreeCreationLayout(repo, settings),
       ...displayNameMeta,
       baseRef: metadataBaseRef,
       ...(checkoutExistingBranch || request.branchIntent === 'open-existing-v2'

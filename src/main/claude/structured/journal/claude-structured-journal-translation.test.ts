@@ -22,7 +22,7 @@ import { claudeProviderHandle } from '../../../../shared/agent-session/lifecycle
 function streamEvent(uuid: string, event: Record<string, unknown>) {
   return {
     type: 'message' as const,
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     message: {
       type: 'stream_event',
       uuid,
@@ -36,7 +36,7 @@ function streamEvent(uuid: string, event: Record<string, unknown>) {
 function resultFrame(subtype: string, fields: Record<string, unknown>) {
   return {
     type: 'message' as const,
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     message: {
       type: 'result',
       subtype,
@@ -78,7 +78,7 @@ function streamedTextTurn(input: {
     ),
     final: {
       type: 'message' as const,
-      sessionId: 'orca-session',
+      sessionId: 'topo-session',
       message: {
         type: 'assistant',
         uuid: input.finalUuid,
@@ -131,7 +131,7 @@ const JOURNAL_IDENTITY: AgentSessionJournalIdentity = {
 let journalRoot = ''
 
 beforeEach(async () => {
-  journalRoot = await mkdtemp(join(tmpdir(), 'orca-claude-journal-translation-'))
+  journalRoot = await mkdtemp(join(tmpdir(), 'topo-claude-journal-translation-'))
 })
 
 afterEach(async () => {
@@ -221,10 +221,10 @@ describe('Claude structured journal translation', () => {
       questionIds: []
     })
 
-    translator.handle({ type: 'prompt', sessionId: 'orca-session', prompt: approval })
+    translator.handle({ type: 'prompt', sessionId: 'topo-session', prompt: approval })
     translator.handle({
       type: 'prompt-cancelled',
-      sessionId: 'orca-session',
+      sessionId: 'topo-session',
       promptKey: approval.promptKey
     })
     await expect(deferred.drained()).resolves.toEqual({ ok: true })

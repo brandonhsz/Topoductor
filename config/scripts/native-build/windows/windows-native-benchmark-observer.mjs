@@ -109,10 +109,10 @@ export function installNativeBenchmarkObserver(api, output, environment = proces
   return receipt
 }
 
-if (process.env.ORCA_NATIVE_BENCHMARK_TRACE) {
+if (process.env.TOPO_NATIVE_BENCHMARK_TRACE) {
   const require = createRequire(import.meta.url)
   installNativeBenchmarkObserver(
-    require('@orca/process-host'),
-    process.env.ORCA_NATIVE_BENCHMARK_TRACE
+    require('@topo/process-host'),
+    process.env.TOPO_NATIVE_BENCHMARK_TRACE
   )
 }

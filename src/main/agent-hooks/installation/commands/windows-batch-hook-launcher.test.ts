@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { removeTree } from '../../../../shared/windows-transient-lock-removal'
 import '../../../claude/hook-settings'
 import { wrapWindowsBatchHookCommand } from './windows-direct-cmd-hook-command'
@@ -11,7 +11,7 @@ import { getWindowsPowerShellExecutablePath } from './windows-powershell-hook-la
 
 describe.skipIf(process.platform !== 'win32')('guarded Windows batch hook commands', () => {
   it('still runs a PowerShell hook under an AllSigned process policy', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-ps1-policy-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-ps1-policy-'))
     const scriptPath = join(root, '测试-hook.ps1')
     try {
       writeFileSync(scriptPath, "Write-Output '{}'; exit 0")
@@ -22,7 +22,7 @@ describe.skipIf(process.platform !== 'win32')('guarded Windows batch hook comman
         args,
         env: {
           ...process.env,
-          ORCA_BACKGROUND_LAUNCH: '1',
+          TOPO_BACKGROUND_LAUNCH: '1',
           PSExecutionPolicyPreference: 'AllSigned'
         },
         input: '{}',
@@ -37,7 +37,7 @@ describe.skipIf(process.platform !== 'win32')('guarded Windows batch hook comman
   })
 
   it('preserves the process policy inherited by a batch hook and its PowerShell child', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-policy-测试-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-policy-测试-'))
     const scriptPath = join(root, 'hook.cmd')
     try {
       writeFileSync(join(root, 'child.ps1'), "Write-Output '{}'; exit 0")
@@ -51,7 +51,7 @@ describe.skipIf(process.platform !== 'win32')('guarded Windows batch hook comman
         args,
         env: {
           ...process.env,
-          ORCA_BACKGROUND_LAUNCH: '1',
+          TOPO_BACKGROUND_LAUNCH: '1',
           PSExecutionPolicyPreference: 'Restricted'
         },
         input: '{}',

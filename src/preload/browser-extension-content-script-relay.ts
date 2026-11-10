@@ -8,13 +8,13 @@ import type {
 } from './browser-extension-storage-sync'
 
 /**
- * Content scripts run in Chromium's per-extension isolated world, which no Orca preload reaches,
- * so their chrome.storage.sync is Electron's disabled one. Orca's content script sends those calls
+ * Content scripts run in Chromium's per-extension isolated world, which no Topo preload reaches,
+ * so their chrome.storage.sync is Electron's disabled one. Topo's content script sends those calls
  * as runtime messages to the extension's own worker, which makes them through main, and the worker
- * sends every sync change back to its tabs the same way. The messages carry this key; Orca hides
+ * sends every sync change back to its tabs the same way. The messages carry this key; Topo hides
  * them from the extension's own onMessage listeners.
  */
-export const CONTENT_SCRIPT_RELAY_KEY = 'orcaContentScriptRelay'
+export const CONTENT_SCRIPT_RELAY_KEY = 'topoContentScriptRelay'
 
 type ApiObject = Record<string, unknown>
 type ExtensionCallable = (...args: unknown[]) => unknown
@@ -29,8 +29,8 @@ const isApiObject = (value: unknown): value is ApiObject =>
  * Self-contained for the same reason as installBrowserExtensionApis: pages serialize it.
  */
 export function installContentScriptRelayFilter(answer?: BrowserExtensionStorageSyncRelay): void {
-  const key = 'orcaContentScriptRelay'
-  const probeKey = 'orcaDocumentTargetProbe'
+  const key = 'topoContentScriptRelay'
+  const probeKey = 'topoDocumentTargetProbe'
   const isObject = (value: unknown): value is ApiObject =>
     value !== null && typeof value === 'object'
   const isCallable = (value: unknown): value is ExtensionCallable => typeof value === 'function'
@@ -111,7 +111,7 @@ export function installContentScriptRelayFilter(answer?: BrowserExtensionStorage
       const from = typeof request.from === 'string' ? request.from : undefined
       answer(request.method, request.args, from).then(
         (reply) => sendResponse(reply),
-        () => sendResponse({ ok: false, error: 'Orca could not handle this extension call' })
+        () => sendResponse({ ok: false, error: 'Topo could not handle this extension call' })
       )
       return true
     })
@@ -169,7 +169,7 @@ export function createContentScriptRelayBridge(
       sender.id === extensionId
     ) {
       for (const handler of handlers) {
-        handler('orcaStorageSync', 'onChanged', [relayed.changes])
+        handler('topoStorageSync', 'onChanged', [relayed.changes])
       }
     }
     return undefined
@@ -178,7 +178,7 @@ export function createContentScriptRelayBridge(
     call: async (_namespace, method, args) => {
       try {
         const reply = await sendMessage({ [CONTENT_SCRIPT_RELAY_KEY]: { method, args, from } })
-        return isReply(reply) ? reply : { ok: false, error: 'Orca could not reach the extension' }
+        return isReply(reply) ? reply : { ok: false, error: 'Topo could not reach the extension' }
       } catch (error) {
         return { ok: false, error: error instanceof Error ? error.message : String(error) }
       }
@@ -200,7 +200,7 @@ export function createContentScriptRelayBridge(
 /**
  * In the worker: sends each sync change to the extension's content scripts in every tab, except
  * the one that made it. Null when the extension has no manifest content scripts (the only ones
- * Orca's content script runs with).
+ * Topo's content script runs with).
  */
 export function createContentScriptSyncForward(): BrowserExtensionStorageSyncForward | null {
   const root: { chrome?: unknown } = globalThis

@@ -7,7 +7,7 @@ import {
 } from '../../../../shared/execution-host'
 import { ptyIncarnationById } from '../provider/ownership-state'
 import { reconcilePaneOwner } from './stable-pane-attach'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import type { Store } from '../../../persistence/loading-store/store'
 import { makePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import { getProvider } from '../provider/registry'
@@ -30,7 +30,7 @@ import type { AdoptStablePaneArgs, AdoptStablePaneResult } from '../ipc/spawn-ty
 
 /** Owns attachment through publication, including the lazy fresh path, under one reservation. */
 export async function adoptStablePane(
-  runtime: OrcaRuntimeService | undefined,
+  runtime: TopoRuntimeService | undefined,
   store: Store | undefined,
   args: AdoptStablePaneArgs
 ): Promise<AdoptStablePaneResult | null> {
@@ -226,7 +226,7 @@ export async function adoptStablePane(
 
 /** An observed exit needs the same surface and acquisition, rather than a now-retired live owner. */
 export function consumeExitedPaneOperation(
-  runtime: OrcaRuntimeService | undefined,
+  runtime: TopoRuntimeService | undefined,
   store: Store | undefined,
   args: Pick<AdoptStablePaneArgs, 'worktreeId' | 'connectionId' | 'tabId' | 'leafId' | 'renderer'>,
   operation: PaneSpawnOperation

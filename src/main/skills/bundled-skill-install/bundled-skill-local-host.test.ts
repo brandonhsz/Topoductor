@@ -13,7 +13,7 @@ import {
 import { localBundledSkillInput } from './bundled-skill-local-host'
 
 const HOME = resolve('/', 'home', 'u')
-const USER_DATA = resolve('/', 'data', 'orca')
+const USER_DATA = resolve('/', 'data', 'topo')
 
 afterEach(() => {
   detectMock.mockReset()
@@ -45,7 +45,7 @@ describe('localBundledSkillInput', () => {
     expect(workspace.providerRootOverrides).toEqual({})
   })
 
-  it("reads past a CLAUDE_CONFIG_DIR Orca injected, as the app's account router does", async () => {
+  it("reads past a CLAUDE_CONFIG_DIR Topo injected, as the app's account router does", async () => {
     const injected = join(USER_DATA, 'claude-profiles', 'work')
     vi.stubEnv('CLAUDE_CONFIG_DIR', injected)
     vi.stubEnv(CLAUDE_INJECTED_CONFIG_DIR_ENV, injected)

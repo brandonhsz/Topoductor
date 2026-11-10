@@ -46,10 +46,10 @@ jobs:
       - name: Plan unit selection
         id: plan
         env:
-          ORCA_UNIT_SELECTION_MODE: ${{ inputs.selection_mode }}
-          ORCA_PULL_REQUEST_DRAFT: ${{ github.event.pull_request.draft }}
+          TOPO_UNIT_SELECTION_MODE: ${{ inputs.selection_mode }}
+          TOPO_PULL_REQUEST_DRAFT: ${{ github.event.pull_request.draft }}
           # Twelve 4-vCPU hosted shards match the old 8-vCPU wall time; the repository variable can request 2 to 16.
-          ORCA_UNIT_FULL_SHARD_COUNT: ${{ vars.ORCA_UNIT_FULL_SHARD_COUNT || '12' }}
+          TOPO_UNIT_FULL_SHARD_COUNT: ${{ vars.TOPO_UNIT_FULL_SHARD_COUNT || '12' }}
         run: |
           if [ "$DEFER_SHADOW" = true ]; then
             node config/scripts/ci/unit-selection/ci-unit-matrix.mjs

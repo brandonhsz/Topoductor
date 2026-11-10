@@ -29,7 +29,7 @@ class LookupCountingMap extends Map<string, string> {
 }
 
 const WINDOWS_ROOT = 'C:\\Users\\dev\\.agents\\skills'
-const OPAQUE_REMOTE_ROOT = 'orca-ssh://build-box/srv/shared/.agents/skills'
+const OPAQUE_REMOTE_ROOT = 'topo-ssh://build-box/srv/shared/.agents/skills'
 
 const OWNERS_WITH_EMPTY: [string, string][] = [
   ['/a', 'claude'],

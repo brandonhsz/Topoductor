@@ -189,7 +189,7 @@ export const createSettingsSlice: StateCreator<AppState, [], [], SettingsSlice> 
     if (
       !runtimeEnvironmentCatalogHydrated ||
       !hasCompleteRuntimeStatusCoverage(runtimeEnvironments, runtimeStatusByEnvironmentId) ||
-      // Why: coverage is blind to catalog edits from another client or the orca CLI.
+      // Why: coverage is blind to catalog edits from another client or the topo CLI.
       isRuntimeCatalogListingStale()
     ) {
       void get().hydrateRuntimeEnvironmentStatuses()

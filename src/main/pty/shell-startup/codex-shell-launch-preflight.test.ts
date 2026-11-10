@@ -24,7 +24,7 @@ import { getPowerShellAgentWrappers } from '../../../shared/powershell-agent-wra
 const roots: string[] = []
 const zshAvailable = existsSync('/bin/zsh')
 const bashAvailable = existsSync('/bin/bash')
-// Shared lookup finds off-PATH Homebrew fish and enforces ORCA_REQUIRE_FISH.
+// Shared lookup finds off-PATH Homebrew fish and enforces TOPO_REQUIRE_FISH.
 const fishLookup = resolveFishBinary()
 const fishAvailable = fishLookup.available
 const pwshAvailable =
@@ -62,18 +62,18 @@ function createFishSandbox(prefix: string): { bin: string; preflight: string; ma
   mkdirSync(bin)
   symlinkSync(fishBinary, join(bin, 'fish'))
   const marker = join(root, 'preflight-ran')
-  const preflight = join(bin, 'orca-preflight')
+  const preflight = join(bin, 'topo-preflight')
   writeExecutable(preflight, `#!/bin/sh\nprintf ran > ${JSON.stringify(marker)}\n`)
   return { bin, preflight, marker }
 }
 
-// Reports Orca's own wrapper (not a user-defined codex function) and any capture leak.
+// Reports Topo's own wrapper (not a user-defined codex function) and any capture leak.
 const FISH_STATE_PROBE = `if functions -q codex; and functions codex | string match -q '*prepare-codex*'
   echo -n wrapper=YES
 else
   echo -n wrapper=NO
 end
-echo " var=[$__orca_codex_type]"`
+echo " var=[$__topo_codex_type]"`
 
 function writeExecutable(path: string, content: string): void {
   writeFileSync(path, content)
@@ -96,7 +96,7 @@ function runAliasLaunch(
     '#!/bin/sh\nif [ -f "$CODEX_HOME/trusted" ]; then printf "normal\\n"; else printf "hooks-review\\n"; fi\n'
   )
   writeExecutable(
-    join(bin, 'orca-test'),
+    join(bin, 'topo-test'),
     preflightSucceeds
       ? '#!/bin/sh\n[ "$1 $2 $3" = "agent hooks prepare-codex" ] || exit 2\nprintf "valid\\n" > "$CODEX_HOME/trusted"\n'
       : '#!/bin/sh\nexit 7\n'
@@ -122,15 +122,15 @@ function runAliasLaunch(
         ...process.env,
         PATH: `${bin}:${process.env.PATH ?? ''}`,
         CODEX_HOME: home,
-        ORCA_CODEX_HOME: home,
-        ORCA_CODEX_LAUNCH_PREFLIGHT: join(bin, 'orca-test')
+        TOPO_CODEX_HOME: home,
+        TOPO_CODEX_LAUNCH_PREFLIGHT: join(bin, 'topo-test')
       }
     }
   ).trim()
 }
 
 function expectNamedAliasSurvives(shell: string, enableAliases: string): void {
-  const root = mkdtempSync(join(tmpdir(), 'orca-codex-named-alias-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-codex-named-alias-'))
   roots.push(root)
   const bin = join(root, 'bin')
   mkdirSync(bin)
@@ -140,7 +140,7 @@ function expectNamedAliasSurvives(shell: string, enableAliases: string): void {
     '#!/bin/sh\nprintf "launched args=[%s] author=[%s]\\n" "$*" "$GIT_AUTHOR_NAME"\n'
   )
   writeExecutable(
-    join(bin, 'orca-test'),
+    join(bin, 'topo-test'),
     `#!/bin/sh\nprintf '%s' "$*" > ${JSON.stringify(preflightMarker)}\n`
   )
   // Compound commands parse before execution, so the existing alias can expand into the wrapper header.
@@ -166,8 +166,8 @@ function expectNamedAliasSurvives(shell: string, enableAliases: string): void {
       env: {
         ...process.env,
         PATH: `${bin}${delimiter}${process.env.PATH ?? ''}`,
-        ORCA_CODEX_LAUNCH_PREFLIGHT: join(bin, 'orca-test'),
-        // Nested Orca tests must not forward the host pane's identity.
+        TOPO_CODEX_LAUNCH_PREFLIGHT: join(bin, 'topo-test'),
+        // Nested Topo tests must not forward the host pane's identity.
         ...Object.fromEntries(CODEX_COMMAND_IDENTITY_ENV_KEYS.map((key) => [key, '']))
       }
     }
@@ -186,8 +186,8 @@ afterEach(() => {
 
 describe.skipIf(process.platform === 'win32')('Codex shell launch preflight', () => {
   it('repairs trust invalidated after shell creation before an alias launches Codex', () => {
-    const beforeRoot = mkdtempSync(join(tmpdir(), 'orca-codex-shell-before-'))
-    const afterRoot = mkdtempSync(join(tmpdir(), 'orca-codex-shell-after-'))
+    const beforeRoot = mkdtempSync(join(tmpdir(), 'topo-codex-shell-before-'))
+    const afterRoot = mkdtempSync(join(tmpdir(), 'topo-codex-shell-after-'))
     roots.push(beforeRoot, afterRoot)
 
     expect(runAliasLaunch(beforeRoot, '')).toBe('hooks-review')
@@ -210,7 +210,7 @@ describe.skipIf(process.platform === 'win32')('Codex shell launch preflight', ()
     it.skipIf(!existsSync(shell))(
       `keeps ${shell} startup alive under strict error handling when Codex is absent`,
       () => {
-        const root = mkdtempSync(join(tmpdir(), 'orca-codex-strict-startup-'))
+        const root = mkdtempSync(join(tmpdir(), 'topo-codex-strict-startup-'))
         roots.push(root)
 
         const output = execFileSync(
@@ -222,7 +222,7 @@ describe.skipIf(process.platform === 'win32')('Codex shell launch preflight', ()
           ],
           {
             encoding: 'utf-8',
-            env: { ...process.env, PATH: root, ORCA_CODEX_LAUNCH_PREFLIGHT: 'orca-test' }
+            env: { ...process.env, PATH: root, TOPO_CODEX_LAUNCH_PREFLIGHT: 'topo-test' }
           }
         )
 
@@ -235,7 +235,7 @@ describe.skipIf(process.platform === 'win32')('Codex shell launch preflight', ()
     it.skipIf(!existsSync(shell))(
       `keeps the user’s own codex function in ${shell} when the cwd has a codex entry`,
       () => {
-        const root = mkdtempSync(join(tmpdir(), 'orca-codex-user-fn-'))
+        const root = mkdtempSync(join(tmpdir(), 'topo-codex-user-fn-'))
         roots.push(root)
         mkdirSync(join(root, 'codex'))
 
@@ -258,12 +258,12 @@ describe.skipIf(process.platform === 'win32')('Codex shell launch preflight', ()
 
   // #16893: absent Codex made unquoted (type -t codex) vanish and test complain; exercise real -l -C startup.
   it.skipIf(!fishAvailable)('stays silent and installs no wrapper when codex is absent', () => {
-    const { bin, preflight } = createFishSandbox('orca-codex-fish-absent-')
+    const { bin, preflight } = createFishSandbox('topo-codex-fish-absent-')
 
     const result = spawnSync(
       join(bin, 'fish'),
       ['--no-config', '-l', '-C', getFishCodexShellLaunchPreflight(), '-c', FISH_STATE_PROBE],
-      { encoding: 'utf-8', env: { PATH: bin, ORCA_CODEX_LAUNCH_PREFLIGHT: preflight } }
+      { encoding: 'utf-8', env: { PATH: bin, TOPO_CODEX_LAUNCH_PREFLIGHT: preflight } }
     )
 
     expect(result.stderr).not.toContain('Missing argument')
@@ -275,10 +275,10 @@ describe.skipIf(process.platform === 'win32')('Codex shell launch preflight', ()
 // Verified launcher paths may contain spaces in app bundles or Program Files.
 describe.skipIf(process.platform === 'win32')('Codex preflight paths containing spaces', () => {
   function writeSpacedPreflight(root: string): { preflightPath: string; markerPath: string } {
-    const dir = join(root, 'Orca Dev.app', 'Contents', 'Resources', 'bin')
+    const dir = join(root, 'Topo Dev.app', 'Contents', 'Resources', 'bin')
     mkdirSync(dir, { recursive: true })
     const markerPath = join(root, 'preflight-ran')
-    const preflightPath = join(dir, 'orca')
+    const preflightPath = join(dir, 'topo')
     writeExecutable(
       preflightPath,
       `#!/bin/sh\n[ "$1 $2 $3" = "agent hooks prepare-codex" ] || exit 2\nprintf ran > ${JSON.stringify(markerPath)}\n`
@@ -287,7 +287,7 @@ describe.skipIf(process.platform === 'win32')('Codex preflight paths containing 
   }
 
   it('invokes a POSIX preflight whose absolute path contains spaces', () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-codex-spaced-posix-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-codex-spaced-posix-'))
     roots.push(root)
     const bin = join(root, 'bin')
     mkdirSync(bin)
@@ -301,7 +301,7 @@ describe.skipIf(process.platform === 'win32')('Codex preflight paths containing 
         env: {
           ...process.env,
           PATH: `${bin}${delimiter}${process.env.PATH ?? ''}`,
-          ORCA_CODEX_LAUNCH_PREFLIGHT: preflightPath
+          TOPO_CODEX_LAUNCH_PREFLIGHT: preflightPath
         }
       }
     )
@@ -310,7 +310,7 @@ describe.skipIf(process.platform === 'win32')('Codex preflight paths containing 
   })
 
   it.skipIf(!fishAvailable)('invokes a fish preflight whose absolute path contains spaces', () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-codex-spaced-fish-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-codex-spaced-fish-'))
     roots.push(root)
     const bin = join(root, 'bin')
     mkdirSync(bin)
@@ -321,7 +321,7 @@ describe.skipIf(process.platform === 'win32')('Codex preflight paths containing 
       env: {
         ...process.env,
         PATH: `${bin}${delimiter}${process.env.PATH ?? ''}`,
-        ORCA_CODEX_LAUNCH_PREFLIGHT: preflightPath
+        TOPO_CODEX_LAUNCH_PREFLIGHT: preflightPath
       }
     })
 
@@ -331,7 +331,7 @@ describe.skipIf(process.platform === 'win32')('Codex preflight paths containing 
   it.skipIf(!pwshAvailable)(
     'invokes a PowerShell preflight whose absolute path contains spaces',
     () => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-codex-spaced-pwsh-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-codex-spaced-pwsh-'))
       roots.push(root)
       const bin = join(root, 'bin')
       mkdirSync(bin)
@@ -346,7 +346,7 @@ describe.skipIf(process.platform === 'win32')('Codex preflight paths containing 
           env: {
             ...process.env,
             PATH: `${bin}${delimiter}${process.env.PATH ?? ''}`,
-            ORCA_CODEX_LAUNCH_PREFLIGHT: preflightPath
+            TOPO_CODEX_LAUNCH_PREFLIGHT: preflightPath
           }
         }
       )

@@ -9,7 +9,7 @@ import {
   computeSkillPackageDigest,
   parseSkillPackageManifest
 } from '../../../shared/skill-package-manifest'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 
 const mocks = vi.hoisted(() => ({
   getRuntimeEnvironmentStatus: vi.fn(),
@@ -106,7 +106,7 @@ it('reports only selected skills in manifest order', async () => {
     installSharedSkillBundleRequest: vi
       .fn()
       .mockRejectedValue(new Error('skill-install-filesystem-failed'))
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   const result = await installSkillBundleCloudGrant(runtime, bundleGrant, {
     operationId: 'op',
     selectedSkillIds: ['a', 'b'],

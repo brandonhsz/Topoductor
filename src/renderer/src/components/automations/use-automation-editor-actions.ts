@@ -118,7 +118,7 @@ export function useAutomationEditorActions({
     setEditingRowKey(row.key)
     const rowHostStableKey = rowRecoveryHost(row.key)?.stableKey ?? null
     const initialHost = automationCreateHostFor(editHostEntries, rowHostStableKey)
-    // A managed SSH host's row can only be saved by moving it to that host's Orca server.
+    // A managed SSH host's row can only be saved by moving it to that host's Topo server.
     const movingToServer = initialHost !== null && initialHost.stableKey !== rowHostStableKey
     const initialDestination = destinationForProject(
       latest.projectId,

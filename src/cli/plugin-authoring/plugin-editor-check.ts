@@ -40,7 +40,7 @@ export async function checkPluginEditors(
   )
   const check = loaded.checkPluginEditorEntry
   if (!check) {
-    throw new Error('this Orca build has no custom editor check')
+    throw new Error('this Topo build has no custom editor check')
   }
   const checks: PluginEditorCheck[] = []
   for (const editor of editors) {

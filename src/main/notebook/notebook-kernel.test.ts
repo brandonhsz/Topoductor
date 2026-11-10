@@ -8,8 +8,8 @@ vi.mock('../../../resources/notebook/kernel-bridge.py?asset&asarUnpack', () => (
 
 import { startNotebookKernel } from './notebook-kernel'
 
-// Needs an interpreter with ipykernel, e.g. ORCA_TEST_IPYKERNEL_PYTHON=/path/to/.venv/bin/python.
-const python = process.env.ORCA_TEST_IPYKERNEL_PYTHON
+// Needs an interpreter with ipykernel, e.g. TOPO_TEST_IPYKERNEL_PYTHON=/path/to/.venv/bin/python.
+const python = process.env.TOPO_TEST_IPYKERNEL_PYTHON
 
 describe.skipIf(!python)('notebook kernel against a real ipykernel', () => {
   it('keeps state across cells, returns the last expression, interrupts, and reports death', async () => {

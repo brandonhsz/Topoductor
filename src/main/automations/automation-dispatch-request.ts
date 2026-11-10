@@ -17,7 +17,7 @@ import {
   automationRunFailure,
   type AutomationRunFailure
 } from '../../shared/automations/history/automation-run-failure-copy'
-import { isOrcadFencedAutomation, ORCAD_FENCED_AUTOMATION } from './orcad-fenced-automation'
+import { isTopodFencedAutomation, TOPOD_FENCED_AUTOMATION } from './topod-fenced-automation'
 import { AutomationDispatchCancelledError } from './automation-dispatch-cancelled-error'
 
 export { AutomationDispatchCancelledError }
@@ -62,7 +62,7 @@ export async function requestAutomationDispatch(
   const readRun = (): AutomationRun => {
     if (!ctx.isActive()) {
       throw new AutomationDispatchCancelledError(
-        'Orca stopped before this automation could launch.'
+        'Topo stopped before this automation could launch.'
       )
     }
     const current = ctx.store.listAutomationRuns(automation.id).find((entry) => entry.id === run.id)
@@ -72,8 +72,8 @@ export async function requestAutomationDispatch(
       )
     }
     // A refusal row would change the fenced export; restart strands the run instead.
-    if (isOrcadFencedAutomation(ctx.store, automation)) {
-      throw new AutomationDispatchCancelledError(ORCAD_FENCED_AUTOMATION)
+    if (isTopodFencedAutomation(ctx.store, automation)) {
+      throw new AutomationDispatchCancelledError(TOPOD_FENCED_AUTOMATION)
     }
     return current
   }

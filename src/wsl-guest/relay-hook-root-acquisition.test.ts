@@ -30,7 +30,7 @@ const row = (pid: number, ppid: number, pgid: number, command: string, tty = 'pt
 // A WSL pane: the bootstrap's exec'd login shell is the guest root; Claude's Bash tool runs the
 // nested run in its own session with no terminal.
 const rows: ProcessTableRow[] = [
-  row(100, 1, 100, '/bin/bash --rcfile /mnt/c/orca/shell-ready/bash/rcfile'),
+  row(100, 1, 100, '/bin/bash --rcfile /mnt/c/topo/shell-ready/bash/rcfile'),
   row(4001, 100, 4001, 'node /usr/lib/node_modules/@anthropic-ai/claude-code/cli.js'),
   row(4005, 4001, 4005, '/bin/bash -c claude -p summarize', '?'),
   row(4006, 4005, 4005, 'claude -p summarize', '?')
@@ -57,7 +57,7 @@ async function relay(request: (paneKey: string) => Promise<unknown>) {
   const post = async (pid: number | null, payload: Record<string, unknown>, pane = paneKey) => {
     const response = await fetch(`http://127.0.0.1:${port}/hook/claude`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Orca-Agent-Hook-Token': token },
+      headers: { 'Content-Type': 'application/json', 'X-Topo-Agent-Hook-Token': token },
       body: JSON.stringify({
         paneKey: pane,
         tabId: pane.split(':')[0],

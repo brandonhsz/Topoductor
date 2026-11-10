@@ -5,7 +5,7 @@ import { labelFromModelId } from './model-id-label'
 // claude models starts chat; list_models over --print stream-json reads the picker without an API turn. Older CLIs return error with exit 0; keep seed models.
 export const CLAUDE_MODEL_LIST_STDIN = `${JSON.stringify({
   type: 'control_request',
-  request_id: 'orca-model-discovery',
+  request_id: 'topo-model-discovery',
   request: { subtype: 'list_models' }
 })}\n`
 

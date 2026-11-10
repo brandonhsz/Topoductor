@@ -128,7 +128,7 @@ export async function readPluginGitCommit<T>(
   if (exactCommit && !SHA1_COMMIT_PATTERN.test(ref)) {
     throw new Error('SHA-256 plugin repositories are not supported')
   }
-  const temporaryRoot = await mkdtemp(join(tmpdir(), 'orca-plugin-git-'))
+  const temporaryRoot = await mkdtemp(join(tmpdir(), 'topo-plugin-git-'))
   const repository = join(temporaryRoot, 'repository')
   const hooks = join(temporaryRoot, 'no-hooks')
   const config = pluginGitConfigArgs(hooks)

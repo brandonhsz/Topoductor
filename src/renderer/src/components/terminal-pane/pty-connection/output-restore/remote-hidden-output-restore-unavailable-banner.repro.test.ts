@@ -488,7 +488,7 @@ describe('remote hidden-output restore abandonment (issue2-hidden-output-skip)',
         repo1: [{ id: 'wt-1', repoId: 'repo1', path: '/tmp/wt-1', displayName: 'feat/notis' }]
       },
       runtimeStatusByEnvironmentId: new Map(),
-      repos: [{ id: 'repo1', connectionId: null, displayName: 'orca' }],
+      repos: [{ id: 'repo1', connectionId: null, displayName: 'topo' }],
       projects: [],
       sshConnectionStates: new Map(),
       transientClearedAgentStatusConnectionIds: {},

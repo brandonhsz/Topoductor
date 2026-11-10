@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from '../../dispatcher'
 import type { RpcRequest } from '../../core'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import '../../../../../shared/remote-rpc-content-budget'
 import { FILE_METHODS } from './files'
 
@@ -26,7 +26,7 @@ describe('file RPC methods', () => {
         registerSubscriptionCleanup: vi.fn().mockImplementation((id, cleanup) => {
           cleanups.set(id, cleanup)
         })
-      } as unknown as OrcaRuntimeService
+      } as unknown as TopoRuntimeService
       const dispatcher = new RpcDispatcher({ runtime, methods: FILE_METHODS })
       const replies: unknown[] = []
 
@@ -112,7 +112,7 @@ describe('file RPC methods', () => {
         cleanups.delete(id)
         cleanup?.()
       })
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     const dispatcher = new RpcDispatcher({ runtime, methods: FILE_METHODS })
     const replies: { result?: { type?: string; message?: string } }[] = []
 

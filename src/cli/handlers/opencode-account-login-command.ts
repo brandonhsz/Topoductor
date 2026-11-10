@@ -1,11 +1,11 @@
 import type { ChildProcess } from 'node:child_process'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import {
   forceTerminateProcessTree,
   signalProcessTree
-} from '@orca/process-host/process-tree-termination'
-import { inFlightWindowsTreeKill } from '@orca/process-host/windows-tree-kill'
-import { createOutputSink } from '@orca/process-host/bounded-output-sink'
+} from '@topo/process-host/process-tree-termination'
+import { inFlightWindowsTreeKill } from '@topo/process-host/windows-tree-kill'
+import { createOutputSink } from '@topo/process-host/bounded-output-sink'
 import { resolveCliCommand, withCliRuntimeOnPath } from '../../shared/node-cli-command-resolution'
 import { RuntimeClientError } from '../runtime-client'
 import {
@@ -40,8 +40,8 @@ export async function resolveOpenCodeLoginCommand(
   }
   const installGuidance =
     process.platform === 'win32'
-      ? 'Install alongside your existing CLI with `npm install --prefix C:\\tools\\orca-opencode2 @opencode/cli`. Append C:\\tools\\orca-opencode2\\node_modules\\.bin to PATH after existing entries, then run this command again. If an unusable opencode2 is the first match, repair that installation without changing your generic opencode launcher.'
-      : 'Install alongside your existing CLI with `npm install --prefix ./orca-opencode2 @opencode/cli`. Append the absolute path of orca-opencode2/node_modules/.bin to PATH after existing entries, then run this command again.'
+      ? 'Install alongside your existing CLI with `npm install --prefix C:\\tools\\topo-opencode2 @opencode/cli`. Append C:\\tools\\topo-opencode2\\node_modules\\.bin to PATH after existing entries, then run this command again. If an unusable opencode2 is the first match, repair that installation without changing your generic opencode launcher.'
+      : 'Install alongside your existing CLI with `npm install --prefix ./topo-opencode2 @opencode/cli`. Append the absolute path of topo-opencode2/node_modules/.bin to PATH after existing entries, then run this command again.'
   throw new RuntimeClientError(
     'invalid_environment',
     `Could not find an OpenCode 2 login. Managed OpenCode accounts require OpenCode 2. ${installGuidance}`

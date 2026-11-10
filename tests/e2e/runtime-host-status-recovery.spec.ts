@@ -5,7 +5,7 @@ import {
   encodePairingOffer
 } from '../../src/shared/remote-runtime/pairing/pairing'
 import type { PairingCreateOfferResult } from '../../src/shared/remote-runtime/pairing/pairing-create-offer-contract'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient,
@@ -119,7 +119,7 @@ async function expectWorkspaceHostAppearance(
 for (const topology of ['desktop', 'headless'] as const) {
   test(`connection-owned status recovers with a ${topology} host and independent viewers`, async ({
     electronApp,
-    orcaPage: page,
+    topoPage: page,
     testRepoPath
   }, testInfo) => {
     test.setTimeout(180_000)

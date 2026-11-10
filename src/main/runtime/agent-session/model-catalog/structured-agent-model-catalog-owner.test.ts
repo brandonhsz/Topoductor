@@ -1,4 +1,4 @@
-import type * as ProfilePaths from '../../../orca-profiles/profile-storage-paths'
+import type * as ProfilePaths from '../../../topo-profiles/profile-storage-paths'
 import { readFileSync } from 'node:fs'
 import { z } from 'zod'
 import { mkdtemp, rm } from 'node:fs/promises'
@@ -14,7 +14,7 @@ import { stopStructuredAgentSessionRuntime } from '../structured-agent-session-r
 import { createStructuredAgentSessionLogger } from '../../../native-chat/agent-session-wire/host/structured-agent-session-logger'
 
 const profile = vi.hoisted(() => ({ root: '' }))
-vi.mock('../../../orca-profiles/profile-storage-paths', async (importOriginal) => ({
+vi.mock('../../../topo-profiles/profile-storage-paths', async (importOriginal) => ({
   ...(await importOriginal<typeof ProfilePaths>()),
   getProfileUserDataPath: () => profile.root
 }))
@@ -32,7 +32,7 @@ const installedDeps = () => ({
   resolveAgentAccountHome: async () => ({ variable: 'PI_CODING_AGENT_DIR', path: join(root, 'pi') })
 })
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-catalog-owner-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-catalog-owner-'))
   profile.root = root
   releases = vi.fn()
   const create = environment.createStructuredAgentEnvironmentResolvers

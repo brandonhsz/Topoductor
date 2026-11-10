@@ -9,8 +9,8 @@ import { createConnection } from 'node:net'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { BrowserManager } from '../../guest-lifecycle/manager/browser-manager'
 import { CdpBridge } from './cdp-bridge'
-import { OrcaRuntimeService } from '../../../runtime/orca-runtime'
-import { OrcaRuntimeRpcServer } from '../../../runtime/rpc/server/runtime-rpc'
+import { TopoRuntimeService } from '../../../runtime/topo-runtime'
+import { TopoRuntimeRpcServer } from '../../../runtime/rpc/server/runtime-rpc'
 import { readRuntimeMetadata } from '../../../runtime/rpc/server/runtime-metadata'
 
 const { webContentsFromIdMock } = vi.hoisted(() => ({
@@ -286,7 +286,7 @@ async function sendRequest(
 }
 
 describe('Browser automation pipeline (integration)', () => {
-  let server: OrcaRuntimeRpcServer
+  let server: TopoRuntimeRpcServer
   let endpoint: string
   let authToken: string
   let activeGuestHarness: ReturnType<typeof createMockGuest>
@@ -320,11 +320,11 @@ describe('Browser automation pipeline (integration)', () => {
     cdpBridge.setActiveTab(GUEST_WC_ID)
 
     const userDataPath = mkdtempSync(join(tmpdir(), 'browser-e2e-'))
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     runtime.setAgentBrowserBridge(cdpBridge as any)
 
-    server = new OrcaRuntimeRpcServer({ runtime, userDataPath })
+    server = new TopoRuntimeRpcServer({ runtime, userDataPath })
     await server.start()
 
     const metadata = readRuntimeMetadata(userDataPath)!

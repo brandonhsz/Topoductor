@@ -299,7 +299,7 @@ export class AgentSenderWorkerHistory {
     const pane = sourceResource ? live.get(resource.pane_key ?? '') : exact
     const runs =
       row &&
-      !row.assignee_orca_session_id &&
+      !row.assignee_topo_session_id &&
       exact &&
       pane === exact &&
       row.launch_token_hash &&

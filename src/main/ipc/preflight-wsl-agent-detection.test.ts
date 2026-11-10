@@ -16,7 +16,7 @@ describe('the detection script itself, run by a real POSIX shell', () => {
   let home: string
 
   beforeEach(() => {
-    home = mkdtempSync(join(tmpdir(), 'orca-wsl-detect-'))
+    home = mkdtempSync(join(tmpdir(), 'topo-wsl-detect-'))
   })
   afterEach(() => {
     rmSync(home, { recursive: true, force: true })
@@ -37,7 +37,7 @@ describe('the detection script itself, run by a real POSIX shell', () => {
       stderr: '',
       timedOut: false
     })
-    await detectWslCommandsOnPath({ distro: 'Ubuntu' }, ['orca-fake-cli', 'nosuchtool'])
+    await detectWslCommandsOnPath({ distro: 'Ubuntu' }, ['topo-fake-cli', 'nosuchtool'])
     const script = String(runWslProcessMock.mock.calls.at(-1)?.[0].script)
     const options: ExecFileSyncOptions = {
       encoding: 'utf8',
@@ -48,20 +48,20 @@ describe('the detection script itself, run by a real POSIX shell', () => {
 
   itPosix('finds an nvm-installed binary the login PATH would have shown', async () => {
     // Version-manager fallback must recover a CLI absent from login PATH (#9725).
-    plant('.nvm/versions/node/v20.1.0/bin', 'orca-fake-cli')
+    plant('.nvm/versions/node/v20.1.0/bin', 'topo-fake-cli')
     const out = await runScript()
-    expect(out).toContain('__ORCA_AGENT_PATH__orca-fake-cli')
-    expect(out).toContain('.nvm/versions/node/v20.1.0/bin/orca-fake-cli')
+    expect(out).toContain('__TOPO_AGENT_PATH__topo-fake-cli')
+    expect(out).toContain('.nvm/versions/node/v20.1.0/bin/topo-fake-cli')
   })
 
   itPosix('finds a CLI when $HOME contains a space', async () => {
     // HOME with spaces must remain one path throughout fallback glob expansion.
-    const spaced = mkdtempSync(join(tmpdir(), 'orca has space-'))
+    const spaced = mkdtempSync(join(tmpdir(), 'topo has space-'))
     const previous = home
     home = spaced
     try {
-      plant('.nvm/versions/node/v20.1.0/bin', 'orca-fake-cli')
-      expect(await runScript()).toContain(`${spaced}/.nvm/versions/node/v20.1.0/bin/orca-fake-cli`)
+      plant('.nvm/versions/node/v20.1.0/bin', 'topo-fake-cli')
+      expect(await runScript()).toContain(`${spaced}/.nvm/versions/node/v20.1.0/bin/topo-fake-cli`)
     } finally {
       home = previous
       rmSync(spaced, { recursive: true, force: true })
@@ -70,8 +70,8 @@ describe('the detection script itself, run by a real POSIX shell', () => {
 
   itPosix('does not report a directory as an installed CLI', async () => {
     // Directories pass -x but would fail to launch with EISDIR.
-    mkdirSync(join(home, '.local/bin/orca-fake-cli'), { recursive: true })
-    expect(await runScript()).not.toContain('__ORCA_AGENT_PATH__orca-fake-cli')
+    mkdirSync(join(home, '.local/bin/topo-fake-cli'), { recursive: true })
+    expect(await runScript()).not.toContain('__TOPO_AGENT_PATH__topo-fake-cli')
   })
 })
 
@@ -80,7 +80,7 @@ describe('the PATH walk, run by a real POSIX shell', () => {
 
   itPosix('finds the guest install behind a Windows binary that shadows it', async () => {
     // Skip Windows components during the walk so an interop binary cannot hide a later guest install.
-    const root = mkdtempSync(join(tmpdir(), 'orca-walk-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-walk-'))
     try {
       const win = join(root, 'winmnt/c/npm')
       const nvm = join(root, 'home/.nvm/bin')
@@ -96,7 +96,7 @@ describe('the PATH walk, run by a real POSIX shell', () => {
         { kind: 'literal', value: 'claude' },
         { skipWindowsMountDirs: true }
         // Substitute synthetic Windows-mount evidence for /proc/mounts.
-      ).replace(/_orca_win_mounts=\$\([^)]*\)/, `_orca_win_mounts=${join(root, 'winmnt')}`)
+      ).replace(/_topo_win_mounts=\$\([^)]*\)/, `_topo_win_mounts=${join(root, 'winmnt')}`)
       const options: ExecFileSyncOptions = {
         encoding: 'utf8',
         env: { PATH: `${win}:${nvm}:/usr/bin:/bin` }
@@ -116,7 +116,7 @@ describe('the mount table read, counted against a real shell', () => {
 
   itPosix('applies the memoised mount list to every command, not just the first', async () => {
     // Fork counts alone miss a clobbered mount cache; all later agents must still skip Windows mounts.
-    const root = mkdtempSync(join(tmpdir(), 'orca-memo-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-memo-'))
     try {
       const win = join(root, 'winmnt/c/npm')
       const guest = join(root, 'home/bin')
@@ -139,16 +139,16 @@ describe('the mount table read, counted against a real shell', () => {
       })
       await detectWslCommandsOnPath({ distro: 'Ubuntu' }, ['claude', 'codex'])
       const script = String(runWslProcessMock.mock.calls.at(-1)?.[0].script).replace(
-        /_orca_win_mounts=\$\([^)]*\)/,
-        `_orca_win_mounts=${join(root, 'winmnt')}`
+        /_topo_win_mounts=\$\([^)]*\)/,
+        `_topo_win_mounts=${join(root, 'winmnt')}`
       )
       const options: ExecFileSyncOptions = {
         encoding: 'utf8',
         env: { PATH: `${win}:${guest}:/usr/bin:/bin`, HOME: root }
       }
       const out = String(execFileSync('/bin/sh', ['-c', script], options))
-      expect(out).toContain(`__ORCA_AGENT_PATH__claude\t${join(guest, 'claude')}`)
-      expect(out).toContain(`__ORCA_AGENT_PATH__codex\t${join(guest, 'codex')}`)
+      expect(out).toContain(`__TOPO_AGENT_PATH__claude\t${join(guest, 'claude')}`)
+      expect(out).toContain(`__TOPO_AGENT_PATH__codex\t${join(guest, 'codex')}`)
     } finally {
       rmSync(root, { recursive: true, force: true })
     }

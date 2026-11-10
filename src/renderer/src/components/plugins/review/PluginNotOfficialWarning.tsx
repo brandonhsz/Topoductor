@@ -2,7 +2,7 @@ import { useTranslate } from '@/i18n/use-translate'
 import { SecuritySurface } from '../../ui/security-surface'
 import { PluginWarningBanner } from './PluginWarningBanner'
 
-/** Why no dismiss: the publisher, not Orca, vouches for this plugin every time it is shown. */
+/** Why no dismiss: the publisher, not Topo, vouches for this plugin every time it is shown. */
 export function PluginNotOfficialWarning({
   notice,
   publisher,
@@ -21,25 +21,25 @@ export function PluginNotOfficialWarning({
   if (notice === 'translations') {
     body = t(
       'auto.components.settings.PluginNotOfficialWarning.translations',
-      'Translations can change any text in Orca. Make sure you trust {{value0}}.',
+      'Translations can change any text in Topo. Make sure you trust {{value0}}.',
       { value0 }
     )
   } else if (moment === 'install') {
     body = t(
       'auto.components.settings.PluginNotOfficialWarning.install',
-      'Make sure you trust {{value0}} before installing. This plugin runs the publisher’s code inside Orca.',
+      'Make sure you trust {{value0}} before installing. This plugin runs the publisher’s code inside Topo.',
       { value0 }
     )
   } else if (moment === 'update') {
     body = t(
       'auto.components.settings.PluginNotOfficialWarning.update',
-      'Make sure you trust {{value0}} before updating. This plugin runs the publisher’s code inside Orca.',
+      'Make sure you trust {{value0}} before updating. This plugin runs the publisher’s code inside Topo.',
       { value0 }
     )
   } else {
     body = t(
       'auto.components.settings.PluginNotOfficialWarning.installed',
-      'Make sure you trust {{value0}}. This plugin runs the publisher’s code inside Orca.',
+      'Make sure you trust {{value0}}. This plugin runs the publisher’s code inside Topo.',
       { value0 }
     )
   }

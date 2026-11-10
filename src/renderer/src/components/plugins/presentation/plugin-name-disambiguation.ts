@@ -37,7 +37,7 @@ export function disambiguatedPluginNames(
   )
 }
 
-/** The Orca-derived publisher in a plugin key; Orca's reserved one marks official content. */
+/** The Topo-derived publisher in a plugin key; Topo's reserved one marks official content. */
 function contentPublisher(pluginKey: string): Pick<PluginNameCandidate, 'publisher' | 'official'> {
   return {
     publisher: splitQualifiedPluginKey(pluginKey)?.publisher ?? null,
@@ -49,7 +49,7 @@ function contentPublisher(pluginKey: string): Pick<PluginNameCandidate, 'publish
 export type PluginContentLabelItem = { id: string; pluginKey: string; label: string }
 
 /**
- * Labels for one picker's plugin content. `plainLabels` are Orca's own choices in the same picker
+ * Labels for one picker's plugin content. `plainLabels` are Topo's own choices in the same picker
  * (built-in themes), which keep their names, so a plugin entry sharing one shows its publisher.
  */
 export function disambiguatedPluginContentLabels(

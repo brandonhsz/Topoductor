@@ -79,8 +79,8 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       setPRAutoMerge('/repo-root', 7, true, 'squash', undefined, {
-        owner: 'stablyai',
-        repo: 'orca',
+        owner: 'brandonhsz',
+        repo: 'topo',
         host: 'github.com'
       })
     ).resolves.toEqual({ ok: true })
@@ -117,8 +117,8 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       setPRAutoMerge('/repo-root', 202, true, 'squash', undefined, {
-        owner: 'stablyai',
-        repo: 'orca',
+        owner: 'brandonhsz',
+        repo: 'topo',
         host: 'github.com'
       })
     ).resolves.toMatchObject({
@@ -140,8 +140,8 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       setPRAutoMerge('/repo-root', 7, true, 'squash', undefined, {
-        owner: 'stablyai',
-        repo: 'orca',
+        owner: 'brandonhsz',
+        repo: 'topo',
         host: 'github.com'
       })
     ).resolves.toMatchObject({
@@ -161,7 +161,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
           number: 7,
           title: 'PR',
           state: 'OPEN',
-          url: 'https://github.com/stablyai/orca/pull/7',
+          url: 'https://github.com/brandonhsz/Topoductor/pull/7',
           statusCheckRollup: [],
           updatedAt: '2026-04-01T00:00:00Z',
           isDraft: false,
@@ -177,8 +177,8 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 7, 'squash', undefined, {
-        owner: 'stablyai',
-        repo: 'orca',
+        owner: 'brandonhsz',
+        repo: 'topo',
         host: 'github.com'
       })
     ).resolves.toEqual({
@@ -195,7 +195,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
       number: 7,
       title: 'PR',
       state: 'OPEN',
-      url: 'https://github.com/stablyai/orca/pull/7',
+      url: 'https://github.com/brandonhsz/Topoductor/pull/7',
       statusCheckRollup: [],
       updatedAt: '2026-04-01T00:00:00Z',
       isDraft: false,
@@ -218,8 +218,8 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 7, 'squash', undefined, {
-        owner: 'stablyai',
-        repo: 'orca',
+        owner: 'brandonhsz',
+        repo: 'topo',
         host: 'github.com'
       })
     ).resolves.toEqual({
@@ -228,14 +228,14 @@ describe('GitHub GraphQL rate-limit guard', () => {
         'This pull request must be merged through GitHub merge queue. Use Merge when ready instead.'
     })
     await expect(
-      mergePR('/repo-root', 7, 'squash', undefined, { owner: 'stablyai', repo: 'orca' })
+      mergePR('/repo-root', 7, 'squash', undefined, { owner: 'brandonhsz', repo: 'topo' })
     ).resolves.toMatchObject({ ok: false })
 
     expect(metadataRequests.mock.calls.filter((call) => call[0].includes('graphql'))).toHaveLength(
       1
     )
     expect(metadataRequests.mock.calls[2]?.[0]).toEqual(
-      expect.arrayContaining(['-f', 'owner=stablyai', '-f', 'repo=orca', '-f', 'branch=true'])
+      expect.arrayContaining(['-f', 'owner=brandonhsz', '-f', 'repo=topo', '-f', 'branch=true'])
     )
     expect(metadataRequests.mock.calls[2]?.[0]).not.toContain('-F')
   })
@@ -300,7 +300,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
           number: 7,
           title: 'PR',
           state: 'OPEN',
-          url: 'https://github.com/stablyai/orca/pull/7',
+          url: 'https://github.com/brandonhsz/Topoductor/pull/7',
           statusCheckRollup: [],
           updatedAt: '2026-04-01T00:00:00Z',
           isDraft: false,
@@ -320,8 +320,8 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 7, 'squash', undefined, {
-        owner: 'stablyai',
-        repo: 'orca',
+        owner: 'brandonhsz',
+        repo: 'topo',
         host: 'github.com'
       })
     ).resolves.toEqual({

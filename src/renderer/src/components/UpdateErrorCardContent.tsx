@@ -132,7 +132,7 @@ export function UpdateErrorCardContent({
 
       {blockers && blockers.length > 0 && (
         <ul
-          aria-label={t('updates.installBlock.instancesLabel', 'Instances using Orca')}
+          aria-label={t('updates.installBlock.instancesLabel', 'Instances using Topo')}
           className="space-y-2"
         >
           {blockers.map(({ pid, kind }) => (
@@ -143,8 +143,8 @@ export function UpdateErrorCardContent({
                   : kind === 'server'
                     ? t('updates.installBlock.serverLabel', 'Background server')
                     : kind === 'window'
-                      ? t('updates.installBlock.windowLabel', 'Other Orca window')
-                      : t('updates.installBlock.instanceLabel', 'Other Orca instance')}
+                      ? t('updates.installBlock.windowLabel', 'Other Topo window')
+                      : t('updates.installBlock.instanceLabel', 'Other Topo instance')}
               </span>
               <span className="font-mono text-muted-foreground">
                 {t('updates.installBlock.processId', 'PID {{pid}}', { pid })}

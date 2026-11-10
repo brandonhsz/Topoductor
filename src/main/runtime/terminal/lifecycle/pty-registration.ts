@@ -3,7 +3,7 @@ import {
   terminalExitError
 } from '../../../../shared/terminal/pty/lifecycle/terminal-start-failure'
 import type { PtySpawnResult } from '../../../providers/pty-spawn-result'
-import { OrcaRuntimeWithInvalidateAllHandlesForPty } from './pty-handle-invalidation'
+import { TopoRuntimeWithInvalidateAllHandlesForPty } from './pty-handle-invalidation'
 import type { PtyIncarnationId } from '../../../../shared/terminal/pty/lifecycle/pty-incarnation'
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
 import { isValidTerminalTabId } from '../../../../shared/workspace-layout/terminal-tab-id'
@@ -16,11 +16,11 @@ import type {
 } from '../records/runtime-terminal-state-records'
 import type { OrchestrationCompatibilityTerminalAuthority } from '../../orchestration/terminal-authority/orchestration-compatibility-authority'
 import type { RuntimeMobileSessionCreateTerminalResult } from '../../../../shared/runtime-session-contracts'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { mainTerminalRegistered } from '../surface/main-terminal-surfaces'
 import { assertPaneBoundAtRegistration, isRuntimeHostedWorkspace } from './bind-first-registration'
 
-export abstract class OrcaRuntimeWithRegisterPty extends OrcaRuntimeWithInvalidateAllHandlesForPty {
+export abstract class TopoRuntimeWithRegisterPty extends TopoRuntimeWithInvalidateAllHandlesForPty {
   protected abstract ensurePtyBackedMobileSurfaceForRendererTab(
     worktreeId: string,
     tabId: string
@@ -122,7 +122,7 @@ export abstract class OrcaRuntimeWithRegisterPty extends OrcaRuntimeWithInvalida
     })
     // Bind-first applies to main-owned layouts; paired-server workspaces and storeless test runtimes have no local binding to assert (L80).
     if (
-      ORCA_LAYOUT_OWNER_IS_MAIN &&
+      TOPO_LAYOUT_OWNER_IS_MAIN &&
       paneKey &&
       this.store?.getWorkspaceSession &&
       !isRuntimeHostedWorkspace(this.tryGetWorkspaceSessionHostIdForWorktree(worktreeId))
@@ -183,7 +183,7 @@ export abstract class OrcaRuntimeWithRegisterPty extends OrcaRuntimeWithInvalida
       }
     }
     // Switch point: a pane main binds lists its terminal now, in the same push as the flip below.
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       mainTerminalRegistered(this, ptyId)
     }
     // Why: a listed surface's pending-handle → ready flip must not wait on a later renderer graph change.

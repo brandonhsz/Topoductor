@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { OrcaReservedRegions, type ReservedRegions } from '../../modules/orca-reserved-regions/src'
+import { TopoReservedRegions, type ReservedRegions } from '../../modules/topo-reserved-regions/src'
 
 const NO_REGIONS: ReservedRegions = { divisions: [], occlusions: [] }
 
@@ -11,9 +11,9 @@ function subscribe(listener: () => void): () => void {
   listeners.add(listener)
   // Why: one app-lifetime native subscription; restarting it would report no regions until the
   // next layout pass.
-  if (!observing && OrcaReservedRegions) {
+  if (!observing && TopoReservedRegions) {
     observing = true
-    OrcaReservedRegions.addListener('onChange', (regions) => {
+    TopoReservedRegions.addListener('onChange', (regions) => {
       current = regions
       for (const notify of listeners) {
         notify()

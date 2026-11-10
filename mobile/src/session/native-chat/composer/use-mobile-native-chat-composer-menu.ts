@@ -187,7 +187,7 @@ export function useMobileNativeChatComposerMenu(input: {
       structuredCatalog &&
       input.interactionModeSupported &&
       row.kind === 'command' &&
-      row.orcaOwned
+      row.topoOwned
         ? agentSessionInteractionCommand(agent ?? '', row.token)
         : null
     const modeDraft =

@@ -202,7 +202,7 @@ export function createCodexHistoryImportPlan(input: {
         }
         compacted = true
         chosenIdentity = {
-          provider: 'orca',
+          provider: 'topo',
           clientMessageId: `codex-compaction:${codexCompactionKey(input.threadId, turn.id)}`
         }
         saved = input.journal.item(agentJournalItemKey(chosenIdentity))

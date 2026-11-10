@@ -1,5 +1,5 @@
 import type { PaintedRestoreAck, PaintedRestorePane } from '../../../../shared/painted-restore-ack'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { tryGetProviderForPty } from '../provider/registry'
 
 function isPane(value: unknown): value is PaintedRestorePane {
@@ -24,7 +24,7 @@ export function acknowledgePaintedColdRestore(
     return
   }
   // A stale view cannot release the current pane terminal's restore cache.
-  if (ORCA_LAYOUT_OWNER_IS_MAIN && !(isPane(args?.pane) && isPaneBoundTo?.(args.pane, id))) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN && !(isPane(args?.pane) && isPaneBoundTo?.(args.pane, id))) {
     return
   }
   const provider = tryGetProviderForPty(id)

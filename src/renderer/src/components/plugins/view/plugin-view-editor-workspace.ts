@@ -74,7 +74,7 @@ export function findWorkspaceShowingFile(
 
 /**
  * The workspace to open `paths[0]` in, made active: one that shows the file, else its folder added
- * as a folder workspace on this machine. Null when Orca could not add the folder.
+ * as a folder workspace on this machine. Null when Topo could not add the folder.
  */
 export async function showWorkspaceForFile(
   paths: readonly string[],
@@ -92,7 +92,7 @@ export async function showWorkspaceForFile(
   let addedRepoId: string | undefined
   if (!found) {
     const state = useAppStore.getState()
-    // Why local: plugin open resolves paths on the Orca that runs it, which is this one.
+    // Why local: plugin open resolves paths on the Topo that runs it, which is this one.
     const repo = await state.addRepoPath(fallbackFolder, 'folder', { runtimeEnvironmentId: null })
     if (!repo) {
       return null

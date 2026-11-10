@@ -4,7 +4,7 @@ import type { Repo } from '../../../shared/repo-types'
 import { resolveProjectCloneUrlPrefill } from './project-clone-url-prefill'
 
 function project(sourceRepoIds: string[]): Project {
-  return { id: 'project-orca', sourceRepoIds } as unknown as Project
+  return { id: 'project-topo', sourceRepoIds } as unknown as Project
 }
 
 function repo(id: string, remoteUrl: string): Repo {
@@ -16,11 +16,11 @@ describe('resolveProjectCloneUrlPrefill', () => {
     // The clone runs on the target host and would persist this into .git/config.
     const prefill = resolveProjectCloneUrlPrefill(
       [project(['repo-1'])],
-      [repo('repo-1', 'https://x-access-token:ghp_ABC123@github.com/acme/orca.git')],
-      'project-orca'
+      [repo('repo-1', 'https://x-access-token:ghp_ABC123@github.com/acme/topo.git')],
+      'project-topo'
     )
 
-    expect(prefill).toBe('https://github.com/acme/orca.git')
+    expect(prefill).toBe('https://github.com/acme/topo.git')
     expect(prefill).not.toContain('ghp_ABC123')
   })
   it('stops on the first usable source and indexes later misses only once', () => {
@@ -33,7 +33,7 @@ describe('resolveProjectCloneUrlPrefill', () => {
       }
     }))
     const sourceIds = Array.from({ length: 1000 }, (_, i) => `repo-${i}`)
-    expect(resolveProjectCloneUrlPrefill([project(sourceIds)], repos, 'project-orca')).toBe(
+    expect(resolveProjectCloneUrlPrefill([project(sourceIds)], repos, 'project-topo')).toBe(
       'https://gitlab.com/acme/repo.git'
     )
     expect(reads).toBe(1)
@@ -42,7 +42,7 @@ describe('resolveProjectCloneUrlPrefill', () => {
       resolveProjectCloneUrlPrefill(
         [project(sourceIds.map((id) => `missing-${id}`))],
         repos,
-        'project-orca'
+        'project-topo'
       )
     ).toBe('')
     expect(reads).toBeLessThanOrEqual(2000)
@@ -53,7 +53,7 @@ describe('resolveProjectCloneUrlPrefill', () => {
       resolveProjectCloneUrlPrefill(
         [project(['missing', 'duplicate'])],
         [repo('duplicate', ''), repo('duplicate', 'https://gitlab.com/acme/repo.git')],
-        'project-orca'
+        'project-topo'
       )
     ).toBe('')
   })

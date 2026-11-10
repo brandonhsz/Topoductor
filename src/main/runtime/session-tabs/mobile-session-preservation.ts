@@ -4,8 +4,8 @@ import {
   preserveLegacyPendingNavigation,
   resolveMobileSessionActiveTab
 } from './mobile-session-tab-selection'
-import type { OrcaRuntimeWithStoredMobileSnapshotHasStalePreservedTab as StoredMobileSnapshotHasStalePreservedTabMethods } from './mobile-session-publication-preservation'
-import { OrcaRuntimeWithSyncMobileSessionTabs } from './mobile-session-reconciliation'
+import type { TopoRuntimeWithStoredMobileSnapshotHasStalePreservedTab as StoredMobileSnapshotHasStalePreservedTabMethods } from './mobile-session-publication-preservation'
+import { TopoRuntimeWithSyncMobileSessionTabs } from './mobile-session-reconciliation'
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../shared/runtime-session-contracts'
 import type { RuntimeMobileSessionTerminalTab } from '../../../shared/runtime-mobile-session-tab-contracts'
 import {
@@ -15,7 +15,7 @@ import {
   mergeMobileSessionTabGroups
 } from '../session-lifecycle/projection/mobile-session-tab-merge'
 import { terminalLayoutContainsLeaf } from '../../../shared/workspace-session/workspace-session-pane-ownership'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { terminalIsOfTab } from '../session-lifecycle/close/closed-tab-terminal'
 import { getHeadlessMobileSessionGroupId } from '../terminal/surface/mobile-session-layout-projection'
 import {
@@ -23,7 +23,7 @@ import {
   collectBrowserGroupAssignment
 } from '../session-lifecycle/projection/mobile-session-browser-group-projection'
 
-export abstract class OrcaRuntimeWithMergePreservedHeadlessMobileSessionTabs extends OrcaRuntimeWithSyncMobileSessionTabs {
+export abstract class TopoRuntimeWithMergePreservedHeadlessMobileSessionTabs extends TopoRuntimeWithSyncMobileSessionTabs {
   protected abstract collectPreservedHeadlessMobileSessionTabs(
     ...args: Parameters<
       StoredMobileSnapshotHasStalePreservedTabMethods['collectPreservedHeadlessMobileSessionTabs']
@@ -186,7 +186,7 @@ export abstract class OrcaRuntimeWithMergePreservedHeadlessMobileSessionTabs ext
     tab: RuntimeMobileSessionTerminalTab
   ): boolean {
     return (
-      ORCA_LAYOUT_OWNER_IS_MAIN &&
+      TOPO_LAYOUT_OWNER_IS_MAIN &&
       getMobileTerminalLeafPtyIds(tab).some((ptyId) => {
         const pty = this.ptysById.get(ptyId)
         return (

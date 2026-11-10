@@ -148,7 +148,7 @@ describe('useNativeChatComposerAttachments', () => {
     const image = { id: 'old', path: '/state/agent-session-attachments/upload/shot.png' }
     const storage = draftStorage.createMemoryNativeChatComposerDraftStorage()
     storage.drafts.set(scope, { text: '', images: [image, { ...image, id: 'edit' }], savedAt: 1 })
-    const paste = { id: 'paste', path: '/state/native-chat-pastes/orca-paste-1-a.png' }
+    const paste = { id: 'paste', path: '/state/native-chat-pastes/topo-paste-1-a.png' }
     storage.drafts.set('pty-1', { text: '', images: [image, paste], savedAt: 1 })
     draftStorage.setNativeChatComposerDraftStorageForTests(storage)
     publishOwner(scope, undefined)

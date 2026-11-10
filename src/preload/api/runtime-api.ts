@@ -3,7 +3,7 @@ import type {
   CrewSubscriptionAttemptCallbacks,
   CrewSubscriptionSetupResult
 } from '../../shared/remote-runtime/host-catalog/runtime-environment-subscription-setup'
-import type { ManagedOrcadPreloadApi } from './managed-orcad-api'
+import type { ManagedTopodPreloadApi } from './managed-topod-api'
 import type { WslHostsPreloadApi } from './wsl-hosts-api'
 import type { RuntimeHostStatusSnapshot } from '../../shared/remote-runtime/host-status/runtime-host-status'
 import type {
@@ -27,7 +27,7 @@ import type {
   BrowserPageCreationPlacement
 } from '../../shared/browser/client-hosting/browser-client-host-placement'
 import type { RemoteRuntimeSharedConnectionDiagnostics } from '../../shared/remote-runtime/control/remote-runtime-shared-control-types'
-import type { WslOrcadAccountNotAppliedEvent } from '../../shared/wsl-orcad-account-notice'
+import type { WslTopodAccountNotAppliedEvent } from '../../shared/wsl-topod-account-notice'
 
 export type RuntimeEnvironmentSubscriptionHandle = {
   unsubscribe: () => void
@@ -134,7 +134,7 @@ export type RuntimeApi = {
     ) => () => void
     // Absent in the web client, which has no desktop account shim.
     onWslAccountNotApplied?: (
-      callback: (event: WslOrcadAccountNotAppliedEvent) => void
+      callback: (event: WslTopodAccountNotAppliedEvent) => void
     ) => () => void
     prepareBrowserClientHostPlacement: (
       args: BrowserClientHostPlacementPreparationRequest
@@ -172,7 +172,7 @@ export type RuntimeApi = {
       }
     ) => Promise<RuntimeEnvironmentSubscriptionHandle>
     // Only desktop clients deploy servers over SSH.
-    managedOrcad?: ManagedOrcadPreloadApi
+    managedTopod?: ManagedTopodPreloadApi
     // Only Windows desktops (or e2e fakes) host WSL distros.
     wslHosts?: WslHostsPreloadApi
   }

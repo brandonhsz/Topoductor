@@ -67,7 +67,7 @@ async function mintJwt(keys: SpikeKeys, relayHostId: string, userId: string): Pr
   return new SignJWT({ purpose: 'host-control', prof: `prof-${userId}`, relayHostId })
     .setProtectedHeader({ alg: 'ES256', kid: 'spike' })
     .setSubject(userId)
-    .setAudience('orca-relay')
+    .setAudience('topo-relay')
     .setIssuedAt()
     .setExpirationTime('10m')
     .sign(key)
@@ -144,7 +144,7 @@ export async function startHost(opts: {
       },
       createSocket: (url, token) =>
         new WebSocket(url, {
-          headers: { authorization: `Bearer ${token}`, 'x-orca-host-capabilities': 'pending-conn-details,idle-regional-rehome-v1' },
+          headers: { authorization: `Bearer ${token}`, 'x-topo-host-capabilities': 'pending-conn-details,idle-regional-rehome-v1' },
           perMessageDeflate: false,
           maxPayload: 64 * 1024
         })

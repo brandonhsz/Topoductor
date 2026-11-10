@@ -42,7 +42,7 @@ export function journalClaudePluginInputFailure({
   // Physical-exit settlement revises this same row after proof; it must not add another notice.
   sink.appendItem(
     {
-      provider: 'orca',
+      provider: 'topo',
       clientMessageId: `${PROVIDER_EXIT_ROW_PREFIX}${event.sessionId}:${event.fence}:${event.acquisitionGeneration}`
     },
     {

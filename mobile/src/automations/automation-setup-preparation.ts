@@ -1,12 +1,12 @@
 import { parseExecutionHostId, type ExecutionHostId } from '../../../src/shared/execution-host'
 import { findAutomationRepo } from '../../../src/shared/automations/ownership/automation-repo-target'
 import { getAutomationSetupDefaultDecision } from '../../../src/shared/automations/launch/automation-setup-decision'
-import type { PersistedTrustedOrcaHooks } from '../../../src/shared/orca-yaml-hook-types'
+import type { PersistedTrustedTopoHooks } from '../../../src/shared/topo-yaml-hook-types'
 import {
   newWorkspaceSetupHooksRead,
   newWorkspaceUiStateRead
 } from '../components/new-workspace-operations'
-import type { OrcaHookTrustPrompt } from '../components/OrcaHookTrustDrawer'
+import type { TopoHookTrustPrompt } from '../components/TopoHookTrustDrawer'
 import { newTabRepoListRead } from '../session/agent-launch/mobile-runtime-repo-operations'
 import {
   isSetupHookTrusted,
@@ -31,8 +31,8 @@ export async function prepareAutomationSetup(args: {
   targets: AutomationTargets
   current: () => boolean
   confirm: (
-    prompt: OrcaHookTrustPrompt,
-    trust: PersistedTrustedOrcaHooks
+    prompt: TopoHookTrustPrompt,
+    trust: PersistedTrustedTopoHooks
   ) => Promise<'run' | 'skip' | null>
 }): Promise<AutomationDraft | null> {
   const { client, draft, original, targets, current } = args
@@ -100,12 +100,12 @@ export async function prepareAutomationSetup(args: {
   if (decision !== 'run' || !setupTrust) {
     return { ...draft, setupDecision: decision ?? 'inherit' }
   }
-  let trust: PersistedTrustedOrcaHooks = {}
+  let trust: PersistedTrustedTopoHooks = {}
   if (parseExecutionHostId(args.executionHost)?.kind !== 'runtime') {
     try {
       const reply = newWorkspaceUiStateRead.interpret(await newWorkspaceUiStateRead.request(client))
       if (reply.accepted) {
-        trust = reply.value?.trustedOrcaHooks ?? {}
+        trust = reply.value?.trustedTopoHooks ?? {}
       }
     } catch {
       // An unreadable approval record grants no trust.

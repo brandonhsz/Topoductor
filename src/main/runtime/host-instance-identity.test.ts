@@ -21,8 +21,8 @@ import {
 import { E2EE_KEYPAIR_FILENAME } from '../../shared/remote-runtime/host-store/runtime-e2ee-keypair-file'
 import { DEVICE_REGISTRY_FILENAME } from './rpc/server/pairing/mobile-pairing-files'
 
-const vmA = hostInstanceIdFromEnv({ ORCA_INSTANCE_ID: 'vm-a' })
-const vmB = hostInstanceIdFromEnv({ ORCA_INSTANCE_ID: 'vm-b' })
+const vmA = hostInstanceIdFromEnv({ TOPO_INSTANCE_ID: 'vm-a' })
+const vmB = hostInstanceIdFromEnv({ TOPO_INSTANCE_ID: 'vm-b' })
 
 /** What pairing serves after one startup. */
 async function identity(dir: string) {
@@ -52,10 +52,10 @@ function failingWriteOf(filename: string): HostIdentityWrite {
 describe('ensureHostInstanceIdentity', () => {
   let dir: string
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-host-instance-'))
+    dir = mkdtempSync(join(tmpdir(), 'topo-host-instance-'))
   })
 
-  it('never rotates while ORCA_INSTANCE_ID is unset, even with an id recorded', async () => {
+  it('never rotates while TOPO_INSTANCE_ID is unset, even with an id recorded', async () => {
     const before = await pairedHost(dir)
     expect(ensureHostInstanceIdentity(dir, null)).toEqual({ kind: 'unchanged' })
     ensureHostInstanceIdentity(dir, vmA)
@@ -67,7 +67,7 @@ describe('ensureHostInstanceIdentity', () => {
     expect(after.registry.validateToken(before.token)).not.toBeNull()
   })
 
-  it('only records the first ORCA_INSTANCE_ID on an existing install', async () => {
+  it('only records the first TOPO_INSTANCE_ID on an existing install', async () => {
     const before = await pairedHost(dir)
     expect(ensureHostInstanceIdentity(dir, vmA)).toEqual({ kind: 'recorded' })
     expect(ensureHostInstanceIdentity(dir, vmA)).toEqual({ kind: 'unchanged' })
@@ -78,10 +78,10 @@ describe('ensureHostInstanceIdentity', () => {
     expect(readFileSync(join(dir, HOST_INSTANCE_FILENAME), 'utf8')).not.toContain('vm-a')
   })
 
-  it('rotates the identity and clears pairings when ORCA_INSTANCE_ID changes', async () => {
+  it('rotates the identity and clears pairings when TOPO_INSTANCE_ID changes', async () => {
     ensureHostInstanceIdentity(dir, vmA)
     const source = await pairedHost(dir)
-    const clone = mkdtempSync(join(tmpdir(), 'orca-host-instance-clone-'))
+    const clone = mkdtempSync(join(tmpdir(), 'topo-host-instance-clone-'))
     cpSync(dir, clone, { recursive: true })
 
     expect(ensureHostInstanceIdentity(clone, vmB)).toEqual({
@@ -101,7 +101,7 @@ describe('ensureHostInstanceIdentity', () => {
   })
 
   it.each([
-    ['the staged keypair', 'orca-e2ee-keypair.json.next'],
+    ['the staged keypair', 'topo-e2ee-keypair.json.next'],
     ['the staged registry', `${DEVICE_REGISTRY_FILENAME}.next`],
     ['the rotating marker', HOST_INSTANCE_FILENAME]
   ])('keeps serving the old identity when writing %s fails', async (_label, failing) => {
@@ -224,7 +224,7 @@ describe('ensureHostInstanceIdentity', () => {
     expect(ensureHostInstanceIdentity(dir, vmB)).toEqual({ kind: 'unchanged' })
   })
 
-  it('keeps the recorded id when a manual reset runs without ORCA_INSTANCE_ID', async () => {
+  it('keeps the recorded id when a manual reset runs without TOPO_INSTANCE_ID', async () => {
     ensureHostInstanceIdentity(dir, vmA)
     const before = await pairedHost(dir)
     rotateHostIdentity(dir, null)
@@ -292,7 +292,7 @@ describe('ensureHostInstanceIdentity', () => {
     expect(() => ensureHostInstanceIdentity(dir, vmB, failFinalMarker)).toThrow(/simulated crash/)
 
     expect(() =>
-      rotateHostIdentity(dir, null, failingWriteOf('orca-e2ee-keypair.json.next'))
+      rotateHostIdentity(dir, null, failingWriteOf('topo-e2ee-keypair.json.next'))
     ).not.toThrow()
     expect((await identity(dir)).registry.validateToken(before.token)).toBeNull()
     expect(readdirSync(dir).filter((name) => name.endsWith('.next'))).toEqual([])

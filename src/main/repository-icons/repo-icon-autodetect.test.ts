@@ -10,7 +10,7 @@ const PNG_1X1_BASE64 =
 const tempDirs: string[] = []
 
 async function makeTempRepoDir(): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), 'orca-repo-icon-'))
+  const dir = await mkdtemp(join(tmpdir(), 'topo-repo-icon-'))
   tempDirs.push(dir)
   return dir
 }

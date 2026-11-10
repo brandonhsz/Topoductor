@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { stripLegacyManagedProfileBlock } from './codex-hook-legacy-cleanup'
 
-const START = '# BEGIN ORCA AGENT STATUS HOOKS'
-const END = '# END ORCA AGENT STATUS HOOKS'
+const START = '# BEGIN TOPO AGENT STATUS HOOKS'
+const END = '# END TOPO AGENT STATUS HOOKS'
 
 describe('legacy Codex managed profile block', () => {
   it('rejoins a CRLF config with CRLF', () => {

@@ -4,7 +4,7 @@ import { domainIsInImportedScope, importedDomainScope } from '../policy/cookie-i
 import { isNonTransplantableCookieDomain } from '../policy/cookie-import-exclusions'
 import { normalizeCookieDomain, normalizeCookieImportDomain } from '../policy/cookie-domain'
 
-const IMPORT_SCOPE_TABLE = 'orca_cookie_import_scope'
+const IMPORT_SCOPE_TABLE = 'topo_cookie_import_scope'
 const IMPORT_SCOPE_FORMAT_VERSION = 1
 export const SCOPED_COOKIE_IMPORT_FORMAT = `scoped-v${IMPORT_SCOPE_FORMAT_VERSION}`
 

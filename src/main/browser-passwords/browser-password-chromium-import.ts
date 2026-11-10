@@ -164,7 +164,7 @@ function needsKey(logins: readonly RawLogin[]): boolean {
   })
 }
 
-/** Reads saved logins from a Chromium-family profile on the machine Orca's UI runs on. */
+/** Reads saved logins from a Chromium-family profile on the machine Topo's UI runs on. */
 export async function readChromiumBrowserPasswords(input: {
   browserFamily: ChromiumBrowserDef['family']
   profileDirectory: string

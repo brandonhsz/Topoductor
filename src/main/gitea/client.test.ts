@@ -50,8 +50,8 @@ function giteaPr(index = 7, branch = 'feature/gitea') {
 describe('Gitea client', () => {
   beforeEach(() => {
     process.env = { ...OLD_ENV }
-    process.env.ORCA_GITEA_TOKEN = 'gitea-token'
-    delete process.env.ORCA_GITEA_API_BASE_URL
+    process.env.TOPO_GITEA_TOKEN = 'gitea-token'
+    delete process.env.TOPO_GITEA_API_BASE_URL
     gitExecFileAsyncMock.mockReset()
     gitExecFileAsyncMock.mockResolvedValue({
       stdout: 'https://git.example.com/team/repo.git\n',

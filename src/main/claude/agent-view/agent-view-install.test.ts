@@ -18,7 +18,7 @@ afterEach(() => {
 })
 
 it('preserves JSONC comments and trailing commas through install and removal', () => {
-  const root = mkdtempSync(join(tmpdir(), 'orca-agent-view-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-agent-view-'))
   roots.push(root)
   const path = join(root, 'keybindings.json')
   const original = `{
@@ -44,9 +44,9 @@ it('preserves JSONC comments and trailing commas through install and removal', (
 })
 
 it('never overwrites an unowned skill and removes only its own installation', () => {
-  const root = mkdtempSync(join(tmpdir(), 'orca-agent-view-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-agent-view-'))
   roots.push(root)
-  const folder = join(root, 'skills', 'orca-agent-view')
+  const folder = join(root, 'skills', 'topo-agent-view')
   mkdirSync(folder, { recursive: true })
   writeFileSync(join(folder, 'SKILL.md'), 'user-owned')
   installClaudeAgentView(join(root, 'settings.json'))
@@ -65,15 +65,15 @@ it('never overwrites an unowned skill and removes only its own installation', ()
 })
 
 it('removes only its recorded binding across reinstalls, preserving other contexts and chords', () => {
-  const root = mkdtempSync(join(tmpdir(), 'orca-agent-view-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-agent-view-'))
   roots.push(root)
   const settings = join(root, 'settings.json')
   const path = join(root, 'keybindings.json')
   installClaudeAgentView(settings)
   const config = JSON.parse(readFileSync(path, 'utf8'))
   const userBindings = [
-    { context: 'Global', bindings: { 'ctrl+alt+g': 'command:orca-agent-view' } },
-    { context: 'Chat', bindings: { 'ctrl+x': 'command:orca-agent-view' } }
+    { context: 'Global', bindings: { 'ctrl+alt+g': 'command:topo-agent-view' } },
+    { context: 'Chat', bindings: { 'ctrl+x': 'command:topo-agent-view' } }
   ]
   config.bindings.push(...userBindings)
   writeFileSync(path, JSON.stringify(config))
@@ -83,7 +83,7 @@ it('removes only its recorded binding across reinstalls, preserving other contex
 })
 
 it('remembers removed and edited bindings across launches', () => {
-  const root = mkdtempSync(join(tmpdir(), 'orca-agent-view-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-agent-view-'))
   roots.push(root)
   const settings = join(root, 'settings.json')
   const bindings = join(root, 'keybindings.json')
@@ -93,7 +93,7 @@ it('remembers removed and edited bindings across launches', () => {
   expect(readFileSync(bindings, 'utf8')).toBe('{"bindings": []}')
   writeFileSync(
     bindings,
-    '{"bindings": [{"context":"Chat","bindings":{"ctrl+x":"command:orca-agent-view"}}]}'
+    '{"bindings": [{"context":"Chat","bindings":{"ctrl+x":"command:topo-agent-view"}}]}'
   )
   expect(installClaudeAgentView(settings)).toBe(false)
   expect(claudeAgentViewChord(readFileSync(bindings, 'utf8'))).toBeUndefined()
@@ -102,15 +102,15 @@ it('remembers removed and edited bindings across launches', () => {
 it.each([false, true])(
   'retires the legacy auto-loaded mod while preserving opt-out memory (malformed: %s)',
   async (malformed) => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-agent-view-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-agent-view-'))
     roots.push(root)
-    const legacy = join(root, 'skills', 'orca-agent-view')
+    const legacy = join(root, 'skills', 'topo-agent-view')
     mkdirSync(join(legacy, '.claude-plugin'), { recursive: true })
     mkdirSync(join(legacy, 'hooks'))
     writeFileSync(
-      join(legacy, '.claude-plugin', 'orca-managed.json'),
+      join(legacy, '.claude-plugin', 'topo-managed.json'),
       JSON.stringify({
-        owner: 'stablyai/orca/claude-agent-view',
+        owner: 'brandonhsz/Topoductor/claude-agent-view',
         binding: { context: 'Chat', chord: 'ctrl+alt+g' }
       })
     )
@@ -120,7 +120,7 @@ it.each([false, true])(
       bindings,
       malformed
         ? '{broken'
-        : '{"bindings":[{"context":"Chat","bindings":{"ctrl+alt+g":"command:orca-agent-view"}}]}'
+        : '{"bindings":[{"context":"Chat","bindings":{"ctrl+alt+g":"command:topo-agent-view"}}]}'
     )
     await refreshClaudeAgentView(join(root, 'settings.json'))
     expect(existsSync(join(legacy, 'hooks', 'register.js'))).toBe(false)
@@ -128,7 +128,7 @@ it.each([false, true])(
       expect(readFileSync(bindings, 'utf8')).toBe('{broken')
       writeFileSync(
         bindings,
-        '{"bindings":[{"context":"Chat","bindings":{"ctrl+alt+g":"command:orca-agent-view"}}]}'
+        '{"bindings":[{"context":"Chat","bindings":{"ctrl+alt+g":"command:topo-agent-view"}}]}'
       )
       await refreshClaudeAgentView(join(root, 'settings.json'))
     }

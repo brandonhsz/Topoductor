@@ -1,21 +1,21 @@
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import type { ComputerActionResult, ComputerSnapshotResult } from '../../src/shared/runtime-types'
 import {
-  ensureOrcaRuntimeLaunched,
+  ensureTopoRuntimeLaunched,
   ensureGeditLaunched,
   findRoleIndex,
   killGedit,
   parseJsonOutput,
-  runOrcaCli
+  runTopoCli
 } from './helpers/computer-driver'
 
 const isLinux = process.platform === 'linux'
-const e2eOptIn = process.env.ORCA_COMPUTER_E2E === '1'
+const e2eOptIn = process.env.TOPO_COMPUTER_E2E === '1'
 
 async function focusGeditDocument(): Promise<void> {
   const before = parseJsonOutput<{ result: ComputerSnapshotResult }>(
     (
-      await runOrcaCli([
+      await runTopoCli([
         'computer',
         'get-app-state',
         '--app',
@@ -32,7 +32,7 @@ async function focusGeditDocument(): Promise<void> {
   )
   expect(textIndex).toBeGreaterThanOrEqual(0)
 
-  await runOrcaCli([
+  await runTopoCli([
     'computer',
     'click',
     '--app',
@@ -47,7 +47,7 @@ async function focusGeditDocument(): Promise<void> {
 
 describe.skipIf(!isLinux || !e2eOptIn)('computer-use Linux e2e (gedit)', () => {
   beforeAll(async () => {
-    await ensureOrcaRuntimeLaunched()
+    await ensureTopoRuntimeLaunched()
     await ensureGeditLaunched()
   })
 
@@ -58,10 +58,10 @@ describe.skipIf(!isLinux || !e2eOptIn)('computer-use Linux e2e (gedit)', () => {
   test('click and type-text insert into the focused document through AT-SPI', async () => {
     await focusGeditDocument()
 
-    const marker = ` orca-linux-type-${Date.now()}-élan-🚀`
+    const marker = ` topo-linux-type-${Date.now()}-élan-🚀`
     const typed = parseJsonOutput<{ result: ComputerActionResult }>(
       (
-        await runOrcaCli([
+        await runTopoCli([
           'computer',
           'type-text',
           '--app',
@@ -81,10 +81,10 @@ describe.skipIf(!isLinux || !e2eOptIn)('computer-use Linux e2e (gedit)', () => {
   test('paste-text mutates the test-owned document', async () => {
     await focusGeditDocument()
 
-    const marker = `orca-linux-paste-${Date.now()}-café-🚀`
+    const marker = `topo-linux-paste-${Date.now()}-café-🚀`
     const action = parseJsonOutput<{ result: ComputerActionResult }>(
       (
-        await runOrcaCli([
+        await runTopoCli([
           'computer',
           'paste-text',
           '--app',
@@ -105,7 +105,7 @@ describe.skipIf(!isLinux || !e2eOptIn)('computer-use Linux e2e (gedit)', () => {
 
     const after = parseJsonOutput<{ result: ComputerSnapshotResult }>(
       (
-        await runOrcaCli([
+        await runTopoCli([
           'computer',
           'get-app-state',
           '--app',

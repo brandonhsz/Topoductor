@@ -5,8 +5,8 @@ import {
   normalizeServeModeArgv
 } from './serve-mode-argv'
 import { getServeOptions } from './serve-options'
-import { parseArgs as parseOrcadArgs } from '../orcad/orcad-command-arguments'
-import { orcadServeArgs, serveOptionArgs } from '../../shared/orcad-serve-argv'
+import { parseArgs as parseTopodArgs } from '../topod/topod-command-arguments'
+import { topodServeArgs, serveOptionArgs } from '../../shared/topod-serve-argv'
 
 describe('serve-mode-argv', () => {
   it('does not treat serve as a subcommand when it is an option value', () => {
@@ -53,15 +53,15 @@ describe('serve-mode-argv', () => {
   it('leaves real GUI launch argv alone', () => {
     // False serve detection replaces a desktop window with a listening runtime; exercise actual desktop argv shapes.
     for (const argv of [
-      ['/Applications/Orca.app/Contents/MacOS/Orca', '-psn_0_123456'],
-      ['C:\\Program Files\\Orca\\Orca.exe', '--squirrel-firstrun'],
-      ['C:\\Program Files\\Orca\\Orca.exe', 'orca://worktree/serve'],
-      ['/opt/orca/orca-ide', '/home/u/serve'],
+      ['/Applications/Topo.app/Contents/MacOS/Topo', '-psn_0_123456'],
+      ['C:\\Program Files\\Topo\\Topo.exe', '--squirrel-firstrun'],
+      ['C:\\Program Files\\Topo\\Topo.exe', 'topo://worktree/serve'],
+      ['/opt/topo/topo-ide', '/home/u/serve'],
       // Value tokens named serve are never subcommands.
-      ['/opt/orca/orca-ide', '--pairing-code', 'serve'],
-      ['/opt/orca/orca-ide', '--environment=serve'],
-      ['/opt/orca/orca-ide', '--', 'serve'],
-      ['/opt/orca/orca-ide', 'Serve']
+      ['/opt/topo/topo-ide', '--pairing-code', 'serve'],
+      ['/opt/topo/topo-ide', '--environment=serve'],
+      ['/opt/topo/topo-ide', '--', 'serve'],
+      ['/opt/topo/topo-ide', 'Serve']
     ]) {
       expect(argvRequestsServeMode(argv), argv.join(' ')).toBe(false)
       expect(normalizeServeModeArgv(argv)).toEqual(argv)
@@ -101,17 +101,17 @@ describe('serve-mode-argv', () => {
   })
 
   it('carries --allow-public and --refuse-public to both serve hosts', () => {
-    expect(parseOrcadArgs(orcadServeArgs({ allowPublic: true })).allowPublic).toBe(true)
-    expect(parseOrcadArgs(orcadServeArgs({})).allowPublic).toBeUndefined()
+    expect(parseTopodArgs(topodServeArgs({ allowPublic: true })).allowPublic).toBe(true)
+    expect(parseTopodArgs(topodServeArgs({})).allowPublic).toBeUndefined()
     expect(getServeOptions(serveOptionArgs({ allowPublic: true }, '--serve-')).allowPublic).toBe(
       true
     )
     expect(getServeOptions(serveOptionArgs({}, '--serve-')).allowPublic).toBe(false)
-    expect(parseOrcadArgs(orcadServeArgs({ refusePublic: true })).refusePublic).toBe(true)
+    expect(parseTopodArgs(topodServeArgs({ refusePublic: true })).refusePublic).toBe(true)
     expect(getServeOptions(serveOptionArgs({ refusePublic: true }, '--serve-')).refusePublic).toBe(
       true
     )
-    expect(() => parseOrcadArgs(['--allow-public', '--refuse-public'])).toThrow(/not both/)
+    expect(() => parseTopodArgs(['--allow-public', '--refuse-public'])).toThrow(/not both/)
     expect(() => getServeOptions(['--serve-allow-public', '--serve-refuse-public'])).toThrow(
       /not both/
     )

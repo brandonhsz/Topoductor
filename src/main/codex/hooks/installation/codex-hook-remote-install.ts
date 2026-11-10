@@ -40,8 +40,8 @@ export async function installCodexHooksRemote(
   // WSL must match runtime script paths/commands to avoid trust-key races; SSH uses guest-home scripts.
   const redirectedCodexHome = options?.codexHomeDir?.replace(/\/$/, '')
   const remoteScriptPath = redirectedCodexHome
-    ? `${redirectedCodexHome}/.orca/agent-hooks/codex-hook.sh`
-    : `${remoteHome.replace(/\/$/, '')}/.orca/agent-hooks/codex-hook.sh`
+    ? `${redirectedCodexHome}/.topo/agent-hooks/codex-hook.sh`
+    : `${remoteHome.replace(/\/$/, '')}/.topo/agent-hooks/codex-hook.sh`
   try {
     const config = await readHooksJsonRemote(sftp, remoteConfigPath)
     if (!config) {
@@ -89,7 +89,7 @@ export async function installCodexHooksRemote(
         handlerIndex: 0,
         command,
         timeoutSec: hook.timeout,
-        // Orca's setting overrides Codex's /hooks off switch for this hook, as local installs do.
+        // Topo's setting overrides Codex's /hooks off switch for this hook, as local installs do.
         enabled: true
       })
     }

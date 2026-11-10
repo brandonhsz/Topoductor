@@ -5,7 +5,7 @@ import { SSH_RUNTIME_DURATION_BUCKETS } from './telemetry-ssh-runtime-event-sche
 
 export const SSH_HOST_SERVER_OUTCOME_VALUES = ['managed', 'deployed', 'converted', 'relay'] as const
 
-/** Why orcad can't run on a host; mirrors main's OrcadHostUnavailableReason. */
+/** Why topod can't run on a host; mirrors main's TopodHostUnavailableReason. */
 const UNAVAILABLE_REASONS = [
   // The host refuses port forwarding and can't run the stdio bridge either.
   'ssh_tunnel_unavailable',
@@ -40,7 +40,7 @@ export const SSH_HOST_SERVER_REASON_VALUES = [
   'other'
 ] as const
 
-/** A conversion refusal's code without its `orcad_migration_` prefix. */
+/** A conversion refusal's code without its `topod_migration_` prefix. */
 export const SSH_HOST_SERVER_REFUSAL_VALUES = [
   'none',
   'already_managed',
@@ -55,7 +55,7 @@ export const SSH_HOST_SERVER_REFUSAL_VALUES = [
   'other'
 ] as const
 
-/** A deploy's deferral code without its `orcad_` prefix, or why orcad can't run on the host. */
+/** A deploy's deferral code without its `topod_` prefix, or why topod can't run on the host. */
 export const SSH_HOST_SERVER_FAILURE_VALUES = [
   ...UNAVAILABLE_REASONS,
   'activation_recovery_required',
@@ -111,7 +111,7 @@ export const sshHostServerDecidedSchema = z
     transport: z.enum(SSH_HOST_SERVER_TRANSPORT_VALUES),
     reason: z.enum(SSH_HOST_SERVER_REASON_VALUES),
     refusal: z.enum(SSH_HOST_SERVER_REFUSAL_VALUES),
-    // True when a recorded "orcad can't run here" sent the host to the relay without a try.
+    // True when a recorded "topod can't run here" sent the host to the relay without a try.
     recorded: z.boolean(),
     ...hostFields,
     duration_bucket: z.enum(SSH_RUNTIME_DURATION_BUCKETS)
@@ -157,7 +157,7 @@ export const SSH_HOST_SERVER_LEGACY_RELAY_BRIDGE_TERMINAL_VALUES = [
   '10_plus'
 ] as const
 
-/** Hosts still running terminals an older Orca's relay holds, and each one's exit. */
+/** Hosts still running terminals an older Topo's relay holds, and each one's exit. */
 export const sshHostServerLegacyRelayBridgeSchema = z
   .object({
     // `active`: at most once per target per UTC day while it bridges terminals.

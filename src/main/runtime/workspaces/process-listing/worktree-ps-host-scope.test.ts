@@ -25,7 +25,7 @@ vi.mock('electron', () => electronMocks)
 
 const listWorktreesStrictMock = vi.hoisted(() => vi.fn())
 
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import type { HostWorktreeTarget } from '../../../../shared/worktree/host-qualified-identity'
 
 const LOCAL_REPO_ID = 'repo-local'
@@ -106,7 +106,7 @@ describe('worktree.ps host coverage', () => {
   })
 
   it('keeps a remote row in the page when the cap cannot hold every local row', async () => {
-    const runtime = new OrcaRuntimeService(makeStore() as never)
+    const runtime = new TopoRuntimeService(makeStore() as never)
 
     const result = await runtime.getWorktreePs(2)
 

@@ -39,7 +39,7 @@ const DOC_LOCATION = {
   filePath: '/home/alice/wt1/report/index.html'
 }
 // Grants exist only in live guest memory: process/mount-scoped and never stored, persisted or published.
-const LIVE_GRANT_URL = `orca-preview://${'a'.repeat(32)}/report/index.html`
+const LIVE_GRANT_URL = `topo-preview://${'a'.repeat(32)}/report/index.html`
 
 let main: TabsDrawnFromMain | undefined
 afterEach(() => {
@@ -94,7 +94,7 @@ describe('a browser page that shows a workspace document', () => {
 
     expect(store.getState().browserPagesByWorkspace[tab.id]?.[0]?.title).toBe('index.html')
     expect(store.getState().browserTabsByWorktree[WORKTREE_ID]?.[0]?.title).toBe('index.html')
-    expect(JSON.stringify(persistedSession(store))).not.toContain('orca-preview://')
+    expect(JSON.stringify(persistedSession(store))).not.toContain('topo-preview://')
   })
 
   // Fence navigation reports too: an unused URL sink could still persist/publish grant authority later.
@@ -114,7 +114,7 @@ describe('a browser page that shows a workspace document', () => {
     expect(page?.title).toBe('index.html')
     // Nothing to wait for behind a blank url: an inert guest never reports the load that clears it.
     expect(page?.loading).toBe(false)
-    expect(JSON.stringify(persistedSession(store))).not.toContain('orca-preview://')
+    expect(JSON.stringify(persistedSession(store))).not.toContain('topo-preview://')
   })
 
   // Drive later mirroring too: active page changes must update tab document identity, which publication reads.

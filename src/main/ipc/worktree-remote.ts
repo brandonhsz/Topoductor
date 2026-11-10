@@ -52,7 +52,7 @@ import { getHostedReviewForBranch } from '../source-control/hosted-review'
 import type { ForgeProviderId } from '../source-control/forge-provider'
 import { validateGitPushTarget } from '../git/push-target-validation'
 import { gitExecFileAsync } from '../git/runner'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import type {
   RemoteFetchResult,
   RemoteTrackingBase
@@ -386,7 +386,7 @@ export function recordWorkspaceLineageForCreatedWorktree(
 
 /** Same refusal as the RPC create, before any checkout exists: a well-formed ref from another store. */
 async function assertCreatableCrossStoreParent(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   parent: NonNullable<CreateWorktreeArgs['crossStoreParent']>
 ): Promise<void> {
   // IPC args are unchecked.
@@ -397,7 +397,7 @@ async function assertCreatableCrossStoreParent(
 }
 
 async function spawnLocalStartupAndSetupTerminals(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   worktree: Worktree
   startup: CreateWorktreeArgs['startup']
   setup: CreateWorktreeResult['setup']
@@ -814,7 +814,7 @@ async function adoptExistingForkRemoteForBranch(
     )
   }
   const restored = await restoreUpstreamAfterMaterialize(execGit, repoPath, target)
-  // Persist inherited Orca ownership for orphan cleanup; derive repo ID because IPC and runtime callers supply different context.
+  // Persist inherited Topo ownership for orphan cleanup; derive repo ID because IPC and runtime callers supply different context.
   const ownerRepoId = repoId ?? (worktree ? getRepoIdFromWorktreeId(worktree.id) : undefined)
   const owned =
     store !== undefined &&
@@ -993,7 +993,7 @@ export function createLocalWorktree(
   repo: Repo,
   store: Store,
   mainWindow: BrowserWindow,
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   timing: WorktreeCreateTimingRecorder = createWorktreeCreateTimingRecorder(),
   onWorkspaceCreated?: (worktreeId: string) => void
 ): Promise<CreateWorktreeResult> {
@@ -1029,7 +1029,7 @@ async function performLocalWorktreeCreate(
   mainWindow: BrowserWindow,
   rearm: PreparationRearmHolder,
   timing: WorktreeCreateTimingRecorder,
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   pathClaim: WorktreeCreatePathClaim,
   onWorkspaceCreated?: (worktreeId: string) => void
 ): Promise<CreateWorktreeResult> {
@@ -1676,10 +1676,10 @@ async function performLocalWorktreeCreate(
     lastActivityAt: now,
     // createdAt protects the new worktree from ambient PTY bumps for CREATE_GRACE_MS.
     createdAt: now,
-    orcaCreatedAt: now,
-    orcaCreationSource: 'desktop',
+    topoCreatedAt: now,
+    topoCreationSource: 'desktop',
     creatorProvenance: { kind: 'host' },
-    orcaCreationWorkspaceLayout: getWorktreeCreationLayout(repo, settings),
+    topoCreationWorkspaceLayout: getWorktreeCreationLayout(repo, settings),
     ...(args.automationProvenance ? { automationProvenance: args.automationProvenance } : {}),
     ...(args.cliProvenance ? { cliProvenance: args.cliProvenance } : {}),
     baseRef: metadataBaseRef,

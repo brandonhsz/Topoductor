@@ -6,7 +6,7 @@ import { allowsRealtimePriority, readZeroRtTimeLimit } from './linux-rttime-limi
 
 let dir: string
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-rttime-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-rttime-'))
 })
 afterEach(() => rmSync(dir, { recursive: true, force: true }))
 

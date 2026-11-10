@@ -26,7 +26,7 @@ function LinkPreview() {
                 destination: anchor.href,
                 anchorX: bounds.left,
                 anchorY: bounds.top,
-                primary: { label: 'Orca Browser', external: false, run: () => {} },
+                primary: { label: 'Topo Browser', external: false, run: () => {} },
                 alternate: { label: 'System Browser', external: true, run: () => {} },
                 restoreFocus: () => anchor.focus()
               })

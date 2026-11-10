@@ -1,5 +1,5 @@
 import type { OrchestrationPartyLocationResult } from '../../../../shared/orchestration/orchestration-caller-status'
-import type { OrcaSessionId } from '../../../../shared/orca-session-address'
+import type { TopoSessionId } from '../../../../shared/topo-session-address'
 import type { OrchestrationDb } from '../db/orchestration-db'
 import { resolveOrchestrationParty } from './orchestration-party'
 import { OrchestrationError } from '../orchestration-error'
@@ -36,8 +36,8 @@ export function locateOrchestrationParty(
     }
     throw error
   }
-  if (party.orcaSessionId) {
-    return locateSession(party.orcaSessionId, deps.records)
+  if (party.topoSessionId) {
+    return locateSession(party.topoSessionId, deps.records)
   }
   return party.terminalHandle
     ? locateTerminal(party.terminalHandle, deps, messageIds)
@@ -70,8 +70,8 @@ function locateDispatchAssignee(
   deps: PartyLocationDeps
 ): OrchestrationPartyLocationResult {
   const dispatch = deps.db?.getDispatchContextById(dispatchId)
-  if (dispatch?.assignee_orca_session_id) {
-    return locateSession(dispatch.assignee_orca_session_id, deps.records)
+  if (dispatch?.assignee_topo_session_id) {
+    return locateSession(dispatch.assignee_topo_session_id, deps.records)
   }
   const remote = dispatch ? undefined : deps.db?.getRemoteDispatchAttachment(dispatchId)
   const paneKey = dispatch?.assignee_pane_key ?? remote?.pane_key
@@ -85,7 +85,7 @@ function locateDispatchAssignee(
 }
 
 function locateSession(
-  orcaSessionId: OrcaSessionId,
+  topoSessionId: TopoSessionId,
   records: AgentSessionRecordReader | null
 ): OrchestrationPartyLocationResult {
   if (!records) {
@@ -93,13 +93,13 @@ function locateSession(
   }
   let record
   try {
-    if (records.isSessionUnreadable?.(orcaSessionId)) {
+    if (records.isSessionUnreadable?.(topoSessionId)) {
       return { location: null }
     }
-    if (!records.getRecord(orcaSessionId)) {
+    if (!records.getRecord(topoSessionId)) {
       return { location: null, lost: 'chat' }
     }
-    record = lineageLiveSession(records, orcaSessionId)
+    record = lineageLiveSession(records, topoSessionId)
   } catch {
     return { location: null }
   }

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { getDefaultWorkspaceSession } from '../../../../shared/constants'
 import type { WorkspaceSessionState } from '../../../../shared/workspace-session/workspace-session-state-types'
 import type {
@@ -8,9 +8,9 @@ import type {
 } from '../../../../shared/workspace-layout/terminal-tab-types'
 import { makePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import './pty-recorded-surface-topology'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
-import { bindPaneFirst } from '../../orca-runtime-tests/bind-first-pane.test-fixture'
-import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { bindPaneFirst } from '../../topo-runtime-tests/bind-first-pane.test-fixture'
+import { partialRuntimeStore } from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
 export function registerTerminalListSurfaceLostOrphanTests(): void {
   // Orphan status must compare PTY claims to current layout topology (#18191); main-layout builds retract panes through main, not window graphs.
@@ -104,16 +104,16 @@ export function registerTerminalListSurfaceLostOrphanTests(): void {
     return { tabId, worktreeId: WORKTREE_ID, title: '', activeLeafId, layout: null }
   }
 
-  const storesByRuntime = new WeakMap<OrcaRuntimeService, ReturnType<typeof makeStore>>()
+  const storesByRuntime = new WeakMap<TopoRuntimeService, ReturnType<typeof makeStore>>()
 
   function pane(tabId: string, leafId: string, ptyId: string) {
     return { worktreeId: WORKTREE_ID, tabId, leafId, ptyId }
   }
 
   /** Both PTYs stay live on the host throughout; only the graph changes. */
-  function makeRuntime(session?: WorkspaceSessionState): OrcaRuntimeService {
+  function makeRuntime(session?: WorkspaceSessionState): TopoRuntimeService {
     const store = makeStore(session)
-    const runtime = new OrcaRuntimeService(partialRuntimeStore(store))
+    const runtime = new TopoRuntimeService(partialRuntimeStore(store))
     storesByRuntime.set(runtime, store)
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the stub carries the four controller members this suite drives; both PTYs stay live throughout.
     runtime.setPtyController({
@@ -139,8 +139,8 @@ export function registerTerminalListSurfaceLostOrphanTests(): void {
   }
 
   /** The restart republishes a graph that kept one pane and dropped the other. */
-  function dropOnePane(runtime: OrcaRuntimeService): void {
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  function dropOnePane(runtime: TopoRuntimeService): void {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       unbindDroppedPane(runtime)
     }
     runtime.syncWindowGraph(1, {
@@ -150,7 +150,7 @@ export function registerTerminalListSurfaceLostOrphanTests(): void {
   }
 
   /** Layout-owner builds: main's layout closes the dropped pane's tab. */
-  function unbindDroppedPane(runtime: OrcaRuntimeService): void {
+  function unbindDroppedPane(runtime: TopoRuntimeService): void {
     const store = storesByRuntime.get(runtime)!
     const session = store.getWorkspaceSession()
     const { 'tab-dropped': _dropped, ...layouts } = session.terminalLayoutsByTabId
@@ -182,7 +182,7 @@ export function registerTerminalListSurfaceLostOrphanTests(): void {
       }
     })
 
-    it.runIf(ORCA_LAYOUT_OWNER_IS_MAIN)(
+    it.runIf(TOPO_LAYOUT_OWNER_IS_MAIN)(
       "keeps a pane main's layout still binds attached when a window graph drops it",
       async () => {
         const runtime = makeRuntime()

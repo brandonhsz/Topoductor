@@ -4,7 +4,7 @@ import { exposeUtcTimestamp } from '../utc-timestamp'
 
 const text = (value: unknown): string | null => (typeof value === 'string' ? value : null)
 
-/** How much mail from above (its coordinator, or Orca for it) the worker has consumed, in any order.
+/** How much mail from above (its coordinator, or Topo for it) the worker has consumed, in any order.
  *  Mail a worker of the Run sent while its Dispatch was open (this worker's own heartbeats, its helpers'
  *  reports, a sibling's broadcast) does not count, nor does mail it has not taken yet. */
 export function readCoordinatorMailCount(db: OrchestrationDb, dispatchId: string): number {

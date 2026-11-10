@@ -97,16 +97,16 @@ async function stopWrapperAndTrackedPids(wrapper: ChildProcess, pids: number[]):
 function devWrapperTestEnv(extra: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   const env = { ...process.env }
   for (const key of Object.keys(env)) {
-    if (key.startsWith('ORCA_DEV_')) {
+    if (key.startsWith('TOPO_DEV_')) {
       delete env[key]
     }
   }
   delete env.ELECTRON_EXEC_PATH
   return {
     ...env,
-    ORCA_SKIP_DEV_STORAGE_RECLAIM: '1',
+    TOPO_SKIP_DEV_STORAGE_RECLAIM: '1',
     // Why: the runner otherwise creates this worktree's real per-worktree profile under appData.
-    ORCA_DEV_USER_DATA_PATH: join(tmpdir(), 'orca-dev-wrapper-test-profile'),
+    TOPO_DEV_USER_DATA_PATH: join(tmpdir(), 'topo-dev-wrapper-test-profile'),
     ...extra
   }
 }
@@ -180,7 +180,7 @@ describe('run-electron-vite-dev', () => {
   it.skipIf(process.platform === 'win32')(
     'kills the descendant process tree on SIGINT',
     async () => {
-      const tempDir = mkdtempSync(join(tmpdir(), 'orca-dev-wrapper-'))
+      const tempDir = mkdtempSync(join(tmpdir(), 'topo-dev-wrapper-'))
       const pidFile = join(tempDir, 'grandchild.pid')
       const wrapperPath = resolve('config/scripts/development/launch/run-electron-vite-dev.mjs')
       const fakeCliPath = resolve('src/main/startup/__fixtures__/fake-electron-vite-dev-cli.mjs')
@@ -188,11 +188,11 @@ describe('run-electron-vite-dev', () => {
       const wrapper = spawn(process.execPath, [wrapperPath], {
         cwd: resolve('.'),
         env: devWrapperTestEnv({
-          ORCA_ELECTRON_VITE_CLI: fakeCliPath,
-          ORCA_SKIP_DEV_CLI_PREPARE: '1',
-          ORCA_SKIP_DEV_ELECTRON_APP_PREPARE: '1',
-          ORCA_SKIP_DEV_WEB_PREPARE: '1',
-          ORCA_DEV_WRAPPER_TEST_PID_FILE: pidFile
+          TOPO_ELECTRON_VITE_CLI: fakeCliPath,
+          TOPO_SKIP_DEV_CLI_PREPARE: '1',
+          TOPO_SKIP_DEV_ELECTRON_APP_PREPARE: '1',
+          TOPO_SKIP_DEV_WEB_PREPARE: '1',
+          TOPO_DEV_WRAPPER_TEST_PID_FILE: pidFile
         }),
         stdio: 'ignore'
       })
@@ -226,15 +226,15 @@ describe('run-electron-vite-dev', () => {
   it.skipIf(process.platform !== 'darwin')(
     'rebuilds the copied Electron app when Chromium resources are missing',
     async () => {
-      const tempDir = mkdtempSync(join(tmpdir(), 'orca-dev-wrapper-'))
+      const tempDir = mkdtempSync(join(tmpdir(), 'topo-dev-wrapper-'))
       const wrapperPath = resolve('config/scripts/development/launch/run-electron-vite-dev.mjs')
       const fakeCliPath = resolve('src/main/startup/__fixtures__/fake-electron-vite-dev-cli.mjs')
       const baseEnv = devWrapperTestEnv({
-        ORCA_ELECTRON_VITE_CLI: fakeCliPath,
-        ORCA_SKIP_DEV_CLI_PREPARE: '1',
-        ORCA_SKIP_DEV_WEB_PREPARE: '1',
-        ORCA_DEV_BRANCH: 'feature/rebuild-electron-app',
-        ORCA_DEV_WORKTREE_NAME: 'electron-app-rebuild'
+        TOPO_ELECTRON_VITE_CLI: fakeCliPath,
+        TOPO_SKIP_DEV_CLI_PREPARE: '1',
+        TOPO_SKIP_DEV_WEB_PREPARE: '1',
+        TOPO_DEV_BRANCH: 'feature/rebuild-electron-app',
+        TOPO_DEV_WORKTREE_NAME: 'electron-app-rebuild'
       })
 
       async function runWrapper(runId: string): Promise<{ electronExecPath: string }> {
@@ -244,8 +244,8 @@ describe('run-electron-vite-dev', () => {
           [wrapperPath, '--remote-debugging-port=9448'],
           {
             ...baseEnv,
-            ORCA_DEV_WRAPPER_TEST_PID_FILE: pidFile,
-            ORCA_DEV_WRAPPER_TEST_ENV_FILE: envFile
+            TOPO_DEV_WRAPPER_TEST_PID_FILE: pidFile,
+            TOPO_DEV_WRAPPER_TEST_ENV_FILE: envFile
           }
         )
 
@@ -298,7 +298,7 @@ describe('run-electron-vite-dev', () => {
   it.skipIf(process.platform !== 'darwin')(
     'preserves relative Electron framework symlinks in the copied mac dev app',
     async () => {
-      const tempDir = mkdtempSync(join(tmpdir(), 'orca-dev-wrapper-'))
+      const tempDir = mkdtempSync(join(tmpdir(), 'topo-dev-wrapper-'))
       const pidFile = join(tempDir, 'grandchild.pid')
       const envFile = join(tempDir, 'env.json')
       const wrapperPath = resolve('config/scripts/development/launch/run-electron-vite-dev.mjs')
@@ -307,13 +307,13 @@ describe('run-electron-vite-dev', () => {
       const { wrapper, readOutput } = spawnDevWrapper(
         [wrapperPath, '--remote-debugging-port=9448'],
         devWrapperTestEnv({
-          ORCA_ELECTRON_VITE_CLI: fakeCliPath,
-          ORCA_SKIP_DEV_CLI_PREPARE: '1',
-          ORCA_SKIP_DEV_WEB_PREPARE: '1',
-          ORCA_DEV_WRAPPER_TEST_PID_FILE: pidFile,
-          ORCA_DEV_WRAPPER_TEST_ENV_FILE: envFile,
-          ORCA_DEV_BRANCH: 'feature/framework-symlinks',
-          ORCA_DEV_WORKTREE_NAME: 'symlink-ui'
+          TOPO_ELECTRON_VITE_CLI: fakeCliPath,
+          TOPO_SKIP_DEV_CLI_PREPARE: '1',
+          TOPO_SKIP_DEV_WEB_PREPARE: '1',
+          TOPO_DEV_WRAPPER_TEST_PID_FILE: pidFile,
+          TOPO_DEV_WRAPPER_TEST_ENV_FILE: envFile,
+          TOPO_DEV_BRANCH: 'feature/framework-symlinks',
+          TOPO_DEV_WORKTREE_NAME: 'symlink-ui'
         })
       )
 

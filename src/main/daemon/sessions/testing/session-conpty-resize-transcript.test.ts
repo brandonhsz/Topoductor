@@ -96,6 +96,6 @@ describe('daemon screen through a captured ConPTY resize transcript', () => {
     const numbers = lines.filter((line) => /^\d+$/.test(line)).map(Number)
     expect(numbers).toEqual(Array.from({ length: 80 }, (_, i) => i + 1))
     expect(lines.filter((line) => line === LONG_LINE)).toHaveLength(1)
-    expect(lines.filter((line) => /\$.*orca@/.test(line))).toEqual([])
+    expect(lines.filter((line) => /\$.*topo@/.test(line))).toEqual([])
   })
 })

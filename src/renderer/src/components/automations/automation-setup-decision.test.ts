@@ -9,7 +9,7 @@ import {
 const repo: Repo = {
   id: 'repo-1',
   path: '/repo',
-  displayName: 'orca',
+  displayName: 'topo',
   badgeColor: 'blue',
   addedAt: 1,
   kind: 'git',
@@ -27,7 +27,7 @@ function setup(overrides: Partial<ProjectHostSetup> = {}): ProjectHostSetup {
     hostId: 'local',
     repoId: 'repo-1',
     path: '/repo',
-    displayName: 'orca',
+    displayName: 'topo',
     setupState: 'ready',
     setupMethod: 'legacy-repo',
     createdAt: 1,
@@ -37,7 +37,7 @@ function setup(overrides: Partial<ProjectHostSetup> = {}): ProjectHostSetup {
 }
 
 describe('automation setup decision defaults', () => {
-  it('hides setup choice outside Orca new-run automations with setup', () => {
+  it('hides setup choice outside Topo new-run automations with setup', () => {
     const baseArgs = {
       repoId: 'repo-1',
       repos: [repo],
@@ -111,7 +111,7 @@ describe('automation setup decision defaults', () => {
     ).toBe('skip')
   })
 
-  it('shows setup choice for shared orca.yaml setup and default tabs', () => {
+  it('shows setup choice for shared topo.yaml setup and default tabs', () => {
     expect(
       getVisibleAutomationSetupDecision({
         workspaceMode: 'new_per_run',

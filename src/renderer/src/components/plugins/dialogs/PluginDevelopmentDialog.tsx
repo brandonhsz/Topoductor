@@ -31,7 +31,7 @@ function saveErrorMessage(cause: unknown): string {
   )
 }
 
-/** Folders Orca loads plugins from while you build them; opened from the Plugins ⋯ menu. */
+/** Folders Topo loads plugins from while you build them; opened from the Plugins ⋯ menu. */
 export function PluginDevelopmentDialog({
   open,
   onOpenChange,

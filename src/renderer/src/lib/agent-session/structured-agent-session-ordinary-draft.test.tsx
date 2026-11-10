@@ -21,7 +21,7 @@ import {
 } from './launch/structured-agent-session-launch-registry'
 import { hasStagedStructuredLaunchPrompt } from './launch/structured-agent-session-launch-prompt'
 import { wasStructuredAgentLaunchClosedByLocalCancel } from './launch/structured-agent-session-local-launch-cancel'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { clearNativeChatComposerDraftsForTests } from '@/components/native-chat/drafts/native-chat-draft-reset'
 import {
   flushNativeChatComposerDrafts,
@@ -130,7 +130,7 @@ it.each(['close', 'cancel', 'abort', 'edited-close'] as const)(
     expect(readNativeChatComposerDraft(scope).text).toBe(expectedText)
     expect(readNativeChatComposerDraft(scope).document).toEqual(expectedDocument)
     expect(
-      ORCA_LAYOUT_OWNER_IS_MAIN
+      TOPO_LAYOUT_OWNER_IS_MAIN
         ? wasStructuredAgentLaunchClosedByLocalCancel(handle.sessionId)
         : hasStructuredAgentSessionLaunchCancellationTombstone('wt-1', handle.sessionId)
     ).toBe(true)
@@ -335,7 +335,7 @@ it.each(['range', 'edit', 'ime'] as const)(
     )
     const field = within(first.container).getByRole('textbox')
     await storage.write(scope, { text: 'typed before load', images: [], savedAt: 1 })
-    const channel = new BroadcastChannel('orca-native-chat-composer-drafts')
+    const channel = new BroadcastChannel('topo-native-chat-composer-drafts')
     channel.postMessage({ scopeKey: scope })
     await act(async () => {
       await vi.waitFor(() => expect(input.current!.value).toBe('typed before load'))
@@ -496,7 +496,7 @@ it('keeps genuine handback and foreign adoption on their ordinary native mapping
   flushNativeChatComposerDrafts()
   await nativeChatComposerDraftWritesSettled()
   await storage.write(scope, { text: 'foreign replacement', images: [], savedAt: 100 })
-  const channel = new BroadcastChannel('orca-native-chat-composer-drafts')
+  const channel = new BroadcastChannel('topo-native-chat-composer-drafts')
   channel.postMessage({ scopeKey: scope })
   await act(async () => {
     await vi.waitFor(() => expect(input.current!.value).toBe('foreign replacement'))

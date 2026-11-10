@@ -38,7 +38,7 @@ export function planLaunchAgentStartupPrompt(args: {
       ...base,
       prompt: '',
       allowEmptyPromptLaunch: true,
-      // Why: Orca's own Enter must not answer a startup update prompt.
+      // Why: Topo's own Enter must not answer a startup update prompt.
       suppressStartupUpdatePrompt: suppressUpdater
     }),
     pasteDraftAfterLaunch: prompt,

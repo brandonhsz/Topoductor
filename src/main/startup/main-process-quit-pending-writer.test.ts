@@ -42,7 +42,7 @@ const dependencies: Record<string, Record<string, unknown>> = {
     shutdownPairedRuntimeBrowserClientHosts: settled()
   },
   '../ipc/browser/desktop-browser-bridge-wiring': { disposeDesktopBrowserBridge: idle() },
-  '../orca-profiles/profile-cloud-session-owner': { flushUnsavedCloudSessions: idle() },
+  '../topo-profiles/profile-cloud-session-owner': { flushUnsavedCloudSessions: idle() },
   '../browser/guest-lifecycle/manager/browser-manager': {
     browserManager: { setBrowserGuestStateChangedListener: idle(), setOffscreenTabOpener: idle() }
   },

@@ -7,7 +7,7 @@ import {
   kiroListHookRunsManagedCommand
 } from './hook-settings'
 
-const KIRO_STANDALONE_HOOKS_FILE_NAME = 'orca-agent-status.json'
+const KIRO_STANDALONE_HOOKS_FILE_NAME = 'topo-agent-status.json'
 
 /** V3 triggers (kiro-cli 2.27+); the docs' `PromptSubmit`/`AgentStop` spellings are dropped on load. */
 export const KIRO_STANDALONE_HOOK_TRIGGERS = [
@@ -67,17 +67,17 @@ export function readManagedKiroStandaloneTriggers(
   return present
 }
 
-/** Why `file` is not Orca's to rewrite, or null when every field and hook is Orca's. */
+/** Why `file` is not Topo's to rewrite, or null when every field and hook is Topo's. */
 export function getKiroStandaloneHooksFileConflict(file: Record<string, unknown>): string | null {
   const otherField = Object.keys(file).find((key) => key !== 'version' && key !== 'hooks')
   if (otherField !== undefined) {
-    return `it has a field Orca does not write (${otherField})`
+    return `it has a field Topo does not write (${otherField})`
   }
   if (!Array.isArray(file.hooks) || file.hooks.length === 0) {
     return 'it has no hooks list'
   }
   if (!file.hooks.every(runsManagedKiroScript)) {
-    return 'it has hooks Orca did not write'
+    return 'it has hooks Topo did not write'
   }
   return file.version === 'v1' ? null : 'it is not a version "v1" hooks file'
 }

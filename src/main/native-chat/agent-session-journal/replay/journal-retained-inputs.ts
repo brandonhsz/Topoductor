@@ -132,7 +132,7 @@ export function restoreRetainedJournalInputs(
   for (const [provider, native] of state.aliases) {
     const identity = parseAgentJournalItemKey(native)
     const receipt =
-      identity?.provider === 'orca' ? state.receipts.get(identity.clientMessageId) : undefined
+      identity?.provider === 'topo' ? state.receipts.get(identity.clientMessageId) : undefined
     if (!receipt || state.itemEchoes.has(provider)) {
       continue
     }
@@ -141,7 +141,7 @@ export function restoreRetainedJournalInputs(
       continue
     }
     const admission =
-      identity?.provider === 'orca' ? state.inputs.sources.get(identity.clientMessageId) : undefined
+      identity?.provider === 'topo' ? state.inputs.sources.get(identity.clientMessageId) : undefined
     const sequence = journalInputSourceSequence(admission)
     const item = state.items.get(native)
     if (sequence === undefined || !item) {

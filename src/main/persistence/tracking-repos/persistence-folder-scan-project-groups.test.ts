@@ -34,7 +34,7 @@ vi.mock('../../ssh/config/ssh-config-parser', () => ({
 
 describe('Flat folder-scan project groups adaptation', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-test-'))
   })
 
   afterEach(async () => {

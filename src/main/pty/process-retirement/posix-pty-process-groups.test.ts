@@ -27,7 +27,7 @@ vi.mock('node:fs/promises', async (importOriginal) => ({
 vi.mock('../../crash-reporting/self-initiated-tree-kill-log', () => ({
   recordSelfInitiatedTreeKill: recordSelfInitiatedTreeKillMock
 }))
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   runProcess: runProcessMock,
   runProcessSync: runProcessSyncMock
 }))

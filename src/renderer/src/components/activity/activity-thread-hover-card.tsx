@@ -185,9 +185,9 @@ function ActivityThreadHoverCardContent({
 
   const taskActions = getWorktreeCardTaskActions(detailsHoverControl.closeHover, {
     onEditIssue: foundation.handleEditIssue,
-    onOpenGitHubIssueInOrca: secondary.handleOpenGitHubIssueInOrca,
+    onOpenGitHubIssueInTopo: secondary.handleOpenGitHubIssueInTopo,
     onOpenIssueInBrowser: secondary.handleOpenIssueInBrowser,
-    onOpenLinearIssueInOrca: secondary.handleOpenLinearIssueInOrca
+    onOpenLinearIssueInTopo: secondary.handleOpenLinearIssueInTopo
   })
 
   const dismissAndRun = useCallback(
@@ -224,7 +224,7 @@ function ActivityThreadHoverCardContent({
           onManageLinks={dismissAndRun(foundation.handleManageLinks)}
           reviewMenuOpen={detailsHoverControl.reviewMenuOpen}
           onReviewMenuOpenChange={detailsHoverControl.handleReviewMenuOpenChange}
-          onOpenReviewInOrca={secondary.handleOpenReviewInOrca}
+          onOpenReviewInTopo={secondary.handleOpenReviewInTopo}
           onOpenLink={onOpenLink}
           onUnlinkReview={secondary.canUnlinkReview ? secondary.handleUnlinkReview : undefined}
           closeHover={detailsHoverControl.closeHover}

@@ -92,7 +92,7 @@ describe('runRetirementBackfillScan', () => {
     // WSL scan admission can exceed this deadline while still returning a valid answer.
     const store = {}
     const slow = await stallPastDeadline(store, 'ns')
-    const rescan = vi.fn(async () => found(['orca']))
+    const rescan = vi.fn(async () => found(['topo']))
 
     slow.finish(['nautilus'])
     await vi.advanceTimersByTimeAsync(0)
@@ -106,7 +106,7 @@ describe('runRetirementBackfillScan', () => {
   it('does not memoize an incomplete answer, so a refused source is retried', async () => {
     const store = {}
     const partial = vi.fn(async () => found(['nautilus'], false))
-    const whole = vi.fn(async () => found(['nautilus', 'orca']))
+    const whole = vi.fn(async () => found(['nautilus', 'topo']))
 
     await expect(runRetirementBackfillScan(store, 'ns', partial)).resolves.toEqual(
       new Set(['nautilus'])
@@ -114,15 +114,15 @@ describe('runRetirementBackfillScan', () => {
 
     await vi.advanceTimersByTimeAsync(RETIREMENT_BACKFILL_RETRY_AFTER_FAILURE_MS)
     await expect(runRetirementBackfillScan(store, 'ns', whole)).resolves.toEqual(
-      new Set(['nautilus', 'orca'])
+      new Set(['nautilus', 'topo'])
     )
   })
 
   it('does not let one store inherit another store scan memo', async () => {
     const first = vi.fn(async () => found(['nautilus']))
-    const second = vi.fn(async () => found(['orca']))
+    const second = vi.fn(async () => found(['topo']))
 
     await runRetirementBackfillScan({}, 'ns', first)
-    await expect(runRetirementBackfillScan({}, 'ns', second)).resolves.toEqual(new Set(['orca']))
+    await expect(runRetirementBackfillScan({}, 'ns', second)).resolves.toEqual(new Set(['topo']))
   })
 })

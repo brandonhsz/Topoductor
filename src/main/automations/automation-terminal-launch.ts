@@ -11,7 +11,7 @@ import type { RuntimeTerminalCreate } from '../../shared/runtime-terminal-create
 import type { Automation } from '../../shared/automations/automation-definition'
 import type { AutomationRun } from '../../shared/automations/history/automation-run'
 import { findReusableAutomationRun } from '../../shared/automations/history/automation-session-reuse'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { deliverTerminalAgentLaunchPrompt } from '../runtime/rpc/methods/agent-launch/agent-launch-terminal-prompt'
 import { AutomationRunLaunchError, type AutomationLaunch } from './automation-launch'
 import { AutomationDispatchRefusedError } from './automation-launch-runner'
@@ -32,7 +32,7 @@ export type AutomationTerminalAgentLaunch = Omit<AutomationLaunch, 'completion'>
 }
 
 export async function launchAutomationTerminalAgent(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   request: {
     automation: Automation
     run: Pick<AutomationRun, 'id' | 'title' | 'scheduledFor' | 'trigger'>
@@ -173,7 +173,7 @@ export async function launchAutomationTerminalAgent(
             ? settled.reason.message
             : String(settled.reason)
           : settled.value.prompt?.outcome === 'not-delivered'
-            ? `${tuiAgentDisplayName(agent)} started, but Orca could not send this run's prompt.`
+            ? `${tuiAgentDisplayName(agent)} started, but Topo could not send this run's prompt.`
             : null
     }))
   }
@@ -196,7 +196,7 @@ function runTargetOf(
 }
 
 async function sendToReusableSession(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   request: {
     automation: Automation
     run: Pick<AutomationRun, 'id'>
@@ -263,7 +263,7 @@ async function sendToReusableSession(
 
 /** A missing workspace or one owned by a paired server is a typed skip, never a fresh local launch. */
 async function resolveLocalExistingWorkspace(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   automation: Automation,
   target: Extract<AutomationRunTargetResult, { ok: true }>
 ) {
@@ -288,7 +288,7 @@ async function resolveLocalExistingWorkspace(
 
 /** Reject reused pane handles whose PTY no longer belongs to this run. */
 export function runOwnHandle(
-  runtime: Pick<OrcaRuntimeService, 'getTerminalHandleForPaneKey' | 'getTerminalPtyIdForHandle'>,
+  runtime: Pick<TopoRuntimeService, 'getTerminalHandleForPaneKey' | 'getTerminalPtyIdForHandle'>,
   run: AutomationRun
 ): string | null {
   const handle = run.terminalPaneKey

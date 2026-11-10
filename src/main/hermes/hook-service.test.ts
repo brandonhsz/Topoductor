@@ -18,7 +18,7 @@ describe('HermesHookService', () => {
 
   beforeEach(() => {
     previousHermesHome = process.env.HERMES_HOME
-    homeDir = mkdtempSync(join(tmpdir(), 'orca-hermes-hooks-'))
+    homeDir = mkdtempSync(join(tmpdir(), 'topo-hermes-hooks-'))
     process.env.HERMES_HOME = homeDir
   })
 
@@ -31,7 +31,7 @@ describe('HermesHookService', () => {
     rmSync(homeDir, { recursive: true, force: true })
   })
 
-  it('preserves other enabled plugins and removes Orca from disabled list', () => {
+  it('preserves other enabled plugins and removes Topo from disabled list', () => {
     writeFileSync(
       join(homeDir, 'config.yaml'),
       [
@@ -66,7 +66,7 @@ describe('HermesHookService', () => {
         '  backend: local',
         '  client_env_passthrough:',
         '    - MY_VAR # mine',
-        '    - ORCA_TAB_ID',
+        '    - TOPO_TAB_ID',
         'plugins:',
         '  enabled: [other]',
         ''
@@ -81,13 +81,13 @@ describe('HermesHookService', () => {
       backend: 'local',
       client_env_passthrough: [
         'MY_VAR',
-        'ORCA_TAB_ID',
-        'ORCA_AGENT_PANE',
-        'ORCA_AGENT_LAUNCH',
-        'ORCA_WORKTREE_ID',
-        'ORCA_AGENT_HOOK_ENDPOINT',
-        'ORCA_AGENT_HOOK_ENV',
-        'ORCA_AGENT_HOOK_VERSION'
+        'TOPO_TAB_ID',
+        'TOPO_AGENT_PANE',
+        'TOPO_AGENT_LAUNCH',
+        'TOPO_WORKTREE_ID',
+        'TOPO_AGENT_HOOK_ENDPOINT',
+        'TOPO_AGENT_HOOK_ENV',
+        'TOPO_AGENT_HOOK_VERSION'
       ]
     })
     expect(installed).toContain('- MY_VAR # mine')
@@ -104,7 +104,7 @@ describe('HermesHookService', () => {
   })
 
   it('refreshes named profiles that keep the plugin enabled, and only those', () => {
-    const stale = '# Managed by Orca. Do not edit; changes may be overwritten.\n# stale\n'
+    const stale = '# Managed by Topo. Do not edit; changes may be overwritten.\n# stale\n'
     // `hermes profile create --clone` copies the plugin but not later passthrough edits.
     const profile = (name: string, config: string): string => {
       const home = join(homeDir, 'profiles', name)
@@ -120,8 +120,8 @@ describe('HermesHookService', () => {
     const broken = profile('broken', '')
     rmSync(join(broken, 'config.yaml'))
     mkdirSync(join(broken, 'config.yaml'))
-    const work = profile('work', 'plugins:\n  enabled: [orca-status]\n')
-    const disabledConfig = 'plugins:\n  enabled: [orca-status]\n  disabled: [orca-status]\n'
+    const work = profile('work', 'plugins:\n  enabled: [topo-status]\n')
+    const disabledConfig = 'plugins:\n  enabled: [topo-status]\n  disabled: [topo-status]\n'
     const disabled = profile('off', disabledConfig)
     const service = new HermesHookService()
 
@@ -156,7 +156,7 @@ describe('HermesHookService', () => {
       readFileSync(join(homeDir, 'config.yaml'), 'utf-8')
     )
     const { terminal: original, ...originalRest } = parse(input)
-    expect(plugins.enabled).toEqual(['orca-status'])
+    expect(plugins.enabled).toEqual(['topo-status'])
     expect(rest).toEqual(originalRest)
     expect(terminal).toEqual(
       passesThrough
@@ -170,14 +170,14 @@ describe('HermesHookService', () => {
     const configPath = join(homeDir, 'config.yaml')
     writeFileSync(
       configPath,
-      'plugins:\n  disabled:\n    - keep\n    - orca-status # managed entry\n# End notes\n'
+      'plugins:\n  disabled:\n    - keep\n    - topo-status # managed entry\n# End notes\n'
     )
 
     expect(new HermesHookService().install().state).toBe('installed')
     const installed = readFileSync(configPath, 'utf-8')
     expect(parse(installed)).toEqual({
-      plugins: { disabled: ['keep'], enabled: ['orca-status'] },
-      terminal: { client_env_passthrough: expect.arrayContaining(['ORCA_AGENT_PANE']) }
+      plugins: { disabled: ['keep'], enabled: ['topo-status'] },
+      terminal: { client_env_passthrough: expect.arrayContaining(['TOPO_AGENT_PANE']) }
     })
     expect(installed.split('# End notes')).toHaveLength(2)
   })
@@ -199,7 +199,7 @@ describe('HermesHookService', () => {
     expect(config.plugins.disabled).toBe('not-a-list')
   })
 
-  it('registered plugin hooks post normalized JSON to Orca', async () => {
+  it('registered plugin hooks post normalized JSON to Topo', async () => {
     const pythonAvailable = spawnSync('python3', ['--version'], { encoding: 'utf-8' }).status === 0
     if (!pythonAvailable) {
       return
@@ -213,7 +213,7 @@ describe('HermesHookService', () => {
         req.on('end', () => {
           try {
             expect(req.url).toBe('/hook/hermes')
-            expect(req.headers['x-orca-agent-hook-token']).toBe('token-1')
+            expect(req.headers['x-topo-agent-hook-token']).toBe('token-1')
             res.writeHead(204)
             res.end()
             clearTimeout(timeout)
@@ -240,7 +240,7 @@ describe('HermesHookService', () => {
         const initPath = join(homeDir, 'plugins', _internals.HERMES_PLUGIN_NAME, '__init__.py')
         const script = [
           'import importlib.util',
-          `spec = importlib.util.spec_from_file_location("orca_status", ${JSON.stringify(initPath)})`,
+          `spec = importlib.util.spec_from_file_location("topo_status", ${JSON.stringify(initPath)})`,
           'mod = importlib.util.module_from_spec(spec)',
           'spec.loader.exec_module(mod)',
           'class Ctx:',
@@ -263,14 +263,14 @@ describe('HermesHookService', () => {
           {
             env: {
               ...process.env,
-              ORCA_AGENT_HOOK_PORT: String(address.port),
-              ORCA_AGENT_HOOK_TOKEN: 'token-1',
-              ORCA_AGENT_HOOK_ENDPOINT: '',
-              ORCA_PANE_KEY: PANE_KEY,
-              ORCA_TAB_ID: 'tab-1',
-              ORCA_WORKTREE_ID: 'wt-1',
-              ORCA_AGENT_HOOK_ENV: 'production',
-              ORCA_AGENT_HOOK_VERSION: '1'
+              TOPO_AGENT_HOOK_PORT: String(address.port),
+              TOPO_AGENT_HOOK_TOKEN: 'token-1',
+              TOPO_AGENT_HOOK_ENDPOINT: '',
+              TOPO_PANE_KEY: PANE_KEY,
+              TOPO_TAB_ID: 'tab-1',
+              TOPO_WORKTREE_ID: 'wt-1',
+              TOPO_AGENT_HOOK_ENV: 'production',
+              TOPO_AGENT_HOOK_VERSION: '1'
             },
             encoding: 'utf-8'
           },
@@ -347,15 +347,15 @@ describe('HermesHookService', () => {
       const endpointPath = join(homeDir, 'endpoint.env')
       writeFileSync(
         endpointPath,
-        `ORCA_AGENT_HOOK_PORT=${address.port}\nORCA_AGENT_HOOK_TOKEN=token-1\n`
+        `TOPO_AGENT_HOOK_PORT=${address.port}\nTOPO_AGENT_HOOK_TOKEN=token-1\n`
       )
       const initPath = join(homeDir, 'plugins', _internals.HERMES_PLUGIN_NAME, '__init__.py')
       const pane = (id: string) =>
-        `{"ORCA_AGENT_PANE": "tab-${id}:pane-${id}", "ORCA_AGENT_LAUNCH": "launch-${id}", "ORCA_TAB_ID": "tab-${id}", "ORCA_WORKTREE_ID": "wt-${id}", "ORCA_AGENT_HOOK_ENDPOINT": ${JSON.stringify(endpointPath)}}`
+        `{"TOPO_AGENT_PANE": "tab-${id}:pane-${id}", "TOPO_AGENT_LAUNCH": "launch-${id}", "TOPO_TAB_ID": "tab-${id}", "TOPO_WORKTREE_ID": "wt-${id}", "TOPO_AGENT_HOOK_ENDPOINT": ${JSON.stringify(endpointPath)}}`
       const script = [
         'import importlib.util',
         'from agent.session_client_env import client_env_scope',
-        `spec = importlib.util.spec_from_file_location("orca_status", ${JSON.stringify(initPath)})`,
+        `spec = importlib.util.spec_from_file_location("topo_status", ${JSON.stringify(initPath)})`,
         'mod = importlib.util.module_from_spec(spec)',
         'spec.loader.exec_module(mod)',
         'class Ctx:',
@@ -369,7 +369,7 @@ describe('HermesHookService', () => {
         '    ctx.hooks["pre_tool_call"](session_id="sess-C", tool_name="patch")',
         '# Gateway housekeeping runs outside any session, so it has no proven pane.',
         'ctx.hooks["on_session_finalize"](session_id="sess-B", platform="local")',
-        '# A non-Orca shell attached to the same gateway.',
+        '# A non-Topo shell attached to the same gateway.',
         'with client_env_scope({"PATH": "/usr/bin"}):',
         '    ctx.hooks["pre_llm_call"](session_id="sess-X", user_message="not a pane")'
       ].join('\n')
@@ -382,14 +382,14 @@ describe('HermesHookService', () => {
             env: {
               ...process.env,
               PYTHONPATH: hermesRoot,
-              ORCA_AGENT_HOOK_PORT: String(address.port),
-              ORCA_AGENT_HOOK_TOKEN: 'token-1',
-              ORCA_AGENT_HOOK_ENDPOINT: '',
-              ORCA_PANE_KEY: 'tab-A:pane-A',
-              ORCA_AGENT_PANE: 'tab-A:pane-A',
-              ORCA_AGENT_LAUNCH_TOKEN: 'launch-A',
-              ORCA_TAB_ID: 'tab-A',
-              ORCA_WORKTREE_ID: 'wt-A'
+              TOPO_AGENT_HOOK_PORT: String(address.port),
+              TOPO_AGENT_HOOK_TOKEN: 'token-1',
+              TOPO_AGENT_HOOK_ENDPOINT: '',
+              TOPO_PANE_KEY: 'tab-A:pane-A',
+              TOPO_AGENT_PANE: 'tab-A:pane-A',
+              TOPO_AGENT_LAUNCH_TOKEN: 'launch-A',
+              TOPO_TAB_ID: 'tab-A',
+              TOPO_WORKTREE_ID: 'wt-A'
             },
             encoding: 'utf-8',
             timeout: 15_000
@@ -430,7 +430,7 @@ describe('HermesHookService', () => {
     const initPath = join(homeDir, 'plugins', _internals.HERMES_PLUGIN_NAME, '__init__.py')
     const script = [
       'import importlib.util, json',
-      `spec = importlib.util.spec_from_file_location("orca_status", ${JSON.stringify(initPath)})`,
+      `spec = importlib.util.spec_from_file_location("topo_status", ${JSON.stringify(initPath)})`,
       'mod = importlib.util.module_from_spec(spec)',
       'spec.loader.exec_module(mod)',
       'payload = mod._payload_for_event("post_tool_call", {',
@@ -476,7 +476,7 @@ describe('HermesHookService', () => {
       const initPath = join(homeDir, 'plugins', _internals.HERMES_PLUGIN_NAME, '__init__.py')
       const script = [
         'import importlib.util, json, os',
-        `spec = importlib.util.spec_from_file_location("orca_status", ${JSON.stringify(initPath)})`,
+        `spec = importlib.util.spec_from_file_location("topo_status", ${JSON.stringify(initPath)})`,
         'mod = importlib.util.module_from_spec(spec)',
         'spec.loader.exec_module(mod)',
         `os.chdir(${JSON.stringify(mkdtempSync(join(homeDir, 'cwd-')))})`,
@@ -490,9 +490,9 @@ describe('HermesHookService', () => {
       const output = execFileSync('python3', ['-c', script], {
         env: {
           ...process.env,
-          ORCA_AGENT_HOOK_PORT: '',
-          ORCA_AGENT_HOOK_ENDPOINT: '',
-          ORCA_PANE_KEY: ''
+          TOPO_AGENT_HOOK_PORT: '',
+          TOPO_AGENT_HOOK_ENDPOINT: '',
+          TOPO_PANE_KEY: ''
         },
         encoding: 'utf-8',
         timeout: 15_000

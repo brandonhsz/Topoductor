@@ -91,7 +91,7 @@ function stopEntry(groupIndex = 0): CodexTrustEntry {
     eventLabel: 'stop',
     groupIndex,
     handlerIndex: 0,
-    command: 'orca-hook.sh'
+    command: 'topo-hook.sh'
   }
 }
 
@@ -110,7 +110,7 @@ function expectRefusal(write: () => void): void {
 }
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-codex-toml-loadability-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-codex-toml-loadability-'))
   tomlPath = join(dir, 'config.toml')
   hooksPath = join(dir, 'hooks.json')
   mocks.rejectParse = null
@@ -126,7 +126,7 @@ describe('hook approval writes never break a config.toml Codex can load', () => 
     ['an inline hooks.state table', '[hooks]\nstate = { "x:stop:0:0" = { trusted_hash = "u" } }\n'],
     ['an inline hooks table', 'hooks = { state = {} }\n'],
     [
-      "a dotted approval for Orca's own key",
+      "a dotted approval for Topo's own key",
       (): string => `hooks.state."${tomlKey(stopEntry())}".trusted_hash = "sha256:user"\n`
     ]
   ])('upsert refuses and leaves the file byte-identical: %s', (_case, content) => {

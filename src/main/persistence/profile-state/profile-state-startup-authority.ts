@@ -6,7 +6,7 @@ import type {
 } from './profile-state-store-factory'
 import { createLiveProfileStateStore } from './profile-state-live-store-factory'
 
-export type ProfileStateStartupRuntime = 'desktop' | 'orcad'
+export type ProfileStateStartupRuntime = 'desktop' | 'topod'
 
 export type ProfileStateStartupAuthorityOptions = Omit<
   ProfileStateStoreFactoryOptions,
@@ -21,21 +21,21 @@ export type ProfileStateStartupAuthorityOptions = Omit<
 }
 
 export class ProfileStateStartupAuthorityError extends Error {
-  readonly code = 'orcad-sqlite-authority-unsupported' as const
+  readonly code = 'topod-sqlite-authority-unsupported' as const
 
   constructor() {
     super(
-      'orcad requires SQLite database and backup support. Launch it through its pinned Node runtime.'
+      'topod requires SQLite database and backup support. Launch it through its pinned Node runtime.'
     )
     this.name = 'ProfileStateStartupAuthorityError'
   }
 }
 
-/** Desktop and orcad share the validated authority boundary. */
+/** Desktop and topod share the validated authority boundary. */
 export async function createProfileStateStoreForStartup(
   options: ProfileStateStartupAuthorityOptions
 ): Promise<ProfileStateStoreFactoryResult> {
-  if (options.runtime === 'orcad' && !isProfileStateSqliteAvailable()) {
+  if (options.runtime === 'topod' && !isProfileStateSqliteAvailable()) {
     throw new ProfileStateStartupAuthorityError()
   }
   return createLiveProfileStateStore(options, {
@@ -44,6 +44,6 @@ export async function createProfileStateStoreForStartup(
     onFailure:
       options.onPersistenceFailure ??
       ((error) =>
-        console.error('[persistence] Saving has stopped. Restart Orca before continuing.', error))
+        console.error('[persistence] Saving has stopped. Restart Topo before continuing.', error))
   })
 }

@@ -14,12 +14,12 @@ export function translateHostAccessLinkError(
     case 'invalid-input':
       return t(
         'auto.lib.remotePairingCopy.invalidInput',
-        'Enter an Orca access link or bare pairing code.'
+        'Enter a Topo access link or bare pairing code.'
       )
     case 'mobile-only':
       return t(
         'auto.lib.remotePairingCopy.mobileOnly',
-        'This link grants mobile-only access. Generate a link for another Orca client.'
+        'This link grants mobile-only access. Generate a link for another Topo client.'
       )
     case 'invalid-destination':
       return t(
@@ -66,8 +66,8 @@ export function translateRemotePairingFailureDescription(
     case 'host-identity-mismatch':
       return t(
         'auto.components.settings.RuntimeHostAccessForm.identityMismatchHelp',
-        'Orca reached {{endpoint}}, but that host does not match this link. Generate a new link on the other host.',
-        { endpoint: endpoint ?? 'Orca' }
+        'Topo reached {{endpoint}}, but that host does not match this link. Generate a new link on the other host.',
+        { endpoint: endpoint ?? 'Topo' }
       )
     case 'access-link-invalid':
       return t(
@@ -77,7 +77,7 @@ export function translateRemotePairingFailureDescription(
     case 'protocol-incompatible':
       return t(
         'auto.components.settings.RuntimeHostAccessForm.incompatibleHelp',
-        'Update Orca on this device and the other host, then try again.'
+        'Update Topo on this device and the other host, then try again.'
       )
     case 'connection-interrupted':
       return t(
@@ -87,7 +87,7 @@ export function translateRemotePairingFailureDescription(
     case 'environment-save-failed':
       return t(
         'auto.components.settings.RuntimeHostAccessForm.saveFailedHelp',
-        'The host was verified, but Orca could not save it. Check the name and local settings storage, then try again.'
+        'The host was verified, but Topo could not save it. Check the name and local settings storage, then try again.'
       )
     case 'different-server':
       return t(
@@ -97,8 +97,8 @@ export function translateRemotePairingFailureDescription(
     case 'host-unreachable':
       return t(
         'auto.components.settings.RuntimeHostAccessForm.unavailableHelp',
-        'Make sure Orca is running on the other host and that the network or SSH tunnel can reach {{endpoint}}.',
-        { endpoint: endpoint ?? 'Orca' }
+        'Make sure Topo is running on the other host and that the network or SSH tunnel can reach {{endpoint}}.',
+        { endpoint: endpoint ?? 'Topo' }
       )
   }
 }

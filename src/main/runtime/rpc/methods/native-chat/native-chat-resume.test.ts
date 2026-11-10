@@ -38,7 +38,7 @@ describe('nativeChat.subscribe resumeAfter on a real transcript file', () => {
   const registry = new RuntimeSubscriptionRegistry()
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-native-chat-resume-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-native-chat-resume-'))
     file = join(root, 'session.jsonl')
     await writeFile(file, ['a', 'b', 'c'].map((id) => claudeLine(id)).join(''))
   })

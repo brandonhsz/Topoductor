@@ -32,7 +32,7 @@ import {
   type LogsResult
 } from './plugin-runtime'
 
-/** The host did not answer: Orca quit, or the network to a remote server dropped. */
+/** The host did not answer: Topo quit, or the network to a remote server dropped. */
 export class PluginHostUnreachableError extends Error {}
 
 // Why: `dev reload` rejects watch-only flags; the old `--approve` is replaced by the new one.
@@ -125,7 +125,7 @@ function bindShotHost(
 export function bindPluginDevWatchHost(ctx: HandlerContext, path: string): PluginDevWatchHost {
   const approve = ctx.flags.get('approve')
   const check = ctx.flags.get('check') === true
-  // Why local only: the check renders the folder's code on this machine, not on the Orca host.
+  // Why local only: the check renders the folder's code on this machine, not on the Topo host.
   if (check && ctx.client.isRemote) {
     throw new RuntimeClientError(
       'invalid_argument',

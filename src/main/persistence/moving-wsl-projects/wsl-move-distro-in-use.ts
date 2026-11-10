@@ -4,7 +4,7 @@ import { wslMoveJournalKey } from '../../../shared/wsl-move/wsl-move-cutover'
 import { parseWslUncPath } from '../../../shared/wsl-paths'
 import type { Store } from '../loading-store/store'
 import { isLocalWslMoveRow, wslMoveHostDistro } from './wsl-move-scope-guard'
-import { defaultWslOrcadEnvironmentId } from '../../wsl/orcad/wsl-orcad-deploy'
+import { defaultWslTopodEnvironmentId } from '../../wsl/topod/wsl-topod-deploy'
 
 /**
  * A bridge project of the distro (local, on its UNC path, not moved) or its WSL host record. A
@@ -15,7 +15,7 @@ export function isDistroInUse(
   userDataPath: string,
   distro: string
 ): boolean {
-  const environmentId = defaultWslOrcadEnvironmentId(distro)
+  const environmentId = defaultWslTopodEnvironmentId(distro)
   try {
     const hosts = readWslHostDeployments(userDataPath)
     if (

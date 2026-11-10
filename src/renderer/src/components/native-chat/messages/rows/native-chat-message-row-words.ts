@@ -7,7 +7,7 @@ import { nativeChatBlocksInOwnWords } from '../../../../../../shared/native-chat
 import { nativeChatStoppedBeforeStartLabel } from './native-chat-stopped-before-start-row'
 import type { Translate } from '../../../../i18n/use-translate'
 
-/** A row's blocks as it draws them, with Orca's stopped-send line in the reader's words. */
+/** A row's blocks as it draws them, with Topo's stopped-send line in the reader's words. */
 export function nativeChatMessageRowBlocks(
   message: NativeChatMessage,
   t?: Translate

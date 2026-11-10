@@ -2,14 +2,14 @@
 import { expect, it, vi } from 'vitest'
 import { HEADLESS_RUNTIME_WINDOW_ID } from '../../../../shared/runtime-session-contracts'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const { HEADLESS_LEAF_ID, HEADLESS_SECOND_LEAF_ID, TEST_WORKTREE_ID } =
-  await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
+  await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
 const { SURFACE_TAB_ID, SURFACE_PTYS, surfaceRuntime } =
   await import('./terminal-surface-replies.test-fixture')
 
@@ -121,7 +121,7 @@ for (const host of ['no window', 'a window'] as const) {
       await close(harness.runtime)
 
       // The relaunch reattaches the closed pane's live terminal; no pane holds it any more.
-      const relaunched = new OrcaRuntimeService(harness.runtime['store'])
+      const relaunched = new TopoRuntimeService(harness.runtime['store'])
       relaunched.setPtyController({
         write: () => true,
         kill: () => true,

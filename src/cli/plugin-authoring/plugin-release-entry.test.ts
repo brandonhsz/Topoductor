@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { afterEach, describe, expect, it } from 'vitest'
 import { hashPluginTree } from '../../main/plugins/plugin-authoring-checks'
 import { createPluginFromTemplate } from './plugin-create'
@@ -11,7 +11,7 @@ import { formatPluginReleaseEntry, pluginReleaseEntryForFolder } from './plugin-
 const roots: string[] = []
 
 async function tempRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-release-entry-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-release-entry-'))
   roots.push(root)
   return root
 }
@@ -24,7 +24,7 @@ async function git(cwd: string, args: string[]): Promise<string> {
   const result = await runProcess({
     program: 'git',
     args: [
-      ...['user.name=Orca Test', 'user.email=test@example.com', 'commit.gpgsign=false'].flatMap(
+      ...['user.name=Topo Test', 'user.email=test@example.com', 'commit.gpgsign=false'].flatMap(
         (setting) => ['-c', setting]
       ),
       ...args
@@ -39,7 +39,7 @@ async function releaseFor(dir: string) {
   return pluginReleaseEntryForFolder(await validatePluginTarget(dir))
 }
 
-describe('orca plugin release-entry', () => {
+describe('topo plugin release-entry', () => {
   it('prints the HEAD entry and source path for a plugin in a subdirectory', async () => {
     const repo = await tempRoot()
     await git(repo, ['init', '--quiet'])

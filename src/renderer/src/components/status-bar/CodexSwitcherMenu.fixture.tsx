@@ -120,7 +120,7 @@ function managed(account: SampleAccount): CodexManagedAccount {
   return {
     id: account.id,
     email: account.email,
-    managedHomePath: `/home/me/.orca/codex/${account.id}`,
+    managedHomePath: `/home/me/.topo/codex/${account.id}`,
     providerAccountId: `provider-${account.id}`,
     workspaceLabel: account.workspace,
     workspaceAccountId: null,

@@ -7,7 +7,7 @@ import { DaemonProcessGrowthMonitor } from '../daemon-process-growth-monitor'
 
 describe('DaemonAutomaticWorkGuard stop request', () => {
   it('records an outside stop on the marker before teardown, so a cut-short exit is no crash', () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-stop-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-stop-'))
     try {
       const markerPath = join(dir, 'daemon-v1.automatic-work-run.json')
       const options = {

@@ -112,11 +112,11 @@ export function GrokAccountsSection(): React.JSX.Element {
                   {tokenFresh
                     ? t(
                         'auto.components.settings.GrokAccountsSection.b36fa2c908',
-                        'Signed in. Orca reads the Grok CLI session stored on disk.'
+                        'Signed in. Topo reads the Grok CLI session stored on disk.'
                       )
                     : t(
                         'auto.components.settings.GrokAccountsSection.f08c41de73',
-                        'Session expired — run grok on the computer running Orca and wait for it to start. If prompted, complete sign-in, then click Refresh usage. No chat message is needed.'
+                        'Session expired — run grok on the computer running Topo and wait for it to start. If prompted, complete sign-in, then click Refresh usage. No chat message is needed.'
                       )}
                 </p>
               </>

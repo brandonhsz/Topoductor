@@ -1,4 +1,4 @@
-/** Plain-language copy for the WSL move dialog: no "manifest", "orcad" or "UNC". */
+/** Plain-language copy for the WSL move dialog: no "manifest", "topod" or "UNC". */
 import { translate } from '@/i18n/i18n'
 import type { Translate } from '@/i18n/use-translate'
 import type {
@@ -38,12 +38,12 @@ export function wslMoveRefusalMessage(
   switch (refusal.code) {
     case 'wsl_move_unavailable':
       if (refusal.detail === 'preview-failed') {
-        return t('wslMove.refusal.previewFailed', 'Orca could not check these projects. Try again.')
+        return t('wslMove.refusal.previewFailed', 'Topo could not check these projects. Try again.')
       }
       if (refusal.detail === 'start-failed') {
         return t(
           'wslMove.refusal.startFailed',
-          'Orca lost contact with the move. Open this dialog again to see where it stands.'
+          'Topo lost contact with the move. Open this dialog again to see where it stands.'
         )
       }
       return t(
@@ -66,7 +66,7 @@ export function wslMoveRefusalMessage(
       return context === 'preview'
         ? t(
             'wslMove.refusal.alreadyInFlightPreview',
-            'A move of {{distro}} is still finishing. Starting this move first finishes or undoes it where Orca can.',
+            'A move of {{distro}} is still finishing. Starting this move first finishes or undoes it where Topo can.',
             { distro }
           )
         : t(
@@ -93,7 +93,7 @@ export function wslMoveRefusalMessage(
     case 'wsl_move_host_update_required':
       return t(
         'wslMove.refusal.hostUpdateRequired',
-        'The {{distro}} host runs an older version of Orca. Update it in Settings, then try again.',
+        'The {{distro}} host runs an older version of Topo. Update it in Settings, then try again.',
         { distro }
       )
     case 'wsl_move_terminals_blocked':
@@ -123,7 +123,7 @@ export function wslMoveRefusalMessage(
     case 'wsl_move_pause_failed':
       return t(
         'wslMove.refusal.pauseFailed',
-        'Orca could not pause the terminals in these projects, so nothing was moved. Paused terminals start again when you open them. Try again.'
+        'Topo could not pause the terminals in these projects, so nothing was moved. Paused terminals start again when you open them. Try again.'
       )
     case 'wsl_move_scope_changed':
       return t(
@@ -135,7 +135,7 @@ export function wslMoveRefusalMessage(
     case 'wsl_move_finished_earlier_move':
       return t(
         'wslMove.refusal.finishedEarlierMove',
-        'Orca first finished an earlier move into {{distro}}. Reload the window, then start this move again.',
+        'Topo first finished an earlier move into {{distro}}. Reload the window, then start this move again.',
         { distro }
       )
   }
@@ -189,8 +189,8 @@ export function wslMoveBlockerTitle(
           )
     case 'unverifiable':
       return one
-        ? t('wslMove.blocker.unverifiableOne', 'Orca cannot check a terminal right now')
-        : t('wslMove.blocker.unverifiableMany', 'Orca cannot check {{n}} terminals right now', {
+        ? t('wslMove.blocker.unverifiableOne', 'Topo cannot check a terminal right now')
+        : t('wslMove.blocker.unverifiableMany', 'Topo cannot check {{n}} terminals right now', {
             n
           })
     case 'automation-running':
@@ -279,7 +279,7 @@ export function wslMoveBrowserLoginsNotCopied(reason: string, t: Translate = tra
     case 'destination-environment-missing':
       return t(
         'wslMove.result.browserLoginsHostUnknown',
-        'Browser logins were not copied, because Orca could not identify the host’s browser profile. Sign in again in the host’s browser tabs.'
+        'Browser logins were not copied, because Topo could not identify the host’s browser profile. Sign in again in the host’s browser tabs.'
       )
     case 'destination-partition-conflict':
       return t(

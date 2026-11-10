@@ -56,7 +56,7 @@ export const BRIDGE_NATIVE_REFUSAL_CODES = [
   'native_pdf_no_viewer',
   // The workspace's host predates mobile file downloads (files.stat/readChunk).
   'native_pdf_host_outdated',
-  // The user refused Orca adding to their photo library; only Settings can undo that.
+  // The user refused Topo adding to their photo library; only Settings can undo that.
   'native_image_permission_denied'
 ] as const
 

@@ -9,7 +9,7 @@ import type { CommitMessagePlan } from '../../shared/source-control/ai/generatio
 
 // Reserve the transport signature under the native text attachment cap.
 const PAYLOAD_BYTES = 5 * 1024 * 1024 - 3
-export const TEXT_TASK_DIRECTORY = '__ORCA_TEXT_TASK_DIRECTORY__'
+export const TEXT_TASK_DIRECTORY = '__TOPO_TEXT_TASK_DIRECTORY__'
 
 function generationFiles(plan: CommitMessagePlan) {
   const files: {
@@ -91,7 +91,7 @@ export function stageLocalPromptFiles(
   if (!files.length && !plan.promptFile) {
     return plan
   }
-  const directory = mkdtempSync(join(tmpdir(), 'orca-generation-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-generation-'))
   own(directory)
   for (const file of files) {
     writeFileSync(join(directory, file.name), policyContent(file, directory), { mode: 0o600 })
@@ -104,12 +104,12 @@ export const WSL_PROMPT_PREPARATION = `
 nonce=$1; count=$2; shift 2
 custom_names=0
 if [ "\${1-}" = --task-files ]; then custom_names=1; shift; fi
-dir=/tmp/orca-generation-$nonce
+dir=/tmp/topo-generation-$nonce
 old_umask=$(umask)
 umask 077
 mkdir "$dir" || exit 1
 trap 'rmdir "$dir" 2>/dev/null' EXIT
-printf '\\nORCA_GENERATION_READY:%s\\n' "$nonce" >&2 || exit 1
+printf '\\nTOPO_GENERATION_READY:%s\\n' "$nonce" >&2 || exit 1
 IFS= read -r record && [ "$record" = "A$nonce" ] || exit 1
 trap - EXIT
 index=1
@@ -132,9 +132,9 @@ exec "$@"
 
 export function prepareWslPrompt(plan: CommitMessagePlan, distro: string) {
   const nonce = randomUUID()
-  const directory = `/tmp/orca-generation-${nonce}`
+  const directory = `/tmp/topo-generation-${nonce}`
   const files = generationFiles(plan)
-  const proof = `ORCA_GENERATION_READY:${nonce}`
+  const proof = `TOPO_GENERATION_READY:${nonce}`
   let partial = ''
   let oversized = false
   let proved = false

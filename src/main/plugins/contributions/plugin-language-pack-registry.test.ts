@@ -11,7 +11,7 @@ import { PluginLanguagePackRegistry } from './plugin-language-pack-registry'
 const roots: string[] = []
 
 async function pluginWithCatalog(catalog: unknown): Promise<ValidDiscoveredPlugin> {
-  const rootDir = await mkdtemp(join(tmpdir(), 'orca-plugin-language-registry-'))
+  const rootDir = await mkdtemp(join(tmpdir(), 'topo-plugin-language-registry-'))
   roots.push(rootDir)
   await mkdir(join(rootDir, 'locales'))
   await writeFile(join(rootDir, 'locales', 'pt-BR.json'), JSON.stringify(catalog))

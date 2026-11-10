@@ -3,7 +3,7 @@
 
 import type { OrchestrationDb } from '../../db/orchestration-db'
 import { resolveStructuredWorkerAuthority } from './structured-worker-authority'
-import { parseOrcaSessionAddress } from '../../../../../shared/orca-session-address'
+import { parseTopoSessionAddress } from '../../../../../shared/topo-session-address'
 
 const TERMINAL_HANDLE_STALE = 'terminal_handle_stale'
 const AGENT_SESSION_HAS_NO_TERMINAL = 'terminal_unsupported_for_agent_session'
@@ -15,15 +15,15 @@ export function structuredWorkerTerminalRefusal(
   if (resolveStructuredWorkerAuthority(handle, db)) {
     return agentSessionRefusal(
       `${handle} is an agent session, not a terminal, so terminal commands cannot address it. ` +
-        'Read its output with `orca terminal read` or `orca orchestration worker-read --source transcript`, ' +
-        'send it work with `orca orchestration send`, and open it from its chat tab.'
+        'Read its output with `topo terminal read` or `topo orchestration worker-read --source transcript`, ' +
+        'send it work with `topo orchestration send`, and open it from its chat tab.'
     )
   }
   // A chat address never names a terminal, live or not.
-  if (parseOrcaSessionAddress(handle)) {
+  if (parseTopoSessionAddress(handle)) {
     return agentSessionRefusal(
       `${handle} is a chat session, not a terminal, so terminal commands cannot address it. ` +
-        `Message it with \`orca orchestration send --to ${handle}\`.`
+        `Message it with \`topo orchestration send --to ${handle}\`.`
     )
   }
   return new Error(TERMINAL_HANDLE_STALE)

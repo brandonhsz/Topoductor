@@ -1,14 +1,14 @@
 /** Resolve structured-owned mail to a session turn, covering Run, session, Dispatch and worker-handle addresses. */
 
 import {
-  isOrcaSessionId,
-  parseOrcaSessionAddress
-} from '../../../../../shared/orca-session-address'
-import { ORCA_SESSION_ADDRESS_PREFIX } from '../../../../../shared/orca-session-address-prefix'
+  isTopoSessionId,
+  parseTopoSessionAddress
+} from '../../../../../shared/topo-session-address'
+import { TOPO_SESSION_ADDRESS_PREFIX } from '../../../../../shared/topo-session-address-prefix'
 
-import type { OrcaSessionId } from '../../../../../shared/orca-session-address'
+import type { TopoSessionId } from '../../../../../shared/topo-session-address'
 import type { OrchestrationDb } from '../../db/orchestration-db'
-import { currentRunCoordinatorOrcaSessionId } from '../../db/runs/run-coordinator-orca-session'
+import { currentRunCoordinatorTopoSessionId } from '../../db/runs/run-coordinator-topo-session'
 import type { StructuredPointerTarget } from '../structured-pointer/structured-mailbox-pointer-delivery'
 import {
   addressableSessionParty,
@@ -27,15 +27,15 @@ export function handleLessCoordinatorSessionId(
   run: Pick<
     RunRow,
     | 'coordinator_handle'
-    | 'coordinator_orca_session_id'
-    | 'coordinator_orca_session_id_generation'
+    | 'coordinator_topo_session_id'
+    | 'coordinator_topo_session_id_generation'
     | 'consumer_generation'
   >
-): OrcaSessionId | null {
+): TopoSessionId | null {
   if (run.coordinator_handle !== null) {
     return null
   }
-  return currentRunCoordinatorOrcaSessionId(run)
+  return currentRunCoordinatorTopoSessionId(run)
 }
 
 /** Who holds a mailbox: the chat session its mail reaches; someone else (a terminal, a released worker,
@@ -111,8 +111,8 @@ export function structuredMailboxCustody(
       ? workerMailCustody(run.coordinator_handle, db, null)
       : 'elsewhere'
   }
-  if (mailboxHandle.startsWith(ORCA_SESSION_ADDRESS_PREFIX)) {
-    const sessionId = parseOrcaSessionAddress(mailboxHandle)
+  if (mailboxHandle.startsWith(TOPO_SESSION_ADDRESS_PREFIX)) {
+    const sessionId = parseTopoSessionAddress(mailboxHandle)
     return sessionId ? structuredSessionMailCustody(sessionId, db) : 'elsewhere'
   }
   if (!mailboxHandle.startsWith('dispatch:')) {
@@ -131,7 +131,7 @@ export function structuredMailboxCustody(
 
 /** Re-derive Run, direct and active-Dispatch mail on each idle edge, including root mail for /clear successors. */
 export function structuredSessionOwnedMailboxes(sessionId: string, db: OrchestrationDb): string[] {
-  const party = isOrcaSessionId(sessionId) ? addressableSessionParty(sessionId, db) : null
+  const party = isTopoSessionId(sessionId) ? addressableSessionParty(sessionId, db) : null
   if (!party) {
     return []
   }

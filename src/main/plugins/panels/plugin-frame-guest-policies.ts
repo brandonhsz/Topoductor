@@ -5,7 +5,7 @@ import { setupGuestShortcutForwarding } from '../../browser/guest-lifecycle/inpu
 import { buildEditableContextMenuTemplate } from '../../window/editable-context-menu'
 import { isAllowedPluginFrameNavigation } from './plugin-frame-request-policy'
 
-/** `did-attach-webview`: per-guest fences the session cannot express, plus Orca's own input. */
+/** `did-attach-webview`: per-guest fences the session cannot express, plus Topo's own input. */
 export function installPluginFrameGuestPolicies(
   guest: WebContents,
   frameKey: string,
@@ -31,7 +31,7 @@ export function installPluginFrameGuestPolicies(
     event.preventDefault()
     callback('')
   })
-  // Why the browser tab path: a focused guest swallows keys, so Orca's shortcuts must be forwarded
+  // Why the browser tab path: a focused guest swallows keys, so Topo's shortcuts must be forwarded
   // the same way. Editor save chords are not window shortcuts; they still ride editor.keydown.
   const stopShortcuts = setupGuestShortcutForwarding({
     browserTabId: `plugin-frame:${guest.id}`,
@@ -42,7 +42,7 @@ export function installPluginFrameGuestPolicies(
   })
   guest.once('destroyed', stopShortcuts)
   guest.on('context-menu', (_event, params) => {
-    // Inputs only: Cut/Copy/Paste and spelling, as in Orca's own window. Popup opens at the cursor.
+    // Inputs only: Cut/Copy/Paste and spelling, as in Topo's own window. Popup opens at the cursor.
     const template = buildEditableContextMenuTemplate(params, guest, { plainText: true })
     const window = host.isDestroyed() ? null : BrowserWindow.fromWebContents(host)
     if (template.length > 0 && window) {

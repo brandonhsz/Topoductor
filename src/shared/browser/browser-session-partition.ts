@@ -1,1 +1,1 @@
-export const ORCA_BROWSER_PARTITION = 'persist:orca-browser'
+export const TOPO_BROWSER_PARTITION = 'persist:topo-browser'

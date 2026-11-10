@@ -9,7 +9,7 @@ import { makeWorktree } from '@/store/slices/worktrees/worktree.test-fixture'
 import { TEST_REPO } from '@/store/repos/repo.test-fixture'
 import type { OpenFile } from '@/store/slices/editor/types/open-file'
 import type * as RuntimeFileReadClient from '@/runtime/files/reads/runtime-file-read-client'
-import { openAiVaultSessionLogInOrca } from '../right-sidebar/ai-vault/session-actions/ai-vault-session-log-open'
+import { openAiVaultSessionLogInTopo } from '../right-sidebar/ai-vault/session-actions/ai-vault-session-log-open'
 import { useEditorPanelContentState } from './useEditorPanelContentState'
 import type { FileContent } from './editor-panel-content-types'
 
@@ -134,7 +134,7 @@ describe('History conversation resources through editor content and tailing', ()
       await act(async () => root?.render(<HookProbe activeFile={file} openFiles={[file]} />))
       expect(latestFileContents[file.id]).toMatchObject({ content: '{"title":"Summary"}' })
 
-      await openAiVaultSessionLogInOrca({
+      await openAiVaultSessionLogInTopo({
         agent: 'grok',
         filePath: metadataPath,
         executionHostId: 'local'

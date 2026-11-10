@@ -439,7 +439,7 @@ export function registerPtyConnectionHiddenOutputRestoreTests(): void {
       })
       transportFactoryQueue.push(transport)
       mockStoreState.repos = [
-        { id: 'repo1', connectionId: null, displayName: 'orca', executionHostId: 'runtime:env-1' }
+        { id: 'repo1', connectionId: null, displayName: 'topo', executionHostId: 'runtime:env-1' }
       ]
       mockStoreState.worktreesByRepo.repo1[0].runtimeOwnerEnvironmentId = 'env-1'
 
@@ -588,7 +588,7 @@ export function registerPtyConnectionHiddenOutputRestoreTests(): void {
         {
           id: 'repo1',
           connectionId: null,
-          displayName: 'orca',
+          displayName: 'topo',
           executionHostId: 'runtime:legacy-env'
         }
       ]

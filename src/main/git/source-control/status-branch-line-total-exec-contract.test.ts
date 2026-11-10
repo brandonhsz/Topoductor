@@ -77,7 +77,7 @@ function git(repo: string, args: string[]): string {
 }
 
 async function createFixtureRepo(): Promise<{ repo: string; mergeBase: string }> {
-  const root = await mkdtemp(path.join(tmpdir(), 'orca-branch-line-total-exec-'))
+  const root = await mkdtemp(path.join(tmpdir(), 'topo-branch-line-total-exec-'))
   tempRoots.push(root)
   const repo = path.join(root, 'repo')
   execFileSync('git', ['init', '-q', repo])

@@ -53,7 +53,7 @@ const event = {
   sender: {
     id: 17,
     getType: () => 'window',
-    getURL: () => 'file:///orca/index.html',
+    getURL: () => 'file:///topo/index.html',
     isDestroyed: () => false
   }
 }
@@ -85,7 +85,7 @@ beforeEach(() => {
 
 describe('clipboard:saveImageAsTempFile for a local structured chat', () => {
   it("stores the image in this machine's attachment store, where a send can claim it", async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-local-paste-store-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-local-paste-store-'))
     try {
       const store = new AgentSessionAttachmentStore(root, { hasSession: () => false })
       // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the image save path never reads the store.
@@ -98,7 +98,7 @@ describe('clipboard:saveImageAsTempFile for a local structured chat', () => {
 
       expect(saved).toEqual(
         expect.stringMatching(
-          /[\\/][0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}[\\/]orca-paste-.+\.png$/
+          /[\\/][0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}[\\/]topo-paste-.+\.png$/
         )
       )
       expect(String(saved).startsWith(root)).toBe(true)

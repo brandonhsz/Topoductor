@@ -35,7 +35,7 @@ function wireRefusalCode(error: unknown): AgentSessionWireRefusalCode | null {
   return null
 }
 
-const PRECOMMIT_REFUSAL_MESSAGE = 'Orca cannot open a structured agent chat for this workspace.'
+const PRECOMMIT_REFUSAL_MESSAGE = 'Topo cannot open a structured agent chat for this workspace.'
 
 function precommitRefusal(error: unknown, agent?: string): AgentSessionWireRefusal {
   // A refusal the host raised keeps its situation; a bare code names none.

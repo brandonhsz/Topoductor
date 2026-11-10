@@ -1,4 +1,4 @@
-// COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+// COMPAT(wsl-bridge): removed when WSL runs as an topod host.
 import { Copy } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,7 @@ import {
   buildSkillCommandForRuntime,
   buildSkillSetupTerminalCommand
 } from '@/lib/skill-runtime-command'
-import { ORCA_CLI_ORCHESTRATION_SKILL_INSTALL_COMMAND } from '@/lib/skills/installation/agent-feature-install-commands'
+import { TOPO_CLI_ORCHESTRATION_SKILL_INSTALL_COMMAND } from '@/lib/skills/installation/agent-feature-install-commands'
 import { useActiveProjectSkillRuntime } from '@/hooks/useActiveProjectSkillRuntime'
 import { useTranslate } from '@/i18n/use-translate'
 
@@ -17,7 +17,7 @@ export function CliSkillSetupTerminal(): React.JSX.Element {
   const activeSkillRuntime = useActiveProjectSkillRuntime()
   // Missing WSL distros fall back to the Windows host; this ungated auto-paste still needs npx preflight.
   const skillCommand = buildSkillCommandForRuntime(
-    ORCA_CLI_ORCHESTRATION_SKILL_INSTALL_COMMAND,
+    TOPO_CLI_ORCHESTRATION_SKILL_INSTALL_COMMAND,
     activeSkillRuntime.installDisabledReason ? undefined : activeSkillRuntime.agentRuntime
   )
   const terminalRuntime = activeSkillRuntime.installDisabledReason
@@ -78,11 +78,11 @@ export function CliSkillSetupTerminal(): React.JSX.Element {
         title={t('auto.components.feature.tips.CliSkillSetupTerminal.84e9576dac', 'Skill setup')}
         ariaLabel={t(
           'auto.components.feature.tips.CliSkillSetupTerminal.43b60ec5c3',
-          'Orca CLI and orchestration skill install terminal'
+          'Topo CLI and orchestration skill install terminal'
         )}
         description={t(
           'auto.components.feature.tips.CliSkillSetupTerminal.1953e90447',
-          'Press Enter to install the Orca CLI orchestration skill for your agents.'
+          'Press Enter to install the Topo CLI orchestration skill for your agents.'
         )}
         terminalHeightPx={280}
         terminalTopMarginPx={8}

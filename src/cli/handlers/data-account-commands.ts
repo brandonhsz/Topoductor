@@ -23,7 +23,7 @@ export async function assertDataAccountsSupported(ctx: HandlerContext): Promise<
   if (!status.result.capabilities?.includes(DATA_ACCOUNT_RUNTIME_CAPABILITY)) {
     throw new RuntimeClientError(
       'incompatible_runtime',
-      'Update or restart this Orca host to manage OpenCode and Devin accounts.'
+      'Update or restart this Topo host to manage OpenCode and Devin accounts.'
     )
   }
 }
@@ -64,7 +64,7 @@ export async function addDataAccount(
   }
   const loginOptions = readOpenCodeLoginOptions(ctx, provider)
   await assertDataAccountsSupported(ctx)
-  const directory = mkdtempSync(join(tmpdir(), `orca-account-add-${provider}-`))
+  const directory = mkdtempSync(join(tmpdir(), `topo-account-add-${provider}-`))
   const session: InteractiveLoginSession = {
     child: null,
     registering: false,

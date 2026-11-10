@@ -5,7 +5,7 @@ import {
   removeManagedDshPatch
 } from './dsh-home-patch'
 
-const HOOKS_PATH = '/home/dev/.orca/agent-hooks/dsh-hooks.json'
+const HOOKS_PATH = '/home/dev/.topo/agent-hooks/dsh-hooks.json'
 
 function applyOrFail(text: string, hooksPath = HOOKS_PATH): string {
   const next = applyManagedDshPatch(text, hooksPath)
@@ -36,7 +36,7 @@ describe('removeManagedDshPatch', () => {
 })
 
 describe('findManagedDshPatchRegion', () => {
-  const ORPHAN_START = '# >>> orca-managed-dsh-hooks (managed by Orca; do not edit) >>>'
+  const ORPHAN_START = '# >>> topo-managed-dsh-hooks (managed by Topo; do not edit) >>>'
 
   it('fails closed on a truncated region rather than guessing its extent', () => {
     // Guessing a missing end marker could delete subsequent user rows.

@@ -123,7 +123,7 @@ export function registerCodexHistoryVariantsTests(input: {
   it('checks a retained omitted parent exactly once and refuses a real queued revision without losing the writer', async () => {
     const c = await chat({ now: 1_000 })
     const parent = {
-      provider: 'orca' as const,
+      provider: 'topo' as const,
       clientMessageId: `codex-history-item:${JSON.stringify([1, THREAD, 'turn-1', 'parent'])}`
     }
     await c.open([], {

@@ -10,12 +10,12 @@ export function getStatusPluginFactorySource(options: {
 }): string[] {
   const expectedAgent = options.expectedAgent ?? (options.emitNextEvents ? 'opencode2' : 'opencode')
   // Both variants share a config directory; duplicate plugin IDs would disable one.
-  const pluginID = expectedAgent === 'opencode2' ? 'orca-opencode2-status' : 'orca-opencode-status'
+  const pluginID = expectedAgent === 'opencode2' ? 'topo-opencode2-status' : 'topo-opencode-status'
   return [
     ...(options.emitNextEvents ? getOpenCode2EventNormalizationSource() : []),
     '// OpenCode may call the factory without context; destructuring would crash startup.',
-    'export const OrcaOpenCodeStatusPlugin = async (_ctx) => {',
-    `  if (process.env.ORCA_OPENCODE_AGENT && process.env.ORCA_OPENCODE_AGENT !== '${expectedAgent}') return {};`,
+    'export const TopoOpenCodeStatusPlugin = async (_ctx) => {',
+    `  if (process.env.TOPO_OPENCODE_AGENT && process.env.TOPO_OPENCODE_AGENT !== '${expectedAgent}') return {};`,
     '  const client = _ctx?.client;',
     '  const sessionsOutliveDispose = _ctx?.sessionsOutliveDispose === true;',
     '  const factoryID = ++nextFactoryID;',
@@ -253,9 +253,9 @@ export function getStatusPluginFactorySource(options: {
     '};',
     ...(options.emitNextEvents ? getOpenCode2ModuleSource(pluginID, expectedAgent) : []),
     '',
-    'export default process.env.ORCA_OPENCODE_PLUGIN_API === "v1" ? OrcaOpenCodeStatusPlugin : {',
+    'export default process.env.TOPO_OPENCODE_PLUGIN_API === "v1" ? TopoOpenCodeStatusPlugin : {',
     `  id: "${pluginID}",`,
-    '  server: OrcaOpenCodeStatusPlugin,',
+    '  server: TopoOpenCodeStatusPlugin,',
     ...(options.emitNextEvents ? ['  setup: setupOpenCode2Status,'] : []),
     '};',
     ''

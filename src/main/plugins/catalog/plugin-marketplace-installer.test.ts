@@ -58,7 +58,7 @@ vi.mock('../../telemetry/client', () => telemetry)
 const roots: string[] = []
 
 async function tempRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-marketplace-installer-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-marketplace-installer-'))
   roots.push(root)
   return root
 }

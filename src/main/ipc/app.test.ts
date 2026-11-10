@@ -161,7 +161,7 @@ describe('registerAppHandlers', () => {
   })
 
   it('checkpoints before scheduling the native administrator restart and quits normally', async () => {
-    const plan = { execPath: 'C:\\Orca\\resources\\bin\\orca.exe', args: ['restart'] }
+    const plan = { execPath: 'C:\\Topo\\resources\\bin\\topo.exe', args: ['restart'] }
     prepareWindowsAdministratorRestartMock.mockReturnValue(plan)
     let finishCleanup!: () => void
     const onBeforeRelaunch = vi.fn(

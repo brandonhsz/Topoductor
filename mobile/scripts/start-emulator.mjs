@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Start Orca Mobile server and load it in the iOS emulator.
+ * Start Topo Mobile server and load it in the iOS emulator.
  * Looks for emulators in the given worktree.
  *
  * Usage:
@@ -77,7 +77,7 @@ Options:
   }
 }
 
-const ORCA_CLI = process.env.ORCA_CLI || 'orca'
+const TOPO_CLI = process.env.TOPO_CLI || 'topo'
 
 const colors = {
   reset: '\x1b[0m',
@@ -117,8 +117,8 @@ function assertIosSimulatorPlatform() {
   }
 }
 
-async function orca(args, options = {}) {
-  const { stdout, stderr } = await execFileAsync(ORCA_CLI, args, {
+async function topo(args, options = {}) {
+  const { stdout, stderr } = await execFileAsync(TOPO_CLI, args, {
     cwd: options.cwd || process.cwd(),
     env: options.env || process.env,
     encoding: 'utf8',
@@ -133,7 +133,7 @@ async function getWorktree() {
   }
 
   try {
-    const { stdout } = await orca(['worktree', 'current', '--json'])
+    const { stdout } = await topo(['worktree', 'current', '--json'])
     const result = JSON.parse(stdout)
     const worktreePath = result.worktree?.path || result.result?.worktree?.path
     if (worktreePath) {
@@ -161,7 +161,7 @@ async function attachEmulator(worktree, device, runtime) {
   logStep('1', `Attaching to emulator: ${device.name}`)
 
   try {
-    await orca(['emulator', 'attach', device.udid, '--worktree', worktree, '--focus', '--json'], {
+    await topo(['emulator', 'attach', device.udid, '--worktree', worktree, '--focus', '--json'], {
       cwd: worktree,
       env: runtime?.env || process.env,
       timeout: 60000
@@ -289,7 +289,7 @@ function metroUrlCandidates(initialUrl) {
 }
 
 function devClientUrlForMetroUrl(url) {
-  return `exp+orca-mobile://expo-development-client/?url=${encodeURIComponent(url)}`
+  return `exp+topo-mobile://expo-development-client/?url=${encodeURIComponent(url)}`
 }
 
 function canListenOnPort(port) {
@@ -400,7 +400,7 @@ async function startMetro(worktree) {
         }
       }
 
-      const urlMatch = line.match(/exp\+orca-mobile:\/\/expo-development-client\/\?url=([^\s]+)/)
+      const urlMatch = line.match(/exp\+topo-mobile:\/\/expo-development-client\/\?url=([^\s]+)/)
       if (urlMatch && !resolved) {
         url = normalizeMetroUrl(decodeURIComponent(urlMatch[1]))
         logInfo(`Found Metro URL: ${url}`)
@@ -486,7 +486,7 @@ async function openPairingUrlInSimulator(pairingUrl, deviceUdid, runtime, worktr
   await new Promise((resolve) => setTimeout(resolve, 2000))
 
   // Confirm explicit pairing trust at current simulator’s Pair button.
-  await orca(['emulator', 'tap', '0.5', '0.56', '--worktree', worktree, '--json'], {
+  await topo(['emulator', 'tap', '0.5', '0.56', '--worktree', worktree, '--json'], {
     cwd: worktree,
     env: runtime?.env || process.env,
     timeout: 30000
@@ -496,7 +496,7 @@ async function openPairingUrlInSimulator(pairingUrl, deviceUdid, runtime, worktr
 
 async function takeScreenshot(
   deviceUdid,
-  outputPath = path.join(os.tmpdir(), 'orca-mobile-ios.png')
+  outputPath = path.join(os.tmpdir(), 'topo-mobile-ios.png')
 ) {
   logStep('4', 'Taking screenshot...')
 
@@ -536,7 +536,7 @@ async function findReachableMetroUrl(initialUrl) {
 }
 
 async function main() {
-  log(colors.bright + 'Starting Orca Mobile in Emulator\n' + colors.reset)
+  log(colors.bright + 'Starting Topo Mobile in Emulator\n' + colors.reset)
   let pairingRuntime = null
 
   try {
@@ -548,14 +548,14 @@ async function main() {
 
     pairingRuntime = await startHeadlessPairingRuntime({
       enabled: options.pair,
-      orcaCli: ORCA_CLI,
+      topoCli: TOPO_CLI,
       cwd: process.cwd(),
       lanIpCandidates,
       logStep,
       logSuccess
     })
     await registerWorktreeForPairingRuntime(pairingRuntime, worktree, {
-      orca,
+      topo,
       logStep,
       logSuccess
     })

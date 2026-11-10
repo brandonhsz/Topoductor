@@ -124,7 +124,7 @@ describe('browser session profile IPC', () => {
         selectedProfile: 'Default'
       }
     ] as never)
-    routeIdentityMock.mockReturnValue({ orcaProfileId: 'profile-a' })
+    routeIdentityMock.mockReturnValue({ topoProfileId: 'profile-a' })
 
     const handler = clientHostDetectHandler()
 

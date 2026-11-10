@@ -2,9 +2,9 @@
 
 import { structuredMailboxCustody } from '../../mailbox/routing/structured-session-mail-target'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import '../../../../../shared/orca-session-address'
-import { ORCA_SESSION_ADDRESS_PREFIX } from '../../../../../shared/orca-session-address-prefix'
-import { testOrcaSessionId } from '../../../../../shared/orca-session-address-test-fixture'
+import '../../../../../shared/topo-session-address'
+import { TOPO_SESSION_ADDRESS_PREFIX } from '../../../../../shared/topo-session-address-prefix'
+import { testTopoSessionId } from '../../../../../shared/topo-session-address-test-fixture'
 import { idOf } from '../../../rpc/orchestration-session-caller-test-fixture'
 import {
   COORDINATOR,
@@ -95,7 +95,7 @@ async function finishedStructuredWorker(
   // Each release of the worker's binding frees its handle.
   const forget = vi.spyOn(structuredWorkerIdentities, 'forget')
   const started = db.createStartingWorkerDispatch({
-    creator: { kind: 'session', orcaSessionId: testOrcaSessionId(COORDINATOR) },
+    creator: { kind: 'session', topoSessionId: testTopoSessionId(COORDINATOR) },
     maxDepth: 9,
     taskId,
     startOptions: { agent: 'codex' }
@@ -167,11 +167,11 @@ describe('a finished structured worker', () => {
     const task = turnText(worker.turns[0]!)
     expect(task).toContain(dispatchId)
     expect(task).toContain(
-      `Your Orca session ID is: ${ORCA_SESSION_ADDRESS_PREFIX}${identity.sessionId}`
+      `Your Topo session ID is: ${TOPO_SESSION_ADDRESS_PREFIX}${identity.sessionId}`
     )
     expect(db.getDispatchContextById(dispatchId)).toMatchObject({
       assignee_handle: identity.handle,
-      assignee_orca_session_id: identity.sessionId
+      assignee_topo_session_id: identity.sessionId
     })
     expect(db.getWorkerTerminalResourceByOwner(dispatchId)).toMatchObject({
       id: resource!.id,
@@ -304,7 +304,7 @@ describe('a send to a finished structured worker', () => {
     })
     expect(db.getDispatchContextById(String(followUp.dispatchId))).toMatchObject({
       follow_up_of_dispatch_id: firstDispatchId,
-      assignee_orca_session_id: identity.sessionId
+      assignee_topo_session_id: identity.sessionId
     })
   })
 

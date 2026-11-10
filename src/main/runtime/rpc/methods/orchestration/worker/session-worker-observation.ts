@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { isStructuredWorkerHandle } from '../../../../../../shared/orchestration/workers/structured-worker-handle'
 import {
   chatAssigneeSessionId,
@@ -22,7 +22,7 @@ export type SessionWorkerObservation = {
 
 /** Read session records for structured/chat workers; null selects the PTY path. */
 export async function inspectSessionWorker(
-  runtime: Pick<OrcaRuntimeService, 'ensureStructuredAgentSessionHost'>,
+  runtime: Pick<TopoRuntimeService, 'ensureStructuredAgentSessionHost'>,
   db: OrchestrationDb,
   dispatchId: string,
   terminalHandle: string
@@ -71,7 +71,7 @@ export async function inspectSessionWorker(
 
 /** Session verdicts read records that a restart leaves uninstalled until something asks. */
 export async function ensureSessionWorkerRecords(
-  runtime: Pick<OrcaRuntimeService, 'ensureStructuredAgentSessionHost'>,
+  runtime: Pick<TopoRuntimeService, 'ensureStructuredAgentSessionHost'>,
   rows: readonly { agentTerminalHandle: string | null }[]
 ): Promise<void> {
   if (

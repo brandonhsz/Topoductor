@@ -2,13 +2,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { RpcDispatcher } from './dispatcher'
 import { defineMethod, defineStreamingMethod, type RpcRequest } from './core'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import { ensureAgentSessionFeatureRequirement } from './agent-launch-feature-requirement'
 import {
-  _resetOrcadFeatureReadinessForTests,
-  installOrcadFeatureReadiness,
-  ORCAD_FEATURE_WAIT_MS
-} from './orcad-feature-readiness'
+  _resetTopodFeatureReadinessForTests,
+  installTopodFeatureReadiness,
+  TOPOD_FEATURE_WAIT_MS
+} from './topod-feature-readiness'
 
 const request = (method: string, params: unknown = {}): RpcRequest => ({
   id: 'r1',
@@ -23,7 +23,7 @@ function dispatcher(): { dispatcher: RpcDispatcher; ran: string[] } {
   const runtime = {
     getRuntimeId: () => 'rt',
     recordFeatureInteraction: vi.fn()
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   const methods = [
     defineMethod({
       name: 'aiVault.searchStatus',
@@ -79,13 +79,13 @@ function dispatcher(): { dispatcher: RpcDispatcher; ran: string[] } {
 }
 
 afterEach(() => {
-  _resetOrcadFeatureReadinessForTests()
+  _resetTopodFeatureReadinessForTests()
   vi.useRealTimers()
 })
 
-describe('RPC methods that require an orcad startup phase', () => {
+describe('RPC methods that require an topod startup phase', () => {
   it('wait for their phase, while methods that need none run at once', async () => {
-    const readiness = installOrcadFeatureReadiness()
+    const readiness = installTopodFeatureReadiness()
     const { dispatcher: rpc, ran } = dispatcher()
     const search = rpc.dispatch(request('aiVault.searchStatus'))
     await expect(rpc.dispatch(request('status.get'))).resolves.toMatchObject({ ok: true })
@@ -98,10 +98,10 @@ describe('RPC methods that require an orcad startup phase', () => {
 
   it('refuse retryably with runtime_unavailable once the bounded wait runs out', async () => {
     vi.useFakeTimers()
-    installOrcadFeatureReadiness()
+    installTopodFeatureReadiness()
     const { dispatcher: rpc, ran } = dispatcher()
     const search = rpc.dispatch(request('aiVault.searchStatus'))
-    await vi.advanceTimersByTimeAsync(ORCAD_FEATURE_WAIT_MS)
+    await vi.advanceTimersByTimeAsync(TOPOD_FEATURE_WAIT_MS)
     await expect(search).resolves.toMatchObject({
       ok: false,
       error: { code: 'runtime_unavailable' }
@@ -110,7 +110,7 @@ describe('RPC methods that require an orcad startup phase', () => {
   })
 
   it('gate streaming methods the same way', async () => {
-    const readiness = installOrcadFeatureReadiness()
+    const readiness = installTopodFeatureReadiness()
     const { dispatcher: rpc, ran } = dispatcher()
     const replies: string[] = []
     const stream = rpc.dispatchStreaming(request('accounts.subscribe'), (reply) =>
@@ -127,7 +127,7 @@ describe('RPC methods that require an orcad startup phase', () => {
   // A handler run for a caller that left leaks its close cleanup, or runs a retried mutation twice.
   it('refuse a unary call whose request is aborted while it waits, never running it', async () => {
     vi.useFakeTimers()
-    const readiness = installOrcadFeatureReadiness()
+    const readiness = installTopodFeatureReadiness()
     const { dispatcher: rpc, ran } = dispatcher()
     const aborted = new AbortController()
     let reply: unknown = 'pending'
@@ -145,7 +145,7 @@ describe('RPC methods that require an orcad startup phase', () => {
 
   it('refuse a stream whose connection closes while it waits, never running its handler', async () => {
     vi.useFakeTimers()
-    const readiness = installOrcadFeatureReadiness()
+    const readiness = installTopodFeatureReadiness()
     const { dispatcher: rpc, ran } = dispatcher()
     const closed = new AbortController()
     const replies: string[] = []

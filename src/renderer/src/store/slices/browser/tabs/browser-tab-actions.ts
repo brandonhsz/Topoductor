@@ -20,7 +20,7 @@ import {
   loadPairedBrowserTabCreator
 } from './paired-browser-tab-creator'
 import { findGroupAndWorktree } from '../../tabs/tab-group-state'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import { openBrowserTabThroughLayoutOwner } from './browser-tab-open-through-layout-owner'
 import { browserTabOpenView } from './browser-tab-open-view'
 import { resolveWebRuntimeBrowserClientTargetGroup } from '@/runtime/browser/creation/web-runtime-browser-client-target-group'
@@ -148,7 +148,7 @@ export function createBrowserTabActions(
       }
       // Switch point: main opens the tab under these ids and its frame draws it.
       if (
-        ORCA_LAYOUT_OWNER_IS_MAIN &&
+        TOPO_LAYOUT_OWNER_IS_MAIN &&
         openBrowserTabThroughLayoutOwner(get, {
           worktreeId,
           browserTab,

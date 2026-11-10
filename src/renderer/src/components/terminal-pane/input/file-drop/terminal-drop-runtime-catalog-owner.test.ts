@@ -83,7 +83,7 @@ beforeEach(() => {
     }
   ]
   mocks.importPaths.mockResolvedValue({
-    results: [{ status: 'imported', destPath: '/owner/workspace/.orca/drops/file.txt' }]
+    results: [{ status: 'imported', destPath: '/owner/workspace/.topo/drops/file.txt' }]
   })
 })
 
@@ -176,11 +176,11 @@ describe.each(['native', 'internal'])('%s runtime terminal catalog ownership', (
             expectedSshConnectionGeneration: kind === 'ssh' ? 1 : undefined
           },
           ['/client/file.txt'],
-          '/owner/workspace/.orca/drops',
+          '/owner/workspace/.topo/drops',
           { assertCurrent: expect.any(Function), nameExtensionlessImages: true }
         )
         expect(sendInput).toHaveBeenCalledExactlyOnceWith(
-          '/owner/workspace/.orca/drops/file.txt ',
+          '/owner/workspace/.topo/drops/file.txt ',
           'driving'
         )
       } else {

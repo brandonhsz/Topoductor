@@ -30,7 +30,7 @@ describe('rebuild-native-deps Electron install fallback', () => {
       writeFileSync(join(projectDir, 'node_modules', 'electron', 'path.txt'), 'stale-path')
 
       const result = runRebuildScript(projectDir, {
-        ORCA_STRICT_ELECTRON_INSTALL: '1'
+        TOPO_STRICT_ELECTRON_INSTALL: '1'
       })
 
       expect(result.status).toBe(1)

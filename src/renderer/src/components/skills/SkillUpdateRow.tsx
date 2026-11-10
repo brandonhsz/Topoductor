@@ -47,8 +47,8 @@ function ChoiceLine({
             onCheckedChange={(checked) => replace.onReplaceChange(location.path, checked === true)}
           />
           {t(
-            'auto.components.skills.SkillUpdateRow.replaceWithOrca',
-            "Replace with Orca's copy (keeps a backup)"
+            'auto.components.skills.SkillUpdateRow.replaceWithTopo',
+            "Replace with Topo's copy (keeps a backup)"
           )}
         </label>
       ) : null}

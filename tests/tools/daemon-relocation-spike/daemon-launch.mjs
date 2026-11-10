@@ -1,4 +1,4 @@
-// Launch copied Orca.exe as run-as-node daemon with production detached/IPC/userData options, awaiting ready.
+// Launch copied Topo.exe as run-as-node daemon with production detached/IPC/userData options, awaiting ready.
 
 import { spawn } from 'node:child_process'
 import { createWriteStream } from 'node:fs'
@@ -23,11 +23,11 @@ export function launchDaemonHost(options) {
   const env = {
     ...process.env,
     ELECTRON_RUN_AS_NODE: '1',
-    ORCA_USER_DATA_PATH: workDir
+    TOPO_USER_DATA_PATH: workDir
   }
-  // Set ORCA_NODE_PTY_NATIVE_DIR for older patched builds; current native resolution is relative to node-pty itself.
+  // Set TOPO_NODE_PTY_NATIVE_DIR for older patched builds; current native resolution is relative to node-pty itself.
   if (nodePtyNativeDir) {
-    env.ORCA_NODE_PTY_NATIVE_DIR = nodePtyNativeDir
+    env.TOPO_NODE_PTY_NATIVE_DIR = nodePtyNativeDir
   }
 
   // Capture --log-file session/crash events because some ConPTY spawn failures never reach stdio.

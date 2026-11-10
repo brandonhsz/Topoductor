@@ -15,7 +15,7 @@ function positionOf(text: string, needle: string): { line: number; column: numbe
 }
 
 describe('guest error locations from served plugin modules', () => {
-  // `orca plugin check` reports source positions (Node --enable-source-maps); the guest must too.
+  // `topo plugin check` reports source positions (Node --enable-source-maps); the guest must too.
   it.each([
     ['a later line', 4],
     ['line 1, behind the prelude', 1]

@@ -37,7 +37,7 @@ const VM_TARGET_ID = 'runtime-ssh-vm-1'
 
 function target(id: string): SshTarget {
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the mocked SshConnection reads no target field.
-  return { id, label: 'Workspace VM', host: 'vm.test', port: 22, username: 'orca' } as SshTarget
+  return { id, label: 'Workspace VM', host: 'vm.test', port: 22, username: 'topo' } as SshTarget
 }
 
 function reconnectHost(targetId: string): {

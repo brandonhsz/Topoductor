@@ -9,9 +9,9 @@ import { GitBinaryTestFixture } from './git-binary.test-fixture'
 
 import { registerGitResolutionBinaryCompatibilityCases } from './git-resolution-binary-compatibility.test-cases'
 
-const image = process.env.ORCA_GIT_COMPAT_IMAGE
-const binary = process.env.ORCA_GIT_COMPAT_BINARY
-const expectedVersion = process.env.ORCA_GIT_COMPAT_VERSION
+const image = process.env.TOPO_GIT_COMPAT_IMAGE
+const binary = process.env.TOPO_GIT_COMPAT_BINARY
+const expectedVersion = process.env.TOPO_GIT_COMPAT_VERSION
 const describeBinaryCompatibility = image || binary ? describe : describe.skip
 
 type GitResult = { stdout: string; stderr: string }
@@ -29,7 +29,7 @@ describeBinaryCompatibility('real Git binary compatibility', () => {
   }
 
   beforeAll(async () => {
-    repoPath = await realpath(await mkdtemp(join(tmpdir(), 'orca-git-binary-compat-')))
+    repoPath = await realpath(await mkdtemp(join(tmpdir(), 'topo-git-binary-compat-')))
     fixture = new GitBinaryTestFixture(repoPath, '/repo')
     await fixture.start()
     const versionOutput = await runGit(['--version'])

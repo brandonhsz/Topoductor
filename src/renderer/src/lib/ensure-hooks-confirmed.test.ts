@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { AppState } from '@/store/types'
-import type { PersistedTrustedOrcaHooks } from '../../../shared/orca-yaml-hook-types'
+import type { PersistedTrustedTopoHooks } from '../../../shared/topo-yaml-hook-types'
 import {
   __resetTrustPromptChainForTests,
   confirmCreatedWorktreeSetupContent,
   ensureHooksConfirmed,
   readAndConfirmRuntimeIssueCommand
 } from './ensure-hooks-confirmed'
-import { hashOrcaHookScript } from './orca-hook-trust'
+import { hashTopoHookScript } from './topo-hook-trust'
 import {
   createCompatibleRuntimeStatusResponseIfNeeded,
   type RuntimeEnvironmentCallRequest
@@ -44,9 +44,9 @@ function createTestState(overrides?: Partial<AppState>): {
   pending: PendingPrompt[]
 } {
   const pending: PendingPrompt[] = []
-  const trust: PersistedTrustedOrcaHooks = {}
+  const trust: PersistedTrustedTopoHooks = {}
   const state = {
-    trustedOrcaHooks: trust,
+    trustedTopoHooks: trust,
     repos: [{ id: 'repo-1', displayName: 'Repo One' }],
     openModal: (modal: string, data: Record<string, unknown>) => {
       pending.push({ modal, data, resolve: data.onResolve as (d: 'run' | 'skip') => void })
@@ -136,7 +136,7 @@ describe('ensureHooksConfirmed', () => {
 
   it('does not reuse repo-wide trust across duplicate execution hosts', async () => {
     const { state, pending } = createTestState({
-      trustedOrcaHooks: { 'repo-1': { all: { approvedAt: 1 } } },
+      trustedTopoHooks: { 'repo-1': { all: { approvedAt: 1 } } },
       repos: [
         { id: 'repo-1', displayName: 'Runtime', executionHostId: 'runtime:env-1' },
         { id: 'repo-1', displayName: 'SSH', connectionId: 'server' }
@@ -225,9 +225,9 @@ describe('ensureHooksConfirmed', () => {
     // The store replaces its state when the dialog records trust, as zustand does.
     state = {
       ...state,
-      trustedOrcaHooks: {
+      trustedTopoHooks: {
         'repo-1': {
-          archive: { contentHash: await hashOrcaHookScript('echo bye'), approvedAt: 1 }
+          archive: { contentHash: await hashTopoHookScript('echo bye'), approvedAt: 1 }
         }
       }
     }

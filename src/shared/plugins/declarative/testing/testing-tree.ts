@@ -71,7 +71,7 @@ const ROLES: Record<string, string> = {
   Unsupported: 'unsupported'
 }
 
-/** What a relative time reads now, in English, as Orca draws it (`short` unless set). */
+/** What a relative time reads now, in English, as Topo draws it (`short` unless set). */
 function relativeText(at: unknown, format: unknown): string {
   if (typeof at !== 'number') {
     return ''

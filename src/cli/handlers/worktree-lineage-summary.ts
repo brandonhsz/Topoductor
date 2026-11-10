@@ -19,7 +19,7 @@ function getLineageSourceLabel(source: string): string {
   }
 }
 
-/** The summary line for a parent saved in another Orca store. */
+/** The summary line for a parent saved in another Topo store. */
 export function formatCrossStoreParentLine(
   lineage: NonNullable<RuntimeWorktreeCreateResult['crossStoreLineage']>
 ): string {

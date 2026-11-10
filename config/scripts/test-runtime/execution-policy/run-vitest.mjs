@@ -1,6 +1,6 @@
 import os from 'node:os'
 import { resolve } from 'node:path'
-import { runProcess, runProcessSync, spawnProcess } from '@orca/process-host'
+import { runProcess, runProcessSync, spawnProcess } from '@topo/process-host'
 import { hasNoChangedFiles } from './vitest-changed-precheck.mjs'
 import { RUN_ARGS_ENV } from './vitest-run-filters.mjs'
 import { localModuleCacheEnv } from '../module-cache/vitest-local-module-cache.mjs'
@@ -77,10 +77,10 @@ async function runVitest() {
         ...process.env,
         ...runTemp?.env,
         ...moduleCacheEnv,
-        ORCA_BACKGROUND_LAUNCH: '1',
-        ORCA_TEST_NODE_EXECUTABLE: process.execPath,
-        ORCA_TEST_NODE_VERSION: process.versions.node,
-        ORCA_UNIT_ZOD_BUNDLE: zodBundle.path,
+        TOPO_BACKGROUND_LAUNCH: '1',
+        TOPO_TEST_NODE_EXECUTABLE: process.execPath,
+        TOPO_TEST_NODE_VERSION: process.versions.node,
+        TOPO_UNIT_ZOD_BUNDLE: zodBundle.path,
         [RUN_ARGS_ENV]: JSON.stringify(vitestArgs),
         // The config's TypeScript and CommonJS package scope are intended; the notice is noise.
         VITE_CONFIG_NATIVE_IGNORE_WARNING: 'true'

@@ -126,7 +126,7 @@ vi.mock('../../src/main/telemetry/client', () =>
 vi.mock('../../src/main/telemetry/classify-error', () =>
   import('../../src/main/ipc/pty/pty-ipc-mock-registry').then((m) => m.classifyErrorModuleMock())
 )
-vi.mock('../../src/main/cli/linux-terminal-orca-cli-shim', () =>
+vi.mock('../../src/main/cli/linux-terminal-topo-cli-shim', () =>
   import('../../src/main/ipc/pty/pty-ipc-mock-registry').then((m) => m.linuxCliShimModuleMock())
 )
 vi.mock('../../src/main/memory/pty-registry', () =>
@@ -268,7 +268,7 @@ describe('a pane that starts its own agent launch', () => {
     ])
     expect(planned).toMatchObject({
       launchAgent: 'claude',
-      env: { PANE_HOST_SENTINEL: 'host', ORCA_AGENT_LAUNCH_TOKEN: expect.any(String) },
+      env: { PANE_HOST_SENTINEL: 'host', TOPO_AGENT_LAUNCH_TOKEN: expect.any(String) },
       launchConfig: { agentEnv: { PANE_HOST_SENTINEL: 'host' } }
     })
     expect(planned.launchConfig?.agentCommand).not.toContain(prompt)
@@ -314,9 +314,9 @@ describe('a pane that starts its own agent launch', () => {
     await spawnPane()
 
     const env = providerSpawn.mock.calls[0]?.[0]?.env ?? {}
-    expect(env.ORCA_AGENT_LAUNCH_TOKEN).toMatch(/.+/)
+    expect(env.TOPO_AGENT_LAUNCH_TOKEN).toMatch(/.+/)
     expect(JSON.stringify(runtime.registerPty.mock.calls)).toContain(
-      JSON.stringify({ launchToken: env.ORCA_AGENT_LAUNCH_TOKEN, launchAgent: 'claude' })
+      JSON.stringify({ launchToken: env.TOPO_AGENT_LAUNCH_TOKEN, launchAgent: 'claude' })
     )
   })
 

@@ -7,7 +7,7 @@ import type { LegacyWorkerRecoveryCandidate } from '../orchestration/terminal-au
 
 import type { LegacyWorkerTerminalRecoveryPlan } from '../orchestration/terminal-authority/release/orchestration-legacy-worker-terminal-recovery'
 
-import { OrcaRuntimeWithTerminalDrivers } from '../terminal/driver/terminal-driver-resources'
+import { TopoRuntimeWithTerminalDrivers } from '../terminal/driver/terminal-driver-resources'
 import type { FolderWorkspace } from '../../../shared/folder-workspaces/folder-workspace-types'
 import type { ResolvedWorktree } from '../workspaces/catalog/runtime-worktree-path-identity'
 import {
@@ -45,7 +45,7 @@ import { ClaudeAgentTeamsService } from '../terminal/agent-teams/claude-agent-te
 import { teardownFolderWorkspacePtys } from '../workspaces/removal/folder-workspace-pty-teardown'
 import { countRepoTerminalsNotKnownExited } from '../workspaces/removal/project-removal-impact'
 
-export abstract class OrcaRuntimeWithPreservedBranchCleanup extends OrcaRuntimeWithTerminalDrivers {
+export abstract class TopoRuntimeWithPreservedBranchCleanup extends TopoRuntimeWithTerminalDrivers {
   declare addRepo: RuntimeRepositoryCommandSurface['addRepo']
   declare cloneRepo: RuntimeRepositoryCommandSurface['cloneRepo']
   declare acquireFileWatcherRemoval: ConstructorParameters<

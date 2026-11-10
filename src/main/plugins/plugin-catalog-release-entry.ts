@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { mkdtemp, readFile, rm, stat } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, sep } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { parseGitRepositoryIdentity } from '../../shared/plugins/catalog/plugin-marketplace'
 import {
   pluginCatalogReleaseEntry,
@@ -33,7 +33,7 @@ export type PluginCatalogReleaseReport = {
   sourcePath?: string
   /** Why there is no entry, or that uncommitted changes are left out of it. */
   note?: string
-  /** The `origin` owner Orca lists the plugin under differs from the declared publisher. */
+  /** The `origin` owner Topo lists the plugin under differs from the declared publisher. */
   ownerWarning?: string
 }
 
@@ -80,7 +80,7 @@ async function committedReleaseEntry(
   commit: string,
   sourcePath: string | undefined
 ): Promise<{ entry: PluginCatalogRelease } | { note: string }> {
-  const tree = await mkdtemp(join(tmpdir(), 'orca-plugin-release-'))
+  const tree = await mkdtemp(join(tmpdir(), 'topo-plugin-release-'))
   try {
     try {
       await materializePluginGitTree({
@@ -161,7 +161,7 @@ async function committedReleaseEntry(
   }
 }
 
-// Why a warning: Orca derives the publisher from the owner; older Orca refuses a declared one that differs.
+// Why a warning: Topo derives the publisher from the owner; older Topo refuses a declared one that differs.
 async function publisherOwnerWarning(pluginDir: string): Promise<string | undefined> {
   const remote = await gitText(pluginDir, ['remote', 'get-url', 'origin']).catch(() => '')
   const owner = parseGitRepositoryIdentity(remote)?.owner?.toLowerCase()
@@ -173,7 +173,7 @@ async function publisherOwnerWarning(pluginDir: string): Promise<string | undefi
       ? manifest.publisher
       : undefined
   return owner && typeof publisher === 'string' && owner !== publisher.toLowerCase()
-    ? `Orca lists this plugin under the repository owner "${owner}", and older Orca refuses it because publisher is "${publisher}"; remove publisher or set it to "${owner}"`
+    ? `Topo lists this plugin under the repository owner "${owner}", and older Topo refuses it because publisher is "${publisher}"; remove publisher or set it to "${owner}"`
     : undefined
 }
 

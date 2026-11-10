@@ -1,6 +1,6 @@
 // File focus differs from terminal create's shared --focus help.
 const FILE_OPEN_FOCUS_HELP =
-  "--focus                Bring the user to the file (switches Orca's window to its worktree)"
+  "--focus                Bring the user to the file (switches Topo's window to its worktree)"
 
 const COMMAND_SCOPED_FLAG_HELP: Record<string, Record<string, string>> = {
   'extension reload': {
@@ -10,7 +10,7 @@ const COMMAND_SCOPED_FLAG_HELP: Record<string, Record<string, string>> = {
   },
   'reference add': {
     url: '--url <url-or-jira-key> Full review/issue URL or Jira key; use positionals or repeated --url',
-    'reference-site': '--reference-site <id> Jira site for bare keys; see orca jira connection'
+    'reference-site': '--reference-site <id> Jira site for bare keys; see topo jira connection'
   },
   'reference remove': {
     url: '--url <url>            Full review or issue URL; pass all URLs positionally or all as repeated --url',
@@ -30,7 +30,7 @@ const COMMAND_SCOPED_FLAG_HELP: Record<string, Record<string, string>> = {
     branch: '--branch <name>        Git branch name to use instead of the prefixed default',
     reference:
       '--reference <url-or-jira-key> Attach an issue/review URL or Jira key; repeat for several',
-    'reference-site': '--reference-site <id> Jira site for bare keys; see orca jira connection',
+    'reference-site': '--reference-site <id> Jira site for bare keys; see topo jira connection',
     pr: '--pr <number>          Linked GitHub pull request number',
     'gitlab-issue': '--gitlab-issue <number|url> Linked GitLab issue in the source project',
     'gitlab-mr': '--gitlab-mr <number|url> Linked GitLab merge request in the source project'
@@ -42,9 +42,9 @@ const COMMAND_SCOPED_FLAG_HELP: Record<string, Record<string, string>> = {
   },
   'plugin create': {
     template: '--template <name>      Template to scaffold from (see Usage)',
-    publisher: '--publisher <name>     Repository owner; only for Orca older than 1.4.246',
+    publisher: '--publisher <name>     Repository owner; only for Topo older than 1.4.246',
     id: '--id <id>              Plugin id (default: the folder name)',
-    name: '--name <display name>  Plugin name shown in Orca'
+    name: '--name <display name>  Plugin name shown in Topo'
   },
   'environment update': {
     force: '--force                Restart over running terminals instead of deferring the update'

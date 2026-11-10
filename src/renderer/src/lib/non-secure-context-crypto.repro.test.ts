@@ -18,15 +18,15 @@ afterEach(() => {
 describe('non-secure context (plain HTTP LAN web client)', () => {
   // Fallback hashes must match secure-context hashes or previously approved hook trust would mismatch.
   it('produces the same hash as crypto.subtle did in a secure context', async () => {
-    const { hashOrcaHookScript } = await import('./orca-hook-trust')
+    const { hashTopoHookScript } = await import('./topo-hook-trust')
     const secureHash = await (async () => {
       Object.defineProperty(globalThis, 'crypto', { configurable: true, value: realCrypto })
-      return hashOrcaHookScript('echo hi')
+      return hashTopoHookScript('echo hi')
     })()
     Object.defineProperty(globalThis, 'crypto', {
       configurable: true,
       value: createNonSecureContextCrypto(realCrypto)
     })
-    expect(await hashOrcaHookScript('echo hi')).toBe(secureHash)
+    expect(await hashTopoHookScript('echo hi')).toBe(secureHash)
   })
 })

@@ -10,7 +10,7 @@ export const CHAT_SELECTION_MIX = { light: 30, dark: 40 } as const
 const MIN_VISIBLE_MIX = 15
 
 /**
- * How much link hue the chat selection mixes into the chat background: Orca's own depth, lowered
+ * How much link hue the chat selection mixes into the chat background: Topo's own depth, lowered
  * (down to a visible floor) to the deepest mix that keeps selected text 4.5:1.
  */
 export function chatSelectionMixOver(
@@ -48,7 +48,7 @@ export function chatSelectionMix(
 }
 
 // Keep in sync with --callout-note in main.css, which follows the chat's own scheme.
-const ORCA_LINK_BLUE = { light: '#0969da', dark: '#4493f8' } as const
+const TOPO_LINK_BLUE = { light: '#0969da', dark: '#4493f8' } as const
 
 let lastTerminalMix: { key: string; mix: number } | null = null
 
@@ -65,7 +65,7 @@ export function terminalChatSelectionMix(
   }
   const text = probe(colors.foreground)
   const canvas = probe(colors.background)
-  const hue = probe(ORCA_LINK_BLUE[chatBase])
+  const hue = probe(TOPO_LINK_BLUE[chatBase])
   const mixed =
     text && canvas && hue
       ? chatSelectionMixOver(text, canvas, hue, chatBase)

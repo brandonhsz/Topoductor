@@ -9,7 +9,7 @@ import {
 } from './daemon-launched-child-spawn'
 import { parseDaemonReadyIdentity } from '../endpoint/identity/daemon-ready-identity'
 import { unlinkOwnedDaemonPidFile } from './daemon-spawner'
-import { childProcessHasExited } from '@orca/process-host/process-tree-termination'
+import { childProcessHasExited } from '@topo/process-host/process-tree-termination'
 import { watchLaunchedDaemonExit } from './daemon-exit-record'
 
 /** Default readiness IPC budget; callers may allow longer. */

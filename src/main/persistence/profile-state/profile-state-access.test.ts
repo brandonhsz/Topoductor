@@ -22,7 +22,7 @@ vi.mock('./profile-state-access-identity', async (importOriginal) => ({
 
 const roots: string[] = []
 function root(): string {
-  const path = fs.mkdtempSync(join(tmpdir(), 'orca-state-access-'))
+  const path = fs.mkdtempSync(join(tmpdir(), 'topo-state-access-'))
   roots.push(path)
   return path
 }

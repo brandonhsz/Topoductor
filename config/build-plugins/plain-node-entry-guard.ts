@@ -18,12 +18,12 @@ const PLAIN_NODE_ENTRY_NAMES = [
   'browser-extension-native-host-supervisor-entry',
   'daemon-entry',
   'parcel-watcher-process-entry',
-  // Utility process on desktop, forked child in orcad.
+  // Utility process on desktop, forked child in topod.
   'stt-worker',
   'session-scanner-service-entry',
   'computer-sidecar',
   'wsl-transcript-fs-process-entry',
-  'orcad/orcad-local-serve-selection-entry',
+  'topod/topod-local-serve-selection-entry',
   // ELECTRON_RUN_AS_NODE plugin worker host; it now bundles sucrase for TypeScript workers.
   'plugin-host-entry',
   ...CLI_MAIN_ENTRY_NAMES
@@ -107,7 +107,7 @@ function assertNoElectronRequire(
 
 // Relocated Windows daemon copies only these packages; other bare requires cause silent fallback to an unrelocated daemon that updates kill.
 const DAEMON_HOST_MIRRORED_PACKAGES = [
-  '@orca/process-host',
+  '@topo/process-host',
   'node-pty',
   '@vscode/windows-process-tree'
 ]
@@ -249,7 +249,7 @@ export function createPlainNodeEntryGuardPlugin(
   let daemonOutputDir: string | undefined
 
   return {
-    name: 'orca-plain-node-entry-guard',
+    name: 'topo-plain-node-entry-guard',
     buildStart(options: NormalizedInputOptions) {
       assertEntryNamesAreRollupInputs(options.input)
     },

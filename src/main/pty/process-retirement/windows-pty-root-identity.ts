@@ -1,7 +1,7 @@
 import { queryWindowsProcessLinksFresh } from '../../providers/windows-foreground-process-rows'
-import { readOrcaChromiumProcessPids } from './orca-chromium-process-pids'
+import { readTopoChromiumProcessPids } from './topo-chromium-process-pids'
 
-/** `own` proves ancestry, not PTY identity: a recycled PID under another Orca child still qualifies. */
+/** `own` proves ancestry, not PTY identity: a recycled PID under another Topo child still qualifies. */
 export type WindowsTreeKillTarget = 'own' | 'absent' | 'foreign' | 'unknown'
 
 export const WINDOWS_ROOT_IDENTITY_TIMEOUT_MS = 3_000
@@ -17,9 +17,9 @@ export function classifyWindowsTreeKillTarget(
   rootPid: number,
   rows: readonly ProcessLink[],
   ownerPid: number,
-  ownChromiumPids: ReadonlySet<number> = readOrcaChromiumProcessPids()
+  ownChromiumPids: ReadonlySet<number> = readTopoChromiumProcessPids()
 ): WindowsTreeKillTarget {
-  // Never let a corrupt root PID authorize killing Orca itself.
+  // Never let a corrupt root PID authorize killing Topo itself.
   if (!Number.isInteger(rootPid) || rootPid <= 0 || rootPid === ownerPid) {
     return 'foreign'
   }
@@ -112,6 +112,6 @@ export async function verifyWindowsTreeKillTarget(
     rootPid,
     rows,
     deps.ownerPid ?? process.pid,
-    deps.ownChromiumPids ?? readOrcaChromiumProcessPids()
+    deps.ownChromiumPids ?? readTopoChromiumProcessPids()
   )
 }

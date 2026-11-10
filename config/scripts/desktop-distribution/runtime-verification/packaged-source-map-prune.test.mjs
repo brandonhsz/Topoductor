@@ -55,7 +55,7 @@ async function createPackagedNodeModulesFixture(resourcesDir) {
 
 describe('packaged runtime type-declaration and source-map pruning', () => {
   it('removes @linear/sdk source maps while preserving runtime files and non-JS maps', async () => {
-    const resourcesDir = await mkdtemp(join(tmpdir(), 'orca-source-map-prune-'))
+    const resourcesDir = await mkdtemp(join(tmpdir(), 'topo-source-map-prune-'))
     try {
       const { packageDir, distDir, webhooksDir } =
         await createPackagedNodeModulesFixture(resourcesDir)

@@ -66,7 +66,7 @@ async function prepareGuestRuntime(distro: string): Promise<OpenCodeWslGuestRunt
     .map((directory) => join(directory, OPENCODE_WSL_TEXT_TASK_FILENAME))
     .find(existsSync)
   if (!helper) {
-    throw new Error('The bundled WSL OpenCode text task is missing. Reinstall Orca to repair it.')
+    throw new Error('The bundled WSL OpenCode text task is missing. Reinstall Topo to repair it.')
   }
   const run = async (spec: WslSpec, timeoutMs = 15_000): Promise<string> => {
     const result = await runWslProcess({ ...spec, distro, timeoutMs, maxOutputBytes: 16 * 1024 })
@@ -84,7 +84,7 @@ async function prepareGuestRuntime(distro: string): Promise<OpenCodeWslGuestRunt
   if (!node?.startsWith('/')) {
     node = await ensureWslPinnedRuntime(
       run,
-      join(getAppEnvironment().getPath('userData'), 'orcad-artifacts'),
+      join(getAppEnvironment().getPath('userData'), 'topod-artifacts'),
       AbortSignal.timeout(PREPARATION_TIMEOUT_MS)
     )
   }

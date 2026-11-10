@@ -23,7 +23,7 @@ function context(argv: string[], call: ReturnType<typeof vi.fn>, cwd: string): H
 let cwd: string
 
 beforeEach(async () => {
-  cwd = await mkdtemp(join(tmpdir(), 'orca-chrome-shot-'))
+  cwd = await mkdtemp(join(tmpdir(), 'topo-chrome-shot-'))
   vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
 })
 
@@ -35,7 +35,7 @@ afterEach(async () => {
 const shot = (argv: string[], call: ReturnType<typeof vi.fn>) =>
   PLUGIN_VIEW_HANDLERS['plugin shot']!(context(['plugin', 'shot', ...argv], call, cwd))
 
-describe('orca plugin shot --status-bar / --window', () => {
+describe('topo plugin shot --status-bar / --window', () => {
   it('asks the host for the status bar and writes <key>-status-bar.png', async () => {
     const call = vi.fn().mockResolvedValue({
       result: {

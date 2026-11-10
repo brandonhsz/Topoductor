@@ -9,7 +9,7 @@ import { useAppStore } from '@/store/index'
 /**
  * Installs terminal-pane shortcuts on the tab keyboard scope.
  * Uses the shared shortcut policy before forwarding unmatched input to xterm
- * so configurable Orca actions remain consistent across local and SSH panes.
+ * so configurable Topo actions remain consistent across local and SSH panes.
  */
 export function useTerminalKeyboardShortcuts({
   tabId,
@@ -39,7 +39,7 @@ export function useTerminalKeyboardShortcuts({
   macOptionAsAltRef,
   paneKittyKeyboardModesRef,
   keybindings,
-  terminalShortcutPolicy = 'orca-first'
+  terminalShortcutPolicy = 'topo-first'
 }: KeyboardHandlersDeps): void {
   useEffect(() => {
     if (!isActive) {

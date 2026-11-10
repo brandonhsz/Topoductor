@@ -27,7 +27,7 @@ const ENGINES = [
     name: 'chromium',
     // Use runner Chrome override to avoid CI browser downloads.
     launch: () => {
-      const executablePath = process.env.ORCA_MOBILE_WEB_RENDER_BROWSER
+      const executablePath = process.env.TOPO_MOBILE_WEB_RENDER_BROWSER
       return chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) })
     }
   },
@@ -50,7 +50,7 @@ const METRICS = {
 function Harness() {
   const [state, setState] = useState({ mounted: false, source: '' })
   useEffect(() => {
-    globalThis.__orcaMermaidSet = setState
+    globalThis.__topoMermaidSet = setState
     document.body.setAttribute('data-ready', 'yes')
   }, [])
   return createElement(
@@ -127,11 +127,11 @@ afterAll(async () => {
 // Record eval/Function stacks to attribute JIT attempts: a library may swallow EvalError under CSP.
 // Playwright also evaluates harness functions, so only bundle-script callers count as page JIT.
 function installJitRecorder() {
-  globalThis.__orcaJit = []
+  globalThis.__topoJit = []
   const record = (kind, source) => {
     // Skip error header and recorder frame to identify caller.
     const stack = (new Error('jit').stack ?? '').split('\n').slice(2).join(' | ')
-    globalThis.__orcaJit.push({ kind, source: String(source).slice(0, 60), stack })
+    globalThis.__topoJit.push({ kind, source: String(source).slice(0, 60), stack })
   }
   // oxlint-disable-next-line eslint/no-eval -- SAFETY: the recorder holds the real eval so it can count and forward calls; naming it is this function's whole purpose.
   const realEval = globalThis.eval
@@ -186,7 +186,7 @@ async function openPage(browser) {
 // On source change, wait for a label unique to replacement; existing SVG already satisfies presence.
 async function show(page, source, contains = null) {
   await page.evaluate(
-    (next) => globalThis.__orcaMermaidSet({ mounted: true, source: next }),
+    (next) => globalThis.__topoMermaidSet({ mounted: true, source: next }),
     source
   )
   await page.waitForFunction((needle) => {
@@ -237,7 +237,7 @@ describeMermaid(
             expect(drawn.src).toBe('data:image/svg+xml')
             expect(drawn.natural).toBeGreaterThan(0)
             expect(drawn.shown).toBeGreaterThan(0)
-            expect(await page.evaluate(() => globalThis.__orcaCspViolations)).toEqual([])
+            expect(await page.evaluate(() => globalThis.__topoCspViolations)).toEqual([])
             expect(consoleErrors).toEqual([])
           } finally {
             await page.close()

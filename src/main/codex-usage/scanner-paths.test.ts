@@ -91,10 +91,10 @@ function totalOnlyUsageRecord(timestamp: string, totalInputTokens: number): stri
 
 beforeEach(() => {
   delete process.env.CODEX_HOME
-  fakeHomeDir = mkdtempSync(join(tmpdir(), 'orca-codex-usage-home-'))
-  userDataDir = mkdtempSync(join(tmpdir(), 'orca-codex-usage-user-data-'))
-  previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-  process.env.ORCA_USER_DATA_PATH = userDataDir
+  fakeHomeDir = mkdtempSync(join(tmpdir(), 'topo-codex-usage-home-'))
+  userDataDir = mkdtempSync(join(tmpdir(), 'topo-codex-usage-user-data-'))
+  previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+  process.env.TOPO_USER_DATA_PATH = userDataDir
   homedirMock.mockReturnValue(fakeHomeDir)
   getPathMock.mockImplementation((name: string) => {
     if (name === 'userData') {
@@ -113,9 +113,9 @@ afterEach(() => {
     process.env.CODEX_HOME = originalCodexHome
   }
   if (previousUserDataPath === undefined) {
-    delete process.env.ORCA_USER_DATA_PATH
+    delete process.env.TOPO_USER_DATA_PATH
   } else {
-    process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+    process.env.TOPO_USER_DATA_PATH = previousUserDataPath
   }
   vi.clearAllMocks()
 })
@@ -129,7 +129,7 @@ describe('listCodexSessionFiles', () => {
     mkdirSync(systemSessionsDir, { recursive: true })
     mkdirSync(accountSessionsDir, { recursive: true })
     writeFileSync(
-      join(userDataDir, 'codex-accounts', 'acct-1', 'home', '.orca-managed-home'),
+      join(userDataDir, 'codex-accounts', 'acct-1', 'home', '.topo-managed-home'),
       'acct-1\n',
       'utf-8'
     )
@@ -167,7 +167,7 @@ describe('listCodexSessionFiles', () => {
     const externalSessionsDir = join(externalHome, 'sessions')
     mkdirSync(accountDir, { recursive: true })
     mkdirSync(externalSessionsDir, { recursive: true })
-    writeFileSync(join(externalHome, '.orca-managed-home'), 'acct-redirected\n', 'utf-8')
+    writeFileSync(join(externalHome, '.topo-managed-home'), 'acct-redirected\n', 'utf-8')
     writeFileSync(join(externalSessionsDir, 'unrelated.jsonl'), '{}\n', 'utf-8')
     symlinkSync(
       externalHome,
@@ -184,7 +184,7 @@ describe('listCodexSessionFiles', () => {
     const externalSessionsDir = join(fakeHomeDir, 'redirected-sessions')
     mkdirSync(accountHome, { recursive: true })
     mkdirSync(externalSessionsDir, { recursive: true })
-    writeFileSync(join(accountHome, '.orca-managed-home'), 'acct-redirected-sessions\n', 'utf-8')
+    writeFileSync(join(accountHome, '.topo-managed-home'), 'acct-redirected-sessions\n', 'utf-8')
     writeFileSync(join(externalSessionsDir, 'unrelated.jsonl'), '{}\n', 'utf-8')
     symlinkSync(
       externalSessionsDir,
@@ -202,7 +202,7 @@ describe('listCodexSessionFiles', () => {
       userDataDir,
       'codex-runtime-home',
       'home',
-      '.orca-session-copies'
+      '.topo-session-copies'
     )
     const systemSessionsDir = join(fakeHomeDir, '.codex', 'sessions')
     mkdirSync(runtimeSessionsDir, { recursive: true })
@@ -378,7 +378,7 @@ describe('listCodexSessionFiles', () => {
       userDataDir,
       'codex-runtime-home',
       'home',
-      '.orca-session-copies'
+      '.topo-session-copies'
     )
     const systemSessionsDir = join(fakeHomeDir, '.codex', 'sessions')
     mkdirSync(runtimeSessionsDir, { recursive: true })
@@ -451,7 +451,7 @@ describe('listCodexSessionFiles', () => {
   // Bridge markers invalidate full-history cache reuse even when file metadata is unchanged.
   it('does not reuse a pre-bridge cache once the source became suffix-only', async () => {
     const runtimeSessionsDir = join(userDataDir, 'codex-runtime-home', 'home', 'sessions')
-    const markerDir = join(userDataDir, 'codex-runtime-home', 'home', '.orca-session-copies')
+    const markerDir = join(userDataDir, 'codex-runtime-home', 'home', '.topo-session-copies')
     const systemSessionsDir = join(fakeHomeDir, '.codex', 'sessions')
     mkdirSync(runtimeSessionsDir, { recursive: true })
     mkdirSync(systemSessionsDir, { recursive: true })

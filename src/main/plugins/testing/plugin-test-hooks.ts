@@ -1,7 +1,7 @@
 /**
  * Node module hooks for running a plugin's own tests in plain Node: `orca` and `orca/testing`
- * resolve to the files Orca ships beside this one, and plugin sources (.ts, .tsx, .mts, .jsx) are
- * transpiled and resolved exactly as Orca's build-less loader does, so a test runs the code Orca
+ * resolve to the files Topo ships beside this one, and plugin sources (.ts, .tsx, .mts, .jsx) are
+ * transpiled and resolved exactly as Topo's build-less loader does, so a test runs the code Topo
  * runs. Bundled to resources/plugins/declarative/orca-test-hooks.mjs (see orca-test-register.mjs).
  */
 import { existsSync, readFileSync, realpathSync, statSync } from 'node:fs'
@@ -15,9 +15,9 @@ import { transpilePluginSource } from '../panels/plugin-source-transpiler'
 import { pluginModuleCandidatePaths } from '../plugin-module-candidate-paths'
 import { transformPluginSource } from '../plugin-source-sucrase-transform'
 import {
-  isOrcaSpecifier,
-  pluginWorkerOrcaImportMessage
-} from '../workers/plugin-worker-orca-import'
+  isTopoSpecifier,
+  pluginWorkerTopoImportMessage
+} from '../workers/plugin-worker-topo-import'
 
 type ResolveResult = { url: string; shortCircuit?: boolean; format?: string }
 type NextResolve = (specifier: string, context: ResolveContext) => Promise<ResolveResult>
@@ -29,7 +29,7 @@ type LoadResult = {
 }
 type NextLoad = (url: string, context: unknown) => Promise<LoadResult>
 
-const ORCA_FILES: Record<string, string> = {
+const TOPO_FILES: Record<string, string> = {
   orca: './orca-runtime.mjs',
   'orca/jsx-runtime': './orca-runtime.mjs',
   'orca/jsx-dev-runtime': './orca-runtime.mjs',
@@ -72,7 +72,7 @@ function workerEntryUrl(): string | null {
   }
 }
 
-/** The worker's module graph: its files load and resolve as Orca's worker host does, not as
+/** The worker's module graph: its files load and resolve as Topo's worker host does, not as
  *  frame modules (Node resolution, packages allowed, `.ts`/`.mts` only, no `orca` at run time). */
 const workerModules = new Set<string>()
 const workerEntry = workerEntryUrl()
@@ -85,8 +85,8 @@ async function resolveWorkerImport(
   context: ResolveContext,
   nextResolve: NextResolve
 ): Promise<ResolveResult> {
-  if (isOrcaSpecifier(specifier)) {
-    throw new Error(pluginWorkerOrcaImportMessage(specifier))
+  if (isTopoSpecifier(specifier)) {
+    throw new Error(pluginWorkerTopoImportMessage(specifier))
   }
   let result: ResolveResult
   try {
@@ -115,19 +115,19 @@ export async function resolve(
   context: ResolveContext,
   nextResolve: NextResolve
 ): Promise<ResolveResult> {
-  const orcaFile = ORCA_FILES[specifier]
-  if (orcaFile) {
-    return { url: new URL(orcaFile, import.meta.url).href, shortCircuit: true }
+  const topoFile = TOPO_FILES[specifier]
+  if (topoFile) {
+    return { url: new URL(topoFile, import.meta.url).href, shortCircuit: true }
   }
   if (context.parentURL && workerModules.has(context.parentURL)) {
     return resolveWorkerImport(specifier, context, nextResolve)
   }
   const parent = context.parentURL ? pluginRelativePath(context.parentURL) : null
-  // Only a plugin's own module imports by Orca's rules; the entry point's parent is a folder.
+  // Only a plugin's own module imports by Topo's rules; the entry point's parent is a folder.
   const from = parent !== null && SCRIPT_FILE.test(parent) ? parent : null
   const relativeImport = specifier.startsWith('.') || specifier.startsWith('/')
-  // Tests may import any package Node can; plugin sources get Orca's rules, so a test fails where
-  // Orca would refuse the import.
+  // Tests may import any package Node can; plugin sources get Topo's rules, so a test fails where
+  // Topo would refuse the import.
   if (from === null || specifier.startsWith('node:') || (TEST_FILE.test(from) && !relativeImport)) {
     return nextResolve(specifier, context)
   }
@@ -150,7 +150,7 @@ export async function resolve(
 export async function load(url: string, context: unknown, nextLoad: NextLoad): Promise<LoadResult> {
   const path = pluginRelativePath(url)
   if (path !== null && workerModules.has(url)) {
-    // Why ESM: Orca's worker host loads `.ts` as a module whatever package.json says.
+    // Why ESM: Topo's worker host loads `.ts` as a module whatever package.json says.
     return isPluginWorkerSourcePath(path)
       ? {
           format: 'module',
@@ -169,10 +169,10 @@ export async function load(url: string, context: unknown, nextLoad: NextLoad): P
   return { format: 'module', source: transpiled.code, shortCircuit: true }
 }
 
-// `orca plugin check` imports this bundle for its static editor check; Node's hooks ignore it.
+// `topo plugin check` imports this bundle for its static editor check; Node's hooks ignore it.
 export { checkPluginEditorEntry } from './plugin-editor-static-check'
 
-/** The same transform, for a Vite plugin (`orca plugin test` with the plugin's own vitest). */
+/** The same transform, for a Vite plugin (`topo plugin test` with the plugin's own vitest). */
 export function transformPluginSourceForTest(path: string, source: string): string {
   const transpiled = transpilePluginSource(path, source)
   if (!transpiled.ok) {

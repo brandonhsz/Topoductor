@@ -232,7 +232,7 @@ describe('repos-project-groups-delete', () => {
         failedProjectRemovals: [
           {
             projectId: 'nested',
-            reason: 'Project remained in Orca after removeProject completed.'
+            reason: 'Project remained in Topo after removeProject completed.'
           }
         ]
       })

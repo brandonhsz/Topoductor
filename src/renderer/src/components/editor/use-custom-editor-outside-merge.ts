@@ -13,13 +13,13 @@ import {
 } from './save/queue/editor-save-disk-precondition'
 import type { CustomEditorHost } from './plugin-custom-editor-host-types'
 import {
-  ORCA_EDITOR_FILE_SAVED_EVENT,
+  TOPO_EDITOR_FILE_SAVED_EVENT,
   type EditorFileSavedDetail
 } from './autosave/editor-autosave'
 
 /**
  * A write to the file on disk while a custom editor tab holds unsaved edits, merged by the editor
- * instead of Orca's banner. Deliberately narrow, the banner on any doubt: one mounted editor view
+ * instead of Topo's banner. Deliberately narrow, the banner on any doubt: one mounted editor view
  * of a local file with no other tab on its buffer, a session that merges, a known ancestor, and an
  * acknowledged merge. Only then is the disk snapshot that merge used stamped as the baseline.
  */
@@ -65,7 +65,7 @@ export function recordCustomEditorAncestor(fileId: string, text: string): void {
   patch('ancestors', fileId, { text, signature: getDiskBaselineSignature(text) })
 }
 
-/** True while the editor is taking a disk change itself, so Orca's banner stays hidden. */
+/** True while the editor is taking a disk change itself, so Topo's banner stays hidden. */
 export function useCustomEditorMerging(fileId: string): boolean {
   return useCustomEditorOutsideMergeStore((state) => state.busy[fileId] === true)
 }
@@ -142,7 +142,7 @@ export async function mergeOutsideChangeIntoEditor(
     // The tab's saved text (what its dirty state compares to) is now this disk text, as after a
     // save; otherwise typing back to the old ancestor would look clean while disk differs.
     window.dispatchEvent(
-      new CustomEvent<EditorFileSavedDetail>(ORCA_EDITOR_FILE_SAVED_EVENT, {
+      new CustomEvent<EditorFileSavedDetail>(TOPO_EDITOR_FILE_SAVED_EVENT, {
         detail: { fileId, content: disk, recordViewIds: [fileId] }
       })
     )

@@ -8,9 +8,9 @@ import type { ConnectionState } from '../transport/connection/connection-state'
 import type { RpcResponse } from '../transport/rpc/rpc-wire-types'
 import { defineHostMutation, runHostMutation, type HostMutationPhase } from './host-mutation'
 import { isHostNotConnectedError } from './host-query-errors'
-import { createOrcaQueryClient } from './orca-query-client'
+import { createTopoQueryClient } from './topo-query-client'
 
-const NAME_KEY = ['orca', 'host-1', 'test.name', { exec: 'local' }, {}] as const
+const NAME_KEY = ['topo', 'host-1', 'test.name', { exec: 'local' }, {}] as const
 
 function host(initial: ConnectionState) {
   let state = initial
@@ -67,7 +67,7 @@ const rename = defineHostMutation({
 // `current` is the host's client at each moment; a reconnect can replace it.
 function run(current: RpcClient | (() => RpcClient), phases: HostMutationPhase[]) {
   const clientNow = typeof current === 'function' ? current : () => current
-  const queryClient = createOrcaQueryClient()
+  const queryClient = createTopoQueryClient()
   queryClient.setQueryData(NAME_KEY, 'old')
   const done = runHostMutation(
     rename,

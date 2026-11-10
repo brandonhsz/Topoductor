@@ -25,16 +25,16 @@ vi.mock(import('node:os'), async (importOriginal) => {
   return { ...actual, homedir: () => fixture.home }
 })
 
-const APP_ENVIRONMENT_SLOT = Symbol.for('orca.host.appEnvironment')
+const APP_ENVIRONMENT_SLOT = Symbol.for('topo.host.appEnvironment')
 
 beforeEach(() => {
-  fixture.home = mkdtempSync(join(tmpdir(), 'orca-uninstall-hooks-home-'))
-  fixture.userData = mkdtempSync(join(tmpdir(), 'orca-uninstall-hooks-data-'))
+  fixture.home = mkdtempSync(join(tmpdir(), 'topo-uninstall-hooks-home-'))
+  fixture.userData = mkdtempSync(join(tmpdir(), 'topo-uninstall-hooks-data-'))
   fixture.exit.mockClear()
   // Every path the removers resolve from the environment stays in the fixture, on any runner.
   vi.stubEnv('HOME', fixture.home)
   vi.stubEnv('USERPROFILE', fixture.home)
-  vi.stubEnv('ORCA_USER_DATA_PATH', fixture.userData)
+  vi.stubEnv('TOPO_USER_DATA_PATH', fixture.userData)
   vi.stubEnv('XDG_CONFIG_HOME', join(fixture.home, '.config'))
   vi.stubEnv('APPDATA', join(fixture.home, 'AppData', 'Roaming'))
   vi.stubEnv('CODEX_HOME', join(fixture.home, '.codex'))
@@ -67,13 +67,13 @@ it("runs every agent's real remover, including Claude's agent view and status-li
 
   const { AGENT_HOOKS_UNINSTALL_FLAG, runAgentHooksUninstallPreflight } =
     await import('./agent-hooks-uninstall-preflight')
-  expect(runAgentHooksUninstallPreflight(['Orca.exe', AGENT_HOOKS_UNINSTALL_FLAG])).toBe(true)
+  expect(runAgentHooksUninstallPreflight(['Topo.exe', AGENT_HOOKS_UNINSTALL_FLAG])).toBe(true)
 
   await vi.waitFor(() => expect(fixture.exit).toHaveBeenCalled(), { timeout: 20_000 })
   // No remover failed, so none hit an uninitialised singleton.
   expect(warn).not.toHaveBeenCalled()
   expect(fixture.exit).toHaveBeenCalledExactlyOnceWith(0)
-  // The keybinding goes; the marker stays, recording that Orca disabled it.
+  // The keybinding goes; the marker stays, recording that Topo disabled it.
   expect(readFileSync(join(claudeDir, 'keybindings.json'), 'utf8')).not.toContain(
     `command:${CLAUDE_AGENT_VIEW_COMMAND}`
   )

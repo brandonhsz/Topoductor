@@ -33,8 +33,8 @@ import {
 import type { PairingOffer } from '../../../src/shared/remote-runtime/pairing/mobile-relay-pairing-offer'
 
 const now = Date.UTC(2026, 6, 13)
-const GENERATION_KEY = 'orca:pairing-keychain-generation'
-const JOURNAL_PRESENCE_KEY = 'orca:pairing-keychain-presence:orca.mobile-relay.pairing-journal.v1'
+const GENERATION_KEY = 'topo:pairing-keychain-generation'
+const JOURNAL_PRESENCE_KEY = 'topo:pairing-keychain-presence:topo.mobile-relay.pairing-journal.v1'
 const offer = {
   v: 2,
   endpoint: 'ws://192.168.1.10:6768',

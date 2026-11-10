@@ -53,7 +53,7 @@ export const pluginCatalogReleaseDetailFields = {
     .catch(undefined)
     .meta(
       pluginFieldDoc(
-        "Source repository page, https only. Orca links it when it is a github.com or gitlab.com repository of the plugin's publisher.",
+        "Source repository page, https only. Topo links it when it is a github.com or gitlab.com repository of the plugin's publisher.",
         NEXT,
         ['https://github.com/acme/orca-gleam-syntax']
       )
@@ -64,7 +64,7 @@ export const pluginCatalogReleaseDetailFields = {
     .catch(undefined)
     .meta(
       pluginFieldDoc(
-        "Set when the release's `repository` is gone and `source` serves an archived copy, so Orca links `source` instead.",
+        "Set when the release's `repository` is gone and `source` serves an archived copy, so Topo links `source` instead.",
         PLUGIN_DERIVED_PUBLISHER_SINCE,
         [true]
       )

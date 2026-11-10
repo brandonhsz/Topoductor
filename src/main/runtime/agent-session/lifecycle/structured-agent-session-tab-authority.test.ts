@@ -15,7 +15,7 @@ vi.mock('../../../claude/claude-cli-flag-prewarm', () => ({
 
 const layoutOwner = vi.hoisted(() => ({ main: false }))
 vi.mock('../../../../shared/layout-owner-switch', () => ({
-  get ORCA_LAYOUT_OWNER_IS_MAIN() {
+  get TOPO_LAYOUT_OWNER_IS_MAIN() {
     return layoutOwner.main
   }
 }))

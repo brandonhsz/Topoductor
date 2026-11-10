@@ -18,7 +18,7 @@ import type {
 } from '../../../../../shared/wsl-drive-unc-renderer-store-keys'
 import { WSL_MOVE_RENDERER_REWRITE_STORE_IDS } from '../../../../../shared/wsl-move/wsl-move-renderer-rewrite-types'
 
-const APPLIED_STORAGE_KEY = 'orca.wsl-drive-unc.renderer-rewrites.v1'
+const APPLIED_STORAGE_KEY = 'topo.wsl-drive-unc.renderer-rewrites.v1'
 const MAX_APPLIED_MARKERS = 256
 
 type StoreId = (typeof WSL_MOVE_RENDERER_REWRITE_STORE_IDS)[number]

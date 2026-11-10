@@ -7,7 +7,7 @@ import { ReserveLedgerWriter } from './reserve-placement/reserve-ledger-writer.j
 
 // Only host-requested moves may leave a reserve cell proven dead by heartbeat and poll silence without a fence; live cells retain hosts.
 
-const databaseUrl = process.env.ORCA_RELAY_TEST_POSTGRES_URL
+const databaseUrl = process.env.TOPO_RELAY_TEST_POSTGRES_URL
 const describePostgres = databaseUrl ? describe : describe.skip
 
 const HEARTBEAT_TTL_MS = 45_000

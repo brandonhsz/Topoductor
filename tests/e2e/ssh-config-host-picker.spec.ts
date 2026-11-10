@@ -1,4 +1,4 @@
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { waitForSessionReady } from './helpers/store'
 import {
   addSshHostFormFields,
@@ -20,18 +20,18 @@ test.use({ seedTestRepo: false })
 const HOST_PREFIX = makeSshConfigHostPrefix()
 
 test.describe('SSH config host picker', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
   })
 
-  test.afterEach(async ({ orcaPage }) => {
-    await closeOpenDialogs(orcaPage).catch(() => undefined)
-    await removeSshTargetsByPrefix(orcaPage, HOST_PREFIX).catch(() => undefined)
+  test.afterEach(async ({ topoPage }) => {
+    await closeOpenDialogs(topoPage).catch(() => undefined)
+    await removeSshTargetsByPrefix(topoPage, HOST_PREFIX).catch(() => undefined)
   })
 
   test('P3: select host prefills form; Save persists; N3 identity hint', async ({
     electronApp,
-    orcaPage
+    topoPage
   }) => {
     const prod: SeededSshConfigHost = {
       alias: `${HOST_PREFIX}-prod`,
@@ -41,10 +41,10 @@ test.describe('SSH config host picker', () => {
     }
     await seedIsolatedSshConfig(electronApp, buildSshConfigBody([prod]))
 
-    const picker = await openSshConfigHostPicker(orcaPage)
+    const picker = await openSshConfigHostPicker(topoPage)
     await configHostRow(picker, prod).click()
 
-    const form = orcaPage.getByRole('dialog', { name: 'Add SSH host' })
+    const form = topoPage.getByRole('dialog', { name: 'Add SSH host' })
     await expect(form.getByRole('heading', { name: 'Add SSH host' })).toBeVisible({
       timeout: 10_000
     })
@@ -59,14 +59,14 @@ test.describe('SSH config host picker', () => {
       form.getByText(new RegExp(`Left empty on purpose:.*${escapeRegExp(prod.alias)}`, 'i'))
     ).toBeVisible()
     await expect(
-      orcaPage.getByText(new RegExp(`Filled from ${escapeRegExp(prod.alias)}`, 'i'))
+      topoPage.getByText(new RegExp(`Filled from ${escapeRegExp(prod.alias)}`, 'i'))
     ).toBeVisible({ timeout: 5_000 })
 
     await form.getByRole('button', { name: 'Save' }).click()
     await expect(form).toBeHidden({ timeout: 10_000 })
 
     // The saved settings card is durable; the success toast is not.
-    const sshSection = await openSshHostSettings(orcaPage)
+    const sshSection = await openSshHostSettings(topoPage)
     await expectSshHostListedInSettings(sshSection, prod)
   })
 })

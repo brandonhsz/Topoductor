@@ -78,7 +78,7 @@ jobs:
   release_gate:
     name: Authorize release
     if: >-
-      github.repository == 'stablyai/orca' &&
+      github.repository == 'brandonhsz/Topoductor' &&
       (github.event_name == 'release' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-24.04
     timeout-minutes: 5

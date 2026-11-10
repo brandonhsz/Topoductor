@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { readFileSync, rmSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import type { Page, TestInfo } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   ensureTerminalVisible,
   getAllWorktreeIds,
@@ -422,7 +422,7 @@ async function closeFeatureTips(page: Page): Promise<void> {
     const store = window.__store
     store
       ?.getState()
-      .markFeatureTipsSeen(['orca-cli', 'cmd-j-palette', 'voice-dictation', 'agent-session-search'])
+      .markFeatureTipsSeen(['topo-cli', 'cmd-j-palette', 'voice-dictation', 'agent-session-search'])
     if (store?.getState().activeModal === 'feature-tips') {
       store.getState().closeModal()
     }
@@ -452,8 +452,8 @@ async function expectAutoWebgl(page: Page): Promise<boolean> {
 }
 
 test.describe('Terminal raw emoji table scroll restore repro', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await orcaPage.evaluate(() => {
+  test.beforeEach(async ({ topoPage }) => {
+    await topoPage.evaluate(() => {
       ;(window as RawTableDebugWindow).getActiveTestPane = () => {
         const store = window.__store
         const state = store?.getState()
@@ -478,13 +478,13 @@ test.describe('Terminal raw emoji table scroll restore repro', () => {
 
   // v1.4.51 minimal golden rejects one-scrollbar-column underfit and ZWJ emoji counted as width 4.
   test('keeps raw emoji box table aligned after restore and scroll @terminal-rendering-golden', async ({
-    orcaPage,
+    topoPage,
     testRepoPath
   }, testInfo: TestInfo) => {
-    await waitForSessionReady(orcaPage)
-    await closeFeatureTips(orcaPage)
-    const firstWorktreeId = await waitForActiveWorktree(orcaPage)
-    const secondWorktreeId = (await getAllWorktreeIds(orcaPage)).find(
+    await waitForSessionReady(topoPage)
+    await closeFeatureTips(topoPage)
+    const firstWorktreeId = await waitForActiveWorktree(topoPage)
+    const secondWorktreeId = (await getAllWorktreeIds(topoPage)).find(
       (id) => id !== firstWorktreeId
     )
     test.skip(!secondWorktreeId, 'raw emoji table repro needs the seeded secondary worktree')
@@ -492,56 +492,56 @@ test.describe('Terminal raw emoji table scroll restore repro', () => {
       return
     }
 
-    await ensureTerminalVisible(orcaPage)
-    await waitForActiveTerminalManager(orcaPage, 30_000)
-    await setWideRenderedTableViewport(orcaPage)
-    await waitForActiveTerminalColumns(orcaPage, RAW_EMOJI_BOX_TABLE_WIDTH)
-    const ptyId = await waitForActivePanePtyId(orcaPage)
+    await ensureTerminalVisible(topoPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
+    await setWideRenderedTableViewport(topoPage)
+    await waitForActiveTerminalColumns(topoPage, RAW_EMOJI_BOX_TABLE_WIDTH)
+    const ptyId = await waitForActivePanePtyId(topoPage)
     const runId = randomUUID()
-    const scriptPath = path.join(testRepoPath, `.orca-raw-emoji-fixture-table-${runId}.mjs`)
+    const scriptPath = path.join(testRepoPath, `.topo-raw-emoji-fixture-table-${runId}.mjs`)
     writeFileSync(scriptPath, rawEmojiFixtureBoxTableScript(EMOJI_TABLE_FIXTURE, runId))
 
     try {
       const completionMarker = rawEmojiFixtureCompletionMarker(runId)
       const frameTailMarker = rawEmojiFixtureFrameTailMarker(runId)
       // Use fixture-marker readiness; extra Ctrl+C/Ctrl+U can race ConPTY startup and consume input.
-      await sendToTerminal(orcaPage, ptyId, `${nodeTerminalCommand([scriptPath])}\r`)
+      await sendToTerminal(topoPage, ptyId, `${nodeTerminalCommand([scriptPath])}\r`)
       // Wait out synchronized output before hiding: PowerShell prompt return can precede xterm flush, unrelated to restored geometry.
-      await waitForTerminalOutput(orcaPage, completionMarker, 20_000, 30_000)
+      await waitForTerminalOutput(topoPage, completionMarker, 20_000, 30_000)
       await expect
-        .poll(() => getTerminalContent(orcaPage, 30_000), {
+        .poll(() => getTerminalContent(topoPage, 30_000), {
           timeout: 10_000,
           message: 'raw emoji table synchronized frame tail was not rendered'
         })
         .toContain(frameTailMarker)
-      await switchToWorktree(orcaPage, secondWorktreeId)
-      await waitForActiveTerminalManager(orcaPage, 30_000)
-      await orcaPage.waitForTimeout(1_000)
+      await switchToWorktree(topoPage, secondWorktreeId)
+      await waitForActiveTerminalManager(topoPage, 30_000)
+      await topoPage.waitForTimeout(1_000)
       // Widen before worktree return so immediate replay cannot wrap the table.
-      await setWideRenderedTableViewport(orcaPage)
-      await switchToWorktree(orcaPage, firstWorktreeId)
+      await setWideRenderedTableViewport(topoPage)
+      await switchToWorktree(topoPage, firstWorktreeId)
       // Keep the deliberate wide viewport despite worktree activation restoring the right sidebar.
-      await ensureTerminalVisible(orcaPage)
-      await waitForActiveTerminalManager(orcaPage, 30_000)
-      await setWideRenderedTableViewport(orcaPage)
-      await waitForActiveTerminalColumns(orcaPage, RAW_EMOJI_BOX_TABLE_WIDTH)
+      await ensureTerminalVisible(topoPage)
+      await waitForActiveTerminalManager(topoPage, 30_000)
+      await setWideRenderedTableViewport(topoPage)
+      await waitForActiveTerminalColumns(topoPage, RAW_EMOJI_BOX_TABLE_WIDTH)
       await expect
-        .poll(() => getTerminalContent(orcaPage, 30_000), {
+        .poll(() => getTerminalContent(topoPage, 30_000), {
           timeout: 30_000,
           message: 'raw emoji table marker did not survive workspace switch'
         })
         .toContain(completionMarker)
 
-      await scrollActiveTerminalToText(orcaPage, 'Singer')
-      await closeFeatureTips(orcaPage)
-      const expectedWebgl = await expectAutoWebgl(orcaPage)
+      await scrollActiveTerminalToText(topoPage, 'Singer')
+      await closeFeatureTips(topoPage)
+      const expectedWebgl = await expectAutoWebgl(topoPage)
       // Wait for async WebGL reattach/backoff and transient cursorHidden after restore.
       // Keep geometry/wrap/overpaint assertions single-shot as the regression signal.
-      let diagnostics = await readTerminalRenderDiagnostics(orcaPage)
+      let diagnostics = await readTerminalRenderDiagnostics(topoPage)
       await expect
         .poll(
           async () => {
-            diagnostics = await readTerminalRenderDiagnostics(orcaPage)
+            diagnostics = await readTerminalRenderDiagnostics(topoPage)
             return diagnostics.hasWebgl === expectedWebgl && diagnostics.cursorHidden === false
           },
           {
@@ -550,9 +550,9 @@ test.describe('Terminal raw emoji table scroll restore repro', () => {
           }
         )
         .toBe(true)
-      const overpaint = await readTerminalRightEdgeOverpaint(orcaPage)
-      const wrapDiagnostics = await readTerminalBoxTableWrapDiagnostics(orcaPage)
-      const singerGeometry = await readVisibleSingerRowGeometry(orcaPage)
+      const overpaint = await readTerminalRightEdgeOverpaint(topoPage)
+      const wrapDiagnostics = await readTerminalBoxTableWrapDiagnostics(topoPage)
+      const singerGeometry = await readVisibleSingerRowGeometry(topoPage)
       testInfo.annotations.push({
         type: 'raw-emoji-table-singer-geometry',
         description: JSON.stringify(singerGeometry)
@@ -567,7 +567,7 @@ test.describe('Terminal raw emoji table scroll restore repro', () => {
       })
 
       const screenshotPath = testInfo.outputPath('raw-emoji-table-after-switch-scroll.png')
-      await orcaPage.screenshot({ path: screenshotPath, fullPage: true })
+      await topoPage.screenshot({ path: screenshotPath, fullPage: true })
       await testInfo.attach('raw-emoji-table-after-switch-scroll.png', {
         path: screenshotPath,
         contentType: 'image/png'

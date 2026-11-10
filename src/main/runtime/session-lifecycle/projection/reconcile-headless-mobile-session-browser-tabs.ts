@@ -1,11 +1,11 @@
-import type { OrcaRuntimeWithStoredMobileSnapshotHasStalePreservedTab as BrowserOwnership } from '../../session-tabs/mobile-session-publication-preservation'
-import type { OrcaRuntimeWithPruneMobileSessionTabGroupLayout as MobileSessionProjection } from './prune-mobile-session-tab-group-layout'
-import type { OrcaRuntimeWithCloseStructuredAgentSessionTab as StructuredSessionClose } from '../../session-tabs/structured-session-tab-close'
-import type { OrcaRuntimeWithPerformMobileSessionPtyRecordsRefresh as MobileSessionRefresh } from './perform-mobile-session-pty-records-refresh'
+import type { TopoRuntimeWithStoredMobileSnapshotHasStalePreservedTab as BrowserOwnership } from '../../session-tabs/mobile-session-publication-preservation'
+import type { TopoRuntimeWithPruneMobileSessionTabGroupLayout as MobileSessionProjection } from './prune-mobile-session-tab-group-layout'
+import type { TopoRuntimeWithCloseStructuredAgentSessionTab as StructuredSessionClose } from '../../session-tabs/structured-session-tab-close'
+import type { TopoRuntimeWithPerformMobileSessionPtyRecordsRefresh as MobileSessionRefresh } from './perform-mobile-session-pty-records-refresh'
 import type { RuntimeWorkspaceCatalog as WorkspaceCatalog } from '../../workspaces/catalog/workspace-catalog'
-import type { OrcaRuntimeWithResolveMobileSessionTerminalCommand as MobileTerminalStartup } from '../../terminal/launch/mobile-terminal-startup'
-import type { OrcaRuntimeWithCreateRuntimeOwnedMobileSessionTerminal as OwnedMobileTerminalCreate } from '../../terminal/launch/mobile-terminal-owned-create'
-import { OrcaRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession } from '../../session-tabs/mobile-session-hydration'
+import type { TopoRuntimeWithResolveMobileSessionTerminalCommand as MobileTerminalStartup } from '../../terminal/launch/mobile-terminal-startup'
+import type { TopoRuntimeWithCreateRuntimeOwnedMobileSessionTerminal as OwnedMobileTerminalCreate } from '../../terminal/launch/mobile-terminal-owned-create'
+import { TopoRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession } from '../../session-tabs/mobile-session-hydration'
 import type {
   RuntimeMobileSessionBrowserTab,
   RuntimeMobileSessionSnapshotTab,
@@ -24,7 +24,7 @@ import { SSH_PANE_RECOVERY_GRACE_MS } from '../../terminal/recovery/ssh-pane-rec
 import { findTerminalTabIdForLeaf } from '../../../persistence/terminal-topology/terminal-topology-membership'
 import { isServeMintedPtySessionId } from '../../../../shared/terminal/pty/lifecycle/pty-session-id-format'
 
-export abstract class OrcaRuntimeWithReconcileHeadlessMobileSessionBrowserTabs extends OrcaRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession {
+export abstract class TopoRuntimeWithReconcileHeadlessMobileSessionBrowserTabs extends TopoRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession {
   protected abstract getAcceptedRendererIdentityKeysForMobileSessionSnapshot(
     ...args: Parameters<BrowserOwnership['getAcceptedRendererIdentityKeysForMobileSessionSnapshot']>
   ): ReturnType<BrowserOwnership['getAcceptedRendererIdentityKeysForMobileSessionSnapshot']>

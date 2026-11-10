@@ -2,7 +2,7 @@ import { mockPanePtyArgs } from '../test-fixtures/pty-connection-test-connect-mo
 import { bindPtyConnectionTestMocks } from '../test-fixtures/pty-connection-mocks.spec'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makePaneKey } from '../../../../../../shared/workspace-layout/stable-pane-id'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import {
   expectNoWindowStart,
   expectWindowPaintsColdRestoreOnly,
@@ -125,7 +125,7 @@ export function registerPtyConnectionColdRestoreAgentResumeTests(): void {
       await flushAsyncTicks(20)
       await vi.advanceTimersByTimeAsync(70)
 
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         // Main resumes the agent; the window attaches, paints the host's history, and resumes nothing.
         expectWindowPaintsColdRestoreOnly(pane, transport, deps, mockStoreState, 'lost-pty')
         return
@@ -150,11 +150,11 @@ export function registerPtyConnectionColdRestoreAgentResumeTests(): void {
             transcriptPath: '/Users/example/.codex/sessions/2026/07/20/rollout-session.jsonl'
           },
           env: expect.objectContaining({
-            ORCA_PANE_KEY: paneKey,
-            ORCA_TAB_ID: 'tab-1',
-            ORCA_WORKTREE_ID: 'wt-1',
-            ORCA_WORKSPACE_ID: 'wt-1',
-            ORCA_AGENT_LAUNCH_TOKEN: expect.stringMatching(new RegExp(`^${UUID_RE}$`))
+            TOPO_PANE_KEY: paneKey,
+            TOPO_TAB_ID: 'tab-1',
+            TOPO_WORKTREE_ID: 'wt-1',
+            TOPO_WORKSPACE_ID: 'wt-1',
+            TOPO_AGENT_LAUNCH_TOKEN: expect.stringMatching(new RegExp(`^${UUID_RE}$`))
           })
         })
       )
@@ -233,7 +233,7 @@ export function registerPtyConnectionColdRestoreAgentResumeTests(): void {
       await flushAsyncTicks(20)
       await vi.advanceTimersByTimeAsync(70)
 
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         // Main resumes the agent; the window attaches, paints the host's history, and resumes nothing.
         expectWindowPaintsColdRestoreOnly(pane, transport, deps, mockStoreState, 'lost-pty')
         return
@@ -249,11 +249,11 @@ export function registerPtyConnectionColdRestoreAgentResumeTests(): void {
           sessionId: 'lost-pty',
           command: `codex '-c' 'disable_paste_burst=true' 'resume' 'codex-session-1'"'"'s'`,
           env: expect.objectContaining({
-            ORCA_PANE_KEY: paneKey,
-            ORCA_TAB_ID: 'tab-1',
-            ORCA_WORKTREE_ID: 'wt-1',
-            ORCA_WORKSPACE_ID: 'wt-1',
-            ORCA_AGENT_LAUNCH_TOKEN: expect.stringMatching(new RegExp(`^${UUID_RE}$`))
+            TOPO_PANE_KEY: paneKey,
+            TOPO_TAB_ID: 'tab-1',
+            TOPO_WORKTREE_ID: 'wt-1',
+            TOPO_WORKSPACE_ID: 'wt-1',
+            TOPO_AGENT_LAUNCH_TOKEN: expect.stringMatching(new RegExp(`^${UUID_RE}$`))
           })
         })
       )
@@ -322,7 +322,7 @@ export function registerPtyConnectionColdRestoreAgentResumeTests(): void {
       await flushAsyncTicks(20)
       await vi.advanceTimersByTimeAsync(70)
 
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         // Main resumes the agent; the window attaches, paints the host's history, and resumes nothing.
         expectWindowPaintsColdRestoreOnly(pane, transport, deps, mockStoreState, 'lost-pty')
         return
@@ -351,11 +351,11 @@ export function registerPtyConnectionColdRestoreAgentResumeTests(): void {
             transcriptPath
           },
           env: expect.objectContaining({
-            ORCA_PANE_KEY: paneKey,
-            ORCA_TAB_ID: 'tab-1',
-            ORCA_WORKTREE_ID: 'wt-1',
-            ORCA_WORKSPACE_ID: 'wt-1',
-            ORCA_AGENT_LAUNCH_TOKEN: expect.stringMatching(new RegExp(`^${UUID_RE}$`))
+            TOPO_PANE_KEY: paneKey,
+            TOPO_TAB_ID: 'tab-1',
+            TOPO_WORKTREE_ID: 'wt-1',
+            TOPO_WORKSPACE_ID: 'wt-1',
+            TOPO_AGENT_LAUNCH_TOKEN: expect.stringMatching(new RegExp(`^${UUID_RE}$`))
           })
         })
       )
@@ -459,7 +459,7 @@ export function registerPtyConnectionColdRestoreAgentResumeTests(): void {
       await flushAsyncTicks(20)
       await vi.advanceTimersByTimeAsync(70)
 
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         expectNoWindowStart(transport, mockStoreState)
         expect(transport.connect).toHaveBeenCalledWith(
           expect.objectContaining({ sessionId: 'lost-pty', attachOnlyView: true })
@@ -546,7 +546,7 @@ export function registerPtyConnectionColdRestoreAgentResumeTests(): void {
       await flushAsyncTicks(20)
       await vi.advanceTimersByTimeAsync(70)
 
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         // Main resumes the agent; the window attaches, paints the host's history, and resumes nothing.
         expectWindowPaintsColdRestoreOnly(pane, transport, deps, mockStoreState, 'lost-pty')
         return

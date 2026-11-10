@@ -3,7 +3,7 @@ import pg from 'pg'
 import { openInMemoryRelayDatabase, openRelayDatabase, type RelayDatabase } from '../../database/database.js'
 
 export async function openIdleRehomeTestDatabase(): Promise<RelayDatabase> {
-  const configured = process.env.ORCA_IDLE_REHOME_POSTGRES_URL
+  const configured = process.env.TOPO_IDLE_REHOME_POSTGRES_URL
   if (!configured) return openInMemoryRelayDatabase()
   const url = new URL(configured)
   if (url.port !== '55440' || !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)) {

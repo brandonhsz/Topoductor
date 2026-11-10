@@ -1,5 +1,5 @@
 // Kept apart from the worklet module, which calls registerProcessor and only loads in AudioWorkletGlobalScope.
-export const DICTATION_CAPTURE_WORKLET_NAME = 'orca-dictation-capture'
+export const DICTATION_CAPTURE_WORKLET_NAME = 'topo-dictation-capture'
 
 export type DictationCaptureWorkletOptions = {
   outputSampleRate: number

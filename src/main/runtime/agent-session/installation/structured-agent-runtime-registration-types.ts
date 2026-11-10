@@ -65,7 +65,7 @@ export type StructuredAgentAccountHomeServices = {
   workspaceTrustRepoDecision: (
     location: AgentSessionExecutionLocation | null
   ) => Parameters<typeof applyStructuredCodexWorkspaceTrust>[0]['repoDecision']
-  /** Orca's data folder on this host, where an agent's chats may keep an account of their own. */
+  /** Topo's data folder on this host, where an agent's chats may keep an account of their own. */
   stateDirectory: string
   /** The environment a chat start of `agent` on this host would launch from. */
   hostLaunchEnvironment: (agent: string) => Promise<Record<string, string>>
@@ -109,7 +109,7 @@ export type StructuredAgentLaunchCheck = {
 export type StructuredAgentChatProgram = {
   /** Resolves the binary a chat start from `env` runs, spawning nothing; throws launch refusals. */
   resolve: StructuredAgentLaunchCheck['resolveLaunch']
-  /** Whether Orca can download this program on this host when none is found. */
+  /** Whether Topo can download this program on this host when none is found. */
   installable?: () => boolean
   /** Whether a new chat would run a compatible program the host already has instead. */
   hostAlternative?: (

@@ -5,13 +5,13 @@ import { fetchJiraIssueDetail } from './mobile-jira-task-source'
 
 const issue: JiraIssue = {
   id: '1',
-  key: 'ORCA-7',
+  key: 'TOPO-7',
   title: 'Read Jira on mobile',
-  url: 'https://acme.atlassian.net/browse/ORCA-7',
+  url: 'https://acme.atlassian.net/browse/TOPO-7',
   siteId: 'site-a',
   description: 'A description',
   labels: ['mobile'],
-  project: { id: 'p', key: 'ORCA', name: 'Orca' },
+  project: { id: 'p', key: 'TOPO', name: 'Topo' },
   issueType: { id: 'task', name: 'Task' },
   status: { id: 'open', name: 'Open', categoryKey: 'new', categoryName: 'To Do' },
   updatedAt: '2026-01-01T00:00:00Z',

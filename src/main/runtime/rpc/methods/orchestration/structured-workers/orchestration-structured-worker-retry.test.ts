@@ -83,7 +83,7 @@ async function createWorker() {
     }),
     publishStructuredAgentSessionTab: async () => {},
     getNestedWorkerMaxDepth: () => 2,
-    getTerminalOrchestrationCliCommand: () => 'orca',
+    getTerminalOrchestrationCliCommand: () => 'topo',
     orchestrationSenderNames: { snapshotOf: () => ({ name: 'Coordinator', agent: null }) },
     captureStructuredAgentSessionPresentation: (id: string) => ({
       raw: { worktreeId: 'workspace-1', tabId: `agent-session:${id}` },

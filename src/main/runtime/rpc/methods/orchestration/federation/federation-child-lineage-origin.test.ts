@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -21,7 +21,7 @@ describe('a server nesting an orchestration worker under a workspace on another 
 
   async function createdLineage(attach: Record<string, unknown>) {
     db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     vi.spyOn(runtime, 'validateOrchestrationAgentLauncher').mockImplementation(() => {})
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: worktree-creation support reads only id and kind.

@@ -10,7 +10,7 @@ import { createSkillPackageArchive } from '../package-archive/skill-package-crea
 
 const execFileAsync = promisify(execFile)
 const RUN_REAL_WINDOWS =
-  process.platform === 'win32' && process.env.ORCA_REAL_WINDOWS_SKILL_TEST === '1'
+  process.platform === 'win32' && process.env.TOPO_REAL_WINDOWS_SKILL_TEST === '1'
 
 describe.runIf(RUN_REAL_WINDOWS)('real Windows skill workspace installation', () => {
   let root = ''
@@ -37,12 +37,12 @@ describe.runIf(RUN_REAL_WINDOWS)('real Windows skill workspace installation', ()
   }
 
   beforeAll(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-windows-skill-integration-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-windows-skill-integration-'))
     homeDirectory = join(root, 'host home-é')
     const repository = join(root, 'repository')
     gitWorktree = join(root, 'Git worktree-é')
     folderWorkspace = join(root, 'Folder workspace-é')
-    stateDirectory = join(root, 'orca state')
+    stateDirectory = join(root, 'topo state')
     const source = join(root, 'Skill source-é')
     await Promise.all([
       mkdir(homeDirectory),
@@ -53,8 +53,8 @@ describe.runIf(RUN_REAL_WINDOWS)('real Windows skill workspace installation', ()
       writeFile(join(root, 'system.gitconfig'), '')
     ])
     await git(['init', '--quiet'], repository)
-    await git(['config', 'user.name', 'Orca Test'], repository)
-    await git(['config', 'user.email', 'orca@example.invalid'], repository)
+    await git(['config', 'user.name', 'Topo Test'], repository)
+    await git(['config', 'user.email', 'topo@example.invalid'], repository)
     await writeFile(join(repository, 'README.md'), 'fixture\n')
     await git(['add', 'README.md'], repository)
     await git(['commit', '--quiet', '-m', 'fixture'], repository)

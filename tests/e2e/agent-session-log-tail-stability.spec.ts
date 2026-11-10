@@ -2,7 +2,7 @@ import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 
 const ANCHOR_TOKEN = 'E2E_LIVE_LOG_STABLE_ANCHOR'
 const INITIAL_PAYLOAD_BYTES = 9 * 1024 * 1024
@@ -24,12 +24,12 @@ declare global {
 
 test.describe('Agent Session History live log', () => {
   test.use({
-    orcaAppExtraArgs: ['--js-flags=--expose-gc', '--enable-precise-memory-info']
+    topoAppExtraArgs: ['--js-flags=--expose-gc', '--enable-precise-memory-info']
   })
 
   test('keeps a long View Log viewport stable while the transcript grows', async ({
     electronApp,
-    orcaPage,
+    topoPage,
     testRepoPath
   }, testInfo) => {
     test.setTimeout(10 * 60_000)
@@ -39,24 +39,24 @@ test.describe('Agent Session History live log', () => {
       BrowserWindow.getAllWindows()[0]?.webContents.setZoomFactor(1)
     })
 
-    await orcaPage.setViewportSize({ width: 520, height: 720 })
-    await openSessionHistory(orcaPage)
-    const title = orcaPage.getByText(fixture.title, { exact: true }).first()
+    await topoPage.setViewportSize({ width: 520, height: 720 })
+    await openSessionHistory(topoPage)
+    const title = topoPage.getByText(fixture.title, { exact: true }).first()
     await expect(title).toBeVisible({ timeout: 30_000 })
     await title.click()
-    await orcaPage.getByText('View Log', { exact: true }).click()
+    await topoPage.getByText('View Log', { exact: true }).click()
     await expect
-      .poll(() => readProbeOrNull(orcaPage), { timeout: 120_000 })
+      .poll(() => readProbeOrNull(topoPage), { timeout: 120_000 })
       .toMatchObject({ filePath: fixture.filePath, valueLength: fixture.initialLength })
-    await orcaPage.setViewportSize({ width: 900, height: 720 })
-    await orcaPage.evaluate(async () => {
+    await topoPage.setViewportSize({ width: 900, height: 720 })
+    await topoPage.evaluate(async () => {
       const state = window.__store?.getState()
       state?.setRightSidebarOpen(false)
       state?.setEditorFontZoomLevel(0)
       await state?.updateSettings({ terminalFontSize: 13 })
     })
 
-    let baseline = await restoreAnchorState(orcaPage, true)
+    let baseline = await restoreAnchorState(topoPage, true)
     console.log(`[live-log-stability] geometry ${JSON.stringify(baseline)}`)
     // Prove content via full 9 MiB length; font-dependent wrap height needs only a generous truncation floor.
     expect(baseline.valueLength).toBe(fixture.initialLength)
@@ -75,8 +75,8 @@ test.describe('Agent Session History live log', () => {
 
     for (let batch = 0; batch < 3; batch++) {
       const equivalentState = baseline
-      replacementMemory.push(await measureLegacyControl(electronApp, orcaPage, baseline, batch))
-      baseline = await restoreAnchorState(orcaPage, baseline.find.open, equivalentState.scrollTop)
+      replacementMemory.push(await measureLegacyControl(electronApp, topoPage, baseline, batch))
+      baseline = await restoreAnchorState(topoPage, baseline.find.open, equivalentState.scrollTop)
       expect(baseline.contentHeight).toBe(equivalentState.contentHeight)
       expect(baseline.valueLength).toBe(equivalentState.valueLength)
       expect(baseline.valueTail).toBe(equivalentState.valueTail)
@@ -85,19 +85,19 @@ test.describe('Agent Session History live log', () => {
       expect(baseline.find).toEqual(equivalentState.find)
       expect(Math.abs(baseline.scrollTop - equivalentState.scrollTop)).toBeLessThanOrEqual(2)
       const suffix = `${JSON.stringify({ type: 'e2e_append', batch, text: 'tail-only' })}\n`
-      await forceGcAndSettle(orcaPage)
-      const before = await readMemory(electronApp, orcaPage)
+      await forceGcAndSettle(topoPage)
+      const before = await readMemory(electronApp, topoPage)
       appendFileSync(fixture.filePath, suffix)
       fixture.initialLength += suffix.length
-      await orcaPage.waitForTimeout(APPEND_CADENCE_MS)
+      await topoPage.waitForTimeout(APPEND_CADENCE_MS)
       await expect
-        .poll(() => readProbe(orcaPage), { timeout: 30_000 })
+        .poll(() => readProbe(topoPage), { timeout: 30_000 })
         .toMatchObject({ valueLength: fixture.initialLength })
-      const after = await readMemory(electronApp, orcaPage)
-      await forceGcAndSettle(orcaPage)
-      const settled = await readMemory(electronApp, orcaPage)
+      const after = await readMemory(electronApp, topoPage)
+      await forceGcAndSettle(topoPage)
+      const settled = await readMemory(electronApp, topoPage)
       suffixMemory.push({ before, after, settled })
-      const current = await readProbe(orcaPage)
+      const current = await readProbe(topoPage)
       console.log(`[live-log-stability] anchor ${JSON.stringify({ batch, baseline, current })}`)
       expect(current.visibleRanges).toEqual(baseline.visibleRanges)
       expect(current.canUndo).toBe(false)
@@ -105,16 +105,16 @@ test.describe('Agent Session History live log', () => {
       expect(current.selection).toEqual(baseline.selection)
       expect(current.find).toEqual(baseline.find)
       expect(Math.abs(current.scrollTop - baseline.scrollTop)).toBeLessThanOrEqual(2)
-      expect(await orcaPage.evaluate(() => 2 + 2)).toBe(4)
+      expect(await topoPage.evaluate(() => 2 + 2)).toBe(4)
       expect((await readMainProcessCrashProbe(electronApp)).processGone).toBeNull()
       baseline = current
       if (batch === 0) {
-        await orcaPage.keyboard.press('Escape')
-        await expect(orcaPage.locator('.monaco-editor .find-widget')).toHaveAttribute(
+        await topoPage.keyboard.press('Escape')
+        await expect(topoPage.locator('.monaco-editor .find-widget')).toHaveAttribute(
           'aria-hidden',
           'true'
         )
-        baseline = await readProbe(orcaPage)
+        baseline = await readProbe(topoPage)
         expect(baseline.find.open).toBe(false)
       }
     }
@@ -124,7 +124,7 @@ test.describe('Agent Session History live log', () => {
     )
     assertMemoryBudget(suffixMemory, replacementMemory)
     await testInfo.attach('synthetic-live-log-stable', {
-      body: await orcaPage.screenshot(),
+      body: await topoPage.screenshot(),
       contentType: 'image/png'
     })
   })

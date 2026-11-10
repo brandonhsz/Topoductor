@@ -3,9 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { NEWER_DAEMON_HOLD_ERROR } from '../../../../shared/newer-daemon-hold'
 import { LOCAL_EXECUTION_HOST_ID, type ExecutionHostId } from '../../../../shared/execution-host'
 import type * as DaemonHoldModule from '../../../daemon/providers/routing/daemon-newer-protocol-hold'
-import { committingSpawn } from '../../orca-runtime-tests/bind-first-pane.test-fixture'
+import { committingSpawn } from '../../topo-runtime-tests/bind-first-pane.test-fixture'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 const daemonHold = vi.hoisted(() => ({ reopen: vi.fn() }))
 vi.mock('../../../daemon/providers/routing/daemon-newer-protocol-hold', async (importOriginal) => ({
   ...(await importOriginal<typeof DaemonHoldModule>()),
@@ -13,16 +13,16 @@ vi.mock('../../../daemon/providers/routing/daemon-newer-protocol-hold', async (i
 }))
 
 // Preserve side-effect order: mocks, lifecycle, fixtures.
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const {
   HEADLESS_LEAF_ID,
   makeDeferred,
   TEST_WORKTREE_ID,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} = await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
+} = await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
 
 const PANE = { worktreeId: TEST_WORKTREE_ID, tabId: 'host-tab', leafId: HEADLESS_LEAF_ID }
 
@@ -30,7 +30,7 @@ async function heldPaneRuntime() {
   const { runtimeStore, getSession, setSession } = makeRuntimeStoreWithWorkspaceSession(
     makeWorkspaceSessionWithHeadlessTerminal()
   )
-  const runtime = new OrcaRuntimeService(
+  const runtime = new TopoRuntimeService(
     Object.assign(runtimeStore, {
       getWorkspaceSessionHostIds: (): ExecutionHostId[] => [LOCAL_EXECUTION_HOST_ID]
     })
@@ -63,7 +63,7 @@ async function heldPaneRuntime() {
   return { runtime, spawn, getSession, setSession, desktopStream }
 }
 
-function publishedStatus(runtime: InstanceType<typeof OrcaRuntimeService>) {
+function publishedStatus(runtime: InstanceType<typeof TopoRuntimeService>) {
   const { snapshot, unsubscribe } = runtime.subscribeWorkspaceLayouts(() => {})
   unsubscribe()
   return snapshot

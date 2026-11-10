@@ -2,12 +2,12 @@ import { join, basename } from 'node:path'
 import { mkdirSync, existsSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { readFile, stat } from 'node:fs/promises'
 import {
-  dropInheritedOrcaFishHistory,
+  dropInheritedTopoFishHistory,
   fishHistorySessionName,
   isSafeFishHistorySession,
   resolveFishHistoryDir
 } from './fish-history-session'
-import { dropInheritedOrcaHistFile } from './worktree-history-file-path'
+import { dropInheritedTopoHistFile } from './worktree-history-file-path'
 import { parseWslPath } from '../../wsl/filesystem/unc-path-access'
 import { toLinuxPath } from '../../../shared/wsl-paths'
 import { getHistoryRoot, getHistoryRootWsl } from './terminal-history-paths'
@@ -205,10 +205,10 @@ export function injectHistoryEnv(
   cwd: string,
   options: { wslDistro?: string | null } = {}
 ): HistoryInjectionResult {
-  // Nested Orca launches inherit this value; clear it before any early return to prevent history leaks.
-  delete spawnEnv.ORCA_HISTFILE
-  dropInheritedOrcaFishHistory(spawnEnv)
-  dropInheritedOrcaHistFile(spawnEnv)
+  // Nested Topo launches inherit this value; clear it before any early return to prevent history leaks.
+  delete spawnEnv.TOPO_HISTFILE
+  dropInheritedTopoFishHistory(spawnEnv)
+  dropInheritedTopoHistFile(spawnEnv)
 
   const shell = resolveShellKind(shellPath)
   const result: HistoryInjectionResult = {
@@ -223,7 +223,7 @@ export function injectHistoryEnv(
     return result
   }
 
-  // Preserve caller-provided history settings after dropping inherited Orca values.
+  // Preserve caller-provided history settings after dropping inherited Topo values.
   if (shell === 'fish' ? spawnEnv.fish_history : spawnEnv.HISTFILE) {
     return result
   }
@@ -254,7 +254,7 @@ export function injectHistoryEnv(
 
   spawnEnv.HISTFILE = wslDistro ? toLinuxPath(histFilePath) : histFilePath
   // Preserve the injected path across system zshrc's unconditional HISTFILE assignment.
-  spawnEnv.ORCA_HISTFILE = spawnEnv.HISTFILE
+  spawnEnv.TOPO_HISTFILE = spawnEnv.HISTFILE
 
   result.histFile = spawnEnv.HISTFILE
   result.historyDir = spawnEnv.HISTFILE.replace(/[/\\][^/\\]+$/, '')
@@ -267,8 +267,8 @@ export function injectWslFishHistoryEnv(
   worktreeId: string,
   wslDistro: string
 ): string | null {
-  // Drop inherited Orca sessions even when the caller did not run injectHistoryEnv first.
-  dropInheritedOrcaFishHistory(spawnEnv)
+  // Drop inherited Topo sessions even when the caller did not run injectHistoryEnv first.
+  dropInheritedTopoFishHistory(spawnEnv)
   if (spawnEnv.fish_history) {
     return null
   }
@@ -299,11 +299,11 @@ export function updateHistoryEnvForFallback(
   const newFilename = historyFilename(resolveShellKind(fallbackShellPath))
   if (!newFilename) {
     delete spawnEnv.HISTFILE
-    delete spawnEnv.ORCA_HISTFILE
+    delete spawnEnv.TOPO_HISTFILE
     return
   }
   spawnEnv.HISTFILE = `${injected.historyDir}/${newFilename}`
-  spawnEnv.ORCA_HISTFILE = spawnEnv.HISTFILE
+  spawnEnv.TOPO_HISTFILE = spawnEnv.HISTFILE
 }
 
 export function logHistoryInjection(worktreeId: string, result: HistoryInjectionResult): void {

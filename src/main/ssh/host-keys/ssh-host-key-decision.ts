@@ -1,5 +1,5 @@
 /** Keep host-key policy independent of handshake wiring and inject trust evidence for deterministic decisions. */
-import { isEphemeralRuntimeSshOwner } from '../../../shared/managed-orcad-ssh-owner'
+import { isEphemeralRuntimeSshOwner } from '../../../shared/managed-topod-ssh-owner'
 import type { SshTargetOwner } from '../../../shared/ssh-types'
 import type { KnownHostsOutcome } from './ssh-known-hosts'
 
@@ -10,7 +10,7 @@ export type HostKeyDecision = {
   action: HostKeyAction
   outcome: KnownHostsOutcome
   /** Name the disagreeing source so guidance points to a remedy that can work. */
-  disagreeingSource?: 'orca-store' | 'known-hosts'
+  disagreeingSource?: 'topo-store' | 'known-hosts'
   reason?: string
 }
 
@@ -113,7 +113,7 @@ export function decideHostKey(input: HostKeyDecisionInput): HostKeyDecision {
       )
     }
   }
-  // Accept known_hosts after legitimate rotation even if Orca trust is stale; it is the authority OpenSSH obeys.
+  // Accept known_hosts after legitimate rotation even if Topo trust is stale; it is the authority OpenSSH obeys.
   if (knownHostsOutcome === 'match') {
     return { action: 'accept', outcome: 'match' }
   }
@@ -121,7 +121,7 @@ export function decideHostKey(input: HostKeyDecisionInput): HostKeyDecision {
     return {
       action: 'reject',
       outcome: 'mismatch',
-      disagreeingSource: 'orca-store',
+      disagreeingSource: 'topo-store',
       reason: rejection(
         displayHost,
         `The key changed since you last connected. ${changedKeyHint(hostKeyStoreFile)}`
@@ -142,7 +142,7 @@ export function decideHostKey(input: HostKeyDecisionInput): HostKeyDecision {
     return {
       action: 'reject',
       outcome: 'unknown-type-known-host',
-      disagreeingSource: fromKnownHosts ? 'known-hosts' : 'orca-store',
+      disagreeingSource: fromKnownHosts ? 'known-hosts' : 'topo-store',
       reason: rejection(
         displayHost,
         // OpenSSH also refuses known hosts offering a different key type; ssh-keygen -R unblocks both.

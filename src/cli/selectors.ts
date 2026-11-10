@@ -78,7 +78,7 @@ export async function resolveCurrentWorktreeSelection(
   if (!selection) {
     throw new RuntimeClientError(
       'selector_not_found',
-      `No Orca workspace contains the current directory: ${resolvePath(cwd)}`
+      `No Topo workspace contains the current directory: ${resolvePath(cwd)}`
     )
   }
   return selection
@@ -175,7 +175,7 @@ export async function getBrowserWorktreeSelector(
   if (enclosing || isLaunchedByAnotherRuntime(process.env, client.userDataPath)) {
     return enclosing?.selector
   }
-  // An Orca terminal knows its workspace; without this an unmanaged cwd lands in the focused one.
+  // A Topo terminal knows its workspace; without this an unmanaged cwd lands in the focused one.
   return selectCallerTerminalWorkspace(catalog, hostId)
 }
 
@@ -223,7 +223,7 @@ export async function getComputerCommandTarget(
 export type EmulatorCliTarget = {
   worktree?: string
   device?: string
-  emulator?: string // Orca id from list
+  emulator?: string // Topo id from list
 }
 
 export async function getEmulatorWorktreeSelector(
@@ -245,14 +245,14 @@ export async function getEmulatorWorktreeSelector(
   if (client.isRemote) {
     return undefined
   }
-  const terminalWorktreeId = process.env.ORCA_WORKTREE_ID
+  const terminalWorktreeId = process.env.TOPO_WORKTREE_ID
   if (terminalWorktreeId?.trim()) {
     const scoped = await resolveCallerPaneWorktreeSelector(terminalWorktreeId, client)
     if (scoped) {
       return scoped
     }
   }
-  const folderWorkspaceId = process.env.ORCA_WORKSPACE_ID?.trim()
+  const folderWorkspaceId = process.env.TOPO_WORKSPACE_ID?.trim()
   if (folderWorkspaceId?.startsWith('folder:')) {
     return folderWorkspaceId
   }

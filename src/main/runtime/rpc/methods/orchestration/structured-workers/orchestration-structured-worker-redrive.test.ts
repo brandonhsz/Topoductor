@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { getDefaultWorkspaceSession } from '../../../../../../shared/constants'
-import { partialRuntimeStore } from '../../../../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../../../topo-runtime-tests/runtime-store-partial-fixture'
 import { withChatTabChanges } from '../../../../agent-session/agent-session-tab-layout'
 import { AGENT_JOURNAL_THREAD_SCOPE } from '../../../../../../shared/agent-session/journal/agent-session-journal-types'
 import '../../../../../native-chat/agent-session-wire/publication/history/agent-session-history-page'
@@ -22,7 +22,7 @@ import {
   releaseStructuredWorkerSession
 } from './orchestration-structured-worker-session'
 import { stopStructuredWorker } from './orchestration-structured-worker-lifecycle'
-import { OrcaRuntimeRpcServer } from '../../../server/runtime-rpc'
+import { TopoRuntimeRpcServer } from '../../../server/runtime-rpc'
 import { ORCHESTRATION_METHODS } from '../orchestration'
 import { STATUS_METHODS } from '../../host-management/status'
 import { createKeyedTrailingEdgeCoalescer } from '../../../../client/events/keyed-trailing-edge-coalescer'
@@ -140,7 +140,7 @@ function workerJournal(identity: StructuredWorkerIdentity) {
       .collaboratorsForTests()
       .sessions.get(identity.sessionId)!
       .journal.appendItem(
-        { provider: 'orca', clientMessageId: id },
+        { provider: 'topo', clientMessageId: id },
         { kind: 'status', text: id },
         {
           fence: store.requireWritableRecord(identity.sessionId).lease.runtimeFence,
@@ -304,7 +304,7 @@ describe('the structured redrive publication edge', () => {
           ?.messages.map((message) => message.id)
       ).toEqual([held.id])
       const fence = store.requireWritableRecord(worker.identity.sessionId).lease.runtimeFence
-      const turn = { provider: 'orca', clientMessageId: 'busy-turn' } as const
+      const turn = { provider: 'topo', clientMessageId: 'busy-turn' } as const
       await worker.journal.appendItem(
         turn,
         { kind: 'turn', turnId: 'busy-turn', state: 'running' },
@@ -314,13 +314,13 @@ describe('the structured redrive publication edge', () => {
       await vi.advanceTimersByTimeAsync(300)
       dispatch.mockClear()
       notify.mockClear()
-      for (const name of ['ORCA_AGENT_SESSION_ID', 'ORCA_ENVIRONMENT', 'ORCA_PAIRING_CODE']) {
+      for (const name of ['TOPO_AGENT_SESSION_ID', 'TOPO_ENVIRONMENT', 'TOPO_PAIRING_CODE']) {
         vi.stubEnv(name, '')
       }
-      vi.stubEnv('ORCA_USER_DATA_PATH', root)
-      vi.stubEnv('ORCA_TERMINAL_HANDLE', 'term_coord')
+      vi.stubEnv('TOPO_USER_DATA_PATH', root)
+      vi.stubEnv('TOPO_TERMINAL_HANDLE', 'term_coord')
       const output = vi.spyOn(console, 'log').mockImplementation(() => {})
-      const server = new OrcaRuntimeRpcServer({
+      const server = new TopoRuntimeRpcServer({
         runtime: state.runtime,
         userDataPath: root,
         enableWebSocket: false,
@@ -495,7 +495,7 @@ describe('the structured redrive publication edge', () => {
         dispatchId,
         resource
       })
-      const newTurn = { provider: 'orca', clientMessageId: 'new-turn-before-close' } as const
+      const newTurn = { provider: 'topo', clientMessageId: 'new-turn-before-close' } as const
       try {
         await heldClose.entered
         expect(state.db.getWorkerTerminalResource(resource.id)?.release_state).toBe('releasing')

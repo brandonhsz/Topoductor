@@ -3,7 +3,7 @@ import type {
   PluginMarketplaceHostListing,
   PluginMarketplaceHostSourceState
 } from '../../../../../preload/api-types'
-import { satisfiesOrcaEngineRange } from '../../../../../shared/plugins/manifest/plugin-manifest'
+import { satisfiesTopoEngineRange } from '../../../../../shared/plugins/manifest/plugin-manifest'
 import {
   pluginCatalogReleaseTypes,
   type PluginCatalogType
@@ -31,9 +31,9 @@ export type PluginListEntry = {
   categories: readonly string[]
   /** What the catalog says this release contributes; empty when unknown. */
   types: readonly PluginCatalogType[]
-  /** Oldest Orca the catalog release supports, e.g. "1.6.0". */
+  /** Oldest Topo the catalog release supports, e.g. "1.6.0". */
   minimumOrca: string | null
-  /** A newer catalog version than the installed one that this Orca can run, if any. */
+  /** A newer catalog version than the installed one that this Topo can run, if any. */
   updateVersion: string | null
   /** Catalog release to reinstall over an installed copy that can't load: same version, other bytes. */
   reinstallVersion?: string | null
@@ -109,12 +109,12 @@ function catalogVersion(listing: PluginMarketplaceHostListing): string | null {
   return listing.version ?? listing.release?.version ?? null
 }
 
-/** The minimum Orca a release needs when this Orca is older; null when it runs or either is unknown. */
-export function needsNewerOrca(
+/** The minimum Topo a release needs when this Topo is older; null when it runs or either is unknown. */
+export function needsNewerTopo(
   minimumOrca: string | null | undefined,
-  orcaVersion: string | null
+  topoVersion: string | null
 ): string | null {
-  return minimumOrca && orcaVersion && !satisfiesOrcaEngineRange(orcaVersion, `>=${minimumOrca}`)
+  return minimumOrca && topoVersion && !satisfiesTopoEngineRange(topoVersion, `>=${minimumOrca}`)
     ? minimumOrca
     : null
 }
@@ -122,14 +122,14 @@ export function needsNewerOrca(
 function newerCatalogVersion(
   plugin: PluginHostListEntry,
   listing: PluginMarketplaceHostListing | null,
-  orcaVersion: string | null
+  topoVersion: string | null
 ): string | null {
   const version = listing ? catalogVersion(listing) : null
   if (!version || plugin.source?.kind !== 'marketplace') {
     return null
   }
-  // Why: an update this Orca can't run isn't one to offer; Orca itself needs updating first.
-  if (needsNewerOrca(listing?.release?.minimumOrca, orcaVersion)) {
+  // Why: an update this Topo can't run isn't one to offer; Topo itself needs updating first.
+  if (needsNewerTopo(listing?.release?.minimumOrca, topoVersion)) {
     return null
   }
   return compareAppVersions(version, plugin.version) > 0 ? version : null
@@ -138,14 +138,14 @@ function newerCatalogVersion(
 function reinstallCatalogVersion(
   plugin: PluginHostListEntry,
   listing: PluginMarketplaceHostListing | null,
-  orcaVersion: string | null
+  topoVersion: string | null
 ): string | null {
   const release = listing?.release
   if (plugin.status !== 'invalid' || plugin.source?.kind !== 'marketplace' || !release) {
     return null
   }
   // Why bytes, not version: reinstalling the same bytes would fail the same way.
-  return needsNewerOrca(release.minimumOrca, orcaVersion) ||
+  return needsNewerTopo(release.minimumOrca, topoVersion) ||
     release.contentHash === plugin.source.contentHash
     ? null
     : release.version
@@ -156,15 +156,15 @@ export function pluginListEntryFromInstalled(
   listing: PluginMarketplaceHostListing | null = null,
   {
     catalogIds = [],
-    orcaVersion = null,
+    topoVersion = null,
     autoUpdates = null
   }: {
     catalogIds?: readonly string[]
-    orcaVersion?: string | null
+    topoVersion?: string | null
     autoUpdates?: PluginAutoUpdateState | null
   } = {}
 ): PluginListEntry {
-  const updateVersion = newerCatalogVersion(plugin, listing, orcaVersion)
+  const updateVersion = newerCatalogVersion(plugin, listing, topoVersion)
   return {
     pluginKey: plugin.pluginKey,
     name: sanitizePluginDisplayText(plugin.name) || pluginDisplayNameFromKey(plugin.pluginKey),
@@ -176,7 +176,7 @@ export function pluginListEntryFromInstalled(
     types: listing?.release ? pluginCatalogReleaseTypes(listing.release) : (plugin.types ?? []),
     minimumOrca: listing?.release?.minimumOrca ?? null,
     updateVersion,
-    reinstallVersion: updateVersion ? null : reinstallCatalogVersion(plugin, listing, orcaVersion),
+    reinstallVersion: updateVersion ? null : reinstallCatalogVersion(plugin, listing, topoVersion),
     catalogIds,
     updatable: plugin.source?.kind === 'marketplace' && listing !== null,
     autoUpdate: entryAutoUpdate(plugin, updateVersion, autoUpdates),
@@ -260,11 +260,11 @@ export function buildPluginListEntries(
   listings: readonly PluginMarketplaceHostListing[],
   {
     sources = [],
-    orcaVersion = null,
+    topoVersion = null,
     autoUpdates = null
   }: {
     sources?: readonly PluginMarketplaceHostSourceState[]
-    orcaVersion?: string | null
+    topoVersion?: string | null
     autoUpdates?: PluginAutoUpdateState | null
   } = {},
   t?: Translate
@@ -287,7 +287,7 @@ export function buildPluginListEntries(
         )
         const entry = pluginListEntryFromInstalled(plugin, listing, {
           catalogIds: catalogIdsOf(plugin.pluginKey),
-          orcaVersion,
+          topoVersion,
           autoUpdates
         })
         const own = ownCatalog && plugin.source?.marketplace ? listing : null

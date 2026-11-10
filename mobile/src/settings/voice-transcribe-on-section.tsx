@@ -6,7 +6,7 @@ import {
   speechAvailability,
   speechDownload,
   type SpeechAvailabilityStatus
-} from '@orca/expo-two-way-audio'
+} from '@topo/expo-two-way-audio'
 import { ListRow } from '../components/list/ListGroup'
 import type { Translate } from '../i18n/mobile-i18n'
 import { getUiIntlLocale } from '../i18n/ui-intl-locale'

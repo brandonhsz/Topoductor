@@ -1,31 +1,31 @@
 /** Use kernel boot ID and /proc start ticks for distro/process identity; wall-clock jumps after host sleep can misidentify live processes (microsoft/WSL#4179/#10006). */
-import type { OrcadProcessIncarnation } from '../../orcad/orcad-process-start-time'
-import type { OrcadHostTransport } from '../../managed-server/install/orcad-host-transport'
+import type { TopodProcessIncarnation } from '../../topod/topod-process-start-time'
+import type { TopodHostTransport } from '../../managed-server/install/topod-host-transport'
 import { execCommand } from '../../ssh/remote-exec/remote-exec-command'
 
 export type WslGuestIdentity = {
   /** `<boot_id>:<pid 1 start ticks>`; a distro restart (or a VM restart) changes it. */
   distroInstance: string
-  /** orcad's `<pid>:<start ticks>`; null when no pid was asked for or the process is gone. */
-  orcad: string | null
+  /** topod's `<pid>:<start ticks>`; null when no pid was asked for or the process is gone. */
+  topod: string | null
 }
 
-const SECTION = '--orca-identity--'
+const SECTION = '--topo-identity--'
 const IDENTITY_TIMEOUT_MS = 10_000
 
 /** One exec, so a classification never mixes two distro incarnations. */
-export function wslGuestIdentityCommand(orcadPid: number | null): string {
+export function wslGuestIdentityCommand(topodPid: number | null): string {
   return wslGuestIdentityShellCommand(
-    orcadPid !== null && Number.isSafeInteger(orcadPid) && orcadPid > 0 ? String(orcadPid) : null
+    topodPid !== null && Number.isSafeInteger(topodPid) && topodPid > 0 ? String(topodPid) : null
   )
 }
 
 /** `pidWord` is a digits-only word, literal or a shell expansion the caller has validated. */
 export function wslGuestIdentityShellCommand(pidWord: string | null): string {
-  const orcad = pidWord !== null ? `cat /proc/${pidWord}/stat 2>/dev/null; ` : ''
+  const topod = pidWord !== null ? `cat /proc/${pidWord}/stat 2>/dev/null; ` : ''
   return [
     `cat /proc/sys/kernel/random/boot_id; echo ${SECTION}; cat /proc/1/stat; echo ${SECTION}; `,
-    `${orcad}echo ${SECTION}`
+    `${topod}echo ${SECTION}`
   ].join('')
 }
 
@@ -59,32 +59,32 @@ export function parseWslGuestIdentity(output: string): WslGuestIdentity | null {
   if (!/^[0-9a-f-]{36}$/i.test(bootId) || !initTicks) {
     return null
   }
-  const orcadStat = sections[2].trim()
-  const orcadPid = orcadStat ? procStatPid(orcadStat) : null
-  const orcadTicks = orcadStat ? procStatStartTicks(orcadStat) : null
+  const topodStat = sections[2].trim()
+  const topodPid = topodStat ? procStatPid(topodStat) : null
+  const topodTicks = topodStat ? procStatStartTicks(topodStat) : null
   return {
     distroInstance: `${bootId.toLowerCase()}:${initTicks}`,
-    orcad: orcadPid && orcadTicks ? `${orcadPid}:${orcadTicks}` : null
+    topod: topodPid && topodTicks ? `${topodPid}:${topodTicks}` : null
   }
 }
 
-/** The asked-for PID's identity in the form orcad's instance lock records; null when it is gone. */
-export function wslGuestOrcadIncarnation(
+/** The asked-for PID's identity in the form topod's instance lock records; null when it is gone. */
+export function wslGuestTopodIncarnation(
   identity: WslGuestIdentity
-): OrcadProcessIncarnation | null {
-  const linuxStartTicks = identity.orcad?.split(':')[1]
+): TopodProcessIncarnation | null {
+  const linuxStartTicks = identity.topod?.split(':')[1]
   const bootId = identity.distroInstance.split(':')[0]
   return linuxStartTicks && bootId ? { linuxStartTicks, bootId } : null
 }
 
 /** null when the guest could not answer: that is unverifiable, never evidence of an exit. */
 export async function readWslGuestIdentity(
-  conn: OrcadHostTransport,
-  orcadPid: number | null
+  conn: TopodHostTransport,
+  topodPid: number | null
 ): Promise<WslGuestIdentity | null> {
   try {
     return parseWslGuestIdentity(
-      await execCommand(conn, wslGuestIdentityCommand(orcadPid), {
+      await execCommand(conn, wslGuestIdentityCommand(topodPid), {
         timeoutMs: IDENTITY_TIMEOUT_MS
       })
     )

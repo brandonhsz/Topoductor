@@ -68,7 +68,7 @@ export function TerminalSlide(): React.JSX.Element {
             {t('auto.components.mobile.slides.TerminalSlide.2defc05141', 'dev@mac')}
           </span>{' '}
           <span className="mp-term-dim">
-            {t('auto.components.mobile.slides.TerminalSlide.e0f98be657', 'orca/feat-mobile-page')}
+            {t('auto.components.mobile.slides.TerminalSlide.e0f98be657', 'topo/feat-mobile-page')}
           </span>{' '}
           <span className="mp-term-prompt">$</span>{' '}
           <span className="mp-term-cmd">
@@ -84,7 +84,7 @@ export function TerminalSlide(): React.JSX.Element {
           <span className="mp-term-dim">
             {t(
               'auto.components.mobile.slides.TerminalSlide.336c0e070e',
-              'mobile/orca-mobile-sidebar-mock-v3.html'
+              'mobile/topo-mobile-sidebar-mock-v3.html'
             )}
           </span>
         </span>
@@ -103,7 +103,7 @@ export function TerminalSlide(): React.JSX.Element {
           <span className="mp-term-dim">
             {t(
               'auto.components.mobile.slides.TerminalSlide.336c0e070e',
-              'mobile/orca-mobile-sidebar-mock-v3.html'
+              'mobile/topo-mobile-sidebar-mock-v3.html'
             )}
           </span>
         </span>

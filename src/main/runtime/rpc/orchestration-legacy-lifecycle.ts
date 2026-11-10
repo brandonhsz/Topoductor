@@ -1,5 +1,5 @@
 import type { RpcRequest } from './core'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import type { MessageType } from '../orchestration/db/orchestration-records'
 import { OrchestrationError } from '../orchestration/orchestration-error'
 import { bindCoordinatorMutationPayload } from '../orchestration/workers/reports/dispatch-message-binding'
@@ -14,7 +14,7 @@ import {
 } from './orchestration-legacy-operation'
 
 export async function handleLegacyLifecycleSend(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   authority: LegacyCompatibilityAuthority
   request: RpcRequest
   params: LegacySendParams

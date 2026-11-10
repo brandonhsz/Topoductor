@@ -28,7 +28,7 @@ type WorktreeCardSshHostControlProps = {
   /** Null for runtime-owned targets: renders the passive connected glyph, as before. */
   status: SshConnectionStatus | null
   targetRemoved: boolean
-  /** Non-null when the SSH target belongs to a remote Orca server; routes connect to that runtime. */
+  /** Non-null when the SSH target belongs to a remote Topo server; routes connect to that runtime. */
   sshOwnerEnvironmentId: string | null
   /** Use only the accessible label when dense rows cannot fit visible text. */
   iconOnly: boolean

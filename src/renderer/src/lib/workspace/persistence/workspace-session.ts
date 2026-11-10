@@ -17,7 +17,7 @@ import { withoutStagedBrowserTabs } from './workspace-session-staged-browser-tab
 import { buildBrowserSessionData } from './workspace-session-browser-tabs'
 import { pickCloseIntents, type CloseIntentFields } from './workspace-session-close-intents'
 
-/** Why (issue #1158): require both flags so a hydration failure can't overwrite orca-data.json with empty error-path state. */
+/** Why (issue #1158): require both flags so a hydration failure can't overwrite topo-data.json with empty error-path state. */
 export function shouldPersistWorkspaceSession(
   state: Pick<AppState, 'workspaceSessionReady' | 'hydrationSucceeded'>
 ): boolean {

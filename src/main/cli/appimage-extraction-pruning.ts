@@ -85,7 +85,7 @@ async function removeInstalledEndpoint(
 
   const displacedPath = join(
     dirname(endpointPath),
-    `.orca-preserved-installed-${process.pid}-${randomUUID()}`
+    `.topo-preserved-installed-${process.pid}-${randomUUID()}`
   )
   try {
     await rename(endpointPath, displacedPath)

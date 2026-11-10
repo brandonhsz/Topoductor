@@ -1,12 +1,12 @@
 import type { TuiAgent } from './agent-launch/catalog/tui-agent'
 
-/** Community skills --agent keys differ from Orca IDs (claude-code, rovodev, augment).
+/** Community skills --agent keys differ from Topo IDs (claude-code, rovodev, augment).
  * Unknown mappings are null because guessed keys abort installation; aider-desk and openclaw are different products. */
 export const SKILLS_CLI_AGENT_KEY_BY_TUI_AGENT = {
   claude: 'claude-code',
   'claude-agent-teams': 'claude-code',
   codebuddy: 'codebuddy',
-  // Follow native-chat skillSourceOwner (claude); Orca’s direct installer separately targets .openclaude roots.
+  // Follow native-chat skillSourceOwner (claude); Topo’s direct installer separately targets .openclaude roots.
   openclaude: 'claude-code',
   codex: 'codex',
   autohand: 'autohand-code',
@@ -44,7 +44,7 @@ export const SKILLS_CLI_AGENT_KEY_BY_TUI_AGENT = {
   grok: 'grok',
   devin: 'devin',
   ante: null,
-  // Only TRAE CN ships the traecli alias Orca detects.
+  // Only TRAE CN ships the traecli alias Topo detects.
   trae: 'trae-cn',
   muse: null,
   zcode: 'zcode',

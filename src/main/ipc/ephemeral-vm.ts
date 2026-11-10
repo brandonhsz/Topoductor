@@ -51,7 +51,7 @@ const activeProvisionControllers = new Map<string, AbortController>()
 export type EphemeralVmProvisionIpcResult =
   | {
       ok: true
-      connectionType: 'orca-server'
+      connectionType: 'topo-server'
       runtime: EphemeralVmProvisionedRuntimeRecord
       environment: PublicKnownRuntimeEnvironment
       stderr: string
@@ -62,7 +62,7 @@ export type EphemeralVmProvisionIpcResult =
       connectionType: 'ssh'
       runtime: EphemeralVmProvisionedRuntimeRecord
       sshTargetId: string
-      /** The managed Orca server the host runs; its workspace lives there. */
+      /** The managed Topo server the host runs; its workspace lives there. */
       environmentId?: string
       expectedRefHead?: string
       stderr: string
@@ -274,7 +274,7 @@ export function registerEphemeralVmHandlers(store: Store, pluginService?: Plugin
         )
         return {
           ok: true,
-          connectionType: 'orca-server',
+          connectionType: 'topo-server',
           runtime,
           environment: redactRuntimeEnvironment(environment),
           stderr: redactEphemeralVmRecipeDiagnosticText(result.start.stderr),

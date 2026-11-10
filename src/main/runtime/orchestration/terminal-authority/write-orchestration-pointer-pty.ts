@@ -1,6 +1,6 @@
 import type { TerminalIdentityReadContext } from '../../terminal/query/terminal-identity-read-context'
 import { isRemoteRuntimePtyId } from '../../../../shared/remote-runtime/remote-runtime-pty-id'
-import { OrcaRuntimeWithRefreshFloatingWorkspacePtyLiveness } from '../../terminal/lifecycle/floating-session-liveness'
+import { TopoRuntimeWithRefreshFloatingWorkspacePtyLiveness } from '../../terminal/lifecycle/floating-session-liveness'
 import { writeOrchestrationPointerWithSettlement } from '../mailbox/terminal-pointer/mailbox-pointer-pty-write'
 import type { WriteSettlement } from '../../../../shared/terminal/pty/lifecycle/pty-write-settlement'
 import type { RuntimeLeafRecord } from '../../terminal/records/runtime-terminal-state-records'
@@ -17,11 +17,11 @@ import { getLatestLeafTitle } from '../../workspaces/process-listing/runtime-wor
 import { parseAppSshPtyId } from '../../../../shared/ssh-pty-id'
 import { isTerminalLeafId, makePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import type { OrchestrationMailboxPointerSubmitTarget } from '../mailbox/terminal-pointer/mailbox-pointer-submit'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { startedMainTerminalSurfaces } from '../../terminal/surface/main-terminal-surfaces'
 import { mainPaneVerdict } from '../../terminal/surface/main-pane-verdict'
 
-export abstract class OrcaRuntimeWithWriteOrchestrationPointerPty extends OrcaRuntimeWithRefreshFloatingWorkspacePtyLiveness {
+export abstract class TopoRuntimeWithWriteOrchestrationPointerPty extends TopoRuntimeWithRefreshFloatingWorkspacePtyLiveness {
   protected abstract issueHandle(
     leaf: RuntimeLeafRecord,
     context?: TerminalIdentityReadContext
@@ -108,7 +108,7 @@ export abstract class OrcaRuntimeWithWriteOrchestrationPointerPty extends OrcaRu
       !isRemoteRuntimePtyId(leaf.ptyId) &&
       parseAppSshPtyId(leaf.ptyId) === null &&
       this.ptyController?.hasPty?.(leaf.ptyId) !== true
-    const mainPane = ORCA_LAYOUT_OWNER_IS_MAIN
+    const mainPane = TOPO_LAYOUT_OWNER_IS_MAIN
       ? (startedMainTerminalSurfaces(this)?.paneOf(leaf.tabId, leaf.leafId) ?? null)
       : null
     return {
@@ -126,7 +126,7 @@ export abstract class OrcaRuntimeWithWriteOrchestrationPointerPty extends OrcaRu
       connected: provenAbsent ? false : leaf.connected,
       writable: provenAbsent ? false : leaf.writable,
       // A pane with a status is never connected; its verdict says what the host knows.
-      ...(ORCA_LAYOUT_OWNER_IS_MAIN && mainPane?.hasStatus
+      ...(TOPO_LAYOUT_OWNER_IS_MAIN && mainPane?.hasStatus
         ? { connected: false, writable: false }
         : {}),
       lastOutputAt: leaf.lastOutputAt,
@@ -139,7 +139,7 @@ export abstract class OrcaRuntimeWithWriteOrchestrationPointerPty extends OrcaRu
         title,
         isTerminalLeafId(leaf.leafId) ? makePaneKey(leaf.tabId, leaf.leafId) : null
       ),
-      ...(ORCA_LAYOUT_OWNER_IS_MAIN && mainPane
+      ...(TOPO_LAYOUT_OWNER_IS_MAIN && mainPane
         ? {
             verdict: mainPaneVerdict(mainPane, {
               ptysById: this.ptysById,

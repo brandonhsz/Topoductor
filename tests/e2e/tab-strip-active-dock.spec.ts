@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForSessionReady, waitForActiveWorktree, ensureTerminalVisible } from './helpers/store'
 
 const STRIP = '.terminal-tab-strip'
@@ -57,32 +57,32 @@ async function nextFrames(page: Page, count: number): Promise<void> {
 }
 
 test.describe('Tab strip active-tab dock', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
   })
 
   for (const edge of ['start', 'end'] as const) {
     test(`keeps inactive tabs clickable in a strip too narrow for the ${edge} dock`, async ({
-      orcaPage
+      topoPage
     }) => {
-      const worktreeId = await waitForActiveWorktree(orcaPage)
+      const worktreeId = await waitForActiveWorktree(topoPage)
       for (let i = 0; i < 3; i++) {
-        await createBackgroundTerminalTab(orcaPage, worktreeId)
+        await createBackgroundTerminalTab(topoPage, worktreeId)
       }
-      const ids = await readStripSlotIds(orcaPage)
+      const ids = await readStripSlotIds(topoPage)
       const activeTabId = (edge === 'start' ? ids.at(0) : ids.at(-1))!
       const inactiveTabId = (edge === 'start' ? ids.at(-1) : ids.at(0))!
-      const activeTab = orcaPage.locator(
+      const activeTab = topoPage.locator(
         `${slotSelector(activeTabId)} [data-testid="sortable-tab"]`
       )
-      const inactiveTab = orcaPage.locator(
+      const inactiveTab = topoPage.locator(
         `${slotSelector(inactiveTabId)} [data-testid="sortable-tab"]`
       )
       await activeTab.click()
 
-      const strip = orcaPage.locator(STRIP).first()
+      const strip = topoPage.locator(STRIP).first()
       await strip.evaluate((el) => {
         el.style.maxWidth = '200px'
       })
@@ -90,7 +90,7 @@ test.describe('Tab strip active-tab dock', () => {
       await strip.evaluate((el, side) => {
         el.scrollLeft = side === 'start' ? el.scrollWidth : 0
       }, edge)
-      await expect.poll(() => isSlotInView(orcaPage, inactiveTabId)).toBe(true)
+      await expect.poll(() => isSlotInView(topoPage, inactiveTabId)).toBe(true)
       await inactiveTab.click()
       await expect(inactiveTab).toHaveAttribute('data-active', 'true')
       await activeTab.locator('[data-tab-close-button]').click()
@@ -107,24 +107,24 @@ test.describe('Tab strip active-tab dock', () => {
         'data-active-tab-docked',
         edge === 'start' ? 'end' : 'start'
       )
-      expect(await isSlotInView(orcaPage, inactiveTabId)).toBe(true)
+      expect(await isSlotInView(topoPage, inactiveTabId)).toBe(true)
     })
   }
 
   test('keeps inactive tabs clickable after cancelling a drag that scrolled a narrow strip', async ({
-    orcaPage
+    topoPage
   }) => {
-    const worktreeId = await waitForActiveWorktree(orcaPage)
+    const worktreeId = await waitForActiveWorktree(topoPage)
     for (let i = 0; i < 3; i++) {
-      await createBackgroundTerminalTab(orcaPage, worktreeId)
+      await createBackgroundTerminalTab(topoPage, worktreeId)
     }
-    const ids = await readStripSlotIds(orcaPage)
-    const activeSlot = orcaPage.locator(slotSelector(ids[0]))
+    const ids = await readStripSlotIds(topoPage)
+    const activeSlot = topoPage.locator(slotSelector(ids[0]))
     const activeTab = activeSlot.locator('[data-testid="sortable-tab"]')
-    const inactiveTab = orcaPage.locator(`${slotSelector(ids[1])} [data-testid="sortable-tab"]`)
+    const inactiveTab = topoPage.locator(`${slotSelector(ids[1])} [data-testid="sortable-tab"]`)
     await activeTab.click()
 
-    const strip = orcaPage.locator(STRIP).first()
+    const strip = topoPage.locator(STRIP).first()
     await strip.evaluate((el) => {
       el.style.maxWidth = '200px'
     })
@@ -132,14 +132,14 @@ test.describe('Tab strip active-tab dock', () => {
     await strip.evaluate((el) => {
       el.scrollLeft = 0
     })
-    await expect.poll(() => isSlotInView(orcaPage, ids[0])).toBe(true)
+    await expect.poll(() => isSlotInView(topoPage, ids[0])).toBe(true)
 
     const box = (await activeTab.boundingBox())!
     const y = box.y + box.height / 2
-    await orcaPage.mouse.move(box.x + 20, y)
-    await orcaPage.mouse.down()
-    await orcaPage.mouse.move(box.x + 34, y)
-    await orcaPage.mouse.move(box.x + 38, y)
+    await topoPage.mouse.move(box.x + 20, y)
+    await topoPage.mouse.down()
+    await topoPage.mouse.move(box.x + 34, y)
+    await topoPage.mouse.move(box.x + 38, y)
     await expect(strip.locator('[data-active-tab-dock]')).toHaveCount(0)
 
     // Hidden-window drag overlays can intercept native wheel input before it reaches the strip.
@@ -147,9 +147,9 @@ test.describe('Tab strip active-tab dock', () => {
       el.dispatchEvent(new WheelEvent('wheel', { deltaY: 144, cancelable: true }))
     })
     await expect.poll(() => strip.evaluate((el) => el.scrollLeft)).toBe(144)
-    await nextFrames(orcaPage, 2)
-    await orcaPage.evaluate(() => window.dispatchEvent(new Event('blur')))
-    await orcaPage.mouse.up()
+    await nextFrames(topoPage, 2)
+    await topoPage.evaluate(() => window.dispatchEvent(new Event('blur')))
+    await topoPage.mouse.up()
 
     await expect(activeSlot).toHaveAttribute('data-active-tab-dock', '')
     await expect(strip).toHaveAttribute('data-active-tab-dock-disabled', '')

@@ -24,9 +24,9 @@ function managedContext(
   return {
     ...env,
     ...profile,
-    ORCA_DATA_ACCOUNT_DATA_HOME: profile.XDG_DATA_HOME,
-    ORCA_DATA_ACCOUNT_STATE_HOME: profile.XDG_STATE_HOME,
-    ORCA_DATA_ACCOUNT_PROVIDER: 'opencode'
+    TOPO_DATA_ACCOUNT_DATA_HOME: profile.XDG_DATA_HOME,
+    TOPO_DATA_ACCOUNT_STATE_HOME: profile.XDG_STATE_HOME,
+    TOPO_DATA_ACCOUNT_PROVIDER: 'opencode'
   }
 }
 
@@ -39,7 +39,7 @@ describe('host-private managed account originals', () => {
       XDG_DATA_HOME: join(tmpdir(), 'different-profile', 'data'),
       XDG_STATE_HOME: join(tmpdir(), 'different-profile', 'state')
     })
-    foreign.ORCA_DATA_ACCOUNT_ORIGINAL_ENV = captured.ORCA_DATA_ACCOUNT_ORIGINAL_ENV
+    foreign.TOPO_DATA_ACCOUNT_ORIGINAL_ENV = captured.TOPO_DATA_ACCOUNT_ORIGINAL_ENV
     service.restoreOriginalEnvironment(foreign)
     expect(foreign.OPENCODE_AUTH_CONTENT).toBeUndefined()
   })

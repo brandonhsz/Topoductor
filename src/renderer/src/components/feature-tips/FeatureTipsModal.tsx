@@ -17,11 +17,11 @@ import { CmdJPaletteTipDialog } from './CmdJPaletteTipDialog'
 import { installCliFromFeatureTip } from './feature-tip-cli-install-action'
 import { getFeatureTipForModal } from './feature-tip-modal-state'
 import {
-  getOrcaCliFeatureTipTelemetrySource,
+  getTopoCliFeatureTipTelemetrySource,
   trackChatUiFeatureTipAction,
   trackCmdJPaletteFeatureTipAcknowledged,
-  trackOrcaCliFeatureTipSetupClicked,
-  trackOrcaCliFeatureTipSetupResult
+  trackTopoCliFeatureTipSetupClicked,
+  trackTopoCliFeatureTipSetupResult
 } from './feature-tip-telemetry'
 import { useMountedRef } from '@/hooks/useMountedRef'
 import { isWebClientLocation } from '@/lib/web-client-location'
@@ -162,7 +162,7 @@ export default function FeatureTipsModal(): JSX.Element | null {
       }
       case 'learn-cmd-j-palette': {
         trackCmdJPaletteFeatureTipAcknowledged(
-          getOrcaCliFeatureTipTelemetrySource(modalData.source)
+          getTopoCliFeatureTipTelemetrySource(modalData.source)
         )
         closeModal()
         break
@@ -202,13 +202,13 @@ export default function FeatureTipsModal(): JSX.Element | null {
           mountedRef.current &&
           activeModalRef.current === 'feature-tips' &&
           setupRequestIdRef.current === setupRequestId
-        const telemetrySource = getOrcaCliFeatureTipTelemetrySource(modalData.source)
-        trackOrcaCliFeatureTipSetupClicked(telemetrySource)
+        const telemetrySource = getTopoCliFeatureTipTelemetrySource(modalData.source)
+        trackTopoCliFeatureTipSetupClicked(telemetrySource)
         setPrimaryBusy(true)
         try {
           const result = await installCliFromFeatureTip(() => window.api.cli.install())
           if (result.kind === 'installed') {
-            trackOrcaCliFeatureTipSetupResult(telemetrySource, 'installed')
+            trackTopoCliFeatureTipSetupResult(telemetrySource, 'installed')
             if (!canApplySetupResult()) {
               return
             }
@@ -216,21 +216,21 @@ export default function FeatureTipsModal(): JSX.Element | null {
             toast.success(
               t(
                 'auto.components.feature.tips.FeatureTipsModal.ce13a742d0',
-                'Registered `orca` in PATH.'
+                'Registered `topo` in PATH.'
               )
             )
             setSkillTerminalOpen(true)
             return
           }
 
-          trackOrcaCliFeatureTipSetupResult(telemetrySource, 'needs_attention')
+          trackTopoCliFeatureTipSetupResult(telemetrySource, 'needs_attention')
           if (!canApplySetupResult()) {
             return
           }
           toast.warning(
             t(
               'auto.components.feature.tips.FeatureTipsModal.1da82af45b',
-              'Orca CLI needs attention'
+              'Topo CLI needs attention'
             ),
             {
               description:
@@ -249,13 +249,13 @@ export default function FeatureTipsModal(): JSX.Element | null {
               ? error.message
               : t(
                   'auto.components.feature.tips.FeatureTipsModal.cliInstallFailed',
-                  'Failed to install Orca CLI.'
+                  'Failed to install Topo CLI.'
                 )
           if (
             import.meta.env.DEV &&
             message.includes('Development mode uses a generated launcher for validation only')
           ) {
-            trackOrcaCliFeatureTipSetupResult(telemetrySource, 'dev_preview')
+            trackTopoCliFeatureTipSetupResult(telemetrySource, 'dev_preview')
             if (!canApplySetupResult()) {
               return
             }
@@ -270,7 +270,7 @@ export default function FeatureTipsModal(): JSX.Element | null {
             return
           }
 
-          trackOrcaCliFeatureTipSetupResult(telemetrySource, 'failed')
+          trackTopoCliFeatureTipSetupResult(telemetrySource, 'failed')
           if (canApplySetupResult()) {
             toast.error(message)
           }

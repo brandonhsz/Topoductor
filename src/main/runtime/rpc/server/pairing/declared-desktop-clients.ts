@@ -1,9 +1,9 @@
-import type { OrcadPeerDesktopsResult } from '../../../../../shared/orcad-peer-desktops-contract'
+import type { TopodPeerDesktopsResult } from '../../../../../shared/topod-peer-desktops-contract'
 import { sanitizeDeviceLabel } from '../../../../../shared/remote-runtime/pairing/device-key-proof'
 import type { DeviceEntry } from './device-entry'
 
-const UNNAMED_DESKTOP = 'another Orca'
-// Lost contact isn't proof an Orca left: a closed control socket still counts while it reconnects.
+const UNNAMED_DESKTOP = 'another Topo'
+// Lost contact isn't proof a Topo left: a closed control socket still counts while it reconnects.
 export const DECLARED_CLIENT_RECONNECT_GRACE_MS = 60_000
 
 type Declaration = { clientInstanceId: string; deviceId: string }
@@ -46,7 +46,7 @@ export class DeclaredDesktopClients {
   peers(
     caller: { connectionId: string; clientInstanceId?: string },
     getDevice: (deviceId: string) => DeviceEntry | null
-  ): OrcadPeerDesktopsResult {
+  ): TopodPeerDesktopsResult {
     const callerInstance =
       caller.clientInstanceId ?? this.byConnection.get(caller.connectionId)?.clientInstanceId
     const names = new Map<string, string>()

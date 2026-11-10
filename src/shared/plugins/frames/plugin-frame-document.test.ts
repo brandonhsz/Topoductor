@@ -21,7 +21,7 @@ const isBytesDocument = (value: unknown): value is { content: { bytes: ArrayBuff
   value.content.bytes instanceof ArrayBuffer
 
 describe('orca.document.get after applyEdit', () => {
-  it('returns the accepted content at the version Orca sent', async () => {
+  it('returns the accepted content at the version Topo sent', async () => {
     const { orca, fromHost } = mountShell('editor')
     const document = orca.document!
     fromHost(doc(3, 'a'))
@@ -59,7 +59,7 @@ describe('orca.document.get after applyEdit', () => {
     expect(isBytesDocument(current) && [...new Uint8Array(current.content.bytes)]).toEqual([1, 2])
   })
 
-  it('keeps the old content when Orca refuses the edit', async () => {
+  it('keeps the old content when Topo refuses the edit', async () => {
     const { orca, fromHost } = mountShell('editor')
     fromHost(doc(1, 'a'))
     const applied = orca.document!.applyEdit({ baseVersion: 1, content: text('b') })

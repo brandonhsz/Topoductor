@@ -5,13 +5,13 @@ import {
   createTranscriptPane,
   TRANSCRIPT_PANE_PTY_ID,
   waitForTranscriptIdle
-} from '../../orca-runtime-tests/agent-transcript-pane-test-harness'
+} from '../../topo-runtime-tests/agent-transcript-pane-test-harness'
 import { createHookListenerState } from '../../../../shared/agent-hook-listener/listener-state'
 import { normalizeHermesEvent } from '../../../../shared/agent-hook-listener/providers/hermes-events'
 import type { AgentStatusIpcPayload } from '../../../../shared/agent-status/contracts/agent-status-ipc-payload'
 import { makePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 
 vi.mock('electron', () => ({
   BrowserWindow: { fromId: vi.fn(() => null) },
@@ -48,7 +48,7 @@ describe('Hermes captured hook readiness', () => {
   describe('Hermes TUI readiness from a captured PTY', () => {
     it('settles tui-idle on a ready composer after the session-boundary hook', async () => {
       const { runtime, handle } = await readyPane()
-      // What Orca's own managed plugin sends for `on_session_start`.
+      // What Topo's own managed plugin sends for `on_session_start`.
       runtime.onPtyData(
         TRANSCRIPT_PANE_PTY_ID,
         status('on_session_start', { session_id: 's1' }),
@@ -242,7 +242,7 @@ describe('Canonical hook status readiness', () => {
     rows: (handle: string) => AgentStatusIpcPayload[]
     launchAgent?: TuiAgent
     data?: string
-    afterCreate?: (runtime: OrcaRuntimeService, handle: string) => unknown
+    afterCreate?: (runtime: TopoRuntimeService, handle: string) => unknown
   }): Promise<string> {
     let handle = ''
     const pane = await createTranscriptPane(
@@ -300,14 +300,14 @@ describe('Canonical hook status readiness', () => {
 
     // Input starts a possible new turn, including typed agent restarts; prior done hooks cannot settle it.
     it.each([
-      ['a prompt Orca sent', 'next task\r'],
+      ['a prompt Topo sent', 'next task\r'],
       ['the user restarting the agent in the same shell', 'pi\r']
     ])('reads no done from before %s', async (_label, input) => {
       const before = Date.now() - 1000
       const rows = (): AgentStatusIpcPayload[] => [
         row({ receivedAt: before, stateStartedAt: before })
       ]
-      const typeAt = (at: number) => (runtime: OrcaRuntimeService) => {
+      const typeAt = (at: number) => (runtime: TopoRuntimeService) => {
         runtime.terminalRunFacts.recordInput(TRANSCRIPT_PANE_PTY_ID, 'driving', input, at)
       }
       expect(await waitOutcome({ rows, afterCreate: typeAt(before - 1) })).toBe('ready')

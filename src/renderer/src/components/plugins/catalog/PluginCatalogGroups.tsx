@@ -63,7 +63,7 @@ export type CatalogCardHandlers = {
   openEntry: (pluginKey: string) => void
   installedHandlers: InstalledRowHandlers
   busyPluginKeys: ReadonlySet<string>
-  orcaVersion: string | null
+  topoVersion: string | null
   /** A catalog refresh is in flight; installs wait for it. */
   refreshing: boolean
 }
@@ -112,7 +112,7 @@ export function CatalogCard({
             ? {
                 text: t(
                   'auto.components.settings.PluginMarketplaceListingRow.blocked',
-                  "Blocked by Orca's safety list: {{value0}}",
+                  "Blocked by Topo's safety list: {{value0}}",
                   { value0: listing.blockedByKillList.reason }
                 ),
                 tone: 'destructive'
@@ -139,7 +139,7 @@ export function CatalogCard({
         <PluginCardAction
           entry={entry}
           phase={phase}
-          orcaVersion={handlers.orcaVersion}
+          topoVersion={handlers.topoVersion}
           refreshing={handlers.refreshing}
           onInstall={() => {
             if (listing) {

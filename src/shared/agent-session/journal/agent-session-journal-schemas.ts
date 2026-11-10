@@ -263,7 +263,7 @@ const KnownItemBody = z.discriminatedUnion('kind', [
     providerFrame: ProviderFrame.optional(),
     threadGoal: AgentJournalThreadGoalStateSchema.optional(),
     failure: AgentSessionFailureFactSchema.optional(),
-    orcaStop: z.object({ cause: z.string().min(1) }).optional(),
+    topoStop: z.object({ cause: z.string().min(1) }).optional(),
     forkedFrom: z.object({ sessionId: z.string().min(1) }).optional()
   }),
   z.object({

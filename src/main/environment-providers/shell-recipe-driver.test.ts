@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { afterEach } from 'vitest'
 import { encodePairingOffer } from '../../shared/remote-runtime/pairing/pairing'
 import { PAIRING_OFFER_VERSION } from '../../shared/remote-runtime/pairing/mobile-relay-pairing-offer'
-import type { OrcaVmRecipe } from '../../shared/orca-yaml-hook-types'
+import type { TopoVmRecipe } from '../../shared/topo-yaml-hook-types'
 import { runEnvironmentProviderDriverContract } from './environment-provider-driver-contract.test-support'
 import { ShellRecipeDriver } from './shell-recipe-driver'
 
@@ -17,8 +17,8 @@ afterEach(() => {
 })
 
 // A recipe whose "VMs" are files in a state dir, so the contract can see what destroy left behind.
-function makeFileBackedRecipe(): { repoPath: string; stateDir: string; recipe: OrcaVmRecipe } {
-  const repoPath = mkdtempSync(join(tmpdir(), 'orca-shell-recipe-driver-'))
+function makeFileBackedRecipe(): { repoPath: string; stateDir: string; recipe: TopoVmRecipe } {
+  const repoPath = mkdtempSync(join(tmpdir(), 'topo-shell-recipe-driver-'))
   tmpRoots.push(repoPath)
   const stateDir = join(repoPath, 'vms')
   mkdirSync(stateDir)
@@ -28,7 +28,7 @@ function makeFileBackedRecipe(): { repoPath: string; stateDir: string; recipe: O
     deviceToken: 'token',
     publicKeyB64: 'public-key'
   })
-  const vmFile = `require('node:path').join(${JSON.stringify(stateDir)}, process.env.ORCA_VM_INSTANCE_ID)`
+  const vmFile = `require('node:path').join(${JSON.stringify(stateDir)}, process.env.TOPO_VM_INSTANCE_ID)`
   const printResult = `console.log(JSON.stringify({ schemaVersion: 1, pairingCode: ${JSON.stringify(pairingCode)}, projectRoot: '/workspace/repo' }))`
   const scripts = {
     create: `require('node:fs').writeFileSync(${vmFile}, 'running'); ${printResult}`,

@@ -24,7 +24,7 @@ import {
 } from '../identity/codex-trust-identity'
 
 // Unavailable wsl.exe leaves guest grants unstamped.
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   runProcess: vi.fn(async () => ({
     code: 1,
     signal: null,
@@ -39,13 +39,13 @@ let runtimeHomeDir: string
 let previousUserDataPath: string | undefined
 
 beforeEach(() => {
-  userDataDir = mkdtempSync(join(tmpdir(), 'orca-trust-grant-userdata-'))
+  userDataDir = mkdtempSync(join(tmpdir(), 'topo-trust-grant-userdata-'))
   runtimeHomeDir = join(userDataDir, 'codex-runtime-home', 'home')
   // Create hooks.json before granting trust to match production canonical-path resolution.
   mkdirSync(runtimeHomeDir, { recursive: true })
   writeFileSync(join(runtimeHomeDir, 'hooks.json'), '{"hooks":{}}\n', 'utf-8')
-  previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-  process.env.ORCA_USER_DATA_PATH = userDataDir
+  previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+  process.env.TOPO_USER_DATA_PATH = userDataDir
   codexAppServerCapabilityCache.clear()
   _internals.resetDiagnostics()
 })
@@ -56,15 +56,15 @@ afterEach(() => {
   setCodexTrustGrantTelemetry(() => {})
   codexAppServerCapabilityCache.clear()
   if (previousUserDataPath === undefined) {
-    delete process.env.ORCA_USER_DATA_PATH
+    delete process.env.TOPO_USER_DATA_PATH
   } else {
-    process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+    process.env.TOPO_USER_DATA_PATH = previousUserDataPath
   }
-  delete process.env.ORCA_DISABLE_CODEX_TRUST_RPC
+  delete process.env.TOPO_DISABLE_CODEX_TRUST_RPC
   rmSync(userDataDir, { recursive: true, force: true })
 })
 
-const MANAGED_COMMAND = "/bin/sh '/tmp/orca/codex-hook.sh'"
+const MANAGED_COMMAND = "/bin/sh '/tmp/topo/codex-hook.sh'"
 
 function managedEntry(eventLabel: CodexTrustEntry['eventLabel']): CodexTrustEntry {
   return {

@@ -22,7 +22,7 @@ function openUsageLimitContinueSetting(): void {
 const LINK_CLASS =
   'inline-flex items-center gap-1 text-xs text-chat-foreground-faint underline underline-offset-2 hover:text-chat-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
 
-/** The last line of a usage-limit row: whether Orca will send the continue itself at the reset. */
+/** The last line of a usage-limit row: whether Topo will send the continue itself at the reset. */
 export function NativeChatUsageLimitAutoContinue({
   state
 }: {
@@ -47,7 +47,7 @@ export function NativeChatUsageLimitAutoContinue({
       <p className="ml-6 text-xs text-chat-foreground-faint">
         {t(
           'components.native-chat.usageLimitAutoContinue.cancelled',
-          "Orca won't continue this chat automatically."
+          "Topo won't continue this chat automatically."
         )}
       </p>
     )
@@ -56,7 +56,7 @@ export function NativeChatUsageLimitAutoContinue({
     <p className="ml-6 text-xs text-chat-foreground-faint">
       {t(
         'components.native-chat.usageLimitAutoContinue.scheduled',
-        'Orca will continue this chat at {{time}}.',
+        'Topo will continue this chat at {{time}}.',
         { time: formatUsageLimitResetClock(state.resetsAt) }
       )}
       <button

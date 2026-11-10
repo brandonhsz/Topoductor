@@ -64,7 +64,7 @@ describe('openNodeSpeechDownloadRequest', () => {
     expect(listeners.response).not.toHaveBeenCalled()
   })
 
-  // Abort emits after detach; an unhandled ClientRequest error crashes orcad.
+  // Abort emits after detach; an unhandled ClientRequest error crashes topod.
   it('swallows the error abort raises after the download detached', () => {
     const handle = openNodeSpeechDownloadRequest('https://models.example/a.tar.bz2')
     const listeners = { error: vi.fn(), response: vi.fn(), redirect: vi.fn() }

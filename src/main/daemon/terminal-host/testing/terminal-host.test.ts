@@ -102,7 +102,7 @@ describe('TerminalHost', () => {
       expect(lastSubprocess.write).not.toHaveBeenCalled()
 
       // Delay post-marker input until prompt output and raw-mode setup prevent cooked echo.
-      lastSubprocess._onDataCb?.('\x1b]777;orca-shell-ready\x07')
+      lastSubprocess._onDataCb?.('\x1b]777;topo-shell-ready\x07')
       expect(lastSubprocess.write).not.toHaveBeenCalled()
 
       lastSubprocess._onDataCb?.('\r\nuser@host $ ')

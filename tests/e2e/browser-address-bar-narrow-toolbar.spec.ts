@@ -2,7 +2,7 @@
 
 import { createServer } from 'node:http'
 import type { AddressInfo } from 'node:net'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import type { ElectronApplication, Locator, Page } from '@stablyai/playwright-test'
 import {
   ensureTerminalVisible,
@@ -70,11 +70,11 @@ async function toolbarWidth(page: Page): Promise<number> {
 }
 
 function addressBarInput(page: Page): Locator {
-  return page.locator('[data-orca-browser-address-bar="true"]')
+  return page.locator('[data-topo-browser-address-bar="true"]')
 }
 
 function addressBarOverlay(page: Page): Locator {
-  return page.locator('[data-orca-browser-address-bar-overlay="true"]')
+  return page.locator('[data-topo-browser-address-bar-overlay="true"]')
 }
 
 async function addressBarInputWidth(page: Page): Promise<number> {
@@ -113,37 +113,37 @@ async function settleToSqueezedRestingState(
 }
 
 test.describe('Browser address bar in a narrow toolbar', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
   })
 
   test('focusing the squeezed address bar expands a typable field that navigates', async ({
-    orcaPage,
+    topoPage,
     electronApp
   }) => {
     const destination = await startDestinationServer()
     try {
-      const worktreeId = (await getActiveWorktreeId(orcaPage))!
-      await createBlankBrowserTab(orcaPage, worktreeId)
-      await settleToSqueezedRestingState(orcaPage, electronApp)
+      const worktreeId = (await getActiveWorktreeId(topoPage))!
+      await createBlankBrowserTab(topoPage, worktreeId)
+      await settleToSqueezedRestingState(topoPage, electronApp)
 
-      const overlay = addressBarOverlay(orcaPage)
-      await expect.poll(() => addressBarInputWidth(orcaPage), { timeout: 10_000 }).toBeLessThan(40)
+      const overlay = addressBarOverlay(topoPage)
+      await expect.poll(() => addressBarInputWidth(topoPage), { timeout: 10_000 }).toBeLessThan(40)
 
-      await orcaPage.locator('form:has(> [data-orca-browser-address-bar="true"])').click()
+      await topoPage.locator('form:has(> [data-topo-browser-address-bar="true"])').click()
 
       await expect(overlay).toBeVisible()
       await expect
-        .poll(() => addressBarInputWidth(orcaPage), { timeout: 5_000 })
+        .poll(() => addressBarInputWidth(topoPage), { timeout: 5_000 })
         .toBeGreaterThan(BROWSER_ADDRESS_BAR_MIN_INLINE_WIDTH / 2)
 
-      await addressBarInput(orcaPage).fill(destination.url)
-      await addressBarInput(orcaPage).press('Enter')
+      await addressBarInput(topoPage).fill(destination.url)
+      await addressBarInput(topoPage).press('Enter')
 
       await expect
-        .poll(async () => (await getBrowserTabs(orcaPage, worktreeId)).at(-1)?.url ?? null, {
+        .poll(async () => (await getBrowserTabs(topoPage, worktreeId)).at(-1)?.url ?? null, {
           timeout: 15_000
         })
         .toContain('/typed')

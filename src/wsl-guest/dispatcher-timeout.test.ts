@@ -45,7 +45,7 @@ describe('RelayDispatcher request timeout validation', () => {
 
     await expect(
       dispatcher.requestPrimary(
-        'orca.cli',
+        'topo.cli',
         { stdin: '\\'.repeat(600 * 1024) },
         { timeoutMs: 1_000 }
       )

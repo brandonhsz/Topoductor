@@ -61,7 +61,7 @@ const host = { kind: 'environment', environmentId: 'remote-2' } as const
 const party: AgentMessageSender['party'] = {
   address: 'term_worker',
   terminalHandle: 'term_worker',
-  orcaSessionId: null
+  topoSessionId: null
 }
 function source(p = party): AgentMessageSource {
   return {
@@ -137,7 +137,7 @@ it.each([
       expect(mocks.toast).toHaveBeenCalledExactlyOnceWith(
         feedback === 'retry'
           ? 'The structured agent session is not available yet. Retry in a moment.'
-          : "This chat can't be reopened until Orca is updated."
+          : "This chat can't be reopened until Topo is updated."
       )
     } else {
       expect(mocks.toast).not.toHaveBeenCalled()

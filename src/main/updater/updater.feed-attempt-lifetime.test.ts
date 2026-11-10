@@ -81,7 +81,7 @@ describe('updater feed preflight ownership', () => {
       expect(autoUpdaterMock.checkForUpdates).toHaveBeenCalledTimes(1)
       expect(autoUpdaterMock.setFeedURL).toHaveBeenLastCalledWith({
         provider: 'generic',
-        url: 'https://github.com/stablyai/orca/releases/download/v3.0.0'
+        url: 'https://github.com/brandonhsz/Topoductor/releases/download/v3.0.0'
       })
       autoUpdaterMock.setFeedURL.mockClear()
 

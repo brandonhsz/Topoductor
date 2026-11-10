@@ -11,8 +11,8 @@ import { encodeAgentSessionRecord } from '../../../shared/agent-session/lifecycl
 import type { PersistedState } from '../../../shared/persisted-state-types'
 import '../../../shared/wsl-host-internal-gate'
 import { getHistorySessionDirName } from '../../daemon/history/storage/history-paths'
-import { readProfileProjectTransferState } from '../../orca-profiles/profile-project-domain-state'
-import { getOrcaProfileStateDatabaseFile } from '../../orca-profiles/profile-storage-paths'
+import { readProfileProjectTransferState } from '../../topo-profiles/profile-project-domain-state'
+import { getTopoProfileStateDatabaseFile } from '../../topo-profiles/profile-storage-paths'
 import { openProfileStateDatabase } from '../../persistence/profile-state/profile-state-database'
 import { importProfileStateJson } from '../../persistence/profile-state/profile-state-documents'
 import Database from '../../sqlite/sync-database'
@@ -54,7 +54,7 @@ const OLD_SESSION = `${OLD_ID}@@s1`
 let root: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-drive-unc-startup-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-drive-unc-startup-'))
 })
 
 afterEach(() => {
@@ -108,7 +108,7 @@ function profileState(): PersistedState {
 }
 
 function seedProfile(state: PersistedState): void {
-  const file = getOrcaProfileStateDatabaseFile(PROFILE, root)
+  const file = getTopoProfileStateDatabaseFile(PROFILE, root)
   mkdirSync(join(file, '..'), { recursive: true })
   const opened = openProfileStateDatabase(file, PROFILE)
   try {

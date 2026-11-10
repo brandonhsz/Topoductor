@@ -1,5 +1,5 @@
-import { CONTROL_CONTINUITY_LIMITS } from '@orca-cloud/relay-contract/control-continuity'
-import { RELAY_CLOSE_CODE } from '@orca-cloud/relay-contract/close-codes'
+import { CONTROL_CONTINUITY_LIMITS } from '@topo-cloud/relay-contract/control-continuity'
+import { RELAY_CLOSE_CODE } from '@topo-cloud/relay-contract/close-codes'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { RelayTokenClaims } from '../authentication/relay-token-verifier.js'
 import {

@@ -42,22 +42,22 @@ function getBatchDeleteDescription(
   if (scope === 'folder') {
     return t(
       'auto.components.sidebar.DeleteWorktreeDialog.removeBatchFolder',
-      'Remove <target>{{count}} workspaces</target> from Orca. Project folders on disk will not be deleted.',
+      'Remove <target>{{count}} workspaces</target> from Topo. Project folders on disk will not be deleted.',
       {
         count,
         defaultValue_one:
-          'Remove <target>{{count}} workspace</target> from Orca. Project folders on disk will not be deleted.'
+          'Remove <target>{{count}} workspace</target> from Topo. Project folders on disk will not be deleted.'
       }
     )
   }
   if (scope === 'mixed') {
     return t(
       'auto.components.sidebar.DeleteWorktreeDialog.removeBatchMixed',
-      'Remove <target>{{count}} workspaces</target> from Orca. Git worktrees will also be removed from git and disk; folder workspaces will only remove the Orca workspace entry.',
+      'Remove <target>{{count}} workspaces</target> from Topo. Git worktrees will also be removed from git and disk; folder workspaces will only remove the Topo workspace entry.',
       {
         count,
         defaultValue_one:
-          'Remove <target>{{count}} workspace</target> from Orca. Git worktrees will also be removed from git and disk; folder workspaces will only remove the Orca workspace entry.'
+          'Remove <target>{{count}} workspace</target> from Topo. Git worktrees will also be removed from git and disk; folder workspaces will only remove the Topo workspace entry.'
       }
     )
   }
@@ -97,8 +97,8 @@ export function getDeleteWorktreeDialogCopy(
         )
       : args.isFolderWorkspaceDelete
         ? t(
-            'auto.components.sidebar.DeleteWorktreeDialog.removeSingleFolderFromOrca',
-            'Removes it from Orca. The folder on disk is kept.'
+            'auto.components.sidebar.DeleteWorktreeDialog.removeSingleFolderFromTopo',
+            'Removes it from Topo. The folder on disk is kept.'
           )
         : t(
             'auto.components.sidebar.DeleteWorktreeDialog.deleteSingleWorktreeAndBranch',
@@ -129,22 +129,22 @@ export function getDeleteWorktreeLineageDialogDescription(
   if (scope === 'folder') {
     return t(
       'auto.components.sidebar.DeleteWorktreeDialog.removeWithChildrenFolder',
-      'Remove <target/> and <descendants>{{count}} child workspaces</descendants> from Orca. Project folders on disk will not be deleted.',
+      'Remove <target/> and <descendants>{{count}} child workspaces</descendants> from Topo. Project folders on disk will not be deleted.',
       {
         count,
         defaultValue_one:
-          'Remove <target/> and <descendants>{{count}} child workspace</descendants> from Orca. Project folders on disk will not be deleted.'
+          'Remove <target/> and <descendants>{{count}} child workspace</descendants> from Topo. Project folders on disk will not be deleted.'
       }
     )
   }
   if (scope === 'mixed') {
     return t(
       'auto.components.sidebar.DeleteWorktreeDialog.removeWithChildrenMixed',
-      'Remove <target/> and <descendants>{{count}} child workspaces</descendants> from Orca. Git worktrees will also be removed from git and disk; folder workspaces will only remove the Orca workspace entry.',
+      'Remove <target/> and <descendants>{{count}} child workspaces</descendants> from Topo. Git worktrees will also be removed from git and disk; folder workspaces will only remove the Topo workspace entry.',
       {
         count,
         defaultValue_one:
-          'Remove <target/> and <descendants>{{count}} child workspace</descendants> from Orca. Git worktrees will also be removed from git and disk; folder workspaces will only remove the Orca workspace entry.'
+          'Remove <target/> and <descendants>{{count}} child workspace</descendants> from Topo. Git worktrees will also be removed from git and disk; folder workspaces will only remove the Topo workspace entry.'
       }
     )
   }

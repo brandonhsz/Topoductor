@@ -74,9 +74,9 @@ beforeEach(() => {
   mocks.requestSingleInstanceLock.mockReturnValue(true)
   mocks.whenReady.mockResolvedValue(undefined)
   mocks.showMessageBox.mockResolvedValue({ response: 0 })
-  vi.stubEnv('ORCA_USER_DATA_PATH', '/stale/inherited/root')
-  vi.stubEnv('ORCA_BYPASS_SINGLE_INSTANCE_LOCK', '1')
-  vi.stubEnv('ORCA_E2E_ENFORCE_SINGLE_INSTANCE_LOCK', '0')
+  vi.stubEnv('TOPO_USER_DATA_PATH', '/stale/inherited/root')
+  vi.stubEnv('TOPO_BYPASS_SINGLE_INSTANCE_LOCK', '1')
+  vi.stubEnv('TOPO_E2E_ENFORCE_SINGLE_INSTANCE_LOCK', '0')
 })
 afterEach(() => {
   vi.restoreAllMocks()
@@ -87,16 +87,16 @@ afterEach(() => {
 })
 
 function fixture() {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), 'orca-recovery-bridge-')))
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'topo-recovery-bridge-')))
   roots.push(root)
   const profileId = 'bridge-profile'
   const directory = join(root, 'profiles', profileId)
   mkdirSync(directory, { recursive: true })
   writeFileSync(
-    join(root, 'orca-profile-index.json'),
+    join(root, 'topo-profile-index.json'),
     JSON.stringify({ activeProfileId: profileId, profiles: [{ id: profileId }] })
   )
-  const dataFile = join(directory, 'orca-data.json')
+  const dataFile = join(directory, 'topo-data.json')
   const databaseFile = join(directory, 'profile-state.db')
   const exportFile = profileStateJsonExportPath(dataFile, 1)
   const restored = {
@@ -107,7 +107,7 @@ function fixture() {
   writeFileSync(databaseFile, 'broken database')
   writeFileSync(exportFile, JSON.stringify(restored))
   const argv = [
-    'Orca',
+    'Topo',
     '--serve',
     PROFILE_STATE_RECOVERY_FLAG,
     JSON.stringify({ userDataPath: root, selector: { kind: 'json', revision: 1 } })
@@ -140,8 +140,8 @@ describe('Electron recovery preflight', () => {
         return true
       })
       expect(runProfileStateRecoveryPreflight(item.argv)).toBe(true)
-      expect(process.env.ORCA_USER_DATA_PATH).toBe(item.root)
-      expect(process.env.ORCA_BACKGROUND_LAUNCH).toBe('1')
+      expect(process.env.TOPO_USER_DATA_PATH).toBe(item.root)
+      expect(process.env.TOPO_BACKGROUND_LAUNCH).toBe('1')
       expect(mocks.background).toHaveBeenCalledOnce()
       expect(mocks.requestSingleInstanceLock).toHaveBeenCalledOnce()
       expect(response()).toMatchObject({
@@ -168,7 +168,7 @@ describe('Electron recovery preflight', () => {
     expect(response()).toMatchObject({
       ok: false,
       code: 'runtime_error',
-      message: expect.stringContaining('Stop Orca')
+      message: expect.stringContaining('Stop Topo')
     })
     expect(readFileSync(item.databaseFile, 'utf8')).toBe('broken database')
     expect(JSON.parse(readFileSync(item.dataFile, 'utf8'))).toEqual({ old: true })
@@ -212,7 +212,7 @@ describe('Electron recovery preflight', () => {
         markerWrite(...args)
       })
     const argv = [
-      'Orca',
+      'Topo',
       '--serve',
       PROFILE_STATE_RECOVERY_FLAG,
       JSON.stringify({ userDataPath: item.root, selector: { kind: 'sqlite', backupId } })
@@ -251,8 +251,8 @@ describe('Electron recovery preflight', () => {
     function desktopArgv(item: ReturnType<typeof fixture>) {
       writeFileSync(item.dataFile, JSON.stringify(item.restored))
       return [
-        'Orca',
-        ...profileStateDesktopRecoveryArgs(['Orca', '--inspect', 'orca://share/1'], {
+        'Topo',
+        ...profileStateDesktopRecoveryArgs(['Topo', '--inspect', 'topo://share/1'], {
           userDataPath: item.root,
           selector: { kind: 'current-json' }
         })
@@ -266,7 +266,7 @@ describe('Electron recovery preflight', () => {
       expect(existsSync(item.databaseFile)).toBe(false)
       expect(mocks.output).not.toHaveBeenCalled()
       expect(mocks.background).not.toHaveBeenCalled()
-      expect(mocks.relaunch).toHaveBeenCalledWith({ args: ['--inspect', 'orca://share/1'] })
+      expect(mocks.relaunch).toHaveBeenCalledWith({ args: ['--inspect', 'topo://share/1'] })
       expect(mocks.exit).toHaveBeenCalledWith(0)
       acquireProfileStateRuntimeAdmission(item.root).release()
     })
@@ -279,7 +279,7 @@ describe('Electron recovery preflight', () => {
       await vi.waitFor(() => expect(mocks.exit).toHaveBeenCalledWith(1))
       expect(mocks.relaunch).not.toHaveBeenCalled()
       expect(mocks.showMessageBox).toHaveBeenCalledWith(
-        expect.objectContaining({ detail: expect.stringContaining('Stop Orca') })
+        expect.objectContaining({ detail: expect.stringContaining('Stop Topo') })
       )
       expect(readFileSync(item.databaseFile, 'utf8')).toBe('broken database')
     })

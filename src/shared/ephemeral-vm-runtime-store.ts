@@ -36,7 +36,7 @@ import {
 
 export { getEphemeralVmWriteAheadRuntimeStorePath } from './ephemeral-vm-runtime-write-ahead-store'
 
-const EPHEMERAL_VM_RUNTIMES_FILE = 'orca-ephemeral-vm-runtimes.json'
+const EPHEMERAL_VM_RUNTIMES_FILE = 'topo-ephemeral-vm-runtimes.json'
 export const MAX_EPHEMERAL_VM_RUNTIME_STORE_FILE_BYTES = 1024 * 1024
 
 export type EphemeralVmRuntimeStoreErrorCode = 'invalid_argument' | 'runtime_error'
@@ -115,7 +115,7 @@ export function upsertEphemeralVmRuntimeRollbackRecovery(
     if (error instanceof JsonStringifyByteLimitError) {
       throw new EphemeralVmRuntimeStoreError(
         'runtime_error',
-        `Could not write Orca ephemeral VM runtimes at ${path}; the store exceeds its durable capacity.`
+        `Could not write Topo ephemeral VM runtimes at ${path}; the store exceeds its durable capacity.`
       )
     }
     throw error
@@ -246,7 +246,7 @@ function readEphemeralVmRuntimeStore(userDataPath: string): LoadedEphemeralVmRun
   } catch {
     throw new EphemeralVmRuntimeStoreError(
       'runtime_error',
-      `Could not read Orca ephemeral VM runtimes at ${path}; the file is invalid.`
+      `Could not read Topo ephemeral VM runtimes at ${path}; the file is invalid.`
     )
   }
 }
@@ -297,7 +297,7 @@ function writeEphemeralVmRuntimeStore(
     if (error instanceof JsonStringifyByteLimitError) {
       throw new EphemeralVmRuntimeStoreError(
         'runtime_error',
-        `Could not write Orca ephemeral VM runtimes at ${path}; the store exceeds its durable capacity.`
+        `Could not write Topo ephemeral VM runtimes at ${path}; the store exceeds its durable capacity.`
       )
     }
     throw error

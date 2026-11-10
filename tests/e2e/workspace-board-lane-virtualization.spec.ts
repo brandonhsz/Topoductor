@@ -1,4 +1,4 @@
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 
 const MARQUEE_WORKSPACE_COUNT = 102
@@ -7,19 +7,19 @@ const CARDS_PER_LANE = 100
 
 // Window lane cards instead of mounting all in one blocking commit; retain true lane indices for drop targeting.
 test.describe('Workspace board lane virtualization', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
   })
 
   test('bounds mounted lanes and cards while preserving a 21-status workflow', async ({
-    orcaPage
+    topoPage
   }) => {
     const statusIds = Array.from(
       { length: MANY_LANE_COUNT },
       (_, index) => `state-${String(index + 1).padStart(2, '0')}`
     )
-    await orcaPage.evaluate(
+    await topoPage.evaluate(
       ({ cardsPerLane, ids }) => {
         const store = window.__store
         if (!store) {
@@ -80,9 +80,9 @@ test.describe('Workspace board lane virtualization', () => {
       { cardsPerLane: CARDS_PER_LANE, ids: statusIds }
     )
 
-    await orcaPage.getByRole('button', { name: 'Workspace board' }).click()
+    await topoPage.getByRole('button', { name: 'Workspace board' }).click()
 
-    const board = orcaPage.locator('[data-workspace-board-selection-surface]')
+    const board = topoPage.locator('[data-workspace-board-selection-surface]')
     const scroller = board.locator('[data-workspace-board-lane-grid]').locator('..')
     const lanes = board.locator('[data-workspace-status]')
     const cards = board.locator('[data-workspace-board-card-id]')
@@ -113,7 +113,7 @@ test.describe('Workspace board lane virtualization', () => {
     expect(await lanes.count()).toBeLessThanOrEqual(laneBudget)
     expect(await cards.count()).toBeLessThan((await lanes.count()) * 40)
     expect(
-      await orcaPage.evaluate(() =>
+      await topoPage.evaluate(() =>
         window.__store?.getState().workspaceStatuses.map((status) => status.id)
       )
     ).toEqual(statusIds)
@@ -125,7 +125,7 @@ test.describe('Workspace board lane virtualization', () => {
     await resizeHandle.focus()
     await resizeHandle.press('ArrowRight')
     await expect
-      .poll(() => orcaPage.evaluate(() => window.__store?.getState().workspaceBoardColumnWidth))
+      .poll(() => topoPage.evaluate(() => window.__store?.getState().workspaceBoardColumnWidth))
       .toBe(328)
     await expect(resizeHandle).toHaveAttribute('aria-valuenow', '328')
     await scroller.evaluate((element) => {
@@ -146,17 +146,17 @@ test.describe('Workspace board lane virtualization', () => {
     if (!sourceId || !sourceBox || !targetBox) {
       throw new Error('Expected visible source card and final lane drop target')
     }
-    await orcaPage.mouse.move(sourceBox.x + sourceBox.width / 2, sourceBox.y + sourceBox.height / 2)
-    await orcaPage.mouse.down()
-    await orcaPage.mouse.move(
+    await topoPage.mouse.move(sourceBox.x + sourceBox.width / 2, sourceBox.y + sourceBox.height / 2)
+    await topoPage.mouse.down()
+    await topoPage.mouse.move(
       targetBox.x + targetBox.width / 2,
       targetBox.y + Math.min(80, targetBox.height / 2),
       { steps: 8 }
     )
-    await orcaPage.mouse.up()
+    await topoPage.mouse.up()
     await expect
       .poll(() =>
-        orcaPage.evaluate(
+        topoPage.evaluate(
           (worktreeId) =>
             window.__store?.getState().getKnownWorktreeById(worktreeId)?.workspaceStatus,
           sourceId
@@ -165,10 +165,10 @@ test.describe('Workspace board lane virtualization', () => {
       .toBe('state-21')
   })
 
-  test('selects the full lane across a single large marquee scroll jump', async ({ orcaPage }) => {
+  test('selects the full lane across a single large marquee scroll jump', async ({ topoPage }) => {
     const statusId = 'virtual-marquee'
     const emptyStatusId = 'virtual-marquee-start'
-    await orcaPage.evaluate(
+    await topoPage.evaluate(
       ({ count, emptyStatus, status }) => {
         const store = window.__store
         if (!store) {
@@ -222,14 +222,14 @@ test.describe('Workspace board lane virtualization', () => {
       { count: MARQUEE_WORKSPACE_COUNT, emptyStatus: emptyStatusId, status: statusId }
     )
 
-    await orcaPage.getByRole('button', { name: 'Workspace board' }).click()
+    await topoPage.getByRole('button', { name: 'Workspace board' }).click()
 
-    const lane = orcaPage.locator(`[data-workspace-status="${statusId}"]`)
+    const lane = topoPage.locator(`[data-workspace-status="${statusId}"]`)
     await expect(lane.getByText(String(MARQUEE_WORKSPACE_COUNT), { exact: true })).toBeVisible()
     const laneCards = lane.locator('[data-workspace-board-card-id]')
     await expect.poll(() => laneCards.count(), { timeout: 15_000 }).toBeGreaterThan(3)
     const laneScroll = lane.locator('[data-workspace-board-lane-scroll]')
-    const emptyLaneScroll = orcaPage.locator(
+    const emptyLaneScroll = topoPage.locator(
       `[data-workspace-status="${emptyStatusId}"] [data-workspace-board-lane-scroll]`
     )
     const box = await laneScroll.boundingBox()
@@ -273,12 +273,12 @@ test.describe('Workspace board lane virtualization', () => {
       throw new Error('Expected empty board space for the marquee start')
     }
 
-    await orcaPage.mouse.move(startPoint.x, startPoint.y)
-    await orcaPage.mouse.down()
-    await orcaPage.mouse.move(box.x + box.width - 18, box.y + 80, { steps: 4 })
+    await topoPage.mouse.move(startPoint.x, startPoint.y)
+    await topoPage.mouse.down()
+    await topoPage.mouse.move(box.x + box.width - 18, box.y + 80, { steps: 4 })
 
     // Require gesture acceptance up front so rejected pointerdown cannot look like a delayed virtualization failure.
-    await expect(orcaPage.locator('[data-workspace-board-selection-rect]')).toBeVisible()
+    await expect(topoPage.locator('[data-workspace-board-selection-rect]')).toBeVisible()
     await expect
       .poll(() => lane.locator('[data-workspace-board-card-area-selected="true"]').count(), {
         timeout: 15_000
@@ -309,11 +309,11 @@ test.describe('Workspace board lane virtualization', () => {
       `lane scroll never settled at its bottom: ${JSON.stringify(laneScrollSettle)}`
     ).toBeGreaterThanOrEqual(laneScrollSettle.maxScrollTop - 1)
 
-    await orcaPage.mouse.move(box.x + box.width - 18, box.y + box.height - 12)
-    await orcaPage.mouse.up()
+    await topoPage.mouse.move(box.x + box.width - 18, box.y + box.height - 12)
+    await topoPage.mouse.up()
 
     // Assert count text so a short marquee reports its committed count instead of locator timeout.
-    await expect(orcaPage.getByText(/^\d+ selected$/)).toHaveText(
+    await expect(topoPage.getByText(/^\d+ selected$/)).toHaveText(
       `${MARQUEE_WORKSPACE_COUNT} selected`
     )
   })

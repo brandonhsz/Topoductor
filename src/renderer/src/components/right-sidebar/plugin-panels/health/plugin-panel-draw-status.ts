@@ -1,5 +1,5 @@
 /**
- * What each mounted plugin panel has drawn, so `orca plugin shot` can wait for the current guest
+ * What each mounted plugin panel has drawn, so `topo plugin shot` can wait for the current guest
  * (not the last good tree of the one a dev save replaced) before main captures it.
  */
 export type PluginPanelDrawStatus = {

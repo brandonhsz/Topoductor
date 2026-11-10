@@ -1,7 +1,7 @@
 import { chmod, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import type { BranchSwitchTarget } from '../../shared/git/branch-switch-target'
 import { installRealWorkerThreadChildProcesses } from '../worker-thread-child-process/worker-thread-child-process-real.test-fixtures'
@@ -47,7 +47,7 @@ async function remote(name: string) {
   await git('update-ref', `refs/remotes/${name}/topic`, 'HEAD')
 }
 beforeEach(async () => {
-  directory = await realpath(await mkdtemp(join(tmpdir(), 'orca-branch-target-')))
+  directory = await realpath(await mkdtemp(join(tmpdir(), 'topo-branch-target-')))
   await git('init', '-q')
   await git('symbolic-ref', 'HEAD', 'refs/heads/main')
   await git('config', 'user.name', 'Test')

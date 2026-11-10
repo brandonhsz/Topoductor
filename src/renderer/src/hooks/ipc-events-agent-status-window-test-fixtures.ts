@@ -96,7 +96,7 @@ export function buildWindowApi(args: {
       browser: {
         onGuestLoadFailed: () => () => {},
         onPaneFocus: () => () => {},
-        onOpenLinkInOrcaTab: () => () => {},
+        onOpenLinkInTopoTab: () => () => {},
         onSessionProfilesChanged: () => () => {},
         onNavigationUpdate: () => () => {},
         onActivateView: () => () => {}

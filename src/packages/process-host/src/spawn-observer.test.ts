@@ -19,7 +19,7 @@ afterEach(() => {
 
 describe('spawn observer', () => {
   it('outside e2e mode writes nothing and captures no stack, even with the log variable set', () => {
-    const dir = mkdtempSync(path.join(tmpdir(), 'orca-spawn-log-'))
+    const dir = mkdtempSync(path.join(tmpdir(), 'topo-spawn-log-'))
     const log = path.join(dir, 'spawns.jsonl')
     process.env[E2E_SPAWN_LOG_ENV] = log
     const errors = vi.spyOn(globalThis, 'Error')

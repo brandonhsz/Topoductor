@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import type { OrchestrationPartyIdentity as OrchestrationParty } from '../../../../../../shared/orchestration/mailbox/orchestration-party-identity'
@@ -31,7 +31,7 @@ export type WorkerFollowUp = {
   earlierWork?: string
 }
 
-/** `userOpened`: the user's own tab, which stays theirs and is never closed by Orca. */
+/** `userOpened`: the user's own tab, which stays theirs and is never closed by Topo. */
 export type ReopenedWorker = {
   handle: string
   chat: boolean
@@ -42,7 +42,7 @@ export type ReopenedWorker = {
 
 /** Resume a closed terminal worker's conversation in a new background tab; never a shell. Null: start a fresh agent. */
 export async function reopenWorkerTerminal(
-  runtime: Pick<OrcaRuntimeService, 'resumeAgentSessionInWorkspace'>,
+  runtime: Pick<TopoRuntimeService, 'resumeAgentSessionInWorkspace'>,
   worktreeId: string,
   session: WorkerResumeSession,
   dispatchId: string
@@ -66,7 +66,7 @@ export async function reopenWorkerTerminal(
     case 'held_elsewhere':
       throw new OrchestrationError(
         'worker_unreachable',
-        "The worker's conversation is open somewhere Orca cannot reach; nothing was sent."
+        "The worker's conversation is open somewhere Topo cannot reach; nothing was sent."
       )
     case 'no_resume_command':
       // Refused before anything spawned, so a fresh agent cannot duplicate it.
@@ -75,7 +75,7 @@ export async function reopenWorkerTerminal(
     case 'create_failed':
       throw new OrchestrationError(
         'worker_reopen_failed',
-        `Orca could not reopen the worker's ${session.agent} conversation (${resumed.reason}).`
+        `Topo could not reopen the worker's ${session.agent} conversation (${resumed.reason}).`
       )
   }
 }
@@ -109,7 +109,7 @@ export function placedWorkerParty(
  *  Its custody identity comes from the worker, since its released row cannot vouch for it. */
 export async function reopenWorkerChat(
   runtime: Pick<
-    OrcaRuntimeService,
+    TopoRuntimeService,
     'ensureStructuredAgentSessionHost' | 'publishStructuredAgentSessionTab'
   >,
   db: OrchestrationDb,
@@ -121,7 +121,7 @@ export async function reopenWorkerChat(
   if (!identity || !host) {
     throw new OrchestrationError(
       'worker_not_restartable',
-      `Worker ${handle} has no chat Orca can reopen; start a new worker with worker-start.`
+      `Worker ${handle} has no chat Topo can reopen; start a new worker with worker-start.`
     )
   }
   // A `/clear` moved the conversation on; reopen the session that runs it now.

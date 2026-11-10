@@ -1,5 +1,5 @@
-// #34089 for VMs reached as paired Orca servers: a VM its provider stopped or reclaimed stays
-// recorded as running. Once Orca's own probes have failed for minutes, opening the workspace runs
+// #34089 for VMs reached as paired Topo servers: a VM its provider stopped or reclaimed stays
+// recorded as running. Once Topo's own probes have failed for minutes, opening the workspace runs
 // the recipe's resume and keeps the device pairing unless the server came back with a new host key.
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -92,8 +92,8 @@ const STORE = {} as Store
 const REQUEST = { sshHeld: false, sshUserDisconnects: 0 }
 type KeyPair = ReturnType<typeof generateKeyPair>
 
-/** A fake orcad: a real encrypted server with a host key and a device list that survive a reboot. */
-async function bootOrcad(serverDataPath: string, keyPair: KeyPair) {
+/** A fake topod: a real encrypted server with a host key and a device list that survive a reboot. */
+async function bootTopod(serverDataPath: string, keyPair: KeyPair) {
   const registry = (): DeviceRegistry => new DeviceRegistry(serverDataPath)
   const server = await createSharedControlTestServer({
     keyPair,
@@ -135,7 +135,7 @@ async function probe(environmentId: string) {
   }
 }
 
-describe('opening a workspace whose paired VM server Orca could not reach for minutes', () => {
+describe('opening a workspace whose paired VM server Topo could not reach for minutes', () => {
   let serverDataPath: string
   let environmentId: string
   let keyPair: KeyPair
@@ -148,10 +148,10 @@ describe('opening a workspace whose paired VM server Orca could not reach for mi
     vi.useFakeTimers({ toFake: ['Date'] })
     now = Date.parse('2026-11-08T12:00:00Z')
     vi.setSystemTime(now)
-    state.desktopDataPath = mkdtempSync(join(tmpdir(), 'orca-lost-vm-desktop-'))
-    serverDataPath = mkdtempSync(join(tmpdir(), 'orca-lost-vm-server-'))
+    state.desktopDataPath = mkdtempSync(join(tmpdir(), 'topo-lost-vm-desktop-'))
+    serverDataPath = mkdtempSync(join(tmpdir(), 'topo-lost-vm-server-'))
     keyPair = generateKeyPair()
-    const boot = await bootOrcad(serverDataPath, keyPair)
+    const boot = await bootTopod(serverDataPath, keyPair)
     environmentId = addEnvironmentFromPairingCode(state.desktopDataPath, {
       name: 'VM workspace',
       pairingCode: boot.pairingCode,
@@ -160,7 +160,7 @@ describe('opening a workspace whose paired VM server Orca could not reach for mi
     state.record = {
       id: 'vm-1',
       status: 'running',
-      connectionMode: 'orca-server',
+      connectionMode: 'topo-server',
       runtimeEnvironmentId: environmentId
     }
     expect((await probe(environmentId)).ok).toBe(true)
@@ -185,7 +185,7 @@ describe('opening a workspace whose paired VM server Orca could not reach for mi
     rmSync(serverDataPath, { recursive: true, force: true })
   })
 
-  /** The VM goes away; Orca's probes keep failing for `forMs`. */
+  /** The VM goes away; Topo's probes keep failing for `forMs`. */
   async function vmDisappears(forMs: number): Promise<void> {
     await closeSharedControlTestServers()
     for (let elapsed = 0; elapsed <= forMs; elapsed += forMs / 3) {
@@ -198,7 +198,7 @@ describe('opening a workspace whose paired VM server Orca could not reach for mi
   /** The recipe's resume boots the VM again on a new address, printing a fresh pairing code. */
   function resumeBoots(nextKeyPair: KeyPair, nextServerDataPath = serverDataPath): void {
     mocks.resume.mockImplementation(async () => {
-      const boot = await bootOrcad(nextServerDataPath, nextKeyPair)
+      const boot = await bootTopod(nextServerDataPath, nextKeyPair)
       return {
         ok: true,
         skipped: false,
@@ -206,7 +206,7 @@ describe('opening a workspace whose paired VM server Orca could not reach for mi
           id: 'vm-1',
           status: 'running',
           recipeResult: {
-            connection: { type: 'orca-server', pairingCode: boot.pairingCode, projectRoot: '/w' }
+            connection: { type: 'topo-server', pairingCode: boot.pairingCode, projectRoot: '/w' }
           }
         }
       }
@@ -243,7 +243,7 @@ describe('opening a workspace whose paired VM server Orca could not reach for mi
   it('re-pairs from the fresh code when the VM comes back with a different host key', async () => {
     const saved = resolveEnvironmentPairingOffer(state.desktopDataPath, environmentId)
     await vmDisappears(RUNTIME_CONTACT_LOST_AFTER_MS)
-    const rebuiltServerDataPath = mkdtempSync(join(tmpdir(), 'orca-lost-vm-rebuilt-'))
+    const rebuiltServerDataPath = mkdtempSync(join(tmpdir(), 'topo-lost-vm-rebuilt-'))
     const rotated = generateKeyPair()
     resumeBoots(rotated, rebuiltServerDataPath)
 

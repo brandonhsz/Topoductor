@@ -38,7 +38,7 @@ export function buildPluginDeclarativeHostBody(entry: string): string {
     '} catch (error) {\n' +
     // The runtime's report names the plugin file and line; the fallback covers a runtime that failed.
     "  if (runtime && typeof runtime.report === 'function') runtime.report(error)\n" +
-    // Why the console too: main routes guest console errors to `orca plugin logs`.
+    // Why the console too: main routes guest console errors to `topo plugin logs`.
     '  else { console.error((error && error.stack) || String(error)); report(error) }\n' +
     '}\n' +
     '</script>\n'

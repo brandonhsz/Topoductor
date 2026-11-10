@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   configureGoldenStubAgent,
   getGoldenStubAgentLaunchEnv,
@@ -34,51 +34,51 @@ async function readRepoDecision(page: Page, repoId: string): Promise<string | nu
 }
 
 test('the first agent launch in a new repo asks once, and its worktrees share the answer', async ({
-  orcaPage
+  topoPage
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  await configureGoldenStubAgent(orcaPage, { agent: 'claude' })
+  await waitForSessionReady(topoPage)
+  await configureGoldenStubAgent(topoPage, { agent: 'claude' })
   // A repo added now has no stored answer, like a fresh clone after the upgrade.
-  const { repoId, mainId, ids } = await addRepoWithWorkspaces(orcaPage, testInfo, 1)
-  await switchToWorktree(orcaPage, mainId)
-  await ensureTerminalVisible(orcaPage)
+  const { repoId, mainId, ids } = await addRepoWithWorkspaces(topoPage, testInfo, 1)
+  await switchToWorktree(topoPage, mainId)
+  await ensureTerminalVisible(topoPage)
 
-  await startClaudeFromNewTab(orcaPage)
-  const prompt = orcaPage.getByRole('dialog', { name: /for agents\?$/ })
+  await startClaudeFromNewTab(topoPage)
+  const prompt = topoPage.getByRole('dialog', { name: /for agents\?$/ })
   await expect(prompt).toBeVisible({ timeout: 15_000 })
-  await orcaPage.screenshot({ path: testInfo.outputPath('first-launch-prompt.png') })
-  expect(await readRepoDecision(orcaPage, repoId)).toBeNull()
+  await topoPage.screenshot({ path: testInfo.outputPath('first-launch-prompt.png') })
+  expect(await readRepoDecision(topoPage, repoId)).toBeNull()
 
   await prompt.getByRole('button', { name: 'Let agents ask', exact: true }).click()
   await expect(prompt).toBeHidden()
-  await waitForAgentReady(orcaPage)
-  expect(await readRepoDecision(orcaPage, repoId)).toBe('agent-asks')
+  await waitForAgentReady(topoPage)
+  expect(await readRepoDecision(topoPage, repoId)).toBe('agent-asks')
 
   // Another worktree of the same repo reuses the stored answer.
   const [sibling] = ids
   if (!sibling) {
     throw new Error('the repo needs a second worktree')
   }
-  await switchToWorktree(orcaPage, sibling)
-  await ensureTerminalVisible(orcaPage)
-  await startClaudeFromNewTab(orcaPage)
-  await waitForAgentReady(orcaPage)
+  await switchToWorktree(topoPage, sibling)
+  await ensureTerminalVisible(topoPage)
+  await startClaudeFromNewTab(topoPage)
+  await waitForAgentReady(topoPage)
   await expect(prompt).toHaveCount(0)
 
-  await orcaPage.evaluate((id) => {
+  await topoPage.evaluate((id) => {
     const state = window.__store?.getState()
     state?.setSettingsSearchQuery('')
     state?.openSettingsTarget({ pane: 'repo', repoId: id })
     state?.openSettingsPage()
   }, repoId)
-  const trustControl = orcaPage.getByRole('radiogroup', { name: 'Agent Folder Trust' })
+  const trustControl = topoPage.getByRole('radiogroup', { name: 'Agent Folder Trust' })
   await trustControl.scrollIntoViewIfNeeded()
   await expect(trustControl.getByRole('radio', { name: 'Let agents ask' })).toHaveAttribute(
     'aria-checked',
     'true'
   )
-  await orcaPage.screenshot({ path: testInfo.outputPath('repo-setting.png') })
+  await topoPage.screenshot({ path: testInfo.outputPath('repo-setting.png') })
 
   await trustControl.getByRole('radio', { name: 'Trust repository' }).click()
-  await expect.poll(() => readRepoDecision(orcaPage, repoId)).toBe('pre-trust')
+  await expect.poll(() => readRepoDecision(topoPage, repoId)).toBe('pre-trust')
 })

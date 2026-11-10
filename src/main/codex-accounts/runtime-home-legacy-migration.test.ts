@@ -155,11 +155,11 @@ describe('CodexRuntimeHomeService', () => {
 
     expect(readFileSync(join(runtimeSessionsDir, 'session.json'), 'utf-8')).toBe('{"turns":[1]}')
     expect(
-      readFileSync(join(runtimeSessionsDir, 'session.orca-legacy-account-1.json'), 'utf-8')
+      readFileSync(join(runtimeSessionsDir, 'session.topo-legacy-account-1.json'), 'utf-8')
     ).toBe('{"turns":[1,2]}')
     expect(
       readFileSync(
-        join(runtimeSessionsDir, 'nested', 'session.orca-legacy-account-1.json'),
+        join(runtimeSessionsDir, 'nested', 'session.topo-legacy-account-1.json'),
         'utf-8'
       )
     ).toBe('{"turns":[2,3]}')

@@ -50,7 +50,7 @@ async function bundleScript(
       lib: {
         entry: resolve(entry),
         formats: [format],
-        name: 'orcaBrowserExtensionScript',
+        name: 'topoBrowserExtensionScript',
         fileName: () => fileName
       },
       rollupOptions: { external: ['electron'], output: ONE_BYTE_UNMINIFIED_OUTPUT }
@@ -83,7 +83,7 @@ export function bundleBrowserExtensionContentScript(): Promise<BundledScript> {
 /** Independent builds prevent sandboxed scripts from acquiring shared main-process chunks. */
 export function createSandboxedScriptBundlesPlugin(): Plugin {
   return {
-    name: 'orca-sandboxed-script-bundles',
+    name: 'topo-sandboxed-script-bundles',
     async buildStart() {
       for (const script of [WORKER_SHIM, CONTENT_SCRIPT, ...GUEST_PRELOADS]) {
         const { entry, fileName } = script

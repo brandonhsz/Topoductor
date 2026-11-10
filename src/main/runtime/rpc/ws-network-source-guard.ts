@@ -31,7 +31,7 @@ export class PublicSourceRefusal implements WebSocketSourceGuard {
       this.lastLogAt = now
       this.log(
         `[runtime] Refused a connection from public address ${normalizeSourceAddress(remoteAddress)}. ` +
-          'This server accepts localhost, LAN and Tailscale addresses; restart orca serve with ' +
+          'This server accepts localhost, LAN and Tailscale addresses; restart topo serve with ' +
           '--allow-public to accept public addresses. Further refusals this hour are not logged.'
       )
     }

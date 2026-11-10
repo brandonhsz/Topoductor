@@ -3,7 +3,7 @@ import type { ThemeLookPalette } from './onboarding-theme-looks'
 
 // Why inline colors throughout: each preview paints another theme's palette, not the live tokens.
 
-/** A tiny Orca window in one look: sidebar, tab strip, and an agent transcript as color bars. */
+/** A tiny Topo window in one look: sidebar, tab strip, and an agent transcript as color bars. */
 export function ThemeLookCardPreview({
   palette
 }: {

@@ -35,7 +35,7 @@ export const PR_CHECK_JOBS = [
   'xterm_patch_sync',
   'shell_contracts',
   'test',
-  'orcad_browser',
+  'topod_browser',
   'mobile_web_app',
   'cross-version-wire',
   'managed_hook_node18',
@@ -87,7 +87,7 @@ const CODEX_INDEX_HEAL_CONTRACT_PREFIXES = [
   'src/main/codex/trust/grants/codex-hook-trust-',
   'src/main/codex/trust/hooks/codex-hook-approval-first-write',
   'src/main/codex/trust/hooks/codex-hook-hash-lookup',
-  'src/main/codex/trust/hooks/codex-hook-orca-approvals',
+  'src/main/codex/trust/hooks/codex-hook-topo-approvals',
   'src/main/codex/hooks/reconciliation/codex-hook-reconcile',
   'src/main/codex/hooks/installation/codex-hook-local-install',
   'src/main/codex/trust/hooks/codex-hook-user-mirroring',
@@ -129,11 +129,11 @@ const CODEX_INDEX_HEAL_CONTRACT_PREFIXES = [
   'src/shared/windows-batch-spawn'
 ]
 
-const ORCAD_BROWSER_PREFIXES = [
-  'src/main/orcad/external-chromium-',
-  'src/main/orcad/orcad-browser-provider',
-  'src/main/orcad/orcad-agent-browser-binary',
-  'src/main/orcad/electron-serve-browser-process'
+const TOPOD_BROWSER_PREFIXES = [
+  'src/main/topod/external-chromium-',
+  'src/main/topod/topod-browser-provider',
+  'src/main/topod/topod-agent-browser-binary',
+  'src/main/topod/electron-serve-browser-process'
 ]
 
 // Include page build/verification/manifest/packaging, entry/routes/imported mobile sources and render-check shell policy.
@@ -180,7 +180,7 @@ const MOBILE_WEB_APP_PREFIXES = [
   'mobile/packages/',
   'mobile/package.json',
   'mobile/pnpm-lock.yaml',
-  'mobile/modules/orca-mobile-web-shell/',
+  'mobile/modules/topo-mobile-web-shell/',
   // Chat visuals on both mobile surfaces are built from it; their in-page links check runs here.
   'src/shared/native-chat/native-chat-visual-shell'
 ]
@@ -337,7 +337,7 @@ const NATIVE_CACHE_FILES = new Set([
   'src/shared/zip-extractor-command.ts',
   'config/scripts/artifact-storage/reflink-copy/space-sharing-copy.mjs',
   'config/scripts/native-build/node-addons/native-dependency-lock-digest.mjs',
-  'config/scripts/orcad-distribution/prebuilds/orcad-prebuild-node-gyp.mjs',
+  'config/scripts/topod-distribution/prebuilds/topod-prebuild-node-gyp.mjs',
   'config/scripts/native-build/windows/msbuild-file-tracking.mjs'
 ])
 
@@ -527,8 +527,8 @@ function jobDetector(job) {
       return (files) => files.some((file) => matchesPrefix(file, XTERM_PREFIXES))
     case 'shell_contracts':
       return (files) => files.some((file) => matchesPrefix(file, SHELL_PREFIXES))
-    case 'orcad_browser':
-      return (files) => files.some((file) => matchesPrefix(file, ORCAD_BROWSER_PREFIXES))
+    case 'topod_browser':
+      return (files) => files.some((file) => matchesPrefix(file, TOPOD_BROWSER_PREFIXES))
     // Handle inside map too: default detector otherwise runs this job on every desktop-relevant PR.
     case 'mobile_web_app':
       return changesMobileWebApp

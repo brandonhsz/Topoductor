@@ -1,6 +1,6 @@
 import { quotePosixShellUnlessPlain } from '../../shared/shell/launch/shell-argument-quoting'
 import { spawn, type ChildProcess } from 'node:child_process'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { existsSync } from 'node:fs'
 import { posix, win32 } from 'node:path'
 import { parseWslUncPath } from '../../shared/wsl-paths'

@@ -5,10 +5,10 @@ import type { Automation } from '../../shared/automations/automation-definition'
 import type { AutomationRun } from '../../shared/automations/history/automation-run'
 import { buildAutomationWorkspaceProvenance } from '../../shared/automations/ownership/automation-workspace-provenance'
 import type { Repo } from '../../shared/repo-types'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 
 type HeadlessAutomationRunForWorkspace = Pick<AutomationRun, 'id' | 'title' | 'scheduledFor'>
-type RuntimeCreateManagedWorktreeArgs = Parameters<OrcaRuntimeService['createManagedWorktree']>[0]
+type RuntimeCreateManagedWorktreeArgs = Parameters<TopoRuntimeService['createManagedWorktree']>[0]
 
 export function buildHeadlessAutomationWorkspaceName(
   runTitle: string,

@@ -16,12 +16,12 @@ function host() {
     findValidPlugin: (key: string) =>
       // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: settings code reads only manifest.contributes.settings.
       key === 'acme.todos' ? (plugin as never as ValidDiscoveredPlugin) : null,
-    userDataPath: mkdtempSync(join(tmpdir(), 'orca-declared-settings-')),
+    userDataPath: mkdtempSync(join(tmpdir(), 'topo-declared-settings-')),
     dataChanged: vi.fn()
   }
 }
 
-describe('declared plugin settings in Orca Settings', () => {
+describe('declared plugin settings in Topo Settings', () => {
   it('shows defaults until the person sets a value, then theirs, and tells the plugin', () => {
     const settingsHost = host()
     expect(readPluginDeclaredSettings(settingsHost, 'acme.todos')?.values).toEqual({

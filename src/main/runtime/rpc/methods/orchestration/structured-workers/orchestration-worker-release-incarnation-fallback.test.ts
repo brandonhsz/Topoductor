@@ -8,7 +8,7 @@ import '../../../../orchestration/db/messages/mailbox-routing-page'
 import '../../../../orchestration/db/dispatch-row-writer'
 import '../../../../orchestration/db/attempt-outcome-projection'
 
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { completeWorkerTerminalRelease } from '../worker/worker-release-completion'
 import type { RuntimeTerminalShow } from '../../../../../../shared/runtime-terminal-contracts'
 import type { OrchestrationCompatibilityTerminalAuthority } from '../../../../orchestration/terminal-authority/orchestration-compatibility-authority'
@@ -18,11 +18,11 @@ const workerStartResult = z.object({ dispatchId: z.string(), state: z.string() }
 describe('orchestration worker release incarnation fallback', () => {
   let db: OrchestrationDb
   let dbOpen = false
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
   let ctx: RpcContext
   let activeRunId: string
   let inspectProcessLiveness: MockInstance<
-    OrcaRuntimeService['inspectTerminalProcessIncarnationLiveness']
+    TopoRuntimeService['inspectTerminalProcessIncarnationLiveness']
   >
 
   const coordinatorPaneKey = 'tab_coord:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
@@ -63,7 +63,7 @@ describe('orchestration worker release incarnation fallback', () => {
   function setup(): void {
     db = new OrchestrationDb(':memory:')
     dbOpen = true
-    runtime = new OrcaRuntimeService()
+    runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     inspectProcessLiveness = vi
       .spyOn(runtime, 'inspectTerminalProcessIncarnationLiveness')
@@ -99,7 +99,7 @@ describe('orchestration worker release incarnation fallback', () => {
       status: 'running',
       exitCode: null
     })
-    vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('orca')
+    vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('topo')
     vi.spyOn(runtime, 'sendTerminalAgentPrompt').mockResolvedValue({
       handle: 'term_worker',
       accepted: true,

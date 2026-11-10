@@ -41,7 +41,7 @@ const reply = (overrides: Record<string, unknown> = {}) => ({
 let cwd: string
 
 beforeEach(async () => {
-  cwd = await mkdtemp(join(tmpdir(), 'orca-editor-shot-'))
+  cwd = await mkdtemp(join(tmpdir(), 'topo-editor-shot-'))
   vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
 })
 
@@ -54,7 +54,7 @@ afterEach(async () => {
 const shot = (argv: string[], call: ReturnType<typeof vi.fn>) =>
   PLUGIN_VIEW_HANDLERS['plugin shot']!(context(['plugin', 'shot', ...argv], call, cwd))
 
-describe('orca plugin shot --editor', () => {
+describe('topo plugin shot --editor', () => {
   it('takes a plugin folder, sends size and acts, and writes the PNG under .orca/shots', async () => {
     await mkdir(join(cwd, 'sketch'))
     await writeFile(

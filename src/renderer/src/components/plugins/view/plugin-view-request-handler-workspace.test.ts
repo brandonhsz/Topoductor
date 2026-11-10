@@ -59,7 +59,7 @@ describe('a panel with no workspace showing', () => {
     expect(useAppStore.getState().rightSidebarTab).toBe(TAB)
   })
 
-  it('still fails when Orca has no workspace at all', async () => {
+  it('still fails when Topo has no workspace at all', async () => {
     setStore({
       activeView: 'terminal',
       activeWorktreeId: null,

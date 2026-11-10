@@ -2,7 +2,7 @@ import {
   normalizeMobileSessionTabSelection,
   selectMobileSessionTab
 } from './mobile-session-tab-selection'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import type { RuntimeMobileSessionAgentTab } from '../../../shared/runtime-mobile-session-tab-contracts'
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../shared/runtime-session-contracts'
 import { defaultAgentChatLabel } from '../../../shared/agent-session/agent-session-chat-label'
@@ -133,7 +133,7 @@ export type StructuredSessionRawPublicationInput = Pick<
 > & { eligible?: () => boolean; savedOrder?: MainSessionTabRows }
 
 export function projectStructuredSessionTab(
-  runtime: Pick<OrcaRuntimeService, 'mobileSessionTabsByWorktree' | 'storeMobileSessionSnapshot'>,
+  runtime: Pick<TopoRuntimeService, 'mobileSessionTabsByWorktree' | 'storeMobileSessionSnapshot'>,
   input: StructuredSessionRawPublicationInput,
   emit: (snapshot: RuntimeMobileSessionTabsSnapshot) => void
 ): void {

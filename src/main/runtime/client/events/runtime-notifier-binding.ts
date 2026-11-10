@@ -1,7 +1,7 @@
 import type { RuntimeNotifier } from './runtime-notifier-contract'
-import { OrcaRuntimeWithPtyController } from '../../terminal/lifecycle/orca-runtime-pty-controller'
+import { TopoRuntimeWithPtyController } from '../../terminal/lifecycle/topo-runtime-pty-controller'
 
-export abstract class RuntimeNotifierBinding extends OrcaRuntimeWithPtyController {
+export abstract class RuntimeNotifierBinding extends TopoRuntimeWithPtyController {
   setNotifier(notifier: RuntimeNotifier | null): void {
     this.notifier = notifier
     if (notifier) {

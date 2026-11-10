@@ -20,9 +20,9 @@ import { runtimeBrowserCommandsFactoryIsAvailable } from '../installation/runtim
 import { hasPairedPageHost } from './browser-client-page-opening'
 import { resolveRemoteCliBrowserScopeSelector } from '../../desktop-browser-bridge/remote-cli-browser-scope'
 import type { RpcContext } from '../../rpc/core'
-import { OrcaRuntimeWithTransitionGraphReloadToTerminalState } from '../../session-graph/session-graph-authority'
+import { TopoRuntimeWithTransitionGraphReloadToTerminalState } from '../../session-graph/session-graph-authority'
 
-export abstract class OrcaRuntimeWithBrowserWorkspaceRouting extends OrcaRuntimeWithTransitionGraphReloadToTerminalState {
+export abstract class TopoRuntimeWithBrowserWorkspaceRouting extends TopoRuntimeWithTransitionGraphReloadToTerminalState {
   /** Resolve the current host key; native/WSL runtime ids and SSH provider epochs expire on restart. Missing workspaces are gone; reconnect/repair is temporary and never authorizes page retirement. */
   async resolveBrowserExecutionHostKeyForWorkspace(
     workspaceId: string
@@ -61,7 +61,7 @@ export abstract class OrcaRuntimeWithBrowserWorkspaceRouting extends OrcaRuntime
     })
   }
 
-  /** On orcad, sends this host's CLI browser commands to the desktop that opted in to serve them. */
+  /** On topod, sends this host's CLI browser commands to the desktop that opted in to serve them. */
   routeDesktopBrowserBridgeRpc(
     method: string,
     params: unknown,

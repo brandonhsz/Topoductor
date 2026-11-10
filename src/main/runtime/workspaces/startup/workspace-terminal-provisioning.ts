@@ -1,14 +1,14 @@
 import type { RuntimeRemoteFetchController } from '../../repositories/runtime-remote-fetch-controller'
 import type { TerminalSplitOptions } from '../../terminal/launch/terminal-split-surface'
 import type { RuntimeTerminalSplit } from '../../../../shared/runtime-terminal-contracts'
-import { OrcaRuntimeWithActivateManagedWorktree } from './workspace-activation'
+import { TopoRuntimeWithActivateManagedWorktree } from './workspace-activation'
 import type { WorktreeTerminalProvisioningHost } from './runtime-worktree-terminal-provisioning'
 import type { WorktreeStartupReadinessHost } from './runtime-worktree-startup-readiness'
 import { prefetchWorktreeCreateBase } from '../../../workspaces/creation/worktree-create-base-prefetch'
 import { prepareWorktreeCreateForRepo } from '../../../workspaces/creation/preparation/worktree-create-preparation'
 import { getWorktreeCreatePrefetchGitOptions } from '../../../workspaces/execution-host/project-runtime-git-options'
 import type { Worktree } from '../../../../shared/worktree/types'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import type { LayoutApplyReply } from '../../../../shared/workspace-layout/workspace-layout-command-types'
 import type { WindowLayoutCommand } from '../../terminal/layout/runtime-layout-apply'
 import {
@@ -16,7 +16,7 @@ import {
   type RuntimeNavigationTarget
 } from '../../../../shared/runtime-navigation'
 
-export abstract class OrcaRuntimeWithGetWorktreeTerminalProvisioningHost extends OrcaRuntimeWithActivateManagedWorktree {
+export abstract class TopoRuntimeWithGetWorktreeTerminalProvisioningHost extends TopoRuntimeWithActivateManagedWorktree {
   abstract applyLayoutCommand(command: WindowLayoutCommand): Promise<LayoutApplyReply>
 
   abstract splitTerminal(
@@ -48,7 +48,7 @@ export abstract class OrcaRuntimeWithGetWorktreeTerminalProvisioningHost extends
     createdWorktree?: Worktree
   ): WorktreeTerminalProvisioningHost {
     // Switch point: main writes a default tab's look itself, window or none.
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       return this.getLayoutOwnerTerminalProvisioningHost(createdWorktree)
     }
     return {

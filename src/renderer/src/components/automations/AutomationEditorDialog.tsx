@@ -20,7 +20,7 @@ import type {
   AutomationWorkspaceMode
 } from '../../../../shared/automations/automation-definition'
 import type { GlobalSettings } from '../../../../shared/global-settings-types'
-import type { OrcaHooks } from '../../../../shared/orca-yaml-hook-types'
+import type { TopoHooks } from '../../../../shared/topo-yaml-hook-types'
 import type { ProjectHostSetup } from '../../../../shared/project-types'
 import type { Repo } from '../../../../shared/repo-types'
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
@@ -78,15 +78,15 @@ type AutomationEditorDialogProps = {
   canSave: boolean
   repos: readonly Repo[]
   projectHostSetups: readonly ProjectHostSetup[]
-  automationYamlHooksByRepoKey: Record<string, OrcaHooks | null>
+  automationYamlHooksByRepoKey: Record<string, TopoHooks | null>
   getAutomationHooksCacheKey: (repoId: string) => string
   repoMap: Map<string, Repo>
   worktrees: Worktree[]
   settings: GlobalSettings | null
   draft: AutomationDraft
-  /** Present only while creating an Orca automation. */
+  /** Present only while creating a Topo automation. */
   createDestination?: AutomationCreateDestinationControl
-  /** Present only while editing an Orca automation; selecting another host moves the record. */
+  /** Present only while editing a Topo automation; selecting another host moves the record. */
   editDestination?: AutomationCreateDestinationControl
   /** Why a save was refused. Belongs here rather than on the page: this dialog covers it. */
   notice?: AutomationActionNotice | null

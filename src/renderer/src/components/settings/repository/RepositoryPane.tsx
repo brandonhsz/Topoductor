@@ -1,6 +1,6 @@
 import type { GhAccountBinding } from '../../../../../shared/github/account-binding'
 import { useCallback, useRef, useState } from 'react'
-import type { OrcaHooks, RepoHookSettings } from '../../../../../shared/orca-yaml-hook-types'
+import type { TopoHooks, RepoHookSettings } from '../../../../../shared/topo-yaml-hook-types'
 import type { Project, ProjectUpdateArgs } from '../../../../../shared/project-types'
 import type { Repo } from '../../../../../shared/repo-types'
 import type { SourceControlAiSettingsPatch } from '../../../../../shared/source-control/ai/settings/source-control-ai-settings-types'
@@ -55,7 +55,7 @@ const EMPTY_WSL_DISTROS: string[] = []
 
 type RepositoryPaneProps = {
   repo: Repo
-  yamlHooks: OrcaHooks | null
+  yamlHooks: TopoHooks | null
   hasHooksFile: boolean
   hooksInspectionReady: boolean
   mayNeedUpdate: boolean
@@ -161,7 +161,7 @@ export function RepositoryPane({
   }
 
   const handleCopyTemplate = async () => {
-    // Make missing-orca.yaml migration a one-click copy of the expected shared-template shape.
+    // Make missing-topo.yaml migration a one-click copy of the expected shared-template shape.
     await window.api.ui.writeClipboardText(`scripts:
   setup: |
     pnpm worktree:setup

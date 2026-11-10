@@ -104,7 +104,7 @@ export async function resolveStructuredSessionOpenSource(
         ? source
         : source.fallback
   const address =
-    source.kind === 'sender' ? source.party.address : `orca_session_id:${seed?.sessionId}`
+    source.kind === 'sender' ? source.party.address : `topo_session_id:${seed?.sessionId}`
   let found: Located
   try {
     found = await locate(address, source.kind === 'sender' ? source.messageIds : [])
@@ -199,7 +199,7 @@ export async function openStructuredAgentSession(
       resolved.kind === 'failed' &&
       (resolved.failure.code === 'method_not_found' || resolved.failure.code === 'forbidden')
     ) {
-      const root = source.party.orcaSessionId
+      const root = source.party.topoSessionId
       if (root) {
         const fallback = source.fallback
         if (fallback?.sessionId === root) {

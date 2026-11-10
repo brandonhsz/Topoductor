@@ -10,7 +10,7 @@ type GuideInvocation = {
   snippet: string
 }
 
-const CLI_INVOCATION = /(?:^|[\s`(])(?:orca|orca-dev|orca-ide|ORCA)\s+([^\n`]*)/g
+const CLI_INVOCATION = /(?:^|[\s`(])(?:topo|topo-dev|topo-ide|TOPO)\s+([^\n`]*)/g
 
 // Longest path first so `orchestration worker-start` never resolves as `orchestration worker`.
 const SPECS_BY_DEPTH: CommandSpec[] = [...COMMAND_SPECS].sort(
@@ -34,9 +34,9 @@ function collectGuideInvocations(): GuideInvocation[] {
       if (!spec) {
         continue
       }
-      // Quoted values contain nested commands whose flags do not belong to orca.
-      const orcaArgs = invocation.replace(/'[^']*'|"[^"]*"/g, ' ')
-      const flags = [...orcaArgs.matchAll(/(?:^|[\s[(])--([a-z][a-z0-9-]*)/g)].map(
+      // Quoted values contain nested commands whose flags do not belong to topo.
+      const topoArgs = invocation.replace(/'[^']*'|"[^"]*"/g, ' ')
+      const flags = [...topoArgs.matchAll(/(?:^|[\s[(])--([a-z][a-z0-9-]*)/g)].map(
         (flag) => flag[1]
       )
       for (const flag of flags) {

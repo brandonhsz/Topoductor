@@ -1,13 +1,13 @@
 import { getAutomationSetupDefaultDecision } from '../../../../shared/automations/launch/automation-setup-decision'
 
 import type { AutomationWorkspaceMode } from '../../../../shared/automations/automation-definition'
-import type { OrcaHooks, SetupRunPolicy } from '../../../../shared/orca-yaml-hook-types'
+import type { TopoHooks, SetupRunPolicy } from '../../../../shared/topo-yaml-hook-types'
 import type { ProjectHostSetup } from '../../../../shared/project-types'
 import type { Repo } from '../../../../shared/repo-types'
 import type { SetupDecision } from '../../../../shared/worktree/create-types'
 import { findAutomationRepo } from '../../../../shared/automations/ownership/automation-repo-target'
 import { getRepoExecutionHostId } from '../../../../shared/execution-host'
-import { getSetupConfig } from '../../../../shared/orca-hook-setup-config'
+import { getSetupConfig } from '../../../../shared/topo-hook-setup-config'
 
 type AutomationSetupSource = {
   setupScript: string
@@ -18,7 +18,7 @@ function getAutomationSetupSource(
   repoId: string,
   repos: readonly Repo[],
   projectHostSetups: readonly ProjectHostSetup[],
-  yamlHooks: OrcaHooks | null | undefined
+  yamlHooks: TopoHooks | null | undefined
 ): AutomationSetupSource | null {
   const repo = findAutomationRepo(repos, repoId)
   if (!repo) {
@@ -50,7 +50,7 @@ export function getVisibleAutomationSetupDecision(args: {
   repoId: string
   repos: readonly Repo[]
   projectHostSetups: readonly ProjectHostSetup[]
-  yamlHooks?: OrcaHooks | null
+  yamlHooks?: TopoHooks | null
 }): Extract<SetupDecision, 'run' | 'skip'> | undefined {
   if (args.workspaceMode !== 'new_per_run') {
     return undefined
@@ -65,7 +65,7 @@ export function resolveAutomationSetupDecisionForSave(args: {
   repoId: string
   repos: readonly Repo[]
   projectHostSetups: readonly ProjectHostSetup[]
-  yamlHooks?: OrcaHooks | null
+  yamlHooks?: TopoHooks | null
   draftSetupDecision: Extract<SetupDecision, 'run' | 'skip'> | undefined
 }): Extract<SetupDecision, 'run' | 'skip'> | undefined {
   if (args.workspaceMode !== 'new_per_run') {

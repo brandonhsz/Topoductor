@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { runOrcaContextMenuPaste, type OrcaContextMenuPasteDeps } from './monaco-context-menu-paste'
+import { runTopoContextMenuPaste, type TopoContextMenuPasteDeps } from './monaco-context-menu-paste'
 
 const READ_ONLY_OPTION = 104
 const EMPTY_SELECTION_OPTION = 45
@@ -63,8 +63,8 @@ function makeEditor(state: FakeEditorState = {}) {
 }
 
 function makeDeps(
-  overrides: Partial<OrcaContextMenuPasteDeps> & { editor?: ReturnType<typeof makeEditor> }
-): OrcaContextMenuPasteDeps {
+  overrides: Partial<TopoContextMenuPasteDeps> & { editor?: ReturnType<typeof makeEditor> }
+): TopoContextMenuPasteDeps {
   const editorHandle = overrides.editor ?? makeEditor()
   return {
     getFocusedEditor: () => editorHandle.editor as never,
@@ -81,7 +81,7 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-describe('runOrcaContextMenuPaste', () => {
+describe('runTopoContextMenuPaste', () => {
   it('does not dispatch a native paste if focus is lost during the async read', async () => {
     const handle = makeEditor()
     const deps = makeDeps({
@@ -92,7 +92,7 @@ describe('runOrcaContextMenuPaste', () => {
       })
     })
 
-    await expect(runOrcaContextMenuPaste(deps)).resolves.toEqual({
+    await expect(runTopoContextMenuPaste(deps)).resolves.toEqual({
       status: 'noop',
       reason: 'target-lost'
     })

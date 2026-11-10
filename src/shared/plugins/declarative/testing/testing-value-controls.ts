@@ -41,7 +41,7 @@ function fallbackOf(element: TestElement): ControlValue {
 }
 
 /**
- * What Orca shows in each value control, owned as Orca owns it: an edit stays until the panel
+ * What Topo shows in each value control, owned as Topo owns it: an edit stays until the panel
  * renders a value having seen it (see the edit protocol in the components runtime).
  */
 export function createValueControls() {

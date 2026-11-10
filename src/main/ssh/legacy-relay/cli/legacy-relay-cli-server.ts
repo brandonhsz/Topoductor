@@ -1,5 +1,5 @@
 /**
- * Serves the `orca orchestration` commands a relay-era terminal still runs, on this desktop's
+ * Serves the `topo orchestration` commands a relay-era terminal still runs, on this desktop's
  * runtime, where that terminal's Dispatch and Run records live.
  * COMPAT(legacy-relay-bridge): revisit 2027-01-15.
  *
@@ -10,7 +10,7 @@
 import { createHash, randomUUID } from 'node:crypto'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../../shared/orchestration/orchestration-runtime-capabilities'
 import { DESKTOP_BROWSER_BRIDGE_SETTING_LABEL } from '../../../../shared/desktop-browser-bridge-protocol'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import type { RpcResponse } from '../../../runtime/rpc/core'
 import { RpcDispatcher } from '../../../runtime/rpc/dispatcher'
 import { ALL_RPC_METHODS } from '../../../runtime/rpc/methods/rpc-method-registry'
@@ -51,29 +51,29 @@ const COMMANDS: ReadonlySet<string> = new Set(
 )
 
 export const LEGACY_RELAY_CLI_CONTROL_OFF =
-  'This terminal was started by an older version of Orca. Its orca orchestration commands reach ' +
+  'This terminal was started by an older version of Topo. Its topo orchestration commands reach ' +
   `this desktop only when "${DESKTOP_BROWSER_BRIDGE_SETTING_LABEL}" is on for this host in ` +
   'Settings > SSH. Otherwise, run them in a new terminal on this host.'
 
 export const LEGACY_RELAY_CLI_UNSUPPORTED =
-  'This terminal was started by an older version of Orca, so only orca orchestration check, ' +
-  'inbox, send, ask and reply work in it. Run other orca commands in a new terminal on this host.'
+  'This terminal was started by an older version of Topo, so only topo orchestration check, ' +
+  'inbox, send, ask and reply work in it. Run other topo commands in a new terminal on this host.'
 
 const LEGACY_RELAY_CLI_HELP =
-  'This terminal was started by an older version of Orca. It runs orca orchestration check, ' +
-  'inbox, send, ask and reply; open a new terminal on this host for full orca help.'
+  'This terminal was started by an older version of Topo. It runs topo orchestration check, ' +
+  'inbox, send, ask and reply; open a new terminal on this host for full topo help.'
 
 type LegacyRelayCliServerDeps = {
   targetId: string
-  runtime: () => OrcaRuntimeService | null
+  runtime: () => TopoRuntimeService | null
   /** The per-host switch, read on every call so turning it off applies to the next command. */
   remoteCliControl: () => boolean
   livePane: (paneKey: string) => LegacyRelayLivePane | null
 }
 
-const dispatchers = new WeakMap<OrcaRuntimeService, RpcDispatcher>()
+const dispatchers = new WeakMap<TopoRuntimeService, RpcDispatcher>()
 
-function dispatcherFor(runtime: OrcaRuntimeService): RpcDispatcher {
+function dispatcherFor(runtime: TopoRuntimeService): RpcDispatcher {
   let dispatcher = dispatchers.get(runtime)
   if (!dispatcher) {
     dispatcher = new RpcDispatcher({
@@ -118,7 +118,7 @@ function buildCall(
           types: flag('types'),
           format: has('format') ? true : undefined,
           inject: has('inject') ? true : undefined,
-          compatibilityCliCommand: 'orca',
+          compatibilityCliCommand: 'topo',
           run: flag('run'),
           ack: flag('ack'),
           wait: has('wait') ? true : undefined,
@@ -157,7 +157,7 @@ function buildCall(
           resume: flag('resume'),
           options: flag('options'),
           timeoutMs: cappedWait(numberFlag(flags, 'timeout-ms')),
-          compatibilityCliCommand: 'orca'
+          compatibilityCliCommand: 'topo'
         }
       }
     case 'orchestration reply':
@@ -178,12 +178,12 @@ function buildCall(
 /** Its own receipt namespace per host terminal: a host can never replay another caller's result. */
 function callerFingerprint(targetId: string, env: Record<string, string>): string {
   return createHash('sha256')
-    .update(['legacy-relay-cli-v1', targetId, env.ORCA_TERMINAL_HANDLE ?? ''].join('\0'))
+    .update(['legacy-relay-cli-v1', targetId, env.TOPO_TERMINAL_HANDLE ?? ''].join('\0'))
     .digest('hex')
 }
 
 type Invocation = {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   caller: LegacyRelayCliCaller
   env: Record<string, string>
   fingerprint: string
@@ -211,7 +211,7 @@ async function dispatchAsCaller(
     const exactReplay = isExactLegacyRelayCliReplay(runtime, fingerprint, requestId, call)
     const db = runtime.getOrchestrationDb()
     assertLegacyRelayCliScope(db, caller, call, deps.livePane, exactReplay)
-    const launchToken = env.ORCA_AGENT_LAUNCH_TOKEN?.trim()
+    const launchToken = env.TOPO_AGENT_LAUNCH_TOKEN?.trim()
     return await dispatcherFor(runtime).dispatch(
       {
         id: `legacy-relay-cli-${requestId}`,

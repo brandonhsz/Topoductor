@@ -17,9 +17,9 @@ import {
   type GitStatusRead
 } from './mobile-git-status-query'
 import { gitStatusHostPayloadSchema } from './git-status-reply-schema'
-import { createOrcaQueryClient } from '../query/orca-query-client'
+import { createTopoQueryClient } from '../query/topo-query-client'
 import { createHostQueryPersistence } from '../query/host-query-persistence'
-import type { OrcaQueryStoreBackend } from '../device-store/query-storage'
+import type { TopoQueryStoreBackend } from '../device-store/query-storage'
 
 import {
   documentQueryClient,
@@ -242,7 +242,7 @@ describe('useMobileSourceControlLoaders status summary', () => {
 
   function setup(calls: PendingCall[]) {
     const client = fakeClient(calls)
-    const documentClient = createOrcaQueryClient()
+    const documentClient = createTopoQueryClient()
     queryClient = documentClient
     // Successful writes to each summary entry: its own reads and publications.
     const summaryWrites = new Map<string, number>()
@@ -389,7 +389,7 @@ describe('useMobileSourceControlLoaders status summary', () => {
 
   it("never hands an earlier launch's status to the summary, nor cancels its live read", async () => {
     const store = memoryStore()
-    const earlier = createOrcaQueryClient()
+    const earlier = createTopoQueryClient()
     const earlierPersistence = createHostQueryPersistence(earlier, store.backend)
     earlier.getQueryCache().build(earlier, {
       queryKey: detailKey,
@@ -428,7 +428,7 @@ describe('useMobileSourceControlLoaders status summary', () => {
 function memoryStore() {
   const rows = new Map<string, string>()
   let readGate: Promise<void> = Promise.resolve()
-  const backend: OrcaQueryStoreBackend = {
+  const backend: TopoQueryStoreBackend = {
     hostId: 'host-1',
     read: async (keys) => {
       await readGate

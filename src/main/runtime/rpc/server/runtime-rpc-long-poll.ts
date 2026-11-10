@@ -1,6 +1,6 @@
 import type { RpcRequest } from '../core'
-import '../../../../shared/orca-session-address'
-import { ORCA_SESSION_ADDRESS_PREFIX } from '../../../../shared/orca-session-address-prefix'
+import '../../../../shared/topo-session-address'
+import { TOPO_SESSION_ADDRESS_PREFIX } from '../../../../shared/topo-session-address-prefix'
 
 export const KEEPALIVE_INTERVAL_MS = 10_000
 
@@ -57,7 +57,7 @@ export function classifyRuntimeLongPoll(request: RpcRequest): RuntimeLongPollCla
     request.params.inject === true &&
     'to' in request.params &&
     typeof request.params.to === 'string' &&
-    request.params.to.startsWith(ORCA_SESSION_ADDRESS_PREFIX)
+    request.params.to.startsWith(TOPO_SESSION_ADDRESS_PREFIX)
   ) {
     return 'wait'
   }

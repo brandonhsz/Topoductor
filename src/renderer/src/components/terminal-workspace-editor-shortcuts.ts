@@ -1,7 +1,7 @@
 import type { KeybindingActionId } from '../../../shared/keybindings'
 import { useAppStore } from '../store'
 import {
-  ORCA_EDITOR_REQUEST_CMD_SAVE_EVENT,
+  TOPO_EDITOR_REQUEST_CMD_SAVE_EVENT,
   type EditorRequestCmdSaveDetail
 } from './editor/autosave/editor-autosave'
 import { getEditorCmdSaveFileId } from './editor/save/commands/editor-cmd-save-target'
@@ -36,7 +36,7 @@ export function handleTerminalWorkspaceEditorShortcut({
         event.preventDefault()
         notifyTerminalCapture('editor.save')
         window.dispatchEvent(
-          new CustomEvent<EditorRequestCmdSaveDetail>(ORCA_EDITOR_REQUEST_CMD_SAVE_EVENT, {
+          new CustomEvent<EditorRequestCmdSaveDetail>(TOPO_EDITOR_REQUEST_CMD_SAVE_EVENT, {
             detail: { fileId: requestedFileId }
           })
         )

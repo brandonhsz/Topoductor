@@ -13,7 +13,7 @@ describe('deleteBrowserPasswordVault', () => {
   let dir: string
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-browser-password-vaults-'))
+    dir = mkdtempSync(join(tmpdir(), 'topo-browser-password-vaults-'))
     configureBrowserPasswordVaults(dir)
     setSecretStore({
       isEncryptionAvailable: () => true,
@@ -29,7 +29,7 @@ describe('deleteBrowserPasswordVault', () => {
     rmSync(dir, { recursive: true, force: true })
   })
 
-  it('deletes the captured vault after an Orca profile switch without touching its replacement', () => {
+  it('deletes the captured vault after a Topo profile switch without touching its replacement', () => {
     const original = getBrowserPasswordVault('default')
     original.add({ origin: 'https://a.test', username: 'original', password: 'p' })
     configureBrowserPasswordVaults(join(dir, 'other-profile'))

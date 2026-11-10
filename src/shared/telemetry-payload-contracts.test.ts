@@ -1,4 +1,4 @@
-import './telemetry-orca-cli-feature-tip.spec'
+import './telemetry-topo-cli-feature-tip.spec'
 import './telemetry-events-feature-education.spec'
 import './telemetry-feature-wall-events.spec'
 import './profile-state-telemetry-schema.spec'

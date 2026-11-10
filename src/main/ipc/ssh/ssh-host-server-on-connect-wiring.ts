@@ -1,39 +1,39 @@
 import { getAppEnvironment } from '../../../shared/app-environment'
 import {
-  getManagedOrcadFenceEnvironmentId,
-  managedOrcadServerName
-} from '../../../shared/managed-orcad-ssh-owner'
+  getManagedTopodFenceEnvironmentId,
+  managedTopodServerName
+} from '../../../shared/managed-topod-ssh-owner'
 import { listEnvironments } from '../../../shared/remote-runtime/host-store/runtime-environment-store'
-import { findOrcadMigrationSourceCutoverForTarget } from '../../persistence/migrating-orcad-catalog/orcad-migration-cutover-journal'
-import { abandonOrcadConversion } from '../../managed-server/migration/cutover/orcad-conversion-abandon'
-import { retainOrcadMigrationSource } from '../../persistence/migrating-orcad-catalog/orcad-migration-source-retention'
-import { enableMovedOrcadAutomationsForTarget } from '../../persistence/migrating-orcad-catalog/orcad-migration-moved-automations'
-import { hasOrcadTemplate } from '../../orcad/orcad-artifact-materializer'
-import { isOrcadHostUnavailableFixableOnHost } from '../../orcad/orcad-host-unavailable'
+import { findTopodMigrationSourceCutoverForTarget } from '../../persistence/migrating-topod-catalog/topod-migration-cutover-journal'
+import { abandonTopodConversion } from '../../managed-server/migration/cutover/topod-conversion-abandon'
+import { retainTopodMigrationSource } from '../../persistence/migrating-topod-catalog/topod-migration-source-retention'
+import { enableMovedTopodAutomationsForTarget } from '../../persistence/migrating-topod-catalog/topod-migration-moved-automations'
+import { hasTopodTemplate } from '../../topod/topod-artifact-materializer'
+import { isTopodHostUnavailableFixableOnHost } from '../../topod/topod-host-unavailable'
 import { managedServerUpdateDeps } from '../../ssh/host-server/managed-server-update-deps'
-import { ensureOrcadManagedTunnel } from '../../managed-server/lifecycle/orcad-managed-tunnel'
-import { verifyOrcadManagedServing } from '../../managed-server/lifecycle/orcad-managed-serving-verify'
-import { convertSshTargetToManagedOrcad } from '../../managed-server/lifecycle/orcad-runtime-conversion'
+import { ensureTopodManagedTunnel } from '../../managed-server/lifecycle/topod-managed-tunnel'
+import { verifyTopodManagedServing } from '../../managed-server/lifecycle/topod-managed-serving-verify'
+import { convertSshTargetToManagedTopod } from '../../managed-server/lifecycle/topod-runtime-conversion'
 import {
-  orcadMigrationDestinationFor,
-  orcadServerAutomationEnablerFor,
-  orcadServerFolderCatalogFor,
-  orcadServerRepositoriesFor
-} from '../../managed-server/lifecycle/orcad-runtime-conversion-wiring'
-import { createManagedOrcadEnvironment } from '../../managed-server/lifecycle/orcad-runtime-deployment'
+  topodMigrationDestinationFor,
+  topodServerAutomationEnablerFor,
+  topodServerFolderCatalogFor,
+  topodServerRepositoriesFor
+} from '../../managed-server/lifecycle/topod-runtime-conversion-wiring'
+import { createManagedTopodEnvironment } from '../../managed-server/lifecycle/topod-runtime-deployment'
 import type { HostServerOnConnectDeps } from '../../ssh/host-server/ssh-host-server-on-connect'
 import {
   censusSshHostRelaysBeforeSession,
   relayTerminalsOnConnect
 } from '../../ssh/legacy-relay/endpoints/ssh-host-relay-terminals-on-connect'
-import { requireManagedOrcadInfrastructure } from '../../managed-server/lifecycle/orcad-managed-runtime-context'
+import { requireManagedTopodInfrastructure } from '../../managed-server/lifecycle/topod-managed-runtime-context'
 import { censusHostRelayTerminalsFor } from '../../ssh/legacy-relay/endpoints/ssh-host-relay-census-for-target'
 import { setSshHostServerStatus } from '../../ssh/host-server/ssh-host-server-status'
 import { trackSshHostServerEvent } from '../../ssh/host-server/ssh-host-server-telemetry'
 import { knownSshHostPlatform } from '../../ssh/remote-host/ssh-host-platform-memo'
-import { knownOrcadTunnelTransport } from '../../managed-server/lifecycle/orcad-tunnel-transport-memo'
+import { knownTopodTunnelTransport } from '../../managed-server/lifecycle/topod-tunnel-transport-memo'
 import { getSshTargetRegistryStore } from '../../ssh/targets/ssh-target-registry'
-import { releaseUnreachableOrcadSetup } from '../../managed-server/migration/cutover/orcad-unreachable-setup-release'
+import { releaseUnreachableTopodSetup } from '../../managed-server/migration/cutover/topod-unreachable-setup-release'
 import { getCurrentMainWindow } from './ssh-ipc-context'
 import { broadcastSshState } from './ssh-renderer-broadcast'
 import { connectInFlight } from './ssh-connect-attempt-registry'
@@ -42,57 +42,57 @@ import { isBridgeableLease } from '../../ssh/legacy-relay/bridge/legacy-relay-br
 
 export function hostServerOnConnectDeps(userDataPath: string): HostServerOnConnectDeps {
   const registry = getSshTargetRegistryStore()!
-  const claims = registry.getOrcadRuntimeClaims()
-  const store = registry.getOrcadMigrationSource()
+  const claims = registry.getTopodRuntimeClaims()
+  const store = registry.getTopodMigrationSource()
   const appVersion = getAppEnvironment().getVersion()
   const isRegistered = (environmentId: string): boolean =>
     listEnvironments(userDataPath).some((entry) => entry.id === environmentId)
   return {
     // A fence alone may be unfinished setup; only registered servers count.
     managedEnvironmentId: (target) => {
-      const environmentId = getManagedOrcadFenceEnvironmentId(target)
+      const environmentId = getManagedTopodFenceEnvironmentId(target)
       return environmentId && isRegistered(environmentId) ? environmentId : null
     },
     ensureTunnel: async (environmentId) => {
-      await ensureOrcadManagedTunnel(userDataPath, environmentId)
+      await ensureTopodManagedTunnel(userDataPath, environmentId)
     },
-    ensureServing: (environmentId) => verifyOrcadManagedServing(userDataPath, environmentId),
+    ensureServing: (environmentId) => verifyTopodManagedServing(userDataPath, environmentId),
     retainCommittedSource: async (target) => {
-      const head = findOrcadMigrationSourceCutoverForTarget(userDataPath, target.id)
+      const head = findTopodMigrationSourceCutoverForTarget(userDataPath, target.id)
       if (head?.phase !== 'destination-committed') {
         return 0
       }
-      await retainOrcadMigrationSource(userDataPath, head.migrationId, store)
+      await retainTopodMigrationSource(userDataPath, head.migrationId, store)
       // Retry what earlier connects could not reach the server to re-enable.
       const environment = listEnvironments(userDataPath).find(
         (entry) => entry.id === head.destinationEnvironmentId
       )
       return environment
-        ? enableMovedOrcadAutomationsForTarget(
+        ? enableMovedTopodAutomationsForTarget(
             userDataPath,
             target.id,
-            orcadServerAutomationEnablerFor(environment)
+            topodServerAutomationEnablerFor(environment)
           )
         : 0
     },
-    hasTemplate: hasOrcadTemplate,
+    hasTemplate: hasTopodTemplate,
     recordedUnavailable: (target) =>
       target.managedServerUnavailable?.appVersion === appVersion
         ? target.managedServerUnavailable.reason
         : null,
     recordUnavailable: (target, reason) => {
-      if (!isOrcadHostUnavailableFixableOnHost(reason)) {
+      if (!isTopodHostUnavailableFixableOnHost(reason)) {
         registry.updateTarget(target.id, { managedServerUnavailable: { reason, appVersion } })
       }
     },
     ...managedServerUpdateDeps(userDataPath),
     isEmptyHost: (target) => {
       // An interrupted empty-host deploy passes its own claim, recorded by its provisioning intent.
-      const environmentId = getManagedOrcadFenceEnvironmentId(target)
+      const environmentId = getManagedTopodFenceEnvironmentId(target)
       return claims.preflight(
         target.id,
         environmentId
-          ? { environmentId, recorded: target.orcadProvisioning !== undefined }
+          ? { environmentId, recorded: target.topodProvisioning !== undefined }
           : undefined
       ).claimable
     },
@@ -102,13 +102,13 @@ export function hostServerOnConnectDeps(userDataPath: string): HostServerOnConne
         targetId: target.id,
         censusHost: async () =>
           censusSshHostRelaysBeforeSession(
-            await requireManagedOrcadInfrastructure().connectionManager.connect(target),
+            await requireManagedTopodInfrastructure().connectionManager.connect(target),
             target.id
           )
       }),
     deploy: (target) =>
-      createManagedOrcadEnvironment(userDataPath, {
-        name: target.orcadProvisioning?.name ?? managedOrcadServerName(target),
+      createManagedTopodEnvironment(userDataPath, {
+        name: target.topodProvisioning?.name ?? managedTopodServerName(target),
         sshTargetId: target.id
       }),
     convert: async (target, hostProof) => {
@@ -116,18 +116,18 @@ export function hostServerOnConnectDeps(userDataPath: string): HostServerOnConne
       if (hostProof?.bridged) {
         await startLegacyRelayBridge(target.id)
       }
-      const converted = await convertSshTargetToManagedOrcad(userDataPath, {
+      const converted = await convertSshTargetToManagedTopod(userDataPath, {
         sshTargetId: target.id,
-        name: managedOrcadServerName(target),
+        name: managedTopodServerName(target),
         // The connect's own census already answered; a conversion before any session reuses it.
         censusHost: (host) =>
           hostProof ? Promise.resolve(hostProof) : censusHostRelayTerminalsFor(host)(),
         isBridgedPaneLease: isBridgeableLease,
         // Releasing the direct session here would cancel the connect that requested conversion.
-        destinationFor: orcadMigrationDestinationFor,
-        serverRepositoriesFor: orcadServerRepositoriesFor,
-        serverFolderCatalogFor: orcadServerFolderCatalogFor,
-        serverAutomationEnablerFor: orcadServerAutomationEnablerFor
+        destinationFor: topodMigrationDestinationFor,
+        serverRepositoriesFor: topodServerRepositoriesFor,
+        serverFolderCatalogFor: topodServerFolderCatalogFor,
+        serverAutomationEnablerFor: topodServerAutomationEnablerFor
       })
       // A quiet retry's refusal is not the user's attempt, so it keeps their consent.
       const quiet = connectInFlight.get(target.id)?.quiet?.active === true
@@ -139,15 +139,15 @@ export function hostServerOnConnectDeps(userDataPath: string): HostServerOnConne
     },
     abandonDeploy: async (target) => {
       const environmentId =
-        getManagedOrcadFenceEnvironmentId(target) ??
-        getManagedOrcadFenceEnvironmentId(registry.getTarget(target.id))
+        getManagedTopodFenceEnvironmentId(target) ??
+        getManagedTopodFenceEnvironmentId(registry.getTarget(target.id))
       if (environmentId && !isRegistered(environmentId)) {
         claims.release(target.id, environmentId)
         await claims.flush()
       }
     },
     hasUnfinishedConversion: (target) => {
-      const head = findOrcadMigrationSourceCutoverForTarget(userDataPath, target.id)
+      const head = findTopodMigrationSourceCutoverForTarget(userDataPath, target.id)
       return (
         head !== null &&
         !head.supersedesMigrationId &&
@@ -155,24 +155,24 @@ export function hostServerOnConnectDeps(userDataPath: string): HostServerOnConne
       )
     },
     abandonConversion: async (target) => {
-      await abandonOrcadConversion({
+      await abandonTopodConversion({
         userDataPath,
         store,
         claims,
         targetId: target.id,
-        destinationFor: orcadMigrationDestinationFor
+        destinationFor: topodMigrationDestinationFor
       })
     },
     isFencedBeforeStaging: (target) =>
-      findOrcadMigrationSourceCutoverForTarget(userDataPath, target.id)?.phase === 'source-fenced',
+      findTopodMigrationSourceCutoverForTarget(userDataPath, target.id)?.phase === 'source-fenced',
     releaseUnreachableSetup: (target) =>
-      releaseUnreachableOrcadSetup({ userDataPath, claims, targetId: target.id }),
+      releaseUnreachableTopodSetup({ userDataPath, claims, targetId: target.id }),
     // Read at report time: a deploy or conversion learns the platform while the decision runs.
     report: (target, event) =>
       trackSshHostServerEvent(
         event,
         knownSshHostPlatform(target.id),
-        knownOrcadTunnelTransport(target.id)
+        knownTopodTunnelTransport(target.id)
       ),
     progress: (target, phase) => {
       // Cancelled decisions keep running; their progress must not revive connection status.

@@ -1,5 +1,5 @@
 // Main-owned early launch tabs are written before launch and withdrawn through main close; paired-runtime workspaces retain window relay.
-import { OrcaRuntimeWithCloseStructuredAgentSessionTab } from './structured-session-tab-close'
+import { TopoRuntimeWithCloseStructuredAgentSessionTab } from './structured-session-tab-close'
 import type {
   AgentLaunchTabPublished,
   AgentLaunchTabPublishRequest
@@ -7,7 +7,7 @@ import type {
 import type { AgentLaunchPlacementReceipt } from '../../../shared/agent-launch/contracts/agent-launch-intent'
 import type { AgentLaunchPaneAddress } from '../../../shared/agent-launch/contracts/agent-launch-pane-verdict'
 import { parseExecutionHostId } from '../../../shared/execution-host'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import type { RuntimePtyWorktreeRecord } from '../terminal/records/runtime-terminal-state-records'
 import type { TerminalIdentityReadContext } from '../terminal/query/terminal-identity-read-context'
 
@@ -23,7 +23,7 @@ function placementFallback(
   return asked?.afterTabId !== undefined && !anchored ? 'active-group' : undefined
 }
 
-export abstract class OrcaRuntimeWithMainLayoutAgentLaunchTabs extends OrcaRuntimeWithCloseStructuredAgentSessionTab {
+export abstract class TopoRuntimeWithMainLayoutAgentLaunchTabs extends TopoRuntimeWithCloseStructuredAgentSessionTab {
   protected abstract getPtyRecordForPaneKey(
     paneKey: string,
     context?: TerminalIdentityReadContext
@@ -33,7 +33,7 @@ export abstract class OrcaRuntimeWithMainLayoutAgentLaunchTabs extends OrcaRunti
   hasLiveTerminalForPaneKey(paneKey: string): boolean {
     const pty = this.getPtyRecordForPaneKey(paneKey)
     // Main's bound terminal may survive listing gaps; only certified exit frees its pane.
-    return ORCA_LAYOUT_OWNER_IS_MAIN
+    return TOPO_LAYOUT_OWNER_IS_MAIN
       ? !!pty && this.getPtyLivenessVerdict(pty.ptyId)?.status !== 'exited'
       : pty?.connected === true
   }

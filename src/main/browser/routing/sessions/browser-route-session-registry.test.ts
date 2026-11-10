@@ -4,7 +4,7 @@ import type { BrowserRouteElectronSession } from './browser-route-session-policy
 import type { BrowserRouteSessionRegistryDependencies } from './browser-route-session-registry-contract'
 
 const identity = {
-  orcaProfileId: 'orca-profile-a',
+  topoProfileId: 'topo-profile-a',
   browserProfileId: 'browser-profile-a',
   authorityConnectionIdentity: 'authority-a',
   executionHostIdentity: 'execution-host-a'

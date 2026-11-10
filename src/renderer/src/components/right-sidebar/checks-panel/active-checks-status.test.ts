@@ -8,7 +8,7 @@ function makePR(status: PRInfo['checksStatus']): PRInfo {
     number: 12,
     title: 'Test PR',
     state: 'open',
-    url: 'https://github.com/acme/orca/pull/12',
+    url: 'https://github.com/acme/topo/pull/12',
     checksStatus: status,
     updatedAt: '2026-05-20T00:00:00Z',
     mergeable: 'MERGEABLE'

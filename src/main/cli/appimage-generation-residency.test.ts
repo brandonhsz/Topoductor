@@ -5,7 +5,7 @@ import {
   type ProcReader
 } from './appimage-generation-residency'
 
-const ROOT = '/home/u/.cache/orca/appimage/aaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbb'
+const ROOT = '/home/u/.cache/topo/appimage/aaaaaaaaaaaaaaaaaaaaaaaa/bbbbbbbbbbbbbbbbbbbbbbbb'
 
 function errorWithCode(code: string): Error {
   return Object.assign(new Error(code), { code })
@@ -34,8 +34,8 @@ function residency(processes: Record<string, { uid: number; exe: string | Error 
 
 describe('AppImage generation residency', () => {
   it('is live while a same-user process runs from the generation', () => {
-    expect(residency({ '1': { uid: 1000, exe: `${ROOT}/orca-ide` } })).toEqual({ status: 'live' })
-    expect(residency({ '1': { uid: 1000, exe: `${ROOT}/orca-ide (deleted)` } })).toEqual({
+    expect(residency({ '1': { uid: 1000, exe: `${ROOT}/topo-ide` } })).toEqual({ status: 'live' })
+    expect(residency({ '1': { uid: 1000, exe: `${ROOT}/topo-ide (deleted)` } })).toEqual({
       status: 'live'
     })
   })
@@ -43,8 +43,8 @@ describe('AppImage generation residency', () => {
   it('is exited when only other users or other paths run', () => {
     expect(
       residency({
-        '1': { uid: 0, exe: `${ROOT}/orca-ide` },
-        '2': { uid: 1000, exe: `${ROOT}-other/orca-ide` },
+        '1': { uid: 0, exe: `${ROOT}/topo-ide` },
+        '2': { uid: 1000, exe: `${ROOT}-other/topo-ide` },
         '3': { uid: 1000, exe: errorWithCode('ENOENT') }
       })
     ).toEqual({ status: 'exited' })

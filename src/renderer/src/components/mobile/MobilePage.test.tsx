@@ -9,7 +9,7 @@ import type { MobilePairingConnectionMode } from '../../../../shared/remote-runt
 
 type StoreState = {
   closeMobilePage: () => void
-  orcaProfileAuthStatus: { state: 'connected' | 'local' }
+  topoProfileAuthStatus: { state: 'connected' | 'local' }
   settings: {
     showMobileButton: boolean
     mobilePairingConnectionMode?: MobilePairingConnectionMode
@@ -17,7 +17,7 @@ type StoreState = {
     mobilePairingCustomAddresses?: string[]
   }
   updateSettings: () => Promise<void>
-  fetchOrcaProfileAuthStatus: () => Promise<unknown>
+  fetchTopoProfileAuthStatus: () => Promise<unknown>
 }
 
 const mocks = vi.hoisted(() => ({
@@ -85,15 +85,15 @@ describe('MobilePage pairing connection mode', () => {
       available: true,
       qrDataUrl: 'data:image/png;base64,qr',
       qrSize: 218,
-      pairingUrl: 'orca://pair#automatic'
+      pairingUrl: 'topo://pair#automatic'
     })
     listNetworkInterfaces.mockReset().mockResolvedValue({ interfaces: [] })
     mocks.storeState = {
       closeMobilePage: vi.fn(),
-      orcaProfileAuthStatus: { state: 'connected' },
+      topoProfileAuthStatus: { state: 'connected' },
       settings: { showMobileButton: true },
       updateSettings: vi.fn().mockResolvedValue(undefined),
-      fetchOrcaProfileAuthStatus: vi.fn().mockResolvedValue(null)
+      fetchTopoProfileAuthStatus: vi.fn().mockResolvedValue(null)
     }
     Object.defineProperty(window, 'api', {
       configurable: true,

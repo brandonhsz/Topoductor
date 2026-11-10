@@ -495,7 +495,7 @@ describe('native-chat composer draft lifecycle', () => {
     // Not on this machine's disk, so a local check could only call it gone.
     const pathExists = vi.fn(async () => false)
     vi.stubGlobal('api', { fs: { pathExists } })
-    const stored = { id: 'a', path: '/srv/orca/agent-session-attachments/0f6c/shot.png' }
+    const stored = { id: 'a', path: '/srv/topo/agent-session-attachments/0f6c/shot.png' }
     storage.drafts.set('agent-session:s1', { text: 'see this', images: [stored], savedAt: 1 })
     const hooks = await loadHooks()
     const seen: { api?: ComposerApi } = {}
@@ -515,8 +515,8 @@ describe('native-chat composer draft lifecycle', () => {
     expect(seen.api?.attachments.imageAttachments).toEqual([stored])
   })
 
-  it('shows a restored paste from Orca’s paste folder once main confirms it is kept, and marks the rest', async () => {
-    const folder = '/Users/me/Library/Application Support/orca/native-chat-pastes'
+  it('shows a restored paste from Topo’s paste folder once main confirms it is kept, and marks the rest', async () => {
+    const folder = '/Users/me/Library/Application Support/topo/native-chat-pastes'
     let answer: () => void = () => {}
     const answered = new Promise<void>((resolve) => {
       answer = resolve
@@ -525,8 +525,8 @@ describe('native-chat composer draft lifecycle', () => {
       await answered
       return paths.map((path) => ({
         path,
-        kept: path.endsWith('orca-paste-1-ab.png'),
-        exists: path.endsWith('orca-paste-1-ab.png')
+        kept: path.endsWith('topo-paste-1-ab.png'),
+        exists: path.endsWith('topo-paste-1-ab.png')
       }))
     })
     vi.stubGlobal('api', {
@@ -536,8 +536,8 @@ describe('native-chat composer draft lifecycle', () => {
     storage.drafts.set('tab-1:pane', {
       text: 'see',
       images: [
-        { id: 'kept', path: `${folder}/orca-paste-1-ab.png` },
-        { id: 'swept', path: `${folder}/orca-paste-2-ab.png` }
+        { id: 'kept', path: `${folder}/topo-paste-1-ab.png` },
+        { id: 'swept', path: `${folder}/topo-paste-2-ab.png` }
       ],
       savedAt: 1
     })
@@ -561,8 +561,8 @@ describe('native-chat composer draft lifecycle', () => {
     }
 
     expect(seen.api?.attachments.imageAttachments).toEqual([
-      { id: 'kept', path: `${folder}/orca-paste-1-ab.png` },
-      { id: 'swept', path: '', unavailableName: 'orca-paste-2-ab.png' }
+      { id: 'kept', path: `${folder}/topo-paste-1-ab.png` },
+      { id: 'swept', path: '', unavailableName: 'topo-paste-2-ab.png' }
     ])
   })
 
@@ -616,7 +616,7 @@ describe('native-chat composer draft lifecycle', () => {
     )
     await act(async () => seen.api?.setDraft('live Q'))
     const current = store.readNativeChatComposerDraft(scope)
-    const sender = new BroadcastChannel('orca-native-chat-composer-drafts')
+    const sender = new BroadcastChannel('topo-native-chat-composer-drafts')
     const read = vi.spyOn(storage, 'read')
     const notify = async (value: unknown) => {
       const requested = Promise.withResolvers<void>()
@@ -661,7 +661,7 @@ describe('native-chat composer draft lifecycle', () => {
       sender.postMessage({ scopeKey: raw })
       const barrier = Promise.withResolvers<void>()
       sender.onmessage = () => barrier.resolve()
-      const peer = new BroadcastChannel('orca-native-chat-composer-drafts')
+      const peer = new BroadcastChannel('topo-native-chat-composer-drafts')
       peer.postMessage({ scopeKey: raw })
       await act(async () => barrier.promise)
       peer.close()

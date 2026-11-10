@@ -24,7 +24,7 @@ const buildRowsSpy = vi.mocked(searchRows.buildAutomationListSearchRows)
 const matchRowsSpy = vi.mocked(searchRows.matchAutomationListSearchRowKeys)
 
 const repoMap = new Map([
-  [REPO_ID, { id: REPO_ID, displayName: 'orca', path: '/src/orca' } as Repo]
+  [REPO_ID, { id: REPO_ID, displayName: 'topo', path: '/src/topo' } as Repo]
 ])
 
 type SearchResult = ReturnType<typeof useAutomationListSearch>

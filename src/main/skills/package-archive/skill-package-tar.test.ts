@@ -7,7 +7,7 @@ import { USTAR_BLOCK_BYTES as SKILL_TAR_BLOCK_BYTES } from '../../archive/ustar-
 
 describe('skill tar reader error ownership', () => {
   it('observes an abort after the pipeline completes before the first reader request', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-tar-abort-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-tar-abort-'))
     try {
       const archivePath = join(root, 'archive.tar.gz')
       await writeSkillTarGzip(archivePath, [

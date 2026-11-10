@@ -1,6 +1,6 @@
 import type * as WslPaths from '../../../shared/wsl-paths'
 import { isAbsolute } from 'node:path'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { EventEmitter } from 'node:events'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type * as BundledRipgrepPath from '../../ripgrep/bundled-ripgrep-path'

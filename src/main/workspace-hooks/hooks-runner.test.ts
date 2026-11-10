@@ -35,7 +35,7 @@ describe('createSetupRunnerScript', () => {
       const { mkdtempSync, rmSync, writeFileSync } = await vi.importActual<typeof NodeFs>('node:fs')
       const { execFileSync } = await vi.importActual<typeof NodeChildProcess>('node:child_process')
 
-      const dir = mkdtempSync(join(tmpdir(), 'orca-posix-runner-'))
+      const dir = mkdtempSync(join(tmpdir(), 'topo-posix-runner-'))
       try {
         const runnerPath = join(dir, 'setup-runner.sh')
         writeFileSync(

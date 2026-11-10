@@ -3,21 +3,21 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { defineMethod } from '../core'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import {
-  _resetOrcadFeatureReadinessForTests,
-  installOrcadFeatureReadiness
-} from '../orcad-feature-readiness'
+  _resetTopodFeatureReadinessForTests,
+  installTopodFeatureReadiness
+} from '../topod-feature-readiness'
 
 // A short RPC gets no handler signal, but a caller that disconnects mid feature-wait is never run.
 it('refuses a gated short RPC whose local caller disconnects while it waits', async () => {
   const userDataPath = mkdtempSync(join(tmpdir(), 'local-disconnect-feature-wait-'))
   const ran = vi.fn()
-  const readiness = installOrcadFeatureReadiness()
-  const server = new OrcaRuntimeRpcServer({
-    runtime: new OrcaRuntimeService(),
+  const readiness = installTopodFeatureReadiness()
+  const server = new TopoRuntimeRpcServer({
+    runtime: new TopoRuntimeService(),
     userDataPath,
     methods: [
       defineMethod({
@@ -51,7 +51,7 @@ it('refuses a gated short RPC whose local caller disconnects while it waits', as
     await Promise.resolve()
     expect(ran).not.toHaveBeenCalled()
   } finally {
-    _resetOrcadFeatureReadinessForTests()
+    _resetTopodFeatureReadinessForTests()
     await server.stop()
     rmSync(userDataPath, { recursive: true, force: true })
   }

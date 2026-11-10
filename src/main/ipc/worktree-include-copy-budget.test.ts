@@ -16,7 +16,7 @@ describe('createWorktreeCopiedPaths copy budget', () => {
   let error: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
-    root = mkdtempSync(join(tmpdir(), 'orca-copy-budget-paths-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-copy-budget-paths-'))
     primary = join(root, 'primary')
     worktree = join(root, 'worktree')
     mkdirSync(primary, { recursive: true })

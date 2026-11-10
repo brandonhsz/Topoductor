@@ -88,7 +88,7 @@ it.each(['selected-plan', 'absent'] as const)(
     }
     let ordinal = 0
     const answerPlan = async (optionId: 'allow' | 'deny') => {
-      const identity = { provider: 'orca' as const, clientMessageId: `plan-${ordinal++}` }
+      const identity = { provider: 'topo' as const, clientMessageId: `plan-${ordinal++}` }
       acquire.mock.calls.at(-1)![0].events!.appendItem(
         identity,
         {

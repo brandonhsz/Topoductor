@@ -41,7 +41,7 @@ export function MonacoMarkdownAnnotationOverlay({
       {selectionAnnotationTarget && shouldShowMarkdownAnnotations && !commentPopover ? (
         <button
           type="button"
-          className="orca-diff-comment-add-btn"
+          className="topo-diff-comment-add-btn"
           style={{
             display: 'flex',
             top: Math.max(4, selectionAnnotationTarget.top - 22),

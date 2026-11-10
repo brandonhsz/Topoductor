@@ -1,10 +1,10 @@
 import type {
-  OrcaVmRecipe,
-  OrcaVmRecipeLifecycleMode,
-  OrcaVmRecipeTimeoutSeconds
-} from './orca-yaml-hook-types'
+  TopoVmRecipe,
+  TopoVmRecipeLifecycleMode,
+  TopoVmRecipeTimeoutSeconds
+} from './topo-yaml-hook-types'
 
-const LIFECYCLE_MODES: readonly OrcaVmRecipeLifecycleMode[] = [
+const LIFECYCLE_MODES: readonly TopoVmRecipeLifecycleMode[] = [
   'create',
   'suspend',
   'resume',
@@ -18,18 +18,18 @@ const LIFECYCLE_MODES: readonly OrcaVmRecipeLifecycleMode[] = [
 export const MAX_EPHEMERAL_VM_RECIPE_TIMEOUT_SECONDS = 24 * 60 * 60
 
 export function getEphemeralVmRecipeTimeoutSeconds(
-  recipe: Pick<OrcaVmRecipe, 'timeoutSeconds'>,
-  mode: OrcaVmRecipeLifecycleMode
+  recipe: Pick<TopoVmRecipe, 'timeoutSeconds'>,
+  mode: TopoVmRecipeLifecycleMode
 ): number | undefined {
   return recipe.timeoutSeconds?.[mode]
 }
 
 /** Runtime records keep a recipe snapshot under a strict schema that current and older builds
  * share, so the snapshot never carries timeoutSeconds; lifecycle calls re-read the limit from
- * the repo's orca.yaml instead (see getRuntimeRecipeContext). */
+ * the repo's topo.yaml instead (see getRuntimeRecipeContext). */
 export function toEphemeralVmRuntimeRecipeSnapshot(
-  recipe: OrcaVmRecipe
-): Omit<OrcaVmRecipe, 'timeoutSeconds'> {
+  recipe: TopoVmRecipe
+): Omit<TopoVmRecipe, 'timeoutSeconds'> {
   const { timeoutSeconds: _timeoutSeconds, ...snapshot } = recipe
   return snapshot
 }
@@ -48,7 +48,7 @@ export function formatEphemeralVmRecipeTimeout(seconds: number): string {
 }
 
 export type EphemeralVmRecipeTimeoutParse =
-  | { ok: true; timeoutSeconds?: OrcaVmRecipeTimeoutSeconds }
+  | { ok: true; timeoutSeconds?: TopoVmRecipeTimeoutSeconds }
   | { ok: false; message: string }
 
 /** Accepts one number for every mode, or a map keyed by create/suspend/resume/destroy. */
@@ -73,7 +73,7 @@ export function parseEphemeralVmRecipeTimeoutSeconds(
       message: 'timeoutSeconds must be a number or a map of create/suspend/resume/destroy.'
     }
   }
-  const timeoutSeconds: OrcaVmRecipeTimeoutSeconds = {}
+  const timeoutSeconds: TopoVmRecipeTimeoutSeconds = {}
   for (const [key, seconds] of Object.entries(value)) {
     if (!isLifecycleMode(key)) {
       return {
@@ -89,7 +89,7 @@ export function parseEphemeralVmRecipeTimeoutSeconds(
   return Object.keys(timeoutSeconds).length > 0 ? { ok: true, timeoutSeconds } : { ok: true }
 }
 
-function isLifecycleMode(value: string): value is OrcaVmRecipeLifecycleMode {
+function isLifecycleMode(value: string): value is TopoVmRecipeLifecycleMode {
   return LIFECYCLE_MODES.some((mode) => mode === value)
 }
 

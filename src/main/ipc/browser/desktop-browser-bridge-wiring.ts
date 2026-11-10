@@ -1,4 +1,4 @@
-/** Route eligible SSH hosts through their paired orcad connection to this desktop's browser bridge. */
+/** Route eligible SSH hosts through their paired topod connection to this desktop's browser bridge. */
 import { randomUUID } from 'node:crypto'
 import { webContents, type BrowserWindow } from 'electron'
 import {
@@ -12,10 +12,10 @@ import '../../../shared/remote-runtime/requests/remote-runtime-request-socket'
 import { subscribeRemoteRuntimeTransport } from '../../../shared/remote-runtime/requests/remote-runtime-subscription-transport'
 import { resolveEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-store'
 import {
-  getOrcadSshDeployment,
+  getTopodSshDeployment,
   getPreferredPairedRuntimeConnection
 } from '../../../shared/remote-runtime/host-catalog/runtime-environments'
-import { getManagedOrcadFenceEnvironmentId } from '../../../shared/managed-orcad-ssh-owner'
+import { getManagedTopodFenceEnvironmentId } from '../../../shared/managed-topod-ssh-owner'
 import { isRemoteCliControlAllowed } from '../../../shared/ssh-remote-cli-control'
 import { browserManager } from '../../browser/guest-lifecycle/manager/browser-manager'
 import {
@@ -27,10 +27,10 @@ import {
   isHostReachableDocument
 } from '../../browser/desktop-browser-bridge/desktop-browser-bridge-executor'
 import { rendererResolveRemoteCliWorkspace } from '../../browser/desktop-browser-bridge/desktop-browser-bridge-renderer-scope'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import { RpcDispatcher } from '../../runtime/rpc/dispatcher'
 import { ALL_RPC_METHODS } from '../../runtime/rpc/methods/rpc-method-registry'
-import { ensureOrcadManagedTunnel } from '../../managed-server/lifecycle/orcad-managed-tunnel'
+import { ensureTopodManagedTunnel } from '../../managed-server/lifecycle/topod-managed-tunnel'
 import { getSshTargetRegistryStore } from '../../ssh/targets/ssh-target-registry'
 import type { SshConnectionManager } from '../../ssh/connection/ssh-connection-manager'
 import { getRuntimeEnvironmentStatus } from '../runtime-environments/runtime-environment-status-probe'
@@ -63,9 +63,9 @@ export function listDesktopBrowserBridgeCandidates(
   connections: Pick<SshConnectionManager, 'getState'> | null
 ): DesktopBrowserBridgeCandidate[] {
   const candidates: DesktopBrowserBridgeCandidate[] = []
-  // Why: a managed host's eligibility follows its orcad claim, not whether it is listed in SSH
+  // Why: a managed host's eligibility follows its topod claim, not whether it is listed in SSH
   // settings; environment recipes connect runtime-owned targets that are claimed the same way.
-  for (const target of getSshTargetRegistryStore()?.getOrcadRuntimeClaims().listTargets() ?? []) {
+  for (const target of getSshTargetRegistryStore()?.getTopodRuntimeClaims().listTargets() ?? []) {
     if (!isRemoteCliControlAllowed(target) || isDesktopBrowserBridgeHostStopped(target.id)) {
       continue
     }
@@ -73,7 +73,7 @@ export function listDesktopBrowserBridgeCandidates(
       continue
     }
     // Only managed hosts qualify even when the global switch defaults on.
-    const environmentId = getManagedOrcadFenceEnvironmentId(target)
+    const environmentId = getManagedTopodFenceEnvironmentId(target)
     if (!environmentId || isRuntimeEnvironmentManuallyDisconnected(environmentId)) {
       continue
     }
@@ -83,7 +83,7 @@ export function listDesktopBrowserBridgeCandidates(
     }
     try {
       const environment = resolveEnvironment(userDataPath, environmentId)
-      if (getOrcadSshDeployment(environment)?.sshTargetId !== target.id) {
+      if (getTopodSshDeployment(environment)?.sshTargetId !== target.id) {
         continue
       }
     } catch {
@@ -96,7 +96,7 @@ export function listDesktopBrowserBridgeCandidates(
 
 export function installDesktopBrowserBridge(options: {
   userDataPath: string
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   getMainWindow: () => BrowserWindow | null
   getConnectionManager: () => Pick<SshConnectionManager, 'getState'> | null
 }): void {
@@ -134,7 +134,7 @@ export function installDesktopBrowserBridge(options: {
       return (status.result.capabilities ?? []).includes(DESKTOP_BROWSER_BRIDGE_RUNTIME_CAPABILITY)
     },
     subscribe: (environmentId) => async (callbacks) => {
-      await ensureOrcadManagedTunnel(userDataPath, environmentId)
+      await ensureTopodManagedTunnel(userDataPath, environmentId)
       const connection = getPreferredPairedRuntimeConnection(
         resolveEnvironment(userDataPath, environmentId)
       )
@@ -189,7 +189,7 @@ export function installDesktopBrowserBridge(options: {
           worktreeIdForPage: (browserPageId) =>
             browserManager.getWorktreeIdForTab(browserPageId) ?? null,
           dispatch: (method, params) =>
-            // Why: the SSH host's orca CLI is an agent caller; the cursor and tab badge key off it.
+            // Why: the SSH host's topo CLI is an agent caller; the cursor and tab badge key off it.
             getDispatcher().dispatch(
               { id: randomUUID(), authToken: '', method, params },
               { caller: { kind: 'local-cli' } }

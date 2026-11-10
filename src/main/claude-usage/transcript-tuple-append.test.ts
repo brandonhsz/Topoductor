@@ -64,7 +64,7 @@ async function project(
 }
 
 beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), 'orca-claude-tuple-append-'))
+  directory = await mkdtemp(join(tmpdir(), 'topo-claude-tuple-append-'))
   transcript = join(directory, 'session.jsonl')
   await writeFile(transcript, `${JSON.stringify({ type: 'user', text: 'x'.repeat(20_000) })}\n`)
 })

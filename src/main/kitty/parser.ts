@@ -88,7 +88,7 @@ export function matchesFileGlob(name: string, pattern: string): boolean {
   return patternIndex === pattern.length
 }
 
-// Kitty globs with pathlib; Orca supports `*` and `?` in the file name, the common `themes/*.conf` form.
+// Kitty globs with pathlib; Topo supports `*` and `?` in the file name, the common `themes/*.conf` form.
 async function expandGlobInclude(pattern: string): Promise<string[] | null> {
   const dir = path.dirname(pattern)
   const namePattern = path.basename(pattern)
@@ -172,7 +172,7 @@ export async function loadKittyConfig(entryPath: string, home: string): Promise<
   }
 
   await loadFile(entryPath)
-  // Kitty 0.38+ swaps these in by OS appearance, overriding the colors above; Orca does not import them yet.
+  // Kitty 0.38+ swaps these in by OS appearance, overriding the colors above; Topo does not import them yet.
   for (const name of AUTO_THEME_FILES) {
     if (await isFile(path.join(path.dirname(entryPath), name))) {
       unsupportedKeys.add(`${name} (appearance-based theme)`)

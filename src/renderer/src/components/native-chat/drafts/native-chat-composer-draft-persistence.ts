@@ -33,7 +33,7 @@ import {
 } from './native-chat-composer-draft-storage'
 
 const PERSIST_DEBOUNCE_MS = 250
-const CHANNEL_NAME = 'orca-native-chat-composer-drafts'
+const CHANNEL_NAME = 'topo-native-chat-composer-drafts'
 
 let flushTimer: ReturnType<typeof setTimeout> | null = null
 let flushOnHideInstalled = false
@@ -64,7 +64,7 @@ export function unavailableNativeChatComposerDraftImage(
     : image
 }
 
-/** A local paste in Orca's paste folder: it outlives the run, so a restore can show and send it. */
+/** A local paste in Topo's paste folder: it outlives the run, so a restore can show and send it. */
 export function isKeptLocalPaste(image: NativeChatComposerDraftImage): boolean {
   return !image.connectionId && isNativeChatKeptPastePath(image.path)
 }

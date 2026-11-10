@@ -19,7 +19,7 @@ let originalKimiHome: string | undefined
 let originalUserProfile: string | undefined
 
 beforeEach(() => {
-  home = mkdtempSync(join(tmpdir(), 'orca-kimi-hook-'))
+  home = mkdtempSync(join(tmpdir(), 'topo-kimi-hook-'))
   originalHome = process.env.HOME
   originalKimiHome = process.env.KIMI_CODE_HOME
   originalUserProfile = process.env.USERPROFILE

@@ -18,9 +18,9 @@ export type PtyProcessInfo = {
   title: string
   /** Owning worktree when the provider can report it authoritatively. */
   worktreeId?: string
-  /** Trusted ORCA_TERMINAL_HANDLE exported into this PTY, when known. */
+  /** Trusted TOPO_TERMINAL_HANDLE exported into this PTY, when known. */
   terminalHandle?: string
-  /** ORCA_PANE_KEY this PTY was spawned with, when the provider recorded it. */
+  /** TOPO_PANE_KEY this PTY was spawned with, when the provider recorded it. */
   paneKey?: string
   /** Exact WSL owner reported by the PTY provider; null means native Windows. */
   wslDistro?: string | null
@@ -31,7 +31,7 @@ export type PtyProcessInfo = {
   agentSessionOwners?: AgentSessionOwnerBinding[]
   /** Owning-host clock age; absent is unmeasured, so age-dependent decisions must defer. */
   hostAgeMs?: number
-  /** Host attests Orca pane (true) or bare shell (false); absent is unknown on older hosts. */
+  /** Host attests Topo pane (true) or bare shell (false); absent is unknown on older hosts. */
   paneBound?: boolean
   /** Creator identity attested by the owning host; absent never means unowned. */
   ownerClientInstanceId?: string

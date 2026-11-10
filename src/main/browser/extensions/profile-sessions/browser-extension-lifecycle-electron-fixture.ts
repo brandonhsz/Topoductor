@@ -1,7 +1,7 @@
 import { app, BaseWindow, protocol, session } from 'electron'
 import { renameSync, writeFileSync } from 'node:fs'
 import '../../../../shared/constants'
-import { ORCA_BROWSER_PARTITION } from '../../../../shared/browser/browser-session-partition'
+import { TOPO_BROWSER_PARTITION } from '../../../../shared/browser/browser-session-partition'
 import { applyBackgroundActivationPolicy } from '../../../window/foreground-activation-policy'
 import { browserSessionRegistry } from '../../sessions/profiles/browser-session-registry'
 import { initializeBrowserExtensionSupport } from '../browser-extension-startup'
@@ -12,14 +12,14 @@ import {
   reloadUnpackedBrowserExtension
 } from '../browser-extension-management'
 
-const statusPath = process.env.ORCA_EXTENSION_FIXTURE_STATUS
-const extensionDirectory = process.env.ORCA_EXTENSION_FIXTURE_DIR
-const phase = process.env.ORCA_EXTENSION_FIXTURE_PHASE
+const statusPath = process.env.TOPO_EXTENSION_FIXTURE_STATUS
+const extensionDirectory = process.env.TOPO_EXTENSION_FIXTURE_DIR
+const phase = process.env.TOPO_EXTENSION_FIXTURE_PHASE
 if (
   !statusPath ||
   !extensionDirectory ||
   (phase !== 'install' && phase !== 'restart' && phase !== 'update') ||
-  process.env.ORCA_BACKGROUND_LAUNCH !== '1'
+  process.env.TOPO_BACKGROUND_LAUNCH !== '1'
 ) {
   throw new Error(
     'Lifecycle fixture requires a status path, an extension, a phase and background launch'
@@ -64,7 +64,7 @@ process.on('uncaughtException', fail)
 process.on('unhandledRejection', fail)
 
 function capture(message: string): void {
-  const prefix = 'ORCA_EXT_LIFECYCLE '
+  const prefix = 'TOPO_EXT_LIFECYCLE '
   if (!message.startsWith(prefix)) {
     return
   }
@@ -95,7 +95,7 @@ async function run(): Promise<void> {
   initializeBrowserExtensionSupport({ enabled: true })
   const profile = browserSessionRegistry.getDefaultProfile()
   session
-    .fromPartition(ORCA_BROWSER_PARTITION)
+    .fromPartition(TOPO_BROWSER_PARTITION)
     .serviceWorkers.on('console-message', (_event, details) => capture(details.message))
   if (phase === 'install') {
     attachBrowserExtensionsToProfileSession(profile, [])

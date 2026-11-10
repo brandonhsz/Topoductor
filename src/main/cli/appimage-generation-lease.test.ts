@@ -19,12 +19,12 @@ afterEach(async () => {
 })
 
 async function makeCache(): Promise<{ cacheRootPath: string; rootPath: string; execPath: string }> {
-  const base = await mkdtemp(join(tmpdir(), 'orca-appimage-lease-'))
+  const base = await mkdtemp(join(tmpdir(), 'topo-appimage-lease-'))
   created.push(base)
   const cacheRootPath = join(base, 'cache')
   const rootPath = join(cacheRootPath, NAMESPACE, GENERATION)
   await mkdir(rootPath, { recursive: true })
-  return { cacheRootPath, rootPath, execPath: join(rootPath, 'orca-ide') }
+  return { cacheRootPath, rootPath, execPath: join(rootPath, 'topo-ide') }
 }
 
 function reader(
@@ -100,7 +100,7 @@ describe('AppImage generation leases', () => {
 
   it('ignores leases on other generations', async () => {
     const { cacheRootPath, rootPath } = await makeCache()
-    const otherExec = join(cacheRootPath, NAMESPACE, 'c'.repeat(24), 'orca-ide')
+    const otherExec = join(cacheRootPath, NAMESPACE, 'c'.repeat(24), 'topo-ide')
     const live = reader({ 10: { status: 'present', startTicks: '500' } })
     await leaseAppImageGenerationForCurrentProcess({
       execPath: otherExec,

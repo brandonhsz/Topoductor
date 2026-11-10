@@ -1,5 +1,5 @@
-import { parseOrcaSessionAddress } from '../../../../../../shared/orca-session-address'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import { parseTopoSessionAddress } from '../../../../../../shared/topo-session-address'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import {
   clearFollowUpMail,
@@ -11,7 +11,7 @@ import {
 } from '../../../../orchestration/db/dispatch-context/worker-follow-up-lineage'
 import { FOLLOW_UP_MESSAGE_TYPES } from '../../../../orchestration/db/dispatch-context/worker-follow-up-plan'
 import type { OrchestrationSessionCaller } from '../../../../orchestration/addressing/orchestration-caller-identity'
-import { resolveOrcaSessionParty } from '../../../../orchestration/addressing/orchestration-party'
+import { resolveTopoSessionParty } from '../../../../orchestration/addressing/orchestration-party'
 import { readStructuredAgentSessionRecord } from '../../../../orchestration/terminal-authority/structured-sessions/structured-worker-authority'
 import { createHash } from 'node:crypto'
 import { escalateWorkerFailure } from '../../../../orchestration/workers/reports/worker-failure-escalation'
@@ -26,7 +26,7 @@ import { reportedWorkerOutcome } from '../worker/worker-start-receipt'
 
 /** After a report settles (or replays): save the worker's conversation, then continue mail it never read. */
 export function followThroughWorkerReport(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   db: OrchestrationDb,
   dispatchId: string | undefined
 ): void {
@@ -40,7 +40,7 @@ export function followThroughWorkerReport(
 /** Mail the worker never read before it reported is not lost: it goes to the worker's newer Dispatch,
  *  or becomes one, as a send after the report would. Its report marked it, so a restart resumes this. */
 export function continueUnreadWorkerMail(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   db: OrchestrationDb,
   dispatchId: string
 ): void {
@@ -62,7 +62,7 @@ const CHAT_FOLLOW_UP_TASK = {
 }
 
 async function continueUnreadMail(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   db: OrchestrationDb,
   dispatchId: string
 ): Promise<void> {
@@ -73,7 +73,7 @@ async function continueUnreadMail(
   }
   const worker = db.getWorkerDispatch(dispatchId)
   if (worker?.state === 'stopped') {
-    // Orca does not restart a stopped worker on its own; the next send carries its mail.
+    // Topo does not restart a stopped worker on its own; the next send carries its mail.
     return
   }
   if (
@@ -87,12 +87,12 @@ async function continueUnreadMail(
         runtime,
         db,
         dispatchId,
-        'Orca restarted while its follow-up was starting'
+        'Topo restarted while its follow-up was starting'
       )
       return
     }
     // Interrupted before it placed an agent, so nothing runs and the start can be retried.
-    db.failWorkerStart(dispatchId, worker.stage, 'Orca restarted before this follow-up started.')
+    db.failWorkerStart(dispatchId, worker.stage, 'Topo restarted before this follow-up started.')
   }
   if (custodyOf(db, dispatchId) === 'reported' && !hasNewUnreadFollowUpMail(db, dispatchId)) {
     // Kept marked, so the coordinator's next send carries it; another short Task would only repeat this one.
@@ -168,7 +168,7 @@ function custodyOf(
 /** Mail held anywhere in a worker's lineage follows its newest follow-up: delivered once that one is ready or
  *  has reported, kept unread on it with one notice when its start failed (so the next send takes it). */
 export function passHeldWorkerMail(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   db: OrchestrationDb,
   followUpId: string
 ): void {
@@ -233,7 +233,7 @@ export function passHeldWorkerMail(
 
 /** Nothing is lost silently: the coordinator hears that its mail did not reach the worker, once per batch. */
 function noticeUnreadMailNotContinued(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   db: OrchestrationDb,
   dispatchId: string,
   reason: string
@@ -254,7 +254,7 @@ function noticeUnreadMailNotContinued(
       mailbox: () => dispatchReportMailbox(db, dispatch),
       describe: (task) => ({
         subject: 'Mail did not reach the finished worker',
-        body: `Orca could not continue the worker of ${task} with the mail it had not read before reporting: ${reason}. The mail is kept for your next send to dispatch:${dispatchId}.`
+        body: `Topo could not continue the worker of ${task} with the mail it had not read before reporting: ${reason}. The mail is kept for your next send to dispatch:${dispatchId}.`
       }),
       payload: { dispatchId, reason }
     },
@@ -278,7 +278,7 @@ export function settledDispatchId(receipt: unknown): string | undefined {
 
 /** After the open returns, so continuing a worker can use the database it is opening. */
 export function continueRestoredWorkerMailSoon(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   db: OrchestrationDb,
   isCurrent: () => boolean
 ): void {
@@ -291,7 +291,7 @@ export function continueRestoredWorkerMailSoon(
 
 /** At startup: continue what a restart interrupted between a report and its follow-up. */
 export function continueAllUnreadWorkerMail(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   db: OrchestrationDb
 ): void {
   try {
@@ -305,11 +305,11 @@ export function continueAllUnreadWorkerMail(
 }
 
 function senderSession(db: OrchestrationDb, from: string): OrchestrationSessionCaller | undefined {
-  const sessionId = parseOrcaSessionAddress(from)
+  const sessionId = parseTopoSessionAddress(from)
   const record = sessionId ? readStructuredAgentSessionRecord(sessionId) : null
   return sessionId && record
     ? {
-        ...resolveOrcaSessionParty(sessionId, db),
+        ...resolveTopoSessionParty(sessionId, db),
         sessionId,
         workspaceId: record.location.workspaceId
       }

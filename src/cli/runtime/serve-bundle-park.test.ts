@@ -15,7 +15,7 @@ import { openServeBundlePark } from '../../shared/serve-bundle-park'
 import { superviseServeService } from './serve-supervised-service'
 import { createSupervisedParkWatch } from './serve-supervised-park-watch'
 
-const LABEL = 'com.stablyai.orca.serve.default'
+const LABEL = 'com.brandonhsz.topo.serve.default'
 
 describe('openServeBundlePark', () => {
   let root: string
@@ -23,9 +23,9 @@ describe('openServeBundlePark', () => {
   let dir: string
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-bundle-park-'))
-    const bundle = join(root, 'Orca.app')
-    executable = join(bundle, 'Contents', 'MacOS', 'Orca')
+    root = await mkdtemp(join(tmpdir(), 'topo-bundle-park-'))
+    const bundle = join(root, 'Topo.app')
+    executable = join(bundle, 'Contents', 'MacOS', 'Topo')
     await mkdir(join(bundle, 'Contents', 'MacOS'), { recursive: true })
     await writeFile(executable, '')
     await writeFile(join(bundle, 'Contents', 'Info.plist'), 'v1')
@@ -162,7 +162,7 @@ describe('openServeBundlePark', () => {
     // 'unused' differs from the real identity, which models a bundle ShipIt already replaced.
     expect(park.holds()).toBe(false)
     const identity = formatBundleIdentity(
-      await stat(join(root, 'Orca.app', 'Contents', 'Info.plist'))
+      await stat(join(root, 'Topo.app', 'Contents', 'Info.plist'))
     )
     await writeRecord({
       phase: 'commit',

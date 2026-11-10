@@ -13,7 +13,7 @@ import {
 } from './artifact-create-intent-store'
 import type { ArtifactShareScope } from './artifact-share-record-store'
 
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   runProcess: vi.fn(),
   runProcessSync: vi.fn()
 }))
@@ -269,7 +269,7 @@ describe('artifact create intent store', () => {
 })
 
 async function createUserDataPath(): Promise<string> {
-  const path = await mkdtemp(join(tmpdir(), 'orca-artifact-create-intents-'))
+  const path = await mkdtemp(join(tmpdir(), 'topo-artifact-create-intents-'))
   createdPaths.push(path)
   return path
 }

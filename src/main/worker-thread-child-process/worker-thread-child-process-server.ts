@@ -1,5 +1,5 @@
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import type {
   WorkerThreadChildErrorPayload,
   WorkerThreadChildEvent,

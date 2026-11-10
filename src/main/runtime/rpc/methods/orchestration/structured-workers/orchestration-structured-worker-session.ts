@@ -20,7 +20,7 @@ import type {
 import type { StructuredAgentSessionHost } from '../../../../../native-chat/agent-session-wire/host/structured-agent-session-host'
 import { getStructuredAgentSessionHost } from '../../../../../native-chat/agent-session-wire/host/structured-agent-session-registry'
 import type { TuiAgent } from '../../../../../../shared/agent-launch/catalog/tui-agent'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import { mintAgentSessionOperationId } from '../../../../orchestration/mailbox/structured-pointer/structured-pointer-operation-id'
 import { structuredPointerCallerKey } from '../../../../orchestration/mailbox/structured-pointer/structured-mailbox-pointer-host'
@@ -50,7 +50,7 @@ const handlesBySessionId = new Map<string, string>()
 /** Every stop/release/abandon must drop identity and parked mail across the worker's /clear lineage, even after restart lost its binding. */
 export function releaseStructuredWorkerSession(
   workerSessionId: string | null | undefined,
-  runtime?: Pick<OrcaRuntimeService, 'forgetStructuredSessionMail'>
+  runtime?: Pick<TopoRuntimeService, 'forgetStructuredSessionMail'>
 ): void {
   if (!workerSessionId) {
     return
@@ -86,7 +86,7 @@ export function rebindReusedStructuredWorker(handle: string, db: OrchestrationDb
 }
 
 export async function createStructuredWorkerSession(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   worktreeId: string
   agent: TuiAgent
   dispatchId: string
@@ -99,7 +99,7 @@ export async function createStructuredWorkerSession(args: {
   fence: number
 }> {
   const sessionId = randomUUID()
-  // Register before attach builds child env or missing ORCA_TERMINAL_HANDLE can misroute orchestration to the coordinator.
+  // Register before attach builds child env or missing TOPO_TERMINAL_HANDLE can misroute orchestration to the coordinator.
   // Assert the provisional local scope against the created record; discard non-local sessions.
   const identity = structuredWorkerIdentities.register({
     handle: mintStructuredWorkerHandle(),

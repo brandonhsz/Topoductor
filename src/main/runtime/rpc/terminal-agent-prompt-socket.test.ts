@@ -19,9 +19,9 @@ import '../orchestration/db/contract-constants'
 import '../orchestration/db/messages/mailbox-routing-page'
 import '../orchestration/db/dispatch-row-writer'
 import '../orchestration/db/attempt-outcome-projection'
-import { OrcaRuntimeRpcServer } from './server/runtime-rpc'
+import { TopoRuntimeRpcServer } from './server/runtime-rpc'
 import { ORCHESTRATION_METHODS } from './methods/orchestration/orchestration'
-import { bindPaneFirst } from '../orca-runtime-tests/bind-first-pane.test-fixture'
+import { bindPaneFirst } from '../topo-runtime-tests/bind-first-pane.test-fixture'
 import * as inputAdmission from '../terminal/input/terminal-input-admission'
 import { writePtyFromRuntimeController } from '../../ipc/pty/runtime/operations'
 import { getLocalPtyProvider } from '../../ipc/pty/provider/registry'
@@ -66,7 +66,7 @@ it.each(['before', 'after', 'paired', 'orchestration'] as const)(
     const paired = boundary === 'paired'
     const latch = () => Promise.withResolvers<void>()
     const [pasted, release, closed, received] = [latch(), latch(), latch(), latch()]
-    const root = mkdtempSync(join(tmpdir(), 'orca-prompt-socket-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-prompt-socket-'))
     const kind = process.platform === 'win32' ? 'named-pipe' : 'unix'
     const endpoint =
       kind === 'named-pipe' ? `\\\\.\\pipe\\${root.split(/[/\\]/).at(-1)}` : join(root, 'rpc')
@@ -119,18 +119,18 @@ it.each(['before', 'after', 'paired', 'orchestration'] as const)(
       authToken: 'fixture-token',
       transports: [{ kind, endpoint }]
     }
-    writeFileSync(join(root, 'orca-runtime.json'), JSON.stringify(discovery))
+    writeFileSync(join(root, 'topo-runtime.json'), JSON.stringify(discovery))
     const preload = join(root, 'exit-on-input.ts')
     writeFileSync(preload, "process.stdin.once('data', () => process.exit(0))")
     const program = createRequire(resolve('package.json')).resolve('bun/bin/bun.exe')
     const env = {
       ...Object.fromEntries(
-        'HOME USERPROFILE APPDATA LOCALAPPDATA XDG_CONFIG_HOME XDG_CACHE_HOME XDG_DATA_HOME XDG_STATE_HOME ORCA_E2E_HOME_DIR ORCA_E2E_USER_DATA_DIR ORCA_USER_DATA_PATH TEMP TMP TMPDIR CODEX_HOME CLAUDE_CONFIG_DIR'
+        'HOME USERPROFILE APPDATA LOCALAPPDATA XDG_CONFIG_HOME XDG_CACHE_HOME XDG_DATA_HOME XDG_STATE_HOME TOPO_E2E_HOME_DIR TOPO_E2E_USER_DATA_DIR TOPO_USER_DATA_PATH TEMP TMP TMPDIR CODEX_HOME CLAUDE_CONFIG_DIR'
           .split(' ')
           .map((key) => [key, root])
       ),
-      ORCA_BACKGROUND_LAUNCH: '1',
-      ORCA_DISABLE_MACOS_LOGIN_SHELL: '1',
+      TOPO_BACKGROUND_LAUNCH: '1',
+      TOPO_DISABLE_MACOS_LOGIN_SHELL: '1',
       PATH: process.env.PATH,
       SystemRoot: process.env.SystemRoot
     }
@@ -168,7 +168,7 @@ it.each(['before', 'after', 'paired', 'orchestration'] as const)(
       ]
     }
     const server = paired
-      ? new OrcaRuntimeRpcServer({
+      ? new TopoRuntimeRpcServer({
           runtime,
           methods,
           userDataPath: root,

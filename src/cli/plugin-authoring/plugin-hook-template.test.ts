@@ -12,16 +12,16 @@ afterEach(async () => {
 })
 
 async function hookPlugin(): Promise<string> {
-  const root = await realpath(await mkdtemp(join(tmpdir(), 'orca-hook-template-')))
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'topo-hook-template-')))
   roots.push(root)
   const dir = join(root, 'guard')
   await createPluginFromTemplate({ dir, template: 'hook' })
   return dir
 }
 
-describe('orca plugin create --template hook', () => {
+describe('topo plugin create --template hook', () => {
   it(
-    "passes its own worker test under `orca plugin test` on Orca's runtime",
+    "passes its own worker test under `topo plugin test` on Topo's runtime",
     async () => {
       const dir = await hookPlugin()
       const files = await findPluginTestFiles(dir)

@@ -4,7 +4,7 @@ import {
   captureStructuredAgentCliSource,
   structuredAgentCliSourceFromEvidence
 } from '../../native-chat/structured-agent-cli-source'
-import type { OrcaRuntimeWithRestoreStructuredAgentSessionTabsOnce as RestoreStructuredAgentSessionTabsOnceMethods } from './structured-session-tab-restoration'
+import type { TopoRuntimeWithRestoreStructuredAgentSessionTabsOnce as RestoreStructuredAgentSessionTabsOnceMethods } from './structured-session-tab-restoration'
 import { agentSessionRefusalError } from '../../../shared/agent-session/failures/agent-session-wire-refusals'
 import { StructuredSessionWorkspaceScope } from './structured-session-workspace-scope'
 import { getStructuredAgentSessionHost } from '../../native-chat/agent-session-wire/host/structured-agent-session-registry'
@@ -25,13 +25,13 @@ import { structuredAgentChatProgramNeedsInstall } from '../agent-session/launch/
 import { structuredLaunchSeedOptions } from '../../../shared/native-chat/input/native-chat-session-option-defaults'
 import { hasPersistedStructuredAgentSessionStore as hasPersistedStructuredAgentSessionStoreOnDisk } from '../agent-session/records/agent-session-record-store-slot'
 import { ensureStructuredAgentSessionHostUnlessRefused } from '../agent-session/structured-agent-session-host-refusal'
-import { getProfileUserDataPath } from '../../orca-profiles/profile-storage-paths'
+import { getProfileUserDataPath } from '../../topo-profiles/profile-storage-paths'
 import { isFloatingWorkspaceSelector } from '../../../shared/floating-workspace-worktree'
 import type { AgentSessionAccountHome } from '../../../shared/agent-session/lifecycle/agent-session-account-home'
 import type { StructuredAgentId } from '../../../shared/agent-session/lifecycle/agent-session-provider-handle'
 import type { StructuredAgentCreateSupportReply } from '../../../shared/agent-session/structured-agent-create-support-reply'
 
-export abstract class OrcaRuntimeWithGetStructuredAgentSessionCreateSupport extends StructuredSessionWorkspaceScope {
+export abstract class TopoRuntimeWithGetStructuredAgentSessionCreateSupport extends StructuredSessionWorkspaceScope {
   protected abstract restoreStructuredAgentSessionTabsOnce(
     ...args: Parameters<
       RestoreStructuredAgentSessionTabsOnceMethods['restoreStructuredAgentSessionTabsOnce']
@@ -40,7 +40,7 @@ export abstract class OrcaRuntimeWithGetStructuredAgentSessionCreateSupport exte
     RestoreStructuredAgentSessionTabsOnceMethods['restoreStructuredAgentSessionTabsOnce']
   >
 
-  /** `requireInstalledChatProgram` is for launches with no chat tab to offer Orca's install. */
+  /** `requireInstalledChatProgram` is for launches with no chat tab to offer Topo's install. */
   async getStructuredAgentSessionCreateSupport(
     worktreeSelector: string,
     agent: StructuredAgentId,

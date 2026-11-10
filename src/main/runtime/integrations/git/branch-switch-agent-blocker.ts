@@ -78,7 +78,7 @@ function blockerMessage(row: AgentSwitchRow, onlyProcessIsLive: boolean): string
 
 /**
  * Switching files under a busy agent breaks its work. A busy row blocks while its evidence is
- * recent, or while Orca verifies that exact agent process is still running (a long silent tool).
+ * recent, or while Topo verifies that exact agent process is still running (a long silent tool).
  * A verified exit, or a newer row that is no longer busy here, releases it. Only this checkout's
  * rows reach liveness, probes and the keyed re-read; the snapshot is walked once per switch.
  */

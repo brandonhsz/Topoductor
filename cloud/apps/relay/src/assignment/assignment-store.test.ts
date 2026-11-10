@@ -1,4 +1,4 @@
-import { ASSIGNMENT_LIMITS } from '@orca-cloud/relay-contract/assignment-invariants'
+import { ASSIGNMENT_LIMITS } from '@topo-cloud/relay-contract/assignment-invariants'
 import { createHash } from 'node:crypto'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { RelayCellConfig } from '../config.js'
@@ -45,7 +45,7 @@ const FENCE_PLAN_BINDING = {
   terraformStateSerial: 7,
   terraformStateObjectGeneration: '987654321',
   terraformStateObjectSha256: 'd'.repeat(64),
-  requestReason: 'orca-relay-fence/22222222-2222-4222-8222-222222222222'
+  requestReason: 'topo-relay-fence/22222222-2222-4222-8222-222222222222'
 }
 const FENCE_INVOCATION_ID = '55555555-5555-4555-8555-555555555555'
 const FENCE_INVOCATION_REASON = `${FENCE_PLAN_BINDING.requestReason}/${FENCE_INVOCATION_ID}`
@@ -71,9 +71,9 @@ function cellFenceEvidence(attemptId = '22222222-2222-4222-8222-222222222222') {
     environment: 'production' as const,
     cellId: 'cell-a',
     cellIncarnation: '11111111-1111-4111-8111-111111111111',
-    migName: 'orca-relay-c1',
-    instanceGroup: 'https://compute.example/instanceGroups/orca-relay-c1',
-    generationIdentity: 'https://compute.example/instanceTemplates/orca-relay-c1-abc',
+    migName: 'topo-relay-c1',
+    instanceGroup: 'https://compute.example/instanceGroups/topo-relay-c1',
+    generationIdentity: 'https://compute.example/instanceTemplates/topo-relay-c1-abc',
     fenceCommit: 'a'.repeat(40),
     planSha256: 'b'.repeat(64),
     ...FENCE_PLAN_BINDING
@@ -867,9 +867,9 @@ describe('RelayAssignmentStore', () => {
       environment: 'production' as const,
       cellId: 'cell-a',
       cellIncarnation: '11111111-1111-4111-8111-111111111111',
-      migName: 'orca-relay-c1',
-      instanceGroup: 'https://compute.example/instanceGroups/orca-relay-c1',
-      generationIdentity: 'https://compute.example/instanceTemplates/orca-relay-c1-abc',
+      migName: 'topo-relay-c1',
+      instanceGroup: 'https://compute.example/instanceGroups/topo-relay-c1',
+      generationIdentity: 'https://compute.example/instanceTemplates/topo-relay-c1-abc',
       fenceCommit: 'a'.repeat(40),
       planSha256: 'b'.repeat(64),
       ...FENCE_PLAN_BINDING
@@ -925,9 +925,9 @@ describe('RelayAssignmentStore', () => {
       environment: 'production' as const,
       cellId: 'cell-a',
       cellIncarnation: '11111111-1111-4111-8111-111111111111',
-      migName: 'orca-relay-c1',
-      instanceGroup: 'https://compute.example/instanceGroups/orca-relay-c1',
-      generationIdentity: 'https://compute.example/instanceTemplates/orca-relay-c1-abc',
+      migName: 'topo-relay-c1',
+      instanceGroup: 'https://compute.example/instanceGroups/topo-relay-c1',
+      generationIdentity: 'https://compute.example/instanceTemplates/topo-relay-c1-abc',
       fenceCommit: 'a'.repeat(40),
       planSha256: 'b'.repeat(64),
       ...FENCE_PLAN_BINDING
@@ -953,7 +953,7 @@ describe('RelayAssignmentStore', () => {
       { environment: 'staging' as const },
       { cellId: 'cell-b' },
       { cellIncarnation: '33333333-3333-4333-8333-333333333333' },
-      { migName: 'orca-relay-other' },
+      { migName: 'topo-relay-other' },
       { instanceGroup: `${evidence.instanceGroup}-other` },
       { generationIdentity: `${evidence.generationIdentity}-other` },
       { fenceCommit: 'c'.repeat(40) },
@@ -1000,9 +1000,9 @@ describe('RelayAssignmentStore', () => {
       environment: 'production' as const,
       cellId: 'cell-a',
       cellIncarnation: '11111111-1111-4111-8111-111111111111',
-      migName: 'orca-relay-c1',
-      instanceGroup: 'https://compute.example/instanceGroups/orca-relay-c1',
-      generationIdentity: 'https://compute.example/instanceTemplates/orca-relay-c1-abc',
+      migName: 'topo-relay-c1',
+      instanceGroup: 'https://compute.example/instanceGroups/topo-relay-c1',
+      generationIdentity: 'https://compute.example/instanceTemplates/topo-relay-c1-abc',
       fenceCommit: 'a'.repeat(40),
       planSha256: 'b'.repeat(64),
       ...FENCE_PLAN_BINDING
@@ -1149,9 +1149,9 @@ describe('RelayAssignmentStore', () => {
       environment: 'production' as const,
       cellId: 'cell-a',
       cellIncarnation: '11111111-1111-4111-8111-111111111111',
-      migName: 'orca-relay-c1',
-      instanceGroup: 'https://compute.example/instanceGroups/orca-relay-c1',
-      generationIdentity: 'https://compute.example/instanceTemplates/orca-relay-c1-abc',
+      migName: 'topo-relay-c1',
+      instanceGroup: 'https://compute.example/instanceGroups/topo-relay-c1',
+      generationIdentity: 'https://compute.example/instanceTemplates/topo-relay-c1-abc',
       fenceCommit: 'a'.repeat(40),
       planSha256: 'b'.repeat(64),
       ...FENCE_PLAN_BINDING
@@ -1174,9 +1174,9 @@ describe('RelayAssignmentStore', () => {
       environment: 'production' as const,
       cellId: 'cell-a',
       cellIncarnation: '11111111-1111-4111-8111-111111111111',
-      migName: 'orca-relay-c1',
-      instanceGroup: 'https://compute.example/instanceGroups/orca-relay-c1',
-      generationIdentity: 'https://compute.example/instanceTemplates/orca-relay-c1-abc',
+      migName: 'topo-relay-c1',
+      instanceGroup: 'https://compute.example/instanceGroups/topo-relay-c1',
+      generationIdentity: 'https://compute.example/instanceTemplates/topo-relay-c1-abc',
       fenceCommit: 'a'.repeat(40),
       planSha256: 'b'.repeat(64),
       ...FENCE_PLAN_BINDING
@@ -1202,7 +1202,7 @@ describe('RelayAssignmentStore', () => {
         attemptId: '44444444-4444-4444-8444-444444444444',
         planObjectName:
           'terraform/state/relay-fence-plans/production/44444444-4444-4444-8444-444444444444.tfplan',
-        requestReason: 'orca-relay-fence/44444444-4444-4444-8444-444444444444'
+        requestReason: 'topo-relay-fence/44444444-4444-4444-8444-444444444444'
       })
     ).rejects.toThrow('cell_fence_attempt_evidence_mismatch')
   })

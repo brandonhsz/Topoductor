@@ -5,7 +5,7 @@ import type {
   RuntimePtyTitleTrackerEntry
 } from '../records/runtime-terminal-state-records'
 import type { RuntimeSyncedLeaf } from '../../../../shared/runtime-session-contracts'
-import { OrcaRuntimeWithPreparePtyExecutionContext } from '../launch/terminal-execution-context'
+import { TopoRuntimeWithPreparePtyExecutionContext } from '../launch/terminal-execution-context'
 import { advertisedUrlWatcher } from '../../../ports/advertised-url-watcher'
 import { appendNormalizedToTailBuffer } from './tail/terminal-tail-buffer'
 import { normalizeTerminalChunk } from './terminal-ansi-normalization'
@@ -21,7 +21,7 @@ import {
 } from '../wait/terminal-wait-tail-state'
 import { extractOscTitleScanTail } from '../../../../shared/osc-title-scan-tail'
 
-export abstract class OrcaRuntimeWithOnPtyData extends OrcaRuntimeWithPreparePtyExecutionContext {
+export abstract class TopoRuntimeWithOnPtyData extends TopoRuntimeWithPreparePtyExecutionContext {
   protected abstract recordOsc7MetadataForPty(
     ptyId: string,
     data: string

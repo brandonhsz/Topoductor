@@ -6,7 +6,7 @@ const SERVICES = [
   { name: 'billing', state: 'Down', tone: 'danger' }
 ] as const
 
-// Box needs Orca 1.4.248 (ui.catalog 4), hence this plugin's engines floor.
+// Box needs Topo 1.4.248 (ui.catalog 4), hence this plugin's engines floor.
 export function LayoutTab() {
   return (
     <Box gap="md">

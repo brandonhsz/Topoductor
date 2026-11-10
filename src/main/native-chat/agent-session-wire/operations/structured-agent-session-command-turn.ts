@@ -108,12 +108,12 @@ export function isStructuredAgentSessionCommandTurnId(turnId: string): boolean {
 const STOP_NOTE_PREFIX = 'stop:'
 
 export function structuredAgentSessionStopNoteIdentity(stopKey: string): AgentJournalItemIdentity {
-  return { provider: 'orca', clientMessageId: `${STOP_NOTE_PREFIX}${stopKey}` }
+  return { provider: 'topo', clientMessageId: `${STOP_NOTE_PREFIX}${stopKey}` }
 }
 
 export function isStructuredAgentSessionStopNote(itemId: string): boolean {
   const identity = parseAgentJournalItemKey(itemId)
-  return identity?.provider === 'orca' && identity.clientMessageId.startsWith(STOP_NOTE_PREFIX)
+  return identity?.provider === 'topo' && identity.clientMessageId.startsWith(STOP_NOTE_PREFIX)
 }
 
 /** Read Stop from the journal so cached state cannot outlive the command. */

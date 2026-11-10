@@ -8,11 +8,11 @@ import {
   nodeRuntimeStoreDir,
   posixNodeRuntimeExecutable,
   probeRemoteNodeRuntimeCommand
-} from '../../managed-server/install/orcad-remote-node-runtime'
+} from '../../managed-server/install/topod-remote-node-runtime'
 import {
   REMOTE_NODE_RUNTIME_READY,
   assertRemoteNodeRuntimePromoted
-} from '../../managed-server/install/orcad-remote-node-runtime-report'
+} from '../../managed-server/install/topod-remote-node-runtime-report'
 import { getRemoteHostPlatform } from '../../ssh/remote-host/ssh-remote-platform'
 import {
   isGlibcBelow,
@@ -40,7 +40,7 @@ export async function ensureWslPinnedRuntime(
   if (glibc && isGlibcBelow(glibc, PINNED_NODE_GLIBC_FLOOR)) {
     throw new Error(
       `This WSL distro's glibc ${glibc.major}.${glibc.minor} is older than ` +
-        `${PINNED_NODE_GLIBC_FLOOR.major}.${PINNED_NODE_GLIBC_FLOOR.minor}, which Orca's Node runtime needs.`
+        `${PINNED_NODE_GLIBC_FLOOR.major}.${PINNED_NODE_GLIBC_FLOOR.minor}, which Topo's Node runtime needs.`
     )
   }
   const target = `linux-${arch === 'x86_64' ? 'x64' : 'arm64'}-${libc}` as const
@@ -49,7 +49,7 @@ export async function ensureWslPinnedRuntime(
     throw new Error('WSL did not provide an absolute home directory.')
   }
   const host = getRemoteHostPlatform(arch === 'x86_64' ? 'linux-x64' : 'linux-arm64')
-  const runtimeDir = nodeRuntimeStoreDir(host, `${home}/.cache/orca`, target)
+  const runtimeDir = nodeRuntimeStoreDir(host, `${home}/.cache/topo`, target)
   const executable = posixNodeRuntimeExecutable(host, runtimeDir)
   const probe = await run({
     script: probeRemoteNodeRuntimeCommand(host, runtimeDir, target),

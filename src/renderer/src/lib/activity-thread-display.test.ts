@@ -37,7 +37,7 @@ describe('getActivityThreadTaskTitle', () => {
     expect(
       getActivityThreadTaskTitle({
         entry: {
-          prompt: '{ "tool": "orca diagnostics", "takenAt": "2026"',
+          prompt: '{ "tool": "topo diagnostics", "takenAt": "2026"',
           stateHistory: [{ state: 'done', prompt: 'Fix logout', startedAt: 1 }]
         },
         tab: { ...tab, generatedTitle: undefined },

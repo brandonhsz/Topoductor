@@ -80,7 +80,7 @@ export async function publishArtifactFromSurface(
       toast.error(
         translate(
           'auto.components.artifacts.artifact-publish-flow.bba20daa6d',
-          'Sign in to Orca and try again.'
+          'Sign in to Topo and try again.'
         )
       )
       return null
@@ -102,14 +102,14 @@ export async function publishArtifactFromSurface(
 
 async function ensureArtifactAccountConnected(): Promise<boolean> {
   const state = useAppStore.getState()
-  if (state.orcaProfileAuthStatus?.state === 'connected') {
+  if (state.topoProfileAuthStatus?.state === 'connected') {
     return true
   }
-  return (await state.connectCurrentOrcaProfile())?.status === 'connected'
+  return (await state.connectCurrentTopoProfile())?.status === 'connected'
 }
 
 async function reconnectArtifactAccount(): Promise<boolean> {
-  return (await useAppStore.getState().connectCurrentOrcaProfile())?.status === 'connected'
+  return (await useAppStore.getState().connectCurrentTopoProfile())?.status === 'connected'
 }
 
 function showArtifactPublishedToast(result: ArtifactPublishResult): void {
@@ -135,7 +135,7 @@ function artifactPreparationErrorDescription(code: ArtifactPublishPreparationErr
     case 'unreadable':
       return translate(
         'auto.components.artifacts.artifact-publish-flow.e2ed5acd8c',
-        "Orca couldn't read this file. Open it from a workspace and try again."
+        "Topo couldn't read this file. Open it from a workspace and try again."
       )
     case 'visual-unreadable':
       return translate(

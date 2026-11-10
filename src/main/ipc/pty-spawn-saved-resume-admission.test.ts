@@ -4,7 +4,7 @@ import { posixOnlyIt } from './pty/pty-ipc-test-constants'
 import { setupPtyIpcSuite } from './pty/pty-ipc-test-harness'
 import { POSIX_SHELL_STARTUP_COMMAND_ENV } from '../pty/shell-startup/posix-shell-startup-command'
 import { registerPtyHandlers } from './pty/register-handlers'
-import { OrcaRuntimeService } from '../runtime/orca-runtime'
+import { TopoRuntimeService } from '../runtime/topo-runtime'
 import { agentSessionConversationView } from '../../shared/agent-session/lifecycle/agent-session-conversation-view'
 import { AgentSessionRecordStore } from '../runtime/agent-session/records/agent-session-record-store'
 import {
@@ -42,7 +42,7 @@ vi.mock('../telemetry/client', () =>
 vi.mock('../telemetry/classify-error', () =>
   import('./pty/pty-ipc-mock-registry').then((m) => m.classifyErrorModuleMock())
 )
-vi.mock('../cli/linux-terminal-orca-cli-shim', () =>
+vi.mock('../cli/linux-terminal-topo-cli-shim', () =>
   import('./pty/pty-ipc-mock-registry').then((m) => m.linuxCliShimModuleMock())
 )
 vi.mock('../memory/pty-registry', () =>
@@ -73,7 +73,7 @@ describe('a pane restore of a conversation a native chat continues', () => {
   const LEAF_ID = '11111111-1111-4111-8111-111111111111'
 
   function register(openTabs: string[] | 'unreadable') {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     vi.spyOn(runtime, 'openAgentSessionRecordStore').mockImplementation(async () => {
       if (openTabs === 'unreadable') {
         throw new Error('records unavailable')

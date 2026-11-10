@@ -41,7 +41,7 @@ import {
   type InstallDirPackageGrantPass
 } from './windows-install-dir-acl.test-fixture'
 
-const INSTALL_DIR = 'C:\\Users\\neil\\AppData\\Local\\Programs\\orca'
+const INSTALL_DIR = 'C:\\Users\\neil\\AppData\\Local\\Programs\\topo'
 const APP_VERSION = '1.4.184'
 
 type Runner = InstallDirPackageGrant
@@ -75,7 +75,7 @@ function probeThenRecover(
           platform: 'win32',
           installDir: INSTALL_DIR,
           appVersion: APP_VERSION,
-          userDataPath: mkdtempSync(join(tmpdir(), 'orca-acl-recovery-')),
+          userDataPath: mkdtempSync(join(tmpdir(), 'topo-acl-recovery-')),
           grants: grantsFrom(grantFn),
           recordBreadcrumb: () => undefined
         })
@@ -125,7 +125,7 @@ describe('startWindowsInstallDirAclRepairIfPoisoned', () => {
             platform: 'win32',
             installDir: INSTALL_DIR,
             appVersion: APP_VERSION,
-            userDataPath: mkdtempSync(join(tmpdir(), 'orca-acl-recovery-')),
+            userDataPath: mkdtempSync(join(tmpdir(), 'topo-acl-recovery-')),
             grants: grantsFrom(async (_installDir, pass) => {
               collected.push(pass)
               throw new Error('unreachable')
@@ -164,7 +164,7 @@ describe('describeInstallDirAclPoison', () => {
         platform: 'win32',
         installDir: INSTALL_DIR,
         appVersion: APP_VERSION,
-        userDataPath: mkdtempSync(join(tmpdir(), 'orca-acl-recovery-')),
+        userDataPath: mkdtempSync(join(tmpdir(), 'topo-acl-recovery-')),
         grants: grantsFrom(() => new Promise<never>(() => undefined)),
         recordBreadcrumb: () => undefined
       }
@@ -200,7 +200,7 @@ describe('install-dir ACL repair vs the GPU safe-graphics marker', () => {
   })
 
   it('clears the sticky safe-graphics marker once the real cause is repaired', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-gpu-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-gpu-'))
     // Model poisoned-DACL GPU deaths that engaged the build's safe-graphics latch.
     writeGpuFallbackMarker(
       userDataPath,
@@ -225,9 +225,9 @@ describe('install-dir ACL repair vs the GPU safe-graphics marker', () => {
     expect(readActiveGpuFallbackMarker(userDataPath, GPU_ENV)).toBeNull()
   })
 
-  // Preserve user-confirmed safe graphics; only Orca's automatic latch may be retired.
+  // Preserve user-confirmed safe graphics; only Topo's automatic latch may be retired.
   it('leaves a user-confirmed safe-graphics marker alone', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-gpu-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-gpu-'))
     writeGpuFallbackMarker(
       userDataPath,
       { engagedAt: Date.now(), crashesInWindow: 3, userConfirmed: true },
@@ -263,7 +263,7 @@ describe('isInstallDirAclSuspect', () => {
 
     startWindowsInstallDirAclRepairIfPoisoned(
       { status: 'ok', matchesPoisonSignature: false },
-      recoveryOptions(mkdtempSync(join(tmpdir(), 'orca-acl-suspect-')), okRun)
+      recoveryOptions(mkdtempSync(join(tmpdir(), 'topo-acl-suspect-')), okRun)
     )
     expect(isInstallDirAclSuspect()).toBe(false)
   })
@@ -276,7 +276,7 @@ describe('isInstallDirAclSuspect', () => {
 
   it('holds through a repair that failed, and releases once one succeeds', async () => {
     const failing: Runner = async () => DENIED
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-suspect-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-suspect-'))
     startWindowsInstallDirAclRepairIfPoisoned(
       POISON_VERDICT,
       recoveryOptions(userDataPath, failing)
@@ -289,7 +289,7 @@ describe('isInstallDirAclSuspect', () => {
     resetWindowsInstallDirAclRepairForTest()
     startWindowsInstallDirAclRepairIfPoisoned(
       POISON_VERDICT,
-      recoveryOptions(mkdtempSync(join(tmpdir(), 'orca-acl-suspect-')), okRun)
+      recoveryOptions(mkdtempSync(join(tmpdir(), 'topo-acl-suspect-')), okRun)
     )
     await vi.waitFor(() => expect(isInstallDirAclSuspect()).toBe(false))
   })
@@ -309,7 +309,7 @@ describe('repairKnownPoisonedInstallDirBeforeWindow', () => {
       return OK
     }
     const mode = await repairKnownPoisonedInstallDirBeforeWindow(
-      recoveryOptions(mkdtempSync(join(tmpdir(), 'orca-acl-gate-')), run)
+      recoveryOptions(mkdtempSync(join(tmpdir(), 'topo-acl-gate-')), run)
     )
     expect(mode).toBe('not-marked')
     expect(specs).toHaveLength(0)
@@ -317,7 +317,7 @@ describe('repairKnownPoisonedInstallDirBeforeWindow', () => {
 
   // Persisted poison must repair before launch-two window creation; launch one's deferred probe was too late.
   it('repairs a launch that a previous one recorded as poisoned, before returning', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-gate-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-gate-'))
     // First launch dies after recording poison but before repair completes.
     startWindowsInstallDirAclRepairIfPoisoned(
       POISON_VERDICT,
@@ -345,7 +345,7 @@ describe('repairKnownPoisonedInstallDirBeforeWindow', () => {
   })
 
   it('gives up on its budget rather than holding the window open forever', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-gate-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-gate-'))
     startWindowsInstallDirAclRepairIfPoisoned(
       POISON_VERDICT,
       recoveryOptions(userDataPath, () => new Promise<never>(() => undefined))
@@ -361,7 +361,7 @@ describe('repairKnownPoisonedInstallDirBeforeWindow', () => {
   })
 
   it('is a no-op off win32 and in serve mode', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-gate-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-gate-'))
     startWindowsInstallDirAclRepairIfPoisoned(
       POISON_VERDICT,
       recoveryOptions(userDataPath, () => new Promise<never>(() => undefined))
@@ -384,7 +384,7 @@ describe('repairKnownPoisonedInstallDirBeforeWindow', () => {
   })
 
   it('retires the marker when a later probe reports the install clean', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-gate-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-gate-'))
     startWindowsInstallDirAclRepairIfPoisoned(
       POISON_VERDICT,
       recoveryOptions(userDataPath, () => new Promise<never>(() => undefined))
@@ -401,7 +401,7 @@ describe('repairKnownPoisonedInstallDirBeforeWindow', () => {
 
   // Unreadable DACL cannot retire poison evidence or the next launch repeats a known crash.
   it('keeps the marker when the probe could not read the DACL', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-gate-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-gate-'))
     startWindowsInstallDirAclRepairIfPoisoned(
       POISON_VERDICT,
       recoveryOptions(userDataPath, () => new Promise<never>(() => undefined))
@@ -416,7 +416,7 @@ describe('repairKnownPoisonedInstallDirBeforeWindow', () => {
 
   // A 20s gate can time out before its 120s grant. Later poison readings outrank that grant's success claim or it falsely disarms recovery and enables in-process GPU.
   it('does not let a timed-out gate repair outrank a poison reading taken after it', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-gate-timeout-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-gate-timeout-'))
     writeInstallDirAclPoisonMarker(userDataPath, INSTALL_DIR, APP_VERSION)
     writeGpuFallbackMarker(
       userDataPath,
@@ -461,7 +461,7 @@ describe('repairKnownPoisonedInstallDirBeforeWindow', () => {
 
   // Reverse ordering: a later poison reading must restore safe graphics already cleared by the grant's disproved success claim.
   it('restores the safe-graphics marker when the probe disproves a timed-out gate repair', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-gate-timeout-restore-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-gate-timeout-restore-'))
     writeInstallDirAclPoisonMarker(userDataPath, INSTALL_DIR, APP_VERSION)
     writeGpuFallbackMarker(
       userDataPath,
@@ -524,7 +524,7 @@ describe('a repair marker recording a completed repair', () => {
 
   // Three-launch regression: old successful repair, re-poisoning/crash mid-repair, then poison plus stale-success markers. The third gate must grant again within budget.
   it('re-runs the grant when a poison marker outlives it', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-repaired-hit-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-repaired-hit-'))
 
     // First launch repairs and retires poison.
     writeInstallDirAclPoisonMarker(userDataPath, INSTALL_DIR, APP_VERSION)
@@ -555,7 +555,7 @@ describe('a repair marker recording a completed repair', () => {
 
   // Spent budget must report unrepaired, without falsely clearing poison.
   it('does not let the gate report a spent budget as a repair', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-gate-budget-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-gate-budget-'))
     writeFileSync(
       join(userDataPath, WINDOWS_INSTALL_DIR_ACL_REPAIR_MARKER_FILE),
       JSON.stringify({
@@ -583,7 +583,7 @@ describe('a repair marker recording a completed repair', () => {
 
   // A later probe reading outranks gate success if the tree still matches poison.
   it('is overruled by a probe that reads the tree poisoned after the gate repaired it', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-noop-grant-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-noop-grant-'))
     writeInstallDirAclPoisonMarker(userDataPath, INSTALL_DIR, APP_VERSION)
     expect(
       await repairKnownPoisonedInstallDirBeforeWindow(recoveryOptions(userDataPath, okRun))
@@ -599,7 +599,7 @@ describe('a repair marker recording a completed repair', () => {
 
   // Gate success is provisional until probe/grace expiry: child deaths can precede the probe, and early in-process GPU would hide evidence.
   it('keeps a gate-repaired tree suspect until this launch probe has read it', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-provisional-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-provisional-'))
     writeInstallDirAclPoisonMarker(userDataPath, INSTALL_DIR, APP_VERSION)
     expect(
       await repairKnownPoisonedInstallDirBeforeWindow(recoveryOptions(userDataPath, okRun))
@@ -621,7 +621,7 @@ describe('a repair marker recording a completed repair', () => {
 
   // Disproved repair must restore cleared safe graphics or hardware relaunch can abort before the re-armed gate repairs.
   it('restores the safe-graphics marker a disproved repair claim cleared', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-gpu-restore-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-gpu-restore-'))
     writeInstallDirAclPoisonMarker(userDataPath, INSTALL_DIR, APP_VERSION)
     writeGpuFallbackMarker(
       userDataPath,
@@ -641,7 +641,7 @@ describe('a repair marker recording a completed repair', () => {
 
   // Fresh poison evidence contradicts prior success; rerun within budget rather than disarm the gate or claim repaired permissions.
   it('re-runs the grant when a fresh probe verdict contradicts the repaired marker', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-repoisoned-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-repoisoned-'))
     writeInstallDirAclPoisonMarker(userDataPath, INSTALL_DIR, APP_VERSION)
     expect(
       await repairKnownPoisonedInstallDirBeforeWindow(recoveryOptions(userDataPath, okRun))
@@ -673,7 +673,7 @@ describe('a repair marker recording a completed repair', () => {
 
   // New poison evidence cannot remove the attempt cap or every launch would re-walk permanently broken trees.
   it('still stops at the attempt budget when the probe keeps reporting poison', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-repoisoned-budget-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-repoisoned-budget-'))
     writeFileSync(
       join(userDataPath, WINDOWS_INSTALL_DIR_ACL_REPAIR_MARKER_FILE),
       JSON.stringify({
@@ -717,7 +717,7 @@ describe('a clean probe verdict', () => {
 
   // A clean probe retires suspicion even after the gate exhausted its repair budget.
   it('retires a verdict the gate could no longer act on', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-clean-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-clean-'))
     writeFileSync(
       join(userDataPath, WINDOWS_INSTALL_DIR_ACL_REPAIR_MARKER_FILE),
       JSON.stringify({
@@ -750,7 +750,7 @@ describe('a clean probe verdict', () => {
 
   // A clean reading outranks a later failed repair result about a tree with nothing left to fix.
   it('outranks a repair verdict that lands after it', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-clean-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-clean-'))
     const failing: Runner = async () => DENIED
     let repairSettled = false
     startWindowsInstallDirAclRepairIfPoisoned(POISON_VERDICT, {
@@ -794,7 +794,7 @@ describe('the probe-pending grace window', () => {
       onDone: (data) => {
         startWindowsInstallDirAclRepairIfPoisoned(
           data,
-          recoveryOptions(mkdtempSync(join(tmpdir(), 'orca-acl-rearm-')), okRun)
+          recoveryOptions(mkdtempSync(join(tmpdir(), 'topo-acl-rearm-')), okRun)
         )
         settleVerdict()
       }
@@ -826,7 +826,7 @@ describe('isBlockingInstallDirAclRepairInFlight', () => {
   })
 
   it('is false on a healthy machine and clears once the gate returns', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-inflight-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-inflight-'))
     expect(isBlockingInstallDirAclRepairInFlight()).toBe(false)
 
     startWindowsInstallDirAclRepairIfPoisoned(
@@ -852,7 +852,7 @@ describe('isBlockingInstallDirAclRepairInFlight', () => {
   // A second entry has no `onDone` coming, so waiting out the 20s budget for it
   // would hold the window closed for nothing.
   it('returns immediately when the once-per-process repair already ran', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-acl-inflight-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-acl-inflight-'))
     startWindowsInstallDirAclRepairIfPoisoned(POISON_VERDICT, recoveryOptions(userDataPath, okRun))
     resetWindowsInstallDirAclRecoveryForTest()
 

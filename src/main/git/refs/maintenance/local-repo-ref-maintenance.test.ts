@@ -35,13 +35,13 @@ function target(wslDistro?: string): ReturnType<typeof createLocalRepoRefMainten
 beforeEach(() => {
   gitExecFileAsyncMock.mockReset()
   readRepoCommonDirFromGitMock.mockReset()
-  delete process.env.ORCA_DISABLE_REPO_REF_MAINTENANCE
+  delete process.env.TOPO_DISABLE_REPO_REF_MAINTENANCE
   _resetCanonicalRepoKeyCacheForTests()
   _resetLocalRepoRefMaintenanceForTests()
 })
 
 afterEach(() => {
-  delete process.env.ORCA_DISABLE_REPO_REF_MAINTENANCE
+  delete process.env.TOPO_DISABLE_REPO_REF_MAINTENANCE
   _resetLocalRepoRefMaintenanceForTests()
   vi.restoreAllMocks()
 })

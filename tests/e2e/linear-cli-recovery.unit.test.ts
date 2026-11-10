@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../src/main/runtime/topo-runtime'
 import { RpcDispatcher } from '../../src/main/runtime/rpc/dispatcher'
 import { LINEAR_AGENT_ACCESS_METHODS } from '../../src/main/runtime/rpc/methods/integrations/linear/linear-agent-access'
 import { connect, getClient, testConnection } from '../../src/main/linear/client'
@@ -14,7 +14,7 @@ import { main } from '../../src/cli/index'
 const boundary = vi.hoisted(() => ({
   callMock: vi.fn(),
   runtimeClientConstructorMock: vi.fn(),
-  serveOrcaAppMock: vi.fn(),
+  serveTopoAppMock: vi.fn(),
   getDefaultUserDataPathMock: vi.fn(() => '/unused-qa-runtime'),
   save: vi.fn(),
   upsert: vi.fn(),
@@ -73,7 +73,7 @@ const relatedIssue = {
   url: 'https://linear.app/proof/issue/ENG-2'
 }
 const nativeFetch = globalThis.fetch
-let runtime: OrcaRuntimeService
+let runtime: TopoRuntimeService
 let server: Awaited<ReturnType<typeof serveLinearHttp>>
 let counts: Map<string, number>
 let signals: (AbortSignal | null | undefined)[]
@@ -89,12 +89,12 @@ beforeEach(async () => {
   dropMutation = false
   previousExitCode = process.exitCode
   for (const key of [
-    'ORCA_ENVIRONMENT',
-    'ORCA_PAIRING_CODE',
-    'ORCA_REMOTE_PAIRING',
-    'ORCA_TERMINAL_HANDLE',
-    'ORCA_WORKSPACE_ID',
-    'ORCA_WORKTREE_ID'
+    'TOPO_ENVIRONMENT',
+    'TOPO_PAIRING_CODE',
+    'TOPO_REMOTE_PAIRING',
+    'TOPO_TERMINAL_HANDLE',
+    'TOPO_WORKSPACE_ID',
+    'TOPO_WORKTREE_ID'
   ]) {
     vi.stubEnv(key, '')
   }
@@ -108,7 +108,7 @@ beforeEach(async () => {
       return
     }
     const connection = { nodes: [issue], pageInfo: { hasNextPage: false } }
-    if (operation === 'OrcaAgentLinearIssueRelations') {
+    if (operation === 'TopoAgentLinearIssueRelations') {
       sendLinearData(response, {
         issue: {
           relations: {
@@ -117,13 +117,13 @@ beforeEach(async () => {
           }
         }
       })
-    } else if (operation === 'OrcaAgentLinearIssue' || operation === 'OrcaLinearIssueByUuid') {
+    } else if (operation === 'TopoAgentLinearIssue' || operation === 'TopoLinearIssueByUuid') {
       sendLinearData(response, { issue })
-    } else if (operation === 'OrcaAgentLinearSearch') {
+    } else if (operation === 'TopoAgentLinearSearch') {
       sendLinearData(response, { searchIssues: connection })
-    } else if (operation === 'OrcaLinearIssues') {
+    } else if (operation === 'TopoLinearIssues') {
       sendLinearData(response, { issues: connection })
-    } else if (operation === 'OrcaLinearProjects') {
+    } else if (operation === 'TopoLinearProjects') {
       sendLinearData(response, {
         projects: {
           nodes: [
@@ -170,7 +170,7 @@ beforeEach(async () => {
   vi.spyOn(console, 'log').mockImplementation(() => {})
   vi.spyOn(console, 'warn').mockImplementation(() => {})
   vi.spyOn(console, 'error').mockImplementation(() => {})
-  runtime = new OrcaRuntimeService(null)
+  runtime = new TopoRuntimeService(null)
   vi.spyOn(runtime, 'getRuntimeId').mockReturnValue('runtime-proof')
   const dispatcher = new RpcDispatcher({ runtime, methods: LINEAR_AGENT_ACCESS_METHODS })
   boundary.callMock.mockImplementation(async (method: string, params: unknown) => {
@@ -223,10 +223,10 @@ it('parses and dispatches issue, search, list and project commands through real 
     result: { projects: [{ id: 'project-proof', name: 'Recovered project' }], truncated: false }
   })
   expect([...counts.entries()]).toEqual([
-    ['OrcaAgentLinearIssue', 2],
-    ['OrcaAgentLinearSearch', 2],
-    ['OrcaLinearIssues', 2],
-    ['OrcaLinearProjects', 2]
+    ['TopoAgentLinearIssue', 2],
+    ['TopoAgentLinearSearch', 2],
+    ['TopoLinearIssues', 2],
+    ['TopoLinearProjects', 2]
   ])
   expect(server.receipts).toHaveLength(8)
   expect(
@@ -288,7 +288,7 @@ it.each([
         /^Linear transport failure: (UND_ERR_SOCKET|ECONNRESET)$/
       )
       expect(hostFailure.cause.cause).toBeUndefined()
-      expect(counts.get('OrcaLinearProjects')).toBe(3)
+      expect(counts.get('TopoLinearProjects')).toBe(3)
     }
     expect(output).not.toMatch(/UND_ERR_SOCKET|ECONNRESET|local-proof-token/)
     expect(server.receipts).toHaveLength(3)
@@ -343,7 +343,7 @@ it('retries only the readback after a successful mutation and recovers signal-bo
       signal
     })
   ).resolves.toMatchObject({ meta: { alreadySet: true } })
-  expect([...counts.entries()]).toEqual([['OrcaAgentLinearIssueRelations', 2]])
+  expect([...counts.entries()]).toEqual([['TopoAgentLinearIssueRelations', 2]])
   expect(signals).toEqual([signal, signal])
   counts.clear()
   dropMutation = true

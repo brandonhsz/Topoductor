@@ -92,7 +92,7 @@ it.each([false, true])(
       worktreeId: WORKSPACE,
       sourceTabId: 'source',
       sourceOwner: { kind: 'local' },
-      forceDestination: 'orca',
+      forceDestination: 'topo',
       onBrowserOpenComplete: (result) => results.push(result)
     })
     expect(results).toEqual([])
@@ -122,7 +122,7 @@ it.each(['refused', 'superseded'] as const)(
     openRoutedHttpLink(URL_TO_OPEN, {
       worktreeId: WORKSPACE,
       sourceTabId: 'source',
-      forceDestination: 'orca',
+      forceDestination: 'topo',
       openInSourceGroup: true,
       onBrowserOpenComplete: complete
     })

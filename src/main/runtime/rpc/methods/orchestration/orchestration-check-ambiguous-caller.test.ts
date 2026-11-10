@@ -38,7 +38,7 @@ it('checks its own Run with A identity but refuses ambiguous identity before cho
   } as never)
   expect(await runtime.resolveActiveTerminal()).toBe('term_other')
 
-  const client = new RuntimeClient('/tmp/orca-ambiguous-check', 60_000, null, null)
+  const client = new RuntimeClient('/tmp/topo-ambiguous-check', 60_000, null, null)
   vi.spyOn(client, 'call').mockImplementation(async (method, params) => {
     if (method === 'worktree.list') {
       return okFixture('req_list', { worktrees: [] })
@@ -78,18 +78,18 @@ it('checks its own Run with A identity but refuses ambiguous identity before cho
       cwd: '/tmp/repo',
       json: true
     })
-  vi.stubEnv('ORCA_AGENT_SESSION_ID', undefined)
-  vi.stubEnv('ORCA_STRUCTURED_SESSION', '')
+  vi.stubEnv('TOPO_AGENT_SESSION_ID', undefined)
+  vi.stubEnv('TOPO_STRUCTURED_SESSION', '')
   vi.stubEnv('CODEX_THREAD_ID', '')
-  vi.stubEnv('ORCA_TERMINAL_HANDLE', 'term_coord')
-  vi.stubEnv('ORCA_PANE_KEY', h.coordinatorPaneKey)
+  vi.stubEnv('TOPO_TERMINAL_HANDLE', 'term_coord')
+  vi.stubEnv('TOPO_PANE_KEY', h.coordinatorPaneKey)
   await check()
   expect(JSON.parse(String(logs.mock.calls.at(-1)?.[0]))).toMatchObject({
     result: { runId: runA, count: 1, messages: [{ subject: 'A report' }] }
   })
 
-  vi.stubEnv('ORCA_TERMINAL_HANDLE', '')
-  vi.stubEnv('ORCA_PANE_KEY', '')
+  vi.stubEnv('TOPO_TERMINAL_HANDLE', '')
+  vi.stubEnv('TOPO_PANE_KEY', '')
   const refusal = await check().catch((error: unknown) => error)
   expect(db.getRun(runA)).toEqual(beforeA)
   expect(db.getRun(runB.id)).toEqual(beforeB)

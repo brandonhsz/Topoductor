@@ -140,13 +140,13 @@ describe('updater check failure handling', () => {
       if (url.endsWith('/releases/latest')) {
         return new Response(null, {
           status: 302,
-          headers: { location: 'https://github.com/stablyai/orca/releases/tag/v1.0.51' }
+          headers: { location: 'https://github.com/brandonhsz/Topoductor/releases/tag/v1.0.51' }
         })
       }
       return new Response(
         url.endsWith('.atom')
           ? '<feed></feed>'
-          : 'version: 1.0.51\nfiles:\n  - url: orca-windows-setup.exe\n'
+          : 'version: 1.0.51\nfiles:\n  - url: topo-windows-setup.exe\n'
       )
     })
     netRequestMock.mockReset()

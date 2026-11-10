@@ -89,8 +89,8 @@ describe('readNativeChatVisualFrameMessage', () => {
       'unknown input',
       { type: NATIVE_CHAT_VISUAL_READER_SCROLL_TYPE, channel: 'c', input: 'key', deltaY: -3 }
     ],
-    ['unknown type', { type: 'orca-panel-action', channel: 'c' }],
-    ['a string', 'orca-visual-size'],
+    ['unknown type', { type: 'topo-panel-action', channel: 'c' }],
+    ['a string', 'topo-visual-size'],
     ['null', null]
   ])('refuses %s', (_name, data) => {
     expect(readNativeChatVisualFrameMessage(data, 'c')).toBeNull()

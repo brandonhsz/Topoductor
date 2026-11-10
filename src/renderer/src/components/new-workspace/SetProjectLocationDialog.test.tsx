@@ -26,7 +26,7 @@ vi.mock('@/components/sidebar/host-path-browser/RemoteFileBrowser', () => ({
     onCancel: () => void
   }) => (
     <div data-testid="remote-file-browser" data-target={targetId ?? ''}>
-      <button type="button" onClick={() => onSelect('/remote/orca')}>
+      <button type="button" onClick={() => onSelect('/remote/topo')}>
         Select remote folder
       </button>
       <button type="button" onClick={onCancel}>
@@ -41,7 +41,7 @@ import { SetProjectLocationDialog } from './SetProjectLocationDialog'
 const option: NeedsSetupProjectHostOption = {
   kind: 'needs-setup',
   id: 'needs-setup:ssh:openclaw',
-  projectId: 'project-orca',
+  projectId: 'project-topo',
   hostId: 'ssh:openclaw',
   label: 'openclaw',
   detail: 'Project location not set',
@@ -57,9 +57,9 @@ function renderDialog(
   render(
     <SetProjectLocationDialog
       option={option}
-      projectName="orca"
+      projectName="topo"
       projectKind="git"
-      defaultCloneUrl="git@github.com:stablyai/orca.git"
+      defaultCloneUrl="git@github.com:brandonhsz/Topoductor.git"
       onClose={vi.fn()}
       onReady={vi.fn()}
       {...overrides}
@@ -115,9 +115,9 @@ describe('SetProjectLocationDialog', () => {
     const { rerender } = render(
       <SetProjectLocationDialog
         option={option}
-        projectName="orca"
+        projectName="topo"
         projectKind="git"
-        defaultCloneUrl="https://github.com/stablyai/orca.git"
+        defaultCloneUrl="https://github.com/brandonhsz/Topoductor.git"
         onClose={onClose}
         onReady={onReady}
       />
@@ -125,15 +125,15 @@ describe('SetProjectLocationDialog', () => {
     const user = userEvent.setup()
 
     await user.click(screen.getByRole('button', { name: /Clone from URL/ }))
-    await user.type(screen.getByPlaceholderText('/destination/on/host'), '/remote/orca')
+    await user.type(screen.getByPlaceholderText('/destination/on/host'), '/remote/topo')
     await user.click(screen.getByRole('button', { name: 'Clone' }))
 
     rerender(
       <SetProjectLocationDialog
         option={null}
-        projectName="orca"
+        projectName="topo"
         projectKind="git"
-        defaultCloneUrl="https://github.com/stablyai/orca.git"
+        defaultCloneUrl="https://github.com/brandonhsz/Topoductor.git"
         onClose={onClose}
         onReady={onReady}
       />
@@ -151,9 +151,9 @@ describe('SetProjectLocationDialog', () => {
       <StrictMode>
         <SetProjectLocationDialog
           option={option}
-          projectName="orca"
+          projectName="topo"
           projectKind="git"
-          defaultCloneUrl="git@github.com:stablyai/orca.git"
+          defaultCloneUrl="git@github.com:brandonhsz/Topoductor.git"
           onClose={vi.fn()}
           onReady={onReady}
         />
@@ -162,7 +162,7 @@ describe('SetProjectLocationDialog', () => {
     const user = userEvent.setup()
 
     await user.click(screen.getByRole('button', { name: /Browse folder/ }))
-    await user.type(screen.getByPlaceholderText('/path/to/project/on/host'), '/remote/orca')
+    await user.type(screen.getByPlaceholderText('/path/to/project/on/host'), '/remote/topo')
     await user.click(screen.getByRole('button', { name: 'Set location' }))
 
     expect(onReady).toHaveBeenCalledWith(JSON.stringify(['setup-openclaw', 'ssh:openclaw']))

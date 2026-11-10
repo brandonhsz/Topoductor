@@ -53,7 +53,7 @@ describe('media preview protocol', () => {
   const store = {} as Store
 
   beforeEach(async () => {
-    directory = await mkdtemp(join(tmpdir(), 'orca-video-protocol-'))
+    directory = await mkdtemp(join(tmpdir(), 'topo-video-protocol-'))
     authorize.mockReset().mockImplementation(async (path) => path)
   })
   afterEach(async () => {

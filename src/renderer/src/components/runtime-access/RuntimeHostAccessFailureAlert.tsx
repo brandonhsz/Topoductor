@@ -14,7 +14,7 @@ function failureTitle(kind: RemotePairingFailureKind, t: Translate = translate):
     case 'host-identity-mismatch':
       return t(
         'auto.components.settings.RuntimeHostAccessForm.identityMismatch',
-        'The reached Orca host does not match this access link'
+        'The reached Topo host does not match this access link'
       )
     case 'access-link-invalid':
       return t(
@@ -24,7 +24,7 @@ function failureTitle(kind: RemotePairingFailureKind, t: Translate = translate):
     case 'protocol-incompatible':
       return t(
         'auto.components.settings.RuntimeHostAccessForm.incompatible',
-        'Orca versions are not compatible'
+        'Topo versions are not compatible'
       )
     case 'connection-interrupted':
       return t(

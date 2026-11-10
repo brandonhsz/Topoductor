@@ -8,7 +8,7 @@ import { PLUGIN_KILL_LIST_RETRY_MS, PluginKillListService } from './plugin-kill-
 const roots: string[] = []
 
 async function tempRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-kill-list-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-kill-list-'))
   roots.push(root)
   return root
 }

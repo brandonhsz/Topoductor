@@ -25,7 +25,7 @@ import { getBrowserExtensionContextSignal } from './browser-extension-context-li
 import { handleBrowserExtensionApiRequest } from './browser-extension-api-request'
 
 /**
- * Serves the worker shim's fetch calls on each extension session's `orca-extension-api:` handler.
+ * Serves the worker shim's fetch calls on each extension session's `topo-extension-api:` handler.
  * The handler's session is the caller's session. Any page in the session can reach the scheme, so
  * Electron's browser-set initiator origin must name an extension loaded there, and the token,
  * readable only from that extension's own files, must match it.
@@ -34,7 +34,7 @@ import { handleBrowserExtensionApiRequest } from './browser-extension-api-reques
 const tokenByExtensionId = new Map<string, string>()
 const extensionIdByToken = new Map<string, string>()
 
-/** Per app run; written into the extension's Orca-owned folder, where only it can read the file. */
+/** Per app run; written into the extension's Topo-owned folder, where only it can read the file. */
 export function getBrowserExtensionWorkerToken(extensionId: string): string {
   let token = tokenByExtensionId.get(extensionId)
   if (!token) {

@@ -1,11 +1,11 @@
 {
-  "name": "orca-agent-plugins",
-  "owner": { "name": "Orca" },
-  "description": "Repository-local plugins for coding agents working in Orca",
+  "name": "topo-agent-plugins",
+  "owner": { "name": "Topo" },
+  "description": "Repository-local plugins for coding agents working in Topo",
   "plugins": [
     {
-      "name": "orca-typescript",
-      "source": "./orca-typescript",
+      "name": "topo-typescript",
+      "source": "./topo-typescript",
       "description": "TypeScript 7 diagnostics and code navigation from the repo's own compiler"
     }
   ]

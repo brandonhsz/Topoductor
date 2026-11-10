@@ -1,4 +1,4 @@
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { dirname, resolve } from 'node:path'
 
 export function readGitBaselineSources(repo, ref, sources) {
@@ -13,7 +13,7 @@ export function readGitBaselineSources(repo, ref, sources) {
       cwd: repo,
       timeoutMs: 10_000,
       maxOutputBytes,
-      env: { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' }
+      env: { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' }
     })
     if (result.code !== 0 || result.outputTruncated) {
       throw new Error(`Cannot read pinned Git baseline sources: ${result.stderr}`)

@@ -67,7 +67,7 @@ describe('two concurrent imports into one partition', () => {
   let releaseFirstWrite: () => void
 
   beforeEach(() => {
-    tmpDir = mkdtempSync(join(tmpdir(), 'orca-cookie-concurrency-'))
+    tmpDir = mkdtempSync(join(tmpdir(), 'topo-cookie-concurrency-'))
     appGetPathMock.mockReturnValue(join(tmpDir, 'userData'))
     events = []
     copyFileWithWindowsRetryMock
@@ -172,7 +172,7 @@ describe('two concurrent NATIVE imports into one partition', () => {
   }
 
   beforeEach(() => {
-    tmpDir = mkdtempSync(join(tmpdir(), 'orca-cookie-native-concurrency-'))
+    tmpDir = mkdtempSync(join(tmpdir(), 'topo-cookie-native-concurrency-'))
     appGetPathMock.mockReturnValue(join(tmpDir, 'userData'))
     events = []
     copyFileWithWindowsRetryMock.mockReset().mockImplementation(copyFileSync)

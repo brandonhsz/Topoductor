@@ -80,7 +80,7 @@ beforeEach(async () => {
   clock = HOST_TEST_NOW
   hosts = []
   compact.mockReset().mockResolvedValue({ state: 'accepted', providerIdentity: null })
-  directory = await mkdtemp(join(tmpdir(), 'orca-conversation-command-'))
+  directory = await mkdtemp(join(tmpdir(), 'topo-conversation-command-'))
   adapter = {
     supportsLocation: (location) =>
       location.executionHostId === 'local' && location.wslDistro === null,

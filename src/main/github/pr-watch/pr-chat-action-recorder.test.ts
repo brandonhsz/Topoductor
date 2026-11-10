@@ -47,18 +47,18 @@ describe('push updates from recorded tool calls', () => {
       name: 'Bash',
       input: { command: 'git push -u origin HEAD', description: 'Push the branch' },
       output:
-        "To github.com:stablyai/orca.git\n   8d5f74b..c512e75  HEAD -> brennanb2025/ci-lines\nbranch 'brennanb2025/ci-lines' set up to track 'origin/brennanb2025/ci-lines'."
+        "To github.com:brandonhsz/Topoductor.git\n   8d5f74b..c512e75  HEAD -> brennanb2025/ci-lines\nbranch 'brennanb2025/ci-lines' set up to track 'origin/brennanb2025/ci-lines'."
     })
     // Codex app-server: one string through a login shell, with its cwd and exit code.
     const codex = toolCallRow({
       name: 'shell',
       input: {
         command: "/bin/zsh -lc 'git add -A && git commit -m wip && git push --force-with-lease'",
-        cwd: '/Users/me/orca/workspaces/orca/ci-lines'
+        cwd: '/Users/me/topo/workspaces/topo/ci-lines'
       },
       exitCode: 0,
       output:
-        '[ci-lines 5d6e7f8] wip\n 1 file changed, 2 insertions(+)\nTo github.com:stablyai/orca.git\n + 1a2b3c4...5d6e7f8 ci-lines -> ci-lines (forced update)\n'
+        '[ci-lines 5d6e7f8] wip\n 1 file changed, 2 insertions(+)\nTo github.com:brandonhsz/Topoductor.git\n + 1a2b3c4...5d6e7f8 ci-lines -> ci-lines (forced update)\n'
     })
     expect(pushedBranches(claude)).toEqual([{ branch: 'brennanb2025/ci-lines', newSha: 'c512e75' }])
     expect(pushedBranches(codex)).toEqual([{ branch: 'ci-lines', newSha: '5d6e7f8' }])

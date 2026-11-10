@@ -7,7 +7,7 @@ import type { AgentLaunchPreferences } from '../../../../../../shared/agent-sess
 import type { TuiAgent } from '../../../../../../shared/agent-launch/catalog/tui-agent'
 import { executeAgentLaunch } from '../../../../../agent-launch/agent-launch-executor'
 import type { AgentLaunchSurfaceFactory } from '../../../../../agent-launch/agent-launch-surface-factories'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import { WORKER_START_VOCABULARY } from '../structured-workers/orchestration-worker-start-mode'
 import type { AgentLaunchModeReceipt as WorkerStartModeReceipt } from '../../../../../../shared/agent-launch/contracts/agent-launch-intent'
@@ -42,7 +42,7 @@ export type WorkerAgentPlacement = {
 }
 
 type WorkerAgentPlacementArgs = {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   dispatchId: string
   taskId: string
@@ -97,7 +97,7 @@ export async function placeWorkerAgent(
     args.effects.push({
       kind: 'terminal',
       role: 'agent',
-      // Only a resumed tab is Orca's to clean up; a chat keeps its conversation.
+      // Only a resumed tab is Topo's to clean up; a chat keeps its conversation.
       action: reopened.chat ? 'reused' : 'created',
       id: reopened.handle
     })

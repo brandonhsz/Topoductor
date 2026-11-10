@@ -33,7 +33,7 @@ function pointerDeps(
     // Hold the pane settled to isolate staging and Enter phases from the idle gate.
     isAgentSettledForDelivery: () => true,
     getMessageWaiters: () => undefined,
-    getCliCommand: () => 'orca' as const,
+    getCliCommand: () => 'topo' as const,
     resolveSubmitTarget: () => ({ terminal: TERMINAL, processIncarnation: 'inc-1' }),
     isLeafPtyProvenAbsent: async () => false,
     isPtyAwaitingUserInput: () => false,

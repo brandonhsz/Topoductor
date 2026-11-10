@@ -187,7 +187,7 @@ export function SetupScriptPromptBody({
         i18n={i18n}
         defaults={t(
           'auto.components.sidebar.SetupScriptPromptCardViews.ignoresSharedSetup',
-          'This repo ignores shared <yaml>orca.yaml</yaml> setup scripts. Add a local command, or change the source in Settings.'
+          'This repo ignores shared <yaml>topo.yaml</yaml> setup scripts. Add a local command, or change the source in Settings.'
         )}
         components={{ yaml: <code /> }}
       />
@@ -199,7 +199,7 @@ export function SetupScriptPromptBody({
       <>
         {t(
           'auto.components.sidebar.SetupScriptPromptCardViews.aef6c0a213',
-          'Save the detected command to run it whenever Orca creates a worktree.'
+          'Save the detected command to run it whenever Topo creates a worktree.'
         )}
       </>
     )
@@ -221,7 +221,7 @@ export function SetupScriptPromptBody({
     <>
       {t(
         'auto.components.sidebar.SetupScriptPromptCardViews.0a98169776',
-        'Add a setup command to run when Orca creates new worktrees.'
+        'Add a setup command to run when Topo creates new worktrees.'
       )}
     </>
   )

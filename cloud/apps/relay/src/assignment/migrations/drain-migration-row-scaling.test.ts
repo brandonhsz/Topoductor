@@ -1,4 +1,4 @@
-import { ASSIGNMENT_LIMITS } from '@orca-cloud/relay-contract/assignment-invariants'
+import { ASSIGNMENT_LIMITS } from '@topo-cloud/relay-contract/assignment-invariants'
 import { afterEach, expect, it } from 'vitest'
 import { RelayAssignmentStore } from '../assignment-store.js'
 import { openInMemoryRelayDatabase, type RelayDatabase, type SqlRow } from '../../database/database.js'

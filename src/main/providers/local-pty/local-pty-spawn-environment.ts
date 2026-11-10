@@ -1,8 +1,8 @@
 import { mergeGitConfigEnvProtocol } from '../../../shared/git/commands/git-credential-prompt-env'
 import { restoreManagedDataAccountEnvironment } from '../../../shared/managed-data-account-environment'
 import {
-  ORCA_IMAGE_PROTOCOL_ENV,
-  ORCA_IMAGE_PROTOCOL_VALUE
+  TOPO_IMAGE_PROTOCOL_ENV,
+  TOPO_IMAGE_PROTOCOL_VALUE
 } from '../../../shared/terminal/images/terminal-image-protocol'
 import { removeAppImageRuntimeEnv } from '../../pty/shell-startup/appimage-terminal-env'
 import { removeChromiumDisabledSessionBus } from '../../pty/shell-startup/chromium-session-bus-env'
@@ -16,7 +16,7 @@ import type { LocalPtyLaunchPlan } from './local-pty-launch-plan'
 import type { LocalPtyProviderOptions } from './local-pty-provider-types'
 import type { PtySpawnOptions } from '../pty-provider-contract'
 
-/** Pane ownership must be fresh even when Orca itself was launched inside an agent. */
+/** Pane ownership must be fresh even when Topo itself was launched inside an agent. */
 export function buildLocalPtySpawnEnvironment(args: {
   id: string
   spawn: PtySpawnOptions
@@ -62,12 +62,12 @@ export function buildInheritedLocalPtyEnvironment(
     ...mergeGitConfigEnvProtocol(inheritedEnv, explicitEnv),
     TERM: 'xterm-256color',
     COLORTERM: 'truecolor',
-    TERM_PROGRAM: 'Orca',
+    TERM_PROGRAM: 'Topo',
     // TUIs gate features on version; plain-node/test launches lack the app version.
-    TERM_PROGRAM_VERSION: process.env.ORCA_APP_VERSION ?? '0.0.0-dev',
-    // supports-hyperlinks rejects Orca by name despite xterm supporting OSC 8; force support.
+    TERM_PROGRAM_VERSION: process.env.TOPO_APP_VERSION ?? '0.0.0-dev',
+    // supports-hyperlinks rejects Topo by name despite xterm supporting OSC 8; force support.
     FORCE_HYPERLINK: '1',
-    [ORCA_IMAGE_PROTOCOL_ENV]: ORCA_IMAGE_PROTOCOL_VALUE
+    [TOPO_IMAGE_PROTOCOL_ENV]: TOPO_IMAGE_PROTOCOL_VALUE
   } satisfies Record<string, string>
   removeUnspecifiedPaneIdentityEnv(spawnEnv, explicitEnv)
   stripPiProcessOwnerEnv(spawnEnv)

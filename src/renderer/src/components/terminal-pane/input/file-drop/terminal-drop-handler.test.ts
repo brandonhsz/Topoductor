@@ -141,7 +141,7 @@ describe('handleTerminalFileDrop', () => {
           {
             sourcePath: '/Users/me/logo.png',
             status: 'imported',
-            destPath: '/remote/repo/.orca/drops/logo.png',
+            destPath: '/remote/repo/.topo/drops/logo.png',
             kind: 'file',
             renamed: false
           }

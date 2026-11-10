@@ -69,11 +69,11 @@ function table(
   return {
     project: {
       id: 'PVT_1',
-      owner: 'stablyai',
+      owner: 'brandonhsz',
       ownerType: 'organization',
       number: 3,
-      title: 'Orca',
-      url: 'https://github.com/orgs/stablyai/projects/3'
+      title: 'Topo',
+      url: 'https://github.com/orgs/brandonhsz/projects/3'
     },
     selectedView: {
       id: 'PVTV_1',

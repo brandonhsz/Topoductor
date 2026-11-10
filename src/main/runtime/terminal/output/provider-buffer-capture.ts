@@ -2,7 +2,7 @@ import type {
   RuntimeHeadlessTerminal,
   RuntimeVisibleTerminalState
 } from '../records/runtime-terminal-state-records'
-import { OrcaRuntimeWithSerializeTerminalBufferFromAvailableState } from './terminal-buffer-selection'
+import { TopoRuntimeWithSerializeTerminalBufferFromAvailableState } from './terminal-buffer-selection'
 import type { PtyProviderBufferSnapshot } from '../../../providers/pty-provider-contract'
 import { TerminalKittyKeyboardModeTracker } from '../../../../shared/terminal/protocol/input-modes/terminal-kitty-keyboard-mode-tracker'
 import type { RuntimeTerminalRead } from '../../../../shared/runtime-terminal-contracts'
@@ -18,11 +18,11 @@ import { HeadlessEmulator } from '../../../daemon/emulation/headless-emulator'
 import {
   projectTerminalTailLines,
   projectTerminalVisibleLines
-} from '../view/orca-runtime-terminal-projection'
+} from '../view/topo-runtime-terminal-projection'
 import { VISIBLE_TERMINAL_SNAPSHOT_TIMEOUT_MS } from './provider-snapshot-budget'
 import { isNativeWindowsConptyPty } from './terminal-model-query-authority'
 
-export abstract class OrcaRuntimeWithCaptureProviderTerminalBuffer extends OrcaRuntimeWithSerializeTerminalBufferFromAvailableState {
+export abstract class TopoRuntimeWithCaptureProviderTerminalBuffer extends TopoRuntimeWithSerializeTerminalBufferFromAvailableState {
   protected abstract readVisibleTerminalState(
     ptyId: string
   ): Promise<RuntimeVisibleTerminalState | null>

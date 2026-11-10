@@ -18,7 +18,7 @@ import {
 } from './RuntimeHostAccessFailureAlert'
 
 // Why untranslated: a literal shell command.
-const HEADLESS_SERVE_COMMAND = 'orca serve --pairing-address <address>'
+const HEADLESS_SERVE_COMMAND = 'topo serve --pairing-address <address>'
 
 const NO_TAKEN_NAMES: readonly { name: string }[] = []
 
@@ -90,7 +90,7 @@ export function RuntimeHostAccessForm({
           }}
           placeholder={t(
             'auto.components.settings.RuntimeHostAccessForm.accessLinkPlaceholder',
-            'orca://pair?code=...'
+            'topo://pair?code=...'
           )}
           className="min-w-0 font-mono"
           autoFocus
@@ -98,7 +98,7 @@ export function RuntimeHostAccessForm({
         <p id="runtime-server-access-link-help" className="text-xs text-muted-foreground">
           {t(
             'auto.components.settings.RuntimeHostAccessForm.accessLinkHelp',
-            'Orca shows the destination before connecting. Credentials stay hidden.'
+            'Topo shows the destination before connecting. Credentials stay hidden.'
           )}
         </p>
         {inputError ? (
@@ -207,7 +207,7 @@ export function RuntimeHostAccessForm({
       <p className="text-xs text-muted-foreground">
         {t(
           'auto.components.settings.RuntimeHostAccessForm.headlessHelpPrefix',
-          'Running Orca without a window? On that computer, run'
+          'Running Topo without a window? On that computer, run'
         )}{' '}
         <code className="whitespace-nowrap rounded bg-muted px-1 py-0.5 font-mono text-2xs text-foreground">
           {HEADLESS_SERVE_COMMAND}

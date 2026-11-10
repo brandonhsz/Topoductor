@@ -33,7 +33,7 @@ const initialProps = {
   hasSourceContext: true,
   accountLabel: 'Account one',
   providerSite: 'site-1',
-  project: 'ORCA',
+  project: 'TOPO',
   type: 'Bug'
 }
 function setup() {

@@ -66,7 +66,7 @@ export function EphemeralVmRuntimeRow({
           <p className="mt-0.5 text-xs text-muted-foreground">
             {t(
               'auto.components.settings.EphemeralVmRuntimesSection.untrackedRuntimeHint',
-              'Orca never received this VM’s details. Cleanup runs destroy with only instance ID {{instanceId}}; if it fails, delete the VM in your provider, then remove it from this list.',
+              'Topo never received this VM’s details. Cleanup runs destroy with only instance ID {{instanceId}}; if it fails, delete the VM in your provider, then remove it from this list.',
               { instanceId: runtime.id }
             )}
           </p>

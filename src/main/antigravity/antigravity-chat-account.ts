@@ -82,7 +82,7 @@ export const antigravityChatAccount = {
     }
     if (!(await antigravityBrowserHelperWorks())) {
       throw new AntigravitySignInSentence(
-        "Antigravity's sign-in link can't be captured on this host. Restart Orca and try again."
+        "Antigravity's sign-in link can't be captured on this host. Restart Topo and try again."
       )
     }
     await folder.prepare?.(env)
@@ -108,7 +108,7 @@ export const antigravityChatAccount = {
     } catch (cause) {
       assertCurrent?.()
       throw new AntigravitySignInSentence(
-        'Antigravity account settings could not be prepared. Check that Orca can write its data folder and try again.',
+        'Antigravity account settings could not be prepared. Check that Topo can write its data folder and try again.',
         { cause }
       )
     }

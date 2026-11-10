@@ -2,13 +2,13 @@ import { mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { runProcess } from '@orca/process-host'
-import type * as ProcessHost from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
+import type * as ProcessHost from '@topo/process-host'
 import type { Repo } from '../../shared/repo-types'
 import { DEFAULT_FORMATTER_INCLUDE } from '../../shared/editor-formatter'
 import { formatEditorText } from './format-editor-text'
 
-vi.mock('@orca/process-host', async (importOriginal) => {
+vi.mock('@topo/process-host', async (importOriginal) => {
   const actual = await importOriginal<typeof ProcessHost>()
   return { ...actual, runProcess: vi.fn(actual.runProcess) }
 })
@@ -26,7 +26,7 @@ describe('project formatter execution', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    root = await mkdtemp(join(tmpdir(), 'orca-formatter-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-formatter-'))
     await writeFile(join(root, 'a.ts'), 'disk baseline')
     repo = {
       id: 'repo',
@@ -85,7 +85,7 @@ describe('project formatter execution', () => {
   it.skipIf(process.platform === 'win32')(
     'rejects a linked file outside the workspace before starting the formatter',
     async () => {
-      const outside = await mkdtemp(join(tmpdir(), 'orca-formatter-outside-'))
+      const outside = await mkdtemp(join(tmpdir(), 'topo-formatter-outside-'))
       try {
         await writeFile(join(outside, 'outside.ts'), 'outside')
         await symlink(join(outside, 'outside.ts'), join(root, 'linked.ts'))

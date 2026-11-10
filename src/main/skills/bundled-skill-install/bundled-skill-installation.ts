@@ -36,7 +36,7 @@ export async function installBundledSkills(
   return executeBundledSkillPlan(withDefaults(input), planDigest)
 }
 
-/** Silent path: updates only hash-verified Orca copies of `names`, planned under the same locks. */
+/** Silent path: updates only hash-verified Topo copies of `names`, planned under the same locks. */
 export async function autoUpdateInstalledBundledSkills(
   input: BundledSkillServiceInput & { names: readonly string[] }
 ): Promise<BundledSkillInstallResult> {

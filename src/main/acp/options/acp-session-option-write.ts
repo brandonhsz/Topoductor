@@ -53,7 +53,7 @@ export function boundAcpOptionWrite(
         throw new Error(`${agent} option write was withdrawn before it was sent`)
       }
       native = send()
-      // Orca's own write stays in flight until the agent answers, so its echo is not drift.
+      // Topo's own write stays in flight until the agent answers, so its echo is not drift.
       const released = (): void => {
         options.writing -= 1
       }

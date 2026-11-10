@@ -26,7 +26,7 @@ type PluginInstallConsentProps = {
   capabilities: readonly { kind: string; description: string }[] | null
   /** Shortcuts it binds; any that replace one of yours are named before consent. */
   shortcuts: readonly PluginPageShortcut[] | null
-  /** Commands that run in place of Orca's own actions. */
+  /** Commands that run in place of Topo's own actions. */
   replacements?: readonly PluginPageReplacement[] | null
   /** Dotted file suffixes its custom editors open and edit. */
   editorFileTypes?: readonly string[] | null
@@ -129,7 +129,7 @@ export function PluginInstallConsent({
               <span>
                 {t(
                   'auto.components.settings.PluginInstallConsent.editsFileTypes',
-                  'Opens and edits {{value0}} files in Orca. It can read the files it opens.',
+                  'Opens and edits {{value0}} files in Topo. It can read the files it opens.',
                   { value0: formatFileTypeList(editorFileTypes, intlLocale) }
                 )}
               </span>
@@ -157,7 +157,7 @@ export function PluginInstallConsent({
               <span>
                 {t(
                   'auto.components.settings.PluginInstallConsent.replacesAction',
-                  '{{value0}} runs instead of Orca’s {{value1}}. You can switch it back in its plugin page.',
+                  '{{value0}} runs instead of Topo’s {{value1}}. You can switch it back in its plugin page.',
                   { value0: replacement.command, value1: builtInActionTitle(replacement.action) }
                 )}
               </span>

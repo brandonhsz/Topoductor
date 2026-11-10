@@ -23,7 +23,7 @@ export type SkillInstallServiceInput = Omit<
   scope: 'global' | 'workspace'
   homeDirectory: string
   workspaceDirectory?: string
-  orcaStateDirectory: string
+  topoStateDirectory: string
   detectedProviders: readonly string[]
   providerRootOverrides?: SkillProviderRootOverrides
   filesystem?: SkillInstallFilesystem
@@ -36,7 +36,7 @@ export function skillInstallLocalInput(input: SkillInstallServiceInput): LocalSk
     operationId: input.operationId,
     archivePath: input.archivePath,
     destinationRoot: canonicalRoot(input),
-    stateDirectory: join(input.orcaStateDirectory, 'skill-installs'),
+    stateDirectory: join(input.topoStateDirectory, 'skill-installs'),
     scope: input.scope,
     destinationIdentity: input.destinationIdentity,
     hostIdentity: input.hostIdentity,

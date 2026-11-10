@@ -1,10 +1,10 @@
 import { createAdaptorServer } from '@hono/node-server'
-import { hasAdmissionCapacity, RELAY_ADMISSION_BUDGETS, cellPlacementCeiling } from '@orca-cloud/relay-contract/admission-budgets'
-import { HostDataAuthSchema, parseRelayHostCapabilities, RELAY_ASSIGNMENT_LEASE_HEADER, RELAY_HOST_CAPABILITIES_HEADER } from '@orca-cloud/relay-contract/control-messages'
-import { RELAY_CLOSE_CODE } from '@orca-cloud/relay-contract/close-codes'
-import { RELAY_DEFAULT_REGION } from '@orca-cloud/relay-contract/relay-regions'
-import { RELAY_PROTOCOL_LIMITS } from '@orca-cloud/relay-contract/protocol-limits'
-import { RelayAuthSchema } from '@orca-cloud/relay-contract/credential-messages'
+import { hasAdmissionCapacity, RELAY_ADMISSION_BUDGETS, cellPlacementCeiling } from '@topo-cloud/relay-contract/admission-budgets'
+import { HostDataAuthSchema, parseRelayHostCapabilities, RELAY_ASSIGNMENT_LEASE_HEADER, RELAY_HOST_CAPABILITIES_HEADER } from '@topo-cloud/relay-contract/control-messages'
+import { RELAY_CLOSE_CODE } from '@topo-cloud/relay-contract/close-codes'
+import { RELAY_DEFAULT_REGION } from '@topo-cloud/relay-contract/relay-regions'
+import { RELAY_PROTOCOL_LIMITS } from '@topo-cloud/relay-contract/protocol-limits'
+import { RelayAuthSchema } from '@topo-cloud/relay-contract/credential-messages'
 import type { IncomingMessage } from 'node:http'
 import { randomUUID } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
@@ -100,7 +100,7 @@ function noDelay(socket: WebSocket): void {
 // Handle ws receiver errors or they crash the process; ws already closes the socket.
 function guardSocketErrors(socket: WebSocket, kind: string): void {
   socket.on('error', (error) => {
-    console.warn(`[orca-relay] ${kind} socket error: ${error.message}`)
+    console.warn(`[topo-relay] ${kind} socket error: ${error.message}`)
   })
 }
 
@@ -198,11 +198,11 @@ export function createRelayServer(
   options.edgeControl?.onChange(() => edgeEvacuation?.controlChanged())
   if (edgeAssignments) {
     void edgeAssignments.ensureEdgeCell().then(
-      () => console.warn(JSON.stringify({ event: 'orca_relay_edge_cell_ready' })),
+      () => console.warn(JSON.stringify({ event: 'topo_relay_edge_cell_ready' })),
       (error: unknown) =>
         console.error(
           JSON.stringify({
-            event: 'orca_relay_edge_cell_seed_failed',
+            event: 'topo_relay_edge_cell_seed_failed',
             reason: error instanceof Error ? error.message : 'unknown'
           })
         )
@@ -280,7 +280,7 @@ export function createRelayServer(
           if (cells.length === 0) return
           console.error(
             JSON.stringify({
-              event: 'orca_relay_reserve_placement_off_with_reserve_cells',
+              event: 'topo_relay_reserve_placement_off_with_reserve_cells',
               cells,
               placement: reservePlacement?.placementMode ?? 'off',
               configured: config.reservePlacement ?? 'off'
@@ -325,7 +325,7 @@ export function createRelayServer(
           reservePlacement?.raiseEpochFloor(seat, row.epoch)
           console.warn(
             JSON.stringify({
-              event: 'orca_relay_reserve_ledger_seat_behind_row',
+              event: 'topo_relay_reserve_ledger_seat_behind_row',
               cellId: seat.cellId,
               epoch: seat.epoch,
               rowEpoch: row.epoch
@@ -334,7 +334,7 @@ export function createRelayServer(
         },
         now
       })
-        .catch(() => console.warn('[orca-relay] reserve ledger reconcile deferred'))
+        .catch(() => console.warn('[topo-relay] reserve ledger reconcile deferred'))
         .finally(schedule)
     }
     // Jittered, so five directors do not reconcile together.
@@ -648,7 +648,7 @@ export function createRelayServer(
       }
       void callback(raw).catch((error: unknown) => {
         console.warn(
-          '[orca-relay] first frame handler failed',
+          '[topo-relay] first frame handler failed',
           error instanceof Error ? error.message : ''
         )
         closeRelayWebSocket(
@@ -914,7 +914,7 @@ export function createRelayServer(
     }).catch((error: unknown) => {
       // A throw in the upgrade handling above must cost this socket, not the process.
       console.warn(
-        `[orca-relay] control upgrade failed: ${error instanceof Error ? error.message : 'unknown'}`
+        `[topo-relay] control upgrade failed: ${error instanceof Error ? error.message : 'unknown'}`
       )
       socket.destroy()
     })

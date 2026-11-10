@@ -5,7 +5,7 @@ import { resolveSmartWorkspaceGithubDirectLink } from './smart-workspace-github-
 
 const slugs: Record<string, { owner: string; repo: string; host: string } | null> = {
   'repo-cloud': null,
-  'repo-orca': { owner: 'stablyai', repo: 'orca', host: 'github.com' }
+  'repo-topo': { owner: 'brandonhsz', repo: 'topo', host: 'github.com' }
 }
 const repoSlug = vi.fn(async ({ repoId }: { repoId: string }) => slugs[repoId] ?? null)
 const workItemByOwnerRepo = vi.fn(async () => null)
@@ -20,8 +20,8 @@ function repo(id: string): RepoOption {
 describe('resolveSmartWorkspaceGithubDirectLink', () => {
   it('offers a project switch when the selected repo has no GitHub origin and the lookup misses', async () => {
     const cloud = repo('repo-cloud')
-    const orca = repo('repo-orca')
-    const directLink = parseGitHubIssueOrPRLink('https://github.com/stablyai/orca/pull/36891')
+    const topo = repo('repo-topo')
+    const directLink = parseGitHubIssueOrPRLink('https://github.com/brandonhsz/topo/pull/36891')
     if (!directLink) {
       throw new Error('expected a GitHub PR link')
     }
@@ -31,12 +31,12 @@ describe('resolveSmartWorkspaceGithubDirectLink', () => {
       repoBackedSearchTargets: [],
       selectedRepo: cloud,
       githubSourceContext: null,
-      repos: [cloud, orca],
+      repos: [cloud, topo],
       repoSlugCache: new Map(),
       handledCrossRepoUrlRef: { current: null },
-      query: 'https://github.com/stablyai/orca/pull/36891'
+      query: 'https://github.com/brandonhsz/topo/pull/36891'
     })
     expect(result.items).toEqual([])
-    expect(result.prompt?.matchingRepo?.id).toBe('repo-orca')
+    expect(result.prompt?.matchingRepo?.id).toBe('repo-topo')
   })
 })

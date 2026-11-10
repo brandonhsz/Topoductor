@@ -131,7 +131,7 @@ export function scheduleRichMarkdownBlobImageImport({
       toast.error(
         translate(
           'auto.components.editor.richMarkdownBlobImagePaste.saveFailed',
-          "Couldn't save a pasted image beside the document. It may not load after Orca restarts."
+          "Couldn't save a pasted image beside the document. It may not load after Topo restarts."
         )
       )
     }

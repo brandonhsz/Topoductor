@@ -2,17 +2,17 @@
 set -euo pipefail
 
 case_name=${1:?launch case is required}
-appimage=${ORCA_TEST_APPIMAGE:-/artifacts/squashfs-root/AppRun}
-timeout_seconds=${ORCA_STARTUP_TIMEOUT_SECONDS:-12}
-pairing_address=${ORCA_PAIRING_ADDRESS:-127.0.0.1}
-port=${ORCA_SERVE_PORT:-0}
-state_dir="/tmp/orca-${case_name}"
+appimage=${TOPO_TEST_APPIMAGE:-/artifacts/squashfs-root/AppRun}
+timeout_seconds=${TOPO_STARTUP_TIMEOUT_SECONDS:-12}
+pairing_address=${TOPO_PAIRING_ADDRESS:-127.0.0.1}
+port=${TOPO_SERVE_PORT:-0}
+state_dir="/tmp/topo-${case_name}"
 
 if ((EUID == 0)); then
   mkdir -p "$state_dir/config" "$state_dir/cache"
-  chown -R orca:orca "$state_dir"
+  chown -R topo:topo "$state_dir"
   # Why: packaged serve should exercise the same unprivileged account required by production systemd guidance.
-  exec runuser --user orca --preserve-environment -- "$0" "$@"
+  exec runuser --user topo --preserve-environment -- "$0" "$@"
 fi
 
 mkdir -p "$state_dir/config" "$state_dir/cache"
@@ -26,14 +26,14 @@ else
 fi
 
 app_args=("${launcher[@]}")
-if [[ ${ORCA_TEST_NO_SANDBOX:-1} == 1 ]]; then
+if [[ ${TOPO_TEST_NO_SANDBOX:-1} == 1 ]]; then
   app_args+=(--no-sandbox)
 fi
 app_args+=(serve --port "$port" --pairing-address "$pairing_address")
-if [[ ${ORCA_READY_JSON:-0} == 1 ]]; then
+if [[ ${TOPO_READY_JSON:-0} == 1 ]]; then
   app_args+=(--json)
 fi
-if [[ ${ORCA_NO_PAIRING:-0} == 1 ]]; then
+if [[ ${TOPO_NO_PAIRING:-0} == 1 ]]; then
   app_args+=(--no-pairing)
 fi
 
@@ -60,10 +60,10 @@ export HOME="$state_dir"
 export XDG_CONFIG_HOME="$state_dir/config"
 export XDG_CACHE_HOME="$state_dir/cache"
 if [[ $is_appimage == 0 ]]; then
-  export APPDIR=${ORCA_TEST_APPDIR:-"$(dirname "$appimage")"}
+  export APPDIR=${TOPO_TEST_APPDIR:-"$(dirname "$appimage")"}
 fi
 
-if [[ ${ORCA_KEEP_RUNNING:-0} == 1 ]]; then
+if [[ ${TOPO_KEEP_RUNNING:-0} == 1 ]]; then
   exec "${command[@]}"
 fi
 

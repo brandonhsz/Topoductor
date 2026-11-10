@@ -23,18 +23,18 @@ export function WorktreeCardCliDetailSection({
     <WorktreeCardDetailSection>
       <DetailHeader
         icon={<SquareTerminal className="size-3 text-muted-foreground" />}
-        label={t('auto.components.sidebar.WorktreeCardMeta.cliHeader', 'Orca CLI')}
+        label={t('auto.components.sidebar.WorktreeCardMeta.cliHeader', 'Topo CLI')}
       />
       <WorktreeCardDetailSectionContent className="space-y-1.5">
         <div className="text-[13px] font-semibold leading-snug text-foreground break-words">
           {provenance.callerTerminalHandle
             ? t(
                 'auto.components.sidebar.WorktreeCardMeta.cliCreatedFromAgent',
-                'Created by an agent via `orca worktree create`'
+                'Created by an agent via `topo worktree create`'
               )
             : t(
                 'auto.components.sidebar.WorktreeCardMeta.cliCreatedFromShell',
-                'Created via `orca worktree create`'
+                'Created via `topo worktree create`'
               )}
         </div>
         {agentLabel ? (

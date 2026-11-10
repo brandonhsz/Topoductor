@@ -31,7 +31,7 @@ const messages: NativeChatMessage[] = [
         name: 'Edit',
         state: 'completed',
         input: {
-          file_path: '/Users/alice/orca/workspaces/orca/feature-x/src/components/greeting.ts',
+          file_path: '/Users/alice/topo/workspaces/topo/feature-x/src/components/greeting.ts',
           old_string: 'return "Hello"',
           new_string: 'return `Hello, ${name}`'
         }

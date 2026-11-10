@@ -1,7 +1,7 @@
 import type { RuntimeClientTarget } from '../../../../../shared/runtime-client-target'
 import '../../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import type { BrowserTabInfo } from '../../../../../shared/browser/runtime/runtime-browser-contracts'
 import { isRemoteBrowserPageMissingError } from './remote-browser-stream-errors'
 import type {
@@ -60,7 +60,7 @@ export class RemoteBrowserPageSession {
     const existingHandle = this.deps.readStoredHandle()
     if (existingHandle?.environmentId !== token.environmentId) {
       // Switch point: a frame-drawn host tab has no handle, but its row id is the host's page id.
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         const adopted = await this.adoptHostPage(token)
         if (adopted !== undefined) {
           return adopted
@@ -159,7 +159,7 @@ export class RemoteBrowserPageSession {
     const worktree = this.deps.getWorktreeSelector()
     const currentUrl = this.deps.getCurrentUrl()
     const initialUrl =
-      currentUrl === ORCA_BROWSER_BLANK_URL ? 'about:blank' : currentUrl || 'about:blank'
+      currentUrl === TOPO_BROWSER_BLANK_URL ? 'about:blank' : currentUrl || 'about:blank'
     const created = await this.deps.callRpc<{ browserPageId: string }>(
       target,
       'browser.tabCreate',

@@ -1,6 +1,6 @@
 import type * as RuntimeRpcCallModule from '../../src/renderer/src/runtime/rpc/calls/runtime-rpc-call'
 import type { StructuredAgentSessionHost } from '../../src/main/native-chat/agent-session-wire/host/structured-agent-session-host'
-import { partialRuntimeStore } from '../../src/main/runtime/orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../src/main/runtime/topo-runtime-tests/runtime-store-partial-fixture'
 import { agentSessionRecordFixture } from '../../src/main/native-chat/agent-session-record-test-fixture'
 import { agentSessionConversationView } from '../../src/shared/agent-session/lifecycle/agent-session-conversation-view'
 // @vitest-environment happy-dom
@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from 
 import type { RuntimeMobileSessionTabsResult } from '../../src/shared/runtime-types'
 
 import type * as RuntimeLayoutClient from '../../src/renderer/src/runtime/workspace-layout/frames/runtime-layout-client'
-import { OrcaRuntimeService } from '../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../src/main/runtime/topo-runtime'
 import { setStructuredAgentSessionHost } from '../../src/main/native-chat/agent-session-wire/host/structured-agent-session-registry'
 import { useAppStore } from '../../src/renderer/src/store'
 import { applyStructuredSessionTabSnapshots } from '../../src/renderer/src/runtime/local-structured-session-tabs-sync/snapshot-apply'
@@ -30,7 +30,7 @@ import {
   isWebSessionCloseIntentPending,
   resetWebSessionCloseIntentForTests
 } from '../../src/renderer/src/runtime/web-session-tabs-sync/closing/web-session-close-intent'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../src/shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../src/shared/layout-owner-switch'
 import { toRuntimeExecutionHostId } from '../../src/shared/execution-host'
 import { makeWorktree } from '../../src/renderer/src/store/slices/worktrees/worktree.test-fixture'
 import { layoutApplyTestTransport } from '../../src/renderer/src/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
@@ -43,7 +43,7 @@ type CloseRequest = { requestId: string; tabId: string; worktreeId: string; expi
 
 type ProcessBoundary = {
   scenario: 'reopened' | 'stale-frame'
-  runtime: Pick<OrcaRuntimeService, 'closeMobileSessionTab' | 'listMobileSessionTabs'> | null
+  runtime: Pick<TopoRuntimeService, 'closeMobileSessionTab' | 'listMobileSessionTabs'> | null
   rendererSessionCloses: string[]
   closeHeld: Promise<void> | null
   pairedClose: Promise<void> | null
@@ -123,10 +123,10 @@ vi.mock(
 let main: TabsDrawnFromMain | undefined
 
 /** Main takes the window's current layout and answers its own layout commands from that model too. */
-async function mainHoldsWindowLayout(runtime: OrcaRuntimeService): Promise<void> {
+async function mainHoldsWindowLayout(runtime: TopoRuntimeService): Promise<void> {
   main?.close()
   main = await drawTabsFromMain(useAppStore)
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     Object.assign(runtime, {
       applyLayoutCommand: (command: unknown) => layoutApplyTestTransport.call({ command })
     })
@@ -193,7 +193,7 @@ describe('reopened structured session close', () => {
 
     const hostSessionCloses: string[] = []
     const closeResponses: (string | undefined)[] = []
-    const runtime = new OrcaRuntimeService(partialRuntimeStore())
+    const runtime = new TopoRuntimeService(partialRuntimeStore())
     bridge.runtime = runtime
     let nextRequest = 0
     runtime.setNotifier(
@@ -361,7 +361,7 @@ describe('in-flight structured session close', () => {
     const pendingResponses = new Map<string, (error?: string) => void>()
     // A failing close answers when the test says, so its frame can be read first.
     const failingCloses: (() => void)[] = []
-    const runtime = new OrcaRuntimeService(partialRuntimeStore())
+    const runtime = new TopoRuntimeService(partialRuntimeStore())
     bridge.runtime = runtime
     vi.stubGlobal('api', {
       ui: {

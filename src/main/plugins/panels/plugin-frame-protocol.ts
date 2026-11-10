@@ -119,7 +119,7 @@ export function createPluginFrameRequestHandler(
       return notFound()
     }
     if (target.reserved) {
-      const body = await readOrcaFile(dependencies, plugin, target.segments, request.url)
+      const body = await readTopoFile(dependencies, plugin, target.segments, request.url)
       return body ? bufferedResponse(request, body.contentType, body.bytes) : notFound()
     }
     const relativePath = target.segments.join('/')
@@ -223,8 +223,8 @@ export function createPluginFrameRequestHandler(
   }
 }
 
-/** `__orca/*`: only files Orca ships, never the plugin's own files under that name. */
-async function readOrcaFile(
+/** `__orca/*`: only files Topo ships, never the plugin's own files under that name. */
+async function readTopoFile(
   dependencies: PluginFrameProtocolDependencies,
   plugin: ValidDiscoveredPlugin,
   segments: readonly string[],

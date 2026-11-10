@@ -1,7 +1,7 @@
 /** Delete the emulator map entry before disposal so new writes create a fresh emulator.
  * Chain disposal after all queued parses; reversing either order silently loses output. */
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 
 const store = {
   getRepo: () => undefined,
@@ -28,8 +28,8 @@ const store = {
 
 const PTY_ID = 'pty-dispose-ordering'
 
-function createRuntime(): OrcaRuntimeService {
-  const runtime = new OrcaRuntimeService(store)
+function createRuntime(): TopoRuntimeService {
+  const runtime = new TopoRuntimeService(store)
   runtime.setPtyController({
     write: () => true,
     kill: () => true,

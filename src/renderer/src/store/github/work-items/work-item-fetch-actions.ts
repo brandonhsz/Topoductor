@@ -170,7 +170,7 @@ export const createWorkItemFetchActions = (
         if (!get().githubSourceCollections.accept(attempt, envelope, query, true)) {
           return undefined
         }
-        // Why: stamp repoId at the fetch boundary so downstream consumers can rely on it — main doesn't know Orca's Repo.id.
+        // Why: stamp repoId at the fetch boundary so downstream consumers can rely on it — main doesn't know Topo's Repo.id.
         const repoHostId = getGitHubWorkItemRowHostId(
           requestState,
           repoId,

@@ -2,7 +2,7 @@
 // CDP cannot prove physical held-key repeat: AppKit needs relaunch; real defaults-domain tests pin preference semantics.
 // Unpackaged Electron must refuse its foreign domain because defaults uses real HOME despite fixture isolation.
 import type { ElectronApplication } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 
 test.use({ seedTestRepo: false })
 
@@ -59,12 +59,12 @@ test.describe('macOS press-and-hold default', () => {
     expect(record.domain).toBe(state.bundleIdentifier)
 
     const ownsDomain =
-      record.domain === 'com.stablyai.orca' || record.domain!.startsWith('com.stablyai.orca.')
+      record.domain === 'com.brandonhsz.topo' || record.domain!.startsWith('com.brandonhsz.topo.')
     if (ownsDomain) {
       // A packaged or dev-identity bundle: the write path is live and must have settled.
       expect(['applied', 'kept-user-preference']).toContain(record.decision)
     } else {
-      // The unpackaged harness. Anything but a refusal means Orca wrote into a foreign domain.
+      // The unpackaged harness. Anything but a refusal means Topo wrote into a foreign domain.
       expect(record.decision).toBe('foreign-bundle')
     }
   })

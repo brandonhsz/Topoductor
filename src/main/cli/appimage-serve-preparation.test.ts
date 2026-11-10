@@ -12,9 +12,9 @@ afterEach(async () => {
 })
 
 async function makeFixture() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-appimage-serve-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-appimage-serve-'))
   created.push(root)
-  const appImagePath = join(root, 'Orca.AppImage')
+  const appImagePath = join(root, 'Topo.AppImage')
   await writeFile(appImagePath, '#!/usr/bin/env bash\n', { mode: 0o755 })
   return { root, appImagePath, cacheRootPath: join(root, 'cache') }
 }

@@ -102,7 +102,7 @@ export function resolveAgentStatusIdentity(args: {
     (otherProcessOwner || isActiveExistingIdentity(args.existing, args.now, staleAfterMs))
   ) {
     return {
-      // Inherited ORCA_PANE_KEY does not grant child CLI ownership; idle leaves foreground process/resume identity intact.
+      // Inherited TOPO_PANE_KEY does not grant child CLI ownership; idle leaves foreground process/resume identity intact.
       agentType: existingAgentType,
       inheritedFromActivePane: true
     }

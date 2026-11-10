@@ -1,15 +1,15 @@
-# Orca could not resolve OpenCode 2 session lineage (#22371 follow-up)
+# Topo could not resolve OpenCode 2 session lineage (#22371 follow-up)
 
-Orca's OpenCode plugin resolves a session's ancestry so a subagent's work rolls up to the pane
+Topo's OpenCode plugin resolves a session's ancestry so a subagent's work rolls up to the pane
 without taking it over. Against OpenCode 2 that resolution returned `null` for every session, so
 every child session was published as if it were a root — and a subagent's question minted an
 un-evictable "needs input" blocker the lead agent had never asked for.
 
-Captured against the shipped `opencode v2.0.12` binary on macOS: Orca's real generated plugin in
-`~/.config/opencode/plugins/orca-opencode2-status.js`, real `ORCA_PANE_KEY` / hook-token env, a
+Captured against the shipped `opencode v2.0.12` binary on macOS: Topo's real generated plugin in
+`~/.config/opencode/plugins/topo-opencode2-status.js`, real `TOPO_PANE_KEY` / hook-token env, a
 logging hook server on a loopback port, and `opencode2 --standalone` driven in a real PTY.
 
-## The SDK shape Orca was given
+## The SDK shape Topo was given
 
 `src/main/opencode2/status-plugin-setup-source.ts` handed the shared lineage walk a client built
 from the plugin `setup()` context. Probing that context live inside the running plugin:
@@ -58,15 +58,15 @@ The subagent still ran in the "after" capture (`ses_f32f2519dffeNSA1jG2Z8JVJyv`,
 
 ```sh
 # Log POSTs on a free loopback port, then:
-ORCA_PANE_KEY=tab:leaf ORCA_OPENCODE_AGENT=opencode2 \
-ORCA_AGENT_HOOK_PORT=<port> ORCA_AGENT_HOOK_TOKEN=<token> \
+TOPO_PANE_KEY=tab:leaf TOPO_OPENCODE_AGENT=opencode2 \
+TOPO_AGENT_HOOK_PORT=<port> TOPO_AGENT_HOOK_TOKEN=<token> \
   opencode2 --standalone --prompt '<delegate something to one subagent>'
 ```
 
-Unset `ORCA_AGENT_HOOK_ENDPOINT` so the plugin reads the port/token from env instead of a live
-Orca's endpoint file.
+Unset `TOPO_AGENT_HOOK_ENDPOINT` so the plugin reads the port/token from env instead of a live
+Topo's endpoint file.
 
-One trap: OpenCode 2 loads both `orca-opencode-status.js` and `orca-opencode2-status.js` from
-`~/.config/opencode/plugins/`, and both declare the same plugin `id` (`orca-opencode-status`).
+One trap: OpenCode 2 loads both `topo-opencode-status.js` and `topo-opencode2-status.js` from
+`~/.config/opencode/plugins/`, and both declare the same plugin `id` (`topo-opencode-status`).
 Only one survives, and if it is the v1 file its agent gate silently returns no hooks, so nothing
 posts at all. Move the v1 file aside while reproducing.

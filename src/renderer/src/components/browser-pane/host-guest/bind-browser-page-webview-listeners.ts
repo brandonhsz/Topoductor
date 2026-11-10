@@ -1,7 +1,7 @@
 import { publishNativeChatVisualGuestTheme } from '@/components/native-chat/media/visuals/NativeChatVisualGuestThemePublisher'
 import { normalizeBrowserGuestSrc } from '../../../../../shared/browser/extensions/browser-extension-url'
 import '../../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
 import { parkBrowserPageViewport } from './browser-page-viewport'
 import { subscribeBrowserSystemResume } from './browser-system-resume'
 import {
@@ -160,7 +160,7 @@ export function bindBrowserPageWebviewListeners({
     publishNativeChatVisualGuestTheme()
     // Why: set src only after listeners attach so a fast localhost failure isn't missed.
     const initialUrl =
-      normalizeBrowserGuestSrc(initialBrowserUrlRef.current) ?? ORCA_BROWSER_BLANK_URL
+      normalizeBrowserGuestSrc(initialBrowserUrlRef.current) ?? TOPO_BROWSER_BLANK_URL
     lastKnownWebviewUrlRef.current = initialUrl
     webview.src = initialUrl
   } else if (isPaintableRef.current) {

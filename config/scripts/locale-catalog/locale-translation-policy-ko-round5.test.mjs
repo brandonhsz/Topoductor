@@ -41,11 +41,11 @@ describe('locale-translation-policy ko round 5', () => {
     expect(
       repairTranslatedValue({
         key: 'auto.components.settings.general.search.244e3fb4c8',
-        enValue: 'Install the Orca skill so agents know to use the Orca CLI.',
-        localeValue: '에이전트가 Orca CLI 사용 방법을 알 수 있도록 Orca 기술을 설치합니다.',
+        enValue: 'Install the Topo skill so agents know to use the Topo CLI.',
+        localeValue: '에이전트가 Topo CLI 사용 방법을 알 수 있도록 Topo 기술을 설치합니다.',
         locale: 'ko'
       })
-    ).toBe('에이전트가 Orca CLI를 사용하도록 Orca 스킬을 설치하세요.')
+    ).toBe('에이전트가 Topo CLI를 사용하도록 Topo 스킬을 설치하세요.')
     expect(
       repairTranslatedValue({
         key: 'auto.components.editor.MarkdownPreview.322afab6ff',

@@ -12,7 +12,7 @@ describe('feature tips', () => {
       seenTipIds: new Set<FeatureTipId>([
         'chat-ui-here',
         'voice-dictation',
-        'orca-cli',
+        'topo-cli',
         'cmd-j-palette',
         'agent-session-search'
       ])
@@ -50,18 +50,18 @@ describe('feature tips', () => {
       })
     })
 
-    expect(tips.map((tip) => tip.id)).toEqual(['orca-cli', 'cmd-j-palette'])
+    expect(tips.map((tip) => tip.id)).toEqual(['topo-cli', 'cmd-j-palette'])
   })
 
   it('normalizes persisted tip ids', () => {
     expect(
       normalizeFeatureTipIds([
         'feature-tour',
-        'orca-cli',
+        'topo-cli',
         'bogus',
         'cmd-j-palette',
         'voice-dictation'
       ])
-    ).toEqual(['orca-cli', 'cmd-j-palette', 'voice-dictation'])
+    ).toEqual(['topo-cli', 'cmd-j-palette', 'voice-dictation'])
   })
 })

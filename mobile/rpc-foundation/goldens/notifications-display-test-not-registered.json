@@ -133,7 +133,7 @@
           "title": "Test notification"
         },
         "trigger": {
-          "channelId": "orca-desktop"
+          "channelId": "topo-desktop"
         }
       }
     },

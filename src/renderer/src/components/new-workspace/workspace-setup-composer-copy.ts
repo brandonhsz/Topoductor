@@ -58,8 +58,8 @@ export function getComposerWorkspaceSetupLabels(t: Translate = translate): Works
       }
     },
     sources: {
-      yaml: t('auto.components.NewWorkspaceComposerCard.23bb365554', 'orca.yaml'),
-      both: t('auto.components.NewWorkspaceComposerCard.326a578923', 'orca.yaml + local'),
+      yaml: t('auto.components.NewWorkspaceComposerCard.23bb365554', 'topo.yaml'),
+      both: t('auto.components.NewWorkspaceComposerCard.326a578923', 'topo.yaml + local'),
       local: t('auto.components.NewWorkspaceComposerCard.92e34f0311', 'local settings')
     },
     help: t(

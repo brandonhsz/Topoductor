@@ -13,7 +13,7 @@ import {
 // Read at each close, so one import serves both builds.
 const layoutOwner = vi.hoisted(() => ({ isMain: false }))
 vi.mock('../../../shared/layout-owner-switch', () => ({
-  get ORCA_LAYOUT_OWNER_IS_MAIN() {
+  get TOPO_LAYOUT_OWNER_IS_MAIN() {
     return layoutOwner.isMain
   }
 }))
@@ -92,7 +92,7 @@ async function pinnedServerTab(layoutOwnerIsMain: boolean) {
   return { f, stopped, close }
 }
 
-describe.each([false, true])('ORCA_LAYOUT_OWNER_IS_MAIN=%s', (layoutOwnerIsMain) => {
+describe.each([false, true])('TOPO_LAYOUT_OWNER_IS_MAIN=%s', (layoutOwnerIsMain) => {
   it('refuses an unforced close of a pinned tab and keeps it and its terminals', async () => {
     const { f, stopped, close } = await pinnedServerTab(layoutOwnerIsMain)
     const reply = await close({})

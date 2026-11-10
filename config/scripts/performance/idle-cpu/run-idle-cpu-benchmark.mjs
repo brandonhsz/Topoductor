@@ -223,12 +223,12 @@ function makeCompletedOnboardingProfile() {
 }
 
 function createIdleRepo(worktreeCount) {
-  const repoDir = mkdtempSync(path.join(os.tmpdir(), 'orca-idle-cpu-repo-'))
+  const repoDir = mkdtempSync(path.join(os.tmpdir(), 'topo-idle-cpu-repo-'))
   const cleanupDirs = [repoDir]
   run('git', ['init'], { cwd: repoDir })
   run('git', ['config', 'user.email', 'idle-cpu@test.local'], { cwd: repoDir })
   run('git', ['config', 'user.name', 'Idle CPU Benchmark'], { cwd: repoDir })
-  writeFileSync(path.join(repoDir, 'README.md'), '# Orca idle CPU benchmark\n')
+  writeFileSync(path.join(repoDir, 'README.md'), '# Topo idle CPU benchmark\n')
   writeFileSync(
     path.join(repoDir, 'package.json'),
     `${JSON.stringify({ private: true }, null, 2)}\n`
@@ -240,7 +240,7 @@ function createIdleRepo(worktreeCount) {
   for (let i = 2; i <= worktreeCount; i += 1) {
     const worktreeDir = path.join(
       path.dirname(repoDir),
-      `orca-idle-cpu-worktree-${i}-${Date.now()}`
+      `topo-idle-cpu-worktree-${i}-${Date.now()}`
     )
     cleanupDirs.push(worktreeDir)
     run('git', ['worktree', 'add', worktreeDir, '-b', `idle-cpu-${i}`], { cwd: repoDir })
@@ -312,21 +312,21 @@ async function main() {
   const options = parseArgs(process.argv.slice(2))
   const root = path.resolve(import.meta.dirname, '../../..', '..')
   const mainPath = buildAppIfNeeded(root, options.skipBuild)
-  const userDataDir = mkdtempSync(path.join(os.tmpdir(), 'orca-idle-cpu-userdata-'))
+  const userDataDir = mkdtempSync(path.join(os.tmpdir(), 'topo-idle-cpu-userdata-'))
   const { repoDir, cleanupDirs } = createIdleRepo(options.worktrees)
   writeFileSync(
-    path.join(userDataDir, 'orca-data.json'),
+    path.join(userDataDir, 'topo-data.json'),
     `${JSON.stringify(makeCompletedOnboardingProfile(), null, 2)}\n`
   )
   const {
     ELECTRON_RUN_AS_NODE,
     CODEX_HOME: _codexHome,
-    ORCA_CODEX_HOME: _orcaCodexHome,
+    TOPO_CODEX_HOME: _topoCodexHome,
     ...cleanEnv
   } = process.env
   void ELECTRON_RUN_AS_NODE
   void _codexHome
-  void _orcaCodexHome
+  void _topoCodexHome
   // Disable real-home rollout to isolate measurements and protect developer’s Codex profile.
   const isolatedHome = path.join(userDataDir, 'home')
   mkdirSync(isolatedHome, { recursive: true })
@@ -335,11 +335,11 @@ async function main() {
     env: {
       ...cleanEnv,
       NODE_ENV: 'development',
-      ORCA_E2E_USER_DATA_DIR: userDataDir,
+      TOPO_E2E_USER_DATA_DIR: userDataDir,
       HOME: isolatedHome,
       USERPROFILE: isolatedHome,
-      ORCA_E2E_HOME_DIR: isolatedHome,
-      ...(options.headful ? { ORCA_E2E_HEADFUL: '1' } : { ORCA_E2E_HEADLESS: '1' })
+      TOPO_E2E_HOME_DIR: isolatedHome,
+      ...(options.headful ? { TOPO_E2E_HEADFUL: '1' } : { TOPO_E2E_HEADLESS: '1' })
     }
   })
   const rootPid = app.process().pid
@@ -459,7 +459,7 @@ async function main() {
     const rendererTimingAfter = await stopRendererTimingProbe(page)
     const rendererCensusAfter = await collectRendererCensus(page, options.lineageDepth)
     const report = {
-      benchmark: 'orca-idle-cpu',
+      benchmark: 'topo-idle-cpu',
       createdAt: new Date().toISOString(),
       options,
       rootPid,

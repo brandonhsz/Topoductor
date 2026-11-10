@@ -26,7 +26,7 @@ function eventItem(delivery: PRPendingDelivery) {
   const [, forgeHost, owner, repo, number] = match
   const pr = { forgeHost: forgeHost!, owner: owner!, repo: repo!, number: Number(number) }
   const identity = {
-    provider: 'orca' as const,
+    provider: 'topo' as const,
     clientMessageId: pullRequestEventClientMessageId({
       ...pr,
       headSha: delivery.headSha,

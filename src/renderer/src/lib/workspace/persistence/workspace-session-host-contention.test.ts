@@ -14,7 +14,7 @@ import {
   type HostPersistenceState
 } from './workspace-session-host-persistence'
 
-const SHARED_ID = 'repo-shared::/work/orca'
+const SHARED_ID = 'repo-shared::/work/topo'
 const SSH_HOST: ExecutionHostId = 'ssh:build-box'
 
 function tab(id: string, worktreeId = SHARED_ID): TerminalTab {

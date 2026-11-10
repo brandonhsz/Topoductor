@@ -6,7 +6,7 @@ import {
 } from './repo-icon-remote-fetch'
 import { pngHeader } from './repo-icon-image-fixture'
 
-const AVATAR = 'https://github.com/stablyai.png?size=64'
+const AVATAR = 'https://github.com/brandonhsz.png?size=64'
 
 function image(bytes: Uint8Array, headers: Record<string, string> = {}): Response {
   return new Response(Buffer.from(bytes), {

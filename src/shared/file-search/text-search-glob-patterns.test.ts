@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { splitSearchGlobPatterns } from './text-search-glob-patterns'
 import { buildGitGrepArgs } from './text-search'
 
@@ -40,7 +40,7 @@ describe('file search with real search engines', () => {
   let root: string
 
   beforeAll(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-search-globs-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-search-globs-'))
     for (const file of ['a.ts', 'b.tsx', 'c.md', ',.ts']) {
       await writeFile(join(root, file), 'needle\n')
     }

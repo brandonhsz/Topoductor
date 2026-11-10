@@ -4,7 +4,7 @@ import { shouldSuppressNotificationWhileViewing } from './notification-viewing-p
 import { loadPushNotificationsEnabled } from '../storage/preferences'
 import { loadHostCatalog } from '../transport/hosts/host-store'
 import { resolveHostIdForFingerprint } from './push-host-fingerprint'
-import { readOrcaPushPayload, type OrcaPushPayload } from './push-payload'
+import { readTopoPushPayload, type TopoPushPayload } from './push-payload'
 import type { NotificationBehavior } from 'expo-notifications'
 import { readNativeNotificationData } from './native-notification-data'
 import {
@@ -16,7 +16,7 @@ import { allowsMobilePushAlertKind } from '../../../src/shared/mobile-push-alert
 const RECENT_FOREGROUND_PUSH_CAP = 512
 const recentForegroundPushes = new Set<string>()
 
-function claimForegroundPush(payload: OrcaPushPayload): boolean {
+function claimForegroundPush(payload: TopoPushPayload): boolean {
   const seq = payload.notificationSeq
   if (
     !payload.notificationEpoch ||
@@ -53,7 +53,7 @@ export async function foregroundNotificationBehavior(notification: {
   request: Parameters<typeof readNativeNotificationData>[0]
 }): Promise<NotificationBehavior> {
   const data = readNativeNotificationData(notification.request)
-  const payload = readOrcaPushPayload(data)
+  const payload = readTopoPushPayload(data)
   const preferences = await loadNotificationDeliveryPreferences()
   // Preserve unknown notifications; recognized pushes fail closed when eligibility/dismissal checks cannot complete.
   const ineligible = await shouldSuppressForegroundPush(payload, preferences).catch(
@@ -68,18 +68,18 @@ export async function foregroundNotificationBehavior(notification: {
   }
 }
 
-export async function canPresentForegroundPush(payload: OrcaPushPayload): Promise<boolean> {
+export async function canPresentForegroundPush(payload: TopoPushPayload): Promise<boolean> {
   const preferences = await loadNotificationDeliveryPreferences()
   return !(await shouldSuppressForegroundPush(payload, preferences))
 }
 
-async function resolvePushHostId(payload: OrcaPushPayload): Promise<string | null> {
+async function resolvePushHostId(payload: TopoPushPayload): Promise<string | null> {
   const hosts = await loadHostCatalog().catch(() => [])
   return resolveHostIdForFingerprint(payload.hostFingerprint, hosts)
 }
 
 async function shouldSuppressForegroundPush(
-  payload: OrcaPushPayload | null,
+  payload: TopoPushPayload | null,
   preferences: NotificationDeliveryPreferences
 ): Promise<boolean> {
   if (!payload) {
@@ -129,7 +129,7 @@ export function pushNotificationRouteData(
   hosts: readonly { readonly id: string; readonly publicKeyB64: string }[],
   remote = false
 ): unknown {
-  const payload = readOrcaPushPayload(data)
+  const payload = readTopoPushPayload(data)
   if (!payload) {
     return remote ? null : data
   }

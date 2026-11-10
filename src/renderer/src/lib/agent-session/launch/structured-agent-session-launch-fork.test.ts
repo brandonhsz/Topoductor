@@ -369,7 +369,7 @@ it('rederives a restored ancestor fork requirement from the child before resubmi
                 body: { kind: 'message', role: 'assistant', blocks: [] }
               },
               {
-                itemId: 'orca:forked-from',
+                itemId: 'topo:forked-from',
                 sequence: 5,
                 body: { kind: 'status', presentation: 'forked-from', text: 'Forked from source' }
               },

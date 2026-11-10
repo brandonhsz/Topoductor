@@ -8,7 +8,7 @@ export type AgentJournalAgentStartItem = {
   task: string
 }
 
-/** Display-only creation fact for an agent this chat's agent launched on its own (`orca agent launch`),
+/** Display-only creation fact for an agent this chat's agent launched on its own (`topo agent launch`),
  *  not a supervised worker: `launchId` is the launch operation, `agent` the launched conversation. */
 export type AgentJournalAgentHandoffItem = {
   kind: 'agent-handoff'

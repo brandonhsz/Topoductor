@@ -174,7 +174,7 @@ export type TerminalBufferActionRequest = {
   }
 }
 
-// Viewers live above the daemon on orcad; an older daemon rejects this, which callers ignore.
+// Viewers live above the daemon on topod; an older daemon rejects this, which callers ignore.
 export type ReportFocusLostRequest = {
   id: string
   type: 'reportFocusLost'

@@ -1,7 +1,7 @@
-import { OrcaRuntimeWithClientTerminalScrollback } from '../../terminal/output/runtime-client-scrollback'
+import { TopoRuntimeWithClientTerminalScrollback } from '../../terminal/output/runtime-client-scrollback'
 import type { WslMoveLiveTerminal } from '../../../persistence/moving-wsl-projects/wsl-move-gate-facts'
 
-export abstract class OrcaRuntimeWithWslMoveTerminalFacts extends OrcaRuntimeWithClientTerminalScrollback {
+export abstract class TopoRuntimeWithWslMoveTerminalFacts extends TopoRuntimeWithClientTerminalScrollback {
   /** The pane a live terminal shows, including one the window has not reopened since a relaunch. */
   wslMovePaneKeyForPty(ptyId: string): string | null {
     const pty = this.ptysById.get(ptyId)

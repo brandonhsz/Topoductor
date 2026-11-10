@@ -56,7 +56,7 @@ vi.mock('../../telemetry/cohort-classifier', () => ({
 
 describe('Store', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-test-'))
     trackMock.mockReset()
     getCohortAtEmitMock.mockReset()
     getCohortAtEmitMock.mockReturnValue({ nth_repo_added: 2 })
@@ -83,9 +83,9 @@ describe('Store', () => {
             provider: 'jira',
             type: 'issue',
             number: 0,
-            title: 'ORCA-123 Link Jira',
-            url: 'https://company.atlassian.net/browse/ORCA-123',
-            jiraIdentifier: 'ORCA-123'
+            title: 'TOPO-123 Link Jira',
+            url: 'https://company.atlassian.net/browse/TOPO-123',
+            jiraIdentifier: 'TOPO-123'
           },
           linkedTaskSourceContext: {
             kind: 'task-source',
@@ -97,7 +97,7 @@ describe('Store', () => {
               provider: 'jira',
               siteId: 'site-1',
               siteUrl: 'https://company.atlassian.net',
-              projectKey: 'ORCA'
+              projectKey: 'TOPO'
             }
           }
         }
@@ -106,7 +106,7 @@ describe('Store', () => {
 
     const store = await createStore()
 
-    expect(store.getWorktreeMeta('wt-sibling')?.linkedWorkItem?.jiraIdentifier).toBe('ORCA-123')
+    expect(store.getWorktreeMeta('wt-sibling')?.linkedWorkItem?.jiraIdentifier).toBe('TOPO-123')
     expect(store.getWorktreeMeta('wt-sibling')?.linkedTaskSourceContext).toBeNull()
     // Reject corrupt rows before unguarded consumers read them, including older builds after rollback.
     expect(store.getAllWorktreeMeta()).not.toHaveProperty('r1::/tmp/wt')

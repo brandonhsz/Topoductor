@@ -31,7 +31,7 @@ import { resolveClaudeLaunchFlags } from './claude-structured-launch-flags'
 import { withNativeChatVisualsEnv } from '../../../native-chat/native-chat-visuals-delivery'
 import { claudeLaunchResumesTranscript } from './claude-structured-launch-home'
 import type { StructuredAgentLaunchPartResolver } from '../../../runtime/agent-session/launch/structured-agent-launch-composition'
-import { claudeSessionIdForOrcaSession } from '../claude-structured-session-id'
+import { claudeSessionIdForTopoSession } from '../claude-structured-session-id'
 import {
   pendingAgentSessionRewindFork,
   type AgentSessionRewindFork
@@ -107,7 +107,7 @@ export function claudeStructuredPermissionOptions(
 }
 
 export type ClaudeStructuredLaunch = {
-  /** Always Orca's resolved user CLI: the SDK's bundled binaries are excluded from the install. */
+  /** Always Topo's resolved user CLI: the SDK's bundled binaries are excluded from the install. */
   pathToClaudeCodeExecutable: string
   prefixArgs?: readonly string[]
   account?: ClaudeStructuredInvocation['account']
@@ -198,7 +198,7 @@ export function claudeStructuredLaunchPart(
       ? fork.sessionId
       : head
         ? head.nativeId
-        : claudeSessionIdForOrcaSession(
+        : claudeSessionIdForTopoSession(
             identity.sessionId,
             active.pendingClear ? record.providerContextBoundary?.operationId : undefined
           )
@@ -295,7 +295,7 @@ export function claudeStructuredLaunchPart(
             ...permission.extraArgs,
             ...thinkingDisplayArgs
           },
-          // Claude owns where a resumed conversation continues; the stored leaf is Orca's bookkeeping.
+          // Claude owns where a resumed conversation continues; the stored leaf is Topo's bookkeeping.
           ...(resumesTranscript
             ? { resume: providerSessionId }
             : { sessionId: providerSessionId, ...(fork ? claudeRewindForkOptions(fork) : {}) })
@@ -313,7 +313,7 @@ export function claudeStructuredLaunchPart(
       },
       env,
       inheritedEnvToDelete: [],
-      // The agent runtime follows Orca's CLI directory on PATH so another orca cannot shadow it.
+      // The agent runtime follows Topo's CLI directory on PATH so another topo cannot shadow it.
       cliRuntimeCommand: command
     }
   }

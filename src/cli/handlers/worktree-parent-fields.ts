@@ -22,8 +22,8 @@ import {
 
 const CALLER_PARENT_INFERENCE_BUDGET_MS = 3_000
 
-/** This machine's own Orca, where a caller-relative parent (active, current, this terminal) lives. */
-export function callerOrcaClient(client: RuntimeClient): RuntimeClient {
+/** This machine's own Topo, where a caller-relative parent (active, current, this terminal) lives. */
+export function callerTopoClient(client: RuntimeClient): RuntimeClient {
   return client.isRemote ? new RuntimeClient(client.userDataPath, undefined, null, null) : client
 }
 
@@ -33,7 +33,7 @@ function serverLabel(client: RuntimeClient): string {
 
 /** `worktree create`'s parent fields. A parent in another environment (--parent-environment, or
  * active/current against a server) is sent as a verified cross-store ref; with no parent flag, the
- * caller's own workspace is inferred on this machine's Orca. */
+ * caller's own workspace is inferred on this machine's Topo. */
 export async function resolveCreateParentFields(
   client: RuntimeClient,
   args: {
@@ -88,7 +88,7 @@ export async function resolveCreateParentFields(
   }
 }
 
-/** No parent flag against a server: this machine's Orca resolves the caller's env, terminal and cwd
+/** No parent flag against a server: this machine's Topo resolves the caller's env, terminal and cwd
  * context exactly as its same-machine create would. Short of a valid parent it creates unnested with
  * one note, and noParent keeps the server's own create-time inference from nesting it anyway. */
 async function inferCallerCrossStoreParent(
@@ -96,7 +96,7 @@ async function inferCallerCrossStoreParent(
   context: { envParentWorkspace: string | undefined; callerTerminalHandle: string | undefined },
   cwd: string
 ): Promise<Record<string, unknown>> {
-  // Optional nesting must not hold up the server create behind a stalled Orca on this machine.
+  // Optional nesting must not hold up the server create behind a stalled Topo on this machine.
   const startedAt = Date.now()
   const local = new RuntimeClient(
     client.userDataPath,
@@ -105,7 +105,7 @@ async function inferCallerCrossStoreParent(
     null
   )
   let localTimedOut = false
-  // No Orca running here, or cwd outside its workspaces: no cwd context.
+  // No Topo running here, or cwd outside its workspaces: no cwd context.
   const cwdContext = await resolveWorktreeCreateCwdContext(cwd, local, false).catch(
     (error: unknown): Awaited<ReturnType<typeof resolveWorktreeCreateCwdContext>> => {
       localTimedOut = error instanceof RuntimeClientError && error.code === 'runtime_timeout'
@@ -122,12 +122,12 @@ async function inferCallerCrossStoreParent(
   // The budget is this machine's: time spent on the server's status doesn't count.
   const remainingMs = CALLER_PARENT_INFERENCE_BUDGET_MS - (Date.now() - startedAt)
   if (localTimedOut || remainingMs <= 0) {
-    return notNested("this machine's Orca didn't answer in time.")
+    return notNested("this machine's Topo didn't answer in time.")
   }
   try {
     const status = (await client.call<RuntimeStatus>('status.get')).result
     if (!supportsCrossStoreLineage(status.capabilities)) {
-      return notNested(`${serverLabel(client)} needs an Orca update to nest across machines.`)
+      return notNested(`${serverLabel(client)} needs a Topo update to nest across machines.`)
     }
     const resolved = (
       await local.call<

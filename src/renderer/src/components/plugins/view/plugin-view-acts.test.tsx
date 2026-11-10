@@ -54,7 +54,7 @@ function mountTodoGuest() {
 }
 
 describe('runPluginPanelActs', () => {
-  it("types, submits and presses through Orca's own controls", async () => {
+  it("types, submits and presses through Topo's own controls", async () => {
     const guest = mountTodoGuest()
     const results = await guest.run([
       { type: { label: 'New task' }, text: 'Ship', submit: true },

@@ -8,7 +8,7 @@ import {
   type TerminalConfigImporter
 } from '../terminal-config-import/preview'
 import { findKittyConfigPaths } from './discovery'
-import { mapKittyToOrca } from './mapper'
+import { mapKittyToTopo } from './mapper'
 import { loadKittyConfig, type KittyConfig } from './parser'
 
 const KITTY_IMPORTER: TerminalConfigImporter<KittyConfig> = {
@@ -17,7 +17,7 @@ const KITTY_IMPORTER: TerminalConfigImporter<KittyConfig> = {
   discover: findKittyConfigPaths,
   // Kitty reads one kitty.conf; anything else arrives through its include directives.
   load: ([entryPath = '']) => loadKittyConfig(entryPath, homedir()),
-  map: async (config) => mapKittyToOrca(config, platform() === 'darwin')
+  map: async (config) => mapKittyToTopo(config, platform() === 'darwin')
 }
 
 export function previewKittyImport(

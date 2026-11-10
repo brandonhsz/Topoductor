@@ -40,19 +40,19 @@ vi.mock('../codex/history/index/codex-account-session-index-heal', () => {
 
 beforeEach(() => {
   vi.resetModules()
-  testState.userData = mkdtempSync(join(tmpdir(), 'orca-codex-e-migration-'))
-  testState.home = mkdtempSync(join(tmpdir(), 'orca-codex-e-home-'))
+  testState.userData = mkdtempSync(join(tmpdir(), 'topo-codex-e-migration-'))
+  testState.home = mkdtempSync(join(tmpdir(), 'topo-codex-e-home-'))
   for (const key of [
-    'ORCA_USER_DATA_PATH',
-    'ORCA_DISABLE_CODEX_TRUST_RPC',
+    'TOPO_USER_DATA_PATH',
+    'TOPO_DISABLE_CODEX_TRUST_RPC',
     'CODEX_HOME',
-    'ORCA_CODEX_HOME'
+    'TOPO_CODEX_HOME'
   ]) {
     previousEnv[key] = process.env[key]
     delete process.env[key]
   }
-  process.env.ORCA_USER_DATA_PATH = testState.userData
-  process.env.ORCA_DISABLE_CODEX_TRUST_RPC = '1'
+  process.env.TOPO_USER_DATA_PATH = testState.userData
+  process.env.TOPO_DISABLE_CODEX_TRUST_RPC = '1'
   mkdirSync(systemHome(), { recursive: true })
   mkdirSync(sharedHome(), { recursive: true })
 })
@@ -239,7 +239,7 @@ function createManagedAccount(
 ): CodexManagedAccount {
   const home = join(testState.userData, 'codex-accounts', id, 'home')
   mkdirSync(home, { recursive: true })
-  writeFileSync(join(home, '.orca-managed-home'), `${id}\n`, 'utf-8')
+  writeFileSync(join(home, '.topo-managed-home'), `${id}\n`, 'utf-8')
   writeFileSync(join(home, 'auth.json'), auth, 'utf-8')
   return managedAccountRecord(id, providerId, home, email)
 }

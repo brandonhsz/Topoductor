@@ -9,10 +9,10 @@ import '../db/messages/mailbox-routing-page'
 import '../db/dispatch-row-writer'
 import '../db/attempt-outcome-projection'
 import {
-  formatOrcaSessionAddress,
-  type OrcaSessionId
-} from '../../../../shared/orca-session-address'
-import { testOrcaSessionId } from '../../../../shared/orca-session-address-test-fixture'
+  formatTopoSessionAddress,
+  type TopoSessionId
+} from '../../../../shared/topo-session-address'
+import { testTopoSessionId } from '../../../../shared/topo-session-address-test-fixture'
 import {
   structuredAgentSessionPaneKey,
   structuredAgentSessionTabId
@@ -31,7 +31,7 @@ export function benchmarkPresentationCorpus(
     history: number
     terminalHistory: number
     attentionFacts: number
-    parentSessionId: OrcaSessionId
+    parentSessionId: TopoSessionId
   },
   build: (
     db: OrchestrationDb
@@ -41,7 +41,7 @@ export function benchmarkPresentationCorpus(
   const revision = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
   const now = Date.parse('2026-10-27T12:00:00Z')
   const clock = vi.spyOn(Date, 'now').mockReturnValue(now)
-  const directory = mkdtempSync(join(tmpdir(), 'orca-lineage-benchmark-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-lineage-benchmark-'))
   const path = join(directory, 'orchestration.sqlite')
   let db = new OrchestrationDb(path)
   let native: ReturnType<typeof installSqlVisitCounters> | undefined
@@ -51,14 +51,14 @@ export function benchmarkPresentationCorpus(
       objective: 'benchmark',
       coordinatorHandle: null,
       coordinatorPaneKey: null,
-      coordinatorOrcaSessionId: parentSessionId
+      coordinatorTopoSessionId: parentSessionId
     })
     const expected = new Map<string, string>()
     for (let i = 0; i < 20; i++) {
-      const session = testOrcaSessionId(`00000000-0000-4000-8000-${String(i).padStart(12, '0')}`)
+      const session = testTopoSessionId(`00000000-0000-4000-8000-${String(i).padStart(12, '0')}`)
       const dispatch = db.createDispatchContext({
         taskId: db.createTask({ runId: run.id, spec: 'active' }).id,
-        assigneeHandle: formatOrcaSessionAddress(session),
+        assigneeHandle: formatTopoSessionAddress(session),
         creator: { kind: 'system' },
         maxDepth: 99
       })
@@ -74,9 +74,9 @@ export function benchmarkPresentationCorpus(
     }
     const task = db.createTask({ runId: run.id, spec: 'history' })
     const insert = db.db.prepare(`INSERT INTO dispatch_contexts
-      (id, run_id, task_id, assignee_handle, assignee_orca_session_id, status, completed_at)
+      (id, run_id, task_id, assignee_handle, assignee_topo_session_id, status, completed_at)
       WITH RECURSIVE seq(n) AS (VALUES(1) UNION ALL SELECT n+1 FROM seq WHERE n < ?)
-      SELECT ? || n, ?, ?, CASE WHEN ? THEN printf('orca_session_id:00000000-0000-4000-8000-%012d', (n-1) % 20) ELSE 'terminal-address-' || n END,
+      SELECT ? || n, ?, ?, CASE WHEN ? THEN printf('topo_session_id:00000000-0000-4000-8000-%012d', (n-1) % 20) ELSE 'terminal-address-' || n END,
         CASE WHEN ? THEN CASE WHEN ? THEN printf('00000000-0000-4000-8000-%012d', (n-1) % 20) ELSE 'session-' || n END ELSE NULL END,
         'completed', '2020-01-01T00:00:00Z' FROM seq`)
     insert.run(history, 'session-history-', run.id, task.id, 1, 1, nullAddress ? 1 : 0)
@@ -179,7 +179,7 @@ export function benchmarkPresentationCorpus(
         trace.executions.filter(
           ({ query }) =>
             query.includes('rowid AS n') &&
-            query.includes('assignee_orca_session_id') &&
+            query.includes('assignee_topo_session_id') &&
             query.includes("AND status IN ('pending', 'dispatched')")
         )
       ).toHaveLength(0)

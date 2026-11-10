@@ -27,7 +27,7 @@ vi.mock('node:fs', async (importOriginal) => {
 let home: string
 let fake: FakeWindowsSecurity
 beforeEach(() => {
-  home = mkdtempSync(join(tmpdir(), 'orca-agy-windows-'))
+  home = mkdtempSync(join(tmpdir(), 'topo-agy-windows-'))
   vi.spyOn(process, 'platform', 'get').mockReturnValue('win32')
   for (const key of ['SSH_TTY', 'SSH_CLIENT', 'SSH_CONNECTION', 'WSL_DISTRO_NAME', 'WSL_INTEROP']) {
     vi.stubEnv(key, '')

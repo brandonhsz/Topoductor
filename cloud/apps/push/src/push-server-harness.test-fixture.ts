@@ -42,8 +42,8 @@ export function testPushConfig(): PushConfig {
     dataDir: './data/push-test',
     databasePoolMax: 10,
     apns: { keyPem: privateKey, keyId: 'ABCDE12345', teamId: 'TEAM123456' },
-    apnsTopic: 'com.stably.orca.mobile',
-    fcmProjectId: 'onorca-cloud',
+    apnsTopic: 'com.brandonhsz.topo.mobile',
+    fcmProjectId: 'ontopo-cloud',
     trustedProxyHops: 0
   }
 }

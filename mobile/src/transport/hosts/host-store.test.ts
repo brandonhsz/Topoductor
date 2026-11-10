@@ -51,8 +51,8 @@ import {
 } from './host-store'
 import { resetMobileRelayHostOverlayStoreForTests } from './mobile-relay-host-overlay-store'
 
-const HOSTS_STORAGE_KEY = 'orca:hosts'
-const OVERLAY_STORAGE_KEY = 'orca:mobile-relay:host-overlays:v2'
+const HOSTS_STORAGE_KEY = 'topo:hosts'
+const OVERLAY_STORAGE_KEY = 'topo:mobile-relay:host-overlays:v2'
 const HOST_ONE = {
   id: 'host-1',
   name: 'Host 1',
@@ -319,9 +319,9 @@ describe('host-store pairing save after an Android encryption rejection', () => 
   }
   // Preserve the Android null-message GeneralSecurityException shape from #6600.
   const ENCRYPT_REJECTION = new Error(
-    "Could not encrypt the value for key 'orca.host-token.host-1782629088232' under keychain 'key_v1'. Caused by: unknown"
+    "Could not encrypt the value for key 'topo.host-token.host-1782629088232' under keychain 'key_v1'. Caused by: unknown"
   )
-  const GENERATION_KEY = 'orca:pairing-keychain-generation'
+  const GENERATION_KEY = 'topo:pairing-keychain-generation'
   let storedHostsRaw: string
   let storedGenerationRaw: string | null
 

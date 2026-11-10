@@ -1,7 +1,7 @@
 import { createElement, useImperativeHandle, useState, type ReactElement } from 'react'
 import { act, create, type ReactTestRenderer } from 'react-test-renderer'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { OrcaMobileWebShellViewHandle } from '../../modules/orca-mobile-web-shell/src'
+import type { TopoMobileWebShellViewHandle } from '../../modules/topo-mobile-web-shell/src'
 import { BRIDGE_NATIVE_VERB_NAMES } from './bridge/bridge-native-verbs'
 import { BRIDGE_HAPTICS_GRANT, type BridgeHapticsKind } from './bridge/bridge-haptics-notify'
 import { BRIDGE_SCREENCAST_BINARY_GRANT } from './bridge/bridge-screencast-grant'
@@ -50,7 +50,7 @@ const SNAPSHOT = {
   host: { id: 'host-1', name: 'Host One', endpoint: 'ws://host-1', lastConnected: 7 }
 }
 
-const STORAGE = { 'orca:pins:host-1': '["wt-1"]' }
+const STORAGE = { 'topo:pins:host-1': '["wt-1"]' }
 
 function fakeClient(): FakeRpcClient {
   const client = doubles.client
@@ -62,7 +62,7 @@ function fakeClient(): FakeRpcClient {
 
 function FakeShellView(props: {
   sessionId: string
-  viewRef: (handle: OrcaMobileWebShellViewHandle | null) => void
+  viewRef: (handle: TopoMobileWebShellViewHandle | null) => void
   posted: PostedFrame[]
 }): null {
   useImperativeHandle(

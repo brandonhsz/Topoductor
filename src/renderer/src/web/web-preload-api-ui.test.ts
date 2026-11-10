@@ -32,13 +32,13 @@ describe('web before-unload persistence', () => {
       ui: { activeView: 'settings' }
     })
 
-    expect(JSON.parse(storage.getItem('orca.web.workspaceSession.v1') ?? '{}')).toMatchObject({
+    expect(JSON.parse(storage.getItem('topo.web.workspaceSession.v1') ?? '{}')).toMatchObject({
       activeWorktreeId: 'local-worktree'
     })
     expect(
-      JSON.parse(storage.getItem('orca.web.workspaceSession.v1.runtime:web-env-1') ?? '{}')
+      JSON.parse(storage.getItem('topo.web.workspaceSession.v1.runtime:web-env-1') ?? '{}')
     ).toMatchObject({ activeWorktreeId: 'remote-worktree' })
-    expect(JSON.parse(storage.getItem('orca.web.ui.v1') ?? '{}')).toMatchObject({
+    expect(JSON.parse(storage.getItem('topo.web.ui.v1') ?? '{}')).toMatchObject({
       activeView: 'settings'
     })
   })
@@ -110,7 +110,7 @@ describe('web UI preload API', () => {
     })
     await first
 
-    const stored = JSON.parse(globals.storage.getItem('orca.web.ui.v1') ?? '{}') as {
+    const stored = JSON.parse(globals.storage.getItem('topo.web.ui.v1') ?? '{}') as {
       featureInteractions?: FeatureInteractionState
     }
     expect(stored.featureInteractions?.tasks).toEqual({
@@ -145,7 +145,7 @@ describe('web UI preload API', () => {
     const globals = installBrowserGlobals('Linux')
     writeStoredRuntimeEnvironment(globals.storage)
     globals.storage.setItem(
-      'orca.web.ui.v1',
+      'topo.web.ui.v1',
       JSON.stringify({
         featureInteractions: {
           tasks: { firstInteractedAt: 50, interactionCount: 3 }
@@ -156,7 +156,7 @@ describe('web UI preload API', () => {
     installWebPreloadApi()
 
     const ui = await globals.window.api.ui.get()
-    const stored = JSON.parse(globals.storage.getItem('orca.web.ui.v1') ?? '{}') as {
+    const stored = JSON.parse(globals.storage.getItem('topo.web.ui.v1') ?? '{}') as {
       featureInteractions?: FeatureInteractionState
     }
 

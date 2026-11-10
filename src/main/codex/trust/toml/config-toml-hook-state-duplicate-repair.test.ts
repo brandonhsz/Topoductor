@@ -3,7 +3,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { syncSystemConfigIntoManagedCodexHome } from '../../configuration/settings/codex-config-mirror'
 import { findDuplicateTomlDeclarations } from '../../configuration/toml/config-toml-duplicate-declarations-test-fixture'
-import { repairOrcaDuplicateTrustTables } from './config-toml-project-duplicate-repair'
+import { repairTopoDuplicateTrustTables } from './config-toml-project-duplicate-repair'
 import { upsertProjectTrustLevel } from './config-toml-trust'
 
 import {
@@ -57,7 +57,7 @@ describe('hook trust recognises Codex quoted hooks.state spellings', () => {
   })
 })
 
-describe('repairing Orca hooks.state duplicates', () => {
+describe('repairing Topo hooks.state duplicates', () => {
   it('fully repairs a file holding both project and hook duplicates', () => {
     const projectPath = '/Users/me/Projects/agentic-WPS'
     const broken = [
@@ -79,7 +79,7 @@ describe('repairing Orca hooks.state duplicates', () => {
       '',
       `[hooks.state."${HOOK_KEY}"]`,
       'enabled = true',
-      'trusted_hash = "sha256:orca"',
+      'trusted_hash = "sha256:topo"',
       ''
     ].join('\n')
     writeFileSync(configPath, broken)
@@ -107,16 +107,16 @@ describe('repairing Orca hooks.state duplicates', () => {
     expect(warn).not.toHaveBeenCalled()
   })
 
-  it('removes the Orca-shaped copy when it comes before the user table', () => {
+  it('removes the Topo-shaped copy when it comes before the user table', () => {
     const broken = [
-      '[projects."/orca-first"]',
+      '[projects."/topo-first"]',
       'trust_level = "trusted"',
       '',
       `[hooks.state.'C:\\Users\\me\\.codex\\hooks.json:stop:0:0']`,
       'enabled = true',
-      'trusted_hash = "sha256:orca"',
+      'trusted_hash = "sha256:topo"',
       '',
-      '["projects"."/orca-first"]',
+      '["projects"."/topo-first"]',
       'trust_level = "untrusted"',
       '',
       '["hooks"."state"."C:\\\\Users\\\\me\\\\.codex\\\\hooks.json:stop:0:0"]',
@@ -125,9 +125,9 @@ describe('repairing Orca hooks.state duplicates', () => {
       ''
     ].join('\n')
 
-    expect(repairOrcaDuplicateTrustTables(broken)).toBe(
+    expect(repairTopoDuplicateTrustTables(broken)).toBe(
       [
-        '["projects"."/orca-first"]',
+        '["projects"."/topo-first"]',
         'trust_level = "untrusted"',
         '',
         '["hooks"."state"."C:\\\\Users\\\\me\\\\.codex\\\\hooks.json:stop:0:0"]',
@@ -150,8 +150,8 @@ describe('repairing Orca hooks.state duplicates', () => {
       ''
     ].join('\n')
 
-    expect(repairOrcaDuplicateTrustTables(broken)).toBe(broken)
-    expect(repairOrcaDuplicateTrustTables(broken)).toBe(broken)
+    expect(repairTopoDuplicateTrustTables(broken)).toBe(broken)
+    expect(repairTopoDuplicateTrustTables(broken)).toBe(broken)
     expect(warn).toHaveBeenCalledTimes(1)
   })
 })

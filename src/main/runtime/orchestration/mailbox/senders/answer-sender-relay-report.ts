@@ -44,7 +44,7 @@ export function importedAnswerSenderSnapshot(value: unknown, role: string): stri
     ? JSON.stringify({
         version: 1,
         sender: {
-          party: { address: role, terminalHandle: null, orcaSessionId: null },
+          party: { address: role, terminalHandle: null, topoSessionId: null },
           name: agentMessageSenderName(report.name),
           ...(report.agent ? { agent: report.agent } : {}),
           ...(report.relation ? { relation: report.relation } : {})

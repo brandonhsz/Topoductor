@@ -111,9 +111,9 @@ describe('WslHookRelayManager', () => {
   // Mocked installers touch no disk, so a fixed POSIX guest home also works on Windows.
   const home = '/home/wsl-test-user'
   const codexHome =
-    '\\\\wsl.localhost\\Ubuntu\\home\\wsl-test-user\\.local\\share\\orca\\codex-runtime-home\\home'
-  const opencodeOverlayDir = `${home}/.orca-relay/opencode-overlays/deadbeefcafe`
-  const opencode2OverlayDir = `${home}/.orca-relay/opencode2-overlays/deadbeefcafe`
+    '\\\\wsl.localhost\\Ubuntu\\home\\wsl-test-user\\.local\\share\\topo\\codex-runtime-home\\home'
+  const opencodeOverlayDir = `${home}/.topo-relay/opencode-overlays/deadbeefcafe`
+  const opencode2OverlayDir = `${home}/.topo-relay/opencode2-overlays/deadbeefcafe`
   let harnesses: GuestHarness[]
 
   beforeEach(() => {
@@ -170,7 +170,7 @@ describe('WslHookRelayManager', () => {
           opencode: opencodeOverlayDir,
           opencode2: opencode2OverlayDir,
           pi: `${home}/.pi/agent`,
-          omp: `${home}/.omp/agent/extensions/orca-agent-status.ts`,
+          omp: `${home}/.omp/agent/extensions/topo-agent-status.ts`,
           ...(options.claudePluginDir && params?.claudeAgentViewSource
             ? { claudeAgentView: options.claudePluginDir, claudeConfig: `${home}/.claude` }
             : {})
@@ -188,10 +188,10 @@ describe('WslHookRelayManager', () => {
       platform: () => 'win32',
       remoteHooksEnabled: () => true,
       hookCoordsEnv: () => ({
-        ORCA_AGENT_HOOK_PORT: '43117',
-        ORCA_AGENT_HOOK_TOKEN: 'tok',
-        ORCA_AGENT_HOOK_ENV: 'production',
-        ORCA_AGENT_HOOK_VERSION: '1'
+        TOPO_AGENT_HOOK_PORT: '43117',
+        TOPO_AGENT_HOOK_TOKEN: 'tok',
+        TOPO_AGENT_HOOK_ENV: 'production',
+        TOPO_AGENT_HOOK_VERSION: '1'
       }),
       instanceKey: () => 'testinstance',
       resolveBundle: () => ({ jsPath: '/fake/wsl-agent-hook-relay.js', version: '0.1.0+abc' }),
@@ -208,7 +208,7 @@ describe('WslHookRelayManager', () => {
       installCodex: vi.fn(async () => ({
         agent: 'codex' as const,
         state: 'installed' as const,
-        configPath: `${home}/.local/share/orca/codex-runtime-home/home/hooks.json`,
+        configPath: `${home}/.local/share/topo/codex-runtime-home/home/hooks.json`,
         managedHooksPresent: true,
         detail: null
       })),

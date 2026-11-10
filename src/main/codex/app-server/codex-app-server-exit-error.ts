@@ -9,7 +9,7 @@ import { providerStderrForDisplay } from '../../provider-process/provider-spawn-
 
 const EXIT_DETAIL_MAX_CHARS = 400
 
-/** The transport ended. Protocol failures are Orca refusing what Codex wrote, so not an exit. */
+/** The transport ended. Protocol failures are Topo refusing what Codex wrote, so not an exit. */
 export class CodexAppServerExitError extends Error {
   constructor(
     message: string,

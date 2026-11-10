@@ -2,8 +2,8 @@ import { useCallback, useMemo, type KeyboardEventHandler, type RefObject } from 
 import { useAppStore } from '@/store'
 import { formatShortcutLabel } from '@/hooks/useShortcutLabel'
 import { getShortcutPlatform } from '@/lib/shortcut-platform'
-import { isOrcaSessionId } from '../../../../../../shared/orca-session-address'
-import { resolveStructuredSessionOrcaSessionId } from '../../../../runtime/native-chat/orchestration/structured-session-orca-session-id'
+import { isTopoSessionId } from '../../../../../../shared/topo-session-address'
+import { resolveStructuredSessionTopoSessionId } from '../../../../runtime/native-chat/orchestration/structured-session-topo-session-id'
 import type { NativeChatStructuredViewProps } from '../../native-chat-view-types'
 import type { NativeChatHandOff } from './use-native-chat-hand-off'
 import type { NativeChatComposerHandle } from '../../composer/native-chat-composer-types'
@@ -42,10 +42,10 @@ export function useStructuredNativeChatPaneCommands({
   const terminalPaneActions = pane.contextMenuActions
   const keybindings = useAppStore((state) => state.keybindings)
   const focusSource = useCallback(() => composerRef.current?.focus(), [composerRef])
-  const resolveOrcaSessionId = useMemo(
+  const resolveTopoSessionId = useMemo(
     () =>
-      isOrcaSessionId(sessionId)
-        ? () => resolveStructuredSessionOrcaSessionId(target, sessionId)
+      isTopoSessionId(sessionId)
+        ? () => resolveStructuredSessionTopoSessionId(target, sessionId)
         : undefined,
     [sessionId, target]
   )
@@ -66,7 +66,7 @@ export function useStructuredNativeChatPaneCommands({
       onPaste: pasteClipboardIntoComposer
     },
     enabled: isVisible,
-    resolveOrcaSessionId,
+    resolveTopoSessionId,
     composerRef,
     showTerminalPaneActions: terminalPaneActions !== undefined,
     splitShortcutLabels: {

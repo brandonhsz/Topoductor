@@ -33,7 +33,7 @@ export type BundledSkillPlanInput = BundledSkillTargetRequest & {
   names?: readonly string[]
   /** Target paths the user chose to Replace; `all` is `--force`, every replaceable one. */
   force?: readonly string[] | 'all'
-  /** Update existing locations only; never spread the skill to another agent. Skip skills with no Orca copy. */
+  /** Update existing locations only; never spread the skill to another agent. Skip skills with no Topo copy. */
   installedOnly?: boolean
   /** `<userData>/skill-installs`, where cloud installs keep receipts and journals. */
   stateDirectory: string
@@ -77,12 +77,12 @@ async function linkPointsAt(
 
 type PlannedTarget = {
   op: BundledSkillOp
-  holdsOrcaCopy: boolean
+  holdsTopoCopy: boolean
   formerInstalled: boolean
   leaves: BundledSkillOp[]
 }
 
-const ORCA_COPY_CLASSES = new Set<BundledSkillFolderClass>(['current', 'released', 'edited'])
+const TOPO_COPY_CLASSES = new Set<BundledSkillFolderClass>(['current', 'released', 'edited'])
 
 async function planTarget(
   context: SkillContext,
@@ -186,8 +186,8 @@ async function planTarget(
       : files('replace')
   }
 
-  const holdsOrcaCopy =
-    former.installed || Boolean(restoreFrom) || ORCA_COPY_CLASSES.has(folderClass)
+  const holdsTopoCopy =
+    former.installed || Boolean(restoreFrom) || TOPO_COPY_CLASSES.has(folderClass)
   const decision = await decide()
   const decided =
     decision.kind === 'keep' &&
@@ -205,7 +205,7 @@ async function planTarget(
             : {})
         }
       : decided
-  const result = { holdsOrcaCopy, formerInstalled: former.installed, leaves: former.leaves }
+  const result = { holdsTopoCopy, formerInstalled: former.installed, leaves: former.leaves }
   const writes = op.kind !== 'keep' && op.kind !== 'leave'
   if (!writes && op.cleanup.length === 0 && !op.previous?.length) {
     return { op, ...result }
@@ -263,7 +263,7 @@ async function planSkill(
       ops: targets.flatMap((target) => [target.op, ...target.leaves])
     }
   }
-  if (!targets.some((target) => target.holdsOrcaCopy)) {
+  if (!targets.some((target) => target.holdsTopoCopy)) {
     return null
   }
   // Only repair an existing agent link into an empty shared slot; other updates must not create a new shared copy.

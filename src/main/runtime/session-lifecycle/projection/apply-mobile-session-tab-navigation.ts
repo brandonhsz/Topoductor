@@ -1,8 +1,8 @@
 import { HEADLESS_RUNTIME_WINDOW_ID } from '../../../../shared/runtime-session-contracts'
 import { selectMobileSessionTab } from '../../session-tabs/mobile-session-tab-selection'
-import type { OrcaRuntimeWithScheduleMobileSessionTabsChanged as MobileSessionPublication } from '../../session-tabs/session-tabs-change-publication'
-import type { OrcaRuntimeWithStoredMobileSnapshotHasStalePreservedTab as MobileSessionPreservation } from '../../session-tabs/mobile-session-publication-preservation'
-import { OrcaRuntimeWithPerformMobileSessionPtyRecordsRefresh } from './perform-mobile-session-pty-records-refresh'
+import type { TopoRuntimeWithScheduleMobileSessionTabsChanged as MobileSessionPublication } from '../../session-tabs/session-tabs-change-publication'
+import type { TopoRuntimeWithStoredMobileSnapshotHasStalePreservedTab as MobileSessionPreservation } from '../../session-tabs/mobile-session-publication-preservation'
+import { TopoRuntimeWithPerformMobileSessionPtyRecordsRefresh } from './perform-mobile-session-pty-records-refresh'
 import type {
   RuntimeMobileSessionTabsResult,
   RuntimeMobileSessionTabsSnapshot
@@ -20,7 +20,7 @@ import {
   cloneTerminalLayoutSnapshot
 } from '../../terminal/surface/mobile-session-layout-projection'
 
-export abstract class OrcaRuntimeWithApplyMobileSessionTabNavigation extends OrcaRuntimeWithPerformMobileSessionPtyRecordsRefresh {
+export abstract class TopoRuntimeWithApplyMobileSessionTabNavigation extends TopoRuntimeWithPerformMobileSessionPtyRecordsRefresh {
   protected abstract createMobileSessionTabsDelivery(): ReturnType<
     MobileSessionPublication['createMobileSessionTabsDelivery']
   >

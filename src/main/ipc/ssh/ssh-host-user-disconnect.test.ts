@@ -51,7 +51,7 @@ const target: SshTarget = {
 }
 const managedServer = {
   id: 'env-managed',
-  orcadDeployment: {
+  topodDeployment: {
     kind: 'ssh',
     requestId: 'request-1',
     sshTargetId: 'ssh-1',

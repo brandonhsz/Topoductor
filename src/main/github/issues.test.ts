@@ -95,7 +95,7 @@ describe('issue source operations', () => {
     expect(body).toContain('data:image')
     expect(body).toHaveLength(133596)
 
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
     ghExecFileAsyncMock
       .mockRejectedValueOnce(
         Object.assign(new Error('gh failed'), {
@@ -106,7 +106,7 @@ describe('issue source operations', () => {
       .mockResolvedValueOnce({
         stdout: JSON.stringify({
           number: 926,
-          html_url: 'https://github.com/stablyai/orca/issues/926'
+          html_url: 'https://github.com/brandonhsz/topo/issues/926'
         })
       })
       .mockResolvedValueOnce({ stdout: '' })
@@ -119,11 +119,11 @@ describe('issue source operations', () => {
     ).resolves.toEqual({
       ok: true,
       number: 926,
-      url: 'https://github.com/stablyai/orca/issues/926'
+      url: 'https://github.com/brandonhsz/topo/issues/926'
     })
     expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
       1,
-      ['api', '-X', 'POST', 'repos/stablyai/orca/issues', '--input', '-'],
+      ['api', '-X', 'POST', 'repos/brandonhsz/topo/issues', '--input', '-'],
       {
         cwd: '/repo-root',
         host: 'github.com',
@@ -137,7 +137,7 @@ describe('issue source operations', () => {
     )
     expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
       2,
-      ['api', '-X', 'POST', 'repos/stablyai/orca/issues', '--input', '-'],
+      ['api', '-X', 'POST', 'repos/brandonhsz/topo/issues', '--input', '-'],
       {
         cwd: '/repo-root',
         host: 'github.com',
@@ -151,13 +151,13 @@ describe('issue source operations', () => {
     )
     expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
       3,
-      ['api', '-X', 'PATCH', 'repos/stablyai/orca/issues/926', '--input', '-'],
+      ['api', '-X', 'PATCH', 'repos/brandonhsz/topo/issues/926', '--input', '-'],
       { cwd: '/repo-root', host: 'github.com', stdin: JSON.stringify({ body }) }
     )
   })
 
   it('does not retry unrelated create failures', async () => {
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
     ghExecFileAsyncMock.mockRejectedValueOnce(new Error('HTTP 422: assignees is invalid'))
 
     await expect(createIssue('/repo-root', 'Invalid issue', 'Body')).resolves.toEqual({
@@ -169,7 +169,7 @@ describe('issue source operations', () => {
 
   it('stops when placeholder create fails during oversized-body recovery', async () => {
     const body = `data:image/png;base64,${'x'.repeat(100)}`
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
     ghExecFileAsyncMock
       .mockRejectedValueOnce(new Error('body is too long (maximum is 65536 characters)'))
       .mockRejectedValueOnce(new Error('HTTP 500: create failed'))
@@ -182,13 +182,13 @@ describe('issue source operations', () => {
   })
 
   it('reports partial success when oversized-body patch fails', async () => {
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
     ghExecFileAsyncMock
       .mockRejectedValueOnce(new Error('body is too long (maximum is 65536 characters)'))
       .mockResolvedValueOnce({
         stdout: JSON.stringify({
           number: 928,
-          html_url: 'https://github.com/stablyai/orca/issues/928'
+          html_url: 'https://github.com/brandonhsz/topo/issues/928'
         })
       })
       .mockRejectedValueOnce(new Error('HTTP 500: update failed'))
@@ -196,14 +196,14 @@ describe('issue source operations', () => {
     await expect(createIssue('/repo-root', 'Partial issue', 'data:image')).resolves.toEqual({
       ok: true,
       number: 928,
-      url: 'https://github.com/stablyai/orca/issues/928',
+      url: 'https://github.com/brandonhsz/topo/issues/928',
       bodySaveWarning:
-        'Issue https://github.com/stablyai/orca/issues/928 was created, but saving its body failed: HTTP 500: update failed'
+        'Issue https://github.com/brandonhsz/topo/issues/928 was created, but saving its body failed: HTTP 500: update failed'
     })
   })
 
   it('sends large issue bodies over stdin through the REST issue endpoint', async () => {
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
     ghExecFileAsyncMock.mockResolvedValueOnce({ stdout: '' })
     const body = `Screenshot:\ndata:image/png;base64,${'A'.repeat(40_000)}`
 
@@ -211,7 +211,7 @@ describe('issue source operations', () => {
       ok: true
     })
     expect(ghExecFileAsyncMock).toHaveBeenCalledWith(
-      ['api', '-X', 'PATCH', 'repos/stablyai/orca/issues/924', '--input', '-'],
+      ['api', '-X', 'PATCH', 'repos/brandonhsz/topo/issues/924', '--input', '-'],
       { cwd: '/repo-root', host: 'github.com', stdin: JSON.stringify({ body }) }
     )
   })
@@ -219,7 +219,7 @@ describe('issue source operations', () => {
   it('keeps the accepted issue body representation through a compound metadata edit', async () => {
     const body =
       '![new](https://github.com/user-attachments/assets/ce11040a-fb66-4289-927f-547b16dfc488)'
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
     ghExecFileAsyncMock
       .mockResolvedValueOnce({
         stdout: JSON.stringify({
@@ -253,7 +253,7 @@ describe('issue source operations', () => {
   ])(
     'keeps an accepted issue edit successful without a usable paired response (%s)',
     async (stdout) => {
-      getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
+      getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
       ghExecFileAsyncMock.mockResolvedValueOnce({ stdout })
       await expect(
         updateIssue('/repo-root', 924, {
@@ -267,7 +267,7 @@ describe('issue source operations', () => {
   )
 
   it('reports a failed close whose gh error mentions "already"', async () => {
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
     ghExecFileAsyncMock.mockRejectedValueOnce(
       new Error('GraphQL: API rate limit already exceeded for user ID 1.')
     )

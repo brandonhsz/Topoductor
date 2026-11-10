@@ -5,7 +5,7 @@ import { act, cleanup, fireEvent, screen } from '@testing-library/react'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { render } from '../actions/native-chat-tooltip-test-harness'
 import { useAppStore } from '@/store'
-import { testOrcaSessionId } from '../../../../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../../../../shared/topo-session-address-test-fixture'
 import {
   initialStore,
   from,
@@ -269,11 +269,11 @@ function slots(message: NativeChatMessage, surrounding = false, working = false)
 it.each(['task', 'mail', 'generic'] as const)(
   'keeps native %s progress independent from Markdown and reparses own edits',
   async (kind) => {
-    const sessionId = testOrcaSessionId('progress-sender')
+    const sessionId = testTopoSessionId('progress-sender')
     const entry = setSenderSessionStatus(sessionId)
     const paneKey = entry.paneKey
     const prefix =
-      kind === 'task' ? 'You are working inside Orca, a multi-agent IDE.\n=== TASK ===\n' : ''
+      kind === 'task' ? 'You are working inside Topo, a multi-agent IDE.\n=== TASK ===\n' : ''
     const message: NativeChatMessage = {
       id: `progress-${kind}`,
       role: 'user',
@@ -282,7 +282,7 @@ it.each(['task', 'mail', 'generic'] as const)(
       from: {
         ...from,
         senders: from.senders.map((sender, index) =>
-          index === 0 ? { ...sender, party: { ...sender.party, orcaSessionId: sessionId } } : sender
+          index === 0 ? { ...sender, party: { ...sender.party, topoSessionId: sessionId } } : sender
         ),
         orchestration:
           kind === 'task'

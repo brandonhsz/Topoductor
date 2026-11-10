@@ -1,4 +1,4 @@
-// Probe selected scopes only, deferring queued work while Orca automation traffic holds priority.
+// Probe selected scopes only, deferring queued work while Topo automation traffic holds priority.
 
 export class ExternalAutomationProbeCancelledError extends Error {
   constructor() {

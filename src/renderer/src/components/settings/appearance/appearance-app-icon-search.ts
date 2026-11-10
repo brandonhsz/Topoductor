@@ -15,7 +15,7 @@ export const getAppIconEntries = createLocalizedCatalog((): SettingsSearchEntry[
         'auto.components.settings.appearance.search.2cfb3420c0',
         'app icon'
       ),
-      ...translateSearchKeyword('auto.components.settings.appearance.search.1f2880a9d5', 'orca'),
+      ...translateSearchKeyword('auto.components.settings.appearance.search.1f2880a9d5', 'topo'),
       ...translateSearchKeyword('auto.components.settings.appearance.search.d18b54ca90', 'dock'),
       ...translateSearchKeyword('auto.components.settings.appearance.search.e5bc35d59e', 'window'),
       ...translateSearchKeyword(

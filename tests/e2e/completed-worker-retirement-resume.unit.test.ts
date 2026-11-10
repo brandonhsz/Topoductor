@@ -12,7 +12,7 @@ import '../../src/main/runtime/orchestration/db/contract-constants'
 import '../../src/main/runtime/orchestration/db/messages/mailbox-routing-page'
 import '../../src/main/runtime/orchestration/db/dispatch-row-writer'
 import '../../src/main/runtime/orchestration/db/attempt-outcome-projection'
-import { OrcaRuntimeService } from '../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../src/main/runtime/topo-runtime'
 import type { RpcContext } from '../../src/main/runtime/rpc/core'
 import { ORCHESTRATION_METHODS } from '../../src/main/runtime/rpc/methods/orchestration/orchestration'
 import { closeTerminalTab } from '@/components/terminal/terminal-tab-actions'
@@ -250,7 +250,7 @@ function orchestrationMethod<N extends OrchestrationMethod['name']>(
 
 async function releaseCompletedWorker(terminalState: 'running' | 'exited'): Promise<void> {
   const db = new OrchestrationDb(':memory:')
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(db)
   const coordinatorPaneKey = 'coordinator-tab:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
   const run = db.createRun({
@@ -290,7 +290,7 @@ async function releaseCompletedWorker(terminalState: 'running' | 'exited'): Prom
     status: 'running',
     exitCode: null
   })
-  vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('orca')
+  vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('topo')
   vi.spyOn(runtime, 'sendTerminalAgentPrompt').mockResolvedValue({
     handle: TERMINAL_HANDLE,
     accepted: true,

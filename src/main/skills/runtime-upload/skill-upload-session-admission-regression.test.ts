@@ -76,7 +76,7 @@ async function stagedArchiveCount(uploads: string): Promise<number> {
 
 describe('SkillUploadSessionService admission regressions', () => {
   it('removes an unpublished archive when disposal starts during open', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-upload-admission-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-upload-admission-'))
     roots.push(root)
     const uploads = join(root, 'uploads')
     const service = new SkillUploadSessionService(uploads)

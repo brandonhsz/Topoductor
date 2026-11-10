@@ -5,7 +5,7 @@ import { mkdtempSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import type { CDPSession, Locator } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   waitForActivePaneHookDescriptor,
@@ -103,25 +103,25 @@ async function processPhrasePick(session: CDPSession, selector: Key, text: strin
   })
 }
 
-test('Linux Sogou commits land in the native chat composer', async ({ orcaPage }) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage, 30_000)
-  const boundPane = await waitForPaneIdentitySnapshot(orcaPage, 1)
-  const ptyId = await waitForActivePanePtyId(orcaPage)
-  await waitForPtyShellEcho(orcaPage, ptyId, 15_000)
-  const descriptor = await waitForActivePaneHookDescriptor(orcaPage)
+test('Linux Sogou commits land in the native chat composer', async ({ topoPage }) => {
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage, 30_000)
+  const boundPane = await waitForPaneIdentitySnapshot(topoPage, 1)
+  const ptyId = await waitForActivePanePtyId(topoPage)
+  await waitForPtyShellEcho(topoPage, ptyId, 15_000)
+  const descriptor = await waitForActivePaneHookDescriptor(topoPage)
   expect(descriptor.paneKey).toBe(`${boundPane.tabId}:${boundPane.activeLeafId}`)
   const [tabId] = descriptor.paneKey.split(':')
   const sessionId = `e2e-sogou-composer-${randomUUID()}`
   const transcriptPath = path.join(
-    mkdtempSync(path.join(os.tmpdir(), 'orca-e2e-sogou-composer-')),
+    mkdtempSync(path.join(os.tmpdir(), 'topo-e2e-sogou-composer-')),
     `${sessionId}.jsonl`
   )
   writeFileSync(transcriptPath, claudeTranscript(sessionId))
 
-  await orcaPage.evaluate(
+  await topoPage.evaluate(
     async ({ paneKey, worktreeId, tabId, sessionId, transcriptPath }) => {
       const settings = await window.api.settings.set({
         nativeChatProviders: { claude: true, codex: true }
@@ -153,12 +153,12 @@ test('Linux Sogou commits land in the native chat composer', async ({ orcaPage }
     { ...descriptor, tabId, sessionId, transcriptPath }
   )
 
-  const chat = orcaPage.locator('[data-native-chat-root="true"]')
+  const chat = topoPage.locator('[data-native-chat-root="true"]')
   await expect(chat.getByText('Ready for input.')).toBeVisible()
   const composer = chat.getByRole('textbox')
   await composer.click()
   await expect(composer).toBeFocused()
-  const session = await orcaPage.context().newCDPSession(orcaPage)
+  const session = await topoPage.context().newCDPSession(topoPage)
   await composer.evaluate((element) => {
     const log: string[] = []
     for (const type of ['keydown', 'keypress', 'keyup', 'beforeinput', 'compositionstart']) {
@@ -184,7 +184,7 @@ test('Linux Sogou commits land in the native chat composer', async ({ orcaPage }
   await expect.poll(() => draft(composer)).toBe('你')
   // Guards the replay itself: it must match the recorded fixture shape.
   expect(
-    await orcaPage.evaluate((): unknown =>
+    await topoPage.evaluate((): unknown =>
       JSON.parse(document.documentElement.dataset.sogouEventLog ?? '[]')
     )
   ).toEqual([
@@ -222,7 +222,7 @@ test('Linux Sogou commits land in the native chat composer', async ({ orcaPage }
 
   await composer.pressSequentially(' ok')
   await expect.poll(() => draft(composer)).toBe('你浩你好你好 ok')
-  const finalPane = await waitForPaneIdentitySnapshot(orcaPage, 1)
+  const finalPane = await waitForPaneIdentitySnapshot(topoPage, 1)
   expect(finalPane.tabId).toBe(boundPane.tabId)
   expect(finalPane.activeLeafId).toBe(boundPane.activeLeafId)
   expect(finalPane.ptyIdsByLeafId).toEqual(boundPane.ptyIdsByLeafId)

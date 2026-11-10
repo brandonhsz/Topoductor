@@ -6,18 +6,18 @@ vi.mock('node:fs/promises', async (importOriginal) => ({
   ...(await importOriginal<typeof FsPromises>()),
   stat: statMock
 }))
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 // Fragments stay side-effect ordered: mocks, then lifecycle, then fixtures.
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const {
   createFolderWorkspaceRuntimeStore,
   makeFolderProjectGroup,
   makeFolderWorkspace,
   TEST_FOLDER_WORKSPACE_KEY
-} = await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
+} = await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
 const { blockedWslDistroForPath } = await import('../../../wsl/filesystem/wsl-unc-access-gate')
 const { isWslUserActFor } = await import('../../../wsl/discovery/wsl-user-act-scope')
 
@@ -27,7 +27,7 @@ const hostPlatform = process.platform
 const statsInUserAct: boolean[] = []
 
 function failedStart(wslUserAct: boolean): Promise<unknown> {
-  const runtime = new OrcaRuntimeService(
+  const runtime = new TopoRuntimeService(
     createFolderWorkspaceRuntimeStore(
       makeFolderWorkspace({ folderPath: FOLDER }),
       makeFolderProjectGroup({ parentPath: PARENT })

@@ -41,8 +41,8 @@ export function nativeChatComposerSendState(
     editSession: { canSave: boolean } | undefined
     isWorking: boolean
     canStop: boolean
-    /** The draft is an Orca command such as /resume, which runs without the agent. */
-    orcaCommand?: boolean
+    /** The draft is a Topo command such as /resume, which runs without the agent. */
+    topoCommand?: boolean
     /** Goal mode submits the draft as an objective, which starts work. */
     goalMode?: boolean
   },
@@ -56,7 +56,7 @@ export function nativeChatComposerSendState(
   const sendHeld = localHold || hostHold
   // Like Enter, a held host still takes commands that start no turn.
   const runsWhileHostHolds =
-    input.orcaCommand === true ||
+    input.topoCommand === true ||
     (transport !== undefined &&
       !input.messageDelivery &&
       input.goalMode !== true &&

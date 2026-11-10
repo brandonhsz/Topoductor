@@ -12,8 +12,8 @@ import {
 
 const resolveHelperAppPathMock = vi.hoisted(() => vi.fn())
 const resolveHelperExecutablePathMock = vi.hoisted(() => vi.fn())
-const permissionStatusTempDir = '/tmp/orca-computer-use-permissions-test'
-const helperAppPath = '/Applications/Orca Computer Use.app'
+const permissionStatusTempDir = '/tmp/topo-computer-use-permissions-test'
+const helperAppPath = '/Applications/Topo Computer Use.app'
 let monotonicOffset = 0
 const gate = vi.hoisted((): { current: PermissionStatusGate | null } => ({ current: null }))
 
@@ -57,7 +57,7 @@ describe('setup helper launch window', () => {
     vi.mocked(stat).mockResolvedValue({} as Awaited<ReturnType<typeof stat>>)
     resolveHelperAppPathMock.mockReturnValue(helperAppPath)
     resolveHelperExecutablePathMock.mockReturnValue(
-      `${helperAppPath}/Contents/MacOS/orca-computer-use-macos`
+      `${helperAppPath}/Contents/MacOS/topo-computer-use-macos`
     )
     mockPermissionStatus('{"accessibility":"not-granted","screenshots":"not-granted"}')
     setPlatform('darwin')

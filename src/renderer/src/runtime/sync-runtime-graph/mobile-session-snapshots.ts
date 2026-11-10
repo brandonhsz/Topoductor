@@ -33,7 +33,7 @@ import { buildMobileBrowserTab } from './mobile-session-browser-tabs'
 import type { MobileSessionPublicationInputs } from './types'
 import { canReuseMobileSessionSnapshot } from './mobile-session-capture'
 import { selectFolderWorkspaces } from '@/store/workspaces/catalog/workspace-record-fields'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 
 export function buildMobileSessionTabSnapshots(
   state: AppState,
@@ -176,7 +176,7 @@ export function buildMobileSessionTabSnapshots(
         emittedEditorTabIds.add(unifiedTab.id)
       }
       // Switch point: a row goes out under its tab id only, the id main's layout resolves (L280).
-      const tablessFiles = ORCA_LAYOUT_OWNER_IS_MAIN ? [] : openFilesForWorktree.values()
+      const tablessFiles = TOPO_LAYOUT_OWNER_IS_MAIN ? [] : openFilesForWorktree.values()
       for (const file of tablessFiles) {
         if (!isMobilePublishableOpenFile(file) || emittedEditorFileIds.has(file.id)) {
           continue

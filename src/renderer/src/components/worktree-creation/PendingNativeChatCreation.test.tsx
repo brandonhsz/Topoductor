@@ -558,7 +558,7 @@ it('keeps typing visible in the replacement while its draft write is slow or ref
   expect(replacement.getAttribute('contenteditable')).toBe('true')
   expect(promptValue(replacement)).toBe('Half a prompt, finished in the replacement')
   expect(
-    screen.getByRole('img', { name: "This draft couldn't be saved yet. Orca keeps trying." })
+    screen.getByRole('img', { name: "This draft couldn't be saved yet. Topo keeps trying." })
   ).toBeTruthy()
   storage.refuseWrites = false
   await act(async () => {

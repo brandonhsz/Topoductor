@@ -20,7 +20,7 @@ import {
 
 import { HOST_TEST_SESSION as SESSION } from '../../../../../native-chat/agent-session-wire/host/testing/structured-agent-session-host-test-data'
 import type { RestTestRig } from '../../../../../native-chat/agent-session-wire/host/testing/structured-agent-session-rest-test-rig'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { RpcDispatcher } from '../../../dispatcher'
 import { STRUCTURED_AGENT_SESSION_METHODS } from '../structured-agent-session'
 
@@ -150,7 +150,7 @@ async function chatAtRest(repoConfig: {
 beforeEach(async () => {
   rig = await createRestTestRig({ idleSweep: { intervalMs: 3_600_000 } })
   setStructuredAgentSessionHost(rig.host)
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
 
   dispatcher = new RpcDispatcher({ runtime, methods: STRUCTURED_AGENT_SESSION_METHODS })
 })

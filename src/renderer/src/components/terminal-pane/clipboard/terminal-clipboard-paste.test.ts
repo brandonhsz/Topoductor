@@ -25,12 +25,12 @@ describe('terminal clipboard paste', () => {
       readClipboardText: vi.fn().mockResolvedValue(''),
       saveClipboardImageAsTempFile: vi
         .fn()
-        .mockResolvedValue('/tmp/orca-paste-1760000000000-id.png'),
+        .mockResolvedValue('/tmp/topo-paste-1760000000000-id.png'),
       pasteText: (text, options) => pasteTerminalText(terminal, text, options)
     })
 
     expect(terminal.input).toHaveBeenCalledWith(
-      '\x1b[200~/tmp/orca-paste-1760000000000-id.png\x1b[201~'
+      '\x1b[200~/tmp/topo-paste-1760000000000-id.png\x1b[201~'
     )
     expect(terminal.paste).not.toHaveBeenCalled()
     expect(observedIgnoreBracketedPasteMode).toEqual([false])

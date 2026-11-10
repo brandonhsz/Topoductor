@@ -21,7 +21,7 @@ export function getJiraIssueKeyCasingTitle(t: Translate = translate): string {
 export function getJiraIssueKeyCasingDescription(t: Translate = translate): string {
   return t(
     'auto.components.settings.GitPane.jiraIssueKeyCasingDescription',
-    'Casing of the Jira issue key in the workspace and branch names Orca suggests for new Jira-linked workspaces, such as PROJ-123-fix-login instead of proj-123-fix-login. Existing workspaces and names you type are never changed.'
+    'Casing of the Jira issue key in the workspace and branch names Topo suggests for new Jira-linked workspaces, such as PROJ-123-fix-login instead of proj-123-fix-login. Existing workspaces and names you type are never changed.'
   )
 }
 

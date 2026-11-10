@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { ProcessResult } from '@orca/process-host/process-spec'
+import type { ProcessResult } from '@topo/process-host/process-spec'
 import { parseWslPath, wslUncDirectoryExistsAsync } from './unc-path-access'
 import { toLinuxPath, toWindowsWslPath } from '../../../shared/wsl-paths'
 
@@ -8,7 +8,7 @@ const { runProcessMock, runProcessSyncMock } = vi.hoisted(() => ({
   runProcessSyncMock: vi.fn()
 }))
 
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   runProcess: runProcessMock,
   runProcessSync: runProcessSyncMock
 }))
@@ -62,12 +62,12 @@ describe('wsl path helpers', () => {
   })
 
   it('converts Windows drive paths to /mnt paths for WSL commands', () => {
-    expect(toLinuxPath('C:\\Users\\jinwo\\git\\orca')).toBe('/mnt/c/Users/jinwo/git/orca')
+    expect(toLinuxPath('C:\\Users\\jinwo\\git\\topo')).toBe('/mnt/c/Users/jinwo/git/topo')
   })
 
   it('converts /mnt drive paths back to native Windows form', () => {
-    expect(toWindowsWslPath('/mnt/c/Users/jinwo/git/orca', 'Ubuntu')).toBe(
-      'C:\\Users\\jinwo\\git\\orca'
+    expect(toWindowsWslPath('/mnt/c/Users/jinwo/git/topo', 'Ubuntu')).toBe(
+      'C:\\Users\\jinwo\\git\\topo'
     )
   })
 })
@@ -78,7 +78,7 @@ describe('wslUncDirectoryExistsAsync', () => {
   })
 
   it('returns true when the distro reports the directory exists', async () => {
-    runProcessMock.mockResolvedValue(exited('__ORCA_DIRECTORY_EXISTS__'))
+    runProcessMock.mockResolvedValue(exited('__TOPO_DIRECTORY_EXISTS__'))
 
     await expect(
       withPlatformAsync('win32', () =>
@@ -95,7 +95,7 @@ describe('wslUncDirectoryExistsAsync', () => {
           '--exec',
           'sh',
           '-c',
-          expect.stringContaining('__ORCA_DIRECTORY_EXISTS__'),
+          expect.stringContaining('__TOPO_DIRECTORY_EXISTS__'),
           'sh',
           '/home/jin/repo'
         ]
@@ -105,7 +105,7 @@ describe('wslUncDirectoryExistsAsync', () => {
 
   it('distinguishes a missing directory from an inconclusive probe', async () => {
     runProcessMock
-      .mockResolvedValueOnce(exited('__ORCA_DIRECTORY_MISSING__'))
+      .mockResolvedValueOnce(exited('__TOPO_DIRECTORY_MISSING__'))
       .mockResolvedValueOnce(exited('', 4294967295))
 
     await withPlatformAsync('win32', async () => {

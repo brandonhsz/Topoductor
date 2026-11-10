@@ -66,7 +66,7 @@ describe('orca.document.session', () => {
     const { orca, session, fromHost, edits, posted } = await open({ debounceMs: 0 })
     session.change('a1')
     await settle()
-    // `a1` is held by Orca's rate limit; the save must not post `b` beside it.
+    // `a1` is held by Topo's rate limit; the save must not post `b` beside it.
     session.change('b')
     fromHost({ orca: 1, kind: 'req', id: 9, method: 'editor.flush' })
     await settle()
@@ -117,7 +117,7 @@ describe('orca.document.session', () => {
       expect(session.value).toBe('a')
       session.change('a+typed')
       await settle()
-      // Still against the document before the merge: Orca refuses it and keeps its banner.
+      // Still against the document before the merge: Topo refuses it and keeps its banner.
       expect(edits().at(-1)).toMatchObject({ params: { baseVersion: 1 } })
     } finally {
       error.mockRestore()

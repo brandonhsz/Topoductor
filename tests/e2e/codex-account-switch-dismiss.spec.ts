@@ -1,4 +1,4 @@
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   configureGoldenStubAgent,
   getGoldenStubAgentLaunchEnv,
@@ -10,17 +10,17 @@ import { waitForActivePanePtyId, waitForTerminalOutput } from './helpers/termina
 test.use({ launchEnv: getGoldenStubAgentLaunchEnv() })
 
 test('account switch actions return keyboard input to the terminal', async ({
-  orcaPage
+  topoPage
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await configureGoldenStubAgent(orcaPage)
-  await launchGoldenStubAgentFromNewTab(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await configureGoldenStubAgent(topoPage)
+  await launchGoldenStubAgentFromNewTab(topoPage)
 
   for (const action of ['outside', 'keep', 'escape', 'restart'] as const) {
-    const ptyId = await waitForActivePanePtyId(orcaPage)
-    await orcaPage.evaluate(
+    const ptyId = await waitForActivePanePtyId(topoPage)
+    await topoPage.evaluate(
       ({ ptyId, action }) => {
         const store = window.__store
         if (!store) {
@@ -36,7 +36,7 @@ test('account switch actions return keyboard input to the terminal', async ({
       },
       { ptyId, action }
     )
-    const dialog = orcaPage.getByRole('dialog').filter({ hasText: 'Account switched' })
+    const dialog = topoPage.getByRole('dialog').filter({ hasText: 'Account switched' })
     await expect(dialog).toBeVisible()
     await expect(dialog).toBeFocused()
     if (action === 'outside') {
@@ -47,15 +47,15 @@ test('account switch actions return keyboard input to the terminal', async ({
       }
       // Why centered: the sidebar seam's resize and scrollbar strips overlap the pane's left edge.
       const outside = { x: backdrop.width / 2, y: 8 }
-      await orcaPage.mouse.move(cardText.x + 8, cardText.y + 8)
-      await orcaPage.mouse.down()
-      await orcaPage.mouse.move(backdrop.x + outside.x, backdrop.y + outside.y)
-      await orcaPage.mouse.up()
+      await topoPage.mouse.move(cardText.x + 8, cardText.y + 8)
+      await topoPage.mouse.down()
+      await topoPage.mouse.move(backdrop.x + outside.x, backdrop.y + outside.y)
+      await topoPage.mouse.up()
       await expect(dialog).toBeVisible()
-      await orcaPage.screenshot({ path: testInfo.outputPath('account-switched.png') })
+      await topoPage.screenshot({ path: testInfo.outputPath('account-switched.png') })
       await dialog.click({ position: outside })
     } else if (action === 'escape') {
-      await orcaPage.keyboard.press('Escape')
+      await topoPage.keyboard.press('Escape')
     } else {
       await dialog
         .getByRole('button', {
@@ -65,7 +65,7 @@ test('account switch actions return keyboard input to the terminal', async ({
         .click()
     }
     await expect(dialog).toHaveCount(0)
-    const input = orcaPage.locator('.xterm-helper-textarea:focus')
+    const input = topoPage.locator('.xterm-helper-textarea:focus')
     await expect(input).toHaveCount(1)
     if (action === 'restart') {
       // This check covers the focus handoff; process replacement is a separate contract.
@@ -73,10 +73,10 @@ test('account switch actions return keyboard input to the terminal', async ({
     }
     // A printed reply proves input reached the process without an extra terminal click.
     const marker = `ACCOUNT_SWITCH_${action.toUpperCase()}`
-    await orcaPage.keyboard.type(marker)
-    await orcaPage.keyboard.press('Enter')
-    await waitForTerminalOutput(orcaPage, `[GOLDEN_STUB_AGENT_SUBMITTED] ${marker}`, 20_000)
+    await topoPage.keyboard.type(marker)
+    await topoPage.keyboard.press('Enter')
+    await waitForTerminalOutput(topoPage, `[GOLDEN_STUB_AGENT_SUBMITTED] ${marker}`, 20_000)
     await expect(input).toHaveCount(1)
-    await orcaPage.screenshot({ path: testInfo.outputPath(`after-${action}.png`) })
+    await topoPage.screenshot({ path: testInfo.outputPath(`after-${action}.png`) })
   }
 })

@@ -6,7 +6,7 @@ import { useAppStore } from '@/store/index'
 import { captureEditorFileOperationProvenance } from '@/lib/editor/file-operations/editor-file-operation-provenance'
 import type { AppState } from '@/store/types'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import type { LayoutCommand } from '../../../../../../shared/workspace-layout/workspace-layout-command-types'
 import {
   drawTabsFromMain,
@@ -147,7 +147,7 @@ function expectMainMatchesWindow(): void {
   }
 }
 
-describe.runIf(ORCA_LAYOUT_OWNER_IS_MAIN)(
+describe.runIf(TOPO_LAYOUT_OWNER_IS_MAIN)(
   'restored editor tab moved to its owning workspace, layout-owner build',
   () => {
     it('records the move under the ids and group the window chose', async () => {

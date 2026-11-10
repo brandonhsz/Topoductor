@@ -2,7 +2,7 @@
 // Require daemon-backed scrollback, cursor and pane titles across clean restart.
 
 import type { ElectronApplication } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   execInTerminal,
   waitForTerminalOutput,
@@ -11,7 +11,7 @@ import {
   splitActiveTerminalPane
 } from './helpers/terminal'
 import { getActiveTabId } from './helpers/store'
-import { createRestartSession } from './helpers/orca-restart'
+import { createRestartSession } from './helpers/topo-restart'
 import { PTY_SESSION_ID_SEPARATOR } from '../../src/shared/terminal/pty/lifecycle/pty-session-id-format'
 import {
   seededRepoPathOrSkip,
@@ -88,8 +88,8 @@ test.describe('Terminal restart persistence', () => {
       const { worktreeId, ptyId } = await bootstrapFirstLaunch(firstLaunch.page, repoPath)
       expect(ptyId).toContain(PTY_SESSION_ID_SEPARATOR)
 
-      const prompt = `ORCA_RESTART_PROMPT_${Date.now()}_GT `
-      const marker = `ORCA_CURSOR_RESTART_${Date.now()}`
+      const prompt = `TOPO_RESTART_PROMPT_${Date.now()}_GT `
+      const marker = `TOPO_CURSOR_RESTART_${Date.now()}`
       const promptCommand =
         process.platform === 'win32'
           ? `function global:prompt { '${prompt}' }`

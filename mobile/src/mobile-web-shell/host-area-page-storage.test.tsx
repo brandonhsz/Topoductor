@@ -41,11 +41,11 @@ import {
   readMirroredStorage
 } from '../storage/mirrored-storage-keys'
 
-const CHAT_TABS = 'orca:nativeChatTabs:host-a:wt-1'
-const LIVE_INPUT = 'orca:terminalLiveInputDisabled:host-a:wt-1'
-const NEVER_STORED = 'orca:nativeChatTabs:host-a:wt-2'
-const OTHER_HOST = 'orca:nativeChatTabs:host-b:wt-1'
-const FRESH = 'orca:terminalLiveInputDisabled:host-a:wt-2'
+const CHAT_TABS = 'topo:nativeChatTabs:host-a:wt-1'
+const LIVE_INPUT = 'topo:terminalLiveInputDisabled:host-a:wt-1'
+const NEVER_STORED = 'topo:nativeChatTabs:host-a:wt-2'
+const OTHER_HOST = 'topo:nativeChatTabs:host-b:wt-1'
+const FRESH = 'topo:terminalLiveInputDisabled:host-a:wt-2'
 
 function persisted(): void {
   for (const land of queued.splice(0)) {

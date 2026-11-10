@@ -16,7 +16,7 @@ afterEach(() => {
   }
 })
 function fixture() {
-  const root = mkdtempSync(join(tmpdir(), 'orca-native-opencode2-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-native-opencode2-'))
   const path = join(root, 'opencode.db')
   const db = new Database(path)
   fixtures.push({ db, root })
@@ -56,7 +56,7 @@ it.each([true, false])(
 )
 
 it('captures the M1 copied roots without events, excludes a racing CLI root, and honors before', async () => {
-  const root = mkdtempSync(join(tmpdir(), 'orca-native-opencode2-fork-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-native-opencode2-fork-'))
   const path = join(root, 'opencode.db')
   const db = openCode2ForkStore(path)
   fixtures.push({ db, root })

@@ -1,4 +1,4 @@
-// No build step: Orca transpiles these files when the panel loads.
+// No build step: Topo transpiles these files when the panel loads.
 import { atom, read, set, Tab, Tabs } from 'orca'
 import { ContentTab } from './content'
 import { DataTab } from './data'

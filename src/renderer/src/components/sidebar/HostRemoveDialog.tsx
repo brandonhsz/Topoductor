@@ -35,7 +35,7 @@ type HostRemoveDialogProps = {
   onOpenChange: (open: boolean) => void
   hostId: ExecutionHostId
   label: string
-  /** `wsl`: a WSL host, removed in place (Settings → Orca servers → WSL hosts). */
+  /** `wsl`: a WSL host, removed in place (Settings → Topo servers → WSL hosts). */
   target: NonNullable<HostRemovalTarget> | { kind: 'wsl'; environmentId: string }
 }
 
@@ -170,23 +170,23 @@ function HostRemoveDialogBody({
     target.kind === 'wsl'
       ? t(
           'auto.components.sidebar.HostRemoveDialog.wslHostEndsTerminalsUnlessShared',
-          'Removes {{value0}} from Orca. Unless another Orca that’s open on this computer is using it, this also ends its open terminals and stops Orca’s server in that distro. Files in the distro are untouched.',
+          'Removes {{value0}} from Topo. Unless another Topo that’s open on this computer is using it, this also ends its open terminals and stops Topo’s server in that distro. Files in the distro are untouched.',
           { value0: label }
         )
       : target.kind === 'runtime'
         ? t(
             'auto.components.sidebar.HostRemoveDialog.4d5e6f7a8b',
-            'This opens the Orca servers settings where you can remove this server.'
+            'This opens the Topo servers settings where you can remove this server.'
           )
         : hasWorkspaces
           ? t(
               'auto.components.sidebar.HostRemoveDialog.hostKeepsWorkspaces',
-              'Removes {{host}} and its credentials from this computer. Its {{count}} workspaces stay in Orca — remote files are not touched.',
+              'Removes {{host}} and its credentials from this computer. Its {{count}} workspaces stay in Topo — remote files are not touched.',
               {
                 host: label,
                 count: workspaceCount,
                 defaultValue_one:
-                  'Removes {{host}} and its credentials from this computer. Its {{count}} workspace stays in Orca — remote files are not touched.'
+                  'Removes {{host}} and its credentials from this computer. Its {{count}} workspace stays in Topo — remote files are not touched.'
               }
             )
           : t(
@@ -196,8 +196,8 @@ function HostRemoveDialogBody({
 
   const deleteOptionLabel = t(
     'auto.components.sidebar.HostRemoveDialog.alsoRemoveWorkspaces',
-    'Also remove these {{count}} workspaces from Orca',
-    { count: workspaceCount, defaultValue_one: 'Also remove this workspace from Orca' }
+    'Also remove these {{count}} workspaces from Topo',
+    { count: workspaceCount, defaultValue_one: 'Also remove this workspace from Topo' }
   )
 
   return (
@@ -249,7 +249,7 @@ function HostRemoveDialogBody({
                   <span className="mt-0.5 block text-muted-foreground">
                     {t(
                       'auto.components.sidebar.HostRemoveDialog.alsoForgetLocalHint',
-                      'Clears them from Orca only. Remote files, worktrees, and branches are left untouched.'
+                      'Clears them from Topo only. Remote files, worktrees, and branches are left untouched.'
                     )}
                   </span>
                 </span>

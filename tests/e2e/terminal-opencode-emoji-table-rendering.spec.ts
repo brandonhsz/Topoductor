@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { rmSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   sendToTerminal,
@@ -39,7 +39,7 @@ type CursorBlinkSample = {
   paintedCursorCellCount: number
 }
 
-const EMOJI_TABLE_MARKER = 'ORCA_EMOJI_TABLE_RENDER_DONE'
+const EMOJI_TABLE_MARKER = 'TOPO_EMOJI_TABLE_RENDER_DONE'
 
 function emojiTableScript(marker: string): string {
   const table = [
@@ -258,30 +258,30 @@ async function enableRiskyTerminalRendererPath(page: Page): Promise<void> {
 
 test.describe('OpenCode emoji table terminal rendering', () => {
   test('keeps emoji table output visually sane and restores the cursor', async ({
-    orcaPage,
+    topoPage,
     testRepoPath
   }, testInfo) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
-    await waitForActiveTerminalManager(orcaPage, 30_000)
-    await enableRiskyTerminalRendererPath(orcaPage)
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
+    await enableRiskyTerminalRendererPath(topoPage)
 
-    const ptyId = await waitForActivePanePtyId(orcaPage)
-    await waitForPtyShellEcho(orcaPage, ptyId, 20_000)
+    const ptyId = await waitForActivePanePtyId(topoPage)
+    await waitForPtyShellEcho(topoPage, ptyId, 20_000)
     const runId = randomUUID()
     const marker = `${EMOJI_TABLE_MARKER}_${runId}`
-    const scriptPath = path.join(testRepoPath, `.orca-opencode-emoji-table-${runId}.mjs`)
+    const scriptPath = path.join(testRepoPath, `.topo-opencode-emoji-table-${runId}.mjs`)
     writeFileSync(scriptPath, emojiTableScript(marker))
     try {
-      await sendToTerminal(orcaPage, ptyId, `${nodeTerminalCommand([scriptPath])}\r`)
-      await waitForTerminalOutput(orcaPage, marker, 10_000)
-      await orcaPage.waitForTimeout(250)
-      await forceCursorProbeTheme(orcaPage)
-      await orcaPage.waitForTimeout(50)
+      await sendToTerminal(topoPage, ptyId, `${nodeTerminalCommand([scriptPath])}\r`)
+      await waitForTerminalOutput(topoPage, marker, 10_000)
+      await topoPage.waitForTimeout(250)
+      await forceCursorProbeTheme(topoPage)
+      await topoPage.waitForTimeout(50)
 
-      const renderState = await readActiveTerminalRenderState(orcaPage)
-      const blinkSamples = await sampleCursorBlink(orcaPage)
+      const renderState = await readActiveTerminalRenderState(topoPage)
+      const blinkSamples = await sampleCursorBlink(topoPage)
 
       testInfo.annotations.push({
         type: 'opencode-emoji-table-rendering',

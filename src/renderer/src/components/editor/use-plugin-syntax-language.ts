@@ -5,7 +5,7 @@ import {
   usePluginSyntaxes
 } from '@/store/plugins/syntax/plugin-syntax-packs'
 
-/** The editor language for a file: an enabled plugin syntax that claims it wins unless Orca's language is protected. */
+/** The editor language for a file: an enabled plugin syntax that claims it wins unless Topo's language is protected. */
 export function usePluginSyntaxLanguage(filePath: string, coreLanguage: string): string {
   const syntaxes = usePluginSyntaxes()
   const syntax = resolvePluginSyntaxForFile(syntaxes, filePath, coreLanguage)

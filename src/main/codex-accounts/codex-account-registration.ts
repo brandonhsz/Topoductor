@@ -46,7 +46,7 @@ type CodexAccountRegistrationDependencies = {
   login: (managedHomePath: string) => Promise<void>
 }
 
-const REAUTH_STAGING_DIR_NAME = '.orca-reauth-login'
+const REAUTH_STAGING_DIR_NAME = '.topo-reauth-login'
 
 function removeStagingHome(stagingHomePath: string): void {
   rmSync(stagingHomePath, {
@@ -122,7 +122,7 @@ export class CodexAccountRegistration {
     await this.loginThroughStagingHome(managedHomePath, account.id)
     const identity = await this.dependencies.readIdentityFromHome(managedHomePath, account.id)
     if (!identity.email) {
-      throw new Error('Codex login completed, but Orca could not resolve the account email.')
+      throw new Error('Codex login completed, but Topo could not resolve the account email.')
     }
 
     const settings = this.dependencies.store.getSettings()
@@ -211,7 +211,7 @@ export class CodexAccountRegistration {
       accountId
     )
     if (!identity.email) {
-      throw new Error('Codex login completed, but Orca could not resolve the account email.')
+      throw new Error('Codex login completed, but Topo could not resolve the account email.')
     }
     const now = Date.now()
     const account: CodexManagedAccount = {

@@ -36,12 +36,12 @@ const OP_PLAN_STATE: Readonly<Record<BundledSkillOpKind, BundledSkillPlanState>>
 }
 
 export const BUNDLED_SKILL_LEAVE_REASON_TEXT: Readonly<Record<BundledSkillLeaveReason, string>> = {
-  edited: 'Skill edited outside Orca',
+  edited: 'Skill edited outside Topo',
   other: 'A different skill uses this name',
-  unwritable: "Orca can't write to this folder",
-  unreadable: "Orca can't read every file",
+  unwritable: "Topo can't write to this folder",
+  unreadable: "Topo can't read every file",
   busy: 'Another install is still running',
-  'shared-not-current': "The shared copy isn't Orca's"
+  'shared-not-current': "The shared copy isn't Topo's"
 }
 
 /** What Update does at one location, for plain-text surfaces; the app translates its own. */
@@ -108,7 +108,7 @@ export function summarizeBundledSkillPlan(plan: BundledSkillPlan): BundledSkillP
   return {
     badge:
       global && states.has('repair') ? 'repair' : global && states.has('update') ? 'update' : null,
-    // Clean leftover swap siblings or a stray released .orca-old could restore after the user deletes the skill.
+    // Clean leftover swap siblings or a stray released .topo-old could restore after the user deletes the skill.
     hasWork:
       skills.some((skill) => ['install', 'update', 'repair'].includes(skill.state)) ||
       plan.skills.some((entry) =>
@@ -155,7 +155,7 @@ export function bundledSkillInstallAgents(
   return [...new Set(agents)].sort()
 }
 
-/** Replaces a copy whose hash matches a shipped Orca release; deletes only Orca's own swap leftovers. */
+/** Replaces a copy whose hash matches a shipped Topo release; deletes only Topo's own swap leftovers. */
 export function isBundledSkillAutoUpdateOp(
   op: Pick<BundledSkillOp, 'kind' | 'cleanup' | 'previous'>
 ): boolean {
@@ -167,7 +167,7 @@ export function isBundledSkillAutoUpdateOp(
 }
 
 function opNeedsConsent(op: BundledSkillOp, autoUpdating: boolean): boolean {
-  // An old copy holding edits Orca has not yet backed up waits on the user, never on deletion.
+  // An old copy holding edits Topo has not yet backed up waits on the user, never on deletion.
   if (op.cleanup.some((item) => item.action === 'backup')) {
     return true
   }
@@ -182,7 +182,7 @@ function opNeedsConsent(op: BundledSkillOp, autoUpdating: boolean): boolean {
 
 /**
  * Skills the nudge asks about: stale, broken or hand-edited copies.
- * `autoUpdating` names skills whose hash-verified locations Orca is updating silently.
+ * `autoUpdating` names skills whose hash-verified locations Topo is updating silently.
  */
 export function bundledSkillNudgeEntries(
   plan: BundledSkillPlan,
@@ -262,7 +262,7 @@ export type BundledSkillOutcomeSummary = {
   text: BundledSkillOutcomeText
   /** Printed as warnings; never part of the exit code. */
   leftAlone: BundledSkillLeftAlone[]
-  /** e.g. "Updated - 1 skipped: Skill edited outside Orca". */
+  /** e.g. "Updated - 1 skipped: Skill edited outside Topo". */
   line: string
 }
 

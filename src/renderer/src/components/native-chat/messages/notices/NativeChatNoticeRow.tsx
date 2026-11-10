@@ -27,10 +27,10 @@ import {
   nativeChatNoticeLook,
   type NativeChatNoticeTone
 } from '../../../../../../shared/native-chat/native-chat-notice'
-import { useNativeChatOrcaStopView } from './native-chat-orca-stop-context'
+import { useNativeChatTopoStopView } from './native-chat-topo-stop-context'
 import { NativeChatInterruptedContinueButton } from '../../usage/NativeChatInterruptedContinue'
-import { nativeChatOrcaStopRowText } from '../../../../../../shared/native-chat/native-chat-orca-stop-words'
-import { sayNativeChatOrcaStopTranslated } from './native-chat-orca-stop-words-text'
+import { nativeChatTopoStopRowText } from '../../../../../../shared/native-chat/native-chat-topo-stop-words'
+import { sayNativeChatTopoStopTranslated } from './native-chat-topo-stop-words-text'
 import {
   NativeChatDetailsDisclosure,
   ProviderFrameRow
@@ -86,7 +86,7 @@ export function NativeChatNoticeRow({
 }): React.JSX.Element {
   const t = useTranslate()
   useTranslation()
-  const orcaStopView = useNativeChatOrcaStopView()
+  const topoStopView = useNativeChatTopoStopView()
   const openForkSource = useContext(NativeChatForkedFromContext)
 
   if (block.presentation === PULL_REQUEST_EVENT_PRESENTATION) {
@@ -218,15 +218,15 @@ export function NativeChatNoticeRow({
       </NativeChatDetailsDisclosure>
     )
   }
-  // Name Orca and its host as the stop cause; without host context, preserve the original words.
-  const { orcaStop } = block
-  const { hostLabel, remoteHost, continueAvailable, wslDistro } = orcaStopView
+  // Name Topo and its host as the stop cause; without host context, preserve the original words.
+  const { topoStop } = block
+  const { hostLabel, remoteHost, continueAvailable, wslDistro } = topoStopView
   // A paired server with no name to show is still a remote server; its id is not a name.
   const machine =
-    hostLabel ?? (remoteHost ? sayNativeChatOrcaStopTranslated('unnamedServer') : null)
-  const named = orcaStop !== undefined && machine !== null
+    hostLabel ?? (remoteHost ? sayNativeChatTopoStopTranslated('unnamedServer') : null)
+  const named = topoStop !== undefined && machine !== null
   const continueOffered =
-    orcaStop?.turnItemId !== undefined && orcaStop.turnItemId === orcaStopView.offeredTurnItemId
+    topoStop?.turnItemId !== undefined && topoStop.turnItemId === topoStopView.offeredTurnItemId
   const failure = readWholeAgentSessionFailureFact(block.failure)
   const antigravitySignInContent = nativeChatAntigravitySignInContent(
     failure?.kind,
@@ -236,7 +236,7 @@ export function NativeChatNoticeRow({
   )
   const usageLimitContinue =
     block.usageLimitTurnItemId !== undefined &&
-    block.usageLimitTurnItemId === orcaStopView.usageLimitTurnItemId
+    block.usageLimitTurnItemId === topoStopView.usageLimitTurnItemId
   // Reword only text fully described by its fact; other host text may carry command advice.
   const factSurface =
     failure?.kind === 'notSignedIn' ||
@@ -254,11 +254,11 @@ export function NativeChatNoticeRow({
         )
       : undefined
   const text = named
-    ? nativeChatOrcaStopRowText(
-        orcaStop.cause,
+    ? nativeChatTopoStopRowText(
+        topoStop.cause,
         machine,
         { continueAvailable, remoteHost },
-        sayNativeChatOrcaStopTranslated
+        sayNativeChatTopoStopTranslated
       )
     : failure?.kind === 'usageLimitReached'
       ? agentSessionFailureSentence(
@@ -310,7 +310,7 @@ export function NativeChatNoticeRow({
           {antigravitySignInContent ?? text}
         </p>
         {continueOffered ? (
-          <NativeChatInterruptedContinueButton onContinue={orcaStopView.continueNow} />
+          <NativeChatInterruptedContinueButton onContinue={topoStopView.continueNow} />
         ) : usageLimitContinue ? (
           <UsageLimitContinueNow
             resetsAt={
@@ -320,8 +320,8 @@ export function NativeChatNoticeRow({
         ) : null}
       </div>
       {usageLimitContinue ? <NativeChatUsageLimitActions /> : null}
-      {usageLimitContinue && orcaStopView.usageLimitAutoContinue ? (
-        <NativeChatUsageLimitAutoContinue state={orcaStopView.usageLimitAutoContinue} />
+      {usageLimitContinue && topoStopView.usageLimitAutoContinue ? (
+        <NativeChatUsageLimitAutoContinue state={topoStopView.usageLimitAutoContinue} />
       ) : null}
       <NativeChatSignInButton failureKind={block.failure?.kind} />
       {block.providerFrame || detail ? (
@@ -342,7 +342,7 @@ function UsageLimitContinueNow({
   resetsAt: number | undefined
 }): React.JSX.Element | null {
   const t = useTranslate()
-  const orcaStopView = useNativeChatOrcaStopView()
+  const topoStopView = useNativeChatTopoStopView()
   const resetPassed = useSyncExternalStore(
     (invalidate) => {
       if (resetsAt === undefined) {
@@ -372,8 +372,8 @@ function UsageLimitContinueNow({
   return (
     <NativeChatInterruptedContinueButton
       label={t('components.native-chat.usageLimitActions.continueNow', 'Continue Now')}
-      onContinue={orcaStopView.continueUsageLimit}
-      disabled={orcaStopView.usageLimitContinueDisabled}
+      onContinue={topoStopView.continueUsageLimit}
+      disabled={topoStopView.usageLimitContinueDisabled}
       explanation={t(
         'components.native-chat.interruptedContinue.usageLimitExplanation',
         'Asks the agent to continue where it left off. Use it once the limit resets.'

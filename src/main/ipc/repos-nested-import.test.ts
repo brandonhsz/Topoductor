@@ -90,7 +90,7 @@ describe('projectGroups IPC validation', () => {
     repoDirs: string[],
     run: (root: string) => Promise<void>
   ): Promise<void> {
-    const root = await mkdtemp(join(tmpdir(), 'orca-nested-import-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-nested-import-'))
     try {
       for (const dir of repoDirs) {
         await mkdir(join(root, dir, '.git'), { recursive: true })

@@ -9,7 +9,7 @@ export function orchestrationTestContext(
   json: boolean,
   cwd = '/tmp/repo'
 ): HandlerContext {
-  const client = new RuntimeClient('/tmp/orca-orchestration-test', 60_000, null, null)
+  const client = new RuntimeClient('/tmp/topo-orchestration-test', 60_000, null, null)
   vi.spyOn(client, 'call').mockImplementation(call)
   return { flags, client, cwd, json }
 }

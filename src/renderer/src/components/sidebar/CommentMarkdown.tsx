@@ -117,7 +117,7 @@ const commentMarkdownSanitizeSchema: SanitizeSchema = {
     ...defaultSchema.protocols,
     // Allow file links through sanitize for native chat; other surfaces still strip them in URL transformation.
     href: [...(defaultSchema.protocols?.href ?? []), 'file'],
-    src: [...(defaultSchema.protocols?.src ?? []), 'data', 'blob', 'orca-jira-image']
+    src: [...(defaultSchema.protocols?.src ?? []), 'data', 'blob', 'topo-jira-image']
   }
 }
 

@@ -1,7 +1,7 @@
 /**
  * The move orchestrator's production ports and IPC (D3a). Dark: with the internal WSL hosts gate
  * closed, or without a WSL host service, nothing is constructed and the IPC answers empty.
- * Automatic starts also stop when ORCA_WSL_MOVE_AUTO=0; explicit user actions still run.
+ * Automatic starts also stop when TOPO_WSL_MOVE_AUTO=0; explicit user actions still run.
  */
 import { app, ipcMain, type WebContents } from 'electron'
 import {
@@ -25,7 +25,7 @@ import type {
 } from '../../persistence/moving-wsl-projects/wsl-move-orchestrator-ports'
 import { prepareWslMoveHost } from '../../persistence/moving-wsl-projects/wsl-move-host-readiness'
 import { readConfirmedRunningWslDistros } from '../../wsl/discovery/wsl-background-distro-gate'
-import { defaultWslOrcadEnvironmentId } from '../../wsl/orcad/wsl-orcad-deploy'
+import { defaultWslTopodEnvironmentId } from '../../wsl/topod/wsl-topod-deploy'
 import {
   readWslMoveOrchestratorRecords,
   writeWslMoveOrchestratorRecords
@@ -54,7 +54,7 @@ import { answerWslMoveSleptPanes, requestSleptPanes } from './wsl-move-orchestra
 import { wslHostRemovalPending } from './wsl-move-host-connect'
 import { wslMoveAutoMovesBridgeProjects } from '../../../shared/wsl-move/wsl-move-rollout-stage'
 
-export const WSL_MOVE_ORCHESTRATOR_AUTO_ENV = 'ORCA_WSL_MOVE_AUTO'
+export const WSL_MOVE_ORCHESTRATOR_AUTO_ENV = 'TOPO_WSL_MOVE_AUTO'
 
 export const WSL_MOVE_ORCHESTRATOR_HANDLER_CHANNELS = [
   'wslMoveOrchestrator:list',
@@ -98,7 +98,7 @@ function prepareHost(
   if (!service) {
     return Promise.resolve('failed')
   }
-  const environmentId = defaultWslOrcadEnvironmentId(distro)
+  const environmentId = defaultWslTopodEnvironmentId(distro)
   return prepareWslMoveHost(
     {
       readRunningDistros: readConfirmedRunningWslDistros,
@@ -140,7 +140,7 @@ function createOrchestrator(
     isDistroInUse: (distro) => isDistroInUse(store, userDataPath, distro),
     hostRemovalPending: (distro) => wslHostRemovalPending(userDataPath, distro),
     hasHost: (distro) =>
-      getWslHostService()?.recordForEnvironment(defaultWslOrcadEnvironmentId(distro)) != null,
+      getWslHostService()?.recordForEnvironment(defaultWslTopodEnvironmentId(distro)) != null,
     isHostReady,
     preview: async (distro, userAsked) =>
       previewWslMove(

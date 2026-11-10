@@ -170,15 +170,15 @@ function isBranchConfigSeparator(code: number): boolean {
   return code === 32 || (code >= 9 && code <= 13)
 }
 
-// Deferred materialization may omit store flags; read the repo-local Orca-created marker too.
-async function remoteHasOrcaProvenance(
+// Deferred materialization may omit store flags; read the repo-local Topo-created marker too.
+async function remoteHasTopoProvenance(
   execGit: GitRemoteExec,
   repoPath: string,
   remoteName: string
 ): Promise<boolean> {
   try {
     const { stdout } = await execGit(
-      ['config', '--get', `remote.${remoteName}.orca-created`],
+      ['config', '--get', `remote.${remoteName}.topo-created`],
       repoPath
     )
     return stdout.trim() === 'true'
@@ -199,7 +199,7 @@ export async function cleanupUnusedWorktreePushTargetRemoteWithExec(
   }
   if (
     !target.remoteCreated &&
-    !(await remoteHasOrcaProvenance(execGit, repoPath, target.remoteName))
+    !(await remoteHasTopoProvenance(execGit, repoPath, target.remoteName))
   ) {
     return
   }

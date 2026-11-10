@@ -151,7 +151,7 @@ export function MobileEmulatorSettingsPane({
           )}
           description={t(
             'auto.components.settings.MobileEmulatorSettingsPane.bc39d0f115',
-            'Configure mobile emulator support for Orca and coding agents.'
+            'Configure mobile emulator support for Topo and coding agents.'
           )}
           keywords={getMobileEmulatorSearchEntries().flatMap((entry) => entry.keywords ?? [])}
           className="divide-y divide-border"
@@ -239,7 +239,7 @@ export function MobileEmulatorSettingsPane({
           )}
           description={t(
             'auto.components.settings.MobileEmulatorSettingsPane.19d39113b6',
-            'Let coding agents control the active mobile emulator with Orca CLI commands.'
+            'Let coding agents control the active mobile emulator with Topo CLI commands.'
           )}
           keywords={getMobileEmulatorSearchEntries()[3]?.keywords}
         >

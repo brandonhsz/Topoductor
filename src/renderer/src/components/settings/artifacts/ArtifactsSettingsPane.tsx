@@ -3,11 +3,11 @@ import type { GlobalSettings } from '../../../../../shared/global-settings-types
 import { Button } from '@/components/ui/button'
 import { SettingsSwitchRow } from '../form-controls/SettingsFormControls'
 import { SettingsGroup } from '../section-layout/SettingsGroup'
-import { useOrcaProfileAuthStatusRefresh } from '@/hooks/use-orca-profile-auth-status-refresh'
+import { useTopoProfileAuthStatusRefresh } from '@/hooks/use-topo-profile-auth-status-refresh'
 import { useAppStore } from '@/store/index'
 import { isWebClientLocation } from '@/lib/web-client-location'
 import { useTranslate } from '@/i18n/use-translate'
-import { OrcaSignInButton, OrcaSignInWaitNotice } from '../../OrcaSignInProgress'
+import { TopoSignInButton, TopoSignInWaitNotice } from '../../TopoSignInProgress'
 
 type HowToStep = { key: string; title: string; description: string }
 
@@ -20,13 +20,13 @@ export function ArtifactsSettingsPane({
 }): React.JSX.Element {
   const t = useTranslate()
   const openArtifactsPage = useAppStore((state) => state.openArtifactsPage)
-  const authStatus = useAppStore((state) => state.orcaProfileAuthStatus)
+  const authStatus = useAppStore((state) => state.topoProfileAuthStatus)
   const signedIn = authStatus?.state === 'connected'
   // Only the desktop host can grant sharing; web clients mirror it because settings.update excludes this capability.
   const isWebClient = isWebClientLocation()
   const sharingEnabled = settings.artifactSharingEnabled === true
 
-  useOrcaProfileAuthStatusRefresh()
+  useTopoProfileAuthStatusRefresh()
 
   const howToSteps: HowToStep[] = [
     ...(sharingEnabled
@@ -41,7 +41,7 @@ export function ArtifactsSettingsPane({
             description: isWebClient
               ? t(
                   'auto.components.settings.artifacts.enableStepWebDescription',
-                  'Open Settings → Artifacts in the Orca desktop app on the host device and enable publishing.'
+                  'Open Settings → Artifacts in the Topo desktop app on the host device and enable publishing.'
                 )
               : t(
                   'auto.components.settings.artifacts.enableStepDescription',
@@ -67,7 +67,7 @@ export function ArtifactsSettingsPane({
     },
     {
       key: 'manage',
-      title: t('auto.components.settings.artifacts.manageStepTitle', 'Manage it in Orca'),
+      title: t('auto.components.settings.artifacts.manageStepTitle', 'Manage it in Topo'),
       description: t(
         'auto.components.settings.artifacts.manageStepDescription',
         'Open Artifacts from the sidebar to preview or remove links.'
@@ -118,16 +118,16 @@ export function ArtifactsSettingsPane({
               <p className="text-xs leading-relaxed text-muted-foreground">
                 {t(
                   'auto.components.settings.artifacts.signInDescription',
-                  'Use your Orca account to upload artifacts and manage their public links.'
+                  'Use your Topo account to upload artifacts and manage their public links.'
                 )}
               </p>
             </div>
-            <OrcaSignInButton size="sm" disabled={authStatus?.configured !== true}>
+            <TopoSignInButton size="sm" disabled={authStatus?.configured !== true}>
               {authStatus?.state === 'reconnect-required'
                 ? t('auto.components.settings.artifacts.signInAgain', 'Sign in again')
-                : t('auto.components.settings.artifacts.signIn', 'Sign in to Orca')}
-            </OrcaSignInButton>
-            <OrcaSignInWaitNotice className="basis-full" />
+                : t('auto.components.settings.artifacts.signIn', 'Sign in to Topo')}
+            </TopoSignInButton>
+            <TopoSignInWaitNotice className="basis-full" />
           </section>
         ) : null}
       </SettingsGroup>

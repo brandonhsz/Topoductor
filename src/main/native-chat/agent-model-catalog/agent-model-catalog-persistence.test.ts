@@ -13,7 +13,7 @@ afterEach(() => {
 })
 
 it("imports an older build's catalog file once and keeps later listings", async () => {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-model-catalog-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-model-catalog-'))
   directories.push(directory)
   const legacyPath = join(directory, 'agent-model-catalog.json')
   writeFileSync(

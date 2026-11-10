@@ -110,7 +110,7 @@ function verifyPackagedPluginResources(resourcesDir) {
   )
 }
 
-/** Every author typing in the checkout must ship, or `orca plugin types` fails with ENOENT. */
+/** Every author typing in the checkout must ship, or `topo plugin types` fails with ENOENT. */
 function verifyPackagedPluginTypings(resourcesDir) {
   for (const dir of ['declarative', 'types']) {
     for (const name of readdirSync(join(sourcePluginsDir, dir))) {

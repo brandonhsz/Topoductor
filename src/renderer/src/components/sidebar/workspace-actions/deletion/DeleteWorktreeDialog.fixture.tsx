@@ -5,17 +5,17 @@ import type { GitStatusEntry } from '../../../../../../shared/git/status/git-sta
 import DeleteWorktreeDialog from './DeleteWorktreeDialog'
 
 const repo: Repo = {
-  id: 'orca-plugins',
-  path: '/Users/me/orca/orca-plugins',
-  displayName: 'orca-plugins',
+  id: 'topo-plugins',
+  path: '/Users/me/topo/topo-plugins',
+  displayName: 'topo-plugins',
   badgeColor: '',
   addedAt: 1
 }
 
 const worktree: Worktree = {
-  id: 'orca-plugins::/Users/me/orca/workspaces/orca-plugins/support-editable-excalidraw',
+  id: 'topo-plugins::/Users/me/topo/workspaces/topo-plugins/support-editable-excalidraw',
   repoId: repo.id,
-  path: '/Users/me/orca/workspaces/orca-plugins/support-editable-excalidraw',
+  path: '/Users/me/topo/workspaces/topo-plugins/support-editable-excalidraw',
   displayName: 'Support editable .excalidraw.svg and .excalidraw.png files',
   branch: 'support-editable-excalidraw',
   head: 'abc123',

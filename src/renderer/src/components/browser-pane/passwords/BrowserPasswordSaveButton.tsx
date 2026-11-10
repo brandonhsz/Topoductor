@@ -22,7 +22,7 @@ function hostOf(origin: string): string {
   }
 }
 
-/** Key icon beside the address bar, opening Orca's offer to save or update a login that worked. */
+/** Key icon beside the address bar, opening Topo's offer to save or update a login that worked. */
 export function BrowserPasswordSaveButton({
   browserPageId,
   isActive

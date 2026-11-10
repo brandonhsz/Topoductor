@@ -94,12 +94,12 @@ export type PluginViewDesktop = {
   shotReplay(params: z.infer<typeof PluginShotReplayParams>): Promise<PluginShotReplayResult>
   /** `shot --editor`: opens the file in the plugin's editor and captures that editor. */
   shotEditor(params: z.infer<typeof PluginShotEditorParams>): Promise<PluginEditorShotResult>
-  /** `shot --status-bar` / `--window`: captures Orca's own chrome, where plugins draw too. */
+  /** `shot --status-bar` / `--window`: captures Topo's own chrome, where plugins draw too. */
   shotChrome(params: z.infer<typeof PluginShotChromeParams>): Promise<PluginChromeShotResult>
 }
 
 export type PluginViewDesktopDeps = {
-  /** The main window's renderer, or null when Orca has no window open. */
+  /** The main window's renderer, or null when Topo has no window open. */
   rendererContents(): WebContents | null
   /** The main window is on screen: visible and not minimized. */
   windowShown(): boolean
@@ -132,7 +132,7 @@ function failed(reply: PluginViewReply): PluginCliError | null {
         reason: reply.code,
         nextSteps:
           reply.code === PLUGIN_VIEW_NO_WORKSPACE_CODE
-            ? ['Open a workspace in Orca, then run this again.']
+            ? ['Open a workspace in Topo, then run this again.']
             : []
       })
 }
@@ -141,7 +141,7 @@ export function createPluginViewDesktop(deps: PluginViewDesktopDeps): PluginView
   const requireContents = (): WebContents => {
     const contents = deps.rendererContents()
     if (!contents || contents.isDestroyed()) {
-      throw new Error('Orca has no open window to show the plugin in; open one, then try again.')
+      throw new Error('Topo has no open window to show the plugin in; open one, then try again.')
     }
     return contents
   }
@@ -242,7 +242,7 @@ export function createPluginViewDesktop(deps: PluginViewDesktopDeps): PluginView
             }
             const drawn = reply.ok ? reply.panel : undefined
             if (!drawn) {
-              throw new Error('Orca did not report where the panel is drawn.')
+              throw new Error('Topo did not report where the panel is drawn.')
             }
             const guest =
               drawn.ui === 'html'

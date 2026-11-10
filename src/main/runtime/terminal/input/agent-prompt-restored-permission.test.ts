@@ -2,7 +2,7 @@ import type * as WorktreeScanCacheModule from '../../../git/worktrees/catalog/wo
 import type * as WorktreeListingModule from '../../../git/worktrees/catalog/worktree-listing'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createAgentPromptSubmissionRuntime } from './agent-prompt-submission-runtime-test-fixture'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 
 const worktrees = vi.hoisted(() => [
   {
@@ -53,7 +53,7 @@ async function createReattachedClaudePane(
   screen: string,
   controller?: Parameters<typeof createAgentPromptSubmissionRuntime>[4]
 ): Promise<{
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   handle: string
   writes: string[]
 }> {

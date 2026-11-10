@@ -2,7 +2,7 @@ import { getLegacyOpenCodeEnvKeysToDelete } from '../../opencode/legacy-shared-c
 import { restoreManagedDataAccountEnvironment } from '../../../shared/managed-data-account-environment'
 import { restoreOrStripOverlayEnv } from '../../../shared/agent-launch/startup/agent-overlay-env'
 import { delimiter } from 'node:path'
-import { dropInheritedOrcaFishHistory } from '../../pty/history/fish-history-session'
+import { dropInheritedTopoFishHistory } from '../../pty/history/fish-history-session'
 import { removeAppImageRuntimeEnv } from '../../pty/shell-startup/appimage-terminal-env'
 import { removeChromiumDisabledSessionBus } from '../../pty/shell-startup/chromium-session-bus-env'
 import { stripInheritedBuildModeEnv } from '../../pty/shell-startup/build-mode-env'
@@ -11,15 +11,15 @@ import { dropIncoherentCondaActivationEnv } from '../../pty/shell-startup/conda-
 import { stripLegacyTerminalShimEnv } from '../../pty/shell-startup/legacy-terminal-shim-dir'
 import { removeInheritedNoColor } from '../../pty/shell-startup/terminal-color-env'
 import { resolvePathEnvKey } from '../../pty/environment/windows-path-segment-merge'
-import { dropInheritedOrcaHistFile } from '../../pty/history/worktree-history-file-path'
+import { dropInheritedTopoHistFile } from '../../pty/history/worktree-history-file-path'
 import {
   gitCredentialPromptGuardEnv,
   mergeGitConfigEnvProtocol
 } from '../../../shared/git/commands/git-credential-prompt-env'
 import { TERMINAL_GIT_CREDENTIAL_GUARD_POLICY_ENV } from '../../../shared/shell/launch/terminal-git-credential-guard'
 import {
-  ORCA_IMAGE_PROTOCOL_ENV,
-  ORCA_IMAGE_PROTOCOL_VALUE
+  TOPO_IMAGE_PROTOCOL_ENV,
+  TOPO_IMAGE_PROTOCOL_VALUE
 } from '../../../shared/terminal/images/terminal-image-protocol'
 import {
   expandWindowsEnvironmentVariables,
@@ -29,20 +29,20 @@ import { applyScrubSafeAgentEnvAliases } from '../../../shared/agent-hook-listen
 import type { TuiAgent } from '../../../shared/agent-launch/catalog/tui-agent'
 import type { PtySubprocessOptions } from './pty-subprocess'
 import { REMOTE_VIEWER_CLIPBOARD_ENV } from '../../../shared/remote-viewer-clipboard-env'
-import { ORCAD_SERVER_LAUNCH_ENV_KEYS } from '../../../shared/orcad-server-launch-env'
+import { TOPOD_SERVER_LAUNCH_ENV_KEYS } from '../../../shared/topod-server-launch-env'
 
 const PANE_IDENTITY_ENV_KEYS = [
-  'ORCA_PANE_KEY',
-  'ORCA_TAB_ID',
-  'ORCA_WORKTREE_ID',
-  'ORCA_AGENT_LAUNCH_TOKEN',
+  'TOPO_PANE_KEY',
+  'TOPO_TAB_ID',
+  'TOPO_WORKTREE_ID',
+  'TOPO_AGENT_LAUNCH_TOKEN',
   // Not identity but equally per-spawn: an inherited copy names another launch's CLI.
-  'ORCA_WSL_CLI_DIR',
+  'TOPO_WSL_CLI_DIR',
   'JCODE_RUNTIME_DIR',
-  // Per-viewer: an Orca started from a remote viewer's pane must not mark its own local panes.
+  // Per-viewer: a Topo started from a remote viewer's pane must not mark its own local panes.
   REMOTE_VIEWER_CLIPBOARD_ENV,
-  // A server's own launch env; a user's `orcad` in this shell is not that server.
-  ...ORCAD_SERVER_LAUNCH_ENV_KEYS
+  // A server's own launch env; a user's `topod` in this shell is not that server.
+  ...TOPOD_SERVER_LAUNCH_ENV_KEYS
 ] as const
 const WINDOWS_PATH_ENV_KEY_RE = /^path$/i
 
@@ -64,29 +64,29 @@ function deleteRequestedDaemonEnvKeys(
   env: Record<string, string>,
   keys: readonly string[] | undefined
 ): void {
-  const userDataPath = process.env.ORCA_USER_DATA_PATH
+  const userDataPath = process.env.TOPO_USER_DATA_PATH
   if (userDataPath) {
     for (const key of getLegacyOpenCodeEnvKeysToDelete(env, userDataPath, {})) {
       delete env[key]
     }
   }
-  // Persistent daemon state may differ from Electron; remove CODEX_HOME only if its Orca overlay owns it.
-  const deleteOrcaOwnedCodexHome =
-    keys?.includes('ORCA_CODEX_HOME') === true &&
-    env.ORCA_CODEX_HOME !== undefined &&
-    env.CODEX_HOME === env.ORCA_CODEX_HOME
+  // Persistent daemon state may differ from Electron; remove CODEX_HOME only if its Topo overlay owns it.
+  const deleteTopoOwnedCodexHome =
+    keys?.includes('TOPO_CODEX_HOME') === true &&
+    env.TOPO_CODEX_HOME !== undefined &&
+    env.CODEX_HOME === env.TOPO_CODEX_HOME
   // A merged caller config can supersede the daemon's recorded overlay source.
   if (
-    keys?.includes('ORCA_OPENCODE_CONFIG_DIR') &&
+    keys?.includes('TOPO_OPENCODE_CONFIG_DIR') &&
     (env.OPENCODE_CONFIG_DIR === undefined ||
-      env.OPENCODE_CONFIG_DIR === env.ORCA_OPENCODE_CONFIG_DIR)
+      env.OPENCODE_CONFIG_DIR === env.TOPO_OPENCODE_CONFIG_DIR)
   ) {
     restoreOrStripOverlayEnv(
       env,
       {
         primary: 'OPENCODE_CONFIG_DIR',
-        overlay: 'ORCA_OPENCODE_CONFIG_DIR',
-        source: 'ORCA_OPENCODE_SOURCE_CONFIG_DIR'
+        overlay: 'TOPO_OPENCODE_CONFIG_DIR',
+        source: 'TOPO_OPENCODE_SOURCE_CONFIG_DIR'
       },
       {}
     )
@@ -94,7 +94,7 @@ function deleteRequestedDaemonEnvKeys(
   for (const key of keys ?? []) {
     delete env[key]
   }
-  if (deleteOrcaOwnedCodexHome) {
+  if (deleteTopoOwnedCodexHome) {
     delete env.CODEX_HOME
   }
 }
@@ -144,7 +144,7 @@ function promoteAgentTeamsShimPath(
   env: Record<string, string>,
   requestedPath: string | undefined
 ): void {
-  if (!env.ORCA_AGENT_TEAMS_TEAM_ID || !requestedPath) {
+  if (!env.TOPO_AGENT_TEAMS_TEAM_ID || !requestedPath) {
     return
   }
   const normalizedRequestedPath =
@@ -166,9 +166,9 @@ function removeInheritedDevAgentHookEndpoint(
   env: Record<string, string>,
   explicitEnv: Record<string, string> | undefined
 ): void {
-  if (explicitEnv?.ORCA_AGENT_HOOK_ENV === 'development' && !explicitEnv.ORCA_AGENT_HOOK_ENDPOINT) {
+  if (explicitEnv?.TOPO_AGENT_HOOK_ENV === 'development' && !explicitEnv.TOPO_AGENT_HOOK_ENDPOINT) {
     // Preserve explicit endpoints used by hooks that scrub token-like environment variables.
-    delete env.ORCA_AGENT_HOOK_ENDPOINT
+    delete env.TOPO_AGENT_HOOK_ENDPOINT
   }
 }
 
@@ -180,10 +180,10 @@ export function createDaemonPtyEnvironment(opts: PtySubprocessOptions): Record<s
     ...mergeGitConfigEnvProtocol(inheritedEnv, opts.env),
     TERM: 'xterm-256color',
     COLORTERM: 'truecolor',
-    TERM_PROGRAM: 'Orca',
-    TERM_PROGRAM_VERSION: process.env.ORCA_APP_VERSION ?? '0.0.0-dev',
+    TERM_PROGRAM: 'Topo',
+    TERM_PROGRAM_VERSION: process.env.TOPO_APP_VERSION ?? '0.0.0-dev',
     FORCE_HYPERLINK: '1',
-    [ORCA_IMAGE_PROTOCOL_ENV]: ORCA_IMAGE_PROTOCOL_VALUE
+    [TOPO_IMAGE_PROTOCOL_ENV]: TOPO_IMAGE_PROTOCOL_VALUE
   } satisfies Record<string, string>
   stripLegacyTerminalShimEnv(env, process.platform)
   composeGuardedDaemonGitConfigEnv(env, opts.env, opts.launchAgent)
@@ -194,13 +194,13 @@ export function createDaemonPtyEnvironment(opts: PtySubprocessOptions): Record<s
   removeUnspecifiedPaneIdentityEnv(env, opts.env)
   stripPiProcessOwnerEnv(env)
   if (opts.env?.fish_history === undefined) {
-    dropInheritedOrcaFishHistory(env)
+    dropInheritedTopoFishHistory(env)
   }
   if (opts.env?.HISTFILE === undefined) {
-    dropInheritedOrcaHistFile(env)
+    dropInheritedTopoHistFile(env)
   }
-  if (opts.env?.ORCA_HISTFILE === undefined) {
-    delete env.ORCA_HISTFILE
+  if (opts.env?.TOPO_HISTFILE === undefined) {
+    delete env.TOPO_HISTFILE
   }
   removeInheritedDevAgentHookEndpoint(env, opts.env)
   delete env.ELECTRON_RUN_AS_NODE
@@ -240,11 +240,11 @@ export function finalizeDaemonPtyEnvironment(
   stripPiProcessOwnerEnv(env)
   // A live daemon pins this runtime across app updates; callers cannot name the host executable.
   for (const key of Object.keys(env)) {
-    if (key.toUpperCase() === 'ORCA_AGENT_HOOK_NODE') {
+    if (key.toUpperCase() === 'TOPO_AGENT_HOOK_NODE') {
       delete env[key]
     }
   }
   if (process.platform === 'win32') {
-    env.ORCA_AGENT_HOOK_NODE = process.execPath
+    env.TOPO_AGENT_HOOK_NODE = process.execPath
   }
 }

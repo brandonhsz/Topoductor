@@ -2,7 +2,7 @@ import { join } from 'node:path'
 import { existsSync } from 'node:fs'
 import { realpath, readdir, stat } from 'node:fs/promises'
 import {
-  getOrcaManagedCodexHomePath,
+  getTopoManagedCodexHomePath,
   getSystemCodexHomePath
 } from '../codex/configuration/homes/codex-home-paths'
 import { getCodexAccountHomeSessionDirectories } from '../codex/history/rollouts/codex-account-home-discovery'
@@ -63,8 +63,8 @@ function appendDiscoveredFiles(target: string[], source: readonly string[]): voi
 }
 
 export function getCodexSessionsDirectory(): string {
-  // The primary runtime uses an Orca-owned home regardless of ambient CODEX_HOME.
-  return join(getOrcaManagedCodexHomePath(), 'sessions')
+  // The primary runtime uses a Topo-owned home regardless of ambient CODEX_HOME.
+  return join(getTopoManagedCodexHomePath(), 'sessions')
 }
 
 export function getCodexSessionDirectories(): string[] {
@@ -77,7 +77,7 @@ export function getCodexSessionDirectories(): string[] {
 }
 
 function hasLegacyCopiedSessionBridgeMarkers(): boolean {
-  return existsSync(join(getOrcaManagedCodexHomePath(), '.orca-session-copies'))
+  return existsSync(join(getTopoManagedCodexHomePath(), '.topo-session-copies'))
 }
 
 export async function listCodexSessionFiles(): Promise<string[]> {

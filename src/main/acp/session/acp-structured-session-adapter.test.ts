@@ -72,7 +72,7 @@ describe('ACP structured session adapter: turns', () => {
         {
           sessionId: SESSION,
           clientMessageId: 'send-1',
-          providerIdentity: { provider: 'orca', clientMessageId: 'send-1' }
+          providerIdentity: { provider: 'topo', clientMessageId: 'send-1' }
         }
       ])
     )

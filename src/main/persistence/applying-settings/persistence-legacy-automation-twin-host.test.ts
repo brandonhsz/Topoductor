@@ -71,7 +71,7 @@ function storedAutomation(store: ReturnType<typeof createStore>): Automation {
 
 describe('legacy automation on a repo id two hosts share', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-legacy-twin-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-legacy-twin-'))
   })
 
   afterEach(async () => {

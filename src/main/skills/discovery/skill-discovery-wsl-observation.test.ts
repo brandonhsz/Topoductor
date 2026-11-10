@@ -37,7 +37,7 @@ describe('WSL skill discovery', () => {
         'S',
         '0',
         '/home/alice/.codex/skills/.system/review/SKILL.md',
-        '/opt/orca/review/SKILL.md',
+        '/opt/topo/review/SKILL.md',
         '1700000000',
         markdown
       ),
@@ -45,7 +45,7 @@ describe('WSL skill discovery', () => {
         'S',
         '1',
         '/work/project/.agents/skills/review/SKILL.md',
-        '/opt/orca/review/SKILL.md',
+        '/opt/topo/review/SKILL.md',
         '1700000001',
         markdown
       )

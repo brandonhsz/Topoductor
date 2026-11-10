@@ -1,4 +1,4 @@
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
@@ -14,13 +14,13 @@ vi.setConfig({ expect: { poll: { timeout: 45_000, interval: 200 } } })
 // Creates its menus and script only on the first run, as extensions that use onInstalled do.
 const WORKER_SCRIPT = `
 chrome.commands.onCommand.addListener((name, tab) =>
-  console.log('ORCA_EXT_COMMAND ' + JSON.stringify({ name, hasTab: Boolean(tab && tab.id) }))
+  console.log('TOPO_EXT_COMMAND ' + JSON.stringify({ name, hasTab: Boolean(tab && tab.id) }))
 );
 chrome.webRequest.onCompleted.addListener(
-  (d) => console.log('ORCA_EXT_WEBREQUEST ' + JSON.stringify({ path: new URL(d.url).pathname, type: d.type, tabId: d.tabId, statusCode: d.statusCode })),
+  (d) => console.log('TOPO_EXT_WEBREQUEST ' + JSON.stringify({ path: new URL(d.url).pathname, type: d.type, tabId: d.tabId, statusCode: d.statusCode })),
   { urls: ['http://127.0.0.1/*'], types: ['main_frame'] }
 );
-chrome.storage.sync.get(null).then((items) => console.log('ORCA_EXT_SYNC ' + JSON.stringify(items)));
+chrome.storage.sync.get(null).then((items) => console.log('TOPO_EXT_SYNC ' + JSON.stringify(items)));
 chrome.storage.local.get('setup').then(async ({ setup }) => {
   if (setup) return;
   await chrome.storage.sync.set({ remembered: { dark: true } });
@@ -31,8 +31,8 @@ chrome.storage.local.get('setup').then(async ({ setup }) => {
   ]);
   await chrome.storage.local.set({ setup: true });
   const registered = (await chrome.scripting.getRegisteredContentScripts()).map((s) => s.id);
-  console.log('ORCA_EXT_SETUP ' + JSON.stringify({ registered }));
-}).catch((error) => console.log('ORCA_EXT_ERROR ' + String(error)));
+  console.log('TOPO_EXT_SETUP ' + JSON.stringify({ registered }));
+}).catch((error) => console.log('TOPO_EXT_ERROR ' + String(error)));
 `
 
 type FixtureStatus = {
@@ -90,10 +90,10 @@ function launch(phase: 'first' | 'second'): ReturnType<typeof spawnProcess> {
     args,
     env: {
       ...env,
-      ORCA_BACKGROUND_LAUNCH: '1',
-      ORCA_EXTENSION_FIXTURE_STATUS: join(root, `status-${phase}.json`),
-      ORCA_EXTENSION_FIXTURE_DIR: extensionDir,
-      ORCA_EXTENSION_FIXTURE_PHASE: phase
+      TOPO_BACKGROUND_LAUNCH: '1',
+      TOPO_EXTENSION_FIXTURE_STATUS: join(root, `status-${phase}.json`),
+      TOPO_EXTENSION_FIXTURE_DIR: extensionDir,
+      TOPO_EXTENSION_FIXTURE_PHASE: phase
     },
     stdio: ['ignore', 'pipe', 'pipe']
   })
@@ -117,28 +117,28 @@ function pollStatus(phase: string, ready: (status: FixtureStatus) => boolean) {
 }
 
 beforeAll(async () => {
-  root = mkdtempSync(join(tmpdir(), 'orca-browser-extension-persistence-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-browser-extension-persistence-'))
   extensionDir = join(root, 'extension')
   mkdirSync(extensionDir)
   writeFileSync(
     join(extensionDir, 'manifest.json'),
     JSON.stringify({
       manifest_version: 3,
-      name: 'Orca persistence probe',
+      name: 'Topo persistence probe',
       version: '1.0.0',
       permissions: ['contextMenus', 'scripting', 'storage', 'webRequest'],
       host_permissions: ['http://127.0.0.1/*'],
       background: { service_worker: 'worker.js' },
       commands: {
         fill_login: { suggested_key: { default: 'Ctrl+Shift+L' }, description: 'Fill' },
-        orca_owned: { suggested_key: { default: 'Ctrl+Shift+F' }, description: 'Taken by Orca' }
+        topo_owned: { suggested_key: { default: 'Ctrl+Shift+F' }, description: 'Taken by Topo' }
       }
     })
   )
   writeFileSync(join(extensionDir, 'worker.js'), WORKER_SCRIPT)
   writeFileSync(
     join(extensionDir, 'cs.js'),
-    "console.log('ORCA_EXT_CONTENT_SCRIPT ' + JSON.stringify({ path: location.pathname }))"
+    "console.log('TOPO_EXT_CONTENT_SCRIPT ' + JSON.stringify({ path: location.pathname }))"
   )
   await buildBundle(
     join(
@@ -181,10 +181,10 @@ describe('browser extension state across a restart', () => {
       Boolean(status.contentScript && status.webRequest && status.menu !== undefined)
     )
     const status = readStatus('second')
-    // Orca keeps sync storage across a restart (Electron disables the native area).
+    // Topo keeps sync storage across a restart (Electron disables the native area).
     await pollStatus('second', (current) => Boolean(current.sync))
     expect(readStatus('second').sync).toEqual({ remembered: { dark: true } })
-    // Electron forgot the script; Orca re-registered it before the tab's first load.
+    // Electron forgot the script; Topo re-registered it before the tab's first load.
     expect(status.contentScript).toEqual({ path: '/login' })
     expect(status.webRequest).toEqual({
       path: '/login',
@@ -192,13 +192,13 @@ describe('browser extension state across a restart', () => {
       tabId: expect.any(Number),
       statusCode: 200
     })
-    // The worker did not create menus this run; they came back from Orca's saved state.
+    // The worker did not create menus this run; they came back from Topo's saved state.
     expect(status.menu).toEqual([
       {
         extensionId: expect.any(String),
         items: [
           expect.objectContaining({
-            title: 'Orca persistence probe',
+            title: 'Topo persistence probe',
             children: [
               expect.objectContaining({ key: '"fill"', title: 'Fill field' }),
               expect.objectContaining({ key: '"generate"', title: 'Generate password' })
@@ -207,7 +207,7 @@ describe('browser extension state across a restart', () => {
         ]
       }
     ])
-    // Command shortcuts typed into the tab reach the extension unless Orca owns the keys.
+    // Command shortcuts typed into the tab reach the extension unless Topo owns the keys.
     await pollStatus('second', (current) => Boolean(current.commands))
     // ast-grep-ignore: test-no-real-time-wait -- Observe late forbidden shortcut deliveries from the separate Electron worker.
     await new Promise((resolve) => setTimeout(resolve, 500))

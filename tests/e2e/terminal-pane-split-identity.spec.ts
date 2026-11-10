@@ -1,6 +1,6 @@
-// Require stable split-leaf UUIDs across PTY binding, ORCA_PANE_KEY and context menu.
+// Require stable split-leaf UUIDs across PTY binding, TOPO_PANE_KEY and context menu.
 
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   UUID_RE,
   discoverActivePtyId,
@@ -19,13 +19,13 @@ test.describe.configure({ mode: 'serial' })
 test.describe('Terminal Panes', () => {
   registerTerminalPaneMountReadiness()
 
-  test('split panes persist PTY bindings by stable UUID leaf id', async ({ orcaPage }) => {
-    const paneCountBefore = await countVisibleTerminalPanes(orcaPage)
+  test('split panes persist PTY bindings by stable UUID leaf id', async ({ topoPage }) => {
+    const paneCountBefore = await countVisibleTerminalPanes(topoPage)
 
-    await splitActiveTerminalPane(orcaPage, 'vertical')
-    await waitForPaneCount(orcaPage, paneCountBefore + 1)
+    await splitActiveTerminalPane(topoPage, 'vertical')
+    await waitForPaneCount(topoPage, paneCountBefore + 1)
 
-    const snapshot = await waitForPaneIdentitySnapshot(orcaPage, paneCountBefore + 1)
+    const snapshot = await waitForPaneIdentitySnapshot(topoPage, paneCountBefore + 1)
     const leafIds = snapshot.panes.map((pane) => pane.leafId)
     const ptyIds = snapshot.panes.map((pane) => pane.ptyId)
 
@@ -41,40 +41,40 @@ test.describe('Terminal Panes', () => {
     ).toBe(false)
   })
 
-  test('terminal process receives ORCA_PANE_KEY with the active UUID leaf id', async ({
-    orcaPage
+  test('terminal process receives TOPO_PANE_KEY with the active UUID leaf id', async ({
+    topoPage
   }) => {
-    const snapshot = await waitForPaneIdentitySnapshot(orcaPage, 1)
+    const snapshot = await waitForPaneIdentitySnapshot(topoPage, 1)
     const activeLeafId = snapshot.activeLeafId ?? snapshot.panes[0]?.leafId
     if (!activeLeafId) {
       throw new Error('No active pane leaf id found')
     }
 
     const expectedPaneKey = `${snapshot.tabId}:${activeLeafId}`
-    const ptyId = await discoverActivePtyId(orcaPage)
-    const marker = `ORCA_PANE_KEY_E2E_${Date.now()}`
+    const ptyId = await discoverActivePtyId(topoPage)
+    const marker = `TOPO_PANE_KEY_E2E_${Date.now()}`
 
-    await execInTerminal(orcaPage, ptyId, `printf '${marker}=%s\\n' "$ORCA_PANE_KEY"`)
-    await waitForTerminalOutput(orcaPage, `${marker}=${expectedPaneKey}`)
+    await execInTerminal(topoPage, ptyId, `printf '${marker}=%s\\n' "$TOPO_PANE_KEY"`)
+    await waitForTerminalOutput(topoPage, `${marker}=${expectedPaneKey}`)
 
     expect(activeLeafId).toMatch(UUID_RE)
   })
 
-  test('terminal context menu copies the stable pane ID', async ({ orcaPage }) => {
-    const snapshot = await waitForPaneIdentitySnapshot(orcaPage, 1)
+  test('terminal context menu copies the stable pane ID', async ({ topoPage }) => {
+    const snapshot = await waitForPaneIdentitySnapshot(topoPage, 1)
     const leafId = snapshot.panes[0]?.leafId
     if (!leafId) {
       throw new Error('No terminal pane leaf id found')
     }
     const expectedPaneKey = `${snapshot.tabId}:${leafId}`
 
-    await openTerminalContextMenu(orcaPage)
-    await orcaPage.getByText('Copy Pane ID', { exact: true }).click()
+    await openTerminalContextMenu(topoPage)
+    await topoPage.getByText('Copy Pane ID', { exact: true }).click()
 
     await expect
-      .poll(() => orcaPage.evaluate(() => window.api.ui.readClipboardText()), { timeout: 3_000 })
+      .poll(() => topoPage.evaluate(() => window.api.ui.readClipboardText()), { timeout: 3_000 })
       .toBe(expectedPaneKey)
-    await expect(orcaPage.getByText('Pane ID copied', { exact: true })).toBeVisible()
+    await expect(topoPage.getByText('Pane ID copied', { exact: true })).toBeVisible()
     expect(leafId).toMatch(UUID_RE)
   })
 })

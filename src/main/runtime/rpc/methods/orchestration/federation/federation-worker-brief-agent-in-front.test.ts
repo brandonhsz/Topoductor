@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -25,7 +25,7 @@ describe('a paired-server worker start writes its brief only into the agent it l
   function workerHost(foreground: LaunchedAgentForeground, provesAgent = true) {
     const db = new OrchestrationDb(':memory:')
     databases.push(db)
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     configureFederationWorkerRuntime(runtime)
     const writes: string[] = []
@@ -40,7 +40,7 @@ describe('a paired-server worker start writes its brief only into the agent it l
     return { runtime, writes }
   }
 
-  async function attach(runtime: OrcaRuntimeService): Promise<unknown> {
+  async function attach(runtime: TopoRuntimeService): Promise<unknown> {
     const method = ORCHESTRATION_METHODS.find(
       (candidate) => candidate.name === 'orchestration.federationAttachStart'
     )

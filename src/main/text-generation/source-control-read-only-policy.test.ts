@@ -19,7 +19,7 @@ afterEach(async () => {
   )
 })
 async function directory() {
-  const result = await mkdtemp(join(tmpdir(), 'orca-policy-test-'))
+  const result = await mkdtemp(join(tmpdir(), 'topo-policy-test-'))
   owned.push(result)
   return result
 }

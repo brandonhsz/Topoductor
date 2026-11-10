@@ -42,7 +42,7 @@ import type {
 
 export type SkillsApi = {
   discover: (target?: SkillDiscoveryTarget) => Promise<SkillDiscoveryResult>
-  /** This machine's plan for Orca's installed skills; paired hosts plan over RPC. */
+  /** This machine's plan for Topo's installed skills; paired hosts plan over RPC. */
   bundledPlan: (request?: LocalBundledSkillPlanRequest) => Promise<BundledSkillPlan>
   bundledExecute: (request: LocalBundledSkillExecuteRequest) => Promise<BundledSkillInstallResult>
   bundledAutoUpdate: (request: BundledSkillAutoUpdateRequest) => Promise<BundledSkillInstallResult>

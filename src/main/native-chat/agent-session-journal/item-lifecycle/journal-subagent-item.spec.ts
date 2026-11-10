@@ -48,7 +48,7 @@ export function registerJournalSubagentItemTests(): void {
   }
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-journal-subagent-item-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-journal-subagent-item-'))
     clock = 1_000
   })
 

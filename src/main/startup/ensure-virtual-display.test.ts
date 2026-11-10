@@ -124,10 +124,10 @@ describe('ensureVirtualDisplayForHeadlessServe', () => {
     expect(appMock.commandLine.appendSwitch).toHaveBeenCalledWith('disable-gpu')
   })
 
-  it('keeps hardware acceleration when ORCA_SERVE_GPU=1 opts in', async () => {
+  it('keeps hardware acceleration when TOPO_SERVE_GPU=1 opts in', async () => {
     setPlatform('linux')
     process.env.DISPLAY = ':0'
-    vi.stubEnv('ORCA_SERVE_GPU', '1')
+    vi.stubEnv('TOPO_SERVE_GPU', '1')
     mockLiveXDisplay()
     const { ensureVirtualDisplayForHeadlessServe } = await import('./ensure-virtual-display')
 
@@ -163,7 +163,7 @@ describe('ensureVirtualDisplayForHeadlessServe', () => {
       expect(message).toContain('`xorg-x11-server-Xvfb`')
       expect(message).toContain('`xorg-server-xvfb` on Arch')
     }
-    expect(MISSING_SERVE_DISPLAY_MESSAGE).not.toContain('orca-ide serve')
+    expect(MISSING_SERVE_DISPLAY_MESSAGE).not.toContain('topo-ide serve')
     expect(MISSING_SERVE_DISPLAY_MESSAGE).toContain('Wayland alone is not enough')
     expect(missingLinuxDisplayMessage(true)).toBe(MISSING_SERVE_DISPLAY_MESSAGE)
     expect(missingLinuxDisplayMessage(false)).toBe(MISSING_LINUX_DISPLAY_MESSAGE)
@@ -201,7 +201,7 @@ describe('ensureVirtualDisplayForHeadlessServe', () => {
     expect(process.env.DISPLAY).toBe(':0')
   })
 
-  // Cleanup unlinks lock first; trusting Orca's own lockless :99 would revive an orphan socket.
+  // Cleanup unlinks lock first; trusting Topo's own lockless :99 would revive an orphan socket.
   it('does not adopt its own :99 socket when the lock is missing', async () => {
     setPlatform('linux')
     existsSyncMock.mockReturnValue(true)

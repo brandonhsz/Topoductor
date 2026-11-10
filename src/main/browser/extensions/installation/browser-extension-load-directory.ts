@@ -11,7 +11,7 @@ import {
   BROWSER_EXTENSION_WORKER_TOKEN_FILE
 } from '../../../../shared/browser/extensions/browser-extension-worker-api'
 import { buildBrowserExtensionBackgroundWrapper } from './browser-extension-background-wrapper'
-import { withOrcaContentScript } from './browser-extension-content-script-manifest'
+import { withTopoContentScript } from './browser-extension-content-script-manifest'
 import {
   withPrivateFilesHiddenFromWebAccessibleResources,
   withStaticWebAccessibleResources
@@ -25,7 +25,7 @@ import {
 } from '../api-runtime/browser-extension-worker-shim-source'
 
 /**
- * Orca loads every extension from a folder it owns, so it can add its worker wrapper, API shim and
+ * Topo loads every extension from a folder it owns, so it can add its worker wrapper, API shim and
  * token without touching the original: store installs in place, unpacked folders from a copy.
  */
 
@@ -54,7 +54,7 @@ export function chromeExtensionIdFromKey(base64Key: string): string {
  */
 function unpackedManifestKey(sourceDirectory: string): string {
   return createHash('sha256')
-    .update(`orca-unpacked:${resolve(sourceDirectory)}`)
+    .update(`topo-unpacked:${resolve(sourceDirectory)}`)
     .digest('base64')
 }
 
@@ -73,8 +73,8 @@ async function writeIfChanged(path: string, content: string): Promise<void> {
     return
   }
   await mkdir(dirname(path), { recursive: true })
-  await writeFile(`${path}.orca-tmp`, content)
-  await rename(`${path}.orca-tmp`, path)
+  await writeFile(`${path}.topo-tmp`, content)
+  await rename(`${path}.topo-tmp`, path)
 }
 
 function requireInside(directory: string, relativePath: string): string {
@@ -122,34 +122,34 @@ export async function browserExtensionIdForUnpackedFolder(directory: string): Pr
   return chromeExtensionIdFromKey(manifestKey(original, { source: 'unpacked', path: directory }))
 }
 
-// Why: Orca writes these into the package; none of them is meant for web pages.
-const ORCA_PRIVATE_FILES = [
+// Why: Topo writes these into the package; none of them is meant for web pages.
+const TOPO_PRIVATE_FILES = [
   BROWSER_EXTENSION_WORKER_TOKEN_FILE,
   BROWSER_EXTENSION_ORIGINAL_MANIFEST_FILE
 ]
-const ORCA_ROOT_FILES = [
-  ...ORCA_PRIVATE_FILES,
+const TOPO_ROOT_FILES = [
+  ...TOPO_PRIVATE_FILES,
   BROWSER_EXTENSION_WORKER_SHIM_FILE,
   BROWSER_EXTENSION_CONTENT_SCRIPT_FILE
 ]
-const ORCA_GENERATED_FILE_NAMES = new Set([
-  ...ORCA_ROOT_FILES,
+const TOPO_GENERATED_FILE_NAMES = new Set([
+  ...TOPO_ROOT_FILES,
   BROWSER_EXTENSION_WORKER_WRAPPER_FILE
 ])
 
 /**
- * Refuses a package that already has a file where Orca writes its own, which would overwrite it.
+ * Refuses a package that already has a file where Topo writes its own, which would overwrite it.
  * Asks the file system rather than comparing names, so every spelling that aliases one counts.
  */
-export async function refuseOrcaFileCollisions(
+export async function refuseTopoFileCollisions(
   directory: string,
   manifest: Record<string, unknown>
 ): Promise<void> {
   const wrapperPath = buildBrowserExtensionBackgroundWrapper(manifest)?.wrapperPath
-  for (const path of wrapperPath ? [...ORCA_ROOT_FILES, wrapperPath] : ORCA_ROOT_FILES) {
+  for (const path of wrapperPath ? [...TOPO_ROOT_FILES, wrapperPath] : TOPO_ROOT_FILES) {
     const target = resolveInsideExtensionDirectory(directory, path)
     if (target && (await stat(target).catch(() => null))) {
-      throw new Error(`Orca can't load this extension: its file ${path} uses a name Orca reserves`)
+      throw new Error(`Topo can't load this extension: its file ${path} uses a name Topo reserves`)
     }
   }
 }
@@ -163,9 +163,9 @@ function fileIdentity(path: string): string | null {
   }
 }
 
-/** True for a resource that is one of Orca's private files on disk, whatever its spelling. */
+/** True for a resource that is one of Topo's private files on disk, whatever its spelling. */
 function isPrivateFileOnDisk(directory: string): (resource: string) => boolean {
-  const privateIds = new Set(ORCA_PRIVATE_FILES.map((file) => fileIdentity(join(directory, file))))
+  const privateIds = new Set(TOPO_PRIVATE_FILES.map((file) => fileIdentity(join(directory, file))))
   privateIds.delete(null)
   return (resource) => {
     const target = resolveInsideExtensionDirectory(directory, resource)
@@ -173,12 +173,12 @@ function isPrivateFileOnDisk(directory: string): (resource: string) => boolean {
   }
 }
 
-// Why skip Orca's own files: they appear only after the first load, and listing them would change
+// Why skip Topo's own files: they appear only after the first load, and listing them would change
 // the manifest on the next launch and needlessly re-register the worker.
 async function listPackageFiles(directory: string): Promise<string[]> {
   const entries = await readdir(directory, { recursive: true, withFileTypes: true })
   return entries
-    .filter((entry) => entry.isFile() && !ORCA_GENERATED_FILE_NAMES.has(entry.name))
+    .filter((entry) => entry.isFile() && !TOPO_GENERATED_FILE_NAMES.has(entry.name))
     .map((entry) => relative(directory, join(entry.parentPath, entry.name)).split(sep).join('/'))
 }
 
@@ -200,14 +200,14 @@ async function prepare(
   const originalPath = join(directory, BROWSER_EXTENSION_ORIGINAL_MANIFEST_FILE)
   const { originalText, original } = await readOriginalManifest(directory, extension.source)
   if (unpacked) {
-    await refuseOrcaFileCollisions(directory, original)
+    await refuseTopoFileCollisions(directory, original)
   }
   const key = manifestKey(original, extension)
   const extensionId = chromeExtensionIdFromKey(key)
   const packageFiles = await listPackageFiles(directory)
   const staticResources = withStaticWebAccessibleResources({ ...original, key })
   const wrapper = buildBrowserExtensionBackgroundWrapper(staticResources)
-  const withContentScript = withOrcaContentScript(wrapper?.manifest ?? staticResources)
+  const withContentScript = withTopoContentScript(wrapper?.manifest ?? staticResources)
   await writeIfChanged(originalPath, originalText)
   let workerScripts = ''
   if (wrapper) {
@@ -251,7 +251,7 @@ const pending = new Map<string, Promise<PreparedBrowserExtensionDirectory>>()
 const copiedThisRun = new Map<string, PreparedBrowserExtensionDirectory>()
 
 /**
- * Store folders are re-checked on every load (an Orca update brings a new shim). An unpacked
+ * Store folders are re-checked on every load (a Topo update brings a new shim). An unpacked
  * folder is copied once per run, so a second profile never rewrites a copy another profile runs;
  * `refresh` (Settings › Reload) copies it again.
  */

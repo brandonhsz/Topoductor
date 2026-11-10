@@ -19,7 +19,7 @@ import {
 import {
   makeRuntimeOrchestrationDb,
   taskLineageRow
-} from '../../orca-runtime-tests/runtime-orchestration-db.test-fixture'
+} from '../../topo-runtime-tests/runtime-orchestration-db.test-fixture'
 import { buildManagedWorktreeCreateArgs } from '../../rpc/methods/workspaces/worktree-create-args'
 import { mapRuntimeError } from '../../rpc/errors'
 

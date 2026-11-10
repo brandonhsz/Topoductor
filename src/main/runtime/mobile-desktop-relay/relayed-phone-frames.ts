@@ -108,7 +108,7 @@ export class RelayedPhoneReplies {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         this.openRequests.delete(id)
-        reject(new Error('Timed out confirming the executing Orca server.'))
+        reject(new Error('Timed out confirming the executing Topo server.'))
       }, timeoutMs)
       this.openRequests.set(id, {
         hostStreamIds: [],
@@ -119,7 +119,7 @@ export class RelayedPhoneReplies {
         },
         cancel: () => {
           clearTimeout(timer)
-          reject(new Error('The executing Orca server connection changed.'))
+          reject(new Error('The executing Topo server connection changed.'))
         }
       })
       try {

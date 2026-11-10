@@ -1,7 +1,7 @@
 /** Flag macOS managed servers that outlive their launching SSH session. */
 import { getAppEnvironment } from '../../../shared/app-environment'
 import { listEnvironments } from '../../../shared/remote-runtime/host-store/runtime-environment-store'
-import { readManagedOrcadLaunchSshSession } from '../../managed-server/lifecycle/orcad-managed-launch-session'
+import { readManagedTopodLaunchSshSession } from '../../managed-server/lifecycle/topod-managed-launch-session'
 import { knownSshHostPlatform } from '../../ssh/remote-host/ssh-host-platform-memo'
 import { getSshHostServerStatus } from '../../ssh/host-server/ssh-host-server-status'
 import { connectionManager } from './ssh-ipc-context'
@@ -54,7 +54,7 @@ export async function noteEndedLaunchSshSession(
     connection.getConnectGeneration() !== generation ||
     checked.get(connection) !== pending
   try {
-    const session = await readManagedOrcadLaunchSshSession(
+    const session = await readManagedTopodLaunchSshSession(
       getAppEnvironment().getPath('userData'),
       environmentId
     )

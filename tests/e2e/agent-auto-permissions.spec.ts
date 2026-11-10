@@ -1,20 +1,20 @@
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForSessionReady } from './helpers/store'
 
 test.use({ seedTestRepo: false })
 
 test('global Auto preserves other agents’ choices and the single permission setting persists', async ({
-  orcaPage
+  topoPage
 }) => {
-  await waitForSessionReady(orcaPage)
-  await orcaPage.getByRole('button', { name: 'Settings', exact: true }).click()
-  await orcaPage.getByRole('button', { name: 'Agents', exact: true }).click()
-  const permissions = orcaPage.getByRole('button', { name: 'Permissions', exact: true })
-  const group = orcaPage.getByRole('group', { name: 'Permissions', exact: true })
-  const others = orcaPage.getByRole('button', { name: 'Permissions for other agents' })
-  const othersGroup = orcaPage.getByRole('group', { name: 'Permissions for other agents' })
+  await waitForSessionReady(topoPage)
+  await topoPage.getByRole('button', { name: 'Settings', exact: true }).click()
+  await topoPage.getByRole('button', { name: 'Agents', exact: true }).click()
+  const permissions = topoPage.getByRole('button', { name: 'Permissions', exact: true })
+  const group = topoPage.getByRole('group', { name: 'Permissions', exact: true })
+  const others = topoPage.getByRole('button', { name: 'Permissions for other agents' })
+  const othersGroup = topoPage.getByRole('group', { name: 'Permissions for other agents' })
   const readPermissions = () =>
-    orcaPage.evaluate(async () => {
+    topoPage.evaluate(async () => {
       const settings = await window.api.settings.get()
       return {
         default: settings.agentPermissionDefault,
@@ -56,10 +56,10 @@ test('global Auto preserves other agents’ choices and the single permission se
     opencode: 'own'
   })
 
-  await orcaPage.reload()
-  await orcaPage.waitForFunction(() => Boolean(window.__store))
-  await waitForSessionReady(orcaPage)
-  await orcaPage.getByRole('button', { name: 'Agents', exact: true }).click()
+  await topoPage.reload()
+  await topoPage.waitForFunction(() => Boolean(window.__store))
+  await waitForSessionReady(topoPage)
+  await topoPage.getByRole('button', { name: 'Agents', exact: true }).click()
   await permissions.click()
   await expect(group.getByRole('menuitemradio', { name: /^Approve for me\b/ })).toHaveAttribute(
     'aria-checked',

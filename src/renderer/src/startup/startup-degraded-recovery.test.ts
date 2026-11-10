@@ -72,7 +72,7 @@ describe('recoverFromDegradedStartup', () => {
         abortSignal: pass.signal ?? new AbortController().signal,
         isCancelled: pass.isCancelled ?? (() => false),
         reconnectPersistedTerminals: async () => {
-          throw new Error('Could not connect to the remote Orca runtime.')
+          throw new Error('Could not connect to the remote Topo runtime.')
         }
       })
     }
@@ -82,7 +82,7 @@ describe('recoverFromDegradedStartup', () => {
       relaunch.mockClear()
       statusListener = null
       currentTransport = 'disconnected'
-      Reflect.set(window, '__ORCA_WEB_CLIENT__', true)
+      Reflect.set(window, '__TOPO_WEB_CLIENT__', true)
       Object.defineProperty(window, 'api', {
         configurable: true,
         value: {
@@ -105,12 +105,12 @@ describe('recoverFromDegradedStartup', () => {
     })
 
     afterEach(() => {
-      Reflect.deleteProperty(window, '__ORCA_WEB_CLIENT__')
+      Reflect.deleteProperty(window, '__TOPO_WEB_CLIENT__')
     })
 
     it('stops waiting to reload once its startup pass is torn down', async () => {
       const pass = new AbortController()
-      await recoverFrom(new Error('Could not connect to the remote Orca runtime.'), {
+      await recoverFrom(new Error('Could not connect to the remote Topo runtime.'), {
         signal: pass.signal
       })
       pass.abort()
@@ -126,7 +126,7 @@ describe('recoverFromDegradedStartup', () => {
         cancelled = true
         return getStatusSnapshots()
       }
-      await recoverFrom(new Error('Could not connect to the remote Orca runtime.'), {
+      await recoverFrom(new Error('Could not connect to the remote Topo runtime.'), {
         isCancelled: () => cancelled
       })
 

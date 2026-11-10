@@ -1,8 +1,8 @@
 import { expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { fixture } from '../../persistence/loading-store/profile-state-delayed-authority-fixture'
 
-vi.mock('../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 it.each(['current', 'superseded', 'refused'] as const)(
   'publishes a queued source move only while admitted: %s',
@@ -39,7 +39,7 @@ it.each(['current', 'superseded', 'refused'] as const)(
     if (!group2) {
       throw new Error('expected second group')
     }
-    const runtime = new OrcaRuntimeService(store)
+    const runtime = new TopoRuntimeService(store)
     for (const sessionId of ['source', 'B', 'active']) {
       runtime.projectStructuredAgentSessionTab({
         workspaceId: workspace,

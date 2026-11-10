@@ -14,7 +14,7 @@ import { useMountedRef } from '@/hooks/useMountedRef'
 import { useTranslate } from '@/i18n/use-translate'
 import { hasGitHubBackedProject, type PreflightIssue } from './landing-preflight-issues'
 import { useLandingPreflightRuntime } from './landing-preflight-runtime'
-import { useLandingOrcaStarState, type LandingStarState } from './landing-github-star-state'
+import { useLandingTopoStarState, type LandingStarState } from './landing-github-star-state'
 import { openAppHttpLink } from '@/lib/browser/navigation/app-http-link-open'
 import {
   LANDING_ACTION_BUTTON_CLASS,
@@ -24,7 +24,7 @@ import {
 } from './landing-layout'
 
 // Do not deep-link to /stargazers: GitHub 404s that page for users without repo write access.
-const ORCA_GITHUB_URL = 'https://github.com/stablyai/orca'
+const TOPO_GITHUB_URL = 'https://github.com/brandonhsz/Topoductor'
 
 type StarButtonProps = {
   hasRepos: boolean
@@ -61,14 +61,14 @@ function GitHubStarButton({
       return
     }
     if (state === 'web-fallback') {
-      await window.api.shell.openUrl(ORCA_GITHUB_URL)
+      await window.api.shell.openUrl(TOPO_GITHUB_URL)
       return
     }
     if (state !== 'not-starred') {
       return
     }
     setState('starred')
-    const ok = await window.api.gh.starOrca('landing')
+    const ok = await window.api.gh.starTopo('landing')
     if (!ok) {
       if (mountedRef.current) {
         setState('web-fallback')
@@ -230,7 +230,7 @@ export default function Landing(): React.JSX.Element {
 
   // Probe the active execution host, including remote runtimes.
   const { preflightIssues } = useLandingPreflightRuntime()
-  const [starState, setStarState] = useLandingOrcaStarState()
+  const [starState, setStarState] = useLandingTopoStarState()
 
   const createWorktreeShortcut = useShortcutKeyDetails('workspace.create')
   const previousWorktreeShortcut = useShortcutKeyDetails('worktree.navigateUp')

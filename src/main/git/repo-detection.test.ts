@@ -13,7 +13,7 @@ describe('isGitRepo', () => {
   let tmpDir: string
 
   beforeEach(() => {
-    tmpDir = mkdtempSync(path.join(tmpdir(), 'orca-repo-detect-'))
+    tmpDir = mkdtempSync(path.join(tmpdir(), 'topo-repo-detect-'))
   })
 
   afterEach(() => {

@@ -7,7 +7,7 @@ vi.mock('../runtime-client', () => {
     readonly isRemote = false
     call = callMock
     getCliStatus = vi.fn()
-    openOrca = vi.fn()
+    openTopo = vi.fn()
   }
 
   class RuntimeClientError extends Error {
@@ -50,7 +50,7 @@ describe('absolute file CLI paths', () => {
   })
 
   describe('WSL UNC worktree roots', () => {
-    const uncRoot = '//wsl.localhost/Ubuntu/root/orca/workspaces/xxx'
+    const uncRoot = '//wsl.localhost/Ubuntu/root/topo/workspaces/xxx'
 
     async function openPath(path: string, cwd = '/tmp'): Promise<void> {
       await main(['file', 'open', '--path', path, '--worktree', 'id:wt-1'], cwd)
@@ -63,7 +63,7 @@ describe('absolute file CLI paths', () => {
         okFixture('req_show', { worktree: buildWorktree(uncRoot, 'feature') })
       )
 
-      await openPath('/root/orca/workspaces/xxx')
+      await openPath('/root/topo/workspaces/xxx')
 
       expect(process.exitCode).toBe(1)
       expect(console.error).toHaveBeenCalledWith(

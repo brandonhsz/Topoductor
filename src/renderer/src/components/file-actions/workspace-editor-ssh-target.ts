@@ -9,7 +9,7 @@ import type { WorktreeOperationRouteState } from '../../lib/workspace/ownership/
 type EditorSshTargetState = Omit<WorktreeOperationRouteState, 'runtimeEnvironments'> & {
   runtimeEnvironments?: readonly Pick<
     PublicKnownRuntimeEnvironment,
-    'id' | 'orcadDeployment' | 'sshAccess'
+    'id' | 'topodDeployment' | 'sshAccess'
   >[]
 }
 

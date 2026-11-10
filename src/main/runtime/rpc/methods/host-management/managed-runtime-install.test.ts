@@ -10,7 +10,7 @@ import type { RpcContext } from '../../core'
 import { MANAGED_RUNTIME_INSTALL_METHODS } from './managed-runtime-install'
 
 const host = vi.hoisted(() => ({ dataDirectory: '' }))
-vi.mock('../../../../orca-profiles/profile-storage-paths', () => ({
+vi.mock('../../../../topo-profiles/profile-storage-paths', () => ({
   getProfileUserDataPath: () => host.dataDirectory
 }))
 vi.mock('../../../agent-session/launch/structured-agent-launch-support', () => ({
@@ -58,7 +58,7 @@ vi.mock('../../../../acp/launch/acp-launch-registry', async (importOriginal) => 
     ...actual,
     acpLaunchSpecFor: (agent: string) => {
       const spec = actual.acpLaunchSpecFor(agent)
-      return spec && { ...spec, command: 'orca-rpc-managed-test', managedRuntime, launchGate }
+      return spec && { ...spec, command: 'topo-rpc-managed-test', managedRuntime, launchGate }
     }
   }
 })
@@ -75,7 +75,7 @@ const ctx = {
 } as unknown as RpcContext
 
 it('pushes a snapshot, then the install another client starts, until the transport closes', async () => {
-  host.dataDirectory = await mkdtemp(join(tmpdir(), 'orca-runtime-install-rpc-'))
+  host.dataDirectory = await mkdtemp(join(tmpdir(), 'topo-runtime-install-rpc-'))
   const transport = new AbortController()
   const frames: unknown[] = []
   const watcher = { ...ctx, signal: transport.signal }
@@ -102,7 +102,7 @@ it('pushes a snapshot, then the install another client starts, until the transpo
 })
 
 it('removes the files only once every chat and unclosed child that may run them is stopped', async () => {
-  host.dataDirectory = await mkdtemp(join(tmpdir(), 'orca-runtime-remove-rpc-'))
+  host.dataDirectory = await mkdtemp(join(tmpdir(), 'topo-runtime-remove-rpc-'))
   const agent = 'opencode'
   const spec = acpLaunchSpecFor(agent)
   const pin = spec?.managedRuntime?.pin()

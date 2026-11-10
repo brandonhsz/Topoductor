@@ -43,8 +43,8 @@ vi.mock('../../../../../shared/agent-status/process/agent-process-presence-probe
 
 registerRootTestHarness()
 
-// Orca's own agent-teams launch sets this synthetic TMUX; its Claudes run in no tmux server.
-const AGENT_TEAMS_HINT = '%1 /tmp/orca-claude-agent-teams/team-x'
+// Topo's own agent-teams launch sets this synthetic TMUX; its Claudes run in no tmux server.
+const AGENT_TEAMS_HINT = '%1 /tmp/topo-claude-agent-teams/team-x'
 const unboundRoot = () => {
   runningPane(49969, CLAUDE)
   io.resolveRoot.mockResolvedValueOnce(null)
@@ -126,7 +126,7 @@ describe('an empty pane whose first hook cannot be proved', () => {
   it.each([['running'], ['restored']])(
     'lets the pane’s proved root replace a %s fallback that is still live',
     async (mode) => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-root-fallback-'))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-root-fallback-'))
       paths.push(userDataPath)
       let server = await createServer(userDataPath)
       // A nested run reports first while the pane's binding is not hydrated yet.

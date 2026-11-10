@@ -7,7 +7,7 @@ import {
 import type { RuntimeRpcResponse } from '../../shared/runtime-rpc-envelope'
 import {
   isWslHostRuntimeEnvironment,
-  type OrcadDeploymentLink
+  type TopodDeploymentLink
 } from '../../shared/remote-runtime/host-catalog/runtime-environments'
 
 export type HostRepoCatalogSnapshotStore = {
@@ -15,7 +15,7 @@ export type HostRepoCatalogSnapshotStore = {
   setHostRepoCatalogSnapshot(environmentId: string, snapshot: HostRepoCatalogSnapshot | null): void
 }
 
-type SavedEnvironment = { id: string; orcadDeployment?: OrcadDeploymentLink | null }
+type SavedEnvironment = { id: string; topodDeployment?: TopodDeploymentLink | null }
 
 /** Paired servers and recipe VMs are out of scope: only a WSL host is routinely stopped while saved. */
 export function recordHostRepoCatalogAnswer(

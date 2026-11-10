@@ -3,9 +3,9 @@ import { forgetFailedAgentLaunches } from '../../../agent-launch/agent-launch-pa
 import type { Store } from '../../../persistence/loading-store/store'
 import { makePaneKey, parsePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import type { TerminalLeafMoveRequest } from '../../../../shared/workspace-layout/terminal-leaf-move'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 
-type PaneOwnerRuntime = Pick<OrcaRuntimeService, 'getExistingOrchestrationDb'> | undefined
+type PaneOwnerRuntime = Pick<TopoRuntimeService, 'getExistingOrchestrationDb'> | undefined
 type PaneAddress = { tabId: string; leafId: string }
 
 /** Rekey after pane move; log failures and retain the failed owner's old key. False if either transfer fails. */

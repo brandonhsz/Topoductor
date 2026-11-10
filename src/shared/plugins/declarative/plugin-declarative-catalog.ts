@@ -146,7 +146,7 @@ const emptyStateProps = z
   .strict()
 const linkProps = z
   .object({
-    // Why no `javascript:`/`file:`: the host opens it in the OS browser, never in Orca.
+    // Why no `javascript:`/`file:`: the host opens it in the OS browser, never in Topo.
     href: z
       .string()
       .max(2048)
@@ -224,7 +224,7 @@ export type PluginDeclarativeProps<T extends PluginDeclarativeComponentName> = z
 >
 export type PluginDeclarativeTone = (typeof PLUGIN_DECLARATIVE_TONES)[number]
 
-/** A component this Orca does not know (a newer catalog, or a typo): drawn as a neutral placeholder. */
+/** A component this Topo does not know (a newer catalog, or a typo): drawn as a neutral placeholder. */
 export type PluginDeclarativeUnsupportedNode = {
   type: 'Unsupported'
   key?: string

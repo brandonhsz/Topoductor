@@ -4,15 +4,15 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  createDefaultLocalOrcaProfile,
-  DEFAULT_LOCAL_ORCA_PROFILE_ID
-} from '../../shared/orca-profiles'
+  createDefaultLocalTopoProfile,
+  DEFAULT_LOCAL_TOPO_PROFILE_ID
+} from '../../shared/topo-profiles'
 import { getDefaultPersistedState } from '../../shared/constants'
 import type { PersistedState } from '../../shared/persisted-state-types'
 import {
-  getOrcaProfileDataFile,
-  getOrcaProfileStateDatabaseFile
-} from '../../main/orca-profiles/profile-storage-paths'
+  getTopoProfileDataFile,
+  getTopoProfileStateDatabaseFile
+} from '../../main/topo-profiles/profile-storage-paths'
 import { openProfileStateDatabase } from '../../main/persistence/profile-state/profile-state-database'
 import * as profileStateDatabase from '../../main/persistence/profile-state/profile-state-database'
 import {
@@ -91,15 +91,15 @@ import { main } from '../index'
 
 function writeDataFile(userDataPath: string, state: PersistedState): void {
   mkdirSync(userDataPath, { recursive: true })
-  writeFileSync(join(userDataPath, 'orca-data.json'), JSON.stringify(state, null, 2), 'utf-8')
+  writeFileSync(join(userDataPath, 'topo-data.json'), JSON.stringify(state, null, 2), 'utf-8')
 }
 
 function writeActiveProfileIndex(userDataPath: string, profileId: string): void {
   writeFileSync(
-    join(userDataPath, 'orca-profile-index.json'),
+    join(userDataPath, 'topo-profile-index.json'),
     JSON.stringify({
       activeProfileId: profileId,
-      profiles: [{ ...createDefaultLocalOrcaProfile(1), id: profileId }]
+      profiles: [{ ...createDefaultLocalTopoProfile(1), id: profileId }]
     }),
     'utf-8'
   )
@@ -114,7 +114,7 @@ describe('agent hooks CLI handler', () => {
   let userDataPath: string
 
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-agent-hooks-cli-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-agent-hooks-cli-'))
     applyAgentStatusHooksEnabledMock.mockReset().mockReturnValue([])
     callMock.mockReset()
     getCliStatusMock.mockClear()
@@ -150,17 +150,17 @@ describe('agent hooks CLI handler', () => {
       expect(process.exitCode).toBe(1)
       expect(applyAgentStatusHooksEnabledMock).not.toHaveBeenCalled()
       expect(existsSync(join(userDataPath, '.profile-state-access'))).toBe(false)
-      expect(existsSync(getOrcaProfileStateDatabaseFile(profileId, userDataPath))).toBe(false)
+      expect(existsSync(getTopoProfileStateDatabaseFile(profileId, userDataPath))).toBe(false)
       expect(
-        existsSync(getOrcaProfileStateDatabaseFile(DEFAULT_LOCAL_ORCA_PROFILE_ID, userDataPath))
+        existsSync(getTopoProfileStateDatabaseFile(DEFAULT_LOCAL_TOPO_PROFILE_ID, userDataPath))
       ).toBe(false)
       if (source !== 'fresh') {
-        expect(JSON.parse(readFileSync(join(directory, 'orca-data.json'), 'utf8'))).toEqual(state)
+        expect(JSON.parse(readFileSync(join(directory, 'topo-data.json'), 'utf8'))).toEqual(state)
       }
       if (source !== 'profile-json') {
-        expect(existsSync(join(userDataPath, 'orca-profile-index.json'))).toBe(false)
+        expect(existsSync(join(userDataPath, 'topo-profile-index.json'))).toBe(false)
       }
-      expect(console.log).toHaveBeenCalledWith(expect.stringContaining('bundled Orca CLI'))
+      expect(console.log).toHaveBeenCalledWith(expect.stringContaining('bundled Topo CLI'))
     }
   )
 
@@ -176,12 +176,12 @@ describe('agent hooks CLI handler', () => {
       }
       getDefaultUserDataPathMock.mockReturnValue(userDataPath)
       vi.spyOn(profileStateDatabase, 'isProfileStateSqliteAvailable').mockReturnValue(false)
-      const original = readFileSync(join(directory, 'orca-data.json'), 'utf8')
+      const original = readFileSync(join(directory, 'topo-data.json'), 'utf8')
 
       await main(['agent', 'hooks', 'status', '--json'], userDataPath)
 
       expect(process.exitCode).not.toBe(1)
-      expect(readFileSync(join(directory, 'orca-data.json'), 'utf8')).toBe(original)
+      expect(readFileSync(join(directory, 'topo-data.json'), 'utf8')).toBe(original)
       expect(existsSync(join(directory, 'profile-state.db'))).toBe(false)
       expect(applyAgentStatusHooksEnabledMock).not.toHaveBeenCalled()
     }
@@ -191,7 +191,7 @@ describe('agent hooks CLI handler', () => {
     'uses the backup index when the primary is %s',
     async (primary) => {
       const profileId = 'backup-selected'
-      const indexPath = join(userDataPath, 'orca-profile-index.json')
+      const indexPath = join(userDataPath, 'topo-profile-index.json')
       writeActiveProfileIndex(userDataPath, profileId)
       fs.renameSync(indexPath, `${indexPath}.bak`)
       if (primary === 'corrupt') {
@@ -205,15 +205,15 @@ describe('agent hooks CLI handler', () => {
       await runAgentHooksOff(userDataPath)
 
       expect(process.exitCode).not.toBe(1)
-      expect(existsSync(getOrcaProfileStateDatabaseFile(profileId, userDataPath))).toBe(true)
+      expect(existsSync(getTopoProfileStateDatabaseFile(profileId, userDataPath))).toBe(true)
       expect(
-        existsSync(getOrcaProfileStateDatabaseFile(DEFAULT_LOCAL_ORCA_PROFILE_ID, userDataPath))
+        existsSync(getTopoProfileStateDatabaseFile(DEFAULT_LOCAL_TOPO_PROFILE_ID, userDataPath))
       ).toBe(false)
-      const { ensureActiveOrcaProfile } =
-        await import('../../main/orca-profiles/profile-index-store.js')
-      expect(ensureActiveOrcaProfile(userDataPath).profile.id).toBe(profileId)
+      const { ensureActiveTopoProfile } =
+        await import('../../main/topo-profiles/profile-index-store.js')
+      expect(ensureActiveTopoProfile(userDataPath).profile.id).toBe(profileId)
       const opened = openProfileStateDatabase(
-        getOrcaProfileStateDatabaseFile(profileId, userDataPath),
+        getTopoProfileStateDatabaseFile(profileId, userDataPath),
         profileId
       )
       try {
@@ -227,7 +227,7 @@ describe('agent hooks CLI handler', () => {
   )
 
   it.each([0])('refuses a pre-index root with only legacy backup %s', async (slot) => {
-    const backup = join(userDataPath, `orca-data.json.bak.${slot}`)
+    const backup = join(userDataPath, `topo-data.json.bak.${slot}`)
     const source = '{"settings":{"agentStatusHooksEnabled":true}}'
     writeFileSync(backup, source)
 
@@ -235,7 +235,7 @@ describe('agent hooks CLI handler', () => {
 
     expect(process.exitCode).toBe(1)
     expect(readFileSync(backup, 'utf8')).toBe(source)
-    expect(existsSync(join(userDataPath, 'orca-profile-index.json'))).toBe(false)
+    expect(existsSync(join(userDataPath, 'topo-profile-index.json'))).toBe(false)
     expect(existsSync(join(userDataPath, 'profiles'))).toBe(false)
     expect(applyAgentStatusHooksEnabledMock).not.toHaveBeenCalled()
   })
@@ -247,7 +247,7 @@ describe('agent hooks CLI handler', () => {
       const directory =
         backend === 'root-json' ? userDataPath : join(userDataPath, 'profiles', profileId)
       mkdirSync(directory, { recursive: true })
-      const dataFile = join(directory, 'orca-data.json')
+      const dataFile = join(directory, 'topo-data.json')
       const raw = JSON.stringify({
         settings: { agentStatusHooksEnabled: true },
         unknown: { retained: null }
@@ -306,10 +306,10 @@ describe('agent hooks CLI handler', () => {
       if (backend === 'profile-json') {
         writeActiveProfileIndex(userDataPath, profileId)
       }
-      const dataFile = join(directory, 'orca-data.json')
+      const dataFile = join(directory, 'topo-data.json')
       writeFileSync(dataFile, JSON.stringify({ settings: { agentStatusHooksEnabled: true } }))
-      const databaseFile = getOrcaProfileStateDatabaseFile(
-        backend === 'root-json' ? DEFAULT_LOCAL_ORCA_PROFILE_ID : profileId,
+      const databaseFile = getTopoProfileStateDatabaseFile(
+        backend === 'root-json' ? DEFAULT_LOCAL_TOPO_PROFILE_ID : profileId,
         userDataPath
       )
       const link = fs.linkSync
@@ -329,7 +329,7 @@ describe('agent hooks CLI handler', () => {
       try {
         const opened = openProfileStateDatabase(
           databaseFile,
-          backend === 'root-json' ? DEFAULT_LOCAL_ORCA_PROFILE_ID : profileId
+          backend === 'root-json' ? DEFAULT_LOCAL_TOPO_PROFILE_ID : profileId
         )
         try {
           expect(
@@ -350,8 +350,8 @@ describe('agent hooks CLI handler', () => {
   it('updates an established SQLite profile without rewriting its JSON export', async () => {
     const profileId = 'work-profile'
     const profileDirectory = join(userDataPath, 'profiles', profileId)
-    const dataFile = getOrcaProfileDataFile(profileId, userDataPath)
-    const databaseFile = getOrcaProfileStateDatabaseFile(profileId, userDataPath)
+    const dataFile = getTopoProfileDataFile(profileId, userDataPath)
+    const databaseFile = getTopoProfileStateDatabaseFile(profileId, userDataPath)
     const raw = JSON.stringify({
       settings: {
         agentStatusHooksEnabled: true,
@@ -399,13 +399,13 @@ describe('agent hooks CLI handler', () => {
 
     await runAgentHooksOff(userDataPath)
 
-    expect(existsSync(getOrcaProfileStateDatabaseFile(profileId, userDataPath))).toBe(true)
+    expect(existsSync(getTopoProfileStateDatabaseFile(profileId, userDataPath))).toBe(true)
     expect(
-      JSON.parse(readFileSync(getOrcaProfileDataFile(profileId, userDataPath), 'utf-8')).settings
+      JSON.parse(readFileSync(getTopoProfileDataFile(profileId, userDataPath), 'utf-8')).settings
         .agentStatusHooksEnabled
     ).toBe(true)
     const opened = openProfileStateDatabase(
-      getOrcaProfileStateDatabaseFile(profileId, userDataPath),
+      getTopoProfileStateDatabaseFile(profileId, userDataPath),
       profileId
     )
     try {
@@ -424,28 +424,28 @@ describe('agent hooks CLI handler', () => {
     const state = getDefaultPersistedState(userDataPath)
     writeDataFile(profileDirectory, state)
     writeActiveProfileIndex(userDataPath, profileId)
-    const databaseFile = getOrcaProfileStateDatabaseFile(profileId, userDataPath)
+    const databaseFile = getTopoProfileStateDatabaseFile(profileId, userDataPath)
     writeFileSync(databaseFile, 'not sqlite', 'utf-8')
-    const before = readFileSync(getOrcaProfileDataFile(profileId, userDataPath), 'utf-8')
+    const before = readFileSync(getTopoProfileDataFile(profileId, userDataPath), 'utf-8')
 
     await runAgentHooksOff(userDataPath)
 
     expect(process.exitCode).toBe(1)
     expect(applyAgentStatusHooksEnabledMock).not.toHaveBeenCalled()
-    expect(readFileSync(getOrcaProfileDataFile(profileId, userDataPath), 'utf-8')).toBe(before)
+    expect(readFileSync(getTopoProfileDataFile(profileId, userDataPath), 'utf-8')).toBe(before)
     expect(readFileSync(databaseFile, 'utf-8')).toBe('not sqlite')
   })
 
   it('fails closed when a profile index is present but unreadable', async () => {
     const legacy = getDefaultPersistedState(userDataPath)
     writeDataFile(userDataPath, legacy)
-    writeFileSync(join(userDataPath, 'orca-profile-index.json'), '{ torn', 'utf-8')
-    const before = readFileSync(join(userDataPath, 'orca-data.json'), 'utf-8')
+    writeFileSync(join(userDataPath, 'topo-profile-index.json'), '{ torn', 'utf-8')
+    const before = readFileSync(join(userDataPath, 'topo-data.json'), 'utf-8')
 
     await runAgentHooksOff(userDataPath)
 
     expect(process.exitCode).toBe(1)
     expect(applyAgentStatusHooksEnabledMock).not.toHaveBeenCalled()
-    expect(readFileSync(join(userDataPath, 'orca-data.json'), 'utf-8')).toBe(before)
+    expect(readFileSync(join(userDataPath, 'topo-data.json'), 'utf-8')).toBe(before)
   })
 })

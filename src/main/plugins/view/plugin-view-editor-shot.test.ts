@@ -112,10 +112,10 @@ beforeEach(() => relay.requestPluginViewFromRenderer.mockReset())
 
 describe('shot --editor', () => {
   it('acts on a temporary copy, never the file, and removes the copy afterwards', async () => {
-    const root = realpathSync(mkdtempSync(join(tmpdir(), 'orca-editor-shot-file-')))
+    const root = realpathSync(mkdtempSync(join(tmpdir(), 'topo-editor-shot-file-')))
     const file = join(root, 'a.sketch')
     writeFileSync(file, '{"shapes":[]}')
-    const scratch = realpathSync(mkdtempSync(join(tmpdir(), 'orca-editor-shot-scratch-')))
+    const scratch = realpathSync(mkdtempSync(join(tmpdir(), 'topo-editor-shot-scratch-')))
     const guest = fakeContents(GUEST_URL)
     relay.requestPluginViewFromRenderer.mockImplementation(answer(drawn(true)))
     const shot = await shootPluginEditor(
@@ -136,7 +136,7 @@ describe('shot --editor', () => {
       capture: { scratch: true, colorScheme: 'light', width: 400 }
     })
     const copied = open?.kind === 'open-editor' ? open.filePath : ''
-    expect(copied.startsWith(join(scratch, 'orca-editor-shot-'))).toBe(true)
+    expect(copied.startsWith(join(scratch, 'topo-editor-shot-'))).toBe(true)
     expect(basename(copied)).toBe('a.sketch')
     // Ends only this capture: a shot running beside it keeps its tab.
     expect(end).toEqual({

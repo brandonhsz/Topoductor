@@ -158,7 +158,7 @@ describe('a pane without a proven owner', () => {
   it.each([['older'], [undefined]])(
     'acquires an owner saved with session %s after a restart, from durable spool replay',
     async (session) => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-root-acquisition-'))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-root-acquisition-'))
       paths.push(userDataPath)
       const first = await createServer(userDataPath)
       await hook(first, 'UserPromptSubmit', { session, pid: null, prompt: 'old' })
@@ -222,7 +222,7 @@ describe('the pane root’s exit', () => {
   })
 })
 
-describe('terminal reports and Orca restatements', () => {
+describe('terminal reports and Topo restatements', () => {
   it('keeps a resumed Codex conversation over a Claude run inside it', async () => {
     const server = await createServer()
     runningPane(49969, [49969, 101, 49969, 'codex resume cx', 'S+'], ...NESTED)

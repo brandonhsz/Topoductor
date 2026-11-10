@@ -1,6 +1,6 @@
 import type { ExternalConversationLink } from '../../shared/external-conversation-link'
 import type { LaunchedAgentReadinessRuntime } from '../runtime/terminal/wait/launched-agent-composer-readiness'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { waitForStartedAgentReady } from '../runtime/rpc/methods/agent-launch/agent-launch-terminal-prompt'
 import type { AgentSessionResumeRefusal } from '../runtime/session-lifecycle/projection/resume-agent-session-in-workspace'
 import { refusalOf } from './external-conversation-chain'
@@ -8,7 +8,7 @@ import { bindPane, type FollowUpTerminal } from './external-conversation-send'
 import type { ConnectorRefusal } from './external-conversation-types'
 
 export type ReopenTerminal = Pick<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   'resumeAgentSessionInWorkspace' | 'getAgentStatusRowsForPane'
 > &
   LaunchedAgentReadinessRuntime &

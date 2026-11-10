@@ -57,7 +57,7 @@ describe('SshConnection host key verification', () => {
   // A rejected host key must bypass credential fallbacks or auth-shaped errors could disclose a secret to the refused peer.
   it('never asks for a credential after refusing a host key', async () => {
     vi.stubEnv('SSH_AUTH_SOCK', '/tmp/agent.sock')
-    const tempDir = mkdtempSync(join(tmpdir(), 'orca-ssh-key-'))
+    const tempDir = mkdtempSync(join(tmpdir(), 'topo-ssh-key-'))
     const keyPath = join(tempDir, 'id_ed25519')
     writeFileSync(keyPath, 'test-key')
     ssh2Mock.presentedHostKey = UNIDENTIFIABLE_HOST_KEY
@@ -87,7 +87,7 @@ describe('SshConnection host key verification', () => {
 
   // Absent known_hosts is normal for new profiles; it cannot be treated as withheld evidence.
   it('connects on first contact when no known_hosts file exists yet', async () => {
-    const emptyHome = mkdtempSync(join(tmpdir(), 'orca-ssh-home-'))
+    const emptyHome = mkdtempSync(join(tmpdir(), 'topo-ssh-home-'))
     vi.stubEnv('HOME', emptyHome)
 
     try {
@@ -105,7 +105,7 @@ describe('SshConnection host key verification', () => {
   it.skipIf(process.platform === 'win32' || process.getuid?.() === 0)(
     'still connects when a known_hosts file exists but cannot be read',
     async () => {
-      const home = mkdtempSync(join(tmpdir(), 'orca-ssh-home-'))
+      const home = mkdtempSync(join(tmpdir(), 'topo-ssh-home-'))
       mkdirSync(join(home, '.ssh'))
       const knownHosts = join(home, '.ssh', 'known_hosts')
       writeFileSync(knownHosts, '')

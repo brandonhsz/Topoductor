@@ -3,9 +3,9 @@ import {
   getEphemeralVmRecipeCheckoutModeFailure,
   getEphemeralVmRecipeResultSchemaVersion
 } from './ephemeral-vm-recipe-checkout-mode'
-import type { OrcaVmRecipe } from './orca-yaml-hook-types'
+import type { TopoVmRecipe } from './topo-yaml-hook-types'
 
-const defaultRecipe: OrcaVmRecipe = {
+const defaultRecipe: TopoVmRecipe = {
   id: 'cloud-sandbox',
   name: 'Cloud Sandbox',
   create: './create.sh'
@@ -17,7 +17,7 @@ describe('ephemeral VM recipe checkout mode', () => {
     expect(
       getEphemeralVmRecipeCheckoutModeFailure(defaultRecipe, {
         schemaVersion: 1,
-        pairingCode: 'orca://pair?code=test',
+        pairingCode: 'topo://pair?code=test',
         projectRoot: '/workspace/repo'
       })
     ).toBeNull()
@@ -27,7 +27,7 @@ describe('ephemeral VM recipe checkout mode', () => {
     const provisionedRootResult = {
       schemaVersion: 2 as const,
       checkoutMode: 'provisioned-root' as const,
-      pairingCode: 'orca://pair?code=test',
+      pairingCode: 'topo://pair?code=test',
       projectRoot: '/workspace/repo'
     }
     expect(getEphemeralVmRecipeCheckoutModeFailure(defaultRecipe, provisionedRootResult)).toEqual({

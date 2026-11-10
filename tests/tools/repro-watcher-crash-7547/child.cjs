@@ -390,8 +390,8 @@ const SCENARIOS = {
 async function main() {
   const scenarioName = process.argv[2] || 'mixed'
   const durationMs = Number(process.argv[3] || 15000)
-  // Keep churn outside the worktree so a live Orca watcher cannot observe it.
-  const baseDir = path.join(os.tmpdir(), 'orca-7547-harness', `run-${process.pid}`)
+  // Keep churn outside the worktree so a live Topo watcher cannot observe it.
+  const baseDir = path.join(os.tmpdir(), 'topo-7547-harness', `run-${process.pid}`)
   fs.mkdirSync(baseDir, { recursive: true })
 
   const watcher = require(watcherPath)

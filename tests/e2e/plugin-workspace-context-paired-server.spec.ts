@@ -1,13 +1,13 @@
 /**
  * #38653: a panel's `workspace.readContext` names the focused workspace when it lives on a paired
- * Orca server, and a focused local workspace's context is unchanged by that remote fallback.
+ * Topo server, and a focused local workspace's context is unchanged by that remote fallback.
  */
 
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { Locator, Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { launchHeadlessPairedRuntimeHost } from './helpers/headless-paired-runtime-host'
 import { launchPairedElectronClient } from './helpers/paired-electron-client'
 import { enableDevPlugins } from './helpers/plugin-smoke'
@@ -65,7 +65,7 @@ test('a panel reads the focused paired-server workspace, and a local one as befo
   test.setTimeout(300_000)
   const host = await launchHeadlessPairedRuntimeHost()
   let hostRunning = true
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-38653-'))
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-38653-'))
   const pluginRoot = join(tempRoot, 'context-probe')
   try {
     const added = await host.client.call<{ repo: { id: string } }>('repo.add', {
@@ -74,7 +74,7 @@ test('a panel reads the focused paired-server workspace, and a local one as befo
     })
     const serverRepoId = added.result.repo.id
     const desktop = await launchPairedElectronClient(host.offer, testInfo, 'context host', {
-      extraEnv: { ORCA_PLUGIN_ISOLATED_FRAMES: '1' }
+      extraEnv: { TOPO_PLUGIN_ISOLATED_FRAMES: '1' }
     })
     try {
       const page = desktop.page

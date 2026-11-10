@@ -18,7 +18,7 @@ const {
 }))
 
 vi.mock('./system-ssh-orphaned-forward', () => ({
-  stopOrphanedOrcaSshForward: stopOrphanMock
+  stopOrphanedTopoSshForward: stopOrphanMock
 }))
 
 vi.mock('./system-ssh-muxed-forward-cancel', () => ({
@@ -128,7 +128,7 @@ describe('system SSH forward process', () => {
     vi.useRealTimers()
   })
 
-  it('keeps the port error when nothing Orca orphaned holds the port', async () => {
+  it('keeps the port error when nothing Topo orphaned holds the port', async () => {
     const server = createFakeServer()
     server.listen.mockImplementation(() => {
       queueMicrotask(() =>

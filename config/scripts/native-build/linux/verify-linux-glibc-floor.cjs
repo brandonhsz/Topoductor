@@ -5,7 +5,7 @@ const { join, relative } = require('node:path')
 // Gate bundled Linux binaries against Ubuntu 20.04 symbol floors to prevent native load crashes (#9902); see docs/reference/linux-glibc-compatibility.md.
 const MIN_GLIBC = Object.freeze([2, 31])
 
-// Gate glibc plus system libstdc++ ABI families; Orca bundles no C++ runtime for desktop.
+// Gate glibc plus system libstdc++ ABI families; Topo bundles no C++ runtime for desktop.
 const VERSION_FLOORS = Object.freeze([
   Object.freeze({ prefix: 'GLIBC_', floor: MIN_GLIBC }),
   Object.freeze({ prefix: 'GLIBCXX_', floor: Object.freeze([3, 4, 28]) }),
@@ -340,7 +340,7 @@ function readDynamicInfo(filePath, objdumpPath) {
 
 function isMuslTemplatePayload(filePath, neededLibraries, versionNeeds) {
   return (
-    /(?:^|[/\\])orcad-template[/\\]targets[/\\]linux-(?:x64|arm64)-musl[/\\]/.test(filePath) &&
+    /(?:^|[/\\])topod-template[/\\]targets[/\\]linux-(?:x64|arm64)-musl[/\\]/.test(filePath) &&
     [...neededLibraries].some(
       (name) => name === 'libc.so' || /^libc\.musl-[\w-]+\.so\.1$/.test(name)
     ) &&

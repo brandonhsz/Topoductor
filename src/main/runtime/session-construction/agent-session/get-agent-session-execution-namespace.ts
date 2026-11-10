@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithResolveWorktreeRemovalTarget } from '../../workspaces/workspace-removal-target'
+import { TopoRuntimeWithResolveWorktreeRemovalTarget } from '../../workspaces/workspace-removal-target'
 import type { TerminalWorkspaceLaunchScope } from '../../orchestration/terminal-authority/structured-sessions/runtime-legacy-worker-terminal-recovery-types'
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
 import { parseWslUncPath } from '../../../../shared/wsl-paths'
@@ -23,7 +23,7 @@ import {
   resolveTuiAgentLaunchEnv
 } from '../../../../shared/agent-launch/choices/tui-agent-launch-defaults'
 
-export abstract class OrcaRuntimeWithGetAgentSessionExecutionNamespace extends OrcaRuntimeWithResolveWorktreeRemovalTarget {
+export abstract class TopoRuntimeWithGetAgentSessionExecutionNamespace extends TopoRuntimeWithResolveWorktreeRemovalTarget {
   protected getAgentSessionExecutionNamespace(
     workspace: TerminalWorkspaceLaunchScope,
     agent: TuiAgent

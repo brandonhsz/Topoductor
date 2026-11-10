@@ -58,7 +58,7 @@ vi.mock('../permissions/browser-extension-permission-prompt', () => ({
   askToGrantBrowserExtensionPermissions: mocks.prompt
 }))
 
-mocks.userData = mkdtempSync(join(tmpdir(), 'orca-extension-apis-'))
+mocks.userData = mkdtempSync(join(tmpdir(), 'topo-extension-apis-'))
 
 const { BROWSER_EXTENSION_EVENT_CHANNEL, BROWSER_EXTENSION_INVOKE_CHANNEL } =
   await import('../../../../shared/browser/extensions/browser-extension-channels')

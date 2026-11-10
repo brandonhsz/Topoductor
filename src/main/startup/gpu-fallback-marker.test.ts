@@ -18,7 +18,7 @@ describe('gpu-fallback-marker', () => {
   }
 
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(os.tmpdir(), 'orca-gpu-fallback-test-'))
+    userDataPath = mkdtempSync(join(os.tmpdir(), 'topo-gpu-fallback-test-'))
   })
 
   afterEach(() => {

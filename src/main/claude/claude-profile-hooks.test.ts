@@ -65,15 +65,15 @@ function stopHooks(f: ReturnType<typeof fixture>) {
       ? hooks.Stop
       : []
   }
-  const isOrca = (entry: unknown) => JSON.stringify(entry).includes('agent-hooks')
+  const isTopo = (entry: unknown) => JSON.stringify(entry).includes('agent-hooks')
   const setStop = (dir: string, commands: string[]) =>
     f.edit(dir, (value) => {
       const hooks = typeof value.hooks === 'object' ? value.hooks : {}
-      value.hooks = { ...hooks, Stop: [...commands.map(hook), ...stopOf(value).filter(isOrca)] }
+      value.hooks = { ...hooks, Stop: [...commands.map(hook), ...stopOf(value).filter(isTopo)] }
     })
   const stop = (dir: string) => stopOf(f.settings(dir))
-  const orcaCount = (dir: string) => stop(dir).filter(isOrca).length
-  return { hook, setStop, stop, orcaCount }
+  const topoCount = (dir: string) => stop(dir).filter(isTopo).length
+  return { hook, setStop, stop, topoCount }
 }
 const sync = async (f: ReturnType<typeof fixture>) => {
   const report = await f.provision()
@@ -97,9 +97,9 @@ describe('Claude hooks at an explicit profile', () => {
     expect(readFileSync(join(f.defaultDir, 'settings.json'), 'utf8')).toBe(before)
     expect(f.settings(f.profile)).toEqual({ model: 'profile', hooks: JSON.parse(before).hooks })
   })
-  it("shares the user's hooks, Orca's hooks and statusline as plain keys that installs leave in sync", async () => {
+  it("shares the user's hooks, Topo's hooks and statusline as plain keys that installs leave in sync", async () => {
     const f = fixture()
-    const { hook, setStop, stop, orcaCount } = stopHooks(f)
+    const { hook, setStop, stop, topoCount } = stopHooks(f)
     f.service.install(CURRENT)
     setStop(f.defaultDir, ['notify-me'])
     await sync(f)
@@ -109,12 +109,12 @@ describe('Claude hooks at an explicit profile', () => {
     setStop(f.defaultDir, ['notify-v2'])
     await sync(f)
     expect(stop(f.profile)[0]).toEqual(hook('notify-v2'))
-    expect(orcaCount(f.profile)).toBe(1)
+    expect(topoCount(f.profile)).toBe(1)
     setStop(f.profile, ['profile-only'])
     setStop(f.defaultDir, ['notify-v3'])
     await sync(f)
     expect(stop(f.profile)[0]).toEqual(hook('notify-v3'))
-    expect(orcaCount(f.profile)).toBe(1)
+    expect(topoCount(f.profile)).toBe(1)
   })
   it('carries a default-home statusline opt-out and an old-Claude retire to the profile', async () => {
     const f = fixture()

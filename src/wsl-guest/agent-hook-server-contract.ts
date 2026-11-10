@@ -8,7 +8,7 @@ import type { HookRootEvidenceReader } from '../shared/agent-hook-listener/prese
 export type RelayHookForward = (envelope: AgentHookRelayEnvelope) => void
 
 export type RelayHookServerOptions = {
-  /** Where to put endpoint.env / endpoint.cmd. Defaults to `$HOME/.orca-relay/agent-hooks`. */
+  /** Where to put endpoint.env / endpoint.cmd. Defaults to `$HOME/.topo-relay/agent-hooks`. */
   endpointDir?: string
   // Default remote tag avoids main’s dev/prod mismatch warnings.
   env?: string

@@ -8,7 +8,7 @@ import {
   type TabsDrawnFromMain
 } from '../../tabs/tabs-drawn-from-main.test-fixture'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import { hasPendingEntityTab } from '@/runtime/workspace-layout/intents/layout-owner-pending-tabs'
 import { buildMobileSessionTabSnapshots } from '@/runtime/sync-runtime-graph/mobile-session-snapshots'
 import { workspaceEditorFiles } from './workspace-editor-files'
@@ -296,7 +296,7 @@ it('does not mirror cross-placed files or dangling groups, and still publishes a
   expect(useAppStore.getState().openFiles).toHaveLength(1)
 })
 
-it.runIf(ORCA_LAYOUT_OWNER_IS_MAIN)(
+it.runIf(TOPO_LAYOUT_OWNER_IS_MAIN)(
   'protects content while main owns the open, and releases a refused placement',
   async () => {
     layoutApplyTestTransport.answerWith('pending')

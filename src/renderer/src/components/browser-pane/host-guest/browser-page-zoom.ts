@@ -2,11 +2,11 @@ import type { BrowserPageZoomCommand } from '../../../../../shared/browser-page-
 
 export type { BrowserPageZoomCommand } from '../../../../../shared/browser-page-zoom'
 
-export const ORCA_BROWSER_PAGE_ZOOM_EVENT = 'orca:browser-page-zoom'
+export const TOPO_BROWSER_PAGE_ZOOM_EVENT = 'topo:browser-page-zoom'
 
-/** Zoom chords that land in Orca's own window while a browser pane holds focus. */
+/** Zoom chords that land in Topo's own window while a browser pane holds focus. */
 export function dispatchBrowserPageZoom(command: BrowserPageZoomCommand): void {
-  window.dispatchEvent(new CustomEvent(ORCA_BROWSER_PAGE_ZOOM_EVENT, { detail: command }))
+  window.dispatchEvent(new CustomEvent(TOPO_BROWSER_PAGE_ZOOM_EVENT, { detail: command }))
 }
 
 export function addBrowserPageZoomEventListener(
@@ -17,6 +17,6 @@ export function addBrowserPageZoomEventListener(
       callback(event.detail)
     }
   }
-  window.addEventListener(ORCA_BROWSER_PAGE_ZOOM_EVENT, listener)
-  return () => window.removeEventListener(ORCA_BROWSER_PAGE_ZOOM_EVENT, listener)
+  window.addEventListener(TOPO_BROWSER_PAGE_ZOOM_EVENT, listener)
+  return () => window.removeEventListener(TOPO_BROWSER_PAGE_ZOOM_EVENT, listener)
 }

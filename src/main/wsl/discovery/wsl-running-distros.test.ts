@@ -2,11 +2,11 @@ import 'node:fs'
 import 'node:os'
 import 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { ProcessResult } from '@orca/process-host/process-spec'
+import type { ProcessResult } from '@topo/process-host/process-spec'
 
 const { runProcessMock } = vi.hoisted(() => ({ runProcessMock: vi.fn() }))
 
-vi.mock('@orca/process-host', () => ({ runProcess: runProcessMock }))
+vi.mock('@topo/process-host', () => ({ runProcess: runProcessMock }))
 
 function exited(stdout: string, code: number | null = 0): ProcessResult {
   return { code, signal: null, stdout, stderr: '', timedOut: false }

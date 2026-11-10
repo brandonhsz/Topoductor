@@ -5,7 +5,7 @@ import type { AgentSessionRecord } from '../../../../shared/agent-session/lifecy
 import { LOCAL_EXECUTION_HOST_ID } from '../../../../shared/execution-host'
 import { claudeProviderHandle } from '../../../../shared/agent-session/lifecycle/agent-session-provider-handle-encoding'
 
-const SESSION_ID = 'orca-session-1'
+const SESSION_ID = 'topo-session-1'
 const IDENTITY = { sessionId: SESSION_ID } as Parameters<
   ReturnType<typeof createClaudeStructuredLaunchResolver>
 >[0]['identity']

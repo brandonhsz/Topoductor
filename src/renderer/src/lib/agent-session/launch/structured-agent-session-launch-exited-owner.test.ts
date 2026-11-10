@@ -228,7 +228,7 @@ describe('structured launch after a host-failed create', () => {
       })
     ).toMatchObject([
       {
-        text: "Chat could not be started. Orca couldn't open this chat's history right now.",
+        text: "Chat could not be started. Topo couldn't open this chat's history right now.",
         action: { label: 'Retry' }
       }
     ])

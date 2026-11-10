@@ -32,7 +32,7 @@ function input(home: SkillHome) {
 const orchestrationIn = (home: SkillHome, root: 'shared' | 'claude') =>
   join(dirname(home[root]), 'orchestration')
 
-describe('skills installed by much older Orca versions', () => {
+describe('skills installed by much older Topo versions', () => {
   it('silently updates the npx-skills layout: shared copy plus agent link', async () => {
     const home = await makeSkillHome()
     const shared = orchestrationIn(home, 'shared')

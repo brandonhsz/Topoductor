@@ -39,7 +39,7 @@ import {
   createSetupRunnerScriptMock,
   getEffectiveHooksFromConfigMock,
   getDefaultTabsLaunchMock,
-  parseOrcaYamlMock,
+  parseTopoYamlMock,
   shouldRunSetupForCreateMock,
   buildPosixRunnerScriptMock,
   buildWindowsRunnerScriptMock,
@@ -110,7 +110,7 @@ export function setupWorktreeHandlers(): WorktreeRuntimeStub {
     getEffectiveHooksMock,
     getEffectiveHooksFromConfigMock,
     getDefaultTabsLaunchMock,
-    parseOrcaYamlMock,
+    parseTopoYamlMock,
     createSetupRunnerScriptMock,
     buildPosixRunnerScriptMock,
     buildWindowsRunnerScriptMock,
@@ -237,7 +237,7 @@ export function setupWorktreeHandlers(): WorktreeRuntimeStub {
   getEffectiveHooksMock.mockReturnValue(null)
   getEffectiveHooksFromConfigMock.mockImplementation(() => getEffectiveHooksMock())
   getDefaultTabsLaunchMock.mockReturnValue(undefined)
-  parseOrcaYamlMock.mockReturnValue(null)
+  parseTopoYamlMock.mockReturnValue(null)
   shouldRunSetupForCreateMock.mockReturnValue(false)
   buildPosixRunnerScriptMock.mockImplementation(
     (script: string) => `#!/usr/bin/env bash\nset -e\n${script.replace(/\r\n/g, '\n')}\n`
@@ -246,18 +246,18 @@ export function setupWorktreeHandlers(): WorktreeRuntimeStub {
   resolveSetupRunnerShellMock.mockReturnValue(undefined)
   getSetupRunnerEnvVarsMock.mockImplementation(
     (repoArg: { path: string }, worktreePath: string) => ({
-      ORCA_ROOT_PATH: repoArg.path,
-      ORCA_WORKTREE_PATH: worktreePath,
-      ORCA_WORKSPACE_NAME: worktreePath.split('/').at(-1) ?? '',
+      TOPO_ROOT_PATH: repoArg.path,
+      TOPO_WORKTREE_PATH: worktreePath,
+      TOPO_WORKSPACE_NAME: worktreePath.split('/').at(-1) ?? '',
       CONDUCTOR_ROOT_PATH: repoArg.path,
       GHOSTX_ROOT_PATH: repoArg.path
     })
   )
   createSetupRunnerScriptMock.mockResolvedValue({
-    runnerScriptPath: '/workspace/repo/.git/orca/setup-runner.sh',
+    runnerScriptPath: '/workspace/repo/.git/topo/setup-runner.sh',
     envVars: {
-      ORCA_ROOT_PATH: '/workspace/repo',
-      ORCA_WORKTREE_PATH: '/workspace/improve-dashboard'
+      TOPO_ROOT_PATH: '/workspace/repo',
+      TOPO_WORKTREE_PATH: '/workspace/improve-dashboard'
     }
   })
   computeWorktreePathMock.mockImplementation(

@@ -2,7 +2,7 @@ import {
   getServeFlagTypoError,
   getServeOptionValidationError
 } from '../../shared/serve-option-validation'
-import { resolveOrcadBindHost } from '../../shared/orcad-bind-address'
+import { resolveTopodBindHost } from '../../shared/topod-bind-address'
 
 export type ServeOptions = {
   json: boolean
@@ -113,7 +113,7 @@ export function getServeOptions(argv: readonly string[]): ServeOptions {
   }
 
   const rawBind = valueAfter(optionsArgv, ['--serve-bind', '--bind'], true, '--serve-bind')
-  const bind = rawBind === null ? undefined : resolveOrcadBindHost(rawBind)
+  const bind = rawBind === null ? undefined : resolveTopodBindHost(rawBind)
 
   const options: ServeOptions = {
     // The CLI uses `flags.has('json')`, so even `--json=false` enables JSON output.

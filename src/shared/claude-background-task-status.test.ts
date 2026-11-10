@@ -100,7 +100,7 @@ describe('Claude background task status', () => {
       status: 'running',
       description: 'Wait for next worker message',
       command:
-        '/usr/local/bin/orca orchestration check --wait --types worker_done --json 2>/dev/null'
+        '/usr/local/bin/topo orchestration check --wait --types worker_done --json 2>/dev/null'
     }
     const launched = createHookListenerState()
     claudeEvent(launched, SOURCE_PANE, { hook_event_name: 'UserPromptSubmit', prompt: 'run' })

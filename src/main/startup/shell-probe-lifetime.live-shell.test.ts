@@ -2,7 +2,7 @@ import { build } from 'esbuild'
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   captureLoginShellEnvironment,
@@ -31,7 +31,7 @@ describe.skipIf(process.platform === 'win32')('a login shell probe left running'
   }
 
   beforeEach(() => {
-    home = mkdtempSync(join(tmpdir(), 'orca-shell-probe-lifetime-'))
+    home = mkdtempSync(join(tmpdir(), 'topo-shell-probe-lifetime-'))
     pidFile = join(home, 'rc-child.pid')
     resetLoginShellEnvironmentCacheForTests()
   })
@@ -74,7 +74,7 @@ describe.skipIf(process.platform === 'win32')('a login shell probe left running'
         contents: `
           import { captureLoginShellEnvironment } from ${JSON.stringify(resolve('src/main/startup/login-shell-environment.ts'))};
           import { hydrateShellPath } from ${JSON.stringify(resolve('src/main/startup/hydrate-shell-path.ts'))};
-          // As orcad and Electron do: INT/TERM end in an exit.
+          // As topod and Electron do: INT/TERM end in an exit.
           process.on('SIGTERM', () => process.exit(143));
           void ${call};
         `,

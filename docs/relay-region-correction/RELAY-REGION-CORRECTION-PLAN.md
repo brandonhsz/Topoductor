@@ -25,7 +25,7 @@ Source experiments used `origin/main` at `721a2692893ab29f8daee3149965bf5e9adf99
 - A SQLite store test sustained a registered migration for a simulated hour with both controls renewed, then completed on source release.
 - Mobile harness restored credentials/assignment/subscriptions after simulated drain. Sent mutations can become delivery-unknown and are not blindly replayed. The 251ms fake-clock recovery result is not measured real-world downtime.
 
-Full evidence: [interruption findings](RELAY-INTERRUPTION-FINDINGS.md), [harness and patches](https://github.com/stablyai/orca/blob/0db9fdc486366f7451289f0c0599eed9ae1d94be/tests/tools/relay-rehome-interruption/README.md). The counterfactual patch is NOT production code: it has no negotiation, incorrectly changes normal deadline semantics, and does not validate failure/replay paths.
+Full evidence: [interruption findings](RELAY-INTERRUPTION-FINDINGS.md), [harness and patches](https://github.com/brandonhsz/Topoductor/blob/0db9fdc486366f7451289f0c0599eed9ae1d94be/tests/tools/relay-rehome-interruption/README.md). The counterfactual patch is NOT production code: it has no negotiation, incorrectly changes normal deadline semantics, and does not validate failure/replay paths.
 
 ## 1. Ordered, expiring region decisions
 
@@ -75,16 +75,16 @@ Required integration checks: pending control-RPC completion must trigger retirem
 
 This section is a required implementation contract, not evidence that the current implementation already satisfies it.
 
-| Condition | Required behavior |
-| --- | --- |
-| Target registration fails | Retain still-live source work; retry or reconcile using existing migration recovery. Restore source new-admission authority only through section 5a's retained-generation rollback; do not discard a migration that still owns connections. |
-| Lost receipt / duplicate drain / zero-grace re-drain | Read durable mode and preserve existing work. Replay must never turn optional mode into forced closure. |
-| Desktop restart / source generation replacement | Old process connections may already be gone; reconcile exact generations before retaining or clearing state. Unsupported replacement must not silently hard-drain existing work. |
-| Source network/cell failure | Use existing failure recovery; connectivity loss is not proof remote execution exited. This is outside the no-deliberate-interruption promise. |
-| Target fails after becoming active | Keep source connections that remain live; reconcile assignment/new connections through existing recovery without starting a third overlapping rehome. |
-| Auth expiry/revocation or emergency cell drain | Preserve existing enforcement; optimization does not exempt sessions from security/maintenance lifecycle. |
-| Last source data connection closes while control RPC pending | Wait for bounded RPC completion/timeout, then run cleanup without a polling loop. |
-| Source remains busy for hours | Keep the migration open while healthy. Long duration alone does not force-close users or spend dispatch-failure budget. |
+| Condition                                                    | Required behavior                                                                                                                                                                                                                           |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Target registration fails                                    | Retain still-live source work; retry or reconcile using existing migration recovery. Restore source new-admission authority only through section 5a's retained-generation rollback; do not discard a migration that still owns connections. |
+| Lost receipt / duplicate drain / zero-grace re-drain         | Read durable mode and preserve existing work. Replay must never turn optional mode into forced closure.                                                                                                                                     |
+| Desktop restart / source generation replacement              | Old process connections may already be gone; reconcile exact generations before retaining or clearing state. Unsupported replacement must not silently hard-drain existing work.                                                            |
+| Source network/cell failure                                  | Use existing failure recovery; connectivity loss is not proof remote execution exited. This is outside the no-deliberate-interruption promise.                                                                                              |
+| Target fails after becoming active                           | Keep source connections that remain live; reconcile assignment/new connections through existing recovery without starting a third overlapping rehome.                                                                                       |
+| Auth expiry/revocation or emergency cell drain               | Preserve existing enforcement; optimization does not exempt sessions from security/maintenance lifecycle.                                                                                                                                   |
+| Last source data connection closes while control RPC pending | Wait for bounded RPC completion/timeout, then run cleanup without a polling loop.                                                                                                                                                           |
+| Source remains busy for hours                                | Keep the migration open while healthy. Long duration alone does not force-close users or spend dispatch-failure budget.                                                                                                                     |
 
 Bound **concurrent open migrations** in addition to starts/minute. Count pre-existing attempts; one migration per host remains enforced. Retain both controls' auth/lease renewals and account for source use plus target reservations. Data is not duplicated; extra controls/reservations still consume capacity.
 
@@ -98,7 +98,7 @@ The independent review found three required contracts. This section supersedes a
 
 ### Reuse the cell's existing activity renewal (supersedes the extra wire exchange)
 
-Follow-up investigation found a smaller mechanism: a successfully validated `renewControlActivity` result can extend the same retained control's in-memory lease to `max(existingExpiry, requestedActivityExpiry)`. The cell already runs this renewal; no new desktop renewal timer, old-source rebind or recurring WebSocket exchange is needed. See [prototype evidence](https://github.com/stablyai/orca/blob/0db9fdc486366f7451289f0c0599eed9ae1d94be/tests/tools/relay-rehome-interruption/RETAINED-CONTROL-LEASE.md).
+Follow-up investigation found a smaller mechanism: a successfully validated `renewControlActivity` result can extend the same retained control's in-memory lease to `max(existingExpiry, requestedActivityExpiry)`. The cell already runs this renewal; no new desktop renewal timer, old-source rebind or recurring WebSocket exchange is needed. See [prototype evidence](https://github.com/brandonhsz/Topoductor/blob/0db9fdc486366f7451289f0c0599eed9ae1d94be/tests/tools/relay-rehome-interruption/RETAINED-CONTROL-LEASE.md).
 
 Before acknowledging the optional drain and telling desktop to cut over, establish the first short authorized renewal for the exact mode/attempt/source generation/incarnation. Subsequent grants reuse normal heartbeat renewal. Failure or stale state during adoption does not authorize retaining the source; reconcile the provisional target through the rollback contract below. A mode flag, pending database request or activity reacquisition alone is not a grant.
 
@@ -108,7 +108,7 @@ Prototype evidence: 43 cell-registry tests and package typecheck pass, including
 
 ### Final renewal-review correction: fence failures as well as success
 
-Fresh GPT-6-astra / low review: [retained-control review](https://github.com/stablyai/orca/blob/0db9fdc486366f7451289f0c0599eed9ae1d94be/docs/relay-region-correction/RELAY-RETAINED-CONTROL-REVIEW.md), **REVISE one completion-fencing detail; heartbeat reuse supported**. The following correction is incorporated after review, not independently approved or implemented.
+Fresh GPT-6-astra / low review: [retained-control review](https://github.com/brandonhsz/Topoductor/blob/0db9fdc486366f7451289f0c0599eed9ae1d94be/docs/relay-region-correction/RELAY-RETAINED-CONTROL-REVIEW.md), **REVISE one completion-fencing detail; heartbeat reuse supported**. The following correction is incorporated after review, not independently approved or implemented.
 
 Every renewal completion and awaited recovery continuation must validate its captured socket/session, activity ID, current authority/mode transition and applicable ordering before altering scheduling, extending expiry, closing a socket, or reacquiring activity. In particular, a denial from an aborted retained attempt arriving after same-generation rollback must not close the restored source. A current applicable denial must still enforce closure. An obsolete missing-activity result must not initiate recovery; after awaited recovery, recheck authority and clean up abandoned acquisition as required. Do not use a blanket success-only fence or suppress all failures.
 
@@ -124,16 +124,16 @@ Desktop recovery must find/reuse the retained source origin and update its assig
 
 ### Transition table
 
-| State/event | Authority and action | Existing source work |
-| --- | --- | --- |
-| Claim optional move | Durable attempt binds mode, source generation/incarnation, target, epoch and supported participants | Retained |
-| Target registering | Source receives optional drain; existing target retry/reconciliation proceeds | Retained; do not convert age into forced closure |
-| Target registered | Director target assignment is authoritative; desktop activates target | Existing source connections keep their origin |
-| Retained source needs renewal | Existing cell activity renewal + exact optional migration authorize a short same-generation lease extension | Retained, source remains drain-only |
-| Target failure / rollback | New durable source epoch plus rollback tombstone; source cell and desktop reuse exact retained generation | Retained if that generation still exists |
-| Final source work ends | Connection and pending-work callbacks retire source; cancel renewals; release activity and complete | No source work left to preserve |
-| Delayed drain/renew/register | Compare durable attempt outcome and epochs; ignore/reject obsolete transition | Must not resurrect draining or replace generation |
-| Source failed / emergency drain | Existing authenticated operational/failure semantics apply | Preservation not promised under those failures |
+| State/event                     | Authority and action                                                                                        | Existing source work                              |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Claim optional move             | Durable attempt binds mode, source generation/incarnation, target, epoch and supported participants         | Retained                                          |
+| Target registering              | Source receives optional drain; existing target retry/reconciliation proceeds                               | Retained; do not convert age into forced closure  |
+| Target registered               | Director target assignment is authoritative; desktop activates target                                       | Existing source connections keep their origin     |
+| Retained source needs renewal   | Existing cell activity renewal + exact optional migration authorize a short same-generation lease extension | Retained, source remains drain-only               |
+| Target failure / rollback       | New durable source epoch plus rollback tombstone; source cell and desktop reuse exact retained generation   | Retained if that generation still exists          |
+| Final source work ends          | Connection and pending-work callbacks retire source; cancel renewals; release activity and complete         | No source work left to preserve                   |
+| Delayed drain/renew/register    | Compare durable attempt outcome and epochs; ignore/reject obsolete transition                               | Must not resurrect draining or replace generation |
+| Source failed / emergency drain | Existing authenticated operational/failure semantics apply                                                  | Preservation not promised under those failures    |
 
 ### Mode-specific durable lifetime and compatibility floor
 

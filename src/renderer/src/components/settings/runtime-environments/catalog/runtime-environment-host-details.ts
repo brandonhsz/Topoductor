@@ -57,7 +57,7 @@ export function getHostDetailsSummary(details: RuntimeHostDetails | undefined): 
   if (details.runtimeStatus === null && details.compatibility === null) {
     return translate(
       'auto.components.settings.RuntimeEnvironmentsPane.serverRuntimeUnavailable',
-      'Orca unavailable'
+      'Topo unavailable'
     )
   }
   if (details.compatibility?.kind === 'blocked') {
@@ -84,7 +84,7 @@ export function getHostDetailsDescription(
   if (details.runtimeStatus === null && details.compatibility === null) {
     const unavailableDescription = t(
       'auto.components.settings.RuntimeEnvironmentsPane.serverRuntimeUnavailableDescription',
-      'SSH transport is connected, but the Orca runtime did not answer. The host may still be running.'
+      'SSH transport is connected, but the Topo runtime did not answer. The host may still be running.'
     )
     return details.error ? `${unavailableDescription} ${details.error}` : unavailableDescription
   }
@@ -220,7 +220,7 @@ export function getRuntimeServerConnectionLabel(
     case 'runtime-unavailable':
       return t(
         'auto.components.settings.RuntimeEnvironmentsPane.serverRuntimeUnavailable',
-        'Orca unavailable'
+        'Topo unavailable'
       )
     case 'workspace-window-closed':
       return t(

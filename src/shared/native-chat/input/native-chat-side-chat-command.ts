@@ -16,7 +16,7 @@ export function parseNativeChatSideChatDraft(draft: string): { question: string 
   return match ? { question: match[1]?.trim() ?? '' } : null
 }
 
-/** Orca's rows replace the agent's own `side` and `btw`; while unavailable they say why. */
+/** Topo's rows replace the agent's own `side` and `btw`; while unavailable they say why. */
 export function withNativeChatSideChatCommands(
   commands: readonly SlashCommandSuggestion[],
   copy: { side: string; btw: string; argumentHint: string; unavailableReason: string | null }
@@ -25,8 +25,8 @@ export function withNativeChatSideChatCommands(
     name,
     description: copy.unavailableReason ?? copy[name],
     argumentHint: copy.argumentHint,
-    orcaOwned: true
+    topoOwned: true
   }))
-  // Ahead of the agent's own, as Orca's built-ins are, so a long catalog never pushes them out.
+  // Ahead of the agent's own, as Topo's built-ins are, so a long catalog never pushes them out.
   return [...rows, ...commands.filter(({ name }) => !isNativeChatSideChatCommand(name))]
 }

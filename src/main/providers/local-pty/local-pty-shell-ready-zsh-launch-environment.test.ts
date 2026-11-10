@@ -19,8 +19,8 @@ describePosix('live zsh subprocess tests', () => {
     let userDataPath: string
 
     beforeEach(async () => {
-      testHome = mkdtempSync(join(tmpdir(), 'orca-term-'))
-      userDataPath = mkdtempSync(join(tmpdir(), 'orca-term-userdata-'))
+      testHome = mkdtempSync(join(tmpdir(), 'topo-term-'))
+      userDataPath = mkdtempSync(join(tmpdir(), 'topo-term-userdata-'))
       setTestUserDataPath(userDataPath)
     })
 
@@ -29,14 +29,14 @@ describePosix('live zsh subprocess tests', () => {
       rmSync(userDataPath, { recursive: true, force: true })
     })
 
-    it('prioritizes fresh discovery over inherited ORCA_ORIG_ZDOTDIR', async () => {
+    it('prioritizes fresh discovery over inherited TOPO_ORIG_ZDOTDIR', async () => {
       const freshZdotdir = join(testHome, '.config', 'zsh-updated')
       mkdirSync(freshZdotdir, { recursive: true })
       writeFileSync(join(testHome, '.zshenv'), `export ZDOTDIR="${freshZdotdir}"\n`)
 
-      const previousOrcaZdotdir = process.env.ORCA_ORIG_ZDOTDIR
+      const previousTopoZdotdir = process.env.TOPO_ORIG_ZDOTDIR
       const oldZdotdir = join(testHome, '.config', 'zsh-old')
-      process.env.ORCA_ORIG_ZDOTDIR = oldZdotdir
+      process.env.TOPO_ORIG_ZDOTDIR = oldZdotdir
 
       try {
         const { getShellReadyLaunchConfig } = await importFreshLocalPtyShellReady()
@@ -45,7 +45,7 @@ describePosix('live zsh subprocess tests', () => {
         const cleanEnv: Record<string, string | undefined> = {
           ...process.env,
           HOME: testHome,
-          ORCA_ORIG_ZDOTDIR: oldZdotdir
+          TOPO_ORIG_ZDOTDIR: oldZdotdir
         }
         delete cleanEnv.ZDOTDIR
         cleanEnv.ZDOTDIR = config.env.ZDOTDIR
@@ -58,10 +58,10 @@ describePosix('live zsh subprocess tests', () => {
         expect(result.status).toBe(0)
         expect(result.stdout).toContain(`ZDOTDIR=${freshZdotdir}`)
       } finally {
-        if (previousOrcaZdotdir === undefined) {
-          delete process.env.ORCA_ORIG_ZDOTDIR
+        if (previousTopoZdotdir === undefined) {
+          delete process.env.TOPO_ORIG_ZDOTDIR
         } else {
-          process.env.ORCA_ORIG_ZDOTDIR = previousOrcaZdotdir
+          process.env.TOPO_ORIG_ZDOTDIR = previousTopoZdotdir
         }
       }
     })
@@ -89,7 +89,7 @@ describePosix('live zsh subprocess tests', () => {
         const { getShellReadyLaunchConfig } = await importFreshLocalPtyShellReady()
         const config = getShellReadyLaunchConfig('/bin/zsh')
         // The wrapper restores this one user directory before zsh reads .zshenv.
-        expect(config.env.ORCA_ORIG_ZDOTDIR).toBe(inheritedZdotdir)
+        expect(config.env.TOPO_ORIG_ZDOTDIR).toBe(inheritedZdotdir)
 
         const cleanEnv: Record<string, string | undefined> = {
           ...process.env,

@@ -1,8 +1,8 @@
 import pg from 'pg'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { applyPostgresSchema } from '@orca-cloud/postgres-schema/apply-postgres-schema'
-import { catalogObjectPresence } from '@orca-cloud/postgres-schema/catalog-object-precheck'
-import { takesRelationLock } from '@orca-cloud/postgres-schema/schema-lock-target'
+import { applyPostgresSchema } from '@topo-cloud/postgres-schema/apply-postgres-schema'
+import { catalogObjectPresence } from '@topo-cloud/postgres-schema/catalog-object-precheck'
+import { takesRelationLock } from '@topo-cloud/postgres-schema/schema-lock-target'
 import {
   openRelayDatabase,
   POSTGRES_LOCK_TIMEOUT_MS,
@@ -11,7 +11,7 @@ import {
 } from './database.js'
 
 // IF NOT EXISTS acquires relation locks before checking existence, queueing writers behind boot DDL; prove catalog prechecks avoid it on a real server.
-const databaseUrl = process.env.ORCA_RELAY_TEST_POSTGRES_URL
+const databaseUrl = process.env.TOPO_RELAY_TEST_POSTGRES_URL
 const describePostgres = databaseUrl ? describe : describe.skip
 const schema = 'relay_schema_precheck_test'
 
@@ -224,7 +224,7 @@ describePostgres('relay boot-time schema against PostgreSQL', () => {
     expect(summary.ran).toBeGreaterThan(0)
     const deferred = warned
       .map((line) => JSON.parse(line) as { event?: string; name?: string })
-      .filter((event) => event.event === 'orca_relay_postgres_schema_object_deferred')
+      .filter((event) => event.event === 'topo_relay_postgres_schema_object_deferred')
     expect(deferred.map((event) => event.name)).toEqual([
       'relay_assignment_activity_expiry',
       'fillfactor=70'

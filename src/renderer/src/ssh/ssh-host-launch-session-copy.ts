@@ -8,7 +8,7 @@ export function launchSessionEndedLine(t: Translate = translate): SshHostServerS
     tone: 'warning',
     text: t(
       'auto.components.settings.sshHostServer.launchSessionEnded',
-      'Terminals on this Mac may have lost local network access because the SSH session that started this host’s Orca server ended. Restart Orca’s server to restore it.'
+      'Terminals on this Mac may have lost local network access because the SSH session that started this host’s Topo server ended. Restart Topo’s server to restore it.'
     )
   }
 }

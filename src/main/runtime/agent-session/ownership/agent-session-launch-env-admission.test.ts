@@ -40,7 +40,7 @@ function request(overrides: Partial<AgentSessionReserveRequest> = {}): AgentSess
 }
 
 beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), 'orca-agent-session-launch-env-'))
+  directory = await mkdtemp(join(tmpdir(), 'topo-agent-session-launch-env-'))
 })
 
 afterEach(async () => {

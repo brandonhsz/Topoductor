@@ -1,4 +1,4 @@
-/** An agent's own `orca agent launch` leaves one card in its chat; nothing else does, and the card never gates the launch. */
+/** An agent's own `topo agent launch` leaves one card in its chat; nothing else does, and the card never gates the launch. */
 
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import {
@@ -75,14 +75,14 @@ function launchRuntime(surface: 'chat' | 'terminal') {
     publishStructuredAgentSessionTab: vi.fn(async () => {}),
     orchestrationSenderNames: {
       sender: (address: string) => ({
-        party: { address, terminalHandle: null, orcaSessionId: null },
+        party: { address, terminalHandle: null, topoSessionId: null },
         name: 'Codex'
       })
     }
   }
 }
 
-/** What `orca agent launch` sends: a replayable launch under a fresh operation id. */
+/** What `topo agent launch` sends: a replayable launch under a fresh operation id. */
 function launch(
   params: Record<string, unknown>,
   context: Partial<RpcContext> = AGENT_CLI,
@@ -138,7 +138,7 @@ it('records one card per launch operation, linking the new chat, and none on rep
       kind: 'agent-handoff',
       launchId: operationId,
       agent: expect.objectContaining({
-        party: expect.objectContaining({ address: `orca_session_id:${first.outcome.sessionId}` })
+        party: expect.objectContaining({ address: `topo_session_id:${first.outcome.sessionId}` })
       }),
       task: TASK
     }

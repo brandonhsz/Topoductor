@@ -26,7 +26,7 @@ vi.mock('@/lib/new-workspace', async (importOriginal) => {
 import { useAppStore } from '@/store/index'
 import { submitFolderWorkspaceCreate } from './folder-workspace-composer-submit'
 
-const ISSUE_URL = 'https://github.com/stablyai/orca/issues/42'
+const ISSUE_URL = 'https://github.com/brandonhsz/Topoductor/issues/42'
 const linkedIssue = {
   provider: 'github' as const,
   type: 'issue' as const,

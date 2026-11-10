@@ -28,7 +28,7 @@ beforeEach(() => {
   cpSync(nestedEntry, directEntry)
   process.env.LOCALAPPDATA = join(tempDir, 'localAppData')
   setProcessProp('platform', 'win32')
-  setProcessProp('execPath', join(installDir, 'Orca.exe'))
+  setProcessProp('execPath', join(installDir, 'Topo.exe'))
   setProcessProp('resourcesPath', join(installDir, 'resources'))
   setAppEnvironment({
     getPath: () => join(tempDir, 'userData'),
@@ -89,7 +89,7 @@ describe('daemon-host entry layout after source removal', () => {
         installDir,
         'resources',
         'node_modules',
-        '@orca',
+        '@topo',
         'process-host',
         'dist',
         'run-process.js'

@@ -3,11 +3,11 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { DeviceRegistry } from './device-registry'
-import '../../../orca-runtime'
+import '../../../topo-runtime'
 import '../runtime-rpc'
 
 function tempDir(): string {
-  return mkdtempSync(join(tmpdir(), 'orca-desktop-control-grant-'))
+  return mkdtempSync(join(tmpdir(), 'topo-desktop-control-grant-'))
 }
 
 describe('pairing-time grants on the device registry', () => {

@@ -6,7 +6,7 @@ import {
   type PluginRelativeTimeFormat
 } from '../../../../../shared/plugins/declarative/plugin-declarative-relative-time'
 
-/** Now, re-read as often as the words for `at` can change: Orca ticks it, the plugin never polls. */
+/** Now, re-read as often as the words for `at` can change: Topo ticks it, the plugin never polls. */
 function useRelativeNow(at: number): number {
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => {

@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import { getLocalPtyProvider } from '../../pty/provider/registry'
 import { clearProviderPtyState } from '../../pty/provider/state-cleanup'
 import { killAllProcessesForWorktree } from '../../../runtime/workspaces/removal/worktree-teardown'
@@ -17,7 +17,7 @@ import {
 } from '../../../workspaces/removal/worktree-removal-process-cleanup'
 
 export async function stopPtysForDestructiveWorktreeRemoval(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   worktreeId: string,
   options: { connectionId?: string; allowUnverifiedStop?: boolean } = {}
 ): Promise<void> {
@@ -70,7 +70,7 @@ export function removeWorktreeMetadataAndTransientState(
     entryPoint = 'worktree-removal'
   }: {
     store: Store
-    runtime: Pick<OrcaRuntimeService, 'releaseRemovedWorktreeHostSessions'>
+    runtime: Pick<TopoRuntimeService, 'releaseRemovedWorktreeHostSessions'>
     entryPoint?: 'worktree-removal' | 'folder-removal'
   },
   worktreeId: string,

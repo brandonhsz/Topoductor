@@ -29,7 +29,7 @@ async function republishThemeFile(path: string, attempt: number): Promise<void> 
   }
 }
 
-/** Null while on but the palette has no readable colors: Orca then leaves Claude Code as it is. */
+/** Null while on but the palette has no readable colors: Topo then leaves Claude Code as it is. */
 function syncTarget(
   settings: SyncSettings,
   systemPrefersDark: boolean

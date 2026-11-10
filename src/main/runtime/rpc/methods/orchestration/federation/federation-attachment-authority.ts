@@ -1,10 +1,10 @@
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import type { FederationEffect } from './federation-effects'
 import type { WorkerSetupReceipt } from '../worker/worker-topology'
 
 export function prepareFederatedAttachmentAuthority(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   dispatchId: string
   terminalHandle: string

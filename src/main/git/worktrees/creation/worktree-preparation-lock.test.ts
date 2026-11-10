@@ -28,7 +28,7 @@ import {
   unlockWorktreePreparationAtPath
 } from './worktree-preparation-lock'
 
-const lockReason = 'orca-create-preparation:v1:123:exact-session'
+const lockReason = 'topo-create-preparation:v1:123:exact-session'
 const commonDir = join(tmpdir(), 'repo', '.git')
 const gitLockPath = join(commonDir, 'worktrees', 'prepared', 'locked')
 const lockPath = toHostFilesystemPath(gitLockPath)
@@ -57,7 +57,7 @@ describe('targeted preparation lock ownership', () => {
 
   it.each([
     'user lock\n',
-    'orca-create-preparation:v1:123:another-session\n',
+    'topo-create-preparation:v1:123:another-session\n',
     lockReason,
     `${lockReason}\n\n`
   ])('preserves a replacement owner: %s', async (reason) => {

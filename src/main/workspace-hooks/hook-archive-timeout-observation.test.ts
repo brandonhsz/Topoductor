@@ -12,8 +12,8 @@ const REPO: Repo = { id: 'r', path: '/repo', displayName: 'r', badgeColor: '#000
 
 async function runArchive(script: string, timeoutMs = 400) {
   const { runHook } = await import('./hooks')
-  const dir = mkdtempSync(join(tmpdir(), 'orca-hook-deadline-'))
-  writeFileSync(join(dir, 'orca.yaml'), `scripts:\n  archive: |\n    ${script}\n`)
+  const dir = mkdtempSync(join(tmpdir(), 'topo-hook-deadline-'))
+  writeFileSync(join(dir, 'topo.yaml'), `scripts:\n  archive: |\n    ${script}\n`)
   try {
     return await runHook('archive', dir, REPO, dir, undefined, timeoutMs)
   } finally {

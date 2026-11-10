@@ -8,7 +8,7 @@ import { resolveGitAdmissionTier } from './git-operation-executor'
 let scheduler = new GitAdmissionScheduler()
 
 export function acquireGitAdmission(request: GitAdmissionRequest): Promise<GitAdmissionGrant> {
-  if (process.env.ORCA_GIT_ADMISSION_DISABLED === '1') {
+  if (process.env.TOPO_GIT_ADMISSION_DISABLED === '1') {
     return Promise.resolve({ queueWaitMs: 0, release: () => {} })
   }
   return scheduler.acquire({ ...request, tier: resolveGitAdmissionTier(request.tier) })

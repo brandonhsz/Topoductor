@@ -112,7 +112,7 @@ export function nativeChatLinkActions(
               sourceTabId: context.sourceTabId,
               sourceOwner: routing.sourceOwner
             },
-            'orca',
+            'topo',
             true
           )
       },

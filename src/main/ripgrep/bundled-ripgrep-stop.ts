@@ -1,4 +1,4 @@
-import { signalProcessTree } from '@orca/process-host/process-tree-termination'
+import { signalProcessTree } from '@topo/process-host/process-tree-termination'
 import { killSpawnedRipgrepProcess } from '../../shared/ripgrep/ripgrep-process-availability'
 import type { ChildProcess } from 'node:child_process'
 

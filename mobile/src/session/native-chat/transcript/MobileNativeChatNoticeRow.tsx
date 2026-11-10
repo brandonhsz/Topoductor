@@ -22,7 +22,7 @@ import {
 } from '../../../../../src/shared/agent-session/failures/agent-session-failure'
 import { agentSessionFailureSentence } from '../../../../../src/shared/agent-session/failures/agent-session-failure-words'
 import { agentSessionRemoteSignInCommand } from '../../../../../src/shared/agent-session/lifecycle/agent-session-sign-in'
-import { nativeChatOrcaStopRowText } from '../../../../../src/shared/native-chat/native-chat-orca-stop-words'
+import { nativeChatTopoStopRowText } from '../../../../../src/shared/native-chat/native-chat-topo-stop-words'
 import {
   MobileNativeChatForkedFromContext,
   MobileNativeChatNoticeContext,
@@ -34,7 +34,7 @@ import { colors, radii, spacing, typography } from '../../../theme/mobile-theme'
 import { themedStyleSheet } from '../../../theme/themed-styles'
 import { useMobileColorScheme } from '../../../theme/use-mobile-color-scheme'
 import { nativeChatHostStatusCopy, nativeChatNoticeCopy } from './native-chat-notice-copy'
-import { nativeChatOrcaStopSay } from './native-chat-orca-stop-copy'
+import { nativeChatTopoStopSay } from './native-chat-topo-stop-copy'
 import { nativeChatUsageLimitText } from './native-chat-usage-limit-copy'
 import { sayMobileAgentSessionFailure } from '../../agent-session-failure-copy'
 import type { Translate } from '../../../i18n/mobile-i18n'
@@ -51,16 +51,16 @@ function toneColor(tone: NativeChatNoticeTone): string {
   return { warning: colors.statusAmber, error: colors.statusRed, notice: colors.textMuted }[tone]
 }
 
-// The phone always reads its Orca host as remote.
+// The phone always reads its Topo host as remote.
 function noticeLineText(
   notice: NativeChatTextBlock,
   names: MobileNativeChatNoticeView,
   t: Translate
 ): string {
-  if (notice.orcaStop) {
-    const say = nativeChatOrcaStopSay(t)
-    return nativeChatOrcaStopRowText(
-      notice.orcaStop.cause,
+  if (notice.topoStop) {
+    const say = nativeChatTopoStopSay(t)
+    return nativeChatTopoStopRowText(
+      notice.topoStop.cause,
       names.hostName ?? say('unnamedServer'),
       { continueAvailable: names.continuation?.continueAvailable === true, remoteHost: true },
       say
@@ -276,8 +276,8 @@ export function MobileNativeChatNoticeRow({
       const continuation = names.continuation
       const continueOffered =
         continuation !== undefined &&
-        notice.orcaStop?.turnItemId !== undefined &&
-        notice.orcaStop.turnItemId === continuation.offeredTurnItemId
+        notice.topoStop?.turnItemId !== undefined &&
+        notice.topoStop.turnItemId === continuation.offeredTurnItemId
       const content = (
         <View style={look.tone ? styles.toneText : undefined}>
           <Text selectable={INLINE_TEXT_SELECTION} style={textStyle}>

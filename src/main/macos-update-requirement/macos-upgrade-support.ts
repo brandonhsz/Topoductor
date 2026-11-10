@@ -1,5 +1,5 @@
 import { app } from 'electron'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { isVenturaRequirement, type MacosUpgradeSupport } from '../../shared/macos-upgrade-support'
 
 // Ventura's Intel model boundaries: https://support.apple.com/en-us/102861.

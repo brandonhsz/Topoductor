@@ -5,8 +5,8 @@ import { mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../orca-runtime'
-import { OrcaRuntimeRpcServer } from '../runtime-rpc'
+import { TopoRuntimeService } from '../../../topo-runtime'
+import { TopoRuntimeRpcServer } from '../runtime-rpc'
 import {
   encodePairingOffer,
   parsePairingCode
@@ -24,7 +24,7 @@ import {
   waitForWsClose
 } from '../runtime-rpc-mobile-ws-test-harness'
 import { makeStore } from '../runtime-rpc-worktree-store-fixtures'
-import { partialRuntimeStore } from '../../../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../../topo-runtime-tests/runtime-store-partial-fixture'
 
 vi.mock('../../../../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => {
   const facade = getWorktreeListingMocks()
@@ -61,9 +61,9 @@ describe('pairing.delegatedMobileDevice.sync', () => {
     }
   })
 
-  async function startServer(userDataPath = mkdtempSync(join(tmpdir(), 'orca-delegated-'))) {
-    const runtime = new OrcaRuntimeService(partialRuntimeStore(makeStore()))
-    const server = new OrcaRuntimeRpcServer({
+  async function startServer(userDataPath = mkdtempSync(join(tmpdir(), 'topo-delegated-'))) {
+    const runtime = new TopoRuntimeService(partialRuntimeStore(makeStore()))
+    const server = new TopoRuntimeRpcServer({
       runtime,
       userDataPath,
       enableWebSocket: true,
@@ -75,8 +75,8 @@ describe('pairing.delegatedMobileDevice.sync', () => {
   }
 
   function pair(
-    server: OrcaRuntimeRpcServer,
-    args: Parameters<OrcaRuntimeRpcServer['createPairingOffer']>[0]
+    server: TopoRuntimeRpcServer,
+    args: Parameters<TopoRuntimeRpcServer['createPairingOffer']>[0]
   ): PairingOffer {
     const offer = server.createPairingOffer({ address: '127.0.0.1', ...args })
     if (!offer.available) {
@@ -85,7 +85,7 @@ describe('pairing.delegatedMobileDevice.sync', () => {
     return parsePairingCode(offer.pairingUrl)!
   }
 
-  function pairDesktop(server: OrcaRuntimeRpcServer, name = 'MacBook'): PairingOffer {
+  function pairDesktop(server: TopoRuntimeRpcServer, name = 'MacBook'): PairingOffer {
     return pair(server, { name, scope: 'runtime' })
   }
 

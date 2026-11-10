@@ -29,7 +29,7 @@ export const MermaidDiagram = memo(function MermaidDiagram({ source, base }: Mer
   const [failedSource, setFailedSource] = useState<string | null>(null)
   // Sanitize React id for CSS identifier because mermaid embeds #id rules; do not assume React’s current _R_0_ spelling.
   const suffix = useId().replace(/[^\w-]/g, '')
-  const id = `orca-mermaid-${suffix}`
+  const id = `topo-mermaid-${suffix}`
   const failed = failedSource === source
   // The drawn diagram, kept by source so a new source never expands a stale drawing.
   const [drawn, setDrawn] = useState<{ source: string; svg: string } | null>(null)

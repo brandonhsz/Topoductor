@@ -6,12 +6,12 @@ import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { promisify } from 'node:util'
 import { describe, expect, it, vi } from 'vitest'
-import { formatOrcaSessionAddress } from '../../../../../shared/orca-session-address'
-import { testOrcaSessionId } from '../../../../../shared/orca-session-address-test-fixture'
+import { formatTopoSessionAddress } from '../../../../../shared/topo-session-address'
+import { testTopoSessionId } from '../../../../../shared/topo-session-address-test-fixture'
 import { idOf } from '../../../rpc/orchestration-session-caller-test-fixture'
 import { closeStructuredAgentSessionChild } from '../../../agent-session/structured-agent-session-close'
 import { restoreJournal } from '../../../../native-chat/agent-session-journal/replay/journal-open'
-import { OrcaRuntimeRpcServer } from '../../../rpc/server/runtime-rpc'
+import { TopoRuntimeRpcServer } from '../../../rpc/server/runtime-rpc'
 import { ORCHESTRATION_METHODS } from '../../../rpc/methods/orchestration/orchestration'
 import type { FakeConnection } from './structured-chat-coordinator-fake-codex-fixture'
 import {
@@ -34,7 +34,7 @@ import {
   startClearedContext
 } from './structured-chat-coordinator-mail-rig.test-fixture'
 
-const WORKER = formatOrcaSessionAddress(testOrcaSessionId(PEER_CHAT))
+const WORKER = formatTopoSessionAddress(testTopoSessionId(PEER_CHAT))
 const cliPath = join(process.cwd(), 'src/cli/index.ts')
 const tsxLoader = pathToFileURL(createRequire(import.meta.url).resolve('tsx')).href
 
@@ -52,36 +52,36 @@ async function readWorkerThroughCli(dispatchId: string): Promise<string> {
     'XDG_RUNTIME_DIR',
     'CLAUDE_CONFIG_DIR',
     'CODEX_HOME',
-    'ORCA_E2E_HOME_DIR',
-    'ORCA_E2E_USER_DATA_DIR',
-    'ORCA_USER_DATA_PATH'
+    'TOPO_E2E_HOME_DIR',
+    'TOPO_E2E_USER_DATA_DIR',
+    'TOPO_USER_DATA_PATH'
   ]) {
     env[name] = root
   }
   for (const name of [
-    'ORCA_ENVIRONMENT',
-    'ORCA_PAIRING_CODE',
-    'ORCA_REMOTE_PAIRING',
-    'ORCA_RUNTIME_SOURCE_ID',
-    'ORCA_RUNTIME_SOURCE_INCARNATION',
-    'ORCA_RUNTIME_SOURCE_PROFILE_PATH',
-    'ORCA_TERMINAL_HANDLE',
-    'ORCA_PANE_KEY',
-    'ORCA_AGENT_LAUNCH_TOKEN',
-    'ORCA_STRUCTURED_SESSION'
+    'TOPO_ENVIRONMENT',
+    'TOPO_PAIRING_CODE',
+    'TOPO_REMOTE_PAIRING',
+    'TOPO_RUNTIME_SOURCE_ID',
+    'TOPO_RUNTIME_SOURCE_INCARNATION',
+    'TOPO_RUNTIME_SOURCE_PROFILE_PATH',
+    'TOPO_TERMINAL_HANDLE',
+    'TOPO_PANE_KEY',
+    'TOPO_AGENT_LAUNCH_TOKEN',
+    'TOPO_STRUCTURED_SESSION'
   ]) {
     env[name] = ''
   }
-  env.ORCA_AGENT_SESSION_ID = COORDINATOR
-  env.ORCA_BACKGROUND_LAUNCH = '1'
-  env.ORCA_DISABLE_MACOS_LOGIN_SHELL = '1'
+  env.TOPO_AGENT_SESSION_ID = COORDINATOR
+  env.TOPO_BACKGROUND_LAUNCH = '1'
+  env.TOPO_DISABLE_MACOS_LOGIN_SHELL = '1'
   // execFile owns its child handle, bounds its lifetime, and awaits exit before server cleanup.
   const { stdout } = await promisify(execFile)(
     process.execPath,
     [
       '--import',
       tsxLoader,
-      '--conditions=orca-source',
+      '--conditions=topo-source',
       cliPath,
       'orchestration',
       'worker-read',
@@ -250,7 +250,7 @@ describe("a chat assignee's liveness, stop and close", () => {
     const saved = restoreJournal(host.deps.journalDatabase.db, PEER_CHAT)?.state
     expect(saved?.lastSequence).toBeGreaterThanOrEqual(prefix.sequence)
     const acquisitions = codex.connections.length
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       runtime,
       userDataPath: root,
       enableWebSocket: false,

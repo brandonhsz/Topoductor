@@ -14,7 +14,7 @@ import {
 const roots: string[] = []
 
 async function tempRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-create-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-create-'))
   roots.push(root)
   return root
 }
@@ -23,7 +23,7 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true })))
 })
 
-describe('orca plugin create templates', () => {
+describe('topo plugin create templates', () => {
   it.each(PLUGIN_TEMPLATE_NAMES)('%s scaffolds a plugin that validates as-is', async (template) => {
     const dir = join(await tempRoot(), `my-${template}`)
     const created = await createPluginFromTemplate({ dir, template, publisher: 'acme' })
@@ -35,7 +35,7 @@ describe('orca plugin create templates', () => {
     const contentOnly = ['theme', 'terminal-theme', 'icon-theme', 'syntax', 'language-pack']
     expect(report.plugin?.needsApproval).toBe(!contentOnly.includes(template))
     const readme = await readFile(join(dir, 'README.md'), 'utf8')
-    expect(readme).toContain('orca plugin dev watch .')
+    expect(readme).toContain('topo plugin dev watch .')
     expect(readme).not.toContain('dev load')
   })
 
@@ -69,8 +69,8 @@ describe('orca plugin create templates', () => {
   })
 })
 
-describe('orca plugin validate', () => {
-  it('reports artifact errors Orca would otherwise skip silently', async () => {
+describe('topo plugin validate', () => {
+  it('reports artifact errors Topo would otherwise skip silently', async () => {
     const dir = join(await tempRoot(), 'broken')
     await createPluginFromTemplate({ dir, template: 'theme', publisher: 'acme' })
     await writeFile(

@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithAgentGeneratedTabTitles } from '../layout/agent-generated-tab-titles-runtime'
+import { TopoRuntimeWithAgentGeneratedTabTitles } from '../layout/agent-generated-tab-titles-runtime'
 import {
   includeTargetResolvedWorktree,
   type ResolvedWorktree
@@ -12,7 +12,7 @@ import { withoutCwdGuesses } from './worktree-pty-collection'
 // Renderer waits 15s; release the spawn fence and return verified failure before its deadline.
 const WORKTREE_TERMINAL_SLEEP_TIMEOUT_MS = 12_000
 
-export abstract class OrcaRuntimeWithSleepResolvedWorktreeTerminals extends OrcaRuntimeWithAgentGeneratedTabTitles {
+export abstract class TopoRuntimeWithSleepResolvedWorktreeTerminals extends TopoRuntimeWithAgentGeneratedTabTitles {
   protected async sleepResolvedWorktreeTerminals(
     worktree: ResolvedWorktree,
     scope: WorktreeSleepScope,

@@ -28,8 +28,8 @@ export function shouldSkipCodexHomeEnvForWindowsShell(
   return isWslTerminalSpawn(shellPath, cwd)
 }
 
-// System-default real-home launches must remove inherited Orca overrides when no managed home is selected.
-export function shouldStripInheritedOrcaCodexHome(args: {
+// System-default real-home launches must remove inherited Topo overrides when no managed home is selected.
+export function shouldStripInheritedTopoCodexHome(args: {
   target: CodexAccountSelectionTarget
   selectedCodexHomePath: string | null
   skipCodexHomeEnv: boolean
@@ -40,21 +40,21 @@ export function shouldStripInheritedOrcaCodexHome(args: {
   )
 }
 
-export const CODEX_HOME_ENV_KEYS = ['CODEX_HOME', 'ORCA_CODEX_HOME'] as const
+export const CODEX_HOME_ENV_KEYS = ['CODEX_HOME', 'TOPO_CODEX_HOME'] as const
 
-// Remove only overrides matching Orca's private marker, then drop the marker so wrappers cannot restore them; preserve user CODEX_HOME (#8606).
-export function stripInheritedOrcaCodexHomeOverride(baseEnv: Record<string, string>): void {
-  for (const key of getLocalOrcaCodexHomeEnvKeysToDelete(baseEnv)) {
+// Remove only overrides matching Topo's private marker, then drop the marker so wrappers cannot restore them; preserve user CODEX_HOME (#8606).
+export function stripInheritedTopoCodexHomeOverride(baseEnv: Record<string, string>): void {
+  for (const key of getLocalTopoCodexHomeEnvKeysToDelete(baseEnv)) {
     delete baseEnv[key]
   }
 }
 
 // Local spawns share this environment; persistent daemons must compare their own inherited values.
-export function getLocalOrcaCodexHomeEnvKeysToDelete(env: Record<string, string>): string[] {
-  const inheritedOrcaOverride = env.ORCA_CODEX_HOME ?? process.env.ORCA_CODEX_HOME
+export function getLocalTopoCodexHomeEnvKeysToDelete(env: Record<string, string>): string[] {
+  const inheritedTopoOverride = env.TOPO_CODEX_HOME ?? process.env.TOPO_CODEX_HOME
   const inheritedCodexHome = env.CODEX_HOME ?? process.env.CODEX_HOME
-  const keysToDelete = ['ORCA_CODEX_HOME']
-  if (inheritedOrcaOverride && inheritedCodexHome === inheritedOrcaOverride) {
+  const keysToDelete = ['TOPO_CODEX_HOME']
+  if (inheritedTopoOverride && inheritedCodexHome === inheritedTopoOverride) {
     keysToDelete.push('CODEX_HOME')
   }
   return keysToDelete

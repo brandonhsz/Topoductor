@@ -28,7 +28,7 @@ function historicalMailText(text: string, mail: OrchestrationMailMessage): strin
   const replyStart = text.lastIndexOf('\n', separatorStart - 1)
   const reply = text.slice(replyStart + 1, separatorStart)
   const match =
-    /^\[Reply: orca(?:-dev|-ide)? orchestration reply --id (\S+)(?: --from \S+)? --body "\.\.\."\]$/.exec(
+    /^\[Reply: topo(?:-dev|-ide)? orchestration reply --id (\S+)(?: --from \S+)? --body "\.\.\."\]$/.exec(
       reply
     )
   if (match?.[1] !== mail.messageId || replyStart < headerEnd + 10) {

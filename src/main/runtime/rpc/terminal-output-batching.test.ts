@@ -1,20 +1,20 @@
 import { describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from './dispatcher'
 import type { RpcRequest } from './core'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import { TERMINAL_METHODS } from './methods/terminal/terminal'
 import { createSubscriptionRegistryDouble } from './subscription-registry-test-double'
 import type { RuntimeTerminalWait } from '../../../shared/runtime-terminal-contracts'
 import '../../../shared/terminal/stream/terminal-stream-protocol'
 
-function stubRuntime(overrides: Partial<OrcaRuntimeService> = {}): OrcaRuntimeService {
+function stubRuntime(overrides: Partial<TopoRuntimeService> = {}): TopoRuntimeService {
   return {
     getRuntimeId: () => 'test-runtime',
     subscribeToPtyExit: vi.fn(() => vi.fn()),
     // Why: subscribe streams register as remote view subscribers for Phase-5
     registerRemoteTerminalViewSubscriber: () => () => {},
     ...overrides
-  } as OrcaRuntimeService
+  } as TopoRuntimeService
 }
 
 function makeRequest(method: string, params?: unknown): RpcRequest {

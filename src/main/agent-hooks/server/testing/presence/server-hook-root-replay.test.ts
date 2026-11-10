@@ -10,7 +10,7 @@ import {
 } from '../../../../../shared/agent-hook-listener/presence/hook-process-root-evidence'
 import type { AgentHookRelayEnvelope } from '../../../../../shared/agent-hook-listener/transport/agent-hook-relay'
 import { RelayAgentHookServer } from '../../../../../wsl-guest/agent-hook-server'
-import { startOrcadAgentHookServer } from '../../../../orcad/orcad-managed-agent-hooks'
+import { startTopodAgentHookServer } from '../../../../topod/topod-managed-agent-hooks'
 import {
   NOW,
   CLAUDE,
@@ -63,9 +63,9 @@ function spooled(
   }
 }
 
-/** Hooks that could not reach Orca while it was down, in the order they were written. */
+/** Hooks that could not reach Topo while it was down, in the order they were written. */
 function spoolDir(records: Record<string, unknown>[]): string {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-root-replay-'))
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-root-replay-'))
   paths.push(userDataPath)
   const dir = join(userDataPath, 'agent-hooks', 'spool')
   mkdirSync(dir, { recursive: true })
@@ -298,7 +298,7 @@ describe('WSL relay startup spool replay', () => {
   )
 })
 
-describe.skipIf(process.platform === 'win32')('orcad startup', () => {
+describe.skipIf(process.platform === 'win32')('topod startup', () => {
   it('installs its pane-root reader before replay, so a pane it cannot bind stays a fallback', async () => {
     const userDataPath = spoolDir([
       spooled(PANE, 49969, { hook_event_name: 'UserPromptSubmit', prompt: 'task' })
@@ -307,7 +307,7 @@ describe.skipIf(process.platform === 'win32')('orcad startup', () => {
     // Before the daemon provider is installed, the local provider owns no PTY for this pane.
     const { server, started } = launchServer(userDataPath, {
       reader: false,
-      start: (target) => startOrcadAgentHookServer(target, { env: 'production', userDataPath })
+      start: (target) => startTopodAgentHookServer(target, { env: 'production', userDataPath })
     })
     await started
     expect(server.presence()).toMatchObject({ process: capture(49969), fallback: true })

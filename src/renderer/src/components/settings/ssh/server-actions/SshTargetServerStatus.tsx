@@ -19,7 +19,7 @@ import { canRestartSshHostServer, SshHostRestartServerDialog } from './SshHostRe
 import { canRecoverSshHostServer, SshHostRecoverServerDialog } from './SshHostRecoverServerAction'
 import { Button } from '../../../ui/button'
 import { isConnectingSshStatus } from '../../../../ssh/ssh-connection-recoverability'
-import { getManagedOrcadApi } from '../../../../runtime/hosts/installation/managed-orcad-api-availability'
+import { getManagedTopodApi } from '../../../../runtime/hosts/installation/managed-topod-api-availability'
 
 export type SshTargetServerDialog =
   | 'details'
@@ -118,7 +118,7 @@ export function SshTargetServerMenuItems({
       ) : null}
       {canRestart ? (
         <DropdownMenuItem onSelect={() => onOpenDialog('restart')}>
-          {t('auto.components.settings.restartServer.action', 'Restart Orca’s server…')}
+          {t('auto.components.settings.restartServer.action', 'Restart Topo’s server…')}
         </DropdownMenuItem>
       ) : null}
       {canRecover ? (
@@ -155,7 +155,7 @@ export function SshTargetServerDialogs({
   onChanged: () => void
 }): React.JSX.Element {
   const t = useTranslate()
-  const api = getManagedOrcadApi()
+  const api = getManagedTopodApi()
   const status = state?.managedServer
   const detail = sshHostServerStatusLine(target, state, t)?.detail
   const openChange =

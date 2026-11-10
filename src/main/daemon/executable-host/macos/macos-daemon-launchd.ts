@@ -4,9 +4,9 @@ import { setTimeout as delay } from 'node:timers/promises'
 import { getAppEnvironment } from '../../../../shared/app-environment'
 import { LOCAL_BUILD_COMPATIBILITY_CONTRACT } from '../../../../shared/local-build-compatibility-contract'
 import { NODE_RUNTIME_DARWIN_MINIMUM_OS } from '../../../../shared/node-runtime-pin'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { rm } from '../../../filesystem/asar-transparent-fs'
-import { compareDottedVersions } from '../../../orcad/native-host-abi'
+import { compareDottedVersions } from '../../../topod/native-host-abi'
 import { DaemonClient } from '../../transport/client/daemon-client'
 import {
   DaemonEndpointOwnershipError,
@@ -60,7 +60,7 @@ function buildMacDaemonLaunchJob(
   bundle: MacDaemonBundle,
   label: string
 ): Record<string, unknown> {
-  const env: NodeJS.ProcessEnv = { ...process.env, ORCA_USER_DATA_PATH: options.userDataPath }
+  const env: NodeJS.ProcessEnv = { ...process.env, TOPO_USER_DATA_PATH: options.userDataPath }
   // Plain Node does not use Electron’s Node-mode switch or inherited IPC descriptors.
   delete env.ELECTRON_RUN_AS_NODE
   delete env.NODE_CHANNEL_FD
@@ -79,7 +79,7 @@ function buildMacDaemonLaunchJob(
     RunAtLoad: true,
     KeepAlive: false,
     AbandonProcessGroup: true,
-    // Associate plist-launched jobs with Orca for Local Network access.
+    // Associate plist-launched jobs with Topo for Local Network access.
     AssociatedBundleIdentifiers: [LOCAL_BUILD_COMPATIBILITY_CONTRACT.appId],
     ProcessType: 'Interactive',
     // launchd disables cloud-file downloads for jobs unless asked; shells need them like Terminal.app.

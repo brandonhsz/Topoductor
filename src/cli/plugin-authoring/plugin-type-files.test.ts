@@ -8,7 +8,7 @@ import { createPluginFromTemplate } from './plugin-create'
 const roots: string[] = []
 
 async function tempRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-types-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-types-'))
   roots.push(root)
   return root
 }
@@ -17,7 +17,7 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true })))
 })
 
-describe('orca plugin types', () => {
+describe('topo plugin types', () => {
   it('refreshes on dev load only for folders that use TypeScript or components panels', async () => {
     const root = await tempRoot()
     const html = join(root, 'html-panel')

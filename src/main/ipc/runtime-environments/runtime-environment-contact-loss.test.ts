@@ -1,4 +1,4 @@
-// #34089: whether a paired server's host may be gone comes only from dials Orca already makes:
+// #34089: whether a paired server's host may be gone comes only from dials Topo already makes:
 // its health probes and its control socket's reconnects.
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { KnownRuntimeEnvironment } from '../../../shared/remote-runtime/host-catalog/runtime-environments'

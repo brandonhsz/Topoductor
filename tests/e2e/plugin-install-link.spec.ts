@@ -1,5 +1,5 @@
 /**
- * Invariant: an `orca://plugins/...` link opens the plugin's page in Settings, waiting while
+ * Invariant: an `topo://plugins/...` link opens the plugin's page in Settings, waiting while
  * plugins are off until they are turned back on, and never installs. A malformed link only toasts, and an unknown
  * catalog asks first. The link is delivered through main's open-url handler; no protocol is
  * registered on the machine running the test.
@@ -10,7 +10,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { ElectronApplication, TestInfo } from '@stablyai/playwright-test'
 import { expect, test } from '@stablyai/playwright-test'
-import { createRestartSession } from './helpers/orca-restart'
+import { createRestartSession } from './helpers/topo-restart'
 import { createGleamCatalogFixture, GLEAM_PLUGIN_KEY } from './helpers/plugin-gleam-catalog-fixture'
 
 async function openLink(app: ElectronApplication, url: string): Promise<void> {
@@ -23,7 +23,7 @@ async function openLink(app: ElectronApplication, url: string): Promise<void> {
 test('an install link opens the plugin page and never installs', async ({}, testInfo) => {
   // Why: one Electron launch plus a Git catalog fetch and a plugin page; slower than the 30s default on CI.
   test.setTimeout(180_000)
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-install-link-e2e-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-install-link-e2e-'))
   const fixture = await createGleamCatalogFixture(root)
   const session = createRestartSession(testInfo as TestInfo, fixture.gitEnvironment)
   let launched: Awaited<ReturnType<typeof session.launch>> | null = null
@@ -49,10 +49,10 @@ test('an install link opens the plugin page and never installs', async ({}, test
       window.__store?.setState({ settings })
     })
 
-    await openLink(app, 'orca://plugins/stablyai..bad')
+    await openLink(app, 'topo://plugins/brandonhsz..bad')
     await expect(page.getByText('That plugin link isn’t valid.')).toBeVisible({ timeout: 15_000 })
 
-    await openLink(app, `orca://plugins/${GLEAM_PLUGIN_KEY}?catalog=official`)
+    await openLink(app, `topo://plugins/${GLEAM_PLUGIN_KEY}?catalog=official`)
     await expect(page.getByText('Plugins are off')).toBeVisible({ timeout: 15_000 })
     // Off comes only from a saved choice now; turning it back on lands on the waiting link's page.
     await page.evaluate(async () => {
@@ -67,7 +67,7 @@ test('an install link opens the plugin page and never installs', async ({}, test
     await expect(page.getByRole('dialog')).toHaveCount(0)
 
     const catalogUrl = encodeURIComponent('https://github.com/acme/orca-catalog.git')
-    await openLink(app, `orca://plugins/acme.dusk?catalog=${catalogUrl}`)
+    await openLink(app, `topo://plugins/acme.dusk?catalog=${catalogUrl}`)
     const prompt = page.getByRole('dialog', { name: 'Add catalog github.com/acme?' })
     await expect(prompt).toBeVisible({ timeout: 15_000 })
     await prompt.getByRole('button', { name: 'Cancel' }).click()

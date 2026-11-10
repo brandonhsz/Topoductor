@@ -8,7 +8,7 @@ import type { WorkspaceSessionState } from '../../../shared/workspace-session/wo
 import { createStore, testState } from '../../persistence/persistence-test-harness'
 
 vi.mock('electron', () => ({
-  app: { getPath: () => testStateDirRef.dir, getName: () => 'orca', getVersion: () => '0.0.0' },
+  app: { getPath: () => testStateDirRef.dir, getName: () => 'topo', getVersion: () => '0.0.0' },
   BrowserWindow: { fromId: () => null, getAllWindows: () => [] },
   webContents: { fromId: () => null },
   ipcMain: { on: () => {}, handle: () => {}, removeListener: () => {} },
@@ -44,7 +44,7 @@ async function makeStore() {
 
 describe('host-created terminal close durability', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-close-durability-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-close-durability-'))
     testStateDirRef.dir = testState.dir
   })
 

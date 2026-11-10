@@ -37,7 +37,7 @@ function writeStub(path: string, markerPath: string): void {
 }
 
 function buildFixture(options: { aliasCodex?: boolean } = {}): Fixture {
-  const root = mkdtempSync(join(tmpdir(), 'orca-codex-profile-path-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-codex-profile-path-'))
   roots.push(root)
   const resourcesPath = join(root, 'resources')
   const hijackDir = join(root, 'hijack')
@@ -56,8 +56,8 @@ function buildFixture(options: { aliasCodex?: boolean } = {}): Fixture {
     throw new Error('Windows has a bundled launcher path')
   }
   writeStub(launcherPath, intendedMarker)
-  // Model hostile binaries under every Orca CLI spelling.
-  for (const name of ['orca', 'orca-ide', 'orca-dev']) {
+  // Model hostile binaries under every Topo CLI spelling.
+  for (const name of ['topo', 'topo-ide', 'topo-dev']) {
     writeStub(join(hijackDir, name), hijackMarker)
   }
   writeStub(join(codexDir, 'codex'), codexMarker)
@@ -85,7 +85,7 @@ function launchCodexThroughRcfile(fixture: Fixture, preflightValue: string): voi
   const rcfilePath = join(fixture.root, 'rcfile')
   writeFileSync(rcfilePath, getDaemonBashShellReadyRcfileContent(), 'utf8')
   // The later OSC hook proves parsing passed the wrapper; trailing : leaves marker absence as the failure.
-  const command = `codex --version; declare -F __orca_osc133_preexec >/dev/null && printf ran > ${JSON.stringify(fixture.postSnippetMarker)}; :`
+  const command = `codex --version; declare -F __topo_osc133_preexec >/dev/null && printf ran > ${JSON.stringify(fixture.postSnippetMarker)}; :`
   execFileSync('/bin/bash', ['--rcfile', rcfilePath, '-i', '-c', command], {
     stdio: 'ignore',
     env: {
@@ -95,8 +95,8 @@ function launchCodexThroughRcfile(fixture: Fixture, preflightValue: string): voi
       TERM: 'dumb',
       SHELL: '/bin/bash',
       // No features means no identity/readiness markers in captured stdout.
-      ORCA_CODEX_HOME: join(fixture.root, 'codex-home'),
-      ORCA_CODEX_LAUNCH_PREFLIGHT: preflightValue
+      TOPO_CODEX_HOME: join(fixture.root, 'codex-home'),
+      TOPO_CODEX_LAUNCH_PREFLIGHT: preflightValue
     }
   })
 }
@@ -151,7 +151,7 @@ describe.skipIf(!bashAvailable)('Codex preflight under a profile-rewritten PATH'
   it('skips an unqualified preflight value while still launching codex', () => {
     const fixture = buildFixture()
 
-    launchCodexThroughRcfile(fixture, 'orca')
+    launchCodexThroughRcfile(fixture, 'topo')
 
     expect(existsSync(fixture.hijackMarker)).toBe(false)
     expect(existsSync(fixture.intendedMarker)).toBe(false)

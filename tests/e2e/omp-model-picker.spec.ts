@@ -1,6 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { buildShellCommandFromArgv } from '../../src/shared/agent-launch/startup/tui-agent-startup-shell'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   execInTerminal,
@@ -10,16 +10,16 @@ import {
 } from './helpers/terminal'
 
 test('OMP model picker dispatches its advertised command and adopts the host report', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }, testInfo) => {
   test.skip(process.platform === 'win32', 'POSIX PTY capture fixture')
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage)
-  const descriptor = await waitForActivePaneHookDescriptor(orcaPage)
-  const ptyId = await waitForActivePanePtyId(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage)
+  const descriptor = await waitForActivePaneHookDescriptor(topoPage)
+  const ptyId = await waitForActivePanePtyId(topoPage)
   const output = testInfo.outputPath('model-command.txt')
   const script = testInfo.outputPath('capture.cjs')
   await writeFile(
@@ -27,7 +27,7 @@ test('OMP model picker dispatches its advertised command and adopts the host rep
     `const fs = require('node:fs'); let data = ''; process.stdin.setRawMode(true); process.stdin.on('data', chunk => { data += chunk; fs.writeFileSync(${JSON.stringify(output)}, data); });`
   )
   await execInTerminal(
-    orcaPage,
+    topoPage,
     ptyId,
     buildShellCommandFromArgv([process.execPath, script], 'posix')
   )
@@ -42,7 +42,7 @@ test('OMP model picker dispatches its advertised command and adopts the host rep
       ]
     }))
   })
-  await orcaPage.evaluate(async ({ paneKey, worktreeId }) => {
+  await topoPage.evaluate(async ({ paneKey, worktreeId }) => {
     const settings = await window.api.settings.set({ nativeChatProviders: { omp: true } })
     const store = window.__store
     if (!store) {
@@ -57,7 +57,7 @@ test('OMP model picker dispatches its advertised command and adopts the host rep
         prompt: '',
         agentType: 'omp',
         model: 'anthropic/claude-sonnet-4-5',
-        modelSwitchCommand: 'orca-model'
+        modelSwitchCommand: 'topo-model'
       },
       'OMP',
       undefined,
@@ -72,19 +72,19 @@ test('OMP model picker dispatches its advertised command and adopts the host rep
     }
     state.toggleTabViewMode(tab.id)
   }, descriptor)
-  const picker = orcaPage.getByRole('button', { name: 'Model Sonnet 4.5', exact: true })
+  const picker = topoPage.getByRole('button', { name: 'Model Sonnet 4.5', exact: true })
   await expect(picker).toBeVisible()
   await picker.click()
-  await expect(orcaPage.getByRole('option', { name: 'Sonnet 4.6', exact: true })).toBeVisible()
-  await orcaPage.screenshot({
+  await expect(topoPage.getByRole('option', { name: 'Sonnet 4.6', exact: true })).toBeVisible()
+  await topoPage.screenshot({
     animations: 'disabled',
     path: testInfo.outputPath('omp-model-choices.png')
   })
-  await orcaPage.getByRole('option', { name: 'Sonnet 4.6', exact: true }).click()
+  await topoPage.getByRole('option', { name: 'Sonnet 4.6', exact: true }).click()
   await expect
     .poll(async () => readFile(output, 'utf8').catch(() => ''))
-    .toContain('/orca-model anthropic/claude-sonnet-4-6')
-  await orcaPage.evaluate(({ paneKey, worktreeId }) => {
+    .toContain('/topo-model anthropic/claude-sonnet-4-6')
+  await topoPage.evaluate(({ paneKey, worktreeId }) => {
     window.__store?.getState().setAgentStatus(
       paneKey,
       {
@@ -92,7 +92,7 @@ test('OMP model picker dispatches its advertised command and adopts the host rep
         prompt: '',
         agentType: 'omp',
         model: 'anthropic/claude-sonnet-4-6',
-        modelSwitchCommand: 'orca-model'
+        modelSwitchCommand: 'topo-model'
       },
       'OMP',
       undefined,
@@ -100,9 +100,9 @@ test('OMP model picker dispatches its advertised command and adopts the host rep
     )
   }, descriptor)
   await expect(
-    orcaPage.getByRole('button', { name: 'Model Sonnet 4.6', exact: true })
+    topoPage.getByRole('button', { name: 'Model Sonnet 4.6', exact: true })
   ).toBeVisible()
-  await orcaPage.screenshot({
+  await topoPage.screenshot({
     animations: 'disabled',
     path: testInfo.outputPath('omp-model-reported.png')
   })

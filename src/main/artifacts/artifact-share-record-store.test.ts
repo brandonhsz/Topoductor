@@ -22,7 +22,7 @@ const scopeA: ArtifactShareScope = {
 }
 
 async function userDataPath(): Promise<string> {
-  const path = await mkdtemp(join(tmpdir(), 'orca-artifact-records-'))
+  const path = await mkdtemp(join(tmpdir(), 'topo-artifact-records-'))
   createdPaths.push(path)
   return path
 }

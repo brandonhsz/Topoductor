@@ -107,7 +107,7 @@ export class PluginMarketplaceInstaller {
     if (incompatible) {
       throw new Error(incompatible)
     }
-    const stagingDirectory = await mkdtemp(join(tmpdir(), 'orca-plugin-marketplace-preview-'))
+    const stagingDirectory = await mkdtemp(join(tmpdir(), 'topo-plugin-marketplace-preview-'))
     try {
       const resolvedCommit = await checkoutPluginGitSource({
         url: listing.source.url,
@@ -164,7 +164,7 @@ export class PluginMarketplaceInstaller {
     const blockedReason =
       listing.blockedByKillList?.reason ?? this.blockedPluginReason(preview.pluginKey)
     if (blockedReason) {
-      return { ok: false, error: `plugin is blocked by Orca's safety list: ${blockedReason}` }
+      return { ok: false, error: `plugin is blocked by Topo's safety list: ${blockedReason}` }
     }
     const incompatible = this.releaseCompatibilityError(listing)
     if (incompatible) {

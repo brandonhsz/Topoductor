@@ -40,7 +40,7 @@ describe('agent.launch.before at the spawn', () => {
   const launch = {
     launchAgent: 'claude' as const,
     command: "claude 'fix the bug'",
-    env: { ORCA_TERMINAL_HANDLE: 'h', PATH: '/bin' },
+    env: { TOPO_TERMINAL_HANDLE: 'h', PATH: '/bin' },
     worktreeId: 'folder:notes',
     preAllocatedHandle: 'term_1',
     cols: 80
@@ -107,7 +107,7 @@ describe('agent.launch.before at the spawn', () => {
     )
   })
 
-  it('keeps Orca’s own variables out of a plugin’s reach', async () => {
+  it('keeps Topo’s own variables out of a plugin’s reach', async () => {
     const outcome = await runPluginHookChain({
       event: 'agent.launch.before',
       payload: {
@@ -120,7 +120,7 @@ describe('agent.launch.before at the spawn', () => {
       participants: ['acme.env'],
       invoke: async (_key, payload) => ({
         decision: 'continue',
-        payload: { ...Object(payload), env: { ORCA_AGENT_LAUNCH_TOKEN: 'stolen' } }
+        payload: { ...Object(payload), env: { TOPO_AGENT_LAUNCH_TOKEN: 'stolen' } }
       }),
       log: vi.fn(),
       now: () => 0

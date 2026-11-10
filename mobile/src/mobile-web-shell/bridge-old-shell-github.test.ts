@@ -109,7 +109,7 @@ it('a checked capable endpoint still closes through the actual old parser/forwar
 it('an old server is refused before unsafe generic send even through the old shell', async () => {
   const f = pair({ capable: false })
   try {
-    await expect(closeIssue(f)).rejects.toThrow('Update Orca')
+    await expect(closeIssue(f)).rejects.toThrow('Update Topo')
     expect(f.calls.map((call) => call.method)).toEqual(['status.get'])
     expect(f.effects).toEqual([])
   } finally {

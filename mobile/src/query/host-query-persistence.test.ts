@@ -1,6 +1,6 @@
 import { hashKey, QueryClient } from '@tanstack/react-query'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { OrcaQueryStoreBackend } from '../device-store/query-storage'
+import type { TopoQueryStoreBackend } from '../device-store/query-storage'
 import { hostWorktreeCatalogKey, hostWorktreeCatalogQuery } from '../host-screen/host-list-queries'
 import {
   createHostQueryPersistence,
@@ -17,7 +17,7 @@ const firstPaint = [persistedHostQueryKey(hostWorktreeCatalogQuery, key)!]
 const liveRow = {
   worktreeId: 'repo-1::/w/mobile-redesign',
   repoId: 'repo-1',
-  repo: 'orca',
+  repo: 'topo',
   branch: 'kelvin/mobile-redesign',
   displayName: 'Mobile redesign',
   path: '/w/mobile-redesign',
@@ -36,7 +36,7 @@ const liveRow = {
 function memoryStore(hostId: string) {
   const rows = new Map<string, string>()
   let readGate: Promise<void> = Promise.resolve()
-  const backend: OrcaQueryStoreBackend = {
+  const backend: TopoQueryStoreBackend = {
     hostId,
     read: async (keys) => {
       await readGate

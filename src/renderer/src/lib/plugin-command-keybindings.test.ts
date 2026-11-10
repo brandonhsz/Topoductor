@@ -45,11 +45,11 @@ describe('plugin command keybindings', () => {
     ).toBeNull()
   })
 
-  // #15642: plugin chords follow the terminal shortcut policy like Orca's own app shortcuts.
-  it('fires in terminal focus under orca-first and stays out under terminal-first', () => {
+  // #15642: plugin chords follow the terminal shortcut policy like Topo's own app shortcuts.
+  it('fires in terminal focus under topo-first and stays out under terminal-first', () => {
     const input = { key: 't', code: 'KeyT', control: true, meta: false, alt: true, shift: false }
     const find = (
-      terminalShortcutPolicy: 'orca-first' | 'terminal-first' | undefined,
+      terminalShortcutPolicy: 'topo-first' | 'terminal-first' | undefined,
       overrides?: KeybindingOverrides
     ) =>
       findPluginCommandForKeybinding([command], input, 'linux', overrides, true, {
@@ -57,8 +57,8 @@ describe('plugin command keybindings', () => {
         terminalShortcutPolicy
       })
 
-    expect(find('orca-first')).toBe(command)
-    // The policy defaults to orca-first, as it does for built-ins.
+    expect(find('topo-first')).toBe(command)
+    // The policy defaults to topo-first, as it does for built-ins.
     expect(find(undefined)).toBe(command)
     expect(find('terminal-first')).toBeNull()
     expect(
@@ -73,7 +73,7 @@ describe('plugin command keybindings', () => {
     const actionId = pluginCommandKeybindingActionId(command)
     const original = { key: 't', code: 'KeyT', control: true, meta: false, alt: true, shift: false }
     const rebound = { key: 't', code: 'KeyT', control: true, meta: false, alt: false, shift: true }
-    const terminal = { context: 'terminal', terminalShortcutPolicy: 'orca-first' } as const
+    const terminal = { context: 'terminal', terminalShortcutPolicy: 'topo-first' } as const
     const rebind = { [actionId]: ['Mod+Shift+T'] }
 
     expect(

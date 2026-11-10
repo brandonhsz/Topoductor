@@ -145,15 +145,15 @@
       "type": "control_response",
       "response": {
         "subtype": "error",
-        "request_id": "orca-command-discovery",
-        "error": "Unsupported control request subtype: orca_unknown_subtype"
+        "request_id": "topo-command-discovery",
+        "error": "Unsupported control request subtype: topo_unknown_subtype"
       }
     },
     "initialize": {
       "type": "control_response",
       "response": {
         "subtype": "success",
-        "request_id": "orca-command-discovery",
+        "request_id": "topo-command-discovery",
         "response": {
           "commands": [
             {

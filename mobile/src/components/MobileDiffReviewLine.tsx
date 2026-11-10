@@ -13,7 +13,7 @@ import { useMobileColorScheme } from '../theme/use-mobile-color-scheme'
 import { MobileSyntaxSegments } from './MobileSyntaxSegments'
 
 // Each pickable line row carries this id, so a drag finds the row under the finger in the page itself.
-export const DIFF_LINE_ID_PREFIX = 'orca-review-diff-line-'
+export const DIFF_LINE_ID_PREFIX = 'topo-review-diff-line-'
 
 type Props = {
   line: MobileHighlightedDiffLine<MobileDiffLine>

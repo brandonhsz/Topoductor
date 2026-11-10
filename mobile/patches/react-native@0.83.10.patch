@@ -122,8 +122,8 @@ index 36aafbb..92aa2d9 100644
    _eventEmitter: NativeEventEmitter<WebSocketEventDefinitions>;
    _subscriptions: Array<EventSubscription>;
    _binaryType: ?BinaryType;
-+  // Orca: opt-in per socket; binary messages arrive as {base64} so the app decodes them natively.
-+  orcaBinaryAsBase64: boolean = false;
++  // Topo: opt-in per socket; binary messages arrive as {base64} so the app decodes them natively.
++  topoBinaryAsBase64: boolean = false;
  
    bufferedAmount: number;
    extension: ?string;
@@ -137,7 +137,7 @@ index 36aafbb..92aa2d9 100644
          switch (ev.type) {
            case 'binary':
 -            data = base64.toByteArray(ev.data).buffer;
-+            data = this.orcaBinaryAsBase64
++            data = this.topoBinaryAsBase64
 +              ? {base64: ev.data}
 +              : base64.toByteArray(ev.data).buffer;
              break;

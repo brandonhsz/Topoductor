@@ -2,7 +2,7 @@ import { app, BaseWindow, BrowserWindow, protocol, session } from 'electron'
 import { renameSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import '../../../../shared/constants'
-import { ORCA_BROWSER_PARTITION } from '../../../../shared/browser/browser-session-partition'
+import { TOPO_BROWSER_PARTITION } from '../../../../shared/browser/browser-session-partition'
 import { applyBackgroundActivationPolicy } from '../../../window/foreground-activation-policy'
 import { browserManager } from '../../guest-lifecycle/manager/browser-manager'
 import { browserSessionRegistry } from '../../sessions/profiles/browser-session-registry'
@@ -17,14 +17,14 @@ import { buildBrowserExtensionPageContextMenu } from '../context-menus/browser-e
 import { recordActiveBrowserPage } from '../tabs-and-windows/browser-extension-tab-model'
 import { trackBrowserExtensionMainWindow } from '../tabs-and-windows/browser-extension-window-model'
 
-const statusPath = process.env.ORCA_EXTENSION_FIXTURE_STATUS
-const extensionDirectory = process.env.ORCA_EXTENSION_FIXTURE_DIR
-const phase = process.env.ORCA_EXTENSION_FIXTURE_PHASE
+const statusPath = process.env.TOPO_EXTENSION_FIXTURE_STATUS
+const extensionDirectory = process.env.TOPO_EXTENSION_FIXTURE_DIR
+const phase = process.env.TOPO_EXTENSION_FIXTURE_PHASE
 if (
   !statusPath ||
   !extensionDirectory ||
   (phase !== 'first' && phase !== 'second') ||
-  process.env.ORCA_BACKGROUND_LAUNCH !== '1'
+  process.env.TOPO_BACKGROUND_LAUNCH !== '1'
 ) {
   throw new Error(
     'Persistence fixture requires a status path, an extension, a phase and background launch'
@@ -33,7 +33,7 @@ if (
 const fixtureStatusPath = statusPath
 const fixtureExtensionDirectory = extensionDirectory
 
-// Orca's preflight registers this before ready; the worker shim calls main through it.
+// Topo's preflight registers this before ready; the worker shim calls main through it.
 protocol.registerSchemesAsPrivileged([BROWSER_EXTENSION_API_CUSTOM_SCHEME])
 
 const presentationCalls: string[] = []
@@ -65,16 +65,16 @@ process.on('uncaughtException', fail)
 process.on('unhandledRejection', fail)
 
 function capture(message: string): void {
-  if (message.startsWith('ORCA_EXT_ERROR ')) {
+  if (message.startsWith('TOPO_EXT_ERROR ')) {
     fail(message)
     return
   }
   for (const [prefix, key] of [
-    ['ORCA_EXT_SETUP ', 'setup'],
-    ['ORCA_EXT_WEBREQUEST ', 'webRequest'],
-    ['ORCA_EXT_CONTENT_SCRIPT ', 'contentScript'],
-    ['ORCA_EXT_COMMAND ', 'commands'],
-    ['ORCA_EXT_SYNC ', 'sync']
+    ['TOPO_EXT_SETUP ', 'setup'],
+    ['TOPO_EXT_WEBREQUEST ', 'webRequest'],
+    ['TOPO_EXT_CONTENT_SCRIPT ', 'contentScript'],
+    ['TOPO_EXT_COMMAND ', 'commands'],
+    ['TOPO_EXT_SYNC ', 'sync']
   ] as const) {
     if (message.startsWith(prefix)) {
       const value: unknown = JSON.parse(message.slice(prefix.length))
@@ -89,7 +89,7 @@ function capture(message: string): void {
   }
 }
 
-/** Orca's main window with one registered tab on `url`, made active the way the renderer does. */
+/** Topo's main window with one registered tab on `url`, made active the way the renderer does. */
 async function openTab(url: string): Promise<Electron.WebContents> {
   const host = new BrowserWindow({
     show: false,
@@ -111,7 +111,7 @@ async function openTab(url: string): Promise<Electron.WebContents> {
   })
   await host.loadURL(
     `data:text/html,${encodeURIComponent(
-      `<webview partition="${ORCA_BROWSER_PARTITION}" src="${url}"></webview>`
+      `<webview partition="${TOPO_BROWSER_PARTITION}" src="${url}"></webview>`
     )}`
   )
   return attached
@@ -130,7 +130,7 @@ async function run(): Promise<void> {
   initializeBrowserExtensionSupport({ enabled: true })
   const profile = browserSessionRegistry.getDefaultProfile()
   session
-    .fromPartition(ORCA_BROWSER_PARTITION)
+    .fromPartition(TOPO_BROWSER_PARTITION)
     .serviceWorkers.on('console-message', (_event, details) => capture(details.message))
 
   if (phase === 'first') {
@@ -156,7 +156,7 @@ async function run(): Promise<void> {
   } as unknown as Electron.ContextMenuParams
   status.menu = buildBrowserExtensionPageContextMenu(guest, params)?.groups ?? null
   writeStatus()
-  // An extension command, then one Orca owns (Mod+Shift+F), typed into the tab.
+  // An extension command, then one Topo owns (Mod+Shift+F), typed into the tab.
   const mod = process.platform === 'darwin' ? 'meta' : 'control'
   for (const keyCode of ['L', 'F']) {
     guest.sendInputEvent({ type: 'keyDown', keyCode, modifiers: [mod, 'shift'] })

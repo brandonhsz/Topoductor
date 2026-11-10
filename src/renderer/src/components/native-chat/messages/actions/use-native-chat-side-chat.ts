@@ -21,7 +21,7 @@ export type NativeChatSideChat = {
   reportForkPoint: (point: NativeChatSideChatForkPoint) => void
 }
 
-/** Undefined where Orca can't fork this chat, so `/btw` stays the agent's. */
+/** Undefined where Topo can't fork this chat, so `/btw` stays the agent's. */
 export function useNativeChatSideChat(
   fork: NativeChatForkSurface | undefined
 ): NativeChatSideChat | undefined {

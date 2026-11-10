@@ -11,7 +11,7 @@ import { preparationHostKey } from './worktree-preparation-discard-retry'
 import { startStalePreparationCleanup } from './worktree-create-preparation-stale-cleanup'
 import { blockedWslDistroForPath } from '../../../wsl/filesystem/wsl-unc-access-gate'
 
-/** Removal is the last point Orca knows this repo, so reclaim its armed and crash-left checkouts now. */
+/** Removal is the last point Topo knows this repo, so reclaim its armed and crash-left checkouts now. */
 export function releaseWorktreeCreatePreparationsForRepo(
   store: ProjectRuntimeResolutionStore,
   repo: Repo

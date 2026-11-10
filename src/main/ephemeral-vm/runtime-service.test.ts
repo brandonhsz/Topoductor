@@ -19,7 +19,7 @@ import {
   resumeEphemeralVmRuntime
 } from './runtime-service'
 import { stopEphemeralVmRuntimeCleanup } from './runtime-cleanup-control'
-import type { OrcaVmRecipe } from '../../shared/orca-yaml-hook-types'
+import type { TopoVmRecipe } from '../../shared/topo-yaml-hook-types'
 
 const tempDirs: string[] = []
 
@@ -63,8 +63,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('persists a successful recipe-created runtime and cleans it up', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startPath = join(repoPath, 'start.js')
     const cleanupPath = join(repoPath, 'cleanup.js')
     writeFileSync(
@@ -74,7 +74,7 @@ describe('ephemeral VM runtime service', () => {
         '  schemaVersion: 1,',
         `  pairingCode: ${JSON.stringify(makePairingCode())},`,
         "  projectRoot: '/workspace/repo',",
-        '  userData: { providerResourceId: process.env.ORCA_VM_INSTANCE_ID }',
+        '  userData: { providerResourceId: process.env.TOPO_VM_INSTANCE_ID }',
         '}))'
       ].join('\n')
     )
@@ -92,7 +92,7 @@ describe('ephemeral VM runtime service', () => {
         '})'
       ].join('\n')
     )
-    const recipe: OrcaVmRecipe = {
+    const recipe: TopoVmRecipe = {
       id: 'cloud-sandbox',
       name: 'Cloud Sandbox',
       // Legacy repository recipes may exceed plugin limits after resources have already been provisioned.
@@ -161,15 +161,15 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('stops a hung destroy and starts a fresh retry', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const cleanupPath = join(repoPath, 'cleanup.js')
     const countPath = join(repoPath, 'cleanup-count.txt')
     writeFileSync(
       cleanupPath,
       `require('fs').appendFileSync(${JSON.stringify(countPath)}, 'x'); setInterval(() => {}, 1000)`
     )
-    const recipe: OrcaVmRecipe = {
+    const recipe: TopoVmRecipe = {
       id: 'cloud-sandbox',
       name: 'Cloud Sandbox',
       create: 'unused',
@@ -188,7 +188,7 @@ describe('ephemeral VM runtime service', () => {
         connection: {
           type: 'ssh',
           projectRoot: '/workspace/repo',
-          target: { label: 'VM', host: 'host', port: 22, username: 'orca' }
+          target: { label: 'VM', host: 'host', port: 22, username: 'topo' }
         }
       }
     })
@@ -218,8 +218,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('keeps no record when create is cancelled before its script starts', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startedPath = join(repoPath, 'started.txt')
     const startPath = join(repoPath, 'start.js')
     writeFileSync(startPath, `require('fs').writeFileSync(${JSON.stringify(startedPath)}, 'x')\n`)
@@ -239,8 +239,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('keeps no record when create fails validation before its script starts', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const missingRepoPath = join(makeDir('orca-ephemeral-vm-service-repo-'), 'missing')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const missingRepoPath = join(makeDir('topo-ephemeral-vm-service-repo-'), 'missing')
 
     await expect(
       provisionEphemeralVmRuntime({
@@ -253,8 +253,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('keeps a result-less failed record when recipe output cannot be parsed', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startPath = join(repoPath, 'start.js')
     writeFileSync(startPath, "console.log('not json')\n")
 
@@ -288,11 +288,11 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('keeps a timed-out create destroyable by its instance id', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startPath = join(repoPath, 'start.js')
     writeFileSync(startPath, 'setInterval(() => {}, 1000)')
-    const recipe: OrcaVmRecipe = {
+    const recipe: TopoVmRecipe = {
       id: 'slow-sandbox',
       name: 'Slow Sandbox',
       create: nodeCommand(startPath),
@@ -320,8 +320,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('reconciles a create interrupted by a crash into a destroyable failed record', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startPath = join(repoPath, 'start.js')
     const destroyPath = join(repoPath, 'destroy.js')
     const spawnedPath = join(repoPath, 'create-spawned.txt')
@@ -329,7 +329,7 @@ describe('ephemeral VM runtime service', () => {
     writeFileSync(
       startPath,
       [
-        `require('fs').writeFileSync(${JSON.stringify(spawnedPath)}, process.env.ORCA_VM_INSTANCE_ID)`,
+        `require('fs').writeFileSync(${JSON.stringify(spawnedPath)}, process.env.TOPO_VM_INSTANCE_ID)`,
         'setInterval(() => {}, 1000)'
       ].join('\n')
     )
@@ -341,7 +341,7 @@ describe('ephemeral VM runtime service', () => {
         `process.stdin.on('end', () => require('fs').writeFileSync(${JSON.stringify(payloadPath)}, input))`
       ].join('\n')
     )
-    const recipe: OrcaVmRecipe = {
+    const recipe: TopoVmRecipe = {
       id: 'slow-sandbox',
       name: 'Slow Sandbox',
       create: nodeCommand(startPath),
@@ -390,7 +390,7 @@ describe('ephemeral VM runtime service', () => {
         status: 'failed',
         cleanupStatus: 'not_started',
         cleanupLastError:
-          'Orca stopped while this VM was being created. Destroy it to release any provider resources.',
+          'Topo stopped while this VM was being created. Destroy it to release any provider resources.',
         cleanupLastErrorCode: 'provisionInterrupted',
         createdAt: 1_000,
         updatedAt: 5_000
@@ -410,8 +410,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('rejects an unwritable feature store before a checkout-mode recipe creates resources', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startPath = join(repoPath, 'start.js')
     const markerPath = join(repoPath, 'create-ran.txt')
     writeFileSync(startPath, `require('fs').writeFileSync(${JSON.stringify(markerPath)}, 'yes')`)
@@ -436,8 +436,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('rejects an unreadable lifecycle store before a checkout-mode recipe creates resources', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startPath = join(repoPath, 'start.js')
     const markerPath = join(repoPath, 'create-ran.txt')
     writeFileSync(startPath, `require('fs').writeFileSync(${JSON.stringify(markerPath)}, 'yes')`)
@@ -460,8 +460,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('destroys a checkout-mode resource when compatibility persistence fails after create', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startPath = join(repoPath, 'start.js')
     const cleanupPath = join(repoPath, 'cleanup.js')
     const cleanupMarkerPath = join(repoPath, 'cleanup-ran.txt')
@@ -476,7 +476,7 @@ describe('ephemeral VM runtime service', () => {
         '  connection: {',
         '    type: "ssh",',
         '    projectRoot: "/workspace/repo",',
-        '    target: { label: "VM", host: "host", port: 22, username: "orca" }',
+        '    target: { label: "VM", host: "host", port: 22, username: "topo" }',
         '  }',
         '}))'
       ].join('\n')
@@ -504,8 +504,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('keeps rollback-readable cleanup recovery when post-create destroy also fails', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startPath = join(repoPath, 'start.js')
     const cleanupPath = join(repoPath, 'cleanup.js')
     const featurePath = getEphemeralVmRuntimeFeatureStorePath(userDataPath)
@@ -519,7 +519,7 @@ describe('ephemeral VM runtime service', () => {
         '  connection: {',
         '    type: "ssh",',
         '    projectRoot: "/workspace/repo",',
-        '    target: { label: "VM", host: "host", port: 22, username: "orca" }',
+        '    target: { label: "VM", host: "host", port: 22, username: "topo" }',
         '  },',
         '  userData: { providerResourceId: "paid-vm" }',
         '}))'
@@ -555,8 +555,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('destroys a provisioned resource when its checkout handshake is incompatible', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startPath = join(repoPath, 'start.js')
     const cleanupPath = join(repoPath, 'cleanup.js')
     writeFileSync(
@@ -595,8 +595,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('persists failed cleanup after an incompatible checkout handshake', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startPath = join(repoPath, 'start.js')
     const cleanupPath = join(repoPath, 'cleanup.js')
     writeFileSync(
@@ -610,7 +610,7 @@ describe('ephemeral VM runtime service', () => {
       )})`
     )
     writeFileSync(cleanupPath, 'process.exit(1)')
-    const recipe: OrcaVmRecipe = {
+    const recipe: TopoVmRecipe = {
       id: 'cloud-sandbox',
       name: 'Cloud Sandbox',
       checkoutMode: 'provisioned-root',
@@ -642,8 +642,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('persists incompatible resources when destroy is disabled', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const startPath = join(repoPath, 'start.js')
     writeFileSync(
       startPath,
@@ -679,8 +679,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('rejects a provisioned root that moves during resume', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const resumePath = join(repoPath, 'resume.js')
     writeFileSync(
       resumePath,
@@ -691,12 +691,12 @@ describe('ephemeral VM runtime service', () => {
         '  connection: {',
         '    type: "ssh",',
         '    projectRoot: "/workspace/moved",',
-        '    target: { label: "VM", host: "host", port: 22, username: "orca" }',
+        '    target: { label: "VM", host: "host", port: 22, username: "topo" }',
         '  }',
         '}))'
       ].join('\n')
     )
-    const recipe: OrcaVmRecipe = {
+    const recipe: TopoVmRecipe = {
       id: 'cloud-sandbox',
       name: 'Cloud Sandbox',
       checkoutMode: 'provisioned-root',
@@ -720,7 +720,7 @@ describe('ephemeral VM runtime service', () => {
         connection: {
           type: 'ssh',
           projectRoot: '/workspace/original',
-          target: { label: 'VM', host: 'host', port: 22, username: 'orca' }
+          target: { label: 'VM', host: 'host', port: 22, username: 'topo' }
         }
       }
     })
@@ -743,8 +743,8 @@ describe('ephemeral VM runtime service', () => {
   })
 
   it('rejects provisioned-root connection-mode drift during resume', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-service-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-service-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-service-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-service-repo-')
     const resumePath = join(repoPath, 'resume.js')
     writeFileSync(
       resumePath,
@@ -753,14 +753,14 @@ describe('ephemeral VM runtime service', () => {
           schemaVersion: 2,
           checkoutMode: 'provisioned-root',
           connection: {
-            type: 'orca-server',
+            type: 'topo-server',
             pairingCode: makePairingCode(),
             projectRoot: '/workspace/original'
           }
         })
       )})`
     )
-    const recipe: OrcaVmRecipe = {
+    const recipe: TopoVmRecipe = {
       id: 'cloud-sandbox',
       name: 'Cloud Sandbox',
       checkoutMode: 'provisioned-root',
@@ -784,7 +784,7 @@ describe('ephemeral VM runtime service', () => {
         connection: {
           type: 'ssh',
           projectRoot: '/workspace/original',
-          target: { label: 'VM', host: 'host', port: 22, username: 'orca' }
+          target: { label: 'VM', host: 'host', port: 22, username: 'topo' }
         }
       }
     })

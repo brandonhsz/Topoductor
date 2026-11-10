@@ -11,19 +11,19 @@ afterEach(() => {
   }
 })
 
-/** Builds a temporary Orca-style project fixture with a compiled CLI entrypoint. */
+/** Builds a temporary Topo-style project fixture with a compiled CLI entrypoint. */
 function makeProjectWithCli(
   content,
   { mode = 0o755, rootPackageType, writeOutPackageJson = true } = {}
 ) {
-  const projectDir = mkdtempSync(path.join(tmpdir(), 'orca-cli-bin-'))
+  const projectDir = mkdtempSync(path.join(tmpdir(), 'topo-cli-bin-'))
   roots.push(projectDir)
   const cliPath = path.join(projectDir, 'out', 'cli', 'index.js')
   const outPackageJsonPath = path.join(projectDir, 'out', 'package.json')
   mkdirSync(path.dirname(cliPath), { recursive: true })
   writeFileSync(
     path.join(projectDir, 'package.json'),
-    JSON.stringify({ bin: { orca: './out/cli/index.js' }, type: rootPackageType }),
+    JSON.stringify({ bin: { topo: './out/cli/index.js' }, type: rootPackageType }),
     'utf8'
   )
   if (writeOutPackageJson) {
@@ -63,7 +63,7 @@ describe('verifyPackageCliBin', () => {
     verifyPackageCliBin({ projectDir, fixPackageJson: true, runHelp: true })
 
     expect(JSON.parse(readFileSync(outPackageJsonPath, 'utf8'))).toEqual({
-      name: 'orca-compiled-output',
+      name: 'topo-compiled-output',
       type: 'commonjs',
       private: true
     })

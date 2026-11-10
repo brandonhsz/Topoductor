@@ -15,7 +15,7 @@ export const AUTOMATION_CAPTURED_HOST_REFUSALS: Record<AutomationCapturedHostIss
   [AUTOMATION_ORPHAN_ISSUES.targetReplaced]:
     'The automation host was removed and re-registered, so this automation must be re-adopted before it can run.',
   [AUTOMATION_ORPHAN_ISSUES.workspaceHostAmbiguous]:
-    'The automation workspace spans more than one host, so Orca cannot tell which one to run it on.',
+    'The automation workspace spans more than one host, so Topo cannot tell which one to run it on.',
   [AUTOMATION_ORPHAN_ISSUES.workspaceOnPairedServer]: AUTOMATION_RUN_FAILURE_COPY.targetUnavailable
 }
 

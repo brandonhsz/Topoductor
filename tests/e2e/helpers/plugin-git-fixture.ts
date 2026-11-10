@@ -39,9 +39,9 @@ export async function commitRepository(
     repository,
     [
       '-c',
-      'user.name=Orca Test',
+      'user.name=Topo Test',
       '-c',
-      'user.email=orca-test@example.invalid',
+      'user.email=topo-test@example.invalid',
       'commit',
       '--quiet',
       '-m',
@@ -70,7 +70,7 @@ export async function configureFixtureGit(
   // fixture repositories are served through the same GIT_SSH_COMMAND shim the unit tests use.
   gitEnvironment.GIT_SSH_COMMAND = `"${process.execPath.replaceAll('\\', '/')}" "${SSH_SHIM.replaceAll('\\', '/')}"`
   gitEnvironment.GIT_SSH_VARIANT = 'ssh'
-  gitEnvironment.ORCA_TEST_SSH_REPOSITORIES = JSON.stringify(
+  gitEnvironment.TOPO_TEST_SSH_REPOSITORIES = JSON.stringify(
     Object.fromEntries(
       repositoryNames.map((name) => [`/${name}.git`, join(repositories, `${name}.git`)])
     )

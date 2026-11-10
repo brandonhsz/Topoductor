@@ -64,7 +64,7 @@ function serverReply(args: RuntimeEnvironmentCallRequest): unknown {
       id: 'rpc',
       ok: true,
       result: results[args.method] ?? { projects: [], setups: [] },
-      _meta: { runtimeId: 'orcad' }
+      _meta: { runtimeId: 'topod' }
     }
   )
 }
@@ -178,7 +178,7 @@ describe('a host that just moved to its managed server', () => {
                 })
               ]
             },
-            _meta: { runtimeId: 'orcad' }
+            _meta: { runtimeId: 'topod' }
           }
         : serverReply(args)
     )
@@ -220,7 +220,7 @@ describe('a host that just moved to its managed server', () => {
               id: 'rpc',
               ok: true,
               result: { repos: [{ ...repo, id: 'repo-a', path: '/root/migrepo' }] },
-              _meta: { runtimeId: 'orcad' }
+              _meta: { runtimeId: 'topod' }
             }
           : serverReply(args)
       )
@@ -390,7 +390,7 @@ describe('a host that just moved to its managed server', () => {
     applySshManagedServerTransition('ssh-overlap-relay', settingUp, managed)
     applySshManagedServerTransition('ssh-overlap-relay', managed, {
       kind: 'relay',
-      reason: 'orcad_unavailable'
+      reason: 'topod_unavailable'
     })
     firstList.reject(new Error('environment catalog unavailable'))
     await vi.waitFor(() => expect(warningLog).toHaveBeenCalled())
@@ -407,7 +407,7 @@ describe('a host that just moved to its managed server', () => {
     applySshManagedServerTransition('ssh-cancel-load', undefined, managed)
     applySshManagedServerTransition('ssh-cancel-load', managed, {
       kind: 'relay',
-      reason: 'orcad_unavailable'
+      reason: 'topod_unavailable'
     })
     pending.resolve([])
     await new Promise((resolve) => setTimeout(resolve, 0))

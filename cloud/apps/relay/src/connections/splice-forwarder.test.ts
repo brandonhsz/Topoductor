@@ -4,7 +4,7 @@ import type { Writable } from 'node:stream'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type WebSocket from 'ws'
 import type { RawData } from 'ws'
-import { RELAY_ADMISSION_BUDGETS } from '@orca-cloud/relay-contract/admission-budgets'
+import { RELAY_ADMISSION_BUDGETS } from '@topo-cloud/relay-contract/admission-budgets'
 import { ProcessQueuedByteBudget, wireSplice } from './splice-forwarder.js'
 
 // SAFETY: ws exports Receiver at runtime; its published types omit this Writable constructor.

@@ -11,7 +11,7 @@ import {
 const roots: string[] = []
 
 async function tempRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-install-stats-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-install-stats-'))
   roots.push(root)
   return root
 }

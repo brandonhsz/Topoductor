@@ -3,7 +3,7 @@ import { PassThrough } from 'node:stream'
 import { setImmediate } from 'node:timers/promises'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { runRecipeCommand } from './ephemeral-vm-recipe-process'
-import { GrowingByteBuffer } from '@orca/process-host/growing-byte-buffer'
+import { GrowingByteBuffer } from '@topo/process-host/growing-byte-buffer'
 
 afterEach(() => {
   vi.restoreAllMocks()

@@ -46,13 +46,13 @@ describe('Branch source results', () => {
   it('gives Jira intent exclusive ownership of Smart results', () => {
     const jiraIssue = {
       id: 'jira-1',
-      key: 'ORCA-123',
+      key: 'TOPO-123',
       siteId: 'site-1',
       title: 'Link Jira'
     } as never
     const rows = buildSmartWorkspaceSourceRows({
       mode: 'smart',
-      value: 'https://company.atlassian.net/browse/ORCA-123',
+      value: 'https://company.atlassian.net/browse/TOPO-123',
       branches: [{ refName: 'origin/main', localBranchName: 'main' }],
       githubItems: [{ repoId: 'repo-a', type: 'issue', number: 1, title: 'GitHub' } as never],
       gitlabItems: [{ repoId: 'repo-a', type: 'issue', number: 2, title: 'GitLab' } as never],
@@ -64,7 +64,7 @@ describe('Branch source results', () => {
       resultLimit: 12
     })
 
-    expect(rows).toEqual([{ kind: 'jira', value: 'jira-site-1-ORCA-123', issue: jiraIssue }])
+    expect(rows).toEqual([{ kind: 'jira', value: 'jira-site-1-TOPO-123', issue: jiraIssue }])
   })
 })
 

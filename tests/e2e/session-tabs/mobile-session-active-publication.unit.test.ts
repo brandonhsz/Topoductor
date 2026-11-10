@@ -1,15 +1,15 @@
-import '../../../src/main/runtime/orca-runtime-tests/runtime-test-module-registration.spec'
+import '../../../src/main/runtime/topo-runtime-tests/runtime-test-module-registration.spec'
 import { withOpenedServeBrowserTab } from '../../../src/main/runtime/browser/headless/serve-browser-tab-layout'
 import { applyPtyBinding } from '../../../src/main/persistence/loading-store/pty-binding-session-update'
 import type { RuntimePtyController } from '../../../src/main/runtime/terminal/lifecycle/runtime-pty-controller-contract'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../../src/main/runtime/topo-runtime'
 import {
   HEADLESS_LEAF_ID,
   TEST_WORKTREE_PATH,
   makeRuntimeStoreWithWorkspaceSession,
   TEST_WORKTREE_ID as WT
-} from '../../../src/main/runtime/orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../../../src/main/runtime/topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import { createRuntimeFixture } from './active-tab-publication.test-fixture'
 import type {
   RuntimeMobileSessionTabsResult,
@@ -18,7 +18,7 @@ import type {
 import { buildMobileSessionTabSnapshots } from '../../../src/renderer/src/runtime/sync-runtime-graph/mobile-session-snapshots'
 import { makeState } from '../../../src/renderer/src/runtime/sync-runtime-graph/testing/sync-runtime-graph-test-harness'
 import { getDefaultWorkspaceSession } from '../../../src/shared/constants'
-import { committingSpawn } from '../../../src/main/runtime/orca-runtime-tests/bind-first-pane.test-fixture'
+import { committingSpawn } from '../../../src/main/runtime/topo-runtime-tests/bind-first-pane.test-fixture'
 import '../../../src/main/runtime/session-tabs/main-session-tab-rows'
 
 const A = 'agent-session:chat-a'
@@ -33,7 +33,7 @@ function createRuntime() {
   return createRuntimeFixture().runtime
 }
 
-async function publish(runtime: OrcaRuntimeService, id: string, activate = true) {
+async function publish(runtime: TopoRuntimeService, id: string, activate = true) {
   await runtime.publishStructuredAgentSessionTab({
     workspaceId: WT,
     sessionId: id.slice('agent-session:'.length),
@@ -105,11 +105,11 @@ function rendererFrame(
   return { ...snapshot, publicationEpoch: 'renderer:active-publication', snapshotVersion: version }
 }
 
-function accept(runtime: OrcaRuntimeService, frame: RuntimeMobileSessionTabsSnapshot) {
+function accept(runtime: TopoRuntimeService, frame: RuntimeMobileSessionTabsSnapshot) {
   runtime.syncWindowGraph(1, { tabs: [], leaves: [], mobileSessionTabs: [frame] })
 }
 
-const list = (runtime: OrcaRuntimeService) => runtime.listMobileSessionTabs(`id:${WT}`)
+const list = (runtime: TopoRuntimeService) => runtime.listMobileSessionTabs(`id:${WT}`)
 function expectSelection(
   snapshot: RuntimeMobileSessionTabsResult | RuntimeMobileSessionTabsSnapshot | undefined,
   id: string | null
@@ -328,7 +328,7 @@ describe('host active-tab publication', () => {
     'retains legacy pending navigation with existing snapshot=%s until passive materialization',
     async (existing) => {
       const { runtimeStore } = makeRuntimeStoreWithWorkspaceSession(getDefaultWorkspaceSession())
-      const runtime = new OrcaRuntimeService(runtimeStore)
+      const runtime = new TopoRuntimeService(runtimeStore)
       runtime.attachWindow(1)
       if (existing) {
         accept(runtime, {
@@ -364,7 +364,7 @@ describe('host active-tab publication', () => {
       activeGroupIdByWorktree: { [WT]: 'saved' },
       tabGroupLayouts: { [WT]: { type: 'leaf', groupId: 'saved' } }
     })
-    const runtime = new OrcaRuntimeService(runtimeStore)
+    const runtime = new TopoRuntimeService(runtimeStore)
     expectSelection(await list(runtime), null)
     runtime.projectStructuredAgentSessionTab({
       workspaceId: WT,
@@ -549,7 +549,7 @@ describe('host active-tab publication', () => {
         'chat-window',
         'sim-window'
       ])
-      const restored = new OrcaRuntimeService(runtimeStore)
+      const restored = new TopoRuntimeService(runtimeStore)
       restored.setPtyController(controller)
       const restoredSelection = await list(restored)
       expect(restoredSelection.activeGroupId).toBe('left')
@@ -570,7 +570,7 @@ describe('host active-tab publication', () => {
         result.tabGroups?.find((group) => group.tabOrder.includes(another.tab.parentTabId))?.id
       )
       expect(result.activeGroupId).toBe('right')
-      const reloaded = new OrcaRuntimeService(runtimeStore)
+      const reloaded = new TopoRuntimeService(runtimeStore)
       reloaded.setPtyController(controller)
       const afterCreateReload = await list(reloaded)
       expect(afterCreateReload.activeGroupId).toBe('right')
@@ -724,7 +724,7 @@ describe('host active-tab publication', () => {
     expect((await list(runtime)).activeTabId).toBe('editor-window')
     await runtime.closeMobileSessionTab(`id:${WT}`, 'editor-window')
     expect((await list(runtime)).activeTabId).toBe(`serve-tab::${HEADLESS_LEAF_ID}`)
-    const restored = new OrcaRuntimeService(runtimeStore)
+    const restored = new TopoRuntimeService(runtimeStore)
     expect((await list(restored)).activeTabId).toBe(`serve-tab::${HEADLESS_LEAF_ID}`)
     expect((await list(restored)).activeGroupId).toBe('terminal')
   })

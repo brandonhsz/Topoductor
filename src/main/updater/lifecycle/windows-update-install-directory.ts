@@ -1,12 +1,12 @@
 import { readdirSync } from 'node:fs'
 import { win32 } from 'node:path'
 
-const UNINSTALLER_NAME = 'Uninstall Orca.exe'
+const UNINSTALLER_NAME = 'Uninstall Topo.exe'
 const INSTALL_DIRECTORIES = new Set(['locales', 'resources'])
 // Exact names for Electron's non-binary top-level files: a broad .txt/.json/.html/.log match would
 // let user documents pass, and the next RMDir /r of InstallLocation would delete them.
 const INSTALL_FILES = new Set([
-  'orca.exe',
+  'topo.exe',
   UNINSTALLER_NAME.toLowerCase(),
   'icudtl.dat',
   'license.electron.txt',
@@ -19,8 +19,8 @@ const INSTALL_FILES = new Set([
 const INSTALL_RUNTIME_BINARY = /\.(?:dll|pak)$/i
 
 // The pinned folder becomes InstallLocation, which later updates and uninstalls wipe with RMDir /r;
-// pin only a folder holding nothing but an installed Orca layout so no unrelated files are ever deleted.
-function isDedicatedOrcaInstallDirectory(directory: string): boolean {
+// pin only a folder holding nothing but an installed Topo layout so no unrelated files are ever deleted.
+function isDedicatedTopoInstallDirectory(directory: string): boolean {
   if (win32.parse(directory).root === directory) {
     return false
   }
@@ -51,7 +51,7 @@ export function resolveWindowsUpdateInstallDirectory(
   }
   const installDirectory = win32.dirname(exePath)
   // spawn quotes a spaced arg as "/D=...", and NSIS keeps the trailing quote in INSTDIR, breaking the update.
-  if (/\s/.test(installDirectory) || !isDedicatedOrcaInstallDirectory(installDirectory)) {
+  if (/\s/.test(installDirectory) || !isDedicatedTopoInstallDirectory(installDirectory)) {
     return undefined
   }
   return installDirectory

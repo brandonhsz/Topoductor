@@ -35,7 +35,7 @@ function git(cwd: string, args: string[]): string {
 }
 
 async function createRepo(): Promise<{ repoPath: string; root: string }> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-prepared-worktree-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-prepared-worktree-'))
   tempRoots.push(root)
   const repoPath = join(root, 'repo')
   execFileSync('git', ['init', '--quiet', repoPath])
@@ -428,7 +428,7 @@ describe('prepared worktree creation with real Git', () => {
       repoPath,
       stalePath,
       'main',
-      'orca-create-preparation:v1:999999999:stale'
+      'topo-create-preparation:v1:999999999:stale'
     )
     let releaseRemoval!: () => void
     const removalGate = new Promise<void>((resolve) => {

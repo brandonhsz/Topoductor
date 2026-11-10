@@ -28,7 +28,7 @@ export type PluginChromeShotResult = {
 const CHROME_TIMEOUT_MS = 10_000
 const MAX_ERRORS = 20
 
-/** `shot --status-bar` / `--window`: captures Orca's own chrome, hidden window included, where
+/** `shot --status-bar` / `--window`: captures Topo's own chrome, hidden window included, where
  *  plugins draw outside their panels (status bar items, for one). */
 export async function shootPluginChrome(
   deps: PluginViewDesktopDeps,
@@ -64,7 +64,7 @@ export async function shootPluginChrome(
         })
       }
       if (!reply.panel) {
-        throw new Error(`Orca did not report where its ${region} is drawn.`)
+        throw new Error(`Topo did not report where its ${region} is drawn.`)
       }
       const image = await capturePluginPanelPng(contents, reply.panel.rect)
       const logged = deps

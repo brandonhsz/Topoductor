@@ -53,15 +53,15 @@ export function chromeShotRegion(ctx: HandlerContext): ChromeRegion | null {
 
 export function formatPluginChromeShot(shot: PluginChromeShotSaved, requested?: string): string {
   return [
-    `Saved ${shot.path} (${shot.width}x${shot.height}, ${shot.theme} theme, Orca's ${shot.region === 'window' ? 'window' : 'status bar'})`,
+    `Saved ${shot.path} (${shot.width}x${shot.height}, ${shot.theme} theme, Topo's ${shot.region === 'window' ? 'window' : 'status bar'})`,
     ...(requested && !shot.themeApplied
-      ? [`  note: ${requested} was not applied (${shot.themeReason ?? 'Orca could not paint it'}).`]
+      ? [`  note: ${requested} was not applied (${shot.themeReason ?? 'Topo could not paint it'}).`]
       : []),
     ...shot.errors.map((error) => `  error: ${error}`)
   ].join('\n')
 }
 
-/** Captures Orca's status bar or whole window on the host and writes the PNG here. */
+/** Captures Topo's status bar or whole window on the host and writes the PNG here. */
 export async function runPluginChromeShot(
   ctx: HandlerContext,
   request: {

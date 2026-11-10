@@ -497,7 +497,7 @@ describe('restored editor owner reparent', () => {
     const listener = (event: Event): void => {
       externalChanges.push((event as CustomEvent).detail)
     }
-    window.addEventListener('orca:editor-external-file-change', listener)
+    window.addEventListener('topo:editor-external-file-change', listener)
     const watcher = createExternalWatchEventHandler((path, owner) =>
       path === target.worktreePath && owner === null ? target : undefined
     )
@@ -536,7 +536,7 @@ describe('restored editor owner reparent', () => {
     ).toBe('renamed')
 
     watcher.dispose()
-    window.removeEventListener('orca:editor-external-file-change', listener)
+    window.removeEventListener('topo:editor-external-file-change', listener)
     vi.useRealTimers()
   })
 })

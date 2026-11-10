@@ -38,7 +38,7 @@ describe('detectRemoteHostPlatform', () => {
   it('falls back to PowerShell detection for Windows remotes', async () => {
     execCommandMock
       .mockRejectedValueOnce(new Error('uname unavailable'))
-      .mockResolvedValueOnce('__ORCA_REMOTE_PLATFORM__ Windows AMD64\r\n')
+      .mockResolvedValueOnce('__TOPO_REMOTE_PLATFORM__ Windows AMD64\r\n')
 
     await expect(detectRemoteHostPlatform(conn)).resolves.toMatchObject({
       relayPlatform: 'win32-x64',
@@ -54,7 +54,7 @@ describe('detectRemoteHostPlatform', () => {
     )
     const command = execCommandMock.mock.calls[1]?.[1] ?? ''
     expect(decodePowerShellCommand(command)).toContain(
-      'Write-Output ("`n__ORCA_REMOTE_PLATFORM__ Windows " + $arch)'
+      'Write-Output ("`n__TOPO_REMOTE_PLATFORM__ Windows " + $arch)'
     )
   })
 
@@ -63,7 +63,7 @@ describe('detectRemoteHostPlatform', () => {
       .mockRejectedValueOnce(new Error('uname unavailable'))
       .mockResolvedValueOnce(
         'Linux x86_64\r\nWindows AMD64\r\n#< CLIXML\r\n' +
-          '__ORCA_REMOTE_PLATFORM__ Windows ARM64\r\n'
+          '__TOPO_REMOTE_PLATFORM__ Windows ARM64\r\n'
       )
 
     await expect(detectRemoteHostPlatform(conn)).resolves.toMatchObject({
@@ -76,8 +76,8 @@ describe('detectRemoteHostPlatform', () => {
 
   it('ignores a marker concatenated to unterminated startup noise', async () => {
     execCommandMock.mockResolvedValueOnce(
-      'startup noise__ORCA_REMOTE_PLATFORM__ Linux x86_64\n' +
-        '__ORCA_REMOTE_PLATFORM__ Linux arm64\n'
+      'startup noise__TOPO_REMOTE_PLATFORM__ Linux x86_64\n' +
+        '__TOPO_REMOTE_PLATFORM__ Linux arm64\n'
     )
 
     await expect(detectRemoteHostPlatform(conn)).resolves.toMatchObject({
@@ -99,7 +99,7 @@ describe('detectRemoteHostPlatform failure reporting', () => {
   it('still detects Windows when the uname probe hits the session limit', async () => {
     execCommandMock
       .mockRejectedValueOnce(maxSessionsError())
-      .mockResolvedValueOnce('__ORCA_REMOTE_PLATFORM__ Windows AMD64\r\n')
+      .mockResolvedValueOnce('__TOPO_REMOTE_PLATFORM__ Windows AMD64\r\n')
 
     await expect(detectRemoteHostPlatform(conn)).resolves.toMatchObject({
       relayPlatform: 'win32-x64'
@@ -125,7 +125,7 @@ describe('detectRemoteHostPlatform failure reporting', () => {
   it('does not call an unmappable uname unsupported when PowerShell was refused', async () => {
     // Cygwin sh on a win32-x64 host: only PowerShell can settle it, and it never ran.
     execCommandMock
-      .mockResolvedValueOnce('__ORCA_REMOTE_PLATFORM__ CYGWIN_NT-10.0 x86_64\n')
+      .mockResolvedValueOnce('__TOPO_REMOTE_PLATFORM__ CYGWIN_NT-10.0 x86_64\n')
       .mockRejectedValueOnce(maxSessionsError())
 
     const error = await detectRemoteHostPlatform(conn).catch((err: unknown) => err)
@@ -139,7 +139,7 @@ describe('detectRemoteHostPlatform failure reporting', () => {
   it('does not call an unmappable uname unsupported when the PowerShell probe timed out', async () => {
     // Prefer typed exec timeout evidence; matching wording could misclassify unrelated errors.
     execCommandMock
-      .mockResolvedValueOnce('__ORCA_REMOTE_PLATFORM__ CYGWIN_NT-10.0 x86_64\n')
+      .mockResolvedValueOnce('__TOPO_REMOTE_PLATFORM__ CYGWIN_NT-10.0 x86_64\n')
       .mockRejectedValueOnce(
         Object.assign(new Error('Command "pwsh" timed out after 30s'), {
           code: SSH_EXEC_TIMEOUT_CODE
@@ -155,7 +155,7 @@ describe('detectRemoteHostPlatform failure reporting', () => {
 
   it('does not read a look-alike timeout message as a timed-out channel', async () => {
     execCommandMock
-      .mockResolvedValueOnce('__ORCA_REMOTE_PLATFORM__ FreeBSD x86_64\n')
+      .mockResolvedValueOnce('__TOPO_REMOTE_PLATFORM__ FreeBSD x86_64\n')
       .mockRejectedValueOnce(new Error('the agent it launched timed out after 30s'))
 
     await expect(detectRemoteHostPlatform(conn)).resolves.toBeNull()
@@ -163,8 +163,8 @@ describe('detectRemoteHostPlatform failure reporting', () => {
 
   it('falls through to PowerShell for a Cygwin uname it cannot map', async () => {
     execCommandMock
-      .mockResolvedValueOnce('__ORCA_REMOTE_PLATFORM__ CYGWIN_NT-10.0 x86_64\n')
-      .mockResolvedValueOnce('__ORCA_REMOTE_PLATFORM__ Windows AMD64\r\n')
+      .mockResolvedValueOnce('__TOPO_REMOTE_PLATFORM__ CYGWIN_NT-10.0 x86_64\n')
+      .mockResolvedValueOnce('__TOPO_REMOTE_PLATFORM__ Windows AMD64\r\n')
 
     await expect(detectRemoteHostPlatform(conn)).resolves.toMatchObject({
       relayPlatform: 'win32-x64'
@@ -176,10 +176,10 @@ describe('remoteHostPlatformFromUnameProbe', () => {
   it('reads only marker-backed platform lines, past other output folded into the same exec', () => {
     expect(
       remoteHostPlatformFromUnameProbe(
-        '5.15.167.4-microsoft-standard-WSL2\n/home/u\n\n__ORCA_REMOTE_PLATFORM__ Linux aarch64\n'
+        '5.15.167.4-microsoft-standard-WSL2\n/home/u\n\n__TOPO_REMOTE_PLATFORM__ Linux aarch64\n'
       )
     ).toMatchObject({ os: 'linux', arch: 'arm64' })
     expect(remoteHostPlatformFromUnameProbe('Linux x86_64\n')).toBeNull()
-    expect(remoteHostPlatformFromUnameProbe('\n__ORCA_REMOTE_PLATFORM__ Linux sparc\n')).toBeNull()
+    expect(remoteHostPlatformFromUnameProbe('\n__TOPO_REMOTE_PLATFORM__ Linux sparc\n')).toBeNull()
   })
 })

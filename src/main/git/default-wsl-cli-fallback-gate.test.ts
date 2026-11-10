@@ -34,7 +34,7 @@ import {
   WslDistroStoppedError,
   WslDistroUnverifiableError
 } from '../wsl/filesystem/wsl-unc-access-gate'
-import { starOrca } from '../github/client/fetch/orca-star'
+import { starTopo } from '../github/client/fetch/topo-star'
 
 const originalPlatform = process.platform
 
@@ -113,12 +113,12 @@ describe.each(CLIS)('$cli default-distro fallback', ({ cli, run }) => {
   })
 })
 
-describe('starring Orca, which is always a click', () => {
+describe('starring Topo, which is always a click', () => {
   it('may start the stopped default distro its gh lives in', async () => {
     readWslDistroRunningStateMock.mockResolvedValue('stopped')
     hostMissingThenWslAnswers('gh')
 
-    await expect(starOrca()).resolves.toBe(true)
+    await expect(starTopo()).resolves.toBe(true)
     expect(spawnedWsl()).toBe(true)
   })
 })

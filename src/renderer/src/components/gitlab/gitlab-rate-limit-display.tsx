@@ -187,7 +187,7 @@ export function GitLabRateLimitPanel({
           <p className="text-xs text-muted-foreground">
             {t(
               'auto.components.gitlab.gitlab.rate.limit.display.2f9c16d6c3',
-              'Orca uses REST through the GitLab CLI.'
+              'Topo uses REST through the GitLab CLI.'
             )}
           </p>
           <ProviderHostScopeControl

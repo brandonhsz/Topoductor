@@ -50,12 +50,12 @@ afterEach(() => {
   }
 
   function journalRefusal(
-    reason: 'journalCorrupt' | 'journalUnavailable' | 'journalWrittenByNewerOrca'
+    reason: 'journalCorrupt' | 'journalUnavailable' | 'journalWrittenByNewerTopo'
   ) {
     return { code: 'agent_session_journal_unreadable', details: { reason } } as const
   }
 
-  it('says a damaged history cannot load in one line, without claiming Orca keeps trying', () => {
+  it('says a damaged history cannot load in one line, without claiming Topo keeps trying', () => {
     mocks.status = 'error'
     mocks.readRefusal = journalRefusal('journalCorrupt')
     mocks.messages = []
@@ -77,7 +77,7 @@ afterEach(() => {
 
     renderPane()
 
-    expect(screen.getAllByText("Orca couldn't open this chat's history right now.")).toHaveLength(1)
+    expect(screen.getAllByText("Topo couldn't open this chat's history right now.")).toHaveLength(1)
     expect(screen.queryByText('Could not load conversation')).toBeNull()
     expect(screen.queryByText(/keeps trying/)).toBeNull()
     expect(screen.queryByText(/Try again/)).toBeNull()
@@ -85,15 +85,15 @@ afterEach(() => {
     expect(mocks.composerProps).not.toBeNull()
   })
 
-  it('says once that a newer Orca saved the chat and only an update opens it, with no composer', () => {
+  it('says once that a newer Topo saved the chat and only an update opens it, with no composer', () => {
     mocks.status = 'error'
-    mocks.readRefusal = journalRefusal('journalWrittenByNewerOrca')
+    mocks.readRefusal = journalRefusal('journalWrittenByNewerTopo')
     mocks.messages = []
 
     renderPane()
 
     expect(
-      screen.getAllByText('This chat was saved by a newer Orca. Update Orca to open it.')
+      screen.getAllByText('This chat was saved by a newer Topo. Update Topo to open it.')
     ).toHaveLength(1)
     expect(screen.queryByText('Could not load conversation')).toBeNull()
     expect(screen.queryByText(/keeps trying/)).toBeNull()

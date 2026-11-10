@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -17,7 +17,7 @@ describe('federation attach-start prompt budget', () => {
 
   it('rejects an 8 MiB Task spec before attachment, worktree, terminal, or prompt effects', async () => {
     db = new OrchestrationDb(':memory:')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     const createAttachment = vi.spyOn(db, 'createRemoteDispatchAttachment')
     const createWorktree = vi.spyOn(runtime, 'createManagedWorktree')

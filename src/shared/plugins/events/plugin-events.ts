@@ -15,7 +15,7 @@ import {
  * own, remotes, credentials) can leak through the event stream.
  */
 
-/** Plugins see `main`, not the `refs/heads/main` Orca tracks internally. */
+/** Plugins see `main`, not the `refs/heads/main` Topo tracks internally. */
 export function shortPluginBranchName(branch: string): string {
   return branch.replace(/^refs\/heads\//, '')
 }
@@ -47,7 +47,7 @@ export const agentStatusChangedPayloadSchema = z.object({
   workspaceId: z.string().min(1).max(2048).nullable(),
   paneKey: z.string().min(1).max(2048),
   /** The pane's terminal, as `workspace.readContext` and `terminal.sendText` name it; absent when
-   *  Orca cannot tie the pane to a terminal it lists. */
+   *  Topo cannot tie the pane to a terminal it lists. */
   terminalId: z.string().min(1).max(PLUGIN_TERMINAL_ID_MAX_LENGTH).optional(),
   /** The pane's name, or its terminal title. */
   title: z.string().max(PLUGIN_WORKSPACE_LABEL_MAX_LENGTH).optional(),
@@ -85,7 +85,7 @@ export const PLUGIN_EVENT_SUMMARIES: Record<PluginEventName, string> = {
   'workspace.created': 'A worktree workspace was created.',
   'workspace.removed': 'A worktree workspace was removed.',
   'agent.status.changed':
-    'An agent in a terminal pane changed status; `workspaceId` is null when Orca cannot tie the pane to a workspace, and `terminalId` names its terminal when Orca lists it.',
+    'An agent in a terminal pane changed status; `workspaceId` is null when Topo cannot tie the pane to a workspace, and `terminalId` names its terminal when Topo lists it.',
   'workspace.changed':
     'The focused workspace changed, or its terminals were opened, closed or renamed; `context` is what `workspace.readContext` now answers. Each new subscriber first gets the current context.'
 }

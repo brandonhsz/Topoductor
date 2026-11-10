@@ -234,7 +234,7 @@ export function reclaimExitedOwner(path: string): void {
     }
     if (owner.token !== token || !ownerExited(owner, join(path, entry))) {
       throw new ProfileStateAccessError(
-        `Profile state is in use or its owner is unverifiable: ${path}. Stop Orca and orcad on every host using this profile, then retry. If this remains, verify PID ${owner.pid} on ${owner.host} has exited before removing its owner entry ${join(path, entry)}.`
+        `Profile state is in use or its owner is unverifiable: ${path}. Stop Topo and topod on every host using this profile, then retry. If this remains, verify PID ${owner.pid} on ${owner.host} has exited before removing its owner entry ${join(path, entry)}.`
       )
     }
     removeOwnerEntry(join(path, entry))

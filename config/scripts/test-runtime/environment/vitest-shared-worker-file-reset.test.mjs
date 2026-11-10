@@ -1,7 +1,7 @@
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { runProcess, runProcessSync } from '@orca/process-host'
+import { runProcess, runProcessSync } from '@topo/process-host'
 import { expect, it } from 'vitest'
 import { resolvePinnedBunExecutable } from '../../tool-invocation/pinned-bun-executable.mjs'
 
@@ -61,9 +61,9 @@ it('restores environment stubs and finishes background imports before the next s
       '02-stub-env.spec.mjs',
       `import { expect, it, vi } from 'vitest'
        it('removes an environment override after a previous file replaced env', () => {
-         vi.stubEnv('ORCA_SHARED_WORKER_OVERRIDE', 'asia-east2')
+         vi.stubEnv('TOPO_SHARED_WORKER_OVERRIDE', 'asia-east2')
          vi.unstubAllEnvs()
-         expect(process.env.ORCA_SHARED_WORKER_OVERRIDE).toBeUndefined()
+         expect(process.env.TOPO_SHARED_WORKER_OVERRIDE).toBeUndefined()
        })`
     )
     const result = await runProcess({
@@ -76,7 +76,7 @@ it('restores environment stubs and finishes background imports before the next s
         join(directory, 'vitest.config.mjs')
       ],
       cwd: root,
-      env: { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' },
+      env: { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' },
       timeoutMs: 30_000
     })
     expect(result.code, result.stdout + result.stderr).toBe(0)

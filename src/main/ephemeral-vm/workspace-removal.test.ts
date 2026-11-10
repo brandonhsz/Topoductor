@@ -56,7 +56,7 @@ function seed(
       connection: {
         type: 'ssh',
         projectRoot: mode === 'provisioned-root' ? '/workspace/repo-task' : '/workspace/repo',
-        target: { host: 'host', label: 'VM', port: 22, username: 'orca' }
+        target: { host: 'host', label: 'VM', port: 22, username: 'topo' }
       }
     },
     ...overrides
@@ -87,7 +87,7 @@ function makePorts(
 }
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-recipe-remove-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-recipe-remove-'))
 })
 afterEach(() => rmSync(root, { recursive: true, force: true }))
 

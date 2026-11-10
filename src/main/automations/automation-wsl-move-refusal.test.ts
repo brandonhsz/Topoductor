@@ -91,8 +91,8 @@ async function evaluateAt(store: Store, automationId: string, when: string): Pro
 
 let fenceDir: string
 beforeEach(() => {
-  testState.dir = mkdtempSync(join(tmpdir(), 'orca-automation-wsl-move-'))
-  fenceDir = mkdtempSync(join(tmpdir(), 'orca-automation-wsl-fence-'))
+  testState.dir = mkdtempSync(join(tmpdir(), 'topo-automation-wsl-move-'))
+  fenceDir = mkdtempSync(join(tmpdir(), 'topo-automation-wsl-fence-'))
   loadWslMoveFence(fenceDir)
   runAutomationPrecheckMock.mockReset()
   vi.useFakeTimers()

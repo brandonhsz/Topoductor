@@ -1,5 +1,5 @@
 import type { ElectronApplication, Page, TestInfo } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   ensureTerminalVisible,
   getActiveWorktreeId,
@@ -19,17 +19,17 @@ import {
 test.describe.configure({ mode: 'serial' })
 
 test('mobile subscribe mounts overlay; collapse → chip; Take back dismisses', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage)
-  const ptyId = await waitForActivePanePtyId(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage)
+  const ptyId = await waitForActivePanePtyId(topoPage)
   await installRestoreTerminalFitRecorder(electronApp)
 
-  const overlay = orcaPage.locator('.mobile-driver-banner')
+  const overlay = topoPage.locator('.mobile-driver-banner')
   await expect(overlay).toHaveCount(0)
 
   // Send the auto-subscribe fit/driver events that main emits to mount the loud overlay.
@@ -37,7 +37,7 @@ test('mobile subscribe mounts overlay; collapse → chip; Take back dismisses', 
 
   await expect(overlay).toBeVisible({ timeout: 15_000 })
   await expect(overlay).toContainText(/your phone is in control/i)
-  await expectExpandedOverlayLeavesPaneReadable(orcaPage, ptyId)
+  await expectExpandedOverlayLeavesPaneReadable(topoPage, ptyId)
 
   const takeBackThisTerminal = overlay.getByRole('button', { name: /^take back$/i })
   const takeBackAllTerminals = overlay.getByRole('button', { name: /^take back all$/i })
@@ -46,20 +46,20 @@ test('mobile subscribe mounts overlay; collapse → chip; Take back dismisses', 
   await expect(takeBackAllTerminals).toBeVisible()
   await expect(collapse).toBeVisible()
 
-  await captureAttachment(orcaPage, testInfo, 'overlay-loud.png')
+  await captureAttachment(topoPage, testInfo, 'overlay-loud.png')
 
   // Minimize keeps the lock while showing a compact take-back chip over live output.
   await collapse.click()
   await expect(overlay).toContainText(/phone driving/i)
   await expect(overlay.getByRole('button', { name: /take back/i })).toBeVisible()
   await expect(overlay).not.toContainText(/your phone is in control/i)
-  await expectChipIsCompactInPane(orcaPage, ptyId)
+  await expectChipIsCompactInPane(topoPage, ptyId)
 
-  await captureAttachment(orcaPage, testInfo, 'overlay-collapsed.png')
+  await captureAttachment(topoPage, testInfo, 'overlay-collapsed.png')
 
   await overlay.getByRole('button', { name: /phone driving/i }).click()
   await expect(overlay).toContainText(/your phone is in control/i)
-  await expectExpandedOverlayLeavesPaneReadable(orcaPage, ptyId)
+  await expectExpandedOverlayLeavesPaneReadable(topoPage, ptyId)
 
   await collapse.click()
   await expect(overlay).not.toContainText(/your phone is in control/i)
@@ -72,17 +72,17 @@ test('mobile subscribe mounts overlay; collapse → chip; Take back dismisses', 
 })
 
 test('held phone-fit state mounts restore overlay without collapse', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage)
-  const ptyId = await waitForActivePanePtyId(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage)
+  const ptyId = await waitForActivePanePtyId(topoPage)
   await installRestoreTerminalFitRecorder(electronApp)
 
-  const overlay = orcaPage.locator('.mobile-driver-banner')
+  const overlay = topoPage.locator('.mobile-driver-banner')
   await expect(overlay).toHaveCount(0)
 
   // After disconnect, idle driver plus held phone fit stays loud because no mobile output remains to watch.
@@ -94,9 +94,9 @@ test('held phone-fit state mounts restore overlay without collapse', async ({
   await expect(overlay.getByRole('button', { name: /^restore all$/i })).toBeVisible()
   await expect(overlay.getByRole('button', { name: /^minimize$/i })).toHaveCount(0)
   await expect(overlay.getByRole('button', { name: /take back/i })).toHaveCount(0)
-  await expectExpandedOverlayLeavesPaneReadable(orcaPage, ptyId)
+  await expectExpandedOverlayLeavesPaneReadable(topoPage, ptyId)
 
-  await captureAttachment(orcaPage, testInfo, 'overlay-held-fit.png')
+  await captureAttachment(topoPage, testInfo, 'overlay-held-fit.png')
 
   await overlay.getByRole('button', { name: /^restore$/i }).click()
   await expectRestoreTerminalFitCalls(electronApp, [ptyId])
@@ -104,30 +104,30 @@ test('held phone-fit state mounts restore overlay without collapse', async ({
   await expect(overlay).toBeHidden({ timeout: 15_000 })
 })
 
-test('restore refits the active restored pane', async ({ orcaPage, electronApp }) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage)
-  const ptyId = await waitForActivePanePtyId(orcaPage)
+test('restore refits the active restored pane', async ({ topoPage, electronApp }) => {
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage)
+  const ptyId = await waitForActivePanePtyId(topoPage)
   await installRestoreTerminalFitAutoRestoreRecorder(electronApp)
 
   await sendHeldPhoneFitIpc(electronApp, { ptyId, cols: 1, rows: 20 })
-  await expect(orcaPage.locator('.mobile-driver-banner')).toHaveCount(1, { timeout: 15_000 })
+  await expect(topoPage.locator('.mobile-driver-banner')).toHaveCount(1, { timeout: 15_000 })
   await expect
-    .poll(() => getPaneTerminalCols(orcaPage, ptyId), {
+    .poll(() => getPaneTerminalCols(topoPage, ptyId), {
       message: 'test harness should hold the active pane in the bad narrow state'
     })
     .toBeLessThanOrEqual(2)
 
-  await orcaPage
+  await topoPage
     .locator(`[data-pty-id="${ptyId}"] .mobile-driver-banner`)
     .getByRole('button', { name: /^restore$/i })
     .click()
 
   await expectRestoreTerminalFitCalls(electronApp, [ptyId])
   await expect
-    .poll(() => getPaneTerminalCols(orcaPage, ptyId), {
+    .poll(() => getPaneTerminalCols(topoPage, ptyId), {
       timeout: 5_000,
       message: 'Restore should refit the active restored pane'
     })
@@ -135,16 +135,16 @@ test('restore refits the active restored pane', async ({ orcaPage, electronApp }
 })
 
 test('restore all refits non-focused restored terminal panes', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage)
-  await splitActiveTerminalPane(orcaPage, 'vertical')
-  const ptyIds = await waitForVisiblePanePtyIds(orcaPage, 2)
-  const focusPtyId = await waitForActivePanePtyId(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage)
+  await splitActiveTerminalPane(topoPage, 'vertical')
+  const ptyIds = await waitForVisiblePanePtyIds(topoPage, 2)
+  const focusPtyId = await waitForActivePanePtyId(topoPage)
   const inactivePtyId = ptyIds.find((ptyId) => ptyId !== focusPtyId)
   if (!inactivePtyId || !focusPtyId) {
     throw new Error('Expected two visible terminal panes with PTY bindings')
@@ -153,23 +153,23 @@ test('restore all refits non-focused restored terminal panes', async ({
 
   await sendHeldPhoneFitIpc(electronApp, { ptyId: inactivePtyId, cols: 45, rows: 20 })
   await sendHeldPhoneFitIpc(electronApp, { ptyId: focusPtyId, cols: 45, rows: 20 })
-  await expect(orcaPage.locator('.mobile-driver-banner')).toHaveCount(2, { timeout: 15_000 })
+  await expect(topoPage.locator('.mobile-driver-banner')).toHaveCount(2, { timeout: 15_000 })
 
-  await forcePaneToOneColumn(orcaPage, inactivePtyId)
+  await forcePaneToOneColumn(topoPage, inactivePtyId)
   await expect
-    .poll(() => getPaneTerminalCols(orcaPage, inactivePtyId), {
+    .poll(() => getPaneTerminalCols(topoPage, inactivePtyId), {
       message: 'test harness should force the non-focused pane into the bad narrow state'
     })
     .toBeLessThanOrEqual(2)
 
-  await orcaPage
+  await topoPage
     .locator(`[data-pty-id="${focusPtyId}"] .mobile-driver-banner`)
     .getByRole('button', { name: /^restore all$/i })
     .click()
 
   await expectRestoreTerminalFitCallSet(electronApp, [inactivePtyId, focusPtyId])
   await expect
-    .poll(() => getPaneTerminalCols(orcaPage, inactivePtyId), {
+    .poll(() => getPaneTerminalCols(topoPage, inactivePtyId), {
       timeout: 5_000,
       message: 'Restore all should refit the non-focused restored pane'
     })
@@ -177,12 +177,12 @@ test('restore all refits non-focused restored terminal panes', async ({
 })
 
 test('restore all recovers a hidden workspace held at narrow terminal geometry', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }) => {
-  await waitForSessionReady(orcaPage)
-  const firstWorktreeId = await waitForActiveWorktree(orcaPage)
-  const secondWorktreeId = (await getAllWorktreeIds(orcaPage)).find(
+  await waitForSessionReady(topoPage)
+  const firstWorktreeId = await waitForActiveWorktree(topoPage)
+  const secondWorktreeId = (await getAllWorktreeIds(topoPage)).find(
     (worktreeId) => worktreeId !== firstWorktreeId
   )
   test.skip(!secondWorktreeId, 'hidden-workspace restore repro needs the seeded secondary worktree')
@@ -190,51 +190,51 @@ test('restore all recovers a hidden workspace held at narrow terminal geometry',
     return
   }
 
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage)
-  const hiddenWorkspacePtyId = await waitForActivePanePtyId(orcaPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage)
+  const hiddenWorkspacePtyId = await waitForActivePanePtyId(topoPage)
   await sendHeldPhoneFitIpc(electronApp, { ptyId: hiddenWorkspacePtyId, cols: 45, rows: 20 })
-  await expect(orcaPage.locator('.mobile-driver-banner')).toHaveCount(1, { timeout: 15_000 })
+  await expect(topoPage.locator('.mobile-driver-banner')).toHaveCount(1, { timeout: 15_000 })
 
-  await forcePaneToOneColumnAndSwitchWorktree(orcaPage, hiddenWorkspacePtyId, secondWorktreeId)
+  await forcePaneToOneColumnAndSwitchWorktree(topoPage, hiddenWorkspacePtyId, secondWorktreeId)
   await expect
-    .poll(() => getActiveWorktreeId(orcaPage), {
+    .poll(() => getActiveWorktreeId(topoPage), {
       timeout: 5_000,
       message: 'second worktree should become active before restore-all'
     })
     .toBe(secondWorktreeId)
   await expect
-    .poll(() => getPaneTerminalCols(orcaPage, hiddenWorkspacePtyId), {
+    .poll(() => getPaneTerminalCols(topoPage, hiddenWorkspacePtyId), {
       message: 'test harness should hold workspace 1 in the bad narrow state'
     })
     .toBeLessThanOrEqual(2)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage)
-  const activeWorkspacePtyId = await waitForActivePanePtyId(orcaPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage)
+  const activeWorkspacePtyId = await waitForActivePanePtyId(topoPage)
   await installRestoreTerminalFitAutoRestoreRecorder(electronApp)
   await sendHeldPhoneFitIpc(electronApp, { ptyId: activeWorkspacePtyId, cols: 45, rows: 20 })
   await expect(
-    orcaPage.locator(`[data-pty-id="${activeWorkspacePtyId}"] .mobile-driver-banner`)
+    topoPage.locator(`[data-pty-id="${activeWorkspacePtyId}"] .mobile-driver-banner`)
   ).toBeVisible({ timeout: 15_000 })
 
-  await orcaPage
+  await topoPage
     .locator(`[data-pty-id="${activeWorkspacePtyId}"] .mobile-driver-banner`)
     .getByRole('button', { name: /^restore all$/i })
     .click()
 
   await expectRestoreTerminalFitCallSet(electronApp, [hiddenWorkspacePtyId, activeWorkspacePtyId])
 
-  await switchToWorktree(orcaPage, firstWorktreeId)
+  await switchToWorktree(topoPage, firstWorktreeId)
   await expect
-    .poll(() => getActiveWorktreeId(orcaPage), {
+    .poll(() => getActiveWorktreeId(topoPage), {
       timeout: 5_000,
       message: 'first worktree should become active after restore-all'
     })
     .toBe(firstWorktreeId)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage)
   await expect
-    .poll(() => getPaneTerminalCols(orcaPage, hiddenWorkspacePtyId), {
+    .poll(() => getPaneTerminalCols(topoPage, hiddenWorkspacePtyId), {
       timeout: 5_000,
       message: 'Restore all should refit the hidden workspace when it becomes visible'
     })

@@ -15,7 +15,7 @@ export function readMetadata(userDataPath: string): RuntimeMetadata {
     if (!metadata || !findTransport(metadata, 'unix', 'named-pipe') || !metadata.authToken) {
       throw new RuntimeClientError(
         'runtime_unavailable',
-        `Orca runtime metadata is incomplete at ${metadataPath}`
+        `Topo runtime metadata is incomplete at ${metadataPath}`
       )
     }
     return metadata
@@ -25,7 +25,7 @@ export function readMetadata(userDataPath: string): RuntimeMetadata {
     }
     throw new RuntimeClientError(
       'runtime_unavailable',
-      `Could not read Orca runtime metadata at ${metadataPath}. Start the Orca app first.`
+      `Could not read Topo runtime metadata at ${metadataPath}. Start the Topo app first.`
     )
   }
 }
@@ -43,8 +43,8 @@ export function getDefaultUserDataPath(
   platform: NodeJS.Platform = process.platform,
   homeDir = homedir()
 ): string {
-  if (process.env.ORCA_USER_DATA_PATH) {
-    return process.env.ORCA_USER_DATA_PATH
+  if (process.env.TOPO_USER_DATA_PATH) {
+    return process.env.TOPO_USER_DATA_PATH
   }
   return getPlatformUserDataPath(platform, homeDir)
 }
@@ -55,18 +55,18 @@ export function getPlatformUserDataPath(
   homeDir = homedir()
 ): string {
   if (platform === 'darwin') {
-    return join(homeDir, 'Library', 'Application Support', 'orca')
+    return join(homeDir, 'Library', 'Application Support', 'topo')
   }
   if (platform === 'win32') {
     const appData = process.env.APPDATA
     if (!appData) {
       throw new RuntimeClientError(
         'runtime_unavailable',
-        'APPDATA is not set, so the Orca runtime metadata path cannot be resolved.'
+        'APPDATA is not set, so the Topo runtime metadata path cannot be resolved.'
       )
     }
-    return join(appData, 'orca')
+    return join(appData, 'topo')
   }
   // Match Electron’s packaged userData path.
-  return join(process.env.XDG_CONFIG_HOME || join(homeDir, '.config'), 'orca')
+  return join(process.env.XDG_CONFIG_HOME || join(homeDir, '.config'), 'topo')
 }

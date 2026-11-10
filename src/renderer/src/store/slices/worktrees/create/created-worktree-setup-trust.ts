@@ -70,7 +70,7 @@ function reviewCreatedWorktreeSetup(
       toast.warning(
         translate(
           'worktree.setupTrust.hostUnsupported',
-          'Approved. Update Orca on the workspace host to run setup for an existing workspace.'
+          'Approved. Update Topo on the workspace host to run setup for an existing workspace.'
         )
       )
     }
@@ -89,11 +89,11 @@ function showSetupSkippedToast(
     reason === 'changed-again'
       ? translate(
           'worktree.setupTrust.changedAgain',
-          "Setup didn't run: this workspace's orca.yaml changed again since you reviewed it."
+          "Setup didn't run: this workspace's topo.yaml changed again since you reviewed it."
         )
       : translate(
           'worktree.setupTrust.createdBranchSkipped',
-          "Setup didn't run: this workspace's branch has different orca.yaml setup commands than the ones you approved."
+          "Setup didn't run: this workspace's branch has different topo.yaml setup commands than the ones you approved."
         ),
     {
       duration: SETUP_SKIPPED_TOAST_MS,

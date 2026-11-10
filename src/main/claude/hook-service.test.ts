@@ -123,7 +123,7 @@ function createFakeSftp(): { sftp: SFTPWrapper; fs: FakeFs } {
 
 describe('ClaudeHookService.install', () => {
   it('installs managed hooks into Claude settings and preserves user Bedrock settings', () => {
-    const tmpHome = mkdtempSync(join(tmpdir(), 'orca-claude-hooks-'))
+    const tmpHome = mkdtempSync(join(tmpdir(), 'topo-claude-hooks-'))
     vi.stubEnv('HOME', tmpHome)
     vi.stubEnv('USERPROFILE', tmpHome)
     try {
@@ -148,7 +148,7 @@ describe('ClaudeHookService.install', () => {
                 hooks: [
                   {
                     type: 'command',
-                    command: '/Users/old/.orca/agent-hooks/claude-hook.sh'
+                    command: '/Users/old/.topo/agent-hooks/claude-hook.sh'
                   }
                 ]
               }
@@ -188,7 +188,7 @@ describe('ClaudeHookService.install', () => {
       ).toBe(true)
       expect(
         legacyHooks.some((hook: TestHook) =>
-          hook.command.includes('/Users/old/.orca/agent-hooks/claude-hook.sh')
+          hook.command.includes('/Users/old/.topo/agent-hooks/claude-hook.sh')
         )
       ).toBe(false)
       expect(hasManagedCommand(legacy.hooks.StopFailure[0].hooks[0], isClaudeManagedCommand)).toBe(
@@ -197,7 +197,7 @@ describe('ClaudeHookService.install', () => {
       const managedScript = readFileSync(
         join(
           tmpHome,
-          '.orca',
+          '.topo',
           'agent-hooks',
           process.platform === 'win32' ? 'claude-hook-impl.cmd' : CLAUDE_SCRIPT_FILE_NAME
         ),
@@ -208,7 +208,7 @@ describe('ClaudeHookService.install', () => {
       expect(managedScript).toMatch(
         process.platform === 'win32'
           ? /^@echo off\r\nsetlocal\r\necho \{\}\r\n/
-          : /^#!\/bin\/sh\norca_hook_printed=\n[\s\S]*\ntrap orca_hook_finish EXIT\n/
+          : /^#!\/bin\/sh\ntopo_hook_printed=\n[\s\S]*\ntrap topo_hook_finish EXIT\n/
       )
     } finally {
       vi.unstubAllEnvs()
@@ -217,7 +217,7 @@ describe('ClaudeHookService.install', () => {
   })
 
   it('writes only the events an old resolved Claude knows and reports that as installed', () => {
-    const tmpHome = mkdtempSync(join(tmpdir(), 'orca-claude-old-version-'))
+    const tmpHome = mkdtempSync(join(tmpdir(), 'topo-claude-old-version-'))
     vi.stubEnv('HOME', tmpHome)
     vi.stubEnv('USERPROFILE', tmpHome)
     try {
@@ -236,8 +236,8 @@ describe('ClaudeHookService.install', () => {
     }
   })
 
-  it('keeps newer Orca events and reports installed when a later probe cannot resolve the version', () => {
-    const tmpHome = mkdtempSync(join(tmpdir(), 'orca-claude-unknown-version-'))
+  it('keeps newer Topo events and reports installed when a later probe cannot resolve the version', () => {
+    const tmpHome = mkdtempSync(join(tmpdir(), 'topo-claude-unknown-version-'))
     vi.stubEnv('HOME', tmpHome)
     vi.stubEnv('USERPROFILE', tmpHome)
     try {
@@ -258,7 +258,7 @@ describe('ClaudeHookService.install', () => {
   })
 
   it('never overwrites a user-owned statusLine command', () => {
-    const tmpHome = mkdtempSync(join(tmpdir(), 'orca-claude-user-statusline-'))
+    const tmpHome = mkdtempSync(join(tmpdir(), 'topo-claude-user-statusline-'))
     vi.stubEnv('HOME', tmpHome)
     vi.stubEnv('USERPROFILE', tmpHome)
     try {
@@ -295,7 +295,7 @@ describe('ClaudeHookService.install', () => {
   })
 
   it('does not re-install a managed statusLine the user deleted, until remove() resets the opt-out', () => {
-    const tmpHome = mkdtempSync(join(tmpdir(), 'orca-claude-statusline-optout-'))
+    const tmpHome = mkdtempSync(join(tmpdir(), 'topo-claude-statusline-optout-'))
     vi.stubEnv('HOME', tmpHome)
     vi.stubEnv('USERPROFILE', tmpHome)
     try {
@@ -322,10 +322,10 @@ describe('ClaudeHookService.install', () => {
   it.skipIf(process.platform !== 'win32')(
     'sweeps a previously installed encoded launcher on reinstall, keeping user hooks',
     () => {
-      const tmpHome = mkdtempSync(join(tmpdir(), 'orca-claude-migrate-'))
+      const tmpHome = mkdtempSync(join(tmpdir(), 'topo-claude-migrate-'))
       vi.stubEnv('HOME', tmpHome)
       vi.stubEnv('USERPROFILE', tmpHome)
-      const scriptPath = join(tmpHome, '.orca', 'agent-hooks', CLAUDE_SCRIPT_FILE_NAME)
+      const scriptPath = join(tmpHome, '.topo', 'agent-hooks', CLAUDE_SCRIPT_FILE_NAME)
       if (!WINDOWS_CMD_SAFE_PATH.test(scriptPath)) {
         vi.unstubAllEnvs()
         rmSync(tmpHome, { recursive: true, force: true })
@@ -335,7 +335,7 @@ describe('ClaudeHookService.install', () => {
         const settingsPath = join(tmpHome, '.claude', 'settings.json')
         mkdirSync(join(tmpHome, '.claude'), { recursive: true })
         const stale = getWindowsManagedLifecycleHook(
-          'C:\\Users\\%name%\\.orca\\agent-hooks\\claude-hook.cmd'
+          'C:\\Users\\%name%\\.topo\\agent-hooks\\claude-hook.cmd'
         )
         writeFileSync(
           settingsPath,
@@ -370,10 +370,10 @@ describe('ClaudeHookService.install', () => {
   it.skipIf(process.platform !== 'win32')(
     'reports a stale absolute path as not_installed and rewrites it on install (#18875)',
     () => {
-      const tmpHome = mkdtempSync(join(tmpdir(), 'orca-claude-moved-'))
+      const tmpHome = mkdtempSync(join(tmpdir(), 'topo-claude-moved-'))
       vi.stubEnv('HOME', tmpHome)
       vi.stubEnv('USERPROFILE', tmpHome)
-      const scriptPath = join(tmpHome, '.orca', 'agent-hooks', CLAUDE_SCRIPT_FILE_NAME)
+      const scriptPath = join(tmpHome, '.topo', 'agent-hooks', CLAUDE_SCRIPT_FILE_NAME)
       if (!WINDOWS_CMD_SAFE_PATH.test(scriptPath)) {
         vi.unstubAllEnvs()
         rmSync(tmpHome, { recursive: true, force: true })
@@ -382,7 +382,7 @@ describe('ClaudeHookService.install', () => {
       try {
         const settingsPath = join(tmpHome, '.claude', 'settings.json')
         mkdirSync(join(tmpHome, '.claude'), { recursive: true })
-        const staleCommand = 'C:/Users/someone-else/.orca/agent-hooks/claude-hook.cmd || echo {}'
+        const staleCommand = 'C:/Users/someone-else/.topo/agent-hooks/claude-hook.cmd || echo {}'
         const stale = { type: 'command', command: staleCommand, timeout: 10 }
         writeFileSync(
           settingsPath,
@@ -447,7 +447,7 @@ describe('ClaudeHookService.installRemote', () => {
                 {
                   type: 'command',
                   command:
-                    'if [ -x /home/dev/.orca/agent-hooks/claude-hook.sh ]; then /bin/sh /home/dev/.orca/agent-hooks/claude-hook.sh; fi'
+                    'if [ -x /home/dev/.topo/agent-hooks/claude-hook.sh ]; then /bin/sh /home/dev/.topo/agent-hooks/claude-hook.sh; fi'
                 }
               ]
             }
@@ -473,7 +473,7 @@ describe('OpenClaudeHookService-compatible install', () => {
     })
 
   it('installs managed hooks into OpenClaude settings without touching Claude settings', () => {
-    const tmpHome = mkdtempSync(join(tmpdir(), 'orca-openclaude-hooks-'))
+    const tmpHome = mkdtempSync(join(tmpdir(), 'topo-openclaude-hooks-'))
     vi.stubEnv('HOME', tmpHome)
     vi.stubEnv('USERPROFILE', tmpHome)
     try {
@@ -492,18 +492,18 @@ describe('OpenClaudeHookService-compatible install', () => {
       for (const event of ['UserPromptSubmit', 'Stop', 'StopFailure']) {
         const command = parsed.hooks[event][0].hooks[0].command as string
         expect(isOpenClaudeManagedCommand(command)).toBe(true)
-        expect(command).toContain('"${HOME-}/.orca/agent-hooks/openclaude-hook.cmd"')
-        expect(command).toContain('"${HOME-}/.orca/agent-hooks/openclaude-hook.sh"')
+        expect(command).toContain('"${HOME-}/.topo/agent-hooks/openclaude-hook.cmd"')
+        expect(command).toContain('"${HOME-}/.topo/agent-hooks/openclaude-hook.sh"')
         expect(command).not.toContain(tmpHome.replaceAll('\\', '/'))
       }
       expect(
-        readFileSync(join(tmpHome, '.orca', 'agent-hooks', OPENCLAUDE_SCRIPT_FILE_NAME), 'utf-8')
+        readFileSync(join(tmpHome, '.topo', 'agent-hooks', OPENCLAUDE_SCRIPT_FILE_NAME), 'utf-8')
       ).toContain('/hook/claude')
       expect(
-        readFileSync(join(tmpHome, '.orca', 'agent-hooks', OPENCLAUDE_SCRIPT_FILE_NAME), 'utf-8')
+        readFileSync(join(tmpHome, '.topo', 'agent-hooks', OPENCLAUDE_SCRIPT_FILE_NAME), 'utf-8')
       ).not.toContain('DEVIN_PROJECT_DIR')
       expect(
-        readFileSync(join(tmpHome, '.orca', 'agent-hooks', OPENCLAUDE_SCRIPT_FILE_NAME), 'utf-8')
+        readFileSync(join(tmpHome, '.topo', 'agent-hooks', OPENCLAUDE_SCRIPT_FILE_NAME), 'utf-8')
       ).not.toContain('GROK_HOOK_EVENT')
       expect(parsed.statusLine).toBeUndefined()
       expect(existsSync(join(tmpHome, '.claude', 'settings.json'))).toBe(false)

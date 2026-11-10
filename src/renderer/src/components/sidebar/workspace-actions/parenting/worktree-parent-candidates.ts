@@ -95,7 +95,7 @@ export function getEligibleWorktreeParents(args: ParentCandidateArgs): Worktree[
   return [...sameMachine, ...otherMachines]
 }
 
-/** A create-time parent in another Orca store; the create saves a ref to it built from verified ids. */
+/** A create-time parent in another Topo store; the create saves a ref to it built from verified ids. */
 export function isCrossStoreCreateParent(
   childHostId: ExecutionHostId | undefined,
   candidate: Worktree
@@ -110,7 +110,7 @@ export function isCrossStoreCreateParent(
   )
 }
 
-/** Parents in another Orca store; chains may cross any number of machines. */
+/** Parents in another Topo store; chains may cross any number of machines. */
 function crossStoreParentEligibility(
   child: Worktree,
   parentIdentities: SidebarLineageParentIdentities | undefined

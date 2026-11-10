@@ -17,7 +17,7 @@ function entry(command: string, groupIndex: number): CodexTrustEntry {
 
 beforeEach(() => {
   // Resolve temp symlinks to match runtime trust keys.
-  dir = realpathSync.native(mkdtempSync(join(tmpdir(), 'orca-codex-trust-cleanup-')))
+  dir = realpathSync.native(mkdtempSync(join(tmpdir(), 'topo-codex-trust-cleanup-')))
   tomlPath = join(dir, 'config.toml')
   hooksPath = join(dir, 'hooks.json')
 })
@@ -28,11 +28,11 @@ afterEach(() => {
 
 describe('removeStaleRuntimeHookTrustEntries', () => {
   it('removes an unexpected key whose duplicate tables disagree, so read as no hash', () => {
-    const expected = { ...entry('orca.sh', 0), trustedHash: 'sha256:orca' }
+    const expected = { ...entry('topo.sh', 0), trustedHash: 'sha256:topo' }
     const staleKey = escapeTomlString(computeTrustKey(entry('gone.sh', 1)))
     writeFileSync(
       tomlPath,
-      `[hooks.state."${escapeTomlString(computeTrustKey(expected))}"]\ntrusted_hash = "sha256:orca"\n\n` +
+      `[hooks.state."${escapeTomlString(computeTrustKey(expected))}"]\ntrusted_hash = "sha256:topo"\n\n` +
         `[hooks.state."${staleKey}"]\ntrusted_hash = "sha256:a"\n\n` +
         `[hooks.state."${staleKey}"]\ntrusted_hash = "sha256:b"\n`
     )
@@ -41,7 +41,7 @@ describe('removeStaleRuntimeHookTrustEntries', () => {
 
     expect(readFileSync(tomlPath, 'utf-8')).not.toContain(staleKey)
     expect(readHookTrustEntries(tomlPath).get(computeTrustKey(expected))?.trustedHash).toBe(
-      'sha256:orca'
+      'sha256:topo'
     )
   })
 })

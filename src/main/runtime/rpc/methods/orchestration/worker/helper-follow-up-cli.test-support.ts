@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, expect, vi, type MockInstance } from 'vitest'
 import { z } from 'zod'
-import { OrcaRuntimeRpcServer } from '../../../server/runtime-rpc'
+import { TopoRuntimeRpcServer } from '../../../server/runtime-rpc'
 import { ORCHESTRATION_METHODS } from '../orchestration'
 import { STATUS_METHODS } from '../../host-management/status'
 import { TERMINAL_QUERY_METHODS } from '../../terminal/terminal-query-methods'
@@ -21,7 +21,7 @@ import {
   structuredWorkerIdentities,
   structuredWorkerProcessIncarnation
 } from '../../../../orchestration/terminal-authority/structured-sessions/structured-worker-identity'
-import { testOrcaSessionId } from '../../../../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../../../../shared/topo-session-address-test-fixture'
 import * as placement from './worker-start-agent-placement'
 
 export const receipt = z.object({
@@ -45,7 +45,7 @@ export function useHelperFollowUpCli() {
   const h = createOrchestrationWorkerReleaseHarness()
   const panes = new Map<string, string>()
   let directory: string
-  let server: OrcaRuntimeRpcServer | undefined
+  let server: TopoRuntimeRpcServer | undefined
   let main: (argv: string[]) => Promise<void>
   let logs: MockInstance<typeof console.log>
   let nextTerminal = 'term_worker'
@@ -65,10 +65,10 @@ export function useHelperFollowUpCli() {
       'ENVIRONMENT',
       'AGENT_LAUNCH_TOKEN'
     ]) {
-      vi.stubEnv(`ORCA_${name}`, '')
+      vi.stubEnv(`TOPO_${name}`, '')
     }
     for (const name of ['ID', 'INCARNATION', 'PROFILE_PATH']) {
-      vi.stubEnv(`ORCA_RUNTIME_SOURCE_${name}`, '')
+      vi.stubEnv(`TOPO_RUNTIME_SOURCE_${name}`, '')
     }
     const pane = (handle: string) => {
       const structured = structuredWorkerIdentities.get(handle)
@@ -110,8 +110,8 @@ export function useHelperFollowUpCli() {
     }))
     // The CLI finds this runtime as it finds the app's: through the metadata its server publishes.
     directory = mkdtempSync(join(tmpdir(), 'helper-follow-up-'))
-    vi.stubEnv('ORCA_USER_DATA_PATH', directory)
-    server = new OrcaRuntimeRpcServer({
+    vi.stubEnv('TOPO_USER_DATA_PATH', directory)
+    server = new TopoRuntimeRpcServer({
       runtime: h.runtime,
       userDataPath: directory,
       methods: [...STATUS_METHODS, ...TERMINAL_QUERY_METHODS, ...ORCHESTRATION_METHODS]
@@ -223,7 +223,7 @@ export function useHelperFollowUpCli() {
 
   /** The next worker-start places its agent in a native chat. */
   async function placeNextWorkerInChat() {
-    const sessionId = testOrcaSessionId('helper-follow-up')
+    const sessionId = testTopoSessionId('helper-follow-up')
     rig = await createQueuedMessageTestRig({
       sessionId,
       location: {

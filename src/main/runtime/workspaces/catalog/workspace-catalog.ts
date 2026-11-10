@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithReadKittyFile } from '../../files/paths/orca-runtime-read-kitty-file'
+import { TopoRuntimeWithReadKittyFile } from '../../files/paths/topo-runtime-read-kitty-file'
 import type { RuntimeWorkspaceRepoScanRefresh } from './workspace-repo-scan-refresh'
 import type { ResolvedWorktree } from './runtime-worktree-path-identity'
 import { splitWorktreeIdForFilesystem } from '../../../../shared/worktree/id'
@@ -36,7 +36,7 @@ import type { RuntimeWorktreeScanCache } from './runtime-worktree-scan-state'
 import * as ScanCache from './runtime-worktree-scan-cache'
 const RESOLVED_WORKTREE_CACHE_TTL_MS = 1000
 
-export abstract class RuntimeWorkspaceCatalog extends OrcaRuntimeWithReadKittyFile {
+export abstract class RuntimeWorkspaceCatalog extends TopoRuntimeWithReadKittyFile {
   protected abstract refreshRepoWorktreeScan(
     ...args: Parameters<RuntimeWorkspaceRepoScanRefresh['refreshRepoWorktreeScan']>
   ): ReturnType<RuntimeWorkspaceRepoScanRefresh['refreshRepoWorktreeScan']>

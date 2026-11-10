@@ -11,7 +11,7 @@ import { resolveBuildSourceCommit } from './config/scripts/build-identity/build-
 export default defineConfig({
   root: resolve('src/renderer'),
   cacheDir: resolve('.cache/vite/web'),
-  // Resolve assets relatively for reverse-proxy pairing prefixes such as /orca/web-index.html.
+  // Resolve assets relatively for reverse-proxy pairing prefixes such as /topo/web-index.html.
   base: './',
   plugins: [
     react(reactPluginOptions()),
@@ -20,8 +20,8 @@ export default defineConfig({
     createViteCacheRetentionPlugin()
   ],
   define: {
-    ORCA_FEATURE_WALL_ENABLED: 'true',
-    ORCA_BUILD_COMMIT: JSON.stringify(resolveBuildSourceCommit())
+    TOPO_FEATURE_WALL_ENABLED: 'true',
+    TOPO_BUILD_COMMIT: JSON.stringify(resolveBuildSourceCommit())
   },
   resolve: {
     alias: {

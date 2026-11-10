@@ -12,7 +12,7 @@ import {
   parseProjectTomlHeaderPath
 } from '../../configuration/toml/config-toml-syntax'
 import { findProjectTrustLevelEntries } from './config-toml-project-trust-level'
-import { repairOrcaDuplicateTrustTables } from './config-toml-project-duplicate-repair'
+import { repairTopoDuplicateTrustTables } from './config-toml-project-duplicate-repair'
 
 export function upsertProjectTrustContent(
   existingContent: string,
@@ -20,7 +20,7 @@ export function upsertProjectTrustContent(
   trustLevel: CodexProjectTrustLevel,
   options?: { alreadyCanonical?: boolean }
 ): string {
-  const existing = repairOrcaDuplicateTrustTables(stripLeadingBom(existingContent))
+  const existing = repairTopoDuplicateTrustTables(stripLeadingBom(existingContent))
   const trustedProjectPath = options?.alreadyCanonical
     ? projectPath
     : canonicalizeLocalProjectPath(projectPath)
@@ -59,7 +59,7 @@ export function removeProjectTrustContent(content: string, projectPath: string):
 
 /**
  * The exact bytes removeProjectTrustContent would delete for the path, or null
- * when no table exists — the ownership check compares this to what Orca wrote.
+ * when no table exists — the ownership check compares this to what Topo wrote.
  */
 export function findProjectTrustRemovedBytes(content: string, projectPath: string): string | null {
   return spliceProjectTrustTables(content, projectPath).removed

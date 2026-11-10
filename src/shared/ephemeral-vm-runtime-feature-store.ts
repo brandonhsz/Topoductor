@@ -13,7 +13,7 @@ import {
   type EphemeralVmRuntimeRecord
 } from './ephemeral-vm-runtimes'
 
-const EPHEMERAL_VM_RUNTIME_FEATURES_FILE = 'orca-ephemeral-vm-runtime-features.json'
+const EPHEMERAL_VM_RUNTIME_FEATURES_FILE = 'topo-ephemeral-vm-runtime-features.json'
 export const MAX_EPHEMERAL_VM_RUNTIME_FEATURE_STORE_FILE_BYTES = 1024 * 1024
 
 const EphemeralVmRuntimeFeatureEntrySchema = z

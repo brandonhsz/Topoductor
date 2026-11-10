@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { findDuplicateTomlDeclarations } from '../../configuration/toml/config-toml-duplicate-declarations-test-fixture'
-import { repairOrcaDuplicateTrustTables } from './config-toml-project-duplicate-repair'
+import { repairTopoDuplicateTrustTables } from './config-toml-project-duplicate-repair'
 import { upsertProjectTrustLevel } from './config-toml-trust'
 import { upsertProjectTrustContent as upsertProjectTrustLevelInContent } from './config-toml-project-trust'
 import {
@@ -27,7 +27,7 @@ afterEach(() => {
 })
 
 describe('repairing configs broken by #22592', () => {
-  it('removes the table Orca appended beside Codex quoted spelling and keeps a .bak', () => {
+  it('removes the table Topo appended beside Codex quoted spelling and keeps a .bak', () => {
     const projectPath = '/Users/me/Projects/agentic-WPS'
     const broken = [
       'model = "gpt-5.5"',
@@ -87,7 +87,7 @@ describe('repairing configs broken by #22592', () => {
     )
   })
 
-  it('removes the bare trust_level line Orca inserted under a quoted key', () => {
+  it('removes the bare trust_level line Topo inserted under a quoted key', () => {
     const broken = [
       '["projects"."/repo-c"]',
       'trust_level = "trusted"',
@@ -95,7 +95,7 @@ describe('repairing configs broken by #22592', () => {
       ''
     ].join('\r\n')
 
-    const repaired = repairOrcaDuplicateTrustTables(broken)
+    const repaired = repairTopoDuplicateTrustTables(broken)
 
     expect(repaired).toBe(['["projects"."/repo-c"]', '"trust_level" = "trusted"', ''].join('\r\n'))
   })
@@ -110,7 +110,7 @@ describe('repairing configs broken by #22592', () => {
       ''
     ].join('\n')
 
-    const repaired = repairOrcaDuplicateTrustTables(broken)
+    const repaired = repairTopoDuplicateTrustTables(broken)
 
     expect(repaired).toBe(
       ["['projects'.'C:\\Users\\me\\repo']", "trust_level = 'trusted'", ''].join('\n')
@@ -127,7 +127,7 @@ describe('repairing configs broken by #22592', () => {
       ''
     ].join('\n')
 
-    expect(repairOrcaDuplicateTrustTables(config)).toBe(config)
+    expect(repairTopoDuplicateTrustTables(config)).toBe(config)
     expect(warn).not.toHaveBeenCalled()
   })
 
@@ -170,7 +170,7 @@ describe('repairing configs broken by #22592', () => {
       ''
     ].join('\n')
 
-    expect(repairOrcaDuplicateTrustTables(broken)).toBe(broken)
+    expect(repairTopoDuplicateTrustTables(broken)).toBe(broken)
     expect(warn).toHaveBeenCalledTimes(1)
   })
 })

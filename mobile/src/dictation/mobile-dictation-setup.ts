@@ -40,7 +40,7 @@ function isLegacyDesktopSpeechSetupReply(reply: RpcResponse): boolean {
 function speechlessServerMessage(): string {
   return translate(
     'dictation.setup.serverUpdateRequired',
-    'Update Orca on this server to use voice dictation.'
+    'Update Topo on this server to use voice dictation.'
   )
 }
 
@@ -132,7 +132,7 @@ export async function fetchDictationSetup(client: RpcOperationSender): Promise<M
     throw new Error(
       translate(
         'dictation.setup.desktopUpdateRequired',
-        'Update the paired desktop Orca app to use mobile voice settings.'
+        'Update the paired desktop Topo app to use mobile voice settings.'
       )
     )
   }

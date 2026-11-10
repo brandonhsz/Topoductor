@@ -12,7 +12,7 @@ import {
 } from '../workers/plugin-host-api'
 import { zodTypeText, type SchemaTypeTextOptions } from '../workers/plugin-schema-type-text'
 
-/** Checked-in output of `pnpm generate:plugin-author-typings`; `orca plugin types` copies it. */
+/** Checked-in output of `pnpm generate:plugin-author-typings`; `topo plugin types` copies it. */
 export const PLUGIN_HOST_TYPINGS_FILE = 'resources/plugins/types/orca-host.d.ts'
 
 /** Names the d.ts must declare beside the generated members, since JSON Schema cannot spell them. */
@@ -118,7 +118,7 @@ declare module 'orca/host' {
   } from 'orca'
   export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue }
   export type Disposable = { dispose(): void }
-  /** \`orca.api\`: check \`minor\` (or \`host.has\`) before calling a method newer than your oldest Orca. */
+  /** \`orca.api\`: check \`minor\` (or \`host.has\`) before calling a method newer than your oldest Topo. */
   export type HostApiVersion = { readonly major: number; readonly minor: number }
   /** Open set: treat a code you do not know as \`action_failed\`. */
   export type HostErrorCode = ${union(PLUGIN_ERROR_CODES)}
@@ -146,7 +146,7 @@ ${renderPluginHostMethodMembers('    ')}  }
   export type HostApi<S extends HostSurface> = {
     /** Rejects with a {@link HostCallError}. */
     call<M extends HostMethodFor<S>>(method: M, ...args: HostCallArgs<M>): Promise<HostResult<M>>
-    /** Synchronous: whether this Orca offers \`method\` on this surface. */
+    /** Synchronous: whether this Topo offers \`method\` on this surface. */
     has(method: string): boolean
   }
 

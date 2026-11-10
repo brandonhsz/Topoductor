@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { OrchestrationDb } from '../../orchestration/db/orchestration-db'
 import '../../orchestration/db/contract-constants'
 import '../../orchestration/db/messages/mailbox-routing-page'
@@ -14,7 +14,7 @@ import '../../orchestration/db/dispatch-row-writer'
 import '../../orchestration/db/attempt-outcome-projection'
 
 import { readRuntimeMetadata } from './runtime-metadata'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import { DeviceRegistry } from './pairing/device-registry'
 import { sendRequest, withCurrentOrchestrationContract } from './runtime-rpc-test-harness'
 import { STATUS_METHODS } from '../methods/host-management/status'
@@ -69,13 +69,13 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
   return { getWorktreeListingMocks: () => (listings ??= createWorktreeListingMocks()) }
 })
 
-describe('OrcaRuntimeRpcServer', () => {
+describe('TopoRuntimeRpcServer', () => {
   it('isolates mutation replay by the authenticated paired device across reconnects', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const runtime = new OrcaRuntimeService()
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const runtime = new TopoRuntimeService()
     const db = new OrchestrationDb(':memory:')
     runtime.setOrchestrationDb(db)
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       runtime,
       methods,
       userDataPath,
@@ -144,11 +144,11 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('keeps authenticated paired callers attached to existing federated workers', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const runtime = new OrcaRuntimeService()
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const runtime = new TopoRuntimeService()
     const db = new OrchestrationDb(':memory:')
     runtime.setOrchestrationDb(db)
-    const server = new OrcaRuntimeRpcServer({
+    const server = new TopoRuntimeRpcServer({
       runtime,
       methods,
       userDataPath,
@@ -200,9 +200,9 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('rejects requests with the wrong auth token', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const runtime = new OrcaRuntimeService()
-    const server = new OrcaRuntimeRpcServer({ runtime, methods, userDataPath })
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const runtime = new TopoRuntimeService()
+    const server = new TopoRuntimeRpcServer({ runtime, methods, userDataPath })
 
     await server.start()
 

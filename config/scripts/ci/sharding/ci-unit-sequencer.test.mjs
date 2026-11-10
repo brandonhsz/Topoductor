@@ -38,9 +38,9 @@ it.each([
   if (kind !== 'missing-artifact') {
     writeFileSync(planPath, JSON.stringify(plan))
   }
-  vi.stubEnv('ORCA_UNIT_SELECTION_PLAN', planPath)
-  vi.stubEnv('ORCA_SHARD_SOURCE_SHA', 'current')
-  vi.stubEnv('ORCA_SHARD_MANIFEST', join(root, 'assignment.json'))
+  vi.stubEnv('TOPO_UNIT_SELECTION_PLAN', planPath)
+  vi.stubEnv('TOPO_SHARD_SOURCE_SHA', 'current')
+  vi.stubEnv('TOPO_SHARD_MANIFEST', join(root, 'assignment.json'))
   const assigned = []
   for (const index of [1, 2]) {
     const sequencer = new TimingSequencer({ config: { root, shard: { index, count: 2 } } })

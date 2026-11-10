@@ -31,11 +31,11 @@ async function replayToRow(events: readonly HookEvent[]): Promise<{
     const env = server.buildPtyEnv()
     const states: string[] = []
     for (const event of events) {
-      const response = await fetch(`http://127.0.0.1:${env.ORCA_AGENT_HOOK_PORT}/hook/claude`, {
+      const response = await fetch(`http://127.0.0.1:${env.TOPO_AGENT_HOOK_PORT}/hook/claude`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Orca-Agent-Hook-Token': env.ORCA_AGENT_HOOK_TOKEN
+          'X-Topo-Agent-Hook-Token': env.TOPO_AGENT_HOOK_TOKEN
         },
         body: JSON.stringify(buildBody(event))
       })
@@ -54,8 +54,8 @@ async function replayToRow(events: readonly HookEvent[]): Promise<{
 
 describe('Claude permission wait that Claude denies itself', () => {
   it("keeps the pane waiting when a subagent's request ends while the lead's own prompt is open", async () => {
-    const leadCommand = { command: 'touch /private/tmp/orca-permcap-lead' }
-    const childCommand = { command: 'touch /private/tmp/orca-permcap-child' }
+    const leadCommand = { command: 'touch /private/tmp/topo-permcap-lead' }
+    const childCommand = { command: 'touch /private/tmp/topo-permcap-child' }
     const child = { agent_id: 'agent-child', agent_type: 'general-purpose' }
     const states = await replay([
       { hook_event_name: 'UserPromptSubmit', prompt: 'work' },
@@ -92,8 +92,8 @@ describe('Claude permission wait that Claude denies itself', () => {
   it("keeps the pane waiting when one subagent's request ends while another's prompt is open", async () => {
     const childA = { agent_id: 'agent-a', agent_type: 'general-purpose' }
     const childB = { agent_id: 'agent-b', agent_type: 'general-purpose' }
-    const commandA = { command: 'touch /private/tmp/orca-permcap-a' }
-    const commandB = { command: 'touch /private/tmp/orca-permcap-b' }
+    const commandA = { command: 'touch /private/tmp/topo-permcap-a' }
+    const commandB = { command: 'touch /private/tmp/topo-permcap-b' }
     const states = await replay([
       { hook_event_name: 'UserPromptSubmit', prompt: 'work' },
       { hook_event_name: 'SubagentStart', ...childA },
@@ -125,7 +125,7 @@ describe('Claude permission wait that Claude denies itself', () => {
 
   it("keeps the pane waiting on the lead's unanswered question when a subagent's request ends", async () => {
     const child = { agent_id: 'agent-child', agent_type: 'general-purpose' }
-    const command = { command: 'touch /private/tmp/orca-permcap-q' }
+    const command = { command: 'touch /private/tmp/topo-permcap-q' }
     const question = { questions: [{ question: 'Which file?', options: [{ label: 'a' }] }] }
     const states = await replay([
       { hook_event_name: 'UserPromptSubmit', prompt: 'work' },
@@ -155,7 +155,7 @@ describe('Claude permission wait that Claude denies itself', () => {
 
   it("keeps an open MCP dialog when a subagent's self-denied request ends", async () => {
     const child = { agent_id: 'agent-a', agent_type: 'general-purpose' }
-    const command = { command: 'touch /private/tmp/orca-permcap-mcp' }
+    const command = { command: 'touch /private/tmp/topo-permcap-mcp' }
     const dialog = { mcp_server_name: 'srv', elicitation_id: 'elicit-1' }
     const childRequest = [
       {
@@ -190,12 +190,12 @@ describe('Claude permission wait that Claude denies itself', () => {
   it("keeps a request whose call was never seen when another subagent's request ends", async () => {
     const childA = { agent_id: 'agent-a', agent_type: 'general-purpose' }
     const childB = { agent_id: 'agent-b', agent_type: 'general-purpose' }
-    const commandB = { command: 'touch /private/tmp/orca-permcap-b' }
+    const commandB = { command: 'touch /private/tmp/topo-permcap-b' }
     const states = await replay([
       {
         hook_event_name: 'PermissionRequest',
         tool_name: 'Bash',
-        tool_input: { command: 'touch /private/tmp/orca-permcap-a' },
+        tool_input: { command: 'touch /private/tmp/topo-permcap-a' },
         ...childA
       },
       {
@@ -216,7 +216,7 @@ describe('Claude permission wait that Claude denies itself', () => {
   })
 
   it('keeps a newer prompt when an earlier batch from the same agent arrives late', async () => {
-    const command = { command: 'touch /private/tmp/orca-permcap-newer' }
+    const command = { command: 'touch /private/tmp/topo-permcap-newer' }
     const states = await replay([
       { hook_event_name: 'UserPromptSubmit', prompt: 'work' },
       {
@@ -270,7 +270,7 @@ describe('Claude permission wait that Claude denies itself', () => {
   })
 
   it('settles the first request of a batch longer than the replay history bound', async () => {
-    const command = { command: 'touch /private/tmp/orca-permcap-long' }
+    const command = { command: 'touch /private/tmp/topo-permcap-long' }
     const siblings = Array.from({ length: 20 }, (_, index) => ({
       tool_name: 'Read',
       tool_input: { file_path: `/tmp/file-${index}` },
@@ -296,9 +296,9 @@ describe('Claude permission wait that Claude denies itself', () => {
     expect(states.at(-1)).toBe('PostToolBatch:working')
   })
 
-  describe('with a wait Orca cannot identify', () => {
+  describe('with a wait Topo cannot identify', () => {
     const childB = { agent_id: 'agent-b', agent_type: 'general-purpose' }
-    const commandB = { command: 'touch /private/tmp/orca-permcap-b' }
+    const commandB = { command: 'touch /private/tmp/topo-permcap-b' }
     const childBDenial = [
       {
         hook_event_name: 'PreToolUse',
@@ -342,7 +342,7 @@ describe('Claude permission wait that Claude denies itself', () => {
       expect(states.at(-1)).toBe('PostToolBatch:waiting')
     })
 
-    const leadCommand = { command: 'touch /private/tmp/orca-permcap-lead' }
+    const leadCommand = { command: 'touch /private/tmp/topo-permcap-lead' }
     const leadRequest = [
       {
         hook_event_name: 'PreToolUse',

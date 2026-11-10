@@ -5,8 +5,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { eraseRpcMethods, type RpcContext, type RpcMethod } from '../rpc/core'
 import { NOTIFICATION_METHODS } from '../rpc/methods/notifications/notifications'
 import { DeviceRegistry } from '../rpc/server/pairing/device-registry'
-import { OrcaRuntimeRpcServer } from '../rpc/server/runtime-rpc'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeRpcServer } from '../rpc/server/runtime-rpc'
+import { TopoRuntimeService } from '../topo-runtime'
 
 function method(name: string): RpcMethod {
   const found = eraseRpcMethods(NOTIFICATION_METHODS).find((candidate) => candidate.name === name)
@@ -111,9 +111,9 @@ describe('notifications.unregisterPush', () => {
 
 describe('revokeMobileDevice', () => {
   it('queues the gateway delete before the device row disappears', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-push-revoke-'))
-    const server = new OrcaRuntimeRpcServer({
-      runtime: new OrcaRuntimeService(),
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-push-revoke-'))
+    const server = new TopoRuntimeRpcServer({
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: false
     })
@@ -132,9 +132,9 @@ describe('revokeMobileDevice', () => {
   })
 
   it('queues nothing for a device that never enabled push', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-push-revoke-'))
-    const server = new OrcaRuntimeRpcServer({
-      runtime: new OrcaRuntimeService(),
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-push-revoke-'))
+    const server = new TopoRuntimeRpcServer({
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: false
     })

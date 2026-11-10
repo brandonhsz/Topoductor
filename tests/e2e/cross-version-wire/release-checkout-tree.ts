@@ -50,7 +50,7 @@ const BARE_SPECIFIER =
 
 type WorkspaceSourceResolver = ReturnType<typeof createWorkspaceSourceResolver>
 
-// Include package JS too: orca-source exports may target any supported module extension.
+// Include package JS too: topo-source exports may target any supported module extension.
 function isRewritableSource(name: string): boolean {
   return /\.(ts|tsx|mts|cts|js|mjs|cjs)$/.test(name)
 }

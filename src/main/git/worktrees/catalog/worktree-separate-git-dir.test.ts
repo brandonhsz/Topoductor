@@ -47,7 +47,7 @@ async function createSeparateGitDirRepo(): Promise<{
   gitDirPath: string
   worktreePath: string
 }> {
-  const root = await mkdtemp(path.join(tmpdir(), 'orca-separate-git-dir-'))
+  const root = await mkdtemp(path.join(tmpdir(), 'topo-separate-git-dir-'))
   tempRoots.push(root)
   const sourcePath = await createCommittedRepo(root, 'source')
   const requestedWorktreePath = path.join(root, 'worktree')
@@ -69,7 +69,7 @@ async function createSeparateGitDirRepo(): Promise<{
 }
 
 async function createNormalRepo(): Promise<string> {
-  const root = await mkdtemp(path.join(tmpdir(), 'orca-normal-worktree-'))
+  const root = await mkdtemp(path.join(tmpdir(), 'topo-normal-worktree-'))
   tempRoots.push(root)
   return createCommittedRepo(root, 'repo')
 }
@@ -101,7 +101,7 @@ describe('git worktree separate git dir paths', () => {
     async () => {
       // A symlink defeats the path gate; the common-dir gate must still preserve the main row.
       const repoPath = await createNormalRepo()
-      const linkRoot = await mkdtemp(path.join(tmpdir(), 'orca-symlink-worktree-'))
+      const linkRoot = await mkdtemp(path.join(tmpdir(), 'topo-symlink-worktree-'))
       tempRoots.push(linkRoot)
       const linkedRepoPath = path.join(linkRoot, 'linked-repo')
       await symlink(repoPath, linkedRepoPath)
@@ -146,7 +146,7 @@ describe('git worktree separate git dir paths', () => {
       let mainPath: string
       let repoForAdd: string
       if (kind === 'bare') {
-        const root = await mkdtemp(path.join(tmpdir(), 'orca-bare-linked-'))
+        const root = await mkdtemp(path.join(tmpdir(), 'topo-bare-linked-'))
         tempRoots.push(root)
         const sourcePath = await createCommittedRepo(root, 'source')
         mainPath = path.join(root, 'project.git')

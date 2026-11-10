@@ -1,5 +1,5 @@
 import { DESKTOP_TERMINAL_SCROLLBACK_ROWS_DEFAULT as DAEMON_RESTORE_SCROLLBACK_ROWS } from '../../../shared/terminal/replay/terminal-scrollback-policy'
-const DAEMON_SESSION_SCROLLBACK_ENV_VAR = 'ORCA_DAEMON_SESSION_SCROLLBACK_ROWS'
+const DAEMON_SESSION_SCROLLBACK_ENV_VAR = 'TOPO_DAEMON_SESSION_SCROLLBACK_ROWS'
 
 // Bound live grid memory across many terminals; durable history supplies the deeper restore window.
 export const DAEMON_SESSION_SCROLLBACK_ROWS = 1000

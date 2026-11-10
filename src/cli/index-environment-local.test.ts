@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 const {
   callMock,
   runtimeClientConstructorMock,
-  serveOrcaAppMock,
+  serveTopoAppMock,
   getDefaultUserDataPathMock,
   addEnvironmentFromPairingCodeMock,
   listEnvironmentsMock,
@@ -12,8 +12,8 @@ const {
 } = vi.hoisted(() => ({
   callMock: vi.fn(),
   runtimeClientConstructorMock: vi.fn(),
-  serveOrcaAppMock: vi.fn(),
-  getDefaultUserDataPathMock: vi.fn(() => '/tmp/orca-user-data'),
+  serveTopoAppMock: vi.fn(),
+  getDefaultUserDataPathMock: vi.fn(() => '/tmp/topo-user-data'),
   addEnvironmentFromPairingCodeMock: vi.fn(),
   listEnvironmentsMock: vi.fn(),
   resolveEnvironmentMock: vi.fn(),
@@ -25,7 +25,7 @@ vi.mock('./runtime-client', async () => {
   return createRuntimeClientModuleMock({
     callMock,
     runtimeClientConstructorMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock
   })
 })
@@ -79,7 +79,7 @@ async function run(args: string[], cwd = '/tmp/repo') {
 describe('--environment local and workspace addresses', () => {
   useWorktreeAwarenessEnvironment({
     callMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock,
     addEnvironmentFromPairingCodeMock,
     listEnvironmentsMock,
@@ -87,9 +87,9 @@ describe('--environment local and workspace addresses', () => {
   })
 
   it.each([
-    [['worktree', 'ps', '--pairing-code', 'orca://pair?code=x', '--environment', 'local']],
+    [['worktree', 'ps', '--pairing-code', 'topo://pair?code=x', '--environment', 'local']],
     [['worktree', 'ps', '--host', 'runtime:srv-b', '--environment', 'local']],
-    [['environment', 'add', '--name', ' Local ', '--pairing-code', 'orca://pair?code=x']],
+    [['environment', 'add', '--name', ' Local ', '--pairing-code', 'topo://pair?code=x']],
     [['environment', 'stop', '--environment', 'local']]
   ])('refuses %j before any request', async (args) => {
     listEnvironmentsMock.mockReturnValue(SAVED)
@@ -114,13 +114,13 @@ describe('--environment local and workspace addresses', () => {
     ])
     expect(exitCode).toBe(1)
     expect(JSON.parse(output).error.data.nextSteps[0]).toContain(
-      '`orca worktree ps --environment srv-b --json`'
+      '`topo worktree ps --environment srv-b --json`'
     )
     expect(callMock).not.toHaveBeenCalled()
   })
 
   it('resolves current under --environment local to the folder workspace at cwd', async () => {
-    vi.stubEnv('ORCA_ENVIRONMENT', 'srv-b')
+    vi.stubEnv('TOPO_ENVIRONMENT', 'srv-b')
     listEnvironmentsMock.mockReturnValue(SAVED)
     callMock.mockImplementation(async (method: string) => {
       if (method === 'worktree.list') {
@@ -211,7 +211,7 @@ describe('--environment local and workspace addresses', () => {
 describe('worktree rm needs an explicit workspace', () => {
   useWorktreeAwarenessEnvironment({
     callMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock,
     addEnvironmentFromPairingCodeMock,
     listEnvironmentsMock,
@@ -247,11 +247,11 @@ describe('worktree rm needs an explicit workspace', () => {
         const { error } = JSON.parse(output)
         expect(error.code).toBe('invalid_argument')
         expect(error.message).toContain(
-          `orca worktree rm needs an explicit workspace; --worktree ${value} is not accepted`
+          `topo worktree rm needs an explicit workspace; --worktree ${value} is not accepted`
         )
         expect(error.data.current).toEqual({ resolution, selectors: [...selectors] })
         expect(error.data.nextSteps.slice(0, selectors.length)).toEqual(
-          selectors.map((selector) => `orca worktree rm --worktree ${selector}`)
+          selectors.map((selector) => `topo worktree rm --worktree ${selector}`)
         )
         if (resolution === 'resolved') {
           expect(error.message).toContain(`Here, ${value} is --worktree id:repo::/tmp/rm-repo`)
@@ -289,7 +289,7 @@ describe('worktree rm needs an explicit workspace', () => {
       const { error } = JSON.parse(output)
       expect(error.code).toBe('invalid_argument')
       expect(error.data.current).toEqual({ resolution: 'resolved', selectors: ['folder:hub-a'] })
-      expect(error.data.nextSteps[0]).toBe('orca worktree rm --worktree folder:hub-a')
+      expect(error.data.nextSteps[0]).toBe('topo worktree rm --worktree folder:hub-a')
       const methods = callMock.mock.calls.map(([method]) => method)
       expect(methods).not.toContain('folderWorkspace.delete')
       expect(methods).not.toContain('worktree.show')
@@ -309,7 +309,7 @@ describe('worktree rm needs an explicit workspace', () => {
     ])
     expect(exitCode).toBe(1)
     expect(JSON.parse(output).error.data.nextSteps[0]).toContain(
-      '`orca worktree ps --environment srv-b --json`'
+      '`topo worktree ps --environment srv-b --json`'
     )
     expect(callMock).not.toHaveBeenCalled()
   })

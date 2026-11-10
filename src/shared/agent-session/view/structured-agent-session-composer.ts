@@ -121,9 +121,9 @@ export function structuredSessionSlashCommands(
 ): readonly SlashCommandSuggestion[] {
   const modeCommands: SlashCommandSuggestion[] = interactionModeSupported
     ? [
-        { name: 'plan', description: 'Switch to Plan mode', orcaOwned: true },
+        { name: 'plan', description: 'Switch to Plan mode', topoOwned: true },
         ...(agent === 'codex'
-          ? [{ name: 'default', description: 'Switch to Build mode', orcaOwned: true as const }]
+          ? [{ name: 'default', description: 'Switch to Build mode', topoOwned: true as const }]
           : [])
       ]
     : []

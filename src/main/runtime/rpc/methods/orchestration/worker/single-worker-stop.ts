@@ -7,7 +7,7 @@ import {
   ORCHESTRATION_WORKER_STOP_HELPERS_RUNTIME_CAPABILITY,
   ORCHESTRATION_WORKER_STOP_VERDICT_RUNTIME_CAPABILITY
 } from '../../../../../../shared/orchestration/orchestration-runtime-capabilities'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { inspectWorkerTerminal, resolvePinnedFederatedServer } from './worker-observation'
 import { refuseFederatedStopWhileKeptOpen } from './worker-keep-open'
 import { archiveWorkerOutputBeforeStop } from './worker-stop-archive'
@@ -21,7 +21,7 @@ export type StopMutation = RpcContext['orchestrationMutation']
 
 /** Fence and stop exactly one Dispatch's worker, as worker-stop always has. */
 export async function stopSingleWorker(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   dispatchId: string,
   orchestrationMutation: StopMutation
 ): Promise<WorkerStopReceipt> {

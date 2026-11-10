@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from '../../dispatcher'
 import type { RpcRequest } from '../../core'
 import type { RpcCallerScope } from '../../rpc-caller-scope'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import { SSH_EDITABLE_TARGET_FIELDS } from '../../../../../shared/ssh-target-management'
 import { SSH_METHODS } from './ssh'
 
@@ -49,7 +49,7 @@ const storedTarget = {
   owner: undefined
 }
 
-const runtime = new OrcaRuntimeService()
+const runtime = new TopoRuntimeService()
 
 function dispatch(method: string, params?: unknown, callerScope?: RpcCallerScope) {
   const dispatcher = new RpcDispatcher({ runtime, methods: SSH_METHODS, callerScope })

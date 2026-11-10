@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { RpcDispatcher } from '../../dispatcher'
 import { PAIRING_METHODS } from './pairing'
 
@@ -12,7 +12,7 @@ function dispatchPairing(
     const runtime = { getRuntimeId: () => 'test-runtime' }
     const dispatcher = new RpcDispatcher({
       // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: Pairing handlers use the supplied pairing context; the envelope reads only getRuntimeId.
-      runtime: runtime as OrcaRuntimeService,
+      runtime: runtime as TopoRuntimeService,
       methods: PAIRING_METHODS
     })
     void dispatcher.dispatchStreaming(

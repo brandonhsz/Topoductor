@@ -7,7 +7,7 @@ const LOG = [
   'Creating sandbox from snapshot snap_7f2c…',
   'Sandbox ready: sbx_41d9 (us-east-1)',
   'Cloning repository…',
-  'Starting orca serve on :7420',
+  'Starting topo serve on :7420',
   'Pairing code emitted.'
 ].join('\n')
 

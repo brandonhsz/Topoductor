@@ -7,9 +7,9 @@ export type EnvironmentProviderCapabilities = Readonly<{
   memoryPause: boolean
   /** Hard per-session cap enforced by the provider; null when sessions are unbounded. */
   maxSessionMs: number | null
-  /** The filesystem (worktree, auth homes, orcad identity) survives suspend. */
+  /** The filesystem (worktree, auth homes, topod identity) survives suspend. */
   fsPersistOnStop: boolean
-  /** Orca-owned idle stop; null when the provider has none. */
+  /** Topo-owned idle stop; null when the provider has none. */
   idleStopMs: number | null
 }>
 
@@ -27,7 +27,7 @@ export type EnvironmentProviderCallContext = {
 }
 
 export type EnvironmentCreateSpec = {
-  /** Orca's workspace id; one environment per workspace. */
+  /** Topo's workspace id; one environment per workspace. */
   workspaceId: string
   workspaceName?: string
   projectId?: string
@@ -106,7 +106,7 @@ export type EnvironmentProviderErrorCode = (typeof ENVIRONMENT_PROVIDER_ERROR_CO
 
 export class EnvironmentProviderError extends Error {
   readonly code: EnvironmentProviderErrorCode
-  /** Machine-readable provider detail, e.g. the Orca failure-copy code behind the message. */
+  /** Machine-readable provider detail, e.g. the Topo failure-copy code behind the message. */
   readonly reason: string | null
 
   constructor(code: EnvironmentProviderErrorCode, message: string, reason: string | null = null) {

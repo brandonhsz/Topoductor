@@ -1,5 +1,5 @@
 import type { RuntimeTerminalAttention } from '../../../../shared/runtime-terminal-contracts'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import { getPtyIpc } from '../pty-host-bindings'
 import type { PtyRendererDelivery } from '../session'
 import { isMainWindowPtyIpcEvent } from './write-input'
@@ -9,7 +9,7 @@ const MAX_ATTENTION_PTY_IDS = 10_000
 /** Agent sleep in this window must see what paired clients and phones are doing with its PTYs. */
 export function installPtyTerminalAttentionIpcHandler(deps: {
   mainWindow?: PtyRendererDelivery
-  runtime?: OrcaRuntimeService
+  runtime?: TopoRuntimeService
 }): void {
   const ipcMain = getPtyIpc()
   ipcMain.removeHandler('pty:getTerminalAttention')

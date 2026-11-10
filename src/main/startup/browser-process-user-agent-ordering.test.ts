@@ -5,7 +5,7 @@ const mocks = vi.hoisted(() => {
   const events: string[] = []
   // Use a two-word app token to expose partial removal; retain the engine identity required by the real cleaner.
   let userAgent =
-    'Mozilla/5.0 (Test) AppleWebKit/537.36 (KHTML, like Gecko) Orca Development/0.0.0 Chrome/150.0.0.0 Electron/43.0.0 Safari/537.36'
+    'Mozilla/5.0 (Test) AppleWebKit/537.36 (KHTML, like Gecko) Topo Development/0.0.0 Chrome/150.0.0.0 Electron/43.0.0 Safari/537.36'
   const app = {
     isPackaged: false,
     exit: vi.fn(),
@@ -66,7 +66,7 @@ vi.mock('./serve-mode-argv', () => ({
 vi.mock('./configure-process', () => ({
   configureDevUserDataPath: vi.fn(),
   configureElectronNetworkCompatibility: vi.fn(),
-  configureOrcaUserDataPathEnv: vi.fn(),
+  configureTopoUserDataPathEnv: vi.fn(),
   disableUnsupportedChromiumFeatures: vi.fn(),
   enableMainProcessGpuFeatures: vi.fn(),
   installDevParentDisconnectQuit: vi.fn(),
@@ -96,8 +96,8 @@ vi.mock('../updater/updater-service', () => ({
 vi.mock('./dev-instance-identity', () => ({
   getDevInstanceIdentity: () => ({
     isDev: true,
-    appName: 'Orca Development',
-    appUserModelId: 'com.orca.development'
+    appName: 'Topo Development',
+    appUserModelId: 'com.topo.development'
   }),
   shouldApplyPreReadyAppName: () => true
 }))
@@ -169,11 +169,11 @@ vi.mock('../persistence/profile-state/profile-state-access', () => ({
 }))
 vi.mock('../window/desktop-integration/macos-press-and-hold-default')
 vi.mock('../ai-vault/parse-cache/session-parse-cache-persistence')
-vi.mock('../orca-profiles/profile-index-store', () => ({ initOrcaProfilePaths: vi.fn() }))
-vi.mock('../orca-profiles/profile-storage-paths', () => ({
+vi.mock('../topo-profiles/profile-index-store', () => ({ initTopoProfilePaths: vi.fn() }))
+vi.mock('../topo-profiles/profile-storage-paths', () => ({
   getProfileUserDataPath: () => '/canonical-user-data'
 }))
-vi.mock('../orca-profiles/profile-project-move-intent', () => ({
+vi.mock('../topo-profiles/profile-project-move-intent', () => ({
   recoverPendingProfileProjectMoves: mocks.recoverMoves
 }))
 vi.mock('../persistence/profile-state/profile-state-active-location', () => ({
@@ -225,7 +225,7 @@ describe('browser process user-agent startup ordering', () => {
       expect(mocks.app.exit).toHaveBeenCalledWith(1)
       expect(mocks.events).toEqual([
         'init-data-path',
-        'set-name:Orca Development',
+        'set-name:Topo Development',
         'single-instance-lock',
         'admission:/canonical-user-data'
       ])
@@ -271,7 +271,7 @@ it('defers a Linux desktop startup failure until Electron is ready', async () =>
     // The dialog waits for the async system-language catalog after ready.
     await vi.waitFor(() => expect(mocks.app.exit).toHaveBeenCalled())
     expect(mocks.showErrorBox).toHaveBeenCalledWith(
-      'Orca could not start',
+      'Topo could not start',
       expect.stringContaining('Linux pre-ready failure')
     )
     expect(mocks.app.exit).toHaveBeenCalledWith(1)

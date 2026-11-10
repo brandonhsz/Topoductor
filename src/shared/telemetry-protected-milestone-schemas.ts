@@ -7,7 +7,7 @@ export type MilestoneInstallCohort = z.infer<typeof milestoneInstallCohortSchema
 
 // unattributed_prompt: a hook saw a submitted prompt but cannot prove a person, not automation, typed it.
 export const firstAgentInteractionSourceSchema = z.enum([
-  'orca_send',
+  'topo_send',
   'native_chat',
   'mobile_chat',
   'unattributed_prompt'
@@ -17,7 +17,7 @@ export type FirstAgentInteractionSource = z.infer<typeof firstAgentInteractionSo
 // terminal_input: genuine xterm user input admitted by a local/remote transport, including buffered input; never its bytes.
 export const meaningfulActivityTriggerSchema = z.enum([
   'agent_started',
-  'orca_send',
+  'topo_send',
   'native_chat',
   'mobile_chat',
   'workspace_created',

@@ -84,7 +84,7 @@ export function GeneralUpdateSettingsSection(): React.JSX.Element {
         )}
         description={t(
           'auto.components.settings.GeneralUpdateSettingsSection.ceb579abaf',
-          'Check for app updates and install a newer Orca version.'
+          'Check for app updates and install a newer Topo version.'
         )}
         keywords={['update', 'version', 'release notes', 'download']}
         className="space-y-3 py-3"
@@ -179,7 +179,7 @@ export function GeneralUpdateSettingsSection(): React.JSX.Element {
               {updateStatus.externallyManaged
                 ? t(
                     'auto.components.settings.GeneralUpdateSettingsSection.e3b9d21c07',
-                    'is available. Update Orca through your system package manager — Orca cannot install this release itself.'
+                    'is available. Update Topo through your system package manager — Topo cannot install this release itself.'
                   )
                 : t(
                     'auto.components.settings.GeneralUpdateSettingsSection.8311da27ba',
@@ -207,7 +207,7 @@ export function GeneralUpdateSettingsSection(): React.JSX.Element {
             (updateStatus.unsupportedSystemUpdate
               ? t(
                   'macosUpdateRequirement.settingsStatus',
-                  'Orca {{version}} requires macOS {{macos}} or later. This is the latest version for this Mac.',
+                  'Topo {{version}} requires macOS {{macos}} or later. This is the latest version for this Mac.',
                   {
                     version: updateStatus.unsupportedSystemUpdate.version,
                     macos: updateStatus.unsupportedSystemUpdate.minimumMacosVersion

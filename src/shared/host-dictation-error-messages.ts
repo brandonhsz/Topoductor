@@ -4,7 +4,7 @@ const HOST_DICTATION_ERROR_MESSAGES: ReadonlyMap<string, string> = new Map([
   // Only hosts older than per-device sessions refuse a second device this way.
   [
     'dictation_already_active',
-    'Dictation is already in use on the computer or another phone. Update Orca on the computer to dictate from several devices at once.'
+    'Dictation is already in use on the computer or another phone. Update Topo on the computer to dictate from several devices at once.'
   ],
   [
     'dictation_session_limit',

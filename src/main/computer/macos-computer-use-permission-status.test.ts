@@ -16,10 +16,10 @@ const permissionStatusDelayMock = vi.hoisted(() =>
       })
   )
 )
-const permissionStatusTempDir = '/tmp/orca-computer-use-permissions-test'
+const permissionStatusTempDir = '/tmp/topo-computer-use-permissions-test'
 const permissionStatusPath = join(permissionStatusTempDir, 'status.json')
 
-vi.mock('@orca/process-host', () => ({ runProcess: runProcessMock }))
+vi.mock('@topo/process-host', () => ({ runProcess: runProcessMock }))
 
 // The status poll's promise delay must use the fake clock this suite controls.
 vi.mock('node:timers/promises', async (importOriginal) => ({
@@ -81,9 +81,9 @@ describe('getComputerUsePermissionStatus', () => {
     })
     resolveHelperAppPathMock.mockReset()
     resolveHelperExecutablePathMock.mockReset()
-    resolveHelperAppPathMock.mockReturnValue('/Applications/Orca Computer Use.app')
+    resolveHelperAppPathMock.mockReturnValue('/Applications/Topo Computer Use.app')
     resolveHelperExecutablePathMock.mockReturnValue(
-      '/Applications/Orca Computer Use.app/Contents/MacOS/orca-computer-use-macos'
+      '/Applications/Topo Computer Use.app/Contents/MacOS/topo-computer-use-macos'
     )
     vi.mocked(mkdtemp).mockResolvedValue(permissionStatusTempDir)
     vi.mocked(stat).mockResolvedValue({} as Awaited<ReturnType<typeof stat>>)
@@ -191,7 +191,7 @@ function expectOnlyOwnStatusHelperStopped(): void {
     program: '/usr/bin/pkill',
     args: [
       '-f',
-      `(^|[[:space:]/])orca-computer-use-macos[[:space:]]+--permission-status-file[[:space:]]+${escapeRegex(permissionStatusPath)}$`
+      `(^|[[:space:]/])topo-computer-use-macos[[:space:]]+--permission-status-file[[:space:]]+${escapeRegex(permissionStatusPath)}$`
     ],
     timeoutMs: 2000,
     stdio: 'ignore'

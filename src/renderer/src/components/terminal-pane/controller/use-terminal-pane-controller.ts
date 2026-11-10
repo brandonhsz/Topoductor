@@ -18,10 +18,10 @@ import { useTerminalPaneContextActions } from './use-terminal-pane-context-actio
 import { useTerminalPaneMobileActions } from './use-terminal-pane-mobile-actions'
 import { useTerminalPaneProjection } from './use-terminal-pane-projection'
 import { useLayoutOwnerPaneTree } from '../layout/ownership/use-layout-owner-pane-tree'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 
 // Switch point: the mounted tab follows main's pane tree. Chosen once per build, so hook order is fixed.
-const useLayoutOwnerPaneTreeWhenMain = ORCA_LAYOUT_OWNER_IS_MAIN
+const useLayoutOwnerPaneTreeWhenMain = TOPO_LAYOUT_OWNER_IS_MAIN
   ? useLayoutOwnerPaneTree
   : (): void => {}
 

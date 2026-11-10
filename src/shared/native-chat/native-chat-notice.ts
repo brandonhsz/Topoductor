@@ -6,7 +6,7 @@ import {
   isAgentSessionHostStatusPresentation,
   type AgentSessionHostStatusPresentation
 } from '../agent-session/view/agent-session-host-status-rows'
-import { AGENT_SESSION_ORCA_STOP_PRESENTATION } from '../agent-session/lifecycle/agent-session-orca-stop'
+import { AGENT_SESSION_TOPO_STOP_PRESENTATION } from '../agent-session/lifecycle/agent-session-topo-stop'
 import { NATIVE_CHAT_STOPPED_BEFORE_START_PRESENTATION } from './native-chat-stopped-before-start'
 import { AGENT_SESSION_FORKED_FROM_PRESENTATION } from '../agent-session/agent-session-fork'
 import type { NativeChatBlock, NativeChatTextBlock } from './native-chat-types'
@@ -79,13 +79,13 @@ export function nativeChatNoticeLook(block: NativeChatTextBlock): NativeChatNoti
   if (presentation === NATIVE_CHAT_STOPPED_BEFORE_START_PRESENTATION) {
     return { kind: 'aside' }
   }
-  // Orca stopped the reply, not the agent: stored red for clients that predate it, read as a notice.
-  if (presentation === AGENT_SESSION_ORCA_STOP_PRESENTATION) {
+  // Topo stopped the reply, not the agent: stored red for clients that predate it, read as a notice.
+  if (presentation === AGENT_SESSION_TOPO_STOP_PRESENTATION) {
     return { kind: 'line', tone: 'notice' }
   }
   const modelFallback =
     !block.failure &&
-    !block.orcaStop &&
+    !block.topoStop &&
     (presentation === undefined || presentation === AGENT_SESSION_TURN_NOTICE_PRESENTATION) &&
     (block.tone === undefined || block.tone === 'notice')
       ? readClaudeModelFallbackFrame(block.providerFrame)
@@ -94,7 +94,7 @@ export function nativeChatNoticeLook(block: NativeChatTextBlock): NativeChatNoti
     return { kind: 'model-fallback', ...modelFallback }
   }
   // Declared notification kinds select disclosure; prose and nested failures do not.
-  if (presentation === undefined && !block.failure && !block.orcaStop) {
+  if (presentation === undefined && !block.failure && !block.topoStop) {
     const frame = block.providerFrame
     if (frame?.provider === 'codex' && frame.kind === 'notification:guardianWarning') {
       // Codex also reports approvals here; its own TUI hides them by this prefix.

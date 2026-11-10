@@ -1,18 +1,18 @@
-import type { OrcadManagedRuntimeStatus } from '../../shared/orcad-managed-runtime'
+import type { TopodManagedRuntimeStatus } from '../../shared/topod-managed-runtime'
 
 function count(value: number | null): string {
   return value === null ? 'unverifiable' : String(value)
 }
 
-export function formatManagedServerStatus(status: OrcadManagedRuntimeStatus): string {
+export function formatManagedServerStatus(status: TopodManagedRuntimeStatus): string {
   const lines = [
-    `Active version: ${status.activeVersion ?? 'none'}${status.activeAppVersion ? ` (Orca ${status.activeAppVersion})` : ''}`,
+    `Active version: ${status.activeVersion ?? 'none'}${status.activeAppVersion ? ` (Topo ${status.activeAppVersion})` : ''}`,
     `Previous version: ${status.previousVersion ?? 'none'}${status.rollbackAvailable ? ' (rollback available)' : ''}`,
     `Live terminals: ${count(status.terminals.liveSessions)}`
   ]
   if (status.recovery) {
     lines.push(
-      `Interrupted ${status.recovery.operation} of ${status.recovery.version} (${status.recovery.phase}); run \`orca environment recover\`.`
+      `Interrupted ${status.recovery.operation} of ${status.recovery.version} (${status.recovery.phase}); run \`topo environment recover\`.`
     )
   }
   if (status.migration) {
@@ -25,7 +25,7 @@ export function formatManagedServerStatus(status: OrcadManagedRuntimeStatus): st
   }
   if (status.availableUpdate) {
     lines.push(
-      `Update available: ${status.availableUpdate}; run \`orca environment update --environment ${status.environmentId}\`.`
+      `Update available: ${status.availableUpdate}; run \`topo environment update --environment ${status.environmentId}\`.`
     )
   }
   return lines.join('\n')

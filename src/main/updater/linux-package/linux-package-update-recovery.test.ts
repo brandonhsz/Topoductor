@@ -35,7 +35,7 @@ vi.mock('node:fs', async (importOriginal) => {
 const describePosix = describe.skipIf(process.platform === 'win32')
 
 const VERSION = '1.2.3'
-const PAYLOAD = 'orca package payload'
+const PAYLOAD = 'topo package payload'
 const SHA512 = createHash('sha512').update(PAYLOAD).digest('base64')
 
 let recovery: typeof RecoveryModule
@@ -62,7 +62,7 @@ async function writePackage(name: string, contents = PAYLOAD): Promise<string> {
 }
 
 function capture(overrides: Record<string, unknown> = {}): LinuxPackageArtifact | null {
-  const downloadedFile = (overrides.downloadedFile ?? path.join(downloadDir, 'orca.deb')) as string
+  const downloadedFile = (overrides.downloadedFile ?? path.join(downloadDir, 'topo.deb')) as string
   return recovery.captureLinuxPackageArtifact({
     version: VERSION,
     files: [{ url: path.basename(downloadedFile), sha512: SHA512 }],
@@ -76,9 +76,9 @@ beforeEach(async () => {
   hashPasses.count = 0
   getPackageTypeMock.mockReset().mockReturnValue('deb')
   buildCommandMock.mockReset().mockReturnValue({ ok: true, command: 'installed command' })
-  tempRoot = await fsp.mkdtemp(path.join(os.tmpdir(), 'orca-recovery-'))
+  tempRoot = await fsp.mkdtemp(path.join(os.tmpdir(), 'topo-recovery-'))
   cacheRoot = path.join(tempRoot, 'cache')
-  updaterDir = path.join(cacheRoot, 'orca-updater')
+  updaterDir = path.join(cacheRoot, 'topo-updater')
   downloadDir = path.join(updaterDir, 'pending')
   outsideDir = path.join(tempRoot, 'outside')
   await fsp.mkdir(downloadDir, { recursive: true })
@@ -101,27 +101,27 @@ describe('captureLinuxPackageArtifact', () => {
   })
 
   it('requires an absolute downloaded path', () => {
-    capture({ downloadedFile: 'orca.deb' })
+    capture({ downloadedFile: 'topo.deb' })
     expect(recovery.getTrackedLinuxPackageArtifact()).toBeNull()
   })
 
   it('requires the package extension to match the installed format', () => {
-    capture({ downloadedFile: path.join(downloadDir, 'orca.rpm') })
+    capture({ downloadedFile: path.join(downloadDir, 'topo.rpm') })
     expect(recovery.getTrackedLinuxPackageArtifact()).toBeNull()
   })
 
   it('matches a percent-encoded relative URL against the decoded basename', () => {
-    const downloadedFile = path.join(downloadDir, 'Orca Setup 1.2.3.deb')
-    capture({ downloadedFile, files: [{ url: 'Orca%20Setup%201.2.3.deb', sha512: SHA512 }] })
+    const downloadedFile = path.join(downloadDir, 'Topo Setup 1.2.3.deb')
+    capture({ downloadedFile, files: [{ url: 'Topo%20Setup%201.2.3.deb', sha512: SHA512 }] })
     expect(recovery.getTrackedLinuxPackageArtifact()?.path).toBe(downloadedFile)
   })
 
   it('ignores entries for other files and formats', () => {
     capture({
       files: [
-        { url: 'orca.AppImage', sha512: 'other-appimage-digest' },
-        { url: 'orca-arm64.deb', sha512: 'other-arch-digest' },
-        { url: 'orca.deb', sha512: SHA512 }
+        { url: 'topo.AppImage', sha512: 'other-appimage-digest' },
+        { url: 'topo-arm64.deb', sha512: 'other-arch-digest' },
+        { url: 'topo.deb', sha512: SHA512 }
       ]
     })
     expect(recovery.getTrackedLinuxPackageArtifact()?.sha512).toBe(SHA512)
@@ -130,8 +130,8 @@ describe('captureLinuxPackageArtifact', () => {
   it('refuses an ambiguous basename with two different digests', () => {
     capture({
       files: [
-        { url: 'orca.deb', sha512: SHA512 },
-        { url: 'https://mirror.example.com/orca.deb', sha512: 'conflicting-digest' }
+        { url: 'topo.deb', sha512: SHA512 },
+        { url: 'https://mirror.example.com/topo.deb', sha512: 'conflicting-digest' }
       ]
     })
     expect(recovery.getTrackedLinuxPackageArtifact()).toBeNull()
@@ -140,30 +140,30 @@ describe('captureLinuxPackageArtifact', () => {
   it('refuses a digest that cannot decode to 64 bytes', () => {
     // Invalid release metadata must not arm recovery that blames the downloaded file.
     capture({
-      files: [{ url: 'orca.deb', sha512: createHash('sha256').update(PAYLOAD).digest('base64') }]
+      files: [{ url: 'topo.deb', sha512: createHash('sha256').update(PAYLOAD).digest('base64') }]
     })
     expect(recovery.getTrackedLinuxPackageArtifact()).toBeNull()
   })
 
   it('refuses a digest with characters outside the base64 alphabet', () => {
     // Buffer.from silently drops invalid characters unless checked by a round trip.
-    capture({ files: [{ url: 'orca.deb', sha512: `${SHA512.slice(0, 4)}!${SHA512.slice(4)}` }] })
+    capture({ files: [{ url: 'topo.deb', sha512: `${SHA512.slice(0, 4)}!${SHA512.slice(4)}` }] })
     expect(recovery.getTrackedLinuxPackageArtifact()).toBeNull()
   })
 
   it('keeps a retained artifact when a later event carries a malformed digest', () => {
     capture()
-    expect(capture({ files: [{ url: 'orca.deb', sha512: 'not-a-digest' }] })).toBeNull()
+    expect(capture({ files: [{ url: 'topo.deb', sha512: 'not-a-digest' }] })).toBeNull()
     expect(recovery.getTrackedLinuxPackageArtifact()?.sha512).toBe(SHA512)
   })
 
   it('does not arm recovery from a download with no usable digest', () => {
-    capture({ files: [{ url: 'orca.deb' }] })
-    capture({ files: [{ url: 'orca%ZZ.deb', sha512: SHA512 }] })
+    capture({ files: [{ url: 'topo.deb' }] })
+    capture({ files: [{ url: 'topo%ZZ.deb', sha512: SHA512 }] })
     capture({
       files: [
-        { url: 'orca.deb', sha512: SHA512 },
-        { url: 'https://mirror.example.com/orca.deb', sha512: 'conflicting-digest' }
+        { url: 'topo.deb', sha512: SHA512 },
+        { url: 'https://mirror.example.com/topo.deb', sha512: 'conflicting-digest' }
       ]
     })
     expect(recovery.getTrackedLinuxPackageArtifact()).toBeNull()
@@ -172,7 +172,7 @@ describe('captureLinuxPackageArtifact', () => {
 
 describePosix('resolveLinuxPackageInstallInstructions', () => {
   it('reports missing when the recovery version does not match', async () => {
-    await writePackage('orca.deb')
+    await writePackage('topo.deb')
     capture()
     await expect(
       recovery.resolveLinuxPackageInstallInstructions(recoveryFor({ version: '9.9.9' }))
@@ -180,7 +180,7 @@ describePosix('resolveLinuxPackageInstallInstructions', () => {
   })
 
   it('reports missing when the recovery package type does not match', async () => {
-    await writePackage('orca.deb')
+    await writePackage('topo.deb')
     capture()
     await expect(
       recovery.resolveLinuxPackageInstallInstructions(recoveryFor({ packageType: 'rpm' }))
@@ -188,7 +188,7 @@ describePosix('resolveLinuxPackageInstallInstructions', () => {
   })
 
   it('reports missing when the package was deleted', async () => {
-    const filePath = await writePackage('orca.deb')
+    const filePath = await writePackage('topo.deb')
     capture()
     await fsp.rm(filePath)
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
@@ -200,7 +200,7 @@ describePosix('resolveLinuxPackageInstallInstructions', () => {
 
 describePosix('digest validation', () => {
   it('rejects a package whose contents changed', async () => {
-    const filePath = await writePackage('orca.deb')
+    const filePath = await writePackage('topo.deb')
     capture()
     await fsp.writeFile(filePath, 'tampered payload')
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
@@ -210,7 +210,7 @@ describePosix('digest validation', () => {
   })
 
   it.runIf(process.getuid?.() !== 0)('reports read-failed for an unreadable package', async () => {
-    const filePath = await writePackage('orca.deb')
+    const filePath = await writePackage('topo.deb')
     capture()
     await fsp.chmod(filePath, 0o000)
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
@@ -223,9 +223,9 @@ describePosix('digest validation', () => {
 
 describePosix('cache containment', () => {
   it('rejects a path that traverses out of the cache', async () => {
-    const filePath = path.join(outsideDir, 'orca.deb')
+    const filePath = path.join(outsideDir, 'topo.deb')
     await fsp.writeFile(filePath, PAYLOAD)
-    capture({ downloadedFile: path.join(downloadDir, '..', '..', '..', 'outside', 'orca.deb') })
+    capture({ downloadedFile: path.join(downloadDir, '..', '..', '..', 'outside', 'topo.deb') })
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
       ok: false,
       reason: 'not-regular'
@@ -233,7 +233,7 @@ describePosix('cache containment', () => {
   })
 
   it('rejects a directory in place of the package', async () => {
-    await fsp.mkdir(path.join(downloadDir, 'orca.deb'))
+    await fsp.mkdir(path.join(downloadDir, 'topo.deb'))
     capture()
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
       ok: false,
@@ -243,7 +243,7 @@ describePosix('cache containment', () => {
 
   it('rejects a symlink to a real package inside the cache', async () => {
     await writePackage('real.deb')
-    const linkPath = path.join(downloadDir, 'orca.deb')
+    const linkPath = path.join(downloadDir, 'topo.deb')
     await fsp.symlink(path.join(downloadDir, 'real.deb'), linkPath)
     capture()
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
@@ -253,9 +253,9 @@ describePosix('cache containment', () => {
   })
 
   it('rejects a package whose parent symlink escapes the cache', async () => {
-    await fsp.writeFile(path.join(outsideDir, 'orca.deb'), PAYLOAD)
+    await fsp.writeFile(path.join(outsideDir, 'topo.deb'), PAYLOAD)
     await fsp.symlink(outsideDir, path.join(cacheRoot, 'escape'))
-    capture({ downloadedFile: path.join(cacheRoot, 'escape', 'orca.deb') })
+    capture({ downloadedFile: path.join(cacheRoot, 'escape', 'topo.deb') })
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
       ok: false,
       reason: 'not-regular'
@@ -265,7 +265,7 @@ describePosix('cache containment', () => {
   it('rejects a subdirectory of the pending directory', async () => {
     const nested = path.join(downloadDir, 'nested')
     await fsp.mkdir(nested)
-    const filePath = path.join(nested, 'orca.deb')
+    const filePath = path.join(nested, 'topo.deb')
     await fsp.writeFile(filePath, PAYLOAD)
     capture({ downloadedFile: filePath })
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
@@ -276,9 +276,9 @@ describePosix('cache containment', () => {
 
   it('uses the home cache when XDG_CACHE_HOME is unset', async () => {
     const homeCache = path.join(tempRoot, 'home')
-    const homeDownloadDir = path.join(homeCache, '.cache', 'orca-updater', 'pending')
+    const homeDownloadDir = path.join(homeCache, '.cache', 'topo-updater', 'pending')
     await fsp.mkdir(homeDownloadDir, { recursive: true })
-    const filePath = path.join(homeDownloadDir, 'orca.deb')
+    const filePath = path.join(homeDownloadDir, 'topo.deb')
     await fsp.writeFile(filePath, PAYLOAD)
     vi.stubEnv('XDG_CACHE_HOME', '')
     vi.spyOn(os, 'homedir').mockReturnValue(homeCache)
@@ -286,7 +286,7 @@ describePosix('cache containment', () => {
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
       ok: true,
       command: 'installed command',
-      packageFileName: 'orca.deb'
+      packageFileName: 'topo.deb'
     })
   })
 })
@@ -296,7 +296,7 @@ describePosix('pending-directory anchoring', () => {
   it('rejects a package in an attacker-owned directory under the cache root', async () => {
     const evilDir = path.join(cacheRoot, 'evil')
     await fsp.mkdir(evilDir)
-    const filePath = path.join(evilDir, 'orca.deb')
+    const filePath = path.join(evilDir, 'topo.deb')
     await fsp.writeFile(filePath, PAYLOAD)
     capture({ downloadedFile: filePath })
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
@@ -308,7 +308,7 @@ describePosix('pending-directory anchoring', () => {
   it('rejects a pending directory buried deeper than one level under the cache root', async () => {
     const deepPending = path.join(cacheRoot, 'evil', 'nested', 'pending')
     await fsp.mkdir(deepPending, { recursive: true })
-    const filePath = path.join(deepPending, 'orca.deb')
+    const filePath = path.join(deepPending, 'topo.deb')
     await fsp.writeFile(filePath, PAYLOAD)
     capture({ downloadedFile: filePath })
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
@@ -318,33 +318,33 @@ describePosix('pending-directory anchoring', () => {
   })
 
   it('accepts any updater directory name that holds the pending directory', async () => {
-    const otherPending = path.join(cacheRoot, 'orca-updater-next', 'pending')
+    const otherPending = path.join(cacheRoot, 'topo-updater-next', 'pending')
     await fsp.mkdir(otherPending, { recursive: true })
-    const filePath = path.join(otherPending, 'orca.deb')
+    const filePath = path.join(otherPending, 'topo.deb')
     await fsp.writeFile(filePath, PAYLOAD)
     capture({ downloadedFile: filePath })
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
       ok: true,
       command: 'installed command',
-      packageFileName: 'orca.deb'
+      packageFileName: 'topo.deb'
     })
   })
 
   it('accepts a pending directory reached through a symlink that stays in the cache', async () => {
-    await writePackage('orca.deb')
+    await writePackage('topo.deb')
     await fsp.symlink(updaterDir, path.join(cacheRoot, 'link-to-updater'))
-    capture({ downloadedFile: path.join(cacheRoot, 'link-to-updater', 'pending', 'orca.deb') })
+    capture({ downloadedFile: path.join(cacheRoot, 'link-to-updater', 'pending', 'topo.deb') })
     await expect(recovery.resolveLinuxPackageInstallInstructions(recoveryFor())).resolves.toEqual({
       ok: true,
       command: 'installed command',
-      packageFileName: 'orca.deb'
+      packageFileName: 'topo.deb'
     })
   })
 })
 
 describePosix('resolveLinuxPackageRevealTarget', () => {
   it('rejects a package that fails validation', async () => {
-    const filePath = await writePackage('orca.deb')
+    const filePath = await writePackage('topo.deb')
     capture()
     await fsp.writeFile(filePath, 'tampered payload')
     await expect(recovery.resolveLinuxPackageRevealTarget(recoveryFor())).resolves.toEqual({

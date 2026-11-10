@@ -3,7 +3,7 @@ import { act, create as createRenderer } from 'react-test-renderer'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('../../../src/shared/sidebar-inputs-switch', () => ({ ORCA_SIDEBAR_INPUTS_IS_MAIN: true }))
+vi.mock('../../../src/shared/sidebar-inputs-switch', () => ({ TOPO_SIDEBAR_INPUTS_IS_MAIN: true }))
 
 import '../../../src/shared/rpc-contract/workspace-view-collapse-params'
 import { FakeSession } from '../transport/connection/mobile-endpoint-supervisor-test-fakes'

@@ -1,7 +1,7 @@
 import { expect, it, vi } from 'vitest'
 import { makeCloseTestTab, preparePendingSplitClose } from './pending-split-close-test-fixture'
 
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 
 const replyFor = (kind: 'reattach' | 'cold-restore-new' | 'ordinary-fresh') => ({
   id: 'pty-restored',
@@ -39,7 +39,7 @@ it('commits the explicit split close in main by its leaf without waiting for its
   Object.assign(window.api, { session: { ...window.api.session, closeTerminalSurface } })
   p.actions.executeClosePane(1, 'user')
   await p.mainAnswered()
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     expect(p.sentPaneCloses()).toEqual([
       { type: 'closePane', workspace: 'workspace', tabId: p.tabId, leafId: p.leafId }
     ])

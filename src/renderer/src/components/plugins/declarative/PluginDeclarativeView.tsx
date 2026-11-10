@@ -49,7 +49,7 @@ type ButtonVariant =
   | 'destructive'
   | 'destructive-chip'
 
-/** The shared tone vocabulary on Orca's button variants: colour only where it marks a role. */
+/** The shared tone vocabulary on Topo's button variants: colour only where it marks a role. */
 function buttonVariant(props: PluginDeclarativeProps<'Button' | 'IconButton'>): ButtonVariant {
   const variant = props.variant ?? 'outline'
   if (props.tone === 'danger') {
@@ -66,7 +66,7 @@ export type PluginDeclarativeViewProps = {
   tree: PluginDeclarativeNode | null
   /** Fires a guest callback; the caller adds the revision the tree came from. */
   onEvent: PluginDeclarativeEmit
-  /** Opens a validated `http(s):`/`mailto:` href outside Orca, once `gestureId`'s control settled. */
+  /** Opens a validated `http(s):`/`mailto:` href outside Topo, once `gestureId`'s control settled. */
   onOpenLink?: (href: string, gestureId: string) => void
   /** Object URL for a plugin-relative image file, or null when it cannot be shown. */
   onLoadImage?: (path: string) => Promise<string | null>
@@ -333,7 +333,7 @@ function PluginDeclarativeNodeView({
   }
 }
 
-/** Renders a validated declarative plugin tree with Orca's own components. */
+/** Renders a validated declarative plugin tree with Topo's own components. */
 export function PluginDeclarativeView({
   tree,
   onEvent,

@@ -1,8 +1,8 @@
 import { posix, win32 } from 'node:path'
 
 /**
- * Where native messaging host manifests (`<name>.json`) are looked up, in order. Orca's own folder
- * comes first so a user can register or override a host for Orca alone. Then Chrome's and
+ * Where native messaging host manifests (`<name>.json`) are looked up, in order. Topo's own folder
+ * comes first so a user can register or override a host for Topo alone. Then Chrome's and
  * Chromium's own locations, user before system as Chrome reads them, then the user folders of other
  * Chromium browsers, where desktop apps often register only for the browsers they detect.
  */
@@ -15,13 +15,13 @@ export type NativeHostManifestSource =
 export type NativeHostLocationEnvironment = {
   platform: NodeJS.Platform
   homeDir: string
-  /** Orca's userData folder. */
+  /** Topo's userData folder. */
   userDataDir: string
   /** Linux: $XDG_CONFIG_HOME, which Chromium browsers use instead of ~/.config when set. */
   xdgConfigHome?: string
 }
 
-export const ORCA_NATIVE_MESSAGING_HOSTS_FOLDER = 'NativeMessagingHosts'
+export const TOPO_NATIVE_MESSAGING_HOSTS_FOLDER = 'NativeMessagingHosts'
 
 // User data folders under ~/Library/Application Support; Chrome and Chromium also have system ones.
 const MAC_OTHER_BROWSERS = [
@@ -71,7 +71,7 @@ export function nativeHostManifestSources(
   const path = env.platform === 'win32' ? win32 : posix
   const own: NativeHostManifestSource = {
     kind: 'folder',
-    folder: path.join(env.userDataDir, ORCA_NATIVE_MESSAGING_HOSTS_FOLDER)
+    folder: path.join(env.userDataDir, TOPO_NATIVE_MESSAGING_HOSTS_FOLDER)
   }
   const folders = (list: string[]): NativeHostManifestSource[] =>
     list.map((folder) => ({ kind: 'folder', folder }))

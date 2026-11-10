@@ -21,7 +21,7 @@ vi.mock('electron', () => ({
     isReady: () => true,
     exit: vi.fn(),
     on: vi.fn(),
-    name: 'Orca'
+    name: 'Topo'
   },
   dialog: { showMessageBox }
 }))
@@ -48,7 +48,7 @@ import {
 } from './windows-install-dir-acl-recovery'
 import { resetWindowsInstallDirAclRepairForTest } from './windows-install-dir-package-acl-repair'
 
-const INSTALL_DIR = 'C:\\Users\\neil\\AppData\\Local\\Programs\\orca'
+const INSTALL_DIR = 'C:\\Users\\neil\\AppData\\Local\\Programs\\topo'
 
 function recoveryOptions(userDataPath?: string): {
   platform: 'win32'
@@ -61,7 +61,7 @@ function recoveryOptions(userDataPath?: string): {
     platform: 'win32',
     installDir: INSTALL_DIR,
     appVersion: '1.4.184',
-    userDataPath: userDataPath ?? mkdtempSync(join(tmpdir(), 'orca-acl-gpu-guard-')),
+    userDataPath: userDataPath ?? mkdtempSync(join(tmpdir(), 'topo-acl-gpu-guard-')),
     recordBreadcrumb: () => undefined
   }
 }
@@ -139,7 +139,7 @@ describe('handleGpuChildCrash vs the install-dir ACL verdict', () => {
   })
 
   beforeEach(() => {
-    userData.path = mkdtempSync(join(tmpdir(), 'orca-acl-gpu-userdata-'))
+    userData.path = mkdtempSync(join(tmpdir(), 'topo-acl-gpu-userdata-'))
     resetWindowsInstallDirAclRepairForTest()
     resetWindowsInstallDirAclRecoveryForTest()
     showMessageBox.mockClear()
@@ -227,7 +227,7 @@ describe('presentGpuFallbackRecoveredLaunchPrompt vs a marker retired since it w
   })
 
   beforeEach(() => {
-    userData.path = mkdtempSync(join(tmpdir(), 'orca-acl-gpu-recovered-'))
+    userData.path = mkdtempSync(join(tmpdir(), 'topo-acl-gpu-recovered-'))
     resetWindowsInstallDirAclRepairForTest()
     resetWindowsInstallDirAclRecoveryForTest()
     showMessageBox.mockClear()

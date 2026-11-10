@@ -47,7 +47,7 @@ async function stagedArchives(uploads: string): Promise<string[]> {
 
 describe('SkillUploadSessionService', () => {
   it('rejects a staging root that redirects through a symlink or junction', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-upload-session-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-upload-session-'))
     roots.push(root)
     const outside = join(root, 'outside')
     const uploads = join(root, 'uploads')
@@ -62,7 +62,7 @@ describe('SkillUploadSessionService', () => {
   })
 
   it('never lets a second service delete a live upload owned by the first', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-upload-session-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-upload-session-'))
     roots.push(root)
     const uploads = join(root, 'uploads')
     const first = createUploadService(uploads)
@@ -92,7 +92,7 @@ describe('SkillUploadSessionService', () => {
   })
 
   it('serializes concurrent admission at four sessions', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-upload-session-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-upload-session-'))
     roots.push(root)
     const uploads = join(root, 'uploads')
     const service = createUploadService(uploads)
@@ -113,7 +113,7 @@ describe('SkillUploadSessionService', () => {
   })
 
   it('accepts monotonic chunks, acknowledges identical retries, and transfers ownership', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-upload-session-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-upload-session-'))
     roots.push(root)
     const service = createUploadService(join(root, 'uploads'))
     const bytes = Buffer.from('immutable skill package')
@@ -147,7 +147,7 @@ describe('SkillUploadSessionService', () => {
   })
 
   it('resumes an idempotent transfer without allocating another session', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-upload-session-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-upload-session-'))
     roots.push(root)
     const service = createUploadService(join(root, 'uploads'))
     const bytes = Buffer.from('resumable package')
@@ -173,7 +173,7 @@ describe('SkillUploadSessionService', () => {
   })
 
   it('keeps a taken archive until retryable cleanup succeeds', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-upload-session-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-upload-session-'))
     roots.push(root)
     vi.useFakeTimers()
     try {
@@ -215,7 +215,7 @@ describe('SkillUploadSessionService', () => {
   })
 
   it('retains failed archive cleanup within the four-path admission bound', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-upload-session-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-upload-session-'))
     roots.push(root)
     const uploads = join(root, 'uploads')
     const service = createUploadService(uploads)
@@ -243,7 +243,7 @@ describe('SkillUploadSessionService', () => {
   })
 
   it('rejects gaps, changed retries, and an archive hash mismatch', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-upload-session-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-upload-session-'))
     roots.push(root)
     const service = createUploadService(join(root, 'uploads'))
     const bytes = Buffer.from('package')

@@ -13,7 +13,7 @@ import type * as NodePath from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type * as ClaudeFolderTrustFile from '../../claude/claude-folder-trust-file'
 
-const CODEX_CONFIG_FILES = ['/orca/codex-home/config.toml', '/home/u/.codex/config.toml']
+const CODEX_CONFIG_FILES = ['/topo/codex-home/config.toml', '/home/u/.codex/config.toml']
 
 const mocks = vi.hoisted(() => ({
   codex: vi.fn<(path: string, configFiles: readonly string[]) => Promise<void>>(async () => {}),
@@ -71,7 +71,7 @@ describe('applyAgentWorkspaceTrust for Claude', () => {
   let root: string
 
   beforeEach(() => {
-    root = realpathSync(mkdtempSync(join(tmpdir(), 'orca-agent-trust-')))
+    root = realpathSync(mkdtempSync(join(tmpdir(), 'topo-agent-trust-')))
   })
 
   afterEach(() => {

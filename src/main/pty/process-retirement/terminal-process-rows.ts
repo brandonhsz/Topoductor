@@ -1,6 +1,6 @@
 /** Limit ps to the pane's terminal so launch paste avoids whole-machine scans that take seconds on loaded hosts. */
 
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { runPsInProcess } from '../../../shared/libproc-process-table'
 import {
   parseShellForegroundRows,

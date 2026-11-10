@@ -1,7 +1,7 @@
 import type { MessageRow, MessageType } from '../../../../orchestration/db/orchestration-records'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import type { MailboxDeliveryBatch } from '../../../../orchestration/db/messages/role-mailbox-delivery'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import { formatMessageBanner } from '../../../../orchestration/mailbox/formatting/message-formatting'
 import { acknowledgedOnlyReceipt, deliveryReceipt, exposeMessages } from './mailbox-message-receipt'
@@ -20,7 +20,7 @@ type RemoteAttachment = NonNullable<
 
 export async function checkWorkerMailbox(args: {
   params: CheckParamsInput
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   handle: string
   paneKey: string | undefined

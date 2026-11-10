@@ -54,7 +54,7 @@ export function createFixture() {
   }
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-journal-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-journal-'))
     clock = 1_000
   })
 

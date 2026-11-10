@@ -17,7 +17,7 @@ import { hashPluginTree } from './plugin-content-hash'
 const roots: string[] = []
 
 async function tempRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-content-test-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-content-test-'))
   roots.push(root)
   return root
 }

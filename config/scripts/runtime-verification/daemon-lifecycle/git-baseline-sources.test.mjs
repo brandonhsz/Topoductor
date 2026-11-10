@@ -1,4 +1,4 @@
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { mkdtempSync, mkdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -14,7 +14,7 @@ afterEach(() => {
 })
 
 it('reads the selected revision before and after a move, preserving its import directory', () => {
-  repo = mkdtempSync(join(tmpdir(), 'orca-git-baseline-'))
+  repo = mkdtempSync(join(tmpdir(), 'topo-git-baseline-'))
   const git = (...args) => {
     const result = runProcessSync({
       program: 'git',

@@ -1,21 +1,21 @@
 import { quotePosixShellDoubleQuotedApostrophe } from '../../shared/shell/launch/shell-argument-quoting'
 import { quotePowerShellLiteral } from '../../shared/powershell-native-argument'
 
-const MANAGED_MARKER = '# Orca managed WSL CLI launcher'
-const BRIDGE_MANAGED_MARKER = '# Orca managed WSL CLI PowerShell bridge'
+const MANAGED_MARKER = '# Topo managed WSL CLI launcher'
+const BRIDGE_MANAGED_MARKER = '# Topo managed WSL CLI PowerShell bridge'
 
 const FIND_INTEROP_POWERSHELL = `if command -v powershell.exe >/dev/null 2>&1; then
-  ORCA_POWERSHELL=powershell.exe
+  TOPO_POWERSHELL=powershell.exe
 elif [ -x /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe ]; then
-  ORCA_POWERSHELL=/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe
+  TOPO_POWERSHELL=/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe
 else
-  echo "Orca WSL CLI requires Windows interop and could not find powershell.exe." >&2
+  echo "Topo WSL CLI requires Windows interop and could not find powershell.exe." >&2
   exit 1
 fi`
 
 export function buildWslLauncher(
   windowsLauncherPath: string,
-  bridgePath = '${XDG_DATA_HOME:-$HOME/.local/share}/orca/orca-wsl-bridge.ps1'
+  bridgePath = '${XDG_DATA_HOME:-$HOME/.local/share}/topo/topo-wsl-bridge.ps1'
 ): string {
   return buildLauncher(
     windowsLauncherPath,
@@ -31,10 +31,10 @@ export function buildColocatedWslLauncher(
 ): string {
   return buildLauncher(
     windowsLauncherPath,
-    '"$(dirname -- "$0")/orca-wsl-bridge.ps1"',
-    `ORCA_POWERSHELL=$(wslpath -u ${quotePosixShellDoubleQuotedApostrophe(windowsPowerShellPath)})
-if [ ! -x "$ORCA_POWERSHELL" ]; then
-  echo "Orca WSL CLI requires Windows interop and access to $ORCA_POWERSHELL." >&2
+    '"$(dirname -- "$0")/topo-wsl-bridge.ps1"',
+    `TOPO_POWERSHELL=$(wslpath -u ${quotePosixShellDoubleQuotedApostrophe(windowsPowerShellPath)})
+if [ ! -x "$TOPO_POWERSHELL" ]; then
+  echo "Topo WSL CLI requires Windows interop and access to $TOPO_POWERSHELL." >&2
   exit 1
 fi`
   )
@@ -49,35 +49,35 @@ function buildLauncher(
   return `#!/usr/bin/env bash
 set -euo pipefail
 ${MANAGED_MARKER}
-# ORCA_WIN_LAUNCHER_B64=${encodedTarget}
-ORCA_WIN_LAUNCHER=${quotePosixShellDoubleQuotedApostrophe(windowsLauncherPath)}
-ORCA_BRIDGE_PS1=${bridgePathExpression}
+# TOPO_WIN_LAUNCHER_B64=${encodedTarget}
+TOPO_WIN_LAUNCHER=${quotePosixShellDoubleQuotedApostrophe(windowsLauncherPath)}
+TOPO_BRIDGE_PS1=${bridgePathExpression}
 ${resolvePowerShell}
 # Why: a shell can outlive a deleted worktree; keep explicit CLI selectors and
 # help usable, and repair cwd before any WSL interop tool tries to resolve it.
-ORCA_WSL_CWD=$(pwd -P 2>/dev/null) || {
-  ORCA_WSL_CWD=/
+TOPO_WSL_CWD=$(pwd -P 2>/dev/null) || {
+  TOPO_WSL_CWD=/
   cd /
 }
-ORCA_BRIDGE_PS1_WIN=$(wslpath -w "$ORCA_BRIDGE_PS1")
-ORCA_WSL_CWD_WIN=$(wslpath -w "$ORCA_WSL_CWD")
+TOPO_BRIDGE_PS1_WIN=$(wslpath -w "$TOPO_BRIDGE_PS1")
+TOPO_WSL_CWD_WIN=$(wslpath -w "$TOPO_WSL_CWD")
 if [ -n "\${WSL_DISTRO_NAME:-}" ]; then
   set -- -WslDistro "$WSL_DISTRO_NAME" "$@"
 fi
-exec "$ORCA_POWERSHELL" -NoProfile -ExecutionPolicy Bypass -File "$ORCA_BRIDGE_PS1_WIN" "$ORCA_WIN_LAUNCHER" -WslCwd "$ORCA_WSL_CWD_WIN" "$@"
+exec "$TOPO_POWERSHELL" -NoProfile -ExecutionPolicy Bypass -File "$TOPO_BRIDGE_PS1_WIN" "$TOPO_WIN_LAUNCHER" -WslCwd "$TOPO_WSL_CWD_WIN" "$@"
 `
 }
 
-/** `app` pins the bridge to one Orca instance; the guest-registered bridge omits it. */
+/** `app` pins the bridge to one Topo instance; the guest-registered bridge omits it. */
 export function buildWslBridgeScript(app?: {
   userDataPath: string
   cliEntryPath?: string
 }): string {
   const setAppEnv = app
     ? [
-        `$env:ORCA_USER_DATA_PATH = ${quotePowerShellLiteral(app.userDataPath)}`,
+        `$env:TOPO_USER_DATA_PATH = ${quotePowerShellLiteral(app.userDataPath)}`,
         // Why: WSLENV /p maps this guest-only dir back; an app the CLI starts must not inherit it.
-        'Remove-Item Env:ORCA_WSL_CLI_DIR -ErrorAction SilentlyContinue',
+        'Remove-Item Env:TOPO_WSL_CLI_DIR -ErrorAction SilentlyContinue',
         ...(app.cliEntryPath ? buildDevCliEnv(app.cliEntryPath) : [])
       ]
     : []
@@ -116,22 +116,22 @@ $exitCode = 0
 try {
   # Why: a param block prefix-binds forwarded flags such as --for in PowerShell 5.1.
   if ($args.Count -lt 1) {
-    throw 'Invalid Orca WSL CLI bridge invocation.'
+    throw 'Invalid Topo WSL CLI bridge invocation.'
   }
-  [string]$OrcaLauncher = $args[0]
+  [string]$TopoLauncher = $args[0]
   [string]$WslCwd = ''
   [string]$WslDistro = ''
   [int]$ForwardArgStart = 1
   if ($args.Count -ge 2 -and $args[1] -eq '-WslCwd') {
     if ($args.Count -lt 3) {
-      throw 'Invalid Orca WSL CLI bridge invocation.'
+      throw 'Invalid Topo WSL CLI bridge invocation.'
     }
     $WslCwd = $args[2]
     $ForwardArgStart = 3
   }
   if ($ForwardArgStart -eq 3 -and $args.Count -ge 4 -and $args[3] -eq '-WslDistro') {
     if ($args.Count -lt 5) {
-      throw 'Invalid Orca WSL CLI bridge invocation.'
+      throw 'Invalid Topo WSL CLI bridge invocation.'
     }
     $WslDistro = $args[4]
     $ForwardArgStart = 5
@@ -141,21 +141,21 @@ try {
     $ForwardArgs = @($args[$ForwardArgStart..($args.Count - 1)])
   }
   if ([string]::IsNullOrEmpty($WslCwd)) {
-    Remove-Item Env:ORCA_CLI_CWD -ErrorAction SilentlyContinue
+    Remove-Item Env:TOPO_CLI_CWD -ErrorAction SilentlyContinue
   } else {
-    $env:ORCA_CLI_CWD = $WslCwd
+    $env:TOPO_CLI_CWD = $WslCwd
   }
   # Do not let an inherited Windows environment choose the caller's account location.
   if ([string]::IsNullOrEmpty($WslDistro)) {
-    Remove-Item Env:ORCA_CLI_WSL_DISTRO -ErrorAction SilentlyContinue
+    Remove-Item Env:TOPO_CLI_WSL_DISTRO -ErrorAction SilentlyContinue
   } else {
-    $env:ORCA_CLI_WSL_DISTRO = $WslDistro
+    $env:TOPO_CLI_WSL_DISTRO = $WslDistro
   }
-  $LauncherDirectory = Split-Path -Parent $OrcaLauncher
+  $LauncherDirectory = Split-Path -Parent $TopoLauncher
   Push-Location -LiteralPath $LauncherDirectory
   # Why: Windows PowerShell 5.1 cannot losslessly splat strings to native argv.
   $StartInfo = [System.Diagnostics.ProcessStartInfo]::new()
-  $StartInfo.FileName = $OrcaLauncher
+  $StartInfo.FileName = $TopoLauncher
 ${bridgeLines(setAppEnv)}  $StartInfo.Arguments = (($ForwardArgs | ForEach-Object {
     ConvertTo-NativeCommandLineArgument $_
   }) -join ' ')
@@ -169,7 +169,7 @@ ${bridgeLines(setAppEnv)}  $StartInfo.Arguments = (($ForwardArgs | ForEach-Objec
   $StartInfo.WorkingDirectory = $LauncherDirectory
   $Process = [System.Diagnostics.Process]::Start($StartInfo)
   if ($null -eq $Process) {
-    throw 'Unable to start the Orca Windows CLI launcher.'
+    throw 'Unable to start the Topo Windows CLI launcher.'
   }
   $Process.WaitForExit()
   $exitCode = $Process.ExitCode
@@ -186,9 +186,9 @@ exit $exitCode
 function buildDevCliEnv(cliEntryPath: string): string[] {
   return [
     "$env:ELECTRON_RUN_AS_NODE = '1'",
-    "if (-not $env:ORCA_APP_EXECUTABLE) { $env:ORCA_APP_EXECUTABLE = $OrcaLauncher; $env:ORCA_APP_EXECUTABLE_NEEDS_APP_ROOT = '1' }",
-    '$env:ORCA_NODE_OPTIONS = $env:NODE_OPTIONS',
-    '$env:ORCA_NODE_REPL_EXTERNAL_MODULE = $env:NODE_REPL_EXTERNAL_MODULE',
+    "if (-not $env:TOPO_APP_EXECUTABLE) { $env:TOPO_APP_EXECUTABLE = $TopoLauncher; $env:TOPO_APP_EXECUTABLE_NEEDS_APP_ROOT = '1' }",
+    '$env:TOPO_NODE_OPTIONS = $env:NODE_OPTIONS',
+    '$env:TOPO_NODE_REPL_EXTERNAL_MODULE = $env:NODE_REPL_EXTERNAL_MODULE',
     'Remove-Item Env:NODE_OPTIONS, Env:NODE_REPL_EXTERNAL_MODULE -ErrorAction SilentlyContinue',
     `$ForwardArgs = @(${quotePowerShellLiteral(cliEntryPath)}) + $ForwardArgs`
   ]
@@ -199,8 +199,8 @@ function bridgeLines(lines: readonly string[]): string {
 }
 
 export function getBridgePathFromCommandPath(commandPath: string): string {
-  // Current and legacy command names share one bridge under ~/.local/share/orca.
-  return `${commandPath.replace(/\/\.local\/bin\/(?:orca|orca-ide)$/, '/.local/share/orca')}/orca-wsl-bridge.ps1`
+  // Current and legacy command names share one bridge under ~/.local/share/topo.
+  return `${commandPath.replace(/\/\.local\/bin\/(?:topo|topo-ide)$/, '/.local/share/topo')}/topo-wsl-bridge.ps1`
 }
 
 export function buildSafeReplaceGuard(path: string, managedMarker: string): string {
@@ -208,10 +208,10 @@ export function buildSafeReplaceGuard(path: string, managedMarker: string): stri
   const quotedMarker = quotePosixShellDoubleQuotedApostrophe(managedMarker)
   return [
     `if [ -L ${quotedPath} ]; then`,
-    '  echo "__ORCA_CONFLICT__"',
+    '  echo "__TOPO_CONFLICT__"',
     '  exit 23',
     `elif [ -e ${quotedPath} ] && { [ ! -f ${quotedPath} ] || ! grep -Fq ${quotedMarker} ${quotedPath}; }; then`,
-    '  echo "__ORCA_CONFLICT__"',
+    '  echo "__TOPO_CONFLICT__"',
     '  exit 23',
     'fi'
   ].join('\n')
@@ -219,10 +219,10 @@ export function buildSafeReplaceGuard(path: string, managedMarker: string): stri
 
 export function buildRegistrationLockPrelude(commandPath: string): string {
   const lockDir = getPosixDirname(getBridgePathFromCommandPath(commandPath))
-  // flock serializes separate Orca installs; the per-distro queue covers only this process.
+  // flock serializes separate Topo installs; the per-distro queue covers only this process.
   return [
     `if command -v flock >/dev/null 2>&1 && mkdir -p ${quotePosixShellDoubleQuotedApostrophe(lockDir)} 2>/dev/null; then`,
-    `  exec 9>${quotePosixShellDoubleQuotedApostrophe(`${lockDir}/.orca-wsl-cli.lock`)}`,
+    `  exec 9>${quotePosixShellDoubleQuotedApostrophe(`${lockDir}/.topo-wsl-cli.lock`)}`,
     '  flock -x -w 30 9',
     'fi'
   ].join('\n')
@@ -250,7 +250,7 @@ export function buildSafeRemoveCommand(commandPath: string, legacyCommandPath?: 
 }
 
 export function parseManagedLauncherTarget(content: string): string | null {
-  const encoded = content.match(/^# ORCA_WIN_LAUNCHER_B64=([A-Za-z0-9+/=]+)$/m)?.[1]
+  const encoded = content.match(/^# TOPO_WIN_LAUNCHER_B64=([A-Za-z0-9+/=]+)$/m)?.[1]
   if (encoded) {
     try {
       return Buffer.from(encoded, 'base64').toString('utf8')
@@ -259,7 +259,7 @@ export function parseManagedLauncherTarget(content: string): string | null {
     }
   }
 
-  const legacyTarget = content.match(/^ORCA_WIN_LAUNCHER='((?:[^']|'"'"')*)'$/m)?.[1]
+  const legacyTarget = content.match(/^TOPO_WIN_LAUNCHER='((?:[^']|'"'"')*)'$/m)?.[1]
   return legacyTarget ? legacyTarget.replaceAll(`'"'"'`, "'") : null
 }
 

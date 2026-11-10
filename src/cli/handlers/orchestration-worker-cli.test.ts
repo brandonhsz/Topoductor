@@ -13,7 +13,7 @@ import { printResult } from '../format'
 
 import { RuntimeClient } from '../runtime-client'
 
-const client = new RuntimeClient('/tmp/orca-worker-cli', 60_000, null, null)
+const client = new RuntimeClient('/tmp/topo-worker-cli', 60_000, null, null)
 
 describe('orchestration worker-start CLI contract', () => {
   beforeEach(() => {
@@ -22,11 +22,11 @@ describe('orchestration worker-start CLI contract', () => {
     vi.mocked(printResult).mockClear()
     vi.spyOn(console, 'log').mockImplementation(() => {})
     process.exitCode = undefined
-    vi.stubEnv('ORCA_CLI_COMMAND', undefined)
-    vi.stubEnv('ORCA_DEV_CLI_INVOCATION', undefined)
-    vi.stubEnv('ORCA_USER_DATA_PATH', undefined)
-    vi.stubEnv('ORCA_TERMINAL_HANDLE', 'term_coord')
-    vi.stubEnv('ORCA_AGENT_SESSION_ID', undefined)
+    vi.stubEnv('TOPO_CLI_COMMAND', undefined)
+    vi.stubEnv('TOPO_DEV_CLI_INVOCATION', undefined)
+    vi.stubEnv('TOPO_USER_DATA_PATH', undefined)
+    vi.stubEnv('TOPO_TERMINAL_HANDLE', 'term_coord')
+    vi.stubEnv('TOPO_AGENT_SESSION_ID', undefined)
   })
 
   afterEach(() => {

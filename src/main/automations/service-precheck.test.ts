@@ -47,7 +47,7 @@ async function createStore() {
   const { Store } = await import('../persistence/loading-store/store')
   const { initDataPath } = await import('../persistence/loading-store/user-data-path')
   initDataPath()
-  return createSqliteTestStore(Store, { dataFile: join(testState.dir, 'orca-data.json') })
+  return createSqliteTestStore(Store, { dataFile: join(testState.dir, 'topo-data.json') })
 }
 
 const makeRepo = (overrides: Partial<Repo> = {}): Repo => ({
@@ -66,7 +66,7 @@ function mutateDataFile(
     automationRuns: Record<string, unknown>[]
   }) => void
 ): void {
-  const file = join(testState.dir, 'orca-data.json')
+  const file = join(testState.dir, 'topo-data.json')
   const state = JSON.parse(readPersistedStateJson(file))
   mutate(state)
   writePersistedStateJson(file, JSON.stringify(state))
@@ -76,7 +76,7 @@ describe('AutomationService prechecks', () => {
   beforeEach(() => {
     hasCreatedStoreInCase = false
     resetRetirementCollisionKeyCacheForTests()
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-automations-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-automations-test-'))
     runAutomationPrecheckMock.mockReset()
     vi.useFakeTimers()
   })

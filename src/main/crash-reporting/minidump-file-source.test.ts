@@ -18,7 +18,7 @@ function header(): Buffer {
 }
 
 async function sourceFile() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-minidump-source-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-minidump-source-'))
   roots.push(root)
   const path = join(root, 'dump.dmp')
   await writeFile(path, header())

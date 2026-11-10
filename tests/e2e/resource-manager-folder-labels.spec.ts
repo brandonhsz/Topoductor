@@ -1,16 +1,16 @@
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { makeResourceManagerFixtureVisible } from './helpers/resource-manager-visible-fixture'
 import { waitForSessionReady } from './helpers/store'
-import { createRestartSession } from './helpers/orca-restart'
+import { createRestartSession } from './helpers/topo-restart'
 
 test.use({ seedTestRepo: false })
 
 test('names a folder terminal recovered from the daemon after restart without an open tab', async (// oxlint-disable-next-line no-empty-pattern -- Playwright requires destructuring to request no fixtures.
 {}, testInfo) => {
-  const root = mkdtempSync(join(tmpdir(), 'orca-recovered-folder-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-recovered-folder-'))
   const session = createRestartSession(testInfo)
   let launched: Awaited<ReturnType<typeof session.launch>> | undefined
   try {

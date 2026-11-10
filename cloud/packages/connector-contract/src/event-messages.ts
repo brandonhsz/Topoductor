@@ -1,4 +1,4 @@
-import { EpochMsSchema, OpaqueIdSchema, SequenceSchema } from '@orca-cloud/push-contract'
+import { EpochMsSchema, OpaqueIdSchema, SequenceSchema } from '@topo-cloud/push-contract'
 import { z } from 'zod'
 import { CONNECTOR_LIMITS } from './connector-limits.js'
 import { ConnectorConversationSchema } from './connector-wire-scalars.js'
@@ -25,7 +25,7 @@ export const ConnectorPendingPromptSchema = z.discriminatedUnion('kind', [
     header: z.string().min(1).optional(),
     options: z.array(PromptOptionSchema)
   }),
-  // Only Orca's own views can answer it.
+  // Only Topo's own views can answer it.
   z.object({ kind: z.literal('unsupported'), promptId: OpaqueIdSchema })
 ])
 

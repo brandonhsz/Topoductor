@@ -42,7 +42,7 @@ export function renderAccountsRemovalDialogs(
             <DialogDescription>
               {t(
                 'auto.components.settings.AccountsPane.380a7736cc',
-                'Removing this account permanently deletes its managed Codex home, including all Codex session history and MCP logins stored inside. This cannot be undone. If the account is currently active, Orca falls back to the system default Codex login.'
+                'Removing this account permanently deletes its managed Codex home, including all Codex session history and MCP logins stored inside. This cannot be undone. If the account is currently active, Topo falls back to the system default Codex login.'
               )}
             </DialogDescription>
           </DialogHeader>
@@ -82,7 +82,7 @@ export function renderAccountsRemovalDialogs(
             <DialogDescription>
               {t(
                 'settings.accounts.claudeRemoveFolder',
-                "Orca deletes this account's Claude folder and its sign-in from this computer. Chat history shared with System default stays. If it is selected, the next Claude you start uses System default."
+                "Topo deletes this account's Claude folder and its sign-in from this computer. Chat history shared with System default stays. If it is selected, the next Claude you start uses System default."
               )}
             </DialogDescription>
           </DialogHeader>

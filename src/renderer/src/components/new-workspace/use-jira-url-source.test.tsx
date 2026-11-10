@@ -107,10 +107,10 @@ describe('useJiraUrlSource', () => {
     const siteB = site('site-b', 'second@example.com')
     const context = sourceContext()
     mocks.readJiraStatus.mockResolvedValue(status([siteA, siteB], 'all'))
-    mocks.lookupJiraIssueSummary.mockResolvedValue(issue('ORCA-123', 'site-b'))
+    mocks.lookupJiraIssueSummary.mockResolvedValue(issue('TOPO-123', 'site-b'))
     const { result } = renderHook(() =>
       useJiraUrlSource({
-        value: 'https://company.atlassian.net/browse/ORCA-123',
+        value: 'https://company.atlassian.net/browse/TOPO-123',
         enabled: true,
         sourceContext: context
       })
@@ -130,11 +130,11 @@ describe('useJiraUrlSource', () => {
 
     expect(mocks.lookupJiraIssueSummary).toHaveBeenCalledWith(
       expect.objectContaining({ hostId: 'local' }),
-      'ORCA-123',
+      'TOPO-123',
       'site-b',
       { force: false, signal: expect.any(AbortSignal) }
     )
-    expect(result.current.issue?.key).toBe('ORCA-123')
+    expect(result.current.issue?.key).toBe('TOPO-123')
     expect(result.current.boundSourceContext).toMatchObject({
       provider: 'jira',
       hostId: 'local',
@@ -144,7 +144,7 @@ describe('useJiraUrlSource', () => {
         provider: 'jira',
         siteId: 'site-b',
         siteUrl: 'https://company.atlassian.net',
-        projectKey: 'ORCA'
+        projectKey: 'TOPO'
       }
     })
   })
@@ -161,11 +161,11 @@ describe('useJiraUrlSource', () => {
         _siteId: string,
         options: { signal?: AbortSignal }
       ) => {
-        if (key === 'ORCA-1') {
+        if (key === 'TOPO-1') {
           oldSignal = options.signal
           return oldIssue.promise
         }
-        return Promise.resolve(issue('ORCA-2'))
+        return Promise.resolve(issue('TOPO-2'))
       }
     )
     const { result, rerender } = renderHook(
@@ -175,29 +175,29 @@ describe('useJiraUrlSource', () => {
           enabled: true,
           sourceContext: context
         }),
-      { initialProps: { value: 'https://company.atlassian.net/browse/ORCA-1' } }
+      { initialProps: { value: 'https://company.atlassian.net/browse/TOPO-1' } }
     )
     await advanceLookup()
 
-    rerender({ value: 'https://company.atlassian.net/browse/ORCA-2' })
+    rerender({ value: 'https://company.atlassian.net/browse/TOPO-2' })
     await advanceLookup()
     expect(oldSignal?.aborted).toBe(true)
-    expect(result.current.issue?.key).toBe('ORCA-2')
+    expect(result.current.issue?.key).toBe('TOPO-2')
 
     await act(async () => {
-      oldIssue.resolve(issue('ORCA-1'))
+      oldIssue.resolve(issue('TOPO-1'))
       await oldIssue.promise
     })
-    expect(result.current.issue?.key).toBe('ORCA-2')
+    expect(result.current.issue?.key).toBe('TOPO-2')
   })
 
   it('forces Retry past an invalid fulfilled summary result', async () => {
     const context = sourceContext()
     mocks.readJiraStatus.mockResolvedValue(status([site('site-a')], 'site-a'))
-    mocks.lookupJiraIssueSummary.mockResolvedValueOnce(null).mockResolvedValueOnce(issue('ORCA-1'))
+    mocks.lookupJiraIssueSummary.mockResolvedValueOnce(null).mockResolvedValueOnce(issue('TOPO-1'))
     const { result } = renderHook(() =>
       useJiraUrlSource({
-        value: 'https://company.atlassian.net/browse/ORCA-1',
+        value: 'https://company.atlassian.net/browse/TOPO-1',
         enabled: true,
         sourceContext: context
       })
@@ -209,8 +209,8 @@ describe('useJiraUrlSource', () => {
     act(() => result.current.retry())
     await advanceLookup()
 
-    expect(result.current.issue?.key).toBe('ORCA-1')
-    expect(mocks.lookupJiraIssueSummary).toHaveBeenLastCalledWith(context, 'ORCA-1', 'site-a', {
+    expect(result.current.issue?.key).toBe('TOPO-1')
+    expect(mocks.lookupJiraIssueSummary).toHaveBeenLastCalledWith(context, 'TOPO-1', 'site-a', {
       force: true,
       signal: expect.any(AbortSignal)
     })

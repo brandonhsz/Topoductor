@@ -25,7 +25,7 @@ function canDenyReads(): boolean {
   if (process.platform !== 'win32') {
     return false
   }
-  const probeRoot = mkdtempSync(join(tmpdir(), 'orca-deny-probe-'))
+  const probeRoot = mkdtempSync(join(tmpdir(), 'topo-deny-probe-'))
   const probe = join(probeRoot, 'probe.json')
   try {
     writeFileSync(probe, '{}')
@@ -73,7 +73,7 @@ describeOnWindows('a secure store that exists but cannot be read', () => {
   let root: string
 
   beforeAll(() => {
-    root = mkdtempSync(join(tmpdir(), 'orca-unreadable-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-unreadable-'))
   })
 
   afterAll(() => {

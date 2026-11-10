@@ -8,12 +8,12 @@ import { createInterface } from 'node:readline'
 
 const scriptDir = import.meta.dirname
 const repoRoot = path.resolve(scriptDir, '../../..', '..')
-const orcaDevScript = path.join(scriptDir, '../launch/orca-dev.mjs')
+const topoDevScript = path.join(scriptDir, '../launch/topo-dev.mjs')
 const ensureNativeRuntimeScript = path.join(
   scriptDir,
   '../../native-build/node-addons/ensure-native-runtime.mjs'
 )
-const fixedProfileDir = process.env.ORCA_HEADLESS_PAIRING_PROFILE_DIR
+const fixedProfileDir = process.env.TOPO_HEADLESS_PAIRING_PROFILE_DIR
 const parsed = parseArgs(process.argv.slice(2))
 
 if (parsed.help) {
@@ -37,7 +37,7 @@ const serveArgs = withDefaultPairingAddress(parsed.serveArgs)
 ensureElectronRuntime()
 
 const profileDir =
-  fixedProfileDir ?? mkdtempSync(path.join(tmpdir(), 'orca-headless-pairing-profile-'))
+  fixedProfileDir ?? mkdtempSync(path.join(tmpdir(), 'topo-headless-pairing-profile-'))
 const ownsProfileDir = !fixedProfileDir
 mkdirSync(profileDir, { recursive: true })
 const isolatedHome = path.join(profileDir, 'home')
@@ -50,10 +50,10 @@ let stopAttempts = 0
 // Local headless worktrees lack root-owned chrome-sandbox; this exception is not packaged-production policy.
 const childEnv = { ...process.env }
 delete childEnv.CODEX_HOME
-delete childEnv.ORCA_CODEX_HOME
+delete childEnv.TOPO_CODEX_HOME
 Object.assign(childEnv, {
   // Prevent disposable pairing smoke from reading/mutating developer’s default Codex profile.
-  ORCA_DEV_USER_DATA_PATH: profileDir,
+  TOPO_DEV_USER_DATA_PATH: profileDir,
   HOME: isolatedHome,
   USERPROFILE: isolatedHome,
   ...(process.platform === 'linux'
@@ -62,9 +62,9 @@ Object.assign(childEnv, {
 })
 
 console.error(`[headless-pairing] userData=${profileDir}`)
-console.error(`[headless-pairing] starting: orca-dev serve --json${formatForwardedArgs(serveArgs)}`)
+console.error(`[headless-pairing] starting: topo-dev serve --json${formatForwardedArgs(serveArgs)}`)
 
-child = spawn(process.execPath, [orcaDevScript, 'serve', '--json', ...serveArgs], {
+child = spawn(process.execPath, [topoDevScript, 'serve', '--json', ...serveArgs], {
   cwd: repoRoot,
   detached: process.platform !== 'win32',
   env: childEnv,
@@ -120,7 +120,7 @@ function parseArgs(args) {
 
 function printHelp() {
   console.log(
-    `Usage: node config/scripts/development/profile-seeding/serve-headless-fresh-profile-pairing.mjs [--keep] [orca serve flags]\n\nStarts orca-dev serve --json with a fresh isolated userData profile, ensures Electron's dev runtime is usable, and prints the pairing URL.\n\nWrapper flags:\n  --keep        Keep the fresh profile after the server exits.\n  -h, --help    Show this help.\n\nForwarded examples:\n  node config/scripts/development/profile-seeding/serve-headless-fresh-profile-pairing.mjs --port 6768\n  node config/scripts/development/profile-seeding/serve-headless-fresh-profile-pairing.mjs --pairing-address 100.64.1.20\n  node config/scripts/development/profile-seeding/serve-headless-fresh-profile-pairing.mjs --mobile-pairing\n\nEnvironment:\n  ORCA_HEADLESS_PAIRING_ADDRESS=<host|host:port|ws://...>  Override the auto pairing address.\n  ORCA_HEADLESS_PAIRING_PROFILE_DIR=/path/to/profile       Use a fixed profile directory.\n`
+    `Usage: node config/scripts/development/profile-seeding/serve-headless-fresh-profile-pairing.mjs [--keep] [topo serve flags]\n\nStarts topo-dev serve --json with a fresh isolated userData profile, ensures Electron's dev runtime is usable, and prints the pairing URL.\n\nWrapper flags:\n  --keep        Keep the fresh profile after the server exits.\n  -h, --help    Show this help.\n\nForwarded examples:\n  node config/scripts/development/profile-seeding/serve-headless-fresh-profile-pairing.mjs --port 6768\n  node config/scripts/development/profile-seeding/serve-headless-fresh-profile-pairing.mjs --pairing-address 100.64.1.20\n  node config/scripts/development/profile-seeding/serve-headless-fresh-profile-pairing.mjs --mobile-pairing\n\nEnvironment:\n  TOPO_HEADLESS_PAIRING_ADDRESS=<host|host:port|ws://...>  Override the auto pairing address.\n  TOPO_HEADLESS_PAIRING_PROFILE_DIR=/path/to/profile       Use a fixed profile directory.\n`
   )
 }
 
@@ -147,7 +147,7 @@ function hasForwardedServeFlag(args, name) {
 
 // Prefer override/Tailscale/hostname: loopback is unreachable from pairing phone.
 function resolveDefaultPairingAddress() {
-  const configured = process.env.ORCA_HEADLESS_PAIRING_ADDRESS?.trim()
+  const configured = process.env.TOPO_HEADLESS_PAIRING_ADDRESS?.trim()
   if (configured) {
     return configured
   }
@@ -212,10 +212,10 @@ function printReadyLine(line) {
   } catch {
     return false
   }
-  if (!payload || payload.type !== 'orca_server_ready') {
+  if (!payload || payload.type !== 'topo_server_ready') {
     return false
   }
-  console.log(`Orca server ready: ${payload.boundEndpoint ?? 'websocket unavailable'}`)
+  console.log(`Topo server ready: ${payload.boundEndpoint ?? 'websocket unavailable'}`)
   if (payload.pairing?.endpoint) {
     console.log(`Pairing endpoint: ${payload.pairing.endpoint}`)
   }
@@ -240,7 +240,7 @@ function stopChild(signal) {
   stopAttempts += 1
   const targetSignal = stopAttempts > 1 ? 'SIGKILL' : signal
   if (process.platform === 'win32' && child.pid) {
-    // Windows child.kill targets only orca-dev; taskkill reaches CLI/Electron descendants holding fresh profile open.
+    // Windows child.kill targets only topo-dev; taskkill reaches CLI/Electron descendants holding fresh profile open.
     const killer = spawn('taskkill', ['/pid', String(child.pid), '/t', '/f'], {
       stdio: 'ignore',
       windowsHide: true
@@ -249,7 +249,7 @@ function stopChild(signal) {
     return
   }
   if (process.platform !== 'win32' && child.pid) {
-    // Kill POSIX group spanning synchronous orca-dev/CLI/Electron ownership to avoid orphan serve.
+    // Kill POSIX group spanning synchronous topo-dev/CLI/Electron ownership to avoid orphan serve.
     try {
       process.kill(-child.pid, targetSignal)
       return
@@ -269,7 +269,7 @@ function cleanupProfile() {
     console.error(`[headless-pairing] kept ${profileDir}`)
     return
   }
-  if (!existsSync(profileDir) || !profileDir.includes('orca-headless-pairing-profile-')) {
+  if (!existsSync(profileDir) || !profileDir.includes('topo-headless-pairing-profile-')) {
     console.error(`[headless-pairing] skipped cleanup for unexpected profile path: ${profileDir}`)
     return
   }

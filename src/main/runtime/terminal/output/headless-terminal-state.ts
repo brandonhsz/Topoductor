@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithMaybeHydrateHeadlessFromRenderer } from './headless-terminal-hydration'
+import { TopoRuntimeWithMaybeHydrateHeadlessFromRenderer } from './headless-terminal-hydration'
 import type { RuntimeHeadlessTerminal } from '../records/runtime-terminal-state-records'
 import { HeadlessEmulator } from '../../../daemon/emulation/headless-emulator'
 import { shouldForwardHeadlessTerminalQueryReply } from './headless-terminal-query-reply-policy'
@@ -15,7 +15,7 @@ import {
 } from '../../../../shared/xterm-conpty-options'
 import { getRegisteredSshState } from '../../../ssh/targets/ssh-target-registry'
 
-export abstract class OrcaRuntimeWithCreatePtyHeadlessTerminalState extends OrcaRuntimeWithMaybeHydrateHeadlessFromRenderer {
+export abstract class TopoRuntimeWithCreatePtyHeadlessTerminalState extends TopoRuntimeWithMaybeHydrateHeadlessFromRenderer {
   /** SSH and paired-runtime panes run on their host's PTY, so the ConPTY model follows that machine. */
   private windowsPtyForHeadlessPty(ptyId: string): XtermConptyOptions | undefined {
     // Why the id too: main's copy starts on the first byte, before a restored relay PTY has a record.

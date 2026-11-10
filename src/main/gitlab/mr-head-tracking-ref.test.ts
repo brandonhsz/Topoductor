@@ -27,7 +27,7 @@ describe('fetchGitLabMergeRequestHeadRef', () => {
     })
   })
 
-  it('fetches a GitLab MR head into its remote-scoped Orca ref for local repos', async () => {
+  it('fetches a GitLab MR head into its remote-scoped Topo ref for local repos', async () => {
     const localRef = await fetchGitLabMergeRequestHeadRef(
       { path: '/repo', connectionId: null },
       'origin',
@@ -39,12 +39,12 @@ describe('fetchGitLabMergeRequestHeadRef', () => {
         'fetch',
         '--no-tags',
         'origin',
-        `+refs/merge-requests/42/head:refs/orca/merge-requests/${ORIGIN_COMPONENT}/42`
+        `+refs/merge-requests/42/head:refs/topo/merge-requests/${ORIGIN_COMPONENT}/42`
       ],
       { cwd: '/repo', timeout: REVIEW_HEAD_FETCH_TIMEOUT_MS }
     )
     expect(localRef).toBe(gitlabMergeRequestHeadLocalRef(ORIGIN_COMPONENT, 42))
-    expect(localRef).toBe(`refs/orca/merge-requests/${ORIGIN_COMPONENT}/42`)
+    expect(localRef).toBe(`refs/topo/merge-requests/${ORIGIN_COMPONENT}/42`)
   })
 
   it('fails the MR-head fetch when the remote is not configured', async () => {

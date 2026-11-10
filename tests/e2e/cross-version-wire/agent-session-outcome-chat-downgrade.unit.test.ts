@@ -16,7 +16,7 @@ import {
   createTrackedJournalOpener,
   liveTestJournalRows,
   openTestJournalHostDatabase,
-  SAVED_BY_NEWER_ORCA
+  SAVED_BY_NEWER_TOPO
 } from '../../../src/main/native-chat/agent-session-journal/store-lifecycle/journal-host-database-test-support'
 import { journalOutcomeSource } from '../../../src/main/native-chat/agent-session-journal/outcomes/journal-outcome-format'
 import { restoreJournal } from '../../../src/main/native-chat/agent-session-journal/replay/journal-open'
@@ -30,7 +30,7 @@ import {
 } from './release-checkout'
 
 // A chat this build has written, new or an existing one whose input rows an older build wrote, is
-// refused by each of the two last releases before outcome storage as a newer Orca's, which leaves
+// refused by each of the two last releases before outcome storage as a newer Topo's, which leaves
 // every byte as it was; a build from before that reason opens it read-only, as it does any newer
 // row, and changes no saved row (it only adds a table of its own). The existing chat's input rows
 // stay byte for byte throughout, and this build reads the whole chat again afterwards.
@@ -63,7 +63,7 @@ type ReleasedOpener = {
 
 let directory: string
 beforeEach(() => {
-  directory = mkdtempSync(join(tmpdir(), 'orca-outcome-chat-xv-'))
+  directory = mkdtempSync(join(tmpdir(), 'topo-outcome-chat-xv-'))
 })
 afterEach(() => {
   rmSync(directory, { recursive: true, force: true })
@@ -182,7 +182,7 @@ describe('a chat this build wrote, opened by a shipped build', () => {
             () => null,
             (error: unknown) => error
           )
-          expect(failure).toMatchObject(SAVED_BY_NEWER_ORCA)
+          expect(failure).toMatchObject(SAVED_BY_NEWER_TOPO)
         } else {
           const opened = await older.open({ identity: OLDER_IDENTITY, stateDirectory: directory })
           // It latches read-only at the marker, having read only the rows before it.

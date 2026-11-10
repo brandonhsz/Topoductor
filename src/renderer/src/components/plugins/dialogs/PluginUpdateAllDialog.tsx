@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import type { PluginMarketplaceHostInstallPreview } from '../../../../../preload/api-types'
-import { satisfiesOrcaEngineRange } from '../../../../../shared/plugins/manifest/plugin-manifest'
+import { satisfiesTopoEngineRange } from '../../../../../shared/plugins/manifest/plugin-manifest'
 import { translate } from '@/i18n/i18n'
 import { useTranslate } from '@/i18n/use-translate'
 import { Button } from '../../ui/button'
@@ -20,13 +20,13 @@ function needsOwnApproval(candidate: UpdateCandidate): boolean {
   return candidate.preview !== null && updateNeedsApproval(candidate.preview)
 }
 
-/** The update's minimum Orca when this Orca can't run it; null when it can or either is unknown. */
-function requiredNewerOrca(
+/** The update's minimum Topo when this Topo can't run it; null when it can or either is unknown. */
+function requiredNewerTopo(
   preview: PluginMarketplaceHostInstallPreview,
-  orcaVersion: string | null | undefined
+  topoVersion: string | null | undefined
 ): string | null {
   const range = preview.manifest.engines?.orca
-  if (!range || !orcaVersion || satisfiesOrcaEngineRange(orcaVersion, range)) {
+  if (!range || !topoVersion || satisfiesTopoEngineRange(topoVersion, range)) {
     return null
   }
   return range.replace(/^>=/, '')
@@ -55,13 +55,13 @@ function failureMessage(failed: readonly string[], updatedCount: number): string
 export function PluginUpdateAllDialog({
   open,
   entries,
-  orcaVersion,
+  topoVersion,
   onClose,
   onUpdated
 }: {
   open: boolean
   entries: readonly PluginListEntry[]
-  orcaVersion?: string | null
+  topoVersion?: string | null
   onClose: () => void
   onUpdated: (pluginKeys: string[]) => Promise<void>
 }): React.JSX.Element {
@@ -74,9 +74,9 @@ export function PluginUpdateAllDialog({
   const [reviewKey, setReviewKey] = useState<string | null>(null)
   // Why frozen: each update reloads the list mid-run; the rows belong to the set the user opened.
   const [plugins] = useState(entries)
-  const orcaVersionRef = useRef(orcaVersion)
+  const topoVersionRef = useRef(topoVersion)
   useLayoutEffect(() => {
-    orcaVersionRef.current = orcaVersion
+    topoVersionRef.current = topoVersion
   })
 
   useEffect(() => {
@@ -94,11 +94,11 @@ export function PluginUpdateAllDialog({
             entry,
             preview,
             error: false,
-            needsOrca: requiredNewerOrca(preview, orcaVersionRef.current)
+            needsTopo: requiredNewerTopo(preview, topoVersionRef.current)
           }
         } catch (cause) {
           console.warn('[plugins] update preview failed:', cause)
-          return { entry, preview: null, error: true, needsOrca: null }
+          return { entry, preview: null, error: true, needsTopo: null }
         }
       })
     ).then((next) => {
@@ -120,7 +120,7 @@ export function PluginUpdateAllDialog({
     Boolean(candidate.preview) &&
     !candidate.preview?.blockedByKillList &&
     !isCurrent(candidate.entry, candidate.preview) &&
-    !candidate.needsOrca &&
+    !candidate.needsTopo &&
     !updated.has(candidate.entry.pluginKey)
   const chosen = (candidates ?? []).filter(
     (candidate) =>

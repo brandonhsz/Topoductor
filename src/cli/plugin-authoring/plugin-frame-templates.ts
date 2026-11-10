@@ -43,7 +43,7 @@ export function panel(input: PluginTemplateInput): PluginTemplate {
       const label = document.getElementById('workspace')
       async function refresh() {
         if (!orca.host.has('workspace.readContext')) {
-          label.textContent = 'This Orca cannot read workspace context.'
+          label.textContent = 'This Topo cannot read workspace context.'
           return
         }
         try {
@@ -60,7 +60,7 @@ export function panel(input: PluginTemplateInput): PluginTemplate {
 `,
       'README.md': readme(
         input,
-        'A right-sidebar panel. It runs in a sandboxed frame and calls host methods its `capabilities` allow through `window.orca`. Loading it needs approval: `orca plugin dev watch .` prints the exact access and the `--approve` fingerprint.'
+        'A right-sidebar panel. It runs in a sandboxed frame and calls host methods its `capabilities` allow through `window.orca`. Loading it needs approval: `topo plugin dev watch .` prints the exact access and the `--approve` fingerprint.'
       ),
       ...COMMON_FILES
     }

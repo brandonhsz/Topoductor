@@ -12,7 +12,7 @@ export function registerJournalDatabaseTests(): void {
   let dbPath: string
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-journal-db-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-journal-db-'))
     dbPath = journalDatabasePath(root)
   })
 

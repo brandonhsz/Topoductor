@@ -16,7 +16,7 @@ import {
 } from './visibility-sources'
 import { isLegacyRepoForExternalWorktreeVisibility } from '../external-worktree-visibility'
 import { shouldShowWorktree } from '../worktree-visibility-resolution'
-import type { GlobalSettings, OrcaWorkspaceLayout } from '../global-settings-types'
+import type { GlobalSettings, TopoWorkspaceLayout } from '../global-settings-types'
 import type { Repo } from '../repo-types'
 import type { WorktreeMeta } from './meta-types'
 import type { DetectedWorktree, Worktree, WorktreeOwnership } from './types'
@@ -29,11 +29,11 @@ export {
 } from '../external-worktree-visibility'
 export { shouldShowWorktree } from '../worktree-visibility-resolution'
 
-export function buildKnownOrcaWorkspaceLayouts(
+export function buildKnownTopoWorkspaceLayouts(
   settings: Pick<GlobalSettings, 'workspaceDir' | 'nestWorkspaces' | 'workspaceDirHistory'>,
   repo?: Pick<Repo, 'path' | 'connectionId' | 'worktreeBasePath'>
-): OrcaWorkspaceLayout[] {
-  const layouts: OrcaWorkspaceLayout[] = []
+): TopoWorkspaceLayout[] {
+  const layouts: TopoWorkspaceLayout[] = []
   for (const basePath of resolveConfiguredWorktreeBasePaths(repo)) {
     layouts.push({ path: basePath, nestWorkspaces: settings.nestWorkspaces })
   }
@@ -70,8 +70,8 @@ export function buildKnownOrcaWorkspaceLayouts(
 }
 
 function appendWorkspaceLayouts(
-  target: OrcaWorkspaceLayout[],
-  source: readonly OrcaWorkspaceLayout[]
+  target: TopoWorkspaceLayout[],
+  source: readonly TopoWorkspaceLayout[]
 ): void {
   // Persisted workspace history can exceed the argument limit of push(...source).
   for (const layout of source) {
@@ -89,7 +89,7 @@ function shouldIncludeWorkspaceLayout(
 function buildWslWorkspaceLayouts(
   repoPath: string,
   settings: Pick<GlobalSettings, 'nestWorkspaces' | 'workspaceDirHistory'>
-): OrcaWorkspaceLayout[] {
+): TopoWorkspaceLayout[] {
   const parsed = parseWslUncPath(repoPath)
   if (!parsed) {
     return []
@@ -99,7 +99,7 @@ function buildWslWorkspaceLayouts(
   if (!linuxHome) {
     return []
   }
-  const root = `//wsl.localhost/${parsed.distro}${linuxHome}/orca/workspaces`
+  const root = `//wsl.localhost/${parsed.distro}${linuxHome}/topo/workspaces`
   const historicalModes = (settings.workspaceDirHistory ?? []).map(
     (layout) => layout.nestWorkspaces
   )
@@ -112,12 +112,12 @@ export function classifyWorktreeOwnership(args: {
   worktree: Pick<Worktree, 'path' | 'isMainWorktree'>
   meta?: WorktreeMeta
   settings: Pick<GlobalSettings, 'workspaceDir' | 'nestWorkspaces' | 'workspaceDirHistory'>
-  knownOrcaLayouts: OrcaWorkspaceLayout[]
+  knownTopoLayouts: TopoWorkspaceLayout[]
   agentScratchWorktreePathMatcher?: AgentScratchWorktreePathMatcher
   worktreeVisibilitySourceMatcher?: WorktreeVisibilitySourceMatcher
 }): WorktreeOwnership {
-  if (hasStrongOrcaMetadata(args.meta)) {
-    return 'orca-managed'
+  if (hasStrongTopoMetadata(args.meta)) {
+    return 'topo-managed'
   }
 
   // Classify tool scratch before layout heuristics; explicitly configured project bases remain exempt (#9388, #15232).
@@ -142,12 +142,12 @@ export function classifyWorktreeOwnership(args: {
     return 'external'
   }
 
-  if (isUnderFlatOrUntrustedOrcaRoot(args.worktree.path, args.knownOrcaLayouts)) {
+  if (isUnderFlatOrUntrustedTopoRoot(args.worktree.path, args.knownTopoLayouts)) {
     return 'unknown-legacy'
   }
 
-  if (canClassifyAsExternal(args.worktree.path, args.knownOrcaLayouts)) {
-    // An Orca-shaped path alone cannot prove creation; users can git worktree add there.
+  if (canClassifyAsExternal(args.worktree.path, args.knownTopoLayouts)) {
+    // A Topo-shaped path alone cannot prove creation; users can git worktree add there.
     return 'external'
   }
 
@@ -162,7 +162,7 @@ export function toDetectedWorktree(args: {
     GlobalSettings,
     'workspaceDir' | 'nestWorkspaces' | 'workspaceDirHistory' | 'worktreeVisibilityDefaults'
   >
-  knownOrcaLayouts: OrcaWorkspaceLayout[]
+  knownTopoLayouts: TopoWorkspaceLayout[]
   isLegacyRepoForVisibility?: boolean
   agentScratchWorktreePathMatcher?: AgentScratchWorktreePathMatcher
   worktreeVisibilitySourceMatcher?: WorktreeVisibilitySourceMatcher
@@ -210,7 +210,7 @@ export function applyMetadataFallbackVisibility(detected: DetectedWorktree): Det
   return {
     ...detected,
     visible: true,
-    ownership: detected.ownership === 'orca-managed' ? 'orca-managed' : 'unknown-legacy'
+    ownership: detected.ownership === 'topo-managed' ? 'topo-managed' : 'unknown-legacy'
   }
 }
 
@@ -220,10 +220,10 @@ export function areRuntimePathsEqual(leftPath: string, rightPath: string): boole
   )
 }
 
-function hasStrongOrcaMetadata(meta: WorktreeMeta | undefined): boolean {
+function hasStrongTopoMetadata(meta: WorktreeMeta | undefined): boolean {
   return Boolean(
-    meta?.orcaCreatedAt ||
-    meta?.orcaCreationWorkspaceLayout ||
+    meta?.topoCreatedAt ||
+    meta?.topoCreationWorkspaceLayout ||
     meta?.createdAt ||
     meta?.createdWithAgent ||
     meta?.pushTarget ||
@@ -233,11 +233,11 @@ function hasStrongOrcaMetadata(meta: WorktreeMeta | undefined): boolean {
   )
 }
 
-function isUnderFlatOrUntrustedOrcaRoot(
+function isUnderFlatOrUntrustedTopoRoot(
   worktreePath: string,
-  knownOrcaLayouts: OrcaWorkspaceLayout[]
+  knownTopoLayouts: TopoWorkspaceLayout[]
 ): boolean {
-  for (const layout of knownOrcaLayouts) {
+  for (const layout of knownTopoLayouts) {
     const relative = relativePathInsideRoot(layout.path, worktreePath)
     if (relative === null) {
       continue
@@ -251,12 +251,12 @@ function isUnderFlatOrUntrustedOrcaRoot(
 
 function canClassifyAsExternal(
   worktreePath: string,
-  knownOrcaLayouts: OrcaWorkspaceLayout[]
+  knownTopoLayouts: TopoWorkspaceLayout[]
 ): boolean {
-  if (knownOrcaLayouts.length === 0) {
+  if (knownTopoLayouts.length === 0) {
     return false
   }
-  for (const layout of knownOrcaLayouts) {
+  for (const layout of knownTopoLayouts) {
     const relative = relativePathInsideRoot(layout.path, worktreePath)
     if (relative === null) {
       continue

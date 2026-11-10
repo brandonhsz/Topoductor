@@ -24,18 +24,18 @@ export type AutomationRunTerminalObserver = {
 
 export function describeStrandedAutomationRun(run: AutomationRun): string {
   if (run.status === 'pending') {
-    return 'Orca stopped before this run could launch.'
+    return 'Topo stopped before this run could launch.'
   }
   if (run.status === 'dispatching') {
-    return 'Orca stopped before this run reported that its agent started.'
+    return 'Topo stopped before this run reported that its agent started.'
   }
-  return 'Orca lost the terminal for this run before it reported completion.'
+  return 'Topo lost the terminal for this run before it reported completion.'
 }
 
 // Log transport tokens while keeping run history readable.
 function describeObservationError(error: unknown): string {
   console.error('[automations] run completion observation failed:', error)
-  return 'Orca stopped watching this run before it reported completion.'
+  return 'Topo stopped watching this run before it reported completion.'
 }
 
 export class AutomationRunCompletionWatcher {

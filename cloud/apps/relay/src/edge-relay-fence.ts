@@ -64,14 +64,14 @@ export async function fenceEdge(
     // The same epoch stays stale; only a later move (a newer epoch) can land.
     if (outcome === 'stale') { break }
   }
-  console.error(JSON.stringify({ event: 'orca_relay_edge_fence_failed', outcome, cellId, assignmentEpoch }))
+  console.error(JSON.stringify({ event: 'topo_relay_edge_fence_failed', outcome, cellId, assignmentEpoch }))
   try {
     await recordPendingFence(database, fence, cellId, assignmentEpoch, now)
   } catch (error) {
     // Best effort, like the fence itself: the host is already placed and its answer still goes out.
     console.error(
       JSON.stringify({
-        event: 'orca_relay_edge_fence_record_failed',
+        event: 'topo_relay_edge_fence_record_failed',
         reason: error instanceof Error ? error.message : 'unknown'
       })
     )
@@ -144,15 +144,15 @@ async function retryOne(
     outcome = error.message
   }
   if (outcome === 'applied' || outcome === 'unchanged') {
-    console.warn(JSON.stringify({ event: 'orca_relay_edge_fence_retried', outcome, cellId, assignmentEpoch, attempts }))
+    console.warn(JSON.stringify({ event: 'topo_relay_edge_fence_retried', outcome, cellId, assignmentEpoch, attempts }))
     return 'landed'
   }
   console.error(
-    JSON.stringify({ event: 'orca_relay_edge_fence_failed', outcome, cellId, assignmentEpoch, attempts, retry: true })
+    JSON.stringify({ event: 'topo_relay_edge_fence_failed', outcome, cellId, assignmentEpoch, attempts, retry: true })
   )
   if (attempts >= EDGE_FENCE_MAX_ATTEMPTS) {
     // The record is dropped: the edge keeps claiming the host until it moves again.
-    console.error(JSON.stringify({ event: 'orca_relay_edge_fence_abandoned', outcome, cellId, assignmentEpoch, attempts }))
+    console.error(JSON.stringify({ event: 'topo_relay_edge_fence_abandoned', outcome, cellId, assignmentEpoch, attempts }))
   }
   return 'failed'
 }

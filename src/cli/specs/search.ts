@@ -4,9 +4,9 @@ import { GLOBAL_FLAGS, type CommandSpec } from '../args'
 export const SEARCH_COMMAND_SPECS: CommandSpec[] = [
   {
     path: ['search'],
-    summary: 'Search the full text of agent sessions indexed on the selected Orca host',
+    summary: 'Search the full text of agent sessions indexed on the selected Topo host',
     usage:
-      'orca search <query> [--scope conversation|all] [--fresh] [--limit <n>] [--cursor <c>] [--agent <id>] [--path <p>] [--since <iso>] [--sort relevance|newest] [--debug] [--json]\n  orca search --index-status [--json]',
+      'topo search <query> [--scope conversation|all] [--fresh] [--limit <n>] [--cursor <c>] [--agent <id>] [--path <p>] [--since <iso>] [--sort relevance|newest] [--debug] [--json]\n  topo search --index-status [--json]',
     allowedFlags: [
       ...GLOBAL_FLAGS,
       'query',
@@ -24,8 +24,8 @@ export const SEARCH_COMMAND_SPECS: CommandSpec[] = [
     repeatableFlags: ['agent', 'path'],
     positionalArgs: ['query'],
     notes: [
-      'Searches one host: this machine, or the paired Orca server named by --environment / --pairing-code. There is no all-computers search.',
-      'In an Orca SSH terminal, the forwarded CLI searches the controlling Orca runtime by default. Use --environment / --pairing-code to select a paired server; --path only filters results on the selected runtime.',
+      'Searches one host: this machine, or the paired Topo server named by --environment / --pairing-code. There is no all-computers search.',
+      'In a Topo SSH terminal, the forwarded CLI searches the controlling Topo runtime by default. Use --environment / --pairing-code to select a paired server; --path only filters results on the selected runtime.',
       'Quote a multi-word query, or pass it as --query "<text>"; unquoted words are read as command names.',
       '--scope conversation and --scope all (the default) search user and assistant turns; tool output is excluded.',
       '--fresh waits up to five seconds for the host to reconcile its index before searching, then searches anyway.',
@@ -37,12 +37,12 @@ export const SEARCH_COMMAND_SPECS: CommandSpec[] = [
       '--json prints the runtime response envelope with the search contract answer under `result`.'
     ],
     examples: [
-      'orca search "strict mode violation getByRole"',
-      'orca search resolveTerminalPath --agent claude --sort newest',
-      'orca search "kernel panic" --path /Users/me/orca --since 2026-08-01T00:00:00Z --json',
-      'orca search "kernel panic" --limit 50 --cursor eyJ2IjoxfQ',
-      'orca search --index-status',
-      'orca search "flaky test" --environment build-server'
+      'topo search "strict mode violation getByRole"',
+      'topo search resolveTerminalPath --agent claude --sort newest',
+      'topo search "kernel panic" --path /Users/me/topo --since 2026-08-01T00:00:00Z --json',
+      'topo search "kernel panic" --limit 50 --cursor eyJ2IjoxfQ',
+      'topo search --index-status',
+      'topo search "flaky test" --environment build-server'
     ]
   }
 ]

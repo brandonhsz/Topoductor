@@ -11,7 +11,7 @@ const describeIfBuilt = existsSync(CLI_PATH) ? describe : describe.skip
 
 function loadRuntimeModules() {
   return Promise.all([
-    import('../../orca-runtime'),
+    import('../../topo-runtime'),
     import('../../orchestration/db/orchestration-db'),
     import('./runtime-rpc')
   ])
@@ -27,8 +27,8 @@ async function runBuiltCli(
   const child = spawn(process.execPath, [CLI_PATH, ...fullArgs], {
     env: {
       ...process.env,
-      ORCA_USER_DATA_PATH: userDataPath,
-      ORCA_TERMINAL_HANDLE: 'term_cli',
+      TOPO_USER_DATA_PATH: userDataPath,
+      TOPO_TERMINAL_HANDLE: 'term_cli',
       ...extraEnv
     },
     stdio: ['ignore', 'pipe', 'pipe']
@@ -53,17 +53,17 @@ async function runBuiltCli(
   }
 }
 
-describeIfBuilt('orca orchestration check --wait subprocess (§3.4)', () => {})
+describeIfBuilt('topo orchestration check --wait subprocess (§3.4)', () => {})
 
-describeIfBuilt('orca orchestration reset subprocess', () => {})
+describeIfBuilt('topo orchestration reset subprocess', () => {})
 
-describeIfBuilt('orca orchestration task readiness subprocess', () => {
+describeIfBuilt('topo orchestration task readiness subprocess', () => {
   it('creates a late dependent as ready through the built CLI and runtime', async () => {
-    const [{ OrcaRuntimeService }, { OrchestrationDb }, { OrcaRuntimeRpcServer }] =
+    const [{ TopoRuntimeService }, { OrchestrationDb }, { TopoRuntimeRpcServer }] =
       await loadRuntimeModules()
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-cli-task-readiness-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-cli-task-readiness-'))
     const dbPath = join(userDataPath, 'orchestration.db')
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const db = new OrchestrationDb(dbPath)
     runtime.setOrchestrationDb(db)
     const coordinatorPaneKey = 'tab_cli:22222222-2222-4222-8222-222222222222'
@@ -75,7 +75,7 @@ describeIfBuilt('orca orchestration task readiness subprocess', () => {
       coordinatorHandle: 'term_cli',
       coordinatorPaneKey
     })
-    const server = new OrcaRuntimeRpcServer({ runtime, userDataPath })
+    const server = new TopoRuntimeRpcServer({ runtime, userDataPath })
     await server.start()
 
     try {

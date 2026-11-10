@@ -12,7 +12,7 @@ export async function createSkillInstallHome(): Promise<{
   input: SkillInstallServiceInput
   managementDependencies: ManagementDependencies
 }> {
-  const root = await realpath(await mkdtemp(join(tmpdir(), 'orca-skill-service-test-')))
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'topo-skill-service-test-')))
   temporaryDirectories.push(root)
   const source = join(root, 'source')
   await mkdir(source)
@@ -33,7 +33,7 @@ export async function createSkillInstallHome(): Promise<{
       archivePath: archive.archivePath,
       scope: 'global',
       homeDirectory: join(root, 'home'),
-      orcaStateDirectory: join(root, 'orca-state'),
+      topoStateDirectory: join(root, 'topo-state'),
       detectedProviders: ['codex', 'claude'],
       destinationIdentity: 'global:test-host',
       hostIdentity: 'test-host',
@@ -49,7 +49,7 @@ export async function createSkillInstallHome(): Promise<{
         resolveWorktree: async () => null,
         resolveFolderWorkspace: async () => null
       },
-      stateDirectory: join(root, 'orca-state'),
+      stateDirectory: join(root, 'topo-state'),
       detectProviders: async () => []
     }
   }

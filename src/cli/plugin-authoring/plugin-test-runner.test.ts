@@ -20,21 +20,21 @@ afterEach(async () => {
 })
 
 async function componentsPlugin(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-test-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-test-'))
   roots.push(root)
   const dir = join(root, 'todo-panel')
   await createPluginFromTemplate({ dir, template: 'components' })
   return dir
 }
 
-describe('orca plugin test', () => {
+describe('topo plugin test', () => {
   it(
-    "runs the components template's own test with node:test on Orca's runtime and passes",
+    "runs the components template's own test with node:test on Topo's runtime and passes",
     async () => {
       const dir = await componentsPlugin()
       const files = await findPluginTestFiles(dir)
       expect(files).toEqual(['src/panel.test.tsx'])
-      // Orca's own runtime, as on a machine with no system Node.
+      // Topo's own runtime, as on a machine with no system Node.
       const orca = {
         program: process.execPath,
         env: { ELECTRON_RUN_AS_NODE: '1' },
@@ -109,9 +109,9 @@ const TESTED_EXAMPLES = readdirSync(EXAMPLES).filter((name) => {
   return existsSync(src) && readdirSync(src).some((file) => PLUGIN_TEST_FILE.test(file))
 })
 
-describe('orca plugin test with a worker', () => {
+describe('topo plugin test with a worker', () => {
   it(
-    "runs a .ts worker's own tests through mountWorker, resolving its imports as Orca does",
+    "runs a .ts worker's own tests through mountWorker, resolving its imports as Topo does",
     async () => {
       const dir = await componentsPlugin()
       const manifestPath = join(dir, 'orca-plugin.json')
@@ -189,7 +189,7 @@ describe('the example plugins', () => {
   )
 })
 
-describe('orca plugin check', () => {
+describe('topo plugin check', () => {
   it(
     "runs the plugin's worker so panel requests reach it, and renders each fixture scenario",
     async () => {
@@ -270,7 +270,7 @@ describe('orca plugin check', () => {
         ['List "Agents": 3 item(s)']
       ])
       expect(checks[1]?.tree).toMatchObject({ type: 'List', props: { label: 'Agents' } })
-      // One scenario, with the tree Orca would draw: it validates and keeps live handler ids.
+      // One scenario, with the tree Topo would draw: it validates and keeps live handler ids.
       expect(await readPluginCheckScenarioNames(dir, 'src/panel.tsx')).toEqual(['empty', 'busy'])
       const [busy] = await checkPluginPanels(dir, { scenario: 'busy', drawnTree: true })
       expect(busy).toMatchObject({ scenario: 'busy', issues: [] })
@@ -386,7 +386,7 @@ describe('orca plugin check', () => {
   })
 
   it(
-    'warns about host calls Orca would refuse, and reports a repeated throw once',
+    'warns about host calls Topo would refuse, and reports a repeated throw once',
     async () => {
       const dir = await componentsPlugin()
       await writeFile(

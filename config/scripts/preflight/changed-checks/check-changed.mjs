@@ -57,7 +57,7 @@ function git(root, args) {
 }
 
 function resolveMergeBase(root, requested) {
-  for (const candidate of [requested, process.env.ORCA_CODE_QUALITY_BASE, 'origin/main', 'main']) {
+  for (const candidate of [requested, process.env.TOPO_CODE_QUALITY_BASE, 'origin/main', 'main']) {
     if (!candidate) {
       continue
     }
@@ -95,7 +95,7 @@ function fitsCommandLine(files) {
   return files.reduce((total, file) => total + file.length + 1, 0) <= MAX_PATH_ARGUMENT_CHARS
 }
 
-// Why before importing @orca/process-host: its dist is what this builds, and a cache hit skips both.
+// Why before importing @topo/process-host: its dist is what this builds, and a cache hit skips both.
 function buildWorkspacePackages(root, env) {
   const pnpm = resolvePnpmCliInvocation()
   const result = spawnSync(pnpm.command, [...pnpm.prefixArgs, 'run', 'build:packages'], {
@@ -302,9 +302,9 @@ export async function main(root, argv) {
   })
   const env = {
     ...process.env,
-    ORCA_BACKGROUND_LAUNCH: '1',
+    TOPO_BACKGROUND_LAUNCH: '1',
     // Why: spawned gates that read the base themselves (flaky-test ratchet) must use --base too.
-    ORCA_CODE_QUALITY_BASE: mergeBase,
+    TOPO_CODE_QUALITY_BASE: mergeBase,
     ...(process.stdout.isTTY ? { FORCE_COLOR: '1' } : {})
   }
   if (
@@ -313,7 +313,7 @@ export async function main(root, argv) {
   ) {
     buildWorkspacePackages(root, env)
   }
-  const { runProcess, runProcessSync } = await import('@orca/process-host')
+  const { runProcess, runProcessSync } = await import('@topo/process-host')
   const { resolvePinnedBunExecutable } =
     await import('../../tool-invocation/pinned-bun-executable.mjs')
   const bun = () => resolvePinnedBunExecutable(root, runProcessSync) ?? 'bun'

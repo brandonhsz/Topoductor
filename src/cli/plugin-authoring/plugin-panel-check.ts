@@ -2,7 +2,7 @@ import { existsSync, realpathSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { join, relative, sep } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { z } from 'zod'
 import type { PluginDeclarativeNode } from '../../shared/plugins/declarative/plugin-declarative-catalog'
 import { parsePluginDeclarativeTree } from '../../shared/plugins/declarative/plugin-declarative-tree'
@@ -26,9 +26,9 @@ export type PluginPanelCheck = {
   elements: number
   /** What a person notices first, one line each (headings, callouts, empty states, table sizes). */
   summary: string[]
-  /** The drawn tree as plain data (handlers as `[handler]`); `orca plugin check --json` only. */
+  /** The drawn tree as plain data (handlers as `[handler]`); `topo plugin check --json` only. */
   tree?: unknown
-  /** With `drawnTree`: the validated tree exactly as Orca draws it, handlers as `{ $callback }`. */
+  /** With `drawnTree`: the validated tree exactly as Topo draws it, handlers as `{ $callback }`. */
   drawnTree?: PluginDeclarativeNode | null
   issues: PluginPanelCheckIssue[]
   warnings: string[]
@@ -69,7 +69,7 @@ export function pluginStackLocation(dir: string, stack: string | undefined): str
   return undefined
 }
 
-// `src/panel.tsx:4:7: Unexpected token`, as Orca's loaders word transpile and import errors.
+// `src/panel.tsx:4:7: Unexpected token`, as Topo's loaders word transpile and import errors.
 const LOCATED_MESSAGE = /^([^\n:]+\.[a-z]+:\d+:\d+): ([\s\S]*)$/i
 
 /** One issue per distinct problem, located from its message or else its first plugin frame. */
@@ -108,7 +108,7 @@ export type CheckPluginPanelsOptions = {
   panel?: string
   /** Only this scenario of its `.check` file; an unknown name is reported as an issue. */
   scenario?: string
-  /** Also return each render's validated tree as Orca draws it (`drawnTree`), for replay. */
+  /** Also return each render's validated tree as Topo draws it (`drawnTree`), for replay. */
   drawnTree?: boolean
 }
 
@@ -176,7 +176,7 @@ async function runCheckChild(dir: string, input: CheckChildInput, appRoot?: stri
       ...process.env,
       ...node.env,
       ORCA_PLUGIN_TEST_ROOT: dir,
-      ORCA_PLUGIN_CHECK_PANELS: JSON.stringify(input)
+      TOPO_PLUGIN_CHECK_PANELS: JSON.stringify(input)
     },
     timeoutMs: 60_000
   })
@@ -200,9 +200,9 @@ export async function readPluginCheckScenarioNames(
     { panel: entry, entry, url: url(entry), fixture: { path: fixture, url: url(fixture) } }
   ]
   const result = await runCheckChild(dir, { panels, main: null, listOnly: true }, appRoot)
-  const marker = result.stdout.lastIndexOf('__ORCA_CHECK__')
+  const marker = result.stdout.lastIndexOf('__TOPO_CHECK__')
   const listed = scenarioListSchema.safeParse(
-    marker === -1 ? null : JSON.parse(result.stdout.slice(marker + '__ORCA_CHECK__'.length))
+    marker === -1 ? null : JSON.parse(result.stdout.slice(marker + '__TOPO_CHECK__'.length))
   )
   if (!listed.success || !listed.data[0]) {
     throw new Error(
@@ -243,7 +243,7 @@ export async function checkPluginPanels(
     },
     options.appRoot
   )
-  const marker = result.stdout.lastIndexOf('__ORCA_CHECK__')
+  const marker = result.stdout.lastIndexOf('__TOPO_CHECK__')
   if (marker === -1) {
     // The process died before reporting (a syntax error in a module, say): report what it said.
     const message = (result.stderr || result.stdout).trim().split('\n').slice(0, 20).join('\n')
@@ -257,7 +257,7 @@ export async function checkPluginPanels(
     }))
   }
   const reported = checkReportSchema.parse(
-    JSON.parse(result.stdout.slice(marker + '__ORCA_CHECK__'.length))
+    JSON.parse(result.stdout.slice(marker + '__TOPO_CHECK__'.length))
   )
   // Stacks name real paths (macOS /var is /private/var).
   const realDir = realpathSync(dir)
@@ -286,7 +286,7 @@ export function formatPluginPanelCheck(check: PluginPanelCheck): string[] {
     `${head}failed`,
     ...check.issues.map(
       (issue) =>
-        `  ${issue.location ?? check.entry}: ${issue.kind === 'refused' ? 'Orca would refuse this render: ' : ''}${issue.message}`
+        `  ${issue.location ?? check.entry}: ${issue.kind === 'refused' ? 'Topo would refuse this render: ' : ''}${issue.message}`
     ),
     ...check.warnings.map((warning) => `  warning: ${warning}`)
   ]

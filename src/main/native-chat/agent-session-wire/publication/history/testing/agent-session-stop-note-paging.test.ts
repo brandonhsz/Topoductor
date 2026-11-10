@@ -31,7 +31,7 @@ it('shrinks the triggering row window without dropping the dependent note', asyn
   } as const
   for (const clientMessageId of ['large-1', 'large-2']) {
     await fixture.journal.appendItem(
-      { provider: 'orca', clientMessageId },
+      { provider: 'topo', clientMessageId },
       { ...large, blocks: [...large.blocks] },
       { fence: 1, turnScope: AGENT_JOURNAL_THREAD_SCOPE }
     )

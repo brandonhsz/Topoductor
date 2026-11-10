@@ -3,17 +3,17 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { HEADLESS_RUNTIME_WINDOW_ID } from '../../../../shared/runtime-session-contracts'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 // Fragments stay side-effect ordered: mocks, then lifecycle, then fixtures.
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const {
   HEADLESS_THIRD_LEAF_ID: THIRD_LEAF_ID,
   TEST_WORKTREE_ID,
   TEST_WORKTREE_PATH,
   deferred
-} = await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
+} = await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
 const { SURFACE_PTYS, SURFACE_TAB_ID, surfaceRuntime } =
   await import('../surface/terminal-surface-replies.test-fixture')
 

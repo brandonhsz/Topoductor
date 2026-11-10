@@ -1,6 +1,6 @@
 import { StringDecoder } from 'node:string_decoder'
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
-import type { PipedProcessSpawner, PipedProcessSpec } from '@orca/process-host/process-spec'
+import type { PipedProcessSpawner, PipedProcessSpec } from '@topo/process-host/process-spec'
 import { ownRetainedString } from '../../shared/own-retained-string'
 
 /** UTF-16 units, not bytes — this bounds the buffer, it is not a payload contract. */

@@ -42,7 +42,7 @@ function client(response: FcmResponse) {
   return {
     fake,
     client: new FcmClient({
-      projectId: 'onorca-cloud',
+      projectId: 'ontopo-cloud',
       now: () => NOW,
       accessToken: async () => 'access-token',
       transport: fake.transport

@@ -188,7 +188,7 @@ describe('runPluginDevWatch', () => {
     const approvalNeeded = vi.fn(async () => ({
       message: 'acme.notes asks for new access',
       fingerprint: 'ap1-x',
-      command: 'orca plugin dev reload /work/notes --approve ap1-x'
+      command: 'topo plugin dev reload /work/notes --approve ap1-x'
     }))
     const { run, events } = harness({
       stopAfterPolls: 6,

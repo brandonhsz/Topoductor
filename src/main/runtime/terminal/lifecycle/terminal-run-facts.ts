@@ -155,12 +155,12 @@ export class TerminalRunFactsRegister {
     return this.lastInputAtByPtyId.get(ptyId) ?? null
   }
 
-  /** Like readLastInputAt, but only `driving` input, so Orca's own launch and orchestration writes don't count. */
+  /** Like readLastInputAt, but only `driving` input, so Topo's own launch and orchestration writes don't count. */
   readLastDrivingInputAt(ptyId: string): number | null {
     return this.lastDrivingInputAtByPtyId.get(ptyId) ?? null
   }
 
-  /** When a composer draft no recorded input explains was first seen, e.g. one typed before an Orca
+  /** When a composer draft no recorded input explains was first seen, e.g. one typed before a Topo
    *  restart into a process main later attached to; null, and forgotten, while there is none. */
   noteUnattributedDraft(ptyId: string, present: boolean, now = Date.now()): number | null {
     if (!present) {

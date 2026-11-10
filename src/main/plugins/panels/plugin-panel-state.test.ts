@@ -8,7 +8,7 @@ const PLUGIN = 'samples.todo'
 let dataDir: string
 
 beforeEach(async () => {
-  dataDir = await mkdtemp(join(tmpdir(), 'orca-panel-state-'))
+  dataDir = await mkdtemp(join(tmpdir(), 'topo-panel-state-'))
 })
 afterEach(async () => {
   await rm(dataDir, { recursive: true, force: true })

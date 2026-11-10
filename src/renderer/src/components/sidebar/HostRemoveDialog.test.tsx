@@ -86,5 +86,5 @@ it('releases both obsolete catalogs and cached indexes while host dialogs stay m
   }
 
   view.rerender(dialogs('one'))
-  expect(screen.getByRole('dialog')).toHaveTextContent('Its 3 workspaces stay in Orca')
+  expect(screen.getByRole('dialog')).toHaveTextContent('Its 3 workspaces stay in Topo')
 })

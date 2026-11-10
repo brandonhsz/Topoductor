@@ -23,7 +23,7 @@ afterEach(() => {
 })
 
 function paths() {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-row-cache-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-row-cache-'))
   directories.push(directory)
   return { path: join(directory, 'cache.db'), legacyPath: join(directory, 'cache.json') }
 }

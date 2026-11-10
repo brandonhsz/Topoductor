@@ -82,7 +82,7 @@ import { getCodexHookTrustSignature } from '../definitions/codex-hook-identity'
 import {
   buildCodexManagedHook,
   CODEX_EVENT_LABEL,
-  computeOrcaCodexHookHashes,
+  computeTopoCodexHookHashes,
   getCodexManagedHookInstallMaterial
 } from '../definitions/codex-hook-definition'
 import type { CodexHookHashes } from '../../trust/hooks/codex-hook-trust-derivation'
@@ -115,7 +115,7 @@ function writeHooks(hooks: Hooks): void {
 }
 
 function olderBuildStop(): Hooks[string][number] {
-  const script = join(home, '.orca', 'agent-hooks', 'codex-hook.sh')
+  const script = join(home, '.topo', 'agent-hooks', 'codex-hook.sh')
   return {
     hooks: [
       buildCodexManagedHook(
@@ -188,12 +188,12 @@ async function finishHeldLookupWait(
 
 beforeEach(() => {
   // Resolve macOS /var symlinks to avoid a second trust-key spelling.
-  root = realpathSync.native(mkdtempSync(join(tmpdir(), 'orca-codex-reconcile-')))
+  root = realpathSync.native(mkdtempSync(join(tmpdir(), 'topo-codex-reconcile-')))
   home = join(root, 'home')
   userData = join(root, 'user-data')
   mkdirSync(home)
   mkdirSync(userData)
-  vi.stubEnv('ORCA_USER_DATA_PATH', userData)
+  vi.stubEnv('TOPO_USER_DATA_PATH', userData)
   vi.stubEnv('CODEX_HOME', '')
   mocks.homedir.mockReturnValue(home)
   mocks.codexPath = join(userData, 'codex')
@@ -355,7 +355,7 @@ describe('reconcileCodexHooks', () => {
     expect(readHooks().Stop).toEqual([{ hooks: [buildCodexManagedHook(command(), 'Stop')] }])
   })
 
-  it("leaves Orca's entry and approvals in ~/.codex as they are while Codex cannot be found", async () => {
+  it("leaves Topo's entry and approvals in ~/.codex as they are while Codex cannot be found", async () => {
     await start()
     writeHooks({ Stop: [olderBuildStop()] })
     const before = snapshot(codexHome())
@@ -392,7 +392,7 @@ describe('while the lookup is still asking Codex', () => {
       })
     )?.trustedHash
 
-  it("writes the entry with Orca's own hash within a launch's wait, then Codex's once it answers", async () => {
+  it("writes the entry with Topo's own hash within a launch's wait, then Codex's once it answers", async () => {
     enabled = false
     await start()
     enabled = true
@@ -402,7 +402,7 @@ describe('while the lookup is still asking Codex', () => {
     await finishHeldLookupWait(reconcileCodexHooksForLaunch, true)
 
     expect(Date.now() - startedAt).toBeLessThan(3_000)
-    expect(stopApproval()).toBe(computeOrcaCodexHookHashes().stop)
+    expect(stopApproval()).toBe(computeTopoCodexHookHashes().stop)
 
     release()
     await settleSpawn()
@@ -428,7 +428,7 @@ describe('while the lookup is still asking Codex', () => {
   })
 })
 
-describe('a ~/.codex/hooks.json Orca cannot add to', () => {
+describe('a ~/.codex/hooks.json Topo cannot add to', () => {
   it.each([
     ['an unparseable file', '{ not json'],
     ['unknown top-level fields', JSON.stringify({ hooks: {}, _managed: true })],
@@ -445,7 +445,7 @@ describe('a ~/.codex/hooks.json Orca cannot add to', () => {
       expect(readFileSync(hooksPath(), 'utf-8')).toBe(content)
       expect(existsSync(tomlPath())).toBe(false)
       expect(readRealHomeHooksFileProblem()).toBe(
-        `Orca cannot add its hook to ${hooksPath()}, so Orca shows no status for ~/.codex`
+        `Topo cannot add its hook to ${hooksPath()}, so Topo shows no status for ~/.codex`
       )
 
       writeHooks({})
@@ -500,7 +500,7 @@ describe('an app start whose lookup has not answered within its wait', () => {
     expect(snapshot(codexHome())).toEqual(settled)
   })
 
-  it("keeps the approval main's grant recorded for Orca's entry", async () => {
+  it("keeps the approval main's grant recorded for Topo's entry", async () => {
     const stop = {
       sourcePath: hooksPath(),
       eventLabel: 'stop' as const,

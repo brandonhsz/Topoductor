@@ -43,14 +43,14 @@ const PROFILES = [
   {
     id: 'default',
     scope: 'default' as const,
-    partition: 'persist:orca-browser',
+    partition: 'persist:topo-browser',
     label: 'Default',
     source: null
   },
   {
     id: 'iso',
     scope: 'isolated' as const,
-    partition: 'persist:orca-browser-session-iso',
+    partition: 'persist:topo-browser-session-iso',
     label: 'Isolated',
     source: null
   }
@@ -71,7 +71,7 @@ describe('browser session proxy', () => {
     let proxyUrl = 'http://old.example:8080'
     let finishFirstWrite: (() => void) | undefined
     setBrowserNetworkProxySettingsResolver(() => ({ httpProxyUrl: proxyUrl }))
-    const sess = fromPartition('persist:orca-browser-session-pending')
+    const sess = fromPartition('persist:topo-browser-session-pending')
     sess.setProxy.mockImplementationOnce(
       () => new Promise<void>((resolve) => (finishFirstWrite = resolve))
     )
@@ -93,7 +93,7 @@ describe('browser session proxy', () => {
     let proxyUrl = 'http://old.example:8080'
     let finishFirstWrite: (() => void) | undefined
     setBrowserNetworkProxySettingsResolver(() => ({ httpProxyUrl: proxyUrl }))
-    const sess = fromPartition('persist:orca-browser-session-restored')
+    const sess = fromPartition('persist:topo-browser-session-restored')
     sess.setProxy.mockImplementationOnce(
       () => new Promise<void>((resolve) => (finishFirstWrite = resolve))
     )
@@ -166,10 +166,10 @@ describe('browser session proxy', () => {
 
     it('awaits every installation and preserves failed-partition warnings and retry budget', async () => {
       const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-      const failed = fromPartition('persist:orca-browser')
+      const failed = fromPartition('persist:topo-browser')
       failed.resolveProxy.mockRejectedValue(new Error('native proxy failure'))
       await expect(applyProxySettingsToSession(failed, {})).rejects.toThrow('native proxy failure')
-      const healthy = fromPartition('persist:orca-browser-session-iso')
+      const healthy = fromPartition('persist:topo-browser-session-iso')
       let finishHealthy: (() => void) | undefined
       healthy.resolveProxy.mockImplementationOnce(
         () => new Promise<string>((resolve) => (finishHealthy = () => resolve('DIRECT')))
@@ -177,7 +177,7 @@ describe('browser session proxy', () => {
       const installation = applyProxySettingsToSession(healthy, {})
       let settled = false
       const startup = awaitBrowserSessionProxies(PROFILES).finally(() => (settled = true))
-      const failure = expect(startup).rejects.toThrow('persist:orca-browser')
+      const failure = expect(startup).rejects.toThrow('persist:topo-browser')
 
       await vi.waitFor(() => expect(failed.resolveProxy).toHaveBeenCalledTimes(6))
       expect(settled).toBe(false)
@@ -187,7 +187,7 @@ describe('browser session proxy', () => {
       expect(healthy.resolveProxy).toHaveBeenCalledOnce()
       expect(warn).toHaveBeenCalledExactlyOnceWith(
         '[proxy] Failed to apply proxy to browser partition',
-        'persist:orca-browser'
+        'persist:topo-browser'
       )
     })
 
@@ -196,7 +196,7 @@ describe('browser session proxy', () => {
       async (initialFails) => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
         const profiles = PROFILES.slice(0, 1)
-        const sess = fromPartition('persist:orca-browser')
+        const sess = fromPartition('persist:topo-browser')
         let settings: NetworkProxySettings = {}
         setBrowserNetworkProxySettingsResolver(() => settings)
         let finishInitial: (() => void) | undefined

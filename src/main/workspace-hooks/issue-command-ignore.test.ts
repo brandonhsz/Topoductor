@@ -13,7 +13,7 @@ describe('issue command ignore rules', () => {
   const git = (args: string[]) => gitExecFileAsync(args, { cwd: repo })
 
   beforeEach(async () => {
-    root = mkdtempSync(join(tmpdir(), 'orca-issue-ignore-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-issue-ignore-'))
     repo = join(root, 'repo with spaces')
     mkdirSync(repo)
     globalConfig = join(root, 'gitconfig')
@@ -31,7 +31,7 @@ describe('issue command ignore rules', () => {
     rmSync(root, { recursive: true, force: true })
   })
 
-  it.each(['.orca', '.orca/', '/.orca/', '.orca/*', '.orca/issue-command'])(
+  it.each(['.topo', '.topo/', '/.topo/', '.topo/*', '.topo/issue-command'])(
     'respects global ignore pattern %s',
     async (pattern) => {
       writeFileSync(join(root, 'ignore'), `${pattern}\n`)
@@ -40,7 +40,7 @@ describe('issue command ignore rules', () => {
       await writeIssueCommand(repo, 'local command')
 
       expect(readFileSync(join(repo, '.gitignore'), 'utf8')).toBe('node_modules/\n')
-      expect(readFileSync(join(repo, '.orca', 'issue-command'), 'utf8')).toBe('local command\n')
+      expect(readFileSync(join(repo, '.topo', 'issue-command'), 'utf8')).toBe('local command\n')
     }
   )
 
@@ -57,7 +57,7 @@ describe('issue command ignore rules', () => {
     ])
     const worktree = join(root, 'linked worktree')
     await git(['worktree', 'add', '-q', '-b', 'issue-command-test', worktree])
-    writeFileSync(join(repo, '.git', 'info', 'exclude'), '.orca/\n')
+    writeFileSync(join(repo, '.git', 'info', 'exclude'), '.topo/\n')
 
     await writeIssueCommand(worktree, 'local command')
 
@@ -65,43 +65,43 @@ describe('issue command ignore rules', () => {
     expect((await gitExecFileAsync(['status', '--porcelain'], { cwd: worktree })).stdout).toBe('')
   })
 
-  it('adds the rule once when .orca is not ignored', async () => {
+  it('adds the rule once when .topo is not ignored', async () => {
     writeFileSync(join(repo, '.gitignore'), 'node_modules/')
 
     await writeIssueCommand(repo, 'first command')
     await writeIssueCommand(repo, 'second command')
 
-    expect(readFileSync(join(repo, '.gitignore'), 'utf8')).toBe('node_modules/\n.orca\n')
-    expect(readFileSync(join(repo, '.orca', 'issue-command'), 'utf8')).toBe('second command\n')
+    expect(readFileSync(join(repo, '.gitignore'), 'utf8')).toBe('node_modules/\n.topo\n')
+    expect(readFileSync(join(repo, '.topo', 'issue-command'), 'utf8')).toBe('second command\n')
   })
 
   it('honors a repository rule that negates a global ignore', async () => {
-    writeFileSync(join(root, 'ignore'), '.orca/\n')
-    writeFileSync(join(repo, '.gitignore'), '!.orca/\n')
+    writeFileSync(join(root, 'ignore'), '.topo/\n')
+    writeFileSync(join(repo, '.gitignore'), '!.topo/\n')
 
     await writeIssueCommand(repo, 'local command')
 
-    expect(readFileSync(join(repo, '.gitignore'), 'utf8')).toBe('!.orca/\n.orca\n')
+    expect(readFileSync(join(repo, '.gitignore'), 'utf8')).toBe('!.topo/\n.topo\n')
   })
 
   it('marks only an uncommitted local command as user-owned on launch', async () => {
-    mkdirSync(join(repo, '.orca'))
-    writeFileSync(join(repo, '.orca', 'issue-command'), 'repo command\n')
+    mkdirSync(join(repo, '.topo'))
+    writeFileSync(join(repo, '.topo', 'issue-command'), 'repo command\n')
     const launch = { wakeWslDistro: true }
     await expect(readIssueCommandUnlessWslStopped(repo, launch)).resolves.toMatchObject({
       source: 'local',
       localUntracked: true
     })
 
-    await git(['add', '-f', '.orca/issue-command'])
+    await git(['add', '-f', '.topo/issue-command'])
 
     const tracked = await readIssueCommandUnlessWslStopped(repo, launch)
     expect(tracked.source).toBe('local')
     expect(tracked.localUntracked).toBeUndefined()
 
     const folder = join(root, 'folder')
-    mkdirSync(join(folder, '.orca'), { recursive: true })
-    writeFileSync(join(folder, '.orca', 'issue-command'), 'folder command\n')
+    mkdirSync(join(folder, '.topo'), { recursive: true })
+    writeFileSync(join(folder, '.topo', 'issue-command'), 'folder command\n')
     await expect(readIssueCommandUnlessWslStopped(folder, launch)).resolves.toMatchObject({
       localUntracked: true
     })

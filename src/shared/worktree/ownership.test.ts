@@ -7,7 +7,7 @@ import type { Worktree } from './types'
 import { migrateExternalWorktreeVisibilityDefaults } from '../external-worktree-visibility'
 import {
   applyMetadataFallbackVisibility,
-  buildKnownOrcaWorkspaceLayouts,
+  buildKnownTopoWorkspaceLayouts,
   toDetectedWorktree,
   EXTERNAL_WORKTREE_VISIBILITY_ROLLOUT_AT
 } from './ownership'
@@ -71,7 +71,7 @@ function makeMeta(overrides: Partial<WorktreeMeta> = {}): WorktreeMeta {
 
 function makeSettings(overrides: Partial<GlobalSettings> = {}): GlobalSettings {
   return {
-    workspaceDir: '/orca/workspaces',
+    workspaceDir: '/topo/workspaces',
     nestWorkspaces: true,
     workspaceDirHistory: [],
     refreshLocalBaseRefOnWorktreeCreate: false,
@@ -93,18 +93,18 @@ function makeSettings(overrides: Partial<GlobalSettings> = {}): GlobalSettings {
 }
 
 describe('worktree ownership classification', () => {
-  it('does not treat generic discovery metadata on nested workspace paths as Orca-managed', () => {
+  it('does not treat generic discovery metadata on nested workspace paths as Topo-managed', () => {
     const repo = makeRepo({ externalWorktreeVisibility: 'hide' })
     const settings = makeSettings()
     const detected = toDetectedWorktree({
       repo,
       settings,
       worktree: makeWorktree({
-        path: '/orca/workspaces/app/manual-git-worktree',
+        path: '/topo/workspaces/app/manual-git-worktree',
         isMainWorktree: false
       }),
       meta: makeMeta({ displayName: 'manual-git-worktree' }),
-      knownOrcaLayouts: buildKnownOrcaWorkspaceLayouts(settings, repo)
+      knownTopoLayouts: buildKnownTopoWorkspaceLayouts(settings, repo)
     })
 
     expect(detected.ownership).toBe('external')
@@ -121,7 +121,7 @@ describe('worktree ownership classification', () => {
         path: '/repos/app-linked',
         isMainWorktree: false
       }),
-      knownOrcaLayouts: buildKnownOrcaWorkspaceLayouts(settings, repo)
+      knownTopoLayouts: buildKnownTopoWorkspaceLayouts(settings, repo)
     })
     const gitMain = toDetectedWorktree({
       repo,
@@ -130,7 +130,7 @@ describe('worktree ownership classification', () => {
         path: '/repos/app-main',
         isMainWorktree: true
       }),
-      knownOrcaLayouts: buildKnownOrcaWorkspaceLayouts(settings, repo)
+      knownTopoLayouts: buildKnownTopoWorkspaceLayouts(settings, repo)
     })
 
     expect(selected.visible).toBe(true)
@@ -183,7 +183,7 @@ describe('agent scratch worktrees', () => {
         repo,
         settings,
         worktree: makeWorktree({ path: scratchPath, isMainWorktree: false }),
-        knownOrcaLayouts: buildKnownOrcaWorkspaceLayouts(settings, repo)
+        knownTopoLayouts: buildKnownTopoWorkspaceLayouts(settings, repo)
       }).visible
     ).toBe(false)
     expect(
@@ -194,7 +194,7 @@ describe('agent scratch worktrees', () => {
           path: '/repos/app/.gsd-workspaces/phase-1',
           isMainWorktree: false
         }),
-        knownOrcaLayouts: buildKnownOrcaWorkspaceLayouts(settings, repo)
+        knownTopoLayouts: buildKnownTopoWorkspaceLayouts(settings, repo)
       }).visible
     ).toBe(true)
   })
@@ -211,7 +211,7 @@ describe('agent scratch worktrees', () => {
       repo,
       settings,
       worktree: makeWorktree({ path: customPath, isMainWorktree: false }),
-      knownOrcaLayouts: buildKnownOrcaWorkspaceLayouts(settings, repo)
+      knownTopoLayouts: buildKnownTopoWorkspaceLayouts(settings, repo)
     })
 
     expect(detected.visibilitySource).toEqual({ kind: 'custom', id: 'team' })
@@ -222,18 +222,18 @@ describe('agent scratch worktrees', () => {
   it('keeps agent scratch hidden in the metadata fallback while revealing the rest', () => {
     const repo = makeRepo()
     const settings = makeSettings()
-    const layouts = buildKnownOrcaWorkspaceLayouts(settings, repo)
+    const layouts = buildKnownTopoWorkspaceLayouts(settings, repo)
     const scratch = toDetectedWorktree({
       repo,
       settings,
       worktree: makeWorktree({ path: scratchPath, isMainWorktree: false }),
-      knownOrcaLayouts: layouts
+      knownTopoLayouts: layouts
     })
     const external = toDetectedWorktree({
       repo,
       settings,
       worktree: makeWorktree({ path: '/scratch/manual', isMainWorktree: false }),
-      knownOrcaLayouts: layouts
+      knownTopoLayouts: layouts
     })
 
     expect(applyMetadataFallbackVisibility(scratch)).toMatchObject({
@@ -256,7 +256,7 @@ describe('agent scratch worktrees', () => {
       repo,
       settings,
       worktree: makeWorktree({ path: scratchPath, isMainWorktree: false }),
-      knownOrcaLayouts: buildKnownOrcaWorkspaceLayouts(settings, repo)
+      knownTopoLayouts: buildKnownTopoWorkspaceLayouts(settings, repo)
     })
 
     expect(scratch).toMatchObject({ ownership: 'agent-scratch', visible: true })

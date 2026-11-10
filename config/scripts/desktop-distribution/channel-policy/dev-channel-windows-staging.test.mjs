@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
 import { parse } from 'yaml'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 
 function readWorkflow(name) {
   return parse(
@@ -32,8 +32,8 @@ describe('Windows dev-channel artifact staging', () => {
     mkdirSync(join(attempt, folder))
     expect((await runScript(step.run, { cwd: attempt })).code).toBe(1)
     for (const file of [
-      'orca-windows-setup.exe',
-      'orca-windows-setup.exe.blockmap',
+      'topo-windows-setup.exe',
+      'topo-windows-setup.exe.blockmap',
       'latest.yml'
     ]) {
       writeFileSync(join(attempt, folder, file), '')

@@ -72,7 +72,7 @@ afterEach(() => {
 })
 
 it('removes the hidden SSH target when provider cleanup cannot start', async () => {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-handler-'))
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-handler-'))
   tempDirs.push(userDataPath)
   getPathMock.mockReturnValue(userDataPath)
   upsertEphemeralVmRuntime(userDataPath, {
@@ -90,7 +90,7 @@ it('removes the hidden SSH target when provider cleanup cannot start', async () 
       connection: {
         type: 'ssh',
         projectRoot: '/workspace/repo',
-        target: { label: 'VM', host: 'host', port: 22, username: 'orca' }
+        target: { label: 'VM', host: 'host', port: 22, username: 'topo' }
       }
     }
   })
@@ -110,8 +110,8 @@ it('removes the hidden SSH target when provider cleanup cannot start', async () 
 })
 
 it('stops in-flight cleanup and retains the runtime for retry', async () => {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-handler-'))
-  const repoPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-repo-'))
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-handler-'))
+  const repoPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-repo-'))
   tempDirs.push(userDataPath, repoPath)
   getPathMock.mockReturnValue(userDataPath)
   const destroyPath = join(repoPath, 'destroy.js')
@@ -139,7 +139,7 @@ it('stops in-flight cleanup and retains the runtime for retry', async () => {
       connection: {
         type: 'ssh',
         projectRoot: '/workspace/repo',
-        target: { label: 'VM', host: 'host', port: 22, username: 'orca' }
+        target: { label: 'VM', host: 'host', port: 22, username: 'topo' }
       }
     }
   })
@@ -170,8 +170,8 @@ it('stops in-flight cleanup and retains the runtime for retry', async () => {
 })
 
 it("retires a recipe server's session partition once its VM is destroyed (#33805)", async () => {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-handler-'))
-  const repoPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-repo-'))
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-handler-'))
+  const repoPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-repo-'))
   tempDirs.push(userDataPath, repoPath)
   getPathMock.mockReturnValue(userDataPath)
   const destroyPath = join(repoPath, 'destroy.js')
@@ -195,7 +195,7 @@ it("retires a recipe server's session partition once its VM is destroyed (#33805
     updatedAt: 1,
     recipeResult: {
       schemaVersion: 1,
-      connection: { type: 'orca-server', pairingCode: 'unused', projectRoot: '/workspace/repo' }
+      connection: { type: 'topo-server', pairingCode: 'unused', projectRoot: '/workspace/repo' }
     }
   })
   const removeWorkspaceSessionHost = vi.fn()
@@ -223,8 +223,8 @@ it("retires a recipe server's session partition once its VM is destroyed (#33805
 })
 
 it('destroys from the recorded snapshot and repo path when the repo id no longer resolves (#17293)', async () => {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-handler-'))
-  const repoPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-repo-'))
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-handler-'))
+  const repoPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-repo-'))
   tempDirs.push(userDataPath, repoPath)
   getPathMock.mockReturnValue(userDataPath)
   const destroyedPath = join(repoPath, 'destroyed.txt')
@@ -240,7 +240,7 @@ it('destroys from the recorded snapshot and repo path when the repo id no longer
   }
   // The checkout still defines the recipe the VM was created from.
   writeFileSync(
-    join(repoPath, 'orca.yaml'),
+    join(repoPath, 'topo.yaml'),
     [
       'environmentRecipes:',
       '  - id: cloud-sandbox',
@@ -260,7 +260,7 @@ it('destroys from the recorded snapshot and repo path when the repo id no longer
     updatedAt: 1,
     recipeResult: {
       schemaVersion: 1,
-      connection: { type: 'orca-server', pairingCode: 'unused', projectRoot: '/workspace/repo' }
+      connection: { type: 'topo-server', pairingCode: 'unused', projectRoot: '/workspace/repo' }
     }
   })
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: these cleanup paths only read getRepo from the store.
@@ -277,8 +277,8 @@ it('destroys from the recorded snapshot and repo path when the repo id no longer
 })
 
 it('refuses the recorded repo path once a different checkout sits there', async () => {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-handler-'))
-  const repoPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-repo-'))
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-handler-'))
+  const repoPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-repo-'))
   tempDirs.push(userDataPath, repoPath)
   getPathMock.mockReturnValue(userDataPath)
   const ranPath = join(repoPath, 'ran.txt')
@@ -287,7 +287,7 @@ it('refuses the recorded repo path once a different checkout sits there', async 
     `require('fs').writeFileSync(${JSON.stringify(ranPath)}, 'x')`
   )
   writeFileSync(
-    join(repoPath, 'orca.yaml'),
+    join(repoPath, 'topo.yaml'),
     [
       'environmentRecipes:',
       '  - id: cloud-sandbox',
@@ -312,7 +312,7 @@ it('refuses the recorded repo path once a different checkout sits there', async 
     updatedAt: 1,
     recipeResult: {
       schemaVersion: 1,
-      connection: { type: 'orca-server', pairingCode: 'unused', projectRoot: '/workspace/repo' }
+      connection: { type: 'topo-server', pairingCode: 'unused', projectRoot: '/workspace/repo' }
     }
   })
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: these cleanup paths only read getRepo from the store.
@@ -325,7 +325,7 @@ it('refuses the recorded repo path once a different checkout sits there', async 
 })
 
 it('still refuses cleanup when the repo id is stale and no repo path was recorded', async () => {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-handler-'))
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-handler-'))
   tempDirs.push(userDataPath)
   getPathMock.mockReturnValue(userDataPath)
   upsertEphemeralVmRuntime(userDataPath, {
@@ -339,7 +339,7 @@ it('still refuses cleanup when the repo id is stale and no repo path was recorde
     updatedAt: 1,
     recipeResult: {
       schemaVersion: 1,
-      connection: { type: 'orca-server', pairingCode: 'unused', projectRoot: '/workspace/repo' }
+      connection: { type: 'topo-server', pairingCode: 'unused', projectRoot: '/workspace/repo' }
     }
   })
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: these cleanup paths only read getRepo from the store.
@@ -353,13 +353,13 @@ it('still refuses cleanup when the repo id is stale and no repo path was recorde
 it(
   "applies the repo recipe's destroy timeout to a snapshot persisted without timeouts",
   async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-handler-'))
-    const repoPath = mkdtempSync(join(tmpdir(), 'orca-vm-runtime-repo-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-handler-'))
+    const repoPath = mkdtempSync(join(tmpdir(), 'topo-vm-runtime-repo-'))
     tempDirs.push(userDataPath, repoPath)
     getPathMock.mockReturnValue(userDataPath)
     writeFileSync(join(repoPath, 'destroy.js'), 'setInterval(() => {}, 1000)')
     writeFileSync(
-      join(repoPath, 'orca.yaml'),
+      join(repoPath, 'topo.yaml'),
       [
         'environmentRecipes:',
         '  - id: cloud-sandbox',
@@ -385,7 +385,7 @@ it(
       updatedAt: 1,
       recipeResult: {
         schemaVersion: 1,
-        connection: { type: 'orca-server', pairingCode: 'unused', projectRoot: '/workspace/repo' }
+        connection: { type: 'topo-server', pairingCode: 'unused', projectRoot: '/workspace/repo' }
       }
     })
     registerEphemeralVmRuntimeHandlers({

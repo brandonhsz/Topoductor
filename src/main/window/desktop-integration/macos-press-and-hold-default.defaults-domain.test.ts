@@ -4,7 +4,7 @@ import { chmodSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs'
 import { homedir, tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import {
   PRESS_AND_HOLD_KEY,
   ensureMacPressAndHoldDefault,
@@ -15,14 +15,14 @@ import {
   type PressAndHoldRecord
 } from './macos-press-and-hold-default'
 
-// Verify real defaults distinguishes absence from false using disposable Orca-prefixed domains.
+// Verify real defaults distinguishes absence from false using disposable Topo-prefixed domains.
 
 const domains: string[] = []
 
 const DEFAULTS_MISSING_EXIT_CODE = 1
 
 function throwawayDomain(): string {
-  const domain = `com.stablyai.orca.defaults-domain-test.${randomUUID()}`
+  const domain = `com.brandonhsz.topo.defaults-domain-test.${randomUUID()}`
   domains.push(domain)
   return domain
 }
@@ -114,7 +114,7 @@ describe.skipIf(process.platform !== 'darwin')(
 
     // Root could still write the read-only fixture directory.
     it.skipIf(process.getuid?.() === 0)('reports a write the binary refused', () => {
-      const readOnly = join(mkdtempSync(join(tmpdir(), 'orca-press-hold-ro-')), 'locked')
+      const readOnly = join(mkdtempSync(join(tmpdir(), 'topo-press-hold-ro-')), 'locked')
       mkdirSync(readOnly)
       chmodSync(readOnly, 0o500)
       try {

@@ -27,7 +27,7 @@ import {
 const VM_ENVIRONMENT = { id: 'env-vm', source: 'ephemeral-vm' as const }
 const SSH_VM_ENVIRONMENT = {
   id: 'env-ssh-vm',
-  orcadDeployment: {
+  topodDeployment: {
     sshTargetId: 'runtime-ssh-vm-2',
     sshTargetGeneration: 1,
     localPort: 41_000,
@@ -91,7 +91,7 @@ async function codeOf(
 
 describe('a request to a recipe VM environment', () => {
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-recipe-vm-wake-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-recipe-vm-wake-'))
     ownerState = null
     ownerOpening = 'up'
     state.mockClear()

@@ -3,7 +3,7 @@ import { PLUGIN_HOOK_SPECS } from '../events/plugin-hook-payloads'
 import { isPluginJsonObject } from '../manifest/plugin-json-object'
 import { pluginWorkerHookDecisionSchema } from './plugin-worker-hooks'
 
-/** What the chain decided: Orca goes on with `payload`, or a plugin refused the action. */
+/** What the chain decided: Topo goes on with `payload`, or a plugin refused the action. */
 export type PluginHookChainOutcome =
   | { kind: 'continue'; payload: unknown }
   | { kind: 'deny'; pluginKey: string; reason: string }
@@ -66,7 +66,7 @@ export class PluginHookParticipantGoneError extends Error {}
 /**
  * Runs a hook through each participant in order. A plugin that times out, throws, crashes or
  * answers nonsense counts as having passed (or refuses, with `onError: "deny"`), so a broken
- * plugin can delay Orca by at most its deadline.
+ * plugin can delay Topo by at most its deadline.
  */
 export async function runPluginHookChain(
   input: PluginHookChainInput

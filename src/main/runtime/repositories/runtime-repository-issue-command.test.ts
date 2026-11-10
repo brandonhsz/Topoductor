@@ -14,7 +14,7 @@ describe('local issue command runtime routing', () => {
   it.each(['command', ' '])(
     'preserves local file writes with an unavailable runtime: %j',
     async (content) => {
-      const root = mkdtempSync(join(tmpdir(), 'orca-runtime-ignore-'))
+      const root = mkdtempSync(join(tmpdir(), 'topo-runtime-ignore-'))
       const repo = {
         id: 'repo-1',
         path: root,
@@ -22,8 +22,8 @@ describe('local issue command runtime routing', () => {
         badgeColor: '#000',
         addedAt: 0
       }
-      mkdirSync(join(root, '.orca'))
-      writeFileSync(join(root, '.orca', 'issue-command'), 'old command\n')
+      mkdirSync(join(root, '.topo'))
+      writeFileSync(join(root, '.topo', 'issue-command'), 'old command\n')
       const getLocalGitArgs = vi.fn((): [] => {
         throw new Error('Project runtime requires repair')
       })
@@ -34,10 +34,10 @@ describe('local issue command runtime routing', () => {
       try {
         await commands.write(repo.id, content)
         if (content.trim()) {
-          expect(readFileSync(join(root, '.orca', 'issue-command'), 'utf8')).toBe('command\n')
-          expect(readFileSync(join(root, '.gitignore'), 'utf8')).toBe('.orca\n')
+          expect(readFileSync(join(root, '.topo', 'issue-command'), 'utf8')).toBe('command\n')
+          expect(readFileSync(join(root, '.gitignore'), 'utf8')).toBe('.topo\n')
         } else {
-          expect(existsSync(join(root, '.orca', 'issue-command'))).toBe(false)
+          expect(existsSync(join(root, '.topo', 'issue-command'))).toBe(false)
           expect(existsSync(join(root, '.gitignore'))).toBe(false)
           expect(getLocalGitArgs).not.toHaveBeenCalled()
         }

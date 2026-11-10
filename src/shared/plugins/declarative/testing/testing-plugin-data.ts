@@ -1,6 +1,6 @@
 import { hostError } from './testing-host-error'
 
-/** What the stand-in Orca holds for the plugin, and the worker handlers it fakes. */
+/** What the stand-in Topo holds for the plugin, and the worker handlers it fakes. */
 export type MockPluginDataOptions = {
   /** `plugin.request` handlers by name: the answer, or a function of the input (it may throw
    *  `hostError(...)`, which the panel then sees). An unlisted name is `unknown_method`. */
@@ -37,7 +37,7 @@ function field(params: unknown, name: string): unknown {
 }
 
 /** In-memory storage, settings and secrets, and the plugin's fake worker, behind the host methods
- *  Orca answers for them. Writes tell `onChange` listeners, as Orca tells open panels. */
+ *  Topo answers for them. Writes tell `onChange` listeners, as Topo tells open panels. */
 export function createMockPluginData(options: MockPluginDataOptions) {
   const areas: Record<MockPluginDataArea, Map<string, unknown>> = {
     storage: new Map(Object.entries(options.storage ?? {})),
@@ -59,7 +59,7 @@ export function createMockPluginData(options: MockPluginDataOptions) {
     return { ok: true }
   }
 
-  // A worker mounted on the same host answers what `requests` does not stub, as Orca's would.
+  // A worker mounted on the same host answers what `requests` does not stub, as Topo's would.
   let worker: ((name: string, input: unknown) => Promise<unknown>) | null = null
 
   async function request(params: unknown): Promise<{ output: unknown }> {

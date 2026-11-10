@@ -22,9 +22,9 @@ import {
 } from '../usage/usage-scan-worker-spawn'
 
 export async function createPersistedUsageTestFixture(getPath: Mock<() => string>) {
-  const directory = await mkdtemp(join(tmpdir(), 'orca-claude-persisted-usage-'))
+  const directory = await mkdtemp(join(tmpdir(), 'topo-claude-persisted-usage-'))
   const transcript = join(directory, 'session.jsonl')
-  const reportPath = join(directory, 'orca-claude-usage.json')
+  const reportPath = join(directory, 'topo-claude-usage.json')
   const sourceRef = {
     path: usageSourceCachePath(reportPath),
     schemaVersion: 7,

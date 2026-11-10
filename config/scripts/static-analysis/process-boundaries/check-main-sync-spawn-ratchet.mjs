@@ -15,7 +15,7 @@ import { isTestOnlySourcePath } from './test-only-source-path.mjs'
 const ROOT = path.resolve(import.meta.dirname, '../../..', '..')
 const BASELINE_PATH = 'config/main-sync-spawn-baseline.txt'
 const SCAN_DIRECTORIES = ['src/main', 'src/shared']
-const PROCESS_ADVICE = 'use runProcess or spawnProcess from @orca/process-host'
+const PROCESS_ADVICE = 'use runProcess or spawnProcess from @topo/process-host'
 const SECURE_ADVICE = `rewrites a DACL on the calling thread, and a directory rewrite blocks on its whole subtree; use restrictWindowsDirectory for a directory, or raise this file's count in ${BASELINE_PATH} (or add a row)`
 // Include package/repo re-exporters so moving an import cannot bypass the gate.
 const GATED_FAMILIES = [
@@ -23,7 +23,7 @@ const GATED_FAMILIES = [
     modules: ['child_process', 'node:child_process'],
     advice: { execFileSync: PROCESS_ADVICE, spawnSync: PROCESS_ADVICE, execSync: PROCESS_ADVICE }
   },
-  { modules: ['@orca/process-host'], advice: { runProcessSync: PROCESS_ADVICE } },
+  { modules: ['@topo/process-host'], advice: { runProcessSync: PROCESS_ADVICE } },
   {
     modules: ['src/shared/secure-storage/secure-path-windows-acl'],
     advice: { restrictWindowsPathSync: SECURE_ADVICE }
@@ -68,7 +68,7 @@ const BASELINE_HEADER = [
   '# execFileSync/spawnSync/execSync, runProcessSync and the repo sync wrappers listed in',
   '# config/scripts/static-analysis/process-boundaries/check-main-sync-spawn-ratchet.mjs (synchronous ACL rewrites and grants, which',
   '# can block on a whole directory subtree).',
-  '# Some entries run in the daemon or orcad process, or are test harnesses outside the test-path',
+  '# Some entries run in the daemon or topod process, or are test harnesses outside the test-path',
   '# conventions. This is a RATCHET: counts may only go DOWN.',
   '# Prune after removing launches: pnpm check:main-sync-spawn-ratchet --prune'
 ]

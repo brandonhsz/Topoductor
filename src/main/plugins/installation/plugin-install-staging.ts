@@ -5,7 +5,7 @@ import {
   PLUGIN_MANIFEST_FILENAME,
   parseHostPluginManifest,
   qualifiedPluginKey,
-  satisfiesOrcaEngineRange,
+  satisfiesTopoEngineRange,
   type PluginManifest,
   type PluginManifestWithPublisher
 } from '../../../shared/plugins/manifest/plugin-manifest'
@@ -69,10 +69,10 @@ async function readInstallManifest(
     const incompatible = pluginManifestCompatibilityError(raw, hostVersion)
     return { ok: false, error: incompatible ?? `invalid manifest: ${parsed.error}` }
   }
-  if (!satisfiesOrcaEngineRange(hostVersion, parsed.manifest.engines.orca)) {
+  if (!satisfiesTopoEngineRange(hostVersion, parsed.manifest.engines.orca)) {
     return {
       ok: false,
-      error: `plugin requires Orca ${parsed.manifest.engines.orca} (this is ${hostVersion})`
+      error: `plugin requires Topo ${parsed.manifest.engines.orca} (this is ${hostVersion})`
     }
   }
   return { ok: true, manifest: parsed.manifest }
@@ -181,7 +181,7 @@ export async function installStagedPluginTree(input: {
   }
   const blockedReason = input.blockedPluginReason?.(sourceInspection.pluginKey)
   if (blockedReason) {
-    return { ok: false, error: `plugin is blocked by Orca's safety list: ${blockedReason}` }
+    return { ok: false, error: `plugin is blocked by Topo's safety list: ${blockedReason}` }
   }
   const manifestError = input.manifestError?.(sourceInspection.manifest)
   if (manifestError) {

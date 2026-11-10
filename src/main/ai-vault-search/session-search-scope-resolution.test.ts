@@ -8,7 +8,7 @@ function catalog(overrides: Partial<SessionSearchScopeCatalog> = {}): SessionSea
     projects: [],
     projectHostSetups: [],
     worktreeMeta: {},
-    settings: { workspaceDir: '/home/me/orca/workspaces', nestWorkspaces: true },
+    settings: { workspaceDir: '/home/me/topo/workspaces', nestWorkspaces: true },
     ...overrides
   }
 }
@@ -70,8 +70,8 @@ describe('workspace scope', () => {
 describe('project scope', () => {
   const projectCatalog = catalog({
     worktreeMeta: {
-      'repo-1::/home/me/orca/workspaces/app/one': {},
-      'repo-1::/home/me/orca/workspaces/app/two': {},
+      'repo-1::/home/me/topo/workspaces/app/one': {},
+      'repo-1::/home/me/topo/workspaces/app/two': {},
       'repo-1::/elsewhere/outside': { priorWorktreeIds: ['repo-1::/elsewhere/before'] }
     }
   })
@@ -84,7 +84,7 @@ describe('project scope', () => {
     expect(paths(resolution)).toEqual([
       '/elsewhere/before',
       '/elsewhere/outside',
-      '/home/me/orca/workspaces/app',
+      '/home/me/topo/workspaces/app',
       '/work/app'
     ])
   })
@@ -92,13 +92,13 @@ describe('project scope', () => {
   it('folds hundreds of worktrees into the one directory that contains them', () => {
     const worktreeMeta: Record<string, Record<string, never>> = {}
     for (let index = 0; index < 580; index++) {
-      worktreeMeta[`repo-1::/home/me/orca/workspaces/app/wt-${index}`] = {}
+      worktreeMeta[`repo-1::/home/me/topo/workspaces/app/wt-${index}`] = {}
     }
     const resolution = resolveSessionSearchScope(
       { kind: 'project', projectKey: 'repo:repo-1' },
       catalog({ worktreeMeta })
     )
-    expect(paths(resolution)).toEqual(['/home/me/orca/workspaces/app', '/work/app'])
+    expect(paths(resolution)).toEqual(['/home/me/topo/workspaces/app', '/work/app'])
   })
 
   it("uses a repo's own worktree base path instead of the global root", () => {
@@ -107,7 +107,7 @@ describe('project scope', () => {
       catalog({ repos: [{ id: 'repo-1', path: '/work/app', worktreeBasePath: '/trees/app' }] })
     )
     // Include older worktrees created before the repo’s base path was configured.
-    expect(paths(resolution)).toEqual(['/home/me/orca/workspaces/app', '/trees/app', '/work/app'])
+    expect(paths(resolution)).toEqual(['/home/me/topo/workspaces/app', '/trees/app', '/work/app'])
   })
 
   it('hands a flat layout one path per worktree, with no cap to squeeze them through', () => {
@@ -127,14 +127,14 @@ describe('project scope', () => {
       { kind: 'project', projectKey: 'repo:repo-1' },
       catalog({
         settings: {
-          workspaceDir: '/home/me/orca/workspaces',
+          workspaceDir: '/home/me/topo/workspaces',
           nestWorkspaces: true,
           workspaceDirHistory: [{ path: '/old/workspaces', nestWorkspaces: true }]
         }
       })
     )
     expect(paths(resolution)).toEqual([
-      '/home/me/orca/workspaces/app',
+      '/home/me/topo/workspaces/app',
       '/old/workspaces/app',
       '/work/app'
     ])
@@ -144,11 +144,11 @@ describe('project scope', () => {
     const resolution = resolveSessionSearchScope(
       { kind: 'project', projectKey: 'repo:repo-1' },
       catalog({
-        settings: { workspaceDir: '/home/me/orca/workspaces', nestWorkspaces: false },
-        worktreeMeta: { 'repo-1::/home/me/orca/workspaces/one': {} }
+        settings: { workspaceDir: '/home/me/topo/workspaces', nestWorkspaces: false },
+        worktreeMeta: { 'repo-1::/home/me/topo/workspaces/one': {} }
       })
     )
-    expect(paths(resolution)).toEqual(['/home/me/orca/workspaces/one', '/work/app'])
+    expect(paths(resolution)).toEqual(['/home/me/topo/workspaces/one', '/work/app'])
   })
 
   it('resolves a project id through this host’s setup for it', () => {
@@ -167,7 +167,7 @@ describe('project scope', () => {
         ]
       })
     )
-    expect(paths(resolution)).toEqual(['/home/me/orca/workspaces/app', '/srv/app', '/srv/trees'])
+    expect(paths(resolution)).toEqual(['/home/me/topo/workspaces/app', '/srv/app', '/srv/trees'])
   })
 
   it('refuses a project set up on another host even when the id is known here', () => {

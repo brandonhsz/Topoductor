@@ -1,13 +1,13 @@
-// WSL-host orcad must ignore Windows CLI shims; identify mounts by type because the automount root is configurable.
+// WSL-host topod must ignore Windows CLI shims; identify mounts by type because the automount root is configurable.
 import { existsSync, readFileSync } from 'node:fs'
 import { isAbsolute } from 'node:path'
 import { resolveCliCommand } from '../../shared/node-cli-command-resolution'
 
 const WINDOWS_DRIVE_MOUNT_TYPES = new Set(['drvfs', '9p', 'virtiofs'])
 
-import { ORCAD_WSL_HOST_ENV } from '../../shared/orcad-server-launch-env'
+import { TOPOD_WSL_HOST_ENV } from '../../shared/topod-server-launch-env'
 
-export { ORCAD_WSL_HOST_ENV }
+export { TOPOD_WSL_HOST_ENV }
 
 let cachedGuestMounts: readonly string[] | null = null
 
@@ -29,12 +29,12 @@ export function isWslGuestProcess(
   return Boolean(env.WSL_DISTRO_NAME?.trim() || env.WSL_INTEROP?.trim()) || interopRegistered()
 }
 
-export function isWslHostOrcadProcess(
+export function isWslHostTopodProcess(
   env: NodeJS.ProcessEnv = process.env,
   platform: NodeJS.Platform = process.platform,
   interopRegistered?: () => boolean
 ): boolean {
-  return env[ORCAD_WSL_HOST_ENV] === '1' && isWslGuestProcess(env, platform, interopRegistered)
+  return env[TOPOD_WSL_HOST_ENV] === '1' && isWslGuestProcess(env, platform, interopRegistered)
 }
 
 /** Decode /proc/mounts octal escapes, including whitespace and backslashes. */
@@ -76,7 +76,7 @@ export function readGuestWindowsDriveMounts(): readonly string[] {
     return cachedGuestMounts
   }
   let mounts: string[] = []
-  if (isWslHostOrcadProcess()) {
+  if (isWslHostTopodProcess()) {
     try {
       mounts = parseWindowsDriveMountPoints(readFileSync('/proc/mounts', 'utf8'))
     } catch {
@@ -92,7 +92,7 @@ export function _setGuestWindowsDriveMountsForTests(mounts: readonly string[] | 
   cachedGuestMounts = mounts
 }
 
-/** Keep CLI launches consistent with detection by removing Windows drive PATH entries only in WSL-host orcad. */
+/** Keep CLI launches consistent with detection by removing Windows drive PATH entries only in WSL-host topod. */
 export function guestNativePathEnv(
   pathEnv: string | null | undefined,
   mounts: readonly string[] = readGuestWindowsDriveMounts()
@@ -104,7 +104,7 @@ export function guestNativePathEnv(
   return value === null ? null : withoutWindowsDriveMountDirs(value, mounts)
 }
 
-/** A one-shot agent child's env on a WSL-host orcad: its PATH lookup can't reach a Windows shim. */
+/** A one-shot agent child's env on a WSL-host topod: its PATH lookup can't reach a Windows shim. */
 export function guestNativeSpawnEnv(
   env: NodeJS.ProcessEnv,
   mounts: readonly string[] = readGuestWindowsDriveMounts()
@@ -117,7 +117,7 @@ export function guestNativeSpawnEnv(
 }
 
 /**
- * Resolve an agent program as a WSL-host orcad must: never a Windows-drive copy. `null` means only a
+ * Resolve an agent program as a WSL-host topod must: never a Windows-drive copy. `null` means only a
  * Windows copy exists; a bare name would reach it through the spawn's own PATH lookup.
  */
 export function resolveGuestNativeProgram(

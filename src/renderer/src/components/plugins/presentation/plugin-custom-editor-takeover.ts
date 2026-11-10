@@ -3,7 +3,7 @@ import type { Translate } from '@/i18n/use-translate'
 import { filePreviewForPath } from '../../../../../shared/file-preview/file-preview-kind'
 import { fileList } from './plugin-contribution-file-list'
 
-/** Says when an editor opens files Orca would otherwise show in its own image, PDF or media viewer. */
+/** Says when an editor opens files Topo would otherwise show in its own image, PDF or media viewer. */
 export function customEditorTakeover(
   editor: {
     extensions: readonly string[]
@@ -24,12 +24,12 @@ export function customEditorTakeover(
   return editor.priority === 'default'
     ? t(
         'auto.components.settings.pluginContributions.editorReplacesViewer',
-        'Opens {{value0}} instead of Orca’s viewer',
+        'Opens {{value0}} instead of Topo’s viewer',
         { value0 }
       )
     : t(
         'auto.components.settings.pluginContributions.editorMayReplaceViewer',
-        'May open {{value0}} instead of Orca’s viewer',
+        'May open {{value0}} instead of Topo’s viewer',
         { value0 }
       )
 }

@@ -174,7 +174,7 @@ export async function endExitedStructuredAgentSessionChildUnderSerialize<
   context.generationEnded(sessionId)
   const endChild = (): void => {
     context.startupAttempts?.childEnded(sessionId, child, {
-      byOrca: expected || !!close,
+      byTopo: expected || !!close,
       ...(close?.failure ? { failure: close.failure, reason: close.reason ?? exit.reason } : {})
     })
     if (session.child === child) {

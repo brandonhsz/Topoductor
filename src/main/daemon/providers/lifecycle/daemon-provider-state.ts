@@ -110,7 +110,7 @@ export function replaceDaemonProvider(newAdapter: DaemonProvider): void {
   setLocalPtyProvider(newAdapter)
 }
 
-// Preserve warm sessions and unclean history so crashes while Orca is closed remain recoverable.
+// Preserve warm sessions and unclean history so crashes while Topo is closed remain recoverable.
 export async function disconnectDaemon(): Promise<void> {
   await adapter?.disconnectOnly()
   adapter = null

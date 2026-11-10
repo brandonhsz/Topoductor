@@ -218,7 +218,7 @@ describe('CodexHookService', () => {
     expect(runtimeToml).toContain(hookTrustHeader(`${managedHooksPath}:stop:0:0`))
   })
 
-  it('refreshes runtime user hooks without installing Orca-managed hooks', async () => {
+  it('refreshes runtime user hooks without installing Topo-managed hooks', async () => {
     const systemCodexHome = join(homes.tmpHome, '.codex')
     const systemHooksPath = join(systemCodexHome, 'hooks.json')
     mkdirSync(systemCodexHome, { recursive: true })

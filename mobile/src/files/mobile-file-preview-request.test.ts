@@ -34,7 +34,7 @@ describe('mobile-file-preview-request', () => {
         {
           source: 'terminalArtifact',
           worktreeId: 'wt-1',
-          absolutePath: '/Users/ada/orca-plans/result.html',
+          absolutePath: '/Users/ada/topo-plans/result.html',
           grantId: 'grant-1',
           readOnly: true
         },

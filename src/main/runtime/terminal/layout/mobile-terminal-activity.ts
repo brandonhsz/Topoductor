@@ -1,9 +1,9 @@
-import { OrcaRuntimeWithMarkPtyLivenessUnverifiable } from './terminal-input-floor'
+import { TopoRuntimeWithMarkPtyLivenessUnverifiable } from './terminal-input-floor'
 import type { ApplyLayoutResult } from './terminal-layout-state'
 import type { RuntimeTerminalDriverState } from '../../../../shared/runtime-session-contracts'
 import { clampTerminalViewport } from '../../../../shared/terminal/viewport/terminal-viewport'
 
-export abstract class OrcaRuntimeWithMobileTookFloor extends OrcaRuntimeWithMarkPtyLivenessUnverifiable {
+export abstract class TopoRuntimeWithMobileTookFloor extends TopoRuntimeWithMarkPtyLivenessUnverifiable {
   abstract applyMobileDisplayMode(ptyId: string): Promise<boolean>
   abstract setMobileDisplayMode(ptyId: string, mode: 'auto' | 'desktop'): void
 

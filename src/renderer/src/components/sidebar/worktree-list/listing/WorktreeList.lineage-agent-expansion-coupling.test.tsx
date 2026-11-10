@@ -73,7 +73,7 @@ vi.mock('@tanstack/react-virtual', () => ({
 }))
 
 vi.mock('@/hooks/useVirtualizedScrollAnchor', () => ({
-  VIRTUALIZED_SCROLL_ANCHOR_RECORD_EVENT: 'orca:test-record-scroll-anchor',
+  VIRTUALIZED_SCROLL_ANCHOR_RECORD_EVENT: 'topo:test-record-scroll-anchor',
   useVirtualizedScrollAnchor: vi.fn()
 }))
 
@@ -136,7 +136,7 @@ vi.mock('../../workspace-card/activity/CacheTimer', () => ({
 
 vi.mock('../../workspace-actions/context-menu/WorktreeContextMenu', () => ({
   default: ({ children }: { children: ReactNode }) => <>{children}</>,
-  WORKTREE_CONTEXT_MENU_SCOPE_ATTR: 'data-orca-context-menu-scope',
+  WORKTREE_CONTEXT_MENU_SCOPE_ATTR: 'data-topo-context-menu-scope',
   WORKTREE_NATIVE_CONTEXT_MENU_ATTR: 'data-worktree-native-context-menu'
 }))
 

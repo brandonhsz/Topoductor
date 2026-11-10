@@ -26,7 +26,7 @@ export function registerContentCreationIpcBridge(
       // A watcher can find an already-mounted simulator; publish stream info without reattaching it.
       window.setTimeout(() => {
         window.dispatchEvent(
-          new CustomEvent('orca:emulator-auto-attach', {
+          new CustomEvent('topo:emulator-auto-attach', {
             detail: { worktreeId, info }
           })
         )

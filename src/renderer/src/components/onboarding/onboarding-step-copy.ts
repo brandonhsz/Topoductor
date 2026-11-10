@@ -39,7 +39,7 @@ export const stepCopy = {
     get subtitle() {
       return translate(
         'components.onboarding.flow.agentTerminal.subtitle',
-        "Orca works with every CLI agent. Choose the one you'll reach for most."
+        "Topo works with every CLI agent. Choose the one you'll reach for most."
       )
     }
   },
@@ -67,7 +67,7 @@ export const stepCopy = {
     get subtitle() {
       return translate(
         'auto.components.onboarding.OnboardingFlow.ff92d15436',
-        'Orca will notify you when agents are done or need help.'
+        'Topo will notify you when agents are done or need help.'
       )
     }
   },

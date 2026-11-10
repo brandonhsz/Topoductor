@@ -4,7 +4,7 @@ import type { RuntimeTerminalCreate } from '../../../../../../shared/runtime-ter
 import type { AgentLaunchPreferences } from '../../../../../../shared/agent-session/agent-session-host-authority'
 import type { TuiAgent } from '../../../../../../shared/agent-launch/catalog/tui-agent'
 import { executeAgentLaunch } from '../../../../../agent-launch/agent-launch-executor'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import { WORKER_START_VOCABULARY } from '../structured-workers/orchestration-worker-start-mode'
 import type { WorkerSetupReceipt } from '../worker/worker-topology'
@@ -20,7 +20,7 @@ import type { Worktree } from '../../../../../../shared/worktree/types'
 const TERMINAL_ONLY_MESSAGE = 'A federated worker starts a terminal agent only.'
 
 export async function launchFederatedWorkerAgent(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   params: FederationAttachStartInput
   agent: TuiAgent | undefined

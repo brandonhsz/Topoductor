@@ -134,12 +134,12 @@ describe('runEnvironmentDoctor', () => {
 
     expect(statuses(result)['git.push']).toBe('fail')
     expect(calls).toContain(
-      'push --dry-run --no-verify --porcelain origin HEAD:refs/heads/orca-env-doctor-push-probe'
+      'push --dry-run --no-verify --porcelain origin HEAD:refs/heads/topo-env-doctor-push-probe'
     )
   })
 
   it('runs the setup script only when asked and gates on its exit code', async () => {
-    const files = { 'orca.yaml': 'scripts:\n  setup: pnpm install\n' }
+    const files = { 'topo.yaml': 'scripts:\n  setup: pnpm install\n' }
     const passive = makeDeps({ files, git: gitRepo() })
     const passiveResult = await runEnvironmentDoctor({ worktreePath: ROOT }, passive)
     expect(passive.runSetupScript).not.toHaveBeenCalled()

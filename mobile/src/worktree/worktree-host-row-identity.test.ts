@@ -18,7 +18,7 @@ function row(
     hostId,
     displayName: worktreeId,
     repoId: 'repo',
-    repo: 'orca',
+    repo: 'topo',
     branch: 'feature',
     path: `/workspaces/${worktreeId}`,
     liveTerminalCount: 0,

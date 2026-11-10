@@ -18,7 +18,7 @@ export function docPreviewFailureDetail(
   // Entry documents are served as text; unsupported formats fail only as subresources and belong in a notice.
   return t(
     'auto.components.editor.HtmlDocPreview.documentUnreadablePanel',
-    'Orca could not read this file from the workspace.'
+    'Topo could not read this file from the workspace.'
   )
 }
 
@@ -54,7 +54,7 @@ export function docPreviewAssetNotice(
   }
   return t(
     'auto.components.editor.HtmlDocPreview.assetUnreadableNotice',
-    'Orca could not read {{path}} from the workspace.',
+    'Topo could not read {{path}} from the workspace.',
     { path: first.relativePath }
   )
 }

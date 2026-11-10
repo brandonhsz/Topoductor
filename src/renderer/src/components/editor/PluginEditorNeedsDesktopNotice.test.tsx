@@ -74,7 +74,7 @@ describe('an isolated-only editor without an isolated frame', () => {
   it('shows that it needs the desktop app instead of the srcdoc frame, and opens Source', async () => {
     await renderFrame(editor)
     expect(container.querySelector('iframe')).toBeNull()
-    expect(container.textContent).toContain('This editor needs the Orca desktop app')
+    expect(container.textContent).toContain('This editor needs the Topo desktop app')
     expect(container.textContent).toContain('isolated plugin frames are turned off')
     expect(usePluginFrameIsolationStore.getState().isolated).toBe(false)
     const open = [...container.querySelectorAll('button')].find(

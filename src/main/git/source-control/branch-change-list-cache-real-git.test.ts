@@ -27,7 +27,7 @@ async function age(...files: string[]): Promise<void> {
 }
 
 beforeEach(async () => {
-  root = await realpath(await mkdtemp(path.join(tmpdir(), 'orca-branch-change-list-')))
+  root = await realpath(await mkdtemp(path.join(tmpdir(), 'topo-branch-change-list-')))
   // Isolate from the developer's global config, whose recent edits would make stamps unprovable.
   process.env.GIT_CONFIG_GLOBAL = path.join(root, 'gitconfig')
   process.env.XDG_CONFIG_HOME = path.join(root, 'xdg')

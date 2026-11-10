@@ -4,7 +4,7 @@ import {
   DESKTOP_BROWSER_BRIDGE_CANCEL_CAPABILITY,
   DESKTOP_BROWSER_BRIDGE_RUNTIME_CAPABILITY
 } from '../../../shared/desktop-browser-bridge-protocol'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import { defineMethod } from '../rpc/core'
 import { RpcDispatcher } from '../rpc/dispatcher'
 import { DESKTOP_BROWSER_BRIDGE_RPC_METHODS } from '../rpc/methods/browser/desktop-browser-bridge'
@@ -46,16 +46,16 @@ const METHODS = [
   })
 ]
 
-function orcadRuntime(options: { localBrowser?: boolean } = {}) {
+function topodRuntime(options: { localBrowser?: boolean } = {}) {
   const cleanups = new Map<string, () => void>()
   const runtime = {
-    getRuntimeId: () => 'orcad-runtime',
+    getRuntimeId: () => 'topod-runtime',
     getStartedAt: () => 1,
     registerSubscriptionCleanup: (id: string, cleanup: () => void) => cleanups.set(id, cleanup),
     routeDesktopBrowserBridgeRpc: (
       method: string,
       params: unknown,
-      context: Parameters<OrcaRuntimeService['routeDesktopBrowserBridgeRpc']>[2]
+      context: Parameters<TopoRuntimeService['routeDesktopBrowserBridgeRpc']>[2]
     ) =>
       routeDesktopBrowserBridgeRpc({
         method,
@@ -71,7 +71,7 @@ function orcadRuntime(options: { localBrowser?: boolean } = {}) {
       })
   }
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the dispatcher reads only the members stubbed above.
-  return { runtime: runtime as unknown as OrcaRuntimeService, cleanups }
+  return { runtime: runtime as unknown as TopoRuntimeService, cleanups }
 }
 
 const DESKTOP = {
@@ -116,10 +116,10 @@ afterEach(() => {
   localOpenUrl.mockClear()
 })
 
-describe('desktop browser bridge on orcad', () => {
+describe('desktop browser bridge on topod', () => {
   it('forwards an allowlisted CLI command to the attached desktop and returns its answer', async () => {
     setDesktopBrowserBridgeHostEnabled(true)
-    const { runtime } = orcadRuntime()
+    const { runtime } = topodRuntime()
     const dispatcher = new RpcDispatcher({ runtime, methods: METHODS })
     const { events } = await attachDesktop(dispatcher)
     const ready = ReadyEvent.parse(events[0])
@@ -177,7 +177,7 @@ describe('desktop browser bridge on orcad', () => {
 
   it('detaching fails the waiting command and the next one names the setting', async () => {
     setDesktopBrowserBridgeHostEnabled(true)
-    const { runtime, cleanups } = orcadRuntime()
+    const { runtime, cleanups } = topodRuntime()
     const dispatcher = new RpcDispatcher({ runtime, methods: METHODS })
     const { events, done } = await attachDesktop(dispatcher)
     const call = cliCall(dispatcher, 'browser.goto', {
@@ -209,7 +209,7 @@ describe('desktop browser bridge on orcad', () => {
     { name: 'an older desktop never hears', capabilities: [], cancels: false }
   ])('$name that the CLI cancelled a forwarded command', async ({ capabilities, cancels }) => {
     setDesktopBrowserBridgeHostEnabled(true)
-    const { runtime } = orcadRuntime()
+    const { runtime } = topodRuntime()
     const dispatcher = new RpcDispatcher({ runtime, methods: METHODS })
     const { events } = await attachDesktop(dispatcher, {
       ...DESKTOP,

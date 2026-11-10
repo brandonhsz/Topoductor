@@ -1,4 +1,4 @@
-// Offer Continue only when the host advertises it; older hosts also lack the row identifying an Orca stop.
+// Offer Continue only when the host advertises it; older hosts also lack the row identifying a Topo stop.
 export const AGENT_SESSION_CONTINUE_INTERRUPTED_RUNTIME_CAPABILITY =
   'agent-session.continue-interrupted.v1' as const
 // Why: hosts before this advertise continue-interrupted.v1 but refuse the method from a phone.

@@ -71,7 +71,7 @@ export function registerJournalRowContextUsageTests(): void {
     })
 
   function row(ordinal: number): AgentJournalItemIdentity {
-    return { provider: 'orca', clientMessageId: `row-${ordinal}` }
+    return { provider: 'topo', clientMessageId: `row-${ordinal}` }
   }
 
   const turn = (turnId: string, contextUsage?: AgentSessionContextUsage): AgentJournalItemBody => ({
@@ -82,7 +82,7 @@ export function registerJournalRowContextUsageTests(): void {
   })
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-journal-context-usage-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-journal-context-usage-'))
     clock = 1_000
   })
 

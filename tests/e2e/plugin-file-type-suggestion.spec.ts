@@ -2,7 +2,7 @@
  * Official ids start with `orca-`, as the catalog requires for unsolicited suggestions.
  *
  * Invariant: opening a file a catalog plugin handles suggests that plugin — an unknown file
- * (.gleam syntax), Orca's binary placeholder (.xlsx editor), and a file Orca already shows as text
+ * (.gleam syntax), Topo's binary placeholder (.xlsx editor), and a file Topo already shows as text
  * (.excalidraw editor). View plugin opens the plugin's page and never installs.
  */
 
@@ -16,7 +16,7 @@ import { hashPluginTree } from '../../src/main/plugins/plugin-content-hash'
 import { pluginContributionSummary } from '../../src/shared/plugins/contributions/plugin-contribution-summary'
 import { pluginEditorFileTypes } from '../../src/shared/plugins/contributions/plugin-file-type'
 import { parsePluginManifest } from '../../src/shared/plugins/manifest/plugin-manifest'
-import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/orca-restart'
+import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/topo-restart'
 import { commitRepository, configureFixtureGit, headCommit } from './helpers/plugin-git-fixture'
 import { openRepoFile } from './helpers/plugin-smoke'
 
@@ -117,7 +117,11 @@ async function createCatalogFixture(root: string) {
     await commitRepository(dir, gitEnvironment)
     plugins.push({
       id: `stablyai.${plugin.repo}`,
-      source: { kind: 'git', url: `https://github.com/stablyai/${plugin.repo}.git`, ref: 'v1.0.0' },
+      source: {
+        kind: 'git',
+        url: `https://github.com/stablyai/${plugin.repo}.git`,
+        ref: 'v1.0.0'
+      },
       releases: [
         {
           version: '1.0.0',
@@ -138,18 +142,18 @@ async function createCatalogFixture(root: string) {
   await mkdir(catalog, { recursive: true })
   await writeFile(
     join(catalog, 'orca-catalog.json'),
-    JSON.stringify({ catalogVersion: 2, name: 'Orca Plugins', owner: 'stablyai', plugins })
+    JSON.stringify({ catalogVersion: 2, name: 'Topo Plugins', owner: 'stablyai', plugins })
   )
   await commitRepository(catalog, gitEnvironment)
 
   const workspace = join(root, 'workspace')
   await mkdir(workspace, { recursive: true })
   await writeFile(join(workspace, 'main.gleam'), 'pub fn main() { Nil }\n')
-  // NULs make Orca show its binary placeholder, as it does for a real workbook.
+  // NULs make Topo show its binary placeholder, as it does for a real workbook.
   await writeFile(join(workspace, 'book.xlsx'), Buffer.from([0x50, 0x4b, 3, 4, 0, 0, 0, 0]))
   await writeFile(join(workspace, 'scene.excalidraw'), '{"type":"excalidraw","elements":[]}\n')
   await commitRepository(workspace, gitEnvironment)
-  // Why realpath: Orca registers the repository by its resolved path, as macOS /var is a link.
+  // Why realpath: Topo registers the repository by its resolved path, as macOS /var is a link.
   return { gitEnvironment, workspace: await realpath(workspace) }
 }
 
@@ -157,7 +161,7 @@ async function createCatalogFixture(root: string) {
 test('suggests catalog plugins for file types and never installs them', async ({}, testInfo) => {
   // Why: one Electron launch plus a Git catalog fetch and a plugin page; slower than the 30s default on CI.
   test.setTimeout(180_000)
-  const root = await mkdtemp(join(tmpdir(), 'orca-file-type-suggestion-e2e-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-file-type-suggestion-e2e-'))
   const fixture = await createCatalogFixture(root)
   const session = createRestartSession(testInfo as TestInfo, fixture.gitEnvironment)
   let launched: Awaited<ReturnType<typeof session.launch>> | null = null

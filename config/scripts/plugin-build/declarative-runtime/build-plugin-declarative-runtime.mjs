@@ -1,5 +1,5 @@
-// Bundle the files Orca ships for components panels into resources/plugins/declarative/:
-// the guest `orca` module, the `orca/testing` kit, and the Node hooks `orca plugin test` runs with.
+// Bundle the files Topo ships for components panels into resources/plugins/declarative/:
+// the guest `orca` module, the `orca/testing` kit, and the Node hooks `topo plugin test` runs with.
 // `--check` fails when a checked-in file is stale instead of rewriting it.
 import { readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
@@ -16,7 +16,7 @@ export const DECLARATIVE_RUNTIME_OUTPUT = path.join(OUTPUT_DIR, 'orca-runtime.mj
 const runtimeAsSibling = {
   name: 'orca-runtime-as-sibling',
   setup(builder) {
-    builder.onResolve({ filter: /runtime\/orca-module$/ }, () => ({
+    builder.onResolve({ filter: /runtime\/topo-module$/ }, () => ({
       path: './orca-runtime.mjs',
       external: true
     }))
@@ -26,13 +26,13 @@ const runtimeAsSibling = {
 const BUNDLES = [
   {
     file: 'orca-runtime.mjs',
-    entry: path.join(DECLARATIVE, 'runtime', 'orca-module.ts'),
+    entry: path.join(DECLARATIVE, 'runtime', 'topo-module.ts'),
     source: 'src/shared/plugins/declarative/runtime/',
     platform: 'browser'
   },
   {
     file: 'orca-testing.mjs',
-    entry: path.join(DECLARATIVE, 'testing', 'orca-testing.ts'),
+    entry: path.join(DECLARATIVE, 'testing', 'topo-testing.ts'),
     source: 'src/shared/plugins/declarative/testing/',
     platform: 'node',
     plugins: [runtimeAsSibling]

@@ -13,7 +13,7 @@ const options: ProjectHostSetupOption[] = [
     repoId: 'mac',
     label: 'Local Mac',
     detail: 'desktop-app',
-    path: '/private/tmp/orca-38669/desktop-app'
+    path: '/private/tmp/topo-38669/desktop-app'
   },
   ...['devbox', 'gpu-box', 'staging', 'bastion', 'build-01', 'build-02', 'pi'].map(
     (name): ProjectHostSetupOption => ({

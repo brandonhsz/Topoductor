@@ -57,7 +57,7 @@ export function buildDirectWorkItemStartup(args: {
     settings: args.settings,
     launchPlatform: args.launchHost.platform,
     ...(shell ? { shell } : {}),
-    // Why: SSH hosts run the plain `orca` shim, so the Linux-only `orca-ide` rename is not applied.
+    // Why: SSH hosts run the plain `topo` shim, so the Linux-only `topo-ide` rename is not applied.
     isRemote: typeof args.launchConnectionId === 'string'
   })
 }

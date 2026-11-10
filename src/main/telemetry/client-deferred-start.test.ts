@@ -16,7 +16,7 @@ import {
 
 const { createPostHogClient } = vi.hoisted(() => {
   // Official-build identity is read at import; set it before client.ts loads.
-  Object.assign(globalThis, { ORCA_BUILD_IDENTITY: 'stable', ORCA_POSTHOG_WRITE_KEY: 'test-key' })
+  Object.assign(globalThis, { TOPO_BUILD_IDENTITY: 'stable', TOPO_POSTHOG_WRITE_KEY: 'test-key' })
   return { createPostHogClient: vi.fn() }
 })
 vi.mock('node:crypto', async (importOriginal) => ({
@@ -31,8 +31,8 @@ const { initTelemetry, shutdownTelemetry, track } = await import('./client')
 const scheduleClientStart = vi.fn<(start: () => void) => void>()
 
 afterAll(() => {
-  Reflect.deleteProperty(globalThis, 'ORCA_BUILD_IDENTITY')
-  Reflect.deleteProperty(globalThis, 'ORCA_POSTHOG_WRITE_KEY')
+  Reflect.deleteProperty(globalThis, 'TOPO_BUILD_IDENTITY')
+  Reflect.deleteProperty(globalThis, 'TOPO_POSTHOG_WRITE_KEY')
 })
 
 describe('deferred PostHog client start', () => {

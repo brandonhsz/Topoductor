@@ -32,7 +32,7 @@ export const PLUGIN_FRAME_FACADES_SCRIPT = `
       subscribed.add(name)
       call('events.subscribe', { event: name }).catch(function (e) {
         subscribed.delete(name)
-        console.warn('[orca] cannot receive ' + name + ': ' + (e && e.message))
+        console.warn('[topo] cannot receive ' + name + ': ' + (e && e.message))
       })
     }
     return subscription

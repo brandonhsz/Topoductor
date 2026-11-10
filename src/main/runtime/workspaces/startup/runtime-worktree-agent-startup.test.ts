@@ -61,7 +61,7 @@ const settings = {
   defaultTuiAgent: null
 }
 
-/** The launched CLI name is the whole decision: `orca` is the relay shim, `orca-ide` is local. */
+/** The launched CLI name is the whole decision: `topo` is the relay shim, `topo-ide` is local. */
 async function launchCliNameFor(repo: Repo): Promise<string> {
   return (
     await buildWorktreeStartupForAgent({
@@ -77,24 +77,24 @@ async function launchCliNameFor(repo: Repo): Promise<string> {
 describe('buildWorktreeStartupForAgent host resolution', () => {
   // Two hosts catch launch shapes resolved from another host's row (ssh:m4air to openclaw leak).
   it('drops the Linux-only rename for both spellings of SSH ownership on two hosts', async () => {
-    expect(await launchCliNameFor(makeRepo({ connectionId: 'm4air' }))).toBe('orca')
-    expect(await launchCliNameFor(makeRepo({ executionHostId: 'ssh:openclaw' }))).toBe('orca')
+    expect(await launchCliNameFor(makeRepo({ connectionId: 'm4air' }))).toBe('topo')
+    expect(await launchCliNameFor(makeRepo({ executionHostId: 'ssh:openclaw' }))).toBe('topo')
   })
 
   it('keeps the Linux rename for a local row carrying a stale connection', async () => {
     expect(
       await launchCliNameFor(makeRepo({ connectionId: 'm4air', executionHostId: 'local' }))
-    ).toBe('orca-ide')
+    ).toBe('topo-ide')
   })
 
   it('drops the rename for a runtime host reaching a nested SSH target', async () => {
     expect(
       await launchCliNameFor(makeRepo({ connectionId: 'nested', executionHostId: 'runtime:vm-1' }))
-    ).toBe('orca')
+    ).toBe('topo')
   })
 
   it('uses the headless runtime CLI with no nested SSH target (#33920)', async () => {
-    expect(await launchCliNameFor(makeRepo({ executionHostId: 'runtime:vm-1' }))).toBe('orca')
+    expect(await launchCliNameFor(makeRepo({ executionHostId: 'runtime:vm-1' }))).toBe('topo')
   })
 })
 
@@ -150,7 +150,7 @@ describe('buildWorktreeStartupForAgent prompt carry', () => {
   })
 
   it('keeps folding the prompt for a caller that delivers nothing afterwards', async () => {
-    // `orca worktree create --prompt` has no post-start paste of its own for an argv agent.
+    // `topo worktree create --prompt` has no post-start paste of its own for an argv agent.
     expect((await build()).startup.command).toContain('summarize the diff')
   })
 })

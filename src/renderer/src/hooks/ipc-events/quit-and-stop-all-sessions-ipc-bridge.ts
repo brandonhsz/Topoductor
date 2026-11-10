@@ -14,13 +14,13 @@ function showStopAllFailure(): void {
   toast.error(
     translate(
       'quitAndStopAllSessions.failed',
-      "Couldn't stop every terminal session, so Orca stayed open."
+      "Couldn't stop every terminal session, so Topo stayed open."
     )
   )
 }
 
 // Why stricter than a Settings warning: quitting past any of these would leave a tab or session
-// that comes back, or keeps running, after Orca exits.
+// that comes back, or keeps running, after Topo exits.
 function stoppedEverySession(summary: KillAllTerminalSurfacesSummary): boolean {
   return (
     summary.daemon.status === 'fulfilled' &&

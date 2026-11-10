@@ -31,7 +31,7 @@ function writeSettings(settings: Record<string, unknown>): void {
 
 describe('nested worker depth default migration', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-test-'))
   })
 
   afterEach(async () => {

@@ -22,9 +22,9 @@ let tempRoots: string[] = []
 
 beforeEach(() => {
   // Isolate the trust ledger from the running app's userData.
-  const userData = mkdtempSync(join(tmpdir(), 'orca-codex-wsl-hooks-userdata-'))
+  const userData = mkdtempSync(join(tmpdir(), 'topo-codex-wsl-hooks-userdata-'))
   tempRoots.push(userData)
-  vi.stubEnv('ORCA_USER_DATA_PATH', userData)
+  vi.stubEnv('TOPO_USER_DATA_PATH', userData)
 })
 
 afterEach(() => {
@@ -36,14 +36,14 @@ afterEach(() => {
 })
 
 function createTestPlan(): CodexWslRuntimeHookInstallPlan {
-  const root = mkdtempSync(join(tmpdir(), 'orca-codex-wsl-hooks-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-codex-wsl-hooks-'))
   tempRoots.push(root)
-  const linuxHome = '/home/alice/.local/share/orca/codex-runtime-home/home'
+  const linuxHome = '/home/alice/.local/share/topo/codex-runtime-home/home'
   return {
     configPath: join(root, 'hooks.json'),
     tomlPath: join(root, 'config.toml'),
-    scriptPath: join(root, '.orca', 'agent-hooks', 'codex-hook.sh'),
-    commandScriptPath: `${linuxHome}/.orca/agent-hooks/codex-hook.sh`,
+    scriptPath: join(root, '.topo', 'agent-hooks', 'codex-hook.sh'),
+    commandScriptPath: `${linuxHome}/.topo/agent-hooks/codex-hook.sh`,
     trustConfigPath: `${linuxHome}/hooks.json`,
     wslDistro: 'Ubuntu',
     linuxRuntimeHome: linuxHome
@@ -106,18 +106,18 @@ describe('Codex WSL runtime hook install', () => {
       writeFileSync(
         endpointPath,
         [
-          'set ORCA_AGENT_HOOK_PORT=43210',
-          'set ORCA_AGENT_HOOK_TOKEN=fresh-token',
-          'set ORCA_AGENT_HOOK_ENV=development',
-          'set ORCA_AGENT_HOOK_VERSION=1',
-          'set ORCA_AGENT_HOOK_TRANSPORT=raw-json-v1',
+          'set TOPO_AGENT_HOOK_PORT=43210',
+          'set TOPO_AGENT_HOOK_TOKEN=fresh-token',
+          'set TOPO_AGENT_HOOK_ENV=development',
+          'set TOPO_AGENT_HOOK_VERSION=1',
+          'set TOPO_AGENT_HOOK_TRANSPORT=raw-json-v1',
           ''
         ].join('\r\n'),
         'utf-8'
       )
       writeFileSync(
         curlPath,
-        '#!/bin/sh\nprintf \'%s\\n\' "$@" > "$ORCA_TEST_CAPTURE"\ncat >> "$ORCA_TEST_CAPTURE"\n',
+        '#!/bin/sh\nprintf \'%s\\n\' "$@" > "$TOPO_TEST_CAPTURE"\ncat >> "$TOPO_TEST_CAPTURE"\n',
         'utf-8'
       )
       chmodSync(curlPath, 0o755)
@@ -130,11 +130,11 @@ describe('Codex WSL runtime hook install', () => {
         env: {
           ...process.env,
           PATH: `${binDir}:${process.env.PATH ?? ''}`,
-          ORCA_AGENT_HOOK_ENDPOINT: endpointPath,
-          ORCA_AGENT_HOOK_PORT: '1',
-          ORCA_AGENT_HOOK_TOKEN: 'stale-token',
-          ORCA_PANE_KEY: 'pane-1',
-          ORCA_TEST_CAPTURE: capturePath,
+          TOPO_AGENT_HOOK_ENDPOINT: endpointPath,
+          TOPO_AGENT_HOOK_PORT: '1',
+          TOPO_AGENT_HOOK_TOKEN: 'stale-token',
+          TOPO_PANE_KEY: 'pane-1',
+          TOPO_TEST_CAPTURE: capturePath,
           CLAUDE_JOB_DIR: ''
         }
       })
@@ -142,7 +142,7 @@ describe('Codex WSL runtime hook install', () => {
       expect(result.status).toBe(0)
       const posted = readFileSync(capturePath, 'utf-8')
       expect(posted).toContain('http://127.0.0.1:43210/hook/codex')
-      expect(posted).toContain('X-Orca-Agent-Hook-Token: fresh-token')
+      expect(posted).toContain('X-Topo-Agent-Hook-Token: fresh-token')
       expect(posted).toContain('Content-Type: application/json')
       expect(posted).not.toContain('stale-token')
     }
@@ -159,7 +159,7 @@ describe('Codex WSL runtime hook install', () => {
       writeFileSync(join(binDir, 'curl'), '#!/bin/sh\nexit 7\n', 'utf-8')
       writeFileSync(
         join(binDir, 'curl.exe'),
-        '#!/bin/sh\nprintf \'%s\\n\' "$@" > "$ORCA_TEST_CAPTURE"\ncat >> "$ORCA_TEST_CAPTURE"\n',
+        '#!/bin/sh\nprintf \'%s\\n\' "$@" > "$TOPO_TEST_CAPTURE"\ncat >> "$TOPO_TEST_CAPTURE"\n',
         'utf-8'
       )
       chmodSync(join(binDir, 'curl'), 0o755)
@@ -174,11 +174,11 @@ describe('Codex WSL runtime hook install', () => {
           ...process.env,
           PATH: `${binDir}:${process.env.PATH ?? ''}`,
           WSL_DISTRO_NAME: 'Ubuntu',
-          ORCA_AGENT_HOOK_ENDPOINT: '',
-          ORCA_AGENT_HOOK_PORT: '43210',
-          ORCA_AGENT_HOOK_TOKEN: 'token',
-          ORCA_PANE_KEY: 'pane-1',
-          ORCA_TEST_CAPTURE: capturePath,
+          TOPO_AGENT_HOOK_ENDPOINT: '',
+          TOPO_AGENT_HOOK_PORT: '43210',
+          TOPO_AGENT_HOOK_TOKEN: 'token',
+          TOPO_PANE_KEY: 'pane-1',
+          TOPO_TEST_CAPTURE: capturePath,
           CLAUDE_JOB_DIR: ''
         }
       })
@@ -186,11 +186,11 @@ describe('Codex WSL runtime hook install', () => {
       expect(result.status).toBe(0)
       const posted = readFileSync(capturePath, 'utf-8')
       expect(posted).toContain('http://127.0.0.1:43210/hook/codex')
-      expect(posted).toContain('X-Orca-Agent-Hook-Token: token')
+      expect(posted).toContain('X-Topo-Agent-Hook-Token: token')
     }
   )
 
-  it('installs trusted WSL hooks and removes only Orca entries when disabled', async () => {
+  it('installs trusted WSL hooks and removes only Topo entries when disabled', async () => {
     const plan = createTestPlan()
     const userCommand = '/bin/sh /home/alice/user-hook.sh'
     writeFileSync(
@@ -204,7 +204,7 @@ describe('Codex WSL runtime hook install', () => {
                 {
                   type: 'command',
                   command:
-                    "if [ -x '/old/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/old/.orca/agent-hooks/codex-hook.sh'; fi"
+                    "if [ -x '/old/.topo/agent-hooks/codex-hook.sh' ]; then /bin/sh '/old/.topo/agent-hooks/codex-hook.sh'; fi"
                 }
               ]
             }

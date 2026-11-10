@@ -5,7 +5,7 @@ import {
   authorityProfile,
   openAuthorityRuntime
 } from '../../src/main/runtime/agent-session/lifecycle/structured-agent-session-tab-authority.test-support'
-import { chatTabCommandsSettled } from '../../src/main/runtime/orca-runtime-tests/session-layout-apply.test-fixture'
+import { chatTabCommandsSettled } from '../../src/main/runtime/topo-runtime-tests/session-layout-apply.test-fixture'
 import type { createChatTabLayoutQueue } from '../../src/main/runtime/agent-session/agent-session-tab-layout-queue'
 import { fixture } from '../../src/main/persistence/loading-store/profile-state-delayed-authority-fixture'
 import { loadChatTabLayout } from '../../src/main/runtime/agent-session/agent-session-tab-layout'
@@ -54,7 +54,7 @@ afterEach(() => {
 
 const layoutOwner = vi.hoisted(() => ({ main: false }))
 vi.mock('../../src/shared/layout-owner-switch', () => ({
-  get ORCA_LAYOUT_OWNER_IS_MAIN() {
+  get TOPO_LAYOUT_OWNER_IS_MAIN() {
     return layoutOwner.main
   }
 }))

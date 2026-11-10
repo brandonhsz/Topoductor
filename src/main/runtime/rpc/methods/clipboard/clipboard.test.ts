@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from '../../dispatcher'
 import type { RpcRequest, RpcResponse } from '../../core'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import '../../../../../shared/clipboard-image'
 
 const { saveClipboardImageBufferAsTempFile } = vi.hoisted(() => ({
@@ -23,7 +23,7 @@ function makeRequest(method: string, params?: unknown): RpcRequest {
 }
 
 function makeDispatcher(): RpcDispatcher {
-  const runtime = { getRuntimeId: () => 'test-runtime' } as unknown as OrcaRuntimeService
+  const runtime = { getRuntimeId: () => 'test-runtime' } as unknown as TopoRuntimeService
   return new RpcDispatcher({ runtime, methods: CLIPBOARD_METHODS })
 }
 
@@ -60,7 +60,7 @@ describe('clipboard RPC methods', () => {
   })
 
   it('binds chunk mutation and provenance to the mobile client that started the upload', async () => {
-    saveClipboardImageBufferAsTempFile.mockResolvedValue('/tmp/orca-paste-image.png')
+    saveClipboardImageBufferAsTempFile.mockResolvedValue('/tmp/topo-paste-image.png')
     const dispatcher = makeDispatcher()
     const contentBase64 = Buffer.from('png-bytes').toString('base64')
     const start = await callMobile(dispatcher, 'clipboard.startImageUpload', {
@@ -95,9 +95,9 @@ describe('clipboard RPC methods', () => {
     })
     await expect(
       callMobile(dispatcher, 'clipboard.commitImageUpload', { uploadId: uploadId.uploadId })
-    ).resolves.toMatchObject({ ok: true, result: '/tmp/orca-paste-image.png' })
-    expect(hasMobileClipboardImagePath('device-a', '/tmp/orca-paste-image.png')).toBe(true)
-    expect(hasMobileClipboardImagePath('device-b', '/tmp/orca-paste-image.png')).toBe(false)
+    ).resolves.toMatchObject({ ok: true, result: '/tmp/topo-paste-image.png' })
+    expect(hasMobileClipboardImagePath('device-a', '/tmp/topo-paste-image.png')).toBe(true)
+    expect(hasMobileClipboardImagePath('device-b', '/tmp/topo-paste-image.png')).toBe(false)
   })
 
   it('rejects out-of-order chunk offsets', async () => {

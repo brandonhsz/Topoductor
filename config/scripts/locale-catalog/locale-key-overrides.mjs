@@ -17,9 +17,9 @@ const BASE_LOCALE_KEY_OVERRIDES = {
   'auto.components.right.sidebar.FileExplorerRow.0fec99bfd7': { zh: '创建副本' },
   'menu.reportCrash': { ko: '크래시 신고...', zh: '报告崩溃...', ja: 'クラッシュを報告...' },
   'menu.showMobileButton': {
-    ko: 'Orca 모바일 버튼 표시',
-    zh: '显示 Orca Mobile 按钮',
-    ja: 'Orca Mobile ボタンを表示'
+    ko: 'Topo 모바일 버튼 표시',
+    zh: '显示 Topo Mobile 按钮',
+    ja: 'Topo Mobile ボタンを表示'
   },
   'menu.toggleLeftSidebar': {
     ko: '왼쪽 사이드바 표시/숨기기',
@@ -36,7 +36,7 @@ const BASE_LOCALE_KEY_OVERRIDES = {
     zh: '打开工作树面板',
     ja: 'ワークツリーパレットを開く'
   },
-  'menu.exploreOrca': { ko: 'Orca 둘러보기', zh: '探索 Orca', ja: 'Orca を探索' },
+  'menu.exploreTopo': { ko: 'Topo 둘러보기', zh: '探索 Topo', ja: 'Topo を探索' },
   'worktreeJumpPalette.matchLabel.issue': { ko: '이슈', zh: '议题', ja: 'Issue' },
   'worktreeJumpPalette.matchLabel.comment': { ko: '댓글', zh: '评论', ja: 'コメント' },
   'auto.hooks.useSettingsNavigationMetadata.13241992bd': {
@@ -174,7 +174,7 @@ const BASE_LOCALE_KEY_OVERRIDES = {
     zh: '打开 Linear 任务',
     ja: 'Linear タスクを開く'
   },
-  // Onboarding pill beside Orca Mobile: "New" marks a new feature, not a create action.
+  // Onboarding pill beside Topo Mobile: "New" marks a new feature, not a create action.
   'auto.components.sidebar.SidebarNav.c86d83b5c3': {
     ko: '신규',
     zh: '新功能',
@@ -186,9 +186,9 @@ const BASE_LOCALE_KEY_OVERRIDES = {
     ja: 'Discord'
   },
   'auto.components.sidebar.SidebarSettingsHelpMenu.ad3d3ed7f1': {
-    ko: 'Orca 재시작',
-    zh: '重启 Orca',
-    ja: 'Orca を再起動'
+    ko: 'Topo 재시작',
+    zh: '重启 Topo',
+    ja: 'Topo を再起動'
   },
   'auto.components.sidebar.workspace.status.5f9ca31a84': {
     ko: '대기 중',
@@ -206,9 +206,9 @@ const BASE_LOCALE_KEY_OVERRIDES = {
     ja: '終了中…'
   },
   'auto.components.status.bar.ResourceUsageStatusSegment.53dd5560ae': {
-    ko: 'Orca 접기',
-    zh: '折叠 Orca',
-    ja: 'Orca を折りたたむ'
+    ko: 'Topo 접기',
+    zh: '折叠 Topo',
+    ja: 'Topo を折りたたむ'
   },
   'auto.components.settings.ManageSessionKillDialog.d3dba51b15': {
     ko: '종료 중…',
@@ -296,9 +296,9 @@ const BASE_LOCALE_KEY_OVERRIDES = {
     ja: 'Linear イシューを検索...'
   },
   'auto.web.WebConnect.e3bcd082ac': {
-    ko: 'Orca에 연결',
-    zh: '连接到 Orca',
-    ja: 'Orca に接続'
+    ko: 'Topo에 연결',
+    zh: '连接到 Topo',
+    ja: 'Topo に接続'
   },
   'auto.App.caea5b51b9': {
     ko: '지금 재시작',

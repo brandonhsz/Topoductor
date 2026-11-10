@@ -46,7 +46,7 @@ const CHILD = '00000000-0000-4000-8000-000000000002'
 let root: string
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-fork-codex-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-fork-codex-'))
   state.home = root
   state.paths.clear()
   state.request.mockReset()
@@ -89,13 +89,13 @@ function copy(selected = `${SOURCE}:a1`, settled = true, turnId?: string) {
   return copyCodexConversation(
     {
       record: agentSessionRecordFixture({
-        sessionId: 'orca-source',
+        sessionId: 'topo-source',
         provider: 'codex',
         accountHome: { variable: 'CODEX_HOME', path: root },
         launchArgs: ['--model', 'saved-model']
       }),
       identity: {
-        sessionId: 'orca-source',
+        sessionId: 'topo-source',
         workspaceId: 'workspace',
         hostId: 'local',
         agent: 'codex',

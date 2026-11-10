@@ -30,7 +30,7 @@ const roots: string[] = []
 const savedEnvironment = {
   GIT_SSH_COMMAND: process.env.GIT_SSH_COMMAND,
   GIT_SSH_VARIANT: process.env.GIT_SSH_VARIANT,
-  ORCA_TEST_SSH_REPOSITORIES: process.env.ORCA_TEST_SSH_REPOSITORIES
+  TOPO_TEST_SSH_REPOSITORIES: process.env.TOPO_TEST_SSH_REPOSITORIES
 }
 
 afterEach(async () => {
@@ -47,7 +47,7 @@ afterEach(async () => {
 async function git(cwd: string, args: string[]): Promise<void> {
   await execFileAsync(
     'git',
-    ['-c', 'user.name=Orca Test', '-c', 'user.email=t@example.invalid', ...args],
+    ['-c', 'user.name=Topo Test', '-c', 'user.email=t@example.invalid', ...args],
     { cwd }
   )
 }
@@ -89,7 +89,7 @@ async function sshShim(root: string, repositories: Record<string, string>): Prom
     shim,
     `const { spawnSync } = require('node:child_process')
 const match = /^git-upload-pack '([^']+)'$/.exec(process.argv.at(-1) ?? '')
-const repository = match ? JSON.parse(process.env.ORCA_TEST_SSH_REPOSITORIES)[match[1]] : undefined
+const repository = match ? JSON.parse(process.env.TOPO_TEST_SSH_REPOSITORIES)[match[1]] : undefined
 if (!repository) {
   process.stderr.write('git@example.invalid: Permission denied (publickey).\\n')
   process.exit(255)
@@ -100,11 +100,11 @@ process.exit(spawnSync('git', ['upload-pack', repository], { stdio: 'inherit' })
   )
   process.env.GIT_SSH_COMMAND = `${shellQuote(process.execPath.replaceAll('\\', '/'))} ${shellQuote(shim.replaceAll('\\', '/'))}`
   process.env.GIT_SSH_VARIANT = 'ssh'
-  process.env.ORCA_TEST_SSH_REPOSITORIES = JSON.stringify(repositories)
+  process.env.TOPO_TEST_SSH_REPOSITORIES = JSON.stringify(repositories)
 }
 
 async function harness() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-cli-install-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-cli-install-'))
   roots.push(root)
   const notes = join(root, 'notes')
   const locale = join(root, 'locale')
@@ -186,7 +186,7 @@ async function harness() {
     applyConsent: async ({ pluginKey, reviewedFingerprint }) => {
       consents[pluginKey] = reviewedFingerprint
     },
-    executionHost: 'the Orca host (build-box)',
+    executionHost: 'the Topo host (build-box)',
     caller: { kind: 'local-cli' }
   }
   const lock = async () => (await readPluginLockfile(getUserPluginsDir(userDataPath))).plugins
@@ -204,7 +204,7 @@ async function approvalOf(promise: Promise<unknown>): Promise<PluginApprovalRequ
   return error
 }
 
-describe('orca plugin install and update over Git', () => {
+describe('topo plugin install and update over Git', () => {
   it('refuses code without --approve, writes nothing, and installs with the shown fingerprint', async () => {
     const { deps, consents, lock } = await harness()
     const source = { kind: 'git' as const, input: NOTES_URL }

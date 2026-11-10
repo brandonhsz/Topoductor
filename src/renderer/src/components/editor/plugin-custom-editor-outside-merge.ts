@@ -1,8 +1,8 @@
 /**
- * One outside merge in flight between Orca and an editor frame. It settles only on the session's
+ * One outside merge in flight between Topo and an editor frame. It settles only on the session's
  * acknowledgement: the first accepted edit made against the merge's own document version, whose
  * text is the merged result. A merge that throws, a disposed session, a remount or silence past
- * the deadline settles with null, and Orca keeps its banner.
+ * the deadline settles with null, and Topo keeps its banner.
  */
 export type PendingOutsideMerge = {
   /** Starts a merge for the document version just sent; a previous one settles with null. */

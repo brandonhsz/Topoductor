@@ -5,9 +5,9 @@ import {
   type RuntimeProvisionedRootRequest
 } from './runtime-provisioned-root-adoption'
 import type { CreateWorktreeResult } from '../../../../shared/worktree/create-types'
-import { OrcaRuntimeWithCreateManagedWorktree } from './workspace-creation'
+import { TopoRuntimeWithCreateManagedWorktree } from './workspace-creation'
 
-export abstract class RuntimeProvisionedWorkspaceAdoption extends OrcaRuntimeWithCreateManagedWorktree {
+export abstract class RuntimeProvisionedWorkspaceAdoption extends TopoRuntimeWithCreateManagedWorktree {
   async adoptManagedProvisionedRoot(
     repoSelector: string,
     request: RuntimeProvisionedRootRequest

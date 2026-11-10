@@ -10,7 +10,7 @@ import { useAppStore } from '@/store'
 import { ArtifactPublishedLinkPanel } from './ArtifactPublishedLinkPanel'
 import { getPublishedArtifactLink } from './artifact-published-link-client'
 import { publishArtifactFromSurface } from './artifact-publish-flow'
-import { OrcaSignInButton, OrcaSignInWaitNotice } from '../OrcaSignInProgress'
+import { TopoSignInButton, TopoSignInWaitNotice } from '../TopoSignInProgress'
 
 type PublishedLinkLookup = {
   key: string
@@ -53,7 +53,7 @@ export function ArtifactPublishButton({
   const [linkLookup, setLinkLookup] = useState<PublishedLinkLookup | null>(null)
   const lookupSequence = useRef(0)
   const popoverContentRef = useRef<HTMLDivElement>(null)
-  const authStatus = useAppStore((state) => state.orcaProfileAuthStatus)
+  const authStatus = useAppStore((state) => state.topoProfileAuthStatus)
   const openSettingsPage = useAppStore((state) => state.openSettingsPage)
   const openSettingsTarget = useAppStore((state) => state.openSettingsTarget)
   const settings = useAppStore((state) => state.settings)
@@ -195,7 +195,7 @@ export function ArtifactPublishButton({
                 <p className="text-xs font-medium">
                   {t(
                     'auto.components.artifacts.ArtifactPublishButton.accountTitle',
-                    'Orca account'
+                    'Topo account'
                   )}
                 </p>
                 <p className="text-[11px] leading-4 text-muted-foreground">
@@ -205,7 +205,7 @@ export function ArtifactPublishButton({
                   )}
                 </p>
               </div>
-              <OrcaSignInButton
+              <TopoSignInButton
                 variant="outline"
                 size="xs"
                 disabled={authStatus?.configured !== true}
@@ -216,10 +216,10 @@ export function ArtifactPublishButton({
                       'Sign in again'
                     )
                   : t('auto.components.artifacts.ArtifactPublishButton.signIn', 'Sign in')}
-              </OrcaSignInButton>
+              </TopoSignInButton>
             </div>
           ) : null}
-          {!signedIn ? <OrcaSignInWaitNotice /> : null}
+          {!signedIn ? <TopoSignInWaitNotice /> : null}
 
           {!sharingEnabled ? (
             <div className={cn('space-y-2', !signedIn && 'border-t border-border/60 pt-3')}>

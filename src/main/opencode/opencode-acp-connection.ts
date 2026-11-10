@@ -1,7 +1,7 @@
 import { homedir } from 'node:os'
 import { resolve } from 'node:path'
-import { spawnProcess } from '@orca/process-host'
-import type { PipedProcessSpawner } from '@orca/process-host/process-spec'
+import { spawnProcess } from '@topo/process-host'
+import type { PipedProcessSpawner } from '@topo/process-host/process-spec'
 import { isRecord } from '../../shared/agent-status/child-work/agent-status-child-work-value-guards'
 import {
   AcpAgentConnection,

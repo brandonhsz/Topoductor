@@ -80,7 +80,7 @@ export function settingsMountAdapters(
         },
         state: () => ({
           settings: state?.runtimeSettings,
-          trust: state?.trustedOrcaHooks,
+          trust: state?.trustedTopoHooks,
           providers: state?.availableProviders
         }),
         dispose: hook.unmount

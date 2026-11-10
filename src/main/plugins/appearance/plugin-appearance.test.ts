@@ -20,7 +20,7 @@ afterEach(async () => {
 })
 
 async function harness(options: { capability?: boolean; desktop?: boolean } = {}) {
-  const root = await mkdtemp(join(tmpdir(), 'orca-appearance-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-appearance-'))
   roots.push(root)
   const manifest = pluginManifestSchema.parse({
     manifestVersion: 2,

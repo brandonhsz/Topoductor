@@ -1,4 +1,4 @@
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import type * as ChildProcess from 'node:child_process'
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, realpathSync } from 'node:fs'
 import { rm } from 'node:fs/promises'
@@ -45,7 +45,7 @@ function planned(agentId: 'omp' | 'codex' = 'omp') {
 it.skipIf(process.platform === 'win32')(
   'clears profile-restored hook identity after login while preserving shell function commands',
   async () => {
-    const directory = realpathSync(mkdtempSync(join(tmpdir(), 'orca-wsl-hook-isolation-')))
+    const directory = realpathSync(mkdtempSync(join(tmpdir(), 'topo-wsl-hook-isolation-')))
     const profile = join(directory, 'rc')
     const shell = join(directory, 'bash')
     const reader = join(directory, 'reader.cjs')
@@ -61,7 +61,7 @@ it.skipIf(process.platform === 'win32')(
     )
     writeFileSync(
       profile,
-      `export ORCA_PANE_KEY=profile-pane ORCA_AGENT_PANE=profile-pane ORCA_AGENT_HOOK_PORT=54321 ORCA_AGENT_HOOKS_DISABLED=0
+      `export TOPO_PANE_KEY=profile-pane TOPO_AGENT_PANE=profile-pane TOPO_AGENT_HOOK_PORT=54321 TOPO_AGENT_HOOKS_DISABLED=0
 export CODEX_HOME=profile-managed-home
 review_agent() { ${quotePosixShell(process.execPath)} ${quotePosixShell(reader)} "$@"; }
 `
@@ -69,10 +69,10 @@ review_agent() { ${quotePosixShell(process.execPath)} ${quotePosixShell(reader)}
     writeFileSync(
       reader,
       `console.log(JSON.stringify({
-  pane: process.env.ORCA_PANE_KEY ?? null,
-  alias: process.env.ORCA_AGENT_PANE ?? null,
-  port: process.env.ORCA_AGENT_HOOK_PORT ?? null,
-  disabled: process.env.ORCA_AGENT_HOOKS_DISABLED,
+  pane: process.env.TOPO_PANE_KEY ?? null,
+  alias: process.env.TOPO_AGENT_PANE ?? null,
+  port: process.env.TOPO_AGENT_HOOK_PORT ?? null,
+  disabled: process.env.TOPO_AGENT_HOOKS_DISABLED,
   home: process.env.CODEX_HOME,
   args: process.argv.slice(2)
 }))
@@ -125,7 +125,7 @@ review_agent() { ${quotePosixShell(process.execPath)} ${quotePosixShell(reader)}
 it.each([false, true])(
   'prepares before hostile profiles and preserves login invocation/cwd/env (assigned=%s)',
   async (assigned) => {
-    const directory = realpathSync(mkdtempSync(join(tmpdir(), 'orca-c3-profiles-')))
+    const directory = realpathSync(mkdtempSync(join(tmpdir(), 'topo-c3-profiles-')))
     const repoPath = join(directory, 'repo')
     const startup = join(directory, 'startup')
     const changed = join(directory, 'profile-cwd')
@@ -235,7 +235,7 @@ fs.writeFileSync(process.env.REPORT, JSON.stringify({startup:process.env.STARTUP
       expect(receipt.mask).toBe(process.umask())
     } finally {
       stop.abort()
-      await rm(`/tmp/orca-generation-${request.preparation.args[0]}`, {
+      await rm(`/tmp/topo-generation-${request.preparation.args[0]}`, {
         recursive: true,
         force: true
       })

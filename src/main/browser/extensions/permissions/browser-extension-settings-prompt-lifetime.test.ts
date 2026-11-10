@@ -47,7 +47,7 @@ vi.mock('../web-store/browser-extension-webstore-events', () => ({
   notifyChromeWebStoreUninstalled: vi.fn()
 }))
 vi.mock('../installation/browser-extension-load-directory', () => ({
-  refuseOrcaFileCollisions: vi.fn(async () => {})
+  refuseTopoFileCollisions: vi.fn(async () => {})
 }))
 vi.mock('../web-store/browser-extension-held-updates', () => ({
   forgetHeldBrowserExtensionUpdate: vi.fn(),
@@ -115,7 +115,7 @@ function stagedFolders(): string[] {
 }
 
 beforeEach(async () => {
-  state.userData = mkdtempSync(join(tmpdir(), 'orca-settings-prompt-'))
+  state.userData = mkdtempSync(join(tmpdir(), 'topo-settings-prompt-'))
   state.load.mockReset()
   state.load.mockResolvedValue(undefined)
   state.download.mockReset()
@@ -157,7 +157,7 @@ describe('Settings extension install prompt lifetime', () => {
     expect(stagedFolders()).toHaveLength(1)
     expect(mutationLock.isBrowserExtensionBusy(extensionId)).toBe(true)
 
-    contents.emit('did-navigate', {}, 'file:///orca/index.html', 200, 'OK')
+    contents.emit('did-navigate', {}, 'file:///topo/index.html', 200, 'OK')
 
     await vi.waitFor(() => expect(mutationLock.isBrowserExtensionBusy(extensionId)).toBe(false))
     await expect(pending).resolves.toEqual({ status: 'cancelled' })

@@ -25,7 +25,7 @@ import {
   hasSystemMediaAccess,
   requestSystemMediaAccess
 } from '../browser/site-settings/permissions/browser-media-access'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import type { RuntimeWorktreeLifecycleEvent } from '../runtime/workspaces/lifecycle/worktree-lifecycle-event'
 import type {
   PreQuitCleanupFailureMode,
@@ -61,7 +61,7 @@ let activeTccPromptHandlerToken: number | null = null
 export function attachMainWindowServices(
   mainWindow: BrowserWindow,
   store: Store,
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   getSelectedCodexHomePath?: GetSelectedCodexHomePath,
   prepareClaudeAuth?: (
     target?: ClaudeAccountSelectionTarget

@@ -14,7 +14,7 @@ afterEach(async () => {
 })
 
 async function syntaxPlugin(files: Record<string, unknown>): Promise<ValidDiscoveredPlugin> {
-  const rootDir = await mkdtemp(join(tmpdir(), 'orca-plugin-syntax-'))
+  const rootDir = await mkdtemp(join(tmpdir(), 'topo-plugin-syntax-'))
   roots.push(rootDir)
   for (const [name, content] of Object.entries(files)) {
     await writeFile(join(rootDir, name), JSON.stringify(content))

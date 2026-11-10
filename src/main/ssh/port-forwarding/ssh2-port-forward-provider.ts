@@ -21,7 +21,7 @@ export class Ssh2PortForwardProvider implements SshPortForwardProvider {
     const activeSockets = new Set<Socket>()
     let closed = false
 
-    // Why noDelay: forwarded orcad RPC carries keystroke echo; Nagle would hold small writes behind an unacked segment.
+    // Why noDelay: forwarded topod RPC carries keystroke echo; Nagle would hold small writes behind an unacked segment.
     const server = createServer({ noDelay: true }, (socket) => {
       activeSockets.add(socket)
       socket.on('close', () => activeSockets.delete(socket))

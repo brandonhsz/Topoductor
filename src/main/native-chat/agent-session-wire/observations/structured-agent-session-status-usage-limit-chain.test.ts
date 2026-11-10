@@ -23,7 +23,7 @@ async function limitedTurn(
   opened: { userItemId?: string; resetsAt?: number } = {}
 ) {
   const turn = await journal.appendItem(
-    { provider: 'orca', clientMessageId: `turn-${name}` },
+    { provider: 'topo', clientMessageId: `turn-${name}` },
     {
       kind: 'turn',
       turnId: name,
@@ -37,13 +37,13 @@ async function limitedTurn(
   const scope = { fence: 1, turnScope: { kind: 'turn' as const, turnItemId: turn.itemId } }
   for (let index = 0; index < rows; index += 1) {
     await journal.appendItem(
-      { provider: 'orca', clientMessageId: `${name}-output-${index}` },
+      { provider: 'topo', clientMessageId: `${name}-output-${index}` },
       { kind: 'message', role: 'assistant', blocks: [{ type: 'text', text: 'working' }] },
       scope
     )
   }
   await journal.appendItem(
-    { provider: 'orca', clientMessageId: `${name}-limit` },
+    { provider: 'topo', clientMessageId: `${name}-limit` },
     {
       kind: 'status',
       ...agentSessionFailureWords(
@@ -112,7 +112,7 @@ it('stops counting a link when its earlier usage limit is revised to another res
   // The provider rewrites the first turn's failure under the same row with a later reset.
   const first = projections.read(journal, null).usageLimitCut
   await journal.appendItem(
-    { provider: 'orca', clientMessageId: 'first-limit' },
+    { provider: 'topo', clientMessageId: 'first-limit' },
     {
       kind: 'status',
       ...agentSessionFailureWords(
@@ -120,7 +120,7 @@ it('stops counting a link when its earlier usage limit is revised to another res
         { surface: 'row' }
       )
     },
-    { fence: 1, turnScope: { kind: 'turn', turnItemId: 'orca:turn-first' } }
+    { fence: 1, turnScope: { kind: 'turn', turnItemId: 'topo:turn-first' } }
   )
   const revised = projections.read(journal, null).usageLimitCut
   expect(revised?.turnItemId).toBe(first?.turnItemId)
@@ -143,7 +143,7 @@ it.each([
     )
     await journal.markPendingSubmissionsUnknown(1)
     // The provider's echo opens the turn before any receipt names it.
-    const echo = { provider: 'orca' as const, clientMessageId: 'provider-echo' }
+    const echo = { provider: 'topo' as const, clientMessageId: 'provider-echo' }
     await journal.appendItem(
       echo,
       { kind: 'message', role: 'user', blocks: [] },

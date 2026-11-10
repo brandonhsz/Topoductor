@@ -5,8 +5,8 @@ import { mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import '../../../../shared/remote-runtime/pairing/pairing'
 
 vi.mock('../../../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => {
@@ -45,12 +45,12 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
   return { getWorktreeListingMocks: () => (listings ??= createWorktreeListingMocks()) }
 })
 
-describe('OrcaRuntimeRpcServer', () => {
+describe('TopoRuntimeRpcServer', () => {
   it('preserves an existing Relay QR when a same-mode remint fails', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -99,10 +99,10 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('coalesces concurrent mobile Relay mints for the shared pending credential', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -159,10 +159,10 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('supersedes an older concurrent Relay mint for a different address without rotate', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -224,10 +224,10 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('lets LAN supersede a pending Relay mint without waiting for it', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -291,10 +291,10 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('revokes a Relay invite when binding persistence throws', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -342,10 +342,10 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('revokes a Relay result from a provider replaced during minting', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0
@@ -403,10 +403,10 @@ describe('OrcaRuntimeRpcServer', () => {
   })
 
   it('retains a minted Relay binding on the device when cleanup cannot be queued', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const server = new OrcaRuntimeRpcServer({
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const server = new TopoRuntimeRpcServer({
       methods: [],
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       userDataPath,
       enableWebSocket: true,
       wsPort: 0

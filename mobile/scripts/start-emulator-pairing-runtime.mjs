@@ -11,7 +11,7 @@ function primaryLanIp(lanIpCandidates) {
 
 export async function startHeadlessPairingRuntime({
   enabled,
-  orcaCli,
+  topoCli,
   cwd,
   lanIpCandidates,
   logStep,
@@ -22,21 +22,21 @@ export async function startHeadlessPairingRuntime({
   }
 
   logStep('0', 'Starting temporary desktop runtime for mobile pairing...')
-  const runDir = mkdtempSync(path.join(os.tmpdir(), 'orca-mobile-run.'))
+  const runDir = mkdtempSync(path.join(os.tmpdir(), 'topo-mobile-run.'))
   const userData = path.join(runDir, 'userData')
   // Give pairing runtime disposable HOME matching main-process E2E boot guard.
   const homeDir = path.join(runDir, 'home')
   mkdirSync(homeDir, { recursive: true, mode: 0o700 })
   const pairingAddress = primaryLanIp(lanIpCandidates)
   const child = spawn(
-    orcaCli,
+    topoCli,
     ['serve', '--mobile-pairing', '--pairing-address', pairingAddress, '--json'],
     {
       cwd,
       env: {
         ...process.env,
-        ORCA_E2E_USER_DATA_DIR: userData,
-        ORCA_E2E_HOME_DIR: homeDir,
+        TOPO_E2E_USER_DATA_DIR: userData,
+        TOPO_E2E_HOME_DIR: homeDir,
         HOME: homeDir,
         USERPROFILE: homeDir
       },
@@ -52,7 +52,7 @@ export async function registerWorktreeForPairingRuntime(runtime, worktree, tools
     return
   }
   tools.logStep('0.1', 'Registering current worktree in temporary runtime...')
-  await tools.orca(['repo', 'add', '--path', worktree, '--json'], {
+  await tools.topo(['repo', 'add', '--path', worktree, '--json'], {
     cwd: worktree,
     env: runtime.env,
     timeout: 60000
@@ -84,9 +84,9 @@ async function waitForPairingRuntime({ child, userData, pairingAddress, logSucce
     process: child,
     env: {
       ...process.env,
-      ORCA_USER_DATA_PATH: userData,
-      // orca-dev ignores ORCA_USER_DATA_PATH; override derived profile so CLI addresses disposable runtime. Plain orca ignores this.
-      ORCA_DEV_USER_DATA_PATH: userData
+      TOPO_USER_DATA_PATH: userData,
+      // topo-dev ignores TOPO_USER_DATA_PATH; override derived profile so CLI addresses disposable runtime. Plain topo ignores this.
+      TOPO_DEV_USER_DATA_PATH: userData
     },
     stop
   })

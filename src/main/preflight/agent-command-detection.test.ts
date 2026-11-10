@@ -49,7 +49,7 @@ describe('detectAgentCommandsOnHost install-dir fallback', () => {
   })
 
   it.skipIf(process.platform === 'win32')(
-    'drops /mnt/<drive> dirs from the fallback PATH on a WSL host orcad',
+    'drops /mnt/<drive> dirs from the fallback PATH on a WSL host topod',
     async () => {
       guestMounts.value = ['/mnt/c']
       const original = process.env.PATH

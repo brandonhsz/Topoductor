@@ -6,8 +6,8 @@ import type { BrowserExtensionPermissionSet } from './browser-extension-permissi
 import { getBrowserExtensionMainWindow } from '../tabs-and-windows/browser-extension-window-model'
 
 /**
- * permissions.request asks through Orca's extension dialog (the one store installs use), listing
- * only the access not yet granted. Without Orca's window there is no one to ask, so it declines.
+ * permissions.request asks through Topo's extension dialog (the one store installs use), listing
+ * only the access not yet granted. Without Topo's window there is no one to ask, so it declines.
  */
 export async function askToGrantBrowserExtensionPermissions(
   browserProfileId: string,

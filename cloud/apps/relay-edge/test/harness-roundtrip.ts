@@ -61,7 +61,7 @@ export async function mint(): Promise<string> {
     .setProtectedHeader({ alg: 'ES256', kid: 'spike' })
     .setSubject(USER)
     .setIssuer(ISSUER)
-    .setAudience('orca-relay')
+    .setAudience('topo-relay')
     .setIssuedAt()
     .setExpirationTime('5m')
     .sign(userKey)
@@ -106,22 +106,22 @@ export function relay(role: 'director' | 'cell', extra: Record<string, string> =
       ...process.env,
       PORT: new URL(url).port,
       DATABASE_URL,
-      ORCA_RELAY_PUBLIC_URL: url,
-      ORCA_RELAY_CELL_URL: url,
-      ORCA_RELAY_CELL_ID: role === 'director' ? 'director' : CELL_ID,
-      ORCA_RELAY_CELL_CAPACITY: '10',
-      ORCA_RELAY_CELLS_JSON: JSON.stringify(role === 'director' ? [{ id: CELL_ID, url: CELL, capacityRequests: 10 }] : []),
-      ORCA_RELAY_ROLE: role,
-      ORCA_RELAY_AUTH_ISSUER: ISSUER,
-      ORCA_RELAY_JWKS_URL: `${ISSUER}/jwks`,
-      ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: ASSIGNMENT_KEY,
-      ORCA_RELAY_DATA_DIR: mkdtempSync(join(tmpdir(), `rt-${role}-`)),
-      ORCA_RELAY_ADMIN_AUDIENCE: `${url}/v1/admin/drain`,
-      ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-      ORCA_RELAY_MONITOR_SERVICE_ACCOUNT: 'monitor@example.com',
-      ORCA_RELAY_FENCE_SERVICE_ACCOUNT: 'fence@example.com',
-      ORCA_RELAY_FENCE_BROKER_SERVICE_ACCOUNT: 'broker@example.com',
-      ORCA_RELAY_ADMIN_JWKS_URL: `${ISSUER}/jwks`,
+      TOPO_RELAY_PUBLIC_URL: url,
+      TOPO_RELAY_CELL_URL: url,
+      TOPO_RELAY_CELL_ID: role === 'director' ? 'director' : CELL_ID,
+      TOPO_RELAY_CELL_CAPACITY: '10',
+      TOPO_RELAY_CELLS_JSON: JSON.stringify(role === 'director' ? [{ id: CELL_ID, url: CELL, capacityRequests: 10 }] : []),
+      TOPO_RELAY_ROLE: role,
+      TOPO_RELAY_AUTH_ISSUER: ISSUER,
+      TOPO_RELAY_JWKS_URL: `${ISSUER}/jwks`,
+      TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: ASSIGNMENT_KEY,
+      TOPO_RELAY_DATA_DIR: mkdtempSync(join(tmpdir(), `rt-${role}-`)),
+      TOPO_RELAY_ADMIN_AUDIENCE: `${url}/v1/admin/drain`,
+      TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+      TOPO_RELAY_MONITOR_SERVICE_ACCOUNT: 'monitor@example.com',
+      TOPO_RELAY_FENCE_SERVICE_ACCOUNT: 'fence@example.com',
+      TOPO_RELAY_FENCE_BROKER_SERVICE_ACCOUNT: 'broker@example.com',
+      TOPO_RELAY_ADMIN_JWKS_URL: `${ISSUER}/jwks`,
       ...extra
     },
     stdio: ['ignore', 'pipe', 'pipe']
@@ -149,12 +149,12 @@ export async function ready(url: string, log: string[], marker?: string): Promis
 
 export async function director(cohort: { allow?: boolean; deny?: boolean }) {
   const d = relay('director', {
-    ORCA_RELAY_EDGE_CELL_URL: EDGE_URL,
-    ORCA_RELAY_EDGE_ADMIN_SIGNING_KEY: EDGE_KEY,
-    ORCA_RELAY_EDGE_ALLOW_HOSTS: cohort.allow ? host.relayHostId : '',
-    ORCA_RELAY_EDGE_DENY_HOSTS: cohort.deny ? host.relayHostId : ''
+    TOPO_RELAY_EDGE_CELL_URL: EDGE_URL,
+    TOPO_RELAY_EDGE_ADMIN_SIGNING_KEY: EDGE_KEY,
+    TOPO_RELAY_EDGE_ALLOW_HOSTS: cohort.allow ? host.relayHostId : '',
+    TOPO_RELAY_EDGE_DENY_HOSTS: cohort.deny ? host.relayHostId : ''
   })
-  await ready(DIRECTOR, d.log, 'orca_relay_edge_cell_ready')
+  await ready(DIRECTOR, d.log, 'topo_relay_edge_cell_ready')
   await heartbeat()
   return d
 }
@@ -187,7 +187,7 @@ export function control(cellUrl: string, epoch: number, jwt: string) {
     onClose: (code) => events.closes.push(code),
     createSocket: (url, token) =>
       new WebSocket(url, {
-        headers: { authorization: `Bearer ${token}`, 'x-orca-host-capabilities': 'pending-conn-details,idle-regional-rehome-v1' },
+        headers: { authorization: `Bearer ${token}`, 'x-topo-host-capabilities': 'pending-conn-details,idle-regional-rehome-v1' },
         perMessageDeflate: false,
         maxPayload: 64 * 1024
       })

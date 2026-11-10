@@ -60,7 +60,7 @@ import {
   type PluginPanelIconName
 } from '../../../../shared/plugins/contributions/plugin-panel-contribution'
 
-// Why a closed map: names are Orca's (one vocabulary for manifests and components), and
+// Why a closed map: names are Topo's (one vocabulary for manifests and components), and
 // lucide's full `icons` table would defeat tree-shaking.
 const PLUGIN_ICON_GLYPHS: Record<PluginPanelIconName, LucideIcon> = {
   activity: Activity,
@@ -120,7 +120,7 @@ const PLUGIN_ICON_GLYPHS: Record<PluginPanelIconName, LucideIcon> = {
   link: Link
 }
 
-/** The glyph for a plugin icon name, or `fallback` for a name this Orca does not know. */
+/** The glyph for a plugin icon name, or `fallback` for a name this Topo does not know. */
 export function resolvePluginIconGlyph(name: string | undefined, fallback: LucideIcon): LucideIcon {
   // Why canonicalize: hosts from before the closed list still send `FileText`-style names.
   const known = name ? canonicalPluginPanelIcon(name) : null

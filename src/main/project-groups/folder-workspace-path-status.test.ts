@@ -44,7 +44,7 @@ describe('folder workspace path status', () => {
   it.each([false, true])(
     'reports canonical owner ambiguity through the persisted folder status route (%s)',
     async (reverse) => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-pr31617-folder-owner-'))
+      const root = await mkdtemp(join(tmpdir(), 'topo-pr31617-folder-owner-'))
       const workspace: FolderWorkspace = {
         id: 'saved',
         projectGroupId: 'group-1',
@@ -95,7 +95,7 @@ describe('folder workspace path status', () => {
   )
 
   it('reports existing local directories and local files', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-folder-status-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-folder-status-'))
     try {
       const filePath = join(root, 'notes.txt')
       await writeFile(filePath, 'hello')
@@ -127,7 +127,7 @@ describe('folder workspace path status', () => {
   })
 
   it('reports missing local directories', async () => {
-    const missingPath = join(tmpdir(), `orca-folder-status-missing-${randomUUID()}`)
+    const missingPath = join(tmpdir(), `topo-folder-status-missing-${randomUUID()}`)
 
     await expect(
       getFolderWorkspacePathStatusForPath({

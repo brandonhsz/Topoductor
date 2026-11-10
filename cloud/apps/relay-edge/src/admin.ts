@@ -19,7 +19,7 @@ import { z } from 'zod'
 import type { Env } from './env'
 import type { AdminReplayGuard } from './admin-jti'
 
-export const ADMIN_AUDIENCE = 'orca-relay-edge-admin'
+export const ADMIN_AUDIENCE = 'topo-relay-edge-admin'
 export const ADMIN_PURPOSE = 'edge-admin'
 export type AdminOp = 'assign' | 'export' | 'erase' | 'drain'
 

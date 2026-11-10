@@ -47,15 +47,15 @@ vi.mock('../../shared/secure-storage/secure-path-windows-acl', () => ({
 const platformDescriptor = Object.getOwnPropertyDescriptor(process, 'platform')!
 const realFs = await vi.importActual<typeof fs>('node:fs')
 const envelope = (value: string): string =>
-  `orca-zcode-plan-api-key:v1:plaintext:${Buffer.from(value).toString('base64')}`
+  `topo-zcode-plan-api-key:v1:plaintext:${Buffer.from(value).toString('base64')}`
 let store: typeof ZcodePlanApiKeyStore
 let writer: typeof SecureFile
 let keyPath: string
 
 beforeEach(async () => {
-  mocks.home = realFs.mkdtempSync(join(os.tmpdir(), 'orca-glm-plaintext-rollback-'))
-  keyPath = join(mocks.home, '.orca', 'zcode-plan-api-key.enc')
-  realFs.mkdirSync(join(mocks.home, '.orca'))
+  mocks.home = realFs.mkdtempSync(join(os.tmpdir(), 'topo-glm-plaintext-rollback-'))
+  keyPath = join(mocks.home, '.topo', 'zcode-plan-api-key.enc')
+  realFs.mkdirSync(join(mocks.home, '.topo'))
   mocks.write.mockReset().mockImplementation(realFs.writeFileSync)
   mocks.rename.mockReset().mockImplementation(realFs.renameSync)
   mocks.restrict.mockReset().mockReturnValue(false)
@@ -145,7 +145,7 @@ describe('conditional rollback publication through the real writer', () => {
 
     expect(realFs.existsSync(keyPath)).toBe(false)
     expect(store.readZcodePlanApiKey()).toBeNull()
-    expect(realFs.readdirSync(join(mocks.home, '.orca'))).toEqual([])
+    expect(realFs.readdirSync(join(mocks.home, '.topo'))).toEqual([])
   })
 
   it('cleans staged bytes when the publication predicate throws', () => {
@@ -161,7 +161,7 @@ describe('conditional rollback publication through the real writer', () => {
 
     expect(mocks.rename).not.toHaveBeenCalled()
     expect(realFs.readFileSync(keyPath, 'utf8')).toBe(envelope('previous-key'))
-    expect(realFs.readdirSync(join(mocks.home, '.orca'))).toEqual(['zcode-plan-api-key.enc'])
+    expect(realFs.readdirSync(join(mocks.home, '.topo'))).toEqual(['zcode-plan-api-key.enc'])
   })
 
   it('cleans guarded staging bytes if rename throws without deleting the original target', () => {
@@ -177,6 +177,6 @@ describe('conditional rollback publication through the real writer', () => {
     ).toThrow('Synthetic guarded rename failure')
 
     expect(realFs.readFileSync(keyPath, 'utf8')).toBe(envelope('previous-key'))
-    expect(realFs.readdirSync(join(mocks.home, '.orca'))).toEqual(['zcode-plan-api-key.enc'])
+    expect(realFs.readdirSync(join(mocks.home, '.topo'))).toEqual(['zcode-plan-api-key.enc'])
   })
 })

@@ -1,6 +1,6 @@
 import { once } from 'node:events'
 import { describe, expect, expectTypeOf, it } from 'vitest'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import type { ChildProcess, ChildProcessWithoutNullStreams } from 'node:child_process'
 import type { ProcessSpec } from './process-spec'
 

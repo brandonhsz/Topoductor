@@ -34,7 +34,7 @@ const identity = {
   agent: 'codex',
   providerHandle: codexProviderHandle('thread-1')
 } as const
-const item = (id: string) => ({ provider: 'orca', clientMessageId: id }) as const
+const item = (id: string) => ({ provider: 'topo', clientMessageId: id }) as const
 // A queue change naming a missing card folds to nothing, so its sequence stores no record.
 const writeNoOp = (journal: AgentSessionJournal) =>
   journal['rowWriter'].enqueue((seq, ts) => ({
@@ -53,7 +53,7 @@ afterEach(async () => {
 })
 
 it('keeps sparse sequence groups whole across catch-up, lookahead, history limits and byte shrinking', async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-journal-outcomes-wire-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-journal-outcomes-wire-'))
   const database = openTestJournalHostDatabase(root)
   const rows: JournalRow[] = [projectionEpochRow]
   for (let seq = 2; seq <= 30; seq++) {
@@ -164,7 +164,7 @@ it('keeps sparse sequence groups whole across catch-up, lookahead, history limit
 })
 
 it('moves subscribers and prompt reuse to the newest write when that write saved nothing', async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-journal-outcomes-wire-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-journal-outcomes-wire-'))
   const database = openTestJournalHostDatabase(root)
   seedOutcomeRows(database, [projectionEpochRow])
   const journal = await journals.open({ identity, stateDirectory: root })

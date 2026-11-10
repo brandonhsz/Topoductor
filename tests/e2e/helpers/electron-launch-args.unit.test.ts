@@ -1,8 +1,8 @@
 import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { getElectronIsolatedKeychainArgs, getOrcaElectronLaunchArgs } from './electron-launch-args'
+import { getElectronIsolatedKeychainArgs, getTopoElectronLaunchArgs } from './electron-launch-args'
 
-describe('getOrcaElectronLaunchArgs', () => {
+describe('getTopoElectronLaunchArgs', () => {
   afterEach(() => vi.unstubAllGlobals())
 
   it.each(['darwin', 'linux', 'win32'])(
@@ -13,7 +13,7 @@ describe('getOrcaElectronLaunchArgs', () => {
       expect(args).toEqual(
         platform === 'darwin' ? ['--password-store=basic', '--use-mock-keychain'] : []
       )
-      expect(getOrcaElectronLaunchArgs(join('orca', 'out', 'main', 'index.js'), false)).toEqual(
+      expect(getTopoElectronLaunchArgs(join('topo', 'out', 'main', 'index.js'), false)).toEqual(
         expect.arrayContaining(args)
       )
     }
@@ -29,7 +29,7 @@ describe('getOrcaElectronLaunchArgs', () => {
     'scopes software WebGL to Linux CI headful launches: %s/%s/%s',
     (platform, ci, headful, enabled) => {
       vi.stubGlobal('process', { ...process, platform, env: { ...process.env, CI: ci } })
-      const args = getOrcaElectronLaunchArgs(join('orca', 'out', 'main', 'index.js'), headful)
+      const args = getTopoElectronLaunchArgs(join('topo', 'out', 'main', 'index.js'), headful)
       expect(args.includes('--use-gl=angle')).toBe(enabled)
       expect(args.includes('--use-angle=swiftshader')).toBe(enabled)
       expect(args.includes('--enable-unsafe-swiftshader')).toBe(enabled)
@@ -41,10 +41,10 @@ describe('getOrcaElectronLaunchArgs', () => {
   )
 
   it('launches the package root that owns the compiled main entry', () => {
-    const root = join('workspace', 'orca')
+    const root = join('workspace', 'topo')
     const mainPath = join(root, 'out', 'main', 'index.js')
 
-    const args = getOrcaElectronLaunchArgs(mainPath, true)
+    const args = getTopoElectronLaunchArgs(mainPath, true)
     if (process.platform === 'darwin') {
       expect(args).toEqual([
         '--password-store=basic',
@@ -56,6 +56,6 @@ describe('getOrcaElectronLaunchArgs', () => {
     } else {
       expect(args.at(-1)).toBe(root)
     }
-    expect(getOrcaElectronLaunchArgs(mainPath, false)).toContain(root)
+    expect(getTopoElectronLaunchArgs(mainPath, false)).toContain(root)
   })
 })

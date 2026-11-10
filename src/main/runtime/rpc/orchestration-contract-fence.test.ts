@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../shared/orchestration/orchestration-runtime-capabilities'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { OrchestrationDb } from '../orchestration/db/orchestration-db'
 import '../orchestration/db/contract-constants'
 import '../orchestration/db/messages/mailbox-routing-page'
@@ -22,7 +22,7 @@ describe('orchestration contract fence', () => {
   function createHarness(method = 'orchestration.send') {
     const database = new OrchestrationDb(':memory:')
     databases.push(database)
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(database)
     const effect = vi.fn(() => ({ accepted: true }))
     const dispatcher = new RpcDispatcher({

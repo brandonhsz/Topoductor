@@ -1,11 +1,11 @@
 // #12536: restart must not inject mail until the agent emits a fresh live title.
 // Cold relaunch publishes leaves after restore seeding, so this case restores no status and does not pin lastAgentStatusObservedLive.
-// orca-runtime.test.ts stages seeded idle directly to pin that gate; this spec proves the real process survives two launches.
+// topo-runtime.test.ts stages seeded idle directly to pin that gate; this spec proves the real process survives two launches.
 import { existsSync, readFileSync } from 'node:fs'
 import type { ElectronApplication } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { TEST_REPO_PATH_FILE } from './global-setup'
-import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/orca-restart'
+import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/topo-restart'
 import {
   execInTerminal,
   waitForActivePaneHookDescriptor,
@@ -21,7 +21,7 @@ import {
 import { mailDisposition, readMailRow } from './helpers/orchestration-mail-store'
 import { waitForPtyShellEcho } from './terminal-pty-readiness'
 
-const POINTER_COMMAND = 'orca-dev orchestration check'
+const POINTER_COMMAND = 'topo-dev orchestration check'
 const NO_DELIVERY_SETTLE_MS = 5_000
 const DELIVERY_TIMEOUT_MS = 20_000
 

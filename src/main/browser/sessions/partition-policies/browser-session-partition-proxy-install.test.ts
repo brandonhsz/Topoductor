@@ -11,7 +11,7 @@ const { fromPartitionMock } = vi.hoisted(() => {
       resolveProxy: vi.fn(async () => 'DIRECT'),
       setProxy: vi.fn(async () => {}),
       closeAllConnections: vi.fn(async () => {}),
-      getUserAgent: vi.fn(() => 'Mozilla/5.0 Electron/43.0.0 Orca/1.0'),
+      getUserAgent: vi.fn(() => 'Mozilla/5.0 Electron/43.0.0 Topo/1.0'),
       setUserAgent: vi.fn(),
       setPermissionRequestHandler: vi.fn(),
       setPermissionCheckHandler: vi.fn(),
@@ -79,7 +79,7 @@ import { handleElectronProxyLogin } from '../../../network/electron-proxy-creden
 let partitionCounter = 0
 function nextProfile() {
   partitionCounter += 1
-  const partition = `persist:orca-browser-session-install-${partitionCounter}`
+  const partition = `persist:topo-browser-session-install-${partitionCounter}`
   return {
     id: `p${partitionCounter}`,
     scope: 'isolated' as const,

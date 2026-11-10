@@ -7,7 +7,7 @@ import {
 } from '../../../../../shared/browser/runtime/browser-runtime-capabilities'
 import { getBrowserHostLeaseRegistry } from '../../../browser-host/leases/browser-host-lease-registry-instance'
 import type { BrowserHostLease } from '../../../browser-host/leases/browser-host-lease-records'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { BrowserNetworkTunnelOutboundMemoryBudgetRegistry } from '../../../../browser/network/tunnels/browser-network-tunnel-outbound-memory-budget'
 import '../../../../browser/network/execution-routes/browser-network-execution-route'
 import { browserNetworkExecutionHostKey } from '../../../../../shared/browser/client-hosting/browser-network-execution-host'
@@ -37,15 +37,15 @@ function request(lease?: BrowserHostLease, overrides: Record<string, unknown> = 
   }
 }
 
-function runtime(cleanups = new Map<string, () => void>()): OrcaRuntimeService {
+function runtime(cleanups = new Map<string, () => void>()): TopoRuntimeService {
   return {
     getRuntimeId: () => 'runtime-a',
     getStartedAt: () => 1,
     registerSubscriptionCleanup: (id: string, cleanup: () => void) => cleanups.set(id, cleanup)
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
 }
 
-function attachLease(hostRuntime: OrcaRuntimeService): BrowserHostLease {
+function attachLease(hostRuntime: TopoRuntimeService): BrowserHostLease {
   return getBrowserHostLeaseRegistry(hostRuntime).attach({
     browserHostClientId: 'host-a',
     connectionId: 'host-control-connection',
@@ -55,7 +55,7 @@ function attachLease(hostRuntime: OrcaRuntimeService): BrowserHostLease {
 }
 
 function grantExecutionHost(
-  hostRuntime: OrcaRuntimeService,
+  hostRuntime: TopoRuntimeService,
   lease: BrowserHostLease,
   executionHost: Parameters<typeof browserNetworkExecutionHostKey>[0]
 ) {

@@ -1,12 +1,12 @@
-import '../../orca-runtime-tests/orca-runtime-test-lifecycle.spec'
+import '../../topo-runtime-tests/topo-runtime-test-lifecycle.spec'
 import { expect, it, vi } from 'vitest'
 
-import '../../orca-runtime-tests/runtime-test-module-registration.spec'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import '../../topo-runtime-tests/runtime-test-module-registration.spec'
+import { TopoRuntimeService } from '../../topo-runtime'
 
-import { electronMocks } from '../../orca-runtime-test-mocks/setup.spec'
+import { electronMocks } from '../../topo-runtime-test-mocks/setup.spec'
 
-import { TEST_WORKTREE_ID, store } from '../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+import { TEST_WORKTREE_ID, store } from '../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import '../../../../shared/constants'
 
 import type { BrowserTabInfo } from '../../../../shared/browser/runtime/runtime-browser-contracts'
@@ -44,7 +44,7 @@ function publication(epoch = 'renderer-1', version = 1): RuntimeMobileSessionTab
 function browserRuntime(closeTab = vi.fn(async (_pageId: string) => {}), runtimeStore = store) {
   const livePages = new Map<string, BrowserTabInfo>()
   const desktopPageIds = new Set<string>()
-  const runtime = new OrcaRuntimeService(runtimeStore)
+  const runtime = new TopoRuntimeService(runtimeStore)
   runtime.setOffscreenBrowserBackend({
     createTab: vi.fn(),
     closeTab,

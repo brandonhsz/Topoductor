@@ -30,7 +30,7 @@ export function useGitCommitActionsSupport(target: RuntimeClientTarget | null, h
     supported: state === 'supported',
     reason:
       state === 'unsupported'
-        ? t('gitGraph.updateActionsHost', 'Update Orca on {{host}} to act on commits', {
+        ? t('gitGraph.updateActionsHost', 'Update Topo on {{host}} to act on commits', {
             host:
               environmentName ??
               (hostName === 'local' ? undefined : hostName) ??

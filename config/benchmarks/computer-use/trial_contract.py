@@ -3,7 +3,7 @@ import random
 import re
 import statistics
 
-MARKER = "Orca café Ω"
+MARKER = "Topo café Ω"
 DECOY = "untouched"
 SELECTORS = {
     "field": (r"\b(edit|text|entry|textbox)\b", r"\bfield\b"),

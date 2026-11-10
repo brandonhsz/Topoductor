@@ -46,7 +46,7 @@ describe('ModelManager Windows model path handling', () => {
   beforeEach(() => {
     appGetPathMock.mockReset()
     netRequestMock.mockReset()
-    appGetPathMock.mockImplementation(() => join(tmpdir(), 'orca-speech-models-test'))
+    appGetPathMock.mockImplementation(() => join(tmpdir(), 'topo-speech-models-test'))
   })
 
   afterEach(() => {
@@ -54,11 +54,11 @@ describe('ModelManager Windows model path handling', () => {
   })
 
   it('migrates existing ready model files from a non-ASCII Windows default cache', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-manager-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-manager-'))
     try {
       setPlatform('win32')
       const programDataDir = join(dir, 'ProgramData')
-      const userDataDir = join(dir, '用户', 'Orca')
+      const userDataDir = join(dir, '用户', 'Topo')
       process.env.PROGRAMDATA = programDataDir
       appGetPathMock.mockImplementation((name: string) =>
         name === 'userData' ? userDataDir : join(dir, name)
@@ -93,11 +93,11 @@ describe('ModelManager Windows model path handling', () => {
   })
 
   it('deleting a migrated model removes the legacy copy so it is not resurrected on next launch', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-model-manager-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-model-manager-'))
     try {
       setPlatform('win32')
       const programDataDir = join(dir, 'ProgramData')
-      const userDataDir = join(dir, '用户', 'Orca')
+      const userDataDir = join(dir, '用户', 'Topo')
       process.env.PROGRAMDATA = programDataDir
       appGetPathMock.mockImplementation((name: string) =>
         name === 'userData' ? userDataDir : join(dir, name)

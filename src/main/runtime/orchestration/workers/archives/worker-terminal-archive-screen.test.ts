@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createTerminalArchiveFixture } from './worker-terminal-archive.test-support'
-import { syncSinglePty } from '../../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+import { syncSinglePty } from '../../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 
 afterEach(() => vi.restoreAllMocks())
 

@@ -151,7 +151,7 @@ export function createFixture() {
   }
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-queue-pause-'))
+    root = await mkdtemp(join(tmpdir(), 'topo-queue-pause-'))
     clock = 1_000
   })
 

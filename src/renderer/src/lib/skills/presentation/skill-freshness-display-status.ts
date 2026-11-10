@@ -20,7 +20,7 @@ export function getSkillFreshnessDisplayStatus(
   skillName: string
 ): SkillFreshnessDisplayStatus {
   switch (planState(plan, skillName)) {
-    // Why: no plan yet, or no copy of Orca's here; the only honest answer is presence.
+    // Why: no plan yet, or no copy of Topo's here; the only honest answer is presence.
     case null:
       return 'installed'
     case 'update':

@@ -13,7 +13,7 @@ function deferred<T>(): { promise: Promise<T>; resolve: (value: T) => void } {
 }
 
 describe('ExternalAutomationProbeScheduler', () => {
-  it('parks queued probes while Orca automation work holds priority', async () => {
+  it('parks queued probes while Topo automation work holds priority', async () => {
     const scheduler = new ExternalAutomationProbeScheduler({ concurrency: 4 })
     const run = vi.fn(() => Promise.resolve('manager'))
 

@@ -1,4 +1,4 @@
-import { mobilePresenceStore as store } from '../../orca-runtime-test-mocks/mobile-presence-store'
+import { mobilePresenceStore as store } from '../../topo-runtime-test-mocks/mobile-presence-store'
 import type * as WorktreeScanCacheModule from '../../../git/worktrees/catalog/worktree-scan-cache'
 import type * as WorktreeListingModule from '../../../git/worktrees/catalog/worktree-listing'
 import * as inputAdmission from '../input/terminal-input-admission'
@@ -6,7 +6,7 @@ import './mobile-subscribe-integration.spec'
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { listWorktrees } from '../../../git/worktrees/catalog/worktree-scan-cache'
 import type * as GitUsernameModule from '../../../git/git-username'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import type { RuntimePtyController } from '../lifecycle/runtime-pty-controller-contract'
 
 vi.mock('../../../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => {
@@ -70,7 +70,7 @@ function createRuntime(mobileAutoRestoreFitMs: number | null = 5_000) {
     ...store,
     getSettings: () => ({ ...store.getSettings(), mobileAutoRestoreFitMs })
   }
-  const runtime = new OrcaRuntimeService(effectiveStore)
+  const runtime = new TopoRuntimeService(effectiveStore)
   const ptySizes = new Map<string, { cols: number; rows: number }>([
     ['pty-1', { cols: 150, rows: 40 }]
   ])
@@ -141,7 +141,7 @@ describe('mobile presence lock — driver state machine', () => {
     expect(runtime.getDriver('pty-1')).toEqual({ kind: 'idle' })
     expect(writes).toHaveLength(0)
 
-    const floorClaim: { current: ReturnType<OrcaRuntimeService['beginMobileInputFloor']> } = {
+    const floorClaim: { current: ReturnType<TopoRuntimeService['beginMobileInputFloor']> } = {
       current: null
     }
     const originalWrite = controller.write
@@ -244,7 +244,7 @@ describe('mobile presence lock — multi-mobile semantics', () => {
 
 // #7588: null-viewport re-subscribe leaves an active subscriber under the held fit override.
 async function reachHeldModalWithNullViewportResubscribe(
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
 ): Promise<void> {
   await runtime.handleMobileSubscribe('pty-1', 'phone-A', { cols: 45, rows: 20 })
   runtime.handleMobileUnsubscribe('pty-1', 'phone-A')

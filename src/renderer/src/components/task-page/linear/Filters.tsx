@@ -79,7 +79,7 @@ export function TaskPageLinearFilters({
                 ? 'border-border/50 bg-foreground/90 text-background'
                 : 'border-border/50 bg-transparent text-foreground hover:bg-muted/50'
             )
-            if (mode.id === 'in-orca') {
+            if (mode.id === 'in-topo') {
               return (
                 <Tooltip key={mode.id}>
                   <TooltipTrigger asChild>
@@ -95,7 +95,7 @@ export function TaskPageLinearFilters({
                   <TooltipContent side="bottom" sideOffset={6}>
                     {t(
                       'auto.components.TaskPage.linearModeHasWorktreeTooltip',
-                      'Linear tickets linked to an Orca workspace'
+                      'Linear tickets linked to a Topo workspace'
                     )}
                   </TooltipContent>
                 </Tooltip>
@@ -177,7 +177,7 @@ export function TaskPageLinearFilters({
                 size="icon"
                 onClick={() => setLinearRefreshNonce((n) => n + 1)}
                 disabled={
-                  linearMode === 'issues' || linearMode === 'in-orca'
+                  linearMode === 'issues' || linearMode === 'in-topo'
                     ? linearLoading
                     : linearMode === 'projects'
                       ? linearProjectsLoading || linearProjectDetailLoading
@@ -186,7 +186,7 @@ export function TaskPageLinearFilters({
                 aria-label={t('auto.components.TaskPage.8964184a8b', 'Refresh Linear')}
                 className="size-8 border-border/50 bg-transparent hover:bg-muted/50 backdrop-blur-md supports-[backdrop-filter]:bg-transparent"
               >
-                {(linearMode === 'issues' || linearMode === 'in-orca') && linearLoading ? (
+                {(linearMode === 'issues' || linearMode === 'in-topo') && linearLoading ? (
                   <LoaderCircle className="size-4 animate-spin" />
                 ) : linearMode === 'projects' &&
                   (linearProjectsLoading || linearProjectDetailLoading) ? (
@@ -206,7 +206,7 @@ export function TaskPageLinearFilters({
         </div>
       </div>
 
-      {linearMode === 'issues' || linearMode === 'in-orca' ? (
+      {linearMode === 'issues' || linearMode === 'in-topo' ? (
         <div className="mt-3 flex min-w-0 items-center gap-2">
           {showLinearAttributeFilters ? (
             <LinearIssueAttributeFilterDropdowns
@@ -244,18 +244,18 @@ export function TaskPageLinearFilters({
                   setAppliedLinearSearch(trimmed)
                   setTaskResumeState({
                     linearQuery: trimmed,
-                    linearMode: linearMode === 'in-orca' ? 'in-orca' : 'issues'
+                    linearMode: linearMode === 'in-topo' ? 'in-topo' : 'issues'
                   })
-                  if (linearMode !== 'in-orca') {
+                  if (linearMode !== 'in-topo') {
                     setLinearRefreshNonce((n) => n + 1)
                   }
                 }
               }}
               placeholder={
-                linearMode === 'in-orca'
+                linearMode === 'in-topo'
                   ? t(
                       'auto.components.TaskPage.linearHasWorktreeSearchPlaceholder',
-                      'Filter issues linked to an Orca workspace...'
+                      'Filter issues linked to a Topo workspace...'
                     )
                   : t('auto.components.TaskPage.eec0c5c079', 'Search Linear issues...')
               }
@@ -270,9 +270,9 @@ export function TaskPageLinearFilters({
                   setAppliedLinearSearch('')
                   setTaskResumeState({
                     linearQuery: '',
-                    linearMode: linearMode === 'in-orca' ? 'in-orca' : 'issues'
+                    linearMode: linearMode === 'in-topo' ? 'in-topo' : 'issues'
                   })
-                  if (linearMode !== 'in-orca') {
+                  if (linearMode !== 'in-topo') {
                     setLinearRefreshNonce((n) => n + 1)
                   }
                 }}

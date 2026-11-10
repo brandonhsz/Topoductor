@@ -30,7 +30,7 @@ const ConnectionKindSchema = z.enum(['invite', 'resume'])
 
 // Strict deployed cells reject new hello keys; mirror contract capabilities in upgrade headers.
 export const RELAY_HOST_CAPABILITY_HEADERS = {
-  'x-orca-host-capabilities': 'pending-conn-details,idle-regional-rehome-v1,client-keepalive-v1'
+  'x-topo-host-capabilities': 'pending-conn-details,idle-regional-rehome-v1,client-keepalive-v1'
 } as const
 
 // Mirror relay-contract RELAY_CLIENT_KEEPALIVE_*: sent only after a relay's keepalive-offer. The

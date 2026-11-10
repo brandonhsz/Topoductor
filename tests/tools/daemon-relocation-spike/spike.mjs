@@ -1,4 +1,4 @@
-// Find minimal copied run-as-node Orca files for real ConPTY without install-dir handles; Windows packaged build required.
+// Find minimal copied run-as-node Topo files for real ConPTY without install-dir handles; Windows packaged build required.
 
 import { randomUUID } from 'node:crypto'
 import { existsSync, readFileSync, readdirSync, rmSync } from 'node:fs'
@@ -30,9 +30,9 @@ function resolveProtocolVersion() {
 
 function makeSocketPath() {
   if (process.platform === 'win32') {
-    return `\\\\?\\pipe\\orca-daemon-spike-${randomUUID().slice(0, 12)}`
+    return `\\\\?\\pipe\\topo-daemon-spike-${randomUUID().slice(0, 12)}`
   }
-  return join(process.env.TMPDIR ?? '/tmp', `orca-daemon-spike-${randomUUID().slice(0, 12)}.sock`)
+  return join(process.env.TMPDIR ?? '/tmp', `topo-daemon-spike-${randomUUID().slice(0, 12)}.sock`)
 }
 
 // Print a depth-limited copy listing so CI can verify require-resolvable entry/node-pty layout.

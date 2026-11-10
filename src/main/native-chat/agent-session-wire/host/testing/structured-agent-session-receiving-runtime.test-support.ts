@@ -1,6 +1,6 @@
-import { OrcaRuntimeService } from '../../../../runtime/orca-runtime'
+import { TopoRuntimeService } from '../../../../runtime/topo-runtime'
 
-export class ReceivingRuntime extends OrcaRuntimeService {
+export class ReceivingRuntime extends TopoRuntimeService {
   override getOrchestrationDbIfAvailable() {
     return super.getOrchestrationDbIfAvailable()
   }

@@ -95,13 +95,13 @@ export function getRemoteServerManualUpdateHelp(
   if (entry.managedOverSsh) {
     return t(
       'auto.components.settings.RemoteServerUpdateStatus.managedOverSshHelp',
-      'This desktop updates this server over SSH. Use Update on its row in Remote Orca Servers.'
+      'This desktop updates this server over SSH. Use Update on its row in Remote Topo Servers.'
     )
   }
   if (entry.support?.reason === 'manual-service-update-required') {
     return t(
       'auto.components.settings.RemoteServerUpdateStatus.serviceManagerHelp',
-      'Update Orca on the server host — through its system package manager if it was installed from a .deb or .rpm, otherwise through the service manager that starts it.'
+      'Update Topo on the server host — through its system package manager if it was installed from a .deb or .rpm, otherwise through the service manager that starts it.'
     )
   }
   if (entry.support?.reason === 'unpackaged-build') {
@@ -112,6 +112,6 @@ export function getRemoteServerManualUpdateHelp(
   }
   return t(
     'auto.components.settings.RemoteServerUpdateStatus.legacyHelp',
-    'Remote updates are unavailable for this server. Update Orca on the server host.'
+    'Remote updates are unavailable for this server. Update Topo on the server host.'
   )
 }

@@ -29,11 +29,11 @@ function AnnouncedProjects() {
         className="w-full justify-start"
         data-fixture-project=""
         onClick={() => {
-          useAppStore.getState().toggleCollapsedGroup('repo:orca')
-          announceProjectCollapse('repo:orca')
+          useAppStore.getState().toggleCollapsedGroup('repo:topo')
+          announceProjectCollapse('repo:topo')
         }}
       >
-        Orca
+        Topo
       </Button>
       <ContextualTourOverlay />
     </div>

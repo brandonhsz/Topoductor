@@ -2,14 +2,14 @@ import { createHash } from 'node:crypto'
 import { chmodSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 
-const AGENT_BROWSER_SOCKET_DIRECTORY_PREFIX = 'orca-ab-'
+const AGENT_BROWSER_SOCKET_DIRECTORY_PREFIX = 'topo-ab-'
 
-/** Per-tab daemon expiry survives Orca crashes and exceeds the bridge command timeout. */
+/** Per-tab daemon expiry survives Topo crashes and exceeds the bridge command timeout. */
 export const AGENT_BROWSER_IDLE_TIMEOUT_MS = 10 * 60 * 1000
 
 export type AgentBrowserProcessEnvironment = {
   env: NodeJS.ProcessEnv
-  /** Only an Orca-derived directory proves sessions belong to this profile; inherited paths may be shared. */
+  /** Only a Topo-derived directory proves sessions belong to this profile; inherited paths may be shared. */
   ownsSocketDirectory: boolean
 }
 
@@ -19,12 +19,12 @@ export function createAgentBrowserProcessEnvironment(options: {
   userDataPath: string
 }): AgentBrowserProcessEnvironment {
   const env = { ...options.inheritedEnv }
-  // Commands get Orca's tokened proxy URL per spawn; an inherited target must not reach `close`.
+  // Commands get Topo's tokened proxy URL per spawn; an inherited target must not reach `close`.
   delete env.AGENT_BROWSER_CDP
   if (!env.AGENT_BROWSER_IDLE_TIMEOUT_MS?.trim()) {
     env.AGENT_BROWSER_IDLE_TIMEOUT_MS = String(AGENT_BROWSER_IDLE_TIMEOUT_MS)
   }
-  // Its auto-accept dropped alert text; Orca keeps every dialog open until someone answers it.
+  // Its auto-accept dropped alert text; Topo keeps every dialog open until someone answers it.
   env.AGENT_BROWSER_NO_AUTO_DIALOG = '1'
   if (options.platform === 'win32' || env.AGENT_BROWSER_SOCKET_DIR?.trim()) {
     return { env, ownsSocketDirectory: false }

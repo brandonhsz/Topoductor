@@ -1,6 +1,6 @@
 import type { ExecutionHostId } from '../execution-host'
 import type { TaskSourceContext } from '../work-items/task-source-context'
-import type { EphemeralVmCheckoutMode } from '../orca-yaml-hook-types'
+import type { EphemeralVmCheckoutMode } from '../topo-yaml-hook-types'
 import type {
   AutomationWorkspaceProvenance,
   CliWorkspaceProvenance,
@@ -11,7 +11,7 @@ import type {
   WorkspaceStatus
 } from './types'
 import type { TuiAgent } from '../agent-launch/catalog/tui-agent'
-import type { OrcaWorkspaceLayout } from '../global-settings-types'
+import type { TopoWorkspaceLayout } from '../global-settings-types'
 import type { DiffComment, MobileDiffReviewState } from '../diff-comment-types'
 import type { SmartTier } from '../sidebar-list/sort-stamps'
 import type { ExternalConversationLink } from '../external-conversation-link'
@@ -66,9 +66,9 @@ export type WorktreeMeta = {
   smartAt?: number
   /** See {@link Worktree.lastTerminalUseAt}. */
   lastTerminalUseAt?: number
-  /** See {@link Worktree.createdAt}. Persisted to orca-data.json. */
+  /** See {@link Worktree.createdAt}. Persisted to topo-data.json. */
   createdAt?: number
-  /** See {@link Worktree.createdWithAgent}. Persisted to orca-data.json. */
+  /** See {@link Worktree.createdWithAgent}. Persisted to topo-data.json. */
   createdWithAgent?: TuiAgent
   /** See {@link Worktree.pendingFirstAgentMessageRename}. */
   pendingFirstAgentMessageRename?: boolean
@@ -79,17 +79,17 @@ export type WorktreeMeta = {
   sparsePresetId?: string
   /** Intended create base for stale-base probes. Persisted metadata, not UI drift state. */
   baseRef?: string
-  /** True when Orca checked out a pre-existing local branch that delete must not prune. */
+  /** True when Topo checked out a pre-existing local branch that delete must not prune. */
   preserveBranchOnDelete?: boolean
-  /** The user switched to or created the current branch in Orca, so first-work naming must not rename it. */
+  /** The user switched to or created the current branch in Topo, so first-work naming must not rename it. */
   branchNameIsUserChosen?: boolean
   /** See {@link Worktree.pushTarget}. Persisted so refreshed worktree lists keep the target. */
   pushTarget?: GitPushTarget
-  /** Explicit marker stamped when Orca creates the worktree. */
-  orcaCreatedAt?: number
-  orcaCreationSource?: 'desktop' | 'runtime' | 'cli' | 'ssh'
-  /** Workspace layout active when Orca created the worktree. */
-  orcaCreationWorkspaceLayout?: OrcaWorkspaceLayout
+  /** Explicit marker stamped when Topo creates the worktree. */
+  topoCreatedAt?: number
+  topoCreationSource?: 'desktop' | 'runtime' | 'cli' | 'ssh'
+  /** Workspace layout active when Topo created the worktree. */
+  topoCreationWorkspaceLayout?: TopoWorkspaceLayout
   /** User-assigned workspace board status for manual sidebar organization. */
   workspaceStatus?: WorkspaceStatus
   diffComments?: DiffComment[]
@@ -98,7 +98,7 @@ export type WorktreeMeta = {
   mobileDiffReview?: MobileDiffReviewState
   /** System-owned provenance for workspaces created by automation new-per-run dispatches. */
   automationProvenance?: AutomationWorkspaceProvenance
-  /** System-owned provenance for workspaces created via `orca worktree create`. */
+  /** System-owned provenance for workspaces created via `topo worktree create`. */
   cliProvenance?: CliWorkspaceProvenance
   /** System-owned connector threads whose agents run here; never published on `Worktree`. */
   externalConversations?: ExternalConversationLink[]

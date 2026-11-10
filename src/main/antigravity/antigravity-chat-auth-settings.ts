@@ -47,7 +47,7 @@ export function applyAntigravityChatAuthConfig(
   }
   if (!store.updateSettingsAndFlush || !store.updateSettings) {
     throw new Error(
-      'Antigravity account settings cannot be saved on this host. Update Orca and try again.'
+      'Antigravity account settings cannot be saved on this host. Update Topo and try again.'
     )
   }
   const flush = store.updateSettingsAndFlush.bind(store)

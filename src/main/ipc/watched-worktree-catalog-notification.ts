@@ -1,9 +1,9 @@
 import type { BrowserWindow } from 'electron'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { notifyWorktreesChanged } from './worktree-remote'
 
 type WorktreeCatalogRemoteClientNotifier = Pick<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   'notifyWorktreeCatalogChangedForRemoteClients' | 'notifyGitStatusChangedForRemoteClients'
 >
 

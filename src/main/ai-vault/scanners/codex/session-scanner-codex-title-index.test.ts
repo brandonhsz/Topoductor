@@ -18,7 +18,7 @@ afterEach(async () => {
 })
 
 async function indexHome() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-codex-index-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-codex-index-'))
   tempRoots.push(root)
   return { root, path: join(root, 'session_index.jsonl') }
 }

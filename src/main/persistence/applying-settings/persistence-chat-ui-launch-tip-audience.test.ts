@@ -26,7 +26,7 @@ vi.mock('node:crypto', async (importOriginal) => ({
 }))
 
 beforeEach(() => {
-  testState.dir = mkdtempSync(join(tmpdir(), 'orca-chat-ui-launch-tip-audience-'))
+  testState.dir = mkdtempSync(join(tmpdir(), 'topo-chat-ui-launch-tip-audience-'))
 })
 afterEach(async () => {
   await closeTestStores()
@@ -73,30 +73,30 @@ it('preserves separate rollout completion through stale client writes and reload
         chatUiLaunchTipCohort: 'control'
       }
     })
-    store.updateUI({ featureTipsSeenIds: ['orca-cli', 'chat-ui-here'] })
+    store.updateUI({ featureTipsSeenIds: ['topo-cli', 'chat-ui-here'] })
     vi.mocked(crypto.randomInt).mockImplementationOnce(() => 4)
     expect(ensureChatUiLaunchTipCohort(store)).toBe('treatment')
-    expect(store.getUI().featureTipsSeenIds).toEqual(['orca-cli', 'chat-ui-here'])
+    expect(store.getUI().featureTipsSeenIds).toEqual(['topo-cli', 'chat-ui-here'])
 
-    store.updateUI({ featureTipsSeenIds: ['orca-cli', 'chat-ui-here', 'voice-dictation'] })
+    store.updateUI({ featureTipsSeenIds: ['topo-cli', 'chat-ui-here', 'voice-dictation'] })
     store.flushOrThrow()
     await closeTestStores()
     const pending = createStore()
     expect(ensureChatUiLaunchTipCohort(pending)).toBe('treatment')
     expect(pending.getUI().featureTipsSeenIds).toEqual([
-      'orca-cli',
+      'topo-cli',
       'chat-ui-here',
       'voice-dictation'
     ])
 
     pending.updateUI({ featureTipsSeenIds: ['chat-ui-here-rollout-v1'] })
-    pending.updateUI({ featureTipsSeenIds: ['orca-cli', 'chat-ui-here', 'cmd-j-palette'] })
+    pending.updateUI({ featureTipsSeenIds: ['topo-cli', 'chat-ui-here', 'cmd-j-palette'] })
     pending.flushOrThrow()
     await closeTestStores()
     const shown = createStore()
     expect(ensureChatUiLaunchTipCohort(shown)).toBe('treatment')
     expect(shown.getUI().featureTipsSeenIds).toEqual([
-      'orca-cli',
+      'topo-cli',
       'chat-ui-here',
       'voice-dictation',
       'chat-ui-here-rollout-v1',

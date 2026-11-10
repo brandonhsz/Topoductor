@@ -33,8 +33,8 @@ const repoMap = new Map<string, Repo>([
     'repo-1',
     {
       id: 'repo-1',
-      path: '/repo/orca',
-      displayName: 'stablyai/orca',
+      path: '/repo/topo',
+      displayName: 'brandonhsz/topo',
       badgeColor: '#22c55e',
       addedAt: 0
     }
@@ -47,7 +47,7 @@ function gitLabReview(overrides: Partial<HostedReviewInfo> = {}): HostedReviewIn
     number: 17,
     title: 'Reuse checks tab review metadata',
     state: 'open',
-    url: 'https://gitlab.com/acme/orca/-/merge_requests/17',
+    url: 'https://gitlab.com/acme/topo/-/merge_requests/17',
     status: 'success',
     updatedAt: '2026-07-12T00:00:00Z',
     mergeable: 'MERGEABLE',
@@ -82,7 +82,7 @@ describe('worktree-palette-search', () => {
       [staleWorktree, gitLabReview({ title: 'Current merge request' })]
     ])
     const prCache = {
-      '/repo/orca::feature/palette-refresh': { data: { number: 99, title: 'Stale GitHub title' } }
+      '/repo/topo::feature/palette-refresh': { data: { number: 99, title: 'Stale GitHub title' } }
     }
 
     expect(
@@ -96,7 +96,7 @@ describe('worktree-palette-search', () => {
 
   it('does not search stale GitHub metadata while a linked non-GitHub review is loading', () => {
     const prCache = {
-      '/repo/orca::feature/palette-refresh': { data: { number: 99, title: 'Stale GitHub title' } }
+      '/repo/topo::feature/palette-refresh': { data: { number: 99, title: 'Stale GitHub title' } }
     }
     const staleWorktree = makeWorktree({
       branch: 'refs/heads/feature/palette-refresh',
@@ -128,12 +128,12 @@ describe('worktree-palette-search', () => {
       })
     ]
 
-    const results = searchWorktrees(worktrees, 'orca/main', repoMap)
+    const results = searchWorktrees(worktrees, 'topo/main', repoMap)
 
     expect(results).toHaveLength(1)
     expect(results[0].worktreeId).toBe('wt-main')
     expect(results[0].matchedFields).toEqual(['repo', 'branch'])
-    expect(results[0].repoRanges).toEqual([{ start: 9, end: 13 }])
+    expect(results[0].repoRanges).toEqual([{ start: 11, end: 15 }])
     expect(results[0].branchRanges).toEqual([{ start: 0, end: 4 }])
   })
 
@@ -143,7 +143,7 @@ describe('worktree-palette-search', () => {
         makeWorktree({ id: 'wt-issue', linkedIssue: 14198 }),
         makeWorktree({ id: 'wt-other', linkedIssue: 7, displayName: 'github.com' })
       ],
-      'https://github.com/stablyai/orca/issues/14198',
+      'https://github.com/brandonhsz/topo/issues/14198',
       repoMap
     )
 

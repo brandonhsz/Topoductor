@@ -7,7 +7,7 @@ import { safePluginThemeTokens, type ColorProbe } from '../../plugin-theme-token
 
 type ThemeBase = 'light' | 'dark'
 
-/** Colors for the code surfaces Orca paints itself (notebook cells, code excerpts, prompt box). */
+/** Colors for the code surfaces Topo paints itself (notebook cells, code excerpts, prompt box). */
 export type CodeEditorColors = {
   background: string
   foreground: string
@@ -25,7 +25,7 @@ export type CodeEditorTheme = {
   override: CodeEditorThemeOverride | null
 }
 
-// Why Monaco's own vs / vs-dark colors: Orca's code surfaces must match what Monaco paints.
+// Why Monaco's own vs / vs-dark colors: Topo's code surfaces must match what Monaco paints.
 const BUILT_IN_COLORS: Record<ThemeBase, CodeEditorColors> = {
   light: {
     background: '#fffffe',

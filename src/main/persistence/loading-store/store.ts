@@ -17,7 +17,7 @@ import {
   type StoreDomainOperations
 } from './store-domain-composition'
 import type { PersistedState } from '../../../shared/persisted-state-types'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { dropInvalidWorkspaceLayoutsAtLoad } from '../restoring-sessions/invalid-workspace-layout-purge'
 import {
   bindPersistedTabTerminalPanes,
@@ -140,7 +140,7 @@ export class Store {
     this.domains.adaptation.hydrateFolderWorkspaceDiffComments()
     // Removal paths require registration; load must sweep residue whose owning repo is already gone.
     const sweptRepoIds = this.domains.repos.sweepDeregisteredRepoResidue()
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       dropInvalidWorkspaceLayoutsAtLoad(this, this.state)
       this.state = bindPersistedTabTerminalPanes(sweepPersistedUnattachedTerminalRows(this.state))
       this.runtime.state = this.state
@@ -148,7 +148,7 @@ export class Store {
     // Imported snapshots cannot own the live hook server or write their source file.
     if (!imported) {
       // Finish interrupted blob installs; shell history waits for post-attach live-process evidence.
-      this.domains.orcadMigrationBlobInstalls.installPendingOrcadMigrationReceivedBlobs()
+      this.domains.topodMigrationBlobInstalls.installPendingTopodMigrationReceivedBlobs()
       for (const entry of initial?.unboundPaneAliases ?? []) {
         agentHookServer.registerPaneKeyAlias(
           entry.legacyPaneKey,

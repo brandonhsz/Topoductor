@@ -1,19 +1,19 @@
-import type { OrcadDeploymentLink, RuntimeSshTunnelLink } from './runtime-environments'
-import type { OrcadWslDeploymentLink } from './wsl-host-deployment-link'
+import type { TopodDeploymentLink, RuntimeSshTunnelLink } from './runtime-environments'
+import type { TopodWslDeploymentLink } from './wsl-host-deployment-link'
 
 /** Switch exhaustively on kind: ssh is reached through an SSH tunnel; wsl uses this computer’s wsl.exe bridge. */
 export type RuntimeEnvironmentHost<T> =
   | { kind: 'network'; environment: T }
   | { kind: 'ssh'; environment: T }
-  | { kind: 'wsl'; environment: T; deployment: OrcadWslDeploymentLink }
+  | { kind: 'wsl'; environment: T; deployment: TopodWslDeploymentLink }
 
 export function classifyRuntimeEnvironmentHost<
   T extends {
-    orcadDeployment?: OrcadDeploymentLink | null
+    topodDeployment?: TopodDeploymentLink | null
     sshAccess?: RuntimeSshTunnelLink | null
   }
 >(environment: T): RuntimeEnvironmentHost<T> {
-  const deployment = environment.orcadDeployment
+  const deployment = environment.topodDeployment
   if (!deployment) {
     return environment.sshAccess ? { kind: 'ssh', environment } : { kind: 'network', environment }
   }

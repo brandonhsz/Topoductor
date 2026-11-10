@@ -6,8 +6,8 @@ import type { GoogleStorageMutationLease } from './mutation-lease.js'
 const commit = 'a'.repeat(40)
 const config: RelayFenceBrokerConfig = {
   port: 8080,
-  project: 'onorca-cloud',
-  stateBucket: 'onorca-cloud-terraform-state',
+  project: 'ontopo-cloud',
+  stateBucket: 'ontopo-cloud-terraform-state',
   leaseObject: 'terraform/state/relay-fence-broker/production.lock',
   directorOrigin: 'https://relay.onorca.dev',
   adminAudience: 'https://relay.onorca.dev/v1/admin/drain',

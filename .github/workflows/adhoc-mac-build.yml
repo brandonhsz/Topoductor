@@ -1,13 +1,13 @@
 name: Adhoc macOS + Windows Dev Build
 
-# Build trusted repo refs on demand: signed/notarized macOS and unsigned Windows, with qualified orcad slots; PR/release pipelines own other gates. Publish to orca-adhoc so branch experiments cannot enter main’s hourly channel or crowd stable/RC release feeds. Dispatch main’s workflow with -f ref=my-branch to avoid stale YAML. Writes use the hourly GitHub App installed on orca-adhoc (setup-hourly-release-token.sh); GITHUB_TOKEN cannot publish cross-repo. Ref vetting rejects PR refs and unreachable SHAs before source runs beside signing secrets.
+# Build trusted repo refs on demand: signed/notarized macOS and unsigned Windows, with qualified topod slots; PR/release pipelines own other gates. Publish to topo-adhoc so branch experiments cannot enter main’s hourly channel or crowd stable/RC release feeds. Dispatch main’s workflow with -f ref=my-branch to avoid stale YAML. Writes use the hourly GitHub App installed on topo-adhoc (setup-hourly-release-token.sh); GITHUB_TOKEN cannot publish cross-repo. Ref vetting rejects PR refs and unreachable SHAs before source runs beside signing secrets.
 
 on:
   workflow_dispatch:
     inputs:
       ref:
         # Default empty ref to the dispatch picker; prefer main’s workflow plus explicit branch input to build old branches with current YAML.
-        description: 'Branch, tag, or SHA to build — must live in stablyai/orca; PR refs are refused (default: the branch selected above)'
+        description: 'Branch, tag, or SHA to build — must live in brandonhsz/Topoductor; PR refs are refused (default: the branch selected above)'
         required: false
         default: ''
         type: string
@@ -26,15 +26,15 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  ORCA_BACKGROUND_LAUNCH: '1'
-  ADHOC_REPO: stablyai/orca-adhoc
+  TOPO_BACKGROUND_LAUNCH: '1'
+  ADHOC_REPO: brandonhsz/topo-adhoc
   # Retain by month rather than count so bursts cannot evict recent experiments or sparse periods keep them forever.
   ADHOC_RETAIN_DAYS: 30
 
 jobs:
   # Resolve once before source execution so concurrent pushes cannot mix slot/template/desktop commits.
   resolve-ref:
-    if: github.repository == 'stablyai/orca'
+    if: github.repository == 'brandonhsz/Topoductor'
     runs-on: blacksmith-2vcpu-ubuntu-2404
     timeout-minutes: 5
     permissions:
@@ -52,7 +52,7 @@ jobs:
           set -euo pipefail
           case "$REQUESTED_REF" in
             refs/pull/*|pull/*)
-              echo "::error::Refusing to build PR ref '$REQUESTED_REF': this workflow signs with release credentials, so it only builds branches, tags, or commits of stablyai/orca. Push the code to a branch of this repo instead."
+              echo "::error::Refusing to build PR ref '$REQUESTED_REF': this workflow signs with release credentials, so it only builds branches, tags, or commits of brandonhsz/Topoductor. Push the code to a branch of this repo instead."
               exit 1
               ;;
           esac
@@ -80,19 +80,19 @@ jobs:
             sha=""
           done
           if [[ -z "$sha" ]]; then
-            echo "::error::'$REQUESTED_REF' does not resolve to a branch, tag, or commit of stablyai/orca."
+            echo "::error::'$REQUESTED_REF' does not resolve to a branch, tag, or commit of brandonhsz/Topoductor."
             exit 1
           fi
           # Lazy-fetchable SHAs can be PR-only; require reachability from a trusted branch/tag, not local object presence.
           if [[ -z "$(git -C "$scratch" for-each-ref --count=1 --format='%(refname)' --contains "$sha" refs/heads refs/tags)" ]]; then
-            echo "::error::Commit $REQUESTED_REF is not reachable from any branch or tag of stablyai/orca; refusing to build it with release credentials."
+            echo "::error::Commit $REQUESTED_REF is not reachable from any branch or tag of brandonhsz/Topoductor; refusing to build it with release credentials."
             exit 1
           fi
           echo "Vetted $REQUESTED_REF -> $sha"
           echo "sha=$sha" >>"$GITHUB_OUTPUT"
 
   # Resolve shared build identity while detecting whether this ref ships a template.
-  orcad-template-support:
+  topod-template-support:
     needs: resolve-ref
     runs-on: blacksmith-2vcpu-ubuntu-2404
     timeout-minutes: 5
@@ -122,15 +122,15 @@ jobs:
             echo "::error::This ref predates #27215 and still ships the SSH relay; build a commit at or after 2b4b60a87e."
             exit 1
           fi
-      - name: Detect whether the ref ships the orcad template
+      - name: Detect whether the ref ships the topod template
         id: detect
         shell: bash
         run: |
-          if [[ -f config/scripts/orcad-distribution/template/packaged-orcad-template.cjs || -f config/scripts/packaged-orcad-template.cjs ]]; then
+          if [[ -f config/scripts/topod-distribution/template/packaged-topod-template.cjs || -f config/scripts/packaged-topod-template.cjs ]]; then
             echo "ships=true" >>"$GITHUB_OUTPUT"
           else
             echo "ships=false" >>"$GITHUB_OUTPUT"
-            echo "::notice::This ref predates the orcad template; the build ships without it."
+            echo "::notice::This ref predates the topod template; the build ships without it."
           fi
 
       - name: Setup Node.js
@@ -161,7 +161,7 @@ jobs:
           published="$(GH_TOKEN="$MAIN_REPO_TOKEN" gh api \
             "repos/$GITHUB_REPOSITORY/git/matching-refs/tags/v" \
             --jq '.[].ref | sub("^refs/tags/"; "")' || true)"
-          ORCA_PUBLISHED_VERSIONS="$published" ORCA_ADHOC_LABEL="${LABEL:-$REF}" \
+          TOPO_PUBLISHED_VERSIONS="$published" TOPO_ADHOC_LABEL="${LABEL:-$REF}" \
             node "$(if [ -f config/scripts/release/versioning/adhoc-build-version.mjs ]; then printf %s config/scripts/release/versioning/adhoc-build-version.mjs; else printf %s config/scripts/adhoc-build-version.mjs; fi)" \
             >"$RUNNER_TEMP/adhoc-identity.txt"
           if ! grep -q '^name=' "$RUNNER_TEMP/adhoc-identity.txt"; then
@@ -170,20 +170,20 @@ jobs:
           fi
           cat "$RUNNER_TEMP/adhoc-identity.txt" >>"$GITHUB_OUTPUT"
 
-  # Ship managed-SSH orcad template from qualified per-target lanes at the vetted ref, as release-cut does.
-  orcad-template:
-    needs: [resolve-ref, orcad-template-support]
-    if: needs.orcad-template-support.outputs.ships == 'true'
+  # Ship managed-SSH topod template from qualified per-target lanes at the vetted ref, as release-cut does.
+  topod-template:
+    needs: [resolve-ref, topod-template-support]
+    if: needs.topod-template-support.outputs.ships == 'true'
     permissions:
       contents: read
       actions: read
-    uses: ./.github/workflows/qualified-orcad-template.yml
+    uses: ./.github/workflows/qualified-topod-template.yml
     with:
       ref: ${{ needs.resolve-ref.outputs.sha }}
       fast_runners: true
 
   release-javascript:
-    needs: [resolve-ref, orcad-template-support]
+    needs: [resolve-ref, topod-template-support]
     uses: ./.github/workflows/release-javascript.yml
     with:
       ref: ${{ needs.resolve-ref.outputs.sha }}
@@ -191,10 +191,10 @@ jobs:
       runner: blacksmith-8vcpu-ubuntu-2404
 
   prepare-adhoc-mac-release:
-    needs: [resolve-ref, orcad-template-support, release-javascript]
+    needs: [resolve-ref, topod-template-support, release-javascript]
     if: >-
-      !cancelled() && github.repository == 'stablyai/orca' &&
-      needs.orcad-template-support.result == 'success' &&
+      !cancelled() && github.repository == 'brandonhsz/Topoductor' &&
+      needs.topod-template-support.result == 'success' &&
       needs.release-javascript.result == 'success'
     environment: adhoc-mac-build
     runs-on: blacksmith-2vcpu-ubuntu-2404
@@ -210,16 +210,16 @@ jobs:
         with:
           app-id: ${{ secrets.HOURLY_RELEASE_APP_ID }}
           private-key: ${{ secrets.HOURLY_RELEASE_APP_PRIVATE_KEY }}
-          owner: stablyai
-          repositories: orca-adhoc
+          owner: brandonhsz
+          repositories: topo-adhoc
 
       - name: Create adhoc release
         id: release
         shell: bash
         env:
           GH_TOKEN: ${{ steps.app_token.outputs.token }}
-          TAG: v${{ needs.orcad-template-support.outputs.version }}
-          NAME: ${{ needs.orcad-template-support.outputs.name }}
+          TAG: v${{ needs.topod-template-support.outputs.version }}
+          NAME: ${{ needs.topod-template-support.outputs.name }}
           SHA: ${{ needs.resolve-ref.outputs.sha }}
           REF: ${{ inputs.ref || github.ref_name }}
           # Pass expressions via env so bash parses data rather than substituted script text (zizmor: template-injection).
@@ -235,16 +235,16 @@ jobs:
             --draft \
             --notes "Adhoc macOS and Windows dev build of \`$REF\` at commit \`$short_sha\`.
 
-          Built from [\`stablyai/orca@$short_sha\`](https://github.com/stablyai/orca/commit/$SHA), cut by @$ACTOR.
+          Built from [\`brandonhsz/Topoductor@$short_sha\`](https://github.com/brandonhsz/Topoductor/commit/$SHA), cut by @$ACTOR.
 
           **Unlanded and unvetted.** This is somebody's branch, not main. No tests
           ran. The macOS build is signed and notarized like a release, so it installs
-          through Orca's in-app updater and opens without a Gatekeeper prompt — but the
+          through Topo's in-app updater and opens without a Gatekeeper prompt — but the
           branch may never merge, and this build is deleted after $ADHOC_RETAIN_DAYS days.
 
           **Windows builds are unsigned.** They install and update normally once you
           are on one, but a signed Stable or RC build cannot install one through the
-          in-app updater — download \`orca-windows-setup.exe\` below and run it once
+          in-app updater — download \`topo-windows-setup.exe\` below and run it once
           (SmartScreen will warn about an unknown publisher). Every later switch,
           including back to Stable, works in-app from there."
           echo "tag=$TAG" >>"$GITHUB_OUTPUT"
@@ -253,16 +253,16 @@ jobs:
     needs:
       [
         resolve-ref,
-        orcad-template-support,
-        orcad-template,
+        topod-template-support,
+        topod-template,
         release-javascript,
         prepare-adhoc-mac-release
       ]
     # Start after template qualification: overlapping ~2.5 min of preparation left both Macs idle ~7 min.
     if: >-
-      !cancelled() && github.repository == 'stablyai/orca' &&
-      needs.orcad-template-support.result == 'success' &&
-      (needs.orcad-template.result == 'success' || needs.orcad-template-support.outputs.ships != 'true') &&
+      !cancelled() && github.repository == 'brandonhsz/Topoductor' &&
+      needs.topod-template-support.result == 'success' &&
+      (needs.topod-template.result == 'success' || needs.topod-template-support.outputs.ships != 'true') &&
       needs.release-javascript.result == 'success' &&
       needs.prepare-adhoc-mac-release.result == 'success'
     # Signing environment must restrict deployments to main after MAC_CERTS/password, APPLE_ID/app password/team and hourly App secrets move there; referencing it alone enforces nothing.
@@ -299,7 +299,7 @@ jobs:
           ref: ${{ steps.vetted.outputs.sha }}
           # Version helpers only read HEAD; published versions come from the release API.
           fetch-depth: 1
-          # Read this repo without persisted checkout credentials; all writes use an env-passed App token for orca-adhoc (zizmor: artipacked).
+          # Read this repo without persisted checkout credentials; all writes use an env-passed App token for topo-adhoc (zizmor: artipacked).
           persist-credentials: false
 
       - name: Setup pnpm
@@ -320,13 +320,13 @@ jobs:
       # Cache bundled host Node by exact pin, without restore keys, so bumps cannot restore old archives.
       - name: Locate the pinned Node runtime cache
         shell: bash
-        run: echo "ORCA_NODE_RUNTIME_CACHE_DIR=$HOME/Library/Caches/orca-node-runtime" >>"$GITHUB_ENV"
+        run: echo "TOPO_NODE_RUNTIME_CACHE_DIR=$HOME/Library/Caches/topo-node-runtime" >>"$GITHUB_ENV"
 
       - name: Cache the pinned Node runtime
         uses: actions/cache@v5
         with:
-          path: ~/Library/Caches/orca-node-runtime
-          key: orca-node-runtime-mac-${{ hashFiles('src/shared/node-runtime-pin.ts') }}
+          path: ~/Library/Caches/topo-node-runtime
+          key: topo-node-runtime-mac-${{ hashFiles('src/shared/node-runtime-pin.ts') }}
 
       - name: Cache electron-builder downloads
         uses: actions/cache@v5
@@ -370,7 +370,7 @@ jobs:
 
       - name: Build app
         run: |
-          if [[ "$ORCA_RELEASE_JAVASCRIPT_SOURCE_SHA" != '' ]]; then
+          if [[ "$TOPO_RELEASE_JAVASCRIPT_SOURCE_SHA" != '' ]]; then
             RELEASE_JAVASCRIPT_ARTIFACT='config/scripts/release/javascript-artifacts/release-javascript-artifact.mjs'
             if [ ! -f "$RELEASE_JAVASCRIPT_ARTIFACT" ]; then
               RELEASE_JAVASCRIPT_ARTIFACT='config/scripts/release-javascript-artifact.mjs'
@@ -381,19 +381,19 @@ jobs:
             pnpm build:release
           fi
         env:
-          ORCA_RELEASE_JAVASCRIPT_SOURCE_SHA: ${{ needs.release-javascript.outputs.supported == 'true' && needs.release-javascript.outputs.source_sha || '' }}
-          ORCA_RELEASE_JAVASCRIPT_BUILD_IDENTITY: dev
+          TOPO_RELEASE_JAVASCRIPT_SOURCE_SHA: ${{ needs.release-javascript.outputs.supported == 'true' && needs.release-javascript.outputs.source_sha || '' }}
+          TOPO_RELEASE_JAVASCRIPT_BUILD_IDENTITY: dev
           NODE_OPTIONS: --max-old-space-size=4096
           # Leave build identity unset: telemetry accepts only official stable/rc, so branch artifacts stay silent.
-          ORCA_DIAGNOSTICS_TOKEN_URL: https://www.onorca.dev/diagnostics/token
+          TOPO_DIAGNOSTICS_TOKEN_URL: https://www.onorca.dev/diagnostics/token
 
       # After the app build so nothing that cleans out/ can drop it; electron-builder ships it.
-      - name: Download the orcad deployment template
-        if: needs.orcad-template-support.outputs.ships == 'true'
+      - name: Download the topod deployment template
+        if: needs.topod-template-support.outputs.ships == 'true'
         uses: actions/download-artifact@v8
         with:
-          name: orcad-template
-          path: out/orcad-template
+          name: topod-template
+          path: out/topod-template
 
       # Mint the one-hour write token after build, just before potentially long notarization/publish.
       - name: Checkout workflow packaging scripts
@@ -415,12 +415,12 @@ jobs:
           timeout_minutes: 45
           max_attempts: 2
           retry_wait_seconds: 30
-          command: node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON "$(if [ -f config/scripts/orcad-distribution/prebuilds/pinned-node-downloads.mjs ]; then printf %s config/scripts/orcad-distribution/prebuilds/pinned-node-downloads.mjs; else printf %s config/scripts/pinned-node-downloads.mjs; fi)" darwin-arm64 darwin-x64 && node "$(if [ -f config/scripts/native-build/node-addons/ensure-native-runtime.mjs ]; then printf %s config/scripts/native-build/node-addons/ensure-native-runtime.mjs; else printf %s config/scripts/ensure-native-runtime.mjs; fi)" --runtime=electron && ORCA_MAC_ADHOC=1 pnpm exec electron-builder --config config/electron-builder.config.cjs --mac dmg zip --${{ matrix.arch }} --publish never
+          command: node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON "$(if [ -f config/scripts/topod-distribution/prebuilds/pinned-node-downloads.mjs ]; then printf %s config/scripts/topod-distribution/prebuilds/pinned-node-downloads.mjs; else printf %s config/scripts/pinned-node-downloads.mjs; fi)" darwin-arm64 darwin-x64 && node "$(if [ -f config/scripts/native-build/node-addons/ensure-native-runtime.mjs ]; then printf %s config/scripts/native-build/node-addons/ensure-native-runtime.mjs; else printf %s config/scripts/ensure-native-runtime.mjs; fi)" --runtime=electron && TOPO_MAC_ADHOC=1 pnpm exec electron-builder --config config/electron-builder.config.cjs --mac dmg zip --${{ matrix.arch }} --publish never
         env:
-          ORCA_ADHOC_BUILD_VERSION: ${{ needs.orcad-template-support.outputs.version }}
-          ORCA_BUILD_COMMIT: ${{ needs.orcad-template-support.outputs.commit }}
+          TOPO_ADHOC_BUILD_VERSION: ${{ needs.topod-template-support.outputs.version }}
+          TOPO_BUILD_COMMIT: ${{ needs.topod-template-support.outputs.commit }}
           # beforePack and afterPack fail the package when the template is absent.
-          ORCA_REQUIRE_ORCAD_TEMPLATE: ${{ needs.orcad-template-support.outputs.ships == 'true' && '1' || '' }}
+          TOPO_REQUIRE_TOPOD_TEMPLATE: ${{ needs.topod-template-support.outputs.ships == 'true' && '1' || '' }}
           CSC_LINK: ${{ secrets.MAC_CERTS }}
           CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTS_PASSWORD }}
           # Require Apple id/app-specific password/team: notarization authenticates separately from signing cert.
@@ -436,13 +436,13 @@ jobs:
           set -euo pipefail
           app_dir=dist/mac
           if [[ "$MAC_ARCH" == arm64 ]]; then app_dir=dist/mac-arm64; fi
-          codesign --verify --deep --strict "$app_dir/Orca.app"
-          xcrun stapler validate "$app_dir/Orca.app"
+          codesign --verify --deep --strict "$app_dir/Topo.app"
+          xcrun stapler validate "$app_dir/Topo.app"
 
       - name: Verify this architecture's updater files
         env:
           MAC_ARCH: ${{ matrix.arch }}
-          MAC_VERSION: ${{ needs.orcad-template-support.outputs.version }}
+          MAC_VERSION: ${{ needs.topod-template-support.outputs.version }}
         run: |
           set -euo pipefail
           # Builder cannot write this field, so older macOS updaters would install a build that won't launch.
@@ -455,8 +455,8 @@ jobs:
         with:
           app-id: ${{ secrets.HOURLY_RELEASE_APP_ID }}
           private-key: ${{ secrets.HOURLY_RELEASE_APP_PRIVATE_KEY }}
-          owner: stablyai
-          repositories: orca-adhoc
+          owner: brandonhsz
+          repositories: topo-adhoc
 
       - name: Upload verified architecture assets to the draft
         shell: bash
@@ -479,7 +479,7 @@ jobs:
           retention-days: 1
 
   build-adhoc-mac:
-    needs: [resolve-ref, orcad-template-support, prepare-adhoc-mac-release, build-adhoc-mac-arch]
+    needs: [resolve-ref, topod-template-support, prepare-adhoc-mac-release, build-adhoc-mac-arch]
     if: always() && needs.prepare-adhoc-mac-release.result == 'success'
     environment: adhoc-mac-build
     runs-on: blacksmith-2vcpu-ubuntu-2404
@@ -489,10 +489,10 @@ jobs:
       actions: read
     outputs:
       tag: ${{ needs.prepare-adhoc-mac-release.outputs.tag }}
-      version: ${{ needs.orcad-template-support.outputs.version }}
+      version: ${{ needs.topod-template-support.outputs.version }}
       head_sha: ${{ needs.resolve-ref.outputs.sha }}
       published: ${{ steps.publish_live.outcome == 'success' && 'true' || 'false' }}
-      ships_orcad_template: ${{ needs.orcad-template-support.outputs.ships }}
+      ships_topod_template: ${{ needs.topod-template-support.outputs.ships }}
     steps:
       - name: Mint adhoc repo token
         id: app_token
@@ -500,8 +500,8 @@ jobs:
         with:
           app-id: ${{ secrets.HOURLY_RELEASE_APP_ID }}
           private-key: ${{ secrets.HOURLY_RELEASE_APP_PRIVATE_KEY }}
-          owner: stablyai
-          repositories: orca-adhoc
+          owner: brandonhsz
+          repositories: topo-adhoc
 
       - name: Require both architecture jobs
         env:
@@ -527,7 +527,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app_token.outputs.token }}
           TAG: ${{ needs.prepare-adhoc-mac-release.outputs.tag }}
-          MAC_VERSION: ${{ needs.orcad-template-support.outputs.version }}
+          MAC_VERSION: ${{ needs.topod-template-support.outputs.version }}
         run: |
           set -euo pipefail
           gh release view "$TAG" --repo "$ADHOC_REPO" --json assets > .build/mac-manifests/assets.json
@@ -535,7 +535,7 @@ jobs:
           gh release upload "$TAG" .build/mac-manifests/latest-mac.yml --repo "$ADHOC_REPO" --clobber
 
       - name: Confirm final template qualification before publication
-        if: needs.orcad-template-support.outputs.ships == 'true'
+        if: needs.topod-template-support.outputs.ships == 'true'
         uses: actions/github-script@v8
         env:
           WAIT_FOR_TEMPLATE_COMPLETION: '1'
@@ -546,19 +546,19 @@ jobs:
               const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
                 ...context.repo, run_id: context.runId, filter: 'latest', per_page: 100
               })
-              const lanes = jobs.filter(job => job.name.startsWith('orcad-template / '))
+              const lanes = jobs.filter(job => job.name.startsWith('topod-template / '))
               const failed = lanes.find(job => job.status === 'completed' &&
                 ['failure', 'cancelled', 'timed_out', 'action_required', 'startup_failure'].includes(job.conclusion))
               if (failed) throw new Error(`Template qualification failed: ${failed.name}`)
               const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
                 ...context.repo, run_id: context.runId, per_page: 100
               })
-              const ready = artifacts.some(artifact => artifact.name === 'orcad-template' && !artifact.expired)
+              const ready = artifacts.some(artifact => artifact.name === 'topod-template' && !artifact.expired)
               const completed = lanes.length > 0 && lanes.every(job => job.status === 'completed')
               if (ready && (process.env.WAIT_FOR_TEMPLATE_COMPLETION !== '1' || completed)) return
               await new Promise(resolve => setTimeout(resolve, 15_000))
             }
-            throw new Error('Timed out waiting for the qualified orcad template')
+            throw new Error('Timed out waiting for the qualified topod template')
 
       # Publish only after manifest validation so the picker never offers incomplete assets.
       - name: Publish the verified release
@@ -567,7 +567,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app_token.outputs.token }}
           TAG: ${{ needs.prepare-adhoc-mac-release.outputs.tag }}
-          NAME: ${{ needs.orcad-template-support.outputs.name }}
+          NAME: ${{ needs.topod-template-support.outputs.name }}
         run: |
           set -euo pipefail
           # Reassert the picker title after electron-builder may rewrite the tag’s draft on upload.
@@ -632,10 +632,10 @@ jobs:
 
   # Build unsigned Windows artifacts alongside Mac; publication waits below.
   build-adhoc-win:
-    needs: [resolve-ref, orcad-template-support, release-javascript]
+    needs: [resolve-ref, topod-template-support, release-javascript]
     if: >-
-      !cancelled() && github.repository == 'stablyai/orca' &&
-      needs.orcad-template-support.result == 'success' &&
+      !cancelled() && github.repository == 'brandonhsz/Topoductor' &&
+      needs.topod-template-support.result == 'success' &&
       needs.release-javascript.result == 'success'
     permissions:
       contents: read
@@ -644,19 +644,19 @@ jobs:
     secrets: inherit
     with:
       channel: adhoc
-      tag: v${{ needs.orcad-template-support.outputs.version }}
+      tag: v${{ needs.topod-template-support.outputs.version }}
       ref: ${{ needs.resolve-ref.outputs.sha }}
-      version: ${{ needs.orcad-template-support.outputs.version }}
-      orcad_template: ${{ needs.orcad-template-support.outputs.ships == 'true' }}
+      version: ${{ needs.topod-template-support.outputs.version }}
+      topod_template: ${{ needs.topod-template-support.outputs.ships == 'true' }}
       stage_only: true
       fast_release: true
       javascript_source_sha: ${{ needs.release-javascript.outputs.supported == 'true' && needs.release-javascript.outputs.source_sha || '' }}
 
   # Prefetch the installer during notarization; the publisher still waits for Mac success.
   publish-adhoc-win:
-    needs: [orcad-template-support, build-adhoc-win]
+    needs: [topod-template-support, build-adhoc-win]
     if: >-
-      !cancelled() && needs.orcad-template-support.result == 'success' &&
+      !cancelled() && needs.topod-template-support.result == 'success' &&
       needs.build-adhoc-win.result == 'success'
     permissions:
       contents: read
@@ -665,5 +665,5 @@ jobs:
     secrets: inherit
     with:
       channel: adhoc
-      tag: v${{ needs.orcad-template-support.outputs.version }}
+      tag: v${{ needs.topod-template-support.outputs.version }}
       wait_for_mac_job: build-adhoc-mac

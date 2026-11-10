@@ -138,7 +138,7 @@ export async function fastForwardLocalBaseBranch(
           [
             'update-ref',
             '-m',
-            `orca: fast-forward to ${remoteTrackingRef}`,
+            `topo: fast-forward to ${remoteTrackingRef}`,
             fullRef,
             remoteOid,
             localOid
@@ -160,7 +160,7 @@ export async function fastForwardLocalBaseBranch(
     }
     return { status: 'updated', ...owner }
   } catch (error) {
-    // A concurrent pull/Orca update may already have moved local.
+    // A concurrent pull/Topo update may already have moved local.
     if (await localContains(git, repoPath, fullRef, remoteOid)) {
       return { status: 'updated', ...owner }
     }

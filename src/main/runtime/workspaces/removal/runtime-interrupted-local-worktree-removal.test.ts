@@ -25,7 +25,7 @@ import { cleanupLocalOrphanedWorktreeDirectory } from '../../../workspaces/remov
 import * as removalOwnership from '../../../ipc/worktrees/removal/worktree-removal-ownership'
 import { executeWorktreeRemoval } from '../../../ipc/worktrees/removal/execute-worktree-removal'
 import { RuntimeWorktreeRemovalInFlight } from './runtime-worktree-removal-in-flight'
-import { OrcaRuntimeWithResolveWorktreeRemovalTarget } from '../workspace-removal-target'
+import { TopoRuntimeWithResolveWorktreeRemovalTarget } from '../workspace-removal-target'
 import type { WorktreeIpcContext } from '../../../ipc/worktrees/worktree-ipc-context'
 import * as backgroundRemoval from '../../../workspaces/removal/worktree-background-removal'
 import * as worktreeGit from '../../../git/worktrees/catalog/worktree-listing'
@@ -100,7 +100,7 @@ beforeEach(async () => {
   lifecycle = new WorkspaceLifecycleQueue()
   vi.mocked(getLocalProjectWorktreeGitOptions).mockReturnValue({})
   // realpath: macOS hands out /var/... temp paths while Git reports /private/var/....
-  scratchDir = await realpath(await mkdtemp(join(tmpdir(), 'orca-interrupted-removal-')))
+  scratchDir = await realpath(await mkdtemp(join(tmpdir(), 'topo-interrupted-removal-')))
   recordsDir = join(scratchDir, 'profile')
   repoPath = join(scratchDir, 'repo')
   worktreePath = join(scratchDir, 'workspaces', 'feature')
@@ -204,8 +204,8 @@ function removalHost(
     getWorktreeMeta: () => ({
       ...getProjectHostSetupWorktreeMeta([], repo),
       instanceId: 'removal-fixture',
-      orcaCreatedAt: 1,
-      orcaCreationSource: 'runtime',
+      topoCreatedAt: 1,
+      topoCreationSource: 'runtime',
       pushTarget
     }),
     getWorktreeMetaForHost: () => store.getWorktreeMeta(),
@@ -251,8 +251,8 @@ async function deleteViaEntry(
   const worktreeId = `repo-1::${worktreePath}`
   const host = removalHost(false, stop, teardown)
   const { store } = host
-  const runtime: OrcaRuntimeWithResolveWorktreeRemovalTarget = Object.assign(
-    Object.create(OrcaRuntimeWithResolveWorktreeRemovalTarget.prototype),
+  const runtime: TopoRuntimeWithResolveWorktreeRemovalTarget = Object.assign(
+    Object.create(TopoRuntimeWithResolveWorktreeRemovalTarget.prototype),
     {
       store,
       workspaceLifecycle: lifecycle,
@@ -410,7 +410,7 @@ describe('finishing an interrupted worktree removal after a restart', () => {
         remoteUrl
       }
       await git(['remote', 'add', pushTarget.remoteName, remoteUrl])
-      await git(['config', `remote.${pushTarget.remoteName}.orca-created`, 'true'])
+      await git(['config', `remote.${pushTarget.remoteName}.topo-created`, 'true'])
       const sibling = join(scratchDir, 'temporarily-missing')
       await git(['worktree', 'add', '-q', sibling, '-b', 'sibling'])
       await rename(sibling, join(scratchDir, 'offline'))
@@ -807,7 +807,7 @@ describe('finishing an interrupted worktree removal after a restart', () => {
     )
   })
 
-  it('drops a record whose repo Orca no longer has', async () => {
+  it('drops a record whose repo Topo no longer has', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {})
 
     const { outcome, purged, records } = await finishAfterRestart({ repoGone: true })

@@ -3,7 +3,7 @@ import { runClaudeListing, type ClaudeModelCatalogProbeDeps } from './claude-mod
 import { ClaudeSlashCommandCatalog } from './claude-slash-command-catalog'
 import { readClaudeControlResponses } from './claude-control-responses'
 
-const REQUEST_ID = 'orca-command-discovery'
+const REQUEST_ID = 'topo-command-discovery'
 
 // initialize lists the live chat command surface without spending an API turn.
 const CLAUDE_COMMAND_LIST_STDIN = `${JSON.stringify({

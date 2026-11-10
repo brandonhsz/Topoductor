@@ -37,7 +37,7 @@ function SkippedFieldsList({ fields }: { fields: readonly string[] }): React.JSX
       <p className="mb-1.5">
         {t(
           'auto.components.sidebar.SetupScriptReviewDialog.notImportedHint',
-          "These settings have no Orca equivalent and won't be saved."
+          "These settings have no Topo equivalent and won't be saved."
         )}
       </p>
       <ul className="flex max-h-24 flex-wrap gap-1 overflow-y-auto scrollbar-sleek">
@@ -79,7 +79,7 @@ export function SetupScriptReviewDialog({
                 i18n={i18n}
                 defaults={t(
                   'auto.components.sidebar.SetupScriptReviewDialog.descriptionWithSource',
-                  'From <file>{{source}}</file>. Saving runs this whenever Orca creates a worktree for {{repo}}.'
+                  'From <file>{{source}}</file>. Saving runs this whenever Topo creates a worktree for {{repo}}.'
                 )}
                 values={{ source: provenance, repo: repoDisplayName }}
                 components={{ file: <code className="font-mono text-foreground" /> }}
@@ -87,7 +87,7 @@ export function SetupScriptReviewDialog({
             ) : (
               t(
                 'auto.components.sidebar.SetupScriptReviewDialog.description',
-                'Saving runs this whenever Orca creates a worktree for {{repo}}.',
+                'Saving runs this whenever Topo creates a worktree for {{repo}}.',
                 { repo: repoDisplayName }
               )
             )}

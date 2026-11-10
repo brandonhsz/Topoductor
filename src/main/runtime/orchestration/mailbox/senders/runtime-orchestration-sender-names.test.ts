@@ -1,6 +1,6 @@
 import { acceptedAnswerSender } from './accepted-answer-sender'
 
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 
 import { agentSessionConversationView } from '../../../../../shared/agent-session/lifecycle/agent-session-conversation-view'
 
@@ -15,7 +15,7 @@ import {
   agentSessionRecordFixture
 } from '../../../../../shared/agent-session/lifecycle/agent-session-record.test-fixture'
 
-import { testOrcaSessionId } from '../../../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../../../shared/topo-session-address-test-fixture'
 
 import '../../../../../shared/wsl-hook-relay-contract'
 import { OrchestrationDb } from '../../db/orchestration-db'
@@ -42,7 +42,7 @@ vi.mock(
   })
 )
 
-const CHAT = testOrcaSessionId('4a1f6c2e-8b3d-4e7a-9c15-0d2b6e8f1a37')
+const CHAT = testTopoSessionId('4a1f6c2e-8b3d-4e7a-9c15-0d2b6e8f1a37')
 const WORKTREE = 'repo_1::/work/tree'
 
 type Session = NonNullable<
@@ -136,7 +136,7 @@ afterEach(() => {
 
 it('preserves old, malformed and absent launch observations without inventing an agent', () => {
   const { dispatchId } = finishedWorker('Inspect parser', 'term_older')
-  const party = { address: `dispatch:${dispatchId}`, terminalHandle: null, orcaSessionId: null }
+  const party = { address: `dispatch:${dispatchId}`, terminalHandle: null, topoSessionId: null }
   for (const launch of [
     undefined,
     null,
@@ -167,13 +167,13 @@ it('preserves old, malformed and absent launch observations without inventing an
 })
 
 it('keeps the accepted answer actor after A parks and B adopts the same Run', () => {
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(db)
   const run = db.createRun({
     objective: 'A owns this',
     coordinatorHandle: 'term_a',
     coordinatorPaneKey: 'tab_a:leaf',
-    coordinatorOrcaSessionId: CHAT
+    coordinatorTopoSessionId: CHAT
   })
   const task = db.createTask({ runId: run.id, spec: 'Worker asks' })
   const dispatch = createRootDispatch(db, task.id, 'term_worker')
@@ -200,7 +200,7 @@ it('keeps the accepted answer actor after A parks and B adopts the same Run', ()
       address: 'term_a_new',
       terminalHandle: 'term_a_new',
       paneKey: 'tab_a:leaf',
-      orcaSessionId: null
+      topoSessionId: null
     })
   })
   const next = db.createRun({
@@ -221,7 +221,7 @@ it('keeps the accepted answer actor after A parks and B adopts the same Run', ()
   expect(delivered.senders[0]).toMatchObject({
     name: 'Known A',
     agent: 'codex',
-    party: { address: `run:${run.id}`, terminalHandle: null, orcaSessionId: null }
+    party: { address: `run:${run.id}`, terminalHandle: null, topoSessionId: null }
   })
   snapshot.mockRestore()
 })

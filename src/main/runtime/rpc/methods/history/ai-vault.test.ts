@@ -4,9 +4,9 @@ import { RpcDispatcher } from '../../dispatcher'
 
 import type { RpcRequest } from '../../core'
 
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 
-import '../../../orca-runtime'
+import '../../../topo-runtime'
 import { RuntimeAiVaultCommands } from '../../../integrations/ai-vault/runtime-ai-vault-commands'
 
 import type {
@@ -95,7 +95,7 @@ function makeDispatcher(): RpcDispatcher {
     listAiVaultSessions: vault.list.bind(vault),
     resolveAiVaultSessionTitles: (requests: unknown[], signal?: AbortSignal) =>
       resolveAiVaultSessionTitlesInService(requests, signal)
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   return new RpcDispatcher({ runtime, methods: AI_VAULT_METHODS })
 }
 
@@ -129,7 +129,7 @@ describe('aiVault methods without a structured host', () => {
         signal?: AbortSignal
       ) => listAiVaultSessions(args, { signal }),
       prepareAiVaultSessionResume: vi.fn().mockResolvedValue({ useRealCodexHome: true })
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     return new RpcDispatcher({ runtime, methods: AI_VAULT_METHODS })
   }
 

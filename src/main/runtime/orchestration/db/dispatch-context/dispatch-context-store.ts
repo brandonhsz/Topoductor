@@ -12,7 +12,7 @@ import {
   taskNotFoundError,
   taskNotStartableError
 } from '../../coordinator/dispatch/task-dispatch-refusal'
-import { dispatchAssigneeOrcaSessionId } from '../../addressing/session-lineage/dispatch-assignee-orca-session-id'
+import { dispatchAssigneeTopoSessionId } from '../../addressing/session-lineage/dispatch-assignee-topo-session-id'
 import { assertTakesNewWork } from '../worker-terminal/worker-terminal-transfer'
 
 export function createDispatchContext(
@@ -65,7 +65,7 @@ export function createDispatchContext(
       launchTokenHash: launchTokenHash ?? null,
       assigneeHandle,
       assigneePaneKey: assigneePaneKey ?? null,
-      assigneeOrcaSessionId: dispatchAssigneeOrcaSessionId({
+      assigneeTopoSessionId: dispatchAssigneeTopoSessionId({
         handle: assigneeHandle,
         processIncarnation
       }),

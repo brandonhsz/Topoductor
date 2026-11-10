@@ -1,15 +1,15 @@
-import type { OrcaRuntimeWithRestoreLivePairedRendererSessionOwnedMobileTerminals as RendererTerminalRescue } from '../../session-tabs/renderer-session-terminal-rescue'
-import type { OrcaRuntimeWithCloseStructuredAgentSessionTab as StructuredSessionClose } from '../../session-tabs/structured-session-tab-close'
-import type { OrcaRuntimeWithTransitionGraphReloadToTerminalState as SessionGraphAuthority } from '../../session-graph/session-graph-authority'
-import type { OrcaRuntimeWithWaitForMobileTerminalSurface as MobileTerminalSurface } from '../../terminal/view/mobile-terminal-surface'
-import type { OrcaRuntimeWithCloseHeadlessMobileTerminalTab as HeadlessTerminalClose } from '../../session-tabs/headless-terminal-tab-close'
-import { OrcaRuntimeWithReconcileHeadlessMobileSessionBrowserTabs } from '../projection/reconcile-headless-mobile-session-browser-tabs'
+import type { TopoRuntimeWithRestoreLivePairedRendererSessionOwnedMobileTerminals as RendererTerminalRescue } from '../../session-tabs/renderer-session-terminal-rescue'
+import type { TopoRuntimeWithCloseStructuredAgentSessionTab as StructuredSessionClose } from '../../session-tabs/structured-session-tab-close'
+import type { TopoRuntimeWithTransitionGraphReloadToTerminalState as SessionGraphAuthority } from '../../session-graph/session-graph-authority'
+import type { TopoRuntimeWithWaitForMobileTerminalSurface as MobileTerminalSurface } from '../../terminal/view/mobile-terminal-surface'
+import type { TopoRuntimeWithCloseHeadlessMobileTerminalTab as HeadlessTerminalClose } from '../../session-tabs/headless-terminal-tab-close'
+import { TopoRuntimeWithReconcileHeadlessMobileSessionBrowserTabs } from '../projection/reconcile-headless-mobile-session-browser-tabs'
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../../shared/runtime-session-contracts'
 import type { RuntimeMobileSessionTerminalTab } from '../../../../shared/runtime-mobile-session-tab-contracts'
 import { SSH_PANE_RECOVERY_GRACE_MS } from '../../terminal/recovery/ssh-pane-recovery-window'
 import { terminalIsOfTab } from './closed-tab-terminal'
 
-export abstract class OrcaRuntimeWithHasLiveOrPersistedServeOrSshOwnedPtyBinding extends OrcaRuntimeWithReconcileHeadlessMobileSessionBrowserTabs {
+export abstract class TopoRuntimeWithHasLiveOrPersistedServeOrSshOwnedPtyBinding extends TopoRuntimeWithReconcileHeadlessMobileSessionBrowserTabs {
   protected abstract setPairedRendererSessionOwnership(
     ...args: Parameters<RendererTerminalRescue['setPairedRendererSessionOwnership']>
   ): ReturnType<RendererTerminalRescue['setPairedRendererSessionOwnership']>

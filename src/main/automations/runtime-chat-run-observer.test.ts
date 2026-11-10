@@ -9,7 +9,7 @@ import {
   agentJournalSubmissionKey,
   agentJournalItemKey
 } from '../../shared/agent-session/journal/agent-session-journal-item-key'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { buildProfileStateCutoverFixture } from '../persistence/profile-state-cutover-fixture'
 import { chatAutomationRunObservation, observeAutomationChatRun } from './runtime-chat-run-observer'
 import type { JournalPublication } from '../native-chat/agent-session-wire/host/structured-agent-session-conversations'
@@ -112,7 +112,7 @@ describe('restart observation and disposal', () => {
     const runtime = {
       ensureStructuredAgentSessionHost: vi.fn(),
       openAgentSessionRecordStore: async () => records
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     const view = snapshot([turn('own', agentJournalSubmissionKey(messageId), 'running')])
     view.submissions = [{ ...submission, clientMessageId: messageId }]
     return { run, records, runtime, view }
@@ -284,7 +284,7 @@ describe('real host queue publication and operation bounds', () => {
             })
           }
           // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: initialization/receipt reads are scripted; the actual host/journal/queue/observer and N/10N measurements execute.
-          const runtime = runtimeFacade as unknown as OrcaRuntimeService
+          const runtime = runtimeFacade as unknown as TopoRuntimeService
           let pending =
             mode === 'internal' ? observeAutomationChatRun(runtime, run, controller.signal) : null
           void pending?.catch(() => {})
@@ -500,7 +500,7 @@ describe('real host queue publication and operation bounds', () => {
           })
         }
         // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: initialization/receipt reads are scripted; the actual host/journal/queue/observer and eviction/reopen lifecycle execute.
-        const typedRuntime = runtime as unknown as OrcaRuntimeService
+        const typedRuntime = runtime as unknown as TopoRuntimeService
         const live = observeAutomationChatRun(typedRuntime, run, new AbortController().signal)
         const liveResult = live.then(
           (value) => value,

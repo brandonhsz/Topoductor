@@ -160,8 +160,8 @@ export class JsonlRpcPeer {
     }
     const id =
       options.oversizedReply === 'reject'
-        ? `orca-optional-${++this.nextOptionalId}`
-        : `orca-${++this.nextId}`
+        ? `topo-optional-${++this.nextOptionalId}`
+        : `topo-${++this.nextId}`
     const controller = new AbortController()
     return new Promise((resolve, reject) => {
       const timer =

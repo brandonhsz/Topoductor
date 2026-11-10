@@ -12,7 +12,7 @@ import type { Worktree } from './types'
 /** The viewer's own store; other stores are keyed by their paired runtime environment id. */
 export const OWN_LINEAGE_STORE_KEY = ''
 
-/** One Orca store as the viewer sees it: its installationId (identity) and its saved cross-store records. */
+/** One Topo store as the viewer sees it: its installationId (identity) and its saved cross-store records. */
 export type LineageStoreView = {
   installationId: string | undefined
   crossStoreLineageByChildKey: Readonly<Record<string, unknown>> | undefined

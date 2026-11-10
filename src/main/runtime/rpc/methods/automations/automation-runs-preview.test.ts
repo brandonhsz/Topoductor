@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { eraseRpcMethods, type RpcContext } from '../../core'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import { AUTOMATION_METHODS } from './automations'
 
 import type { AutomationRun } from '../../../../../shared/automations/history/automation-run'
@@ -57,10 +57,10 @@ function runtimeWith(runs: AutomationRun[]) {
     )
   }
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: run reads touch only these two store members.
-  return new OrcaRuntimeService(store as never)
+  return new TopoRuntimeService(store as never)
 }
 
-async function runs(runtime: OrcaRuntimeService, params: Record<string, unknown>) {
+async function runs(runtime: TopoRuntimeService, params: Record<string, unknown>) {
   const method = eraseRpcMethods(AUTOMATION_METHODS).find(
     (entry) => entry.name === 'automation.runs'
   )

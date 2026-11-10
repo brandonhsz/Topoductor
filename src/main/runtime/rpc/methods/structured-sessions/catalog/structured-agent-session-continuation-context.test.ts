@@ -27,7 +27,7 @@ import {
   editPersistedTestAgentSessionStore,
   readPersistedTestAgentSessionStore
 } from '../../../../agent-session/records/agent-session-record-store-test-harness'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import type { RpcResponse } from '../../../core'
 import { RpcDispatcher } from '../../../dispatcher'
 import type { RpcDispatchStreamingOptions } from '../../../dispatcher-stream-options'
@@ -82,7 +82,7 @@ beforeEach(async () => {
   requests = 0
   rig = await createRestTestRig({ idleSweep: { intervalMs: 3_600_000 } })
   setStructuredAgentSessionHost(rig.host)
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   dispatcher = new RpcDispatcher({ runtime, methods: STRUCTURED_AGENT_SESSION_METHODS })
 })
 
@@ -270,7 +270,7 @@ it('hands off the reduced saved chat after clear and rewind, budgets only the st
   await vi.waitFor(() => expect(writing).toHaveBeenCalledOnce())
   const currentJournal = rig.host.collaboratorsForTests().sessions.get(SESSION)!.journal
   await currentJournal.appendItem(
-    { provider: 'orca', clientMessageId: 'pr-31782-late' },
+    { provider: 'topo', clientMessageId: 'pr-31782-late' },
     hostTestMessage('LATER_SAVED_MARKER'),
     {
       fence: rig.store.getRecord(SESSION)!.lease.runtimeFence,

@@ -209,7 +209,7 @@ describe('subscribeRuntimeEnvironmentFromPreload', () => {
         subscriptionId: 'sub-err',
         type: 'error',
         code: 'TIMEOUT',
-        message: 'Timed out waiting for the remote Orca runtime to respond.'
+        message: 'Timed out waiting for the remote Topo runtime to respond.'
       })
     }
     expect(onError).toHaveBeenCalledTimes(50)

@@ -115,7 +115,7 @@ export async function acquireTerminalArtifactGrant(
         15_000
       ))
     ) {
-      throw new Error('Update Orca on this host to keep editing files outside its workspaces.')
+      throw new Error('Update Topo on this host to keep editing files outside its workspaces.')
     }
     return null
   }
@@ -170,7 +170,7 @@ export function isSshWorkspaceGrantRefusal(error: unknown): boolean {
   )
 }
 
-/** Older hosts read a granted file only whole and as text, so it opens in Orca instead of downloading. */
+/** Older hosts read a granted file only whole and as text, so it opens in Topo instead of downloading. */
 export async function hostStreamsGrantedFiles(environmentId: string): Promise<boolean> {
   try {
     return await runtimeEnvironmentSupportsCapability(

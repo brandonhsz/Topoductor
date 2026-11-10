@@ -12,7 +12,7 @@ import { runtimeEnvironmentSupportsCapability } from '../../rpc/compatibility/ru
 /** The paired server predates server SSH management; the caller shows "update the server". */
 export class RuntimeSshTargetManagementUnsupportedError extends Error {
   constructor() {
-    super('Update this Orca server to manage its SSH hosts from here.')
+    super('Update this Topo server to manage its SSH hosts from here.')
     this.name = 'RuntimeSshTargetManagementUnsupportedError'
   }
 }

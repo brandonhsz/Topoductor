@@ -1,5 +1,5 @@
-import type { OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree } from '../terminal/launch/terminal-workspace-scope'
-import type { OrcaRuntimeWithTransitionGraphReloadToTerminalState } from '../session-graph/session-graph-authority'
+import type { TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree } from '../terminal/launch/terminal-workspace-scope'
+import type { TopoRuntimeWithTransitionGraphReloadToTerminalState } from '../session-graph/session-graph-authority'
 import type { ResolvedWorktree } from './catalog/runtime-worktree-path-identity'
 import type { Repo } from '../../../shared/repo-types'
 import {
@@ -14,26 +14,26 @@ import { RuntimeMarkdownTabOperations } from '../files/paths/runtime-markdown-ta
 export abstract class RuntimeWorkspaceFileTargets extends RuntimeMarkdownTabOperations {
   protected abstract floatingWorkspaceToResolvedWorktree(
     ...args: Parameters<
-      OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['floatingWorkspaceToResolvedWorktree']
+      TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['floatingWorkspaceToResolvedWorktree']
     >
   ): ReturnType<
-    OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['floatingWorkspaceToResolvedWorktree']
+    TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['floatingWorkspaceToResolvedWorktree']
   >
 
   protected abstract resolveFloatingWorkspacePath(
     ...args: Parameters<
-      OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['resolveFloatingWorkspacePath']
+      TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['resolveFloatingWorkspacePath']
     >
   ): ReturnType<
-    OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['resolveFloatingWorkspacePath']
+    TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree['resolveFloatingWorkspacePath']
   >
 
   protected abstract resolveFolderWorkspaceLaunchScope(
     ...args: Parameters<
-      OrcaRuntimeWithTransitionGraphReloadToTerminalState['resolveFolderWorkspaceLaunchScope']
+      TopoRuntimeWithTransitionGraphReloadToTerminalState['resolveFolderWorkspaceLaunchScope']
     >
   ): ReturnType<
-    OrcaRuntimeWithTransitionGraphReloadToTerminalState['resolveFolderWorkspaceLaunchScope']
+    TopoRuntimeWithTransitionGraphReloadToTerminalState['resolveFolderWorkspaceLaunchScope']
   >
 
   // Route by worktree host before repo id: same-id host twins and runtime-nested targets cannot use this client's arbitrary repo row (#11163).

@@ -4,10 +4,10 @@ import type {
   HostServerOnConnectDeps,
   HostServerOnConnectResult
 } from './ssh-host-server-on-connect'
-import { orcadMigrationConflictGuidance } from '../../managed-server/migration/cutover/orcad-migration-conflict-guidance'
+import { topodMigrationConflictGuidance } from '../../managed-server/migration/cutover/topod-migration-conflict-guidance'
 import { boundedDetail, setupFailure, type SetupFailure } from './ssh-host-server-setup-failure'
 import { isSshSessionStartFailure } from '../connection/ssh-session-start-failure'
-import { classifyOrcadHostUnavailable } from '../../orcad/orcad-host-unavailable'
+import { classifyTopodHostUnavailable } from '../../topod/topod-host-unavailable'
 import {
   reportHostServerSetupError,
   type HostServerDecisionTrace
@@ -20,13 +20,13 @@ export function setupFailed(
   error: unknown,
   empty: boolean
 ): Promise<HostServerOnConnectResult> {
-  console.warn('[ssh] Managed Orca server setup failed:', error)
+  console.warn('[ssh] Managed Topo server setup failed:', error)
   reportHostServerSetupError(deps.report, target, trace, error)
   if (isSshSessionStartFailure(error)) {
     return sshSessionStartFailed(target, deps, empty, error)
   }
-  const unavailable = classifyOrcadHostUnavailable(error)
-  const conflict = empty ? null : orcadMigrationConflictGuidance(error)
+  const unavailable = classifyTopodHostUnavailable(error)
+  const conflict = empty ? null : topodMigrationConflictGuidance(error)
   if (conflict) {
     return unfinished(target, deps, unavailable, empty, 'refused', { detail: conflict })
   }
@@ -54,8 +54,8 @@ export function deferred(
   result: { code: string; reason: string },
   empty: boolean
 ): Promise<HostServerOnConnectResult> {
-  console.warn(`[ssh] Managed Orca server setup deferred (${result.code}):`, result.reason)
-  const unavailable = classifyOrcadHostUnavailable({ code: result.code })
+  console.warn(`[ssh] Managed Topo server setup deferred (${result.code}):`, result.reason)
+  const unavailable = classifyTopodHostUnavailable({ code: result.code })
   return unfinished(target, deps, unavailable, empty, 'deferred', {
     detail: result.reason,
     code: result.code
@@ -75,12 +75,12 @@ async function unfinished(
     await (empty ? deps.abandonDeploy(target) : deps.abandonConversion(target))
   } catch (error) {
     // Retain fences when staging/registration leaves destination state unproven.
-    console.warn('[ssh] The managed Orca server setup keeps its fence:', error)
+    console.warn('[ssh] The managed Topo server setup keeps its fence:', error)
   }
   // Re-read the journal: abort may have released the fence or discovered commit.
   const held = !empty && !unavailable && deps.hasUnfinishedConversion(target)
   if (!unavailable) {
-    // Publish host-specific setup detail, including bounded orcad.log tail when available.
+    // Publish host-specific setup detail, including bounded topod.log tail when available.
     return {
       route: 'unserved',
       reason,
@@ -92,5 +92,5 @@ async function unfinished(
     }
   }
   deps.recordUnavailable(target, unavailable)
-  return { route: 'unserved', reason: 'orcad_unavailable', detail: unavailable }
+  return { route: 'unserved', reason: 'topod_unavailable', detail: unavailable }
 }

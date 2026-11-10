@@ -24,7 +24,7 @@ afterEach(async () => {
 
 describe('writeTerminalRenderDesyncEvidence', () => {
   it('writes private PNG and metadata files under app-owned user data', async () => {
-    const userData = await mkdtemp(path.join(os.tmpdir(), 'orca-render-desync-'))
+    const userData = await mkdtemp(path.join(os.tmpdir(), 'topo-render-desync-'))
     tempDirectories.push(userData)
     const result = await writeTerminalRenderDesyncEvidence(userData, {
       captureId: 'capture-1',
@@ -44,7 +44,7 @@ describe('writeTerminalRenderDesyncEvidence', () => {
   })
 
   it('retains only the newest four capture directories', async () => {
-    const userData = await mkdtemp(path.join(os.tmpdir(), 'orca-render-desync-'))
+    const userData = await mkdtemp(path.join(os.tmpdir(), 'topo-render-desync-'))
     tempDirectories.push(userData)
     const oldestCaptureTime = Date.now() - 60_000
     for (let capture = 1; capture <= 6; capture++) {

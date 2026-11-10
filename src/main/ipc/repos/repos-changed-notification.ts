@@ -1,10 +1,10 @@
 import type { BrowserWindow } from 'electron'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import { wakeFolderRepoGitUpgradeWatch } from '../folder-repo-git-upgrade-wake'
 import { scheduleCurrentWorktreeBaseDirectoryWatcherSync } from '../worktrees/creation/worktree-base-directory-watcher'
 
 type RepoRemoteClientNotifier = Pick<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   'notifyReposChangedForRemoteClients' | 'notifyAutomationsChanged'
 >
 

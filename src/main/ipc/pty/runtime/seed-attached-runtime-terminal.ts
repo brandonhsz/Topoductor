@@ -1,5 +1,5 @@
 import type { PtySpawnResult } from '../../../providers/pty-provider-contract'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import { commitRuntimeAttachedPtySize, type PtyGrid } from '../delivery/attached-pty-size'
 import { ptySizes } from '../delivery/visibility-state'
 import { seedTerminalRestoreRecordsFromSpawnResult } from '../pane/agent-session-owners'
@@ -7,7 +7,7 @@ import { seedHeadlessTerminalFromSpawnResult } from '../pane/terminal-spawn-rest
 
 /** Commit the attached grid, then seed the screen a restarted runtime has never seen. */
 export function seedAttachedRuntimeTerminal(
-  runtime: OrcaRuntimeService | undefined,
+  runtime: TopoRuntimeService | undefined,
   result: PtySpawnResult,
   sizeBeforeAttach: PtyGrid | undefined
 ): void {

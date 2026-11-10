@@ -1,5 +1,5 @@
 import type { ChildProcess } from 'node:child_process'
-import type { ProcessSpec } from '@orca/process-host/process-spec'
+import type { ProcessSpec } from '@topo/process-host/process-spec'
 import { readFileSync } from 'node:fs'
 import { readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import {
@@ -70,7 +70,7 @@ async function awaitInstalledHandoff(
   await recordServeUpdateHandoffFailure(
     handoffPath,
     handoff,
-    `Timed out waiting for Orca ${handoff.targetVersion} to be installed.`
+    `Timed out waiting for Topo ${handoff.targetVersion} to be installed.`
   )
   return null
 }

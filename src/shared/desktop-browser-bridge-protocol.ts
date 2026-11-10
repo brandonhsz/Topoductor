@@ -13,14 +13,14 @@ export const DESKTOP_BROWSER_BRIDGE_SCOPE_CODE = 'desktop_browser_bridge_out_of_
 export const DESKTOP_BROWSER_BRIDGE_UNROUTED_CODE = 'desktop_browser_bridge_unrouted'
 
 export const DESKTOP_BROWSER_BRIDGE_SETTING_LABEL =
-  'Allow this host to control Orca browser tabs in its workspaces'
+  'Allow this host to control Topo browser tabs in its workspaces'
 
 /** The desktop also withholds the bridge while this host's pages browse from the desktop's own network. */
 export const DESKTOP_BROWSER_BRIDGE_ROUTING_SETTING_LABEL = 'Settings › Browser › SSH workspaces'
 export const DESKTOP_BROWSER_BRIDGE_ROUTING_OPT_OUT_LABEL =
   'Hosts browsing from this device instead'
 
-export const DESKTOP_BROWSER_BRIDGE_UNAVAILABLE_MESSAGE = `No Orca desktop is sharing its browser with this host. On your desktop, open this host's SSH settings and turn on "${DESKTOP_BROWSER_BRIDGE_SETTING_LABEL}", make sure ${DESKTOP_BROWSER_BRIDGE_ROUTING_SETTING_LABEL} is "SSH host" and this host isn't listed under "${DESKTOP_BROWSER_BRIDGE_ROUTING_OPT_OUT_LABEL}", and keep the host connected. The desktop needs an Orca version that supports it.`
+export const DESKTOP_BROWSER_BRIDGE_UNAVAILABLE_MESSAGE = `No Topo desktop is sharing its browser with this host. On your desktop, open this host's SSH settings and turn on "${DESKTOP_BROWSER_BRIDGE_SETTING_LABEL}", make sure ${DESKTOP_BROWSER_BRIDGE_ROUTING_SETTING_LABEL} is "SSH host" and this host isn't listed under "${DESKTOP_BROWSER_BRIDGE_ROUTING_OPT_OUT_LABEL}", and keep the host connected. The desktop needs a Topo version that supports it.`
 
 /** Unlike the pre-1.4.225 arbitrary CLI relay, allow browser commands only: no desktop files, clipboard, cookies/headers, raw agent-browser, profile/identity changes or certificate bypass. */
 export const DESKTOP_BROWSER_BRIDGE_METHODS: ReadonlySet<string> = new Set([
@@ -96,14 +96,14 @@ export const DesktopBrowserBridgeRequest = z.object({
   type: z.literal('request'),
   requestId: Identity,
   method: z.string().refine(isDesktopBrowserBridgeMethod, 'method is not forwarded'),
-  /** How long orcad waits for this answer; the desktop never starts the command after it. */
+  /** How long topod waits for this answer; the desktop never starts the command after it. */
   timeoutMs: z
     .number()
     .int()
     .positive()
     .max(60 * 60_000)
     .optional(),
-  /** The workspace orcad resolved the caller's selector to; absent when it named none. */
+  /** The workspace topod resolved the caller's selector to; absent when it named none. */
   // Why longer than an identity: a worktree id embeds the repository's absolute path.
   workspaceId: z.string().min(1).max(MAX_WORKSPACE_ID_LENGTH).optional(),
   params: z
@@ -118,7 +118,7 @@ export type DesktopBrowserBridgeRequest = z.infer<typeof DesktopBrowserBridgeReq
 export const DesktopBrowserBridgeEvent = z.discriminatedUnion('type', [
   z.object({ type: z.literal('ready'), attachmentId: Identity }),
   DesktopBrowserBridgeRequest,
-  /** orcad stopped waiting for this request; the desktop must not start or continue it. */
+  /** topod stopped waiting for this request; the desktop must not start or continue it. */
   z.object({ type: z.literal('cancel'), requestId: Identity })
 ])
 export type DesktopBrowserBridgeEvent = z.infer<typeof DesktopBrowserBridgeEvent>

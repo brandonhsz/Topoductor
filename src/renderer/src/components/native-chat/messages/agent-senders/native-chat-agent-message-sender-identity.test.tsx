@@ -17,7 +17,7 @@ import {
 } from '../../../../../../shared/agent-session/agent-session-conversation-names'
 import type { AgentMessageSource } from '../../../../../../shared/agent-session/agent-session-message-source'
 import type { AgentStatusEntry } from '../../../../../../shared/agent-status/contracts/agent-status-types'
-import { testOrcaSessionId } from '../../../../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../../../../shared/topo-session-address-test-fixture'
 import type { Tab } from '../../../../../../shared/tab-types'
 import { NativeChatAgentMessageSenders } from './NativeChatAgentMessageSenders'
 
@@ -65,7 +65,7 @@ vi.mock('@/runtime/native-chat/status/structured-agent-session-status-feed', () 
 const openAgentMessageSender = vi.hoisted(() => vi.fn())
 vi.mock('@/lib/open-agent-message-sender', () => ({ openAgentMessageSender }))
 
-const ROOT = testOrcaSessionId('root-chat')
+const ROOT = testTopoSessionId('root-chat')
 const RECIPIENT = 'recipient'
 const SENDER = 'sender'
 const PANE = 'terminal:11111111-1111-4111-8111-111111111111'
@@ -104,9 +104,9 @@ function source(terminal = false): AgentMessageSource {
     senders: [
       {
         party: {
-          address: terminal ? 'term-a' : `orca_session_id:${ROOT}`,
+          address: terminal ? 'term-a' : `topo_session_id:${ROOT}`,
           terminalHandle: terminal ? 'term-a' : null,
-          orcaSessionId: terminal ? null : ROOT
+          topoSessionId: terminal ? null : ROOT
         },
         name: 'Original sender'
       }
@@ -255,13 +255,13 @@ it.each([false, true])(
 )
 
 it('uses the same published /clear successor for the live sender label', () => {
-  const live = testOrcaSessionId('22222222-2222-4222-8222-222222222222')
+  const live = testTopoSessionId('22222222-2222-4222-8222-222222222222')
   publish('local', [summary(live)], [{ sessionId: live, conversationName: 'Continued sender' }])
   useAppStore.setState({ unifiedTabsByWorktree: { [SENDER]: [tab(live, '')] } })
   useAppStore.getState().setAgentSenderPublication('local', {
     associations: [
       {
-        identity: `orca_session_id:${ROOT}`,
+        identity: `topo_session_id:${ROOT}`,
         sessionId: live,
         paneKey: structuredAgentSessionPaneKey(structuredAgentSessionTabId(live), live),
         worktreeId: SENDER

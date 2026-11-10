@@ -90,31 +90,31 @@ describe('a rejected send', () => {
 
   // Local send timestamps cannot imply a zero-duration turn when the host proves the message never reached the provider.
   it('opened no turn, whatever the local clock observed', () => {
-    const settled = selectStructuredAgentSettledTurns([user('orca:dead')], [rejected('dead')])
-    expect(settled.get('orca:dead')).toBeNull()
+    const settled = selectStructuredAgentSettledTurns([user('topo:dead')], [rejected('dead')])
+    expect(settled.get('topo:dead')).toBeNull()
 
     const statuses = selectNativeChatTurnStatuses(
-      { 'orca:dead': { startedAt: 900, workedSeconds: 0 } },
-      { activeTurnKey: 'orca:dead', isWorking: false, thinking: false, settledByTurn: settled }
+      { 'topo:dead': { startedAt: 900, workedSeconds: 0 } },
+      { activeTurnKey: 'topo:dead', isWorking: false, thinking: false, settledByTurn: settled }
     )
-    expect(statuses.completedByTurn['orca:dead']).toBeUndefined()
+    expect(statuses.completedByTurn['topo:dead']).toBeUndefined()
     expect(statuses.active).toBeNull()
   })
 
   it('keeps the duration of a turn the journal does record for it', () => {
     const settled = selectStructuredAgentSettledTurns(
       [
-        user('orca:ran'),
+        user('topo:ran'),
         lifecycle('t1', {
           state: 'interrupted',
-          userItemId: 'orca:ran',
+          userItemId: 'topo:ran',
           startedAt: 10_000,
           completedAt: 14_000
         })
       ],
       [rejected('ran')]
     )
-    expect(settled.get('orca:ran')).toEqual({
+    expect(settled.get('topo:ran')).toEqual({
       startedAt: 10_000,
       workedSeconds: 4,
       verdict: 'interruption'
@@ -128,22 +128,22 @@ describe('a rejected send', () => {
       lifecycle(userItemId, { userItemId, startedAt: 10_000, completedAt: 22_000, ...turn })
     ]
     const settled = selectStructuredAgentSettledTurns([
-      ...ended('orca:crashed', { state: 'interrupted' }),
-      ...ended('orca:stopped', { state: 'interrupted', outcome: 'cancellation' }),
-      ...ended('orca:finished', { state: 'completed', outcome: 'success' }),
-      ...ended('orca:unjudged', { state: 'completed' })
+      ...ended('topo:crashed', { state: 'interrupted' }),
+      ...ended('topo:stopped', { state: 'interrupted', outcome: 'cancellation' }),
+      ...ended('topo:finished', { state: 'completed', outcome: 'success' }),
+      ...ended('topo:unjudged', { state: 'completed' })
     ])
-    expect(settled.get('orca:crashed')).toEqual({
+    expect(settled.get('topo:crashed')).toEqual({
       startedAt: 10_000,
       workedSeconds: 12,
       verdict: 'interruption'
     })
-    expect(settled.get('orca:stopped')).toMatchObject({ verdict: 'cancellation' })
-    expect(settled.get('orca:finished')).toMatchObject({ verdict: 'success' })
-    expect(settled.get('orca:unjudged')).toEqual({ startedAt: 10_000, workedSeconds: 12 })
+    expect(settled.get('topo:stopped')).toMatchObject({ verdict: 'cancellation' })
+    expect(settled.get('topo:finished')).toMatchObject({ verdict: 'success' })
+    expect(settled.get('topo:unjudged')).toEqual({ startedAt: 10_000, workedSeconds: 12 })
     const statuses = selectNativeChatTurnStatuses(
       {},
-      { activeTurnKey: 'orca:crashed', isWorking: false, thinking: false, settledByTurn: settled }
+      { activeTurnKey: 'topo:crashed', isWorking: false, thinking: false, settledByTurn: settled }
     )
     expect(statuses.active).toMatchObject({ workedSeconds: 12, verdict: 'interruption' })
   })

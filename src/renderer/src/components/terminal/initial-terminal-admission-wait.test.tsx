@@ -90,7 +90,7 @@ import { useTerminalWatcherEffects } from '../use-terminal-watcher-effects'
 import { beginStructuredAgentSessionProvisionalLaunch } from '@/lib/agent-session/structured-agent-session-provisional-tab'
 import { isEmptyWorkspaceDefaultSurfacePending } from '@/lib/workspace/activation/initial-surface/empty-workspace-default-surface-claims'
 import type { AgentSessionLaunchPlan } from '@/lib/agent-session/launch/routing/agent-session-launch-plan'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
 
 Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true })
@@ -185,7 +185,7 @@ function expectNoShell(): void {
 
 /** Observe the original create/open request count; finishChat verifies the actual drawn row. */
 async function expectChatOpenedOnce(): Promise<void> {
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     await layoutApplyTestTransport.settle()
     expect(layoutApplyTestTransport.sentOfType('openAgentSessionTab')).toEqual([
       expect.objectContaining({ workspace: 'wt-1', sessionId: 'claude_1' })

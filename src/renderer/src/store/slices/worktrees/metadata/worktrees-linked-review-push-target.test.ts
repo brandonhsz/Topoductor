@@ -253,9 +253,9 @@ describe('worktree remote runtime mutations', () => {
     const store = createTestStore()
     const pushTarget = { remoteName: 'fork', branchName: 'feature/ssh-pr' }
     const wt = makeWorktree({
-      id: 'repo-ssh::/home/orca/runtime-wt',
+      id: 'repo-ssh::/home/topo/runtime-wt',
       repoId: 'repo-ssh',
-      path: '/home/orca/runtime-wt',
+      path: '/home/topo/runtime-wt',
       linkedPR: 5571,
       hostId: 'ssh:ssh-1'
     })
@@ -268,7 +268,7 @@ describe('worktree remote runtime mutations', () => {
       repos: [
         {
           id: 'repo-ssh',
-          path: '/home/orca/repo',
+          path: '/home/topo/repo',
           displayName: 'SSH Repo',
           badgeColor: '#000',
           addedAt: 0,

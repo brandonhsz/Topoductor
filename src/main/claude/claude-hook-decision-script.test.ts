@@ -39,8 +39,8 @@ function runHook(
     const child = spawn('sh', ['-c', getManagedScript('posix', { decidesPreToolUse })], {
       env: {
         PATH: process.env.PATH ?? '',
-        ORCA_AGENT_HOOK_TOKEN: 'token',
-        ORCA_PANE_KEY: 'tab-1:0',
+        TOPO_AGENT_HOOK_TOKEN: 'token',
+        TOPO_PANE_KEY: 'tab-1:0',
         ...env
       }
     })
@@ -60,35 +60,35 @@ const DENY =
 describe.skipIf(process.platform === 'win32')(
   'Claude PreToolUse decisions in the hook script',
   () => {
-    it('prints Orca’s decision for PreToolUse, over either transport', async () => {
+    it('prints Topo’s decision for PreToolUse, over either transport', async () => {
       const { port, seen } = await hookServer(() => DENY)
-      expect(await runHook(PRE, { ORCA_AGENT_HOOK_PORT: String(port) })).toBe(`${DENY}\n`)
+      expect(await runHook(PRE, { TOPO_AGENT_HOOK_PORT: String(port) })).toBe(`${DENY}\n`)
       expect(
         await runHook(PRE, {
-          ORCA_AGENT_HOOK_PORT: String(port),
-          ORCA_AGENT_HOOK_TRANSPORT: 'raw-json-v1'
+          TOPO_AGENT_HOOK_PORT: String(port),
+          TOPO_AGENT_HOOK_TRANSPORT: 'raw-json-v1'
         })
       ).toBe(`${DENY}\n`)
-      expect(seen.map(({ headers }) => headers['x-orca-hook-decision'])).toEqual([
+      expect(seen.map(({ headers }) => headers['x-topo-hook-decision'])).toEqual([
         'claude-pre-tool-use-v1',
         'claude-pre-tool-use-v1'
       ])
     })
 
-    it('prints {} with no decision, for other events, and when Orca is unreachable', async () => {
+    it('prints {} with no decision, for other events, and when Topo is unreachable', async () => {
       const { port, seen } = await hookServer(() => null)
-      expect(await runHook(PRE, { ORCA_AGENT_HOOK_PORT: String(port) })).toBe('{}\n')
-      expect(await runHook(POST, { ORCA_AGENT_HOOK_PORT: String(port) })).toBe('{}\n')
+      expect(await runHook(PRE, { TOPO_AGENT_HOOK_PORT: String(port) })).toBe('{}\n')
+      expect(await runHook(POST, { TOPO_AGENT_HOOK_PORT: String(port) })).toBe('{}\n')
       // curl drops a header whose value is empty.
-      expect(seen[1]?.headers['x-orca-hook-decision']).toBeUndefined()
+      expect(seen[1]?.headers['x-topo-hook-decision']).toBeUndefined()
       const closed = await hookServer(() => null)
       await new Promise((resolve) => servers.pop()?.close(resolve))
-      expect(await runHook(PRE, { ORCA_AGENT_HOOK_PORT: String(closed.port) })).toBe('{}\n')
+      expect(await runHook(PRE, { TOPO_AGENT_HOOK_PORT: String(closed.port) })).toBe('{}\n')
     })
 
     it('never prints a reply that is not a PreToolUse decision', async () => {
       const { port } = await hookServer(() => '{"error":"nope"}')
-      expect(await runHook(PRE, { ORCA_AGENT_HOOK_PORT: String(port) })).toBe('{}\n')
+      expect(await runHook(PRE, { TOPO_AGENT_HOOK_PORT: String(port) })).toBe('{}\n')
     })
 
     it('prints {} when curl fails after part of a decision arrived', async () => {
@@ -103,14 +103,14 @@ describe.skipIf(process.platform === 'win32')(
       await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
       const address = server.address()
       const port = typeof address === 'object' && address ? address.port : 0
-      expect(await runHook(PRE, { ORCA_AGENT_HOOK_PORT: String(port) })).toBe('{}\n')
+      expect(await runHook(PRE, { TOPO_AGENT_HOOK_PORT: String(port) })).toBe('{}\n')
     })
 
     it('keeps print-then-post for CLIs reusing Claude’s script, such as OpenClaude', async () => {
       const { port, seen } = await hookServer(() => DENY)
-      expect(await runHook(PRE, { ORCA_AGENT_HOOK_PORT: String(port) }, false)).toBe('{}\n')
+      expect(await runHook(PRE, { TOPO_AGENT_HOOK_PORT: String(port) }, false)).toBe('{}\n')
       expect(seen).toHaveLength(1)
-      expect(seen[0]?.headers['x-orca-hook-decision']).toBeUndefined()
+      expect(seen[0]?.headers['x-topo-hook-decision']).toBeUndefined()
     })
   }
 )

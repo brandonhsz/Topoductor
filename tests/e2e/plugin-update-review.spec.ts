@@ -7,7 +7,7 @@ import { pluginManifestSchema } from '../../src/shared/plugins/manifest/plugin-m
 import { pluginContributionSummary } from '../../src/shared/plugins/contributions/plugin-contribution-summary'
 import { pluginCatalogTypes } from '../../src/shared/plugins/catalog/plugin-catalog-release'
 import { PLUGIN_MANIFEST_V2_SINCE } from '../../src/shared/plugins/manifest/plugin-schema-field-docs'
-import { createRestartSession } from './helpers/orca-restart'
+import { createRestartSession } from './helpers/topo-restart'
 import {
   commitRepository,
   configureFixtureGit,
@@ -19,7 +19,7 @@ const PLUGINS = ['orca-review-notes', 'orca-review-tasks'] as const
 // Why: install and update review fetch Git; on a loaded runner that alone outlasts the 10s default.
 const GIT_STEP = { timeout: 60_000 }
 const FULL_ACCESS =
-  'Full access: runs as a normal program and can read your files, use the network, run other programs and control Orca, including your terminals and agents.'
+  'Full access: runs as a normal program and can read your files, use the network, run other programs and control Topo, including your terminals and agents.'
 
 /** Each fixture plugin's installed version and whether it waits on the page's review queue. */
 async function installedState(page: Page): Promise<{ version: string; review: boolean }[]> {
@@ -113,7 +113,7 @@ async function publishCatalog(
   )
   await writeFile(
     join(repositories, 'orca-plugins.git', 'orca-catalog.json'),
-    JSON.stringify({ catalogVersion: 2, name: 'Orca Plugins', owner: 'stablyai', plugins })
+    JSON.stringify({ catalogVersion: 2, name: 'Topo Plugins', owner: 'stablyai', plugins })
   )
 }
 
@@ -121,7 +121,7 @@ async function publishCatalog(
 test('confirms card removal, reviews a lone access-growing update directly, and approves each of several from the list', async ({}, testInfo) => {
   // Why: one Electron launch drives two Git-backed installs and an update review.
   test.setTimeout(240_000)
-  const root = await mkdtemp(join(tmpdir(), 'orca-update-review-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-update-review-'))
   const repositories = join(root, 'repositories')
   const home = join(root, 'home')
   await mkdir(repositories, { recursive: true })
@@ -136,7 +136,7 @@ test('confirms card removal, reviews a lone access-growing update directly, and 
   await mkdir(marketplace, { recursive: true })
   await publishCatalog(repositories, gitEnvironment, '1.0.0')
   await commitRepository(marketplace, gitEnvironment)
-  const session = createRestartSession(testInfo, { ...gitEnvironment, ORCA_BACKGROUND_LAUNCH: '1' })
+  const session = createRestartSession(testInfo, { ...gitEnvironment, TOPO_BACKGROUND_LAUNCH: '1' })
   let launched: Awaited<ReturnType<typeof session.launch>> | null = null
   try {
     launched = await session.launch()
@@ -229,9 +229,9 @@ test('confirms card removal, reviews a lone access-growing update directly, and 
         repository,
         [
           '-c',
-          'user.name=Orca Test',
+          'user.name=Topo Test',
           '-c',
-          'user.email=orca-test@example.invalid',
+          'user.email=topo-test@example.invalid',
           'commit',
           '--quiet',
           '-m',
@@ -246,9 +246,9 @@ test('confirms card removal, reviews a lone access-growing update directly, and 
       marketplace,
       [
         '-c',
-        'user.name=Orca Test',
+        'user.name=Topo Test',
         '-c',
-        'user.email=orca-test@example.invalid',
+        'user.email=topo-test@example.invalid',
         'commit',
         '--quiet',
         '-m',

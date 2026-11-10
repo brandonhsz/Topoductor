@@ -6,7 +6,7 @@ import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:f
 import type * as DaemonBashRcfileModule from '../daemon-bash-shell-ready-rcfile'
 import { getBashShellReadyRcfileContent } from '../../../providers/local-pty/local-pty-shell-ready-bash-rcfile'
 import { getDaemonBashShellReadyRcfileContent } from '../daemon-bash-shell-ready-rcfile'
-import { prependOrcaCliDirToChildPath } from '../../../cli/orca-cli-child-path'
+import { prependTopoCliDirToChildPath } from '../../../cli/topo-cli-child-path'
 import {
   expectBashOsc133Lifecycle,
   runInteractiveBashRcfile
@@ -26,16 +26,16 @@ describePosix('daemon shell-ready bash wrapper', () => {
   let previousUserDataPath: string | undefined
 
   beforeEach(() => {
-    previousUserDataPath = process.env.ORCA_USER_DATA_PATH
+    previousUserDataPath = process.env.TOPO_USER_DATA_PATH
     userDataPath = mkdtempSync(join(tmpdir(), 'daemon-shell-ready-bash-test-'))
-    process.env.ORCA_USER_DATA_PATH = userDataPath
+    process.env.TOPO_USER_DATA_PATH = userDataPath
   })
 
   afterEach(() => {
     if (previousUserDataPath === undefined) {
-      delete process.env.ORCA_USER_DATA_PATH
+      delete process.env.TOPO_USER_DATA_PATH
     } else {
-      process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+      process.env.TOPO_USER_DATA_PATH = previousUserDataPath
     }
     rmSync(userDataPath, { recursive: true, force: true })
     vi.restoreAllMocks()
@@ -50,7 +50,7 @@ describePosix('daemon shell-ready bash wrapper', () => {
     mkdirSync(cliBin, { recursive: true })
     mkdirSync(ambientBin)
     for (const bin of [cliBin, ambientBin]) {
-      const launcher = join(bin, 'orca-dev')
+      const launcher = join(bin, 'topo-dev')
       writeFileSync(launcher, '#!/bin/sh\nexit 0\n')
       chmodSync(launcher, 0o755)
     }
@@ -58,9 +58,9 @@ describePosix('daemon shell-ready bash wrapper', () => {
       HOME: userDataPath,
       USERPROFILE: userDataPath,
       PATH: `${ambientBin}:/usr/bin:/bin`,
-      ORCA_BACKGROUND_LAUNCH: '1'
+      TOPO_BACKGROUND_LAUNCH: '1'
     }
-    const expectedLauncher = prependOrcaCliDirToChildPath(env, {
+    const expectedLauncher = prependTopoCliDirToChildPath(env, {
       isPackaged: false,
       userDataPath
     })
@@ -70,7 +70,7 @@ describePosix('daemon shell-ready bash wrapper', () => {
     )
     const rcfile = join(userDataPath, 'cli-path-rcfile')
     writeFileSync(rcfile, content())
-    const result = spawnSync('bash', ['-c', '. "$1"; command -v orca-dev', 'bash', rcfile], {
+    const result = spawnSync('bash', ['-c', '. "$1"; command -v topo-dev', 'bash', rcfile], {
       env,
       encoding: 'utf8',
       timeout: 5000
@@ -106,7 +106,7 @@ describePosix('daemon shell-ready bash wrapper', () => {
     'still emits 133;C when bash-preexec re-arms the DEBUG trap at first prompt',
     async () => {
       const { getDaemonBashShellReadyRcfileContent } = await importFreshDaemonBashRcfile()
-      // Simulate bash-preexec replacing Orca’s DEBUG trap at the first prompt.
+      // Simulate bash-preexec replacing Topo’s DEBUG trap at the first prompt.
       writeFileSync(
         join(userDataPath, '.bash_profile'),
         [
@@ -129,7 +129,7 @@ describePosix('daemon shell-ready bash wrapper', () => {
   )
 
   itWithBash(
-    'dispatches a non-empty preexec_functions against the real command, not Orca hooks',
+    'dispatches a non-empty preexec_functions against the real command, not Topo hooks',
     async () => {
       const { getDaemonBashShellReadyRcfileContent } = await importFreshDaemonBashRcfile()
       // A real callback verifies that chaining preserves the user’s preexec handler.
@@ -165,7 +165,7 @@ describePosix('daemon shell-ready bash wrapper', () => {
       expectBashOsc133Lifecycle(output)
       expect(output).toContain('USER_PREEXEC:true')
       expect(output).toContain('USER_PREEXEC:false')
-      expect(output).not.toContain('USER_PREEXEC:__orca_osc133')
+      expect(output).not.toContain('USER_PREEXEC:__topo_osc133')
       expect(output).not.toContain('USER_PREEXEC:__bp_')
     }
   )
@@ -173,14 +173,14 @@ describePosix('daemon shell-ready bash wrapper', () => {
   // Profiles discard Bash's own prompt output the way attached ble.sh does (internal_suppress_bash_output).
   itWithBash('signals readiness at the first prompt once ble.sh attaches its decoder', async () => {
     const { getDaemonBashShellReadyRcfileContent } = await importFreshDaemonBashRcfile()
-    // Prompt-time ble-attach renders, running Orca's epilogue, before its decoder attaches.
+    // Prompt-time ble-attach renders, running Topo's epilogue, before its decoder attaches.
     writeFileSync(
       join(userDataPath, '.bash_profile'),
       [
         '__fake_ble_attach() {',
         '  [[ -z "${_ble_attached-}" ]] || return 0',
         '  _ble_attached=1 _ble_decode_bind_state=none',
-        '  __orca_osc133_epilogue',
+        '  __topo_osc133_epilogue',
         '  _ble_decode_bind_state=emacs',
         "  printf 'DECODER_ATTACHED\\n'",
         '}',
@@ -191,8 +191,8 @@ describePosix('daemon shell-ready bash wrapper', () => {
 
     const output = runInteractiveBashRcfile(getDaemonBashShellReadyRcfileContent(), userDataPath)
 
-    const marker = output.indexOf('\x1b]777;orca-shell-ready\x07')
-    expect(output.split('\x1b]777;orca-shell-ready\x07')).toHaveLength(2)
+    const marker = output.indexOf('\x1b]777;topo-shell-ready\x07')
+    expect(output.split('\x1b]777;topo-shell-ready\x07')).toHaveLength(2)
     expect(marker).toBeGreaterThan(output.indexOf('DECODER_ATTACHED'))
     expect(marker).toBeLessThan(output.indexOf('\x1b]133;D;'))
   })
@@ -207,8 +207,8 @@ describePosix('daemon shell-ready bash wrapper', () => {
       userDataPath
     )
 
-    const marker = output.indexOf('\x1b]777;orca-shell-ready\x07')
-    expect(output.split('\x1b]777;orca-shell-ready\x07')).toHaveLength(2)
+    const marker = output.indexOf('\x1b]777;topo-shell-ready\x07')
+    expect(output.split('\x1b]777;topo-shell-ready\x07')).toHaveLength(2)
     expect(marker).toBeLessThan(output.indexOf('\x1b]133;D;'))
   })
 
@@ -226,7 +226,7 @@ describePosix('daemon shell-ready bash wrapper', () => {
       'BASH_FUNC_ble-attach%%': '() { :; }'
     })
 
-    expect(output).not.toContain('\x1b]777;orca-shell-ready\x07')
-    expect(output).toContain('\\e]777;orca-shell-ready\\a')
+    expect(output).not.toContain('\x1b]777;topo-shell-ready\x07')
+    expect(output).toContain('\\e]777;topo-shell-ready\\a')
   })
 })

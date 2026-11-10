@@ -15,14 +15,14 @@ describe('branch conflict real Git contract', () => {
   })
 
   it('decides remote conflicts from one batched probe across many remotes', async () => {
-    const repoPath = mkdtempSync(join(tmpdir(), 'orca-branch-conflict-'))
+    const repoPath = mkdtempSync(join(tmpdir(), 'topo-branch-conflict-'))
     tempPaths.push(repoPath)
     const git = (...args: string[]): string =>
       execFileSync('git', args, { cwd: repoPath, encoding: 'utf8' })
 
     git('init', '--quiet')
-    git('config', 'user.name', 'Orca Test')
-    git('config', 'user.email', 'orca@example.test')
+    git('config', 'user.name', 'Topo Test')
+    git('config', 'user.email', 'topo@example.test')
     git('config', 'commit.gpgSign', 'false')
     git('config', 'core.hooksPath', '.git/no-hooks')
     writeFileSync(join(repoPath, 'fixture.txt'), 'base\n')

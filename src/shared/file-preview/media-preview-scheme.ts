@@ -1,1 +1,1 @@
-export const MEDIA_PREVIEW_SCHEME = 'orca-media'
+export const MEDIA_PREVIEW_SCHEME = 'topo-media'

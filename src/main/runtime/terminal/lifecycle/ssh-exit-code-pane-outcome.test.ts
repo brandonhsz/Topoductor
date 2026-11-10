@@ -1,15 +1,15 @@
 // Main matches window SSH exit-code rules: negative and failed exits retain recoverable panes; clean exits close them (L80 ruling 2).
 import { describe, expect, it, vi } from 'vitest'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
 const { makePaneKey } = await import('../../../../shared/workspace-layout/stable-pane-id')
 const { HEADLESS_LEAF_ID, TEST_WORKTREE_ID, createRuntimeWithSshLease } =
-  await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
-const { registerBoundPty } = await import('../../orca-runtime-tests/bind-first-pane.test-fixture')
+  await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
+const { registerBoundPty } = await import('../../topo-runtime-tests/bind-first-pane.test-fixture')
 const { boundSessionOf } = await import('../layout/profile-session-store.test-fixture')
 
 function exitedSshPane(tabId: string, ptyId: string, exitCode: number) {

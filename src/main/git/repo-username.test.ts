@@ -98,7 +98,7 @@ describe('resolveLocalGitUsername', () => {
 
   it('settles within the wall even when the gh child never exits', async () => {
     vi.useFakeTimers()
-    originRemoteUrl = 'https://github.com/stablyai/orca.git'
+    originRemoteUrl = 'https://github.com/brandonhsz/Topoductor.git'
     // Simulate a killed gh whose descendants keep its stdio pipes open.
     ghExecFileAsyncMock.mockImplementation(() => new Promise(() => {}))
 

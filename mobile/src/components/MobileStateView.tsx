@@ -143,7 +143,7 @@ export function MobileOfflineState({
       }
       message={
         message ??
-        t('common.offline.message', 'Check that your computer is awake and Orca is running.')
+        t('common.offline.message', 'Check that your computer is awake and Topo is running.')
       }
       action={
         onReconnect

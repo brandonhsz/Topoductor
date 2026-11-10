@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
 import type { SkillInstallDestination } from '../../src/shared/skill-install-contract'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient,
@@ -37,20 +37,20 @@ test.afterAll(async () => {
 
 test('installs on a headed desktop runtime without a local fallback', async ({
   electronApp,
-  orcaPage,
+  topoPage,
   testRepoPath
 }, testInfo) => {
   test.setTimeout(240_000)
   const fixture = requireCloudFixture()
   const requestStart = fixture.requests.length
-  const folderRoot = mkdtempSync(join(tmpdir(), 'orca-paired-skill-folder-'))
+  const folderRoot = mkdtempSync(join(tmpdir(), 'topo-paired-skill-folder-'))
   let client: PairedElectronClient | null = null
   try {
     const hostHome = await electronApp.evaluate(({ app }) => app.getPath('home'))
-    const worktreeId = await activeWorktreeId(orcaPage)
-    const folderWorkspaceId = await createHostFolderWorkspace(orcaPage, folderRoot)
+    const worktreeId = await activeWorktreeId(topoPage)
+    const folderWorkspaceId = await createHostFolderWorkspace(topoPage, folderRoot)
     client = await launchPairedElectronClient(
-      await createRuntimeDesktopPairingOffer(orcaPage),
+      await createRuntimeDesktopPairingOffer(topoPage),
       testInfo,
       'Skill installation client',
       { extraEnv: cloudClientEnvironment() }
@@ -120,17 +120,17 @@ test('installs on a headless serve runtime through the same contract', async ({
 function cloudClientEnvironment(): Record<string, string> {
   const { origin } = requireCloudFixture()
   return {
-    ORCA_ARTIFACTS_API_URL: origin,
-    ORCA_CLOUD_API_URL: origin,
-    ORCA_CLOUD_CLIENT_ID: 'skills-e2e-client',
-    ORCA_CLOUD_DEV_AUTH: '1',
-    ORCA_CLOUD_ALLOW_PLAINTEXT_SESSION: '1',
-    ORCA_SKILL_PACKAGE_DOWNLOAD_ORIGINS: origin
+    TOPO_ARTIFACTS_API_URL: origin,
+    TOPO_CLOUD_API_URL: origin,
+    TOPO_CLOUD_CLIENT_ID: 'skills-e2e-client',
+    TOPO_CLOUD_DEV_AUTH: '1',
+    TOPO_CLOUD_ALLOW_PLAINTEXT_SESSION: '1',
+    TOPO_SKILL_PACKAGE_DOWNLOAD_ORIGINS: origin
   }
 }
 
 async function connectCloud(page: Page): Promise<void> {
-  const auth = await page.evaluate(() => window.api.orcaProfiles.connectCurrent())
+  const auth = await page.evaluate(() => window.api.topoProfiles.connectCurrent())
   expect(auth.status).toBe('connected')
 }
 

@@ -1,5 +1,5 @@
 import { execFileSync, spawn } from 'node:child_process'
-import { assertWslDistroAllowed } from '@orca/process-host/wsl-distro-allowlist'
+import { assertWslDistroAllowed } from '@topo/process-host/wsl-distro-allowlist'
 import type { WindowsHostInteractiveLoginSpawn } from '../../shared/windows-interactive-login-spawn'
 import type {
   CodexManagedAccount,
@@ -187,7 +187,7 @@ export class CodexAccountService {
     this.pendingLoginUrlListeners.add(listener)
   }
 
-  /** The desktop supplies a WSL link opener; orcad leaves it unset. */
+  /** The desktop supplies a WSL link opener; topod leaves it unset. */
   setWslLoginUrlOpener(opener: ((url: string) => void) | null): void {
     this.openWslLoginUrl = opener
   }

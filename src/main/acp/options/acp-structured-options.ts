@@ -56,9 +56,9 @@ export class AcpStructuredOptions {
   readonly appliedInput = new Map<string, string>()
   readonly applied = new Map<string, string>()
   writeRevision = 0
-  /** Orca's own writes in flight; config changes outside them are the agent's own. */
+  /** Topo's own writes in flight; config changes outside them are the agent's own. */
   writing = 0
-  /** While Orca's hidden model command runs, its reply belongs to it, never to the chat. */
+  /** While Topo's hidden model command runs, its reply belongs to it, never to the chat. */
   commandReply: string | null = null
   // What a launch-line or model-command selection resolved to. The agent never echoes the raw
   // selector, so a concrete change away from this retires it; ordinary control proof never does.

@@ -20,7 +20,7 @@ type AgentSpawnArgs = {
 /**
  * `agent.launch.before` at the one place every agent terminal starts (window, runtime, CLI,
  * automation, orchestration), before the spawn goes to its host, so SSH, WSL and daemon terminals
- * are decided on this Orca. Restores and resumes are not launches. Throws PluginHookDeniedError.
+ * are decided on this Topo. Restores and resumes are not launches. Throws PluginHookDeniedError.
  */
 export async function applyAgentLaunchPluginHook<Args extends AgentSpawnArgs>(
   args: Args,

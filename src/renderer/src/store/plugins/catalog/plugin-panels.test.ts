@@ -85,20 +85,20 @@ describe('plugin names on contributions', () => {
     }
     const official = {
       ...plugin('stablyai.orca-catppuccin-theme'),
-      name: 'Catppuccin for Orca',
+      name: 'Catppuccin for Topo',
       publisher: 'stablyai',
       official: true,
       commands: [command]
     }
     const community = {
       ...plugin('vale-c.catppuccin'),
-      name: 'Catppuccin for Orca',
+      name: 'Catppuccin for Topo',
       publisher: 'vale-c',
       commands: [command]
     }
     expect(collectActivePluginCommands([official, community]).map((c) => c.pluginName)).toEqual([
-      'Catppuccin for Orca',
-      'Catppuccin for Orca (vale-c)'
+      'Catppuccin for Topo',
+      'Catppuccin for Topo (vale-c)'
     ])
   })
 })

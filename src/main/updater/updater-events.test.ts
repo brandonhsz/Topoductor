@@ -42,7 +42,7 @@ vi.mock('../cli/appimage-copy-pre-extraction', () => ({
 vi.mock('./releases/updater-changelog', () => ({ fetchChangelog: vi.fn().mockResolvedValue(null) }))
 vi.mock('./updater-lifecycle-diagnostics', () => ({ recordUpdaterLifecycle: vi.fn() }))
 
-const DEB_PATH = '/home/tester/.cache/orca-updater/pending/orca-ide_1.0.61_amd64.deb'
+const DEB_PATH = '/home/tester/.cache/topo-updater/pending/topo-ide_1.0.61_amd64.deb'
 // Capture requires a digest that decodes to exactly 64 bytes.
 const DEB_SHA512 =
   'LHlL7dKoqg98gS2nfQv878dK+UoktbAkm4M20/hoJ2Qr0Kqsa3MSL4VmWy/Lll/MYjQFkpvOxduQ/vswentozA=='
@@ -119,7 +119,7 @@ function downloadedEvent(overrides?: Record<string, unknown>): Record<string, un
   return {
     version: '1.0.61',
     downloadedFile: DEB_PATH,
-    files: [{ url: 'orca-ide_1.0.61_amd64.deb', sha512: DEB_SHA512 }],
+    files: [{ url: 'topo-ide_1.0.61_amd64.deb', sha512: DEB_SHA512 }],
     ...overrides
   }
 }
@@ -159,7 +159,7 @@ describe('registerAutoUpdaterHandlers linux package artifact tracking', () => {
     getLinuxPackageTypeMock.mockReturnValue('non-root')
     getLinuxRootPackageTypeMock.mockReturnValue(null)
     preExtractUpdateMock.mockReturnValue(new Promise(() => {}))
-    const appImagePath = '/home/tester/.cache/orca-updater/pending/Orca-1.0.61.AppImage'
+    const appImagePath = '/home/tester/.cache/topo-updater/pending/Topo-1.0.61.AppImage'
     const { context, emit } = await register()
     emit('update-downloaded', downloadedEvent({ downloadedFile: appImagePath }))
 
@@ -168,8 +168,8 @@ describe('registerAutoUpdaterHandlers linux package artifact tracking', () => {
   })
 
   it.each([
-    ['missing', [{ url: 'orca-ide_1.0.61_amd64.deb' }]],
-    ['malformed', [{ url: 'orca-ide_1.0.61_amd64.deb', sha512: 'not-a-digest' }]]
+    ['missing', [{ url: 'topo-ide_1.0.61_amd64.deb' }]],
+    ['malformed', [{ url: 'topo-ide_1.0.61_amd64.deb', sha512: 'not-a-digest' }]]
   ])('does not offer recovery when the package digest is %s', async (_kind, files) => {
     const { emit, context, getArtifact } = await register()
 
@@ -178,7 +178,7 @@ describe('registerAutoUpdaterHandlers linux package artifact tracking', () => {
     const status = {
       state: 'error',
       message:
-        'The downloaded package metadata could not be verified. Quit Orca before downloading and installing the update from the official release page.',
+        'The downloaded package metadata could not be verified. Quit Topo before downloading and installing the update from the official release page.',
       messageCode: 'linuxPackageMetadataUnusable',
       version: '1.0.61',
       retryable: false
@@ -202,7 +202,7 @@ describe('registerAutoUpdaterHandlers linux package artifact tracking', () => {
     expect(getArtifact()).toEqual(expect.objectContaining({ version: '1.0.61' }))
     expect(context.sendStatus).toHaveBeenLastCalledWith({
       state: 'error',
-      message: 'Quit Orca before running the system package install command.',
+      message: 'Quit Topo before running the system package install command.',
       messageCode: 'linuxPackageManualInstall',
       recovery: {
         kind: 'linux-package-install',
@@ -280,7 +280,7 @@ describe('registerAutoUpdaterHandlers linux package artifact tracking', () => {
       await vi.waitFor(() =>
         expect(context.sendStatus).toHaveBeenLastCalledWith({
           state: 'error',
-          message: 'Quit Orca before running the system package install command.',
+          message: 'Quit Topo before running the system package install command.',
           messageCode: 'linuxPackageManualInstall',
           recovery: {
             kind: 'linux-package-install',

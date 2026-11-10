@@ -19,13 +19,13 @@ import {
 
 import { registerSshBrowseHandler } from './ssh-browse'
 import { registerCredentialHandler } from './ssh-passphrase'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import {
   initializeSshConnectionGenerationSession,
   resetSshConnectionGenerations
 } from '../../ssh/connection/authority/ssh-connection-generation'
 import { resetSshProviderAuthorities } from '../../ssh/connection/authority/ssh-provider-authority'
-import { installManagedOrcadStartStatus } from '../runtime-environments/runtime-environment-managed-tunnel'
+import { installManagedTopodStartStatus } from '../runtime-environments/runtime-environment-managed-tunnel'
 import {
   connectInFlight,
   credentialRequestedForTarget,
@@ -64,10 +64,10 @@ import { broadcastPortForwards } from './ssh-renderer-broadcast'
 import { resetSshShutdownDrain } from './ssh-shutdown-drain'
 import { registerSshTargetCrudHandlers } from './ssh-target-crud-handlers'
 import { targetLifecycleInFlight } from './ssh-target-lifecycle-queue'
-import { disposeOrcadManagedTunnels } from '../../managed-server/lifecycle/orcad-managed-tunnel'
-import { retainUnretainedOrcadMigrationSources } from '../../persistence/migrating-orcad-catalog/orcad-migration-source-retention'
-import { reconcileManagedOrcadSshTargets } from '../../persistence/migrating-orcad-catalog/orcad-retained-source'
-import { installOrcadMigrationScrollbackRetention } from '../../persistence/migrating-orcad-catalog/orcad-migration-scrollback-retention-wiring'
+import { disposeTopodManagedTunnels } from '../../managed-server/lifecycle/topod-managed-tunnel'
+import { retainUnretainedTopodMigrationSources } from '../../persistence/migrating-topod-catalog/topod-migration-source-retention'
+import { reconcileManagedTopodSshTargets } from '../../persistence/migrating-topod-catalog/topod-retained-source'
+import { installTopodMigrationScrollbackRetention } from '../../persistence/migrating-topod-catalog/topod-migration-scrollback-retention-wiring'
 import { getAppEnvironment } from '../../../shared/app-environment'
 import { registerLegacyRelayBridgeIpc } from '../../ssh/legacy-relay/bridge/legacy-relay-bridge-ipc'
 import {
@@ -106,7 +106,7 @@ const SSH_IPC_CHANNELS = [
 export function registerSshHandlers(
   store: Store,
   getMainWindow: () => BrowserWindow | null,
-  runtime?: OrcaRuntimeService
+  runtime?: TopoRuntimeService
 ): { connectionManager: SshConnectionManager; sshStore: SshConnectionStore } {
   initializeSshConnectionGenerationSession()
   // macOS window recreation re-registers handlers; remove old channels to avoid duplicate registration.
@@ -118,10 +118,10 @@ export function registerSshHandlers(
   setCurrentRuntime(runtime)
   setSshTargetRegistryStore(new SshConnectionStore(store))
   setPersistedStore(store)
-  reconcileManagedOrcadSshTargets(getAppEnvironment().getPath('userData'), store)
-  void retainUnretainedOrcadMigrationSources(getAppEnvironment().getPath('userData'), store)
-  installOrcadMigrationScrollbackRetention(getAppEnvironment().getPath('userData'), store)
-  installManagedOrcadStartStatus()
+  reconcileManagedTopodSshTargets(getAppEnvironment().getPath('userData'), store)
+  void retainUnretainedTopodMigrationSources(getAppEnvironment().getPath('userData'), store)
+  installTopodMigrationScrollbackRetention(getAppEnvironment().getPath('userData'), store)
+  installManagedTopodStartStatus()
 
   registerCredentialHandler()
 
@@ -165,7 +165,7 @@ export function registerSshHandlers(
   registerSshConnectionHandlers()
   registerSshPortForwardHandlers()
   registerPlainSshTerminalHandlers()
-  // COMPAT(legacy-relay-bridge): terminals an older Orca's relay still runs.
+  // COMPAT(legacy-relay-bridge): terminals an older Topo's relay still runs.
   registerLegacyRelayBridgeIpc({
     store,
     getMainWindow: getCurrentMainWindow,
@@ -221,7 +221,7 @@ export async function resetSshHandlerStateForTests(): Promise<void> {
 
   disposeDesktopBrowserBridge()
   await connectionManager?.disconnectAll()
-  disposeOrcadManagedTunnels()
+  disposeTopodManagedTunnels()
   portForwardManager?.dispose()
   setConnectionManager(null)
   setSshConnectionManagerResolver(null)

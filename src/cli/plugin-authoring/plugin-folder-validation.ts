@@ -94,7 +94,7 @@ async function contentErrors(root: string, manifest: PluginManifest): Promise<st
   return errors
 }
 
-/** The checks `pnpm validate:plugin` runs, plus every file Orca reads at load. Offline; never runs plugin code. */
+/** The checks `pnpm validate:plugin` runs, plus every file Topo reads at load. Offline; never runs plugin code. */
 export async function validatePluginTarget(target: string): Promise<PluginValidationReport> {
   const file = resolveTargetFile(target)
   const root = dirname(file)
@@ -136,7 +136,7 @@ export async function validatePluginTarget(target: string): Promise<PluginValida
 }
 
 export type PluginInspection = PluginValidationReport & {
-  /** What `orca plugin install` of these exact files would record; absent when unhashable. */
+  /** What `topo plugin install` of these exact files would record; absent when unhashable. */
   contentHash?: string
   fileCount?: number
   totalBytes?: number

@@ -20,7 +20,7 @@ import type {
 } from 'ssh2'
 import type { SshTarget, SshConnectionState, SshConnectionStatus } from '../../../shared/ssh-types'
 import {
-  getOrcaControlSocketPath,
+  getTopoControlSocketPath,
   isOpenSshConfigBackedTarget,
   type SystemSshBuildArgsOptions
 } from '../system-transport/system-ssh-args'
@@ -98,8 +98,8 @@ export class SshConnection {
     generation: number
     sources: Promise<HostKeyTrustSources>
   } | null = null
-  /** Generation whose ssh2 attempt found an Orca-stored key for this endpoint. */
-  private orcaStorePinnedGeneration: number | null = null
+  /** Generation whose ssh2 attempt found a Topo-stored key for this endpoint. */
+  private topoStorePinnedGeneration: number | null = null
   private systemSshControlMasterDisabledForSession = false
   private systemSshGssapiOnlyForSession = false
   private systemSshLoopbackRoute: SystemSshLoopbackRoute | null = null
@@ -175,7 +175,7 @@ export class SshConnection {
       return true
     }
     return (
-      getOrcaControlSocketPath(this.target, {
+      getTopoControlSocketPath(this.target, {
         ...this.getSystemSshBuildArgsOptions()
       }) !== null
     )
@@ -515,7 +515,7 @@ export class SshConnection {
       connect: (config) => this.doSsh2Connect(config, connectGeneration),
       respawnProxy: (config, proxy) => this.respawnProxy(config, proxy, connectGeneration),
       killProxyIfCurrent: () => this.killProxyIfCurrent(connectGeneration),
-      isPinnedByOrcaHostKeyStore: () => this.orcaStorePinnedGeneration === connectGeneration,
+      isPinnedByTopoHostKeyStore: () => this.topoStorePinnedGeneration === connectGeneration,
       probeSystemSsh: (resolved, gssapiOnly) =>
         this.doSystemSshProbeWithControlMasterRetry(connectGeneration, resolved, gssapiOnly),
       resetSystemTransportIfCurrent: () => this.resetSystemTransportIfCurrent(connectGeneration),
@@ -562,7 +562,7 @@ export class SshConnection {
     // Probe before platform detection: raw echo works in POSIX, cmd and PowerShell; /bin/sh wrapping does not.
     const channel = spawnTrackedSystemSshChannel(
       this.sessionChannelHost(),
-      'echo ORCA-SYSTEM-SSH-OK',
+      'echo TOPO-SYSTEM-SSH-OK',
       {
         wrapCommand: false
       }
@@ -599,7 +599,7 @@ export class SshConnection {
     this.systemSshResolvedConfig = cloneResolvedConfig(resolved)
     this.systemSshControlMasterDisabledForSession = false
     this.systemSshGssapiOnlyForSession = gssapiOnly
-    const controlPath = getOrcaControlSocketPath(this.target, {
+    const controlPath = getTopoControlSocketPath(this.target, {
       resolvedConfig: this.systemSshResolvedConfig,
       gssapiOnly: this.systemSshGssapiOnlyForSession
     })
@@ -748,8 +748,8 @@ export class SshConnection {
         this.hostKeyFingerprint = fingerprint
       }
     })
-    if (verdict.pinnedByOrcaStore && isCurrentAttempt()) {
-      this.orcaStorePinnedGeneration = connectGeneration
+    if (verdict.pinnedByTopoStore && isCurrentAttempt()) {
+      this.topoStorePinnedGeneration = connectGeneration
     }
     return runSsh2Handshake(config, {
       label: this.target.label,

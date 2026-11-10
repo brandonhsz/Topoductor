@@ -1,5 +1,5 @@
 import type { ChildProcess } from 'node:child_process'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { createHash, createHmac } from 'node:crypto'
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { createServer, type Server } from 'node:http'
@@ -8,8 +8,8 @@ import { dirname, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { exportJWK, generateKeyPair, jwtVerify, SignJWT } from 'jose'
-import { ASSIGNMENT_LIMITS } from '@orca-cloud/relay-contract/assignment-invariants'
-import { buildHostProofMacInput, HOST_CHALLENGE_PLAINTEXT_DOMAIN } from '@orca-cloud/relay-contract/host-proof-transcript'
+import { ASSIGNMENT_LIMITS } from '@topo-cloud/relay-contract/assignment-invariants'
+import { buildHostProofMacInput, HOST_CHALLENGE_PLAINTEXT_DOMAIN } from '@topo-cloud/relay-contract/host-proof-transcript'
 import nacl from 'tweetnacl'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import WebSocket from 'ws'
@@ -72,7 +72,7 @@ async function waitForRelay(child: ChildProcess): Promise<void> {
       child.off('exit', onExit)
     }
     const onOutput = (chunk: Buffer): void => {
-      if (chunk.toString().includes('[orca-relay] listening')) {
+      if (chunk.toString().includes('[topo-relay] listening')) {
         cleanup()
         resolveReady()
       }
@@ -100,7 +100,7 @@ async function withClockRelay(
   const originalUrl = relayUrl
   const clockPort = await unusedPort()
   const clockUrl = `http://127.0.0.1:${clockPort}`
-  const clockData = mkdtempSync(resolve(tmpdir(), 'orca-relay-clock-'))
+  const clockData = mkdtempSync(resolve(tmpdir(), 'topo-relay-clock-'))
   const clockFile = resolve(clockData, 'offset-ms')
   writeFileSync(clockFile, '0')
   const clockProcess = spawnProcess({
@@ -111,16 +111,16 @@ async function withClockRelay(
       ...process.env,
       NODE_ENV: 'test',
       PORT: String(clockPort),
-      ORCA_RELAY_PUBLIC_URL: clockUrl,
-      ORCA_RELAY_CELL_URL: clockUrl,
-      ORCA_RELAY_AUTH_ISSUER: issuer,
-      ORCA_RELAY_JWKS_URL: `${issuer}/jwks`,
-      ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
-      ORCA_RELAY_DATA_DIR: clockData,
-      ORCA_RELAY_ADMIN_AUDIENCE: adminAudience,
-      ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-      ORCA_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`,
-      ORCA_RELAY_TEST_CLOCK_FILE: clockFile
+      TOPO_RELAY_PUBLIC_URL: clockUrl,
+      TOPO_RELAY_CELL_URL: clockUrl,
+      TOPO_RELAY_AUTH_ISSUER: issuer,
+      TOPO_RELAY_JWKS_URL: `${issuer}/jwks`,
+      TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
+      TOPO_RELAY_DATA_DIR: clockData,
+      TOPO_RELAY_ADMIN_AUDIENCE: adminAudience,
+      TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+      TOPO_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`,
+      TOPO_RELAY_TEST_CLOCK_FILE: clockFile
     },
     stdio: ['ignore', 'pipe', 'pipe']
   })
@@ -204,22 +204,22 @@ function spawnTopologyRelay(input: {
     env: {
       ...process.env,
       PORT: new URL(input.url).port,
-      ORCA_RELAY_PUBLIC_URL: input.url,
-      ORCA_RELAY_CELL_URL: input.url,
-      ORCA_RELAY_CELL_ID: input.cellId,
-      ORCA_RELAY_CELL_CAPACITY: '10',
-      ORCA_RELAY_CELLS_JSON: JSON.stringify(input.cells ?? []),
-      ORCA_RELAY_ROLE: input.role,
-      ORCA_RELAY_AUTH_ISSUER: issuer,
-      ORCA_RELAY_JWKS_URL: `${issuer}/jwks`,
-      ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
-      ORCA_RELAY_DATA_DIR: input.dataDirectory,
-      ORCA_RELAY_ADMIN_AUDIENCE: adminAudience,
-      ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-      ORCA_RELAY_MONITOR_SERVICE_ACCOUNT: 'monitor@example.com',
-      ORCA_RELAY_FENCE_SERVICE_ACCOUNT: 'fence@example.com',
-      ORCA_RELAY_FENCE_BROKER_SERVICE_ACCOUNT: 'broker@example.com',
-      ORCA_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
+      TOPO_RELAY_PUBLIC_URL: input.url,
+      TOPO_RELAY_CELL_URL: input.url,
+      TOPO_RELAY_CELL_ID: input.cellId,
+      TOPO_RELAY_CELL_CAPACITY: '10',
+      TOPO_RELAY_CELLS_JSON: JSON.stringify(input.cells ?? []),
+      TOPO_RELAY_ROLE: input.role,
+      TOPO_RELAY_AUTH_ISSUER: issuer,
+      TOPO_RELAY_JWKS_URL: `${issuer}/jwks`,
+      TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
+      TOPO_RELAY_DATA_DIR: input.dataDirectory,
+      TOPO_RELAY_ADMIN_AUDIENCE: adminAudience,
+      TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+      TOPO_RELAY_MONITOR_SERVICE_ACCOUNT: 'monitor@example.com',
+      TOPO_RELAY_FENCE_SERVICE_ACCOUNT: 'fence@example.com',
+      TOPO_RELAY_FENCE_BROKER_SERVICE_ACCOUNT: 'broker@example.com',
+      TOPO_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
     },
     stdio: ['ignore', 'pipe', 'pipe']
   })
@@ -358,8 +358,8 @@ async function openHostControl(input?: {
   const hostId = createHash('sha256').update(keyPair.publicKey).digest('base64url').slice(0, 16)
   const socket = new WebSocket(`${relayUrl.replace('http:', 'ws:')}/v1/host/control`, {
     headers: {
-      authorization: `Bearer ${await relayToken('orca-relay', hostId)}`,
-      ...(input?.capabilities ? { ['x-orca-host-capabilities']: input.capabilities } : {})
+      authorization: `Bearer ${await relayToken('topo-relay', hostId)}`,
+      ...(input?.capabilities ? { ['x-topo-host-capabilities']: input.capabilities } : {})
     },
     perMessageDeflate: false
   })
@@ -479,7 +479,7 @@ beforeAll(async () => {
   const relayPort = await unusedPort()
   relayUrl = `http://127.0.0.1:${relayPort}`
   adminAudience = `${relayUrl}/v1/admin/drain`
-  relayDataDirectory = mkdtempSync(resolve(tmpdir(), 'orca-relay-blackbox-'))
+  relayDataDirectory = mkdtempSync(resolve(tmpdir(), 'topo-relay-blackbox-'))
   relayProcess = spawnProcess({
     program: process.execPath,
     args: ['--import', 'tsx', 'src/index.ts'],
@@ -487,18 +487,18 @@ beforeAll(async () => {
     env: {
       ...process.env,
       PORT: String(relayPort),
-      ORCA_RELAY_PUBLIC_URL: relayUrl,
-      ORCA_RELAY_CELL_URL: relayUrl,
-      ORCA_RELAY_AUTH_ISSUER: issuer,
-      ORCA_RELAY_JWKS_URL: `${issuer}/jwks`,
-      ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
-      ORCA_RELAY_DATA_DIR: relayDataDirectory,
-      ORCA_RELAY_ADMIN_AUDIENCE: adminAudience,
-      ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-      ORCA_RELAY_MONITOR_SERVICE_ACCOUNT: 'monitor@example.com',
-      ORCA_RELAY_FENCE_SERVICE_ACCOUNT: 'fence@example.com',
-      ORCA_RELAY_IMAGE_DIGEST: `sha256:${'a'.repeat(64)}`,
-      ORCA_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
+      TOPO_RELAY_PUBLIC_URL: relayUrl,
+      TOPO_RELAY_CELL_URL: relayUrl,
+      TOPO_RELAY_AUTH_ISSUER: issuer,
+      TOPO_RELAY_JWKS_URL: `${issuer}/jwks`,
+      TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
+      TOPO_RELAY_DATA_DIR: relayDataDirectory,
+      TOPO_RELAY_ADMIN_AUDIENCE: adminAudience,
+      TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+      TOPO_RELAY_MONITOR_SERVICE_ACCOUNT: 'monitor@example.com',
+      TOPO_RELAY_FENCE_SERVICE_ACCOUNT: 'fence@example.com',
+      TOPO_RELAY_IMAGE_DIGEST: `sha256:${'a'.repeat(64)}`,
+      TOPO_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
     },
     stdio: ['ignore', 'pipe', 'pipe']
   })
@@ -515,7 +515,7 @@ describe('served relay URL', () => {
   it('keeps liveness healthy when dependency readiness fails', async () => {
     const port = await unusedPort()
     const url = `http://127.0.0.1:${port}`
-    const dataDirectory = mkdtempSync(resolve(tmpdir(), 'orca-relay-unready-'))
+    const dataDirectory = mkdtempSync(resolve(tmpdir(), 'topo-relay-unready-'))
     const processUnderTest = spawnProcess({
       program: process.execPath,
       args: ['--import', 'tsx', 'src/index.ts'],
@@ -523,16 +523,16 @@ describe('served relay URL', () => {
       env: {
         ...process.env,
         PORT: String(port),
-        ORCA_RELAY_PUBLIC_URL: url,
-        ORCA_RELAY_CELL_URL: url,
-        ORCA_RELAY_AUTH_ISSUER: issuer,
-        ORCA_RELAY_JWKS_URL: 'http://127.0.0.1:1/jwks',
-        ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
-        ORCA_RELAY_DATA_DIR: dataDirectory,
-        ORCA_RELAY_ADMIN_AUDIENCE: adminAudience,
-        ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-        ORCA_RELAY_IMAGE_DIGEST: `sha256:${'a'.repeat(64)}`,
-        ORCA_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
+        TOPO_RELAY_PUBLIC_URL: url,
+        TOPO_RELAY_CELL_URL: url,
+        TOPO_RELAY_AUTH_ISSUER: issuer,
+        TOPO_RELAY_JWKS_URL: 'http://127.0.0.1:1/jwks',
+        TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
+        TOPO_RELAY_DATA_DIR: dataDirectory,
+        TOPO_RELAY_ADMIN_AUDIENCE: adminAudience,
+        TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+        TOPO_RELAY_IMAGE_DIGEST: `sha256:${'a'.repeat(64)}`,
+        TOPO_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
       },
       stdio: ['ignore', 'pipe', 'pipe']
     })
@@ -553,7 +553,7 @@ describe('served relay URL', () => {
       (
         await fetch(`${relayUrl}/v1/assign`, {
           method: 'POST',
-          headers: { authorization: `Bearer ${await relayToken('orca-cloud')}` },
+          headers: { authorization: `Bearer ${await relayToken('topo-cloud')}` },
           body
         })
       ).status
@@ -669,7 +669,7 @@ describe('served relay URL', () => {
     const response = await fetch(`${relayUrl}/v1/assign`, {
       method: 'POST',
       headers: {
-        authorization: `Bearer ${await relayToken('orca-relay')}`,
+        authorization: `Bearer ${await relayToken('topo-relay')}`,
         'content-type': 'application/json'
       },
       body: JSON.stringify({ v: 1, relayHostId: 'abcdefghijklmnop' })
@@ -684,7 +684,7 @@ describe('served relay URL', () => {
     expect(assignment).toMatchObject({ v: 1, cellUrl: relayUrl, assignmentEpoch: 1 })
     const verified = await jwtVerify(assignment.lease, new TextEncoder().encode(assignmentKey), {
       issuer: relayUrl,
-      audience: 'orca-relay-cell',
+      audience: 'topo-relay-cell',
       algorithms: ['HS256']
     })
     expect(verified.payload).toMatchObject({ relayHostId: 'abcdefghijklmnop' })
@@ -714,7 +714,7 @@ describe('served relay URL', () => {
     const wrongKey = nacl.box.keyPair()
     const hostId = createHash('sha256').update(claimedKey.publicKey).digest('base64url').slice(0, 16)
     const socket = new WebSocket(`${relayUrl.replace('http:', 'ws:')}/v1/host/control`, {
-      headers: { authorization: `Bearer ${await relayToken('orca-relay', hostId)}` }
+      headers: { authorization: `Bearer ${await relayToken('topo-relay', hostId)}` }
     })
     await new Promise<void>((resolveOpen) => socket.once('open', resolveOpen))
     const closed = new Promise<number>((resolveClose) =>
@@ -778,7 +778,7 @@ describe('served relay URL', () => {
     }
     const hostId = createHash('sha256').update(keyPair.publicKey).digest('base64url').slice(0, 16)
     const socket = new WebSocket(`${relayUrl.replace('http:', 'ws:')}/v1/host/control`, {
-      headers: { authorization: `Bearer ${await relayToken('orca-relay', hostId)}` }
+      headers: { authorization: `Bearer ${await relayToken('topo-relay', hostId)}` }
     })
     await new Promise<void>((resolveOpen, reject) => {
       socket.once('open', resolveOpen)
@@ -808,7 +808,7 @@ describe('served relay URL', () => {
   })
 
   it('restates a pending connection to the rebound control, detailed only when advertised', async () => {
-    // Real upgrade must carry x-orca-host-capabilities into acceptControl; unit tests cannot catch a misspelled header here.
+    // Real upgrade must carry x-topo-host-capabilities into acceptControl; unit tests cannot catch a misspelled header here.
     const host = await openHostControl()
     const hostId = createHash('sha256')
       .update(host.keyPair.publicKey)
@@ -1640,7 +1640,7 @@ describe('served relay URL', () => {
     const originalUrl = relayUrl
     const faultPort = await unusedPort()
     const faultUrl = `http://127.0.0.1:${faultPort}`
-    const faultData = mkdtempSync(resolve(tmpdir(), 'orca-relay-fault-'))
+    const faultData = mkdtempSync(resolve(tmpdir(), 'topo-relay-fault-'))
     const faultProcess = spawnProcess({
       program: process.execPath,
       args: ['--import', 'tsx', 'src/fault-injection-test-entry.ts'],
@@ -1649,16 +1649,16 @@ describe('served relay URL', () => {
         ...process.env,
         NODE_ENV: 'test',
         PORT: String(faultPort),
-        ORCA_RELAY_PUBLIC_URL: faultUrl,
-        ORCA_RELAY_CELL_URL: faultUrl,
-        ORCA_RELAY_AUTH_ISSUER: issuer,
-        ORCA_RELAY_JWKS_URL: `${issuer}/jwks`,
-        ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
-        ORCA_RELAY_DATA_DIR: faultData,
-        ORCA_RELAY_ADMIN_AUDIENCE: adminAudience,
-        ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-        ORCA_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`,
-        ORCA_RELAY_TEST_FAULT_SQL: 'INSERT INTO relay_install_results'
+        TOPO_RELAY_PUBLIC_URL: faultUrl,
+        TOPO_RELAY_CELL_URL: faultUrl,
+        TOPO_RELAY_AUTH_ISSUER: issuer,
+        TOPO_RELAY_JWKS_URL: `${issuer}/jwks`,
+        TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
+        TOPO_RELAY_DATA_DIR: faultData,
+        TOPO_RELAY_ADMIN_AUDIENCE: adminAudience,
+        TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+        TOPO_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`,
+        TOPO_RELAY_TEST_FAULT_SQL: 'INSERT INTO relay_install_results'
       },
       stdio: ['ignore', 'pipe', 'pipe']
     })
@@ -1733,7 +1733,7 @@ describe('served relay URL', () => {
     const originalUrl = relayUrl
     const faultPort = await unusedPort()
     const faultUrl = `http://127.0.0.1:${faultPort}`
-    const faultData = mkdtempSync(resolve(tmpdir(), 'orca-relay-direct-fault-'))
+    const faultData = mkdtempSync(resolve(tmpdir(), 'topo-relay-direct-fault-'))
     const faultProcess = spawnProcess({
       program: process.execPath,
       args: ['--import', 'tsx', 'src/fault-injection-test-entry.ts'],
@@ -1742,16 +1742,16 @@ describe('served relay URL', () => {
         ...process.env,
         NODE_ENV: 'test',
         PORT: String(faultPort),
-        ORCA_RELAY_PUBLIC_URL: faultUrl,
-        ORCA_RELAY_CELL_URL: faultUrl,
-        ORCA_RELAY_AUTH_ISSUER: issuer,
-        ORCA_RELAY_JWKS_URL: `${issuer}/jwks`,
-        ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
-        ORCA_RELAY_DATA_DIR: faultData,
-        ORCA_RELAY_ADMIN_AUDIENCE: adminAudience,
-        ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-        ORCA_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`,
-        ORCA_RELAY_TEST_FAULT_SQL: 'INSERT INTO relay_direct_authorizations'
+        TOPO_RELAY_PUBLIC_URL: faultUrl,
+        TOPO_RELAY_CELL_URL: faultUrl,
+        TOPO_RELAY_AUTH_ISSUER: issuer,
+        TOPO_RELAY_JWKS_URL: `${issuer}/jwks`,
+        TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
+        TOPO_RELAY_DATA_DIR: faultData,
+        TOPO_RELAY_ADMIN_AUDIENCE: adminAudience,
+        TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+        TOPO_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`,
+        TOPO_RELAY_TEST_FAULT_SQL: 'INSERT INTO relay_direct_authorizations'
       },
       stdio: ['ignore', 'pipe', 'pipe']
     })
@@ -1836,7 +1836,7 @@ describe('served relay URL', () => {
     const originalUrl = relayUrl
     const cellPort = await unusedPort()
     const cellUrl = `http://127.0.0.1:${cellPort}`
-    const cellData = mkdtempSync(resolve(tmpdir(), 'orca-relay-cell-'))
+    const cellData = mkdtempSync(resolve(tmpdir(), 'topo-relay-cell-'))
     const keyPair = nacl.box.keyPair()
     const hostId = createHash('sha256').update(keyPair.publicKey).digest('base64url').slice(0, 16)
     const database = await openRelayDatabase({ dataDir: cellData })
@@ -1851,25 +1851,25 @@ describe('served relay URL', () => {
       env: {
         ...process.env,
         PORT: String(cellPort),
-        ORCA_RELAY_PUBLIC_URL: cellUrl,
-        ORCA_RELAY_CELL_URL: cellUrl,
-        ORCA_RELAY_CELL_ID: 'cell-a',
-        ORCA_RELAY_CELL_CAPACITY: '10',
-        ORCA_RELAY_ROLE: 'cell',
-        ORCA_RELAY_AUTH_ISSUER: issuer,
-        ORCA_RELAY_JWKS_URL: `${issuer}/jwks`,
-        ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
-        ORCA_RELAY_DATA_DIR: cellData,
-        ORCA_RELAY_ADMIN_AUDIENCE: adminAudience,
-        ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-        ORCA_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
+        TOPO_RELAY_PUBLIC_URL: cellUrl,
+        TOPO_RELAY_CELL_URL: cellUrl,
+        TOPO_RELAY_CELL_ID: 'cell-a',
+        TOPO_RELAY_CELL_CAPACITY: '10',
+        TOPO_RELAY_ROLE: 'cell',
+        TOPO_RELAY_AUTH_ISSUER: issuer,
+        TOPO_RELAY_JWKS_URL: `${issuer}/jwks`,
+        TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
+        TOPO_RELAY_DATA_DIR: cellData,
+        TOPO_RELAY_ADMIN_AUDIENCE: adminAudience,
+        TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+        TOPO_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
       },
       stdio: ['ignore', 'pipe', 'pipe']
     })
     relayUrl = cellUrl
     try {
       await waitForRelay(cellProcess)
-      const token = await relayToken('orca-relay', hostId)
+      const token = await relayToken('topo-relay', hostId)
       const assignmentResponse = await fetch(`${cellUrl}/v1/assign`, {
         method: 'POST',
         headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
@@ -1943,7 +1943,7 @@ describe('served relay URL', () => {
 
   it('runs target-first dual-cell evacuation before releasing the source control', async () => {
     const originalUrl = relayUrl
-    const dataDirectory = mkdtempSync(resolve(tmpdir(), 'orca-relay-topology-'))
+    const dataDirectory = mkdtempSync(resolve(tmpdir(), 'topo-relay-topology-'))
     const directorUrl = `http://127.0.0.1:${await unusedPort()}`
     const cellAUrl = `http://127.0.0.1:${await unusedPort()}`
     const cellBUrl = `http://127.0.0.1:${await unusedPort()}`
@@ -2032,9 +2032,9 @@ describe('served relay URL', () => {
             environment: 'production',
             cellId: 'cell-a',
             cellIncarnation: '11111111-1111-4111-8111-111111111111',
-            migName: 'orca-relay-c1',
-            instanceGroup: 'https://compute.example/instanceGroups/orca-relay-c1',
-            generationIdentity: 'https://compute.example/instanceTemplates/orca-relay-c1-abc',
+            migName: 'topo-relay-c1',
+            instanceGroup: 'https://compute.example/instanceGroups/topo-relay-c1',
+            generationIdentity: 'https://compute.example/instanceTemplates/topo-relay-c1-abc',
             fenceCommit: 'a'.repeat(40),
             planSha256: 'b'.repeat(64),
             planObjectName:
@@ -2044,7 +2044,7 @@ describe('served relay URL', () => {
             terraformStateSerial: 7,
             terraformStateObjectGeneration: '987654321',
             terraformStateObjectSha256: 'd'.repeat(64),
-            requestReason: 'orca-relay-fence/44444444-4444-4444-8444-444444444444'
+            requestReason: 'topo-relay-fence/44444444-4444-4444-8444-444444444444'
           },
           confirmation: 'PREPARE_TERRAFORM_CELL_FENCE',
           expected: { status: 409, body: { error: 'cell_fence_admission_enabled' } }
@@ -2057,9 +2057,9 @@ describe('served relay URL', () => {
             environment: 'production',
             cellId: 'cell-a',
             cellIncarnation: '11111111-1111-4111-8111-111111111111',
-            migName: 'orca-relay-c1',
-            instanceGroup: 'https://compute.example/instanceGroups/orca-relay-c1',
-            generationIdentity: 'https://compute.example/instanceTemplates/orca-relay-c1-abc',
+            migName: 'topo-relay-c1',
+            instanceGroup: 'https://compute.example/instanceGroups/topo-relay-c1',
+            generationIdentity: 'https://compute.example/instanceTemplates/topo-relay-c1-abc',
             fenceCommit: 'a'.repeat(40),
             planSha256: 'b'.repeat(64),
             planObjectName:
@@ -2069,7 +2069,7 @@ describe('served relay URL', () => {
             terraformStateSerial: 7,
             terraformStateObjectGeneration: '987654321',
             terraformStateObjectSha256: 'd'.repeat(64),
-            requestReason: 'orca-relay-fence/44444444-4444-4444-8444-444444444444'
+            requestReason: 'topo-relay-fence/44444444-4444-4444-8444-444444444444'
           },
           confirmation: 'ABORT_UNSTARTED_TERRAFORM_CELL_FENCE',
           expected: { status: 409, body: { error: 'cell_fence_attempt_not_found' } }
@@ -2498,23 +2498,23 @@ describe('served relay URL', () => {
       env: {
         ...process.env,
         PORT: String(directorPort),
-        ORCA_RELAY_PUBLIC_URL: relayUrl,
-        ORCA_RELAY_CELL_URL: 'https://relay-c2.onorca.dev',
-        ORCA_RELAY_AUTH_ISSUER: issuer,
-        ORCA_RELAY_JWKS_URL: `${issuer}/jwks`,
-        ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
-        ORCA_RELAY_DATA_DIR: relayDataDirectory,
-        ORCA_RELAY_ROLE: 'director',
-        ORCA_RELAY_CELLS_JSON: JSON.stringify([
+        TOPO_RELAY_PUBLIC_URL: relayUrl,
+        TOPO_RELAY_CELL_URL: 'https://relay-c2.onorca.dev',
+        TOPO_RELAY_AUTH_ISSUER: issuer,
+        TOPO_RELAY_JWKS_URL: `${issuer}/jwks`,
+        TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
+        TOPO_RELAY_DATA_DIR: relayDataDirectory,
+        TOPO_RELAY_ROLE: 'director',
+        TOPO_RELAY_CELLS_JSON: JSON.stringify([
           {
             id: 'cell-c2',
             url: 'https://relay-c2.onorca.dev',
             capacityRequests: 900
           }
         ]),
-        ORCA_RELAY_ADMIN_AUDIENCE: adminAudience,
-        ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-        ORCA_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
+        TOPO_RELAY_ADMIN_AUDIENCE: adminAudience,
+        TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+        TOPO_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
       },
       stdio: ['ignore', 'pipe', 'pipe']
     })
@@ -2559,19 +2559,19 @@ describe('served relay URL', () => {
       env: {
         ...process.env,
         PORT: new URL(combinedUrl).port,
-        ORCA_RELAY_PUBLIC_URL: combinedUrl,
-        ORCA_RELAY_CELL_URL: combinedUrl,
-        ORCA_RELAY_AUTH_ISSUER: issuer,
-        ORCA_RELAY_JWKS_URL: `${issuer}/jwks`,
-        ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
-        ORCA_RELAY_DATA_DIR: relayDataDirectory,
-        ORCA_RELAY_ADMIN_AUDIENCE: adminAudience,
-        ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-        ORCA_RELAY_CAPACITY_SERVICE_ACCOUNT: 'capacity@example.com',
-        ORCA_RELAY_MONITOR_SERVICE_ACCOUNT: 'monitor@example.com',
-        ORCA_RELAY_FENCE_SERVICE_ACCOUNT: 'fence@example.com',
-        ORCA_RELAY_IMAGE_DIGEST: `sha256:${'a'.repeat(64)}`,
-        ORCA_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
+        TOPO_RELAY_PUBLIC_URL: combinedUrl,
+        TOPO_RELAY_CELL_URL: combinedUrl,
+        TOPO_RELAY_AUTH_ISSUER: issuer,
+        TOPO_RELAY_JWKS_URL: `${issuer}/jwks`,
+        TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
+        TOPO_RELAY_DATA_DIR: relayDataDirectory,
+        TOPO_RELAY_ADMIN_AUDIENCE: adminAudience,
+        TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+        TOPO_RELAY_CAPACITY_SERVICE_ACCOUNT: 'capacity@example.com',
+        TOPO_RELAY_MONITOR_SERVICE_ACCOUNT: 'monitor@example.com',
+        TOPO_RELAY_FENCE_SERVICE_ACCOUNT: 'fence@example.com',
+        TOPO_RELAY_IMAGE_DIGEST: `sha256:${'a'.repeat(64)}`,
+        TOPO_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
       },
       stdio: ['ignore', 'pipe', 'pipe']
     })
@@ -2582,7 +2582,7 @@ describe('served relay URL', () => {
     const originalUrl = relayUrl
     const signalPort = await unusedPort()
     const signalUrl = `http://127.0.0.1:${signalPort}`
-    const signalData = mkdtempSync(resolve(tmpdir(), 'orca-relay-sigterm-'))
+    const signalData = mkdtempSync(resolve(tmpdir(), 'topo-relay-sigterm-'))
     const signalProcess = spawnProcess({
       program: process.execPath,
       args: ['--import', 'tsx', 'src/index.ts'],
@@ -2590,15 +2590,15 @@ describe('served relay URL', () => {
       env: {
         ...process.env,
         PORT: String(signalPort),
-        ORCA_RELAY_PUBLIC_URL: signalUrl,
-        ORCA_RELAY_CELL_URL: signalUrl,
-        ORCA_RELAY_AUTH_ISSUER: issuer,
-        ORCA_RELAY_JWKS_URL: `${issuer}/jwks`,
-        ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
-        ORCA_RELAY_DATA_DIR: signalData,
-        ORCA_RELAY_ADMIN_AUDIENCE: adminAudience,
-        ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
-        ORCA_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
+        TOPO_RELAY_PUBLIC_URL: signalUrl,
+        TOPO_RELAY_CELL_URL: signalUrl,
+        TOPO_RELAY_AUTH_ISSUER: issuer,
+        TOPO_RELAY_JWKS_URL: `${issuer}/jwks`,
+        TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: assignmentKey,
+        TOPO_RELAY_DATA_DIR: signalData,
+        TOPO_RELAY_ADMIN_AUDIENCE: adminAudience,
+        TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.com',
+        TOPO_RELAY_ADMIN_JWKS_URL: `${issuer}/jwks`
       },
       stdio: ['ignore', 'pipe', 'pipe']
     })
@@ -2739,7 +2739,7 @@ describe('served relay URL', () => {
 
     const directorPort = await unusedPort()
     const directorUrl = `http://127.0.0.1:${directorPort}`
-    const directorData = mkdtempSync(resolve(tmpdir(), 'orca-relay-monitor-auth-'))
+    const directorData = mkdtempSync(resolve(tmpdir(), 'topo-relay-monitor-auth-'))
     const director = spawnTopologyRelay({
       url: directorUrl,
       dataDirectory: directorData,

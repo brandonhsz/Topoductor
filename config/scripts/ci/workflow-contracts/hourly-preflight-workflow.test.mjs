@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parse } from 'yaml'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 
 const workflow = parse(
   readFileSync(
@@ -36,9 +36,9 @@ async function checkFreshness(overrides = {}) {
       env: {
         ...process.env,
         GITHUB_OUTPUT: output,
-        GITHUB_REPOSITORY: 'stablyai/orca',
+        GITHUB_REPOSITORY: 'brandonhsz/Topoductor',
         MAIN_REPO_TOKEN: 'main-token',
-        HOURLY_REPO: 'stablyai/orca-hourly',
+        HOURLY_REPO: 'brandonhsz/topo-hourly',
         HEAD_SHA: head,
         LAST_TAG: 'previous-hourly',
         LAST_SHA: head.slice(0, 12),

@@ -3,15 +3,15 @@ import { ORCHESTRATION_HANDLERS } from '../orchestration'
 import { RuntimeClient, RuntimeClientError } from '../../runtime-client'
 import { okFixture } from '../../test-fixtures'
 
-const client = new RuntimeClient('/tmp/orca-older-runtime-run', 60_000, null, null)
+const client = new RuntimeClient('/tmp/topo-older-runtime-run', 60_000, null, null)
 
-describe('an older Orca server that binds one Run per coordinator', () => {
+describe('an older Topo server that binds one Run per coordinator', () => {
   let log: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
-    vi.stubEnv('ORCA_CLI_COMMAND', 'orca')
-    vi.stubEnv('ORCA_TERMINAL_HANDLE', '')
-    vi.stubEnv('ORCA_AGENT_SESSION_ID', undefined)
+    vi.stubEnv('TOPO_CLI_COMMAND', 'topo')
+    vi.stubEnv('TOPO_TERMINAL_HANDLE', '')
+    vi.stubEnv('TOPO_AGENT_SESSION_ID', undefined)
     log = vi.spyOn(console, 'log').mockImplementation(() => {})
   })
 
@@ -45,7 +45,7 @@ describe('an older Orca server that binds one Run per coordinator', () => {
     ).rejects.toMatchObject({
       code: 'incompatible_runtime',
       message:
-        'This Orca server is an older version and needs a Run first. Run `orca orchestration run-create --objective "<goal>" --json`, then run this worker-start again.'
+        'This Topo server is an older version and needs a Run first. Run `topo orchestration run-create --objective "<goal>" --json`, then run this worker-start again.'
     })
     expect(methods).not.toContain('orchestration.runCreate')
   })
@@ -79,7 +79,7 @@ describe('an older Orca server that binds one Run per coordinator', () => {
 
     expect(JSON.parse(String(log.mock.calls[0][0])).result).toMatchObject({
       run: { id: 'run_b' },
-      next: 'This Orca server is an older version and keeps one Run per coordinator; run_a is no longer bound to you. Switch back with `orca orchestration run-use --id run_a --json`.'
+      next: 'This Topo server is an older version and keeps one Run per coordinator; run_a is no longer bound to you. Switch back with `topo orchestration run-use --id run_a --json`.'
     })
   })
 })

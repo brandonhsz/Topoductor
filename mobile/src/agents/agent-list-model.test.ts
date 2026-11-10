@@ -40,7 +40,7 @@ function entries(agents: RuntimeWorktreeAgentRow[]) {
   return agents.map((row) => ({
     worktreeId: 'wt-1',
     workspaceName: 'mobile-tabs',
-    repo: 'orca',
+    repo: 'topo',
     branch: 'main',
     agent: row
   }))

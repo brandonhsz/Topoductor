@@ -26,7 +26,7 @@ vi.mock('./serve-install-hold', async (importOriginal) => ({
   readServeInstallEvidence: async () => ({ kind: 'clear' })
 }))
 
-import { serveOrcaApp } from './launch'
+import { serveTopoApp } from './launch'
 
 class FakeChild extends EventEmitter {
   kill = vi.fn()
@@ -40,9 +40,9 @@ const NEW = '1.0.61'
 const ENV_KEYS = [
   'XPC_SERVICE_NAME',
   'ELECTRON_RUN_AS_NODE',
-  'ORCA_SERVE_RUNTIME',
-  'ORCA_USER_DATA_PATH',
-  'ORCA_APP_EXECUTABLE'
+  'TOPO_SERVE_RUNTIME',
+  'TOPO_USER_DATA_PATH',
+  'TOPO_APP_EXECUTABLE'
 ] as const
 
 function overrideProperty(key: 'platform' | 'execPath', value: string): () => void {
@@ -57,15 +57,15 @@ function overrideProperty(key: 'platform' | 'execPath', value: string): () => vo
 
 async function installApp(dir: string, version: string): Promise<void> {
   await mkdir(join(dir, 'Contents', 'MacOS'), { recursive: true })
-  await writeFile(join(dir, 'Contents', 'MacOS', 'Orca'), '')
-  await chmod(join(dir, 'Contents', 'MacOS', 'Orca'), 0o755)
+  await writeFile(join(dir, 'Contents', 'MacOS', 'Topo'), '')
+  await chmod(join(dir, 'Contents', 'MacOS', 'Topo'), 0o755)
   await writeFile(
     join(dir, 'Contents', 'Info.plist'),
     `<plist><dict><key>CFBundleShortVersionString</key><string>${version}</string></dict></plist>`
   )
 }
 
-describe('serveOrcaApp restarts from a replaced app before any server starts', () => {
+describe('serveTopoApp restarts from a replaced app before any server starts', () => {
   let root: string
   let app: string
   let handoffPath: string
@@ -80,21 +80,21 @@ describe('serveOrcaApp restarts from a replaced app before any server starts', (
   })
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-serve-replaced-app-'))
-    app = join(root, 'Orca.app')
+    root = await mkdtemp(join(tmpdir(), 'topo-serve-replaced-app-'))
+    app = join(root, 'Topo.app')
     await installApp(app, NEW)
     for (const key of ENV_KEYS) {
       savedEnv[key] = process.env[key]
     }
     process.env.ELECTRON_RUN_AS_NODE = '1'
-    process.env.ORCA_SERVE_RUNTIME = 'electron'
-    process.env.ORCA_USER_DATA_PATH = join(root, 'profile')
-    delete process.env.ORCA_APP_EXECUTABLE
+    process.env.TOPO_SERVE_RUNTIME = 'electron'
+    process.env.TOPO_USER_DATA_PATH = join(root, 'profile')
+    delete process.env.TOPO_APP_EXECUTABLE
     delete process.env.XPC_SERVICE_NAME
     await mkdir(join(root, 'profile'), { recursive: true })
     handoffPath = getServeUpdateHandoffPath(join(root, 'profile'))
     restore.push(overrideProperty('platform', 'darwin'))
-    restore.push(overrideProperty('execPath', join(app, 'Contents', 'MacOS', 'Orca')))
+    restore.push(overrideProperty('execPath', join(app, 'Contents', 'MacOS', 'Topo')))
     vi.spyOn(process.stderr, 'write').mockImplementation(() => true)
   })
 
@@ -139,12 +139,12 @@ describe('serveOrcaApp restarts from a replaced app before any server starts', (
     await writeFile(handoffPath, JSON.stringify(requested(4101)))
     const replacement = new FakeChild(4102)
     spawnMock.mockReturnValueOnce(replacement)
-    const code = serveOrcaApp({ json: true })
+    const code = serveTopoApp({ json: true })
     if (swapDuringWait) {
       await swapInstall(NEW)
     }
     await vi.waitFor(() => expect(spawnMock).toHaveBeenCalledOnce())
-    replacement.emit('message', { type: 'orca:serve-ready', version: NEW, runtimeId: 'new' })
+    replacement.emit('message', { type: 'topo:serve-ready', version: NEW, runtimeId: 'new' })
     await vi.waitFor(async () => expect(await readServeUpdateHandoff(handoffPath)).toBeNull())
     replacement.emit('exit', 0, null)
     await expect(code).resolves.toBe(0)

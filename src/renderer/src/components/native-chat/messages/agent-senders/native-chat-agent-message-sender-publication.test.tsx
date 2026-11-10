@@ -14,7 +14,7 @@ import {
 import type { AgentSenderPublication } from '../../../../../../shared/agent-sender-associations'
 import type { AgentMessageSender } from '../../../../../../shared/agent-session/agent-session-message-source'
 
-import { testOrcaSessionId } from '../../../../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../../../../shared/topo-session-address-test-fixture'
 
 let revision = 0
 /** Each delivery is the host's next revision, as a publishing host stamps it. */
@@ -34,9 +34,9 @@ const association = (i: number) => ({
 // A federated sender is named by its Dispatch address; any other by the handle it sent from.
 const sender = (identity: string): AgentMessageSender =>
   identity.startsWith('dispatch:')
-    ? { party: { address: identity, terminalHandle: null, orcaSessionId: null }, name: 'Sender' }
+    ? { party: { address: identity, terminalHandle: null, topoSessionId: null }, name: 'Sender' }
     : {
-        party: { address: identity, terminalHandle: identity, orcaSessionId: null },
+        party: { address: identity, terminalHandle: identity, topoSessionId: null },
         name: 'Sender',
         agent: 'claude'
       }
@@ -118,13 +118,13 @@ it('qualifies federation by both execution peer and the attachment home principa
 })
 
 it('keeps equal session ids on two hosts separate and rejects an unqualified pane collision', () => {
-  const sessionId = testOrcaSessionId('11111111-1111-4111-8111-111111111111')
+  const sessionId = testTopoSessionId('11111111-1111-4111-8111-111111111111')
   const identity = {
-    ...sender(`orca_session_id:${sessionId}`),
+    ...sender(`topo_session_id:${sessionId}`),
     party: {
-      address: `orca_session_id:${sessionId}`,
+      address: `topo_session_id:${sessionId}`,
       terminalHandle: null,
-      orcaSessionId: sessionId
+      topoSessionId: sessionId
     }
   }
   const row = {

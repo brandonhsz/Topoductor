@@ -24,7 +24,7 @@ export type AgentSessionProcessIdentityField = 'process-start-time' | 'spawn-tok
 export type AgentSessionIdentityMatchField = AgentSessionProcessIdentityField | 'held-child'
 
 export type AgentSessionOwnerProbe =
-  /** Orca watched this exact process exit. */
+  /** Topo watched this exact process exit. */
   | { outcome: 'exit-observed' }
   /** The recorded pid is not present on the host. */
   | { outcome: 'pid-absent' }

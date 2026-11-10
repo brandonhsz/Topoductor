@@ -33,7 +33,7 @@ import {
 import { recomputeOn } from '@/lib/recompute-on'
 
 export const SUPPRESS_WORKTREE_LIST_SCROLL_ADJUSTMENT_EVENT =
-  'orca-suppress-worktree-list-scroll-adjustment'
+  'topo-suppress-worktree-list-scroll-adjustment'
 
 const dispatchSuppressScrollAdjustment = () => {
   window.dispatchEvent(new CustomEvent(SUPPRESS_WORKTREE_LIST_SCROLL_ADJUSTMENT_EVENT))

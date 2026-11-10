@@ -2,11 +2,11 @@ import { QueryObserver } from '@tanstack/react-query'
 import { expect, it, vi } from 'vitest'
 import { stubRpcClient } from '../transport/rpc/rpc-client-test-stub'
 import { retainHostEventRouter } from './host-event-router'
-import { createOrcaQueryClient } from './orca-query-client'
+import { createTopoQueryClient } from './topo-query-client'
 
 vi.mock('react-native', () => ({ AppState: {}, Platform: { OS: 'ios' } }))
 
-const KEY = ['orca', 'host-1', 'test.rows', { exec: 'local' }, {}] as const
+const KEY = ['topo', 'host-1', 'test.rows', { exec: 'local' }, {}] as const
 
 it('reads again after a read that was already out when the event stream reopened', async () => {
   // One client-events wire at a time; each subscribe hands the test its frames.
@@ -20,7 +20,7 @@ it('reads again after a read that was already out when the event stream reopened
   })
   let desktopRows = 1
   const replies: ((rows: number) => void)[] = []
-  const queryClient = createOrcaQueryClient()
+  const queryClient = createTopoQueryClient()
   const router = retainHostEventRouter(queryClient, 'host-1', client)
   wires[0]?.({ type: 'ready', subscriptionId: 'events-1' })
 

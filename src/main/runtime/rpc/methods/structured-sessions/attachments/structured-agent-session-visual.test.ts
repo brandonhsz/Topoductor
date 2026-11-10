@@ -16,7 +16,7 @@ import {
   closeTestStores,
   createSqliteTestStore
 } from '../../../../../persistence/persistence-test-harness'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { RpcDispatcher } from '../../../dispatcher'
 import { FILE_METHODS } from '../../files/files'
 import { STRUCTURED_AGENT_SESSION_VISUAL_METHODS } from './structured-agent-session-visual'
@@ -38,13 +38,13 @@ function call(method: string, params: unknown, client: CallClient) {
 }
 
 let stateDirectory: string
-vi.mock('../../../../../orca-profiles/profile-storage-paths', () => ({
+vi.mock('../../../../../topo-profiles/profile-storage-paths', () => ({
   getProfileUserDataPath: () => stateDirectory
 }))
 let record: AgentSessionRecord | null
 
 beforeEach(async () => {
-  stateDirectory = await mkdtemp(join(tmpdir(), 'orca-visual-rpc-'))
+  stateDirectory = await mkdtemp(join(tmpdir(), 'topo-visual-rpc-'))
   record = agentSessionRecordFixture(agentSessionLeaseFixture({ sessionId: SESSION }))
   setStructuredAgentSessionHost(
     Object.assign(hostStub(), {
@@ -88,7 +88,7 @@ describe('agentSession.readVisual', () => {
     const knownRevision = nativeChatVisualRevision(Buffer.from('a'))
     expect(await readVisual({ knownRevision })).toMatchObject({ result: { unchanged: true, path } })
     const dataFile = join(stateDirectory, 'db', 'data.json')
-    const runtime = new OrcaRuntimeService(createSqliteTestStore(Store, { dataFile }))
+    const runtime = new TopoRuntimeService(createSqliteTestStore(Store, { dataFile }))
     const files = (method: string, worktree: string, relativePath: string, extra = {}) =>
       new RpcDispatcher({ runtime, methods: FILE_METHODS }).dispatch({
         id: 'r',

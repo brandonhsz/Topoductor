@@ -7,7 +7,7 @@ import { isWorkspaceLinkedItemSourceContextMatch } from '../workspace-attachment
 import { normalizeWorkspaceCreatorProvenance } from '../workspace-creator-provenance'
 import { getWorkspaceAttachments } from '../workspace-attachments/workspace-attachments'
 import { isSmartTier } from '../sidebar-list/sort-stamps'
-import { normalizeOrcadRetainedMarker } from '../orcad-retained-marker'
+import { normalizeTopodRetainedMarker } from '../topod-retained-marker'
 
 export function normalizeFolderWorkspaceName(
   name: string | null | undefined,
@@ -56,7 +56,7 @@ export function normalizeFolderWorkspaces(
     const linkedTask = normalizeWorkspaceLinkedItem(raw.linkedTask)
     const linkedTaskSourceContext = normalizeStoredTaskSourceContext(raw.linkedTaskSourceContext)
     const creatorProvenance = normalizeWorkspaceCreatorProvenance(raw.creatorProvenance)
-    const orcadRetained = normalizeOrcadRetainedMarker(raw.orcadRetained)
+    const topodRetained = normalizeTopodRetainedMarker(raw.topodRetained)
     seen.add(raw.id)
     // Do not persist fetch-time executionHostId: it may name an unowned runtime authority and lacks a generation fence.
     // connectionId is the durable pin main projects from.
@@ -131,7 +131,7 @@ export function normalizeFolderWorkspaces(
       ...(Array.isArray(raw.externalConversations)
         ? { externalConversations: raw.externalConversations }
         : {}),
-      ...(orcadRetained ? { orcadRetained } : {})
+      ...(topodRetained ? { topodRetained } : {})
     })
   }
   return workspaces.sort(

@@ -116,7 +116,7 @@ it.each(['local', 'relay'] as const)(
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
-                  'X-Orca-Agent-Hook-Token': relay.getCoordinates().token
+                  'X-Topo-Agent-Hook-Token': relay.getCoordinates().token
                 },
                 body: JSON.stringify(body)
               })

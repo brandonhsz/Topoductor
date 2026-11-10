@@ -1,9 +1,9 @@
 import { spawn, spawnSync } from 'node:child_process'
 import path from 'node:path'
 
-export const MAX_ORCA_RPC_OUTPUT_BYTES = 20 * 1024 * 1024
+export const MAX_TOPO_RPC_OUTPUT_BYTES = 20 * 1024 * 1024
 
-export function appendOrcaRpcOutput(output, chunk, bytes, limit = MAX_ORCA_RPC_OUTPUT_BYTES) {
+export function appendTopoRpcOutput(output, chunk, bytes, limit = MAX_TOPO_RPC_OUTPUT_BYTES) {
   const nextBytes = bytes + Buffer.byteLength(chunk)
   return {
     output: nextBytes > limit ? output : output + chunk,
@@ -12,57 +12,57 @@ export function appendOrcaRpcOutput(output, chunk, bytes, limit = MAX_ORCA_RPC_O
   }
 }
 
-export function resolveOrcaCliCommand({ env = process.env, platform = process.platform } = {}) {
-  if (env.ORCA_CLI_COMMAND?.trim()) {
-    return env.ORCA_CLI_COMMAND.trim()
+export function resolveTopoCliCommand({ env = process.env, platform = process.platform } = {}) {
+  if (env.TOPO_CLI_COMMAND?.trim()) {
+    return env.TOPO_CLI_COMMAND.trim()
   }
-  if (env.ORCA_DEV_REPO_ROOT) {
-    return 'orca-dev'
+  if (env.TOPO_DEV_REPO_ROOT) {
+    return 'topo-dev'
   }
-  return platform === 'linux' ? 'orca-ide' : 'orca'
+  return platform === 'linux' ? 'topo-ide' : 'topo'
 }
 
-export function resolveOrcaCliInvocation({
+export function resolveTopoCliInvocation({
   env = process.env,
   platform = process.platform,
   nodeExecutable = process.execPath
 } = {}) {
-  const command = resolveOrcaCliCommand({ env, platform })
+  const command = resolveTopoCliCommand({ env, platform })
   const commandName = platform === 'win32' ? path.win32.basename(command).toLowerCase() : command
   if (
     platform === 'win32' &&
-    env.ORCA_DEV_REPO_ROOT &&
-    (commandName === 'orca-dev' || commandName === 'orca-dev.cmd')
+    env.TOPO_DEV_REPO_ROOT &&
+    (commandName === 'topo-dev' || commandName === 'topo-dev.cmd')
   ) {
     const defaultUserDataPath = path.win32.join(
       env.APPDATA ?? path.win32.join(env.USERPROFILE ?? '', 'AppData', 'Roaming'),
-      'orca-dev'
+      'topo-dev'
     )
     return {
       command: nodeExecutable,
-      prefixArgs: [path.win32.join(env.ORCA_DEV_REPO_ROOT, 'out', 'cli', 'index.js')],
+      prefixArgs: [path.win32.join(env.TOPO_DEV_REPO_ROOT, 'out', 'cli', 'index.js')],
       env: {
         ...env,
-        ORCA_USER_DATA_PATH:
-          env.ORCA_USER_DATA_PATH ?? env.ORCA_DEV_USER_DATA_PATH ?? defaultUserDataPath,
-        ORCA_DEV_CLI_INVOCATION: '1',
-        ORCA_APP_EXECUTABLE:
-          env.ORCA_APP_EXECUTABLE ??
+        TOPO_USER_DATA_PATH:
+          env.TOPO_USER_DATA_PATH ?? env.TOPO_DEV_USER_DATA_PATH ?? defaultUserDataPath,
+        TOPO_DEV_CLI_INVOCATION: '1',
+        TOPO_APP_EXECUTABLE:
+          env.TOPO_APP_EXECUTABLE ??
           path.win32.join(
-            env.ORCA_DEV_REPO_ROOT,
+            env.TOPO_DEV_REPO_ROOT,
             'node_modules',
             'electron',
             'dist',
             'electron.exe'
           ),
-        ORCA_APP_EXECUTABLE_NEEDS_APP_ROOT: '1'
+        TOPO_APP_EXECUTABLE_NEEDS_APP_ROOT: '1'
       }
     }
   }
   return { command, prefixArgs: [] }
 }
 
-export function createOrcaRpc({
+export function createTopoRpc({
   envName,
   cliCommand,
   env = process.env,
@@ -70,8 +70,8 @@ export function createOrcaRpc({
 }) {
   const cliInvocation = cliCommand
     ? { command: cliCommand, prefixArgs: [] }
-    : resolveOrcaCliInvocation({ env, platform })
-  const commandLabel = cliCommand ?? resolveOrcaCliCommand({ env, platform })
+    : resolveTopoCliInvocation({ env, platform })
+  const commandLabel = cliCommand ?? resolveTopoCliCommand({ env, platform })
   const commandArgs = (args, local) => [
     ...cliInvocation.prefixArgs,
     ...args,
@@ -79,12 +79,12 @@ export function createOrcaRpc({
     '--json'
   ]
 
-  function orcaJsonSync(args, opts = {}) {
+  function topoJsonSync(args, opts = {}) {
     const started = performance.now()
     const result = spawnSync(cliInvocation.command, commandArgs(args, opts.local), {
       encoding: 'utf8',
       env: cliInvocation.env,
-      maxBuffer: MAX_ORCA_RPC_OUTPUT_BYTES,
+      maxBuffer: MAX_TOPO_RPC_OUTPUT_BYTES,
       timeout: opts.timeoutMs ?? 120_000
     })
     const elapsedMs = performance.now() - started
@@ -103,7 +103,7 @@ export function createOrcaRpc({
     return { parsed, elapsedMs, result: parsed.result }
   }
 
-  function orcaJsonAsync(args, opts = {}) {
+  function topoJsonAsync(args, opts = {}) {
     const started = performance.now()
     return new Promise((resolve, reject) => {
       const child = spawn(cliInvocation.command, commandArgs(args, opts.local), {
@@ -127,7 +127,7 @@ export function createOrcaRpc({
         if (settled) {
           return stream
         }
-        const appended = appendOrcaRpcOutput(stream, chunk, outputBytes)
+        const appended = appendTopoRpcOutput(stream, chunk, outputBytes)
         outputBytes = appended.bytes
         if (appended.exceeded) {
           child.kill('SIGKILL')
@@ -199,12 +199,12 @@ export function createOrcaRpc({
   async function runReconnectRefreshStorm(notes) {
     const started = performance.now()
     const jobs = [
-      () => orcaJsonAsync(['status'], { timeoutMs: 90_000 }),
-      () => orcaJsonAsync(['worktree', 'list'], { timeoutMs: 120_000 }),
-      () => orcaJsonAsync(['terminal', 'list'], { timeoutMs: 120_000 }),
-      () => orcaJsonAsync(['status'], { local: true, timeoutMs: 60_000 }),
-      () => orcaJsonAsync(['worktree', 'list'], { timeoutMs: 120_000 }),
-      () => orcaJsonAsync(['terminal', 'list'], { timeoutMs: 120_000 })
+      () => topoJsonAsync(['status'], { timeoutMs: 90_000 }),
+      () => topoJsonAsync(['worktree', 'list'], { timeoutMs: 120_000 }),
+      () => topoJsonAsync(['terminal', 'list'], { timeoutMs: 120_000 }),
+      () => topoJsonAsync(['status'], { local: true, timeoutMs: 60_000 }),
+      () => topoJsonAsync(['worktree', 'list'], { timeoutMs: 120_000 }),
+      () => topoJsonAsync(['terminal', 'list'], { timeoutMs: 120_000 })
     ]
     const results = await Promise.all(
       jobs.map(async (job, index) => {
@@ -228,14 +228,14 @@ export function createOrcaRpc({
   async function runRestartProxy(notes) {
     const started = performance.now()
     try {
-      const opened = await orcaJsonAsync(['open'], { local: true, timeoutMs: 120_000 })
-      notes.push(`orca open ms=${opened.elapsedMs.toFixed(0)}`)
+      const opened = await topoJsonAsync(['open'], { local: true, timeoutMs: 120_000 })
+      notes.push(`topo open ms=${opened.elapsedMs.toFixed(0)}`)
     } catch (error) {
-      notes.push(`orca open failed: ${String(error).slice(0, 200)}`)
+      notes.push(`topo open failed: ${String(error).slice(0, 200)}`)
     }
     const storm = await runReconnectRefreshStorm(notes)
     return { wallMs: performance.now() - started, storm }
   }
 
-  return { orcaJsonSync, orcaJsonAsync, runReconnectRefreshStorm, runRestartProxy }
+  return { topoJsonSync, topoJsonAsync, runReconnectRefreshStorm, runRestartProxy }
 }

@@ -1,4 +1,4 @@
-/** Pairing offers requested by this host's owner: the desktop's Settings and `orca pair` mint the same offers. */
+/** Pairing offers requested by this host's owner: the desktop's Settings and `topo pair` mint the same offers. */
 import type { MobilePairingConnectionMode } from '../../../../../shared/remote-runtime/pairing/mobile-pairing-connection-mode'
 import type {
   PairingCreateOfferParams,
@@ -63,7 +63,7 @@ export async function requestMobilePairingOffer(
     address?: string
     connectionMode?: MobilePairingConnectionMode
     rotate?: boolean
-    // Unset leaves the offer without an expiry, as headless serve/orcad mint today.
+    // Unset leaves the offer without an expiry, as headless serve/topod mint today.
     offerTtlMs?: number
   },
   lookup: DefaultRouteInterfaceLookup = getWindowsDefaultRouteInterfaceNames

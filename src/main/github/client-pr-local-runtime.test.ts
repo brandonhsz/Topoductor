@@ -147,7 +147,7 @@ describe('GitHub PR local runtime routing', () => {
   })
 
   it('never falls through to the default gh host for an unresolved SSH repository', async () => {
-    const legacyRepo = { owner: 'team', repo: 'orca' }
+    const legacyRepo = { owner: 'team', repo: 'topo' }
     getOwnerRepoMock.mockResolvedValue(null)
     getEnterpriseGitHubRepoSlugMock.mockResolvedValue(null)
 
@@ -190,7 +190,7 @@ describe('GitHub PR local runtime routing', () => {
   })
 
   it('refuses unresolved local PR mutations instead of using ambient gh defaults', async () => {
-    const legacyRepo = { owner: 'team', repo: 'orca' }
+    const legacyRepo = { owner: 'team', repo: 'topo' }
     getOwnerRepoMock.mockResolvedValue(null)
     getEnterpriseGitHubRepoSlugMock.mockResolvedValue(null)
 

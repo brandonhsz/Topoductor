@@ -2,9 +2,9 @@ import { spawn } from 'node:child_process'
 import { resolve } from 'node:path'
 import type { CommandHandler } from '../dispatch'
 import { formatCliStatus, formatStatus, printResult } from '../format'
-import { RuntimeClientError, serveOrcaApp } from '../runtime-client'
+import { RuntimeClientError, serveTopoApp } from '../runtime-client'
 import { getOptionalServeBind } from '../runtime/serve-bind-flag'
-import { stripElectronRunAsNode } from '../runtime/orca-app-executable'
+import { stripElectronRunAsNode } from '../runtime/topo-app-executable'
 import { resolveCliStatusCaller } from '../runtime/status-caller'
 import { getServeSuperviseValidationError } from '../runtime/serve-supervised-service'
 import { getOptionalServePort } from '../runtime/serve-port-flag'
@@ -54,11 +54,11 @@ export const CORE_HANDLERS: Record<string, CommandHandler> = {
         'Claude Agent Teams native panes are not supported on Windows.'
       )
     }
-    const paneKey = process.env.ORCA_PANE_KEY
+    const paneKey = process.env.TOPO_PANE_KEY
     if (!paneKey) {
       throw new RuntimeClientError(
         'invalid_environment',
-        'orca claude-teams must be run inside an Orca terminal.'
+        'topo claude-teams must be run inside a Topo terminal.'
       )
     }
     const inheritedEnv = envRecord()
@@ -81,7 +81,7 @@ export const CORE_HANDLERS: Record<string, CommandHandler> = {
     )
   },
   open: async ({ client, json }) => {
-    const result = await client.openOrca()
+    const result = await client.openTopo()
     printResult(result, json, formatCliStatus)
   },
   serve: async ({ flags, json }) => {
@@ -91,18 +91,18 @@ export const CORE_HANDLERS: Record<string, CommandHandler> = {
       if (flags.has('data-root') && (typeof dataRoot !== 'string' || !dataRoot.trim())) {
         throw new RuntimeClientError(
           'invalid_argument',
-          '--data-root expects a directory. Usage: orca serve --reclaim-stale-lock [--data-root <dir>] [--yes] [--json]'
+          '--data-root expects a directory. Usage: topo serve --reclaim-stale-lock [--data-root <dir>] [--yes] [--json]'
         )
       }
-      // Why lazy: only this mode needs orcad's lock code, and every other command skips loading it.
-      const { printOrcadStaleLockReclaimResult, reclaimStaleOrcadInstanceLock } =
-        await import('../../main/orcad/orcad-stale-lock-reclaim.js')
-      const result = await reclaimStaleOrcadInstanceLock(
+      // Why lazy: only this mode needs topod's lock code, and every other command skips loading it.
+      const { printTopodStaleLockReclaimResult, reclaimStaleTopodInstanceLock } =
+        await import('../../main/topod/topod-stale-lock-reclaim.js')
+      const result = await reclaimStaleTopodInstanceLock(
         typeof dataRoot === 'string' ? resolve(dataRoot) : resolveLaunchUserDataPath(),
-        // This CLI's own binary is no command to give a user; `orca serve` is.
+        // This CLI's own binary is no command to give a user; `topo serve` is.
         { yes: flags.get('yes') === true, hintRuntime: null }
       )
-      printOrcadStaleLockReclaimResult(result, json)
+      printTopodStaleLockReclaimResult(result, json)
       process.exitCode = result.exitCode
       return
     }
@@ -136,7 +136,7 @@ export const CORE_HANDLERS: Record<string, CommandHandler> = {
     }
     const port = getOptionalServePort(flags)
     const pairingAddressValue = flags.get('pairing-address')
-    const exitCode = await serveOrcaApp({
+    const exitCode = await serveTopoApp({
       json,
       port,
       bind,

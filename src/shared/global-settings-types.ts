@@ -3,7 +3,7 @@ import type { TelemetrySettings } from './telemetry-settings-types'
 import type { BrowserProfileScope } from './browser/profiles/browser-profile-scope'
 import type { GlobalSettingsBase } from './global-settings-base'
 import type { ExecutionHostId } from './execution-host'
-import type { OrcaWorkspaceLayout } from './orca-workspace-layout'
+import type { TopoWorkspaceLayout } from './topo-workspace-layout'
 import type { GitHubProjectSettings } from './github/project-types'
 import type { VoiceSettings } from './speech-types'
 import type { AiVaultSearchSettings } from './ai-vault/search/ai-vault-search-settings'
@@ -56,7 +56,7 @@ export type GlobalSettings = GlobalSettingsBase & {
   /** Per-host value is host override ?? client default, keyed by ExecutionHostId. */
   hostSettingOverrides?: Partial<Record<ExecutionHostId, HostSettingOverrides>>
   nestWorkspaces: boolean
-  workspaceDirHistory?: OrcaWorkspaceLayout[]
+  workspaceDirHistory?: TopoWorkspaceLayout[]
   refreshLocalBaseRefOnWorktreeCreate: boolean
   /** Permanently dismisses the suggestion to enable local base refresh. */
   localBaseRefSuggestionDismissed: boolean
@@ -80,7 +80,7 @@ export type GlobalSettings = GlobalSettingsBase & {
   appIcon: AppIconId
   appFontFamily: string
   editorAutoSave: boolean
-  /** Days a release must be public before Orca offers it; absent/0 offers releases immediately. */
+  /** Days a release must be public before Topo offers it; absent/0 offers releases immediately. */
   updateDelayDays?: number
   editorAutoSaveDelayMs: number
   editorMinimapEnabled: boolean
@@ -129,7 +129,7 @@ export type GlobalSettings = GlobalSettingsBase & {
   terminalUseSeparateLightTheme: boolean
   terminalThemeLight: string
   terminalDividerColorLight: string
-  /** Mirror the terminal palette into Claude Code's theme; off restores the theme Orca replaced. */
+  /** Mirror the terminal palette into Claude Code's theme; off restores the theme Topo replaced. */
   claudeCodeThemeSync: boolean
   /** `pending` until the offer toast shows at the next Claude launch, then `settled`. */
   claudeCodeThemeSyncOffer?: 'pending' | 'settled'
@@ -150,7 +150,7 @@ export type GlobalSettings = GlobalSettingsBase & {
   terminalQuickCommands?: TerminalQuickCommand[]
   /** Windows-only: close (X) hides to tray instead of quitting; the tray icon is always present regardless. */
   minimizeToTrayOnClose?: boolean
-  /** macOS: toggles the additive menu-bar entry (Orca survives last-window close); doesn't change Dock behavior. */
+  /** macOS: toggles the additive menu-bar entry (Topo survives last-window close); doesn't change Dock behavior. */
   showMenuBarIcon?: boolean
   /** Windows convention: right-click pastes; macOS/Linux keep the context menu. */
   terminalRightClickToPaste: boolean
@@ -192,7 +192,7 @@ export type GlobalSettings = GlobalSettingsBase & {
   httpProxyUrl?: string
   /** Optional semicolon/comma/newline-separated bypass rules for httpProxyUrl. */
   httpProxyBypassRules?: string
-  /** Optional mirror of nodejs.org/dist for the Node runtime Orca installs on SSH and WSL servers. */
+  /** Optional mirror of nodejs.org/dist for the Node runtime Topo installs on SSH and WSL servers. */
   nodeDistMirrorUrl?: string
   /** Why: corporate TLS-intercepting proxies can break HTTP/2 downloads; opt-in Chromium process-wide HTTP/1.1 switch. */
   electronHttp1CompatibilityMode?: boolean
@@ -243,7 +243,7 @@ export type GlobalSettings = GlobalSettingsBase & {
   sourceControlGroupOrder: SourceControlGroupOrder
   /** Compare base defaults to the branch upstream instead of the repo default; affects only the compare/diff view, not the PR/rebase target. Per-user. */
   sourceControlCompareAgainstUpstream: boolean
-  /** Whether to show the Orca app name in the titlebar. */
+  /** Whether to show the Topo app name in the titlebar. */
   showTitlebarAppName: boolean
   /** Hides the Tasks sidebar button (also removes it from keyboard navigation). */
   showTasksButton: boolean
@@ -262,7 +262,7 @@ export type GlobalSettings = GlobalSettingsBase & {
   showArtifactsButton?: boolean
   /** Only toggles the sidebar shortcut; Skills stay reachable from Settings. */
   showSkillsButton?: boolean
-  /** Only toggles the sidebar shortcut; Orca Mobile stays reachable from Settings. */
+  /** Only toggles the sidebar shortcut; Topo Mobile stays reachable from Settings. */
   showMobileButton?: boolean
   /** Pinned workspaces show in one sidebar location by default; opt in to also show them in their natural groups. */
   showPinnedWorktreesInGroups?: boolean
@@ -305,7 +305,7 @@ export type GlobalSettings = GlobalSettingsBase & {
   promptCacheTimerEnabled: boolean
   /** Prompt-cache TTL (ms); only 300000 (5 min standard) or 3600000 (1 hr, extended-TTL plans). */
   promptCacheTtlMs: number
-  /** Why: durable main-owned pref so Orca can prepare shared ~/.codex before the renderer hydrates. */
+  /** Why: durable main-owned pref so Topo can prepare shared ~/.codex before the renderer hydrates. */
   codexManagedAccounts: CodexManagedAccount[]
   activeCodexManagedAccountId: string | null
   activeCodexManagedAccountIdsByRuntime?: CodexManagedAccountRuntimeSelection
@@ -375,11 +375,11 @@ export type GlobalSettings = GlobalSettingsBase & {
   geminiCliOAuthEnabled: boolean
   /** Per-agent CLI command overrides. A missing key means use the catalog default binary name. */
   agentCmdOverrides: Partial<Record<TuiAgent, string>>
-  /** Off keeps each Codex home's history to itself: Orca links no sessions between accounts or
+  /** Off keeps each Codex home's history to itself: Topo links no sessions between accounts or
    *  into ~/.codex, and removes nothing already linked (#24511). Absent means on (#10770). */
   codexShareHistoryAcrossAccounts?: boolean
   /** Custom CODEX_HOME for Codex session-history discovery (defaults to ~/.codex).
-   *  History-only: does not change which account/config/hooks Orca uses. */
+   *  History-only: does not change which account/config/hooks Topo uses. */
   codexSessionSourceHome?: {
     /** Absolute host path; empty/undefined falls back to ~/.codex. */
     host?: string
@@ -411,7 +411,7 @@ export type GlobalSettings = GlobalSettingsBase & {
   confirmClosePinnedTab: boolean
   /** Why: preview tabs reuse one slot per group, so browsing replaces the open file; off makes every open its own tab. Defaults on. */
   editorPreviewTabsEnabled: boolean
-  /** When true, Orca requests local awake assertions while hook-reported agents are working. */
+  /** When true, Topo requests local awake assertions while hook-reported agents are working. */
   keepComputerAwakeWhileAgentsRun: boolean
   /** Optional for mixed-version compatibility; the legacy boolean maps true to Auto. */
   computerAwakeMode?: ComputerAwakeMode
@@ -471,7 +471,7 @@ export type GlobalSettings = GlobalSettingsBase & {
   experimentalPluginIsolatedFrames?: boolean
   /** Experimental: per-workspace on-demand environment recipes and setup surface. */
   experimentalEphemeralVms?: boolean
-  /** Experimental (Windows): add WSL distros as hosts, each running its own Orca server. */
+  /** Experimental (Windows): add WSL distros as hosts, each running its own Topo server. */
   experimentalWslHosts?: boolean
   /** Declined the add-project offer to run a `\\wsl.localhost` project's distro as a host. */
   wslHostOfferDismissed?: boolean
@@ -499,4 +499,4 @@ export type GlobalSettings = GlobalSettingsBase & {
   aiVaultSearch?: AiVaultSearchSettings
 }
 
-export type { OrcaWorkspaceLayout } from './orca-workspace-layout'
+export type { TopoWorkspaceLayout } from './topo-workspace-layout'

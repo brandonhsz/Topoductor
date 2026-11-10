@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from '../../../src/shared/sidebar-inputs-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from '../../../src/shared/sidebar-inputs-switch'
 import { buildSidebarFeedRows } from '../../../src/shared/sidebar-list/sidebar-feed-rows'
 import { repoIconFeedKey } from '../../../src/shared/sidebar-list/repo-icon-data-urls-contract'
 import type { ProjectOrderBy } from '../../../src/shared/ui-chrome-types'
@@ -199,6 +199,6 @@ function useFeedHostListSections({
   return { sections, rawSections: sections, uniqueRepos, repoById, collapsedGroups, projectOrderBy }
 }
 
-export const useHostListSections = ORCA_SIDEBAR_INPUTS_IS_MAIN
+export const useHostListSections = TOPO_SIDEBAR_INPUTS_IS_MAIN
   ? useFeedHostListSections
   : useLegacyHostListSections

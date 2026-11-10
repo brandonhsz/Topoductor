@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../src/main/runtime/topo-runtime'
 import { RpcDispatcher } from '../../src/main/runtime/rpc/dispatcher'
 import type { RpcRequest } from '../../src/main/runtime/rpc/core'
 import { TERMINAL_METHODS } from '../../src/main/runtime/rpc/methods/terminal/terminal'
@@ -29,7 +29,7 @@ type RuntimeInternals = {
   issuePtyHandle: (pty: unknown) => string
 }
 
-function internals(runtime: OrcaRuntimeService): RuntimeInternals {
+function internals(runtime: TopoRuntimeService): RuntimeInternals {
   return runtime as unknown as RuntimeInternals
 }
 
@@ -40,7 +40,7 @@ function createHostProvider() {
   const session = { cols: 120, rows: 40, attached: true, screen: '' }
   const attachCalls: string[] = []
   const writes: [string, string][] = []
-  let runtime: OrcaRuntimeService | null = null
+  let runtime: TopoRuntimeService | null = null
   const controller = {
     write: (id: string, text: string) => {
       writes.push([id, text])
@@ -74,7 +74,7 @@ function createHostProvider() {
     attachCalls,
     writes,
     session,
-    bind(target: OrcaRuntimeService) {
+    bind(target: TopoRuntimeService) {
       runtime = target
     },
     emitData(data: string): boolean {
@@ -88,7 +88,7 @@ function createHostProvider() {
   }
 }
 
-function startMultiplex(runtime: OrcaRuntimeService, connectionId: string) {
+function startMultiplex(runtime: TopoRuntimeService, connectionId: string) {
   const messages: { result?: { type?: string; streamId?: number | null } }[] = []
   const binaryFrames: Uint8Array<ArrayBufferLike>[] = []
   const handlers = new Map<
@@ -187,7 +187,7 @@ function errorFrames(harness: Harness): number {
 
 describe('STA-2854 B: remote subscriber survives a fully unmounted host renderer', () => {
   it('streams, accepts input, and re-subscribes with no host renderer pane at all', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const provider = createHostProvider()
     provider.bind(runtime)
     runtime.setPtyController(provider.controller as never)
@@ -239,7 +239,7 @@ describe('STA-2854 B: remote subscriber survives a fully unmounted host renderer
 
 describe('STA-2854 C: an unattached host PTY with no mountable renderer pane', () => {
   it('still streams to the remote subscriber without any renderer mount', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const provider = createHostProvider()
     // A never-mounted pane needs main to attach before daemon output can flow.
     provider.session.attached = false

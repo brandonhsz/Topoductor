@@ -13,7 +13,7 @@ export function setupGrabShortcutForwarding(args: {
 }): () => void {
   const { browserTabId, guest, resolveRenderer, hasActiveGrabOp, getKeybindings } = args
   const handler = (event: Electron.Event, input: Electron.Input): void => {
-    // Agent-injected keys must not trigger Orca actions (#20595).
+    // Agent-injected keys must not trigger Topo actions (#20595).
     if (isAgentInjectingInput(guest)) {
       return
     }

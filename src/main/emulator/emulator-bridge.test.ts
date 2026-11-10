@@ -110,7 +110,7 @@ describe('EmulatorBridge helper ownership', () => {
     expect(bridge.getActiveForWorktree('wt-1')).toBeNull()
   })
 
-  it('only kills Orca-managed helpers during app shutdown cleanup', async () => {
+  it('only kills Topo-managed helpers during app shutdown cleanup', async () => {
     const bridge = new EmulatorBridge()
     bridge.registerActiveEmulator('wt-managed', session('device-managed'), { managed: true })
     bridge.registerActiveEmulator('wt-external', session('device-external'))

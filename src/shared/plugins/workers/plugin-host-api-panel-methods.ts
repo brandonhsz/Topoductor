@@ -22,10 +22,10 @@ const agentsListResult = z.object({
     .array(
       z.object({
         /** Its terminal, as `workspace.readContext` and `terminal.sendText` name it; null when
-         *  Orca cannot tie the agent's pane to a terminal it lists. */
+         *  Topo cannot tie the agent's pane to a terminal it lists. */
         terminalId: z.string().min(1).max(1024).nullable(),
         title: z.string().max(512).nullable(),
-        /** Which agent runs there (`claude`, `codex`, ...), when Orca knows. */
+        /** Which agent runs there (`claude`, `codex`, ...), when Topo knows. */
         agent: z.string().max(128).nullable(),
         state: z.enum(AGENT_STATUS_STATES),
         /** When it entered `state`, in ms since the epoch. */

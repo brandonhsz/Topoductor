@@ -1,5 +1,5 @@
 /**
- * Who a relay-era terminal's `orca` command speaks as, and what it may reach.
+ * Who a relay-era terminal's `topo` command speaks as, and what it may reach.
  * COMPAT(legacy-relay-bridge): revisit 2027-01-15.
  *
  * Everything the host sends is a claim. The caller is accepted only as a pane this desktop leased
@@ -8,7 +8,7 @@
  * mailboxes, its own Dispatch or Run, and the other party of that same orchestration.
  */
 import { parsePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import type { OrchestrationDb } from '../../../runtime/orchestration/db/orchestration-db'
 import { isEquivalentPaneKey } from '../../../runtime/orchestration/db/pane-key-match'
 import type {
@@ -20,8 +20,8 @@ import type { LegacyRelayLivePane } from '../bridge/legacy-relay-bridge-leases'
 const MAX_IDENTITY_LENGTH = 512
 
 export const LEGACY_RELAY_CLI_UNVERIFIED =
-  "Orca could not confirm this terminal is one of this host's supervised Orca terminals, so its " +
-  'orca command was refused. Run it in a new terminal on this host.'
+  "Topo could not confirm this terminal is one of this host's supervised Topo terminals, so its " +
+  'topo command was refused. Run it in a new terminal on this host.'
 
 export type LegacyRelayCliCaller = {
   handle: string
@@ -48,15 +48,15 @@ function samePane(recorded: string | null | undefined, paneKey: string): boolean
 }
 
 export function resolveLegacyRelayCliCaller(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   env: Readonly<Record<string, string>>,
   livePane: (paneKey: string) => LegacyRelayLivePane | null,
   targetId: string,
   /** A retry of a mutation this caller already completed, which may outlive its Dispatch. */
   replay?: { fingerprint: string; requestId: string }
 ): LegacyRelayCliCaller {
-  const handle = bounded(env.ORCA_TERMINAL_HANDLE)
-  const paneKey = bounded(env.ORCA_PANE_KEY)
+  const handle = bounded(env.TOPO_TERMINAL_HANDLE)
+  const paneKey = bounded(env.TOPO_PANE_KEY)
   const pane = handle && paneKey && parsePaneKey(paneKey) ? livePane(paneKey) : null
   if (!handle || !paneKey || !pane) {
     throw new Error(LEGACY_RELAY_CLI_UNVERIFIED)
@@ -161,7 +161,7 @@ function principalHostTargetId(hostScope: string): string | undefined {
 
 function outside(subject: string): Error {
   return new Error(
-    `A terminal started by an older version of Orca can reach only its own orchestration, and ${subject} is outside it.`
+    `A terminal started by an older version of Topo can reach only its own orchestration, and ${subject} is outside it.`
   )
 }
 

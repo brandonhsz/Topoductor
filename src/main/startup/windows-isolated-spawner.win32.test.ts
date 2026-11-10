@@ -5,16 +5,16 @@ import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import {
   setIsolatedSpawner,
   spawnDetachedWithoutInheritance
-} from '@orca/process-host/isolated-detached-spawn'
+} from '@topo/process-host/isolated-detached-spawn'
 import { loadWindowsSecurity } from '../../shared/windows-security-addon'
 
 const describeOnWindows = process.platform === 'win32' ? describe : describe.skip
 const ADDON = resolve(__dirname, '..', '..', '..', 'native', 'windows-security', 'index.js')
-const root = mkdtempSync(join(tmpdir(), 'orca-isolated-spawn-'))
+const root = mkdtempSync(join(tmpdir(), 'topo-isolated-spawn-'))
 const entry = join(root, 'main.cjs')
 
 // Holders now break away from the runner's job, so nothing reaps one a test leaves behind.
@@ -53,7 +53,7 @@ async function runElectron(mode: 'isolated' | 'libuv', holderMs: number) {
   if (typeof electron !== 'string') {
     throw new Error('Electron executable is unavailable')
   }
-  const env: NodeJS.ProcessEnv = { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' }
+  const env: NodeJS.ProcessEnv = { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' }
   delete env.ELECTRON_RUN_AS_NODE
   const resultFile = join(root, `${mode}.result`)
   const child = spawnProcess({
@@ -84,7 +84,7 @@ describeOnWindows('isolated detached spawn against real Windows processes', () =
       bundle: true,
       platform: 'node',
       format: 'cjs',
-      conditions: ['orca-source'],
+      conditions: ['topo-source'],
       external: ['electron'],
       logLevel: 'silent'
     })
@@ -180,7 +180,7 @@ describeOnWindows('isolated detached spawn against real Windows processes', () =
 })
 
 // Joins a kill-on-close job (strict: one that forbids breakaway), starts a sleeper through the
-// addon, reports, then exits so the job closes with it, as when Orca is killed in such a job.
+// addon, reports, then exits so the job closes with it, as when Topo is killed in such a job.
 const JOB_HELPER = `
 const [conptyUtils, addonPath, mode, resultFile] = process.argv.slice(2)
 const conpty = require(conptyUtils).loadNativeModule('conpty').module
@@ -198,7 +198,7 @@ describeOnWindows('isolated detached spawn inside a kill-on-close job', () => {
   let jobRoot = ''
 
   beforeAll(() => {
-    jobRoot = mkdtempSync(join(tmpdir(), 'orca-isolated-spawn-job-'))
+    jobRoot = mkdtempSync(join(tmpdir(), 'topo-isolated-spawn-job-'))
   })
 
   afterAll(() => {

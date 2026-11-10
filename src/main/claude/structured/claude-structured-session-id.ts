@@ -1,20 +1,20 @@
 import { createHash } from 'node:crypto'
 
-/** A stable UUID (v4 layout) for the Claude conversation behind an Orca chat. */
-export function claudeSessionIdForOrcaSession(
+/** A stable UUID (v4 layout) for the Claude conversation behind a Topo chat. */
+export function claudeSessionIdForTopoSession(
   sessionId: string,
   clearOperationId?: string
 ): string {
   return stableUuid(
     clearOperationId
-      ? `orca-claude:${sessionId}:context-clear:${clearOperationId}`
-      : `orca-claude:${sessionId}`
+      ? `topo-claude:${sessionId}:context-clear:${clearOperationId}`
+      : `topo-claude:${sessionId}`
   )
 }
 
 /** Stable across retries so a rewind always names the same conversation. */
 export function claudeSessionIdForRewind(sessionId: string, rewindOperationId: string): string {
-  return stableUuid(`orca-claude:${sessionId}:rewind:${rewindOperationId}`)
+  return stableUuid(`topo-claude:${sessionId}:rewind:${rewindOperationId}`)
 }
 
 /** Fresh submissions have fresh keys; only provably unwritten input may reuse one. */
@@ -22,7 +22,7 @@ export function claudePromptUuidForSubmission(
   sessionId: string,
   submissionItemKey: string
 ): string {
-  return stableUuid(JSON.stringify(['orca-claude:prompt', sessionId, submissionItemKey]))
+  return stableUuid(JSON.stringify(['topo-claude:prompt', sessionId, submissionItemKey]))
 }
 
 function stableUuid(identity: string): string {

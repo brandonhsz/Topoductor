@@ -6,7 +6,7 @@ vi.mock('../runtime-client', async () => {
   class RuntimeClient {
     call = callMock
     getCliStatus = vi.fn()
-    openOrca = vi.fn()
+    openTopo = vi.fn()
   }
 
   // Error formatting uses instanceof, so preserve the production error classes.
@@ -17,7 +17,7 @@ vi.mock('../runtime-client', async () => {
 import { main } from '../index'
 import { okFixture, queueFixtures } from '../test-fixtures'
 
-describe('orca computer action CLI validation', () => {
+describe('topo computer action CLI validation', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
     callMock.mockReset()

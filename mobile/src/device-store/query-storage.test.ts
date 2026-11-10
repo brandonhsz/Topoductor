@@ -4,11 +4,11 @@ import {
   type PersistedQuery
 } from '@tanstack/query-persist-client-core'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createOrcaQueryStorage, type OrcaQueryStoreBackend } from './query-storage'
+import { createTopoQueryStorage, type TopoQueryStoreBackend } from './query-storage'
 
 function memoryBackend(hostId: string) {
   const rows = new Map<string, string>()
-  const backend: OrcaQueryStoreBackend = {
+  const backend: TopoQueryStoreBackend = {
     hostId,
     read: async (keys) => ({ status: 'ok', values: keys.map((key) => rows.get(key) ?? null) }),
     write: async (ops) => {
@@ -30,7 +30,7 @@ function memoryBackend(hostId: string) {
 }
 
 function persisterOver(
-  storage: ReturnType<typeof createOrcaQueryStorage>,
+  storage: ReturnType<typeof createTopoQueryStorage>,
   prefix = 'q1|worktree.ps@1'
 ) {
   return experimental_createQueryPersister<PersistedQuery>({
@@ -41,7 +41,7 @@ function persisterOver(
   })
 }
 
-describe('createOrcaQueryStorage', () => {
+describe('createTopoQueryStorage', () => {
   beforeEach(() => {
     vi.useFakeTimers({ now: 1_794_000_000_000 })
   })
@@ -49,14 +49,14 @@ describe('createOrcaQueryStorage', () => {
     vi.useRealTimers()
   })
 
-  it("stores only queries keyed ['orca', <bridge host>, ...], deep paths included", async () => {
+  it("stores only queries keyed ['topo', <bridge host>, ...], deep paths included", async () => {
     const memory = memoryBackend('host-a')
-    const storage = createOrcaQueryStorage(memory.backend)
+    const storage = createTopoQueryStorage(memory.backend)
     const persister = persisterOver(storage, 'q1|files.dir@1')
     const client = new QueryClient()
     const relativePath = Array(12).fill('packages/very-deeply-nested-workspace-folder').join('/')
-    const ownKey = ['orca', 'host-a', 'files.dir', { exec: 'local' }, { relativePath }]
-    const otherHostKey = ['orca', 'host-b', 'files.dir', { exec: 'local' }, {}]
+    const ownKey = ['topo', 'host-a', 'files.dir', { exec: 'local' }, { relativePath }]
+    const otherHostKey = ['topo', 'host-b', 'files.dir', { exec: 'local' }, {}]
     const foreignKey = ['other', 'host-a', 'files.dir']
     for (const queryKey of [ownKey, otherHostKey, foreignKey]) {
       client.setQueryData(queryKey, { entries: ['README.md'] })
@@ -69,10 +69,10 @@ describe('createOrcaQueryStorage', () => {
       '1b7af21ba777cb9df9bb4374b31946114af6196c3ec2cb1a478743c4aed03d0b'
     ])
     // A later document reads the stored record back.
-    const nextDocument = persisterOver(createOrcaQueryStorage(memory.backend), 'q1|files.dir@1')
+    const nextDocument = persisterOver(createTopoQueryStorage(memory.backend), 'q1|files.dir@1')
     await expect(
       nextDocument.retrieveQuery(
-        `["orca","host-a","files.dir",{"exec":"local"},{"relativePath":"${relativePath}"}]`
+        `["topo","host-a","files.dir",{"exec":"local"},{"relativePath":"${relativePath}"}]`
       )
     ).resolves.toEqual({ entries: ['README.md'] })
   })

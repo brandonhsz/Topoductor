@@ -78,7 +78,7 @@ export function getChecksPanelReviewState(
       ),
       description: t(
         'auto.components.right.sidebar.checks.panel.review.active.body',
-        'Orca is checking {{provider}} for a {{reviewLabel}} on this branch.',
+        'Topo is checking {{provider}} for a {{reviewLabel}} on this branch.',
         { reviewLabel, provider: providerName }
       ),
       composerMode: 'hidden',
@@ -103,7 +103,7 @@ export function getChecksPanelReviewState(
       ),
       description: t(
         'auto.components.right.sidebar.checks.panel.review.positive.body',
-        'Orca has saved {{reviewLabel}} information for this branch but could not confirm its current status.',
+        'Topo has saved {{reviewLabel}} information for this branch but could not confirm its current status.',
         { reviewLabel }
       ),
       composerMode: 'hidden',
@@ -171,7 +171,7 @@ export function getChecksPanelReviewState(
       ),
       description: t(
         'auto.components.right.sidebar.checks.panel.review.active.body',
-        'Orca is checking {{provider}} for a {{reviewLabel}} on this branch.',
+        'Topo is checking {{provider}} for a {{reviewLabel}} on this branch.',
         { reviewLabel, provider: providerName }
       ),
       composerMode: mode,
@@ -189,7 +189,7 @@ export function getChecksPanelReviewState(
       ),
       description: t(
         'auto.components.right.sidebar.checks.panel.review.git_loading.body',
-        'Orca is checking this branch before showing create or publish actions.'
+        'Topo is checking this branch before showing create or publish actions.'
       ),
       composerMode: 'hidden',
       workflowAction: null,
@@ -205,7 +205,7 @@ export function getChecksPanelReviewState(
       ),
       description: t(
         'auto.components.right.sidebar.checks.panel.review.git_error.body',
-        "Orca could not confirm this branch's upstream from this environment. Retry before publishing or creating a {{reviewLabel}}.",
+        "Topo could not confirm this branch's upstream from this environment. Retry before publishing or creating a {{reviewLabel}}.",
         { reviewLabel }
       ),
       composerMode: 'hidden',
@@ -233,7 +233,7 @@ export function getChecksPanelReviewState(
     ),
     description: t(
       'auto.components.right.sidebar.checks.panel.review.unknown.body',
-      'Orca has not confirmed the {{reviewLabel}} status for this branch. Retry to check again.',
+      'Topo has not confirmed the {{reviewLabel}} status for this branch. Retry to check again.',
       { reviewLabel }
     ),
     composerMode: 'hidden',

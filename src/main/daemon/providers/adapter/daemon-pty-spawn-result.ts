@@ -96,8 +96,8 @@ export abstract class DaemonPtySpawnResult extends DaemonPtySpawnRequest {
       providerWslDistro === null || result.isNew,
       result.incarnationId
     )
-    if (wslDistro && opts.env?.ORCA_PANE_KEY) {
-      this.wslPaneKeysBySessionId.set(sessionId, opts.env.ORCA_PANE_KEY)
+    if (wslDistro && opts.env?.TOPO_PANE_KEY) {
+      this.wslPaneKeysBySessionId.set(sessionId, opts.env.TOPO_PANE_KEY)
     }
 
     if (effectiveCwd) {

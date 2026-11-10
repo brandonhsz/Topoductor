@@ -40,7 +40,7 @@ function openMainWindowForContextMenu() {
     closeDevTools: vi.fn(),
     replaceMisspelling: vi.fn(),
     session: { addWordToSpellCheckerDictionary: vi.fn() },
-    getURL: vi.fn(() => 'file:///opt/orca/renderer/index.html'),
+    getURL: vi.fn(() => 'file:///opt/topo/renderer/index.html'),
     isLoadingMainFrame: vi.fn(() => true)
   }
   const browserWindowInstance = {
@@ -365,7 +365,7 @@ describe('createMainWindow', () => {
       expect(paste?.click).toBeTypeOf('function')
       return { closePopup, paste }
     }
-    const nextDocument = 'file:///opt/orca/renderer/index.html?reload'
+    const nextDocument = 'file:///opt/topo/renderer/index.html?reload'
 
     const first = openMenu()
     emit('did-start-navigation', {}, `${nextDocument}#hash`, true, true)

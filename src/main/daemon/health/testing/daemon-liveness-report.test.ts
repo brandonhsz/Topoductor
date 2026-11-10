@@ -12,7 +12,7 @@ const record: ParsedDaemonPid = {
   bootId: 'b',
   spawnerExecPath: null,
   cgroupUnit: null,
-  processCeiling: { state: 'on', limit: 200, mechanism: 'systemd-slice', unit: 'orca.slice' }
+  processCeiling: { state: 'on', limit: 200, mechanism: 'systemd-slice', unit: 'topo.slice' }
 }
 
 describe('terminal daemon liveness report', () => {

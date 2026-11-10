@@ -4,7 +4,7 @@ import { ptyBindingIsRefused } from '../../persistence/loading-store/pty-binding
 import { makePaneKey } from '../../../shared/workspace-layout/stable-pane-id'
 import { toSshExecutionHostId } from '../../../shared/execution-host'
 import { createTerminalSessionStateSaveFailureMessage } from '../../../shared/workspace-session/terminal-session-state-save-failure'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import type { IPtyProvider, PtySpawnResult } from '../../providers/pty-provider-contract'
 import {
   isAbsentBindingReplay,
@@ -31,7 +31,7 @@ export async function savePtySpawnPaneBinding(
     result: PtySpawnResult
     provider: IPtyProvider
     replacedPaneOwner?: ReplacedPaneOwner | null
-    deps: { runtime?: OrcaRuntimeService }
+    deps: { runtime?: TopoRuntimeService }
   },
   { store, binding, absentOwner, refusal, failureLog }: PtySpawnPaneBinding,
   connectionId: string | null | undefined

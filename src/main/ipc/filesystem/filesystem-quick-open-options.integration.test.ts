@@ -12,7 +12,7 @@ afterEach(async () => {
 })
 
 it('honors inherited ignores, opt-in links, cycles, and retargets in real processes', async () => {
-  const parent = await mkdtemp(join(tmpdir(), 'orca-quick-open-options-'))
+  const parent = await mkdtemp(join(tmpdir(), 'topo-quick-open-options-'))
   fixtures.push(parent)
   await mkdir(join(parent, '.git'))
   const root = join(parent, 'project')

@@ -130,7 +130,7 @@ export class StructuredAgentSessionUsageLimitContinue {
 
   readState = (id: string): AgentSessionStatusSummary['usageLimitContinue'] => {
     const cut = this.readCut(id)
-    // A cut Orca can never continue shows only the manual actions, whatever the setting.
+    // A cut Topo can never continue shows only the manual actions, whatever the setting.
     if (!cut || !isNativeChatUsageLimitCutSchedulable(cut, this.deps.now())) {
       return undefined
     }

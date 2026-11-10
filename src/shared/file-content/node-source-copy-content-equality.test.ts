@@ -25,7 +25,7 @@ describe('Node source/copy content equality', () => {
   })
 
   it('compares multi-megabyte sparse files with fixed-size chunks', () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-resource-compare-'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-resource-compare-'))
     roots.push(root)
     const sourcePath = join(root, 'source.md')
     const copyPath = join(root, 'copy.md')

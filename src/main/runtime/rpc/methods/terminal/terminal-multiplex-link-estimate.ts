@@ -42,7 +42,7 @@ type StreamSendLedger = {
 
 // Opt-in until soaked on real high-latency links.
 export function isAdaptiveAckWindowEnabled(): boolean {
-  return process.env.ORCA_TERMINAL_ADAPTIVE_ACK_WINDOW === '1'
+  return process.env.TOPO_TERMINAL_ADAPTIVE_ACK_WINDOW === '1'
 }
 
 /** Best sample over the last one-to-two windows of activity; idle time does not expire it. */

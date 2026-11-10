@@ -9,15 +9,15 @@ import {
   type WslHostStatusDetailCode
 } from '../../../shared/wsl-host-failure-copy'
 import type { WslHostStatus } from '../../../shared/wsl-host-types'
-import type { WslOrcadConnection } from '../orcad/wsl-orcad-connection-types'
-import type { WslOrcadConnectionStatus } from '../orcad/wsl-orcad-connection-status'
-import type { WslLivenessUnverifiableReason } from '../orcad/wsl-orcad-liveness-verdict'
+import type { WslTopodConnection } from '../topod/wsl-topod-connection-types'
+import type { WslTopodConnectionStatus } from '../topod/wsl-topod-connection-status'
+import type { WslLivenessUnverifiableReason } from '../topod/wsl-topod-liveness-verdict'
 
 /** Saves an explicit re-pair or a moved bridge; true when the pairing changed. */
 export function persistWslHostConnection(
   userDataPath: string,
   record: WslHostDeploymentRecord,
-  connection: WslOrcadConnection
+  connection: WslTopodConnection
 ): boolean {
   try {
     return refreshWslHostPairing(userDataPath, record.environmentId, {
@@ -35,7 +35,7 @@ export function persistWslHostConnection(
 export function saveWslHostConnection(
   deps: { userDataPath: () => string; pairingChanged: (environmentId: string) => void },
   record: WslHostDeploymentRecord | null,
-  connections: { get(distro: string): WslOrcadConnection | null } | null
+  connections: { get(distro: string): WslTopodConnection | null } | null
 ): void {
   const connection = record ? connections?.get(record.distro) : null
   if (record && connection && persistWslHostConnection(deps.userDataPath(), record, connection)) {
@@ -45,8 +45,8 @@ export function saveWslHostConnection(
 
 export function toWslHostStatus(
   record: WslHostDeploymentRecord,
-  status: WslOrcadConnectionStatus,
-  connection: WslOrcadConnection | null = null
+  status: WslTopodConnectionStatus,
+  connection: WslTopodConnection | null = null
 ): WslHostStatus {
   return {
     environmentId: record.environmentId,
@@ -67,7 +67,7 @@ export function toWslHostStatus(
 const UNVERIFIABLE_DETAIL_CODES: Record<WslLivenessUnverifiableReason, WslHostStatusDetailCode> = {
   'running-list-unavailable': 'runningListUnavailable',
   'guest-unanswered': 'guestUnanswered',
-  'orcad-unanswered': 'orcadUnanswered'
+  'topod-unanswered': 'topodUnanswered'
 }
 
 type WslHostStatusDetail = Pick<WslHostStatus, 'detail' | 'detailCode' | 'detailParams'>
@@ -86,7 +86,7 @@ function codedDetail(
 
 function wslHostStatusDetail(
   record: WslHostDeploymentRecord,
-  status: WslOrcadConnectionStatus
+  status: WslTopodConnectionStatus
 ): WslHostStatusDetail {
   if (status.state === 'unverifiable') {
     const { text, code } = wslHostStatusDetailText(UNVERIFIABLE_DETAIL_CODES[status.reason])

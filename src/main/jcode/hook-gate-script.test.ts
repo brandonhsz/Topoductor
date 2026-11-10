@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { createServer } from 'node:http'
 import { removeTreeSync } from '../../shared/windows-transient-lock-removal'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 
 const { homedirMock } = vi.hoisted(() => ({ homedirMock: vi.fn<() => string>() }))
 vi.mock(import('node:os'), async (importOriginal) => {
@@ -17,7 +17,7 @@ import { JcodeHookService } from './hook-service'
 import { getJcodeManagedScriptPath, JCODE_HOOK_EVENTS } from './hook-settings'
 
 function installManagedScript(): { scriptPath: string; cleanup: () => void } {
-  const homeDir = mkdtempSync(join(tmpdir(), 'orca-jcode-gate-'))
+  const homeDir = mkdtempSync(join(tmpdir(), 'topo-jcode-gate-'))
   homedirMock.mockReturnValue(homeDir)
   vi.stubEnv('JCODE_HOME', join(homeDir, '.jcode'))
   new JcodeHookService().install()
@@ -32,14 +32,14 @@ function installManagedScript(): { scriptPath: string; cleanup: () => void } {
 }
 
 describe.runIf(process.platform !== 'win32')('jcode managed hook as jcode runs it', () => {
-  it('drains the gate stdin before exiting on a missing Orca environment', () => {
+  it('drains the gate stdin before exiting on a missing Topo environment', () => {
     const { scriptPath, cleanup } = installManagedScript()
     try {
       // Returning proves the gate drained input larger than the pipe buffer before exiting.
       execFileSync('/bin/sh', [scriptPath], {
         input: JSON.stringify({ content: 'y'.repeat(512 * 1024) }),
-        // Outside Orca, POSIX must still drain stdin before exiting.
-        env: { ...process.env, JCODE_HOOK_EVENT: 'pre_tool', ORCA_PANE_KEY: '' },
+        // Outside Topo, POSIX must still drain stdin before exiting.
+        env: { ...process.env, JCODE_HOOK_EVENT: 'pre_tool', TOPO_PANE_KEY: '' },
         // This checks completion, not latency; allow slow CI hosts.
         timeout: 60_000,
         stdio: ['pipe', 'pipe', 'pipe']
@@ -67,7 +67,7 @@ describe.runIf(process.platform === 'win32')('Windows jcode hook payload deliver
       request.on('end', () => {
         posts.push({
           path: request.url,
-          token: request.headers['x-orca-agent-hook-token'],
+          token: request.headers['x-topo-agent-hook-token'],
           form: new URLSearchParams(body)
         })
         response.end('{}')
@@ -85,11 +85,11 @@ describe.runIf(process.platform === 'win32')('Windows jcode hook payload deliver
           program: scriptPath,
           env: {
             ...process.env,
-            ORCA_BACKGROUND_LAUNCH: '1',
-            ORCA_AGENT_HOOK_ENDPOINT: '',
-            ORCA_AGENT_HOOK_PORT: String(address.port),
-            ORCA_AGENT_HOOK_TOKEN: 'jcode-delivery-token',
-            ORCA_PANE_KEY: 'jcode:leaf',
+            TOPO_BACKGROUND_LAUNCH: '1',
+            TOPO_AGENT_HOOK_ENDPOINT: '',
+            TOPO_AGENT_HOOK_PORT: String(address.port),
+            TOPO_AGENT_HOOK_TOKEN: 'jcode-delivery-token',
+            TOPO_PANE_KEY: 'jcode:leaf',
             JCODE_HOOK_EVENT: event,
             JCODE_HOOK_SESSION_ID: 'jcode-session',
             JCODE_HOOK_CWD: dirname(scriptPath),

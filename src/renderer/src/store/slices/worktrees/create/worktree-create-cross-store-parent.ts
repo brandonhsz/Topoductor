@@ -17,7 +17,7 @@ const TASK_ID = /\btask_[A-Za-z0-9]+\b/
 const LOCAL_TARGET: RuntimeClientTarget = { kind: 'local' }
 
 /**
- * A create's parent in another store. A picked parent refuses the whole create (older Orca,
+ * A create's parent in another store. A picked parent refuses the whole create (older Topo,
  * unconfirmed parent) rather than create it unnested; the active folder fallback keeps its old
  * behaviour there: create unnested and warn. Only when nothing else named a parent, even one since
  * dropped, may a task id in the note name one.
@@ -59,7 +59,7 @@ type InferredNoteParent = {
 
 /**
  * A workspace created on a paired server whose note names a task: the task lives in this desktop's
- * own Orca, so this desktop names the parent, as the CLI does for its caller's context. The whole
+ * own Topo, so this desktop names the parent, as the CLI does for its caller's context. The whole
  * step shares one 3 s deadline; anything short of a confirmed parent creates unnested, as before.
  */
 async function inferNoteCrossStoreParent(
@@ -100,7 +100,7 @@ async function inferWithin(
   const resolved = await callRuntimeRpc<
     { parent: CrossStoreParentRef; source: CrossStoreInferredSource } | { reason: string }
   >(LOCAL_TARGET, 'worktree.resolveCallerParent', { comment: note }, { signal })
-  // A client whose own Orca is this server has nothing to add: the server reads the note itself.
+  // A client whose own Topo is this server has nothing to add: the server reads the note itself.
   if ('reason' in resolved || resolved.parent.installationId === serverInstallationId) {
     return undefined
   }

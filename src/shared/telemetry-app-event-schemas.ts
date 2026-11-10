@@ -65,7 +65,7 @@ export const repoAddedSchema = z
   })
   .strict()
 
-export const appStarredOrcaSchema = z
+export const appStarredTopoSchema = z
   .object({
     source: appStarSourceSchema,
     nth_repo_added: nthRepoAddedSchema

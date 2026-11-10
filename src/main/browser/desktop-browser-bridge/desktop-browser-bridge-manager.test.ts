@@ -16,7 +16,7 @@ const HOST: DesktopBrowserBridgeCandidate = {
 }
 
 function event(result: unknown): RuntimeRpcResponse<unknown> {
-  return { id: 'attach', ok: true, result, _meta: { runtimeId: 'orcad' } }
+  return { id: 'attach', ok: true, result, _meta: { runtimeId: 'topod' } }
 }
 
 function harness(options: { supports?: boolean } = {}) {
@@ -75,7 +75,7 @@ function harness(options: { supports?: boolean } = {}) {
 }
 
 describe('DesktopBrowserBridgeManager', () => {
-  it('stops a queued or running command when orcad cancels it, and stays attached', async () => {
+  it('stops a queued or running command when topod cancels it, and stays attached', async () => {
     const h = harness()
     let seen: AbortSignal | null = null
     let finish = (): void => {}

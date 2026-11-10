@@ -48,7 +48,7 @@ import {
 } from '../../routing/sessions/browser-route-session-runtime'
 
 export type ClientHostRouteIdentity = BrowserClientPageAuthorityIdentity & {
-  orcaProfileId: string
+  topoProfileId: string
   /** Pairs with `authorityConnectionIdentity` and `pairingAuthorityConnectionIdentity`. */
   executionHostIdentity: string
   /** Pairs with `legacyAuthorityConnectionIdentity`, naming the partition an older build populated. */
@@ -59,12 +59,12 @@ export type ClientHostRouteIdentity = BrowserClientPageAuthorityIdentity & {
 type ProductionBrowserClientHostStart = PairedRuntimeBrowserClientHostStart &
   BrowserClientPageAuthorityIdentity & {
     connection: PairedRuntimeConnection
-    orcaProfileId: string
+    topoProfileId: string
     storageScope: string
     environmentLabel: string
   }
 
-let activeOrcaProfileId: string | null = null
+let activeTopoProfileId: string | null = null
 // Storage operations need a route identity even without an open page.
 const clientHostRouteIdentities = new Map<string, ClientHostRouteIdentity>()
 
@@ -94,7 +94,7 @@ const browserClientHosts =
           createNetworkRoutes(next.connection, authority, next.storageScope, input.environmentId),
         createExecutor: (next, { retainNetworkRoute, onPageUnavailable }) => {
           executor = new BrowserClientPageCommandExecutor({
-            orcaProfileId: next.orcaProfileId,
+            topoProfileId: next.topoProfileId,
             authorityConnectionIdentity: next.authorityConnectionIdentity,
             pairingAuthorityConnectionIdentity: next.pairingAuthorityConnectionIdentity,
             legacyAuthorityConnectionIdentity: next.legacyAuthorityConnectionIdentity,
@@ -145,38 +145,38 @@ const browserClientHosts =
     }
   })
 
-export function configurePairedRuntimeBrowserClientHostsForOrcaProfile(options: {
-  orcaProfileId: string
+export function configurePairedRuntimeBrowserClientHostsForTopoProfile(options: {
+  topoProfileId: string
 }): void {
-  if (activeOrcaProfileId && activeOrcaProfileId !== options.orcaProfileId) {
+  if (activeTopoProfileId && activeTopoProfileId !== options.topoProfileId) {
     throw new Error('paired_runtime_browser_client_host_profile_conflict')
   }
-  activeOrcaProfileId = options.orcaProfileId
+  activeTopoProfileId = options.topoProfileId
 }
 
 export async function startPairedRuntimeBrowserClientHost(options: {
   environment: KnownRuntimeEnvironment
   authorityRuntimeId: string
 }): Promise<BrowserClientHostLeaseAuthority> {
-  const orcaProfileId = activeOrcaProfileId
-  if (!orcaProfileId) {
+  const topoProfileId = activeTopoProfileId
+  if (!topoProfileId) {
     throw new Error('paired_runtime_browser_client_host_profile_unavailable')
   }
   const pairingRevision = options.environment.pairingRevision ?? options.environment.createdAt
   const connection = getPreferredPairedRuntimeConnection(options.environment)
   const storageScope = deriveBrowserRoutePartitionStorageScope({
-    orcaProfileId,
+    topoProfileId,
     environmentId: options.environment.id
   })
   const authorityIdentity = derivePairedRuntimeBrowserAuthorityIdentity({
-    orcaProfileId,
+    topoProfileId,
     environment: options.environment,
     pairingRevision,
     authorityRuntimeId: options.authorityRuntimeId,
     connection
   })
   const routeIdentity: ClientHostRouteIdentity = {
-    orcaProfileId,
+    topoProfileId,
     storageScope,
     ...authorityIdentity,
     // Settings-level cookie imports target the server itself.
@@ -190,7 +190,7 @@ export async function startPairedRuntimeBrowserClientHost(options: {
     pairingRevision,
     authorityRuntimeId: options.authorityRuntimeId,
     connection,
-    orcaProfileId,
+    topoProfileId,
     storageScope: routeIdentity.storageScope,
     environmentLabel: options.environment.name,
     ...authorityIdentity
@@ -273,7 +273,7 @@ function createNetworkRoutes(
 
 function browserClientFileStagingRoot(environmentId: string): string {
   const scope = createHash('sha256').update(environmentId).digest('hex').slice(0, 16)
-  return path.join(app.getPath('temp'), 'orca-browser-file-channel', scope)
+  return path.join(app.getPath('temp'), 'topo-browser-file-channel', scope)
 }
 
 function reportBrowserClientHostError(error: Error): void {

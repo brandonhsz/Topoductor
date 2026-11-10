@@ -113,7 +113,7 @@ export function SshTargetCard({
     ? `${target.username}@${target.host}:${target.port}`
     : `${target.host}:${target.port}`
   const keyName = sshIdentityFileName(target.identityFile)
-  const servedByOrcaServer =
+  const servedByTopoServer =
     isManagedServerSshHost(target) || state?.managedServer?.kind === 'managed'
 
   const handleCardRef = useCallback((node: HTMLDivElement | null): void => {
@@ -224,9 +224,9 @@ export function SshTargetCard({
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-baseline gap-2">
           <span className="truncate text-sm font-medium">{target.label}</span>
-          {servedByOrcaServer ? (
+          {servedByTopoServer ? (
             <Badge variant="hostContext" className="self-center">
-              {t('auto.components.settings.SshTargetCard.orcaServer', 'Orca server')}
+              {t('auto.components.settings.SshTargetCard.topoServer', 'Topo server')}
             </Badge>
           ) : null}
           {/* Keep the separator outside monospace spans so its width stays compact. */}

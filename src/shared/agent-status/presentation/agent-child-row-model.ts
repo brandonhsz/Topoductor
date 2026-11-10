@@ -90,7 +90,7 @@ export function agentChildRowContextForParent(
   }
 }
 
-// A live claim beneath a parent Orca no longer hears from asserts nothing; settled history stands.
+// A live claim beneath a parent Topo no longer hears from asserts nothing; settled history stands.
 function withFreshness(
   displayState: AgentChildDisplayState,
   context: AgentChildRowContext

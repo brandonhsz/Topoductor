@@ -16,7 +16,7 @@ let tempDir = ''
 let localFile = ''
 
 beforeEach(async () => {
-  tempDir = await mkdtemp(join(tmpdir(), 'orca-sftp-late-'))
+  tempDir = await mkdtemp(join(tmpdir(), 'topo-sftp-late-'))
   localFile = join(tempDir, 'relay.js')
   await writeFile(localFile, 'console.log(1)\n')
 })
@@ -37,7 +37,7 @@ describe('late SFTP stream errors', () => {
     const stream = new PassThrough()
     stream.resume()
 
-    await uploadFile(sftpDoubleReturning(stream), localFile, '/home/user/.orca-remote/relay.js')
+    await uploadFile(sftpDoubleReturning(stream), localFile, '/home/user/.topo-remote/relay.js')
 
     expect(() => stream.emit('error', sftpNoSuchFileError())).not.toThrow()
   })
@@ -46,7 +46,7 @@ describe('late SFTP stream errors', () => {
     const stream = new PassThrough()
     stream.resume()
 
-    await writeStringViaSftp(sftpDoubleReturning(stream), '/home/user/.orca-remote/.version', 'v1')
+    await writeStringViaSftp(sftpDoubleReturning(stream), '/home/user/.topo-remote/.version', 'v1')
 
     expect(() => stream.emit('error', sftpNoSuchFileError())).not.toThrow()
   })

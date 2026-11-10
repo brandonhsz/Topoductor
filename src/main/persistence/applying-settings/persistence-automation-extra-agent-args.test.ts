@@ -49,7 +49,7 @@ const BASE = {
 
 describe('automation extra agent args persistence', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-test-'))
   })
 
   afterEach(async () => {

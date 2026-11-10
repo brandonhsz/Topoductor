@@ -107,7 +107,7 @@ export class AgentBrowserBridge extends AgentBrowserBridgeInteractionCommands {
         throw new BrowserError('browser_error', 'Debugger not attached')
       }
 
-      // agent-browser lacks a mobile viewport flag; apply Orca's emulation through CDP.
+      // agent-browser lacks a mobile viewport flag; apply Topo's emulation through CDP.
       await sendGuestCdpCommand(wc, 'Emulation.setDeviceMetricsOverride', {
         width,
         height,
@@ -272,7 +272,7 @@ export class AgentBrowserBridge extends AgentBrowserBridgeInteractionCommands {
   }
 
   async exec(command: string, worktreeId?: string, browserPageId?: string): Promise<unknown> {
-    // Passthrough arguments must not override Orca's selected page or CDP proxy.
+    // Passthrough arguments must not override Topo's selected page or CDP proxy.
     const args = stripAgentBrowserTargetArgs(parseShellArgs(command.trim()))
     return this.enqueueTargetedCommand(
       worktreeId,

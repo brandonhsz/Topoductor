@@ -258,7 +258,7 @@ function decideHeadersReceived(
   return { responseHeaders: modified.headers }
 }
 
-/** declarativeNetRequest inside Orca's session handlers; one WeakMap lookup when unused. */
+/** declarativeNetRequest inside Topo's session handlers; one WeakMap lookup when unused. */
 export const browserExtensionDnrRequestDecider: BrowserSessionRequestDecider = {
   beforeRequest: (session, details) => {
     const runtime = getDnrSessionRuntime(session)

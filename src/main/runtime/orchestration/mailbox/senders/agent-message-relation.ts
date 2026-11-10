@@ -2,15 +2,15 @@ import type { AgentMessageSender } from '../../../../../shared/agent-session/age
 import { readWorkerTerminalHostScope } from '../../../../../shared/orchestration/workers/worker-terminal-host-scope'
 import type { OrchestrationDb } from '../../db/orchestration-db'
 import type { DispatchContextRow } from '../../db/orchestration-records'
-import { canonicalOrcaSessionId } from '../../addressing/session-lineage/canonical-orca-session-id'
+import { canonicalTopoSessionId } from '../../addressing/session-lineage/canonical-topo-session-id'
 import { resolveOrchestrationParty } from '../../addressing/orchestration-party'
 import { runCoordinatorKey } from '../../addressing/orchestration-caller-identity'
 
-type Party = Pick<AgentMessageSender['party'], 'terminalHandle' | 'orcaSessionId'>
+type Party = Pick<AgentMessageSender['party'], 'terminalHandle' | 'topoSessionId'>
 
 function sameParty(a: Party, b: Party): boolean {
-  if (a.orcaSessionId && b.orcaSessionId) {
-    return canonicalOrcaSessionId(a.orcaSessionId) === canonicalOrcaSessionId(b.orcaSessionId)
+  if (a.topoSessionId && b.topoSessionId) {
+    return canonicalTopoSessionId(a.topoSessionId) === canonicalTopoSessionId(b.topoSessionId)
   }
   return Boolean(a.terminalHandle && a.terminalHandle === b.terminalHandle)
 }
@@ -48,7 +48,7 @@ export function agentMessageRelation(args: {
         ? [db.getDispatchContextById(id)]
         : db.getActiveDispatchMailboxOwners(
             party.terminalHandle ??
-              (party.orcaSessionId ? `orca_session_id:${party.orcaSessionId}` : '')
+              (party.topoSessionId ? `topo_session_id:${party.topoSessionId}` : '')
           )
       const matches = candidates.filter((row): row is DispatchContextRow =>
         Boolean(
@@ -57,7 +57,7 @@ export function agentMessageRelation(args: {
           localDispatch(row) &&
           sameParty(party, {
             terminalHandle: row.assignee_handle,
-            orcaSessionId: row.assignee_orca_session_id
+            topoSessionId: row.assignee_topo_session_id
           })
         )
       )
@@ -67,10 +67,10 @@ export function agentMessageRelation(args: {
       if (!dispatch) {
         return undefined
       }
-      if (dispatch.creator_handle || dispatch.creator_orca_session_id) {
+      if (dispatch.creator_handle || dispatch.creator_topo_session_id) {
         return {
           terminalHandle: dispatch.creator_handle,
-          orcaSessionId: dispatch.creator_orca_session_id
+          topoSessionId: dispatch.creator_topo_session_id
         }
       }
       if (dispatch.creator_dispatch_id) {
@@ -78,7 +78,7 @@ export function agentMessageRelation(args: {
         return creator && creator.run_id === runId && localDispatch(creator)
           ? {
               terminalHandle: creator.assignee_handle,
-              orcaSessionId: creator.assignee_orca_session_id
+              topoSessionId: creator.assignee_topo_session_id
             }
           : undefined
       }

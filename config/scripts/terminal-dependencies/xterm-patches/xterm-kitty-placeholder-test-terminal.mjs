@@ -4,9 +4,9 @@ import { vi } from 'vitest'
 const require = createRequire(
   new URL('../../xterm-kitty-placeholder-test-terminal.mjs', import.meta.url)
 )
-const { Terminal } = require(process.env.ORCA_IMAGE_CONTRACT_CORE_PATH ?? '@xterm/xterm')
+const { Terminal } = require(process.env.TOPO_IMAGE_CONTRACT_CORE_PATH ?? '@xterm/xterm')
 const { Unicode11Addon } = require('@xterm/addon-unicode11')
-const { ImageAddon } = require(process.env.ORCA_IMAGE_CONTRACT_ADDON_PATH ?? '@xterm/addon-image')
+const { ImageAddon } = require(process.env.TOPO_IMAGE_CONTRACT_ADDON_PATH ?? '@xterm/addon-image')
 
 export const PLACEHOLDER = '\u{10EEEE}'
 export const DIACRITICS = ['\u0305', '\u030D', '\u030E']

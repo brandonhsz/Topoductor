@@ -48,7 +48,7 @@ const OTHER_DOC_LOCATION = {
   worktreeId: WORKTREE_ID,
   filePath: '/home/alice/wt1/report/details.html'
 }
-const LIVE_GRANT_URL = `orca-preview://${'a'.repeat(32)}/report/index.html`
+const LIVE_GRANT_URL = `topo-preview://${'a'.repeat(32)}/report/index.html`
 
 let main: TabsDrawnFromMain | undefined
 afterEach(() => {

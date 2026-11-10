@@ -72,7 +72,7 @@ export function registerPtyConnectionDaemonSnapshotReplayTests(): void {
         '@/lib/agent-status/aggregation/worktree-agent-status'
       )
       const transport = createMockTransport('tab-pty')
-      const snapshot = 'ORCA-SGR-REPRO \x1b[1mBOLD-RUN-LEFT-OPEN\x1b[1;34H'
+      const snapshot = 'TOPO-SGR-REPRO \x1b[1mBOLD-RUN-LEFT-OPEN\x1b[1;34H'
       transport.connect.mockImplementation(async ({ sessionId }: { sessionId?: string }) => {
         if (sessionId) {
           return { id: sessionId, snapshot }

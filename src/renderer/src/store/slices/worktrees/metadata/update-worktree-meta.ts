@@ -14,7 +14,7 @@ import { translate } from '@/i18n/i18n'
 import { isPositiveHostedReviewNumber } from '../../../../../../shared/source-control/hosted-review/hosted-review-contracts'
 import { displayNameUpdatePinsLabel } from '../../../../../../shared/worktree/display-name-provenance'
 import { parseWorkspaceKey } from '../../../../../../shared/workspace-scope'
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from '../../../../../../shared/sidebar-inputs-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from '../../../../../../shared/sidebar-inputs-switch'
 import type { WorktreeSlice } from '../worktree-slice-contract'
 import { getRepoIdFromWorktreeId } from '../../../../../../shared/worktree/id'
 import {
@@ -167,7 +167,7 @@ export function createUpdateWorktreeMeta(
         : targetEnriched
     // Switch point: a comment edit is not a Recent event once the host owns the stamps.
     const enriched =
-      'comment' in renameCleared && !ORCA_SIDEBAR_INPUTS_IS_MAIN
+      'comment' in renameCleared && !TOPO_SIDEBAR_INPUTS_IS_MAIN
         ? { ...renameCleared, lastActivityAt: Date.now() }
         : renameCleared
 

@@ -4,8 +4,8 @@ import { createServer, type Server } from 'node:net'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import { PinnedPortUnavailableError } from '../ws-transport'
 
 const holders: Server[] = []
@@ -27,11 +27,11 @@ afterEach(async () => {
   )
 })
 
-function serveServer(wsPort: number, requirePinnedWsPort: boolean): OrcaRuntimeRpcServer {
-  return new OrcaRuntimeRpcServer({
+function serveServer(wsPort: number, requirePinnedWsPort: boolean): TopoRuntimeRpcServer {
+  return new TopoRuntimeRpcServer({
     methods: [],
-    runtime: new OrcaRuntimeService(),
-    userDataPath: mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-pinned-')),
+    runtime: new TopoRuntimeService(),
+    userDataPath: mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-pinned-')),
     enableWebSocket: true,
     exposeNetworkByDefault: true,
     wsPort,
@@ -40,7 +40,7 @@ function serveServer(wsPort: number, requirePinnedWsPort: boolean): OrcaRuntimeR
   })
 }
 
-describe('orca serve --port', () => {
+describe('topo serve --port', () => {
   it('fails startup when the requested port is taken instead of serving on another port', async () => {
     const port = await holdPort()
     const server = serveServer(port, true)

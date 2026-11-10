@@ -5,7 +5,7 @@ import {
   paneTerminalFact,
   type RuntimePtyRegistryView
 } from '../records/runtime-leaf-record-projection'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { startedMainTerminalSurfaces, type SurfacesOwner } from './main-terminal-surfaces'
 
 /** A pane main owns: its bound terminal, and whether a status says that binding is not live. */
@@ -64,7 +64,7 @@ export function mainBindsUnendedTerminal(
 ): boolean {
   const status = recorded?.verdict.status
   return (
-    ORCA_LAYOUT_OWNER_IS_MAIN &&
+    TOPO_LAYOUT_OWNER_IS_MAIN &&
     status !== 'exited' &&
     status !== 'unverifiable' &&
     mainHoldsTerminal(runtime, ptyId)

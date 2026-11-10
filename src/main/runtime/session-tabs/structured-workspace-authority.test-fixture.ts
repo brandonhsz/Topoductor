@@ -1,6 +1,6 @@
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 
-export const availableRevealWorkspace: OrcaRuntimeService['prepareStructuredAgentSessionRevealWorkspace'] =
+export const availableRevealWorkspace: TopoRuntimeService['prepareStructuredAgentSessionRevealWorkspace'] =
   async () => ({
     current: () => true,
     check: () => {},

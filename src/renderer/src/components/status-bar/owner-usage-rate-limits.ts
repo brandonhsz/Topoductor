@@ -74,7 +74,7 @@ function describeUnverifiableOwner(
   return reason === 'usage-not-published'
     ? t(
         'auto.components.status.bar.tooltip.remoteOwnerNoUsage',
-        'Usage unavailable — {{server}} does not report usage. Update Orca on that host.',
+        'Usage unavailable — {{server}} does not report usage. Update Topo on that host.',
         { server: ownerLabel }
       )
     : t(

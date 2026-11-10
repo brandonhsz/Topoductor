@@ -2,7 +2,7 @@ import { applyRemoteViewerLaunchEnv } from './remote-viewer-launch-env'
 import type { MobileTerminalCommandOptions, MobileTerminalCommand } from './mobile-terminal-startup'
 import type { RuntimePtyWorktreeRecord } from '../records/runtime-terminal-state-records'
 import type { TerminalWorkspaceLaunchScope } from '../../orchestration/terminal-authority/structured-sessions/runtime-legacy-worker-terminal-recovery-types'
-import { OrcaRuntimeWithMobileChatForkCreate } from './mobile-terminal-chat-fork-create'
+import { TopoRuntimeWithMobileChatForkCreate } from './mobile-terminal-chat-fork-create'
 import type { RuntimeMobileSessionCreateTerminalResult } from '../../../../shared/runtime-session-contracts'
 import { randomUUID } from 'node:crypto'
 import { getRuntimeDesktopSurface } from '../../construction/runtime-desktop-surface'
@@ -18,7 +18,7 @@ import { assertMobileTerminalShellSupported } from './mobile-terminal-shell-refu
 import { anchorTabOfCreate, mainPlacedAfter } from './mobile-terminal-create-anchor'
 import type { MobileTerminalCreateOptions } from './mobile-terminal-create'
 
-export abstract class OrcaRuntimeWithRunCreateMobileSessionTerminal extends OrcaRuntimeWithMobileChatForkCreate {
+export abstract class TopoRuntimeWithRunCreateMobileSessionTerminal extends TopoRuntimeWithMobileChatForkCreate {
   protected abstract resolveMobileSessionTerminalCommand(
     workspace: TerminalWorkspaceLaunchScope,
     opts: MobileTerminalCommandOptions

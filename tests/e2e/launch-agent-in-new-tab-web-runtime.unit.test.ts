@@ -12,7 +12,7 @@ import { newAgentLaunchRequestId } from '@/lib/agent-session/launch/routing/agen
 import { nonRefusedAgentLaunch } from '@/lib/agent-session/launch/new-tab/agent-tab-launch-outcome.test-fixture'
 import { stubRuntimeEnvironmentBridge } from '@/runtime/rpc/testing/runtime-environment-bridge-fixture'
 import { AGENT_LAUNCH_CHOICES_CAPABILITY } from '../../src/shared/agent-launch/contracts/agent-launch-runtime-capability'
-import { OrcaRuntimeService } from '../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../src/main/runtime/topo-runtime'
 import { consumeOldHostPreparedCommand } from './prepared-action-launch.test-fixture'
 import '@/runtime/agent-launch-settings/host-agent-launch-preferences-resource'
 import { composeAgentLaunchProfile } from '../../src/shared/agent-launch/choices/tui-agent-launch-defaults'
@@ -103,7 +103,7 @@ describe('launchAgentInNewTab paired web runtime', () => {
                     : projectAgentLaunchSettings(hostSettings)
               })
         )
-        const host = new OrcaRuntimeService(
+        const host = new TopoRuntimeService(
           // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the final startup owner reads only this settings store.
           { getSettings: () => hostSettings } as never
         )

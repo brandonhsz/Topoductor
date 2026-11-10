@@ -20,7 +20,7 @@ import { parse } from 'yaml'
 import { HERMES_CLIENT_ENV_PASSTHROUGH } from './hermes-managed-plugin-source'
 import { HermesHookService } from './hook-service'
 
-const configured = `# Operator comments\r\nmodel: "fixture"\r\nplugins:\r\n  enabled: [orca-status]\r\nterminal:\r\n  client_env_passthrough: [${HERMES_CLIENT_ENV_PASSTHROUGH.join(', ')}]\r\n`
+const configured = `# Operator comments\r\nmodel: "fixture"\r\nplugins:\r\n  enabled: [topo-status]\r\nterminal:\r\n  client_env_passthrough: [${HERMES_CLIENT_ENV_PASSTHROUGH.join(', ')}]\r\n`
 const initial =
   '# Recovery notes\nmodel: "001"\nprompt: |\n  First\n  Second\nplugins:\n  enabled: [other] # choices\n'
 
@@ -30,7 +30,7 @@ describe('Hermes config preservation on disk', () => {
   const service = new HermesHookService()
 
   beforeEach(() => {
-    directory = mkdtempSync(join(tmpdir(), 'orca-hermes-config-'))
+    directory = mkdtempSync(join(tmpdir(), 'topo-hermes-config-'))
     configPath = join(directory, 'config.yaml')
     vi.stubEnv('HERMES_HOME', directory)
   })
@@ -62,7 +62,7 @@ describe('Hermes config preservation on disk', () => {
     writeFileSync(configPath, initial)
     expect(service.install().state).toBe('installed')
     const installed = readFileSync(configPath, 'utf8')
-    expect(parse(installed).plugins.enabled).toEqual(['other', 'orca-status'])
+    expect(parse(installed).plugins.enabled).toEqual(['other', 'topo-status'])
     expect(readFileSync(`${configPath}.bak`, 'utf8')).toBe(initial)
     expect(service.remove().state).toBe('not_installed')
     const removed = readFileSync(configPath, 'utf8')
@@ -116,7 +116,7 @@ describe('Hermes config preservation on disk', () => {
     symlinkSync(target, configPath)
     expect(service.install().state).toBe('installed')
     expect(lstatSync(configPath).isSymbolicLink()).toBe(true)
-    expect(parse(readFileSync(target, 'utf8')).plugins.enabled).toContain('orca-status')
+    expect(parse(readFileSync(target, 'utf8')).plugins.enabled).toContain('topo-status')
     expect(readFileSync(`${target}.bak`, 'utf8')).toBe(initial)
   })
 
@@ -165,17 +165,17 @@ describe('Hermes config preservation on disk', () => {
     mkdirSync(`${configPath}.bak`)
     expect(() => service.remove()).toThrow()
     expect(readFileSync(configPath, 'utf8')).toBe(before)
-    expect(existsSync(join(directory, 'plugins', 'orca-status', '__init__.py'))).toBe(true)
+    expect(existsSync(join(directory, 'plugins', 'topo-status', '__init__.py'))).toBe(true)
     expect(readdirSync(directory).some((name) => name.endsWith('.tmp'))).toBe(false)
   })
 
   it('refuses alias-bearing removal before deleting installed plugin files', () => {
     expect(service.install().state).toBe('installed')
-    const input = 'plugins:\n  enabled: &enabled [orca-status, other]\ncopy: *enabled\n'
+    const input = 'plugins:\n  enabled: &enabled [topo-status, other]\ncopy: *enabled\n'
     writeFileSync(configPath, input)
     expect(service.remove().state).toBe('error')
     expect(readFileSync(configPath, 'utf8')).toBe(input)
-    expect(existsSync(join(directory, 'plugins', 'orca-status', '__init__.py'))).toBe(true)
+    expect(existsSync(join(directory, 'plugins', 'topo-status', '__init__.py'))).toBe(true)
     expect(existsSync(`${configPath}.bak`)).toBe(false)
   })
 

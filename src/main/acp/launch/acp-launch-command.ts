@@ -1,4 +1,4 @@
-// Which program an ACP chat runs: its Command setting, Orca's managed release, PATH, or a host backend.
+// Which program an ACP chat runs: its Command setting, Topo's managed release, PATH, or a host backend.
 
 import { delimiter, isAbsolute } from 'node:path'
 import { homedir } from 'node:os'

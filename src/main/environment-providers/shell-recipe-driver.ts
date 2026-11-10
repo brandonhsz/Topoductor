@@ -1,7 +1,7 @@
-// orca.yaml environment recipes and plugin VM recipes as an environment provider: each lifecycle
+// topo.yaml environment recipes and plugin VM recipes as an environment provider: each lifecycle
 // call runs the recipe's shell step, exactly as the runtime service did before the driver seam.
 import { z } from 'zod'
-import type { OrcaVmRecipe } from '../../shared/orca-yaml-hook-types'
+import type { TopoVmRecipe } from '../../shared/topo-yaml-hook-types'
 import {
   EphemeralVmRecipeResultSchema,
   type EphemeralVmRecipeResult,
@@ -59,7 +59,7 @@ export class ShellRecipeDriver implements EnvironmentProviderDriver {
   private readonly statuses = new Map<string, EnvironmentStatus>()
 
   constructor(
-    private readonly recipe: OrcaVmRecipe,
+    private readonly recipe: TopoVmRecipe,
     private readonly repoPath: string
   ) {
     this.capabilities = {
@@ -121,7 +121,7 @@ export class ShellRecipeDriver implements EnvironmentProviderDriver {
     if (!start.ok) {
       const error = toProviderError(start)
       if (start.recipeResult) {
-        // The VM exists even though Orca rejected its result; release it rather than leak it.
+        // The VM exists even though Topo rejected its result; release it rather than leak it.
         const cleanup = await this.runDestroy({
           context: start.context,
           recipeResult: start.recipeResult
@@ -274,7 +274,7 @@ function toProviderError(failure: RecipeStepFailure): EnvironmentProviderError {
     ? 'aborted'
     : failure.timedOut
       ? 'timeout'
-      : // The step exited cleanly but Orca rejected what it printed.
+      : // The step exited cleanly but Topo rejected what it printed.
         failure.exitCode === 0
         ? 'invalid_response'
         : 'unavailable'

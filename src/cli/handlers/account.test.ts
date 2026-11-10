@@ -1,6 +1,6 @@
 import type * as NodeCliCommandResolutionModule from '../../shared/node-cli-command-resolution'
-import type * as ProcessHostModule from '@orca/process-host'
-import type { ProcessSpec } from '@orca/process-host/process-spec'
+import type * as ProcessHostModule from '@topo/process-host'
+import type { ProcessSpec } from '@topo/process-host/process-spec'
 import { EventEmitter } from 'node:events'
 import { existsSync } from 'node:fs'
 import { PassThrough } from 'node:stream'
@@ -41,7 +41,7 @@ vi.mock('node:child_process', () => ({
   execFileSync: vi.fn(),
   spawn: vi.fn()
 }))
-vi.mock('@orca/process-host', async (importOriginal) => ({
+vi.mock('@topo/process-host', async (importOriginal) => ({
   ...(await importOriginal<typeof ProcessHostModule>()),
   spawnProcess: (spec: ProcessSpec) =>
     spec.args?.includes('--help') ? probeMock(spec) : spawnMock(spec.program, spec.args, spec)
@@ -113,7 +113,7 @@ describe('account CLI handlers', () => {
   const originalElectronRunAsNode = process.env.ELECTRON_RUN_AS_NODE
   const originalPathAlias = process.env.Path
   const originalWslDistroName = process.env.WSL_DISTRO_NAME
-  const originalBridgeDistro = process.env.ORCA_CLI_WSL_DISTRO
+  const originalBridgeDistro = process.env.TOPO_CLI_WSL_DISTRO
   const callMock = vi.fn()
   const client = { call: callMock } as unknown as RuntimeClient
   let logSpy: ReturnType<typeof vi.spyOn>
@@ -162,7 +162,7 @@ describe('account CLI handlers', () => {
     process.env.ELECTRON_RUN_AS_NODE = '1'
     // Clear real WSL attribution before simulating win32.
     delete process.env.WSL_DISTRO_NAME
-    delete process.env.ORCA_CLI_WSL_DISTRO
+    delete process.env.TOPO_CLI_WSL_DISTRO
   })
 
   afterEach(() => {
@@ -179,9 +179,9 @@ describe('account CLI handlers', () => {
       process.env.Path = originalPathAlias
     }
     if (originalBridgeDistro === undefined) {
-      delete process.env.ORCA_CLI_WSL_DISTRO
+      delete process.env.TOPO_CLI_WSL_DISTRO
     } else {
-      process.env.ORCA_CLI_WSL_DISTRO = originalBridgeDistro
+      process.env.TOPO_CLI_WSL_DISTRO = originalBridgeDistro
     }
     if (originalWslDistroName === undefined) {
       delete process.env.WSL_DISTRO_NAME
@@ -361,11 +361,11 @@ describe('account CLI handlers', () => {
 
     it('refuses the Claude system default from WSL rather than resetting the Windows host', async () => {
       Object.defineProperty(process, 'platform', { configurable: true, value: 'win32' })
-      process.env.ORCA_CLI_WSL_DISTRO = 'Ubuntu'
+      process.env.TOPO_CLI_WSL_DISTRO = 'Ubuntu'
 
       await expect(
         ACCOUNT_HANDLERS['account select'](selectionContext('claude', 'system'))
-      ).rejects.toThrow('Select the Claude system default for a WSL distro in Orca Settings')
+      ).rejects.toThrow('Select the Claude system default for a WSL distro in Topo Settings')
       expect(callMock).not.toHaveBeenCalled()
     })
   })

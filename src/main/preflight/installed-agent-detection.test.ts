@@ -12,7 +12,7 @@ import { detectInstalledAgents } from './installed-agent-detection'
 describe('detectInstalledAgents command overrides', () => {
   let dir: string
   beforeEach(async () => {
-    dir = await mkdtemp(path.join(tmpdir(), 'orca agent override '))
+    dir = await mkdtemp(path.join(tmpdir(), 'topo agent override '))
   })
   afterEach(async () => {
     await rm(dir, { recursive: true, force: true })

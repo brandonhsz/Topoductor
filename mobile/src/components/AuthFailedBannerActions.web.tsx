@@ -28,7 +28,7 @@ export function AuthFailedBannerActions({
       <Text style={styles.note}>
         {t(
           'components.authFailedBannerActions.webNote',
-          'Reconnect or remove this host from the Orca app.'
+          'Reconnect or remove this host from the Topo app.'
         )}
       </Text>
     </>

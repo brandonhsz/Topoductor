@@ -22,13 +22,13 @@ const mocks = vi.hoisted(() => ({
   flush: vi.fn(),
   preflight: vi.fn()
 }))
-vi.mock('../../managed-server/lifecycle/orcad-managed-runtime-context', () => ({
-  requireManagedOrcadInfrastructure: mocks.infrastructure
+vi.mock('../../managed-server/lifecycle/topod-managed-runtime-context', () => ({
+  requireManagedTopodInfrastructure: mocks.infrastructure
 }))
-vi.mock('../../managed-server/lifecycle/orcad-managed-tunnel', () => ({
-  startOrcadManagedTunnel: mocks.start,
-  closeOrcadManagedTunnel: mocks.close,
-  ensureOrcadManagedTunnel: mocks.ensure
+vi.mock('../../managed-server/lifecycle/topod-managed-tunnel', () => ({
+  startTopodManagedTunnel: mocks.start,
+  closeTopodManagedTunnel: mocks.close,
+  ensureTopodManagedTunnel: mocks.ensure
 }))
 vi.mock('./runtime-ssh-access-verification', () => ({
   verifyRuntimeEnvironmentSshTunnel: mocks.verify
@@ -98,13 +98,13 @@ describe('independent runtime SSH access coordinator', () => {
         claim: () => {
           expect(current().pendingSshAccessOperation?.operation).toBe('link')
           events.push('claim')
-          target = { ...target, orcadFence: { environmentId: environmentId } }
+          target = { ...target, topodFence: { environmentId: environmentId } }
           return target
         },
         release: () => {
           expect(current().pendingSshAccessOperation?.operation).toBe('unlink')
           events.push('release')
-          target = { ...target, orcadFence: undefined }
+          target = { ...target, topodFence: undefined }
           return target
         }
       }
@@ -161,7 +161,7 @@ describe('independent runtime SSH access coordinator', () => {
     const committed = current()
     expect(committed.sshAccess?.requestId).toBe('request')
     expect(committed.pendingSshAccessOperation).toBeUndefined()
-    expect(target?.orcadFence).toEqual({ environmentId: environmentId })
+    expect(target?.topodFence).toEqual({ environmentId: environmentId })
     expect(mocks.close).not.toHaveBeenCalled()
 
     await linkRuntimeSshAccess(userDataPath, request(), { invalidateTransport })
@@ -191,7 +191,7 @@ describe('independent runtime SSH access coordinator', () => {
     expect(events).toEqual(['invalidate', 'close', 'release', 'flush'])
     expect(current().endpoints[0].endpoint).toBe(pairing.endpoint)
     expect(current().sshAccess).toBeUndefined()
-    expect(target.orcadFence).toBeUndefined()
+    expect(target.topodFence).toBeUndefined()
   })
 
   it('retains claim and pending intent on wrong-host proof, then permits cancellation', async () => {
@@ -199,10 +199,10 @@ describe('independent runtime SSH access coordinator', () => {
     await expect(linkRuntimeSshAccess(userDataPath, request())).rejects.toThrow('wrong host')
     expect(current().pendingSshAccessOperation?.operation).toBe('link')
     expect(current().sshAccess).toBeUndefined()
-    expect(target.orcadFence).toBeDefined()
+    expect(target.topodFence).toBeDefined()
     expect(mocks.close).toHaveBeenCalledTimes(1)
     await unlink('request')
-    expect(target.orcadFence).toBeUndefined()
+    expect(target.topodFence).toBeUndefined()
   })
 
   it.each([1, 2])('never connects when durable flush %s fails', async (flushNumber) => {
@@ -213,14 +213,14 @@ describe('independent runtime SSH access coordinator', () => {
     await expect(linkRuntimeSshAccess(userDataPath, request())).rejects.toThrow('disk full')
     expect(mocks.connect).not.toHaveBeenCalled()
     expect(current().pendingSshAccessOperation).toBeDefined()
-    expect(!!target.orcadFence).toBe(flushNumber === 2)
+    expect(!!target.topodFence).toBe(flushNumber === 2)
   })
 
   it('resumes unlink after release flush failed without releasing another owner', async () => {
     await linkRuntimeSshAccess(userDataPath, request())
     mocks.flush.mockRejectedValueOnce(new Error('disk full'))
     await expect(unlink()).rejects.toThrow('disk full')
-    expect(target.orcadFence).toBeUndefined()
+    expect(target.topodFence).toBeUndefined()
     await unlink()
     expect(events.filter((event) => event === 'release')).toHaveLength(1)
     expect(current().pendingSshAccessOperation).toBeUndefined()
@@ -230,7 +230,7 @@ describe('independent runtime SSH access coordinator', () => {
     await linkRuntimeSshAccess(userDataPath, request())
     mocks.flush.mockRejectedValueOnce(new Error('disk full'))
     await expect(unlink()).rejects.toThrow('disk full')
-    target = { ...target, orcadFence: { environmentId: 'other' } }
+    target = { ...target, topodFence: { environmentId: 'other' } }
     await expect(unlink()).rejects.toThrow('changed')
     expect(events.filter((event) => event === 'release')).toHaveLength(1)
     expect(current().pendingSshAccessOperation?.operation).toBe('unlink')
@@ -240,7 +240,7 @@ describe('independent runtime SSH access coordinator', () => {
     mocks.verify.mockRejectedValueOnce(new Error('offline'))
     await expect(linkRuntimeSshAccess(userDataPath, request())).rejects.toThrow()
     mocks.preflight.mockReturnValue({
-      blockers: [{ code: 'orcad_migration_direct_ssh_repositories' }]
+      blockers: [{ code: 'topod_migration_direct_ssh_repositories' }]
     })
     await expect(linkRuntimeSshAccess(userDataPath, request())).rejects.toThrow(
       'direct SSH authority'

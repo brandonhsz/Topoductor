@@ -90,7 +90,7 @@ export async function executeDesktopBrowserBridgeRequest(
     if (signal?.aborted) {
       throw new BridgeRefusal(
         DESKTOP_BROWSER_BRIDGE_UNAVAILABLE_CODE,
-        'The Orca desktop stopped sharing its browser before this command ran.'
+        'The Topo desktop stopped sharing its browser before this command ran.'
       )
     }
     deps.markWorkspaceDriven(workspaceId)
@@ -135,7 +135,7 @@ async function scopeRequest(
   if (!deps.isHostBrowsingRouted()) {
     throw new BridgeRefusal(
       DESKTOP_BROWSER_BRIDGE_UNROUTED_CODE,
-      `This host's browser tabs browse from your desktop's own network, so its orca CLI cannot use them. Set ${DESKTOP_BROWSER_BRIDGE_ROUTING_SETTING_LABEL} to "SSH host" and, if this host is listed under "${DESKTOP_BROWSER_BRIDGE_ROUTING_OPT_OUT_LABEL}", click "Use SSH host".`
+      `This host's browser tabs browse from your desktop's own network, so its topo CLI cannot use them. Set ${DESKTOP_BROWSER_BRIDGE_ROUTING_SETTING_LABEL} to "SSH host" and, if this host is listed under "${DESKTOP_BROWSER_BRIDGE_ROUTING_OPT_OUT_LABEL}", click "Use SSH host".`
     )
   }
   const params: Record<string, unknown> = { ...request.params }
@@ -163,7 +163,7 @@ async function scopeRequest(
   if (request.method === 'browser.keypress' && isPasteChord(params.key)) {
     throw new BridgeRefusal(
       DESKTOP_BROWSER_BRIDGE_NOT_FORWARDED_CODE,
-      'An SSH host cannot paste from the desktop clipboard. Use orca type or orca fill instead.'
+      'An SSH host cannot paste from the desktop clipboard. Use topo type or topo fill instead.'
     )
   }
   const requestedWorkspaceId = request.workspaceId ?? null
@@ -177,7 +177,7 @@ async function scopeRequest(
   if (!requestedWorkspaceId && !page) {
     throw new BridgeRefusal(
       DESKTOP_BROWSER_BRIDGE_SCOPE_CODE,
-      'Run this command inside a workspace on this host, or pass --worktree, so Orca knows which workspace’s browser tabs it may use.'
+      'Run this command inside a workspace on this host, or pass --worktree, so Topo knows which workspace’s browser tabs it may use.'
     )
   }
   const workspaceId = await deps.resolveWorkspace({ workspaceId: requestedWorkspaceId, page })

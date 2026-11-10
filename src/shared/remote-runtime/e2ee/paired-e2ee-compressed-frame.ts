@@ -13,7 +13,7 @@ export const COMPRESSED_FRAMES_CLIENT_CAPABILITY = 'transport.compressed-frames.
 /** Field rollback without a release: a host stops compressing, a desktop or CLI stops asking. */
 export function compressedFramesDisabled(): boolean {
   return (
-    typeof process !== 'undefined' && process.env?.ORCA_DISABLE_MOBILE_COMPRESSED_FRAMES === '1'
+    typeof process !== 'undefined' && process.env?.TOPO_DISABLE_MOBILE_COMPRESSED_FRAMES === '1'
   )
 }
 

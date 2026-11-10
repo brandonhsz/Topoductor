@@ -41,7 +41,7 @@ describe('ReserveDeadMan', () => {
     // After the first contact, silence trips on the plain window again.
     clock.value += WINDOW_MS + 1
     expect(deadMan.mode(reserve(1))).toBe('db')
-    expect(events('orca_relay_cell_reserve_dead_man_tripped')).toHaveLength(1)
+    expect(events('topo_relay_cell_reserve_dead_man_tripped')).toHaveLength(1)
   })
 
   it('still trips a fresh process that never hears from a placing director', () => {
@@ -50,7 +50,7 @@ describe('ReserveDeadMan', () => {
     expect(deadMan.mode(reserve(1))).toBe('reserve')
     clock.value += WINDOW_MS + grace + 1
     expect(deadMan.mode(reserve(1))).toBe('db')
-    expect(events('orca_relay_cell_reserve_dead_man_tripped')).toEqual([
+    expect(events('topo_relay_cell_reserve_dead_man_tripped')).toEqual([
       expect.objectContaining({ silentMs: WINDOW_MS + grace + 1 })
     ])
   })
@@ -80,8 +80,8 @@ describe('ReserveDeadMan', () => {
     clock.value += WINDOW_MS + 1
     expect(deadMan.mode(applied)).toBe('reserve')
     expect(deadMan.pendingTrip()).toEqual({ generation: 1, slots: 1 })
-    expect(events('orca_relay_cell_reserve_dead_man_held')).toHaveLength(2)
-    expect(events('orca_relay_cell_reserve_dead_man_tripped')).toEqual([])
+    expect(events('topo_relay_cell_reserve_dead_man_held')).toHaveLength(2)
+    expect(events('topo_relay_cell_reserve_dead_man_tripped')).toEqual([])
   })
 
   it('drops a permit for an earlier switch generation', () => {

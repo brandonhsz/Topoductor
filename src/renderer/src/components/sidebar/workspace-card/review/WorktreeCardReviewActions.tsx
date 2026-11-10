@@ -14,7 +14,7 @@ export function WorktreeCardReviewActions({
   provider,
   open,
   onOpenChange,
-  onOpenInOrca,
+  onOpenInTopo,
   onUnlink,
   closeHover
 }: {
@@ -23,12 +23,12 @@ export function WorktreeCardReviewActions({
   provider: string
   open?: boolean
   onOpenChange: (open: boolean) => void
-  onOpenInOrca?: (event: MouseEvent) => void
+  onOpenInTopo?: (event: MouseEvent) => void
   onUnlink?: () => void
   closeHover: () => void
 }): React.JSX.Element | null {
   const t = useTranslate()
-  if (!onOpenInOrca && !onUnlink) {
+  if (!onOpenInTopo && !onUnlink) {
     return null
   }
   return (
@@ -39,15 +39,15 @@ export function WorktreeCardReviewActions({
       open={open}
       onOpenChange={onOpenChange}
     >
-      {onOpenInOrca ? (
+      {onOpenInTopo ? (
         <DropdownMenuItem
           onClick={(event) => {
             closeHover()
-            onOpenInOrca(event)
+            onOpenInTopo(event)
           }}
         >
           <MonitorUp className="size-3.5" />
-          {t('auto.components.sidebar.WorktreeCardMeta.2c67730e07', 'Open in Orca')}
+          {t('auto.components.sidebar.WorktreeCardMeta.2c67730e07', 'Open in Topo')}
         </DropdownMenuItem>
       ) : null}
       {onUnlink ? (
@@ -69,14 +69,14 @@ export function WorktreeCardLinkedReviewActions({
   item,
   review,
   onOpenChange,
-  onOpenInOrca,
+  onOpenInTopo,
   onUnlink,
   closeHover
 }: {
   item: WorkspaceAttachment
   review: WorktreeCardPrDisplay | null
   onOpenChange: (open: boolean) => void
-  onOpenInOrca?: (event: MouseEvent, review?: WorktreeCardPrDisplay) => void
+  onOpenInTopo?: (event: MouseEvent, review?: WorktreeCardPrDisplay) => void
   onUnlink?: (item?: WorkspaceAttachment) => void
   closeHover: () => void
 }): React.JSX.Element {
@@ -88,10 +88,10 @@ export function WorktreeCardLinkedReviewActions({
       number={item.number}
       provider={workspaceAttachmentProviderLabel(item)}
       onOpenChange={onOpenChange}
-      onOpenInOrca={
-        url && item.provider === 'github' && onOpenInOrca
+      onOpenInTopo={
+        url && item.provider === 'github' && onOpenInTopo
           ? (event) =>
-              onOpenInOrca(
+              onOpenInTopo(
                 event,
                 review ?? {
                   provider: 'github',

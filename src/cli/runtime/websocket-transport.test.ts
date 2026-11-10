@@ -18,7 +18,7 @@ import './websocket-transport'
 import '../../shared/remote-runtime/requests/remote-runtime-prepared-request-admission'
 import { RuntimeClient } from './client'
 import '../handlers/worktree-removal-request'
-import { launchOrcaApp } from './launch'
+import { launchTopoApp } from './launch'
 import './environments'
 import {
   MIN_COMPATIBLE_RUNTIME_CLIENT_VERSION,
@@ -26,7 +26,7 @@ import {
 } from '../../shared/protocol-version'
 
 vi.mock('./launch', () => ({
-  launchOrcaApp: vi.fn()
+  launchTopoApp: vi.fn()
 }))
 
 type TestRuntime = {
@@ -44,7 +44,7 @@ describe('CLI remote WebSocket transport', () => {
   const servers: TestRuntime[] = []
 
   afterEach(async () => {
-    vi.mocked(launchOrcaApp).mockClear()
+    vi.mocked(launchTopoApp).mockClear()
     await Promise.all(servers.splice(0).map((server) => server.close()))
   })
 

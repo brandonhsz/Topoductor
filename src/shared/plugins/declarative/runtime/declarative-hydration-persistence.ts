@@ -1,16 +1,16 @@
-import type { OrcaBridge } from './declarative-runtime-types'
+import type { TopoBridge } from './declarative-runtime-types'
 import { readHostMessage } from './declarative-host-messages'
-import type { OrcaPersistedEntry } from './declarative-atoms'
+import type { TopoPersistedEntry } from './declarative-atoms'
 import { createDeclarativePersistence } from './declarative-storage-sync'
 
-export type HydratedPersistFields = { entries: OrcaPersistedEntry[]; hydration?: number }
+export type HydratedPersistFields = { entries: TopoPersistedEntry[]; hydration?: number }
 
 /**
  * Persistence that tags each write with the host's id for the hydrate its values came from, so
  * a write made before a workspace switch is stored under the workspace it was made in.
  */
 export function createHydratedPersistence(options: {
-  bridge: OrcaBridge | null
+  bridge: TopoBridge | null
   report: (error: unknown) => void
   post: (fields: HydratedPersistFields) => void
   hydratePanel: (payload: unknown) => void

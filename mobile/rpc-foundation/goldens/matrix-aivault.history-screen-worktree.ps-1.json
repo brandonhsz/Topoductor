@@ -227,7 +227,7 @@
         "View": 8
       },
       "labels": ["Back", "Refresh agent sessions"],
-      "text": ["Agent Session History", "orca-history", "Loading agent sessions…"]
+      "text": ["Agent Session History", "topo-history", "Loading agent sessions…"]
     },
     "7c48e0564605": {
       "name": "status.get#1",

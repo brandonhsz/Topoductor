@@ -10,7 +10,7 @@ import { resetWorkspacePortScanTimeoutBackoffForTests } from './local-workspace-
 import { LSOF_NONBLOCKING_ARGS } from '../../shared/lsof-nonblocking-args'
 
 const spawnMock = vi.hoisted(() => vi.fn())
-vi.mock('@orca/process-host', () => ({ spawnProcess: spawnMock }))
+vi.mock('@topo/process-host', () => ({ spawnProcess: spawnMock }))
 vi.mock('./darwin-port-scan-lock', () => ({
   openDarwinPortScanLock: () => openSync(devNull, 'r')
 }))

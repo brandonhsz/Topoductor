@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
 import { expect, test } from '@stablyai/playwright-test'
-import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/orca-restart'
+import { attachRepoAndOpenTerminal, createRestartSession } from './helpers/topo-restart'
 import {
   createGleamCatalogFixture,
   EXCALIDRAW_PLUGIN_KEY,
@@ -27,7 +27,7 @@ async function openPluginPage(
 ) {
   await app.evaluate(({ app: electronApp }, link) => {
     electronApp.emit('open-url', { preventDefault: () => undefined }, link)
-  }, `orca://plugins/${pluginKey}?catalog=official`)
+  }, `topo://plugins/${pluginKey}?catalog=official`)
   await expect(page.getByRole('article').locator('#plugin-detail-heading')).toContainText(name, {
     timeout: 30_000
   })
@@ -43,12 +43,12 @@ async function tryFromToast(page: Page, name: string): Promise<void> {
 test('Try it opens a blank highlighted file and a new drawing', async ({}, testInfo) => {
   // Why: one Electron launch, a Git catalog fetch and two installs; slower than the 30s default.
   test.setTimeout(180_000)
-  const root = await mkdtemp(join(tmpdir(), 'orca-plugin-try-it-e2e-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-plugin-try-it-e2e-'))
   const fixture = await createGleamCatalogFixture(root)
   // Its own launch, so the isolated-frames switch rides the session env, not test.use.
   const session = createRestartSession(testInfo, {
     ...fixture.gitEnvironment,
-    ...ISOLATED_FRAMES_E2E.orcaAppExtraEnv
+    ...ISOLATED_FRAMES_E2E.topoAppExtraEnv
   })
   let launched: Awaited<ReturnType<typeof session.launch>> | null = null
   try {

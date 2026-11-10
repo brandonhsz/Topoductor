@@ -1,7 +1,7 @@
 import type { AgentLaunchResult } from '../../../../../shared/agent-launch/contracts/agent-launch-intent'
-import { isOrcaSessionId } from '../../../../../shared/orca-session-address'
+import { isTopoSessionId } from '../../../../../shared/topo-session-address'
 
-import { ORCA_SESSION_ADDRESS_PREFIX } from '../../../../../shared/orca-session-address-prefix'
+import { TOPO_SESSION_ADDRESS_PREFIX } from '../../../../../shared/topo-session-address-prefix'
 import type { AgentLaunchParams } from '../../../../../shared/rpc-contract/agent-launch-params'
 import {
   prepareAgentCreationCard,
@@ -27,12 +27,12 @@ function prepareHandoffRecord(
   params: AgentLaunchParams & { operationId: string },
   context: RpcContext
 ): (result: AgentLaunchResult) => void {
-  // Only the orca CLI on this host names its chat; windows, phones and remote CLIs launch for a person.
+  // Only the topo CLI on this host names its chat; windows, phones and remote CLIs launch for a person.
   const callerSessionId = context.orchestrationCompatibilityEvidence?.agentSessionId
   if (
     !isAgentRpcCaller(context.caller) ||
     callerSessionId === undefined ||
-    !isOrcaSessionId(callerSessionId)
+    !isTopoSessionId(callerSessionId)
   ) {
     return () => {}
   }
@@ -48,7 +48,7 @@ function prepareHandoffRecord(
         : ''
     const address =
       outcome.kind === 'structured'
-        ? `${ORCA_SESSION_ADDRESS_PREFIX}${outcome.sessionId}`
+        ? `${TOPO_SESSION_ADDRESS_PREFIX}${outcome.sessionId}`
         : outcome.handle
     publish(() => ({
       kind: 'agent-handoff',

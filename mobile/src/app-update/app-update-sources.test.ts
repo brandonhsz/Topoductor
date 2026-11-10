@@ -10,9 +10,9 @@ const tagRefs = fixture('github-mobile-android-tag-refs.json')
 const release050 = fixture('github-release-mobile-android-v0.0.50.json')
 
 const REFS_URL =
-  'https://api.github.com/repos/stablyai/orca/git/matching-refs/tags/mobile-android-v'
+  'https://api.github.com/repos/brandonhsz/Topoductor/git/matching-refs/tags/mobile-android-v'
 const releaseUrl = (version: string) =>
-  `https://api.github.com/repos/stablyai/orca/releases/tags/mobile-android-v${version}`
+  `https://api.github.com/repos/brandonhsz/Topoductor/releases/tags/mobile-android-v${version}`
 
 function fakeFetch(routes: Record<string, { status: number; body?: unknown }>) {
   const requested: string[] = []
@@ -41,7 +41,7 @@ describe('GitHub release source (Android sideload)', () => {
     ).resolves.toEqual({
       kind: 'available',
       version: '0.0.50',
-      url: 'https://github.com/stablyai/orca/releases/tag/mobile-android-v0.0.50'
+      url: 'https://github.com/brandonhsz/Topoductor/releases/tag/mobile-android-v0.0.50'
     })
     expect(requested).toEqual([REFS_URL, releaseUrl('0.0.50')])
   })

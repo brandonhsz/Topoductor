@@ -193,7 +193,7 @@ describe('useEmulatorPaneSession', () => {
     expect(latest?.loading).toBe(true)
     await act(async () => {
       window.dispatchEvent(
-        new CustomEvent('orca:emulator-auto-attach', {
+        new CustomEvent('topo:emulator-auto-attach', {
           detail: {
             worktreeId: WORKTREE_ID,
             info: {

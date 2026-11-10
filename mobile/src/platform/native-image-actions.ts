@@ -3,7 +3,7 @@ import { Platform } from 'react-native'
 import * as Clipboard from 'expo-clipboard'
 import { File as FsFile, type Directory, type FileHandle } from 'expo-file-system'
 import { useFocusEffect, useNavigation } from 'expo-router'
-import { saveImageToPhotos, shareImage } from '../../modules/orca-mobile-web-shell/src'
+import { saveImageToPhotos, shareImage } from '../../modules/topo-mobile-web-shell/src'
 import {
   CLIPBOARD_IMAGE_MAX_SOURCE_BYTES,
   CLIPBOARD_IMAGE_TOO_LARGE_ERROR
@@ -37,7 +37,7 @@ function namedForMime(file: FsFile, folder: Directory, mime: string): FsFile {
 }
 
 async function download(url: string): Promise<Ready> {
-  const folder = freshCacheFolder('orca-image-actions')
+  const folder = freshCacheFolder('topo-image-actions')
   const file = await FsFile.downloadFileAsync(url, folder)
   const raster = isKnownRasterImageMimeType(file.type)
   if (!raster || file.size > CLIPBOARD_IMAGE_MAX_SOURCE_BYTES) {
@@ -75,7 +75,7 @@ function createNativeImageActions(isFocused: () => boolean) {
     }
     if (offset === 0) {
       dropStaged()
-      const folder = freshCacheFolder('orca-image-actions')
+      const folder = freshCacheFolder('topo-image-actions')
       const file = new FsFile(folder, 'image.bin')
       file.create({ overwrite: true })
       staged = { folder, file, handle: file.open(), byteLength: 0 }

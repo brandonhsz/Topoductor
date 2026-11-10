@@ -18,7 +18,7 @@ import {
 let userDataPath: string
 
 beforeEach(() => {
-  userDataPath = mkdtempSync(join(tmpdir(), 'orca-removed-preference-'))
+  userDataPath = mkdtempSync(join(tmpdir(), 'topo-removed-preference-'))
 })
 
 afterEach(() => {

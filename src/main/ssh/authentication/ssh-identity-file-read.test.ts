@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { mkdir, mkdtemp, rm, symlink, truncate, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import type { SshTarget } from '../../../shared/ssh-types'
 import {
   resolvePrivateKeys,
@@ -19,7 +19,7 @@ function targetFor(identityFile: string): SshTarget {
 }
 
 beforeAll(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-ssh-identity-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-ssh-identity-'))
   await mkdir(join(root, 'directory'))
   await writeFile(join(root, 'huge'), '')
   await truncate(join(root, 'huge'), 2 * 1024 * 1024)
@@ -64,7 +64,7 @@ describe('SSH identity file reads', () => {
     )
     expect(error).toHaveProperty(
       'message',
-      `All configured authentication methods failed. Orca skipped identity file "${keyPath}" (${reason}).`
+      `All configured authentication methods failed. Topo skipped identity file "${keyPath}" (${reason}).`
     )
   })
 })

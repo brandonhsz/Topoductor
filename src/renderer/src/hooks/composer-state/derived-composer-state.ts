@@ -15,7 +15,7 @@ import {
   DEFAULT_ISSUE_COMMAND_TEMPLATE,
   renderIssueCommandTemplate
 } from '@/lib/new-workspace'
-import { getSetupConfig } from '../../../../shared/orca-hook-setup-config'
+import { getSetupConfig } from '../../../../shared/topo-hook-setup-config'
 import { deriveWorkspaceSetupState } from '@/lib/workspace/creation/setup/workspace-setup-preparation'
 import type { SparsePreset } from '../../../../shared/worktree/create-types'
 import { useRetiredWorktreeNames } from '@/hooks/useRetiredWorktreeNames'

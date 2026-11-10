@@ -15,11 +15,11 @@ const other: JiraSite = { ...acme, id: 'site-other', siteUrl: 'https://other.atl
 function issue(overrides: Partial<JiraIssue> = {}): JiraIssue {
   return {
     id: '1',
-    key: 'ORCA-123',
+    key: 'TOPO-123',
     siteId: 'site-acme',
     title: 'Add Jira to mobile',
-    url: 'https://acme.atlassian.net/browse/ORCA-123',
-    project: { id: 'p1', key: 'ORCA', name: 'Orca' },
+    url: 'https://acme.atlassian.net/browse/TOPO-123',
+    project: { id: 'p1', key: 'TOPO', name: 'Topo' },
     issueType: { id: 't1', name: 'Task' },
     status: { id: 's1', name: 'To Do', categoryKey: 'new', categoryName: 'To Do' },
     labels: [],
@@ -40,7 +40,7 @@ describe('lookupJiraIssueByUrl', () => {
     const client = clientReturning(issue(), sendRequest)
     // Same issue keys can exist on multiple sites; never answer an acme link with another site’s issue.
     await expect(
-      lookupJiraIssueByUrl(client, 'https://acme.atlassian.net/browse/ORCA-123', [other])
+      lookupJiraIssueByUrl(client, 'https://acme.atlassian.net/browse/TOPO-123', [other])
     ).resolves.toBeNull()
     expect(sendRequest).not.toHaveBeenCalled()
   })

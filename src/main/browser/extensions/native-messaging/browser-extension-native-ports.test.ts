@@ -45,7 +45,7 @@ await import('../api-runtime/browser-extension-api-request')
 
 const VAULT = 'v'.repeat(32)
 registerNativeMessagingNamespace()
-const methods = registry.getBrowserExtensionNamespace('orcaNativeMessaging')?.methods ?? {}
+const methods = registry.getBrowserExtensionNamespace('topoNativeMessaging')?.methods ?? {}
 
 function fakeSession() {
   const emitter = { extensions: new EventEmitter(), serviceWorkers: new EventEmitter() }

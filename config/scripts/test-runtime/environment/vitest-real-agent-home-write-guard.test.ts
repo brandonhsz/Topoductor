@@ -9,7 +9,7 @@ import { takeRealAgentHomeWriteViolations } from './vitest-real-agent-home-write
 
 // Use missing-parent/no-op paths so guard ablation never writes real home either.
 const missingRealFolder = (entry: string) =>
-  join(userInfo().homedir, entry, `orca-vitest-guard-${randomUUID()}`)
+  join(userInfo().homedir, entry, `topo-vitest-guard-${randomUUID()}`)
 
 afterEach(() => {
   takeRealAgentHomeWriteViolations()
@@ -33,13 +33,13 @@ describe('vitest real-agent-home write guard', () => {
   )
 
   it('allows only Claude transcript writes for the real CLI opt-in', () => {
-    vi.stubEnv('ORCA_REAL_CLAUDE_CLI_TEST', '1')
+    vi.stubEnv('TOPO_REAL_CLAUDE_CLI_TEST', '1')
     const missingTranscript = missingRealFolder(join('.claude', 'projects'))
     expect(() => rmSync(missingTranscript, { force: true })).not.toThrow()
     expect(() => rmSync(missingRealFolder('.codex'), { force: true })).toThrow(
       /real-agent-home guard/
     )
-    expect(() => rmSync(missingRealFolder('.orca'), { force: true })).toThrow(
+    expect(() => rmSync(missingRealFolder('.topo'), { force: true })).toThrow(
       /real-agent-home guard/
     )
   })
@@ -51,7 +51,7 @@ describe('vitest real-agent-home write guard', () => {
   })
 
   it('refuses a removal that would otherwise succeed silently', () => {
-    expect(() => rmSync(missingRealFolder('.orca'), { recursive: true, force: true })).toThrow(
+    expect(() => rmSync(missingRealFolder('.topo'), { recursive: true, force: true })).toThrow(
       /real-agent-home guard/
     )
   })
@@ -66,7 +66,7 @@ describe('vitest real-agent-home write guard', () => {
   })
 
   it('protects the account home even when HOME points elsewhere', () => {
-    const tempHome = mkdtempSync(join(tmpdir(), 'orca-vitest-guard-home-'))
+    const tempHome = mkdtempSync(join(tmpdir(), 'topo-vitest-guard-home-'))
     vi.stubEnv('HOME', tempHome)
     vi.stubEnv('USERPROFILE', tempHome)
     try {
@@ -80,13 +80,13 @@ describe('vitest real-agent-home write guard', () => {
   })
 
   it('leaves a sibling that only shares an agent folder prefix alone', () => {
-    const sibling = join(userInfo().homedir, `.codex-orca-vitest-guard-${randomUUID()}`)
+    const sibling = join(userInfo().homedir, `.codex-topo-vitest-guard-${randomUUID()}`)
     expect(() => rmSync(sibling, { force: true })).not.toThrow()
   })
 
   it('allows reads there and writes under a temp home', () => {
     expect(() => openSync(join(missingRealFolder('.codex'), 'config.toml'), 'r')).toThrow(/ENOENT/)
-    const tempHome = mkdtempSync(join(tmpdir(), 'orca-vitest-guard-home-'))
+    const tempHome = mkdtempSync(join(tmpdir(), 'topo-vitest-guard-home-'))
     try {
       const target = join(tempHome, '.codex', 'config.toml')
       mkdirSync(join(tempHome, '.codex'))

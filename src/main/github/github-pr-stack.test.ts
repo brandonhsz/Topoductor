@@ -16,7 +16,7 @@ vi.mock('./rate-limit', () => ({
 }))
 import { _resetGitHubPRStackCacheForTests, mergeGitHubPRStack } from './github-pr-stack'
 
-const repository = { owner: 'stablyai', repo: 'orca', host: 'github.com' }
+const repository = { owner: 'brandonhsz', repo: 'topo', host: 'github.com' }
 
 beforeEach(() => {
   vi.useRealTimers()

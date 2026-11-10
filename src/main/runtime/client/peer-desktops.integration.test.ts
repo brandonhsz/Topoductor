@@ -12,14 +12,14 @@ import {
 import type { PairingOffer } from '../../../shared/remote-runtime/pairing/mobile-relay-pairing-offer'
 import { sendRemoteRuntimeRequestOnSocket } from '../../../shared/remote-runtime/requests/remote-runtime-request-socket'
 import {
-  ORCAD_DECLARE_CLIENT_METHOD,
-  ORCAD_PEER_DESKTOPS_METHOD,
-  type OrcadPeerDesktopsResult
-} from '../../../shared/orcad-peer-desktops-contract'
-import { ORCAD_PEER_DESKTOPS_RUNTIME_CAPABILITY } from '../../../shared/orcad-runtime-capabilities'
+  TOPOD_DECLARE_CLIENT_METHOD,
+  TOPOD_PEER_DESKTOPS_METHOD,
+  type TopodPeerDesktopsResult
+} from '../../../shared/topod-peer-desktops-contract'
+import { TOPOD_PEER_DESKTOPS_RUNTIME_CAPABILITY } from '../../../shared/topod-runtime-capabilities'
 import type { RuntimeStatus } from '../../../shared/runtime-session-contracts'
-import { OrcaRuntimeService } from '../orca-runtime'
-import { OrcaRuntimeRpcServer } from '../rpc/server/runtime-rpc'
+import { TopoRuntimeService } from '../topo-runtime'
+import { TopoRuntimeRpcServer } from '../rpc/server/runtime-rpc'
 import {
   authenticateMobileWsSession,
   createEncryptedWsResponseReader,
@@ -29,7 +29,7 @@ import {
 } from '../rpc/server/runtime-rpc-mobile-ws-test-harness'
 import { makeStore } from '../rpc/server/runtime-rpc-worktree-store-fixtures'
 import { DECLARED_CLIENT_RECONNECT_GRACE_MS } from '../rpc/server/pairing/declared-desktop-clients'
-import { partialRuntimeStore } from '../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../topo-runtime-tests/runtime-store-partial-fixture'
 
 vi.mock('../../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => {
   const facade = getWorktreeListingMocks()
@@ -59,7 +59,7 @@ const { getWorktreeListingMocks } = vi.hoisted(() => {
 const STABLE = 'stable-installation-id'
 const DEV = 'dev-installation-id-01'
 
-describe(ORCAD_PEER_DESKTOPS_METHOD, () => {
+describe(TOPOD_PEER_DESKTOPS_METHOD, () => {
   const cleanups: (() => Promise<void> | void)[] = []
   afterEach(async () => {
     for (const cleanup of cleanups.splice(0).toReversed()) {
@@ -67,10 +67,10 @@ describe(ORCAD_PEER_DESKTOPS_METHOD, () => {
     }
   })
 
-  async function startServer(): Promise<OrcaRuntimeRpcServer> {
-    const server = new OrcaRuntimeRpcServer({
-      runtime: new OrcaRuntimeService(partialRuntimeStore(makeStore())),
-      userDataPath: mkdtempSync(join(tmpdir(), 'orca-peer-desktops-')),
+  async function startServer(): Promise<TopoRuntimeRpcServer> {
+    const server = new TopoRuntimeRpcServer({
+      runtime: new TopoRuntimeService(partialRuntimeStore(makeStore())),
+      userDataPath: mkdtempSync(join(tmpdir(), 'topo-peer-desktops-')),
       enableWebSocket: true,
       wsPort: 0
     })
@@ -79,7 +79,7 @@ describe(ORCAD_PEER_DESKTOPS_METHOD, () => {
     return server
   }
 
-  function pair(server: OrcaRuntimeRpcServer, name: string, scope: 'runtime' | 'mobile') {
+  function pair(server: TopoRuntimeRpcServer, name: string, scope: 'runtime' | 'mobile') {
     const offer = server.createPairingOffer({ address: '127.0.0.1', name, scope })
     if (!offer.available) {
       throw new Error('pairing unavailable')
@@ -123,7 +123,7 @@ describe(ORCAD_PEER_DESKTOPS_METHOD, () => {
   }
 
   async function peerNames(offer: PairingOffer, clientInstanceId: string): Promise<string[]> {
-    const answer = await oneShot<OrcadPeerDesktopsResult>(offer, ORCAD_PEER_DESKTOPS_METHOD, {
+    const answer = await oneShot<TopodPeerDesktopsResult>(offer, TOPOD_PEER_DESKTOPS_METHOD, {
       clientInstanceId
     })
     if (!answer.ok) {
@@ -137,11 +137,11 @@ describe(ORCAD_PEER_DESKTOPS_METHOD, () => {
     const startup = pair(server, 'CLI 10/28/2026', 'runtime')
     const status = await oneShot<RuntimeStatus>(startup, 'status.get')
     expect(status.ok && status.result.capabilities).toContain(
-      ORCAD_PEER_DESKTOPS_RUNTIME_CAPABILITY
+      TOPOD_PEER_DESKTOPS_RUNTIME_CAPABILITY
     )
     const control = await socket(startup)
     expect(
-      await control.request(ORCAD_DECLARE_CLIENT_METHOD, { clientInstanceId: STABLE })
+      await control.request(TOPOD_DECLARE_CLIENT_METHOD, { clientInstanceId: STABLE })
     ).toMatchObject({ ok: true })
     // An undeclared second socket (as a terminal multiplex) and one-shot calls are this same desktop.
     await (await socket(startup)).request('status.get')
@@ -152,12 +152,12 @@ describe(ORCAD_PEER_DESKTOPS_METHOD, () => {
     const server = await startServer()
     const startup = pair(server, 'CLI 10/28/2026', 'runtime')
     const stable = await socket(startup)
-    await stable.request(ORCAD_DECLARE_CLIENT_METHOD, { clientInstanceId: STABLE })
+    await stable.request(TOPOD_DECLARE_CLIENT_METHOD, { clientInstanceId: STABLE })
     const dev = await socket(startup)
-    await dev.request(ORCAD_DECLARE_CLIENT_METHOD, { clientInstanceId: DEV })
+    await dev.request(TOPOD_DECLARE_CLIENT_METHOD, { clientInstanceId: DEV })
     // The startup row's "CLI <date>" name says nothing to a person.
-    expect(await peerNames(startup, STABLE)).toEqual(['another Orca'])
-    expect(await peerNames(startup, DEV)).toEqual(['another Orca'])
+    expect(await peerNames(startup, STABLE)).toEqual(['another Topo'])
+    expect(await peerNames(startup, DEV)).toEqual(['another Topo'])
 
     // Dev's control socket closes: lost contact isn't proof it left, so it still counts while it
     // reconnects (the grace's expiry is unit-tested with a clock).
@@ -168,41 +168,41 @@ describe(ORCAD_PEER_DESKTOPS_METHOD, () => {
     dev.session.ws.close()
     await closed
     await expect.poll(declared).toBe(1)
-    expect(await peerNames(startup, STABLE)).toEqual(['another Orca'])
+    expect(await peerNames(startup, STABLE)).toEqual(['another Topo'])
 
     // A reconnect declares again.
     const devAgain = await socket(startup)
-    await devAgain.request(ORCAD_DECLARE_CLIENT_METHOD, { clientInstanceId: DEV })
-    expect(await peerNames(startup, STABLE)).toEqual(['another Orca'])
+    await devAgain.request(TOPOD_DECLARE_CLIENT_METHOD, { clientInstanceId: DEV })
+    expect(await peerNames(startup, STABLE)).toEqual(['another Topo'])
   })
 
   it('sanitizes a peer name and ignores phones', async () => {
     const server = await startServer()
-    const stable = pair(server, 'Orca', 'runtime')
-    await (await socket(stable)).request(ORCAD_DECLARE_CLIENT_METHOD, { clientInstanceId: STABLE })
-    const dev = pair(server, 'Orca‮\nDev​', 'runtime')
-    await (await socket(dev)).request(ORCAD_DECLARE_CLIENT_METHOD, { clientInstanceId: DEV })
-    expect(await peerNames(stable, STABLE)).toEqual(['OrcaDev'])
+    const stable = pair(server, 'Topo', 'runtime')
+    await (await socket(stable)).request(TOPOD_DECLARE_CLIENT_METHOD, { clientInstanceId: STABLE })
+    const dev = pair(server, 'Topo‮\nDev​', 'runtime')
+    await (await socket(dev)).request(TOPOD_DECLARE_CLIENT_METHOD, { clientInstanceId: DEV })
+    expect(await peerNames(stable, STABLE)).toEqual(['TopoDev'])
 
     const phone = await socket(pair(server, 'Phone', 'mobile'))
-    const refused = await phone.request(ORCAD_DECLARE_CLIENT_METHOD, {
+    const refused = await phone.request(TOPOD_DECLARE_CLIENT_METHOD, {
       clientInstanceId: 'phone-installation'
     })
     expect(refused.ok).not.toBe(true)
-    expect(await peerNames(stable, STABLE)).toEqual(['OrcaDev'])
+    expect(await peerNames(stable, STABLE)).toEqual(['TopoDev'])
   })
 
   // R39 follow-up: Stable removed the host while Dev used it, so the server was kept. Once Stable
-  // is gone past the reconnect grace, Dev is the last Orca, and its own Remove may tear down.
-  it('lets the last Orca tear down once the other one has been gone past the grace', async () => {
+  // is gone past the reconnect grace, Dev is the last Topo, and its own Remove may tear down.
+  it('lets the last Topo tear down once the other one has been gone past the grace', async () => {
     const server = await startServer()
     const startup = pair(server, 'CLI 10/28/2026', 'runtime')
     const stable = await socket(startup)
-    await stable.request(ORCAD_DECLARE_CLIENT_METHOD, { clientInstanceId: STABLE })
+    await stable.request(TOPOD_DECLARE_CLIENT_METHOD, { clientInstanceId: STABLE })
     const dev = await socket(startup)
-    await dev.request(ORCAD_DECLARE_CLIENT_METHOD, { clientInstanceId: DEV })
+    await dev.request(TOPOD_DECLARE_CLIENT_METHOD, { clientInstanceId: DEV })
     // Stable's Remove: Dev is connected, so the server is kept.
-    expect(await peerNames(startup, STABLE)).toEqual(['another Orca'])
+    expect(await peerNames(startup, STABLE)).toEqual(['another Topo'])
 
     // Stable lets go of the host.
     const declared = () => server['declaredDesktopClients']['byConnection'].size
@@ -211,7 +211,7 @@ describe(ORCAD_PEER_DESKTOPS_METHOD, () => {
     await closed
     await expect.poll(declared).toBe(1)
     // Within the grace, Stable could still be reconnecting, so Dev's Remove keeps the server.
-    expect(await peerNames(startup, DEV)).toEqual(['another Orca'])
+    expect(await peerNames(startup, DEV)).toEqual(['another Topo'])
 
     const real = performance.now.bind(performance)
     const clock = vi

@@ -5,7 +5,7 @@ import {
 } from '../../../../../shared/browser-url'
 import type { BrowserLoadError } from '../../../../../shared/browser-workspace-types'
 import '../../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
 import { isBrowserLoadBlockedByExtension } from '../../../../../shared/browser-load-failure'
 import { translate } from '@/i18n/i18n'
 import { BROWSER_GUEST_RECOVERY_ERROR_CODE } from './browser-page-guest-recovery'
@@ -129,7 +129,7 @@ export function createBrowserPageWebviewLoadingHandlers({
       setAddressBarValue(toDisplayUrl(browserModelUrl))
     }
     onSetUrlRef.current(browserTabId, browserModelUrl)
-    if (keepAddressBarFocusRef.current && currentUrl === ORCA_BROWSER_BLANK_URL) {
+    if (keepAddressBarFocusRef.current && currentUrl === TOPO_BROWSER_BLANK_URL) {
       focusAddressBarNow()
     } else {
       keepAddressBarFocusRef.current = false

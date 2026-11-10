@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { findGitRemoteNameByFetchUrl, parseGitRemoteVerboseLine } from './git-remote-url-index'
 
-const SSH_URL = 'git@github.com:contributor/orca.git'
-const HTTPS_URL = 'https://github.com/contributor/orca.git'
+const SSH_URL = 'git@github.com:contributor/topo.git'
+const HTTPS_URL = 'https://github.com/contributor/topo.git'
 
 function verbose(rows: readonly (readonly [string, string])[]): string {
   return rows.map(([name, url]) => `${name}\t${url}`).join('\n')
@@ -26,8 +26,8 @@ describe('parseGitRemoteVerboseLine', () => {
 
 describe('findGitRemoteNameByFetchUrl', () => {
   const stdout = verbose([
-    ['origin', 'https://github.com/stablyai/orca.git (fetch)'],
-    ['origin', 'https://github.com/stablyai/orca.git (push)'],
+    ['origin', 'https://github.com/brandonhsz/Topoductor.git (fetch)'],
+    ['origin', 'https://github.com/brandonhsz/Topoductor.git (push)'],
     ['first-fork', `${SSH_URL} (fetch)`],
     ['first-fork', `${SSH_URL} (push)`],
     ['second-fork', `${SSH_URL} (fetch)`],

@@ -2,7 +2,7 @@ import { decodeMobileCanonicalBase64 } from './mobile-paired-e2ee-primitives'
 
 // Opt into our react-native patch: binary messages then arrive as `{ base64 }`, skipping base64-js.
 export function receiveBinaryAsBase64(socket: WebSocket): WebSocket {
-  return Object.assign(socket, { orcaBinaryAsBase64: true })
+  return Object.assign(socket, { topoBinaryAsBase64: true })
 }
 
 export async function websocketPayloadToUint8(value: unknown): Promise<Uint8Array | null> {

@@ -1,11 +1,11 @@
-import { parseOrcaSessionAddress } from '../../orca-session-address'
+import { parseTopoSessionAddress } from '../../topo-session-address'
 
 export type OrchestrationAgentReference = { label: string; address: string; hostKey: string }
 
 export function isPublicOrchestrationAddress(address: string): boolean {
   return (
     /^(?:term_[a-zA-Z0-9_-]+|(?:dispatch|run):[a-zA-Z0-9_-]+)$/.test(address) ||
-    parseOrcaSessionAddress(address) !== null
+    parseTopoSessionAddress(address) !== null
   )
 }
 
@@ -19,7 +19,7 @@ export function printableAgentLabel(label: string): string {
 }
 
 // Every printed reference carries this; a draft without it holds no agent reference.
-const AGENT_REFERENCE_MARK = ' (Orca agent '
+const AGENT_REFERENCE_MARK = ' (Topo agent '
 
 export function mayHoldAgentReferences(text: string): boolean {
   return text.includes(AGENT_REFERENCE_MARK)
@@ -31,7 +31,7 @@ export function agentReferenceToken(reference: OrchestrationAgentReference): str
 
 /** The routing line a sent message ends with, one per mentioned agent. */
 export function agentReferenceNote(label: string, address: string): string {
-  return `[Orca agent "${label}": ${address} — message it with orca orchestration send --to ${address}]`
+  return `[Topo agent "${label}": ${address} — message it with topo orchestration send --to ${address}]`
 }
 
 export function terminalAgentReference(reference: OrchestrationAgentReference): string | null {

@@ -45,7 +45,7 @@ export function setTerminalScopesForTest(
   active = scopes ? { scopes, log } : null
 }
 
-/** Match Orca’s exact wrapper paths so an unrelated user systemd-run is not hidden. */
+/** Match Topo’s exact wrapper paths so an unrelated user systemd-run is not hidden. */
 export function isTerminalScopeWrapper(processName: string): boolean {
   return (
     active !== null &&
@@ -100,7 +100,7 @@ export function wrapPtySpawnInTerminalScope(
       '--quiet',
       '--collect',
       `--slice=${scopes.slice}`,
-      `--unit=orca_pty_${scopes.launchId}_${scopeCounter}.scope`,
+      `--unit=topo_pty_${scopes.launchId}_${scopeCounter}.scope`,
       ...scopes.properties.map((property) => `--property=${property}`),
       '--',
       ...(unsets.length + sets.length > 0 ? [scopes.envBinary, ...unsets, ...sets] : []),

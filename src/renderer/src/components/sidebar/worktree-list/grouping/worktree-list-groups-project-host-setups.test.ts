@@ -13,14 +13,14 @@ describe('buildRows with pinned worktrees', () => {
     const localRepoB: Repo = {
       ...repo,
       id: 'repo-local-b',
-      path: '/tmp/orca-b',
-      displayName: 'orca-b'
+      path: '/tmp/topo-b',
+      displayName: 'topo-b'
     }
     const localWorktreeB: Worktree = {
       ...worktree,
       id: 'wt-local-b',
       repoId: localRepoB.id,
-      path: '/tmp/orca-b-feature',
+      path: '/tmp/topo-b-feature',
       displayName: 'feature-b'
     }
     const localSetupB: ProjectHostSetup = {
@@ -33,14 +33,14 @@ describe('buildRows with pinned worktrees', () => {
     const runtimeRepoB: Repo = {
       ...repo,
       id: 'repo-runtime-b',
-      path: '/tmp/orca-runtime-b',
-      displayName: 'orca-runtime-b'
+      path: '/tmp/topo-runtime-b',
+      displayName: 'topo-runtime-b'
     }
     const runtimeWorktreeB: Worktree = {
       ...worktree,
       id: 'wt-runtime-b',
       repoId: runtimeRepoB.id,
-      path: '/tmp/orca-runtime-b-feature',
+      path: '/tmp/topo-runtime-b-feature',
       displayName: 'feature-runtime-b'
     }
     const runtimeSetupB: ProjectHostSetup = {
@@ -85,17 +85,21 @@ describe('buildRows with pinned worktrees', () => {
 
     const headers = rows.filter((row) => row.type === 'header')
     expect(headers.map((row) => row.key).sort()).toEqual([
-      'project:github:stablyai/orca',
-      'project:github:stablyai/orca::setup:repo-1',
-      'project:github:stablyai/orca::setup:repo-local-b'
+      'project:github:brandonhsz/Topoductor',
+      'project:github:brandonhsz/Topoductor::setup:repo-1',
+      'project:github:brandonhsz/Topoductor::setup:repo-local-b'
     ])
     // Only real checkouts receive setup-scoped headers; provisioned copies retain the project label.
     expect(
-      headers.some((row) => row.key === 'project:github:stablyai/orca::setup:repo-runtime-b')
+      headers.some(
+        (row) => row.key === 'project:github:brandonhsz/Topoductor::setup:repo-runtime-b'
+      )
     ).toBe(false)
-    expect(headers.find((row) => row.key === 'project:github:stablyai/orca')).toMatchObject({
-      label: 'Orca',
-      count: 1
-    })
+    expect(headers.find((row) => row.key === 'project:github:brandonhsz/Topoductor')).toMatchObject(
+      {
+        label: 'Topo',
+        count: 1
+      }
+    )
   })
 })

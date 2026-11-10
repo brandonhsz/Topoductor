@@ -1,4 +1,4 @@
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 
 export const LINUX_LID_SLEEP_ASSERTION_RETRY_MS = 30_000
 // Consecutive failures double the retry delay up to this many base delays.
@@ -81,10 +81,10 @@ export class LinuxLidSleepAssertion {
         'systemd-inhibit',
         [
           '--what=sleep:handle-lid-switch',
-          '--who=Orca',
+          '--who=Topo',
           '--why=Agents are working',
           '--mode=block',
-          // EOF releases the inhibitor even when Orca is killed without running cleanup.
+          // EOF releases the inhibitor even when Topo is killed without running cleanup.
           'cat'
         ],
         {

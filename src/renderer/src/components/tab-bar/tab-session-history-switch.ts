@@ -50,7 +50,7 @@ import {
 } from '@/store/workspaces/catalog/workspace-record-fields'
 import { workspaceKindForWorktreeId } from '../../../../shared/agent-launch/contracts/workspace-launch-kind'
 
-/** Find native chats by Orca session ID and terminal tabs by their provider conversation. */
+/** Find native chats by Topo session ID and terminal tabs by their provider conversation. */
 export type TabSessionHistorySubject = {
   workspaceId: string
   /** The panel's own list request for this workspace, so both share one cached list. */

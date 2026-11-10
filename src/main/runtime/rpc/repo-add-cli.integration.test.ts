@@ -2,14 +2,14 @@ import { randomUUID } from 'node:crypto'
 import { mkdir, mkdtemp, realpath, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { normalizeRuntimePathForComparison } from '../../../shared/cross-platform-path'
 import { getRuntimeMetadataPath } from '../../../shared/runtime-bootstrap'
 import type { Repo } from '../../../shared/repo-types'
 import { RuntimeRepositoryRegistrationController } from '../repositories/runtime-repository-registration-controller'
-import { partialRuntimeStore } from '../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../topo-runtime-tests/runtime-store-partial-fixture'
 import type { RpcRequest } from './core'
 import { repoDispatcher } from './methods/projects/repo-rpc.test-fixture'
 import { UnixSocketTransport } from './unix-socket-transport'
@@ -28,7 +28,7 @@ const repoReply = z.object({
 })
 
 it('opens a repo-tool root through the CLI folder route and keeps subproject Git registration', async () => {
-  const root = await realpath(await mkdtemp(join(tmpdir(), 'orca-repo-cli-')))
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'topo-repo-cli-')))
   const tree = join(root, 'repo tree')
   const project = join(tree, 'project')
   const repos: Repo[] = []
@@ -52,7 +52,7 @@ it('opens a repo-tool root through the CLI folder route and keeps subproject Git
   const kind = process.platform === 'win32' ? 'named-pipe' : 'unix'
   const endpoint =
     process.platform === 'win32'
-      ? String.raw`\\.\pipe\orca-repo-cli-${randomUUID()}`
+      ? String.raw`\\.\pipe\topo-repo-cli-${randomUUID()}`
       : join(root, 'rpc.sock')
   const socket = new UnixSocketTransport({ kind, endpoint })
   const requests: RpcRequest[] = []
@@ -90,10 +90,10 @@ it('opens a repo-tool root through the CLI folder route and keeps subproject Git
         startedAt: 1
       })
     )
-    vi.stubEnv('ORCA_USER_DATA_PATH', root)
-    vi.stubEnv('ORCA_PAIRING_CODE', '')
-    vi.stubEnv('ORCA_REMOTE_PAIRING', '')
-    vi.stubEnv('ORCA_ENVIRONMENT', '')
+    vi.stubEnv('TOPO_USER_DATA_PATH', root)
+    vi.stubEnv('TOPO_PAIRING_CODE', '')
+    vi.stubEnv('TOPO_REMOTE_PAIRING', '')
+    vi.stubEnv('TOPO_ENVIRONMENT', '')
 
     const refusal = await cli(['repo', 'add', '--path', tree])
     expect(refusal).toMatchObject({

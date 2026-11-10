@@ -1,0 +1,115 @@
+import { spawn } from 'node:child_process'
+import { mkdtempSync, readFileSync, rmSync, symlinkSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import type * as DaemonProcessStartTime from '../daemon/endpoint/identity/daemon-process-start-time'
+
+const { readWindowsProcessCreationTime, getProcessStartedAtMs } = vi.hoisted(() => ({
+  readWindowsProcessCreationTime: vi.fn<(pid: number) => number | null>(),
+  getProcessStartedAtMs: vi.fn<(pid: number) => number | null>()
+}))
+vi.mock('../windows/windows-process-table', () => ({
+  readWindowsProcessCreationTime
+}))
+vi.mock('../daemon/endpoint/identity/daemon-process-start-time', async (importOriginal) => ({
+  ...(await importOriginal<typeof DaemonProcessStartTime>()),
+  getProcessStartedAtMs
+}))
+
+import {
+  compareTopodProcessIdentity,
+  readTopodProcessIncarnation
+} from './topod-process-start-time'
+
+const platform = process.platform
+function onPlatform(value: NodeJS.Platform): void {
+  Object.defineProperty(process, 'platform', { value, configurable: true })
+}
+
+afterEach(() => {
+  onPlatform(platform)
+  vi.resetAllMocks()
+})
+
+describe('topod process start time', () => {
+  it('tells a reused Windows PID apart, and fails open when the addon cannot answer', () => {
+    onPlatform('win32')
+    readWindowsProcessCreationTime.mockReturnValue(9_000_000)
+    expect(compareTopodProcessIdentity(42, { startedAtMs: 1_000 })).toBe('differs')
+    expect(compareTopodProcessIdentity(42, { startedAtMs: 9_000_100 })).toBe('matches')
+    readWindowsProcessCreationTime.mockReturnValue(null)
+    expect(compareTopodProcessIdentity(42, { startedAtMs: 1_000 })).toBe('unknown')
+  })
+})
+
+describe('topod process identity', () => {
+  const incarnation = { linuxStartTicks: '1234', bootId: 'boot-a' }
+  const recorded = { startedAtMs: 1_000, ...incarnation }
+
+  it('matches on ticks and boot id even when the btime-derived start time drifted', () => {
+    expect(
+      compareTopodProcessIdentity(42, recorded, {
+        startedAtMs: () => 158_000,
+        incarnation: () => incarnation,
+        platform: 'linux'
+      })
+    ).toBe('matches')
+  })
+
+  it.each([
+    ['different start ticks', { ...incarnation, linuxStartTicks: '9999' }],
+    ['a different boot', { ...incarnation, bootId: 'boot-b' }]
+  ])('proves reuse on %s', (_name, actual) => {
+    expect(compareTopodProcessIdentity(42, recorded, { incarnation: () => actual })).toBe('differs')
+  })
+
+  it.each([
+    ['another non-root uid', 1001, 'differs'],
+    ['root', 0, 'unproven'],
+    ['the overflow uid an unmapped root shows as', 65534, 'unproven'],
+    ['the same uid', 1000, 'unproven'],
+    ['an unreadable owner', null, 'unproven']
+  ] as const)('reads that mismatch with the PID owned by %s as %s', (_owner, ownerUid, verdict) => {
+    const readers = {
+      startedAtMs: () => 158_000,
+      ownerUid: () => ownerUid,
+      platform: 'linux' as const
+    }
+    expect(compareTopodProcessIdentity(42, { startedAtMs: 1_000, identity: '1000' }, readers)).toBe(
+      verdict
+    )
+  })
+})
+
+describe.runIf(platform === 'linux')('topod process incarnation on a real /proc', () => {
+  it('reads ticks and the boot id, even for a command name with spaces and parens', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'topod-incarnation-'))
+    const odd = join(dir, 'x) y (z')
+    symlinkSync('/bin/sleep', odd)
+    const child = spawn(odd, ['30'], { stdio: 'ignore' })
+    try {
+      await new Promise<void>((resolve, reject) => {
+        child.once('spawn', resolve)
+        child.once('error', reject)
+      })
+      const pid = child.pid ?? 0
+      const bootId = readFileSync('/proc/sys/kernel/random/boot_id', 'utf8').trim()
+      const own = readTopodProcessIncarnation(process.pid)
+      const other = readTopodProcessIncarnation(pid)
+      expect(own).toEqual({
+        linuxStartTicks: expect.stringMatching(/^\d+$/),
+        bootId
+      })
+      expect(other).toEqual({
+        linuxStartTicks: expect.stringMatching(/^\d+$/),
+        bootId
+      })
+      expect(compareTopodProcessIdentity(pid, { startedAtMs: null, ...other })).toBe('matches')
+      expect(compareTopodProcessIdentity(pid, { startedAtMs: null, ...own })).toBe('differs')
+    } finally {
+      child.kill('SIGKILL')
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+})

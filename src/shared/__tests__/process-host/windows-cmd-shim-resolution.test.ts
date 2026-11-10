@@ -7,8 +7,8 @@ import { removeTreeSync } from '../../windows-transient-lock-removal'
 import {
   parseWindowsCmdShim,
   resolveWindowsCmdShim
-} from '@orca/process-host/windows-cmd-shim-resolution'
-import '@orca/process-host'
+} from '@topo/process-host/windows-cmd-shim-resolution'
+import '@topo/process-host'
 import {
   REAL_AGENT_BROWSER_CMD,
   REAL_CODEX_CMD,
@@ -98,7 +98,7 @@ describeOnWindows('resolveWindowsCmdShim', () => {
   let env: NodeJS.ProcessEnv
 
   beforeAll(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-shim-resolve-'))
+    dir = mkdtempSync(join(tmpdir(), 'topo-shim-resolve-'))
     env = { ...process.env }
     writeFileSync(join(dir, 'cli.js'), 'process.stdout.write("hi")\n')
     writeFileSync(join(dir, 'ci2.js'), '')
@@ -117,7 +117,7 @@ describeOnWindows('resolveWindowsCmdShim', () => {
   }
 
   it('prefers a node.exe sitting beside the shim, as the shim itself does', () => {
-    const sibling = mkdtempSync(join(tmpdir(), 'orca-shim-sibling-'))
+    const sibling = mkdtempSync(join(tmpdir(), 'topo-shim-sibling-'))
     try {
       writeFileSync(join(sibling, 'node.exe'), '')
       writeFileSync(join(sibling, 'cli.js'), '')
@@ -173,7 +173,7 @@ describeOnWindows('resolveWindowsCmdShim', () => {
     expect(
       resolveWindowsCmdShim(shim, {
         ...env,
-        ORCA_DISABLE_CMD_SHIM_RESOLUTION: '1'
+        TOPO_DISABLE_CMD_SHIM_RESOLUTION: '1'
       })
     ).toBeNull()
   })
@@ -192,9 +192,9 @@ describeOnWindows('resolveWindowsCmdShim', () => {
 
   it('walks PATH once per shim directory, not once per spawn', () => {
     // Adding an earlier interpreter after first resolution proves cached PATH walks stay cached; without the cache this returns early.
-    const early = mkdtempSync(join(tmpdir(), 'orca-shim-path-early-'))
-    const late = mkdtempSync(join(tmpdir(), 'orca-shim-path-late-'))
-    const shimDir = mkdtempSync(join(tmpdir(), 'orca-shim-path-'))
+    const early = mkdtempSync(join(tmpdir(), 'topo-shim-path-early-'))
+    const late = mkdtempSync(join(tmpdir(), 'topo-shim-path-late-'))
+    const shimDir = mkdtempSync(join(tmpdir(), 'topo-shim-path-'))
     try {
       writeFileSync(join(late, 'node.exe'), '')
       writeFileSync(join(shimDir, 'cli.js'), '')
@@ -220,9 +220,9 @@ describeOnWindows('resolveWindowsCmdShim', () => {
 
   it('gives up when cmd would resolve `node` to a non-.exe PATHEXT spelling', () => {
     // cmd stops at the first PATHEXT match, including .COM before .EXE; skipping it would launch the wrong binary.
-    const first = mkdtempSync(join(tmpdir(), 'orca-shim-ext-first-'))
-    const second = mkdtempSync(join(tmpdir(), 'orca-shim-ext-second-'))
-    const shimDir = mkdtempSync(join(tmpdir(), 'orca-shim-ext-'))
+    const first = mkdtempSync(join(tmpdir(), 'topo-shim-ext-first-'))
+    const second = mkdtempSync(join(tmpdir(), 'topo-shim-ext-second-'))
+    const shimDir = mkdtempSync(join(tmpdir(), 'topo-shim-ext-'))
     try {
       writeFileSync(join(first, 'node.com'), '')
       const nodeExe = join(second, 'node.exe')
@@ -247,8 +247,8 @@ describeOnWindows('resolveWindowsCmdShim', () => {
 
   it('falls back to cmd.exe when the cached interpreter has been uninstalled', () => {
     // A deleted cached interpreter must fall back to cmd.exe instead of spawning ENOENT.
-    const nodeDir = mkdtempSync(join(tmpdir(), 'orca-shim-gone-node-'))
-    const shimDir = mkdtempSync(join(tmpdir(), 'orca-shim-gone-'))
+    const nodeDir = mkdtempSync(join(tmpdir(), 'topo-shim-gone-node-'))
+    const shimDir = mkdtempSync(join(tmpdir(), 'topo-shim-gone-'))
     try {
       const nodeExe = join(nodeDir, 'node.exe')
       writeFileSync(nodeExe, '')

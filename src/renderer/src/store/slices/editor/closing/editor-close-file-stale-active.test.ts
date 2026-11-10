@@ -4,7 +4,7 @@ import { makeOpenFile } from '../types/open-file.test-fixture'
 import { makeTabGroup, makeUnifiedTab } from '../../tabs/tab-group.test-fixture'
 import { makeWorktree } from '../../worktrees/worktree.test-fixture'
 import { drawTabsFromMain } from '../../tabs/tabs-drawn-from-main.test-fixture'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 
 vi.mock('@/runtime/rpc/calls/runtime-rpc-call', async (importOriginal) =>
   (
@@ -72,7 +72,7 @@ function expectValidActiveFile(store: ReturnType<typeof createTestStore>): void 
 }
 
 // Main frames dedupe same-file tabs per group; keep the duplicate only in openFiles for switch-on seeds.
-const duplicateTab: [string, string][] = ORCA_LAYOUT_OWNER_IS_MAIN ? [] : [['t-a2', '/a']]
+const duplicateTab: [string, string][] = TOPO_LAYOUT_OWNER_IS_MAIN ? [] : [['t-a2', '/a']]
 
 describe('closeFile when activeFileId is not an open file', () => {
   it('closes an editor tab whose file is gone without throwing', async () => {

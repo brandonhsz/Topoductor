@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import '../terminal/records/runtime-leaf-record-projection.test-fixture'
 import '../terminal/wait/tui-idle-wait-test-harness'
 
@@ -9,7 +9,7 @@ const TAB_ID = 'tab-terminal'
 const LEAF_ID = '11111111-1111-4111-8111-111111111111'
 
 it('keeps a running terminal’s sender row, by its start-time handle, while no window graph exists', () => {
-  const runtime = new OrcaRuntimeService(null)
+  const runtime = new TopoRuntimeService(null)
   runtime.setPtyController({
     write: () => true,
     kill: vi.fn(() => true),

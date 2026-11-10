@@ -10,7 +10,7 @@ import {
   type TabGroupPanelGeometrySnapshot
 } from './tab-group-panel-split-target'
 import { isPaneDropData, isTabDragData, type TabDragItemData } from './tab-drag-data'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { dropTabThroughLayoutOwner } from './tab-group-layout-owner-commands'
 import { moveTabToGroup } from '../tab-bar/tab-move-to-pane-column'
 
@@ -53,7 +53,7 @@ export function commitTabDragDrop({
   if (paneColumnSplit) {
     // End the drag now; main’s answer draws the requested pane placement.
     if (
-      ORCA_LAYOUT_OWNER_IS_MAIN &&
+      TOPO_LAYOUT_OWNER_IS_MAIN &&
       dropTabThroughLayoutOwner(worktreeId, {
         kind: 'split',
         tabId: activeData.unifiedTabId,
@@ -125,7 +125,7 @@ export function commitTabDragDrop({
         const nextOrder = targetGroup.tabOrder.filter((id) => id !== activeData.unifiedTabId)
         nextOrder.splice(nextIndex, 0, activeData.unifiedTabId)
         if (
-          ORCA_LAYOUT_OWNER_IS_MAIN &&
+          TOPO_LAYOUT_OWNER_IS_MAIN &&
           dropTabThroughLayoutOwner(worktreeId, {
             kind: 'reorder',
             tabId: activeData.unifiedTabId,

@@ -1,17 +1,17 @@
-import type { OrcaBridge, OrcaDisposable } from '../runtime/declarative-runtime-types'
+import type { TopoBridge, TopoDisposable } from '../runtime/declarative-runtime-types'
 
 type Listener = (payload: unknown) => void
 
 /**
  * The frame shell's `plugin`, `storage`, `settings` and `secrets` for a mounted test panel, over
  * the mock host's calls: what plugin-panel-shell-facades.ts gives a real guest. `post` stands in
- * for the worker's `orca.panels.post`; `changed` for Orca telling the panel a key changed.
+ * for the worker's `orca.panels.post`; `changed` for Topo telling the panel a key changed.
  */
 export function createTestingPanelFacades(
   call: (method: string, params?: unknown) => Promise<unknown>
 ) {
   const listeners = new Map<string, Set<Listener>>()
-  const listen = (channel: string, handler: Listener): OrcaDisposable => {
+  const listen = (channel: string, handler: Listener): TopoDisposable => {
     const set = listeners.get(channel) ?? new Set()
     set.add(handler)
     listeners.set(channel, set)
@@ -29,7 +29,7 @@ export function createTestingPanelFacades(
         ? Object.getOwnPropertyDescriptor(result, name)?.value
         : undefined
   const done = (): void => undefined
-  const facades: Required<Pick<OrcaBridge, 'plugin' | 'storage' | 'settings' | 'secrets'>> = {
+  const facades: Required<Pick<TopoBridge, 'plugin' | 'storage' | 'settings' | 'secrets'>> = {
     plugin: {
       request: (name, input, options) => {
         const timeoutMs =

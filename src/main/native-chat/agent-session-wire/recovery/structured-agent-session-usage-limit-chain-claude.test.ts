@@ -39,7 +39,7 @@ it('counts a host continue whose recorded Claude echo opens the turn under its p
   const identity = identityFor()
   const journal = await fixture.open({ identity })
   const previous = await journal.appendItem(
-    { provider: 'orca', clientMessageId: 'previous-turn' },
+    { provider: 'topo', clientMessageId: 'previous-turn' },
     {
       kind: 'turn',
       turnId: 'previous-turn',
@@ -60,7 +60,7 @@ it('counts a host continue whose recorded Claude echo opens the turn under its p
       )
     }) satisfies Parameters<typeof journal.appendItem>[1]
   await journal.appendItem(
-    { provider: 'orca', clientMessageId: 'previous-limit' },
+    { provider: 'topo', clientMessageId: 'previous-limit' },
     limitBody(previousCut.resetsAt),
     { fence: 7, turnScope: { kind: 'turn', turnItemId: previous.itemId } }
   )
@@ -169,7 +169,7 @@ it('counts a host continue whose recorded Claude echo opens the turn under its p
     expect(submission.providerItemId).not.toBe(agentJournalSubmissionKey(clientMessageId))
     expect(submission.dispatchState).toBe('accepted')
     await journal.appendItem(
-      { provider: 'orca', clientMessageId: 'continued-limit' },
+      { provider: 'topo', clientMessageId: 'continued-limit' },
       limitBody(at + 1_000),
       { fence: 7, turnScope: { kind: 'turn', turnItemId: turnItem.itemId } }
     )

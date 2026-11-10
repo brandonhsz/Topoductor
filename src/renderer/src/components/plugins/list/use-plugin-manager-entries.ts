@@ -11,7 +11,7 @@ export function usePluginManagerEntries(
   plugins: Parameters<typeof buildPluginListEntries>[0],
   listings: Parameters<typeof buildPluginListEntries>[1],
   sources: EntryOptions['sources'],
-  orcaVersion: EntryOptions['orcaVersion'],
+  topoVersion: EntryOptions['topoVersion'],
   t: Translate
 ): ReturnType<typeof buildPluginListEntries> {
   const autoUpdated = usePluginAutoUpdatesStore((state) => state.updated)
@@ -22,7 +22,7 @@ export function usePluginManagerEntries(
       listings,
       {
         sources,
-        orcaVersion,
+        topoVersion,
         autoUpdates: { updated: autoUpdated, needsReview: autoNeedsReview }
       },
       t
@@ -31,5 +31,5 @@ export function usePluginManagerEntries(
       ...built,
       installed: sortByAttention(built.installed, (entry) => Boolean(entry.updateVersion))
     }
-  }, [plugins, listings, sources, orcaVersion, autoUpdated, autoNeedsReview, t])
+  }, [plugins, listings, sources, topoVersion, autoUpdated, autoNeedsReview, t])
 }

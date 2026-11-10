@@ -6,16 +6,16 @@ import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import '../../../shared/node-runtime-pin'
 import type { SshTarget } from '../../../shared/ssh-types'
-import '@orca/process-host'
-import '../../managed-server/install/orcad-remote-node-runtime-report'
-import '../../managed-server/install/orcad-remote-node-runtime'
+import '@topo/process-host'
+import '../../managed-server/install/topod-remote-node-runtime-report'
+import '../../managed-server/install/topod-remote-node-runtime'
 import '../remote-host/ssh-remote-platform'
 import { findSystemSsh } from './system-ssh-binary'
 import { uploadDirectoryViaSystemSsh } from './file-transfer/system-ssh-file-transfer'
 import './file-transfer/system-ssh-sftp-transfer'
 import { isHostAnsweredSystemSshExit } from './system-ssh-operation-lifecycle'
 
-vi.mock('@orca/process-host', async (importOriginal) => ({
+vi.mock('@topo/process-host', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   runProcess: vi.fn()
 }))
@@ -30,7 +30,7 @@ const target = {} as SshTarget
 let scratch: string
 
 beforeEach(async () => {
-  scratch = await mkdtemp(join(tmpdir(), 'orca-answered-producers-'))
+  scratch = await mkdtemp(join(tmpdir(), 'topo-answered-producers-'))
 })
 afterEach(async () => {
   vi.unstubAllEnvs()

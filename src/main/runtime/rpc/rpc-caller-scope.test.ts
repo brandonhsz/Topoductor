@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import type { RpcRequest, RpcResponse } from './core'
 import { RpcDispatcher } from './dispatcher'
 import { ALL_RPC_METHODS } from './methods/rpc-method-registry'
@@ -15,7 +15,7 @@ async function dispatchAs(
   scope: RpcCallerScope | undefined,
   method: string,
   params?: unknown,
-  runtime = new OrcaRuntimeService()
+  runtime = new TopoRuntimeService()
 ): Promise<RpcResponse> {
   return new RpcDispatcher({ runtime, methods: ALL_RPC_METHODS }).dispatch(
     request(method, params),
@@ -50,7 +50,7 @@ describe('paired runtime clients', () => {
 describe('a pinned in-process bridge dispatcher', () => {
   it('ignores a wider per-call scope', async () => {
     const dispatcher = new RpcDispatcher({
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       methods: ALL_RPC_METHODS,
       callerScope: PAIRED
     })

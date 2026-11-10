@@ -10,9 +10,9 @@ import type {
 
 /** Keep runtime SSH access free of Electron imports from ipc/ssh.ts. Resolve callbacks on each call because handler registration may replace the manager. */
 
-/** orcad has no SSH stack yet still advertises ssh.target-management.v1 (D3), so clients show this. */
+/** topod has no SSH stack yet still advertises ssh.target-management.v1 (D3), so clients show this. */
 export const SSH_TARGET_MANAGEMENT_UNSERVED_MESSAGE =
-  "This Orca server runs without the desktop app, so it can't manage SSH hosts yet."
+  "This Topo server runs without the desktop app, so it can't manage SSH hosts yet."
 
 export class SshTargetManagementUnservedError extends Error {
   constructor() {

@@ -9,14 +9,14 @@ import {
 const ready: ServeReadiness = {
   runtimeId: 'runtime-1',
   boundEndpoint: 'ws://0.0.0.0:6768',
-  advertisedEndpoint: 'wss://orca.example.test/runtime',
+  advertisedEndpoint: 'wss://topo.example.test/runtime',
   managedWslCliReconciliation: 'settled',
   pairing: {
     available: true,
-    url: 'orca://pair?code=secret',
-    endpoint: 'wss://orca.example.test/runtime',
+    url: 'topo://pair?code=secret',
+    endpoint: 'wss://topo.example.test/runtime',
     deviceId: 'device-1',
-    webClientUrl: 'https://orca.example.test/runtime/web-index.html#pairing=secret',
+    webClientUrl: 'https://topo.example.test/runtime/web-index.html#pairing=secret',
     scope: 'runtime',
     qr: null
   }

@@ -13,9 +13,9 @@ import { quotePowerShellLiteral } from '../../powershell-native-argument'
 
 const DEFAULT_WAIT_TIMEOUT_SECONDS = 2 * 60 * 60
 export const SETUP_COMPLETE_MESSAGE = 'Setup finished; starting agent.'
-export const SETUP_AGENT_SEQUENCE_STARTUP_COMMAND_ENV = 'ORCA_SEQUENCED_STARTUP_COMMAND'
-export const SETUP_AGENT_SEQUENCE_STARTUP_SCRIPT_ENV = 'ORCA_SEQUENCED_STARTUP_SCRIPT'
-export const SETUP_AGENT_SEQUENCE_SETUP_SCRIPT_ENV = 'ORCA_SEQUENCED_SETUP_SCRIPT'
+export const SETUP_AGENT_SEQUENCE_STARTUP_COMMAND_ENV = 'TOPO_SEQUENCED_STARTUP_COMMAND'
+export const SETUP_AGENT_SEQUENCE_STARTUP_SCRIPT_ENV = 'TOPO_SEQUENCED_STARTUP_SCRIPT'
+export const SETUP_AGENT_SEQUENCE_SETUP_SCRIPT_ENV = 'TOPO_SEQUENCED_SETUP_SCRIPT'
 
 export type SequencedSetupAgentCommands = {
   setupCommand: string
@@ -130,7 +130,7 @@ function buildPosixStartupScript(
     `if [ "$seen" = ${nonceValue} ]; then`,
     `rm -f ${marker} ${tmp} 2>/dev/null;`,
     // Announce success so “Waiting for setup...” does not linger. Install launch functions only after setup
-    // may have supplied codex; fresh bash -lc does not read Orca’s wrapper.
+    // may have supplied codex; fresh bash -lc does not read Topo’s wrapper.
     `if [ "$status" = "0" ]; then echo ${quotePosixShellUnlessPlainNoAt(SETUP_COMPLETE_MESSAGE)} >&2;\n${getPosixCodexShellLaunchPreflight() + getPosixClaudeShellFunction()}if [ -n "\${${SETUP_AGENT_SEQUENCE_STARTUP_COMMAND_ENV}:-}" ]; then eval "\$${SETUP_AGENT_SEQUENCE_STARTUP_COMMAND_ENV}"; exit "$?"; else ${startupSuccessCommand}; fi; fi;`,
     'echo "Setup failed; skipping agent startup." >&2;',
     'exit "${status:-1}";',
@@ -204,9 +204,9 @@ function buildWindowsSetupCommand(
     'Remove-Item -LiteralPath $marker, $tmp -Force -ErrorAction SilentlyContinue',
     '$processInfo = [System.Diagnostics.ProcessStartInfo]::new()',
     '$processInfo.FileName = $env:ComSpec',
-    '$processInfo.Arguments = \'/d /s /v:on /c ""!ORCA_SETUP_RUNNER!""\'',
+    '$processInfo.Arguments = \'/d /s /v:on /c ""!TOPO_SETUP_RUNNER!""\'',
     '$processInfo.UseShellExecute = $false',
-    '$processInfo.EnvironmentVariables["ORCA_SETUP_RUNNER"] = $runner',
+    '$processInfo.EnvironmentVariables["TOPO_SETUP_RUNNER"] = $runner',
     '$process = [System.Diagnostics.Process]::Start($processInfo)',
     '$process.WaitForExit()',
     '$setupStatus = $process.ExitCode',
@@ -230,12 +230,12 @@ function buildWindowsStartupCommand(
     // User startup may invoke policy-gated .ps1; apply relief in-payload to avoid the flagged command-line switch.
     // Silence/restore module-autoload progress so stderr stays clean. Stop routes nonterminating autoload errors
     // to a reporting catch; never rethrow and abort startup over a broken security module.
-    "$orcaProgress = $ProgressPreference; $ProgressPreference = 'SilentlyContinue'",
+    "$topoProgress = $ProgressPreference; $ProgressPreference = 'SilentlyContinue'",
     'try { Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force -ErrorAction Stop } ' +
-      'catch { [Console]::Error.WriteLine("Orca: could not relax the execution policy for this " + ' +
+      'catch { [Console]::Error.WriteLine("Topo: could not relax the execution policy for this " + ' +
       '"session (" + $_.FullyQualifiedErrorId + "). A startup command that runs a .ps1 " + ' +
       '"may be blocked.") }',
-    '$ProgressPreference = $orcaProgress',
+    '$ProgressPreference = $topoProgress',
     `$marker = ${quotePowerShellLiteral(markerPath)}`,
     'if ([string]::IsNullOrWhiteSpace($marker)) {',
     '  [Console]::Error.WriteLine("Missing setup marker path.")',

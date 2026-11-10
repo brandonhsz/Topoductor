@@ -52,7 +52,7 @@ export default function CommandDockProbeRoute() {
   const dockKeys = useTerminalDockKeys({ activeHandle, sendInput: send })
   const liveInputRef = useRef(null)
   const [liveInputCapture] = useState(createLiveInputCapture)
-  globalThis.__orcaHeldPressProbe = {
+  globalThis.__topoHeldPressProbe = {
     sent: () => [...sentRef.current],
     deliveries: () => [...deliveriesRef.current],
     repeats: () => [...repeatRef.current],

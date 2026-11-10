@@ -4,8 +4,8 @@ import type { AgentStatusIpcPayload } from '../../../../../shared/agent-status/c
 import type { AgentSessionTurnCompletionEvent } from '../../../../../shared/agent-session/view/agent-session-turn-completion-wire'
 import { makePaneKey } from '../../../../../shared/workspace-layout/stable-pane-id'
 import { LOCAL_EXECUTION_HOST_ID } from '../../../../../shared/execution-host'
-import { formatOrcaSessionAddress } from '../../../../../shared/orca-session-address'
-import { testOrcaSessionId } from '../../../../../shared/orca-session-address-test-fixture'
+import { formatTopoSessionAddress } from '../../../../../shared/topo-session-address'
+import { testTopoSessionId } from '../../../../../shared/topo-session-address-test-fixture'
 import { chatWorkerTurnStopReporter } from './chat-worker-turn-stops'
 import { OrchestrationDb } from '../../db/orchestration-db'
 import '../../db/contract-constants'
@@ -19,7 +19,7 @@ import { reportWorkerTurnStop } from './worker-turn-stop-report'
 const PANE = makePaneKey('tab-worker', '11111111-1111-4111-8111-111111111111')
 const HANDLE = 'term_worker'
 
-const CHAT_SESSION = testOrcaSessionId('9a4e7c1b-3d2f-4b6a-8e5c-7f1d0b2a6c93')
+const CHAT_SESSION = testTopoSessionId('9a4e7c1b-3d2f-4b6a-8e5c-7f1d0b2a6c93')
 
 function setup(assignee = HANDLE) {
   const db = new OrchestrationDb(':memory:')
@@ -396,7 +396,7 @@ describe('chat worker turn stops', () => {
     }).dispatch.id
     ctx.db.prepareStartingWorkerAuthority({
       dispatchId: followUp,
-      handle: formatOrcaSessionAddress(CHAT_SESSION),
+      handle: formatTopoSessionAddress(CHAT_SESSION),
       paneKey: null,
       processIncarnation: null,
       worktreeId: 'repo::/tmp/wt',

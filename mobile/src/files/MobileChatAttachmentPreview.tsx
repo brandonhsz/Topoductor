@@ -144,10 +144,10 @@ function formatAttachmentPreviewError(message: string, t: Translate): string {
       )
     case 'Unable to open attachment. Try again.':
       return t('chat.textAttachmentPreview.openFailed', 'Unable to open attachment. Try again.')
-    case 'This host cannot open text attachments yet. Update Orca on that host, then retry.':
+    case 'This host cannot open text attachments yet. Update Topo on that host, then retry.':
       return t(
         'chat.textAttachmentPreview.hostUpdate',
-        'This host cannot open text attachments yet. Update Orca on that host, then retry.'
+        'This host cannot open text attachments yet. Update Topo on that host, then retry.'
       )
     case 'This file is too large to copy. Save it instead.':
       return t(

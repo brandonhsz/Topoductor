@@ -16,7 +16,7 @@ const { forkMock, existsSyncMock, mkdtempSyncMock, parcelSubscribeMock, rmSyncMo
   () => ({
     forkMock: vi.fn(),
     existsSyncMock: vi.fn(),
-    mkdtempSyncMock: vi.fn(() => '/tmp/orca-watcher-canary-supervisor-test'),
+    mkdtempSyncMock: vi.fn(() => '/tmp/topo-watcher-canary-supervisor-test'),
     parcelSubscribeMock: vi.fn(),
     rmSyncMock: vi.fn()
   })
@@ -613,7 +613,7 @@ describe('subscribeViaWatcherProcess', () => {
     expect(first.kill).toHaveBeenCalledTimes(1)
     await new Promise<void>((resolve) => setImmediate(resolve))
     expect(isSettled()).toBe(false)
-    expect(rmSyncMock).toHaveBeenCalledWith('/tmp/orca-watcher-canary-supervisor-test', {
+    expect(rmSyncMock).toHaveBeenCalledWith('/tmp/topo-watcher-canary-supervisor-test', {
       recursive: true,
       force: true
     })

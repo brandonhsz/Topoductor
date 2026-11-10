@@ -89,7 +89,7 @@ async function directory(name: string): Promise<string> {
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-launch-directory-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-launch-directory-'))
   store = await openTestAgentSessionRecordStore(root)
 })
 

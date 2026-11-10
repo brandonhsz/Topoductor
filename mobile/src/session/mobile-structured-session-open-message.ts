@@ -37,7 +37,7 @@ export function mobileStructuredSessionOpenMessage(
       case 'unsupported':
         return translate(
           'session.structuredOpen.unsupportedGeneric',
-          "Agent's chat can't be reopened until Orca is updated."
+          "Agent's chat can't be reopened until Topo is updated."
         )
       case 'unreachable':
         return translate(
@@ -63,7 +63,7 @@ export function mobileStructuredSessionOpenMessage(
     case 'unsupported':
       return translate(
         'session.structuredOpen.unsupported',
-        "{{agent}}'s chat can't be reopened until Orca is updated.",
+        "{{agent}}'s chat can't be reopened until Topo is updated.",
         { agent }
       )
     case 'unreachable':

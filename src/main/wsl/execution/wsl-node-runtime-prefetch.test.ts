@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { orcadNodeRuntimeInstallOptions } from '../../managed-server/install/orcad-node-runtime-install-options'
+import { topodNodeRuntimeInstallOptions } from '../../managed-server/install/topod-node-runtime-install-options'
 import {
   prefetchWslNodeRuntime,
   resetWslNodeRuntimePrefetchForTests,
@@ -17,7 +17,7 @@ let userDataPath: string
 
 beforeEach(async () => {
   resetWslNodeRuntimePrefetchForTests()
-  userDataPath = await mkdtemp(join(tmpdir(), 'orca-wsl-node-prefetch-'))
+  userDataPath = await mkdtemp(join(tmpdir(), 'topo-wsl-node-prefetch-'))
 })
 
 afterEach(async () => {
@@ -90,7 +90,7 @@ describe('prefetchWslNodeRuntime', () => {
     await first
     expect(materialize).toHaveBeenCalledWith(
       'linux-arm64-glibc',
-      join(userDataPath, 'orcad-artifacts'),
+      join(userDataPath, 'topod-artifacts'),
       {}
     )
   })
@@ -109,9 +109,9 @@ describe('prefetchWslNodeRuntime', () => {
   it('skips the download when the deploy cache already has the archive', async () => {
     const target = wslNodeRuntimePrefetchTarget('x64')
     // The path a WSL deploy names as its offline archive is the one the prefetch fills.
-    const cached = orcadNodeRuntimeInstallOptions(
+    const cached = topodNodeRuntimeInstallOptions(
       target,
-      join(userDataPath, 'orcad-artifacts'),
+      join(userDataPath, 'topod-artifacts'),
       {}
     ).nodeRuntimeOfflineArchivePath
     await mkdir(dirname(cached), { recursive: true })

@@ -1,11 +1,11 @@
 /**
  * A committed WSL move's source rows, as this build keeps them (mover design, section 4.5). The
- * journal hides them; the `orcadRetained` mark records, on the row itself, which move took it and
+ * journal hides them; the `topodRetained` mark records, on the row itself, which move took it and
  * whether an older build changed it since. Only identity counts as a change, as for SSH: an older
  * build's tabs and edits inside a moved project stay in the retained rows.
  */
 import type { FolderWorkspace } from '../../../shared/folder-workspaces/folder-workspace-types'
-import type { OrcadRetainedMarker } from '../../../shared/orcad-retained-marker'
+import type { TopodRetainedMarker } from '../../../shared/topod-retained-marker'
 import type { Repo } from '../../../shared/repo-types'
 import {
   WSL_MOVE_CUTOVER_PHASES,
@@ -102,7 +102,7 @@ export function planWslMoveRetainedMarks(input: {
   const visit = (
     ref: WslMoveRowRef,
     row: IdentityRow,
-    current: OrcadRetainedMarker | undefined
+    current: TopodRetainedMarker | undefined
   ) => {
     const owner = owners.get(wslMoveRowKey(ref))
     if (!owner) {
@@ -120,7 +120,7 @@ export function planWslMoveRetainedMarks(input: {
     }
     const keptChangedAt =
       current?.migrationId === owner.migrationId ? current.sourceChangedAt : undefined
-    const marker: OrcadRetainedMarker = {
+    const marker: TopodRetainedMarker = {
       migrationId: owner.migrationId,
       environmentId: owner.destinationEnvironmentId,
       ...(changed ? { sourceChangedAt: keptChangedAt ?? input.now } : {})
@@ -129,12 +129,12 @@ export function planWslMoveRetainedMarks(input: {
   }
   for (const repo of input.repos) {
     if (isLocalWslMoveRow(repo)) {
-      visit({ kind: 'repo', id: repo.id }, repo, repo.orcadRetained)
+      visit({ kind: 'repo', id: repo.id }, repo, repo.topodRetained)
     }
   }
   for (const folder of input.folderWorkspaces) {
     if (isLocalWslMoveRow(folder)) {
-      visit({ kind: 'folder', id: folder.id }, folder, folder.orcadRetained)
+      visit({ kind: 'folder', id: folder.id }, folder, folder.topodRetained)
     }
   }
   return plan

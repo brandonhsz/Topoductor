@@ -57,7 +57,7 @@ async function digest(path: string): Promise<string> {
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-journal-host-refusal-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-journal-host-refusal-'))
   log = recordingStructuredAgentSessionLogger()
 })
 

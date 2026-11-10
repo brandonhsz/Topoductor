@@ -13,7 +13,7 @@ export const ORCHESTRATION_REQUEST_SHOW_HANDLER: Record<string, CommandHandler> 
         if (error instanceof RuntimeClientError && error.code === 'method_not_found') {
           throw new RuntimeClientError(
             'incompatible_runtime',
-            'This Orca server cannot look up orchestration mutation requests yet. Update Orca on the server, or inspect the Dispatch directly with orchestration worker-show.'
+            'This Topo server cannot look up orchestration mutation requests yet. Update Topo on the server, or inspect the Dispatch directly with orchestration worker-show.'
           )
         }
         throw error

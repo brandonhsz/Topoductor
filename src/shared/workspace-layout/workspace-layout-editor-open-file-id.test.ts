@@ -4,7 +4,7 @@ import { build, testContext, WS } from './workspace-layout-command.test-fixture'
 
 import type { LayoutEditorFile } from './workspace-layout-model'
 
-vi.mock('../layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 function file(filePath: string, runtimeEnvironmentId?: string): LayoutEditorFile {
   return {

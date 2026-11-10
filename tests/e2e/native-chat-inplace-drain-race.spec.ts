@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { appendFileSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   waitForActivePaneHookDescriptor,
@@ -19,21 +19,21 @@ import {
 
 test('renders a larger transcript rewrite during snapshot publication, then ordinary appends', async ({
   electronApp,
-  orcaPage,
+  topoPage,
   registerPostElectronShutdownCleanup
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage, 30_000)
-  const boundPane = await waitForPaneIdentitySnapshot(orcaPage, 1)
-  const ptyId = await waitForActivePanePtyId(orcaPage)
-  await waitForPtyShellEcho(orcaPage, ptyId, 15_000)
-  const descriptor = await waitForActivePaneHookDescriptor(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage, 30_000)
+  const boundPane = await waitForPaneIdentitySnapshot(topoPage, 1)
+  const ptyId = await waitForActivePanePtyId(topoPage)
+  await waitForPtyShellEcho(topoPage, ptyId, 15_000)
+  const descriptor = await waitForActivePaneHookDescriptor(topoPage)
   expect(descriptor.paneKey).toBe(`${boundPane.tabId}:${boundPane.activeLeafId}`)
   const [tabId] = descriptor.paneKey.split(':')
   const sessionId = `drain-race-${randomUUID()}`
-  const root = mkdtempSync(join(tmpdir(), 'orca-native-chat-drain-proof-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-native-chat-drain-proof-'))
   registerPostElectronShutdownCleanup(async () => rmSync(root, { recursive: true, force: true }))
   const transcriptPath = join(root, `${sessionId}.jsonl`)
   const cleanupChannel = `e2e:drain-race-cleanup:${sessionId}`
@@ -100,20 +100,20 @@ test('renders a larger transcript rewrite during snapshot publication, then ordi
     { transcriptPath, replacement, cleanupChannel }
   )
 
-  const transcript = orcaPage.locator('[data-native-chat-root="true"]')
+  const transcript = topoPage.locator('[data-native-chat-root="true"]')
   async function capture(name: string): Promise<void> {
     const bounds = await transcript.boundingBox()
     if (!bounds) {
       throw new Error('Chat transcript has no rendered bounds')
     }
-    await orcaPage.screenshot({
+    await topoPage.screenshot({
       path: testInfo.outputPath(name),
       clip: { ...bounds, height: Math.min(bounds.height, 320) }
     })
   }
   try {
-    await seedClaudeProviderSession(orcaPage, { ...descriptor, sessionId, transcriptPath })
-    await toggleTerminalTabToChatView(orcaPage, { tabId, worktreeId: descriptor.worktreeId })
+    await seedClaudeProviderSession(topoPage, { ...descriptor, sessionId, transcriptPath })
+    await toggleTerminalTabToChatView(topoPage, { tabId, worktreeId: descriptor.worktreeId })
     await expect(transcript).toBeVisible()
     try {
       await expect(transcript.getByText(newText)).toBeVisible({ timeout: 8_000 })
@@ -134,7 +134,7 @@ test('renders a larger transcript rewrite during snapshot publication, then ordi
     await expect(transcript.getByText(followup)).toBeVisible()
     await expect(transcript.getByText(followup)).toHaveCount(1)
     await capture('after-followup.png')
-    const finalPane = await waitForPaneIdentitySnapshot(orcaPage, 1)
+    const finalPane = await waitForPaneIdentitySnapshot(topoPage, 1)
     expect(finalPane.tabId).toBe(boundPane.tabId)
     expect(finalPane.activeLeafId).toBe(boundPane.activeLeafId)
     expect(finalPane.ptyIdsByLeafId).toEqual(boundPane.ptyIdsByLeafId)

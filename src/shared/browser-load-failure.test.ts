@@ -58,7 +58,7 @@ describe('describeBrowserLoadFailure', () => {
     expect(result.recovery).toBe(recovery)
   })
 
-  it('leaves certificate and Orca-coded failures to their own pages on mobile', () => {
+  it('leaves certificate and Topo-coded failures to their own pages on mobile', () => {
     const at = (code: number) => ({ code, description: '', validatedUrl: 'https://a/' })
     expect(isBrowserNetworkLoadFailure(at(-102))).toBe(true)
     expect(isBrowserNetworkLoadFailure(at(-202))).toBe(false)

@@ -1,5 +1,5 @@
-import { ASSIGNMENT_LIMITS } from '@orca-cloud/relay-contract/assignment-invariants'
-import { relayHostCloseReasonFrom, type RelayHostCloseReason } from '@orca-cloud/relay-contract/host-close-reason'
+import { ASSIGNMENT_LIMITS } from '@topo-cloud/relay-contract/assignment-invariants'
+import { relayHostCloseReasonFrom, type RelayHostCloseReason } from '@topo-cloud/relay-contract/host-close-reason'
 
 // Retention matches the dormant assignment TTL: past it the host may have been
 // rebalanced onto another cell, so this cell is no longer the one a phone asks.

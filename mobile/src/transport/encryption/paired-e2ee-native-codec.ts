@@ -8,7 +8,7 @@ export type PairedE2EENativeCodec = {
   openSecretbox(box: Uint8Array, nonce: Uint8Array, key: Uint8Array): Uint8Array | null
   /** XSalsa20-Poly1305 secretbox seal, byte-identical to tweetnacl's `secretbox`. */
   sealSecretbox(message: Uint8Array, nonce: Uint8Array, key: Uint8Array): Uint8Array
-  /** Throws on a body that is not one well-formed gzip member. See orca-gzip-utf8-codec. */
+  /** Throws on a body that is not one well-formed gzip member. See topo-gzip-utf8-codec. */
   gunzip(input: Uint8Array, outputLimit: number): Uint8Array
   /** Null where only TextDecoder's replacement or BOM rules give the answer, or native failed. */
   decodeUtf8(input: Uint8Array): string | null

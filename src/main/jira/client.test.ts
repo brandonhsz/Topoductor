@@ -31,14 +31,14 @@ function mkdtempLike(prefix: string): string {
 }
 
 function tokenPathForSite(siteId: string): string {
-  return join(tempHome, '.orca', 'jira-tokens', `${Buffer.from(siteId).toString('base64url')}.enc`)
+  return join(tempHome, '.topo', 'jira-tokens', `${Buffer.from(siteId).toString('base64url')}.enc`)
 }
 
 function writeJiraFiles(siteId: string, token: string | Buffer): void {
-  const orcaDir = join(tempHome, '.orca')
-  mkdirSync(join(orcaDir, 'jira-tokens'), { recursive: true })
+  const topoDir = join(tempHome, '.topo')
+  mkdirSync(join(topoDir, 'jira-tokens'), { recursive: true })
   writeFileSync(
-    join(orcaDir, 'jira-sites.json'),
+    join(topoDir, 'jira-sites.json'),
     JSON.stringify(
       {
         version: 1,
@@ -66,10 +66,10 @@ function writeMultiSiteFiles(
   sites: { id: string; token: string | Buffer }[],
   selectedSiteId: string
 ): void {
-  const orcaDir = join(tempHome, '.orca')
-  mkdirSync(join(orcaDir, 'jira-tokens'), { recursive: true })
+  const topoDir = join(tempHome, '.topo')
+  mkdirSync(join(topoDir, 'jira-tokens'), { recursive: true })
   writeFileSync(
-    join(orcaDir, 'jira-sites.json'),
+    join(topoDir, 'jira-sites.json'),
     JSON.stringify(
       {
         version: 1,
@@ -102,7 +102,7 @@ function loadClientModule(options: SafeStorageMockOptions = {}) {
 }
 
 beforeEach(() => {
-  tempHome = mkdtempLike('orca-jira-client-')
+  tempHome = mkdtempLike('topo-jira-client-')
   fetchMock = vi.fn(async () => {
     throw new Error('fetch should not be called')
   })
@@ -401,7 +401,7 @@ describe('Jira client credential storage', () => {
 
     // Same-host PAT accounts need verified viewer identity to avoid overwriting each other.
     const stored = JSON.parse(
-      readFileSync(join(tempHome, '.orca', 'jira-sites.json'), 'utf-8')
+      readFileSync(join(tempHome, '.topo', 'jira-sites.json'), 'utf-8')
     ) as {
       sites: { accountId: string }[]
     }
@@ -501,8 +501,8 @@ describe('Jira site file cross-process visibility', () => {
     )
   })
 
-  it('picks up a site connected by another Orca process', async () => {
-    // Processes share ~/.orca; an initially empty read must observe later connections.
+  it('picks up a site connected by another Topo process', async () => {
+    // Processes share ~/.topo; an initially empty read must observe later connections.
     const jira = await loadClientModule()
     expect(jira.getStatus()).toMatchObject({ connected: false, sites: [] })
 
@@ -515,13 +515,13 @@ describe('Jira site file cross-process visibility', () => {
     })
   })
 
-  it('drops a site disconnected by another Orca process', async () => {
+  it('drops a site disconnected by another Topo process', async () => {
     writeJiraFiles('site-alpha', 'token-alpha')
     const jira = await loadClientModule()
     expect(jira.getStatus()).toMatchObject({ connected: true })
 
     writeFileSync(
-      join(tempHome, '.orca', 'jira-sites.json'),
+      join(tempHome, '.topo', 'jira-sites.json'),
       JSON.stringify({ version: 1, activeSiteId: null, selectedSiteId: null, sites: [] }, null, 2),
       { encoding: 'utf-8' }
     )

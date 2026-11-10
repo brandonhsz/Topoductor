@@ -24,7 +24,7 @@ function isGuestCancellationPayload(rawPayload: unknown): boolean {
     return false
   }
   const payload = rawPayload as Record<string, unknown>
-  if (payload.__orcaCancelled === true) {
+  if (payload.__topoCancelled === true) {
     return true
   }
   // Accept legacy cancellation errors without misclassifying page-authored payload fields.
@@ -112,8 +112,8 @@ export class BrowserGrabSessionController {
           }
           // Right-click selections open the action menu instead of auto-copying.
           const isContextMenu =
-            '__orcaContextMenu' in (rawPayload as Record<string, unknown>) &&
-            (rawPayload as Record<string, unknown>).__orcaContextMenu === true
+            '__topoContextMenu' in (rawPayload as Record<string, unknown>) &&
+            (rawPayload as Record<string, unknown>).__topoContextMenu === true
           const payloadSource = isContextMenu
             ? (rawPayload as Record<string, unknown>).payload
             : rawPayload

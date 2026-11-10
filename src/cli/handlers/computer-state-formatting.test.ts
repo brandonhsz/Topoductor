@@ -9,7 +9,7 @@ vi.mock('../runtime-client', () => {
   class RuntimeClient {
     call = callMock
     getCliStatus = vi.fn()
-    openOrca = vi.fn()
+    openTopo = vi.fn()
   }
 
   class RuntimeClientError extends Error {
@@ -40,13 +40,13 @@ vi.mock('../runtime-client', () => {
 import { main } from '../index'
 import { okFixture, queueFixtures } from '../test-fixtures'
 
-describe('orca computer get-app-state formatting', () => {
+describe('topo computer get-app-state formatting', () => {
   let screenshotDirectory: string
   beforeEach(() => {
     vi.restoreAllMocks()
     callMock.mockReset()
-    screenshotDirectory = mkdtempSync(join(tmpdir(), 'orca-computer-state-'))
-    vi.stubEnv('ORCA_COMPUTER_SCREENSHOT_TMPDIR', screenshotDirectory)
+    screenshotDirectory = mkdtempSync(join(tmpdir(), 'topo-computer-state-'))
+    vi.stubEnv('TOPO_COMPUTER_SCREENSHOT_TMPDIR', screenshotDirectory)
     vi.spyOn(console, 'log').mockImplementation(() => {})
     vi.spyOn(console, 'error').mockImplementation(() => {})
     process.exitCode = undefined

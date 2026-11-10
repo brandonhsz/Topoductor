@@ -33,7 +33,7 @@ async function tempDir(prefix: string): Promise<string> {
 }
 
 beforeAll(async () => {
-  hostEntryPath = join(await tempDir('orca-plugin-host-bundle-'), 'plugin-host-entry.cjs')
+  hostEntryPath = join(await tempDir('topo-plugin-host-bundle-'), 'plugin-host-entry.cjs')
   await build({
     entryPoints: [join(process.cwd(), 'src', 'main', 'plugins', 'workers', 'plugin-host-entry.ts')],
     outfile: hostEntryPath,
@@ -52,10 +52,10 @@ afterAll(async () => {
 describe('dev worker restarts', () => {
   // Spawns two real worker processes, which takes seconds on a loaded CI host.
   it('keep storage: a dev save starts a new worker process that reads what the last one wrote', async () => {
-    const rootDir = await tempDir('orca-plugin-dev-worker-')
+    const rootDir = await tempDir('topo-plugin-dev-worker-')
     const services = bindPluginHostServices({
       delegate,
-      pluginsDataDir: await tempDir('orca-plugin-data-')
+      pluginsDataDir: await tempDir('topo-plugin-data-')
     })
     await writeFile(
       join(rootDir, 'main.mjs'),

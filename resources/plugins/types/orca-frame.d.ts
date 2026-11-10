@@ -17,7 +17,7 @@ declare module 'orca/frame' {
   /** `bytes` documents come from editors whose manifest sets `"contentKind": "bytes"`. */
   export type EditorContent = { kind: 'text'; text: string } | { kind: 'bytes'; bytes: ArrayBuffer }
   export type EditorDocument = {
-    /** Rises with each document Orca sends, not with your own edits. */
+    /** Rises with each document Topo sends, not with your own edits. */
     readonly version: number
     readonly readOnly: boolean
     readonly content: EditorContent
@@ -36,7 +36,7 @@ declare module 'orca/frame' {
     theme: FrameTheme
     /** Custom editors: a new document; `orca.document.onDidChange` is the usual way to listen. */
     'editor.document': EditorDocument
-    /** Custom editors: post pending edits before a save; Orca waits for a returned promise. */
+    /** Custom editors: post pending edits before a save; Topo waits for a returned promise. */
     'editor.flush': undefined
   }
   export type SaveAsOptions = {
@@ -47,7 +47,7 @@ declare module 'orca/frame' {
   export type EditorDocumentApi = {
     /** The latest document, with your accepted edits' content at the same version. */
     get(): Promise<EditorDocument>
-    /** Replays the current document, then each one Orca sends when the file changes outside. */
+    /** Replays the current document, then each one Topo sends when the file changes outside. */
     onDidChange(handler: (document: EditorDocument) => void): Disposable
     /** Rejects with `conflict`, `too_large` or `not_permitted` (read-only). */
     applyEdit(edit: EditorEdit): Promise<null>
@@ -59,14 +59,14 @@ declare module 'orca/frame' {
     decode?: (content: EditorContent) => T
     encode?: (value: T) => EditorContent
     /** On a conflict `base` is the last accepted value; when the file changes on disk under the
-     *  tab's unsaved edits, `base` is the disk content those edits started from and Orca skips its
-     *  banner. Without it the outside document wins, or Orca shows its banner. */
+     *  tab's unsaved edits, `base` is the disk content those edits started from and Topo skips its
+     *  banner. Without it the outside document wins, or Topo shows its banner. */
     merge?: (base: T, outside: T, mine: T) => T
     /** Wait after the last change before sending it; default 250. */
     debounceMs?: number
   }
   export type EditorSession<T> = {
-    /** The latest value, including changes Orca has not accepted yet. */
+    /** The latest value, including changes Topo has not accepted yet. */
     readonly value: T
     readonly readOnly: boolean
     /** Schedules an edit; one is in flight at a time and later changes coalesce. No-op read-only. */
@@ -84,7 +84,7 @@ declare module 'orca/frame' {
       event: E,
       handler: (payload: FrameEvents[E]) => unknown
     ): Disposable
-    /** Orca's UI language as a BCP-47 tag. */
+    /** Topo's UI language as a BCP-47 tag. */
     readonly locale: string
     /** Your plugin's own worker: `request` its handlers, hear what it `post`s. */
     readonly plugin: PluginBridgeApi
@@ -96,7 +96,7 @@ declare module 'orca/frame' {
     readonly secrets: SecretsApi
     /** Desktop isolated frames only; needs a click or key press in the frame. */
     readonly shell?: {
-      /** `reason`: the person cancelled, or Orca's window was hidden so nobody could confirm. */
+      /** `reason`: the person cancelled, or Topo's window was hidden so nobody could confirm. */
       openExternal(
         url: string
       ): Promise<{ opened: boolean; reason?: 'cancelled' | 'consent-unavailable' }>
@@ -105,12 +105,12 @@ declare module 'orca/frame' {
     readonly files?: {
       saveAs(options: SaveAsOptions): Promise<{ status: 'saved' | 'cancelled' }>
     }
-    /** Custom editors only. Orca keeps no undo history for them: Cmd/Ctrl+Z reaches the frame. */
+    /** Custom editors only. Topo keeps no undo history for them: Cmd/Ctrl+Z reaches the frame. */
     readonly document?: EditorDocumentApi
   }
 
   global {
-    /** Defined by Orca's frame shell before any plugin script runs; also `window.orca`. */
+    /** Defined by Topo's frame shell before any plugin script runs; also `window.orca`. */
     var orca: OrcaFrameApi
   }
 }

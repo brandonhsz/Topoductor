@@ -29,7 +29,7 @@ describe('a WSL bridge pane exit', () => {
   const noteMayHaveStopped = vi.fn()
 
   beforeEach(async () => {
-    historyDir = mkdtempSync(join(tmpdir(), 'orca-distro-loss-history-'))
+    historyDir = mkdtempSync(join(tmpdir(), 'topo-distro-loss-history-'))
     subprocesses = []
     running = async () => ({ status: 'confirmed', distros: ['Ubuntu'] })
     readRunning.mockClear()

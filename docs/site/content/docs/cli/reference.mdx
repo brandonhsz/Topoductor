@@ -1,42 +1,41 @@
 ---
-title: Orca CLI reference
-description: Commands, selectors, and agent-friendly patterns for driving Orca from a shell.
+title: Topo CLI reference
+description: Commands, selectors, and agent-friendly patterns for driving Topo from a shell.
 ---
 
 import { Callout } from '@/components/docs/prose'
 
-The `orca` CLI talks to a running Orca runtime. Use it when a shell script or agent needs to inspect worktrees, launch terminals, open files, automate the built-in browser, or report progress back into Orca.
+The `topo` CLI talks to a running Topo runtime. Use it when a shell script or agent needs to inspect worktrees, launch terminals, open files, automate the built-in browser, or report progress back into Topo.
 
 ## Verify the runtime
 
-Register the CLI under [Settings → General → Orca CLI](/docs/settings), then check that it can reach Orca.
+Register the CLI under [Settings → General → Topo CLI](/docs/settings), then check that it can reach Topo.
 
-<Callout title="On Linux the command is orca-ide">
-  GNOME Orca — the screen reader that ships with most GNOME desktops — already owns `/usr/bin/orca`,
-  so Orca's Linux CLI installs as `orca-ide`. Do not check for it with `command -v orca`: that
-  succeeds on a GNOME desktop and resolves to the screen reader, not to Orca. This page writes
-  `orca` throughout — read it as `orca-ide` on Linux. See [Install → Linux](/docs/install#linux).
+<Callout title="On Linux the command is topo-ide">
+  Topo's Linux CLI installs as `topo-ide`, so check for it with `command -v topo-ide`. This page
+  writes `topo` throughout — read it as `topo-ide` on Linux. See [Install →
+  Linux](/docs/install#linux).
 </Callout>
 
 On macOS and Windows:
 
 ```bash
-command -v orca
-orca status --json
+command -v topo
+topo status --json
 ```
 
 On Linux:
 
 ```bash
-command -v orca-ide
-orca-ide status --json
+command -v topo-ide
+topo-ide status --json
 ```
 
-If Orca is not already running:
+If Topo is not already running:
 
 ```bash
-orca open --json
-orca status --json
+topo open --json
+topo status --json
 ```
 
 Use `--json` when another tool will parse the result. Human-readable output is for quick terminal checks.
@@ -46,87 +45,87 @@ Use `--json` when another tool will parse the result. Human-readable output is f
 Most commands accept selectors instead of requiring long IDs:
 
 ```bash
-orca repo show --repo id:<repoId> --json
-orca worktree show --worktree active --json
-orca worktree show --worktree path:/abs/path/to/worktree --json
-orca worktree show --worktree branch:feature-name --json
-orca worktree show --worktree issue:123 --json
+topo repo show --repo id:<repoId> --json
+topo worktree show --worktree active --json
+topo worktree show --worktree path:/abs/path/to/worktree --json
+topo worktree show --worktree branch:feature-name --json
+topo worktree show --worktree issue:123 --json
 ```
 
-`active` and `current` resolve to the enclosing Orca-managed worktree from the shell's current directory or terminal context. Use explicit selectors in scripts that may run outside the target worktree. For remote runtimes, prefer full server-side selectors such as `id:<repoId>::<absolute-worktree-path>` or `path:<absolute-server-path>` because the local shell's current directory may not exist on the runtime host.
+`active` and `current` resolve to the enclosing Topo-managed worktree from the shell's current directory or terminal context. Use explicit selectors in scripts that may run outside the target worktree. For remote runtimes, prefer full server-side selectors such as `id:<repoId>::<absolute-worktree-path>` or `path:<absolute-server-path>` because the local shell's current directory may not exist on the runtime host.
 
 ## Choose a host
 
-List every machine the current Orca host can target and the selector for each one:
+List every machine the current Topo host can target and the selector for each one:
 
 ```bash
-orca host list --json
+topo host list --json
 ```
 
-The result includes this machine, its registered [SSH targets](/docs/ssh), and paired [Remote Orca Servers](/docs/remote-servers). Use `--host local` for this machine, `--host ssh:<target-id>` for an SSH target, and `--environment <server-name>` for a paired server. SSH rows include the detected remote platform (`linux`, `darwin`, or `win32`) after the target connects; older or disconnected targets report `platform unknown`. They also include `connected` and, when known, the SSH lifecycle `connectionStatus`. If you put a machine name on the wrong selector, Orca reports the matching machine and the flag to use instead of returning an empty result.
+The result includes this machine, its registered [SSH targets](/docs/ssh), and paired [Remote Topo Servers](/docs/remote-servers). Use `--host local` for this machine, `--host ssh:<target-id>` for an SSH target, and `--environment <server-name>` for a paired server. SSH rows include the detected remote platform (`linux`, `darwin`, or `win32`) after the target connects; older or disconnected targets report `platform unknown`. They also include `connected` and, when known, the SSH lifecycle `connectionStatus`. If you put a machine name on the wrong selector, Topo reports the matching machine and the flag to use instead of returning an empty result.
 
 `--host` also takes the bare name shown in the `name` column, on either axis — `--host trader-local` reaches the same machine as `--host ssh:ssh-1783599077486-fyasux`. Names resolve only when they are unique: a name held by two SSH targets, by two paired servers, or by one of each is refused, and the error hands back the id form for each candidate — `--host ssh:<target-id>` for an SSH target and `--host runtime:<environment-id>` for a paired server. Use those to settle it, since `--environment <server-name>` cannot separate two servers sharing a name.
 
-Remove a saved SSH target with the id `orca host list` prints:
+Remove a saved SSH target with the id `topo host list` prints:
 
 ```bash
-orca host rm --host ssh:<target-id> --json
+topo host rm --host ssh:<target-id> --json
 ```
 
-It removes the target the same way Settings does, so the passive `~/.ssh/config` import does not add the alias back on the next launch. It takes only the `ssh:<target-id>` form, not the bare name, because it deletes data. It refuses `--host local`, paired servers (use `orca environment rm`), and an id this Orca host does not have.
+It removes the target the same way Settings does, so the passive `~/.ssh/config` import does not add the alias back on the next launch. It takes only the `ssh:<target-id>` form, not the bare name, because it deletes data. It refuses `--host local`, paired servers (use `topo environment rm`), and an id this Topo host does not have.
 
 ## Runtime commands
 
 ```bash
-orca open --json
-orca status --json
-orca serve --port 6768 --bind 100.64.1.20 --pairing-address 100.64.1.20 --json
+topo open --json
+topo status --json
+topo serve --port 6768 --bind 100.64.1.20 --pairing-address 100.64.1.20 --json
 ```
 
-`orca serve` starts a runtime server in the foreground without opening the desktop window. Use it for [Remote Orca Servers](/docs/remote-servers) or headless environments, and stop it with `Ctrl-C`. It accepts clients from localhost, LAN and Tailscale addresses; add `--allow-public` to accept public internet addresses too.
+`topo serve` starts a runtime server in the foreground without opening the desktop window. Use it for [Remote Topo Servers](/docs/remote-servers) or headless environments, and stop it with `Ctrl-C`. It accepts clients from localhost, LAN and Tailscale addresses; add `--allow-public` to accept public internet addresses too.
 Use `--bind <literal-ip>` to choose the listening interface; `--pairing-address` changes the address advertised to clients.
 
 ## Repos
 
 ```bash
-orca repo list --json
-orca repo add --path /abs/path/to/repo --json
-orca repo add --path /abs/path/to/folder --kind folder --json
-orca repo show --repo id:<repoId> --json
-orca repo set-base-ref --repo id:<repoId> --ref origin/main --json
-orca repo search-refs --repo id:<repoId> --query main --limit 10 --json
+topo repo list --json
+topo repo add --path /abs/path/to/repo --json
+topo repo add --path /abs/path/to/folder --kind folder --json
+topo repo show --repo id:<repoId> --json
+topo repo set-base-ref --repo id:<repoId> --ref origin/main --json
+topo repo search-refs --repo id:<repoId> --query main --limit 10 --json
 ```
 
 Set the repo base ref before creating lots of worktrees so new tasks branch from the right place by default.
 
-`repo add` defaults to `--kind git`. Use `--kind folder` to open an ordinary directory, including a repo-tool root containing separate Git repositories, as a folder workspace without Git worktrees or source control. With `--environment`, use an absolute path on that Orca server.
+`repo add` defaults to `--kind git`. Use `--kind folder` to open an ordinary directory, including a repo-tool root containing separate Git repositories, as a folder workspace without Git worktrees or source control. With `--environment`, use an absolute path on that Topo server.
 
 ## Worktrees
 
 ```bash
-orca worktree list --repo id:<repoId> --json
-orca worktree ps --json
-orca worktree current --json
-orca worktree show --worktree active --json
-orca worktree create --repo id:<repoId> --name fix-login --json
-orca worktree create --name child-task --agent codex --prompt "Investigate the flaky login test" --json
-orca worktree set --worktree active --comment "reproduced failure; testing token refresh fix" --json
-orca worktree set --worktree active --workspace-status in-review --unread --json
-orca worktree rm --worktree id:<worktreeId> --force --json
+topo worktree list --repo id:<repoId> --json
+topo worktree ps --json
+topo worktree current --json
+topo worktree show --worktree active --json
+topo worktree create --repo id:<repoId> --name fix-login --json
+topo worktree create --name child-task --agent codex --prompt "Investigate the flaky login test" --json
+topo worktree set --worktree active --comment "reproduced failure; testing token refresh fix" --json
+topo worktree set --worktree active --workspace-status in-review --unread --json
+topo worktree rm --worktree id:<worktreeId> --force --json
 ```
 
-When `worktree create` runs from inside an Orca-managed worktree, Orca records the new worktree as a child when it can infer the relationship. Pass `--parent-worktree active` to be explicit, or `--no-parent` when the new work is independent.
+When `worktree create` runs from inside a Topo-managed worktree, Topo records the new worktree as a child when it can infer the relationship. Pass `--parent-worktree active` to be explicit, or `--no-parent` when the new work is independent.
 
-Pass `--branch DAT-111-fix-login` to name the Git branch yourself instead of applying the configured branch prefix. `--name` still sets the workspace name and `--base-branch` the starting ref. If that branch already exists and cannot be reused, or the workspace path is already taken, Orca appends a numeric suffix to both, as it does in the new-workspace composer, so `--name task --branch exact` can produce branch `exact-2` even when `exact` is free.
+Pass `--branch DAT-111-fix-login` to name the Git branch yourself instead of applying the configured branch prefix. `--name` still sets the workspace name and `--base-branch` the starting ref. If that branch already exists and cannot be reused, or the workspace path is already taken, Topo appends a numeric suffix to both, as it does in the new-workspace composer, so `--name task --branch exact` can produce branch `exact-2` even when `exact` is free.
 
-`worktree set --unread` puts the unread dot on the workspace in the sidebar, the same one Orca shows when an agent finishes; `--read` clears it.
+`worktree set --unread` puts the unread dot on the workspace in the sidebar, the same one Topo shows when an agent finishes; `--read` clears it.
 
 Agent startup flags:
 
 ```bash
-orca worktree create --name review-api --agent claude --setup run --json
-orca worktree create --name quick-check --agent codex --prompt "Summarize the diff" --setup skip --json
-orca worktree create --name hidden-setup --setup inherit --json
+topo worktree create --name review-api --agent claude --setup run --json
+topo worktree create --name quick-check --agent codex --prompt "Summarize the diff" --setup skip --json
+topo worktree create --name hidden-setup --setup inherit --json
 ```
 
 `--agent` launches the selected agent in the first terminal. `--prompt` sends initial work to that agent. `--setup run|skip|inherit` controls repo setup hooks; `inherit` follows the repo policy.
@@ -134,11 +133,11 @@ orca worktree create --name hidden-setup --setup inherit --json
 Link issues and reviews using the existing workspace metadata:
 
 ```bash
-orca worktree create --repo id:<repoId> --name review-task --pr 123 --json
-orca worktree create --repo id:<repoId> --name gitlab-task --gitlab-issue 42 --gitlab-mr 77 --json
-orca worktree set --worktree active --gitlab-issue '#42' --gitlab-mr '!77' --json
-orca worktree set --worktree active --gitlab-issue https://gitlab.example.com/group/project/-/work_items/42 --json
-orca worktree set --worktree active --pr null --gitlab-mr null --json
+topo worktree create --repo id:<repoId> --name review-task --pr 123 --json
+topo worktree create --repo id:<repoId> --name gitlab-task --gitlab-issue 42 --gitlab-mr 77 --json
+topo worktree set --worktree active --gitlab-issue '#42' --gitlab-mr '!77' --json
+topo worktree set --worktree active --gitlab-issue https://gitlab.example.com/group/project/-/work_items/42 --json
+topo worktree set --worktree active --pr null --gitlab-mr null --json
 ```
 
 `--pr` is a GitHub pull request number. `--gitlab-issue` accepts an issue number or `#42`; `--gitlab-mr` accepts a merge request number or `!77`. Numbers must be positive safe integers. The GitLab flags also accept HTTP(S) issue or merge request URLs, including self-hosted instances and nested groups. The URL's host and project must match the workspace's stored GitLab source context or the repository's stored remote. If that identity is missing or different, the command fails before updating metadata. A URL cannot choose another project, change the checkout, or fetch a review branch.
@@ -150,58 +149,58 @@ Folder-based repositories can store numeric links through these commands, but a 
 ## Ports
 
 ```bash
-orca ports --json
-orca ports --worktree branch:feature/login --json
-orca ports --all
+topo ports --json
+topo ports --worktree branch:feature/login --json
+topo ports --all
 ```
 
-`ports` lists the listening ports Orca tied to a workspace, from the host the workspace runs on. It defaults to the workspace that contains the current directory. Each row has `port`, `pid`, `processName`, `connectHost`, `protocol`, how Orca matched it (`owner.confidence`: `cwd` or `command`), and `advertisedUrl` when the dev server printed one in an Orca terminal. `--all` lists every listener on that host. Native folder workspaces need `--all`, because Orca does not tie ports to them. If `unavailableReason` is set, the scan could not run on that host; SSH workspaces opened directly from the desktop report this for now, while a workspace on a managed Orca server is scanned on that server.
+`ports` lists the listening ports Topo tied to a workspace, from the host the workspace runs on. It defaults to the workspace that contains the current directory. Each row has `port`, `pid`, `processName`, `connectHost`, `protocol`, how Topo matched it (`owner.confidence`: `cwd` or `command`), and `advertisedUrl` when the dev server printed one in a Topo terminal. `--all` lists every listener on that host. Native folder workspaces need `--all`, because Topo does not tie ports to them. If `unavailableReason` is set, the scan could not run on that host; SSH workspaces opened directly from the desktop report this for now, while a workspace on a managed Topo server is scanned on that server.
 
 ## References
 
 A workspace can link multiple reviews and issues, including sources outside its repository.
 
 ```bash
-orca reference list --worktree name:api --json
-orca reference add https://github.com/acme/api/pull/5123 https://linear.app/acme/issue/STA-1234 --worktree name:api --json
-orca reference remove https://github.com/acme/api/pull/5123 --worktree name:api --json
-orca reference remove --key '<key-from-list>' --worktree name:api --json
-orca worktree create --name fix --reference https://github.com/acme/api/pull/5123 --reference https://linear.app/acme/issue/STA-1234 --json
-orca reference find STA-1234 --json
+topo reference list --worktree name:api --json
+topo reference add https://github.com/acme/api/pull/5123 https://linear.app/acme/issue/STA-1234 --worktree name:api --json
+topo reference remove https://github.com/acme/api/pull/5123 --worktree name:api --json
+topo reference remove --key '<key-from-list>' --worktree name:api --json
+topo worktree create --name fix --reference https://github.com/acme/api/pull/5123 --reference https://linear.app/acme/issue/STA-1234 --json
+topo reference find STA-1234 --json
 ```
 
 - **Writes:** full URLs only; no custom shorthand. `remove --key` supports older entries without URLs. Source-unknown legacy links cannot match an exact URL; native issue keys remain searchable when stored. Duplicate adds and absent removals are no-ops. Unrelated links and current selection are preserved. Older hosts without safe delta merging refuse writes.
 - **Create:** repeat `--reference`; incompatible with `--pr`, `--issue`, `--linear-issue`, `--gitlab-issue`, and `--gitlab-mr`. References persist before setup or agent startup.
-- **Find:** a full URL or native issue key; bare numbers are rejected. Keys search all matching sources. Reads stored metadata, without provider requests or conversation searches. Use `orca search` for conversation text.
+- **Find:** a full URL or native issue key; bare numbers are rejected. Keys search all matching sources. Reads stored metadata, without provider requests or conversation searches. Use `topo search` for conversation text.
 - **Scope:** `--worktree` selects a worktree or folder workspace. Find also accepts `--repo` instead, plus `--include-archived` and `--limit` (default 50 workspaces). `truncated: true` means more matched. Remote selectors refer to the execution host; `current` is local only.
 - **Output:** list returns `references` with opaque `key` and `selected`; writes also return `changes`. Worktree show/list/ps retain `linkedItems`. Find returns workspace matches and agents with `linked`, `liveness`, and available `terminal`/`mailbox` addresses. `linked: false` means ownership is unknown; sharing a workspace is insufficient evidence.
 
 Choose an agent from `find`, then use its exact address:
 
 ```bash
-orca terminal send --terminal '<terminal-from-find>' --text 'Status?' --enter
-orca orchestration send --to '<mailbox-from-find>' --subject 'Status?' --type question
+topo terminal send --terminal '<terminal-from-find>' --text 'Status?' --enter
+topo orchestration send --to '<mailbox-from-find>' --subject 'Status?' --type question
 ```
 
-Mailboxes are `dispatch:<id>` or `orca_session_id:<id>`; a `run:<id>` addresses a coordinator. Find never sends messages or assigns ownership. Adding references from a shell does not associate that shell with an agent.
+Mailboxes are `dispatch:<id>` or `topo_session_id:<id>`; a `run:<id>` addresses a coordinator. Find never sends messages or assigns ownership. Adding references from a shell does not associate that shell with an agent.
 
 ## Terminals
 
 ```bash
-orca terminal list --worktree active --json
-orca terminal show --terminal <handle> --json
-orca terminal read --terminal <handle> --json
-orca terminal read --terminal <handle> --screen --json
-orca terminal read --terminal <handle> --cursor <cursor> --limit 1000 --json
-orca terminal send --terminal <handle> --text "continue" --enter --json
-orca terminal wait --terminal <handle> --for tui-idle --timeout-ms 300000 --json
-orca terminal create --worktree active --title "tests" --command "npm test" --json
-orca terminal split --terminal <handle> --direction horizontal --command "npm run dev" --json
-orca terminal rename --terminal <handle> --title "runner" --json
-orca terminal set-pane-title --terminal <handle> --title "reviewer" --json
-orca terminal switch --terminal <handle> --json
-orca terminal close --terminal <handle> --json
-orca terminal close --worktree active --all --json
+topo terminal list --worktree active --json
+topo terminal show --terminal <handle> --json
+topo terminal read --terminal <handle> --json
+topo terminal read --terminal <handle> --screen --json
+topo terminal read --terminal <handle> --cursor <cursor> --limit 1000 --json
+topo terminal send --terminal <handle> --text "continue" --enter --json
+topo terminal wait --terminal <handle> --for tui-idle --timeout-ms 300000 --json
+topo terminal create --worktree active --title "tests" --command "npm test" --json
+topo terminal split --terminal <handle> --direction horizontal --command "npm run dev" --json
+topo terminal rename --terminal <handle> --title "runner" --json
+topo terminal set-pane-title --terminal <handle> --title "reviewer" --json
+topo terminal switch --terminal <handle> --json
+topo terminal close --terminal <handle> --json
+topo terminal close --worktree active --all --json
 ```
 
 Omit `--terminal` to target the active terminal in the current worktree. Read before sending when you are not sure what the terminal is waiting for.
@@ -214,11 +213,11 @@ close returns a failing `unverifiable` result rather than claiming the processes
 `terminal stop` remains only for compatibility with older tooling.
 
 <Callout title="Terminal handles">
-  Terminal handles are runtime-scoped. If Orca restarts or a command reports a stale terminal
-  handle, run `orca terminal list --json` and reacquire the handle.
+  Terminal handles are runtime-scoped. If Topo restarts or a command reports a stale terminal
+  handle, run `topo terminal list --json` and reacquire the handle.
 </Callout>
 
-`terminal list` reports each terminal's `executionHostId` when Orca can verify it, plus a result-level `hostScope` with covered and omitted host IDs. Treat a missing host identity or scope as **unverifiable**, not local. A missing terminal is evidence that it exited only when its execution host is listed in `hostScope.hostIds`.
+`terminal list` reports each terminal's `executionHostId` when Topo can verify it, plus a result-level `hostScope` with covered and omitted host IDs. Treat a missing host identity or scope as **unverifiable**, not local. A missing terminal is evidence that it exited only when its execution host is listed in `hostScope.hostIds`.
 
 By default, `terminal read` returns the accumulated output stream with terminal escapes stripped. Programs that redraw lines can therefore appear as stacked fragments. Use `--screen` when you need the currently rendered frame; the response's `source` identifies `stream`, `screen`, or `screen-unavailable`. Screen reads have no history to page, so `--screen` and `--cursor` are mutually exclusive.
 
@@ -227,114 +226,114 @@ For long output, use cursor reads. Save `nextCursor` from one stream read, then 
 ## Chats
 
 ```bash
-orca chat rename --session <sessionId> --name "Release notes" --json
-orca chat rename --name "Migrate auth"
+topo chat rename --session <sessionId> --name "Release notes" --json
+topo chat rename --name "Migrate auth"
 ```
 
-Renames a chat tab, the same as renaming it by hand. `--session` takes the `sessionId` that `orca agent launch` prints. Run inside a chat, it defaults to that chat; with `--environment` it is required.
+Renames a chat tab, the same as renaming it by hand. `--session` takes the `sessionId` that `topo agent launch` prints. Run inside a chat, it defaults to that chat; with `--environment` it is required.
 
 ## Files
 
 ```bash
-orca file open src/App.tsx --worktree active --json
-orca file open src/App.tsx --line 42 --column 7 --worktree active --focus --json
-orca file diff src/App.tsx --staged --worktree active --json
-orca file open-changed --mode both --worktree active --json
+topo file open src/App.tsx --worktree active --json
+topo file open src/App.tsx --line 42 --column 7 --worktree active --focus --json
+topo file diff src/App.tsx --staged --worktree active --json
+topo file open-changed --mode both --worktree active --json
 ```
 
 Paths are relative to the selected worktree. `--line` and `--column` are 1-based; a column requires a line. Positions are applied when you select the file, or immediately with `--focus`. Markdown switches to source view for positioning. Older hosts open the file without positioning. `open-changed` reads git status and opens changed files in edit, diff, or both modes. Tabs open without changing what you are looking at; pass `--focus` to be brought to them.
 
 ## Built-in browser
 
-Browser commands control Orca's embedded browser tab for the selected worktree. They do not control Chrome, Safari, or the Orca desktop UI.
+Browser commands control Topo's embedded browser tab for the selected worktree. They do not control Chrome, Safari, or the Topo desktop UI.
 
 Use a snapshot -> act -> snapshot loop:
 
 ```bash
-orca goto --url http://localhost:3000 --worktree active --json
-orca snapshot --worktree active --json
-orca click --element @e3 --worktree active --json
-orca fill --element @e1 --value "user@example.com" --worktree active --json
-orca wait --text "Welcome" --worktree active --json
-orca screenshot --worktree active --json
+topo goto --url http://localhost:3000 --worktree active --json
+topo snapshot --worktree active --json
+topo click --element @e3 --worktree active --json
+topo fill --element @e1 --value "user@example.com" --worktree active --json
+topo wait --text "Welcome" --worktree active --json
+topo screenshot --worktree active --json
 ```
 
 Refs such as `@e3` come from `snapshot`. Re-snapshot after navigation, tab switches, clicks that change the page, and any stale-ref error.
 
-`snapshot --interactive` lists only controls and links, `--delta` returns only what changed since the last `--delta` snapshot, and `--selector <css>` or `--depth <n>` narrow the tree. `screenshot` and `full-screenshot` save the image where the CLI runs and print its path; `screenshot` is in CSS pixels in Orca's desktop browser.
+`snapshot --interactive` lists only controls and links, `--delta` returns only what changed since the last `--delta` snapshot, and `--selector <css>` or `--depth <n>` narrow the tree. `screenshot` and `full-screenshot` save the image where the CLI runs and print its path; `screenshot` is in CSS pixels in Topo's desktop browser.
 
 Tab and capture commands:
 
 ```bash
-orca tab list --worktree active --json
-orca tab create --url http://localhost:3000 --worktree active --json
-orca tab switch --index 1 --worktree active --json
-orca capture start --worktree active --json
-orca console --limit 50 --worktree active --json
-orca network --limit 50 --worktree active --json
-orca full-screenshot --worktree active --json
-orca pdf --worktree active --json
+topo tab list --worktree active --json
+topo tab create --url http://localhost:3000 --worktree active --json
+topo tab switch --index 1 --worktree active --json
+topo capture start --worktree active --json
+topo console --limit 50 --worktree active --json
+topo network --limit 50 --worktree active --json
+topo full-screenshot --worktree active --json
+topo pdf --worktree active --json
 ```
 
-Use `orca exec --command "<agent-browser command>" --json` only for browser actions that do not have a typed Orca command yet.
+Use `topo exec --command "<agent-browser command>" --json` only for browser actions that do not have a typed Topo command yet.
 
 Browser device emulation:
 
 ```bash
-orca set device --name "iPhone 12" --worktree active --json
-orca screenshot --worktree active --json
+topo set device --name "iPhone 12" --worktree active --json
+topo screenshot --worktree active --json
 ```
 
 ## Desktop computer use
 
-Use `orca computer` for native desktop apps outside the built-in browser:
+Use `topo computer` for native desktop apps outside the built-in browser:
 
 ```bash
-orca computer permissions --json
-orca computer list-apps --json
-orca computer get-app-state --app com.apple.Safari --json
-orca computer click --app com.apple.Safari --element-index 12 --json
-orca computer paste-text --app com.apple.Safari --text "hello" --json
+topo computer permissions --json
+topo computer list-apps --json
+topo computer get-app-state --app com.apple.Safari --json
+topo computer click --app com.apple.Safari --element-index 12 --json
+topo computer paste-text --app com.apple.Safari --text "hello" --json
 ```
 
 See [Computer use](/docs/cli/computer-use) for the full workflow and permission setup.
 
 ## Mobile emulator
 
-The mobile emulator commands control iOS Simulator devices through Orca's worktree-scoped bridge. Use them instead of raw `serve-sim` or `simctl` when an agent is operating from inside Orca, so lifecycle and active-device state stay attached to the current worktree.
+The mobile emulator commands control iOS Simulator devices through Topo's worktree-scoped bridge. Use them instead of raw `serve-sim` or `simctl` when an agent is operating from inside Topo, so lifecycle and active-device state stay attached to the current worktree.
 
 ```bash
-orca emulator list --worktree active --json
-orca emulator attach "<device-name-or-udid>" --worktree active --json
-orca emulator tap 0.5 0.7 --worktree active --json
-orca emulator type "hello" --worktree active --json
-orca emulator gesture '[{"type":"begin","x":0.5,"y":0.8},{"type":"move","x":0.5,"y":0.4},{"type":"end","x":0.5,"y":0.2}]' --worktree active --json
-orca emulator button home --worktree active --json
-orca emulator rotate landscape_left --worktree active --json
-orca emulator exec --command "tap 0.5 0.7" --worktree active --json
-orca emulator kill --worktree active --json
-orca emulator shutdown --worktree active --json
+topo emulator list --worktree active --json
+topo emulator attach "<device-name-or-udid>" --worktree active --json
+topo emulator tap 0.5 0.7 --worktree active --json
+topo emulator type "hello" --worktree active --json
+topo emulator gesture '[{"type":"begin","x":0.5,"y":0.8},{"type":"move","x":0.5,"y":0.4},{"type":"end","x":0.5,"y":0.2}]' --worktree active --json
+topo emulator button home --worktree active --json
+topo emulator rotate landscape_left --worktree active --json
+topo emulator exec --command "tap 0.5 0.7" --worktree active --json
+topo emulator kill --worktree active --json
+topo emulator shutdown --worktree active --json
 ```
 
 Coordinates are normalized from `0` to `1`. Prefer `tap` for single taps, and use `gesture` for drags or multi-step touch input. Pass `--device <udid-or-name>` or `--emulator <id>` when a script must target a specific simulator instead of the worktree's active emulator.
 
 ## Linear
 
-The `orca linear` surface is what agents use via the `orca-linear` skill (legacy install name `linear-tickets` still works). Prefer `--json`. Linked worktrees resolve with `--current`.
+The `topo linear` surface is what agents use via the `topo-linear` skill (legacy install name `linear-tickets` still works). Prefer `--json`. Linked worktrees resolve with `--current`.
 
 ### Read
 
 ```bash
-orca linear issue --current --full --json
-orca linear issue ENG-123 --comments --children --relations --activity --json
-orca linear search "auth bug" --workspace all --json
-orca linear list --filter assigned --limit 10 --json
-orca linear list-issues --team ENG --state started --assignee me --json
-orca linear list-issues --query auth --updated-at -P7D --cursor <cursor> --workspace <id> --json
-orca linear team list --json
-orca linear team states --team ENG --json
-orca linear team labels --team ENG --json
-orca linear project list --query launch --json
+topo linear issue --current --full --json
+topo linear issue ENG-123 --comments --children --relations --activity --json
+topo linear search "auth bug" --workspace all --json
+topo linear list --filter assigned --limit 10 --json
+topo linear list-issues --team ENG --state started --assignee me --json
+topo linear list-issues --query auth --updated-at -P7D --cursor <cursor> --workspace <id> --json
+topo linear team list --json
+topo linear team states --team ENG --json
+topo linear team labels --team ENG --json
+topo linear project list --query launch --json
 ```
 
 `--full` expands comments, children, attachments, relations, and activity. Section flags (`--comments`, `--children`, `--attachments`, `--relations`, `--activity`) work individually.
@@ -343,12 +342,12 @@ orca linear project list --query launch --json
 
 ```bash
 # Create or update (omit id/--current to create; requires --team and --title on create)
-orca linear save-issue --team ENG --title "Fix auth" --priority high --json
-orca linear save-issue ENG-123 --state "In Progress" --assignee me --json
-orca linear save-issue --current --project null --due-date null --json
+topo linear save-issue --team ENG --title "Fix auth" --priority high --json
+topo linear save-issue ENG-123 --state "In Progress" --assignee me --json
+topo linear save-issue --current --project null --due-date null --json
 
-orca linear relation add ENG-1 --related ENG-2 --type blocks --json
-orca linear relation remove ENG-1 --related ENG-2 --type related --json
+topo linear relation add ENG-1 --related ENG-2 --type blocks --json
+topo linear relation remove ENG-1 --related ENG-2 --type related --json
 ```
 
 `save-issue` labels **replace** the full label set (Linear MCP `save_issue` semantics). Literal `null` clears assignee, estimate, due date, project, or parent.
@@ -356,44 +355,44 @@ orca linear relation remove ENG-1 --related ENG-2 --type related --json
 ### Field helpers (still valid)
 
 ```bash
-orca linear status set --current --to "In Progress" --json
-orca linear assignee set --current --me --json
-orca linear priority set ENG-123 --to high --json
-orca linear estimate set --current --to 3 --json
-orca linear due-date set --current --to 2026-08-01 --json
-orca linear label add --current --label backend --json
-orca linear comment add --current --body "Investigating regression" --json
-orca linear attach --current --url https://example.com/repro --title "Repro" --json
-orca linear create --title "Flaky login test" --team ENG --priority high --json
+topo linear status set --current --to "In Progress" --json
+topo linear assignee set --current --me --json
+topo linear priority set ENG-123 --to high --json
+topo linear estimate set --current --to 3 --json
+topo linear due-date set --current --to 2026-08-01 --json
+topo linear label add --current --label backend --json
+topo linear comment add --current --body "Investigating regression" --json
+topo linear attach --current --url https://example.com/repro --title "Repro" --json
+topo linear create --title "Flaky login test" --team ENG --priority high --json
 ```
 
-Run `orca linear --help` or `orca skills get orca-linear` for the version-matched list. Pass an explicit issue id (e.g. `ENG-123`) when a script may run outside an Orca-linked worktree.
+Run `topo linear --help` or `topo skills get topo-linear` for the version-matched list. Pass an explicit issue id (e.g. `ENG-123`) when a script may run outside a Topo-linked worktree.
 
 ## Skills (local, no runtime required)
 
 List bundled guides, print a version-matched guide, or install/update hybrid skill packages without the desktop Settings UI:
 
 ```bash
-orca skills list
-orca skills get orca-cli
-orca skills get orchestration --references
-orca skills get orchestration --reference recovery-and-cleanup
-orca skills get orchestration --full
-orca skills install --skill orca-cli --skill orchestration
-orca skills install --all --dry-run
-orca skills update --all
+topo skills list
+topo skills get topo-cli
+topo skills get orchestration --references
+topo skills get orchestration --reference recovery-and-cleanup
+topo skills get orchestration --full
+topo skills install --skill topo-cli --skill orchestration
+topo skills install --all --dry-run
+topo skills update --all
 ```
 
-`install` / `update` run Orca's own skill installer on the machine that runs them, the same planner the app's **Update skills** uses. They do not contact the Orca runtime or need `npx`. See [Orca skills](/docs/cli/skills#keep-skills-up-to-date).
+`install` / `update` run Topo's own skill installer on the machine that runs them, the same planner the app's **Update skills** uses. They do not contact the Topo runtime or need `npx`. See [Topo skills](/docs/cli/skills#keep-skills-up-to-date).
 
 ## Account (host-local runtime)
 
-On a headless host running Orca (`orca serve` or the desktop app), add managed Claude/Codex accounts when the remote client cannot use **Add account** (remote runtime scope disables that button):
+On a headless host running Topo (`topo serve` or the desktop app), add managed Claude/Codex accounts when the remote client cannot use **Add account** (remote runtime scope disables that button):
 
 ```bash
-orca account list
-orca account add                 # Claude by default
-orca account add --agent codex
+topo account list
+topo account add                 # Claude by default
+topo account add --agent codex
 ```
 
 `account add` runs `claude login` / `codex login` in **this** terminal on the host, then registers the captured credentials with the local runtime. Codex uses device authorization so the browser can finish on another machine. Run these on the machine that owns the accounts — not through a client-only remote session.
@@ -401,35 +400,35 @@ orca account add --agent codex
 Switch which saved account new agents launch with, for any provider with saved accounts (Claude, Codex, OpenCode, Devin, Antigravity):
 
 ```bash
-orca account list                                               # ids, emails/labels, and the active one
-orca account select --agent claude --account you@example.com    # id, email or label
-orca worktree create --name task --agent claude --prompt "..."
-orca account select --agent claude --account system             # back to your own sign-in
-orca account rm --agent codex --account old@example.com         # forget a saved account
+topo account list                                               # ids, emails/labels, and the active one
+topo account select --agent claude --account you@example.com    # id, email or label
+topo worktree create --name task --agent claude --prompt "..."
+topo account select --agent claude --account system             # back to your own sign-in
+topo account rm --agent codex --account old@example.com         # forget a saved account
 ```
 
 A selection applies to every agent of that provider launched on the host after it — the same switch as the status-bar account menu — not to a single workspace. An email shared by several accounts (one sign-in in two organizations) is refused; pass the id instead. Antigravity has no `system` default, and `account rm` never removes system credentials.
 
 ## Artifacts
 
-Publish HTML or Markdown through the signed-in Orca account. Viewing a public link does not require sign-in; create/list/update/delete do. **Publishing is off by default** — a human must enable **Settings → Artifacts → Allow publishing public artifact links** on the device. There is no CLI flag that grants the gate. `list`, `unshare`, and `delete` stay available so you can audit or revoke links after turning publishing off.
+Publish HTML or Markdown through the signed-in Topo account. Viewing a public link does not require sign-in; create/list/update/delete do. **Publishing is off by default** — a human must enable **Settings → Artifacts → Allow publishing public artifact links** on the device. There is no CLI flag that grants the gate. `list`, `unshare`, and `delete` stay available so you can audit or revoke links after turning publishing off.
 
 ```bash
-orca artifacts share ./report.html --json
-orca artifacts share ./notes.md --json
-orca artifacts update ./notes.md --json
-orca artifacts unshare ./notes.md --json
-orca artifacts list --json
-orca artifacts list --cursor <cursor> --json
-orca artifacts delete <id> --json
+topo artifacts share ./report.html --json
+topo artifacts share ./notes.md --json
+topo artifacts update ./notes.md --json
+topo artifacts unshare ./notes.md --json
+topo artifacts list --json
+topo artifacts list --cursor <cursor> --json
+topo artifacts delete <id> --json
 ```
 
 - Accepted files: `.html`, `.htm`, `.md`, `.markdown`.
-- `share` stores the edit token in the active Orca profile and does not print it. `update` / `unshare` resolve by the same local path and profile that originally shared the file.
+- `share` stores the edit token in the active Topo profile and does not print it. `update` / `unshare` resolve by the same local path and profile that originally shared the file.
 - `list` is paged (`nextCursor` → `--cursor`). `delete` takes the artifact id from `list` and does not need the original file.
 - Relative HTML assets are not uploaded — share self-contained HTML or absolute asset URLs.
 - Denied publish/update fails with `artifact_sharing_disabled`; fix Settings instead of retrying.
-- Headless Orca servers have no Orca cloud sign-in, so artifact and skill-sharing commands there fail with `sharing_unavailable_on_host`; share from the desktop app.
+- Headless Topo servers have no Topo cloud sign-in, so artifact and skill-sharing commands there fail with `sharing_unavailable_on_host`; share from the desktop app.
 - Desktop: open a local HTML or Markdown file and use **Share as artifact**, or manage links from the sidebar **Artifacts** page.
 
 ## Automations, environments, and hooks
@@ -437,25 +436,25 @@ orca artifacts delete <id> --json
 Scheduled prompts:
 
 ```bash
-orca automations list --json
-orca automations create --name "Daily review" --trigger daily --time 09:00 --prompt "Review open changes" --provider codex --repo id:<repoId> --disabled --json
-orca automations run <automationId> --json
+topo automations list --json
+topo automations create --name "Daily review" --trigger daily --time 09:00 --prompt "Review open changes" --provider codex --repo id:<repoId> --disabled --json
+topo automations run <automationId> --json
 ```
 
 Remote runtime environments:
 
 ```bash
-orca environment add --name work-laptop --pairing-code "orca://pair?code=..." --json
-orca environment list --json
-orca environment rm --environment <selector> --json
+topo environment add --name work-laptop --pairing-code "topo://pair?code=..." --json
+topo environment list --json
+topo environment rm --environment <selector> --json
 ```
 
 Agent status hooks:
 
 ```bash
-orca agent hooks status --json
-orca agent hooks on --json
-orca agent hooks off --json
+topo agent hooks status --json
+topo agent hooks on --json
+topo agent hooks off --json
 ```
 
 ## Agent habits

@@ -8,9 +8,9 @@
  * before commit, so lifting the record is the whole reset; a host's leftover staging expires.
  */
 import type {
-  OrcadMigrationCatalogReferenceAbortResult,
-  OrcadMigrationCatalogState
-} from '../../../shared/orcad-migration/orcad-migration-manifest'
+  TopodMigrationCatalogReferenceAbortResult,
+  TopodMigrationCatalogState
+} from '../../../shared/topod-migration/topod-migration-manifest'
 import {
   WSL_MOVE_CUTOVER_PHASES,
   type WslMoveCutover,
@@ -19,9 +19,9 @@ import {
 import {
   abortWithRecovery,
   confirmDurableCommit,
-  type OrcadMigrationDestinationCatalog
-} from '../../managed-server/migration/cutover/orcad-migration-cutover-coordinator'
-import { orcadMigrationRequestFits } from '../../managed-server/migration/catalog/orcad-migration-request-budget'
+  type TopodMigrationDestinationCatalog
+} from '../../managed-server/migration/cutover/topod-migration-cutover-coordinator'
+import { topodMigrationRequestFits } from '../../managed-server/migration/catalog/topod-migration-request-budget'
 import { wslHostsServing } from '../../wsl/host-lifecycle/wsl-host-gate'
 import {
   listWslMoveCutovers,
@@ -51,7 +51,7 @@ export type WslMoveResetResult =
 export type WslMoveResetContext = {
   userDataPath: string
   /** The WSL host's catalog; null while it is unreachable. */
-  destination: OrcadMigrationDestinationCatalog | null
+  destination: TopodMigrationDestinationCatalog | null
   /**
    * The distro is proven unregistered (name and recorded GUID gone): its disk, and any commit on
    * it, went too. Residual: an unregister then re-import under a new name between two startups.
@@ -100,10 +100,10 @@ export async function resetWslMoveToZero(
   const destination = context.destination
   const byReference = () =>
     resetByReference({ ...context, destination }, cutover, commitMayExist, release)
-  if (!orcadMigrationRequestFits({ manifest: cutover.manifest })) {
+  if (!topodMigrationRequestFits({ manifest: cutover.manifest })) {
     return byReference()
   }
-  let state: OrcadMigrationCatalogState
+  let state: TopodMigrationCatalogState
   try {
     state = await destination.readState(cutover.manifest)
     if (state.state !== 'committed') {
@@ -131,7 +131,7 @@ export async function resetWslMoveToZero(
  * its identity alone; without this a reset could never prove the host empty and would stay stuck.
  */
 async function resetByReference(
-  context: WslMoveResetContext & { destination: OrcadMigrationDestinationCatalog },
+  context: WslMoveResetContext & { destination: TopodMigrationDestinationCatalog },
   cutover: WslMoveCutover,
   commitMayExist: boolean,
   release: (
@@ -139,7 +139,7 @@ async function resetByReference(
     hostConfirmedAbsent?: boolean
   ) => WslMoveResetResult
 ): Promise<WslMoveResetResult> {
-  let aborted: OrcadMigrationCatalogReferenceAbortResult
+  let aborted: TopodMigrationCatalogReferenceAbortResult
   try {
     aborted = await context.destination.abortByReference(cutover.manifest)
   } catch (error) {

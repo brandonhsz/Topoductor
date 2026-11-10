@@ -6,10 +6,10 @@ import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
 import '../../../../orchestration/db/dispatch-row-writer'
 import '../../../../orchestration/db/attempt-outcome-projection'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import type { TuiAgent } from '../../../../../../shared/agent-launch/catalog/tui-agent'
 import type { RuntimeStore } from '../../../../construction/runtime-store-contract'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import {
   getAppEnvironment,
   hasAppEnvironment,
@@ -55,7 +55,7 @@ export type OrchestrationWorkerReleaseHarness = {
   coordinatorPaneKey: string
   workerPaneKey: string
   readonly db: OrchestrationDb
-  readonly runtime: OrcaRuntimeService
+  readonly runtime: TopoRuntimeService
   readonly activeRunId: string
   readonly inspectProcessLiveness: ReturnType<typeof vi.fn>
 }
@@ -85,7 +85,7 @@ function workerReleaseLayoutStore(): RuntimeStore {
 export function createOrchestrationWorkerReleaseHarness(): OrchestrationWorkerReleaseHarness {
   let db: OrchestrationDb
   let dbOpen = false
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
   let ctx: RpcContext
   let activeRunId: string
   let inspectProcessLiveness: ReturnType<typeof vi.fn>
@@ -120,7 +120,7 @@ export function createOrchestrationWorkerReleaseHarness(): OrchestrationWorkerRe
 
   // A file-backed runtime opens its database itself, as startup does, so armed deadlines recover.
   function startRuntime(): void {
-    runtime = new OrcaRuntimeService(ORCA_LAYOUT_OWNER_IS_MAIN ? workerReleaseLayoutStore() : null)
+    runtime = new TopoRuntimeService(TOPO_LAYOUT_OWNER_IS_MAIN ? workerReleaseLayoutStore() : null)
     if (userDataDir) {
       db = runtime.getOrchestrationDb()
     } else {
@@ -186,7 +186,7 @@ export function createOrchestrationWorkerReleaseHarness(): OrchestrationWorkerRe
       status: 'running',
       exitCode: null
     })
-    vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('orca')
+    vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('topo')
     vi.spyOn(runtime, 'sendTerminalAgentPrompt').mockResolvedValue({
       handle: 'term_worker',
       accepted: true,

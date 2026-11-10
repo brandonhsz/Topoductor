@@ -1,19 +1,19 @@
 import { mkdirSync } from 'node:fs'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { makeResourceManagerFixtureVisible } from './helpers/resource-manager-visible-fixture'
 import { waitForSessionReady } from './helpers/store'
 
 test.use({ seedTestRepo: false })
 
 test('Resource Manager ends a tab-less terminal this run spawned', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }, testInfo) => {
   const folderPath = testInfo.outputPath('notes')
   mkdirSync(folderPath, { recursive: true })
-  await waitForSessionReady(orcaPage)
-  await orcaPage.setViewportSize({ width: 1200, height: 900 })
-  const ptyId = await orcaPage.evaluate(async (folderPath) => {
+  await waitForSessionReady(topoPage)
+  await topoPage.setViewportSize({ width: 1200, height: 900 })
+  const ptyId = await topoPage.evaluate(async (folderPath) => {
     const state = window.__store!.getState()
     const group = await window.api.projectGroups.create({
       name: 'Notes',
@@ -41,18 +41,18 @@ test('Resource Manager ends a tab-less terminal this run spawned', async ({
     return spawned.id
   }, folderPath)
 
-  await makeResourceManagerFixtureVisible(electronApp, orcaPage)
-  await orcaPage.getByRole('button', { name: /^Resource Manager,/ }).click()
-  await orcaPage.getByRole('tab', { name: 'PTYs', exact: true }).click()
-  const panel = orcaPage.getByRole('tabpanel', { name: /^PTYs/ })
+  await makeResourceManagerFixtureVisible(electronApp, topoPage)
+  await topoPage.getByRole('button', { name: /^Resource Manager,/ }).click()
+  await topoPage.getByRole('tab', { name: 'PTYs', exact: true }).click()
+  const panel = topoPage.getByRole('tabpanel', { name: /^PTYs/ })
   await expect(panel.getByText(/1 without a tab/)).toBeVisible()
   const rows = panel.locator('[data-resource-pty-row]')
   await rows.getByRole('button', { name: /^End / }).click()
-  await expect(orcaPage.getByRole('dialog', { name: /^End .*\?$/ })).toHaveCount(0)
+  await expect(topoPage.getByRole('dialog', { name: /^End .*\?$/ })).toHaveCount(0)
   await expect(rows).toHaveCount(0)
   await expect
     .poll(async () =>
-      (await orcaPage.evaluate(() => window.api.pty.listSessions({ connectionId: null }))).map(
+      (await topoPage.evaluate(() => window.api.pty.listSessions({ connectionId: null }))).map(
         (session) => session.id
       )
     )

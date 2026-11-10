@@ -111,7 +111,7 @@ beforeAll(async () => {
   const served = await createBundleServer({ outDir, cspHeader })
   server = served.server
   origin = served.origin
-  const executablePath = process.env.ORCA_MOBILE_WEB_RENDER_BROWSER
+  const executablePath = process.env.TOPO_MOBILE_WEB_RENDER_BROWSER
   browser = await chromium.launch({
     headless: true,
     ...(executablePath ? { executablePath } : {})
@@ -160,9 +160,9 @@ async function openPane({ grants }) {
   })
   // The page reports a CSP violation as a document event; the header is the shell's own.
   await page.addInitScript(() => {
-    globalThis.__orcaRenderCheckCsp = []
+    globalThis.__topoRenderCheckCsp = []
     document.addEventListener('securitypolicyviolation', (event) => {
-      globalThis.__orcaRenderCheckCsp.push({
+      globalThis.__topoRenderCheckCsp.push({
         directive: event.violatedDirective,
         blockedUri: event.blockedURI
       })
@@ -175,7 +175,7 @@ async function openPane({ grants }) {
     context,
     consoleErrors,
     foreignRequests,
-    csp: () => page.evaluate(() => globalThis.__orcaRenderCheckCsp)
+    csp: () => page.evaluate(() => globalThis.__topoRenderCheckCsp)
   }
 }
 
@@ -208,11 +208,11 @@ async function encodeNoiseJpeg(page, { width, height, seed }) {
 function emitFrame(page, { b64, frameSeq, width, height, pageScaleFactor = 1 }) {
   return page.evaluate(
     ({ b64, frameSeq, width, height, pageScaleFactor, source }) => {
-      const subscription = globalThis.__orcaRenderCheckSubscribes.at(-1)
+      const subscription = globalThis.__topoRenderCheckSubscribes.at(-1)
       if (!subscription) {
         return 'no-subscription'
       }
-      return globalThis.__orcaRenderCheckEmitBinary(subscription.id, {
+      return globalThis.__topoRenderCheckEmitBinary(subscription.id, {
         b64,
         format: 'jpeg',
         frameSeq,
@@ -247,7 +247,7 @@ describePane('the browser pane in a page', () => {
   it('issues one mouseClick with the geometry the native pane would send', async () => {
     const view = await openPane({ grants: [faultGrant, BINARY_GRANT] })
     try {
-      await view.page.waitForFunction(() => globalThis.__orcaRenderCheckSubscribes.length > 0)
+      await view.page.waitForFunction(() => globalThis.__topoRenderCheckSubscribes.length > 0)
       const b64 = await encodeNoiseJpeg(view.page, { ...FRAME, seed: 21 })
       await emitFrame(view.page, { b64, frameSeq: 1, ...FRAME })
       await waitForPaint(view.page, 1)
@@ -261,9 +261,9 @@ describePane('the browser pane in a page', () => {
         return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }
       })
       await view.page.mouse.click(box.x, box.y)
-      await view.page.waitForFunction(() => globalThis.__orcaRenderCheckRequests.length > 0)
+      await view.page.waitForFunction(() => globalThis.__topoRenderCheckRequests.length > 0)
 
-      const requests = await view.page.evaluate(() => globalThis.__orcaRenderCheckRequests)
+      const requests = await view.page.evaluate(() => globalThis.__topoRenderCheckRequests)
       // One request proves double’s click reply prevented move/down/up fallback (four requests).
       expect(requests).toHaveLength(1)
       expect(requests[0].method).toBe('browser.mouseClick')
@@ -285,7 +285,7 @@ describePane('the browser pane in a page', () => {
   it('maps a tap through the page scale the frame was painted at', async () => {
     const view = await openPane({ grants: [faultGrant, BINARY_GRANT] })
     try {
-      await view.page.waitForFunction(() => globalThis.__orcaRenderCheckSubscribes.length > 0)
+      await view.page.waitForFunction(() => globalThis.__topoRenderCheckSubscribes.length > 0)
       const b64 = await encodeNoiseJpeg(view.page, { ...FRAME, seed: 22 })
       await emitFrame(view.page, {
         b64,
@@ -303,9 +303,9 @@ describePane('the browser pane in a page', () => {
         return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }
       })
       await view.page.mouse.click(box.x, box.y)
-      await view.page.waitForFunction(() => globalThis.__orcaRenderCheckRequests.length > 0)
+      await view.page.waitForFunction(() => globalThis.__topoRenderCheckRequests.length > 0)
 
-      const requests = await view.page.evaluate(() => globalThis.__orcaRenderCheckRequests)
+      const requests = await view.page.evaluate(() => globalThis.__topoRenderCheckRequests)
       expect(requests[0].method).toBe('browser.mouseClick')
       // Scaled 980 CSS px layout maps from 712-device-px frame height; allow three CSS px since one device pixel is 2.5 CSS px plus fractional width.
       expect(Math.abs(requests[0].params.x - 980 / 2)).toBeLessThanOrEqual(3)

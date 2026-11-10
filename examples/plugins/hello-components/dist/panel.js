@@ -113,7 +113,7 @@ function Panel() {
       }
     ) }),
     /* @__PURE__ */ jsxs(Text, { muted: true, size: "xs", children: [
-      "Runs isolated with no network; Orca draws every control. Theme changes seen:",
+      "Runs isolated with no network; Topo draws every control. Theme changes seen:",
       " ",
       read(seenThemes),
       "."

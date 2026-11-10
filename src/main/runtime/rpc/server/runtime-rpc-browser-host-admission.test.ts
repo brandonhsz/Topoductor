@@ -6,15 +6,15 @@ import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 import type { WebSocket } from 'ws'
 import { DeviceRegistry } from './pairing/device-registry'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { defineStreamingMethod } from '../core'
 
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import { withCurrentOrchestrationContract } from './runtime-rpc-test-harness'
 
 describe('runtime RPC browser-host admission', () => {
   it('reserves browser-host capacity for a second paired device', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-browser-host-fairness-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-browser-host-fairness-'))
     const blockingHost = defineStreamingMethod({
       name: 'browser.clientHost.attach',
       permission: 'workspace',
@@ -22,8 +22,8 @@ describe('runtime RPC browser-host admission', () => {
       handler: async (_params, { signal }) =>
         await new Promise<void>((resolve) => signal?.addEventListener('abort', () => resolve()))
     })
-    const server = new OrcaRuntimeRpcServer({
-      runtime: new OrcaRuntimeService(),
+    const server = new TopoRuntimeRpcServer({
+      runtime: new TopoRuntimeService(),
       userDataPath,
       longPollCap: 16,
       methods: [blockingHost]
@@ -107,7 +107,7 @@ describe('runtime RPC browser-host admission', () => {
   })
 
   it('keeps a wait slot when asks and browser hosts fill their shared budget', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-browser-host-wait-reserve-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-browser-host-wait-reserve-'))
     const blockingMethod = (
       name: 'browser.clientHost.attach' | 'orchestration.ask' | 'terminal.wait'
     ) =>
@@ -118,8 +118,8 @@ describe('runtime RPC browser-host admission', () => {
         handler: async (_params, { signal }) =>
           await new Promise<void>((resolve) => signal?.addEventListener('abort', () => resolve()))
       })
-    const server = new OrcaRuntimeRpcServer({
-      runtime: new OrcaRuntimeService(),
+    const server = new TopoRuntimeRpcServer({
+      runtime: new TopoRuntimeService(),
       userDataPath,
       longPollCap: 4,
       methods: [

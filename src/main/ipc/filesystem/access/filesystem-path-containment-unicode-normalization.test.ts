@@ -17,7 +17,7 @@ const scratchDirs: string[] = []
 
 async function makeScratchDir(): Promise<string> {
   // Canonicalize macOS /var temp aliases before building fixtures.
-  const scratch = await mkdtemp(join(await realpath(tmpdir()), 'orca-unicode-path-'))
+  const scratch = await mkdtemp(join(await realpath(tmpdir()), 'topo-unicode-path-'))
   scratchDirs.push(scratch)
   return scratch
 }

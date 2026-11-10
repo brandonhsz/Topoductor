@@ -8,7 +8,7 @@ import type {
 } from '../../../../../shared/agent-launch/contracts/agent-launch-intent'
 
 import { parsePaneKey } from '../../../../../shared/workspace-layout/stable-pane-id'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import type { RpcContext } from '../../core'
 import { clientRendersStructuredAgent } from '../structured-sessions/structured-agent-session-policy'
 
@@ -24,7 +24,7 @@ export function agentLaunchCallerNavigationId(
 
 /** Bookkeeping, never a gate: the agent already runs, so a failure here only leaves the view as it was. */
 export function selectAgentLaunchTabForCaller(
-  runtime: Pick<OrcaRuntimeService, 'selectCreatedMobileSessionTabForClient'>,
+  runtime: Pick<TopoRuntimeService, 'selectCreatedMobileSessionTabForClient'>,
   surface: AgentLaunchPublishedSurface,
   clientNavigationId: string
 ): void {

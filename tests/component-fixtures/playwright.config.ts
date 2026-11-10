@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test'
 
-// ORCA_BACKGROUND_LAUNCH=1 pnpm exec playwright test --config tests/component-fixtures/playwright.config.ts
+// TOPO_BACKGROUND_LAUNCH=1 pnpm exec playwright test --config tests/component-fixtures/playwright.config.ts
 export default defineConfig({
   testDir: '.',
   testMatch: '*.spec.ts',
@@ -10,8 +10,8 @@ export default defineConfig({
     headless: true,
     viewport: { width: 1000, height: 720 },
     reducedMotion: 'reduce',
-    launchOptions: process.env.ORCA_FIXTURES_BROWSER
-      ? { executablePath: process.env.ORCA_FIXTURES_BROWSER }
+    launchOptions: process.env.TOPO_FIXTURES_BROWSER
+      ? { executablePath: process.env.TOPO_FIXTURES_BROWSER }
       : undefined,
     trace: 'retain-on-failure'
   },

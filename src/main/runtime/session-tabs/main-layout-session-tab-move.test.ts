@@ -6,7 +6,7 @@ import {
   setupMainOwnedWorkspace
 } from '../terminal/layout/main-owned-workspace-runtime-fixture'
 
-vi.mock('../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 const WT = `id:${WORKTREE_ID}`
 

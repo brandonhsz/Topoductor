@@ -1,6 +1,6 @@
 import { measureUtf8ByteLength } from '../../../shared/utf8-byte-limits'
 
-export const JIRA_BOARD_DRAG_ISSUE_MIME = 'application/x-orca-jira-issue-ref'
+export const JIRA_BOARD_DRAG_ISSUE_MIME = 'application/x-topo-jira-issue-ref'
 export const JIRA_BOARD_DRAG_ISSUE_REF_MAX_BYTES = 1024
 
 // Why: Jira issue keys are only unique per site, so the payload carries both.

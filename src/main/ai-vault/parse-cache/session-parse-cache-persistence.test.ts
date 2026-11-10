@@ -72,7 +72,7 @@ afterEach(async () => {
 })
 
 async function makeTempDir(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-parse-cache-persist-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-parse-cache-persist-'))
   tempRoots.push(root)
   return root
 }
@@ -390,16 +390,16 @@ describe('session parse cache persistence', () => {
     const cacheFile = join(root, 'session-parse-cache.json')
     initSessionParseCachePersistence({ filePath: cacheFile, appVersion: APP_VERSION })
     const kept = await writeTranscript(root, 'kaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee')
-    const deletedOutsideOrca = await writeTranscript(root, 'daaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee')
+    const deletedOutsideTopo = await writeTranscript(root, 'daaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee')
     await parse(kept)
-    await parse(deletedOutsideOrca)
+    await parse(deletedOutsideTopo)
     await flushSessionParseCachePersist()
     resetSessionParseCachePersistenceForTests()
     // ast-grep-ignore: test-no-wall-clock -- Real database expiry uses current time for persisted row ages.
     setSeenAt(cacheFile, kept, Date.now() - 31 * DAY_MS)
     // ast-grep-ignore: test-no-wall-clock -- Real database expiry uses current time for persisted row ages.
-    setSeenAt(cacheFile, deletedOutsideOrca, Date.now() - 31 * DAY_MS)
-    await rm(deletedOutsideOrca)
+    setSeenAt(cacheFile, deletedOutsideTopo, Date.now() - 31 * DAY_MS)
+    await rm(deletedOutsideTopo)
 
     simulateRestart(cacheFile)
     expect((await parse(kept)).reused).toBe(1)

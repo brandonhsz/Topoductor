@@ -13,7 +13,7 @@ const writeArgsSchema = z
   .object({ pluginKey: pluginKeySchema, key: z.string().min(1).max(64), value: z.json() })
   .strict()
 
-/** The plugin settings Orca's Settings page shows and edits (`contributes.settings`). */
+/** The plugin settings Topo's Settings page shows and edits (`contributes.settings`). */
 export function registerPluginSettingsHandlers(pluginService: PluginService): void {
   const host = () => ({
     findValidPlugin: (pluginKey: string) => pluginService.findValidPlugin(pluginKey),

@@ -124,9 +124,9 @@ describe('registerEphemeralVmHandlers', () => {
     removeRuntimeOwnedSshTargetMock.mockReset()
     invalidateRuntimeEnvironmentTransportMock.mockReset()
     connectRuntimeOwnedSshTargetMock.mockResolvedValue({
-      targetId: 'runtime-ssh-orca-instance-1',
+      targetId: 'runtime-ssh-topo-instance-1',
       target: {
-        id: 'runtime-ssh-orca-instance-1',
+        id: 'runtime-ssh-topo-instance-1',
         label: 'Sandbox',
         host: 'sandbox.example.com',
         port: 22,
@@ -147,8 +147,8 @@ describe('registerEphemeralVmHandlers', () => {
   })
 
   it('uses an immutable plugin recipe snapshot after the plugin is removed', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-ipc-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-ipc-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-ipc-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-ipc-repo-')
     getPathMock.mockReturnValue(userDataPath)
     const startPath = join(repoPath, 'start.js')
     const destroyPath = join(repoPath, 'destroy.js')
@@ -192,8 +192,8 @@ describe('registerEphemeralVmHandlers', () => {
   })
 
   it('never substitutes a later same-id plugin recipe for a legacy runtime', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-ipc-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-ipc-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-ipc-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-ipc-repo-')
     getPathMock.mockReturnValue(userDataPath)
     const pluginDestroyPath = join(repoPath, 'plugin-destroy.js')
     writeFileSync(
@@ -239,8 +239,8 @@ describe('registerEphemeralVmHandlers', () => {
   })
 
   it('retains the runtime-owned SSH target when destroy fails', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-ipc-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-ipc-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-ipc-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-ipc-repo-')
     getPathMock.mockReturnValue(userDataPath)
     mkdirSync(join(repoPath, 'scripts'), { recursive: true })
     const startPath = join(repoPath, 'scripts', 'start-ssh.js')
@@ -265,7 +265,7 @@ describe('registerEphemeralVmHandlers', () => {
     )
     writeFileSync(destroyPath, 'process.exit(1)')
     writeFileSync(
-      join(repoPath, 'orca.yaml'),
+      join(repoPath, 'topo.yaml'),
       [
         'environmentRecipes:',
         '  - id: cloud-sandbox',
@@ -294,12 +294,12 @@ describe('registerEphemeralVmHandlers', () => {
     expect(cleaned.cleanupLastError).toBeTruthy()
     expect(removeRuntimeOwnedSshTargetMock).not.toHaveBeenCalled()
     expect(cleaned.connectionMode).toBe('ssh')
-    expect(cleaned.sshTargetId).toBe('runtime-ssh-orca-instance-1')
+    expect(cleaned.sshTargetId).toBe('runtime-ssh-topo-instance-1')
   })
 
   it('runs suspend and resume for an attached ephemeral VM workspace', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-ipc-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-ipc-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-ipc-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-ipc-repo-')
     getPathMock.mockReturnValue(userDataPath)
     mkdirSync(join(repoPath, 'scripts'), { recursive: true })
     const startPath = join(repoPath, 'scripts', 'start.js')
@@ -344,7 +344,7 @@ describe('registerEphemeralVmHandlers', () => {
       ].join('\n')
     )
     writeFileSync(
-      join(repoPath, 'orca.yaml'),
+      join(repoPath, 'topo.yaml'),
       [
         'environmentRecipes:',
         '  - id: cloud-sandbox',
@@ -408,8 +408,8 @@ describe('registerEphemeralVmHandlers', () => {
   })
 
   it('returns coded suspend and resume failures and keeps them on the record', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-ipc-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-ipc-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-ipc-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-ipc-repo-')
     getPathMock.mockReturnValue(userDataPath)
     mkdirSync(join(repoPath, 'scripts'), { recursive: true })
     const startPath = join(repoPath, 'scripts', 'start.js')
@@ -428,7 +428,7 @@ describe('registerEphemeralVmHandlers', () => {
     writeFileSync(suspendPath, "if (require('fs').existsSync('fail-suspend.txt')) process.exit(4)")
     writeFileSync(resumePath, 'process.exit(3)')
     writeFileSync(
-      join(repoPath, 'orca.yaml'),
+      join(repoPath, 'topo.yaml'),
       [
         'environmentRecipes:',
         '  - id: cloud-sandbox',
@@ -497,8 +497,8 @@ describe('registerEphemeralVmHandlers', () => {
   })
 
   it('redacts recipe stdout when provisioning fails', async () => {
-    const userDataPath = makeDir('orca-ephemeral-vm-ipc-user-data-')
-    const repoPath = makeDir('orca-ephemeral-vm-ipc-repo-')
+    const userDataPath = makeDir('topo-ephemeral-vm-ipc-user-data-')
+    const repoPath = makeDir('topo-ephemeral-vm-ipc-repo-')
     getPathMock.mockReturnValue(userDataPath)
     mkdirSync(join(repoPath, 'scripts'), { recursive: true })
     const startPath = join(repoPath, 'scripts', 'start.js')
@@ -512,7 +512,7 @@ describe('registerEphemeralVmHandlers', () => {
       ].join('\n')
     )
     writeFileSync(
-      join(repoPath, 'orca.yaml'),
+      join(repoPath, 'topo.yaml'),
       [
         'environmentRecipes:',
         '  - id: cloud-sandbox',

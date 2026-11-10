@@ -2,23 +2,23 @@ import { toast } from 'sonner'
 import type { CliInstallStatus } from '../../../../../shared/cli-install-types'
 import { translate } from '@/i18n/i18n'
 
-type EnsureOrcaCliAvailableOptions = {
+type EnsureTopoCliAvailableOptions = {
   onStatusChange?: (status: CliInstallStatus) => void
   registrationPromptDelayMs?: number
 }
 
-export const CLI_PREREQUISITE_REGISTRATION_TOAST = 'Orca needs to register its CLI on PATH.'
+export const CLI_PREREQUISITE_REGISTRATION_TOAST = 'Topo needs to register its CLI on PATH.'
 export const CLI_PREREQUISITE_REGISTRATION_TOAST_DESCRIPTION =
-  'Approve the system prompt so skill setup can use the Orca CLI command.'
+  'Approve the system prompt so skill setup can use the Topo CLI command.'
 
-export function isOrcaCliAvailableOnPath(status: CliInstallStatus | null | undefined): boolean {
+export function isTopoCliAvailableOnPath(status: CliInstallStatus | null | undefined): boolean {
   return status?.state === 'installed' && status.pathConfigured === true
 }
 
-export async function ensureOrcaCliAvailableForAgentSkillTerminal({
+export async function ensureTopoCliAvailableForAgentSkillTerminal({
   onStatusChange,
   registrationPromptDelayMs = 700
-}: EnsureOrcaCliAvailableOptions = {}): Promise<CliInstallStatus | null> {
+}: EnsureTopoCliAvailableOptions = {}): Promise<CliInstallStatus | null> {
   try {
     const status = await window.api.cli.getInstallStatus()
     onStatusChange?.(status)
@@ -35,7 +35,7 @@ export async function ensureOrcaCliAvailableForAgentSkillTerminal({
 
     if (status.state !== 'installed' || status.pathConfigured === false) {
       // Show app context before macOS can immediately present its native authorization prompt.
-      await showOrcaCliRegistrationPromptToast(registrationPromptDelayMs)
+      await showTopoCliRegistrationPromptToast(registrationPromptDelayMs)
       const next = await window.api.cli.install()
       onStatusChange?.(next)
       showCliPrerequisiteWarning(next)
@@ -49,14 +49,14 @@ export async function ensureOrcaCliAvailableForAgentSkillTerminal({
         ? error.message
         : translate(
             'auto.lib.agent.skill.cli.prerequisite.8d6eedf97e',
-            'Failed to register the Orca CLI in PATH.'
+            'Failed to register the Topo CLI in PATH.'
           )
     )
     return null
   }
 }
 
-async function showOrcaCliRegistrationPromptToast(delayMs = 700): Promise<void> {
+async function showTopoCliRegistrationPromptToast(delayMs = 700): Promise<void> {
   toast.message(CLI_PREREQUISITE_REGISTRATION_TOAST, {
     description: CLI_PREREQUISITE_REGISTRATION_TOAST_DESCRIPTION
   })
@@ -75,14 +75,14 @@ function showCliPrerequisiteWarning(status: CliInstallStatus): void {
     toast.warning(
       translate(
         'auto.lib.agent.skill.cli.prerequisite.2db0bd7515',
-        'Orca CLI registration is unavailable'
+        'Topo CLI registration is unavailable'
       ),
       {
         description:
           status.detail ??
           translate(
             'auto.lib.agent.skill.cli.prerequisite.15cbedc3e3',
-            'Install the Orca CLI before running agent skill setup.'
+            'Install the Topo CLI before running agent skill setup.'
           )
       }
     )
@@ -93,14 +93,14 @@ function showCliPrerequisiteWarning(status: CliInstallStatus): void {
     toast.warning(
       translate(
         'auto.lib.agent.skill.cli.prerequisite.e99d7dc36f',
-        'Orca CLI registration needs attention'
+        'Topo CLI registration needs attention'
       ),
       {
         description:
           status.detail ??
           translate(
             'auto.lib.agent.skill.cli.prerequisite.15cbedc3e3',
-            'Install the Orca CLI before running agent skill setup.'
+            'Install the Topo CLI before running agent skill setup.'
           )
       }
     )
@@ -111,7 +111,7 @@ function showCliPrerequisiteWarning(status: CliInstallStatus): void {
     toast.warning(
       translate(
         'auto.lib.agent.skill.cli.prerequisite.windowsPathUnknown',
-        'Orca could not check your Windows user PATH'
+        'Topo could not check your Windows user PATH'
       ),
       {
         description:
@@ -126,18 +126,18 @@ function showCliPrerequisiteWarning(status: CliInstallStatus): void {
   }
 
   if (status.pathConfigured === false) {
-    // Installer shells must resolve the Orca CLI for agent skill affordances to work.
+    // Installer shells must resolve the Topo CLI for agent skill affordances to work.
     toast.warning(
       translate(
         'auto.lib.agent.skill.cli.prerequisite.79371593b0',
-        'Orca CLI is not visible on PATH yet'
+        'Topo CLI is not visible on PATH yet'
       ),
       {
         description:
           status.detail ??
           translate(
             'auto.lib.agent.skill.cli.prerequisite.0f116999f1',
-            'Restart your shell or add the Orca CLI directory to PATH before setup.'
+            'Restart your shell or add the Topo CLI directory to PATH before setup.'
           )
       }
     )

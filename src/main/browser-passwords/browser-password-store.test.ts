@@ -31,7 +31,7 @@ describe('BrowserPasswordStore', () => {
     new BrowserPasswordStore(filePath, { now: () => clock })
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-browser-passwords-test-'))
+    dir = mkdtempSync(join(tmpdir(), 'topo-browser-passwords-test-'))
     filePath = join(dir, 'vault.json')
     clock = 1000
     installFakeSecretStore()
@@ -55,7 +55,7 @@ describe('BrowserPasswordStore', () => {
     expect(onDisk).not.toContain('alice')
     expect(onDisk).not.toContain('example.com')
     expect(onDisk).not.toContain('hunter2')
-    expect(JSON.parse(onDisk)).toMatchObject({ version: 1, format: 'orca-browser-passwords-v1' })
+    expect(JSON.parse(onDisk)).toMatchObject({ version: 1, format: 'topo-browser-passwords-v1' })
 
     const reopened = newStore()
     const list = reopened.list()
@@ -101,12 +101,12 @@ describe('BrowserPasswordStore', () => {
   })
 
   it('never overwrites a corrupt vault', () => {
-    writeFileSync(filePath, '{"version":1,"format":"orca-browser-passwords-v1","index":')
+    writeFileSync(filePath, '{"version":1,"format":"topo-browser-passwords-v1","index":')
     expect(newStore().add({ origin: 'https://a.test', username: 'u', password: 'p' }).ok).toBe(
       false
     )
     expect(readFileSync(filePath, 'utf8')).toBe(
-      '{"version":1,"format":"orca-browser-passwords-v1","index":'
+      '{"version":1,"format":"topo-browser-passwords-v1","index":'
     )
   })
 

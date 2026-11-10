@@ -1,8 +1,8 @@
-# WinForms target for the cua-vs-Orca background bench. Writes its state to state.json every 30 ms
+# WinForms target for the cua-vs-Topo background bench. Writes its state to state.json every 30 ms
 # and acknowledges each JSON command after applying it.
 param([string]$StateDir)
 $ErrorActionPreference = "Stop"
-if ($env:ORCA_COMPUTER_BENCH_ISOLATED -ne "1" -or $env:GITHUB_ACTIONS -ne "true") { throw "fixture requires isolated CI desktop" }
+if ($env:TOPO_COMPUTER_BENCH_ISOLATED -ne "1" -or $env:GITHUB_ACTIONS -ne "true") { throw "fixture requires isolated CI desktop" }
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 [System.Windows.Forms.Application]::EnableVisualStyles()

@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import { worktreeRow } from './worktree-row-locators'
 
@@ -41,27 +41,27 @@ async function prepareSidebarForSwitchTest(page: Page): Promise<[string, string]
 }
 
 test.describe('Worktree switch responsiveness', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
   })
 
   test('updates the selected workspace in the same click task when changing back', async ({
-    orcaPage
+    topoPage
   }) => {
-    const [firstWorktreeId, secondWorktreeId] = await prepareSidebarForSwitchTest(orcaPage)
-    const firstRow = worktreeRow(orcaPage, firstWorktreeId)
-    const secondRow = worktreeRow(orcaPage, secondWorktreeId)
+    const [firstWorktreeId, secondWorktreeId] = await prepareSidebarForSwitchTest(topoPage)
+    const firstRow = worktreeRow(topoPage, firstWorktreeId)
+    const secondRow = worktreeRow(topoPage, secondWorktreeId)
 
     await expect(firstRow).toBeVisible()
     await expect(secondRow).toBeVisible()
     await expect(firstRow).toHaveAttribute('aria-current', 'page')
-    await expect(orcaPage.locator('[data-rendered-active-worktree-id]')).toHaveAttribute(
+    await expect(topoPage.locator('[data-rendered-active-worktree-id]')).toHaveAttribute(
       'data-rendered-active-worktree-id',
       firstWorktreeId
     )
 
-    const result = await orcaPage.evaluate(
+    const result = await topoPage.evaluate(
       async ({ firstId, secondId, timerDelayMs }) => {
         const option = (id: string): HTMLElement => {
           const element = [...document.querySelectorAll<HTMLElement>('[data-worktree-id]')].find(

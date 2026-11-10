@@ -2,7 +2,7 @@ import type { StartupCommandDelivery } from '../agent-launch/startup/codex-start
 import type { AgentKind, LaunchSource, RequestKind } from '../telemetry-events'
 import type { SleepingAgentLaunchConfig } from '../agent-session/lifecycle/agent-session-resume'
 import type { SetupRunnerShell } from '../agent-launch/startup/setup-runner-command'
-import type { OrcaDefaultTabTemplate } from '../orca-yaml-hook-types'
+import type { TopoDefaultTabTemplate } from '../topo-yaml-hook-types'
 import type { TuiAgent } from '../agent-launch/catalog/tui-agent'
 
 export type WorktreeSetupLaunch = {
@@ -25,6 +25,6 @@ export type WorktreeStartupLaunch = {
 }
 
 export type WorktreeDefaultTabsLaunch = {
-  tabs: OrcaDefaultTabTemplate[]
+  tabs: TopoDefaultTabTemplate[]
   runCommands: boolean
 }

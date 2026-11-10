@@ -1,4 +1,4 @@
-import type { MobileWebShellFailureReason } from '../../modules/orca-mobile-web-shell/src/load-state'
+import type { MobileWebShellFailureReason } from '../../modules/topo-mobile-web-shell/src/load-state'
 import type { MobileWebPageRoute, PageRouteRefusalVerdict } from './page-route-policy'
 import type {
   MobileWebBundleCompatManifest,
@@ -151,7 +151,7 @@ export type MobileWebShellSessionEvent =
   | {
       readonly type: 'shell-failed'
       readonly reason: MobileWebShellReportedFailure
-      // The OS took the renderer while Orca was off screen or for memory; the page is not at fault.
+      // The OS took the renderer while Topo was off screen or for memory; the page is not at fault.
       readonly reclaimed?: boolean
     }
   | { readonly type: 'retry-pressed' }

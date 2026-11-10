@@ -118,7 +118,7 @@ describe('CodexAccountService config sync', () => {
     )
     const expectSanitizedManagedConfig = (): void => {
       const entries = readHookTrustEntries(join(managedHomePath, 'config.toml'))
-      for (const key of fixture.orcaKeys) {
+      for (const key of fixture.topoKeys) {
         expect(entries.has(key)).toBe(false)
       }
 

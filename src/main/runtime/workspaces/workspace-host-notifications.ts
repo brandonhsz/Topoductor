@@ -1,36 +1,36 @@
 import { getRepoRoutingConnectionId } from '../../../shared/execution-host'
-import type { OrcaRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession } from '../session-tabs/mobile-session-hydration'
-import type { OrcaRuntimeWithBuildHeadlessMobileSessionBrowserTabs } from '../session-lifecycle/projection/build-headless-mobile-session-browser-tabs'
-import type { OrcaRuntimeWithScheduleMobileSessionTabsChanged } from '../session-tabs/session-tabs-change-publication'
+import type { TopoRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession } from '../session-tabs/mobile-session-hydration'
+import type { TopoRuntimeWithBuildHeadlessMobileSessionBrowserTabs } from '../session-lifecycle/projection/build-headless-mobile-session-browser-tabs'
+import type { TopoRuntimeWithScheduleMobileSessionTabsChanged } from '../session-tabs/session-tabs-change-publication'
 import type { RuntimeWorkspaceRepoScanRefresh } from './catalog/workspace-repo-scan-refresh'
 import type { SshConnectionState } from '../../../shared/ssh-types'
 import { getPublicSshState } from '../hosts/platform-probe/public-ssh-state'
 import { splitWorktreeId } from '../../../shared/worktree/id'
 import { RuntimeEmulatorBinding } from '../emulator/runtime-emulator-binding'
 
-export abstract class OrcaRuntimeWithNotifySshStateChanged extends RuntimeEmulatorBinding {
+export abstract class TopoRuntimeWithNotifySshStateChanged extends RuntimeEmulatorBinding {
   protected abstract hydrateHeadlessMobileSessionTabsFromWorkspaceSession(
     ...args: Parameters<
-      OrcaRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession['hydrateHeadlessMobileSessionTabsFromWorkspaceSession']
+      TopoRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession['hydrateHeadlessMobileSessionTabsFromWorkspaceSession']
     >
   ): ReturnType<
-    OrcaRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession['hydrateHeadlessMobileSessionTabsFromWorkspaceSession']
+    TopoRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession['hydrateHeadlessMobileSessionTabsFromWorkspaceSession']
   >
 
   protected abstract refreshMobileSessionPtyRecords(
     ...args: Parameters<
-      OrcaRuntimeWithBuildHeadlessMobileSessionBrowserTabs['refreshMobileSessionPtyRecords']
+      TopoRuntimeWithBuildHeadlessMobileSessionBrowserTabs['refreshMobileSessionPtyRecords']
     >
   ): ReturnType<
-    OrcaRuntimeWithBuildHeadlessMobileSessionBrowserTabs['refreshMobileSessionPtyRecords']
+    TopoRuntimeWithBuildHeadlessMobileSessionBrowserTabs['refreshMobileSessionPtyRecords']
   >
 
   protected abstract notifyMobileSessionTabsChangedNow(
     ...args: Parameters<
-      OrcaRuntimeWithScheduleMobileSessionTabsChanged['notifyMobileSessionTabsChangedNow']
+      TopoRuntimeWithScheduleMobileSessionTabsChanged['notifyMobileSessionTabsChangedNow']
     >
   ): ReturnType<
-    OrcaRuntimeWithScheduleMobileSessionTabsChanged['notifyMobileSessionTabsChangedNow']
+    TopoRuntimeWithScheduleMobileSessionTabsChanged['notifyMobileSessionTabsChangedNow']
   >
 
   protected abstract invalidateSshWorktreeScanCacheInternal(
@@ -94,7 +94,7 @@ export abstract class OrcaRuntimeWithNotifySshStateChanged extends RuntimeEmulat
     this.sshRelayRecoveryGenerationByTargetId.set(targetId, generation)
     while (
       this.sshRelayRecoveryGenerationByTargetId.size >
-      OrcaRuntimeWithNotifySshStateChanged.MAX_SSH_RELAY_RECOVERY_GENERATIONS
+      TopoRuntimeWithNotifySshStateChanged.MAX_SSH_RELAY_RECOVERY_GENERATIONS
     ) {
       const oldest = this.sshRelayRecoveryGenerationByTargetId.keys().next()
       if (oldest.done) {

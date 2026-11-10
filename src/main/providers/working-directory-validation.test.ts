@@ -21,7 +21,7 @@ beforeEach(async () => {
   wslUncDirectoryExistsAsyncMock.mockReset()
   wslUncDirectoryExistsAsyncMock.mockResolvedValue(null)
   _resetWorkingDirectoryValidationStateForTest()
-  tempDir = await mkdtemp(path.join(os.tmpdir(), 'orca-cwd-validate-'))
+  tempDir = await mkdtemp(path.join(os.tmpdir(), 'topo-cwd-validate-'))
 })
 
 afterEach(async () => {

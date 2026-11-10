@@ -3,13 +3,13 @@ import { expect, vi } from 'vitest'
 import { Store } from '../../../../persistence/loading-store/store'
 import { ProfileStateSqliteAuthority } from '../../../../persistence/profile-state/profile-state-sqlite-authority'
 import { getAppEnvironment, setAppEnvironment } from '../../../../../shared/app-environment'
-import { testOrcaSessionId } from '../../../../../shared/orca-session-address-test-fixture'
+import { testTopoSessionId } from '../../../../../shared/topo-session-address-test-fixture'
 import { claudeProviderHandle } from '../../../../../shared/agent-session/lifecycle/agent-session-provider-handle-encoding'
 import { computeAgentSessionPayloadFingerprint } from '../../../../../shared/agent-session/lifecycle/agent-session-mutation-envelope'
 import { agentJournalSubmissionKey } from '../../../../../shared/agent-session/journal/agent-session-journal-item-key'
 import type { AgentJournalMessageItem } from '../../../../../shared/agent-session/journal/agent-session-journal-types'
 import type { OrchestrationSessionCaller } from '../../../../runtime/orchestration/addressing/orchestration-caller-identity'
-import { resolveOrcaSessionParty } from '../../../../runtime/orchestration/addressing/orchestration-party'
+import { resolveTopoSessionParty } from '../../../../runtime/orchestration/addressing/orchestration-party'
 import { ReceivingRuntime } from './structured-agent-session-receiving-runtime.test-support'
 import { eraseRpcMethods, isStreamingMethod } from '../../../../runtime/rpc/core'
 import { STRUCTURED_AGENT_SESSION_METHODS } from '../../../../runtime/rpc/methods/structured-sessions/structured-agent-session'
@@ -33,8 +33,8 @@ import { setStructuredAgentSessionHost } from '../structured-agent-session-regis
 import { createClaudeAccountRouting } from './structured-agent-session-claude-account-routing.test-support'
 import type { StructuredAgentSessionEventSink } from '../../journal-ingress/structured-agent-session-event-sink'
 
-export const PARENT = testOrcaSessionId('cfe50e96-3a95-4353-9cdc-7a652779c6e8')
-export const WORKER = testOrcaSessionId('4c1b8d7a-975c-4984-a2e4-8149fdd4177a')
+export const PARENT = testTopoSessionId('cfe50e96-3a95-4353-9cdc-7a652779c6e8')
+export const WORKER = testTopoSessionId('4c1b8d7a-975c-4984-a2e4-8149fdd4177a')
 
 /** The registered attach path reads launch defaults from the runtime's profile store. */
 function receivingRuntimeStore(root: string) {
@@ -147,7 +147,7 @@ export async function createReceivingCallerFixture() {
     })
   }
   const caller = (id = PARENT): OrchestrationSessionCaller => ({
-    ...resolveOrcaSessionParty(id, service.getExistingOrchestrationDb()),
+    ...resolveTopoSessionParty(id, service.getExistingOrchestrationDb()),
     sessionId: id,
     workspaceId: 'workspace-1'
   })

@@ -162,15 +162,15 @@ async function createStatsCollector(dir: string): Promise<TestStatsCollector> {
   return stats
 }
 
-const dataFile = (dir: string): string => join(dir, 'orca-data.json')
-const statsFile = (dir: string): string => join(dir, 'orca-stats.json')
+const dataFile = (dir: string): string => join(dir, 'topo-data.json')
+const statsFile = (dir: string): string => join(dir, 'topo-stats.json')
 const activeViewFile = (dir: string): string => join(dir, 'active-view.json')
 
 describe('quit-path durable writes never park the main thread', () => {
   const dirs: string[] = []
 
   function makeDir(): string {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-quit-path-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-quit-path-'))
     dirs.push(dir)
     return dir
   }

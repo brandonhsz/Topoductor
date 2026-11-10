@@ -2,7 +2,7 @@ import type { Page, TestInfo } from '@stablyai/playwright-test'
 import { randomUUID } from 'node:crypto'
 import { rmSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   ensureTerminalVisible,
   getActiveTabId,
@@ -19,12 +19,12 @@ import {
 } from './helpers/terminal'
 
 // Scope fast-park overrides to these launches to avoid leaking past the spec; production cold delay is 30s.
-const PARKING_DELAY_MS = Number(process.env.ORCA_E2E_TERMINAL_PARKING_DELAY_MS) || 500
+const PARKING_DELAY_MS = Number(process.env.TOPO_E2E_TERMINAL_PARKING_DELAY_MS) || 500
 
 test.use({
-  orcaAppExtraEnv: { ORCA_E2E_TERMINAL_PARKING_DELAY_MS: String(PARKING_DELAY_MS) },
+  topoAppExtraEnv: { TOPO_E2E_TERMINAL_PARKING_DELAY_MS: String(PARKING_DELAY_MS) },
   // Disable Chromium memory quantization/~20min refresh so samples do not reuse the launch-time bucket.
-  orcaAppExtraArgs: ['--enable-precise-memory-info']
+  topoAppExtraArgs: ['--enable-precise-memory-info']
 })
 
 // Fast-park overrides collapse hot retention to cold delay, parking 7/8 hidden tabs before retain-count policy.
@@ -228,14 +228,14 @@ function formatParkedMemoryAnnotation(metrics: ParkedMemoryMetrics, parkedTabs: 
 
 test.describe('Terminal parked memory', () => {
   test('retains terminal views when parking is disabled', async ({
-    orcaPage,
+    topoPage,
     testRepoPath
   }, testInfo: TestInfo) => {
     test.setTimeout(PARKED_MEMORY_TEST_TIMEOUT_MS)
-    await waitForSessionReady(orcaPage)
+    await waitForSessionReady(topoPage)
 
     // Flip the persisted parking kill switch through updateSettings, the same subscribed mutation path as production.
-    await orcaPage.evaluate(async () => {
+    await topoPage.evaluate(async () => {
       const store = window.__store
       if (!store) {
         throw new Error('parked memory spec: window.__store is unavailable')
@@ -245,35 +245,35 @@ test.describe('Terminal parked memory', () => {
     await expect
       .poll(
         () =>
-          orcaPage.evaluate(() => window.__store?.getState().settings?.terminalHiddenViewParking),
+          topoPage.evaluate(() => window.__store?.getState().settings?.terminalHiddenViewParking),
         { timeout: 5_000, message: 'terminalHiddenViewParking kill switch did not persist' }
       )
       .toBe(false)
 
     const runId = randomUUID()
-    const scriptPath = path.join(testRepoPath, `.orca-parked-memory-${runId}.mjs`)
+    const scriptPath = path.join(testRepoPath, `.topo-parked-memory-${runId}.mjs`)
     writeScrollbackFillScript(scriptPath, runId)
     try {
-      const { worktreeId, scrollbackTabs } = await setUpScrollbackTabs(orcaPage, scriptPath, runId)
+      const { worktreeId, scrollbackTabs } = await setUpScrollbackTabs(topoPage, scriptPath, runId)
       const scrollbackTabIds = scrollbackTabs.map((tab) => tab.tabId)
 
-      const visibleTab = await createActiveTerminalTab(orcaPage, worktreeId)
+      const visibleTab = await createActiveTerminalTab(topoPage, worktreeId)
       // Enabled parking already proved this build’s machinery; surviving 3× delay demonstrates the kill switch.
-      await orcaPage.waitForTimeout(PARKING_DELAY_MS * 3)
-      expect(await countMountedPaneManagers(orcaPage, scrollbackTabIds)).toBe(SCROLLBACK_TAB_COUNT)
+      await topoPage.waitForTimeout(PARKING_DELAY_MS * 3)
+      expect(await countMountedPaneManagers(topoPage, scrollbackTabIds)).toBe(SCROLLBACK_TAB_COUNT)
 
-      const metrics = await sampleParkedMemoryMetrics(orcaPage)
+      const metrics = await sampleParkedMemoryMetrics(topoPage)
       testInfo.annotations.push({
         type: 'opencode-parked-memory-disabled',
         description: formatParkedMemoryAnnotation(metrics, 0)
       })
 
       for (const tab of scrollbackTabs) {
-        const state = await readTerminalTabViewState(orcaPage, tab.tabId)
+        const state = await readTerminalTabViewState(topoPage, tab.tabId)
         expect(state.hasManager).toBe(true)
         expect(state.paneCount).toBeGreaterThan(0)
       }
-      expect((await readTerminalTabViewState(orcaPage, visibleTab.tabId)).hasManager).toBe(true)
+      expect((await readTerminalTabViewState(topoPage, visibleTab.tabId)).hasManager).toBe(true)
       expect(metrics.livePaneManagers).toBe(SCROLLBACK_TAB_COUNT + 1)
       expect(metrics.liveTerminals).toBe(SCROLLBACK_TAB_COUNT + 1)
     } finally {
@@ -474,25 +474,25 @@ async function waitForRetentionBudgetSetting(page: Page, enabled: boolean): Prom
 
 test.describe('Terminal hidden worktree retention budget', () => {
   test.use({
-    orcaAppExtraEnv: {
-      ORCA_E2E_TERMINAL_PARKING_DELAY_MS: String(PARKING_DELAY_MS),
+    topoAppExtraEnv: {
+      TOPO_E2E_TERMINAL_PARKING_DELAY_MS: String(PARKING_DELAY_MS),
       // Use count cap 1: production 45min TTL is not shortened by parking overrides.
       // The newer hidden unparkable worktree gets last-active exemption; the older must force-park.
-      ORCA_E2E_TERMINAL_RETENTION_LIMIT: '1'
+      TOPO_E2E_TERMINAL_RETENTION_LIMIT: '1'
     },
-    orcaAppExtraArgs: ['--enable-precise-memory-info']
+    topoAppExtraArgs: ['--enable-precise-memory-info']
   })
 
   test('releases un-parkable hidden worktree buffers only once the retention budget engages', async ({
-    orcaPage,
+    topoPage,
     testRepoPath
   }, testInfo: TestInfo) => {
     test.setTimeout(RETENTION_TEST_TIMEOUT_MS)
-    await waitForSessionReady(orcaPage)
-    const victimWorktreeId = await waitForActiveWorktree(orcaPage)
-    await skipUnlessParkingWired(orcaPage)
+    await waitForSessionReady(topoPage)
+    const victimWorktreeId = await waitForActiveWorktree(topoPage)
+    await skipUnlessParkingWired(topoPage)
 
-    const decoyWorktreeId = (await getAllWorktreeIds(orcaPage)).find(
+    const decoyWorktreeId = (await getAllWorktreeIds(topoPage)).find(
       (worktreeId) => worktreeId !== victimWorktreeId
     )
     if (!decoyWorktreeId) {
@@ -500,19 +500,19 @@ test.describe('Terminal hidden worktree retention budget', () => {
     }
 
     // Keep budget off through staging/control so release is attributable only to the setting flip.
-    await updateTerminalSettings(orcaPage, {
+    await updateTerminalSettings(topoPage, {
       terminalHiddenWorktreeRetentionBudget: false,
       terminalScrollbackRows: RETENTION_SCROLLBACK_ROWS
     })
-    await waitForRetentionBudgetSetting(orcaPage, false)
+    await waitForRetentionBudgetSetting(topoPage, false)
 
     const runId = randomUUID()
-    const scriptPath = path.join(testRepoPath, `.orca-retention-memory-${runId}.mjs`)
+    const scriptPath = path.join(testRepoPath, `.topo-retention-memory-${runId}.mjs`)
     writeScrollbackFillScript(scriptPath, runId, RETENTION_FILL_LINE_COUNT)
     try {
-      await ensureTerminalVisible(orcaPage)
-      await waitForActiveTerminalManager(orcaPage, 30_000)
-      const baselineSnapshot = await waitForPaneIdentitySnapshot(orcaPage, 1)
+      await ensureTerminalVisible(topoPage)
+      await waitForActiveTerminalManager(topoPage, 30_000)
+      const baselineSnapshot = await waitForPaneIdentitySnapshot(topoPage, 1)
       const baselinePtyId = baselineSnapshot.panes[0]?.ptyId
       if (!baselinePtyId) {
         throw new Error('retention budget spec: baseline terminal tab did not bind a PTY')
@@ -521,47 +521,47 @@ test.describe('Terminal hidden worktree retention budget', () => {
       const victimTabs: ScrollbackTab[] = [{ tabId: baselineSnapshot.tabId, ptyId: baselinePtyId }]
       for (let tabIndex = 0; tabIndex < RETENTION_TAB_COUNT; tabIndex += 1) {
         if (tabIndex > 0) {
-          victimTabs.push(await createActiveTerminalTab(orcaPage, victimWorktreeId))
+          victimTabs.push(await createActiveTerminalTab(topoPage, victimWorktreeId))
         }
         const tab = victimTabs[tabIndex]
         await sendToTerminal(
-          orcaPage,
+          topoPage,
           tab.ptyId,
           `node ${JSON.stringify(scriptPath)} ${tabIndex}\r`
         )
         await waitForFillMarkerInTab(
-          orcaPage,
+          topoPage,
           tab.tabId,
           `PARKED_MEMORY_FILL_DONE_${runId}_${tabIndex}`
         )
         // Re-stage after each slow fill; otherwise ordinary tab parking can evict earlier hidden tabs.
-        await stageUnparkableWorktreeTabs(orcaPage, victimWorktreeId)
+        await stageUnparkableWorktreeTabs(topoPage, victimWorktreeId)
       }
 
       // Hide the victim first so the later-hidden decoy takes last-active exemption.
-      await switchToWorktree(orcaPage, decoyWorktreeId)
+      await switchToWorktree(topoPage, decoyWorktreeId)
       await expect
-        .poll(() => orcaPage.evaluate(() => window.__store?.getState().activeWorktreeId), {
+        .poll(() => topoPage.evaluate(() => window.__store?.getState().activeWorktreeId), {
           timeout: 5_000,
           message: 'decoy worktree did not become active before staging'
         })
         .toBe(decoyWorktreeId)
-      await ensureTerminalVisible(orcaPage)
-      await waitForActiveTerminalManager(orcaPage, 30_000)
+      await ensureTerminalVisible(topoPage)
+      await waitForActiveTerminalManager(topoPage, 30_000)
       // Require active PaneManager-bound snapshots; empty/deferred ids cannot demonstrate retention.
-      const decoySnapshot = await waitForPaneIdentitySnapshot(orcaPage, 1)
+      const decoySnapshot = await waitForPaneIdentitySnapshot(topoPage, 1)
       const decoyTabIds = [decoySnapshot.tabId]
-      expect(await countMountedPaneManagers(orcaPage, decoyTabIds)).toBe(1)
+      expect(await countMountedPaneManagers(topoPage, decoyTabIds)).toBe(1)
 
       // Leave terminal view to hide both worktrees while App keeps the workbench mounted.
-      await orcaPage.evaluate(() => {
+      await topoPage.evaluate(() => {
         window.__store?.getState().setActiveView('tasks')
       })
       // Stage after hiding: visible-pane binds can replace fake remote ids and let ordinary parking evict during control.
-      await stageUnparkableWorktreeTabs(orcaPage, victimWorktreeId)
-      await stageUnparkableWorktreeTabs(orcaPage, decoyWorktreeId)
-      await waitForUnparkableWorktreeTabs(orcaPage, victimWorktreeId)
-      await waitForUnparkableWorktreeTabs(orcaPage, decoyWorktreeId)
+      await stageUnparkableWorktreeTabs(topoPage, victimWorktreeId)
+      await stageUnparkableWorktreeTabs(topoPage, decoyWorktreeId)
+      await waitForUnparkableWorktreeTabs(topoPage, victimWorktreeId)
+      await waitForUnparkableWorktreeTabs(topoPage, decoyWorktreeId)
 
       const victimTabIds = victimTabs.map((tab) => tab.tabId)
       expect(victimTabIds).toHaveLength(RETENTION_TAB_COUNT)
@@ -570,10 +570,10 @@ test.describe('Terminal hidden worktree retention budget', () => {
       await expect
         .poll(
           async () => {
-            await stageUnparkableWorktreeTabs(orcaPage, victimWorktreeId)
-            await stageUnparkableWorktreeTabs(orcaPage, decoyWorktreeId)
-            const victimMounted = await countMountedPaneManagers(orcaPage, victimTabIds)
-            const decoyMounted = await countMountedPaneManagers(orcaPage, decoyTabIds)
+            await stageUnparkableWorktreeTabs(topoPage, victimWorktreeId)
+            await stageUnparkableWorktreeTabs(topoPage, decoyWorktreeId)
+            const victimMounted = await countMountedPaneManagers(topoPage, victimTabIds)
+            const decoyMounted = await countMountedPaneManagers(topoPage, decoyTabIds)
             const heldLongEnough = Date.now() - controlArmStartedAt >= PARKING_DELAY_MS * 4
             return {
               victimMounted,
@@ -592,24 +592,24 @@ test.describe('Terminal hidden worktree retention budget', () => {
           decoyMounted: 1,
           heldLongEnough: true
         })
-      await waitForUnparkableWorktreeTabs(orcaPage, victimWorktreeId)
-      await waitForUnparkableWorktreeTabs(orcaPage, decoyWorktreeId)
+      await waitForUnparkableWorktreeTabs(topoPage, victimWorktreeId)
+      await waitForUnparkableWorktreeTabs(topoPage, decoyWorktreeId)
 
-      const before = await readRetentionMemorySample(orcaPage)
+      const before = await readRetentionMemorySample(topoPage)
       expect(before.bufferMb).toBeGreaterThan(MIN_STAGED_BUFFER_MB)
 
       const flipStartedAt = Date.now()
-      await updateTerminalSettings(orcaPage, { terminalHiddenWorktreeRetentionBudget: true })
-      await waitForRetentionBudgetSetting(orcaPage, true)
+      await updateTerminalSettings(topoPage, { terminalHiddenWorktreeRetentionBudget: true })
+      await waitForRetentionBudgetSetting(topoPage, true)
       await expect
-        .poll(() => countMountedPaneManagers(orcaPage, victimTabIds), {
+        .poll(() => countMountedPaneManagers(topoPage, victimTabIds), {
           timeout: 30_000,
           message: 'retention budget did not force-park the older hidden un-parkable worktree'
         })
         .toBe(0)
       const evictionMs = Date.now() - flipStartedAt
 
-      const after = await readRetentionMemorySample(orcaPage)
+      const after = await readRetentionMemorySample(topoPage)
       testInfo.annotations.push({
         type: 'terminal-retention-budget-memory',
         description: [
@@ -624,7 +624,7 @@ test.describe('Terminal hidden worktree retention budget', () => {
 
       expect(after.buffers.cells).toBeLessThan(before.buffers.cells * MAX_RETAINED_CELL_FRACTION)
       // Require the last-active decoy to survive so the cap cannot pass by evicting everything.
-      expect(await countMountedPaneManagers(orcaPage, decoyTabIds)).toBe(decoyTabIds.length)
+      expect(await countMountedPaneManagers(topoPage, decoyTabIds)).toBe(decoyTabIds.length)
       // Typed arrays return to allocator free lists, so RSS may barely fall despite ~87MB released.
       // Tolerate sampling noise while catching eviction that plants serialized scrollback in the store.
       if (before.rendererMb !== null && after.rendererMb !== null) {

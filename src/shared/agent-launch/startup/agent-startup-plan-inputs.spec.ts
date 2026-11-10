@@ -66,7 +66,7 @@ describe('a picked session option outranks configured launch arguments', () => {
   })
 })
 
-describe('an Orca-driven launch skips the startup update prompt (#15814, #18153)', () => {
+describe('a Topo-driven launch skips the startup update prompt (#15814, #18153)', () => {
   function planFor(
     agent: 'codex' | 'claude',
     suppressStartupUpdatePrompt: boolean,

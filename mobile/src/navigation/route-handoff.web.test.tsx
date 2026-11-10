@@ -78,7 +78,7 @@ function installChannel(): {
     },
     onmessage: null
   }
-  Object.defineProperty(globalThis, 'orcaBridge', { value: channel, configurable: true })
+  Object.defineProperty(globalThis, 'topoBridge', { value: channel, configurable: true })
   return {
     posted,
     failPosts: () => {
@@ -159,7 +159,7 @@ afterEach(() => {
   restoreWarn?.()
   restoreWarn = null
   vi.useRealTimers()
-  Reflect.deleteProperty(globalThis, 'orcaBridge')
+  Reflect.deleteProperty(globalThis, 'topoBridge')
 })
 
 describe('a shell that granted no navigate', () => {

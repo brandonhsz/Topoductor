@@ -34,7 +34,7 @@ function laneState(args?: {
       ? [
           {
             id: args.wslHost.environmentId,
-            orcadDeployment: {
+            topodDeployment: {
               kind: 'wsl',
               distro: args.wslHost.distro,
               localPort: 41000,
@@ -63,7 +63,7 @@ function laneState(args?: {
         ]
       : [],
     worktreesByRepo: {
-      repo1: [{ id: 'wt1', repoId: 'repo1', path: args?.worktreePath ?? '/Users/dev/code/orca' }]
+      repo1: [{ id: 'wt1', repoId: 'repo1', path: args?.worktreePath ?? '/Users/dev/code/topo' }]
     }
   } as unknown as LaneState
 }

@@ -54,8 +54,8 @@ describe('OpenCode startup prompt installer', () => {
     writeFileSync(join(foreign, 'untouched.txt'), 'foreign bytes')
     const env: Record<string, string> = {
       OPENCODE_CONFIG_DIR: source,
-      ORCA_OPENCODE_PLUGIN_API: 'v2',
-      ORCA_OPENCODE_STARTUP_PROMPT_NONCE: 'replaced-overlay'
+      TOPO_OPENCODE_PLUGIN_API: 'v2',
+      TOPO_OPENCODE_STARTUP_PROMPT_NONCE: 'replaced-overlay'
     }
     const config = captureOpenCodeSourceConfig(env, join(root, 'profile'))
     applyOpenCodeStatusPluginEnv(
@@ -71,7 +71,7 @@ describe('OpenCode startup prompt installer', () => {
     rmSync(env.OPENCODE_CONFIG_DIR, { recursive: true })
     symlinkSync(foreign, env.OPENCODE_CONFIG_DIR, 'junction')
     expect(installOpenCodeStartupPromptForLaunch(env)).toBe(false)
-    expect(env.ORCA_OPENCODE_STARTUP_PROMPT_NONCE).toBeUndefined()
+    expect(env.TOPO_OPENCODE_STARTUP_PROMPT_NONCE).toBeUndefined()
     expect(readFileSync(join(foreign, 'untouched.txt'), 'utf8')).toBe('foreign bytes')
     expect(existsSync(join(foreign, 'plugins'))).toBe(false)
   })
@@ -81,9 +81,9 @@ describe('OpenCode startup prompt installer', () => {
     mkdirSync(join(config, 'plugins'), { recursive: true })
     writeFileSync(join(config, 'opencode.json'), '{"model":"user/model"}')
     writeFileSync(join(config, 'plugins', 'user.js'), 'user source')
-    mkdirSync(join(config, 'plugins', 'orca-opencode-startup-prompt'))
+    mkdirSync(join(config, 'plugins', 'topo-opencode-startup-prompt'))
     writeFileSync(
-      join(config, 'plugins', 'orca-opencode-startup-prompt', 'tui.js'),
+      join(config, 'plugins', 'topo-opencode-startup-prompt', 'tui.js'),
       'user collision'
     )
     let source = 'first prompt source'
@@ -96,12 +96,12 @@ describe('OpenCode startup prompt installer', () => {
       throw new Error('Missing overlay')
     }
     expect(
-      readFileSync(join(first, 'plugins', 'orca-opencode-startup-prompt', 'tui.js'), 'utf8')
+      readFileSync(join(first, 'plugins', 'topo-opencode-startup-prompt', 'tui.js'), 'utf8')
     ).toBe(source)
     expect(readFileSync(join(first, 'opencode.json'), 'utf8')).toContain('user/model')
     expect(readFileSync(join(first, 'plugins', 'user.js'), 'utf8')).toBe('user source')
     expect(
-      readFileSync(join(config, 'plugins', 'orca-opencode-startup-prompt', 'tui.js'), 'utf8')
+      readFileSync(join(config, 'plugins', 'topo-opencode-startup-prompt', 'tui.js'), 'utf8')
     ).toBe('user collision')
   })
 })

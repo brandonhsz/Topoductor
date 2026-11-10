@@ -8,13 +8,13 @@ import type { MobileWorkspaceRepo } from './new-worktree-modal-types'
 import { useNewWorkspaceSetupScript } from './use-new-workspace-setup-script'
 
 type SetupScript = ReturnType<typeof useNewWorkspaceSetupScript>
-const repo: MobileWorkspaceRepo = { id: 'repo', displayName: 'Orca', path: '/orca' }
+const repo: MobileWorkspaceRepo = { id: 'repo', displayName: 'Topo', path: '/topo' }
 const hooks: RpcResponse = {
   id: 'hooks',
   ok: true,
   result: {
     hooks: { scripts: { setup: 'pnpm install' } },
-    source: 'orca.yaml',
+    source: 'topo.yaml',
     setupRunPolicy: 'ask',
     setupTrust: { contentHash: 'hash', scriptContent: 'pnpm install' }
   }

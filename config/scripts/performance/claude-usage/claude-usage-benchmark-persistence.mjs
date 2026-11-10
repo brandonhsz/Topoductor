@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises'
 import { dirname, extname, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { build, version } from 'esbuild'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 
 const ROOT = fileURLToPath(new URL('../../../..', import.meta.url))
 const MIB = 1024 * 1024
@@ -20,7 +20,7 @@ export function resolveClaudeBenchmarkCommit(ref) {
     cwd: ROOT,
     timeoutMs: 10_000,
     maxOutputBytes: MIB,
-    env: { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' }
+    env: { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' }
   })
   assert.equal(result.code, 0, result.stderr)
   return result.stdout.trim()
@@ -83,7 +83,7 @@ export async function loadClaudeUsageBenchmarkPersistence(mode, commit = null, f
       cwd: ROOT,
       timeoutMs: 10_000,
       maxOutputBytes: MIB,
-      env: { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' }
+      env: { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' }
     })
     assert.equal(listed.code, 0, listed.stderr)
     assert.equal(listed.outputTruncated, false)
@@ -140,7 +140,7 @@ export async function loadClaudeUsageBenchmarkPersistence(mode, commit = null, f
                   cwd: ROOT,
                   timeoutMs: 10_000,
                   maxOutputBytes: MIB,
-                  env: { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' }
+                  env: { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' }
                 })
                 assert.equal(pinned.code, 0, pinned.stderr)
                 assert.equal(pinned.outputTruncated, false, modulePath)

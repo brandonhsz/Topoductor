@@ -5,7 +5,7 @@ import {
   ORCHESTRATION_FEDERATION_LIFECYCLE_SETTLEMENT_RUNTIME_CAPABILITY
 } from '../../../../../../shared/orchestration/orchestration-runtime-capabilities'
 import type { RuntimeRpcResponse } from '../../../../../../shared/runtime-rpc-envelope'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -20,8 +20,8 @@ import { createFederationWorkerStartRequest as startRequest } from './federation
 describe('orchestration federation lifecycle settlement', () => {
   let homeDb: OrchestrationDb
   let workerDb: OrchestrationDb
-  let homeRuntime: OrcaRuntimeService
-  let workerRuntime: OrcaRuntimeService
+  let homeRuntime: TopoRuntimeService
+  let workerRuntime: TopoRuntimeService
   let homeDispatcher: RpcDispatcher
   let workerDispatcher: RpcDispatcher
   let workerCapabilities: string[]
@@ -32,7 +32,7 @@ describe('orchestration federation lifecycle settlement', () => {
   beforeEach(() => {
     homeDb = new OrchestrationDb(':memory:')
     workerDb = new OrchestrationDb(':memory:')
-    workerRuntime = new OrcaRuntimeService()
+    workerRuntime = new TopoRuntimeService()
     workerRuntime.setOrchestrationDb(workerDb)
     workerDispatcher = new RpcDispatcher({ runtime: workerRuntime, methods: ORCHESTRATION_METHODS })
     workerCapabilities = [...(workerRuntime.getStatus().capabilities ?? [])]
@@ -70,7 +70,7 @@ describe('orchestration federation lifecycle settlement', () => {
         })
       }
     }
-    homeRuntime = new OrcaRuntimeService(null, undefined, {
+    homeRuntime = new TopoRuntimeService(null, undefined, {
       orchestrationEnvironmentTransport: transport
     })
     homeRuntime.setOrchestrationDb(homeDb)
@@ -121,7 +121,7 @@ describe('orchestration federation lifecycle settlement', () => {
     vi.spyOn(workerRuntime, 'getTerminalProcessIncarnation').mockReturnValue(
       'windows_runtime:pty:1'
     )
-    vi.spyOn(workerRuntime, 'getTerminalOrchestrationCliCommand').mockReturnValue('orca')
+    vi.spyOn(workerRuntime, 'getTerminalOrchestrationCliCommand').mockReturnValue('topo')
     vi.spyOn(workerRuntime, 'sendTerminalAgentPrompt').mockResolvedValue({
       handle: 'term_windows_worker',
       accepted: true,
@@ -140,7 +140,7 @@ describe('orchestration federation lifecycle settlement', () => {
 
   function restartWorkerRuntime(): void {
     workerRuntime.stopOrchestrationFederationRelay()
-    workerRuntime = new OrcaRuntimeService()
+    workerRuntime = new TopoRuntimeService()
     workerRuntime.setOrchestrationDb(workerDb)
     workerDispatcher = new RpcDispatcher({ runtime: workerRuntime, methods: ORCHESTRATION_METHODS })
     configureWorkerRuntime()

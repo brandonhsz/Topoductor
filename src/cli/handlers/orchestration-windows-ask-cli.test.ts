@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const callMock = vi.fn()
-const originalCliCommand = process.env.ORCA_CLI_COMMAND
-const originalPackagedLauncher = process.env.ORCA_WINDOWS_PACKAGED_CLI_LAUNCHER
-const originalTerminalHandle = process.env.ORCA_TERMINAL_HANDLE
+const originalCliCommand = process.env.TOPO_CLI_COMMAND
+const originalPackagedLauncher = process.env.TOPO_WINDOWS_PACKAGED_CLI_LAUNCHER
+const originalTerminalHandle = process.env.TOPO_TERMINAL_HANDLE
 const originalExitCode = process.exitCode
 
 vi.mock('../format', () => ({ printResult: vi.fn() }))
@@ -14,23 +14,23 @@ import { ORCHESTRATION_HANDLERS } from './orchestration'
 describe('packaged Windows legacy ask protocol', () => {
   beforeEach(() => {
     callMock.mockReset()
-    process.env.ORCA_WINDOWS_PACKAGED_CLI_LAUNCHER = '1'
-    process.env.ORCA_TERMINAL_HANDLE = 'term_worker'
+    process.env.TOPO_WINDOWS_PACKAGED_CLI_LAUNCHER = '1'
+    process.env.TOPO_TERMINAL_HANDLE = 'term_worker'
     process.exitCode = undefined
   })
 
   afterEach(() => {
     vi.restoreAllMocks()
     process.exitCode = originalExitCode
-    restoreEnv('ORCA_CLI_COMMAND', originalCliCommand)
-    restoreEnv('ORCA_WINDOWS_PACKAGED_CLI_LAUNCHER', originalPackagedLauncher)
-    restoreEnv('ORCA_TERMINAL_HANDLE', originalTerminalHandle)
+    restoreEnv('TOPO_CLI_COMMAND', originalCliCommand)
+    restoreEnv('TOPO_WINDOWS_PACKAGED_CLI_LAUNCHER', originalPackagedLauncher)
+    restoreEnv('TOPO_TERMINAL_HANDLE', originalTerminalHandle)
   })
 
-  it.each(['orca', 'orca-ide'] as const)(
+  it.each(['topo', 'topo-ide'] as const)(
     'commits with the %s launcher and exits 75 before resume',
     async (command) => {
-      process.env.ORCA_CLI_COMMAND = command
+      process.env.TOPO_CLI_COMMAND = command
       callMock.mockResolvedValue({
         result: {
           answer: null,
@@ -64,7 +64,7 @@ describe('packaged Windows legacy ask protocol', () => {
   )
 
   it('resumes the committed question without another exit-75 handoff', async () => {
-    process.env.ORCA_CLI_COMMAND = 'orca'
+    process.env.TOPO_CLI_COMMAND = 'topo'
     callMock.mockResolvedValue({
       result: {
         answer: 'yes',
@@ -82,7 +82,7 @@ describe('packaged Windows legacy ask protocol', () => {
       expect.objectContaining({
         question: undefined,
         resume: 'msg_question',
-        compatibilityWindowsCommand: 'orca'
+        compatibilityWindowsCommand: 'topo'
       }),
       expect.any(Object)
     )

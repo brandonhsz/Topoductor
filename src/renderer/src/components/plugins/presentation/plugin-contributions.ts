@@ -34,7 +34,7 @@ export type PluginContribution = {
   tone: 'default' | 'warning' | 'destructive'
 }
 
-/** What a plugin adds, minus commands, from either its manifest or Orca's live registrations. */
+/** What a plugin adds, minus commands, from either its manifest or Topo's live registrations. */
 export type PluginContributionSource = {
   themes: readonly { id: string; label: string; base?: 'light' | 'dark' }[]
   terminalThemes: readonly { id: string; label: string; mode?: 'light' | 'dark' | 'unknown' }[]
@@ -89,7 +89,7 @@ export function nameFromContributionPath(path: string): string {
 
 export function manifestContributionSource(manifest: PluginManifest): PluginContributionSource {
   const { contributes } = manifest
-  // Why label: the source shares the shape of Orca's live registrations, which name it so.
+  // Why label: the source shares the shape of Topo's live registrations, which name it so.
   const titled = <Item extends { title: string }>({ title, ...item }: Item) => ({
     ...item,
     label: title
@@ -168,7 +168,7 @@ function languageDetail(
     return {
       detail: t(
         'auto.components.settings.pluginContributions.languageIncomplete',
-        '{{value0}}% translated, too incomplete to use as Orca’s language',
+        '{{value0}}% translated, too incomplete to use as Topo’s language',
         { value0: coverage }
       ),
       tone: 'warning'

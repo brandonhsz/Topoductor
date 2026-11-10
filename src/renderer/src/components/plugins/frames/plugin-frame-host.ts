@@ -80,7 +80,7 @@ export type PluginFrameHostOptions = {
   saveBudget?: PanelMessageBudget
   /** `ui.render` lane: trees up to the declarative cap, re-rendered as the person types. */
   renderBudget?: PanelMessageBudget
-  /** One-shot activation from a press on Orca's own controls (declarative panels). */
+  /** One-shot activation from a press on Topo's own controls (declarative panels). */
   consumeHostActivation?: () => boolean
   /** Called as a host call (`plugin.request` included) starts; the result runs when it settles. */
   trackHostCall?: () => () => void
@@ -115,7 +115,7 @@ export function createPluginFrameMessageHandler(
     }
     // Activation in a child frame also activates this window, so the host can read it directly.
     // Activation in a child frame also activates this window; good enough for save chords, but
-    // typing anywhere in Orca sets it too, so user-gesture methods never trust it.
+    // typing anywhere in Topo sets it too, so user-gesture methods never trust it.
     handle(event.data, {
       userActivation: navigator.userActivation?.isActive === true,
       transport: 'iframe'
@@ -135,7 +135,7 @@ export function createPluginFrameEnvelopeHandler(
   const callHostMethod = options.callHostMethod ?? callPanelActionViaPreload
   // Ids the frame cancelled while main was still running the call; their answers are dropped.
   const inFlight = new Set<number>()
-  // A components panel's hidden guest never has a real press of its own; only Orca's grant counts.
+  // A components panel's hidden guest never has a real press of its own; only Topo's grant counts.
   const admitsGesture = createPluginFrameGestureGate(
     options.declarative ? (options.consumeHostActivation ?? (() => false)) : undefined
   )

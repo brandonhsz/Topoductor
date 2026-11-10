@@ -1,3 +1,3 @@
-import { registerOrcaRuntimeEmulatorFolderWorkspaceTests } from '../emulator/orca-runtime-emulator-folder-workspace.spec'
+import { registerTopoRuntimeEmulatorFolderWorkspaceTests } from '../emulator/topo-runtime-emulator-folder-workspace.spec'
 
-registerOrcaRuntimeEmulatorFolderWorkspaceTests()
+registerTopoRuntimeEmulatorFolderWorkspaceTests()

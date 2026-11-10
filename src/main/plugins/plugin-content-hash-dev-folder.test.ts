@@ -11,7 +11,7 @@ afterEach(async () => {
 })
 
 async function devFolder(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-dev-hash-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-dev-hash-'))
   roots.push(root)
   await writeFile(join(root, 'orca-plugin.json'), '{}')
   await mkdir(join(root, 'src'), { recursive: true })
@@ -52,11 +52,11 @@ describe('hashPluginTree devFolder', () => {
     const before = await hashPluginTree(root)
     await mkdir(join(root, '.orca'))
     await writeFile(join(root, '.orca', 'x'), 'x')
-    const withOrca = await hashPluginTree(root)
-    expect(withOrca.ok && before.ok && withOrca.hash !== before.hash).toBe(true)
+    const withTopo = await hashPluginTree(root)
+    expect(withTopo.ok && before.ok && withTopo.hash !== before.hash).toBe(true)
     await mkdir(join(root, 'src', 'node_modules'))
     await writeFile(join(root, 'src', 'node_modules', 'kept.js'), 'shipped code')
     const withNested = await hashPluginTree(root)
-    expect(withNested.ok && withOrca.ok && withNested.hash !== withOrca.hash).toBe(true)
+    expect(withNested.ok && withTopo.ok && withNested.hash !== withTopo.hash).toBe(true)
   })
 })

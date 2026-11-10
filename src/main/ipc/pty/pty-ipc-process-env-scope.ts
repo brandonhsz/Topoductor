@@ -1,22 +1,22 @@
 // Split suites rewrite platform and agent-home environment; capture and restore the host values.
 export function createPtyIpcProcessEnvScope() {
   const savedOpenCodeConfigDir = process.env.OPENCODE_CONFIG_DIR
-  const savedOrcaOpenCodeConfigDir = process.env.ORCA_OPENCODE_CONFIG_DIR
-  const savedOrcaOpenCodeSourceConfigDir = process.env.ORCA_OPENCODE_SOURCE_CONFIG_DIR
+  const savedTopoOpenCodeConfigDir = process.env.TOPO_OPENCODE_CONFIG_DIR
+  const savedTopoOpenCodeSourceConfigDir = process.env.TOPO_OPENCODE_SOURCE_CONFIG_DIR
   const savedPiAgentDir = process.env.PI_CODING_AGENT_DIR
-  const savedOrcaPiAgentDir = process.env.ORCA_PI_CODING_AGENT_DIR
-  const savedOrcaPiSourceAgentDir = process.env.ORCA_PI_SOURCE_AGENT_DIR
-  const savedOrcaCodexHome = process.env.ORCA_CODEX_HOME
-  const savedOrcaOmpAgentDir = process.env.ORCA_OMP_CODING_AGENT_DIR
-  const savedOrcaOmpSourceAgentDir = process.env.ORCA_OMP_SOURCE_AGENT_DIR
-  const savedOrcaOmpStatusExtension = process.env.ORCA_OMP_STATUS_EXTENSION
+  const savedTopoPiAgentDir = process.env.TOPO_PI_CODING_AGENT_DIR
+  const savedTopoPiSourceAgentDir = process.env.TOPO_PI_SOURCE_AGENT_DIR
+  const savedTopoCodexHome = process.env.TOPO_CODEX_HOME
+  const savedTopoOmpAgentDir = process.env.TOPO_OMP_CODING_AGENT_DIR
+  const savedTopoOmpSourceAgentDir = process.env.TOPO_OMP_SOURCE_AGENT_DIR
+  const savedTopoOmpStatusExtension = process.env.TOPO_OMP_STATUS_EXTENSION
   const savedPrimeAgentDir = process.env.PRIME_AGENT_CODING_AGENT_DIR
-  const savedOrcaPrimeAgentSourceDir = process.env.ORCA_PRIME_AGENT_SOURCE_AGENT_DIR
-  const savedOrcaPrimeAgentStatusExtension = process.env.ORCA_PRIME_AGENT_STATUS_EXTENSION
-  const savedOrcaClaudeAgentStatusSettings = process.env.ORCA_CLAUDE_AGENT_STATUS_SETTINGS
+  const savedTopoPrimeAgentSourceDir = process.env.TOPO_PRIME_AGENT_SOURCE_AGENT_DIR
+  const savedTopoPrimeAgentStatusExtension = process.env.TOPO_PRIME_AGENT_STATUS_EXTENSION
+  const savedTopoClaudeAgentStatusSettings = process.env.TOPO_CLAUDE_AGENT_STATUS_SETTINGS
   const savedProcessPlatform = Object.getOwnPropertyDescriptor(process, 'platform')
-  const savedDisableMacosLoginShell = process.env.ORCA_DISABLE_MACOS_LOGIN_SHELL
-  const savedOrcaUserDataPath = process.env.ORCA_USER_DATA_PATH
+  const savedDisableMacosLoginShell = process.env.TOPO_DISABLE_MACOS_LOGIN_SHELL
+  const savedTopoUserDataPath = process.env.TOPO_USER_DATA_PATH
 
   function applyTestEnvDefaults() {
     // POSIX is the default fixture; Windows cases explicitly opt in.
@@ -25,22 +25,22 @@ export function createPtyIpcProcessEnvScope() {
       value: 'darwin'
     })
     // Disable the TCC argv wrapper except in its dedicated tests.
-    process.env.ORCA_DISABLE_MACOS_LOGIN_SHELL = '1'
+    process.env.TOPO_DISABLE_MACOS_LOGIN_SHELL = '1'
     delete process.env.OPENCODE_CONFIG_DIR
-    delete process.env.ORCA_OPENCODE_SOURCE_CONFIG_DIR
-    delete process.env.ORCA_OPENCODE_CONFIG_DIR
-    delete process.env.ORCA_AGENT_HOOK_ENDPOINT
-    delete process.env.ORCA_CLAUDE_AGENT_STATUS_SETTINGS
+    delete process.env.TOPO_OPENCODE_SOURCE_CONFIG_DIR
+    delete process.env.TOPO_OPENCODE_CONFIG_DIR
+    delete process.env.TOPO_AGENT_HOOK_ENDPOINT
+    delete process.env.TOPO_CLAUDE_AGENT_STATUS_SETTINGS
     delete process.env.PI_CODING_AGENT_DIR
-    delete process.env.ORCA_PI_SOURCE_AGENT_DIR
-    delete process.env.ORCA_PI_CODING_AGENT_DIR
-    delete process.env.ORCA_CODEX_HOME
-    delete process.env.ORCA_OMP_SOURCE_AGENT_DIR
-    delete process.env.ORCA_OMP_CODING_AGENT_DIR
-    delete process.env.ORCA_OMP_STATUS_EXTENSION
+    delete process.env.TOPO_PI_SOURCE_AGENT_DIR
+    delete process.env.TOPO_PI_CODING_AGENT_DIR
+    delete process.env.TOPO_CODEX_HOME
+    delete process.env.TOPO_OMP_SOURCE_AGENT_DIR
+    delete process.env.TOPO_OMP_CODING_AGENT_DIR
+    delete process.env.TOPO_OMP_STATUS_EXTENSION
     delete process.env.PRIME_AGENT_CODING_AGENT_DIR
-    delete process.env.ORCA_PRIME_AGENT_SOURCE_AGENT_DIR
-    delete process.env.ORCA_PRIME_AGENT_STATUS_EXTENSION
+    delete process.env.TOPO_PRIME_AGENT_SOURCE_AGENT_DIR
+    delete process.env.TOPO_PRIME_AGENT_STATUS_EXTENSION
   }
 
   function restoreProcessEnv() {
@@ -48,84 +48,84 @@ export function createPtyIpcProcessEnvScope() {
       Object.defineProperty(process, 'platform', savedProcessPlatform)
     }
     if (savedDisableMacosLoginShell !== undefined) {
-      process.env.ORCA_DISABLE_MACOS_LOGIN_SHELL = savedDisableMacosLoginShell
+      process.env.TOPO_DISABLE_MACOS_LOGIN_SHELL = savedDisableMacosLoginShell
     } else {
-      delete process.env.ORCA_DISABLE_MACOS_LOGIN_SHELL
+      delete process.env.TOPO_DISABLE_MACOS_LOGIN_SHELL
     }
-    if (savedOrcaUserDataPath !== undefined) {
-      process.env.ORCA_USER_DATA_PATH = savedOrcaUserDataPath
+    if (savedTopoUserDataPath !== undefined) {
+      process.env.TOPO_USER_DATA_PATH = savedTopoUserDataPath
     } else {
-      delete process.env.ORCA_USER_DATA_PATH
+      delete process.env.TOPO_USER_DATA_PATH
     }
     if (savedOpenCodeConfigDir !== undefined) {
       process.env.OPENCODE_CONFIG_DIR = savedOpenCodeConfigDir
     } else {
       delete process.env.OPENCODE_CONFIG_DIR
     }
-    if (savedOrcaOpenCodeConfigDir !== undefined) {
-      process.env.ORCA_OPENCODE_CONFIG_DIR = savedOrcaOpenCodeConfigDir
+    if (savedTopoOpenCodeConfigDir !== undefined) {
+      process.env.TOPO_OPENCODE_CONFIG_DIR = savedTopoOpenCodeConfigDir
     } else {
-      delete process.env.ORCA_OPENCODE_CONFIG_DIR
+      delete process.env.TOPO_OPENCODE_CONFIG_DIR
     }
-    if (savedOrcaOpenCodeSourceConfigDir !== undefined) {
-      process.env.ORCA_OPENCODE_SOURCE_CONFIG_DIR = savedOrcaOpenCodeSourceConfigDir
+    if (savedTopoOpenCodeSourceConfigDir !== undefined) {
+      process.env.TOPO_OPENCODE_SOURCE_CONFIG_DIR = savedTopoOpenCodeSourceConfigDir
     } else {
-      delete process.env.ORCA_OPENCODE_SOURCE_CONFIG_DIR
+      delete process.env.TOPO_OPENCODE_SOURCE_CONFIG_DIR
     }
     if (savedPiAgentDir !== undefined) {
       process.env.PI_CODING_AGENT_DIR = savedPiAgentDir
     } else {
       delete process.env.PI_CODING_AGENT_DIR
     }
-    if (savedOrcaPiAgentDir !== undefined) {
-      process.env.ORCA_PI_CODING_AGENT_DIR = savedOrcaPiAgentDir
+    if (savedTopoPiAgentDir !== undefined) {
+      process.env.TOPO_PI_CODING_AGENT_DIR = savedTopoPiAgentDir
     } else {
-      delete process.env.ORCA_PI_CODING_AGENT_DIR
+      delete process.env.TOPO_PI_CODING_AGENT_DIR
     }
-    if (savedOrcaPiSourceAgentDir === undefined) {
-      delete process.env.ORCA_PI_SOURCE_AGENT_DIR
+    if (savedTopoPiSourceAgentDir === undefined) {
+      delete process.env.TOPO_PI_SOURCE_AGENT_DIR
     } else {
-      process.env.ORCA_PI_SOURCE_AGENT_DIR = savedOrcaPiSourceAgentDir
+      process.env.TOPO_PI_SOURCE_AGENT_DIR = savedTopoPiSourceAgentDir
     }
-    if (savedOrcaCodexHome === undefined) {
-      delete process.env.ORCA_CODEX_HOME
+    if (savedTopoCodexHome === undefined) {
+      delete process.env.TOPO_CODEX_HOME
     } else {
-      process.env.ORCA_CODEX_HOME = savedOrcaCodexHome
+      process.env.TOPO_CODEX_HOME = savedTopoCodexHome
     }
-    if (savedOrcaOmpAgentDir !== undefined) {
-      process.env.ORCA_OMP_CODING_AGENT_DIR = savedOrcaOmpAgentDir
+    if (savedTopoOmpAgentDir !== undefined) {
+      process.env.TOPO_OMP_CODING_AGENT_DIR = savedTopoOmpAgentDir
     } else {
-      delete process.env.ORCA_OMP_CODING_AGENT_DIR
+      delete process.env.TOPO_OMP_CODING_AGENT_DIR
     }
-    if (savedOrcaOmpSourceAgentDir !== undefined) {
-      process.env.ORCA_OMP_SOURCE_AGENT_DIR = savedOrcaOmpSourceAgentDir
+    if (savedTopoOmpSourceAgentDir !== undefined) {
+      process.env.TOPO_OMP_SOURCE_AGENT_DIR = savedTopoOmpSourceAgentDir
     } else {
-      delete process.env.ORCA_OMP_SOURCE_AGENT_DIR
+      delete process.env.TOPO_OMP_SOURCE_AGENT_DIR
     }
-    if (savedOrcaOmpStatusExtension !== undefined) {
-      process.env.ORCA_OMP_STATUS_EXTENSION = savedOrcaOmpStatusExtension
+    if (savedTopoOmpStatusExtension !== undefined) {
+      process.env.TOPO_OMP_STATUS_EXTENSION = savedTopoOmpStatusExtension
     } else {
-      delete process.env.ORCA_OMP_STATUS_EXTENSION
+      delete process.env.TOPO_OMP_STATUS_EXTENSION
     }
     if (savedPrimeAgentDir !== undefined) {
       process.env.PRIME_AGENT_CODING_AGENT_DIR = savedPrimeAgentDir
     } else {
       delete process.env.PRIME_AGENT_CODING_AGENT_DIR
     }
-    if (savedOrcaPrimeAgentSourceDir !== undefined) {
-      process.env.ORCA_PRIME_AGENT_SOURCE_AGENT_DIR = savedOrcaPrimeAgentSourceDir
+    if (savedTopoPrimeAgentSourceDir !== undefined) {
+      process.env.TOPO_PRIME_AGENT_SOURCE_AGENT_DIR = savedTopoPrimeAgentSourceDir
     } else {
-      delete process.env.ORCA_PRIME_AGENT_SOURCE_AGENT_DIR
+      delete process.env.TOPO_PRIME_AGENT_SOURCE_AGENT_DIR
     }
-    if (savedOrcaPrimeAgentStatusExtension !== undefined) {
-      process.env.ORCA_PRIME_AGENT_STATUS_EXTENSION = savedOrcaPrimeAgentStatusExtension
+    if (savedTopoPrimeAgentStatusExtension !== undefined) {
+      process.env.TOPO_PRIME_AGENT_STATUS_EXTENSION = savedTopoPrimeAgentStatusExtension
     } else {
-      delete process.env.ORCA_PRIME_AGENT_STATUS_EXTENSION
+      delete process.env.TOPO_PRIME_AGENT_STATUS_EXTENSION
     }
-    if (savedOrcaClaudeAgentStatusSettings === undefined) {
-      delete process.env.ORCA_CLAUDE_AGENT_STATUS_SETTINGS
+    if (savedTopoClaudeAgentStatusSettings === undefined) {
+      delete process.env.TOPO_CLAUDE_AGENT_STATUS_SETTINGS
     } else {
-      process.env.ORCA_CLAUDE_AGENT_STATUS_SETTINGS = savedOrcaClaudeAgentStatusSettings
+      process.env.TOPO_CLAUDE_AGENT_STATUS_SETTINGS = savedTopoClaudeAgentStatusSettings
     }
   }
 

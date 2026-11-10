@@ -57,7 +57,7 @@ export function requireGitHubWorkItemTargetDetails(
 }
 
 export const GITHUB_EXACT_OPERATION_UNSUPPORTED =
-  'Update Orca on the executing server to edit this item or load its repository options.'
+  'Update Topo on the executing server to edit this item or load its repository options.'
 
 export function githubWorkItemTargetKey(target: GitHubWorkItemTarget): string {
   return [githubRepoIdentityKey(target.repository), target.type, target.number].join('\0')

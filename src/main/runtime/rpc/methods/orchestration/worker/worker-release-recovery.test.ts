@@ -5,7 +5,7 @@ import '../../../../orchestration/db/messages/mailbox-routing-page'
 import '../../../../orchestration/db/dispatch-row-writer'
 import '../../../../orchestration/db/attempt-outcome-projection'
 import { reconcileRequestedWorkerTerminalReleases } from '../../../../orchestration/terminal-authority/release/worker-terminal-release-reconciliation'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { isStreamingMethod, eraseRpcMethods, type RpcContext } from '../../../core'
 import { ORCHESTRATION_METHODS } from '../orchestration'
 
@@ -20,7 +20,7 @@ function deferred<T>(): { promise: Promise<T>; resolve: (value: T) => void } {
 describe('orchestration worker release recovery', () => {
   let db: OrchestrationDb
   let dbOpen = false
-  let runtime: OrcaRuntimeService
+  let runtime: TopoRuntimeService
   let ctx: RpcContext
   let activeRunId: string
 
@@ -30,7 +30,7 @@ describe('orchestration worker release recovery', () => {
   function setup(): void {
     db = new OrchestrationDb(':memory:')
     dbOpen = true
-    runtime = new OrcaRuntimeService()
+    runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(db)
     vi.spyOn(runtime, 'getTerminalPaneKey').mockImplementation((handle) =>
       handle === 'term_coord' ? coordinatorPaneKey : handle === 'term_worker' ? workerPaneKey : null
@@ -67,7 +67,7 @@ describe('orchestration worker release recovery', () => {
       status: 'running',
       exitCode: null
     })
-    vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('orca')
+    vi.spyOn(runtime, 'getTerminalOrchestrationCliCommand').mockReturnValue('topo')
     vi.spyOn(runtime, 'sendTerminalAgentPrompt').mockResolvedValue({
       handle: 'term_worker',
       accepted: true,
@@ -273,7 +273,7 @@ describe('orchestration worker release recovery', () => {
     const { dispatchId } = await startSettledWorker()
     const resourceId = db.getWorkerTerminalResourceByOwner(dispatchId)?.id
     expect(resourceId).toBeDefined()
-    const pendingClose = deferred<Awaited<ReturnType<OrcaRuntimeService['closeTerminal']>>>()
+    const pendingClose = deferred<Awaited<ReturnType<TopoRuntimeService['closeTerminal']>>>()
     vi.mocked(runtime.closeTerminal).mockReturnValue(pendingClose.promise)
 
     const interactive = call('orchestration.workerRelease', { dispatch: dispatchId })

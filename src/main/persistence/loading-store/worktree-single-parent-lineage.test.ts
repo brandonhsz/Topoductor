@@ -54,7 +54,7 @@ const folderParent: WorkspaceLineage = {
 
 describe('worktree parent records', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-single-parent-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-single-parent-'))
   })
 
   afterEach(async () => {

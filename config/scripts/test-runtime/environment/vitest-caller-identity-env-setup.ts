@@ -1,12 +1,12 @@
-// Clear the launching terminal’s inherited Orca identity so test branches depend on fixture env, not which agent launched runner.
+// Clear the launching terminal’s inherited Topo identity so test branches depend on fixture env, not which agent launched runner.
 for (const name of [
-  'ORCA_AGENT_SESSION_ID',
-  'ORCA_STRUCTURED_SESSION',
-  'ORCA_WORKTREE_ID',
-  'ORCA_WORKSPACE_ID',
-  'ORCA_RUNTIME_SOURCE_ID',
-  'ORCA_RUNTIME_SOURCE_INCARNATION',
-  'ORCA_RUNTIME_SOURCE_PROFILE_PATH'
+  'TOPO_AGENT_SESSION_ID',
+  'TOPO_STRUCTURED_SESSION',
+  'TOPO_WORKTREE_ID',
+  'TOPO_WORKSPACE_ID',
+  'TOPO_RUNTIME_SOURCE_ID',
+  'TOPO_RUNTIME_SOURCE_INCARNATION',
+  'TOPO_RUNTIME_SOURCE_PROFILE_PATH'
 ]) {
   delete process.env[name]
 }

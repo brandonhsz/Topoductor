@@ -16,8 +16,8 @@ import { openTestAgentSessionRecordStore } from '../../../../agent-session/recor
 import type { StructuredAgentSessionAdapter } from '../../../../../native-chat/agent-session-wire/providers/structured-agent-session-adapter'
 import { StructuredAgentSessionHost } from '../../../../../native-chat/agent-session-wire/host/structured-agent-session-host'
 import { setStructuredAgentSessionHost } from '../../../../../native-chat/agent-session-wire/host/structured-agent-session-registry'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
-import { registerBoundPty } from '../../../../orca-runtime-tests/bind-first-pane.test-fixture'
+import { TopoRuntimeService } from '../../../../topo-runtime'
+import { registerBoundPty } from '../../../../topo-runtime-tests/bind-first-pane.test-fixture'
 import type { RpcRequest, RpcResponse } from '../../../core'
 import type { RpcDispatchStreamingOptions } from '../../../dispatcher-stream-options'
 import { RpcDispatcher } from '../../../dispatcher'
@@ -135,11 +135,11 @@ async function call(
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-adoption-rpc-replay-'))
-  // Why: the adopting create pre-trusts its folder in ~/.codex and Orca's managed Codex home.
+  root = await mkdtemp(join(tmpdir(), 'topo-adoption-rpc-replay-'))
+  // Why: the adopting create pre-trusts its folder in ~/.codex and Topo's managed Codex home.
   vi.stubEnv('HOME', join(root, 'home'))
   vi.stubEnv('USERPROFILE', join(root, 'home'))
-  vi.stubEnv('ORCA_USER_DATA_PATH', join(root, 'user-data'))
+  vi.stubEnv('TOPO_USER_DATA_PATH', join(root, 'user-data'))
 })
 
 afterEach(async () => {
@@ -195,7 +195,7 @@ describe('committed adopting create RPC replay', () => {
     let selectedHome = originalHome
     const selectAccountHome = vi.fn(() => selectedHome)
     let writerVerdict: AgentProcessVerdict = 'live'
-    const runtime = new OrcaRuntimeService(
+    const runtime = new TopoRuntimeService(
       {
         getSettings: () => ({
           agentDefaultEnv: { codex: {} }

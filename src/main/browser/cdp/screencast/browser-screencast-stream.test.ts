@@ -121,7 +121,7 @@ describe('startBrowserScreencast', () => {
     }
   })
 
-  it('keeps the phone card on the dialog Orca holds, and dismisses it when the last viewer leaves', async () => {
+  it('keeps the phone card on the dialog Topo holds, and dismisses it when the last viewer leaves', async () => {
     const webContents = Object.assign(new EventEmitter(), createMockWebContents(), {
       id: 501,
       getURL: () => 'https://example.com'

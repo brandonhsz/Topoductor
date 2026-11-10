@@ -18,13 +18,13 @@ afterEach(() => {
 })
 
 function profileDataFile(): string {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-github-cache-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-github-cache-'))
   directories.push(directory)
-  return join(directory, 'orca-data.json')
+  return join(directory, 'topo-data.json')
 }
 
 const pr = (fetchedAt: number) => ({ data: null, fetchedAt })
-const sidecarPath = (dataFile: string) => join(dataFile, '..', 'orca-github-cache.json')
+const sidecarPath = (dataFile: string) => join(dataFile, '..', 'topo-github-cache.json')
 const save = (dataFile: string, cache: Parameters<typeof writeGitHubCacheDatabase>[1]): void => {
   void writeGitHubCacheDatabase(dataFile, cache, { busyTimeoutMs: 0, importedLegacyFileHash: null })
 }

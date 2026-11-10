@@ -9,7 +9,7 @@ export async function inspectCapySetupConfig(
 ): Promise<SetupScriptImportCandidate | null> {
   const config = parseJsonObject(await readFile(CAPY_SETUP_PATH))
   const scripts = asRecord(config?.scripts)
-  // initialize runs once per fresh clone, which is what an Orca setup script is.
+  // initialize runs once per fresh clone, which is what a Topo setup script is.
   const setup = scripts ? normalizeSetupScriptImportCommand(scripts.initialize) : ''
   if (!config || !scripts || !setup) {
     return null

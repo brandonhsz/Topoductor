@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type WebSocket from 'ws'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 import { DeviceRegistry } from './pairing/device-registry'
 import { FILE_METHODS } from '../methods/files/files'
 import { E2EEChannel } from '../e2ee-channel'
@@ -20,9 +20,9 @@ import { REMOTE_RUNTIME_MAX_OUTBOUND_JSON_BYTES } from '../../../../shared/remot
 import { RUNTIME_RPC_REPLY_TOO_LARGE_CODE } from './runtime-rpc-reply-size-limit'
 
 function createServer() {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-reply-size-'))
-  const runtime = new OrcaRuntimeService()
-  const server = new OrcaRuntimeRpcServer({
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-reply-size-'))
+  const runtime = new TopoRuntimeService()
+  const server = new TopoRuntimeRpcServer({
     runtime,
     methods: FILE_METHODS,
     userDataPath,
@@ -82,7 +82,7 @@ function connectEncryptedChannel() {
 }
 
 describe('remote RPC replies over the encrypted channel', () => {
-  const servers: OrcaRuntimeRpcServer[] = []
+  const servers: TopoRuntimeRpcServer[] = []
   afterEach(async () => {
     await Promise.all(servers.splice(0).map((server) => server.stop()))
     vi.restoreAllMocks()

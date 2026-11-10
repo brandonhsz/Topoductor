@@ -52,12 +52,12 @@ type Props = {
   sessionId: string | null
   getSendCompletionGeneration: () => number
   keyboardInset: number
-  /** The Orca host that runs this chat, named for notices; null when unnamed. */
+  /** The Topo host that runs this chat, named for notices; null when unnamed. */
   hostName: string | null
   /** Opens the accounts of the host that runs this chat; absent when the phone can't reach them. */
   onOpenAccounts?: () => void
   /** Offered for tapped links; absent where the host can't open a browser tab. */
-  onOpenUrlInOrca?: (url: string) => void
+  onOpenUrlInTopo?: (url: string) => void
   /** Opens a host terminal tab in this chat's workspace running `command`. */
   onRunInTerminal: (command: string) => void
   hostOutage?: MobileNativeChatHostOutage | null
@@ -107,7 +107,7 @@ function MobileNativeChatOverlayContent({
   getSendCompletionGeneration,
   keyboardInset,
   hostName,
-  onOpenUrlInOrca,
+  onOpenUrlInTopo,
   onRunInTerminal,
   hostOutage = null,
   onOpenAccounts
@@ -269,7 +269,7 @@ function MobileNativeChatOverlayContent({
     <MobileNativeChatRowOverlaysHost
       conversation={{ surfaceId: sendSurfaceId, sessionId }}
       imageSource={imageSource}
-      onOpenUrlInOrca={onOpenUrlInOrca}
+      onOpenUrlInTopo={onOpenUrlInTopo}
       rewind={controller.nativeChatRewind}
     >
       <MobileMarkdownLinksContext.Provider value={markdownLinks}>

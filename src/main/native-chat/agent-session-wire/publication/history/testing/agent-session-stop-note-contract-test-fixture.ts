@@ -17,7 +17,7 @@ import { structuredAgentSessionStopNoteIdentity } from '../../../operations/stru
 
 export const journals = createTrackedJournalOpener()
 
-export const turnIdentity = { provider: 'orca', clientMessageId: 'turn-1' } as const
+export const turnIdentity = { provider: 'topo', clientMessageId: 'turn-1' } as const
 
 export const turnItemId = agentJournalItemKey(turnIdentity)
 
@@ -41,7 +41,7 @@ let root: string
 let journal: AgentSessionJournal
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-stop-note-projection-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-stop-note-projection-'))
   journal = await journals.open({
     identity: {
       sessionId: 'session-1',

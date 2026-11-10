@@ -1,7 +1,7 @@
 import path from 'node:path'
 import type { ElectronApplication, Locator, Page, TestInfo } from '@stablyai/playwright-test'
 import { eventSchemas } from '../../src/shared/telemetry-events'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { openSidebarProjectDialog } from './helpers/sidebar-project-dialog'
 import {
   createRuntimeDesktopPairingOffer,
@@ -11,15 +11,15 @@ import {
 test.use({
   seedTestRepo: false,
   testRepoPath: '',
-  orcaAppExtraEnv: { ORCA_BACKGROUND_LAUNCH: '1' }
+  topoAppExtraEnv: { TOPO_BACKGROUND_LAUNCH: '1' }
 })
 
 async function assertHiddenIsolation(app: ElectronApplication, testInfo: TestInfo, name: string) {
   const isolation = await app.evaluate(({ app, BrowserWindow }) => ({
     home: app.getPath('home'),
-    expectedHome: process.env.ORCA_E2E_HOME_DIR,
+    expectedHome: process.env.TOPO_E2E_HOME_DIR,
     appPath: app.getAppPath(),
-    background: process.env.ORCA_BACKGROUND_LAUNCH,
+    background: process.env.TOPO_BACKGROUND_LAUNCH,
     windows: BrowserWindow.getAllWindows().map((window) => ({
       visible: window.isVisible(),
       focused: window.isFocused()
@@ -36,12 +36,12 @@ async function assertHiddenIsolation(app: ElectronApplication, testInfo: TestInf
 for (const theme of ['dark', 'light'] as const) {
   test(`invalid host project path stays readable over its dialog (${theme})`, async ({
     electronApp,
-    orcaPage
+    topoPage
   }, testInfo) => {
     const hostHome = await assertHiddenIsolation(electronApp, testInfo, 'host-isolation')
-    const offer = await createRuntimeDesktopPairingOffer(orcaPage)
+    const offer = await createRuntimeDesktopPairingOffer(topoPage)
     const client = await launchPairedElectronClient(offer, testInfo, 'Disposable host', {
-      extraEnv: { ORCA_BACKGROUND_LAUNCH: '1' }
+      extraEnv: { TOPO_BACKGROUND_LAUNCH: '1' }
     })
     try {
       await assertHiddenIsolation(client.app, testInfo, 'client-isolation')
@@ -240,7 +240,7 @@ for (const theme of ['dark', 'light'] as const) {
       await assertHiddenIsolation(client.app, testInfo, 'client-final-isolation')
       await assertHiddenIsolation(electronApp, testInfo, 'host-final-isolation')
       expect(await client.getDirectSshAttemptTargetIds()).toEqual([])
-      expect(await orcaPage.evaluate(() => window.api.repos.list())).toEqual([])
+      expect(await topoPage.evaluate(() => window.api.repos.list())).toEqual([])
     } finally {
       await client.dispose()
     }
@@ -299,7 +299,7 @@ async function pressAt(page: Page, target: Locator): Promise<void> {
 for (const theme of ['dark', 'light'] as const) {
   test(`toasts behind a settings dialog come forward on a press and keep its draft (${theme})`, async ({
     electronApp,
-    orcaPage: page
+    topoPage: page
   }) => {
     await recordTelemetry(electronApp)
     await page.evaluate(async (theme) => {

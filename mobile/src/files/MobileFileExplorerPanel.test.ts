@@ -4,7 +4,7 @@ import { act, create, type ReactTestRenderer } from 'react-test-renderer'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { MobileFileExplorerPanel } from './MobileFileExplorerPanel'
 import type { MobileDirEntry } from './file-tree'
-import { createOrcaQueryClient } from '../query/orca-query-client'
+import { createTopoQueryClient } from '../query/topo-query-client'
 import { settleQueryNotifications } from '../test-support/rpc-recording/hook-mount'
 import type { RpcClient } from '../transport/rpc/rpc-client-contract'
 import { stubRpcClient } from '../transport/rpc/rpc-client-test-stub'
@@ -191,7 +191,7 @@ function deferred() {
   return { promise, resolve }
 }
 
-let queryClient: QueryClient = createOrcaQueryClient()
+let queryClient: QueryClient = createTopoQueryClient()
 
 function explorer(): ReactElement {
   return createElement(
@@ -266,7 +266,7 @@ describe('MobileFileExplorerPanel', () => {
     }
     vi.restoreAllMocks()
     queryClient.clear()
-    queryClient = createOrcaQueryClient()
+    queryClient = createTopoQueryClient()
     mockTransport.client = null
     mockTransport.connectionState = 'connected'
     mockTransport.forceReconnect = vi.fn()

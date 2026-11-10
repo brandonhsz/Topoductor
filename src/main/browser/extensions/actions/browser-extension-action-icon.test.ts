@@ -50,7 +50,7 @@ describe('action icons', () => {
 describe('resolveActionIconDataUrl', () => {
   let root: string
   beforeEach(() => {
-    root = mkdtempSync(join(tmpdir(), 'orca-action-icon-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-action-icon-'))
   })
   afterEach(() => {
     rmSync(root, { recursive: true, force: true })

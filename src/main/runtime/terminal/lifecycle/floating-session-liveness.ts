@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithRefreshPtyWorktreeRecordsWithControllerInventory } from './pty-controller-inventory-refresh'
+import { TopoRuntimeWithRefreshPtyWorktreeRecordsWithControllerInventory } from './pty-controller-inventory-refresh'
 import { FLOATING_TERMINAL_WORKTREE_ID } from '../../../../shared/constants'
 import { indexFloatingSnapshotPtyBindings } from './floating-snapshot-pty-bindings'
 import type {
@@ -9,7 +9,7 @@ import type {
 import { questionAnswerWaitPrefix } from '../../orchestration/mailbox/questions/question-answer-delivery'
 const DISCONNECTED_PTY_RECORD_MAX = 128
 
-export abstract class OrcaRuntimeWithRefreshFloatingWorkspacePtyLiveness extends OrcaRuntimeWithRefreshPtyWorktreeRecordsWithControllerInventory {
+export abstract class TopoRuntimeWithRefreshFloatingWorkspacePtyLiveness extends TopoRuntimeWithRefreshPtyWorktreeRecordsWithControllerInventory {
   protected refreshFloatingWorkspacePtyLiveness(): Set<string> | null {
     const controller = this.ptyController
     if (!controller?.hasPty) {

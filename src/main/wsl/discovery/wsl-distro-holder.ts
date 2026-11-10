@@ -1,11 +1,11 @@
 import { runKeyedSerializedOperation } from '../../cli/keyed-promise-queue'
-import { spawnDetachedWithoutInheritance } from '@orca/process-host/isolated-detached-spawn'
+import { spawnDetachedWithoutInheritance } from '@topo/process-host/isolated-detached-spawn'
 import { queryWindowsProcess } from '../../daemon/endpoint/identity/daemon-process-inspection'
 import {
   listConfirmedRunningWslDistros,
   noteWslDistroMayHaveStopped
 } from './wsl-background-distro-gate'
-import { WslDistroNotRunningError } from '../orcad/wsl-orcad-connection-errors'
+import { WslDistroNotRunningError } from '../topod/wsl-topod-connection-errors'
 import { resolveWslInteropSpawnCwd } from '../execution/wsl-interop-spawn-directory'
 import { buildWslDistroHolderArgs } from './wsl-distro-holder-command'
 import {
@@ -34,9 +34,9 @@ const RELEASE_EXIT_TIMEOUT_MS = 5_000
 export const WSL_HOLDER_UNVERIFIABLE_REPLACE_AFTER_MS = 5 * 60_000
 
 function spawnDetachedHolder(distro: string): WslDistroHolderChild {
-  // Detached and broken away from Orca's jobs where they allow it, so a holder outlives a crash of
-  // Orca even inside a kill-on-close job (an OpenSSH session's); taskkill /T still reaches it.
-  // Inheriting none of Orca's handles keeps a launcher's pipe or a DevTools socket from outliving Orca.
+  // Detached and broken away from Topo's jobs where they allow it, so a holder outlives a crash of
+  // Topo even inside a kill-on-close job (an OpenSSH session's); taskkill /T still reaches it.
+  // Inheriting none of Topo's handles keeps a launcher's pipe or a DevTools socket from outliving Topo.
   return spawnDetachedWithoutInheritance({
     program: resolveWslExecutablePath(),
     args: buildWslDistroHolderArgs(distro),
@@ -142,7 +142,7 @@ export function createWslDistroHolder(dependencies: WslDistroHolderDependencies)
         child.once('spawn', resolve)
         child.once('error', reject)
       })
-      // Unref so the surviving holder cannot keep Orca alive.
+      // Unref so the surviving holder cannot keep Topo alive.
       child.unref()
       const pid = child.pid
       if (pid === undefined) {

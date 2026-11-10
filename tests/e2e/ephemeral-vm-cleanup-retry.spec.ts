@@ -3,14 +3,14 @@ import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 
 test.use({ seedTestRepo: false })
 
-test('shows interrupted hidden SSH cleanup as retryable', async ({ electronApp, orcaPage }) => {
+test('shows interrupted hidden SSH cleanup as retryable', async ({ electronApp, topoPage }) => {
   const userDataPath = await electronApp.evaluate(({ app }) => app.getPath('userData'))
   writeFileSync(
-    path.join(userDataPath, 'orca-ephemeral-vm-runtimes.json'),
+    path.join(userDataPath, 'topo-ephemeral-vm-runtimes.json'),
     JSON.stringify({
       version: 1,
       runtimes: [
@@ -43,21 +43,21 @@ test('shows interrupted hidden SSH cleanup as retryable', async ({ electronApp, 
     })
   )
 
-  await orcaPage.evaluate(() => {
+  await topoPage.evaluate(() => {
     const state = window.__store!.getState()
     state.openSettingsTarget({ pane: 'servers', repoId: null })
     state.openSettingsPage()
   })
-  await expect(orcaPage.getByPlaceholder('Search settings')).toBeVisible()
+  await expect(topoPage.getByPlaceholder('Search settings')).toBeVisible()
 
-  const runtimes = orcaPage.locator('[data-settings-section="temporary-vm-runtimes"]')
+  const runtimes = topoPage.locator('[data-settings-section="temporary-vm-runtimes"]')
   await expect(runtimes.getByText('Interrupted cleanup')).toBeVisible()
   await expect(runtimes.getByText('Cleanup failed')).toBeVisible()
   await expect(runtimes.getByRole('button', { name: 'Retry cleanup' })).toBeVisible()
 })
 
-test('stops long-running cleanup and keeps it retryable', async ({ electronApp, orcaPage }) => {
-  const repoPath = mkdtempSync(path.join(tmpdir(), 'orca-cleanup-stop-'))
+test('stops long-running cleanup and keeps it retryable', async ({ electronApp, topoPage }) => {
+  const repoPath = mkdtempSync(path.join(tmpdir(), 'topo-cleanup-stop-'))
   const destroyPath = path.join(repoPath, 'destroy.js')
   const destroyStartedPath = path.join(repoPath, 'destroy-started.txt')
   try {
@@ -67,12 +67,12 @@ test('stops long-running cleanup and keeps it retryable', async ({ electronApp, 
     )
     execFileSync('git', ['init'], { cwd: repoPath })
     execFileSync('git', ['config', 'user.email', 'e2e@test.local'], { cwd: repoPath })
-    execFileSync('git', ['config', 'user.name', 'Orca E2E'], { cwd: repoPath })
+    execFileSync('git', ['config', 'user.name', 'Topo E2E'], { cwd: repoPath })
     writeFileSync(path.join(repoPath, 'README.md'), 'cleanup stop fixture\n')
     execFileSync('git', ['add', '.'], { cwd: repoPath })
     execFileSync('git', ['commit', '-m', 'seed'], { cwd: repoPath })
 
-    const repoId = await orcaPage.evaluate(async (repo) => {
+    const repoId = await topoPage.evaluate(async (repo) => {
       const result = await window.api.repos.add({ path: repo })
       if ('error' in result) {
         throw new Error(result.error)
@@ -81,7 +81,7 @@ test('stops long-running cleanup and keeps it retryable', async ({ electronApp, 
     }, repoPath)
     const userDataPath = await electronApp.evaluate(({ app }) => app.getPath('userData'))
     writeFileSync(
-      path.join(userDataPath, 'orca-ephemeral-vm-runtimes.json'),
+      path.join(userDataPath, 'topo-ephemeral-vm-runtimes.json'),
       JSON.stringify({
         version: 1,
         runtimes: [
@@ -118,29 +118,29 @@ test('stops long-running cleanup and keeps it retryable', async ({ electronApp, 
       })
     )
 
-    await openCloudVmRuntimes(orcaPage)
-    const runtimes = orcaPage.locator('[data-settings-section="temporary-vm-runtimes"]')
+    await openCloudVmRuntimes(topoPage)
+    const runtimes = topoPage.locator('[data-settings-section="temporary-vm-runtimes"]')
     await expect(runtimes.getByText('Long cleanup')).toBeVisible()
     await runtimes.getByRole('button', { name: 'Cleanup', exact: true }).click()
     await expect(runtimes.getByRole('button', { name: 'Stop cleanup' })).toBeVisible()
     await expect.poll(() => existsSync(destroyStartedPath)).toBe(true)
 
     await runtimes.getByRole('button', { name: 'Stop cleanup' }).click()
-    const dialog = orcaPage.getByRole('dialog', { name: 'Stop cleanup?' })
+    const dialog = topoPage.getByRole('dialog', { name: 'Stop cleanup?' })
     await expect(dialog).toContainText('The VM may remain running and incur charges.')
     await dialog.getByRole('button', { name: 'Stop cleanup' }).click()
 
     await expect(dialog).toBeHidden()
     await expect(runtimes.getByText('Cleanup stopped', { exact: true })).toBeVisible()
     await expect(runtimes.getByRole('button', { name: 'Retry cleanup' })).toBeVisible()
-    await expect(orcaPage.getByText('Cleanup stopped by user.')).toBeVisible()
+    await expect(topoPage.getByText('Cleanup stopped by user.')).toBeVisible()
 
     writeFileSync(destroyPath, "process.stdin.resume(); process.stdin.on('end', () => {})")
     await runtimes.getByRole('button', { name: 'Retry cleanup' }).click()
     await expect(runtimes.getByText('Long cleanup')).toBeHidden()
     await expect
       .poll(() =>
-        orcaPage.evaluate(async () => {
+        topoPage.evaluate(async () => {
           const runtime = (await window.api.ephemeralVm.listRuntimes()).find(
             (entry) => entry.id === 'runtime-cleanup-stop'
           )

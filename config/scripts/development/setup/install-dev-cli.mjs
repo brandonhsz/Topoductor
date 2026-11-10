@@ -1,17 +1,17 @@
 #!/usr/bin/env node
-// Symlink orca-dev into /usr/local/bin after build:cli for global dev access.
+// Symlink topo-dev into /usr/local/bin after build:cli for global dev access.
 import { existsSync, lstatSync, readlinkSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 
 const scriptDir = import.meta.dirname
-const source = path.join(scriptDir, '../launch/orca-dev.mjs')
+const source = path.join(scriptDir, '../launch/topo-dev.mjs')
 
 const commandPath =
-  process.platform === 'darwin' || process.platform === 'linux' ? '/usr/local/bin/orca-dev' : null
+  process.platform === 'darwin' || process.platform === 'linux' ? '/usr/local/bin/topo-dev' : null
 
 if (!commandPath) {
-  console.log('[orca-dev] Skipping global symlink (unsupported platform).')
+  console.log('[topo-dev] Skipping global symlink (unsupported platform).')
   process.exit(0)
 }
 
@@ -28,21 +28,21 @@ function isOwnedByUs(target) {
 
 if (existsSync(commandPath)) {
   if (isOwnedByUs(commandPath)) {
-    console.log(`[orca-dev] ${commandPath} already points to dev CLI.`)
+    console.log(`[topo-dev] ${commandPath} already points to dev CLI.`)
     process.exit(0)
   }
   console.error(
-    `[orca-dev] ${commandPath} exists but is not our symlink. Remove it manually if you want the dev CLI installed globally.`
+    `[topo-dev] ${commandPath} exists but is not our symlink. Remove it manually if you want the dev CLI installed globally.`
   )
   process.exit(0)
 }
 
 try {
   execFileSync('ln', ['-s', source, commandPath], { stdio: 'inherit' })
-  console.log(`[orca-dev] Symlinked ${commandPath} → ${source}`)
+  console.log(`[topo-dev] Symlinked ${commandPath} → ${source}`)
 } catch {
   console.log(
-    `[orca-dev] Could not create ${commandPath} (permission denied). Run once with:\n` +
+    `[topo-dev] Could not create ${commandPath} (permission denied). Run once with:\n` +
       `  sudo ln -s ${source} ${commandPath}`
   )
 }

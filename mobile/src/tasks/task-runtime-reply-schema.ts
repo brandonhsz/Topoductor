@@ -16,7 +16,7 @@ export const taskUiStateSchema = z
       'ui',
       z.looseObject({
         taskResumeState: z.unknown().optional(),
-        trustedOrcaHooks: z.unknown().optional()
+        trustedTopoHooks: z.unknown().optional()
       })
     )
   })

@@ -18,7 +18,7 @@ export function useWebClientTerminalResize({
 }): void {
   useEffect(() => {
     if (
-      !(globalThis as { __ORCA_WEB_CLIENT__?: boolean }).__ORCA_WEB_CLIENT__ ||
+      !(globalThis as { __TOPO_WEB_CLIENT__?: boolean }).__TOPO_WEB_CLIENT__ ||
       !isVisible ||
       !isActive
     ) {

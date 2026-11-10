@@ -267,7 +267,7 @@ export default function PairScanScreen() {
             {canAskAgain
               ? t(
                   'app.pairScan.cameraPermissionDescription',
-                  'Scan the QR code from Orca on your desktop, or paste the pairing code instead.'
+                  'Scan the QR code from Topo on your desktop, or paste the pairing code instead.'
                 )
               : t(
                   'app.pairScan.cameraDisabledDescription',
@@ -304,7 +304,7 @@ export default function PairScanScreen() {
           )}
           placeholder={t(
             'app.pairScan.pasteCodePlaceholder',
-            'orca://pair?code=... or paste the code'
+            'topo://pair?code=... or paste the code'
           )}
           onSubmit={handlePasteSubmit}
           onCancel={() => setPasteVisible(false)}
@@ -326,7 +326,7 @@ export default function PairScanScreen() {
       </Pressable>
 
       <View style={styles.steps}>
-        <Step number={1} text={t('app.pairScan.openDesktopStep', 'Open Orca on your computer')} />
+        <Step number={1} text={t('app.pairScan.openDesktopStep', 'Open Topo on your computer')} />
         <Step
           number={2}
           text={t('app.pairScan.openMobileSettingsStep', 'Go to Settings → Mobile')}
@@ -418,7 +418,7 @@ export default function PairScanScreen() {
         )}
         placeholder={t(
           'app.pairScan.pasteCodePlaceholder',
-          'orca://pair?code=... or paste the code'
+          'topo://pair?code=... or paste the code'
         )}
         onSubmit={handlePasteSubmit}
         onCancel={() => setPasteVisible(false)}

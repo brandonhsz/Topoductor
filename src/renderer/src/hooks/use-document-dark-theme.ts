@@ -7,12 +7,12 @@ import { usePluginViewCaptureStore } from '@/store/plugins/capture/plugin-view-c
 export function useSettingsDarkTheme(): boolean {
   const theme = useAppStore((s) => s.settings?.theme ?? 'system')
   const systemPrefersDark = useSystemPrefersDark()
-  // `orca plugin shot --theme` paints the other mode for one capture, leaving the setting alone.
+  // `topo plugin shot --theme` paints the other mode for one capture, leaving the setting alone.
   const captureDark = usePluginViewCaptureStore((s) => s.dark)
   return captureDark ?? (theme === 'system' ? systemPrefersDark : theme === 'dark')
 }
 
-/** The mode Orca is painted in: the requested one, unless Match Terminal follows a terminal
+/** The mode Topo is painted in: the requested one, unless Match Terminal follows a terminal
  *  theme of the other mode. */
 export function useDocumentDarkTheme(): boolean {
   const requestedDark = useSettingsDarkTheme()

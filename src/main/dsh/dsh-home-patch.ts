@@ -1,12 +1,12 @@
-/** Edit only Orca's marker-delimited region in the user-owned YAML patch layer. */
+/** Edit only Topo's marker-delimited region in the user-owned YAML patch layer. */
 
 import { DSH_HOOK_EXECUTOR_PACKAGE } from './dsh-hook-packages'
 
-const START_MARKER = '# >>> orca-managed-dsh-hooks (managed by Orca; do not edit) >>>'
-const END_MARKER = '# <<< orca-managed-dsh-hooks <<<'
+const START_MARKER = '# >>> topo-managed-dsh-hooks (managed by Topo; do not edit) >>>'
+const END_MARKER = '# <<< topo-managed-dsh-hooks <<<'
 
 /** DSH targets patch rows by ID, so keep this stable. */
-const MANAGED_ROW_ID = 'orca-agent-hooks'
+const MANAGED_ROW_ID = 'topo-agent-hooks'
 
 const EMPTY_FLOW_SEQUENCE = '[]'
 

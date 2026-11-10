@@ -8,7 +8,7 @@ vi.mock('node:child_process', async (importOriginal) => ({
   ...(await importOriginal<typeof ChildProcess>()),
   spawn: spawnMock
 }))
-vi.mock('@orca/process-host/process-tree-kill-gate', () => ({
+vi.mock('@topo/process-host/process-tree-kill-gate', () => ({
   admitProcessTreeKill: () => true
 }))
 

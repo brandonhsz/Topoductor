@@ -4,7 +4,7 @@ import { removeTree } from '../../shared/windows-transient-lock-removal'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { buildWslBridgeScript, buildWslLauncher } from './wsl-cli-scripts'
 
 const FORWARDED_ARGS = [
@@ -16,8 +16,8 @@ const FORWARDED_ARGS = [
   'tui-idle',
   '--wsl',
   'forwarded-wsl-value',
-  '--orca',
-  'forwarded-orca-value',
+  '--topo',
+  'forwarded-topo-value',
   '--debug',
   'forwarded-debug-value',
   '--deps',
@@ -36,11 +36,11 @@ describe('WSL CLI PowerShell boundary', () => {
   it.skipIf(process.platform === 'win32')(
     'forwards the distro as one argument and omits it when absent',
     async () => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-wsl-launcher-argv-'))
+      const root = await mkdtemp(join(tmpdir(), 'topo-wsl-launcher-argv-'))
       try {
         const launcherPath = join(root, 'launcher.sh')
         const expectedCwd = await realpath(root)
-        await writeFile(launcherPath, buildWslLauncher('C:\\Orca\\orca.exe', '/bridge.ps1'))
+        await writeFile(launcherPath, buildWslLauncher('C:\\Topo\\topo.exe', '/bridge.ps1'))
         await writeFile(join(root, 'wslpath'), '#!/bin/bash\nprintf "%s" "$2"\n', {
           mode: 0o700
         })
@@ -69,7 +69,7 @@ describe('WSL CLI PowerShell boundary', () => {
             'Bypass',
             '-File',
             '/bridge.ps1',
-            'C:\\Orca\\orca.exe',
+            'C:\\Topo\\topo.exe',
             '-WslCwd',
             expectedCwd,
             ...(distro ? ['-WslDistro', distro] : []),
@@ -88,9 +88,9 @@ describe('WSL CLI PowerShell boundary', () => {
   it.skipIf(process.platform !== 'win32')(
     'preserves native argv and exit status through Windows PowerShell 5.1',
     async () => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-wsl-powershell-boundary-'))
+      const root = await mkdtemp(join(tmpdir(), 'topo-wsl-powershell-boundary-'))
       const fixtureDir = join(root, 'fixture with spaces')
-      const bridgePath = join(fixtureDir, 'orca-wsl-bridge.ps1')
+      const bridgePath = join(fixtureDir, 'topo-wsl-bridge.ps1')
       const targetPath = join(fixtureDir, 'argv-target.cjs')
       const wslCwd = join(root, 'WSL cwd with spaces')
 
@@ -99,7 +99,7 @@ describe('WSL CLI PowerShell boundary', () => {
         await writeFile(bridgePath, buildWslBridgeScript(), 'utf8')
         await writeFile(
           targetPath,
-          'process.stdout.write(JSON.stringify({ argv: process.argv.slice(2), cwd: process.env.ORCA_CLI_CWD ?? null, distro: process.env.ORCA_CLI_WSL_DISTRO ?? null }))\n',
+          'process.stdout.write(JSON.stringify({ argv: process.argv.slice(2), cwd: process.env.TOPO_CLI_CWD ?? null, distro: process.env.TOPO_CLI_WSL_DISTRO ?? null }))\n',
           'utf8'
         )
         const invocations = [
@@ -145,8 +145,8 @@ describe('WSL CLI PowerShell boundary', () => {
               windowsHide: true,
               env: {
                 ...process.env,
-                ORCA_CLI_CWD: 'stale',
-                ORCA_CLI_WSL_DISTRO: 'stale-distro',
+                TOPO_CLI_CWD: 'stale',
+                TOPO_CLI_WSL_DISTRO: 'stale-distro',
                 WSL_DISTRO_NAME: 'wrong-distro'
               }
             }
@@ -184,15 +184,15 @@ describe('WSL CLI PowerShell boundary', () => {
   it.skipIf(process.platform !== 'win32')(
     'pins a non-ASCII app identity and the dev launcher env through Windows PowerShell 5.1',
     async () => {
-      const root = await mkdtemp(join(tmpdir(), 'orca-wsl-managed-bridge-'))
-      const userDataPath = join(root, "张三's O\u2019Brien Orca")
+      const root = await mkdtemp(join(tmpdir(), 'topo-wsl-managed-bridge-'))
+      const userDataPath = join(root, "张三's O\u2019Brien Topo")
       const cliEntryPath = join(root, 'cli \u2018entry\u2019.cjs')
-      const bridgePath = join(root, 'orca-wsl-bridge.ps1')
+      const bridgePath = join(root, 'topo-wsl-bridge.ps1')
       try {
         await writeFile(bridgePath, buildWslBridgeScript({ userDataPath, cliEntryPath }), 'utf8')
         await writeFile(
           cliEntryPath,
-          'console.error("to stderr"); const e = process.env; console.log(JSON.stringify({ argv: process.argv.slice(2), owner: e.ORCA_USER_DATA_PATH, app: e.ORCA_APP_EXECUTABLE, nodeOptions: e.NODE_OPTIONS ?? null, stashed: e.ORCA_NODE_OPTIONS, cliDir: e.ORCA_WSL_CLI_DIR ?? null }))\n',
+          'console.error("to stderr"); const e = process.env; console.log(JSON.stringify({ argv: process.argv.slice(2), owner: e.TOPO_USER_DATA_PATH, app: e.TOPO_APP_EXECUTABLE, nodeOptions: e.NODE_OPTIONS ?? null, stashed: e.TOPO_NODE_OPTIONS, cliDir: e.TOPO_WSL_CLI_DIR ?? null }))\n',
           'utf8'
         )
         const result = spawnSync(
@@ -214,9 +214,9 @@ describe('WSL CLI PowerShell boundary', () => {
             windowsHide: true,
             env: {
               ...process.env,
-              ORCA_APP_EXECUTABLE: '',
+              TOPO_APP_EXECUTABLE: '',
               NODE_OPTIONS: '--max-old-space-size=4096',
-              ORCA_WSL_CLI_DIR: 'C:\\guest-only'
+              TOPO_WSL_CLI_DIR: 'C:\\guest-only'
             }
           }
         )

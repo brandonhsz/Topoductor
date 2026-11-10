@@ -3,7 +3,7 @@ import ts from 'typescript-api'
 
 const RESOURCES = path.resolve(__dirname, '../../../../resources/plugins')
 
-/** The files `orca plugin types` copies, as checked in. */
+/** The files `topo plugin types` copies, as checked in. */
 export const AUTHOR_TYPINGS_FILES = [
   path.join(RESOURCES, 'declarative', 'orca.d.ts'),
   path.join(RESOURCES, 'declarative', 'orca-components.d.ts'),
@@ -16,7 +16,7 @@ export const AUTHOR_TYPINGS_FILES = [
   path.join(RESOURCES, 'types', 'orca-testing.d.ts')
 ]
 
-// Mirrors the tsconfig `orca plugin types` writes (plugin-type-files.ts).
+// Mirrors the tsconfig `topo plugin types` writes (plugin-type-files.ts).
 const OPTIONS: ts.CompilerOptions = {
   strict: true,
   noEmit: true,

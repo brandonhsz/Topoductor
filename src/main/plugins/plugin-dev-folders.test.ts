@@ -44,7 +44,7 @@ const PANEL = {
 }
 
 async function harness(raw: Record<string, unknown>, enabled = true) {
-  const folder = await realpath(await mkdtemp(join(tmpdir(), 'orca-dev-folder-')))
+  const folder = await realpath(await mkdtemp(join(tmpdir(), 'topo-dev-folder-')))
   roots.push(folder)
   let devPaths: string[] = []
   let discovered: DiscoveredPlugin[] = []

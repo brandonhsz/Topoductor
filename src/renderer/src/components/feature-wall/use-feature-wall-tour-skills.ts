@@ -1,5 +1,5 @@
 import {
-  ORCA_CLI_SKILL_NAME,
+  TOPO_CLI_SKILL_NAME,
   ORCHESTRATION_SKILL_NAME
 } from '@/lib/skills/installation/agent-feature-skill-names'
 import {
@@ -22,7 +22,7 @@ export function useFeatureWallTourSkills(
     discoveryTarget,
     sourceKinds: GLOBAL_AGENT_SKILL_SOURCE_KINDS
   })
-  const browserUseSkill = useInstalledAgentSkill(ORCA_CLI_SKILL_NAME, {
+  const browserUseSkill = useInstalledAgentSkill(TOPO_CLI_SKILL_NAME, {
     enabled: isOpen,
     discoveryTarget,
     sourceKinds: GLOBAL_AGENT_SKILL_SOURCE_KINDS

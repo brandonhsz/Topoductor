@@ -14,7 +14,7 @@ describe('diff drivers with textconv', () => {
     execFileSync('git', args, { cwd: repo, stdio: 'pipe' }).toString()
 
   beforeEach(() => {
-    repo = mkdtempSync(path.join(tmpdir(), 'orca-textconv-'))
+    repo = mkdtempSync(path.join(tmpdir(), 'topo-textconv-'))
     git('init')
     git('config', 'user.email', 'test@example.com')
     git('config', 'user.name', 'Test User')

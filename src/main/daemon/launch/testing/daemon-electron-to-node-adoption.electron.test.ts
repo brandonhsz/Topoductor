@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, realpathSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import {
   buildDaemonLauncherDriver,
   closeLauncherWindows,
@@ -18,13 +18,13 @@ import {
 import {
   buildDaemonSessionClient,
   type DaemonSessionClientResult
-} from '../../../orcad/orcad-daemon-session-client-fixture'
+} from '../../../topod/topod-daemon-session-client-fixture'
 import {
   killAndAwaitExit,
   killProfileDaemons,
   removeTestRoot
-} from '../../../orcad/orcad-daemon-teardown-fixture'
-import { locatePinnedNodeForTests } from '../../../orcad/orcad-node-slot-fixture'
+} from '../../../topod/topod-daemon-teardown-fixture'
+import { locatePinnedNodeForTests } from '../../../topod/topod-node-slot-fixture'
 
 type Runtime = 'electron' | 'node'
 
@@ -86,7 +86,7 @@ describe.runIf(linux)('an Electron-hosted daemon meeting a Node-hosted launcher'
     runtimes.electron = realpathSync(electron)
     runtimes.node = realpathSync(locatePinnedNodeForTests() ?? process.execPath)
     // Keep the daemon socket path within sun_path.
-    root = realpathSync(mkdtempSync('/tmp/orca-e2n-'))
+    root = realpathSync(mkdtempSync('/tmp/topo-e2n-'))
     appPath = join(root, 'app')
     launcher = join(root, 'launcher.cjs')
     client = join(root, 'client.cjs')

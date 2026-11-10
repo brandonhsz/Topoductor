@@ -2,7 +2,7 @@ import type { Locator, Page } from '@stablyai/playwright-test'
 import type { ExecutionHostId } from '../../src/shared/execution-host'
 import { getPaletteWorktreeIdentity } from '../../src/renderer/src/lib/workspace/search/palette-repo-resolution'
 import { encodePaletteIdentity } from '../../src/shared/palette-match/palette-ranking'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 
 const LOCAL_PROJECT = 'E2E Palette Local Project'
@@ -159,12 +159,12 @@ async function openComposerFromTypedName(page: Page): Promise<Locator> {
 }
 
 test.describe('Worktree jump-palette filters', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
   })
-  test.afterEach(async ({ orcaPage }) => {
-    await orcaPage.evaluate(() => {
+  test.afterEach(async ({ topoPage }) => {
+    await topoPage.evaluate(() => {
       const store = window.__store?.getState()
       store?.setFilterRepoIds([])
       store?.closeModal()
@@ -172,67 +172,67 @@ test.describe('Worktree jump-palette filters', () => {
   })
 
   test('filters results, intersects fields, and reseeds from the sidebar on reopen', async ({
-    orcaPage
+    topoPage
   }) => {
-    const fixture = await seedPaletteFilterFixture(orcaPage)
-    await openPalette(orcaPage)
-    await searchFixtureWorkspaces(orcaPage, fixture)
+    const fixture = await seedPaletteFilterFixture(topoPage)
+    await openPalette(topoPage)
+    await searchFixtureWorkspaces(topoPage, fixture)
 
     // P1: keyboard focus reaches the control; its rendered selection narrows rows.
-    await selectRemoteHost(orcaPage, true)
-    await expect(filterTrigger(orcaPage)).toContainText('1')
-    await expect(palette(orcaPage).getByLabel(`Remove filter ${REMOTE_HOST}`)).toBeVisible()
+    await selectRemoteHost(topoPage, true)
+    await expect(filterTrigger(topoPage)).toContainText('1')
+    await expect(palette(topoPage).getByLabel(`Remove filter ${REMOTE_HOST}`)).toBeVisible()
     await expect(
-      worktreeRow(orcaPage, fixture.remoteWorktreeId, fixture.remoteHostId)
+      worktreeRow(topoPage, fixture.remoteWorktreeId, fixture.remoteHostId)
     ).toBeVisible()
-    await expect(worktreeRow(orcaPage, fixture.localWorktreeId)).toHaveCount(0)
+    await expect(worktreeRow(topoPage, fixture.localWorktreeId)).toHaveCount(0)
 
     // P2: host and repository fields intersect, with the filter-specific empty state.
-    await palette(orcaPage).getByPlaceholder(SEARCH_PLACEHOLDER).fill('')
-    await filterTrigger(orcaPage).click()
-    await palette(orcaPage).getByText('Projects', { exact: true }).click()
-    const projects = palette(orcaPage).getByRole('listbox', { name: 'Projects' })
+    await palette(topoPage).getByPlaceholder(SEARCH_PLACEHOLDER).fill('')
+    await filterTrigger(topoPage).click()
+    await palette(topoPage).getByText('Projects', { exact: true }).click()
+    const projects = palette(topoPage).getByRole('listbox', { name: 'Projects' })
     const localProject = projects.getByRole('option', { name: LOCAL_PROJECT })
     await expect(localProject).toBeVisible()
     await localProject.click()
-    await filterTrigger(orcaPage).click()
-    await expect(palette(orcaPage).getByText('No results match the active filter')).toBeVisible()
+    await filterTrigger(topoPage).click()
+    await expect(palette(topoPage).getByText('No results match the active filter')).toBeVisible()
     await expect(
-      palette(orcaPage).getByText('Clear the filter above, or widen it to more hosts and projects.')
+      palette(topoPage).getByText('Clear the filter above, or widen it to more hosts and projects.')
     ).toBeVisible()
 
     // P3: clear restores both rows; reopening replaces ephemeral state with the sidebar scope.
-    await filterTrigger(orcaPage).click()
-    await palette(orcaPage).getByRole('button', { name: 'Clear all' }).last().click()
-    await filterTrigger(orcaPage).click()
-    await expect(filterTrigger(orcaPage)).not.toContainText('1')
-    await searchFixtureWorkspaces(orcaPage, fixture)
+    await filterTrigger(topoPage).click()
+    await palette(topoPage).getByRole('button', { name: 'Clear all' }).last().click()
+    await filterTrigger(topoPage).click()
+    await expect(filterTrigger(topoPage)).not.toContainText('1')
+    await searchFixtureWorkspaces(topoPage, fixture)
 
-    await selectRemoteHost(orcaPage)
-    await orcaPage.evaluate((repoId) => {
+    await selectRemoteHost(topoPage)
+    await topoPage.evaluate((repoId) => {
       const store = window.__store?.getState()
       store?.closeModal()
       store?.setFilterRepoIds([repoId])
     }, fixture.localRepoId)
-    await expect(palette(orcaPage)).toBeHidden()
-    await openPalette(orcaPage)
-    await palette(orcaPage).getByPlaceholder(SEARCH_PLACEHOLDER).fill('E2E Palette')
-    await expect(filterTrigger(orcaPage)).toContainText('1')
-    await expect(worktreeRow(orcaPage, fixture.localWorktreeId)).toBeVisible()
-    await expect(worktreeRow(orcaPage, fixture.remoteWorktreeId, fixture.remoteHostId)).toHaveCount(
+    await expect(palette(topoPage)).toBeHidden()
+    await openPalette(topoPage)
+    await palette(topoPage).getByPlaceholder(SEARCH_PLACEHOLDER).fill('E2E Palette')
+    await expect(filterTrigger(topoPage)).toContainText('1')
+    await expect(worktreeRow(topoPage, fixture.localWorktreeId)).toBeVisible()
+    await expect(worktreeRow(topoPage, fixture.remoteWorktreeId, fixture.remoteHostId)).toHaveCount(
       0
     )
   })
 
-  test('Escape closes the composer opened over the Automations page', async ({ orcaPage }) => {
+  test('Escape closes the composer opened over the Automations page', async ({ topoPage }) => {
     // Keep an underlying page capture listener: it runs before Radix document capture, and preventDefault there can veto Cmd+J palette dismissal.
-    await orcaPage.evaluate(() => window.__store?.getState().openAutomationsPage())
-    const automationsHeading = orcaPage.getByRole('heading', { name: 'Automations', level: 1 })
+    await topoPage.evaluate(() => window.__store?.getState().openAutomationsPage())
+    const automationsHeading = topoPage.getByRole('heading', { name: 'Automations', level: 1 })
     await expect(automationsHeading).toBeVisible()
 
-    const createDialog = await openComposerFromTypedName(orcaPage)
+    const createDialog = await openComposerFromTypedName(topoPage)
 
-    await orcaPage.keyboard.press('Escape')
+    await topoPage.keyboard.press('Escape')
 
     await expect(createDialog).toBeHidden()
     // The page declined the press rather than consuming it, so it is still open.

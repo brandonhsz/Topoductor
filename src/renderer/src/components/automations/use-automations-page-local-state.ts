@@ -4,7 +4,7 @@ import type {
   ExternalAutomationJob,
   ExternalAutomationManager
 } from '../../../../shared/automations/external/external-automation'
-import type { OrcaHooks } from '../../../../shared/orca-yaml-hook-types'
+import type { TopoHooks } from '../../../../shared/topo-yaml-hook-types'
 import { useContextualTour } from '@/components/contextual-tours/use-contextual-tour'
 import type { AutomationDraft } from './AutomationEditorDialog'
 import { AUTOMATION_DEFAULT_TIME } from './automation-draft-model'
@@ -121,10 +121,10 @@ export function useAutomationsPageLocalState(store: AutomationsPageStoreState) {
   const setupDecisionDefaultSignatureRef = useRef<string | null>(null)
   const setupDecisionTouchedRef = useRef(false)
   const automationHookCheckPromisesRef = useRef<
-    Map<string, Promise<{ hooks: OrcaHooks | null; ok: boolean }>>
+    Map<string, Promise<{ hooks: TopoHooks | null; ok: boolean }>>
   >(new Map())
   const [automationYamlHooksByRepoKey, setAutomationYamlHooksByRepoKey] = useState<
-    Record<string, OrcaHooks | null>
+    Record<string, TopoHooks | null>
   >({})
   const [draft, setDraft] = useState<AutomationDraft>({
     name: '',

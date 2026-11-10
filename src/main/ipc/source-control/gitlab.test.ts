@@ -261,18 +261,18 @@ describe('GitLab IPC handlers', () => {
 
   it('rejects source context for a different host', async () => {
     registerGitLabHandlers(
-      storeWithRepos([repo({ id: 'repo-local', path: '/local/orca' })]) as Store
+      storeWithRepos([repo({ id: 'repo-local', path: '/local/topo' })]) as Store
     )
 
     const handler = ipcHandlers.get('gitlab:listWorkItems')
     await expect(
       handler?.(null, {
-        repoPath: '/local/orca',
+        repoPath: '/local/topo',
         repoId: 'repo-local',
         sourceContext: {
           kind: 'task-source',
           provider: 'gitlab',
-          projectId: 'gitlab:stablyai/orca',
+          projectId: 'gitlab:brandonhsz/Topoductor',
           hostId: toSshExecutionHostId('builder'),
           repoId: 'repo-local'
         }

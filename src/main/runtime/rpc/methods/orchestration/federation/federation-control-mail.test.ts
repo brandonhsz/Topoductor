@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../../../../shared/orchestration/orchestration-runtime-capabilities'
 import type { RuntimeRpcResponse } from '../../../../../../shared/runtime-rpc-envelope'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -24,8 +24,8 @@ describe('orchestration federation control mail', () => {
   const processIncarnation = 'worker-runtime:pty:1'
   let homeDb: OrchestrationDb
   let workerDb: OrchestrationDb
-  let homeRuntime: OrcaRuntimeService
-  let workerRuntime: OrcaRuntimeService
+  let homeRuntime: TopoRuntimeService
+  let workerRuntime: TopoRuntimeService
   let homeDispatcher: RpcDispatcher
   let workerDispatcher: RpcDispatcher
   let dispatchId: string
@@ -33,7 +33,7 @@ describe('orchestration federation control mail', () => {
 
   beforeEach(() => {
     workerDb = new OrchestrationDb(':memory:')
-    workerRuntime = new OrcaRuntimeService()
+    workerRuntime = new TopoRuntimeService()
     workerRuntime.setOrchestrationDb(workerDb)
     vi.spyOn(workerRuntime, 'getTerminalPaneKey').mockImplementation((handle) =>
       handle === 'term_worker' ? workerPaneKey : null
@@ -76,7 +76,7 @@ describe('orchestration federation control mail', () => {
       }
     }
     homeDb = new OrchestrationDb(':memory:')
-    homeRuntime = new OrcaRuntimeService(null, undefined, {
+    homeRuntime = new TopoRuntimeService(null, undefined, {
       orchestrationEnvironmentTransport: transport
     })
     homeRuntime.setOrchestrationDb(homeDb)

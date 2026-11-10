@@ -85,7 +85,7 @@ export async function prepareWorktreePushTargetWithExec(
     const existingRemote = await findRemoteForUrl(execGit, repoPath, target.remoteUrl)
     if (existingRemote) {
       remoteName = existingRemote
-      // Reused Orca remotes retain ownership so removing the final worktree can reclaim them.
+      // Reused Topo remotes retain ownership so removing the final worktree can reclaim them.
       remoteCreated = isRemoteCreatedByKnownWorktree(existingRemote)
       // Reused remotes may still track every fork branch; keep this branch within the bounded refspec.
       await ensureRemoteTracksBranchNarrowly(execGit, repoPath, remoteName, target.branchName)
@@ -101,7 +101,7 @@ export async function prepareWorktreePushTargetWithExec(
         // Rewrite -t's literal refspec to the trailing-* form that tolerates deleted branches.
         await ensureRemoteTracksBranchNarrowly(execGit, repoPath, remoteName, target.branchName)
         // Git config provenance survives store purge and is removed with the remote.
-        await execGit(['config', `remote.${remoteName}.orca-created`, 'true'], repoPath)
+        await execGit(['config', `remote.${remoteName}.topo-created`, 'true'], repoPath)
       } catch (error) {
         // Failed provenance setup must roll back or cleanup cannot reclaim the half-configured remote.
         await execGit(['remote', 'remove', remoteName], repoPath).catch(() => {})

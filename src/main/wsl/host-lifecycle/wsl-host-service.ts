@@ -22,7 +22,7 @@ import {
   toWslHostStatus
 } from './wsl-host-connection-record'
 import { sameWslDistro, wslHostRunRefusal } from './wsl-host-add-admission'
-import type { WslOrcadConnection } from '../orcad/wsl-orcad-connection-types'
+import type { WslTopodConnection } from '../topod/wsl-topod-connection-types'
 import { registerWslHost } from './wsl-host-registration'
 import { WslHostStatusBoard } from './wsl-host-status-board'
 import { withWslHostIds } from './wsl-host-records'
@@ -32,7 +32,7 @@ import {
   readdPendingWslHost,
   removeWslHostServer
 } from './wsl-host-removal'
-import type { WslOrcadConnectionStatus } from '../orcad/wsl-orcad-connection-status'
+import type { WslTopodConnectionStatus } from '../topod/wsl-topod-connection-status'
 
 export class WslHostService {
   private connector: WslHostConnector | null = null
@@ -62,8 +62,8 @@ export class WslHostService {
   /** C5's `onChange`: persist what moved, then tell the UI. */
   handleConnectionChange(
     distro: string,
-    connection: WslOrcadConnection | null,
-    status: WslOrcadConnectionStatus
+    connection: WslTopodConnection | null,
+    status: WslTopodConnectionStatus
   ): void {
     const record = this.recordForDistro(distro)
     if (!record) {
@@ -313,8 +313,8 @@ export class WslHostService {
 
   private setStatus(
     record: WslHostDeploymentRecord,
-    status: WslOrcadConnectionStatus,
-    connection: WslOrcadConnection | null = null
+    status: WslTopodConnectionStatus,
+    connection: WslTopodConnection | null = null
   ): void {
     if (status.state === 'ready') {
       const generation = this.readyGenerations.get(record.environmentId) ?? 0

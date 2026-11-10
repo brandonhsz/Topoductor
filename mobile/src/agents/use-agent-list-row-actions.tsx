@@ -52,7 +52,7 @@ export function useAgentListRowActions(
         const desktop = hosts.find((host) => host.id === failure.hostId)?.name
         showToast(
           failure.needsDesktopWindow && desktop
-            ? t('agents.activity.needsWindow', 'Couldn’t update. Open Orca on {{desktop}}.', {
+            ? t('agents.activity.needsWindow', 'Couldn’t update. Open Topo on {{desktop}}.', {
                 desktop
               })
             : t('agents.activity.failed', 'Couldn’t update the agent list.')

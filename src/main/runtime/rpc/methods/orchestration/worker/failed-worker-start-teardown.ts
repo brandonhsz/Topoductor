@@ -1,6 +1,6 @@
 import { closeStructuredAgentSessionChild } from '../../../../agent-session/structured-agent-session-close'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import {
   discardStructuredWorkerSession,
   releaseStructuredWorkerSession
@@ -9,7 +9,7 @@ import type { createStructuredWorkerSessionForWorktree } from './worker-topology
 
 /** Keep refused tasks reachable with their worker custody until retry or release; other partial starts retire their surface. */
 export async function tearDownFailedWorkerStart(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   structuredSession: Awaited<ReturnType<typeof createStructuredWorkerSessionForWorktree>> | null
   dispatchId: string
   error: unknown

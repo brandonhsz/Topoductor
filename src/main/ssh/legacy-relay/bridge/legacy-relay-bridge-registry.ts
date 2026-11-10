@@ -13,7 +13,7 @@ import type { SshPendingPtyKill } from '../../../../shared/ssh-pending-pty-kill'
 import type { SshRemotePtyLease } from '../../../../shared/ssh-types'
 import type { SshConnection } from '../../connection/ssh-connection'
 import { waitForSentinel } from '../handshake/ssh-relay-sentinel'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import { LegacyRelayClient } from './legacy-relay-client'
 import { createLegacyRelayCliServer } from '../cli/legacy-relay-cli-server'
 import { listLegacyRelayEndpoints, posixEndpointExited } from '../endpoints/legacy-relay-endpoints'
@@ -54,9 +54,9 @@ export type LegacyRelayBridgeHost = {
   onReplay: (ptyId: string, replay: string) => void
   onExit: (ptyId: string, code: number) => void
   report: (targetId: string, phase: ReportPhase, terminals: number) => void
-  /** Absent: relay-era `orca` commands are refused, as before this host served them. */
+  /** Absent: relay-era `topo` commands are refused, as before this host served them. */
   remoteCli?: {
-    runtime: () => OrcaRuntimeService | null
+    runtime: () => TopoRuntimeService | null
     /** The per-host browser-control switch (DESKTOP_BROWSER_BRIDGE_SETTING_LABEL). */
     allowed: (targetId: string) => boolean
   }
@@ -105,7 +105,7 @@ function bridgeFor(targetId: string): LegacyRelayTargetBridge | null {
     return existing ?? null
   }
   const installed = host
-  const clientInstanceId = `orca-legacy-relay-bridge:${targetId}`
+  const clientInstanceId = `topo-legacy-relay-bridge:${targetId}`
   const connection = (): SshConnection => {
     const conn = installed.connection(targetId)
     if (!conn) {

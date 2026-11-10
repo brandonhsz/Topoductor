@@ -19,7 +19,7 @@ describe('sweepOrphanedRuntimeSockets', () => {
   it.runIf(process.platform !== 'win32')(
     'sweeps dead-pid sockets while retaining own, alive, and non-matching entries',
     () => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-sweep-'))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-sweep-'))
 
       const ownPidSocket = join(userDataPath, `o-${SYNTHETIC_OWN_PID}-aaaa.sock`)
       const aliveSocket = join(userDataPath, `o-${process.pid}-bbbb.sock`)
@@ -49,7 +49,7 @@ describe('createRuntimeTransportMetadata', () => {
       const { endpoint } = createRuntimeTransportMetadata(userDataPath, 12345, 'darwin', 'rt')
       // macOS listen() returns EINVAL past 103 bytes (sun_path is 104 including NUL).
       expect(Buffer.byteLength(endpoint)).toBeLessThanOrEqual(103)
-      expect(endpoint).toMatch(/^\/tmp\/\.orca-daemon-\d+\/[0-9a-f]{12}\/o-12345-rt\.sock$/)
+      expect(endpoint).toMatch(/^\/tmp\/\.topo-daemon-\d+\/[0-9a-f]{12}\/o-12345-rt\.sock$/)
     }
   )
 })

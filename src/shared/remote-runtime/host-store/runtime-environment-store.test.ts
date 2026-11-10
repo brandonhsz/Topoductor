@@ -50,13 +50,13 @@ describe('runtime environment store', () => {
   function writeProfileKeypair(userDataPath: string, fill: number): void {
     const publicKeyB64 = Buffer.from(new Uint8Array(32).fill(fill)).toString('base64')
     writeFileSync(
-      join(userDataPath, 'orca-e2ee-keypair.json'),
+      join(userDataPath, 'topo-e2ee-keypair.json'),
       JSON.stringify({ v: 1, publicKeyB64, secretKeyB64: publicKeyB64 })
     )
   }
 
-  it('refuses a pairing code that this same Orca profile issued', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-env-store-'))
+  it('refuses a pairing code that this same Topo profile issued', () => {
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-env-store-'))
     tempDirs.push(userDataPath)
     writeProfileKeypair(userDataPath, 1)
 
@@ -65,12 +65,12 @@ describe('runtime environment store', () => {
         name: 'myself',
         pairingCode: pairingCode('ws://192.0.2.10:6768')
       })
-    ).toThrow(/this Orca itself/)
+    ).toThrow(/this Topo itself/)
     expect(listEnvironments(userDataPath)).toEqual([])
   })
 
   it('advances pairing revisions across equal and backward clock readings', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-env-store-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-env-store-'))
     tempDirs.push(userDataPath)
     const environment = addEnvironmentFromPairingCode(userDataPath, {
       name: 'dev box',
@@ -99,7 +99,7 @@ describe('runtime environment store', () => {
   })
 
   it('persists immediately when the runtimeId changes within the throttle window', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-env-store-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-env-store-'))
     tempDirs.push(userDataPath)
     const env = addEnvironmentFromPairingCode(userDataPath, {
       name: 'dev box',
@@ -118,7 +118,7 @@ describe('runtime environment store', () => {
   it('backs up a NUL-filled store when a server is saved over it', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     onTestFinished(() => warn.mockRestore())
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-env-store-nul-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-env-store-nul-'))
     tempDirs.push(userDataPath)
     writeFileSync(getEnvironmentStorePath(userDataPath), Buffer.alloc(640))
 
@@ -139,7 +139,7 @@ describe('runtime environment store', () => {
 
     expect(listEnvironments(userDataPath)).toEqual([added])
     const backups = readdirSync(userDataPath).filter((name) =>
-      name.startsWith('orca-environments.json.corrupt-')
+      name.startsWith('topo-environments.json.corrupt-')
     )
     // The rejected save above left no copy; only the save that replaced the file did.
     expect(backups).toHaveLength(1)
@@ -150,19 +150,19 @@ describe('runtime environment store', () => {
     ['a newer format', '{"version":2,"environments":[]}'],
     ['truncated JSON that may still hold servers', '{"version":1,"environments":[{"id":"a"']
   ])('does not overwrite %s when a server is saved', (_label, contents) => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-env-store-invalid-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-env-store-invalid-'))
     tempDirs.push(userDataPath)
     writeFileSync(getEnvironmentStorePath(userDataPath), contents)
 
     expect(() =>
       addEnvironmentFromPairingCode(userDataPath, { name: 'dev box', pairingCode: pairingCode() })
     ).toThrow(RuntimeEnvironmentStoreError)
-    expect(readdirSync(userDataPath)).toEqual(['orca-environments.json'])
+    expect(readdirSync(userDataPath)).toEqual(['topo-environments.json'])
     expect(readFileSync(getEnvironmentStorePath(userDataPath), 'utf8')).toBe(contents)
   })
 
   it('rejects an oversized write without replacing the durable environment list', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-env-store-write-bound-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-env-store-write-bound-'))
     tempDirs.push(userDataPath)
     const first = addEnvironmentFromPairingCode(userDataPath, {
       name: 'dev box',

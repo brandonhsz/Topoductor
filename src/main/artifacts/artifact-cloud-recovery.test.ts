@@ -283,7 +283,7 @@ class ArtifactFaultServer {
     const headers = new Headers(init?.headers)
     if (
       headers.get('authorization') !== 'Bearer token-a' ||
-      headers.get('x-orca-edit-token') !== `edit-${slug}`
+      headers.get('x-topo-edit-token') !== `edit-${slug}`
     ) {
       return jsonResponse({ code: 'artifact_forbidden' }, 403)
     }
@@ -293,7 +293,7 @@ class ArtifactFaultServer {
 }
 
 async function createUserDataPath(): Promise<string> {
-  const path = await mkdtemp(join(tmpdir(), 'orca-artifact-recovery-'))
+  const path = await mkdtemp(join(tmpdir(), 'topo-artifact-recovery-'))
   createdPaths.push(path)
   return path
 }

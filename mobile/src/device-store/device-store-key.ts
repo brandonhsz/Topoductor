@@ -3,7 +3,7 @@ import { withTimeoutResult } from '../../../src/shared/promise-timeout-fallback'
 
 // Stored through the pairing keychain: WHEN_UNLOCKED_THIS_DEVICE_ONLY keeps it off iCloud and backups,
 // and its Android generation rotation recovers alias faults (#6600) that one fixed alias could hit forever.
-export const DEVICE_STORE_KEY_ITEM = 'orca.device-store-key.v1'
+export const DEVICE_STORE_KEY_ITEM = 'topo.device-store-key.v1'
 
 // Keychain calls can stall behind other keychain work; every store call waits on the key, so bound it.
 const KEYCHAIN_TIMEOUT_MS = 5000

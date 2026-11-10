@@ -7,13 +7,13 @@ vi.mock('../runtime-client', async () => {
     readonly isRemote: boolean
     call = callMock
     getCliStatus = vi.fn()
-    openOrca = vi.fn()
+    openTopo = vi.fn()
 
     constructor(
       _userDataPath?: string,
       _requestTimeoutMs?: number,
-      remotePairingCode = process.env.ORCA_PAIRING_CODE ?? null,
-      environmentSelector = process.env.ORCA_ENVIRONMENT ?? null
+      remotePairingCode = process.env.TOPO_PAIRING_CODE ?? null,
+      environmentSelector = process.env.TOPO_ENVIRONMENT ?? null
     ) {
       this.isRemote = Boolean(remotePairingCode || environmentSelector)
     }
@@ -32,7 +32,7 @@ vi.mock('../runtime-client', async () => {
 import { main } from '../index'
 import { okFixture, queueFixtures } from '../test-fixtures'
 
-describe('orca linear CLI handlers', () => {
+describe('topo linear CLI handlers', () => {
   const originalEnv = { ...process.env }
 
   beforeEach(() => {
@@ -40,10 +40,10 @@ describe('orca linear CLI handlers', () => {
     callMock.mockReset()
     process.env = { ...originalEnv }
     // Clear real terminal/worktree/pairing hints inherited from the test runner.
-    delete process.env.ORCA_WORKTREE_ID
-    delete process.env.ORCA_TERMINAL_HANDLE
-    delete process.env.ORCA_PAIRING_CODE
-    delete process.env.ORCA_ENVIRONMENT
+    delete process.env.TOPO_WORKTREE_ID
+    delete process.env.TOPO_TERMINAL_HANDLE
+    delete process.env.TOPO_PAIRING_CODE
+    delete process.env.TOPO_ENVIRONMENT
     process.exitCode = undefined
     vi.spyOn(console, 'log').mockImplementation(() => {})
     vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -135,9 +135,9 @@ describe('orca linear CLI handlers', () => {
   })
 
   it('passes verified current-context hints without resolving cwd for remote runtimes', async () => {
-    process.env.ORCA_TERMINAL_HANDLE = 'term_123'
-    process.env.ORCA_WORKTREE_ID = 'repo::/srv/app'
-    process.env.ORCA_PAIRING_CODE = 'orca://pair?payload=bad'
+    process.env.TOPO_TERMINAL_HANDLE = 'term_123'
+    process.env.TOPO_WORKTREE_ID = 'repo::/srv/app'
+    process.env.TOPO_PAIRING_CODE = 'topo://pair?payload=bad'
     queueFixtures(callMock, okFixture('req_linear', issueResult()))
 
     await main(['linear', 'issue', '--current', '--comments', '--json'], '/client/repo')

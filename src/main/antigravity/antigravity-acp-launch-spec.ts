@@ -1,4 +1,4 @@
-// Antigravity chats run Orca's managed ACP server, or the host's own `agy acp` when compatible.
+// Antigravity chats run Topo's managed ACP server, or the host's own `agy acp` when compatible.
 
 import { join } from 'node:path'
 import { homedir } from 'node:os'
@@ -39,7 +39,7 @@ const ANTIGRAVITY_SESSION_HISTORY: StructuredAgentSessionHistory = {
   parseResumeArgs: () => null
 }
 
-// Orca's managed ACP server keeps its own sign-in under <userData>/antigravity-chat.
+// Topo's managed ACP server keeps its own sign-in under <userData>/antigravity-chat.
 const ANTIGRAVITY_MANAGED_LAUNCH_SPEC = {
   agent: 'antigravity',
   command: ANTIGRAVITY_ACP_COMMAND,
@@ -86,7 +86,7 @@ function scrubAgyHostApiKeys(env: Record<string, string>): string[] {
   return removed
 }
 
-// The host's `agy acp` uses agy's own sign-in and history; Orca neither signs it in nor out.
+// The host's `agy acp` uses agy's own sign-in and history; Topo neither signs it in nor out.
 const ANTIGRAVITY_HOST_LAUNCH_SPEC: AcpLaunchSpec = {
   ...ANTIGRAVITY_MANAGED_LAUNCH_SPEC,
   command: 'agy',
@@ -119,8 +119,8 @@ const ANTIGRAVITY_HOST_LAUNCH_SPEC: AcpLaunchSpec = {
   keepsEverySession: true
 }
 
-// The host's agy ignores Orca's account type, so any other saved choice, a malformed one, or one
-// still being saved keeps new chats on Orca's runtime, whose sign-in honors it.
+// The host's agy ignores Topo's account type, so any other saved choice, a malformed one, or one
+// still being saved keeps new chats on Topo's runtime, whose sign-in honors it.
 function savedChatAuthIsPersonal(value: unknown): boolean {
   try {
     assertAntigravityChatAuthPublished(value)
@@ -138,7 +138,7 @@ export const ANTIGRAVITY_LAUNCH_SPEC = {
   hostBackend: {
     spec: ANTIGRAVITY_HOST_LAUNCH_SPEC,
     pins: isAntigravityHostAccountHome,
-    // Someone signed in to Orca's own Chat keeps it; the host's agy needs a sign-in that serves
+    // Someone signed in to Topo's own Chat keeps it; the host's agy needs a sign-in that serves
     // sessions, not an API-key provider whose key the host launch drops.
     select: async ({ command, env, envToDelete, homePath, stateDirectory, settings }) =>
       savedChatAuthIsPersonal(settings.antigravityChatAuth) &&

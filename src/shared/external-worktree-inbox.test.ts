@@ -12,7 +12,7 @@ import { EXTERNAL_WORKTREE_VISIBILITY_ROLLOUT_AT } from './worktree/ownership'
 const repo: Repo = {
   id: 'repo-1',
   path: '/repo',
-  displayName: 'orca',
+  displayName: 'topo',
   badgeColor: '#000000',
   addedAt: Date.UTC(2026, 4, 24),
   externalWorktreeVisibility: 'hide',
@@ -67,7 +67,7 @@ describe('external worktree inbox', () => {
       hiddenScratch,
       hiddenExternal,
       detectedWorktree({ id: 'visible-scratch', ownership: 'agent-scratch', visible: true }),
-      detectedWorktree({ id: 'orca-managed', ownership: 'orca-managed' }),
+      detectedWorktree({ id: 'topo-managed', ownership: 'topo-managed' }),
       detectedWorktree({ id: 'checked-out', selectedCheckout: true })
     ])
 

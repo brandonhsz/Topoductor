@@ -1,6 +1,6 @@
 import { activeProviderContext } from '../../shared/agent-session/agent-session-provider-context'
 import type { AgentSessionRecord } from '../../shared/agent-session/lifecycle/agent-session-record'
-import { claudeSessionIdForOrcaSession } from './structured/claude-structured-session-id'
+import { claudeSessionIdForTopoSession } from './structured/claude-structured-session-id'
 import {
   createClaudeNamingGeneration,
   type ClaudeNamingGeneration
@@ -27,7 +27,7 @@ export function claudeNamingContextId(record: AgentSessionRecord): string {
   const active = activeProviderContext(record)
   return (
     active.head?.handle.nativeId ??
-    claudeSessionIdForOrcaSession(
+    claudeSessionIdForTopoSession(
       record.sessionId,
       active.pendingClear ? record.providerContextBoundary?.operationId : undefined
     )
@@ -68,7 +68,7 @@ export class ClaudeConversationNaming {
     const chat = input.identity.sessionId
     const nativeId = record
       ? claudeNamingContextId(record)
-      : (input.identity.providerHandle?.nativeId ?? claudeSessionIdForOrcaSession(chat))
+      : (input.identity.providerHandle?.nativeId ?? claudeSessionIdForTopoSession(chat))
     const registry = this.generations.get(chat) ?? new Set<ClaudeNamingGeneration>()
     this.generations.set(chat, registry)
     const generation = createClaudeNamingGeneration(

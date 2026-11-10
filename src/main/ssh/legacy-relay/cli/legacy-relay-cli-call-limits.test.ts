@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { toAppSshPtyId } from '../../../../shared/ssh-pty-id'
 
-import { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import { OrchestrationDb } from '../../../runtime/orchestration/db/orchestration-db'
 import '../../../runtime/orchestration/db/contract-constants'
 import '../../../runtime/orchestration/db/messages/mailbox-routing-page'
@@ -17,17 +17,17 @@ const WORKER = 'term_relay_worker'
 const WORKER_PANE = 'tab_w:33333333-3333-4333-8333-333333333333'
 const COORDINATOR = 'term_local_coord'
 const PTY_ID = toAppSshPtyId(TARGET, 'pty-7')
-const ENV = { ORCA_TERMINAL_HANDLE: WORKER, ORCA_PANE_KEY: WORKER_PANE }
+const ENV = { TOPO_TERMINAL_HANDLE: WORKER, TOPO_PANE_KEY: WORKER_PANE }
 
 let dir: string
 let db: OrchestrationDb
-let runtime: OrcaRuntimeService
+let runtime: TopoRuntimeService
 let allowed: boolean
 
 beforeEach(() => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-legacy-relay-limits-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-legacy-relay-limits-'))
   db = new OrchestrationDb(join(dir, 'orchestration.db'))
-  runtime = new OrcaRuntimeService()
+  runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(db)
   vi.spyOn(runtime, 'notifyMessageArrived').mockImplementation(() => {})
   allowed = true
@@ -131,7 +131,7 @@ describe('limits on relay-era CLI calls', () => {
 
   it('names nobody when two hosts claim one handle', () => {
     const terminal = { handle: WORKER, paneKey: WORKER_PANE, processIncarnation: 'p-1' }
-    const fresh = new OrcaRuntimeService()
+    const fresh = new TopoRuntimeService()
     const a = fresh.registerOrchestrationCompatibilitySshAttachment('host-a', 'c-1', terminal)
     expect(fresh.getTerminalPaneKey(WORKER)).toBe(WORKER_PANE)
     const b = fresh.registerOrchestrationCompatibilitySshAttachment('host-b', 'c-2', terminal)

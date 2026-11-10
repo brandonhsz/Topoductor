@@ -7,7 +7,7 @@ vi.mock('../runtime-client', () => {
     readonly isRemote: boolean
     call = callMock
     getCliStatus = vi.fn()
-    openOrca = vi.fn()
+    openTopo = vi.fn()
 
     constructor(
       _userDataPath?: string,
@@ -47,7 +47,7 @@ vi.mock('../runtime-client', () => {
 import { main } from '../index'
 import { okFixture, queueFixtures } from '../test-fixtures'
 
-describe('orca file CLI handlers', () => {
+describe('topo file CLI handlers', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
     callMock.mockReset()
@@ -77,7 +77,7 @@ describe('orca file CLI handlers', () => {
     })
     expect(console.log).not.toHaveBeenCalled()
     expect(vi.mocked(console.error).mock.calls[0][0]).toContain(
-      'Did not open diff for assets/logo.png: the Orca app declined this binary file.'
+      'Did not open diff for assets/logo.png: the Topo app declined this binary file.'
     )
     expect(process.exitCode).toBe(1)
     process.exitCode = undefined

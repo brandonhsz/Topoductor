@@ -88,13 +88,13 @@ export function verifyProvisionedRootCheckout(args: {
   }
   const requestedBranch = request.branchNameOverride ?? request.name
   if (gitWorktree.branch !== `refs/heads/${requestedBranch}`) {
-    throw new Error("The recipe projectRoot is not checked out on Orca's requested branch.")
+    throw new Error("The recipe projectRoot is not checked out on Topo's requested branch.")
   }
   if (request.baseBranch && !request.expectedRefHead) {
     throw new Error('The requested provisioned-root ref identity is missing.')
   }
   if (request.expectedRefHead && gitWorktree.head !== request.expectedRefHead) {
-    throw new Error("The recipe projectRoot was not created from Orca's requested ref.")
+    throw new Error("The recipe projectRoot was not created from Topo's requested ref.")
   }
   return gitWorktree
 }
@@ -113,7 +113,7 @@ export function buildProvisionedRootMeta(
     now: number
     /** Omitted on the host that runs the checkout, whose own rows carry no host id. */
     hostId?: ExecutionHostId
-    source: NonNullable<WorktreeMeta['orcaCreationSource']>
+    source: NonNullable<WorktreeMeta['topoCreationSource']>
   }
 ): Partial<WorktreeMeta> {
   const { branchName, now } = options
@@ -141,10 +141,10 @@ export function buildProvisionedRootMeta(
     ...displayNameMeta,
     lastActivityAt: now,
     createdAt: now,
-    orcaCreatedAt: now,
-    orcaCreationSource: options.source,
+    topoCreatedAt: now,
+    topoCreationSource: options.source,
     creatorProvenance: { kind: 'host' },
-    orcaCreationWorkspaceLayout: getWorktreeCreationLayout(repo, store.getSettings()),
+    topoCreationWorkspaceLayout: getWorktreeCreationLayout(repo, store.getSettings()),
     ...(args.automationProvenance ? { automationProvenance: args.automationProvenance } : {}),
     ...(args.compareBaseRef || args.baseBranch
       ? { baseRef: args.compareBaseRef ?? args.baseBranch }

@@ -1,5 +1,5 @@
 import { defineMethod } from '../../core'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import {
   agentCommandOverrideDetectionOptions,
   type InstalledAgentDetectionOptions
@@ -23,7 +23,7 @@ import {
 
 /** This host's command overrides, so a configured CLI outside PATH is listed like a detected one. */
 function hostDetectionOptions(
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
 ): InstalledAgentDetectionOptions | undefined {
   try {
     return agentCommandOverrideDetectionOptions(

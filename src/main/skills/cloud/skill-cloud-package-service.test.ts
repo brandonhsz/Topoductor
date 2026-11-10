@@ -26,14 +26,14 @@ afterEach(() => {
 })
 
 function userDataPath(): string {
-  const path = mkdtempSync(join(tmpdir(), 'orca-skill-cloud-service-'))
+  const path = mkdtempSync(join(tmpdir(), 'topo-skill-cloud-service-'))
   createdPaths.push(path)
   return path
 }
 
 describe('SkillCloudService bearer links', () => {
   it('uses the development auth token without opening a profile session', async () => {
-    vi.stubEnv('ORCA_CLOUD_AUTH_TOKEN', 'desktop-e2e-token')
+    vi.stubEnv('TOPO_CLOUD_AUTH_TOKEN', 'desktop-e2e-token')
     const requests: RequestInit[] = []
     vi.stubGlobal(
       'fetch',
@@ -52,7 +52,7 @@ describe('SkillCloudService bearer links', () => {
 
   it('rejects the development auth token in packaged builds', async () => {
     packaged.value = true
-    vi.stubEnv('ORCA_CLOUD_AUTH_TOKEN', 'desktop-e2e-token')
+    vi.stubEnv('TOPO_CLOUD_AUTH_TOKEN', 'desktop-e2e-token')
 
     await expect(
       new SkillCloudService(userDataPath()).listOwnedShares({ apiUrl: 'https://share.onorca.dev' })

@@ -42,8 +42,8 @@ import { startBlurringOnKeyboardClose } from '../src/platform/keyboard-close-blu
 import { publishShellKeyboardSource } from '../src/platform/keyboard-occlusion.web'
 // Select the page-client provider explicitly; the builder aliases extensionless screen imports to this same web module.
 import { RpcClientProvider } from '../src/transport/connection/client-context.web'
-import { OrcaQueryProvider } from '../src/query/orca-query-provider.web'
-import { createOrcaQueryClient } from '../src/query/orca-query-client'
+import { TopoQueryProvider } from '../src/query/topo-query-provider.web'
+import { createTopoQueryClient } from '../src/query/topo-query-client'
 import {
   awaitFirstPaintRestore,
   startPageQueryPersistence
@@ -78,11 +78,11 @@ function createRootProviders(
     }, [])
     return (
       <RpcClientProvider client={client}>
-        <OrcaQueryProvider client={queryClient}>
+        <TopoQueryProvider client={queryClient}>
           <RouteScreenPaintProvider report={reportRouteScreenPaint}>
             {children}
           </RouteScreenPaintProvider>
-        </OrcaQueryProvider>
+        </TopoQueryProvider>
       </RpcClientProvider>
     )
   }
@@ -121,7 +121,7 @@ function renderShellTooOldPanel(container: HTMLElement): void {
     'justify-content:center;gap:8px;padding:24px;text-align:center'
   const title = document.createElement('div')
   title.style.cssText = 'font-weight:600'
-  title.textContent = 'Update Orca to open this workspace'
+  title.textContent = 'Update Topo to open this workspace'
   const body = document.createElement('div')
   body.style.cssText = 'color:#9a9a9a;font-size:14px'
   body.textContent = 'This version of the app cannot open the workspace it downloaded.'
@@ -131,7 +131,7 @@ function renderShellTooOldPanel(container: HTMLElement): void {
 
 const container = document.getElementById('root')
 if (!container) {
-  throw new Error('[orca-mobile-web-app] #root missing')
+  throw new Error('[topo-mobile-web-app] #root missing')
 }
 const target = document.documentElement
 // Keep <html> transparent: overlay routes show the native screen through it, and the shell paints bgBase behind the rest.
@@ -191,7 +191,7 @@ bootstrapShellPage({
     publishPageDeviceStore(deviceStore)
     // An open-target boot paints the shell's target first, so that is the screen to preload and restore.
     const route = bootRoute(session.route?.params?.[BRIDGE_OPEN_ROUTE_PARAM])
-    const queryClient = createOrcaQueryClient()
+    const queryClient = createTopoQueryClient()
     // One store read for the first screen's stored data, alongside the catalog and route loads.
     const firstPaintRestore = startPageQueryPersistence(
       queryClient,

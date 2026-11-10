@@ -1,7 +1,7 @@
 // STA-3067: keep add/edit fields in a viewport-bound modal even with a long SSH host list.
 
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { waitForSessionReady } from './helpers/store'
 
 test.use({ seedTestRepo: false })
@@ -93,24 +93,24 @@ async function listTargetIdsByLabelPrefix(page: Page, prefix: string): Promise<s
 }
 
 test.describe('SSH host add/edit modal', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
   })
 
-  test.afterEach(async ({ orcaPage }) => {
-    const ids = await listTargetIdsByLabelPrefix(orcaPage, HOST_PREFIX)
+  test.afterEach(async ({ topoPage }) => {
+    const ids = await listTargetIdsByLabelPrefix(topoPage, HOST_PREFIX)
     if (ids.length > 0) {
-      await removeSshTargets(orcaPage, ids)
+      await removeSshTargets(topoPage, ids)
     }
   })
 
   test('opens add/edit form in a viewport-stable dialog over a long host list', async ({
-    orcaPage
+    topoPage
   }) => {
-    const seeded = await seedSshTargets(orcaPage, 10)
-    await openSshHostSettings(orcaPage)
+    const seeded = await seedSshTargets(topoPage, 10)
+    await openSshHostSettings(topoPage)
 
-    const sshSection = orcaPage.locator('[data-settings-section="ssh"]')
+    const sshSection = topoPage.locator('[data-settings-section="ssh"]')
     // Why: seed first, then open settings so SshPane's listTargets load includes them.
     for (const label of seeded.labels.slice(0, 3)) {
       await expect(sshSection.getByText(label, { exact: true })).toBeVisible()
@@ -118,7 +118,7 @@ test.describe('SSH host add/edit modal', () => {
 
     await sshSection.getByRole('button', { name: 'Add host' }).click()
 
-    const addDialog = orcaPage.getByRole('dialog', { name: 'Add SSH host' })
+    const addDialog = topoPage.getByRole('dialog', { name: 'Add SSH host' })
     await expect(addDialog).toBeVisible()
     await expect(addDialog.getByRole('heading', { name: 'Add SSH host' })).toBeInViewport()
     await expect(
@@ -153,9 +153,9 @@ test.describe('SSH host add/edit modal', () => {
       `[data-ssh-target-card][data-ssh-target-label="${createdLabel}"]`
     )
     await createdCard.getByRole('button', { name: `More actions for ${createdLabel}` }).click()
-    await orcaPage.getByRole('menuitem', { name: 'Edit…' }).click()
+    await topoPage.getByRole('menuitem', { name: 'Edit…' }).click()
 
-    const editDialog = orcaPage.getByRole('dialog', { name: 'Edit SSH host' })
+    const editDialog = topoPage.getByRole('dialog', { name: 'Edit SSH host' })
     await expect(editDialog).toBeVisible()
     await expect(editDialog.getByRole('heading', { name: 'Edit SSH host' })).toBeInViewport()
     await expect(
@@ -183,7 +183,7 @@ test.describe('SSH host add/edit modal', () => {
 
     // Dirty outside-click must not discard the draft.
     await editDialog.locator('#ssh-target-label').fill(`${createdLabel}-dirty`)
-    await orcaPage.locator('[data-slot="dialog-overlay"]').click({ position: { x: 8, y: 8 } })
+    await topoPage.locator('[data-slot="dialog-overlay"]').click({ position: { x: 8, y: 8 } })
     await expect(editDialog).toBeVisible()
     await expect(editDialog.locator('#ssh-target-label')).toHaveValue(`${createdLabel}-dirty`)
 
@@ -192,8 +192,8 @@ test.describe('SSH host add/edit modal', () => {
     await expect(editDialog).toBeHidden()
 
     await createdCard.getByRole('button', { name: `More actions for ${createdLabel}` }).click()
-    await orcaPage.getByRole('menuitem', { name: 'Edit…' }).click()
-    const reopened = orcaPage.getByRole('dialog', { name: 'Edit SSH host' })
+    await topoPage.getByRole('menuitem', { name: 'Edit…' }).click()
+    const reopened = topoPage.getByRole('dialog', { name: 'Edit SSH host' })
     await expect(reopened).toBeVisible()
     await expect(reopened.locator('#ssh-target-label')).toHaveValue(createdLabel)
     await expect(reopened.getByRole('button', { name: 'Advanced' })).toHaveAttribute(

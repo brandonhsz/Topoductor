@@ -59,7 +59,7 @@ export async function replaceLocalFileBytesIfUnchanged(
       (stats) => stats.mode & 0o7777,
       () => null
     )
-    const temp = join(dirname(target), `.${basename(target)}.orca-save-${randomUUID()}`)
+    const temp = join(dirname(target), `.${basename(target)}.topo-save-${randomUUID()}`)
     try {
       await writeTemp(temp)
       if (mode !== null) {

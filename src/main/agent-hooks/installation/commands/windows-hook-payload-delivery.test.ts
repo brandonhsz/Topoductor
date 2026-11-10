@@ -1,5 +1,5 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { lstatSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { removeTreeSync } from '../../../../shared/windows-transient-lock-removal'
 import { tmpdir } from 'node:os'
@@ -10,7 +10,7 @@ const { homedirMock } = vi.hoisted(() => ({ homedirMock: vi.fn<() => string>() }
 
 vi.mock('electron', () => ({
   app: {
-    getPath: () => '/tmp/orca-user-data'
+    getPath: () => '/tmp/topo-user-data'
   }
 }))
 
@@ -76,12 +76,12 @@ function readEvent(path: string, event: string): (string | undefined)[] {
   return commandsOf(JSON.parse(readFileSync(path, 'utf8')).hooks?.[event])
 }
 
-// Inherited Orca endpoints must not redirect test payloads away from this listener.
+// Inherited Topo endpoints must not redirect test payloads away from this listener.
 function hookEnvironment(extra: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
   const base = Object.fromEntries(
-    Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith('ORCA_'))
+    Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith('TOPO_'))
   )
-  return { ...base, ORCA_BACKGROUND_LAUNCH: '1', ...extra }
+  return { ...base, TOPO_BACKGROUND_LAUNCH: '1', ...extra }
 }
 
 describe.skipIf(process.platform !== 'win32')('Windows managed hook payload delivery', () => {
@@ -103,7 +103,7 @@ describe.skipIf(process.platform !== 'win32')('Windows managed hook payload deli
 
   // The control verifies profile-based AutoRun ran; printing it must not corrupt Copilot gate JSON.
   it('Copilot answers exactly {} when the cmd AutoRun prints', async () => {
-    root = mkdtempSync(join(tmpdir(), 'orca-hook-autorun-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-hook-autorun-'))
     const home = join(root, 'user')
     mkdirSync(home)
     homedirMock.mockReturnValue(home)
@@ -113,7 +113,7 @@ describe.skipIf(process.platform !== 'win32')('Windows managed hook payload deli
     vi.stubEnv('COPILOT_HOME', undefined)
     writeFileSync(join(home, '.cmd_aliases.cmd'), '@echo autorun-noise\r\n', 'utf8')
     expect(new CopilotHookService().install().state).toBe('installed')
-    const [command] = readEvent(join(home, '.copilot', 'hooks', 'orca.json'), 'PreToolUse')
+    const [command] = readEvent(join(home, '.copilot', 'hooks', 'topo.json'), 'PreToolUse')
     if (!command) {
       throw new Error('Missing managed Copilot PreToolUse command')
     }

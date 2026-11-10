@@ -19,8 +19,8 @@ afterEach(() => {
 
 describe('pairing deep links', () => {
   it('rejects lookalike routes', () => {
-    expect(extractPairingCodeFromUrl('orca://pairing?code=abc123')).toBeNull()
-    expect(extractPairingCodeFromUrl('orca://pair-extra?code=abc123')).toBeNull()
+    expect(extractPairingCodeFromUrl('topo://pairing?code=abc123')).toBeNull()
+    expect(extractPairingCodeFromUrl('topo://pair-extra?code=abc123')).toBeNull()
   })
 
   it('decodes desktop QR payloads when atob requires base64 padding', () => {
@@ -32,7 +32,7 @@ describe('pairing deep links', () => {
       return realAtob(input)
     })
 
-    expect(decodePairingUrl(`orca://pair?code=${encodeOffer()}`)).toEqual(offer)
+    expect(decodePairingUrl(`topo://pair?code=${encodeOffer()}`)).toEqual(offer)
   })
 
   it('preserves legacy padding and aliases with the same decoded offer', () => {

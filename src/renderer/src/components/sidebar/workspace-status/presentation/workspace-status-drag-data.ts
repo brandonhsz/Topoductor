@@ -1,7 +1,7 @@
 import { measureUtf8ByteLength } from '../../../../../../shared/utf8-byte-limits'
 
-export const WORKSPACE_STATUS_DRAG_TYPE = 'application/x-orca-worktree-id'
-export const WORKSPACE_STATUS_DRAG_IDS_TYPE = 'application/x-orca-worktree-ids'
+export const WORKSPACE_STATUS_DRAG_TYPE = 'application/x-topo-worktree-id'
+export const WORKSPACE_STATUS_DRAG_IDS_TYPE = 'application/x-topo-worktree-ids'
 export const WORKSPACE_STATUS_DRAG_PAYLOAD_MAX_BYTES = 16 * 1024
 export const WORKSPACE_STATUS_DRAG_ID_MAX_COUNT = 512
 

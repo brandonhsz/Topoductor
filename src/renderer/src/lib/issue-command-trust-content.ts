@@ -10,7 +10,7 @@ export function getIssueCommandTrustContent(result: IssueCommandReadResult): str
   return ''
 }
 
-// A committed .orca/issue-command came from the repo, so it needs the same trust as orca.yaml.
+// A committed .topo/issue-command came from the repo, so it needs the same trust as topo.yaml.
 export function isUserOwnedIssueCommand(result: IssueCommandReadResult): boolean {
   return result.source === 'local' && result.localUntracked === true
 }

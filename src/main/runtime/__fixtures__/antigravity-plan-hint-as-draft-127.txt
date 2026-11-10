@@ -2,7 +2,7 @@
 [6C▄▀▀▄        [1mAntigravity CLI 1.2.7[m
 [34D▀▀▀▀▀▀       Gemini API key
 [28D▀▀▀▀▀▀▀▀      Gemini 3.7 Flash (Low)
-   ▄▀▀    ▀▀▄     ~/orca/workspaces/orca/agy-gemini-issues
+   ▄▀▀    ▀▀▄     ~/topo/workspaces/topo/agy-gemini-issues
   ▄▀▀      ▀▀▄
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

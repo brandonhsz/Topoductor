@@ -12,7 +12,7 @@ import {
 import type { EdgeAssignBody, EdgeDeviceRow } from './edge-admin-client.js'
 import { EDGE_FENCE_RETRY_BASE_MS, retryPendingFences } from './edge-relay-fence.js'
 
-const databaseUrl = process.env.ORCA_RELAY_TEST_POSTGRES_URL
+const databaseUrl = process.env.TOPO_RELAY_TEST_POSTGRES_URL
 const describePostgres = databaseUrl ? describe : describe.skip
 
 const cell = { id: 'edge-pg-c1', url: 'https://edge-pg-c1.example.com', capacityRequests: 200 }

@@ -96,7 +96,7 @@ export async function resolveRepoSlug(repo: Repo): Promise<string | null> {
       const slug = githubRepoIdentityKey(result)
       return commit(slug)
     } catch {
-      // GHES auth can change outside Orca; retry negative results after a bounded quiet period.
+      // GHES auth can change outside Topo; retry negative results after a bounded quiet period.
       return commit(null)
     }
   })()

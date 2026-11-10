@@ -1,7 +1,7 @@
 // Assert real preedit geometry: PTY byte checks passed while hidden overlays left users composing blind.
 // CDP imeSetComposition opens Chromium composition without native IME/accessibility grants, enabling normal headless CI coverage.
 
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { closeTerminalImePaneArena, openTerminalImePaneArena } from './terminal-ime-pane-arena'
 import {
   commitImeText,
@@ -44,30 +44,30 @@ const GEUL_FRAMES = [
 
 test.describe('Terminal 2-Set Korean preedit visibility', () => {
   test('shows every assembling jamo at non-zero size and commits the syllable ahead of the newline', async ({
-    orcaPage,
+    topoPage,
     testRepoPath
   }, testInfo) => {
-    const arena = await openTerminalImePaneArena(orcaPage)
+    const arena = await openTerminalImePaneArena(topoPage)
     const reader = createTerminalImeByteReader(testRepoPath, 1)
     let completed = false
     try {
-      await startTerminalImeByteReader(orcaPage, arena.ptyId, reader)
-      await expectPreeditHidden(orcaPage, 'before composing')
+      await startTerminalImeByteReader(topoPage, arena.ptyId, reader)
+      await expectPreeditHidden(topoPage, 'before composing')
 
       for (const frame of HAN_FRAMES) {
-        await composeHangulSyllable(arena.session, orcaPage, [frame])
-        await expectPreeditRendered(orcaPage, frame.preedit, `composing ${frame.preedit}`)
+        await composeHangulSyllable(arena.session, topoPage, [frame])
+        await expectPreeditRendered(topoPage, frame.preedit, `composing ${frame.preedit}`)
       }
 
       await commitImeText(arena.session, '한')
-      await expectPreeditHidden(orcaPage, 'after committing 한')
+      await expectPreeditHidden(topoPage, 'after committing 한')
 
       await dispatchPlainEnter(arena.session)
 
-      const received = await waitForTerminalImeBytes(orcaPage, reader)
+      const received = await waitForTerminalImeBytes(topoPage, reader)
       expect(received).toEqual([Buffer.from('한\n').toString('hex')])
 
-      const trace = await readTerminalImeBoundaryTrace(orcaPage)
+      const trace = await readTerminalImeBoundaryTrace(topoPage)
       // The ordering the user reported as broken: the syllable must precede the newline.
       expect(trace.onData.join('')).toBe('한\r')
       completed = true
@@ -78,27 +78,27 @@ test.describe('Terminal 2-Set Korean preedit visibility', () => {
   })
 
   test('loses and duplicates nothing when back-to-back syllables commit at full speed', async ({
-    orcaPage,
+    topoPage,
     testRepoPath
   }, testInfo) => {
-    const arena = await openTerminalImePaneArena(orcaPage)
+    const arena = await openTerminalImePaneArena(topoPage)
     const reader = createTerminalImeByteReader(testRepoPath, 1)
     let completed = false
     try {
-      await startTerminalImeByteReader(orcaPage, arena.ptyId, reader)
+      await startTerminalImeByteReader(topoPage, arena.ptyId, reader)
       // No frame/syllable settling: fast-typing cadence previously dropped or doubled boundary syllables.
       for (let repetition = 0; repetition < 4; repetition += 1) {
-        await composeHangulSyllable(arena.session, orcaPage, HAN_FRAMES, 0)
+        await composeHangulSyllable(arena.session, topoPage, HAN_FRAMES, 0)
         await commitImeText(arena.session, '한')
-        await composeHangulSyllable(arena.session, orcaPage, GEUL_FRAMES, 0)
+        await composeHangulSyllable(arena.session, topoPage, GEUL_FRAMES, 0)
         await commitImeText(arena.session, '글')
       }
       await dispatchPlainEnter(arena.session)
 
-      const received = await waitForTerminalImeBytes(orcaPage, reader)
+      const received = await waitForTerminalImeBytes(topoPage, reader)
       expect(received).toEqual([Buffer.from(`${'한글'.repeat(4)}\n`).toString('hex')])
 
-      const trace = await readTerminalImeBoundaryTrace(orcaPage)
+      const trace = await readTerminalImeBoundaryTrace(topoPage)
       expect(trace.onData.join('')).toBe(`${'한글'.repeat(4)}\r`)
       completed = true
     } finally {

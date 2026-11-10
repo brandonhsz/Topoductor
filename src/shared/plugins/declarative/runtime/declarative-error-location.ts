@@ -1,6 +1,6 @@
 import { originalPluginPosition } from './declarative-source-maps'
 
-/** Mirrors PLUGIN_FRAME_RESERVED_SEGMENT: Orca's own files (this runtime) are never the culprit. */
+/** Mirrors PLUGIN_FRAME_RESERVED_SEGMENT: Topo's own files (this runtime) are never the culprit. */
 export const ORCA_RESERVED_PATH_PREFIX = '/__orca/'
 
 const STACK_FRAME_URL = /([a-z][a-z0-9+.-]*:\/\/[^\s()]+):(\d+):(\d+)\)?\s*$/i
@@ -13,7 +13,7 @@ function pageBase(): string | null {
 
 type PluginFrame = { path: string; line: number; column: number }
 
-/** The plugin file a stack line runs in, at its source position; null for Orca's or foreign code. */
+/** The plugin file a stack line runs in, at its source position; null for Topo's or foreign code. */
 function pluginFrame(stackLine: string, base: string): PluginFrame | 'orca' | null {
   const match = STACK_FRAME_URL.exec(stackLine)
   const url = match?.[1]
@@ -48,7 +48,7 @@ export function pluginErrorLocation(stack: string, base: string): string | null 
 
 /**
  * The error's message, prefixed with where in the plugin it was thrown, at the source position
- * (as `orca plugin check` reports it); a message that already names its file is kept.
+ * (as `topo plugin check` reports it); a message that already names its file is kept.
  */
 export function describePluginError(error: unknown, base = pageBase()): string {
   const message = error instanceof Error ? error.message : String(error)
@@ -62,8 +62,8 @@ export function describePluginError(error: unknown, base = pageBase()): string {
 }
 
 /**
- * What `orca plugin logs` shows: the located message, then the stack's frames at source positions
- * with Orca's runtime frames left out. A message that already names its location stands alone.
+ * What `topo plugin logs` shows: the located message, then the stack's frames at source positions
+ * with Topo's runtime frames left out. A message that already names its location stands alone.
  */
 export function describePluginErrorForLog(error: unknown, base = pageBase()): string {
   const headline = describePluginError(error, base)

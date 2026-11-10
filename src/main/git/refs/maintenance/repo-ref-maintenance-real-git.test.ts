@@ -56,7 +56,7 @@ async function createFragmentedPacks(repoPath: string): Promise<string[]> {
 }
 
 beforeAll(async () => {
-  packFixtureRoot = await mkdtemp(join(tmpdir(), 'orca-fragmented-packs-'))
+  packFixtureRoot = await mkdtemp(join(tmpdir(), 'topo-fragmented-packs-'))
   git(packFixtureRoot, ['init', '--quiet'])
   packFixtureBlobs = await buildFragmentedPacks(packFixtureRoot)
 })
@@ -88,7 +88,7 @@ function maintainIndex(repoPath: string) {
 }
 
 async function createRepo(looseRefs: number): Promise<{ repoPath: string; refsDir: string }> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-ref-maintenance-git-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-ref-maintenance-git-'))
   roots.push(root)
   const repoPath = join(root, 'repo')
   execFileSync('git', ['init', '--quiet', repoPath])

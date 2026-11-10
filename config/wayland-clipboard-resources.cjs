@@ -22,7 +22,7 @@ function ensureBundledWaylandClipboard(archEnum, root = join(__dirname, '..'), r
   if (
     result.error ||
     result.status !== 0 ||
-    !existsSync(join(root, 'native', 'wayland-clipboard', '.build', arch, 'orca-wayland-clipboard'))
+    !existsSync(join(root, 'native', 'wayland-clipboard', '.build', arch, 'topo-wayland-clipboard'))
   ) {
     throw new Error('The Linux package requires a built Wayland clipboard helper.')
   }
@@ -30,7 +30,7 @@ function ensureBundledWaylandClipboard(archEnum, root = join(__dirname, '..'), r
 
 function finalizePackagedWaylandClipboard(resourcesDir) {
   const binDir = join(resourcesDir, 'bin')
-  const helper = join(binDir, 'orca-wayland-clipboard')
+  const helper = join(binDir, 'topo-wayland-clipboard')
   if (!existsSync(helper) || !collectNativeBinaries(binDir).includes(helper)) {
     throw new Error('The Linux package is missing its Wayland clipboard executable.')
   }

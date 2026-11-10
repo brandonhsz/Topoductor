@@ -3,7 +3,7 @@ import type {
   MessageType
 } from '../../../../orchestration/db/orchestration-records'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { reconcileLifecycleMessage } from '../../../../orchestration/workers/lifecycle/lifecycle-reconciliation'
 import { bindCoordinatorMutationPayload } from '../../../../orchestration/workers/reports/dispatch-message-binding'
 import { isDispatchMutationMessageType } from '../../../../../../shared/rpc-contract/orchestration-params'
@@ -25,7 +25,7 @@ type SendReceipt = <T extends object>(receipt: T) => T & { warnings?: SendRecipi
 
 export function sendPointToPointMessage(args: {
   params: SendParamsInput
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   from: string
   to: string

@@ -36,17 +36,17 @@ describe('MatchedText', () => {
       kind: 'project',
       id: 'p1',
       projectId: 'p1',
-      displayName: '🚀 orca',
+      displayName: '🚀 topo',
       badgeColor: '#111111',
-      detail: '~/dev/orca'
+      detail: '~/dev/topo'
     }
-    const [match] = rankProjectOptions([option], 'orca', [])
+    const [match] = rankProjectOptions([option], 'topo', [])
     expect(match).toBeDefined()
 
     act(() => {
       root.render(<MatchedText text={option.displayName} hits={match!.nameHits} />)
     })
 
-    expect(markedText()).toBe('orca')
+    expect(markedText()).toBe('topo')
   })
 })

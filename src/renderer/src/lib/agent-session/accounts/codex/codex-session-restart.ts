@@ -35,7 +35,7 @@ export type CodexPaneScanResult = {
   eligible: boolean
   /** Inspection failed or the handle was stale, so a later read may answer differently. */
   inconclusive: boolean
-  /** Orca launched Codex in this tab, so a shell foreground can still be reattach settle. */
+  /** Topo launched Codex in this tab, so a shell foreground can still be reattach settle. */
   launchedCodex: boolean
   notified: boolean
   laneKey: string
@@ -59,7 +59,7 @@ async function readRecordedCodexPaneLanes(
   return await listRecordedPaneLanes({ ptyIds: localPtyIds }).catch(() => ({}))
 }
 
-/** Fresh-scan shell readings only for Orca-launched Codex panes (#11064); cached shell flaps can lose the one-time notice. Only affirmative Codex evidence reverses ineligibility, not null or confirmed shell. */
+/** Fresh-scan shell readings only for Topo-launched Codex panes (#11064); cached shell flaps can lose the one-time notice. Only affirmative Codex evidence reverses ineligibility, not null or confirmed shell. */
 async function isConfirmedCodexForegroundDespiteShellReading(
   ptyId: string,
   launchAgent: TuiAgent | undefined,

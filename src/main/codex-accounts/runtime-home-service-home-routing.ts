@@ -6,7 +6,7 @@ import { getCachedWslHome } from '../wsl/discovery/wsl-home-cache'
 import { isWslDistroRunning } from '../wsl/discovery/wsl-background-distro-gate'
 import {
   getSystemCodexHomePath,
-  resolveOrcaManagedCodexHomePath,
+  resolveTopoManagedCodexHomePath,
   syncCodexGlobalInstructionsIntoManagedHome,
   syncSystemCodexResourcesIntoManagedHome
 } from '../codex/configuration/homes/codex-home-paths'
@@ -30,9 +30,9 @@ import { CodexRuntimeHomeManagedHome } from './runtime-home-service-managed-home
 export abstract class CodexRuntimeHomeRouting extends CodexRuntimeHomeManagedHome {
   getHostCodexHomePathsForSessionDiscovery(): string[] {
     // Transcript polling must resolve the mirror path without creating it.
-    const homes = [resolveOrcaManagedCodexHomePath()]
+    const homes = [resolveTopoManagedCodexHomePath()]
     if (this.isHostSystemDefaultRealHomeSelected() || this.getSelfContainedManagedHostAccount()) {
-      // Include real-home history even when nested Orca inherits a managed CODEX_HOME.
+      // Include real-home history even when nested Topo inherits a managed CODEX_HOME.
       homes.push(getSystemCodexHomePath())
     }
     for (const perAccountHome of this.getManagedAccountHomesForSessionDiscovery()) {
@@ -273,7 +273,7 @@ export abstract class CodexRuntimeHomeRouting extends CodexRuntimeHomeManagedHom
       if (hasRecordedLegacySharedCodexPane()) {
         this.syncLegacySharedSystemDefaultAuthForRetainedPanes()
       }
-      // Pin the native home so nested Orca cannot inherit a managed-home OAuth conflict (#5370).
+      // Pin the native home so nested Topo cannot inherit a managed-home OAuth conflict (#5370).
       return { kind: 'ready', codexHomePath: getSystemCodexHomePath() }
     }
     this.syncMirrorForReadOnlyAppServer()
@@ -285,7 +285,7 @@ export abstract class CodexRuntimeHomeRouting extends CodexRuntimeHomeManagedHom
     if (
       this.getSelfContainedManagedHostAccount() ||
       normalizeRuntimePathForComparison(homePath) !==
-        normalizeRuntimePathForComparison(resolveOrcaManagedCodexHomePath())
+        normalizeRuntimePathForComparison(resolveTopoManagedCodexHomePath())
     ) {
       return
     }

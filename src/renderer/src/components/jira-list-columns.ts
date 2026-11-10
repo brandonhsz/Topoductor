@@ -39,7 +39,7 @@ export const JIRA_LIST_COLUMNS: readonly JiraListColumn[] = [
 ]
 
 // Device-local, like Linear display preferences, rather than synced through ui.set.
-const STORAGE_KEY = 'orca.jira.list-columns.v1'
+const STORAGE_KEY = 'topo.jira.list-columns.v1'
 
 export function getJiraListColumnLabel(id: JiraListColumnId, t: Translate = translate): string {
   switch (id) {

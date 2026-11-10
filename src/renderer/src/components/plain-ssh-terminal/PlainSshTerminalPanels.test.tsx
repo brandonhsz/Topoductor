@@ -126,7 +126,7 @@ describe('plain SSH terminal', () => {
     await user.click(screen.getByRole('button', { name: 'Open plain SSH terminal' }))
 
     expect(screen.getByText('Plain SSH · lambda')).toBeInTheDocument()
-    expect(screen.getByText(/Plain SSH — unmanaged\. Not an Orca workspace/)).toBeInTheDocument()
+    expect(screen.getByText(/Plain SSH — unmanaged\. Not a Topo workspace/)).toBeInTheDocument()
     expect(open).toHaveBeenCalledWith({ targetId: 'lambda', cols: 80, rows: 24 })
 
     // ssh can print before the open reply arrives.

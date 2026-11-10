@@ -1,4 +1,4 @@
-// COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+// COMPAT(wsl-bridge): removed when WSL runs as an topod host.
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Copy, Loader2, RefreshCw, Terminal } from 'lucide-react'
 import { toast } from 'sonner'
@@ -15,7 +15,7 @@ import {
   recheckSurfacesAfterAgentSkillInstall,
   syncSurfacesAfterAgentSkillRecheck
 } from '../../../hooks/agent-skill-recheck-surface-sync'
-import { isOrcaCliAvailableOnPath } from '@/lib/skills/installation/agent-skill-cli-prerequisite'
+import { isTopoCliAvailableOnPath } from '@/lib/skills/installation/agent-skill-cli-prerequisite'
 import { cn } from '@/lib/utils'
 import { useTranslate } from '@/i18n/use-translate'
 
@@ -41,7 +41,7 @@ export function WslAgentSkillSetupPanel({
   hideHeader = false,
   preInstallNotice,
   getPrerequisiteStatus,
-  isPrerequisiteAvailable = isOrcaCliAvailableOnPath,
+  isPrerequisiteAvailable = isTopoCliAvailableOnPath,
   onBeforeOpenTerminal,
   showInstallWhenInstalled = true,
   showRecheckWhenInstalled = true,

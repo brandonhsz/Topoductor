@@ -4,7 +4,7 @@ import {
   providerDiagnosticOf
 } from '../../../../shared/agent-session/failures/agent-session-failure'
 import type { CodexAppServerConnection } from '../../app-server/codex-app-server-connection-types'
-import { closeProcessRegistry } from '@orca/process-host/close-process-registry'
+import { closeProcessRegistry } from '@topo/process-host/close-process-registry'
 import {
   cancelCodexAcquisitionAttempt,
   type CodexAcquisitionRegistry,
@@ -19,8 +19,8 @@ export function handleCodexSessionExit(input: {
   sessionId: string
   connection: CodexAppServerConnection | null
   error: Error
-  /** Includes root exits reported during or after an Orca close attempt. */
-  closedByOrca?: true
+  /** Includes root exits reported during or after a Topo close attempt. */
+  closedByTopo?: true
   prompts?: CodexSession['prompts']
   onEvent?: (event: CodexStructuredSessionEvent) => void
   logger?: StructuredAgentSessionLogger
@@ -37,14 +37,14 @@ export function handleCodexSessionExit(input: {
     type: 'ended',
     sessionId: input.sessionId,
     // Preserve the initiating close reason when its exit arrives.
-    reason: ((input.closedByOrca && session.orcaClose?.reason) || input.error).message,
-    // Orca-initiated closes are host faults, regardless of the exit report. No spawn ENOENT reaches
+    reason: ((input.closedByTopo && session.topoClose?.reason) || input.error).message,
+    // Topo-initiated closes are host faults, regardless of the exit report. No spawn ENOENT reaches
     // here: a session registers only after the CLI answered thread/start, so the acquire path owns it.
-    failure: input.closedByOrca
+    failure: input.closedByTopo
       ? agentSessionFailureFact('hostFault')
       : agentSessionFailureFact('providerExited', { detail: providerDiagnosticOf(input.error) }),
-    cause: session.orcaClose?.requested ? 'requested-close' : 'unexpected-exit',
-    ...(input.closedByOrca && input.connection?.closeResult
+    cause: session.topoClose?.requested ? 'requested-close' : 'unexpected-exit',
+    ...(input.closedByTopo && input.connection?.closeResult
       ? {
           processExit: {
             root: input.connection.closeResult.root,
@@ -111,7 +111,7 @@ export async function closeCodexPublishedSession(
     return true
   }
   // Preserve unexpected-death settlement when sink failure forces a close.
-  session.orcaClose ??= {
+  session.topoClose ??= {
     requested: options?.requestedClose ?? true,
     reason: options?.unexpectedReason ?? new Error('codex session closed')
   }
@@ -125,8 +125,8 @@ export async function closeCodexPublishedSession(
       sessions,
       sessionId,
       connection: session.connection,
-      error: session.orcaClose.reason,
-      closedByOrca: true,
+      error: session.topoClose.reason,
+      closedByTopo: true,
       prompts: session.prompts,
       ...(onEvent ? { onEvent } : {}),
       ...(options?.logger ? { logger: options.logger } : {})

@@ -56,17 +56,17 @@ describe('content script relay', () => {
     receiver.chrome.runtime.onMessage.addListener(second)
 
     await expect(
-      receiver.dispatch({ orcaDocumentTargetProbe: { token: 'private-probe' } }, { id: 'ext' })
+      receiver.dispatch({ topoDocumentTargetProbe: { token: 'private-probe' } }, { id: 'ext' })
     ).resolves.toBe(true)
 
     expect(receiver.sendMessage).toHaveBeenCalledExactlyOnceWith({
-      orcaDocumentTargetProbe: { token: 'private-probe', response: true }
+      topoDocumentTargetProbe: { token: 'private-probe', response: true }
     })
     expect(seen).not.toHaveBeenCalled()
     expect(second).not.toHaveBeenCalled()
     expect(receiver.listeners.size).toBe(2)
     await receiver.dispatch(
-      { orcaDocumentTargetProbe: { token: 'private-probe', response: true } },
+      { topoDocumentTargetProbe: { token: 'private-probe', response: true } },
       fromContentScript
     )
     expect(seen).not.toHaveBeenCalled()
@@ -138,9 +138,9 @@ describe('content script relay', () => {
       [CONTENT_SCRIPT_RELAY_KEY]: { changes: { theme: { newValue: 'dark' } }, from }
     })
     expect(native.size).toBe(0)
-    bridge.listen('orcaStorageSync', 'onChanged', true)
+    bridge.listen('topoStorageSync', 'onChanged', true)
 
-    await bridge.call('orcaStorageSync', 'set', [{ theme: 'light' }])
+    await bridge.call('topoStorageSync', 'set', [{ theme: 'light' }])
     const [sent] = sendMessage.mock.calls[0]
     const ownId =
       isRecord(sent) && isRecord(sent[CONTENT_SCRIPT_RELAY_KEY])
@@ -150,9 +150,9 @@ describe('content script relay', () => {
     deliver(change(String(ownId)), { id: 'ext' })
     deliver(change(), { id: 'other-extension' })
     deliver(change('another-frame'), { id: 'ext' })
-    expect(events).toEqual([['orcaStorageSync', 'onChanged', [{ theme: { newValue: 'dark' } }]]])
+    expect(events).toEqual([['topoStorageSync', 'onChanged', [{ theme: { newValue: 'dark' } }]]])
 
-    bridge.listen('orcaStorageSync', 'onChanged', false)
+    bridge.listen('topoStorageSync', 'onChanged', false)
     expect(native.size).toBe(0)
   })
 })

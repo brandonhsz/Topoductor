@@ -1,6 +1,6 @@
 import { useTranslate } from '../../../i18n/use-translate'
 import { useAppStore } from '../../../store/index'
-import { OrcaSignInButton, OrcaSignInWaitNotice } from '../../OrcaSignInProgress'
+import { TopoSignInButton, TopoSignInWaitNotice } from '../../TopoSignInProgress'
 
 export function MobileRelaySignInPanel({
   reconnectRequired
@@ -8,7 +8,7 @@ export function MobileRelaySignInPanel({
   reconnectRequired: boolean
 }): React.JSX.Element {
   const t = useTranslate()
-  const browserWaiting = useAppStore((state) => Boolean(state.orcaProfileSignInProgress?.link))
+  const browserWaiting = useAppStore((state) => Boolean(state.topoProfileSignInProgress?.link))
 
   return (
     <div
@@ -23,16 +23,16 @@ export function MobileRelaySignInPanel({
       data-testid="anywhere-sign-in-panel"
     >
       {browserWaiting ? (
-        <OrcaSignInWaitNotice className="min-w-0 flex-1" />
+        <TopoSignInWaitNotice className="min-w-0 flex-1" />
       ) : (
         <p className="min-w-0 flex-1 text-xs text-muted-foreground">
           {t(
             'auto.components.settings.MobilePairingConnectionOptions.relaySignInDetail',
-            'Signs this desktop in to Orca and routes the phone through Orca’s servers. LAN does not need an account.'
+            'Signs this desktop in to Topo and routes the phone through Topo’s servers. LAN does not need an account.'
           )}
         </p>
       )}
-      <OrcaSignInButton size="sm" className="shrink-0">
+      <TopoSignInButton size="sm" className="shrink-0">
         {reconnectRequired
           ? t(
               'auto.components.settings.MobilePairingConnectionOptions.signInAgain',
@@ -42,7 +42,7 @@ export function MobileRelaySignInPanel({
               'auto.components.settings.MobilePairingConnectionOptions.signIn',
               'Sign in for Relay'
             )}
-      </OrcaSignInButton>
+      </TopoSignInButton>
     </div>
   )
 }

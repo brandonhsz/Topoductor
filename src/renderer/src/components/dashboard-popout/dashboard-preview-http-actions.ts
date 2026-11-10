@@ -94,7 +94,7 @@ export function dashboardPreviewHttpActions(
     : { primary: 'system' as const }
   const open = (destination: HttpLinkDestination | undefined, inSourceGroup = false): void => {
     const current = dashboardPreviewHttpActions(source, url, onForegroundOpen)
-    if (!current || (destination === 'orca' && !current.canOpen)) {
+    if (!current || (destination === 'topo' && !current.canOpen)) {
       toast.error(intentPresentation({ kind: 'url' }, url).error)
       return
     }
@@ -143,7 +143,7 @@ export function dashboardPreviewHttpActions(
             sourceTabId: source.tabId,
             sourceOwner: owner,
             url,
-            openInSourceGroup: () => open('orca', true)
+            openInSourceGroup: () => open('topo', true)
           }
         : undefined
     )

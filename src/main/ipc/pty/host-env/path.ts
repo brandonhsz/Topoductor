@@ -19,7 +19,7 @@ export function promoteAgentTeamsShimPath(
   env: Record<string, string> | undefined,
   requestedPath: string | undefined
 ): void {
-  if (!env?.ORCA_AGENT_TEAMS_TEAM_ID) {
+  if (!env?.TOPO_AGENT_TEAMS_TEAM_ID) {
     return
   }
   const shimPath = firstPathEntry(requestedPath)
@@ -32,7 +32,7 @@ export function promoteAgentTeamsShimPath(
   const remaining = currentPath
     .split(delimiter)
     .filter((entry) => entry.length > 0 && entry !== shimPath)
-  // Agent Teams must resolve Orca's tmux shim before any real tmux, including after host prepends.
+  // Agent Teams must resolve Topo's tmux shim before any real tmux, including after host prepends.
   env[currentPathKey] = [shimPath, ...remaining].join(delimiter)
 }
 

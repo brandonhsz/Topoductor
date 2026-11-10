@@ -4,23 +4,23 @@ import { isWindowsServerTarget, type WindowsServerTarget } from '../../../shared
 import type { SshTarget } from '../../../shared/ssh-types'
 
 /** Pinned node.exe lifecycle under each DefaultShell. */
-const WINDOWS_ORCAD_CELL_IDS = ['orcad-cmd', 'orcad-powershell'] as const
-type WindowsOrcadCellId = (typeof WINDOWS_ORCAD_CELL_IDS)[number]
+const WINDOWS_TOPOD_CELL_IDS = ['topod-cmd', 'topod-powershell'] as const
+type WindowsTopodCellId = (typeof WINDOWS_TOPOD_CELL_IDS)[number]
 
-export function isWindowsOrcadCellId(id: string): id is WindowsOrcadCellId {
-  return WINDOWS_ORCAD_CELL_IDS.some((candidate) => candidate === id)
+export function isWindowsTopodCellId(id: string): id is WindowsTopodCellId {
+  return WINDOWS_TOPOD_CELL_IDS.some((candidate) => candidate === id)
 }
 
 /** Relay-to-managed conversion through the app (tests/e2e). */
-const WINDOWS_CONVERT_CELL_ID = 'orcad-convert'
+const WINDOWS_CONVERT_CELL_ID = 'topod-convert'
 
-/** Bundled CLI cells: tests/e2e/ssh-orcad-windows-cli-matrix.spec.ts. */
-const WINDOWS_CLI_MATRIX_CELL_IDS = ['orcad-cli-managed', 'orcad-cli-convert'] as const
+/** Bundled CLI cells: tests/e2e/ssh-topod-windows-cli-matrix.spec.ts. */
+const WINDOWS_CLI_MATRIX_CELL_IDS = ['topod-cli-managed', 'topod-cli-convert'] as const
 type WindowsCliMatrixCellId = (typeof WINDOWS_CLI_MATRIX_CELL_IDS)[number]
 
 /** Written by config/ci/windows-ssh-provider/invoke-windows-host-cells.ps1, one per run. */
 type WindowsHostCellDescriptor = {
-  cell: WindowsOrcadCellId | typeof WINDOWS_CONVERT_CELL_ID | WindowsCliMatrixCellId
+  cell: WindowsTopodCellId | typeof WINDOWS_CONVERT_CELL_ID | WindowsCliMatrixCellId
   target: WindowsServerTarget
   host: string
   port: number
@@ -47,7 +47,7 @@ export function parseWindowsHostCellDescriptor(text: string): WindowsHostCellDes
   }
   const record = Object.fromEntries(Object.entries(parsed))
   const cell =
-    WINDOWS_ORCAD_CELL_IDS.find((id) => id === record.cell) ??
+    WINDOWS_TOPOD_CELL_IDS.find((id) => id === record.cell) ??
     WINDOWS_CLI_MATRIX_CELL_IDS.find((id) => id === record.cell) ??
     (record.cell === WINDOWS_CONVERT_CELL_ID ? WINDOWS_CONVERT_CELL_ID : undefined)
   if (!cell) {

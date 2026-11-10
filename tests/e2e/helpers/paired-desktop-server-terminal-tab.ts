@@ -2,7 +2,7 @@
 import type { RuntimeMobileSessionTabsResult } from '../../../src/shared/runtime-types'
 import { toRemoteRuntimePtyId } from '../../../src/shared/remote-runtime/remote-runtime-pty-id'
 import { toWebTerminalSurfaceTabId } from '../../../src/shared/workspace-layout/terminal-surface-id'
-import { expect } from './orca-app'
+import { expect } from './topo-app'
 import type { HeadlessPairedRuntimeHost } from './headless-paired-runtime-host'
 import type { PairedElectronClient } from './paired-electron-client'
 

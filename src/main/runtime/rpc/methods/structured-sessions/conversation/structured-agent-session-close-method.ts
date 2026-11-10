@@ -7,7 +7,7 @@ import {
   requireStructuredCapability,
   requireStructuredCleanupHost
 } from '../creation/structured-agent-session-gate'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import { getStructuredAgentSessionHost } from '../../../../../native-chat/agent-session-wire/host/structured-agent-session-registry'
 import { noteStructuredAgentSessionClose } from '../creation/structured-agent-session-close-before-create'
 import {
@@ -23,7 +23,7 @@ export const STRUCTURED_AGENT_SESSION_CLOSE_METHOD = defineMethod({
   handler: async (params, ctx) => {
     requireStructuredCapability(ctx)
     // Record close before requiring host so even failed closes fence racing creates.
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       noteStructuredAgentSessionClose(
         params.sessionId,
         (getStructuredAgentSessionHost()?.deps.store.getConversation(params.sessionId) ?? null) !==

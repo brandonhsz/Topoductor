@@ -5,7 +5,7 @@ import { layoutContainsLeafId } from '../../../../shared/workspace-layout/termin
 import { worktreeIdsEqual } from '../../../../shared/worktree/id'
 import { RuntimeArtifactOperations } from '../../artifacts/runtime-artifact-operations'
 
-export abstract class OrcaRuntimeWithHasExactPersistedTerminalSurfaceIdentity extends RuntimeArtifactOperations {
+export abstract class TopoRuntimeWithHasExactPersistedTerminalSurfaceIdentity extends RuntimeArtifactOperations {
   protected abstract getOwnWorkspaceSessionForWorktree(
     worktreeId: string
   ): WorkspaceSessionState | null

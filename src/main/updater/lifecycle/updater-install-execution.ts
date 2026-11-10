@@ -115,7 +115,7 @@ export abstract class UpdaterInstallExecution extends UpdaterMacInstallPreflight
             }
           )
           this.sendErrorStatus(
-            'Could not prepare the supervised server restart. Orca remains running.',
+            'Could not prepare the supervised server restart. Topo remains running.',
             true
           )
           this.resetQuitForUpdateState()
@@ -168,7 +168,7 @@ export abstract class UpdaterInstallExecution extends UpdaterMacInstallPreflight
             this.sendInstallFailureStatus({
               state: 'error',
               message:
-                'macOS has not finished preparing the update. Orca keeps serving and installs it once ready; restart the Orca service if it never does.',
+                'macOS has not finished preparing the update. Topo keeps serving and installs it once ready; restart the Topo service if it never does.',
               ...(pendingVersion ? { version: pendingVersion } : {}),
               retryable: false
             })
@@ -215,7 +215,7 @@ export abstract class UpdaterInstallExecution extends UpdaterMacInstallPreflight
         // A synchronous throw carries the same installer text the 'error' event would have.
         message: quitAndInstallNativeInvokedBeforeReset
           ? this.withInstallFailureCause(this.getPreCommitInstallFailureMessage(), error)
-          : 'Could not restart to install the update. Quit and reopen Orca, then try again.'
+          : 'Could not restart to install the update. Quit and reopen Topo, then try again.'
       })
     }
   }

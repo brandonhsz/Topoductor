@@ -37,13 +37,13 @@ export async function readEnabledHostCapabilities(
     // `skills share` refuses forwarded and remote invocations, so their hosts cannot publish skills.
     if (
       settings?.agentSkillSharingEnabled === true &&
-      !process.env.ORCA_CLI_CWD &&
+      !process.env.TOPO_CLI_CWD &&
       !ctx.client.isRemote
     ) {
       enabled.add('skill-publishing')
     }
   } catch {
-    // Orca not running, sandboxed, or an older host; the publish commands still enforce the real gate.
+    // Topo not running, sandboxed, or an older host; the publish commands still enforce the real gate.
   }
   return enabled
 }

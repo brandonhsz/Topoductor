@@ -1,4 +1,4 @@
-/** Admit, refuse duplicate orcad ownership, connect (possibly booting), then persist the environment and WSL record. */
+/** Admit, refuse duplicate topod ownership, connect (possibly booting), then persist the environment and WSL record. */
 import { errorMessage } from '../../../shared/error-message'
 import { addWslHostEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-wsl-host-store'
 import type { WslHostDeploymentRecord } from '../../../shared/remote-runtime/host-store/wsl-host-deployment-store'
@@ -10,9 +10,9 @@ import {
 } from './wsl-host-add-admission'
 import { abandonWslHostAdd, connectForWslHostAdd } from './wsl-host-first-connect'
 import type { WslHostConnector, WslHostServiceDependencies } from './wsl-host-connector-contract'
-import { wslHostSshManagedRefusal } from './wsl-host-ssh-orcad-conflict'
-import type { WslOrcadConnection } from '../orcad/wsl-orcad-connection-types'
-import { defaultWslOrcadEnvironmentId } from '../orcad/wsl-orcad-deploy'
+import { wslHostSshManagedRefusal } from './wsl-host-ssh-topod-conflict'
+import type { WslTopodConnection } from '../topod/wsl-topod-connection-types'
+import { defaultWslTopodEnvironmentId } from '../topod/wsl-topod-deploy'
 
 /** What registration reads from and reports to the service that owns the hosts. */
 export type WslHostRegistrationContext = {
@@ -23,7 +23,7 @@ export type WslHostRegistrationContext = {
   disableGeneration: () => number
   recordForDistro: (distro: string) => WslHostDeploymentRecord | null
   recordForEnvironment: (environmentId: string) => WslHostDeploymentRecord | null
-  setReady: (record: WslHostDeploymentRecord, connection: WslOrcadConnection) => void
+  setReady: (record: WslHostDeploymentRecord, connection: WslTopodConnection) => void
 }
 
 export async function registerWslHost(
@@ -47,12 +47,12 @@ export async function registerWslHost(
   const { distro } = admission
   const userDataPath = context.deps.userDataPath()
   const sharing = await wslHostSshManagedRefusal(distro.name, userDataPath, (name) =>
-    context.wsl().readOrcadPublicKey(name)
+    context.wsl().readTopodPublicKey(name)
   )
   if (sharing) {
     return sharing
   }
-  const environmentId = defaultWslOrcadEnvironmentId(distro.name)
+  const environmentId = defaultWslTopodEnvironmentId(distro.name)
   const connected = await connectForWslHostAdd(context.wsl(), distro.name, () =>
     generation === context.disableGeneration()
       ? wslHostNewWorkRefusal(context.deps)

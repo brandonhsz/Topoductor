@@ -7,7 +7,7 @@ export function pluginPanelNotShownReason(
   tabKey: string
 ): string | null {
   if (!canShowRightSidebarForView(state.activeView) || !state.activeWorktreeId) {
-    return 'Orca is not showing a workspace'
+    return 'Topo is not showing a workspace'
   }
   if (!state.rightSidebarOpen) {
     return 'the right sidebar is closed'

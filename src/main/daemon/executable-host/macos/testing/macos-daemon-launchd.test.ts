@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import type * as TimerPromises from 'node:timers/promises'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import type { DaemonEndpointIdentity } from '../../../protocol/daemon-hello-protocol'
-import type { ProcessResult, ProcessSpec } from '@orca/process-host/process-spec'
+import type { ProcessResult, ProcessSpec } from '@topo/process-host/process-spec'
 
 const { state, runProcessMock, materializeMock, ensureWithinMock, disconnectMock, recoverMock } =
   vi.hoisted(() => {
@@ -42,11 +42,11 @@ vi.mock('node:timers/promises', async (importOriginal) => {
     }
   }
 })
-vi.mock('@orca/process-host', () => ({ runProcess: runProcessMock }))
+vi.mock('@topo/process-host', () => ({ runProcess: runProcessMock }))
 vi.mock('../../../../../shared/app-environment', () => ({
   hasAppEnvironment: () => true,
   getAppEnvironment: () => ({
-    getAppPath: () => '/Applications/Orca.app/Contents/Resources/app.asar',
+    getAppPath: () => '/Applications/Topo.app/Contents/Resources/app.asar',
     getPath: () => state.root,
     getVersion: () => '1.2.3',
     isPackaged: () => state.packaged
@@ -92,7 +92,7 @@ const nativePlatform = process.platform
 const originalGetuid = Object.getOwnPropertyDescriptor(process, 'getuid')
 const originalGetSystemVersion = Object.getOwnPropertyDescriptor(process, 'getSystemVersion')
 const roomyDeadline = (): number => Date.now() + 60_000
-const helperExec = (): string => join(copyDir, 'MacOS', 'orca-terminal-host')
+const helperExec = (): string => join(copyDir, 'MacOS', 'topo-terminal-host')
 const helperEntry = (): string => join(copyDir, 'daemon-entry.js')
 const service = (): string => `gui/501/${macDaemonJobLabel(state.root)}`
 const launchctlCalls = (verb: string): ProcessSpec[] =>
@@ -138,14 +138,14 @@ beforeEach(async () => {
   vi.spyOn(console, 'warn').mockImplementation(() => {})
   Object.defineProperty(process, 'getuid', { configurable: true, value: () => 501 })
   stubSystemVersion('15.4.1')
-  state.root = await mkdtemp(join(tmpdir(), 'orca-mac-launch-job-'))
+  state.root = await mkdtemp(join(tmpdir(), 'topo-mac-launch-job-'))
   state.packaged = true
   state.identity = { pid: 12345, startedAtMs: 1000, launchNonce: 'owned-launch' }
   copyDir = join(state.root, 'daemon-host', 'macos', 'terminal-host-abc')
   await mkdir(copyDir, { recursive: true })
   options = {
-    entryPath: '/Applications/Orca.app/Contents/Resources/daemon-entry.js',
-    forkEntryPath: '/Applications/Orca.app/Contents/Resources/daemon-entry.js',
+    entryPath: '/Applications/Topo.app/Contents/Resources/daemon-entry.js',
+    forkEntryPath: '/Applications/Topo.app/Contents/Resources/daemon-entry.js',
     userDataPath: state.root,
     runtimeDir: join(state.root, 'daemon'),
     socketPath: join(state.root, 'daemon.sock'),
@@ -207,7 +207,7 @@ afterEach(async () => {
 })
 
 it('launches the copied helper on plain Node and leaves no inherited credentials on disk', async () => {
-  vi.stubEnv('ORCA_TEST_SECRET', 'test-value')
+  vi.stubEnv('TOPO_TEST_SECRET', 'test-value')
   vi.stubEnv('NODE_CHANNEL_FD', '3')
   vi.stubEnv('ELECTRON_RUN_AS_NODE', '1')
   const handle = await launchMacDaemonFromStableBundle(options, roomyDeadline())
@@ -217,9 +217,9 @@ it('launches the copied helper on plain Node and leaves no inherited credentials
   expect(job).toMatchObject({
     Label: macDaemonJobLabel(state.root),
     KeepAlive: false,
-    AssociatedBundleIdentifiers: ['com.stablyai.orca'],
+    AssociatedBundleIdentifiers: ['com.brandonhsz.topo'],
     MaterializeDatalessFiles: true,
-    EnvironmentVariables: { ORCA_TEST_SECRET: 'test-value' }
+    EnvironmentVariables: { TOPO_TEST_SECRET: 'test-value' }
   })
   expect(JSON.stringify(job)).not.toContain('NODE_CHANNEL_FD')
   expect(job).not.toHaveProperty('EnvironmentVariables.ELECTRON_RUN_AS_NODE')

@@ -11,9 +11,9 @@ describe('readServeInstallEvidence', () => {
   let executable: string
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'orca-install-hold-'))
-    bundle = join(root, 'Orca.app')
-    executable = join(bundle, 'Contents', 'MacOS', 'Orca')
+    root = await mkdtemp(join(tmpdir(), 'topo-install-hold-'))
+    bundle = join(root, 'Topo.app')
+    executable = join(bundle, 'Contents', 'MacOS', 'Topo')
     await mkdir(join(bundle, 'Contents', 'MacOS'), { recursive: true })
     await writeFile(executable, '')
   })
@@ -23,7 +23,7 @@ describe('readServeInstallEvidence', () => {
   })
 
   const shipIt = (b: string): string =>
-    `${b}/Contents/Frameworks/Squirrel.framework/Resources/ShipIt com.stablyai.orca.ShipIt /state.plist`
+    `${b}/Contents/Frameworks/Squirrel.framework/Resources/ShipIt com.brandonhsz.topo.ShipIt /state.plist`
 
   it('holds while ShipIt replaces this bundle, and when the check cannot run', async () => {
     await expect(

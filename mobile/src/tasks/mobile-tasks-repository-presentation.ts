@@ -44,8 +44,8 @@ export function getRepoBadgeColor(repo: RepoSummary | undefined): string {
 }
 
 export function setupSourceLabel(source: string | null | undefined): string {
-  if (source === 'orca.yaml') {
-    return 'orca.yaml'
+  if (source === 'topo.yaml') {
+    return 'topo.yaml'
   }
   if (source === 'legacy') {
     return 'local hooks'

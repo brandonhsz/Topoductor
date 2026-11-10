@@ -1,6 +1,6 @@
 import { measureUtf8ByteLength } from '../../../shared/utf8-byte-limits'
 
-export const LINEAR_BOARD_DRAG_ISSUE_MIME = 'application/x-orca-linear-issue-id'
+export const LINEAR_BOARD_DRAG_ISSUE_MIME = 'application/x-topo-linear-issue-id'
 export const LINEAR_BOARD_DRAG_ISSUE_ID_MAX_BYTES = 1024
 
 export type LinearBoardIssueDragReadResult =

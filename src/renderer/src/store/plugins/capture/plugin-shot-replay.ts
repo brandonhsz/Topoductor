@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { PluginDeclarativeNode } from '../../../../../shared/plugins/declarative/plugin-declarative-catalog'
 
-/** `orca plugin shot --scenario`: a tree drawn detached from any plugin, for one capture. */
+/** `topo plugin shot --scenario`: a tree drawn detached from any plugin, for one capture. */
 export type PluginShotReplayPreview = {
   /** Already passed `parsePluginDeclarativeTree`. */
   tree: PluginDeclarativeNode | null

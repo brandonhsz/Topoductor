@@ -35,7 +35,7 @@ function captureOpenLinkHandler(): (event: {
     | null = null
   const browserApi = new Proxy(
     {
-      onOpenLinkInOrcaTab: (
+      onOpenLinkInTopoTab: (
         callback: (event: { browserPageId: string; url: string; activate?: boolean }) => void
       ) => {
         handler = callback
@@ -57,12 +57,12 @@ function captureOpenLinkHandler(): (event: {
 
   registerBrowserStateIpcBridge([], () => false)
   if (!handler) {
-    throw new Error('Expected the bridge to subscribe to browser:open-link-in-orca-tab')
+    throw new Error('Expected the bridge to subscribe to browser:open-link-in-topo-tab')
   }
   return handler
 }
 
-describe('link-opened Orca tabs', () => {
+describe('link-opened Topo tabs', () => {
   beforeEach(() => {
     createBrowserTabMock.mockReset()
     dispatchEventMock.mockReset()

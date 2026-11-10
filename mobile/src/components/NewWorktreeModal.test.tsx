@@ -77,10 +77,10 @@ import { findAllByHostType } from '../test-support/react-test-renderer-host-node
 const repos = [
   {
     id: 'repo-1',
-    displayName: 'orca',
-    path: '/src/orca',
+    displayName: 'topo',
+    path: '/src/topo',
     kind: 'git',
-    upstream: { owner: 'stablyai', repo: 'orca' }
+    upstream: { owner: 'brandonhsz', repo: 'topo' }
   }
 ]
 
@@ -158,11 +158,11 @@ describe('NewWorktreeModal project targets', () => {
     await flushUpdates()
 
     expect(hungServer).toHaveBeenCalledWith('repo.list')
-    expect(pickerItems(renderer, 'Run on').map((item) => item.detail)).toEqual(['/src/orca'])
+    expect(pickerItems(renderer, 'Run on').map((item) => item.detail)).toEqual(['/src/topo'])
   })
 
   it('keeps a server repo picked when the desktop lists a repo with the same id', async () => {
-    const serverRepo = { ...repos[0]!, path: '/srv/orca' }
+    const serverRepo = { ...repos[0]!, path: '/srv/topo' }
     const listing = (listed: unknown[]) =>
       vi.fn((method: string) =>
         method === 'repo.list' ? replied({ repos: listed }) : new Promise<never>(() => {})
@@ -191,7 +191,7 @@ describe('NewWorktreeModal project targets', () => {
     expect(runTargetPicker(renderer).props.selectedId).toBe('runtime:env-1')
     expect(
       renderer.root.find((node) => node.props.runTarget !== undefined).props.runTarget.detail
-    ).toBe('/srv/orca')
+    ).toBe('/srv/topo')
   })
 
   it('ignores a stale repo list after the client changes', async () => {

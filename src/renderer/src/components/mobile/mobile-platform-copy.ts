@@ -10,7 +10,7 @@ export function getInstallCopy(platform: Platform, t: Translate = translate): In
   return platform === 'ios'
     ? {
         ctaLabel: t('auto.components.mobile.mobile.platform.copy.openAppStore', 'Open App Store'),
-        url: 'https://apps.apple.com/app/orca-ide/id6766130217'
+        url: 'https://apps.apple.com/app/topo-ide/id6766130217'
       }
     : {
         ctaLabel: t('auto.components.mobile.mobile.platform.copy.downloadApk', 'Download APK'),

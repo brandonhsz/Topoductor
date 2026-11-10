@@ -31,7 +31,7 @@ import type { AgentSessionResumeTrigger } from '../../../../shared/agent-session
 import {
   recordStructuredAgentSessionShutdownCut,
   runningRootTurnItemId
-} from './structured-agent-session-orca-stop-row'
+} from './structured-agent-session-topo-stop-row'
 import { structuredAgentSessionFailureWordsContext } from '../operations/structured-agent-session-send-preparation'
 
 import {

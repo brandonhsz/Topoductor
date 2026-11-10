@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@stablyai/playwright-test'
-import { expect } from './orca-app'
+import { expect } from './topo-app'
 
 /** A desktop plugin frame: an isolated `<webview>` guest titled with the panel or editor title. */
 export function pluginGuest(page: Page, title: string): Locator {
@@ -103,4 +103,4 @@ export function guestWebContentsId(guest: Locator): Promise<number> {
 }
 
 /** Isolated frames are off by default until the flip; guest-path specs turn them on per launch. */
-export const ISOLATED_FRAMES_E2E = { orcaAppExtraEnv: { ORCA_PLUGIN_ISOLATED_FRAMES: '1' } }
+export const ISOLATED_FRAMES_E2E = { topoAppExtraEnv: { TOPO_PLUGIN_ISOLATED_FRAMES: '1' } }

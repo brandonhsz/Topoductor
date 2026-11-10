@@ -69,11 +69,11 @@ export function RepositoryIssueCommandSetting({
             hasSharedIssueCommand
               ? t(
                   'auto.components.settings.RepositoryHooksSection.issueCommandSharedDefault',
-                  'Leave blank to use the repo default from <yaml>orca.yaml</yaml>.'
+                  'Leave blank to use the repo default from <yaml>topo.yaml</yaml>.'
                 )
               : t(
                   'auto.components.settings.RepositoryHooksSection.issueCommandOptionalDefault',
-                  'Leave blank to use the repo default from <yaml>orca.yaml</yaml> when one exists.'
+                  'Leave blank to use the repo default from <yaml>topo.yaml</yaml> when one exists.'
                 )
           }
           components={{ yaml: <code className="rounded bg-muted px-1 py-0.5" /> }}

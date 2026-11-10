@@ -34,14 +34,14 @@ import {
 } from '../../../shared/plugins/workers/plugin-worker-hooks'
 import {
   createPluginWorkerApiTables,
-  createPluginWorkerOrcaApi,
-  type PluginWorkerOrcaApi
-} from '../../../shared/plugins/workers/plugin-worker-orca-api'
+  createPluginWorkerTopoApi,
+  type PluginWorkerTopoApi
+} from '../../../shared/plugins/workers/plugin-worker-topo-api'
 
 export type {
   PluginDisposable,
-  PluginWorkerOrcaApi
-} from '../../../shared/plugins/workers/plugin-worker-orca-api'
+  PluginWorkerTopoApi
+} from '../../../shared/plugins/workers/plugin-worker-topo-api'
 
 export type PluginHostCallError = Error & {
   code: PluginErrorCode
@@ -136,10 +136,10 @@ export function createPluginWorkerRuntime(
     const module: unknown = await importModule(entryUrl)
     const activate = readExport(module, 'default')
     if (typeof activate !== 'function') {
-      // Why name it: `export function activate` is the usual slip, and Orca never calls it.
+      // Why name it: `export function activate` is the usual slip, and Topo never calls it.
       throw new Error(
         typeof readExport(module, 'activate') === 'function'
-          ? `plugin entry ${input.mainEntry} exports activate by name, but Orca calls the default export: write \`export default function activate(orca)\``
+          ? `plugin entry ${input.mainEntry} exports activate by name, but Topo calls the default export: write \`export default function activate(orca)\``
           : `plugin entry ${input.mainEntry} has no default-exported activate function`
       )
     }
@@ -148,7 +148,7 @@ export function createPluginWorkerRuntime(
       throw new Error(`plugin entry ${input.mainEntry} has a non-function deactivate export`)
     }
     deactivate = deactivateExport === undefined ? null : () => deactivateExport()
-    const orca: PluginWorkerOrcaApi = createPluginWorkerOrcaApi({
+    const orca: PluginWorkerTopoApi = createPluginWorkerTopoApi({
       tables,
       hostCall: (method, params, callOptions) => hostCall(method, params, callOptions?.signal),
       postToPanels: (post) => send(pluginEvent(WORKER_EVENTS.panelPost, post)),

@@ -50,7 +50,7 @@ export function locateLegacyAgentMessageSender(
   sender: AgentMessageSender,
   owner: string
 ): SenderLocation | undefined {
-  const { address, orcaSessionId: sessionId, terminalHandle: handle } = sender.party
+  const { address, topoSessionId: sessionId, terminalHandle: handle } = sender.party
   if (!address || address.startsWith('dispatch:')) {
     return undefined
   }

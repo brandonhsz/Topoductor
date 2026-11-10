@@ -13,7 +13,7 @@ import { isTuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent-co
 import { CommandReceiptExistsError } from '../../agent-session-journal/writing/command-receipt-transaction'
 import {
   classifyJournalOpenFailure,
-  isJournalWrittenByNewerOrca,
+  isJournalWrittenByNewerTopo,
   journalOpenRefusal
 } from '../../agent-session-journal/replay/journal-open-failure'
 import type { JournalStopAcceptanceInput } from '../../agent-session-journal/context-epochs/journal-stop-acceptance'
@@ -191,7 +191,7 @@ export function stopNotSaved(
   if (
     isAgentSessionRefusalError(error) ||
     classifyJournalOpenFailure(error) === 'journalCorrupt' ||
-    isJournalWrittenByNewerOrca(error)
+    isJournalWrittenByNewerTopo(error)
   ) {
     return { ok: false, refusal: journalOpenRefusal(error) }
   }

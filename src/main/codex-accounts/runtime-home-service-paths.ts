@@ -10,15 +10,15 @@ import {
 import { getAppEnvironment } from '../../shared/app-environment'
 import { dirname, isAbsolute, join, resolve } from 'node:path'
 import {
-  getOrcaManagedCodexHomePath,
-  getOrcaUserDataPath
+  getTopoManagedCodexHomePath,
+  getTopoUserDataPath
 } from '../codex/configuration/homes/codex-home-paths'
 import type { CodexMirroredHomeStatus } from './runtime-home-service-types'
 import { CodexRuntimeHomeState } from './runtime-home-service-state'
 
 export abstract class CodexRuntimeHomePaths extends CodexRuntimeHomeState {
   protected getRuntimeHomePath(): string {
-    return getOrcaManagedCodexHomePath()
+    return getTopoManagedCodexHomePath()
   }
 
   /** Resolve config-mirror status without side effects; a ready null path means no mirror runs. */
@@ -37,7 +37,7 @@ export abstract class CodexRuntimeHomePaths extends CodexRuntimeHomeState {
     }
     return {
       kind: 'ready',
-      homePath: join(getOrcaUserDataPath(), 'codex-runtime-home', 'home')
+      homePath: join(getTopoUserDataPath(), 'codex-runtime-home', 'home')
     }
   }
 

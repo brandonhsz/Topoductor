@@ -1,7 +1,7 @@
 import { wslDistroForCommand } from '../../shared/wsl-paths'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { withCliRuntimeOnPath } from '../../shared/node-cli-command-resolution'
-import { ORCA_AGENT_HOOKS_DISABLED_ENV } from '../../shared/agent-hook-listener/transport/agent-hook-suppression-env'
+import { TOPO_AGENT_HOOKS_DISABLED_ENV } from '../../shared/agent-hook-listener/transport/agent-hook-suppression-env'
 import { quotePosixShell } from '../../shared/shell/launch/shell-argument-quoting'
 import { resolveCliCommand } from '../codex-cli/command'
 import { wslAwareSpawn } from '../git/runner'
@@ -27,7 +27,7 @@ const WSL_LAUNCHER_ENV_KEYS = [
 
 const BACKGROUND_HOOK_ENV_KEYS = new Set<string>([
   ...AGENT_PANE_HOOK_ENV_KEYS,
-  ORCA_AGENT_HOOKS_DISABLED_ENV
+  TOPO_AGENT_HOOKS_DISABLED_ENV
 ])
 
 function buildWslLauncherEnv(explicitEnv: NodeJS.ProcessEnv | undefined): NodeJS.ProcessEnv {
@@ -50,14 +50,14 @@ export const spawnSourceControlAgent: SpawnSourceControlAgent = (input) => {
   const wslDistro = input.preparation
     ? wslDistroForCommand(input.cwd, input.wslDistro)
     : input.wslDistro
-  // Background agents cannot report hooks against the terminal that launched Orca.
+  // Background agents cannot report hooks against the terminal that launched Topo.
   const spawnEnv = { ...(input.env ?? process.env) }
   for (const key of Object.keys(spawnEnv)) {
     if (BACKGROUND_HOOK_ENV_KEYS.has(process.platform === 'win32' ? key.toUpperCase() : key)) {
       delete spawnEnv[key]
     }
   }
-  spawnEnv[ORCA_AGENT_HOOKS_DISABLED_ENV] = '1'
+  spawnEnv[TOPO_AGENT_HOOKS_DISABLED_ENV] = '1'
   if (process.platform === 'win32' && wslDistro) {
     // Apply command assignments after guest login-shell setup, never to the Windows launcher.
     const assignments = Object.entries(input.commandEnv ?? {})
@@ -77,7 +77,7 @@ export const spawnSourceControlAgent: SpawnSourceControlAgent = (input) => {
         // Profiles may restore pane identity; clear it in the guest before invoking the agent.
         wslShellCommand: [
           `command unset ${AGENT_PANE_HOOK_ENV_KEYS.join(' ')}`,
-          `command export ${ORCA_AGENT_HOOKS_DISABLED_ENV}=1`,
+          `command export ${TOPO_AGENT_HOOKS_DISABLED_ENV}=1`,
           quotePosixShell(assignments.length ? '/usr/bin/env' : input.binary)
         ].join(' && '),
         ...(input.preparation ? { preparation: input.preparation } : {})

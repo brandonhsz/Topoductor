@@ -58,7 +58,7 @@ function createFixture(): {
   home: string
   args: Parameters<typeof waitForManagedCodexAuthReady>[0]
 } {
-  const root = mkdtempSync(join(tmpdir(), 'orca-managed-codex-auth-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-managed-codex-auth-'))
   roots.push(root)
   const home = join(root, 'account', 'home')
   mkdirSync(home, { recursive: true })

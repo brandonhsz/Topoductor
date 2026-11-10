@@ -45,7 +45,7 @@ describe('JSON-lines RPC peer', () => {
     // Already-read bytes can arrive within a burst after the consumer pauses.
     input.emit(
       'data',
-      '{"type":"first"}\n{"type":"second"}\n{"id":"orca-1","type":"response","command":"get_state","success":true,"data":{}}\n{"id":"orca-optional-1","type":"response","data":"'
+      '{"type":"first"}\n{"type":"second"}\n{"id":"topo-1","type":"response","command":"get_state","success":true,"data":{}}\n{"id":"topo-optional-1","type":"response","data":"'
     )
     input.emit('data', 'x'.repeat(70_000))
     await optional

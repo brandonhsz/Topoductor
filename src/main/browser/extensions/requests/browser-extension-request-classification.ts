@@ -46,7 +46,7 @@ export function isRequestHiddenFromExtensions(details: {
   if (!WEB_URL.test(details.url)) {
     return true
   }
-  // Orca's own main-process requests carry neither a webContents nor an initiator.
+  // Topo's own main-process requests carry neither a webContents nor an initiator.
   if (details.webContentsId === undefined && details.initiatorOrigin === undefined) {
     return true
   }

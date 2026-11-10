@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { getDefaultSettings } from '../../../../shared/constants'
 import { makePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { layoutApplyTestDouble } from '@/runtime/workspace-layout/testing/layout-apply-test-double'
 
 vi.mock('sonner', () => ({ toast: { info: vi.fn(), success: vi.fn(), error: vi.fn() } }))
@@ -120,7 +120,7 @@ describe('terminal tab title batches', () => {
     main.commands.length = 0
     store.getState().setGeneratedTabTitlesFromAgentPrompts(updates)
 
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       // Main derives batch titles from agent status; first-write/replacement coverage is in agent-generated-tab-titles.test.ts, with no window writes.
       expect(main.commands).toEqual([])
       expect(store.getState().tabsByWorktree['wt-0']?.[0]?.generatedTitle).toBeUndefined()

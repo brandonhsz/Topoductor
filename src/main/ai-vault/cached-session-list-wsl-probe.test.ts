@@ -1,13 +1,13 @@
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { ProcessResult } from '@orca/process-host/process-spec'
+import type { ProcessResult } from '@topo/process-host/process-spec'
 
 const { runProcessMock, scanAiVaultSessionsInService } = vi.hoisted(() => ({
   runProcessMock: vi.fn(),
   scanAiVaultSessionsInService: vi.fn()
 }))
 
-vi.mock('@orca/process-host', async (importOriginal) => ({
+vi.mock('@topo/process-host', async (importOriginal) => ({
   ...(await importOriginal<object>()),
   runProcess: runProcessMock
 }))

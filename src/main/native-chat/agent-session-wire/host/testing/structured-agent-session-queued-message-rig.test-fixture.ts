@@ -57,7 +57,7 @@ export async function createQueuedMessageTestRig(
   } = {}
 ) {
   const SESSION = options.sessionId ?? DEFAULT_SESSION
-  const root = await mkdtemp(join(tmpdir(), 'orca-queued-messages-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-queued-messages-'))
   resetHostTestOperationIds()
   let store = await openTestAgentSessionRecordStore(root)
   const provider = createQueuedRigProvider(store, options, () => host)

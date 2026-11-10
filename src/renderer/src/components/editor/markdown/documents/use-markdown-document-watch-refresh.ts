@@ -4,7 +4,7 @@ import {
   normalizeRuntimePathForComparison,
   relativePathInsideRoot
 } from '../../../../../../shared/cross-platform-path'
-import { ORCA_WORKTREE_FILE_CHANGE_EVENT } from '@/hooks/worktree-file-change-event'
+import { TOPO_WORKTREE_FILE_CHANGE_EVENT } from '@/hooks/worktree-file-change-event'
 import { hasMarkdownExtension } from '../link-routing/markdown-internal-links'
 import { MARKDOWN_DOCUMENT_LIST_JOIN_WINDOW_MS } from './markdown-document-list-request'
 
@@ -111,7 +111,7 @@ export function useMarkdownDocumentWatchRefresh({
         })
       }, DOCUMENT_WATCH_DEBOUNCE_MS)
     }
-    const handleChange = (event: WindowEventMap[typeof ORCA_WORKTREE_FILE_CHANGE_EVENT]): void => {
+    const handleChange = (event: WindowEventMap[typeof TOPO_WORKTREE_FILE_CHANGE_EVENT]): void => {
       const { payload, runtimeEnvironmentId: eventOwner } = event.detail
       if (eventOwner !== owner || !changesDocumentMembership(payload, worktreePath)) {
         return
@@ -124,12 +124,12 @@ export function useMarkdownDocumentWatchRefresh({
       }
       scheduleScan()
     }
-    window.addEventListener(ORCA_WORKTREE_FILE_CHANGE_EVENT, handleChange)
+    window.addEventListener(TOPO_WORKTREE_FILE_CHANGE_EVENT, handleChange)
     return () => {
       disposed = true
       clearTimeout(timer)
       clearTimeout(scanWatchdog)
-      window.removeEventListener(ORCA_WORKTREE_FILE_CHANGE_EVENT, handleChange)
+      window.removeEventListener(TOPO_WORKTREE_FILE_CHANGE_EVENT, handleChange)
     }
   }, [enabled, owner, worktreePath, refresh])
 }

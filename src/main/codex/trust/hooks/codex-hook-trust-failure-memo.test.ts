@@ -13,7 +13,7 @@ vi.mock('../../app-server/codex-app-server-session', async (importOriginal) => (
   ...(await importOriginal<typeof AppServerSession>()),
   runCodexAppServerSession: mocks.runCodexAppServerSession
 }))
-vi.mock('@orca/process-host', () => ({ runProcess: mocks.runProcess }))
+vi.mock('@topo/process-host', () => ({ runProcess: mocks.runProcess }))
 
 import { CodexAppServerRequestError } from '../../app-server/codex-app-server-request-error'
 import { CodexAppServerUnsupportedError } from '../../app-server/codex-app-server-session'
@@ -24,7 +24,7 @@ import {
 } from './codex-hook-hash-lookup'
 import { getCodexHookTrustMemoPath } from './codex-hook-trust-memo'
 
-const COMMAND = '/home/u/.orca/agent-hooks/codex-hook.sh'
+const COMMAND = '/home/u/.topo/agent-hooks/codex-hook.sh'
 let userData: string
 let codexPath: string
 
@@ -33,8 +33,8 @@ function startProcess(): void {
   startCodexHookHashLookup(Promise.resolve())
 }
 
-// movedHash controls the shifted copy; listsOrca=false leaves only the dummy hook.
-function listHashedHooks(movedHash = 'sha256:stop', listsOrca = true): void {
+// movedHash controls the shifted copy; listsTopo=false leaves only the dummy hook.
+function listHashedHooks(movedHash = 'sha256:stop', listsTopo = true): void {
   mocks.runCodexAppServerSession.mockImplementation(
     async (invocation: { env?: Record<string, string> }, body: (rpc: unknown) => unknown) => {
       let project = ''
@@ -52,16 +52,16 @@ function listHashedHooks(movedHash = 'sha256:stop', listsOrca = true): void {
         sourcePath,
         currentHash: hash
       })
-      const orca = [listing(home, 0), listing(home, 2, movedHash), listing(projectHooks, 0)]
-      const hooks = [listing(home, 1, 'sha256:dummy'), ...(listsOrca ? orca : [])]
+      const topo = [listing(home, 0), listing(home, 2, movedHash), listing(projectHooks, 0)]
+      const hooks = [listing(home, 1, 'sha256:dummy'), ...(listsTopo ? topo : [])]
       return { data: [{ cwd: project, hooks }] }
     }
   )
 }
 
 beforeEach(() => {
-  userData = mkdtempSync(join(tmpdir(), 'orca-codex-trust-failure-'))
-  vi.stubEnv('ORCA_USER_DATA_PATH', userData)
+  userData = mkdtempSync(join(tmpdir(), 'topo-codex-trust-failure-'))
+  vi.stubEnv('TOPO_USER_DATA_PATH', userData)
   codexPath = join(userData, 'codex')
   writeFileSync(codexPath, 'codex 0.150.1')
   mocks.runProcess.mockResolvedValue({ code: 0, stdout: 'codex-cli 0.150.1\n', stderr: '' })
@@ -113,7 +113,7 @@ describe("Codex's definitive answer", () => {
           new CodexAppServerUnsupportedError('method not found: hooks/list')
         )
     ],
-    ["it does not list Orca's entry", 1, () => listHashedHooks('sha256:stop', false)],
+    ["it does not list Topo's entry", 1, () => listHashedHooks('sha256:stop', false)],
     ['it hashes a moved copy differently, twice', 2, () => listHashedHooks('sha256:moved')]
   ])('is refused and saved for the version when %s', async (_, asks, answer) => {
     answer()

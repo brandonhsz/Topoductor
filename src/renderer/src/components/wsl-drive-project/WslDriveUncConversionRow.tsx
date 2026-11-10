@@ -15,9 +15,9 @@ type Step =
   | { kind: 'problem'; messages: string[] }
 
 /**
- * A project Orca opens through WSL's view of a Windows drive (`\\wsl.localhost\<d>\mnt\c\x`): Git
- * there is ~300x slower than Git for Windows, so Orca offers to reopen it at its drive path, with
- * terminals and agents still in the distro. Converting restarts Orca.
+ * A project Topo opens through WSL's view of a Windows drive (`\\wsl.localhost\<d>\mnt\c\x`): Git
+ * there is ~300x slower than Git for Windows, so Topo offers to reopen it at its drive path, with
+ * terminals and agents still in the distro. Converting restarts Topo.
  */
 export function WslDriveUncConversionRow({
   repo
@@ -38,11 +38,11 @@ export function WslDriveUncConversionRow({
       result = await window.api.wslDriveUnc.convert({ distro, repoIds: [repo.id] })
     } catch {
       setStep({ kind: 'idle' })
-      toast.error(t('wslDriveUnc.failed', 'Orca could not convert this project.'))
+      toast.error(t('wslDriveUnc.failed', 'Topo could not convert this project.'))
       return
     }
     if (result.outcome === 'restarting') {
-      toast(t('wslDriveUnc.restarting', 'Restarting Orca to convert this project…'))
+      toast(t('wslDriveUnc.restarting', 'Restarting Topo to convert this project…'))
       return
     }
     setStep({ kind: 'problem', messages: wslDriveUncConversionMessages(result, drivePath) })
@@ -54,7 +54,7 @@ export function WslDriveUncConversionRow({
         alignTop
         description={t(
           'wslDriveUnc.description',
-          'Orca opens this project through WSL. Open it at {{drivePath}} instead: Git runs on Windows, which is much faster here, and terminals and agents stay in {{distro}}.',
+          'Topo opens this project through WSL. Open it at {{drivePath}} instead: Git runs on Windows, which is much faster here, and terminals and agents stay in {{distro}}.',
           { drivePath, distro }
         )}
         control={
@@ -82,7 +82,7 @@ export function WslDriveUncConversionRow({
           <p className="text-xs text-muted-foreground">
             {t(
               'wslDriveUnc.review',
-              'Orca pauses this project’s terminals, restarts, and reopens it at {{drivePath}}. Tabs, terminals with their history, chats and settings come along, and paused terminals pick up where they were.',
+              'Topo pauses this project’s terminals, restarts, and reopens it at {{drivePath}}. Tabs, terminals with their history, chats and settings come along, and paused terminals pick up where they were.',
               { drivePath }
             )}
           </p>

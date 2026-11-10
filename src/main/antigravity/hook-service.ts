@@ -59,7 +59,7 @@ function getWindowsWrapperScriptPath(event: AntigravityEvent): string {
 function getPosixManagedCommand(scriptPath: string, event: AntigravityEvent): string {
   const command = wrapPosixHookCommand(
     scriptPath,
-    { ORCA_ANTIGRAVITY_EVENT: event.eventName },
+    { TOPO_ANTIGRAVITY_EVENT: event.eventName },
     // Keep tools usable if the managed script disappears: silence denies PreToolUse.
     event.eventName === 'PreToolUse' ? { fallbackStdout: ANTIGRAVITY_PRE_TOOL_USE_DECISION } : {}
   )
@@ -200,7 +200,7 @@ export class AntigravityHookService {
   async installRemote(sftp: SFTPWrapper, remoteHome: string): Promise<AgentHookInstallStatus> {
     const home = remoteHome.replace(/\/$/, '')
     const remoteConfigPath = `${home}/.gemini/config/hooks.json`
-    const remoteScriptPath = `${home}/.orca/agent-hooks/antigravity-hook.sh`
+    const remoteScriptPath = `${home}/.topo/agent-hooks/antigravity-hook.sh`
     try {
       const config = await readHooksJsonRemote(sftp, remoteConfigPath)
       if (!config) {

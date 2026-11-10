@@ -76,7 +76,7 @@ export function useTerminalPaneGlobalListeners(controller: TerminalPaneCloseCont
     macOptionAsAltRef,
     paneKittyKeyboardModesRef,
     keybindings,
-    terminalShortcutPolicy: settings?.terminalShortcutPolicy ?? 'orca-first'
+    terminalShortcutPolicy: settings?.terminalShortcutPolicy ?? 'topo-first'
   })
   useTerminalPaneGlobalEffects({
     tabId,

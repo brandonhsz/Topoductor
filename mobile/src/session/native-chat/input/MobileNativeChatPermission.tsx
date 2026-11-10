@@ -149,8 +149,8 @@ function MobileNativeChatPermissionContext({
         <MobileNativeChatPermissionDetail detail={permission.detail} />
       ) : null}
       {newerSubject ? (
-        <Text testID="native-chat-approval-needs-newer-orca" style={styles.detail}>
-          {t('chat.permission.newerVersionRequired', 'This request needs a newer version of Orca.')}
+        <Text testID="native-chat-approval-needs-newer-topo" style={styles.detail}>
+          {t('chat.permission.newerVersionRequired', 'This request needs a newer version of Topo.')}
         </Text>
       ) : null}
     </ScrollView>

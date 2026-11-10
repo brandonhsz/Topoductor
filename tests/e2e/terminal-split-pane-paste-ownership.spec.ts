@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { rmSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   focusActiveTerminalInput,
@@ -55,20 +55,20 @@ function countOccurrences(value: string, needle: string): number {
 test.describe('split terminal pane paste ownership', () => {
   test('keyboard paste writes only to the active split pane PTY', async ({
     electronApp,
-    orcaPage,
+    topoPage,
     testRepoPath
   }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
-    await waitForActiveTerminalManager(orcaPage, 30_000)
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
     await installTerminalPtyWriteSpy(electronApp)
 
-    await splitActiveTerminalPane(orcaPage, 'vertical')
-    await waitForPaneCount(orcaPage, 2)
-    await focusLastTerminalPane(orcaPage)
+    await splitActiveTerminalPane(topoPage, 'vertical')
+    await waitForPaneCount(topoPage, 2)
+    await focusLastTerminalPane(topoPage)
 
-    const snapshot = await waitForPaneIdentitySnapshot(orcaPage, 2)
+    const snapshot = await waitForPaneIdentitySnapshot(topoPage, 2)
     const activePane = snapshot.panes.find((pane) => pane.leafId === snapshot.activeLeafId)
     const inactivePane = snapshot.panes.find((pane) => pane.leafId !== snapshot.activeLeafId)
     if (!activePane?.ptyId || !inactivePane?.ptyId) {
@@ -76,23 +76,23 @@ test.describe('split terminal pane paste ownership', () => {
     }
 
     const runId = randomUUID()
-    const scriptPath = path.join(testRepoPath, `.orca-split-paste-${runId}.mjs`)
+    const scriptPath = path.join(testRepoPath, `.topo-split-paste-${runId}.mjs`)
     writeFileSync(scriptPath, pasteEchoScript(runId))
     let scriptStarted = false
 
     try {
-      await sendToTerminal(orcaPage, activePane.ptyId, `node ${JSON.stringify(scriptPath)}\r`)
+      await sendToTerminal(topoPage, activePane.ptyId, `node ${JSON.stringify(scriptPath)}\r`)
       scriptStarted = true
-      await waitForTerminalOutput(orcaPage, `SPLIT_PASTE_READY_${runId}`, 10_000)
+      await waitForTerminalOutput(topoPage, `SPLIT_PASTE_READY_${runId}`, 10_000)
 
-      const payload = `ORCA_E2E_SPLIT_PASTE_${runId}`
+      const payload = `TOPO_E2E_SPLIT_PASTE_${runId}`
       const encodedPayload = Buffer.from(payload, 'utf8').toString('base64')
-      await orcaPage.evaluate((text) => window.api.ui.writeClipboardText(text), payload)
+      await topoPage.evaluate((text) => window.api.ui.writeClipboardText(text), payload)
       await clearTerminalPtyWriteLog(electronApp)
-      await focusActiveTerminalInput(orcaPage)
+      await focusActiveTerminalInput(topoPage)
 
-      await orcaPage.keyboard.press(keyboardPasteChord())
-      await waitForTerminalOutput(orcaPage, encodedPayload, 10_000, 12_000)
+      await topoPage.keyboard.press(keyboardPasteChord())
+      await waitForTerminalOutput(topoPage, encodedPayload, 10_000, 12_000)
 
       const writes = await readTerminalPtyWriteEntries(electronApp)
       const activeWrites = writes
@@ -107,7 +107,7 @@ test.describe('split terminal pane paste ownership', () => {
       expect(inactiveWrites).not.toContain(payload)
     } finally {
       if (scriptStarted) {
-        await sendToTerminal(orcaPage, activePane.ptyId, '\x03').catch(() => undefined)
+        await sendToTerminal(topoPage, activePane.ptyId, '\x03').catch(() => undefined)
       }
       rmSync(scriptPath, { force: true })
     }

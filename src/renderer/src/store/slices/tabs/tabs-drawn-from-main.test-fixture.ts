@@ -1,6 +1,6 @@
 // With main layout ownership, emulate command replies and frames; install runtimeRpcClientWithLayoutApply/runtimeLayoutClientWithTestFrames mocks first. Inert for window-owned layouts.
 
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import { buildWorkspaceSessionPayload } from '@/lib/workspace/persistence/workspace-session'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
 import { _resetLayoutFramePositionForTests } from '@/runtime/workspace-layout/frames/layout-frame-position'
@@ -58,7 +58,7 @@ function missingFrameSlices(state: AppState): Partial<AppState> {
 
 /** Main takes the store's current layout and draws it from here on; a no-op with the switch off. */
 export async function drawTabsFromMain(store: DrawnStore): Promise<TabsDrawnFromMain> {
-  if (!ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (!TOPO_LAYOUT_OWNER_IS_MAIN) {
     return INERT
   }
   layoutApplyTestTransport.reset()

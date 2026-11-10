@@ -88,7 +88,7 @@ export const fsModuleMock = () => ({
   chmodSync: chmodSyncMock,
   renameSync: renameSyncMock,
   rmSync: rmSyncMock,
-  mkdtempSync: () => '/tmp/orca-watcher-canary-test',
+  mkdtempSync: () => '/tmp/topo-watcher-canary-test',
   constants: {
     X_OK: 1,
     R_OK: 4
@@ -154,7 +154,7 @@ export const agentHookServerModuleMock = () => ({
 export const piTitlebarExtensionModuleMock = () => ({
   piTitlebarExtensionService: {
     buildPtyEnv: piBuildPtyEnvMock,
-    buildFreshOmpEnv: () => ({ ORCA_OMP_FRESH_CONFIG: '/tmp/orca-fresh-session.yml' }),
+    buildFreshOmpEnv: () => ({ TOPO_OMP_FRESH_CONFIG: '/tmp/topo-fresh-session.yml' }),
     clearPty: piClearPtyMock
   }
 })
@@ -189,7 +189,7 @@ export const classifyErrorModuleMock = () => ({
 
 // Avoid writes to resourcesPath; environment assembly needs only the returned shim directory.
 export const linuxCliShimModuleMock = () => ({
-  ensureLinuxTerminalOrcaCliShimDir: linuxCliShimMock
+  ensureLinuxTerminalTopoCliShimDir: linuxCliShimMock
 })
 
 export const ptyRegistryModuleMock = () => ({

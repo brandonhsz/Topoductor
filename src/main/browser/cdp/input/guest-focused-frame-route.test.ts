@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { WebContents } from 'electron'
-import { isOrcaFrameSessionTraffic, type GuestSessionCdpSender } from './guest-frame-input-sessions'
+import { isTopoFrameSessionTraffic, type GuestSessionCdpSender } from './guest-frame-input-sessions'
 import { resolveFocusedFrameRoute } from './guest-focused-frame-route'
 
 function fakeGuest(): WebContents {
@@ -92,7 +92,7 @@ describe('resolveFocusedFrameRoute', () => {
       expect(await route).toEqual({ kind: 'unknown' })
       await vi.advanceTimersByTimeAsync(2_000)
 
-      expect(isOrcaFrameSessionTraffic(guest, 'Runtime.consoleAPICalled', {}, 'LATE')).toBe(true)
+      expect(isTopoFrameSessionTraffic(guest, 'Runtime.consoleAPICalled', {}, 'LATE')).toBe(true)
     } finally {
       vi.useRealTimers()
     }

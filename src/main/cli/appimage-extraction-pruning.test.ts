@@ -42,16 +42,16 @@ afterEach(async () => {
 })
 
 async function writePayload(rootPath: string, content = '#!/usr/bin/env bash\n'): Promise<string> {
-  const launcherPath = join(rootPath, 'resources', 'bin', 'orca-ide')
+  const launcherPath = join(rootPath, 'resources', 'bin', 'topo-ide')
   await mkdir(dirname(launcherPath), { recursive: true })
   await writeFile(launcherPath, content, { mode: 0o755 })
   return launcherPath
 }
 
 async function makeExtractionFixture() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-appimage-pruning-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-appimage-pruning-'))
   created.push(root)
-  const appImagePath = join(root, 'Orca.AppImage')
+  const appImagePath = join(root, 'Topo.AppImage')
   await writeFile(appImagePath, '#!/usr/bin/env bash\n', { mode: 0o755 })
   return { root, appImagePath, cacheRootPath: join(root, 'cache') }
 }
@@ -158,7 +158,7 @@ describe('AppImage extraction pruning', () => {
   it.skipIf(process.platform === 'win32')(
     'restores a sibling endpoint that wins the uninstall rename race',
     async () => {
-      const cacheRootPath = await mkdtemp(join(tmpdir(), 'orca-appimage-pruning-'))
+      const cacheRootPath = await mkdtemp(join(tmpdir(), 'topo-appimage-pruning-'))
       created.push(cacheRootPath)
       const ownerNamespace = join(cacheRootPath, 'a'.repeat(24))
       const siblingNamespace = join(cacheRootPath, 'b'.repeat(24))

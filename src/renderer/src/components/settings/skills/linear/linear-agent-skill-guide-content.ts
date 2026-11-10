@@ -28,11 +28,11 @@ export function getLinearGuideNotes(t: Translate = translate): LinearGuideNote[]
       icon: Slash,
       title: t(
         'auto.components.settings.LinearAgentSkillGuide.noteSlashTitle',
-        'Mention /orca-linear'
+        'Mention /topo-linear'
       ),
       body: t(
         'auto.components.settings.LinearAgentSkillGuide.noteSlashBody',
-        'In chat, use /orca-linear (or ask in plain language) so the agent loads the skill for that turn.'
+        'In chat, use /topo-linear (or ask in plain language) so the agent loads the skill for that turn.'
       )
     },
     {

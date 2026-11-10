@@ -47,7 +47,7 @@ export class RemoteRuntimeSubscriptionFrameRouter<TResult> {
       this.options.fail(
         new RemoteRuntimeClientError(
           'invalid_runtime_response',
-          'Remote Orca runtime returned an undecryptable frame.'
+          'Remote Topo runtime returned an undecryptable frame.'
         )
       )
       return
@@ -66,8 +66,8 @@ export class RemoteRuntimeSubscriptionFrameRouter<TResult> {
         new RemoteRuntimeClientError(
           'invalid_runtime_response',
           readyFrame === 'invalid'
-            ? 'Remote Orca runtime returned an invalid E2EE handshake frame.'
-            : 'Remote Orca runtime returned an unexpected E2EE handshake frame.'
+            ? 'Remote Topo runtime returned an invalid E2EE handshake frame.'
+            : 'Remote Topo runtime returned an unexpected E2EE handshake frame.'
         )
       )
       return
@@ -99,7 +99,7 @@ export class RemoteRuntimeSubscriptionFrameRouter<TResult> {
       this.options.fail(
         new RemoteRuntimeClientError(
           'invalid_runtime_response',
-          'Remote Orca runtime returned an invalid E2EE auth frame.'
+          'Remote Topo runtime returned an invalid E2EE auth frame.'
         )
       )
       return
@@ -108,7 +108,7 @@ export class RemoteRuntimeSubscriptionFrameRouter<TResult> {
       const code =
         authenticated.errorCode === 'unauthorized' ? 'unauthorized' : 'invalid_runtime_response'
       this.options.fail(
-        new RemoteRuntimeClientError(code, 'Remote Orca runtime rejected the pairing token.')
+        new RemoteRuntimeClientError(code, 'Remote Topo runtime rejected the pairing token.')
       )
       return
     }
@@ -125,7 +125,7 @@ export class RemoteRuntimeSubscriptionFrameRouter<TResult> {
       this.options.fail(
         new RemoteRuntimeClientError(
           'invalid_runtime_response',
-          'Remote Orca runtime returned an invalid response frame.'
+          'Remote Topo runtime returned an invalid response frame.'
         )
       )
       return
@@ -145,7 +145,7 @@ export class RemoteRuntimeSubscriptionFrameRouter<TResult> {
     this.options.fail(
       new RemoteRuntimeClientError(
         'invalid_runtime_response',
-        'Remote Orca runtime returned a mismatched response id.'
+        'Remote Topo runtime returned a mismatched response id.'
       )
     )
   }
@@ -155,7 +155,7 @@ export class RemoteRuntimeSubscriptionFrameRouter<TResult> {
       this.options.fail(
         new RemoteRuntimeClientError(
           'invalid_runtime_response',
-          'Remote Orca runtime returned binary data before authentication.'
+          'Remote Topo runtime returned binary data before authentication.'
         )
       )
       return
@@ -166,7 +166,7 @@ export class RemoteRuntimeSubscriptionFrameRouter<TResult> {
         new RemoteRuntimeClientError(
           'invalid_runtime_response',
           opened.failure === 'undecryptable'
-            ? 'Remote Orca runtime returned an undecryptable binary frame.'
+            ? 'Remote Topo runtime returned an undecryptable binary frame.'
             : SEALED_FRAME_FAILURE_MESSAGES[opened.failure]
         )
       )

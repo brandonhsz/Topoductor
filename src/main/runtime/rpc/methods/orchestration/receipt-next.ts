@@ -1,13 +1,13 @@
 import { z } from 'zod'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { projectWorkerListFleet } from './worker/worker-list-projection'
 
 // Only an empty check sees the whole mailbox, so only it says to stop.
-const AWAIT_WAKE = "Orca wakes you when workers report; end your turn when you're done."
+const AWAIT_WAKE = "Topo wakes you when workers report; end your turn when you're done."
 const FINISH_MAILBOX = 'Finish the rest of your mail.'
 const MORE_MAIL = 'More mail is waiting: run check again.'
 const AWAIT_WORKER_REPORTS =
-  'Orca wakes you when a worker reports. Once every worker you need is started, end your turn. Do not poll.'
+  'Topo wakes you when a worker reports. Once every worker you need is started, end your turn. Do not poll.'
 export const WORKER_DONE_RECORDED_NEXT = 'Recorded. End your turn.'
 
 const ReadyWorkerStart = z.looseObject({
@@ -43,7 +43,7 @@ export function withWorkerStartNext(
 }
 
 export async function withRunCheckNext(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   result: unknown
 ): Promise<unknown> {
   // A batch is capped, so a take that leaves unread mail behind is the one case that needs another check.
@@ -64,7 +64,7 @@ export function withAnswerNext<T extends object>(receipt: T): T & { next: string
 }
 
 /** A worker still runs and worker-list owes no action: each running worker's stop or exit sends mail. */
-async function awaitsWorkerReports(runtime: OrcaRuntimeService, runId: string): Promise<boolean> {
+async function awaitsWorkerReports(runtime: TopoRuntimeService, runId: string): Promise<boolean> {
   const db = runtime.getOrchestrationDb()
   const rows = db.listWorkerTerminalResources({ runId })
   const { workers } = await projectWorkerListFleet(runtime, rows, {

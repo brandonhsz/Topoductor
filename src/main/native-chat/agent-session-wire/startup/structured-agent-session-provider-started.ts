@@ -48,7 +48,7 @@ export type StructuredAgentSessionProviderStartedContext = {
 }
 
 /** A failure is the adapter's verdict on required provider work or on this child ending before it
- *  was ready, or Orca refusing what the open answered; `stale` retires only this owner. */
+ *  was ready, or Topo refusing what the open answered; `stale` retires only this owner. */
 export type StructuredAgentSessionProviderStartedOutcome =
   | 'ready'
   | 'stale'
@@ -71,7 +71,7 @@ export async function settleStructuredAgentSessionProviderStarted(
     context.deps.adapter.startupEnding?.(event.sessionId, event.acquisitionGeneration)
   const local: LocalSettlement = { started: false, fenced: false }
   // A death the adapter reports ends the start without waiting on its bookkeeping below, but
-  // never once Orca's own handle or rewind write began: only that write's answer says whether
+  // never once Topo's own handle or rewind write began: only that write's answer says whether
   // the start may run again, and the contract guard bounds the wait for it.
   const died = context.runtimeState.startupAttempts.rootExit(event.sessionId, child).then(() => {
     const ending = local.started ? undefined : ended()

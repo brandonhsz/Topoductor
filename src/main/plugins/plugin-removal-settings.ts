@@ -5,7 +5,7 @@ import type { Store } from '../persistence/loading-store/store'
 
 /**
  * Forgets a removed plugin's consent, disabled flag, allowed external hosts, theme and font choices.
- * `keepDisabled`: Orca republishes a copy it ships on the next launch; that copy comes back off.
+ * `keepDisabled`: Topo republishes a copy it ships on the next launch; that copy comes back off.
  */
 export function clearRemovedPluginSettings(
   store: Pick<Store, 'getSettings' | 'updateSettings'>,

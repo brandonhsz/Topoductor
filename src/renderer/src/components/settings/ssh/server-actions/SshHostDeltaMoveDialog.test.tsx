@@ -3,11 +3,11 @@ import { act, type ReactNode } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type {
-  OrcadDeltaMovePreview,
-  OrcadDeltaMoveResult
-} from '../../../../../../shared/orcad-managed-runtime'
+  TopodDeltaMovePreview,
+  TopodDeltaMoveResult
+} from '../../../../../../shared/topod-managed-runtime'
 import type { SshTarget } from '../../../../../../shared/ssh-types'
-import type { ManagedOrcadPreloadApi } from '../../../../../../preload/api/managed-orcad-api'
+import type { ManagedTopodPreloadApi } from '../../../../../../preload/api/managed-topod-api'
 import { SshHostDeltaMoveDialog } from './SshHostDeltaMoveDialog'
 
 vi.mock('../../../ui/dialog', () => ({
@@ -30,7 +30,7 @@ afterEach(() => {
 
 const target: SshTarget = { id: 'ssh-1', label: 'Builder', host: 'b', port: 22, username: 'dev' }
 
-function preview(overrides: Partial<OrcadDeltaMovePreview> = {}): OrcadDeltaMovePreview {
+function preview(overrides: Partial<TopodDeltaMovePreview> = {}): TopodDeltaMovePreview {
   return {
     sshTargetId: 'ssh-1',
     environmentId: 'env-1',
@@ -44,7 +44,7 @@ function preview(overrides: Partial<OrcadDeltaMovePreview> = {}): OrcadDeltaMove
   }
 }
 
-function api(next: OrcadDeltaMovePreview, result: OrcadDeltaMoveResult): ManagedOrcadPreloadApi {
+function api(next: TopodDeltaMovePreview, result: TopodDeltaMoveResult): ManagedTopodPreloadApi {
   const unused = vi.fn(async () => {
     throw new Error('not used by the delta dialog')
   })
@@ -79,7 +79,7 @@ function confirmButton(container: HTMLElement): HTMLButtonElement {
 describe('moving what an older build added', () => {
   it('keeps a running move when the caller passes a fresh target object', async () => {
     const managed = api(preview(), { outcome: 'moved', migrationId: 'm-2' })
-    managed.moveDelta = vi.fn(() => new Promise<OrcadDeltaMoveResult>(() => {}))
+    managed.moveDelta = vi.fn(() => new Promise<TopodDeltaMoveResult>(() => {}))
     const container = document.createElement('div')
     document.body.append(container)
     const root = createRoot(container)

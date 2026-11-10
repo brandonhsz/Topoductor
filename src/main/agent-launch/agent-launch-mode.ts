@@ -19,7 +19,7 @@ import type {
   StructuredAgentCreateSupportReply
 } from '../../shared/agent-session/structured-agent-create-support-reply'
 import type { WorkspaceLaunchKind } from '../../shared/agent-launch/contracts/workspace-launch-kind'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import type { AgentLaunchSurface } from '../../shared/agent-launch/contracts/agent-launch-surface'
 import { formatAgentTypeLabel } from '../../shared/agent-status/presentation/agent-type-label'
 import { AgentLaunchSurfaceUnavailableError } from './agent-launch-surface-refusal'
@@ -72,7 +72,7 @@ const DOWNGRADE_DETAIL: Record<AgentLaunchDowngradeReason, string> = {
   chat_unavailable_on_windows: "this agent's chat isn't available on Windows yet",
   structured_unsupported_on_host: 'the execution host cannot create one here',
   chat_runtime_not_installed:
-    "its chat runtime isn't installed on this host (install it from a new chat tab in Orca)"
+    "its chat runtime isn't installed on this host (install it from a new chat tab in Topo)"
 }
 
 const BLOCKER_REASON: Record<StructuredNativeChatBlocker, AgentLaunchDowngradeReason> = {
@@ -167,7 +167,7 @@ export function decideAgentLaunchMode(args: {
 
 /** Refuse explicit chat only before effects; a created workspace keeps its terminal fallback. */
 export async function resolveAgentLaunchModeOnHost(
-  runtime: Pick<OrcaRuntimeService, 'getStructuredAgentSessionCreateSupport'>,
+  runtime: Pick<TopoRuntimeService, 'getStructuredAgentSessionCreateSupport'>,
   receipt: AgentLaunchModeReceipt,
   worktreeId: string | undefined,
   agent: TuiAgent | undefined,
@@ -199,7 +199,7 @@ export async function resolveAgentLaunchModeOnHost(
 
 /** Unknown host support must fall back to a terminal. */
 async function readStructuredCreateSupport(
-  runtime: Pick<OrcaRuntimeService, 'getStructuredAgentSessionCreateSupport'>,
+  runtime: Pick<TopoRuntimeService, 'getStructuredAgentSessionCreateSupport'>,
   worktreeId: string,
   agent: TuiAgent | undefined
 ): Promise<StructuredAgentCreateSupportReply | null> {

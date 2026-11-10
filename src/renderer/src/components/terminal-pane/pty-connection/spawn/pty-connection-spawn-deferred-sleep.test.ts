@@ -4,7 +4,7 @@ import type { ConnectPanePtySession } from '../connect-pane-pty-session'
 import type * as React from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { makePaneKey } from '../../../../../../shared/workspace-layout/stable-pane-id'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import {
   expectWindowStartAskedMain,
   mainLayoutApplyTransport
@@ -486,7 +486,7 @@ describe('connectPanePty: a restore the host kept asleep', () => {
       ...mockPanePtyArgs(pane, createManager(1), bindPaneAgentTitleMocks(deps, agentTitleMocks2))
     )
     await flushAsyncTicks(20)
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       await expectRestoreAskedMainNotDeferred(transport, makePaneKey('tab-1', pane.leafId))
       binding.dispose()
       return
@@ -539,7 +539,7 @@ describe('connectPanePty: a restore the host kept asleep', () => {
       ...mockPanePtyArgs(pane, createManager(1), bindPaneAgentTitleMocks(deps, agentTitleMocks3))
     )
     await flushAsyncTicks(20)
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       await expectRestoreAskedMainNotDeferred(transport, makePaneKey('tab-1', pane.leafId))
       binding.dispose()
       return
@@ -585,7 +585,7 @@ describe('connectPanePty: a restore the host kept asleep', () => {
       ...mockPanePtyArgs(pane, createManager(1), bindPaneAgentTitleMocks(deps, agentTitleMocks4))
     )
     await flushAsyncTicks(20)
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       await expectRestoreAskedMainNotDeferred(transport, makePaneKey('tab-1', pane.leafId))
       binding.dispose()
       return
@@ -644,7 +644,7 @@ describe('connectPanePty: a restore the host kept asleep', () => {
       ...mockPanePtyArgs(pane, createManager(1), bindPaneAgentTitleMocks(deps, agentTitleMocks5))
     )
     await flushAsyncTicks(20)
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       await expectRestoreAskedMainNotDeferred(transport, makePaneKey('tab-1', pane.leafId))
       binding.dispose()
       return
@@ -690,7 +690,7 @@ describe('connectPanePty: a restore the host kept asleep', () => {
       ...mockPanePtyArgs(pane, createManager(1), bindPaneAgentTitleMocks(deps, agentTitleMocks6))
     )
     await flushAsyncTicks(20)
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       await expectRestoreAskedMainNotDeferred(transport, makePaneKey('tab-1', pane.leafId))
       binding.dispose()
       return
@@ -729,7 +729,7 @@ describe('connectPanePty: a restore the host kept asleep', () => {
       ...mockPanePtyArgs(pane, createManager(1), bindPaneAgentTitleMocks(deps, agentTitleMocks7))
     )
     await flushAsyncTicks(20)
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       await expectRestoreAskedMainNotDeferred(transport, makePaneKey('tab-1', pane.leafId))
       binding.dispose()
       return

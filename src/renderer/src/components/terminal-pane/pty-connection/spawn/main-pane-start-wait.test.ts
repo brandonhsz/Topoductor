@@ -25,7 +25,7 @@ const store = vi.hoisted(() => {
 })
 
 vi.mock('@/store/index', () => ({ useAppStore: store }))
-vi.mock('../../../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 const callRuntimeRpc = vi.hoisted(() => vi.fn(async () => ({ started: true })))
 vi.mock('@/runtime/rpc/calls/runtime-rpc-call', () => ({
   callRuntimeRpc
@@ -119,7 +119,7 @@ describe('waitsForMainPaneStart', () => {
 
     showPaneStartFailure(
       pane,
-      "The WSL distro Debian is stopped, so Orca didn't start this terminal. Start the distro, then try again."
+      "The WSL distro Debian is stopped, so Topo didn't start this terminal. Start the distro, then try again."
     )
 
     expect(wslDistroStoppedHoldStore.getState().panes[PANE_KEY]).toMatchObject({

@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   cleanupMarkdownFixture,
   closeActiveEditorTab,
@@ -21,13 +21,13 @@ import {
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 
 test.describe('Markdown nested toggle regression', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
   })
 
-  test('editing a nested toggle survives save and reopen', async ({ orcaPage }, testInfo) => {
-    const context = await getActiveWorktreeContext(orcaPage)
+  test('editing a nested toggle survives save and reopen', async ({ topoPage }, testInfo) => {
+    const context = await getActiveWorktreeContext(topoPage)
     const sentinel = `editedInsideNestedToggle${Date.now()}`
     let filePath: string | null = null
 
@@ -39,16 +39,16 @@ test.describe('Markdown nested toggle regression', () => {
         testInfo.workerIndex,
         NESTED_TOGGLE_MARKDOWN
       )
-      await openMarkdownFixture(orcaPage, context, filePath)
-      await waitForRichMarkdownEditor(orcaPage)
-      await expectEditableNestedToggles(orcaPage)
+      await openMarkdownFixture(topoPage, context, filePath)
+      await waitForRichMarkdownEditor(topoPage)
+      await expectEditableNestedToggles(topoPage)
 
-      await placeCaretInNestedToggleBody(orcaPage)
-      await orcaPage.keyboard.type(` ${sentinel}`)
-      await expectSentinelInsideNestedToggle(orcaPage, sentinel)
+      await placeCaretInNestedToggleBody(topoPage)
+      await topoPage.keyboard.type(` ${sentinel}`)
+      await expectSentinelInsideNestedToggle(topoPage, sentinel)
 
       // Save through the real shortcut and assert the bytes that landed on disk.
-      await orcaPage.keyboard.press('ControlOrMeta+S')
+      await topoPage.keyboard.press('ControlOrMeta+S')
       const savedPath = filePath
       await expect
         .poll(() => readFileSync(savedPath, 'utf8'), { timeout: 10_000 })
@@ -56,20 +56,20 @@ test.describe('Markdown nested toggle regression', () => {
       expectFileKeepsNesting(readFileSync(savedPath, 'utf8'), sentinel)
 
       // Reopen the saved bytes from scratch; the reported bug appeared only after reparsing.
-      await closeActiveEditorTab(orcaPage, savedPath)
-      await openMarkdownFixture(orcaPage, context, savedPath)
-      await waitForRichMarkdownEditor(orcaPage)
-      await expectEditableNestedToggles(orcaPage)
-      await expectSentinelInsideNestedToggle(orcaPage, sentinel)
+      await closeActiveEditorTab(topoPage, savedPath)
+      await openMarkdownFixture(topoPage, context, savedPath)
+      await waitForRichMarkdownEditor(topoPage)
+      await expectEditableNestedToggles(topoPage)
+      await expectSentinelInsideNestedToggle(topoPage, sentinel)
     } finally {
       await cleanupMarkdownFixture(filePath)
     }
   })
 
   test('a nested toggle that cannot be represented stays raw passthrough', async ({
-    orcaPage
+    topoPage
   }, testInfo) => {
-    const context = await getActiveWorktreeContext(orcaPage)
+    const context = await getActiveWorktreeContext(topoPage)
     let filePath: string | null = null
 
     try {
@@ -80,10 +80,10 @@ test.describe('Markdown nested toggle regression', () => {
         testInfo.workerIndex,
         UNSUPPORTED_NESTED_TOGGLE_MARKDOWN
       )
-      await openMarkdownFixture(orcaPage, context, filePath)
-      await waitForRichMarkdownEditor(orcaPage)
+      await openMarkdownFixture(topoPage, context, filePath)
+      await waitForRichMarkdownEditor(topoPage)
 
-      await expectPassthroughFallback(orcaPage)
+      await expectPassthroughFallback(topoPage)
     } finally {
       await cleanupMarkdownFixture(filePath)
     }

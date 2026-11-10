@@ -92,8 +92,8 @@ export function prepareComputerCliJsonResult<TResult>(
 }
 
 const COMPUTER_SCREENSHOT_TEMP_DIR = {
-  envVar: 'ORCA_COMPUTER_SCREENSHOT_TMPDIR',
-  dirName: 'orca-computer-use'
+  envVar: 'TOPO_COMPUTER_SCREENSHOT_TMPDIR',
+  dirName: 'topo-computer-use'
 }
 
 export function formatListApps(result: ComputerListAppsResult): string {
@@ -163,7 +163,7 @@ function formatComputerFollowUpCommand(
   target: ComputerActionFollowUpTarget
 ): string {
   const args = [
-    'orca',
+    'topo',
     'computer',
     'get-app-state',
     '--app',

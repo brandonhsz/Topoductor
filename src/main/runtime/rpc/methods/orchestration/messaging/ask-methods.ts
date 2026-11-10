@@ -79,7 +79,7 @@ export const ORCHESTRATION_ASK_METHODS = [
           {
             address: from,
             paneKey: paneKey ?? null,
-            orcaSessionId: orchestrationCaller?.orcaSessionId ?? null,
+            topoSessionId: orchestrationCaller?.topoSessionId ?? null,
             processIncarnation: () => runtime.getTerminalProcessIncarnation(from) ?? undefined
           },
           { run: undefined, dispatchId: undefined, dispatch: undefined },

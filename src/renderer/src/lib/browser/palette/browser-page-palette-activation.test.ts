@@ -5,7 +5,7 @@ import type { BrowserPage, BrowserWorkspace } from '../../../../../shared/browse
 import type { Tab, TabGroup } from '../../../../../shared/tab-types'
 import type { Worktree } from '../../../../../shared/worktree/types'
 import '../../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../../shared/browser/browser-blank-page'
 import { useAppStore } from '@/store/index'
 import type { AppState } from '@/store/types'
 
@@ -158,7 +158,7 @@ describe('activateBrowserPagePaletteResult', () => {
   it('derives the focus target from the page url captured before worktree activation', () => {
     seedStore({
       browserPagesByWorkspace: {
-        'ws-1': [makePage({ url: ORCA_BROWSER_BLANK_URL })]
+        'ws-1': [makePage({ url: TOPO_BROWSER_BLANK_URL })]
       }
     })
     // Capture the focus target before activation deletes the original page.

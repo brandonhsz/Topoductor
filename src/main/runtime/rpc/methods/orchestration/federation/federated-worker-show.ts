@@ -7,7 +7,7 @@ import type {
   DispatchContextRow,
   FederatedDispatchRow
 } from '../../../../orchestration/db/orchestration-records'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import {
   callFederatedWorkerShow,
   exposeFederatedWorkerObservation,
@@ -20,7 +20,7 @@ import { applyConfirmedFederatedReleaseHomeProjection } from './federated-worker
 
 /** Query host evidence: push-fed fleet snapshots cover only local panes and would fabricate unverifiable for federated workers. */
 export function projectFederatedFleetWorker(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   dispatchId: string
   environmentId: string
@@ -59,7 +59,7 @@ export function projectFederatedFleetWorker(args: {
 }
 
 export async function showFederatedWorker(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   dispatchId: string
   dispatch: DispatchContextRow

@@ -33,7 +33,7 @@ vi.mock('../model-catalog/structured-agent-model-catalog-wiring', async (importO
 it('stops naming admission and joins native helper finalization before runtime close', async ({
   onTestFinished
 }) => {
-  const root = await mkdtemp(join(tmpdir(), 'orca-naming-shutdown-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-naming-shutdown-'))
   const sessionId = 'chat-shutdown-1'
   const argumentsReady = Promise.withResolvers<string[]>()
   const stdinEnded = Promise.withResolvers<void>()
@@ -146,7 +146,7 @@ it('stops naming admission and joins native helper finalization before runtime c
     {
       id: 1,
       method: 'initialize',
-      params: { clientInfo: { name: 'orca_desktop', title: 'Orca', version: '0.0.0' } }
+      params: { clientInfo: { name: 'topo_desktop', title: 'Topo', version: '0.0.0' } }
     },
     { method: 'initialized' },
     { id: 2, method: 'thread/name/set', params: { threadId: 'thread-1', name: 'Saved name' } }

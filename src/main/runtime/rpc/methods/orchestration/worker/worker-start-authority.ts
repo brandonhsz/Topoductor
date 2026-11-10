@@ -11,7 +11,7 @@ import type {
   RunRow,
   TaskRow
 } from '../../../../orchestration/db/orchestration-records'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { resolveDispatchCreator } from '../runs/dispatch-creator'
 import { createBoundRun } from '../runs/runs'
 import { ROOT_DISPATCH_DEPTH } from '../../../../../../shared/orchestration/workers/nested-worker-depth'
@@ -23,7 +23,7 @@ export type WorkerStartRunBinding = { run: RunRow; created: boolean }
 
 /** Coordinators start workers in their Run, creating one when none is bound; active workers start helpers as themselves so reports return to their Dispatch without moving its mailbox. A new Run is created and bound only when `bindRun` is first called, so a start refused before it leaves no Run behind. */
 export function resolveWorkerStartRun(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   args: {
     coordinator: OrchestrationCallerIdentity | null
     from: string
@@ -117,7 +117,7 @@ function fenced(message: string): OrchestrationError {
 }
 
 export function qualifyLiveWorkerFollowUp(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   coordinator: OrchestrationCallerIdentity | null,
   from: string,
   session: OrchestrationSessionCaller | undefined,

@@ -69,7 +69,7 @@ describe('crash-reporting shared helpers', () => {
         crashed: true,
         missing: null,
         error_stack: longStack,
-        minidumpPath: '/Users/alice/Library/Application Support/Orca/reports/abc.dmp',
+        minidumpPath: '/Users/alice/Library/Application Support/Topo/reports/abc.dmp',
         nested: { nope: true },
         infinite: Number.POSITIVE_INFINITY
       })
@@ -140,9 +140,9 @@ describe('crash-reporting shared helpers', () => {
   })
 
   it.each([
-    ['POSIX', '/home/alice/orca/app.log then recovered.'],
-    ['Windows', 'C:\\Users\\alice\\Orca\\app.log then recovered.'],
-    ['UNC', '\\\\server\\share\\Orca\\app.log then recovered.']
+    ['POSIX', '/home/alice/topo/app.log then recovered.'],
+    ['Windows', 'C:\\Users\\alice\\Topo\\app.log then recovered.'],
+    ['UNC', '\\\\server\\share\\Topo\\app.log then recovered.']
   ])('stops unquoted %s paths at prose boundaries', (_platform, value) => {
     expect(sanitizeCrashReportString(value)).toBe('[redacted-path] then recovered.')
   })

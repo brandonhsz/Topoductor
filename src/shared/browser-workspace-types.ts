@@ -62,7 +62,7 @@ export type BrowserViewportScrollState = {
   maxScrollTop: number
 }
 
-/** Persist workspace document identity only; mount/reload mints fresh grants/orca-preview URLs, which must never be stored or published. url stays blank for the document page. */
+/** Persist workspace document identity only; mount/reload mints fresh grants/topo-preview URLs, which must never be stored or published. url stays blank for the document page. */
 export type BrowserPageDocLocation = {
   kind: 'workspace-doc'
   worktreeId: string
@@ -157,7 +157,7 @@ export type BrowserSessionProfile = {
   partition: string
   label: string
   source: BrowserSessionProfileSource | null
-  /** Set when Orca manages this profile for one repo or workspace; it goes when its owner is removed. */
+  /** Set when Topo manages this profile for one repo or workspace; it goes when its owner is removed. */
   owner?: ManagedBrowserProfileOwner
 }
 

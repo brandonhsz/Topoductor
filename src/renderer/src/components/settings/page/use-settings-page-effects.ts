@@ -212,7 +212,7 @@ export function useSettingsPageEffects(
       setQuickCommandAddIntentSignal((signal) => signal + 1)
     } else if (settingsNavigationTarget.intent === 'add-ssh-host') {
       setSshHostAddIntentSignal((signal) => signal + 1)
-    } else if (settingsNavigationTarget.intent === 'add-remote-orca-server') {
+    } else if (settingsNavigationTarget.intent === 'add-remote-topo-server') {
       setRemoteServerAddIntentSignal((signal) => signal + 1)
     }
     setMountedSectionIds((previous) => {

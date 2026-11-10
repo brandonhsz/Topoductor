@@ -4,7 +4,7 @@ import { invalidateWslLinkedWorktreeGitRouting } from '../../command-runner/wsl-
 import { bumpWorktreeScanGeneration } from '../catalog/worktree-scan-cache'
 import { invalidateSparseCheckoutState } from '../sparse-checkout/worktree-sparse-checkout-cache'
 
-/** Git repairs marker back-pointers during a move; callers migrate Orca identity and check the destination. */
+/** Git repairs marker back-pointers during a move; callers migrate Topo identity and check the destination. */
 export async function moveWorktree(
   repoPath: string,
   oldPath: string,

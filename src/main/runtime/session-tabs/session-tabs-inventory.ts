@@ -1,14 +1,14 @@
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { visibleGraphChangedWorktrees } from '../session-graph/visible-graph-changed-worktrees'
 import type { RuntimeSessionTabsInventoryPublication as SessionTabsInventoryPublicationMethods } from './session-tabs-inventory-publication'
-import type { OrcaRuntimeWithScheduleMobileSessionTabsChanged as ScheduleMobileSessionTabsChangedMethods } from './session-tabs-change-publication'
-import type { OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree as ResolveBrowserNetworkExecutionHostForWorktreeMethods } from '../terminal/launch/terminal-workspace-scope'
-import type { OrcaRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession as HydrateHeadlessMobileSessionTabsFromWorkspaceSessionMethods } from './mobile-session-hydration'
-import type { OrcaRuntimeWithBuildHeadlessMobileSessionBrowserTabs as BuildHeadlessMobileSessionBrowserTabsMethods } from '../session-lifecycle/projection/build-headless-mobile-session-browser-tabs'
-import type { OrcaRuntimeWithRestoreLivePairedRendererSessionOwnedMobileTerminals as RestoreLivePairedRendererSessionOwnedMobileTerminalsMethods } from './renderer-session-terminal-rescue'
-import type { OrcaRuntimeWithTouchMobileSessionTabsForWorktree as TouchMobileSessionTabsForWorktreeMethods } from './mobile-session-membership'
-import type { OrcaRuntimeWithPruneMobileSessionTabGroupLayout as PruneMobileSessionTabGroupLayoutMethods } from '../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
-import { OrcaRuntimeWithSyncWindowGraph } from '../session-graph/session-window-graph'
+import type { TopoRuntimeWithScheduleMobileSessionTabsChanged as ScheduleMobileSessionTabsChangedMethods } from './session-tabs-change-publication'
+import type { TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree as ResolveBrowserNetworkExecutionHostForWorktreeMethods } from '../terminal/launch/terminal-workspace-scope'
+import type { TopoRuntimeWithHydrateHeadlessMobileSessionTabsFromWorkspaceSession as HydrateHeadlessMobileSessionTabsFromWorkspaceSessionMethods } from './mobile-session-hydration'
+import type { TopoRuntimeWithBuildHeadlessMobileSessionBrowserTabs as BuildHeadlessMobileSessionBrowserTabsMethods } from '../session-lifecycle/projection/build-headless-mobile-session-browser-tabs'
+import type { TopoRuntimeWithRestoreLivePairedRendererSessionOwnedMobileTerminals as RestoreLivePairedRendererSessionOwnedMobileTerminalsMethods } from './renderer-session-terminal-rescue'
+import type { TopoRuntimeWithTouchMobileSessionTabsForWorktree as TouchMobileSessionTabsForWorktreeMethods } from './mobile-session-membership'
+import type { TopoRuntimeWithPruneMobileSessionTabGroupLayout as PruneMobileSessionTabGroupLayoutMethods } from '../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
+import { TopoRuntimeWithSyncWindowGraph } from '../session-graph/session-window-graph'
 import { mainTerminalSurfaces } from '../terminal/surface/main-terminal-surfaces'
 import type { MainTerminalSurfacesHost } from '../terminal/surface/main-terminal-surfaces-host'
 import type { WorkspaceLayoutReads } from '../terminal/surface/workspace-layout-stream'
@@ -28,7 +28,7 @@ import {
   type PtyPaneOf
 } from '../terminal/surface/pty-pane-query'
 
-export abstract class OrcaRuntimeWithCollectMobileVisibleGraphChangedWorktrees extends OrcaRuntimeWithSyncWindowGraph {
+export abstract class TopoRuntimeWithCollectMobileVisibleGraphChangedWorktrees extends TopoRuntimeWithSyncWindowGraph {
   abstract get workspaceLayoutReads(): WorkspaceLayoutReads
   declare protected readonly paneStartStatuses: PaneStartStatuses | null
 
@@ -46,7 +46,7 @@ export abstract class OrcaRuntimeWithCollectMobileVisibleGraphChangedWorktrees e
   }
 
   protected captureTerminalPaneReader(): PtyPaneOf {
-    if (!ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (!TOPO_LAYOUT_OWNER_IS_MAIN) {
       return (pty) => paneOfPty(pty, () => null)
     }
     const mainPane = this.mainSurfaces().capturePaneLookup()
@@ -322,7 +322,7 @@ export abstract class OrcaRuntimeWithCollectMobileVisibleGraphChangedWorktrees e
   }
 
   supportsAuthoritativeSessionTabsInventory(): boolean {
-    return process.env.ORCA_E2E_DISABLE_AUTHORITATIVE_SESSION_TABS_INVENTORY !== '1'
+    return process.env.TOPO_E2E_DISABLE_AUTHORITATIVE_SESSION_TABS_INVENTORY !== '1'
   }
 
   protected abstract assertSessionTabsInventoryRequestActive(signal?: AbortSignal): void

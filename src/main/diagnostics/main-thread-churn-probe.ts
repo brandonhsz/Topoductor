@@ -1,6 +1,6 @@
 import { writeStartupDiagnosticLine } from '../startup/startup-diagnostics'
 
-export const MAIN_THREAD_DIAGNOSTICS_ENV = 'ORCA_MAIN_THREAD_DIAGNOSTICS'
+export const MAIN_THREAD_DIAGNOSTICS_ENV = 'TOPO_MAIN_THREAD_DIAGNOSTICS'
 
 // Match the startup probe's 25ms sampling interval for comparable stall windows.
 const TICK_MS = 25
@@ -26,7 +26,7 @@ export function classifySubprocessCommand(command: string, args: readonly string
   let binary = binaryName(command)
   const rest = [...args]
   if (binary === 'wsl') {
-    // Accept external WSL invocations using -- or -e as well as Orca's --exec.
+    // Accept external WSL invocations using -- or -e as well as Topo's --exec.
     while (rest.length > 0) {
       const arg = rest.shift()
       if (arg === '--' || arg === '--exec' || arg === '-e') {

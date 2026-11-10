@@ -28,7 +28,7 @@ function configureHeadlessServeChromiumFlags(): void {
   // Small sandbox /dev/shm mounts can exhaust and crash Chromium utility services; use disk-backed temp.
   app.commandLine.appendSwitch('disable-dev-shm-usage')
   // Opt-in for hosts that expose a GPU to this process (#22450).
-  if (process.env.ORCA_SERVE_GPU === '1') {
+  if (process.env.TOPO_SERVE_GPU === '1') {
     return
   }
   // External displays may also be Xvfb; GPU forks can trap before serve readiness.
@@ -103,14 +103,14 @@ export function hasUsableLinuxDisplay(env: NodeJS.ProcessEnv = process.env): boo
 }
 
 export const MISSING_LINUX_DISPLAY_MESSAGE = [
-  'Orca needs a usable display server, but the selected X11 or Wayland endpoint is unavailable.',
+  'Topo needs a usable display server, but the selected X11 or Wayland endpoint is unavailable.',
   'Check DISPLAY, WAYLAND_DISPLAY, XDG_RUNTIME_DIR, and any --ozone-platform override.',
-  `Use \`orca-ide serve\` to run headless. On a bare server, ${XVFB_INSTALL_GUIDANCE}`
+  `Use \`topo-ide serve\` to run headless. On a bare server, ${XVFB_INSTALL_GUIDANCE}`
 ].join('\n')
 
 export const MISSING_SERVE_DISPLAY_MESSAGE = [
-  'Orca serve needs an X display for its browser panes, and could not start its own.',
-  `Wayland alone is not enough. To let Orca start one, ${XVFB_INSTALL_GUIDANCE}`,
+  'Topo serve needs an X display for its browser panes, and could not start its own.',
+  `Wayland alone is not enough. To let Topo start one, ${XVFB_INSTALL_GUIDANCE}`,
   'Or set DISPLAY to a running X server.'
 ].join('\n')
 
@@ -173,7 +173,7 @@ export function ensureVirtualDisplayForHeadlessServe(options: { isServeMode: boo
     }
     console.warn(
       `[serve] DISPLAY=${configuredDisplay} is not verifiably live; leaving it untouched. ` +
-        'Unset DISPLAY to let Orca start its own Xvfb.'
+        'Unset DISPLAY to let Topo start its own Xvfb.'
     )
     return false
   }

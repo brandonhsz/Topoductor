@@ -38,8 +38,8 @@ const otherHostFingerprint = Buffer.from(sha256(Buffer.alloc(32, 2)))
   .toString('base64url')
   .slice(0, 16)
 
-function apnsData(orca: Record<string, unknown>): unknown {
-  return { aps: { alert: { title: 'Orca', body: 'Agent needs input' } }, orca }
+function apnsData(topo: Record<string, unknown>): unknown {
+  return { aps: { alert: { title: 'Topo', body: 'Agent needs input' } }, topo }
 }
 
 beforeEach(() => {
@@ -47,7 +47,7 @@ beforeEach(() => {
   AppState.currentState = 'background'
   setNotificationViewingWorkspace(null)
   storage.clear()
-  storage.set('orca:pushServiceNotificationsEnabled', 'true')
+  storage.set('topo:pushServiceNotificationsEnabled', 'true')
   resetForegroundPushClaimsForTests()
   vi.mocked(loadHostCatalog).mockResolvedValue([
     ...hosts,

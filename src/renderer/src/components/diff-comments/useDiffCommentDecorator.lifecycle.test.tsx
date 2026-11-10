@@ -42,7 +42,7 @@ vi.mock('react-dom/client', async (importOriginal) => {
   return {
     ...actual,
     createRoot: (container: Element, options?: Parameters<typeof actual.createRoot>[1]) => {
-      const isZoneRoot = container.classList?.contains('orca-diff-comment-inline') ?? false
+      const isZoneRoot = container.classList?.contains('topo-diff-comment-inline') ?? false
       if (isZoneRoot) {
         rootCounts.created += 1
       }

@@ -1,7 +1,7 @@
 // Reproduce 가나다 → ㄱㅏㄴㅏㄷㅏ from controlled Display Name resets during real Blink composition.
 // Use CDP Input.imeSetComposition because Playwright keyboard events cannot drive IME composition.
 import type { CDPSession, Locator, Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { getStoreState, waitForSessionReady } from './helpers/store'
 import type { Repo } from '../../src/shared/repo-types'
 
@@ -93,16 +93,16 @@ async function typeHangulGanadaSlowly(
 }
 
 test.describe('Repository Display Name IME composition', () => {
-  test('keeps Hangul syllables composed while typing slowly', async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
+  test('keeps Hangul syllables composed while typing slowly', async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
 
-    const repos = await getStoreState<Repo[]>(orcaPage, 'repos')
+    const repos = await getStoreState<Repo[]>(topoPage, 'repos')
     expect(repos.length).toBeGreaterThan(0)
     const repo = repos[0]
 
-    await openRepoSettings(orcaPage, repo.id)
+    await openRepoSettings(topoPage, repo.id)
 
-    const repoSection = orcaPage.locator(`[data-settings-section="repo-${repo.id}"]`)
+    const repoSection = topoPage.locator(`[data-settings-section="repo-${repo.id}"]`)
     const displayNameInput = repoSection.getByLabel('Display Name')
     await expect(displayNameInput).toHaveValue(repo.displayName)
 
@@ -111,8 +111,8 @@ test.describe('Repository Display Name IME composition', () => {
     await displayNameInput.fill('')
     await expect(displayNameInput).toHaveValue('')
 
-    const session = await orcaPage.context().newCDPSession(orcaPage)
-    await typeHangulGanadaSlowly(session, orcaPage, displayNameInput)
+    const session = await topoPage.context().newCDPSession(topoPage)
+    await typeHangulGanadaSlowly(session, topoPage, displayNameInput)
 
     // Require composed syllables despite async updateRepo echoes that previously cancelled each key.
     await expect(displayNameInput).toHaveValue('가나다')
@@ -121,7 +121,7 @@ test.describe('Repository Display Name IME composition', () => {
     await expect
       .poll(
         async () => {
-          const current = await getStoreState<Repo[]>(orcaPage, 'repos')
+          const current = await getStoreState<Repo[]>(topoPage, 'repos')
           return current.find((entry) => entry.id === repo.id)?.displayName
         },
         { timeout: 5_000, message: 'display name did not persist to the store' }

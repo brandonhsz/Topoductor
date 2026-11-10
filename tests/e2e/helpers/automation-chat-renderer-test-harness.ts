@@ -11,7 +11,7 @@ import { decodeSessionTabsDeltaEvents } from '../../../src/main/ipc/runtime-envi
 import { RpcDispatcher } from '../../../src/main/runtime/rpc/dispatcher'
 import { STRUCTURED_AGENT_SESSION_METHODS } from '../../../src/main/runtime/rpc/methods/structured-sessions/structured-agent-session'
 import { SESSION_TAB_METHODS } from '../../../src/main/runtime/rpc/methods/session-tabs/session-tabs'
-import { OrcaRuntimeService } from '../../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../../src/main/runtime/topo-runtime'
 import { createTestStore } from '../../../src/renderer/src/store/testing/app-store-test-fixture'
 import { makeWorktree } from '../../../src/renderer/src/store/slices/worktrees/worktree.test-fixture'
 import { TEST_REPO } from '../../../src/renderer/src/store/repos/repo.test-fixture'
@@ -20,7 +20,7 @@ import { applyStructuredSessionTabSnapshots } from '../../../src/renderer/src/ru
 import { applyWebSessionTabsSnapshot } from '../../../src/renderer/src/runtime/web-session-tabs-sync/snapshot-api'
 import { decideWebSessionTabsSnapshot } from '../../../src/renderer/src/runtime/web-session-tabs-sync/tracking-decisions'
 
-export class ChatOpenTestRuntime extends OrcaRuntimeService {
+export class ChatOpenTestRuntime extends TopoRuntimeService {
   protected override async refreshMobileSessionPtyRecords() {
     return new Set<string>()
   }
@@ -28,7 +28,7 @@ export class ChatOpenTestRuntime extends OrcaRuntimeService {
 
 /** Only transport and PTY census are bridged; record reveal, publication, mirror and selection stay real. */
 export async function createChatRendererBridge(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   workspace: string,
   target: RuntimeClientTarget,
   store: ReturnType<typeof createTestStore> = createTestStore()
@@ -133,7 +133,7 @@ export async function createChatRendererBridge(
 }
 
 export async function exerciseRecordedChatOpen(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   run: AutomationRun,
   bind: (renderer: Awaited<ReturnType<typeof createChatRendererBridge>> | null) => void
 ) {

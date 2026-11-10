@@ -222,7 +222,7 @@ describe('killAllProcessesForWorktree', () => {
   })
 
   it('accepts a failed stop when exact-owner inventory supersedes cached uncertainty', async () => {
-    const worktreeId = 'repo-1::C:/Users/User/orca/workspaces/repo/feature'
+    const worktreeId = 'repo-1::C:/Users/User/topo/workspaces/repo/feature'
     const ptyId = `${worktreeId}@@windows-pty`
     const stopTerminalsForWorktree = vi.fn(
       async (
@@ -248,7 +248,7 @@ describe('killAllProcessesForWorktree', () => {
     const localProvider = createProviderStub(async () => {
       inventoryCount += 1
       return inventoryCount === 1
-        ? [{ id: ptyId, cwd: 'C:/Users/User/orca/workspaces/repo/feature', title: 'shell' }]
+        ? [{ id: ptyId, cwd: 'C:/Users/User/topo/workspaces/repo/feature', title: 'shell' }]
         : []
     })
     ;(localProvider.shutdown as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(

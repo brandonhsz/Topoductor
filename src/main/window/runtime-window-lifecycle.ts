@@ -9,14 +9,14 @@ import type { TerminalTabCreateReply } from '../../shared/workspace-layout/termi
 import { runWorktreeChangeInvalidators } from '../ipc/worktrees/listing/worktree-change-invalidators'
 import { requestAgentLaunchTabPublishFromRenderer } from './agent-launch-tab-publish-relay'
 import { requestAgentPaneActivityFromRenderer } from './agent-pane-activity-relay'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { registerRendererDocumentNavigation } from './renderer-document-navigation'
 import { createRuntimeRendererNotificationSender } from './runtime-renderer-notification-sender'
 import { requestSessionTabCloseFromRenderer } from './session-tab-close-request-relay'
 import { requestTerminalPaneMoveFromRenderer } from './terminal-pane-move-request-relay'
 import { revealTerminalPaneInWindow } from './terminal-pane-reveal-relay'
 import { requestTerminalTabCloseFromRenderer } from './terminal-tab-close-request-relay'
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from '../../shared/sidebar-inputs-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from '../../shared/sidebar-inputs-switch'
 import type { AgentListPublication } from '../../shared/agent-status/presentation/agent-list-status'
 import { addFanoutListener } from '../runtime/events/event-listener-fanout'
 
@@ -25,7 +25,7 @@ let activeRuntimeNotifierToken: number | null = null
 
 export function registerRuntimeWindowLifecycle(
   mainWindow: BrowserWindow,
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
 ): void {
   const notifierToken = ++runtimeNotifierTokenCounter
   activeRuntimeNotifierToken = notifierToken
@@ -238,7 +238,7 @@ export function registerRuntimeWindowLifecycle(
     claudeAccountSelected: (change) => send('claudeAccounts:selectedElsewhere', change)
   })
   // Switch point: the window reads its sidebar from main's feed and re-reads on each notice.
-  const detachSidebarInputsNotices = ORCA_SIDEBAR_INPUTS_IS_MAIN
+  const detachSidebarInputsNotices = TOPO_SIDEBAR_INPUTS_IS_MAIN
     ? runtime.onClientEvent(
         (event) => {
           if (event.type === 'sidebarInputsChanged') {

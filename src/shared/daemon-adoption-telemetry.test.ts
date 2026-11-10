@@ -22,7 +22,7 @@ describe('daemon_adopted / daemon_pty_cwd_denied schemas', () => {
 
   it('rejects leaked paths, versions, counts, and unknown enum values', () => {
     for (const leak of [
-      { spawner_exec_path: '/Users/alice/Library/Caches/ShipIt/Orca.app' },
+      { spawner_exec_path: '/Users/alice/Library/Caches/ShipIt/Topo.app' },
       { app_version: '1.4.187' },
       { live_session_count: 3 },
       { cwd: '/Users/alice/Documents' }

@@ -59,14 +59,14 @@ it.each(['success', 'budget'] as const)(
       {
         response: {
           subtype: 'success',
-          request_id: 'orca-model-discovery',
+          request_id: 'topo-model-discovery',
           response: { models: [{ value: 'opus', supportsFastMode: true }] }
         }
       },
       {
         response: {
           subtype: 'success',
-          request_id: 'orca-model-settings',
+          request_id: 'topo-model-settings',
           response: { applied: {} }
         }
       }

@@ -90,7 +90,7 @@ beforeEach(() => {
   hostApp.version = '9.9.9'
   installHostApp()
   setProcessProp('platform', 'win32')
-  setProcessProp('execPath', join(installDir, 'Orca.exe'))
+  setProcessProp('execPath', join(installDir, 'Topo.exe'))
   setProcessProp('resourcesPath', join(installDir, 'resources'))
 })
 
@@ -422,7 +422,7 @@ describe('pruneOldDaemonHosts', () => {
     expect(existsSync(join(root, '1.0.0'))).toBe(true)
   })
 
-  it('reclaims nothing for a packaged host with no asar root (orcad on win32)', () => {
+  it('reclaims nothing for a packaged host with no asar root (topod on win32)', () => {
     const root = getDaemonHostRootDir()
     mkdirSync(join(root, '1.0.0'), { recursive: true })
     hostApp.appPath = join(installDir, 'resources', 'app')

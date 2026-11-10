@@ -9,7 +9,7 @@ import type { AppState } from '@/store/types'
 import type { LayoutCommand } from '../../../../../../shared/workspace-layout/workspace-layout-command-types'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
 import { contentRekeyOutcome } from '@/runtime/workspace-layout/intents/layout-owner-content-rekeys'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import {
   drawTabsFromMain,
   type TabsDrawnFromMain
@@ -97,7 +97,7 @@ const pathsIn = (worktreeId: string) =>
     .openFiles.filter((file) => file.worktreeId === worktreeId)
     .map((file) => file.filePath)
 
-describe.runIf(ORCA_LAYOUT_OWNER_IS_MAIN)('a disk rename beside a twin, layout-owner build', () => {
+describe.runIf(TOPO_LAYOUT_OWNER_IS_MAIN)('a disk rename beside a twin, layout-owner build', () => {
   it.each([
     ['the main-owned workspace first', [WT, TWIN]],
     ['the twin first', [TWIN, WT]]

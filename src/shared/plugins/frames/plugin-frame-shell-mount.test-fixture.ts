@@ -2,7 +2,7 @@ import { afterEach, vi, type Mock } from 'vitest'
 import { buildPluginPanelShellHtml, type PluginFrameSurface } from './plugin-panel-shell'
 
 /** The injected `window.orca` is the public frame API; the envelope under it stays internal. */
-export type FrameOrca = {
+export type FrameTopo = {
   api: { major: number; minor: number }
   host: {
     call: (method: string, params?: unknown, options?: { signal?: AbortSignal }) => Promise<unknown>
@@ -56,7 +56,7 @@ afterEach(() => {
 })
 
 export type MountedShell = {
-  orca: FrameOrca
+  orca: FrameTopo
   parent: { postMessage: Mock<(message: Record<string, unknown>) => void> }
   fromHost: (data: unknown, source?: unknown) => boolean
   posted: () => Record<string, unknown>[]
@@ -70,7 +70,7 @@ export function mountShell(surface: PluginFrameSurface = 'panel'): MountedShell 
   )?.[1]
   // Configurable only so happy-dom can tear down; the frame's copy stays locked.
   window.eval(script!.replaceAll('configurable: false', 'configurable: true'))
-  const orca: FrameOrca = Object.getOwnPropertyDescriptor(window, 'orca')?.value
+  const orca: FrameTopo = Object.getOwnPropertyDescriptor(window, 'orca')?.value
   const fromHost = (data: unknown, source: unknown = parent) =>
     window.dispatchEvent(
       // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the shim only compares source identity.

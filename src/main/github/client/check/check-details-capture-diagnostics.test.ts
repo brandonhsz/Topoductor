@@ -1,6 +1,6 @@
 import type { ChildProcess } from 'node:child_process'
 import { getEventListeners } from 'node:events'
-import type * as ProcessHostModule from '@orca/process-host'
+import type * as ProcessHostModule from '@topo/process-host'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   completeFakeSpawn,
@@ -9,7 +9,7 @@ import {
 import * as capture from '../../../git/command-runner/exec-file-capture'
 import { RpcDispatcher } from '../../../runtime/rpc/dispatcher'
 import { GITHUB_PULL_REQUEST_METHODS } from '../../../runtime/rpc/methods/source-control/github/github-pull-request-methods'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import * as ghUtils from '../../gh-utils'
 import { getPRCheckDetails } from './get-pr-check-details'
 import { prCheckLogTailCache } from './check-job-log-tails'
@@ -23,11 +23,11 @@ const { spawnMock, resolverMock, signalMock, forceMock, captureCap } = vi.hoiste
 }))
 vi.mock('node:child_process', async (original) => ({ ...(await original()), spawn: spawnMock }))
 vi.mock('../../github-api-repository', () => ({ resolveGitHubRepoExecution: resolverMock }))
-vi.mock('@orca/process-host/process-tree-termination', () => ({
+vi.mock('@topo/process-host/process-tree-termination', () => ({
   signalProcessTree: signalMock,
   forceTerminateProcessTree: forceMock
 }))
-vi.mock('@orca/process-host', async (original) => {
+vi.mock('@topo/process-host', async (original) => {
   const actual = await original<typeof ProcessHostModule>()
   return {
     ...actual,
@@ -76,7 +76,7 @@ function dispatcher(): RpcDispatcher {
   }
   return new RpcDispatcher({
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: This explicit registry invokes only getRuntimeId and getRepoPRCheckDetails.
-    runtime: runtime as unknown as OrcaRuntimeService,
+    runtime: runtime as unknown as TopoRuntimeService,
     methods: GITHUB_PULL_REQUEST_METHODS
   })
 }

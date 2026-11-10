@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { readCrewAssignmentIds } from './crew-query'
 import type { OrchestrationDb } from '../db/orchestration-db'
-import { currentRunCoordinatorOrcaSessionIdSql } from '../db/runs/run-coordinator-orca-session'
+import { currentRunCoordinatorTopoSessionIdSql } from '../db/runs/run-coordinator-topo-session'
 import { parsePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import { potentiallyLiveRemoteAttachmentSql } from '../db/federation/remote-attachment-liveness'
 import {
@@ -52,19 +52,19 @@ const resource = z.object({
 export type CrewParentResource = z.infer<typeof resource>
 
 const localColumns = `d.id, d.task_id AS task, d.run_id AS run, r.home_database AS runHome, d.assignee_handle AS handle,
- d.assignee_pane_key AS pane, d.assignee_orca_session_id AS session,
+ d.assignee_pane_key AS pane, d.assignee_topo_session_id AS session,
  d.process_incarnation AS process, d.host_scope AS host, w.runtime_epoch AS endpoint,
  d.creator_dispatch_id AS creator, d.creator_handle AS creatorHandle,
- d.creator_pane_key AS creatorPane, d.creator_orca_session_id AS creatorSession,
+ d.creator_pane_key AS creatorPane, d.creator_topo_session_id AS creatorSession,
  d.retry_of_dispatch_id AS retry, NULL AS home, r.coordinator_handle AS coordinator,
  r.coordinator_pane_key AS coordinatorPane,
- ${currentRunCoordinatorOrcaSessionIdSql('r')} AS coordinatorSession`
+ ${currentRunCoordinatorTopoSessionIdSql('r')} AS coordinatorSession`
 
 export function readCrewParentInputs(db: OrchestrationDb, addresses: string[], panes: string[]) {
   const handles = JSON.stringify(addresses.filter((value) => value.startsWith('term_')))
   const sessions = JSON.stringify(
     addresses
-      .filter((value) => value.startsWith('orca_session_id:'))
+      .filter((value) => value.startsWith('topo_session_id:'))
       .map((value) => value.slice(16))
   )
   const ids = JSON.stringify(
@@ -81,7 +81,7 @@ export function readCrewParentInputs(db: OrchestrationDb, addresses: string[], p
     LEFT JOIN worker_dispatches w ON w.dispatch_id = d.id
     WHERE d.rowid IN (
       SELECT rowid FROM dispatch_contexts WHERE assignee_handle IN (SELECT value FROM json_each(?))
-      UNION SELECT rowid FROM dispatch_contexts WHERE assignee_orca_session_id IN (SELECT value FROM json_each(?))
+      UNION SELECT rowid FROM dispatch_contexts WHERE assignee_topo_session_id IN (SELECT value FROM json_each(?))
       UNION SELECT rowid FROM dispatch_contexts WHERE assignee_pane_key IN (SELECT value FROM json_each(?))
       UNION SELECT rowid FROM dispatch_contexts WHERE assignee_pane_key IS NOT NULL AND ${DISPATCH_PANE_KEY_MATCH_SUFFIX_SQL} IN (SELECT value FROM json_each(?))
       UNION SELECT rowid FROM dispatch_contexts WHERE id IN (SELECT value FROM json_each(?)))

@@ -3,7 +3,7 @@ import type {
   FileWriteDiskPrecondition,
   FileWriteResult
 } from '../../../shared/file-write/file-write-disk-precondition'
-import { getProfileUserDataPath } from '../../orca-profiles/profile-storage-paths'
+import { getProfileUserDataPath } from '../../topo-profiles/profile-storage-paths'
 import { resolveRuntimeAuthorizedPath } from './chat-scratch-file-root'
 import type { RuntimeFileCommandHost } from './file-command-host'
 import { assertRuntimeFileMutationExpectation } from './file-mutation-expectation'

@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { getDefaultWorkspaceSession } from '../../../shared/constants'
 import type { WorkspaceSessionState } from '../../../shared/workspace-session/workspace-session-state-types'
 import type { TerminalModes } from '../../daemon/protocol/terminal-modes'
-import { parseOrcadMigrationTerminalHistoryText } from '../../../shared/orcad-migration/orcad-migration-terminal-history'
+import { parseTopodMigrationTerminalHistoryText } from '../../../shared/topod-migration/topod-migration-terminal-history'
 import {
   daemonHistoryLeafOf,
   listWslMoveSleptSessionPanes,
@@ -127,7 +127,7 @@ function documentOf(slept: Awaited<ReturnType<typeof readWslMoveSleptScrollbackF
   if (!entry) {
     throw new Error('expected a history document')
   }
-  const document = parseOrcadMigrationTerminalHistoryText(readFileSync(entry.path, 'utf8'))
+  const document = parseTopodMigrationTerminalHistoryText(readFileSync(entry.path, 'utf8'))
   return {
     ...document,
     checkpoint: {

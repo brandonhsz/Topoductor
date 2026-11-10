@@ -86,7 +86,7 @@ export const getTerminalLightThemeSearchEntries = createLocalizedCatalog(() => [
     title: translate('auto.components.settings.terminal.search.1d89457764', 'Light Theme'),
     description: translate(
       'auto.components.settings.terminal.search.1dee533bd9',
-      'Choose the theme used when Orca is in light mode.'
+      'Choose the theme used when Topo is in light mode.'
     ),
     keywords: [
       ...translateSearchKeyword('auto.components.settings.terminal.search.f66a7cf715', 'terminal'),
@@ -120,7 +120,7 @@ export const getTerminalYamlImportSearchEntries = createLocalizedCatalog(() => [
     ),
     description: translate(
       'auto.components.settings.terminal.search.yaml_import.description',
-      'Import theme YAML files as Orca terminal themes.'
+      'Import theme YAML files as Topo terminal themes.'
     ),
     keywords: [
       translate('auto.components.settings.terminal.search.yaml_import.keyword_yaml', 'yaml'),
@@ -141,7 +141,7 @@ export const getTerminalWarpImportSearchEntries = createLocalizedCatalog(() => [
     ),
     description: translate(
       'auto.components.settings.terminal.search.warp_import.description',
-      'Import Warp themes as Orca terminal themes.'
+      'Import Warp themes as Topo terminal themes.'
     ),
     keywords: [
       translate('auto.components.settings.terminal.search.warp_import.keyword_warp', 'warp'),
@@ -166,7 +166,7 @@ export const getClaudeCodeThemeSyncSearchEntry = createLocalizedCatalog(() => [
     ),
     description: translate(
       'components.settings.terminal.claudeCodeThemeSync.description',
-      'Claude Code on this computer uses your terminal colors and follows theme changes live, including outside Orca. Turning this off restores your previous Claude Code theme. Picking a theme in Claude Code stops the sync.'
+      'Claude Code on this computer uses your terminal colors and follows theme changes live, including outside Topo. Turning this off restores your previous Claude Code theme. Picking a theme in Claude Code stops the sync.'
     ),
     keywords: [
       ...translateSearchKeyword('auto.components.settings.terminal.search.0ce176909a', 'theme'),

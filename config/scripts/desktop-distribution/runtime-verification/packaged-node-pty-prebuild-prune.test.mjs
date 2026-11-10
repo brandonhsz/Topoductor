@@ -47,7 +47,7 @@ describe('prunePackagedNodePty: the Windows conpty fallback', () => {
   }
 
   beforeEach(() => {
-    resources = mkdtempSync(join(tmpdir(), 'orca-prune-'))
+    resources = mkdtempSync(join(tmpdir(), 'topo-prune-'))
   })
   afterEach(() => {
     rmSync(resources, { recursive: true, force: true })

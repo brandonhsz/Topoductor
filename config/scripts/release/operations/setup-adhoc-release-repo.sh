@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Provision stablyai/orca-adhoc for adhoc-mac-build.yml. Keep unlanded branch builds out of main’s hourly feed.
+# Provision brandonhsz/topo-adhoc for adhoc-mac-build.yml. Keep unlanded branch builds out of main’s hourly feed.
 # Reuse hourly’s App credentials; this only widens its installation.
 # Run once after setup-hourly-release-token.sh: bash config/scripts/release/operations/setup-adhoc-release-repo.sh
 set -euo pipefail
 
-ORG="stablyai"
-ADHOC_REPO="$ORG/orca-adhoc"
-MAIN_REPO="$ORG/orca"
-APP_SLUG="orca-hourly-release"
+ORG="brandonhsz"
+ADHOC_REPO="$ORG/topo-adhoc"
+MAIN_REPO="$ORG/topo"
+APP_SLUG="topo-hourly-release"
 
 fail() {
   echo "error: $*" >&2
@@ -25,7 +25,7 @@ else
   # --add-readme supplies the commit required to create a release tag in a new repo.
   gh repo create "$ADHOC_REPO" \
     --public \
-    --description "Adhoc macOS dev builds of Orca, cut from unlanded branches. Not a source repo." \
+    --description "Adhoc macOS dev builds of Topo, cut from unlanded branches. Not a source repo." \
     --add-readme \
     --disable-issues \
     --disable-wiki ||
@@ -62,7 +62,7 @@ Could not do it from here${INSTALL_ID:+ (needs an Organization Owner)}. Do it in
   1. Open:  https://github.com/organizations/$ORG/settings/installations
   2. Configure  ->  $APP_SLUG
   3. Repository access  ->  Only select repositories  ->  add $ADHOC_REPO
-     (keep orca-hourly/orca-daily selected; all dev channels use this one App)
+     (keep topo-hourly/topo-daily selected; all dev channels use this one App)
   4. Save.
 EOF
 fi

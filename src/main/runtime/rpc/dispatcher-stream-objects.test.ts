@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import { defineStreamingMethod, type RpcResponse } from './core'
 import { RpcDispatcher } from './dispatcher'
 
 // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: These test methods only read the runtime ID; optional runtime hooks are absent.
-const runtime = { getRuntimeId: () => 'test-runtime' } as OrcaRuntimeService
+const runtime = { getRuntimeId: () => 'test-runtime' } as TopoRuntimeService
 
 describe('object and JSON stream transports', () => {
   it('preserves ordered stream results and errors across structured cloning and JSON', async () => {

@@ -218,7 +218,7 @@ export type GitLabProjectSettings = {
   recent: { host: string; path: string; lastOpenedAt: string }[]
 }
 
-// Why: only the four Todo target types Orca renders meaningfully; others (e.g. DesignManagement::Design) fall back to a generic "open URL".
+// Why: only the four Todo target types Topo renders meaningfully; others (e.g. DesignManagement::Design) fall back to a generic "open URL".
 export type GitLabTodoTargetType = 'MergeRequest' | 'Issue' | 'Commit' | 'Note'
 
 export type GitLabTodo = {
@@ -254,7 +254,7 @@ export type GitLabPipelineJob = {
   webUrl: string
   /** Duration in seconds. null when the job hasn't finished. */
   duration: number | null
-  /** Provider ISO times; absent from older Orca servers and from jobs that haven't started. */
+  /** Provider ISO times; absent from older Topo servers and from jobs that haven't started. */
   startedAt?: string
   finishedAt?: string
 }
@@ -266,7 +266,7 @@ export type GitLabPipeline = {
   /** Pipeline-level verdict, settled by the MR status rule from the same reply. */
   checkStatus?: CheckStatus
   webUrl?: string | null
-  /** Commit and ref the pipeline ran on; absent from older Orca servers. */
+  /** Commit and ref the pipeline ran on; absent from older Topo servers. */
   sha?: string
   ref?: string
   startedAt?: string
@@ -275,7 +275,7 @@ export type GitLabPipeline = {
 
 // Flatten discussions into the work-item details comment list.
 export type GitLabWorkItemDetails = {
-  /** repoId is stamped by the renderer's caller — the main process doesn't know Orca's Repo.id. */
+  /** repoId is stamped by the renderer's caller — the main process doesn't know Topo's Repo.id. */
   item: Omit<GitLabWorkItem, 'repoId'>
   body: string
   comments: MRComment[]

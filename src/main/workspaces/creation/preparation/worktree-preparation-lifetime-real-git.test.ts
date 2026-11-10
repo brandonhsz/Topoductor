@@ -22,7 +22,7 @@ function git(cwd: string, ...args: string[]): string {
 }
 
 async function fixture() {
-  const root = await realpath(await mkdtemp(join(tmpdir(), 'orca-preparation-lifetime-')))
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'topo-preparation-lifetime-')))
   roots.push(root)
   const repoPath = join(root, 'repo')
   execFileSync('git', ['init', '--quiet', repoPath])
@@ -236,7 +236,7 @@ it('keeps a locked artifact after writer termination cannot be verified, even wh
   expect(existsSync(join(preparedPath, '.git'))).toBe(true)
   expect(existsSync(join(preparedPath, 'version.txt'))).toBe(false)
   expect(git(preparedPath, 'worktree', 'list', '--porcelain')).toContain(
-    'locked orca-create-preparation:'
+    'locked topo-create-preparation:'
   )
 })
 

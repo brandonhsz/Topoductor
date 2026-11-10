@@ -25,7 +25,7 @@ import { readLocalAntigravityHistory } from './session-scanner-antigravity-histo
 
 const roots: string[] = []
 async function filePath() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-regular-index-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-regular-index-'))
   roots.push(root)
   return join(root, 'projects.json')
 }

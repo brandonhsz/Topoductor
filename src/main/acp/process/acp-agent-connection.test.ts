@@ -1,6 +1,6 @@
 import { PassThrough } from 'node:stream'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { PipedProcessSpawner } from '@orca/process-host/process-spec'
+import type { PipedProcessSpawner } from '@topo/process-host/process-spec'
 import { createFakePipedChild } from '../../../shared/__fixtures__/fake-spawned-child'
 import type { terminateProviderProcessTree } from '../../provider-process/provider-process-teardown'
 import {

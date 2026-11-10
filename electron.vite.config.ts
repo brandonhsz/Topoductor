@@ -32,7 +32,7 @@ const BUNDLED_MAIN_DEPENDENCIES = new Set([
   'fflate',
   'mime-types',
   'mime-db',
-  // Linear save confirmation; bundled like orcad so packaging needs no extra node_modules.
+  // Linear save confirmation; bundled like topod so packaging needs no extra node_modules.
   'unified',
   'remark-parse',
   'remark-gfm',
@@ -40,22 +40,22 @@ const BUNDLED_MAIN_DEPENDENCIES = new Set([
   // Windows NSIS copies app.asar before external resources; bootstrap must not race resources/node_modules.
   'zod'
 ])
-// Official CI alone injects ORCA_BUILD_IDENTITY (stable|rc) and ORCA_POSTHOG_WRITE_KEY secrets; other builds substitute literal null.
+// Official CI alone injects TOPO_BUILD_IDENTITY (stable|rc) and TOPO_POSTHOG_WRITE_KEY secrets; other builds substitute literal null.
 // Compile-time substitution gates telemetry at module load without runtime env fallback; declarations live in src/types/build-constants.d.ts.
-const orcaBuildIdentity = process.env.ORCA_BUILD_IDENTITY
-const ORCA_BUILD_IDENTITY_LITERAL =
-  orcaBuildIdentity === 'stable' || orcaBuildIdentity === 'rc'
-    ? JSON.stringify(orcaBuildIdentity)
+const topoBuildIdentity = process.env.TOPO_BUILD_IDENTITY
+const TOPO_BUILD_IDENTITY_LITERAL =
+  topoBuildIdentity === 'stable' || topoBuildIdentity === 'rc'
+    ? JSON.stringify(topoBuildIdentity)
     : 'null'
-const orcaPostHogWriteKey = process.env.ORCA_POSTHOG_WRITE_KEY
-const ORCA_POSTHOG_WRITE_KEY_LITERAL =
-  typeof orcaPostHogWriteKey === 'string' && orcaPostHogWriteKey.length > 0
-    ? JSON.stringify(orcaPostHogWriteKey)
+const topoPostHogWriteKey = process.env.TOPO_POSTHOG_WRITE_KEY
+const TOPO_POSTHOG_WRITE_KEY_LITERAL =
+  typeof topoPostHogWriteKey === 'string' && topoPostHogWriteKey.length > 0
+    ? JSON.stringify(topoPostHogWriteKey)
     : 'null'
-const orcaDiagnosticsTokenUrl = process.env.ORCA_DIAGNOSTICS_TOKEN_URL
-const ORCA_DIAGNOSTICS_TOKEN_URL_LITERAL =
-  typeof orcaDiagnosticsTokenUrl === 'string' && orcaDiagnosticsTokenUrl.length > 0
-    ? JSON.stringify(orcaDiagnosticsTokenUrl)
+const topoDiagnosticsTokenUrl = process.env.TOPO_DIAGNOSTICS_TOKEN_URL
+const TOPO_DIAGNOSTICS_TOKEN_URL_LITERAL =
+  typeof topoDiagnosticsTokenUrl === 'string' && topoDiagnosticsTokenUrl.length > 0
+    ? JSON.stringify(topoDiagnosticsTokenUrl)
     : 'null'
 
 const darkBuildSwitches: {
@@ -67,7 +67,7 @@ const DARK_BUILD_DEFINES = darkBuildSwitches.darkBuildDefines()
 /** Marks a dark switched-on main build so packaging refuses it. */
 function createDarkBuildMarkerPlugin(): Plugin {
   return {
-    name: 'orca-dark-build-marker',
+    name: 'topo-dark-build-marker',
     generateBundle() {
       for (const marker of darkBuildSwitches.darkBuildMarkers()) {
         this.emitFile({ type: 'asset', fileName: marker.fileName, source: marker.text })
@@ -77,13 +77,13 @@ function createDarkBuildMarkerPlugin(): Plugin {
 }
 
 // Pin official skill installs to the bundled commit on every channel; main installs, renderer prints the command.
-const ORCA_BUILD_COMMIT_LITERAL = JSON.stringify(resolveBuildSourceCommit())
+const TOPO_BUILD_COMMIT_LITERAL = JSON.stringify(resolveBuildSourceCommit())
 
 function createStartupDiagnosticsBanner(chunkName: string): string {
   return `
 ;(() => {
   const env = typeof process !== 'undefined' ? process.env : undefined
-  const mode = env?.ORCA_STARTUP_DIAGNOSTICS
+  const mode = env?.TOPO_STARTUP_DIAGNOSTICS
   if (mode !== '1' && mode !== 'trace') {
     return
   }
@@ -106,7 +106,7 @@ function createStartupDiagnosticsBanner(chunkName: string): string {
     openSync = undefined
     writeSync = undefined
   }
-  const diagnosticFile = env?.ORCA_STARTUP_DIAGNOSTICS_FILE
+  const diagnosticFile = env?.TOPO_STARTUP_DIAGNOSTICS_FILE
   if (typeof diagnosticFile === 'string' && diagnosticFile.length > 0 && typeof openSync === 'function') {
     try {
       diagnosticFileDescriptor = openSync(diagnosticFile, 'a', 0o600)
@@ -129,8 +129,8 @@ function createStartupDiagnosticsBanner(chunkName: string): string {
   }
   const chunkName = ${JSON.stringify(chunkName)}
   writeLine('[bootstrap] bundle-enter chunk=' + safeJson(chunkName) + ' pid=' + process.pid + ' ppid=' + process.ppid + ' execPath=' + safeJson(process.execPath) + ' argv=' + safeJson(process.argv) + ' electronRunAsNode=' + safeJson(env?.ELECTRON_RUN_AS_NODE ?? null))
-  if (!globalThis.__ORCA_BOOTSTRAP_EXIT_LOG_INSTALLED__) {
-    globalThis.__ORCA_BOOTSTRAP_EXIT_LOG_INSTALLED__ = true
+  if (!globalThis.__TOPO_BOOTSTRAP_EXIT_LOG_INSTALLED__) {
+    globalThis.__TOPO_BOOTSTRAP_EXIT_LOG_INSTALLED__ = true
     process.once('exit', (code) => {
       writeLine('[bootstrap] process-exit code=' + code)
       if (typeof closeSync === 'function' && typeof diagnosticFileDescriptor === 'number') {
@@ -150,12 +150,12 @@ function createStartupDiagnosticsBanner(chunkName: string): string {
       writeLine('[bootstrap] unhandled-rejection error=' + safeJson(String(message)))
     })
   }
-  if (mode === 'trace' && !globalThis.__ORCA_BOOTSTRAP_REQUIRE_TRACE_INSTALLED__) {
-    globalThis.__ORCA_BOOTSTRAP_REQUIRE_TRACE_INSTALLED__ = true
+  if (mode === 'trace' && !globalThis.__TOPO_BOOTSTRAP_REQUIRE_TRACE_INSTALLED__) {
+    globalThis.__TOPO_BOOTSTRAP_REQUIRE_TRACE_INSTALLED__ = true
     try {
       const Module = require('node:module')
       const originalLoad = Module._load
-      const parsedTraceLimit = Number(env?.ORCA_STARTUP_DIAGNOSTICS_TRACE_LIMIT ?? 20000)
+      const parsedTraceLimit = Number(env?.TOPO_STARTUP_DIAGNOSTICS_TRACE_LIMIT ?? 20000)
       const traceLimit = Number.isFinite(parsedTraceLimit) && parsedTraceLimit > 0 ? parsedTraceLimit : 20000
       let traceLineCount = 0
       let traceLimitReported = false
@@ -204,7 +204,7 @@ function createMainBootstrapPostBanner(chunk: Rollup.RenderedChunk): string {
 }
 
 // Dev-only unminified main bundle exposes function names in V8 profiles; releases and pnpm build never read this flag.
-const MAIN_MINIFY: 'oxc' | false = process.env.ORCA_UNMINIFIED_MAIN === '1' ? false : 'oxc'
+const MAIN_MINIFY: 'oxc' | false = process.env.TOPO_UNMINIFIED_MAIN === '1' ? false : 'oxc'
 
 export const electronViteConfig: UserConfig = {
   main: {
@@ -216,9 +216,9 @@ export const electronViteConfig: UserConfig = {
       // Hidden maps omit sourceMappingURL because packaging strips them; release CI uploads maps for crash decoding.
       sourcemap: 'hidden',
       // PR fixtures discard maps; official releases must always retain them.
-      ...(process.env.ORCA_CI_MAIN_SOURCEMAPS === '0' &&
-      orcaBuildIdentity !== 'stable' &&
-      orcaBuildIdentity !== 'rc'
+      ...(process.env.TOPO_CI_MAIN_SOURCEMAPS === '0' &&
+      topoBuildIdentity !== 'stable' &&
+      topoBuildIdentity !== 'rc'
         ? { sourcemap: false }
         : {}),
       // Forked daemon-entry.js must be unpacked; its Node resolver cannot reach app.asar, and startup-critical JS must survive partial Windows resource copies.
@@ -248,10 +248,10 @@ export const electronViteConfig: UserConfig = {
       }
     },
     define: {
-      ORCA_BUILD_IDENTITY: ORCA_BUILD_IDENTITY_LITERAL,
-      ORCA_POSTHOG_WRITE_KEY: ORCA_POSTHOG_WRITE_KEY_LITERAL,
-      ORCA_DIAGNOSTICS_TOKEN_URL: ORCA_DIAGNOSTICS_TOKEN_URL_LITERAL,
-      ORCA_BUILD_COMMIT: ORCA_BUILD_COMMIT_LITERAL,
+      TOPO_BUILD_IDENTITY: TOPO_BUILD_IDENTITY_LITERAL,
+      TOPO_POSTHOG_WRITE_KEY: TOPO_POSTHOG_WRITE_KEY_LITERAL,
+      TOPO_DIAGNOSTICS_TOKEN_URL: TOPO_DIAGNOSTICS_TOKEN_URL_LITERAL,
+      TOPO_BUILD_COMMIT: TOPO_BUILD_COMMIT_LITERAL,
       ...DARK_BUILD_DEFINES
     },
     // @xterm/headless declares exports:null; point Vite directly at its published CJS main to permit inlining.
@@ -274,7 +274,7 @@ export const electronViteConfig: UserConfig = {
     // Shared node_modules installs must not share dependency optimization state across worktrees.
     cacheDir: resolve('.cache/vite/renderer'),
     define: {
-      ORCA_BUILD_COMMIT: ORCA_BUILD_COMMIT_LITERAL,
+      TOPO_BUILD_COMMIT: TOPO_BUILD_COMMIT_LITERAL,
       ...DARK_BUILD_DEFINES
     },
     resolve: {

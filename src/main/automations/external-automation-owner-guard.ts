@@ -18,7 +18,7 @@ import type {
 } from '../../shared/automations/external/external-automation'
 import type { SshTarget } from '../../shared/ssh-types'
 import {
-  isManagedOrcadSshTarget,
+  isManagedTopodSshTarget,
   isRuntimeOwnedSshTarget
 } from '../ssh/targets/ssh-target-runtime-ownership'
 
@@ -45,7 +45,7 @@ function resolveSshScope(
     throw externalAutomationTargetRemovedError()
   }
   // Hide registration details before reporting generation mismatches.
-  if (isRuntimeOwnedSshTarget(target) || isManagedOrcadSshTarget(target)) {
+  if (isRuntimeOwnedSshTarget(target) || isManagedTopodSshTarget(target)) {
     throw new ExternalAutomationScopeError(EXTERNAL_AUTOMATION_SCOPE_CODES.targetHidden)
   }
   const current = sanitizeSshTargetGeneration(target.generation)

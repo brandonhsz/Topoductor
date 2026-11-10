@@ -1,13 +1,13 @@
 import type { RepoIcon } from './repo-icon'
 import type { GhAccountBinding } from './github/account-binding'
 import type { GitHubRepositoryIdentity } from './github/pull-request-types'
-import type { RepoHookSettings } from './orca-yaml-hook-types'
+import type { RepoHookSettings } from './topo-yaml-hook-types'
 import type { ForkSyncMode } from './git/remotes/git-fork-sync'
 import type { GitRemoteIdentity } from './git/remotes/git-remote-identity'
 import type { RepoSourceControlAiOverrides } from './source-control/ai/settings/source-control-ai-settings-types'
 import type { RepoProjectHostSetupMethod } from './project-types'
 import type { JiraProjectReference } from './jira/jira-project-reference'
-import type { OrcadRetainedMarker } from './orcad-retained-marker'
+import type { TopodRetainedMarker } from './topod-retained-marker'
 import type { EditorFormatter } from './editor-formatter'
 import type { AgentWorkspaceTrustDecision } from './agent-launch/permissions/agent-workspace-trust-decision'
 
@@ -67,13 +67,13 @@ export type Repo = {
   defaultJiraProject?: JiraProjectReference | null
   /** Bind host/login only; resolve a short-lived gh token at spawn and inject into that child’s environment. */
   ghAccount?: GhAccountBinding
-  /** Controls Orca's fork-default-branch sync offer for repos with upstream metadata. */
+  /** Controls Topo's fork-default-branch sync offer for repos with upstream metadata. */
   forkSyncMode?: ForkSyncMode
-  /** Whether Orca pre-trusts this repo's worktrees for agents. Absent means undecided: desktop launches ask once. */
+  /** Whether Topo pre-trusts this repo's worktrees for agents. Absent means undecided: desktop launches ask once. */
   agentWorkspaceTrust?: AgentWorkspaceTrustDecision
-  /** Canonical identity for the repo remote Orca should use for provider-level grouping. */
+  /** Canonical identity for the repo remote Topo should use for provider-level grouping. */
   gitRemoteIdentity?: GitRemoteIdentity | null
-  /** Controls whether worktrees Orca did not create appear in the sidebar. */
+  /** Controls whether worktrees Topo did not create appear in the sidebar. */
   externalWorktreeVisibility?: ExternalWorktreeVisibility
   /** True when the repo predates hidden-by-default external worktrees. */
   externalWorktreeVisibilityLegacy?: boolean
@@ -102,7 +102,7 @@ export type Repo = {
   /** Transitional source for ProjectHostSetup.setupMethod while Repo remains compatibility storage. */
   projectHostSetupMethod?: RepoProjectHostSetupMethod
   /** Local row a WSL host now owns, kept for a downgrade; set only by the mover's retention pass. */
-  orcadRetained?: OrcadRetainedMarker
+  topodRetained?: TopodRetainedMarker
 }
 
 /** Shared IPC shape for repos:getBaseRefDefault across main/preload/renderer; remoteCount avoids a second hint lookup. */

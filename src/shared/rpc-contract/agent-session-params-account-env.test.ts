@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest'
 import { CreateAgentSessionParams, EnsureAgentSessionParams } from './agent-session-params'
 
 const ACCOUNT_ENV = {
-  CLAUDE_CONFIG_DIR: '/home/u/.orca-claude/a/config',
-  ORCA_CLAUDE_INJECTED_CONFIG_DIR: '/home/u/.orca-claude/a/config',
-  ORCA_CLAUDE_PROFILE_POINTER: '~/.orca-claude/pointer',
-  CODEX_HOME: '/home/u/.orca-codex/b'
+  CLAUDE_CONFIG_DIR: '/home/u/.topo-claude/a/config',
+  TOPO_CLAUDE_INJECTED_CONFIG_DIR: '/home/u/.topo-claude/a/config',
+  TOPO_CLAUDE_PROFILE_POINTER: '~/.topo-claude/pointer',
+  CODEX_HOME: '/home/u/.topo-codex/b'
 }
 const CREATE = {
   clientOperationId: `${Date.now()}-${'a'.repeat(32)}`,

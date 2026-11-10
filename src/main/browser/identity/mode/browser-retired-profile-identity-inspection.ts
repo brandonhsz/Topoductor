@@ -6,7 +6,7 @@ type PersistedProfileWithUserAgentMode = Record<string, unknown> & {
 
 export function inspectRetiredBrowserSessionProfileUserAgentModes(
   profiles: readonly unknown[],
-  activeOrcaProfileId: string
+  activeTopoProfileId: string
 ): { noticePending: boolean; degraded: boolean } {
   let noticePending = false
   let degraded = false
@@ -20,7 +20,7 @@ export function inspectRetiredBrowserSessionProfileUserAgentModes(
     // Unknown modes and unhydratable profiles make the retired choice uninspectable.
     if (
       (mode !== 'clean' && mode !== 'native') ||
-      !isValidPersistedBrowserSessionProfile(profile, activeOrcaProfileId)
+      !isValidPersistedBrowserSessionProfile(profile, activeTopoProfileId)
     ) {
       degraded = true
     }

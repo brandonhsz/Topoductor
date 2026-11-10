@@ -62,7 +62,7 @@ async function candidate(path: string): Promise<SessionFileCandidate> {
 }
 
 it('lists a recovered session without an issue on fresh and cached scans', async () => {
-  const root = await tempRoot('orca-record-budget-scan-')
+  const root = await tempRoot('topo-record-budget-scan-')
   const roots = isolatedScanRoots(root)
   const fixture = codexFixture()
   const dir = roots.codexSessionsDir
@@ -90,7 +90,7 @@ it('lists a recovered session without an issue on fresh and cached scans', async
 it.each(['claude', 'kiro'] as const)(
   'retains %s unreadable errors across restart and clears them on recovery or replacement',
   async (agent) => {
-    const root = await tempRoot('orca-record-budget-unreadable-')
+    const root = await tempRoot('topo-record-budget-unreadable-')
     const dir = join(root, agent)
     const roots = {
       ...isolatedScanRoots(root),

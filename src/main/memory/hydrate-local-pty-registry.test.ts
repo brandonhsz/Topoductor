@@ -115,22 +115,22 @@ describe('hydrateLocalPtyRegistryAtBoot', () => {
 
   it('fails closed when live worktrees collide on one normalized key', async () => {
     const { hydrate, listRegisteredPtys } = await loadFresh()
-    const ptyId = 'repo-a::C:/Users/Neil/Orca@@cafebabe'
+    const ptyId = 'repo-a::C:/Users/Neil/Topo@@cafebabe'
     getDaemonProviderMock.mockReturnValue(
       makeProvider([
-        { sessionId: ptyId, pid: 4242, cwd: 'C:/Users/Neil/Orca' } as unknown as SessionInfo
+        { sessionId: ptyId, pid: 4242, cwd: 'C:/Users/Neil/Topo' } as unknown as SessionInfo
       ])
     )
     listLocalRepoWorktreesStrictMock.mockResolvedValue([
       {
-        path: 'C:/Users/Neil/Orca',
+        path: 'C:/Users/Neil/Topo',
         head: '',
         branch: '',
         isBare: false,
         isMainWorktree: true
       },
       {
-        path: 'c:\\users\\neil\\orca',
+        path: 'c:\\users\\neil\\topo',
         head: '',
         branch: '',
         isBare: false,
@@ -138,7 +138,7 @@ describe('hydrateLocalPtyRegistryAtBoot', () => {
       }
     ])
 
-    await hydrate(makeStore([{ id: 'repo-a', path: 'C:/Users/Neil/Orca' }]))
+    await hydrate(makeStore([{ id: 'repo-a', path: 'C:/Users/Neil/Topo' }]))
 
     expect(listRegisteredPtys()).toHaveLength(0)
   })

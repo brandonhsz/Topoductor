@@ -5,7 +5,7 @@ import type { PluginShotReplayPreview } from '@/store/plugins/capture/plugin-sho
 const ignoreEvent = (): void => {}
 
 /**
- * `orca plugin shot --scenario`: the tree over everything at the viewport's corner, because
+ * `topo plugin shot --scenario`: the tree over everything at the viewport's corner, because
  * capturePage sees only what the window composites. Main draws it only while the window is hidden
  * or minimized. No image loader, so images keep their placeholder; events go nowhere.
  */

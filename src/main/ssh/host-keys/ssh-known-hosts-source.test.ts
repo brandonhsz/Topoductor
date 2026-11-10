@@ -26,7 +26,7 @@ const roots: string[] = []
 const savedHome = { HOME: process.env.HOME, USERPROFILE: process.env.USERPROFILE }
 
 async function createRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-known-hosts-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-known-hosts-'))
   roots.push(root)
   return root
 }
@@ -115,7 +115,7 @@ describe('a known_hosts path containing a space', () => {
   let dir: string
 
   beforeEach(async () => {
-    dir = await mkdtemp(join(tmpdir(), 'orca known hosts '))
+    dir = await mkdtemp(join(tmpdir(), 'topo known hosts '))
   })
 
   afterEach(async () => {
@@ -143,10 +143,10 @@ describe('a known_hosts path containing a space', () => {
     await writeFile(real, '', 'utf-8')
 
     const resolved = await resolveKnownHostsFiles({
-      userKnownHostsFiles: [real, '/tmp/orca-does-not-exist-known-hosts'],
+      userKnownHostsFiles: [real, '/tmp/topo-does-not-exist-known-hosts'],
       globalKnownHostsFiles: []
     } as never)
 
-    expect(resolved).toEqual([real, '/tmp/orca-does-not-exist-known-hosts'])
+    expect(resolved).toEqual([real, '/tmp/topo-does-not-exist-known-hosts'])
   })
 })

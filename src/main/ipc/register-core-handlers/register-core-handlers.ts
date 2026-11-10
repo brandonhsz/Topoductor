@@ -1,5 +1,5 @@
 import { app } from 'electron'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { registerAppHandlers } from '../app'
 import { registerWslMoveWiring } from '../wsl/wsl-move-driver-wiring'
 import { registerWslDriveProjectHandlers } from '../wsl/wsl-drive-project-handlers'
@@ -7,7 +7,7 @@ import { installProjectRuntimeGitRouter } from '../../workspaces/execution-host/
 import { registerCliHandlers } from '../cli'
 import { registerPreflightHandlers } from '../preflight'
 import type { Store } from '../../persistence/loading-store/store'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import type { StatsCollector } from '../../stats/collector'
 import { registerFilesystemHandlers } from '../filesystem/filesystem'
 import type { CommitMessageAgentEnvironmentResolvers } from '../../text-generation/commit-message-agent-environment'
@@ -68,7 +68,7 @@ import { registerEmulatorScrcpyTouchHandler } from '../emulator-scrcpy-touch'
 import { registerEmulatorScrcpyKeyboardHandler } from '../emulator-scrcpy-keyboard'
 import { registerSpeechHandlers } from '../speech'
 import { registerTerminalRenderDesyncEvidenceHandler } from '../terminal-render-desync-evidence'
-import { registerOrcaProfileHandlers } from '../profiles/orca-profiles'
+import { registerTopoProfileHandlers } from '../profiles/topo-profiles'
 import { registerCodexAccountHandlers } from '../codex-accounts'
 import { registerAgentHookHandlers } from '../agent-hooks'
 import { registerCodexConfigSyncHandlers } from '../codex-config-sync'
@@ -121,7 +121,7 @@ let registered = false
 const RELAUNCH_DISMISSAL_CLOSE_TIMEOUT_MS = 2_000
 
 async function closeNotificationDismissalsBeforeRelaunch(
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
 ): Promise<void> {
   const result = await settleWithinMs(
     runtime.closeNotificationDismissals(),
@@ -134,9 +134,9 @@ async function closeNotificationDismissalsBeforeRelaunch(
 
 type CoreHandlerLifecycleOptions = {
   onBeforeRelaunch?: () => void | Promise<void>
-  onOrcaProfileAuthMutation?: () => void
-  onBeforeOrcaProfileSignOut?: () => void
-  onAfterOrcaProfileSignOut?: () => void
+  onTopoProfileAuthMutation?: () => void
+  onBeforeTopoProfileSignOut?: () => void
+  onAfterTopoProfileSignOut?: () => void
   getAdditionalAiVaultCodexHomePaths?: () => readonly string[]
   prepareAiVaultSessionResume?: (
     args: AiVaultPrepareSessionResumeArgs
@@ -145,7 +145,7 @@ type CoreHandlerLifecycleOptions = {
 
 export function registerCoreHandlers(
   store: Store,
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   stats: StatsCollector,
   claudeUsage: ClaudeUsageStore,
   codexUsage: CodexUsageStore,
@@ -176,7 +176,7 @@ export function registerCoreHandlers(
 
   registerAppHandlers(store, {
     quitResumeRecordsFor: (session) => runtime.quitResumeRecordsFor(session),
-    ...(ORCA_LAYOUT_OWNER_IS_MAIN
+    ...(TOPO_LAYOUT_OWNER_IS_MAIN
       ? {
           reconnectFactsFor: (session, partition) =>
             runtime.shutdownReconnectFactsFor(session, partition)
@@ -239,11 +239,11 @@ export function registerCoreHandlers(
     registerPluginHandlers(store, pluginService, marketplaceServices)
   }
   registerTelemetryHandlers(store)
-  registerOrcaProfileHandlers(store, {
+  registerTopoProfileHandlers(store, {
     onBeforeRelaunch: lifecycleOptions.onBeforeRelaunch,
-    onAuthMutation: lifecycleOptions.onOrcaProfileAuthMutation,
-    onBeforeSignOut: lifecycleOptions.onBeforeOrcaProfileSignOut,
-    onAfterSignOut: lifecycleOptions.onAfterOrcaProfileSignOut
+    onAuthMutation: lifecycleOptions.onTopoProfileAuthMutation,
+    onBeforeSignOut: lifecycleOptions.onBeforeTopoProfileSignOut,
+    onAfterSignOut: lifecycleOptions.onAfterTopoProfileSignOut
   })
   registerBrowserHandlers(store)
   registerShellHandlers(store)

@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithRunCreateMobileSessionTerminal } from './mobile-terminal-renderer-create'
+import { TopoRuntimeWithRunCreateMobileSessionTerminal } from './mobile-terminal-renderer-create'
 import type { TerminalWorkspaceLaunchScope } from '../../orchestration/terminal-authority/structured-sessions/runtime-legacy-worker-terminal-recovery-types'
 import type { WorktreeStartupLaunch } from '../../../../shared/worktree/launch-types'
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
@@ -62,7 +62,7 @@ function normalizeOriginConnectionId(connectionId: string | null | undefined): s
   return connectionId?.trim() || null
 }
 
-export abstract class OrcaRuntimeWithResolveMobileSessionTerminalCommand extends OrcaRuntimeWithRunCreateMobileSessionTerminal {
+export abstract class TopoRuntimeWithResolveMobileSessionTerminalCommand extends TopoRuntimeWithRunCreateMobileSessionTerminal {
   /** The `--resume` launch for a pane's recorded agent session, as the host window's cold restore builds it. */
   protected resolveMobileSessionResumeCommand(
     workspace: TerminalWorkspaceLaunchScope,
@@ -142,7 +142,7 @@ export abstract class OrcaRuntimeWithResolveMobileSessionTerminalCommand extends
           // Quote for the execution host, even when the mobile client runs another OS.
           platform: launchRuntime.platform,
           shell: agentLaunchQuotingShell(launchRuntime),
-          // SSH uses relay-shim orca, never the local Linux orca-ide rename.
+          // SSH uses relay-shim topo, never the local Linux topo-ide rename.
           isRemote: Boolean(workspace.connectionId)
         })
       ),

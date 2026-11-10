@@ -18,7 +18,7 @@ vi.mock('./session-search-worker-client', async (importOriginal) => {
             `require(${JSON.stringify(loader)}); require(${JSON.stringify(entry)})`,
             {
               eval: true,
-              execArgv: ['--conditions=orca-source']
+              execArgv: ['--conditions=topo-source']
             }
           )
         )

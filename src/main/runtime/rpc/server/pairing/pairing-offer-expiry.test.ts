@@ -13,7 +13,7 @@ let dir: string
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date'] })
   vi.setSystemTime(1_000_000)
-  dir = mkdtempSync(join(tmpdir(), 'orca-offer-expiry-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-offer-expiry-'))
 })
 
 afterEach(() => {

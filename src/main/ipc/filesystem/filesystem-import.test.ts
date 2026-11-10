@@ -29,7 +29,7 @@ const {
 }))
 
 vi.mock('electron', () => ({
-  app: { getPath: () => '/orca-test-user-data' },
+  app: { getPath: () => '/topo-test-user-data' },
   ipcMain: { handle: handleMock }
 }))
 

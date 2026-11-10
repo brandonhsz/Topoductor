@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   createTranscriptPane,
   TRANSCRIPT_PANE_PTY_ID
-} from '../../orca-runtime-tests/agent-transcript-pane-test-harness'
+} from '../../topo-runtime-tests/agent-transcript-pane-test-harness'
 
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
 import { createDraftPasteReadyScanner } from '../../../../shared/draft-paste-ready-scanner'

@@ -133,8 +133,8 @@ describe('codex structured launch resolution', () => {
   })
 
   it('resumes a chat on the account selected after it was created, bringing its thread along', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'orca-codex-chat-account-move-'))
-    vi.stubEnv('ORCA_USER_DATA_PATH', join(root, 'user-data'))
+    const root = mkdtempSync(join(tmpdir(), 'topo-codex-chat-account-move-'))
+    vi.stubEnv('TOPO_USER_DATA_PATH', join(root, 'user-data'))
     try {
       const threadId = '019a1a83-f690-7c82-a482-31195524a7d8'
       const rollout = join(

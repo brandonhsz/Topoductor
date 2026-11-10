@@ -1,7 +1,7 @@
 import { connect, type Socket } from 'node:net'
 import { afterEach, expect, it, vi } from 'vitest'
-import { RELAY_CLOSE_CODE } from '@orca-cloud/relay-contract/close-codes'
-import { RELAY_PROTOCOL_LIMITS } from '@orca-cloud/relay-contract/protocol-limits'
+import { RELAY_CLOSE_CODE } from '@topo-cloud/relay-contract/close-codes'
+import { RELAY_PROTOCOL_LIMITS } from '@topo-cloud/relay-contract/protocol-limits'
 import { loadRelayConfig } from '../config.js'
 import type { RelayDatabase } from '../database/database.js'
 import { createRelayServer } from '../relay-server.js'
@@ -30,19 +30,19 @@ async function fixture(
     close: async () => {}
   }
   const config = loadRelayConfig({
-    ORCA_RELAY_PUBLIC_URL: 'http://127.0.0.1',
-    ORCA_RELAY_CELL_URL: 'http://127.0.0.1',
-    ORCA_RELAY_AUTH_ISSUER: 'https://auth.example.test',
-    ORCA_RELAY_JWKS_URL: 'https://auth.example.test/jwks',
-    ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: 'synthetic-assignment-key-for-test-only',
-    ORCA_RELAY_ROLE: role,
-    ORCA_RELAY_ADMIN_AUDIENCE: 'https://auth.example.test/admin',
-    ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.test',
-    ORCA_RELAY_CELL_CONNECTION_HARD_CAP: '600',
-    ORCA_RELAY_CELL_CONNECTION_UNOBSERVED_BOUND: '60',
+    TOPO_RELAY_PUBLIC_URL: 'http://127.0.0.1',
+    TOPO_RELAY_CELL_URL: 'http://127.0.0.1',
+    TOPO_RELAY_AUTH_ISSUER: 'https://auth.example.test',
+    TOPO_RELAY_JWKS_URL: 'https://auth.example.test/jwks',
+    TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: 'synthetic-assignment-key-for-test-only',
+    TOPO_RELAY_ROLE: role,
+    TOPO_RELAY_ADMIN_AUDIENCE: 'https://auth.example.test/admin',
+    TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.test',
+    TOPO_RELAY_CELL_CONNECTION_HARD_CAP: '600',
+    TOPO_RELAY_CELL_CONNECTION_UNOBSERVED_BOUND: '60',
     ...(role === 'director'
       ? {
-          ORCA_RELAY_CELLS_JSON: JSON.stringify([
+          TOPO_RELAY_CELLS_JSON: JSON.stringify([
             { id: 'cell-1', url: 'https://cell-1.example.test', capacityRequests: 900 }
           ])
         }

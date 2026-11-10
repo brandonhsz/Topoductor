@@ -1,7 +1,7 @@
 import { getClaudeAgentViewService } from '../../../claude/agent-view/agent-view-service'
 import { inheritOmpLaunchEnvironment } from '../host-env/omp-launch-environment'
 import { getAppEnvironment } from '../../../../shared/app-environment'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import type { GlobalSettings } from '../../../../shared/global-settings-types'
 import { isAgentStatusHooksEnabled } from '../../../../shared/agent-hook-listener/configuration/agent-status-hooks-setting'
 import { isPwshAvailableAsync } from '../../../pty/shell-startup/pwsh'
@@ -9,28 +9,28 @@ import { LocalPtyProvider } from '../../../providers/local-pty/local-pty-provide
 import type { LocalPtyProviderOptions } from '../../../providers/local-pty/local-pty-provider-types'
 import { runAsWslLaunchUserAct } from '../../../wsl/discovery/wsl-background-exec-gate'
 import {
-  addOrcaWslInteropEnv,
+  addTopoWslInteropEnv,
   stampWslOrchestrationCompatibilityHost
-} from '../../../pty/shell-startup/wsl-orca-env'
+} from '../../../pty/shell-startup/wsl-topo-env'
 import type { CodexAccountSelectionTarget } from '../../../codex-accounts/runtime-selection'
 import { buildPtyHostEnv } from '../host-env/assembly'
 import { stampRuntimeSourceEnv } from '../../../../shared/runtime-source-env'
 import { getRuntimeSourceStamp } from '../../../runtime/hosts/platform-probe/host-descriptor'
 import {
   getCompatibleSelectedCodexHomePath,
-  shouldStripInheritedOrcaCodexHome
+  shouldStripInheritedTopoCodexHome
 } from '../host-env/codex-home'
 import type { GetSelectedCodexHomePath } from '../host-env/types'
 import { isCurrentPtyExit, ptyOwnership } from './ownership-state'
 import { localProvider } from './registry'
 import { clearProviderPtyState } from './state-cleanup'
 import { visibleRendererPtys } from '../delivery/visibility-state'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { awaitExplicitAgentPluginGuestReadiness } from '../../../agent-hooks/wsl-relay/wsl-agent-plugin-readiness'
 import { prepareAntigravityAccountForLaunch } from '../../../antigravity/native-account-launch'
 
 export function configureLocalPtyProvider(args: {
-  runtime?: OrcaRuntimeService
+  runtime?: TopoRuntimeService
   getSettings?: () => GlobalSettings
   getSelectedCodexHomePath?: GetSelectedCodexHomePath
   trustedTerminalHandleEnv: Set<string>
@@ -91,7 +91,7 @@ export function configureLocalPtyProvider(args: {
       userDataPath: getAppEnvironment().getPath('userData'),
       selectedCodexHomePath,
       skipCodexHomeEnv,
-      stripInheritedOrcaCodexHome: shouldStripInheritedOrcaCodexHome({
+      stripInheritedTopoCodexHome: shouldStripInheritedTopoCodexHome({
         target: codexSelectionTarget,
         selectedCodexHomePath,
         skipCodexHomeEnv,
@@ -110,16 +110,16 @@ export function configureLocalPtyProvider(args: {
       routeBrowserOpensToClient: runtime?.shouldRelayTerminalBrowserOpens?.()
     })
     // Supply terminal identity at process start so agents can address orchestration without another RPC.
-    const requestedHandle = baseEnv.ORCA_TERMINAL_HANDLE
+    const requestedHandle = baseEnv.TOPO_TERMINAL_HANDLE
     const preAllocatedHandle =
       requestedHandle && trustedTerminalHandleEnv.has(requestedHandle)
         ? requestedHandle
         : runtime?.preAllocateHandleForPty(id)
     if (requestedHandle && requestedHandle !== preAllocatedHandle) {
-      delete env.ORCA_TERMINAL_HANDLE
+      delete env.TOPO_TERMINAL_HANDLE
     }
     if (preAllocatedHandle) {
-      env.ORCA_TERMINAL_HANDLE = preAllocatedHandle
+      env.TOPO_TERMINAL_HANDLE = preAllocatedHandle
     }
     stampWslOrchestrationCompatibilityHost(
       env,
@@ -131,7 +131,7 @@ export function configureLocalPtyProvider(args: {
       getRuntimeSourceStamp(runtime, getAppEnvironment().getPath('userData'))
     )
     if (ctx?.isWsl === true) {
-      addOrcaWslInteropEnv(env)
+      addTopoWslInteropEnv(env)
     }
     return env
   }
@@ -157,7 +157,7 @@ export function configureLocalPtyProvider(args: {
       if (!isCurrentPtyExit({ id, incarnationId })) {
         return
       }
-      const viewShown = ORCA_LAYOUT_OWNER_IS_MAIN && visibleRendererPtys.has(id)
+      const viewShown = TOPO_LAYOUT_OWNER_IS_MAIN && visibleRendererPtys.has(id)
       clearProviderPtyState(id)
       ptyOwnership.delete(id)
       runtime?.onPtyExit(id, code, incarnationId, {

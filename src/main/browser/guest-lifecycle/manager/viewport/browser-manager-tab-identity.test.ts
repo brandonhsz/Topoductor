@@ -36,7 +36,7 @@ vi.mock('../../../identity/browser-process-user-agent', () => ({
     electronUserAgent:
       mocks.processUserAgentMode === 'native'
         ? mocks.processUserAgent
-        : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) orca/1.0.0 Chrome/134.0.0.0 Electron/30.0.0 Safari/537.36'
+        : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) topo/1.0.0 Chrome/134.0.0.0 Electron/30.0.0 Safari/537.36'
   })
 }))
 
@@ -129,7 +129,7 @@ async function observe(
 
 describe('tab identity ownership', () => {
   beforeEach(() => {
-    expect(process.env.ORCA_BACKGROUND_LAUNCH).toBe('1')
+    expect(process.env.TOPO_BACKGROUND_LAUNCH).toBe('1')
     resetBrowserManagerMocks(mocks)
     resetBrowserManagerState()
     guests.clear()

@@ -145,8 +145,8 @@ export function useSourceControlAgentActionDialog({
     initialCwd,
     promptDelivery,
     launchPlatform,
-    // Why: an SSH host runs the plain `orca` shim; keep the previewed command
-    // label aligned with the real remote launch (no `orca-ide` rename).
+    // Why: an SSH host runs the plain `topo` shim; keep the previewed command
+    // label aligned with the real remote launch (no `topo-ide` rename).
     isRemote: typeof connectionId === 'string',
     launchSource,
     recoveryContext,

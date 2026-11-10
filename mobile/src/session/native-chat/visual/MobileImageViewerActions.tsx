@@ -51,7 +51,7 @@ function operationCopy(t: Translate): Record<BridgeImageOperation, OperationCopy
 
 function refusalMessage(t: Translate, error: ImageActionRefusedError): string {
   return error.reason === 'photos-access-denied'
-    ? t('chat.nativeChatImageViewer.photosAccessDenied', 'Allow Orca to add photos in Settings')
+    ? t('chat.nativeChatImageViewer.photosAccessDenied', 'Allow Topo to add photos in Settings')
     : t('chat.nativeChatImageViewer.imageTooLarge', 'This image is too large')
 }
 

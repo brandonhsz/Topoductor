@@ -1,7 +1,7 @@
 import type { BrowserExtensionMainWorldBridge } from './browser-extension-main-world'
 
 /** Main-only namespace carrying page storage writes to the worker; never installed on `chrome`. */
-export const PRELOAD_STORAGE_RELAY_NAMESPACE = 'orcaStorageRelay'
+export const PRELOAD_STORAGE_RELAY_NAMESPACE = 'topoStorageRelay'
 
 export type BrowserExtensionStorageContext = 'page' | 'worker'
 
@@ -12,7 +12,7 @@ type StorageChanges = Record<string, { oldValue?: unknown; newValue?: unknown }>
 /**
  * Electron never fires chrome.storage.onChanged in extension service workers. This wraps each
  * area's set/remove/clear to compute Chrome-shaped changes: a page reports them to main, which
- * forwards them to the same extension's worker; in a worker, onChanged becomes an Orca event fed by
+ * forwards them to the same extension's worker; in a worker, onChanged becomes a Topo event fed by
  * those reports and the worker's own writes. Pages keep the native onChanged, which works.
  * Known gap: writes from content scripts (web pages' isolated worlds) never reach the worker.
  * Sync is not wrapped: Electron disables it and installBrowserExtensionStorageSync replaces it.
@@ -23,7 +23,7 @@ export function installBrowserExtensionStorageRelay(
   bridge: BrowserExtensionMainWorldBridge,
   context: BrowserExtensionStorageContext
 ): void {
-  const relayNamespace = 'orcaStorageRelay'
+  const relayNamespace = 'topoStorageRelay'
   const isObject = (value: unknown): value is ApiObject =>
     value !== null && typeof value === 'object'
   const isCallable = (value: unknown): value is ExtensionCallable => typeof value === 'function'
@@ -145,7 +145,7 @@ export function installBrowserExtensionStorageRelay(
       if (!isCallable(native)) {
         continue
       }
-      define(area, method, function orcaStorageWrite(...input: unknown[]): unknown {
+      define(area, method, function topoStorageWrite(...input: unknown[]): unknown {
         const args = [...input]
         const last = args.at(-1)
         const callback = isCallable(last) ? last : undefined

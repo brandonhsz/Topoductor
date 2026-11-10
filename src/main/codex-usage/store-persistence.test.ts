@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { setupCodexUsageStoreEnv } from './store-test-harness'
 
 const { getPathMock } = vi.hoisted(() => ({
-  getPathMock: vi.fn(() => '/tmp/orca-test-userdata')
+  getPathMock: vi.fn(() => '/tmp/topo-test-userdata')
 }))
 
 vi.mock('electron', () => ({
@@ -27,8 +27,8 @@ describe('CodexUsageStore', () => {
 
   it('rescans from scratch when the cache predates per-request long-context counts', async () => {
     const scanMock = vi.mocked(scanCodexUsageFilesViaWorker)
-    const sourceCachePath = join(storeEnv.tempUserData, 'orca-codex-usage-sources.json')
-    const cacheFile = join(storeEnv.tempUserData, 'orca-codex-usage.json')
+    const sourceCachePath = join(storeEnv.tempUserData, 'topo-codex-usage-sources.json')
+    const cacheFile = join(storeEnv.tempUserData, 'topo-codex-usage.json')
     const seeded = new CodexUsageStore({ getRepos: () => [], getAllWorktreeMeta: () => ({}) })
     await seeded.setEnabled(true)
     await seeded.refresh(true)

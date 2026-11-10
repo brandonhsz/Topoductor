@@ -343,7 +343,7 @@ export function AppearanceInterfaceSection({
             <SearchableSetting
               title={t('auto.components.settings.AppearancePane.9868f39007', 'Titlebar App Name')}
               description={titlebarEntry?.description}
-              keywords={titlebarEntry?.keywords ?? ['titlebar', 'orca', 'app', 'name']}
+              keywords={titlebarEntry?.keywords ?? ['titlebar', 'topo', 'app', 'name']}
             >
               <SettingsSwitchRow
                 label={t('auto.components.settings.AppearancePane.9868f39007', 'Titlebar App Name')}
@@ -377,7 +377,7 @@ export function AppearanceInterfaceSection({
                   // Explain the non-obvious platform restriction and keep-running consequence.
                   description={t(
                     'auto.components.settings.AppearancePane.b707773a0d',
-                    'When enabled, closing the window keeps Orca running in the system tray instead of quitting.'
+                    'When enabled, closing the window keeps Topo running in the system tray instead of quitting.'
                   )}
                   checked={settings.minimizeToTrayOnClose === true}
                   onChange={() =>
@@ -398,7 +398,7 @@ export function AppearanceInterfaceSection({
                   // Hiding the status item preserves Dock activation and close-keeps-running behavior.
                   description={t(
                     'settings.appearance.menuBarIcon.description',
-                    'Keep an Orca shortcut and activity indicator in the macOS menu bar.'
+                    'Keep a Topo shortcut and activity indicator in the macOS menu bar.'
                   )}
                   checked={settings.showMenuBarIcon !== false}
                   onChange={() =>

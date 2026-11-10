@@ -73,7 +73,7 @@ export type StructuredAgentSessionHostSupport = {
   /** The host says whether it recorded a send; older hosts answer only through loaded pages. */
   sendRecorded?: boolean
   phoneAttachments: boolean
-  /** Older hosts lack Continue on an Orca-stopped turn or refuse it from a phone; the phone sends an ordinary message there. */
+  /** Older hosts lack Continue on a Topo-stopped turn or refuse it from a phone; the phone sends an ordinary message there. */
   continueInterrupted?: boolean
   /** Older hosts report goals but refuse the phone's goal changes. */
   phoneThreadGoal?: boolean

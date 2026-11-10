@@ -1,14 +1,14 @@
 import { describePluginErrorForLog } from './declarative-error-location'
 import { PLUGIN_DECLARATIVE_MESSAGES } from '../plugin-declarative-message-names'
-import { hostAtom, read, subscribeAtom, trackAtomReads, type OrcaAtom } from './declarative-atoms'
+import { hostAtom, read, subscribeAtom, trackAtomReads, type TopoAtom } from './declarative-atoms'
 import type { OrcaComponent } from './declarative-elements'
 import type {
-  OrcaDeclarativeRuntime,
-  OrcaDisposable,
-  OrcaRuntimeOptions,
-  OrcaTheme
+  TopoDeclarativeRuntime,
+  TopoDisposable,
+  TopoRuntimeOptions,
+  TopoTheme
 } from './declarative-runtime-types'
-import { evaluateOrcaTree, type OrcaCallback } from './declarative-evaluate'
+import { evaluateOrcaTree, type TopoCallback } from './declarative-evaluate'
 import { createMemoryRetention } from './declarative-memory-retention'
 import { actSnapshotSubscriptions } from './declarative-act-snapshot'
 import {
@@ -24,25 +24,25 @@ import { readHostMessage } from './declarative-host-messages'
 import { createPanelContext } from './declarative-panel-context'
 import { createHydratedPersistence } from './declarative-hydration-persistence'
 
-export type { OrcaWireNode } from './declarative-evaluate'
+export type { TopoWireNode } from './declarative-evaluate'
 export type {
-  OrcaBridge,
-  OrcaColorScheme,
-  OrcaDeclarativeRuntime,
-  OrcaDisposable,
-  OrcaPanelContext,
-  OrcaPanelModule,
-  OrcaRuntimeOptions,
-  OrcaTheme
+  TopoBridge,
+  TopoColorScheme,
+  TopoDeclarativeRuntime,
+  TopoDisposable,
+  TopoPanelContext,
+  TopoPanelModule,
+  TopoRuntimeOptions,
+  TopoTheme
 } from './declarative-runtime-types'
 
-export function createOrcaDeclarativeRuntime(options: OrcaRuntimeOptions): OrcaDeclarativeRuntime {
+export function createOrcaDeclarativeRuntime(options: TopoRuntimeOptions): TopoDeclarativeRuntime {
   const { post } = options
   const bridge = options.bridge ?? null
   const schedule = options.schedule ?? defaultSchedule
   const now = options.now ?? (() => Date.now())
   const document = newDocumentId(now())
-  const theme = hostAtom<OrcaTheme>({ colorScheme: options.colorScheme ?? 'dark' })
+  const theme = hostAtom<TopoTheme>({ colorScheme: options.colorScheme ?? 'dark' })
   const retention = createMemoryRetention((entries) =>
     post(PLUGIN_DECLARATIVE_MESSAGES.retain, { document, entries })
   )
@@ -52,10 +52,10 @@ export function createOrcaDeclarativeRuntime(options: OrcaRuntimeOptions): OrcaD
   let revision = 0
   let lastRenderAt = Number.NEGATIVE_INFINITY
   /** Callback tables by revision: the one on screen (accepted) plus every newer one. */
-  let renders = new Map<number, Map<string, OrcaCallback>>()
+  let renders = new Map<number, Map<string, TopoCallback>>()
   let accepted: number | null = null
   const editsSeen = new Map<string, number>()
-  let subscriptions = new Map<OrcaAtom<unknown>, () => void>()
+  let subscriptions = new Map<TopoAtom<unknown>, () => void>()
   let scheduled = false
   let setupCleanup: (() => void) | null = null
   let disposed = false
@@ -73,8 +73,8 @@ export function createOrcaDeclarativeRuntime(options: OrcaRuntimeOptions): OrcaD
     }, wait)
   }
 
-  function resubscribe(reads: Set<OrcaAtom<unknown>>): void {
-    const next = new Map<OrcaAtom<unknown>, () => void>()
+  function resubscribe(reads: Set<TopoAtom<unknown>>): void {
+    const next = new Map<TopoAtom<unknown>, () => void>()
     for (const target of reads) {
       next.set(target, subscriptions.get(target) ?? subscribeAtom(target, () => invalidate()))
     }
@@ -87,7 +87,7 @@ export function createOrcaDeclarativeRuntime(options: OrcaRuntimeOptions): OrcaD
   }
 
   function report(error: unknown): void {
-    // Main routes guest console errors to `orca plugin logs`; this text is located like the banner.
+    // Main routes guest console errors to `topo plugin logs`; this text is located like the banner.
     console.error(describePluginErrorForLog(error))
     const stack = error instanceof Error && error.stack ? error.stack.slice(0, 8192) : undefined
     post(PLUGIN_DECLARATIVE_MESSAGES.error, {
@@ -98,7 +98,7 @@ export function createOrcaDeclarativeRuntime(options: OrcaRuntimeOptions): OrcaD
     })
   }
 
-  function retain(at: number, callbacks: Map<string, OrcaCallback>): void {
+  function retain(at: number, callbacks: Map<string, TopoCallback>): void {
     renders.set(at, callbacks)
     for (const kept of renders.keys()) {
       if (renders.size <= MAX_RETAINED_RENDERS) {
@@ -116,7 +116,7 @@ export function createOrcaDeclarativeRuntime(options: OrcaRuntimeOptions): OrcaD
       return
     }
     lastRenderAt = now()
-    const reads = new Set<OrcaAtom<unknown>>()
+    const reads = new Set<TopoAtom<unknown>>()
     const mounted = component
     let evaluation
     try {
@@ -195,7 +195,7 @@ export function createOrcaDeclarativeRuntime(options: OrcaRuntimeOptions): OrcaD
   })
   const flushPersist = persistence.flush
 
-  const bridgeSubscriptions: OrcaDisposable[] = bridge?.on
+  const bridgeSubscriptions: TopoDisposable[] = bridge?.on
     ? [
         bridge.on(PLUGIN_DECLARATIVE_MESSAGES.event, dispatchEvent),
         bridge.on(PLUGIN_DECLARATIVE_MESSAGES.ack, acknowledge),
@@ -230,7 +230,7 @@ export function createOrcaDeclarativeRuntime(options: OrcaRuntimeOptions): OrcaD
     subscriptions = new Map()
   }
 
-  const runtime: OrcaDeclarativeRuntime = {
+  const runtime: TopoDeclarativeRuntime = {
     document,
     async boot(module) {
       await panel.hydrated

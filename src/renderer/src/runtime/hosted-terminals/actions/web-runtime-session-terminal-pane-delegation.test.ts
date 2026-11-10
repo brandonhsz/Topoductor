@@ -145,7 +145,7 @@ function makeSplitResult(leafId: string): unknown {
 
 describe('splitWebRuntimeTerminal', () => {
   beforeEach(() => {
-    vi.stubGlobal('__ORCA_WEB_CLIENT__', true)
+    vi.stubGlobal('__TOPO_WEB_CLIENT__', true)
   })
 
   afterEach(() => {

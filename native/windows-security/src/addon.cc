@@ -569,4 +569,4 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
   return exports;
 }
 
-NODE_API_MODULE(orca_windows_security, Init)
+NODE_API_MODULE(topo_windows_security, Init)

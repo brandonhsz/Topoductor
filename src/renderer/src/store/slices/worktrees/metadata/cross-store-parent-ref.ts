@@ -11,7 +11,7 @@ import { getRuntimeEnvironmentDisplayName } from '../../../repos/owner-routing'
 import { selectLineageStoreInstallationId } from './cross-store-lineage-parents'
 import { lineageStoreKeyOfTarget } from './cross-store-lineage-state'
 
-/** Whether a parent lives in another Orca store than the child, so the link needs a cross-store ref. */
+/** Whether a parent lives in another Topo store than the child, so the link needs a cross-store ref. */
 export function isCrossStoreParent(child: Worktree, parent: Worktree): boolean {
   const childStore = lineageStoreKeyOfRow(child)
   const parentStore = lineageStoreKeyOfRow(parent)

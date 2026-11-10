@@ -64,12 +64,12 @@ const {
   verifyPackagedWindowsNodePty
 } = require('./scripts/desktop-distribution/runtime-verification/verify-packaged-node-pty-job-ownership.cjs')
 const {
-  assertOrcadTemplateBuilt,
-  finalizePackagedOrcadTemplate,
-  orcadTemplateExtraResource,
-  orcadTemplateNodeModulesExtraResource,
-  orcadTemplateMacSignIgnore
-} = require('./scripts/orcad-distribution/template/packaged-orcad-template.cjs')
+  assertTopodTemplateBuilt,
+  finalizePackagedTopodTemplate,
+  topodTemplateExtraResource,
+  topodTemplateNodeModulesExtraResource,
+  topodTemplateMacSignIgnore
+} = require('./scripts/topod-distribution/template/packaged-topod-template.cjs')
 const {
   verifySkillsCliRuntime
 } = require('./scripts/runtime-verification/skills-cli/verify-skills-cli-runtime.cjs')
@@ -90,37 +90,37 @@ const {
 } = require('./scripts/desktop-distribution/macos/macos-shipit-scheduling.cjs')
 
 // Dev channels need release bundle ID/signature/notarization so Squirrel.Mac accepts updates and macOS retains app identity.
-const isMacHourly = process.env.ORCA_MAC_HOURLY === '1'
-const isMacDaily = process.env.ORCA_MAC_DAILY === '1'
-const isMacAdhoc = process.env.ORCA_MAC_ADHOC === '1'
+const isMacHourly = process.env.TOPO_MAC_HOURLY === '1'
+const isMacDaily = process.env.TOPO_MAC_DAILY === '1'
+const isMacAdhoc = process.env.TOPO_MAC_ADHOC === '1'
 // Keep Windows dev flags separate: mac flags enable hardened runtime/notarization/global signing, which would demand an unavailable Windows cert.
-const isWinHourly = process.env.ORCA_WIN_HOURLY === '1'
-const isWinDaily = process.env.ORCA_WIN_DAILY === '1'
-const isWinAdhoc = process.env.ORCA_WIN_ADHOC === '1'
+const isWinHourly = process.env.TOPO_WIN_HOURLY === '1'
+const isWinDaily = process.env.TOPO_WIN_DAILY === '1'
+const isWinAdhoc = process.env.TOPO_WIN_ADHOC === '1'
 const isWinDevChannel = isWinHourly || isWinDaily || isWinAdhoc
-const isMacRelease = process.env.ORCA_MAC_RELEASE === '1' || isMacHourly || isMacDaily || isMacAdhoc
-const isLinuxArm64Release = process.env.ORCA_LINUX_ARM64_RELEASE === '1'
+const isMacRelease = process.env.TOPO_MAC_RELEASE === '1' || isMacHourly || isMacDaily || isMacAdhoc
+const isLinuxArm64Release = process.env.TOPO_LINUX_ARM64_RELEASE === '1'
 const localBuildVersion =
-  isMacRelease || isWinDevChannel ? undefined : process.env.ORCA_LOCAL_BUILD_VERSION
+  isMacRelease || isWinDevChannel ? undefined : process.env.TOPO_LOCAL_BUILD_VERSION
 const isHourlyChannel = isMacHourly || isWinHourly
 const isDailyChannel = isMacDaily || isWinDaily
 const isAdhocChannel = isMacAdhoc || isWinAdhoc
 const devChannelBuildVersion = isHourlyChannel
-  ? process.env.ORCA_HOURLY_BUILD_VERSION
+  ? process.env.TOPO_HOURLY_BUILD_VERSION
   : isDailyChannel
-    ? process.env.ORCA_DAILY_BUILD_VERSION
+    ? process.env.TOPO_DAILY_BUILD_VERSION
     : isAdhocChannel
-      ? process.env.ORCA_ADHOC_BUILD_VERSION
+      ? process.env.TOPO_ADHOC_BUILD_VERSION
       : undefined
 // Separate dev-channel repos: 24 hourly tags/day would evict stable/RC from the ten-entry release feed; isolate adhoc/daily from hourly subscribers too.
 const devChannelRepo = isHourlyChannel
-  ? 'orca-hourly'
+  ? 'topo-hourly'
   : isDailyChannel
-    ? 'orca-daily'
+    ? 'topo-daily'
     : isAdhocChannel
-      ? 'orca-adhoc'
+      ? 'topo-adhoc'
       : null
-const appId = 'com.stablyai.orca'
+const appId = 'com.brandonhsz.topo'
 const featureWallResources = {
   from: 'resources/onboarding/feature-wall',
   to: 'onboarding/feature-wall'
@@ -150,7 +150,7 @@ const bundledPluginResources = {
   from: 'resources/plugins/launch',
   to: 'plugins/launch'
 }
-// electron-builder always drops `*.d.ts` from app files, so `orca plugin types` reads these copies.
+// electron-builder always drops `*.d.ts` from app files, so `topo plugin types` reads these copies.
 const pluginAuthorTypingsResources = {
   from: 'resources/plugins',
   to: 'plugins',
@@ -164,8 +164,8 @@ const emojiShortcodeDatasetResource = {
 }
 const commonExtraResources = [
   relayExtraResource,
-  orcadTemplateExtraResource,
-  orcadTemplateNodeModulesExtraResource,
+  topodTemplateExtraResource,
+  topodTemplateNodeModulesExtraResource,
   ...bundledRipgrepExtraResources,
   bundledPluginResources,
   pluginAuthorTypingsResources,
@@ -188,7 +188,7 @@ const winSpeechNativeResource = {
   to: 'node_modules/sherpa-onnx-win-x64'
 }
 // electron-builder replaces these defaults when `depends` is configured; retain
-// Electron's loader requirements alongside Orca's headless-host dependencies.
+// Electron's loader requirements alongside Topo's headless-host dependencies.
 const debElectronRuntimeDependencies = [
   'libgtk-3-0',
   'libnotify4',
@@ -229,40 +229,40 @@ const windowsRuntimeResources = existsSync(
 // Shared with the terminal host helper so its purpose strings cannot drift from the app's.
 const macUsageDescriptions = {
   NSAppleEventsUsageDescription:
-    'Orca allows terminal-launched developer tools to automate local apps when you request it.',
+    'Topo allows terminal-launched developer tools to automate local apps when you request it.',
   NSBluetoothAlwaysUsageDescription:
-    'Orca allows terminal-launched developer tools to access Bluetooth devices when you request it.',
+    'Topo allows terminal-launched developer tools to access Bluetooth devices when you request it.',
   NSBluetoothPeripheralUsageDescription:
-    'Orca allows terminal-launched developer tools to access Bluetooth devices when you request it.',
+    'Topo allows terminal-launched developer tools to access Bluetooth devices when you request it.',
   NSCalendarsUsageDescription:
-    'Orca allows terminal-launched developer tools to access your calendars when you request it.',
+    'Topo allows terminal-launched developer tools to access your calendars when you request it.',
   NSCalendarsFullAccessUsageDescription:
-    'Orca allows terminal-launched developer tools to access your calendars when you request it.',
+    'Topo allows terminal-launched developer tools to access your calendars when you request it.',
   NSCameraUsageDescription: "Application requests access to the device's camera.",
   NSContactsUsageDescription:
-    'Orca allows terminal-launched developer tools to access your contacts when you request it.',
+    'Topo allows terminal-launched developer tools to access your contacts when you request it.',
   NSLocationUsageDescription:
-    'Orca allows terminal-launched developer tools to access location when you request it.',
+    'Topo allows terminal-launched developer tools to access location when you request it.',
   NSLocalNetworkUsageDescription:
-    'Orca allows terminal-launched developer tools to discover and connect to local development servers when you request it.',
+    'Topo allows terminal-launched developer tools to discover and connect to local development servers when you request it.',
   NSMicrophoneUsageDescription: "Application requests access to the device's microphone.",
   NSRemindersUsageDescription:
-    'Orca allows terminal-launched developer tools to access your reminders when you request it.',
+    'Topo allows terminal-launched developer tools to access your reminders when you request it.',
   NSRemindersFullAccessUsageDescription:
-    'Orca allows terminal-launched developer tools to access your reminders when you request it.',
+    'Topo allows terminal-launched developer tools to access your reminders when you request it.',
   NSAudioCaptureUsageDescription:
-    'Orca allows terminal-launched developer tools to capture desktop audio when you request it.',
+    'Topo allows terminal-launched developer tools to capture desktop audio when you request it.',
   NSBonjourServices: ['_http._tcp', '_https._tcp'],
   ...MACOS_FOLDER_USAGE_DESCRIPTIONS
 }
 // Developer ID team that signs every release-channel mac build.
-const ORCA_MAC_TEAM_ID = '6CX3WHS9HZ'
+const TOPO_MAC_TEAM_ID = '6CX3WHS9HZ'
 
 /** @type {import('electron-builder').Configuration} */
 module.exports = {
   appId,
-  productName: 'Orca',
-  protocols: [{ name: 'Orca', schemes: ['orca'] }],
+  productName: 'Topo',
+  protocols: [{ name: 'Topo', schemes: ['topo'] }],
   toolsets: { appimage: '1.0.3' },
   ...(devChannelBuildVersion
     ? { extraMetadata: { version: devChannelBuildVersion } }
@@ -276,11 +276,11 @@ module.exports = {
     '!**/.vscode/*',
     // Repo inputs already bundled/copied through extraResources would bloat app.asar.
     '!src{,/**/*}',
-    '!out/orcad{,/**/*}',
-    // Never in app.asar: the template ships via orcadTemplateExtraResource; prebuilds are build inputs.
-    '!out/orcad-*{,/**/*}',
-    '!out/.orcad-*{,/**/*}',
-    // Why: the pinned Node a local orcad build references (~120 MB) and its download cache.
+    '!out/topod{,/**/*}',
+    // Never in app.asar: the template ships via topodTemplateExtraResource; prebuilds are build inputs.
+    '!out/topod-*{,/**/*}',
+    '!out/.topod-*{,/**/*}',
+    // Why: the pinned Node a local topod build references (~120 MB) and its download cache.
     '!out/runtimes{,/**/*}',
     '!out/node-runtime-cache{,/**/*}',
     '!config{,/**/*}',
@@ -322,7 +322,7 @@ module.exports = {
     // extraResources already ships relay; duplicating it in asar added 14MB and let script-heuristic quarantine gut the whole archive (#20966/#20972).
     '!out/relay{,/**/*}',
     '!electron.vite.config.{js,ts,mjs,cjs}',
-    '!{.oxlintrc.json,.oxfmtrc.json,components.json,opencode.json,orca.yaml,pnpm-workspace.yaml,vite.web.config.ts}',
+    '!{.oxlintrc.json,.oxfmtrc.json,components.json,opencode.json,topo.yaml,pnpm-workspace.yaml,vite.web.config.ts}',
     '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,CHANGELOG.md,README.md}',
     '!{.env,.env.*,.npmrc,pnpm-lock.yaml}',
     '!tsconfig.json',
@@ -334,7 +334,7 @@ module.exports = {
     '!resources/plugins/launch/**',
     // Platform extraResources selects speech natives; asar would duplicate it and ship other variants.
     '!node_modules/{sherpa-onnx*,transcribe-cpp,@transcribe-cpp,koffi,@koromix}{,/**/*}',
-    // CLI shim belongs beside resources/bin/orca.exe; unpacking source creates a second .cmd without its executable (#7351).
+    // CLI shim belongs beside resources/bin/topo.exe; unpacking source creates a second .cmd without its executable (#7351).
     '!resources/win32{,/**/*}'
   ],
   // Node-mode CLI/daemon/foreign SQLite reader/serve entries cannot read asar; unpack their shared/main dependencies too.
@@ -359,12 +359,12 @@ module.exports = {
     'out/main/hermes/**',
     'out/main/filesystem/asar-transparent-fs.js',
     'out/main/filesystem/macos-tree-clone.js',
-    'out/main/orca-profiles/profile-index-store.js',
+    'out/main/topo-profiles/profile-index-store.js',
     'out/main/persistence/profile-state/**',
     'out/main/plugins/plugin-authoring-checks.js',
     'out/main/environment-doctor/environment-doctor.js',
     'out/main/environment-doctor/environment-doctor-host.js',
-    // `orca plugin test` and `orca plugin check` load the runtime, kit and hooks in Node.
+    // `topo plugin test` and `topo plugin check` load the runtime, kit and hooks in Node.
     'resources/plugins/declarative/*.mjs',
     'out/main/skills/bundled-skill-install/bundled-skill-local-host.js',
     'out/main/skills/bundled-skill-install/bundled-skill-installation.js',
@@ -378,9 +378,9 @@ module.exports = {
     'out/main/browser-extension-native-host-supervisor-entry.js',
     'out/main/computer-sidecar.js',
     'out/main/parcel-watcher-process-entry.js',
-    'out/main/orcad/orcad-local-serve-selection-entry.js',
-    'out/main/orcad/orcad-stale-lock-reclaim.js',
-    'out/main/orcad/orcad-host-identity-reset.js',
+    'out/main/topod/topod-local-serve-selection-entry.js',
+    'out/main/topod/topod-stale-lock-reclaim.js',
+    'out/main/topod/topod-host-identity-reset.js',
     'out/main/chunks/**',
     'out/renderer/**',
     'out/mobile-web/**',
@@ -401,14 +401,14 @@ module.exports = {
     context,
     mobileWebBundleDir = MOBILE_WEB_BUNDLE_DIR,
     ensureWaylandClipboard = ensureBundledWaylandClipboard,
-    orcadTemplateDir = join(__dirname, '..', orcadTemplateExtraResource.from)
+    topodTemplateDir = join(__dirname, '..', topodTemplateExtraResource.from)
   ) => {
     // The template is the server every SSH host gets, so a dark test template must never ship.
-    assertNotDarkBuild([join(__dirname, '..', 'out', 'main'), mobileWebBundleDir, orcadTemplateDir])
+    assertNotDarkBuild([join(__dirname, '..', 'out', 'main'), mobileWebBundleDir, topodTemplateDir])
     assertPackagedNativeVariantsInstalled(context.electronPlatformName, context.arch)
     assertBundledRipgrepInstalled()
     assertProcessHostOutputBuilt()
-    assertOrcadTemplateBuilt()
+    assertTopodTemplateBuilt()
     assertMobileWebBundleBuilt(mobileWebBundleDir)
     if (context.electronPlatformName === 'linux') {
       ensureWaylandClipboard(context.arch)
@@ -440,7 +440,7 @@ module.exports = {
       const schedulingAddon = buildMacShipItScheduling(resourcesDir, architecture)
       await signMacStandaloneHelper(schedulingAddon, 'ShipIt scheduling', context.packager)
       const version = context.packager.appInfo.version
-      let commit = process.env.ORCA_BUILD_COMMIT || process.env.GITHUB_SHA || 'unknown'
+      let commit = process.env.TOPO_BUILD_COMMIT || process.env.GITHUB_SHA || 'unknown'
       if (commit === 'unknown') {
         try {
           commit = execFileSync('git', ['rev-parse', '--short=12', 'HEAD'], {
@@ -514,7 +514,7 @@ module.exports = {
       }
       // Upstream executable bits vary (notably darwin-x64); restore them so packaged execFile works.
       chmodSync(join(resourcesDir, filename), 0o755)
-      // The orcad template hashes this exact file next, so app signing must not rewrite it later.
+      // The topod template hashes this exact file next, so app signing must not rewrite it later.
       if (context.electronPlatformName === 'darwin') {
         await signMacStandaloneHelper(
           join(resourcesDir, filename),
@@ -524,34 +524,34 @@ module.exports = {
         )
       }
     }
-    await finalizePackagedOrcadTemplate(resourcesDir, {
+    await finalizePackagedTopodTemplate(resourcesDir, {
       platform: context.electronPlatformName,
       signMacBinary: (path) =>
-        signMacStandaloneHelper(path, 'orcad template binary', context.packager)
+        signMacStandaloneHelper(path, 'topod template binary', context.packager)
     })
     chmodUnixCliLaunchers(resourcesDir, context.electronPlatformName)
     if (context.electronPlatformName === 'darwin') {
-      await signMacComputerUseHelper(join(resourcesDir, 'Orca Computer Use.app'), context.packager)
+      await signMacComputerUseHelper(join(resourcesDir, 'Topo Computer Use.app'), context.packager)
       await signMacStandaloneHelper(
-        join(resourcesDir, '..', 'MacOS', 'orca-notification-status'),
-        'orca-notification-status',
+        join(resourcesDir, '..', 'MacOS', 'topo-notification-status'),
+        'topo-notification-status',
         context.packager
       )
       await signMacStandaloneHelper(
-        join(resourcesDir, '..', 'MacOS', 'orca-keyboard-layout'),
-        'orca-keyboard-layout',
+        join(resourcesDir, '..', 'MacOS', 'topo-keyboard-layout'),
+        'topo-keyboard-layout',
         context.packager
       )
       await signMacStandaloneHelper(
-        join(resourcesDir, '..', 'MacOS', 'orca-process-footprint'),
-        'orca-process-footprint',
+        join(resourcesDir, '..', 'MacOS', 'topo-process-footprint'),
+        'topo-process-footprint',
         context.packager
       )
       await packageMacTerminalHost(join(resourcesDir, '..', '..'), context)
     }
   },
   win: {
-    executableName: 'Orca',
+    executableName: 'Topo',
     // SignPath signs Windows installers after packaging, so set release publisherName explicitly.
     // Unsigned dev channels omit it or updater signature checks reject dev updates and return to stable.
     // Sign hook signs nothing: it relays transient NSIS uninstaller files to CI SignPath; unset relay env leaves local/dev builds inert.
@@ -565,22 +565,22 @@ module.exports = {
       ...windowsRuntimeResources,
       winSpeechNativeResource,
       {
-        from: 'resources/win32/bin/orca.cmd',
-        to: 'bin/orca.cmd'
+        from: 'resources/win32/bin/topo.cmd',
+        to: 'bin/topo.cmd'
       },
       {
-        from: 'native/windows-cli-launcher/.build/orca.exe',
-        to: 'bin/orca.exe'
+        from: 'native/windows-cli-launcher/.build/topo.exe',
+        to: 'bin/topo.exe'
       },
       {
-        from: 'native/windows-cli-launcher/.build/orca-administrator-restart.exe',
-        to: 'bin/orca-administrator-restart.exe'
+        from: 'native/windows-cli-launcher/.build/topo-administrator-restart.exe',
+        to: 'bin/topo-administrator-restart.exe'
       },
       // Why resources/bin: SignPath signs every unsigned PE under win-unpacked, and the hook
-      // installer copies this signed file into ~/.orca/agent-hooks (#20913).
+      // installer copies this signed file into ~/.topo/agent-hooks (#20913).
       {
-        from: 'native/windows-agent-hook/.build/orca-agent-hook.exe',
-        to: 'bin/orca-agent-hook.exe'
+        from: 'native/windows-agent-hook/.build/topo-agent-hook.exe',
+        to: 'bin/topo-agent-hook.exe'
       },
       {
         from: 'node_modules/agent-browser/bin/agent-browser-win32-x64.exe',
@@ -594,13 +594,13 @@ module.exports = {
     ]
   },
   nsis: {
-    artifactName: 'orca-windows-setup.${ext}',
+    artifactName: 'topo-windows-setup.${ext}',
     shortcutName: '${productName}',
     uninstallDisplayName: '${productName}',
     createDesktopShortcut: 'always',
     // One NSIS include hosts update-guarded daemon cleanup and additive markdown Open With registration.
     // Avoid fileAssociations: it would steal default .md ownership; see the include’s header.
-    include: resolve(__dirname, 'nsis', 'orca-installer-hooks.nsh')
+    include: resolve(__dirname, 'nsis', 'topo-installer-hooks.nsh')
   },
   mac: {
     // Alternate rank preserves Finder’s default; one entry per extension because app-builder globs the value as a string.
@@ -630,8 +630,8 @@ module.exports = {
       : {}),
     signIgnore: [
       ...bundledRipgrepMacSignIgnore,
-      ...orcadTemplateMacSignIgnore,
-      // afterPack signs it before the orcad template hashes it.
+      ...topodTemplateMacSignIgnore,
+      // afterPack signs it before the topod template hashes it.
       '/Contents/Resources/agent-browser-darwin-[^/]+$',
       ...macTerminalHostSignIgnore
     ],
@@ -645,32 +645,32 @@ module.exports = {
       ...createPackagedRuntimeNodeModuleResources('darwin'),
       macSpeechNativeResource,
       {
-        from: 'resources/darwin/bin/orca',
-        to: 'bin/orca'
+        from: 'resources/darwin/bin/topo',
+        to: 'bin/topo'
       },
       {
         from: 'node_modules/agent-browser/bin/agent-browser-darwin-${arch}',
         to: 'agent-browser-darwin-${arch}'
       },
       {
-        from: 'native/computer-use-macos/.build/release/Orca Computer Use.app',
-        to: 'Orca Computer Use.app'
+        from: 'native/computer-use-macos/.build/release/Topo Computer Use.app',
+        to: 'Topo Computer Use.app'
       },
       featureWallResources
     ],
     // macOS 26 UNUserNotificationCenter aborts helpers launched from Resources; execute from Contents/MacOS (#7929).
     extraFiles: [
       {
-        from: 'native/notification-status-macos/.build/release/orca-notification-status',
-        to: 'MacOS/orca-notification-status'
+        from: 'native/notification-status-macos/.build/release/topo-notification-status',
+        to: 'MacOS/topo-notification-status'
       },
       {
-        from: 'native/keyboard-layout-macos/.build/release/orca-keyboard-layout',
-        to: 'MacOS/orca-keyboard-layout'
+        from: 'native/keyboard-layout-macos/.build/release/topo-keyboard-layout',
+        to: 'MacOS/topo-keyboard-layout'
       },
       {
-        from: 'native/process-footprint-macos/.build/release/orca-process-footprint',
-        to: 'MacOS/orca-process-footprint'
+        from: 'native/process-footprint-macos/.build/release/topo-process-footprint',
+        to: 'MacOS/topo-process-footprint'
       }
     ],
     target: [
@@ -688,21 +688,21 @@ module.exports = {
   // silently downgrading to ad-hoc artifacts that look shippable in CI logs.
   forceCodeSigning: isMacRelease,
   dmg: {
-    artifactName: 'orca-macos-${arch}.${ext}'
+    artifactName: 'topo-macos-${arch}.${ext}'
   },
   linux: {
     // shared-mime-info already maps md/markdown: advertise handler only, leaving mimeapps.list defaults intact.
     // Omit mdx because Ubuntu 24.04 maps it to application/x-genesis-32x-rom; claiming it would need a glob override.
     mimeTypes: ['text/markdown', 'text/csv', 'text/tab-separated-values'],
-    // Avoid GNOME Orca’s orca package and /usr/bin/orca names.
-    executableName: 'orca-ide',
+    // Linux packages and binaries are named topo-ide.
+    executableName: 'topo-ide',
     // Use icns to generate hicolor sizes; some Linux docks ignore a lone 1024px PNG.
     icon: 'resources/build/icon.icns',
     desktop: {
       entry: {
-        // Why: Electron reports WM_CLASS=orca for the visible Linux window;
-        // GNOME docks need an exact match to group it with orca-ide.desktop.
-        StartupWMClass: 'orca'
+        // Why: Electron reports WM_CLASS=topo for the visible Linux window;
+        // GNOME docks need an exact match to group it with topo-ide.desktop.
+        StartupWMClass: 'topo'
       }
     },
     extraResources: [
@@ -710,12 +710,12 @@ module.exports = {
       ...createPackagedRuntimeNodeModuleResources('linux'),
       linuxSpeechNativeResource,
       {
-        from: 'native/wayland-clipboard/.build/${arch}/orca-wayland-clipboard',
-        to: 'bin/orca-wayland-clipboard'
+        from: 'native/wayland-clipboard/.build/${arch}/topo-wayland-clipboard',
+        to: 'bin/topo-wayland-clipboard'
       },
       {
-        from: 'resources/linux/bin/orca-ide',
-        to: 'bin/orca-ide'
+        from: 'resources/linux/bin/topo-ide',
+        to: 'bin/topo-ide'
       },
       {
         from: 'node_modules/agent-browser/bin/agent-browser-linux-${arch}',
@@ -729,16 +729,16 @@ module.exports = {
     ],
     // Keep local artifacts aligned with the release pipeline.
     target: ['AppImage', 'deb', 'rpm'],
-    maintainer: 'stablyai',
+    maintainer: 'brandonhsz',
     category: 'Utility'
   },
   appImage: {
-    artifactName: isLinuxArm64Release ? 'orca-linux-arm64.${ext}' : 'orca-linux.${ext}'
+    artifactName: isLinuxArm64Release ? 'topo-linux-arm64.${ext}' : 'topo-linux.${ext}'
   },
   deb: {
-    packageName: 'orca-ide',
-    artifactName: 'orca-ide_${version}_${arch}.${ext}',
-    // Headless Chromium still needs display service; orca serve starts packaged Xvfb when available (ensure-virtual-display.ts).
+    packageName: 'topo-ide',
+    artifactName: 'topo-ide_${version}_${arch}.${ext}',
+    // Headless Chromium still needs display service; topo serve starts packaged Xvfb when available (ensure-virtual-display.ts).
     depends: [
       ...debElectronRuntimeDependencies,
       'python3',
@@ -756,8 +756,8 @@ module.exports = {
     fpm: appImageNodeRuntimeFpmArgs
   },
   rpm: {
-    packageName: 'orca-ide',
-    artifactName: 'orca-ide-${version}.${arch}.${ext}',
+    packageName: 'topo-ide',
+    artifactName: 'topo-ide-${version}.${arch}.${ext}',
     // Why: see deb depends. RPM distros ship Xvfb as xorg-x11-server-Xvfb (there
     // is no `xvfb` package), so the name differs from the deb here.
     depends: [
@@ -780,8 +780,8 @@ module.exports = {
   npmRebuild: true,
   publish: {
     provider: 'github',
-    owner: 'stablyai',
-    repo: devChannelRepo ?? 'orca',
+    owner: 'brandonhsz',
+    repo: devChannelRepo ?? 'Topoductor',
     // Keep main-repo releases draft until release-cut verifies all assets; early --publish always would expose missing Windows installers.
     releaseType: devChannelRepo ? 'prerelease' : 'draft'
   }
@@ -801,7 +801,7 @@ function chmodUnixCliLaunchers(resourcesDir, electronPlatformName) {
   if (electronPlatformName === 'win32') {
     return
   }
-  for (const launcherName of ['orca', 'orca-ide']) {
+  for (const launcherName of ['topo', 'topo-ide']) {
     const launcherPath = join(resourcesDir, 'bin', launcherName)
     if (!existsSync(launcherPath)) {
       continue
@@ -814,7 +814,7 @@ function chmodUnixCliLaunchers(resourcesDir, electronPlatformName) {
 async function signMacComputerUseHelper(helperAppPath, packager) {
   if (!existsSync(helperAppPath)) {
     if (isMacRelease) {
-      throw new Error(`Missing Orca Computer Use helper app at ${helperAppPath}`)
+      throw new Error(`Missing Topo Computer Use helper app at ${helperAppPath}`)
     }
     return
   }
@@ -823,15 +823,15 @@ async function signMacComputerUseHelper(helperAppPath, packager) {
       ? await packager.codeSigningInfo.value
       : null
   const identity =
-    process.env.ORCA_COMPUTER_MACOS_SIGN_IDENTITY ??
+    process.env.TOPO_COMPUTER_MACOS_SIGN_IDENTITY ??
     process.env.CSC_NAME ??
     findInstalledMacSigningIdentity(codeSigningInfo?.keychainFile) ??
     (isMacRelease ? null : '-')
   if (!identity) {
-    throw new Error('Missing signing identity for Orca Computer Use helper app')
+    throw new Error('Missing signing identity for Topo Computer Use helper app')
   }
   // Why: TCC grants attach to this nested app's code identity. Sign it before
-  // the outer Orca.app is sealed so production builds preserve that identity.
+  // the outer Topo.app is sealed so production builds preserve that identity.
   execFileSync('codesign', codesignArgs(identity, helperAppPath), { stdio: 'inherit' })
   execFileSync('codesign', ['--verify', '--deep', '--strict', helperAppPath], {
     stdio: 'inherit'
@@ -868,7 +868,7 @@ async function packageMacTerminalHost(appPath, context) {
     appPath,
     arch,
     usageDescriptions: macUsageDescriptions,
-    expectedTeamId: isMacRelease ? ORCA_MAC_TEAM_ID : null
+    expectedTeamId: isMacRelease ? TOPO_MAC_TEAM_ID : null
   })
 }
 

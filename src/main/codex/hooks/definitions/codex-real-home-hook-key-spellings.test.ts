@@ -71,22 +71,22 @@ function linkCodexHomeToDotfiles(): string {
 
 beforeEach(() => {
   // Resolve macOS /var symlinks so only the fixture home supplies alternate spellings.
-  root = realpathSync.native(mkdtempSync(join(tmpdir(), 'orca-real-home-spellings-')))
+  root = realpathSync.native(mkdtempSync(join(tmpdir(), 'topo-real-home-spellings-')))
   home = join(root, 'home')
   mkdirSync(home)
   userDataDir = join(root, 'user-data')
   mkdirSync(userDataDir)
-  previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-  process.env.ORCA_USER_DATA_PATH = userDataDir
+  previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+  process.env.TOPO_USER_DATA_PATH = userDataDir
   homedirMock.mockReturnValue(home)
 })
 
 afterEach(() => {
   rmSync(root, { recursive: true, force: true })
   if (previousUserDataPath === undefined) {
-    delete process.env.ORCA_USER_DATA_PATH
+    delete process.env.TOPO_USER_DATA_PATH
   } else {
-    process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+    process.env.TOPO_USER_DATA_PATH = previousUserDataPath
   }
   vi.clearAllMocks()
   vi.restoreAllMocks()
@@ -120,10 +120,10 @@ describe('both spellings of a symlinked ~/.codex', () => {
     expect(after.get(computeTrustKey(resolved))).toBeUndefined()
   })
 
-  it("moves user approvals under both keys when Orca's copy leaves a user group", async () => {
+  it("moves user approvals under both keys when Topo's copy leaves a user group", async () => {
     const resolvedHooks = linkCodexHomeToDotfiles()
-    const orca = { type: 'command', command: getCodexManagedHookInstallMaterial().command }
-    const userGroup = { hooks: [orca, { type: 'command', command: 'after.sh' }] }
+    const topo = { type: 'command', command: getCodexManagedHookInstallMaterial().command }
+    const userGroup = { hooks: [topo, { type: 'command', command: 'after.sh' }] }
     writeFileSync(hooksPath(), `${JSON.stringify({ hooks: { Stop: [userGroup] } }, null, 2)}\n`)
     const afterAt = (sourcePath: string, handlerIndex: number): CodexTrustEntry => ({
       sourcePath,

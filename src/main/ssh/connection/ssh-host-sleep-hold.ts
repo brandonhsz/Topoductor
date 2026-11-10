@@ -1,6 +1,6 @@
 import { isRuntimeOwnedSshTargetId } from '../../../shared/execution-host'
 
-/** Whether an Orca-owned SSH host serves a workspace VM that is asleep. Desktop main registers
+/** Whether a Topo-owned SSH host serves a workspace VM that is asleep. Desktop main registers
  *  it; the SSH layer only reads it, so it stays free of the VM store. */
 let asleepCheck: ((targetId: string) => boolean) | null = null
 

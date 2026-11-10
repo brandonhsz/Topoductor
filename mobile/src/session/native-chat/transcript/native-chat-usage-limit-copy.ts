@@ -11,7 +11,7 @@ function usageLimitResetClock(resetsAt: number): string {
   return formatUsageLimitResetClock(resetsAt, Date.now(), getUiIntlLocale())
 }
 
-/** The card's headline; the reset time and what Orca will do sit on its status line. */
+/** The card's headline; the reset time and what Topo will do sit on its status line. */
 export function nativeChatUsageLimitText(
   limit: AgentSessionUsageLimit | undefined,
   agentName: string | null | undefined,
@@ -32,7 +32,7 @@ export function nativeChatUsageLimitText(
     : t('chat.usageLimit.reached', '{{agent}} hit its usage limit.', { agent })
 }
 
-/** One status line: when the limit resets, then what Orca will do about it. */
+/** One status line: when the limit resets, then what Topo will do about it. */
 export function nativeChatUsageLimitStatusText(
   status: {
     resetsAt: number | undefined
@@ -54,10 +54,10 @@ export function nativeChatUsageLimitStatusText(
           }),
     autoContinue === 'scheduled'
       ? resetPassed
-        ? t('chat.usageLimit.statusContinuesShortly', 'Orca continues shortly')
-        : t('chat.usageLimit.statusContinuesThen', 'Orca continues then')
+        ? t('chat.usageLimit.statusContinuesShortly', 'Topo continues shortly')
+        : t('chat.usageLimit.statusContinuesThen', 'Topo continues then')
       : autoContinue === 'cancelled'
-        ? t('chat.usageLimit.statusWontContinue', "Orca won't continue automatically")
+        ? t('chat.usageLimit.statusWontContinue', "Topo won't continue automatically")
         : null
   ]
   return parts.filter((part) => part !== null).join(' · ')

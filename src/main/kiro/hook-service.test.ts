@@ -7,14 +7,14 @@ import { isPlainObject } from '../agent-hooks/installation/configuration/hooks-j
 import { KiroHookService } from './hook-service'
 import { getKiroManagedCommandMatcher, KIRO_HOOK_EVENTS } from './hook-settings'
 
-// Isolate HOME and USERPROFILE so tests cannot write real Kiro or Orca configs on any OS.
+// Isolate HOME and USERPROFILE so tests cannot write real Kiro or Topo configs on any OS.
 let home: string
 let originalHome: string | undefined
 let originalUserProfile: string | undefined
 let originalKiroHome: string | undefined
 
 beforeEach(() => {
-  home = mkdtempSync(join(tmpdir(), 'orca-kiro-hook-'))
+  home = mkdtempSync(join(tmpdir(), 'topo-kiro-hook-'))
   originalHome = process.env.HOME
   originalUserProfile = process.env.USERPROFILE
   process.env.HOME = home
@@ -103,7 +103,7 @@ describe('KiroHookService', () => {
 
   // Shape `kiro-cli agent upgrade` (2.29+) writes; edits to `hooks` keep the file "universal".
   it('converges list-form hooks in place and removes only its entries, locally and remotely', async () => {
-    const orcaHook = (trigger: string, command: string) => ({
+    const topoHook = (trigger: string, command: string) => ({
       name: `${trigger}-0`,
       trigger,
       ...(trigger === 'preToolUse' ? { matcher: '*' } : {}),
@@ -117,14 +117,14 @@ describe('KiroHookService', () => {
       action: { type: 'command', command: 'audit.sh' },
       timeout: 10
     }
-    const stale = `/bin/sh '${join(home, '.orca', 'agent-hooks', 'kiro-hook.sh')}'`
+    const stale = `/bin/sh '${join(home, '.topo', 'agent-hooks', 'kiro-hook.sh')}'`
     const extra = {
       permissions: { rules: [{ capability: 'shell', effect: 'allow' }] },
       kiroUpgrade: { notes: [] }
     }
     writeAgent('reviewer', {
       name: 'reviewer',
-      hooks: [orcaHook('agentSpawn', stale), userHook, orcaHook('preToolUse', stale)],
+      hooks: [topoHook('agentSpawn', stale), userHook, topoHook('preToolUse', stale)],
       ...extra
     })
     writeAgent('upgraded', { name: 'upgraded', permissions: extra.permissions })

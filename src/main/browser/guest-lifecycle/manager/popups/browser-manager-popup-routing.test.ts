@@ -72,8 +72,8 @@ describe('browserManager', () => {
     vi.useRealTimers()
   })
 
-  // #36804: headless serve pages have no renderer to own Orca's tab model.
-  // orcad's Electron browser registers pages without a workspace, so there is no tab list to open into.
+  // #36804: headless serve pages have no renderer to own Topo's tab model.
+  // topod's Electron browser registers pages without a workspace, so there is no tab list to open into.
 
   it('opens a tab for every clicked link but caps scripted opens', () => {
     vi.useFakeTimers()
@@ -123,7 +123,7 @@ describe('browserManager', () => {
       })
     }
     const routedTabCount = (): number =>
-      rendererSendMock.mock.calls.filter(([channel]) => channel === 'browser:open-link-in-orca-tab')
+      rendererSendMock.mock.calls.filter(([channel]) => channel === 'browser:open-link-in-topo-tab')
         .length
 
     const clicks = MAX_PAGE_INITIATED_TABS_PER_WINDOW * 2
@@ -251,7 +251,7 @@ describe('browserManager', () => {
     }
 
     const routedTabs = rendererSendMock.mock.calls.filter(
-      ([channel]) => channel === 'browser:open-link-in-orca-tab'
+      ([channel]) => channel === 'browser:open-link-in-topo-tab'
     )
     expect(routedTabs).toHaveLength(MAX_PAGE_INITIATED_TABS_PER_WINDOW)
     expect(rendererSendMock).toHaveBeenCalledWith('browser:popup', {

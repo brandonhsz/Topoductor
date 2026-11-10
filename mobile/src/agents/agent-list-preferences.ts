@@ -5,7 +5,7 @@ import {
   type AgentListView
 } from './agent-list-model'
 
-const AGENT_LIST_VIEW_KEY = 'orca:agentListView'
+const AGENT_LIST_VIEW_KEY = 'topo:agentListView'
 
 export async function loadAgentListView(): Promise<AgentListView> {
   try {

@@ -1,4 +1,4 @@
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   activateGoldenWorktree,
   cleanupGoldenWorktree,
@@ -7,44 +7,44 @@ import {
 import { waitForSessionReady } from './helpers/store'
 
 test('preserves highlighted editor text across worktree tab switches', async ({
-  orcaPage,
+  topoPage,
   testRepoPath,
   registerPostElectronShutdownCleanup
 }) => {
   const fixture = createGoldenWorktree(testRepoPath, 'editor-selection')
   registerPostElectronShutdownCleanup(async () => cleanupGoldenWorktree(testRepoPath, fixture))
 
-  await waitForSessionReady(orcaPage)
-  await activateGoldenWorktree(orcaPage, testRepoPath, fixture.worktreePath)
-  await orcaPage.evaluate(() => {
+  await waitForSessionReady(topoPage)
+  await activateGoldenWorktree(topoPage, testRepoPath, fixture.worktreePath)
+  await topoPage.evaluate(() => {
     const state = window.__store?.getState()
     state?.setRightSidebarTab('explorer')
     state?.setRightSidebarOpen(true)
   })
 
-  const explorer = orcaPage.locator('[data-orca-explorer-shell]')
+  const explorer = topoPage.locator('[data-topo-explorer-shell]')
   const rowNamed = (name: string) =>
     explorer.locator('[data-file-explorer-row]').filter({
-      has: orcaPage.getByText(name, { exact: true })
+      has: topoPage.getByText(name, { exact: true })
     })
 
   await rowNamed('package.json').dblclick()
-  const monaco = orcaPage.locator('.monaco-editor').first()
+  const monaco = topoPage.locator('.monaco-editor').first()
   await expect(monaco).toBeVisible({ timeout: 25_000 })
   await monaco.click()
-  await orcaPage.keyboard.press('ControlOrMeta+f')
+  await topoPage.keyboard.press('ControlOrMeta+f')
   const findInput = monaco.locator('.find-widget .input[aria-label="Find"]')
   await expect(findInput).toBeVisible()
-  await findInput.fill('orca-e2e-test')
-  await orcaPage.keyboard.press('Enter')
-  await orcaPage.keyboard.press('Escape')
+  await findInput.fill('topo-e2e-test')
+  await topoPage.keyboard.press('Enter')
+  await topoPage.keyboard.press('Escape')
 
   await expect
-    .poll(() => orcaPage.evaluate(() => window.__monacoEditorE2E?.snapshot().selection ?? null), {
+    .poll(() => topoPage.evaluate(() => window.__monacoEditorE2E?.snapshot().selection ?? null), {
       message: 'Monaco did not select the searched text'
     })
     .not.toBeNull()
-  const selectedRange = await orcaPage.evaluate(
+  const selectedRange = await topoPage.evaluate(
     () => window.__monacoEditorE2E?.snapshot().selection ?? null
   )
   if (!selectedRange) {
@@ -54,25 +54,25 @@ test('preserves highlighted editor text across worktree tab switches', async ({
     selectedRange.positionLineNumber,
     selectedRange.positionColumn
   ])
-  if (process.env.ORCA_E2E_RECORD_VIDEO === '1') {
-    await orcaPage.waitForTimeout(700)
+  if (process.env.TOPO_E2E_RECORD_VIDEO === '1') {
+    await topoPage.waitForTimeout(700)
   }
 
   await rowNamed('src').click()
   await rowNamed('index.ts').click()
-  await expect(orcaPage.locator('.editor-header-path').first()).toContainText('index.ts', {
+  await expect(topoPage.locator('.editor-header-path').first()).toContainText('index.ts', {
     timeout: 20_000
   })
 
-  await orcaPage.locator('[data-tab-id]').filter({ hasText: 'package.json' }).last().click()
-  await expect(orcaPage.locator('.editor-header-path').first()).toContainText('package.json', {
+  await topoPage.locator('[data-tab-id]').filter({ hasText: 'package.json' }).last().click()
+  await expect(topoPage.locator('.editor-header-path').first()).toContainText('package.json', {
     timeout: 20_000
   })
   await expect
-    .poll(() => orcaPage.evaluate(() => window.__monacoEditorE2E?.snapshot().selection ?? null))
+    .poll(() => topoPage.evaluate(() => window.__monacoEditorE2E?.snapshot().selection ?? null))
     .toEqual(selectedRange)
   await expect(monaco.locator('.selected-text').first()).toBeVisible()
-  if (process.env.ORCA_E2E_RECORD_VIDEO === '1') {
-    await orcaPage.waitForTimeout(700)
+  if (process.env.TOPO_E2E_RECORD_VIDEO === '1') {
+    await topoPage.waitForTimeout(700)
   }
 })

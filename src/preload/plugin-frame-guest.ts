@@ -67,7 +67,7 @@ function refuse(message: unknown, refusal: PluginFrameSendRefusal): void {
   queueMicrotask(() => deliver({ orca: 1, kind: 'res', id, error }))
 }
 
-// Why only HTML in the top frame: Orca's shell, which takes and hides the transport before plugin
+// Why only HTML in the top frame: Topo's shell, which takes and hides the transport before plugin
 // code runs, is injected only into HTML it serves. An SVG or XML document never gets one.
 if (process.isMainFrame && document.contentType === 'text/html') {
   contextBridge.executeInMainWorld({

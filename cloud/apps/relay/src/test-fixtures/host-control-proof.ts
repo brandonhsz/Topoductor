@@ -1,7 +1,7 @@
 import { createHash, createHmac } from 'node:crypto'
 import { EventEmitter } from 'node:events'
-import { buildHostProofMacInput, HOST_CHALLENGE_PLAINTEXT_DOMAIN } from '@orca-cloud/relay-contract/host-proof-transcript'
-import { HostChallengeSchema } from '@orca-cloud/relay-contract/control-messages'
+import { buildHostProofMacInput, HOST_CHALLENGE_PLAINTEXT_DOMAIN } from '@topo-cloud/relay-contract/host-proof-transcript'
+import { HostChallengeSchema } from '@topo-cloud/relay-contract/control-messages'
 import nacl from 'tweetnacl'
 import { expect, vi, type Mock, type MockInstance } from 'vitest'
 import type WebSocket from 'ws'
@@ -59,16 +59,16 @@ export function hostControlProofFixture(
     close: async () => undefined
   }
   const config = loadRelayConfig({
-    ORCA_RELAY_PUBLIC_URL: 'http://127.0.0.1',
-    ORCA_RELAY_CELL_URL: 'http://127.0.0.1',
-    ORCA_RELAY_AUTH_ISSUER: 'https://auth.example.test',
-    ORCA_RELAY_JWKS_URL: 'https://auth.example.test/jwks',
-    ORCA_RELAY_ASSIGNMENT_SIGNING_KEY: 'synthetic-assignment-key-for-test-only',
-    ORCA_RELAY_ROLE: 'cell',
-    ORCA_RELAY_ADMIN_AUDIENCE: 'https://auth.example.test/admin',
-    ORCA_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.test',
-    ORCA_RELAY_CELL_CONNECTION_HARD_CAP: '600',
-    ORCA_RELAY_CELL_CONNECTION_UNOBSERVED_BOUND: '60'
+    TOPO_RELAY_PUBLIC_URL: 'http://127.0.0.1',
+    TOPO_RELAY_CELL_URL: 'http://127.0.0.1',
+    TOPO_RELAY_AUTH_ISSUER: 'https://auth.example.test',
+    TOPO_RELAY_JWKS_URL: 'https://auth.example.test/jwks',
+    TOPO_RELAY_ASSIGNMENT_SIGNING_KEY: 'synthetic-assignment-key-for-test-only',
+    TOPO_RELAY_ROLE: 'cell',
+    TOPO_RELAY_ADMIN_AUDIENCE: 'https://auth.example.test/admin',
+    TOPO_RELAY_DEPLOY_SERVICE_ACCOUNT: 'deploy@example.test',
+    TOPO_RELAY_CELL_CONNECTION_HARD_CAP: '600',
+    TOPO_RELAY_CELL_CONNECTION_UNOBSERVED_BOUND: '60'
   })
   const assignments = new RelayAssignmentStore(database)
   const verify = vi.spyOn(assignments, 'verifyCellAssignment').mockResolvedValue(true)

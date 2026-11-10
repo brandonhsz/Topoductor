@@ -5,7 +5,7 @@ import { Button } from './ui/button'
 import { useMountedRef } from '@/hooks/useMountedRef'
 import { useTranslate } from '@/i18n/use-translate'
 
-const ORCA_REPO_URL = 'https://github.com/stablyai/orca'
+const TOPO_REPO_URL = 'https://github.com/brandonhsz/Topoductor'
 type StarNagMode = 'gh' | 'web'
 
 /** Main owns visibility thresholds and GitHub checks. Keep the card until explicit action; nonterminal exits persist a cooldown. */
@@ -79,7 +79,7 @@ export function StarNagCard(): React.JSX.Element | null {
     }
     const openGithubFallback = async (): Promise<boolean> => {
       try {
-        await window.api.shell.openUrl(ORCA_REPO_URL)
+        await window.api.shell.openUrl(TOPO_REPO_URL)
         await window.api.starNag.openWeb()
         if (mountedRef.current) {
           setVisible(false)
@@ -104,7 +104,7 @@ export function StarNagCard(): React.JSX.Element | null {
     setBusy(true)
     let ok = false
     try {
-      ok = await window.api.starNag.starOrca()
+      ok = await window.api.starNag.starTopo()
     } catch {
       ok = false
     }
@@ -134,7 +134,7 @@ export function StarNagCard(): React.JSX.Element | null {
             <div className="flex items-center gap-2">
               <Star className="size-4 fill-amber-400/60 text-amber-400/80" />
               <h3 id="star-nag-heading" className="text-sm font-semibold">
-                {t('auto.components.StarNagCard.5f6df21046', 'Enjoying Orca?')}
+                {t('auto.components.StarNagCard.5f6df21046', 'Enjoying Topo?')}
               </h3>
             </div>
             <Button
@@ -152,7 +152,7 @@ export function StarNagCard(): React.JSX.Element | null {
           <p className="text-sm text-muted-foreground">
             {t(
               'auto.components.StarNagCard.30c36231c1',
-              'Orca is open source. If it helped today, a GitHub star helps other developers find it.'
+              'Topo is open source. If it helped today, a GitHub star helps other developers find it.'
             )}
           </p>
 

@@ -15,7 +15,7 @@ describe('compressMobileE2EEV2Item', () => {
 
   it('sends plain frames to every phone while the rollback switch is set', () => {
     const large = { kind: 'text' as const, plaintext: 'x'.repeat(4096) }
-    vi.stubEnv('ORCA_DISABLE_MOBILE_COMPRESSED_FRAMES', '1')
+    vi.stubEnv('TOPO_DISABLE_MOBILE_COMPRESSED_FRAMES', '1')
     try {
       expect(compressMobileE2EEV2Item(large, capable)).toBe(large)
     } finally {

@@ -16,12 +16,12 @@ import { windowsRelayConnectCommand } from './ssh-relay-windows-launch-command'
 import { listRemoteInstallBaseDirsCommand } from '../../../managed-server/install/remote-install-gc-listing-command'
 import { joinRemotePath, type RemoteHostPlatform } from '../../remote-host/ssh-remote-platform'
 import { isNodeRuntimeTarget } from '../../../../shared/node-runtime-pin'
-import { orcadNodeRuntimeExecutable } from '../../../../shared/orcad-artifacts'
+import { topodNodeRuntimeExecutable } from '../../../../shared/topod-artifacts'
 import {
   nodeRuntimeStoreDir,
   remoteNodeRuntimePresentCommand
-} from '../../../managed-server/install/orcad-remote-node-runtime'
-import { REMOTE_NODE_RUNTIME_READY } from '../../../managed-server/install/orcad-remote-node-runtime-report'
+} from '../../../managed-server/install/topod-remote-node-runtime'
+import { REMOTE_NODE_RUNTIME_READY } from '../../../managed-server/install/topod-remote-node-runtime-report'
 import { resolveRemoteNodePath } from '../../remote-host/node-toolchain/ssh-remote-node-resolution'
 
 const MAX_CENSUS_PIPES = 32
@@ -129,7 +129,7 @@ export async function windowsCensusNodePath(
       signal
     }).catch(() => '')
     if (present.trim() === REMOTE_NODE_RUNTIME_READY) {
-      return joinRemotePath(host, runtimeDir, orcadNodeRuntimeExecutable(target))
+      return joinRemotePath(host, runtimeDir, topodNodeRuntimeExecutable(target))
     }
   }
   return resolveRemoteNodePath(conn, host, { signal }).catch(() => null)

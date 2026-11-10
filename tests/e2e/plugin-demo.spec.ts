@@ -4,7 +4,7 @@ import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { removeWorktreeViaStore } from './helpers/dead-terminal'
 import {
   pluginGuest,
@@ -41,18 +41,18 @@ async function openDemoPanel(page: Page): Promise<void> {
       state.toggleRightSidebar()
     }
   })
-  const panelButton = page.getByRole('button', { name: 'Hello Orca', exact: true })
+  const panelButton = page.getByRole('button', { name: 'Hello Topo', exact: true })
   await expect(panelButton).toBeVisible({ timeout: 15_000 })
   await panelButton.click()
-  const guest = pluginGuest(page, 'Hello Orca')
+  const guest = pluginGuest(page, 'Hello Topo')
   await expect(guest).toBeVisible({ timeout: 15_000 })
-  await expect.poll(() => readDemoHeading(page)).toBe('Hello Orca 👋')
+  await expect.poll(() => readDemoHeading(page)).toBe('Hello Topo 👋')
   expect(await readGuestCsp(guest)).toMatch(/default-src 'self'.*connect-src 'self' data: blob:/)
 }
 
 function readDemoHeading(page: Page): Promise<string | null> {
   return readInGuest<string | null>(
-    pluginGuest(page, 'Hello Orca'),
+    pluginGuest(page, 'Hello Topo'),
     `document.querySelector('h1')?.textContent ?? null`
   )
 }
@@ -82,8 +82,8 @@ async function createWorktree(page: Page, name: string): Promise<string> {
   }, name)
 }
 
-test('runs hello-orca panel, command, and event behind visible consent', async ({ orcaPage }) => {
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-hello-plugin-e2e-'))
+test('runs hello-orca panel, command, and event behind visible consent', async ({ topoPage }) => {
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-hello-plugin-e2e-'))
   const pluginRoot = join(tempRoot, 'hello-orca')
   let createdWorktreeId: string | null = null
   await cp(join(process.cwd(), 'examples', 'plugins', 'hello-orca'), pluginRoot, {
@@ -91,7 +91,7 @@ test('runs hello-orca panel, command, and event behind visible consent', async (
   })
 
   try {
-    const installed = await orcaPage.evaluate(async (sourcePath) => {
+    const installed = await topoPage.evaluate(async (sourcePath) => {
       const settings = await window.api.settings.set({ pluginSystemEnabled: true })
       window.__store?.setState({ settings })
       const result = await window.api.plugins.install({ kind: 'local-path', path: sourcePath })
@@ -120,31 +120,31 @@ test('runs hello-orca panel, command, and event behind visible consent', async (
     expect(installed.status).toBe('pending')
     expect(installed.blocked).toBe(true)
 
-    await openPluginSettings(orcaPage)
-    await orcaPage.getByRole('tab', { name: /^Installed/ }).click()
-    const row = orcaPage.locator(`[data-plugin-key="${installed.pluginKey}"]`)
+    await openPluginSettings(topoPage)
+    await topoPage.getByRole('tab', { name: /^Installed/ }).click()
+    const row = topoPage.locator(`[data-plugin-key="${installed.pluginKey}"]`)
     // Why on the page: review sits above its one button there, not in a dialog over the list.
     await row.getByRole('button', { name: 'Review', exact: true }).click()
-    const consent = orcaPage.locator('[data-plugin-consent]')
+    const consent = topoPage.locator('[data-plugin-consent]')
     await expect(consent).toBeVisible()
-    await expect(orcaPage.getByRole('article')).toContainText('Local folder')
+    await expect(topoPage.getByRole('article')).toContainText('Local folder')
     await expect(consent).toContainText(
-      'Full access: runs as a normal program and can read your files, use the network, run other programs and control Orca, including your terminals and agents.'
+      'Full access: runs as a normal program and can read your files, use the network, run other programs and control Topo, including your terminals and agents.'
     )
-    await expect(orcaPage.getByRole('dialog')).toHaveCount(0)
-    await orcaPage
+    await expect(topoPage.getByRole('dialog')).toHaveCount(0)
+    await topoPage
       .getByRole('article')
       .getByRole('button', { name: /^Enable plugin/ })
       .click()
     await expect(consent).toBeHidden()
-    await orcaPage
+    await topoPage
       .getByRole('article')
       .getByRole('button', { name: 'Plugins', exact: true })
       .click()
-    await orcaPage.getByRole('tab', { name: /^Installed/ }).click()
+    await topoPage.getByRole('tab', { name: /^Installed/ }).click()
     await expect(row).toContainText('Installed')
 
-    const commandResults = await orcaPage.evaluate(async (pluginKey) => {
+    const commandResults = await topoPage.evaluate(async (pluginKey) => {
       const first = await window.api.plugins.invokeCommand({
         pluginKey,
         commandId: 'hello-ping',
@@ -160,13 +160,13 @@ test('runs hello-orca panel, command, and event behind visible consent', async (
     expect(commandResults.first).toBe('Pong! First ping.')
     expect(commandResults.second).toBe('Pong! 2 pings so far.')
 
-    await orcaPage.evaluate(async (sourcePath) => {
+    await topoPage.evaluate(async (sourcePath) => {
       const settings = await window.api.settings.set({ devPluginPaths: [sourcePath] })
       window.__store?.setState({ settings })
       await window.api.plugins.refresh()
     }, pluginRoot)
     // A dev folder taking over the approved install is different code, so it needs its own review.
-    await orcaPage.evaluate(async (pluginKey) => {
+    await topoPage.evaluate(async (pluginKey) => {
       const plugin = (await window.api.plugins.list()).find(
         (entry) => entry.pluginKey === pluginKey
       )
@@ -180,20 +180,20 @@ test('runs hello-orca panel, command, and event behind visible consent', async (
       })
     }, installed.pluginKey)
 
-    await openDemoPanel(orcaPage)
+    await openDemoPanel(topoPage)
 
     const panelPath = join(pluginRoot, 'panel.html')
     const panelHtml = await readFile(panelPath, 'utf8')
-    await writeFile(panelPath, panelHtml.replace('Hello Orca 👋', 'Hello Orca reloaded'))
+    await writeFile(panelPath, panelHtml.replace('Hello Topo 👋', 'Hello Topo reloaded'))
     await expect
-      .poll(() => readDemoHeading(orcaPage), { timeout: 15_000 })
-      .toBe('Hello Orca reloaded')
+      .poll(() => readDemoHeading(topoPage), { timeout: 15_000 })
+      .toBe('Hello Topo reloaded')
 
-    createdWorktreeId = await createWorktree(orcaPage, `plugin-event-${Date.now()}`)
+    createdWorktreeId = await createWorktree(topoPage, `plugin-event-${Date.now()}`)
     await expect
       .poll(
         () =>
-          orcaPage.evaluate(
+          topoPage.evaluate(
             async ({ pluginKey, worktreeId }) =>
               (await window.api.plugins.getLogs({ pluginKey })).some(
                 (entry) =>
@@ -207,7 +207,7 @@ test('runs hello-orca panel, command, and event behind visible consent', async (
   } finally {
     try {
       if (createdWorktreeId) {
-        await removeWorktreeViaStore(orcaPage, createdWorktreeId)
+        await removeWorktreeViaStore(topoPage, createdWorktreeId)
       }
     } finally {
       await rm(tempRoot, { recursive: true, force: true })

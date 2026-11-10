@@ -7,6 +7,6 @@ export type AgentSessionDeathEvidence = {
   ownerFence?: number
   /** Last liveness proof by the transport holder; absent for surface release, failed start or older evidence. */
   lastProvenAliveAt?: number
-  /** Quit/update/crash when the provider died with its runtime; absent for independent/unknown death. Keep open strings and read with isAgentSessionOrcaStopCause. */
+  /** Quit/update/crash when the provider died with its runtime; absent for independent/unknown death. Keep open strings and read with isAgentSessionTopoStopCause. */
   runtimeEnd?: string
 }

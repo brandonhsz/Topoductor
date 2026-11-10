@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { createEditorStore, createEditorTabsStore } from '../editor-slice-test-harness'
 import type { AppState } from '../../../types'
 import { FLOATING_TERMINAL_WORKTREE_ID } from '../../../../../../shared/constants'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import { makeLayout, makeTab } from '../../../terminals/terminal-tab.test-fixture'
 import {
   drawTabsFromMain,
@@ -61,7 +61,7 @@ describe('createEditorSlice floating editor activation', () => {
 
     store.getState().openFile(
       {
-        filePath: '/tmp/orca/notes.md',
+        filePath: '/tmp/topo/notes.md',
         relativePath: 'notes.md',
         worktreeId: FLOATING_TERMINAL_WORKTREE_ID,
         runtimeEnvironmentId: null,
@@ -73,13 +73,13 @@ describe('createEditorSlice floating editor activation', () => {
     // A layout-owner build draws and selects the tab once main's frame is in.
     await main.settle()
 
-    const fileId = fileIdOf(store, '/tmp/orca/notes.md')
+    const fileId = fileIdOf(store, '/tmp/topo/notes.md')
     const tab = store.getState().unifiedTabsByWorktree[FLOATING_TERMINAL_WORKTREE_ID]?.[0]
     expect(tab).toMatchObject({
       contentType: 'editor',
       entityId: fileId,
       // Main publishes no editor label; the tab bar names an editor tab by its file.
-      ...(ORCA_LAYOUT_OWNER_IS_MAIN ? {} : { label: 'notes.md' }),
+      ...(TOPO_LAYOUT_OWNER_IS_MAIN ? {} : { label: 'notes.md' }),
       worktreeId: FLOATING_TERMINAL_WORKTREE_ID
     })
     expect(store.getState().groupsByWorktree[FLOATING_TERMINAL_WORKTREE_ID]?.[0]).toMatchObject({
@@ -99,7 +99,7 @@ describe('createEditorSlice floating editor activation', () => {
     } as Partial<AppState>)
 
     store.getState().openFile({
-      filePath: '/tmp/orca/untitled.md',
+      filePath: '/tmp/topo/untitled.md',
       relativePath: 'untitled.md',
       worktreeId: FLOATING_TERMINAL_WORKTREE_ID,
       language: 'markdown',

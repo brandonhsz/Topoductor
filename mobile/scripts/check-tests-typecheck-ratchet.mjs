@@ -1,4 +1,4 @@
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
@@ -179,7 +179,7 @@ function printAddedFailure(added) {
     console.error(`    • ${entry}`)
   }
   console.error('')
-  console.error('  See the errors with:  pnpm --filter orca-mobile typecheck:tests')
+  console.error('  See the errors with:  pnpm --filter topo-mobile typecheck:tests')
   console.error('')
   console.error('  A type-level pin in an unchecked test proves nothing, which is the whole reason')
   console.error('  this gate exists. Fix the test rather than adding it to the baseline.')
@@ -205,7 +205,7 @@ function printStaleFailure(stale) {
   }
   console.error('')
   console.error(
-    `  ✅  Fix it (one command):  pnpm --filter orca-mobile check:tests-typecheck --prune`
+    `  ✅  Fix it (one command):  pnpm --filter topo-mobile check:tests-typecheck --prune`
   )
   console.error('')
 }

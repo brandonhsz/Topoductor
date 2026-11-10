@@ -3,7 +3,7 @@ import {
   type TerminalIdentityReadContext
 } from '../../../terminal/query/terminal-identity-read-context'
 import type { RuntimeTerminalAgentPresenceOptions } from '../../../terminal/query/runtime-terminal-agent-presence'
-import { OrcaRuntimeWithPruneMobileSessionTabGroupLayout } from '../../../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
+import { TopoRuntimeWithPruneMobileSessionTabGroupLayout } from '../../../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
 import type { RuntimePtyWorktreeRecord } from '../../../terminal/records/runtime-terminal-state-records'
 import {
   isTerminalLeafId,
@@ -32,7 +32,7 @@ import { exitedChatDispatchesForSession } from '../../workers/lifecycle/chat-ass
 import { OPERATOR_CLOSE_EXIT_CAUSE } from '../../../../../shared/terminal/pty/lifecycle/terminal-exit-cause'
 import { resolveTerminalIdentityFromProbes } from '../../../terminal/identity/terminal-identity-probe'
 
-export abstract class OrcaRuntimeWithGetPtyRecordForPaneKey extends OrcaRuntimeWithPruneMobileSessionTabGroupLayout {
+export abstract class TopoRuntimeWithGetPtyRecordForPaneKey extends TopoRuntimeWithPruneMobileSessionTabGroupLayout {
   protected terminalIdentitySources = () => ({
     handles: this.handles,
     sshTerminals: this.orchestrationCompatibilitySshTerminals,

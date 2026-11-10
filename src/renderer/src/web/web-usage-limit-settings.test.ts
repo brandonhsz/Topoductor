@@ -50,7 +50,7 @@ it('keeps consent with its pairing through failures, late responses and rejected
   const globals = installBrowserGlobals('Linux')
   writeStoredRuntimeEnvironment(globals.storage)
   globals.storage.setItem(
-    'orca.web.settings.v1',
+    'topo.web.settings.v1',
     JSON.stringify({ nativeChatAutoContinueAfterUsageLimit: true })
   )
   const { installWebPreloadApi } = await import('./web-preload-api')
@@ -101,7 +101,7 @@ it('keeps consent with its pairing through failures, late responses and rejected
     expect(consent()).toBeUndefined()
     hold = undefined
   }
-  expect(globals.storage.getItem('orca.web.settings.v1')).not.toContain(
+  expect(globals.storage.getItem('topo.web.settings.v1')).not.toContain(
     'nativeChatAutoContinueAfterUsageLimit'
   )
 })

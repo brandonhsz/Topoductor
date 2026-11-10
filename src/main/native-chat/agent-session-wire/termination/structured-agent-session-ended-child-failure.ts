@@ -17,7 +17,7 @@ const ENDED_CHILD_FAILURE = {
   'user-stop': () => null,
   'user-close': () => null,
   'context-clear': () => null,
-  // Host Stop is Orca’s action, not a provider failure.
+  // Host Stop is Topo’s action, not a provider failure.
   'host-stop': (ended) => ({ failure: ended.failure ?? agentSessionFailureFact('hostStopped') }),
   exit: providerEndFailure,
   'attach-failed': providerEndFailure,

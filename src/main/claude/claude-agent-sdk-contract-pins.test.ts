@@ -11,7 +11,7 @@ import {
   type SpawnOptions as SdkSpawnOptions
 } from '@anthropic-ai/claude-agent-sdk'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { ClaudePromptRegistry } from './claude-prompt-registry'
 import { claudeLaunchPermissions } from './structured/claude-structured-inbound-control'
 import { claudeStructuredPermissionOptions } from './structured/launch/claude-structured-launch-resolution'
@@ -84,8 +84,8 @@ function scriptScenario(
 function scenarioEnv(scenario: { scenarioPath: string; reportPath: string }) {
   return {
     PATH: process.env.PATH,
-    ORCA_SDK_CONTRACT_SCENARIO_PATH: scenario.scenarioPath,
-    ORCA_SDK_CONTRACT_REPORT_PATH: scenario.reportPath
+    TOPO_SDK_CONTRACT_SCENARIO_PATH: scenario.scenarioPath,
+    TOPO_SDK_CONTRACT_REPORT_PATH: scenario.reportPath
   }
 }
 

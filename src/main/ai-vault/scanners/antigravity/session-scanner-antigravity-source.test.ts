@@ -20,8 +20,8 @@ afterEach(async () => {
 })
 
 describe('Antigravity AI Vault discovery', () => {
-  it("lists Orca's managed chat sessions in their workspace", async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-antigravity-chat-'))
+  it("lists Topo's managed chat sessions in their workspace", async () => {
+    const root = await mkdtemp(join(tmpdir(), 'topo-antigravity-chat-'))
     tempRoots.push(root)
     const stateDirectory = join(root, 'user-data')
     const acpHome = join(stateDirectory, 'antigravity-chat', 'antigravity-acp')
@@ -32,7 +32,7 @@ describe('Antigravity AI Vault discovery', () => {
         source: 'USER_EXPLICIT',
         type: 'USER_INPUT',
         created_at: '2026-11-04T10:00:00.000Z',
-        content: '<USER_REQUEST>ORCA_38100_REPRO</USER_REQUEST>'
+        content: '<USER_REQUEST>TOPO_38100_REPRO</USER_REQUEST>'
       },
       {
         source: 'MODEL',
@@ -77,7 +77,7 @@ describe('Antigravity AI Vault discovery', () => {
   })
 
   it('uses a unique history match in the default workspace view', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-antigravity-workspace-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-antigravity-workspace-'))
     tempRoots.push(root)
     const roots = isolatedScanRoots(root)
     const sessionId = 'bbbbbbbb-cccc-4ddd-8eee-ffffffffffff'
@@ -87,7 +87,7 @@ describe('Antigravity AI Vault discovery', () => {
         source: 'USER_EXPLICIT',
         type: 'USER_INPUT',
         created_at: '2026-07-15T11:39:10.000Z',
-        content: '<USER_REQUEST>ORCA_8742_REPRO</USER_REQUEST>'
+        content: '<USER_REQUEST>TOPO_8742_REPRO</USER_REQUEST>'
       }
     ])
 
@@ -96,7 +96,7 @@ describe('Antigravity AI Vault discovery', () => {
 
     await writeAntigravityHistory(roots.antigravityBrainDir, [
       {
-        display: 'ORCA_8742_REPRO',
+        display: 'TOPO_8742_REPRO',
         timestamp: Date.parse('2026-07-15T11:39:10.100Z'),
         workspace
       }
@@ -118,7 +118,7 @@ describe('Antigravity AI Vault discovery', () => {
   })
 
   it('does not join workspace from a colliding truncated prompt title', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-antigravity-long-title-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-antigravity-long-title-'))
     tempRoots.push(root)
     const roots = isolatedScanRoots(root)
     const sessionId = 'eeeeeeee-ffff-4aaa-8bbb-cccccccccccc'
@@ -147,7 +147,7 @@ describe('Antigravity AI Vault discovery', () => {
   })
 
   it('offers the artifacts folder only once the conversation has top-level artifact files', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-antigravity-artifacts-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-antigravity-artifacts-'))
     tempRoots.push(root)
     const roots = isolatedScanRoots(root)
     const sessionId = 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee'
@@ -157,7 +157,7 @@ describe('Antigravity AI Vault discovery', () => {
         source: 'USER_EXPLICIT',
         type: 'USER_INPUT',
         created_at: '2026-07-15T11:39:10.000Z',
-        content: '<USER_REQUEST>ORCA_28795_REPRO</USER_REQUEST>'
+        content: '<USER_REQUEST>TOPO_28795_REPRO</USER_REQUEST>'
       }
     ])
     for (const dir of ['scratch', '.user_uploaded']) {

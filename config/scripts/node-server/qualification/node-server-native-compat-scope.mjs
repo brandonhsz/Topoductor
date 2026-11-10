@@ -1,8 +1,8 @@
 // The glibc 2.17 lane builds and smokes native slots; it does not run the server tests.
 export const NATIVE_COMPAT_ENTRY_POINTS = [
-  'config/scripts/orcad-distribution/prebuilds/build-orcad-prebuilds.mjs',
-  'config/scripts/orcad-distribution/prebuilds/orcad-prebuild-smoke.mjs',
-  'config/scripts/orcad-distribution/prebuilds/orcad-prebuild-smoke-child.cjs',
+  'config/scripts/topod-distribution/prebuilds/build-topod-prebuilds.mjs',
+  'config/scripts/topod-distribution/prebuilds/topod-prebuild-smoke.mjs',
+  'config/scripts/topod-distribution/prebuilds/topod-prebuild-smoke-child.cjs',
   // createRequire and the smoke subprocess do not expose these edges to esbuild.
   'config/scripts/native-build/node-addons/node-pty-job-ownership.cjs',
   'config/scripts/native-build/linux/verify-linux-glibc-floor.cjs'
@@ -84,7 +84,7 @@ function isTestInput({ status, file }) {
   // Build policy and process-host fixtures can be read without a static import.
   if (
     file.startsWith('src/packages/') ||
-    /^config\/scripts\/(?:desktop-distribution\/runtime-verification\/|ci\/unit-selection\/|release\/workflow-contracts\/|runtime-verification\/desktop-transport\/|orcad-distribution\/qualification\/)?(?:node-runtime\/pin-policy\/|runtime-verification\/native-chat-rendering\/|static-analysis\/process-boundaries\/)?(?:performance\/native-chat\/|performance\/terminal-stream\/)?(?:desktop-distribution\/linux\/|native-build\/windows\/|native-build\/composition\/|orcad-distribution\/prebuilds\/|orcad-distribution\/template\/|orcad-distribution\/server-bundle\/|desktop-distribution\/runtime-verification\/|native-build\/node-addons\/|orcad-distribution\/qualification\/|native-build\/linux\/)?(?:test-runtime\/node-worker\/|test-runtime\/sqlite-admission\/|test-runtime\/environment\/)?[^/]*(?:orcad|node-server|node-pty|native|glibc|pinned-node|node-runtime|workspace-source-exports|script-module-dependencies)[^/]*$|^config\/scripts\/(?:desktop-distribution\/runtime-verification\/|ci\/unit-selection\/|release\/workflow-contracts\/|runtime-verification\/desktop-transport\/|orcad-distribution\/qualification\/)?(?:node-runtime\/pin-policy\/|runtime-verification\/native-chat-rendering\/|static-analysis\/process-boundaries\/)?(?:performance\/native-chat\/|performance\/terminal-stream\/)?(?:ci\/workflow-contracts|node-server\/qualification|test-fixtures\/script-copy-closure|node-runtime\/archive-identity|workflow\/source-routing|workspace\/source-exports)\/[^/]*(?:orcad|node-server|node-pty|native|glibc|pinned-node|node-runtime|workspace-source-exports|script-module-dependencies)[^/]*$/.test(
+    /^config\/scripts\/(?:desktop-distribution\/runtime-verification\/|ci\/unit-selection\/|release\/workflow-contracts\/|runtime-verification\/desktop-transport\/|topod-distribution\/qualification\/)?(?:node-runtime\/pin-policy\/|runtime-verification\/native-chat-rendering\/|static-analysis\/process-boundaries\/)?(?:performance\/native-chat\/|performance\/terminal-stream\/)?(?:desktop-distribution\/linux\/|native-build\/windows\/|native-build\/composition\/|topod-distribution\/prebuilds\/|topod-distribution\/template\/|topod-distribution\/server-bundle\/|desktop-distribution\/runtime-verification\/|native-build\/node-addons\/|topod-distribution\/qualification\/|native-build\/linux\/)?(?:test-runtime\/node-worker\/|test-runtime\/sqlite-admission\/|test-runtime\/environment\/)?[^/]*(?:topod|node-server|node-pty|native|glibc|pinned-node|node-runtime|workspace-source-exports|script-module-dependencies)[^/]*$|^config\/scripts\/(?:desktop-distribution\/runtime-verification\/|ci\/unit-selection\/|release\/workflow-contracts\/|runtime-verification\/desktop-transport\/|topod-distribution\/qualification\/)?(?:node-runtime\/pin-policy\/|runtime-verification\/native-chat-rendering\/|static-analysis\/process-boundaries\/)?(?:performance\/native-chat\/|performance\/terminal-stream\/)?(?:ci\/workflow-contracts|node-server\/qualification|test-fixtures\/script-copy-closure|node-runtime\/archive-identity|workflow\/source-routing|workspace\/source-exports)\/[^/]*(?:topod|node-server|node-pty|native|glibc|pinned-node|node-runtime|workspace-source-exports|script-module-dependencies)[^/]*$/.test(
       file
     )
   ) {
@@ -93,7 +93,7 @@ function isTestInput({ status, file }) {
   return (
     (status === 'M' && MODIFIED_TEST_INPUTS.has(file)) ||
     /^src\/(?:[^/]+\/)*[^/]+\.(?:test|spec)\.(?:ts|tsx)$/.test(file) ||
-    /^config\/scripts\/(?:release\/workflow-contracts\/|release\/versioning\/|desktop-distribution\/macos\/|desktop-distribution\/linux\/|cli-build\/|build\/mobile-web-app\/|native-build\/composition\/|orcad-distribution\/prebuilds\/|orcad-distribution\/template\/|plugin-build\/declarative-runtime\/|native-build\/linux\/|native-build\/windows\/|desktop-distribution\/runtime-verification\/|desktop-build\/output-contracts\/|native-build\/node-addons\/|orcad-distribution\/server-bundle\/|orcad-distribution\/qualification\/)?(?:[^/]+\/)*[^/]+\.test\.(?:ts|mjs)$/.test(
+    /^config\/scripts\/(?:release\/workflow-contracts\/|release\/versioning\/|desktop-distribution\/macos\/|desktop-distribution\/linux\/|cli-build\/|build\/mobile-web-app\/|native-build\/composition\/|topod-distribution\/prebuilds\/|topod-distribution\/template\/|plugin-build\/declarative-runtime\/|native-build\/linux\/|native-build\/windows\/|desktop-distribution\/runtime-verification\/|desktop-build\/output-contracts\/|native-build\/node-addons\/|topod-distribution\/server-bundle\/|topod-distribution\/qualification\/)?(?:[^/]+\/)*[^/]+\.test\.(?:ts|mjs)$/.test(
       file
     ) ||
     /^tests\/e2e\/(?:[^/]+\/)*[^/]+\.unit\.test\.ts$/.test(file)

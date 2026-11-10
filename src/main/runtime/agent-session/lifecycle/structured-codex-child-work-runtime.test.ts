@@ -19,7 +19,7 @@ import {
 } from '../structured-agent-session-runtime'
 
 import '../../../native-chat/agent-session-wire/host/structured-agent-session-logger'
-import '../../orca-runtime-tests/scripted-codex-transport.test-fixture'
+import '../../topo-runtime-tests/scripted-codex-transport.test-fixture'
 import { AgentHookServer } from '../../../agent-hooks/server/agent-hook-server'
 
 import { makeStructuredAgentStatusSubject } from '../../../../shared/agent-status/contracts/agent-status-subject'

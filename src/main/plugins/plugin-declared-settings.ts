@@ -18,7 +18,7 @@ function store(host: SettingsHost, pluginKey: string): PluginKvStore {
   return new PluginKvStore(getPluginsDataDir(host.userDataPath), pluginKey, 'settings.json')
 }
 
-/** What Orca's Settings shows under a plugin; null when it declares none. */
+/** What Topo's Settings shows under a plugin; null when it declares none. */
 export function readPluginDeclaredSettings(
   host: SettingsHost,
   pluginKey: string

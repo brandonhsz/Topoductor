@@ -93,12 +93,12 @@ export function WorktreeCardTaskActions({
 }): React.JSX.Element | null {
   const t = useTranslate()
   const github = item.provider === 'github'
-  const openInOrca = !isCardTask
+  const openInTopo = !isCardTask
     ? undefined
     : github
-      ? actions.onOpenGitHubIssueInOrca
+      ? actions.onOpenGitHubIssueInTopo
       : item.provider === 'linear'
-        ? actions.onOpenLinearIssueInOrca
+        ? actions.onOpenLinearIssueInTopo
         : undefined
   const onEdit = isCardTask && github ? actions.onEditIssue : undefined
   const { onCopyLink, onOpenIssueInBrowser } = actions
@@ -117,16 +117,16 @@ export function WorktreeCardTaskActions({
       }
       onOpenChange={onOpenChange}
     >
-      {url && openInOrca ? (
-        <DropdownMenuItem onClick={openInOrca}>
+      {url && openInTopo ? (
+        <DropdownMenuItem onClick={openInTopo}>
           <MonitorUp className="size-3.5" />
-          {t('auto.components.sidebar.WorktreeCardMeta.2c67730e07', 'Open in Orca')}
+          {t('auto.components.sidebar.WorktreeCardMeta.2c67730e07', 'Open in Topo')}
         </DropdownMenuItem>
       ) : null}
       {url && onOpenIssueInBrowser ? (
         <DropdownMenuItem onClick={() => onOpenIssueInBrowser(url)}>
           <Globe className="size-3.5" />
-          {t('auto.components.sidebar.WorktreeCardMeta.openInOrcaBrowser', 'Open in Orca browser')}
+          {t('auto.components.sidebar.WorktreeCardMeta.openInTopoBrowser', 'Open in Topo browser')}
         </DropdownMenuItem>
       ) : null}
       {onEdit ? (

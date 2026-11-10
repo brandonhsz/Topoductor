@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { MessageChannel, Worker, type MessagePort } from 'node:worker_threads'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import {
   WorkerThreadChildProcessHost,
@@ -45,7 +45,7 @@ function waitForSpawn(child: WorkerThreadChildProcess): Promise<number> {
   )
 }
 
-// After worker-loop death libuv can no longer reap POSIX children; zombies persist until Orca exits.
+// After worker-loop death libuv can no longer reap POSIX children; zombies persist until Topo exits.
 async function isRunning(pid: number): Promise<boolean> {
   try {
     process.kill(pid, 0)
@@ -148,9 +148,9 @@ describe('WorkerThreadChildProcessHost over a message channel', () => {
   it('passes env and cwd through to the child', async () => {
     const child = makeConnectedHost().spawn({
       program: process.execPath,
-      args: ['-e', 'process.stdout.write(process.env.ORCA_PROBE_MARKER + "|" + process.cwd())'],
+      args: ['-e', 'process.stdout.write(process.env.TOPO_PROBE_MARKER + "|" + process.cwd())'],
       cwd: process.cwd(),
-      env: { ...process.env, ORCA_PROBE_MARKER: 'marker' }
+      env: { ...process.env, TOPO_PROBE_MARKER: 'marker' }
     })
     const stdout: string[] = []
     child.stdout.on('data', (chunk: Buffer) => stdout.push(chunk.toString()))
@@ -161,7 +161,7 @@ describe('WorkerThreadChildProcessHost over a message channel', () => {
 
   it('reports a missing program as ENOENT so callers can say the CLI is not installed', async () => {
     const child = makeConnectedHost().spawn({
-      program: 'orca-definitely-missing-program',
+      program: 'topo-definitely-missing-program',
       args: []
     })
     const error = new Promise<NodeJS.ErrnoException>((resolve) => child.once('error', resolve))
@@ -171,7 +171,7 @@ describe('WorkerThreadChildProcessHost over a message channel', () => {
 
   it('drops an error nobody listens for instead of throwing on the main loop', async () => {
     const child = makeConnectedHost().spawn({
-      program: 'orca-definitely-missing-program',
+      program: 'topo-definitely-missing-program',
       args: []
     })
 

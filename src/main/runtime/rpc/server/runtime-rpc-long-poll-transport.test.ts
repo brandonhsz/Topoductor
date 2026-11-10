@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createConnection } from 'node:net'
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { OrchestrationDb } from '../../orchestration/db/orchestration-db'
 import '../../orchestration/db/contract-constants'
 import '../../orchestration/db/messages/mailbox-routing-page'
@@ -27,7 +27,7 @@ import '../../orchestration/db/root-dispatch-test-fixture'
 import {
   createTranscriptPane,
   TRANSCRIPT_PANE_PTY_ID
-} from '../../orca-runtime-tests/agent-transcript-pane-test-harness'
+} from '../../topo-runtime-tests/agent-transcript-pane-test-harness'
 
 vi.mock('../../../git/worktrees/catalog/worktree-scan-cache', async (importOriginal) => ({
   ...(await importOriginal<typeof WorktreeScanCacheModule>()),
@@ -48,10 +48,10 @@ const { getWorktreeOwnerMocks } = vi.hoisted(() => {
   return { getWorktreeOwnerMocks: () => (fixture ??= createWorktreeOwnerMocks()) }
 })
 
-describe('OrcaRuntimeRpcServer', () => {
+describe('TopoRuntimeRpcServer', () => {
   it('rejects oversized RPC frames instead of buffering them indefinitely', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-    const runtime = new OrcaRuntimeService()
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+    const runtime = new TopoRuntimeService()
     const server = createServer({ runtime, userDataPath })
 
     await server.start()
@@ -89,8 +89,8 @@ describe('OrcaRuntimeRpcServer', () => {
   // Use real socket keepalives/admission to catch flush/buffer regressions mocks miss (design §§3.1, 6).
   describe('long-poll transport (§3.1)', () => {
     it('releases terminal.wait long-poll slot when the client closes mid-wait', async () => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-      const runtime = new OrcaRuntimeService()
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+      const runtime = new TopoRuntimeService()
       const server = createServer({
         runtime,
         userDataPath,
@@ -164,8 +164,8 @@ describe('OrcaRuntimeRpcServer', () => {
     })
 
     it('releases one same-Run wait slot when its client closes and keeps its sibling live', async () => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-      const runtime = new OrcaRuntimeService()
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+      const runtime = new TopoRuntimeService()
       const db = new OrchestrationDb(':memory:')
       runtime.setOrchestrationDb(db)
       // A consuming check now requires a live pane; these transport tests only need it to block.
@@ -221,7 +221,7 @@ describe('OrcaRuntimeRpcServer', () => {
     })
 
     it('destroys active Unix sockets and cancels pending composer readiness when the runtime stops', async () => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
       const { runtime, handle } = await createTranscriptPane({
         paneTitle: 'shell',
         foregroundProcess: 'bash',
@@ -258,8 +258,8 @@ describe('OrcaRuntimeRpcServer', () => {
     })
 
     it('reserves long-poll headroom for terminal.wait when orchestration.ask floods', async () => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-rpc-'))
-      const runtime = new OrcaRuntimeService()
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-rpc-'))
+      const runtime = new TopoRuntimeService()
       const db = new OrchestrationDb(':memory:')
       runtime.setOrchestrationDb(db)
       // A consuming check now requires a live pane; these transport tests only need it to block.

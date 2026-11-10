@@ -8,7 +8,7 @@ import {
 } from '../../ssh/connection/authority/ssh-connection-generation'
 
 export const RUNTIME_FILE_MUTATION_UPDATE_REQUIRED =
-  'Remote file changes require a newer Orca client. Update the paired client and try again.'
+  'Remote file changes require a newer Topo client. Update the paired client and try again.'
 
 export function assertRuntimeFileMutationExpectation(
   // #11163: use the resolved host; connectionId would collapse runtime/unresolved to local.

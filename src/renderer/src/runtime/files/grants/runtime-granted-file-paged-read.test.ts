@@ -35,7 +35,7 @@ describe('a granted host file outside every workspace', () => {
       content: '',
       isBinary: true,
       mimeType: 'video/mp4',
-      mediaUrl: 'orca-media://file/t'
+      mediaUrl: 'topo-media://file/t'
     }
     fsGrantRuntimeFilePreview.mockResolvedValue(mediaUrl)
 
@@ -43,7 +43,7 @@ describe('a granted host file outside every workspace', () => {
       content: '',
       isBinary: true,
       mimeType: 'video/mp4',
-      mediaUrl: 'orca-media://file/t',
+      mediaUrl: 'topo-media://file/t',
       terminalArtifactGrantId: 'g-1',
       readOnly: true
     })

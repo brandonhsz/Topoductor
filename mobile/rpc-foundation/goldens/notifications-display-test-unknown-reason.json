@@ -112,7 +112,7 @@
         "Send test notification",
         "Troubleshooting",
         "Test push delivery, or a local notification when push is unavailable.",
-        "Could not send through Orca’s push service. Try again."
+        "Could not send through Topo’s push service. Try again."
       ]
     },
     "9585b40ac04d": {

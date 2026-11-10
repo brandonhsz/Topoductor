@@ -10,13 +10,13 @@ import {
 } from './serve-pairing-redaction'
 
 const READY = [
-  'Orca server ready',
+  'Topo server ready',
   'Bound endpoint: ws://0.0.0.0:6768',
   'Web client URL: https://host/web#pairing=secret',
   'Mobile pairing QR:',
   '█▀▀▀▀▀█ secret-qr',
   '█ ███ █',
-  'Pairing URL: orca://pair?code=secret',
+  'Pairing URL: topo://pair?code=secret',
   '[serve] later log line'
 ]
 
@@ -27,7 +27,7 @@ describe('supervised pairing redaction', () => {
     const redact = createPairingRedactor()
     const kept = READY.map(redact).filter((line) => line !== null)
     expect(kept).toEqual([
-      'Orca server ready',
+      'Topo server ready',
       'Bound endpoint: ws://0.0.0.0:6768',
       PAIRING_HIDDEN_LINE,
       '[serve] later log line'
@@ -37,9 +37,9 @@ describe('supervised pairing redaction', () => {
 
   it('blanks the pairing offer in the JSON readiness line', () => {
     const line = JSON.stringify({
-      type: 'orca_server_ready',
+      type: 'topo_server_ready',
       endpoint: 'ws://x',
-      pairing: { available: true, url: 'orca://pair?code=secret' }
+      pairing: { available: true, url: 'topo://pair?code=secret' }
     })
     const kept = createPairingRedactor()(line)
     expect(kept).not.toContain('secret')
@@ -65,9 +65,9 @@ describe('supervised pairing redaction', () => {
       written.push(String(chunk))
       return true
     })
-    redactingSpawn(spawn)({ program: 'orca', stdio: ['inherit', 'inherit', 'inherit', 'ipc'] })
+    redactingSpawn(spawn)({ program: 'topo', stdio: ['inherit', 'inherit', 'inherit', 'ipc'] })
     expect(spawn).toHaveBeenCalledWith({
-      program: 'orca',
+      program: 'topo',
       stdio: ['inherit', 'pipe', 'inherit', 'ipc']
     })
     const drained = once(stdout, 'end')

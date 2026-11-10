@@ -192,7 +192,7 @@ export function createClaudeModelCatalogProbe(
                 command,
                 args: [...prefixArgs, ...argsFor(strictMcp, settingSources)],
                 ...(listIn ? { cwd: listIn } : {}),
-                stdin: `${CLAUDE_MODEL_LIST_STDIN}${JSON.stringify({ type: 'control_request', request_id: 'orca-model-settings', request: { subtype: 'get_settings' } })}\n${JSON.stringify({ type: 'control_request', request_id: 'orca-signin-discovery', request: { subtype: 'initialize' } })}\n`
+                stdin: `${CLAUDE_MODEL_LIST_STDIN}${JSON.stringify({ type: 'control_request', request_id: 'topo-model-settings', request: { subtype: 'get_settings' } })}\n${JSON.stringify({ type: 'control_request', request_id: 'topo-signin-discovery', request: { subtype: 'initialize' } })}\n`
               },
               {
                 site: 'claude-model-catalog-probe',
@@ -204,8 +204,8 @@ export function createClaudeModelCatalogProbe(
                   ready: (stdout) => {
                     const replies = readClaudeControlResponses(stdout)
                     return (
-                      listedModels(replies.get('orca-model-discovery')).length > 0 &&
-                      replies.has('orca-model-settings')
+                      listedModels(replies.get('topo-model-discovery')).length > 0 &&
+                      replies.has('topo-model-settings')
                     )
                   }
                 }
@@ -230,9 +230,9 @@ export function createClaudeModelCatalogProbe(
         }
         const stdout = outcome
         const replies = readClaudeControlResponses(stdout)
-        const listing = replies.get('orca-model-discovery')
+        const listing = replies.get('topo-model-discovery')
         const models = listedModels(listing)
-        const settings = replies.get('orca-model-settings')
+        const settings = replies.get('topo-model-settings')
         const applied = record(record(settings)?.applied)
         const configured =
           applied &&
@@ -251,7 +251,7 @@ export function createClaudeModelCatalogProbe(
           complete: isCompleteClaudeModelListing(listing) && configured !== undefined,
           ...(fastModeSupport ? { fastModeSupport } : {}),
           ...(configured ? { configured } : {}),
-          ...(claudeCatalogSignedOut(replies.get('orca-signin-discovery'), settings, env)
+          ...(claudeCatalogSignedOut(replies.get('topo-signin-discovery'), settings, env)
             ? { unavailable: { reason: 'notSignedIn', account } }
             : {})
         }

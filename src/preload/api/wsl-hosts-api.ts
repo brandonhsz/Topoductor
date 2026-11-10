@@ -68,6 +68,6 @@ export function getWslHostsApi(
     return undefined
   }
   // The fake is only honored in `--mode e2e` builds, matching main.
-  const e2eFake = import.meta.env.MODE === 'e2e' && Boolean(env.ORCA_E2E_FAKE_WSL_HOSTS)
+  const e2eFake = import.meta.env.MODE === 'e2e' && Boolean(env.TOPO_E2E_FAKE_WSL_HOSTS)
   return platform === 'win32' || e2eFake ? wslHostsApi : undefined
 }

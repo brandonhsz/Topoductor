@@ -76,7 +76,7 @@ describe('notifications:dismiss by acknowledged subject', () => {
 
   // Reads rebuild ids for turns that never alerted; each forwarded one was a silent push and a store slot.
   it('clears on the phone only alerts that reached it, including ones sent before a restart', async () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-clear-delivered-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-clear-delivered-'))
     const original = new RuntimeMobileNotificationController()
     const restarted = new RuntimeMobileNotificationController()
     try {

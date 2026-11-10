@@ -121,7 +121,7 @@ beforeEach(async () => {
   installCrewSocketGlobals()
   vi.stubGlobal('window', domWindow)
   localStorage.clear()
-  localStorage.setItem('orca.web.runtimeEnvironment.v1', JSON.stringify(environment))
+  localStorage.setItem('topo.web.runtimeEnvironment.v1', JSON.stringify(environment))
   session = await import('./preload-api/web-runtime-session')
   session.manuallyDisconnectedEnvironmentIds.clear()
   session.webRuntimeState.activeEnvironment = environment

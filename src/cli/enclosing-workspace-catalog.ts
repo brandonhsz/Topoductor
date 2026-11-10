@@ -10,7 +10,7 @@ import type { CatalogRow } from './workspace-catalog-row'
 import type { RuntimeClient } from './runtime-client'
 import { RuntimeClientError } from './runtime/types'
 
-/** An older Orca without the folder catalog keeps its repo-backed rows; any other failure is real. */
+/** An older Topo without the folder catalog keeps its repo-backed rows; any other failure is real. */
 async function readOptional<TResult>(read: Promise<TResult>): Promise<TResult | undefined> {
   try {
     return await read

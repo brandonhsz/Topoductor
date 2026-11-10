@@ -245,7 +245,7 @@ const NOT_REPORTS: ReadonlySet<string> = new Set([
 ])
 
 /** The turn a root failure row reports for, unless it is a command's own verdict: one of the kinds
- * above, or anything Orca wrote on a command's result identity (its refusals). */
+ * above, or anything Topo wrote on a command's result identity (its refusals). */
 function reportedTurn(state: JournalReducerState, item: AgentJournalRenderItem): string | null {
   const { body, turnScope } = item
   if (
@@ -257,7 +257,7 @@ function reportedTurn(state: JournalReducerState, item: AgentJournalRenderItem):
     return null
   }
   const identity = parseAgentJournalItemKey(item.itemId)
-  if (identity?.provider === 'orca' && identity.clientMessageId.startsWith('command-result:')) {
+  if (identity?.provider === 'topo' && identity.clientMessageId.startsWith('command-result:')) {
     return null
   }
   return state.aliases.get(turnScope.turnItemId) ?? turnScope.turnItemId

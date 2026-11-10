@@ -8,8 +8,8 @@ import {
 } from './relay-host-proof'
 
 const encoder = new TextEncoder()
-const HOST_PROOF_DOMAIN = 'orca-relay-host-proof/v1'
-const CHALLENGE_DOMAIN = 'orca-relay-host-challenge/v1'
+const HOST_PROOF_DOMAIN = 'topo-relay-host-proof/v1'
+const CHALLENGE_DOMAIN = 'topo-relay-host-challenge/v1'
 const CLOCK_SKEW_MS = 30_000
 
 function concat(parts: readonly Uint8Array[]): Uint8Array {

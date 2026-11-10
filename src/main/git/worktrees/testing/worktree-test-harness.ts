@@ -8,7 +8,7 @@ export function registerWorktreeSuiteHooks(): void {
     clearGitCapabilityStateForTests()
     __resetSparseCheckoutStateCacheForTests()
     // Remove ambient timeout overrides; undefined matches an absent environment key.
-    vi.stubEnv('ORCA_WORKTREE_ADD_TIMEOUT_MS', undefined)
+    vi.stubEnv('TOPO_WORKTREE_ADD_TIMEOUT_MS', undefined)
   })
 
   afterEach(() => {

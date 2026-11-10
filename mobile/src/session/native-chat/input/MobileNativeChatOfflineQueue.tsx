@@ -33,7 +33,7 @@ export function MobileNativeChatOfflineQueue({
           send.paused === 'failed'
             ? t('chat.offlineQueue.failed', "Couldn't send — tap Send to retry")
             : send.paused === 'closed'
-              ? t('chat.offlineQueue.closed', 'Not sent before Orca closed')
+              ? t('chat.offlineQueue.closed', 'Not sent before Topo closed')
               : offline
                 ? hostName
                   ? t('chat.offlineQueue.waitingFor', 'Sends when {{host}} is back', {

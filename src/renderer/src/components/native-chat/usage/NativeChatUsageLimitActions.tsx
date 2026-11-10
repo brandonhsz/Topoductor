@@ -26,9 +26,9 @@ import { callStructuredAgentSession } from '@/runtime/native-chat/requests/struc
 import type { AgentSessionOptionsResult } from '../../../../../shared/agent-session/options/agent-session-options-result'
 import { executionHostIdForStructuredTarget } from '@/runtime/native-chat/session-ownership/structured-agent-session-owner'
 import {
-  NativeChatOrcaStopContext,
-  type NativeChatOrcaStopView
-} from '@/components/native-chat/messages/notices/native-chat-orca-stop-context'
+  NativeChatTopoStopContext,
+  type NativeChatTopoStopView
+} from '@/components/native-chat/messages/notices/native-chat-topo-stop-context'
 import type { NativeChatMessage } from '../../../../../shared/native-chat/native-chat-types'
 import type { NativeChatStructuredViewProps } from '@/components/native-chat/native-chat-view-types'
 import type { NativeChatFileLinkContext } from '@/components/native-chat/links/actions/native-chat-file-link-context'
@@ -52,7 +52,7 @@ export function NativeChatUsageLimitActionsProvider({
   pane: Omit<NativeChatStructuredViewProps, 'mode'>
   directory: NativeChatFileLinkContext | null
   messages: readonly NativeChatMessage[]
-  view: NativeChatOrcaStopView
+  view: NativeChatTopoStopView
   recovery: {
     readCurrent: boolean
     canSwitchAccount: boolean | undefined
@@ -227,9 +227,9 @@ export function NativeChatUsageLimitActionsProvider({
   )
   return (
     <UsageLimitActionsContext.Provider value={actions}>
-      <NativeChatOrcaStopContext.Provider value={stopView}>
+      <NativeChatTopoStopContext.Provider value={stopView}>
         {children}
-      </NativeChatOrcaStopContext.Provider>
+      </NativeChatTopoStopContext.Provider>
       {request ? (
         <AgentSessionContinuationDialog
           open

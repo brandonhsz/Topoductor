@@ -118,7 +118,7 @@ it('keeps each request’s own saved error when another start fails before the d
   await tick()
   expect(r.mail().map((message) => JSON.parse(message.payload ?? '{}'))).toMatchObject([
     { requestId: 'A', error: 'capacity from A' },
-    { requestId: 'orca:B', error: refused.reason }
+    { requestId: 'topo:B', error: refused.reason }
   ])
   expect(r.db.getDispatchContextById(r.dispatch().id)?.status).toBe('dispatched')
 })

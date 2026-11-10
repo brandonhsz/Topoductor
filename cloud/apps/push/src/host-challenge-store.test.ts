@@ -1,4 +1,4 @@
-import { PUSH_LIMITS } from '@orca-cloud/push-contract'
+import { PUSH_LIMITS } from '@topo-cloud/push-contract'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import {
   answerPushHostChallenge,

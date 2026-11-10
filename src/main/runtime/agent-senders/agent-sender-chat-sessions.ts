@@ -67,7 +67,7 @@ export function readAgentSenderSessions(
       ? []
       : [
           {
-            identity: `orca_session_id:${sessionId}`,
+            identity: `topo_session_id:${sessionId}`,
             paneKey: structuredAgentSessionPaneKey(
               structuredAgentSessionTabId(destinationId),
               destinationId

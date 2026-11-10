@@ -24,7 +24,7 @@ function frame(value: unknown = fallback) {
 it('upcasts the saved unknown content from an older host without rewriting its diagnostic payload', () => {
   const body = {
     kind: 'status',
-    text: 'Claude sent content Orca cannot display yet',
+    text: 'Claude sent content Topo cannot display yet',
     providerFrame: frame()
   } as const
   const block = structuredAgentSessionStatusBlock(body)
@@ -40,7 +40,7 @@ it('upcasts the saved unknown content from an older host without rewriting its d
     from: 'claude-opus-5-5',
     to: 'claude-opus-4-8'
   })
-  expect(body.text).toBe('Claude sent content Orca cannot display yet')
+  expect(body.text).toBe('Claude sent content Topo cannot display yet')
 })
 
 it.each([
@@ -77,7 +77,7 @@ it.each([
   { tone: 'error' },
   { presentation: 'plan-document' },
   { failure: { kind: 'usageLimitReached' } },
-  { orcaStop: { cause: 'quit' } }
+  { topoStop: { cause: 'quit' } }
 ] as const)('does not replace another explicit status or failure: %j', (special) => {
   const block = {
     type: 'text',

@@ -16,11 +16,11 @@ describe('resolveImportedFolderProjectLink', () => {
     expect(() =>
       resolveImportedFolderProjectLink(
         folder('https://github.com/acme/other.git'),
-        'github:acme/orca',
+        'github:acme/topo',
         {
           provider: 'github',
           owner: 'acme',
-          repo: 'orca'
+          repo: 'topo'
         }
       )
     ).toThrow('its Git remote "origin" points at acme/other')

@@ -11,7 +11,7 @@ function context(
   flags = new Map<string, string | boolean>(),
   options: { isRemote?: boolean; json?: boolean } = {}
 ): HandlerContext {
-  const client = new RuntimeClient('/tmp/orca-skill-sharing-test', 60_000, null, null)
+  const client = new RuntimeClient('/tmp/topo-skill-sharing-test', 60_000, null, null)
   vi.spyOn(client, 'call').mockImplementation(call)
   vi.spyOn(client, 'isRemote', 'get').mockReturnValue(options.isRemote ?? false)
   return {
@@ -227,7 +227,7 @@ describe('skill sharing CLI handlers', () => {
     ['a paired runtime', true, undefined]
   ])('rejects %s before any discovery or publish call', async (_label, isRemote, forwardedCwd) => {
     if (forwardedCwd) {
-      vi.stubEnv('ORCA_CLI_CWD', forwardedCwd)
+      vi.stubEnv('TOPO_CLI_CWD', forwardedCwd)
     }
     const call = vi.fn()
 

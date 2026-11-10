@@ -1,4 +1,4 @@
-// Replay recorded traffic with this run's session and prompt IDs, advancing on Orca's frames.
+// Replay recorded traffic with this run's session and prompt IDs, advancing on Topo's frames.
 
 import { expect } from 'vitest'
 import { z } from 'zod'
@@ -36,8 +36,8 @@ export class GrokFixtureReplay {
 
   attach(agent: AcpScriptedAgent): void {
     this.agent = agent
-    agent.on('session/prompt', (frame) => this.orcaSent('session/prompt', frame))
-    agent.on('session/cancel', (frame) => this.orcaSent('session/cancel', frame))
+    agent.on('session/prompt', (frame) => this.topoSent('session/prompt', frame))
+    agent.on('session/cancel', (frame) => this.topoSent('session/cancel', frame))
   }
 
   get awaiting(): string | null {
@@ -51,7 +51,7 @@ export class GrokFixtureReplay {
     return next.direction === 'out' ? (next.message.method ?? 'reply') : 'agent'
   }
 
-  private orcaSent(method: string, frame: FakeFrame): void {
+  private topoSent(method: string, frame: FakeFrame): void {
     const recorded = this.frames[this.cursor]
     expect(recorded?.direction).toBe('out')
     expect(recorded?.message.method).toBe(method)
@@ -74,7 +74,7 @@ export class GrokFixtureReplay {
       this.cursor += 1
       const message = this.rewrite(recorded.message)
       if (message.method !== undefined && message.id !== undefined) {
-        // Resume only after Orca answers the agent's request.
+        // Resume only after Topo answers the agent's request.
         void agent
           .request(message.id, message.method, message.params)
           .then((response) => {

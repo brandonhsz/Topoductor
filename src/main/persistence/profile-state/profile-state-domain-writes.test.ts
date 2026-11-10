@@ -24,7 +24,7 @@ afterEach(() => {
 })
 
 function openTestDatabase(): ReturnType<typeof openProfileStateDatabase>['db'] {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-profile-state-domain-write-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-profile-state-domain-write-'))
   temporaryDirectories.push(directory)
   return openProfileStateDatabase(profileStateDatabaseFile(directory), 'profile-a').db
 }
@@ -113,7 +113,7 @@ describe('profile state dirty-domain writes', () => {
   })
 
   it('fences two independently opened database writers with the shared revision', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-profile-state-domain-writer-fence-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-profile-state-domain-writer-fence-'))
     temporaryDirectories.push(directory)
     const databasePath = profileStateDatabaseFile(directory)
     const first = openProfileStateDatabase(databasePath, 'profile-a').db

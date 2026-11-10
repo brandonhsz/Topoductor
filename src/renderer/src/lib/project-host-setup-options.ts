@@ -9,7 +9,7 @@ import type { ExecutionHostRegistryEntry } from '../../../shared/execution-host/
 import { getHostHealthUnavailableDetail } from './project-host-health-detail'
 import { isHostLocalProjectId } from '../../../shared/project-host-setup-projection'
 import { isEphemeralVmRuntimeEnvironment } from '../../../shared/remote-runtime/host-catalog/runtime-environments'
-import { isMergedAwayExecutionHost } from '../../../shared/execution-host/managed-orcad-execution-host'
+import { isMergedAwayExecutionHost } from '../../../shared/execution-host/managed-topod-execution-host'
 import {
   PROJECT_HOST_SETUP_RUNTIME_CAPABILITY,
   WORKSPACE_RUN_CONTEXT_RUNTIME_CAPABILITY
@@ -224,7 +224,7 @@ export function getHostSetupUnavailableDetail(
   if (host.health === 'blocked') {
     return t(
       'auto.components.settings.RepositoryPane.hostSetupBlockedVersion',
-      'Orca server version is incompatible'
+      'Topo server version is incompatible'
     )
   }
   if (host.kind !== 'runtime') {
@@ -242,7 +242,7 @@ export function getHostSetupUnavailableDetail(
   ) {
     return t(
       'auto.components.settings.RepositoryPane.hostSetupMissingCapability',
-      'Update Orca on this host to set up projects'
+      'Update Topo on this host to set up projects'
     )
   }
   return null

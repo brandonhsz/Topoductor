@@ -22,7 +22,7 @@ const PANE_BLOCKERS = new Set<WslMoveBlocker['kind']>([
   'agent-not-resumable'
 ])
 
-/** Opens the busy terminal so the user can stop it there; Orca never ends it for them. */
+/** Opens the busy terminal so the user can stop it there; Topo never ends it for them. */
 export function showBlockingTerminal(paneKey: string): void {
   const pane = parsePaneKey(paneKey)
   const { tabsByWorktree } = useAppStore.getState()

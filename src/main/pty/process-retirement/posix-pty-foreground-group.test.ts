@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { ProcessResult, ProcessSpec } from '@orca/process-host/process-spec'
+import type { ProcessResult, ProcessSpec } from '@topo/process-host/process-spec'
 import {
   getPosixPtyForegroundGroup,
   resetPosixPtyForegroundGroupOwnRowCache,
@@ -9,7 +9,7 @@ import {
 const { runProcessMock } = vi.hoisted(() => ({
   runProcessMock: vi.fn<(spec: ProcessSpec) => Promise<ProcessResult>>()
 }))
-vi.mock('@orca/process-host', () => ({ runProcess: runProcessMock }))
+vi.mock('@topo/process-host', () => ({ runProcess: runProcessMock }))
 
 const psResult = (stdout: string): ProcessResult => ({
   code: 0,
@@ -28,7 +28,7 @@ describe('getPosixPtyForegroundGroup', () => {
   })
 
   it('refuses when this process shares the PTY', () => {
-    // A dev daemon can inherit its launch TTY; group signals must not reach Orca.
+    // A dev daemon can inherit its launch TTY; group signals must not reach Topo.
     const shared = ['84644 84985 ttys318', '4242 84985 ttys318'].join('\n')
     expect(getPosixPtyForegroundGroup(shared, 84644, '/dev/ttys318', 4242)).toBeNull()
   })

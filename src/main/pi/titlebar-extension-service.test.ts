@@ -16,7 +16,7 @@ import type * as fsModule from 'node:fs'
 import { join } from 'node:path'
 import { installFakeAppEnvironment } from '../../../config/scripts/test-runtime/environment/vitest-host-ports-setup'
 
-const userDataDir = mkdtempSync(join(tmpdir(), 'orca-pi-test-userdata-'))
+const userDataDir = mkdtempSync(join(tmpdir(), 'topo-pi-test-userdata-'))
 
 // Override homedir per test without changing the eagerly created temp root.
 const homedirOverride = vi.hoisted(() => ({ current: '' as string }))
@@ -51,7 +51,7 @@ describe('PiTitlebarExtensionService', () => {
   let piHome: string
 
   beforeEach(() => {
-    piHome = mkdtempSync(join(tmpdir(), 'orca-pi-test-pihome-'))
+    piHome = mkdtempSync(join(tmpdir(), 'topo-pi-test-pihome-'))
     mkdirSync(join(piHome, 'skills', 'my-skill', 'nested'), { recursive: true })
     writeFileSync(join(piHome, 'skills', 'my-skill', 'SKILL.md'), 'critical user skill')
     writeFileSync(join(piHome, 'skills', 'my-skill', 'nested', 'data.txt'), 'nested data')
@@ -118,7 +118,7 @@ describe('PiTitlebarExtensionService', () => {
     expect(readFileSync(join(piHome, 'agent.db'), 'utf-8')).toBe('fresh sqlite credentials')
     expect(existsSync(join(piHome, 'agent.db-wal'))).toBe(false)
     expect(existsSync(join(piHome, 'agent.db-shm'))).toBe(false)
-    expect(readFileSync(join(overlayDir, '.orca-omp-overlay-migration-complete'), 'utf-8')).toBe(
+    expect(readFileSync(join(overlayDir, '.topo-omp-overlay-migration-complete'), 'utf-8')).toBe(
       'complete\n'
     )
   })
@@ -152,13 +152,13 @@ describe('PiTitlebarExtensionService', () => {
 
       expect(existsSync(join(piHome, 'agent.db'))).toBe(false)
       expect(existsSync(join(piHome, 'agent.db-wal'))).toBe(false)
-      expect(existsSync(join(overlayDir, '.orca-omp-overlay-migration-complete'))).toBe(false)
+      expect(existsSync(join(overlayDir, '.topo-omp-overlay-migration-complete'))).toBe(false)
 
       migrateLegacyOmpOverlayState(piHome, overlayDir)
 
       expect(readFileSync(join(piHome, 'agent.db'), 'utf-8')).toBe('legacy sqlite credentials')
       expect(readFileSync(join(piHome, 'agent.db-wal'), 'utf-8')).toBe('legacy sqlite wal')
-      expect(readFileSync(join(overlayDir, '.orca-omp-overlay-migration-complete'), 'utf-8')).toBe(
+      expect(readFileSync(join(overlayDir, '.topo-omp-overlay-migration-complete'), 'utf-8')).toBe(
         'complete\n'
       )
     } finally {
@@ -174,7 +174,7 @@ describe('PiTitlebarExtensionService', () => {
       const overlayDir = legacySourceOverlayPath('omp', piHome)
       mkdirSync(join(overlayDir, 'sessions'), { recursive: true })
       writeFileSync(join(overlayDir, 'sessions', 'legacy-session.jsonl'), 'legacy transcript')
-      const outsideDir = mkdtempSync(join(tmpdir(), 'orca-omp-target-junction-'))
+      const outsideDir = mkdtempSync(join(tmpdir(), 'topo-omp-target-junction-'))
       const sessionsPath = join(piHome, 'sessions')
 
       try {
@@ -190,15 +190,15 @@ describe('PiTitlebarExtensionService', () => {
     }
   )
 
-  it("does not overwrite a user's same-named Orca extension file", () => {
+  it("does not overwrite a user's same-named Topo extension file", () => {
     const userStatusExtension = 'user-owned status extension'
-    writeFileSync(join(piHome, 'extensions', 'orca-agent-status.ts'), userStatusExtension, 'utf-8')
+    writeFileSync(join(piHome, 'extensions', 'topo-agent-status.ts'), userStatusExtension, 'utf-8')
 
     const svc = new PiTitlebarExtensionService()
     const env = svc.buildPtyEnv('pty-same-name-extension', piHome, 'pi')
 
     expect(env.PI_CODING_AGENT_DIR).toBeUndefined()
-    expect(readFileSync(join(piHome, 'extensions', 'orca-agent-status.ts'), 'utf-8')).toBe(
+    expect(readFileSync(join(piHome, 'extensions', 'topo-agent-status.ts'), 'utf-8')).toBe(
       userStatusExtension
     )
     expectPiHomeIntact()
@@ -208,7 +208,7 @@ describe('PiTitlebarExtensionService', () => {
 
   describe('per-agent default source dir (no cross-agent fallback)', () => {
     it('bare-shell prep does not create missing ~/.pi or ~/.omp homes (#10196)', () => {
-      const fakeHome = mkdtempSync(join(tmpdir(), 'orca-no-eager-agent-home-'))
+      const fakeHome = mkdtempSync(join(tmpdir(), 'topo-no-eager-agent-home-'))
       expect(existsSync(join(fakeHome, '.pi'))).toBe(false)
       expect(existsSync(join(fakeHome, '.omp'))).toBe(false)
 
@@ -225,11 +225,11 @@ describe('PiTitlebarExtensionService', () => {
         expect(piEnv).toEqual({})
         expect(existsSync(join(fakeHome, '.pi'))).toBe(false)
         expect(existsSync(join(fakeHome, '.omp'))).toBe(false)
-        expect(ompEnv.ORCA_OMP_SOURCE_AGENT_DIR).toBeUndefined()
-        expect(ompEnv.ORCA_OMP_STATUS_EXTENSION).toEqual(
+        expect(ompEnv.TOPO_OMP_SOURCE_AGENT_DIR).toBeUndefined()
+        expect(ompEnv.TOPO_OMP_STATUS_EXTENSION).toEqual(
           expect.stringContaining('omp-managed-status-extension')
         )
-        expect(existsSync(ompEnv.ORCA_OMP_STATUS_EXTENSION!)).toBe(true)
+        expect(existsSync(ompEnv.TOPO_OMP_STATUS_EXTENSION!)).toBe(true)
       } finally {
         homedirOverride.current = ''
         rmSync(fakeHome, { recursive: true, force: true })

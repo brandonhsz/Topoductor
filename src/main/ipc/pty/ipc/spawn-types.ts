@@ -10,7 +10,7 @@ import type { ProjectExecutionRuntimeResolution } from '../../../../shared/execu
 import type { StartupCommandDelivery } from '../../../../shared/agent-launch/startup/codex-startup-delivery'
 import type { GlobalSettings } from '../../../../shared/global-settings-types'
 import type { TerminalStartupCwdMissingDirFallback } from '../../../../shared/shell/launch/terminal-startup-cwd'
-import type { OrcaRuntimeService } from '../../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../../runtime/topo-runtime'
 import type { Store } from '../../../persistence/loading-store/store'
 import type { PtySpawnResult } from '../../../providers/pty-provider-contract'
 import type {
@@ -109,7 +109,7 @@ export type AdoptStablePaneResult = {
 }
 
 export type PtySpawnIpcDeps = PtySpawnCodexResumeDeps & {
-  runtime?: OrcaRuntimeService
+  runtime?: TopoRuntimeService
   store?: Store
   getSettings?: () => GlobalSettings
   getSelectedCodexHomePath?: GetSelectedCodexHomePath

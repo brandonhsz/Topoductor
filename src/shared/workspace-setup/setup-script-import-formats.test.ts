@@ -126,7 +126,7 @@ describe('devcontainer.json', () => {
     })
     expect(candidate).toMatchObject({
       setup:
-        'git lfs pull\nnpm install --prefix ${ORCA_WORKTREE_PATH}/server\nnpm install --prefix client',
+        'git lfs pull\nnpm install --prefix ${TOPO_WORKTREE_PATH}/server\nnpm install --prefix client',
       unsupportedFields: ['postCreateCommand.quoted', 'postCreateCommand.token']
     })
   })
@@ -203,7 +203,7 @@ jobs:
     })
     expect(candidate).toMatchObject({
       setup:
-        '(\ncd web || exit 1\ncd client && npm ci\n)\n(\ncd web || exit 1\ncp "${ORCA_WORKTREE_PATH}/.env.example" .env\n)',
+        '(\ncd web || exit 1\ncd client && npm ci\n)\n(\ncd web || exit 1\ncp "${TOPO_WORKTREE_PATH}/.env.example" .env\n)',
       unsupportedFields: ['steps.2.if', 'steps.3.env']
     })
   })

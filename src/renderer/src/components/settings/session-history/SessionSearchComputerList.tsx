@@ -31,7 +31,7 @@ export function SessionSearchComputerList({
       {local}
       {showSubheads ? (
         <p className="pt-4 text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
-          {t('sessionHistory.settings.remoteServers', 'Orca remote servers')}
+          {t('sessionHistory.settings.remoteServers', 'Topo remote servers')}
         </p>
       ) : null}
       {shownServers.map((server) => (

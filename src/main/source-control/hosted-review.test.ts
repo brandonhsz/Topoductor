@@ -204,12 +204,12 @@ describe('getHostedReviewForBranch', () => {
   it('routes local WSL project branch lookup through provider detection and the selected provider', async () => {
     getProjectSlugMock.mockResolvedValue(null)
     getRepoSlugMock.mockResolvedValue(null)
-    getBitbucketRepoSlugMock.mockResolvedValue({ workspace: 'team', repoSlug: 'orca' })
+    getBitbucketRepoSlugMock.mockResolvedValue({ workspace: 'team', repoSlug: 'topo' })
     getBitbucketPullRequestForBranchMock.mockResolvedValue({
       number: 22,
       title: 'Bitbucket WSL branch',
       state: 'open',
-      url: 'https://bitbucket.org/team/orca/pull-requests/22',
+      url: 'https://bitbucket.org/team/topo/pull-requests/22',
       status: 'pending',
       updatedAt: '2026-06-16T00:00:00.000Z',
       mergeable: 'UNKNOWN'

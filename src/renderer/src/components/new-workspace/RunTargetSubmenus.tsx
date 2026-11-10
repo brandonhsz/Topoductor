@@ -165,12 +165,12 @@ export function AddHostSubmenuRow({
             <RunTargetRow
               icon={<Cloud className="size-3.5 shrink-0 text-muted-foreground" />}
               label={t(
-                'auto.components.NewWorkspaceComposerCard.addRemoteOrcaServer',
-                'Add Remote Orca Server'
+                'auto.components.NewWorkspaceComposerCard.addRemoteTopoServer',
+                'Add Remote Topo Server'
               )}
               detail={t(
-                'auto.components.NewWorkspaceComposerCard.addRemoteOrcaServerHint',
-                'Pair another Orca runtime'
+                'auto.components.NewWorkspaceComposerCard.addRemoteTopoServerHint',
+                'Pair another Topo runtime'
               )}
               armed={hoveredKey === 'remote'}
               current={false}

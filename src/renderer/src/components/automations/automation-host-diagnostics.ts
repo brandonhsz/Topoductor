@@ -241,7 +241,7 @@ export type AutomationHostDiagnosticsBridge = {
 }
 
 type AutomationHostDiagnosticsWindow = Window & {
-  __orcaAutomationHostDiagnostic?: AutomationHostDiagnosticsBridge
+  __topoAutomationHostDiagnostic?: AutomationHostDiagnosticsBridge
 }
 
 export function installAutomationHostDiagnostic(): void {
@@ -249,13 +249,13 @@ export function installAutomationHostDiagnostic(): void {
     return
   }
   const target = window as AutomationHostDiagnosticsWindow
-  if (target.__orcaAutomationHostDiagnostic) {
+  if (target.__topoAutomationHostDiagnostic) {
     return
   }
-  target.__orcaAutomationHostDiagnostic = {
+  target.__topoAutomationHostDiagnostic = {
     report: () => {
       const snapshot = automationHostDiagnostics.snapshot()
-      console.log('[orca] automation host cache diagnostics', snapshot)
+      console.log('[topo] automation host cache diagnostics', snapshot)
       return snapshot
     },
     measureSerializedChars: (enabled = true) => {

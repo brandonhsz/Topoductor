@@ -13,7 +13,7 @@ import { parseTomlTableHeaderPath } from '../toml/config-toml-key-path'
 
 // Codex >=0.157 auto-starts a daemon; long managed homes exceed its socket's sun_path limit.
 const DAEMON_SOCKET_SEGMENTS = ['app-server-control', 'app-server-control.sock']
-export const CODEX_DAEMON_OVERRIDE_MARKER = '# orca: CODEX_HOME too long for the daemon socket'
+export const CODEX_DAEMON_OVERRIDE_MARKER = '# topo: CODEX_HOME too long for the daemon socket'
 const DAEMON_OVERRIDE_RAW = `false ${CODEX_DAEMON_OVERRIDE_MARKER}`
 
 export function codexDaemonSocketPath(homePath: string, platform = process.platform): string {
@@ -44,7 +44,7 @@ export function codexDaemonSocketPathExceedsLimit(
 
 const unguardableHomesWarned = new Set<string>()
 
-/** Applies (or removes) Orca's daemon override so it tracks the home's current path. */
+/** Applies (or removes) Topo's daemon override so it tracks the home's current path. */
 export function applyCodexDaemonSocketGuard(
   config: string,
   homePath: string,
@@ -66,7 +66,7 @@ export function applyCodexDaemonSocketGuard(
     // Inline/array features tables block upsert; warn once so an ineffective guard is visible.
     unguardableHomesWarned.add(homePath)
     console.warn(
-      `[codex-config] Could not turn off Codex daemon auto-start in ${homePath}: its config defines features in a form Orca cannot extend. Codex may fail with "path must be shorter than SUN_LEN"; add daemon_auto_start = false to features in ~/.codex/config.toml.`
+      `[codex-config] Could not turn off Codex daemon auto-start in ${homePath}: its config defines features in a form Topo cannot extend. Codex may fail with "path must be shorter than SUN_LEN"; add daemon_auto_start = false to features in ~/.codex/config.toml.`
     )
   }
   return guarded

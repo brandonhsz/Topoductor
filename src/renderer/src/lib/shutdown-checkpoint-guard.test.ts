@@ -7,7 +7,7 @@ import {
 } from './shutdown-checkpoint-guard'
 import {
   consumeShutdownCheckpointFailureReason,
-  ORCA_RENDERER_UNLOAD_PREVENTED_EVENT
+  TOPO_RENDERER_UNLOAD_PREVENTED_EVENT
 } from '../../../shared/renderer-shutdown-events'
 
 describe('createShutdownCheckpointGuard', () => {
@@ -73,7 +73,7 @@ describe('createShutdownCheckpointGuard', () => {
     }
     eventTarget.addEventListener('beforeunload', preventReload)
     eventTarget.addEventListener('beforeunload', createShutdownCheckpointBeforeUnloadHandler(guard))
-    eventTarget.addEventListener(ORCA_RENDERER_UNLOAD_PREVENTED_EVENT, guard.abandonAttempt)
+    eventTarget.addEventListener(TOPO_RENDERER_UNLOAD_PREVENTED_EVENT, guard.abandonAttempt)
 
     expect(eventTarget.dispatchEvent(new Event('beforeunload', { cancelable: true }))).toBe(false)
     await Promise.resolve()

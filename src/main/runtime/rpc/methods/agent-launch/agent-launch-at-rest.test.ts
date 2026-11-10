@@ -24,7 +24,7 @@ import {
 const { AGENT_LAUNCH_METHODS } = await import('./agent-launch')
 const AGENT_LAUNCH_REPLAY = methodNamed(AGENT_LAUNCH_METHODS, 'agent.launchReplay')
 const AGENT_LAUNCH = methodNamed(AGENT_LAUNCH_METHODS, 'agent.launch')
-// The `orca` CLI carries no capability list.
+// The `topo` CLI carries no capability list.
 const CLI: Partial<RpcContext> = {}
 const SESSION = 'codex_9b1deb4d_3b7d_4bad_9bdd_2b0d7b3dcb6d'
 

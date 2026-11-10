@@ -98,7 +98,7 @@ export function useMobileAgentMessageNavigation(
           return
         }
         const known = sessionTabsRef.current.find(
-          (tab) => tab.type === 'agent-session' && tab.sessionId === sender.party.orcaSessionId
+          (tab) => tab.type === 'agent-session' && tab.sessionId === sender.party.topoSessionId
         )
         const result = await openMobileStructuredSession({
           client,

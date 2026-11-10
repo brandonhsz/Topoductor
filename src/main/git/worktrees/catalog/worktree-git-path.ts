@@ -12,7 +12,7 @@ import { wslDrivePathUnderRoots } from '../../../wsl/filesystem/wsl-automount-ro
 // Git keeps these per worktree; everything else under the git dir (`hooks/`, `info/`, `objects/`,
 // `refs/`, `config`, `packed-refs`, …) lives in the common dir, which only real Git resolves.
 const PER_WORKTREE_ENTRIES: ReadonlySet<string> = new Set([
-  'orca',
+  'topo',
   'HEAD',
   'ORIG_HEAD',
   'FETCH_HEAD',

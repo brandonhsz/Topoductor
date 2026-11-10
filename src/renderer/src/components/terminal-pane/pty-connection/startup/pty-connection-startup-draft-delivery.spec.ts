@@ -91,7 +91,7 @@ export function registerPtyConnectionStartupDraftDeliveryTests(): void {
           launchAgent: 'codex',
           launchConfig: { agentArgs: '', agentEnv: {} },
           launchToken: 'launch-token-1',
-          draftPrompt: 'https://github.com/stablyai/orca/issues/42'
+          draftPrompt: 'https://github.com/brandonhsz/Topoductor/issues/42'
         }
       })
       vi.mocked(window.api.pty.getForegroundProcess).mockResolvedValue('codex')
@@ -138,13 +138,13 @@ export function registerPtyConnectionStartupDraftDeliveryTests(): void {
       }
 
       expect(transport.sendInputAccepted).toHaveBeenCalledWith(
-        '\x1b[200~https://github.com/stablyai/orca/issues/42\x1b[201~',
+        '\x1b[200~https://github.com/brandonhsz/Topoductor/issues/42\x1b[201~',
         'launch'
       )
       expect(transport.sendInput.mock.calls.map(([data]) => data)).toEqual([
         '\x1b[I',
         'USER_DRAFT',
-        '\x1b[200~https://github.com/stablyai/orca/issues/42\x1b[201~'
+        '\x1b[200~https://github.com/brandonhsz/Topoductor/issues/42\x1b[201~'
       ])
       expect(window.api.pty.writeAccepted).not.toHaveBeenCalled()
       expect(mockStoreState.recordTerminalInput).toHaveBeenCalledOnce()
@@ -252,7 +252,7 @@ export function registerPtyConnectionStartupDraftDeliveryTests(): void {
                 launchAgent: 'codex',
                 launchConfig: { agentArgs: '', agentEnv: {} },
                 launchToken: 'launch-token-1',
-                draftPrompt: 'https://github.com/stablyai/orca/issues/42'
+                draftPrompt: 'https://github.com/brandonhsz/Topoductor/issues/42'
               }
             }),
             agentTitleMocks3

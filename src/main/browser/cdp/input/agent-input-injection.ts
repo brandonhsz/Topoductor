@@ -1,7 +1,7 @@
 import type { WebContents } from 'electron'
 import { assertRemoteCliPageAccess } from '../../routing/input-ownership/remote-cli-page-admission'
 
-// Agent keys must bypass Orca shortcuts, grab handlers, and app menus (#20595).
+// Agent keys must bypass Topo shortcuts, grab handlers, and app menus (#20595).
 type InjectionTarget = Pick<WebContents, 'id' | 'isDestroyed' | 'setIgnoreMenuShortcuts'>
 
 const injectionDepth = new WeakMap<InjectionTarget, number>()

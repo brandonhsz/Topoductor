@@ -39,7 +39,7 @@ export async function invokePluginWorkerCommand(
     throw new Error(`plugin ${pluginKey} started too late to run ${commandId}`)
   }
   if (startBy !== undefined && command.replaces !== undefined) {
-    // Why: past startBy the renderer runs Orca's own action, so a handler that finishes later
+    // Why: past startBy the renderer runs Topo's own action, so a handler that finishes later
     // must not run it again through commands.run.
     return runPluginReplacementWithinDeadline(pluginKey, command.replaces, startBy, () =>
       handle.invokeCommand(commandId, args)

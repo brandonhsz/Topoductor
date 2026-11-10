@@ -111,7 +111,7 @@ describe('useSkillFreshness', () => {
     const second = deferred<BundledSkillPlan>()
     const bundledPlan = vi
       .fn()
-      .mockResolvedValueOnce(plan(1, ['orca-cli']))
+      .mockResolvedValueOnce(plan(1, ['topo-cli']))
       .mockReturnValueOnce(second.promise)
     installBundledPlan(bundledPlan)
     const renderProbes = (enabled: boolean): void => {
@@ -125,13 +125,13 @@ describe('useSkillFreshness', () => {
 
     await act(async () => renderProbes(true))
     expect(bundledPlan).toHaveBeenCalledTimes(1)
-    expect(state?.plan?.skills.map((skill) => skill.name)).toEqual(['orca-cli'])
+    expect(state?.plan?.skills.map((skill) => skill.name)).toEqual(['topo-cli'])
 
     await act(async () => renderProbes(true))
     expect(bundledPlan).toHaveBeenCalledTimes(1)
 
     await act(async () => renderProbes(false))
-    await act(async () => window.dispatchEvent(new Event('orca:installed-agent-skills-changed')))
+    await act(async () => window.dispatchEvent(new Event('topo:installed-agent-skills-changed')))
     expect(bundledPlan).toHaveBeenCalledTimes(1)
     expect(state).toMatchObject({ plan: null, loading: false })
 
@@ -152,12 +152,12 @@ describe('useSkillFreshness', () => {
     const second = deferred<BundledSkillPlan>()
     const bundledPlan = vi
       .fn()
-      .mockResolvedValueOnce(plan(1, ['orca-cli']))
+      .mockResolvedValueOnce(plan(1, ['topo-cli']))
       .mockReturnValueOnce(second.promise)
     installBundledPlan(bundledPlan)
 
     await act(async () => root?.render(<Probe />))
-    expect(state?.plan?.skills.map((skill) => skill.name)).toEqual(['orca-cli'])
+    expect(state?.plan?.skills.map((skill) => skill.name)).toEqual(['topo-cli'])
 
     await act(async () => window.dispatchEvent(new Event('focus')))
     expect(bundledPlan).toHaveBeenCalledTimes(1)
@@ -209,7 +209,7 @@ describe('useSkillFreshness', () => {
     await act(async () => root?.render(<Probe />))
     expect(state?.plan?.planDigest).toBe(digest(1))
 
-    await act(async () => window.dispatchEvent(new Event('orca:installed-agent-skills-changed')))
+    await act(async () => window.dispatchEvent(new Event('topo:installed-agent-skills-changed')))
     expect(state?.plan).toBeNull()
     expect(state?.loading).toBe(true)
 
@@ -220,7 +220,7 @@ describe('useSkillFreshness', () => {
   })
 
   it('re-plans a new host without ever showing the previous host’s plan', async () => {
-    const bundledPlan = vi.fn().mockResolvedValueOnce(plan(1, ['orca-cli']))
+    const bundledPlan = vi.fn().mockResolvedValueOnce(plan(1, ['topo-cli']))
     installBundledPlan(bundledPlan)
 
     await act(async () => root?.render(<Probe />))

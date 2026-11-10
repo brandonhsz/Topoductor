@@ -19,7 +19,7 @@ import {
 } from './structured-agent-session-stale-verdict-contract-test-fixture'
 
 it('adds one row for a death however many attempts its settle takes to write', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'orca-stale-session-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-stale-session-'))
   const journals = createTrackedJournalOpener({ legacyInputs: true })
   let now = 100
   try {

@@ -1,4 +1,4 @@
-import { ORCA_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
+import { TOPO_CLI_SKILL_NAME } from '@/lib/skills/installation/agent-feature-skill-names'
 import { AgentSkillSetupPanel } from '../../../skills/setup/AgentSkillSetupPanel'
 import { StepBadge } from '../../setup-guide/SetupStepBadge'
 import { useTranslate } from '@/i18n/use-translate'
@@ -31,9 +31,9 @@ export function BrowserUseSkillStep({
       title={t('auto.components.settings.BrowserUseSkillStep.459e24eebc', 'Browser Use skill')}
       description={t(
         'auto.components.settings.BrowserUseSkillStep.0871b6998d',
-        "Enables agents to navigate and verify pages in Orca's browser."
+        "Enables agents to navigate and verify pages in Topo's browser."
       )}
-      skillNames={[ORCA_CLI_SKILL_NAME]}
+      skillNames={[TOPO_CLI_SKILL_NAME]}
       installed={skillDetected}
       loading={skillLoading}
       error={skillError}

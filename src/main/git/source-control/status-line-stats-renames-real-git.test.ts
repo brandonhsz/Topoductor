@@ -1,7 +1,7 @@
 import { mkdtemp, rename, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { getStatus } from './status-read'
 import { invalidateGitReadCaches } from './git-read-cache-invalidation'
@@ -16,7 +16,7 @@ function git(args: string[], cwd = repo): void {
 
 beforeEach(async () => {
   invalidateGitReadCaches()
-  root = await mkdtemp(join(tmpdir(), 'orca-status-renames-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-status-renames-'))
   repo = join(root, 'repo')
   const emptyConfig = join(root, 'empty-git-config')
   await writeFile(emptyConfig, '')

@@ -37,7 +37,7 @@ describe('MachineNameField', () => {
 
   afterEach(() => {
     cleanup()
-    Reflect.deleteProperty(window, '__ORCA_WEB_CLIENT__')
+    Reflect.deleteProperty(window, '__TOPO_WEB_CLIENT__')
   })
 
   it('lets Enter submit an enclosing host form like its sibling inputs, and still commits the name', async () => {

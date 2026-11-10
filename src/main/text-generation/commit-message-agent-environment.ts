@@ -29,13 +29,13 @@ function cloneProcessEnv(): Record<string, string> {
   return env
 }
 
-// System-default routing strips only Orca-marked inherited CODEX_HOME overlays; preserve user overrides.
-function withoutOrcaCodexHomeOverride(base: Record<string, string>): Record<string, string> {
+// System-default routing strips only Topo-marked inherited CODEX_HOME overlays; preserve user overrides.
+function withoutTopoCodexHomeOverride(base: Record<string, string>): Record<string, string> {
   const env = { ...base }
-  if (env.ORCA_CODEX_HOME && env.CODEX_HOME === env.ORCA_CODEX_HOME) {
+  if (env.TOPO_CODEX_HOME && env.CODEX_HOME === env.TOPO_CODEX_HOME) {
     delete env.CODEX_HOME
   }
-  delete env.ORCA_CODEX_HOME
+  delete env.TOPO_CODEX_HOME
   return env
 }
 
@@ -44,7 +44,7 @@ function readInheritedOrShellEnvVar(
   sourceName: string | undefined,
   base: Record<string, string> | undefined
 ): string | undefined {
-  // Prefer saved overlay source, then chat login-shell base, over inherited Orca values.
+  // Prefer saved overlay source, then chat login-shell base, over inherited Topo values.
   return (
     (sourceName ? process.env[sourceName] : undefined) ??
     base?.[name] ??
@@ -71,11 +71,11 @@ function prepareShellConfigDirEnv(
   // Pi/OMP share a binary config var but need distinct source shadows or nested legacy overlays restore the wrong agent directory.
   const sourceVar =
     agentId === 'opencode' || agentId === 'opencode2'
-      ? 'ORCA_OPENCODE_SOURCE_CONFIG_DIR'
+      ? 'TOPO_OPENCODE_SOURCE_CONFIG_DIR'
       : agentId === 'pi'
-        ? 'ORCA_PI_SOURCE_AGENT_DIR'
+        ? 'TOPO_PI_SOURCE_AGENT_DIR'
         : agentId === 'omp'
-          ? 'ORCA_OMP_SOURCE_AGENT_DIR'
+          ? 'TOPO_OMP_SOURCE_AGENT_DIR'
           : undefined
 
   const value = readInheritedOrShellEnvVar(configVar, sourceVar, base)
@@ -125,12 +125,12 @@ export async function prepareLocalCommitMessageAgentEnv(
       const wslCodexHome = codexHomePath ? parseWslUncPath(codexHomePath) : null
       if (target?.runtime === 'wsl') {
         const codexHomeForTarget = wslCodexHome?.linuxPath ?? null
-        // Fallback still strips Orca overlays so system-default WSL cannot inherit managed CODEX_HOME.
+        // Fallback still strips Topo overlays so system-default WSL cannot inherit managed CODEX_HOME.
         return {
           ok: true,
           env: codexHomeForTarget
-            ? { ...withoutOrcaCodexHomeOverride(base), CODEX_HOME: codexHomeForTarget }
-            : withoutOrcaCodexHomeOverride(base)
+            ? { ...withoutTopoCodexHomeOverride(base), CODEX_HOME: codexHomeForTarget }
+            : withoutTopoCodexHomeOverride(base)
         }
       }
       if (codexHomePath && wslCodexHome) {
@@ -141,7 +141,7 @@ export async function prepareLocalCommitMessageAgentEnv(
         ok: true,
         env: codexHomePath
           ? { ...base, CODEX_HOME: codexHomePath }
-          : withoutOrcaCodexHomeOverride(base)
+          : withoutTopoCodexHomeOverride(base)
       }
     }
 

@@ -137,15 +137,15 @@ it('an old original admission survives new restatement and retirement, with cano
   const original = (field: string, key: string, value: unknown) =>
     insert.run(800, field, JSON.stringify(key), JSON.stringify(value))
   original('submissions', 'H', ['H', { ...handoff, dispatchState: 'pending', resolvedAt: null }])
-  original('items', 'orca:H', {
-    itemId: 'orca:H',
+  original('items', 'topo:H', {
+    itemId: 'topo:H',
     revision: 0,
     body,
     sequence: 800,
     observedAt: 800,
     turnScope: { kind: 'thread' }
   })
-  original('itemFences', 'orca:H', ['orca:H', 0])
+  original('itemFences', 'topo:H', ['topo:H', 0])
   insert.run(801, 'submissions', JSON.stringify('H'), JSON.stringify(['H', handoff]))
   save(900, 'submissions', 'H', handoff)
   save(901, 'submissions', 'H', null, true)

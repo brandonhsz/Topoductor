@@ -1,13 +1,13 @@
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForSessionReady } from './helpers/store'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 
 test.use({ seedTestRepo: false })
 
 test('real WSL registration preserves literal paths and fences login output', async ({
-  orcaPage
+  topoPage
 }, testInfo) => {
-  const distro = process.env.ORCA_REAL_WSL_DISTRO
+  const distro = process.env.TOPO_REAL_WSL_DISTRO
   test.skip(process.platform !== 'win32' || !distro, 'Requires a real Windows WSL distro')
   const { buildWslExecArgs, buildWslCapturedLoginShellCommand } =
     await import('../../src/shared/wsl-login-shell-command')
@@ -41,14 +41,14 @@ test('real WSL registration preserves literal paths and fences login output', as
     expect(raw.code, raw.stderr).toBe(0)
     expect(raw.stdout).toContain('OR60_LOGIN_NOISE')
     expect(capture.readStdout(raw.stdout)).toBe('true\n')
-    await waitForSessionReady(orcaPage)
-    const added = await orcaPage.evaluate(
+    await waitForSessionReady(topoPage)
+    const added = await topoPage.evaluate(
       async (path) => window.api.repos.add({ path }),
       `${uncPath}\\nested`
     )
     expect('repo' in added).toBe(true)
     expect('repo' in added && added.repo.path).toBe(uncPath)
-    await orcaPage.screenshot({ path: testInfo.outputPath('wsl-project.png') })
+    await topoPage.screenshot({ path: testInfo.outputPath('wsl-project.png') })
   } finally {
     const cleanup = await runProcess({
       program: 'wsl.exe',

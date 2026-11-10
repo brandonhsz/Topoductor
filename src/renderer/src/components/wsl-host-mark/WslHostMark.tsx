@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 import { parseExecutionHostId } from '../../../../shared/execution-host'
 import {
   isWslHostRuntimeEnvironment,
-  type OrcadDeploymentLink
+  type TopodDeploymentLink
 } from '../../../../shared/remote-runtime/host-catalog/runtime-environments'
 
 /** The distro a WSL host runs in; null for any other host, including an unknown runtime id. */
@@ -18,7 +18,7 @@ export function selectWslHostDistro(
     /** Optional: some list builders run before the environments load. */
     runtimeEnvironments?: readonly {
       id: string
-      orcadDeployment?: OrcadDeploymentLink | null
+      topodDeployment?: TopodDeploymentLink | null
     }[]
   },
   hostId: string | null | undefined
@@ -31,7 +31,7 @@ export function selectWslHostDistro(
     (candidate) => candidate.id === host.environmentId
   )
   return environment && isWslHostRuntimeEnvironment(environment)
-    ? environment.orcadDeployment.distro
+    ? environment.topodDeployment.distro
     : null
 }
 

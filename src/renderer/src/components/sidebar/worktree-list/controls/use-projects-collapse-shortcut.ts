@@ -73,7 +73,7 @@ export function useProjectsCollapseShortcut(enabled: boolean, onToggle: () => vo
       }
       event.preventDefault()
       event.stopPropagation()
-      if (context === 'terminal' && (terminalShortcutPolicy ?? 'orca-first') === 'orca-first') {
+      if (context === 'terminal' && (terminalShortcutPolicy ?? 'topo-first') === 'topo-first') {
         showTerminalShortcutCaptureNotification({ actionId: ACTION_ID, platform, keybindings })
       }
       onToggle()

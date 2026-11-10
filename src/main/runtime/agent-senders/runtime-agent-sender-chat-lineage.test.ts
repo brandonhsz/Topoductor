@@ -62,7 +62,7 @@ it('follows branching, unreadable and cyclic /clear predecessors as the full sca
   const { listClearedFrom: _index, ...listing }: AgentSessionRecordReader = records
   const rows = (reader: AgentSessionRecordReader) =>
     readAgentSenderSessions(reader)
-      .map((row) => `${row.identity.slice('orca_session_id:'.length)}>${row.sessionId}`)
+      .map((row) => `${row.identity.slice('topo_session_id:'.length)}>${row.sessionId}`)
       .sort()
   expect(rows(records)).toEqual(rows(listing))
   expect(rows(records)).toEqual([

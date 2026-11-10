@@ -63,7 +63,7 @@ async function wireCodexAccountKey(settings: ReturnType<typeof createSettings>) 
     readCodexLaunchHome: codexStructuredLaunchHomeResolvers.resolveCodexStructuredLaunchHome,
     workspaceTrustSettings: () => settings,
     workspaceTrustRepoDecision: () => undefined,
-    stateDirectory: '/orca-data',
+    stateDirectory: '/topo-data',
     hostLaunchEnvironment: async () => ({}),
     hostSettings: () => ({})
   }
@@ -106,7 +106,7 @@ describe('Codex catalog account key: picker read vs launch', () => {
     await expectOneKey(createSettings({ realHomeRoutable: true }), getSystemCodexHomePath())
   })
 
-  it("system account on Orca's shared runtime home", async () => {
+  it("system account on Topo's shared runtime home", async () => {
     await expectOneKey(createSettings({ realHomeRoutable: false }), getRuntimeCodexHomePath())
   })
 

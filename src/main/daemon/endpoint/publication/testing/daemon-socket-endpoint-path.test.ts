@@ -31,12 +31,12 @@ describe.skipIf(process.platform === 'win32')('relocated endpoint binds (#17840)
     try {
       rmdirSync(dirname(shortDaemonSocketDir(runtimeDir, uid)))
     } catch {
-      // Another Orca instance may still use the shared parent.
+      // Another Topo instance may still use the shared parent.
     }
   })
 
   it('creates a private dir the over-long data root can bind its socket in', async () => {
-    base = mkdtempSync(join(tmpdir(), 'orca-long-'))
+    base = mkdtempSync(join(tmpdir(), 'topo-long-'))
     runtimeDir = join(base, 'x'.repeat(130))
     mkdirSync(runtimeDir, { recursive: true })
     const socketPath = getDaemonSocketPath(runtimeDir, 99)
@@ -52,7 +52,7 @@ describe.skipIf(process.platform === 'win32')('relocated endpoint binds (#17840)
     await new Promise<void>((resolve) => server.close(() => resolve()))
   })
   it('never connects to a listener planted in a shared relocated dir', async () => {
-    base = mkdtempSync(join(tmpdir(), 'orca-long-'))
+    base = mkdtempSync(join(tmpdir(), 'topo-long-'))
     runtimeDir = join(base, 'x'.repeat(130))
     mkdirSync(runtimeDir, { recursive: true })
     const socketPath = getDaemonSocketPath(runtimeDir, 99)

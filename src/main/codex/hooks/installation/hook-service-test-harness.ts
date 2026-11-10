@@ -10,7 +10,7 @@ import {
 } from '../../trust/identity/codex-trust-identity'
 import { _internals as grantInternals } from '../../trust/grants/codex-hook-trust-grant'
 import { _internals as lookupInternals } from '../../trust/hooks/codex-hook-hash-lookup'
-import { computeOrcaCodexHookHashes } from '../definitions/codex-hook-definition'
+import { computeTopoCodexHookHashes } from '../definitions/codex-hook-definition'
 import type { CodexHookAnswer } from '../../trust/hooks/codex-hook-trust-derivation'
 import { CODEX_VERSION_FOR_TESTS } from '../../trust/hooks/codex-hook-trust-derivation.test-fixture'
 
@@ -28,7 +28,7 @@ export function codexHookAnswerForTests(): CodexHookAnswer {
   return {
     kind: 'hashes',
     codexVersion: CODEX_VERSION_FOR_TESTS,
-    hashes: computeOrcaCodexHookHashes()
+    hashes: computeTopoCodexHookHashes()
   }
 }
 
@@ -50,10 +50,10 @@ export function setupCodexHookHomes(
   let previousUserDataPath: string | undefined
 
   beforeEach(() => {
-    homes.tmpHome = mkdtempSync(join(tmpdir(), 'orca-codex-home-'))
-    homes.userDataDir = mkdtempSync(join(tmpdir(), 'orca-codex-user-data-'))
-    previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-    process.env.ORCA_USER_DATA_PATH = homes.userDataDir
+    homes.tmpHome = mkdtempSync(join(tmpdir(), 'topo-codex-home-'))
+    homes.userDataDir = mkdtempSync(join(tmpdir(), 'topo-codex-user-data-'))
+    previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+    process.env.TOPO_USER_DATA_PATH = homes.userDataDir
     homedirMock.mockReturnValue(homes.tmpHome)
     stubCodexTrustSessionsForTests()
     getPathMock.mockImplementation((name: string) => {
@@ -69,9 +69,9 @@ export function setupCodexHookHomes(
     rmSync(homes.tmpHome, { recursive: true, force: true })
     rmSync(homes.userDataDir, { recursive: true, force: true })
     if (previousUserDataPath === undefined) {
-      delete process.env.ORCA_USER_DATA_PATH
+      delete process.env.TOPO_USER_DATA_PATH
     } else {
-      process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+      process.env.TOPO_USER_DATA_PATH = previousUserDataPath
     }
     vi.clearAllMocks()
   })

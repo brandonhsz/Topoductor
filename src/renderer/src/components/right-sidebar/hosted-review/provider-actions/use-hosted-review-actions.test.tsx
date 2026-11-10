@@ -31,7 +31,7 @@ vi.mock('@/runtime/rpc/compatibility/runtime-capability-proof', () => ({
   runtimeEnvironmentSupportsCapability: runtimeRpcMocks.runtimeEnvironmentSupportsCapability
 }))
 
-const prRepo = { host: 'github.com', owner: 'stablyai', repo: 'orca-sta1015-sandbox' }
+const prRepo = { host: 'github.com', owner: 'brandonhsz', repo: 'topo-sta1015-sandbox' }
 const review: HostedReviewActionInfo = {
   provider: 'github',
   number: 1015,

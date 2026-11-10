@@ -85,7 +85,7 @@ export function openFolderWorkspace(
 }
 
 // Rule: the raw built-in handler, never a wrapper that runs a plugin's replacement first, or a
-// replacement that calls commands.run for Orca's own version would call itself.
+// replacement that calls commands.run for Topo's own version would call itself.
 export function runBuiltInAction(
   request: Extract<PluginViewRequest, { kind: 'run-action' }>
 ): PluginViewReply {

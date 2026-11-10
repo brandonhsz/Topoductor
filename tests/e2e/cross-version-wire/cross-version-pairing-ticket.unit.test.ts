@@ -55,7 +55,7 @@ function pairedTicket(registry: DeviceRegistry, name: string) {
 
 describe('cross-version: single-use pairing tickets', () => {
   it('after a downgrade, exchanged phones keep their own token and older phones their code', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-xv-ticket-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-xv-ticket-'))
     const current = new DeviceRegistry(userDataPath)
     const exchanged = pairedTicket(current, 'New phone')
     current.exchangePairingTicket(exchanged.deviceId, exchanged.token, EXCHANGED)
@@ -75,7 +75,7 @@ describe('cross-version: single-use pairing tickets', () => {
   })
 
   it('rows an older host minted keep working and are never treated as single-use', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-xv-ticket-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-xv-ticket-'))
     const released = new PreTicketRegistry(userDataPath)
     const phone = released.addDevice('Phone', 'mobile')
     released.updateLastSeen(phone.deviceId)

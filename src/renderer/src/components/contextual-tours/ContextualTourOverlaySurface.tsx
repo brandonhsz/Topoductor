@@ -71,21 +71,21 @@ function disposeContextualTourGlobalKeyGuard(): void {
     return
   }
   const guardedWindow = window as Window & {
-    __orcaContextualTourGlobalKeyGuardInstalled?: boolean
+    __topoContextualTourGlobalKeyGuardInstalled?: boolean
   }
-  if (!guardedWindow.__orcaContextualTourGlobalKeyGuardInstalled) {
+  if (!guardedWindow.__topoContextualTourGlobalKeyGuardInstalled) {
     return
   }
   removeAppKeyListener('keydown', handleContextualTourGlobalKeyDown)
-  delete guardedWindow.__orcaContextualTourGlobalKeyGuardInstalled
+  delete guardedWindow.__topoContextualTourGlobalKeyGuardInstalled
 }
 
 if (typeof window !== 'undefined') {
   const guardedWindow = window as Window & {
-    __orcaContextualTourGlobalKeyGuardInstalled?: boolean
+    __topoContextualTourGlobalKeyGuardInstalled?: boolean
   }
-  if (!guardedWindow.__orcaContextualTourGlobalKeyGuardInstalled) {
-    guardedWindow.__orcaContextualTourGlobalKeyGuardInstalled = true
+  if (!guardedWindow.__topoContextualTourGlobalKeyGuardInstalled) {
+    guardedWindow.__topoContextualTourGlobalKeyGuardInstalled = true
     addAppKeyListener('keydown', handleContextualTourGlobalKeyDown)
   }
 }
@@ -96,7 +96,7 @@ if (import.meta !== undefined && import.meta.hot) {
 }
 
 const PANEL_BASE_CLASSES =
-  'orca-contextual-tour-panel rounded-lg border border-border text-popover-foreground backdrop-blur-[2px]'
+  'topo-contextual-tour-panel rounded-lg border border-border text-popover-foreground backdrop-blur-[2px]'
 
 const PANEL_ANIMATION_CLASSES = 'animate-in fade-in-0 zoom-in-95 duration-200 ease-out'
 
@@ -289,7 +289,7 @@ export function ContextualTourOverlaySurface({
       {showTargetRings ? (
         <div
           aria-hidden="true"
-          className="orca-contextual-tour-target-rings fixed z-[75]"
+          className="topo-contextual-tour-target-rings fixed z-[75]"
           data-contextual-tour-target-rings=""
           style={targetRingStyle}
         />

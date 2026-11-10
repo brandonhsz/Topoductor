@@ -41,9 +41,9 @@ function subscribeDocumentVisibility(onChange: () => void): () => void {
 }
 
 /**
- * A components panel: a hidden guest runs the plugin's module, Orca draws the tree it sends.
+ * A components panel: a hidden guest runs the plugin's module, Topo draws the tree it sends.
  * The guest lives while this panel is the open right-sidebar tab (also while the sidebar is
- * collapsed or Orca's window is hidden, which `visible` reports); switching tabs or closing it
+ * collapsed or Topo's window is hidden, which `visible` reports); switching tabs or closing it
  * ends the guest, and only persisted atoms carry over.
  */
 export function PluginDeclarativePanel({
@@ -105,7 +105,7 @@ export function PluginDeclarativePanel({
   const revision = rendered?.revision ?? 0
   const onEvent = useCallback<PluginDeclarativeEmit>(
     (callback, args, emitOptions = {}) => {
-      // A press on Orca's own control is real input the guest never sees; it may grant a gesture.
+      // A press on Topo's own control is real input the guest never sees; it may grant a gesture.
       if (emitOptions.press && !admitPress(emitOptions.press)) {
         return
       }
@@ -137,7 +137,7 @@ export function PluginDeclarativePanel({
     trackHostCall,
     onUnresponsive
   })
-  // A click on Orca's own Link (or a Markdown link): no frame-activation check, but its control
+  // A click on Topo's own Link (or a Markdown link): no frame-activation check, but its control
   // must have settled, and main keeps the URL allowlist and rate limit.
   const onOpenLink = (href: string, gestureId: string): void => {
     const token = sessionTokenRef.current

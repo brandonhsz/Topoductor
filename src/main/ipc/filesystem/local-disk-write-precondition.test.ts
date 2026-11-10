@@ -85,7 +85,7 @@ vi.mock('./local-regular-file-read', async (importOriginal) => {
 let base: string
 
 beforeEach(async () => {
-  base = await mkdtemp(join(await realpath(tmpdir()), 'orca-disk-write-precondition-'))
+  base = await mkdtemp(join(await realpath(tmpdir()), 'topo-disk-write-precondition-'))
 })
 
 afterEach(async () => {

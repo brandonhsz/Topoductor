@@ -6,7 +6,7 @@ export const PRELOAD_PLUGIN_FRAME_KEY_CHANNEL = 'orca-plugin-frame-key'
 
 /**
  * Runs serialized in the guest's main world, so it must not reference anything outside its body.
- * Hands Orca's injected frame shell its transport; the shell deletes the property before any
+ * Hands Topo's injected frame shell its transport; the shell deletes the property before any
  * plugin script runs, and only one subscriber ever receives host messages.
  */
 export function installPluginFrameTransport(

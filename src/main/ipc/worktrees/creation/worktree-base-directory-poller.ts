@@ -68,7 +68,7 @@ export type WorktreeBasePollerOptions = {
   pendingMarkerMaxTicks?: number
 }
 
-// Shallow polling avoids recursive FSEvents churn; two-second discovery complements immediate Orca mutation notifications.
+// Shallow polling avoids recursive FSEvents churn; two-second discovery complements immediate Topo mutation notifications.
 export const WORKTREE_BASE_POLL_INTERVAL_MS = 2_000
 
 /** Resolve after the shallow baseline snapshot or native subscription is established. */

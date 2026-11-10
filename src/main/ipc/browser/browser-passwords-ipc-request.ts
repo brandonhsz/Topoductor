@@ -14,7 +14,7 @@ export function readBrowserPasswordsArgs(value: unknown): Record<string, unknown
   return typeof value === 'object' && value !== null ? { ...value } : {}
 }
 
-/** Only Orca's own renderer may reach a vault, and only one of a known browser profile. */
+/** Only Topo's own renderer may reach a vault, and only one of a known browser profile. */
 export function readBrowserPasswordsVaultRequest(
   event: IpcMainInvokeEvent,
   raw: unknown

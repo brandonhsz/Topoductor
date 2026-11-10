@@ -1,16 +1,16 @@
 /**
  * Invariant: a plugin command that replaces a built-in action (here `sidebar.left.toggle`) gets
  * the action exactly once per press. A fast handler that calls `commands.run` toggles it, a
- * handler that throws gets Orca's own toggle, a handler that never calls `commands.run` leaves
+ * handler that throws gets Topo's own toggle, a handler that never calls `commands.run` leaves
  * it alone, and a handler that calls `commands.run` after the 2 s deadline is refused because
- * Orca already ran its own: the sidebar never toggles twice.
+ * Topo already ran its own: the sidebar never toggles twice.
  */
 
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { disablePluginSystem, enableDevPlugins } from './helpers/plugin-smoke'
 
 type Mode = 'fast' | 'late' | 'throw' | 'noop'
@@ -112,21 +112,21 @@ async function logLines(logPath: string, mode: Mode): Promise<string[]> {
 }
 
 test('a replacing command gets the left sidebar toggle exactly once, early, late or failing', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }) => {
   // Why: four timed presses each wait out the 2 s deadline and 3 s safety net, plus plugin setup.
   test.setTimeout(120_000)
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-replacement-deadline-'))
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-replacement-deadline-'))
   const pluginRoot = join(tempRoot, 'sidebar-replacement')
   const logPath = join(tempRoot, 'handler.log')
   try {
     await mkdir(pluginRoot)
     await writeFile(join(pluginRoot, 'orca-plugin.json'), JSON.stringify(manifest, null, 2))
     await writeFile(join(pluginRoot, 'worker.mjs'), worker)
-    await enableDevPlugins(orcaPage, [pluginRoot])
+    await enableDevPlugins(topoPage, [pluginRoot])
 
-    const pluginKey = await orcaPage.evaluate(async () => {
+    const pluginKey = await topoPage.evaluate(async () => {
       const plugin = (await window.api.plugins.list()).find(
         (entry) => entry.name === 'E2E Sidebar Replacement'
       )
@@ -140,7 +140,7 @@ test('a replacing command gets the left sidebar toggle exactly once, early, late
     await expect
       .poll(
         () =>
-          orcaPage.evaluate(async (key) => {
+          topoPage.evaluate(async (key) => {
             const plugin = (await window.api.plugins.list()).find((p) => p.pluginKey === key)
             if (plugin?.status === 'pending' && plugin.consentFingerprint) {
               await window.api.plugins.consent({
@@ -157,10 +157,10 @@ test('a replacing command gets the left sidebar toggle exactly once, early, late
         { timeout: 30_000 }
       )
       .toBe('ran')
-    await setMode(orcaPage, pluginKey, 'logPath', logPath)
+    await setMode(topoPage, pluginKey, 'logPath', logPath)
 
     // Counts every open/close of the left sidebar the renderer actually commits.
-    await orcaPage.evaluate(() => {
+    await topoPage.evaluate(() => {
       window.__sidebarToggles = 0
       window.__store?.subscribe((state, previous) => {
         if (state.sidebarOpen !== previous.sidebarOpen) {
@@ -184,21 +184,21 @@ test('a replacing command gets the left sidebar toggle exactly once, early, late
       { mode: 'noop', settle: 3_500, toggles: 0, log: ['start', 'done'] }
     ]
     for (const { mode, settle, toggles, log } of cases) {
-      await setMode(orcaPage, pluginKey, 'mode', mode)
-      const before = await toggleCount(orcaPage)
-      const openBefore = await orcaPage.evaluate(() => window.__store?.getState().sidebarOpen)
+      await setMode(topoPage, pluginKey, 'mode', mode)
+      const before = await toggleCount(topoPage)
+      const openBefore = await topoPage.evaluate(() => window.__store?.getState().sidebarOpen)
       await pressToggle(electronApp)
       // Past the 2 s deadline and the renderer's 3 s safety net, so a second toggle would show:
       // the assertion is that nothing more happens, which no condition can wait for.
       // ast-grep-ignore: test-no-real-time-wait -- proves the absence of a late second toggle
-      await orcaPage.waitForTimeout(settle)
-      expect({ mode, toggles: (await toggleCount(orcaPage)) - before }).toEqual({ mode, toggles })
+      await topoPage.waitForTimeout(settle)
+      expect({ mode, toggles: (await toggleCount(topoPage)) - before }).toEqual({ mode, toggles })
       expect({ mode, log: await logLines(logPath, mode) }).toEqual({ mode, log })
-      const openAfter = await orcaPage.evaluate(() => window.__store?.getState().sidebarOpen)
+      const openAfter = await topoPage.evaluate(() => window.__store?.getState().sidebarOpen)
       expect(openAfter).toBe(toggles === 1 ? !openBefore : openBefore)
     }
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(tempRoot, { recursive: true, force: true })
   }
 })

@@ -67,7 +67,7 @@ export abstract class CliInstallLocation {
       // Why: development builds must not claim the production shell command.
       return DEV_COMMAND_NAME
     }
-    return this.platform === 'linux' ? LINUX_CLI_COMMAND_NAME : 'orca'
+    return this.platform === 'linux' ? LINUX_CLI_COMMAND_NAME : 'topo'
   }
 
   constructor(options: CliInstallerOptions = {}) {
@@ -84,12 +84,12 @@ export abstract class CliInstallLocation {
       join(this.homePath, 'AppData', 'Local')
     this.processPathEnv = options.processPathEnv ?? process.env.PATH ?? process.env.Path ?? null
     this.commandPathOverride =
-      options.commandPathOverride ?? process.env.ORCA_CLI_INSTALL_PATH ?? null
+      options.commandPathOverride ?? process.env.TOPO_CLI_INSTALL_PATH ?? null
     // Resolve once for hot status reads; Apple Silicon Macs may lack /usr/local/bin.
     const candidateMacPath = options.defaultMacCommandPath ?? DEFAULT_MAC_COMMAND_PATH
     this.macCommandPath = existsSync(dirname(candidateMacPath))
       ? candidateMacPath
-      : join(this.homePath, '.local', 'bin', 'orca')
+      : join(this.homePath, '.local', 'bin', 'topo')
     this.privilegedRunner = options.privilegedRunner ?? runMacPrivilegedCommand
     this.userPathReader = options.userPathReader ?? readWindowsUserPathRegistry
     this.userPathMutationReader =
@@ -181,7 +181,7 @@ export abstract class CliInstallLocation {
       if (!(await isExecutableFile(commandPath))) {
         continue
       }
-      // Orca terminals put the launcher's own dir first on PATH.
+      // Topo terminals put the launcher's own dir first on PATH.
       if (await isSameDirectoryEntry(commandPath, launcherPath)) {
         continue
       }
@@ -192,7 +192,7 @@ export abstract class CliInstallLocation {
           // Installing in the empty default slot can shadow this command without replacing it.
           continue
         }
-        // Match shell PATH precedence, including conflicts that shadow Orca.
+        // Match shell PATH precedence, including conflicts that shadow Topo.
         return commandPath
       }
     }
@@ -220,7 +220,7 @@ export abstract class CliInstallLocation {
         return join(this.homePath, '.local', 'bin', DEV_COMMAND_NAME)
       }
       if (this.platform === 'win32') {
-        return join(this.localAppDataPath, 'Programs', 'Orca Dev', 'bin', `${DEV_COMMAND_NAME}.cmd`)
+        return join(this.localAppDataPath, 'Programs', 'Topo Dev', 'bin', `${DEV_COMMAND_NAME}.cmd`)
       }
     }
 

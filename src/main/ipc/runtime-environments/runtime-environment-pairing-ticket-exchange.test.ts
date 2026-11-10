@@ -49,7 +49,7 @@ describe('Add server with a pairing link', () => {
           ? { ok: true, result: status(row.capabilities) }
           : { ok: true, result: { deviceId: 'desktop' } }
       )
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-add-server-exchange-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-add-server-exchange-'))
 
     const result = await verifyAndAddRuntimeEnvironmentFromPairingCode(userDataPath, {
       name: 'Studio',

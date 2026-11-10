@@ -185,16 +185,16 @@ export function AutomationRunSetupSkippedNotice({
         {!review
           ? t(
               'automations.setupTrust.skippedSinceApproved',
-              "Setup didn't run for this run because its branch's orca.yaml setup commands changed. They've since been approved, so later runs run them."
+              "Setup didn't run for this run because its branch's topo.yaml setup commands changed. They've since been approved, so later runs run them."
             )
           : canReview
             ? t(
                 'automations.setupTrust.skippedReview',
-                "Setup didn't run: this run's branch has different orca.yaml setup commands than the ones approved for this automation. Review them to run setup in later runs."
+                "Setup didn't run: this run's branch has different topo.yaml setup commands than the ones approved for this automation. Review them to run setup in later runs."
               )
             : t(
                 'auto.components.automations.AutomationsPage.setupSkippedChanged',
-                "Setup didn't run: this run's branch has different orca.yaml setup commands than the ones approved when the automation was saved. Save the automation again to review the current commands."
+                "Setup didn't run: this run's branch has different topo.yaml setup commands than the ones approved when the automation was saved. Save the automation again to review the current commands."
               )}
       </span>
       {canReview ? (

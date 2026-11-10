@@ -1,10 +1,10 @@
 import { normalizeMobileSessionTabSelection } from './mobile-session-tab-selection'
-import type { OrcaRuntimeWithTouchMobileSessionTabsForWorktree as TouchMobileSessionTabsForWorktreeMethods } from './mobile-session-membership'
-import { OrcaRuntimeWithHasLiveOrPersistedServeOrSshOwnedPtyBinding } from '../session-lifecycle/close/has-live-or-persisted-serve-or-ssh-owned-pty-binding'
+import type { TopoRuntimeWithTouchMobileSessionTabsForWorktree as TouchMobileSessionTabsForWorktreeMethods } from './mobile-session-membership'
+import { TopoRuntimeWithHasLiveOrPersistedServeOrSshOwnedPtyBinding } from '../session-lifecycle/close/has-live-or-persisted-serve-or-ssh-owned-pty-binding'
 import type { RuntimePtyWorktreeRecord } from '../terminal/records/runtime-terminal-state-records'
 import { normalizeCompatibleAgentTitleForOwner } from '../../../shared/agent-status/title/agent-title-owner'
 import { getLatestPtyTitle } from '../workspaces/process-listing/runtime-worktree-status-projection'
-import type { OrcaRuntimeWithBuildPtyTerminalSummary as PtyTerminalSummaryMethods } from '../terminal/query/pty-terminal-summary'
+import type { TopoRuntimeWithBuildPtyTerminalSummary as PtyTerminalSummaryMethods } from '../terminal/query/pty-terminal-summary'
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../shared/runtime-session-contracts'
 import type { RuntimeMobileSessionTerminalTab } from '../../../shared/runtime-mobile-session-tab-contracts'
 import {
@@ -17,7 +17,7 @@ import {
   mergeMobileSessionTabGroups
 } from '../session-lifecycle/projection/mobile-session-tab-merge'
 
-export abstract class OrcaRuntimeWithPublishPtyBackedMobileSessionTerminal extends OrcaRuntimeWithHasLiveOrPersistedServeOrSshOwnedPtyBinding {
+export abstract class TopoRuntimeWithPublishPtyBackedMobileSessionTerminal extends TopoRuntimeWithHasLiveOrPersistedServeOrSshOwnedPtyBinding {
   protected abstract markPaneLiveTitlesDirty(): void
   protected abstract getPtyManualTitle(
     ...args: Parameters<PtyTerminalSummaryMethods['getPtyManualTitle']>

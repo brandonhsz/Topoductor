@@ -3,7 +3,7 @@ export const ANTIGRAVITY_HISTORY_ROOTS = [
   'antigravity-ide',
   'antigravity'
 ] as const
-/** The ACP server's home under GEMINI_HOME; Orca's managed chat runtime writes here. */
+/** The ACP server's home under GEMINI_HOME; Topo's managed chat runtime writes here. */
 export const ANTIGRAVITY_ACP_HOME = 'antigravity-acp'
 export type AntigravitySessionOrigin =
   | (typeof ANTIGRAVITY_HISTORY_ROOTS)[number]

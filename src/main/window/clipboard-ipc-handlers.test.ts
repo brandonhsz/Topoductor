@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type * as ProcessHost from '@orca/process-host'
+import type * as ProcessHost from '@topo/process-host'
 import { installFakeAppEnvironment } from '../../../config/scripts/test-runtime/environment/vitest-host-ports-setup'
 import { CLIPBOARD_TEXT_MEASURE_YIELD_CODE_UNITS } from '../../shared/clipboard-text'
 import {
@@ -56,7 +56,7 @@ const {
   callRuntimeEnvironmentMock: vi.fn()
 }))
 
-vi.mock('@orca/process-host', async (importOriginal) => ({
+vi.mock('@topo/process-host', async (importOriginal) => ({
   ...(await importOriginal<typeof ProcessHost>()),
   runProcess: runProcessMock
 }))
@@ -141,7 +141,7 @@ function makeClipboardEvent(senderOverrides: Record<string, unknown> = {}): {
     sender: {
       id: 17,
       getType: () => 'window',
-      getURL: () => 'file:///orca/index.html',
+      getURL: () => 'file:///topo/index.html',
       isDestroyed: () => false,
       ...senderOverrides
     }
@@ -588,7 +588,7 @@ describe('registerClipboardHandlers', () => {
         expect(() => probe?.(makeClipboardEvent({ id: 42 }))).toThrow()
         const handler = getRegisteredHandlers().get('clipboard:saveImageAsTempFile')
         await expect(handler?.(makeClipboardEvent())).resolves.toMatch(
-          /orca-paste-1760000000000-00000000-0000-4000-8000-000000000000\.png$/
+          /topo-paste-1760000000000-00000000-0000-4000-8000-000000000000\.png$/
         )
         expect(clipboardReadBufferMock).toHaveBeenCalledWith('FileNameW')
         expect(clipboardReadBufferMock).toHaveBeenCalledWith('Shell IDList Array')
@@ -597,7 +597,7 @@ describe('registerClipboardHandlers', () => {
         expect(close).toHaveBeenCalled()
         expect(fsWriteFileMock).toHaveBeenCalledWith(
           expect.stringMatching(
-            /orca-paste-1760000000000-00000000-0000-4000-8000-000000000000\.png$/
+            /topo-paste-1760000000000-00000000-0000-4000-8000-000000000000\.png$/
           ),
           png
         )
@@ -629,7 +629,7 @@ describe('registerClipboardHandlers', () => {
       if (method === 'clipboard.commitImageUpload') {
         return {
           ok: true,
-          result: '/tmp/orca-paste-remote.png',
+          result: '/tmp/topo-paste-remote.png',
           _meta: { runtimeId: 'runtime-1' }
         }
       }
@@ -643,7 +643,7 @@ describe('registerClipboardHandlers', () => {
       handlers.get('clipboard:saveImageAsTempFile')?.(makeClipboardEvent(), {
         runtimeEnvironmentId: 'remote-host-1'
       })
-    ).resolves.toBe('/tmp/orca-paste-remote.png')
+    ).resolves.toBe('/tmp/topo-paste-remote.png')
     expect(callRuntimeEnvironmentMock).toHaveBeenNthCalledWith(
       1,
       '/tmp',

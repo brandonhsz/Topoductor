@@ -43,7 +43,7 @@ export type AgentLaunchProfileSettings = Partial<
   >
 >
 
-/** Launch intent overrides only Orca's injected permission, preserving the user's args and env. */
+/** Launch intent overrides only Topo's injected permission, preserving the user's args and env. */
 export function agentLaunchPermissionSettings<T extends AgentLaunchProfileSettings>(
   agent: TuiAgent,
   settings: T,
@@ -212,7 +212,7 @@ export function resolveTuiAgentLaunchRawArgs(
   )
 }
 
-/** Legacy missing Arguments use Orca’s bypass default; Manual stores an explicit empty value that overrides it. */
+/** Legacy missing Arguments use Topo’s bypass default; Manual stores an explicit empty value that overrides it. */
 export function resolvedTuiAgentArgsBypassPermissions(
   agent: TuiAgent,
   settings:
@@ -232,7 +232,7 @@ export function resolvedTuiAgentArgsBypassPermissions(
   return tuiAgentArgsBypassPermissions(agent, resolveTuiAgentLaunchArgs(agent, settings), shell)
 }
 
-/** The env a terminal launch of this agent gets; the user's own entries win over Orca's. */
+/** The env a terminal launch of this agent gets; the user's own entries win over Topo's. */
 export function resolveTuiAgentLaunchEnv(
   agent: string,
   settings: AgentLaunchProfileSettings | null | undefined,

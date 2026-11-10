@@ -46,7 +46,7 @@ async function updateCandidate(
   const { source } = entry
   switch (source.kind) {
     case 'bundled':
-      return { status: 'pinned', reason: 'It is bundled with Orca and updates with Orca.' }
+      return { status: 'pinned', reason: 'It is bundled with Topo and updates with Topo.' }
     case 'marketplace':
       return catalogUpdateCandidate(host, deps.catalogs, entry)
     case 'local-path':
@@ -97,11 +97,11 @@ export async function updatePluginFromCli(
   if (!entry) {
     throw new PluginCliError(
       PLUGIN_NOT_FOUND_CODE,
-      `${pluginKey} is not installed on this Orca host.`,
+      `${pluginKey} is not installed on this Topo host.`,
       {
         pluginKey,
         nextSteps: [
-          '`orca plugin list` shows installed plugins; development folders update when their files change.'
+          '`topo plugin list` shows installed plugins; development folders update when their files change.'
         ]
       }
     )
@@ -199,7 +199,7 @@ export function updateAllApprovalError(result: PluginCliUpdateAllResult): Plugin
       'Each update below grows access or comes from a different repository. Confirm with your user first.',
       ...result.approvals.map(
         (request) =>
-          `To approve ${request.pluginKey}, run: orca plugin update ${request.pluginKey} ${request.approveFlag}`
+          `To approve ${request.pluginKey}, run: topo plugin update ${request.pluginKey} ${request.approveFlag}`
       )
     ]
   })

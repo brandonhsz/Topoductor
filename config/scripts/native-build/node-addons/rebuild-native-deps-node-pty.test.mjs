@@ -174,7 +174,7 @@ describe('rebuild-native-deps patched node-pty rebuild', () => {
     try {
       const rebuildLogPath = join(projectDir, 'electron-rebuild.log')
       writeFakeUsableElectronPackage(projectDir, { platform: 'win32' })
-      writeFakeElectronRebuild(projectDir, { logPathEnv: 'ORCA_REBUILD_TEST_LOG' })
+      writeFakeElectronRebuild(projectDir, { logPathEnv: 'TOPO_REBUILD_TEST_LOG' })
       writeFakeNodePtyConptyPayload(projectDir, 'x64')
       writeFakeNodePtyConptySource(projectDir, { cygwinBreakawayDenied: false })
       writeFakeWindowsProcessTreeWithNodeAddonApi(projectDir)
@@ -182,7 +182,7 @@ describe('rebuild-native-deps patched node-pty rebuild', () => {
       const result = runRebuildScript(
         projectDir,
         {
-          ORCA_REBUILD_TEST_LOG: rebuildLogPath,
+          TOPO_REBUILD_TEST_LOG: rebuildLogPath,
           npm_config_platform: 'win32',
           npm_config_arch: 'x64'
         },

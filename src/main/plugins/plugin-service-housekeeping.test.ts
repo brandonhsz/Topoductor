@@ -30,7 +30,7 @@ let housekeeping: PluginServiceHousekeeping
 let options: Parameters<PluginServiceHousekeeping['sync']>[0]
 
 beforeEach(async () => {
-  fixture = await mkdtemp(join(tmpdir(), 'orca-plugin-root-recovery-'))
+  fixture = await mkdtemp(join(tmpdir(), 'topo-plugin-root-recovery-'))
   healthy = join(fixture, 'healthy')
   failing = join(fixture, 'failing')
   await Promise.all([mkdir(healthy), mkdir(failing)])

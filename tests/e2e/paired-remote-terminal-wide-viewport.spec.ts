@@ -1,4 +1,4 @@
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient
@@ -13,20 +13,20 @@ import {
 } from './helpers/terminal'
 
 test('paired terminal fills a pane wider than 240 columns', async ({
-  orcaPage,
+  topoPage,
   testRepoPath
 }, testInfo) => {
   test.skip(process.platform === 'win32', 'The width probe uses POSIX stty')
   test.setTimeout(180_000)
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage)
-  const hostPtyId = await waitForActivePanePtyId(orcaPage)
-  await execInTerminal(orcaPage, hostPtyId, "printf 'WIDE_PROBE_READY\\n'")
-  await waitForTerminalOutput(orcaPage, 'WIDE_PROBE_READY')
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage)
+  const hostPtyId = await waitForActivePanePtyId(topoPage)
+  await execInTerminal(topoPage, hostPtyId, "printf 'WIDE_PROBE_READY\\n'")
+  await waitForTerminalOutput(topoPage, 'WIDE_PROBE_READY')
   const client = await launchPairedElectronClient(
-    await createRuntimeDesktopPairingOffer(orcaPage),
+    await createRuntimeDesktopPairingOffer(topoPage),
     testInfo,
     'Wide terminal proof'
   )

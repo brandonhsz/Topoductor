@@ -103,8 +103,8 @@ describe('filterProjectTableRowsBySelectedRepos', () => {
         content: { ...base.content, title: 'Restricted item', number: null, state: null }
       }
     })
-    const issue = row('issue', 'acme/orca')
-    const pullRequest: GitHubProjectRow = { ...row('pr', 'acme/orca'), itemType: 'PULL_REQUEST' }
+    const issue = row('issue', 'acme/topo')
+    const pullRequest: GitHubProjectRow = { ...row('pr', 'acme/topo'), itemType: 'PULL_REQUEST' }
     const filtered = filterProjectTableRowsBySelectedRepos(
       table([
         ...drafts,
@@ -115,7 +115,7 @@ describe('filterProjectTableRowsBySelectedRepos', () => {
         // An older host sends inaccessible Issue/PR content as a blank Issue row.
         row('old-host-blank-issue', null)
       ]),
-      (slug) => originOnly([repo(slug === 'acme/orca' ? 'selected' : 'other')]),
+      (slug) => originOnly([repo(slug === 'acme/topo' ? 'selected' : 'other')]),
       true,
       new Set(['selected'])
     )

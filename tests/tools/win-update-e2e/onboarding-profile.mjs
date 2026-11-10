@@ -8,12 +8,12 @@ import { execFileSync } from 'node:child_process'
 const ONBOARDING_FLOW_VERSION = 4
 const ONBOARDING_FINAL_STEP = 5
 
-// Create init+commit checkout and return its persisted Repo record; Orca must recognize a real git project.
+// Create init+commit checkout and return its persisted Repo record; Topo must recognize a real git project.
 export function createSeededRepo(dir) {
   mkdirSync(dir, { recursive: true })
   const git = (...args) => execFileSync('git', args, { cwd: dir, stdio: 'ignore' })
   git('init', '-b', 'main')
-  git('config', 'user.email', 'win-update-e2e@orca.test')
+  git('config', 'user.email', 'win-update-e2e@topo.test')
   git('config', 'user.name', 'win-update-e2e')
   writeFileSync(path.join(dir, 'README.md'), '# win-update-e2e fixture repo\n')
   git('add', '-A')
@@ -52,5 +52,5 @@ export function buildFreshProfile({ repo = null } = {}) {
 /** Write a fresh profile into a userData dir before the FIRST launch only. */
 export function seedFreshProfile(userDataDir, profile) {
   mkdirSync(userDataDir, { recursive: true })
-  writeFileSync(path.join(userDataDir, 'orca-data.json'), `${JSON.stringify(profile, null, 2)}\n`)
+  writeFileSync(path.join(userDataDir, 'topo-data.json'), `${JSON.stringify(profile, null, 2)}\n`)
 }

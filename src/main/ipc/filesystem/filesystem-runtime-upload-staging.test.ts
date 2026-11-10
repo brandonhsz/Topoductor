@@ -18,7 +18,7 @@ const { stageOneSourceForRuntimeUpload } = await import('./filesystem-runtime-up
 let workDir: string
 
 beforeEach(async () => {
-  workDir = await mkdtemp(join(tmpdir(), 'orca-upload-staging-'))
+  workDir = await mkdtemp(join(tmpdir(), 'topo-upload-staging-'))
 })
 
 afterEach(async () => {

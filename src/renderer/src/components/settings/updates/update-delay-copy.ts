@@ -16,7 +16,7 @@ export function getUpdateDelayTitle(t: Translate = translate): string {
 export function getUpdateDelayDescription(t: Translate = translate): string {
   return t(
     'settings.updateDelay.description',
-    'Wait this many days after a release is published before Orca offers it.'
+    'Wait this many days after a release is published before Topo offers it.'
   )
 }
 

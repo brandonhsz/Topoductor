@@ -124,7 +124,7 @@ export function AppWorkspaceShell(props: {
   const scrollAnchorRef = useRef<VirtualizedScrollAnchor>(null)
   const sidebarScrollRefs = { scrollOffsetRef, scrollAnchorRef }
   const { setOpenWithFocus } = floatingWorkspace
-  // `orca plugin shot` captures the right sidebar, which the parked launcher floats over.
+  // `topo plugin shot` captures the right sidebar, which the parked launcher floats over.
   const capturingPluginShot = usePluginViewCaptureStore((s) => s.capturing)
   const toggleFloatingWorkspace = useCallback(
     () => setOpenWithFocus((open) => !open),
@@ -235,7 +235,7 @@ export function AppWorkspaceShell(props: {
                       title={t('auto.App.b7a714db1e', 'This page hit an error.')}
                       description={t(
                         'auto.App.03a14f6b5b',
-                        'Retry the page or navigate to another Orca surface.'
+                        'Retry the page or navigate to another Topo surface.'
                       )}
                     >
                       <ActivePage layout={layout} />

@@ -7,10 +7,10 @@ import { dirname, resolve } from 'node:path'
 import { app, BrowserWindow, nativeImage } from 'electron'
 import classicIcon from '../../../../resources/icon.png?asset'
 import classicDevIcon from '../../../../resources/icon-dev.png?asset'
-import watercolorIcon from '../../../../resources/app-icons/orca-watercolor.png?asset'
-import watercolorMacDockIcon from '../../../../resources/app-icons/orca-watercolor.png?asset&asarUnpack'
-import blueIcon from '../../../../resources/app-icons/orca-blue.png?asset'
-import blueMacDockIcon from '../../../../resources/app-icons/orca-blue.png?asset&asarUnpack'
+import watercolorIcon from '../../../../resources/app-icons/topo-watercolor.png?asset'
+import watercolorMacDockIcon from '../../../../resources/app-icons/topo-watercolor.png?asset&asarUnpack'
+import blueIcon from '../../../../resources/app-icons/topo-blue.png?asset'
+import blueMacDockIcon from '../../../../resources/app-icons/topo-blue.png?asset&asarUnpack'
 import {
   CUSTOM_APP_ICON_ID,
   normalizeAppIconId,
@@ -48,20 +48,20 @@ type PersistMacDockIconOptions = {
 const MAC_DOCK_ICON_SCRIPT = [
   'use framework "AppKit"',
   'use scripting additions',
-  'set appPath to system attribute "ORCA_APP_BUNDLE_PATH"',
-  'set iconPath to system attribute "ORCA_APP_ICON_PATH"',
+  'set appPath to system attribute "TOPO_APP_BUNDLE_PATH"',
+  'set iconPath to system attribute "TOPO_APP_ICON_PATH"',
   "set image to current application's NSImage's alloc()'s initWithContentsOfFile:iconPath",
-  'if image is missing value then error "Orca app icon image could not be loaded"',
+  'if image is missing value then error "Topo app icon image could not be loaded"',
   "set ok to current application's NSWorkspace's sharedWorkspace()'s setIcon:image forFile:appPath options:0",
-  'if ok is false then error "Orca app icon could not be persisted"'
+  'if ok is false then error "Topo app icon could not be persisted"'
 ]
 
 const MAC_DOCK_ICON_CLEAR_SCRIPT = [
   'use framework "AppKit"',
   'use scripting additions',
-  'set appPath to system attribute "ORCA_APP_BUNDLE_PATH"',
+  'set appPath to system attribute "TOPO_APP_BUNDLE_PATH"',
   "set ok to current application's NSWorkspace's sharedWorkspace()'s setIcon:(missing value) forFile:appPath options:0",
-  'if ok is false then error "Orca app icon could not be cleared"'
+  'if ok is false then error "Topo app icon could not be cleared"'
 ]
 
 const MAC_DOCK_ICON_COMMAND_TIMEOUT_MS = 10_000
@@ -110,8 +110,8 @@ function runMacCustomIconCommand(
     options: {
       env: {
         ...process.env,
-        ORCA_APP_BUNDLE_PATH: appBundlePath,
-        ORCA_APP_ICON_PATH: iconPath
+        TOPO_APP_BUNDLE_PATH: appBundlePath,
+        TOPO_APP_ICON_PATH: iconPath
       }
     },
     timeoutWarning: '[app-icon] timed out persisting macOS dock icon'
@@ -239,7 +239,7 @@ function clearMacCustomIconMetadata(execFile: ExecFile, appBundlePath: string): 
       options: {
         env: {
           ...process.env,
-          ORCA_APP_BUNDLE_PATH: appBundlePath
+          TOPO_APP_BUNDLE_PATH: appBundlePath
         }
       },
       timeoutWarning: '[app-icon] timed out clearing macOS dock icon'

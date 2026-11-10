@@ -5,7 +5,7 @@ import type {
   RuntimeMobileSessionTabsSnapshot
 } from '../../../shared/runtime-session-contracts'
 import type { WorkspaceSessionState } from '../../../shared/workspace-session/workspace-session-state-types'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 
 const WT = 'repo-1::/tmp/worktree-a'
 
@@ -50,7 +50,7 @@ function makeSession(overrides: Partial<WorkspaceSessionState> = {}): WorkspaceS
 
 function createRuntime(initialSession: WorkspaceSessionState) {
   let session = initialSession
-  const runtime = new OrcaRuntimeService({
+  const runtime = new TopoRuntimeService({
     ...storeBase,
     getWorkspaceSession: () => session,
     setWorkspaceSession: (next: WorkspaceSessionState) => {

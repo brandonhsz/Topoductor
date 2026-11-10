@@ -1,30 +1,30 @@
 import { CLAUDE_PRE_TOOL_USE_DECISION } from '../agent-hooks/tool-events/agent-tool-plugin-hooks'
 
 /**
- * Lets Claude Code's PreToolUse hook print Orca's answer (plugins' `agent.tool.before`) instead of
+ * Lets Claude Code's PreToolUse hook print Topo's answer (plugins' `agent.tool.before`) instead of
  * a fixed `{}`. Every other event still prints `{}` before it posts, as permission hooks need. The
  * answer is printed only when it is a PreToolUse decision; a timeout, an error or no answer prints
- * `{}`, so the tool call proceeds as if Orca were not there.
+ * `{}`, so the tool call proceeds as if Topo were not there.
  */
 export function buildPosixClaudeDecisionPreludeLines(): string[] {
   return [
-    'orca_hook_printed=',
-    'orca_hook_answer=',
-    'orca_hook_decides=',
+    'topo_hook_printed=',
+    'topo_hook_answer=',
+    'topo_hook_decides=',
     // An early exit (a skip path) still prints the `{}` Claude Code needs.
-    'orca_hook_finish() {',
-    '  [ -z "$orca_hook_printed" ] || return 0',
-    '  if [ -n "$orca_hook_answer" ]; then printf \'%s\\n\' "$orca_hook_answer"; else printf \'{}\\n\'; fi',
+    'topo_hook_finish() {',
+    '  [ -z "$topo_hook_printed" ] || return 0',
+    '  if [ -n "$topo_hook_answer" ]; then printf \'%s\\n\' "$topo_hook_answer"; else printf \'{}\\n\'; fi',
     '}',
-    'trap orca_hook_finish EXIT'
+    'trap topo_hook_finish EXIT'
   ]
 }
 
 export function buildPosixClaudeDecisionModeLines(): string[] {
   return [
     'case "$payload" in',
-    `  *'"hook_event_name":"PreToolUse"'*|*'"hook_event_name": "PreToolUse"'*) orca_hook_decides=${CLAUDE_PRE_TOOL_USE_DECISION}; max_time=8 ;;`,
-    "  *) printf '{}\\n'; orca_hook_printed=1 ;;",
+    `  *'"hook_event_name":"PreToolUse"'*|*'"hook_event_name": "PreToolUse"'*) topo_hook_decides=${CLAUDE_PRE_TOOL_USE_DECISION}; max_time=8 ;;`,
+    "  *) printf '{}\\n'; topo_hook_printed=1 ;;",
     'esac'
   ]
 }
@@ -34,11 +34,11 @@ export function wrapPosixClaudeDecisionPost(postLines: readonly string[]): strin
   return [
     ...postLines.map((line, index) =>
       index === 0
-        ? `orca_hook_reply=$(${line}`
+        ? `topo_hook_reply=$(${line}`
         : index === postLines.length - 1
-          ? `${line} 2>/dev/null) || { orca_hook_reply=; spool_hook_event; }`
+          ? `${line} 2>/dev/null) || { topo_hook_reply=; spool_hook_event; }`
           : line
     ),
-    'case "$orca_hook_reply" in \'{"hookSpecificOutput":{"hookEventName":"PreToolUse"\'*\'}}\') orca_hook_answer=$orca_hook_reply ;; esac'
+    'case "$topo_hook_reply" in \'{"hookSpecificOutput":{"hookEventName":"PreToolUse"\'*\'}}\') topo_hook_answer=$topo_hook_reply ;; esac'
   ]
 }

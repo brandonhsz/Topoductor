@@ -16,7 +16,7 @@ import { commitPtyIpcSpawn } from './spawn-commit'
 import { createPtyIpcSpawnState } from './spawn-state'
 import { triggerPtySpawnPushTargetMaterialization } from './spawn-push-target-materialization'
 import type { PtySpawnIpcArgs, PtySpawnIpcDeps } from './spawn-types'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { refuseClosedPaneSpawn } from './closed-pane-spawn-refusal'
 import { resolveStablePaneOwner } from '../pane/stable-owner'
 import { excludeReplacedPaneOwner } from '../pane/replaced-pane-owner'
@@ -58,7 +58,7 @@ export async function runPtyIpcSpawn(deps: PtySpawnIpcDeps, request: PtySpawnIpc
     facts: () => ({
       validateDispatch: () => {
         ctx.paneAgentLaunch?.refuseIfClosed()
-        if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+        if (TOPO_LAYOUT_OWNER_IS_MAIN) {
           refuseClosedPaneSpawn(deps.store, ctx.args.tabId, ctx.args.leafId)
         }
       },

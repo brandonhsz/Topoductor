@@ -14,7 +14,7 @@ import type { SshConnectionState } from '../ssh-types'
 import type { RuntimeEnvironmentSource } from '../remote-runtime/host-catalog/runtime-environments'
 import type { GlobalSettings } from '../global-settings-types'
 import type { Repo } from '../repo-types'
-import { annotateManagedOrcadExecutionHosts } from './managed-orcad-execution-host'
+import { annotateManagedTopodExecutionHosts } from './managed-topod-execution-host'
 import { getSshConnectionHealth, type EphemeralVmHostLifecycle } from './execution-host-health'
 import { applyEphemeralVmHostLifecycles } from './execution-host-vm-lifecycle'
 import type {
@@ -87,7 +87,7 @@ function addRuntimeHost(
     id: hostId,
     kind: 'runtime',
     label,
-    detail: 'Orca server',
+    detail: 'Topo server',
     health,
     ...(blockedReason ? { blockedReason } : {}),
     compatibility: compatibility ?? undefined,
@@ -208,7 +208,7 @@ export function buildExecutionHostRegistry(args: {
     })
   }
 
-  annotateManagedOrcadExecutionHosts({
+  annotateManagedTopodExecutionHosts({
     hosts,
     runtimeEnvironments: args.runtimeEnvironments ?? [],
     sshConnectionStates: args.sshConnectionStates

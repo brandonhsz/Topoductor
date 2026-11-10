@@ -66,7 +66,7 @@ describe('removeWorktree state cleanup', () => {
     const wt = makeWorktree({ id: 'repo1::/path/wt1', repoId: 'repo1', path: '/path/wt1' })
     const orphanedSetup: AppState['projectHostSetups'][number] = {
       id: 'setup-runtime-ssh',
-      hostId: 'ssh:runtime-ssh-orca-1',
+      hostId: 'ssh:runtime-ssh-topo-1',
       projectId: 'project-runtime-ssh',
       repoId: 'repo-runtime-ssh',
       path: '/runtime/repo',
@@ -99,7 +99,7 @@ describe('removeWorktree state cleanup', () => {
         id: 'runtime-1',
         workspaceId: 'repo1::/path/wt1',
         cleanupStatus: 'not_started',
-        sshTargetId: 'runtime-ssh-orca-1'
+        sshTargetId: 'runtime-ssh-topo-1'
       }
     ])
 
@@ -108,7 +108,7 @@ describe('removeWorktree state cleanup', () => {
     // Only the orphaned runtime-owned project setup is purged; the user's SSH project is untouched.
     expect(deleteProjectHostSetup).toHaveBeenCalledWith({
       setupId: 'setup-runtime-ssh',
-      hostId: 'ssh:runtime-ssh-orca-1'
+      hostId: 'ssh:runtime-ssh-topo-1'
     })
   })
 
@@ -148,7 +148,7 @@ describe('removeWorktree state cleanup', () => {
 
     const sidebar = new EventTarget()
     let worktreePresentWhenRecorded: boolean | null = null
-    sidebar.addEventListener('orca-record-virtualized-scroll-anchor', () => {
+    sidebar.addEventListener('topo-record-virtualized-scroll-anchor', () => {
       worktreePresentWhenRecorded =
         store.getState().worktreesByRepo.repo1?.some((w) => w.id === wt.id) ?? false
     })

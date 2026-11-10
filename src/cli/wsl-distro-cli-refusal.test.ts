@@ -6,7 +6,7 @@ import { readableWslDistroCliRefusal } from './wsl-distro-cli-refusal'
 describe('readableWslDistroCliRefusal', () => {
   it("names the distro in an older server's raw hold code", () => {
     expect(readableWslDistroCliRefusal('terminal_held_wsl_distro_stopped:Ubuntu')).toBe(
-      "The WSL distro Ubuntu is stopped, so Orca didn't start this terminal. Start the distro, then try again."
+      "The WSL distro Ubuntu is stopped, so Topo didn't start this terminal. Start the distro, then try again."
     )
   })
 
@@ -14,7 +14,7 @@ describe('readableWslDistroCliRefusal', () => {
     'names the distro behind an unavailable WSL folder (%s)',
     (path) => {
       expect(readableWslDistroCliRefusal(`folder_workspace_path_unavailable:${path}`)).toBe(
-        `Orca couldn't reach ${path}. The WSL distro Ubuntu may be stopped, and Orca doesn't start a stopped distro for this. Start Ubuntu (for example, open a terminal in it), then try again.`
+        `Topo couldn't reach ${path}. The WSL distro Ubuntu may be stopped, and Topo doesn't start a stopped distro for this. Start Ubuntu (for example, open a terminal in it), then try again.`
       )
     }
   )

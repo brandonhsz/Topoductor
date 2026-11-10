@@ -102,7 +102,7 @@ describe('GitLab self-hosted hosted review creation eligibility', () => {
     mockNonGitLabProviders()
     getHostedReviewForBranchMock.mockResolvedValue(null)
     gitExecFileAsyncMock.mockResolvedValue({
-      stdout: 'git@gitlab.internal:team/orca.git\n',
+      stdout: 'git@gitlab.internal:team/topo.git\n',
       stderr: ''
     })
   })
@@ -112,12 +112,12 @@ describe('GitLab self-hosted hosted review creation eligibility', () => {
     getGiteaRepoSlugMock.mockResolvedValue({
       host: 'gitlab.example.com',
       owner: 'team',
-      repo: 'orca',
+      repo: 'topo',
       apiBaseUrl: 'https://gitlab.example.com/api/v1',
       webBaseUrl: 'https://gitlab.example.com'
     })
     gitExecFileAsyncMock.mockResolvedValue({
-      stdout: 'https://gitlab.example.com/team/orca.git\n',
+      stdout: 'https://gitlab.example.com/team/topo.git\n',
       stderr: ''
     })
     glabExecFileAsyncMock.mockImplementation(async (args: string[]) => {

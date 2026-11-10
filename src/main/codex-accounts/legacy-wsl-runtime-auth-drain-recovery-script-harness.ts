@@ -32,16 +32,16 @@ export function runRecoveryScript(options: {
   sourceRecoveryExists: boolean
   status: number
 } {
-  const root = mkdtempSync(join(tmpdir(), 'orca-drain-recovery-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-drain-recovery-'))
   try {
     const legacyHome = join(root, 'legacy')
     const targetHome = join(root, 'account')
     mkdirSync(legacyHome)
     mkdirSync(targetHome)
     const markerPath = join(root, 'drain-marker.json')
-    const sourceRecoveryPath = `${markerPath}.orca-drain-source`
-    const destinationRecoveryPath = `${markerPath}.orca-drain-destination`
-    const destinationRecoveryTargetPath = `${markerPath}.orca-drain-destination-path`
+    const sourceRecoveryPath = `${markerPath}.topo-drain-source`
+    const destinationRecoveryPath = `${markerPath}.topo-drain-destination`
+    const destinationRecoveryTargetPath = `${markerPath}.topo-drain-destination-path`
     const sourceAuthPath = join(legacyHome, 'auth.json')
     const destinationAuthPath = join(targetHome, 'auth.json')
     writeFileSync(sourceRecoveryPath, SOURCE_AUTH, { mode: 0o400 })
@@ -88,7 +88,7 @@ export function runAbsentLegacyHomeScript(options: {
   markerExists: boolean
   status: number
 } {
-  const root = mkdtempSync(join(tmpdir(), 'orca-drain-absent-home-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-drain-absent-home-'))
   try {
     const legacyHome = join(root, 'legacy')
     const activeHome = join(root, 'absent-active-home')

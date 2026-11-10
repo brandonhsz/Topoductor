@@ -41,16 +41,16 @@ describe('Codex quota poll home for a WSL account (E9)', () => {
   })
 
   it('skips without preparing a home when the targeted distro is stopped, even if the default runs', async () => {
-    const h = harness(['Ubuntu'], () => homeIn('orca-w'))
+    const h = harness(['Ubuntu'], () => homeIn('topo-w'))
 
     const resolution = await resolveCodexRateLimitHomeUnlessStopped(
       h.source,
-      { runtime: 'wsl', wslDistro: 'orca-w' },
+      { runtime: 'wsl', wslDistro: 'topo-w' },
       h.deps
     )
 
     expect(resolution).toEqual({ kind: 'skip' })
-    expect(h.deps.isRunning).toHaveBeenCalledExactlyOnceWith('orca-w')
+    expect(h.deps.isRunning).toHaveBeenCalledExactlyOnceWith('topo-w')
     expect(h.prepareForRateLimitFetch).not.toHaveBeenCalled()
   })
 
@@ -70,7 +70,7 @@ describe('Codex quota poll home for a WSL account (E9)', () => {
 
   it('skips a home that lives in a distro other than the one it read as running', async () => {
     // The gated default runs, but the account's home is in a stopped distro.
-    const h = harness(['Ubuntu'], () => homeIn('orca-w'))
+    const h = harness(['Ubuntu'], () => homeIn('topo-w'))
 
     const resolution = await resolveCodexRateLimitHomeUnlessStopped(
       h.source,

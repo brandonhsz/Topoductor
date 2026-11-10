@@ -22,7 +22,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 /** Granted only by a Full access launch; Claude's mode reports can suspend it, never create it.
  *  The SDK answers permission requests straight from its reader while ordinary frames queue
- *  behind Orca's pausable consumer, and a stdout chunk is read ahead of the requests in it,
+ *  behind Topo's pausable consumer, and a stdout chunk is read ahead of the requests in it,
  *  so each request keeps the mode in effect at its own position in the stream. */
 export function createClaudeFullAccessPolicy(providerSessionId: string): ClaudeFullAccessPolicy {
   const decoder = new StringDecoder('utf8')
@@ -106,7 +106,7 @@ export function createClaudeFullAccessPolicy(providerSessionId: string): ClaudeF
     allows: (requestId) => {
       const atRequest = modeAtRequest.get(requestId)
       modeAtRequest.delete(requestId)
-      // A request Orca never saw on the wire has no position, so it never inherits a later mode.
+      // A request Topo never saw on the wire has no position, so it never inherits a later mode.
       return atRequest ?? false
     },
     mode: () => mode,

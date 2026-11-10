@@ -1,15 +1,15 @@
-import type { ProcessSpec } from '@orca/process-host/process-spec'
+import type { ProcessSpec } from '@topo/process-host/process-spec'
 import type { superviseForegroundServe } from './serve-update-supervisor'
 import { createInterface } from 'node:readline'
 
 export const PAIRING_HIDDEN_LINE =
-  'Pairing URL: hidden because this supervised server is not writing to a terminal. Pair from the desktop app, or run `orca serve` in a terminal.'
+  'Pairing URL: hidden because this supervised server is not writing to a terminal. Pair from the desktop app, or run `topo serve` in a terminal.'
 
 /** Remove readiness pairing secrets, retaining state for multiline QR output. */
 export function createPairingRedactor(): (line: string) => string | null {
   let inQr = false
   return (line) => {
-    if (line.startsWith('{') && line.includes('"orca_server_ready"')) {
+    if (line.startsWith('{') && line.includes('"topo_server_ready"')) {
       return redactReadyJson(line)
     }
     if (line.startsWith('Mobile pairing QR:')) {

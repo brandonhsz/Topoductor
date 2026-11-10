@@ -47,8 +47,8 @@ describe('listChangedFiles', () => {
     writeFileSync(join(fixture, 'existing.test.ts'), source)
     git('add', '.')
     git('commit', '-qm', 'base')
-    vi.stubEnv('ORCA_CODE_QUALITY_BASE', git('rev-parse', 'HEAD'))
-    vi.stubEnv('ORCA_FLAKY_TEST_RATCHET_ALL', '')
+    vi.stubEnv('TOPO_CODE_QUALITY_BASE', git('rev-parse', 'HEAD'))
+    vi.stubEnv('TOPO_FLAKY_TEST_RATCHET_ALL', '')
   }
 
   it('does not newly enforce existing debt when only static import paths change', () => {
@@ -62,7 +62,7 @@ describe('listChangedFiles', () => {
     writeFileSync(join(fixture, 'existing.test.ts'), `${movedImports}Date.now()\n`)
     expect(main(fixture, undefined, [...matches, ...matches])).toBe(1)
     writeFileSync(join(fixture, 'existing.test.ts'), movedImports)
-    vi.stubEnv('ORCA_FLAKY_TEST_RATCHET_ALL', '1')
+    vi.stubEnv('TOPO_FLAKY_TEST_RATCHET_ALL', '1')
     expect(main(fixture, undefined, matches)).toBe(1)
   })
 
@@ -89,8 +89,8 @@ describe('listChangedFiles', () => {
     git('init', '-q')
     git('config', 'core.quotePath', 'true')
     git('commit', '--allow-empty', '-qm', 'base')
-    vi.stubEnv('ORCA_CODE_QUALITY_BASE', git('rev-parse', 'HEAD'))
-    vi.stubEnv('ORCA_FLAKY_TEST_RATCHET_ALL', '')
+    vi.stubEnv('TOPO_CODE_QUALITY_BASE', git('rev-parse', 'HEAD'))
+    vi.stubEnv('TOPO_FLAKY_TEST_RATCHET_ALL', '')
     const file = '測試.test.ts'
     writeFileSync(join(fixture, file), 'Date.now()\n')
     git('add', '--', file)
@@ -114,14 +114,14 @@ describe('listChangedFiles', () => {
     git('update-ref', 'refs/remotes/origin/main', commit('fork-base.txt'))
     const upstream = commit('upstream-drift.txt')
     commit('contribution.txt')
-    vi.stubEnv('ORCA_FLAKY_TEST_RATCHET_ALL', '')
-    vi.stubEnv('ORCA_CODE_QUALITY_BASE', '')
+    vi.stubEnv('TOPO_FLAKY_TEST_RATCHET_ALL', '')
+    vi.stubEnv('TOPO_CODE_QUALITY_BASE', '')
 
     expect([...listChangedFiles(fixture)].sort()).toEqual([
       'contribution.txt',
       'upstream-drift.txt'
     ])
-    vi.stubEnv('ORCA_CODE_QUALITY_BASE', upstream)
+    vi.stubEnv('TOPO_CODE_QUALITY_BASE', upstream)
     expect([...listChangedFiles(fixture)]).toEqual(['contribution.txt'])
   })
 })

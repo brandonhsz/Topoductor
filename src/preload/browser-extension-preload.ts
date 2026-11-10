@@ -32,7 +32,7 @@ const electron: { contextBridge: ContextBridge; ipcRenderer: IpcRenderer } = req
 const { contextBridge, ipcRenderer } = electron
 
 // Why frame-only: a service-worker preload crashes the renderer during GC (electron#52310);
-// workers get the same installer from Orca's worker shim. Pages stay on IPC because namespaces
+// workers get the same installer from Topo's worker shim. Pages stay on IPC because namespaces
 // need the calling frame (tabs.getCurrent, popout windows), which only IPC's senderFrame names.
 
 /** The frame's own location: one session preload runs in every page of the session. */
@@ -63,7 +63,7 @@ async function invoke(request: unknown): Promise<BrowserExtensionInvokeReply> {
     )
     return reply
   } catch {
-    return { ok: false, error: 'Orca could not handle this extension call' }
+    return { ok: false, error: 'Topo could not handle this extension call' }
   }
 }
 
@@ -136,7 +136,7 @@ if (process.contextIsolated) {
   if (href.startsWith('chrome-extension://')) {
     // A document marker survives Chromium reusing an existing extension renderer process.
     // Why origin: a manifest sandbox page keeps its extension URL but runs with an opaque origin.
-    if (!href.endsWith('/manifest.json?orca-native-page=1') && globalThis.origin !== 'null') {
+    if (!href.endsWith('/manifest.json?topo-native-page=1') && globalThis.origin !== 'null') {
       installExtensionContextApis()
     }
   } else if (process.isMainFrame && readOrigin(href) === CHROME_WEB_STORE_ORIGIN) {

@@ -102,7 +102,7 @@ function stepToImported(
       return null
     }
   }
-  const run = rawRun.replace(GITHUB_WORKSPACE_REFERENCE, '${ORCA_WORKTREE_PATH}')
+  const run = rawRun.replace(GITHUB_WORKSPACE_REFERENCE, '${TOPO_WORKTREE_PATH}')
   if (run.includes('${{') || RUNNER_ONLY_COMMAND.test(run)) {
     pushSetupScriptImportUnsupportedField(unsupportedFields, `${prefix}.run`)
     return null

@@ -1,5 +1,5 @@
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { expect } from './orca-app'
+import { expect } from './topo-app'
 import { execInTerminal, focusActiveTerminalInput } from './terminal'
 import { clearTerminalPtyWriteLog, readTerminalPtyWrites } from './terminal-pty-write-spy'
 
@@ -44,7 +44,7 @@ async function dispatchCtrlCToActiveTerminalTextarea(
       return event
     }
 
-    // Electron can consume real Ctrl+C before xterm; synthetic events still exercise Orca’s installed boundary.
+    // Electron can consume real Ctrl+C before xterm; synthetic events still exercise Topo’s installed boundary.
     const keydown = createEvent('keydown', true)
     textarea.dispatchEvent(keydown)
     const keyup = createEvent('keyup', dispatchOptions.keyupCtrlKey !== false)

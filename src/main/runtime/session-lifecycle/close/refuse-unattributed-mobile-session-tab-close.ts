@@ -1,7 +1,7 @@
-import { OrcaRuntimeWithResumeAgentSessionInWorkspace } from '../projection/resume-agent-session-in-workspace'
+import { TopoRuntimeWithResumeAgentSessionInWorkspace } from '../projection/resume-agent-session-in-workspace'
 import type { RuntimeMobileSessionTabCloseResult } from '../../../../shared/runtime-session-contracts'
 
-export abstract class OrcaRuntimeWithRefuseUnattributedMobileSessionTabClose extends OrcaRuntimeWithResumeAgentSessionInWorkspace {
+export abstract class TopoRuntimeWithRefuseUnattributedMobileSessionTabClose extends TopoRuntimeWithResumeAgentSessionInWorkspace {
   async refuseUnattributedMobileSessionTabClose(
     worktreeSelector: string,
     tabId: string

@@ -13,7 +13,7 @@ export function WorktreeCardReviewDetailSection({
   review,
   reviewMenuOpen,
   onReviewMenuOpenChange,
-  onOpenReviewInOrca,
+  onOpenReviewInTopo,
   onUnlinkReview,
   closeHover,
   onOpenLink,
@@ -22,7 +22,7 @@ export function WorktreeCardReviewDetailSection({
   review: WorktreeCardPrDisplay | null
   reviewMenuOpen: boolean
   onReviewMenuOpenChange: (open: boolean) => void
-  onOpenReviewInOrca?: (event: MouseEvent) => void
+  onOpenReviewInTopo?: (event: MouseEvent) => void
   onUnlinkReview?: () => void
   closeHover: () => void
   onOpenLink: (url: string, event: MouseEvent) => void
@@ -66,8 +66,8 @@ export function WorktreeCardReviewDetailSection({
               provider={getProviderName(review)}
               open={reviewMenuOpen}
               onOpenChange={onReviewMenuOpenChange}
-              onOpenInOrca={
-                review.url && review.provider === 'github' ? onOpenReviewInOrca : undefined
+              onOpenInTopo={
+                review.url && review.provider === 'github' ? onOpenReviewInTopo : undefined
               }
               onUnlink={onUnlinkReview}
               closeHover={closeHover}

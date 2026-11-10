@@ -65,7 +65,7 @@ const issue = {
   title:
     '[Bug]: Renderer compositor thread spins at ~100% of one core for hours, producing no frames - recovered by minimize/restore',
   state: 'open' as const,
-  url: 'https://github.com/stablyai/orca/issues/14882',
+  url: 'https://github.com/brandonhsz/Topoductor/issues/14882',
   labels: ['bug', 'os:Windows']
 }
 
@@ -75,13 +75,13 @@ const review = {
   title: 'perf(renderer): pause long-lived status animations offscreen and honor reduced motion',
   state: 'merged' as const,
   status: 'success' as const,
-  url: 'https://github.com/stablyai/orca/pull/37162'
+  url: 'https://github.com/brandonhsz/Topoductor/pull/37162'
 }
 
 const linearIssue = {
   identifier: 'ORC-412',
   title: 'Sidebar hovercard should summarize linked tasks without crowding the PR row',
-  url: 'https://linear.app/orca/issue/ORC-412',
+  url: 'https://linear.app/topo/issue/ORC-412',
   stateName: 'In Progress',
   stateType: 'started',
   labels: ['design', 'sidebar']
@@ -90,7 +90,7 @@ const linearIssue = {
 const jiraIssue = {
   identifier: 'PLAT-2087',
   title: 'Rotate staging webhook signing secrets',
-  url: 'https://orca.atlassian.net/browse/PLAT-2087'
+  url: 'https://topo.atlassian.net/browse/PLAT-2087'
 }
 
 function workspaceWith(linkedItems: WorkspaceAttachment[]): Worktree {
@@ -126,9 +126,9 @@ export const githubIssueWithReview = defineFixture({
       review={review}
       onManageLinks={noop}
       onEditIssue={noop}
-      onOpenGitHubIssueInOrca={noop}
+      onOpenGitHubIssueInTopo={noop}
       onOpenIssueInBrowser={noop}
-      onOpenReviewInOrca={noop}
+      onOpenReviewInTopo={noop}
       onUnlinkReview={noop}
     />
   )
@@ -142,8 +142,8 @@ export const linearIssueWithReview = defineFixture({
       linearIssue={linearIssue}
       review={{ ...review, state: 'open', status: 'pending' }}
       onManageLinks={noop}
-      onOpenLinearIssueInOrca={noop}
-      onOpenReviewInOrca={noop}
+      onOpenLinearIssueInTopo={noop}
+      onOpenReviewInTopo={noop}
     />
   )
 })
@@ -176,7 +176,7 @@ export const closedIssueManyLabels = defineFixture({
       review={null}
       onManageLinks={noop}
       onEditIssue={noop}
-      onOpenGitHubIssueInOrca={noop}
+      onOpenGitHubIssueInTopo={noop}
       onOpenIssueInBrowser={noop}
     />
   )
@@ -201,7 +201,7 @@ export const linkedCollection = defineFixture({
       linearIssue={linearIssue}
       review={review}
       onManageLinks={noop}
-      onOpenReviewInOrca={noop}
+      onOpenReviewInTopo={noop}
     />
   )
 })
@@ -224,7 +224,7 @@ export const narrowLongMetadata = defineFixture({
         onManageLinks={noop}
         onEditIssue={noop}
         onOpenIssueInBrowser={noop}
-        onOpenReviewInOrca={noop}
+        onOpenReviewInTopo={noop}
       />
     </>
   )

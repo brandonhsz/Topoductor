@@ -77,7 +77,7 @@ describe('repos-project-host-capability', () => {
         store.getState().setupProjectClone({
           projectId: 'project-1',
           hostId: 'runtime:env-1',
-          url: 'https://github.com/stablyai/orca.git',
+          url: 'https://github.com/brandonhsz/Topoductor.git',
           destination: '/srv'
         })
       ).resolves.toBeNull()
@@ -102,7 +102,7 @@ describe('repos-project-host-capability', () => {
         store.getState().setupProjectClone({
           projectId: 'project-1',
           hostId: 'runtime:env-1',
-          url: 'https://github.com/stablyai/orca.git',
+          url: 'https://github.com/brandonhsz/Topoductor.git',
           destination: '/srv'
         })
       ).resolves.toBeNull()

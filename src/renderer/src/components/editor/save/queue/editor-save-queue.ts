@@ -7,7 +7,7 @@ import {
 import type { OpenFile } from '@/store/slices/editor/types/open-file'
 import {
   isAutosaveSuspendedForFile,
-  ORCA_EDITOR_FILE_SAVED_EVENT,
+  TOPO_EDITOR_FILE_SAVED_EVENT,
   type EditorFileSavedDetail
 } from '../../autosave/editor-autosave'
 import {
@@ -233,7 +233,7 @@ export function createEditorSaveQueue(store: AppStoreApi): EditorSaveQueue {
       return 'written'
     }
     window.dispatchEvent(
-      new CustomEvent<EditorFileSavedDetail>(ORCA_EDITOR_FILE_SAVED_EVENT, {
+      new CustomEvent<EditorFileSavedDetail>(TOPO_EDITOR_FILE_SAVED_EVENT, {
         detail: {
           fileId: settledViewIds.includes(fileId) ? fileId : settledViewIds[0],
           content: contentToSave,

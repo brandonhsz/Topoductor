@@ -2,7 +2,7 @@ import { expect, it } from 'vitest'
 import { getDefaultSettings } from '../../../../shared/constants'
 import type { GlobalSettings } from '../../../../shared/global-settings-types'
 import type { RuntimeClientEvent } from '../../../../shared/runtime-client-events'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 import { RuntimeClientSettingsController } from '../../client/settings/runtime-client-settings'
 import { publishNativeChatPreferenceChanges } from './runtime-native-chat-preference-events'
 import { eraseRpcMethods, isStreamingMethod } from '../../rpc/core'
@@ -62,7 +62,7 @@ it('resolves the CI result lines setting in the ready snapshot', async () => {
       }
     }
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the subscribe handler reads only these members.
-    const runtime = fake as unknown as OrcaRuntimeService
+    const runtime = fake as unknown as TopoRuntimeService
     streams.push(
       subscribe.handler({}, { runtime, connectionId: 'conn-1' }, (event) => {
         if (event && typeof event === 'object' && 'snapshot' in event) {

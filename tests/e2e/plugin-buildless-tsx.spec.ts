@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { disablePluginSystem, enableDevPlugins } from './helpers/plugin-smoke'
 import {
   evalInGuest,
@@ -27,9 +27,9 @@ async function openPanel(page: Page, title: string): Promise<void> {
 }
 
 test('an HTML frame panel can name a .ts entry, and bare imports fail by name', async ({
-  orcaPage
+  topoPage
 }) => {
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-buildless-frame-'))
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-buildless-frame-'))
   const pluginRoot = join(tempRoot, 'ts-frame')
   try {
     await mkdir(join(pluginRoot, 'app'), { recursive: true })
@@ -62,10 +62,10 @@ test('an HTML frame panel can name a .ts entry, and bare imports fail by name', 
       'export const greeting = (n: number): string => `typed ${n * 21}`\n'
     )
     await writeFile(join(pluginRoot, 'app', 'bare.ts'), "import 'left-pad'\nexport {}\n")
-    await enableDevPlugins(orcaPage, [pluginRoot])
-    await openPanel(orcaPage, 'TS Frame')
+    await enableDevPlugins(topoPage, [pluginRoot])
+    await openPanel(topoPage, 'TS Frame')
 
-    const guest = pluginGuest(orcaPage, 'TS Frame')
+    const guest = pluginGuest(topoPage, 'TS Frame')
     await expect(guest).toBeVisible({ timeout: 15_000 })
     await waitForGuestReady(guest)
     // Why tolerant: the guest can remount while the panel settles; the poll then retries.
@@ -78,7 +78,7 @@ test('an HTML frame panel can name a .ts entry, and bare imports fail by name', 
       .poll(() => read('document.getElementById("out")?.dataset.bare'), { timeout: 15_000 })
       .toContain('app/bare.ts:1:8: cannot import "left-pad"')
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(tempRoot, { recursive: true, force: true })
   }
 })

@@ -11,7 +11,7 @@ describe('process-host output packaging guard', () => {
   const { assertProcessHostOutputBuilt } = require('../../../packaged-runtime-node-modules.cjs')
 
   async function builtPackage() {
-    const packageDir = await mkdtemp(join(tmpdir(), 'orca-process-host-output-'))
+    const packageDir = await mkdtemp(join(tmpdir(), 'topo-process-host-output-'))
     await mkdir(join(packageDir, 'src', '__fixtures__'), { recursive: true })
     await mkdir(join(packageDir, 'dist'))
     await writeFile(

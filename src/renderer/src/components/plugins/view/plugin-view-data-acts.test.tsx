@@ -102,7 +102,7 @@ describe('shot --act Table, Tree and Slider verbs', () => {
   it('sorts, selects, activates and pages a Table as its header, rows and scroll would', async () => {
     const guest = mountFilesGuest()
     const table = { type: 'Table' }
-    // Orca itself asks for more once the last row shows; the act asks once more on top.
+    // Topo itself asks for more once the last row shows; the act asks once more on top.
     const pagesBefore = guest.state.pages
     expect(
       await guest.run([

@@ -10,7 +10,7 @@ import type {
 } from '../../../../../shared/runtime-terminal-contracts'
 import { worktreeIdsEqual } from '../../../../../shared/worktree/id'
 import { toRuntimeWorktreeSelector } from '@/runtime/rpc/targets/runtime-worktree-selector'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 
 /** The exact surface the execution host records as owning a live PTY. */
 export type LiveTerminalSurfaceOwner = {
@@ -120,7 +120,7 @@ export async function readWorktreeLiveTerminalSurfaceOwners(
       requireFreshPtyLiveness: true,
       includeVisualLayouts: false,
       // Main places unshown live terminals before listing; this sweep only reads its panes.
-      ...(ORCA_LAYOUT_OWNER_IS_MAIN ? { placeUnshownLiveTerminals: true } : {})
+      ...(TOPO_LAYOUT_OWNER_IS_MAIN ? { placeUnshownLiveTerminals: true } : {})
     }
   })
   if (!response.ok || !isScopedTerminalListResult(response.result)) {

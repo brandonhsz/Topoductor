@@ -7,7 +7,7 @@ import {
 } from '../bundled-skill-install/bundled-skill-classification'
 import { nativeBundledSkillFilesystem } from '../bundled-skill-install/bundled-skill-filesystem'
 
-/** Former generic names identify Orca only when their bytes match a shipped version. */
+/** Former generic names identify Topo only when their bytes match a shipped version. */
 export function bundledSkillDiscoveryName(
   name: string | null,
   markdown: string

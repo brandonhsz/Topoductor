@@ -62,7 +62,7 @@ describe('a taken session id under a named operation', () => {
   let store: AgentSessionRecordStore
 
   beforeEach(async () => {
-    directory = await mkdtemp(join(tmpdir(), 'orca-agent-launch-session-'))
+    directory = await mkdtemp(join(tmpdir(), 'topo-agent-launch-session-'))
     store = await openTestAgentSessionRecordStore(directory)
     setAgentLaunchRecordStore(store)
   })

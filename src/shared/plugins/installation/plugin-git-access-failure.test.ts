@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { classifyPluginGitAccessFailure } from './plugin-git-access-failure'
 
-const HOST = 'the Orca host (build-box)'
+const HOST = 'the Topo host (build-box)'
 
 describe('classifyPluginGitAccessFailure', () => {
   it('leaves other failures alone and strips credentials from the detail', () => {

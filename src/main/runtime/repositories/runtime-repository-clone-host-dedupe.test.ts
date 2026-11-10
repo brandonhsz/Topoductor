@@ -1,4 +1,4 @@
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { mkdir, mkdtemp, realpath, rm, stat, symlink } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -64,7 +64,7 @@ describe('clone reuses only a project on this machine', () => {
   let sourceUrl: string
 
   beforeEach(async () => {
-    root = await realpath(await mkdtemp(join(tmpdir(), 'orca-clone-host-dedupe-')))
+    root = await realpath(await mkdtemp(join(tmpdir(), 'topo-clone-host-dedupe-')))
     const source = join(root, 'origin', 'source')
     runGit(['init', '-q', source])
     runGit([
@@ -144,7 +144,7 @@ describe('clone reuses only a project on this machine', () => {
       }
       const { controller, repos } = createController([saved])
 
-      await expect(controller.clone(sourceUrl, alias)).rejects.toThrow('is already an Orca project')
+      await expect(controller.clone(sourceUrl, alias)).rejects.toThrow('is already a Topo project')
       expect(repos).toEqual([saved])
       await expect(stat(join(root, 'real', 'source'))).rejects.toThrow()
     })

@@ -147,7 +147,7 @@ describe('DesktopBrowserBridgeRegistry', () => {
     expect(events.map((event) => event.type)).toEqual(['request'])
   })
 
-  it('cancels on the desktop when orcad stops waiting at its deadline', async () => {
+  it('cancels on the desktop when topod stops waiting at its deadline', async () => {
     vi.useFakeTimers()
     try {
       const registry = new DesktopBrowserBridgeRegistry()

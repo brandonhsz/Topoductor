@@ -3,7 +3,7 @@ import type * as WorktreeListingModule from '../../../git/worktrees/catalog/work
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AGENT_PROMPT_BRACKETED_PASTE_END } from '../../../../shared/agent-launch/startup/agent-prompt-injection'
 import { createAgentPromptSubmissionRuntime } from './agent-prompt-submission-runtime-test-fixture'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 import { TUI_IDLE_QUIESCENCE_MS } from '../wait/terminal-idle-policy'
 
 const createPromptRuntime = createAgentPromptSubmissionRuntime
@@ -77,7 +77,7 @@ describe('agent prompt submission runtime', () => {
   })
 
   // Why real timers until the send: the emulator drains on timers, and the screen may clear only once quiet.
-  async function settleScreen(runtime: OrcaRuntimeService, handle: string): Promise<void> {
+  async function settleScreen(runtime: TopoRuntimeService, handle: string): Promise<void> {
     const outputAt = Date.now()
     vi.useRealTimers()
     await runtime.readTerminal(handle, { screen: true })

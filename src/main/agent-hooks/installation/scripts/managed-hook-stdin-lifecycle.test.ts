@@ -1,7 +1,7 @@
 // POSIX hooks drain before exit; Windows missing-context hooks may exit without owning stdin.
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type * as CodexHookHashLookup from '../../../codex/trust/hooks/codex-hook-hash-lookup'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -18,17 +18,17 @@ beforeEach(() => {
   vi.stubEnv('COPILOT_HOME', undefined)
   vi.stubEnv('KIRO_HOME', undefined)
   vi.stubEnv('XDG_CONFIG_HOME', undefined)
-  previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-  isolatedUserDataDir = mkdtempSync(join(tmpdir(), 'orca-hook-stdin-user-data-'))
+  previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+  isolatedUserDataDir = mkdtempSync(join(tmpdir(), 'topo-hook-stdin-user-data-'))
   // Isolate managed-script resolution so inherited user-data paths cannot target live hooks.
-  process.env.ORCA_USER_DATA_PATH = isolatedUserDataDir
+  process.env.TOPO_USER_DATA_PATH = isolatedUserDataDir
 })
 
 afterEach(() => {
   if (previousUserDataPath === undefined) {
-    delete process.env.ORCA_USER_DATA_PATH
+    delete process.env.TOPO_USER_DATA_PATH
   } else {
-    process.env.ORCA_USER_DATA_PATH = previousUserDataPath
+    process.env.TOPO_USER_DATA_PATH = previousUserDataPath
   }
   rmSync(isolatedUserDataDir, { recursive: true, force: true })
   vi.unstubAllEnvs()
@@ -55,7 +55,7 @@ vi.mock('../../../codex/trust/hooks/codex-hook-hash-lookup', async (importOrigin
 
 vi.mock('electron', () => ({
   app: {
-    getPath: () => '/tmp/orca-user-data'
+    getPath: () => '/tmp/topo-user-data'
   }
 }))
 
@@ -116,7 +116,7 @@ function runHookProcess(
   executable: string,
   args: string[],
   env: NodeJS.ProcessEnv,
-  // An open, unwritten pipe exposes read-to-EOF hangs outside an Orca pane.
+  // An open, unwritten pipe exposes read-to-EOF hangs outside a Topo pane.
   stdin: 'close' | 'abandon' = 'close'
 ): Promise<HookRun> {
   return new Promise((resolve, reject) => {
@@ -161,12 +161,12 @@ function runHookProcess(
 
 function hookEnvironment(extraEnv: NodeJS.ProcessEnv = {}): NodeJS.ProcessEnv {
   const env = Object.fromEntries(
-    Object.entries(process.env).filter(([key]) => !key.startsWith('ORCA_'))
+    Object.entries(process.env).filter(([key]) => !key.startsWith('TOPO_'))
   )
   return {
     ...env,
     HOME: REMOTE_HOME,
-    ORCA_AGENT_HOOK_ENDPOINT: '',
+    TOPO_AGENT_HOOK_ENDPOINT: '',
     ...extraEnv
   }
 }
@@ -181,11 +181,11 @@ describe('Windows managed hook stdin structure', () => {
   // Command-shape assertions missed conhost discarding the consumer's JSON output.
   it.skipIf(process.platform !== 'win32').each([
     { form: 'claude-hook.cmd', bundled: false },
-    { form: 'orca-agent-hook.exe claude', bundled: true }
+    { form: 'topo-agent-hook.exe claude', bundled: true }
   ])(
     'emits parseable JSON on stdout from the registered Claude hook command ($form), through cmd.exe and Git Bash',
     async ({ form, bundled }) => {
-      const home = mkdtempSync(join(tmpdir(), 'orca-hook-stdout-json-'))
+      const home = mkdtempSync(join(tmpdir(), 'topo-hook-stdout-json-'))
       homedirMock.mockReturnValue(home)
       const absentProfile = join(home, 'absent')
       seedCmdAutoRunTarget(home)
@@ -207,14 +207,14 @@ describe('Windows managed hook stdin structure', () => {
           { name: 'Git Bash', executable: gitBash, args: ['-c', entry.command] }
         ]
         const environments = [
-          { name: 'no Orca env', env: hookEnvironment({ USERPROFILE: home }) },
+          { name: 'no Topo env', env: hookEnvironment({ USERPROFILE: home }) },
           {
-            name: 'Orca env with dead listener',
+            name: 'Topo env with dead listener',
             env: hookEnvironment({
               USERPROFILE: home,
-              ORCA_AGENT_HOOK_PORT: '59999',
-              ORCA_AGENT_HOOK_TOKEN: 'token',
-              ORCA_PANE_KEY: 'tab:leaf'
+              TOPO_AGENT_HOOK_PORT: '59999',
+              TOPO_AGENT_HOOK_TOKEN: 'token',
+              TOPO_PANE_KEY: 'tab:leaf'
             })
           },
           {
@@ -261,7 +261,7 @@ describe.skipIf(process.platform === 'win32')('managed hook stdin lifecycle', ()
     ['PATH without coreutils', '/nonexistent'],
     ['PATH whose first cat is a decoy', '']
   ])('captures the whole payload with %s', async (label, pathValue) => {
-    const decoyDir = mkdtempSync(join(tmpdir(), 'orca-hook-stdin-decoy-'))
+    const decoyDir = mkdtempSync(join(tmpdir(), 'topo-hook-stdin-decoy-'))
     try {
       let effectivePath = pathValue
       if (label === 'PATH whose first cat is a decoy') {

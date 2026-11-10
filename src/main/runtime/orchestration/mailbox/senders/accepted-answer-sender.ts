@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import {
   runCoordinatorKey,
   runBoundToCoordinator
@@ -8,7 +8,7 @@ import { isEquivalentPaneKey } from '../../db/pane-key-match'
 
 /** Capture only the actor whose exact binding was validated for this answer. */
 export function acceptedAnswerSender(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   role: string,
   caller?: OrchestrationCallerIdentity
 ): () => string | undefined {
@@ -31,7 +31,7 @@ export function acceptedAnswerSender(
       return dispatch
         ? {
             terminalHandle: dispatch.assignee_handle,
-            orcaSessionId: dispatch.assignee_orca_session_id,
+            topoSessionId: dispatch.assignee_topo_session_id,
             paneKey: dispatch.assignee_pane_key,
             generation: dispatch.consumer_generation,
             hostScope: dispatch.host_scope,
@@ -92,7 +92,7 @@ export function acceptedAnswerSender(
       const party = {
         address: role,
         terminalHandle: actor.terminalHandle,
-        orcaSessionId: actor.orcaSessionId
+        topoSessionId: actor.topoSessionId
       }
       const snapshot = runtime.orchestrationSenderNames.snapshotOf(
         caller ? { ...party, address: caller.address } : party

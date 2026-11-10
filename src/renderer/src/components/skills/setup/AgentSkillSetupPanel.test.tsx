@@ -68,15 +68,15 @@ vi.mock('../../onboarding/OnboardingInlineCommandTerminal', () => ({
   )
 }))
 
-const WRITE_PLAN = planOf([sharedEntry('orca-cli', 'write')])
+const WRITE_PLAN = planOf([sharedEntry('topo-cli', 'write')])
 
 function panelProps(
   overrides: Partial<ComponentProps<typeof AgentSkillSetupPanel>> = {}
 ): ComponentProps<typeof AgentSkillSetupPanel> {
   return {
     title: 'CLI skill',
-    description: 'Enables agents to use Orca workflows.',
-    skillNames: ['orca-cli'],
+    description: 'Enables agents to use Topo workflows.',
+    skillNames: ['topo-cli'],
     installed: false,
     loading: false,
     error: null,

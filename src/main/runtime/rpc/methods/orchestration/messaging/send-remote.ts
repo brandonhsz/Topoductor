@@ -4,7 +4,7 @@ import type {
 } from '../../../../orchestration/db/orchestration-records'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import { waitForFederatedLifecycleSettlement } from '../../../../orchestration/federation/federation-lifecycle-settlement'
 import { bindCoordinatorMutationPayload } from '../../../../orchestration/workers/reports/dispatch-message-binding'
@@ -27,7 +27,7 @@ type RemoteAttachment = {
 
 export async function sendRemoteMessage(args: {
   params: SendParamsInput
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   from: string
   senderPaneKey: string

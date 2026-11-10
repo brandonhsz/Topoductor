@@ -1,18 +1,18 @@
-import { OrcaRuntimeWithPickMostRecentActor } from './terminal-layout-queue'
+import { TopoRuntimeWithPickMostRecentActor } from './terminal-layout-queue'
 import type { ApplyLayoutResult, PtyLayoutState, PtyLayoutTarget } from './terminal-layout-state'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import type { LayoutApplyReply } from '../../../../shared/workspace-layout/workspace-layout-command-types'
 import type { WindowLayoutCommand } from './runtime-layout-apply'
 import { PaneGridRecorder } from './pane-grid-recording'
 
-export abstract class OrcaRuntimeWithApplyLayout extends OrcaRuntimeWithPickMostRecentActor {
+export abstract class TopoRuntimeWithApplyLayout extends TopoRuntimeWithPickMostRecentActor {
   protected abstract suppressResizesForMs(ms: number): void
   abstract applyLayoutCommand(command: WindowLayoutCommand): Promise<LayoutApplyReply>
   private paneGrids: PaneGridRecorder | null = null
 
   /** Layout-owner build: remembers a resized terminal's grid on the pane showing it. */
   protected notePaneGrid(ptyId: string, cols: number, rows: number): void {
-    if (!ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (!TOPO_LAYOUT_OWNER_IS_MAIN) {
       return
     }
     this.paneGrids ??= new PaneGridRecorder({
@@ -165,7 +165,7 @@ export abstract class OrcaRuntimeWithApplyLayout extends OrcaRuntimeWithPickMost
     return this.mobileDisplayModes.get(ptyId) ?? this.getDefaultMobileDisplayMode()
   }
 
-  // Why: a headless runtime (orca serve, orcad) serves several clients at once, so a phone that
+  // Why: a headless runtime (topo serve, topod) serves several clients at once, so a phone that
   // only views a terminal must not shrink it for all of them. Phone input or an explicit
   // phone-mode request still claims the size. servesHeadlessGraph is fixed for the process, so
   // a desktop host keeps fitting phones on open and no PTY's mode flips mid-session.

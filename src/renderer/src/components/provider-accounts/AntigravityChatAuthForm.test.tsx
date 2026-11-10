@@ -157,7 +157,7 @@ it.each([
       kind: 'environment',
       environmentId: `failed-save-${surface}-${language}`
     } as const
-    const failure = "Orca couldn't save your Antigravity sign-in settings. Try again."
+    const failure = "Topo couldn't save your Antigravity sign-in settings. Try again."
     vi.mocked(callAntigravityChatAuthConfig).mockImplementation((_owner, config) =>
       config === undefined
         ? Promise.resolve(enterprise)

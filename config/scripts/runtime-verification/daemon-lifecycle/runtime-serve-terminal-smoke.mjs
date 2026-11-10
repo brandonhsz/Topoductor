@@ -1,4 +1,4 @@
-// Drive built Electron/orcad server through public pairing/RPC, create terminal and require real command output, then shutdown; --browser also checks provider actions.
+// Drive built Electron/topod server through public pairing/RPC, create terminal and require real command output, then shutdown; --browser also checks provider actions.
 // Boot/port/host.platform can pass with dead PTYs when renderer fallback times out; both targets must satisfy the same end-to-end contract.
 import { spawn, spawnSync } from 'node:child_process'
 import { existsSync, mkdtempSync, rmSync, statSync, writeFileSync } from 'node:fs'
@@ -8,21 +8,21 @@ import { pathToFileURL } from 'node:url'
 import { randomBytes } from 'node:crypto'
 import process from 'node:process'
 import {
-  ORCAD_CLI_ENTRY_FILENAME,
-  ORCAD_SERVER_ENTRY_FILENAME
-} from '../../../../src/shared/orcad-artifacts.ts'
-import { packagedNodeRuntimePath } from '../../orcad-distribution/prebuilds/build-orcad-node.mjs'
-import { currentTarget } from '../../orcad-distribution/prebuilds/server-build-target.mjs'
+  TOPOD_CLI_ENTRY_FILENAME,
+  TOPOD_SERVER_ENTRY_FILENAME
+} from '../../../../src/shared/topod-artifacts.ts'
+import { packagedNodeRuntimePath } from '../../topod-distribution/prebuilds/build-topod-node.mjs'
+import { currentTarget } from '../../topod-distribution/prebuilds/server-build-target.mjs'
 
 const projectDir = resolve(import.meta.dirname, '../../../..')
 const serveEntry = join(projectDir, 'out', 'main', 'index.js')
-const ORCAD_DIR = join(projectDir, 'out', 'orcad')
-const ORCAD_ENTRY = join(ORCAD_DIR, ORCAD_SERVER_ENTRY_FILENAME)
+const TOPOD_DIR = join(projectDir, 'out', 'topod')
+const TOPOD_ENTRY = join(TOPOD_DIR, TOPOD_SERVER_ENTRY_FILENAME)
 const READY_TIMEOUT_MS = 120_000
 const OUTPUT_TIMEOUT_MS = 30_000
 const SHUTDOWN_TIMEOUT_MS = 15_000
-// Offset the port when a developer's own `orca serve` is already using it.
-const PORT = 6800 + Math.floor(Number(process.env.ORCA_SMOKE_PORT_OFFSET ?? '0'))
+// Offset the port when a developer's own `topo serve` is already using it.
+const PORT = 6800 + Math.floor(Number(process.env.TOPO_SMOKE_PORT_OFFSET ?? '0'))
 
 function log(message) {
   process.stdout.write(`[serve-terminal-smoke] ${message}\n`)
@@ -33,13 +33,13 @@ function fail(message) {
   process.exitCode = 1
 }
 
-// Use packaged Node/CLI for orcad and checkout desktop CLI for Electron.
+// Use packaged Node/CLI for topod and checkout desktop CLI for Electron.
 export function resolveCli(target, root = projectDir) {
-  if (target === 'orcad') {
-    const directory = join(root, 'out', 'orcad')
-    const built = join(directory, ORCAD_CLI_ENTRY_FILENAME)
+  if (target === 'topod') {
+    const directory = join(root, 'out', 'topod')
+    const built = join(directory, TOPOD_CLI_ENTRY_FILENAME)
     if (!existsSync(built)) {
-      throw new Error(`Missing packaged Orcad CLI at ${built}; run pnpm build:orcad`)
+      throw new Error(`Missing packaged Topod CLI at ${built}; run pnpm build:topod`)
     }
     return {
       command: packagedNodeRuntimePath(directory, currentTarget()),
@@ -49,10 +49,10 @@ export function resolveCli(target, root = projectDir) {
   const built = join(root, 'out', 'cli', 'index.js')
   return existsSync(built)
     ? { command: process.execPath, prefix: [built] }
-    : { command: 'orca', prefix: [] }
+    : { command: 'topo', prefix: [] }
 }
 
-function orca(pairingCode, args) {
+function topo(pairingCode, args) {
   const cli = resolveCli(smokeTarget())
   const result = spawnSync(
     cli.command,
@@ -64,21 +64,21 @@ function orca(pairingCode, args) {
     }
   )
   if (result.error) {
-    throw new Error(`orca ${args[0]} failed to spawn: ${result.error.message}`)
+    throw new Error(`topo ${args[0]} failed to spawn: ${result.error.message}`)
   }
   if (result.status !== 0) {
     throw new Error(
-      `orca ${args.join(' ')} exited ${result.signal ?? result.status}:\n${result.stderr || result.stdout}`
+      `topo ${args.join(' ')} exited ${result.signal ?? result.status}:\n${result.stderr || result.stdout}`
     )
   }
   const line = (result.stdout ?? '').trim()
   if (!line.startsWith('{')) {
-    throw new Error(`orca ${args.join(' ')} produced no JSON:\n${result.stdout}\n${result.stderr}`)
+    throw new Error(`topo ${args.join(' ')} produced no JSON:\n${result.stdout}\n${result.stderr}`)
   }
   const parsed = JSON.parse(line)
   if (parsed.ok === false) {
     throw new Error(
-      `orca ${args.join(' ')} returned ${parsed.error?.code}: ${parsed.error?.message}`
+      `topo ${args.join(' ')} returned ${parsed.error?.code}: ${parsed.error?.message}`
     )
   }
   return parsed.result
@@ -106,7 +106,7 @@ function waitForReady(child) {
         }
         try {
           const payload = JSON.parse(line)
-          if (payload.type === 'orca_server_ready') {
+          if (payload.type === 'topo_server_ready') {
             clearTimeout(timer)
             resolvePromise(payload)
             return
@@ -144,7 +144,7 @@ function pairingCodeFrom(payload) {
 async function waitForNonce(pairingCode, terminalHandle, nonce) {
   const deadline = Date.now() + OUTPUT_TIMEOUT_MS
   while (Date.now() < deadline) {
-    const read = orca(pairingCode, ['terminal', 'read', '--terminal', terminalHandle])
+    const read = topo(pairingCode, ['terminal', 'read', '--terminal', terminalHandle])
     const tail = (read?.terminal?.tail ?? []).map((entry) => String(entry)).join('\n')
     if (tail.includes(nonce)) {
       return true
@@ -160,22 +160,22 @@ function smokeTarget() {
   const flagIndex = process.argv.indexOf('--target')
   return flagIndex !== -1
     ? process.argv[flagIndex + 1]
-    : (process.env.ORCA_SMOKE_TARGET ?? 'electron')
+    : (process.env.TOPO_SMOKE_TARGET ?? 'electron')
 }
 
 function resolveLaunch(userDataDir) {
   const target = smokeTarget()
-  if (target === 'orcad') {
+  if (target === 'topod') {
     return {
-      label: `orcad (${ORCAD_ENTRY})`,
-      command: packagedNodeRuntimePath(ORCAD_DIR, currentTarget()),
-      args: [ORCAD_ENTRY, '--port', String(PORT), '--json'],
-      env: { ORCA_USER_DATA: userDataDir }
+      label: `topod (${TOPOD_ENTRY})`,
+      command: packagedNodeRuntimePath(TOPOD_DIR, currentTarget()),
+      args: [TOPOD_ENTRY, '--port', String(PORT), '--json'],
+      env: { TOPO_USER_DATA: userDataDir }
     }
   }
   if (target !== 'electron') {
     throw new Error(
-      `--target (or ORCA_SMOKE_TARGET) must be 'electron' or 'orcad', got '${target}'`
+      `--target (or TOPO_SMOKE_TARGET) must be 'electron' or 'topod', got '${target}'`
     )
   }
   const serveArgs = [
@@ -186,18 +186,18 @@ function resolveLaunch(userDataDir) {
     '--serve-json',
     `--user-data-dir=${userDataDir}`
   ]
-  const override = process.env.ORCA_SMOKE_ELECTRON
+  const override = process.env.TOPO_SMOKE_ELECTRON
   return {
     label: `electron (${serveEntry})`,
     command: override ?? 'npx',
     args: override ? serveArgs : ['electron', ...serveArgs],
-    env: { ORCA_DEV_USER_DATA_PATH: userDataDir }
+    env: { TOPO_DEV_USER_DATA_PATH: userDataDir }
   }
 }
 
 function seedGitRepo() {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-smoke-repo-'))
-  writeFileSync(join(dir, 'README.md'), '# orca smoke\n')
+  const dir = mkdtempSync(join(tmpdir(), 'topo-smoke-repo-'))
+  writeFileSync(join(dir, 'README.md'), '# topo smoke\n')
   const git = (...args) => {
     const result = spawnSync('git', args, { cwd: dir, encoding: 'utf8' })
     if (result.status !== 0) {
@@ -205,15 +205,15 @@ function seedGitRepo() {
     }
   }
   git('init', '-b', 'main')
-  git('config', 'user.email', 'smoke@orca.test')
-  git('config', 'user.name', 'Orca Smoke')
+  git('config', 'user.email', 'smoke@topo.test')
+  git('config', 'user.name', 'Topo Smoke')
   git('add', '-A')
   git('commit', '-m', 'seed')
   return dir
 }
 
 async function main() {
-  const userDataDir = mkdtempSync(join(tmpdir(), 'orca-serve-smoke-'))
+  const userDataDir = mkdtempSync(join(tmpdir(), 'topo-serve-smoke-'))
   const launch = resolveLaunch(userDataDir)
   log(`booting ${launch.label} on port ${PORT} with userData ${userDataDir}`)
 
@@ -236,13 +236,13 @@ async function main() {
     const repoPath = seedGitRepo()
     seeded = { repoPath }
     log(`seeded repo at ${repoPath}`)
-    const repo = orca(pairingCode, ['repo', 'add', '--path', repoPath])?.repo
+    const repo = topo(pairingCode, ['repo', 'add', '--path', repoPath])?.repo
     if (!repo?.id) {
       throw new Error('repo.add returned no repo id')
     }
 
     const worktreeName = `smoke-${randomBytes(4).toString('hex')}`
-    const created = orca(pairingCode, [
+    const created = topo(pairingCode, [
       'worktree',
       'create',
       '--repo',
@@ -259,13 +259,13 @@ async function main() {
     log(`created worktree ${created.id}`)
 
     // Use show to verify this persisted worktree: capped list may omit it in shared dev profile.
-    const shown = orca(pairingCode, ['worktree', 'show', '--worktree', created.id])?.worktree
+    const shown = topo(pairingCode, ['worktree', 'show', '--worktree', created.id])?.worktree
     if (shown?.id !== created.id) {
       throw new Error('worktree.create succeeded but worktree.show cannot resolve it')
     }
     log(`server resolves ${shown.id}`)
     if (process.argv.includes('--browser')) {
-      const status = orca(pairingCode, ['status'])
+      const status = topo(pairingCode, ['status'])
       if (!status?.runtime?.capabilities?.includes('browser.headless.v1')) {
         throw new Error(
           `status omitted browser.headless.v1: ${JSON.stringify(status?.runtime?.capabilities)}`
@@ -274,9 +274,9 @@ async function main() {
       const fixturePath = join(userDataDir, 'browser-smoke.html')
       writeFileSync(
         fixturePath,
-        '<!doctype html><title>Orcad Browser Smoke</title><main>browser-ready</main>'
+        '<!doctype html><title>Topod Browser Smoke</title><main>browser-ready</main>'
       )
-      const browserPageId = orca(pairingCode, [
+      const browserPageId = topo(pairingCode, [
         'tab',
         'create',
         '--worktree',
@@ -289,11 +289,11 @@ async function main() {
       }
       const targetFlags = ['--worktree', created.id, '--page', browserPageId]
       const targetUrl = pathToFileURL(fixturePath).href
-      const navigation = orca(pairingCode, ['goto', ...targetFlags, '--url', targetUrl])
-      if (navigation?.url !== targetUrl || navigation?.title !== 'Orcad Browser Smoke') {
+      const navigation = topo(pairingCode, ['goto', ...targetFlags, '--url', targetUrl])
+      if (navigation?.url !== targetUrl || navigation?.title !== 'Topod Browser Smoke') {
         throw new Error(`browser.goto returned the wrong page: ${JSON.stringify(navigation)}`)
       }
-      const evaluated = orca(pairingCode, [
+      const evaluated = topo(pairingCode, [
         'eval',
         ...targetFlags,
         '--expression',
@@ -302,14 +302,14 @@ async function main() {
       if (evaluated?.result !== 'browser-ready') {
         throw new Error(`browser.eval returned ${JSON.stringify(evaluated)}`)
       }
-      const screenshot = orca(pairingCode, ['screenshot', ...targetFlags])
+      const screenshot = topo(pairingCode, ['screenshot', ...targetFlags])
       if (screenshot?.format !== 'png' || !screenshot.path || !statSync(screenshot.path).size) {
         throw new Error('browser.screenshot saved no PNG file')
       }
       log('browser navigate/evaluate/screenshot round trip OK')
     }
 
-    const terminal = orca(pairingCode, ['terminal', 'create', '--worktree', created.id])?.terminal
+    const terminal = topo(pairingCode, ['terminal', 'create', '--worktree', created.id])?.terminal
     if (!terminal?.handle) {
       throw new Error('terminal.create returned no handle')
     }
@@ -317,35 +317,35 @@ async function main() {
 
     // Why invoke node rather than `echo`: the shell differs per platform, node does not.
     const nonce = randomBytes(8).toString('hex')
-    orca(pairingCode, [
+    topo(pairingCode, [
       'terminal',
       'send',
       '--terminal',
       terminal.handle,
       '--text',
-      `"${process.execPath}" -e "console.log('ORCA_SMOKE_' + '${nonce}')"`,
+      `"${process.execPath}" -e "console.log('TOPO_SMOKE_' + '${nonce}')"`,
       '--enter'
     ])
 
-    if (!(await waitForNonce(pairingCode, terminal.handle, `ORCA_SMOKE_${nonce}`))) {
+    if (!(await waitForNonce(pairingCode, terminal.handle, `TOPO_SMOKE_${nonce}`))) {
       throw new Error(
         `terminal produced no output containing ${nonce} within ${OUTPUT_TIMEOUT_MS}ms — ` +
           `the server started and answered RPC, but its PTY path is dead`
       )
     }
     log('terminal round trip OK')
-    if (launch.env.ORCA_USER_DATA && process.platform !== 'win32') {
+    if (launch.env.TOPO_USER_DATA && process.platform !== 'win32') {
       const cliNonce = randomBytes(8).toString('hex')
-      orca(pairingCode, [
+      topo(pairingCode, [
         'terminal',
         'send',
         '--terminal',
         terminal.handle,
         '--text',
-        `orca status && orca worktree ps --json && printf 'ORCA_CLI_%s\\n' '${cliNonce}'`,
+        `topo status && topo worktree ps --json && printf 'TOPO_CLI_%s\\n' '${cliNonce}'`,
         '--enter'
       ])
-      if (!(await waitForNonce(pairingCode, terminal.handle, `ORCA_CLI_${cliNonce}`))) {
+      if (!(await waitForNonce(pairingCode, terminal.handle, `TOPO_CLI_${cliNonce}`))) {
         throw new Error('The managed terminal could not run the execution host CLI')
       }
       log('execution host CLI round trip OK')

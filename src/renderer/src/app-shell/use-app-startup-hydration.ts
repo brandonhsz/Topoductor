@@ -74,7 +74,7 @@ export function useAppStartupHydration(onOnboardingLoaded: (state: OnboardingSta
       logRendererStartupDiagnostic('startup-chain-start')
       try {
         // Profiles need no synchronous read here; overlap their IPC with settings.
-        void actions.fetchOrcaProfiles()
+        void actions.fetchTopoProfiles()
         // Publish local settings first; a remote owner’s defaults can wait a full connect timeout.
         await timeRendererStartupStep('fetch-settings', () =>
           actions.fetchSettings({ deferOwnerWorktreeVisibilityDefaults: true })

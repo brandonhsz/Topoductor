@@ -10,11 +10,11 @@ export type PluginHostCallScope = {
   assertActive(): void
   /** The WebContents whose frame made the call (desktop IPC only): dialogs and budgets bind to it. */
   callerWebContentsId?: number
-  /** The plugin's display name, for prompts Orca shows on its behalf. */
+  /** The plugin's display name, for prompts Topo shows on its behalf. */
   pluginName?: string
   /** The open panel or editor that made the call; absent for workers. */
   panel?: PluginPanelCaller
-  /** Writes to the plugin's log (`orca plugin logs`). */
+  /** Writes to the plugin's log (`topo plugin logs`). */
   log?: (line: string) => void
   /** Aborts when the worker that made the call cancels it or exits. */
   signal?: AbortSignal

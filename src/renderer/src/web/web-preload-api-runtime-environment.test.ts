@@ -30,7 +30,7 @@ describe('web runtime environment identity', () => {
 
     await expect(
       globals.window.api.runtimeEnvironments.resolve({ selector: 'web-server-a' })
-    ).rejects.toThrow('Unknown Orca runtime environment: web-server-a')
+    ).rejects.toThrow('Unknown Topo runtime environment: web-server-a')
   })
 
   it('keeps old selectors only when re-pairing proves the same server key', async () => {
@@ -118,7 +118,7 @@ describe('web runtime environment identity', () => {
     expect(clientCount).toBe(2)
     expect(calls).toEqual(['status.get', 'status.get'])
     expect(
-      JSON.parse(globals.storage.getItem('orca.web.runtimeEnvironment.v1') ?? '{}')
+      JSON.parse(globals.storage.getItem('topo.web.runtimeEnvironment.v1') ?? '{}')
     ).toMatchObject({ pairedDeviceId: 'paired-device-a' })
   })
 
@@ -204,7 +204,7 @@ describe('web runtime environment identity', () => {
     }))
     const globals = installBrowserGlobals('Linux')
     writeStoredRuntimeEnvironment(globals.storage, 'web-server-a')
-    const previousStored = globals.storage.getItem('orca.web.runtimeEnvironment.v1')
+    const previousStored = globals.storage.getItem('topo.web.runtimeEnvironment.v1')
     const { installWebPreloadApi } = await import('./web-preload-api')
     installWebPreloadApi()
 
@@ -214,7 +214,7 @@ describe('web runtime environment identity', () => {
         pairingCode: encodePairingCode()
       })
     ).resolves.toMatchObject({ ok: false, kind: 'protocol-incompatible' })
-    expect(globals.storage.getItem('orca.web.runtimeEnvironment.v1')).toBe(previousStored)
+    expect(globals.storage.getItem('topo.web.runtimeEnvironment.v1')).toBe(previousStored)
     await expect(globals.window.api.runtimeEnvironments.list()).resolves.toMatchObject([
       { id: 'web-server-a' }
     ])
@@ -259,7 +259,7 @@ describe('web runtime environment identity', () => {
     ).resolves.toMatchObject({
       ok: false,
       kind: 'environment-save-failed',
-      message: 'Orca verified the host but could not save it. Check browser storage and try again.'
+      message: 'Topo verified the host but could not save it. Check browser storage and try again.'
     })
     await expect(globals.window.api.runtimeEnvironments.list()).resolves.toMatchObject([
       { id: 'web-server-a' }
@@ -312,7 +312,7 @@ describe('web runtime environment identity', () => {
     })
     expect(call).toHaveBeenCalledOnce()
     expect(
-      JSON.parse(globals.storage.getItem('orca.web.runtimeEnvironment.v1') ?? '{}')
+      JSON.parse(globals.storage.getItem('topo.web.runtimeEnvironment.v1') ?? '{}')
     ).toMatchObject({ connectionDependency: 'ssh-tunnel' })
   })
 })

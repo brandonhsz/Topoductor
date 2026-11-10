@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithListManagedWorktrees } from '../managed-workspace-operations'
+import { TopoRuntimeWithListManagedWorktrees } from '../managed-workspace-operations'
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
 import {
   describeLaunchedAgentHost,
@@ -7,7 +7,7 @@ import {
   type LaunchedAgentHost
 } from '../../terminal/wait/launched-agent-foreground'
 
-export abstract class OrcaRuntimeWithForegroundInspection extends OrcaRuntimeWithListManagedWorktrees {
+export abstract class TopoRuntimeWithForegroundInspection extends TopoRuntimeWithListManagedWorktrees {
   launchedAgentTerminalIdentity(ptyId: string): unknown {
     return this.ptysById.get(ptyId)
   }

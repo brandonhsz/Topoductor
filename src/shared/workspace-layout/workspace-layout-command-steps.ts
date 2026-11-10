@@ -1,5 +1,5 @@
 import { canonicalTabGap, visibleLayoutGroups } from './workspace-layout-client-visibility'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../layout-owner-switch'
 import { insertTabIdIntoOrder } from './tab-order'
 import { collectLayoutLeafIdsInOrder } from './terminal-pane-tree'
 import type {
@@ -114,7 +114,7 @@ export type TabPlacement = { groupId?: string; afterTabId?: string; index?: numb
 
 /** In owner builds, reuse the sender’s empty group or the window/Loader root ID; otherwise mint an ID. */
 function firstGroupId(key: string, placement: TabPlacement, context: LayoutContext): string {
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     return placement.groupId ?? workspaceRootGroupId(key)
   }
   return context.mintId()

@@ -31,7 +31,7 @@ function remoteWriteTooLargeError(content: string): Error | null {
   const bytes = new TextEncoder().encode(JSON.stringify(content)).length
   return bytes > REMOTE_RUNTIME_MAX_FILE_WRITE_CONTENT_BYTES
     ? new Error(
-        `File is too large to save to a remote Orca server (${Math.ceil(bytes / 1024)} KB; the limit is ${REMOTE_RUNTIME_MAX_FILE_WRITE_CONTENT_BYTES / 1024} KB).`
+        `File is too large to save to a remote Topo server (${Math.ceil(bytes / 1024)} KB; the limit is ${REMOTE_RUNTIME_MAX_FILE_WRITE_CONTENT_BYTES / 1024} KB).`
       )
     : null
 }

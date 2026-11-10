@@ -115,7 +115,7 @@ export async function resolveRuntimeLocalWorktreeCreateCandidate(args: {
       computeWorktreePath(effectiveSanitizedName, args.repo.path, args.worktreePathSettings),
       args.workspaceRoot
     )
-    // Orca owns the path until background removal settles.
+    // Topo owns the path until background removal settles.
     return (
       !findPendingWorktreeRemovalConflict(args.repo.path, { worktreePath }) &&
       !(await runtimePathExists(worktreePath)) &&

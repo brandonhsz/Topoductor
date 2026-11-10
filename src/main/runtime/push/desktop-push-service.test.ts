@@ -33,7 +33,7 @@ function createService(
   dispatch: (event: MobileNotificationEvent) => void
   retries: { run: () => void; delayMs: number }[]
 } {
-  const userDataPath = mkdtempSync(join(tmpdir(), 'orca-push-service-'))
+  const userDataPath = mkdtempSync(join(tmpdir(), 'topo-push-service-'))
   const registry = new DeviceRegistry(userDataPath)
   const outbox = new PushUnregisterOutbox(userDataPath)
   const device = registry.addDevice('phone', 'mobile')

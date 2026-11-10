@@ -51,7 +51,7 @@ import {
 
 import type { RestTestRig } from '../../src/main/native-chat/agent-session-wire/host/testing/structured-agent-session-rest-test-rig'
 import { setStructuredAgentSessionHost } from '../../src/main/native-chat/agent-session-wire/host/structured-agent-session-registry'
-import { OrcaRuntimeService } from '../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../src/main/runtime/topo-runtime'
 import { RpcDispatcher } from '../../src/main/runtime/rpc/dispatcher'
 import { STRUCTURED_AGENT_SESSION_METHODS } from '../../src/main/runtime/rpc/methods/structured-sessions/structured-agent-session'
 import {
@@ -218,7 +218,7 @@ it.each(cases)(
     }
     const options = { fence: attached.fence, turnScope: AGENT_JOURNAL_THREAD_SCOPE }
     const dispatcher = new RpcDispatcher({
-      runtime: new OrcaRuntimeService(),
+      runtime: new TopoRuntimeService(),
       methods: STRUCTURED_AGENT_SESSION_METHODS
     })
     let requestId = 0
@@ -247,12 +247,12 @@ it.each(cases)(
     const append = journal.appendItem.bind(journal)
     async function completedTurn(id: string, prompt: string, answer: string) {
       const user = await append(
-        { provider: 'orca', clientMessageId: `${id}-user` },
+        { provider: 'topo', clientMessageId: `${id}-user` },
         message(prompt, 'user'),
         options
       )
       const turn = await append(
-        { provider: 'orca', clientMessageId: `${id}-turn` },
+        { provider: 'topo', clientMessageId: `${id}-turn` },
         {
           kind: 'turn',
           turnId: id,
@@ -266,7 +266,7 @@ it.each(cases)(
       )
       const turnScope = { kind: 'turn', turnItemId: turn.itemId } as const
       const response = await append(
-        { provider: 'orca', clientMessageId: `${id}-answer` },
+        { provider: 'topo', clientMessageId: `${id}-answer` },
         message(answer),
         { ...options, turnScope }
       )
@@ -275,7 +275,7 @@ it.each(cases)(
     await completedTurn('older', OLDER, OLDER_ANSWER)
     for (let index = 0; index < AGENT_SESSION_HISTORY_MAX_LIMIT; index += 1) {
       await journal.appendItem(
-        { provider: 'orca', clientMessageId: `context-${index}` },
+        { provider: 'topo', clientMessageId: `context-${index}` },
         message(`Context ${index}`),
         options
       )
@@ -284,7 +284,7 @@ it.each(cases)(
     const crossing = kind === 'mixed' ? await history({ direction: 'tail' }) : null
     const { response, turnScope } = await completedTurn('current', PROMPT, STALE)
     const disposable = await journal.appendItem(
-      { provider: 'orca', clientMessageId: 'disposable' },
+      { provider: 'topo', clientMessageId: 'disposable' },
       { kind: 'status', text: REMOVED },
       options
     )
@@ -419,7 +419,7 @@ it.each(cases)(
     const priorHydrated = hydrated.events.length
     const priorResumed = resumed.events.length
     const published = await restored.appendItem(
-      { provider: 'orca', clientMessageId: 'published' },
+      { provider: 'topo', clientMessageId: 'published' },
       message(PUBLISHED),
       options
     )

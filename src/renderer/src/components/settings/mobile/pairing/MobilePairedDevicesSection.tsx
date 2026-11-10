@@ -27,7 +27,7 @@ export function MobilePairedDevicesSection({
           {hasQrCode
             ? t(
                 'auto.components.settings.MobilePane.1592afcc7a',
-                'No devices paired yet. Scan the QR code with the Orca mobile app.'
+                'No devices paired yet. Scan the QR code with the Topo mobile app.'
               )
             : t('auto.components.settings.MobilePane.1b1b70279a', 'No devices paired yet.')}
         </p>
@@ -48,14 +48,14 @@ export function MobilePairedDevicesSection({
                   <LegacyEncryptionNotice
                     message={t(
                       'auto.components.settings.MobilePane.legacyEncryption',
-                      'Uses older encryption. Update the Orca app on this device.'
+                      'Uses older encryption. Update the Topo app on this device.'
                     )}
                   />
                 ) : device.olderPairingMethod ? (
                   <div className="text-muted-foreground text-xs">
                     {t(
                       'auto.components.settings.MobilePane.olderPairingMethod',
-                      'Uses an older pairing method. Update the Orca app on this phone.'
+                      'Uses an older pairing method. Update the Topo app on this phone.'
                     )}
                   </div>
                 ) : null}

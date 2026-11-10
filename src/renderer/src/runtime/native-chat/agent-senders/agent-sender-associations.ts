@@ -170,7 +170,7 @@ export type AgentSenderResolution =
   /** The host runs nothing under the identities the card saved: a closed chat, a terminal that
    *  exited or was respawned, or a sender with no identity this host can name. */
   | { kind: 'gone'; sender: 'chat' | 'terminal' | 'other' }
-  /** The host publishes nothing: an older Orca, read through its own lookup. */
+  /** The host publishes nothing: an older Topo, read through its own lookup. */
   | { kind: 'legacy' }
 
 const AMBIGUOUS: AgentSenderResolution = Object.freeze({ kind: 'ambiguous' })
@@ -179,10 +179,10 @@ const LEGACY: AgentSenderResolution = Object.freeze({ kind: 'legacy' })
 /** The identities a card names its sender by, most specific first: the Dispatch a Started-worker
  *  card records, the chat session, the terminal handle it sent from, a federated Dispatch. */
 function senderIdentities(sender: AgentMessageSender, dispatchId: string | undefined): string[] {
-  const { address, orcaSessionId, terminalHandle } = sender.party
+  const { address, topoSessionId, terminalHandle } = sender.party
   return [
     dispatchId ? `dispatch:${dispatchId}` : undefined,
-    orcaSessionId ? `orca_session_id:${orcaSessionId}` : undefined,
+    topoSessionId ? `topo_session_id:${topoSessionId}` : undefined,
     terminalHandle && !terminalHandle.startsWith('dispatch:') ? terminalHandle : undefined,
     address.startsWith('dispatch:') ? address : undefined
   ].filter((identity): identity is string => Boolean(identity))
@@ -198,7 +198,7 @@ export function resolveAgentMessageSender(
 ): AgentSenderResolution {
   if (
     sender.party.address.startsWith('run:') &&
-    !sender.party.orcaSessionId &&
+    !sender.party.topoSessionId &&
     !sender.party.terminalHandle
   ) {
     return { kind: 'gone', sender: 'other' }
@@ -214,7 +214,7 @@ export function resolveAgentMessageSender(
     }
     if (location) {
       const role = sender.party.address.startsWith('dispatch:') || dispatchId !== undefined
-      const stableSession = identity.startsWith('orca_session_id:')
+      const stableSession = identity.startsWith('topo_session_id:')
       if (
         (identity.startsWith('dispatch:') || (role && !stableSession)) &&
         location.dispatchActor !== true
@@ -224,10 +224,10 @@ export function resolveAgentMessageSender(
       return { kind: 'located', location }
     }
   }
-  const { orcaSessionId, terminalHandle } = sender.party
+  const { topoSessionId, terminalHandle } = sender.party
   return {
     kind: 'gone',
-    sender: orcaSessionId
+    sender: topoSessionId
       ? 'chat'
       : terminalHandle && !terminalHandle.startsWith('dispatch:')
         ? 'terminal'

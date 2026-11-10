@@ -85,7 +85,7 @@ function uiStore(initial: Partial<PersistedUIState> = {}): {
 const percent = (guest: FakeGuest): number => browserPageZoomLevelToPercent(guest.level)
 
 beforeEach(() => {
-  configureBrowserSiteDisplayStore(mkdtempSync(join(tmpdir(), 'orca-site-display-')))
+  configureBrowserSiteDisplayStore(mkdtempSync(join(tmpdir(), 'topo-site-display-')))
 })
 
 describe('BrowserSiteDisplayController zoom', () => {
@@ -112,7 +112,7 @@ describe('BrowserSiteDisplayController zoom', () => {
     expect([github, githubOtherPort, docs].map(percent)).toEqual([110, 110, 110])
   })
 
-  it("restores the site's zoom after Orca's UI zoom is copied onto the page", () => {
+  it("restores the site's zoom after Topo's UI zoom is copied onto the page", () => {
     const controller = new BrowserSiteDisplayController()
     const ui = uiStore()
     controller.followZoomSettings(ui)
@@ -143,7 +143,7 @@ describe('BrowserSiteDisplayController zoom', () => {
 describe('BrowserSiteDisplayController color scheme', () => {
   it('uses chat media for document guests without changing zoom, and upgrades browser registration', () => {
     const controller = new BrowserSiteDisplayController()
-    const preview = fakeGuest('orca-preview://grant/theme.html')
+    const preview = fakeGuest('topo-preview://grant/theme.html')
     preview.level = 1
     controller.onGuestDocumentStart(preview, {
       url: preview.url,

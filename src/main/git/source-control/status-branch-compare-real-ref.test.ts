@@ -23,7 +23,7 @@ describe('getBranchCompare real refs', () => {
   it.each([false, true])(
     'excludes base-only changes after branches diverge: %s',
     async (diverged) => {
-      const repo = await mkdtemp(path.join(tmpdir(), 'orca-common-ancestor-compare-'))
+      const repo = await mkdtemp(path.join(tmpdir(), 'topo-common-ancestor-compare-'))
       tempRoots.push(repo)
       git(repo, ['init', '-q'])
       git(repo, ['config', 'user.email', 'test@example.com'])
@@ -59,7 +59,7 @@ describe('getBranchCompare real refs', () => {
   )
 
   it('reports equal commits as empty despite staged and unstaged changes', async () => {
-    const repo = await mkdtemp(path.join(tmpdir(), 'orca-equal-branch-compare-'))
+    const repo = await mkdtemp(path.join(tmpdir(), 'topo-equal-branch-compare-'))
     tempRoots.push(repo)
     git(repo, ['init', '-q'])
     git(repo, ['config', 'user.email', 'test@example.com'])
@@ -96,7 +96,7 @@ describe('getBranchCompare real refs', () => {
     async function createChainRepo(): Promise<{ repo: string; oids: Record<string, string> }> {
       // Canonical path so linked worktrees and the main checkout resolve one common dir.
       const repo = await realpath(
-        await mkdtemp(path.join(tmpdir(), 'orca-branch-compare-rewrite-'))
+        await mkdtemp(path.join(tmpdir(), 'topo-branch-compare-rewrite-'))
       )
       tempRoots.push(repo)
       git(repo, ['init', '-q', '-b', 'feature'])
@@ -196,7 +196,7 @@ describe('getBranchCompare real refs', () => {
   })
 
   it('preserves the raw oid of a remote-tracking ref that stores an annotated tag', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'orca-branch-compare-ref-'))
+    const root = await mkdtemp(path.join(tmpdir(), 'topo-branch-compare-ref-'))
     tempRoots.push(root)
     const source = path.join(root, 'source')
     const client = path.join(root, 'client')

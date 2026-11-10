@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 /**
- * `orca plugin shot --act`: input run against the live components panel before the capture, in
+ * `topo plugin shot --act`: input run against the live components panel before the capture, in
  * the test kit's vocabulary: `press(query)`, `type(query, text, { replace, submit })`,
  * `select(query, value)`, `toggle(query)`, `slide(query, value)`, and the Table and Tree verbs
  * (`sort`, `selectRows`, `activateRow`, `loadMore`, `expand`, `collapse`, `selectItem`,
@@ -115,7 +115,7 @@ function issueOf(index: number, value: unknown): string {
   return `${where} (${verb})${path}: ${first?.message ?? 'invalid'}`
 }
 
-/** `--act`'s JSON: a list (or one act) checked here, so a typo fails before Orca opens anything. */
+/** `--act`'s JSON: a list (or one act) checked here, so a typo fails before Topo opens anything. */
 export function parsePluginShotActs(
   json: string
 ): { ok: true; acts: PluginShotAct[] } | { ok: false; error: string } {

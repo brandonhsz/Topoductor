@@ -72,7 +72,7 @@ vi.mock('../../rpc/calls/runtime-rpc-call', () => ({
 vi.mock('../host-capabilities/structured-agent-session-host-support', () => ({
   supportsStructuredAgentSessionRename: async () => true
 }))
-vi.mock('../../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 vi.mock('@/store/terminals/tab-change-through-layout-owner', () => ({
   sendTabChangeToLayoutOwner: mock.layout
 }))

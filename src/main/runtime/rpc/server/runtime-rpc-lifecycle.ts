@@ -1,7 +1,7 @@
 import { stat } from 'node:fs/promises'
 import { basename, join } from 'node:path'
 import { AGENT_LAUNCH_RUNTIME_CAPABILITY } from '../../../../shared/agent-launch/contracts/agent-launch-runtime-capability'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { placeUnshownLiveTerminalsBestEffort } from '../../terminal/adoption/unshown-live-terminal-placement'
 import type { RuntimeTransportMetadata } from '../../../../shared/runtime-bootstrap'
 import { watchRuntimeMetadataOwnership } from './runtime-metadata-ownership-watch'
@@ -184,7 +184,7 @@ export class RuntimeRpcLifecycle extends RuntimeRpcWebSocketDispatch {
       },
       onReclaim: (previous) => {
         console.warn(
-          `[runtime] Reclaimed orca-runtime.json from a dead runtime (pid ${previous?.pid ?? 'none'}); republished pid ${this.pid}.`
+          `[runtime] Reclaimed topo-runtime.json from a dead runtime (pid ${previous?.pid ?? 'none'}); republished pid ${this.pid}.`
         )
       }
     })
@@ -290,7 +290,7 @@ export class RuntimeRpcLifecycle extends RuntimeRpcWebSocketDispatch {
           this.runtime.noteAgentLaunchClientReady?.()
         }
         // Publish every live host terminal as a tab on attach.
-        if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+        if (TOPO_LAYOUT_OWNER_IS_MAIN) {
           void placeUnshownLiveTerminalsBestEffort(this.runtime)
         }
         // Update capabilities once per socket; only phones send their own later update.

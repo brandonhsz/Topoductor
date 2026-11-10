@@ -8,7 +8,7 @@ import {
 } from './hook-config'
 
 const EVENTS = ['turn_end', 'session_start', 'session_end', 'post_tool'] as const
-const MANAGED_COMMAND = '/Users/tester/.orca/agent-hooks/jcode-hook.sh'
+const MANAGED_COMMAND = '/Users/tester/.topo/agent-hooks/jcode-hook.sh'
 
 describe('jcode hook-config', () => {
   it('keeps every table declared after [hooks] when removing managed entries', () => {
@@ -68,7 +68,7 @@ turn_end = "~/bin/mine" # replaces agent-hooks/jcode-hook.sh
   })
 
   it('repoints a stale managed array element in place and drops managed duplicates', () => {
-    const stale = tomlQuoteString('/Users/old/.orca/agent-hooks/jcode-hook.cmd')
+    const stale = tomlQuoteString('/Users/old/.topo/agent-hooks/jcode-hook.cmd')
     const current = tomlQuoteString(MANAGED_COMMAND)
     const source = `[hooks]\npre_tool = ["a.sh", ${stale}, "b.sh", ${current}]\nturn_end = [${stale}, ${stale}]\n`
     const applied = applyJcodeManagedHooks(

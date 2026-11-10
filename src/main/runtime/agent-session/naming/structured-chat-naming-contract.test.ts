@@ -45,7 +45,7 @@ beforeEach(() => {
   boundary.spawn.mockReset()
   boundary.native.mockReset()
   boundary.openCode.mockClear()
-  vi.stubEnv('ORCA_PI_SOURCE_AGENT_DIR', undefined)
+  vi.stubEnv('TOPO_PI_SOURCE_AGENT_DIR', undefined)
 })
 afterEach(() => {
   vi.restoreAllMocks()

@@ -19,7 +19,7 @@ let root = ''
 let sessionsDir = ''
 
 beforeEach(async () => {
-  root = await realpath(await mkdtemp(join(tmpdir(), 'orca-omp-cwd-')))
+  root = await realpath(await mkdtemp(join(tmpdir(), 'topo-omp-cwd-')))
   sessionsDir = join(root, 'sessions')
   const actual = await vi.importActual<typeof FsPromises>('node:fs/promises')
   io.open.mockReset().mockImplementation(actual.opendir)
@@ -38,7 +38,7 @@ async function record(bucket: string, file = FILE): Promise<string> {
   return path
 }
 
-async function lookup(cwd = '/repo/orca', homeDir = join(root, 'home'), temp = join(root, 'temp')) {
+async function lookup(cwd = '/repo/topo', homeDir = join(root, 'home'), temp = join(root, 'temp')) {
   const launchEnv = {
     OMP_CODING_AGENT_DIR: sessionsDir,
     HOME: homeDir,
@@ -64,10 +64,10 @@ describe('OMP known-workspace transcript lookup', () => {
   it('finds the reverted SHA256 bucket used by OMP 17.2.5–17.2.8', async () => {
     const windows = process.platform === 'win32'
     const digest = windows
-      ? '25910242104f20d3250db9cb42dca52b1ef2afc76aeebbb03cf50c958c3927e9'
-      : '5e800b892f87de7d83df9a448eb6a6f9e4c8ce34f082e23cc225a87e622553ac'
-    const expected = await record(`abs-orca-${digest}`)
-    expect(await lookup(windows ? 'C:\\repo\\orca' : '/repo/orca')).toBe(expected)
+      ? '8fe767e0d92882534871a5cfe1d2ecce6d3f70b6792fb334c597a51ab67722a3'
+      : '3f3a2bcdc781674bd41810485326c7593aa98fe035c0aef7ef63f75e96011a81'
+    const expected = await record(`abs-topo-${digest}`)
+    expect(await lookup(windows ? 'C:\\repo\\topo' : '/repo/topo')).toBe(expected)
   })
 
   it.skipIf(process.platform === 'win32')(

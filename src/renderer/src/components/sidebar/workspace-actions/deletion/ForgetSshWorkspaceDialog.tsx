@@ -106,7 +106,7 @@ export function ForgetSshWorkspaceDialog(): React.JSX.Element | null {
     }
   }
 
-  // Forget only Orca’s records; remote files, worktrees and branches survive.
+  // Forget only Topo’s records; remote files, worktrees and branches survive.
   const handleForget = async (): Promise<void> => {
     if (!isSelectedWorkspaceCurrent()) {
       refuseReplacedSelection()
@@ -142,7 +142,7 @@ export function ForgetSshWorkspaceDialog(): React.JSX.Element | null {
             <ServerOff className="size-4 text-muted-foreground" />
             {t(
               'auto.components.sidebar.ForgetSshWorkspaceDialog.removeTitle',
-              'Remove “{{name}}” from Orca?',
+              'Remove “{{name}}” from Topo?',
               { name: displayName }
             )}
           </DialogTitle>
@@ -150,12 +150,12 @@ export function ForgetSshWorkspaceDialog(): React.JSX.Element | null {
             {resolution.kind === 'saved'
               ? t(
                   'auto.components.sidebar.ForgetSshWorkspaceDialog.savedHostBody',
-                  'This workspace’s project isn’t served by Orca’s server on {{host}}, so Orca can’t delete it there. You can remove it from Orca; files, the Git worktree, and branches on {{host}} are left untouched.',
+                  'This workspace’s project isn’t served by Topo’s server on {{host}}, so Topo can’t delete it there. You can remove it from Topo; files, the Git worktree, and branches on {{host}} are left untouched.',
                   { host: hostLabel }
                 )
               : t(
                   'auto.components.sidebar.ForgetSshWorkspaceDialog.ghostBody',
-                  '{{host}} is no longer a saved SSH host, so this workspace is no longer connected to a live host. It can only be removed from Orca — files and branches on the remote are left untouched.',
+                  '{{host}} is no longer a saved SSH host, so this workspace is no longer connected to a live host. It can only be removed from Topo — files and branches on the remote are left untouched.',
                   { host: hostLabel }
                 )}
           </DialogDescription>
@@ -174,7 +174,7 @@ export function ForgetSshWorkspaceDialog(): React.JSX.Element | null {
           </Button>
           <Button size="sm" onClick={() => void handleForget()} disabled={busy}>
             {busy ? <Loader2 className="size-3.5 animate-spin" /> : null}
-            {t('auto.components.sidebar.ForgetSshWorkspaceDialog.forget', 'Remove from Orca')}
+            {t('auto.components.sidebar.ForgetSshWorkspaceDialog.forget', 'Remove from Topo')}
           </Button>
         </DialogFooter>
       </DialogContent>

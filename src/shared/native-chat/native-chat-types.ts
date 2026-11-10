@@ -7,7 +7,7 @@ import type {
   AgentSessionBackgroundTaskRunState
 } from '../agent-session/agent-session-background-task-wire'
 import type { AgentSessionTokenUsage } from '../agent-session/agent-session-context-usage'
-import type { AgentSessionOrcaStop } from '../agent-session/lifecycle/agent-session-orca-stop'
+import type { AgentSessionTopoStop } from '../agent-session/lifecycle/agent-session-topo-stop'
 import type { AgentSessionFailureFact } from '../agent-session/failures/agent-session-failure'
 import type {
   AgentJournalMessageSendMode,
@@ -54,8 +54,8 @@ export type NativeChatTextBlock = {
   }
   /** On a status line that reports a failure: what failed, typed. */
   failure?: AgentSessionFailureFact
-  /** On the line about a reply Orca's own stop cut off: why, and the turn it cut. */
-  orcaStop?: AgentSessionOrcaStop & { turnItemId?: string }
+  /** On the line about a reply Topo's own stop cut off: why, and the turn it cut. */
+  topoStop?: AgentSessionTopoStop & { turnItemId?: string }
   /** On the "Forked from" divider: the source chat it links to. */
   forkedFrom?: { sessionId: string }
   /** On a usage-limit line: the turn the limit ended, which its Continue picks up. */
@@ -231,7 +231,7 @@ export type NativeChatMessage = AgentJournalProducerLinkage & {
   completedAt?: number
   /** On a conversation command the user sent, such as `/compact`: the command it names. */
   command?: { name: string }
-  /** On a user-role message another agent sent through Orca: who, as the journal recorded it. */
+  /** On a user-role message another agent sent through Topo: who, as the journal recorded it. */
   from?: AgentMessageSource
   /** Projected creation fact, never a user turn or provider input. */
   agentStartDispatchId?: string

@@ -3,7 +3,7 @@
 import { createServer, type Server } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient,
@@ -127,18 +127,18 @@ async function readOwnedPageUrls(app: ElectronApplication, url: string): Promise
 
 test('shows a client-hosted page in the host tab strip and closes it from there', async ({
   electronApp,
-  orcaPage,
+  topoPage,
   testRepoPath
 }, testInfo) => {
   test.setTimeout(300_000)
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
 
   const fixture = await startPageFixture()
   let client: PairedElectronClient | null = null
   try {
-    const offer = await createRuntimeDesktopPairingOffer(orcaPage)
+    const offer = await createRuntimeDesktopPairingOffer(topoPage)
     client = await launchPairedElectronClient(offer, testInfo, 'STA-4150 host strip')
 
     const clientWorktreeId = await findWorktreeIdByPath(client.page, testRepoPath)
@@ -164,7 +164,7 @@ test('shows a client-hosted page in the host tab strip and closes it from there'
     expect(await readOwnedPageUrls(client.app, fixture.url)).toHaveLength(1)
     expect(await readOwnedPageUrls(electronApp, fixture.url)).toHaveLength(0)
 
-    const hostRow = orcaPage.locator(
+    const hostRow = topoPage.locator(
       `.terminal-tab-strip [data-client-hosted-browser-row-id="${hostPageId}"]`
     )
     await expect(hostRow).toBeVisible({ timeout: 60_000 })

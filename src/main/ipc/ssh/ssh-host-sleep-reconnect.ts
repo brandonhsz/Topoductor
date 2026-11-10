@@ -1,5 +1,5 @@
 import { powerMonitor } from 'electron'
-import { recoverOrcadManagedTunnelsAfterHostResume } from '../../managed-server/lifecycle/orcad-managed-tunnel'
+import { recoverTopodManagedTunnelsAfterHostResume } from '../../managed-server/lifecycle/topod-managed-tunnel'
 import { getSshConnectionManager } from '../../ssh/targets/ssh-target-registry'
 import { errorMessage } from '../../../shared/error-message'
 
@@ -21,12 +21,12 @@ export function retrySshConnectionsAfterNetworkReturn(): void {
     return
   }
   // Probe transports that still appear connected after wake; keepalive may not detect them yet.
-  void recoverOrcadManagedTunnelsAfterHostResume(getUserDataPath(), {
+  void recoverTopodManagedTunnelsAfterHostResume(getUserDataPath(), {
     attempts: RESUME_PROBE_ATTEMPTS,
     timeoutMs: RESUME_PROBE_TIMEOUT_MS
   }).catch((err) => {
     console.warn(
-      `[ssh] Failed to recover a managed Orca tunnel after system resume: ${errorMessage(err)}`
+      `[ssh] Failed to recover a managed Topo tunnel after system resume: ${errorMessage(err)}`
     )
   })
 }

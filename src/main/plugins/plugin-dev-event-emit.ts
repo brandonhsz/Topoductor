@@ -41,13 +41,13 @@ export type PluginDevEmitResult = {
 }
 
 const LOGS_HINT =
-  'Handler errors appear in `orca plugin logs <plugin-key>` and `orca plugin dev watch`.'
+  'Handler errors appear in `topo plugin logs <plugin-key>` and `topo plugin dev watch`.'
 
 function parseEventName(event: string): PluginEventName {
   const known = PLUGIN_EVENT_NAMES.find((name) => name === event)
   const resolved = known ?? PLUGIN_V1_EVENT_ALIASES.get(event)
   if (!resolved) {
-    throw new PluginCliError('invalid_argument', `${event} is not an Orca plugin event.`, {
+    throw new PluginCliError('invalid_argument', `${event} is not a Topo plugin event.`, {
       events: [...PLUGIN_EVENT_NAMES],
       nextSteps: [`Pass one of: ${PLUGIN_EVENT_NAMES.join(', ')}.`]
     })
@@ -71,13 +71,13 @@ export async function resolveDevPlugin(
     throw new PluginCliError(
       'invalid_argument',
       `${key} is an installed plugin; ${installedRefusal}.`,
-      { nextSteps: ['Load the plugin folder with `orca plugin dev load <dir>`, then retry.'] }
+      { nextSteps: ['Load the plugin folder with `topo plugin dev load <dir>`, then retry.'] }
     )
   }
   throw new PluginCliError(PLUGIN_NOT_FOUND_CODE, 'That is not a loaded development plugin.', {
     loaded: [...service.options.getDevPluginPaths()],
     nextSteps: [
-      'Pass the folder or the plugin key of a development plugin (`orca plugin list --json` marks them dev), or load it first with `orca plugin dev load <dir>`.'
+      'Pass the folder or the plugin key of a development plugin (`topo plugin list --json` marks them dev), or load it first with `topo plugin dev load <dir>`.'
     ]
   })
 }
@@ -94,7 +94,7 @@ function skipError(
         PLUGIN_INVALID_CODE,
         `${key} is invalid, so it receives no events.`,
         {
-          nextSteps: ['Run `orca plugin validate <dir>` and fix the manifest.']
+          nextSteps: ['Run `topo plugin validate <dir>` and fix the manifest.']
         }
       )
     case 'no-worker':
@@ -108,13 +108,13 @@ function skipError(
       return new PluginCliError(
         'invalid_argument',
         `${key} is not approved and enabled, so it receives no events.`,
-        { nextSteps: ['Run `orca plugin dev load <dir>` and approve it with `--approve`.'] }
+        { nextSteps: ['Run `topo plugin dev load <dir>` and approve it with `--approve`.'] }
       )
     case 'not-granted':
       return new PluginCliError(
         'invalid_argument',
         `${key} was not granted ${PLUGIN_EVENT_CAPABILITY[event]}, which ${event} needs.`,
-        { nextSteps: ['Add the capability, then reload with `orca plugin dev reload <dir>`.'] }
+        { nextSteps: ['Add the capability, then reload with `topo plugin dev reload <dir>`.'] }
       )
   }
 }
@@ -125,15 +125,15 @@ export function assertPluginSystemEnabled(service: {
   if (!service.options.isPluginSystemEnabled()) {
     throw new PluginCliError(
       PLUGIN_SYSTEM_DISABLED_CODE,
-      'Plugins are turned off on this Orca host.',
+      'Plugins are turned off on this Topo host.',
       {
-        nextSteps: ['Turn plugins on (Settings → Plugins, or `orca plugin system on`).']
+        nextSteps: ['Turn plugins on (Settings → Plugins, or `topo plugin system on`).']
       }
     )
   }
 }
 
-/** `orca plugin dev emit`: one event through the real delivery rules, at one development plugin. */
+/** `topo plugin dev emit`: one event through the real delivery rules, at one development plugin. */
 export async function emitPluginDevEvent(input: {
   service: PluginDevEmitService
   target: PluginDevFolderTarget

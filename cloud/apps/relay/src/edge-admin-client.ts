@@ -1,13 +1,13 @@
 import { createHash, randomBytes } from 'node:crypto'
 import { SignJWT } from 'jose'
-import type { RelayRegion } from '@orca-cloud/relay-contract/relay-regions'
+import type { RelayRegion } from '@topo-cloud/relay-contract/relay-regions'
 
 // Director → relay edge admin calls. With the edge's data in its objects, the director pushes a
 // host's assignment and devices before answering it with the edge, and exports them back before
 // placing it anywhere else. Each call is signed with its own purpose and audience (desktops never
 // receive one) and bound to the SHA-256 of its exact body.
 
-export const EDGE_ADMIN_AUDIENCE = 'orca-relay-edge-admin'
+export const EDGE_ADMIN_AUDIENCE = 'topo-relay-edge-admin'
 const EDGE_ADMIN_PURPOSE = 'edge-admin'
 const EDGE_ADMIN_TIMEOUT_MS = 3_000
 // Calls a director makes while it holds a host's assignment row lock (the push of a move), and the

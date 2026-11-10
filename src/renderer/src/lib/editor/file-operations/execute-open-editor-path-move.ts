@@ -17,7 +17,7 @@ import {
 } from '@/lib/editor/file-operations/open-editor-move-owner'
 import { documentFolderAccess } from '@/lib/local-file-access'
 import { contentRekeyOutcome } from '@/runtime/workspace-layout/intents/layout-owner-content-rekeys'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 
 let moveOperationCounter = 0
 
@@ -94,7 +94,7 @@ export async function executeOpenEditorPathMove(args: {
       moveOperationId: operationId
     })
     if (
-      ORCA_LAYOUT_OWNER_IS_MAIN &&
+      TOPO_LAYOUT_OWNER_IS_MAIN &&
       rekeyResult.ok &&
       !(await contentRekeyOutcome(affected.map((file) => file.id)))
     ) {

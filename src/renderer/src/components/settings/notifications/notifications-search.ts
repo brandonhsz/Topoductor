@@ -10,7 +10,7 @@ export const getNotificationsPaneSearchEntries = createLocalizedCatalog(() => [
     ),
     description: translate(
       'auto.components.settings.notifications.search.0534c76311',
-      'Master switch for Orca desktop notifications.'
+      'Master switch for Topo desktop notifications.'
     ),
     keywords: [
       ...translateSearchKeyword(
@@ -132,7 +132,7 @@ export const getNotificationsPaneSearchEntries = createLocalizedCatalog(() => [
     ),
     description: translate(
       'auto.components.settings.notifications.search.7247b97a31',
-      'Avoid notifying when Orca is focused on the active worktree.'
+      'Avoid notifying when Topo is focused on the active worktree.'
     ),
     keywords: [
       ...translateSearchKeyword(
@@ -160,7 +160,7 @@ export const getNotificationsPaneSearchEntries = createLocalizedCatalog(() => [
     ),
     description: translate(
       'auto.components.settings.notifications.search.c718793e95',
-      'Choose the built-in, system, or local audio file Orca plays for desktop notifications.'
+      'Choose the built-in, system, or local audio file Topo plays for desktop notifications.'
     ),
     keywords: [
       ...translateSearchKeyword(

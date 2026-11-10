@@ -54,7 +54,7 @@ async function isRegistered(path: string): Promise<boolean> {
 
 beforeEach(async () => {
   // Canonicalize macOS /var temp paths to match Git's /private/var output.
-  scratchDir = await realpath(await mkdtemp(join(tmpdir(), 'orca-worktree-removal-')))
+  scratchDir = await realpath(await mkdtemp(join(tmpdir(), 'topo-worktree-removal-')))
   repoPath = join(scratchDir, 'repo')
   workspaceRoot = join(scratchDir, 'workspaces')
   worktreePath = join(workspaceRoot, 'repo', 'feature')
@@ -292,7 +292,7 @@ describe('worktree removal against the real Git binary', () => {
     expect(refusal).toBeInstanceOf(Error)
     const message = formatWorktreeRemovalError(refusal, subWorktreePath, false)
     expect(classifyWorktreeForceDeleteReason(message)).toBe('submodules')
-    // Git itself, not Orca's native Windows remover, decides what counts.
+    // Git itself, not Topo's native Windows remover, decides what counts.
     const gitRefusal = await git(['worktree', 'remove', subWorktreePath], repoPath).catch((e) => e)
     expect(String(gitRefusal?.stderr)).toContain('containing submodules')
   })

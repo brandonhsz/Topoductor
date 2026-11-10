@@ -81,7 +81,7 @@ export function installMonacoEditorInputBindings(params: MonacoEditorInputBindin
     return true
   })
   const searchInFilesAction = editorInstance.addAction({
-    id: 'orca.searchInFiles',
+    id: 'topo.searchInFiles',
     label: translate('auto.components.editor.MonacoEditor.fd68ae03b3', 'Search in Files'),
     contextMenuGroupId: 'navigation',
     contextMenuOrder: 2,
@@ -102,7 +102,7 @@ export function installMonacoEditorInputBindings(params: MonacoEditorInputBindin
     }
   })
   const addToChatAction = editorInstance.addAction({
-    id: 'orca.addSelectionToChat',
+    id: 'topo.addSelectionToChat',
     label: translate('components.native-chat.addSelectionToChat', 'Add to chat'),
     precondition: 'editorHasSelection',
     contextMenuGroupId: '9_cutcopypaste',

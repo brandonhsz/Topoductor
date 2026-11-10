@@ -4,9 +4,9 @@ import { InMemoryClipboardMetadataManager } from 'monaco-editor/esm/vs/editor/br
 import { toast } from 'sonner'
 import { translate } from '@/i18n/i18n'
 import {
-  ORCA_CONTEXT_MENU_PASTE_NAME,
-  ORCA_CONTEXT_MENU_PASTE_PRIORITY,
-  runOrcaContextMenuPaste
+  TOPO_CONTEXT_MENU_PASTE_NAME,
+  TOPO_CONTEXT_MENU_PASTE_PRIORITY,
+  runTopoContextMenuPaste
 } from './monaco-context-menu-paste'
 
 let installed = false
@@ -21,10 +21,10 @@ export function installMonacoContextMenuPaste(monaco: typeof Monaco): void {
 
   // Priority beats Monaco’s 10000; a truthy Promise stops MultiCommand, while false yields read-only/unfocused cases to the default.
   PasteAction.addImplementation(
-    ORCA_CONTEXT_MENU_PASTE_PRIORITY,
-    ORCA_CONTEXT_MENU_PASTE_NAME,
+    TOPO_CONTEXT_MENU_PASTE_PRIORITY,
+    TOPO_CONTEXT_MENU_PASTE_NAME,
     () =>
-      runOrcaContextMenuPaste({
+      runTopoContextMenuPaste({
         getFocusedEditor: () =>
           monaco.editor.getEditors().find((candidate) => candidate.hasTextFocus()) ?? null,
         readClipboardText: (options) => window.api.ui.readClipboardText(options),

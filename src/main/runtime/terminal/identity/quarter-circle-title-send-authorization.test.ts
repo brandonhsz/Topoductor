@@ -1,7 +1,7 @@
 // Quarter-circle progress glyphs alone cannot authorize auto-Enter into an unknown pane owner (STA-4028, #13925).
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 
 import { assertTerminalAgentSendable } from '../../rpc/terminal-agent-send-guard'
 
@@ -31,11 +31,11 @@ async function createRuntimeWithTitle(
   launchAgent?: 'claude',
   verifiedLaunch = true
 ): Promise<{
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   handle: string
   getForegroundProcess: ReturnType<typeof vi.fn>
 }> {
-  const runtime = new OrcaRuntimeService(null)
+  const runtime = new TopoRuntimeService(null)
   const internals = runtime as unknown as {
     resolveTerminalWorkspaceLaunchScope: (selector: string) => Promise<unknown>
   }
@@ -129,7 +129,7 @@ async function readAgentEvidenceAtDeadline<T>(
   }
 }
 
-async function guardedSendResult(runtime: OrcaRuntimeService, handle: string): Promise<string> {
+async function guardedSendResult(runtime: TopoRuntimeService, handle: string): Promise<string> {
   try {
     await assertTerminalAgentSendable({ runtime, handle, assertWritable: () => {} })
     return AUTHORIZED

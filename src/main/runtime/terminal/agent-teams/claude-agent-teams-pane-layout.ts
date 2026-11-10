@@ -6,7 +6,7 @@ export function paneEnv(team: AgentTeam, fakePaneId: string): Record<string, str
   return {
     ...team.baseEnv,
     TMUX_PANE: fakePaneId,
-    ORCA_AGENT_TEAMS_LEADER_PANE: team.leaderPane
+    TOPO_AGENT_TEAMS_LEADER_PANE: team.leaderPane
   }
 }
 
@@ -21,7 +21,7 @@ export function resolveSplitTarget(
       direction: 'horizontal'
     }
   }
-  // tmux -h means left/right; Orca names the vertical divider.
+  // tmux -h means left/right; Topo names the vertical divider.
   return { pane: targetPane, direction: horizontal ? 'vertical' : 'horizontal' }
 }
 

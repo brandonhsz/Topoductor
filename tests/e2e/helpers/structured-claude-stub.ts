@@ -12,7 +12,7 @@ import {
 import os from 'node:os'
 import path from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
-import { test as base, expect } from './orca-app'
+import { test as base, expect } from './topo-app'
 import { waitForActiveWorktree, waitForSessionReady } from './store'
 import { buildFakeAgentCommandOverride } from './fake-agent-command-override'
 import { resolveCliCommand } from '../../../src/shared/node-cli-command-resolution'
@@ -53,7 +53,7 @@ function macLoginShellPathDirs(): string[] {
 export const test = base.extend<{ claudeStub: ClaudeStub }>({
   // oxlint-disable-next-line no-empty-pattern -- Playwright fixture callbacks require object destructuring here.
   claudeStub: async ({}, provideFixture, testInfo) => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'orca-e2e-structured-claude-'))
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'topo-e2e-structured-claude-'))
     const command = path.join(dir, 'claude')
     const launchLog = path.join(dir, 'launches.jsonl')
     const emptyHome = path.join(dir, 'empty-home')

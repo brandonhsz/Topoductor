@@ -23,7 +23,7 @@ afterEach(async () => {
 it('gives each process its own temp folder, removed at exit, and clears an earlier run at the first start', async () => {
   // Short enough that a socket under the run folder fits, so the root stays in the data folder.
   const dataDirectory = await mkdtemp(
-    process.platform === 'win32' ? join(tmpdir(), 'orca-acp-temp-') : '/tmp/oa-'
+    process.platform === 'win32' ? join(tmpdir(), 'topo-acp-temp-') : '/tmp/oa-'
   )
   ownedDirectories.add(dataDirectory)
   const root = join(dataDirectory, 'acp-temp', 'grok')

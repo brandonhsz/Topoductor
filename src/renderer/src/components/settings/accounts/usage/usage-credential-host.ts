@@ -38,7 +38,7 @@ export function usageCredentialAccessNotice(
   if (access === 'outdated') {
     return t(
       'auto.components.settings.usageCredentialHost.outdated',
-      'Update Orca on {{host}} to save this key there.',
+      'Update Topo on {{host}} to save this key there.',
       { host: host.label }
     )
   }
@@ -52,7 +52,7 @@ export function usageCredentialAccessNotice(
   return null
 }
 
-/** A remote host's saved key it cannot use: sealed by its other Orca app, or just unreadable. */
+/** A remote host's saved key it cannot use: sealed by its other Topo app, or just unreadable. */
 export function usageCredentialUnreadableNotice(
   host: UsageCredentialHost,
   unreadable: 'sealed-elsewhere' | 'unreadable' | undefined,
@@ -64,12 +64,12 @@ export function usageCredentialUnreadableNotice(
   return unreadable === 'sealed-elsewhere'
     ? t(
         'auto.components.settings.usageCredentialHost.sealedElsewhereForgettable',
-        'Saved by another Orca app on {{host}}, which this one cannot read. Change it in that app, or forget it here.',
+        'Saved by another Topo app on {{host}}, which this one cannot read. Change it in that app, or forget it here.',
         { host: host.label }
       )
     : t(
         'auto.components.settings.usageCredentialHost.unreadableKey',
-        'Orca on {{host}} cannot read the saved key. Replace it or forget it.',
+        'Topo on {{host}} cannot read the saved key. Replace it or forget it.',
         { host: host.label }
       )
 }

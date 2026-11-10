@@ -22,7 +22,7 @@ import type {
   AgentJournalRenderItem,
   AgentJournalSubmission
 } from '../../../../../shared/agent-session/journal/agent-session-journal-types'
-import { latestNativeChatOrcaStopCut } from '../../../../../shared/native-chat/native-chat-orca-stop-cut'
+import { latestNativeChatTopoStopCut } from '../../../../../shared/native-chat/native-chat-topo-stop-cut'
 import {
   latestNativeChatUsageLimitCut,
   NATIVE_CHAT_USAGE_LIMIT_CONTINUE_MESSAGE
@@ -34,7 +34,7 @@ import {
   NO_NATIVE_CHAT_INTERRUPTED_CONTINUE_ATTEMPT,
   nativeChatInterruptedContinueAccepted
 } from '../../../../../shared/native-chat/native-chat-interrupted-continue'
-import type { NativeChatOrcaStopView } from '@/components/native-chat/messages/notices/native-chat-orca-stop-context'
+import type { NativeChatTopoStopView } from '@/components/native-chat/messages/notices/native-chat-topo-stop-context'
 import { useStructuredAgentSessionHostLabel } from '@/components/native-chat/pane/ownership/use-structured-agent-session-host-label'
 import { useNativeChatTargetRestartResuming } from '@/components/native-chat-restart-runtimes'
 import { useNativeChatLaunchResumePending } from '@/components/native-chat-launch-resume-decision'
@@ -43,7 +43,7 @@ import type { NativeChatStructuredComposerTransport } from '@/components/native-
 
 export type NativeChatInterruptedContinuation = {
   /** Host identity and continuation availability for the cut’s transcript row. */
-  view: NativeChatOrcaStopView
+  view: NativeChatTopoStopView
   /** Show a failed Continue until retry, dismissal or continuation from any client. */
   continueError: (NativeChatComposerNoticeContent & { onDismiss: () => void }) | null
 }
@@ -85,7 +85,7 @@ export function useNativeChatInterruptedContinuation(input: {
   const launchPending = useNativeChatLaunchResumePending() && target.kind === 'local'
   const resuming = useNativeChatTargetRestartResuming(target).includes(sessionId) || launchPending
   const cut = useMemo(
-    () => latestNativeChatOrcaStopCut(input.journalItems, input.submissions),
+    () => latestNativeChatTopoStopCut(input.journalItems, input.submissions),
     [input.journalItems, input.submissions]
   )
   // Any host: Continue past a usage limit is the person's own message, which every host takes.
@@ -238,7 +238,7 @@ export function NativeChatInterruptedContinueButton({
   onContinue: (hadFocus?: boolean) => void
   disabled?: boolean
   label?: string
-  /** What Continue does here, when it is not picking up a reply Orca's stop cut off. */
+  /** What Continue does here, when it is not picking up a reply Topo's stop cut off. */
   explanation?: string
 }): React.JSX.Element {
   const t = useTranslate()

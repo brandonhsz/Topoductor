@@ -7,7 +7,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 
 import type * as GitUsernameModule from '../../../git/git-username'
 
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 
 import { createPtyWriteInput } from '../../../ipc/pty/ipc/write-input'
 
@@ -72,7 +72,7 @@ vi.mock('../../../git/git-username', async () => {
   return { ...actual, resolveLocalGitUsername: vi.fn(async () => '') }
 })
 
-class TestOrcaRuntimeService extends OrcaRuntimeService {
+class TestTopoRuntimeService extends TopoRuntimeService {
   getLayoutForTest(ptyId: string) {
     return this.getLayout(ptyId)
   }
@@ -112,7 +112,7 @@ const store = {
 }
 
 function createRuntime(mobileAutoRestoreFitMs: number | null = 5_000) {
-  const runtime = new TestOrcaRuntimeService({
+  const runtime = new TestTopoRuntimeService({
     ...store,
     getSettings: () => ({ ...store.getSettings(), mobileAutoRestoreFitMs })
   })

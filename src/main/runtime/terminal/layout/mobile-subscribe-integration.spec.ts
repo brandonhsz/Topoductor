@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { listWorktrees } from '../../../git/worktrees/catalog/worktree-scan-cache'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 
 // Legacy restore cases need finite 5s (the clamp floor); production defaults to indefinite hold.
 const LEGACY_RESTORE_MS = 5_000
@@ -42,7 +42,7 @@ const store = {
   }
 }
 
-class ObservableRuntime extends OrcaRuntimeService {
+class ObservableRuntime extends TopoRuntimeService {
   get restoreTimers(): typeof this.pendingRestoreTimers {
     return this.pendingRestoreTimers
   }

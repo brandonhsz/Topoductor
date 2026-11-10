@@ -8,7 +8,7 @@ import {
   parseProgramTestFiles
 } from './check-tests-typecheck-ratchet.mjs'
 
-vi.mock('@orca/process-host', () => ({ runProcessSync: vi.fn() }))
+vi.mock('@topo/process-host', () => ({ runProcessSync: vi.fn() }))
 vi.mock('./mobile-typecheck-compiler.mjs', () => ({
   resolveMobileTypecheckCommand: (project: string, cwd: string) => ({
     program: 'compiler',

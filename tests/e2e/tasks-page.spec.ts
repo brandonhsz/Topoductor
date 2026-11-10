@@ -1,5 +1,5 @@
 import type { ElectronApplication } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForSessionReady, waitForActiveWorktree, getStoreState } from './helpers/store'
 
 async function openTasksPage(page: Parameters<typeof getStoreState>[0]): Promise<void> {
@@ -68,91 +68,91 @@ async function openMockedPaginatedGitHubTasks(
 }
 
 test.describe('Tasks page', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
   })
 
   test('reopening restores the GitHub page and scroll position', async ({
-    orcaPage,
+    topoPage,
     electronApp
   }) => {
-    await openMockedPaginatedGitHubTasks(orcaPage, electronApp)
+    await openMockedPaginatedGitHubTasks(topoPage, electronApp)
 
-    await orcaPage.getByRole('button', { name: 'Page 28', exact: true }).click()
-    await expect(orcaPage.getByText('Issue page 28 item 1', { exact: true })).toBeVisible()
+    await topoPage.getByRole('button', { name: 'Page 28', exact: true }).click()
+    await expect(topoPage.getByText('Issue page 28 item 1', { exact: true })).toBeVisible()
 
-    const list = orcaPage.locator('[data-task-list-scroll="github"]')
+    const list = topoPage.locator('[data-task-list-scroll="github"]')
     await list.evaluate((element) => {
       element.scrollTop = 360
       element.dispatchEvent(new Event('scroll'))
     })
     await expect.poll(() => list.evaluate((element) => element.scrollTop)).toBeGreaterThan(300)
 
-    await orcaPage.getByRole('button', { name: 'Close tasks' }).click()
+    await topoPage.getByRole('button', { name: 'Close tasks' }).click()
     await expect(list).toHaveCount(0)
-    const clampedRowsStyle = await orcaPage.addStyleTag({
+    const clampedRowsStyle = await topoPage.addStyleTag({
       content:
         '[data-task-list-scroll="github"] > .divide-y { max-height: 0 !important; overflow: hidden !important; }'
     })
-    await openTasksPage(orcaPage)
+    await openTasksPage(topoPage)
 
-    await expect(orcaPage.getByRole('button', { name: 'Page 28', exact: true })).toHaveAttribute(
+    await expect(topoPage.getByRole('button', { name: 'Page 28', exact: true })).toHaveAttribute(
       'aria-current',
       'page'
     )
-    const restoredList = orcaPage.locator('[data-task-list-scroll="github"]')
+    const restoredList = topoPage.locator('[data-task-list-scroll="github"]')
     await expect.poll(() => restoredList.evaluate((element) => element.scrollTop)).toBe(0)
     await clampedRowsStyle.evaluate((element) => {
       element.parentNode?.removeChild(element)
     })
-    await expect(orcaPage.getByText('Issue page 28 item 1', { exact: true })).toBeVisible()
+    await expect(topoPage.getByText('Issue page 28 item 1', { exact: true })).toBeVisible()
     await expect
       .poll(() => restoredList.evaluate((element) => element.scrollTop))
       .toBeGreaterThan(300)
 
-    await orcaPage.getByText('Issue page 28 item 12', { exact: true }).click()
+    await topoPage.getByText('Issue page 28 item 12', { exact: true }).click()
     await expect(restoredList).toHaveCount(0)
     await expect
       .poll(async () => {
-        const position = await getStoreState<{ scrollTop: number }>(orcaPage, 'taskListPosition')
+        const position = await getStoreState<{ scrollTop: number }>(topoPage, 'taskListPosition')
         return position.scrollTop
       })
       .toBeGreaterThan(300)
-    await orcaPage.getByRole('button', { name: 'GitHub list', exact: true }).click()
-    await expect(orcaPage.getByText('Issue page 28 item 1', { exact: true })).toBeVisible()
+    await topoPage.getByRole('button', { name: 'GitHub list', exact: true }).click()
+    await expect(topoPage.getByText('Issue page 28 item 1', { exact: true })).toBeVisible()
     await expect
       .poll(() => restoredList.evaluate((element) => element.scrollTop))
       .toBeGreaterThan(300)
 
-    await orcaPage.getByRole('button', { name: 'Close tasks' }).click()
-    const pendingRestoreStyle = await orcaPage.addStyleTag({
+    await topoPage.getByRole('button', { name: 'Close tasks' }).click()
+    const pendingRestoreStyle = await topoPage.addStyleTag({
       content:
         '[data-task-list-scroll="github"] > .divide-y { max-height: 0 !important; overflow: hidden !important; }'
     })
-    await openTasksPage(orcaPage)
-    await expect(orcaPage.getByRole('button', { name: 'Page 28', exact: true })).toHaveAttribute(
+    await openTasksPage(topoPage)
+    await expect(topoPage.getByRole('button', { name: 'Page 28', exact: true })).toHaveAttribute(
       'aria-current',
       'page'
     )
-    await orcaPage.getByRole('button', { name: 'Page 1', exact: true }).click()
+    await topoPage.getByRole('button', { name: 'Page 1', exact: true }).click()
     await pendingRestoreStyle.evaluate((element) => {
       element.parentNode?.removeChild(element)
     })
-    await expect(orcaPage.getByRole('button', { name: 'Page 1', exact: true })).toHaveAttribute(
+    await expect(topoPage.getByRole('button', { name: 'Page 1', exact: true })).toHaveAttribute(
       'aria-current',
       'page'
     )
     await expect
       .poll(() =>
-        orcaPage
+        topoPage
           .locator('[data-task-list-scroll="github"]')
           .evaluate((element) => element.scrollTop)
       )
       .toBe(0)
 
-    await orcaPage.getByRole('button', { name: 'Page 28', exact: true }).click()
-    await expect(orcaPage.getByText('Issue page 28 item 1', { exact: true })).toBeVisible()
+    await topoPage.getByRole('button', { name: 'Page 28', exact: true }).click()
+    await expect(topoPage.getByText('Issue page 28 item 1', { exact: true })).toBeVisible()
     await restoredList.evaluate((element) => {
       element.scrollTop = 360
       element.dispatchEvent(new Event('scroll'))
@@ -160,23 +160,23 @@ test.describe('Tasks page', () => {
     await expect
       .poll(() => restoredList.evaluate((element) => element.scrollTop))
       .toBeGreaterThan(300)
-    await orcaPage.getByRole('button', { name: 'Close tasks' }).click()
+    await topoPage.getByRole('button', { name: 'Close tasks' }).click()
 
-    const permanentlyClampedRowsStyle = await orcaPage.addStyleTag({
+    const permanentlyClampedRowsStyle = await topoPage.addStyleTag({
       content:
         '[data-task-list-scroll="github"] > .divide-y { max-height: 0 !important; overflow: hidden !important; }'
     })
-    await openTasksPage(orcaPage)
-    await expect(orcaPage.getByRole('button', { name: 'Page 28', exact: true })).toHaveAttribute(
+    await openTasksPage(topoPage)
+    await expect(topoPage.getByRole('button', { name: 'Page 28', exact: true })).toHaveAttribute(
       'aria-current',
       'page'
     )
     // Outlast the old 5s restore give-up so an unpainted list cannot overwrite remembered scroll with zero.
-    await orcaPage.waitForTimeout(5_500)
-    await orcaPage.getByRole('button', { name: 'Close tasks' }).click()
+    await topoPage.waitForTimeout(5_500)
+    await topoPage.getByRole('button', { name: 'Close tasks' }).click()
     await expect
       .poll(async () => {
-        const position = await getStoreState<{ scrollTop: number }>(orcaPage, 'taskListPosition')
+        const position = await getStoreState<{ scrollTop: number }>(topoPage, 'taskListPosition')
         return position.scrollTop
       })
       .toBeGreaterThan(300)

@@ -50,12 +50,12 @@ beforeAll(async () => {
   bridgeVersion = await readBridgeProtocolVersion()
   faultGrant = await readBridgeFaultGrant()
   paintName = await readBridgePagePainted()
-  scratch = await mkdtemp(join(tmpdir(), 'orca-mobile-web-app-agent-history-'))
+  scratch = await mkdtemp(join(tmpdir(), 'topo-mobile-web-app-agent-history-'))
   const built = await buildMobileWebAppBundle({ outDir: join(scratch, 'bundle') })
   const served = await createBundleServer({ outDir: built.outDir, cspHeader })
   server = served.server
   origin = served.origin
-  const executablePath = process.env.ORCA_MOBILE_WEB_RENDER_BROWSER
+  const executablePath = process.env.TOPO_MOBILE_WEB_RENDER_BROWSER
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) })
 }, 180_000)
 
@@ -121,14 +121,14 @@ async function waitForRoute({ page, errors, uncaught }, route, awaitText) {
       uncaught
     ])
   const cause = await race(
-    page.waitForFunction(() => document.documentElement.dataset.orcaWebEntry === 'mounted', {
+    page.waitForFunction(() => document.documentElement.dataset.topoWebEntry === 'mounted', {
       timeout: 30_000,
       polling: 250
     })
   )
   if (cause) {
     const state = await page.evaluate(
-      () => document.documentElement.dataset.orcaWebEntry ?? 'absent'
+      () => document.documentElement.dataset.topoWebEntry ?? 'absent'
     )
     throw named(cause, `never mounted (entry ${state})`)
   }
@@ -141,7 +141,7 @@ async function waitForRoute({ page, errors, uncaught }, route, awaitText) {
   if (paintCause) {
     throw named(paintCause, `mounted but never painted ${JSON.stringify(awaitText)}`)
   }
-  for (const fault of await page.evaluate(() => globalThis.__orcaRenderCheckFaults ?? [])) {
+  for (const fault of await page.evaluate(() => globalThis.__topoRenderCheckFaults ?? [])) {
     errors.push(`page fault: ${fault}`)
   }
 }
@@ -157,7 +157,7 @@ async function openRoute(route, awaitText, options = {}) {
 /** Every grant-gated notify the page posted, whole and in order, as the shell received them. The
  *  paint report and the location report are not: every page posts them for its route screen. */
 async function readNotifies(page) {
-  const notifies = await page.evaluate(() => globalThis.__orcaRenderCheckNotifies ?? [])
+  const notifies = await page.evaluate(() => globalThis.__topoRenderCheckNotifies ?? [])
   return notifies.filter((frame) => frame.name !== paintName && frame.name !== 'location')
 }
 

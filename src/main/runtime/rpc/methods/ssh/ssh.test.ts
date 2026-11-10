@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from '../../dispatcher'
 import type { RpcRequest } from '../../core'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { SSH_METHODS } from './ssh'
 
 const {
@@ -37,7 +37,7 @@ describe('ssh RPC methods', () => {
       reconnectAttempt: 0
     })
     connectRegisteredSshTargetMock.mockRejectedValueOnce(new Error(privateMessage))
-    const runtime = { getRuntimeId: () => 'test-runtime' } as unknown as OrcaRuntimeService
+    const runtime = { getRuntimeId: () => 'test-runtime' } as unknown as TopoRuntimeService
     const dispatcher = new RpcDispatcher({ runtime, methods: SSH_METHODS })
 
     const stateResponse = await dispatcher.dispatch(
@@ -73,7 +73,7 @@ describe('ssh RPC methods', () => {
     ]
     listRegisteredSshTargetsMock.mockReturnValueOnce(targets)
     getRegisteredSshStateMock.mockReturnValueOnce({ status: 'connected', remotePlatform: 'win32' })
-    const runtime = { getRuntimeId: () => 'test-runtime' } as unknown as OrcaRuntimeService
+    const runtime = { getRuntimeId: () => 'test-runtime' } as unknown as TopoRuntimeService
     const dispatcher = new RpcDispatcher({ runtime, methods: SSH_METHODS })
 
     const response = await dispatcher.dispatch(makeRequest('ssh.listTargetSummaries'))

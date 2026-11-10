@@ -35,7 +35,7 @@ let database: JournalHostDatabase
 const sweepers: JournalOutcomeSweeper[] = []
 beforeEach(async () => {
   vi.useFakeTimers()
-  root = await mkdtemp(join(tmpdir(), 'orca-journal-outcome-sweeper-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-journal-outcome-sweeper-'))
   database = openTestJournalHostDatabase(root)
   database.transaction((db) => {
     publishTestJournalEpoch(db, 'live', epoch)

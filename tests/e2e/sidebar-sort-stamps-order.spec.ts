@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { postClaudeHook, readHookEndpoint } from './helpers/agent-hook-endpoint'
 import { SIDEBAR_INPUTS_BUILD } from './helpers/sidebar-inputs-build'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
@@ -8,7 +8,7 @@ import { RECENT_STAMP_THROTTLE_MS } from '../../src/shared/sidebar-list/sort-sta
 
 test.skip(
   !SIDEBAR_INPUTS_BUILD,
-  'the window sorts by host stamps only in an ORCA_SIDEBAR_INPUTS=main build'
+  'the window sorts by host stamps only in an TOPO_SIDEBAR_INPUTS=main build'
 )
 
 async function rowOrder(page: Page, ids: string[]): Promise<string[]> {
@@ -23,18 +23,18 @@ async function rowOrder(page: Page, ids: string[]): Promise<string[]> {
 }
 
 test('the window sidebar order follows the host stamps in Recent and Smart', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }) => {
   test.setTimeout(90_000)
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage, 30_000)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage, 30_000)
   const endpoint = await readHookEndpoint(electronApp)
-  const pane = await waitForActivePaneHookDescriptor(orcaPage)
+  const pane = await waitForActivePaneHookDescriptor(topoPage)
 
-  const otherId = await orcaPage.evaluate((activeId) => {
+  const otherId = await topoPage.evaluate((activeId) => {
     const store = window.__store!
     store.getState().setGroupBy('none')
     store.getState().setSortBy('smart')
@@ -49,18 +49,18 @@ test('the window sidebar order follows the host stamps in Recent and Smart', asy
     return other.id
   }, pane.worktreeId)
   const ids = [pane.worktreeId, otherId]
-  await expect.poll(() => rowOrder(orcaPage, ids)).toEqual([otherId, pane.worktreeId])
+  await expect.poll(() => rowOrder(topoPage, ids)).toEqual([otherId, pane.worktreeId])
 
-  await orcaPage.waitForTimeout(RECENT_STAMP_THROTTLE_MS + 500)
+  await topoPage.waitForTimeout(RECENT_STAMP_THROTTLE_MS + 500)
   await postClaudeHook(endpoint, pane, { hook_event_name: 'UserPromptSubmit', prompt: 'go' })
   // Working outranks a row with no tier; the prompt's Recent stamp also tops Recent.
-  await expect.poll(() => rowOrder(orcaPage, ids)).toEqual([pane.worktreeId, otherId])
-  await orcaPage.evaluate(() => window.__store!.getState().setSortBy('recent'))
-  await expect.poll(() => rowOrder(orcaPage, ids)).toEqual([pane.worktreeId, otherId])
+  await expect.poll(() => rowOrder(topoPage, ids)).toEqual([pane.worktreeId, otherId])
+  await topoPage.evaluate(() => window.__store!.getState().setSortBy('recent'))
+  await expect.poll(() => rowOrder(topoPage, ids)).toEqual([pane.worktreeId, otherId])
 
-  await orcaPage.evaluate(() => window.__store!.getState().setSortBy('smart'))
+  await topoPage.evaluate(() => window.__store!.getState().setSortBy('smart'))
   await postClaudeHook(endpoint, pane, { hook_event_name: 'Stop', last_assistant_message: 'ok' })
   // Done holds the top with no fade and no settle.
-  await orcaPage.waitForTimeout(2_000)
-  expect(await rowOrder(orcaPage, ids)).toEqual([pane.worktreeId, otherId])
+  await topoPage.waitForTimeout(2_000)
+  expect(await rowOrder(topoPage, ids)).toEqual([pane.worktreeId, otherId])
 })

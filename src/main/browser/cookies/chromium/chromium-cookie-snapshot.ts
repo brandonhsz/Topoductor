@@ -119,7 +119,7 @@ export function createChromiumCookieSnapshot(
   sourcePath: string,
   options: ChromiumCookieSnapshotOptions = {}
 ): ChromiumCookieSnapshot {
-  const snapshotDir = mkdtempSync(join(options.tempRoot ?? tmpdir(), 'orca-cookie-import-'))
+  const snapshotDir = mkdtempSync(join(options.tempRoot ?? tmpdir(), 'topo-cookie-import-'))
   const databasePath = join(snapshotDir, options.fileName ?? 'Cookies')
   let keepSnapshot = false
 

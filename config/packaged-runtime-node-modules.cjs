@@ -27,7 +27,7 @@ const requireFromProject = createRequire(join(projectDir, 'package.json'))
 const PACKAGED_RUNTIME_PACKAGE_ROOTS = [
   '@anthropic-ai/claude-agent-sdk',
   '@linear/sdk',
-  '@orca/process-host',
+  '@topo/process-host',
   '@parcel/watcher',
   'electron-updater',
   'i18next',
@@ -47,13 +47,13 @@ const PACKAGED_RUNTIME_PACKAGE_ROOTS = [
 const DARWIN_PACKAGED_RUNTIME_PACKAGE_ROOTS = ['serve-sim']
 /** The compiled binary each workspace Windows addon loads, relative to its package. */
 const WORKSPACE_WINDOWS_ADDON_BINARIES = [
-  ['@orca/windows-registry', 'build/Release/orca_windows_registry.node'],
-  ['@orca/windows-security', 'build/Release/orca_windows_security.node']
+  ['@topo/windows-registry', 'build/Release/topo_windows_registry.node'],
+  ['@topo/windows-security', 'build/Release/topo_windows_security.node']
 ]
 const WINDOWS_PACKAGED_RUNTIME_PACKAGE_ROOTS = [
   '@vscode/windows-process-tree',
-  '@orca/windows-registry',
-  '@orca/windows-security'
+  '@topo/windows-registry',
+  '@topo/windows-security'
 ]
 
 const NODE_PTY_PREBUILD_PREFIX_BY_PLATFORM = {
@@ -223,7 +223,7 @@ function collectPackagedRuntimePackages(electronPlatformName = process.platform)
 function createPackagedRuntimeNodeModuleResources(electronPlatformName = process.platform) {
   return collectPackagedRuntimePackages(electronPlatformName).map(([packageName, packageDir]) => {
     const filter = [
-      ...(packageName === '@orca/process-host' ? ['package.json', 'dist/**/*'] : []),
+      ...(packageName === '@topo/process-host' ? ['package.json', 'dist/**/*'] : []),
       // Why: another worktree can rename these away mid-copy, failing the walk with ENOENT.
       ...(NATIVE_BUILD_PACKAGES[packageName] ? TRANSIENT_NATIVE_BUILD_ENTRY_FILTER : []),
       ...runtimePackageExcludeFilter(packageName, electronPlatformName)
@@ -254,7 +254,7 @@ function listProcessHostModules(directory, extension, prefix = '') {
 }
 
 // Resource filters copy dist as-is; assert complete/current process-host emission matching package tsconfig.
-function assertProcessHostOutputBuilt(packageDir = readPackage('@orca/process-host').packageDir) {
+function assertProcessHostOutputBuilt(packageDir = readPackage('@topo/process-host').packageDir) {
   const manifest = JSON.parse(readFileSync(join(packageDir, 'package.json'), 'utf8'))
   const publicTargets = [
     manifest.main,
@@ -272,7 +272,7 @@ function assertProcessHostOutputBuilt(packageDir = readPackage('@orca/process-ho
     .map((module) => `./dist/${module}.js`)
   if (missing.length > 0 || stale.length > 0) {
     throw new Error(
-      `@orca/process-host output in ${packageDir} does not match its source ` +
+      `@topo/process-host output in ${packageDir} does not match its source ` +
         `(missing: ${missing.join(', ') || 'none'}; stale: ${stale.join(', ') || 'none'}). ` +
         'Run `pnpm build:packages` before packaging.'
     )
@@ -505,7 +505,7 @@ function prunePackagedParcelWatcher(resourcesDir, electronPlatformName, electron
   }
 }
 
-// Declarations are compile-only; dependency maps embed unused sources (megabytes for Linear). Orca main maps ship separately.
+// Declarations are compile-only; dependency maps embed unused sources (megabytes for Linear). Topo main maps ship separately.
 function isPrunableTypeOrSourceMapArtifact(filename) {
   return TYPE_DECLARATION_ARTIFACT_RE.test(filename) || JS_SOURCE_MAP_ARTIFACT_RE.test(filename)
 }
@@ -592,12 +592,12 @@ function assertPackagedNativeVariantsInstalled(electronPlatformName, electronArc
   }
 
   // Why one package: @vscode/windows-process-tree is the only os: win32 npm addon;
-  // the @orca/windows-* addons are workspace links present on every host, so their presence proves nothing.
+  // the @topo/windows-* addons are workspace links present on every host, so their presence proves nothing.
   const missingWindowsAddons = []
   if (electronPlatformName === 'win32' && !isInstalled('@vscode/windows-process-tree')) {
     missingWindowsAddons.push('@vscode/windows-process-tree')
   }
-  // Check actual target binary, not universal workspace link, or packaged secure-file/orcad failures appear only at runtime.
+  // Check actual target binary, not universal workspace link, or packaged secure-file/topod failures appear only at runtime.
   if (electronPlatformName === 'win32') {
     for (const [name, binary] of WORKSPACE_WINDOWS_ADDON_BINARIES) {
       const addon = join(nodeModulesDir, name, binary)

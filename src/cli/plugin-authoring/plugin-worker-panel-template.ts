@@ -25,7 +25,7 @@ declare module 'orca' {
 }
 `
 
-const PANEL_CHECK_TS = `// \`orca plugin check\` renders the panel once per scenario, each with the worker on a fresh
+const PANEL_CHECK_TS = `// \`topo plugin check\` renders the panel once per scenario, each with the worker on a fresh
 // host. Seed what the worker reads so check shows more than the first state.
 import { defineCheck } from 'orca/testing'
 
@@ -35,7 +35,7 @@ export default defineCheck({
 })
 `
 
-const WORKER_TS = `// The plugin's own worker. Orca starts it on the panel's first plugin.request and transpiles
+const WORKER_TS = `// The plugin's own worker. Topo starts it on the panel's first plugin.request and transpiles
 // this file when it loads: no build step. A save restarts it and drops its in-memory state, so
 // the total lives in orca.storage (the storage:own capability).
 import type { OrcaWorkerApi } from 'orca/worker'
@@ -60,7 +60,7 @@ export default function activate(orca: OrcaWorkerApi): void {
 }
 `
 
-const PANEL_TSX = `// No build step: Orca strips the types and compiles the JSX when the panel loads.
+const PANEL_TSX = `// No build step: Topo strips the types and compiles the JSX when the panel loads.
 import {
   atom,
   Badge,
@@ -109,14 +109,14 @@ export default function Panel() {
         </Button>
       </Row>
       <Text muted size="xs">
-        src/worker.ts keeps the total in storage. Edit either file and save: Orca reloads it.
+        src/worker.ts keeps the total in storage. Edit either file and save: Topo reloads it.
       </Text>
     </Stack>
   )
 }
 `
 
-const PANEL_TEST_TSX = `// \`orca plugin test .\` runs this in Node with the same runtime and checks Orca uses.
+const PANEL_TEST_TSX = `// \`topo plugin test .\` runs this in Node with the same runtime and checks Topo uses.
 import { assert, mockHost, mount, test } from 'orca/testing'
 import * as panel from './panel'
 
@@ -148,7 +148,7 @@ test('shows the worker total and adds the step', async () => {
 })
 `
 
-const WORKER_TEST_TS = `// Runs src/worker.ts's activate(orca) with the orca object Orca passes, over a mock host.
+const WORKER_TEST_TS = `// Runs src/worker.ts's activate(orca) with the orca object Topo passes, over a mock host.
 import { assert, mockHost, mountWorker, test } from 'orca/testing'
 import * as main from './worker'
 
@@ -196,7 +196,7 @@ export function workerPanel(input: PluginTemplateInput): PluginTemplate {
       'tsconfig.json': json({ extends: `./${PLUGIN_TYPES_DIR}/tsconfig.json`, include: ['src'] }),
       'README.md': readme(
         input,
-        `A right-sidebar panel (\`src/panel.tsx\`) and the plugin's own worker (\`src/worker.ts\`). The panel asks with \`plugin.request\`, the worker answers with \`orca.panels.handle\`, keeps the total in \`orca.storage\` and tells every open panel with \`orca.panels.post\`; \`src/protocol.ts\` types both sides. Orca transpiles both files when they load, so there is no build step: save and the panel or worker reloads (a worker reload drops its in-memory state, so keep what must last in storage). \`orca plugin test .\` runs \`src/panel.test.tsx\` and \`src/worker.test.ts\` in Node with \`orca/testing\`, and \`orca plugin check .\` renders the panel with the worker in each \`src/panel.check.ts\` scenario; \`npx tsc -p .\` type-checks against the typings \`orca plugin types .\` writes to \`${PLUGIN_TYPES_DIR}/\`. With the folder loaded, \`orca plugin dev request . counter.add --data '{"by":1}'\` calls the worker as the panel does.`
+        `A right-sidebar panel (\`src/panel.tsx\`) and the plugin's own worker (\`src/worker.ts\`). The panel asks with \`plugin.request\`, the worker answers with \`orca.panels.handle\`, keeps the total in \`orca.storage\` and tells every open panel with \`orca.panels.post\`; \`src/protocol.ts\` types both sides. Topo transpiles both files when they load, so there is no build step: save and the panel or worker reloads (a worker reload drops its in-memory state, so keep what must last in storage). \`topo plugin test .\` runs \`src/panel.test.tsx\` and \`src/worker.test.ts\` in Node with \`orca/testing\`, and \`topo plugin check .\` renders the panel with the worker in each \`src/panel.check.ts\` scenario; \`npx tsc -p .\` type-checks against the typings \`topo plugin types .\` writes to \`${PLUGIN_TYPES_DIR}/\`. With the folder loaded, \`topo plugin dev request . counter.add --data '{"by":1}'\` calls the worker as the panel does.`
       ),
       ...COMMON_FILES
     }

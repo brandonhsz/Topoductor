@@ -2,7 +2,7 @@ import {
   TerminalIdentityRawInputs,
   TerminalIdentityReadContext
 } from './terminal-identity-read-context'
-import { OrcaRuntimeWithMailboxTerminalIdentity } from '../../orchestration/mailbox/routing/mailbox-terminal-identity'
+import { TopoRuntimeWithMailboxTerminalIdentity } from '../../orchestration/mailbox/routing/mailbox-terminal-identity'
 import type {
   RuntimeLeafRecord,
   RuntimePtyWorktreeRecord
@@ -31,9 +31,9 @@ import type {
 
 import { readTerminalTail } from '../output/tail/terminal-tail-read'
 import { structuredWorkerTerminalRefusal } from '../../orchestration/terminal-authority/structured-sessions/structured-worker-terminal-refusal'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 
-export abstract class OrcaRuntimeWithBuildPtyTerminalSummary extends OrcaRuntimeWithMailboxTerminalIdentity {
+export abstract class TopoRuntimeWithBuildPtyTerminalSummary extends TopoRuntimeWithMailboxTerminalIdentity {
   protected abstract bindPtyIncarnationHandle(
     retained: PtyIncarnationHandleRecord,
     leaf: RuntimeLeafRecord
@@ -246,7 +246,7 @@ export abstract class OrcaRuntimeWithBuildPtyTerminalSummary extends OrcaRuntime
     context?: TerminalIdentityReadContext
   ): boolean {
     if (
-      !ORCA_LAYOUT_OWNER_IS_MAIN ||
+      !TOPO_LAYOUT_OWNER_IS_MAIN ||
       !record.ptyId ||
       !isTerminalLeafId(record.leafId) ||
       !isValidTerminalTabId(record.tabId) ||

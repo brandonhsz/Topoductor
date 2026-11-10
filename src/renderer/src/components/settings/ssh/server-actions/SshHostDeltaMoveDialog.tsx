@@ -1,8 +1,8 @@
 import { Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import type { OrcadDeltaMovePreview } from '../../../../../../shared/orcad-managed-runtime'
+import type { TopodDeltaMovePreview } from '../../../../../../shared/topod-managed-runtime'
 import type { SshTarget } from '../../../../../../shared/ssh-types'
-import type { ManagedOrcadPreloadApi } from '../../../../../../preload/api/managed-orcad-api'
+import type { ManagedTopodPreloadApi } from '../../../../../../preload/api/managed-topod-api'
 import { useMountedRef } from '@/hooks/useMountedRef'
 import { useTranslate } from '@/i18n/use-translate'
 import { Button } from '../../../ui/button'
@@ -21,7 +21,7 @@ import {
 import { deltaMoveRowLabel } from './ssh-host-delta-move-copy'
 
 type SshHostDeltaMoveDialogProps = {
-  api: ManagedOrcadPreloadApi
+  api: ManagedTopodPreloadApi
   target: SshTarget | null
   onClose: () => void
   onFinished: () => void
@@ -36,7 +36,7 @@ export function SshHostDeltaMoveDialog({
 }: SshHostDeltaMoveDialogProps): React.JSX.Element {
   const t = useTranslate()
   const mountedRef = useMountedRef()
-  const [preview, setPreview] = useState<OrcadDeltaMovePreview | null>(null)
+  const [preview, setPreview] = useState<TopodDeltaMovePreview | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [running, setRunning] = useState(false)
   // Key by target ID so reloads with fresh target objects cannot reset a running move.
@@ -99,7 +99,7 @@ export function SshHostDeltaMoveDialog({
           <DialogDescription>
             {t(
               'auto.components.settings.deltaMove.description',
-              'An older version of Orca changed this host after its projects moved to Orca on the host. This adds what it created to the server; it never merges over what the server already has.'
+              'An older version of Topo changed this host after its projects moved to Topo on the host. This adds what it created to the server; it never merges over what the server already has.'
             )}
           </DialogDescription>
         </DialogHeader>

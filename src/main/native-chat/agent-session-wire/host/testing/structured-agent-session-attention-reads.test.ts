@@ -164,7 +164,7 @@ it('acknowledges a post-rewind completion after normal idle retirement without r
       attached.fence,
       [
         {
-          identity: { provider: 'orca', clientMessageId: firstRequest.clientMessageId },
+          identity: { provider: 'topo', clientMessageId: firstRequest.clientMessageId },
           body: initial.body,
           ownerFence: attached.fence,
           turnScope: AGENT_JOURNAL_THREAD_SCOPE

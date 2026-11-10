@@ -1,4 +1,4 @@
-// Generate the host API typings `orca plugin types` copies into plugins, from the host-API table.
+// Generate the host API typings `topo plugin types` copies into plugins, from the host-API table.
 import { mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { loadPluginSchemaModule, REPO_ROOT } from './plugin-schema-module-loader.mjs'

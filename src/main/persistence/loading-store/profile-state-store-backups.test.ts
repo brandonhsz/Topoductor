@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { flushActiveProfileBeforeFileMutation } from '../../orca-profiles/profile-persistence-deadline'
+import { flushActiveProfileBeforeFileMutation } from '../../topo-profiles/profile-persistence-deadline'
 import { openProfileStateDatabaseReadOnly } from '../profile-state/profile-state-database'
 import { readProfileStateSnapshot } from '../profile-state/profile-state-documents'
 import { profileStateDatabaseBackups } from '../profile-state/profile-state-backup-path'
@@ -13,7 +13,7 @@ import { Store } from './store'
 vi.mock('electron', () => ({
   app: {
     getPath: () => tmpdir(),
-    getName: () => 'orca-test',
+    getName: () => 'topo-test',
     getVersion: () => '0.0.0-test',
     isPackaged: false,
     on: () => {},
@@ -59,9 +59,9 @@ afterEach(async () => {
 })
 
 async function fixture() {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-store-backup-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-store-backup-'))
   const databasePath = join(directory, 'profile-state.db')
-  const dataFile = join(directory, 'orca-data.json')
+  const dataFile = join(directory, 'topo-data.json')
   const legacyBytes = '{"settings":{"theme":"system"},"legacy":"retained"}'
   writeFileSync(dataFile, legacyBytes)
   const beginning = Date.now()

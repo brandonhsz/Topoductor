@@ -3,20 +3,20 @@ import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { assertPackagedNodePtyCapability } from './packaged-node-pty-capability-oracle.mjs'
 
-const EVIDENCE_PREFIX = 'ORCA_NODE_PTY_CAPABILITY_EVIDENCE='
+const EVIDENCE_PREFIX = 'TOPO_NODE_PTY_CAPABILITY_EVIDENCE='
 const PROBE_TIMEOUT_MS = 45_000
 const MAX_DIAGNOSTIC_CHARS = 8_000
 
 function executableArgument(argv) {
   const value = argv.find((arg) => arg.startsWith('--exe='))?.slice('--exe='.length)
   if (!value) {
-    throw new Error('usage: windows-pty-native-capability-smoke --exe=<packaged Orca.exe>')
+    throw new Error('usage: windows-pty-native-capability-smoke --exe=<packaged Topo.exe>')
   }
   return path.resolve(value)
 }
 
 export function checkoutRunProcessPath() {
-  return createRequire(import.meta.url).resolve('@orca/process-host')
+  return createRequire(import.meta.url).resolve('@topo/process-host')
 }
 
 export function packagedProbeInvocation(executable, environment = process.env) {

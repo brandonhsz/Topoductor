@@ -52,7 +52,7 @@ export async function mint(key: KeyLike, relayHostId: string, issuer = ISSUER): 
     .setProtectedHeader({ alg: 'ES256', kid: REMOTE ? 'spike' : 'mvp' })
     .setSubject(USER)
     .setIssuer(issuer)
-    .setAudience('orca-relay')
+    .setAudience('topo-relay')
     .setIssuedAt()
     .setExpirationTime('5m')
     .sign(key)
@@ -80,7 +80,7 @@ export function control(host: Host, jwt: string, epoch = EPOCH, opts: { drop?: (
     onClose: (code) => events.closes.push(code),
     createSocket: (url, token) => {
       const ws = new WebSocket(url, {
-        headers: { authorization: `Bearer ${token}`, 'x-orca-host-capabilities': opts.caps ?? process.env.MVP_HOST_CAPS ?? SHIPPED_CAPS },
+        headers: { authorization: `Bearer ${token}`, 'x-topo-host-capabilities': opts.caps ?? process.env.MVP_HOST_CAPS ?? SHIPPED_CAPS },
         perMessageDeflate: false,
         maxPayload: 64 * 1024
       })
@@ -144,7 +144,7 @@ export async function adminToken(op: string, body: unknown, opts: AdminOpts = {}
   return new SignJWT({ purpose: 'edge-admin', op: opts.tokenOp ?? op, bodySha256: sha(opts.tokenBody ?? raw), ...(jti === null ? {} : { jti }) })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuer(opts.issuer ?? DIRECTOR)
-    .setAudience('orca-relay-edge-admin')
+    .setAudience('topo-relay-edge-admin')
     .setIssuedAt()
     .setExpirationTime('1m')
     .sign(new TextEncoder().encode(opts.key ?? SIGNING_KEY))

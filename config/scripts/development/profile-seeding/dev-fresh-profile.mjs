@@ -3,17 +3,17 @@
 import { existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { getDefaultSeedSource, seedDevProfile } from './dev-profile-seed.mjs'
 
 const USAGE = `Usage: pnpm dev:fresh [--] [--keep] [--seed-from[=<profile dir>]] [-- <pnpm dev args>]
 
   --keep                 keep the temporary profile after exit
   --seed-from[=<dir>]    start from a slim copy of a profile (projects, workspaces, settings,
-                         SSH targets, account session); default: orca-dev, else the installed app
-  ORCA_FRESH_PROFILE_DIR=<dir>   use (and keep) a fixed profile directory`
+                         SSH targets, account session); default: topo-dev, else the installed app
+  TOPO_FRESH_PROFILE_DIR=<dir>   use (and keep) a fixed profile directory`
 
-const TEMP_PREFIX = 'orca-fresh-profile-'
+const TEMP_PREFIX = 'topo-fresh-profile-'
 
 function parseArgs(argv) {
   const options = { keep: false, seedFrom: null, devArgs: [] }
@@ -45,7 +45,7 @@ if (options.help) {
   process.exit(0)
 }
 
-const fixedDir = process.env.ORCA_FRESH_PROFILE_DIR
+const fixedDir = process.env.TOPO_FRESH_PROFILE_DIR
 const profileDir = fixedDir ? path.resolve(fixedDir) : mkdtempSync(path.join(tmpdir(), TEMP_PREFIX))
 mkdirSync(profileDir, { recursive: true })
 
@@ -75,9 +75,9 @@ const child = spawnProcess({
   args: ['dev', ...options.devArgs],
   env: {
     ...process.env,
-    ORCA_DEV_USER_DATA_PATH: profileDir,
+    TOPO_DEV_USER_DATA_PATH: profileDir,
     // Why: seeded profiles already finished onboarding; only empty ones should show first-run education.
-    ...(options.seedFrom ? {} : { ORCA_DEV_SHOW_FIRST_RUN_EDUCATION: '1' })
+    ...(options.seedFrom ? {} : { TOPO_DEV_SHOW_FIRST_RUN_EDUCATION: '1' })
   },
   stdio: 'inherit'
 })

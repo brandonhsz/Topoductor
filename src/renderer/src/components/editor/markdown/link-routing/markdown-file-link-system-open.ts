@@ -3,7 +3,7 @@ import { fileUrlToAbsolutePath } from './markdown-preview-links'
 
 /**
  * Hand a local Markdown file link to the OS default app. Main never launches scripts from a link:
- * it answers `open-in-editor` for readable ones, which open in an Orca editor tab, or are revealed
+ * it answers `open-in-editor` for readable ones, which open in a Topo editor tab, or are revealed
  * in the file manager when the link has no workspace to open the tab in.
  */
 export async function openMarkdownFileLinkWithSystemDefault(

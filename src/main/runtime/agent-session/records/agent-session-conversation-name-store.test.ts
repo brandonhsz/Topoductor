@@ -42,7 +42,7 @@ const reserveRequest = (): AgentSessionReserveRequest => ({
 let directory: string
 
 beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), 'orca-conversation-name-store-'))
+  directory = await mkdtemp(join(tmpdir(), 'topo-conversation-name-store-'))
 })
 afterEach(async () => {
   await closeTestJournalHostDatabases()

@@ -47,8 +47,8 @@ function fakeGuest(respond: (request: GuestRequest, canceled: Promise<void>) => 
 }
 
 const prepare = vi.fn(async () => ({
-  node: '/home/dev/.cache/orca/node-runtime/bin/node',
-  helper: '/mnt/c/Program Files/Orca/resources/relay/wsl/opencode-text-task-wsl.cjs'
+  node: '/home/dev/.cache/topo/node-runtime/bin/node',
+  helper: '/mnt/c/Program Files/Topo/resources/relay/wsl/opencode-text-task-wsl.cjs'
 }))
 
 function task(signal = new AbortController().signal) {

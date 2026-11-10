@@ -10,7 +10,7 @@ import {
   type PairedUiState
 } from '../../../../../shared/pairing-local-ui-fields'
 import type { PersistedUIState } from '../../../../../shared/persisted-ui-state-types'
-import { isWorkspaceHostScope } from '../../../../../shared/orcad-migration/orcad-migration-client-state-value-validation'
+import { isWorkspaceHostScope } from '../../../../../shared/topod-migration/topod-migration-client-state-value-validation'
 import { defineMethod, type RpcContext } from '../../core'
 import { isHostOwnPhone } from '../../host-own-phone'
 import {

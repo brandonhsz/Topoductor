@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { resolveExecutableCommand } from '../../node-cli-command-resolution'
 import { GitHistory } from '../../rpc-contract/git-params'
 import { gitHistoryTokens } from './git-history-token-store'
@@ -10,7 +10,7 @@ import { loadGitHistoryRefs } from './git-history-revisions'
 import { loadGitHistoryFromExecutor } from './git-history-execution'
 
 const repositories: string[] = []
-const gitBinary = resolveExecutableCommand(process.env.ORCA_TEST_GIT_BINARY ?? 'git')
+const gitBinary = resolveExecutableCommand(process.env.TOPO_TEST_GIT_BINARY ?? 'git')
 
 afterEach(async () => {
   await Promise.all(
@@ -22,7 +22,7 @@ async function createRepository(inheritedEnv: NodeJS.ProcessEnv = process.env) {
   if (!gitBinary) {
     throw new Error('Git is required for the real history regression')
   }
-  const repo = await mkdtemp(join(tmpdir(), 'orca-history-roots-'))
+  const repo = await mkdtemp(join(tmpdir(), 'topo-history-roots-'))
   repositories.push(repo)
   const emptyConfig = join(repo, 'empty-git-config')
   const emptyHooks = join(repo, 'empty-hooks')

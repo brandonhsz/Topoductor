@@ -6,7 +6,7 @@ import { expect, vi } from 'vitest'
 import type { OrchestrationCompatibilityEvidence } from '../../../shared/orchestration/orchestration-compatibility-evidence'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../shared/orchestration/orchestration-runtime-capabilities'
 import Database from '../../sqlite/sync-database'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { OrchestrationDb } from '../orchestration/db/orchestration-db'
 import '../orchestration/db/contract-constants'
 import '../orchestration/db/messages/mailbox-routing-page'
@@ -31,7 +31,7 @@ type Transport = 'dispatch' | 'websocket'
 export type LegacyCompatibilityDispatcherHarness = {
   db: OrchestrationDb
   dispatcher: RpcDispatcher
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   adoptedRunId: string
   taskId: string
   dispatchId: string
@@ -52,7 +52,7 @@ export function cleanupLegacyCompatibilityDispatcherHarnesses(): void {
 }
 
 export function createHarness(): LegacyCompatibilityDispatcherHarness {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-legacy-dispatcher-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-legacy-dispatcher-'))
   tempDirs.push(dir)
   const dbPath = join(dir, 'orchestration.db')
   const before = new OrchestrationDb(dbPath)
@@ -79,7 +79,7 @@ export function createHarness(): LegacyCompatibilityDispatcherHarness {
   const db = new OrchestrationDb(dbPath)
   databases.push(db)
   const adoptedRunId = db.getLegacyAdoption()?.adopted_run_id as string
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(db)
   vi.spyOn(runtime, 'getTerminalPaneKey').mockImplementation((handle) => {
     if (handle === COORDINATOR_HANDLE) {

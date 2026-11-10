@@ -1,6 +1,6 @@
 
 import { afterEach, expect, it, vi } from 'vitest'
-import type { PushNotification } from '@orca-cloud/push-contract'
+import type { PushNotification } from '@topo-cloud/push-contract'
 import { DurablePushStore } from './durable-push-store.js'
 import { DurablePushWorker } from './durable-push-worker.js'
 import { PushDispatcher } from './push-dispatcher.js'
@@ -189,7 +189,7 @@ it('stops queued claim admissions without leasing the remaining device', async (
     paused.release()
     await within(Promise.all([pending, stopping]), 2_000)
     expect(h.send).toHaveBeenCalledOnce()
-    expect(h.send.mock.calls[0]?.[0].orca.notificationSeq).toBe(1)
+    expect(h.send.mock.calls[0]?.[0].topo.notificationSeq).toBe(1)
     const [remaining] = await h.db.query(
       'SELECT attempts, lease_until FROM push_delivery_batches WHERE registration_id = ?',
       [other.registrationId]
@@ -223,12 +223,12 @@ it('claims new devices while an earlier provider response is still pending', asy
   const secondSent = Promise.withResolvers<void>()
   const thirdSent = Promise.withResolvers<void>()
   h.send.mockImplementation(async (delivery) => {
-    if (delivery.orca.notificationSeq === 1) {
+    if (delivery.topo.notificationSeq === 1) {
       entered.resolve()
       return await held.promise
     }
-    if (delivery.orca.notificationSeq === 2) secondSent.resolve()
-    if (delivery.orca.notificationSeq === 3) thirdSent.resolve()
+    if (delivery.topo.notificationSeq === 2) secondSent.resolve()
+    if (delivery.topo.notificationSeq === 3) thirdSent.resolve()
     return { status: 'sent' }
   })
   await h.accept(note(1))

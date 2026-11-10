@@ -14,7 +14,7 @@ import type {
 const HEALTH_CHECK_TIMEOUT_MS = 3_000
 const RESOLVER_HEALTH_CHECK_TIMEOUT_MS = 3_000
 // SIGSTOP also blocks listSessions; inject failure so e2e can test preserving live sessions reliably.
-export const E2E_FORCE_DAEMON_HEALTH_UNREACHABLE_ENV = 'ORCA_E2E_FORCE_DAEMON_HEALTH_UNREACHABLE'
+export const E2E_FORCE_DAEMON_HEALTH_UNREACHABLE_ENV = 'TOPO_E2E_FORCE_DAEMON_HEALTH_UNREACHABLE'
 
 // Rejected means handshake refusal or malformed reply; unreachable includes live but slow daemons.
 export type DaemonHealth = 'healthy' | 'unreachable' | 'rejected' | 'pty-spawn-unhealthy'

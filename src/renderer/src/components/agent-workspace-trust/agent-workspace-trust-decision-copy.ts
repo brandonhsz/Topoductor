@@ -11,12 +11,12 @@ export const agentWorkspaceTrustDecisionCopy = {
   promptDescription: () =>
     translate(
       'auto.components.agent-workspace-trust-decision.prompt-description',
-      'Agents like Claude Code and Codex ask "Do you trust this folder?" before they load the project\'s own agent settings and hooks, which can run commands. Orca can answer yes for you in every worktree of this repository.'
+      'Agents like Claude Code and Codex ask "Do you trust this folder?" before they load the project\'s own agent settings and hooks, which can run commands. Topo can answer yes for you in every worktree of this repository.'
     ),
   promptRemembered: () =>
     translate(
       'auto.components.agent-workspace-trust-decision.prompt-remembered',
-      "Orca remembers your answer for this repository. You can change it in the repository's settings."
+      "Topo remembers your answer for this repository. You can change it in the repository's settings."
     ),
   trustRepository: () =>
     translate(
@@ -30,12 +30,12 @@ export const agentWorkspaceTrustDecisionCopy = {
   settingDescription: () =>
     translate(
       'auto.components.agent-workspace-trust-decision.setting-description',
-      'Whether agents Orca starts in this repository\'s worktrees skip their "Do you trust this folder?" prompt and load the project\'s agent settings and hooks right away.'
+      'Whether agents Topo starts in this repository\'s worktrees skip their "Do you trust this folder?" prompt and load the project\'s agent settings and hooks right away.'
     ),
   settingUndecided: () =>
     translate(
       'auto.components.agent-workspace-trust-decision.setting-undecided',
-      'Not decided yet. Orca will ask the next time you start an agent here.'
+      'Not decided yet. Topo will ask the next time you start an agent here.'
     ),
   settingGlobalOff: () =>
     translate(

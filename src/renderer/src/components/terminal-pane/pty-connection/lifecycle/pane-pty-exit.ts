@@ -14,7 +14,7 @@ import { isPtyExitReplacedByRestart } from '../../pty-transport/delivery/pty-exi
 import { armRestartReplacement } from '../spawn/restart-replacement-on-show'
 import { noteHiddenAgentResumePtyEnded } from '../spawn/hidden-agent-resume-deferral'
 import { expectExitedSplitPaneClose } from './exited-split-pane-close'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 
 export function initializePanePtyExit(session: ConnectPanePtySession): void {
   session.focusSurvivingPtyPaneAfterKeptExit = (): void => {
@@ -201,7 +201,7 @@ export function bindPanePtyExit(session: ConnectPanePtySession): void {
     }
     // Switch point: main closes the exited pane; the window removes it when main's frame does.
     if (
-      ORCA_LAYOUT_OWNER_IS_MAIN &&
+      TOPO_LAYOUT_OWNER_IS_MAIN &&
       expectExitedSplitPaneClose({
         worktreeId: session.deps.worktreeId,
         tabId: session.deps.tabId,

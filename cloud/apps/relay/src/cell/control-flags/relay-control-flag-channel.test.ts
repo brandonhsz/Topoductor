@@ -20,7 +20,7 @@ function fakeGoogle(initial: StoredObject = { kind: 'status', status: 404 }) {
   const fetchImpl: typeof fetch = async (target, init) => {
     const url = new URL(String(target))
     if (url.hostname === 'metadata.google.internal') {
-      if (url.pathname.endsWith('/project/project-id')) return new Response('onorca-cloud')
+      if (url.pathname.endsWith('/project/project-id')) return new Response('ontopo-cloud')
       return Response.json({ access_token: ACCESS_TOKEN, expires_in: 3_600 })
     }
     state.storageRequests.push(url)

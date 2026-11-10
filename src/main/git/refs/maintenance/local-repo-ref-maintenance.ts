@@ -54,7 +54,7 @@ export function setRepoMaintenanceActivityProbe(probe: RepoMaintenanceActivityPr
 }
 
 function isDisabled(): boolean {
-  return process.env.ORCA_DISABLE_REPO_REF_MAINTENANCE === '1'
+  return process.env.TOPO_DISABLE_REPO_REF_MAINTENANCE === '1'
 }
 
 function localMaintenanceOptions(): RepoRefMaintenanceOptions {
@@ -130,7 +130,7 @@ function refsDirectoryForMainProcess(commonDir: string, wslDistro: string | unde
   return (isWindowsAbsolutePathLike(commonDir) ? win32 : posix).join(commonDir, 'refs')
 }
 
-/** Read user opt-outs; Orca's per-command maintenance suppression never appears in persisted config. */
+/** Read user opt-outs; Topo's per-command maintenance suppression never appears in persisted config. */
 export function isGitAutoMaintenanceDisabled(configOutput: string): boolean {
   return configOutput
     .split('\n')

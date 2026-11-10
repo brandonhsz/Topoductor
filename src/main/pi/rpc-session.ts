@@ -107,7 +107,7 @@ export class PiRpcSession {
       onInputAccepted: (clientMessageId) =>
         this.settle(clientMessageId, {
           state: 'accepted',
-          providerIdentity: { provider: 'orca', clientMessageId }
+          providerIdentity: { provider: 'topo', clientMessageId }
         })
     })
     this.turns = new PiRpcTurns({

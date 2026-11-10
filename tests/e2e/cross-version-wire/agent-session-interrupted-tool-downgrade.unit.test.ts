@@ -56,7 +56,7 @@ function inputRows(rows: readonly JournalReadRow[]): JournalRow[] {
 }
 // Loads a real old build, including cold extraction and transforms.
 test('an older host and client read a call a stop cut short as the failure they always showed', async () => {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-interrupted-tool-downgrade-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-interrupted-tool-downgrade-'))
   const journals = createTrackedJournalOpener({ legacyInputs: true })
   try {
     // This build: a call a stop cut short, with the partial output it left.

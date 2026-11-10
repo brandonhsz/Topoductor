@@ -12,7 +12,7 @@ let dir: string
 let server: AgentHookServer
 
 beforeEach(async () => {
-  dir = mkdtempSync(join(tmpdir(), 'orca-claude-continuation-'))
+  dir = mkdtempSync(join(tmpdir(), 'topo-claude-continuation-'))
   server = new AgentHookServer()
   await server.start({ env: 'production', userDataPath: dir })
 })

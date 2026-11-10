@@ -39,7 +39,7 @@ export function isProviderUserMessageEcho(
     body.kind === 'message' &&
     body.role === 'user' &&
     identity !== null &&
-    identity.provider !== 'orca'
+    identity.provider !== 'topo'
   )
 }
 

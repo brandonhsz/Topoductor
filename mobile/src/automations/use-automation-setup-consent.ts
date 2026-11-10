@@ -1,8 +1,8 @@
 import { parseExecutionHostId, type ExecutionHostId } from '../../../src/shared/execution-host'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ComponentProps } from 'react'
-import type { PersistedTrustedOrcaHooks } from '../../../src/shared/orca-yaml-hook-types'
-import type { OrcaHookTrustDrawer, OrcaHookTrustPrompt } from '../components/OrcaHookTrustDrawer'
+import type { PersistedTrustedTopoHooks } from '../../../src/shared/topo-yaml-hook-types'
+import type { TopoHookTrustDrawer, TopoHookTrustPrompt } from '../components/TopoHookTrustDrawer'
 import { persistSetupHookTrustApproval } from '../tasks/setup-hook-trust'
 import type { RpcClient } from '../transport/rpc/rpc-client-contract'
 import { prepareAutomationSetup } from './automation-setup-preparation'
@@ -10,10 +10,10 @@ import type { AutomationDraft } from './automation-draft'
 import type { AutomationTargets } from './automation-target-inventory'
 
 type Consent = {
-  prompt: OrcaHookTrustPrompt
+  prompt: TopoHookTrustPrompt
   client: RpcClient
   executionHost?: ExecutionHostId
-  trust: PersistedTrustedOrcaHooks
+  trust: PersistedTrustedTopoHooks
   current: () => boolean
   resolve: (decision: 'run' | 'skip' | null) => void
   reject: (failure: unknown) => void
@@ -81,7 +81,7 @@ export function useAutomationSetupConsent(
       setBusy(false)
     }
   }
-  const drawer: ComponentProps<typeof OrcaHookTrustDrawer> = {
+  const drawer: ComponentProps<typeof TopoHookTrustDrawer> = {
     prompt: confirmation?.prompt ?? null,
     visible: confirmation !== null,
     allowAlwaysTrust: parseExecutionHostId(confirmation?.executionHost)?.kind !== 'runtime',

@@ -28,7 +28,7 @@ import {
 import type { AiVaultScanOptions } from './session-scanner-types'
 import { managedOpenCodeAccountDataDirs } from '../opencode/opencode-managed-account-data-dirs'
 import { antigravityChatBrainDir } from '../antigravity/antigravity-chat-home'
-import { getProfileUserDataPath } from '../orca-profiles/profile-storage-paths'
+import { getProfileUserDataPath } from '../topo-profiles/profile-storage-paths'
 import { prepareOpenCodeWslReaders } from './scanners/opencode/reader-transport/opencode-wsl-runtime-preparation'
 import { LOCAL_EXECUTION_HOST_ID } from '../../shared/execution-host'
 import { AiVaultScanCoordinator } from './ai-vault-scan-coordinator'

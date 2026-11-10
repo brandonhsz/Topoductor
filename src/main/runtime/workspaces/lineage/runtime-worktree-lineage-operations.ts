@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree } from '../../terminal/launch/terminal-workspace-scope'
+import { TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree } from '../../terminal/launch/terminal-workspace-scope'
 import { getRepoExecutionHostId } from '../../../../shared/execution-host'
 import type {
   WorktreeLineageInput,
@@ -14,7 +14,7 @@ import type {
 } from '../../../../shared/worktree/lineage-types'
 import type { WorkspaceKey } from '../../../../shared/workspace-scope'
 import type { Repo } from '../../../../shared/repo-types'
-export abstract class RuntimeWorktreeLineageOperations extends OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree {
+export abstract class RuntimeWorktreeLineageOperations extends TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree {
   /** `childRepo` scopes the parent to the new worktree's execution host (#12757). */
   resolveLineageForWorktreeCreate(
     input?: WorktreeLineageInput,

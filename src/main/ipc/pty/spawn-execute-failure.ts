@@ -1,6 +1,6 @@
 import type { PtyRegistrationClaim } from '../../runtime/terminal/records/runtime-terminal-state-records'
 import type { PtySpawnResult } from '../../providers/pty-provider-contract'
-import type { OrcaRuntimeService } from '../../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 import { classifyError } from '../../telemetry/classify-error'
 import { track } from '../../telemetry/client'
 import { getCohortAtEmit } from '../../telemetry/cohort-classifier'
@@ -10,7 +10,7 @@ import { restoreProvisionalPtySize, type PtySpawnSizeSeed } from './spawn-option
 import { clearProviderPtyState } from './provider/state-cleanup'
 
 type PtySpawnExecuteState = {
-  deps: { runtime?: OrcaRuntimeService }
+  deps: { runtime?: TopoRuntimeService }
   isClaudeLaunch: boolean
   effectiveSessionAppId: string | undefined
   provisionalPtySize: PtySpawnSizeSeed | undefined

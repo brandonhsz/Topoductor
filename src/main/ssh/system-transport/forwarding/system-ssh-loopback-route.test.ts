@@ -16,13 +16,13 @@ vi.mock('./system-ssh-loopback-route-admission', () => ({
   admitSystemSshLoopbackRoute: admissionMock
 }))
 
-vi.mock('@orca/process-host/process-tree-termination', async (importOriginal) => {
+vi.mock('@topo/process-host/process-tree-termination', async (importOriginal) => {
   const actual: Record<string, unknown> = await importOriginal()
   return { ...actual, signalProcessTree: treeKillMock }
 })
 
 vi.mock('./system-ssh-orphaned-forward', () => ({
-  stopOrphanedOrcaSshForward: vi.fn().mockResolvedValue(false)
+  stopOrphanedTopoSshForward: vi.fn().mockResolvedValue(false)
 }))
 
 vi.mock('fs', async (importOriginal) => {

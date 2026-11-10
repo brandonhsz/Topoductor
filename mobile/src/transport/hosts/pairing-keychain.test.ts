@@ -23,8 +23,8 @@ vi.mock('react-native', () => ({ Platform: platformMock }))
 
 import { resetPairingKeychainForTests, writePairingKeychainItem } from './pairing-keychain'
 
-const GENERATION_KEY = 'orca:pairing-keychain-generation'
-const TOKEN_KEY = 'orca.host-token.host-1782629088232'
+const GENERATION_KEY = 'topo:pairing-keychain-generation'
+const TOKEN_KEY = 'topo.host-token.host-1782629088232'
 
 // Preserve Expo’s null-message Android GeneralSecurityException shape from #6600.
 const ENCRYPT_REJECTION = new Error(

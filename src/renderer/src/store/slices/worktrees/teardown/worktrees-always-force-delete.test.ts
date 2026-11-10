@@ -96,7 +96,7 @@ it('refuses newly appeared unapproved live agent on runtime:env-1 after preparat
   })
   store.setState({ worktreesByRepo: { [wt.repoId]: [wt] } })
   const gate = deferred<unknown>()
-  store.setState({ trustedOrcaHooks: { repo1: { all: { approvedAt: 1 } } } })
+  store.setState({ trustedTopoHooks: { repo1: { all: { approvedAt: 1 } } } })
   const preparation = runtimeEnvironmentTransportCall
   preparation.mockReturnValueOnce(gate.promise)
   const removal = store
@@ -128,7 +128,7 @@ it('allows already-approved live agent on runtime:env-1 after preparation', asyn
   })
   store.setState({ worktreesByRepo: { [wt.repoId]: [wt] } })
   const gate = deferred<unknown>()
-  store.setState({ trustedOrcaHooks: { repo1: { all: { approvedAt: 1 } } } })
+  store.setState({ trustedTopoHooks: { repo1: { all: { approvedAt: 1 } } } })
   const preparation = runtimeEnvironmentTransportCall
   preparation.mockReturnValueOnce(gate.promise)
   const removal = store

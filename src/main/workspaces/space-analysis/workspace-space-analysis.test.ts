@@ -73,7 +73,7 @@ describe('analyzeWorkspaceSpace', () => {
   beforeEach(async () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-05-14T12:00:00Z'))
-    tempDir = await mkdtemp(join(tmpdir(), 'orca-space-'))
+    tempDir = await mkdtemp(join(tmpdir(), 'topo-space-'))
     listRepoWorktreesMock.mockReset()
     getLocalProjectWorktreeGitOptionsMock.mockReset().mockReturnValue({})
     workerState.fail = false
@@ -101,7 +101,7 @@ describe('analyzeWorkspaceSpace', () => {
     const repo: Repo = {
       id: 'repo-1',
       path: mainPath,
-      displayName: 'orca',
+      displayName: 'topo',
       badgeColor: '#000',
       addedAt: 0
     }
@@ -195,7 +195,7 @@ describe('analyzeWorkspaceSpace', () => {
     const repo: Repo = {
       id: 'repo-1',
       path: repoPath,
-      displayName: 'orca',
+      displayName: 'topo',
       badgeColor: '#000',
       addedAt: 0
     }

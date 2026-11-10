@@ -1,26 +1,26 @@
 // Restored panes share main's starter across first-view, CLI and orchestration triggers.
 import { describe, expect, it, vi } from 'vitest'
 
-vi.mock('../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 // Fragments stay side-effect ordered: mocks, then lifecycle, then fixtures.
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const {
   HEADLESS_LEAF_ID,
   TEST_WORKTREE_ID,
   deferred,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} = await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
-const { committingSpawn } = await import('../../orca-runtime-tests/bind-first-pane.test-fixture')
+} = await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
+const { committingSpawn } = await import('../../topo-runtime-tests/bind-first-pane.test-fixture')
 
 function windowlessRuntime() {
   const { runtimeStore, getSession, setSession } = makeRuntimeStoreWithWorkspaceSession(
     makeWorkspaceSessionWithHeadlessTerminal()
   )
-  const runtime = new OrcaRuntimeService(runtimeStore)
+  const runtime = new TopoRuntimeService(runtimeStore)
   const started = deferred<{ id: string }>()
   const spawn = vi.fn(
     (_args: { worktreeId?: string; tabId?: string; leafId?: string }) => started.promise

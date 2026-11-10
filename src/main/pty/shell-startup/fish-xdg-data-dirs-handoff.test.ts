@@ -14,7 +14,7 @@ import {
   getFishXdgDataDirsLaunchEnv
 } from './fish-xdg-data-dirs-handoff'
 
-const ROOT = '/orca/shell-wrappers/abc'
+const ROOT = '/topo/shell-wrappers/abc'
 
 describe('getFishXdgDataDirsLaunchEnv', () => {
   it.each([['-N'], ['--no-config'], ['--no-c'], ['-lN'], ['-Ni']])(
@@ -46,11 +46,11 @@ echo "fake-codex $*"
 const STATE_PROBE = [
   'set -q XDG_DATA_DIRS; and echo "xdg=[$XDG_DATA_DIRS]"; or echo xdg=unset',
   `set -q ${FISH_XDG_DATA_DIRS_PREFIX_ENV}; and echo marker-left`,
-  'env | grep "^XDG_DATA_DIRS=\\|ORCA_FISH"; or echo child-clean',
-  'functions -q __orca_fish_xdg_handoff; and echo handoff-left'
+  'env | grep "^XDG_DATA_DIRS=\\|TOPO_FISH"; or echo child-clean',
+  'functions -q __topo_fish_xdg_handoff; and echo handoff-left'
 ].join('\n')
 
-// CI sets ORCA_REQUIRE_FISH so a missing binary must fail rather than skip.
+// CI sets TOPO_REQUIRE_FISH so a missing binary must fail rather than skip.
 it('finds fish when the environment requires it', () => {
   expect(fishRequirementViolation(fishLookup)).toBeNull()
 })
@@ -61,7 +61,7 @@ describe.skipIf(!fish.available)('fish vendor snippet in a real fish', () => {
   let bin: string
 
   beforeEach(() => {
-    sandbox = mkdtempSync(join(tmpdir(), 'orca-fish-xdg-'))
+    sandbox = mkdtempSync(join(tmpdir(), 'topo-fish-xdg-'))
     root = join(sandbox, 'root')
     bin = join(sandbox, 'bin')
     const [snippetPath, snippet] = buildFishVendorConfWrapperFile(root)
@@ -93,18 +93,18 @@ describe.skipIf(!fish.available)('fish vendor snippet in a real fish', () => {
 
   // Distro vendor snippets such as snapd may change XDG_DATA_DIRS themselves.
   it.each([['/opt/a:/opt/b/'], ['/opt/a:'], [undefined]] as const)(
-    'leaves fish exactly as it starts without Orca when XDG_DATA_DIRS is %s',
+    'leaves fish exactly as it starts without Topo when XDG_DATA_DIRS is %s',
     (inherited) => {
       const base: Record<string, string> =
         inherited === undefined ? {} : { XDG_DATA_DIRS: inherited }
-      const withoutOrca = runFish(['-c', STATE_PROBE], base)
-      const withOrca = runFish(['-c', STATE_PROBE], {
+      const withoutTopo = runFish(['-c', STATE_PROBE], base)
+      const withTopo = runFish(['-c', STATE_PROBE], {
         ...base,
         ...getFishXdgDataDirsLaunchEnv(root, inherited)
       })
-      expect(withOrca).toBe(withoutOrca)
-      expect(withOrca).not.toContain('marker-left')
-      expect(withOrca).not.toContain('handoff-left')
+      expect(withTopo).toBe(withoutTopo)
+      expect(withTopo).not.toContain('marker-left')
+      expect(withTopo).not.toContain('handoff-left')
     }
   )
 
@@ -119,7 +119,7 @@ describe.skipIf(!fish.available)('fish vendor snippet in a real fish', () => {
   it('keeps the opt-out', () => {
     const output = runFish(['-i', '-c', 'emit fish_prompt; codex hi'], {
       ...getFishXdgDataDirsLaunchEnv(root, undefined),
-      ORCA_CODEX_ISOLATE: '0'
+      TOPO_CODEX_ISOLATE: '0'
     })
     expect(output).toContain('fake-codex hi')
   })
@@ -138,7 +138,7 @@ describe.skipIf(!fish.available)('fish vendor snippet in a real fish', () => {
 
   it('defines nothing in a non-interactive fish', () => {
     const output = runFish(
-      ['-c', 'emit fish_prompt; type -t codex; functions -q __orca_define_codex; and echo hook'],
+      ['-c', 'emit fish_prompt; type -t codex; functions -q __topo_define_codex; and echo hook'],
       getFishXdgDataDirsLaunchEnv(root, undefined)
     )
     // fish’s greeting handler also runs for this event.

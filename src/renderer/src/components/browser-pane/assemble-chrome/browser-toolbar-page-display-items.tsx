@@ -104,7 +104,7 @@ export function BrowserToolbarZoomRow({
   )
 }
 
-const MATCH_ORCA_VALUE = 'orca'
+const MATCH_TOPO_VALUE = 'topo'
 
 export function BrowserToolbarAppearanceSub({
   browserPageId,
@@ -125,15 +125,15 @@ export function BrowserToolbarAppearanceSub({
       <DropdownMenuPortal>
         <DropdownMenuSubContent data-browser-page-menu-id={browserPageId}>
           <DropdownMenuRadioGroup
-            value={display?.colorScheme ?? MATCH_ORCA_VALUE}
+            value={display?.colorScheme ?? MATCH_TOPO_VALUE}
             onValueChange={(value) =>
               onSetColorScheme(isBrowserSiteColorScheme(value) ? value : null)
             }
           >
-            <DropdownMenuRadioItem value={MATCH_ORCA_VALUE}>
+            <DropdownMenuRadioItem value={MATCH_TOPO_VALUE}>
               {t(
-                'auto.components.browser.pane.BrowserToolbarMenu.appearanceMatchOrca',
-                'Match Orca'
+                'auto.components.browser.pane.BrowserToolbarMenu.appearanceMatchTopo',
+                'Match Topo'
               )}
             </DropdownMenuRadioItem>
             <DropdownMenuSeparator />

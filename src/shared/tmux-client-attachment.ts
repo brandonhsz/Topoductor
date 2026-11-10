@@ -26,7 +26,7 @@ export function readTmuxHookPane(value: unknown): TmuxHookPane | null {
   return { socket, pane }
 }
 
-/** The `<pane> <socket>` hint a Claude hook sends from TMUX_PANE and TMUX. Orca's agent-teams
+/** The `<pane> <socket>` hint a Claude hook sends from TMUX_PANE and TMUX. Topo's agent-teams
  *  launch sets a synthetic TMUX for its own Claudes, which run in no tmux server. */
 export function readTmuxHookPaneHint(value: unknown): TmuxHookPane | null {
   const match = typeof value === 'string' ? /^(%\d{1,12}) (\/.+)$/.exec(value) : null

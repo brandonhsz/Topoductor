@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { IPty } from 'node-pty'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { killConptyNow } from './windows-pty-job'
 import { watchConptyStartup } from '../daemon/pty-subprocess/conpty-startup-input-reader'
 
@@ -88,7 +88,7 @@ describeOnWindows('ConPTY job ownership', () => {
           'windows-pty-table-stress.cjs'
         )
       ],
-      env: { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' },
+      env: { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' },
       timeoutMs: 90_000
     })
     const status = result.code === null ? 'null' : `0x${(result.code >>> 0).toString(16)}`
@@ -105,7 +105,7 @@ describeOnWindows('ConPTY job ownership', () => {
   it('still starts a backgrounded child from inside the job', async () => {
     // start /b proves ordinary backgrounding, not CREATE_BREAKAWAY_FROM_JOB rejection; that flag needs a dedicated native helper.
     const nodePty = await import('node-pty')
-    const marker = join(mkdtempSync(join(tmpdir(), 'orca-breakaway-')), 'marker.txt')
+    const marker = join(mkdtempSync(join(tmpdir(), 'topo-breakaway-')), 'marker.txt')
     const proc = nodePty.spawn('cmd.exe', [], {
       name: 'xterm-256color',
       cols: 100,
@@ -119,7 +119,7 @@ describeOnWindows('ConPTY job ownership', () => {
     proc.onData((chunk) => {
       output += chunk
     })
-    proc.write(`start /b cmd /c "echo ORCA_BREAKAWAY> ${marker}"\r`)
+    proc.write(`start /b cmd /c "echo TOPO_BREAKAWAY> ${marker}"\r`)
 
     await vi.waitFor(() => expect(existsSync(marker)).toBe(true), { timeout: 15_000 })
     expect(output).not.toMatch(/Access is denied/i)

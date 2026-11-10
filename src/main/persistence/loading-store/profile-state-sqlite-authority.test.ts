@@ -26,7 +26,7 @@ import { buildProfileStateCutoverFixture } from '../profile-state-cutover-fixtur
 vi.mock('electron', () => ({
   app: {
     getPath: () => tmpdir(),
-    getName: () => 'orca-test',
+    getName: () => 'topo-test',
     getVersion: () => '0.0.0-test',
     isPackaged: false,
     on: () => {},
@@ -87,7 +87,7 @@ afterEach(async () => {
 
 describe('Store with an injected SQLite profile-state authority', () => {
   it('rejects profile-state buffers that are not valid UTF-8', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-store-profile-state-invalid-utf8-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-store-profile-state-invalid-utf8-'))
     temporaryDirectories.push(directory)
     const authority = createAuthority(join(directory, 'profile-state.db'), 'profile-authority-test')
 
@@ -106,9 +106,9 @@ describe('Store with an injected SQLite profile-state authority', () => {
   })
 
   it('mutates, flushes, and reloads without writing the legacy JSON file', async () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-store-profile-state-authority-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-store-profile-state-authority-'))
     temporaryDirectories.push(directory)
-    const dataFile = join(directory, 'orca-data.json')
+    const dataFile = join(directory, 'topo-data.json')
     const databaseFile = join(directory, 'profile-state.db')
     writeFileSync(dataFile, '{"settings":{"theme":"light"}}', 'utf8')
     const legacyBytes = readFileSync(dataFile)
@@ -133,7 +133,7 @@ describe('Store with an injected SQLite profile-state authority', () => {
   })
 
   it('rejects a corrupt ordering placeholder when normalized rows exist', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-store-profile-state-normalized-read-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-store-profile-state-normalized-read-'))
     temporaryDirectories.push(directory)
     const databasePath = join(directory, 'profile-state.db')
     const fixture = buildProfileStateCutoverFixture()
@@ -160,7 +160,7 @@ describe('Store with an injected SQLite profile-state authority', () => {
   })
 
   it('rejects invalid domain JSON before handing it to the Store', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-store-profile-state-runtime-parse-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-store-profile-state-runtime-parse-'))
     temporaryDirectories.push(directory)
     const databasePath = join(directory, 'profile-state.db')
     const authority = createAuthority(databasePath, 'profile-authority-test')
@@ -176,14 +176,14 @@ describe('Store with an injected SQLite profile-state authority', () => {
     expect(
       () =>
         new Store({
-          dataFile: join(directory, 'orca-data.json'),
+          dataFile: join(directory, 'topo-data.json'),
           profileStateAuthority: createAuthority(databasePath, 'profile-authority-test')
         })
     ).toThrow('Profile state document payload is invalid JSON: settings')
   })
 
   it('rejects documents whose revision metadata was removed or reset', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-store-profile-state-authority-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-store-profile-state-authority-'))
     temporaryDirectories.push(directory)
     const databasePath = join(directory, 'profile-state.db')
     const opened = openProfileStateDatabase(databasePath, 'profile-authority-test')
@@ -196,7 +196,7 @@ describe('Store with an injected SQLite profile-state authority', () => {
   })
 
   it('fences a complete-document writer that read before another authority committed', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-store-profile-state-authority-cas-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-store-profile-state-authority-cas-'))
     temporaryDirectories.push(directory)
     const databasePath = join(directory, 'profile-state.db')
     const first = createAuthority(databasePath, 'profile-authority-test')
@@ -224,7 +224,7 @@ describe('Store with an injected SQLite profile-state authority', () => {
   })
 
   it('fences a first commit after another authority creates the database', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-store-profile-state-authority-create-cas-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-store-profile-state-authority-create-cas-'))
     temporaryDirectories.push(directory)
     const databasePath = join(directory, 'profile-state.db')
     const first = createAuthority(databasePath, 'profile-authority-test')
@@ -245,9 +245,9 @@ describe('Store with an injected SQLite profile-state authority', () => {
   })
 
   it('refuses to overwrite a conflicting export for the same SQLite revision', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-store-profile-state-export-conflict-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-store-profile-state-export-conflict-'))
     temporaryDirectories.push(directory)
-    const dataFile = join(directory, 'orca-data.json')
+    const dataFile = join(directory, 'topo-data.json')
     const databasePath = join(directory, 'profile-state.db')
     const authority = createAuthority(databasePath, 'profile-authority-test')
     authority.writeSerializedState(Buffer.from(JSON.stringify({ settings: { theme: 'dark' } })))
@@ -266,16 +266,16 @@ describe('Store with an injected SQLite profile-state authority', () => {
     expect(readFileSync(exportPath, 'utf8')).toContain('tampered')
     expect(
       readdirSync(directory).some((name) =>
-        name.startsWith('orca-data.json.sqlite-export.pending.')
+        name.startsWith('topo-data.json.sqlite-export.pending.')
       )
     ).toBe(false)
     store.freezeWrites()
   })
 
   it('freezes Store writes before quarantining the SQLite database family', async () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-store-profile-state-quarantine-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-store-profile-state-quarantine-'))
     temporaryDirectories.push(directory)
-    const dataFile = join(directory, 'orca-data.json')
+    const dataFile = join(directory, 'topo-data.json')
     const databasePath = join(directory, 'profile-state.db')
     const authority = createAuthority(databasePath, 'profile-authority-test')
     authority.writeSerializedState(Buffer.from(JSON.stringify({ settings: { theme: 'light' } })))
@@ -305,13 +305,13 @@ describe('Store with an injected SQLite profile-state authority', () => {
   })
 
   it('prepares frozen JSON imports without permitting file publication', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-store-profile-state-legacy-export-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-store-profile-state-legacy-export-'))
     temporaryDirectories.push(directory)
-    const dataFile = join(directory, 'orca-data.json')
+    const dataFile = join(directory, 'topo-data.json')
     const store = new Store({ dataFile, serializedState: '{"settings":{"theme":"light"}}' })
     store.updateSettings({ theme: 'dark' })
 
-    const exportPath = join(directory, 'rollback', 'orca-data.json.legacy.json')
+    const exportPath = join(directory, 'rollback', 'topo-data.json.legacy.json')
     expect(() => store.writeProfileStateJsonExport(exportPath)).toThrow('require a SQLite')
     expect(JSON.parse(store.prepareProfileStateExport().json).settings.theme).toBe('dark')
     expect(existsSync(exportPath)).toBe(false)

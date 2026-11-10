@@ -1,9 +1,9 @@
 import { EventEmitter } from 'node:events'
-import { ASSIGNMENT_LIMITS } from '@orca-cloud/relay-contract/assignment-invariants'
-import { CONTROL_CONTINUITY_LIMITS } from '@orca-cloud/relay-contract/control-continuity'
-import { RELAY_CLOSE_CODE } from '@orca-cloud/relay-contract/close-codes'
-import { RELAY_HOST_CAPABILITY_IDLE_REGIONAL_REHOME } from '@orca-cloud/relay-contract/control-messages'
-import { RELAY_PROTOCOL_LIMITS } from '@orca-cloud/relay-contract/protocol-limits'
+import { ASSIGNMENT_LIMITS } from '@topo-cloud/relay-contract/assignment-invariants'
+import { CONTROL_CONTINUITY_LIMITS } from '@topo-cloud/relay-contract/control-continuity'
+import { RELAY_CLOSE_CODE } from '@topo-cloud/relay-contract/close-codes'
+import { RELAY_HOST_CAPABILITY_IDLE_REGIONAL_REHOME } from '@topo-cloud/relay-contract/control-messages'
+import { RELAY_PROTOCOL_LIMITS } from '@topo-cloud/relay-contract/protocol-limits'
 import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
 import type WebSocket from 'ws'
 import type { RelayAssignmentStore } from '../assignment/assignment-store.js'
@@ -66,7 +66,7 @@ const config = {
   publicUrl: 'https://relay-c3.example.com',
   cellUrl: 'https://relay-c3.example.com',
   authIssuer: 'https://auth.example.com',
-  authAudience: 'orca-relay',
+  authAudience: 'topo-relay',
   jwksUrl: 'https://auth.example.com/jwks',
   assignmentSigningKey: new Uint8Array(32),
   role: 'cell',
@@ -255,7 +255,7 @@ describe('host session cleanup races', () => {
         )
       )
       expect(warn).toHaveBeenCalledWith(
-        '[orca-relay] auth refresh failed: Connection terminated due to connection timeout'
+        '[topo-relay] auth refresh failed: Connection terminated due to connection timeout'
       )
     } finally {
       warn.mockRestore()
@@ -1878,7 +1878,7 @@ describe('control error codes', () => {
     ])
     expect(sent.join('\n')).not.toContain('fake-pw')
     expect(warned).toContain(
-      '[orca-relay] control device-revoke failed: Error: redacted code=08006'
+      '[topo-relay] control device-revoke failed: Error: redacted code=08006'
     )
     expect(warned.join('\n')).not.toContain('fake-pw')
   })

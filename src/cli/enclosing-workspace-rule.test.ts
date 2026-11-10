@@ -50,7 +50,7 @@ describe('one enclosing-workspace rule across worktrees and folder workspaces', 
 })
 
 function clientAnswering(answer: (method: string) => ReturnType<typeof okFixture>): RuntimeClient {
-  const client = new RuntimeClient('/tmp/orca-enclosing-rule', 60_000, null, null)
+  const client = new RuntimeClient('/tmp/topo-enclosing-rule', 60_000, null, null)
   vi.spyOn(client, 'call').mockImplementation(async (method: string) => answer(method))
   return client
 }
@@ -83,7 +83,7 @@ describe('owners registered at one path', () => {
 
 // Symlinks need privileges on Windows; macOS /tmp and Linux bind aliases behave like this fixture.
 describe.skipIf(process.platform === 'win32')('symlink aliases on the caller filesystem', () => {
-  const root = realpathSync(mkdtempSync(join(tmpdir(), 'orca-enclosing-alias-')))
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'topo-enclosing-alias-')))
   const real = join(root, 'real')
   const alias = join(root, 'alias')
   mkdirSync(join(real, 'hub', 'app', 'src'), { recursive: true })

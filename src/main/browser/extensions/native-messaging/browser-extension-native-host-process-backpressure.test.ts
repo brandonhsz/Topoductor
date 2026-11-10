@@ -1,7 +1,7 @@
 import { once } from 'node:events'
 
 import { PassThrough, Writable } from 'node:stream'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { NATIVE_HOST_ERRORS } from './browser-extension-native-host-errors'

@@ -46,8 +46,8 @@ function viewedImages(lines: string[]): ReturnType<typeof nativeChatToolRunViewe
 
 describe('Claude Read of an image', () => {
   it('shows the screenshot the agent read', () => {
-    expect(viewedImages(readTurn('/tmp/orca-annot/s2.png', IMAGE_RESULT))).toEqual([
-      { type: 'image-ref', path: '/tmp/orca-annot/s2.png' }
+    expect(viewedImages(readTurn('/tmp/topo-annot/s2.png', IMAGE_RESULT))).toEqual([
+      { type: 'image-ref', path: '/tmp/topo-annot/s2.png' }
     ])
   })
 

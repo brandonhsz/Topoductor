@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { hasConfiguredBranchPushTarget } from './git-configured-branch-target'
 
 const BRANCH = 'imp/translation'
-const FORK_URL = 'https://github.com/contributor/orca.git'
-const UPSTREAM_URL = 'https://github.com/stablyai/orca.git'
+const FORK_URL = 'https://github.com/contributor/topo.git'
+const UPSTREAM_URL = 'https://github.com/brandonhsz/Topoductor.git'
 
 type RemoteRow = { name: string; fetchUrl: string; pushUrl?: string }
 

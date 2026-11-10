@@ -15,7 +15,7 @@ import '../../../shared/terminal-themes/terminal-theme-catalog'
 import '../../../shared/color/rgba-contrast'
 import '../../../shared/terminal-themes/terminal-title-contrast'
 
-const THEME = { name: 'Orca', base: 'dark', overrides: { claude: '#7aa2f7' } }
+const THEME = { name: 'Topo', base: 'dark', overrides: { claude: '#7aa2f7' } }
 const on = { enabled: true, theme: THEME } as const
 const off = { enabled: false, terminalBase: 'dark' } as const
 
@@ -29,7 +29,7 @@ describe('Claude Code theme sync', () => {
     syncClaudeCodeThemeConfigDirs(target, join(home, 'userData'))
 
   beforeEach(() => {
-    home = mkdtempSync(join(tmpdir(), 'orca-claude-theme-sync-'))
+    home = mkdtempSync(join(tmpdir(), 'topo-claude-theme-sync-'))
     configDir = join(home, 'claude-config')
     settingsPath = join(configDir, 'settings.json')
     mkdirSync(configDir)
@@ -43,17 +43,17 @@ describe('Claude Code theme sync', () => {
     rmSync(home, { recursive: true, force: true })
   })
 
-  it('selects the Orca theme beside the user keys and restores the replaced theme', async () => {
+  it('selects the Topo theme beside the user keys and restores the replaced theme', async () => {
     writeSettings({ theme: 'light', hooks: { Stop: [] } })
     await sync(on)
-    expect(readSettings()).toEqual({ theme: 'custom:orca', hooks: { Stop: [] } })
-    expect(JSON.parse(readFileSync(join(configDir, 'themes', 'orca.json'), 'utf-8'))).toEqual(THEME)
+    expect(readSettings()).toEqual({ theme: 'custom:topo', hooks: { Stop: [] } })
+    expect(JSON.parse(readFileSync(join(configDir, 'themes', 'topo.json'), 'utf-8'))).toEqual(THEME)
 
     await sync(off)
     expect(readSettings()).toEqual({ theme: 'light', hooks: { Stop: [] } })
     // Running sessions keep reading the file, so it takes the restored look.
-    expect(JSON.parse(readFileSync(join(configDir, 'themes', 'orca.json'), 'utf-8'))).toEqual({
-      name: 'Orca',
+    expect(JSON.parse(readFileSync(join(configDir, 'themes', 'topo.json'), 'utf-8'))).toEqual({
+      name: 'Topo',
       base: 'light',
       overrides: {}
     })
@@ -83,7 +83,7 @@ describe('Claude Code theme sync', () => {
       }
       expect(readSettings()).toEqual({ theme: 'dark' })
       await sync(on)
-      expect(readSettings()).toEqual({ theme: 'custom:orca' })
+      expect(readSettings()).toEqual({ theme: 'custom:topo' })
     }
   )
 

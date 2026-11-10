@@ -6,45 +6,45 @@ import { promisify } from 'node:util'
 import { createElectronHomeIsolation } from './electron-home-isolation'
 
 const execFileAsync = promisify(execFile)
-const RUNTIME_METADATA_FILE = 'orca-runtime.json'
-let orcaDevUserDataPath: string | null = null
-let orcaServeProcess: ChildProcess | null = null
-let orcaServeStdout = ''
-let orcaServeStderr = ''
+const RUNTIME_METADATA_FILE = 'topo-runtime.json'
+let topoDevUserDataPath: string | null = null
+let topoServeProcess: ChildProcess | null = null
+let topoServeStdout = ''
+let topoServeStderr = ''
 
 export type CliResult = {
   stdout: string
   stderr: string
 }
 
-type RunOrcaCliOptions = {
+type RunTopoCliOptions = {
   retryMissingRuntimeMetadata?: boolean
 }
 
-export async function runOrcaCli(
+export async function runTopoCli(
   args: string[],
-  options: RunOrcaCliOptions = {}
+  options: RunTopoCliOptions = {}
 ): Promise<CliResult> {
   try {
-    return await runOrcaCliOnce(args)
+    return await runTopoCliOnce(args)
   } catch (error) {
     if (
       options.retryMissingRuntimeMetadata !== false &&
       isMissingRuntimeMetadataError(args, error)
     ) {
       // Windows can lose the dev runtime while launching the fixture app; reopen once before the desktop action.
-      await ensureOrcaRuntimeLaunched()
-      return await runOrcaCliOnce(args)
+      await ensureTopoRuntimeLaunched()
+      return await runTopoCliOnce(args)
     }
     throw error
   }
 }
 
-async function runOrcaCliOnce(args: string[]): Promise<CliResult> {
-  const devCli = join(process.cwd(), 'config/scripts/development/launch/orca-dev.mjs')
-  const command = process.env.ORCA_COMPUTER_CLI ?? process.execPath
-  const cliArgs = process.env.ORCA_COMPUTER_CLI ? args : [devCli, ...args]
-  const env = process.env.ORCA_COMPUTER_CLI
+async function runTopoCliOnce(args: string[]): Promise<CliResult> {
+  const devCli = join(process.cwd(), 'config/scripts/development/launch/topo-dev.mjs')
+  const command = process.env.TOPO_COMPUTER_CLI ?? process.execPath
+  const cliArgs = process.env.TOPO_COMPUTER_CLI ? args : [devCli, ...args]
+  const env = process.env.TOPO_COMPUTER_CLI
     ? { ...process.env }
     : await createComputerE2ERuntimeEnv()
   try {
@@ -62,21 +62,21 @@ async function runOrcaCliOnce(args: string[]): Promise<CliResult> {
   }
 }
 
-export async function ensureOrcaRuntimeLaunched(): Promise<void> {
-  if (!process.env.ORCA_COMPUTER_CLI && process.platform === 'win32') {
-    await ensureOrcaRuntimeServed()
+export async function ensureTopoRuntimeLaunched(): Promise<void> {
+  if (!process.env.TOPO_COMPUTER_CLI && process.platform === 'win32') {
+    await ensureTopoRuntimeServed()
     return
   }
-  await runOrcaCli(['open', '--json'], { retryMissingRuntimeMetadata: false })
-  await waitForOrcaRuntimeReady()
+  await runTopoCli(['open', '--json'], { retryMissingRuntimeMetadata: false })
+  await waitForTopoRuntimeReady()
 }
 
-export async function stopOrcaRuntime(): Promise<void> {
-  const processToStop = orcaServeProcess
+export async function stopTopoRuntime(): Promise<void> {
+  const processToStop = topoServeProcess
   if (!processToStop?.pid) {
     return
   }
-  orcaServeProcess = null
+  topoServeProcess = null
   if (process.platform === 'win32') {
     try {
       await execFileAsync('taskkill.exe', ['/PID', String(processToStop.pid), '/T', '/F'])
@@ -92,16 +92,16 @@ export function parseJsonOutput<T>(stdout: string): T {
   return JSON.parse(stdout) as T
 }
 
-async function getComputerE2eOrcaDevUserDataPath(): Promise<string> {
-  if (!orcaDevUserDataPath) {
+async function getComputerE2eTopoDevUserDataPath(): Promise<string> {
+  if (!topoDevUserDataPath) {
     // Use a fresh profile so a retained dev runtime cannot execute stale provider code.
-    orcaDevUserDataPath = await mkdtemp(join(tmpdir(), 'orca-computer-runtime-'))
+    topoDevUserDataPath = await mkdtemp(join(tmpdir(), 'topo-computer-runtime-'))
   }
-  return orcaDevUserDataPath
+  return topoDevUserDataPath
 }
 
-async function waitForOrcaRuntimeReady(): Promise<void> {
-  const userDataPath = await getComputerE2eOrcaDevUserDataPath()
+async function waitForTopoRuntimeReady(): Promise<void> {
+  const userDataPath = await getComputerE2eTopoDevUserDataPath()
   const metadataPath = join(userDataPath, RUNTIME_METADATA_FILE)
   const deadline = Date.now() + 15000
   let lastError: unknown = null
@@ -111,7 +111,7 @@ async function waitForOrcaRuntimeReady(): Promise<void> {
       await access(metadataPath)
       const status = parseJsonOutput<{
         result: { runtime: { reachable: boolean } }
-      }>((await runOrcaCli(['status', '--json'], { retryMissingRuntimeMetadata: false })).stdout)
+      }>((await runTopoCli(['status', '--json'], { retryMissingRuntimeMetadata: false })).stdout)
       if (status.result.runtime.reachable) {
         return
       }
@@ -123,47 +123,47 @@ async function waitForOrcaRuntimeReady(): Promise<void> {
 
   const detail = [
     lastError instanceof Error ? `Last error: ${lastError.message}` : null,
-    orcaServeStdout.trim() ? `serve stdout: ${orcaServeStdout.trim()}` : null,
-    orcaServeStderr.trim() ? `serve stderr: ${orcaServeStderr.trim()}` : null
+    topoServeStdout.trim() ? `serve stdout: ${topoServeStdout.trim()}` : null,
+    topoServeStderr.trim() ? `serve stderr: ${topoServeStderr.trim()}` : null
   ]
     .filter(Boolean)
     .join(' ')
-  throw new Error(`Orca runtime metadata was not ready at ${metadataPath}.${detail}`)
+  throw new Error(`Topo runtime metadata was not ready at ${metadataPath}.${detail}`)
 }
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-async function ensureOrcaRuntimeServed(): Promise<void> {
-  if (!orcaServeProcess || orcaServeProcess.exitCode !== null) {
-    const devCli = join(process.cwd(), 'config/scripts/development/launch/orca-dev.mjs')
+async function ensureTopoRuntimeServed(): Promise<void> {
+  if (!topoServeProcess || topoServeProcess.exitCode !== null) {
+    const devCli = join(process.cwd(), 'config/scripts/development/launch/topo-dev.mjs')
     const env = await createComputerE2ERuntimeEnv()
-    orcaServeStdout = ''
-    orcaServeStderr = ''
-    orcaServeProcess = spawn(process.execPath, [devCli, 'serve', '--no-pairing', '--json'], {
+    topoServeStdout = ''
+    topoServeStderr = ''
+    topoServeProcess = spawn(process.execPath, [devCli, 'serve', '--no-pairing', '--json'], {
       env,
       windowsHide: true
     })
-    orcaServeProcess.stdout?.on('data', (chunk) => {
-      orcaServeStdout += String(chunk)
+    topoServeProcess.stdout?.on('data', (chunk) => {
+      topoServeStdout += String(chunk)
     })
-    orcaServeProcess.stderr?.on('data', (chunk) => {
-      orcaServeStderr += String(chunk)
+    topoServeProcess.stderr?.on('data', (chunk) => {
+      topoServeStderr += String(chunk)
     })
-    orcaServeProcess.once('exit', () => {
-      orcaServeProcess = null
+    topoServeProcess.once('exit', () => {
+      topoServeProcess = null
     })
     process.once('exit', () => {
-      orcaServeProcess?.kill()
+      topoServeProcess?.kill()
     })
   }
-  await waitForOrcaRuntimeReady()
+  await waitForTopoRuntimeReady()
 }
 
 async function createComputerE2ERuntimeEnv(): Promise<NodeJS.ProcessEnv> {
   const userDataDir =
-    process.env.ORCA_DEV_USER_DATA_PATH ?? (await getComputerE2eOrcaDevUserDataPath())
+    process.env.TOPO_DEV_USER_DATA_PATH ?? (await getComputerE2eTopoDevUserDataPath())
   // Strip ELECTRON_RUN_AS_NODE or the Electron child runs as plain Node.
   const { ELECTRON_RUN_AS_NODE: _electronRunAsNode, ...inheritedEnv } = process.env
   void _electronRunAsNode
@@ -176,7 +176,7 @@ async function createComputerE2ERuntimeEnv(): Promise<NodeJS.ProcessEnv> {
   return {
     ...isolation.env,
     // Keep CLI and Electron on the same runtime metadata while fixture HOME/Codex isolation remains in force.
-    ORCA_DEV_USER_DATA_PATH: userDataDir
+    TOPO_DEV_USER_DATA_PATH: userDataDir
   }
 }
 
@@ -190,6 +190,6 @@ function isMissingRuntimeMetadataError(args: string[], error: unknown): boolean 
   const message = String((error as { message?: unknown }).message)
   return (
     message.includes('"code": "runtime_unavailable"') &&
-    message.includes('Could not read Orca runtime metadata')
+    message.includes('Could not read Topo runtime metadata')
   )
 }

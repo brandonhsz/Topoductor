@@ -640,7 +640,7 @@ it.each(['a', 'b'] as const)(
       id,
       status: 'failed',
       command: "/bin/zsh -lc 'sleep 60'",
-      cwd: '/Users/brennanbenson/orca/workspaces/orca/qa-codex-exec-import-qg/codex-exec-import/run/workspace',
+      cwd: '/Users/brennanbenson/topo/workspaces/topo/qa-codex-exec-import-qg/codex-exec-import/run/workspace',
       exitCode: -1,
       durationMs: label === 'a' ? 9915 : 53631
     }

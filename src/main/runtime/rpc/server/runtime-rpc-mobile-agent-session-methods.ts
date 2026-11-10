@@ -8,7 +8,7 @@ export const MOBILE_AGENT_SESSION_RPC_METHODS = [
   'agentSession.reveal',
   'agentSession.send',
   'agentSession.cancel',
-  // Continue a turn Orca's own stop cut off; phones gate on agent-session.continue-interrupted.phone.v1.
+  // Continue a turn Topo's own stop cut off; phones gate on agent-session.continue-interrupted.phone.v1.
   'agentSession.continueInterrupted',
   'agentSession.queuedMessageSend',
   'agentSession.queuedMessageDelete',
@@ -33,7 +33,7 @@ export const MOBILE_AGENT_SESSION_RPC_METHODS = [
   'agentSession.unsubscribe',
   // Every session's status on one stream: the phone's chat reads the host's "Stopping…" from it.
   'agentSession.subscribeStatus',
-  // One visual from the chat's own scratch folder, for the transcript's `::orca-visual` lines.
+  // One visual from the chat's own scratch folder, for the transcript's `::topo-visual` lines.
   'agentSession.readVisual',
   // One item whole, for "Show full output" and "Show full message".
   'agentSession.item',

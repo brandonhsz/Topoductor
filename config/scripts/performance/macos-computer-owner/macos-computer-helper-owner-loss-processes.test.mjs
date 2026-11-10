@@ -30,10 +30,10 @@ afterEach(() => {
 
 describeMacOS('macOS helper owner-loss benchmark process cleanup', () => {
   it('kills a timed-out trial group only after validating its environment', async () => {
-    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), 'orca-owner-benchmark-group-test-'))
+    const temporaryDirectory = mkdtempSync(path.join(tmpdir(), 'topo-owner-benchmark-group-test-'))
     temporaryDirectories.add(temporaryDirectory)
     const childPidPath = path.join(temporaryDirectory, 'child.pid')
-    const environmentName = `ORCA_OWNER_GROUP_${process.pid}`
+    const environmentName = `TOPO_OWNER_GROUP_${process.pid}`
     const environmentValue = `${Date.now()}`
     const fixture = `
       const { spawn } = require('node:child_process')
@@ -89,11 +89,11 @@ describeMacOS('macOS helper owner-loss benchmark process cleanup', () => {
 
   it('kills a recorded helper in a separate process group', async () => {
     const temporaryDirectory = mkdtempSync(
-      path.join(tmpdir(), 'orca-owner-benchmark-cleanup-test-')
+      path.join(tmpdir(), 'topo-owner-benchmark-cleanup-test-')
     )
     temporaryDirectories.add(temporaryDirectory)
     const recordPath = path.join(temporaryDirectory, 'helper.json')
-    const marker = `orca-owner-cleanup-${process.pid}-${Date.now()}`
+    const marker = `topo-owner-cleanup-${process.pid}-${Date.now()}`
     const helper = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1_000)', marker], {
       detached: true,
       stdio: 'ignore'
@@ -120,7 +120,7 @@ describeMacOS('macOS helper owner-loss benchmark process cleanup', () => {
   })
 
   it('kills every unrecorded helper using its unique trial command', async () => {
-    const marker = `orca-owner-unrecorded-${process.pid}-${Date.now()}`
+    const marker = `topo-owner-unrecorded-${process.pid}-${Date.now()}`
     const helpers = Array.from({ length: 2 }, () =>
       spawn(process.execPath, ['-e', 'setInterval(() => {}, 1_000)', marker], {
         detached: true,
@@ -145,11 +145,11 @@ describeMacOS('macOS helper owner-loss benchmark process cleanup', () => {
 
   it('runs unique-command cleanup after an invalid process record', async () => {
     const temporaryDirectory = mkdtempSync(
-      path.join(tmpdir(), 'orca-owner-benchmark-fallback-test-')
+      path.join(tmpdir(), 'topo-owner-benchmark-fallback-test-')
     )
     temporaryDirectories.add(temporaryDirectory)
     const recordPath = path.join(temporaryDirectory, 'helper.json')
-    const marker = `orca-owner-invalid-record-${process.pid}-${Date.now()}`
+    const marker = `topo-owner-invalid-record-${process.pid}-${Date.now()}`
     const helper = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1_000)', marker], {
       detached: true,
       stdio: 'ignore'
@@ -173,11 +173,11 @@ describeMacOS('macOS helper owner-loss benchmark process cleanup', () => {
 
   it('rejects a record that is not a detached process-group identity', () => {
     const temporaryDirectory = mkdtempSync(
-      path.join(tmpdir(), 'orca-owner-benchmark-identity-test-')
+      path.join(tmpdir(), 'topo-owner-benchmark-identity-test-')
     )
     temporaryDirectories.add(temporaryDirectory)
     const recordPath = path.join(temporaryDirectory, 'helper.json')
-    const marker = `orca-owner-invalid-identity-${process.pid}-${Date.now()}`
+    const marker = `topo-owner-invalid-identity-${process.pid}-${Date.now()}`
     const helper = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1_000)', marker], {
       stdio: 'ignore'
     })

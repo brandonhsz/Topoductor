@@ -105,7 +105,7 @@ export async function saveNewSshHostFromForm<T extends SavedSshHost>({
       toast.error(
         translate(
           'auto.components.sidebar.AddRemoteHostDialog.sshAlreadyExists',
-          'That SSH host is already in Orca.'
+          'That SSH host is already in Topo.'
         )
       )
       return 'validation-failed'
@@ -143,7 +143,7 @@ export async function prefillFormFromSshConfigHost(
     throw new Error(
       translate(
         'auto.components.sidebar.AddRemoteHostDialog.sshConfigPickerRestartRequired',
-        'Restart Orca to finish applying the SSH config picker update.'
+        'Restart Topo to finish applying the SSH config picker update.'
       )
     )
   }
@@ -158,7 +158,7 @@ export async function prefillFormFromSshConfigHost(
   }
 }
 
-export async function addAllSshConfigHostsToOrca({
+export async function addAllSshConfigHostsToTopo({
   ssh,
   recordSshRepoReadoptions,
   setSshTargetsMetadata,
@@ -187,8 +187,8 @@ export async function addAllSshConfigHostsToOrca({
     toast.success(
       translate(
         'auto.components.sidebar.AddRemoteHostDialog.sshImportSynced',
-        'Added {{count}} hosts to Orca.',
-        { count: result.targets.length, defaultValue_one: 'Added {{count}} host to Orca.' }
+        'Added {{count}} hosts to Topo.',
+        { count: result.targets.length, defaultValue_one: 'Added {{count}} host to Topo.' }
       )
     )
     return { kind: 'added', count: result.targets.length }
@@ -244,7 +244,7 @@ function normalizeSshConfigHostListResult(value: unknown): SshConfigHostListResu
       totalHostCount: value.length,
       newHostCount: value.filter(
         (host): host is SshConfigHostSummary =>
-          typeof host === 'object' && host !== null && host.alreadyInOrca === false
+          typeof host === 'object' && host !== null && host.alreadyInTopo === false
       ).length,
       matchCount: value.length,
       hasMore: value.length > hosts.length

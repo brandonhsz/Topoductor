@@ -47,7 +47,7 @@ export function waitForRecipeJson(child: ChildProcess): Promise<number> {
         writeIgnoredRecipeStdout()
         return
       }
-      if (getEphemeralVmRecipeResultConnection(parsed.result).type !== 'orca-server') {
+      if (getEphemeralVmRecipeResultConnection(parsed.result).type !== 'topo-server') {
         writeIgnoredRecipeStdout()
         return
       }
@@ -85,8 +85,8 @@ export function waitForRecipeJson(child: ChildProcess): Promise<number> {
         new RuntimeClientError(
           'runtime_serve_failed',
           typeof code === 'number'
-            ? `Orca serve exited before printing valid recipe JSON with code ${code}.`
-            : `Orca serve exited before printing valid recipe JSON via ${signal}.`
+            ? `Topo serve exited before printing valid recipe JSON with code ${code}.`
+            : `Topo serve exited before printing valid recipe JSON via ${signal}.`
         )
       )
     }

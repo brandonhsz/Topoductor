@@ -13,7 +13,7 @@ describe.skipIf(hostPlatform === 'win32')('planCodexNoDaemonLaunch', () => {
   let codex: string
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), 'orca-codex-no-daemon-launch-'))
+    dir = mkdtempSync(join(tmpdir(), 'topo-codex-no-daemon-launch-'))
     codex = writeCodex('codex', HELP_WITH_FLAG)
   })
 
@@ -49,9 +49,9 @@ describe.skipIf(hostPlatform === 'win32')('planCodexNoDaemonLaunch', () => {
   })
 
   it('ignores an inherited opt-out the pane deletes', async () => {
-    vi.stubEnv('ORCA_CODEX_ISOLATE', '0')
+    vi.stubEnv('TOPO_CODEX_ISOLATE', '0')
 
-    await expect(plan(`${codex} --yolo`, { envToDelete: ['ORCA_CODEX_ISOLATE'] })).resolves.toBe(
+    await expect(plan(`${codex} --yolo`, { envToDelete: ['TOPO_CODEX_ISOLATE'] })).resolves.toBe(
       `${codex} --no-daemon --yolo`
     )
   })

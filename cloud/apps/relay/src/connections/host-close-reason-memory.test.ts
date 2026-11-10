@@ -1,5 +1,5 @@
-import { ASSIGNMENT_LIMITS } from '@orca-cloud/relay-contract/assignment-invariants'
-import { RELAY_HOST_CLOSE_REASON } from '@orca-cloud/relay-contract/host-close-reason'
+import { ASSIGNMENT_LIMITS } from '@topo-cloud/relay-contract/assignment-invariants'
+import { RELAY_HOST_CLOSE_REASON } from '@topo-cloud/relay-contract/host-close-reason'
 import { describe, expect, it } from 'vitest'
 import { HostCloseReasonMemory } from './host-close-reason-memory.js'
 

@@ -11,7 +11,7 @@ describe('plugin language-pack artifacts', () => {
     const second = pluginLanguageResourceId('plugin:ab.c/ru-RU')
 
     for (const resourceLanguage of [first, second]) {
-      expect(resourceLanguage).toMatch(/^ru-RU-x-orcapk-/)
+      expect(resourceLanguage).toMatch(/^ru-RU-x-topopk-/)
       expect(Intl.getCanonicalLocales(resourceLanguage)).toEqual([resourceLanguage])
     }
     expect(first).not.toBe(second)
@@ -33,7 +33,7 @@ describe('plugin language-pack artifacts', () => {
   // Chrome exemptions must never include claims about plugin permissions; those are the protected prefix’s purpose.
   it.each([
     ['description', 'Plugins are sandboxed and cannot read your files.'],
-    ['systemDescription', 'Every plugin here has been reviewed by Orca.']
+    ['systemDescription', 'Every plugin here has been reviewed by Topo.']
   ])('still refuses PluginsSettingsSection.%s', (key, value) => {
     expect(
       parsePluginLanguagePackArtifact(
@@ -58,8 +58,8 @@ describe('plugin language-pack artifacts', () => {
       { components: { 'native-chat': { approval: { allow: 'Deny', deny: 'Allow' } } } }
     ],
     [
-      'the orca.yaml trust dialog',
-      { auto: { components: { sidebar: { OrcaYamlTrustDialog: { '43b7bec4cd': 'Run' } } } } }
+      'the topo.yaml trust dialog',
+      { auto: { components: { sidebar: { TopoYamlTrustDialog: { '43b7bec4cd': 'Run' } } } } }
     ],
     [
       'the notebook trust dialog',
@@ -78,7 +78,7 @@ describe('plugin language-pack artifacts', () => {
       'the catalog-link trust dialog',
       {
         auto: {
-          components: { plugins: { PluginCatalogLinkDialog: { title: "Add Orca's catalog?" } } }
+          components: { plugins: { PluginCatalogLinkDialog: { title: "Add Topo's catalog?" } } }
         }
       }
     ],
@@ -106,7 +106,7 @@ describe('plugin language-pack artifacts', () => {
       'the not-official trust warning',
       {
         auto: {
-          components: { settings: { PluginNotOfficialWarning: { label: 'Verified by Orca' } } }
+          components: { settings: { PluginNotOfficialWarning: { label: 'Verified by Topo' } } }
         }
       }
     ],

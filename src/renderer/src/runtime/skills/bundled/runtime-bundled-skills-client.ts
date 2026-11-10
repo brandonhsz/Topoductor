@@ -4,9 +4,9 @@ import type {
   BundledSkillPlanRequest
 } from '../../../../../shared/bundled-skill-plan'
 import {
-  BUNDLED_ORCA_SKILL_AUTO_UPDATE_CAPABILITY,
-  BUNDLED_ORCA_SKILL_CAPABILITY,
-  BUNDLED_ORCA_SKILL_RENAMES_CAPABILITY
+  BUNDLED_TOPO_SKILL_AUTO_UPDATE_CAPABILITY,
+  BUNDLED_TOPO_SKILL_CAPABILITY,
+  BUNDLED_TOPO_SKILL_RENAMES_CAPABILITY
 } from '../../../../../shared/skill-install-capability'
 import { bundledSkillNames } from '../../../../../shared/bundled-skill-names'
 import type { BundledSkillTarget } from '@/lib/bundled-skill-target'
@@ -22,15 +22,15 @@ async function supportsSelectedNames(
 ): Promise<boolean> {
   return (
     !names?.some((name) => bundledSkillNames(name).length > 1) ||
-    runtimeEnvironmentSupportsCapability(environmentId, BUNDLED_ORCA_SKILL_RENAMES_CAPABILITY)
+    runtimeEnvironmentSupportsCapability(environmentId, BUNDLED_TOPO_SKILL_RENAMES_CAPABILITY)
   )
 }
 
-/** `unsupported`: the host answered its status and predates the capability ("Update Orca on
+/** `unsupported`: the host answered its status and predates the capability ("Update Topo on
  *  the server"). A failed probe is not this; it rejects like any other error. */
 export type BundledSkillPlanResult =
   | { kind: 'plan'; plan: BundledSkillPlan }
-  /** `connect-host`: an SSH host no Orca server serves yet; never planned on this machine. */
+  /** `connect-host`: an SSH host no Topo server serves yet; never planned on this machine. */
   | { kind: 'unsupported'; reason: BundledSkillUnsupportedReason }
 
 export type BundledSkillUnsupportedReason = 'update-server' | 'connect-host'
@@ -53,7 +53,7 @@ export async function planBundledSkillsOnTarget(
   if (
     !(await runtimeEnvironmentSupportsCapability(
       target.environmentId,
-      BUNDLED_ORCA_SKILL_CAPABILITY
+      BUNDLED_TOPO_SKILL_CAPABILITY
     )) ||
     !(await supportsSelectedNames(target.environmentId, request.names))
   ) {
@@ -61,7 +61,7 @@ export async function planBundledSkillsOnTarget(
   }
   const plan = await callRuntimeRpc<BundledSkillPlan>(
     { kind: 'environment', environmentId: target.environmentId },
-    'skills.planBundledOrca',
+    'skills.planBundledTopo',
     request,
     { timeoutMs: BUNDLED_SKILL_PLAN_TIMEOUT_MS }
   )
@@ -84,11 +84,11 @@ export async function executeBundledSkillsOnTarget(
     })
   }
   if (!(await supportsSelectedNames(target.environmentId, request.names))) {
-    throw new Error('Update Orca on the server to install renamed Orca skills.')
+    throw new Error('Update Topo on the server to install renamed Topo skills.')
   }
   return callRuntimeRpc<BundledSkillInstallResult>(
     { kind: 'environment', environmentId: target.environmentId },
-    'skills.executeBundledOrca',
+    'skills.executeBundledTopo',
     { planDigest, request },
     { timeoutMs: BUNDLED_SKILL_EXECUTE_TIMEOUT_MS }
   )
@@ -108,7 +108,7 @@ export async function autoUpdateBundledSkillsOnTarget(
   if (
     !(await runtimeEnvironmentSupportsCapability(
       target.environmentId,
-      BUNDLED_ORCA_SKILL_AUTO_UPDATE_CAPABILITY
+      BUNDLED_TOPO_SKILL_AUTO_UPDATE_CAPABILITY
     )) ||
     !(await supportsSelectedNames(target.environmentId, names))
   ) {
@@ -116,7 +116,7 @@ export async function autoUpdateBundledSkillsOnTarget(
   }
   return callRuntimeRpc<BundledSkillInstallResult>(
     { kind: 'environment', environmentId: target.environmentId },
-    'skills.autoUpdateBundledOrca',
+    'skills.autoUpdateBundledTopo',
     { names },
     { timeoutMs: BUNDLED_SKILL_EXECUTE_TIMEOUT_MS }
   )

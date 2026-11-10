@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { isOrcaSessionId, type OrcaSessionId } from '../../../../shared/orca-session-address'
+import { isTopoSessionId, type TopoSessionId } from '../../../../shared/topo-session-address'
 import type { OrchestrationDb } from '../db/orchestration-db'
 import {
   RUN_PANE_KEY_MATCH_SUFFIX_SQL,
@@ -8,16 +8,16 @@ import {
 import { workerSeatGrabSql } from '../db/runs/run-coordinator-mail-routing'
 
 const nullable = z.string().nullable()
-const sessionId = z.custom<OrcaSessionId>(
-  (value) => typeof value === 'string' && isOrcaSessionId(value)
+const sessionId = z.custom<TopoSessionId>(
+  (value) => typeof value === 'string' && isTopoSessionId(value)
 )
 const Run = z.object({
   id: z.string(),
   legacy: z.number(),
   home_database: z.string(),
   coordinator_pane_key: nullable,
-  coordinator_orca_session_id: sessionId.nullable(),
-  coordinator_orca_session_id_generation: z.number().nullable(),
+  coordinator_topo_session_id: sessionId.nullable(),
+  coordinator_topo_session_id_generation: z.number().nullable(),
   consumer_generation: z.number()
 })
 const Resource = z.object({
@@ -58,7 +58,7 @@ const Dispatch = z.object({
   creator_pane_key: nullable,
   assignee_handle: nullable,
   assignee_pane_key: nullable,
-  assignee_orca_session_id: sessionId.nullable(),
+  assignee_topo_session_id: sessionId.nullable(),
   process_incarnation: nullable,
   protocol_version: z.number().nullable(),
   worker_state: nullable,
@@ -89,12 +89,12 @@ const Identity = z.object({
 })
 
 export type CrewRecipientRun = z.infer<typeof Run>
-const runColumns = `r.id, r.legacy, r.home_database, r.coordinator_pane_key, r.coordinator_orca_session_id,
-  r.coordinator_orca_session_id_generation, r.consumer_generation`
+const runColumns = `r.id, r.legacy, r.home_database, r.coordinator_pane_key, r.coordinator_topo_session_id,
+  r.coordinator_topo_session_id_generation, r.consumer_generation`
 
 const dispatchColumns = `d.id, d.run_id, d.contract_version, d.status, d.follow_up_of_dispatch_id,
       (SELECT next.id FROM dispatch_contexts next WHERE next.follow_up_of_dispatch_id = d.id) AS next_dispatch_id, d.creator_handle, d.creator_pane_key, d.assignee_handle, d.assignee_pane_key,
-      d.assignee_orca_session_id, d.process_incarnation, f.protocol_version, w.state AS worker_state, s.id AS sender_run_id, s.legacy AS sender_run_legacy, ${resource('h')} AS nested_resource`
+      d.assignee_topo_session_id, d.process_incarnation, f.protocol_version, w.state AS worker_state, s.id AS sender_run_id, s.legacy AS sender_run_legacy, ${resource('h')} AS nested_resource`
 
 /** Selected owner queries return complete source rows, never recipient decisions. */
 export function crewRecipientOwnerQueries(db: OrchestrationDb) {
@@ -105,7 +105,7 @@ export function crewRecipientOwnerQueries(db: OrchestrationDb) {
       SELECT json_extract(value, '$.root') AS root, json_extract(value, '$.incarnation') AS incarnation,
         json_extract(value, '$.handle') AS handle FROM json_each(?)
     ) SELECT requested.root,
-      EXISTS(SELECT 1 FROM dispatch_contexts WHERE assignee_orca_session_id = requested.root
+      EXISTS(SELECT 1 FROM dispatch_contexts WHERE assignee_topo_session_id = requested.root
         AND process_incarnation = requested.incarnation) AS recorded,
       ${resource('p')} AS identity_resource, ${resource('h')} AS custody_resource,
       COALESCE(w.state, a.state, 'unsupervised') AS owner_state
@@ -131,7 +131,7 @@ export function crewRecipientOwnerQueries(db: OrchestrationDb) {
         json_extract(value, '$.suffix') AS suffix, json_extract(value, '$.id') AS id FROM json_each(?)
     ), candidates AS (
       SELECT requested.key, r.rowid AS ordinal, ${runColumns} FROM requested CROSS JOIN runs r
-      WHERE r.legacy = 0 AND r.coordinator_orca_session_id = requested.session
+      WHERE r.legacy = 0 AND r.coordinator_topo_session_id = requested.session
       UNION
       SELECT requested.key, r.rowid AS ordinal, ${runColumns} FROM requested CROSS JOIN runs r
       WHERE r.legacy = 0 AND r.coordinator_pane_key IS NOT NULL AND ${RUN_PANE_KEY_MATCH_SUFFIX_SQL.replaceAll('coordinator_pane_key', 'r.coordinator_pane_key')} = requested.suffix

@@ -277,7 +277,7 @@ describe('a Stop whose interrupt cancelled a queued follow-up (cancel_queued)', 
   )
 })
 
-describe('a queued send the CLI withdraws without Orca hearing why', () => {
+describe('a queued send the CLI withdraws without Topo hearing why', () => {
   it('withdraws only the batch lead; the send behind it runs as its own turn and is accepted', async () => {
     const replay = await replayCapture('batch-lead')
 

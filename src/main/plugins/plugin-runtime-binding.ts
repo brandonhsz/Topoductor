@@ -5,7 +5,7 @@ import type { PluginRuntimeDelegate } from './workers/plugin-host-service-bindin
 import type { PluginService } from './plugin-service'
 import { installPluginHookRunner } from './hooks/plugin-hook-participants'
 import { installPluginResidentWorkerWarmer } from './workers/plugin-resident-worker'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { pluginRuntimeRpc } from './plugin-runtime-rpc'
 import type { DispatcherOptions } from '../runtime/rpc/dispatcher'
 import type { PluginRuntimeRpc } from './workers/plugin-host-workspace-method-bindings'
@@ -44,10 +44,10 @@ export function pluginRuntimeDelegate(
   }
 }
 
-/** Binds the plugin host to main's runtime: its delegate, and the hooks Orca's own code runs. */
+/** Binds the plugin host to main's runtime: its delegate, and the hooks Topo's own code runs. */
 export function bindPluginRuntime(
   service: PluginService,
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   hookServer: { getStatusSnapshot(): readonly PluginAgentStatusRow[] },
   methods: DispatcherOptions['methods']
 ): PluginRuntimeDelegate {

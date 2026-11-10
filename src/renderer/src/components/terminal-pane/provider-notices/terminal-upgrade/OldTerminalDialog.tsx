@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/dialog'
 import { useTranslate } from '@/i18n/use-translate'
 
-/** Learn more for a terminal opened before an Orca update its shell does not have. */
+/** Learn more for a terminal opened before a Topo update its shell does not have. */
 export function OldTerminalDialog({
   open,
   onOpenChange,

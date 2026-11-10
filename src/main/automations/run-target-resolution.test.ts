@@ -132,7 +132,7 @@ describe('resolveAutomationRunTarget projectId drift', () => {
 })
 
 describe('resolveAutomationRunTarget on a managed SSH host', () => {
-  it('skips a desktop row whose SSH host now runs automations on its Orca server', () => {
+  it('skips a desktop row whose SSH host now runs automations on its Topo server', () => {
     const sshContext = { hostId: 'ssh:box', path: '/srv/repo' } as const
     const store = makeStore(
       [makeSetup(sshContext)],
@@ -146,7 +146,7 @@ describe('resolveAutomationRunTarget on a managed SSH host', () => {
             host: 'box',
             port: 22,
             username: 'me',
-            orcadFence: { environmentId: 'env-1' }
+            topodFence: { environmentId: 'env-1' }
           }
         : undefined
     const automation = makeAutomation(makeRunContext(sshContext), {
@@ -176,7 +176,7 @@ describe('resolveAutomationRunTarget on a managed SSH workspace pin', () => {
             host: 'box',
             port: 22,
             username: 'me',
-            orcadFence: { environmentId: 'env-1' }
+            topodFence: { environmentId: 'env-1' }
           }
         : undefined
 

@@ -105,7 +105,7 @@ describe('WebRuntimeClient', () => {
 
       client.close()
 
-      await expect(callPromise).rejects.toThrow('Remote Orca runtime connection closed.')
+      await expect(callPromise).rejects.toThrow('Remote Topo runtime connection closed.')
       expect(vi.getTimerCount()).toBe(0)
     } finally {
       vi.useRealTimers()
@@ -193,7 +193,7 @@ describe('WebRuntimeClient', () => {
       expect(fakeSockets).toHaveLength(2)
 
       client.close()
-      await expect(callPromise).rejects.toThrow('Remote Orca runtime connection closed.')
+      await expect(callPromise).rejects.toThrow('Remote Topo runtime connection closed.')
     } finally {
       client.close()
       random.mockRestore()

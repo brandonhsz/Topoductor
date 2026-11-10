@@ -17,7 +17,7 @@ vi.mock('../../native-chat/agent-session-wire/host/structured-agent-session-regi
   getStructuredAgentSessionHost: () => hostRef.current
 }))
 
-describe('orchestration.callerShow: a session learns its Orca session ID from the host', () => {
+describe('orchestration.callerShow: a session learns its Topo session ID from the host', () => {
   let h: SessionCallerHarness
 
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('orchestration.callerShow: a session learns its Orca session ID from th
     return orchestrationRequest('orchestration.callerShow', {}, options)
   }
 
-  it('gives the menu the Orca session ID each session of a cleared chat acts as', async () => {
+  it('gives the menu the Topo session ID each session of a cleared chat acts as', async () => {
     const cleared = sessionRecord(SESSION_X)
     h.records.set(SESSION_X, {
       ...cleared,
@@ -53,8 +53,8 @@ describe('orchestration.callerShow: a session learns its Orca session ID from th
       )
       const acting = resultOf(await h.dispatch(callerShow({ sessionId })))
       // One derivation: the conversation's root, which the successor copies and acts as too.
-      expect(shown.orcaSessionId).toBe(ADDRESS_X)
-      expect(acting.caller).toMatchObject({ orcaSessionId: shown.orcaSessionId })
+      expect(shown.topoSessionId).toBe(ADDRESS_X)
+      expect(acting.caller).toMatchObject({ topoSessionId: shown.topoSessionId })
     }
   })
 })

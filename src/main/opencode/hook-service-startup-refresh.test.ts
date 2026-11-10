@@ -6,14 +6,14 @@ import { setAppEnvironment } from '../../shared/app-environment'
 import { OpenCodeHookService } from './hook-service'
 import { resolveOpenCodeConfigDirectory } from '../../shared/opencode-config-directory'
 
-const PLUGIN = 'orca-opencode2-status.js'
+const PLUGIN = 'topo-opencode2-status.js'
 
 describe('OpenCodeHookService.refreshInstalledPlugins (app start)', () => {
   let userDataDir: string
   const originalXdgConfigHome = process.env.XDG_CONFIG_HOME
 
   beforeAll(() => {
-    userDataDir = mkdtempSync(join(tmpdir(), 'orca-opencode-startup-refresh-'))
+    userDataDir = mkdtempSync(join(tmpdir(), 'topo-opencode-startup-refresh-'))
     process.env.XDG_CONFIG_HOME = join(userDataDir, 'xdg')
   })
 
@@ -60,7 +60,7 @@ describe('OpenCodeHookService.refreshInstalledPlugins (app start)', () => {
     const pluginsDir = join(resolveOpenCodeConfigDirectory(), 'plugins')
     mkdirSync(pluginsDir, { recursive: true })
     writeFileSync(join(pluginsDir, PLUGIN), '// old')
-    writeFileSync(join(pluginsDir, 'orca-opencode2-status-tui'), 'obstruction')
+    writeFileSync(join(pluginsDir, 'topo-opencode2-status-tui'), 'obstruction')
     const overlayPlugins = join(userDataDir, 'opencode2-config-overlays', 'a', 'plugins')
     mkdirSync(overlayPlugins, { recursive: true })
     writeFileSync(join(overlayPlugins, PLUGIN), '// old')

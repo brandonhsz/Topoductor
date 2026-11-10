@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import path from 'node:path'
 import { chromium } from 'playwright-core'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import {
   FEATURE_WALL_TILES,
   isFeatureWallMediaTile
@@ -97,7 +97,7 @@ export async function verifyLosslessFeatureWallMedia(
   try {
     browser = await chromium.launch({
       headless: true,
-      executablePath: process.env.ORCA_ANIMATION_CHROMIUM_EXECUTABLE || undefined
+      executablePath: process.env.TOPO_ANIMATION_CHROMIUM_EXECUTABLE || undefined
     })
     const page = await browser.newPage()
     await page.goto(`http://127.0.0.1:${server.address().port}`)

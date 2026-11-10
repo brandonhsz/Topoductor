@@ -1,8 +1,8 @@
 // Convert only the moved distro's UNC paths; unrelated paths remain unchanged.
 import { wslUncPathToLinux } from '../../../shared/wsl-paths'
-import type { OrcadMigrationPathRewriter } from '../migrating-orcad-catalog/path-rewrite/orcad-migration-path-rewrite'
+import type { TopodMigrationPathRewriter } from '../migrating-topod-catalog/path-rewrite/topod-migration-path-rewrite'
 
-export function createUncToLinuxPathRewriter(distro: string): OrcadMigrationPathRewriter {
+export function createUncToLinuxPathRewriter(distro: string): TopodMigrationPathRewriter {
   const fileUrl = new RegExp(`^file://(?:wsl\\.localhost|wsl\\$)/([^/]+)(/.*)?$`, 'i')
   return {
     path: (value, form) => {

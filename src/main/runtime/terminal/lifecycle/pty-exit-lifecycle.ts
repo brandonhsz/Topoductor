@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithOnClientDisconnected } from '../layout/terminal-client-disconnect'
+import { TopoRuntimeWithOnClientDisconnected } from '../layout/terminal-client-disconnect'
 import type { PtyIncarnationId } from '../../../../shared/terminal/pty/lifecycle/pty-incarnation'
 
 import {
@@ -12,12 +12,12 @@ import type { RetiredTerminalSurface } from '../surface/mobile-session-terminal-
 import { parsePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
 import { advertisedUrlWatcher } from '../../../ports/advertised-url-watcher'
 
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { exitedSplitPaneFacts } from './exited-split-pane-rule'
 import { closedPaneOfExitedPty, type ClosedPaneOfExit } from './closed-pane-of-exited-pty'
 import type { RuntimePtyWorktreeRecord } from '../records/runtime-terminal-state-records'
 
-export abstract class OrcaRuntimeWithOnPtyExit extends OrcaRuntimeWithOnClientDisconnected {
+export abstract class TopoRuntimeWithOnPtyExit extends TopoRuntimeWithOnClientDisconnected {
   protected abstract pruneDisconnectedPtyRecords(): void
 
   protected abstract failActiveDispatchOnExit(
@@ -45,7 +45,7 @@ export abstract class OrcaRuntimeWithOnPtyExit extends OrcaRuntimeWithOnClientDi
     pty: RuntimePtyWorktreeRecord | undefined,
     exitIncarnationId: PtyIncarnationId | undefined
   ): ClosedPaneOfExit | null {
-    if (!ORCA_LAYOUT_OWNER_IS_MAIN || !pty || this.paneOfPty(pty).paneKey) {
+    if (!TOPO_LAYOUT_OWNER_IS_MAIN || !pty || this.paneOfPty(pty).paneKey) {
       return null
     }
     return closedPaneOfExitedPty(
@@ -276,7 +276,7 @@ export abstract class OrcaRuntimeWithOnPtyExit extends OrcaRuntimeWithOnClientDi
             incarnationId,
             exactSurfaces,
             // Switch point: main decides an exited split pane's close.
-            ORCA_LAYOUT_OWNER_IS_MAIN
+            TOPO_LAYOUT_OWNER_IS_MAIN
               ? exitedSplitPaneFacts(this.terminalRunFacts, pty, ptyId, exitCode, options)
               : undefined,
             closedPane ?? undefined

@@ -7,7 +7,7 @@
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { emitCodexHookStatus, readHookEndpoint } from './helpers/agent-hook-endpoint'
 import { disablePluginSystem, enableDevPlugins } from './helpers/plugin-smoke'
 import {
@@ -29,16 +29,16 @@ window.__ask = (method) => orca.host.call(method).then((value) => { window.__ans
 </script></body></html>`
 
 test('a panel lists agents and hears their status and workspace changes', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }) => {
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-panel-agents-'))
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-panel-agents-'))
   const pluginRoot = join(tempRoot, 'agent-board')
   try {
-    await waitForSessionReady(orcaPage)
-    const worktreeId = await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
-    await waitForActiveTerminalManager(orcaPage, 30_000)
+    await waitForSessionReady(topoPage)
+    const worktreeId = await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
+    await waitForActiveTerminalManager(topoPage, 30_000)
     await mkdir(pluginRoot, { recursive: true })
     await writeFile(join(pluginRoot, 'panel.html'), PANEL)
     await writeFile(
@@ -55,16 +55,16 @@ test('a panel lists agents and hears their status and workspace changes', async 
         capabilities: [{ kind: 'agent:read' }, { kind: 'workspace:read' }]
       })
     )
-    await enableDevPlugins(orcaPage, [pluginRoot])
-    await orcaPage.evaluate(async () => {
+    await enableDevPlugins(topoPage, [pluginRoot])
+    await topoPage.evaluate(async () => {
       const store = window.__store?.getState()
       if (store && !store.rightSidebarOpen) {
         store.toggleRightSidebar()
       }
       await window.api.plugins.refresh()
     })
-    await orcaPage.getByRole('button', { name: 'Agent Board' }).click({ timeout: 15_000 })
-    const guest = pluginGuest(orcaPage, 'Agent Board')
+    await topoPage.getByRole('button', { name: 'Agent Board' }).click({ timeout: 15_000 })
+    const guest = pluginGuest(topoPage, 'Agent Board')
     await waitForGuestReady(guest)
     const ask = async <T>(method: string): Promise<T> => {
       await readInGuest(guest, `window.__ask(${JSON.stringify(method)})`)
@@ -92,7 +92,7 @@ test('a panel lists agents and hears their status and workspace changes', async 
       .not.toBeNull()
 
     const endpoint = await readHookEndpoint(electronApp)
-    const descriptor = await waitForActivePaneHookDescriptor(orcaPage)
+    const descriptor = await waitForActivePaneHookDescriptor(topoPage)
     await emitCodexHookStatus(endpoint, { ...descriptor, state: 'working', prompt: 'Board' })
     const terminalIds = context.terminals.map(({ id }) => id)
     type AgentEvent = { paneKey: string; state: string; terminalId?: string }
@@ -125,7 +125,7 @@ test('a panel lists agents and hears their status and workspace changes', async 
     )
 
     // A terminal opening in the focused workspace reaches the panel without a poll.
-    await orcaPage.evaluate((id) => {
+    await topoPage.evaluate((id) => {
       window.__store?.getState().createTab(id, undefined, undefined, { activate: false })
     }, worktreeId)
     await expect
@@ -144,7 +144,7 @@ test('a panel lists agents and hears their status and workspace changes', async 
       )
       .toBe(true)
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(tempRoot, { recursive: true, force: true })
   }
 })

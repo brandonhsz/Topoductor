@@ -1,8 +1,8 @@
 import type { AgentSessionConversationView } from '../../../../../shared/agent-session/lifecycle/agent-session-conversation-view'
-import { parseOrcaSessionAddress } from '../../../../../shared/orca-session-address'
-import { ORCA_SESSION_ADDRESS_PREFIX } from '../../../../../shared/orca-session-address-prefix'
+import { parseTopoSessionAddress } from '../../../../../shared/topo-session-address'
+import { TOPO_SESSION_ADDRESS_PREFIX } from '../../../../../shared/topo-session-address-prefix'
 
-import type { OrcaSessionId } from '../../../../../shared/orca-session-address'
+import type { TopoSessionId } from '../../../../../shared/topo-session-address'
 import type { OrchestrationDb } from '../../db/orchestration-db'
 import { DISPATCH_CONTEXT_COLUMN_LIST } from '../../db/row-column-lists'
 import type { DispatchContextRow } from '../../db/orchestration-records'
@@ -16,8 +16,8 @@ import {
 /** The chat a Dispatch assignee handle names; null for a terminal or a structured worker. */
 export function chatAssigneeSessionId(
   assigneeHandle: string | null | undefined
-): OrcaSessionId | null {
-  return assigneeHandle ? parseOrcaSessionAddress(assigneeHandle) : null
+): TopoSessionId | null {
+  return assigneeHandle ? parseTopoSessionAddress(assigneeHandle) : null
 }
 
 export type ChatAssigneeObservation =
@@ -28,7 +28,7 @@ export type ChatAssigneeObservation =
 
 /** Idle chats remain live; only closed chats exited, while missing or remote records are unverifiable. */
 export function observeChatAssignee(
-  sessionId: OrcaSessionId,
+  sessionId: TopoSessionId,
   db: OrchestrationDb | null | undefined,
   store: AgentSessionRecordReader | null = readAgentSessionRecordStore()
 ): ChatAssigneeObservation {
@@ -82,7 +82,7 @@ export function exitedChatDispatchesForSession(
       `SELECT ${DISPATCH_CONTEXT_COLUMN_LIST} FROM dispatch_contexts
         WHERE status IN ('pending', 'dispatched') AND substr(assignee_handle, 1, ?) = ?`
     )
-    .all(ORCA_SESSION_ADDRESS_PREFIX.length, ORCA_SESSION_ADDRESS_PREFIX)
+    .all(TOPO_SESSION_ADDRESS_PREFIX.length, TOPO_SESSION_ADDRESS_PREFIX)
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: The schema-pinned complete Dispatch projection returns Dispatch rows; the adapter exposes unknown.
   return (rows as DispatchContextRow[]).filter(
     (dispatch): dispatch is DispatchContextRow & { assignee_handle: string } => {

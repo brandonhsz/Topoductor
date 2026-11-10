@@ -17,7 +17,7 @@ import { createNonSecureContextUuid as createBrowserUuid } from '../../../../sha
 import { emptySplitGroup, insertSplitGroup } from '../slices/tabs/tabs-group-actions'
 import { ownsGlobalSelection } from '../workspaces/selection/global-selection-owner'
 import type { TerminalSlice, TerminalStoreGet, TerminalStoreSet } from './terminal-state'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import {
   recordCreatedTerminalTabInLayoutOwner,
   terminalTabCreateCommand,
@@ -113,7 +113,7 @@ export function createTerminalTabCreationActions(
           ...(options?.pendingActivationSpawn ? { pendingActivationSpawn: true } : {})
         }
         // Switch point: a tab main already made is drawn with main's creation facts.
-        if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+        if (TOPO_LAYOUT_OWNER_IS_MAIN) {
           tab = withMainTerminalFacts(tab)
         }
         if (options?.launchAgent === 'zcode') {
@@ -263,7 +263,7 @@ export function createTerminalTabCreationActions(
         }
       })
       // Switch point: main writes the tab under these ids before any later command names it.
-      if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+      if (TOPO_LAYOUT_OWNER_IS_MAIN) {
         recordCreatedTerminalTabInLayoutOwner(get(), terminalTabCreateCommand(get(), tab), {
           tab,
           store: { getState: get, setState: (patch) => set(patch), subscribe }

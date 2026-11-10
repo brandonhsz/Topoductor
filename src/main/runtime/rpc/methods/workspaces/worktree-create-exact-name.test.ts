@@ -1,7 +1,7 @@
 import '../../unused-default-rpc-methods.test-fixture'
 import { expect, it, vi } from 'vitest'
 import { RpcDispatcher } from '../../dispatcher'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { WORKTREE_METHODS } from './worktree'
 import { WorktreeCreateExactNameTakenError } from '../../../../../shared/new-workspace/worktree-create-collision'
 
@@ -23,7 +23,7 @@ it('keeps the exact-name refusal code on worktree.create', async () => {
     createManagedWorktree: vi
       .fn()
       .mockRejectedValue(new WorktreeCreateExactNameTakenError('"child" is already taken.'))
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   const dispatcher = new RpcDispatcher({ runtime, methods: WORKTREE_METHODS })
 
   const response = await dispatcher.dispatch({

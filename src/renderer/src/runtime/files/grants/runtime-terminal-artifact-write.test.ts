@@ -32,7 +32,7 @@ describe('saving a granted host file outside every workspace', () => {
     const timedOut = {
       id: 'rpc',
       ok: false,
-      error: { code: 'runtime_timeout', message: 'Timed out waiting for the remote Orca runtime' },
+      error: { code: 'runtime_timeout', message: 'Timed out waiting for the remote Topo runtime' },
       _meta: meta
     }
     runtimeEnvironmentCall.mockImplementation(async ({ method }) =>

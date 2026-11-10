@@ -1,12 +1,12 @@
 import type { AppState } from '@/store/types'
-import type { OrcaHooks } from '../../../shared/orca-yaml-hook-types'
+import type { TopoHooks } from '../../../shared/topo-yaml-hook-types'
 import { resolveHookCommandSourcePolicy } from '../../../shared/hook-command-source-policy'
-import { getSetupTrustContent } from '../../../shared/orca-hook-setup-config'
+import { getSetupTrustContent } from '../../../shared/topo-hook-setup-config'
 import {
   canUseRepoWideTrust,
-  isOrcaHookContentApproved
-} from '../../../shared/orca-hook-trust-entries'
-import { hashOrcaHookScript, type OrcaHookScriptKind } from './orca-hook-trust'
+  isTopoHookContentApproved
+} from '../../../shared/topo-hook-trust-entries'
+import { hashTopoHookScript, type TopoHookScriptKind } from './topo-hook-trust'
 import { getVmRecipeTrustContent } from './vm-recipe-trust-content'
 import { getIssueCommandTrustContent, isUserOwnedIssueCommand } from './issue-command-trust-content'
 import {
@@ -21,7 +21,7 @@ import {
   type ExecutionHostId
 } from '../../../shared/execution-host'
 
-export type HookScriptKind = OrcaHookScriptKind
+export type HookScriptKind = TopoHookScriptKind
 
 const NEVER_CANCEL_TRUST_CHECK = (): boolean => false
 
@@ -87,19 +87,19 @@ async function confirmScriptContent(
   if (isCancelled() || signal?.aborted) {
     return SKIP
   }
-  if (canUseRepoWideTrust(state.trustedOrcaHooks, state.repos, repoId)) {
+  if (canUseRepoWideTrust(state.trustedTopoHooks, state.repos, repoId)) {
     return RUN_ANY
   }
 
-  const contentHash = await hashOrcaHookScript(scriptContent)
+  const contentHash = await hashTopoHookScript(scriptContent)
   if (isCancelled() || signal?.aborted) {
     return SKIP
   }
   const approved: HookTrustApproval = { decision: 'run', approvedContentHash: contentHash }
-  const existingHash = state.trustedOrcaHooks[repoId]?.[scriptKind]?.contentHash
+  const existingHash = state.trustedTopoHooks[repoId]?.[scriptKind]?.contentHash
   if (
     !scriptContent ||
-    isOrcaHookContentApproved(state.trustedOrcaHooks, repoId, scriptKind, contentHash)
+    isTopoHookContentApproved(state.trustedTopoHooks, repoId, scriptKind, contentHash)
   ) {
     return approved
   }
@@ -127,7 +127,7 @@ async function confirmScriptContent(
       state.closeModal()
     }
     signal?.addEventListener('abort', cancel, { once: true })
-    state.openModal('confirm-orca-yaml-hooks', {
+    state.openModal('confirm-topo-yaml-hooks', {
       repoId,
       repoName,
       scriptKind,
@@ -248,7 +248,7 @@ export function confirmCreatedWorktreeSetupContent(
     )
     // Repo-wide trust approves any content, but the host runs only content it can match.
     return approval.decision === 'run' && approval.approvedContentHash === undefined
-      ? { decision: 'run', approvedContentHash: await hashOrcaHookScript(scriptContent) }
+      ? { decision: 'run', approvedContentHash: await hashTopoHookScript(scriptContent) }
       : approval
   })
 }
@@ -268,7 +268,7 @@ export async function ensureHooksApproved(
       return SKIP
     }
     const state = typeof stateOrGetter === 'function' ? stateOrGetter() : stateOrGetter
-    if (canUseRepoWideTrust(state.trustedOrcaHooks, state.repos, repoId)) {
+    if (canUseRepoWideTrust(state.trustedTopoHooks, state.repos, repoId)) {
       return RUN_ANY
     }
 
@@ -311,7 +311,7 @@ export async function ensureHooksApproved(
         if (result.status === 'error') {
           return SKIP
         }
-        const yamlHooks = (result.hooks as OrcaHooks | null) ?? null
+        const yamlHooks = (result.hooks as TopoHooks | null) ?? null
         scriptContent =
           scriptKind === 'setup'
             ? getSetupTrustContent(yamlHooks)

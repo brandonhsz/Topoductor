@@ -110,14 +110,14 @@ export function PluginDeclarativeLink({
   )
 }
 
-/** A component this Orca does not know: neutral, so the rest of the panel still works. */
+/** A component this Topo does not know: neutral, so the rest of the panel still works. */
 export function PluginDeclarativeUnsupported({ name }: { name: string }): React.JSX.Element {
   const t = useTranslate()
   return (
     <div className="rounded-md border border-dashed border-border px-2 py-1.5 text-xs text-muted-foreground">
       {t(
         'auto.components.plugins.declarative.PluginDeclarativeView.unsupported',
-        '{{value0}} is not available in this version of Orca',
+        '{{value0}} is not available in this version of Topo',
         { value0: name }
       )}
     </div>

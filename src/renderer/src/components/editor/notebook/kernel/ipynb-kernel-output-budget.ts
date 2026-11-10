@@ -63,7 +63,7 @@ function withTruncationNotice(outputs: NotebookOutput[]): NotebookOutput[] {
   const notice = noticeOutput(
     translate(
       'auto.components.editor.IpynbViewer.outputTruncated',
-      "Output truncated: Orca kept the start of this cell's output and discarded the rest. To keep all of it, write it to a file instead."
+      "Output truncated: Topo kept the start of this cell's output and discarded the rest. To keep all of it, write it to a file instead."
     )
   )
   truncationNotices.add(notice)

@@ -1,6 +1,6 @@
 // Install on the agent's chat host without a workspace; negotiate install.v1/remove.v1 and stream a snapshot followed by state revisions.
 
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import {
   ManagedRuntimeAgentParams,
   ManagedRuntimeCancelParams
@@ -10,7 +10,7 @@ import { resolveAcpLaunchCommand } from '../../../../acp/launch/acp-launch-comma
 import { ManagedRuntimeInstallation } from '../../../../node-runtime/managed-runtime-installation'
 import '../../../../native-chat/agent-session-wire/providers/structured-agent-session-adapter'
 import { isAgentSessionPreSpawnError } from '../../../../native-chat/agent-session-wire/providers/structured-agent-session-adapter-errors'
-import { getProfileUserDataPath } from '../../../../orca-profiles/profile-storage-paths'
+import { getProfileUserDataPath } from '../../../../topo-profiles/profile-storage-paths'
 import { stopStructuredAgentChats } from '../../../agent-session/lifecycle/structured-agent-chat-stop'
 import { resolveHostStructuredAgentLaunchEnvironment } from '../../../agent-session/launch/structured-agent-launch-support'
 import { isPathInsideOrEqual } from '../../../../../shared/cross-platform-path'
@@ -19,10 +19,10 @@ import { bindStructuredAgentSessionStream } from '../structured-sessions/subscri
 
 const installations = new Map<string, ManagedRuntimeInstallation>()
 
-function installationFor(agent: string, runtime: OrcaRuntimeService): ManagedRuntimeInstallation {
+function installationFor(agent: string, runtime: TopoRuntimeService): ManagedRuntimeInstallation {
   const spec = acpLaunchSpecFor(agent)
   if (!spec?.managedRuntime) {
-    throw new Error(`Orca installs no runtime for ${agent}.`)
+    throw new Error(`Topo installs no runtime for ${agent}.`)
   }
   const dataDirectory = getProfileUserDataPath()
   const releases = spec.managedRuntime.root(dataDirectory)

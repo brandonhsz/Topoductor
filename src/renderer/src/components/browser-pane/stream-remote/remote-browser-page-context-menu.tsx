@@ -138,12 +138,12 @@ export function useRemoteBrowserPageContextMenu({
 export function RemoteBrowserPageContextMenu({
   contextMenu,
   onDismiss,
-  onOpenLinkInOrcaBrowser,
+  onOpenLinkInTopoBrowser,
   onNavigate
 }: {
   contextMenu: RemoteBrowserContextMenu
   onDismiss: () => void
-  onOpenLinkInOrcaBrowser: () => void
+  onOpenLinkInTopoBrowser: () => void
   onNavigate: (method: 'browser.back' | 'browser.forward' | 'browser.reload') => void
 }): React.JSX.Element {
   const t = useTranslate()
@@ -186,11 +186,11 @@ export function RemoteBrowserPageContextMenu({
             <button
               role="menuitem"
               className="relative flex w-full cursor-default items-center gap-2 rounded-[7px] px-2 py-0.5 text-[12px] leading-5 font-medium outline-none select-none hover:bg-black/8 dark:hover:bg-white/14"
-              onClick={onOpenLinkInOrcaBrowser}
+              onClick={onOpenLinkInTopoBrowser}
             >
               {t(
                 'auto.components.browser.pane.BrowserPane.b5b87d6cbb',
-                'Open Link In Orca Browser'
+                'Open Link In Topo Browser'
               )}
             </button>
             <button

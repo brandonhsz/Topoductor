@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from './dispatcher'
 import type { RpcRequest } from './core'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import { TERMINAL_METHODS } from './methods/terminal/terminal'
 import type { RuntimeTerminalWait } from '../../../shared/runtime-terminal-contracts'
 import {
@@ -83,7 +83,7 @@ async function setupMultiplexStream(): Promise<{
     }),
     waitForTerminal: vi.fn(() => new Promise<RuntimeTerminalWait>(() => {})),
     updateDesktopViewport: vi.fn().mockResolvedValue(true)
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   const dispatcher = new RpcDispatcher({ runtime, methods: TERMINAL_METHODS })
 
   const request: RpcRequest = {

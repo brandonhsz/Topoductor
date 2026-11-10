@@ -143,7 +143,7 @@ function buildMenuSections(
   if (linkUrl) {
     sections.push([
       item(
-        t('auto.components.browser.pane.BrowserPane.b5b87d6cbb', 'Open Link In Orca Browser'),
+        t('auto.components.browser.pane.BrowserPane.b5b87d6cbb', 'Open Link In Topo Browser'),
         () => openInNewTab(linkUrl, false)
       ),
       item(

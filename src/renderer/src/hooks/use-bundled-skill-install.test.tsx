@@ -30,7 +30,7 @@ vi.mock('./installed-agent-skill-discovery', () => ({
   notifyInstalledAgentSkillsChanged: vi.fn()
 }))
 
-const PLAN = planOf([sharedEntry('orca-cli', 'write')])
+const PLAN = planOf([sharedEntry('topo-cli', 'write')])
 
 let root: Root | null = null
 let latest: BundledSkillInstall | null = null
@@ -78,7 +78,7 @@ describe('useBundledSkillInstall', () => {
     const hook = await renderHarness()
     let first: Promise<unknown> = Promise.resolve()
     await act(async () => {
-      first = hook.install(['orca-cli'])
+      first = hook.install(['topo-cli'])
     })
     expect(latest?.state.kind).toBe('installing')
 
@@ -89,12 +89,12 @@ describe('useBundledSkillInstall', () => {
     expect(latest?.state.kind).toBe('idle')
 
     await act(async () => {
-      await latest?.install(['orca-cli'])
+      await latest?.install(['topo-cli'])
     })
     expect(mocks.execute).toHaveBeenLastCalledWith(
       { kind: 'environment', environmentId: 'env-2' },
       PLAN.planDigest,
-      { names: ['orca-cli'] }
+      { names: ['topo-cli'] }
     )
     expect(latest?.state.kind).toBe('done')
 

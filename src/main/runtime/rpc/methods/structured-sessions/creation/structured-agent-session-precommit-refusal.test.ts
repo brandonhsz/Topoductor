@@ -15,7 +15,7 @@ import { computeAgentSessionPayloadFingerprint } from '../../../../../../shared/
 import { isDefinitiveAgentSessionCreateRefusal } from '../../../../../../shared/agent-session/failures/agent-session-definitive-refusal'
 import { agentSessionRefusalError } from '../../../../../../shared/agent-session/failures/agent-session-wire-refusals'
 import { STRUCTURED_AGENT_SESSION_RUNTIME_CAPABILITY } from '../../../../../../shared/agent-session/agent-session-runtime-capabilities'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { RpcResponse } from '../../../core'
 import { RpcDispatcher } from '../../../dispatcher'
 import { STRUCTURED_AGENT_SESSION_METHODS } from '../structured-agent-session'
@@ -102,7 +102,7 @@ async function create(
   }
   const replies: RpcResponse[] = []
   await new RpcDispatcher({
-    runtime: runtime as unknown as OrcaRuntimeService,
+    runtime: runtime as unknown as TopoRuntimeService,
     methods: STRUCTURED_AGENT_SESSION_METHODS
   }).dispatchStreaming(
     { id: 'request-1', authToken: 'token', method: 'agentSession.create', params },
@@ -149,7 +149,7 @@ describe('a create refused before it commits', () => {
     expect(refusalOf(response)).toMatchObject({
       code: 'agent_session_identity_required',
       details: { reason: 'transcriptUnreadable' },
-      message: 'Orca cannot open a structured agent chat for this workspace.',
+      message: 'Topo cannot open a structured agent chat for this workspace.',
       createAttemptRefusedBeforeCommit: true
     })
     expect(attach).not.toHaveBeenCalled()
@@ -237,7 +237,7 @@ async function forkHost() {
     create(
       {
         resolveStructuredAgentSessionCreateIntent: async (
-          input: Parameters<OrcaRuntimeService['resolveStructuredAgentSessionCreateIntent']>[0]
+          input: Parameters<TopoRuntimeService['resolveStructuredAgentSessionCreateIntent']>[0]
         ) => {
           if (!input.forkFrom) {
             throw new Error('Expected a fork intent')

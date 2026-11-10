@@ -22,7 +22,7 @@ import { openFileInBrowserTab } from '../documents/file-preview'
 import { openEditorHtmlPreview } from '@/components/editor/open-editor-html-preview'
 import type { BrowserOpenOutcome } from './browser-link-destination'
 
-vi.mock('../../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 const mocks = vi.hoisted(() => ({ getState: vi.fn(), subscribe: vi.fn() }))
 vi.mock('@/store/index', () => ({
   useAppStore: { getState: () => mocks.getState(), subscribe: mocks.subscribe }

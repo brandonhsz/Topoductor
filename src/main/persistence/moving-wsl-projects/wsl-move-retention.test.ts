@@ -19,7 +19,7 @@ import {
 import {
   visibleFolderWorkspaces,
   visibleRepos
-} from '../migrating-orcad-catalog/orcad-source-visibility'
+} from '../migrating-topod-catalog/topod-source-visibility'
 import { wslMoveCutoverFixture } from '../__fixtures__/wsl-mover/wsl-move-cutover-fixture'
 import { seedWslMoveCutover } from '../__fixtures__/wsl-mover/wsl-move-journal-seeding'
 import { listWslMoveCutovers, wslMoveJournalDirectory } from './wsl-move-cutover-journal'
@@ -133,14 +133,14 @@ describe('WSL move retention', () => {
     expect(saved.repos).toHaveLength(3)
     expect(localRow(saved.repos).find((repo) => repo.id === 'repo-a')).toEqual({
       ...movedRepo,
-      orcadRetained: MARK
+      topodRetained: MARK
     })
-    expect(saved.folderWorkspaces?.find((row) => row.id === 'notes')?.orcadRetained).toEqual(MARK)
+    expect(saved.folderWorkspaces?.find((row) => row.id === 'notes')?.topodRetained).toEqual(MARK)
     // The SSH rows sharing an id, and the Windows project, are never marked.
-    expect(saved.repos.find((repo) => repo.connectionId === 'ssh-1')?.orcadRetained).toBeUndefined()
-    expect(saved.repos.find((repo) => repo.id === 'repo-w')?.orcadRetained).toBeUndefined()
+    expect(saved.repos.find((repo) => repo.connectionId === 'ssh-1')?.topodRetained).toBeUndefined()
+    expect(saved.repos.find((repo) => repo.id === 'repo-w')?.topodRetained).toBeUndefined()
     expect(
-      saved.folderWorkspaces?.find((row) => row.id === 'remote')?.orcadRetained
+      saved.folderWorkspaces?.find((row) => row.id === 'remote')?.topodRetained
     ).toBeUndefined()
     // Hidden by the same lists SSH uses.
     const userData = () => testState.dir
@@ -163,8 +163,8 @@ describe('WSL move retention', () => {
     // An older build: it never reads the WSL journal, strips the marks it does not know, and the
     // user renames the moved project and adds a new one in the same distro.
     const downgraded = persisted()
-    const strip = <T extends { orcadRetained?: unknown }>({
-      orcadRetained: _stripped,
+    const strip = <T extends { topodRetained?: unknown }>({
+      topodRetained: _stripped,
       ...row
     }: T) => row
     const added = makeRepo({ id: 'repo-b', displayName: 'repo-b', path: `${UNC}\\home\\dev\\b` })
@@ -178,7 +178,7 @@ describe('WSL move retention', () => {
       repos: [...rows, added],
       folderWorkspaces: downgraded.folderWorkspaces?.map(strip)
     })
-    expect(store.getRepos().some((repo) => repo.orcadRetained)).toBe(false)
+    expect(store.getRepos().some((repo) => repo.topodRetained)).toBe(false)
 
     const report = await pass()
 
@@ -192,11 +192,11 @@ describe('WSL move retention', () => {
     expect(local.find((repo) => repo.id === 'repo-a')).toEqual({
       ...movedRepo,
       displayName: 'renamed',
-      orcadRetained: { ...MARK, sourceChangedAt: NOW.toISOString() }
+      topodRetained: { ...MARK, sourceChangedAt: NOW.toISOString() }
     })
     expect(saved.folderWorkspaces?.find((row) => row.id === 'notes')).toMatchObject({
       comment: 'kept',
-      orcadRetained: MARK
+      topodRetained: MARK
     })
     expect(local.map((repo) => repo.id).sort()).toEqual(['repo-a', 'repo-b', 'repo-w'])
     expect(
@@ -240,8 +240,8 @@ describe('WSL move retention', () => {
     const report = await pass()
 
     expect(report?.rewrittenMarks).toBe(2)
-    expect(store.getRepos().some((repo) => repo.orcadRetained)).toBe(false)
-    expect(store.getFolderWorkspaces().some((row) => row.orcadRetained)).toBe(false)
+    expect(store.getRepos().some((repo) => repo.topodRetained)).toBe(false)
+    expect(store.getFolderWorkspaces().some((row) => row.topodRetained)).toBe(false)
     expect(visibleRepos(store, () => testState.dir)).toHaveLength(3)
   })
 
@@ -254,7 +254,7 @@ describe('WSL move retention', () => {
     writeFileSync(join(dir, 'broken.json'), '{')
 
     expect(await pass()).toBeNull()
-    expect(localRow(store.getRepos()).find((repo) => repo.id === 'repo-a')?.orcadRetained).toEqual(
+    expect(localRow(store.getRepos()).find((repo) => repo.id === 'repo-a')?.topodRetained).toEqual(
       MARK
     )
   })
@@ -280,7 +280,7 @@ describe('WSL move retention', () => {
 
     const marks = localRow(store.getRepos()).map((repo) => [
       repo.id,
-      repo.orcadRetained?.migrationId
+      repo.topodRetained?.migrationId
     ])
     expect(marks).toEqual(
       expect.arrayContaining([
@@ -309,10 +309,10 @@ describe('WSL move retention', () => {
 
   it('drops a mark naming a move that never took the row', async () => {
     seedWslMoveCutover(testState.dir, retainedMove('retained'))
-    open(profile({ repos: [movedRepo, { ...stayingRepo, orcadRetained: MARK }] }))
+    open(profile({ repos: [movedRepo, { ...stayingRepo, topodRetained: MARK }] }))
 
     await pass()
 
-    expect(store.getRepos().find((repo) => repo.id === 'repo-w')?.orcadRetained).toBeUndefined()
+    expect(store.getRepos().find((repo) => repo.id === 'repo-w')?.topodRetained).toBeUndefined()
   })
 })

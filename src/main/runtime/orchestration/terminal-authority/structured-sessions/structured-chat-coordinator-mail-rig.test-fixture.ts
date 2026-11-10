@@ -10,7 +10,7 @@ import '../../../../../shared/protocol-version'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../../../shared/orchestration/orchestration-runtime-capabilities'
 import type { StructuredAgentSessionHost } from '../../../../native-chat/agent-session-wire/host/structured-agent-session-host'
 import { activeProviderContext } from '../../../../../shared/agent-session/agent-session-provider-context'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import {
   createStore,
   closeTestStores,
@@ -35,7 +35,7 @@ import {
   type FakeConnection
 } from './structured-chat-coordinator-fake-codex-fixture'
 import { createStructuredAgentSessionLogger } from '../../../../native-chat/agent-session-wire/host/structured-agent-session-logger'
-import { scriptedCodexTransport } from '../../../orca-runtime-tests/scripted-codex-transport.test-fixture'
+import { scriptedCodexTransport } from '../../../topo-runtime-tests/scripted-codex-transport.test-fixture'
 
 export const COORDINATOR = '4a1f6c2e-8b3d-4e7a-9c15-0d2b6e8f1a37'
 export const PEER_CHAT = '7e3b9d15-2c4a-4f86-a0b1-5c9e2d7f3b64'
@@ -45,7 +45,7 @@ export const WORKER_2_PANE = 'tab_worker2:cccccccc-cccc-4ccc-8ccc-cccccccccccc'
 export let codex: ReturnType<typeof fakeCodex>
 export let root: string
 let profile: ReturnType<typeof createStore>
-export let runtime: OrcaRuntimeService
+export let runtime: TopoRuntimeService
 export let db: OrchestrationDb
 export let host: StructuredAgentSessionHost
 export let dispatcher: RpcDispatcher
@@ -242,7 +242,7 @@ export async function startClearedContext(sessionId: string): Promise<void> {
 
 beforeEach(async () => {
   resetProviderFaults()
-  root = await mkdtemp(join(tmpdir(), 'orca-structured-coordinator-mail-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-structured-coordinator-mail-'))
   testState.dir = root
   profile = createStore()
   profile.addRepo(makeRepo({ id: 'workspace-1', path: root, executionHostId: 'local' }))
@@ -271,8 +271,8 @@ beforeEach(async () => {
 })
 
 /** Restart reuses the same database with a fresh runtime. */
-export function startRuntime(): OrcaRuntimeService {
-  const started = new OrcaRuntimeService(profile)
+export function startRuntime(): TopoRuntimeService {
+  const started = new TopoRuntimeService(profile)
   started.setOrchestrationDb(db)
   vi.spyOn(started, 'ensureStructuredAgentSessionHost').mockResolvedValue()
   vi.spyOn(started, 'getTerminalPaneKey').mockImplementation((handle) =>
@@ -303,7 +303,7 @@ export const WAIT = { timeout: 10_000, interval: 10 }
 
 /** A chat got the whole orchestration message: its subject and its reply command. */
 export function isWholeMail(text: string): boolean {
-  return text.includes('\nSubject: ') && /\[[^\]\n]*: orca(-dev)? orchestration /.test(text)
+  return text.includes('\nSubject: ') && /\[[^\]\n]*: topo(-dev)? orchestration /.test(text)
 }
 
 export function turnText(turn: { text: string }): string {

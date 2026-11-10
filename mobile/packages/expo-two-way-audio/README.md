@@ -1,6 +1,6 @@
-# Orca Two Way Audio
+# Topo Two Way Audio
 
-Vendored Expo module for capturing PCM microphone audio in the Orca mobile app (iOS and Android). Orca uses it for voice dictation; the upstream playback path was removed because nothing played audio through it.
+Vendored Expo module for capturing PCM microphone audio in the Topo mobile app (iOS and Android). Topo uses it for voice dictation; the upstream playback path was removed because nothing played audio through it.
 
 The following features are provided:
 
@@ -12,7 +12,7 @@ The following features are provided:
 ## Installation
 
 ```
-npm i @orca/expo-two-way-audio
+npm i @topo/expo-two-way-audio
 ```
 
 ## Usage
@@ -20,7 +20,7 @@ npm i @orca/expo-two-way-audio
 1. Request permissions for recording audio
 
    ```JSX
-   import {useMicrophonePermissions} from "@orca/expo-two-way-audio";
+   import {useMicrophonePermissions} from "@topo/expo-two-way-audio";
 
    const [micPermission, requestMicPermission] = useMicrophonePermissions();
    console.log(micPermission);
@@ -56,7 +56,7 @@ npm i @orca/expo-two-way-audio
 
 ## Notes
 
-Some audio features of expo-two-way-audio like Acoustic Echo Cancelling, noise reduction or microphone modes (iOS) don't work on simulator. Run the Orca mobile app on a real device to test these features.
+Some audio features of expo-two-way-audio like Acoustic Echo Cancelling, noise reduction or microphone modes (iOS) don't work on simulator. Run the Topo mobile app on a real device to test these features.
 
 ```bash
 # iOS

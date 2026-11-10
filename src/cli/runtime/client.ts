@@ -8,7 +8,7 @@ import {
   orchestrationMigrationData
 } from '../../shared/orchestration/orchestration-rpc-contract'
 import type { PairedRuntimeConnection } from '../../shared/remote-runtime/pairing/paired-runtime-connection'
-import { openLocalOrca } from './open-local-orca'
+import { openLocalTopo } from './open-local-topo'
 import { getDefaultUserDataPath, readMetadata } from './metadata'
 import {
   getCliStatus,
@@ -78,8 +78,8 @@ export class RuntimeClient {
   constructor(
     userDataPath = getDefaultUserDataPath(),
     private readonly requestTimeoutMs = 60_000,
-    remotePairingCode = process.env.ORCA_PAIRING_CODE ?? process.env.ORCA_REMOTE_PAIRING ?? null,
-    environmentSelector = process.env.ORCA_ENVIRONMENT ?? null,
+    remotePairingCode = process.env.TOPO_PAIRING_CODE ?? process.env.TOPO_REMOTE_PAIRING ?? null,
+    environmentSelector = process.env.TOPO_ENVIRONMENT ?? null,
     cliExecutable = resolveOrchestrationCliExecutable(),
     originalArgs?: readonly string[]
   ) {
@@ -308,13 +308,13 @@ export class RuntimeClient {
     if (!response.result.capabilities?.includes(ORCHESTRATION_CONTRACT_RUNTIME_CAPABILITY)) {
       throw new RuntimeClientError(
         'orchestration_migration_required',
-        'The connected Orca runtime does not support the current orchestration contract. No effects were applied.',
+        'The connected Topo runtime does not support the current orchestration contract. No effects were applied.',
         orchestrationMigrationData('runtime_capability_missing')
       )
     }
   }
 
-  async openOrca(timeoutMs = 15_000): Promise<RuntimeRpcSuccess<CliStatusResult>> {
-    return this.remote ? this.getCliStatus() : openLocalOrca(() => this.getCliStatus(), timeoutMs)
+  async openTopo(timeoutMs = 15_000): Promise<RuntimeRpcSuccess<CliStatusResult>> {
+    return this.remote ? this.getCliStatus() : openLocalTopo(() => this.getCliStatus(), timeoutMs)
   }
 }

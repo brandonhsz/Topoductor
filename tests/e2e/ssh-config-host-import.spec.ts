@@ -1,7 +1,7 @@
 // Cover Add all import versus Settings re-adoption (P5/P6/P7/P9); picker host selection lives in ssh-config-host-picker.spec.ts.
 
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { waitForSessionReady } from './helpers/store'
 import {
   buildSshConfigBody,
@@ -58,9 +58,9 @@ async function importPairThenDeleteAlias(
 ): Promise<{ alpha: SeededSshConfigHost; bravo: SeededSshConfigHost }> {
   const hosts = await seedPairConfig(electronApp, prefix)
   const picker = await openSshConfigHostPicker(page)
-  await expect(picker.getByRole('button', { name: 'Add all 2 to Orca' })).toBeEnabled()
-  await picker.getByRole('button', { name: 'Add all 2 to Orca' }).click()
-  await expect(page.getByText('Added 2 hosts to Orca.')).toBeVisible({ timeout: 15_000 })
+  await expect(picker.getByRole('button', { name: 'Add all 2 to Topo' })).toBeEnabled()
+  await picker.getByRole('button', { name: 'Add all 2 to Topo' }).click()
+  await expect(page.getByText('Added 2 hosts to Topo.')).toBeVisible({ timeout: 15_000 })
   await expect(page.getByRole('dialog', { name: 'Choose from ~/.ssh/config' })).toBeHidden({
     timeout: 10_000
   })
@@ -72,80 +72,80 @@ async function importPairThenDeleteAlias(
 }
 
 test.describe('SSH config host import (bulk + settings re-adopt)', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
   })
 
-  test.afterEach(async ({ orcaPage }) => {
-    await removeSshTargetsByPrefix(orcaPage, HOST_PREFIX).catch(() => undefined)
+  test.afterEach(async ({ topoPage }) => {
+    await removeSshTargetsByPrefix(topoPage, HOST_PREFIX).catch(() => undefined)
   })
 
-  test('P6: Add all N to Orca imports new hosts; re-open shows all in Orca', async ({
+  test('P6: Add all N to Topo imports new hosts; re-open shows all in Topo', async ({
     electronApp,
-    orcaPage
+    topoPage
   }) => {
     const hosts = await seedPairConfig(electronApp, HOST_PREFIX)
-    const picker = await openSshConfigHostPicker(orcaPage)
+    const picker = await openSshConfigHostPicker(topoPage)
 
     await expect(configHostRow(picker, hosts.alpha)).toBeVisible()
     await expect(configHostRow(picker, hosts.bravo)).toBeVisible()
-    await expect(picker.getByRole('button', { name: 'Add all 2 to Orca' })).toBeEnabled()
+    await expect(picker.getByRole('button', { name: 'Add all 2 to Topo' })).toBeEnabled()
 
-    await picker.getByRole('button', { name: 'Add all 2 to Orca' }).click()
-    await expect(orcaPage.getByText('Added 2 hosts to Orca.')).toBeVisible({ timeout: 15_000 })
-    await expect(orcaPage.getByRole('dialog', { name: 'Choose from ~/.ssh/config' })).toBeHidden({
+    await picker.getByRole('button', { name: 'Add all 2 to Topo' }).click()
+    await expect(topoPage.getByText('Added 2 hosts to Topo.')).toBeVisible({ timeout: 15_000 })
+    await expect(topoPage.getByRole('dialog', { name: 'Choose from ~/.ssh/config' })).toBeHidden({
       timeout: 10_000
     })
-    await expect(orcaPage.getByRole('dialog', { name: 'Add SSH host' })).toBeHidden({
+    await expect(topoPage.getByRole('dialog', { name: 'Add SSH host' })).toBeHidden({
       timeout: 10_000
     })
 
-    const sshSection = await openSshHostSettings(orcaPage)
+    const sshSection = await openSshHostSettings(topoPage)
     await expectSshHostListedInSettings(sshSection, hosts.alpha)
     await expectSshHostListedInSettings(sshSection, hosts.bravo)
 
-    await returnToAppShell(orcaPage)
-    const reopened = await openSshConfigHostPicker(orcaPage)
+    await returnToAppShell(topoPage)
+    const reopened = await openSshConfigHostPicker(topoPage)
     await expect(configHostRow(reopened, hosts.alpha)).toBeDisabled()
     await expect(
-      configHostRow(reopened, hosts.alpha).getByText('In Orca', { exact: true })
+      configHostRow(reopened, hosts.alpha).getByText('In Topo', { exact: true })
     ).toBeVisible()
     await expect(configHostRow(reopened, hosts.bravo)).toBeDisabled()
     await expect(
-      configHostRow(reopened, hosts.bravo).getByText('In Orca', { exact: true })
+      configHostRow(reopened, hosts.bravo).getByText('In Topo', { exact: true })
     ).toBeVisible()
     await expect(reopened.getByRole('button', { name: 'No new hosts to add' })).toBeDisabled()
   })
 
   test('P9: Sync keeps deleted config hosts; Restore removed hosts re-adopts them', async ({
     electronApp,
-    orcaPage
+    topoPage
   }) => {
     const hosts = await importPairThenDeleteAlias(
-      orcaPage,
+      topoPage,
       electronApp,
       HOST_PREFIX,
       `${HOST_PREFIX}-alpha`
     )
 
-    const sshSection = await openSshHostSettings(orcaPage)
+    const sshSection = await openSshHostSettings(topoPage)
     await expectSshHostListedInSettings(sshSection, hosts.bravo)
     await expectSshHostAbsentFromSettings(sshSection, hosts.alpha)
 
     // Sync never lifts a removal, so bulk removal sticks.
     await sshSection.getByRole('button', { name: 'Sync ~/.ssh/config' }).click()
-    await expect(orcaPage.getByText(/already in sync|Synced \d+ servers?/i).first()).toBeVisible({
+    await expect(topoPage.getByText(/already in sync|Synced \d+ servers?/i).first()).toBeVisible({
       timeout: 15_000
     })
     await expectSshHostAbsentFromSettings(sshSection, hosts.alpha)
 
     await sshSection.getByRole('button', { name: 'More SSH host actions' }).click()
     // The label carries the removed count once ~/.ssh/config is read; click waits for it to enable.
-    await orcaPage.getByRole('menuitem', { name: /^Restore removed hosts \(\d+\)…$/ }).click()
-    const restoreDialog = orcaPage.getByRole('dialog', { name: 'Restore removed hosts?' })
+    await topoPage.getByRole('menuitem', { name: /^Restore removed hosts \(\d+\)…$/ }).click()
+    const restoreDialog = topoPage.getByRole('dialog', { name: 'Restore removed hosts?' })
     await expect(restoreDialog.getByText(hosts.alpha.alias)).toBeVisible({ timeout: 15_000 })
     await restoreDialog.getByRole('button', { name: 'Restore' }).click()
-    await expect(orcaPage.getByText(/Synced \d+ servers?/i)).toBeVisible({ timeout: 15_000 })
+    await expect(topoPage.getByText(/Synced \d+ servers?/i)).toBeVisible({ timeout: 15_000 })
 
     await expectSshHostListedInSettings(sshSection, hosts.alpha)
     await expectSshHostListedInSettings(sshSection, hosts.bravo)

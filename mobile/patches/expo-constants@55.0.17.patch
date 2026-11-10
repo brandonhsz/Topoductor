@@ -7,7 +7,7 @@ index fc4608aec9d7ac1e884cb6c57aaf0886f9ff6bbe..26b96c970acfbe66af00270683b21d15
    end
  
 -  env_vars = ENV['PROJECT_ROOT'] ? "PROJECT_ROOT=#{ENV['PROJECT_ROOT']} " : ""
-+  # Orca: `bash -l -c` re-parses its argument, so keep paths quoted for checkouts with spaces (upstream fix in expo-constants 58).
++  # Topo: `bash -l -c` re-parses its argument, so keep paths quoted for checkouts with spaces (upstream fix in expo-constants 58).
 +  env_vars = ENV['PROJECT_ROOT'] ? "PROJECT_ROOT=\\\"#{ENV['PROJECT_ROOT']}\\\" " : ""
    script_phase = {
      :name => 'Generate app.config for prebuilt Constants.manifest',

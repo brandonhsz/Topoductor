@@ -14,7 +14,7 @@ export function CopyTabIdMenuItem({
   const Item = menuKind === 'context' ? ContextMenuItem : DropdownMenuItem
   const copyTabId = async (): Promise<void> => {
     try {
-      await window.api.ui.writeClipboardText(`orcaTabId: ${unifiedTabId}`)
+      await window.api.ui.writeClipboardText(`topoTabId: ${unifiedTabId}`)
       toast.success(t('components.tab.bar.CopyTabIdMenuItem.copied', 'Tab ID copied'))
     } catch {
       toast.error(t('components.tab.bar.CopyTabIdMenuItem.failed', 'Could not copy tab ID'))

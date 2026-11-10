@@ -4,8 +4,8 @@ import type { PluginDeclarativeEventArg } from '../../../../../../shared/plugins
 import { PLUGIN_DECLARATIVE_MESSAGES } from '../../../../../../shared/plugins/declarative/plugin-declarative-message-names'
 
 /**
- * What `orca plugin shot` drives and waits on in a mounted components panel: the tree on screen,
- * the guest callbacks Orca's own controls fire, and the host calls in flight. Sends carry no
+ * What `topo plugin shot` drives and waits on in a mounted components panel: the tree on screen,
+ * the guest callbacks Topo's own controls fire, and the host calls in flight. Sends carry no
  * press, so they never grant a gesture.
  */
 export type PluginPanelActDriver = {
@@ -18,7 +18,7 @@ export type PluginPanelActDriver = {
   onChange(listener: () => void): () => void
   /** Asks the guest to remember its atoms before `--act`. */
   snapshot(): void
-  /** Puts them back and redraws Orca's controls; false when that guest is gone (a reload). */
+  /** Puts them back and redraws Topo's controls; false when that guest is gone (a reload). */
   restore(): boolean
 }
 
@@ -29,7 +29,7 @@ export function pluginPanelActDriver(tabKey: string): PluginPanelActDriver | nul
 }
 
 /**
- * Registers the panel for `tabKey` while it is mounted. `viewEpoch` keys Orca's drawn view, so a
+ * Registers the panel for `tabKey` while it is mounted. `viewEpoch` keys Topo's drawn view, so a
  * restore also resets what its controls hold locally; `trackHostCall` goes to the frame host.
  */
 export function usePluginPanelActDriver(options: {

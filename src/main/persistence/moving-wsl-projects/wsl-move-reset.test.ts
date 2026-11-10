@@ -3,19 +3,19 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type {
-  OrcadMigrationCatalogAbortResult,
-  OrcadMigrationCatalogState,
-  OrcadMigrationManifest
-} from '../../../shared/orcad-migration/orcad-migration-manifest'
+  TopodMigrationCatalogAbortResult,
+  TopodMigrationCatalogState,
+  TopodMigrationManifest
+} from '../../../shared/topod-migration/topod-migration-manifest'
 import { WSL_HOSTS_INTERNAL_GATE_ENV } from '../../../shared/wsl-host-internal-gate'
 import type { WslMoveCutoverPhase } from '../../../shared/wsl-move/wsl-move-cutover'
-import type { OrcadMigrationDestinationCatalog } from '../../managed-server/migration/cutover/orcad-migration-cutover-coordinator'
-import { MAX_ORCAD_MIGRATION_MANIFEST_BYTES } from '../../../shared/orcad-migration/orcad-migration-manifest-validation'
+import type { TopodMigrationDestinationCatalog } from '../../managed-server/migration/cutover/topod-migration-cutover-coordinator'
+import { MAX_TOPOD_MIGRATION_MANIFEST_BYTES } from '../../../shared/topod-migration/topod-migration-manifest-validation'
 import {
-  ORCAD_MIGRATION_REQUEST_PARAMS_BUDGET_BYTES,
-  orcadMigrationRequestFits
-} from '../../managed-server/migration/catalog/orcad-migration-request-budget'
-import { computeOrcadMigrationManifestSha256 } from '../../orcad/orcad-migration-manifest-digest'
+  TOPOD_MIGRATION_REQUEST_PARAMS_BUDGET_BYTES,
+  topodMigrationRequestFits
+} from '../../managed-server/migration/catalog/topod-migration-request-budget'
+import { computeTopodMigrationManifestSha256 } from '../../topod/topod-migration-manifest-digest'
 import { wslMoveCutoverFixture } from '../__fixtures__/wsl-mover/wsl-move-cutover-fixture'
 import { seedWslMoveCutover } from '../__fixtures__/wsl-mover/wsl-move-journal-seeding'
 import { listWslMoveCutovers, wslMoveJournalDirectory } from './wsl-move-cutover-journal'
@@ -38,8 +38,8 @@ function seed(phase: WslMoveCutoverPhase, migrationId = 'move-1'): void {
 
 function state(
   kind: 'absent' | 'staged' | 'committed',
-  manifest: OrcadMigrationManifest
-): OrcadMigrationCatalogState {
+  manifest: TopodMigrationManifest
+): TopodMigrationCatalogState {
   const ids = { migrationId: manifest.migrationId, manifestSha256: manifest.manifestSha256 }
   if (kind === 'absent') {
     return { state: 'absent', ...ids }
@@ -66,7 +66,7 @@ function host(
   catalog: { current: 'absent' | 'staged' | 'committed' },
   options: { refuseInline?: boolean; durableCommitted?: boolean } = {}
 ): {
-  destination: OrcadMigrationDestinationCatalog
+  destination: TopodMigrationDestinationCatalog
   calls: string[]
 } {
   const calls: string[] = []
@@ -85,7 +85,7 @@ function host(
         calls.push('commit')
         return state(catalog.current, manifest)
       },
-      abort: async (manifest): Promise<OrcadMigrationCatalogAbortResult> => {
+      abort: async (manifest): Promise<TopodMigrationCatalogAbortResult> => {
         assertCarried(manifest, options.refuseInline)
         calls.push('abort')
         const aborted = catalog.current === 'staged'
@@ -121,8 +121,8 @@ function host(
 }
 
 /** A real host closes the socket on a request this large; the fake refuses it the same way. */
-function assertCarried(manifest: OrcadMigrationManifest, refuse = false): void {
-  if (refuse || !orcadMigrationRequestFits({ manifest })) {
+function assertCarried(manifest: TopodMigrationManifest, refuse = false): void {
+  if (refuse || !topodMigrationRequestFits({ manifest })) {
     throw new Error('socket closed: request too large')
   }
 }
@@ -143,13 +143,13 @@ function seedOversized(phase: WslMoveCutoverPhase): void {
       }))
     }
     const signed = { ...unsigned, payload }
-    return { ...signed, manifestSha256: computeOrcadMigrationManifestSha256(signed) }
+    return { ...signed, manifestSha256: computeTopodMigrationManifestSha256(signed) }
   }
   const overhead = JSON.stringify(sized(0)).length
-  const manifest = sized(MAX_ORCAD_MIGRATION_MANIFEST_BYTES - overhead - 16)
-  expect(JSON.stringify(manifest).length).toBeLessThanOrEqual(MAX_ORCAD_MIGRATION_MANIFEST_BYTES)
+  const manifest = sized(MAX_TOPOD_MIGRATION_MANIFEST_BYTES - overhead - 16)
+  expect(JSON.stringify(manifest).length).toBeLessThanOrEqual(MAX_TOPOD_MIGRATION_MANIFEST_BYTES)
   expect(JSON.stringify({ manifest }).length).toBeGreaterThan(
-    ORCAD_MIGRATION_REQUEST_PARAMS_BUDGET_BYTES
+    TOPOD_MIGRATION_REQUEST_PARAMS_BUDGET_BYTES
   )
   // Written past the journal's size cap on purpose: a record from before the cap must still reset.
   seedWslMoveCutover(userDataPath, base)

@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { getDefaultWorkspaceSession } from '../../../../shared/constants'
 import type { WorkspaceSessionState } from '../../../../shared/workspace-session/workspace-session-state-types'
 import '../../../../shared/workspace-layout/stable-pane-id'
 import '../../../../shared/layout-owner-switch'
-import '../../orca-runtime-tests/bind-first-pane.test-fixture'
+import '../../topo-runtime-tests/bind-first-pane.test-fixture'
 
 // Reattach restore arrives as RPC data, not onPtyData; seed preview/tail/title without inventing recency or side-effect facts.
 
@@ -35,9 +35,9 @@ function makeStore() {
   }
 }
 
-function makeRuntimeWithLeaf(): OrcaRuntimeService {
+function makeRuntimeWithLeaf(): TopoRuntimeService {
   // SAFETY: Restore reads only this fixture's workspace, metadata, and settings capabilities.
-  const runtime = new OrcaRuntimeService(makeStore() as never)
+  const runtime = new TopoRuntimeService(makeStore() as never)
   runtime.setPtyController({
     spawn: vi.fn(async () => ({ id: 'never' })),
     write: () => true,

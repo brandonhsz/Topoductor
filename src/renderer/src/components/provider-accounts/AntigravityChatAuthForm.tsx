@@ -159,7 +159,7 @@ function AuthForm({
           setError({
             message: translate(
               'accounts.antigravity.settingsLoadFailed',
-              "Orca couldn't load your Antigravity sign-in settings. Try again."
+              "Topo couldn't load your Antigravity sign-in settings. Try again."
             ),
             recovery: 'reload'
           })
@@ -234,7 +234,7 @@ function AuthForm({
           setError({
             message: t(
               'accounts.antigravity.settingsSaveFailed',
-              "Orca couldn't save your Antigravity sign-in settings. Try again."
+              "Topo couldn't save your Antigravity sign-in settings. Try again."
             ),
             recovery: null
           })

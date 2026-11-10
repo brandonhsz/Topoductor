@@ -5,7 +5,7 @@ import type { AgentProcessIdentity } from './agent-status/process/agent-process-
 export type WslGuestRoot = { pid: number; startTime: string }
 
 // oxlint-disable-next-line no-control-regex -- the marker is an OSC sequence: ESC ... BEL.
-const MARKER_RE = /\x1b\]777;orca-wsl-root:(\d{1,10}):([0-9a-f-]{36}):(\d{1,20})\x07/
+const MARKER_RE = /\x1b\]777;topo-wsl-root:(\d{1,10}):([0-9a-f-]{36}):(\d{1,20})\x07/
 const MARKER_MAX_LENGTH = 96
 // The bootstrap prints before exec'ing the login shell; later output is the user's, never trusted.
 const LAUNCH_WINDOW_BYTES = 64 * 1024
@@ -13,7 +13,7 @@ const LAUNCH_WINDOW_BYTES = 64 * 1024
 /** `sh -c` keeps its PID across `exec`, so the marker names the login shell that follows. The
  *  start identity matches the hook capture's Linux form (`<boot_id>:<starttime>`). */
 export const WSL_GUEST_ROOT_MARKER_COMMAND =
-  '{ _orca_root=$(awk \'NR==1{b=$0;next}{print b":"$22}\' /proc/sys/kernel/random/boot_id /proc/$$/stat 2>/dev/null) && printf \'\\033]777;orca-wsl-root:%s:%s\\007\' "$$" "$_orca_root"; true; }'
+  '{ _topo_root=$(awk \'NR==1{b=$0;next}{print b":"$22}\' /proc/sys/kernel/random/boot_id /proc/$$/stat 2>/dev/null) && printf \'\\033]777;topo-wsl-root:%s:%s\\007\' "$$" "$_topo_root"; true; }'
 
 /** Watch a WSL pane's first output for its root marker; never rewrites the stream. */
 export function createWslGuestRootObserver(

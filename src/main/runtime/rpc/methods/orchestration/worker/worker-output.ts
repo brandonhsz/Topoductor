@@ -4,7 +4,7 @@ import type {
   OrchestrationWorkerReadSource
 } from '../../../../../../shared/orchestration/workers/orchestration-worker-output'
 import type { RuntimeTerminalState } from '../../../../../../shared/runtime-terminal-contracts'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import {
   createWorkerOutputSourceIdentity,
@@ -16,7 +16,7 @@ import { readWorkerTranscript } from '../../../../orchestration/workers/transcri
 import { isWslHookRelayConnectionId } from '../../../../../../shared/wsl-hook-relay-contract'
 
 export async function readExactWorkerOutput(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   dispatchId: string
   terminalHandle: string
   workerState: string

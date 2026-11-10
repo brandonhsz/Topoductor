@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithCaptureProviderTerminalBuffer } from './provider-buffer-capture'
+import { TopoRuntimeWithCaptureProviderTerminalBuffer } from './provider-buffer-capture'
 import { TERMINAL_INTERACTIVE_WAIT_PROBE_TIMEOUT_MS } from '../wait/terminal-interactive-probe-budget'
 import type { RuntimeTerminalProjection } from './terminal-projection'
 import { buildPreview } from './tail/terminal-tail-state'
@@ -10,13 +10,13 @@ import {
   VISIBLE_TERMINAL_SNAPSHOT_RETRY_MS,
   VISIBLE_TERMINAL_SNAPSHOT_TIMEOUT_MS
 } from './provider-snapshot-budget'
-import { projectTerminalVisibleLines } from '../view/orca-runtime-terminal-projection'
+import { projectTerminalVisibleLines } from '../view/topo-runtime-terminal-projection'
 import { visibleNonBlankTerminalLines } from './tail/terminal-tail-read'
 import type { RuledScreen } from '../wait/screen-input-veto'
 import { HeadlessEmulator } from '../../../daemon/emulation/headless-emulator'
 import { withTimeout } from '../../../../shared/promise-timeout-fallback'
 
-export abstract class OrcaRuntimeWithVisibleSnapshotPreview extends OrcaRuntimeWithCaptureProviderTerminalBuffer {
+export abstract class TopoRuntimeWithVisibleSnapshotPreview extends TopoRuntimeWithCaptureProviderTerminalBuffer {
   protected async visibleSnapshotPreview(ptyId: string, preview: string): Promise<string> {
     const knownAlternateScreen = this.isTerminalAlternateScreen(ptyId)
     const providerModeUnknown =

@@ -86,7 +86,7 @@ function cellConfig(jwksUrl: string): RelayConfig {
     cellUrl: 'https://c7.relay.example.test',
     region: 'us-central1',
     authIssuer: 'https://auth.example.test',
-    authAudience: 'orca-relay',
+    authAudience: 'topo-relay',
     jwksUrl,
     assignmentSigningKey: new Uint8Array(32),
     role: 'cell',

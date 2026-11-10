@@ -37,7 +37,7 @@ describe.skipIf(process.platform === 'win32')('statusline curl throttle (posix b
     dateLog: string
     catLog: string
   } {
-    const dir = mkdtempSync(join(tmpdir(), 'orca-statusline-throttle-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-statusline-throttle-'))
     dirs.push(dir)
     const curlLog = join(dir, 'curl.log')
     const payloadLog = join(dir, 'payload.log')
@@ -74,9 +74,9 @@ describe.skipIf(process.platform === 'win32')('statusline curl throttle (posix b
         env: {
           PATH: `${join(dir, 'stub-bin')}:${process.env.PATH ?? ''}`,
           TMPDIR: dir,
-          ORCA_AGENT_HOOK_PORT: '65535',
-          ORCA_AGENT_HOOK_TOKEN: 'test-token',
-          ORCA_PANE_KEY: paneKey
+          TOPO_AGENT_HOOK_PORT: '65535',
+          TOPO_AGENT_HOOK_TOKEN: 'test-token',
+          TOPO_PANE_KEY: paneKey
         },
         stdio: ['pipe', 'ignore', 'pipe']
       })
@@ -106,7 +106,7 @@ describe.skipIf(process.platform === 'win32')('statusline curl throttle (posix b
   }
 
   function stampPathFor(dir: string, leafId = LEAF_ID): string {
-    return join(dir, `orca-claude-statusline-last-${leafId}`)
+    return join(dir, `topo-claude-statusline-last-${leafId}`)
   }
 
   it('spawns one curl and no capture or clock subprocesses across 30 rapid ticks', async () => {

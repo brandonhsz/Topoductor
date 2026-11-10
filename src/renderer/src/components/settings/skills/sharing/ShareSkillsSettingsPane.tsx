@@ -1,12 +1,12 @@
 import { ArrowRight, BookOpen } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useOrcaProfileAuthStatusRefresh } from '@/hooks/use-orca-profile-auth-status-refresh'
+import { useTopoProfileAuthStatusRefresh } from '@/hooks/use-topo-profile-auth-status-refresh'
 import { useTranslate } from '@/i18n/use-translate'
 import { isWebClientLocation } from '@/lib/web-client-location'
 import { useAppStore } from '@/store/index'
 import { SettingsSwitchRow } from '../../form-controls/SettingsFormControls'
 import { SettingsGroup } from '../../section-layout/SettingsGroup'
-import { OrcaSignInButton, OrcaSignInWaitNotice } from '../../../OrcaSignInProgress'
+import { TopoSignInButton, TopoSignInWaitNotice } from '../../../TopoSignInProgress'
 
 type HowToStep = { key: string; title: string; description: string }
 
@@ -16,12 +16,12 @@ export function ShareSkillsSettingsPane(): React.JSX.Element {
   const openSkillsSharedLinks = useAppStore((state) => state.openSkillsSharedLinks)
   const settings = useAppStore((state) => state.settings)
   const updateSettings = useAppStore((state) => state.updateSettings)
-  const authStatus = useAppStore((state) => state.orcaProfileAuthStatus)
+  const authStatus = useAppStore((state) => state.topoProfileAuthStatus)
   const signedIn = authStatus?.state === 'connected'
   const isWebClient = isWebClientLocation()
   const agentSharingEnabled = settings?.agentSkillSharingEnabled === true
 
-  useOrcaProfileAuthStatusRefresh()
+  useTopoProfileAuthStatusRefresh()
 
   const steps: HowToStep[] = [
     {
@@ -64,13 +64,13 @@ export function ShareSkillsSettingsPane(): React.JSX.Element {
         title={t('auto.components.settings.shareSkills.linkTitle', 'Unlisted skill links')}
         description={t(
           'auto.components.settings.shareSkills.linkDescription',
-          'Shared bundles are not searchable or listed in Orca. The link is the credential, so send it only to people you trust.'
+          'Shared bundles are not searchable or listed in Topo. The link is the credential, so send it only to people you trust.'
         )}
       >
         <SettingsSwitchRow
           label={t(
             'auto.components.settings.shareSkills.allowAgentPublishing',
-            'Allow agents and the Orca CLI to publish skill links'
+            'Allow agents and the Topo CLI to publish skill links'
           )}
           description={
             isWebClient
@@ -110,22 +110,22 @@ export function ShareSkillsSettingsPane(): React.JSX.Element {
                 {isWebClient
                   ? t(
                       'auto.components.settings.shareSkills.signInWebDescription',
-                      'Publishing and link management are available in the Orca desktop app.'
+                      'Publishing and link management are available in the Topo desktop app.'
                     )
                   : t(
                       'auto.components.settings.shareSkills.signInDescription',
-                      'Use your Orca account to publish bundles and manage their links. Recipients do not need an account.'
+                      'Use your Topo account to publish bundles and manage their links. Recipients do not need an account.'
                     )}
               </p>
             </div>
             {!isWebClient ? (
-              <OrcaSignInButton size="sm" disabled={authStatus?.configured !== true}>
+              <TopoSignInButton size="sm" disabled={authStatus?.configured !== true}>
                 {authStatus?.state === 'reconnect-required'
                   ? t('auto.components.settings.shareSkills.signInAgain', 'Sign in again')
-                  : t('auto.components.settings.shareSkills.signIn', 'Sign in to Orca')}
-              </OrcaSignInButton>
+                  : t('auto.components.settings.shareSkills.signIn', 'Sign in to Topo')}
+              </TopoSignInButton>
             ) : null}
-            {!isWebClient ? <OrcaSignInWaitNotice className="basis-full" /> : null}
+            {!isWebClient ? <TopoSignInWaitNotice className="basis-full" /> : null}
           </section>
         ) : null}
 

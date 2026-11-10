@@ -34,7 +34,7 @@ function sinkState() {
 function userTurn(uuid: string, observedAt?: number): ClaudeStructuredSessionEvent {
   return {
     type: 'message',
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     startsTurn: true,
     ...(observedAt === undefined ? {} : { observedAt }),
     message: {
@@ -55,7 +55,7 @@ function sessionState(
 ): ClaudeStructuredSessionEvent {
   return {
     type: 'message',
-    sessionId: 'orca-session',
+    sessionId: 'topo-session',
     observedAt,
     message: {
       type: 'system',

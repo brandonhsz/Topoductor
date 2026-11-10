@@ -1,11 +1,11 @@
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { delimiter, join } from 'node:path'
 import type { CommandHandler, HandlerContext } from '../dispatch'
 import { printResult } from '../format'
 import { RuntimeClientError } from '../runtime-client'
-import { stripElectronRunAsNode } from '../runtime/orca-app-executable'
+import { stripElectronRunAsNode } from '../runtime/topo-app-executable'
 import { rejectRemoteSelectionFlags } from '../remote-selection-flag-rejection'
 import { buildWslExecArgs, buildWslLoginShellCommand } from '../../shared/wsl-login-shell-command'
 import { quotePosixShell } from '../../shared/shell/launch/shell-argument-quoting'
@@ -187,7 +187,7 @@ async function addClaudeAccount({ client, cwd, json }: HandlerContext): Promise<
 }
 
 async function addCodexAccount({ client, cwd, json }: HandlerContext): Promise<void> {
-  const codexHome = mkdtempSync(join(tmpdir(), 'orca-account-add-codex-'))
+  const codexHome = mkdtempSync(join(tmpdir(), 'topo-account-add-codex-'))
   const session: InteractiveLoginSession = {
     child: null,
     registering: false,
@@ -234,7 +234,7 @@ async function assertAccountImportSupported(
   if (!status.result.capabilities?.includes(capability)) {
     throw new RuntimeClientError(
       'incompatible_runtime',
-      'The running Orca runtime is too old to add accounts from the CLI. Update or restart Orca and try again.'
+      'The running Topo runtime is too old to add accounts from the CLI. Update or restart Topo and try again.'
     )
   }
 }
@@ -256,7 +256,7 @@ export const ACCOUNT_HANDLERS: Record<string, CommandHandler> = {
         `Unsupported --agent "${agent}". Use "claude", "codex", "opencode", or "devin".`
       )
     }
-    rejectAccountRemoteSelectionFlags(ctx, 'orca account add')
+    rejectAccountRemoteSelectionFlags(ctx, 'topo account add')
     rejectOpenCodeLoginFlagsForAgent(ctx, agent)
     if (agent === 'opencode' || agent === 'devin') {
       await addDataAccount(ctx, agent, runAgentLoginInTerminal)
@@ -268,7 +268,7 @@ export const ACCOUNT_HANDLERS: Record<string, CommandHandler> = {
     await (agent === 'claude' ? addClaudeAccount(ctx) : addCodexAccount(ctx))
   },
   'account list': async (ctx) => {
-    rejectAccountRemoteSelectionFlags(ctx, 'orca account list')
+    rejectAccountRemoteSelectionFlags(ctx, 'topo account list')
     const provider = ctx.flags.get('agent')
     if (provider !== undefined) {
       await listAgentAccounts(ctx, provider)
@@ -295,11 +295,11 @@ export const ACCOUNT_HANDLERS: Record<string, CommandHandler> = {
     )
   },
   'account select': async (ctx) => {
-    rejectAccountRemoteSelectionFlags(ctx, 'orca account select')
+    rejectAccountRemoteSelectionFlags(ctx, 'topo account select')
     await selectAgentAccount(ctx)
   },
   'account rm': async (ctx) => {
-    rejectAccountRemoteSelectionFlags(ctx, 'orca account rm')
+    rejectAccountRemoteSelectionFlags(ctx, 'topo account rm')
     await removeAgentAccount(ctx)
   }
 }

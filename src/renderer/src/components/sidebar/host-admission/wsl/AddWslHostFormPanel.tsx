@@ -35,7 +35,7 @@ export function wslDistroStateLabel(distro: WslHostDistro, t: Translate = transl
 export function wsl1DistroReason(name: string, t: Translate = translate): string {
   return t(
     'auto.components.sidebar.AddWslHostFormPanel.wsl1Reason',
-    'WSL 1 can’t run an Orca host; convert with {{command}}',
+    'WSL 1 can’t run a Topo host; convert with {{command}}',
     { command: wslSetVersion2Command(name) }
   )
 }
@@ -100,7 +100,7 @@ export function AddWslHostFormPanel({
         <DialogDescription>
           {t(
             'auto.components.sidebar.AddWslHostFormPanel.description',
-            'Orca runs its server inside the distro, so git, files and terminals run natively in Linux. Projects in this distro that you opened through \\\\wsl.localhost move to this host automatically once their terminals are idle; projects on a Windows drive (/mnt/…) stay on this computer. You can bring a moved project back from the sidebar.'
+            'Topo runs its server inside the distro, so git, files and terminals run natively in Linux. Projects in this distro that you opened through \\\\wsl.localhost move to this host automatically once their terminals are idle; projects on a Windows drive (/mnt/…) stay on this computer. You can bring a moved project back from the sidebar.'
           )}
         </DialogDescription>
       </DialogHeader>
@@ -206,7 +206,7 @@ export function AddWslHostFormPanel({
           <p className="text-xs text-muted-foreground" aria-live="polite">
             {t(
               'auto.components.sidebar.AddWslHostFormPanel.addingHint',
-              'Installing and starting the Orca server in the distro. The first time can take a minute.'
+              'Installing and starting the Topo server in the distro. The first time can take a minute.'
             )}
           </p>
         ) : null}

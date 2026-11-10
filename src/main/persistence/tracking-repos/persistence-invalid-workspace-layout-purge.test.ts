@@ -19,7 +19,7 @@ import {
 } from '../../workspaces/catalog/local-worktree-scan-generation'
 import { dropWorkspacesTheListingInvalidates } from '../restoring-sessions/invalid-workspace-layout-purge'
 
-vi.mock('../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 vi.mock('../../ssh/config/ssh-config-parser', () => ({
   loadUserSshConfig: vi.fn(),
   sshConfigHostsToTargets: vi.fn()
@@ -71,7 +71,7 @@ const storedKeys = (store: ReturnType<typeof createStore>, hostId?: string): str
 
 describe('main drops the layout of workspaces the catalog no longer validates', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-invalid-layout-purge-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-invalid-layout-purge-'))
   })
 
   afterEach(async () => {

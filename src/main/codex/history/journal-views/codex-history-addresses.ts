@@ -30,7 +30,7 @@ export function codexHistoryAddresses(input: {
       return identity.threadId === input.threadId && identity.turnId === turn.id
     }
     if (
-      identity?.provider === 'orca' &&
+      identity?.provider === 'topo' &&
       identity.clientMessageId.startsWith('codex-history-item:')
     ) {
       const encoded = identity.clientMessageId.slice('codex-history-item:'.length)

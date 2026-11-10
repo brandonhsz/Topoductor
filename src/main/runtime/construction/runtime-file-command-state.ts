@@ -1,7 +1,7 @@
 import { LOCAL_EXECUTION_HOST_ID, type ExecutionHostId } from '../../../shared/execution-host'
 import type { GitAdmissionTier } from '../../../shared/rpc-contract/git-admission-tier-params'
 import type { LocalProjectGhExecOptions } from '../../workspaces/execution-host/project-runtime-git-options'
-import { OrcaRuntimeWithPreservedBranchCleanup } from './runtime-host-services'
+import { TopoRuntimeWithPreservedBranchCleanup } from './runtime-host-services'
 import { createRuntimeFileWatcherRemoval } from '../workspaces/removal/runtime-file-watcher-removal'
 import {
   isChatScratchWorktreeId,
@@ -26,7 +26,7 @@ import { RuntimeFileWatches } from '../files/watch/file-watches'
 import { RuntimeTerminalPathResolver } from '../terminal/terminal-path-resolver'
 import type { RuntimeFileCommandHost } from '../files/file-command-host'
 
-export abstract class OrcaRuntimeWithFileCommands extends OrcaRuntimeWithPreservedBranchCleanup {
+export abstract class TopoRuntimeWithFileCommands extends TopoRuntimeWithPreservedBranchCleanup {
   protected abstract hydrateHeadlessMobileSessionTabsFromWorkspaceSession(
     worktreeId?: string,
     options?: { force?: boolean }

@@ -7,7 +7,7 @@ import { loadWorkspace } from './workspace-layout-load-workspace'
 import { nameBasedLoadContext } from './workspace-layout-minted-ids'
 import { createRecordedLeafReader } from './workspace-layout-recorded-key-order'
 
-vi.mock('../layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 const key = 'wt-checks'
 

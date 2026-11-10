@@ -13,7 +13,7 @@ function plugin(
     consentFingerprint: null,
     name: overrides.pluginKey,
     version: '1.0.0',
-    publisher: 'stablyai',
+    publisher: 'brandonhsz',
     status: 'idle',
     needsReconsent: false,
     isDev: false,

@@ -9,10 +9,10 @@ import { summarizeBenchmarkSamples } from '../../performance/measurement/benchma
 const root = fileURLToPath(new URL('../../../..', import.meta.url))
 const output = path.join(root, '.build/preflight-benchmark')
 mkdirSync(output, { recursive: true })
-const bun = process.env.ORCA_BENCHMARK_BUN ?? 'bun'
+const bun = process.env.TOPO_BENCHMARK_BUN ?? 'bun'
 const sourcePath =
   'config/scripts/static-analysis/process-boundaries/check-compat-boundary-imports.mjs'
-const baselineRef = process.env.ORCA_COMPAT_BASELINE_REF ?? 'HEAD^'
+const baselineRef = process.env.TOPO_COMPAT_BASELINE_REF ?? 'HEAD^'
 const baselinePath = path.join(output, 'compat-baseline.mjs')
 const report = {
   sourceSha: process.env.GITHUB_SHA ?? null,
@@ -30,7 +30,7 @@ const command = (program, args, label) =>
     label,
     root,
     output,
-    env: { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' }
+    env: { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' }
   })
 async function requireSuccess(program, args, label) {
   const result = await command(program, args, label)

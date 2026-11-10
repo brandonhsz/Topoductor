@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { win32 as pathWin32 } from 'node:path'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import { resolveWindowsShellStartupFamily } from '../../shared/windows-terminal-shell'
 import {
   resolveProfileLoadingFallbackShell,
@@ -9,8 +9,8 @@ import {
 import { shellProbeDetached } from './shell-path-probe'
 import { bindShellProbeLifetime } from './shell-probe-lifetime'
 
-const START_MARKER = '__ORCA_LOGIN_SHELL_ENV_START__'
-const END_MARKER = '__ORCA_LOGIN_SHELL_ENV_END__'
+const START_MARKER = '__TOPO_LOGIN_SHELL_ENV_START__'
+const END_MARKER = '__TOPO_LOGIN_SHELL_ENV_END__'
 const SPAWN_TIMEOUT_MS = 5000
 
 export type LoginShellEnvironmentCapture = {

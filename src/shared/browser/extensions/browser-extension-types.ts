@@ -6,7 +6,7 @@ export type InstalledBrowserExtension = {
   id: string
   name: string
   version: string
-  /** Store installs: `<userData>/browser-extensions/<id>/<version>`; unpacked: the user's folder (loaded from Orca's copy). */
+  /** Store installs: `<userData>/browser-extensions/<id>/<version>`; unpacked: the user's folder (loaded from Topo's copy). */
   path: string
   source: BrowserExtensionSource
   /** Stable install/update precedence; absent on records written by older versions. */
@@ -38,7 +38,7 @@ export type BrowserExtensionListing = {
 }
 
 export type BrowserExtensionListResult = {
-  /** False until Orca restarts with the experimental setting on. */
+  /** False until Topo restarts with the experimental setting on. */
   active: boolean
   extensions: BrowserExtensionListing[]
 }

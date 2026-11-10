@@ -2,12 +2,12 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { buildAppImageDaemonCommand } from '../daemon-appimage-launch'
 
 describe('buildAppImageDaemonCommand', () => {
   const launch = {
-    appImagePath: '/apps/Orca.AppImage',
+    appImagePath: '/apps/Topo.AppImage',
     entryPathInAppDir: 'resources/entry.js',
     appPathInAppDir: 'resources/app.asar',
     appVersion: '1.4.215'
@@ -25,7 +25,7 @@ describe('buildAppImageDaemonCommand', () => {
     result: ReturnType<typeof runProcessSync>
     appDir: string
   } {
-    const appDir = mkdtempSync(join(tmpdir(), 'orca-appimage-boot-'))
+    const appDir = mkdtempSync(join(tmpdir(), 'topo-appimage-boot-'))
     root = appDir
     mkdirSync(join(appDir, 'resources', 'app.asar'), { recursive: true })
     writeFileSync(

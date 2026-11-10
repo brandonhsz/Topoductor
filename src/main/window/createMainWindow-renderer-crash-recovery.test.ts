@@ -93,7 +93,7 @@ describe('createMainWindow', () => {
   it('retires renderer generations and resets focus on crash, navigation, and destroy', async () => {
     const windowHandlers: Record<string, (...args: any[]) => void> = {}
     const webContents = {
-      getURL: vi.fn(() => 'file:///opt/orca/renderer/index.html'),
+      getURL: vi.fn(() => 'file:///opt/topo/renderer/index.html'),
       isDestroyed: vi.fn(() => false),
       isLoadingMainFrame: vi.fn(() => false),
       mainFrame: {},
@@ -175,7 +175,7 @@ describe('createMainWindow', () => {
 
     windowHandlers['did-start-navigation']?.(
       {} as never,
-      'file:///opt/orca/renderer/index.html?reload=1',
+      'file:///opt/topo/renderer/index.html?reload=1',
       false,
       true
     )
@@ -187,7 +187,7 @@ describe('createMainWindow', () => {
       {} as never,
       -3,
       'aborted',
-      'file:///opt/orca/renderer/index.html?reload=1',
+      'file:///opt/topo/renderer/index.html?reload=1',
       true
     )
     await Promise.resolve()

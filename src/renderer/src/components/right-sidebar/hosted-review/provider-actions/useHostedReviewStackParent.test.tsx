@@ -11,7 +11,7 @@ function makeReview(overrides: Partial<HostedReviewInfo> = {}): HostedReviewInfo
     number: 13741,
     title: 'Parent review',
     state: 'open',
-    url: 'https://github.com/stablyai/orca/pull/13741',
+    url: 'https://github.com/brandonhsz/Topoductor/pull/13741',
     status: 'success',
     updatedAt: '2026-08-11T00:00:00.000Z',
     mergeable: 'MERGEABLE',
@@ -21,7 +21,7 @@ function makeReview(overrides: Partial<HostedReviewInfo> = {}): HostedReviewInfo
 
 const baseOptions = {
   enabled: true,
-  repoPath: '/repo/orca',
+  repoPath: '/repo/topo',
   repoId: 'repo-1',
   base: 'feature/parent',
   repoDefaultBase: 'main',

@@ -1,13 +1,13 @@
 import type { RuntimeTerminalSend } from '../../../../../../shared/runtime-terminal-send-contract'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import {
-  formatOrcaSessionAddress,
-  isOrcaSessionId
-} from '../../../../../../shared/orca-session-address'
-import { canonicalOrcaSessionId } from '../../../../orchestration/addressing/session-lineage/canonical-orca-session-id'
+  formatTopoSessionAddress,
+  isTopoSessionId
+} from '../../../../../../shared/topo-session-address'
+import { canonicalTopoSessionId } from '../../../../orchestration/addressing/session-lineage/canonical-topo-session-id'
 import {
-  orcaSessionIdOrHandle,
+  topoSessionIdOrHandle,
   resolveDispatchAssigneeParty
 } from '../../../../orchestration/addressing/orchestration-party'
 import { buildDispatchPreamble } from '../../../../orchestration/workers/launch/worker-dispatch-preamble'
@@ -28,7 +28,7 @@ type StructuredSession = Awaited<ReturnType<typeof createStructuredWorkerSession
  * PTY writes return queued/accepted; structured turns may stay held while agents start. Unobserved starts remain unknown, never torn down.
  * Busy chat tasks queue as cards, like input waiting in busy terminals. */
 export async function deliverWorkerDispatchPreamble(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   structuredSession: StructuredSession
   terminalHandle: string
@@ -49,7 +49,7 @@ export async function deliverWorkerDispatchPreamble(args: {
   structuredTurnStart?: WorkerTurnStartObservation
 }> {
   const { runtime, structuredSession, terminalHandle } = args
-  // A reused structured worker is a chat too, though its handle is not an Orca session ID.
+  // A reused structured worker is a chat too, though its handle is not a Topo session ID.
   const chat = structuredSession
     ? null
     : chatAssigneeOf(resolveDispatchAssigneeParty(terminalHandle, args.db))
@@ -59,13 +59,13 @@ export async function deliverWorkerDispatchPreamble(args: {
     taskId: args.taskId,
     dispatchId: args.dispatchId,
     taskSpec: args.taskSpec,
-    coordinatorHandle: orcaSessionIdOrHandle(args.coordinatorHandle, args.db),
-    // Its mailbox stays keyed by the handle; its commands name its Orca session ID, which binds to it.
+    coordinatorHandle: topoSessionIdOrHandle(args.coordinatorHandle, args.db),
+    // Its mailbox stays keyed by the handle; its commands name its Topo session ID, which binds to it.
     workerHandle:
-      structuredSession && isOrcaSessionId(structuredSession.identity.sessionId)
-        ? formatOrcaSessionAddress(canonicalOrcaSessionId(structuredSession.identity.sessionId))
+      structuredSession && isTopoSessionId(structuredSession.identity.sessionId)
+        ? formatTopoSessionAddress(canonicalTopoSessionId(structuredSession.identity.sessionId))
         : chat
-          ? formatOrcaSessionAddress(chat)
+          ? formatTopoSessionAddress(chat)
           : terminalHandle,
     devMode: args.devMode,
     cliCommand: runtime.getTerminalOrchestrationCliCommand(terminalHandle),
@@ -146,7 +146,7 @@ function chatTaskTurnStart(delivery: ChatTaskDelivery): WorkerTurnStartObservati
 
 /** Who the task is from, for a worker whose chat shows the sender. */
 function workerTaskSource(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   dispatchId: string
   runId: string

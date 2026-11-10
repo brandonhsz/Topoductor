@@ -14,7 +14,7 @@ import {
   type SourceControlScope
 } from './source-control/panel/worktree-scope'
 import { useWorktreeGitStatusObservation } from './source-control/sync/use-worktree-git-status-observation'
-import { ORCA_WORKTREE_FILE_CHANGE_EVENT } from '@/hooks/worktree-file-change-event'
+import { TOPO_WORKTREE_FILE_CHANGE_EVENT } from '@/hooks/worktree-file-change-event'
 
 const probes = vi.hoisted(() => ({
   status: vi.fn(async (_request: { worktreeId: string }) => {}),
@@ -196,7 +196,7 @@ it('filters file events by the section runtime host when a same-id local twin ex
   for (const runtimeEnvironmentId of [null, 'other-runtime', 'paired']) {
     await act(async () => {
       window.dispatchEvent(
-        new CustomEvent(ORCA_WORKTREE_FILE_CHANGE_EVENT, {
+        new CustomEvent(TOPO_WORKTREE_FILE_CHANGE_EVENT, {
           detail: {
             runtimeEnvironmentId,
             payload: {

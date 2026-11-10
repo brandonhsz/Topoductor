@@ -6,7 +6,7 @@ import { createTestStore } from '../../testing/app-store-test-fixture'
 import { makeOpenFile } from '../editor/types/open-file.test-fixture'
 import { drawTabsFromMain } from './tabs-drawn-from-main.test-fixture'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 
 vi.mock('sonner', () => ({ toast: { info: vi.fn(), success: vi.fn(), error: vi.fn() } }))
 
@@ -54,7 +54,7 @@ describe('TabsSlice', () => {
 
         store.getState().activateTab(preview.id)
         // A layout-owner build: main promotes it, and only its frame ends the preview.
-        if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+        if (TOPO_LAYOUT_OWNER_IS_MAIN) {
           expect(store.getState().unifiedTabsByWorktree[WT][0].isPreview).toBe(true)
           expect(layoutApplyTestTransport.sentOfType('promotePreviewTab')).toEqual([
             { type: 'promotePreviewTab', workspace: WT, tabId: preview.id }
@@ -63,7 +63,7 @@ describe('TabsSlice', () => {
         await main.settle()
 
         expect(store.getState().unifiedTabsByWorktree[WT][0].isPreview).toBe(
-          ORCA_LAYOUT_OWNER_IS_MAIN ? undefined : false
+          TOPO_LAYOUT_OWNER_IS_MAIN ? undefined : false
         )
       } finally {
         main.close()

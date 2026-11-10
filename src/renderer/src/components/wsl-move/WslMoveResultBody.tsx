@@ -39,7 +39,7 @@ function reloadFailure(reload: WslMoveReloadState, t: Translate = translate): st
     case 'checkpoint-refused':
       return t(
         'wslMove.result.reloadCheckpointRefused',
-        'Orca could not back up unsaved files, so the window did not reload. Close this dialog, save or close those files, then use Reload now in the notice that stays open.'
+        'Topo could not back up unsaved files, so the window did not reload. Close this dialog, save or close those files, then use Reload now in the notice that stays open.'
       )
     case 'unload-vetoed':
       return t(
@@ -86,7 +86,7 @@ export function WslMoveResultBody({
             <p>
               {t(
                 'wslMove.result.moved',
-                'Reload this window to see the projects under the {{distro}} host. Orca backs up unsaved files before it reloads.',
+                'Reload this window to see the projects under the {{distro}} host. Topo backs up unsaved files before it reloads.',
                 { distro }
               )}
             </p>
@@ -95,11 +95,11 @@ export function WslMoveResultBody({
                 {result.automationsPending.length === 1
                   ? t(
                       'wslMove.result.automationsPendingOne',
-                      'One automation is off on the host for now. Orca keeps asking the host to turn it back on.'
+                      'One automation is off on the host for now. Topo keeps asking the host to turn it back on.'
                     )
                   : t(
                       'wslMove.result.automationsPendingMany',
-                      '{{n}} automations are off on the host for now. Orca keeps asking the host to turn them back on.',
+                      '{{n}} automations are off on the host for now. Topo keeps asking the host to turn them back on.',
                       { n: result.automationsPending.length }
                     )}
               </p>
@@ -137,7 +137,7 @@ export function WslMoveResultBody({
           <p>
             {t(
               'wslMove.result.waiting',
-              'The move may have reached the {{distro}} host, but the host is not answering. These projects stay read-only here until it does. Connect the host in Settings, then open this dialog again and start a move: Orca finishes or undoes this one first.',
+              'The move may have reached the {{distro}} host, but the host is not answering. These projects stay read-only here until it does. Connect the host in Settings, then open this dialog again and start a move: Topo finishes or undoes this one first.',
               { distro }
             )}
           </p>

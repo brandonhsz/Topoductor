@@ -1,19 +1,19 @@
 import { webContents } from 'electron'
 import { BrowserCertificateTrustController } from '../../certificate-trust/browser-certificate-trust-controller'
 import '../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../shared/browser/browser-blank-page'
 import { normalizeBrowserNavigationUrl } from '../../../../shared/browser-url'
 import { BrowserManagerEventForwarding } from './browser-manager-event-forwarding'
 
 type OpenLinkInTab = (url: string, activate: boolean) => void
 
 export class BrowserManager extends BrowserManagerEventForwarding {
-  protected openLinkInOrcaTab(browserTabId: string, rawUrl: string, activate?: boolean): boolean {
+  protected openLinkInTopoTab(browserTabId: string, rawUrl: string, activate?: boolean): boolean {
     const renderer = this.resolveRendererForBrowserTab(browserTabId)
     const open: OpenLinkInTab | null = renderer
-      ? // The renderer owns Orca's tab model; forward the validated URL for materialization.
+      ? // The renderer owns Topo's tab model; forward the validated URL for materialization.
         (url, activateTab) =>
-          renderer.send('browser:open-link-in-orca-tab', {
+          renderer.send('browser:open-link-in-topo-tab', {
             browserPageId: browserTabId,
             url,
             ...(activateTab ? {} : { activate: false })
@@ -23,7 +23,7 @@ export class BrowserManager extends BrowserManagerEventForwarding {
       return false
     }
     const normalizedUrl = normalizeBrowserNavigationUrl(rawUrl)
-    if (!normalizedUrl || normalizedUrl === ORCA_BROWSER_BLANK_URL) {
+    if (!normalizedUrl || normalizedUrl === TOPO_BROWSER_BLANK_URL) {
       return false
     }
     open(normalizedUrl, activate !== false)
@@ -31,7 +31,7 @@ export class BrowserManager extends BrowserManagerEventForwarding {
     return true
   }
 
-  /** Headless serve pages have no renderer tab model; the runtime opens tabs in their workspace. A page with no workspace (orcad's Electron browser) has no tab list to open into. */
+  /** Headless serve pages have no renderer tab model; the runtime opens tabs in their workspace. A page with no workspace (topod's Electron browser) has no tab list to open into. */
   private resolveOffscreenTabOpener(browserTabId: string): OpenLinkInTab | null {
     const opener = this.offscreenTabOpener
     const webContentsId = this.webContentsIdByTabId.get(browserTabId)

@@ -31,7 +31,7 @@ export function createLegacyStorageCutoverFixture(): {
   fixture: LegacyStorageCutoverFixture
   tempDir: string
 } {
-  const tempDir = mkdtempSync(join(tmpdir(), 'orca-legacy-storage-'))
+  const tempDir = mkdtempSync(join(tmpdir(), 'topo-legacy-storage-'))
   const dbPath = join(tempDir, 'orchestration.db')
   const first = new OrchestrationDb(dbPath)
   const currentRun = first.createRun({
@@ -114,7 +114,7 @@ export function createLegacyStorageCutoverFixture(): {
     to: 'term_legacy_coord',
     subject: 'Rejected heartbeat',
     type: 'heartbeat',
-    payload: JSON.stringify({ _orcaLifecycleRejection: { code: 'migration', reason: 'cutover' } })
+    payload: JSON.stringify({ _topoLifecycleRejection: { code: 'migration', reason: 'cutover' } })
   })
   const lookalike = first.insertMessage({
     runId: 'run_legacy_local',
@@ -122,7 +122,7 @@ export function createLegacyStorageCutoverFixture(): {
     to: 'term_legacy_coord',
     subject: 'Ordinary legacy mail',
     payload: JSON.stringify({
-      userData: { _orcaLifecycleRejection: { code: 'not-a-top-level-audit-marker' } }
+      userData: { _topoLifecycleRejection: { code: 'not-a-top-level-audit-marker' } }
     })
   })
   const malformedRejections = [
@@ -131,35 +131,35 @@ export function createLegacyStorageCutoverFixture(): {
       from: 'term_legacy_worker',
       to: 'term_legacy_coord',
       subject: 'Invalid JSON marker',
-      payload: '{"_orcaLifecycleRejection":'
+      payload: '{"_topoLifecycleRejection":'
     }),
     first.insertMessage({
       runId: 'run_legacy_local',
       from: 'term_legacy_worker',
       to: 'term_legacy_coord',
       subject: 'Array marker',
-      payload: JSON.stringify({ _orcaLifecycleRejection: [] })
+      payload: JSON.stringify({ _topoLifecycleRejection: [] })
     }),
     first.insertMessage({
       runId: 'run_legacy_local',
       from: 'term_legacy_worker',
       to: 'term_legacy_coord',
       subject: 'String marker',
-      payload: JSON.stringify({ _orcaLifecycleRejection: 'migration' })
+      payload: JSON.stringify({ _topoLifecycleRejection: 'migration' })
     }),
     first.insertMessage({
       runId: 'run_legacy_local',
       from: 'term_legacy_worker',
       to: 'term_legacy_coord',
       subject: 'Incomplete marker',
-      payload: JSON.stringify({ _orcaLifecycleRejection: { code: 'migration' } })
+      payload: JSON.stringify({ _topoLifecycleRejection: { code: 'migration' } })
     }),
     first.insertMessage({
       runId: 'run_legacy_local',
       from: 'term_legacy_worker',
       to: 'term_legacy_coord',
       subject: 'Non-string marker fields',
-      payload: JSON.stringify({ _orcaLifecycleRejection: { code: 19, reason: false } })
+      payload: JSON.stringify({ _topoLifecycleRejection: { code: 19, reason: false } })
     }),
     first.insertMessage({
       runId: 'run_legacy_local',
@@ -167,7 +167,7 @@ export function createLegacyStorageCutoverFixture(): {
       to: 'term_legacy_coord',
       subject: 'Array root',
       payload: JSON.stringify([
-        { _orcaLifecycleRejection: { code: 'migration', reason: 'nested' } }
+        { _topoLifecycleRejection: { code: 'migration', reason: 'nested' } }
       ])
     }),
     first.insertMessage({
@@ -175,7 +175,7 @@ export function createLegacyStorageCutoverFixture(): {
       from: 'term_legacy_worker',
       to: 'term_legacy_coord',
       subject: 'String root',
-      payload: JSON.stringify('_orcaLifecycleRejection')
+      payload: JSON.stringify('_topoLifecycleRejection')
     })
   ]
   first.close()

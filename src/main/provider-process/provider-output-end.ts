@@ -2,7 +2,7 @@ import type { Readable, Writable } from 'node:stream'
 import { afterProviderOutputDrains } from './provider-exit-output-drain'
 import { detachProviderStreamErrorHandler } from './provider-stdio-error-boundary'
 
-/** The agent stopped reading what Orca writes. Nothing more is written, but calls it may already
+/** The agent stopped reading what Topo writes. Nothing more is written, but calls it may already
  *  have answered settle only once its output ends or the drain bound passes. */
 export class ProviderOutputEnd {
   error?: Error

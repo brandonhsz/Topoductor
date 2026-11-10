@@ -73,22 +73,22 @@ export function GeneralRemoteServerUpdates(): React.JSX.Element | null {
 
   return (
     <SearchableSetting
-      title={t('auto.components.settings.GeneralRemoteServerUpdates.title', 'Remote Orca Servers')}
+      title={t('auto.components.settings.GeneralRemoteServerUpdates.title', 'Remote Topo Servers')}
       description={t(
         'auto.components.settings.GeneralRemoteServerUpdates.description',
-        'Check and update paired Orca servers from this client.'
+        'Check and update paired Topo servers from this client.'
       )}
       keywords={['remote server', 'update all', 'paired', 'version']}
       className="space-y-3 py-3"
     >
       <div className="space-y-0.5">
         <div className="text-sm font-medium">
-          {t('auto.components.settings.GeneralRemoteServerUpdates.title', 'Remote Orca Servers')}
+          {t('auto.components.settings.GeneralRemoteServerUpdates.title', 'Remote Topo Servers')}
         </div>
         <p className="text-xs text-muted-foreground">
           {t(
             'auto.components.settings.GeneralRemoteServerUpdates.description',
-            'Check and update paired Orca servers from this client.'
+            'Check and update paired Topo servers from this client.'
           )}
         </p>
       </div>

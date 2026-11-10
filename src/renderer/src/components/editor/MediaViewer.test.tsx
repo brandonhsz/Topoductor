@@ -24,7 +24,7 @@ describe('MediaViewer', () => {
       root.render(
         <StrictMode>
           <MediaViewer
-            src="orca-media://file/token"
+            src="topo-media://file/token"
             mimeType="video/mp4"
             filePath="clip.mp4"
             canOpenLocally
@@ -50,7 +50,7 @@ describe('MediaViewer', () => {
       root.render(
         <StrictMode>
           <MediaViewer
-            src="orca-media://file/token"
+            src="topo-media://file/token"
             mimeType="video/mp4"
             filePath="clip.mp4"
             canOpenLocally
@@ -59,7 +59,7 @@ describe('MediaViewer', () => {
       )
     )
     const video = container.querySelector('video')
-    expect(video?.getAttribute('src')).toBe('orca-media://file/token')
+    expect(video?.getAttribute('src')).toBe('topo-media://file/token')
     expect(video?.controls).toBe(true)
     expect(video?.autoplay).toBe(false)
     expect(video?.preload).toBe('metadata')

@@ -1,7 +1,7 @@
-import type { OrcaRuntimeWithScheduleMobileSessionTabsChanged as SessionTabsPublication } from './session-tabs-change-publication'
-import type { OrcaRuntimeWithPruneMobileSessionTabGroupLayout as SessionTabsProjection } from '../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
-import type { OrcaRuntimeWithGetTerminalInteractiveWait as GetTerminalInteractiveWaitMethods } from '../terminal/wait/terminal-interactive-wait'
-import { OrcaRuntimeWithPublishPtyBackedMobileSessionTerminal } from './pty-backed-session-publication'
+import type { TopoRuntimeWithScheduleMobileSessionTabsChanged as SessionTabsPublication } from './session-tabs-change-publication'
+import type { TopoRuntimeWithPruneMobileSessionTabGroupLayout as SessionTabsProjection } from '../session-lifecycle/projection/prune-mobile-session-tab-group-layout'
+import type { TopoRuntimeWithGetTerminalInteractiveWait as GetTerminalInteractiveWaitMethods } from '../terminal/wait/terminal-interactive-wait'
+import { TopoRuntimeWithPublishPtyBackedMobileSessionTerminal } from './pty-backed-session-publication'
 import { getRepoIdFromWorktreeId } from '../../../shared/worktree/id'
 import { parsePaneKey } from '../../../shared/workspace-layout/stable-pane-id'
 import { hasHostAuthoritativeTerminalMembership } from '../../persistence/terminal-topology/terminal-topology-membership'
@@ -10,10 +10,10 @@ import type {
   RuntimeSyncedLeaf
 } from '../../../shared/runtime-session-contracts'
 import { retireTerminalSurfacesFromSnapshot } from '../terminal/surface/mobile-session-terminal-retirement'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { startedMainTerminalSurfaces } from '../terminal/surface/main-terminal-surfaces'
 
-export abstract class OrcaRuntimeWithTouchMobileSessionTabsForWorktree extends OrcaRuntimeWithPublishPtyBackedMobileSessionTerminal {
+export abstract class TopoRuntimeWithTouchMobileSessionTabsForWorktree extends TopoRuntimeWithPublishPtyBackedMobileSessionTerminal {
   protected abstract createMobileSessionTabsDelivery(): ReturnType<
     SessionTabsPublication['createMobileSessionTabsDelivery']
   >
@@ -136,7 +136,7 @@ export abstract class OrcaRuntimeWithTouchMobileSessionTabsForWorktree extends O
   protected reconcileMobileSessionRetirementFences(
     leaves: readonly RuntimeSyncedLeaf[]
   ): RuntimeSyncedLeaf[] {
-    const mainOwns = ORCA_LAYOUT_OWNER_IS_MAIN
+    const mainOwns = TOPO_LAYOUT_OWNER_IS_MAIN
       ? startedMainTerminalSurfaces(this)?.ownedWorkspaces()
       : null
     return leaves.filter(

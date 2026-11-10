@@ -4,7 +4,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 
 import { RpcDispatcher } from '../../../dispatcher'
 
@@ -23,7 +23,7 @@ let root: string
 let store: AgentSessionAttachmentStore
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-attachment-rpc-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-attachment-rpc-'))
   store = new AgentSessionAttachmentStore(join(root, 'agent-session-attachments'), {
     hasSession: (sessionId) => sessionId === 'session-alpha'
   })
@@ -48,7 +48,7 @@ async function call(
     runtime: {
       getRuntimeId: () => 'runtime-1',
       ensureStructuredAgentSessionHost: async () => {}
-    } as unknown as OrcaRuntimeService,
+    } as unknown as TopoRuntimeService,
     methods: STRUCTURED_AGENT_SESSION_ATTACHMENT_METHODS
   })
   const replies: RpcResponse[] = []

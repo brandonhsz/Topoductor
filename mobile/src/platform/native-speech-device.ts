@@ -4,7 +4,7 @@ import {
   speechCancel,
   speechFinish,
   speechStart
-} from '@orca/expo-two-way-audio'
+} from '@topo/expo-two-way-audio'
 import { loadDictationEnginePreference } from '../storage/dictation-engine-preference'
 import { NATIVE_AUDIO_DEVICE_SAMPLE_RATE } from './native-audio-device'
 import type { NativeSpeechEngine } from './native-speech'

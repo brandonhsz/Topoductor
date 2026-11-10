@@ -116,7 +116,7 @@ export function TerminalWindowsAdministratorSection(): React.JSX.Element {
           }
           description={t(
             'settings.terminal.windows.administratorScope',
-            'Permissions for the Orca app. Existing terminals may differ.'
+            'Permissions for the Topo app. Existing terminals may differ.'
           )}
           control={
             <DialogTrigger asChild>
@@ -177,7 +177,7 @@ export function TerminalWindowsAdministratorSection(): React.JSX.Element {
               <p className="text-xs text-muted-foreground">
                 {t(
                   'settings.terminal.windows.administratorPromptCancellation',
-                  'Canceling Windows’ prompt reopens Orca with its retained terminals. SSH and WSL permissions stay controlled on their hosts.'
+                  'Canceling Windows’ prompt reopens Topo with its retained terminals. SSH and WSL permissions stay controlled on their hosts.'
                 )}
               </p>
             </div>
@@ -187,18 +187,18 @@ export function TerminalWindowsAdministratorSection(): React.JSX.Element {
                 <li>
                   {t(
                     'settings.terminal.windows.closeLocalSessions',
-                    'Save your work, close all local terminal sessions, then exit Orca.'
+                    'Save your work, close all local terminal sessions, then exit Topo.'
                   )}
                 </li>
                 <li>
                   {administrator
                     ? t(
                         'settings.terminal.windows.launchStandard',
-                        'Open Orca normally from the Windows Start menu.'
+                        'Open Topo normally from the Windows Start menu.'
                       )
                     : t(
                         'settings.terminal.windows.launchAdministrator',
-                        'In the Windows Start menu, right-click Orca and choose Run as administrator. Approve the Windows prompt using your usual account.'
+                        'In the Windows Start menu, right-click Topo and choose Run as administrator. Approve the Windows prompt using your usual account.'
                       )}
                 </li>
               </ol>
@@ -214,7 +214,7 @@ export function TerminalWindowsAdministratorSection(): React.JSX.Element {
             <p role="alert" className="text-sm text-destructive">
               {t(
                 'settings.terminal.windows.administratorRestartFailed',
-                'Orca could not restart. Try again or use the manual instructions.'
+                'Topo could not restart. Try again or use the manual instructions.'
               )}
             </p>
           )}

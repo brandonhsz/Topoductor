@@ -7,7 +7,7 @@ const { forkMock } = vi.hoisted(() => ({ forkMock: vi.fn() }))
 vi.mock('node:child_process', () => ({ fork: forkMock }))
 vi.mock('node:fs', () => ({
   existsSync: vi.fn(() => true),
-  mkdtempSync: vi.fn(() => '/tmp/orca-watcher-disposal-test'),
+  mkdtempSync: vi.fn(() => '/tmp/topo-watcher-disposal-test'),
   rmSync: vi.fn()
 }))
 

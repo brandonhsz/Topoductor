@@ -68,7 +68,7 @@ export function createMobileChatAttachmentReader(
         !host.value?.capabilities?.includes(AGENT_SESSION_TEXT_ATTACHMENT_READ_CAPABILITY)
       ) {
         throw new Error(
-          'This host cannot open text attachments yet. Update Orca on that host, then retry.'
+          'This host cannot open text attachments yet. Update Topo on that host, then retry.'
         )
       }
       const reply = await sharedPromiseSettlementWaiters(

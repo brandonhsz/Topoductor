@@ -21,7 +21,7 @@ export function windowMaterialOptions(
   }
   if (platform === 'darwin') {
     // Why no `transparent` with vibrancy: it suppresses the effect view and forces full-window alpha compositing (#8482).
-    // Why active: the default follows focus and turns into a flat gray fill whenever Orca is unfocused.
+    // Why active: the default follows focus and turns into a flat gray fill whenever Topo is unfocused.
     return material === 'blur'
       ? { backgroundColor: CLEAR, vibrancy: MAC_BLUR_VIBRANCY, visualEffectState: 'active' }
       : { backgroundColor: CLEAR, transparent: true }

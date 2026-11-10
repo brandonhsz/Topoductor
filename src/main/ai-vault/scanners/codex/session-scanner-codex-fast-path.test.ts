@@ -20,7 +20,7 @@ function record(type: string, payload: Record<string, unknown>, timestamp: strin
 let tempRoots: string[] = []
 
 async function writeTranscript(lines: string[], name: string): Promise<FileWithMtime> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-codex-fast-path-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-codex-fast-path-'))
   tempRoots.push(root)
   const path = join(root, 'sessions', '2026', '08', '20', name)
   await mkdir(dirname(path), { recursive: true })

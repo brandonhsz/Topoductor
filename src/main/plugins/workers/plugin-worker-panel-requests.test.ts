@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { createPluginWorkerRuntime, type PluginWorkerOrcaApi } from './plugin-host-runtime'
+import { createPluginWorkerRuntime, type PluginWorkerTopoApi } from './plugin-host-runtime'
 
 const panel = { id: 'panel-1', surface: 'panel', contributionId: 'todos' }
 
-async function activate(setup: (orca: PluginWorkerOrcaApi) => void) {
+async function activate(setup: (orca: PluginWorkerTopoApi) => void) {
   const send = vi.fn()
   const runtime = createPluginWorkerRuntime({
     send,

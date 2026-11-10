@@ -7,7 +7,7 @@ import { createAdapter } from '../../../daemon/providers/routing/testing/daemon-
 import { DaemonPtyRouter } from '../../../daemon/providers/routing/daemon-pty-router'
 
 const mocks = vi.hoisted(() => ({ runProcess: vi.fn() }))
-vi.mock('@orca/process-host', () => ({ runProcess: mocks.runProcess }))
+vi.mock('@topo/process-host', () => ({ runProcess: mocks.runProcess }))
 vi.mock('../../../../shared/libproc-process-table', () => ({ runPsInProcess: async () => null }))
 
 const rows = (pid: number) =>

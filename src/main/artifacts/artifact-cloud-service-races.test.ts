@@ -45,7 +45,7 @@ function createResponse(slug: string): Response {
 }
 
 async function setup(): Promise<ArtifactCloudService> {
-  const path = await mkdtemp(join(tmpdir(), 'orca-artifact-races-'))
+  const path = await mkdtemp(join(tmpdir(), 'topo-artifact-races-'))
   createdPaths.push(path)
   return new ArtifactCloudService(path, () => true)
 }

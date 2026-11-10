@@ -16,7 +16,7 @@ import { quoteCliCommandArgument } from '../shell-command-quote'
 import { describeClientEnvironment, environmentLabel } from '../workspace-address'
 import { attachCliErrorData } from './worktree-setup-decision-recovery'
 
-/** The Orca a parent lives in: `local` or a saved environment's id. */
+/** The Topo a parent lives in: `local` or a saved environment's id. */
 export type ParentEnvironment = { route: string; name: string }
 
 const LOCAL: ParentEnvironment = { route: LOCAL_ENVIRONMENT, name: LOCAL_ENVIRONMENT }
@@ -47,8 +47,8 @@ function savedParentEnvironment(userDataPath: string, value: string): ParentEnvi
       environment: value,
       knownEnvironments: saved.map(({ id, name }) => ({ id, name })),
       nextSteps: [
-        'Pass local, or the id or name of a saved environment from `orca environment list`.',
-        'Pair it first with `orca environment add --name <name> --pairing-code <code>`.'
+        'Pass local, or the id or name of a saved environment from `topo environment list`.',
+        'Pair it first with `topo environment add --name <name> --pairing-code <code>`.'
       ]
     }
   )
@@ -57,7 +57,7 @@ function savedParentEnvironment(userDataPath: string, value: string): ParentEnvi
 /**
  * Which environment `--parent-worktree` names, when that differs from the child's. Undefined keeps
  * same-environment parents. A caller-relative parent (active/current) is always on the caller's own
- * Orca, so against another environment it is implicitly `local`.
+ * Topo, so against another environment it is implicitly `local`.
  */
 export function resolveParentEnvironment(
   flags: Map<string, string | boolean>,
@@ -84,11 +84,11 @@ export function resolveParentEnvironment(
   if (isCallerRelative(parentSelector) && named && named.route !== LOCAL_ENVIRONMENT) {
     throw new RuntimeClientError(
       'invalid_argument',
-      `--parent-worktree ${parentSelector} names the workspace containing this terminal or cwd, which is on this machine's own Orca, not ${named.name}.`,
+      `--parent-worktree ${parentSelector} names the workspace containing this terminal or cwd, which is on this machine's own Topo, not ${named.name}.`,
       {
         nextSteps: [
           `Drop --parent-environment, or pass --parent-environment local.`,
-          `For a workspace in ${named.name}, list it with \`orca worktree ps --environment ${quoteCliCommandArgument(named.route)} --json\` and pass its address.worktree as --parent-worktree.`
+          `For a workspace in ${named.name}, list it with \`topo worktree ps --environment ${quoteCliCommandArgument(named.route)} --json\` and pass its address.worktree as --parent-worktree.`
         ]
       }
     )
@@ -111,7 +111,7 @@ function parentEnvironmentClient(
   )
 }
 
-/** Refuses before any request: an older child Orca would apply the rest and drop the parent. */
+/** Refuses before any request: an older child Topo would apply the rest and drop the parent. */
 async function assertChildSavesCrossStoreParents(client: RuntimeClient): Promise<void> {
   const status = (await client.call<RuntimeStatus>('status.get')).result
   if (supportsCrossStoreLineage(status.capabilities)) {
@@ -120,7 +120,7 @@ async function assertChildSavesCrossStoreParents(client: RuntimeClient): Promise
   const environment = describeClientEnvironment(client)
   throw new RuntimeClientError(
     'incompatible_runtime',
-    `Update Orca in ${environmentLabel(environment)} to nest workspaces under a parent in another environment. Nothing was changed.`,
+    `Update Topo in ${environmentLabel(environment)} to nest workspaces under a parent in another environment. Nothing was changed.`,
     { environment: environment.id, requires: WORKTREE_CROSS_STORE_LINEAGE_RUNTIME_CAPABILITY }
   )
 }
@@ -134,7 +134,7 @@ function unavailableError(error: unknown, environment: ParentEnvironment): unkno
     `${environment.name} didn't answer, so the parent couldn't be checked. Nothing was changed. (${error.message})`,
     {
       environment: environment.route,
-      nextSteps: [`orca status --environment ${quoteCliCommandArgument(environment.route)} --json`]
+      nextSteps: [`topo status --environment ${quoteCliCommandArgument(environment.route)} --json`]
     }
   )
 }
@@ -168,13 +168,13 @@ function searchedEnvironmentData(
   extraSteps: readonly string[] = []
 ): Record<string, unknown> {
   const list = environment.route
-    ? `orca worktree ps --environment ${quoteCliCommandArgument(environment.route)} --json`
+    ? `topo worktree ps --environment ${quoteCliCommandArgument(environment.route)} --json`
     : undefined
   const listStep = list
     ? code === 'LINEAGE_PARENT_AMBIGUOUS'
       ? `Compare the choices with \`${list}\`, then pass one as --parent-worktree.`
       : list
-    : 'This one-off connection has no listing route; save it with `orca environment add --name <name> --pairing-code <code>`, then run `orca worktree ps --environment <name> --json`.'
+    : 'This one-off connection has no listing route; save it with `topo environment add --name <name> --pairing-code <code>`, then run `topo worktree ps --environment <name> --json`.'
   return {
     ...(error.data && typeof error.data === 'object' ? error.data : {}),
     environment: environment.route,
@@ -230,7 +230,7 @@ export async function resolveCrossEnvironmentParent(
     if (!installationId) {
       throw new RuntimeClientError(
         'incompatible_runtime',
-        `Update Orca in ${environment.name} so workspaces in other environments can name it as a parent. Nothing was changed.`,
+        `Update Topo in ${environment.name} so workspaces in other environments can name it as a parent. Nothing was changed.`,
         {
           environment: environment.route,
           requires: WORKTREE_CROSS_STORE_LINEAGE_RUNTIME_CAPABILITY
@@ -240,7 +240,7 @@ export async function resolveCrossEnvironmentParent(
     if (!ref) {
       throw new RuntimeClientError(
         'invalid_argument',
-        "Couldn't confirm the parent's workspace identity. Refresh it in the Orca app and try again."
+        "Couldn't confirm the parent's workspace identity. Refresh it in the Topo app and try again."
       )
     }
     return ref
@@ -283,7 +283,7 @@ export async function callNamingParentEnvironment<
         { route: environment.id, name: environmentLabel(environment) },
         code === 'LINEAGE_PARENT_NOT_FOUND'
           ? [
-              `Only ${environmentLabel(environment)} was searched for "${parentSelector}". For a parent in another environment, add --parent-environment <local|environment-id> (a row's address.environment from \`orca worktree ps --environment <id> --json\`).`
+              `Only ${environmentLabel(environment)} was searched for "${parentSelector}". For a parent in another environment, add --parent-environment <local|environment-id> (a row's address.environment from \`topo worktree ps --environment <id> --json\`).`
             ]
           : []
       )

@@ -1,4 +1,4 @@
-import { setIsolatedSpawner } from '@orca/process-host/isolated-detached-spawn'
+import { setIsolatedSpawner } from '@topo/process-host/isolated-detached-spawn'
 import { loadWindowsSecurity } from '../../shared/windows-security-addon'
 
 /** Long-lived detached children (the WSL holder) then inherit none of main's handles, e.g. a
@@ -20,7 +20,7 @@ export function installWindowsIsolatedSpawner(platform: NodeJS.Platform = proces
       return
     }
     if (!security.addon.hasNativeExport('isolatedSpawnBreaksAwayFromJob')) {
-      // Still isolates handles; only a kill-on-close job Orca runs in can take the holder down.
+      // Still isolates handles; only a kill-on-close job Topo runs in can take the holder down.
       console.warn('[startup] detached spawns stay in our jobs; the addon build predates breakaway')
     }
     setIsolatedSpawner(security.addon.spawnDetachedIsolated)

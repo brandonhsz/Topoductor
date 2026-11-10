@@ -6,29 +6,29 @@ import {
 } from './browser-route-identity'
 
 const identity = {
-  orcaProfileId: 'orca/profile:alpha',
+  topoProfileId: 'topo/profile:alpha',
   browserProfileId: 'browser/profile:default',
   authorityConnectionIdentity: 'paired/runtime:authority',
   executionHostIdentity: 'ssh/target:private.example'
 }
 
 const pinnedIdentity = {
-  orcaProfileId: 'orca/profile:alpha',
+  topoProfileId: 'topo/profile:alpha',
   browserProfileId: 'browser/profile:default',
   authorityConnectionIdentity: 'paired-runtime:authority-a',
-  executionHostIdentity: '["orca-browser-execution-host-storage",1,"authority","env-a"]'
+  executionHostIdentity: '["topo-browser-execution-host-storage",1,"authority","env-a"]'
 }
 
 describe('browser route partition identity', () => {
   it('keeps delimiter-containing components structurally distinct', () => {
     const left = deriveBrowserRoutePartition({
       ...identity,
-      orcaProfileId: 'a',
+      topoProfileId: 'a',
       browserProfileId: 'b:c'
     })
     const right = deriveBrowserRoutePartition({
       ...identity,
-      orcaProfileId: 'a:b',
+      topoProfileId: 'a:b',
       browserProfileId: 'c'
     })
 
@@ -38,7 +38,7 @@ describe('browser route partition identity', () => {
   it('makes every identity component load-bearing', () => {
     const derived = [
       identity,
-      { ...identity, orcaProfileId: 'orca/profile:beta' },
+      { ...identity, topoProfileId: 'topo/profile:beta' },
       { ...identity, browserProfileId: 'browser/profile:work' },
       { ...identity, authorityConnectionIdentity: 'paired/runtime:other' },
       { ...identity, executionHostIdentity: 'ssh/target:other.example' }
@@ -52,27 +52,27 @@ describe('browser route partition identity', () => {
   it('pins the derived partition and fingerprint against silent relocation', () => {
     expect(deriveBrowserRoutePartition(pinnedIdentity)).toEqual({
       partition:
-        'persist:orca-browser-v1-955a5db671b210d053d64d1e557d8cdf1e60e1e6cb710a033f1b5cd1b61e6586',
-      bindingFingerprint: 'fe69d9d83ab889b68eeb185f12821e4e0e77dcc91fc4cb7672c88e7818a4ded7'
+        'persist:topo-browser-v1-23a46c78e794af4959f499ed2612d45895df0d90443e4f649aa1877700443ec0',
+      bindingFingerprint: '29495f7c5990c9f1ff1653dd6346854a5b33138117fa0565eeff33f338addce1'
     })
   })
 
-  it('scopes partition ownership to one orca profile and one environment', () => {
+  it('scopes partition ownership to one topo profile and one environment', () => {
     const scope = deriveBrowserRoutePartitionStorageScope({
-      orcaProfileId: 'orca/profile:alpha',
+      topoProfileId: 'topo/profile:alpha',
       environmentId: 'environment-a'
     })
 
-    expect(scope).toBe('2821c92c85c9724ddb6136aeeec266a84fc5a9ea00f61faacef8db89bea79fb4')
+    expect(scope).toBe('a2695f4eb190f41eaa8b31c01812bac83f8b6fd4b79c41224e59bf86194e32ec')
     expect(
       deriveBrowserRoutePartitionStorageScope({
-        orcaProfileId: 'orca/profile:alpha',
+        topoProfileId: 'topo/profile:alpha',
         environmentId: 'environment-b'
       })
     ).not.toBe(scope)
     expect(
       deriveBrowserRoutePartitionStorageScope({
-        orcaProfileId: 'orca/profile:beta',
+        topoProfileId: 'topo/profile:beta',
         environmentId: 'environment-a'
       })
     ).not.toBe(scope)

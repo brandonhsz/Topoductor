@@ -11,11 +11,11 @@ import {
   mirrorWorkspaceFromActivePage
 } from './browser-page-records'
 import '../../../../../../shared/constants'
-import { ORCA_BROWSER_BLANK_URL } from '../../../../../../shared/browser/browser-blank-page'
+import { TOPO_BROWSER_BLANK_URL } from '../../../../../../shared/browser/browser-blank-page'
 import { closeRemoteBrowserPageInOwningEnvironment } from '../hosts/browser-remote-close'
 import { releaseDocPreviewGrant } from '@/lib/browser/documents/doc-preview-grants'
 import { admitBrowserPageMount } from '@/components/browser-pane/host-guest/browser-page-mount-admission'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import { sendBrowserLayoutCommand } from '../tabs/browser-layout-owner-commands'
 
 export function createBrowserPageCreateActions(
@@ -65,7 +65,7 @@ export function createBrowserPageCreateActions(
           const shouldFocusAddressBar =
             shouldUpdateGlobalActiveSurface &&
             !page.docLocation &&
-            (page.url === 'about:blank' || page.url === ORCA_BROWSER_BLANK_URL)
+            (page.url === 'about:blank' || page.url === TOPO_BROWSER_BLANK_URL)
 
           return {
             browserPagesByWorkspace: {
@@ -105,7 +105,7 @@ export function createBrowserPageCreateActions(
       }
       // Switch point: main adds the page to the tab first; the window shows it once main did.
       if (
-        ORCA_LAYOUT_OWNER_IS_MAIN &&
+        TOPO_LAYOUT_OWNER_IS_MAIN &&
         sendBrowserLayoutCommand(
           get,
           workspace.worktreeId,
@@ -228,7 +228,7 @@ export function createBrowserPageCreateActions(
           get().setTabLabel(item.id, workspace.title)
         }
       }
-      const page = ORCA_LAYOUT_OWNER_IS_MAIN
+      const page = TOPO_LAYOUT_OWNER_IS_MAIN
         ? findPage(get().browserPagesByWorkspace, pageId)
         : null
       const owner = page ? findWorkspace(get().browserTabsByWorktree, page.workspaceId) : null

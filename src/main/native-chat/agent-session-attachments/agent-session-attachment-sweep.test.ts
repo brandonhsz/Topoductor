@@ -62,7 +62,7 @@ let db: Database.Database
 let recorded: Set<string> | null
 
 beforeEach(async () => {
-  stateDirectory = await mkdtemp(join(tmpdir(), 'orca-attachment-sweep-'))
+  stateDirectory = await mkdtemp(join(tmpdir(), 'topo-attachment-sweep-'))
   store = new AgentSessionAttachmentStore(agentSessionAttachmentStoreRoot(stateDirectory), {
     hasSession: () => true
   })

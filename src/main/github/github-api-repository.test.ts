@@ -161,7 +161,7 @@ describe('skip missing upstream remote probes', () => {
       if (remote === 'origin') {
         throw originError
       }
-      return { owner: 'stablyai', repo: 'orca' }
+      return { owner: 'brandonhsz', repo: 'topo' }
     })
 
     const resultPromise = resolveGitHubApiRepositoryCandidates('/repo')

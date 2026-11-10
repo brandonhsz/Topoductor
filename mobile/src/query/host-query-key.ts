@@ -6,7 +6,7 @@ export type HostQueryTarget = { exec: ExecutionHostId; worktree?: string; repo?:
 export type HostQueryParams = Readonly<Record<string, string | number | boolean | null>>
 
 export type HostQueryKey = readonly [
-  'orca',
+  'topo',
   hostId: string,
   family: string,
   target: HostQueryTarget,
@@ -19,10 +19,10 @@ export function hostQueryKey(
   target: HostQueryTarget,
   params: HostQueryParams
 ): HostQueryKey {
-  return ['orca', hostId, family, target, params]
+  return ['topo', hostId, family, target, params]
 }
 
 // Prefix of every query one paired host owns; TanStack matches keys by prefix.
-export function hostScopeKey(hostId: string): readonly ['orca', string] {
-  return ['orca', hostId]
+export function hostScopeKey(hostId: string): readonly ['topo', string] {
+  return ['topo', hostId]
 }

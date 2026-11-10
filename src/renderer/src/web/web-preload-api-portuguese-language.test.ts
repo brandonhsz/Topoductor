@@ -17,7 +17,7 @@ describe('web Portuguese language migration', () => {
       const plugin = 'plugin:stablyai.orca-portuguese/pt-BR'
       const globals = installBrowserGlobals('Linux')
       globals.storage.setItem(
-        'orca.web.settings.v1',
+        'topo.web.settings.v1',
         JSON.stringify({
           uiLanguage: language,
           terminalFontSize: 19,
@@ -32,7 +32,7 @@ describe('web Portuguese language migration', () => {
         uiLanguagePortugueseMigrationApplied: true
       })
       expect(await globals.window.api.settings.get()).toMatchObject({ uiLanguage: expected })
-      expect(JSON.parse(globals.storage.getItem('orca.web.settings.v1') ?? '{}')).toMatchObject({
+      expect(JSON.parse(globals.storage.getItem('topo.web.settings.v1') ?? '{}')).toMatchObject({
         uiLanguage: expected,
         uiLanguagePortugueseMigrationApplied: true,
         terminalFontSize: 19,

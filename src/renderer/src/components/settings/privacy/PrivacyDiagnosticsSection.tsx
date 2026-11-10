@@ -315,15 +315,15 @@ function DiagnosticsDisabledStateNote({
           'auto.components.settings.PrivacyDiagnosticsRows.5a7cbe069a',
           'DO_NOT_TRACK=1 is set — creating and sending diagnostic files is disabled.'
         )
-      : reason === 'orca_telemetry_disabled'
+      : reason === 'topo_telemetry_disabled'
         ? t(
             'auto.components.settings.PrivacyDiagnosticsRows.63d03261d1',
-            'ORCA_TELEMETRY_DISABLED=1 is set — creating and sending diagnostic files is disabled.'
+            'TOPO_TELEMETRY_DISABLED=1 is set — creating and sending diagnostic files is disabled.'
           )
-        : reason === 'orca_diagnostics_disabled'
+        : reason === 'topo_diagnostics_disabled'
           ? t(
               'auto.components.settings.PrivacyDiagnosticsRows.d37e92a06b',
-              'ORCA_DIAGNOSTICS_DISABLED=1 is set — app diagnostics are off.'
+              'TOPO_DIAGNOSTICS_DISABLED=1 is set — app diagnostics are off.'
             )
           : reason === 'ci'
             ? t(

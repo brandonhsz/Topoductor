@@ -1,8 +1,8 @@
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { DESKTOP_TERMINAL_SCROLLBACK_ROWS_DEFAULT } from '../../../../../shared/terminal/replay/terminal-scrollback-policy'
 
 type HeadlessCopySource = Pick<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   | 'getPtyOutputSequence'
   | 'serializeRendererTerminalBuffer'
   | 'replaceHeadlessTerminalFromRendererSnapshotForRecovery'

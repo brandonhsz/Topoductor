@@ -20,9 +20,9 @@ const RESTRICTED_E2E_ENV_KEYS = new Set([
   'HOME',
   'USERPROFILE',
   'CODEX_HOME',
-  'ORCA_CODEX_HOME',
-  'ORCA_E2E_HOME_DIR',
-  'ORCA_E2E_USER_DATA_DIR'
+  'TOPO_CODEX_HOME',
+  'TOPO_E2E_HOME_DIR',
+  'TOPO_E2E_USER_DATA_DIR'
 ])
 
 // Launch with harness-owned userData for unique daemon scope; optional seedProfile writes only before FIRST launch, preserving later restore evidence.
@@ -35,12 +35,12 @@ export async function launchInstalledApp({
   const {
     ELECTRON_RUN_AS_NODE: _drop,
     CODEX_HOME: _codexHome,
-    ORCA_CODEX_HOME: _orcaCodexHome,
+    TOPO_CODEX_HOME: _topoCodexHome,
     ...cleanEnv
   } = process.env
   void _drop
   void _codexHome
-  void _orcaCodexHome
+  void _topoCodexHome
   const restrictedExtraEnvKey = Object.keys(extraEnv).find((key) =>
     RESTRICTED_E2E_ENV_KEYS.has(key.toUpperCase())
   )
@@ -54,22 +54,22 @@ export async function launchInstalledApp({
   // Isolate Codex home separately: relocating userData does not change Node home.
   const requestedIsolatedHome = path.join(userDataDir, 'home')
   mkdirSync(requestedIsolatedHome, { recursive: true })
-  // Canonicalize Windows 8.3 home aliases so Git worktree paths match Orca’s comparisons.
+  // Canonicalize Windows 8.3 home aliases so Git worktree paths match Topo’s comparisons.
   const isolatedHome = realpathSync.native(requestedIsolatedHome)
   const app = await electron.launch({
     executablePath: exePath,
     args: [],
     env: {
       ...cleanEnv,
-      // Packaged main honors ORCA_E2E_USER_DATA_DIR to relocate userData
+      // Packaged main honors TOPO_E2E_USER_DATA_DIR to relocate userData
       // (logs/daemon/terminal-history) under a controlled dir.
       ...extraEnv,
-      ORCA_E2E_USER_DATA_DIR: userDataDir,
+      TOPO_E2E_USER_DATA_DIR: userDataDir,
       // Why: the driven app stays off the foreground so a local run doesn't steal focus.
-      ORCA_BACKGROUND_LAUNCH: '1',
+      TOPO_BACKGROUND_LAUNCH: '1',
       HOME: isolatedHome,
       USERPROFILE: isolatedHome,
-      ORCA_E2E_HOME_DIR: isolatedHome
+      TOPO_E2E_HOME_DIR: isolatedHome
     }
   })
   // Kill launch tree if firstWindow fails; Electron may still run after the driver times out.
@@ -243,7 +243,7 @@ async function createWorkspaceFromSeededRepo(page, timeoutMs) {
 const OVERLAY_DISMISS_LABELS = ['Got it', 'Dismiss setup scripts', 'Dismiss tip', 'Dismiss update']
 const FEATURE_TIP_DIALOG_TITLES = [
   'Chat UI is here',
-  'Let agents drive Orca with the Orca CLI',
+  'Let agents drive Topo with the Topo CLI',
   'Search every agent session'
 ]
 

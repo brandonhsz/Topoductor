@@ -371,7 +371,7 @@ var PLUGIN_DECLARATIVE_MESSAGES = {
   persist: "ui.persist",
   /** guest → host, `{ document, entries: [{ key, version, value? }] }`: keyed memory atoms changed. */
   retain: "ui.retain",
-  /** host → guest, `{ document }`: remember every atom's value before `orca plugin shot --act`. */
+  /** host → guest, `{ document }`: remember every atom's value before `topo plugin shot --act`. */
   snapshot: "ui.snapshot",
   /** host → guest, `{ document }`: put the atoms back to the last `ui.snapshot`. */
   restore: "ui.restore"
@@ -418,7 +418,7 @@ var PLUGIN_DECLARATIVE_COMPONENT_PROPS = {
   EmptyState: ["title", "description", "icon"],
   Link: ["href", "onPress"],
   Code: ["block"],
-  // Catalog 2 (Orca 1.4.247).
+  // Catalog 2 (Topo 1.4.247).
   Textarea: [
     "label",
     "labelHidden",
@@ -496,9 +496,9 @@ var PLUGIN_DECLARATIVE_COMPONENT_PROPS = {
   KeyValue: ["label", "items"],
   Callout: ["tone", "title", "icon"],
   Skeleton: ["shape", "lines", "label"],
-  // Catalog 3 (also Orca 1.4.247).
+  // Catalog 3 (also Topo 1.4.247).
   RelativeTime: ["at", "format", "tone", "muted"],
-  // Catalog 4 (Orca 1.4.248).
+  // Catalog 4 (Topo 1.4.248).
   Box: [
     "direction",
     "gap",
@@ -671,9 +671,7 @@ function evaluateOrcaTree(component, editsSeen = /* @__PURE__ */ new Map()) {
   }
   function hostNode(type, props, key, parentPath, depth) {
     if (!/^[A-Z]/.test(type)) {
-      throw new TypeError(
-        `<${type.slice(0, 64)}> is not an Orca component; panels never render DOM`
-      );
+      throw new TypeError(`<${type.slice(0, 64)}> is not a Topo component; panels never render DOM`);
     }
     const path = `${parentPath}/${key}`;
     const wireProps = {};
@@ -1312,7 +1310,7 @@ function hostError(code, message) {
   return Object.assign(new Error(message), { code, retryable: code === "timeout" });
 }
 function unavailable(what) {
-  return Promise.reject(hostError("unavailable", `${what} is not available in this Orca`));
+  return Promise.reject(hostError("unavailable", `${what} is not available in this Topo`));
 }
 function isComponentTag(name) {
   return Object.hasOwn(PLUGIN_DECLARATIVE_COMPONENT_PROPS, name);
@@ -1359,7 +1357,7 @@ function createOrcaSdk(source) {
     }
   });
   const env2 = Object.freeze({
-    /** Orca's UI language (BCP-47); the guest's `navigator.language` follows the OS instead. */
+    /** Topo's UI language (BCP-47); the guest's `navigator.language` follows the OS instead. */
     get locale() {
       return source.bridge()?.locale ?? "en";
     },
@@ -1390,7 +1388,7 @@ function createOrcaSdk(source) {
   const ui2 = Object.freeze({
     /** Grows with the component catalog. */
     catalog: PLUGIN_DECLARATIVE_CATALOG_VERSION,
-    /** Whether this Orca draws `component`, and accepts `prop` on it when given. */
+    /** Whether this Topo draws `component`, and accepts `prop` on it when given. */
     has(component, prop) {
       if (!isComponentTag(component)) {
         return false;
@@ -1405,7 +1403,7 @@ function createOrcaSdk(source) {
 // src/shared/plugins/declarative/runtime/declarative-data-sdk.ts
 function unavailable2(what) {
   return Promise.reject(
-    Object.assign(new Error(`${what} is not available in this Orca`), {
+    Object.assign(new Error(`${what} is not available in this Topo`), {
       code: "unavailable",
       retryable: false
     })
@@ -1441,7 +1439,7 @@ function createOrcaDataSdk(bridge) {
   return { plugin: plugin2, storage: storage2, settings: settings2, secrets: secrets2 };
 }
 
-// src/shared/plugins/declarative/runtime/orca-module.ts
+// src/shared/plugins/declarative/runtime/topo-module.ts
 var runtime = null;
 var pendingMount = null;
 function isOrcaBridge(value) {

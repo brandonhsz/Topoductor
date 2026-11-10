@@ -96,7 +96,7 @@ function newId(f: ReturnType<typeof fixture>): string {
 
 // Publish atomically so the poller cannot read an empty link.
 function handOverClaudeSignInLink(windowsPath: string, link: string): void {
-  const helperPath = join(windowsPath, '.orca-sign-in-browser')
+  const helperPath = join(windowsPath, '.topo-sign-in-browser')
   writeFileSync(`${helperPath}.tmp`, link)
   renameSync(`${helperPath}.tmp`, `${helperPath}.link`)
 }
@@ -219,7 +219,7 @@ describe('ClaudeAccountService', () => {
       const adding = f.service.addAccount({ runtime: 'host' }, true)
       copied = await f.service.waitForSignInLink()
       await adding
-      expect(existsSync(join(f.home(newId(f)), '.orca-sign-in-browser'))).toBe(false)
+      expect(existsSync(join(f.home(newId(f)), '.topo-sign-in-browser'))).toBe(false)
       await expect(f.service.waitForSignInLink()).resolves.toBeNull()
     }
   )

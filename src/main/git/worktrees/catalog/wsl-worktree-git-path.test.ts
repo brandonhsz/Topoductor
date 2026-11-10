@@ -16,7 +16,7 @@ import { resolveWslWorktreeGitPath } from './wsl-worktree-git-path'
 
 const WORKTREE = '\\\\wsl.localhost\\Ubuntu\\home\\jin\\feature'
 const FROM_LINK =
-  '\\\\wsl.localhost\\Ubuntu\\home\\jin\\repo\\.git\\worktrees\\feature\\orca\\setup-runner.sh'
+  '\\\\wsl.localhost\\Ubuntu\\home\\jin\\repo\\.git\\worktrees\\feature\\topo\\setup-runner.sh'
 
 describe('resolveWslWorktreeGitPath', () => {
   beforeEach(() => {
@@ -27,7 +27,7 @@ describe('resolveWslWorktreeGitPath', () => {
   it('retries the link once after a transient miss', async () => {
     readWorktreeGitPathMock.mockReturnValueOnce(null).mockReturnValueOnce(FROM_LINK)
 
-    await expect(resolveWslWorktreeGitPath(WORKTREE, 'orca/setup-runner.sh')).resolves.toBe(
+    await expect(resolveWslWorktreeGitPath(WORKTREE, 'topo/setup-runner.sh')).resolves.toBe(
       FROM_LINK
     )
     expect(readWorktreeGitPathMock).toHaveBeenCalledTimes(2)
@@ -37,16 +37,16 @@ describe('resolveWslWorktreeGitPath', () => {
   it("asks the distro's Git when the link stays unreadable", async () => {
     readWorktreeGitPathMock.mockReturnValue(null)
     gitExecFileAsyncMock.mockResolvedValue({
-      stdout: '/home/jin/repo/.git/worktrees/feature/orca/setup-runner.sh\n',
+      stdout: '/home/jin/repo/.git/worktrees/feature/topo/setup-runner.sh\n',
       stderr: ''
     })
 
-    await expect(resolveWslWorktreeGitPath(WORKTREE, 'orca/setup-runner.sh')).resolves.toBe(
+    await expect(resolveWslWorktreeGitPath(WORKTREE, 'topo/setup-runner.sh')).resolves.toBe(
       FROM_LINK
     )
     expect(readWorktreeGitPathMock).toHaveBeenCalledTimes(2)
     expect(gitExecFileAsyncMock).toHaveBeenCalledWith(
-      ['rev-parse', '--git-path', 'orca/setup-runner.sh'],
+      ['rev-parse', '--git-path', 'topo/setup-runner.sh'],
       { cwd: WORKTREE }
     )
   })
@@ -54,21 +54,21 @@ describe('resolveWslWorktreeGitPath', () => {
   it("maps Git's mounted-drive answer to the Windows drive", async () => {
     readWorktreeGitPathMock.mockReturnValue(null)
     gitExecFileAsyncMock.mockResolvedValue({
-      stdout: '/mnt/c/src/repo/.git/worktrees/feature/orca/setup-runner.sh\n',
+      stdout: '/mnt/c/src/repo/.git/worktrees/feature/topo/setup-runner.sh\n',
       stderr: ''
     })
 
-    await expect(resolveWslWorktreeGitPath(WORKTREE, 'orca/setup-runner.sh')).resolves.toBe(
-      'C:\\src\\repo\\.git\\worktrees\\feature\\orca\\setup-runner.sh'
+    await expect(resolveWslWorktreeGitPath(WORKTREE, 'topo/setup-runner.sh')).resolves.toBe(
+      'C:\\src\\repo\\.git\\worktrees\\feature\\topo\\setup-runner.sh'
     )
   })
 
   it("resolves Git's worktree-relative answer against the worktree", async () => {
     readWorktreeGitPathMock.mockReturnValue(null)
-    gitExecFileAsyncMock.mockResolvedValue({ stdout: '.git/orca/setup-runner.sh\n', stderr: '' })
+    gitExecFileAsyncMock.mockResolvedValue({ stdout: '.git/topo/setup-runner.sh\n', stderr: '' })
 
-    await expect(resolveWslWorktreeGitPath(WORKTREE, 'orca/setup-runner.sh')).resolves.toBe(
-      '\\\\wsl.localhost\\Ubuntu\\home\\jin\\feature\\.git\\orca\\setup-runner.sh'
+    await expect(resolveWslWorktreeGitPath(WORKTREE, 'topo/setup-runner.sh')).resolves.toBe(
+      '\\\\wsl.localhost\\Ubuntu\\home\\jin\\feature\\.git\\topo\\setup-runner.sh'
     )
   })
 
@@ -77,7 +77,7 @@ describe('resolveWslWorktreeGitPath', () => {
     const gitError = new Error('fatal: not a git repository')
     gitExecFileAsyncMock.mockRejectedValue(gitError)
 
-    const failure = resolveWslWorktreeGitPath(WORKTREE, 'orca/setup-runner.sh')
+    const failure = resolveWslWorktreeGitPath(WORKTREE, 'topo/setup-runner.sh')
     await expect(failure).rejects.toThrow(/couldn't find this WSL worktree's Git folder/)
     await expect(failure).rejects.toMatchObject({ cause: gitError })
   })

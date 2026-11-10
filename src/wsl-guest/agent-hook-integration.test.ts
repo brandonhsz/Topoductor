@@ -23,7 +23,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
   let mux: SshChannelMultiplexer
   let dispatcher: RelayDispatcher
   let hookServer: RelayAgentHookServer
-  let orcaServer: AgentHookServer
+  let topoServer: AgentHookServer
 
   beforeEach(async () => {
     tmpDir = mkdtempSync(join(tmpdir(), 'agent-hook-e2e-'))
@@ -72,11 +72,11 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
 
     mux = new SshChannelMultiplexer(clientTransport)
 
-    orcaServer = new AgentHookServer()
+    topoServer = new AgentHookServer()
     // Main receives through ingestRemote; only the relay starts an HTTP listener.
     mux.onNotification((method, params) => {
       if (method === AGENT_HOOK_NOTIFICATION_METHOD) {
-        orcaServer.ingestRemote(
+        topoServer.ingestRemote(
           params as unknown as {
             paneKey: string
             tabId?: string
@@ -93,7 +93,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
     mux.dispose()
     dispatcher.dispose()
     hookServer.stop()
-    orcaServer.stop()
+    topoServer.stop()
     rmSync(tmpDir, { recursive: true, force: true })
   })
 
@@ -102,7 +102,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
     const { port, token } = hookServer.getCoordinates()
     const response = await fetch(`http://127.0.0.1:${port}/hook/claude`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Orca-Agent-Hook-Token': token },
+      headers: { 'Content-Type': 'application/json', 'X-Topo-Agent-Hook-Token': token },
       body: JSON.stringify({
         paneKey,
         tabId: 'tab-7',
@@ -113,16 +113,16 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
       })
     })
     expect(response.status).toBe(204)
-    await expect.poll(() => orcaServer.getStatusSnapshotForPane(paneKey)[0]?.state).toBe('working')
+    await expect.poll(() => topoServer.getStatusSnapshotForPane(paneKey)[0]?.state).toBe('working')
     const native = hookServer.claudeTerminalInterrupts
     native.observe(paneKey, { kind: 'title', title: '◐ Long table' })
     native.observe(paneKey, { kind: 'input', data: '\x1b' })
     native.observe(paneKey, { kind: 'title', title: '◑ Long table' })
-    expect(orcaServer.getStatusSnapshotForPane(paneKey)[0].state).toBe('working')
+    expect(topoServer.getStatusSnapshotForPane(paneKey)[0].state).toBe('working')
     native.observe(paneKey, { kind: 'input', data: '\x1b' })
     native.observe(paneKey, { kind: 'title', title: '✳ Long table' })
     await expect
-      .poll(() => orcaServer.getStatusSnapshotForPane(paneKey)[0])
+      .poll(() => topoServer.getStatusSnapshotForPane(paneKey)[0])
       .toMatchObject({
         state: 'done',
         interrupted: true,
@@ -130,12 +130,12 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
         mainAgent: { state: 'done', outcome: 'cancellation' }
       })
     const replayOutcomes: (string | undefined)[] = []
-    orcaServer.setListener((event) => replayOutcomes.push(event.payload.mainAgent?.outcome))
+    topoServer.setListener((event) => replayOutcomes.push(event.payload.mainAgent?.outcome))
     replayOutcomes.length = 0
     expect(hookServer.replayCachedPayloadsForPanes()).toBe(1)
     await expect.poll(() => replayOutcomes).toEqual(['cancellation'])
     await expect
-      .poll(() => orcaServer.getStatusSnapshotForPane(paneKey)[0]?.mainAgent?.outcome)
+      .poll(() => topoServer.getStatusSnapshotForPane(paneKey)[0]?.mainAgent?.outcome)
       .toBe('cancellation')
   })
 
@@ -161,7 +161,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'X-Orca-Agent-Hook-Token': token
+            'X-Topo-Agent-Hook-Token': token
           },
           body: new URLSearchParams({
             paneKey: `tab-7:${LEAF_7}`,
@@ -171,7 +171,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
         })
         expect(response.status).toBe(204)
         await expect
-          .poll(() => orcaServer.getStatusSnapshot())
+          .poll(() => topoServer.getStatusSnapshot())
           .toEqual([
             expect.objectContaining({
               paneKey: `tab-7:${LEAF_7}`,
@@ -199,7 +199,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'X-Orca-Agent-Hook-Token': token
+          'X-Topo-Agent-Hook-Token': token
         },
         body: new URLSearchParams({ paneKey: `tab-7:${LEAF_7}`, payload }).toString()
       })
@@ -207,7 +207,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
     }
     await new Promise((resolve) => setImmediate(resolve))
     expect(hookServer.replayCachedPayloadsForPanes()).toBe(0)
-    expect(orcaServer.getStatusSnapshot()).toEqual([])
+    expect(topoServer.getStatusSnapshot()).toEqual([])
   })
 
   it('clears remote Claude permission when the approved tool starts with matching identity', async () => {
@@ -217,7 +217,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Orca-Agent-Hook-Token': token
+          'X-Topo-Agent-Hook-Token': token
         },
         body: JSON.stringify({
           paneKey: `tab-7:${LEAF_7}`,
@@ -238,7 +238,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
         tool_input: { command: 'pnpm test' }
       })
     ).resolves.toMatchObject({ status: 204 })
-    await expect.poll(() => orcaServer.getStatusSnapshot()[0]?.state).toBe('waiting')
+    await expect.poll(() => topoServer.getStatusSnapshot()[0]?.state).toBe('waiting')
     await expect(
       postClaude({
         hook_event_name: 'PreToolUse',
@@ -251,10 +251,10 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
     ).resolves.toMatchObject({ status: 204 })
 
     const start = Date.now()
-    while (orcaServer.getStatusSnapshot()[0]?.state !== 'working' && Date.now() - start < 1500) {
+    while (topoServer.getStatusSnapshot()[0]?.state !== 'working' && Date.now() - start < 1500) {
       await new Promise((r) => setImmediate(r))
     }
-    expect(orcaServer.getStatusSnapshot()).toEqual([
+    expect(topoServer.getStatusSnapshot()).toEqual([
       expect.objectContaining({
         paneKey: `tab-7:${LEAF_7}`,
         connectionId: 'conn-test',
@@ -273,7 +273,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Orca-Agent-Hook-Token': token
+          'X-Topo-Agent-Hook-Token': token
         },
         body: JSON.stringify({
           paneKey: `tab-9:${LEAF_9}`,
@@ -292,21 +292,21 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
       tool_name: 'Bash',
       tool_input: { command: 'false' }
     })
-    await expect.poll(() => orcaServer.getStatusSnapshot()[0]?.state).toBe('waiting')
+    await expect.poll(() => topoServer.getStatusSnapshot()[0]?.state).toBe('waiting')
     await postClaude({ hook_event_name: 'TeammateIdle', teammate_name: 'reviewer' })
 
     const start = Date.now()
-    while (orcaServer.getStatusSnapshot()[0]?.state !== 'working' && Date.now() - start < 1500) {
+    while (topoServer.getStatusSnapshot()[0]?.state !== 'working' && Date.now() - start < 1500) {
       await new Promise((resolve) => setImmediate(resolve))
     }
-    expect(orcaServer.getStatusSnapshot()[0]).toMatchObject({
+    expect(topoServer.getStatusSnapshot()[0]).toMatchObject({
       paneKey: `tab-9:${LEAF_9}`,
       connectionId: 'conn-test',
       state: 'working',
       agentType: 'claude',
       subagents: [expect.objectContaining({ id: 'areviewer-6d3cb5b5', state: 'idle' })]
     })
-    expect(orcaServer.getStatusSnapshot()[0]?.toolName).toBeUndefined()
+    expect(topoServer.getStatusSnapshot()[0]?.toolName).toBeUndefined()
   })
 
   it('clears remote Claude permission when approved PostToolUse matches the preceding tool use id', async () => {
@@ -316,7 +316,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Orca-Agent-Hook-Token': token
+          'X-Topo-Agent-Hook-Token': token
         },
         body: JSON.stringify({
           paneKey: `tab-7:${LEAF_7}`,
@@ -332,7 +332,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
       postClaude({
         hook_event_name: 'PreToolUse',
         tool_name: 'Bash',
-        tool_input: { command: 'rm -rf /tmp/orca-2824-permission-target' },
+        tool_input: { command: 'rm -rf /tmp/topo-2824-permission-target' },
         tool_use_id: 'toolu-approved-remote-post'
       })
     ).resolves.toMatchObject({ status: 204 })
@@ -340,31 +340,31 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
       postClaude({
         hook_event_name: 'PermissionRequest',
         tool_name: 'Bash',
-        tool_input: { command: 'rm -rf /tmp/orca-2824-permission-target' }
+        tool_input: { command: 'rm -rf /tmp/topo-2824-permission-target' }
       })
     ).resolves.toMatchObject({ status: 204 })
-    await expect.poll(() => orcaServer.getStatusSnapshot()[0]?.state).toBe('waiting')
+    await expect.poll(() => topoServer.getStatusSnapshot()[0]?.state).toBe('waiting')
     await expect(
       postClaude({
         hook_event_name: 'PostToolUse',
         tool_name: 'Bash',
-        tool_input: { command: 'rm -rf /tmp/orca-2824-permission-target' },
+        tool_input: { command: 'rm -rf /tmp/topo-2824-permission-target' },
         tool_use_id: 'toolu-approved-remote-post'
       })
     ).resolves.toMatchObject({ status: 204 })
 
     const start = Date.now()
-    while (orcaServer.getStatusSnapshot()[0]?.state !== 'working' && Date.now() - start < 1500) {
+    while (topoServer.getStatusSnapshot()[0]?.state !== 'working' && Date.now() - start < 1500) {
       await new Promise((r) => setImmediate(r))
     }
-    expect(orcaServer.getStatusSnapshot()).toEqual([
+    expect(topoServer.getStatusSnapshot()).toEqual([
       expect.objectContaining({
         paneKey: `tab-7:${LEAF_7}`,
         connectionId: 'conn-test',
         state: 'working',
         agentType: 'claude',
         toolName: 'Bash',
-        toolInput: 'rm -rf /tmp/orca-2824-permission-target'
+        toolInput: 'rm -rf /tmp/topo-2824-permission-target'
       })
     ])
   })
@@ -372,7 +372,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
   it('replays the cached last-status on agent_hook.requestReplay', async () => {
     // Listen before POST so synchronous cache replay cannot masquerade as an SSH round-trip.
     const events: { paneKey: string; payload: unknown }[] = []
-    orcaServer.setListener((event) => {
+    topoServer.setListener((event) => {
       events.push({ paneKey: event.paneKey, payload: event.payload })
     })
 
@@ -381,7 +381,7 @@ describe('Integration: relay hook server → mux → AgentHookServer.ingestRemot
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Orca-Agent-Hook-Token': token
+        'X-Topo-Agent-Hook-Token': token
       },
       body: JSON.stringify({
         paneKey: `tab-9:${LEAF_9}`,

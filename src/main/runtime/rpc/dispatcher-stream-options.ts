@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import { captureStructuredAgentCliSource } from '../../native-chat/structured-agent-cli-source'
 import type { OrchestrationSessionCaller } from '../orchestration/addressing/orchestration-caller-identity'
 import { isRegistrationFencedUnsubscribe, type RpcContext, type RpcRequest } from './core'
@@ -38,7 +38,7 @@ export type RpcDispatchStreamingOptions = Pick<
 }
 
 export function rpcContextFromTransport(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   request: RpcRequest,
   options: RpcDispatchStreamingOptions | undefined,
   orchestrationCaller: OrchestrationSessionCaller | undefined,

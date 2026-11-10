@@ -1,7 +1,7 @@
 // Register these factories in each suite so split screen tests use the same environment.
 import * as React from 'react'
 import { vi } from 'vitest'
-import { parseMobileWebShellLoadState } from '../../modules/orca-mobile-web-shell/src/load-state'
+import { parseMobileWebShellLoadState } from '../../modules/topo-mobile-web-shell/src/load-state'
 import { SCREEN_SNAPSHOT, type ScreenDependencies } from './mobile-web-shell-screen-test-harness'
 
 export function screenModuleMocks(dependencies: ScreenDependencies) {
@@ -85,7 +85,7 @@ export function screenModuleMocks(dependencies: ScreenDependencies) {
       NotificationFeedbackType: { Error: 'error', Success: 'success' }
     }),
     'expo-document-picker': () => ({ getDocumentAsync: () => Promise.resolve(null) }),
-    '@orca/expo-two-way-audio': () => ({
+    '@topo/expo-two-way-audio': () => ({
       addExpoTwoWayAudioEventListener: () => ({ remove: () => {} }),
       initialize: () => Promise.resolve(true),
       requestMicrophonePermissionsAsync: () =>
@@ -132,9 +132,9 @@ export function screenModuleMocks(dependencies: ScreenDependencies) {
       useFocusEffect: (effect: () => undefined | (() => void)) => React.useEffect(effect, [effect])
     }),
     // Use a component to observe keyed remounts; host-string prop updates cannot prove WebView replacement.
-    '../../modules/orca-mobile-web-shell/src': () => {
+    '../../modules/topo-mobile-web-shell/src': () => {
       return {
-        OrcaMobileWebShellView: (props: {
+        TopoMobileWebShellView: (props: {
           sessionId: string
           ref?: (handle: { postBridgeMessage: (json: string) => Promise<void> } | null) => void
         }) => {

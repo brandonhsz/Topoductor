@@ -203,7 +203,7 @@ export function exitEmptyDetailsBody(editor: Editor): boolean {
   return true
 }
 
-const OrcaDetails = Details.extend({
+const TopoDetails = Details.extend({
   // Handle summary Enter before StarterKit splits paragraphs so titles lead into the toggle body.
   priority: 1000,
 
@@ -212,10 +212,10 @@ const OrcaDetails = Details.extend({
       ...this.parent?.(),
       variant: {
         default: null,
-        parseHTML: (element) => parseToggleHeadingVariant(element.getAttribute('data-orca-toggle')),
+        parseHTML: (element) => parseToggleHeadingVariant(element.getAttribute('data-topo-toggle')),
         renderHTML: ({ variant }) => {
           const parsed = parseToggleHeadingVariant(variant)
-          return parsed ? { 'data-orca-toggle': parsed } : {}
+          return parsed ? { 'data-topo-toggle': parsed } : {}
         }
       }
     }
@@ -295,7 +295,7 @@ const OrcaDetails = Details.extend({
   }
 })
 
-const OrcaDetailsSummary = DetailsSummary.extend({
+const TopoDetailsSummary = DetailsSummary.extend({
   markdownTokenizer: guardMarkdownDirectiveTokenizer(
     DetailsSummary.config.markdownTokenizer,
     'detailsSummary'
@@ -304,7 +304,7 @@ const OrcaDetailsSummary = DetailsSummary.extend({
   content: 'inline*'
 })
 
-const OrcaDetailsContent = DetailsContent.extend({
+const TopoDetailsContent = DetailsContent.extend({
   markdownTokenizer: guardMarkdownDirectiveTokenizer(
     DetailsContent.config.markdownTokenizer,
     'detailsContent'
@@ -327,15 +327,15 @@ const OrcaDetailsContent = DetailsContent.extend({
   }
 })
 
-export function createOrcaDetailsExtensions(): AnyExtension[] {
+export function createTopoDetailsExtensions(): AnyExtension[] {
   return [
-    OrcaDetails.configure({
+    TopoDetails.configure({
       persist: true,
       HTMLAttributes: {
-        class: 'orca-details'
+        class: 'topo-details'
       }
     }),
-    OrcaDetailsSummary,
-    OrcaDetailsContent
+    TopoDetailsSummary,
+    TopoDetailsContent
   ]
 }

@@ -1,6 +1,6 @@
 import { app, clipboard } from 'electron'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import {
   assertClipboardTextWriteWithinLimitWithYield,
   CLIPBOARD_TEXT_WRITE_MAX_BYTES,
@@ -118,14 +118,14 @@ let stagedPublisher: Promise<string> | undefined
 
 function publisherPath(): string | Promise<string> {
   const source = app.isPackaged
-    ? join(process.resourcesPath, 'bin', 'orca-wayland-clipboard')
+    ? join(process.resourcesPath, 'bin', 'topo-wayland-clipboard')
     : join(
         app.getAppPath(),
         'native',
         'wayland-clipboard',
         '.build',
         process.arch,
-        'orca-wayland-clipboard'
+        'topo-wayland-clipboard'
       )
   if (
     !app.isPackaged ||
@@ -138,7 +138,7 @@ function publisherPath(): string | Promise<string> {
   ) {
     return source
   }
-  // A detached owner must not execute pages from an AppImage mount after Orca exits.
+  // A detached owner must not execute pages from an AppImage mount after Topo exits.
   stagedPublisher ??= stageClipboardPublisher(source, app.getPath('userData')).catch(
     (error: unknown) => {
       stagedPublisher = undefined

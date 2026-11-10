@@ -3,7 +3,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useAppStore } from '@/store/index'
 import { toast } from 'sonner'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import { executeWorktreeCreation } from './worktree-creation-flow-execute'
 import { retryBackgroundWorktreeCreation } from './worktree-creation-flow'
 import {
@@ -219,7 +219,7 @@ describe('creation chat handoff', () => {
     }
   )
 
-  it.skipIf(!ORCA_LAYOUT_OWNER_IS_MAIN)(
+  it.skipIf(!TOPO_LAYOUT_OWNER_IS_MAIN)(
     'owns input through delayed provider creation and replacement tab publication',
     async () => {
       const emptyRequest = { ...request, quickPrompt: '' }
@@ -256,7 +256,7 @@ describe('creation chat handoff', () => {
     }
   )
 
-  it.skipIf(!ORCA_LAYOUT_OWNER_IS_MAIN)(
+  it.skipIf(!TOPO_LAYOUT_OWNER_IS_MAIN)(
     'waits for the answering layout frame even when provider creation fails first',
     async () => {
       layoutApplyTestTransport.answerWith((command) =>
@@ -285,7 +285,7 @@ describe('creation chat handoff', () => {
     }
   )
 
-  it.skipIf(!ORCA_LAYOUT_OWNER_IS_MAIN)(
+  it.skipIf(!TOPO_LAYOUT_OWNER_IS_MAIN)(
     'preserves the held first message in a terminal when layout refuses the chat',
     async () => {
       const emptyRequest = { ...request, quickPrompt: '' }
@@ -313,7 +313,7 @@ describe('creation chat handoff', () => {
     }
   )
 
-  it.skipIf(!ORCA_LAYOUT_OWNER_IS_MAIN).each(['foreground', 'background'] as const)(
+  it.skipIf(!TOPO_LAYOUT_OWNER_IS_MAIN).each(['foreground', 'background'] as const)(
     'retries a layout-refused rich message in the created worktree without creating it again: %s',
     async (scenario) => {
       const emptyRequest = { ...request, quickPrompt: '' }

@@ -1,4 +1,4 @@
-import '../orca-runtime-tests/orca-runtime-test-lifecycle.spec'
+import '../topo-runtime-tests/topo-runtime-test-lifecycle.spec'
 import { expect, it, vi } from 'vitest'
 
 import { mkdtemp, rm } from 'node:fs/promises'
@@ -30,16 +30,16 @@ import {
 
 import type { AgentSessionRecordStore } from '../agent-session/records/agent-session-record-store'
 
-import '../orca-runtime-tests/runtime-test-module-registration.spec'
-import { OrcaRuntimeService } from '../orca-runtime'
+import '../topo-runtime-tests/runtime-test-module-registration.spec'
+import { TopoRuntimeService } from '../topo-runtime'
 
-import { electronMocks } from '../orca-runtime-test-mocks/setup.spec'
+import { electronMocks } from '../topo-runtime-test-mocks/setup.spec'
 
 import {
   TEST_WORKTREE_ID,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} from '../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 
 import type { RuntimeNotifier } from '../client/events/runtime-notifier-contract'
 
@@ -49,7 +49,7 @@ import { SESSION_TAB_MUTATION_METHODS } from '../rpc/methods/session-tabs/sessio
 
 function fixture(session = makeWorkspaceSessionWithHeadlessTerminal()) {
   const { runtimeStore, getSession } = makeRuntimeStoreWithWorkspaceSession(session)
-  const runtime = new OrcaRuntimeService(runtimeStore)
+  const runtime = new TopoRuntimeService(runtimeStore)
   const notifier = {
     worktreesChanged: vi.fn(),
     reposChanged: vi.fn(),
@@ -71,7 +71,7 @@ function fixture(session = makeWorkspaceSessionWithHeadlessTerminal()) {
 }
 
 it('refuses a combined native chat edit before saving its name, while accepting a title alone', async () => {
-  const directory = await mkdtemp(join(tmpdir(), 'orca-native-tab-props-'))
+  const directory = await mkdtemp(join(tmpdir(), 'topo-native-tab-props-'))
   const record = {
     ...agentSessionRecordFixture(
       agentSessionLeaseFixture({

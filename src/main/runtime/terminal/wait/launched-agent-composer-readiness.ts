@@ -14,7 +14,7 @@ import { resolveDraftPasteReadyTimeoutMs } from '../../../../shared/draft-paste-
 import { TUI_AGENT_CONFIG } from '../../../../shared/agent-launch/catalog/tui-agent-config'
 import { draftPasteReadySignalHasMarker } from '../../../../shared/draft-paste-ready-scanner'
 import { nameOnlyIdleNeedsCorroboration } from './tui-idle-evidence'
-import type { OrcaRuntimeService } from '../../orca-runtime'
+import type { TopoRuntimeService } from '../../topo-runtime'
 import {
   failOnLaunchedAgentExit,
   launchedAgentExitMessage,
@@ -30,11 +30,11 @@ export function getLaunchedAgentReadinessLane(agent: TuiAgent): LaunchedAgentRea
 }
 
 export type LaunchedAgentReadinessRuntime = Pick<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   'waitForTerminal' | 'waitForFreshWorkerComposer'
 > &
   Partial<
-    Pick<OrcaRuntimeService, 'getPtyLivenessVerdict' | 'readExitedLaunchOutput'> &
+    Pick<TopoRuntimeService, 'getPtyLivenessVerdict' | 'readExitedLaunchOutput'> &
       LaunchedAgentExitRuntime
   >
 

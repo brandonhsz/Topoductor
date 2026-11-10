@@ -158,7 +158,7 @@ export function AppearanceThemeControl({
   )
 }
 
-/** The app theme painted while Orca is in one mode: built-in, the terminal's colors, or any
+/** The app theme painted while Topo is in one mode: built-in, the terminal's colors, or any
  *  enabled plugin theme of that mode. */
 export function AppearanceThemeSlotSelect({
   base,

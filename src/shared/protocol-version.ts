@@ -20,7 +20,7 @@ import { PAIRING_TICKET_EXCHANGE_RUNTIME_CAPABILITIES } from './remote-runtime/p
 import { FILES_RUNTIME_CAPABILITIES } from './file-access/files-runtime-capabilities'
 import { HOST_RUNTIME_CAPABILITIES } from './host-runtime-capabilities'
 import { MOBILE_RUNTIME_CAPABILITIES } from './mobile-runtime-capabilities'
-import { ORCAD_RUNTIME_CAPABILITIES } from './orcad-runtime-capabilities'
+import { TOPOD_RUNTIME_CAPABILITIES } from './topod-runtime-capabilities'
 import { ORCHESTRATION_RUNTIME_CAPABILITIES } from './orchestration/orchestration-runtime-capabilities'
 import { PREFLIGHT_RUNTIME_CAPABILITIES } from './preflight-runtime-capabilities'
 import {
@@ -94,7 +94,7 @@ export const RUNTIME_CAPABILITIES = /* @__PURE__ */ (() =>
     E2EE_V2_TOKEN_CAPABILITIES_RUNTIME_CAPABILITY,
     ...PAIRING_TICKET_EXCHANGE_RUNTIME_CAPABILITIES,
     ...MOBILE_RUNTIME_CAPABILITIES,
-    ...ORCAD_RUNTIME_CAPABILITIES,
+    ...TOPOD_RUNTIME_CAPABILITIES,
     ...ORCHESTRATION_RUNTIME_CAPABILITIES,
     ...agentLaunchCapabilities.AGENT_LAUNCH_RUNTIME_CAPABILITIES,
     ...AGENT_SESSION_RUNTIME_CAPABILITIES,

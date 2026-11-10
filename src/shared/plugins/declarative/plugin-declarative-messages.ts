@@ -56,7 +56,7 @@ export const pluginDeclarativeErrorPayloadSchema = z
     document: documentSchema.optional(),
     revision: revisionSchema,
     message: z.string().max(LIMITS.maxLabelLength * 4),
-    /** Where it threw, for `orca plugin check` and tests; the host shows only `message`. */
+    /** Where it threw, for `topo plugin check` and tests; the host shows only `message`. */
     stack: z.string().max(8192).optional()
   })
   .strict()

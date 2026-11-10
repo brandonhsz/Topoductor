@@ -1,4 +1,4 @@
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { readHostBrowserPageIds } from './helpers/host-session-tabs'
 import {
   readPanes,
@@ -74,7 +74,7 @@ async function readAddressBarState(
   page: Awaited<ReturnType<typeof setUpPairedFixture>>['client']['page']
 ): Promise<{ bars: number; focused: boolean; value: string | null }> {
   return page.evaluate(() => {
-    const bars = document.querySelectorAll('[data-orca-browser-address-bar]')
+    const bars = document.querySelectorAll('[data-topo-browser-address-bar]')
     const input = bars[0] as HTMLInputElement | undefined
     return {
       bars: bars.length,
@@ -129,7 +129,7 @@ test('keeps an address typed into the staged tab when the paired create is adopt
       { groupId: rootGroupId, url: fixture.url }
     )
 
-    await client.page.locator('[data-orca-browser-address-bar]').first().waitFor()
+    await client.page.locator('[data-topo-browser-address-bar]').first().waitFor()
     await expect
       .poll(() => readActiveBrowserPlacementKind(client.page, worktreeId), {
         timeout: 60_000,
@@ -148,7 +148,7 @@ test('keeps an address typed into the staged tab when the paired create is adopt
 
     // The user types their address while the create is still held at the seam.
     const typed = 'example.internal/typed-before-adoption'
-    const addressBar = client.page.locator('[data-orca-browser-address-bar]').first()
+    const addressBar = client.page.locator('[data-topo-browser-address-bar]').first()
     await addressBar.click()
     await client.page.keyboard.type(typed)
     expect(await readAddressBarState(client.page)).toMatchObject({ focused: true, value: typed })

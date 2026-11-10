@@ -9,7 +9,7 @@ import { isWslAvailableAsync } from '../main/wsl/discovery/wsl-availability'
 import { listWslDistrosAsync } from '../main/wsl/discovery/distro-catalog'
 import { isGitBashAvailable } from '../main/pty/shell-startup/git-bash'
 import { buildPosixCommandPathLookupScript } from '../shared/posix-command-path-lookup'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 
 const execFileAsync = promisify(execFile)
 
@@ -37,7 +37,7 @@ type AgentDetectionCommand = {
 
 const SUPPORTED_POSIX_SHELLS = new Set(['sh', 'dash', 'bash', 'zsh', 'fish'])
 const CONSERVATIVE_SYSTEM_SHELL_DIRS = new Set(['/bin', '/usr/bin'])
-const AGENT_PATH_PREFIX = '__ORCA_AGENT_PATH__'
+const AGENT_PATH_PREFIX = '__TOPO_AGENT_PATH__'
 
 export class PreflightHandler {
   constructor(private readonly dispatcher: RelayDispatcher) {

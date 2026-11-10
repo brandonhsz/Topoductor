@@ -1,7 +1,7 @@
-import type { OrcaProfileAuthStatus } from '../../../../shared/orca-profiles'
+import type { TopoProfileAuthStatus } from '../../../../shared/topo-profiles'
 
 export type UnexpectedSignoutGate = {
-  authStatus: OrcaProfileAuthStatus | null
+  authStatus: TopoProfileAuthStatus | null
   persistedUIReady: boolean
   appVersion: string | null
   dismissedVersion: string | null

@@ -53,7 +53,7 @@ const RICH_TYPES = [
 ] as const
 const RICH_TYPE_SET: ReadonlySet<string> = new Set(RICH_TYPES)
 
-/** Catalog 2+ components (Orca 1.4.247 and later). */
+/** Catalog 2+ components (Topo 1.4.247 and later). */
 export type PluginDeclarativeRichNode = Extract<
   PluginDeclarativeNode,
   { type: (typeof RICH_TYPES)[number] }

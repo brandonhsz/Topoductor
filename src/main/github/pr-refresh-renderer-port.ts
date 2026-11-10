@@ -1,4 +1,4 @@
-/** The desktop renderers PR refresh serves. A Node host (orcad) has none: no window reports
+/** The desktop renderers PR refresh serves. A Node host (topod) has none: no window reports
  *  visible PRs there, and refresh events go nowhere. Electron installs its own at startup. */
 export type PRRefreshRendererPort = {
   /** Whether the renderer that reported visible PRs is still open. */

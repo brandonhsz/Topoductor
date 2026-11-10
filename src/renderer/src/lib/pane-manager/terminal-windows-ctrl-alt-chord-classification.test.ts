@@ -6,7 +6,7 @@ import { installWindowsCtrlAltChordRepair } from './terminal-windows-ctrl-alt-ch
 
 const WINDOWS_ELECTRON_UA =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' +
-  'orca/1.0.0 Chrome/126.0.0.0 Electron/31.0.0 Safari/537.36'
+  'topo/1.0.0 Chrome/126.0.0.0 Electron/31.0.0 Safari/537.36'
 
 type ClassificationEvent = {
   type: string

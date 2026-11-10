@@ -15,7 +15,7 @@ afterEach(async () => {
 
 /** The editor template behind an HTML page that loads `editor/main.ts`, which imports `./sync.ts`. */
 async function editorPlugin(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-editor-check-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-editor-check-'))
   roots.push(root)
   const dir = join(root, 'notes')
   await createPluginFromTemplate({ dir, template: 'editor', publisher: 'acme' })
@@ -36,7 +36,7 @@ async function editorPlugin(): Promise<string> {
   return dir
 }
 
-describe('orca plugin check: custom editors', () => {
+describe('topo plugin check: custom editors', () => {
   it('passes the editor template and follows its script and imports', async () => {
     const dir = await editorPlugin()
     const [check] = await checkPluginEditors(dir)

@@ -33,21 +33,21 @@ function finishedDescription(
     return byUpdate
       ? t(
           'auto.components.NativeChatResumeRunPanel.finishedUpdate',
-          'These chats were working when Orca installed an update. Orca restored each one where it stopped, with its full context, and asked the agent to check what it was doing before carrying on. Your own prompts weren’t re-sent.'
+          'These chats were working when Topo installed an update. Topo restored each one where it stopped, with its full context, and asked the agent to check what it was doing before carrying on. Your own prompts weren’t re-sent.'
         )
       : t(
           'auto.components.NativeChatResumeRunPanel.finished',
-          'These chats were working when Orca closed. Orca restored each one where it stopped, with its full context, and asked the agent to check what it was doing before carrying on. Your own prompts weren’t re-sent.'
+          'These chats were working when Topo closed. Topo restored each one where it stopped, with its full context, and asked the agent to check what it was doing before carrying on. Your own prompts weren’t re-sent.'
         )
   }
   return byUpdate
     ? t(
         'auto.components.NativeChatResumeRunPanel.finishedPartialUpdate',
-        'These chats were working when Orca installed an update. The ones Orca resumed were restored where they stopped, with their full context, and asked to check what they were doing before carrying on. Your own prompts weren’t re-sent. Check the list for chats that still need attention or can be resumed.'
+        'These chats were working when Topo installed an update. The ones Topo resumed were restored where they stopped, with their full context, and asked to check what they were doing before carrying on. Your own prompts weren’t re-sent. Check the list for chats that still need attention or can be resumed.'
       )
     : t(
         'auto.components.NativeChatResumeRunPanel.finishedPartial',
-        'These chats were working when Orca closed. The ones Orca resumed were restored where they stopped, with their full context, and asked to check what they were doing before carrying on. Your own prompts weren’t re-sent. Check the list for chats that still need attention or can be resumed.'
+        'These chats were working when Topo closed. The ones Topo resumed were restored where they stopped, with their full context, and asked to check what they were doing before carrying on. Your own prompts weren’t re-sent. Check the list for chats that still need attention or can be resumed.'
       )
 }
 

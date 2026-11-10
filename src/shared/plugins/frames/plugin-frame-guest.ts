@@ -8,19 +8,19 @@ import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils'
  */
 
 export const PLUGIN_FRAME_SCHEME = 'orca-plugin-frame'
-export const PLUGIN_FRAME_PARTITION_PREFIX = 'persist:orca-plugin-'
+export const PLUGIN_FRAME_PARTITION_PREFIX = 'persist:topo-plugin-'
 /** `sendToHost` / `webview.send` channel carrying the `{orca:1, …}` envelopes. */
 export const PLUGIN_FRAME_IPC_CHANNEL = 'orca-plugin-frame'
 /** Preload → host only: modifier chords from trusted keydowns, the one source of a guest save. */
 export const PLUGIN_FRAME_KEY_CHANNEL = 'orca-plugin-frame-key'
-/** One-shot main-world handoff from the guest preload to Orca's injected frame shell. */
+/** One-shot main-world handoff from the guest preload to Topo's injected frame shell. */
 export const PLUGIN_FRAME_TRANSPORT_GLOBAL = '__orcaPluginFrameTransport'
-/** One-shot main-world hook letting Orca's declarative boot script post `ui.*` events. */
+/** One-shot main-world hook letting Topo's declarative boot script post `ui.*` events. */
 export const PLUGIN_DECLARATIVE_POST_GLOBAL = '__orcaDeclarativePost'
-/** Orca-served files under the reserved prefix (plugin-frame-protocol.ts). */
+/** Topo-served files under the reserved prefix (plugin-frame-protocol.ts). */
 export const PLUGIN_DECLARATIVE_HOST_FILE = 'declarative-host.html'
 export const PLUGIN_DECLARATIVE_RUNTIME_FILE = 'orca-runtime.mjs'
-/** Paths under this prefix are reserved for files Orca ships; plugin files there are never served. */
+/** Paths under this prefix are reserved for files Topo ships; plugin files there are never served. */
 export const PLUGIN_FRAME_RESERVED_SEGMENT = '__orca'
 
 const FRAME_KEY_PATTERN = /^[0-9a-f]{16}$/
@@ -38,7 +38,7 @@ export function pluginFramePartition(frameKey: string): string {
   return `${PLUGIN_FRAME_PARTITION_PREFIX}${frameKey}`
 }
 
-/** The frame key of an `orca-plugin-` partition, or null for any other partition. */
+/** The frame key of an `topo-plugin-` partition, or null for any other partition. */
 export function readPluginFramePartitionKey(partition: string): string | null {
   if (!partition.startsWith(PLUGIN_FRAME_PARTITION_PREFIX)) {
     return null

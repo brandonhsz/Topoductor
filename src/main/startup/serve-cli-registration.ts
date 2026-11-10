@@ -2,7 +2,7 @@ import { app } from 'electron'
 import { resolveAppImageRuntimeIdentity } from '../updater/linux-package/appimage-runtime-identity'
 import { prepareAppImageCopyForServe } from '../cli/appimage-serve-preparation'
 import { CliInstaller } from '../cli/cli-installer'
-import { installLinuxBareOrcaDispatcher } from '../cli/linux-bare-orca-dispatcher'
+import { installLinuxBareTopoDispatcher } from '../cli/linux-bare-topo-dispatcher'
 
 /** Headless serve has no renderer to run the normal cli:install flow, so it registers here. */
 export async function registerCliForHeadlessServe(): Promise<void> {
@@ -17,7 +17,7 @@ export async function registerCliForHeadlessServe(): Promise<void> {
     // Share one bounded AppImage extraction across CLI install/dispatcher and report progress.
     const preparation = await prepareAppImageCopyForServe({ appImagePath })
     if (preparation.status === 'unavailable') {
-      console.warn(`[serve] orca CLI install skipped: ${preparation.reason}`)
+      console.warn(`[serve] topo CLI install skipped: ${preparation.reason}`)
       return
     }
     appImageDeadlineAt = preparation.deadlineAt
@@ -31,28 +31,28 @@ export async function registerCliForHeadlessServe(): Promise<void> {
       ...(appImageDeadlineAt === undefined ? {} : { appImageDeadlineAt })
     }).install()
     console.log(
-      `[serve] orca CLI install: ${cliStatus.state}${cliStatus.commandPath ? ` (${cliStatus.commandPath})` : ''}`
+      `[serve] topo CLI install: ${cliStatus.state}${cliStatus.commandPath ? ` (${cliStatus.commandPath})` : ''}`
     )
   } catch (error) {
     console.warn(
-      '[serve] orca CLI install skipped:',
+      '[serve] topo CLI install skipped:',
       error instanceof Error ? error.message : String(error)
     )
   }
-  // Linux installs orca-ide; Claude Team invokes bare orca, requiring a best-effort user-local dispatcher.
+  // Linux installs topo-ide; Claude Team invokes bare topo, requiring a best-effort user-local dispatcher.
   if (process.platform === 'linux' && app.isPackaged && process.resourcesPath) {
     try {
-      const dispatcher = await installLinuxBareOrcaDispatcher({
+      const dispatcher = await installLinuxBareTopoDispatcher({
         resourcesPath: process.resourcesPath,
         ...(appImageDeadlineAt === undefined ? {} : { appImageDeadlineAt })
       })
       console.log(
-        `[serve] bare orca dispatcher ${dispatcher.state}: ${dispatcher.dispatcherPath}` +
+        `[serve] bare topo dispatcher ${dispatcher.state}: ${dispatcher.dispatcherPath}` +
           `${dispatcher.target ? ` -> ${dispatcher.target}` : ''}`
       )
     } catch (error) {
       console.warn(
-        '[serve] bare orca dispatcher install skipped:',
+        '[serve] bare topo dispatcher install skipped:',
         error instanceof Error ? error.message : String(error)
       )
     }

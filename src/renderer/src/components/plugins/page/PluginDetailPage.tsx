@@ -4,7 +4,7 @@ import { translate } from '@/i18n/i18n'
 import { useIntlLocale, useTranslate, type Translate } from '@/i18n/use-translate'
 import { pluginOfficialLabel } from '../presentation/plugin-official-label'
 import { Button } from '../../ui/button'
-import { needsNewerOrca, type PluginListEntry } from '../list/plugin-list-entries'
+import { needsNewerTopo, type PluginListEntry } from '../list/plugin-list-entries'
 import { PluginDetailAlert as Alert } from './PluginDetailAlert'
 import { usePluginPageAction } from './PluginPageAction'
 import { PluginPageHero, PluginScreenshots } from './PluginPageHero'
@@ -36,7 +36,7 @@ import { PluginPageIcon } from './PluginPageIcon'
 type PluginDetailPageProps = {
   entry: PluginListEntry
   busy: boolean
-  orcaVersion: string | null
+  topoVersion: string | null
   logsState: PluginLogsState | undefined
   handlers: InstalledRowHandlers
   fetchPreview: (listing: NonNullable<PluginListEntry['listing']>) => Promise<PluginPagePreview>
@@ -59,7 +59,7 @@ type PluginDetailPageProps = {
 function sourceLabel(entry: PluginListEntry, t: Translate = translate): string | null {
   const source = entry.installed?.source
   if (entry.installed?.bundled || source?.kind === 'bundled') {
-    return t('auto.components.settings.PluginDetailPage.bundled', 'Bundled with Orca')
+    return t('auto.components.settings.PluginDetailPage.bundled', 'Bundled with Topo')
   }
   if (source?.kind === 'local-path') {
     return t('auto.components.settings.PluginDetailPage.localFolder', 'Local folder')
@@ -75,7 +75,7 @@ function sourceLabel(entry: PluginListEntry, t: Translate = translate): string |
 export function PluginDetailPage({
   entry: currentEntry,
   busy,
-  orcaVersion,
+  topoVersion,
   logsState,
   handlers,
   fetchPreview,
@@ -93,7 +93,7 @@ export function PluginDetailPage({
   const model = usePluginPageModel({ entry: currentEntry, fetchPreview, refreshing })
   const { entry, plugin, listing, preview, stale } = model
   const palettes = usePluginArtPalettes(entry.pluginKey, listing?.release?.themePreview)
-  const tooNew = needsNewerOrca(entry.minimumOrca, orcaVersion) !== null
+  const tooNew = needsNewerTopo(entry.minimumOrca, topoVersion) !== null
   // Why: a fetched manifest names the plugin exactly; older catalogs only give its key.
   const name = entry.nameShowsPublisher
     ? entry.name
@@ -148,7 +148,7 @@ export function PluginDetailPage({
         title={t('auto.components.settings.PluginStatus.blocked', 'Blocked')}
         body={t(
           'auto.components.settings.PluginSettingsRow.killListMessage',
-          "Orca's safety list disabled this plugin: {{value0}}",
+          "Topo's safety list disabled this plugin: {{value0}}",
           { value0: plugin.blockedByKillList.reason }
         )}
       />
@@ -181,7 +181,7 @@ export function PluginDetailPage({
         tone="destructive"
         title={t(
           'auto.components.settings.PluginDetailPage.invalidTitle',
-          'Orca can’t load this plugin'
+          'Topo can’t load this plugin'
         )}
         body={typeof controls.description === 'string' ? controls.description : ''}
       />
@@ -193,7 +193,7 @@ export function PluginDetailPage({
         title={t('auto.components.settings.PluginStatus.blocked', 'Blocked')}
         body={t(
           'auto.components.settings.PluginMarketplaceListingRow.blocked',
-          "Blocked by Orca's safety list: {{value0}}",
+          "Blocked by Topo's safety list: {{value0}}",
           { value0: listing.blockedByKillList.reason }
         )}
       />
@@ -219,17 +219,17 @@ export function PluginDetailPage({
       <Alert
         tone="warning"
         title={t(
-          'auto.components.settings.PluginDetailPage.needsOrcaTitle',
-          'Needs Orca {{value0}} or later',
+          'auto.components.settings.PluginDetailPage.needsTopoTitle',
+          'Needs Topo {{value0}} or later',
           {
             value0: entry.minimumOrca ?? ''
           }
         )}
         body={t(
-          'auto.components.settings.PluginDetailPage.needsOrcaBody',
-          'You have Orca {{value0}}.',
+          'auto.components.settings.PluginDetailPage.needsTopoBody',
+          'You have Topo {{value0}}.',
           {
-            value0: orcaVersion ?? ''
+            value0: topoVersion ?? ''
           }
         )}
       />

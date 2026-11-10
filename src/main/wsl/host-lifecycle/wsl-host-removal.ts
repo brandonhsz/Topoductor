@@ -42,7 +42,7 @@ export async function removeWslHostServer(
         }))
     }
     await connector.disconnect(record.distro)
-    // Without its holder the distro stops once nothing started in it (a peer's orcad, user jobs) runs.
+    // Without its holder the distro stops once nothing started in it (a peer's topod, user jobs) runs.
     await connector.releaseHolder(record.distro)
   }
   serverStop = noteServerKeptForPeers(userDataPath, record.environmentId, serverStop)
@@ -64,7 +64,7 @@ export async function removeWslHostServer(
   return { serverStop: { ...serverStop, kept: true }, removed: false }
 }
 
-/** R39: undo of a move onto this host must not read a server kept for another Orca as stopped. */
+/** R39: undo of a move onto this host must not read a server kept for another Topo as stopped. */
 function noteServerKeptForPeers(
   userDataPath: string,
   environmentId: string,

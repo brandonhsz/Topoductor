@@ -15,7 +15,7 @@ import type { HistoryReader } from './agent-session-history-page-bounds'
 
 export type ForkMarker = { forkedFrom: AgentSessionForkedFrom; sourceName: string }
 export const FORK_MARKER_ITEM_ID = agentJournalItemKey({
-  provider: 'orca',
+  provider: 'topo',
   clientMessageId: 'forked-from'
 })
 

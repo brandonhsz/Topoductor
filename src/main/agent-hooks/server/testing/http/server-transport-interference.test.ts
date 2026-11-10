@@ -20,7 +20,7 @@ async function postTruncatedHook(
   await new Promise<void>((resolve, reject) => {
     const socket = connect({ port, host: '127.0.0.1' }, () => {
       socket.write(
-        `POST ${pathname} HTTP/1.1\r\nHost: 127.0.0.1\r\nContent-Type: application/x-www-form-urlencoded\r\nX-Orca-Agent-Hook-Token: ${token}\r\nContent-Length: ${announcedLength}\r\n\r\n${sentBytes}`
+        `POST ${pathname} HTTP/1.1\r\nHost: 127.0.0.1\r\nContent-Type: application/x-www-form-urlencoded\r\nX-Topo-Agent-Hook-Token: ${token}\r\nContent-Length: ${announcedLength}\r\n\r\n${sentBytes}`
       )
       // Reset mid-body to simulate interference rather than an ordinary FIN hangup.
       setTimeout(() => {
@@ -59,7 +59,7 @@ async function postStalledHook(
     const socket = connect({ port, host: '127.0.0.1' })
     await new Promise<void>((resolve) => socket.on('connect', () => resolve()))
     socket.write(
-      `POST ${pathname} HTTP/1.1\r\nHost: 127.0.0.1\r\nContent-Type: application/x-www-form-urlencoded\r\nX-Orca-Agent-Hook-Token: ${token}\r\nContent-Length: 100000\r\n\r\n`
+      `POST ${pathname} HTTP/1.1\r\nHost: 127.0.0.1\r\nContent-Type: application/x-www-form-urlencoded\r\nX-Topo-Agent-Hook-Token: ${token}\r\nContent-Length: 100000\r\n\r\n`
     )
     await new Promise<void>((resolve) => {
       socket.on('close', () => resolve())
@@ -99,8 +99,8 @@ describe('AgentHookServer transport interference', () => {
     const env = server.buildPtyEnv()
     return {
       server,
-      port: Number(env.ORCA_AGENT_HOOK_PORT),
-      token: env.ORCA_AGENT_HOOK_TOKEN,
+      port: Number(env.TOPO_AGENT_HOOK_PORT),
+      token: env.TOPO_AGENT_HOOK_TOKEN,
       reports
     }
   }
@@ -162,7 +162,7 @@ describe('AgentHookServer transport interference', () => {
 
     await postTruncatedHook(port, token)
     await postTruncatedHook(port, token)
-    // Orca's own slowloris timeout must not be misclassified as external interference.
+    // Topo's own slowloris timeout must not be misclassified as external interference.
     await postStalledHook(port, token)
     expect(reports).toEqual([])
 

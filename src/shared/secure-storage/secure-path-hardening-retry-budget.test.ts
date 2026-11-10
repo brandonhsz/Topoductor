@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { configureHardeningRetryBudget } from './secure-path-hardening-retry-budget'
 
-const PATH = 'C:\\Users\\me\\.orca\\secret.json'
-const OTHER = 'C:\\Users\\me\\.orca\\other.json'
+const PATH = 'C:\\Users\\me\\.topo\\secret.json'
+const OTHER = 'C:\\Users\\me\\.topo\\other.json'
 
 describe('secure path hardening retry budget', () => {
   beforeEach(() => {

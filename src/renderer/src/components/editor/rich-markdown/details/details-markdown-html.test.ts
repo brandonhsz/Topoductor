@@ -6,9 +6,9 @@ import {
 } from './details-markdown-html'
 
 function nestedToggles(depth: number): string {
-  let html = '<details class="orca-details" open>\n<summary>leaf</summary>\n\nBody\n\n</details>'
+  let html = '<details class="topo-details" open>\n<summary>leaf</summary>\n\nBody\n\n</details>'
   for (let level = depth - 1; level > 0; level -= 1) {
-    html = `<details class="orca-details" open>\n<summary>level ${level}</summary>\n\n${html}\n\n</details>`
+    html = `<details class="topo-details" open>\n<summary>level ${level}</summary>\n\n${html}\n\n</details>`
   }
   return html
 }
@@ -28,10 +28,10 @@ describe('details markdown html', () => {
       Array.from(
         { length: count },
         (_, index) =>
-          `<details class="orca-details"${extra}>\n<summary>sibling ${index}</summary>\n\nBody\n\n</details>`
+          `<details class="topo-details"${extra}>\n<summary>sibling ${index}</summary>\n\nBody\n\n</details>`
       ).join('\n\n')
     const wrap = (body: string): string =>
-      `<details class="orca-details">\n<summary>Outer</summary>\n\n${body}\n\n</details>`
+      `<details class="topo-details">\n<summary>Outer</summary>\n\n${body}\n\n</details>`
 
     expect(isEditableHtml(wrap(siblings(40)))).toBe(true)
     // Shared fence ranges must not let later siblings inherit an earlier sibling’s editability boundaries.

@@ -145,7 +145,7 @@ export const ISSUE_FIELDS = `
 `
 
 export const ISSUE_QUERY = `
-  query OrcaAgentLinearIssue($id: String!, $includeDrawerFields: Boolean = false) {
+  query TopoAgentLinearIssue($id: String!, $includeDrawerFields: Boolean = false) {
     issue(id: $id) {
       ${ISSUE_CORE_FIELDS}
       ... @skip(if: $includeDrawerFields) {
@@ -160,7 +160,7 @@ export const ISSUE_QUERY = `
 `
 
 export const SEARCH_QUERY = `
-  query OrcaAgentLinearSearch($term: String!, $first: Int) {
+  query TopoAgentLinearSearch($term: String!, $first: Int) {
     searchIssues(term: $term, first: $first) {
       nodes {
         ${ISSUE_FIELDS}
@@ -170,7 +170,7 @@ export const SEARCH_QUERY = `
 `
 
 export const COMMENTS_QUERY = `
-  query OrcaAgentLinearIssueComments($id: String!, $first: Int, $after: String) {
+  query TopoAgentLinearIssueComments($id: String!, $first: Int, $after: String) {
     issue(id: $id) {
       comments(first: $first, after: $after) {
         nodes {
@@ -202,7 +202,7 @@ export function CHILDREN_QUERY(depth: number): string {
       }`
   }
   return `
-    query OrcaAgentLinearIssueChildren($id: String!, $first: Int!, $after: String) {
+    query TopoAgentLinearIssueChildren($id: String!, $first: Int!, $after: String) {
       issue(id: $id) {
         children(first: $first, after: $after) {
           nodes { ${fields} }
@@ -214,7 +214,7 @@ export function CHILDREN_QUERY(depth: number): string {
 }
 
 export const ATTACHMENTS_QUERY = `
-  query OrcaAgentLinearIssueAttachments($id: String!, $first: Int, $after: String) {
+  query TopoAgentLinearIssueAttachments($id: String!, $first: Int, $after: String) {
     issue(id: $id) {
       attachments(first: $first, after: $after) {
         nodes { id title url source subtitle createdAt }
@@ -225,7 +225,7 @@ export const ATTACHMENTS_QUERY = `
 `
 
 export const RELATIONS_QUERY = `
-  query OrcaAgentLinearIssueRelations($id: String!, $first: Int, $after: String) {
+  query TopoAgentLinearIssueRelations($id: String!, $first: Int, $after: String) {
     issue(id: $id) {
       relations(first: $first, after: $after) {
         nodes {
@@ -240,7 +240,7 @@ export const RELATIONS_QUERY = `
 `
 
 export const INVERSE_RELATIONS_QUERY = `
-  query OrcaAgentLinearIssueInverseRelations($id: String!, $first: Int, $after: String) {
+  query TopoAgentLinearIssueInverseRelations($id: String!, $first: Int, $after: String) {
     issue(id: $id) {
       inverseRelations(first: $first, after: $after) {
         nodes {

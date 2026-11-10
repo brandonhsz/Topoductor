@@ -33,7 +33,7 @@ declare module 'orca/worker' {
     PluginHooks
   } from 'orca/host'
 
-  /** `signal` aborts when Orca stops waiting for the command. */
+  /** `signal` aborts when Topo stops waiting for the command. */
   export type CommandContext = { signal: AbortSignal }
   /** The open panel or editor that asked; `id` stays the same while it stays open. */
   export type PanelCaller = { id: string; surface: 'panel' | 'editor'; contributionId: string }
@@ -81,7 +81,7 @@ declare module 'orca/worker' {
   export type OrcaWorkerApi = {
     readonly api: HostApiVersion
     readonly commands: {
-      /** A string result is shown as-is in Orca; anything else as JSON. */
+      /** A string result is shown as-is in Topo; anything else as JSON. */
       register(
         commandId: string,
         handler: (args: unknown, context: CommandContext) => unknown
@@ -97,7 +97,7 @@ declare module 'orca/worker' {
     readonly hooks: {
       /** Only hooks listed in `contributes.hooks` run. Return `next(event)` to go on (with the
        *  fields the hook allows changed), a result such as `{ deny: reason }` to stop, or nothing
-       *  to pass. Plugins run in turn, then Orca acts; past 2 s, or on a throw, Orca carries on as
+       *  to pass. Plugins run in turn, then Topo acts; past 2 s, or on a throw, Topo carries on as
        *  if this plugin passed and logs it. */
       on<H extends PluginHookName>(hook: H, handler: HookHandler<H>): Disposable
     }
@@ -112,11 +112,11 @@ declare module 'orca/worker' {
     readonly secrets: SecretsApi
     /** Consented capability kinds; informational, the host re-checks every call. */
     readonly grantedCapabilities: readonly string[]
-    /** Lands in `orca plugin logs`. */
+    /** Lands in `topo plugin logs`. */
     log(message: string): void
   }
   /** A worker's `main` must export it as the DEFAULT export (`export default function
-   *  activate(orca)`); Orca calls it once when the worker starts and never calls a named
+   *  activate(orca)`); Topo calls it once when the worker starts and never calls a named
    *  `activate`. An optional `export function deactivate()` is awaited before it stops. */
   export type Activate = (orca: OrcaWorkerApi) => void | Promise<void>
 }

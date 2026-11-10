@@ -3,7 +3,7 @@ import {
   BROWSER_CLIENT_HOST_REQUEST_CAPABILITY,
   type BrowserClientHostRequestEvent
 } from '../../../../../shared/browser/client-hosting/browser-client-host-request-protocol'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { getBrowserHostRequestRegistry } from '../../../browser-host/leases/browser-host-request-registry'
 import { eraseRpcMethods, isStreamingMethod, type RpcContext } from '../../core'
 // Import the registry to avoid client-events' module-init cycle through ipc/ssh.
@@ -13,7 +13,7 @@ const subscribeMethod = eraseRpcMethods(ALL_RPC_METHODS)
   .filter(isStreamingMethod)
   .find((method) => method.name === 'runtime.clientEvents.subscribe')
 
-function makeRuntime(): { runtime: OrcaRuntimeService; cleanups: (() => void)[] } {
+function makeRuntime(): { runtime: TopoRuntimeService; cleanups: (() => void)[] } {
   const cleanups: (() => void)[] = []
   const fake = {
     getRuntimeId: () => 'runtime-a',
@@ -24,7 +24,7 @@ function makeRuntime(): { runtime: OrcaRuntimeService; cleanups: (() => void)[] 
     }
   }
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the subscribe handler reads only these members.
-  return { runtime: fake as unknown as OrcaRuntimeService, cleanups }
+  return { runtime: fake as unknown as TopoRuntimeService, cleanups }
 }
 
 it('asks only the opted-in subscription of a capable desktop socket to host browser pages', async () => {

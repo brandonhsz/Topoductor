@@ -17,7 +17,7 @@ import type {
 import type { ExecutionHostRegistryEntry } from '../../../../../../shared/execution-host/execution-host-registry-entry'
 
 import { getExecutionHostHealthLabel } from '@/lib/runtime-host-copy'
-import { pickerExecutionHosts } from '../../../../../../shared/execution-host/managed-orcad-execution-host'
+import { pickerExecutionHosts } from '../../../../../../shared/execution-host/managed-topod-execution-host'
 import { getCheckedHostRows } from '../../../../../../shared/workspace-view/workspace-host-visibility'
 import type { RuntimeCompatVerdict } from '../../../../../../shared/protocol-compat'
 import type { SshConnectionState, SshConnectionStatus } from '../../../../../../shared/ssh-types'
@@ -58,7 +58,7 @@ export type SidebarHostOption = {
   connectionStatus?: SshConnectionStatus
   aliasHostIds?: readonly ExecutionHostId[]
   mergedIntoHostId?: ExecutionHostId
-  /** Set on a WSL host's row: the distro its Orca server runs in. */
+  /** Set on a WSL host's row: the distro its Topo server runs in. */
   wslDistro?: string
   /** Why a listed WSL host cannot run: the experiment is off, or this build lacks its server files. */
   wslUnavailable?: 'turned-off' | 'server-files-missing'
@@ -82,7 +82,7 @@ export function buildSidebarHostOptions(
     runtimeStatusByEnvironmentId?: ReadonlyMap<string, RuntimeEnvironmentStatus>
     runtimeEnvironments?: readonly Pick<
       PublicKnownRuntimeEnvironment,
-      'id' | 'name' | 'source' | 'orcadDeployment'
+      'id' | 'name' | 'source' | 'topodDeployment'
     >[]
     // Apply display-label overrides consistently across sidebar host controls.
     hostLabelOverrides?: ReadonlyMap<ExecutionHostId, string>
@@ -110,7 +110,7 @@ export function buildSidebarHostOptions(
     if (isWslHostRuntimeEnvironment(environment)) {
       wslDistroByHostId.set(toRuntimeExecutionHostId(environment.id), {
         environmentId: environment.id,
-        distro: environment.orcadDeployment.distro
+        distro: environment.topodDeployment.distro
       })
     }
   }

@@ -8,14 +8,14 @@ import {
 import { leaf } from '../../../shared/workspace-layout/workspace-layout-session.test-fixture'
 import type { WorkspaceSessionState } from '../../../shared/workspace-session/workspace-session-state-types'
 import { deriveHeadlessLegacyTerminalLeafId } from '../terminal/surface/mobile-session-layout-projection'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 
 const repos = [
   { id: 'repo-1', path: '/repos', displayName: 'repo-1', badgeColor: 'blue', addedAt: 1 }
 ]
 
 function hydratedRuntime(session: WorkspaceSessionState) {
-  const runtime = new OrcaRuntimeService({
+  const runtime = new TopoRuntimeService({
     getRepo: (id: string) => repos.find((repo) => repo.id === id),
     getRepos: () => repos,
     getAllWorktreeMeta: () => ({}),

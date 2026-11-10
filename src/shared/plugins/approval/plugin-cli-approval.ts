@@ -27,7 +27,7 @@ export const PLUGIN_APPROVAL_STALE_CODE = 'approval_stale'
 export const PLUGIN_NOT_FOUND_CODE = 'plugin_not_found'
 export const PLUGIN_INVALID_CODE = 'plugin_invalid'
 export const PLUGIN_SYSTEM_DISABLED_CODE = 'plugin_system_disabled'
-/** `orca plugin dev request`: the worker's own error code rides in `data.requestCode`. */
+/** `topo plugin dev request`: the worker's own error code rides in `data.requestCode`. */
 export const PLUGIN_REQUEST_FAILED_CODE = 'plugin_request_failed'
 export const PLUGIN_INSTALL_FAILED_CODE = 'plugin_install_failed'
 export const PLUGIN_BLOCKED_CODE = 'plugin_blocked'
@@ -69,7 +69,7 @@ export type PluginApprovalGrants = {
   executionDescription: string
   capabilities: { kind: string; description: string }[]
   contributions: PluginContributionSummaryItem[]
-  /** Commands that run in place of Orca's own actions; absent when there are none. */
+  /** Commands that run in place of Topo's own actions; absent when there are none. */
   replacements?: { command: string; action: string }[]
 }
 
@@ -111,11 +111,11 @@ type ApprovalSubject = {
 const EXECUTION_DESCRIPTIONS: Record<PluginExecutionProfile, string> = {
   data: 'Content only (themes, icons, syntaxes, translations); nothing runs.',
   declarative:
-    'Runs Orca actions you could run yourself through the commands, shortcuts or VM recipes it declares.',
+    'Runs Topo actions you could run yourself through the commands, shortcuts or VM recipes it declares.',
   'sandboxed-ui':
-    'Shows its own code in sandboxed panels or editors inside Orca; an editor reads every file it opens.',
+    'Shows its own code in sandboxed panels or editors inside Topo; an editor reads every file it opens.',
   'trusted-worker':
-    'Runs its own code in a separate Node.js process on the Orca host, with your user account’s access to that machine.'
+    'Runs its own code in a separate Node.js process on the Topo host, with your user account’s access to that machine.'
 }
 
 /** Content-only plugins never need the flag; main decides this from the verified manifest. */
@@ -194,8 +194,8 @@ export function buildPluginApprovalRequest(
     isDev: subject.isDev,
     grants,
     why: pluginNeedsCliApproval(subject.manifest)
-      ? `It can run code or act in Orca, so Orca does not enable it without an explicit approval bound to exactly these files and this access.${devNote}`
-      : 'It now comes from a different repository or folder, so Orca does not keep it on without an explicit approval bound to exactly these files.',
+      ? `It can run code or act in Topo, so Topo does not enable it without an explicit approval bound to exactly these files and this access.${devNote}`
+      : 'It now comes from a different repository or folder, so Topo does not keep it on without an explicit approval bound to exactly these files.',
     approveFlag,
     nextSteps: [
       'Approving grants the access listed above. Confirm with your user first unless they already asked for exactly this plugin and access.',
@@ -241,7 +241,7 @@ export function formatPluginApprovalMessage(request: PluginApprovalRequest, stal
     ...request.grants.capabilities.map((capability) => `- ${capability.description}`),
     ...(request.grants.replacements ?? []).map(
       (replacement) =>
-        `- Runs "${replacement.command}" instead of Orca's own ${replacement.action} (switch it back on the plugin's page)`
+        `- Runs "${replacement.command}" instead of Topo's own ${replacement.action} (switch it back on the plugin's page)`
     )
   ]
   if (request.grants.contributions.length > 0) {
@@ -279,12 +279,12 @@ export class PluginNotFoundError extends Error {
   readonly data: { pluginKey: string; nextSteps: string[] }
 
   constructor(pluginKey: string) {
-    super(`No valid plugin ${pluginKey} is loaded on this Orca host.`)
+    super(`No valid plugin ${pluginKey} is loaded on this Topo host.`)
     this.name = 'PluginNotFoundError'
     this.data = {
       pluginKey,
       nextSteps: [
-        'Check the plugin key, and that the plugin is installed or loaded on this Orca host.'
+        'Check the plugin key, and that the plugin is installed or loaded on this Topo host.'
       ]
     }
   }

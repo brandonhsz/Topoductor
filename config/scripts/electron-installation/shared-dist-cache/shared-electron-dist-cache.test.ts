@@ -29,7 +29,7 @@ afterEach(() => {
 })
 
 function makeRoot(): string {
-  const root = mkdtempSync(path.join(tmpdir(), 'orca-shared-electron-'))
+  const root = mkdtempSync(path.join(tmpdir(), 'topo-shared-electron-'))
   roots.push(root)
   return root
 }
@@ -46,7 +46,7 @@ function makeEntry(root: string, entryName = `${VERSION}-darwin-arm64`) {
   return {
     cacheRoot,
     entryPath: path.join(cacheRoot, entryName),
-    markerPath: path.join(root, '.orca-shared-dist')
+    markerPath: path.join(root, '.topo-shared-dist')
   }
 }
 

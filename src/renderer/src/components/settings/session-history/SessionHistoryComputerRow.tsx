@@ -46,7 +46,7 @@ export function SessionHistoryComputerRow({
           <span className="truncate text-sm font-medium">{name}</span>
           {version ? (
             <span className="shrink-0 text-[11px] text-muted-foreground">
-              {t('sessionHistory.settings.serverVersion', 'Orca v{{version}}', { version })}
+              {t('sessionHistory.settings.serverVersion', 'Topo v{{version}}', { version })}
             </span>
           ) : null}
         </div>

@@ -153,8 +153,8 @@ describe('codex journal translation', () => {
 
     expect(admission).toEqual({ accepted: true })
     expect(bound.map(([journalItemId]) => journalItemId)).toEqual([
-      'orca:codex-prompt%3Athread-abc%3Ainput-hard-watermark%3Aq1',
-      'orca:codex-prompt%3Athread-abc%3Ainput-hard-watermark%3Aq2'
+      'topo:codex-prompt%3Athread-abc%3Ainput-hard-watermark%3Aq1',
+      'topo:codex-prompt%3Athread-abc%3Ainput-hard-watermark%3Aq2'
     ])
     expect(deferred.state()).toMatchObject({ backpressured: true })
 

@@ -38,7 +38,7 @@ export function useMobileSessionScreenState(scope: MobileSessionFoundationModel)
   const [terminalTextScale, setTerminalTextScale] = useState(1)
   const terminalTextScaleRevisionRef = useRef(0)
   const [terminalLinkOpenMode, setTerminalLinkOpenMode] =
-    useState<MobileTerminalLinkOpenMode>('orca-browser')
+    useState<MobileTerminalLinkOpenMode>('topo-browser')
   const [liveInputCapture] = useState(createLiveInputCapture)
   const [activeHandle, setActiveHandle] = useState<string | null>(null)
   const [coveredStreamRevision, setCoveredStreamRevision] = useState(0)

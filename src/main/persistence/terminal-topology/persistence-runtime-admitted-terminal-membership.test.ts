@@ -57,7 +57,7 @@ async function startRuntimePane(
 
 describe('runtime-admitted terminal membership survives a stale renderer replay', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-host-membership-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-host-membership-'))
   })
 
   afterEach(async () => {

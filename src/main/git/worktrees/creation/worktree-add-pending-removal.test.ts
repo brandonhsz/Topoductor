@@ -47,7 +47,7 @@ function startDeleting(): void {
   })
 }
 
-describe('addWorktree while Orca deletes a checkout in the background', () => {
+describe('addWorktree while Topo deletes a checkout in the background', () => {
   afterEach(() => {
     _resetPendingWorktreeRemovalsForTests()
   })
@@ -55,7 +55,7 @@ describe('addWorktree while Orca deletes a checkout in the background', () => {
   it('refuses the same path with a clear message and runs no git', async () => {
     startDeleting()
     await expect(addWorktree('/repo', '/repo-feature', 'other-branch')).rejects.toThrow(
-      'Orca is still deleting the workspace at /repo-feature. Cleanup is pending; try again shortly.'
+      'Topo is still deleting the workspace at /repo-feature. Cleanup is pending; try again shortly.'
     )
     expect(gitExecFileAsyncMock).not.toHaveBeenCalled()
   })

@@ -1,5 +1,5 @@
 import {
-  getOrcaManagedCodexHomePath,
+  getTopoManagedCodexHomePath,
   getSystemCodexHomePath
 } from '../codex/configuration/homes/codex-home-paths'
 import { syncSystemConfigIntoLegacySharedCodexHome } from '../codex/configuration/settings/codex-config-mirror'
@@ -14,7 +14,7 @@ export function syncLegacySharedCodexConfigForRetainedPanes(
 ): void {
   try {
     const resolvedPaths = paths ?? {
-      sharedRuntimeHome: getOrcaManagedCodexHomePath(),
+      sharedRuntimeHome: getTopoManagedCodexHomePath(),
       systemCodexHome: getSystemCodexHomePath()
     }
     syncSystemConfigIntoLegacySharedCodexHome({

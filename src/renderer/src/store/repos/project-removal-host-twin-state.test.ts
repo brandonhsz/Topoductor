@@ -14,7 +14,7 @@ import {
 } from '../../runtime/rpc/testing/runtime-compatibility-test-fixture'
 import { clearRuntimeCompatibilityCache as clearRuntimeCompatibilityCacheForTests } from '../../runtime/rpc/compatibility/runtime-compatibility-cache'
 import { layoutApplyTestTransport } from '@/runtime/workspace-layout/testing/layout-apply-test-transport.test-fixture'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 
 vi.mock('@/runtime/rpc/calls/runtime-rpc-call', async (importOriginal) =>
   (
@@ -284,7 +284,7 @@ describe('removing a remote project keeps its local twin', () => {
 
     const state = store.getState()
     // A layout-owner build asks main to close the removed host's editor tab first.
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       expect(layoutApplyTestTransport.sentOfType('closeTabs')).toEqual([
         { type: 'closeTabs', workspace: WORKTREE_ID, tabIds: ['editor:remote-file'] }
       ])

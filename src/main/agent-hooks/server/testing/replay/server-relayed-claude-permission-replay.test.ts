@@ -55,7 +55,7 @@ type SshPane = {
 }
 
 async function startSshPane(): Promise<SshPane> {
-  const endpointDir = mkdtempSync(join(tmpdir(), 'orca-relayed-permission-'))
+  const endpointDir = mkdtempSync(join(tmpdir(), 'topo-relayed-permission-'))
   temporaryPaths.push(endpointDir)
   const pane: SshPane = {
     desktop: new AgentHookServer(),
@@ -75,7 +75,7 @@ async function startSshPane(): Promise<SshPane> {
       const { port, token } = pane.relay.getCoordinates()
       const response = await fetch(`http://127.0.0.1:${port}/hook/claude`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Orca-Agent-Hook-Token': token },
+        headers: { 'Content-Type': 'application/json', 'X-Topo-Agent-Hook-Token': token },
         body: JSON.stringify(buildBody(payload))
       })
       expect(response.status).toBe(204)

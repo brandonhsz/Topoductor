@@ -24,8 +24,8 @@ import '../../orchestration/db/messages/mailbox-routing-page'
 import '../../orchestration/db/dispatch-row-writer'
 import '../../orchestration/db/attempt-outcome-projection'
 import { structuredSessionMailReach } from '../../orchestration/mailbox/routing/structured-session-mail-address'
-import { resolveOrcaSessionParty } from '../../orchestration/addressing/orchestration-party'
-import { testOrcaSessionId } from '../../../../shared/orca-session-address-test-fixture'
+import { resolveTopoSessionParty } from '../../orchestration/addressing/orchestration-party'
+import { testTopoSessionId } from '../../../../shared/topo-session-address-test-fixture'
 import {
   mintStructuredWorkerHandle,
   mintStructuredWorkerPaneKey,
@@ -157,8 +157,8 @@ describe('real conversation inventory work', () => {
   })
 
   it('keeps global worker identity separate from candidate inventory and retains closure/loop outcomes', async () => {
-    const rootId = testOrcaSessionId('global-root')
-    const successor = testOrcaSessionId('visible-successor')
+    const rootId = testTopoSessionId('global-root')
+    const successor = testTopoSessionId('visible-successor')
     const globalRoot = await scaleDirectory()
     const candidateRoot = await scaleDirectory()
     const rows = [
@@ -201,7 +201,7 @@ describe('real conversation inventory work', () => {
         creator: { kind: 'system' },
         maxDepth: Number.MAX_SAFE_INTEGER
       })
-      expect(db.getDispatchContextById(dispatch.id)?.assignee_orca_session_id).toBe(rootId)
+      expect(db.getDispatchContextById(dispatch.id)?.assignee_topo_session_id).toBe(rootId)
       const reader = conversationRecordReader(candidateStore)
       const found = () =>
         [...createReferenceAgentIndex(referenceRuntime, db, reader).values()].flat()
@@ -220,11 +220,11 @@ describe('real conversation inventory work', () => {
         worktreeId: 'workspace-1',
         hostScope: { kind: 'local', hostId: 'local' }
       })
-      expect(resolveOrcaSessionParty(successor, db)).toMatchObject({
-        orcaSessionId: rootId,
+      expect(resolveTopoSessionParty(successor, db)).toMatchObject({
+        topoSessionId: rootId,
         terminalHandle: handle
       })
-      expect(found()[0]?.mailbox).toBe(`orca_session_id:${successor}`)
+      expect(found()[0]?.mailbox).toBe(`topo_session_id:${successor}`)
       expect(
         structuredSessionMailReach(reader, candidateStore.getConversation('closed-chat')!, db)
       ).toEqual({ kind: 'ended', reason: 'closed' })

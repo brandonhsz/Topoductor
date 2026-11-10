@@ -12,7 +12,7 @@ describe('planOpenCodeRootModelRewrite', () => {
   it.each(['posix', 'powershell', 'cmd'] as const)(
     'moves a launch-built %s model into the overlay and keeps the prompt as built',
     (shell) => {
-      // Orca's cmd quoting diverges for quotes and ^&|<>()%!, so a cmd prompt with them stays as typed.
+      // Topo's cmd quoting diverges for quotes and ^&|<>()%!, so a cmd prompt with them stays as typed.
       const prompt = shell === 'cmd' ? 'fix a;b then test' : 'it\'s broken; fix "a;b"'
       const tail = ` --prompt ${quoteStartupArg(prompt, shell)}`
       const command = `opencode ${q(['--auto', '--model', 'opencode/big-pickle'], shell)}${tail}`
@@ -50,7 +50,7 @@ describe('planOpenCodeRootModelRewrite', () => {
     ['posix', `opencode ${q(['./pkg', '--model', 'a/b'], 'posix')}`],
     ['posix', `opencode ${q(['--server', 'http://127.0.0.1:4096', '--model', 'a/b'], 'posix')}`],
     ['posix', `opencode ${q(['-s', 'ses_1', '--model', '$MODEL'], 'posix')}`],
-    // Hand-typed shapes Orca never emits keep today's behavior.
+    // Hand-typed shapes Topo never emits keep today's behavior.
     ['posix', 'opencode --model a/b'],
     ['posix', `opencode ${q(['--model', 'a/b'], 'posix')}\n--model c/d`],
     ['posix', `opencode ${q(['--model', 'a/b'], 'posix')}; --model c/d`],

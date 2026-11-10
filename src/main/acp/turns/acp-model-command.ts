@@ -75,7 +75,7 @@ async function applyAcpModelCommand(
 }
 
 /** Option writes and the model command share one deadline; only an unanswered command, a hidden
- *  prompt Orca cannot cancel, retires the child. */
+ *  prompt Topo cannot cancel, retires the child. */
 export function acpOptionWriteBound(
   deps: Pick<AcpStructuredSessionAdapterDeps, 'optionWriteTimeoutMs'>,
   session: Pick<AcpStructuredSession, 'spec'>,

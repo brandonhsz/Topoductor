@@ -40,7 +40,7 @@ vi.mock('electron', () => ({
   }
 }))
 
-mocks.userData = mkdtempSync(join(tmpdir(), 'orca-extension-data-user-'))
+mocks.userData = mkdtempSync(join(tmpdir(), 'topo-extension-data-user-'))
 
 const {
   clearBrowserExtensionSessionData,
@@ -80,7 +80,7 @@ beforeEach(() => {
 
 describe('clearBrowserExtensionSessionData', () => {
   it('deletes chrome.storage.local of an unloaded extension unless this run opened it', async () => {
-    const partition = mkdtempSync(join(tmpdir(), 'orca-extension-data-'))
+    const partition = mkdtempSync(join(tmpdir(), 'topo-extension-data-'))
     const folder = join(partition, 'Local Extension Settings', ID)
     mkdirSync(folder, { recursive: true })
     const opened = fakeSession(false, partition)
@@ -88,7 +88,7 @@ describe('clearBrowserExtensionSessionData', () => {
     await clearBrowserExtensionSessionData(opened, ID)
     // Chromium still holds the open database, so the launch sweep deletes it instead.
     expect(existsSync(folder)).toBe(true)
-    expect(() => throwIfBrowserExtensionStorageAwaitingRestart(opened, ID)).toThrow('Restart Orca')
+    expect(() => throwIfBrowserExtensionStorageAwaitingRestart(opened, ID)).toThrow('Restart Topo')
 
     const sess = fakeSession(false, partition)
     await clearBrowserExtensionSessionData(sess, ID)
@@ -99,7 +99,7 @@ describe('clearBrowserExtensionSessionData', () => {
 })
 
 describe('removeUninstalledBrowserExtensionData', () => {
-  // Uninstall reaches only the Orca profile open at the time; others are swept when they attach.
+  // Uninstall reaches only the Topo profile open at the time; others are swept when they attach.
   it("forgets this profile's saved grants and sync items of uninstalled extensions", async () => {
     const states = getBrowserExtensionProfileStateStore()
     const sync = getBrowserExtensionSyncStorageStore()
@@ -123,11 +123,11 @@ describe('removeUninstalledBrowserExtensionData', () => {
   })
 })
 
-describe('uninstall while another Orca profile is inactive', () => {
-  it('clears native and origin data and grants after uninstall and reinstall in another Orca profile', async () => {
-    const personalDirectory = mkdtempSync(join(tmpdir(), 'orca-extension-personal-'))
-    const workDirectory = mkdtempSync(join(tmpdir(), 'orca-extension-work-'))
-    async function openOrcaProfile(directory: string) {
+describe('uninstall while another Topo profile is inactive', () => {
+  it('clears native and origin data and grants after uninstall and reinstall in another Topo profile', async () => {
+    const personalDirectory = mkdtempSync(join(tmpdir(), 'topo-extension-personal-'))
+    const workDirectory = mkdtempSync(join(tmpdir(), 'topo-extension-work-'))
+    async function openTopoProfile(directory: string) {
       vi.resetModules()
       const { configureBrowserExtensionProfileDataDirectory } =
         await import('./browser-extension-profile-data-directory')
@@ -147,7 +147,7 @@ describe('uninstall while another Orca profile is inactive', () => {
         sweep: removeUninstalledBrowserExtensionData
       }
     }
-    const personal = await openOrcaProfile(personalDirectory)
+    const personal = await openTopoProfile(personalDirectory)
     const record = {
       id: ID,
       name: 'Vault',
@@ -159,7 +159,7 @@ describe('uninstall while another Orca profile is inactive', () => {
       hostPermissions: [],
       optionsPage: null
     }
-    const partition = mkdtempSync(join(tmpdir(), 'orca-extension-inactive-'))
+    const partition = mkdtempSync(join(tmpdir(), 'topo-extension-inactive-'))
     const nativeSettings = join(partition, 'Local Extension Settings', ID)
     mkdirSync(nativeSettings, { recursive: true })
     personal.states.update('default', ID, (state) => ({
@@ -171,11 +171,11 @@ describe('uninstall while another Orca profile is inactive', () => {
     personal.sync.flush()
     personal.installed.save(record)
 
-    const work = await openOrcaProfile(workDirectory)
+    const work = await openTopoProfile(workDirectory)
     await work.installed.remove(ID)
     work.installed.save({ ...record, version: '2' })
 
-    const reopened = await openOrcaProfile(personalDirectory)
+    const reopened = await openTopoProfile(personalDirectory)
     const sess = fakeSession(false, partition)
     await reopened.sweep(sess, 'default', new Set([ID]))
     expect(reopened.sync.read('default', ID)).toEqual({})
@@ -208,7 +208,7 @@ it('preserves newly opened native settings while another extension finishes rein
     await store.remove(id)
     store.save({ ...record, id })
   }
-  const partition = mkdtempSync(join(tmpdir(), 'orca-extension-concurrent-cleanup-'))
+  const partition = mkdtempSync(join(tmpdir(), 'topo-extension-concurrent-cleanup-'))
   const settings = join(partition, 'Local Extension Settings')
   mkdirSync(join(settings, ID), { recursive: true })
   mkdirSync(join(settings, OTHER), { recursive: true })
@@ -262,7 +262,7 @@ it("preserves another pending unpacked reinstall's data when reconciling one ext
     })
     await store.remove(id)
   }
-  const partition = mkdtempSync(join(tmpdir(), 'orca-extension-pending-reinstall-'))
+  const partition = mkdtempSync(join(tmpdir(), 'topo-extension-pending-reinstall-'))
   const sess = fakeSession(false, partition)
   const profileId = 'pending-reinstalls'
   await removeReinstalledBrowserExtensionData(sess, profileId, ID)
@@ -279,7 +279,7 @@ it("preserves another pending unpacked reinstall's data when reconciling one ext
 
   expect(sync.read(profileId, ID)).toEqual({ token: 'fresh secret' })
   expect(states.read(profileId, ID).grantedPermissions).toEqual(['tabs'])
-  expect(existsSync(join(nativeSettings, 'orca-uninstalled'))).toBe(false)
+  expect(existsSync(join(nativeSettings, 'topo-uninstalled'))).toBe(false)
   expect(sess.clearStorageData).toHaveBeenCalledExactlyOnceWith({
     origin: `chrome-extension://${OTHER}`
   })

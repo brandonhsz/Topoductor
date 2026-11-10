@@ -23,8 +23,8 @@ export type BrowserAgentPresenceApi = {
   onRemoteHostControlNotice?: (
     callback: (notice: DesktopBrowserBridgeHostNotice) => void
   ) => () => void
-  /** Detaches the host from desktop browser tabs until Orca restarts or the host is re-enabled. */
+  /** Detaches the host from desktop browser tabs until Topo restarts or the host is re-enabled. */
   stopRemoteHostControl?: (targetId: string) => Promise<void>
-  /** Turns the host's browser-control setting off; false when the host's settings are Orca's own. */
+  /** Turns the host's browser-control setting off; false when the host's settings are Topo's own. */
   disallowRemoteHostControl?: (targetId: string) => Promise<boolean>
 }

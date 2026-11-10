@@ -9,9 +9,9 @@ import {
   type ExecutionHostId
 } from '../../../../../../shared/execution-host'
 
-export const AI_VAULT_SESSION_DRAG_TYPE = 'application/x-orca-ai-vault-session'
-export const AI_VAULT_SESSION_DRAG_START_EVENT = 'orca-ai-vault-session-drag-start'
-export const AI_VAULT_SESSION_DRAG_END_EVENT = 'orca-ai-vault-session-drag-end'
+export const AI_VAULT_SESSION_DRAG_TYPE = 'application/x-topo-ai-vault-session'
+export const AI_VAULT_SESSION_DRAG_START_EVENT = 'topo-ai-vault-session-drag-start'
+export const AI_VAULT_SESSION_DRAG_END_EVENT = 'topo-ai-vault-session-drag-end'
 export const AI_VAULT_SESSION_DRAG_PAYLOAD_MAX_BYTES = 16 * 1024
 
 export type AiVaultSessionDragPayload = {
@@ -146,7 +146,7 @@ export function writeAiVaultSessionDragData(
   }
   activeAiVaultSessionDragPayload = { ...payload }
   dataTransfer.effectAllowed = 'copy'
-  // Avoid text/plain so native terminal drops cannot paste the resume command before Orca handles it.
+  // Avoid text/plain so native terminal drops cannot paste the resume command before Topo handles it.
   dataTransfer.setData(AI_VAULT_SESSION_DRAG_TYPE, serialized)
 }
 

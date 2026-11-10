@@ -15,7 +15,7 @@ describe('KeybindingService profile defaults', () => {
   const cmdK = { key: 'k', code: 'KeyK', meta: true, control: false, alt: false, shift: false }
 
   beforeEach(() => {
-    home = mkdtempSync(join(tmpdir(), 'orca-kb-service-'))
+    home = mkdtempSync(join(tmpdir(), 'topo-kb-service-'))
   })
 
   afterEach(() => {
@@ -27,7 +27,7 @@ describe('KeybindingService profile defaults', () => {
   }
 
   function write(document: unknown): void {
-    mkdirSync(join(home, '.orca'), { recursive: true })
+    mkdirSync(join(home, '.topo'), { recursive: true })
     writeFileSync(getUserKeybindingsPath(home), JSON.stringify(document))
   }
 
@@ -116,7 +116,7 @@ describe('KeybindingService profile defaults', () => {
   })
 
   it('uses custom legacy settings in memory when importing fails and retries next launch', () => {
-    mkdirSync(join(home, '.orca', 'keybindings.json.tmp'), { recursive: true })
+    mkdirSync(join(home, '.topo', 'keybindings.json.tmp'), { recursive: true })
     const options = {
       homePath: home,
       platform: 'darwin' as const,
@@ -128,7 +128,7 @@ describe('KeybindingService profile defaults', () => {
       'worktree.palette': ['Mod+Alt+J'],
       'terminal.clear': ['Mod+K']
     })
-    rmSync(join(home, '.orca', 'keybindings.json.tmp'), { recursive: true })
+    rmSync(join(home, '.topo', 'keybindings.json.tmp'), { recursive: true })
     expect(new KeybindingService(options).getOverrides()).toEqual({
       'worktree.palette': ['Mod+Alt+J'],
       'terminal.clear': ['Mod+K']
@@ -141,14 +141,14 @@ describe('KeybindingService profile defaults', () => {
   })
 
   it('persists pending legacy choices together with a new settings edit after recovery', () => {
-    mkdirSync(join(home, '.orca', 'keybindings.json.tmp'), { recursive: true })
+    mkdirSync(join(home, '.topo', 'keybindings.json.tmp'), { recursive: true })
     const older = new KeybindingService({
       homePath: home,
       platform: 'darwin',
       legacySearchDefaults: true,
       getLegacyOverrides: () => ({ 'worktree.palette': ['Mod+Alt+J'] })
     })
-    rmSync(join(home, '.orca', 'keybindings.json.tmp'), { recursive: true })
+    rmSync(join(home, '.topo', 'keybindings.json.tmp'), { recursive: true })
     expect(older.setActionBindings('view.tasks', ['Ctrl+Alt+T']).overrides).toEqual({
       'worktree.palette': ['Mod+Alt+J'],
       'terminal.clear': ['Mod+K'],

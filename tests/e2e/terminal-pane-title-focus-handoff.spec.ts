@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 
 import { openTerminalContextMenu } from './helpers/terminal-pane-title-actions'
 import { registerTerminalPaneMountReadiness } from './helpers/terminal-pane-mount-readiness'
@@ -32,25 +32,25 @@ test.describe('Terminal Panes', () => {
   registerTerminalPaneMountReadiness()
 
   test('Set Title still commits by blur after synthetic terminal focus steals', async ({
-    orcaPage
+    topoPage
   }) => {
     const title = `Post steal blur title ${Date.now()}`
 
-    await openTerminalContextMenu(orcaPage)
-    await installDelayedTerminalFocusSteals(orcaPage, [50, 150])
-    await orcaPage.getByText('Set Title…', { exact: true }).click()
+    await openTerminalContextMenu(topoPage)
+    await installDelayedTerminalFocusSteals(topoPage, [50, 150])
+    await topoPage.getByText('Set Title…', { exact: true }).click()
 
-    const titleInput = orcaPage.locator('.pane-title-input').first()
+    const titleInput = topoPage.locator('.pane-title-input').first()
     await expect(titleInput).toBeVisible()
     await expect(titleInput).toBeFocused()
-    await orcaPage.waitForTimeout(300)
+    await topoPage.waitForTimeout(300)
     await titleInput.fill(title)
-    await orcaPage
+    await topoPage
       .locator('.xterm:visible')
       .first()
       .click({ position: { x: 40, y: 60 } })
 
     await expect(titleInput).toHaveCount(0)
-    await expect(orcaPage.locator('.pane-title-text', { hasText: title })).toHaveCount(1)
+    await expect(topoPage.locator('.pane-title-text', { hasText: title })).toHaveCount(1)
   })
 })

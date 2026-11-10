@@ -65,7 +65,7 @@ export async function createMarkdownTokensProvider(
   ])
   await editorCore.core.loadLanguage(...markdownGrammars)
 
-  // Why: Orca's editors all use the built-in theme names; redefining them keeps every setTheme caller unchanged.
+  // Why: Topo's editors all use the built-in theme names; redefining them keeps every setTheme caller unchanged.
   monaco.editor.defineTheme('vs-dark', {
     base: 'vs-dark',
     inherit: true,

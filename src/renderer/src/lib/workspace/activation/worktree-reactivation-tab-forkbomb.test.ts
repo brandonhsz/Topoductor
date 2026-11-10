@@ -7,7 +7,7 @@ import { activateAndRevealWorktree } from './worktree-activation'
 import { waitForWorktreeAgentActivationGateForTests } from './worktree-agent-activation-gate'
 import { makeCreatedAgentWorktree as makeWorktree } from '@/lib/workspace/activation/worktree-activation-created-agent.test-fixture'
 import type { RuntimeMobileSessionTabsResult } from '../../../../../shared/runtime-session-contracts'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import { layoutApplyTestDouble } from '@/runtime/workspace-layout/testing/layout-apply-test-double'
 
 const initialAppStoreState = useAppStore.getState()
@@ -136,6 +136,6 @@ describe('STA-1111 worktree reopen does not fork-bomb tabs', () => {
     // A layout-owner build asks main for the resumed tab once; no reopen asks again.
     expect(
       layoutApply.commands.filter((command) => command.type === 'createTerminalTab')
-    ).toHaveLength(ORCA_LAYOUT_OWNER_IS_MAIN ? 1 : 0)
+    ).toHaveLength(TOPO_LAYOUT_OWNER_IS_MAIN ? 1 : 0)
   })
 })

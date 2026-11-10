@@ -20,7 +20,7 @@ import { AcpTimelineTranslator } from '../timeline/acp-timeline-translator'
 
 /** The chat a replay belongs to. */
 export type AcpHistoryScope = {
-  /** Orca's session id. */
+  /** Topo's session id. */
   sessionId: string
   agent: AgentType
   providerSessionId: string

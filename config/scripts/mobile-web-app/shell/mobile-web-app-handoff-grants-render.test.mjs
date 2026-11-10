@@ -62,7 +62,7 @@ beforeAll(async () => {
   cspHeader = await readShellCsp()
   bridgeVersion = await readBridgeProtocolVersion()
   faultGrant = await readBridgeFaultGrant()
-  scratch = await mkdtemp(join(tmpdir(), 'orca-mobile-web-app-handoff-'))
+  scratch = await mkdtemp(join(tmpdir(), 'topo-mobile-web-app-handoff-'))
   const built = await buildMobileWebAppBundle({ outDir: join(scratch, 'bundle') })
   tasksChunk = built.routeChunks[TASKS_ROUTE_KEY]
   // Require resolvable target chunk or every absence assertion could pass on a typo.
@@ -70,7 +70,7 @@ beforeAll(async () => {
   const served = await createBundleServer({ outDir: built.outDir, cspHeader })
   server = served.server
   origin = served.origin
-  const executablePath = process.env.ORCA_MOBILE_WEB_RENDER_BROWSER
+  const executablePath = process.env.TOPO_MOBILE_WEB_RENDER_BROWSER
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) })
 }, 180_000)
 
@@ -122,7 +122,7 @@ async function openHostRoute({
     jsResponses.push({ status: response.status(), path })
   })
   await page.goto(`${origin}/`, { waitUntil: 'load' })
-  await page.waitForFunction(() => document.documentElement.dataset.orcaWebEntry === 'mounted', {
+  await page.waitForFunction(() => document.documentElement.dataset.topoWebEntry === 'mounted', {
     timeout: 30_000,
     polling: 250
   })
@@ -136,7 +136,7 @@ async function openHostRoute({
 /** Every `navigate` notify the page posted, in order. */
 function navigates(page) {
   return page.evaluate(() =>
-    (globalThis.__orcaRenderCheckNotifies ?? []).filter((frame) => frame.name === 'navigate')
+    (globalThis.__topoRenderCheckNotifies ?? []).filter((frame) => frame.name === 'navigate')
   )
 }
 

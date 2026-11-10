@@ -22,7 +22,7 @@ import { nativeChatShowsCiResultLines } from '../../../../shared/native-chat/nat
 import type { TerminalQuickCommand } from '../../../../shared/terminal/quick-commands/terminal-quick-command-types'
 import { recordManagedHookInstallFailure } from '../../../agent-hooks/installation/install-telemetry'
 import { applyAgentStatusHooksEnabled } from '../../../agent-hooks/installation/managed-agent-hook-controls'
-import { isWslHostOrcadProcess } from '../../../ipc/wsl-guest-windows-drive-path'
+import { isWslHostTopodProcess } from '../../../ipc/wsl-guest-windows-drive-path'
 import { isAgentStatusHooksEnabledForAgent } from '../../../../shared/agent-hook-listener/configuration/agent-status-hooks-setting'
 import type { RuntimeStore } from '../../construction/runtime-store-contract'
 import {
@@ -41,7 +41,7 @@ import type {
   RuntimeHostDisplayLabelOverrides
 } from './runtime-client-settings-shape'
 
-/** Which Orca cloud services this host registered; headless hosts register none. */
+/** Which Topo cloud services this host registered; headless hosts register none. */
 export type RuntimeSharingServicePresence = {
   artifacts(): boolean
   skills(): boolean
@@ -161,7 +161,7 @@ export class RuntimeClientSettingsController {
       this.notifyReposChanged?.()
     }
     if (
-      // An explicit enable while already enabled is a repair request (`orca agent hooks on`), so a wiped hook config reinstalls.
+      // An explicit enable while already enabled is a repair request (`topo agent hooks on`), so a wiped hook config reinstalls.
       updates.agentStatusHooksEnabled === true ||
       (typeof updates.agentStatusHooksEnabled === 'boolean' &&
         before !== updates.agentStatusHooksEnabled) ||
@@ -276,7 +276,7 @@ export class RuntimeClientSettingsController {
       }
       await applyAgentStatusHooksEnabled(settings.agentStatusHooksEnabled !== false, settings, {
         // R42, COMPAT(wsl-bridge): the bridge's panes in this distro share these entries; drop at D4.
-        keepSharedEntries: isWslHostOrcadProcess(),
+        keepSharedEntries: isWslHostTopodProcess(),
         shouldHydrateShellPath: getAppEnvironment().isPackaged(),
         onInstallError: recordManagedHookInstallFailure,
         shouldContinue: (agent) => {

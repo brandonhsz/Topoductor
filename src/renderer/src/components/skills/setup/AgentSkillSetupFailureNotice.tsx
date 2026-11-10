@@ -1,4 +1,4 @@
-// COMPAT(wsl-bridge): removed when WSL runs as an orcad host.
+// COMPAT(wsl-bridge): removed when WSL runs as an topod host.
 import { useTranslate } from '@/i18n/use-translate'
 
 export function AgentSkillSetupFailureNotice(props: {

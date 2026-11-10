@@ -1,4 +1,4 @@
-// What a Stop leaves owed to the agent: only messages Orca proves it never received, at most once.
+// What a Stop leaves owed to the agent: only messages Topo proves it never received, at most once.
 
 import { describe, expect, it } from 'vitest'
 import {

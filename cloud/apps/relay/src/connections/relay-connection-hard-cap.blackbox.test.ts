@@ -5,7 +5,7 @@ import { createServer, type Server } from 'node:http'
 import { createServer as createNetServer } from 'node:net'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { buildHostProofMacInput, HOST_CHALLENGE_PLAINTEXT_DOMAIN } from '@orca-cloud/relay-contract/host-proof-transcript'
+import { buildHostProofMacInput, HOST_CHALLENGE_PLAINTEXT_DOMAIN } from '@topo-cloud/relay-contract/host-proof-transcript'
 import nacl from 'tweetnacl'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import WebSocket from 'ws'
@@ -142,7 +142,7 @@ describe('relay connection hard cap', () => {
     const issuer = `http://127.0.0.1:${jwksAddress.port}`
     const port = await unusedPort()
     const relayUrl = `http://127.0.0.1:${port}`
-    const dataDir = mkdtempSync(join(tmpdir(), 'orca-relay-hard-cap-'))
+    const dataDir = mkdtempSync(join(tmpdir(), 'topo-relay-hard-cap-'))
     cleanup.push(() => rmSync(dataDir, { recursive: true, force: true }))
     const database: RelayDatabase = await openRelayDatabase({ dataDir })
     cleanup.push(() => database.close())
@@ -151,7 +151,7 @@ describe('relay connection hard cap', () => {
       publicUrl: relayUrl,
       cellUrl: relayUrl,
       authIssuer: issuer,
-      authAudience: 'orca-relay',
+      authAudience: 'topo-relay',
       jwksUrl: `${issuer}/jwks`,
       assignmentSigningKey: new TextEncoder().encode('test-assignment-key-with-at-least-32-bytes'),
       role: 'combined',
@@ -241,7 +241,7 @@ describe('relay connection hard cap', () => {
     })
       .setProtectedHeader({ alg: 'ES256', kid: 'test-key' })
       .setIssuer(issuer)
-      .setAudience('orca-relay')
+      .setAudience('topo-relay')
       .setSubject('user-1')
       .setIssuedAt()
       .setExpirationTime('5m')
@@ -260,7 +260,7 @@ describe('relay connection hard cap', () => {
     })
       .setProtectedHeader({ alg: 'ES256', kid: 'test-key' })
       .setIssuer(issuer)
-      .setAudience('orca-relay')
+      .setAudience('topo-relay')
       .setSubject('user-2')
       .setIssuedAt()
       .setExpirationTime('5m')

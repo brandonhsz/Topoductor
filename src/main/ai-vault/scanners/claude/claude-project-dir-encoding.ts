@@ -41,7 +41,7 @@ export function isClaudeProjectBucketInScope(
 }
 
 /** The encoded path below one scope prefix (`''` for the scope's own bucket), or null when the bucket is outside it.
- * An encoded separator boundary keeps orca from matching its sibling orcadyne; a root (`-`, `C--`) keeps its separator. */
+ * An encoded separator boundary keeps topo from matching its sibling topodyne; a root (`-`, `C--`) keeps its separator. */
 export function claudeProjectBucketNameBelowScope(
   projectDirName: string,
   scopePrefix: string

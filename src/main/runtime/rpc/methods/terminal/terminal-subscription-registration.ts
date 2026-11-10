@@ -1,7 +1,7 @@
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 
 type RegistrationRuntime = Pick<
-  OrcaRuntimeService,
+  TopoRuntimeService,
   | 'registerOwnedSubscriptionCleanup'
   | 'subscribeToPtyExit'
   | 'handleMobileSubscribe'

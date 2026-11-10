@@ -1,12 +1,12 @@
 /** Resolve structured coordinators through session authority, as pane/incarnation getters do.
  * showTerminal requires a real PTY; fabricating its writable fields would break terminal verbs for chat workers. */
 
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import type { OrchestrationSessionCaller } from '../../../orchestration/addressing/orchestration-caller-identity'
 import { isStructuredWorkerHandle } from '../../../../../shared/orchestration/workers/structured-worker-handle'
 
 export async function resolveDispatchCallerWorktreeId(
-  runtime: Pick<OrcaRuntimeService, 'showTerminal' | 'getOrchestrationDispatchAuthority'>,
+  runtime: Pick<TopoRuntimeService, 'showTerminal' | 'getOrchestrationDispatchAuthority'>,
   callerHandle: string,
   callerSession: OrchestrationSessionCaller | undefined
 ): Promise<string> {

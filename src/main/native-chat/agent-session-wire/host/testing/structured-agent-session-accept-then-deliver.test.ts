@@ -91,7 +91,7 @@ async function startHost(): Promise<void> {
 }
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-accept-deliver-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-accept-deliver-'))
   resetHostTestOperationIds()
   adapterExtras = {}
   starts.clear()

@@ -13,7 +13,7 @@ import { sameEditorFile } from './workspace-layout-editor-tab-file'
 import type { LayoutTab, WorkspaceLayout, WorkspaceLayoutModel } from './workspace-layout-model'
 import { removeTabFromWorkspace, withWorkspace } from './workspace-layout-removal'
 import { withoutKey } from './stored-record-fields'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../layout-owner-switch'
 
 export const EDITOR_KINDS: ReadonlySet<LayoutTab['kind']> = new Set<LayoutTab['kind']>([
   'editor',
@@ -29,7 +29,7 @@ export function groupShowsTabFile(
   groupId: string,
   tab: Pick<LayoutTab, 'id' | 'kind' | 'entityId'>
 ): boolean {
-  if (!ORCA_LAYOUT_OWNER_IS_MAIN || !EDITOR_KINDS.has(tab.kind)) {
+  if (!TOPO_LAYOUT_OWNER_IS_MAIN || !EDITOR_KINDS.has(tab.kind)) {
     return false
   }
   return (
@@ -46,7 +46,7 @@ type Move = CommandOf<'moveTabToWorkspace'>['tabs'][number] & { tab: LayoutTab }
 
 function shownFiles(workspace: WorkspaceLayout, groupId: string): Map<string, string> {
   const shown = new Map<string, string>()
-  if (!ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (!TOPO_LAYOUT_OWNER_IS_MAIN) {
     return shown
   }
   for (const id of workspace.groups.find((group) => group.id === groupId)?.tabOrder ?? []) {
@@ -106,7 +106,7 @@ export function moveTabToWorkspace(
     if (held) {
       return refuse('tab_exists')
     }
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       shown.set(key, move.newTabId)
     }
     moves.push({ tab, ...move })

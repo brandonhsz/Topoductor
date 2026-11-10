@@ -14,10 +14,10 @@ function createServiceWithLeader(): {
   const launch = service.createLaunchEnv({
     leaderHandle: 'leader-handle',
     baseEnv: { PATH: '/usr/bin' },
-    shimDir: '/tmp/orca-shim',
-    shimBin: '/usr/bin/orca'
+    shimDir: '/tmp/topo-shim',
+    shimBin: '/usr/bin/topo'
   })
-  expect(launch.env.ORCA_AGENT_TEAMS_SHIM_DIR).toBe('/tmp/orca-shim')
+  expect(launch.env.TOPO_AGENT_TEAMS_SHIM_DIR).toBe('/tmp/topo-shim')
   const splitCalls: { handle: string; direction?: string; command?: string; envPane?: string }[] =
     []
   let splitCount = 0
@@ -99,7 +99,7 @@ describe('ClaudeAgentTeamsService', () => {
 
     expect(api.closeTerminal).toHaveBeenCalledWith('teammate-1')
     await expect(
-      request(['list-panes', '-t', 'orca:0', '-F', '#{pane_id}'])
+      request(['list-panes', '-t', 'topo:0', '-F', '#{pane_id}'])
     ).resolves.toMatchObject({ stdout: '%1\n' })
   })
 
@@ -120,7 +120,7 @@ describe('ClaudeAgentTeamsService', () => {
       exitCode: 1
     })
     await expect(
-      request(['list-panes', '-t', 'orca:0', '-F', '#{pane_id}'])
+      request(['list-panes', '-t', 'topo:0', '-F', '#{pane_id}'])
     ).resolves.toMatchObject({ stdout: '%1\n%2\n' })
   })
 

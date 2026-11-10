@@ -12,7 +12,7 @@ export function parsePluginTranspileFailure(
     : { message: reason }
 }
 
-/** `<file>:<line>:<column>: <reason>`, the one shape frames, tests and `orca plugin check` show. */
+/** `<file>:<line>:<column>: <reason>`, the one shape frames, tests and `topo plugin check` show. */
 export function formatPluginTranspileFailure(relativePath: string, message: string): string {
   const failure = parsePluginTranspileFailure(relativePath, message)
   const where = failure.at

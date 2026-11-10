@@ -15,7 +15,7 @@ import {
   spawnCodexBackfillRecoveryProcess,
   stopCodexBackfillRecoveryProcess
 } from './codex-state-db-backfill-recovery-process'
-import { getOrcaUserDataPath } from '../../configuration/homes/codex-home-paths'
+import { getTopoUserDataPath } from '../../configuration/homes/codex-home-paths'
 import {
   BACKFILL_PENDING_MIN_SESSION_FILES,
   countCodexSessionFilesUpTo,
@@ -159,7 +159,7 @@ export async function runCodexStateDbBackfillRecovery(
 export function resolveCodexBackfillSupervisorLockRoot(codexHomePath: string): string {
   const homeKey = normalizeRuntimePathForComparison(codexHomePath)
   const digest = createHash('sha256').update(homeKey).digest('hex')
-  return join(getOrcaUserDataPath(), 'codex-state-db-backfill-locks', digest)
+  return join(getTopoUserDataPath(), 'codex-state-db-backfill-locks', digest)
 }
 
 function scopeRecoveryHostIdentity(hostIdentity: string, codexHomePath: string): string {

@@ -9,7 +9,7 @@ export function isBrowserExtensionNativePage(contents: Electron.WebContents): bo
   return creatingNativePage || nativePages.has(contents)
 }
 
-/** Native extension bindings without Orca's API wrappers, always on a hidden document. */
+/** Native extension bindings without Topo's API wrappers, always on a hidden document. */
 export async function runBrowserExtensionNativePage(options: {
   session: Electron.Session
   extensionId: string
@@ -41,7 +41,7 @@ export async function runBrowserExtensionNativePage(options: {
     return await Promise.race([
       (async () => {
         await window.loadURL(
-          `${getChromeExtensionOrigin(extensionId)}/manifest.json?orca-native-page=1`
+          `${getChromeExtensionOrigin(extensionId)}/manifest.json?topo-native-page=1`
         )
         signal?.throwIfAborted()
         return window.webContents.executeJavaScript(code)

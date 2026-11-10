@@ -1,6 +1,6 @@
 import { classifyClaudeBackgroundTaskKind } from './claude-background-task-kind'
 import { isAgentChildWorkKind } from './agent-status/child-work/agent-status-child-work-liveness'
-import { runsOrcaOrchestrationWait } from './orca-cli-invocations'
+import { runsTopoOrchestrationWait } from './topo-cli-invocations'
 
 const CLAUDE_TERMINAL_BACKGROUND_TASK_STATUSES = new Set([
   'idle',
@@ -42,7 +42,7 @@ export function readClaudeBackgroundAgentTasks(hookPayload: Record<string, unkno
   hasRunningNonAgentTask: boolean
   /** Ids of the running shell-like entries; one without an id is counted but not listed. */
   runningNonAgentTaskIds: string[]
-  /** Running shells blocked on `orca orchestration check --wait`, which recovers them after a listener restart. */
+  /** Running shells blocked on `topo orchestration check --wait`, which recovers them after a listener restart. */
   runningAgentWaitIds: string[]
 } {
   const raw = hookPayload['background_tasks']
@@ -84,7 +84,7 @@ export function readClaudeBackgroundAgentTasks(hookPayload: Record<string, unkno
       const id = typeof obj.id === 'string' ? obj.id.trim() : ''
       if (id.length > 0) {
         runningNonAgentTaskIds.push(id)
-        if (runsOrcaOrchestrationWait(obj.command)) {
+        if (runsTopoOrchestrationWait(obj.command)) {
           runningAgentWaitIds.push(id)
         }
       }

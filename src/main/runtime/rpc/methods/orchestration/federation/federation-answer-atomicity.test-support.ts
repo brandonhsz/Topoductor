@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { RpcDispatcher } from '../../../dispatcher'
 import { createFederationWorkerStartRequest as startRequest } from './federation-request.test-support'
 
@@ -8,7 +8,7 @@ export function registerFederationAnswerAtomicityTest(
   fixture: () => {
     homeDb: OrchestrationDb
     workerDb: OrchestrationDb
-    homeRuntime: OrcaRuntimeService
+    homeRuntime: TopoRuntimeService
     homeDispatcher: RpcDispatcher
     createHomeTask: () => ReturnType<OrchestrationDb['createTask']>
   }

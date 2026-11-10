@@ -16,19 +16,19 @@ vi.mock('../../../../resources/icon-dev.png?asset', () => ({
   default: 'classic-dev-icon'
 }))
 
-vi.mock('../../../../resources/app-icons/orca-watercolor.png?asset', () => ({
+vi.mock('../../../../resources/app-icons/topo-watercolor.png?asset', () => ({
   default: 'watercolor-icon'
 }))
 
-vi.mock('../../../../resources/app-icons/orca-watercolor.png?asset&asarUnpack', () => ({
+vi.mock('../../../../resources/app-icons/topo-watercolor.png?asset&asarUnpack', () => ({
   default: 'watercolor-icon-unpacked'
 }))
 
-vi.mock('../../../../resources/app-icons/orca-blue.png?asset', () => ({
+vi.mock('../../../../resources/app-icons/topo-blue.png?asset', () => ({
   default: 'blue-icon'
 }))
 
-vi.mock('../../../../resources/app-icons/orca-blue.png?asset&asarUnpack', () => ({
+vi.mock('../../../../resources/app-icons/topo-blue.png?asset&asarUnpack', () => ({
   default: 'blue-icon-unpacked'
 }))
 
@@ -60,7 +60,7 @@ describe('app icon selection', () => {
   it('restores the bundle Dock icon only after the custom icon clear succeeds', async () => {
     const persistClassic = (clearError: Error | null): Promise<void> => {
       persistMacDockIcon('classic', {
-        appBundlePath: '/Applications/Orca.app',
+        appBundlePath: '/Applications/Topo.app',
         execFile: (file, _args, _options, callback) =>
           callback?.(file === '/usr/bin/osascript' ? clearError : null),
         isDevApp: false,
@@ -80,7 +80,7 @@ describe('app icon selection', () => {
     const commands: string[][] = []
     dockSetIconMock.mockClear()
     persistMacDockIcon('custom', {
-      appBundlePath: '/Applications/Orca.app',
+      appBundlePath: '/Applications/Topo.app',
       execFile: (file, args, _options, callback) => {
         commands.push([file, ...args])
         callback?.(null)
@@ -115,7 +115,7 @@ describe('app icon selection', () => {
     )
 
     persistMacDockIcon('watercolor', {
-      appBundlePath: '/Applications/Orca.app',
+      appBundlePath: '/Applications/Topo.app',
       execFile,
       isDevApp: false,
       platform: 'darwin'
@@ -123,13 +123,13 @@ describe('app icon selection', () => {
     await waitForQueuedPersistence()
 
     persistMacDockIcon('blue', {
-      appBundlePath: '/Applications/Orca.app',
+      appBundlePath: '/Applications/Topo.app',
       execFile,
       isDevApp: false,
       platform: 'darwin'
     })
     persistMacDockIcon('classic', {
-      appBundlePath: '/Applications/Orca.app',
+      appBundlePath: '/Applications/Topo.app',
       execFile,
       isDevApp: false,
       platform: 'darwin'
@@ -141,7 +141,7 @@ describe('app icon selection', () => {
       expect.any(Array),
       expect.objectContaining({
         env: expect.objectContaining({
-          ORCA_APP_ICON_PATH: 'watercolor-icon-unpacked'
+          TOPO_APP_ICON_PATH: 'watercolor-icon-unpacked'
         })
       }),
       expect.any(Function)
@@ -156,7 +156,7 @@ describe('app icon selection', () => {
       expect.any(Array),
       expect.objectContaining({
         env: expect.objectContaining({
-          ORCA_APP_ICON_PATH: 'blue-icon-unpacked'
+          TOPO_APP_ICON_PATH: 'blue-icon-unpacked'
         })
       }),
       expect.any(Function)
@@ -170,7 +170,7 @@ describe('app icon selection', () => {
       ]),
       expect.objectContaining({
         env: expect.objectContaining({
-          ORCA_APP_BUNDLE_PATH: '/Applications/Orca.app'
+          TOPO_APP_BUNDLE_PATH: '/Applications/Topo.app'
         }),
         timeout: 10_000
       }),
@@ -183,7 +183,7 @@ describe('app icon selection', () => {
     expect(execFile).toHaveBeenNthCalledWith(
       3,
       '/usr/bin/xattr',
-      ['-d', 'com.apple.FinderInfo', '/Applications/Orca.app'],
+      ['-d', 'com.apple.FinderInfo', '/Applications/Topo.app'],
       expect.objectContaining({
         timeout: 10_000
       }),
@@ -192,7 +192,7 @@ describe('app icon selection', () => {
     expect(execFile).toHaveBeenNthCalledWith(
       4,
       '/usr/bin/xattr',
-      ['-d', 'com.apple.ResourceFork', '/Applications/Orca.app'],
+      ['-d', 'com.apple.ResourceFork', '/Applications/Topo.app'],
       expect.objectContaining({
         timeout: 10_000
       }),
@@ -229,7 +229,7 @@ describe('app icon selection', () => {
     )
 
     persistMacDockIcon('watercolor', {
-      appBundlePath: '/Applications/Orca.app',
+      appBundlePath: '/Applications/Topo.app',
       execFile,
       isDevApp: false,
       platform: 'darwin'
@@ -237,7 +237,7 @@ describe('app icon selection', () => {
     await waitForQueuedPersistenceMicrotasks()
 
     persistMacDockIcon('blue', {
-      appBundlePath: '/Applications/Orca.app',
+      appBundlePath: '/Applications/Topo.app',
       execFile,
       isDevApp: false,
       platform: 'darwin'
@@ -263,7 +263,7 @@ describe('app icon selection', () => {
       expect.any(Array),
       expect.objectContaining({
         env: expect.objectContaining({
-          ORCA_APP_ICON_PATH: 'blue-icon-unpacked'
+          TOPO_APP_ICON_PATH: 'blue-icon-unpacked'
         }),
         timeout: 10_000
       }),

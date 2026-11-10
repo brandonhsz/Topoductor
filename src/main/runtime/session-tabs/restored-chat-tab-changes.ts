@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithCloseMobileSessionTab } from '../session-lifecycle/close/close-mobile-session-tab'
+import { TopoRuntimeWithCloseMobileSessionTab } from '../session-lifecycle/close/close-mobile-session-tab'
 import { getStructuredAgentSessionHost } from '../../native-chat/agent-session-wire/host/structured-agent-session-registry'
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../shared/runtime-session-contracts'
 import { LOCAL_EXECUTION_HOST_ID } from '../../../shared/execution-host'
@@ -26,7 +26,7 @@ export function restoredChatTabChanges(
         tabId: chatTabId(session.sessionId)
       }
     })),
-    // A chat a newer Orca wrote is only unreadable here, so it keeps its tab.
+    // A chat a newer Topo wrote is only unreadable here, so it keeps its tab.
     (sessionId) =>
       !!host &&
       structuredSessionTabRetired(host, sessionId) &&
@@ -35,7 +35,7 @@ export function restoredChatTabChanges(
   )
 }
 
-export abstract class OrcaRuntimeWithStructuredSessionTabProjection extends OrcaRuntimeWithCloseMobileSessionTab {
+export abstract class TopoRuntimeWithStructuredSessionTabProjection extends TopoRuntimeWithCloseMobileSessionTab {
   protected passiveStructuredSessionTabChangeEligible(change: ChatTabChange): boolean {
     const host = getStructuredAgentSessionHost()
     if ('open' in change) {

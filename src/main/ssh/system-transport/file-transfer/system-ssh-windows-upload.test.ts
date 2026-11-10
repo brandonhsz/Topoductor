@@ -16,7 +16,7 @@ vi.mock('../system-ssh-command', () => ({
   spawnSystemSshCommand: spawnSystemSshCommandMock
 }))
 
-vi.mock('@orca/process-host', () => ({
+vi.mock('@topo/process-host', () => ({
   runProcess: runProcessMock
 }))
 
@@ -46,7 +46,7 @@ const target = {
   port: 22
 } as unknown as SshTarget
 const hostPlatform = getRemoteHostPlatform('win32-x64')
-const remoteRoot = 'C:/Users/dev/.orca-remote'
+const remoteRoot = 'C:/Users/dev/.topo-remote'
 
 function decodePowerShellCommand(command: string): string {
   const encoded = /-EncodedCommand (\S+)/.exec(command)?.[1]
@@ -122,8 +122,8 @@ beforeEach(() => {
   failedWriteExit = 1
   failedWriteStderr = ''
   clearWindowsRemoteWriteCapabilitiesForTests()
-  localDir = mkdtempSync(join(tmpdir(), 'orca-win-upload-'))
-  process.env.ORCA_SYSTEM_SFTP_PATH = '/usr/bin/sftp'
+  localDir = mkdtempSync(join(tmpdir(), 'topo-win-upload-'))
+  process.env.TOPO_SYSTEM_SFTP_PATH = '/usr/bin/sftp'
   runProcessMock.mockReset()
   acceptSftp()
   spawnSystemSshCommandMock.mockReset()
@@ -148,7 +148,7 @@ beforeEach(() => {
 })
 
 afterEach(async () => {
-  delete process.env.ORCA_SYSTEM_SFTP_PATH
+  delete process.env.TOPO_SYSTEM_SFTP_PATH
   await rm(localDir, { recursive: true, force: true })
 })
 

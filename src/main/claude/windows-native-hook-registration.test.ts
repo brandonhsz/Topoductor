@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
 import { once } from 'node:events'
 import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
@@ -37,7 +37,7 @@ import {
 import { ClaudeHookService } from './hook-service'
 
 const CURRENT_CLAUDE = { claudeVersion: '2.1.261 (Claude Code)' }
-const EXE = 'orca-agent-hook.exe'
+const EXE = 'topo-agent-hook.exe'
 
 describe.skipIf(process.platform !== 'win32')('ClaudeHookService native hook install', () => {
   let home = ''
@@ -51,7 +51,7 @@ describe.skipIf(process.platform !== 'win32')('ClaudeHookService native hook ins
     }
   })
 
-  function useTempHome(prefix = 'orca-claude-native-hook-'): {
+  function useTempHome(prefix = 'topo-claude-native-hook-'): {
     hooksDir: string
     settingsPath: string
     bundle: string
@@ -62,7 +62,7 @@ describe.skipIf(process.platform !== 'win32')('ClaudeHookService native hook ins
     const bundle = join(home, 'bundled-agent-hook.exe')
     writeFileSync(bundle, 'MZ stand-in for the signed bundle')
     return {
-      hooksDir: join(home, '.orca', 'agent-hooks'),
+      hooksDir: join(home, '.topo', 'agent-hooks'),
       settingsPath: join(home, '.claude', 'settings.json'),
       bundle
     }
@@ -91,9 +91,9 @@ describe.skipIf(process.platform !== 'win32')('ClaudeHookService native hook ins
       args: ['claude'],
       env: {
         SystemRoot: process.env.SystemRoot,
-        ORCA_AGENT_HOOK_PORT: '1',
-        ORCA_AGENT_HOOK_TOKEN: 'token',
-        ORCA_PANE_KEY: 'tab:leaf'
+        TOPO_AGENT_HOOK_PORT: '1',
+        TOPO_AGENT_HOOK_TOKEN: 'token',
+        TOPO_PANE_KEY: 'tab:leaf'
       },
       stdio: ['pipe', 'pipe', 'pipe']
     })

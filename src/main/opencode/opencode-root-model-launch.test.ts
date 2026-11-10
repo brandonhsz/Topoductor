@@ -4,7 +4,7 @@ import { quoteStartupArg } from '../../shared/agent-launch/startup/tui-agent-sta
 import { OPENCODE_STARTUP_PROMPT_BODY_ENV } from '../../shared/agent-launch/startup/opencode-startup-prompt'
 
 const run = vi.hoisted(() => vi.fn())
-vi.mock('@orca/process-host', () => ({ runProcess: run }))
+vi.mock('@topo/process-host', () => ({ runProcess: run }))
 vi.mock('../ipc/command-path/command-path-resolver', () => ({
   resolveCommandOnLocalPath: async () => '/usr/local/bin/opencode'
 }))

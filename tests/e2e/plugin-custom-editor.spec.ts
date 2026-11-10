@@ -1,7 +1,7 @@
 /**
  * Invariant: a plugin custom editor opens matching files in the editor tab, edits (text or
- * bytes) flow into Orca's buffer without dirtying it on open, the save shortcut pressed inside
- * the frame saves through Orca, Source shows the same buffer (or the binary placeholder), and
+ * bytes) flow into Topo's buffer without dirtying it on open, the save shortcut pressed inside
+ * the frame saves through Topo, Source shows the same buffer (or the binary placeholder), and
  * turning plugins off falls back to Source.
  */
 
@@ -10,7 +10,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
 import { PLUGIN_MANIFEST_V2_SINCE } from '../../src/shared/plugins/manifest/plugin-schema-field-docs'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { disablePluginSystem, enableDevPlugins, openRepoFile } from './helpers/plugin-smoke'
 import {
   focusInGuest,
@@ -80,46 +80,46 @@ async function chooseView(page: Page, label: string): Promise<void> {
   await page.getByRole('radio', { name: label, exact: true }).click()
 }
 
-test('plugin custom editor edits and saves through Orca', async ({ orcaPage, seededRepoPath }) => {
-  const pluginRoot = await mkdtemp(join(tmpdir(), 'orca-custom-editor-'))
+test('plugin custom editor edits and saves through Topo', async ({ topoPage, seededRepoPath }) => {
+  const pluginRoot = await mkdtemp(join(tmpdir(), 'topo-custom-editor-'))
   const filePath = join(seededRepoPath, FILE)
   try {
     await writeEditorPlugin(pluginRoot)
     await writeFile(filePath, 'first line\n')
-    await enableDevPlugins(orcaPage, [pluginRoot])
-    await openRepoFile(orcaPage, seededRepoPath, FILE)
+    await enableDevPlugins(topoPage, [pluginRoot])
+    await openRepoFile(topoPage, seededRepoPath, FILE)
 
-    const guest = pluginGuest(orcaPage, 'Sketch Pad')
+    const guest = pluginGuest(topoPage, 'Sketch Pad')
     const text = () => readInGuest<string>(guest, `document.getElementById('doc').value`)
     await expect(guest).toBeVisible({ timeout: 15_000 })
     await expect.poll(text, { timeout: 15_000 }).toBe('first line\n')
     // Opening a file in its custom editor must not dirty it.
-    expect(await activeFileDirty(orcaPage)).toBe(false)
+    expect(await activeFileDirty(topoPage)).toBe(false)
 
     // Real input: the save chord only counts with the frame's own user activation.
     await focusInGuest(guest, '#doc')
-    await orcaPage.keyboard.press(process.platform === 'darwin' ? 'Meta+ArrowDown' : 'Control+End')
-    await orcaPage.keyboard.type('second line')
-    await expect.poll(() => activeFileDirty(orcaPage)).toBe(true)
+    await topoPage.keyboard.press(process.platform === 'darwin' ? 'Meta+ArrowDown' : 'Control+End')
+    await topoPage.keyboard.type('second line')
+    await expect.poll(() => activeFileDirty(topoPage)).toBe(true)
 
-    // Saved inside the debounce window: Orca must flush the frame first.
-    await orcaPage.keyboard.type('!')
-    await orcaPage.keyboard.press(SAVE_KEY)
+    // Saved inside the debounce window: Topo must flush the frame first.
+    await topoPage.keyboard.type('!')
+    await topoPage.keyboard.press(SAVE_KEY)
     await expect.poll(() => readFile(filePath, 'utf8')).toBe('first line\nsecond line!')
-    await expect.poll(() => activeFileDirty(orcaPage)).toBe(false)
+    await expect.poll(() => activeFileDirty(topoPage)).toBe(false)
 
-    await chooseView(orcaPage, 'Source')
+    await chooseView(topoPage, 'Source')
     await expect(guest).toHaveCount(0)
-    await expect(orcaPage.locator('.monaco-editor .view-lines')).toContainText('second line!')
-    await chooseView(orcaPage, 'Sketch Pad')
+    await expect(topoPage.locator('.monaco-editor .view-lines')).toContainText('second line!')
+    await chooseView(topoPage, 'Sketch Pad')
     await expect(guest).toBeVisible()
     await expect.poll(text).toBe('first line\nsecond line!')
 
-    await disablePluginSystem(orcaPage)
+    await disablePluginSystem(topoPage)
     await expect(guest).toHaveCount(0, { timeout: 15_000 })
-    await expect(orcaPage.locator('.monaco-editor .view-lines')).toBeVisible()
+    await expect(topoPage.locator('.monaco-editor .view-lines')).toBeVisible()
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(filePath, { force: true })
     await rm(pluginRoot, { recursive: true, force: true })
   }
@@ -141,7 +141,7 @@ orca.document.onDidChange((doc) => {
     'v' + doc.version + ' ' + doc.fileType + ' ' + doc.readOnly + ' ' + bytes.length + ':' +
     Array.from(bytes.slice(0, 4), (byte) => byte.toString(16)).join(' ') +
     ' name=' + (window.name.includes('hexbook') ? 'leaks' : 'opaque')
-  // A text edit is the wrong kind for a bytes document: Orca refuses it.
+  // A text edit is the wrong kind for a bytes document: Topo refuses it.
   orca.document.applyEdit({ baseVersion: version, content: { kind: 'text', text: 'x' } }).catch(() => {})
 })
 document.getElementById('append').addEventListener('click', () => {
@@ -154,12 +154,12 @@ document.getElementById('append').addEventListener('click', () => {
 </script>`
 
 test('a bytes custom editor edits and saves a binary file', async ({
-  orcaPage,
+  topoPage,
   seededRepoPath
 }) => {
-  const pluginRoot = await mkdtemp(join(tmpdir(), 'orca-bytes-editor-'))
+  const pluginRoot = await mkdtemp(join(tmpdir(), 'topo-bytes-editor-'))
   const filePath = join(seededRepoPath, BYTES_FILE)
-  // NULs make Orca treat it as binary, like a zip-based workbook.
+  // NULs make Topo treat it as binary, like a zip-based workbook.
   const original = Buffer.from([0x50, 0x4b, 0x03, 0x04, 0x00, 0x00, 0xff, 0x10])
   try {
     await mkdir(join(pluginRoot, 'editor'), { recursive: true })
@@ -188,17 +188,17 @@ test('a bytes custom editor edits and saves a binary file', async ({
       })
     )
     await writeFile(filePath, original)
-    await enableDevPlugins(orcaPage, [pluginRoot])
-    await openRepoFile(orcaPage, seededRepoPath, BYTES_FILE)
+    await enableDevPlugins(topoPage, [pluginRoot])
+    await openRepoFile(topoPage, seededRepoPath, BYTES_FILE)
 
-    const guest = pluginGuest(orcaPage, 'Hex Book')
+    const guest = pluginGuest(topoPage, 'Hex Book')
     const summary = () =>
       readInGuest<string>(guest, `document.getElementById('summary').textContent`)
     await expect(guest).toBeVisible({ timeout: 15_000 })
     await expect.poll(summary, { timeout: 15_000 }).toBe('v1 hexbook false 8:50 4b 3 4 name=opaque')
     // Opening and the ignored text edit leave the file and the tab untouched.
     const dirty = () =>
-      orcaPage.evaluate(
+      topoPage.evaluate(
         (name) =>
           window.__store?.getState().openFiles.find((file) => file.relativePath === name)?.isDirty,
         BYTES_FILE
@@ -208,27 +208,27 @@ test('a bytes custom editor edits and saves a binary file', async ({
 
     // Why a key: in a hidden Linux window the mouse never reaches a sandboxed frame's button.
     await focusInGuest(guest, '#append')
-    await orcaPage.keyboard.press('Enter')
+    await topoPage.keyboard.press('Enter')
     await expect.poll(dirty).toBe(true)
-    await orcaPage.keyboard.press(SAVE_KEY)
+    await topoPage.keyboard.press(SAVE_KEY)
     const edited = Buffer.concat([original, Buffer.from([0xaa])])
     await expect.poll(() => readFile(filePath)).toEqual(edited)
     await expect.poll(dirty).toBe(false)
 
     // Source of a binary file is the binary placeholder, never decoded bytes.
-    await chooseView(orcaPage, 'Source')
+    await chooseView(topoPage, 'Source')
     await expect(guest).toHaveCount(0)
-    await expect(orcaPage.getByText('Binary file — cannot display')).toBeVisible()
-    await chooseView(orcaPage, 'Hex Book')
+    await expect(topoPage.getByText('Binary file — cannot display')).toBeVisible()
+    await chooseView(topoPage, 'Hex Book')
     // A remount reads the saved bytes back.
     await expect(guest).toBeVisible()
     await expect.poll(summary).toContain('hexbook false 9:')
 
-    await disablePluginSystem(orcaPage)
+    await disablePluginSystem(topoPage)
     await expect(guest).toHaveCount(0, { timeout: 15_000 })
-    await expect(orcaPage.getByText('Binary file — cannot display')).toBeVisible()
+    await expect(topoPage.getByText('Binary file — cannot display')).toBeVisible()
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(filePath, { force: true })
     await rm(pluginRoot, { recursive: true, force: true })
   }

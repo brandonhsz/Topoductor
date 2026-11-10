@@ -5,7 +5,7 @@ import type {
   LegacyPrincipalRole
 } from '../orchestration/db/orchestration-records'
 import { OrchestrationError } from '../orchestration/orchestration-error'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import type { OrchestrationCompatibilityCallerAuthority } from '../orchestration/terminal-authority/orchestration-compatibility-authority'
 import '../orchestration/db/orchestration-db'
 import { LEGACY_CONTRACT_VERSION } from '../orchestration/db/contract-constants'
@@ -28,7 +28,7 @@ export type LegacyPrincipalCandidate = {
 }
 
 export function resolveAttestedLegacyPrincipal(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   evidence?: OrchestrationCompatibilityEvidence
   candidate: LegacyPrincipalCandidate
   authority?: OrchestrationCompatibilityCallerAuthority
@@ -47,7 +47,7 @@ export function resolveAttestedLegacyPrincipal(args: {
 }
 
 export function verifyAttestedLegacyCandidate(args: {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   evidence?: OrchestrationCompatibilityEvidence
   candidate: LegacyPrincipalCandidate
 }) {
@@ -74,7 +74,7 @@ export function verifyAttestedLegacyCandidate(args: {
 }
 
 export class LegacyCompatibilityAuthority {
-  constructor(private readonly runtime: OrcaRuntimeService) {}
+  constructor(private readonly runtime: TopoRuntimeService) {}
 
   resolveWorkerDispatch(
     request: RpcRequest,

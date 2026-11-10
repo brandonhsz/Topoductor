@@ -25,7 +25,7 @@ afterEach(async () => {
 })
 
 it.each([false, true])('keeps cold authority with read failure=%s', async (failReads) => {
-  const root = await mkdtemp(join(tmpdir(), 'orca-scope-invalid-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-scope-invalid-'))
   tempRoots.push(root)
   const roots = isolatedScanRoots(root)
   const persistence = { filePath: join(root, 'parse-cache.json'), appVersion: 'test' }

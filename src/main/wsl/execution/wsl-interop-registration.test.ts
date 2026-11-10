@@ -5,12 +5,12 @@ describe('parseWslInteropProbeOutput', () => {
   it('carries the wsl.conf interop setting when the entry is missing', () => {
     expect(
       parseWslInteropProbeOutput(
-        'orca-wsl-interop:missing\norca-wsl-interop:conf\n[boot]\nsystemd=true\n'
+        'topo-wsl-interop:missing\ntopo-wsl-interop:conf\n[boot]\nsystemd=true\n'
       )
     ).toEqual({ state: 'missing', interopDisabled: false })
     expect(
       parseWslInteropProbeOutput(
-        'orca-wsl-interop:missing\norca-wsl-interop:conf\n[interop]\nenabled=false\n'
+        'topo-wsl-interop:missing\ntopo-wsl-interop:conf\n[interop]\nenabled=false\n'
       )
     ).toEqual({ state: 'missing', interopDisabled: true })
   })

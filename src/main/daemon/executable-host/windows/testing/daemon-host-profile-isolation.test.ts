@@ -46,7 +46,7 @@ function materializedBuild(): string {
 
 function seedDir(path: string, exe: string): string {
   mkdirSync(join(path, 'resources'), { recursive: true })
-  writeFileSync(join(path, 'Orca.exe'), exe)
+  writeFileSync(join(path, 'Topo.exe'), exe)
   return path
 }
 
@@ -56,7 +56,7 @@ beforeEach(() => {
   process.env.LOCALAPPDATA = localAppData
   setProcessProp('platform', 'win32')
   buildInstallFixture(join(tempDir, 'app'))
-  setProcessProp('execPath', join(tempDir, 'app', 'Orca.exe'))
+  setProcessProp('execPath', join(tempDir, 'app', 'Topo.exe'))
   setProcessProp('resourcesPath', join(tempDir, 'app', 'resources'))
   vi.spyOn(process, 'kill').mockImplementation((pid) => {
     if (pid === DEAD_WRITER_PID) {
@@ -114,20 +114,20 @@ describe('daemon-host profile isolation under a shared LOCALAPPDATA', () => {
       [stagingA, 'a-staging'],
       [oldVersionA, 'a-old']
     ] as const) {
-      expect(existsSync(join(dir, 'Orca.exe'))).toBe(true)
+      expect(existsSync(join(dir, 'Topo.exe'))).toBe(true)
       if (exe) {
-        expect(readFileSync(join(dir, 'Orca.exe'), 'utf8')).toBe(exe)
+        expect(readFileSync(join(dir, 'Topo.exe'), 'utf8')).toBe(exe)
       }
     }
-    expect(existsSync(join(buildB, 'Orca.exe'))).toBe(true)
-    expect(existsSync(join(liveStagingB, 'Orca.exe'))).toBe(true)
+    expect(existsSync(join(buildB, 'Topo.exe'))).toBe(true)
+    expect(existsSync(join(liveStagingB, 'Topo.exe'))).toBe(true)
     expect(existsSync(staleB)).toBe(true)
     expect(existsSync(deadStagingB)).toBe(false)
     expect(existsSync(oldVersionB)).toBe(false)
   })
 
   it('keeps legacy unscoped mirrors that older daemons may still run from', () => {
-    const legacyRoot = join(localAppData, 'Orca', 'daemon-host')
+    const legacyRoot = join(localAppData, 'Topo', 'daemon-host')
     const legacyCurrent = seedDir(join(legacyRoot, '9.9.9', 'build-legacy-000000000000'), 'cur')
     const legacyStaging = seedDir(
       join(legacyRoot, '9.9.9', daemonHostStagingName(DEAD_WRITER_PID, '000000000000')),
@@ -139,8 +139,8 @@ describe('daemon-host profile isolation under a shared LOCALAPPDATA', () => {
 
     pruneOldDaemonHosts({ status: 'complete', versionLiveness: new Map() })
 
-    expect(existsSync(join(legacyCurrent, 'Orca.exe'))).toBe(true)
-    expect(existsSync(join(legacyStaging, 'Orca.exe'))).toBe(true)
-    expect(existsSync(join(legacyOld, 'Orca.exe'))).toBe(true)
+    expect(existsSync(join(legacyCurrent, 'Topo.exe'))).toBe(true)
+    expect(existsSync(join(legacyStaging, 'Topo.exe'))).toBe(true)
+    expect(existsSync(join(legacyOld, 'Topo.exe'))).toBe(true)
   })
 })

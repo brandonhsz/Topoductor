@@ -2,7 +2,7 @@ import type { ManagedPane } from '@/lib/pane-manager/pane-manager-types'
 
 export type SessionRestoredBannerPane = Pick<ManagedPane, 'id' | 'container'>
 
-/** `resume-unavailable`: the pane asked to resume a provider session Orca could not
+/** `resume-unavailable`: the pane asked to resume a provider session Topo could not
  *  verify, so it launched a fresh one — silence would read as a successful restore. */
 export type SessionRestoredBannerReason = 'restored' | 'resume-unavailable'
 

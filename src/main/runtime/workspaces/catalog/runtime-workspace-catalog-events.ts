@@ -5,9 +5,9 @@ import {
 import type { Repo } from '../../../../shared/repo-types'
 import { normalizeRuntimePathForComparison } from '../../../../shared/cross-platform-path'
 import { composeWorktreeId } from '../../../../shared/worktree/id'
-import { OrcaRuntimeWithGetStatus } from '../../hosts/runtime-status'
+import { TopoRuntimeWithGetStatus } from '../../hosts/runtime-status'
 
-export abstract class RuntimeWorkspaceCatalogEvents extends OrcaRuntimeWithGetStatus {
+export abstract class RuntimeWorkspaceCatalogEvents extends TopoRuntimeWithGetStatus {
   abstract invalidateResolvedWorktreeCache(): void
 
   abstract invalidateWorktreeScanCacheForRepo(repoId: string): void

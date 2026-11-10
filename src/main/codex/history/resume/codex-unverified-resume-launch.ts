@@ -2,7 +2,7 @@ import { dropAgentResumeArgvFromCommand } from '../../../../shared/agent-launch/
 import type { AgentProviderSessionMetadata } from '../../../../shared/agent-session/lifecycle/agent-session-resume'
 
 export const UNVERIFIED_CODEX_RESUME_ERROR =
-  'Orca could not verify the originating Codex session file, so automatic resume was stopped to avoid using a different account.'
+  'Topo could not verify the originating Codex session file, so automatic resume was stopped to avoid using a different account.'
 
 /** Avoid cross-account resumes; reject unstrippable locators only when metadata claims Codex provenance. */
 export function dropUnverifiedCodexResumeArgv(args: {

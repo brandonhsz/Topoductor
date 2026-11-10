@@ -1,4 +1,4 @@
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import {
   waitForSessionReady,
   waitForActiveWorktree,
@@ -10,19 +10,19 @@ import {
 import { clickFileInExplorer, openFileExplorer } from './helpers/file-explorer'
 
 test.describe('File Open & Markdown Preview', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
-    await ensureTerminalVisible(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
+    await ensureTerminalVisible(topoPage)
   })
 
-  test('clicking a file in the file explorer opens it in an editor tab', async ({ orcaPage }) => {
-    const worktreeId = (await getActiveWorktreeId(orcaPage))!
-    await openFileExplorer(orcaPage)
+  test('clicking a file in the file explorer opens it in an editor tab', async ({ topoPage }) => {
+    const worktreeId = (await getActiveWorktreeId(topoPage))!
+    await openFileExplorer(topoPage)
 
-    const filesBefore = await getOpenFiles(orcaPage, worktreeId)
+    const filesBefore = await getOpenFiles(topoPage, worktreeId)
 
-    const clickedFile = await clickFileInExplorer(orcaPage, [
+    const clickedFile = await clickFileInExplorer(topoPage, [
       'package.json',
       'tsconfig.json',
       '.gitignore',
@@ -30,31 +30,31 @@ test.describe('File Open & Markdown Preview', () => {
     ])
     expect(clickedFile).not.toBeNull()
 
-    await expect.poll(async () => getActiveTabType(orcaPage), { timeout: 5_000 }).toBe('editor')
+    await expect.poll(async () => getActiveTabType(topoPage), { timeout: 5_000 }).toBe('editor')
 
     await expect
-      .poll(async () => (await getOpenFiles(orcaPage, worktreeId)).length, { timeout: 5_000 })
+      .poll(async () => (await getOpenFiles(topoPage, worktreeId)).length, { timeout: 5_000 })
       .toBeGreaterThan(filesBefore.length)
 
     // Assert the rendered path; allow first-open lazy EditorPanel/Monaco/Markdown chunks to mount.
-    await expect(orcaPage.locator('.editor-header-path').first()).toContainText(clickedFile!, {
+    await expect(topoPage.locator('.editor-header-path').first()).toContainText(clickedFile!, {
       timeout: 20_000
     })
   })
 
-  test('opening a .md file shows markdown content', async ({ orcaPage }) => {
-    await openFileExplorer(orcaPage)
-    const clickedFile = await clickFileInExplorer(orcaPage, ['README.md', 'CLAUDE.md'])
+  test('opening a .md file shows markdown content', async ({ topoPage }) => {
+    await openFileExplorer(topoPage)
+    const clickedFile = await clickFileInExplorer(topoPage, ['README.md', 'CLAUDE.md'])
     expect(clickedFile).not.toBeNull()
 
-    await expect.poll(async () => getActiveTabType(orcaPage), { timeout: 5_000 }).toBe('editor')
+    await expect.poll(async () => getActiveTabType(topoPage), { timeout: 5_000 }).toBe('editor')
 
     // Assert the file’s real heading so a blank editor cannot pass via store state.
     const expectedHeading = clickedFile?.endsWith('README.md')
-      ? /Orca E2E Test Repo/i
+      ? /Topo E2E Test Repo/i
       : /CLAUDE\.md/i
     // Allow cold EditorPanel → Markdown chunk loading and ProseMirror boot before the heading paints.
-    await expect(orcaPage.getByRole('heading', { name: expectedHeading, level: 1 })).toBeVisible({
+    await expect(topoPage.getByRole('heading', { name: expectedHeading, level: 1 })).toBeVisible({
       timeout: 25_000
     })
   })

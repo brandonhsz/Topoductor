@@ -141,7 +141,7 @@ export function startControlFlagChannel<Flags>(input: {
     } catch (error) {
       console.warn(
         JSON.stringify({
-          event: 'orca_relay_control_flags_listener_failed',
+          event: 'topo_relay_control_flags_listener_failed',
           object: input.objectName,
           reason: error instanceof Error ? error.message : 'unknown'
         })
@@ -161,7 +161,7 @@ export function startControlFlagChannel<Flags>(input: {
         lastLoggedFailure = failure
         console.warn(
           JSON.stringify({
-            event: 'orca_relay_control_flags_unreadable',
+            event: 'topo_relay_control_flags_unreadable',
             object: input.objectName,
             failure,
             generation: applied.generation

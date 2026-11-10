@@ -7,7 +7,7 @@
 /** Rolling the feature back is this one line. */
 export const PLUGIN_ISOLATED_FRAMES_DEFAULT = true
 
-export const PLUGIN_ISOLATED_FRAMES_ENV = 'ORCA_PLUGIN_ISOLATED_FRAMES'
+export const PLUGIN_ISOLATED_FRAMES_ENV = 'TOPO_PLUGIN_ISOLATED_FRAMES'
 
 export function isPluginFrameIsolationEnabled(
   settings: { experimentalPluginIsolatedFrames?: boolean } | null | undefined,

@@ -10,7 +10,7 @@ const englishPath = `${renderer}/i18n/locales/en.json`
 const runtimePath = `${renderer}/i18n/en-runtime-required.json`
 
 async function fixture() {
-  const root = await mkdtemp(join(tmpdir(), 'orca-localization-checks-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-localization-checks-'))
   directories.push(root)
   await mkdir(join(root, renderer, 'i18n/locales'), { recursive: true })
   await mkdir(join(root, 'src/main'), { recursive: true })

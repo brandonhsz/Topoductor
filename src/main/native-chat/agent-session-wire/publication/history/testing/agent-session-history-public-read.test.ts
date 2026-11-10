@@ -31,7 +31,7 @@ const item = (ordinal: number) => ({
 })
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-history-public-read-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-history-public-read-'))
   journal = await journals.open({ identity: IDENTITY, stateDirectory: root })
 })
 afterEach(async () => {

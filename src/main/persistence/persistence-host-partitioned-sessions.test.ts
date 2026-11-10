@@ -59,7 +59,7 @@ vi.mock('../telemetry/cohort-classifier', () => ({
 
 describe('Store host-partitioned workspace sessions', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-test-'))
   })
 
   afterEach(async () => {

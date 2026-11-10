@@ -1,7 +1,7 @@
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
-import type { PipedProcessSpawner } from '@orca/process-host/process-spec'
-import { spawnProcess } from '@orca/process-host'
-import { RetryableProcessExitProof } from '@orca/process-host/retryable-process-exit-proof'
+import type { PipedProcessSpawner } from '@topo/process-host/process-spec'
+import { spawnProcess } from '@topo/process-host'
+import { RetryableProcessExitProof } from '@topo/process-host/retryable-process-exit-proof'
 import type { ProviderProcessLaunch } from './provider-process-launch'
 import {
   PROVIDER_BRIEF_SIGTERM_GRACE_MS,
@@ -184,7 +184,7 @@ export function spawnManagedProviderProcess(
     // A direct spawn error names what this process spawned: the supervisor, when there is one.
     if (spawnError) {
       const direct = providerSpawnAbsence(spawnError, spec.program, launch.cwd)
-      // A missing supervisor is Orca's own binary (e.g. mid-update), never the agent's CLI.
+      // A missing supervisor is Topo's own binary (e.g. mid-update), never the agent's CLI.
       absence = spec.supervised && direct === 'executable' ? null : direct
       return absence
     }

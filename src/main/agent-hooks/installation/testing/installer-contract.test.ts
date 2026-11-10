@@ -13,7 +13,7 @@ import {
 } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { wrapPosixHookCommand } from '../commands/posix-hook-command'
 import { wrapWindowsHookCommand } from '../commands/windows-hook-command'
 import { writeHooksJson } from '../configuration/hooks-json-write'
@@ -25,7 +25,7 @@ let tmpDir: string
 let configPath: string
 
 beforeEach(() => {
-  tmpDir = mkdtempSync(join(tmpdir(), 'orca-installer-utils-test-'))
+  tmpDir = mkdtempSync(join(tmpdir(), 'topo-installer-utils-test-'))
   configPath = join(tmpDir, 'settings.json')
 })
 
@@ -122,14 +122,14 @@ describe('wrapPosixHookCommand', () => {
     () => {
       const scriptPath = join(tmpDir, 'env-hook.sh')
       const event = "UserPromptSubmit ' $HOME ;"
-      writeFileSync(scriptPath, '#!/bin/sh\nprintf "%s" "$ORCA_COPILOT_HOOK_EVENT"\n', {
+      writeFileSync(scriptPath, '#!/bin/sh\nprintf "%s" "$TOPO_COPILOT_HOOK_EVENT"\n', {
         mode: 0o755
       })
-      const command = wrapPosixHookCommand(scriptPath, { ORCA_COPILOT_HOOK_EVENT: event })
+      const command = wrapPosixHookCommand(scriptPath, { TOPO_COPILOT_HOOK_EVENT: event })
       const result = runProcessSync({
         program: '/bin/sh',
-        args: ['-c', `${command}; printf '\n%s' "$ORCA_COPILOT_HOOK_EVENT"`],
-        env: { ...process.env, ORCA_COPILOT_HOOK_EVENT: 'parent-value' },
+        args: ['-c', `${command}; printf '\n%s' "$TOPO_COPILOT_HOOK_EVENT"`],
+        env: { ...process.env, TOPO_COPILOT_HOOK_EVENT: 'parent-value' },
         timeoutMs: 5000
       })
       expect(result.code).toBe(0)
@@ -173,7 +173,7 @@ describe('wrapWindowsHookCommand', () => {
   it.skipIf(process.platform !== 'win32')(
     'executes a script path containing a cmd.exe caret literally',
     () => {
-      const scriptDir = join(tmpDir, 'home with ^ caret', '.orca', 'agent-hooks')
+      const scriptDir = join(tmpDir, 'home with ^ caret', '.topo', 'agent-hooks')
       mkdirSync(scriptDir, { recursive: true })
       const scriptPath = join(scriptDir, 'codex-hook.cmd')
       writeFileSync(scriptPath, '@echo off\r\nexit /b 7\r\n', 'utf-8')
@@ -181,7 +181,7 @@ describe('wrapWindowsHookCommand', () => {
       const result = runProcessSync({
         program: 'cmd.exe',
         args: ['/d', '/c', wrapWindowsHookCommand(scriptPath)],
-        env: { ...process.env, ORCA_WRAP_TEST: 'expanded' },
+        env: { ...process.env, TOPO_WRAP_TEST: 'expanded' },
         timeoutMs: 5000
       })
 
@@ -201,8 +201,8 @@ describe('wrapRuntimeHomeHookCommand', () => {
   it('executes the destination HOME script for the current runtime', () => {
     const sourceHome = join(tmpDir, 'source profile')
     const destinationHome = join(tmpDir, "destination $HOME ' & profile")
-    const sourceScriptDir = join(sourceHome, '.orca', 'agent-hooks')
-    const destinationScriptDir = join(destinationHome, '.orca', 'agent-hooks')
+    const sourceScriptDir = join(sourceHome, '.topo', 'agent-hooks')
+    const destinationScriptDir = join(destinationHome, '.topo', 'agent-hooks')
     mkdirSync(sourceScriptDir, { recursive: true })
     mkdirSync(destinationScriptDir, { recursive: true })
     const windowsExitCode = process.platform === 'win32' ? 7 : 9
@@ -241,7 +241,7 @@ describe('wrapRuntimeHomeHookCommand', () => {
       program: shell,
       args: [
         '-c',
-        wrapRuntimeHomeHookCommand('missing-orca-hook', { neutralJsonWhenMissing: true })
+        wrapRuntimeHomeHookCommand('missing-topo-hook', { neutralJsonWhenMissing: true })
       ],
       env: { ...process.env, HOME: tmpDir.replaceAll('\\', '/') },
       input: 'x'.repeat(1_000_000),

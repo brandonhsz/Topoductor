@@ -5,12 +5,12 @@ import type { RuntimeMobileSessionTabsResult } from '../../../../shared/runtime-
 import { getDefaultWorkspaceSession } from '../../../../shared/constants'
 
 // Preserve side-effect order: mocks, lifecycle, fixtures.
-await import('../../orca-runtime-tests/runtime-test-module-registration.spec')
-const { OrcaRuntimeService } = await import('../../orca-runtime')
-await import('../../orca-runtime-tests/orca-runtime-test-lifecycle.spec')
+await import('../../topo-runtime-tests/runtime-test-module-registration.spec')
+const { TopoRuntimeService } = await import('../../topo-runtime')
+await import('../../topo-runtime-tests/topo-runtime-test-lifecycle.spec')
 const { makeRuntimeStoreWithWorkspaceSession, TEST_WORKTREE_ID } =
-  await import('../../orca-runtime-tests/orca-runtime-test-fixtures.spec')
-await import('../../orca-runtime-tests/orca-runtime-test-scenario-builders.spec')
+  await import('../../topo-runtime-tests/topo-runtime-test-fixtures.spec')
+await import('../../topo-runtime-tests/topo-runtime-test-scenario-builders.spec')
 
 const WT = TEST_WORKTREE_ID
 
@@ -18,7 +18,7 @@ function pairedRuntime(clientKind?: 'mobile' | 'runtime') {
   let next = 0
   const spawn = vi.fn(async () => ({ id: `pty-${++next}` }))
   const { runtimeStore } = makeRuntimeStoreWithWorkspaceSession(getDefaultWorkspaceSession())
-  const runtime = new OrcaRuntimeService(runtimeStore)
+  const runtime = new TopoRuntimeService(runtimeStore)
   runtime.setPtyController({
     spawn,
     write: () => true,
@@ -35,7 +35,7 @@ function pairedRuntime(clientKind?: 'mobile' | 'runtime') {
   return { runtime, spawn, caller }
 }
 
-async function createPane(runtime: InstanceType<typeof OrcaRuntimeService>) {
+async function createPane(runtime: InstanceType<typeof TopoRuntimeService>) {
   const created = await runtime.createTerminal(`id:${WT}`)
   const pane = parsePaneKey(created.paneKey ?? '')
   if (!pane) {

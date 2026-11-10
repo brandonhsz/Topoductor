@@ -36,7 +36,7 @@ export function RemoteServerUpdateStatusSegment({
         ),
         tooltip: t(
           'auto.components.status.bar.RemoteServerUpdateStatusSegment.updatingTooltip',
-          'Remote Orca Server updates are in progress'
+          'Remote Topo Server updates are in progress'
         )
       }
     : failed > 0
@@ -49,7 +49,7 @@ export function RemoteServerUpdateStatusSegment({
           ),
           tooltip: t(
             'auto.components.status.bar.RemoteServerUpdateStatusSegment.failedTooltip',
-            'Open Remote Orca Server updates to review and retry'
+            'Open Remote Topo Server updates to review and retry'
           )
         }
       : {
@@ -61,7 +61,7 @@ export function RemoteServerUpdateStatusSegment({
           ),
           tooltip: t(
             'auto.components.status.bar.RemoteServerUpdateStatusSegment.updatedTooltip',
-            'Remote Orca Server updates completed'
+            'Remote Topo Server updates completed'
           )
         }
 

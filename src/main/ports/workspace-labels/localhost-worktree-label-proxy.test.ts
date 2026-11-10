@@ -113,7 +113,7 @@ describe('localhost worktree label proxy', () => {
     expect(result.body).toBe('ok')
   })
 
-  it('returns 404 for unregistered orca.localhost labels', async () => {
+  it('returns 404 for unregistered topo.localhost labels', async () => {
     const port = await startUpstream((_request, response) => {
       response.end('ok')
     })
@@ -125,7 +125,7 @@ describe('localhost worktree label proxy', () => {
     })
     const proxyPort = new URL(url).port
 
-    const result = await fetchThroughProxy(`http://unknown-label.orca.localhost:${proxyPort}/`)
+    const result = await fetchThroughProxy(`http://unknown-label.topo.localhost:${proxyPort}/`)
 
     expect(result.status).toBe(404)
   })

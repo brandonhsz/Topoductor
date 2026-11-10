@@ -1,7 +1,7 @@
-import type { OrcaHooks } from '../../../shared/orca-yaml-hook-types'
+import type { TopoHooks } from '../../../shared/topo-yaml-hook-types'
 
 /** The environment recipe commands a vmRecipe trust approval covers. */
-export function getVmRecipeTrustContent(yamlHooks: OrcaHooks | null): string {
+export function getVmRecipeTrustContent(yamlHooks: TopoHooks | null): string {
   return (yamlHooks?.environmentRecipes ?? [])
     .map((recipe) =>
       [

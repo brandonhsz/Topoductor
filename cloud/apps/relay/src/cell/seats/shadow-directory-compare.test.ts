@@ -58,7 +58,7 @@ describe('unexplained samples', () => {
     )
     compare.compare('sticky-verify', IDENTITY, { ...assignment('cell-a'), assignmentEpoch: 2 })
     compare.flush(20)
-    const sample = lines.find((line) => line.event === 'orca_relay_shadow_compare_unexplained')
+    const sample = lines.find((line) => line.event === 'topo_relay_shadow_compare_unexplained')
     expect(sample).toMatchObject({
       class: 'epoch-mismatch',
       db: { cellId: 'cell-a', assignmentEpoch: 2 }
@@ -143,7 +143,7 @@ function config(): RelayConfig {
     publicUrl: 'https://relay.example.test',
     cellUrl: 'https://relay.example.test',
     authIssuer: 'https://auth.example.test',
-    authAudience: 'orca-relay',
+    authAudience: 'topo-relay',
     jwksUrl: 'https://auth.example.test/jwks',
     assignmentSigningKey: new TextEncoder().encode('assignment-key-with-at-least-32-bytes'),
     role: 'director',

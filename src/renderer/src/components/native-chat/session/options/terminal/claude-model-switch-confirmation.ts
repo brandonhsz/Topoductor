@@ -33,7 +33,7 @@ function compactTerminalText(buffer: string): string {
 
 function hasClaudeModelSwitchSuccess(buffer: string, modelLabel: string): boolean {
   const text = compactTerminalText(buffer)
-  // Claude echoes neither the vendor prefix nor Orca's picker-only `alias` suffix.
+  // Claude echoes neither the vendor prefix nor Topo's picker-only `alias` suffix.
   const label = modelLabel.replace(/^claude[\s-]+/i, '').replace(/\s+alias$/i, '')
   const marker = `setmodelto${label.replace(/\s+/g, '').toLowerCase()}`
   if (text.includes(marker)) {

@@ -10,7 +10,7 @@ import {
   makeRepo,
   testState
 } from '../persistence/persistence-test-harness'
-import { OrcaRuntimeService } from '../runtime/orca-runtime'
+import { TopoRuntimeService } from '../runtime/topo-runtime'
 import { RpcDispatcher } from '../runtime/rpc/dispatcher'
 import { GITHUB_REPO_WORK_ITEM_METHODS } from '../runtime/rpc/methods/source-control/github/github-repo-work-item-methods'
 import { GITHUB_PULL_REQUEST_METHODS } from '../runtime/rpc/methods/source-control/github/github-pull-request-methods'
@@ -247,12 +247,12 @@ describe('host account expectation through registered RPC and local preload', ()
     store.updateRepo({ id: 'repo' }, { ghAccount })
 
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-pr36172-account-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-pr36172-account-'))
     store = createStore()
     store.addRepo(
       makeRepo({ id: 'repo', path: '/repo', issueSourcePreference: 'origin', ghAccount: alice })
     )
-    const runtime = new OrcaRuntimeService(store)
+    const runtime = new TopoRuntimeService(store)
     release = installGitHubProjectAccounts(store)
     vi.spyOn(runtime, 'getRuntimeId').mockReturnValue('account-runtime')
     dispatcher = new RpcDispatcher({

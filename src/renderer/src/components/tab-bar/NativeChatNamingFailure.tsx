@@ -96,7 +96,7 @@ export function NativeChatNamingFailedDialog({
         <>
           {t(
             'tabHoverCard.namingFailure.dialogDescriptionStart',
-            "Orca couldn't generate a name for"
+            "Topo couldn't generate a name for"
           )}{' '}
           <span className="font-medium text-foreground">{chatName}</span>{' '}
           {t('tabHoverCard.namingFailure.dialogDescriptionEnd', 'from its first message.')}

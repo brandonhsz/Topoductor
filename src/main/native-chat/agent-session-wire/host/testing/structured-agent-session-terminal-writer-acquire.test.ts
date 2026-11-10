@@ -55,7 +55,7 @@ const assertNoTerminalWriter = vi.fn(async (_record: AgentSessionRecord) => {
 })
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-terminal-writer-acquire-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-terminal-writer-acquire-'))
   resetHostTestOperationIds()
   terminalWriting = false
   acquire.mockClear()

@@ -12,7 +12,7 @@ import type {
 } from './dragged-temp-file-copy'
 import { ensureOwnedTempStagingRoot } from './owned-temp-staging-root'
 
-const COPY_DIR_PREFIX = 'orca-drop-'
+const COPY_DIR_PREFIX = 'topo-drop-'
 const COPY_HIGH_WATER_MARK = 1024 * 1024
 
 /** A checked drag-temp file: the handle reads the dropped bytes even after the provider removes
@@ -97,7 +97,7 @@ export function isDragTempSourceChanged(error: unknown): boolean {
   return error instanceof DropCopyError && error.reason === 'changed'
 }
 
-/** A private 0600 copy in Orca's temp storage, for consumers that need a path. */
+/** A private 0600 copy in Topo's temp storage, for consumers that need a path. */
 export async function copyCheckedDragTempSource(
   source: CheckedDragTempSource,
   env: DragTempCopyEnvironment,
@@ -112,7 +112,7 @@ export async function copyCheckedDragTempSource(
     await writeCheckedDragTempSource(source, destPath, signal)
     // Why: a caller that gave up mid-copy never hands this path out; don't retain it.
     signal?.throwIfAborted()
-    console.debug('[drop] copied a drag-temp file into Orca storage', { bytes: source.size })
+    console.debug('[drop] copied a drag-temp file into Topo storage', { bytes: source.size })
     return {
       sourcePath: source.sourcePath,
       status: 'imported',

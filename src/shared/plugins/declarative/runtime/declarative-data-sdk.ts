@@ -1,25 +1,25 @@
-import type { OrcaBridge, OrcaDisposable } from './declarative-runtime-types'
+import type { TopoBridge, TopoDisposable } from './declarative-runtime-types'
 
 /** `plugin`, `storage`, `settings` and `secrets` from `orca`: the frame shell's facades, typed in
  *  orca.d.ts. Calls before the panel's guest offers them reject with `unavailable`. */
 
 function unavailable(what: string): Promise<never> {
   return Promise.reject(
-    Object.assign(new Error(`${what} is not available in this Orca`), {
+    Object.assign(new Error(`${what} is not available in this Topo`), {
       code: 'unavailable',
       retryable: false
     })
   )
 }
 
-const NOTHING: OrcaDisposable = { dispose: () => undefined }
+const NOTHING: TopoDisposable = { dispose: () => undefined }
 
-export function createOrcaDataSdk(bridge: () => OrcaBridge | null) {
+export function createOrcaDataSdk(bridge: () => TopoBridge | null) {
   const plugin = Object.freeze({
     request(name: string, input?: unknown, options?: { signal?: AbortSignal; timeoutMs?: number }) {
       return bridge()?.plugin?.request(name, input, options) ?? unavailable('plugin.request')
     },
-    on(event: string, handler: (payload: unknown) => void): OrcaDisposable {
+    on(event: string, handler: (payload: unknown) => void): TopoDisposable {
       return bridge()?.plugin?.on(event, handler) ?? NOTHING
     }
   })
@@ -29,14 +29,14 @@ export function createOrcaDataSdk(bridge: () => OrcaBridge | null) {
       bridge()?.storage?.set(key, value) ?? unavailable('storage'),
     delete: (key: string) => bridge()?.storage?.delete(key) ?? unavailable('storage'),
     keys: () => bridge()?.storage?.keys() ?? unavailable('storage'),
-    onDidChange: (handler: (change: { key: string }) => void): OrcaDisposable =>
+    onDidChange: (handler: (change: { key: string }) => void): TopoDisposable =>
       bridge()?.storage?.onDidChange(handler) ?? NOTHING
   })
   const settings = Object.freeze({
     get: (key?: string) => bridge()?.settings?.get(key) ?? unavailable('settings'),
     set: (key: string, value: unknown) =>
       bridge()?.settings?.set(key, value) ?? unavailable('settings'),
-    onDidChange: (handler: (change: { key: string }) => void): OrcaDisposable =>
+    onDidChange: (handler: (change: { key: string }) => void): TopoDisposable =>
       bridge()?.settings?.onDidChange(handler) ?? NOTHING
   })
   const secrets = Object.freeze({

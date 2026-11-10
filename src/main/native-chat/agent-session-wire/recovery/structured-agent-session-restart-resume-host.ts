@@ -8,7 +8,7 @@ import {
 } from '../../../../shared/agent-session/failures/agent-session-wire-refusals'
 import type { AgentSessionResumeMarker } from '../../../../shared/agent-session/lifecycle/agent-session-resume-marker'
 import {
-  createNewerOrcaChats,
+  createNewerTopoChats,
   createStructuredAgentSessionRestartCandidateReaders
 } from './structured-agent-session-restart-candidates'
 import {
@@ -78,20 +78,20 @@ export function createStructuredAgentSessionRestartResume(
     now: surfaces.now,
     enqueue: enqueueRecoveryOperation
   })
-  const newerOrca = createNewerOrcaChats(() => deps.journalDatabase.readOnly)
+  const newerTopo = createNewerTopoChats(() => deps.journalDatabase.readOnly)
   const { derive, deriveAtSend } = createStructuredAgentSessionRestartCandidateReaders({
     sessions,
     getRecord: deps.store.getRecord,
     adapter: deps.adapter,
     agents: deps.agents,
     movedOn: withdrawal.movedOn,
-    savedByNewerOrca: newerOrca.has
+    savedByNewerTopo: newerTopo.has
   })
   const failures = createStructuredAgentSessionRestartFailureLedger({
     ...(deps.recoveryCapsule ? { capsule: deps.recoveryCapsule } : {}),
     getRecord: deps.store.getConversation,
     retryable: (marker) => derive([marker], 'may-be-held').candidates.length === 1,
-    savedByNewerOrca: newerOrca.has,
+    savedByNewerTopo: newerTopo.has,
     logger: deps.logger,
     now: surfaces.now,
     enqueue: enqueueRecoveryOperation
@@ -103,7 +103,7 @@ export function createStructuredAgentSessionRestartResume(
       readFailedMarkers: async () => (await failures.read()).map((failure) => failure.marker),
       hasSession: (sessionId) => sessions.has(sessionId),
       reveal: async (sessionId) => {
-        newerOrca.note(sessionId, await surfaces.revealSession(sessionId).catch(() => null))
+        newerTopo.note(sessionId, await surfaces.revealSession(sessionId).catch(() => null))
       },
       logger: deps.logger,
       now: surfaces.now,

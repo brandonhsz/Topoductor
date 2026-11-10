@@ -21,13 +21,13 @@ const host = { id: 'svg-host', name: 'SVG Host', endpoint: 'ws://svg-test', last
 const pattern = '/h/[hostId]/files/preview/[worktreeId]'
 const pathname = '/h/svg-host/files/preview/folder-project'
 const bundles = mobileWebAppDependenciesPresent()
-const shots = process.env.ORCA_MOBILE_SVG_SHOTS_DIR
+const shots = process.env.TOPO_MOBILE_SVG_SHOTS_DIR
 let scratch, server, origin, browser, policy, version, faultGrant
 beforeAll(async () => {
   if (!bundles) {
     return
   }
-  scratch = await mkdtemp(join(tmpdir(), 'orca-mobile-svg-render-'))
+  scratch = await mkdtemp(join(tmpdir(), 'topo-mobile-svg-render-'))
   const built = await buildMobileWebAppBundle({ outDir: join(scratch, 'bundle') })
   policy = await readShellCsp()
   version = await readBridgeProtocolVersion()
@@ -35,7 +35,7 @@ beforeAll(async () => {
   const served = await createBundleServer({ outDir: built.outDir, cspHeader: () => policy })
   server = served.server
   origin = served.origin
-  const executablePath = process.env.ORCA_MOBILE_WEB_RENDER_BROWSER
+  const executablePath = process.env.TOPO_MOBILE_WEB_RENDER_BROWSER
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) })
   if (shots) {
     await mkdir(shots, { recursive: true })

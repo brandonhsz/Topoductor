@@ -99,7 +99,7 @@ export function installChromeWebStoreApis(
               last(result.value)
             }
           }),
-        () => withLastError('Orca could not handle this request', () => last())
+        () => withLastError('Topo could not handle this request', () => last())
       )
       return undefined
     }

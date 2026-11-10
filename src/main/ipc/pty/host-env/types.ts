@@ -13,8 +13,8 @@ export type BuildPtyHostEnvOptions = {
   userDataPath: string
   selectedCodexHomePath: string | null
   skipCodexHomeEnv?: boolean
-  /** Real-home routing strips only inherited Orca-owned Codex overrides, preserving user CODEX_HOME. */
-  stripInheritedOrcaCodexHome?: boolean
+  /** Real-home routing strips only inherited Topo-owned Codex overrides, preserving user CODEX_HOME. */
+  stripInheritedTopoCodexHome?: boolean
   /** Explicit launch command selects Pi/OMP extension targets; never infer agent identity from directories on disk. */
   launchCommand?: string
   /** Trusted agent identity for wrapped commands that cannot be recognized from text. */
@@ -30,7 +30,7 @@ export type BuildPtyHostEnvOptions = {
   /** Per-agent opt-out; disabled agents must not receive managed extensions. */
   disabledTuiAgents?: Iterable<unknown> | null
   networkProxySettings?: NetworkProxySettings
-  /** Headless paired runtimes hand browser launches to the client-hosted Orca browser. */
+  /** Headless paired runtimes hand browser launches to the client-hosted Topo browser. */
   routeBrowserOpensToClient?: boolean
   /** The daemon reapplies the Git credential guard after merging its inherited env, so askpass reflects the final pane env. */
   deferGitConfigGuardToDaemon?: boolean

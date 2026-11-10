@@ -1,6 +1,6 @@
 /** Reattached idle PTYs may never emit; hidden panes serialize at desktop size, but phones need a phone-grid snapshot. */
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { RpcDispatcher } from '../../rpc/dispatcher'
 import type { RpcRequest } from '../../rpc/core'
 import { TERMINAL_METHODS } from '../../rpc/methods/terminal/terminal'
@@ -25,7 +25,7 @@ type RuntimeInternals = {
   providerSnapshotPreferredPtys: Set<string>
 }
 
-function internals(runtime: OrcaRuntimeService): RuntimeInternals {
+function internals(runtime: TopoRuntimeService): RuntimeInternals {
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: test reaches protected members the runtime defines.
   return runtime as unknown as RuntimeInternals
 }
@@ -46,7 +46,7 @@ function setup(opts: { paneMounted: boolean; providerSnapshot?: boolean }) {
   const serializeBuffer = vi.fn(async () =>
     opts.paneMounted ? { data: await screenOn(DESKTOP), ...DESKTOP } : null
   )
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setPtyController({
     write: () => true,
     kill: () => true,
@@ -73,7 +73,7 @@ function setup(opts: { paneMounted: boolean; providerSnapshot?: boolean }) {
   return { runtime, handle, sizes, serializeBuffer, requestMount }
 }
 
-function subscribePhone(runtime: OrcaRuntimeService, handle: string) {
+function subscribePhone(runtime: TopoRuntimeService, handle: string) {
   const frames: Uint8Array<ArrayBufferLike>[] = []
   const controller = new AbortController()
   const request: RpcRequest = {
@@ -132,7 +132,7 @@ async function paintedRows(snapshot: { cols: number; rows: number; data: string 
   }
 }
 
-async function firstSnapshot(runtime: OrcaRuntimeService, handle: string) {
+async function firstSnapshot(runtime: TopoRuntimeService, handle: string) {
   const subscription = subscribePhone(runtime, handle)
   await vi.waitFor(() => expect(subscription.snapshot()).not.toBeNull())
   const snapshot = subscription.snapshot()

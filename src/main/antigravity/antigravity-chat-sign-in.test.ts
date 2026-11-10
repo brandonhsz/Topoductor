@@ -1,6 +1,6 @@
 import type { AntigravityChatAuthConfig } from '../../shared/antigravity-chat-auth-config'
 import { structuredAgentHostLaunchSources } from '../runtime/agent-session/launch/structured-agent-launch-support'
-import * as profileStorage from '../orca-profiles/profile-storage-paths'
+import * as profileStorage from '../topo-profiles/profile-storage-paths'
 // The chat sign-in against a scripted Antigravity server.
 
 import { createServer } from 'node:http'
@@ -100,7 +100,7 @@ async function signInAgainst(
   vi.spyOn(browserHelper, 'antigravityBrowserHelperWorks').mockResolvedValue(true)
   // Short on POSIX so the private temp root stays in this folder, not /tmp/oacp-*.
   const stateDirectory = await mkdtemp(
-    process.platform === 'win32' ? join(tmpdir(), 'orca-agy-sign-in-') : '/tmp/o'
+    process.platform === 'win32' ? join(tmpdir(), 'topo-agy-sign-in-') : '/tmp/o'
   )
   folders.push(stateDirectory)
   const folder = join(stateDirectory, 'antigravity-chat')

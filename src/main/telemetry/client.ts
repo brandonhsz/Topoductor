@@ -24,13 +24,13 @@ const TELEMETRY_ENABLED = true
 
 // Require both CI-injected official build identity and write key; contributor builds fail closed. Vitest bypasses defines and uses globalThis fallbacks.
 const BUILD_IDENTITY: 'stable' | 'rc' | null =
-  typeof ORCA_BUILD_IDENTITY !== 'undefined'
-    ? ORCA_BUILD_IDENTITY
-    : ((globalThis as { ORCA_BUILD_IDENTITY?: 'stable' | 'rc' | null }).ORCA_BUILD_IDENTITY ?? null)
+  typeof TOPO_BUILD_IDENTITY !== 'undefined'
+    ? TOPO_BUILD_IDENTITY
+    : ((globalThis as { TOPO_BUILD_IDENTITY?: 'stable' | 'rc' | null }).TOPO_BUILD_IDENTITY ?? null)
 const WRITE_KEY: string | null =
-  typeof ORCA_POSTHOG_WRITE_KEY !== 'undefined'
-    ? ORCA_POSTHOG_WRITE_KEY
-    : ((globalThis as { ORCA_POSTHOG_WRITE_KEY?: string | null }).ORCA_POSTHOG_WRITE_KEY ?? null)
+  typeof TOPO_POSTHOG_WRITE_KEY !== 'undefined'
+    ? TOPO_POSTHOG_WRITE_KEY
+    : ((globalThis as { TOPO_POSTHOG_WRITE_KEY?: string | null }).TOPO_POSTHOG_WRITE_KEY ?? null)
 const IS_OFFICIAL_BUILD: boolean =
   (BUILD_IDENTITY === 'stable' || BUILD_IDENTITY === 'rc') &&
   typeof WRITE_KEY === 'string' &&

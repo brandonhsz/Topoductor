@@ -16,7 +16,7 @@ const { copyFiles, FileMatcher } = require('app-builder-lib/out/fileMatcher')
 
 describe('electron-builder config', () => {
   it.each(['file', 'directory'])('keeps a root notes %s out of app.asar', async (kind) => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-packaging-notes-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-packaging-notes-'))
     const source = join(root, 'app')
     const destination = join(root, 'selected')
     const runtimePaths = [
@@ -35,9 +35,9 @@ describe('electron-builder config', () => {
         ? ['notes']
         : [
             'notes/build.log',
-            'notes/installed-orca-backup/Orca.exe',
-            'notes/installed-orca-backup/resources/app.asar',
-            'notes/orca-windows-setup.exe',
+            'notes/installed-topo-backup/Topo.exe',
+            'notes/installed-topo-backup/resources/app.asar',
+            'notes/topo-windows-setup.exe',
             'notes/.recovery/state.json'
           ]
     try {
@@ -82,7 +82,7 @@ describe('electron-builder config', () => {
   it.runIf(hostBuilderPlatform)(
     'ships the agent-browser skill catalog the packaged binary resolves',
     async () => {
-      const resourcesDir = await mkdtemp(join(tmpdir(), 'orca-packaged-agent-browser-'))
+      const resourcesDir = await mkdtemp(join(tmpdir(), 'topo-packaged-agent-browser-'))
       try {
         const resources = electronBuilderConfig[hostBuilderPlatform].extraResources.filter(
           (entry) => entry.from.startsWith('node_modules/agent-browser/') || entry.to === 'skills'
@@ -115,14 +115,14 @@ describe('electron-builder config', () => {
     }
   )
 
-  // CLI Node mode cannot read asar; packed entry sends orca serve to Electron (#27307).
+  // CLI Node mode cannot read asar; packed entry sends topo serve to Electron (#27307).
 
   // Swept one-time /tmp asar extracts cause web-client 500s and phone bundle failures until restart (#27976).
 
   it('validates each AppImage before electron-builder publishes it', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-electron-builder-appimage-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-electron-builder-appimage-'))
     try {
-      const appImage = join(root, 'orca-linux.AppImage')
+      const appImage = join(root, 'topo-linux.AppImage')
       await writeFile(appImage, 'not an ELF')
       await chmod(appImage, 0o755)
 
@@ -130,7 +130,7 @@ describe('electron-builder config', () => {
         electronBuilderConfig.artifactBuildCompleted({ file: appImage, arch: 1 })
       ).toThrow(/ELF header is outside/)
       expect(() =>
-        electronBuilderConfig.artifactBuildCompleted({ file: join(root, 'orca-ide.deb') })
+        electronBuilderConfig.artifactBuildCompleted({ file: join(root, 'topo-ide.deb') })
       ).not.toThrow()
     } finally {
       await rm(root, { recursive: true, force: true })
@@ -146,7 +146,7 @@ describe('arch-aware packaging guard', () => {
   let scratch
   let bundleDir
   beforeAll(async () => {
-    scratch = await mkdtemp(join(tmpdir(), 'orca-electron-builder-guard-'))
+    scratch = await mkdtemp(join(tmpdir(), 'topo-electron-builder-guard-'))
     bundleDir = join(scratch, 'mobile-web')
     await writeMobileWebBundleFixtureTree({ outDir: bundleDir })
   })
@@ -162,23 +162,23 @@ describe('arch-aware packaging guard', () => {
     )
 
   it('refuses to package a dark layout-owner build', () => {
-    const previous = process.env.ORCA_LAYOUT_OWNER
-    process.env.ORCA_LAYOUT_OWNER = 'main'
+    const previous = process.env.TOPO_LAYOUT_OWNER
+    process.env.TOPO_LAYOUT_OWNER = 'main'
     try {
-      expect(() => packHost(HOST_ARCH)).toThrow('ORCA_LAYOUT_OWNER=main')
+      expect(() => packHost(HOST_ARCH)).toThrow('TOPO_LAYOUT_OWNER=main')
     } finally {
       if (previous === undefined) {
-        delete process.env.ORCA_LAYOUT_OWNER
+        delete process.env.TOPO_LAYOUT_OWNER
       } else {
-        process.env.ORCA_LAYOUT_OWNER = previous
+        process.env.TOPO_LAYOUT_OWNER = previous
       }
     }
   })
 
-  it('refuses to package an orcad template marked by a dark test build', async () => {
-    const templateDir = join(scratch, 'orcad-template')
+  it('refuses to package an topod template marked by a dark test build', async () => {
+    const templateDir = join(scratch, 'topod-template')
     await mkdir(templateDir, { recursive: true })
-    await writeFile(join(templateDir, 'ORCA_LAYOUT_OWNER_MAIN'), 'dark\n')
+    await writeFile(join(templateDir, 'TOPO_LAYOUT_OWNER_MAIN'), 'dark\n')
     try {
       expect(() =>
         electronBuilderConfig.beforePack(
@@ -187,7 +187,7 @@ describe('arch-aware packaging guard', () => {
           () => undefined,
           templateDir
         )
-      ).toThrow(`${templateDir} holds an ORCA_LAYOUT_OWNER=main build`)
+      ).toThrow(`${templateDir} holds an TOPO_LAYOUT_OWNER=main build`)
     } finally {
       await rm(templateDir, { recursive: true, force: true })
     }

@@ -1228,7 +1228,7 @@ index c9ec396ab66cb966d49aa63bed09cdf9cd6c4246..cfc6385982b16b8c46b1eff1bbd6a177
 +      this._compositionView.style.color = this._themeService?.colors.foreground.css ?? '#FFF';
 +      // Sized and placed to match the preedit, not the whole view, so the candidate window
 +      // anchors to the composing text rather than the end of the rendered tail. The clamp has to
-+      // be applied here and not only in Orca's terminal-ime-candidate-anchor.ts, because
++      // be applied here and not only in Topo's terminal-ime-candidate-anchor.ts, because
 +      // CoreBrowserTerminal calls this from onRender as well as from composition events, and a
 +      // render can land after the last composition event that module can hear.
 +      this._textarea.style.left = anchorLeft + 'px';
@@ -1400,7 +1400,7 @@ index 6ae089a4387de14488f39f5dab7024cffdcd9d10..9deba6019223f2e26bcf7534fc43eae2
          bgColorMode = temp2;
        }
  
-+      // Orca: a translucent terminal paints its backdrop once; an explicit background equal to the
++      // Topo: a translucent terminal paints its backdrop once; an explicit background equal to the
 +      // default background is that backdrop, not an opaque fill. The buffer keeps the original color.
 +      if (!isInverse && this._optionsService.rawOptions.allowTransparency && isTranslucentDefaultBackground(bgColorMode, bg, colors)) {
 +        bg = 0;

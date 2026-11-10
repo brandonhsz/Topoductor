@@ -6,8 +6,8 @@ import { describe, expect, it } from 'vitest'
 import '../../../../shared/remote-runtime/pairing/device-key-proof'
 import './pairing/device-principal'
 import './pairing/device-registry'
-import type { OrcaRuntimeService } from '../../orca-runtime'
-import { OrcaRuntimeRpcServer } from './runtime-rpc'
+import type { TopoRuntimeService } from '../../topo-runtime'
+import { TopoRuntimeRpcServer } from './runtime-rpc'
 
 import { visibleSnapshot } from '../methods/session-tabs/session-tabs-snapshot.test-fixture'
 import {
@@ -45,10 +45,10 @@ describe('streams on an authenticated phone socket', () => {
       registerSubscriptionCleanup: (id: string, cleanup: () => void) => cleanups.set(id, cleanup),
       cleanupSubscription: (id: string) => cleanups.get(id)?.(),
       onMobileSessionTabsChanged: () => () => {}
-    } as unknown as OrcaRuntimeService
-    const server = new OrcaRuntimeRpcServer({
+    } as unknown as TopoRuntimeService
+    const server = new TopoRuntimeRpcServer({
       runtime,
-      userDataPath: mkdtempSync(join(tmpdir(), 'orca-phone-capability-dispatch-')),
+      userDataPath: mkdtempSync(join(tmpdir(), 'topo-phone-capability-dispatch-')),
       enableWebSocket: true,
       wsPort: 0
     })

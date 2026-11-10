@@ -19,9 +19,9 @@ import {
   writeRuntimeEnvironmentSidecarEntry
 } from './runtime-environment-sidecar'
 import {
-  addManagedOrcadEnvironment,
-  removeManagedOrcadEnvironment
-} from './runtime-environment-managed-orcad-store'
+  addManagedTopodEnvironment,
+  removeManagedTopodEnvironment
+} from './runtime-environment-managed-topod-store'
 import {
   readPersistedEnvironmentStore,
   writeEnvironmentStore
@@ -43,7 +43,7 @@ function readJson(path: string): { environments?: unknown[]; entries?: Record<st
 describe('runtime environment store with records this build cannot read', () => {
   let userDataPath: string
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-environment-unreadable-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-environment-unreadable-'))
     vi.spyOn(console, 'warn').mockImplementation(() => {})
   })
   afterEach(() => {
@@ -125,7 +125,7 @@ describe('runtime environment store with records this build cannot read', () => 
         version: 1,
         environments: [...store.environments, { ...alpha, id: futureKind.id, name: 'Other' }]
       })
-    ).toThrow('newer version of Orca')
+    ).toThrow('newer version of Topo')
     expect(readJson(getEnvironmentStorePath(userDataPath)).environments).toContainEqual(futureKind)
   })
 
@@ -142,7 +142,7 @@ describe('runtime environment store with records this build cannot read', () => 
       userDataPath,
       readPersistedEnvironmentStore(userDataPath).environments,
       alpha,
-      { orcadMigratedAt: new Date(0).toISOString() }
+      { topodMigratedAt: new Date(0).toISOString() }
     )
 
     expect(readJson(getRuntimeEnvironmentSidecarPath(userDataPath)).entries?.future).toEqual(
@@ -157,11 +157,11 @@ describe('runtime environment store with records this build cannot read', () => 
     }
 
     function setup() {
-      const pinned = addManagedOrcadEnvironment(userDataPath, {
+      const pinned = addManagedTopodEnvironment(userDataPath, {
         id: 'pinned',
         name: 'Pinned',
         pairingCode: encodePairingOffer({ ...pairing, endpoint: 'ws://127.0.0.1:41000/runtime' }),
-        orcadDeployment: tunnel,
+        topodDeployment: tunnel,
         now: 100
       })
       const other = add('Other')
@@ -186,7 +186,7 @@ describe('runtime environment store with records this build cannot read', () => 
         })
       ).toThrow('Unknown environment')
       expect(() => readCurrentRuntimeEnvironmentSidecarEntry(userDataPath, pinned)).toThrow(
-        'newer version of Orca'
+        'newer version of Topo'
       )
       expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('Hiding 1 server'))
     })
@@ -206,8 +206,8 @@ describe('runtime environment store with records this build cannot read', () => 
       const { pinned, other, sidecarPath } = setup()
       const storeBefore = readFileSync(getEnvironmentStorePath(userDataPath), 'utf8')
 
-      expect(() => removeManagedOrcadEnvironment(userDataPath, pinned.id)).toThrow(
-        'newer version of Orca'
+      expect(() => removeManagedTopodEnvironment(userDataPath, pinned.id)).toThrow(
+        'newer version of Topo'
       )
       expect(readFileSync(getEnvironmentStorePath(userDataPath), 'utf8')).toBe(storeBefore)
       expect(() =>
@@ -217,7 +217,7 @@ describe('runtime environment store with records this build cannot read', () => 
           pinned,
           null
         )
-      ).toThrow('newer version of Orca')
+      ).toThrow('newer version of Topo')
 
       removeEnvironment(userDataPath, other.id)
       expect(readJson(sidecarPath).entries?.pinned).toEqual(unreadableEntry)

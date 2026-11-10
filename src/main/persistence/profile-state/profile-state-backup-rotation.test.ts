@@ -40,7 +40,7 @@ afterEach(async () => {
 })
 
 function fixture() {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-sqlite-backup-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-sqlite-backup-'))
   directories.push(directory)
   const databasePath = join(directory, 'profile-state.db')
   const opened = openProfileStateDatabase(databasePath, 'backup-profile')

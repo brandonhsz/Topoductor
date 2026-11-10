@@ -9,8 +9,8 @@ const mocks = vi.hoisted(() => ({
   disconnectConnection: vi.fn(async () => undefined),
   census: vi.fn()
 }))
-vi.mock('../../../managed-server/lifecycle/orcad-managed-runtime-context', () => ({
-  requireManagedOrcadInfrastructure: () => ({
+vi.mock('../../../managed-server/lifecycle/topod-managed-runtime-context', () => ({
+  requireManagedTopodInfrastructure: () => ({
     connectionManager: {
       connect: mocks.connect,
       getConnection: mocks.getConnection,

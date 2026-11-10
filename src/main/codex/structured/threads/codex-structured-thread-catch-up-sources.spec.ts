@@ -170,7 +170,7 @@ export function registerCodexHistorySourcesTests(input: {
     await c.open([], { paginate: false, returnedTurns: [{ ...turn(1), items: [parent] }] })
     await c.open([], { paginate: false, returnedTurns: [turn(2)] })
     const legacy = {
-      provider: 'orca' as const,
+      provider: 'topo' as const,
       clientMessageId: `codex-history-item:${JSON.stringify([1, THREAD, 'turn-1', 'legacy-parent'])}`
     }
     await c.journal.appendItem(

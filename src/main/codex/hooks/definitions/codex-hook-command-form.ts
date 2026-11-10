@@ -2,7 +2,7 @@
 // Bump the form to change bytes; preserve entries from higher forms.
 export const CODEX_HOOK_COMMAND_FORM = 1
 
-const FORM_MARKER = /orca-agent-hook-form=(\d+)/
+const FORM_MARKER = /topo-agent-hook-form=(\d+)/
 
 // Keep literals independent of shared hook constants to freeze these bytes.
 const POSIX_STDIN_DRAIN = '{ command -p cat 2>/dev/null || cat; } >/dev/null 2>&1 || :'
@@ -12,14 +12,14 @@ const POSIX_STDIN_DRAIN = '{ command -p cat 2>/dev/null || cat; } >/dev/null 2>&
 const WINDOWS_BARE_PATH = /^[A-Za-z0-9_.:/~-]+$/
 
 function buildPosixCommand(): string {
-  const rootScript = '"${ORCA_AGENT_HOOK_ROOT-}/agent-hooks/codex-hook.sh"'
-  const sharedScript = '"${HOME-}/.orca/agent-hooks/codex-hook.sh"'
-  // The root branch stays dormant until Orca sets its root; shared hooks require a pane and port.
-  // Outside Orca or with hooks off, only drain stdin, preserving the frozen command bytes.
+  const rootScript = '"${TOPO_AGENT_HOOK_ROOT-}/agent-hooks/codex-hook.sh"'
+  const sharedScript = '"${HOME-}/.topo/agent-hooks/codex-hook.sh"'
+  // The root branch stays dormant until Topo sets its root; shared hooks require a pane and port.
+  // Outside Topo or with hooks off, only drain stdin, preserving the frozen command bytes.
   return [
-    `: orca-agent-hook-form=${CODEX_HOOK_COMMAND_FORM};`,
-    `if [ -n "\${ORCA_PANE_KEY-}" ] && [ -n "\${ORCA_AGENT_HOOK_ROOT-}" ] && [ -f ${rootScript} ]; then /bin/sh ${rootScript} || :;`,
-    `elif [ -z "\${ORCA_AGENT_HOOK_ROOT-}" ] && [ -n "\${ORCA_PANE_KEY-}" ] && [ -n "\${ORCA_AGENT_HOOK_PORT-}" ] && [ -f ${sharedScript} ]; then /bin/sh ${sharedScript} || :;`,
+    `: topo-agent-hook-form=${CODEX_HOOK_COMMAND_FORM};`,
+    `if [ -n "\${TOPO_PANE_KEY-}" ] && [ -n "\${TOPO_AGENT_HOOK_ROOT-}" ] && [ -f ${rootScript} ]; then /bin/sh ${rootScript} || :;`,
+    `elif [ -z "\${TOPO_AGENT_HOOK_ROOT-}" ] && [ -n "\${TOPO_PANE_KEY-}" ] && [ -n "\${TOPO_AGENT_HOOK_PORT-}" ] && [ -f ${sharedScript} ]; then /bin/sh ${sharedScript} || :;`,
     `else ${POSIX_STDIN_DRAIN}; fi`
   ].join(' ')
 }
@@ -58,7 +58,7 @@ function buildWindowsCommand(scriptPath: string, env: WindowsDirectoryEnv): stri
 }
 
 /**
- * Only Windows embeds scriptPath (~/.orca/agent-hooks); bytes depend on it and the machine's Windows directory.
+ * Only Windows embeds scriptPath (~/.topo/agent-hooks); bytes depend on it and the machine's Windows directory.
  */
 export function buildCodexHookCommand(
   scriptPath: string,

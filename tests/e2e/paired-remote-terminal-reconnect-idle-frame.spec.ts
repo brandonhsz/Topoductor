@@ -10,7 +10,7 @@ import {
   encodePairingOffer
 } from '../../src/shared/remote-runtime/pairing/pairing'
 import { quotePosixShell } from '../../src/shared/shell/launch/shell-argument-quoting'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { launchHeadlessPairedRuntimeHost } from './helpers/headless-paired-runtime-host'
 import { cleanupE2EDaemons } from './helpers/electron-process-shutdown'
 import {
@@ -21,7 +21,7 @@ import { startFreezableTcpProxy, type FreezableTcpProxy } from './helpers/freeza
 
 test.skip(process.platform === 'win32', 'The fixture drives a POSIX alt-screen TUI')
 
-const scratch = mkdtempSync(path.join(os.tmpdir(), 'orca-paired-idle-frame-'))
+const scratch = mkdtempSync(path.join(os.tmpdir(), 'topo-paired-idle-frame-'))
 const fixturePath = path.join(scratch, 'idle-frame-tui.mjs')
 
 // Why Node: its tty repaints on SIGWINCH only when the size really changed, like Claude Code.
@@ -125,7 +125,7 @@ const HOSTS = [
   { label: 'a host that can image the pane', env: {}, programRepaints: false },
   {
     label: 'a host that cannot image the pane',
-    env: { ORCA_E2E_FORCE_REMOTE_TERMINAL_SNAPSHOT_UNAVAILABLE: '1' },
+    env: { TOPO_E2E_FORCE_REMOTE_TERMINAL_SNAPSHOT_UNAVAILABLE: '1' },
     // Why asserted: proves the frame came from the program's own repaint, not a host image.
     programRepaints: true
   }

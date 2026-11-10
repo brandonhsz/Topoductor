@@ -8,7 +8,7 @@ import {
   PluginShotReplayParams
 } from '../../../../../shared/rpc-contract/plugins-params'
 
-// Desktop only: a headless `orca serve` has no window to show or capture a plugin in.
+// Desktop only: a headless `topo serve` has no window to show or capture a plugin in.
 let pluginViewForRpc: PluginViewDesktop | null = null
 
 export function setPluginViewForRpc(view: PluginViewDesktop | null): void {
@@ -17,7 +17,7 @@ export function setPluginViewForRpc(view: PluginViewDesktop | null): void {
 
 function requirePluginView(): PluginViewDesktop {
   if (!pluginViewForRpc) {
-    throw new Error('Showing plugin panels is only available in the Orca desktop app')
+    throw new Error('Showing plugin panels is only available in the Topo desktop app')
   }
   return pluginViewForRpc
 }

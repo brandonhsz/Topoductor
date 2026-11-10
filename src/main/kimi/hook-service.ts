@@ -77,8 +77,8 @@ function getManagedScript(target: 'local' | 'posix' = 'local'): string {
     return [
       '@echo off',
       'setlocal',
-      // Refresh endpoint credentials for PTYs surviving an Orca restart.
-      'if defined ORCA_AGENT_HOOK_ENDPOINT if exist "%ORCA_AGENT_HOOK_ENDPOINT%" call "%ORCA_AGENT_HOOK_ENDPOINT%" 2>nul',
+      // Refresh endpoint credentials for PTYs surviving a Topo restart.
+      'if defined TOPO_AGENT_HOOK_ENDPOINT if exist "%TOPO_AGENT_HOOK_ENDPOINT%" call "%TOPO_AGENT_HOOK_ENDPOINT%" 2>nul',
       ...buildWindowsHookEnvironmentGuardLines(),
       buildWindowsAgentHookCurlPostCommand('kimi'),
       'exit /b 0',
@@ -89,25 +89,25 @@ function getManagedScript(target: 'local' | 'posix' = 'local'): string {
     '#!/bin/sh',
     ...buildPosixHookPayloadCapture(),
     ...buildPosixHookSpoolLines('kimi'),
-    // Refresh endpoint credentials for PTYs surviving an Orca restart.
-    'if [ -n "$ORCA_AGENT_HOOK_ENDPOINT" ] && [ -r "$ORCA_AGENT_HOOK_ENDPOINT" ]; then',
-    '  . "$ORCA_AGENT_HOOK_ENDPOINT" 2>/dev/null || :',
+    // Refresh endpoint credentials for PTYs surviving a Topo restart.
+    'if [ -n "$TOPO_AGENT_HOOK_ENDPOINT" ] && [ -r "$TOPO_AGENT_HOOK_ENDPOINT" ]; then',
+    '  . "$TOPO_AGENT_HOOK_ENDPOINT" 2>/dev/null || :',
     'fi',
-    'if [ -z "$ORCA_AGENT_HOOK_PORT" ] || [ -z "$ORCA_AGENT_HOOK_TOKEN" ] || [ -z "$ORCA_PANE_KEY" ]; then',
+    'if [ -z "$TOPO_AGENT_HOOK_PORT" ] || [ -z "$TOPO_AGENT_HOOK_TOKEN" ] || [ -z "$TOPO_PANE_KEY" ]; then',
     '  spool_hook_event',
     '  exit 0',
     'fi',
     // Form fields preserve arbitrary path text; stdin keeps large payloads off curl's command line for EDR.
-    `printf '%s' "$payload" | ${posixCurlCommand()} -sS -X POST "http://127.0.0.1:\${ORCA_AGENT_HOOK_PORT}/hook/kimi" \\`,
+    `printf '%s' "$payload" | ${posixCurlCommand()} -sS -X POST "http://127.0.0.1:\${TOPO_AGENT_HOOK_PORT}/hook/kimi" \\`,
     '  --connect-timeout 0.5 --max-time 1.5 \\',
     '  -H "Content-Type: application/x-www-form-urlencoded" \\',
-    '  -H "X-Orca-Agent-Hook-Token: ${ORCA_AGENT_HOOK_TOKEN}" \\',
-    '  --data-urlencode "paneKey=${ORCA_PANE_KEY}" \\',
-    '  --data-urlencode "tabId=${ORCA_TAB_ID}" \\',
-    '  --data-urlencode "launchToken=${ORCA_AGENT_LAUNCH_TOKEN}" \\',
-    '  --data-urlencode "worktreeId=${ORCA_WORKTREE_ID}" \\',
-    '  --data-urlencode "env=${ORCA_AGENT_HOOK_ENV}" \\',
-    '  --data-urlencode "version=${ORCA_AGENT_HOOK_VERSION}" \\',
+    '  -H "X-Topo-Agent-Hook-Token: ${TOPO_AGENT_HOOK_TOKEN}" \\',
+    '  --data-urlencode "paneKey=${TOPO_PANE_KEY}" \\',
+    '  --data-urlencode "tabId=${TOPO_TAB_ID}" \\',
+    '  --data-urlencode "launchToken=${TOPO_AGENT_LAUNCH_TOKEN}" \\',
+    '  --data-urlencode "worktreeId=${TOPO_WORKTREE_ID}" \\',
+    '  --data-urlencode "env=${TOPO_AGENT_HOOK_ENV}" \\',
+    '  --data-urlencode "version=${TOPO_AGENT_HOOK_VERSION}" \\',
     '  --data-urlencode "payload@-" >/dev/null 2>&1 || spool_hook_event',
     'exit 0',
     ''
@@ -228,7 +228,7 @@ export class KimiHookService {
     const remoteConfigPath = pathPosix.join(remoteHome, '.kimi-code', 'config.toml')
     const remoteScriptPath = pathPosix.join(
       remoteHome,
-      '.orca',
+      '.topo',
       'agent-hooks',
       POSIX_SCRIPT_FILE_NAME
     )

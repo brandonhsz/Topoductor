@@ -44,7 +44,7 @@ let dismissedMobile: string[]
 beforeEach(() => {
   vi.useFakeTimers()
   resetNotificationDispatchMocks()
-  directory = mkdtempSync(join(tmpdir(), 'orca-external-ack-'))
+  directory = mkdtempSync(join(tmpdir(), 'topo-external-ack-'))
   controller = new RuntimeMobileNotificationController()
   controller.configureDismissalStore(directory)
   dismissedMobile = []

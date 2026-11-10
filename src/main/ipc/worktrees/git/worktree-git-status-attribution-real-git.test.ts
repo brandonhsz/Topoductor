@@ -45,12 +45,12 @@ let poller: WorktreeBaseSubscription | null = null
 let received: WorktreeBasePollEvent[] = []
 
 beforeEach(async () => {
-  scratch = await mkdtemp(join(tmpdir(), 'orca-status-attribution-'))
+  scratch = await mkdtemp(join(tmpdir(), 'topo-status-attribution-'))
   primary = join(scratch, 'repo')
   await git(['init', '-q', '-b', 'main', primary], scratch)
   for (const [key, value] of [
-    ['user.name', 'Orca Test'],
-    ['user.email', 'orca@example.test'],
+    ['user.name', 'Topo Test'],
+    ['user.email', 'topo@example.test'],
     ['commit.gpgSign', 'false']
   ]) {
     await git(['config', key, value], primary)

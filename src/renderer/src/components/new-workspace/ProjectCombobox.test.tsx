@@ -37,19 +37,19 @@ function renderField(element: React.ReactNode): void {
 const projects: NewWorkspaceProjectOption[] = [
   {
     kind: 'project',
-    id: 'github:stablyai/orca',
-    projectId: 'github:stablyai/orca',
-    displayName: 'orca',
+    id: 'github:brandonhsz/Topoductor',
+    projectId: 'github:brandonhsz/Topoductor',
+    displayName: 'topo',
     badgeColor: '#111111',
-    detail: 'stablyai/orca'
+    detail: 'brandonhsz/Topoductor'
   },
   {
     kind: 'project',
-    id: 'github:stablyai/noqa',
-    projectId: 'github:stablyai/noqa',
+    id: 'github:brandonhsz/noqa',
+    projectId: 'github:brandonhsz/noqa',
     displayName: 'noqa',
     badgeColor: '#222222',
-    detail: 'stablyai/noqa'
+    detail: 'brandonhsz/noqa'
   },
   {
     kind: 'project-group',
@@ -134,7 +134,7 @@ describe('ProjectCombobox', () => {
       projectId: `project-${index}`,
       displayName: `svc-${index}`,
       badgeColor: '#111111',
-      detail: `stablyai/svc-${index}`
+      detail: `brandonhsz/svc-${index}`
     })),
     {
       kind: 'project-group',

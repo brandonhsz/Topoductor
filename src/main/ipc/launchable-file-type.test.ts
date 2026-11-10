@@ -27,7 +27,7 @@ type Row = [
 
 describe('classifyLinkedFile', () => {
   it.each<Row>([
-    // Text scripts and launchers open in Orca.
+    // Text scripts and launchers open in Topo.
     ['darwin', ['/x/run.sh'], 'file', 0o644, TEXT, 'view-as-text'],
     ['darwin', ['/x/run.command'], 'file', 0o755, SHEBANG, 'view-as-text'],
     ['darwin', ['/x/tool.py'], 'file', 0o644, SHEBANG, 'view-as-text'],

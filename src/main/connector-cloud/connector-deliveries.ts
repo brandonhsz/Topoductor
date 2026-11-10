@@ -18,12 +18,12 @@ import { placeLaunchTarget } from './connector-places'
 
 /** One fixed line per source, so a resent start hashes to the same receipt. */
 export function connectorReplyInstructions(source: ConnectorSource): string {
-  return `(Sent from ${CONNECTOR_SOURCE_NAMES[source]}. To answer in the thread, run: orca connector reply --text "<your message>")`
+  return `(Sent from ${CONNECTOR_SOURCE_NAMES[source]}. To answer in the thread, run: topo connector reply --text "<your message>")`
 }
 
 export type DispatchedDelivery = {
   deliveryId: string
-  /** False when this Orca refused it without calling the seam; only done is sent then. */
+  /** False when this Topo refused it without calling the seam; only done is sent then. */
   received: boolean
   done: Promise<ConnectorDeliveryResult>
 }

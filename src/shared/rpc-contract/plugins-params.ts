@@ -63,7 +63,7 @@ export const PluginDevUnloadParams = z
     message: 'pass exactly one of path or pluginKey'
   })
 
-/** `orca plugin dev emit`: the host checks `event` against its own event list so older names get a clear refusal. */
+/** `topo plugin dev emit`: the host checks `event` against its own event list so older names get a clear refusal. */
 export const PluginDevEmitParams = z
   .object({
     path: devFolderPathParam.optional(),
@@ -75,10 +75,10 @@ export const PluginDevEmitParams = z
     message: 'pass exactly one of path or pluginKey'
   })
 
-/** `orca plugin dev hook`: one hook through a development plugin's worker alone. */
+/** `topo plugin dev hook`: one hook through a development plugin's worker alone. */
 export const PluginDevHookParams = PluginDevEmitParams
 
-/** `orca plugin dev request`: one `plugin.request` to a development plugin's worker. */
+/** `topo plugin dev request`: one `plugin.request` to a development plugin's worker. */
 export const PluginDevRequestParams = z
   .object({
     path: devFolderPathParam.optional(),
@@ -110,7 +110,7 @@ export const PluginRestartParams = z.object({
 const pluginKeyParam = z.string().refine(isQualifiedPluginKey, 'invalid qualified plugin key')
 const contributionIdParam = z.string().min(1).max(128)
 
-/** `orca plugin open`: a panel (default: the first) or, with `filePath`, a file in its editor. */
+/** `topo plugin open`: a panel (default: the first) or, with `filePath`, a file in its editor. */
 export const PluginOpenParams = z
   .object({
     pluginKey: pluginKeyParam,
@@ -139,7 +139,7 @@ export const PluginShotParams = z.object({
 export const PLUGIN_SHOT_MIN_HEIGHT = 120
 export const PLUGIN_SHOT_MAX_HEIGHT = 4000
 
-/** `orca plugin shot --editor`: its own method, so an older host fails `method_not_found`
+/** `topo plugin shot --editor`: its own method, so an older host fails `method_not_found`
  *  instead of quietly shooting the plugin's panel. */
 export const PluginShotEditorParams = z.object({
   pluginKey: pluginKeyParam,
@@ -153,14 +153,14 @@ export const PluginShotEditorParams = z.object({
   inPlace: z.boolean().optional()
 })
 
-/** `orca plugin shot --status-bar` / `--window`: Orca's own chrome, where plugins draw too. */
+/** `topo plugin shot --status-bar` / `--window`: Topo's own chrome, where plugins draw too. */
 export const PluginShotChromeParams = z.object({
   pluginKey: pluginKeyParam,
   region: z.enum(['status-bar', 'window']),
   colorScheme: z.enum(['light', 'dark']).optional()
 })
 
-// Why the render lane's cap: the same bytes a live panel may send Orca for one tree.
+// Why the render lane's cap: the same bytes a live panel may send Topo for one tree.
 export const PLUGIN_SHOT_REPLAY_MAX_TREE_BYTES = PLUGIN_DECLARATIVE_RENDER_LANE.maxBytes
 
 function jsonBytes(value: unknown): number {
@@ -171,7 +171,7 @@ function jsonBytes(value: unknown): number {
   }
 }
 
-/** `orca plugin shot --scenario`: a tree the CLI rendered locally, drawn detached from the plugin.
+/** `topo plugin shot --scenario`: a tree the CLI rendered locally, drawn detached from the plugin.
  *  Its own method so an older host fails `method_not_found` instead of shooting the live panel. */
 export const PluginShotReplayParams = z.object({
   pluginKey: pluginKeyParam,

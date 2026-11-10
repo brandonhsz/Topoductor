@@ -1,13 +1,13 @@
-import { WslOrcadBridgeActivity, wslHostBridgeEvents } from '../orcad/wsl-orcad-bridge-activity'
-import { listenWslOrcadStdioBridge } from '../orcad/wsl-orcad-stdio-bridge'
-import { createWslOrcadPairingRecovery } from '../orcad/wsl-orcad-pairing-repair'
+import { WslTopodBridgeActivity, wslHostBridgeEvents } from '../topod/wsl-topod-bridge-activity'
+import { listenWslTopodStdioBridge } from '../topod/wsl-topod-stdio-bridge'
+import { createWslTopodPairingRecovery } from '../topod/wsl-topod-pairing-repair'
 import {
   readSettledConfirmedRunningWslDistros,
   wasWslDistroLastSeenRunningSettled
 } from '../discovery/wsl-background-distro-gate'
 import { parsePairingCode } from '../../../shared/remote-runtime/pairing/pairing'
 import { pairedRuntimeConnectionFromOffer } from '../../../shared/remote-runtime/pairing/paired-runtime-connection'
-import { verifyOrcadPairingIdentity } from '../../managed-server/lifecycle/orcad-managed-tunnel-identity'
+import { verifyTopodPairingIdentity } from '../../managed-server/lifecycle/topod-managed-tunnel-identity'
 import { resolveEnvironmentPairingOffer } from '../../../shared/remote-runtime/host-store/runtime-environment-store'
 import { findWslHostDeployment } from '../../../shared/remote-runtime/host-store/runtime-environment-wsl-host-store'
 import { createWslDistroHolder } from '../discovery/wsl-distro-holder'
@@ -15,50 +15,50 @@ import type { WslDistroHolder } from '../discovery/wsl-distro-holder-types'
 import { listWslHostDistros } from './wsl-host-distro-list'
 import { resolveWslDistroName } from '../discovery/wsl-distro-registry-id'
 import type { WslHostConnector, WslHostReachability } from './wsl-host-connector-contract'
-import { readWslDistroOrcadPublicKey } from './wsl-host-ssh-orcad-conflict'
-import { WslOrcadConnectionManager } from '../orcad/wsl-orcad-connection'
+import { readWslDistroTopodPublicKey } from './wsl-host-ssh-topod-conflict'
+import { WslTopodConnectionManager } from '../topod/wsl-topod-connection'
 import type {
-  WslOrcadConnection,
-  WslOrcadConnectionDependencies
-} from '../orcad/wsl-orcad-connection-types'
-import { defaultWslOrcadEnvironmentId, deployAndLaunchWslOrcad } from '../orcad/wsl-orcad-deploy'
-import { createWslOrcadHostTransport } from '../orcad/wsl-orcad-host-transport'
-import type { WslOrcadHostTarget } from '../orcad/wsl-orcad-host-target'
+  WslTopodConnection,
+  WslTopodConnectionDependencies
+} from '../topod/wsl-topod-connection-types'
+import { defaultWslTopodEnvironmentId, deployAndLaunchWslTopod } from '../topod/wsl-topod-deploy'
+import { createWslTopodHostTransport } from '../topod/wsl-topod-host-transport'
+import type { WslTopodHostTarget } from '../topod/wsl-topod-host-target'
 import {
-  decommissionWslHostOrcad,
+  decommissionWslHostTopod,
   stopWslHostServer,
   wslHostRuntimeStopSteps,
   type WslHostRuntimeAccess
 } from './wsl-host-server-stop'
-import { createWslOrcadLivenessSupervisor } from '../orcad/wsl-orcad-liveness-wiring'
-import type { WslOrcadLivenessSupervisor } from '../orcad/wsl-orcad-liveness-supervisor'
-import { confirmsRunning } from '../orcad/wsl-orcad-liveness-evidence'
-import { requireConfirmedRunning } from '../orcad/wsl-orcad-connection-errors'
+import { createWslTopodLivenessSupervisor } from '../topod/wsl-topod-liveness-wiring'
+import type { WslTopodLivenessSupervisor } from '../topod/wsl-topod-liveness-supervisor'
+import { confirmsRunning } from '../topod/wsl-topod-liveness-evidence'
+import { requireConfirmedRunning } from '../topod/wsl-topod-connection-errors'
 import { wslDistroHolderKey } from '../discovery/wsl-distro-holder-record'
 import { wslHostServerStopReason } from '../../../shared/wsl-host-failure-copy'
 
-function targetFor(distro: string): WslOrcadHostTarget {
-  return { kind: 'wsl', id: defaultWslOrcadEnvironmentId(distro), distro, label: distro }
+function targetFor(distro: string): WslTopodHostTarget {
+  return { kind: 'wsl', id: defaultWslTopodEnvironmentId(distro), distro, label: distro }
 }
 
 function transportFor(distro: string) {
-  return createWslOrcadHostTransport({ target: targetFor(distro) })
+  return createWslTopodHostTransport({ target: targetFor(distro) })
 }
 
 type Reachability = WslHostReachability
 
 export function createWslHostConnector(options: {
   userDataPath: string
-  onChange: NonNullable<WslOrcadConnectionDependencies['onChange']>
+  onChange: NonNullable<WslTopodConnectionDependencies['onChange']>
   hasUserVisibleWork: (distro: string) => boolean
   /** False once a distro's host is gone: nothing may be spawned for it again. */
   isKnownDistro: (distro: string) => boolean
   runtime: WslHostRuntimeAccess
 }): WslHostConnector {
   const refuseUnknown = (distro: string): Error =>
-    new Error(`${distro} is no longer a WSL host; Orca will not start anything for it.`)
+    new Error(`${distro} is no longer a WSL host; Topo will not start anything for it.`)
   // Assigned below; a holder exit cannot arrive before the first ensure.
-  let supervisor: WslOrcadLivenessSupervisor | null = null
+  let supervisor: WslTopodLivenessSupervisor | null = null
   const unguardedHolder = createWslDistroHolder({
     userDataPath: options.userDataPath,
     onHolderExit: (distro, exit) => supervisor?.noteHolderExit(distro, exit)
@@ -71,13 +71,13 @@ export function createWslHostConnector(options: {
         ? unguardedHolder.ensureHeld(distro, ensureOptions)
         : Promise.reject(refuseUnknown(distro))
   }
-  const pairingRecovery = createWslOrcadPairingRecovery(options.userDataPath)
+  const pairingRecovery = createWslTopodPairingRecovery(options.userDataPath)
   // The desktop's own bridged sockets double as the liveness watch; no bridge is held for it.
-  const bridgeActivity = new WslOrcadBridgeActivity()
-  const manager = new WslOrcadConnectionManager({
+  const bridgeActivity = new WslTopodBridgeActivity()
+  const manager = new WslTopodConnectionManager({
     holder,
     listen: (transport, listenOptions) =>
-      listenWslOrcadStdioBridge(transport, {
+      listenWslTopodStdioBridge(transport, {
         ...listenOptions,
         events: wslHostBridgeEvents(bridgeActivity, listenOptions)
       }),
@@ -91,10 +91,10 @@ export function createWslHostConnector(options: {
     onChange: options.onChange,
     deployAndLaunch: (distro, deployOptions) =>
       options.isKnownDistro(distro)
-        ? deployAndLaunchWslOrcad(distro, deployOptions)
+        ? deployAndLaunchWslTopod(distro, deployOptions)
         : Promise.reject(refuseUnknown(distro))
   })
-  const liveness = createWslOrcadLivenessSupervisor({
+  const liveness = createWslTopodLivenessSupervisor({
     manager,
     bridgeActivity,
     holder,
@@ -104,7 +104,7 @@ export function createWslHostConnector(options: {
   // Liveness connects in flight, per distro; a plain connect meanwhile joins rather than re-arms.
   const livenessConnects = new Map<
     string,
-    { promise: Promise<WslOrcadConnection>; noBoot: boolean; intent: boolean }
+    { promise: Promise<WslTopodConnection>; noBoot: boolean; intent: boolean }
   >()
   // Read right before a no-boot reconnect spawns anything in the distro (E9); settled, since a
   // list taken while the distro stops still names it.
@@ -117,7 +117,7 @@ export function createWslHostConnector(options: {
   const coldProbes = new Map<
     string,
     {
-      connection: WslOrcadConnection | null
+      connection: WslTopodConnection | null
       pairingOffer: string | undefined
       result: Promise<Reachability>
     }
@@ -125,7 +125,7 @@ export function createWslHostConnector(options: {
   const probe = async (
     distro: string,
     environmentId: string,
-    connection: WslOrcadConnection | null
+    connection: WslTopodConnection | null
   ): Promise<Reachability> => {
     // Bridge dialing spawns wsl.exe; passive checks must first prove the distro runs.
     const running = await readSettledConfirmedRunningWslDistros(distro)
@@ -148,7 +148,7 @@ export function createWslHostConnector(options: {
     if (!offer) {
       return 'unreachable'
     }
-    const identity = await verifyOrcadPairingIdentity(pairedRuntimeConnectionFromOffer(offer), {
+    const identity = await verifyTopodPairingIdentity(pairedRuntimeConnectionFromOffer(offer), {
       runtimeId: null
     })
     return identity.verdict === 'verified' && manager.get(distro) === connection
@@ -173,7 +173,7 @@ export function createWslHostConnector(options: {
   }
   return {
     listDistros: () => listWslHostDistros(),
-    readOrcadPublicKey: (distro) => readWslDistroOrcadPublicKey(transportFor(distro)),
+    readTopodPublicKey: (distro) => readWslDistroTopodPublicKey(transportFor(distro)),
     connect: (distro, { noBoot, ...connectOptions } = {}) => {
       const options = noBoot ? { ...connectOptions, requireRunning } : connectOptions
       const key = wslDistroHolderKey(distro)
@@ -230,7 +230,7 @@ export function createWslHostConnector(options: {
       return stopWslHostServer({
         ...wslHostRuntimeStopSteps(options.runtime, environmentId),
         closeBridge: () => liveness.stop(distro),
-        decommission: decommissionWslHostOrcad(target, createWslOrcadHostTransport({ target }))
+        decommission: decommissionWslHostTopod(target, createWslTopodHostTransport({ target }))
       })
     },
     resolveDistroName: (distro, distroId) => resolveWslDistroName(distro, distroId),

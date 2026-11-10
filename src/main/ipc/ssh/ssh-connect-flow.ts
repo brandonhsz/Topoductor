@@ -11,7 +11,7 @@ import {
   runAttributedToSshOwner
 } from '../../ssh/connection/ssh-connection-attribution'
 import { getSshTargetRegistryStore } from '../../ssh/targets/ssh-target-registry'
-import { getManagedOrcadFenceEnvironmentId } from '../../../shared/managed-orcad-ssh-owner'
+import { getManagedTopodFenceEnvironmentId } from '../../../shared/managed-topod-ssh-owner'
 import { noteRuntimeEnvironmentConnectRequested } from '../runtime-environments/runtime-environment-pairing-refusal-registry'
 import {
   decideHostServer,
@@ -58,7 +58,7 @@ export async function connectTarget(
   targetId: string,
   options: { automatic?: boolean; quiet?: boolean } = {}
 ): Promise<SshConnectionState> {
-  const e2eProbePath = process.env.ORCA_E2E_FORBID_LOCAL_SSH_CONNECT_PROBE
+  const e2eProbePath = process.env.TOPO_E2E_FORBID_LOCAL_SSH_CONNECT_PROBE
   if (e2eProbePath) {
     appendFileSync(e2eProbePath, `${JSON.stringify(targetId)}\n`)
     throw new Error('e2e_forbidden_local_ssh_connect')
@@ -73,7 +73,7 @@ export async function connectTarget(
   }
   clearSshCredentialDeclined(targetId)
   // Only explicit user connects may lift the re-pair and crash-loop caps.
-  const managedEnvironmentId = getManagedOrcadFenceEnvironmentId(
+  const managedEnvironmentId = getManagedTopodFenceEnvironmentId(
     getSshTargetRegistryStore()?.getTarget(targetId)
   )
   if (managedEnvironmentId) {

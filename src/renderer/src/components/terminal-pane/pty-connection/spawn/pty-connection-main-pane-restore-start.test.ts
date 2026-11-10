@@ -30,7 +30,7 @@ import {
 import { PANE_NOT_LIVE_ERROR } from '../../../../../../shared/pane-attach-only-view'
 import { mockPanePtyArgs } from '../test-fixtures/pty-connection-test-connect-mock-pane'
 
-vi.mock('../../../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 
 const sent = vi.hoisted((): { command: WindowLayoutCommand; handlers: LayoutApplyHandlers }[] => [])
 vi.mock('@/runtime/workspace-layout/commands/layout-apply-send', async (importOriginal) => ({

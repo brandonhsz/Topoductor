@@ -7,7 +7,7 @@ import { runtimePathExists } from '@/runtime/files/metadata/runtime-file-metadat
 import { basename, joinPath } from '../../../path'
 import { normalizeRelativePath } from '../../../../../../shared/cross-platform-path'
 
-const MARKDOWN_TEMPLATE_ROOT = '.orca/templates'
+const MARKDOWN_TEMPLATE_ROOT = '.topo/templates'
 const MARKDOWN_TEMPLATE_MAX_DEPTH = 8
 const MARKDOWN_TEMPLATE_MAX_COUNT = 100
 

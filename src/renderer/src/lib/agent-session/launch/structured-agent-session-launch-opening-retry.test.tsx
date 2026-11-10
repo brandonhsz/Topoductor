@@ -192,7 +192,7 @@ it.each([
     if (cancel && proof === 'receipt') {
       expect(lateNotifications).not.toHaveBeenCalled()
       expect(
-        lateWrites.mock.calls.filter(([key]) => key === 'orca:structuredAgentLaunches:v1')
+        lateWrites.mock.calls.filter(([key]) => key === 'topo:structuredAgentLaunches:v1')
       ).toHaveLength(0)
     }
     stopWatching()

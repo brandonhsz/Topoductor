@@ -35,7 +35,7 @@ describe.skipIf(process.platform === 'win32')('createInstallPluginsHandler (gues
       const install = createInstallPluginsHandler(new PluginOverlayManager({ homeDir: home }), {
         HOME: home,
         CLAUDE_CONFIG_DIR: config,
-        ORCA_WSL_HOOK_INSTANCE: 'claude-test'
+        TOPO_WSL_HOOK_INSTANCE: 'claude-test'
       })
       expect(install({ claudeAgentViewSource: '' }).overlayDirs.claudeAgentView).toBeUndefined()
       expect(existsSync(config)).toBe(false)
@@ -44,7 +44,7 @@ describe.skipIf(process.platform === 'win32')('createInstallPluginsHandler (gues
       if (!first) {
         throw new Error('Claude mod was not installed')
       }
-      expect(first.startsWith(join(home, '.orca-relay'))).toBe(true)
+      expect(first.startsWith(join(home, '.topo-relay'))).toBe(true)
       expect(readFileSync(join(first, 'hooks', 'register.js'), 'utf8')).toBe(source)
       expect(existsSync(join(config, 'skills'))).toBe(false)
       const second = install({ claudeAgentViewSource: `${source}\n// new version` }).overlayDirs
@@ -67,12 +67,12 @@ describe.skipIf(process.platform === 'win32')('createInstallPluginsHandler (gues
     withHome((home) => {
       const install = createInstallPluginsHandler(new PluginOverlayManager({ homeDir: home }), {
         HOME: home,
-        ORCA_WSL_HOOK_INSTANCE: 'inst-pi'
+        TOPO_WSL_HOOK_INSTANCE: 'inst-pi'
       })
-      const source = '// @orca-managed-pi-extension\nexport default {}\n'
+      const source = '// @topo-managed-pi-extension\nexport default {}\n'
       const res = install({ piExtensionSource: source, launchKind: 'pi' })
       expect(res.overlayDirs.pi).toBe(join(home, '.pi', 'agent'))
-      const extension = join(home, '.pi', 'agent', 'extensions', 'orca-agent-status.ts')
+      const extension = join(home, '.pi', 'agent', 'extensions', 'topo-agent-status.ts')
       expect(readFileSync(extension, 'utf8')).toContain(source)
     })
   })
@@ -81,7 +81,7 @@ describe.skipIf(process.platform === 'win32')('createInstallPluginsHandler (gues
     withHome((home) => {
       const install = createInstallPluginsHandler(new PluginOverlayManager({ homeDir: home }), {
         HOME: home,
-        ORCA_WSL_HOOK_INSTANCE: 'inst-v2'
+        TOPO_WSL_HOOK_INSTANCE: 'inst-v2'
       })
       const source = '// opencode2\n'
       const res = install({ opencode2PluginSource: source })
@@ -89,7 +89,7 @@ describe.skipIf(process.platform === 'win32')('createInstallPluginsHandler (gues
       expect(res.installed.opencode2).toBe(true)
       expect(typeof dir).toBe('string')
       expect(
-        readFileSync(join(requireOverlayDir(dir), 'plugins', 'orca-opencode2-status.js'), 'utf8')
+        readFileSync(join(requireOverlayDir(dir), 'plugins', 'topo-opencode2-status.js'), 'utf8')
       ).toBe(source)
       expect(res.overlayDirs.opencode).toBeUndefined()
     })
@@ -99,7 +99,7 @@ describe.skipIf(process.platform === 'win32')('createInstallPluginsHandler (gues
     withHome((home) => {
       const install = createInstallPluginsHandler(new PluginOverlayManager({ homeDir: home }), {
         HOME: home,
-        ORCA_WSL_HOOK_INSTANCE: 'inst1'
+        TOPO_WSL_HOOK_INSTANCE: 'inst1'
       })
       const source = '// v1\n'
       const dir = requireOverlayDir(install({ opencodePluginSource: source }).overlayDirs.opencode)
@@ -118,15 +118,15 @@ describe.skipIf(process.platform === 'win32')('createInstallPluginsHandler (gues
     withHome((home) => {
       const install = createInstallPluginsHandler(new PluginOverlayManager({ homeDir: home }), {
         HOME: home,
-        ORCA_WSL_HOOK_INSTANCE: 'inst1'
+        TOPO_WSL_HOOK_INSTANCE: 'inst1'
       })
       const source = '// v1\n'
       const dir = requireOverlayDir(install({ opencodePluginSource: source }).overlayDirs.opencode)
       // A failed rebuild can leave an empty directory; only the plugin file proves a cache hit.
-      rmSync(join(dir, 'plugins', 'orca-opencode-status.js'))
+      rmSync(join(dir, 'plugins', 'topo-opencode-status.js'))
 
       expect(install({ opencodePluginSource: source }).overlayDirs.opencode).toBe(dir)
-      expect(existsSync(join(dir, 'plugins', 'orca-opencode-status.js'))).toBe(true)
+      expect(existsSync(join(dir, 'plugins', 'topo-opencode-status.js'))).toBe(true)
     })
   })
 
@@ -134,14 +134,14 @@ describe.skipIf(process.platform === 'win32')('createInstallPluginsHandler (gues
     withHome((home) => {
       const install = createInstallPluginsHandler(new PluginOverlayManager({ homeDir: home }), {
         HOME: home,
-        ORCA_WSL_HOOK_INSTANCE: 'inst1'
+        TOPO_WSL_HOOK_INSTANCE: 'inst1'
       })
       install({ opencodePluginSource: '// v1\n' })
-      // Why: a mid-session Orca upgrade ships new plugin source; future spawns must see it.
+      // Why: a mid-session Topo upgrade ships new plugin source; future spawns must see it.
       const dir = requireOverlayDir(
         install({ opencodePluginSource: '// v2\n' }).overlayDirs.opencode
       )
-      expect(readFileSync(join(dir, 'plugins', 'orca-opencode-status.js'), 'utf8')).toBe('// v2\n')
+      expect(readFileSync(join(dir, 'plugins', 'topo-opencode-status.js'), 'utf8')).toBe('// v2\n')
     })
   })
 
@@ -154,15 +154,15 @@ describe.skipIf(process.platform === 'win32')('createInstallPluginsHandler (gues
       writeFileSync(join(userConfig, 'opencode.json'), '{"model":"user-set"}')
       const install = createInstallPluginsHandler(new PluginOverlayManager({ homeDir: home }), {
         HOME: home,
-        ORCA_OPENCODE_SOURCE_CONFIG_DIR: userConfig,
-        ORCA_WSL_HOOK_INSTANCE: 'inst1'
+        TOPO_OPENCODE_SOURCE_CONFIG_DIR: userConfig,
+        TOPO_WSL_HOOK_INSTANCE: 'inst1'
       })
       const dir = requireOverlayDir(
         install({ opencodePluginSource: '// v1\n' }).overlayDirs.opencode
       )
 
       expect(readFileSync(join(dir, 'opencode.json'), 'utf8')).toBe('{"model":"user-set"}')
-      expect(existsSync(join(dir, 'plugins', 'orca-opencode-status.js'))).toBe(true)
+      expect(existsSync(join(dir, 'plugins', 'topo-opencode-status.js'))).toBe(true)
     })
   })
 

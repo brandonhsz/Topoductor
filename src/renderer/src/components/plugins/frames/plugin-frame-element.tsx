@@ -1,5 +1,5 @@
 import React from 'react'
-import { ORCA_BROWSER_GUEST_WEB_PREFERENCES_ATTRIBUTE } from '../../../../../shared/browser/guest-lifecycle/browser-guest-web-preferences'
+import { TOPO_BROWSER_GUEST_WEB_PREFERENCES_ATTRIBUTE } from '../../../../../shared/browser/guest-lifecycle/browser-guest-web-preferences'
 import type { PluginFrameGuest } from '../../../../../shared/plugins/frames/plugin-frame-bridge'
 import { isWebClientLocation } from '@/lib/web-client-location'
 import './plugin-frame-host'
@@ -91,7 +91,7 @@ export function PluginFrameView({
   if (guest && hidden) {
     return (
       // Inert: the runner must never take focus (keys would vanish into it), and its own
-      // activation never counts; only presses on Orca's controls do.
+      // activation never counts; only presses on Topo's controls do.
       <div inert aria-hidden="true" className="pointer-events-none absolute size-0 overflow-hidden">
         <webview
           ref={(element: PluginFrameElement | null) => {
@@ -100,7 +100,7 @@ export function PluginFrameView({
           }}
           partition={guest.partition}
           // Why unthrottled: a zero-size guest still has to answer events and pings promptly.
-          webpreferences={`${ORCA_BROWSER_GUEST_WEB_PREFERENCES_ATTRIBUTE},backgroundThrottling=false`}
+          webpreferences={`${TOPO_BROWSER_GUEST_WEB_PREFERENCES_ATTRIBUTE},backgroundThrottling=false`}
           src={guest.url}
           title={title}
           tabIndex={-1}
@@ -116,7 +116,7 @@ export function PluginFrameView({
       <webview
         ref={setFrame}
         partition={guest.partition}
-        webpreferences={ORCA_BROWSER_GUEST_WEB_PREFERENCES_ATTRIBUTE}
+        webpreferences={TOPO_BROWSER_GUEST_WEB_PREFERENCES_ATTRIBUTE}
         src={guest.url}
         title={title}
         className="flex min-h-0 w-full flex-1 border-0 bg-background"

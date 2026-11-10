@@ -36,7 +36,7 @@ it('a steer send waiting on approval joins the running turn when approval clears
   const opener = await rig.workingSend()
   await rig.settleAccepted(opener, 'opening')
   await openRigTurnFor(rig, opener)
-  const identity = { provider: 'orca' as const, clientMessageId: 'approval' }
+  const identity = { provider: 'topo' as const, clientMessageId: 'approval' }
   rig.providerEvents().appendItem(
     identity,
     {

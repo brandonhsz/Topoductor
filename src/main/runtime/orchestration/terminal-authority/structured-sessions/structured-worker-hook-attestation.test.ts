@@ -14,9 +14,9 @@ vi.mock(
   })
 )
 
-const { OrcaRuntimeWithGetOrchestrationDispatchAuthority } =
+const { TopoRuntimeWithGetOrchestrationDispatchAuthority } =
   await import('../../../terminal/output/terminal-orchestration-authority')
-const { OrcaRuntimeWithVerifyOrchestrationCompatibilityCaller } =
+const { TopoRuntimeWithVerifyOrchestrationCompatibilityCaller } =
   await import('../verify-orchestration-compatibility-caller')
 const {
   mintStructuredWorkerHandle,
@@ -28,10 +28,10 @@ const {
 const SESSION_ID = 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d'
 
 const getAuthority =
-  OrcaRuntimeWithGetOrchestrationDispatchAuthority.prototype.getOrchestrationDispatchAuthority
+  TopoRuntimeWithGetOrchestrationDispatchAuthority.prototype.getOrchestrationDispatchAuthority
 // Use the production prototype methods; stubbing the implementation would not exercise attestation.
 const verifyCaller =
-  OrcaRuntimeWithVerifyOrchestrationCompatibilityCaller.prototype
+  TopoRuntimeWithVerifyOrchestrationCompatibilityCaller.prototype
     .verifyOrchestrationCompatibilityCaller
 
 function registerStructuredWorker(): string {

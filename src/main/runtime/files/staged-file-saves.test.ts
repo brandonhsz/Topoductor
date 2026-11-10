@@ -75,7 +75,7 @@ void (384 * 1024)
 let root: string
 let staging: string
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'orca-staged-save-'))
+  root = mkdtempSync(join(tmpdir(), 'topo-staged-save-'))
   staging = join(root, 'profile', 'staged-saves')
   appendGate.hold = null
   createGate.hold = null

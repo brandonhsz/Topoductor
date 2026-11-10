@@ -33,7 +33,7 @@ export function UpdateStatusSegment({
         label: `${pct}%`,
         tooltip: t(
           'auto.components.status.bar.UpdateStatusSegment.248ee5d8ef',
-          'Orca v{{value0}} downloading… {{value1}}%',
+          'Topo v{{value0}} downloading… {{value1}}%',
           { value0: status.version, value1: pct }
         ),
         ariaLabel: t(
@@ -50,7 +50,7 @@ export function UpdateStatusSegment({
         tooltip: getUpdateInstallBlockGuidance(status.installBlock, t).explainer,
         ariaLabel: t(
           'updates.installBlock.waitingAriaLabel',
-          'Update waiting for other Orca instances. Click to expand.'
+          'Update waiting for other Topo instances. Click to expand.'
         )
       }
     }
@@ -60,7 +60,7 @@ export function UpdateStatusSegment({
         label: t('updates.installBlock.preparingLabel', 'Preparing update'),
         tooltip: t(
           'updates.installBlock.preparingSummary',
-          'Checking running Orca instances before restarting.'
+          'Checking running Topo instances before restarting.'
         ),
         ariaLabel: t(
           'updates.installBlock.preparingAriaLabel',
@@ -76,7 +76,7 @@ export function UpdateStatusSegment({
         label: t('auto.components.status.bar.UpdateStatusSegment.57a29c3b0e', 'Update ready'),
         tooltip: t(
           'auto.components.status.bar.UpdateStatusSegment.9d13213a56',
-          'Orca v{{value0}} ready to install',
+          'Topo v{{value0}} ready to install',
           { value0: readyVersion }
         ),
         ariaLabel: t(

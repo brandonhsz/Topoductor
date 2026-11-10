@@ -3,32 +3,32 @@ export const WSL_HOST_ADD_REFUSAL_COPY = {
   turnedOff: 'WSL hosts are turned off in Settings → Experimental.',
   newWorkPaused:
     'Adding WSL hosts and moving projects onto them is paused in this build. Your saved WSL hosts keep working.',
-  serverFilesMissing: 'This build of Orca can’t run WSL hosts (server files missing).',
+  serverFilesMissing: 'This build of Topo can’t run WSL hosts (server files missing).',
   alreadyAdded: '{{distro}} is already a host.',
   distroStopped: '{{distro}} stopped since the list was read. Choose Start and add to start it.',
   distroUnverifiable:
     'WSL didn’t answer whether {{distro}} is running. Refresh the list, or add it from the dialog, which starts it if needed.',
-  wsl1: '{{distro}} runs WSL 1, which Orca no longer supports. Convert it to WSL 2 in a Windows terminal with: {{command}}',
+  wsl1: '{{distro}} runs WSL 1, which Topo no longer supports. Convert it to WSL 2 in a Windows terminal with: {{command}}',
   notRegistered:
     '{{distro}} is not an installed WSL distro. Run {{command}} in a Windows terminal to see the installed ones, or reinstall it and try again.',
   sshManaged:
-    '{{distro}} already runs the Orca server for “{{server}}”, which this computer reaches over SSH. Remove that server first; moving it to a WSL host isn’t supported yet.'
+    '{{distro}} already runs the Topo server for “{{server}}”, which this computer reaches over SSH. Remove that server first; moving it to a WSL host isn’t supported yet.'
 } as const
 
 export type WslHostAddRefusalCode = keyof typeof WSL_HOST_ADD_REFUSAL_COPY
 
 export const WSL_HOST_STATUS_DETAIL_COPY = {
   runningListUnavailable: 'Windows didn’t report whether the distro is running.',
-  guestUnanswered: 'The distro is running but didn’t answer Orca’s check.',
-  orcadUnanswered: 'Orca’s server in the distro didn’t answer.',
+  guestUnanswered: 'The distro is running but didn’t answer Topo’s check.',
+  topodUnanswered: 'Topo’s server in the distro didn’t answer.',
   restartGaveUp: {
-    one: 'Could not restart the Orca server in {{distro}} after {{count}} attempt',
-    other: 'Could not restart the Orca server in {{distro}} after {{count}} attempts'
+    one: 'Could not restart the Topo server in {{distro}} after {{count}} attempt',
+    other: 'Could not restart the Topo server in {{distro}} after {{count}} attempts'
   },
   serviceUnconfirmed: 'The WSL service did not confirm whether the distro runs.',
   peerCheckFailed:
-    'Orca couldn’t ask the WSL host whether another Orca on this computer still uses it: {{detail}}',
-  removalUnrecorded: 'Orca couldn’t record what this Remove left running: {{detail}}'
+    'Topo couldn’t ask the WSL host whether another Topo on this computer still uses it: {{detail}}',
+  removalUnrecorded: 'Topo couldn’t record what this Remove left running: {{detail}}'
 } as const
 
 export type WslHostStatusDetailCode = keyof typeof WSL_HOST_STATUS_DETAIL_COPY

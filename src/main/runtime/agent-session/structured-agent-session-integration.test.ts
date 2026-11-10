@@ -16,7 +16,7 @@ import { attachFingerprintFields } from '../../native-chat/agent-session-wire/ac
 import { getStructuredAgentSessionHost } from '../../native-chat/agent-session-wire/host/structured-agent-session-registry'
 import type { AgentSessionJournal } from '../../native-chat/agent-session-journal/journal-store'
 import { createTrackedJournalOpener } from '../../native-chat/agent-session-journal/store-lifecycle/journal-host-database-test-support'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import type { RpcRequest, RpcResponse } from '../rpc/core'
 import { RpcDispatcher } from '../rpc/dispatcher'
 import type { NativeChatShellEnvironmentPolicy } from '../../../shared/native-chat/native-chat-shell-environment'
@@ -27,7 +27,7 @@ import {
 } from './structured-agent-session-runtime'
 import { createStructuredAgentSessionLogger } from '../../native-chat/agent-session-wire/host/structured-agent-session-logger'
 import { codexProviderHandle } from '../../../shared/agent-session/lifecycle/agent-session-provider-handle-encoding'
-import { scriptedCodexTransport } from '../orca-runtime-tests/scripted-codex-transport.test-fixture'
+import { scriptedCodexTransport } from '../topo-runtime-tests/scripted-codex-transport.test-fixture'
 
 const journals = createTrackedJournalOpener()
 
@@ -236,7 +236,7 @@ function textOf(item: AgentJournalRenderItem): string {
 
 beforeEach(async () => {
   operations = 0
-  root = await mkdtemp(join(tmpdir(), 'orca-structured-integration-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-structured-integration-'))
   codex = fakeCodex()
   bootEnvironmentReads = 0
   codexOverrideReads = 0
@@ -292,7 +292,7 @@ beforeEach(async () => {
     }))
   }
   dispatcher = new RpcDispatcher({
-    runtime: runtime as unknown as OrcaRuntimeService,
+    runtime: runtime as unknown as TopoRuntimeService,
     methods: STRUCTURED_AGENT_SESSION_METHODS
   })
 })

@@ -55,7 +55,7 @@ vi.mock('../../telemetry/cohort-classifier', () => ({
 
 describe('Store', () => {
   beforeEach(() => {
-    testState.dir = mkdtempSync(join(tmpdir(), 'orca-test-'))
+    testState.dir = mkdtempSync(join(tmpdir(), 'topo-test-'))
     trackMock.mockReset()
     getCohortAtEmitMock.mockReset()
     getCohortAtEmitMock.mockReturnValue({ nth_repo_added: 2 })
@@ -68,7 +68,7 @@ describe('Store', () => {
 
   it('stores terminal scrollback snapshots beside explicit profile data files', async () => {
     const profileDataDirectory = join(testState.dir, 'profiles', 'local-default')
-    const profileDataFile = join(profileDataDirectory, 'orca-data.json')
+    const profileDataFile = join(profileDataDirectory, 'topo-data.json')
     mkdirSync(profileDataDirectory, { recursive: true })
 
     // Legacy snapshot paths resolve through AppEnvironment; use this fixture’s userData.
@@ -94,7 +94,7 @@ describe('Store', () => {
 
   it('reads legacy terminal scrollback snapshots for explicit profile data files', async () => {
     const profileDataDirectory = join(testState.dir, 'profiles', 'local-default')
-    const profileDataFile = join(profileDataDirectory, 'orca-data.json')
+    const profileDataFile = join(profileDataDirectory, 'topo-data.json')
     const ref = 'v1-11111111111111111111111111111111'
     const legacySnapshotDir = join(testState.dir, 'terminal-scrollback')
     mkdirSync(profileDataDirectory, { recursive: true })

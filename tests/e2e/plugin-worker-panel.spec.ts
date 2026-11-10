@@ -9,7 +9,7 @@ import { cp, mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import type { Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { disablePluginSystem, enableDevPlugins } from './helpers/plugin-smoke'
 import { ISOLATED_FRAMES_E2E } from './helpers/plugin-frame-guest'
 
@@ -29,31 +29,31 @@ async function openPanel(page: Page, title: string): Promise<void> {
 }
 
 test('a panel and its own worker: requests, posts, a storage atom, settings', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }, testInfo) => {
-  const tempRoot = await mkdtemp(join(tmpdir(), 'orca-worker-panel-'))
+  const tempRoot = await mkdtemp(join(tmpdir(), 'topo-worker-panel-'))
   const pluginRoot = join(tempRoot, 'hello-worker-panel')
   try {
     await cp(join(process.cwd(), 'examples', 'plugins', 'hello-worker-panel'), pluginRoot, {
       recursive: true
     })
-    await enableDevPlugins(orcaPage, [pluginRoot])
-    await openPanel(orcaPage, 'Hello Worker Panel')
+    await enableDevPlugins(topoPage, [pluginRoot])
+    await openPanel(topoPage, 'Hello Worker Panel')
 
-    await expect(orcaPage.getByRole('heading', { name: 'Tasks' })).toBeVisible({ timeout: 15_000 })
-    await expect(orcaPage.getByText('Edit src/panel.tsx and save')).toBeVisible()
-    await expect(orcaPage.getByText('1 open')).toBeVisible()
+    await expect(topoPage.getByRole('heading', { name: 'Tasks' })).toBeVisible({ timeout: 15_000 })
+    await expect(topoPage.getByText('Edit src/panel.tsx and save')).toBeVisible()
+    await expect(topoPage.getByText('1 open')).toBeVisible()
     // The worker answered the panel's first plugin.request from the `suggestions` default.
-    const draft = orcaPage.getByPlaceholder('New task')
+    const draft = topoPage.getByPlaceholder('New task')
     await expect(draft).toHaveValue('Write a test', { timeout: 15_000 })
     await draft.fill('Ship without a build')
-    await orcaPage.getByRole('button', { name: 'Add task' }).click()
-    await expect(orcaPage.getByText('Ship without a build')).toBeVisible()
-    await expect(orcaPage.getByText('2 open')).toBeVisible()
+    await topoPage.getByRole('button', { name: 'Add task' }).click()
+    await expect(topoPage.getByText('Ship without a build')).toBeVisible()
+    await expect(topoPage.getByText('2 open')).toBeVisible()
 
     // A setting the person changes reaches the worker's next answer.
-    await orcaPage.evaluate(async () => {
+    await topoPage.evaluate(async () => {
       const plugin = (await window.api.plugins.list()).find(
         (entry) => entry.name === 'Hello Worker Panel'
       )
@@ -66,24 +66,24 @@ test('a panel and its own worker: requests, posts, a storage atom, settings', as
         throw new Error(`setSetting failed: ${JSON.stringify(written)}`)
       }
     })
-    await orcaPage.getByRole('button', { name: 'Suggest' }).click()
+    await topoPage.getByRole('button', { name: 'Suggest' }).click()
     await expect(draft).toHaveValue('Ship the bridge')
 
     // Finishing the list: the atom lands in storage, the worker sees it and posts back.
-    await orcaPage.getByText('Edit src/panel.tsx and save').click()
-    await orcaPage.getByText('Ship without a build').click()
-    await expect(orcaPage.getByText('All 3 done!')).toBeVisible({ timeout: 15_000 })
+    await topoPage.getByText('Edit src/panel.tsx and save').click()
+    await topoPage.getByText('Ship without a build').click()
+    await expect(topoPage.getByText('All 3 done!')).toBeVisible({ timeout: 15_000 })
 
-    // The declared settings show under the plugin in Orca's Settings, with the person's value.
-    const pluginKey = await orcaPage.evaluate(
+    // The declared settings show under the plugin in Topo's Settings, with the person's value.
+    const pluginKey = await topoPage.evaluate(
       async () =>
         (await window.api.plugins.list()).find((entry) => entry.name === 'Hello Worker Panel')
           ?.pluginKey
     )
     await electronApp.evaluate(({ app }, link) => {
       app.emit('open-url', { preventDefault: () => undefined }, link)
-    }, `orca://plugins/${pluginKey}`)
-    const article = orcaPage.getByRole('article')
+    }, `topo://plugins/${pluginKey}`)
+    const article = topoPage.getByRole('article')
     await expect(article.locator('#plugin-detail-heading')).toContainText('Hello Worker Panel', {
       timeout: 30_000
     })
@@ -95,7 +95,7 @@ test('a panel and its own worker: requests, posts, a storage atom, settings', as
       contentType: 'image/png'
     })
   } finally {
-    await disablePluginSystem(orcaPage).catch(() => undefined)
+    await disablePluginSystem(topoPage).catch(() => undefined)
     await rm(tempRoot, { recursive: true, force: true })
   }
 })

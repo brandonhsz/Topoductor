@@ -13,7 +13,7 @@ export function managedUpdateLine(
         tone: 'muted',
         text: t(
           'auto.components.settings.sshHostServer.hostNewer',
-          'Runs a newer version of Orca’s server than this app; it keeps that version.'
+          'Runs a newer version of Topo’s server than this app; it keeps that version.'
         )
       }
     case 'deferred':
@@ -21,7 +21,7 @@ export function managedUpdateLine(
         tone: 'muted',
         text: t(
           'auto.components.settings.sshHostServer.updateDeferredLater',
-          'Runs Orca’s server; it updates on a later connect.'
+          'Runs Topo’s server; it updates on a later connect.'
         ),
         ...withDetail(update.detail)
       }
@@ -30,7 +30,7 @@ export function managedUpdateLine(
         tone: 'warning',
         text: t(
           'auto.components.settings.sshHostServer.updateFailedPrevious',
-          'Runs Orca’s server on its previous version; updating it failed.'
+          'Runs Topo’s server on its previous version; updating it failed.'
         ),
         ...withDetail(update.detail)
       }
@@ -39,7 +39,7 @@ export function managedUpdateLine(
         tone: 'warning',
         text: t(
           'auto.components.settings.sshHostServer.behindRolledBack',
-          'Runs an older version of Orca’s server than this app; the last update was rolled back. Use Update server to try again.'
+          'Runs an older version of Topo’s server than this app; the last update was rolled back. Use Update server to try again.'
         )
       }
     case 'no-template':
@@ -47,7 +47,7 @@ export function managedUpdateLine(
         tone: 'muted',
         text: t(
           'auto.components.settings.sshHostServer.behindNoTemplate',
-          'Runs a version of Orca’s server this app can’t update; this build has no server for this host.'
+          'Runs a version of Topo’s server this app can’t update; this build has no server for this host.'
         )
       }
     case 'migrating':
@@ -55,7 +55,7 @@ export function managedUpdateLine(
         tone: 'muted',
         text: t(
           'auto.components.settings.sshHostServer.behindMigrating',
-          'Runs Orca’s server, which updates after its project move finishes.'
+          'Runs Topo’s server, which updates after its project move finishes.'
         )
       }
     case 'check-failed':
@@ -63,7 +63,7 @@ export function managedUpdateLine(
         tone: 'warning',
         text: t(
           'auto.components.settings.sshHostServer.behindCheckFailed',
-          'Runs Orca’s server; Orca couldn’t check whether it is behind this app.'
+          'Runs Topo’s server; Topo couldn’t check whether it is behind this app.'
         ),
         ...withDetail(update.detail)
       }

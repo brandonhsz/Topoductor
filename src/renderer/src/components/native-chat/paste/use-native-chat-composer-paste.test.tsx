@@ -95,9 +95,9 @@ describe('useNativeChatComposerPaste', () => {
       { id: 'chip-1', path: '', previewUrl: 'blob:clipboard-image', pending: true }
     ])
     await act(async () => {
-      resolveSave('/tmp/orca-paste-1.png')
+      resolveSave('/tmp/topo-paste-1.png')
     })
-    expect(store.chips[0]).toMatchObject({ path: '/tmp/orca-paste-1.png', pending: false })
+    expect(store.chips[0]).toMatchObject({ path: '/tmp/topo-paste-1.png', pending: false })
   })
 
   it('does not settle a local path after the attachment owner changes', async () => {
@@ -123,7 +123,7 @@ describe('useNativeChatComposerPaste', () => {
 
     owner = { kind: 'remote' }
     await act(async () => {
-      resolveSave('/tmp/orca-paste-owner-changed.png')
+      resolveSave('/tmp/topo-paste-owner-changed.png')
     })
 
     expect(store.chips).toHaveLength(0)

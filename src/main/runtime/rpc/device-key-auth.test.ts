@@ -91,13 +91,13 @@ function harness(registry: DeviceRegistry, metadata?: MobileSocketTransportMetad
 }
 
 function freshRegistry(): DeviceRegistry {
-  return new DeviceRegistry(mkdtempSync(join(tmpdir(), 'orca-device-key-')))
+  return new DeviceRegistry(mkdtempSync(join(tmpdir(), 'topo-device-key-')))
 }
 
 describe('device-key authentication (host)', () => {
   it('forks a pre-ticket token row per installation, then authenticates the key and keeps the token working', () => {
     // Rows paired before single-use tickets may be shared by several installations.
-    const dir = mkdtempSync(join(tmpdir(), 'orca-device-key-'))
+    const dir = mkdtempSync(join(tmpdir(), 'topo-device-key-'))
     const legacy = {
       deviceId: 'legacy-phone',
       name: 'Phone',
@@ -259,7 +259,7 @@ describe('device-key authentication (host)', () => {
   })
 
   it('answers registry_unavailable, never device_revoked, after loading a corrupt registry', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-device-key-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-device-key-'))
     writeFileSync(join(userDataPath, DEVICE_REGISTRY_FILENAME), '[{"deviceId":')
     const key = nacl.sign.keyPair()
     const attempt = harness(new DeviceRegistry(userDataPath)).connect((hash) => ({

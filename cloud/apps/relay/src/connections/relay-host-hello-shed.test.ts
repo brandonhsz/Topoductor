@@ -41,7 +41,7 @@ function cellConfig(port: number, issuer: string): RelayConfig {
     publicUrl: relayUrl,
     cellUrl: relayUrl,
     authIssuer: issuer,
-    authAudience: 'orca-relay',
+    authAudience: 'topo-relay',
     jwksUrl: issuer,
     assignmentSigningKey: new Uint8Array(32),
     role: 'cell',
@@ -113,7 +113,7 @@ describe('host hello shedding under database pool pressure', () => {
     })
       .setProtectedHeader({ alg: 'ES256', kid: 'test-key' })
       .setIssuer(issuer)
-      .setAudience('orca-relay')
+      .setAudience('topo-relay')
       .setSubject('user-1')
       .setIssuedAt()
       .setExpirationTime('5m')

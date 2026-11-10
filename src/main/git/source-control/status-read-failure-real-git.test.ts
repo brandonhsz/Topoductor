@@ -1,7 +1,7 @@
 import { copyFile, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import * as path from 'node:path'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { afterEach, expect, it } from 'vitest'
 import { getStatus } from './status-read'
 import { invalidateGitReadCaches } from './git-read-cache-invalidation'
@@ -16,7 +16,7 @@ afterEach(async () => {
 })
 
 it('reports a failed status read instead of a clean tree, then recovers', async () => {
-  root = await mkdtemp(path.join(tmpdir(), 'orca-status-read-failure-'))
+  root = await mkdtemp(path.join(tmpdir(), 'topo-status-read-failure-'))
   const repo = path.join(root, 'repo')
   const git = (args: string[], cwd = repo): void => {
     const result = runProcessSync({ program: 'git', args, cwd })

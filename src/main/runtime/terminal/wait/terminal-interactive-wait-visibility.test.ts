@@ -1,5 +1,5 @@
 import '../../hosts/platform-probe/runtime-machine-name'
-import '../../orca-runtime'
+import '../../topo-runtime'
 import './tui-idle-wait-test-harness'
 import { readFileSync } from 'node:fs'
 import { makeAgentStatusStoreWiring } from '../identity/agent-status-store-wiring.test-fixture'
@@ -11,7 +11,7 @@ import {
   type TranscriptPaneOptions,
   TRANSCRIPT_PANE_PTY_ID as PTY_ID,
   waitForTranscriptIdle
-} from '../../orca-runtime-tests/agent-transcript-pane-test-harness'
+} from '../../topo-runtime-tests/agent-transcript-pane-test-harness'
 import { assertTerminalAgentSendable } from '../../rpc/terminal-agent-send-guard'
 import { readRuntimeFixture } from './agent-transcript-replay-test-harness'
 

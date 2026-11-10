@@ -47,7 +47,7 @@ describe('the memory phone path', () => {
     vi.spyOn(console, 'log').mockImplementation(() => undefined)
     vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     vi.spyOn(console, 'error').mockImplementation(() => undefined)
-    const dataDir = mkdtempSync(join(tmpdir(), 'orca-relay-phone-path-'))
+    const dataDir = mkdtempSync(join(tmpdir(), 'topo-relay-phone-path-'))
     cleanup.push(() => rmSync(dataDir, { recursive: true, force: true }))
     const inner = await openRelayDatabase({ dataDir })
     cleanup.push(() => inner.close())
@@ -186,8 +186,8 @@ describe('the memory phone path', () => {
     expect(invite).not.toHaveBeenCalled()
     expect(reserve.phoneStatements()).toEqual([])
     // One line opens the window; the repeat waits for its closing line.
-    expect(warnings('orca_relay_client_accept_db_error')).toEqual([
-      { event: 'orca_relay_client_accept_db_error', cause: 'error', cellId: reserve.config.cellId }
+    expect(warnings('topo_relay_client_accept_db_error')).toEqual([
+      { event: 'topo_relay_client_accept_db_error', cause: 'error', cellId: reserve.config.cellId }
     ])
   })
 
@@ -230,9 +230,9 @@ describe('the memory phone path', () => {
     }
     expect(await dial('elsewhere')).toBe(4409)
     expect(await dial('none')).toBe(4404)
-    expect(warnings('orca_relay_client_miss_row_names_here')).toEqual([])
+    expect(warnings('topo_relay_client_miss_row_names_here')).toEqual([])
     expect(await dial('here')).toBe(4404)
-    expect(warnings('orca_relay_client_miss_row_names_here')).toEqual([
+    expect(warnings('topo_relay_client_miss_row_names_here')).toEqual([
       expect.objectContaining({
         cellId: reserve.config.cellId,
         relayHostIdDigest: expect.any(String)
@@ -244,8 +244,8 @@ describe('the memory phone path', () => {
     const host = await reserve.host()
     await reserve.installDevice(host.hostId, TOKEN)
     expect((await (await reserve.dialPhone(host.hostId, TOKEN)).closed).code).toBe(4409)
-    expect(warnings('orca_relay_client_miss_read_error')).toEqual([
-      { event: 'orca_relay_client_miss_read_error', cause: 'error', cellId: reserve.config.cellId }
+    expect(warnings('topo_relay_client_miss_read_error')).toEqual([
+      { event: 'topo_relay_client_miss_read_error', cause: 'error', cellId: reserve.config.cellId }
     ])
   })
 
@@ -321,9 +321,9 @@ describe('the memory phone path', () => {
     })
     expect(Number((await deviceRow(failing.reserve))?.current_expires_at)).toBe(due)
     // Never silent: a renewal left failing ages phones toward re-pairing.
-    expect(warnings('orca_relay_resume_renewal_failed')).toEqual([
+    expect(warnings('topo_relay_resume_renewal_failed')).toEqual([
       {
-        event: 'orca_relay_resume_renewal_failed',
+        event: 'topo_relay_resume_renewal_failed',
         cause: 'error',
         cellId: failing.reserve.config.cellId
       }

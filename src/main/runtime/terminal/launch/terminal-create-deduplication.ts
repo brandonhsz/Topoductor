@@ -4,7 +4,7 @@ import type { TerminalWorkspaceCreationEvidence } from './terminal-workspace-sco
 import type { FolderWorkspace } from '../../../../shared/folder-workspaces/folder-workspace-types'
 import type { Repo } from '../../../../shared/repo-types'
 
-import { OrcaRuntimeWithCreateAgentSession } from '../../session-construction/agent-session/orca-runtime-create-agent-session'
+import { TopoRuntimeWithCreateAgentSession } from '../../session-construction/agent-session/topo-runtime-create-agent-session'
 import type { RuntimeTerminalCreate } from '../../../../shared/runtime-terminal-create-contract'
 import { WORKTREE_CREATE_RESULT_TTL_MS } from '../../workspaces/creation/worktree-create-idempotency'
 import { deriveRemoteRuntimeTerminalCreateHandle } from '../identity/remote-runtime-terminal-create-identity'
@@ -26,7 +26,7 @@ import { resolveWorktreeLaunchHost } from '../../workspaces/catalog/worktree-lau
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
 import type { TerminalWorkspaceLaunchScope } from '../../orchestration/terminal-authority/structured-sessions/runtime-legacy-worker-terminal-recovery-types'
 
-export abstract class OrcaRuntimeWithTerminalCreateDeduplication extends OrcaRuntimeWithCreateAgentSession {
+export abstract class TopoRuntimeWithTerminalCreateDeduplication extends TopoRuntimeWithCreateAgentSession {
   /** A create's scope: its `wslUserAct` lets the folder check start a stopped WSL distro (E9). */
   protected resolveTerminalCreateLaunchScope(
     selector: string,

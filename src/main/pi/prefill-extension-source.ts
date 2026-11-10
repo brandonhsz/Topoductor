@@ -1,13 +1,13 @@
 import type { PiAgentKind } from '../../shared/pi-agent-kind'
 
-export const ORCA_PI_PREFILL_EXTENSION_FILE = 'orca-prefill.ts'
+export const TOPO_PI_PREFILL_EXTENSION_FILE = 'topo-prefill.ts'
 
 // Keep draft variables agent-specific so Pi and OMP cannot consume each other's prefill.
 type PrefillAgentKind = Exclude<PiAgentKind, 'prime-agent'>
 
 const PREFILL_ENV_VAR_BY_KIND: Record<PrefillAgentKind, string> = {
-  pi: 'ORCA_PI_PREFILL',
-  omp: 'ORCA_OMP_PREFILL'
+  pi: 'TOPO_PI_PREFILL',
+  omp: 'TOPO_OMP_PREFILL'
 }
 
 export function getPiPrefillExtensionSource(kind: PrefillAgentKind): string {
@@ -24,7 +24,7 @@ export function getPiPrefillHandlerSourceLines(
   const register = wrapInStatusOwner && kind === 'omp' ? 'onStatus' : 'pi.on'
   return [
     `  ${register}('session_start', async (event, ctx) => {`,
-    '    if (!process.env.ORCA_PANE_KEY || ctx?.hasUI === false) return',
+    '    if (!process.env.TOPO_PANE_KEY || ctx?.hasUI === false) return',
     ...(kind === 'pi' ? ["    if (event.reason !== 'startup') return"] : []),
     `    const prefill = process.env.${envVar}`,
     "    if (!prefill || typeof ctx?.ui?.setEditorText !== 'function') return",

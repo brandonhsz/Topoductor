@@ -29,7 +29,7 @@ vi.mock('../../tabs-and-windows/browser-extension-tab-model', () => ({
   resolveBrowserExtensionTab: (id: number) => (mocks.tabs.has(id) ? { contents: { id } } : null)
 }))
 
-mocks.userData = mkdtempSync(join(tmpdir(), 'orca-dnr-requests-'))
+mocks.userData = mkdtempSync(join(tmpdir(), 'topo-dnr-requests-'))
 
 const { browserExtensionDnrRequestDecider: decider } =
   await import('./browser-extension-dnr-requests')
@@ -46,7 +46,7 @@ const TAB = 5
 type Rule = { id: number; priority?: number; condition: object; action: object }
 
 function blocker(rules: Rule[], manifest: Record<string, unknown> = {}): Electron.Extension {
-  const path = mkdtempSync(join(tmpdir(), 'orca-dnr-extension-'))
+  const path = mkdtempSync(join(tmpdir(), 'topo-dnr-extension-'))
   writeFileSync(join(path, 'rules.json'), JSON.stringify(rules))
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the DNR code reads only id, version, path and manifest.
   return {
@@ -134,7 +134,7 @@ function headersReceived(
 mocks.tabs.add(TAB)
 afterEach(() => setBrowserSessionRequestDecider(null))
 
-describe('declarativeNetRequest in Orca request handlers', () => {
+describe('declarativeNetRequest in Topo request handlers', () => {
   it('holds requests at startup until enabled blockers have loaded', async () => {
     const extension = blocker([
       { id: 1, condition: { urlFilter: '||ads.example^' }, action: { type: 'block' } }

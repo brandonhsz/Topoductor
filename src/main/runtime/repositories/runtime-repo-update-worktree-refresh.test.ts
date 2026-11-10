@@ -1,14 +1,14 @@
 import { describe, expect, it, vi } from 'vitest'
-import '../orca-runtime-tests/orca-runtime-test-lifecycle.spec'
-import '../orca-runtime-tests/runtime-test-module-registration.spec'
-import { OrcaRuntimeService } from '../orca-runtime'
+import '../topo-runtime-tests/topo-runtime-test-lifecycle.spec'
+import '../topo-runtime-tests/runtime-test-module-registration.spec'
+import { TopoRuntimeService } from '../topo-runtime'
 import { listWorktrees } from '../../git/worktrees/catalog/worktree-scan-cache'
 import {
   TEST_REPO_ID,
   TEST_REPO_PATH,
   makeWorktreeInfo,
   store
-} from '../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import type { Repo } from '../../../shared/repo-types'
 import type { RuntimeClientEvent } from '../../../shared/runtime-client-events'
 
@@ -16,7 +16,7 @@ const externalPath = '/tmp/elsewhere/external'
 
 async function createScannedRuntime() {
   let repo: Repo = { ...store.getRepos()[0], externalWorktreeVisibility: 'hide' }
-  const runtime = new OrcaRuntimeService({
+  const runtime = new TopoRuntimeService({
     ...store,
     getRepo: (id: string) => (id === repo.id ? repo : undefined),
     getRepos: () => [repo],

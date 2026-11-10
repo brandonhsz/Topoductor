@@ -231,7 +231,7 @@ export function CommitMessageAiPane({
         title: t('auto.components.settings.CommitMessageAiPane.47e45cbd5a', 'Custom command'),
         description: t(
           'auto.components.settings.CommitMessageAiPane.1ef29f8c29',
-          'Command line Orca runs when a text recipe uses Custom command.'
+          'Command line Topo runs when a text recipe uses Custom command.'
         ),
         keywords: [
           t('auto.components.settings.CommitMessageAiPane.25350d670f', 'custom'),
@@ -249,7 +249,7 @@ export function CommitMessageAiPane({
         title={t('auto.components.settings.CommitMessageAiPane.47e45cbd5a', 'Custom command')}
         description={t(
           'auto.components.settings.CommitMessageAiPane.1ef29f8c29',
-          'Command line Orca runs when a text recipe uses Custom command.'
+          'Command line Topo runs when a text recipe uses Custom command.'
         )}
         keywords={['custom', 'command', 'cli', 'binary', 'prompt', 'placeholder']}
         className="space-y-2 py-3"

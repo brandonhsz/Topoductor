@@ -35,7 +35,7 @@ describe('a follow-up to a finished terminal worker', () => {
     })
 
   it('retries a follow-up a restart interrupted before it placed an agent, with the mail it took', async () => {
-    userDataDir = mkdtempSync(join(tmpdir(), 'orca-follow-up-midstart-'))
+    userDataDir = mkdtempSync(join(tmpdir(), 'topo-follow-up-midstart-'))
     h.setup({ userDataDir })
     const { taskId, dispatchId } = await h.startWorker()
     await send(dispatchId, 'DO NOT PUSH')

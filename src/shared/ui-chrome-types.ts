@@ -12,7 +12,7 @@ export type OpenInApplication = {
 export type SourceControlViewMode = 'list' | 'tree'
 export type SourceControlGroupOrder = 'changes-first' | 'staged-first' | 'untracked-first'
 
-// Why 'match-terminal' stays: it mirrors the app theme slots for older Orca (syncLegacyMatchTerminalSidebar);
+// Why 'match-terminal' stays: it mirrors the app theme slots for older Topo (syncLegacyMatchTerminalSidebar);
 // this version's sidebar treats it as 'default'.
 export type LeftSidebarAppearanceMode = 'default' | 'match-terminal' | 'tinted'
 
@@ -43,7 +43,7 @@ export type WorktreeCardProperty =
   | 'jira-issue'
   | 'pr'
   | 'automation'
-  // Badge marking workspaces created through `orca worktree create`.
+  // Badge marking workspaces created through `topo worktree create`.
   | 'cli'
   | 'comment'
   | 'ports'
@@ -81,7 +81,7 @@ export type TaskResumeState = {
   githubItemsPreset?: TaskViewPresetId | null
   githubItemsQuery?: string
   githubProjectHiddenFieldIdsByView?: Record<string, string[]>
-  linearMode?: 'issues' | 'projects' | 'views' | 'in-orca'
+  linearMode?: 'issues' | 'projects' | 'views' | 'in-topo'
   linearPreset?: 'assigned' | 'created' | 'all' | 'completed'
   linearQuery?: string
   linearContext?: {

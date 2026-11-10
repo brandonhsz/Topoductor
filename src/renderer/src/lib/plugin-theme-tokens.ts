@@ -145,7 +145,7 @@ export const HOST_PILL_OUTLINE_MIX_TOKEN = '--worktree-host-pill-outline-mix'
 const HOST_PILL_OUTLINE_MIX = 40
 
 /**
- * How much sidebar text the selected card's host pill outline mixes into the sidebar: Orca's 40%,
+ * How much sidebar text the selected card's host pill outline mixes into the sidebar: Topo's 40%,
  * raised to the smallest mix that stands out from the selected wash painted over the sidebar.
  */
 export function hostPillOutlineMixOver(foreground: Rgba, sidebar: Rgba, wash: Rgba | null): number {
@@ -154,7 +154,7 @@ export function hostPillOutlineMixOver(foreground: Rgba, sidebar: Rgba, wash: Rg
   }
   const card = wash ? over(wash, sidebar) : sidebar
   // Why the ring floor: the wash matches the pill's fill, so the outline alone keeps the pill from
-  // vanishing. Orca's own outline (2.3:1 light, 2.5:1 dark) already clears 2:1 and stays at 40%;
+  // vanishing. Topo's own outline (2.3:1 light, 2.5:1 dark) already clears 2:1 and stays at 40%;
   // a dimmer theme gets only the smallest mix that reaches it.
   for (let percent = HOST_PILL_OUTLINE_MIX; percent < 100; percent++) {
     if (contrastRatio(mix(foreground, sidebar, percent), card) >= MIN_RING_CONTRAST) {

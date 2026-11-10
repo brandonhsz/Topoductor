@@ -51,7 +51,7 @@ function buildSummaries(t: Translate = translate): Record<string, SettingOwnersh
       ),
       description: t(
         'auto.components.settings.settingOwnership.terminalQuickCommandHostCollections',
-        'Commands are saved on the selected Orca host, then scoped globally or to a project setup. Commands from this device also remain available in remote workspaces.'
+        'Commands are saved on the selected Topo host, then scoped globally or to a project setup. Commands from this device also remain available in remote workspaces.'
       )
     },
     workspaceDirectory: {

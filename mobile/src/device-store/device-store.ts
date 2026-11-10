@@ -263,8 +263,8 @@ export function processDeviceStore(): DeviceStore {
   processStore ??= createDeviceStore({
     fileSystem: createExpoGenerationFileSystem(),
     roots: {
-      cache: new Directory(Paths.cache, 'orca-store', 'v1').uri,
-      draft: new Directory(Paths.document, 'orca-drafts', 'v1').uri
+      cache: new Directory(Paths.cache, 'topo-store', 'v1').uri,
+      draft: new Directory(Paths.document, 'topo-drafts', 'v1').uri
     },
     keychain: {
       read: () => readPairingKeychainItem(DEVICE_STORE_KEY_ITEM),

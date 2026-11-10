@@ -54,18 +54,18 @@ export function isAgentHookSource(value: unknown): value is AgentHookSource {
 /** Remote transport location; excluded from dev/prod mismatch checks. */
 export const REMOTE_AGENT_HOOK_ENV = 'remote' as const
 
-/** Wire envelope for a single hook event flowing relay → Orca. */
+/** Wire envelope for a single hook event flowing relay → Topo. */
 export type AgentHookRelayEnvelope = {
   source: AgentHookSource
   paneKey: string
   agentPresence?: AgentProcessPresence
-  /** Ephemeral Orca launch identity stamped into the PTY env for this process. */
+  /** Ephemeral Topo launch identity stamped into the PTY env for this process. */
   launchToken?: string
   /** Optional support proof and exact host turn fence for explicit interrupt reconciliation. */
   hostTurnRevision?: string
   tabId?: string
   worktreeId?: string
-  /** Always `null` on the wire — relay does not know Orca's local connectionId. */
+  /** Always `null` on the wire — relay does not know Topo's local connectionId. */
   connectionId: null
   /** Distinguish same-prompt retries from cached-prompt tool events. */
   hasExplicitPrompt?: boolean
@@ -93,7 +93,7 @@ export type AgentHookRelayEnvelope = {
   providerSession?: AgentProviderSessionMetadata
   /** True when this envelope updates resume identity without changing turn status. */
   providerSessionOnly?: boolean
-  /** True when the relay is replaying its cache after Orca reconnects. */
+  /** True when the relay is replaying its cache after Topo reconnects. */
   isReplay?: boolean
   /** The relay's turn-end stamp (see AgentHookEventPayload.turnEndedAt); older relays omit it. */
   turnEndedAt?: number
@@ -213,9 +213,9 @@ export const AGENT_HOOK_PANE_ROOT_METHOD = 'agent_hook.paneRoot' as const
 export const AGENT_HOOK_INSTALL_PLUGINS_METHOD = 'agent_hook.installPlugins' as const
 
 /** Read each WSL relay start; 0 disables remote hooks. */
-export const ORCA_FEATURE_REMOTE_AGENT_HOOKS_ENV = 'ORCA_FEATURE_REMOTE_AGENT_HOOKS' as const
+export const TOPO_FEATURE_REMOTE_AGENT_HOOKS_ENV = 'TOPO_FEATURE_REMOTE_AGENT_HOOKS' as const
 
 export function isWslAgentHookRelayEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
-  const raw = env[ORCA_FEATURE_REMOTE_AGENT_HOOKS_ENV]
+  const raw = env[TOPO_FEATURE_REMOTE_AGENT_HOOKS_ENV]
   return raw === undefined || !['', '0'].includes(raw.trim())
 }

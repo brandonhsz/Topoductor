@@ -10,7 +10,7 @@ import { DEVICE_REGISTRY_FILENAME } from './mobile-pairing-files'
 
 describe('planDeviceKeyFork', () => {
   it('keeps a corrupt registry aside and never calls an unlisted key revoked while it exists', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-device-key-fork-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-device-key-fork-'))
     writeFileSync(join(userDataPath, DEVICE_REGISTRY_FILENAME), '[{"deviceId":"keyed",')
     const afterCrash = new DeviceRegistry(userDataPath)
     expect(afterCrash.lookupDeviceKey('keyed')).toEqual({ kind: 'unavailable' })
@@ -23,7 +23,7 @@ describe('planDeviceKeyFork', () => {
   })
 
   it('stays doubtful when the rewrite after quarantine never landed', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-device-key-fork-'))
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-device-key-fork-'))
     writeFileSync(join(userDataPath, DEVICE_REGISTRY_FILENAME), '{')
     writeFileSync(join(userDataPath, `${DEVICE_REGISTRY_FILENAME}.corrupt-1`), '{')
     rmSync(join(userDataPath, DEVICE_REGISTRY_FILENAME))

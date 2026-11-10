@@ -21,7 +21,7 @@ export function emulatorOpeningMessage(
     case 'first-use':
       return t(
         'emulator.opening.firstUse',
-        'Choose your first device. Orca will remember successful selections on this computer.'
+        'Choose your first device. Topo will remember successful selections on this computer.'
       )
   }
 }

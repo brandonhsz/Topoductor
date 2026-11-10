@@ -101,7 +101,7 @@ const JAN_2024_CHROME = (BigInt(JAN_2024_MS) + 11_644_473_600_000n) * 1000n
 
 describe('readChromiumBrowserPasswords', () => {
   beforeEach(() => {
-    state.root = mkdtempSync(join(tmpdir(), 'orca-chromium-passwords-test-'))
+    state.root = mkdtempSync(join(tmpdir(), 'topo-chromium-passwords-test-'))
     state.key = { mode: 'aes-128-cbc', keysByVersion: { v10: cbcKey } }
     state.snapshotPaths = []
   })

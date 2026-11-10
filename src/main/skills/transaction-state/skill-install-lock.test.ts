@@ -25,7 +25,7 @@ async function readPublishedOwner(lockPath: string): Promise<Record<string, unkn
 
 describe('skill install lock', () => {
   it('reclaims a fresh legacy lock whose process was killed', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-lock-test-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-lock-test-'))
     roots.push(root)
     const lockPath = skillInstallLockPath(join(root, 'state'), join(root, 'skills', 'alpha'))
     await mkdir(dirname(lockPath), { recursive: true })
@@ -42,7 +42,7 @@ describe('skill install lock', () => {
   })
 
   it('reclaims abandoned legacy owner files at startup', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-lock-test-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-lock-test-'))
     roots.push(root)
     const stateDirectory = join(root, 'state')
     const lockPath = skillInstallLockPath(stateDirectory, join(root, 'skills', 'alpha'))
@@ -61,7 +61,7 @@ describe('skill install lock', () => {
   })
 
   it('reclaims dead locks, abandoned candidates, and completed releases at startup', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-lock-test-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-lock-test-'))
     roots.push(root)
     const stateDirectory = join(root, 'state')
     const deadPath = skillInstallLockPath(stateDirectory, join(root, 'skills', 'alpha'))
@@ -96,7 +96,7 @@ describe('skill install lock', () => {
   })
 
   it('continues startup recovery past a non-empty released lock', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skill-lock-test-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skill-lock-test-'))
     roots.push(root)
     const stateDirectory = join(root, 'state')
     const lockDirectory = join(stateDirectory, 'locks')

@@ -66,7 +66,7 @@ describe('worktree remote runtime mutations', () => {
       }
     })
 
-    await expect(create(...args)).rejects.toThrow('Update Orca on the workspace host')
+    await expect(create(...args)).rejects.toThrow('Update Topo on the workspace host')
     expect(runtimeEnvironmentCall).not.toHaveBeenCalled()
   })
 
@@ -168,7 +168,7 @@ describe('worktree remote runtime mutations', () => {
         ]
         args[12] = 'feature/test'
         args[25] = { branchIntent }
-        await expect(create(...args)).rejects.toThrow('Update Orca on the workspace host')
+        await expect(create(...args)).rejects.toThrow('Update Topo on the workspace host')
         expect(mockApi.worktrees.create).not.toHaveBeenCalled()
       } finally {
         setLocalRuntimeCapabilitiesForTests(null)
@@ -296,9 +296,9 @@ describe('worktree remote runtime mutations', () => {
         provider: 'jira',
         type: 'issue',
         number: 0,
-        title: 'ORCA-123 Link Jira',
-        url: 'https://company.atlassian.net/browse/ORCA-123',
-        jiraIdentifier: 'ORCA-123'
+        title: 'TOPO-123 Link Jira',
+        url: 'https://company.atlassian.net/browse/TOPO-123',
+        jiraIdentifier: 'TOPO-123'
       }
     }
 
@@ -389,7 +389,7 @@ describe('worktree remote runtime mutations', () => {
     )
     await vi.waitFor(() => expect(openModal).toHaveBeenCalledOnce())
     expect(openModal).toHaveBeenCalledWith(
-      'confirm-orca-yaml-hooks',
+      'confirm-topo-yaml-hooks',
       expect.objectContaining({
         repoId: 'repo1',
         scriptKind: 'setup',
@@ -432,7 +432,7 @@ describe('worktree remote runtime mutations', () => {
     action.onClick()
     await vi.waitFor(() => expect(openModal).toHaveBeenCalledTimes(2))
     expect(openModal).toHaveBeenLastCalledWith(
-      'confirm-orca-yaml-hooks',
+      'confirm-topo-yaml-hooks',
       expect.objectContaining({ scriptContent: 'pnpm build' })
     )
     openModal.mock.calls[1][1].onResolve('run')

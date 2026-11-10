@@ -25,7 +25,7 @@ export { selectLatestStableReleaseTag }
 export const REPO_ROOT = resolve(import.meta.dirname, '..', '..', '..')
 const DEFAULT_CACHE_ROOT = join(REPO_ROOT, 'tests', 'e2e', '.cross-version-checkouts')
 
-const BASELINE_REF_ENV = 'ORCA_CROSS_VERSION_BASELINE_REF'
+const BASELINE_REF_ENV = 'TOPO_CROSS_VERSION_BASELINE_REF'
 
 export type ReleaseCheckout = {
   ref: string

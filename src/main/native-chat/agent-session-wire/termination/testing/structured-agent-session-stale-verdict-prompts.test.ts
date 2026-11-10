@@ -16,7 +16,7 @@ import {
 } from './structured-agent-session-stale-verdict-contract-test-fixture'
 
 it('ends a crashed turn at its last proof of life, not at a send accepted before the proof', async () => {
-  const root = await mkdtemp(join(tmpdir(), 'orca-stale-session-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-stale-session-'))
   const journals = createTrackedJournalOpener({ legacyInputs: true })
   let now = 100
   try {

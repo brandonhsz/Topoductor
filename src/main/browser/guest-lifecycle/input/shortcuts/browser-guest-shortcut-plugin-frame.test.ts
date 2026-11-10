@@ -40,7 +40,7 @@ function pluginGuestHarness(browserPage = false) {
     guest: guest as unknown as Electron.WebContents,
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: forwarding only sends to the renderer.
     resolveRenderer: () => ({ send }) as unknown as Electron.WebContents,
-    // Orca's settings chord is the person's own binding here; the menu owns the default.
+    // Topo's settings chord is the person's own binding here; the menu owns the default.
     getKeybindings: () => ({ 'app.settings': ['Mod+Comma'] }),
     browserPage
   })
@@ -52,7 +52,7 @@ function pluginGuestHarness(browserPage = false) {
   return { send, press }
 }
 
-describe('Orca shortcuts while a plugin guest has focus', () => {
+describe('Topo shortcuts while a plugin guest has focus', () => {
   it.each([false, true])('forwards collapse-all with browserPage=%s', (browserPage) => {
     const { send, press } = pluginGuestHarness(browserPage)
     const consumed = press({
@@ -67,7 +67,7 @@ describe('Orca shortcuts while a plugin guest has focus', () => {
     expect(consumed).toHaveBeenCalled()
   })
 
-  it('forwards app shortcuts to Orca and keeps them from the guest', () => {
+  it('forwards app shortcuts to Topo and keeps them from the guest', () => {
     const { send, press } = pluginGuestHarness()
     const consumed = press(keyDown(',', 'Comma'))
     expect(send).toHaveBeenCalledWith('ui:openSettings')
@@ -88,7 +88,7 @@ describe('Orca shortcuts while a plugin guest has focus', () => {
     expect(send).not.toHaveBeenCalled()
   })
 
-  // #37472: these resolved to Orca actions but the plugin frame kept the keys.
+  // #37472: these resolved to Topo actions but the plugin frame kept the keys.
   it('toggles the sidebars instead of the browser address bar', () => {
     const { send, press } = pluginGuestHarness()
     expect(press(keyDown('b', 'KeyB'))).toHaveBeenCalled()
@@ -96,7 +96,7 @@ describe('Orca shortcuts while a plugin guest has focus', () => {
     expect(send.mock.calls).toEqual([['ui:toggleLeftSidebar'], ['ui:toggleRightSidebar']])
   })
 
-  it('sends zoom chords to Orca rather than dropping them', () => {
+  it('sends zoom chords to Topo rather than dropping them', () => {
     const { send, press } = pluginGuestHarness()
     expect(press(keyDown('=', 'Equal'))).toHaveBeenCalled()
     expect(press(keyDown('-', 'Minus'))).toHaveBeenCalled()

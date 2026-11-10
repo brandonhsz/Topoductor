@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { View, Text } from 'react-native'
 import { Globe } from 'lucide-react-native'
 import Svg, { Path } from 'react-native-svg'
-import { OrcaLogo } from '../components/OrcaLogo'
+import { TopoLogo } from '../components/TopoLogo'
 import { LIST_LEADING_INSET, ListRow } from '../components/list/ListGroup'
 import { useMobileTranslation } from '../i18n/use-mobile-translation'
 import { colors, spacing, typography } from '../theme/mobile-theme'
@@ -48,8 +48,8 @@ export default function AboutScreen({
   return (
     <SettingsScreen title={t('settings.aboutScreen.title', 'About')} onBack={onBack}>
       <View style={styles.brand}>
-        <OrcaLogo size={28} />
-        <Text style={styles.brandName}>Orca</Text>
+        <TopoLogo size={28} />
+        <Text style={styles.brandName}>Topo</Text>
         <Text style={styles.brandSub}>
           {t('settings.aboutScreen.tagline', 'Open-source agent IDE for 100x builders')}
         </Text>
@@ -58,24 +58,24 @@ export default function AboutScreen({
       <SettingsSection first separatorInset={LIST_LEADING_INSET}>
         <ListRow
           key="website"
-          title="onOrca.dev"
+          title="GitHub"
           leading={<Globe size={18} color={colors.textSecondary} />}
-          accessibilityLabel={t('settings.aboutScreen.website', 'Orca website')}
-          onPress={() => openLink('https://onOrca.dev')}
+          accessibilityLabel={t('settings.aboutScreen.website', 'Topo website')}
+          onPress={() => openLink('https://github.com/brandonhsz/Topoductor')}
         />
         <ListRow
           key="source"
-          title="stablyai/orca"
+          title="brandonhsz/Topoductor"
           leading={<GithubIcon size={18} />}
-          accessibilityLabel={t('settings.aboutScreen.sourceCode', 'Orca source code')}
-          onPress={() => openLink('https://github.com/stablyai/orca')}
+          accessibilityLabel={t('settings.aboutScreen.sourceCode', 'Topo source code')}
+          onPress={() => openLink('https://github.com/brandonhsz/Topoductor')}
         />
         <ListRow
           key="social"
-          title="@orca_build"
+          title="@topo_build"
           leading={<XIcon size={18} />}
-          accessibilityLabel={t('settings.aboutScreen.socialProfile', 'Orca on X')}
-          onPress={() => openLink('https://x.com/orca_build')}
+          accessibilityLabel={t('settings.aboutScreen.socialProfile', 'Topo on X')}
+          onPress={() => openLink('https://x.com/topo_build')}
         />
       </SettingsSection>
 

@@ -153,8 +153,8 @@ describe('registerFilesystemHandlers', () => {
   })
 
   it('rejects readFile when a symlink in a canonical alias worktree escapes the registered root', async () => {
-    const aliasWorktreePath = path.resolve('/var/folders/orca/worktrees/feature')
-    const canonicalWorktreePath = path.resolve('/private/var/folders/orca/worktrees/feature')
+    const aliasWorktreePath = path.resolve('/var/folders/topo/worktrees/feature')
+    const canonicalWorktreePath = path.resolve('/private/var/folders/topo/worktrees/feature')
     const aliasLinkPath = path.join(aliasWorktreePath, 'link.txt')
     registerWorktreeRootsForRepo(store as never, 'repo-1', [REPO_PATH, aliasWorktreePath])
     realpathMock.mockImplementation(async (targetPath: string) => {

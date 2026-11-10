@@ -84,14 +84,14 @@ function openDialog(
       {
         id: 'repo',
         path: '/repo',
-        displayName: 'orca',
+        displayName: 'topo',
         badgeColor: '',
         addedAt: 1,
         ...(overrides.hostId ? { executionHostId: overrides.hostId } : {}),
         gitRemoteIdentity: {
-          canonicalKey: 'github.com/acme/orca',
+          canonicalKey: 'github.com/acme/topo',
           remoteName: 'origin',
-          remoteUrl: 'https://github.com/acme/orca.git'
+          remoteUrl: 'https://github.com/acme/topo.git'
         }
       }
     ],
@@ -152,7 +152,7 @@ describe('workspace linked work editor', () => {
     fireEvent.change(screen.getByRole('textbox', { name: 'Notes' }), {
       target: { value: 'Local draft' }
     })
-    await add('https://github.com/acme/orca/issues/3')
+    await add('https://github.com/acme/topo/issues/3')
     act(() =>
       useAppStore.setState({
         worktreesByRepo: {

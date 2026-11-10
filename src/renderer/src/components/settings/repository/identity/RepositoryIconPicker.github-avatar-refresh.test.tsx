@@ -32,8 +32,8 @@ globalThis.window = { api: { gh: apiMocks } }
 function makeRepo(overrides: Partial<Repo> = {}): Repo {
   return {
     id: 'repo-1',
-    path: '/workspace/orca',
-    displayName: 'orca',
+    path: '/workspace/topo',
+    displayName: 'topo',
     badgeColor: '#2563eb',
     addedAt: 1,
     kind: 'git',
@@ -67,17 +67,17 @@ describe('RepositoryIconPicker GitHub avatar refresh', () => {
     const updateRepo = vi.fn()
     // A fork whose avatar tracks its parent org, resolved earlier while online.
     const repo = makeRepo({
-      upstream: { owner: 'stablyai', repo: 'orca' },
+      upstream: { owner: 'brandonhsz', repo: 'topo' },
       repoIcon: {
         type: 'image',
-        src: 'https://github.com/stablyai.png?size=64',
+        src: 'https://github.com/brandonhsz.png?size=64',
         source: 'github',
-        label: 'stablyai/orca'
+        label: 'brandonhsz/topo'
       }
     })
     // Failed upstream probes are ambiguous; never replace a known parent identity with same-name origin.
     apiMocks.repoUpstream.mockResolvedValueOnce(null)
-    apiMocks.repoSlug.mockResolvedValueOnce({ owner: 'parkerrex', repo: 'orca' })
+    apiMocks.repoSlug.mockResolvedValueOnce({ owner: 'parkerrex', repo: 'topo' })
 
     act(() => {
       root.render(<RepositoryIconPicker repo={repo} updateRepo={updateRepo} />)

@@ -58,7 +58,7 @@ function rowsFor(worktreeId: string) {
     tabId: tab.id,
     agentType: 'claude',
     state: 'working',
-    prompt: 'Orca plugin architecture review',
+    prompt: 'Topo plugin architecture review',
     updatedAt: now,
     stateStartedAt: now - 5 * HOUR,
     stateHistory: [],

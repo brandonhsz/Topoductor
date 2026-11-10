@@ -5,7 +5,7 @@ import { getRemoteRuntimePtyOwner } from '../identity/remote-runtime-pty-owner'
 import type { TerminalInputKind } from '../../../../../shared/terminal/input/terminal-input-kind'
 import type { RuntimeTerminalSend } from '../../../../../shared/runtime-terminal-send-contract'
 
-const DESKTOP_RUNTIME_CLIENT = { id: 'orca-desktop', type: 'desktop' } as const
+const DESKTOP_RUNTIME_CLIENT = { id: 'topo-desktop', type: 'desktop' } as const
 
 export function sendRuntimePtyInput(
   ptyId: string,

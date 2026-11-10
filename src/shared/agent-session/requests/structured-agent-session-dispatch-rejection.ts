@@ -37,11 +37,11 @@ function dispatchRejectionWasTransportWriteFailure(reason: string | null | undef
 /**
  * What a rejection means for the chat, whatever wrote it:
  * - `withdrawn`: the user's Stop took it back; nothing failed.
- * - `undelivered`: accepted, then never handed over (Orca restarted, the chat closed, the provider
+ * - `undelivered`: accepted, then never handed over (Topo restarted, the chat closed, the provider
  *   never took it or stopped first).
  * - `startFailed`: the agent it waited on did not start.
- * - `content`: the provider, or Orca's check of the message, refused this payload.
- * - `transport`: Orca could not hand it over.
+ * - `content`: the provider, or Topo's check of the message, refused this payload.
+ * - `transport`: Topo could not hand it over.
  */
 export type DispatchRejectionCategory =
   | 'withdrawn'
@@ -142,7 +142,7 @@ const KIND_VERDICT = {
   queueFull: 'failure',
   writeFailed: 'failure',
   hostFault: 'failure',
-  // Orca stopped a start that hung: the agent failed.
+  // Topo stopped a start that hung: the agent failed.
   hostStopped: 'failure'
 } satisfies Record<SubmissionRejectionKind, 'failure' | null>
 

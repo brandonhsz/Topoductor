@@ -49,18 +49,18 @@ const requestSchema = z.discriminatedUnion('method', [
 ])
 
 type StoreSenderLookups = {
-  isOrcaBrowserTab: (webContentsId: number) => boolean
+  isTopoBrowserTab: (webContentsId: number) => boolean
   profileIdForSession: (session: Electron.Session) => string | null
 }
 
 const defaultLookups: StoreSenderLookups = {
-  isOrcaBrowserTab: (webContentsId) =>
+  isTopoBrowserTab: (webContentsId) =>
     browserManager.getTabIdForWebContentsId(webContentsId) !== null,
   profileIdForSession: getBrowserExtensionProfileIdForSession
 }
 
 /**
- * The caller must be the top frame of an Orca browser tab, in a local browser profile that runs
+ * The caller must be the top frame of a Topo browser tab, in a local browser profile that runs
  * extensions, whose document is exactly https://chromewebstore.google.com.
  */
 export function resolveChromeWebStoreFrame(
@@ -75,7 +75,7 @@ export function resolveChromeWebStoreFrame(
     return null
   }
   const profileId = lookups.profileIdForSession(sender.session)
-  if (!profileId || !lookups.isOrcaBrowserTab(sender.id)) {
+  if (!profileId || !lookups.isTopoBrowserTab(sender.id)) {
     return null
   }
   return {
@@ -88,7 +88,7 @@ export function resolveChromeWebStoreFrame(
       frame.parent === null &&
       isChromeWebStoreUrl(frame.url) &&
       lookups.profileIdForSession(sender.session) === profileId &&
-      lookups.isOrcaBrowserTab(sender.id)
+      lookups.isTopoBrowserTab(sender.id)
   }
 }
 
@@ -138,7 +138,7 @@ async function dispatch(
       // Why: the store only asks to enable; turning extensions on or off stays in Settings.
       return enabled && isBrowserExtensionEnabledInProfile(frame.profileId, extensionId)
         ? {}
-        : { error: 'Turn extensions on or off in Orca Settings' }
+        : { error: 'Turn extensions on or off in Topo Settings' }
     }
   }
 }

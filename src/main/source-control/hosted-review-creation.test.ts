@@ -144,7 +144,7 @@ function resetMocks(): void {
 
 function mockGitHubProvider(): void {
   getProjectSlugMock.mockResolvedValue(null)
-  getRepoSlugMock.mockResolvedValue({ owner: 'acme', repo: 'orca' })
+  getRepoSlugMock.mockResolvedValue({ owner: 'acme', repo: 'topo' })
   getBitbucketRepoSlugMock.mockResolvedValue(null)
   getAzureDevOpsRepoSlugMock.mockResolvedValue(null)
   getGiteaRepoSlugMock.mockResolvedValue(null)
@@ -189,22 +189,22 @@ describe('createHostedReview', () => {
     createGitHubPullRequestMock.mockResolvedValue({
       ok: true,
       number: 12,
-      url: 'https://github.com/acme/orca/pull/12'
+      url: 'https://github.com/acme/topo/pull/12'
     })
     createGitLabMergeRequestMock.mockResolvedValue({
       ok: true,
       number: 44,
-      url: 'https://gitlab.com/acme/orca/-/merge_requests/44'
+      url: 'https://gitlab.com/acme/topo/-/merge_requests/44'
     })
     createAzureDevOpsPullRequestMock.mockResolvedValue({
       ok: true,
       number: 88,
-      url: 'https://dev.azure.com/acme/Project/_git/orca/pullrequest/88'
+      url: 'https://dev.azure.com/acme/Project/_git/topo/pullrequest/88'
     })
     createGiteaPullRequestMock.mockResolvedValue({
       ok: true,
       number: 19,
-      url: 'https://git.example.com/acme/orca/pulls/19'
+      url: 'https://git.example.com/acme/topo/pulls/19'
     })
     isAzureDevOpsReviewCreationAuthenticatedMock.mockReturnValue(true)
     isGiteaReviewCreationAuthenticatedMock.mockReturnValue(true)
@@ -305,7 +305,7 @@ describe('createHostedReview', () => {
       number: 31,
       title: 'Existing feature',
       state: 'open',
-      url: 'https://github.com/acme/orca/pull/31',
+      url: 'https://github.com/acme/topo/pull/31',
       status: 'pending',
       updatedAt: '2026-05-15T00:00:00.000Z',
       mergeable: 'UNKNOWN'
@@ -329,7 +329,7 @@ describe('createHostedReview', () => {
       reason: 'existing_review',
       existingReview: {
         number: 31,
-        url: 'https://github.com/acme/orca/pull/31'
+        url: 'https://github.com/acme/topo/pull/31'
       }
     })
     expect(createGitHubPullRequestMock).not.toHaveBeenCalled()

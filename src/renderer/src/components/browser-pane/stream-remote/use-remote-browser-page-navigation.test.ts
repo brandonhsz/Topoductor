@@ -63,7 +63,7 @@ describe('useRemoteBrowserPageNavigation history recording', () => {
 
     act(() =>
       result.current.applyRemoteTabInfo({
-        url: 'https://kagi.com/search?q=orca&token=secret-session',
+        url: 'https://kagi.com/search?q=topo&token=secret-session',
         title: 'Kagi'
       })
     )

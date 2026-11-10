@@ -1,5 +1,5 @@
 import { availableParallelism } from 'node:os'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { describeProcessFailure } from '../../tool-invocation/process-failure-message.mjs'
 import { isDirectInvocation } from '../../tool-invocation/script-entry-detection.mjs'
 import {

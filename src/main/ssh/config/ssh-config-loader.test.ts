@@ -41,7 +41,7 @@ afterEach(() => {
   }
 })
 
-function makeHome(prefix = 'orca-ssh-config-'): string {
+function makeHome(prefix = 'topo-ssh-config-'): string {
   const home = mkdtempSync(join(tmpdir(), prefix))
   tempDirs.push(home)
   homedirMock.mockReturnValue(home)
@@ -85,12 +85,12 @@ describe('loadUserSshConfig', () => {
 
   it('supports relative includes, ${VAR}, and local % tokens', () => {
     const home = makeHome()
-    process.env.ORCA_SSH_INCLUDE = 'from-env.conf'
+    process.env.TOPO_SSH_INCLUDE = 'from-env.conf'
     writeFile(
       home,
       '.ssh/config',
       [
-        'Include relative.conf ${ORCA_SSH_INCLUDE}',
+        'Include relative.conf ${TOPO_SSH_INCLUDE}',
         'Include %d/.ssh/from-home.conf',
         'Include %u/%i.conf',
         'Include %%literal.conf'

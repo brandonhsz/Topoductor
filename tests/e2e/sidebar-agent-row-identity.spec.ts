@@ -1,5 +1,5 @@
 import type { Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   waitForActivePanePtyId,
@@ -125,44 +125,44 @@ async function settledSidebarAgentRowIdentities(
 }
 
 test('sidebar keeps a Cursor pane visible and an OpenCode pane out of Claude Code hands', async ({
-  orcaPage
+  topoPage
 }) => {
-  await waitForSessionReady(orcaPage)
-  const worktreeId = await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await useFullAgentActivityRows(orcaPage)
+  await waitForSessionReady(topoPage)
+  const worktreeId = await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await useFullAgentActivityRows(topoPage)
 
-  const openCode = await openAgentTab(orcaPage, worktreeId, 'opencode')
+  const openCode = await openAgentTab(topoPage, worktreeId, 'opencode')
   const openCodeScript = await runNodeScriptInTerminal(
-    orcaPage,
+    topoPage,
     openCode.ptyId,
     // ⠋ is the braille spinner frame OpenCode paints ahead of its task text.
     oscTitleHolderScript('\\u280b use Claude Sonnet')
   )
-  await waitForTerminalOutput(orcaPage, PANE_HOLD_MARKER, 15_000)
+  await waitForTerminalOutput(topoPage, PANE_HOLD_MARKER, 15_000)
   // Require the always-accepted title as a PTY emission precondition.
   await expect
-    .poll(() => paneTitles(orcaPage, openCode.tabId), {
+    .poll(() => paneTitles(topoPage, openCode.tabId), {
       timeout: 15_000,
       message: 'the OpenCode task title never reached the renderer'
     })
     .toContain(OPENCODE_TASK_OSC_TITLE)
 
-  const cursor = await openAgentTab(orcaPage, worktreeId, 'cursor')
+  const cursor = await openAgentTab(topoPage, worktreeId, 'cursor')
   const cursorScript = await runNodeScriptInTerminal(
-    orcaPage,
+    topoPage,
     cursor.ptyId,
     oscTitleHolderScript(CURSOR_NATIVE_OSC_TITLE)
   )
   // Require emitter output before judging literal-title filtering.
-  await waitForTerminalOutput(orcaPage, PANE_HOLD_MARKER, 15_000)
+  await waitForTerminalOutput(topoPage, PANE_HOLD_MARKER, 15_000)
 
   // Only the active worktree's card has agents, so this resolves to one list.
   const agentListSelector = `[data-worktree-sidebar] [aria-label="Agents"]`
-  const agentList = worktreeRow(orcaPage, worktreeId).locator('[aria-label="Agents"]')
+  const agentList = worktreeRow(topoPage, worktreeId).locator('[aria-label="Agents"]')
   await expect(agentList.locator('> div').first()).toBeVisible()
 
-  expect(await settledSidebarAgentRowIdentities(orcaPage, agentListSelector)).toEqual([
+  expect(await settledSidebarAgentRowIdentities(topoPage, agentListSelector)).toEqual([
     'Cursor',
     'OpenCode'
   ])

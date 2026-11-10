@@ -75,7 +75,7 @@ describe('withAgentInputInjection', () => {
     expect(isAgentInjectingInput(webContents)).toBe(false)
   })
 
-  it('keeps Orca shortcuts, grab copy and Escape from acting on injected keys', async () => {
+  it('keeps Topo shortcuts, grab copy and Escape from acting on injected keys', async () => {
     const { webContents, press } = fakeGuest()
     const send = vi.fn()
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: forwarding only calls send and isDestroyed.

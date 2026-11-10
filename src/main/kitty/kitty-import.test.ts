@@ -2,13 +2,13 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { mapKittyToOrca } from './mapper'
+import { mapKittyToTopo } from './mapper'
 import { loadKittyConfig, matchesFileGlob } from './parser'
 
 let dir: string
 
 beforeEach(async () => {
-  dir = await mkdtemp(path.join(tmpdir(), 'orca-kitty-import-'))
+  dir = await mkdtemp(path.join(tmpdir(), 'topo-kitty-import-'))
 })
 
 afterEach(async () => {
@@ -43,7 +43,7 @@ describe('Kitty config import', () => {
     )
 
     const { config, readPaths } = await loadKittyConfig(path.join(dir, 'kitty.conf'), dir)
-    const { diff, unsupportedKeys } = mapKittyToOrca(config, true)
+    const { diff, unsupportedKeys } = mapKittyToTopo(config, true)
 
     expect(readPaths).toEqual([
       path.join(dir, 'kitty.conf'),
@@ -62,7 +62,7 @@ describe('Kitty config import', () => {
     expect(unsupportedKeys).toEqual(['geninclude', 'map'])
   })
 
-  it('reports values Orca cannot represent instead of guessing', () => {
+  it('reports values Topo cannot represent instead of guessing', () => {
     const options = new Map([
       ['font_family', 'monospace'],
       ['cursor_text_color', 'background'],
@@ -71,7 +71,7 @@ describe('Kitty config import', () => {
       ['constructor', '#ff0000'],
       ['font_size', '1e3']
     ])
-    const { diff, unsupportedKeys } = mapKittyToOrca({ options, unsupportedKeys: [] }, false)
+    const { diff, unsupportedKeys } = mapKittyToTopo({ options, unsupportedKeys: [] }, false)
     expect(diff).toEqual({})
     expect(unsupportedKeys).toEqual([
       'font_family',

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from './orca-runtime'
+import { TopoRuntimeService } from './topo-runtime'
 
 const PTY_ID = 'repo-1::/tmp/wt@@7a3c9e01'
 
@@ -12,7 +12,7 @@ type LayoutInternals = {
 
 describe('layout queue when its PTY exits', () => {
   it('settles layout work queued behind the running slot as pty-exited', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: test reaches protected members the runtime defines.
     const internals = runtime as unknown as LayoutInternals
     internals.recordPtyWorktree(PTY_ID, 'repo-1::/tmp/wt', { connected: true })

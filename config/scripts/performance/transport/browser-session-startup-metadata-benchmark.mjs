@@ -14,7 +14,7 @@ const relative = 'src/main/browser/browser-session-registry.ts'
 const historicalTarget = join(root, relative)
 const currentRelative = 'src/main/browser/sessions/profiles/browser-session-registry.ts'
 const target = join(root, currentRelative)
-const scratch = mkdtempSync(join(tmpdir(), 'orca-browser-meta-bench-'))
+const scratch = mkdtempSync(join(tmpdir(), 'topo-browser-meta-bench-'))
 const previousSource = execFileSync('git', ['show', `${baseline}:${relative}`], {
   cwd: root,
   encoding: 'utf8'
@@ -190,7 +190,7 @@ try {
       return {
         id,
         scope: 'isolated',
-        partition: `persist:orca-browser-session-${id}`,
+        partition: `persist:topo-browser-session-${id}`,
         label: `Browser ${index}`,
         source: null
       }
@@ -207,8 +207,8 @@ try {
       const timings = []
       for (let iteration = 0; iteration < 4; iteration++) {
         globalThis.__metaBench = { directory: scratch, reads: 0, bytes: 0, assignments: [] }
-        registry.configureForOrcaProfile({
-          orcaProfileId: 'local-default',
+        registry.configureForTopoProfile({
+          topoProfileId: 'local-default',
           profileDirectory: scratch
         })
         globalThis.__metaBench.reads = 0

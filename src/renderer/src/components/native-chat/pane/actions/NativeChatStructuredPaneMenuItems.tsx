@@ -10,19 +10,19 @@ import { useShortcutLabel } from '@/hooks/useShortcutLabel'
 import { useAppStore } from '@/store'
 import { structuredAgentSessionPaneKey } from '../../../../../../shared/agent-session/view/structured-agent-session-projection'
 import { NativeChatProviderSessionIdMenuItem } from './NativeChatProviderSessionIdMenuItem'
-import { NativeChatCopyOrcaSessionIdMenuItem } from './NativeChatCopyOrcaSessionIdMenuItem'
+import { NativeChatCopyTopoSessionIdMenuItem } from './NativeChatCopyTopoSessionIdMenuItem'
 import { useStructuredChatPaneActions } from './use-structured-chat-pane-actions'
 
 export function NativeChatStructuredPaneMenuItems({
   pane,
   leadingSeparator,
   splitShortcutLabels,
-  resolveOrcaSessionId
+  resolveTopoSessionId
 }: {
   pane: { tabId: string; worktreeId: string; groupId: string; sessionId: string }
   leadingSeparator: boolean
   splitShortcutLabels?: { right: string; down: string }
-  resolveOrcaSessionId?: () => Promise<string | null>
+  resolveTopoSessionId?: () => Promise<string | null>
 }): React.JSX.Element {
   const t = useTranslate()
   const actions = useStructuredChatPaneActions(pane.tabId, pane.worktreeId, pane.groupId)
@@ -48,14 +48,14 @@ export function NativeChatStructuredPaneMenuItems({
         {t('components.native-chat.splitDown', 'Split Down')}
         <DropdownMenuShortcut>{splitShortcutLabels?.down}</DropdownMenuShortcut>
       </DropdownMenuItem>
-      {providerSessionId || resolveOrcaSessionId ? (
+      {providerSessionId || resolveTopoSessionId ? (
         <>
           <DropdownMenuSeparator />
           {providerSessionId ? (
             <NativeChatProviderSessionIdMenuItem sessionId={providerSessionId} />
           ) : null}
-          {resolveOrcaSessionId ? (
-            <NativeChatCopyOrcaSessionIdMenuItem resolveOrcaSessionId={resolveOrcaSessionId} />
+          {resolveTopoSessionId ? (
+            <NativeChatCopyTopoSessionIdMenuItem resolveTopoSessionId={resolveTopoSessionId} />
           ) : null}
         </>
       ) : null}

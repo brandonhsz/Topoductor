@@ -20,16 +20,16 @@ export function renderServersSettingsSection(
     <RuntimeServersPageProvider>
       <SettingsSection
         id="servers"
-        title={t('auto.components.settings.Settings.bd0181eeca', 'Remote Orca Servers')}
+        title={t('auto.components.settings.Settings.bd0181eeca', 'Remote Topo Servers')}
         description={
           model.isWebClient
             ? t(
                 'auto.components.settings.Settings.7686cb5c36',
-                'Connect this browser to a saved Orca server.'
+                'Connect this browser to a saved Topo server.'
               )
             : t(
                 'auto.components.settings.Settings.remoteServersDescription',
-                'Run Orca on another machine and work on it from here.'
+                'Run Topo on another machine and work on it from here.'
               )
         }
         searchEntries={navigation.getSectionSearchEntries('servers')}

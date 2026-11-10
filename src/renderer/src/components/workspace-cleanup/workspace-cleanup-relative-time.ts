@@ -1,7 +1,7 @@
 import { translate } from '@/i18n/i18n'
 import type { Translate } from '@/i18n/use-translate'
 
-/** Compact "how long ago" label for cleanup rows; 0 means Orca never recorded it. */
+/** Compact "how long ago" label for cleanup rows; 0 means Topo never recorded it. */
 export function formatWorkspaceCleanupRelativeTime(
   timestamp: number,
   now = Date.now(),

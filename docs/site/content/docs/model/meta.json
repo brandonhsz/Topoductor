@@ -1,9 +1,9 @@
 {
-  "title": "The Orca Model",
+  "title": "The Topo Model",
   "defaultOpen": true,
   "pages": [
     "worktrees",
-    "orca-yaml",
+    "topo-yaml",
     "tabs-panes-splits",
     "agents-sessions",
     "session-restore",

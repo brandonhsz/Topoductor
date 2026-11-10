@@ -67,7 +67,7 @@ async function initializeFromDisposableFolder(
 ): Promise<InitializeOutcome> {
   const { observe, check } = options
   // Keep the server's working folder, and any home inside it, together for cleanup.
-  const folder = await mkdtemp(join(tmpdir(), 'orca-antigravity-probe-'))
+  const folder = await mkdtemp(join(tmpdir(), 'topo-antigravity-probe-'))
   const probe: ProbeConnection = {}
   const outcome: InitializeOutcome = {
     initialized: null,
@@ -83,7 +83,7 @@ async function initializeFromDisposableFolder(
           observe
             ? {
                 onExit: (_error, { expected, exit }) => {
-                  // Orca closing the check, or a spawn that never ran, says nothing about the runtime.
+                  // Topo closing the check, or a spawn that never ran, says nothing about the runtime.
                   if (!expected && !exit.processless) {
                     probe.exit = exit
                   }

@@ -1069,7 +1069,7 @@
                     "type": "image",
                     "src": "https://github.com/acme.png?size=64",
                     "source": "github",
-                    "label": "acme/orca"
+                    "label": "acme/topo"
                   },
                   "executionHostId": "ssh:ssh-1"
                 }
@@ -1829,7 +1829,7 @@
               "source": {
                 "identifier": "ORC-1",
                 "title": "Recorded issue",
-                "url": "https://linear.app/orca/issue/ORC-1"
+                "url": "https://linear.app/topo/issue/ORC-1"
               }
             }
           }
@@ -1862,7 +1862,7 @@
             "linkedLinearIssue": "ORC-1",
             "setupDecision": "inherit",
             "activate": true,
-            "startupDraft": "https://linear.app/orca/issue/ORC-1",
+            "startupDraft": "https://linear.app/topo/issue/ORC-1",
             "createdWithAgent": "claude"
           },
           "reply": {
@@ -5728,7 +5728,7 @@
         {
           "complete": "ui.set#1",
           "params": {
-            "trustedOrcaHooks": {
+            "trustedTopoHooks": {
               "repo-1": {
                 "setup": {
                   "contentHash": "hash-1",
@@ -5766,7 +5766,7 @@
         {
           "complete": "ui.set#1",
           "params": {
-            "trustedOrcaHooks": {
+            "trustedTopoHooks": {
               "repo-1": {
                 "setup": {
                   "contentHash": "hash-1",
@@ -6765,7 +6765,7 @@
         {
           "complete": "ui.set#2",
           "params": {
-            "trustedOrcaHooks": {
+            "trustedTopoHooks": {
               "repo-1": {
                 "setup": {
                   "contentHash": "hash-1",
@@ -7605,7 +7605,7 @@
             "ok": true,
             "result": {
               "retiredNamesByRepo": {
-                "repo-1": ["marlin", "orca"]
+                "repo-1": ["marlin", "topo"]
               },
               "retiredNameTiersByRepo": {
                 "repo-1": 2
@@ -7794,7 +7794,7 @@
                 }
               },
               "setupRunPolicy": "run-by-default",
-              "source": "orca.yaml",
+              "source": "topo.yaml",
               "setupConfig": null,
               "archiveTrust": {
                 "contentHash": "archive-hash-1",
@@ -7812,7 +7812,7 @@
             "ok": true,
             "result": {
               "ui": {
-                "trustedOrcaHooks": {}
+                "trustedTopoHooks": {}
               }
             }
           }
@@ -7827,7 +7827,7 @@
         {
           "complete": "ui.set#1",
           "params": {
-            "trustedOrcaHooks": {
+            "trustedTopoHooks": {
               "repo-1": {
                 "archive": {
                   "contentHash": "archive-hash-1",
@@ -7889,7 +7889,7 @@
                 }
               },
               "setupRunPolicy": "run-by-default",
-              "source": "orca.yaml",
+              "source": "topo.yaml",
               "setupConfig": null,
               "archiveTrust": {
                 "contentHash": "archive-hash-1",
@@ -7907,7 +7907,7 @@
             "ok": true,
             "result": {
               "ui": {
-                "trustedOrcaHooks": {
+                "trustedTopoHooks": {
                   "repo-1": {
                     "archive": {
                       "contentHash": "archive-hash-1",
@@ -7961,8 +7961,8 @@
           "reply": {
             "ok": true,
             "result": {
-              "owner": "orca",
-              "repo": "orca",
+              "owner": "topo",
+              "repo": "topo",
               "host": "github.com"
             }
           }
@@ -10557,8 +10557,8 @@
           "reply": {
             "ok": true,
             "result": {
-              "owner": "orca",
-              "repo": "orca",
+              "owner": "topo",
+              "repo": "topo",
               "host": "github.com"
             }
           }
@@ -17119,7 +17119,7 @@
             "activate": false,
             "clientMutationId": "resume-mutation-1",
             "env": {
-              "ORCA_RESUME": "1"
+              "TOPO_RESUME": "1"
             },
             "envToDelete": ["CODEX_HOME"],
             "launchAgent": "codex",
@@ -17177,7 +17177,7 @@
             "activate": false,
             "clientMutationId": "resume-mutation-1",
             "env": {
-              "ORCA_RESUME": "1"
+              "TOPO_RESUME": "1"
             },
             "envToDelete": ["CODEX_HOME"],
             "launchAgent": "codex",
@@ -17267,7 +17267,7 @@
             "activate": false,
             "clientMutationId": "resume-mutation-1",
             "env": {
-              "ORCA_RESUME": "1"
+              "TOPO_RESUME": "1"
             },
             "envToDelete": ["CODEX_HOME"],
             "launchAgent": "codex",
@@ -20993,7 +20993,7 @@
       "sites": ["mobile/src/components/use-new-workspace-repositories.ts"],
       "schedules": [],
       "deviceStore": {
-        "orca:last-visited-worktree": "{\"hostId\":\"host-1\",\"worktreeId\":\"repo-b::/tmp/repo-b\"}"
+        "topo:last-visited-worktree": "{\"hostId\":\"host-1\",\"worktreeId\":\"repo-b::/tmp/repo-b\"}"
       },
       "steps": [
         {
@@ -21124,7 +21124,7 @@
       "sites": ["mobile/src/notifications/push-dismissal-reconciliation.ts"],
       "schedules": [],
       "deviceStore": {
-        "orca:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"wss://desk.test\",\"publicKeyB64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\",\"lastConnected\":1700000000000}]"
+        "topo:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"wss://desk.test\",\"publicKeyB64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\",\"lastConnected\":1700000000000}]"
       },
       "deviceState": {
         "notificationTray": [
@@ -21417,8 +21417,8 @@
       "sites": ["mobile/src/settings/notification-display-test.tsx"],
       "schedules": [],
       "deviceStore": {
-        "orca:pushServiceNotificationsEnabled": "true",
-        "orca:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"ws://desk.local:7777\",\"publicKeyB64\":\"AAAA\",\"lastConnected\":1700000000000}]"
+        "topo:pushServiceNotificationsEnabled": "true",
+        "topo:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"ws://desk.local:7777\",\"publicKeyB64\":\"AAAA\",\"lastConnected\":1700000000000}]"
       },
       "deviceState": {
         "notificationPermissions": {
@@ -21467,8 +21467,8 @@
       "sites": ["mobile/src/settings/notification-display-test.tsx"],
       "schedules": [],
       "deviceStore": {
-        "orca:pushServiceNotificationsEnabled": "true",
-        "orca:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"ws://desk.local:7777\",\"publicKeyB64\":\"AAAA\",\"lastConnected\":1700000000000}]"
+        "topo:pushServiceNotificationsEnabled": "true",
+        "topo:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"ws://desk.local:7777\",\"publicKeyB64\":\"AAAA\",\"lastConnected\":1700000000000}]"
       },
       "deviceState": {
         "notificationPermissions": {
@@ -21518,8 +21518,8 @@
       "sites": ["mobile/src/settings/notification-display-test.tsx"],
       "schedules": [],
       "deviceStore": {
-        "orca:pushServiceNotificationsEnabled": "true",
-        "orca:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"ws://desk.local:7777\",\"publicKeyB64\":\"AAAA\",\"lastConnected\":1700000000000}]"
+        "topo:pushServiceNotificationsEnabled": "true",
+        "topo:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"ws://desk.local:7777\",\"publicKeyB64\":\"AAAA\",\"lastConnected\":1700000000000}]"
       },
       "deviceState": {
         "notificationPermissions": {
@@ -21569,8 +21569,8 @@
       "sites": ["mobile/src/settings/notification-display-test.tsx"],
       "schedules": [],
       "deviceStore": {
-        "orca:pushServiceNotificationsEnabled": "true",
-        "orca:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"ws://desk.local:7777\",\"publicKeyB64\":\"AAAA\",\"lastConnected\":1700000000000}]"
+        "topo:pushServiceNotificationsEnabled": "true",
+        "topo:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"ws://desk.local:7777\",\"publicKeyB64\":\"AAAA\",\"lastConnected\":1700000000000}]"
       },
       "deviceState": {
         "notificationPermissions": {
@@ -21813,7 +21813,7 @@
               "repos": [
                 {
                   "id": "repo-1",
-                  "name": "orca"
+                  "name": "topo"
                 },
                 {
                   "id": "repo-2",
@@ -22748,7 +22748,7 @@
       "sites": ["mobile/src/notifications/mobile-notifications.ts"],
       "schedules": [],
       "deviceStore": {
-        "orca:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"wss://desk.test\",\"publicKeyB64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\",\"lastConnected\":1700000000000}]"
+        "topo:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"wss://desk.test\",\"publicKeyB64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\",\"lastConnected\":1700000000000}]"
       },
       "deviceState": {
         "notificationTray": [
@@ -22878,7 +22878,7 @@
       "sites": ["mobile/src/notifications/mobile-notifications.ts"],
       "schedules": [],
       "deviceStore": {
-        "orca:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"wss://desk.test\",\"publicKeyB64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\",\"lastConnected\":1700000000000}]"
+        "topo:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"wss://desk.test\",\"publicKeyB64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\",\"lastConnected\":1700000000000}]"
       },
       "deviceState": {
         "notificationTray": [
@@ -24653,7 +24653,7 @@
       "sites": ["mobile/src/notifications/mobile-notifications.ts"],
       "schedules": [],
       "deviceStore": {
-        "orca:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"wss://desk.test\",\"publicKeyB64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\",\"lastConnected\":1700000000000}]"
+        "topo:hosts": "[{\"id\":\"host-1\",\"name\":\"Desk\",\"endpoint\":\"wss://desk.test\",\"publicKeyB64\":\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\",\"lastConnected\":1700000000000}]"
       },
       "deviceState": {
         "notificationTray": [

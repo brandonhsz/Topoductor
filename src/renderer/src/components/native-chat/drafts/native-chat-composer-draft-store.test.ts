@@ -114,14 +114,14 @@ describe('native-chat composer draft store', () => {
     const uncommitted = createMemoryNativeChatComposerDraftStorage()
     uncommitted.write = () => new Promise(() => {})
     const lost = await reload({ using: uncommitted })
-    lost.drafts.writeNativeChatDraftCache('tab-1:pane', 'typed, then Orca quit')
+    lost.drafts.writeNativeChatDraftCache('tab-1:pane', 'typed, then Topo quit')
     window.dispatchEvent(new Event('pagehide'))
     expect(uncommitted.drafts.size).toBe(0)
 
     const reloaded = await reload()
-    expect(reloaded.drafts.readNativeChatDraftCache('tab-1:pane')).toBe('typed, then Orca quit')
+    expect(reloaded.drafts.readNativeChatDraftCache('tab-1:pane')).toBe('typed, then Topo quit')
     await reloaded.persistence.nativeChatComposerDraftWritesSettled()
-    expect(storedDraft('tab-1:pane')?.text).toBe('typed, then Orca quit')
+    expect(storedDraft('tab-1:pane')?.text).toBe('typed, then Topo quit')
   })
 
   it('never brings back a draft sent while storage refused, however much was given back to it', async () => {
@@ -195,7 +195,7 @@ describe('native-chat composer draft store', () => {
     storage.drafts.set('agent-session:s1', { text: 'typed earlier', images: [], savedAt: 1 })
     const crashing = { ...storage, write: () => new Promise<void>(() => {}) }
     const crashed = await reload({ using: crashing })
-    // Stop gives a message back; its outbox entry is deleted right after, then Orca crashes.
+    // Stop gives a message back; its outbox entry is deleted right after, then Topo crashes.
     expect(crashed.drafts.appendNativeChatDraftCache('agent-session:s1', 'returned by Stop')).toBe(
       true
     )
@@ -207,7 +207,7 @@ describe('native-chat composer draft store', () => {
     )
     await next.persistence.nativeChatComposerDraftWritesSettled()
     expect(storedDraft('agent-session:s1')?.text).toBe('typed earlier\n\nreturned by Stop')
-    expect(localStorage.getItem('orca:nativeChatComposerDraftJournal:v1')).toBeNull()
+    expect(localStorage.getItem('topo:nativeChatComposerDraftJournal:v1')).toBeNull()
   })
 
   it('does not give text back twice when storage committed it but the window died first', async () => {
@@ -257,7 +257,7 @@ describe('native-chat composer draft store', () => {
   })
 
   it('brings a pasted image back after a reload as one to attach again, by name', async () => {
-    const pasted = { id: 'p-1', path: '/var/folders/T/orca-paste-1-0f.png' }
+    const pasted = { id: 'p-1', path: '/var/folders/T/topo-paste-1-0f.png' }
     modules.attachments.appendNativeChatAttachmentCache('tab-1:pane', [pasted, IMAGES[0]])
     modules.drafts.writeNativeChatDraftCache('tab-1:pane', 'caption')
     modules.persistence.flushNativeChatComposerDrafts()
@@ -268,19 +268,19 @@ describe('native-chat composer draft store', () => {
     ])
     const reloaded = await reload()
     expect(reloaded.attachments.readNativeChatAttachmentCache('tab-1:pane')).toEqual([
-      { id: 'p-1', path: '', unavailableName: 'orca-paste-1-0f.png' },
+      { id: 'p-1', path: '', unavailableName: 'topo-paste-1-0f.png' },
       IMAGES[0]
     ])
   })
 
-  it('saves a paste kept in Orca’s paste folder as the real image, but not one over SSH', async () => {
+  it('saves a paste kept in Topo’s paste folder as the real image, but not one over SSH', async () => {
     const kept = {
       id: 'p-1',
-      path: '/Users/me/Library/Application Support/orca/native-chat-pastes/orca-paste-1-0f.png'
+      path: '/Users/me/Library/Application Support/topo/native-chat-pastes/topo-paste-1-0f.png'
     }
     const remote = {
       id: 'p-2',
-      path: '/remote/native-chat-pastes/orca-paste-2-0f.png',
+      path: '/remote/native-chat-pastes/topo-paste-2-0f.png',
       connectionId: 'ssh-1'
     }
     modules.attachments.appendNativeChatAttachmentCache('tab-1:pane', [kept, remote])
@@ -288,7 +288,7 @@ describe('native-chat composer draft store', () => {
     const reloaded = await reload()
     expect(reloaded.attachments.readNativeChatAttachmentCache('tab-1:pane')).toEqual([
       kept,
-      { id: 'p-2', path: '', unavailableName: 'orca-paste-2-0f.png' }
+      { id: 'p-2', path: '', unavailableName: 'topo-paste-2-0f.png' }
     ])
   })
 
@@ -579,7 +579,7 @@ describe('native-chat composer draft store', () => {
     const tabA = await reload({ using: landsUnconfirmed })
     tabA.drafts.writeNativeChatDraftCache('agent-session:s1', 'typed in A, then A closed')
     window.dispatchEvent(new Event('pagehide'))
-    expect(localStorage.getItem('orca:nativeChatComposerDraftJournal:v1')).toContain('typed in A')
+    expect(localStorage.getItem('topo:nativeChatComposerDraftJournal:v1')).toContain('typed in A')
     tabA.reset.clearNativeChatComposerDraftsForTests()
 
     tabB.drafts.writeNativeChatDraftCache('agent-session:s1', 'written in B')
@@ -591,7 +591,7 @@ describe('native-chat composer draft store', () => {
 
     const tabC = await reload()
     expect(tabC.drafts.readNativeChatDraftCache('agent-session:s1')).toBe('')
-    expect(localStorage.getItem('orca:nativeChatComposerDraftJournal:v1')).toBeNull()
+    expect(localStorage.getItem('topo:nativeChatComposerDraftJournal:v1')).toBeNull()
   })
 
   it('keeps a refused draft in the journal for the next run', async () => {
@@ -628,7 +628,7 @@ describe('native-chat composer draft store', () => {
     await modules.persistence.nativeChatComposerDraftWritesSettled()
     window.dispatchEvent(new Event('pagehide'))
 
-    const journal = localStorage.getItem('orca:nativeChatComposerDraftJournal:v1') ?? ''
+    const journal = localStorage.getItem('topo:nativeChatComposerDraftJournal:v1') ?? ''
     expect(journal.length).toBeLessThanOrEqual(800_000 + 256_000)
     // What no longer fits is reported, so its source is kept until storage confirms it.
     expect(durable).toContain(false)

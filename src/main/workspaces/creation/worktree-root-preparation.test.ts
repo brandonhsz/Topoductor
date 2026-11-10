@@ -51,7 +51,7 @@ describe('prepareLocalWorktreeRootForRepo', () => {
     getWslHomeAsyncMock.mockReset().mockResolvedValue(null)
     runningStateMock.mockReset().mockResolvedValue('running')
     store.getSettings.mockReset().mockReturnValue({
-      workspaceDir: '/Users/alice/orca/workspaces',
+      workspaceDir: '/Users/alice/topo/workspaces',
       nestWorkspaces: false
     })
   })
@@ -80,7 +80,7 @@ describe('prepareLocalWorktreeRootForRepo', () => {
 
       expect(getWslHomeMock).not.toHaveBeenCalled()
       expect(mkdirMock).toHaveBeenCalledWith(
-        '\\\\wsl.localhost\\Ubuntu\\home\\jin\\orca\\workspaces',
+        '\\\\wsl.localhost\\Ubuntu\\home\\jin\\topo\\workspaces',
         { recursive: true }
       )
     } finally {

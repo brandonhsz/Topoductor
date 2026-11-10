@@ -2,7 +2,7 @@ import '../../../../../shared/native-chat/every-agent-chat.test-fixture'
 import { describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from '../../dispatcher'
 import type { RpcRequest } from '../../core'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { WORKTREE_METHODS } from './worktree'
 import '../../../../../shared/protocol-version'
 import '../../../../../shared/worktree-runtime-capabilities'
@@ -34,7 +34,7 @@ describe('worktree explicit acknowledgement RPC', () => {
           return { id: 'wt-1' }
         },
         acknowledgeNotificationAttention: publish
-      } as unknown as OrcaRuntimeService
+      } as unknown as TopoRuntimeService
 
       const response = await new RpcDispatcher({ runtime, methods: WORKTREE_METHODS }).dispatch({
         id: 'req-read',
@@ -54,7 +54,7 @@ describe('worktree explicit acknowledgement RPC', () => {
 })
 
 describe('worktree.rm host qualification', () => {
-  function makeRuntime(repoHostIds: (string | undefined)[] = ['local']): OrcaRuntimeService {
+  function makeRuntime(repoHostIds: (string | undefined)[] = ['local']): TopoRuntimeService {
     // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: this fixture supplies every runtime member reached by the requests in this suite.
     return {
       getRuntimeId: () => 'test-runtime',
@@ -66,7 +66,7 @@ describe('worktree.rm host qualification', () => {
         })),
       showManagedWorktree: vi.fn().mockResolvedValue({ id: 'wt-1', hostId: 'local' }),
       removeManagedWorktree: vi.fn().mockResolvedValue({})
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
   }
 
   const WORKTREE_ID = 'repo-1::/repo/wt'

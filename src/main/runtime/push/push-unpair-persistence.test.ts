@@ -3,16 +3,16 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 import { DeviceRegistry } from '../rpc/server/pairing/device-registry'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { DesktopPushService } from './desktop-push-service'
 import { createPushHostKeypair } from './push-host-challenge-fixtures'
-import { OrcaRuntimeRpcServer } from '../rpc/server/runtime-rpc'
+import { TopoRuntimeRpcServer } from '../rpc/server/runtime-rpc'
 
 describe('mobile revoke when the registry write fails', () => {
   it('preserves a live route after failed unpair and deletes it after durable removal', async () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'orca-revoke-write-failure-'))
-    const runtime = new OrcaRuntimeService()
-    const server = new OrcaRuntimeRpcServer({ runtime, userDataPath, enableWebSocket: false })
+    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-revoke-write-failure-'))
+    const runtime = new TopoRuntimeService()
+    const server = new TopoRuntimeRpcServer({ runtime, userDataPath, enableWebSocket: false })
     const registry = new DeviceRegistry(userDataPath)
     const device = registry.addDevice('phone', 'mobile')
     registry.setPushRegistration(device.deviceId, {

@@ -34,8 +34,8 @@ export function wslDistroHoldUserMessage(hold: {
   state: WslDistroHoldState
 }): string {
   return hold.state === 'stopped'
-    ? `The WSL distro ${hold.distro} is stopped, so Orca didn't start this terminal. Start the distro, then try again.`
-    : `Orca couldn't check whether the WSL distro ${hold.distro} is running, so it didn't start this terminal. Start the distro, then try again.`
+    ? `The WSL distro ${hold.distro} is stopped, so Topo didn't start this terminal. Start the distro, then try again.`
+    : `Topo couldn't check whether the WSL distro ${hold.distro} is running, so it didn't start this terminal. Start the distro, then try again.`
 }
 
 /** An RPC failure's readable message and data for a held terminal, or null when it is not one. */

@@ -126,7 +126,7 @@ export function MobilePairingQrSection({
             <span>
               {t(
                 'auto.components.settings.MobilePane.pairingQrError',
-                'This pairing code couldn’t be rendered as a QR code. Copy it into Orca Mobile instead.'
+                'This pairing code couldn’t be rendered as a QR code. Copy it into Topo Mobile instead.'
               )}
             </span>
           </p>
@@ -134,7 +134,7 @@ export function MobilePairingQrSection({
           <p className="text-muted-foreground max-w-xs text-center text-xs">
             {t(
               'auto.components.settings.MobilePane.310924ad2c',
-              'Scan this code with the Orca mobile app. Each code creates a unique device token.'
+              'Scan this code with the Topo mobile app. Each code creates a unique device token.'
             )}
             {refreshesAutomatically ? (
               <>
@@ -182,7 +182,7 @@ export function MobilePairingQrSection({
           <DialogContent className="sm:max-w-lg">
             <DialogHeader>
               <DialogTitle>
-                {t('auto.components.settings.MobilePane.dd3cd78d04', 'Scan with Orca Mobile')}
+                {t('auto.components.settings.MobilePane.dd3cd78d04', 'Scan with Topo Mobile')}
               </DialogTitle>
             </DialogHeader>
             <div className="flex flex-col items-center gap-3">

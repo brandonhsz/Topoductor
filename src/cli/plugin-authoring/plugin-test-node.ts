@@ -1,8 +1,8 @@
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
-import type { ProcessResult, ProcessSpec } from '@orca/process-host/process-spec'
+import { runProcess } from '@topo/process-host'
+import type { ProcessResult, ProcessSpec } from '@topo/process-host/process-spec'
 
 /** `module.register` (the `--import` hooks) arrived in Node 20.6; `node:test` is older. */
 const MIN_NODE = [20, 6] as const
@@ -10,7 +10,7 @@ const MIN_NODE = [20, 6] as const
 export type PluginTestNode = {
   /** Absolute path of the executable to run. */
   program: string
-  /** Extra environment: Orca's own runtime needs ELECTRON_RUN_AS_NODE to act as Node. */
+  /** Extra environment: Topo's own runtime needs ELECTRON_RUN_AS_NODE to act as Node. */
   env: Record<string, string>
   source: 'system' | 'orca'
   version: string
@@ -37,7 +37,7 @@ function supports(version: string): boolean {
 }
 
 /**
- * The Node to run plugin tests with: the author's `node` when it is new enough, else Orca's own
+ * The Node to run plugin tests with: the author's `node` when it is new enough, else Topo's own
  * runtime, so tests run on a machine with no Node installed. The probe asks `node` for its own
  * absolute path from an empty folder: on Windows a bare name resolves in the working directory
  * first, and the plugin folder may hold a planted `node.exe`.
@@ -45,7 +45,7 @@ function supports(version: string): boolean {
 export async function selectPluginTestNode(
   deps: Dependencies = defaults()
 ): Promise<PluginTestNode> {
-  const empty = await mkdtemp(join(tmpdir(), 'orca-plugin-node-'))
+  const empty = await mkdtemp(join(tmpdir(), 'topo-plugin-node-'))
   const probe = await deps
     .run({
       program: 'node',

@@ -16,7 +16,7 @@ import {
 import { createPluginDeclarativeGestureGeometry } from '@/components/plugins/declarative/plugin-declarative-gesture-geometry'
 import type { PluginDeclarativePress } from '@/components/plugins/declarative/PluginDeclarativeControls'
 
-/** How long a press on Orca's own controls lets the panel make one user-gesture call. */
+/** How long a press on Topo's own controls lets the panel make one user-gesture call. */
 export const PLUGIN_DECLARATIVE_PRESS_GRANT_MS = 1_000
 /** Plugin error text shown in the banner; the full message is the plugin's own to log. */
 export const PLUGIN_DECLARATIVE_ERROR_MAX_CHARS = 300
@@ -27,7 +27,7 @@ const systemNow = (): number => Date.now()
 
 type RenderedTree = { document: string; revision: number; tree: PluginDeclarativeNode | null }
 /**
- * `plugin`: text the plugin reported. `orca`: Orca refused what the plugin sent. `load`: the guest
+ * `plugin`: text the plugin reported. `orca`: Topo refused what the plugin sent. `load`: the guest
  * failed before its first render (a broken dev save); any tree on screen is the last good one.
  */
 export type PluginDeclarativeIssue = { source: 'plugin' | 'orca' | 'load'; message: string }
@@ -35,7 +35,7 @@ export type PluginDeclarativeIssue = { source: 'plugin' | 'orca' | 'load'; messa
 function invalidTreeMessage(): string {
   return translate(
     'auto.components.rightSidebar.PluginDeclarativePanel.invalidTree',
-    'The panel sent a layout Orca cannot show.'
+    'The panel sent a layout Topo cannot show.'
   )
 }
 
@@ -200,7 +200,7 @@ export function usePluginDeclarativeTree(
     return {
       isSettled,
       /**
-       * Judges a press on Orca's own control: false when it must not reach the guest at all (an
+       * Judges a press on Topo's own control: false when it must not reach the guest at all (an
        * unsettled Link). A settled press that grants opens the one-shot gesture window.
        */
       admit: (press: PluginDeclarativePress): boolean => {

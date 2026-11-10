@@ -1,8 +1,8 @@
 /** What the WSL host service drives (the C3 holder, C5 connections and C6 liveness, or an e2e fake), and its dependencies. */
 import type { WslHostServerStop, WslHostStatus } from '../../../shared/wsl-host-types'
 import type { WslHostDistroCandidate } from './wsl-host-distro-list'
-import type { WslOrcadConnection } from '../orcad/wsl-orcad-connection-types'
-import type { WslOrcadConnectIntent } from '../orcad/wsl-orcad-connection-status'
+import type { WslTopodConnection } from '../topod/wsl-topod-connection-types'
+import type { WslTopodConnectIntent } from '../topod/wsl-topod-connection-status'
 
 /** `stopped` and `unreachable` rest on a confirmed running list; `unavailable` could not read it. */
 export type WslHostReachability = 'available' | 'unreachable' | 'stopped' | 'unavailable'
@@ -11,12 +11,12 @@ export type WslHostReachability = 'available' | 'unreachable' | 'stopped' | 'una
 export type WslHostConnector = {
   listDistros(): Promise<WslHostDistroCandidate[]>
   /** Runs in the distro, so it boots a stopped one: only after the user chose to. */
-  readOrcadPublicKey(distro: string): Promise<string | null>
+  readTopodPublicKey(distro: string): Promise<string | null>
   /** User-initiated; may boot the distro. An intent retries or forces a skipped update. */
-  connect(distro: string, options?: WslOrcadConnectIntent): Promise<WslOrcadConnection>
+  connect(distro: string, options?: WslTopodConnectIntent): Promise<WslTopodConnection>
   /** Explicit retry must clear pairing-repair failures and spent caps. */
   forgetPairingFailures?(environmentId: string): void
-  get(distro: string): WslOrcadConnection | null
+  get(distro: string): WslTopodConnection | null
   /** Checks the paired server without starting a stopped or unconfirmed distro. */
   isReachable(distro: string, environmentId: string): Promise<boolean>
   /** The same check, telling a confirmed-stopped distro from an unconfirmed one. */
@@ -24,7 +24,7 @@ export type WslHostConnector = {
   /** Liveness is deciding whether the distro stopped; its running list may be stale. */
   isSettling(distro: string): boolean
   disconnect(distro: string): Promise<void>
-  /** Ends the host's terminals, orcad and its terminal daemon; never boots a stopped distro. */
+  /** Ends the host's terminals, topod and its terminal daemon; never boots a stopped distro. */
   stopServer(distro: string, environmentId: string): Promise<WslHostServerStop>
   /** The current name by GUID (a rename) or name; false when gone, null when unreadable. Never boots. */
   resolveDistroName(distro: string, distroId?: string): Promise<string | false | null>
@@ -37,7 +37,7 @@ export type WslHostConnector = {
 export type WslHostServiceDependencies = {
   userDataPath: () => string
   isEnabled: () => boolean
-  /** Whether this build ships the orcad template a WSL host deploys from. */
+  /** Whether this build ships the topod template a WSL host deploys from. */
   hasServerFiles: () => boolean
   publish: (status: WslHostStatus) => void
   /** The environment's pairing changed: transports that authenticate with the old one retire. */

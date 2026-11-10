@@ -72,7 +72,7 @@ function takePendingAudio(dictation: HostDictation): Float32Array {
 }
 
 function encodePcm16Base64(samples: Float32Array): string {
-  // Int16Array is little-endian on every platform Orca runs on, as the host's readInt16LE expects.
+  // Int16Array is little-endian on every platform Topo runs on, as the host's readInt16LE expects.
   const pcm = new Int16Array(samples.length)
   for (let index = 0; index < samples.length; index += 1) {
     pcm[index] = Math.round(Math.max(-1, Math.min(1, samples[index] ?? 0)) * 0x7fff)

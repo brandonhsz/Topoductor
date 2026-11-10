@@ -17,7 +17,7 @@ afterEach(async () => {
 })
 
 async function installed(): Promise<ValidDiscoveredPlugin> {
-  const rootDir = await mkdtemp(join(tmpdir(), 'orca-frame-integrity-'))
+  const rootDir = await mkdtemp(join(tmpdir(), 'topo-frame-integrity-'))
   roots.push(rootDir)
   await writeFile(join(rootDir, 'app.js'), 'one')
   const tree = await hashPluginTree(rootDir)

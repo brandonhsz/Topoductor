@@ -21,7 +21,7 @@ export function registerAppCommandDispatcher(dispatcher: AppCommandDispatcher): 
   }
 }
 
-/** Runs Orca's own handler for the action; plugin commands that replace it never run here. */
+/** Runs Topo's own handler for the action; plugin commands that replace it never run here. */
 export function dispatchAppCommand(actionId: string, source: AppCommandSource): boolean {
   return isKeybindingActionId(actionId) && currentDispatcher !== null
     ? currentDispatcher(actionId, source)

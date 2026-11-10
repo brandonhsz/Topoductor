@@ -27,12 +27,12 @@ const CUT: AgentJournalRenderItem[] = [
     body: { kind: 'turn', turnId: 'cut', state: 'interrupted', startedAt: 1, completedAt: 5 }
   },
   {
-    itemId: agentJournalItemKey({ provider: 'orca', clientMessageId: 'stale-session:s:death-1-5' }),
+    itemId: agentJournalItemKey({ provider: 'topo', clientMessageId: 'stale-session:s:death-1-5' }),
     revision: 1,
     sequence: 2,
     observedAt: 6,
     turnScope: { kind: 'turn', turnItemId: 'turn-cut' },
-    body: { kind: 'status', text: 'Codex stopped.', tone: 'error', orcaStop: { cause: 'crash' } }
+    body: { kind: 'status', text: 'Codex stopped.', tone: 'error', topoStop: { cause: 'crash' } }
   }
 ]
 const CONTINUED_ELSEWHERE: AgentJournalRenderItem[] = [
@@ -53,7 +53,7 @@ afterEach(() => {
   renderer = null
 })
 
-it('continues an Orca-stopped turn, shows a refusal, and drops it once another client continues', async () => {
+it('continues a Topo-stopped turn, shows a refusal, and drops it once another client continues', async () => {
   let listener: ((value: unknown) => void) | null = null
   const sendRequest = vi.fn(async (method: string): Promise<RpcResponse> => ({
     id: 'response-1',
@@ -102,7 +102,7 @@ it('continues an Orca-stopped turn, shows a refusal, and drops it once another c
   )
   // The row the notice draws must carry the same cut, or no Continue shows on it.
   expect(rendered.hook?.session.messages.at(-1)?.blocks[0]).toMatchObject({
-    orcaStop: { cause: 'crash', turnItemId: 'turn-cut' }
+    topoStop: { cause: 'crash', turnItemId: 'turn-cut' }
   })
 
   act(() => rendered.hook?.interruptedContinue.continueNow())

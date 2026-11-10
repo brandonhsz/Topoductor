@@ -57,7 +57,7 @@ export type GitHubWorkItem = {
 }
 
 export type GitHubWorkItemDetails = {
-  // Main lacks Orca Repo.id; renderer stamps it when storing details.
+  // Main lacks Topo Repo.id; renderer stamps it when storing details.
   item: Omit<GitHubWorkItem, 'repoId'>
   body: string
   bodyImageUrls?: Record<string, string>

@@ -35,7 +35,7 @@ export function RightSidebarPanelContent({
   return (
     <div
       className="flex min-h-0 flex-1 flex-col overflow-hidden"
-      // `orca plugin shot` captures exactly this rect.
+      // `topo plugin shot` captures exactly this rect.
       data-plugin-panel-surface={isPluginPanelTabKey(effectiveTab) ? effectiveTab : undefined}
     >
       <Suspense fallback={null}>

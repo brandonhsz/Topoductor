@@ -3,11 +3,11 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os'
 import { delimiter, join } from 'node:path'
 import { parse } from 'yaml'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { managedSshShards } from '../e2e-selection/ci-e2e-job-selection.mjs'
 
 const workflow = parse(readFileSync('.github/workflows/e2e.yml', 'utf8'))
-const lane = workflow.jobs['orcad-ssh-docker']
+const lane = workflow.jobs['topod-ssh-docker']
 const command = lane.steps.find(
   (step) => step.name === 'Run managed SSH specs on a Docker host'
 ).run
@@ -20,7 +20,7 @@ afterEach(() => {
 })
 
 async function execute(input, version = 'current') {
-  const directory = mkdtempSync(join(tmpdir(), 'orca-ssh-selection-'))
+  const directory = mkdtempSync(join(tmpdir(), 'topo-ssh-selection-'))
   directories.push(directory)
   const bin = join(directory, 'bin')
   mkdirSync(bin)
@@ -77,7 +77,7 @@ describe.skipIf(process.platform === 'win32')('managed SSH workflow command', ()
     '[]',
     '[null]',
     JSON.stringify(['tests/e2e/other.spec.ts']),
-    JSON.stringify(['tests/e2e/ssh-orcad-../../other.spec.ts'])
+    JSON.stringify(['tests/e2e/ssh-topod-../../other.spec.ts'])
   ])('refuses invalid selection before starting Playwright: %s', async (input) => {
     const { result, args } = await execute(input)
     expect(result.code).not.toBe(0)

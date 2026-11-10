@@ -132,7 +132,7 @@ describe('host model catalog snapshots sync', () => {
     resetHostModelCatalogSnapshotsForTests()
     useAppStore.setState({
       settings: {
-        ...getDefaultSettings('/tmp/orca-workspaces'),
+        ...getDefaultSettings('/tmp/topo-workspaces'),
         agentDefaultSurface: 'chat',
         nativeChatSessionOptions: { claude: { model: 'opus[1m]' }, codex: {} }
       },

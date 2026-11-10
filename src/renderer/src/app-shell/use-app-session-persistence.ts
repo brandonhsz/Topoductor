@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useAppStore } from '../store'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { createSessionWriteSubscriber } from '../lib/workspace/persistence/session-write-subscriber'
 import { buildActiveViewUnloadPatch } from '../lib/active-view-persist'
 import {
@@ -28,12 +28,12 @@ import {
   isWindowCloseCheckpointInProgress
 } from '../components/window-close-request-coordinator'
 import {
-  ORCA_APP_RESTART_ABORTED_EVENT,
-  ORCA_UPDATER_QUIT_AND_INSTALL_ABORTED_EVENT
+  TOPO_APP_RESTART_ABORTED_EVENT,
+  TOPO_UPDATER_QUIT_AND_INSTALL_ABORTED_EVENT
 } from '../../../shared/updater-renderer-events'
 import {
-  ORCA_RENDERER_SHUTDOWN_CHECKPOINT_ABORTED_EVENT,
-  ORCA_RENDERER_UNLOAD_PREVENTED_EVENT
+  TOPO_RENDERER_SHUTDOWN_CHECKPOINT_ABORTED_EVENT,
+  TOPO_RENDERER_UNLOAD_PREVENTED_EVENT
 } from '../../../shared/renderer-shutdown-events'
 
 // Capture unchanged-skipping resume records each minute to bound hard-kill loss.
@@ -71,7 +71,7 @@ export function useAppSessionPersistence(): void {
         }
       },
       // Persist in-memory provider session IDs for cold resume after daemon death (#5232); layout-owner main captures its own panes during quit staging.
-      captureSleepingAgentSessions: ORCA_LAYOUT_OWNER_IS_MAIN
+      captureSleepingAgentSessions: TOPO_LAYOUT_OWNER_IS_MAIN
         ? () => {}
         : () => useAppStore.getState().captureAllSleepingAgentSessions('quit'),
       // Reread after capture setters populate scrollback; the earlier gating snapshot lacks it.
@@ -100,28 +100,28 @@ export function useAppSessionPersistence(): void {
     )
     window.addEventListener('beforeunload', persistBeforeUnload)
     window.addEventListener(
-      ORCA_RENDERER_SHUTDOWN_CHECKPOINT_ABORTED_EVENT,
+      TOPO_RENDERER_SHUTDOWN_CHECKPOINT_ABORTED_EVENT,
       shutdownCheckpoint.abortAfterCheckpointFailure
     )
-    window.addEventListener(ORCA_APP_RESTART_ABORTED_EVENT, shutdownCheckpoint.abandonAttempt)
+    window.addEventListener(TOPO_APP_RESTART_ABORTED_EVENT, shutdownCheckpoint.abandonAttempt)
     window.addEventListener(
-      ORCA_UPDATER_QUIT_AND_INSTALL_ABORTED_EVENT,
+      TOPO_UPDATER_QUIT_AND_INSTALL_ABORTED_EVENT,
       shutdownCheckpoint.abandonAttempt
     )
-    window.addEventListener(ORCA_RENDERER_UNLOAD_PREVENTED_EVENT, shutdownCheckpoint.abandonAttempt)
+    window.addEventListener(TOPO_RENDERER_UNLOAD_PREVENTED_EVENT, shutdownCheckpoint.abandonAttempt)
     return () => {
       window.removeEventListener('beforeunload', persistBeforeUnload)
       window.removeEventListener(
-        ORCA_RENDERER_SHUTDOWN_CHECKPOINT_ABORTED_EVENT,
+        TOPO_RENDERER_SHUTDOWN_CHECKPOINT_ABORTED_EVENT,
         shutdownCheckpoint.abortAfterCheckpointFailure
       )
-      window.removeEventListener(ORCA_APP_RESTART_ABORTED_EVENT, shutdownCheckpoint.abandonAttempt)
+      window.removeEventListener(TOPO_APP_RESTART_ABORTED_EVENT, shutdownCheckpoint.abandonAttempt)
       window.removeEventListener(
-        ORCA_UPDATER_QUIT_AND_INSTALL_ABORTED_EVENT,
+        TOPO_UPDATER_QUIT_AND_INSTALL_ABORTED_EVENT,
         shutdownCheckpoint.abandonAttempt
       )
       window.removeEventListener(
-        ORCA_RENDERER_UNLOAD_PREVENTED_EVENT,
+        TOPO_RENDERER_UNLOAD_PREVENTED_EVENT,
         shutdownCheckpoint.abandonAttempt
       )
     }

@@ -1,4 +1,4 @@
-/** The scripts an editor's HTML document runs, read as Chromium would for `orca plugin check`. */
+/** The scripts an editor's HTML document runs, read as Chromium would for `topo plugin check`. */
 
 export type HtmlScript = { text: string; module: boolean; lineOffset: number }
 export type HtmlScriptSrc = { src: string; module: boolean; line: number; column: number }

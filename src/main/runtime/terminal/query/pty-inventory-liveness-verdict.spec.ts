@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { getDefaultWorkspaceSession } from '../../../../shared/constants'
 
 export function registerPtyInventoryLivenessVerdictTests(): void {
@@ -44,9 +44,9 @@ export function registerPtyInventoryLivenessVerdictTests(): void {
   function makeRuntimeMissingFromInventory(
     hasPty: () => boolean | null,
     listProcesses: () => Promise<{ id: string; worktreeId: string }[]> = vi.fn(async () => [])
-  ): OrcaRuntimeService {
+  ): TopoRuntimeService {
     // SAFETY: This partial store supplies the reads and writes used by inventory and liveness tracking.
-    const runtime = new OrcaRuntimeService(makeStore() as never)
+    const runtime = new TopoRuntimeService(makeStore() as never)
     runtime.setPtyController({
       write: () => true,
       kill: () => true,

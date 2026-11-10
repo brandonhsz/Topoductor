@@ -25,7 +25,7 @@ function createRunner(overrides: {
   const runGit = vi.fn(async (args: string[]) => {
     calls.push(args)
     if (args[0] === 'remote' && args[1] === 'get-url') {
-      return { stdout: overrides.upstreamUrl ?? 'git@github.com:stablyai/orca.git\n' }
+      return { stdout: overrides.upstreamUrl ?? 'git@github.com:brandonhsz/Topoductor.git\n' }
     }
     if (args[0] === 'remote') {
       return { stdout: overrides.remotes ?? 'origin\nupstream\n' }
@@ -137,12 +137,12 @@ describe('syncForkDefaultBranch', () => {
 
   it('blocks when the upstream remote no longer matches the expected fork metadata', async () => {
     const { runGit, calls } = createRunner({
-      upstreamUrl: 'git@github.com:someone-else/orca.git\n'
+      upstreamUrl: 'git@github.com:someone-else/topo.git\n'
     })
 
     await expect(
       syncForkDefaultBranch(runGit, {
-        expectedUpstream: { owner: 'stablyai', repo: 'orca' }
+        expectedUpstream: { owner: 'brandonhsz', repo: 'topo' }
       })
     ).resolves.toMatchObject({
       status: 'blocked',
@@ -154,12 +154,12 @@ describe('syncForkDefaultBranch', () => {
 
   it('blocks when a non-GitHub upstream remote has the expected owner and repo suffix', async () => {
     const { runGit, calls } = createRunner({
-      upstreamUrl: 'ssh://evil.example.com/stablyai/orca.git\n'
+      upstreamUrl: 'ssh://evil.example.com/brandonhsz/Topoductor.git\n'
     })
 
     await expect(
       syncForkDefaultBranch(runGit, {
-        expectedUpstream: { owner: 'stablyai', repo: 'orca' }
+        expectedUpstream: { owner: 'brandonhsz', repo: 'topo' }
       })
     ).resolves.toMatchObject({
       status: 'blocked',
@@ -174,7 +174,7 @@ describe('syncForkDefaultBranch', () => {
 
     await expect(
       syncForkDefaultBranch(runGit, {
-        expectedUpstream: { owner: '   ', repo: 'orca' }
+        expectedUpstream: { owner: '   ', repo: 'topo' }
       })
     ).rejects.toThrow('Invalid expected upstream.')
   })

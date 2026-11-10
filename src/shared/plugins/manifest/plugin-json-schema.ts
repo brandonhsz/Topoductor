@@ -26,7 +26,7 @@ function toPublishedSchema(
   title: string,
   description: string
 ): PluginJsonSchema {
-  // Why input side: authors write what Orca reads, before defaults and transforms apply.
+  // Why input side: authors write what Topo reads, before defaults and transforms apply.
   const generated = z.toJSONSchema(schema, {
     io: 'input',
     target: 'draft-2020-12',
@@ -40,8 +40,8 @@ export function pluginManifestJsonSchema(): PluginJsonSchema {
   return toPublishedSchema(
     pluginManifestV2Object,
     PLUGIN_MANIFEST_SCHEMA_FILE,
-    'Orca plugin manifest',
-    'The orca-plugin.json file at the root of an Orca plugin (manifest format 2).'
+    'Topo plugin manifest',
+    'The orca-plugin.json file at the root of a Topo plugin (manifest format 2).'
   )
 }
 
@@ -49,7 +49,7 @@ export function pluginCatalogJsonSchema(): PluginJsonSchema {
   return toPublishedSchema(
     pluginCatalogDocumentSchema,
     PLUGIN_CATALOG_SCHEMA_FILE,
-    'Orca plugin catalog',
+    'Topo plugin catalog',
     `The ${PLUGIN_CATALOG_FILENAME} file that lists installable plugins and their releases.`
   )
 }
@@ -66,14 +66,14 @@ export function pluginSchemaGeneratedFiles(): Record<string, string> {
       file: 'orca-plugin.json',
       schemaFile: PLUGIN_MANIFEST_SCHEMA_FILE,
       sinceNote:
-        '`Since` is the first Orca release that reads the field; raise `engines.orca` when you use a newer one.',
+        '`Since` is the first Topo release that reads the field; raise `engines.orca` when you use a newer one.',
       appendix: PLUGIN_MANIFEST_POLICY_NOTES
     }),
     'docs/reference/plugin-catalog.md': renderPluginSchemaReference(catalog, {
       file: PLUGIN_CATALOG_FILENAME,
       schemaFile: PLUGIN_CATALOG_SCHEMA_FILE,
       sinceNote:
-        '`Since` is the first Orca release that reads the field. Older releases ignore fields they do not know.',
+        '`Since` is the first Topo release that reads the field. Older releases ignore fields they do not know.',
       appendix: PLUGIN_CATALOG_POLICY_NOTES
     }),
     'docs/reference/plugin-host-api.md': renderPluginHostApiReference(),

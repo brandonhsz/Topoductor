@@ -88,12 +88,12 @@ function changesOnlyStaticImportPaths(root, base, file) {
 
 // Scope enforcement to changed files so unrelated merges cannot invalidate every PR's baseline.
 export function listChangedFiles(root = process.cwd()) {
-  if (process.env.ORCA_FLAKY_TEST_RATCHET_ALL === '1') {
+  if (process.env.TOPO_FLAKY_TEST_RATCHET_ALL === '1') {
     return null
   }
   let base
   try {
-    const requested = process.env.ORCA_CODE_QUALITY_BASE || 'origin/main'
+    const requested = process.env.TOPO_CODE_QUALITY_BASE || 'origin/main'
     const mergeBase = git(root, ['merge-base', 'HEAD', requested]).trim()
     base = resolvePullRequestDiffBase(root, mergeBase)
   } catch {

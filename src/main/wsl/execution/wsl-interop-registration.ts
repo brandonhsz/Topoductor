@@ -2,12 +2,12 @@
 
 export type WslInteropProbeResult =
   | { state: 'present' }
-  /** binfmt_misc is not mounted, so there is nothing Orca can safely restore. */
+  /** binfmt_misc is not mounted, so there is nothing Topo can safely restore. */
   | { state: 'unmounted' }
   | { state: 'missing'; interopDisabled: boolean }
   | { state: 'unknown' }
 
-const MARKER = 'orca-wsl-interop:'
+const MARKER = 'topo-wsl-interop:'
 const BINFMT_DIR = '/proc/sys/fs/binfmt_misc'
 
 // Some WSL builds register WSLInterop-late after systemd startup.

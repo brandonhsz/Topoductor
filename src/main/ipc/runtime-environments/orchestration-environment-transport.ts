@@ -9,7 +9,7 @@ import {
   type OrchestrationEnvironmentTransport
 } from '../../runtime/orchestration/federation/environment-transport'
 
-/** Dials this host's paired servers for cross-server orchestration; host-free, so desktop and orcad share it. */
+/** Dials this host's paired servers for cross-server orchestration; host-free, so desktop and topod share it. */
 export function createOrchestrationEnvironmentTransport(): OrchestrationEnvironmentTransport {
   // Read per call: the desktop settles userData casing only after app.setName.
   const registryRoot = (): string => getAppEnvironment().getPath('userData')

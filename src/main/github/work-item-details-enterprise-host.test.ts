@@ -100,7 +100,7 @@ describe('getWorkItemDetails Enterprise host routing', () => {
       number: 7,
       title: 'Unresolved Enterprise PR',
       state: 'open',
-      url: 'https://github.acme-corp.com/team/orca/pull/7',
+      url: 'https://github.acme-corp.com/team/topo/pull/7',
       labels: [],
       updatedAt: '2026-07-16T00:00:00Z',
       author: 'pr-author'

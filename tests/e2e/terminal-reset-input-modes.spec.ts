@@ -1,6 +1,6 @@
 // Require Reset Terminal to ground modes in the host model across park/reveal; renderer-only reset would re-arm the fresh xterm.
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { parkHiddenTabBehindDecoy } from './helpers/terminal-hidden-parking'
 import {
   ensureTerminalVisible,
@@ -22,11 +22,11 @@ import {
 } from './helpers/terminal-pty-write-spy'
 import { waitForPtyShellEcho } from './terminal-pty-readiness'
 
-const PARKING_DELAY_MS = Number(process.env.ORCA_E2E_TERMINAL_PARKING_DELAY_MS) || 500
+const PARKING_DELAY_MS = Number(process.env.TOPO_E2E_TERMINAL_PARKING_DELAY_MS) || 500
 const KITTY_SHIFT_ENTER = '\x1b[13;2u'
 
 test.use({
-  orcaAppExtraEnv: { ORCA_E2E_TERMINAL_PARKING_DELAY_MS: String(PARKING_DELAY_MS) }
+  topoAppExtraEnv: { TOPO_E2E_TERMINAL_PARKING_DELAY_MS: String(PARKING_DELAY_MS) }
 })
 
 type XtermInputModes = { kittyFlags: number | null; mouse: string | null }
@@ -80,7 +80,7 @@ async function activateTerminalTab(page: Page, tabId: string): Promise<void> {
   await page.evaluate((tabId) => {
     const state = window.__store?.getState()
     if (!state) {
-      throw new Error('Orca store unavailable')
+      throw new Error('Topo store unavailable')
     }
     state.setActiveTabType('terminal', window.__store?.getState().activeWorktreeId ?? null)
     state.setActiveTab(tabId)
@@ -90,37 +90,37 @@ async function activateTerminalTab(page: Page, tabId: string): Promise<void> {
 }
 
 test('Reset Terminal grounds modes an unhooked crash left armed, through park and reveal', async ({
-  orcaPage,
+  topoPage,
   electronApp
 }) => {
   test.skip(process.platform === 'win32', 'ConPTY panes withhold the kitty protocol')
   await installTerminalPtyWriteSpy(electronApp)
-  await waitForSessionReady(orcaPage)
-  const worktreeId = await waitForActiveWorktree(orcaPage)
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage, 30_000)
-  const tabId = await getActiveTabId(orcaPage)
+  await waitForSessionReady(topoPage)
+  const worktreeId = await waitForActiveWorktree(topoPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage, 30_000)
+  const tabId = await getActiveTabId(topoPage)
   if (!tabId) {
     throw new Error('no active terminal tab')
   }
-  const ptyId = await waitForActivePanePtyId(orcaPage)
-  await waitForPtyShellEcho(orcaPage, ptyId, 15_000)
+  const ptyId = await waitForActivePanePtyId(topoPage)
+  await waitForPtyShellEcho(topoPage, ptyId, 15_000)
 
   // `exec` drops the shell hooks, so no OSC 133;D ever lets the host ground the
   // modes the printf arms and leaves behind.
-  await sendToTerminal(orcaPage, ptyId, 'exec bash --norc --noprofile\r')
-  await sendToTerminal(orcaPage, ptyId, "printf '\\033[>5u\\033[?1000h\\033[?1006h'\r")
+  await sendToTerminal(topoPage, ptyId, 'exec bash --norc --noprofile\r')
+  await sendToTerminal(topoPage, ptyId, "printf '\\033[>5u\\033[?1000h\\033[?1006h'\r")
   await expect
-    .poll(() => readXtermInputModes(orcaPage), { timeout: 10_000 })
+    .poll(() => readXtermInputModes(topoPage), { timeout: 10_000 })
     .toEqual({ kittyFlags: 5, mouse: 'vt200' })
-  expect(await readShiftEnterWrite(orcaPage, electronApp)).toContain(KITTY_SHIFT_ENTER)
+  expect(await readShiftEnterWrite(topoPage, electronApp)).toContain(KITTY_SHIFT_ENTER)
 
-  await openTerminalContextMenu(orcaPage)
-  await orcaPage.getByRole('menuitem', { name: 'Reset Terminal', exact: true }).click()
-  await expectGrounded(orcaPage, electronApp, 'after Reset Terminal')
+  await openTerminalContextMenu(topoPage)
+  await topoPage.getByRole('menuitem', { name: 'Reset Terminal', exact: true }).click()
+  await expectGrounded(topoPage, electronApp, 'after Reset Terminal')
 
-  await parkHiddenTabBehindDecoy(orcaPage, worktreeId, tabId, { parkDelayMs: PARKING_DELAY_MS })
-  await activateTerminalTab(orcaPage, tabId)
-  await waitForActivePanePtyId(orcaPage)
-  await expectGrounded(orcaPage, electronApp, 'after park and reveal')
+  await parkHiddenTabBehindDecoy(topoPage, worktreeId, tabId, { parkDelayMs: PARKING_DELAY_MS })
+  await activateTerminalTab(topoPage, tabId)
+  await waitForActivePanePtyId(topoPage)
+  await expectGrounded(topoPage, electronApp, 'after park and reveal')
 })

@@ -1,5 +1,5 @@
 import { renameStructuredSessionTab, type SessionTabProps } from './structured-session-tab-rename'
-import { OrcaRuntimeWithHeadlessPaneMoveToNewTab } from './headless-pane-move-to-new-tab'
+import { TopoRuntimeWithHeadlessPaneMoveToNewTab } from './headless-pane-move-to-new-tab'
 import type { WorkspaceSessionState } from '../../../shared/workspace-session/workspace-session-state-types'
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../shared/runtime-session-contracts'
 import type { RuntimeMobileSessionSnapshotTab } from '../../../shared/runtime-mobile-session-tab-contracts'
@@ -7,7 +7,7 @@ import type {
   TerminalLayoutSnapshot,
   TerminalPaneLayoutNode
 } from '../../../shared/workspace-layout/terminal-tab-types'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { cloneTerminalLayoutSnapshot } from '../terminal/surface/mobile-session-layout-projection'
 import {
   sameStringRecord,
@@ -35,7 +35,7 @@ function paneLayoutEditIsNoOp(
   )
 }
 
-export abstract class RuntimeHeadlessTabProperties extends OrcaRuntimeWithHeadlessPaneMoveToNewTab {
+export abstract class RuntimeHeadlessTabProperties extends TopoRuntimeWithHeadlessPaneMoveToNewTab {
   // Remote tab color/pin need persistence and live publication or the next snapshot reverts them.
   async setMobileSessionTabProps(
     worktreeSelector: string,
@@ -50,7 +50,7 @@ export abstract class RuntimeHeadlessTabProperties extends OrcaRuntimeWithHeadle
     const hostTabId = snapshot
       ? (this.resolveMobileSessionHostTabId(snapshot, args.tabId) ?? args.tabId)
       : args.tabId
-    if (ORCA_LAYOUT_OWNER_IS_MAIN && (await this.setMainTabProps(worktreeId, hostTabId, args))) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN && (await this.setMainTabProps(worktreeId, hostTabId, args))) {
       return { updated: true }
     }
     const authoritativeWindow = this.getAvailableAuthoritativeWindow()

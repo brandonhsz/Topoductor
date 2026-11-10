@@ -8,7 +8,7 @@ import {
   resolveWslHostsGateState,
   type WslHostsGateState
 } from '../../../shared/wsl-host-internal-gate'
-import type { OrcadDeploymentLink } from '../../../shared/remote-runtime/host-catalog/runtime-environments'
+import type { TopodDeploymentLink } from '../../../shared/remote-runtime/host-catalog/runtime-environments'
 import { wslHostRunRefusal, WSL_HOST_REMOVING_MESSAGE } from './wsl-host-add-admission'
 import type { WslHostsMovedProjects, WslHostsPolicyState } from '../../../shared/wsl-hosts-policy'
 
@@ -81,7 +81,7 @@ export function configureWslHostsGate(facts: {
       }
   const state = wslHostsGateState()
   noteWslHostsServeOnly(state === 'serve-only')
-  // Children inherit ORCA_INTERNAL_WSL_HOSTS even when a block closed it; this tells them the truth.
+  // Children inherit TOPO_INTERNAL_WSL_HOSTS even when a block closed it; this tells them the truth.
   publishWslHostsGateState(process.env, state)
 }
 
@@ -179,13 +179,13 @@ export function wslHostsServing(): boolean {
 
 /** A persisted WSL host while the gate is closed: left on disk, but never listed or reached. */
 export function isGatedOffWslHost(environment: {
-  orcadDeployment?: OrcadDeploymentLink | null
+  topodDeployment?: TopodDeploymentLink | null
 }): boolean {
-  return environment.orcadDeployment?.kind === 'wsl' && !wslHostsServing()
+  return environment.topodDeployment?.kind === 'wsl' && !wslHostsServing()
 }
 
 export function assertWslHostReachable(environment: {
-  orcadDeployment?: OrcadDeploymentLink | null
+  topodDeployment?: TopodDeploymentLink | null
 }): void {
   if (isGatedOffWslHost(environment)) {
     throw new Error(WSL_HOSTS_GATED_OFF_MESSAGE)

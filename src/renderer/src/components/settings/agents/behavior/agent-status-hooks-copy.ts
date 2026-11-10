@@ -13,7 +13,7 @@ export function getAgentStatusHooksTitle(t: Translate = translate): string {
 export function getAgentStatusHooksDescription(t: Translate = translate): string {
   return t(
     AGENT_STATUS_HOOKS_DESCRIPTION_KEY,
-    'Shows working, waiting, and done states in Orca. Turn off to remove Orca-managed hooks and stop reinstalling them.'
+    'Shows working, waiting, and done states in Topo. Turn off to remove Topo-managed hooks and stop reinstalling them.'
   )
 }
 

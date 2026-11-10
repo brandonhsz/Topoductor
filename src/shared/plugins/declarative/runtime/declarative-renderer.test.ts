@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 import { atom, derived, read, set, update } from './declarative-atoms'
 import { h } from './declarative-elements'
-import { createOrcaDeclarativeRuntime, type OrcaBridge } from './declarative-renderer'
+import { createOrcaDeclarativeRuntime, type TopoBridge } from './declarative-renderer'
 
 type Posted = { event: string; payload: unknown }
 type WireNode = {
@@ -22,7 +22,7 @@ const wireNodeSchema: z.ZodType<WireNode> = z.lazy(() =>
 const renderSchema = z.object({ document: z.string(), revision: z.number(), tree: wireNodeSchema })
 const callbackRefSchema = z.object({ $callback: z.string() })
 
-function setup(bridge?: OrcaBridge) {
+function setup(bridge?: TopoBridge) {
   const posted: Posted[] = []
   const queue: { flush: () => void; delayMs: number }[] = []
   const runtime = createOrcaDeclarativeRuntime({
@@ -254,7 +254,7 @@ describe('declarative runtime', () => {
 
   it('follows theme changes from the bridge and stops listening on dispose', () => {
     const handlers = new Map<string, (payload: unknown) => void>()
-    const bridge: OrcaBridge = {
+    const bridge: TopoBridge = {
       on: (name, handler) => {
         handlers.set(name, handler)
         return { dispose: () => handlers.delete(name) }

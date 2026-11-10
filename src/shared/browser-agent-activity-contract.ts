@@ -9,7 +9,7 @@ export type BrowserAgentActivityEvent = {
   browserPageId: string
   worktreeId: string | null
   active: boolean
-  /** Set while an SSH host's orca CLI drives the page through the desktop browser bridge. */
+  /** Set while an SSH host's topo CLI drives the page through the desktop browser bridge. */
   controllerHostLabel?: string
 }
 

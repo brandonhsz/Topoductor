@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../shared/orchestration/orchestration-runtime-capabilities'
 import Database from '../../sqlite/sync-database'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { OrchestrationDb } from '../orchestration/db/orchestration-db'
 import '../orchestration/db/contract-constants'
 import '../orchestration/db/messages/mailbox-routing-page'
@@ -67,11 +67,11 @@ describe('Task/Dispatch state invariant', () => {
 })
 
 function createHarness(): Harness {
-  const dir = mkdtempSync(join(tmpdir(), 'orca-task-dispatch-invariant-'))
+  const dir = mkdtempSync(join(tmpdir(), 'topo-task-dispatch-invariant-'))
   const dbPath = join(dir, 'orchestration.db')
   tempDirs.push(dir)
   const db = new OrchestrationDb(dbPath)
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(db)
   vi.spyOn(runtime, 'getTerminalPaneKey').mockImplementation((handle) => {
     if (handle === COORDINATOR_HANDLE) {

@@ -34,7 +34,7 @@ describe('mobile pairing userData path stability', () => {
   let lateDir: string
 
   beforeEach(() => {
-    root = mkdtempSync(join(tmpdir(), 'orca-pairing-path-'))
+    root = mkdtempSync(join(tmpdir(), 'topo-pairing-path-'))
     canonicalDir = join(root, 'userdata-early')
     lateDir = join(root, 'userdata-late')
     mkdirSync(canonicalDir, { recursive: true })

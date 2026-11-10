@@ -36,11 +36,11 @@ describeRender('terminal font startup and late painting', () => {
     })
     try {
       expect(
-        await page.evaluate(() => document.fonts.check('13px "Orca Nerd Font Symbols"', '\ue0b0'))
+        await page.evaluate(() => document.fonts.check('13px "Topo Nerd Font Symbols"', '\ue0b0'))
       ).toBe(false)
       await openProbeTerminal(page)
       await page.evaluate(() =>
-        globalThis.__orcaTerminalProbe.write('\x1b[?25l\x1b[2J\x1b[H\uf07b')
+        globalThis.__topoTerminalProbe.write('\x1b[?25l\x1b[2J\x1b[H\uf07b')
       )
       const screen = page.locator('.xterm-screen')
       expect(await screen.locator('canvas').count()).toBeGreaterThan(0)
@@ -62,7 +62,7 @@ describeRender('terminal font startup and late painting', () => {
       const before = await capture()
       releaseFont()
       await page.waitForFunction(
-        () => document.fonts.check('13px "Orca Nerd Font Symbols"', '\ue0b0'),
+        () => document.fonts.check('13px "Topo Nerd Font Symbols"', '\ue0b0'),
         undefined,
         { timeout: 30_000, polling: 50 }
       )
@@ -73,7 +73,7 @@ describeRender('terminal font startup and late painting', () => {
       expect(after.equals(before), 'the folder glyph must repaint after the font arrives').toBe(
         false
       )
-      expect(await page.evaluate(() => globalThis.__orcaTerminalEngineErrors)).toEqual([])
+      expect(await page.evaluate(() => globalThis.__topoTerminalEngineErrors)).toEqual([])
     } finally {
       releaseFont()
       await page.close()

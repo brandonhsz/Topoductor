@@ -48,10 +48,10 @@ it.each(['{}', '', 'not-json', 'null'])(
       env: {
         get: async (key: string) =>
           ({
-            ORCA_PANE_KEY: 'tab:11111111-1111-4111-8111-111111111111',
-            ORCA_AGENT_HOOK_PORT: '1234',
-            ORCA_AGENT_HOOK_TOKEN: 'test-token',
-            ORCA_CLAUDE_CONFIG_DIR: '/test/.claude',
+            TOPO_PANE_KEY: 'tab:11111111-1111-4111-8111-111111111111',
+            TOPO_AGENT_HOOK_PORT: '1234',
+            TOPO_AGENT_HOOK_TOKEN: 'test-token',
+            TOPO_CLAUDE_CONFIG_DIR: '/test/.claude',
             CLAUDE_CONFIG_DIR: '/test/actual-claude-config'
           })[key]
       },
@@ -62,7 +62,7 @@ it.each(['{}', '', 'not-json', 'null'])(
               {
                 context: 'Chat',
                 bindings: {
-                  'Alt+Control+G': 'command:orca-agent-view'
+                  'Alt+Control+G': 'command:topo-agent-view'
                 }
               }
             ]
@@ -168,7 +168,7 @@ it.each(['{}', '', 'not-json', 'null'])(
     expect(view).toHaveBeenCalledWith({ agentId: 'child' })
     expect(posts.at(-1)).toMatchObject({ action: 'ack', sessionId })
     api.http.fetch = async () => {
-      throw new Error('Orca is unavailable')
+      throw new Error('Topo is unavailable')
     }
     await expect(invoke('command.run')).resolves.toEqual({})
     api.http.fetch = async () => new Promise(() => {})

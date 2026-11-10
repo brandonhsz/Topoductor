@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Repo } from '../../../../shared/repo-types'
 import { getDefaultSettings } from '../../../../shared/constants'
-import { hashOrcaHookTrustContent } from '../../../workspace-hooks/created-worktree-setup-trust'
+import { hashTopoHookTrustContent } from '../../../workspace-hooks/created-worktree-setup-trust'
 import { runApprovedCreatedWorktreeSetup } from './created-worktree-approved-setup'
 
 const runner = vi.hoisted(() => ({ createSetupRunnerScript: vi.fn() }))
@@ -34,9 +34,9 @@ function runtimeFor() {
 }
 
 beforeEach(() => {
-  worktreePath = mkdtempSync(join(tmpdir(), 'orca-approved-setup-'))
+  worktreePath = mkdtempSync(join(tmpdir(), 'topo-approved-setup-'))
   repo = { id: 'repo', path: '/primary', displayName: 'r', badgeColor: '', addedAt: 0 }
-  writeFileSync(join(worktreePath, 'orca.yaml'), BRANCH_YAML)
+  writeFileSync(join(worktreePath, 'topo.yaml'), BRANCH_YAML)
   provisionManagedWorktreeTerminals.mockReset().mockResolvedValue({ setupSpawned: true })
   runner.createSetupRunnerScript.mockReset().mockResolvedValue({
     runnerScriptPath: join(worktreePath, 'runner.sh'),
@@ -53,13 +53,13 @@ describe('runApprovedCreatedWorktreeSetup', () => {
     const result = await runApprovedCreatedWorktreeSetup(
       runtimeFor(),
       'id:wt',
-      hashOrcaHookTrustContent('make bootstrap')
+      hashTopoHookTrustContent('make bootstrap')
     )
 
     expect(result).toEqual({
       status: 'mismatch',
       setupTrustMismatch: {
-        contentHash: hashOrcaHookTrustContent(BRANCH_TRUST_CONTENT),
+        contentHash: hashTopoHookTrustContent(BRANCH_TRUST_CONTENT),
         scriptContent: BRANCH_TRUST_CONTENT
       }
     })

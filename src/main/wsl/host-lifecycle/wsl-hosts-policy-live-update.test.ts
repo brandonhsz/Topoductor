@@ -19,7 +19,7 @@ const policy = (revision: number, wslHosts: 'allow' | 'block'): string =>
 describe('WSL hosts policy live update', () => {
   let userDataPath: string
   beforeEach(() => {
-    userDataPath = mkdtempSync(join(tmpdir(), 'orca-wsl-policy-'))
+    userDataPath = mkdtempSync(join(tmpdir(), 'topo-wsl-policy-'))
   })
   afterEach(() => {
     vi.restoreAllMocks()

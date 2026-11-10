@@ -1,4 +1,4 @@
-import type { OrcaStoredValue } from './declarative-atoms'
+import type { TopoStoredValue } from './declarative-atoms'
 
 /** Fields of the host → guest messages, still unvalidated; each reader checks the ones it uses. */
 export type HostMessageFields = {
@@ -44,11 +44,11 @@ export function readHostMessage(payload: unknown): HostMessageFields {
 }
 
 /** `{ [key]: { version, value } }` from `ui.hydrate`; null when the scope is absent or malformed. */
-export function readStoredValues(raw: unknown): Map<string, OrcaStoredValue> | null {
+export function readStoredValues(raw: unknown): Map<string, TopoStoredValue> | null {
   if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {
     return null
   }
-  const values = new Map<string, OrcaStoredValue>()
+  const values = new Map<string, TopoStoredValue>()
   for (const [key, entry] of Object.entries(raw)) {
     if (typeof entry !== 'object' || entry === null) {
       continue

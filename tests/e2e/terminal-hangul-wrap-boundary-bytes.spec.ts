@@ -2,7 +2,7 @@
 // #15066’s extra LF/spaces were shell output from prompt escapes missing readline’s \[ \] wrappers; a plain prompt rendered cleanly.
 // The Node reader records PTY input, separating renderer-manufactured bytes from shell echo/output.
 import type { CDPSession, Page } from '@stablyai/playwright-test'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } from './helpers/store'
 import {
   splitActiveTerminalPane,
@@ -215,20 +215,20 @@ test.describe('Terminal Hangul wrap-boundary byte exactness', () => {
   for (const scenario of SCENARIOS) {
     for (const policy of scenario.policies) {
       test(`sends ${scenario.name} unaltered to the pty (${policy})`, async ({
-        orcaPage,
+        topoPage,
         testRepoPath
       }, testInfo) => {
-        await applyImePlatformPolicy(orcaPage, policy)
-        await expectImePlatformPolicy(orcaPage, policy)
-        await narrowPaneBySplitting(orcaPage, 2)
+        await applyImePlatformPolicy(topoPage, policy)
+        await expectImePlatformPolicy(topoPage, policy)
+        await narrowPaneBySplitting(topoPage, 2)
 
-        const arena = await openTerminalImePaneArena(orcaPage)
+        const arena = await openTerminalImePaneArena(topoPage)
         const reader = createTerminalImeByteReader(testRepoPath, 1)
         let completed = false
         try {
-          await startTerminalImeByteReader(orcaPage, arena.ptyId, reader)
+          await startTerminalImeByteReader(topoPage, arena.ptyId, reader)
 
-          const observedCols = await waitForSettledCols(orcaPage, arena.ptyId)
+          const observedCols = await waitForSettledCols(topoPage, arena.ptyId)
           const run = buildHangulRun(scenario.syllableCount(observedCols))
           const prefix = scenario.offsetByOneCell ? OFFSET_KEY.key : ''
           const expectedText = prefix + run.map((syllable) => syllable.text).join('')
@@ -237,14 +237,14 @@ test.describe('Terminal Hangul wrap-boundary byte exactness', () => {
             description: `${observedCols} cols, ${run.length} syllables, offset ${prefix.length}`
           })
 
-          const startRow = (await readPaneGrid(orcaPage, arena.ptyId)).cursorRow
+          const startRow = (await readPaneGrid(topoPage, arena.ptyId)).cursorRow
           if (scenario.offsetByOneCell) {
             await dispatchImeRewrittenPrintableKey(arena.session, OFFSET_KEY)
           }
-          await scenario.drive(arena.session, orcaPage, run)
+          await scenario.drive(arena.session, topoPage, run)
           // Require cursor movement to a later row so a run that never wraps cannot pass.
           await expect
-            .poll(async () => (await readPaneGrid(orcaPage, arena.ptyId)).cursorRow, {
+            .poll(async () => (await readPaneGrid(topoPage, arena.ptyId)).cursorRow, {
               timeout: 10_000,
               message: `run of ${run.length} syllables never wrapped at ${observedCols} cols`
             })
@@ -252,7 +252,7 @@ test.describe('Terminal Hangul wrap-boundary byte exactness', () => {
 
           await dispatchPlainEnter(arena.session)
 
-          const received = await waitForTerminalImeBytes(orcaPage, reader, 20_000)
+          const received = await waitForTerminalImeBytes(topoPage, reader, 20_000)
           expectExactPtyInput(received, expectedText)
           completed = true
         } finally {

@@ -41,7 +41,7 @@ vi.mock('@/lib/runtime-workspace-file-route', () => ({
 installTerminalLinkTestEnvironment(doubles)
 
 describe('handleOscLink', () => {
-  it('ignores stale async completion so latest local click wins for Orca open and reveal', async () => {
+  it('ignores stale async completion so latest local click wins for Topo open and reveal', async () => {
     setPlatform('Macintosh')
     const firstStat = createDeferred<{ isDirectory: boolean }>()
     const secondStat = createDeferred<{ isDirectory: boolean }>()

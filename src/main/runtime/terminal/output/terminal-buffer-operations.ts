@@ -4,8 +4,8 @@ import type {
   ProviderTerminalBufferWait,
   RuntimeHeadlessTerminal
 } from '../records/runtime-terminal-state-records'
-import type { OrcaRuntimeWithSerializeTerminalBufferFromAvailableState } from './terminal-buffer-selection'
-import { OrcaRuntimeWithNotifyRemoteTerminalViewPresenceChanged } from '../layout/terminal-view-presence'
+import type { TopoRuntimeWithSerializeTerminalBufferFromAvailableState } from './terminal-buffer-selection'
+import { TopoRuntimeWithNotifyRemoteTerminalViewPresenceChanged } from '../layout/terminal-view-presence'
 import type { TerminalOscLinkRange } from '../../../../shared/terminal/links/terminal-osc-link-ranges'
 import {
   applyRestoredTerminalTailSeed,
@@ -19,13 +19,13 @@ import { restoreFromReattachedReadyScreen } from '../wait/reattached-ready-scree
 import type { RuledScreen } from '../wait/screen-input-veto'
 import type { AgentStatus } from '../../../../shared/agent-status/title/agent-title-core'
 
-export abstract class OrcaRuntimeWithSerializeMainTerminalBuffer extends OrcaRuntimeWithNotifyRemoteTerminalViewPresenceChanged {
+export abstract class TopoRuntimeWithSerializeMainTerminalBuffer extends TopoRuntimeWithNotifyRemoteTerminalViewPresenceChanged {
   protected abstract readCaughtUpRuledScreen(ptyId: string): RuledScreen | null
   protected abstract serializePreferredRestoredTerminalBuffer(
     ptyId: string,
     opts?: { scrollbackRows?: number }
   ): ReturnType<
-    OrcaRuntimeWithSerializeTerminalBufferFromAvailableState['serializePreferredRestoredTerminalBuffer']
+    TopoRuntimeWithSerializeTerminalBufferFromAvailableState['serializePreferredRestoredTerminalBuffer']
   >
   protected abstract serializeHeadlessTerminalBuffer(
     ptyId: string,

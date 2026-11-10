@@ -22,7 +22,7 @@ export function reactCompilerExcludedFiles(): string[] {
 }
 
 export function isReactCompilerEnabled(): boolean {
-  return process.env.ORCA_REACT_COMPILER !== '0'
+  return process.env.TOPO_REACT_COMPILER !== '0'
 }
 
 export const REACT_COMPILER_OPTIONS = { target: '19' } as const
@@ -35,7 +35,7 @@ export function reactCompilerExcludePattern(): RegExp {
   return new RegExp(`/(?:${reactCompilerExcludedFiles().map(escapeRegExp).join('|')})$`)
 }
 
-// ORCA_REACT_COMPILER=0 builds without the compiler for bisecting.
+// TOPO_REACT_COMPILER=0 builds without the compiler for bisecting.
 export function reactPluginOptions(): Options {
   if (!isReactCompilerEnabled()) {
     return {}

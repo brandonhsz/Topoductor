@@ -111,7 +111,7 @@ async function flushPromises(): Promise<void> {
 function seedRemoteWorkspace(environmentId = 'env-1'): void {
   useAppStore.setState({
     settings: {
-      ...getDefaultSettings('/tmp/orca-workspaces'),
+      ...getDefaultSettings('/tmp/topo-workspaces'),
       activeRuntimeEnvironmentId: environmentId
     },
     repos: [

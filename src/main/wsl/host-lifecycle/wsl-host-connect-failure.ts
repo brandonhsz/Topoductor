@@ -1,15 +1,15 @@
 import { errorMessage } from '../../../shared/error-message'
 import { RemoteRuntimeClientError } from '../../../shared/remote-runtime/remote-runtime-client-error'
-import { OrcadHostUnsupportedError } from '../../orcad/orcad-host-unavailable'
+import { TopodHostUnsupportedError } from '../../topod/topod-host-unavailable'
 import {
   WslDistroNotRunningError,
-  WslOrcadLaunchDeferredError
-} from '../orcad/wsl-orcad-connection-errors'
+  WslTopodLaunchDeferredError
+} from '../topod/wsl-topod-connection-errors'
 import {
-  OrcadManagedIdentityError,
-  OrcadManagedPairingRejectedError
-} from '../../managed-server/lifecycle/orcad-managed-tunnel-identity'
-import { OrcadManagedPairingRepairFailedError } from '../../managed-server/lifecycle/orcad-managed-pairing-repair-failure'
+  TopodManagedIdentityError,
+  TopodManagedPairingRejectedError
+} from '../../managed-server/lifecycle/topod-managed-tunnel-identity'
+import { TopodManagedPairingRepairFailedError } from '../../managed-server/lifecycle/topod-managed-pairing-repair-failure'
 
 /**
  * Liveness keeps reconnecting a running host whose connect failed, so a call that met the failure
@@ -18,14 +18,14 @@ import { OrcadManagedPairingRepairFailedError } from '../../managed-server/lifec
  */
 export function retryableConnectFailure(distro: string, error: unknown): unknown {
   if (
-    error instanceof WslOrcadLaunchDeferredError ||
-    error instanceof OrcadHostUnsupportedError ||
+    error instanceof WslTopodLaunchDeferredError ||
+    error instanceof TopodHostUnsupportedError ||
     error instanceof WslDistroNotRunningError ||
     // A foreign or unpaired server, or a failed re-pair, needs the user (as on the SSH tunnel path);
     // retrying would run a full deploy per pane until the deadline.
-    error instanceof OrcadManagedIdentityError ||
-    error instanceof OrcadManagedPairingRejectedError ||
-    error instanceof OrcadManagedPairingRepairFailedError
+    error instanceof TopodManagedIdentityError ||
+    error instanceof TopodManagedPairingRejectedError ||
+    error instanceof TopodManagedPairingRepairFailedError
   ) {
     return error
   }
@@ -41,7 +41,7 @@ function notReachableYet(distro: string, reason: string): RemoteRuntimeClientErr
   return new RemoteRuntimeClientError(
     'remote_runtime_unavailable',
     // Why this wording: subscriptions cross IPC as a message, and renderers match this phrase.
-    `Could not connect to the remote Orca runtime in ${distro} yet: ${reason}`
+    `Could not connect to the remote Topo runtime in ${distro} yet: ${reason}`
   )
 }
 

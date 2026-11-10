@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { PLUGIN_SHOT_MAX_ACTS } from './plugin-shot-acts'
 
 /**
- * `orca plugin shot --editor --act`: real input sent to the editor's frame before the capture, in
+ * `topo plugin shot --editor --act`: real input sent to the editor's frame before the capture, in
  * the editor's CSS pixels from its top-left corner: `{"click":[x,y]}`, `{"drag":[[x1,y1],[x2,y2]]}`
  * and `{"key":"r"}` (a key name such as `Enter`, with optional `modifiers`).
  */
@@ -52,7 +52,7 @@ function issueOf(index: number, value: unknown): string {
   return `${where} (${verb})${path}: ${first?.message ?? 'invalid'}`
 }
 
-/** `--act`'s JSON for an editor shot, checked here so a typo fails before Orca opens anything. */
+/** `--act`'s JSON for an editor shot, checked here so a typo fails before Topo opens anything. */
 export function parsePluginEditorShotActs(
   json: string
 ): { ok: true; acts: PluginEditorShotAct[] } | { ok: false; error: string } {

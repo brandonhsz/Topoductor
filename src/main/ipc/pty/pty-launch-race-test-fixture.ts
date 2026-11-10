@@ -5,7 +5,7 @@ import { applyPtyBinding } from '../../persistence/loading-store/pty-binding-ses
 import {
   withRuntimePaneAdmission,
   withDurableRuntimeStore
-} from '../../runtime/orca-runtime-tests/runtime-durable-store-fixture'
+} from '../../runtime/topo-runtime-tests/runtime-durable-store-fixture'
 import { vi, type Mock } from 'vitest'
 import { makePaneKey } from '../../../shared/workspace-layout/stable-pane-id'
 import { WORKTREE_TERMINALS_SLEEPING_ERROR } from '../../../shared/workspace-sleep'
@@ -68,7 +68,7 @@ export function launchRacePane(tag: string, leafId: string) {
       worktreeId,
       tabId,
       leafId,
-      env: { ORCA_PANE_KEY: paneKey, ORCA_TAB_ID: tabId, ORCA_WORKTREE_ID: worktreeId }
+      env: { TOPO_PANE_KEY: paneKey, TOPO_TAB_ID: tabId, TOPO_WORKTREE_ID: worktreeId }
     }
   }
 }

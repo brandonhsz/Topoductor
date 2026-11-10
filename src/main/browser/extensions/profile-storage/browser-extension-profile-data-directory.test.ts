@@ -7,17 +7,17 @@ vi.mock('electron', () => ({ app: { getPath: () => tmpdir(), on: vi.fn() } }))
 
 const EXTENSION = 'a'.repeat(32)
 const extension = { id: EXTENSION, version: '1.0' }
-const userData = mkdtempSync(join(tmpdir(), 'orca-extension-orca-profiles-'))
+const userData = mkdtempSync(join(tmpdir(), 'topo-extension-topo-profiles-'))
 
 afterEach(() => {
   vi.resetModules()
 })
 
-/** One launch of Orca as the given Orca profile, with fresh store singletons. */
-async function openStoresAs(orcaProfileId: string) {
+/** One launch of Topo as the given Topo profile, with fresh store singletons. */
+async function openStoresAs(topoProfileId: string) {
   const { configureBrowserExtensionProfileDataDirectory } =
     await import('./browser-extension-profile-data-directory')
-  configureBrowserExtensionProfileDataDirectory(join(userData, 'profiles', orcaProfileId))
+  configureBrowserExtensionProfileDataDirectory(join(userData, 'profiles', topoProfileId))
   const sync = (
     await import('./browser-extension-sync-storage-store')
   ).getBrowserExtensionSyncStorageStore()
@@ -28,8 +28,8 @@ async function openStoresAs(orcaProfileId: string) {
   return { sync, state, dnr }
 }
 
-describe('browser extension data per Orca profile', () => {
-  it('keeps one Orca profile’s "default" browser profile data from another', async () => {
+describe('browser extension data per Topo profile', () => {
+  it('keeps one Topo profile’s "default" browser profile data from another', async () => {
     const personal = await openStoresAs('local-default')
     personal.sync.write('default', EXTENSION, { token: 'personal-secret' })
     personal.state.update('default', EXTENSION, (current) => ({

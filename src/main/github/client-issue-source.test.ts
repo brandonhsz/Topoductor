@@ -137,8 +137,8 @@ describe('GitHub issue source split', () => {
   it.each(['is:issue', 'is:pr'])(
     'propagates GitHub outages for scoped %s queries',
     async (query) => {
-      getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
-      getOwnerRepoMock.mockResolvedValueOnce({ owner: 'fork', repo: 'orca' })
+      getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
+      getOwnerRepoMock.mockResolvedValueOnce({ owner: 'fork', repo: 'topo' })
       ghExecFileAsyncMock.mockRejectedValueOnce(new Error('HTTP 503: Service Unavailable'))
 
       await expect(listWorkItems('/repo-root', 10, query)).rejects.toThrow(
@@ -150,8 +150,8 @@ describe('GitHub issue source split', () => {
   )
 
   it('propagates an outage when both sides of a combined query are unavailable', async () => {
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
-    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'fork', repo: 'orca' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
+    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'fork', repo: 'topo' })
     ghExecFileAsyncMock
       .mockRejectedValueOnce(new Error('HTTP 503: Service Unavailable'))
       .mockRejectedValueOnce(new Error('HTTP 502: Bad Gateway'))
@@ -164,8 +164,8 @@ describe('GitHub issue source split', () => {
   })
 
   it('pins typed PR metadata to explicit origin when upstream has the same number', async () => {
-    const upstream = { owner: 'stablyai', repo: 'orca', host: 'github.com' }
-    const origin = { owner: 'fork', repo: 'orca', host: 'github.com' }
+    const upstream = { owner: 'brandonhsz', repo: 'topo', host: 'github.com' }
+    const origin = { owner: 'fork', repo: 'topo', host: 'github.com' }
     getOwnerRepoMock.mockResolvedValue(origin)
     mockUpstreamCandidate(upstream)
     resolvePRRepositoryCandidatesMock.mockResolvedValue({
@@ -177,7 +177,7 @@ describe('GitHub issue source split', () => {
         number: 42,
         title: 'Origin PR',
         state: 'open',
-        url: 'https://github.com/fork/orca/pull/42',
+        url: 'https://github.com/fork/topo/pull/42',
         labels: [],
         updatedAt: '2026-04-02T00:00:00Z',
         author: { login: 'octocat' },
@@ -191,11 +191,11 @@ describe('GitHub issue source split', () => {
 
     expect(resolvePRRepositoryCandidatesMock).not.toHaveBeenCalled()
     expect(ghExecFileAsyncMock.mock.calls[0]?.[0]).toEqual(
-      expect.arrayContaining(['pr', 'view', '--repo', 'fork/orca'])
+      expect.arrayContaining(['pr', 'view', '--repo', 'fork/topo'])
     )
     expect(
       ghExecFileAsyncMock.mock.calls.some((call) =>
-        (call[0] as string[]).some((arg) => arg.includes('upstream/orca'))
+        (call[0] as string[]).some((arg) => arg.includes('upstream/topo'))
       )
     ).toBe(false)
     expect(item?.prRepo).toEqual(origin)
@@ -203,7 +203,7 @@ describe('GitHub issue source split', () => {
 
   it('does not run a bare PR lookup when explicit origin identity is unresolved', async () => {
     getOwnerRepoMock.mockResolvedValue(null)
-    mockUpstreamCandidate({ owner: 'stablyai', repo: 'orca' })
+    mockUpstreamCandidate({ owner: 'brandonhsz', repo: 'topo' })
 
     await expect(getWorkItem('/repo-root', 42, 'pr', null, {}, 'origin')).resolves.toBeNull()
 
@@ -222,10 +222,10 @@ describe('GitHub issue source split', () => {
   it('does not probe a second PR repository after a non-not-found failure', async () => {
     resolvePRRepositoryCandidatesMock.mockResolvedValueOnce({
       candidates: [
-        { owner: 'stablyai', repo: 'orca', host: 'github.com' },
-        { owner: 'fork', repo: 'orca', host: 'github.com' }
+        { owner: 'brandonhsz', repo: 'topo', host: 'github.com' },
+        { owner: 'fork', repo: 'topo', host: 'github.com' }
       ],
-      headRepo: { owner: 'fork', repo: 'orca', host: 'github.com' }
+      headRepo: { owner: 'fork', repo: 'topo', host: 'github.com' }
     })
     ghExecFileAsyncMock
       .mockRejectedValueOnce(new Error('HTTP 500: server error'))
@@ -237,22 +237,22 @@ describe('GitHub issue source split', () => {
     expect(ghExecFileAsyncMock).toHaveBeenCalledTimes(2)
     expect(
       ghExecFileAsyncMock.mock.calls.some(([args]) =>
-        (args as string[]).some((arg) => arg.includes('fork/orca'))
+        (args as string[]).some((arg) => arg.includes('fork/topo'))
       )
     ).toBe(false)
   })
 
   it('raw number lookup tries upstream issue before origin PR', async () => {
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
     // Non-404 upstream failures must not route to an unrelated origin PR with the same number.
     ghExecFileAsyncMock.mockRejectedValueOnce(new Error('HTTP 404: Not Found'))
-    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'fork', repo: 'orca' })
+    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'fork', repo: 'topo' })
     ghExecFileAsyncMock.mockResolvedValueOnce({
       stdout: JSON.stringify({
         number: 42,
         title: 'Origin PR',
         state: 'open',
-        html_url: 'https://github.com/fork/orca/pull/42',
+        html_url: 'https://github.com/fork/topo/pull/42',
         labels: [],
         updated_at: '2026-04-02T00:00:00Z',
         user: { login: 'octocat' },
@@ -264,7 +264,7 @@ describe('GitHub issue source split', () => {
 
     expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
       1,
-      ['api', 'repos/stablyai/orca/issues/42'],
+      ['api', 'repos/brandonhsz/topo/issues/42'],
       { cwd: '/repo-root' }
     )
     expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
@@ -274,7 +274,7 @@ describe('GitHub issue source split', () => {
         'view',
         '42',
         '--repo',
-        'fork/orca',
+        'fork/topo',
         '--json',
         expect.stringContaining('reviewDecision')
       ],
@@ -284,8 +284,8 @@ describe('GitHub issue source split', () => {
   })
 
   it('returns partial results when upstream issues fail but origin PRs succeed', async () => {
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
-    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'fork', repo: 'orca' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
+    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'fork', repo: 'topo' })
     ghExecFileAsyncMock
       .mockRejectedValueOnce(new Error('HTTP 403: Resource not accessible by integration'))
       .mockResolvedValueOnce({
@@ -294,7 +294,7 @@ describe('GitHub issue source split', () => {
             number: 42,
             title: 'Fork PR',
             state: 'open',
-            html_url: 'https://github.com/fork/orca/pull/42',
+            html_url: 'https://github.com/fork/topo/pull/42',
             labels: [],
             updated_at: '2026-03-31T00:00:00Z',
             user: { login: 'octocat' },
@@ -312,7 +312,7 @@ describe('GitHub issue source split', () => {
   })
 
   it('raw number lookup does not fall through on transient upstream errors', async () => {
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'stablyai', repo: 'orca' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'brandonhsz', repo: 'topo' })
     ghExecFileAsyncMock.mockRejectedValueOnce(new Error('HTTP 500: server error'))
 
     const item = await getWorkItem('/repo-root', 42)

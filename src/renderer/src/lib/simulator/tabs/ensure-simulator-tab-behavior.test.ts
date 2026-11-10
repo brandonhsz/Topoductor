@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../shared/layout-owner-switch'
 import type { Tab, TabGroup } from '../../../../../shared/tab-types'
 import type { ExecutionHostId } from '../../../../../shared/execution-host'
 import type { AppState } from '@/store/types'
@@ -236,7 +236,7 @@ describe('ensureSimulatorTab', () => {
     mockStoreState.focusGroup.mockReset()
     mockStoreState.setActiveTab.mockReset()
     mockStoreState.setActiveTabType.mockReset()
-    if (!ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (!TOPO_LAYOUT_OWNER_IS_MAIN) {
       vi.resetModules()
     }
   })
@@ -267,7 +267,7 @@ describe('ensureSimulatorTab', () => {
     stubCreatedSimulatorTab('group-1')
     const { ensureSimulatorTab } = await import('./ensure-simulator-tab')
 
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       const { tabId, tab, sent } = await openThroughMain(() => ensureSimulatorTab('wt-1'))
       expect(tabId).not.toBe('sim-local')
       expect(sent).toEqual([])
@@ -387,7 +387,7 @@ describe('ensureSimulatorTab', () => {
     })
     const { ensureSimulatorTab } = await import('./ensure-simulator-tab')
 
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       const { tab, sent, store } = await openThroughMain(() =>
         ensureSimulatorTab('wt-1', { placement: 'rightSplit' })
       )
@@ -436,7 +436,7 @@ describe('ensureSimulatorTab', () => {
     stubCreatedSimulatorTab('group-2')
     const { ensureSimulatorTab } = await import('./ensure-simulator-tab')
 
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       const { tab, sent, store } = await openThroughMain(() =>
         ensureSimulatorTab('wt-1', { placement: 'rightSplit' })
       )
@@ -465,7 +465,7 @@ describe('ensureSimulatorTab', () => {
     stubCreatedSimulatorTab('group-1')
     const { ensureSimulatorTab } = await import('./ensure-simulator-tab')
 
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       const { tabId, tab, sent, store } = await openThroughMain(() =>
         ensureSimulatorTab('wt-1', { placement: 'rightSplit', surfacePane: false })
       )
@@ -503,7 +503,7 @@ describe('ensureSimulatorTab', () => {
     stubCreatedSimulatorTab('group-1')
     const { ensureSimulatorTab } = await import('./ensure-simulator-tab')
 
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       await expectBackgroundLocalOpen(true)
       return
     }
@@ -536,7 +536,7 @@ describe('ensureSimulatorTab', () => {
     stubCreatedSimulatorTab('group-1')
     const { ensureSimulatorTab } = await import('./ensure-simulator-tab')
 
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       await expectBackgroundLocalOpen(false)
       return
     }

@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * Orca startup-time benchmark.
+ * Topo startup-time benchmark.
  *
  * Launches the built app (out/) against a synthetic userData fixture that
  * mimics a long-lived real profile (tens of thousands of Chromium cache
  * files — the documented pathological case for the win32 startup ACL grant),
- * parses `ORCA_STARTUP_DIAGNOSTICS=1` milestone lines from stderr, and
+ * parses `TOPO_STARTUP_DIAGNOSTICS=1` milestone lines from stderr, and
  * reports per-phase timings across iterations.
  *
  * Usage:
@@ -15,7 +15,7 @@
  *     [--ssh-unreachable-targets 1]
  *     [--github-repos 3] [--gh-hang-ms 30000]
  *     [--wait-for-event renderer-startup-hydration-done]
- *     [--exe <path-to-packaged-Orca>] [--timeout-ms 240000]
+ *     [--exe <path-to-packaged-Topo>] [--timeout-ms 240000]
  *
  * Issue #7225 freeze reproduction: `--github-repos N` seeds N git repos with
  * GitHub remotes and no configured username, so repo hydration reaches the
@@ -105,7 +105,7 @@ function parseArgs(argv) {
   return args
 }
 
-// Seed tiny Chromium/Orca cache files; count/tree shape drives icacls walk cost, contents do not.
+// Seed tiny Chromium/Topo cache files; count/tree shape drives icacls walk cost, contents do not.
 function ensureFixture(fixtureDir, options) {
   const { fileCount, stateProfile, sessionTabs, githubRepos, sshUnreachableTargets } = options
   const manifestPath = join(fixtureDir, 'bench-fixture-manifest.json')
@@ -198,15 +198,15 @@ function buildLaunchEnvironment({ fixtureDir, githubRepos, ghShimDir }) {
   mkdirSync(isolatedHome, { recursive: true })
   const env = {
     ...process.env,
-    ORCA_STARTUP_DIAGNOSTICS: '1',
-    ORCA_E2E_USER_DATA_DIR: fixtureDir,
+    TOPO_STARTUP_DIAGNOSTICS: '1',
+    TOPO_E2E_USER_DATA_DIR: fixtureDir,
     HOME: isolatedHome,
     USERPROFILE: isolatedHome,
-    ORCA_E2E_HOME_DIR: isolatedHome,
-    ORCA_E2E_HEADLESS: '1'
+    TOPO_E2E_HOME_DIR: isolatedHome,
+    TOPO_E2E_HEADLESS: '1'
   }
   delete env.CODEX_HOME
-  delete env.ORCA_CODEX_HOME
+  delete env.TOPO_CODEX_HOME
   if (ghShimDir) {
     env.PATH = `${ghShimDir}${delimiter}${env.PATH ?? ''}`
   }
@@ -431,7 +431,7 @@ async function main() {
     args.fixtureDir ??
       join(
         os.tmpdir(),
-        'orca-startup-bench',
+        'topo-startup-bench',
         `userdata-${args.files}-${args.stateProfile}-${args.sessionTabs}-gh${args.githubRepos}-ssh${args.sshUnreachableTargets}`
       )
   )

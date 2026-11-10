@@ -4,13 +4,13 @@ import { structuredAgentSessionStartFailure } from '../../../../native-chat/agen
 import { agentSessionFailureFact } from '../../../../../shared/agent-session/failures/agent-session-failure'
 import { agentSessionFailureWords } from '../../../../../shared/agent-session/failures/agent-session-failure-words'
 import {
-  formatOrcaSessionAddress,
-  isOrcaSessionId
-} from '../../../../../shared/orca-session-address'
+  formatTopoSessionAddress,
+  isTopoSessionId
+} from '../../../../../shared/topo-session-address'
 import type { StructuredAgentSessionRequestFailure } from '../../../../native-chat/agent-session-wire/observations/structured-agent-session-request-failures'
 import { tuiAgentDisplayName } from '../../../../../shared/agent-launch/catalog/tui-agent-display-names'
 import { resolveStructuredWorkerIdentityForSession } from '../../terminal-authority/structured-sessions/structured-worker-authority'
-import { canonicalOrcaSessionId } from '../../addressing/session-lineage/canonical-orca-session-id'
+import { canonicalTopoSessionId } from '../../addressing/session-lineage/canonical-topo-session-id'
 import { chatRequestError, isSenderOwnRejection } from './chat-worker-error-words'
 import type { OrchestrationDb } from '../../db/orchestration-db'
 import type { DispatchContextRow } from '../../db/orchestration-records'
@@ -22,9 +22,9 @@ type ChatWorkerDispatch = { dispatch: DispatchContextRow; from: string }
 /** The open Dispatch this session works, as a chat assignee or as a structured worker. */
 export function chatWorkerDispatches(sessionId: string, db: OrchestrationDb): ChatWorkerDispatch[] {
   const found: ChatWorkerDispatch[] = []
-  if (isOrcaSessionId(sessionId)) {
+  if (isTopoSessionId(sessionId)) {
     // A `/clear` successor keeps its root's address, so the Dispatch names the root.
-    const address = formatOrcaSessionAddress(canonicalOrcaSessionId(sessionId))
+    const address = formatTopoSessionAddress(canonicalTopoSessionId(sessionId))
     const dispatch = db.getActiveDispatchForTerminal(address)
     if (dispatch) {
       found.push({ dispatch, from: address })

@@ -1,9 +1,9 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 const processCheck = readFileSync(
-  new URL('../../../nsis/orca-process-check.nsh', import.meta.url),
+  new URL('../../../nsis/topo-process-check.nsh', import.meta.url),
   'utf8'
 )
 
@@ -18,18 +18,18 @@ function readPowerShellProbe(source = processCheck) {
 describe.runIf(process.platform === 'win32')(
   'NSIS capability probe under Restricted policy',
   () => {
-    const policyReceipt = 'orca-nsis: restricted policy verified'
-    const queryFailureReceipt = 'orca-nsis: injected query failure'
+    const policyReceipt = 'topo-nsis: restricted policy verified'
+    const queryFailureReceipt = 'topo-nsis: injected query failure'
     const policyCheck = [
-      'function Test-OrcaRestrictedPolicy { param([string]$Scope)',
+      'function Test-TopoRestrictedPolicy { param([string]$Scope)',
       "try { $parameters = @{ ErrorAction = 'Stop' };",
       'if ($Scope) { $parameters.Scope = $Scope };',
       "return ((Get-ExecutionPolicy @parameters) -eq 'Restricted')",
       '} catch { return $false } };',
       // A failed getter must not fall through to the query's successful exit.
-      "if ((Test-OrcaRestrictedPolicy '__orca_invalid_scope__') -ne $false) { exit 11 };",
-      "if ((Test-OrcaRestrictedPolicy 'Process') -ne $true) { exit 10 };",
-      'if ((Test-OrcaRestrictedPolicy) -ne $true) { exit 10 };',
+      "if ((Test-TopoRestrictedPolicy '__topo_invalid_scope__') -ne $false) { exit 11 };",
+      "if ((Test-TopoRestrictedPolicy 'Process') -ne $true) { exit 10 };",
+      'if ((Test-TopoRestrictedPolicy) -ne $true) { exit 10 };',
       `[Console]::Out.WriteLine('${policyReceipt}');`
     ].join(' ')
 
@@ -55,7 +55,7 @@ describe.runIf(process.platform === 'win32')(
         args: [...args, '-Command', `${policyCheck} ${prefix}${command}`],
         env: {
           ...env,
-          ORCA_BACKGROUND_LAUNCH: '1',
+          TOPO_BACKGROUND_LAUNCH: '1',
           PSExecutionPolicyPreference: 'Restricted'
         },
         timeoutMs

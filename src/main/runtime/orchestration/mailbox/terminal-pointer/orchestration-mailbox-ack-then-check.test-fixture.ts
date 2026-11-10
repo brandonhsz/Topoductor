@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import {
   checkBoundMailbox,
   type MailboxCheckOptions
@@ -6,7 +6,7 @@ import {
 
 /** Acknowledge a held Delivery, then take the next batch with a plain check, as agents do. */
 export async function ackThenCheck(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   deliveryId: string,
   options: MailboxCheckOptions = {}
 ) {

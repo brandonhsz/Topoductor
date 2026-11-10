@@ -34,7 +34,7 @@ export function TerminalCursorAppearanceSection({
           title={t('auto.components.settings.TerminalAppearanceSection.db270cc9a9', 'Cursor Shape')}
           description={t(
             'auto.components.settings.TerminalAppearanceSection.d455f2ef4f',
-            'Default cursor appearance for Orca terminal panes.'
+            'Default cursor appearance for Topo terminal panes.'
           )}
           keywords={['terminal', 'cursor', 'bar', 'block', 'underline']}
         >

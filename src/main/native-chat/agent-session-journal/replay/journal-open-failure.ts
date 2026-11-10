@@ -13,7 +13,7 @@ import type { StructuredAgentSessionLogger } from '../../agent-session-wire/host
 
 type JournalRefusalReason = AgentSessionRefusalReason<'agent_session_journal_unreadable'>
 
-export type JournalOpenFailure = Exclude<JournalRefusalReason, 'journalWrittenByNewerOrca'>
+export type JournalOpenFailure = Exclude<JournalRefusalReason, 'journalWrittenByNewerTopo'>
 
 export class JournalDamageError extends Error {
   override readonly name = 'JournalDamageError'
@@ -25,7 +25,7 @@ export function failLoadOnUnloadableJournal(sessionId: string, load: JournalLoad
     throw journalOpenRefusalError(
       new AgentSessionJournalError(
         'journal_read_only',
-        `journal of ${sessionId} holds a newer Orca's row at sequence ${load.newer.sequence}`
+        `journal of ${sessionId} holds a newer Topo's row at sequence ${load.newer.sequence}`
       )
     )
   }
@@ -65,21 +65,21 @@ export function classifyJournalOpenFailure(error: unknown): JournalOpenFailure {
 const JOURNAL_OPEN_MESSAGE: Record<JournalRefusalReason, string> = {
   journalCorrupt: agentSessionWriteNoticeEnglish(['historyUnusable']),
   journalUnavailable: agentSessionWriteNoticeEnglish(['historyUnavailable', 'tryAgain']),
-  journalWrittenByNewerOrca: agentSessionWriteNoticeEnglish([
-    'savedByNewerOrca',
-    'updateOrcaToKeepUsing'
+  journalWrittenByNewerTopo: agentSessionWriteNoticeEnglish([
+    'savedByNewerTopo',
+    'updateTopoToKeepUsing'
   ])
 }
 
-export const JOURNAL_NEWER_SCHEMA_MESSAGE = JOURNAL_OPEN_MESSAGE.journalWrittenByNewerOrca
+export const JOURNAL_NEWER_SCHEMA_MESSAGE = JOURNAL_OPEN_MESSAGE.journalWrittenByNewerTopo
 
-export function isJournalWrittenByNewerOrca(error: unknown): boolean {
+export function isJournalWrittenByNewerTopo(error: unknown): boolean {
   return error instanceof AgentSessionJournalError && error.code === 'journal_read_only'
 }
 
 function journalRefusalReason(error: unknown): JournalRefusalReason {
-  return isJournalWrittenByNewerOrca(error)
-    ? 'journalWrittenByNewerOrca'
+  return isJournalWrittenByNewerTopo(error)
+    ? 'journalWrittenByNewerTopo'
     : classifyJournalOpenFailure(error)
 }
 
@@ -100,13 +100,13 @@ export function journalOpenRefusal(error: unknown): AgentSessionWireRefusal {
   return refuse('agent_session_journal_unreadable', { reason }, message)
 }
 
-export async function refusingNewerOrcaJournal<TOutcome>(
+export async function refusingNewerTopoJournal<TOutcome>(
   run: Promise<TOutcome>
 ): Promise<TOutcome | { ok: false; refusal: AgentSessionWireRefusal }> {
   try {
     return await run
   } catch (error) {
-    if (isJournalWrittenByNewerOrca(error)) {
+    if (isJournalWrittenByNewerTopo(error)) {
       return { ok: false, refusal: journalOpenRefusal(error) }
     }
     throw error

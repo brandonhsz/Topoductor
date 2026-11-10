@@ -24,8 +24,8 @@ export type UpdateCandidate = {
   entry: PluginListEntry
   preview: PluginMarketplaceHostInstallPreview | null
   error: boolean
-  /** Oldest Orca the update runs on, when this Orca is older. */
-  needsOrca: string | null
+  /** Oldest Topo the update runs on, when this Topo is older. */
+  needsTopo: string | null
 }
 
 /** The installed repository when main found the catalog now points the update somewhere else. */
@@ -85,7 +85,7 @@ const contributionGrowthLabel = (point: PluginContributionPoint): string => {
 const replacementLine = (command: string, action: string, t: Translate = translate): string =>
   t(
     'auto.components.settings.PluginUpdateAllDialog.replacesAction',
-    '{{value0}} runs instead of Orca’s {{value1}}',
+    '{{value0}} runs instead of Topo’s {{value1}}',
     { value0: command, value1: builtInActionTitle(action) }
   )
 
@@ -111,7 +111,7 @@ export function updateChanges(
   const executionLines =
     growth?.execution && execution.length === 0 ? [contributionGrowthLabel('panels')] : execution
   const contributions = (growth?.contributions ?? []).map(contributionGrowthLabel)
-  // Why named: "Commands" alone would hide that one takes over an Orca action.
+  // Why named: "Commands" alone would hide that one takes over a Topo action.
   const replacements = growth?.contributions.includes('commands')
     ? preview.manifest.contributes.commands.flatMap((command) =>
         command.replaces ? [replacementLine(command.title, command.replaces, t)] : []
@@ -214,7 +214,7 @@ export function CandidateRow({
   onReview?: () => void
 }): React.JSX.Element {
   const t = useTranslate()
-  const { entry, preview, error, needsOrca } = candidate
+  const { entry, preview, error, needsTopo } = candidate
   const { capabilities: requestedAdded, warnings } = preview
     ? updateChanges(preview, t)
     : { capabilities: [], warnings: [] }
@@ -244,7 +244,7 @@ export function CandidateRow({
       <p className="text-xs text-destructive">
         {t(
           'auto.components.settings.PluginMarketplaceListingRow.blocked',
-          "Blocked by Orca's safety list: {{value0}}",
+          "Blocked by Topo's safety list: {{value0}}",
           { value0: preview.blockedByKillList.reason }
         )}
       </p>
@@ -255,13 +255,13 @@ export function CandidateRow({
         {t('auto.components.settings.PluginUpdateAllDialog.current', 'Already installed')}
       </p>
     )
-  } else if (needsOrca) {
+  } else if (needsTopo) {
     note = (
       <p className="text-xs text-status-warning-text">
         {t(
-          'auto.components.settings.PluginUpdateAllDialog.needsOrca',
-          'Needs Orca {{value0}} or later',
-          { value0: needsOrca }
+          'auto.components.settings.PluginUpdateAllDialog.needsTopo',
+          'Needs Topo {{value0}} or later',
+          { value0: needsTopo }
         )}
       </p>
     )

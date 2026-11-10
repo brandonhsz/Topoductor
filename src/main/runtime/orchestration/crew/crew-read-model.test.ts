@@ -14,7 +14,7 @@ describe('public crew read and stream', () => {
   it('derives direct roles and two-sided latest mail without consuming questions or leaking authority', async () => {
     const { db, deps, run, assign } = fixture()
     const worker = assign('term_worker')
-    assign('orca_session_id:chat-root', 'term_coord', 'Chat task')
+    assign('topo_session_id:chat-root', 'term_coord', 'Chat task')
     const helper = assign('term_helper', 'term_worker', 'Help worker')
     assign('term_grandchild', 'term_helper', 'Help helper')
     const mail = db.insertMessage({
@@ -106,7 +106,7 @@ describe('public crew read and stream', () => {
   })
 })
 
-it("keeps a worker's last real message over Orca's own records", () => {
+it("keeps a worker's last real message over Topo's own records", () => {
   const { db, deps, assign } = fixture()
   const worker = assign('term_worker')
   db.insertMessage({
@@ -115,12 +115,12 @@ it("keeps a worker's last real message over Orca's own records", () => {
     subject: 'Update',
     body: 'Read 3 files'
   })
-  // Orca's notice as QA recorded it, an agent's own escalation, an empty setup receipt and a rejected report.
+  // Topo's notice as QA recorded it, an agent's own escalation, an empty setup receipt and a rejected report.
   db.insertMessage({
     from: 'term_worker',
     to: 'term_coord',
     subject: 'Worker stopped without reporting',
-    body: 'Worker term_698aff42-fca8-4378-b317-029b98be48dc ended its turn without sending worker_done for task "W4: list files then wait" (task_b7063456179a). The Dispatch is still open. Answer it with your Orca CLI\'s `orchestration send --to dispatch:ctx_e99c0e270caf --subject "<topic>" --body "<guidance>"`, retry it, or stop the worker.',
+    body: 'Worker term_698aff42-fca8-4378-b317-029b98be48dc ended its turn without sending worker_done for task "W4: list files then wait" (task_b7063456179a). The Dispatch is still open. Answer it with your Topo CLI\'s `orchestration send --to dispatch:ctx_e99c0e270caf --subject "<topic>" --body "<guidance>"`, retry it, or stop the worker.',
     type: 'escalation',
     priority: 'high'
   })
@@ -192,18 +192,18 @@ it('preserves a bound offline manager and the complete committed clear conversat
     getRecord: (id) => records.find((entry) => entry.sessionId === id) ?? null
   }
   db.insertMessage({
-    from: 'orca_session_id:chat-aaa',
+    from: 'topo_session_id:chat-aaa',
     to: 'term_peer',
     subject: 'Root',
     body: 'root'
   })
   const latest = db.insertMessage({
     from: 'term_peer',
-    to: 'orca_session_id:chat-bbb',
+    to: 'topo_session_id:chat-bbb',
     subject: 'Intermediate',
     body: 'intermediate'
   })
-  const peers = buildCrewSnapshot('orca_session_id:chat-ccc', deps).sections.talkingWith
+  const peers = buildCrewSnapshot('topo_session_id:chat-ccc', deps).sections.talkingWith
   expect(peers).toHaveLength(1)
   expect(peers[0].latest).toMatchObject({
     preview: 'intermediate',

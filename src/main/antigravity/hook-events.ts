@@ -1,4 +1,4 @@
-export const ANTIGRAVITY_HOOK_BUNDLE_NAME = 'orca-status'
+export const ANTIGRAVITY_HOOK_BUNDLE_NAME = 'topo-status'
 
 export const ANTIGRAVITY_EVENTS = [
   {

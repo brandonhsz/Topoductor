@@ -1,9 +1,9 @@
 import type { ApplyLayoutResult, PtyLayoutTarget } from '../layout/terminal-layout-state'
 import type { RuntimeTerminalDriverState } from '../../../../shared/runtime-session-contracts'
-import { OrcaRuntimeWithGetOrchestrationDispatchAuthority } from './terminal-orchestration-authority'
+import { TopoRuntimeWithGetOrchestrationDispatchAuthority } from './terminal-orchestration-authority'
 import { clampTerminalViewport } from '../../../../shared/terminal/viewport/terminal-viewport'
 
-export abstract class OrcaRuntimeWithHasRecentTerminalOutputPath extends OrcaRuntimeWithGetOrchestrationDispatchAuthority {
+export abstract class TopoRuntimeWithHasRecentTerminalOutputPath extends TopoRuntimeWithGetOrchestrationDispatchAuthority {
   protected abstract enqueueLayout(
     ptyId: string,
     target: PtyLayoutTarget

@@ -94,8 +94,8 @@ export type UpdaterMocks = {
 // Quitting re-stages Squirrel updates on macOS, so restart advice remains useful there.
 export const PRE_COMMIT_INSTALL_FAILURE =
   process.platform === 'darwin'
-    ? 'Could not restart to install the update. Quit and reopen Orca, then try again.'
-    : 'Could not start the update installer. Orca remains open.'
+    ? 'Could not restart to install the update. Quit and reopen Topo, then try again.'
+    : 'Could not start the update installer. Topo remains open.'
 
 /** Call from an awaited vi.hoisted block so module factories see initialized mocks. */
 export function createUpdaterMocks(): UpdaterMocks {
@@ -245,7 +245,7 @@ export function createUpdaterMocks(): UpdaterMocks {
           : result
       },
       getReleaseDownloadUrl: (tag: string) =>
-        `https://github.com/stablyai/orca/releases/download/${tag}`
+        `https://github.com/brandonhsz/Topoductor/releases/download/${tag}`
     }),
     localBuildSwitch: () => ({ chooseLocalBuild: chooseLocalBuildMock }),
     localBuildFeedServer: () => ({ startLocalBuildFeed: startLocalBuildFeedMock })

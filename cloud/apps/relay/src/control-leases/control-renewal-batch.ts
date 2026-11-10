@@ -128,7 +128,7 @@ export class ControlRenewalBatch {
     if (durationMs <= CONTROL_RENEWAL_SLOW_FLUSH_MS && renewed === rows) return
     console.warn(
       JSON.stringify({
-        event: 'orca_relay_control_renewal_flush',
+        event: 'topo_relay_control_renewal_flush',
         ...this.logFields(),
         rows,
         durationMs: Math.round(durationMs),

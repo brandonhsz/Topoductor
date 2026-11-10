@@ -118,7 +118,7 @@ describe('addWorktree', () => {
       [
         'update-ref',
         '-m',
-        'orca: fast-forward to refs/remotes/origin/main',
+        'topo: fast-forward to refs/remotes/origin/main',
         'refs/heads/main',
         'remote-main',
         'old-main'

@@ -2,11 +2,11 @@ import {
   FOLDER_WORKSPACE_INSTANCE_SEPARATOR,
   splitWorktreeId
 } from '../../../../shared/worktree/id'
-import { removeOrcaCreatedProjectTrustEntries } from '../../../codex/trust/toml/config-toml-trust'
-import { removeOrcaCreatedAntigravityTrust } from '../../../agent-launch/trust/antigravity-workspace-trust-ownership'
+import { removeTopoCreatedProjectTrustEntries } from '../../../codex/trust/toml/config-toml-trust'
+import { removeTopoCreatedAntigravityTrust } from '../../../agent-launch/trust/antigravity-workspace-trust-ownership'
 
 /**
- * Drops the workspace trust entries Orca's preflight wrote for a removed
+ * Drops the workspace trust entries Topo's preflight wrote for a removed
  * worktree's path (Codex `[projects."<path>"]`, Antigravity `trustedWorkspaces`).
  *
  * Why: worktree IDs are path-derived and can be recreated, so a stale entry would
@@ -18,13 +18,13 @@ import { removeOrcaCreatedAntigravityTrust } from '../../../agent-launch/trust/a
  * Errors degrade to a warning: an unwritable config must not fail an accepted
  * removal, and the ownership record stays for a later pass.
  */
-export function dropOrcaCreatedAgentTrustForRemovedWorktree(worktreeId: string): Promise<void> {
+export function dropTopoCreatedAgentTrustForRemovedWorktree(worktreeId: string): Promise<void> {
   const worktreePath = splitWorktreeId(worktreeId)?.worktreePath
   if (!worktreePath || worktreePath.includes(FOLDER_WORKSPACE_INSTANCE_SEPARATOR)) {
     return Promise.resolve()
   }
-  removeOrcaCreatedAntigravityTrust(worktreePath)
-  return removeOrcaCreatedProjectTrustEntries(worktreePath).catch((error) => {
-    console.warn('[codex-config] Failed to drop an Orca-created project trust entry:', error)
+  removeTopoCreatedAntigravityTrust(worktreePath)
+  return removeTopoCreatedProjectTrustEntries(worktreePath).catch((error) => {
+    console.warn('[codex-config] Failed to drop a Topo-created project trust entry:', error)
   })
 }

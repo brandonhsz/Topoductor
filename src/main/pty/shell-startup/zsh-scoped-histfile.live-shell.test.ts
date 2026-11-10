@@ -15,7 +15,7 @@ const systemZshrcClobbersHistfile = (() => {
   if (!hasZsh) {
     return false
   }
-  const home = mkdtempSync(join(tmpdir(), 'orca-histfile-probe-'))
+  const home = mkdtempSync(join(tmpdir(), 'topo-histfile-probe-'))
   try {
     const output = execFileSync(ZSH_PATH, ['-l', '-i', '-c', 'echo "RESULT=$HISTFILE"'], {
       encoding: 'utf8',
@@ -39,7 +39,7 @@ function launchPane(
 ) {
   const env: Record<string, string> = {
     HOME: home,
-    ...(scopedHistfile ? { HISTFILE: scopedHistfile, ORCA_HISTFILE: scopedHistfile } : {})
+    ...(scopedHistfile ? { HISTFILE: scopedHistfile, TOPO_HISTFILE: scopedHistfile } : {})
   }
   const features = selectShellStartupFeatures({
     shellPath: ZSH_PATH,
@@ -54,14 +54,14 @@ function launchPane(
     features,
     launch,
     // Resolve config against the sandbox home instead of the real launch environment.
-    env: { PATH: '/usr/bin:/bin', ...env, ...launch.env, ORCA_ORIG_ZDOTDIR: home }
+    env: { PATH: '/usr/bin:/bin', ...env, ...launch.env, TOPO_ORIG_ZDOTDIR: home }
   }
 }
 
 const USER_FILES = {
-  '.zshenv': 'export ORCA_TEST_USER_ZSHENV=1\n',
-  '.zprofile': 'export ORCA_TEST_USER_ZPROFILE=1\n',
-  '.zshrc': 'export ORCA_TEST_USER_ZSHRC=1\n'
+  '.zshenv': 'export TOPO_TEST_USER_ZSHENV=1\n',
+  '.zprofile': 'export TOPO_TEST_USER_ZPROFILE=1\n',
+  '.zshrc': 'export TOPO_TEST_USER_ZSHRC=1\n'
 }
 
 function withHome(files: Record<string, string>, run: (home: string) => Promise<void>) {
@@ -81,7 +81,7 @@ describe.skipIf(process.platform === 'win32')(
     itWithClobber(
       'keeps the injected path that the system zshrc would otherwise clobber',
       withHome(USER_FILES, async (home) => {
-        const scoped = join(home, 'orca-history', 'zsh_history')
+        const scoped = join(home, 'topo-history', 'zsh_history')
         const { env } = launchPane(home, scoped)
 
         const { values } = await runZshPty({ env, report: ['HISTFILE'] })

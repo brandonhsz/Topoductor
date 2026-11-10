@@ -1,14 +1,14 @@
 import type { HookCheckResult } from '@/runtime/repo-hooks/runtime-hooks-client'
 import { checkRuntimeHooks } from '@/runtime/repo-hooks/runtime-hooks-client'
 import type { ExecutionHostId } from '../../../../../../shared/execution-host'
-import type { OrcaHooks, RepoHookSettings } from '../../../../../../shared/orca-yaml-hook-types'
+import type { TopoHooks, RepoHookSettings } from '../../../../../../shared/topo-yaml-hook-types'
 import type { SetupDecision } from '../../../../../../shared/worktree/create-types'
 import { resolveHookCommandSourcePolicy } from '../../../../../../shared/hook-command-source-policy'
 import {
   getSetupConfig,
   getDefaultSetupDecision,
   type SetupConfig
-} from '../../../../../../shared/orca-hook-setup-config'
+} from '../../../../../../shared/topo-hook-setup-config'
 import { settleComposerSubmit } from '../../../composer-submit-cancellation'
 
 type SetupRepo = { hookSettings?: RepoHookSettings }
@@ -37,7 +37,7 @@ export async function readWorkspaceSetupInspection(
 export function getComposerSetupInspectionCommit(
   outcome: SetupReadOutcome,
   phase: 'background' | 'submit'
-): { hooks: OrcaHooks | null } | null {
+): { hooks: TopoHooks | null } | null {
   if (outcome.status === 'cancelled') {
     return null
   }
@@ -72,7 +72,7 @@ export async function inspectRequiredWorkspaceSetup(
   repo: SetupRepo,
   ownerHostId: ExecutionHostId
 ): Promise<WorkspaceSetupInspection> {
-  let yamlHooks: OrcaHooks | null = null
+  let yamlHooks: TopoHooks | null = null
   if (
     resolveHookCommandSourcePolicy(repo.hookSettings?.commandSourcePolicy, {
       hasLocalScript: Boolean(repo.hookSettings?.scripts?.setup?.trim())

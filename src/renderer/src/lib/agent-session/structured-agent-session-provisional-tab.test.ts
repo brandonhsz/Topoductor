@@ -28,7 +28,7 @@ import { makeEmptyHostSnapshot } from '@/runtime/web-session-tabs-sync/hydration
 import * as unlisted from './launch/pane/structured-agent-session-unlisted-created-chats'
 import { buildFullWorktreePurgeState } from '@/store/slices/worktrees/teardown/worktree-purge-state'
 import type { TerminalTab } from '../../../../shared/workspace-layout/terminal-tab-types'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import { sendLayoutCommandToOwner } from '@/runtime/workspace-layout/commands/layout-owner-command'
 import { structuredAgentSessionTabId } from '../../../../shared/agent-session/view/structured-agent-session-projection'
 import {
@@ -156,7 +156,7 @@ async function mainLoadsStoreLayout(): Promise<void> {
 }
 
 function pinAsUser(tabId: string): void {
-  if (!ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (!TOPO_LAYOUT_OWNER_IS_MAIN) {
     useAppStore.getState().pinTab(tabId)
     return
   }
@@ -169,7 +169,7 @@ function pinAsUser(tabId: string): void {
 }
 
 function labelAsUser(tabId: string, label: string, color: string): void {
-  if (!ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (!TOPO_LAYOUT_OWNER_IS_MAIN) {
     useAppStore.getState().setTabCustomLabel(tabId, label)
     useAppStore.getState().setUnifiedTabColor(tabId, color)
     return
@@ -231,7 +231,7 @@ function openChat(
 }
 
 describe('a provisional structured chat tab', () => {
-  it.skipIf(!ORCA_LAYOUT_OWNER_IS_MAIN)(
+  it.skipIf(!TOPO_LAYOUT_OWNER_IS_MAIN)(
     'cancels a launch whose owning tab main refuses, even if the provider later succeeds',
     async () => {
       layoutApplyTestTransport.answerWith((command) =>
@@ -309,7 +309,7 @@ describe('a provisional structured chat tab', () => {
       useAppStore.getState().closeUnifiedTab(chat.id)
       await main.settle()
       expect(
-        ORCA_LAYOUT_OWNER_IS_MAIN
+        TOPO_LAYOUT_OWNER_IS_MAIN
           ? wasStructuredAgentLaunchClosedByLocalCancel(chat.entityId)
           : hasStructuredAgentSessionLaunchCancellationTombstone('wt-1', chat.entityId)
       ).toBe(true)
@@ -400,7 +400,7 @@ describe('a provisional structured chat tab', () => {
   )
 
   it
-    .skipIf(!ORCA_LAYOUT_OWNER_IS_MAIN)
+    .skipIf(!TOPO_LAYOUT_OWNER_IS_MAIN)
     .each([
       'initializer',
       'published',
@@ -571,7 +571,7 @@ describe('a provisional structured chat tab', () => {
     })
     const groupId = sibling.groupId
     const siblingRecords = () =>
-      ORCA_LAYOUT_OWNER_IS_MAIN ? [terminalRecord(sibling.entityId)] : []
+      TOPO_LAYOUT_OWNER_IS_MAIN ? [terminalRecord(sibling.entityId)] : []
     useAppStore.setState({ tabsByWorktree: { 'wt-1': siblingRecords() } })
     await mainLoadsStoreLayout()
     const pinnedSource = ['empty', 'typed-during', 'initializer'].includes(scenario)
@@ -742,7 +742,7 @@ describe('a provisional structured chat tab', () => {
     })
     useAppStore.setState({
       tabsByWorktree: {
-        'wt-1': ORCA_LAYOUT_OWNER_IS_MAIN
+        'wt-1': TOPO_LAYOUT_OWNER_IS_MAIN
           ? [terminalRecord(sibling.entityId), terminalRecord(terminal.entityId)]
           : []
       }
@@ -811,7 +811,7 @@ it.each(['expiry', 'purge'])('created pane publication: %s', async (order) => {
     expect(store().unifiedTabsByWorktree['wt-1']?.some((t) => t.id === chat.id)).toBe(true)
     list(101)
     expect(store().unifiedTabsByWorktree['wt-1']?.some((t) => t.id === chat.id)).toBe(
-      ORCA_LAYOUT_OWNER_IS_MAIN
+      TOPO_LAYOUT_OWNER_IS_MAIN
     )
   }
 })

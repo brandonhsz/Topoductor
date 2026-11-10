@@ -10,7 +10,7 @@ import type {
 } from './browser-client-page-renderer-reply-admission'
 
 export const rendererPage = {
-  partition: 'persist:orca-browser-route:v1:partition-a',
+  partition: 'persist:topo-browser-route:v1:partition-a',
   browserPageId: 'page-a',
   pageHostGeneration: 7
 }

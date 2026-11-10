@@ -13,7 +13,7 @@ let stateDirectory: string
 let folder: string
 
 beforeEach(async () => {
-  stateDirectory = await mkdtemp(join(tmpdir(), 'orca-visual-read-'))
+  stateDirectory = await mkdtemp(join(tmpdir(), 'topo-visual-read-'))
   folder = nativeChatScratchFolderFor(stateDirectory, 'session-alpha')
   await mkdir(folder, { recursive: true })
 })

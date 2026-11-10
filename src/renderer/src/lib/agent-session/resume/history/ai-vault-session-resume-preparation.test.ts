@@ -34,7 +34,7 @@ describe('ordinary Resume against an older paired host', () => {
       prepareAiVaultSessionForTerminalResume(
         session({
           executionHostId: 'runtime:paired',
-          codexHome: '/tmp/orca/codex-runtime-home/home'
+          codexHome: '/tmp/topo/codex-runtime-home/home'
         })
       )
     ).rejects.toBe(error)
@@ -50,7 +50,7 @@ describe('prepareAiVaultSessionForFork', () => {
     })
 
     await expect(prepareAiVaultSessionForFork(owned)).rejects.toThrow(
-      'Update Orca on the host that runs this chat to resume it in a new CLI.'
+      'Update Topo on the host that runs this chat to resume it in a new CLI.'
     )
   })
 })

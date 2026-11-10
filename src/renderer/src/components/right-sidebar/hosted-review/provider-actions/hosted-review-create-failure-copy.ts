@@ -133,7 +133,7 @@ function createFailureCopy(
       return detail(
         t(
           'sourceControl.createReviewFailure.reviewLookupUnavailable',
-          'Orca could not confirm whether this branch already has a {{reviewLabel}}. Retry once the {{providerName}} lookup succeeds.',
+          'Topo could not confirm whether this branch already has a {{reviewLabel}}. Retry once the {{providerName}} lookup succeeds.',
           vars
         )
       )
@@ -223,7 +223,7 @@ function failureCopyFor(
   return copy ? { copy, shortLabel: labels.shortLabel } : null
 }
 
-/** The sentence for an Orca-authored create failure in the UI language, or null for an unknown reason. */
+/** The sentence for a Topo-authored create failure in the UI language, or null for an unknown reason. */
 export function hostedReviewCreateFailureMessage(
   reason: CreateHostedReviewFailureReason,
   provider: HostedReviewProvider,

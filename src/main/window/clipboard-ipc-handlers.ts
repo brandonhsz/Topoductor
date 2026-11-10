@@ -1,7 +1,7 @@
 import { app, clipboard, ipcMain, nativeImage } from 'electron'
 import { randomUUID } from 'node:crypto'
 import { open, stat } from 'node:fs/promises'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import type { Store } from '../persistence/loading-store/store'
 import { PATH_ACCESS_DENIED_MESSAGE } from '../ipc/filesystem/access/filesystem-auth'
 import { resolveDesktopAuthorizedPath } from '../ipc/filesystem/access/local-file-access-resolution'

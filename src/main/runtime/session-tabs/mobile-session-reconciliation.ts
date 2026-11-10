@@ -1,28 +1,28 @@
 import { reconcileChatTabIdentities } from '../agent-session/agent-session-tab-identity'
 import { preserveTerminalRetirementProofs } from '../terminal/surface/mobile-session-terminal-retirement-proof'
 import { stampMobileSnapshotVersion } from './mobile-session-snapshot-version'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import { startedMainTerminalSurfaces } from '../terminal/surface/main-terminal-surfaces'
 import {
   headlessMobileSnapshotContentUnchanged,
   mobileSnapshotIdentityUnchanged
 } from './mobile-session-snapshot-equality'
-import type { OrcaRuntimeWithMergePreservedHeadlessMobileSessionTabs as MergePreservedHeadlessMobileSessionTabsMethods } from './mobile-session-preservation'
-import type { OrcaRuntimeWithStoredMobileSnapshotHasStalePreservedTab as StoredMobileSnapshotHasStalePreservedTabMethods } from './mobile-session-publication-preservation'
-import { OrcaRuntimeWithWriteOrchestrationPointerPty } from '../orchestration/terminal-authority/write-orchestration-pointer-pty'
+import type { TopoRuntimeWithMergePreservedHeadlessMobileSessionTabs as MergePreservedHeadlessMobileSessionTabsMethods } from './mobile-session-preservation'
+import type { TopoRuntimeWithStoredMobileSnapshotHasStalePreservedTab as StoredMobileSnapshotHasStalePreservedTabMethods } from './mobile-session-publication-preservation'
+import { TopoRuntimeWithWriteOrchestrationPointerPty } from '../orchestration/terminal-authority/write-orchestration-pointer-pty'
 import type { RuntimeMobileSessionTabsSnapshot } from '../../../shared/runtime-session-contracts'
 import type { WorkspaceSessionState } from '../../../shared/workspace-session/workspace-session-state-types'
 import { getMobileSessionSnapshotTabIdentityKeys } from '../session-lifecycle/projection/mobile-session-tab-merge'
 import { HEADLESS_RUNTIME_WINDOW_ID } from '../../../shared/runtime-session-contracts'
 
-export abstract class OrcaRuntimeWithSyncMobileSessionTabs extends OrcaRuntimeWithWriteOrchestrationPointerPty {
+export abstract class TopoRuntimeWithSyncMobileSessionTabs extends TopoRuntimeWithWriteOrchestrationPointerPty {
   storeMobileSessionSnapshot(
     worktreeId: string,
     snapshot: RuntimeMobileSessionTabsSnapshot
   ): RuntimeMobileSessionTabsSnapshot {
     const existing = this.mobileSessionTabsByWorktree.get(worktreeId)
     snapshot = reconcileChatTabIdentities(snapshot, existing)
-    if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN) {
       const merged = startedMainTerminalSurfaces(this)?.withMainOrder(snapshot) ?? snapshot
       // Main-order-only rebuilds are no-ops unless occupant/publication/retirement evidence changed.
       if (

@@ -4,13 +4,13 @@ param(
  [Parameter(Mandatory=$true)][hashtable]$Context,
  [Parameter(Mandatory=$true)][ValidateSet('win32-arm64','win32-x64')][string]$Target,
  [Parameter(Mandatory=$true)][string]$ReceiptRoot,
- [ValidateSet('orcad-cmd','orcad-powershell','orcad-convert','orcad-cli-managed','orcad-cli-convert')][string[]]$Cells=@('orcad-cmd','orcad-powershell')
+ [ValidateSet('topod-cmd','topod-powershell','topod-convert','topod-cli-managed','topod-cli-convert')][string[]]$Cells=@('topod-cmd','topod-powershell')
 )
 $ErrorActionPreference='Stop'
-if($env:GITHUB_ACTIONS -ne 'true' -or $env:ORCA_ISOLATED_SSH_CI -ne '1'){throw 'Disposable CI only'}
-$shells=@{'orcad-cmd'='cmd';'orcad-powershell'='powershell';'orcad-convert'='cmd';'orcad-cli-managed'='cmd';'orcad-cli-convert'='cmd'}
+if($env:GITHUB_ACTIONS -ne 'true' -or $env:TOPO_ISOLATED_SSH_CI -ne '1'){throw 'Disposable CI only'}
+$shells=@{'topod-cmd'='cmd';'topod-powershell'='powershell';'topod-convert'='cmd';'topod-cli-managed'='cmd';'topod-cli-convert'='cmd'}
 # App-level cells drive the e2e build (and the bundled CLI) against the host; each greps one tagged test.
-$appCells=@{'orcad-convert'=@('tests/e2e/ssh-orcad-auto-convert.spec.ts','');'orcad-cli-managed'=@('tests/e2e/ssh-orcad-windows-cli-matrix.spec.ts','@orcad-cli-managed');'orcad-cli-convert'=@('tests/e2e/ssh-orcad-windows-cli-matrix.spec.ts','@orcad-cli-convert')}
+$appCells=@{'topod-convert'=@('tests/e2e/ssh-topod-auto-convert.spec.ts','');'topod-cli-managed'=@('tests/e2e/ssh-topod-windows-cli-matrix.spec.ts','@topod-cli-managed');'topod-cli-convert'=@('tests/e2e/ssh-topod-windows-cli-matrix.spec.ts','@topod-cli-convert')}
 $electronBuilt=$false
 if($Context.accounts.Count -lt $Cells.Count){throw 'Each cell needs its own private account'}
 $seenApp=$false
@@ -21,7 +21,7 @@ $windowsPowerShell=Join-Path $env:WINDIR 'System32\WindowsPowerShell\v1.0\powers
 $knownPath=Join-Path ([Environment]::GetFolderPath('UserProfile')) '.ssh\known_hosts'
 $knownExisted=Test-Path -LiteralPath $knownPath
 $priorKnown=if($knownExisted){[IO.File]::ReadAllBytes($knownPath)}else{$null}
-$priorBackground=$env:ORCA_BACKGROUND_LAUNCH
+$priorBackground=$env:TOPO_BACKGROUND_LAUNCH
 $failed=[Collections.Generic.List[string]]::new()
 $summary=[Collections.Generic.List[hashtable]]::new()
 
@@ -46,22 +46,22 @@ function Set-PrivateDefaultShell([string]$Shell) {
   }
 }
 
-# Diagnostic ORCA_WMI=<ReturnValue>|denied: standard SSH logons lack root\cimv2 Remote Enable; Orca must launch without WMI.
+# Diagnostic TOPO_WMI=<ReturnValue>|denied: standard SSH logons lack root\cimv2 Remote Enable; Topo must launch without WMI.
 function Test-PrivateWmiLaunch([string]$Account) {
-  $out=Invoke-PrivateSsh $Account 'powershell.exe -NoProfile -NonInteractive -Command "try{$r=Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine=''cmd.exe /d /c exit 0''} -ErrorAction Stop;''ORCA_WMI=''+$r.ReturnValue}catch{''ORCA_WMI=denied''}"'
-  $match=[regex]::Match($out,'ORCA_WMI=(\S+)')
+  $out=Invoke-PrivateSsh $Account 'powershell.exe -NoProfile -NonInteractive -Command "try{$r=Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine=''cmd.exe /d /c exit 0''} -ErrorAction Stop;''TOPO_WMI=''+$r.ReturnValue}catch{''TOPO_WMI=denied''}"'
+  $match=[regex]::Match($out,'TOPO_WMI=(\S+)')
   if($match.Success){return $match.Groups[1].Value}else{return 'no-output'}
 }
 
 # Run app-level cells last: the e2e build switches natives to Electron’s ABI, which vitest cannot load.
 function Invoke-AppCell($Account,[string]$Descriptor,[string]$Log,[string]$Spec,[string]$Grep) {
-  $ready=Invoke-PrivateSsh $Account.name 'git init -q orca-convert-repo && git -C orca-convert-repo -c user.name=orca -c user.email=orca@example.invalid commit -q --allow-empty -m init && echo ORCA_REPO_READY'
-  if($ready -notmatch 'ORCA_REPO_READY'){throw 'Could not create the convert cell repository as the account'}
+  $ready=Invoke-PrivateSsh $Account.name 'git init -q topo-convert-repo && git -C topo-convert-repo -c user.name=topo -c user.email=topo@example.invalid commit -q --allow-empty -m init && echo TOPO_REPO_READY'
+  if($ready -notmatch 'TOPO_REPO_READY'){throw 'Could not create the convert cell repository as the account'}
   # Out of the app's default lookup, so the relay phase runs without a template.
-  $template=Join-Path $env:RUNNER_TEMP 'orcad-convert-template'
+  $template=Join-Path $env:RUNNER_TEMP 'topod-convert-template'
   # Why guarded: Copy-Item into an existing folder nests the copy instead of replacing it.
-  if(-not (Test-Path -LiteralPath $template)){Copy-Item -LiteralPath 'out\orcad-template' -Destination $template -Recurse -Force}
-  Rename-Item -LiteralPath 'out\orcad-template' -NewName 'orcad-template.convert-hidden'
+  if(-not (Test-Path -LiteralPath $template)){Copy-Item -LiteralPath 'out\topod-template' -Destination $template -Recurse -Force}
+  Rename-Item -LiteralPath 'out\topod-template' -NewName 'topod-template.convert-hidden'
   try {
     if(-not $script:electronBuilt){
       & node config/scripts/native-build/node-addons/ensure-native-runtime.mjs --runtime=electron 2>&1 | Tee-Object -FilePath $Log | Out-Host
@@ -70,7 +70,7 @@ function Invoke-AppCell($Account,[string]$Descriptor,[string]$Log,[string]$Spec,
       if($global:LASTEXITCODE -ne 0){Write-Host 'The e2e app build failed';return $global:LASTEXITCODE}
       $script:electronBuilt=$true
     }
-    $env:ORCA_E2E_ORCAD_CONVERT_HOST=$Descriptor;$env:ORCA_E2E_ORCAD_CONVERT_TEMPLATE=$template;$env:SKIP_BUILD='1'
+    $env:TOPO_E2E_TOPOD_CONVERT_HOST=$Descriptor;$env:TOPO_E2E_TOPOD_CONVERT_TEMPLATE=$template;$env:SKIP_BUILD='1'
     $grepArgs=if($Grep){@('--grep',$Grep)}else{@()}
     & pnpm exec playwright test --config tests/playwright.config.ts $Spec @grepArgs --project=electron-headless --workers=1 2>&1 | Tee-Object -FilePath $Log -Append | Out-Host
     # Functions return uncaptured output, so only the exit code may reach the caller.
@@ -78,22 +78,22 @@ function Invoke-AppCell($Account,[string]$Descriptor,[string]$Log,[string]$Spec,
   } finally {
     # Screenshots, traces and error context: Playwright clears test-results on the next cell's run.
     if(Test-Path -LiteralPath 'test-results'){Copy-Item -LiteralPath 'test-results' -Destination ($Log -replace '\.log$','.test-results') -Recurse -Force}
-    Remove-Item Env:ORCA_E2E_ORCAD_CONVERT_HOST,Env:ORCA_E2E_ORCAD_CONVERT_TEMPLATE,Env:SKIP_BUILD -ErrorAction SilentlyContinue
-    Rename-Item -LiteralPath 'out\orcad-template.convert-hidden' -NewName 'orcad-template'
+    Remove-Item Env:TOPO_E2E_TOPOD_CONVERT_HOST,Env:TOPO_E2E_TOPOD_CONVERT_TEMPLATE,Env:SKIP_BUILD -ErrorAction SilentlyContinue
+    Rename-Item -LiteralPath 'out\topod-template.convert-hidden' -NewName 'topod-template'
   }
 }
 
 New-Item -ItemType Directory -Force -Path $ReceiptRoot | Out-Null
 Push-Location $SourceRoot
 try {
-  if(-not (Test-Path -LiteralPath 'out\orcad-template')){throw 'Build the orcad template before provisioning'}
+  if(-not (Test-Path -LiteralPath 'out\topod-template')){throw 'Build the topod template before provisioning'}
   # ssh2 consults the runner's known_hosts: pin only this private endpoint, restored below.
   New-Item -ItemType Directory -Force -Path (Split-Path $knownPath) | Out-Null
   Add-Content -LiteralPath $knownPath -Value ("`n"+[IO.File]::ReadAllText($Context.knownHosts))
-  $env:ORCA_BACKGROUND_LAUNCH='1'
+  $env:TOPO_BACKGROUND_LAUNCH='1'
   # DefaultShell is still stock cmd here.
   $wmi=Test-PrivateWmiLaunch $Context.accounts[0].name
-  Write-Host "Standard SSH user WMI Win32_Process.Create: $wmi (no grant; the orcad launch must not depend on it)"
+  Write-Host "Standard SSH user WMI Win32_Process.Create: $wmi (no grant; the topod launch must not depend on it)"
   $summary.Add(@{standardUserWmiLaunch=$wmi;granted=$false})
   for($index=0;$index -lt $Cells.Count;$index++){
     $cell=$Cells[$index];$account=$Context.accounts[$index];$shell=$shells[$cell]
@@ -105,19 +105,19 @@ try {
     if(Test-Path -LiteralPath $Context.forbiddenToolLog){Move-Item -LiteralPath $Context.forbiddenToolLog -Destination (Join-Path $ReceiptRoot "$cell.before.forbidden-tool-calls.log")}
     $descriptor=Join-Path $ReceiptRoot "$cell.descriptor.json"
     @{cell=$cell;target=$Target;host='127.0.0.1';port=[int]$Context.port;username=$account.name;identityFile=$Context.identityFile;home=$account.home;forbiddenToolLog=$Context.forbiddenToolLog;receipt=(Join-Path $ReceiptRoot "$cell.json")} | ConvertTo-Json | Set-Content -LiteralPath $descriptor -Encoding utf8NoBOM
-    $env:ORCA_RUN_SSH_WINDOWS_HOST='1';$env:ORCA_SSH_WINDOWS_HOST_CELL=$descriptor
+    $env:TOPO_RUN_SSH_WINDOWS_HOST='1';$env:TOPO_SSH_WINDOWS_HOST_CELL=$descriptor
     Write-Host "Windows host cell $cell ($Target, DefaultShell $shell, account $($account.name))"
     if($appCells.ContainsKey($cell)){
       $code=Invoke-AppCell $account $descriptor (Join-Path $ReceiptRoot "$cell.log") $appCells[$cell][0] $appCells[$cell][1]
     } else {
-      if(-not $cell.StartsWith('orcad-')){throw "Unknown Windows host cell $cell"}
-      $lane='src/main/managed-server/host-state/orcad-windows-host-lane.test.ts'
+      if(-not $cell.StartsWith('topod-')){throw "Unknown Windows host cell $cell"}
+      $lane='src/main/managed-server/host-state/topod-windows-host-lane.test.ts'
       & node node_modules/vitest/vitest.mjs run --config config/vitest.config.ts $lane --reporter=verbose 2>&1 | Tee-Object -FilePath (Join-Path $ReceiptRoot "$cell.log")
       # Why global: under the workflow's GetNewClosure callback, bare $LASTEXITCODE reads a stale captured copy.
       $code=$global:LASTEXITCODE
     }
-    # orcad.log holds only the last launch on Windows; orcad.log.1 is the one before a restart.
-    foreach($log in @(Get-ChildItem -Path (Join-Path $account.home '.orca-remote\orcad-*\orcad.log'),(Join-Path $account.home '.orca-remote\orcad-*\orcad.log.1') -File -ErrorAction SilentlyContinue)){Copy-Item -LiteralPath $log.FullName -Destination (Join-Path $ReceiptRoot "$cell.$($log.Directory.Name).$($log.Name)")}
+    # topod.log holds only the last launch on Windows; topod.log.1 is the one before a restart.
+    foreach($log in @(Get-ChildItem -Path (Join-Path $account.home '.topo-remote\topod-*\topod.log'),(Join-Path $account.home '.topo-remote\topod-*\topod.log.1') -File -ErrorAction SilentlyContinue)){Copy-Item -LiteralPath $log.FullName -Destination (Join-Path $ReceiptRoot "$cell.$($log.Directory.Name).$($log.Name)")}
     if(Test-Path -LiteralPath $Context.forbiddenToolLog){Copy-Item -LiteralPath $Context.forbiddenToolLog -Destination (Join-Path $ReceiptRoot "$cell.forbidden-tool-calls.log")}
     $summary.Add(@{cell=$cell;shell=$shell;account=$account.name;exitCode=$code})
     if($code -ne 0){$failed.Add($cell)}
@@ -133,8 +133,8 @@ try {
 } finally {
   Set-PrivateDefaultShell 'cmd'
   if($knownExisted){[IO.File]::WriteAllBytes($knownPath,$priorKnown)}else{Remove-Item -LiteralPath $knownPath -Force -ErrorAction SilentlyContinue}
-  $env:ORCA_BACKGROUND_LAUNCH=$priorBackground
-  Remove-Item Env:ORCA_RUN_SSH_WINDOWS_HOST,Env:ORCA_SSH_WINDOWS_HOST_CELL -ErrorAction SilentlyContinue
+  $env:TOPO_BACKGROUND_LAUNCH=$priorBackground
+  Remove-Item Env:TOPO_RUN_SSH_WINDOWS_HOST,Env:TOPO_SSH_WINDOWS_HOST_CELL -ErrorAction SilentlyContinue
   $summary | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $ReceiptRoot 'summary.json') -Encoding utf8NoBOM
   Pop-Location
 }

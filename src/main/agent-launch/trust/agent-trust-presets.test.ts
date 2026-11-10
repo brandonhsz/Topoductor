@@ -11,7 +11,7 @@ import {
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { runCodexAppServerSession } from '../../codex/app-server/codex-app-server-session'
 
 const testState = {
@@ -39,27 +39,27 @@ const { getLocalCodexTrustConfigFiles } =
 
 // Real-binary tests prove Codex consumes the key; CI requires the binary instead of skipping.
 const codexTrustContract = {
-  binary: process.env.ORCA_CODEX_TRUST_CONTRACT_BINARY,
-  version: process.env.ORCA_CODEX_TRUST_CONTRACT_VERSION
+  binary: process.env.TOPO_CODEX_TRUST_CONTRACT_BINARY,
+  version: process.env.TOPO_CODEX_TRUST_CONTRACT_VERSION
 }
-if (process.env.ORCA_CODEX_TRUST_CONTRACT_REQUIRED === '1' && !codexTrustContract.binary) {
-  throw new Error('ORCA_CODEX_TRUST_CONTRACT_REQUIRED=1 but no Codex binary was given')
+if (process.env.TOPO_CODEX_TRUST_CONTRACT_REQUIRED === '1' && !codexTrustContract.binary) {
+  throw new Error('TOPO_CODEX_TRUST_CONTRACT_REQUIRED=1 but no Codex binary was given')
 }
 
 beforeEach(() => {
-  testState.fakeHomeDir = mkdtempSync(join(tmpdir(), 'orca-trust-presets-'))
-  testState.userDataDir = mkdtempSync(join(tmpdir(), 'orca-trust-presets-user-data-'))
-  testState.previousUserDataPath = process.env.ORCA_USER_DATA_PATH
-  process.env.ORCA_USER_DATA_PATH = testState.userDataDir
+  testState.fakeHomeDir = mkdtempSync(join(tmpdir(), 'topo-trust-presets-'))
+  testState.userDataDir = mkdtempSync(join(tmpdir(), 'topo-trust-presets-user-data-'))
+  testState.previousUserDataPath = process.env.TOPO_USER_DATA_PATH
+  process.env.TOPO_USER_DATA_PATH = testState.userDataDir
 })
 
 afterEach(() => {
   rmSync(testState.fakeHomeDir, { recursive: true, force: true })
   rmSync(testState.userDataDir, { recursive: true, force: true })
   if (testState.previousUserDataPath === undefined) {
-    delete process.env.ORCA_USER_DATA_PATH
+    delete process.env.TOPO_USER_DATA_PATH
   } else {
-    process.env.ORCA_USER_DATA_PATH = testState.previousUserDataPath
+    process.env.TOPO_USER_DATA_PATH = testState.previousUserDataPath
   }
   testState.fakeHomeDir = ''
   testState.userDataDir = ''
@@ -71,7 +71,7 @@ describe('markCopilotFolderTrusted', () => {
     if (process.platform === 'win32') {
       return
     }
-    const workspace = mkdtempSync(join(tmpdir(), 'orca-copilot-ws-'))
+    const workspace = mkdtempSync(join(tmpdir(), 'topo-copilot-ws-'))
     const configPath = join(testState.fakeHomeDir, '.copilot', 'config.json')
     // A restrictive runner umask could hide a missing creation mode.
     const originalUmask = process.umask(0o022)
@@ -93,7 +93,7 @@ describe('markCopilotFolderTrusted', () => {
 describe('markCodexProjectTrusted', () => {
   // Hook capture/restore could silently revert an unqueued trust write (#16441).
   it('queues behind an in-flight Codex trust-config mutation', async () => {
-    const workspace = mkdtempSync(join(tmpdir(), 'orca-codex-ws-'))
+    const workspace = mkdtempSync(join(tmpdir(), 'topo-codex-ws-'))
     const configPath = join(testState.fakeHomeDir, '.codex', 'config.toml')
     let releaseGrant!: () => void
     const grantHoldingTheFile = new Promise<void>((resolve) => {
@@ -127,7 +127,7 @@ describe('markCodexProjectTrusted', () => {
       }
     })
     beforeEach(() => {
-      fixtureRoot = realpathSync.native(mkdtempSync(join(tmpdir(), 'orca-codex-layout-')))
+      fixtureRoot = realpathSync.native(mkdtempSync(join(tmpdir(), 'topo-codex-layout-')))
     })
     afterEach(() => {
       rmSync(fixtureRoot, { recursive: true, force: true })
@@ -136,7 +136,7 @@ describe('markCodexProjectTrusted', () => {
     function git(cwd: string, ...args: string[]): void {
       const result = runProcessSync({
         program: 'git',
-        args: ['-c', 'user.name=Orca', '-c', 'user.email=orca@example.com', ...args],
+        args: ['-c', 'user.name=Topo', '-c', 'user.email=topo@example.com', ...args],
         cwd
       })
       expect(result.code, result.stderr).toBe(0)

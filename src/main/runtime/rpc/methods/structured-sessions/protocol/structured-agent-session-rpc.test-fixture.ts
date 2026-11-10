@@ -15,7 +15,7 @@ import {
   setStructuredAgentSessionHost
 } from '../../../../../native-chat/agent-session-wire/host/structured-agent-session-registry'
 import type { StructuredAgentSessionStatusSubscriber } from '../../../../../native-chat/agent-session-wire/observations/structured-agent-session-status-feed-deps'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { RpcAnyMethodDeclaration, RpcContext, RpcResponse } from '../../../core'
 import { RpcDispatcher } from '../../../dispatcher'
 import { STRUCTURED_AGENT_SESSION_METHODS } from '../structured-agent-session'
@@ -166,7 +166,7 @@ export function dispatcher(
     currentLocalStructuredSessionPresentation: vi.fn(() => null),
     captureStructuredAgentSessionPresentation: vi.fn(() => ({ raw: null, saved: [] })),
     removeCapturedStructuredSessionSavedTabs: vi.fn(),
-    publishStructuredAgentSessionTab: vi.fn<OrcaRuntimeService['publishStructuredAgentSessionTab']>(
+    publishStructuredAgentSessionTab: vi.fn<TopoRuntimeService['publishStructuredAgentSessionTab']>(
       async (input) => input.capture?.({ tableId: null, presentation: { raw: null, saved: [] } })
     )
   })
@@ -184,7 +184,7 @@ export function dispatcher(
     ...runtimeOverrides
   }
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: this partial runtime supplies the dispatcher methods under test and runtimeOverrides; a missing access fails the test.
-  return new RpcDispatcher({ runtime: runtime as unknown as OrcaRuntimeService, methods })
+  return new RpcDispatcher({ runtime: runtime as unknown as TopoRuntimeService, methods })
 }
 
 /** Reply transport carries the negotiated client identity the capability gate reads. */

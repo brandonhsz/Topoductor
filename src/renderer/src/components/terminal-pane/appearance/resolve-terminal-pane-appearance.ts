@@ -40,9 +40,9 @@ export function resolveTerminalPaneAppearance({
     display: terminalContentVisible ? 'flex' : 'none',
     overflow: 'hidden',
     ...hiddenStartupStyle,
-    ['--orca-terminal-divider-color' as string]:
+    ['--topo-terminal-divider-color' as string]:
       effectiveAppearance?.dividerColor ?? DEFAULT_TERMINAL_DIVIDER_DARK,
-    ['--orca-terminal-divider-color-strong' as string]: normalizeColor(
+    ['--topo-terminal-divider-color-strong' as string]: normalizeColor(
       effectiveAppearance?.dividerColor,
       DEFAULT_TERMINAL_DIVIDER_DARK
     )

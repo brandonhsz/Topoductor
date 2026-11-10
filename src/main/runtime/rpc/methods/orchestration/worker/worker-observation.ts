@@ -12,7 +12,7 @@ import type {
   FederatedDispatchRow,
   WorkerDispatchRow
 } from '../../../../orchestration/db/orchestration-records'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import { exposeDispatchContext } from './dispatch-context-exposure'
 
 /** Recover live handles by recorded process incarnation so stale durable handles cannot hide and leak running workers. */
@@ -106,7 +106,7 @@ export async function inspectWorkerTerminal(
       }
     }
     // Switch point: main's rows carry the host's verdict; `connected` alone is the old word.
-    if (ORCA_LAYOUT_OWNER_IS_MAIN && terminal.verdict === 'unverifiable') {
+    if (TOPO_LAYOUT_OWNER_IS_MAIN && terminal.verdict === 'unverifiable') {
       return {
         terminal,
         exact,
@@ -120,7 +120,7 @@ export async function inspectWorkerTerminal(
       terminal,
       exact,
       status:
-        ORCA_LAYOUT_OWNER_IS_MAIN && terminal.verdict
+        TOPO_LAYOUT_OWNER_IS_MAIN && terminal.verdict
           ? terminal.verdict
           : terminal.connected === false
             ? 'exited'
@@ -259,7 +259,7 @@ export function resolvePinnedFederatedServer(
   if (server.peerFingerprint !== federated.peer_fingerprint) {
     throw new OrchestrationError(
       'peer_changed',
-      `Saved environment ${federated.environment_name} now identifies a different Orca server.`
+      `Saved environment ${federated.environment_name} now identifies a different Topo server.`
     )
   }
   return server

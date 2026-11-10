@@ -30,7 +30,7 @@ describe('orchestration mailbox crash recovery', () => {
 
   it('does not replay Enter when Enter was accepted before settlement', async () => {
     vi.useFakeTimers()
-    const directory = mkdtempSync(join(tmpdir(), 'orca-mailbox-enter-crash-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-mailbox-enter-crash-'))
     temporaryDirectories.push(directory)
     const dbPath = join(directory, 'orchestration.db')
     const firstDb = new OrchestrationDb(dbPath)

@@ -48,9 +48,9 @@ const SidebarFeedbackDialog = lazyWithRetry(
 
 const DOCS_URL = 'https://www.onorca.dev/docs'
 const CHANGELOG_URL = 'https://onorca.dev/changelog'
-const GITHUB_URL = 'https://github.com/stablyai/orca'
+const GITHUB_URL = 'https://github.com/brandonhsz/Topoductor'
 const DISCORD_URL = 'https://discord.gg/fzjDKHxv8Q'
-const X_URL = 'https://x.com/orca_build'
+const X_URL = 'https://x.com/topo_build'
 const NO_UPDATE_CHECK_MODIFIERS = {
   altKey: false,
   ctrlKey: false,
@@ -105,7 +105,7 @@ export function SidebarSettingsHelpMenu(): React.JSX.Element {
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   // Retain the mounted dialog through its closing animation.
   const [feedbackDialogMounted, setFeedbackDialogMounted] = useState(false)
-  const [isRestartingOrca, setIsRestartingOrca] = useState(false)
+  const [isRestartingTopo, setIsRestartingTopo] = useState(false)
   const lastShowOnboardingAtRef = React.useRef(0)
   const updateCheckModifiersRef = React.useRef(NO_UPDATE_CHECK_MODIFIERS)
   const mountedRef = useMountedRef()
@@ -137,17 +137,17 @@ export function SidebarSettingsHelpMenu(): React.JSX.Element {
     void showOnboardingFromRenderer()
   }
 
-  const handleRestartOrca = (): void => {
-    if (isRestartingOrca) {
+  const handleRestartTopo = (): void => {
+    if (isRestartingTopo) {
       return
     }
-    setIsRestartingOrca(true)
-    toast.info(t('auto.components.sidebar.SidebarSettingsHelpMenu.5161eef55d', 'Restarting Orca…'))
+    setIsRestartingTopo(true)
+    toast.info(t('auto.components.sidebar.SidebarSettingsHelpMenu.5161eef55d', 'Restarting Topo…'))
     void window.api.app.restart().catch((error) => {
       if (mountedRef.current) {
-        setIsRestartingOrca(false)
+        setIsRestartingTopo(false)
         toast.error(
-          t('auto.components.sidebar.SidebarSettingsHelpMenu.4e8f5710d3', "Couldn't restart Orca."),
+          t('auto.components.sidebar.SidebarSettingsHelpMenu.4e8f5710d3', "Couldn't restart Topo."),
           {
             description: error instanceof Error ? error.message : undefined
           }
@@ -313,9 +313,9 @@ export function SidebarSettingsHelpMenu(): React.JSX.Element {
               {t('auto.components.sidebar.SidebarSettingsHelpMenu.29c56f30ee', 'Check for Updates')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={handleRestartOrca} disabled={isRestartingOrca}>
+            <DropdownMenuItem onSelect={handleRestartTopo} disabled={isRestartingTopo}>
               <RotateCw className="size-3.5" />
-              {t('auto.components.sidebar.SidebarSettingsHelpMenu.ad3d3ed7f1', 'Restart Orca')}
+              {t('auto.components.sidebar.SidebarSettingsHelpMenu.ad3d3ed7f1', 'Restart Topo')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

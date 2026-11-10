@@ -111,7 +111,7 @@ export function TerminalPane({
         title={t('auto.components.settings.TerminalPane.fd05fb109c', 'Terminal shell')}
         description={t(
           'auto.components.settings.TerminalPane.69724e8f0c',
-          'Choose what Orca opens for new local terminal panes.'
+          'Choose what Topo opens for new local terminal panes.'
         )}
       >
         <div className="space-y-3 py-3">
@@ -168,7 +168,7 @@ export function TerminalPane({
               <p id="default-shell-help" className="text-xs text-muted-foreground">
                 {t(
                   'auto.components.settings.TerminalPane.59573d0b33',
-                  'Enter a shell name on PATH or an executable path. Orca starts it as a login shell.'
+                  'Enter a shell name on PATH or an executable path. Topo starts it as a login shell.'
                 )}
               </p>
               {shellValidationError ? (

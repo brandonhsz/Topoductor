@@ -54,7 +54,7 @@ export type RemoveWorktreeOptions = GitWorktreeExecOptions & {
   checkoutDeleteSignal?: AbortSignal
 }
 
-// Bound stalled checkouts; this default also sets the floor for ORCA_WORKTREE_ADD_TIMEOUT_MS.
+// Bound stalled checkouts; this default also sets the floor for TOPO_WORKTREE_ADD_TIMEOUT_MS.
 export const WORKTREE_ADD_TIMEOUT_MS = 180_000
 // Allow slow content filters while bounding overrides to 30 minutes.
 export const WORKTREE_ADD_TIMEOUT_MAX_MS = 30 * 60_000
@@ -63,9 +63,9 @@ export const WORKTREE_REMOVAL_REGISTRATION_TIMEOUT_MS = 30_000
 // A wedged shared scan would otherwise stall every later listing.
 export const WORKTREE_LIST_TIMEOUT_MS = 30_000
 
-/** Clamp ORCA_WORKTREE_ADD_TIMEOUT_MS; warn for nonblank rejected/clamped values, not fractional truncation. */
+/** Clamp TOPO_WORKTREE_ADD_TIMEOUT_MS; warn for nonblank rejected/clamped values, not fractional truncation. */
 export function resolveWorktreeAddTimeoutMs(env: NodeJS.ProcessEnv = process.env): number {
-  const raw = env.ORCA_WORKTREE_ADD_TIMEOUT_MS?.trim()
+  const raw = env.TOPO_WORKTREE_ADD_TIMEOUT_MS?.trim()
   const requested = Math.floor(Number(raw))
   // Guard against values entered in seconds rather than milliseconds.
   const resolved = Number.isNaN(requested)
@@ -77,18 +77,18 @@ export function resolveWorktreeAddTimeoutMs(env: NodeJS.ProcessEnv = process.env
       ? 'is not a number'
       : `is outside [${WORKTREE_ADD_TIMEOUT_MS}, ${WORKTREE_ADD_TIMEOUT_MAX_MS}]ms`
     console.warn(
-      `[git/worktree] ORCA_WORKTREE_ADD_TIMEOUT_MS="${raw}" ${problem}; using ${resolved}ms`
+      `[git/worktree] TOPO_WORKTREE_ADD_TIMEOUT_MS="${raw}" ${problem}; using ${resolved}ms`
     )
   }
   return resolved
 }
 
 export function worktreeAddTimeoutMessage(timeoutMs: number): string {
-  const stopped = `Creating the worktree took longer than ${Math.round(timeoutMs / 1000)} seconds, so Orca stopped Git.`
+  const stopped = `Creating the worktree took longer than ${Math.round(timeoutMs / 1000)} seconds, so Topo stopped Git.`
   if (timeoutMs >= WORKTREE_ADD_TIMEOUT_MAX_MS) {
     return stopped
   }
-  return `${stopped} To allow more time, set ORCA_WORKTREE_ADD_TIMEOUT_MS (milliseconds, up to ${WORKTREE_ADD_TIMEOUT_MAX_MS}) in the environment that starts Orca on the machine running Git (the remote host for SSH or \`orca serve\` workspaces), then restart Orca there.`
+  return `${stopped} To allow more time, set TOPO_WORKTREE_ADD_TIMEOUT_MS (milliseconds, up to ${WORKTREE_ADD_TIMEOUT_MAX_MS}) in the environment that starts Topo on the machine running Git (the remote host for SSH or \`topo serve\` workspaces), then restart Topo there.`
 }
 
 export type GitExecOptionsForWorktree = {

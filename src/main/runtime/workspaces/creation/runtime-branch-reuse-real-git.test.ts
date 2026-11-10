@@ -32,7 +32,7 @@ async function fixture(
   remote = 'origin',
   prefix: { branchPrefix: string; branchPrefixCustom?: string } = { branchPrefix: '' }
 ) {
-  const root = await realpath(await mkdtemp(join(tmpdir(), 'orca-branch-reuse-')))
+  const root = await realpath(await mkdtemp(join(tmpdir(), 'topo-branch-reuse-')))
   roots.push(root)
   await git(root, 'init', '--quiet', 'repo')
   const repoPath = join(root, 'repo')

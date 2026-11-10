@@ -2,22 +2,22 @@ import { getRepoDialableSshTargetId } from '../../../shared/execution-host'
 import { windowsFsPath } from '../../wsl/filesystem/wsl-unc-drive-fs-path'
 import { readFile } from 'node:fs/promises'
 import type { Repo } from '../../../shared/repo-types'
-import type { OrcaHooks } from '../../../shared/orca-yaml-hook-types'
+import type { TopoHooks } from '../../../shared/topo-yaml-hook-types'
 import {
   getEffectiveHooks,
   hasHooksFile,
-  hasUnrecognizedOrcaYamlKeys,
+  hasUnrecognizedTopoYamlKeys,
   loadHooks
 } from '../../workspace-hooks/hooks'
 import { getEffectiveSetupRunPolicy } from '../../workspace-hooks/effective-hook-config'
 import { resolveHookCommandSourcePolicy } from '../../../shared/hook-command-source-policy'
-import { getSetupConfig, getSetupTrustContent } from '../../../shared/orca-hook-setup-config'
+import { getSetupConfig, getSetupTrustContent } from '../../../shared/topo-hook-setup-config'
 import { isENOENT } from '../../ipc/filesystem/access/filesystem-path-containment'
 import { isFolderRepo } from '../../../shared/repo-kind'
 import { inspectSetupScriptImportCandidates } from '../../../shared/workspace-setup/setup-script-imports'
 import { joinWorktreeRelativePath } from '../files/paths/runtime-relative-paths'
 import { blockedWslDistroForPath } from '../../wsl/filesystem/wsl-unc-access-gate'
-import { hashOrcaHookTrustContent } from '../../workspace-hooks/created-worktree-setup-trust'
+import { hashTopoHookTrustContent } from '../../workspace-hooks/created-worktree-setup-trust'
 
 type RuntimeRepositoryHooksCommandsDeps = {
   resolveRepo: (selector: string) => Promise<Repo>
@@ -46,15 +46,15 @@ export class RuntimeRepositoryHooksCommands {
       hasHooksFile: hasFile,
       hooks,
       setupRunPolicy: getEffectiveSetupRunPolicy(repo),
-      source: hasFile ? ('orca.yaml' as const) : hooks ? ('legacy' as const) : null,
+      source: hasFile ? ('topo.yaml' as const) : hooks ? ('legacy' as const) : null,
       // Why: `hooks` drops defaultTabs, so clients gate the setup choice on this instead.
       setupConfig,
-      // Local-only setup runs the user's own script, which needs no orca.yaml trust.
+      // Local-only setup runs the user's own script, which needs no topo.yaml trust.
       setupTrust:
         setupConfig && setupConfig.source !== 'local'
           ? hookTrust(getSetupTrustContent(sharedHooks))
           : undefined,
-      // As desktop's archive prompt: only a shared orca.yaml script needs trust. null tells clients none is needed; older hosts omit it.
+      // As desktop's archive prompt: only a shared topo.yaml script needs trust. null tells clients none is needed; older hosts omit it.
       archiveTrust: archiveTrust(repo, sharedHooks)
     }
   }
@@ -88,7 +88,7 @@ export class RuntimeRepositoryHooksCommands {
       status: 'ok' as const,
       hasHooks: has,
       hooks,
-      mayNeedUpdate: has && !hooks && hasUnrecognizedOrcaYamlKeys(repo.path)
+      mayNeedUpdate: has && !hooks && hasUnrecognizedTopoYamlKeys(repo.path)
     }
   }
 
@@ -116,12 +116,12 @@ export class RuntimeRepositoryHooksCommands {
 }
 
 function hookTrust(scriptContent: string): { contentHash: string; scriptContent: string } {
-  return { contentHash: hashOrcaHookTrustContent(scriptContent), scriptContent }
+  return { contentHash: hashTopoHookTrustContent(scriptContent), scriptContent }
 }
 
 function archiveTrust(
   repo: Repo,
-  sharedHooks: OrcaHooks | null
+  sharedHooks: TopoHooks | null
 ): { contentHash: string; scriptContent: string } | null {
   // Folder removal never runs hooks.
   if (isFolderRepo(repo)) {

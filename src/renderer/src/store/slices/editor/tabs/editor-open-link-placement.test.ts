@@ -5,7 +5,7 @@ import type { AppState } from '../../../types'
 import type { OpenFile } from '../types/open-file'
 import { captureEditorOpenLinkIntent } from './editor-open-target-group'
 import { removeGroupLayoutLeaf } from '../../../../../../shared/workspace-layout/tab-group-layout-tree'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 import { makeLayout, makeTab } from '../../../terminals/terminal-tab.test-fixture'
 import { drawTabsFromMain } from '../../tabs/tabs-drawn-from-main.test-fixture'
 
@@ -53,7 +53,7 @@ function addTab(
     ...(groupId ? { targetGroupId: groupId } : {})
   })
   // A terminal with its row, so main holds it once it takes the layout.
-  if (ORCA_LAYOUT_OWNER_IS_MAIN && contentType === 'terminal') {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN && contentType === 'terminal') {
     const state = store.getState()
     store.setState({
       tabsByWorktree: {
@@ -70,7 +70,7 @@ function addTab(
 
 /** A seeded editor; a layout-owner build lays it out as a restore does, before main takes it. */
 function addEditor(store: StoreApi<AppState>, filePath: string, groupId: string): void {
-  if (!ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (!TOPO_LAYOUT_OWNER_IS_MAIN) {
     store.getState().openFile(fileInput(filePath), { targetGroupId: groupId })
     return
   }

@@ -53,9 +53,9 @@ async function runNumstat(
 // Statting more files than this costs about as much as the numstat it would skip.
 const MAX_STAMPED_PATHS = 512
 
-/** Rollback switch: `ORCA_GIT_STATUS_NUMSTAT_REUSE=0` recomputes every numstat pass. */
+/** Rollback switch: `TOPO_GIT_STATUS_NUMSTAT_REUSE=0` recomputes every numstat pass. */
 function isNumstatReuseEnabled(): boolean {
-  return process.env.ORCA_GIT_STATUS_NUMSTAT_REUSE !== '0'
+  return process.env.TOPO_GIT_STATUS_NUMSTAT_REUSE !== '0'
 }
 
 /** Unstaged working files (unlisted ones would be status rows) plus every `.gitattributes` that applies; null if unstampable. */

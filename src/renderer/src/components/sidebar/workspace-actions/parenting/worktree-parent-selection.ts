@@ -38,7 +38,7 @@ export function selectWorktreeParent({
   })
 }
 
-/** Cross-machine refusals (an older Orca on the child's machine, an unconfirmed parent) name what to do next. */
+/** Cross-machine refusals (an older Topo on the child's machine, an unconfirmed parent) name what to do next. */
 export function showCrossStoreParentError(error: unknown): void {
   toast.error(
     translate(

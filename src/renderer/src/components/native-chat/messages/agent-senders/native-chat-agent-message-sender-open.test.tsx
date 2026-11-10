@@ -72,7 +72,7 @@ const publication = (
   revision: { epoch: 'host', revision: ++revision }
 })
 const terminal = (handle = 'term_0', agent: AgentMessageSender['agent'] = 'claude') => ({
-  party: { address: handle, terminalHandle: handle, orcaSessionId: null },
+  party: { address: handle, terminalHandle: handle, topoSessionId: null },
   name: 'Worker',
   agent
 })

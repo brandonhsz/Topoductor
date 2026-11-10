@@ -60,9 +60,9 @@ vi.mock('@/store', () => ({
 function storeState(): Record<string, unknown> {
   return {
     closeArtifactsPage: mocks.closePage,
-    connectCurrentOrcaProfile: mocks.connect,
-    orcaProfileAuthStatus: mocks.authStatus,
-    refreshCurrentOrcaProfileAuth: mocks.refreshAuth,
+    connectCurrentTopoProfile: mocks.connect,
+    topoProfileAuthStatus: mocks.authStatus,
+    refreshCurrentTopoProfileAuth: mocks.refreshAuth,
     settings: mocks.settings,
     updateSettings: mocks.updateSettings,
     openSettingsPage: mocks.openSettingsPage,
@@ -89,7 +89,7 @@ describe('ArtifactsPage', () => {
     mocks.updateSettings.mockReset().mockResolvedValue(undefined)
     mocks.openSettingsPage.mockReset()
     mocks.openSettingsTarget.mockReset()
-    mocks.resolvePartition.mockReset().mockResolvedValue('persist:orca-default')
+    mocks.resolvePartition.mockReset().mockResolvedValue('persist:topo-default')
     mocks.writeClipboardText.mockReset().mockResolvedValue(undefined)
     mocks.openUrl.mockReset().mockResolvedValue(undefined)
     mocks.toastSuccess.mockReset()
@@ -249,7 +249,7 @@ describe('ArtifactsPage', () => {
     })
 
     await waitFor(() =>
-      expect(screen.queryByText('Sign in to Orca again to load artifacts.')).not.toBeInTheDocument()
+      expect(screen.queryByText('Sign in to Topo again to load artifacts.')).not.toBeInTheDocument()
     )
   })
 
@@ -291,7 +291,7 @@ describe('ArtifactsPage', () => {
     })
 
     await waitFor(() =>
-      expect(screen.queryByText('Sign in to Orca again to load artifacts.')).not.toBeInTheDocument()
+      expect(screen.queryByText('Sign in to Topo again to load artifacts.')).not.toBeInTheDocument()
     )
   })
 

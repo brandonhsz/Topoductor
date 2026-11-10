@@ -1,7 +1,7 @@
 import { posix } from 'node:path'
 import type { WslUncPathInfo as WslPathInfo } from '../../../shared/wsl-paths'
 
-const REJECTION_PREFIX = 'ORCA_WSL_DELETE_REJECT:'
+const REJECTION_PREFIX = 'TOPO_WSL_DELETE_REJECT:'
 
 export type WslDeleteRejection = 'path-outside-known-roots' | 'unexpected-target-kind'
 
@@ -100,7 +100,7 @@ export function containedDeleteCommand(
     'sh',
     '-c',
     WSL_CONTAINED_DELETE_SCRIPT,
-    'orca-wsl-delete',
+    'topo-wsl-delete',
     recursive ? 'directory' : 'regular file',
     String(rootParts.length),
     ...rootParts,

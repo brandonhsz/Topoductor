@@ -7,7 +7,7 @@ import type {
   BrowserRoutePageGuestIdentity
 } from '../../routing/guest-authority/browser-route-page-authority'
 
-export const partition = `persist:orca-browser-v1-${'a'.repeat(64)}`
+export const partition = `persist:topo-browser-v1-${'a'.repeat(64)}`
 
 export function createCommand(
   type: 'createPage' | 'navigate',
@@ -79,7 +79,7 @@ export function createHarness(options: { maxPages?: number } = {}) {
     })
   }
   const dependencies = {
-    orcaProfileId: 'orca-profile-a',
+    topoProfileId: 'topo-profile-a',
     authorityConnectionIdentity: 'authority-record-a',
     pairingAuthorityConnectionIdentity: 'pairing-authority-record-a',
     legacyAuthorityConnectionIdentity: 'legacy-authority-record-a',

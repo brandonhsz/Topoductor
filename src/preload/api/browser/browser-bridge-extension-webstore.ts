@@ -8,7 +8,7 @@ import {
   type BrowserExtensionWebStoreInstallResult
 } from '../../../shared/browser/extensions/browser-extension-webstore'
 
-/** "Add from Chrome Web Store" and Orca's install/uninstall confirmation round trip. */
+/** "Add from Chrome Web Store" and Topo's install/uninstall confirmation round trip. */
 export const browserExtensionWebStoreApi = {
   extensionsInstallFromWebStore: (args: {
     profileId: string

@@ -1,6 +1,6 @@
 import { settingsRead } from '../settings/mobile-settings-read-operations'
 import { useRef, useState, type Dispatch, type SetStateAction } from 'react'
-import type { PersistedTrustedOrcaHooks } from '../../../src/shared/orca-yaml-hook-types'
+import type { PersistedTrustedTopoHooks } from '../../../src/shared/topo-yaml-hook-types'
 import type { RetiredNameRegistry } from '../../../src/shared/worktree/retired-name-registry'
 import type { RpcClient } from '../transport/rpc/rpc-client-contract'
 import { triggerError, triggerSuccess } from '../platform/haptics'
@@ -25,7 +25,7 @@ import {
   type NewWorktreeRuntimeSettings
 } from './new-worktree-agent-selection'
 import type { MobileWorkspaceRepo, SetupRunPolicy } from './new-worktree-modal-types'
-import type { OrcaHookTrustPrompt } from './OrcaHookTrustDrawer'
+import type { TopoHookTrustPrompt } from './TopoHookTrustDrawer'
 import type { NewWorktreeDrawerView } from './use-new-worktree-drawer-navigation'
 import { getSuggestedCreatureName } from './worktree-name-suggestion'
 
@@ -56,8 +56,8 @@ export function useNewWorkspaceCreateSubmit(args: {
   setupRunPolicy: SetupRunPolicy
   setupDecisionChoice: Exclude<WorkspaceCreateSetupDecision, 'inherit'> | null
   runSetup: boolean
-  trustedOrcaHooks: PersistedTrustedOrcaHooks
-  setTrustedOrcaHooks: (trust: PersistedTrustedOrcaHooks) => void
+  trustedTopoHooks: PersistedTrustedTopoHooks
+  setTrustedTopoHooks: (trust: PersistedTrustedTopoHooks) => void
   getWorktreeCreateCutoverSupport: () => Promise<WorktreeCreateIdempotencySupport | false>
   getAgentLaunchSupport: () => Promise<AgentLaunchSupport | false>
   getBranchIntentSupport: (intent: 'open-existing-v2' | 'create-new') => Promise<boolean>
@@ -67,7 +67,7 @@ export function useNewWorkspaceCreateSubmit(args: {
   onClose: () => void
 }): {
   creating: boolean
-  setupTrustPrompt: OrcaHookTrustPrompt | null
+  setupTrustPrompt: TopoHookTrustPrompt | null
   create: () => Promise<void>
   approveSetupTrust: (alwaysTrust: boolean) => Promise<void>
   closeSetupTrust: () => void
@@ -76,7 +76,7 @@ export function useNewWorkspaceCreateSubmit(args: {
   const createInFlightRef = useRef(false)
   const setupTrustActionInFlightRef = useRef(false)
   const [creating, setCreating] = useState(false)
-  const [setupTrustPrompt, setSetupTrustPrompt] = useState<OrcaHookTrustPrompt | null>(null)
+  const [setupTrustPrompt, setSetupTrustPrompt] = useState<TopoHookTrustPrompt | null>(null)
 
   async function create(options: CreateOptions = {}): Promise<void> {
     const { client, selectedRepo } = args
@@ -142,7 +142,7 @@ export function useNewWorkspaceCreateSubmit(args: {
         args.setupTrust &&
         args.setupTrust.contentHash !== options.approvedSetupContentHash &&
         !isSetupHookTrusted(
-          args.trustedOrcaHooks,
+          args.trustedTopoHooks,
           args.repos,
           selectedRepo.id,
           args.setupTrust.contentHash
@@ -154,7 +154,7 @@ export function useNewWorkspaceCreateSubmit(args: {
           repoName: selectedRepo.displayName,
           scriptContent: args.setupTrust.scriptContent,
           contentHash: args.setupTrust.contentHash,
-          previouslyApproved: wasSetupHookPreviouslyApproved(args.trustedOrcaHooks, selectedRepo.id)
+          previouslyApproved: wasSetupHookPreviouslyApproved(args.trustedTopoHooks, selectedRepo.id)
         })
         args.transitionDrawer('trust')
         return
@@ -222,12 +222,12 @@ export function useNewWorkspaceCreateSubmit(args: {
     try {
       const nextTrust = await persistSetupHookTrustApproval({
         client: args.client,
-        trust: args.trustedOrcaHooks,
+        trust: args.trustedTopoHooks,
         repoId: setupTrustPrompt.repoId,
         contentHash: setupTrustPrompt.contentHash,
         alwaysTrust
       })
-      args.setTrustedOrcaHooks(nextTrust)
+      args.setTrustedTopoHooks(nextTrust)
       const approvedHash = setupTrustPrompt.contentHash
       setSetupTrustPrompt(null)
       args.transitionDrawer('form')

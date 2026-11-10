@@ -50,5 +50,5 @@ const boxProps = z
   })
   .strict()
 
-/** Catalog 4 (Orca 1.4.248): a general layout container, styled only through tokens. */
+/** Catalog 4 (Topo 1.4.248): a general layout container, styled only through tokens. */
 export const PLUGIN_DECLARATIVE_BOX_CATALOG = { Box: component(boxProps, 'any') } as const

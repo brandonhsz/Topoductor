@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { RpcDispatcher } from './dispatcher'
-import type { OrcaRuntimeService } from '../orca-runtime'
+import type { TopoRuntimeService } from '../topo-runtime'
 import { TERMINAL_METHODS } from './methods/terminal/terminal'
 import { createSubscriptionRegistryDouble } from './subscription-registry-test-double'
 import type { RuntimeTerminalWait } from '../../../shared/runtime-terminal-contracts'
@@ -61,7 +61,7 @@ async function startCreditedSubscription() {
     registerOwnedSubscriptionCleanup: vi.fn(registry.registerOwnedSubscriptionCleanup),
     cleanupSubscription: vi.fn(registry.cleanupSubscription),
     waitForTerminal: vi.fn(() => new Promise<RuntimeTerminalWait>(() => {}))
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   const dispatcher = new RpcDispatcher({ runtime, methods: TERMINAL_METHODS })
   const done = dispatcher.dispatchStreaming(
     {

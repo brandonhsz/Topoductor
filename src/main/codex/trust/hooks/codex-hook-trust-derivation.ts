@@ -2,7 +2,7 @@ import { realpathSync, statSync } from 'node:fs'
 import { mkdir, mkdtemp, readdir, realpath, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { removeTree } from '../../../../shared/windows-transient-lock-removal'
 import '../../../codex-cli/command'
 import { withCliRuntimeOnPath } from '../../../../shared/node-cli-command-resolution'
@@ -37,9 +37,9 @@ const VERSION_TIMEOUT_MS = 30_000
 const DERIVE_TIMEOUT_MS = 30_000
 // Shift a copy to verify that Codex hashes do not depend on position.
 const SCRATCH_DUMMY_HOOK = { type: 'command', command: 'exit 0' }
-const SCRATCH_ORCA_GROUP_INDEXES = [0, 2] as const
+const SCRATCH_TOPO_GROUP_INDEXES = [0, 2] as const
 const SCRATCH_DUMMY_GROUP_INDEX = 1
-const SCRATCH_PREFIXES = ['orca-codex-hook-trust-', 'orca-codex-version-'] as const
+const SCRATCH_PREFIXES = ['topo-codex-hook-trust-', 'topo-codex-version-'] as const
 // An hour exceeds any probe's lifetime; older scratch homes were abandoned.
 const STALE_SCRATCH_MS = 60 * 60_000
 
@@ -70,24 +70,24 @@ export async function deriveCodexHookHashes(
     }
     if (hashes === 'inconsistent') {
       return refused(
-        `${describeCodexVersion(codexVersion)} hashes Orca's status hook differently by its file or position, so Orca does not approve it`
+        `${describeCodexVersion(codexVersion)} hashes Topo's status hook differently by its file or position, so Topo does not approve it`
       )
     }
     if (hashes === 'unloaded') {
       // An unloaded scratch home cannot establish version incompatibility.
       return {
         kind: 'pending',
-        failure: `${describeCodexVersion(codexVersion)} listed no hooks from Orca's test home`
+        failure: `${describeCodexVersion(codexVersion)} listed no hooks from Topo's test home`
       }
     }
     if (!hashes) {
-      return refused(`${describeCodexVersion(codexVersion)} did not recognize Orca's status hook`)
+      return refused(`${describeCodexVersion(codexVersion)} did not recognize Topo's status hook`)
     }
     return { kind: 'hashes', codexVersion, hashes }
   } catch (error) {
     if (isCodexAppServerUnsupportedError(error)) {
       return refused(
-        `${describeCodexVersion(codexVersion)} is too old for Orca status; update Codex`
+        `${describeCodexVersion(codexVersion)} is too old for Topo status; update Codex`
       )
     }
     console.warn('[codex-hook-trust] could not derive Codex hook hashes:', error)
@@ -99,8 +99,8 @@ export async function deriveCodexHookHashes(
 export function buildScratchHooksJson(hookCommand: string, positionCopy: boolean): string {
   const hooks = Object.fromEntries(
     CODEX_EVENTS.map((eventName) => {
-      const orca = { hooks: [buildCodexManagedHook(hookCommand, eventName)] }
-      return [eventName, positionCopy ? [orca, { hooks: [SCRATCH_DUMMY_HOOK] }, orca] : [orca]]
+      const topo = { hooks: [buildCodexManagedHook(hookCommand, eventName)] }
+      return [eventName, positionCopy ? [topo, { hooks: [SCRATCH_DUMMY_HOOK] }, topo] : [topo]]
     })
   )
   return `${JSON.stringify({ hooks }, null, 2)}\n`
@@ -158,7 +158,7 @@ async function listScratchHomeHooks(
 }
 
 /**
- * 'inconsistent': copies hash differently; null: dummy listed without Orca; 'unloaded': neither listed.
+ * 'inconsistent': copies hash differently; null: dummy listed without Topo; 'unloaded': neither listed.
  * Only scratch files count; absent events stay absent.
  */
 export function readCodexHookHashes(
@@ -184,12 +184,12 @@ export function readCodexHookHashes(
   const hashes: Partial<Record<CodexEventLabel, string | null>> = {}
   for (const eventName of CODEX_EVENTS) {
     const label = CODEX_EVENT_LABEL[eventName]
-    const primary = listed(scratch.homeHooksPath, label, SCRATCH_ORCA_GROUP_INDEXES[0])
+    const primary = listed(scratch.homeHooksPath, label, SCRATCH_TOPO_GROUP_INDEXES[0])
     if (!primary) {
       continue
     }
     const copies = [
-      listed(scratch.homeHooksPath, label, SCRATCH_ORCA_GROUP_INDEXES[1]),
+      listed(scratch.homeHooksPath, label, SCRATCH_TOPO_GROUP_INDEXES[1]),
       listed(scratch.projectHooksPath, label, 0)
     ]
     if (copies.some((copy) => copy && copy.currentHash !== primary.currentHash)) {

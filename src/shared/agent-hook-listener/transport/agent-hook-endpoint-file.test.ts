@@ -8,7 +8,7 @@ const ENDPOINT = { port: '12345', token: 'token-123', env: 'production', version
 
 describe('agent hook endpoint files', () => {
   it('parses the endpoint bytes published by the platform writer', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-hook-endpoint-parser-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-hook-endpoint-parser-'))
     try {
       const path = join(directory, getEndpointFileName())
       expect(

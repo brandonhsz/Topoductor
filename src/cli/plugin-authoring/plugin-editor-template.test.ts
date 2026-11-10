@@ -13,14 +13,14 @@ afterEach(async () => {
 })
 
 async function editorPlugin(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-editor-template-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-editor-template-'))
   roots.push(root)
   const dir = join(root, 'sketch')
   await createPluginFromTemplate({ dir, template: 'editor' })
   return dir
 }
 
-describe('orca plugin create --template editor', () => {
+describe('topo plugin create --template editor', () => {
   it('writes the recipe: a session-based TypeScript editor in an isolated frame', async () => {
     const dir = await editorPlugin()
     const manifest: unknown = JSON.parse(await readFile(join(dir, 'orca-plugin.json'), 'utf8'))

@@ -7,7 +7,7 @@ import type * as Os from 'node:os'
 const tempRoots: string[] = []
 
 async function makeClaudeProjectsRoot(): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), 'orca-claude-usage-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-claude-usage-'))
   tempRoots.push(root)
   await mkdir(join(root, '.claude', 'projects', 'project-a'), { recursive: true })
   await mkdir(join(root, '.claude', 'transcripts'), { recursive: true })

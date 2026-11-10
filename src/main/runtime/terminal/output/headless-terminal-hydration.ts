@@ -4,7 +4,7 @@ import type {
 } from '../records/runtime-terminal-state-records'
 import type { AgentStatusIpcPayload } from '../../../../shared/agent-status/contracts/agent-status-ipc-payload'
 import { splitFreebuffScreenUpdates } from '../../../../shared/freebuff-screen-status'
-import { OrcaRuntimeWithSerializeMainTerminalBuffer } from './terminal-buffer-operations'
+import { TopoRuntimeWithSerializeMainTerminalBuffer } from './terminal-buffer-operations'
 import { observeFreebuffTerminalStatus } from './freebuff-terminal-status'
 import {
   observeCodexCapacityTerminalStatus,
@@ -20,7 +20,7 @@ import {
 import { shouldModelAnswerHiddenPtyQueries } from './terminal-model-query-authority'
 import { advancePartialEscapeTail } from '../../../../shared/terminal/protocol/escape/terminal-partial-escape-tail'
 
-export abstract class OrcaRuntimeWithMaybeHydrateHeadlessFromRenderer extends OrcaRuntimeWithSerializeMainTerminalBuffer {
+export abstract class TopoRuntimeWithMaybeHydrateHeadlessFromRenderer extends TopoRuntimeWithSerializeMainTerminalBuffer {
   protected abstract getOrCreateHeadlessTerminal(ptyId: string): RuntimeHeadlessTerminal
   protected abstract markPaneLiveTitlesDirty(): void
   protected abstract settleLostAgentSession(ptyId: string): void

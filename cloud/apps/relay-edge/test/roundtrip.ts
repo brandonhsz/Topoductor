@@ -3,7 +3,7 @@
 // the SHIPPED desktop control client and phone parser. A host pairs a phone on the cell, moves to
 // the edge (director pushes its devices), pairs another phone and revokes the first there, then
 // moves back (director exports, writes Postgres, places it on the cell, fences the edge).
-//   DIRECTOR_APP=<orca worktree>/cloud/apps/relay DATABASE_URL=postgres://... \
+//   DIRECTOR_APP=<topo worktree>/cloud/apps/relay DATABASE_URL=postgres://... \
 //   EDGE_URL=https://<phase2 worker> EDGE_KEY_FILE=<admin key file> npx tsx test/roundtrip.ts
 // The edge's ADMIN_ISSUER must be the local director origin (DIRECTOR_PORT, default 18480).
 import { createServer } from 'node:http'

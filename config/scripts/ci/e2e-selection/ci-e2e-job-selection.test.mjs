@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 
 it('publishes conservative hints for malformed evidence and refuses a malformed consumer list', async () => {
   const program = 'config/scripts/ci/e2e-selection/ci-e2e-job-selection.mjs'

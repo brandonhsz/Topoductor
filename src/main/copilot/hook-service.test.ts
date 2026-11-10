@@ -15,7 +15,7 @@ let originalHome: string | undefined
 let originalUserProfile: string | undefined
 
 beforeEach(() => {
-  tmpDir = mkdtempSync(join(tmpdir(), 'orca-copilot-hooks-'))
+  tmpDir = mkdtempSync(join(tmpdir(), 'topo-copilot-hooks-'))
   copilotHome = join(tmpDir, 'copilot-home')
   originalCopilotHome = process.env.COPILOT_HOME
   originalHome = process.env.HOME
@@ -46,7 +46,7 @@ afterEach(() => {
 })
 
 function readConfig(): Record<string, unknown> {
-  return JSON.parse(readFileSync(join(copilotHome, 'hooks', 'orca.json'), 'utf-8'))
+  return JSON.parse(readFileSync(join(copilotHome, 'hooks', 'topo.json'), 'utf-8'))
 }
 
 function makeStaleManagedHookDefinition(): Record<string, unknown> {
@@ -66,8 +66,8 @@ describe('CopilotHookService', () => {
     })
 
     it('replaces the legacy .ps1 registration on install and keeps user hooks', () => {
-      const legacyPath = join(tmpDir, '.orca', 'agent-hooks', 'copilot-hook.ps1')
-      const configPath = join(copilotHome, 'hooks', 'orca.json')
+      const legacyPath = join(tmpDir, '.topo', 'agent-hooks', 'copilot-hook.ps1')
+      const configPath = join(copilotHome, 'hooks', 'topo.json')
       mkdirSync(join(copilotHome, 'hooks'), { recursive: true })
       const userHook = { type: 'command', powershell: 'Write-Output user-hook', timeoutSec: 3 }
       const legacyHooks = Object.fromEntries(
@@ -77,7 +77,7 @@ describe('CopilotHookService', () => {
             {
               type: 'command',
               powershell: wrapWindowsHookCommand(legacyPath, {
-                ORCA_COPILOT_HOOK_EVENT: eventName
+                TOPO_COPILOT_HOOK_EVENT: eventName
               }),
               timeoutSec: 5
             }
@@ -91,7 +91,7 @@ describe('CopilotHookService', () => {
 
       expect(service.install().state).toBe('installed')
       const hooks = readHooksJson(configPath)?.hooks ?? {}
-      const scriptPath = join(tmpDir, '.orca', 'agent-hooks', 'copilot-hook.cmd')
+      const scriptPath = join(tmpDir, '.topo', 'agent-hooks', 'copilot-hook.cmd')
       for (const eventName of COPILOT_EVENTS) {
         const managed = {
           type: 'command',
@@ -108,7 +108,7 @@ describe('CopilotHookService', () => {
   })
 
   it('preserves user-authored hooks and sweeps stale managed entries', () => {
-    const configPath = join(copilotHome, 'hooks', 'orca.json')
+    const configPath = join(copilotHome, 'hooks', 'topo.json')
     mkdirSync(join(copilotHome, 'hooks'), { recursive: true })
     writeFileSync(
       configPath,
@@ -139,10 +139,10 @@ describe('CopilotHookService', () => {
     expect(hooks.UserPromptSubmit).toHaveLength(2)
   })
 
-  it('remove deletes only Orca-managed Copilot hooks', () => {
+  it('remove deletes only Topo-managed Copilot hooks', () => {
     const service = new CopilotHookService()
     service.install()
-    const configPath = join(copilotHome, 'hooks', 'orca.json')
+    const configPath = join(copilotHome, 'hooks', 'topo.json')
     const config = readConfig()
     const hooks = config.hooks as Record<string, unknown[]>
     hooks.UserPromptSubmit.unshift({ type: 'command', bash: 'echo user prompt' })
@@ -157,7 +157,7 @@ describe('CopilotHookService', () => {
   })
 
   it('remove leaves nested user hooks untouched when no managed hook is present', () => {
-    const configPath = join(copilotHome, 'hooks', 'orca.json')
+    const configPath = join(copilotHome, 'hooks', 'topo.json')
     mkdirSync(join(copilotHome, 'hooks'), { recursive: true })
     const original = JSON.stringify(
       {

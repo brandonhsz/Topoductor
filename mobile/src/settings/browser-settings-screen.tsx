@@ -17,8 +17,8 @@ import { SettingsNote, SettingsScreen, SettingsSection } from './settings-screen
 function linkModeOptions(t: Translate): PickerOption<MobileTerminalLinkOpenMode>[] {
   return [
     {
-      value: 'orca-browser',
-      label: t('settings.browserSettingsScreen.desktopBrowser', 'Orca browser on desktop'),
+      value: 'topo-browser',
+      label: t('settings.browserSettingsScreen.desktopBrowser', 'Topo browser on desktop'),
       subtitle: t(
         'settings.browserSettingsScreen.desktopBrowserDescription',
         'Open in the streamed browser from your paired desktop.'
@@ -50,13 +50,13 @@ export default function BrowserSettingsScreen({
   const t = useMobileTranslation()
   useMobileColorScheme()
   const router = useRouter()
-  const [linkMode, setLinkMode] = useState<MobileTerminalLinkOpenMode>('orca-browser')
+  const [linkMode, setLinkMode] = useState<MobileTerminalLinkOpenMode>('topo-browser')
   const [pickerOpen, setPickerOpen] = useState(false)
   const [error, setError] = useState<'load' | 'save' | null>(null)
   const options = linkModeOptions(t)
   const selectionRevision = useRef(0)
   const failedSelectionRevision = useRef<number | null>(null)
-  const savedMode = useRef<MobileTerminalLinkOpenMode>('orca-browser')
+  const savedMode = useRef<MobileTerminalLinkOpenMode>('topo-browser')
   const hasSaved = useRef(false)
 
   useEffect(() => {

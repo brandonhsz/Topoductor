@@ -3,7 +3,7 @@ import { captureMainTerminalPaneLookup, findMainTerminalPane } from './pty-pane-
 
 import type { MainTerminalSurfacesHost } from './main-terminal-surfaces-host'
 import { parsePaneKey } from '../../../../shared/workspace-layout/stable-pane-id'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
 import type { MainPaneBinding } from './main-pane-verdict'
 import type {
   RuntimeSyncWindowGraph,
@@ -335,12 +335,12 @@ export function paneHoldsSession(
   if (panePtyIds.length > 0) {
     return panePtyIds.some((ptyId) => !exited(ptyId))
   }
-  return !ORCA_LAYOUT_OWNER_IS_MAIN || mainLayoutHoldsPane(runtime, paneKey) !== false
+  return !TOPO_LAYOUT_OWNER_IS_MAIN || mainLayoutHoldsPane(runtime, paneKey) !== false
 }
 
 /** Main-owned pane existence cannot prove process life; inventory/records decide. Paired-runtime workspaces retain window rules. */
 export function mainDecidesLeafLiveness(runtime: SurfacesOwner, worktreeId: string): boolean {
-  return ORCA_LAYOUT_OWNER_IS_MAIN && mainListsEveryPane(runtime, worktreeId)
+  return TOPO_LAYOUT_OWNER_IS_MAIN && mainListsEveryPane(runtime, worktreeId)
 }
 
 /** Whether main lists the workspace's panes, so terminal.list shows every saved one. */

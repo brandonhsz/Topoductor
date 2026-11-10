@@ -1,5 +1,5 @@
 /** A mux forward remains on its master after the client exits; only the master can release it. */
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { buildSshArgs, type SystemSshBuildArgsOptions } from '../system-ssh-args'
 import { findSystemSsh } from '../system-ssh-binary'
 import type { SshTarget } from '../../../../shared/ssh-types'
@@ -37,7 +37,7 @@ export function buildMuxedLocalForwardCancelArgs(
     '-L',
     `127.0.0.1:${localPort}:${remoteHost}:${remotePort}`,
     '--',
-    'orca-muxed-forward-cancel'
+    'topo-muxed-forward-cancel'
   ]
 }
 
@@ -80,7 +80,7 @@ export async function cancelMuxedLocalForward(
     return false
   }
   console.warn(
-    `[ssh] Cancelled a forward a previous Orca left on 127.0.0.1:${localPort}, held by its ControlMaster`
+    `[ssh] Cancelled a forward a previous Topo left on 127.0.0.1:${localPort}, held by its ControlMaster`
   )
   return true
 }

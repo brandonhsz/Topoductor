@@ -1,7 +1,7 @@
 import type { Page } from '@stablyai/playwright-test'
 import 'node:fs'
 import 'node:path'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import './helpers/repo-with-workspaces'
 import './helpers/sidebar-inputs-build'
 import { waitForActiveWorktree, waitForSessionReady } from './helpers/store'
@@ -15,15 +15,15 @@ function worktreeOption(page: Page, worktreeId: string) {
 test.describe('Worktree Lineage', () => {
   test.describe.configure({ mode: 'serial' })
 
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
-    await waitForActiveWorktree(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
+    await waitForActiveWorktree(topoPage)
   })
 
-  test('renders existing child lineage in the sidebar', async ({ orcaPage }) => {
-    const { parentId, childId } = await seedLineageScenario(orcaPage)
-    const parentRow = worktreeOption(orcaPage, parentId)
-    const childRow = worktreeOption(orcaPage, childId)
+  test('renders existing child lineage in the sidebar', async ({ topoPage }) => {
+    const { parentId, childId } = await seedLineageScenario(topoPage)
+    const parentRow = worktreeOption(topoPage, parentId)
+    const childRow = worktreeOption(topoPage, childId)
 
     await expect(parentRow).toBeVisible()
     await parentRow.click()
@@ -34,7 +34,7 @@ test.describe('Worktree Lineage', () => {
     await expect(childToggle).toBeVisible({ timeout: 10_000 })
     await expect(childRow).toBeVisible()
 
-    const positions = await orcaPage.evaluate(
+    const positions = await topoPage.evaluate(
       ({ parentId, childId }) => {
         const rowFor = (worktreeId: string) =>
           [...document.querySelectorAll<HTMLElement>('[data-worktree-id]')].find(
@@ -60,7 +60,7 @@ test.describe('Worktree Lineage', () => {
     await expect(childRow).toBeHidden()
 
     await parentRow.getByRole('button', { name: 'Show 1 child workspace' }).click()
-    await orcaPage.evaluate(async (childId) => {
+    await topoPage.evaluate(async (childId) => {
       const store = window.__store
       if (!store) {
         throw new Error('window.__store is not available')
@@ -71,7 +71,7 @@ test.describe('Worktree Lineage', () => {
     await expect
       .poll(
         () =>
-          orcaPage.evaluate((childId) => {
+          topoPage.evaluate((childId) => {
             const store = window.__store
             return Boolean(store?.getState().worktreeLineageById[childId])
           }, childId),
@@ -85,11 +85,11 @@ test.describe('Worktree Lineage', () => {
   })
 
   test('injects filtered parents structurally without showing a parent badge', async ({
-    orcaPage
+    topoPage
   }) => {
-    const { parentId, childId } = await seedLineageScenario(orcaPage)
+    const { parentId, childId } = await seedLineageScenario(topoPage)
 
-    await orcaPage.evaluate(
+    await topoPage.evaluate(
       ({ parentId, childId }) => {
         const store = window.__store
         if (!store) {
@@ -119,14 +119,14 @@ test.describe('Worktree Lineage', () => {
       { parentId, childId }
     )
 
-    const parentRow = worktreeOption(orcaPage, parentId)
-    const childRow = worktreeOption(orcaPage, childId)
+    const parentRow = worktreeOption(topoPage, parentId)
+    const childRow = worktreeOption(topoPage, childId)
 
     await expect(parentRow).toBeVisible()
     await expect(childRow).toBeVisible()
     await expect(childRow).not.toContainText(/\bfrom\b/)
 
-    const positions = await orcaPage.evaluate(
+    const positions = await topoPage.evaluate(
       ({ parentId, childId }) => {
         const rowFor = (worktreeId: string) =>
           [...document.querySelectorAll<HTMLElement>('[data-worktree-id]')].find(

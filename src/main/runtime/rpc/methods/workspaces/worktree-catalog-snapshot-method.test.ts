@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import { RpcDispatcher } from '../../dispatcher'
 import { WORKTREE_METHODS } from './worktree'
 import '../../../../../shared/protocol-version'
@@ -19,7 +19,7 @@ function runtimeReturning(...results: RuntimeWorktreePsResult[]) {
     getWorktreePs.mockResolvedValueOnce(result)
   }
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: worktree.ps reads only these two runtime members.
-  return { getRuntimeId: () => 'test-runtime', getWorktreePs } as unknown as OrcaRuntimeService
+  return { getRuntimeId: () => 'test-runtime', getWorktreePs } as unknown as TopoRuntimeService
 }
 
 function psRow(overrides: Partial<RuntimeWorktreePsSummary> = {}): RuntimeWorktreePsSummary {

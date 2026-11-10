@@ -1,4 +1,4 @@
-// Separate Orca’s notice wording from verbatim external errors so the latter stay readable and copyable.
+// Separate Topo’s notice wording from verbatim external errors so the latter stay readable and copyable.
 
 import { translate } from '@/i18n/i18n'
 import { readIpcErrorDetail } from '@/lib/ipc-error'
@@ -8,7 +8,7 @@ export type NativeChatComposerNoticeContent = {
   text: string
   /** Inline presentation of the sentence when it contains navigation. */
   content?: React.ReactNode
-  /** Text from outside Orca (a host or system error), shown apart and copyable. */
+  /** Text from outside Topo (a host or system error), shown apart and copyable. */
   errorText?: string
 }
 
@@ -18,18 +18,18 @@ export type NativeChatComposerNotice = NativeChatComposerNoticeContent & {
   onDismiss?: () => void
 } & ({ kind: 'error' | 'attachment' | 'device' } | { kind: 'host'; tone: 'warning' | 'muted' })
 
-/** Keep external errors apart from headline; localErrorIsOrcaWords identifies already-worded renderer errors. */
+/** Keep external errors apart from headline; localErrorIsTopoWords identifies already-worded renderer errors. */
 export function nativeChatNoticeFromError(
   error: unknown,
   headline: string,
-  options: { localErrorIsOrcaWords?: boolean } = {}
+  options: { localErrorIsTopoWords?: boolean } = {}
 ): NativeChatComposerNoticeContent {
   const detail = error instanceof Error ? readIpcErrorDetail(error) : String(error ?? '').trim()
   if (!detail) {
     return { text: headline }
   }
   const wrapped = error instanceof Error && detail !== error.message.trim()
-  return options.localErrorIsOrcaWords && error instanceof Error && !wrapped
+  return options.localErrorIsTopoWords && error instanceof Error && !wrapped
     ? { text: detail }
     : { text: headline, errorText: detail }
 }
@@ -39,7 +39,7 @@ export function setNativeChatNoticeFromError(
   setNotice: (text: string | null, errorText?: string) => void,
   error: unknown,
   headline: string,
-  options: { localErrorIsOrcaWords?: boolean } = {}
+  options: { localErrorIsTopoWords?: boolean } = {}
 ): void {
   const notice = nativeChatNoticeFromError(error, headline, options)
   if (notice.errorText) {
@@ -49,7 +49,7 @@ export function setNativeChatNoticeFromError(
   }
 }
 
-/** Local errors and main’s size refusals already use Orca wording; keep other paste errors apart under headline. */
+/** Local errors and main’s size refusals already use Topo wording; keep other paste errors apart under headline. */
 export function setNativeChatPasteFailure(
   setNotice: (text: string | null, errorText?: string) => void,
   error: unknown,
@@ -59,5 +59,5 @@ export function setNativeChatPasteFailure(
     setNotice(readIpcErrorDetail(error) ?? headline)
     return
   }
-  setNativeChatNoticeFromError(setNotice, error, headline, { localErrorIsOrcaWords: true })
+  setNativeChatNoticeFromError(setNotice, error, headline, { localErrorIsTopoWords: true })
 }

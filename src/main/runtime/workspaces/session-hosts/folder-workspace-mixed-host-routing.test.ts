@@ -12,17 +12,17 @@ import {
   FOLDER_KEY,
   GIT_KEY
 } from '../../../../shared/workspace-layout/workspace-layout-session.test-fixture'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { WorkspaceLayoutStream } from '../../terminal/surface/workspace-layout-stream'
-import { collectLayoutEvents } from '../../orca-runtime-tests/workspace-layout-stream-events.test-fixture'
+import { collectLayoutEvents } from '../../topo-runtime-tests/workspace-layout-stream-events.test-fixture'
 import {
   partialRuntimeStore,
   storeRepo
-} from '../../orca-runtime-tests/runtime-store-partial-fixture'
+} from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
 const mocks = vi.hoisted(() => ({ layoutOwnerIsMain: true }))
 vi.mock('../../../../shared/layout-owner-switch', () => ({
-  get ORCA_LAYOUT_OWNER_IS_MAIN() {
+  get TOPO_LAYOUT_OWNER_IS_MAIN() {
     return mocks.layoutOwnerIsMain
   }
 }))
@@ -42,7 +42,7 @@ function runtimeWithMixedFolder() {
     getWorkspaceSession: (hostId: ExecutionHostId) => partitions.get(hostId) ?? emptySession(),
     onWorkspaceSessionWritten: () => () => {}
   }
-  return { runtime: new OrcaRuntimeService(partialRuntimeStore(store)) }
+  return { runtime: new TopoRuntimeService(partialRuntimeStore(store)) }
 }
 
 afterEach(() => {

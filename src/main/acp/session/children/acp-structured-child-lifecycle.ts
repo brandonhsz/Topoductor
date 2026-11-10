@@ -194,7 +194,7 @@ export class AcpStructuredChildren {
   }
 
   /** Taken when the process exit is first seen, so a start settling meanwhile cannot miss it. A
-   *  connection Orca closed first keeps that cause; only a bare exit is the agent's own. */
+   *  connection Topo closed first keeps that cause; only a bare exit is the agent's own. */
   recordExit(
     sessionId: string,
     generation: string,
@@ -227,7 +227,7 @@ export class AcpStructuredChildren {
     ) {
       return
     }
-    // Orca refusing what the agent wrote outranks the exit its cleanup then causes.
+    // Topo refusing what the agent wrote outranks the exit its cleanup then causes.
     this.recordEnding(session, error)
     if (!isAcpReadySession(session)) {
       session.journalClosed = error.message || error.name

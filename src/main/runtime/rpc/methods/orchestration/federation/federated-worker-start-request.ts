@@ -1,12 +1,12 @@
 import type { OrchestrationSessionCaller } from '../../../../orchestration/addressing/orchestration-caller-identity'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import type { WorkerStartInput } from '../worker/worker-start-schema'
 import type { WorkerStartMutation } from '../worker/worker-start-mutation'
 
 export type FederatedWorkerStartRequest = {
   params: WorkerStartInput
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   db: OrchestrationDb
   /** Called only once preflight passes, so a refused start binds no new Run. */
   bindRunId: () => string

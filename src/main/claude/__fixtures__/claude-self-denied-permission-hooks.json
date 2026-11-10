@@ -1,5 +1,5 @@
 {
-  "source": "Real Claude Code 2.1.310 hook payloads for Orca's managed events plus PostToolBatch (claude -p, default permission mode), trimmed to the fields Orca reads; session ids, paths and tool output dropped. Each touch, and each Read outside the project, needs approval, no prompt is shown, and Claude denies it itself: no PostToolUse, PostToolUseFailure or PermissionDenied follows, only the batch end.",
+  "source": "Real Claude Code 2.1.310 hook payloads for Topo's managed events plus PostToolBatch (claude -p, default permission mode), trimmed to the fields Topo reads; session ids, paths and tool output dropped. Each touch, and each Read outside the project, needs approval, no prompt is shown, and Claude denies it itself: no PostToolUse, PostToolUseFailure or PermissionDenied follows, only the batch end.",
   "leadDenied": [
     {
       "hook_event_name": "SessionStart",
@@ -8,7 +8,7 @@
     {
       "hook_event_name": "UserPromptSubmit",
       "permission_mode": "default",
-      "prompt": "In a single response, call the Bash tool twice in parallel: one call running exactly: ls  and another call running exactly: touch /private/tmp/orca-permcap-marker . After both results come back, run exactly: pwd  with Bash, then reply with the word finished."
+      "prompt": "In a single response, call the Bash tool twice in parallel: one call running exactly: ls  and another call running exactly: touch /private/tmp/topo-permcap-marker . After both results come back, run exactly: pwd  with Bash, then reply with the word finished."
     },
     {
       "hook_event_name": "PreToolUse",
@@ -34,7 +34,7 @@
       "hook_event_name": "PreToolUse",
       "tool_name": "Bash",
       "tool_input": {
-        "command": "touch /private/tmp/orca-permcap-marker",
+        "command": "touch /private/tmp/topo-permcap-marker",
         "description": "Create marker file in tmp"
       },
       "tool_use_id": "toolu_01QoxbM6nqxDCovVGfyQxLmJ",
@@ -44,7 +44,7 @@
       "hook_event_name": "PermissionRequest",
       "tool_name": "Bash",
       "tool_input": {
-        "command": "touch /private/tmp/orca-permcap-marker",
+        "command": "touch /private/tmp/topo-permcap-marker",
         "description": "Create marker file in tmp"
       },
       "permission_mode": "default"
@@ -63,7 +63,7 @@
         {
           "tool_name": "Bash",
           "tool_input": {
-            "command": "touch /private/tmp/orca-permcap-marker",
+            "command": "touch /private/tmp/topo-permcap-marker",
             "description": "Create marker file in tmp"
           },
           "tool_use_id": "toolu_01QoxbM6nqxDCovVGfyQxLmJ"
@@ -122,14 +122,14 @@
     {
       "hook_event_name": "UserPromptSubmit",
       "permission_mode": "default",
-      "prompt": "Use the Agent tool exactly once (subagent_type general-purpose) with this prompt for the subagent: 'Run exactly this Bash command: touch /private/tmp/orca-permcap-marker2 ; then run exactly: pwd ; then reply done.' Do not run any tools yourself. When it returns, reply finished."
+      "prompt": "Use the Agent tool exactly once (subagent_type general-purpose) with this prompt for the subagent: 'Run exactly this Bash command: touch /private/tmp/topo-permcap-marker2 ; then run exactly: pwd ; then reply done.' Do not run any tools yourself. When it returns, reply finished."
     },
     {
       "hook_event_name": "PreToolUse",
       "tool_name": "Agent",
       "tool_input": {
         "description": "Touch marker and pwd",
-        "prompt": "Run exactly this Bash command: touch /private/tmp/orca-permcap-marker2 ; then run exactly: pwd ; then reply done.",
+        "prompt": "Run exactly this Bash command: touch /private/tmp/topo-permcap-marker2 ; then run exactly: pwd ; then reply done.",
         "subagent_type": "general-purpose",
         "run_in_background": false
       },
@@ -147,7 +147,7 @@
       "agent_type": "general-purpose",
       "tool_name": "Bash",
       "tool_input": {
-        "command": "touch /private/tmp/orca-permcap-marker2",
+        "command": "touch /private/tmp/topo-permcap-marker2",
         "description": "Create marker file"
       },
       "tool_use_id": "toolu_01Dcj3M1WrcnrHYJdYrnhrEn",
@@ -159,7 +159,7 @@
       "agent_type": "general-purpose",
       "tool_name": "Bash",
       "tool_input": {
-        "command": "touch /private/tmp/orca-permcap-marker2",
+        "command": "touch /private/tmp/topo-permcap-marker2",
         "description": "Create marker file"
       },
       "permission_mode": "default"
@@ -196,7 +196,7 @@
         {
           "tool_name": "Bash",
           "tool_input": {
-            "command": "touch /private/tmp/orca-permcap-marker2",
+            "command": "touch /private/tmp/topo-permcap-marker2",
             "description": "Create marker file"
           },
           "tool_use_id": "toolu_01Dcj3M1WrcnrHYJdYrnhrEn"
@@ -223,7 +223,7 @@
       "tool_name": "Agent",
       "tool_input": {
         "description": "Touch marker and pwd",
-        "prompt": "Run exactly this Bash command: touch /private/tmp/orca-permcap-marker2 ; then run exactly: pwd ; then reply done.",
+        "prompt": "Run exactly this Bash command: touch /private/tmp/topo-permcap-marker2 ; then run exactly: pwd ; then reply done.",
         "subagent_type": "general-purpose",
         "run_in_background": false
       },
@@ -238,7 +238,7 @@
           "tool_input": {
             "description": "Touch marker and pwd",
             "subagent_type": "general-purpose",
-            "prompt": "Run exactly this Bash command: touch /private/tmp/orca-permcap-marker2 ; then run exactly: pwd ; then reply done.",
+            "prompt": "Run exactly this Bash command: touch /private/tmp/topo-permcap-marker2 ; then run exactly: pwd ; then reply done.",
             "run_in_background": false
           },
           "tool_use_id": "toolu_01Di42VZZSD5BsDYgcx6keYQ"
@@ -263,7 +263,7 @@
     {
       "hook_event_name": "UserPromptSubmit",
       "permission_mode": "default",
-      "prompt": "In a single response, call the Read tool three times in parallel on exactly these paths: /home/dev/project/z.txt , /private/tmp/orca-permcap-outside.txt , and /home/dev/project/z.txt again. Then reply finished."
+      "prompt": "In a single response, call the Read tool three times in parallel on exactly these paths: /home/dev/project/z.txt , /private/tmp/topo-permcap-outside.txt , and /home/dev/project/z.txt again. Then reply finished."
     },
     {
       "hook_event_name": "PreToolUse",
@@ -287,7 +287,7 @@
       "hook_event_name": "PreToolUse",
       "tool_name": "Read",
       "tool_input": {
-        "file_path": "/private/tmp/orca-permcap-outside.txt"
+        "file_path": "/private/tmp/topo-permcap-outside.txt"
       },
       "tool_use_id": "toolu_01Qww1XTTD1PR4QinYpgQpAu",
       "permission_mode": "default"
@@ -305,7 +305,7 @@
       "hook_event_name": "PermissionRequest",
       "tool_name": "Read",
       "tool_input": {
-        "file_path": "/private/tmp/orca-permcap-outside.txt"
+        "file_path": "/private/tmp/topo-permcap-outside.txt"
       },
       "permission_mode": "default"
     },
@@ -331,7 +331,7 @@
         {
           "tool_name": "Read",
           "tool_input": {
-            "file_path": "/private/tmp/orca-permcap-outside.txt"
+            "file_path": "/private/tmp/topo-permcap-outside.txt"
           },
           "tool_use_id": "toolu_01Qww1XTTD1PR4QinYpgQpAu"
         },
@@ -362,14 +362,14 @@
     {
       "hook_event_name": "UserPromptSubmit",
       "permission_mode": "default",
-      "prompt": "Use the Agent tool exactly once (subagent_type general-purpose) with this prompt for the subagent: 'In a single response call the Read tool twice in parallel on exactly these paths: /home/dev/project/z.txt and /private/tmp/orca-permcap-outside.txt ; then reply done.' Do not run any tools yourself. When it returns, reply finished."
+      "prompt": "Use the Agent tool exactly once (subagent_type general-purpose) with this prompt for the subagent: 'In a single response call the Read tool twice in parallel on exactly these paths: /home/dev/project/z.txt and /private/tmp/topo-permcap-outside.txt ; then reply done.' Do not run any tools yourself. When it returns, reply finished."
     },
     {
       "hook_event_name": "PreToolUse",
       "tool_name": "Agent",
       "tool_input": {
         "description": "Read two files in parallel",
-        "prompt": "In a single response call the Read tool twice in parallel on exactly these paths: /home/dev/project/z.txt and /private/tmp/orca-permcap-outside.txt ; then reply done.",
+        "prompt": "In a single response call the Read tool twice in parallel on exactly these paths: /home/dev/project/z.txt and /private/tmp/topo-permcap-outside.txt ; then reply done.",
         "subagent_type": "general-purpose",
         "run_in_background": false
       },
@@ -409,7 +409,7 @@
       "agent_type": "general-purpose",
       "tool_name": "Read",
       "tool_input": {
-        "file_path": "/private/tmp/orca-permcap-outside.txt"
+        "file_path": "/private/tmp/topo-permcap-outside.txt"
       },
       "tool_use_id": "toolu_01E32z7bwBBZ4qdSRLMZN8JD",
       "permission_mode": "default"
@@ -420,7 +420,7 @@
       "agent_type": "general-purpose",
       "tool_name": "Read",
       "tool_input": {
-        "file_path": "/private/tmp/orca-permcap-outside.txt"
+        "file_path": "/private/tmp/topo-permcap-outside.txt"
       },
       "permission_mode": "default"
     },
@@ -439,7 +439,7 @@
         {
           "tool_name": "Read",
           "tool_input": {
-            "file_path": "/private/tmp/orca-permcap-outside.txt"
+            "file_path": "/private/tmp/topo-permcap-outside.txt"
           },
           "tool_use_id": "toolu_01E32z7bwBBZ4qdSRLMZN8JD"
         }
@@ -457,7 +457,7 @@
       "tool_name": "Agent",
       "tool_input": {
         "description": "Read two files in parallel",
-        "prompt": "In a single response call the Read tool twice in parallel on exactly these paths: /home/dev/project/z.txt and /private/tmp/orca-permcap-outside.txt ; then reply done.",
+        "prompt": "In a single response call the Read tool twice in parallel on exactly these paths: /home/dev/project/z.txt and /private/tmp/topo-permcap-outside.txt ; then reply done.",
         "subagent_type": "general-purpose",
         "run_in_background": false
       },
@@ -472,7 +472,7 @@
           "tool_input": {
             "description": "Read two files in parallel",
             "subagent_type": "general-purpose",
-            "prompt": "In a single response call the Read tool twice in parallel on exactly these paths: /home/dev/project/z.txt and /private/tmp/orca-permcap-outside.txt ; then reply done.",
+            "prompt": "In a single response call the Read tool twice in parallel on exactly these paths: /home/dev/project/z.txt and /private/tmp/topo-permcap-outside.txt ; then reply done.",
             "run_in_background": false
           },
           "tool_use_id": "toolu_01CvBpbMazwdsNw5pRnH2hzJ"

@@ -1,6 +1,6 @@
-/** R39: each ready control socket to a WSL host says which Orca installation it belongs to. */
+/** R39: each ready control socket to a WSL host says which Topo installation it belongs to. */
 import { getAppEnvironment } from '../../../shared/app-environment'
-import { ORCAD_DECLARE_CLIENT_METHOD } from '../../../shared/orcad-peer-desktops-contract'
+import { TOPOD_DECLARE_CLIENT_METHOD } from '../../../shared/topod-peer-desktops-contract'
 import { resolveEnvironment } from '../../../shared/remote-runtime/host-store/runtime-environment-store'
 import type { RuntimeRpcResponse } from '../../../shared/runtime-rpc-envelope'
 import { wslHostClientInstanceId } from './wsl-host-client-instance'
@@ -23,14 +23,14 @@ export function declareWslHostClient(
     return
   }
   void request(
-    ORCAD_DECLARE_CLIENT_METHOD,
+    TOPOD_DECLARE_CLIENT_METHOD,
     { clientInstanceId: wslHostClientInstanceId() },
     DECLARE_TIMEOUT_MS
   )
     .then((response) => {
       // An older server lacks the method; it then has no peer check, so nothing reads the tag.
       if (!response.ok && response.error.code !== 'method_not_found') {
-        console.warn('[wsl-hosts] The WSL host did not note this Orca:', response.error.message)
+        console.warn('[wsl-hosts] The WSL host did not note this Topo:', response.error.message)
       }
     })
     .catch(() => {
@@ -41,7 +41,7 @@ export function declareWslHostClient(
 function isWslHostEnvironment(environmentId: string): boolean {
   try {
     const environment = resolveEnvironment(getAppEnvironment().getPath('userData'), environmentId)
-    return environment.orcadDeployment?.kind === 'wsl'
+    return environment.topodDeployment?.kind === 'wsl'
   } catch {
     return false
   }

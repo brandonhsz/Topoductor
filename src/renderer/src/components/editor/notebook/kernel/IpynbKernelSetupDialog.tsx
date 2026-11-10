@@ -40,7 +40,7 @@ function setupCopy(mode: SetupMode, env: string, folder: string, t: Translate = 
         ),
         description: t(
           'auto.components.editor.IpynbViewer.venvDescription',
-          "Orca will create a .venv in {{folder}} from '{{env}}', install ipykernel into it, and run this notebook there.",
+          "Topo will create a .venv in {{folder}} from '{{env}}', install ipykernel into it, and run this notebook there.",
           { env, folder }
         ),
         action: t('auto.components.editor.IpynbViewer.createVenv', 'Create .venv')

@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url'
 import { isPluginWorkerSourcePath } from '../../../shared/plugins/frames/plugin-frame-source-modules'
 import { pluginModuleCandidatePaths } from '../plugin-module-candidate-paths'
 import { transformPluginSource } from '../plugin-source-sucrase-transform'
-import { isOrcaSpecifier, pluginWorkerOrcaImportMessage } from './plugin-worker-orca-import'
+import { isTopoSpecifier, pluginWorkerTopoImportMessage } from './plugin-worker-topo-import'
 
 // Plain-Node entry code: runs in the plugin host process, so no Electron imports.
 
@@ -64,8 +64,8 @@ export function createPluginWorkerSourceHooks(pluginRoot: string): PluginWorkerS
     try {
       return nextResolve(specifier, context)
     } catch (error) {
-      if (isOrcaSpecifier(specifier)) {
-        throw new Error(pluginWorkerOrcaImportMessage(specifier), { cause: error })
+      if (isTopoSpecifier(specifier)) {
+        throw new Error(pluginWorkerTopoImportMessage(specifier), { cause: error })
       }
       if (!isRelativeSpecifier(specifier) || !NOT_FOUND_CODES.has(errorCode(error))) {
         throw error

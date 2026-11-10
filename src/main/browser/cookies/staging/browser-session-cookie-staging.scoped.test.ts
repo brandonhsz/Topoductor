@@ -77,7 +77,7 @@ describe('scoped pending browser cookie imports', () => {
   let lifecycle: string[]
 
   beforeEach(() => {
-    tmpDir = mkdtempSync(join(tmpdir(), 'orca-scoped-cookie-replay-'))
+    tmpDir = mkdtempSync(join(tmpdir(), 'topo-scoped-cookie-replay-'))
     livePath = join(tmpDir, 'Partitions', 'test', 'Network', 'Cookies')
     metaPath = join(tmpDir, 'browser-session-meta.json')
     stagedPath = join(tmpDir, 'staged-cookies')
@@ -135,7 +135,7 @@ describe('scoped pending browser cookie imports', () => {
     applyPendingBrowserCookieImports({
       resolveMetadataPath: () => metaPath,
       defaultPartition: PARTITION,
-      activeOrcaProfileId: 'test-profile'
+      activeTopoProfileId: 'test-profile'
     })
   }
 
@@ -145,8 +145,8 @@ describe('scoped pending browser cookie imports', () => {
     try {
       // Shipped scoped-v1 image: retain this fixture independently of the removed importer writer.
       staged.exec(`
-        CREATE TABLE orca_cookie_import_scope (domain TEXT PRIMARY KEY, format_version INTEGER NOT NULL);
-        INSERT INTO orca_cookie_import_scope VALUES ('a.example.com', 1);
+        CREATE TABLE topo_cookie_import_scope (domain TEXT PRIMARY KEY, format_version INTEGER NOT NULL);
+        INSERT INTO topo_cookie_import_scope VALUES ('a.example.com', 1);
         DELETE FROM cookies WHERE host_key IN ('.example.com', '.a.example.com', 'child.a.example.com');
       `)
       insertCookie(staged, '.a.example.com', 'new-a', 'imported')
@@ -264,7 +264,7 @@ describe('scoped pending browser cookie imports', () => {
     const replayed = new DatabaseSync(replayedPath, { readOnly: true })
     expect(
       replayed
-        .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name LIKE 'orca_%'")
+        .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name LIKE 'topo_%'")
         .all()
     ).toEqual([])
     replayed.close()

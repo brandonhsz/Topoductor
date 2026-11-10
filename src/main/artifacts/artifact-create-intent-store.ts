@@ -11,7 +11,7 @@ import {
   bestEffortFsyncDirectorySync,
   writeSecureFile
 } from '../../shared/secure-storage/secure-file'
-import { getOrcaProfileDirectory } from '../orca-profiles/profile-storage-paths'
+import { getTopoProfileDirectory } from '../topo-profiles/profile-storage-paths'
 import type { ArtifactWriteBody } from './artifact-cloud-request'
 import type { ArtifactShareScope } from './artifact-share-record-store'
 
@@ -27,7 +27,7 @@ export type ArtifactCreateIntent = {
 }
 
 function intentDirectory(profileId: string, userDataPath: string): string {
-  return join(getOrcaProfileDirectory(profileId, userDataPath), 'artifact-create-intents')
+  return join(getTopoProfileDirectory(profileId, userDataPath), 'artifact-create-intents')
 }
 
 function ensureIntentDirectory(profileId: string, userDataPath: string): string {

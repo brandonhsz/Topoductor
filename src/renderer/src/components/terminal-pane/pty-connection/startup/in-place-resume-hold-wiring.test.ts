@@ -8,7 +8,7 @@ import { startDeferredSessionReattach } from '../reattach/deferred-session-reatt
 import type { ConnectPanePtySession } from '../connect-pane-pty-session'
 import type { ColdRestoreAgentResumeStartup } from './fresh-spawn-types'
 
-vi.mock('../../../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 vi.mock('../../layout/reconciliation/terminal-lifecycle-diagnostics', () => ({
   warnTerminalLifecycleAnomaly: vi.fn()
 }))

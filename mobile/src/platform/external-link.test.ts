@@ -27,8 +27,10 @@ afterEach(() => {
 
 describe('opening a URL from a phone screen', () => {
   it('hands it straight to the app, unchanged', () => {
-    openExternalLink('https://github.com/stablyai/orca/pull/1')
-    expect(linking.openURL.mock.calls).toEqual([['https://github.com/stablyai/orca/pull/1']])
+    openExternalLink('https://github.com/brandonhsz/Topoductor/pull/1')
+    expect(linking.openURL.mock.calls).toEqual([
+      ['https://github.com/brandonhsz/Topoductor/pull/1']
+    ])
   })
 
   it('does not throw out of a tap handler when nothing can open the URL', async () => {
@@ -38,8 +40,8 @@ describe('opening a URL from a phone screen', () => {
   })
 
   it('checks no scheme of its own, because on a phone this is what every call site already did', () => {
-    openExternalLink('orca://x')
-    expect(linking.openURL.mock.calls).toEqual([['orca://x']])
+    openExternalLink('topo://x')
+    expect(linking.openURL.mock.calls).toEqual([['topo://x']])
   })
 })
 

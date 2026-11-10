@@ -84,7 +84,7 @@ export function formatHostList(result: { hosts: HostListEntry[] }): string {
   const kindLabel: Record<HostListEntry['kind'], string> = {
     local: 'local',
     ssh: 'ssh target',
-    environment: 'orca server'
+    environment: 'topo server'
   }
   return result.hosts
     .map(
@@ -130,7 +130,7 @@ export function formatCliStatus(status: CliStatusResult): string {
     `runtimeId: ${status.runtime.runtimeId ?? 'none'}`,
     `graphState: ${status.graph.state}`,
     ...(status.runtime.degradations ?? []).map((degradation) => `degraded: ${degradation.message}`),
-    ...(status.caller === undefined ? [] : [`orcaSessionId: ${formatStatusCaller(status.caller)}`])
+    ...(status.caller === undefined ? [] : [`topoSessionId: ${formatStatusCaller(status.caller)}`])
   ].join('\n')
 }
 
@@ -138,7 +138,7 @@ function formatStatusCaller(caller: CliStatusCaller): string {
   if ('refusal' in caller) {
     return `none (refused: ${caller.refusal.code})`
   }
-  return `${caller.orcaSessionId}${caller.live ? '' : ' (not live)'}`
+  return `${caller.topoSessionId}${caller.live ? '' : ' (not live)'}`
 }
 
 export function formatStatus(status: CliStatusResult): string {

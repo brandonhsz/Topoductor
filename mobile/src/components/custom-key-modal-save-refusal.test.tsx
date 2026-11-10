@@ -27,7 +27,7 @@ vi.mock('@react-native-async-storage/async-storage', () => ({
       store.writes += 1
       if (store.refuse) {
         throw new Error(
-          'Orca could not save orca:custom-accessory-keys: a stored value may be too large.'
+          'Topo could not save topo:custom-accessory-keys: a stored value may be too large.'
         )
       }
       store.raw = value
@@ -71,7 +71,7 @@ import { CustomKeyModal } from './CustomKeyModal'
 import { removeCustomKey, saveCustomKeys } from '../terminal/terminal-custom-keys'
 import { readMirroredStorage, retainMirroredStorage } from '../storage/mirrored-storage-keys'
 
-const CUSTOM_KEYS = 'orca:custom-accessory-keys'
+const CUSTOM_KEYS = 'topo:custom-accessory-keys'
 let releaseStorage = () => {}
 
 afterEach(() => releaseStorage())

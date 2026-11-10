@@ -4,14 +4,14 @@ WITH
     FROM events
     WHERE event IN ('first_agent_interaction', 'meaningful_activity_day')
       AND timestamp >= toDateTime('2026-11-08 00:00:00')
-      AND properties.install_id IS NOT NULL AND properties.orca_channel IS NOT NULL
+      AND properties.install_id IS NOT NULL AND properties.topo_channel IS NOT NULL
   ),
   opted_out AS (
     SELECT distinct_id AS uid
     FROM events
     WHERE event = 'telemetry_opted_out'
       AND timestamp >= toDateTime('2026-10-09 00:00:00')
-      AND properties.install_id IS NOT NULL AND properties.orca_channel IS NOT NULL
+      AND properties.install_id IS NOT NULL AND properties.topo_channel IS NOT NULL
     GROUP BY uid
   ),
   anchors AS (
@@ -25,7 +25,7 @@ WITH
     WHERE event = 'onboarding_started'
       AND properties.cohort = 'fresh_install'
       AND timestamp >= toDateTime('2026-10-09 00:00:00')
-      AND properties.install_id IS NOT NULL AND properties.orca_channel IS NOT NULL
+      AND properties.install_id IS NOT NULL AND properties.topo_channel IS NOT NULL
     GROUP BY uid
   ),
   cohort AS (
@@ -49,7 +49,7 @@ WITH
     WHERE e.event IN ('meaningful_activity_day', 'app_opened')
       AND e.timestamp >= toDateTime('2026-11-08 00:00:00')
       AND e.timestamp > c.anchor_at
-      AND e.properties.orca_channel IS NOT NULL
+      AND e.properties.topo_channel IS NOT NULL
     GROUP BY uid, day_n
   ),
   per_install AS (

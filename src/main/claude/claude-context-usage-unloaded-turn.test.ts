@@ -34,12 +34,12 @@ import { claudeProviderHandle } from '../../shared/agent-session/lifecycle/agent
 import { claudeAndCodexAgents } from '../native-chat/agent-session-wire/providers/testing/structured-agent-session-adapter-router-test-support'
 import type { StructuredAgentRegistry } from '../native-chat/agent-session-wire/providers/structured-agent-registry'
 
-const SESSION = 'orca-session'
+const SESSION = 'topo-session'
 const journals = createTrackedJournalOpener()
 let root: string
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-claude-context-unloaded-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-claude-context-unloaded-'))
 })
 
 afterEach(async () => {

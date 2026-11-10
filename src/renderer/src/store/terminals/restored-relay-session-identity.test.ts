@@ -8,7 +8,7 @@ import { makeWorktree } from '../slices/worktrees/worktree.test-fixture'
 
 const layoutOwner = vi.hoisted(() => ({ isMain: false }))
 vi.mock('../../../../shared/layout-owner-switch', () => ({
-  get ORCA_LAYOUT_OWNER_IS_MAIN() {
+  get TOPO_LAYOUT_OWNER_IS_MAIN() {
     return layoutOwner.isMain
   }
 }))

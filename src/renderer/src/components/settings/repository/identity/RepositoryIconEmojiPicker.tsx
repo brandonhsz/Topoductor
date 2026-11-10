@@ -16,7 +16,7 @@ export function RepositoryIconEmojiPicker({
   onSetIcon
 }: RepositoryIconEmojiPickerProps): React.JSX.Element {
   const t = useTranslate()
-  // Theme.AUTO only follows the OS setting, which can disagree with Orca's painted theme.
+  // Theme.AUTO only follows the OS setting, which can disagree with Topo's painted theme.
   const isDarkTheme = useDocumentDarkTheme()
 
   const handleEmojiClick = (emojiData: EmojiClickData): void => {

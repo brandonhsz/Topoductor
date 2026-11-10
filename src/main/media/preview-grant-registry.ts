@@ -146,7 +146,7 @@ export function remotePreviewVersion(grant: PreviewGrant): Promise<RemotePreview
   return grant.stat.version
 }
 
-/** The grant behind an orca-media URL, only for the renderer that minted it. */
+/** The grant behind an topo-media URL, only for the renderer that minted it. */
 export function previewGrantForSender(
   url: string,
   senderId: number

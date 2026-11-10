@@ -7,7 +7,7 @@ import { publishClaudeConversationTranscript } from './claude-conversation-trans
 
 let root: string
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), 'orca-transcript-publication-'))
+  root = await mkdtemp(join(tmpdir(), 'topo-transcript-publication-'))
 })
 afterEach(async () => {
   await rm(root, { recursive: true, force: true })

@@ -7,7 +7,7 @@ import { isMobileMethodUnavailableError } from '../transport/rpc/mobile-method-u
 import type { RpcResponse } from '../transport/rpc/rpc-wire-types'
 import type { UnvalidatedRpcRequestPort } from '../transport/rpc/unvalidated-rpc-request-port'
 
-// Only ORCA_SIDEBAR_INPUTS=main pages read this feed; method_not_found or an older allowlist’s forbidden means the page is newer than the host.
+// Only TOPO_SIDEBAR_INPUTS=main pages read this feed; method_not_found or an older allowlist’s forbidden means the page is newer than the host.
 
 export const sidebarInputsRead = bindDeferredRpcOperation(
   defineRpcOperation({

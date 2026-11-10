@@ -46,7 +46,7 @@ export default function WorktreeVisibilityHelpPopover(): React.JSX.Element {
             <li>
               {t(
                 'auto.components.sidebar.WorktreeVisibilityHelpPopover.8db4e19a26',
-                'This setting never hides worktrees created through Orca.'
+                'This setting never hides worktrees created through Topo.'
               )}
             </li>
             <li>

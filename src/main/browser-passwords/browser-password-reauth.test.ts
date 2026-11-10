@@ -6,7 +6,7 @@ const { canPromptTouchID, promptTouchID, runProcess } = vi.hoisted(() => ({
   runProcess: vi.fn()
 }))
 vi.mock('electron', () => ({ systemPreferences: { canPromptTouchID, promptTouchID } }))
-vi.mock('@orca/process-host', () => ({ runProcess }))
+vi.mock('@topo/process-host', () => ({ runProcess }))
 vi.mock('./browser-password-vault-access', () => ({ browserPasswordSettings: vi.fn() }))
 
 import {

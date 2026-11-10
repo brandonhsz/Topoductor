@@ -43,7 +43,7 @@ type UseSourceControlAgentActionStartArgs = {
   initialCwd?: string
   promptDelivery: 'auto-submit' | 'draft' | 'submit-after-ready'
   launchPlatform?: NodeJS.Platform
-  /** SSH uses plain orca; omit the local Linux orca-ide rename in its preview. */
+  /** SSH uses plain topo; omit the local Linux topo-ide rename in its preview. */
   isRemote?: boolean
   launchSource: LaunchSource
   recoveryContext?: RuntimeGitContext | null

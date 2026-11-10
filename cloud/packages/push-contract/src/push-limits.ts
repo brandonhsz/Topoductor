@@ -19,8 +19,8 @@ export const PUSH_LIMITS = {
 } as const
 
 export const PUSH_DEFAULTS = {
-  apnsTopic: 'com.stably.orca.mobile',
-  androidChannelId: 'orca-desktop'
+  apnsTopic: 'com.brandonhsz.topo.mobile',
+  androidChannelId: 'topo-desktop'
 } as const
 
 export const PUSH_HOST_FINGERPRINT_LENGTH = 16

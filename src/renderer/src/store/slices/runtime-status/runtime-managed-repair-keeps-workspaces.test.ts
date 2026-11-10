@@ -36,7 +36,7 @@ function server(
     runtimeId: null,
     endpoints: [{ id: 'ws', kind: 'websocket', label: 'Box', endpoint: 'ws://127.0.0.1:46768/' }],
     preferredEndpointId: 'ws',
-    orcadDeployment: {
+    topodDeployment: {
       sshTargetId: 'box',
       sshTargetGeneration: 1,
       localPort: 46_768,

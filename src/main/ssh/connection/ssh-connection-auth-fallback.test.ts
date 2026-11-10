@@ -66,7 +66,7 @@ describe('SshConnection', () => {
 
   it('holds the keyboard-interactive challenge until the deferred default key has been tried', async () => {
     vi.stubEnv('SSH_AUTH_SOCK', '/tmp/agent.sock')
-    const tempDir = mkdtempSync(join(tmpdir(), 'orca-ssh-home-'))
+    const tempDir = mkdtempSync(join(tmpdir(), 'topo-ssh-home-'))
     mkdirSync(join(tempDir, '.ssh'))
     // Real key bytes and parser: deferral requires the waiting key to parse as unencrypted.
     const realSsh2 = await vi.importActual<typeof Ssh2>('ssh2')
@@ -108,7 +108,7 @@ describe('SshConnection', () => {
 
     beforeEach(async () => {
       vi.stubEnv('SSH_AUTH_SOCK', '/tmp/agent.sock')
-      tempDir = mkdtempSync(join(tmpdir(), 'orca-ssh-home-'))
+      tempDir = mkdtempSync(join(tmpdir(), 'topo-ssh-home-'))
       mkdirSync(join(tempDir, '.ssh'))
       // Real key bytes and parser: deferral requires the waiting key to parse as unencrypted.
       const realSsh2 = await vi.importActual<typeof Ssh2>('ssh2')
@@ -193,7 +193,7 @@ describe('SshConnection', () => {
 
   it('falls back to direct private key auth when the agent socket is unavailable', async () => {
     vi.stubEnv('SSH_AUTH_SOCK', '/tmp/stale-agent.sock')
-    const tempDir = mkdtempSync(join(tmpdir(), 'orca-ssh-key-'))
+    const tempDir = mkdtempSync(join(tmpdir(), 'topo-ssh-key-'))
     const keyPath = join(tempDir, 'id_ed25519')
     writeFileSync(keyPath, 'test-key')
     const agentError = new Error('Failed to connect to agent') as Error & { level: string }
@@ -250,7 +250,7 @@ describe('SshConnection', () => {
 
   it('retries password auth with the no-agent key config after direct key fallback fails', async () => {
     vi.stubEnv('SSH_AUTH_SOCK', '/tmp/agent.sock')
-    const tempDir = mkdtempSync(join(tmpdir(), 'orca-ssh-key-'))
+    const tempDir = mkdtempSync(join(tmpdir(), 'topo-ssh-key-'))
     const keyPath = join(tempDir, 'id_ed25519')
     writeFileSync(keyPath, 'test-key')
     ssh2Mock.connectSequence = [
@@ -406,7 +406,7 @@ describe('SshConnection', () => {
 
   it('does not prompt twice when post-agent private key passphrase is cancelled', async () => {
     vi.stubEnv('SSH_AUTH_SOCK', '/tmp/agent.sock')
-    const tempDir = mkdtempSync(join(tmpdir(), 'orca-ssh-key-'))
+    const tempDir = mkdtempSync(join(tmpdir(), 'topo-ssh-key-'))
     const keyPath = join(tempDir, 'id_ed25519')
     writeFileSync(keyPath, 'test-key')
     ssh2Mock.connectSequence = [

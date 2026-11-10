@@ -6,7 +6,7 @@ import { RuntimeHostDescriptorSchema } from '../../../../shared/remote-runtime/h
 import { HOST_INSTALLATION_FILENAME, loadOrCreateHostInstallationId } from './host-descriptor'
 
 function profile(): string {
-  return mkdtempSync(join(tmpdir(), 'orca-host-descriptor-'))
+  return mkdtempSync(join(tmpdir(), 'topo-host-descriptor-'))
 }
 
 function storedId(userDataPath: string): unknown {

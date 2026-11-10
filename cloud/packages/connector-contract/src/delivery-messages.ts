@@ -1,4 +1,4 @@
-import { EpochMsSchema, OpaqueIdSchema, SequenceSchema } from '@orca-cloud/push-contract'
+import { EpochMsSchema, OpaqueIdSchema, SequenceSchema } from '@topo-cloud/push-contract'
 import { z } from 'zod'
 import { CONNECTOR_LIMITS } from './connector-limits.js'
 import { ConnectorConversationSchema, PlaceIdSchema } from './connector-wire-scalars.js'

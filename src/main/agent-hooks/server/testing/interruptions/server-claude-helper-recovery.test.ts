@@ -229,7 +229,7 @@ async function setup(
         (
           await fetch(`http://127.0.0.1:${port}/hook/claude`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Orca-Agent-Hook-Token': token },
+            headers: { 'Content-Type': 'application/json', 'X-Topo-Agent-Hook-Token': token },
             body: JSON.stringify({ ...body(payload), ...extra })
           })
         ).status

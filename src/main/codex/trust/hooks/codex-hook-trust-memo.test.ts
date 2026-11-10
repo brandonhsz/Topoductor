@@ -13,12 +13,12 @@ import { fingerprintCodex, type CodexHookHashes } from './codex-hook-trust-deriv
 
 let userData: string
 let codexPath: string
-const COMMAND = '/home/u/.orca/agent-hooks/codex-hook.sh'
+const COMMAND = '/home/u/.topo/agent-hooks/codex-hook.sh'
 const HASHES = { stop: 'sha256:stop', session_start: 'sha256:start' }
 
 beforeEach(() => {
-  userData = mkdtempSync(join(tmpdir(), 'orca-codex-trust-memo-'))
-  vi.stubEnv('ORCA_USER_DATA_PATH', userData)
+  userData = mkdtempSync(join(tmpdir(), 'topo-codex-trust-memo-'))
+  vi.stubEnv('TOPO_USER_DATA_PATH', userData)
   codexPath = join(userData, 'codex')
   writeFileSync(codexPath, 'codex 0.150.1')
 })
@@ -69,13 +69,13 @@ describe('Codex hook trust memo', () => {
     memoizeCodexHookAnswer(codexPath, fingerprint(), COMMAND, {
       kind: 'refused',
       codexVersion: 'codex-cli 0.127.0',
-      failure: 'Codex 0.127.0 is too old for Orca status; update Codex'
+      failure: 'Codex 0.127.0 is too old for Topo status; update Codex'
     })
 
     expect(read()).toEqual({
       kind: 'refused',
       codexVersion: 'codex-cli 0.127.0',
-      failure: 'Codex 0.127.0 is too old for Orca status; update Codex'
+      failure: 'Codex 0.127.0 is too old for Topo status; update Codex'
     })
     expect(readMemoizedVersionAnswer('codex-cli 0.127.0', COMMAND)?.kind).toBe('refused')
     expect(readEveryMemoizedCodexHookHashes()).toEqual([])
@@ -92,7 +92,7 @@ describe('Codex hook trust memo', () => {
     ])
   })
 
-  it('drops hashes that are not strings, and events Orca does not hook', () => {
+  it('drops hashes that are not strings, and events Topo does not hook', () => {
     writeFileSync(
       getCodexHookTrustMemoPath(),
       JSON.stringify({

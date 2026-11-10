@@ -44,7 +44,7 @@ function extension(overrides: Partial<InstalledBrowserExtension> = {}): Installe
 beforeEach(async () => {
   vi.clearAllMocks()
   mocks.installed = []
-  directory = await mkdtemp(join(tmpdir(), 'orca-extension-command-'))
+  directory = await mkdtemp(join(tmpdir(), 'topo-extension-command-'))
 })
 afterEach(async () => rm(directory, { recursive: true, force: true }))
 

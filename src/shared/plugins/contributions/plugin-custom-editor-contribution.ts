@@ -54,7 +54,7 @@ export const pluginCustomEditorContributionSchema = z
     }),
     entry: pluginRelativePathSchema.meta(
       pluginPathFieldDoc(
-        `HTML file rendered inside an editor frame, like a panel, or a \`.ts\`/\`.tsx\` module that Orca transpiles and loads in a generated page (needs \`engines.orca\` \`>=${PLUGIN_SOURCE_MODULES_SINCE}\`). It receives the open document and posts edits back; it never gets a file path or file system. It is trusted code: install editors you trust.`,
+        `HTML file rendered inside an editor frame, like a panel, or a \`.ts\`/\`.tsx\` module that Topo transpiles and loads in a generated page (needs \`engines.orca\` \`>=${PLUGIN_SOURCE_MODULES_SINCE}\`). It receives the open document and posts edits back; it never gets a file path or file system. It is trusted code: install editors you trust.`,
         PLUGIN_MANIFEST_V2_SINCE,
         ['editor/index.html']
       )
@@ -64,7 +64,7 @@ export const pluginCustomEditorContributionSchema = z
       .optional()
       .meta(
         pluginFieldDoc(
-          '`default` (the default) opens matching files in this editor; `option` only offers it in the view toggle, so files open in Source. Files Orca opens itself (such as `.json`, `.ts`, `.md`, `.csv`, `.yaml`, lockfiles and `.env` files) always behave as `option`; a longer suffix such as `.sketch.json` is not one of them and opens by default.',
+          '`default` (the default) opens matching files in this editor; `option` only offers it in the view toggle, so files open in Source. Files Topo opens itself (such as `.json`, `.ts`, `.md`, `.csv`, `.yaml`, lockfiles and `.env` files) always behave as `option`; a longer suffix such as `.sketch.json` is not one of them and opens by default.',
           PLUGIN_MANIFEST_V2_SINCE,
           ['default']
         )
@@ -84,7 +84,7 @@ export const pluginCustomEditorContributionSchema = z
       .optional()
       .meta(
         pluginFieldDoc(
-          "`any` (the default) runs in whatever frame the client gives. `isolated` runs only in the desktop app's isolated frame, never the browser-client fallback: browser clients, and desktop with isolated frames switched off, open the file in Source with a notice that the editor needs the Orca desktop app.",
+          "`any` (the default) runs in whatever frame the client gives. `isolated` runs only in the desktop app's isolated frame, never the browser-client fallback: browser clients, and desktop with isolated frames switched off, open the file in Source with a notice that the editor needs the Topo desktop app.",
           PLUGIN_EDITOR_FRAME_SINCE,
           ['isolated']
         )

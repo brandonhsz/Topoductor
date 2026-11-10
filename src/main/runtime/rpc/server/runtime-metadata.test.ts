@@ -31,7 +31,7 @@ describe('runtime metadata', () => {
   describe('clearRuntimeMetadataIfOwned', () => {
     it('retains metadata when only the runtimeId differs', () => {
       // Auto-update may reuse a pid; runtimeId must still prevent treating the replacement as the old owner.
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-metadata-'))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-metadata-'))
       tempDirs.push(userDataPath)
       writeRuntimeMetadata(userDataPath, {
         runtimeId: 'rt_replacement',
@@ -53,7 +53,7 @@ describe('runtime metadata', () => {
   it.runIf(process.platform !== 'win32')(
     'restricts runtime metadata permissions to the current user on Unix',
     () => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-metadata-'))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-metadata-'))
       tempDirs.push(userDataPath)
 
       writeRuntimeMetadata(userDataPath, {
@@ -62,7 +62,7 @@ describe('runtime metadata', () => {
         transports: [
           {
             kind: 'unix',
-            endpoint: '/tmp/orca.sock'
+            endpoint: '/tmp/topo.sock'
           }
         ],
         authToken: 'secret',
@@ -80,7 +80,7 @@ describe('runtime metadata', () => {
   it.runIf(process.platform !== 'win32')(
     'uses hardened atomic writes for runtime credential stores on Unix',
     () => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-secure-files-'))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-secure-files-'))
       tempDirs.push(userDataPath)
 
       new DeviceRegistry(userDataPath).addDevice('phone')
@@ -96,8 +96,8 @@ describe('runtime metadata', () => {
       })
 
       for (const path of [
-        join(userDataPath, 'orca-devices.json'),
-        join(userDataPath, 'orca-e2ee-keypair.json'),
+        join(userDataPath, 'topo-devices.json'),
+        join(userDataPath, 'topo-e2ee-keypair.json'),
         getEnvironmentStorePath(userDataPath)
       ]) {
         expect(statSync(path).mode & 0o777).toBe(0o600)
@@ -110,7 +110,7 @@ describe('runtime metadata', () => {
   it.runIf(process.platform !== 'win32')(
     'hardens existing runtime credential stores before reading them on Unix',
     () => {
-      const userDataPath = mkdtempSync(join(tmpdir(), 'orca-runtime-existing-secure-files-'))
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-runtime-existing-secure-files-'))
       tempDirs.push(userDataPath)
       const keyMaterial = Buffer.from(new Uint8Array(32).fill(1)).toString('base64')
       const pairingCode = encodePairingOffer({
@@ -124,8 +124,8 @@ describe('runtime metadata', () => {
         pairingCode
       })
 
-      const devicesPath = join(userDataPath, 'orca-devices.json')
-      const keypairPath = join(userDataPath, 'orca-e2ee-keypair.json')
+      const devicesPath = join(userDataPath, 'topo-devices.json')
+      const keypairPath = join(userDataPath, 'topo-e2ee-keypair.json')
       const environmentsPath = getEnvironmentStorePath(userDataPath)
       writeFileSync(
         devicesPath,

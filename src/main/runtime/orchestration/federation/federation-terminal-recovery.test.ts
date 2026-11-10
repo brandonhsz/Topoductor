@@ -1,6 +1,6 @@
 import { createFederationSyncDatabase } from './synchronization/federation-sync-test-harness'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 
 describe('terminal federation acknowledgment recovery', () => {
   afterEach(() => {
@@ -11,7 +11,7 @@ describe('terminal federation acknowledgment recovery', () => {
     vi.useFakeTimers()
     let release!: () => void
     const blocked = new Promise<void>((resolve) => (release = resolve))
-    const runtime = new OrcaRuntimeService(null, undefined, {
+    const runtime = new TopoRuntimeService(null, undefined, {
       orchestrationEnvironmentTransport: {
         resolve: vi.fn(),
         call: vi.fn()

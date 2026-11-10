@@ -16,14 +16,14 @@ const FIXTURE_BYTES = 384
 describe('static AppImage package contract', () => {
   it('does not scan the appended AppImage payload as outer ELF data', async () => {
     const payload = Buffer.concat([RUNTIME_SOURCE, Buffer.alloc(16, 1)])
-    await withFixture('orca-linux.AppImage', Buffer.concat([createRuntime(), payload]), (path) => {
+    await withFixture('topo-linux.AppImage', Buffer.concat([createRuntime(), payload]), (path) => {
       expect(() => verifyStaticAppImagePackage(path, 1)).not.toThrow()
     })
 
     const unidentifiedRuntime = createRuntime()
     unidentifiedRuntime.fill(0, 192, 192 + RUNTIME_SOURCE.length)
     await withFixture(
-      'orca-linux.AppImage',
+      'topo-linux.AppImage',
       Buffer.concat([unidentifiedRuntime, payload]),
       (path) => {
         expect(() => verifyStaticAppImagePackage(path, 1)).toThrow(/does not identify/)
@@ -83,7 +83,7 @@ function writeProgramHeader(
 }
 
 async function withFixture(filename, contents, check, { mode = 0o755 } = {}) {
-  const root = await mkdtemp(join(tmpdir(), 'orca-static-appimage-contract-'))
+  const root = await mkdtemp(join(tmpdir(), 'topo-static-appimage-contract-'))
   try {
     const path = join(root, filename)
     await writeFile(path, contents)

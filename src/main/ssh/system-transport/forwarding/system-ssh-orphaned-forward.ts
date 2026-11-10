@@ -1,5 +1,5 @@
-/** Recover fixed ports only from parentless processes with the exact same Orca forward/host argv; user SSH and live Orca tunnels are excluded. */
-import { parseWindowsCommandLine } from '@orca/process-host/windows-command-line'
+/** Recover fixed ports only from parentless processes with the exact same Topo forward/host argv; user SSH and live Topo tunnels are excluded. */
+import { parseWindowsCommandLine } from '@topo/process-host/windows-command-line'
 import { getFreshShellForegroundSnapshot } from '../../../../shared/process-table-snapshot-reader'
 import { readWindowsProcessTableFresh } from '../../../windows/windows-process-table'
 import {
@@ -55,7 +55,7 @@ function executableName(command: string): string {
   return splitExecutable(command).name
 }
 
-// Accept historical Orca argv: ExitOnForwardFailure=yes (pre STA-10471), missing LogLevel=INFO (pre #24863), or missing -S none.
+// Accept historical Topo argv: ExitOnForwardFailure=yes (pre STA-10471), missing LogLevel=INFO (pre #24863), or missing -S none.
 function normalizeForwardArgv(args: readonly string[]): string[] {
   const normalized: string[] = []
   let droppedLogLevel = false
@@ -88,8 +88,8 @@ function sshArgv(command: string, platform: NodeJS.Platform): string[] | null {
   return name === 'ssh' || name === 'ssh.exe' ? rest.split(' ') : null
 }
 
-/** Extra argv belongs to another SSH invocation; require the complete Orca forward. */
-function isOrcaForward(
+/** Extra argv belongs to another SSH invocation; require the complete Topo forward. */
+function isTopoForward(
   command: string,
   expectedArgs: readonly string[],
   platform: NodeJS.Platform
@@ -123,7 +123,7 @@ function parentIsGone(
   return row.ppid <= 1 || !parent || REAPER_NAMES.has(executableName(parent.command))
 }
 
-export function findOrphanedOrcaSshForward(
+export function findOrphanedTopoSshForward(
   rows: readonly SshForwardProcessRow[],
   expectedArgs: readonly string[],
   platform: NodeJS.Platform
@@ -132,7 +132,7 @@ export function findOrphanedOrcaSshForward(
   return (
     rows.find(
       (row) =>
-        isOrcaForward(row.command, expectedArgs, platform) && parentIsGone(row, byPid, platform)
+        isTopoForward(row.command, expectedArgs, platform) && parentIsGone(row, byPid, platform)
     ) ?? null
   )
 }
@@ -160,15 +160,15 @@ async function waitUntilGone(
   return isGone(pid, kill)
 }
 
-/** True when an orphaned Orca forward was signalled; false means nothing was touched. */
-export async function stopOrphanedOrcaSshForward(
+/** True when an orphaned Topo forward was signalled; false means nothing was touched. */
+export async function stopOrphanedTopoSshForward(
   localPort: number,
   expectedArgs: readonly string[],
   deps: OrphanedForwardDeps = DEFAULT_DEPS
 ): Promise<boolean> {
   const find = async (): Promise<SshForwardProcessRow | null> => {
     try {
-      return findOrphanedOrcaSshForward(await deps.listProcesses(), expectedArgs, deps.platform)
+      return findOrphanedTopoSshForward(await deps.listProcesses(), expectedArgs, deps.platform)
     } catch {
       return null
     }
@@ -178,7 +178,7 @@ export async function stopOrphanedOrcaSshForward(
     return false
   }
   console.warn(
-    `[ssh] Stopping a forward a previous Orca left on 127.0.0.1:${localPort} (pid ${orphan.pid})`
+    `[ssh] Stopping a forward a previous Topo left on 127.0.0.1:${localPort} (pid ${orphan.pid})`
   )
   const startedAtMs = await deps.readStartTimeMs(orphan.pid)
   try {

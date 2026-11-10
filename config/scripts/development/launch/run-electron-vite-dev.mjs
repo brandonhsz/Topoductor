@@ -61,7 +61,7 @@ const STABLE_NAME_FLAG = '--stable-name'
 const rawForwardedArgs = process.argv.slice(2)
 // Runner-only escape hatch for tools requiring stock Electron name; never forward to Chromium/electron-vite.
 const useStableElectronName =
-  process.env.ORCA_DEV_STABLE_NAME === '1' || rawForwardedArgs.includes(STABLE_NAME_FLAG)
+  process.env.TOPO_DEV_STABLE_NAME === '1' || rawForwardedArgs.includes(STABLE_NAME_FLAG)
 const SHARED_PROFILE_FLAG = '--shared-profile'
 const WORKTREE_PROFILE_FLAG = '--worktree-profile'
 const SEED_PROFILE_FLAG = '--seed-profile'
@@ -81,11 +81,11 @@ const requestedProfileMode = rawForwardedArgs.includes(SHARED_PROFILE_FLAG)
   : rawForwardedArgs.includes(WORKTREE_PROFILE_FLAG)
     ? 'worktree'
     : undefined
-// `--seed-profile` uses the default source; `--seed-profile=<dir>` or ORCA_DEV_SEED_PROFILE=<dir|1> pick one.
+// `--seed-profile` uses the default source; `--seed-profile=<dir>` or TOPO_DEV_SEED_PROFILE=<dir|1> pick one.
 const seedProfileRequest =
-  seedProfileArg?.slice(SEED_PROFILE_FLAG.length + 1) ?? process.env.ORCA_DEV_SEED_PROFILE ?? null
+  seedProfileArg?.slice(SEED_PROFILE_FLAG.length + 1) ?? process.env.TOPO_DEV_SEED_PROFILE ?? null
 if (useStableElectronName) {
-  process.env.ORCA_DEV_STABLE_NAME = '1'
+  process.env.TOPO_DEV_STABLE_NAME = '1'
 }
 // Why: --help/--version exit immediately; binding probe sockets or printing instance lines is noise.
 const isHelpOrVersion = forwardedRaw.some((a) => a === '--help' || a === '-h' || a === '--version')
@@ -118,32 +118,32 @@ function formatDevInstanceLabel(branch, worktreeName) {
 }
 
 function createDockTitle(branch, label) {
-  return `Orca: ${branch || label || 'dev'}`
+  return `Topo: ${branch || label || 'dev'}`
 }
 
 function seedDevInstanceIdentityEnv() {
   const branch =
-    process.env.ORCA_DEV_BRANCH ||
+    process.env.TOPO_DEV_BRANCH ||
     readGitValue(['symbolic-ref', '--quiet', '--short', 'HEAD']) ||
     readGitValue(['rev-parse', '--short', 'HEAD'])
-  const worktreeName = process.env.ORCA_DEV_WORKTREE_NAME || path.basename(repoRoot)
-  const label = process.env.ORCA_DEV_INSTANCE_LABEL || formatDevInstanceLabel(branch, worktreeName)
-  const identitySeed = process.env.ORCA_DEV_INSTANCE_KEY || repoRoot
-  const dockTitle = process.env.ORCA_DEV_DOCK_TITLE || createDockTitle(branch, label)
+  const worktreeName = process.env.TOPO_DEV_WORKTREE_NAME || path.basename(repoRoot)
+  const label = process.env.TOPO_DEV_INSTANCE_LABEL || formatDevInstanceLabel(branch, worktreeName)
+  const identitySeed = process.env.TOPO_DEV_INSTANCE_KEY || repoRoot
+  const dockTitle = process.env.TOPO_DEV_DOCK_TITLE || createDockTitle(branch, label)
 
-  process.env.ORCA_DEV_REPO_ROOT ||= repoRoot
-  process.env.ORCA_DEV_INSTANCE_KEY ||= identitySeed
+  process.env.TOPO_DEV_REPO_ROOT ||= repoRoot
+  process.env.TOPO_DEV_INSTANCE_KEY ||= identitySeed
   if (branch) {
-    process.env.ORCA_DEV_BRANCH ||= branch
+    process.env.TOPO_DEV_BRANCH ||= branch
   }
   if (worktreeName) {
-    process.env.ORCA_DEV_WORKTREE_NAME ||= worktreeName
+    process.env.TOPO_DEV_WORKTREE_NAME ||= worktreeName
   }
   if (label) {
     // Seed stable per-worktree identity for window/Dock/automation labels without Git calls from Electron.
-    process.env.ORCA_DEV_INSTANCE_LABEL ||= label
+    process.env.TOPO_DEV_INSTANCE_LABEL ||= label
   }
-  process.env.ORCA_DEV_DOCK_TITLE ||= dockTitle
+  process.env.TOPO_DEV_DOCK_TITLE ||= dockTitle
 }
 
 function setPlistValue(plistPath, key, value) {
@@ -159,7 +159,7 @@ function sanitizeMacAppBundleName(value) {
       .join('')
       .replace(/\s+/g, ' ')
       .trim()
-      .slice(0, 120) || 'Orca'
+      .slice(0, 120) || 'Topo'
   )
 }
 
@@ -216,8 +216,8 @@ function prepareMacDevElectronApp() {
     electronVersion = JSON.parse(readFileSync(electronPackagePath, 'utf8')).version ?? null
   } catch {}
 
-  const title = process.env.ORCA_DEV_DOCK_TITLE || 'Orca: dev'
-  const identityKey = process.env.ORCA_DEV_INSTANCE_KEY || repoRoot
+  const title = process.env.TOPO_DEV_DOCK_TITLE || 'Topo: dev'
+  const identityKey = process.env.TOPO_DEV_INSTANCE_KEY || repoRoot
   // v11 stabilizes Info.plist/cdhash; ignored stale marker fields permit schema narrowing without another bump.
   const bundleLayoutVersion = 'stable-cdhash-dock-name-from-bundle-dir-v11'
   const hash = createHash('sha1')
@@ -233,7 +233,7 @@ function prepareMacDevElectronApp() {
   const markerPath = path.join(distDir, DEV_BUNDLE_MARKER_FILENAME)
   // Use one dev bundle ID for shared notification permission/settings entry. Concurrent instances may lose clicks routed to other instance; unknown IDs are dropped.
   const bundleId = DEV_BUNDLE_ID
-  process.env.ORCA_DEV_MACOS_BUNDLE_ID = bundleId
+  process.env.TOPO_DEV_MACOS_BUNDLE_ID = bundleId
   // Include patch values in reuse marker; layout version alone can reuse stale app identity.
   const expectedMarker = JSON.stringify(
     {
@@ -260,8 +260,8 @@ function prepareMacDevElectronApp() {
   )
   const requiredResourcePaths = [
     chromiumResourcePath,
-    path.join(appPath, 'Contents', 'MacOS', 'orca-keyboard-layout'),
-    path.join(appPath, 'Contents', 'MacOS', 'orca-process-footprint')
+    path.join(appPath, 'Contents', 'MacOS', 'topo-keyboard-layout'),
+    path.join(appPath, 'Contents', 'MacOS', 'topo-process-footprint')
   ]
 
   function copiedAppIsUsable() {
@@ -298,7 +298,7 @@ function prepareMacDevElectronApp() {
     existsSync(chromiumResourcePath)
   ) {
     console.warn(
-      `[orca-dev] Another dev instance is running from this bundle; reusing it instead of rebuilding. Quit the other instance (or delete ${distDir}) to force a rebuild.`
+      `[topo-dev] Another dev instance is running from this bundle; reusing it instead of rebuilding. Quit the other instance (or delete ${distDir}) to force a rebuild.`
     )
     process.env.ELECTRON_EXEC_PATH = executablePath
     return
@@ -344,13 +344,13 @@ function prepareMacDevElectronApp() {
         bundleId,
         '--single-arch',
         '--output',
-        path.join(appPath, 'Contents', 'MacOS', 'orca-notification-status')
+        path.join(appPath, 'Contents', 'MacOS', 'topo-notification-status')
       ],
       { stdio: 'inherit' }
     )
   } catch (error) {
     console.warn(
-      `[orca-dev] notification-status helper build failed (permission card falls back to probes): ${error?.message ?? error}`
+      `[topo-dev] notification-status helper build failed (permission card falls back to probes): ${error?.message ?? error}`
     )
   }
 
@@ -363,7 +363,7 @@ function prepareMacDevElectronApp() {
   } catch (error) {
     signed = false
     console.warn(
-      `[orca-dev] ad-hoc codesign failed (dev notifications will not deliver): ${error?.message ?? error}`
+      `[topo-dev] ad-hoc codesign failed (dev notifications will not deliver): ${error?.message ?? error}`
     )
   }
   // Write reuse marker only after signing: otherwise unsigned cache permanently loses notifications/stable Keychain identity; retry copying next launch instead.
@@ -424,7 +424,7 @@ async function prepareDevProfile({ kind, userDataPath }) {
     // Why: storage reclaim uses this marker to delete the profile once its worktree is removed.
     writeWorktreeProfileMarker(userDataPath, {
       repoRoot,
-      instanceKey: process.env.ORCA_DEV_INSTANCE_KEY,
+      instanceKey: process.env.TOPO_DEV_INSTANCE_KEY,
       gitCommonDir: readGitCommonDir()
     })
   }
@@ -438,7 +438,7 @@ async function prepareDevProfile({ kind, userDataPath }) {
   try {
     await seedDevProfile({ sourceDir, targetDir: userDataPath })
   } catch (error) {
-    console.error(`[orca-dev] Profile seed skipped: ${error.message}`)
+    console.error(`[topo-dev] Profile seed skipped: ${error.message}`)
   }
 }
 
@@ -450,7 +450,7 @@ function prepareDevCliWrapper(userDataPath) {
   })
 
   process.env.PATH = `${binDir}${path.delimiter}${process.env.PATH ?? ''}`
-  console.log(`[orca-dev] Prepared wrapper in ${binDir}`)
+  console.log(`[topo-dev] Prepared wrapper in ${binDir}`)
 }
 
 function getElectronExecutable() {
@@ -463,29 +463,29 @@ function getElectronExecutable() {
 seedDevInstanceIdentityEnv()
 const devProfile = resolveDevProfile({
   repoRoot,
-  instanceKey: process.env.ORCA_DEV_INSTANCE_KEY,
+  instanceKey: process.env.TOPO_DEV_INSTANCE_KEY,
   mode: requestedProfileMode
 })
-// Why: Electron main reads this; without it main falls back to the shared orca-dev profile.
-process.env.ORCA_DEV_USER_DATA_PATH = devProfile.userDataPath
+// Why: Electron main reads this; without it main falls back to the shared topo-dev profile.
+process.env.TOPO_DEV_USER_DATA_PATH = devProfile.userDataPath
 if (!isHelpOrVersion) {
   await prepareDevProfile(devProfile)
 }
 
-if (process.env.ORCA_SKIP_DEV_CLI_PREPARE !== '1') {
+if (process.env.TOPO_SKIP_DEV_CLI_PREPARE !== '1') {
   prepareDevCliWrapper(devProfile.userDataPath)
 }
 
-if (!useStableElectronName && process.env.ORCA_SKIP_DEV_ELECTRON_APP_PREPARE !== '1') {
+if (!useStableElectronName && process.env.TOPO_SKIP_DEV_ELECTRON_APP_PREPARE !== '1') {
   prepareMacDevElectronApp()
 }
 
 // Inject fake CLI to test Ctrl+C tree teardown without real electron-vite dependency.
 const electronViteCli =
-  process.env.ORCA_ELECTRON_VITE_CLI ||
+  process.env.TOPO_ELECTRON_VITE_CLI ||
   path.join(path.dirname(require.resolve('electron-vite/package.json')), 'bin', 'electron-vite.js')
 const viteCli =
-  process.env.ORCA_VITE_CLI ||
+  process.env.TOPO_VITE_CLI ||
   path.join(path.dirname(require.resolve('vite/package.json')), 'bin', 'vite.js')
 
 function getMtimeMs(filePath) {
@@ -501,13 +501,13 @@ function getDevWebClientIndexPath() {
 }
 
 function prepareDevWebClient() {
-  if (process.env.ORCA_SKIP_DEV_WEB_PREPARE === '1' || isHelpOrVersion) {
+  if (process.env.TOPO_SKIP_DEV_WEB_PREPARE === '1' || isHelpOrVersion) {
     return
   }
   // Start fresh worktree immediately: pairing can use non-browser URLs while optional web bundle is unavailable.
-  if (!existsSync(getDevWebClientIndexPath()) && process.env.ORCA_DEV_WEB_PREPARE !== '1') {
+  if (!existsSync(getDevWebClientIndexPath()) && process.env.TOPO_DEV_WEB_PREPARE !== '1') {
     console.error(
-      '[orca-dev] Web client bundle missing; skipping pairing web build. Run `pnpm run build:web` or set ORCA_DEV_WEB_PREPARE=1 when you need browser pairing.'
+      '[topo-dev] Web client bundle missing; skipping pairing web build. Run `pnpm run build:web` or set TOPO_DEV_WEB_PREPARE=1 when you need browser pairing.'
     )
     return
   }
@@ -515,7 +515,7 @@ function prepareDevWebClient() {
     return
   }
   const inputs = captureDevWebClientInputs(repoRoot)
-  console.error('[orca-dev] Building web client for pairing in the background...')
+  console.error('[topo-dev] Building web client for pairing in the background...')
   // Pairing reads out/web per request, so a stale bundle must not delay Electron startup.
   // Stage then swap, so an interrupted build never leaves out/web empty.
   const stagingDir = path.join(repoRoot, 'out', '.web-next')
@@ -540,14 +540,14 @@ function prepareDevWebClient() {
     // Priority is best effort; the build still runs at normal priority.
   }
   build.once('error', (error) => {
-    console.error(`[orca-dev] Web client build failed to start: ${error.message}`)
+    console.error(`[topo-dev] Web client build failed to start: ${error.message}`)
   })
   build.once('exit', (code, signal) => {
     webClientBuild = null
     if (code !== 0) {
       if (!isShuttingDown) {
         console.error(
-          `[orca-dev] Web client build failed (${signal ?? code}); pairing serves the previous bundle`
+          `[topo-dev] Web client build failed (${signal ?? code}); pairing serves the previous bundle`
         )
       }
       return
@@ -557,25 +557,25 @@ function prepareDevWebClient() {
       rmSync(outDir, { recursive: true, force: true })
       renameSync(stagingDir, outDir)
       recordDevWebClientInputs(repoRoot, inputs)
-      console.error('[orca-dev] Web client for pairing is ready')
+      console.error('[topo-dev] Web client for pairing is ready')
     } catch (error) {
-      console.error(`[orca-dev] Could not install the web client build: ${error.message}`)
+      console.error(`[topo-dev] Could not install the web client build: ${error.message}`)
     }
   })
 }
 
-if (!isHelpOrVersion && process.env.ORCA_DEV_INSTANCE_LABEL) {
-  console.error(`[orca-dev] Instance: ${process.env.ORCA_DEV_INSTANCE_LABEL}`)
+if (!isHelpOrVersion && process.env.TOPO_DEV_INSTANCE_LABEL) {
+  console.error(`[topo-dev] Instance: ${process.env.TOPO_DEV_INSTANCE_LABEL}`)
 }
 // Log background-launch mode so automation’s focus-preserving behavior is visible.
-if (!isHelpOrVersion && process.env.ORCA_BACKGROUND_LAUNCH === '1') {
-  console.error('[orca-dev] Background launch: window stays off screen; automate through CDP')
+if (!isHelpOrVersion && process.env.TOPO_BACKGROUND_LAUNCH === '1') {
+  console.error('[topo-dev] Background launch: window stays off screen; automate through CDP')
 }
 let forwardedExtras = []
 if (!isHelpOrVersion) {
   const ports = await resolveDevInstancePorts({
     forwardedArgs: forwardedRaw,
-    instanceKey: process.env.ORCA_DEV_INSTANCE_KEY || repoRoot
+    instanceKey: process.env.TOPO_DEV_INSTANCE_KEY || repoRoot
   })
   forwardedExtras = ports.forwardedExtras
   announceDevInstance({ repoRoot, profile: devProfile, ...ports })

@@ -56,7 +56,7 @@ function fakeHosts(
     id: string
     name: string
     snapshot: RuntimeHostStatusSnapshot
-    orcadDeployment?: { sshTargetId: string } | { kind: 'wsl' }
+    topodDeployment?: { sshTargetId: string } | { kind: 'wsl' }
     runtimeId?: string | null
     pairedDeviceId?: string
     stoppedOnDesktop?: true
@@ -79,7 +79,7 @@ function fakeHosts(
         ({
           id,
           name,
-          orcadDeployment,
+          topodDeployment,
           runtimeId,
           pairedDeviceId,
           stoppedOnDesktop,
@@ -87,7 +87,7 @@ function fakeHosts(
         }) => ({
           id,
           name,
-          orcadDeployment,
+          topodDeployment,
           stoppedOnDesktop,
           unavailableOnDesktop,
           pairingRevision: state.pairingRevision,

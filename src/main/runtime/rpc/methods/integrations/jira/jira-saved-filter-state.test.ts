@@ -2,7 +2,7 @@ import { MOBILE_RPC_METHOD_ROUTES } from '../../../server/runtime-rpc-mobile-met
 import { describe, expect, it, vi } from 'vitest'
 import { getDefaultUIState } from '../../../../../../shared/constants'
 import type { PersistedUIState } from '../../../../../../shared/persisted-ui-state-types'
-import type { OrcaRuntimeService } from '../../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../../topo-runtime'
 import { CLIENT_UI_METHODS } from '../../client-state/client-ui'
 import { RpcDispatcher } from '../../../dispatcher'
 
@@ -21,7 +21,7 @@ function setup() {
     getRuntimeId: () => 'host-a',
     getUIState: () => ui,
     updateUIState
-  } as unknown as OrcaRuntimeService
+  } as unknown as TopoRuntimeService
   const dispatcher = new RpcDispatcher({ runtime, methods: CLIENT_UI_METHODS })
   const dispatch = (method: string, params?: unknown) =>
     dispatcher.dispatch({ id: 'request', method, params, authToken: 'token' })

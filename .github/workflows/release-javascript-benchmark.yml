@@ -14,9 +14,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  ORCA_BACKGROUND_LAUNCH: '1'
-  ORCA_DIAGNOSTICS_TOKEN_URL: https://www.onorca.dev/diagnostics/token
-  ORCA_POSTHOG_WRITE_KEY: ci-build-comparison
+  TOPO_BACKGROUND_LAUNCH: '1'
+  TOPO_DIAGNOSTICS_TOKEN_URL: https://www.onorca.dev/diagnostics/token
+  TOPO_POSTHOG_WRITE_KEY: ci-build-comparison
   NODE_OPTIONS: --max-old-space-size=4096
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
     with:
       ref: ${{ github.sha }}
     secrets:
-      ORCA_POSTHOG_WRITE_KEY: ci-build-comparison
+      TOPO_POSTHOG_WRITE_KEY: ci-build-comparison
 
   measure:
     needs: bundle
@@ -73,7 +73,7 @@ jobs:
           if [ ! -f "$RELEASE_JAVASCRIPT_ARTIFACT" ]; then
             RELEASE_JAVASCRIPT_ARTIFACT='config/scripts/release-javascript-artifact.mjs'
           fi
-          echo "ORCA_BUILD_IDENTITY=$(node "$RELEASE_JAVASCRIPT_ARTIFACT" identity)" >> "$GITHUB_ENV"
+          echo "TOPO_BUILD_IDENTITY=$(node "$RELEASE_JAVASCRIPT_ARTIFACT" identity)" >> "$GITHUB_ENV"
       - name: Download shared JavaScript
         if: matrix.mode == 'shared'
         uses: actions/download-artifact@v8
@@ -84,7 +84,7 @@ jobs:
         shell: bash
         env:
           MEASUREMENT_MODE: ${{ matrix.mode }}
-          ORCA_RELEASE_JAVASCRIPT_SOURCE_SHA: ${{ needs.bundle.outputs.source_sha }}
+          TOPO_RELEASE_JAVASCRIPT_SOURCE_SHA: ${{ needs.bundle.outputs.source_sha }}
         run: |
           RELEASE_JAVASCRIPT_BENCHMARK='config/scripts/release/javascript-artifacts/release-javascript-benchmark.mjs'
           if [ ! -f "$RELEASE_JAVASCRIPT_BENCHMARK" ]; then

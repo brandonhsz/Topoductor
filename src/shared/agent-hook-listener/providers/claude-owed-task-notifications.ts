@@ -1,5 +1,5 @@
 import { isRecord } from '../../agent-status/child-work/agent-status-child-work-value-guards'
-import { runsOrcaOrchestrationWait } from '../../orca-cli-invocations'
+import { runsTopoOrchestrationWait } from '../../topo-cli-invocations'
 
 /** Main-agent background tasks keyed by launch/notification task ID. Notifications can arrive a turn after task end and an empty Stop; owed work keeps the pane active (#23942). Captures: __fixtures__/claude-task-notification-hooks.jsonl. */
 export type ClaudeLaunchedBackgroundTasks = Map<string, ClaudeLaunchedBackgroundTask>
@@ -14,7 +14,7 @@ type ClaudeLaunchedBackgroundTask = {
   settled?: true
   /** A delivered notification, distinct from a lease that merely gave up waiting. */
   notificationDelivered?: true
-  /** A shell blocked on worker agents (`orca orchestration check --wait`): agent work, not monitoring. */
+  /** A shell blocked on worker agents (`topo orchestration check --wait`): agent work, not monitoring. */
   awaitsAgents?: true
   /** Known only from the main agent's task list (e.g. after a listener restart): a subagent may own it, so it owes the main agent nothing. */
   listedOnly?: true
@@ -56,7 +56,7 @@ export function readClaudeBackgroundTaskLaunch(
   return {
     id: shellId,
     kind: 'shell',
-    ...(runsOrcaOrchestrationWait(command) ? { awaitsAgents: true as const } : {})
+    ...(runsTopoOrchestrationWait(command) ? { awaitsAgents: true as const } : {})
   }
 }
 

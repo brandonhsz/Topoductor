@@ -3,8 +3,8 @@
 
 import type { AgentSessionConversationView } from '../../../../../shared/agent-session/lifecycle/agent-session-conversation-view'
 import { buildOrchestrationTaskDisplayMetadata } from '../../../../../shared/orchestration/orchestration-task-display'
-import { isOrcaSessionId } from '../../../../../shared/orca-session-address'
-import { canonicalOrcaSessionId } from '../../addressing/session-lineage/canonical-orca-session-id'
+import { isTopoSessionId } from '../../../../../shared/topo-session-address'
+import { canonicalTopoSessionId } from '../../addressing/session-lineage/canonical-topo-session-id'
 import type { RunningStructuredSession } from '../../addressing/session-lineage/structured-session-lineage'
 import type { OrchestrationDb } from '../../db/orchestration-db'
 import type { WorkerDispatchState } from '../../db/orchestration-records'
@@ -175,7 +175,7 @@ function ownedWorkerIncarnation(
     return null
   }
   const incarnation = structuredWorkerProcessIncarnation(
-    isOrcaSessionId(record.sessionId) ? canonicalOrcaSessionId(record.sessionId) : record.sessionId
+    isTopoSessionId(record.sessionId) ? canonicalTopoSessionId(record.sessionId) : record.sessionId
   )
   const owned = db.db
     .prepare(

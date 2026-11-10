@@ -23,7 +23,7 @@ export const MobileRelayDirectUpgradeJournalSchema = z
 export type MobileRelayDirectUpgradeJournal = z.infer<typeof MobileRelayDirectUpgradeJournalSchema>
 
 function journalKey(hostId: string): string {
-  return `orca.mobile-relay.direct-upgrade.${hostId}`
+  return `topo.mobile-relay.direct-upgrade.${hostId}`
 }
 
 export function createMobileRelayDirectUpgradeJournal(
@@ -82,6 +82,6 @@ function encodeBase64Url(value: Uint8Array): string {
 
 function requireNativeSecretStore(): void {
   if (Platform.OS === 'web') {
-    throw new Error('Orca Relay upgrade state requires a native secret store')
+    throw new Error('Topo Relay upgrade state requires a native secret store')
   }
 }

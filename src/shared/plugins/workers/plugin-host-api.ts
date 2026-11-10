@@ -98,7 +98,7 @@ const shellOpenExternalParams = z.strictObject({
     .max(PLUGIN_EXTERNAL_URL_MAX_LENGTH)
     .refine(isPluginExternalUrl, 'url must be an http:, https: or mailto: URL')
 })
-/** `reason`, when not opened: the person said no, or nobody could be asked (Orca's window hidden). */
+/** `reason`, when not opened: the person said no, or nobody could be asked (Topo's window hidden). */
 const shellOpenExternalResult = z.object({
   opened: z.boolean(),
   reason: z.enum(['cancelled', 'consent-unavailable']).optional()
@@ -106,7 +106,7 @@ const shellOpenExternalResult = z.object({
 
 const saveAsDataSchema = z.union([
   z.string().max(PLUGIN_SAVE_AS_MAX_BYTES),
-  // Why Uint8Array too: IPC between Orca's own processes may hand bytes over as a view.
+  // Why Uint8Array too: IPC between Topo's own processes may hand bytes over as a view.
   z
     .custom<ArrayBuffer | Uint8Array>(
       (value) => value instanceof ArrayBuffer || value instanceof Uint8Array,
@@ -278,7 +278,7 @@ export const PLUGIN_HOST_API = {
   }),
   'shell.openExternal': spec({
     summary:
-      'Opens an http:, https: or mailto: URL in the default browser. Needs a click or key press in the frame; desktop app only. Orca asks the person before an http(s) host the plugin was not allowed; `opened` is false if they cancel.',
+      'Opens an http:, https: or mailto: URL in the default browser. Needs a click or key press in the frame; desktop app only. Topo asks the person before an http(s) host the plugin was not allowed; `opened` is false if they cancel.',
     since: 1,
     scope: 'desktop',
     capability: null,
@@ -290,7 +290,7 @@ export const PLUGIN_HOST_API = {
   }),
   'files.saveAs': spec({
     summary:
-      "Offers data (a string or ArrayBuffer, up to 64 MiB) in Orca's save dialog; the plugin never learns the path. Needs a click or key press in the frame; desktop app only.",
+      "Offers data (a string or ArrayBuffer, up to 64 MiB) in Topo's save dialog; the plugin never learns the path. Needs a click or key press in the frame; desktop app only.",
     since: 1,
     scope: 'desktop',
     capability: null,
@@ -330,7 +330,7 @@ export function pluginHostMethodsFor(surface: PluginSurface): PluginHostMethodNa
   return PLUGIN_HOST_METHOD_NAMES.filter((name) => PLUGIN_HOST_API[name].surfaces.includes(surface))
 }
 
-/** A frame's methods: user-gesture methods only where Orca can verify the gesture (a guest). */
+/** A frame's methods: user-gesture methods only where Topo can verify the gesture (a guest). */
 export function pluginFrameMethodsFor(
   surface: 'panel' | 'editor',
   isolatedGuest: boolean

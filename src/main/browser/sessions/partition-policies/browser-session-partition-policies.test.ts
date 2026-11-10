@@ -53,7 +53,7 @@ function fakeSession(): FakeSession {
         listeners.splice(index, 1)
       }
     }),
-    getUserAgent: () => 'Mozilla/5.0 Orca',
+    getUserAgent: () => 'Mozilla/5.0 Topo',
     setUserAgent: vi.fn(),
     setPermissionRequestHandler: vi.fn(),
     setPermissionCheckHandler: vi.fn(),
@@ -98,7 +98,7 @@ vi.mock('../../identity/requests/browser-session-ua', () => ({
   installBrowserSessionUserAgentPolicy: vi.fn(() => vi.fn())
 }))
 vi.mock('../../identity/browser-process-user-agent', () => ({
-  getBrowserProcessUserAgentIdentity: () => ({ mode: 'clean', userAgent: 'Mozilla/5.0 Orca' })
+  getBrowserProcessUserAgentIdentity: () => ({ mode: 'clean', userAgent: 'Mozilla/5.0 Topo' })
 }))
 vi.mock('../../webauthn/browser-webauthn-access', () => ({
   allowsBrowserWebAuthnPermission: () => false,
@@ -148,7 +148,7 @@ describe('partition permission policy', () => {
     mocks.isRemoteCliDrivenGuest.mockImplementation((id?: number) => id === 7)
     const install = await loadInstaller()
     const store = await import('../../site-settings/permissions/browser-site-permission-store')
-    store.configureBrowserSitePermissionStore(mkdtempSync(join(tmpdir(), 'orca-site-permissions-')))
+    store.configureBrowserSitePermissionStore(mkdtempSync(join(tmpdir(), 'topo-site-permissions-')))
     store.setBrowserSitePermissionDecisions(
       'persist:browsing-2',
       'https://a.test',
@@ -194,7 +194,7 @@ describe('partition permission policy', () => {
   it("answers a notification from a frame with an inherited origin as the frame's real site", async () => {
     const install = await loadInstaller()
     const store = await import('../../site-settings/permissions/browser-site-permission-store')
-    store.configureBrowserSitePermissionStore(mkdtempSync(join(tmpdir(), 'orca-site-permissions-')))
+    store.configureBrowserSitePermissionStore(mkdtempSync(join(tmpdir(), 'topo-site-permissions-')))
     store.setBrowserSitePermissionDecisions(
       'persist:browsing-frames',
       'https://a.test',
@@ -254,7 +254,7 @@ describe('partition permission policy', () => {
   it('asks when a page checks local network access, since Electron never requests it', async () => {
     const install = await loadInstaller()
     const store = await import('../../site-settings/permissions/browser-site-permission-store')
-    store.configureBrowserSitePermissionStore(mkdtempSync(join(tmpdir(), 'orca-site-permissions-')))
+    store.configureBrowserSitePermissionStore(mkdtempSync(join(tmpdir(), 'topo-site-permissions-')))
     const { respondToBrowserPagePrompt } =
       await import('../../guest-lifecycle/prompts/browser-page-prompts')
     const send = vi.fn()
@@ -306,7 +306,7 @@ describe('partition permission policy', () => {
   it("keeps a paired server's pages off this computer's saved answers for the same profile id", async () => {
     const install = await loadInstaller()
     const store = await import('../../site-settings/permissions/browser-site-permission-store')
-    store.configureBrowserSitePermissionStore(mkdtempSync(join(tmpdir(), 'orca-site-permissions-')))
+    store.configureBrowserSitePermissionStore(mkdtempSync(join(tmpdir(), 'topo-site-permissions-')))
     store.setBrowserSitePermissionDecisions('default', 'https://a.test', ['clipboard'], 'allow')
     const desktop = { ...profileFor('persist:desktop-default'), id: 'default' }
     const paired = { ...profileFor('persist:paired-default'), id: 'default' }
@@ -364,7 +364,7 @@ describe('partition permission policy', () => {
     const install = await loadInstaller()
     const { installBrowserRoutePartitionPolicies } =
       await import('../../routing/sessions/browser-session-route-policies')
-    const routed = `persist:orca-browser-v1-${'a'.repeat(64)}`
+    const routed = `persist:topo-browser-v1-${'a'.repeat(64)}`
     install(profileFor('persist:browsing-5'))
     void installBrowserRoutePartitionPolicies(profileFor('persist:browsing-5'), routed)
     const decide = (partition: string) => {

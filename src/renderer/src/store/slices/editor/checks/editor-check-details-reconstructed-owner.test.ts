@@ -12,7 +12,7 @@ import { loadWorkspaceLayoutWithoutReport } from '../../../../../../shared/works
 import { nameBasedLoadContext } from '../../../../../../shared/workspace-layout/workspace-layout-minted-ids'
 import { getDefaultWorkspaceSession } from '../../../../../../shared/constants'
 import type { ExecutionHostId } from '../../../../../../shared/execution-host'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../../../shared/layout-owner-switch'
 
 vi.mock('@/runtime/rpc/calls/runtime-rpc-call', async (importOriginal) =>
   (
@@ -25,7 +25,7 @@ vi.mock('@/runtime/workspace-layout/frames/runtime-layout-client', async (import
   ).runtimeLayoutClientWithTestFrames(await importOriginal())
 )
 
-it.runIf(ORCA_LAYOUT_OWNER_IS_MAIN).each(['local', 'ssh:builder'] as const)(
+it.runIf(TOPO_LAYOUT_OWNER_IS_MAIN).each(['local', 'ssh:builder'] as const)(
   'refreshes reconstructed %s checks and isolates colliding requests from its runtime twin',
   async (hostId) => {
     const repo = {
@@ -138,7 +138,7 @@ it.runIf(ORCA_LAYOUT_OWNER_IS_MAIN).each(['local', 'ssh:builder'] as const)(
   }
 )
 
-it.runIf(ORCA_LAYOUT_OWNER_IS_MAIN).each([
+it.runIf(TOPO_LAYOUT_OWNER_IS_MAIN).each([
   { hostId: 'local', runtimeEnvironmentId: undefined, scope: '' },
   { hostId: 'runtime:server', runtimeEnvironmentId: 'server', scope: '@runtime:server' },
   { hostId: 'ssh:builder', runtimeEnvironmentId: 'server', scope: '@ssh:builder>runtime:server' }

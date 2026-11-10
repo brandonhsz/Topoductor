@@ -108,7 +108,7 @@ describe('the structured worker-read cursor over a mutating journal', () => {
         dispatchId: 'dispatch',
         task: 'Private worker assignment',
         worker: {
-          party: { address: 'term_worker', terminalHandle: 'term_worker', orcaSessionId: null },
+          party: { address: 'term_worker', terminalHandle: 'term_worker', topoSessionId: null },
           name: 'Worker'
         }
       }

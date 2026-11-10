@@ -77,7 +77,7 @@ export type AgentStatusEntry = {
   /** Provider model currently used by this session. */
   model?: string
   /** Command installed by the running OMP extension; absent on older hosts. */
-  modelSwitchCommand?: 'orca-model'
+  modelSwitchCommand?: 'topo-model'
   /** Composite key: `${tabId}:${leafId}` where leafId is a stable UUID layout leaf. */
   paneKey: string
   /** Runtime terminal handle for matching retained parent rows when the parent
@@ -107,7 +107,7 @@ export type AgentStatusEntry = {
   /** Retain the last completed non-boundary output across working: batched done→working publication may already clear lastAssistantMessage. */
   lastCompletedAssistantMessage?: string
   /** True when this `done` was reached via interrupt, not normal completion
-   *  (agent-reported or Orca's guarded fallback). Undefined otherwise. */
+   *  (agent-reported or Topo's guarded fallback). Undefined otherwise. */
   interrupted?: boolean
   /** True when this `done` is a session boundary, not a completed turn. See AgentStatusPayload. */
   sessionBoundary?: boolean
@@ -123,7 +123,7 @@ export type AgentStatusEntry = {
    *  these instead of `subagents`. Absent from older hosts. */
   children?: AgentChildWorkView[]
   /** Provider-owned conversation/session id captured from hook payloads.
-   *  Used only for exact CLI resume; Orca terminal ids are not agent-session ids. */
+   *  Used only for exact CLI resume; Topo terminal ids are not agent-session ids. */
   providerSession?: AgentProviderSessionMetadata
   /** False when the status belongs to a non-terminal owner that restores itself. */
   terminalResumeEligible?: false
@@ -146,7 +146,7 @@ export type AgentStatusPayload = {
   prompt?: string
   agentType?: AgentType
   model?: string
-  modelSwitchCommand?: 'orca-model'
+  modelSwitchCommand?: 'topo-model'
   toolName?: string
   toolInput?: string
   /** JSON string of the AskUserQuestion tool input, captured live. See the
@@ -287,8 +287,8 @@ function normalizeAgentStatusObject(parsed: unknown): ParsedAgentStatusPayload |
     // Why: normalize like the other single-line fields so embedded newlines (e.g. `agentType: "claude\nrogue"`) can't break single-line UI and equality checks.
     agentType: normalizeOptionalField(obj.agentType, AGENT_TYPE_MAX_LENGTH),
     model: normalizeOptionalField(obj.model, AGENT_MODEL_MAX_LENGTH),
-    ...(obj.modelSwitchCommand === 'orca-model'
-      ? { modelSwitchCommand: 'orca-model' as const }
+    ...(obj.modelSwitchCommand === 'topo-model'
+      ? { modelSwitchCommand: 'topo-model' as const }
       : {}),
     toolName: normalizeOptionalField(obj.toolName, AGENT_STATUS_TOOL_NAME_MAX_LENGTH),
     toolInput: normalizeOptionalField(obj.toolInput, AGENT_STATUS_TOOL_INPUT_MAX_LENGTH),

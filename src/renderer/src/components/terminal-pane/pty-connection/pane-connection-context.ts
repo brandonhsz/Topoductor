@@ -9,7 +9,7 @@ import { settleTerminalPaneRecovery } from '../render-health/recovery/terminal-p
 import type { ConnectPanePtySession } from './connect-pane-pty-session'
 
 export function initializePaneConnectionContext(session: ConnectPanePtySession): void {
-  // Inject opaque ORCA_PANE_KEY matching tabId:leafId so global hooks can attribute callbacks without cwd lookup.
+  // Inject opaque TOPO_PANE_KEY matching tabId:leafId so global hooks can attribute callbacks without cwd lookup.
   session.state = useAppStore.getState()
   session.parsedWorkspaceKey = parseWorkspaceKey(session.deps.worktreeId)
   session.restoredPtyIdForTransport =
@@ -28,17 +28,17 @@ export function initializePaneConnectionContext(session: ConnectPanePtySession):
     session.restoredPtyIdForTransport
   )
   session.folderWorkspace = session.ownerContext.folderWorkspace
-  session.workspaceEnv = { ORCA_WORKSPACE_ID: session.deps.worktreeId }
+  session.workspaceEnv = { TOPO_WORKSPACE_ID: session.deps.worktreeId }
   if (session.folderWorkspace) {
-    session.workspaceEnv.ORCA_PROJECT_GROUP_ID = session.folderWorkspace.projectGroupId
-    session.workspaceEnv.ORCA_WORKSPACE_ROOT = session.folderWorkspace.folderPath
+    session.workspaceEnv.TOPO_PROJECT_GROUP_ID = session.folderWorkspace.projectGroupId
+    session.workspaceEnv.TOPO_WORKSPACE_ROOT = session.folderWorkspace.folderPath
   }
   session.paneIdentityEnv = {
     ...session.workspaceEnv,
-    ORCA_PANE_KEY: session.cacheKey,
-    ORCA_TAB_ID: session.deps.tabId,
-    ORCA_WORKTREE_ID: session.deps.worktreeId,
-    ...(session.launchToken ? { ORCA_AGENT_LAUNCH_TOKEN: session.launchToken } : {})
+    TOPO_PANE_KEY: session.cacheKey,
+    TOPO_TAB_ID: session.deps.tabId,
+    TOPO_WORKTREE_ID: session.deps.worktreeId,
+    ...(session.launchToken ? { TOPO_AGENT_LAUNCH_TOKEN: session.launchToken } : {})
   }
   session.paneEnv = {
     ...session.paneStartup?.env,

@@ -1,5 +1,5 @@
 import type { GlobalSettings } from './global-settings-types'
-import type { RepoHookSettings } from './orca-yaml-hook-types'
+import type { RepoHookSettings } from './topo-yaml-hook-types'
 import type { PersistedState } from './persisted-state-types'
 import type { PersistedUIState } from './persisted-ui-state-types'
 import type { AgentActivityDisplayMode } from './ui-chrome-types'
@@ -71,7 +71,7 @@ export { DEFAULT_REPO_BADGE_COLOR, REPO_COLORS } from './repo-badge-color'
 export function getDefaultWorkspaceDir(homeDir: string): string {
   const separator = homeDir.includes('\\') ? '\\' : '/'
   const trimmedHomeDir = homeDir.replace(/[\\/]+$/, '')
-  return [trimmedHomeDir, 'orca', 'workspaces'].join(separator)
+  return [trimmedHomeDir, 'topo', 'workspaces'].join(separator)
 }
 
 export function getDefaultSettings(homedir: string): GlobalSettings {
@@ -224,7 +224,7 @@ export function getDefaultUIState(): PersistedUIState {
     dismissedUpdateVersion: null,
     dismissedUnexpectedSignoutVersion: null,
     lastUpdateCheckAt: null,
-    trustedOrcaHooks: {},
+    trustedTopoHooks: {},
     setupScriptPromptDismissedRepoIds: [],
     acknowledgedAgentsByPaneKey: {},
     activityClearedAtByPaneKey: {},

@@ -1,6 +1,6 @@
 import 'node:crypto'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../orca-runtime'
+import { TopoRuntimeService } from '../topo-runtime'
 import { OrchestrationDb } from '../orchestration/db/orchestration-db'
 import '../orchestration/db/contract-constants'
 import '../orchestration/db/messages/mailbox-routing-page'
@@ -14,7 +14,7 @@ const promptParams = {
   text: 'retry safely',
   enter: true,
   agentPrompt: true,
-  client: { id: 'orca-cli', type: 'desktop' }
+  client: { id: 'topo-cli', type: 'desktop' }
 } as const
 
 function promptRequest(requestId: string): RpcRequest {
@@ -39,7 +39,7 @@ function workerStartRequest(method: string, requestId: string, params: unknown):
 
 function createHarness() {
   const db = new OrchestrationDb(':memory:')
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(db)
   const binding = vi.spyOn(runtime, 'getTerminalPromptRequestBinding').mockReturnValue({
     ptyId: 'pty-prompt',

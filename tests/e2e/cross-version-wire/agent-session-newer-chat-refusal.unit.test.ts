@@ -18,7 +18,7 @@ import {
   insertTestJournalRowJson,
   liveTestJournalRows,
   openTestJournalHostDatabase,
-  SAVED_BY_NEWER_ORCA
+  SAVED_BY_NEWER_TOPO
 } from '../../../src/main/native-chat/agent-session-journal/store-lifecycle/journal-host-database-test-support'
 import { journalOpenRefusal } from '../../../src/main/native-chat/agent-session-journal/replay/journal-open-failure'
 import {
@@ -28,10 +28,10 @@ import {
   releaseModuleExport
 } from './release-checkout'
 
-// Newer journals must yield the newer-Orca refusal to old clients, never damage wording.
-// Unknown bodies refuse as a newer Orca's here; also probe the older host’s handling of those rows.
+// Newer journals must yield the newer-Topo refusal to old clients, never damage wording.
+// Unknown bodies refuse as a newer Topo's here; also probe the older host’s handling of those rows.
 const SUITE_TIMEOUT_MS = 180_000
-// The last release that does not know the newer-Orca reason: its words fall back to the code's.
+// The last release that does not know the newer-Topo reason: its words fall back to the code's.
 const BEFORE_NEWER_REASON_REF = 'v1.4.218'
 // Pin a main build sharing this database/schema for writable downgrade; move to the first release that ships it.
 const WRITABLE_BASELINE_REF = '3727100cc9dbcea6201f8a3e506676a3c4b53b18'
@@ -63,7 +63,7 @@ let directory: string
 const journals = createTrackedJournalOpener({ legacyInputs: true })
 
 beforeAll(() => {
-  directory = mkdtempSync(join(tmpdir(), 'orca-newer-chat-xv-'))
+  directory = mkdtempSync(join(tmpdir(), 'topo-newer-chat-xv-'))
 })
 
 afterAll(async () => {
@@ -81,7 +81,7 @@ const NEWER_NESTED_LITERAL = {
   subject: { kind: 'diff', path: 'a.ts' }
 }
 
-/** A row of a kind this build does not know: the journal's open is refused as a newer Orca's. */
+/** A row of a kind this build does not know: the journal's open is refused as a newer Topo's. */
 const NEWER_ROW_KIND = { kind: 'future-mark' }
 
 // Write two current journal items, then a newer body or an unknown closed row.
@@ -126,14 +126,14 @@ async function storedRows(): Promise<string[]> {
   return rows.map((row) => row.rowJson)
 }
 
-/** This host's refusal of a newer Orca's chat, as `history` and `subscribe` raise it. */
+/** This host's refusal of a newer Topo's chat, as `history` and `subscribe` raise it. */
 async function newerChatRefusal(): Promise<AgentSessionRefusalReference> {
   await journalWithNewerRow()
   const failure = await journals.open({ identity: IDENTITY, stateDirectory: directory }).then(
     () => null,
     (error: unknown) => error
   )
-  expect(failure).toMatchObject(SAVED_BY_NEWER_ORCA)
+  expect(failure).toMatchObject(SAVED_BY_NEWER_TOPO)
   await journals.closeAll()
   return journalOpenRefusal(failure)
 }
@@ -158,7 +158,7 @@ async function releasedReader(ref: string) {
   return { words, isFinal }
 }
 
-describe('a chat a newer Orca saved, across versions', () => {
+describe('a chat a newer Topo saved, across versions', () => {
   it(
     'old client against new host: a release before the reason words it as an unreadable history and keeps retrying',
     async () => {
@@ -177,7 +177,7 @@ describe('a chat a newer Orca saved, across versions', () => {
     'old client against new host: the newest release words it as its own, never as damage',
     async () => {
       rmSync(directory, { recursive: true, force: true })
-      directory = mkdtempSync(join(tmpdir(), 'orca-newer-chat-xv-'))
+      directory = mkdtempSync(join(tmpdir(), 'topo-newer-chat-xv-'))
       const refusal = await newerChatRefusal()
       const released = await releasedReader(resolveBaselineReleaseRef())
       const damage = { code: refusal.code, details: { reason: 'journalCorrupt' } }
@@ -193,10 +193,10 @@ describe('a chat a newer Orca saved, across versions', () => {
     ['body kind', NEWER_BODY_KIND],
     ['plan subject kind', NEWER_NESTED_LITERAL]
   ])(
-    "this build refuses a newer build's %s as a newer Orca's and keeps it; a build before it deletes it",
+    "this build refuses a newer build's %s as a newer Topo's and keeps it; a build before it deletes it",
     async (_value, body) => {
       rmSync(directory, { recursive: true, force: true })
-      directory = mkdtempSync(join(tmpdir(), 'orca-newer-chat-xv-'))
+      directory = mkdtempSync(join(tmpdir(), 'topo-newer-chat-xv-'))
       const { rows, newer } = await journalWithNewerRow({
         kind: 'item',
         itemId: 'codex:thread-1:turn-1:1',
@@ -205,7 +205,7 @@ describe('a chat a newer Orca saved, across versions', () => {
       })
       await expect(
         journals.open({ identity: IDENTITY, stateDirectory: directory })
-      ).rejects.toMatchObject(SAVED_BY_NEWER_ORCA)
+      ).rejects.toMatchObject(SAVED_BY_NEWER_TOPO)
       await journals.closeAll()
       expect(await storedRows()).toEqual(rows)
 

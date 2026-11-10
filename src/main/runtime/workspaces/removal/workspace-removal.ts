@@ -38,7 +38,7 @@ import {
   isWslMoveSourceHost
 } from '../../../persistence/moving-wsl-projects/wsl-move-scope-guard'
 
-export abstract class OrcaRuntimeWithRemoveManagedWorktree extends RuntimeWorkspaceMetadata {
+export abstract class TopoRuntimeWithRemoveManagedWorktree extends RuntimeWorkspaceMetadata {
   abstract removeWorktreeMetadataAndHistory(
     store: RuntimeStore,
     worktreeId: string,

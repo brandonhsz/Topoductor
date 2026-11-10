@@ -2,9 +2,9 @@ import { getWorkerTerminalAutoReleaseScheduler } from '../terminal-authority/rel
 import { OrchestrationDb } from './orchestration-db'
 import { committedHandBackTypes, type MailHandBack } from './messages/helper-mailbox-hand-back'
 import { existsSync } from 'node:fs'
-import { OrcaRuntimeWithAutomationApiOperations } from '../../workspaces/persisted-surfaces/automation-api-operations'
+import { TopoRuntimeWithAutomationApiOperations } from '../../workspaces/persisted-surfaces/automation-api-operations'
 
-export abstract class RuntimeOrchestrationDatabaseAccess extends OrcaRuntimeWithAutomationApiOperations {
+export abstract class RuntimeOrchestrationDatabaseAccess extends TopoRuntimeWithAutomationApiOperations {
   abstract ensureOrchestrationFederationRelay(runId?: string): void
 
   protected abstract scheduleRestoredMessageRepoints(): void

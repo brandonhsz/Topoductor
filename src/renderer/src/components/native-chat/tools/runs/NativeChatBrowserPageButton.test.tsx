@@ -57,7 +57,7 @@ describe('NativeChatBrowserRunPageButton', () => {
           {
             type: 'tool-call',
             name: 'Bash',
-            input: { command: 'orca browser snapshot' },
+            input: { command: 'topo browser snapshot' },
             callId: 'run-a'
           }
         ]}

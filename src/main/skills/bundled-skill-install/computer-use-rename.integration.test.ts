@@ -6,7 +6,7 @@ import { BUNDLED_SKILL_SOURCES } from './bundled-skill-sources'
 import { makeSkillHome, removeSkillHomes, writeCopy } from './testing/bundled-skill-home'
 import { clearSkillRootScanCache, discoverSkills } from '../discovery/skill-native-discovery'
 
-const NAME = 'orca-computer-use'
+const NAME = 'topo-computer-use'
 const OLD = 'computer-use'
 const FIXTURE = join(import.meta.dirname, 'computer-use-before-rename.skill-md.txt')
 afterEach(async () => {

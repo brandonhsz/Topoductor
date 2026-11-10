@@ -9,7 +9,7 @@ import {
   isAgentStatusFresh
 } from '../../src/shared/agent-status/contracts/agent-status-freshness'
 
-import { OrcaRuntimeService } from '../../src/main/runtime/orca-runtime'
+import { TopoRuntimeService } from '../../src/main/runtime/topo-runtime'
 import { SESSION_TABS_AGENT_STATUS_HEARTBEAT_INTERVAL_MS } from '../../src/main/runtime/session-lifecycle/publication/mobile-session-tabs-agent-status-heartbeat'
 import { applyFreshWebSessionTabsSnapshot } from '../../src/renderer/src/runtime/web-session-tabs-sync/snapshot-api'
 import { resetWebSessionTabsSnapshotFreshnessForTests } from '../../src/renderer/src/runtime/web-session-tabs-sync/tracking-lifecycle'
@@ -63,7 +63,7 @@ function makeViewerState(): WebSessionTabsSyncState {
   }
 }
 
-function seedWorktree(runtime: OrcaRuntimeService, index: number): string {
+function seedWorktree(runtime: TopoRuntimeService, index: number): string {
   const worktreeId = `workspace-${index}`
   const ptyId = `pty-${index}`
   const tabId = `host-tab-${index}`
@@ -111,7 +111,7 @@ describe('real PTY decorative session-tabs fanout', () => {
     ['build ⠁', 'build ⠂'],
     ['Codex working task ⠁', 'Codex working task ⠂']
   ])('publishes meaningful real-title changes from %j to %j', (firstTitle, secondTitle) => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     seedWorktree(runtime, 0)
     const published: RuntimeMobileSessionTabsResult[] = []
     const unsubscribe = runtime.onMobileSessionTabsChanged((snapshot) => published.push(snapshot))
@@ -142,7 +142,7 @@ describe('real PTY decorative session-tabs fanout', () => {
       expectedTitle: '⠋ Grok'
     }
   ])('renews exact and normalized $agent frames beyond the viewer stale boundary', (testCase) => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const firstWorkingTitleAt = Date.now()
     const ptyId = seedWorktree(runtime, 0)
     const internals = runtime as unknown as RuntimeInternals
@@ -225,7 +225,7 @@ describe('real PTY decorative session-tabs fanout', () => {
   })
 
   it('does not publish a stored working row over a later permission title', () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const ptyId = seedWorktree(runtime, 0)
     const internals = runtime as unknown as RuntimeInternals
     const seededTab = internals.mobileSessionTabsByWorktree.get('workspace-0')?.tabs[0]
@@ -266,7 +266,7 @@ describe('real PTY decorative session-tabs fanout', () => {
   })
 
   it('does not publish a prior done row over a newer working title', () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const ptyId = seedWorktree(runtime, 0)
     const internals = runtime as unknown as RuntimeInternals
     const seededTab = internals.mobileSessionTabsByWorktree.get('workspace-0')?.tabs[0]
@@ -327,7 +327,7 @@ describe('real PTY decorative session-tabs fanout', () => {
       resolveForegroundProcess = resolve
     })
     const getForegroundProcess = vi.fn(() => foregroundProcess)
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     runtime.setPtyController({
       spawn: vi.fn().mockResolvedValue({ id: 'pty-0' }),
       write: () => true,
@@ -368,7 +368,7 @@ describe('real PTY decorative session-tabs fanout', () => {
 
   it('renews retained hook status without resetting its state start', () => {
     const statusWiring = makeAgentStatusStoreWiring()
-    const runtime = new OrcaRuntimeService(null, undefined, statusWiring.deps)
+    const runtime = new TopoRuntimeService(null, undefined, statusWiring.deps)
     const uninstallStatusRepublish = statusWiring.attach(runtime)
     const ptyId = seedWorktree(runtime, 0)
     const internals = runtime as unknown as RuntimeInternals

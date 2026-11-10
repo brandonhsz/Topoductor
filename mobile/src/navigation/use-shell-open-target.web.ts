@@ -89,14 +89,14 @@ function shellOpenStackRouter(
 
 function decodedPathnameOf(href: string): string {
   try {
-    return decodeURIComponent(new URL(href, 'orca-page://document').pathname)
+    return decodeURIComponent(new URL(href, 'topo-page://document').pathname)
   } catch {
     return href
   }
 }
 
 function searchParamsOf(href: string): Record<string, string> {
-  return Object.fromEntries(new URL(href, 'orca-page://document').searchParams)
+  return Object.fromEntries(new URL(href, 'topo-page://document').searchParams)
 }
 
 // The shell names a target to open inside this document (Jump back in, notification taps) instead of pushing a second one.

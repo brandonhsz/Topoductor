@@ -175,7 +175,7 @@ describe('entry points with the gate closed', () => {
             {
               id: 'wsl:ubuntu',
               name: 'Ubuntu (WSL)',
-              orcadDeployment: { kind: 'wsl', distro: 'Ubuntu', localPort: 1, remotePort: 2 }
+              topodDeployment: { kind: 'wsl', distro: 'Ubuntu', localPort: 1, remotePort: 2 }
             }
           ]
         })

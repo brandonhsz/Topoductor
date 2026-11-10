@@ -6,7 +6,7 @@ import {
 } from './terminal-launch-result'
 import { revealCreatedTerminal } from './terminal-create-reveal'
 import type { PaneSpawnOperation } from '../../../ipc/pty/pane/pane-spawn-operation'
-import { OrcaRuntimeWithTerminalCreateDeduplication } from './terminal-create-deduplication'
+import { TopoRuntimeWithTerminalCreateDeduplication } from './terminal-create-deduplication'
 import { type PaneStartArgsOf, spawnInAdmittedPane } from './runtime-pane-admission'
 import type { TerminalCreateOptions } from './terminal-create-options'
 import type { RuntimeTerminalCreate } from '../../../../shared/runtime-terminal-create-contract'
@@ -24,7 +24,7 @@ import type { RuntimePtyController } from '../lifecycle/runtime-pty-controller-c
 import { SETUP_AGENT_SEQUENCE_STARTUP_COMMAND_ENV } from '../../../../shared/agent-launch/startup/setup-agent-sequencing'
 import { mergeTerminalEnvDeletionKeys } from './runtime-agent-launch-resolution'
 import { terminalSpawnOptions } from './terminal-spawn-options'
-import { createDesktopTerminal } from './orca-runtime-create-terminal-desktop'
+import { createDesktopTerminal } from './topo-runtime-create-terminal-desktop'
 import { terminalCreateTeamAllocation } from './terminal-create-team-allocation'
 import { createIdempotentCallback } from './pty-spawn-commit-callback'
 import {
@@ -37,7 +37,7 @@ import { migratedPaneRestoreHint } from '../recovery/migrated-pane-restore-cwd'
 import { paneSize, resolvePtyFirstSize } from '../../../ipc/pty/pty-first-size'
 import * as dependenciesOwner1 from '../../../../shared/workspace-layout/stable-pane-id'
 
-export abstract class OrcaRuntimeWithCreateTerminal extends OrcaRuntimeWithTerminalCreateDeduplication {
+export abstract class TopoRuntimeWithCreateTerminal extends TopoRuntimeWithTerminalCreateDeduplication {
   protected abstract paneStartStatusArgs: PaneStartArgsOf
 
   async createTerminal(

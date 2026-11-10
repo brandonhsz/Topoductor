@@ -138,7 +138,7 @@ export function createTestStore() {
         ...createWorkspaceAttentionSlice(...a),
         ...createEphemeralVmLifecycleSlice(...a),
         ...createAgentStatusSlice(...a),
-        trustedOrcaHooks: {},
+        trustedTopoHooks: {},
         sshConnectionStates: new Map([
           [
             TEST_SSH_AUTHORITY.targetId,

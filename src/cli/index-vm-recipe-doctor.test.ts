@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest'
 const {
   callMock,
   runtimeClientConstructorMock,
-  serveOrcaAppMock,
+  serveTopoAppMock,
   getDefaultUserDataPathMock,
   addEnvironmentFromPairingCodeMock,
   listEnvironmentsMock,
@@ -14,8 +14,8 @@ const {
 } = vi.hoisted(() => ({
   callMock: vi.fn(),
   runtimeClientConstructorMock: vi.fn(),
-  serveOrcaAppMock: vi.fn(),
-  getDefaultUserDataPathMock: vi.fn(() => '/tmp/orca-user-data'),
+  serveTopoAppMock: vi.fn(),
+  getDefaultUserDataPathMock: vi.fn(() => '/tmp/topo-user-data'),
   addEnvironmentFromPairingCodeMock: vi.fn(),
   listEnvironmentsMock: vi.fn(),
   spawnMock: vi.fn()
@@ -26,7 +26,7 @@ vi.mock('./runtime-client', async () => {
   return createRuntimeClientModuleMock({
     callMock,
     runtimeClientConstructorMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock
   })
 })
@@ -49,10 +49,10 @@ vi.mock('child_process', async () => {
 import { main } from './index'
 import { useWorktreeAwarenessEnvironment } from './index-test-harness'
 
-describe('orca cli worktree awareness', () => {
+describe('topo cli worktree awareness', () => {
   useWorktreeAwarenessEnvironment({
     callMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock,
     addEnvironmentFromPairingCodeMock,
     listEnvironmentsMock,
@@ -60,23 +60,23 @@ describe('orca cli worktree awareness', () => {
   })
 
   it('runs vm recipe doctor locally without contacting the app runtime', async () => {
-    const repoPath = mkdtempSync(path.join(tmpdir(), 'orca-vm-doctor-'))
+    const repoPath = mkdtempSync(path.join(tmpdir(), 'topo-vm-doctor-'))
     try {
-      mkdirSync(path.join(repoPath, 'scripts', 'orca-vm'), { recursive: true })
-      const startScript = path.join(repoPath, 'scripts', 'orca-vm', 'start.sh')
-      const cleanupScript = path.join(repoPath, 'scripts', 'orca-vm', 'cleanup.sh')
+      mkdirSync(path.join(repoPath, 'scripts', 'topo-vm'), { recursive: true })
+      const startScript = path.join(repoPath, 'scripts', 'topo-vm', 'start.sh')
+      const cleanupScript = path.join(repoPath, 'scripts', 'topo-vm', 'cleanup.sh')
       writeFileSync(startScript, '#!/bin/sh\n')
       writeFileSync(cleanupScript, '#!/bin/sh\n')
       chmodSync(startScript, 0o755)
       chmodSync(cleanupScript, 0o755)
       writeFileSync(
-        path.join(repoPath, 'orca.yaml'),
+        path.join(repoPath, 'topo.yaml'),
         [
           'environmentRecipes:',
           '  - id: cloud-sandbox',
           '    name: Cloud Sandbox',
-          '    create: ./scripts/orca-vm/start.sh',
-          '    destroy: ./scripts/orca-vm/cleanup.sh'
+          '    create: ./scripts/topo-vm/start.sh',
+          '    destroy: ./scripts/topo-vm/cleanup.sh'
         ].join('\n')
       )
       const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
@@ -93,7 +93,7 @@ describe('orca cli worktree awareness', () => {
       expect(output.ok).toBe(true)
       expect(output.checks).toEqual(
         expect.arrayContaining([
-          expect.objectContaining({ id: 'orca_yaml.parse', status: 'pass' }),
+          expect.objectContaining({ id: 'topo_yaml.parse', status: 'pass' }),
           expect.objectContaining({ id: 'recipe.exists', status: 'pass' }),
           expect.objectContaining({ id: 'recipe.create', status: 'pass' }),
           expect.objectContaining({ id: 'recipe.destroy', status: 'pass' })

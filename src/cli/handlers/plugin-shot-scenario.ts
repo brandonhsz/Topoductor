@@ -40,12 +40,12 @@ function refuse(code: string, message: string, nextSteps: string[] = []): Runtim
   return new RuntimeClientError(code, message, nextSteps.length > 0 ? { nextSteps } : undefined)
 }
 
-/** Why local only: the scenario runs the plugin's code here, then Orca on this machine draws it. */
+/** Why local only: the scenario runs the plugin's code here, then Topo on this machine draws it. */
 function requireLocal(ctx: HandlerContext): void {
-  if (process.env.ORCA_CLI_CWD || ctx.client.isRemote) {
+  if (process.env.TOPO_CLI_CWD || ctx.client.isRemote) {
     throw refuse(
       'invalid_environment',
-      "shot --scenario runs the plugin's code on this machine and shows it in the Orca on this machine, so it does not reach another host. Run it where Orca and the plugin folder are, without --environment."
+      "shot --scenario runs the plugin's code on this machine and shows it in the Topo on this machine, so it does not reach another host. Run it where Topo and the plugin folder are, without --environment."
     )
   }
 }
@@ -63,7 +63,7 @@ async function readManifest(dir: string): Promise<PluginManifest> {
   const parsed = parsePluginManifest(raw)
   if (!parsed.ok) {
     throw refuse('plugin_invalid', `${dir}: ${parsed.error}`, [
-      `\`orca plugin validate ${dir}\` lists every problem.`
+      `\`topo plugin validate ${dir}\` lists every problem.`
     ])
   }
   return parsed.manifest
@@ -94,15 +94,15 @@ async function resolveFolder(
   const plugins = await callPlugins<PluginHostListEntry[]>(ctx, 'plugins.list')
   const entry = plugins.find((plugin) => plugin.pluginKey === target)
   if (!entry) {
-    throw refuse('plugin_not_found', `Orca has no plugin ${target}.`, [
-      'Pass the plugin folder instead: `orca plugin shot <dir> --scenario <name>`.'
+    throw refuse('plugin_not_found', `Topo has no plugin ${target}.`, [
+      'Pass the plugin folder instead: `topo plugin shot <dir> --scenario <name>`.'
     ])
   }
   if (!entry.isDev) {
     throw refuse(
       'invalid_argument',
       `${target} is installed, not a development folder; --scenario renders a plugin's own source folder.`,
-      ['Pass the plugin folder: `orca plugin shot <dir> --scenario <name>`.']
+      ['Pass the plugin folder: `topo plugin shot <dir> --scenario <name>`.']
     )
   }
   const enclosing = enclosingPluginFolder(ctx.cwd)
@@ -110,8 +110,8 @@ async function resolveFolder(
   if (!enclosing || !manifest || folderKey(manifest) !== target) {
     throw refuse(
       'invalid_argument',
-      `Run this inside ${target}'s folder, or pass the folder; Orca does not share where a development folder is.`,
-      [`orca plugin shot <dir> --scenario <name>`]
+      `Run this inside ${target}'s folder, or pass the folder; Topo does not share where a development folder is.`,
+      [`topo plugin shot <dir> --scenario <name>`]
     )
   }
   return { dir: enclosing, manifest, pluginKey: target }
@@ -150,9 +150,9 @@ export function pluginScenarioFileStem(scenario: string): string {
 }
 
 /**
- * `orca plugin shot --scenario`: renders the panel in the named `.check.ts` scenario on this
- * machine (as `orca plugin check` does, against a stand-in host and the plugin's worker mounted
- * here), then has Orca draw that tree apart from the plugin and capture it.
+ * `topo plugin shot --scenario`: renders the panel in the named `.check.ts` scenario on this
+ * machine (as `topo plugin check` does, against a stand-in host and the plugin's worker mounted
+ * here), then has Topo draw that tree apart from the plugin and capture it.
  */
 export async function takePluginScenarioShot(
   ctx: HandlerContext,
@@ -208,7 +208,7 @@ export async function takePluginScenarioShot(
   if (reply.replay !== true) {
     throw refuse(
       'runtime_unsupported',
-      'This Orca does not draw shot --scenario previews; update Orca, then run it again.'
+      'This Topo does not draw shot --scenario previews; update Topo, then run it again.'
     )
   }
   const path =

@@ -28,9 +28,9 @@ export const BROWSER_COOKIE_IMPORT_FAILURE_COPY = {
   importFailedWithLog:
     'Could not import cookies from {{browser}}: {{detail}}. Details were written to {{logPath}}.',
   safariFullDiskAccess:
-    'macOS denied access to Safari cookies. Grant Full Disk Access to Orca in System Settings → Privacy & Security → Full Disk Access.',
+    'macOS denied access to Safari cookies. Grant Full Disk Access to Topo in System Settings → Privacy & Security → Full Disk Access.',
   macFullDiskAccess:
-    'macOS denied access to {{browser}} cookies. Grant Full Disk Access to Orca in System Settings → Privacy & Security → Full Disk Access, then restart Orca.',
+    'macOS denied access to {{browser}} cookies. Grant Full Disk Access to Topo in System Settings → Privacy & Security → Full Disk Access, then restart Topo.',
   connectionEnded:
     'The connection to this server ended during the import. Reconnect and try again.',
   serverRepaired: 'This server was re-paired during the import. Try again.'

@@ -1,6 +1,6 @@
 # Linux clipboard publisher
 
-Orca text copies on native Wayland use `orca-wayland-clipboard` instead of asking
+Topo text copies on native Wayland use `topo-wayland-clipboard` instead of asking
 Electron to own the clipboard. A rejected or reused input serial can leave
 Chromium returning its own cached text after other applications copy something.
 After the helper acknowledges publication, the main process discards that source
@@ -21,8 +21,8 @@ Stock Electron 43.7.9 and 44.7.0 still reproduce the rejected write and stale re
 Remove the publisher after an Electron version containing the upstream repair
 passes these checks with the helper disabled on native Wayland:
 
-- Before any keyboard/mouse input, copy A externally, write B through Orca's text
-  IPC, then copy C externally. Both the system clipboard and Orca must contain B
+- Before any keyboard/mouse input, copy A externally, write B through Topo's text
+  IPC, then copy C externally. Both the system clipboard and Topo must contain B
   after the write and C after the external copy; native Ctrl+V must paste C.
 - Repeat with OSC 52 emitted by a restored terminal before new input, and with
   duplicate/different copies after native keyboard input. Check Unicode, CRLF,
@@ -65,7 +65,7 @@ node config/scripts/native-build/linux/build-wayland-clipboard.mjs --arch arm64
 Builds use Ubuntu 20.04, preserve the glibc 2.31 floor, validate ELF architecture
 and library requirements, and cache by source/toolchain fingerprint. Linux
 packaging builds the target slice before copying it into
-`resources/bin/orca-wayland-clipboard` and validates the copied executable.
+`resources/bin/topo-wayland-clipboard` and validates the copied executable.
 Development uses `.build/<arch>/`.
 
 On an executable target architecture, the build runs `protocol_test.py` against

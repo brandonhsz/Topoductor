@@ -1,7 +1,7 @@
 import { STATUS_METHODS } from './host-management/status'
 import { SIDEBAR_INPUT_METHODS } from './sidebar-inputs/sidebar-inputs'
-import { ORCAD_TERMINAL_CENSUS_METHODS } from './orcad/orcad-terminal-census'
-import { ORCAD_MIGRATION_METHODS } from './orcad/orcad-migration'
+import { TOPOD_TERMINAL_CENSUS_METHODS } from './topod/topod-terminal-census'
+import { TOPOD_MIGRATION_METHODS } from './topod/topod-migration'
 import { SESSION_TERMINAL_SCROLLBACK_METHODS } from './terminal/session-terminal-scrollback'
 import { AI_VAULT_METHODS } from './history/ai-vault'
 import { AUTOMATION_METHODS } from './automations/automations'
@@ -79,14 +79,14 @@ import {
   LAYOUT_VIEW_REPORT_METHODS,
   WORKSPACE_LAYOUT_METHODS
 } from './workspace-layout/workspace-layout'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
-import { ORCA_SIDEBAR_INPUTS_IS_MAIN } from '../../../../shared/sidebar-inputs-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../../shared/layout-owner-switch'
+import { TOPO_SIDEBAR_INPUTS_IS_MAIN } from '../../../../shared/sidebar-inputs-switch'
 
 // Keep registration order and the full RPC/security surface visible in one manifest.
 export const ALL_RPC_METHODS = [
   ...STATUS_METHODS,
-  ...ORCAD_TERMINAL_CENSUS_METHODS,
-  ...ORCAD_MIGRATION_METHODS,
+  ...TOPOD_TERMINAL_CENSUS_METHODS,
+  ...TOPOD_MIGRATION_METHODS,
   ...SESSION_TERMINAL_SCROLLBACK_METHODS,
   ...AGENT_HOOK_METHODS,
   ...AI_VAULT_METHODS,
@@ -127,7 +127,7 @@ export const ALL_RPC_METHODS = [
   ...SESSION_TAB_METHODS,
   ...WORKSPACE_LAYOUT_METHODS,
   // Switch point: a window-owned build registers no layout command.
-  ...(ORCA_LAYOUT_OWNER_IS_MAIN ? [...LAYOUT_APPLY_METHODS, ...LAYOUT_VIEW_REPORT_METHODS] : []),
+  ...(TOPO_LAYOUT_OWNER_IS_MAIN ? [...LAYOUT_APPLY_METHODS, ...LAYOUT_VIEW_REPORT_METHODS] : []),
   ...NATIVE_CHAT_METHODS,
   ...FILE_METHODS,
   ...GIT_METHODS,
@@ -161,7 +161,7 @@ export const ALL_RPC_METHODS = [
   ...MOBILE_RELAY_HOSTS_METHODS,
   ...MOBILE_PROJECT_SECTIONS_METHODS,
   // Switch point: a window-fed build publishes no sidebar input.
-  ...(ORCA_SIDEBAR_INPUTS_IS_MAIN ? SIDEBAR_INPUT_METHODS : []),
+  ...(TOPO_SIDEBAR_INPUTS_IS_MAIN ? SIDEBAR_INPUT_METHODS : []),
   ...UPDATER_METHODS,
   ...AUTOMATIC_WORK_METHODS
 ]

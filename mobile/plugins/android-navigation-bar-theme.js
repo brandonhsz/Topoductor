@@ -2,9 +2,9 @@ const { withMainActivity } = require('expo/config-plugins')
 
 // Why: edge-to-edge picks the navigation bar's light or dark look (and the contrast scrim drawn
 // behind it) once, from the phone's theme at launch (#34246). MainActivity handles uiMode itself,
-// so Orca's own theme choice and later phone switches never reach the bar, leaving a white scrim
+// so Topo's own theme choice and later phone switches never reach the bar, leaving a white scrim
 // under a dark app. AppCompat reports both through onConfigurationChanged with the resolved uiMode.
-const MARKER = 'orca: navigation bar theme'
+const MARKER = 'topo: navigation bar theme'
 
 const CLASS_HEADER = 'class MainActivity : ReactActivity() {'
 const IMPORTS = [

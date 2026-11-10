@@ -2,7 +2,7 @@ import { ipcMain } from 'electron'
 import { appStarSourceSchema } from '../../../shared/gh-star-source'
 import { resolveGhAccountRequiredHost } from '../../github/account-binding-required-host'
 import { diagnoseGhAuth } from '../../github/auth-diagnose'
-import { checkOrcaStarred, starOrca } from '../../github/client/fetch/orca-star'
+import { checkTopoStarred, starTopo } from '../../github/client/fetch/topo-star'
 import { getAuthenticatedViewer } from '../../github/client/fetch/authenticated-viewer'
 import {
   listGhAccountBindingInventory,
@@ -16,12 +16,12 @@ import { assertRegisteredGitHubRepo, getGitHubLocalGitOptionArgs } from './githu
 
 export function registerGitHubAccountHandlers(store: Store): void {
   ipcMain.handle('gh:viewer', () => getAuthenticatedViewer())
-  ipcMain.handle('gh:checkOrcaStarred', () => checkOrcaStarred())
-  ipcMain.handle('gh:starOrca', async (_event, source: unknown) => {
+  ipcMain.handle('gh:checkTopoStarred', () => checkTopoStarred())
+  ipcMain.handle('gh:starTopo', async (_event, source: unknown) => {
     const sourceParse = appStarSourceSchema.safeParse(source)
-    const starred = await starOrca()
+    const starred = await starTopo()
     if (starred && sourceParse.success) {
-      track('app_starred_orca', {
+      track('app_starred_topo', {
         source: sourceParse.data,
         ...getCohortAtEmit()
       })

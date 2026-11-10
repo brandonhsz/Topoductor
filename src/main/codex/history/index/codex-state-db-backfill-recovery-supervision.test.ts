@@ -21,8 +21,8 @@ const INCOMPLETE: CodexStateDbBackfillStatus = {
 
 const OWNER = String.raw`
 import { runCodexStateDbBackfillRecovery } from './codex-state-db-backfill-recovery'
-void runCodexStateDbBackfillRecovery(process.env.ORCA_TEST_CODEX_HOME!, new AbortController().signal, {
-  resolveCommand: () => process.env.ORCA_TEST_STAND_IN!,
+void runCodexStateDbBackfillRecovery(process.env.TOPO_TEST_CODEX_HOME!, new AbortController().signal, {
+  resolveCommand: () => process.env.TOPO_TEST_STAND_IN!,
   readStatus: () => ({ kind: 'incomplete', stateDbPath: '/state.sqlite', status: 'running' })
 }).catch(() => {})
 setInterval(() => {}, 60_000)
@@ -69,8 +69,8 @@ describe.runIf(process.platform !== 'win32')('supervised Codex backfill recovery
     const standIn = rig.writeStandIn('codex')
     const bundle = await rig.bundleOwner(OWNER, __dirname)
     const owner = rig.launchOwner(bundle, {
-      ORCA_TEST_STAND_IN: standIn,
-      ORCA_TEST_CODEX_HOME: rig.dir
+      TOPO_TEST_STAND_IN: standIn,
+      TOPO_TEST_CODEX_HOME: rig.dir
     })
     const pids = await rig.readPids()
 

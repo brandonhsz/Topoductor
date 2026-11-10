@@ -1,6 +1,6 @@
 import './rpc/unused-default-rpc-methods.test-fixture'
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from './orca-runtime'
+import { TopoRuntimeService } from './topo-runtime'
 import { RpcDispatcher } from './rpc/dispatcher'
 import { TERMINAL_METHODS } from './rpc/methods/terminal/terminal'
 import {
@@ -20,7 +20,7 @@ type RuntimeInternals = {
   issuePtyHandle: (pty: unknown) => string
 }
 
-function internals(runtime: OrcaRuntimeService): RuntimeInternals {
+function internals(runtime: TopoRuntimeService): RuntimeInternals {
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: test reaches protected members the runtime defines.
   return runtime as unknown as RuntimeInternals
 }
@@ -35,8 +35,8 @@ async function paintedRows(cols: number, rows: number, data: string): Promise<st
   }
 }
 
-function setup(controller: Partial<Parameters<OrcaRuntimeService['setPtyController']>[0]> = {}) {
-  const runtime = new OrcaRuntimeService()
+function setup(controller: Partial<Parameters<TopoRuntimeService['setPtyController']>[0]> = {}) {
+  const runtime = new TopoRuntimeService()
   runtime.setPtyController({
     write: () => true,
     kill: () => true,
@@ -52,7 +52,7 @@ function setup(controller: Partial<Parameters<OrcaRuntimeService['setPtyControll
 
 /** Subscribes a phone whose fit is still running when the PTY writes `lastOutput` and exits. */
 async function subscribeThroughExit(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   handle: string,
   capabilities: { outputAck?: number },
   lastOutput: string

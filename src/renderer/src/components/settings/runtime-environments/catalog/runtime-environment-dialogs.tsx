@@ -39,7 +39,7 @@ export function RuntimeEnvironmentSwitchDialog({
           <DialogDescription>
             {t(
               'auto.components.settings.RuntimeEnvironmentsPane.b2290ed203',
-              'Orca will focus this host and load its projects. Existing terminals and browser tabs on other hosts stay alive.'
+              'Topo will focus this host and load its projects. Existing terminals and browser tabs on other hosts stay alive.'
             )}
           </DialogDescription>
         </DialogHeader>
@@ -101,7 +101,7 @@ export function RuntimeEnvironmentRemoveDialog({
                 )
               : t(
                   'auto.components.settings.RuntimeEnvironmentsPane.ed3e3f069d',
-                  'This removes the saved server from Orca. It does not change the default host for new projects.'
+                  'This removes the saved server from Topo. It does not change the default host for new projects.'
                 )}
           </DialogDescription>
         </DialogHeader>

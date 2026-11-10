@@ -18,7 +18,7 @@ import {
 import { probePreviewPixel } from './mobile-web-app-preview-frame-readings.mjs'
 import { MOBILE_WEB_PAGE_ROUTES } from '../../build/mobile-web-app/mobile-web-page-routes.mjs'
 
-const MARKER = 'ORCA_HTML_FILE_RENDERED'
+const MARKER = 'TOPO_HTML_FILE_RENDERED'
 const PAINT_RGB = '0,128,255'
 const HTML = `<!doctype html>
 <html>
@@ -30,7 +30,7 @@ const host = { id: 'html-host', name: 'HTML Host', endpoint: 'ws://html-test', l
 const pattern = '/h/[hostId]/files/preview/[worktreeId]'
 const pathname = '/h/html-host/files/preview/folder-project'
 const bundles = mobileWebAppDependenciesPresent()
-const shots = process.env.ORCA_MOBILE_HTML_FILE_SHOTS_DIR
+const shots = process.env.TOPO_MOBILE_HTML_FILE_SHOTS_DIR
 const browsers = {}
 let scratch, server, origin, version, faultGrant
 
@@ -38,7 +38,7 @@ beforeAll(async () => {
   if (!bundles) {
     return
   }
-  scratch = await mkdtemp(join(tmpdir(), 'orca-mobile-html-file-render-'))
+  scratch = await mkdtemp(join(tmpdir(), 'topo-mobile-html-file-render-'))
   const built = await buildMobileWebAppBundle({ outDir: join(scratch, 'bundle') })
   const policy = await readShellCsp()
   const documentHeaders = await readShellDocumentHeaders()
@@ -51,7 +51,7 @@ beforeAll(async () => {
   })
   server = served.server
   origin = served.origin
-  const executablePath = process.env.ORCA_MOBILE_WEB_RENDER_BROWSER
+  const executablePath = process.env.TOPO_MOBILE_WEB_RENDER_BROWSER
   browsers.chromium = await chromium.launch({
     headless: true,
     ...(executablePath ? { executablePath } : {})

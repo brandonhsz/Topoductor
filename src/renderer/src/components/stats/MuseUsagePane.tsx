@@ -14,9 +14,9 @@ import { useIntlLocale, useTranslate } from '@/i18n/use-translate'
 const RANGE_OPTIONS: MuseUsageRange[] = ['7d', '30d', '90d', 'all']
 const SCOPE_OPTIONS: { value: MuseUsageScope; label: string }[] = [
   {
-    value: 'orca',
+    value: 'topo',
     get label() {
-      return translate('auto.components.stats.OpenCodeUsagePane.e04c58327c', 'Orca worktrees only')
+      return translate('auto.components.stats.OpenCodeUsagePane.e04c58327c', 'Topo worktrees only')
     }
   },
   {

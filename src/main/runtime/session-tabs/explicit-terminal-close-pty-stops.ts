@@ -1,5 +1,5 @@
 import { IMMEDIATE_KILL_REPLY_BUDGET_MS } from '../../daemon/sessions/immediate-kill-reply-budget'
-import { OrcaRuntimeWithFocusTerminal } from '../terminal/focus/focus-terminal'
+import { TopoRuntimeWithFocusTerminal } from '../terminal/focus/focus-terminal'
 
 import { SSH_PROVIDER_UNREGISTERED_REASON } from '../../../shared/terminal/pty/lifecycle/pty-liveness-verdict'
 import { errorMessage } from '../../../shared/error-message'
@@ -11,7 +11,7 @@ export type ExplicitCloseStop = { stopped: boolean }
 
 export const NO_STOP: ExplicitCloseStop = { stopped: false }
 
-export abstract class OrcaRuntimeWithExplicitCloseTabPtyStops extends OrcaRuntimeWithFocusTerminal {
+export abstract class TopoRuntimeWithExplicitCloseTabPtyStops extends TopoRuntimeWithFocusTerminal {
   protected async stopExplicitlyClosedTabPtys(
     ptyIds: readonly string[],
     addressedPtyId: string

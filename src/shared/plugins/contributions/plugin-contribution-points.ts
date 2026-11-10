@@ -103,8 +103,8 @@ export const PLUGIN_PLANNED_CONTRIBUTION_POINTS: Readonly<
   agentHarnesses:
     'New coding-agent harnesses described as data: how to launch them and read their status.',
   sidebarCards: 'Declarative left-sidebar cards with fixed layouts whose values a worker updates.',
-  mcpServers: 'MCP server definitions that Orca offers to the agents it launches.',
-  skills: 'Agent skills shipped as files that Orca installs for the agents it launches.'
+  mcpServers: 'MCP server definitions that Topo offers to the agents it launches.',
+  skills: 'Agent skills shipped as files that Topo installs for the agents it launches.'
 }
 
 function reservedList(purpose: string) {
@@ -160,7 +160,7 @@ export const pluginContributesFields = {
   hooks: contributionList(
     pluginHookContributionSchema,
     PLUGIN_HOOK_LIMIT,
-    'Hooks the worker runs before or after Orca acts; Orca waits only on plugins that list one.',
+    'Hooks the worker runs before or after Topo acts; Topo waits only on plugins that list one.',
     PLUGIN_HOOKS_SINCE
   ),
   languagePacks: contributionList(
@@ -226,7 +226,7 @@ export const pluginContributesFields = {
   settings: contributionList(
     pluginSettingContributionSchema,
     PLUGIN_SETTING_LIMIT,
-    'Settings Orca shows under the plugin in Settings; code reads them with `settings.get` (`settings:own`).',
+    'Settings Topo shows under the plugin in Settings; code reads them with `settings.get` (`settings:own`).',
     PLUGIN_PANEL_BRIDGE_SINCE
   ),
   statusBarItems: contributionList(
@@ -265,7 +265,7 @@ export const PLUGIN_CONTRIBUTION_POINT_POLICY: Record<
   commands: { execution: 'declarative', catalogType: 'instructions', bindsContent: false },
   // Why no catalog type: events need a worker, which `main` already declares.
   events: { execution: 'trusted-worker', catalogType: null, bindsContent: false },
-  // Why trusted-worker: a hook changes or refuses what Orca does, which only full access may.
+  // Why trusted-worker: a hook changes or refuses what Topo does, which only full access may.
   hooks: { execution: 'trusted-worker', catalogType: null, bindsContent: false },
   languagePacks: { execution: 'data', catalogType: 'interface-language', bindsContent: false },
   keybindings: { execution: 'declarative', catalogType: 'instructions', bindsContent: true },

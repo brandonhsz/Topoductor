@@ -26,7 +26,7 @@ function submission(index: number): AgentJournalSubmission {
 function turnItems(index: number): AgentJournalRenderItem[] {
   return [
     {
-      itemId: `orca:user-${index}`,
+      itemId: `topo:user-${index}`,
       revision: 1,
       sequence: index * 2 + 1,
       observedAt: 1_000,
@@ -91,7 +91,7 @@ describe('durable turn attribution across paginated history', () => {
       page: page([0])
     })
     expect(
-      selectStructuredAgentSettledTurns(state.items, state.submissions).get('orca:user-0')
+      selectStructuredAgentSettledTurns(state.items, state.submissions).get('topo:user-0')
     ).toEqual({ startedAt: 1_000, workedSeconds: 7 })
     expect(state.submissions).toHaveLength(257)
 

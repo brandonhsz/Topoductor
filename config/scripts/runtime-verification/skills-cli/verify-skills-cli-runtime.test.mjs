@@ -19,7 +19,7 @@ async function writeSkillsCliFixture(outDir, handlerSource) {
 
 describe('skills CLI runtime closure', () => {
   it('reports the missing final-artifact import and its owner', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skills-cli-closure-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skills-cli-closure-'))
     try {
       await writeSkillsCliFixture(root, "require('../../main/codex-cli/command')\n")
 
@@ -32,7 +32,7 @@ describe('skills CLI runtime closure', () => {
   })
 
   it('rejects bare imports resolved outside the artifact', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skills-cli-closure-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skills-cli-closure-'))
     try {
       const artifactRoot = join(root, 'artifact')
       const outDir = join(artifactRoot, 'out')
@@ -55,7 +55,7 @@ describe('skills CLI runtime closure', () => {
   })
 
   it("resolves a linked package's imports from its store slot, as Node does", async () => {
-    const root = await mkdtemp(join(tmpdir(), 'orca-skills-cli-closure-'))
+    const root = await mkdtemp(join(tmpdir(), 'topo-skills-cli-closure-'))
     try {
       const artifactRoot = join(root, 'artifact')
       const outDir = join(artifactRoot, 'out')

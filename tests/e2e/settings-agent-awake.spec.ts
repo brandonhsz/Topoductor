@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import type { ElectronApplication, Page } from '@stablyai/playwright-test'
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import { waitForSessionReady } from './helpers/store'
 import type { GlobalSettings } from '../../src/shared/global-settings-types'
 import { readHookEndpoint } from './helpers/agent-hook-endpoint'
@@ -24,22 +24,22 @@ async function setKeepAwake(page: Page, enabled: boolean): Promise<void> {
 async function installPowerSaveBlockerProbe(electronApp: ElectronApplication): Promise<void> {
   await electronApp.evaluate(({ powerSaveBlocker }) => {
     const root = globalThis as typeof globalThis & {
-      __orcaAwakePowerProbe?: {
+      __topoAwakePowerProbe?: {
         starts: { type: string; id: number }[]
         stops: { id: number }[]
         originalStart: typeof powerSaveBlocker.start
         originalStop: typeof powerSaveBlocker.stop
       }
     }
-    if (root.__orcaAwakePowerProbe) {
-      root.__orcaAwakePowerProbe.starts = []
-      root.__orcaAwakePowerProbe.stops = []
+    if (root.__topoAwakePowerProbe) {
+      root.__topoAwakePowerProbe.starts = []
+      root.__topoAwakePowerProbe.stops = []
       return
     }
 
     const originalStart = powerSaveBlocker.start.bind(powerSaveBlocker)
     const originalStop = powerSaveBlocker.stop.bind(powerSaveBlocker)
-    root.__orcaAwakePowerProbe = {
+    root.__topoAwakePowerProbe = {
       starts: [],
       stops: [],
       originalStart,
@@ -48,12 +48,12 @@ async function installPowerSaveBlockerProbe(electronApp: ElectronApplication): P
 
     powerSaveBlocker.start = ((type) => {
       const id = originalStart(type)
-      root.__orcaAwakePowerProbe?.starts.push({ type, id })
+      root.__topoAwakePowerProbe?.starts.push({ type, id })
       return id
     }) as typeof powerSaveBlocker.start
 
     powerSaveBlocker.stop = ((id) => {
-      root.__orcaAwakePowerProbe?.stops.push({ id })
+      root.__topoAwakePowerProbe?.stops.push({ id })
       originalStop(id)
     }) as typeof powerSaveBlocker.stop
   })
@@ -65,12 +65,12 @@ async function readPowerSaveBlockerProbe(
   return electronApp.evaluate(({ powerSaveBlocker }) => {
     const probe = (
       globalThis as typeof globalThis & {
-        __orcaAwakePowerProbe?: {
+        __topoAwakePowerProbe?: {
           starts: { type: string; id: number }[]
           stops: { id: number }[]
         }
       }
-    ).__orcaAwakePowerProbe
+    ).__topoAwakePowerProbe
     const starts = probe?.starts ?? []
     return {
       starts: starts.map((start) => ({ ...start })),
@@ -106,7 +106,7 @@ async function postCodexHookEvent(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Orca-Agent-Hook-Token': endpoint.token
+      'X-Topo-Agent-Hook-Token': endpoint.token
     },
     body: JSON.stringify({
       paneKey: options.paneKey,
@@ -124,18 +124,18 @@ async function postCodexHookEvent(
 }
 
 test.describe('Agent awake setting', () => {
-  test.beforeEach(async ({ orcaPage }) => {
-    await waitForSessionReady(orcaPage)
+  test.beforeEach(async ({ topoPage }) => {
+    await waitForSessionReady(topoPage)
   })
 
   test('keeps the OS awake only while a hook-reported agent is working', async ({
     electronApp,
-    orcaPage
+    topoPage
   }) => {
     if (process.platform !== 'darwin') {
       await installPowerSaveBlockerProbe(electronApp)
     }
-    await setKeepAwake(orcaPage, true)
+    await setKeepAwake(topoPage, true)
 
     const tabId = 'e2e-awake-tab'
     const paneKey = `${tabId}:${randomUUID()}`
@@ -146,7 +146,7 @@ test.describe('Agent awake setting', () => {
     })
 
     await expect(
-      orcaPage.getByRole('button', { name: 'Keep computer awake, Agent · Active' })
+      topoPage.getByRole('button', { name: 'Keep computer awake, Agent · Active' })
     ).toBeVisible()
     let startedIds: number[] = []
     if (process.platform === 'darwin') {
@@ -180,7 +180,7 @@ test.describe('Agent awake setting', () => {
     })
 
     await expect(
-      orcaPage.getByRole('button', { name: 'Keep computer awake, Agent · Inactive' })
+      topoPage.getByRole('button', { name: 'Keep computer awake, Agent · Inactive' })
     ).toBeVisible()
     if (process.platform === 'darwin') {
       await expect

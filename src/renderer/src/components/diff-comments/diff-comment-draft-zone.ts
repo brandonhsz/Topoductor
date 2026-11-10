@@ -130,9 +130,9 @@ export function useDiffCommentDraftZone({
       disposeDraftZone()
       editor.changeViewZones((accessor) => {
         const dom = document.createElement('div')
-        dom.className = 'orca-diff-comment-inline'
+        dom.className = 'topo-diff-comment-inline'
         const marginDom = document.createElement('div')
-        marginDom.className = 'orca-diff-comment-draft-margin'
+        marginDom.className = 'topo-diff-comment-draft-margin'
         const disposeDomMouseDownStopper = installDiffCommentZoneMouseDownStopper(dom)
         const disposeMarginMouseDownStopper = installDiffCommentZoneMouseDownStopper(marginDom)
         const root = createRoot(dom)

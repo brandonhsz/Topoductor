@@ -25,7 +25,7 @@ const service = new ClaudeHookService()
 
 beforeEach(() => {
   home.path = mkdtempSync(join(tmpdir(), 'claude-windows-files-'))
-  entry = join(home.path, '.orca', 'agent-hooks', 'claude-hook.cmd')
+  entry = join(home.path, '.topo', 'agent-hooks', 'claude-hook.cmd')
   payload = getWindowsClaudeHookPayloadPath(entry)
   settings = join(home.path, '.claude', 'settings.json')
   Object.defineProperty(process, 'platform', { configurable: true, value: 'win32' })
@@ -65,7 +65,7 @@ describe('Windows Claude hook files', () => {
   })
 
   it('leaves the old single-file entry intact when payload publication fails', async () => {
-    mkdirSync(join(home.path, '.orca', 'agent-hooks'), { recursive: true })
+    mkdirSync(join(home.path, '.topo', 'agent-hooks'), { recursive: true })
     const oldEntry = '@echo off\r\necho {}\r\nexit /b 0\r\n'
     writeFileSync(entry, oldEntry)
     vi.spyOn(refresh, 'restoreManagedScript').mockRejectedValueOnce(new Error('disk full'))
@@ -75,7 +75,7 @@ describe('Windows Claude hook files', () => {
   })
 
   it('publishes the payload before replacing a legacy entry', async () => {
-    mkdirSync(join(home.path, '.orca', 'agent-hooks'), { recursive: true })
+    mkdirSync(join(home.path, '.topo', 'agent-hooks'), { recursive: true })
     writeFileSync(entry, 'legacy payload')
     const restore = refresh.restoreManagedScript
     const writes: string[] = []
@@ -106,7 +106,7 @@ describe('Windows Claude hook files', () => {
 
   it('migrates old command forms while preserving user hooks', () => {
     const encoded = getWindowsManagedLifecycleHook(
-      'C:\\Users\\%name%\\.orca\\agent-hooks\\claude-hook.cmd'
+      'C:\\Users\\%name%\\.topo\\agent-hooks\\claude-hook.cmd'
     )
     writeHooksJson(settings, {
       hooks: {
@@ -114,7 +114,7 @@ describe('Windows Claude hook files', () => {
         PreToolUse: [
           {
             hooks: [
-              { type: 'command', command: 'C:/old/.orca/agent-hooks/claude-hook.cmd || echo {}' }
+              { type: 'command', command: 'C:/old/.topo/agent-hooks/claude-hook.cmd || echo {}' }
             ]
           }
         ]

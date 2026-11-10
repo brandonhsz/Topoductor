@@ -4,11 +4,11 @@ import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { afterAll, describe, expect, it } from 'vitest'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 
 const describeOnWindows = process.platform === 'win32' ? describe : describe.skip
 const ADDON = resolve(__dirname, '..', '..', '..', 'native', 'windows-security', 'index.js')
-const root = mkdtempSync(join(tmpdir(), 'orca-std-handles-'))
+const root = mkdtempSync(join(tmpdir(), 'topo-std-handles-'))
 const entry = join(root, 'main.cjs')
 
 /** Optionally clears, writes through a stdio:'inherit' grandchild, then leaves a detached
@@ -43,14 +43,14 @@ function isAlive(pid: number): boolean {
   }
 }
 
-/** Electron main is Orca's real shape: it keeps std handles inheritable (kEnableStdioInheritance),
+/** Electron main is Topo's real shape: it keeps std handles inheritable (kEnableStdioInheritance),
  * where plain Node clears them itself at startup. */
 async function runChild(host: 'electron' | 'node', mode: 'clear' | 'keep', holderMs: number) {
   const electron: unknown = createRequire(import.meta.url)('electron')
   if (typeof electron !== 'string') {
     throw new Error('Electron executable is unavailable')
   }
-  const env: NodeJS.ProcessEnv = { ...process.env, ORCA_BACKGROUND_LAUNCH: '1' }
+  const env: NodeJS.ProcessEnv = { ...process.env, TOPO_BACKGROUND_LAUNCH: '1' }
   delete env.ELECTRON_RUN_AS_NODE
   const pidFile = join(root, `${host}-${mode}.pid`)
   const child = spawnProcess({

@@ -4,12 +4,12 @@ import {
   type StructuredSessionRawPublicationInput,
   type StructuredSessionTabPublicationInput
 } from './structured-session-tab-publication'
-import type { OrcaRuntimeWithScheduleMobileSessionTabsChanged as ScheduleMobileSessionTabsChangedMethods } from './session-tabs-change-publication'
-import { OrcaRuntimeWithGetStructuredAgentSessionCreateSupport } from './structured-session-create-support'
+import type { TopoRuntimeWithScheduleMobileSessionTabsChanged as ScheduleMobileSessionTabsChangedMethods } from './session-tabs-change-publication'
+import { TopoRuntimeWithGetStructuredAgentSessionCreateSupport } from './structured-session-create-support'
 import { getStructuredAgentSessionHost } from '../../native-chat/agent-session-wire/host/structured-agent-session-registry'
 import { LOCAL_EXECUTION_HOST_ID } from '../../../shared/execution-host'
 import { restoredChatTabChanges } from './restored-chat-tab-changes'
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../../../shared/layout-owner-switch'
 import type { RuntimeRepoSearchRefs } from '../../../shared/runtime-worktree-contracts'
 import { REPO_SEARCH_REFS_DEFAULT_LIMIT as DEFAULT_REPO_SEARCH_REFS_LIMIT } from '../../../shared/repo-search-limits'
 import type { Repo } from '../../../shared/repo-types'
@@ -33,10 +33,10 @@ import type { MainSessionTabRows } from './main-session-tab-rows'
 import { isReopenedChatTabId } from '../../../shared/agent-session/view/structured-agent-session-host-tab-id'
 
 export type AgentLaunchScope = Parameters<
-  OrcaRuntimeWithRestoreStructuredAgentSessionTabsOnce['getAgentLaunchPlatformForWorkspace']
+  TopoRuntimeWithRestoreStructuredAgentSessionTabsOnce['getAgentLaunchPlatformForWorkspace']
 >[0]
 
-export abstract class OrcaRuntimeWithRestoreStructuredAgentSessionTabsOnce extends OrcaRuntimeWithGetStructuredAgentSessionCreateSupport {
+export abstract class TopoRuntimeWithRestoreStructuredAgentSessionTabsOnce extends TopoRuntimeWithGetStructuredAgentSessionCreateSupport {
   protected abstract notifyMobileSessionTabSnapshots(
     ...args: Parameters<ScheduleMobileSessionTabsChangedMethods['notifyMobileSessionTabSnapshots']>
   ): ReturnType<ScheduleMobileSessionTabsChangedMethods['notifyMobileSessionTabSnapshots']>
@@ -85,7 +85,7 @@ export abstract class OrcaRuntimeWithRestoreStructuredAgentSessionTabsOnce exten
         if (!savedOrders.has(session.workspaceId)) {
           savedOrders.set(
             session.workspaceId,
-            ORCA_LAYOUT_OWNER_IS_MAIN || !this.getAvailableAuthoritativeWindow()
+            TOPO_LAYOUT_OWNER_IS_MAIN || !this.getAvailableAuthoritativeWindow()
               ? this.savedStructuredSessionTabOrder(session.workspaceId)
               : undefined
           )
@@ -123,8 +123,8 @@ export abstract class OrcaRuntimeWithRestoreStructuredAgentSessionTabsOnce exten
     let savedOrder: MainSessionTabRows | undefined
     // Window creates retain the window's own placement decision.
     if (
-      (ORCA_LAYOUT_OWNER_IS_MAIN || !this.getAvailableAuthoritativeWindow()) &&
-      !(ORCA_LAYOUT_OWNER_IS_MAIN && input.placedByWindow)
+      (TOPO_LAYOUT_OWNER_IS_MAIN || !this.getAvailableAuthoritativeWindow()) &&
+      !(TOPO_LAYOUT_OWNER_IS_MAIN && input.placedByWindow)
     ) {
       const saving = this.saveWindowlessAgentSessionTab(input.workspaceId, {
         ...input,
@@ -158,7 +158,7 @@ export abstract class OrcaRuntimeWithRestoreStructuredAgentSessionTabsOnce exten
       presentation: {
         raw: this.currentLocalStructuredSessionPresentation(input.sessionId),
         saved:
-          ORCA_LAYOUT_OWNER_IS_MAIN && input.placedByWindow
+          TOPO_LAYOUT_OWNER_IS_MAIN && input.placedByWindow
             ? []
             : [{ worktreeId: input.workspaceId, tabId }]
       }
@@ -171,8 +171,8 @@ export abstract class OrcaRuntimeWithRestoreStructuredAgentSessionTabsOnce exten
     const savedOrder =
       'savedOrder' in input
         ? input.savedOrder
-        : (ORCA_LAYOUT_OWNER_IS_MAIN || !this.getAvailableAuthoritativeWindow()) &&
-            !(ORCA_LAYOUT_OWNER_IS_MAIN && input.placedByWindow)
+        : (TOPO_LAYOUT_OWNER_IS_MAIN || !this.getAvailableAuthoritativeWindow()) &&
+            !(TOPO_LAYOUT_OWNER_IS_MAIN && input.placedByWindow)
           ? this.savedStructuredSessionTabOrder(input.workspaceId)
           : undefined
     projectStructuredSessionTab(this, { ...input, savedOrder }, (snapshot) =>

@@ -26,7 +26,7 @@ const snapshot = (name: string): OrchestrationCrewSnapshot => ({
   }
 })
 
-// Orca-specific Crew overlay: actual menu/pane owner with controlled content and clipboard IO.
+// Topo-specific Crew overlay: actual menu/pane owner with controlled content and clipboard IO.
 export const keyboardPanes = defineFixture({
   width: 760,
   setup: () => {

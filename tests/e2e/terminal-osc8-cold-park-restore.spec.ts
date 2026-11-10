@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import type { Page } from '@stablyai/playwright-test'
 import { alternateScreenFixtureScript } from './alternate-screen-fixture-script'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { stageNodeScriptForTerminal } from './helpers/run-node-script-in-terminal'
 import { parkHiddenTabBehindDecoy } from './helpers/terminal-hidden-parking'
 import {
@@ -20,10 +20,10 @@ import {
 import { nodeTerminalCommand } from './terminal-node-command'
 import { waitForPtyShellEcho } from './terminal-pty-readiness'
 
-const PARKING_DELAY_MS = Number(process.env.ORCA_E2E_TERMINAL_PARKING_DELAY_MS) || 500
+const PARKING_DELAY_MS = Number(process.env.TOPO_E2E_TERMINAL_PARKING_DELAY_MS) || 500
 
 test.use({
-  orcaAppExtraEnv: { ORCA_E2E_TERMINAL_PARKING_DELAY_MS: String(PARKING_DELAY_MS) }
+  topoAppExtraEnv: { TOPO_E2E_TERMINAL_PARKING_DELAY_MS: String(PARKING_DELAY_MS) }
 })
 
 type LinkProbe = { clientX: number; clientY: number; tabId: string }
@@ -111,7 +111,7 @@ async function activateTerminalTab(page: Page, tabId: string): Promise<void> {
   await page.evaluate((tabId) => {
     const state = window.__store?.getState()
     if (!state) {
-      throw new Error('Orca store unavailable')
+      throw new Error('Topo store unavailable')
     }
     state.setActiveTabType('terminal', window.__store?.getState().activeWorktreeId ?? null)
     state.setActiveTab(tabId)
@@ -120,40 +120,40 @@ async function activateTerminalTab(page: Page, tabId: string): Promise<void> {
   await waitForActiveTerminalManager(page, 30_000)
 }
 
-test('restores and opens an OSC 8 link after its terminal is cold-parked', async ({ orcaPage }) => {
-  await waitForSessionReady(orcaPage)
-  const worktreeId = await waitForActiveWorktree(orcaPage)
-  await orcaPage.evaluate(async () => {
+test('restores and opens an OSC 8 link after its terminal is cold-parked', async ({ topoPage }) => {
+  await waitForSessionReady(topoPage)
+  const worktreeId = await waitForActiveWorktree(topoPage)
+  await topoPage.evaluate(async () => {
     await window.__store?.getState().updateSettings({
       openLinksInApp: true,
       openLinksInAppPreferencePrompted: true
     })
   })
-  await ensureTerminalVisible(orcaPage)
-  await waitForActiveTerminalManager(orcaPage, 30_000)
-  const tabId = await getActiveTabId(orcaPage)
+  await ensureTerminalVisible(topoPage)
+  await waitForActiveTerminalManager(topoPage, 30_000)
+  const tabId = await getActiveTabId(topoPage)
   if (!tabId) {
     throw new Error('No active terminal tab')
   }
-  const ptyId = await waitForActivePanePtyId(orcaPage)
-  await waitForPtyShellEcho(orcaPage, ptyId, 15_000)
+  const ptyId = await waitForActivePanePtyId(topoPage)
+  await waitForPtyShellEcho(topoPage, ptyId, 15_000)
 
   const label = `#${randomUUID().slice(0, 6)}`
-  const url = `https://example.com/orca-osc8-${randomUUID()}`
+  const url = `https://example.com/topo-osc8-${randomUUID()}`
   const linkedOutput = `\x1b[?1049h\x1b[2J\x1b[H\x1b]8;id=cold-park;${url}\x1b\\${label}\x1b]8;;\x1b\\\n`
   // Stage to avoid PowerShell escape mangling (#8521) and keep the readiness label out of command echo.
   // Use nodeTerminalCommand instead of bare-node staged.command to pin Windows CI’s executable.
   const staged = stageNodeScriptForTerminal(alternateScreenFixtureScript(linkedOutput), {
-    prefix: 'orca-osc8-cold-park'
+    prefix: 'topo-osc8-cold-park'
   })
   try {
-    await sendToTerminal(orcaPage, ptyId, `${nodeTerminalCommand([staged.scriptPath])}\r`)
-    await expect.poll(() => getTerminalContent(orcaPage, 4_000)).toContain(label)
+    await sendToTerminal(topoPage, ptyId, `${nodeTerminalCommand([staged.scriptPath])}\r`)
+    await expect.poll(() => getTerminalContent(topoPage, 4_000)).toContain(label)
 
-    const baselineProbe = await locateLink(orcaPage, label)
-    await orcaPage.mouse.move(baselineProbe.clientX, baselineProbe.clientY)
+    const baselineProbe = await locateLink(topoPage, label)
+    await topoPage.mouse.move(baselineProbe.clientX, baselineProbe.clientY)
     await expect
-      .poll(() => readLinkState(orcaPage, tabId, label))
+      .poll(() => readLinkState(topoPage, tabId, label))
       .toMatchObject({
         bufferType: 'alternate',
         serializedUri: true,
@@ -161,16 +161,16 @@ test('restores and opens an OSC 8 link after its terminal is cold-parked', async
         uri: url
       })
 
-    await parkHiddenTabBehindDecoy(orcaPage, worktreeId, tabId, {
+    await parkHiddenTabBehindDecoy(topoPage, worktreeId, tabId, {
       parkDelayMs: PARKING_DELAY_MS
     })
-    await activateTerminalTab(orcaPage, tabId)
-    await expect.poll(() => getTerminalContent(orcaPage, 4_000)).toContain(label)
+    await activateTerminalTab(topoPage, tabId)
+    await expect.poll(() => getTerminalContent(topoPage, 4_000)).toContain(label)
 
-    const restoredProbe = await locateLink(orcaPage, label)
-    await orcaPage.mouse.move(restoredProbe.clientX, restoredProbe.clientY)
+    const restoredProbe = await locateLink(topoPage, label)
+    await topoPage.mouse.move(restoredProbe.clientX, restoredProbe.clientY)
     await expect
-      .poll(() => readLinkState(orcaPage, tabId, label))
+      .poll(() => readLinkState(topoPage, tabId, label))
       .toMatchObject({
         bufferType: 'alternate',
         serializedUri: true,
@@ -178,17 +178,17 @@ test('restores and opens an OSC 8 link after its terminal is cold-parked', async
         uri: url
       })
 
-    const isMac = await orcaPage.evaluate(() => navigator.userAgent.includes('Mac'))
+    const isMac = await topoPage.evaluate(() => navigator.userAgent.includes('Mac'))
     const modifier = isMac ? 'Meta' : 'Control'
-    await orcaPage.keyboard.down(modifier)
-    await orcaPage.mouse.down()
-    await orcaPage.mouse.up()
-    await orcaPage.keyboard.up(modifier)
+    await topoPage.keyboard.down(modifier)
+    await topoPage.mouse.down()
+    await topoPage.mouse.up()
+    await topoPage.keyboard.up(modifier)
     await expect
-      .poll(async () => (await getBrowserTabs(orcaPage, worktreeId)).some((tab) => tab.url === url))
+      .poll(async () => (await getBrowserTabs(topoPage, worktreeId)).some((tab) => tab.url === url))
       .toBe(true)
   } finally {
-    await sendToTerminal(orcaPage, ptyId, '\x03').catch(() => undefined)
+    await sendToTerminal(topoPage, ptyId, '\x03').catch(() => undefined)
     staged.cleanup()
   }
 })

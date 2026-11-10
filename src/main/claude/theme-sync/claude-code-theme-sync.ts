@@ -19,7 +19,7 @@ import {
   type ClaudeThemeOwnership
 } from './claude-code-theme-ownership'
 
-const THEME_SETTING = 'custom:orca'
+const THEME_SETTING = 'custom:topo'
 // Why only these: colorblind and ANSI-only themes, and the user's own custom ones, were picked on purpose.
 const REPLACEABLE_THEMES = new Set(['dark', 'light', 'auto'])
 
@@ -28,13 +28,13 @@ export type ClaudeCodeThemeSyncTarget =
   | { enabled: false; terminalBase: string }
 
 function themeFilePath(configDir: string): string {
-  return join(configDir, 'themes', 'orca.json')
+  return join(configDir, 'themes', 'topo.json')
 }
 
 /** Atomic so Claude Code's theme watcher never reads a half-written file. */
 export async function replaceFile(path: string, content: string): Promise<void> {
   // Why not .json: Claude Code only loads .json files, so it never sees the temp file as a theme.
-  const tmp = join(dirname(path), `.orca-${randomUUID()}.tmp`)
+  const tmp = join(dirname(path), `.topo-${randomUUID()}.tmp`)
   try {
     await writeFile(tmp, content, 'utf-8')
     await rename(tmp, path)
@@ -90,7 +90,7 @@ async function applyToConfigDir(
     if (entry?.userChangedTheme) {
       return
     }
-    // Why sync reads and writes: Orca's in-process hook installer edits this file synchronously.
+    // Why sync reads and writes: Topo's in-process hook installer edits this file synchronously.
     const settings = readHooksJson(settingsPath)
     if (!settings) {
       return
@@ -104,7 +104,7 @@ async function applyToConfigDir(
     if (!isReplaceableTheme(settings.theme)) {
       return
     }
-    // Under the lock, so another Orca's restore cannot leave its look in the file Orca now selects.
+    // Under the lock, so another Topo's restore cannot leave its look in the file Topo now selects.
     replaced.push(...(await writeThemeFile(configDir, theme)))
     // The record lands first: a crash between the two writes must still leave a way back.
     await save({
@@ -125,17 +125,17 @@ async function applyToConfigDir(
       throw error
     }
   }).catch((error: unknown) => {
-    console.warn(`[claude-theme] Could not select the Orca theme in ${settingsPath}:`, error)
+    console.warn(`[claude-theme] Could not select the Topo theme in ${settingsPath}:`, error)
   })
   return replaced
 }
 
-/** The look Orca's theme file takes on once released, so running sessions show the restored theme. */
+/** The look Topo's theme file takes on once released, so running sessions show the restored theme. */
 function releasedTheme(previousTheme: string | null, terminalBase: string): ClaudeCodeTheme {
   // Claude Code's own default is dark; `auto` follows the terminal background.
   const base =
     previousTheme === null ? 'dark' : previousTheme === 'auto' ? terminalBase : previousTheme
-  return { name: 'Orca', base, overrides: {} }
+  return { name: 'Topo', base, overrides: {} }
 }
 
 /** Writes the replaced theme back into settings.json; the theme to show running sessions, if it reverted. */
@@ -158,7 +158,7 @@ function revertSettings(
     const reverted = settings.theme === (entry.previousTheme ?? undefined)
     return reverted ? { restored: true, previousTheme: entry.previousTheme } : { restored: true }
   }
-  const { theme: _orcaTheme, ...rest } = settings
+  const { theme: _topoTheme, ...rest } = settings
   writeHooksJson(
     settingsPath,
     entry.previousTheme === null ? rest : { ...settings, theme: entry.previousTheme }
@@ -191,7 +191,7 @@ async function restoreConfigDir(
     let replaced: string[] = []
     if (reverted.previousTheme !== undefined && !publishedThemeFiles.has(themeFile)) {
       // Under the lock and before the record goes, so a failed write is retried and cannot
-      // overwrite the theme another Orca selects right after.
+      // overwrite the theme another Topo selects right after.
       replaced = await writeThemeFile(
         configDir,
         releasedTheme(reverted.previousTheme, terminalBase)
@@ -206,7 +206,7 @@ async function restoreConfigDir(
   })
 }
 
-/** Where Claude Code runs from Orca: the user's own folder, account homes, and folders hooks reported. */
+/** Where Claude Code runs from Topo: the user's own folder, account homes, and folders hooks reported. */
 async function claudeConfigDirs(userDataPath: string): Promise<string[]> {
   const router = getClaudeProfileRouter()
   return [
@@ -222,7 +222,7 @@ export type ClaudeCodeThemeSyncResult = {
   restorePending: boolean
 }
 
-/** One pass over every Claude Code config dir Orca's terminals can launch with. */
+/** One pass over every Claude Code config dir Topo's terminals can launch with. */
 export async function syncClaudeCodeThemeConfigDirs(
   target: ClaudeCodeThemeSyncTarget,
   userDataPath: string
@@ -230,7 +230,7 @@ export async function syncClaudeCodeThemeConfigDirs(
   const result: ClaudeCodeThemeSyncResult = { replaced: [], restorePending: false }
   const owned = await readClaudeThemeOwnership()
   if (!owned) {
-    console.warn('[claude-theme] Skipping sync: Orca cannot read its record of replaced themes')
+    console.warn('[claude-theme] Skipping sync: Topo cannot read its record of replaced themes')
     return { ...result, restorePending: !target.enabled }
   }
   if (target.enabled) {

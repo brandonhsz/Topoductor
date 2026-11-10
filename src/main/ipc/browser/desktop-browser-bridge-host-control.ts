@@ -64,7 +64,7 @@ export function stopDesktopBrowserBridgeHost(
   deps.endHostActivity(targetId)
 }
 
-/** Turns the host's setting off; hosts Orca created itself are only stopped. */
+/** Turns the host's setting off; hosts Topo created itself are only stopped. */
 export function disallowDesktopBrowserBridgeHost(
   targetId: string,
   deps: DesktopBrowserBridgeHostControlDeps

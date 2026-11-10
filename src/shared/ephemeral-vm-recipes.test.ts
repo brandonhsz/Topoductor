@@ -80,7 +80,7 @@ describe('parseEphemeralVmRecipeResult', () => {
       })
     ).toEqual({
       schemaVersion: 1,
-      pairingCode: 'orca://pair?code=[redacted]',
+      pairingCode: 'topo://pair?code=[redacted]',
       projectRoot: '/workspace/repo',
       userData: {
         providerResourceId: 'sandbox-123',

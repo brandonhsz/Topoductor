@@ -1,4 +1,4 @@
-// Run with `orca plugin test .`: plain Node, no Orca window, the same runtime and checks Orca uses.
+// Run with `topo plugin test .`: plain Node, no Topo window, the same runtime and checks Topo uses.
 import { afterEach, assert, mount, test, type TestPanel } from 'orca/testing'
 import * as panelModule from './panel'
 

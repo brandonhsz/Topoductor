@@ -102,7 +102,7 @@ describe('scanOpenCodeUsageDatabases', () => {
   let previousOpenCodeDb: string | undefined
 
   beforeEach(() => {
-    dataRoot = mkdtempSync(join(tmpdir(), 'orca-opencode-usage-scan-'))
+    dataRoot = mkdtempSync(join(tmpdir(), 'topo-opencode-usage-scan-'))
     openCodeDir = join(dataRoot, 'opencode')
     mkdirSync(openCodeDir, { recursive: true })
     previousXdgDataHome = process.env.XDG_DATA_HOME

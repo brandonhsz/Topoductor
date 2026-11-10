@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import type { CommandHandler } from '../dispatch'
 import { RuntimeClientError } from '../runtime/types'
 import { getOptionalServePort } from '../runtime/serve-port-flag'
@@ -53,7 +53,7 @@ function requireManager(platform: NodeJS.Platform): void {
   if (!resolveServeServiceManager(platform)) {
     throw new RuntimeClientError(
       'unsupported_platform',
-      '`orca serve service` is not available on Windows yet. Run `orca serve` under a service wrapper of your own.'
+      '`topo serve service` is not available on Windows yet. Run `topo serve` under a service wrapper of your own.'
     )
   }
 }
@@ -181,7 +181,7 @@ export async function readServeServiceStatus(
   deps: ServeServiceDeps = defaultDeps()
 ): Promise<ServeServiceStatus> {
   requireManager(deps.platform)
-  const spec = serviceSpec(deps, { command: 'orca' })
+  const spec = serviceSpec(deps, { command: 'topo' })
   const base = {
     installed: existsSync(spec.unitPath),
     manager: spec.manager,
@@ -240,7 +240,7 @@ export async function uninstallServeService(
   deps: ServeServiceDeps = defaultDeps()
 ): Promise<Record<string, unknown>> {
   requireManager(deps.platform)
-  const spec = serviceSpec(deps, { command: 'orca' })
+  const spec = serviceSpec(deps, { command: 'topo' })
   await (spec.manager === 'launchd'
     ? deps.run('launchctl', ['bootout', `gui/${deps.uid}/${spec.name}`])
     : deps.run('systemctl', ['--user', 'disable', '--now', spec.name]))

@@ -52,7 +52,7 @@ let cwd: string
 let stdout: string[]
 
 beforeEach(async () => {
-  cwd = await mkdtemp(join(tmpdir(), 'orca-plugin-shot-'))
+  cwd = await mkdtemp(join(tmpdir(), 'topo-plugin-shot-'))
   stdout = []
   vi.spyOn(process.stdout, 'write').mockImplementation((chunk) => {
     stdout.push(String(chunk))
@@ -63,11 +63,11 @@ beforeEach(async () => {
 afterEach(async () => {
   vi.restoreAllMocks()
   process.exitCode = undefined
-  delete process.env.ORCA_CLI_CWD
+  delete process.env.TOPO_CLI_CWD
   await rm(cwd, { recursive: true, force: true })
 })
 
-describe('orca plugin open', () => {
+describe('topo plugin open', () => {
   it('sends --editor as a host path, absolute on a remote host', async () => {
     const call = vi.fn().mockResolvedValue({
       result: { pluginKey: 'acme.notes', kind: 'editor', editorId: 'e', title: 'N', filePath: 'x' }
@@ -90,7 +90,7 @@ describe('orca plugin open', () => {
   })
 })
 
-describe('orca plugin shot', () => {
+describe('topo plugin shot', () => {
   it('writes the PNG to .orca/shots under cwd by default', async () => {
     const call = vi.fn().mockResolvedValue(shotReply())
     await PLUGIN_VIEW_HANDLERS['plugin shot'](
@@ -125,7 +125,7 @@ describe('orca plugin shot', () => {
   })
 
   it('refuses a bridged shell, whose cwd is on another machine', async () => {
-    process.env.ORCA_CLI_CWD = '/remote/home'
+    process.env.TOPO_CLI_CWD = '/remote/home'
     await expect(
       PLUGIN_VIEW_HANDLERS['plugin shot'](
         context(['plugin', 'shot', 'acme.todos'], vi.fn(), { cwd })

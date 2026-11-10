@@ -1,4 +1,4 @@
-/** The main-process plugin checks `orca plugin validate|inspect|release-entry` runs. One CLI entry so the
+/** The main-process plugin checks `topo plugin validate|inspect|release-entry` runs. One CLI entry so the
  *  packaged CLI loads them after electron-vite replaces out/main; keep it free of Electron. */
 export {
   validateDeclaredPluginArtifacts,

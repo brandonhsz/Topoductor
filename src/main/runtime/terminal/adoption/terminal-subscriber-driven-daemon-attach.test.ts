@@ -1,7 +1,7 @@
 /** Paired subscriptions must attach never-activated daemon sessions so headless terminal read/streams receive bytes.
  * Exercise real runtime/multiplex with controller data gated on attach; no renderer is present. */
 import { describe, expect, it, vi } from 'vitest'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import { TopoRuntimeService } from '../../topo-runtime'
 import { deriveRemoteRuntimeTerminalCreateHandle } from '../identity/remote-runtime-terminal-create-identity'
 import { RpcDispatcher } from '../../rpc/dispatcher'
 import type { RpcRequest } from '../../rpc/core'
@@ -34,7 +34,7 @@ type RuntimeInternals = {
   resolveTerminalWorkspaceLaunchScope: () => Promise<{ id: string; connectionId: null }>
 }
 
-function internals(runtime: OrcaRuntimeService): RuntimeInternals {
+function internals(runtime: TopoRuntimeService): RuntimeInternals {
   return runtime as unknown as RuntimeInternals
 }
 
@@ -55,7 +55,7 @@ function createDaemonProviderModel(opts: { snapshotCapable: boolean }) {
   const resizeCalls: [string, number, number][] = []
   const writes: string[] = []
   let nextAttachBarrier: { promise: Promise<void>; result: boolean } | null = null
-  let runtime: OrcaRuntimeService | null = null
+  let runtime: TopoRuntimeService | null = null
   const controller = {
     // The adapter refuses input to a session until this app attaches it again.
     write: (ptyId: string, data: string) => {
@@ -143,7 +143,7 @@ function createDaemonProviderModel(opts: { snapshotCapable: boolean }) {
       nextAttachBarrier = { promise, result }
       return release
     },
-    bind(target: OrcaRuntimeService) {
+    bind(target: TopoRuntimeService) {
       runtime = target
     },
     /** Daemon stream event → main ingestion, exactly like ipc/pty.ts wiring —
@@ -160,12 +160,12 @@ function createDaemonProviderModel(opts: { snapshotCapable: boolean }) {
 }
 
 function setupNeverAttachedDaemonSession(opts: { snapshotCapable: boolean; screen?: string }): {
-  runtime: OrcaRuntimeService
+  runtime: TopoRuntimeService
   model: ReturnType<typeof createDaemonProviderModel>
   handle: string
   mountSpy: ReturnType<typeof vi.spyOn>
 } {
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   const model = createDaemonProviderModel(opts)
   model.bind(runtime)
   runtime.setPtyController(model.controller as never)
@@ -183,7 +183,7 @@ function setupNeverAttachedDaemonSession(opts: { snapshotCapable: boolean; scree
   return { runtime, model, handle, mountSpy }
 }
 
-function startMultiplex(runtime: OrcaRuntimeService, connectionId = 'conn-desktop') {
+function startMultiplex(runtime: TopoRuntimeService, connectionId = 'conn-desktop') {
   const messages: { result?: { type?: string; streamId?: number | null } }[] = []
   const binaryFrames: Uint8Array<ArrayBufferLike>[] = []
   const handlers = new Map<
@@ -390,7 +390,7 @@ describe('subscriber-driven daemon attach (never-activated tab)', () => {
   })
 
   it('streams a survivor a terminal.create retry adopts after a restart', async () => {
-    const runtime = new OrcaRuntimeService()
+    const runtime = new TopoRuntimeService()
     const model = createDaemonProviderModel({ snapshotCapable: false })
     model.bind(runtime)
     runtime.setPtyController(model.controller as never)
@@ -482,7 +482,7 @@ describe('re-attach after a daemon reconnect detached a spawned session', () => 
   }
 
   function loseEndpoint(
-    runtime: OrcaRuntimeService,
+    runtime: TopoRuntimeService,
     model: ReturnType<typeof createDaemonProviderModel>
   ): void {
     model.dropAttachments()

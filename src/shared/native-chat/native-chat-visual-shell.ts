@@ -41,14 +41,14 @@ export const NATIVE_CHAT_VISUAL_CSP = [...POLICY_WITHOUT_BASE, "base-uri 'none'"
 export const NATIVE_CHAT_VISUAL_HOST_CSP = [...POLICY_WITHOUT_BASE, 'base-uri about:'].join('; ')
 
 /** Frame names carry this prefix so the main process registers them before content runs. */
-export const NATIVE_CHAT_VISUAL_FRAME_NAME_PREFIX = 'orca-chat-visual:'
+export const NATIVE_CHAT_VISUAL_FRAME_NAME_PREFIX = 'topo-chat-visual:'
 
-export const NATIVE_CHAT_VISUAL_SIZE_TYPE = 'orca-visual-size'
-export const NATIVE_CHAT_VISUAL_OPEN_LINK_TYPE = 'orca-visual-open-link'
-export const NATIVE_CHAT_VISUAL_THEME_TYPE = 'orca-visual-theme'
-export const NATIVE_CHAT_VISUAL_PING_TYPE = 'orca-visual-ping'
-export const NATIVE_CHAT_VISUAL_PONG_TYPE = 'orca-visual-pong'
-export const NATIVE_CHAT_VISUAL_READER_SCROLL_TYPE = 'orca-visual-reader-scroll'
+export const NATIVE_CHAT_VISUAL_SIZE_TYPE = 'topo-visual-size'
+export const NATIVE_CHAT_VISUAL_OPEN_LINK_TYPE = 'topo-visual-open-link'
+export const NATIVE_CHAT_VISUAL_THEME_TYPE = 'topo-visual-theme'
+export const NATIVE_CHAT_VISUAL_PING_TYPE = 'topo-visual-ping'
+export const NATIVE_CHAT_VISUAL_PONG_TYPE = 'topo-visual-pong'
+export const NATIVE_CHAT_VISUAL_READER_SCROLL_TYPE = 'topo-visual-reader-scroll'
 /** Visuals' own wait for an answer: at 1 s, a busy visual in WebKit answered too late. */
 export const NATIVE_CHAT_VISUAL_PONG_TIMEOUT_MS = 5_000
 
@@ -157,7 +157,7 @@ document.addEventListener('click', function (event) {
 }, true)
 document.addEventListener('submit', function (event) { event.preventDefault() }, true)
 // Only the host window may restyle the visual, or ask whether this document still runs the shell.
-var themeStyle = document.getElementById('orca-visual-theme')
+var themeStyle = document.getElementById('topo-visual-theme')
 window.addEventListener('message', function (event) {
   var data = event.data
   if (event.source !== host || !data || data.channel !== C.channel) return
@@ -228,7 +228,7 @@ export function buildNativeChatVisualDocument(args: {
 ${INERT_BASE}
 <meta http-equiv="Content-Security-Policy" content="${NATIVE_CHAT_VISUAL_CSP}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<style id="orca-visual-theme">${nativeChatVisualThemeCss(args.theme)}</style>
+<style id="topo-visual-theme">${nativeChatVisualThemeCss(args.theme)}</style>
 <style>${BASE_CSS}</style>
 <script>${bootstrapScript(args.channel)}</script>
 </head>

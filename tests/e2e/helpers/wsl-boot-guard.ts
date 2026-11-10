@@ -4,7 +4,7 @@
  */
 import { execFile } from 'node:child_process'
 import type { Page } from '@stablyai/playwright-test'
-import { expect } from './orca-app'
+import { expect } from './topo-app'
 import { buildWslExecArgs } from '../../../src/shared/wsl-login-shell-command'
 import {
   PTY_SPAWN,
@@ -12,7 +12,7 @@ import {
   UNC_TOUCH,
   type DiagnosticRecord
 } from './wsl-boot-diagnostics-log'
-import { orcaWslLaunches, shouldRetryTerminate, WSL_EXE } from './wsl-terminate-retry'
+import { topoWslLaunches, shouldRetryTerminate, WSL_EXE } from './wsl-terminate-retry'
 
 /** Async with a timeout: a hung wsl.exe must fail the test, never block the worker past its timeout. */
 export function wsl(args: readonly string[], timeoutMs = 60_000): Promise<string> {
@@ -84,7 +84,7 @@ const TERMINATE_GRACE_MS = 10_000
  * `stopped` resolves on the first not-running read, which must come within the grace; only
  * running reads before it are forgiven, so a real boot is never waited out. Any running read
  * after it is a boot. Three failed reads in a row fail the guard. With `retryTerminate`, a terminate
- * that never took is re-issued once, and only while Orca has launched nothing since `spawnsBefore`.
+ * that never took is re-issued once, and only while Topo has launched nothing since `spawnsBefore`.
  */
 export function watchDistroRunning(
   distro: string,
@@ -125,7 +125,7 @@ export function watchDistroRunning(
   let spawnsSeen = readDiagnosticLog(spawnLog).length
   const logNewWslSpawns = (): void => {
     const spawns = readDiagnosticLog(spawnLog)
-    for (const spawn of orcaWslLaunches(spawns.slice(spawnsSeen))) {
+    for (const spawn of topoWslLaunches(spawns.slice(spawnsSeen))) {
       const kind = spawn.file === UNC_TOUCH ? 'unc' : spawn.file === PTY_SPAWN ? 'pty' : 'spawn'
       // `at` is when it happened; the line prints at this poll, up to a second later.
       timeline(`${kind} ${spawn.file} ${spawn.args.join(' ')}`, spawn.at)
@@ -158,7 +158,7 @@ export function watchDistroRunning(
         ) {
           retried = true
           // Loud on purpose: a pattern of these is a runner problem worth chasing.
-          timeline(`RETRYING --terminate: ${distro} still listed and Orca launched nothing since`)
+          timeline(`RETRYING --terminate: ${distro} still listed and Topo launched nothing since`)
           console.warn(`[e9-guard] WARNING: --terminate of ${distro} did not take; retrying once`)
           clearTimeout(grace)
           grace = armGrace()

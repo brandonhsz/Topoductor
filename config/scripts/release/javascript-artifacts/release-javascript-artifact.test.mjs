@@ -1,7 +1,7 @@
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import { afterEach, describe, expect, it } from 'vitest'
 import {
   javascriptInventory,
@@ -27,7 +27,7 @@ afterEach(() => {
 })
 
 function fixture() {
-  const root = mkdtempSync(join(tmpdir(), 'orca-release-javascript-test-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-release-javascript-test-'))
   directories.push(root)
   for (const file of [
     'cli/index.js',
@@ -35,7 +35,7 @@ function fixture() {
     'preload/index.js',
     'renderer/index.html',
     'renderer/.vite/manifest.json',
-    'renderer/.orca-web-client-files.json',
+    'renderer/.topo-web-client-files.json',
     'web/web-index.html',
     'mobile-web/manifest.json',
     'package.json',
@@ -51,7 +51,7 @@ function fixture() {
 }
 
 function configurationFixture(version = '1.2.3') {
-  const root = mkdtempSync(join(tmpdir(), 'orca-javascript-configuration-test-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-javascript-configuration-test-'))
   directories.push(root)
   const hooks = join(root, 'empty-hooks')
   mkdirSync(hooks)
@@ -81,9 +81,9 @@ function configurationFixture(version = '1.2.3') {
     expect(result.code, result.stderr).toBe(0)
   }
   const env = {
-    ORCA_BUILD_IDENTITY: 'stable',
-    ORCA_DIAGNOSTICS_TOKEN_URL: 'https://example.test/diagnostics',
-    ORCA_POSTHOG_WRITE_KEY: 'release-key'
+    TOPO_BUILD_IDENTITY: 'stable',
+    TOPO_DIAGNOSTICS_TOKEN_URL: 'https://example.test/diagnostics',
+    TOPO_POSTHOG_WRITE_KEY: 'release-key'
   }
   return { root, env }
 }
@@ -93,18 +93,18 @@ describe('release JavaScript configuration', () => {
     const { root, env } = configurationFixture()
     const devEnv = {
       ...env,
-      ORCA_RELEASE_JAVASCRIPT_BUILD_IDENTITY: 'dev',
-      ORCA_BUILD_IDENTITY: '',
-      ORCA_POSTHOG_WRITE_KEY: ''
+      TOPO_RELEASE_JAVASCRIPT_BUILD_IDENTITY: 'dev',
+      TOPO_BUILD_IDENTITY: '',
+      TOPO_POSTHOG_WRITE_KEY: ''
     }
     expect(() =>
       releaseJavascriptConfiguration(root, {
         ...devEnv,
-        ORCA_RELEASE_JAVASCRIPT_SOURCE_SHA: 'b'.repeat(40)
+        TOPO_RELEASE_JAVASCRIPT_SOURCE_SHA: 'b'.repeat(40)
       })
     ).toThrow('Release checkout differs from bundle source')
     expect(() =>
-      releaseJavascriptConfiguration(root, { ...devEnv, ORCA_DIAGNOSTICS_TOKEN_URL: '' })
+      releaseJavascriptConfiguration(root, { ...devEnv, TOPO_DIAGNOSTICS_TOKEN_URL: '' })
     ).toThrow('Missing release diagnostics URL')
   })
 })

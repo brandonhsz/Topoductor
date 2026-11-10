@@ -1,1 +1,1 @@
-export const RELAY_REMOTE_DIR = '.orca-remote'
+export const RELAY_REMOTE_DIR = '.topo-remote'

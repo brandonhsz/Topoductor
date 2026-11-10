@@ -2,12 +2,12 @@ import { app, session } from 'electron'
 import { randomUUID } from 'node:crypto'
 import { join } from 'node:path'
 import '../../../../shared/constants'
-import { ORCA_BROWSER_PARTITION } from '../../../../shared/browser/browser-session-partition'
+import { TOPO_BROWSER_PARTITION } from '../../../../shared/browser/browser-session-partition'
 import {
-  DEFAULT_LOCAL_ORCA_PROFILE_ID,
-  getOrcaProfileBrowserDefaultPartition,
-  getOrcaProfileBrowserSessionPartition
-} from '../../../../shared/orca-profiles'
+  DEFAULT_LOCAL_TOPO_PROFILE_ID,
+  getTopoProfileBrowserDefaultPartition,
+  getTopoProfileBrowserSessionPartition
+} from '../../../../shared/topo-profiles'
 import type {
   BrowserSessionProfile,
   BrowserSessionProfileScope
@@ -43,7 +43,7 @@ type ExtensionIdListKey = 'enabledExtensionIdsByProfileId' | 'pinnedExtensionIds
 type ExtensionIdListUpdate = (byProfile: Record<string, string[]>) => Record<string, string[]>
 
 export type BrowserSessionRegistryProfileOptions = {
-  orcaProfileId: string
+  topoProfileId: string
   profileDirectory: string
 }
 
@@ -51,9 +51,9 @@ export type BrowserSessionRegistryProfileOptions = {
 
 class BrowserSessionRegistry {
   private readonly profiles = new Map<string, BrowserSessionProfile>()
-  private activeOrcaProfileId = DEFAULT_LOCAL_ORCA_PROFILE_ID
+  private activeTopoProfileId = DEFAULT_LOCAL_TOPO_PROFILE_ID
   private metadataPathOverride: string | null = null
-  private defaultPartition = ORCA_BROWSER_PARTITION
+  private defaultPartition = TOPO_BROWSER_PARTITION
   // Why: profiles change from IPC, the CLI and managed-profile owners; open windows and paired clients only learn of it here.
   onProfilesChanged: (() => void) | null = null
   onProfileDeleted: ((profileId: string) => Promise<void>) | null = null
@@ -62,10 +62,10 @@ class BrowserSessionRegistry {
     this.resetDefaultProfile()
   }
 
-  configureForOrcaProfile(options: BrowserSessionRegistryProfileOptions): void {
-    this.activeOrcaProfileId = options.orcaProfileId
+  configureForTopoProfile(options: BrowserSessionRegistryProfileOptions): void {
+    this.activeTopoProfileId = options.topoProfileId
     this.metadataPathOverride = join(options.profileDirectory, BROWSER_SESSION_META_FILE_NAME)
-    this.defaultPartition = getOrcaProfileBrowserDefaultPartition(options.orcaProfileId)
+    this.defaultPartition = getTopoProfileBrowserDefaultPartition(options.topoProfileId)
     this.profiles.clear()
     this.resetDefaultProfile()
   }
@@ -113,7 +113,7 @@ class BrowserSessionRegistry {
     const meta = this.loadPersistedMeta()
     const migration = inspectRetiredBrowserSessionProfileUserAgentModes(
       meta.profiles,
-      this.activeOrcaProfileId
+      this.activeTopoProfileId
     )
     if (migration.noticePending) {
       // Migration bookkeeping must not block session startup.
@@ -173,7 +173,7 @@ class BrowserSessionRegistry {
     applyPendingBrowserCookieImports({
       resolveMetadataPath: () => this.metadataPath,
       defaultPartition: this.defaultPartition,
-      activeOrcaProfileId: this.activeOrcaProfileId
+      activeTopoProfileId: this.activeTopoProfileId
     })
   }
 
@@ -250,7 +250,7 @@ class BrowserSessionRegistry {
       return null
     }
     const id = randomUUID()
-    const partition = getOrcaProfileBrowserSessionPartition(this.activeOrcaProfileId, id)
+    const partition = getTopoProfileBrowserSessionPartition(this.activeTopoProfileId, id)
     const profile: BrowserSessionProfile = { id, scope, partition, label, source: null, owner }
     try {
       await installBrowserSessionPartitionPolicies(profile)
@@ -329,7 +329,7 @@ class BrowserSessionRegistry {
     enabledExtensionIdsByProfileId = this.loadPersistedMeta().enabledExtensionIdsByProfileId
   ): void {
     for (const profile of profiles) {
-      if (!isValidPersistedBrowserSessionProfile(profile, this.activeOrcaProfileId)) {
+      if (!isValidPersistedBrowserSessionProfile(profile, this.activeTopoProfileId)) {
         continue
       }
       this.profiles.set(profile.id, profile)

@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { once } from 'node:events'
 import { build } from 'esbuild'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import {
@@ -48,7 +48,7 @@ const REPLY_THEN_EXIT = `${FRAMING} send({ hello: 'x'.repeat(900 * 1024) }); pro
 const IGNORES_EOF = `${FRAMING} process.stdin.resume(); setInterval(() => {}, 1000);`
 const OVERSIZED = `${FRAMING} send('x'.repeat(1024 * 1024));`
 
-const root = mkdtempSync(join(tmpdir(), 'orca-native-host-'))
+const root = mkdtempSync(join(tmpdir(), 'topo-native-host-'))
 let pidFiles = 0
 
 beforeAll(async () => {
@@ -132,7 +132,7 @@ describe('native host process', () => {
     host.connection.close()
     expect(isRunning(pid)).toBe(true)
     await expect.poll(() => isRunning(pid), { timeout: 8000 }).toBe(false)
-    // Closing from Orca's side never reports back to the extension.
+    // Closing from Topo's side never reports back to the extension.
     expect(host.closes).toEqual([])
   })
 

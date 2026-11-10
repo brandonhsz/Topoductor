@@ -49,10 +49,10 @@ function printOrchestrationFields<TFields extends AgentViewFields>(
   // A failed outcome reads ok:false even though its fields still describe what happened.
   ok = true
 ): void {
-  // Runtime next steps name `orca`; this is the one place they get the executable in use.
+  // Runtime next steps name `topo`; this is the one place they get the executable in use.
   const resolved: TFields =
     typeof fields.next === 'string'
-      ? { ...fields, next: resolveOrcaCommandsInText(fields.next) }
+      ? { ...fields, next: resolveTopoCommandsInText(fields.next) }
       : fields
   console.log(json ? JSON.stringify({ ok, result: withNextLast(resolved) }) : text(resolved))
 }
@@ -133,21 +133,21 @@ function withNextLast(fields: AgentViewFields): AgentViewFields {
   return { ...rest, next }
 }
 
-function resolveOrcaCommandsInText(text: string): string {
+function resolveTopoCommandsInText(text: string): string {
   const executable = resolveOrchestrationCliExecutable()
-  if (executable === 'orca') {
+  if (executable === 'topo') {
     return text
   }
   const rendered = renderCommand([executable])
-  return text.replace(/(^|[\s`'"(])orca(?= orchestration )/gm, (_, lead: string) => lead + rendered)
+  return text.replace(/(^|[\s`'"(])topo(?= orchestration )/gm, (_, lead: string) => lead + rendered)
 }
 
 export function renderOrchestrationArgv(argv: readonly string[]): string | undefined {
   if (argv.length === 0) {
     return undefined
   }
-  // Fleet next actions are subcommand argv (`orchestration ...`); older hosts named `orca`.
-  const subcommand = argv[0] === 'orca' ? argv.slice(1) : argv
+  // Fleet next actions are subcommand argv (`orchestration ...`); older hosts named `topo`.
+  const subcommand = argv[0] === 'topo' ? argv.slice(1) : argv
   return renderCommand([resolveOrchestrationCliExecutable(), ...subcommand])
 }
 

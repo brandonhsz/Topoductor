@@ -29,9 +29,9 @@ if($InboxPreparationReceipt){
   $report.inboxCapabilityPreparation=$preparation
 }
 $id = [Guid]::NewGuid().ToString('N').Substring(0,10)
-$name = "orca$id"
+$name = "topo$id"
 $accountNames = @($name) + @(if($Accounts -gt 1){2..$Accounts | ForEach-Object {"$name$_"}})
-$serviceName = "orca-sshd-$id"
+$serviceName = "topo-sshd-$id"
 $root = Join-Path $env:RUNNER_TEMP "ossh-$id"
 Write-Stage 'private-directory-create-start'
 New-Item -ItemType Directory -Path $root | Out-Null
@@ -185,7 +185,7 @@ try {
     $account=@{name=$accountName;sid=$null;home=$null}
     $ownedAccounts.Add($account)
     Write-Stage 'private-user-create-start'
-    $user=New-LocalUser -Name $accountName -Password $password -AccountNeverExpires -PasswordNeverExpires -Description 'Ephemeral Orca SSH qualification'
+    $user=New-LocalUser -Name $accountName -Password $password -AccountNeverExpires -PasswordNeverExpires -Description 'Ephemeral Topo SSH qualification'
     Write-Stage 'private-user-create-complete'
     $account.sid=$user.SID.Value
     Write-Stage 'private-user-group-start'
@@ -323,8 +323,8 @@ $(@($accountNames | Select-Object -Last $ForwardingAccounts | ForEach-Object {"M
   }
   if($HiddenTools.Count){
     Write-Stage 'host-toolchain-session-proof-start'
-    $pathProbe=Invoke-Bounded $ssh ($sshArgs+@('echo ORCA_PATH=%PATH%& where node.exe')) 30 -AllowFailure
-    $sessionPath=([regex]::Match($pathProbe.stdout,'ORCA_PATH=([^\r\n]*)')).Groups[1].Value
+    $pathProbe=Invoke-Bounded $ssh ($sshArgs+@('echo TOPO_PATH=%PATH%& where node.exe')) 30 -AllowFailure
+    $sessionPath=([regex]::Match($pathProbe.stdout,'TOPO_PATH=([^\r\n]*)')).Groups[1].Value
     $visibleNode=@($pathProbe.stdout -split '\r?\n' | Where-Object {$_ -match '(?i)\\node\.exe\s*$'})
     # Every kept entry was checked free of the tools, so the shims only need to be on PATH at all.
     $report.hostToolchain.sessionPathHasShims=@($sessionPath -split ';' | Where-Object {$_.TrimEnd('\') -ieq $shimDir}).Count -gt 0

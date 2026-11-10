@@ -83,8 +83,8 @@ describe('Phase 1 launch plugin content', () => {
   })
 
   it('boots release-indexed content from the packaged resources layout', async () => {
-    const resourcesPath = await mkdtemp(join(tmpdir(), 'orca-packaged-resources-'))
-    const userDataPath = await mkdtemp(join(tmpdir(), 'orca-packaged-user-data-'))
+    const resourcesPath = await mkdtemp(join(tmpdir(), 'topo-packaged-resources-'))
+    const userDataPath = await mkdtemp(join(tmpdir(), 'topo-packaged-user-data-'))
     temporaryRoots.push(resourcesPath, userDataPath)
     const packagedRoot = join(resourcesPath, 'plugins', 'launch')
     await cp(launchRoot, packagedRoot, { recursive: true })

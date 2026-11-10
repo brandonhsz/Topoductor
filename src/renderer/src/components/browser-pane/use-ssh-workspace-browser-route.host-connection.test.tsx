@@ -27,7 +27,7 @@ vi.mock('@/lib/workspace/ownership/worktree-host-connection-phase', () => ({
 
 let useSshWorkspaceBrowserRoute: typeof UseSshWorkspaceBrowserRoute
 
-const READY_PARTITION = 'persist:orca-browser-v1-routed'
+const READY_PARTITION = 'persist:topo-browser-v1-routed'
 
 const settle = () =>
   act(async () => {

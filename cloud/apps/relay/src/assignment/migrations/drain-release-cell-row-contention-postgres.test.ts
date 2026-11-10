@@ -9,7 +9,7 @@ import {
 import type { RelayCellConfig } from '../../config.js'
 import { openRelayDatabase, type RelayDatabase } from '../../database/database.js'
 
-const databaseUrl = process.env.ORCA_RELAY_TEST_POSTGRES_URL
+const databaseUrl = process.env.TOPO_RELAY_TEST_POSTGRES_URL
 const describePostgres = databaseUrl ? describe : describe.skip
 const DIRECTOR_INSTANCES = 5
 const DIRECTOR_POOL_MAX = 3

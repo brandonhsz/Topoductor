@@ -22,7 +22,7 @@ index 49fdf5b1bb4d6c1f602e36470248a10a690a3479..384f4db6f22d0691f66938d42333d1b0
      $colors = this._themeService.colors;
      $variantOffset = 0;
  
-+    // Orca: a translucent terminal paints its backdrop once; an explicit background equal to the
++    // Topo: a translucent terminal paints its backdrop once; an explicit background equal to the
 +    // default background is that backdrop, not an opaque fill. The buffer keeps the original color.
 +    if (!(cell.fg & FgFlags.INVERSE) && this._optionService.rawOptions.allowTransparency && isTranslucentDefaultBackground(cell.bg, $colors)) {
 +      this.result.bg &= ~(Attributes.CM_MASK | Attributes.RGB_MASK);
@@ -86,7 +86,7 @@ index eebfda3b3df9b4c8cefcc6a64692053ed5eaeefa..75e34767bd1e12802b72371fddb5fc90
          if (bg !== currentBg || (fg !== currentFg && (currentInverse || inverse))) {
            // A rectangle needs to be drawn if going from non-default to another color
 -          if (currentBg !== 0 || (currentInverse && currentFg !== 0)) {
-+          // Orca: style-only bg flags (dim, italic, extended) keep the default color, which the
++          // Topo: style-only bg flags (dim, italic, extended) keep the default color, which the
 +          // viewport clear already painted; filling it again ignored a translucent background.
 +          if ((currentBg & Attributes.CM_MASK) !== Attributes.CM_DEFAULT || (currentInverse && currentFg !== 0)) {
              offset = rectangleCount++ * INDICES_PER_RECTANGLE;
@@ -133,7 +133,7 @@ index eff0d0e1c36906b1f14b85fb8db7907bf685c8a7..1fb0b7a971e33e1dbd2dcf9841645ca4
      const queue = this._warmUpQueue = new IdleTaskQueue(this._logService);
      for (let i = 33; i < 126; i++) {
        queue.enqueue(() => {
-+        // Orca: a canvas outside the document ignores the page's font smoothing and rasterizes
++        // Topo: a canvas outside the document ignores the page's font smoothing and rasterizes
 +        // heavier glyphs that stay cached, so leave them to on-demand drawing until connected.
 +        if (!domContainer?.isConnected) {
 +          return;
@@ -148,7 +148,7 @@ index eff0d0e1c36906b1f14b85fb8db7907bf685c8a7..1fb0b7a971e33e1dbd2dcf9841645ca4
    private _pageLayoutVersion = 0;
    public get pageLayoutVersion(): number { return this._pageLayoutVersion; }
  
-+  // Orca diagnostics: read by terminal-render-desync-weight-probe.ts to tell a real
++  // Topo diagnostics: read by terminal-render-desync-weight-probe.ts to tell a real
 +  // bold-collapse from a repaint problem. Canvas silently keeps its previous font when an
 +  // assignment fails to parse, which rasterizes glyphs at a stale weight.
 +  public fontProbeMismatchCount = 0;
@@ -194,7 +194,7 @@ index eff0d0e1c36906b1f14b85fb8db7907bf685c8a7..1fb0b7a971e33e1dbd2dcf9841645ca4
    }
  
 +  /**
-+   * Orca diagnostic. Canvas ignores a font assignment it cannot parse and silently keeps the
++   * Topo diagnostic. Canvas ignores a font assignment it cannot parse and silently keeps the
 +   * previous value, so a bad family or weight rasterizes every glyph at a stale weight. Record
 +   * the mismatch rather than correcting it: the goal is to tell that failure apart from a
 +   * repaint bug when a terminal renders bold-collapsed.
@@ -216,8 +216,8 @@ index eff0d0e1c36906b1f14b85fb8db7907bf685c8a7..1fb0b7a971e33e1dbd2dcf9841645ca4
 +    this.fontProbeMismatchCount++;
 +    this.fontProbeLastMismatch = { desired, actual: this._tmpCtx.font };
 +    try {
-+      (globalThis as { __orcaAtlasFontProbe?: (mismatch: { desired: string, actual: string }) => void })
-+        .__orcaAtlasFontProbe?.(this.fontProbeLastMismatch);
++      (globalThis as { __topoAtlasFontProbe?: (mismatch: { desired: string, actual: string }) => void })
++        .__topoAtlasFontProbe?.(this.fontProbeLastMismatch);
 +    } catch {
 +      // Diagnostics only; a throwing listener must never break rasterization.
 +    }
@@ -277,7 +277,7 @@ index 2d0f5a3a8ee7fc0765a0179cee0102edb9376e4b..92f1c7241e887cd907d21d91aa26c0de
  
      // Render
 +    // A transparent framebuffer keeps the previous draw, so re-blending translucent
-+    // backgrounds accumulated opacity on every redraw and flickered (Orca #6491).
++    // backgrounds accumulated opacity on every redraw and flickered (Topo #6491).
 +    if (this._terminal.options.allowTransparency) {
 +      // Keep the RGB blend but write source alpha as-is; SRC_ALPHA on alpha
 +      // itself would turn the configured opacity `a` into `a²`.

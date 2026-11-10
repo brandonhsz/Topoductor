@@ -2,7 +2,7 @@
 
 import * as z from 'zod'
 import { normalizeAgentSessionConversationName } from './agent-session-conversation-name'
-import { isOrcaSessionId, type OrcaSessionId } from '../orca-session-address'
+import { isTopoSessionId, type TopoSessionId } from '../topo-session-address'
 import type { OrchestrationPartyIdentity } from '../orchestration/mailbox/orchestration-party-identity'
 import type { AgentType } from '../agent-status/contracts/agent-status-types'
 import { AGENT_TYPE_MAX_LENGTH } from '../agent-status/contracts/agent-status-field-normalization'
@@ -11,9 +11,9 @@ import { openEnum, salvagedField, salvagedOptional, salvagingArray } from '../zo
 /** Resolve senders through the storing host's orchestration mailbox address (dispatch:<id> for federation), never a pane key. */
 export type AgentMessageSender = Readonly<{
   party: Omit<OrchestrationPartyIdentity, 'paneKey'>
-  /** What Orca called the sender when it wrote, kept for when it is gone; null when it had none. */
+  /** What Topo called the sender when it wrote, kept for when it is gone; null when it had none. */
   name: string | null
-  /** Its agent when Orca wrote, so the card keeps its icon once the agent is gone; absent when unknown. */
+  /** Its agent when Topo wrote, so the card keeps its icon once the agent is gone; absent when unknown. */
   agent?: AgentType
   relation?: 'worker' | 'coordinator' | 'none'
 }>
@@ -50,7 +50,7 @@ export type OrchestrationTaskMessage = Readonly<{
   dispatchId: string
 }>
 
-/** What Orca delivers for other agents, one shape per message kind. */
+/** What Topo delivers for other agents, one shape per message kind. */
 export type OrchestrationAgentMessage = OrchestrationMailNotice | OrchestrationTaskMessage
 
 export type AgentMessageSource = Readonly<{
@@ -83,8 +83,8 @@ export function agentMessageSenderName(value: unknown): string | null {
   return normalizeAgentSessionConversationName(value)
 }
 
-const orcaSessionIdSchema = z.custom<OrcaSessionId>(
-  (value) => typeof value === 'string' && isOrcaSessionId(value)
+const topoSessionIdSchema = z.custom<TopoSessionId>(
+  (value) => typeof value === 'string' && isTopoSessionId(value)
 )
 
 const contentRangeSchema = z.tuple([z.number().int().nonnegative(), z.number().int().nonnegative()])
@@ -119,7 +119,7 @@ const senderSchema = z.object({
   party: z.object({
     address: z.string().min(1),
     terminalHandle: z.string().nullable(),
-    orcaSessionId: orcaSessionIdSchema.nullable()
+    topoSessionId: topoSessionIdSchema.nullable()
   }),
   // Any bounded string: a kind a newer build knows still draws as its first letter.
   agent: salvagedOptional('agent', z.string().min(1).max(AGENT_TYPE_MAX_LENGTH)),

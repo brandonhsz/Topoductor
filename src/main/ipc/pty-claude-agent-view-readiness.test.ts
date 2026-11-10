@@ -36,7 +36,7 @@ vi.mock('../telemetry/client', () =>
 vi.mock('../telemetry/classify-error', () =>
   import('./pty/pty-ipc-mock-registry').then((m) => m.classifyErrorModuleMock())
 )
-vi.mock('../cli/linux-terminal-orca-cli-shim', () =>
+vi.mock('../cli/linux-terminal-topo-cli-shim', () =>
   import('./pty/pty-ipc-mock-registry').then((m) => m.linuxCliShimModuleMock())
 )
 vi.mock('../memory/pty-registry', () =>
@@ -59,16 +59,16 @@ describe.each(['local', 'daemon'] as const)('%s PTY navigation readiness', (prov
   it('spawns a plain shell while reconciliation is pending', async () => {
     const gate = Promise.withResolvers<void>()
     const reconcileStarted = Promise.withResolvers<void>()
-    const config = join(tmpdir(), 'orca-spawn-pending-agent-view-config')
+    const config = join(tmpdir(), 'topo-spawn-pending-agent-view-config')
     vi.stubEnv('CLAUDE_CONFIG_DIR', config)
     const service = new agentView.ClaudeAgentViewService(
-      join(tmpdir(), 'orca-spawn-pending-agent-view'),
+      join(tmpdir(), 'topo-spawn-pending-agent-view'),
       {
         reconcileConfig: () => {
           reconcileStarted.resolve()
           return gate.promise
         },
-        ensurePlugin: async () => join(tmpdir(), 'orca-spawn-agent-view-plugin'),
+        ensurePlugin: async () => join(tmpdir(), 'topo-spawn-agent-view-plugin'),
         loginEnv: async () => ({ CLAUDE_CONFIG_DIR: config }),
         listProfiles: async () => []
       }
@@ -86,7 +86,7 @@ describe.each(['local', 'daemon'] as const)('%s PTY navigation readiness', (prov
     const env = await (provider === 'daemon'
       ? daemonSpawnAndGetEnv({}, undefined, () => settings)
       : spawnAndGetEnv({}, undefined, undefined, () => settings))
-    expect(env).not.toHaveProperty('ORCA_CLAUDE_AGENT_VIEW_PLUGIN_DIR')
+    expect(env).not.toHaveProperty('TOPO_CLAUDE_AGENT_VIEW_PLUGIN_DIR')
     gate.resolve()
     await reconcile
   })

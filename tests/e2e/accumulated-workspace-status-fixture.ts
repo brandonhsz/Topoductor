@@ -38,7 +38,7 @@ type AccumulatedStatusTrafficRun = {
 
 /** The Electron main-process global the traffic generator parks its controller on. */
 type StatusTrafficHost = typeof globalThis & {
-  __orcaAccumulatedStatusTrafficController?: { stop: () => AccumulatedStatusTrafficRun }
+  __topoAccumulatedStatusTrafficController?: { stop: () => AccumulatedStatusTrafficRun }
 }
 
 type StatusTrafficWindow = Window & {
@@ -96,7 +96,7 @@ export async function validateAccumulatedStatusIpcIngress(
         (candidate) => !candidate.isDestroyed() && !candidate.webContents.isDestroyed()
       )
       if (!appWindow) {
-        throw new Error('Orca BrowserWindow is unavailable')
+        throw new Error('Topo BrowserWindow is unavailable')
       }
       const receivedAt = Date.now()
       return validationPanes.map((pane) => {
@@ -118,7 +118,7 @@ export async function validateAccumulatedStatusIpcIngress(
         (candidate) => !candidate.isDestroyed() && !candidate.webContents.isDestroyed()
       )
       if (!appWindow) {
-        throw new Error('Orca BrowserWindow is unavailable')
+        throw new Error('Topo BrowserWindow is unavailable')
       }
       const receipts: StatusReceipt[] = []
       for (const pane of validationPanes) {
@@ -183,10 +183,10 @@ export async function startAccumulatedStatusTraffic(
         (candidate) => !candidate.isDestroyed() && !candidate.webContents.isDestroyed()
       )
       if (!appWindow) {
-        throw new Error('Orca BrowserWindow is unavailable')
+        throw new Error('Topo BrowserWindow is unavailable')
       }
       const host: StatusTrafficHost = globalThis
-      if (host.__orcaAccumulatedStatusTrafficController) {
+      if (host.__topoAccumulatedStatusTrafficController) {
         throw new Error('accumulated status traffic is already running')
       }
       let completedRounds = 0
@@ -210,10 +210,10 @@ export async function startAccumulatedStatusTraffic(
         },
         Math.max(10, Math.floor(intervalMs))
       )
-      host.__orcaAccumulatedStatusTrafficController = {
+      host.__topoAccumulatedStatusTrafficController = {
         stop: () => {
           clearInterval(timer)
-          delete host.__orcaAccumulatedStatusTrafficController
+          delete host.__topoAccumulatedStatusTrafficController
           return { completedRounds, generatedUpdates, lastReceivedAtByPaneKey }
         }
       }
@@ -229,7 +229,7 @@ export async function stopAccumulatedStatusTraffic(
 ): Promise<AccumulatedStatusTrafficStats> {
   const mainStats = await electronApp.evaluate((): AccumulatedStatusTrafficRun | null => {
     const host: StatusTrafficHost = globalThis
-    return host.__orcaAccumulatedStatusTrafficController?.stop() ?? null
+    return host.__topoAccumulatedStatusTrafficController?.stop() ?? null
   })
   if (!mainStats) {
     await page.evaluate(() => {

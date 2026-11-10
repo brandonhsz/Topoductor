@@ -119,7 +119,7 @@ describe('remote skill setup availability', () => {
           ],
           preferredEndpointId: 'ssh',
           connectionDependency: 'ssh-tunnel',
-          orcadDeployment: {
+          topodDeployment: {
             sshTargetId: 'box',
             sshTargetGeneration: 1,
             localPort: 1234,

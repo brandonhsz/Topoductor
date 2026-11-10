@@ -159,7 +159,7 @@ function BrowserPasswordsProfile({
       toast.success(
         t(
           'settings.browser.passwords.copied',
-          'Password copied. Orca clears it from the clipboard in 2 minutes.'
+          'Password copied. Topo clears it from the clipboard in 2 minutes.'
         )
       )
     } else if (result.reason === 'auth-failed') {
@@ -179,7 +179,7 @@ function BrowserPasswordsProfile({
       ),
       description: t(
         'settings.browser.passwords.deleteConfirmDescription',
-        'Orca won’t fill it anymore. This can’t be undone.'
+        'Topo won’t fill it anymore. This can’t be undone.'
       ),
       confirmLabel: t('settings.browser.passwords.deleteConfirm', 'Delete'),
       confirmVariant: 'destructive'
@@ -225,7 +225,7 @@ function BrowserPasswordsProfile({
           <p className="text-xs text-muted-foreground">
             {t(
               'settings.browser.passwords.profileDescription',
-              'Saved logins for the {{profile}} profile. Orca fills one only when you pick it under a sign-in field.',
+              'Saved logins for the {{profile}} profile. Topo fills one only when you pick it under a sign-in field.',
               { profile: profileLabel }
             )}
           </p>
@@ -277,7 +277,7 @@ function BrowserPasswordsProfile({
             <p className="text-xs text-muted-foreground">
               {t(
                 'settings.browser.passwords.empty',
-                'Orca offers to save a login after you sign in. You can also bring them from another browser or a CSV file.'
+                'Topo offers to save a login after you sign in. You can also bring them from another browser or a CSV file.'
               )}
             </p>
           </div>

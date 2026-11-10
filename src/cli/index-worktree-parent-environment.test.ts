@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 const {
   callMock,
   runtimeClientConstructorMock,
-  serveOrcaAppMock,
+  serveTopoAppMock,
   getDefaultUserDataPathMock,
   addEnvironmentFromPairingCodeMock,
   listEnvironmentsMock,
@@ -11,8 +11,8 @@ const {
 } = vi.hoisted(() => ({
   callMock: vi.fn(),
   runtimeClientConstructorMock: vi.fn(),
-  serveOrcaAppMock: vi.fn(),
-  getDefaultUserDataPathMock: vi.fn(() => '/tmp/orca-user-data'),
+  serveTopoAppMock: vi.fn(),
+  getDefaultUserDataPathMock: vi.fn(() => '/tmp/topo-user-data'),
   addEnvironmentFromPairingCodeMock: vi.fn(),
   listEnvironmentsMock: vi.fn(),
   spawnMock: vi.fn()
@@ -23,7 +23,7 @@ vi.mock('./runtime-client', async () => {
   return createRuntimeClientModuleMock({
     callMock,
     runtimeClientConstructorMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock
   })
 })
@@ -60,7 +60,7 @@ const CROSS_MACHINE = 'worktree.lineage.crossMachine'
 type Call = { environment: string; method: string; params: Record<string, unknown> }
 type Answer = (call: Call) => unknown
 
-/** Answers each request by the environment its client routes to; `local` is the caller's Orca. */
+/** Answers each request by the environment its client routes to; `local` is the caller's Topo. */
 function serve(answer: Answer): Call[] {
   const calls: Call[] = []
   callMock.mockImplementation(async function (
@@ -114,7 +114,7 @@ async function run(args: string[], cwd = '/tmp/elsewhere') {
 describe('--parent-environment', () => {
   useWorktreeAwarenessEnvironment({
     callMock,
-    serveOrcaAppMock,
+    serveTopoAppMock,
     getDefaultUserDataPathMock,
     addEnvironmentFromPairingCodeMock,
     listEnvironmentsMock,
@@ -240,7 +240,7 @@ describe('--parent-environment', () => {
     const ambiguous = (code: string) =>
       new RuntimeClientError(code, 'Several workspaces match name:B Ambiguous.', {
         candidates: [{ selector: 'folder:one' }, { selector: 'folder:two' }],
-        nextSteps: ['Run `orca worktree ps --json` to compare the choices.']
+        nextSteps: ['Run `topo worktree ps --json` to compare the choices.']
       })
     const parent = ['--parent-worktree', 'name:B Ambiguous', '--parent-environment', 'srv-b']
     const cases: [string[], Answer][] = [
@@ -275,7 +275,7 @@ describe('--parent-environment', () => {
         { selector: 'folder:two' }
       ])
       expect(error.data.nextSteps).toEqual([
-        'Compare the choices with `orca worktree ps --environment srv-b --json`, then pass one as --parent-worktree.'
+        'Compare the choices with `topo worktree ps --environment srv-b --json`, then pass one as --parent-worktree.'
       ])
     }
   })

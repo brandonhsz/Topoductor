@@ -20,8 +20,8 @@ export const NATIVE_CHAT_RESUME_COMMAND = 'resume'
 
 const FORK_DRAFT = /^\/fork(?:\s+([\s\S]*))?$/i
 
-/** Replace the agent’s /resume catalog entry with Orca’s Session History command, and its /usage
- *  and /fork with Orca’s where this chat runs them. */
+/** Replace the agent’s /resume catalog entry with Topo’s Session History command, and its /usage
+ *  and /fork with Topo’s where this chat runs them. */
 export function withNativeChatResumeCommand(
   commands: readonly SlashCommandSuggestion[],
   accountUsage = false,
@@ -35,7 +35,7 @@ export function withNativeChatResumeCommand(
       'Open Agent Session History'
     ),
     argumentHint: t('components.native-chat.resumeCommand.argumentHint', '[search]'),
-    orcaOwned: true
+    topoOwned: true
   }
   if (accountUsage) {
     commands = [
@@ -45,7 +45,7 @@ export function withNativeChatResumeCommand(
           'components.native-chat.usage.description',
           'Show usage for this chat’s Codex account'
         ),
-        orcaOwned: true
+        topoOwned: true
       },
       ...commands.filter((command) => command.name !== 'usage')
     ]
@@ -58,7 +58,7 @@ export function withNativeChatResumeCommand(
           'components.native-chat.fork.commandDescription',
           'Fork this chat from its latest response'
         ),
-        orcaOwned: true
+        topoOwned: true
       },
       ...commands.filter((command) => command.name !== 'fork')
     ]
@@ -80,9 +80,9 @@ export function parseNativeChatResumeDraft(draft: string): string | null {
 
 export type NativeChatResumeCommand = {
   matchesDraft: (draft: string) => boolean
-  /** Opens Session History for a `/resume` draft; false means the draft is not Orca's. */
+  /** Opens Session History for a `/resume` draft; false means the draft is not Topo's. */
   consume: (draft: string) => boolean
-  /** Choosing the draft-leading Orca row runs it; mid-prompt it stays an ordinary completion. */
+  /** Choosing the draft-leading Topo row runs it; mid-prompt it stays an ordinary completion. */
   interceptPick: <TItem extends NativeChatPickerItem>(
     pick: (item: TItem) => void
   ) => (item: TItem) => void
@@ -236,8 +236,8 @@ export function useNativeChatResumeCommand(args: {
     <TItem extends NativeChatPickerItem>(pick: (item: TItem) => void) =>
       (item: TItem) => {
         const leading = autocomplete.mode === 'slash' && autocomplete.dispatchable
-        // An explicit Orca command pick overrides an earlier same-named skill pick.
-        if (leading && item.kind === 'command' && item.orcaOwned) {
+        // An explicit Topo command pick overrides an earlier same-named skill pick.
+        if (leading && item.kind === 'command' && item.topoOwned) {
           if (
             item.name !== 'resume' &&
             !(item.name === 'usage' && usage) &&

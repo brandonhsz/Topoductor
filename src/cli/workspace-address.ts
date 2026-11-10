@@ -6,7 +6,7 @@ import { LOCAL_ENVIRONMENT } from './local-environment-selector'
 import type { RuntimeClient } from './runtime-client'
 import { quoteCliCommandArgument } from './shell-command-quote'
 
-/** Which Orca answered: `local`, a saved environment, or a one-off pairing-code connection (id null). */
+/** Which Topo answered: `local`, a saved environment, or a one-off pairing-code connection (id null). */
 export type WorkspaceEnvironment = { id: string | null; name: string | null }
 
 /** A copyable route to one workspace; `environment` is the exact `--environment` value. */
@@ -208,10 +208,10 @@ export function annotateWorkspaces(
 
 const UNAVAILABLE_TEXT: Record<AddressUnavailableReason, string> = {
   'one-off-connection':
-    'unavailable (one-off pairing-code connection; save it with `orca environment add --name <name> --pairing-code <code>`)',
+    'unavailable (one-off pairing-code connection; save it with `topo environment add --name <name> --pairing-code <code>`)',
   'unverifiable-row': "unavailable (this row's host or identity can't be verified)",
   'duplicate-folder-id':
-    'unavailable (several folder workspaces share this id; remove one in the Orca app and add its folder again)'
+    'unavailable (several folder workspaces share this id; remove one in the Topo app and add its folder again)'
 }
 
 /** `environment:` and `address:` lines, each on its own line. */

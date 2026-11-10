@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { createSequencedSetupAgentCommands } from './setup-agent-sequencing'
 
-// Fresh bash -lc does not read Orca’s wrapper; the gate must enforce codex --no-daemon itself.
+// Fresh bash -lc does not read Topo’s wrapper; the gate must enforce codex --no-daemon itself.
 const roots: string[] = []
 
 afterEach(() => {
@@ -15,7 +15,7 @@ afterEach(() => {
 })
 
 function prepareGate(startupCommand: string) {
-  const root = mkdtempSync(join(tmpdir(), 'orca-gate-codex-'))
+  const root = mkdtempSync(join(tmpdir(), 'topo-gate-codex-'))
   roots.push(root)
   const bin = join(root, 'bin')
   mkdirSync(bin)
@@ -63,7 +63,7 @@ describe.skipIf(process.platform === 'win32')('sequenced setup gate runs codex',
   it.each([
     ['an old binary', 'codex --yolo', '--no-alt-screen', {}],
     ['a subcommand that needs the shared server', 'codex agents', '--no-daemon', {}],
-    ['the opt-out', 'codex --yolo', '--no-daemon', { ORCA_CODEX_ISOLATE: '0' }]
+    ['the opt-out', 'codex --yolo', '--no-daemon', { TOPO_CODEX_ISOLATE: '0' }]
   ])('unchanged for %s', (_case, command, help, env) => {
     expect(runGate(command, help, env)).toBe(`ARGV:${command.slice('codex '.length)}\n`)
   })

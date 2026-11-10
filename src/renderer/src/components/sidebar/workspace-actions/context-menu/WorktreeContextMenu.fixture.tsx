@@ -5,19 +5,19 @@ import type { ProjectGroup } from '../../../../../../shared/project-group-types'
 import WorktreeContextMenu from './WorktreeContextMenu'
 
 const repo: Repo = {
-  id: 'orca',
-  path: '/preview/orca',
-  displayName: 'orca',
+  id: 'topo',
+  path: '/preview/topo',
+  displayName: 'topo',
   badgeColor: '',
   addedAt: 1
 }
 
 const worktree: Worktree = {
-  id: 'orca::/preview/orca/release',
+  id: 'topo::/preview/topo/release',
   repoId: repo.id,
   hostId: 'local',
   instanceId: 'release-instance',
-  path: '/preview/orca/release',
+  path: '/preview/topo/release',
   displayName: 'Prepare the release',
   branch: 'release',
   head: 'abc123',
@@ -36,9 +36,9 @@ const worktree: Worktree = {
 
 const childWorktree: Worktree = {
   ...worktree,
-  id: 'orca::/preview/orca/release-notes',
+  id: 'topo::/preview/topo/release-notes',
   instanceId: 'release-notes-instance',
-  path: '/preview/orca/release-notes',
+  path: '/preview/topo/release-notes',
   displayName: 'Write release notes',
   branch: 'release-notes'
 }

@@ -52,7 +52,7 @@ describe('recordPRHeadObservation over saved state', () => {
     database = openTestJournalHostDatabase(root)
     recordPRChatAction(database, {
       chatId: 'chat-1',
-      anchor: { itemId: 'orca:anchor', revision: 1 },
+      anchor: { itemId: 'topo:anchor', revision: 1 },
       forgeHost: 'github.com',
       owner: 'acme',
       repo: 'repo',
@@ -142,7 +142,7 @@ describe('a superseded push head and startup', () => {
   it('saves a pusher before the read that verified it is evaluated', async () => {
     recordPRChatAction(database, {
       chatId: 'chat-0',
-      anchor: { itemId: 'orca:anchor', revision: 1 },
+      anchor: { itemId: 'topo:anchor', revision: 1 },
       forgeHost: 'github.com',
       owner: 'acme',
       repo: 'repo',

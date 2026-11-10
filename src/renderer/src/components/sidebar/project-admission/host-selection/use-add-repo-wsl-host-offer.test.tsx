@@ -10,7 +10,7 @@ import type { DroppedHostPath } from './add-repo-wsl-host-folder-picker'
 
 const UBUNTU_HOST = {
   id: 'wsl-ubuntu',
-  orcadDeployment: { kind: 'wsl' as const, distro: 'Ubuntu', localPort: 4100, remotePort: 4200 }
+  topodDeployment: { kind: 'wsl' as const, distro: 'Ubuntu', localPort: 4100, remotePort: 4200 }
 }
 const mocks = vi.hoisted(() => ({
   gateOpen: true,
@@ -18,7 +18,7 @@ const mocks = vi.hoisted(() => ({
     settings: { experimentalWslHosts: true },
     runtimeEnvironments: new Array<{
       id: string
-      orcadDeployment: { kind: 'wsl'; distro: string; localPort: number; remotePort: number }
+      topodDeployment: { kind: 'wsl'; distro: string; localPort: number; remotePort: number }
     }>()
   }
 }))

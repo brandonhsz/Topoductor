@@ -1,8 +1,8 @@
-// Normalize one desktop scenario's CLI, paired and orcad replies for byte-identical comparison across layout ownership modes.
+// Normalize one desktop scenario's CLI, paired and topod replies for byte-identical comparison across layout ownership modes.
 import { readFileSync } from 'node:fs'
 import { vi } from 'vitest'
-import '../../orca-runtime-tests/runtime-test-module-registration.spec'
-import { OrcaRuntimeService } from '../../orca-runtime'
+import '../../topo-runtime-tests/runtime-test-module-registration.spec'
+import { TopoRuntimeService } from '../../topo-runtime'
 import {
   HEADLESS_LEAF_ID,
   HEADLESS_SECOND_LEAF_ID,
@@ -11,19 +11,19 @@ import {
   makeHeadlessTerminalLayout,
   makeRuntimeStoreWithWorkspaceSession,
   makeWorkspaceSessionWithHeadlessTerminal
-} from '../../orca-runtime-tests/orca-runtime-test-fixtures.spec'
+} from '../../topo-runtime-tests/topo-runtime-test-fixtures.spec'
 import type { RuntimeSyncWindowGraph } from '../../../../shared/runtime-session-contracts'
 import type { RuntimeTerminalShow } from '../../../../shared/runtime-terminal-contracts'
 import type { WorkspaceSessionState } from '../../../../shared/workspace-session/workspace-session-state-types'
 import type { ExecutionHostId } from '../../../../shared/execution-host'
 import type { LayoutCommand } from '../../../../shared/workspace-layout/workspace-layout-command-types'
 import { applyCommandToSession } from '../../../persistence/terminal-topology/terminal-pane-admission'
-import { partialRuntimeStore } from '../../orca-runtime-tests/runtime-store-partial-fixture'
+import { partialRuntimeStore } from '../../topo-runtime-tests/runtime-store-partial-fixture'
 
 export const SURFACE_TAB_ID = '44444444-4444-4444-8444-444444444444'
 export const SURFACE_PTYS = { [HEADLESS_LEAF_ID]: 'pty-a', [HEADLESS_SECOND_LEAF_ID]: 'pty-b' }
 
-type Runtime = InstanceType<typeof OrcaRuntimeService>
+type Runtime = InstanceType<typeof TopoRuntimeService>
 
 /** A saved tab split in two, each pane bound to a live terminal. */
 export function surfaceRuntime(
@@ -104,7 +104,7 @@ export function surfaceRuntime(
       return change.value
     }
   }
-  const runtime = new OrcaRuntimeService(partialRuntimeStore(runtimeStore))
+  const runtime = new TopoRuntimeService(partialRuntimeStore(runtimeStore))
   const killed: string[] = []
   runtime.setPtyController({
     write: () => true,

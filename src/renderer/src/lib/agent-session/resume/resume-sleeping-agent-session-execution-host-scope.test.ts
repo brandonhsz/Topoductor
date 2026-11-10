@@ -11,7 +11,7 @@ import './sleeping-record-execution-host-scope'
 const initialAppStoreState = useAppStore.getState()
 
 const TARGET_ID = 'openclaw'
-const REMOTE_PATH = '/home/neil/projects/orca-test123'
+const REMOTE_PATH = '/home/neil/projects/topo-test123'
 const WORKTREE_ID = `repo-1::${REMOTE_PATH}`
 const SESSION_ID = '87987465-66f6-4967-bf3f-0659565cbcc5'
 

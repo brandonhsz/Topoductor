@@ -1,6 +1,6 @@
 // Dirty records must retain every view’s edits and conflict state without per-view reloads.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { ORCA_EDITOR_FILE_CACHE_STALE_EVENT } from '../../autosave/editor-autosave'
+import { TOPO_EDITOR_FILE_CACHE_STALE_EVENT } from '../../autosave/editor-autosave'
 import { attachEditorAutosaveController } from '../../autosave/editor-autosave-controller'
 
 import { __clearSelfWriteRegistryForTests } from '../../external-changes/editor-self-write-registry'
@@ -72,11 +72,11 @@ describe('a dirty record shown in several workspaces', () => {
     dropped.length = 0
     mocks.readRuntimeFileContent.mockReset()
     stubGuardedDisk({ [GUARDED_PATH]: 'E' })
-    window.addEventListener(ORCA_EDITOR_FILE_CACHE_STALE_EVENT, onStale)
+    window.addEventListener(TOPO_EDITOR_FILE_CACHE_STALE_EVENT, onStale)
   })
 
   afterEach(() => {
-    window.removeEventListener(ORCA_EDITOR_FILE_CACHE_STALE_EVENT, onStale)
+    window.removeEventListener(TOPO_EDITOR_FILE_CACHE_STALE_EVENT, onStale)
     vi.useRealTimers()
     vi.unstubAllGlobals()
     __clearSelfWriteRegistryForTests()

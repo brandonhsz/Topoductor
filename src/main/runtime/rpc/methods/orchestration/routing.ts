@@ -1,4 +1,4 @@
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import type { OrchestrationPartyIdentity as OrchestrationCallerIdentity } from '../../../../../shared/orchestration/mailbox/orchestration-party-identity'
 import {
   type MessageType,
@@ -35,7 +35,7 @@ export type MessageRouting = {
 }
 
 export function resolveMessageRun(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   params: {
     /** The sender as Run binding and Dispatch identity see it. */
     sender: OrchestrationCallerIdentity
@@ -129,7 +129,7 @@ export function resolveMessageRun(
 }
 
 export function legacyWorkerDeliveryContract(
-  runtime: OrcaRuntimeService,
+  runtime: TopoRuntimeService,
   runId: string | undefined,
   recipient: string
 ): 'legacy_direct' | undefined {
@@ -173,7 +173,7 @@ export function interruptedAcknowledgedCheck(
 
 /** Remote Run rows are local mirrors; mail stored there reaches nobody (#32292). */
 export function rejectRemotelyHomedRun(
-  db: ReturnType<OrcaRuntimeService['getOrchestrationDb']>,
+  db: ReturnType<TopoRuntimeService['getOrchestrationDb']>,
   runId: string
 ): void {
   if (db.getRun(runId)?.home_database === 'remote') {
@@ -182,7 +182,7 @@ export function rejectRemotelyHomedRun(
 }
 
 export function remoteRunHomeUnreachable(
-  db: ReturnType<OrcaRuntimeService['getOrchestrationDb']>,
+  db: ReturnType<TopoRuntimeService['getOrchestrationDb']>,
   runId: string
 ): OrchestrationError {
   const dispatchId = db.findRemoteAttachmentForHomeRun(runId)?.dispatch_id

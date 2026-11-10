@@ -105,7 +105,7 @@ const parent: DashboardAgentRow = {
   startedAt: 1000
 }
 const keybindings = JSON.stringify({
-  bindings: [{ context: 'Chat', bindings: { 'ctrl+alt+g': 'command:orca-agent-view' } }]
+  bindings: [{ context: 'Chat', bindings: { 'ctrl+alt+g': 'command:topo-agent-view' } }]
 })
 type Request = ReturnType<typeof TerminalViewClaudeAgent.parse>
 let bridge: ClaudeAgentViewBridge
@@ -408,7 +408,7 @@ it.each(['compact', 'full'] as const)(
     expect(requests[0]).toMatchObject({
       terminal: 'T',
       sessionId: 'P',
-      client: { id: 'orca-desktop', type: 'desktop' }
+      client: { id: 'topo-desktop', type: 'desktop' }
     })
     expect(requests[1]).toEqual({ ...requests[0], agentId: undefined })
     expect(requests[1]).not.toHaveProperty('agentId')

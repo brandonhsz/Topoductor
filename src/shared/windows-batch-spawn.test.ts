@@ -52,7 +52,7 @@ describe('getSpawnArgsForWindows', () => {
     withPlatform('win32', () => {
       const { spawnCmd, spawnArgs } = getSpawnArgsForWindows(
         'C:\\Tools\\idea.cmd',
-        ['C:\\workspaces\\orca'],
+        ['C:\\workspaces\\topo'],
         { detachedGui: true }
       )
       expect(spawnCmd).toBe(getCmdExePath())
@@ -69,7 +69,7 @@ describe('getSpawnArgsForWindows', () => {
         '/c',
         '@',
         'C:\\Tools\\idea.cmd',
-        'C:\\workspaces\\orca'
+        'C:\\workspaces\\topo'
       ])
       expect(spawnArgs[3]).toBe('')
       expect(spawnArgs).not.toContain('/K')
@@ -122,11 +122,11 @@ describe('getSpawnArgsForWindows', () => {
     withPlatform('win32', () => {
       const { spawnCmd, spawnArgs } = getSpawnArgsForWindows(
         'C:\\Program Files\\JetBrains\\IntelliJ IDEA\\bin\\idea64.exe',
-        ['C:\\workspaces\\orca'],
+        ['C:\\workspaces\\topo'],
         { detachedGui: true }
       )
       expect(spawnCmd).toBe('C:\\Program Files\\JetBrains\\IntelliJ IDEA\\bin\\idea64.exe')
-      expect(spawnArgs).toEqual(['C:\\workspaces\\orca'])
+      expect(spawnArgs).toEqual(['C:\\workspaces\\topo'])
     })
   })
 

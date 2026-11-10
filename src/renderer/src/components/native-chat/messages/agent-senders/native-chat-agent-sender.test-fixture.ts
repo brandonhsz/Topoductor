@@ -1,5 +1,5 @@
 import { structuredAgentSessionPaneKey } from '../../../../../../shared/agent-session/view/structured-agent-session-projection'
-import type { OrcaSessionId } from '../../../../../../shared/orca-session-address'
+import type { TopoSessionId } from '../../../../../../shared/topo-session-address'
 import { useAppStore } from '@/store'
 import { makeTab } from '@/store/terminals/terminal-tab.test-fixture'
 import { makeUnifiedTab } from '@/store/slices/tabs/tab-group.test-fixture'
@@ -26,7 +26,7 @@ export const from: AgentMessageSource = {
   orchestration: null,
   senders: ['Build cards', 'Other sender'].map((name, i) => ({
     name,
-    party: { address: `term_${i}`, terminalHandle: `term_${i}`, orcaSessionId: null }
+    party: { address: `term_${i}`, terminalHandle: `term_${i}`, topoSessionId: null }
   }))
 }
 
@@ -52,7 +52,7 @@ export function resetSenderStore(): void {
   )
 }
 
-export function setSenderSessionStatus(sessionId: OrcaSessionId): AgentStatusEntry {
+export function setSenderSessionStatus(sessionId: TopoSessionId): AgentStatusEntry {
   const tab = makeUnifiedTab({
     id: 'progress-chat',
     entityId: sessionId,

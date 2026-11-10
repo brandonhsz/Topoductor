@@ -127,7 +127,7 @@ const PERMISSIONS: PermissionDefinition[] = [
     get description() {
       return translate(
         'auto.components.settings.DeveloperPermissionsPane.7ca17b62c8',
-        "macOS names Orca when the agents it runs read other apps' data, because Orca is the responsible process for terminal commands. Grant this to Orca to reduce those prompts. Then quit and reopen Orca."
+        "macOS names Topo when the agents it runs read other apps' data, because Topo is the responsible process for terminal commands. Grant this to Topo to reduce those prompts. Then quit and reopen Topo."
       )
     },
     get actionLabel() {
@@ -168,7 +168,7 @@ const PERMISSIONS: PermissionDefinition[] = [
     get description() {
       return translate(
         'auto.components.settings.DeveloperPermissionsPane.f903bf20b5',
-        "Allows terminals and development tools to connect to services on your local network. macOS does not report this permission's current status to Orca."
+        "Allows terminals and development tools to connect to services on your local network. macOS does not report this permission's current status to Topo."
       )
     },
     get actionLabel() {
@@ -322,13 +322,13 @@ export function DeveloperPermissionsPane({
             <ShieldCheck className="size-4" />
             {t(
               'auto.components.settings.DeveloperPermissionsPane.6f011b9bf6',
-              "Terminal tools inherit Orca's macOS privacy envelope."
+              "Terminal tools inherit Topo's macOS privacy envelope."
             )}
           </span>
         }
         description={t(
           'auto.components.settings.DeveloperPermissionsPane.6326a4c5cc',
-          'Use these controls when a CLI, local app, or automation tool needs macOS privacy access. Orca does not ask at startup.'
+          'Use these controls when a CLI, local app, or automation tool needs macOS privacy access. Topo does not ask at startup.'
         )}
         action={
           <Button variant="outline" size="sm" className="gap-1.5" onClick={() => void refresh()}>

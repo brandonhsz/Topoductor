@@ -9,7 +9,7 @@ import {
 } from './browser-extension-storage-sync'
 
 /**
- * Orca's content script, bundled into one standalone file that Orca's manifest rewrite puts first
+ * Topo's content script, bundled into one standalone file that Topo's manifest rewrite puts first
  * in each of the extension's isolated-world content scripts. It adds the content-script APIs
  * Chrome has and Electron lacks, and, when the extension has a worker, chrome.storage.sync through
  * that worker (see browser-extension-content-script-relay.ts).
@@ -24,7 +24,7 @@ type ContentScriptRoot = {
       getManifest?: () => { background?: unknown }
     }
   }
-  __orcaContentScriptApi?: true
+  __topoContentScriptApi?: true
 }
 
 function hasServiceWorker(runtime: { getManifest?: () => { background?: unknown } }): boolean {
@@ -43,8 +43,8 @@ function hasServiceWorker(runtime: { getManifest?: () => { background?: unknown 
 
 const root: ContentScriptRoot = globalThis
 // Why the guard: every manifest entry lists this file, and entries share one world per frame.
-if (!root.__orcaContentScriptApi && root.chrome) {
-  root.__orcaContentScriptApi = true
+if (!root.__topoContentScriptApi && root.chrome) {
+  root.__topoContentScriptApi = true
   installBrowserExtensionInertApis('content-script')
   const runtime = root.chrome.runtime
   const sendMessage = runtime?.sendMessage

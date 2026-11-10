@@ -14,7 +14,7 @@ afterEach(async () => {
 })
 
 async function createPlugin(): Promise<ValidDiscoveredPlugin> {
-  const rootDir = await mkdtemp(join(tmpdir(), 'orca-plugin-panel-controller-'))
+  const rootDir = await mkdtemp(join(tmpdir(), 'topo-plugin-panel-controller-'))
   roots.push(rootDir)
   await writeFile(join(rootDir, 'panel.html'), '<h1>Panel</h1>')
   return {

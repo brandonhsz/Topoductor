@@ -56,7 +56,7 @@ export const NEVER_TRANSLATE_VALUES = new Set([
   'OpenClaw',
   'OpenCode',
   'OpenCode Go',
-  'Orca',
+  'Topo',
   'Pi',
   'PostHog',
   'Qwen Code',
@@ -151,7 +151,7 @@ export const NEVER_TRANSLATE_VALUES = new Set([
   '/home/user',
   '/home/user/project',
   '/path/to/destination',
-  '.orca/issue-command',
+  '.topo/issue-command',
   'PLAN.md',
   'feat/mobile-page',
   'sk-...',
@@ -203,11 +203,11 @@ export const NEVER_TRANSLATE_VALUES = new Set([
   '/signup',
   'npm run dev',
   'nbformat',
-  'orca.yaml',
+  'topo.yaml',
   'upstream',
   'LIN-329',
   'GH #1799',
-  'orca · zsh'
+  'topo · zsh'
 ])
 
 export const NATIVE_PICKER_LABELS = {
@@ -263,7 +263,7 @@ export function shouldPreserveEnglishValue(enValue, key = '') {
   if (!enValue?.trim()) {
     return true
   }
-  if (/^https?:\/\//.test(enValue) || enValue.startsWith('orca://')) {
+  if (/^https?:\/\//.test(enValue) || enValue.startsWith('topo://')) {
     return true
   }
   if (isEnglishOnlyKey(key)) {
@@ -359,7 +359,7 @@ function applyCjkLatinTermSpacing(localeValue, locale) {
       '$1 $2'
     )
   if (locale === 'ko') {
-    // Re-glue Korean particles only at whole-token boundaries (Orca 에/PR 을); keep content-word spaces (Jira 이슈/Orca 로고/agent 에뮬레이터).
+    // Re-glue Korean particles only at whole-token boundaries (Topo 에/PR 을); keep content-word spaces (Jira 이슈/Topo 로고/agent 에뮬레이터).
     result = result.replace(
       new RegExp(
         `(${CJK_LATIN_SPACED_TERM_PATTERN}) ((?:에서|에게|에는|에선|으로|로서|로써|부터|까지|보다|처럼|은|는|이|가|을|를|와|과|의|에|로|도|만)+)(?=$|[\\s.,!?…·:;)\\]}"'」』])`,
@@ -434,19 +434,19 @@ export function repairTranslatedValue({ key, enValue, localeValue, locale }) {
     result = applyCjkLatinTermSpacing(result, locale)
   }
 
-  if (enValue.includes('orca://')) {
-    result = result.replace(/虎鲸:\/\//g, 'orca://')
+  if (enValue.includes('topo://')) {
+    result = result.replace(/虎鲸:\/\//g, 'topo://')
   }
 
-  if (enValue === 'Orca' || enValue.startsWith('Orca ')) {
+  if (enValue === 'Topo' || enValue.startsWith('Topo ')) {
     result = result
-      .replaceAll('虎鲸', 'Orca')
-      .replaceAll('逆戟鲸', 'Orca')
-      .replaceAll('シャチ', 'Orca')
+      .replaceAll('虎鲸', 'Topo')
+      .replaceAll('逆戟鲸', 'Topo')
+      .replaceAll('シャチ', 'Topo')
   }
 
-  if (enValue.includes('orca://')) {
-    result = result.replace(/シャチ:\/\//g, 'orca://')
+  if (enValue.includes('topo://')) {
+    result = result.replace(/シャチ:\/\//g, 'topo://')
   }
 
   return result
@@ -508,22 +508,22 @@ export function repairCatalog(enCatalog, localeCatalog, locale) {
 
   if (localeCatalog.menu) {
     if (locale === 'zh') {
-      if (localeCatalog.menu.exploreOrca !== '探索 Orca') {
-        localeCatalog.menu.exploreOrca = '探索 Orca'
+      if (localeCatalog.menu.exploreTopo !== '探索 Topo') {
+        localeCatalog.menu.exploreTopo = '探索 Topo'
         repaired += 1
       }
-      if (localeCatalog.menu.gettingStarted !== 'Orca 入门') {
-        localeCatalog.menu.gettingStarted = 'Orca 入门'
+      if (localeCatalog.menu.gettingStarted !== 'Topo 入门') {
+        localeCatalog.menu.gettingStarted = 'Topo 入门'
         repaired += 1
       }
     }
     if (locale === 'ko') {
-      if (localeCatalog.menu.exploreOrca !== 'Orca 둘러보기') {
-        localeCatalog.menu.exploreOrca = 'Orca 둘러보기'
+      if (localeCatalog.menu.exploreTopo !== 'Topo 둘러보기') {
+        localeCatalog.menu.exploreTopo = 'Topo 둘러보기'
         repaired += 1
       }
-      if (localeCatalog.menu.gettingStarted !== 'Orca 시작하기') {
-        localeCatalog.menu.gettingStarted = 'Orca 시작하기'
+      if (localeCatalog.menu.gettingStarted !== 'Topo 시작하기') {
+        localeCatalog.menu.gettingStarted = 'Topo 시작하기'
         repaired += 1
       }
     }

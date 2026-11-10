@@ -23,7 +23,7 @@ export type MessageView = {
   handled?: boolean
   /** What to do after a finished task's report, with its command; the runtime chooses it. */
   followUp?: string
-  // Kept nested so sender-written payload can never stand in for Orca's own fields.
+  // Kept nested so sender-written payload can never stand in for Topo's own fields.
   payload?: Record<string, unknown> | string
 }
 

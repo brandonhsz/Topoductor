@@ -29,7 +29,7 @@ import {
 } from '../test-fixtures/pty-connection-test-main-pane-start-fixtures'
 import { mockPanePtyArgs } from '../test-fixtures/pty-connection-test-connect-mock-pane'
 
-vi.mock('../../../../../../shared/layout-owner-switch', () => ({ ORCA_LAYOUT_OWNER_IS_MAIN: true }))
+vi.mock('../../../../../../shared/layout-owner-switch', () => ({ TOPO_LAYOUT_OWNER_IS_MAIN: true }))
 // Main's answer to the window's layout commands, as a switch-on build sends them.
 vi.mock('@/runtime/rpc/calls/runtime-rpc-call', async (importOriginal) =>
   (

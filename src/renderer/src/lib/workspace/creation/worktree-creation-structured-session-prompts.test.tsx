@@ -262,7 +262,7 @@ it.each([
   expect(promptValue(screen.getByRole('textbox'))).toBe(expectedDraft)
 })
 
-it.each(['journalCorrupt', 'journalWrittenByNewerOrca'] as const)(
+it.each(['journalCorrupt', 'journalWrittenByNewerTopo'] as const)(
   'reveals a final %s failure and retains the unsent draft',
   async (reason) => {
     render(

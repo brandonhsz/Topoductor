@@ -3,7 +3,7 @@ import { detectConflictOperation } from './source-control/git-conflict-operation
 import { chmod, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { installRealWorkerThreadChildProcesses } from '../worker-thread-child-process/worker-thread-child-process-real.test-fixtures'
 import { applyCommit, recoverSequencer } from './commit-actions'
@@ -25,7 +25,7 @@ async function commit(text: string, message: string) {
   return git('rev-parse', 'HEAD')
 }
 beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), 'orca-commit-actions-'))
+  directory = await mkdtemp(join(tmpdir(), 'topo-commit-actions-'))
   await git('init', '-q')
   await git('symbolic-ref', 'HEAD', 'refs/heads/main')
   await git('config', 'user.name', 'Audit')

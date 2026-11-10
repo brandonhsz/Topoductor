@@ -85,8 +85,8 @@ describe('session view preference', () => {
     await Promise.all([older, newer])
 
     await expect(reloaded).resolves.toBe('terminal')
-    expect(AsyncStorage.setItem).toHaveBeenNthCalledWith(1, 'orca:defaultSessionView', 'chat')
-    expect(AsyncStorage.setItem).toHaveBeenNthCalledWith(2, 'orca:defaultSessionView', 'terminal')
+    expect(AsyncStorage.setItem).toHaveBeenNthCalledWith(1, 'topo:defaultSessionView', 'chat')
+    expect(AsyncStorage.setItem).toHaveBeenNthCalledWith(2, 'topo:defaultSessionView', 'terminal')
   })
 
   it('continues the shared default queue after a failed write', async () => {
@@ -155,7 +155,7 @@ describe('session view preference', () => {
     await updateSessionViewOverride('other-host', 'worktree', 'tab', 'terminal')
 
     expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-      'orca:nativeChatTabs:other-host:worktree',
+      'topo:nativeChatTabs:other-host:worktree',
       JSON.stringify({ tab: 'terminal' })
     )
     blockedWrite.resolve()
@@ -202,7 +202,7 @@ describe('session view preference', () => {
     await updateSessionViewOverride('host', 'worktree', 'tab', 'chat')
 
     expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-      'orca:nativeChatTabs:host:worktree',
+      'topo:nativeChatTabs:host:worktree',
       JSON.stringify({ tab: 'chat' })
     )
   })
@@ -223,7 +223,7 @@ describe('terminal link open mode preference', () => {
 
   it('orders writes across settings mounts and makes readers wait for the latest choice', async () => {
     const firstWrite = deferred<void>()
-    let stored: string | null = 'orca-browser'
+    let stored: string | null = 'topo-browser'
     vi.mocked(AsyncStorage.getItem).mockImplementation(async () => stored)
     vi.mocked(AsyncStorage.setItem).mockImplementation(async (_key, value) => {
       if (value === 'phone-browser') {
@@ -232,13 +232,13 @@ describe('terminal link open mode preference', () => {
       stored = value
     })
     const firstMount = saveTerminalLinkOpenMode('phone-browser')
-    const secondMount = saveTerminalLinkOpenMode('orca-browser')
+    const secondMount = saveTerminalLinkOpenMode('topo-browser')
     const reader = loadTerminalLinkOpenMode()
     await Promise.resolve()
-    expect(stored).toBe('orca-browser')
+    expect(stored).toBe('topo-browser')
     firstWrite.resolve()
     await Promise.all([firstMount, secondMount])
-    await expect(reader).resolves.toBe('orca-browser')
-    expect(stored).toBe('orca-browser')
+    await expect(reader).resolves.toBe('topo-browser')
+    expect(stored).toBe('topo-browser')
   })
 })

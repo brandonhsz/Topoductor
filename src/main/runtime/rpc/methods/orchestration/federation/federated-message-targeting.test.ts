@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ORCHESTRATION_CONTRACT_VERSION } from '../../../../../../shared/orchestration/orchestration-runtime-capabilities'
-import { OrcaRuntimeService } from '../../../../orca-runtime'
+import { TopoRuntimeService } from '../../../../topo-runtime'
 import { OrchestrationDb } from '../../../../orchestration/db/orchestration-db'
 import '../../../../orchestration/db/contract-constants'
 import '../../../../orchestration/db/messages/mailbox-routing-page'
@@ -12,7 +12,7 @@ import { ORCHESTRATION_METHODS } from '../orchestration'
 
 describe('orchestration federated message targeting', () => {
   let db: OrchestrationDb | undefined
-  let runtime: OrcaRuntimeService | undefined
+  let runtime: TopoRuntimeService | undefined
 
   afterEach(() => {
     runtime?.stopOrchestrationFederationRelay()
@@ -84,7 +84,7 @@ describe('orchestration federated message targeting', () => {
   it('delivers to a local Run a loopback remote Dispatch also reports to', async () => {
     const loopbackDb = new OrchestrationDb(':memory:')
     db = loopbackDb
-    runtime = new OrcaRuntimeService()
+    runtime = new TopoRuntimeService()
     runtime.setOrchestrationDb(loopbackDb)
     vi.spyOn(runtime, 'getTerminalPaneKey').mockReturnValue('tab_coordinator:leaf_coordinator')
     const local = loopbackDb.createRun({
@@ -182,16 +182,16 @@ describe('orchestration federated message targeting', () => {
 })
 
 /** A worker pane bound to remote Dispatch ctx_remote_targeting, whose Run home is `run-home`. */
-function attachedRemoteWorker(): { db: OrchestrationDb; runtime: OrcaRuntimeService } {
+function attachedRemoteWorker(): { db: OrchestrationDb; runtime: TopoRuntimeService } {
   const db = new OrchestrationDb(':memory:')
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(db)
   vi.spyOn(runtime, 'getTerminalPaneKey').mockReturnValue('tab_worker:leaf_worker')
   attachRemoteDispatch(db, runtime, 'run-home')
   return { db, runtime }
 }
 
-function attachRemoteDispatch(db: OrchestrationDb, runtime: OrcaRuntimeService, runId: string) {
+function attachRemoteDispatch(db: OrchestrationDb, runtime: TopoRuntimeService, runId: string) {
   const processIncarnation = 'worker_epoch:pty:1'
   const dispatchId = 'ctx_remote_targeting'
   vi.spyOn(runtime, 'getTerminalProcessIncarnation').mockReturnValue(processIncarnation)

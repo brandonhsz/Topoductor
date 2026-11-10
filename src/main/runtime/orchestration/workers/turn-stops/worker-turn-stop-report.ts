@@ -61,7 +61,7 @@ function describeStop(stop: WorkerTurnStop, task: string, dispatchId: string): s
     stop.reason === 'exited'
       ? 'The Dispatch is still open. Stop the worker, then retry it or tell the user.'
       : // The reader runs its own CLI build, so name the subcommand, never an executable.
-        `The Dispatch is still open. Answer it with your Orca CLI's \`orchestration send --to dispatch:${dispatchId} --subject "<topic>" --body "<guidance>"\`, retry it, or stop the worker.`,
+        `The Dispatch is still open. Answer it with your Topo CLI's \`orchestration send --to dispatch:${dispatchId} --subject "<topic>" --body "<guidance>"\`, retry it, or stop the worker.`,
     ...(stop.reason === 'finished'
       ? [
           'If it is idle on purpose, leave it: its later idle turns are not reported until you write to it.'

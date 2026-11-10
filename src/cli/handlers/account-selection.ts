@@ -25,7 +25,7 @@ const ACCOUNT_AGENTS = ['claude', 'codex', 'opencode', 'devin', 'antigravity'] a
 type AccountAgent = (typeof ACCOUNT_AGENTS)[number]
 
 const AGENT_FLAG_HINT = 'Use --agent claude|codex|opencode|devin|antigravity.'
-const ACCOUNT_FLAG_HINT = 'Use --account <id|email|label|system> from `orca account list`.'
+const ACCOUNT_FLAG_HINT = 'Use --account <id|email|label|system> from `topo account list`.'
 
 /** One saved account and the names `--account` may call it by (email, label, subject). */
 type AccountChoice = { id: string; names: readonly (string | null | undefined)[] }
@@ -37,7 +37,7 @@ type AccountChoice = { id: string; names: readonly (string | null | undefined)[]
  */
 type ProviderAccounts = {
   label: string
-  /** Whether `system` (the provider's own sign-in, outside Orca's vault) can be selected. */
+  /** Whether `system` (the provider's own sign-in, outside Topo's vault) can be selected. */
   hasSystemDefault: boolean
   choices: () => Promise<AccountChoice[]>
   list: () => Promise<void>
@@ -161,7 +161,7 @@ function antigravityAccounts(ctx: HandlerContext): ProviderAccounts {
     if (!(await supportsAntigravityAccounts(ctx))) {
       throw new RuntimeClientError(
         'incompatible_runtime',
-        'Update or restart this Orca host to manage Antigravity accounts.'
+        'Update or restart this Topo host to manage Antigravity accounts.'
       )
     }
     return client.call<AntigravityAccountState>('accounts.antigravityList', target)
@@ -282,11 +282,11 @@ function resolveSavedAccountId(
   }
   throw new RuntimeClientError(
     'invalid_argument',
-    `No managed ${label} account matches "${query}". Run \`orca account list\` to see the saved accounts.`
+    `No managed ${label} account matches "${query}". Run \`topo account list\` to see the saved accounts.`
   )
 }
 
-/** `orca account select`: the account new launches of that agent use on this host. */
+/** `topo account select`: the account new launches of that agent use on this host. */
 export async function selectAgentAccount(ctx: HandlerContext): Promise<void> {
   const agent = readAgentFlag(ctx)
   const query = readAccountFlag(ctx)
@@ -295,7 +295,7 @@ export async function selectAgentAccount(ctx: HandlerContext): Promise<void> {
   if (agent === 'claude' && query === 'system' && getWslAccountTarget(ctx.cwd)) {
     throw new RuntimeClientError(
       'invalid_argument',
-      'Select the Claude system default for a WSL distro in Orca Settings > AI Provider Accounts.'
+      'Select the Claude system default for a WSL distro in Topo Settings > AI Provider Accounts.'
     )
   }
   const provider = providerAccounts(ctx, agent)
@@ -305,21 +305,21 @@ export async function selectAgentAccount(ctx: HandlerContext): Promise<void> {
   await provider.select(accountId)
 }
 
-/** `orca account rm`: forgets a saved account; the provider's own sign-in is never touched. */
+/** `topo account rm`: forgets a saved account; the provider's own sign-in is never touched. */
 export async function removeAgentAccount(ctx: HandlerContext): Promise<void> {
   const agent = readAgentFlag(ctx)
   const query = readAccountFlag(ctx)
   if (query === 'system') {
     throw new RuntimeClientError(
       'invalid_argument',
-      'System credentials are never removed; pass a saved account from `orca account list`.'
+      'System credentials are never removed; pass a saved account from `topo account list`.'
     )
   }
   const provider = providerAccounts(ctx, agent)
   await provider.remove(resolveSavedAccountId(provider.label, await provider.choices(), query))
 }
 
-/** `orca account list --agent <id>`: one provider's saved accounts. */
+/** `topo account list --agent <id>`: one provider's saved accounts. */
 export async function listAgentAccounts(ctx: HandlerContext, agentFlag: unknown): Promise<void> {
   if (typeof agentFlag !== 'string' || !isAccountAgent(agentFlag)) {
     throw new RuntimeClientError('invalid_argument', AGENT_FLAG_HINT)
@@ -327,7 +327,7 @@ export async function listAgentAccounts(ctx: HandlerContext, agentFlag: unknown)
   await providerAccounts(ctx, agentFlag).list()
 }
 
-/** The Antigravity block for the full `orca account list`, or null on a host that cannot read it. */
+/** The Antigravity block for the full `topo account list`, or null on a host that cannot read it. */
 export async function readAntigravityAccountsForList(
   ctx: HandlerContext
 ): Promise<AntigravityAccountState | null> {
@@ -336,7 +336,7 @@ export async function readAntigravityAccountsForList(
   }
   // Why: a host can advertise the capability yet have no native credential adapter
   // (Linux Secret Service today). The overview must still show every other provider;
-  // `orca account list --agent antigravity` keeps reporting the reason.
+  // `topo account list --agent antigravity` keeps reporting the reason.
   try {
     const response = await ctx.client.call<AntigravityAccountState>(
       'accounts.antigravityList',

@@ -53,14 +53,14 @@ function withWin32<T>(run: () => T): T {
 
 function readInstalledConfig(home: string): InstalledConfig {
   return JSON.parse(
-    readFileSync(join(home, '.grok', 'hooks', 'orca-status.json'), 'utf8')
+    readFileSync(join(home, '.grok', 'hooks', 'topo-status.json'), 'utf8')
   ) as InstalledConfig
 }
 
 describe('Windows Grok managed hook launch shape', () => {
   // POSIX path.join cannot produce a real cmd-safe install path; synthetic Windows paths cover that branch everywhere.
   describe('registered command, from a synthetic Windows path', () => {
-    const scriptPath = 'C:\\Users\\dev\\.orca\\agent-hooks\\grok-hook.cmd'
+    const scriptPath = 'C:\\Users\\dev\\.topo\\agent-hooks\\grok-hook.cmd'
 
     // Stub Windows so legacy hook cleanup also runs on POSIX CI.
     it('replaces a legacy backslash entry and keeps user hooks', () => {
@@ -81,7 +81,7 @@ describe('Windows Grok managed hook launch shape', () => {
       )
       expect(stop).toEqual([
         'C:\\tools\\user-hook.cmd',
-        'C:/Users/dev/.orca/agent-hooks/grok-hook.cmd'
+        'C:/Users/dev/.topo/agent-hooks/grok-hook.cmd'
       ])
     })
   })
@@ -90,7 +90,7 @@ describe('Windows Grok managed hook launch shape', () => {
     let home = ''
 
     beforeEach(() => {
-      home = mkdtempSync(join(tmpdir(), 'orca-grok-launcher-'))
+      home = mkdtempSync(join(tmpdir(), 'topo-grok-launcher-'))
       homedirMock.mockReturnValue(home)
     })
 
@@ -103,9 +103,9 @@ describe('Windows Grok managed hook launch shape', () => {
     it.skipIf(process.platform !== 'win32')(
       'replaces a previously installed encoded-PowerShell entry on reinstall',
       () => {
-        const scriptPath = join(home, '.orca', 'agent-hooks', 'grok-hook.cmd')
+        const scriptPath = join(home, '.topo', 'agent-hooks', 'grok-hook.cmd')
         const staleCommand = wrapWindowsHookCommand(scriptPath)
-        const configPath = join(home, '.grok', 'hooks', 'orca-status.json')
+        const configPath = join(home, '.grok', 'hooks', 'topo-status.json')
         mkdirSync(dirname(configPath), { recursive: true })
         writeFileSync(
           configPath,

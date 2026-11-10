@@ -10,7 +10,7 @@ export type SessionInfo = {
   shellState: ShellReadyState
   isAlive: boolean
   terminalHandle?: string
-  /** ORCA_PANE_KEY the PTY was spawned with; absent from daemons that predate it. */
+  /** TOPO_PANE_KEY the PTY was spawned with; absent from daemons that predate it. */
   paneKey?: string
   wslDistro?: string | null
   /** Seen once in a WSL session's launch output; volatile metadata of this incarnation. */

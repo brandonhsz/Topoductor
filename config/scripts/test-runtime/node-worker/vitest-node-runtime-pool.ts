@@ -1,6 +1,6 @@
 import { isAbsolute, resolve } from 'node:path'
 import type { PoolOptions, PoolWorker, WorkerRequest } from 'vitest/node'
-import { spawnProcess } from '@orca/process-host'
+import { spawnProcess } from '@topo/process-host'
 import type { ChildProcess } from 'node:child_process'
 import {
   decodeNodeRuntimeMessage,
@@ -19,7 +19,7 @@ class NodeRuntimeWorker implements PoolWorker {
       return
     }
     const executable =
-      this.options.env.ORCA_TEST_NODE_EXECUTABLE ?? this.options.env.npm_node_execpath
+      this.options.env.TOPO_TEST_NODE_EXECUTABLE ?? this.options.env.npm_node_execpath
     if (!executable || !isAbsolute(executable)) {
       throw new Error('Node runtime contracts require pnpm test or run-vitest.mjs')
     }

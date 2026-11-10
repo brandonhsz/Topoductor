@@ -1,18 +1,18 @@
 import { vi } from 'vitest'
-import { OrcaRuntimeService } from '../../../orca-runtime'
+import { TopoRuntimeService } from '../../../topo-runtime'
 import type { OrchestrationDb } from '../../db/orchestration-db'
 import { ORCHESTRATION_METHODS } from '../../../rpc/methods/orchestration/orchestration'
 import { isStreamingMethod, eraseRpcMethods } from '../../../rpc/core'
 
 type Db = InstanceType<typeof OrchestrationDb>
-type Runtime = InstanceType<typeof OrcaRuntimeService>
+type Runtime = InstanceType<typeof TopoRuntimeService>
 
 /** A real runtime over `db` with the orchestration RPCs, as a coordinator calls them. */
 export function rpcRuntime(db: Db): {
   runtime: Runtime
   call: (name: string, params: Record<string, unknown>) => Promise<unknown>
 } {
-  const runtime = new OrcaRuntimeService()
+  const runtime = new TopoRuntimeService()
   runtime.setOrchestrationDb(db)
   vi.spyOn(runtime, 'ensureStructuredAgentSessionHost').mockResolvedValue(undefined)
   return {

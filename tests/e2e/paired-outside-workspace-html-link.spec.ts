@@ -1,7 +1,7 @@
 import { copyFileSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import {
   createRuntimeDesktopPairingOffer,
   launchPairedElectronClient
@@ -11,15 +11,15 @@ import { ensureTerminalVisible, waitForActiveWorktree, waitForSessionReady } fro
 import { waitForActiveTerminalManager } from './helpers/terminal'
 import { openTerminalWorkspaceRootLink } from './helpers/terminal-workspace-root-link'
 
-test.use({ orcaAppExtraEnv: { ORCA_BACKGROUND_LAUNCH: '1' } })
+test.use({ topoAppExtraEnv: { TOPO_BACKGROUND_LAUNCH: '1' } })
 
 test('opens an unregistered host HTML path from a terminal and keeps asset access scoped', async ({
-  orcaPage,
+  topoPage,
   testRepoPath
 }, testInfo) => {
   // Boots a paired hub and client, then opens two documents and approves their asset folders.
   test.setTimeout(240_000)
-  const directory = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'orca-outside-html-')))
+  const directory = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'topo-outside-html-')))
   const filePath = path.join(directory, 'proposal.html')
   const workspaceAssetReport = path.join(
     path.dirname(testRepoPath),
@@ -42,9 +42,9 @@ test('opens an unregistered host HTML path from a terminal and keeps asset acces
     path.join(directory, 'asset.js'),
     'document.querySelector("#asset").textContent = "approved asset loaded"'
   )
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  const offer = await createRuntimeDesktopPairingOffer(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  const offer = await createRuntimeDesktopPairingOffer(topoPage)
   const client = await launchPairedElectronClient(offer, testInfo, 'Unregistered HTML host')
   try {
     await expect

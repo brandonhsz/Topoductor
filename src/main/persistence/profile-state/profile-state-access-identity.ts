@@ -1,5 +1,5 @@
 import { readFileSync, statSync } from 'node:fs'
-import { runProcessSync } from '@orca/process-host'
+import { runProcessSync } from '@topo/process-host'
 import {
   parseLinuxBootTimeSeconds,
   parseLinuxProcStartTicks

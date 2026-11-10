@@ -1,4 +1,4 @@
-import { ORCA_LAYOUT_OWNER_IS_MAIN } from '../layout-owner-switch'
+import { TOPO_LAYOUT_OWNER_IS_MAIN } from '../layout-owner-switch'
 import { checkRunDetailsOwnerScope } from '../source-control/checks/check-run-details-owner-scope'
 import type { Tab } from '../tab-types'
 import { normalizeTerminalLayoutPtyOwnership } from './terminal-layout-pty-ownership'
@@ -64,7 +64,7 @@ function loadPanes(
 ): LayoutTerminalTab {
   const stored = session.terminalLayoutsByTabId?.[tab.entityId] ?? legacyLayout(row, args)
   // Match window restore: one pane per terminal; discard lone-pane titles that repeat the tab name.
-  const layout = ORCA_LAYOUT_OWNER_IS_MAIN
+  const layout = TOPO_LAYOUT_OWNER_IS_MAIN
     ? sanitizeTerminalLayoutPaneTitles(normalizeTerminalLayoutPtyOwnership(stored).snapshot, {
         ...row,
         // The tab-bar label is live; it also fills a missing quick-command label.
@@ -90,7 +90,7 @@ function loadTabs(args: WorkspaceReadArgs): {
     (session.openFilesByWorktree?.[key] ?? []).map((file) => file.filePath)
   )
   // Prune transient tabs only when loading with main’s views; loads without views retain all stored tabs.
-  const viewsOf = ORCA_LAYOUT_OWNER_IS_MAIN ? args.context.editorViewsOf : undefined
+  const viewsOf = TOPO_LAYOUT_OWNER_IS_MAIN ? args.context.editorViewsOf : undefined
   const heldViews = viewsOf?.(key) ?? {}
   const viewedEntities = new Set(
     (session.unifiedTabs?.[key] ?? []).flatMap((entry) =>
@@ -156,7 +156,7 @@ function loadTabs(args: WorkspaceReadArgs): {
     }
   }
   // Match window browser hydration: append orphaned browser records to the retained active group so the window never invents an unknown ID.
-  if (ORCA_LAYOUT_OWNER_IS_MAIN) {
+  if (TOPO_LAYOUT_OWNER_IS_MAIN) {
     const browserEntities = new Set(
       tabs.flatMap((tab) => (tab.kind === 'browser' ? [tab.entityId] : []))
     )

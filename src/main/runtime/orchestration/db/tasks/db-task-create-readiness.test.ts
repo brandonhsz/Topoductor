@@ -67,7 +67,7 @@ describe('task creation dependency readiness', () => {
   )
 
   it('preserves readiness and later promotion across reload', () => {
-    const directory = mkdtempSync(join(tmpdir(), 'orca-task-readiness-'))
+    const directory = mkdtempSync(join(tmpdir(), 'topo-task-readiness-'))
     directories.push(directory)
     const path = join(directory, 'orchestration.db')
     const before = createDb(path)

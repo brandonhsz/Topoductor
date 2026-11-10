@@ -19,7 +19,7 @@ import { tmpdir } from 'node:os'
 import { join, relative, resolve } from 'node:path'
 import { isSharedPackageDir } from '../node-addons/native-build-entry.cjs'
 import { canReusePreparedAddon } from './windows-process-tree-prepared-addon.mjs'
-import { ORCAD_WINDOWS_PROCESS_TREE_FILENAME } from '../../../../src/shared/orcad-artifacts.ts'
+import { TOPOD_WINDOWS_PROCESS_TREE_FILENAME } from '../../../../src/shared/topod-artifacts.ts'
 import {
   ensureWindowsProcessTreeCommandLinePatch,
   inspectWindowsProcessTreeAddon,
@@ -38,7 +38,7 @@ const SUPPORTED_ARCHES = ['x64', 'arm64']
 // Shared pnpm store belongs to every worktree; repair/build a private source copy.
 const SCRATCH_DIR =
   existsSync(INSTALLED_PACKAGE_DIR) && isSharedPackageDir(INSTALLED_PACKAGE_DIR, ROOT)
-    ? mkdtempSync(join(tmpdir(), 'orca-windows-process-tree-'))
+    ? mkdtempSync(join(tmpdir(), 'topo-windows-process-tree-'))
     : null
 const PACKAGE_DIR = SCRATCH_DIR === null ? INSTALLED_PACKAGE_DIR : join(SCRATCH_DIR, 'package')
 if (SCRATCH_DIR !== null) {
@@ -478,7 +478,7 @@ function main() {
   }
 
   mkdirSync(outDir, { recursive: true })
-  const staged = join(outDir, ORCAD_WINDOWS_PROCESS_TREE_FILENAME)
+  const staged = join(outDir, TOPOD_WINDOWS_PROCESS_TREE_FILENAME)
   copyFileSync(built, staged)
   console.log(`[windows-process-tree] ${arch} -> ${staged}`)
 }

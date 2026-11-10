@@ -1,4 +1,4 @@
-import { test, expect } from './helpers/orca-app'
+import { test, expect } from './helpers/topo-app'
 import type { Locator } from '@stablyai/playwright-test'
 import type { Editor } from '@tiptap/core'
 import {
@@ -26,22 +26,22 @@ async function readParagraphs(editor: Locator): Promise<string[]> {
 }
 
 test('keeps a large paste at its original selection after the caret moves', async ({
-  orcaPage,
+  topoPage,
   registerPostElectronShutdownCleanup
 }, testInfo) => {
-  await waitForSessionReady(orcaPage)
-  await waitForActiveWorktree(orcaPage)
-  const context = await getActiveWorktreeContext(orcaPage)
+  await waitForSessionReady(topoPage)
+  await waitForActiveWorktree(topoPage)
+  const context = await getActiveWorktreeContext(topoPage)
   const filePath = await createMarkdownFixture(
     context,
-    '.orca-e2e-markdown-large-paste',
+    '.topo-e2e-markdown-large-paste',
     'selection',
     testInfo.workerIndex,
     'hello world\n\nother paragraph'
   )
   registerPostElectronShutdownCleanup(() => cleanupMarkdownFixture(filePath))
-  await openMarkdownFixture(orcaPage, context, filePath)
-  const editor = await waitForRichMarkdownEditor(orcaPage)
+  await openMarkdownFixture(topoPage, context, filePath)
+  const editor = await waitForRichMarkdownEditor(topoPage)
   const payload = 'PASTE_SENTINEL '.repeat(5500)
   await editor.evaluate((element, text) => {
     const instance =
@@ -65,9 +65,9 @@ test('keeps a large paste at its original selection after the caret moves', asyn
   await expect
     .poll(async () => (await readParagraphs(editor)).join('').match(/PASTE_SENTINEL/g)?.length ?? 0)
     .toBe(5500)
-  await orcaPage.keyboard.type('!')
+  await topoPage.keyboard.type('!')
   await editor.evaluate((element) => element.querySelector('p')?.scrollIntoView({ block: 'start' }))
-  await orcaPage.screenshot({ path: testInfo.outputPath('large-paste-after-caret-move.png') })
+  await topoPage.screenshot({ path: testInfo.outputPath('large-paste-after-caret-move.png') })
   const paragraphs = await readParagraphs(editor)
   const outcome = {
     bytes: Buffer.byteLength(payload),

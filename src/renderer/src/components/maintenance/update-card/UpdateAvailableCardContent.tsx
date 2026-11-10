@@ -8,14 +8,14 @@ function isAnimatedGif(url: string | undefined): boolean {
   return typeof url === 'string' && url.toLowerCase().endsWith('.gif')
 }
 
-/** A package manager owns this install: the release is real but Orca can never apply it here. */
+/** A package manager owns this install: the release is real but Topo can never apply it here. */
 function ExternallyManagedNote(): React.JSX.Element {
   const t = useTranslate()
   return (
     <p className="text-xs leading-relaxed text-muted-foreground">
       {t(
         'auto.components.UpdateCard.7f1a4c9e02',
-        'Your system package manager installed Orca, so update it from there — Orca cannot install this release itself.'
+        'Your system package manager installed Topo, so update it from there — Topo cannot install this release itself.'
       )}
     </p>
   )
@@ -149,7 +149,7 @@ export function UpdateAvailableSimpleContent({
         </Button>
       </div>
       <p className="text-sm text-muted-foreground">
-        {t('auto.components.UpdateCard.05ad78a6d1', 'Orca v{{value0}} is ready.', {
+        {t('auto.components.UpdateCard.05ad78a6d1', 'Topo v{{value0}} is ready.', {
           value0: version
         })}
       </p>

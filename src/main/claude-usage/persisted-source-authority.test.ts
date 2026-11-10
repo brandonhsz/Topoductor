@@ -68,7 +68,7 @@ async function fixture(large = true): Promise<ClaudeUsagePersistedFile> {
 }
 
 beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), 'orca-claude-source-authority-'))
+  directory = await mkdtemp(join(tmpdir(), 'topo-claude-source-authority-'))
   transcript = join(directory, 'session.jsonl')
   sourcePath = join(directory, 'usage-sources.json')
   discovered.paths = [transcript]

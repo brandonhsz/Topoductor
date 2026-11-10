@@ -11,7 +11,7 @@ import type {
   StructuredNotificationRead
 } from '../../shared/notification-settings-types'
 import { isNotificationAttentionAcknowledgement } from '../../shared/notification-settings-types'
-import type { OrcaRuntimeService } from '../runtime/orca-runtime'
+import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { readNotificationAuthorizationStatus } from './notification-authorization-status'
 import { setTrayAttention } from '../tray/system-tray'
 import { isMainWindowVisible } from '../window/main-window-visibility'
@@ -37,7 +37,7 @@ import {
 
 let stopRuntimeAttentionEvents: (() => void) | undefined
 
-export function registerNotificationHandlers(store: Store, runtime?: OrcaRuntimeService): void {
+export function registerNotificationHandlers(store: Store, runtime?: TopoRuntimeService): void {
   ipcMain.removeHandler('notifications:getDesktopAwayState')
   ipcMain.handle('notifications:getDesktopAwayState', () => readDesktopAwayState(powerMonitor))
   resetNotificationPermissionEvidence()

@@ -106,7 +106,7 @@ export async function shootPluginEditor(
   if (acts && deps.windowShown()) {
     throw new PluginCliError('invalid_argument', PLUGIN_SHOT_ACT_WINDOW_SHOWN_MESSAGE, {
       reason: 'window_shown',
-      nextSteps: ['Minimize or hide Orca, then run this again.']
+      nextSteps: ['Minimize or hide Topo, then run this again.']
     })
   }
   const { colorScheme, themeReason } = pluginShotThemeDecision(
@@ -117,7 +117,7 @@ export async function shootPluginEditor(
   // Why a copy: acts are real input, and a shot must never change the author's file.
   const scratchDir =
     acts && !params.inPlace
-      ? await mkdtemp(join(deps.shotScratchRoot?.() ?? tmpdir(), 'orca-editor-shot-'))
+      ? await mkdtemp(join(deps.shotScratchRoot?.() ?? tmpdir(), 'topo-editor-shot-'))
       : null
   const shotPath = scratchDir ? join(scratchDir, basename(filePath)) : filePath
   const captureId = randomUUID()
@@ -151,13 +151,13 @@ export async function shootPluginEditor(
         throw new PluginCliError('invalid_argument', reply.message, {
           reason: reply.code,
           nextSteps: [
-            `\`orca plugin logs ${pluginKey}\` shows what the editor reported; fix it, then shoot again.`
+            `\`topo plugin logs ${pluginKey}\` shows what the editor reported; fix it, then shoot again.`
           ]
         })
       }
       const drawn = reply.panel
       if (!drawn) {
-        throw new Error('Orca did not report where the editor is drawn.')
+        throw new Error('Topo did not report where the editor is drawn.')
       }
       // The guest isolates its own page, so its painting is kept awake here too.
       const guest = drawn.guestUrl

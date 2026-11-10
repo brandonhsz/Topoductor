@@ -1,6 +1,6 @@
 import type { Page } from '@stablyai/playwright-test'
 import type { JiraIssue } from '../../src/shared/jira/jira-types'
-import { expect, test } from './helpers/orca-app'
+import { expect, test } from './helpers/topo-app'
 import { waitForSessionReady } from './helpers/store'
 
 const ISSUE_TITLE = 'Keep planning notes visible while switching between project tasks'
@@ -66,10 +66,10 @@ async function openFixtureJiraList(page: Page): Promise<void> {
 }
 
 test('Jira planning columns persist and hiding a sorted field selects a visible fallback', async ({
-  orcaPage
+  topoPage
 }) => {
-  await openFixtureJiraList(orcaPage)
-  const title = orcaPage.getByRole('heading', { name: ISSUE_TITLE })
+  await openFixtureJiraList(topoPage)
+  const title = topoPage.getByRole('heading', { name: ISSUE_TITLE })
   await expect(title).toBeVisible()
   await title.evaluate((element) => {
     const host =
@@ -80,15 +80,15 @@ test('Jira planning columns persist and hiding a sorted field selects a visible 
     }
     host.style.width = '780px'
   })
-  await orcaPage.getByRole('button', { name: 'Columns', exact: true }).click()
+  await topoPage.getByRole('button', { name: 'Columns', exact: true }).click()
   for (const name of ['Parent', 'Sprint', 'Points', 'Estimate', 'Remaining']) {
-    await orcaPage.getByRole('menuitemcheckbox', { name, exact: true }).click()
+    await topoPage.getByRole('menuitemcheckbox', { name, exact: true }).click()
   }
-  await orcaPage.keyboard.press('Escape')
-  await expect(orcaPage.getByText('Epic planning', { exact: true })).toBeVisible()
-  await expect(orcaPage.getByText('Sprint 12', { exact: true })).toBeVisible()
-  await expect(orcaPage.getByText('2h', { exact: true })).toBeVisible()
-  await expect(orcaPage.getByText('30m', { exact: true })).toBeVisible()
+  await topoPage.keyboard.press('Escape')
+  await expect(topoPage.getByText('Epic planning', { exact: true })).toBeVisible()
+  await expect(topoPage.getByText('Sprint 12', { exact: true })).toBeVisible()
+  await expect(topoPage.getByText('2h', { exact: true })).toBeVisible()
+  await expect(topoPage.getByText('30m', { exact: true })).toBeVisible()
   const layout = await title.evaluate((element) => {
     const row = element.closest('[role="button"]')
     const scroll = row?.parentElement?.parentElement?.parentElement?.parentElement
@@ -103,25 +103,25 @@ test('Jira planning columns persist and hiding a sorted field selects a visible 
   })
   expect(layout.title).toBeGreaterThanOrEqual(180)
   expect(layout.content).toBeGreaterThan(layout.viewport)
-  await orcaPage.getByRole('button', { name: 'Points', exact: true }).click()
-  await expect(orcaPage.getByRole('button', { name: 'Points, ascending' })).toHaveAttribute(
+  await topoPage.getByRole('button', { name: 'Points', exact: true }).click()
+  await expect(topoPage.getByRole('button', { name: 'Points, ascending' })).toHaveAttribute(
     'aria-pressed',
     'true'
   )
-  await orcaPage.getByRole('button', { name: 'Columns', exact: true }).click()
-  await orcaPage.getByRole('menuitemcheckbox', { name: 'Points', exact: true }).click()
-  await orcaPage.keyboard.press('Escape')
-  await expect(orcaPage.getByRole('button', { name: 'Updated, descending' })).toHaveAttribute(
+  await topoPage.getByRole('button', { name: 'Columns', exact: true }).click()
+  await topoPage.getByRole('menuitemcheckbox', { name: 'Points', exact: true }).click()
+  await topoPage.keyboard.press('Escape')
+  await expect(topoPage.getByRole('button', { name: 'Updated, descending' })).toHaveAttribute(
     'aria-pressed',
     'true'
   )
-  await orcaPage.reload()
-  await openFixtureJiraList(orcaPage)
-  await orcaPage.getByRole('button', { name: 'Columns', exact: true }).click()
+  await topoPage.reload()
+  await openFixtureJiraList(topoPage)
+  await topoPage.getByRole('button', { name: 'Columns', exact: true }).click()
   await expect(
-    orcaPage.getByRole('menuitemcheckbox', { name: 'Sprint', exact: true })
+    topoPage.getByRole('menuitemcheckbox', { name: 'Sprint', exact: true })
   ).toHaveAttribute('aria-checked', 'true')
   await expect(
-    orcaPage.getByRole('menuitemcheckbox', { name: 'Points', exact: true })
+    topoPage.getByRole('menuitemcheckbox', { name: 'Points', exact: true })
   ).toHaveAttribute('aria-checked', 'false')
 })

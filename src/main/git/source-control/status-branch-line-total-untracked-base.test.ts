@@ -1,4 +1,4 @@
-import { runProcess } from '@orca/process-host'
+import { runProcess } from '@topo/process-host'
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -18,7 +18,7 @@ async function git(repo: string, ...args: string[]): Promise<string> {
 }
 
 async function createRepo(): Promise<string> {
-  const repo = await mkdtemp(join(tmpdir(), 'orca-untracked-base-total-'))
+  const repo = await mkdtemp(join(tmpdir(), 'topo-untracked-base-total-'))
   roots.push(repo)
   await git(repo, 'init', '-q')
   await git(repo, 'config', 'user.email', 'test@example.com')

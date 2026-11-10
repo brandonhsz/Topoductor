@@ -1,4 +1,4 @@
-import { OrcaRuntimeWithBrowserWorkspaceRouting } from '../../browser/client-pages/runtime-browser-workspace-routing'
+import { TopoRuntimeWithBrowserWorkspaceRouting } from '../../browser/client-pages/runtime-browser-workspace-routing'
 
 import {
   floatingWorkspaceToWorktree,
@@ -39,12 +39,12 @@ import { WorktreeIdRequiresFullPathError } from '../../workspaces/lineage/worktr
 import { triggerTerminalSpawnPushTargetMaterialization } from './runtime-terminal-spawn-push-target-materialization'
 import { resolveCreatedWorktreeTerminalTarget } from './runtime-created-worktree-terminal-target'
 const AGENT_HOOK_RUNTIME_ENV_KEYS = [
-  'ORCA_AGENT_HOOK_PORT',
-  'ORCA_AGENT_HOOK_TOKEN',
-  'ORCA_AGENT_HOOK_ENV',
-  'ORCA_AGENT_HOOK_VERSION',
-  'ORCA_AGENT_HOOK_TRANSPORT',
-  'ORCA_AGENT_HOOK_ENDPOINT'
+  'TOPO_AGENT_HOOK_PORT',
+  'TOPO_AGENT_HOOK_TOKEN',
+  'TOPO_AGENT_HOOK_ENV',
+  'TOPO_AGENT_HOOK_VERSION',
+  'TOPO_AGENT_HOOK_TRANSPORT',
+  'TOPO_AGENT_HOOK_ENDPOINT'
 ] as const
 
 export type TerminalWorkspaceCreationEvidence = [
@@ -70,7 +70,7 @@ function withoutWorktreeLineage(worktree: Worktree): ResolvedWorktree {
   }
 }
 
-export abstract class OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktree extends OrcaRuntimeWithBrowserWorkspaceRouting {
+export abstract class TopoRuntimeWithResolveBrowserNetworkExecutionHostForWorktree extends TopoRuntimeWithBrowserWorkspaceRouting {
   protected resolveBrowserNetworkExecutionHostForWorktree(worktree?: {
     id: string
     repoId?: string
@@ -226,20 +226,20 @@ export abstract class OrcaRuntimeWithResolveBrowserNetworkExecutionHostForWorktr
     for (const key of AGENT_HOOK_RUNTIME_ENV_KEYS) {
       delete cleanBaseEnv[key]
     }
-    // Spawn stamps pane ids and jcode dir; match the window's ORCA_WORKSPACE_ID for every workspace kind.
+    // Spawn stamps pane ids and jcode dir; match the window's TOPO_WORKSPACE_ID for every workspace kind.
     const env = {
       ...cleanBaseEnv,
       ...agentTeamsEnv,
       ...this.buildAgentHookPtyEnv?.(),
-      ORCA_WORKSPACE_ID: scope.id
+      TOPO_WORKSPACE_ID: scope.id
     }
     if (!scope.folderWorkspace) {
       return env
     }
     return {
       ...env,
-      ORCA_PROJECT_GROUP_ID: scope.folderWorkspace.projectGroupId,
-      ORCA_WORKSPACE_ROOT: scope.folderWorkspace.folderPath
+      TOPO_PROJECT_GROUP_ID: scope.folderWorkspace.projectGroupId,
+      TOPO_WORKSPACE_ROOT: scope.folderWorkspace.folderPath
     }
   }
 

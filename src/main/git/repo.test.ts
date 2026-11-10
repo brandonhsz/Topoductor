@@ -33,7 +33,7 @@ describe('searchBaseRefs (widened glob)', () => {
   let tmpDir: string
 
   beforeEach(() => {
-    tmpDir = mkdtempSync(path.join(tmpdir(), 'orca-repo-test-'))
+    tmpDir = mkdtempSync(path.join(tmpdir(), 'topo-repo-test-'))
     initRepo(tmpDir)
   })
 
@@ -49,7 +49,7 @@ describe('searchBaseRefs (widened glob)', () => {
     createRemoteRef(tmpDir, `origin/${branch}`, sha)
     const results = await searchBaseRefDetails(tmpDir, '加')
     expect(results).toHaveLength(2)
-    const worktreeRoot = mkdtempSync(path.join(tmpdir(), 'orca-unicode-worktrees-'))
+    const worktreeRoot = mkdtempSync(path.join(tmpdir(), 'topo-unicode-worktrees-'))
     try {
       for (const [index, result] of results.entries()) {
         const worktreePath = path.join(worktreeRoot, String(index))
@@ -108,7 +108,7 @@ describe('searchBaseRefs (widened glob)', () => {
     expect(results[0]?.localBranchName).toBe(branch)
     expect(git(tmpDir, ['rev-parse', '--verify', results[0]?.refName ?? '']).trim()).toBe(branchSha)
 
-    const worktreeDir = mkdtempSync(path.join(tmpdir(), 'orca-ref-worktree-test-'))
+    const worktreeDir = mkdtempSync(path.join(tmpdir(), 'topo-ref-worktree-test-'))
     rmSync(worktreeDir, { recursive: true })
     try {
       git(tmpDir, ['worktree', 'add', '--quiet', worktreeDir, results[0]?.localBranchName ?? ''])

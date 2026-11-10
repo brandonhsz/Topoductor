@@ -17,7 +17,7 @@ import {
 } from '../worktree/home-host-worktree-fetch'
 
 // Where Home kept its counts before the device store: read once to seed the store, then removed.
-const LEGACY_SNAPSHOT_KEY = 'orca:home-snapshot:v1'
+const LEGACY_SNAPSHOT_KEY = 'topo:home-snapshot:v1'
 
 const legacySnapshotSchema = z.object({
   savedAt: z.number(),

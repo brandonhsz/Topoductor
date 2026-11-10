@@ -7,7 +7,7 @@ import type { TerminalQuickCommand } from '../../../../../shared/terminal/quick-
 import type { TerminalQuickCommandMutation } from '../../../../../shared/terminal/quick-commands/terminal-quick-commands'
 import '../../../../../shared/web-runtime-client-capabilities'
 import { TERMINAL_QUICK_COMMAND_LARGE_LISTS_RUNTIME_CAPABILITY } from '../../../../../shared/terminal/quick-commands/terminal-quick-command-capabilities'
-import type { OrcaRuntimeService } from '../../../orca-runtime'
+import type { TopoRuntimeService } from '../../../topo-runtime'
 import '../../../../ipc/desktop-renderer-runtime-capabilities'
 import { RuntimeClientSettingsController } from '../../../client/settings/runtime-client-settings'
 import {
@@ -62,7 +62,7 @@ describe('quick-command client compatibility', () => {
       getClientTerminalQuickCommands: () => settings.getTerminalQuickCommands(),
       updateClientTerminalQuickCommands: (mutation: TerminalQuickCommandMutation) =>
         settings.updateTerminalQuickCommands(mutation)
-    } as unknown as OrcaRuntimeService
+    } as unknown as TopoRuntimeService
     return {
       dispatcher: new RpcDispatcher({ runtime, methods: CLIENT_UI_METHODS }),
       state,
@@ -122,7 +122,7 @@ describe('quick-command client compatibility', () => {
         ok: false,
         error: {
           code: 'invalid_argument',
-          message: expect.stringContaining('Update this Orca client')
+          message: expect.stringContaining('Update this Topo client')
         }
       })
       expect(state.settings.terminalQuickCommands).toEqual([shortCommand, longCommand])

@@ -22,7 +22,7 @@ export function setAntigravityNativeCredentialChangeListener(listener: () => voi
   credentialChangeListener = listener
 }
 
-// The first read is a baseline: what agy held before Orca looked is unknown.
+// The first read is a baseline: what agy held before Topo looked is unknown.
 // agy's own token refreshes keep the refresh token and must not discard the usage they produce;
 // a new refresh token is a fresh sign-in, even to the same account, and must clear a sign-in hold.
 function reportingCredentialChanges(
@@ -77,7 +77,7 @@ async function resolveWslAccountDistro(wslDistro: string | null | undefined): Pr
   }
   const distro = wslDistro?.trim() || (await resolveWslDefaultDistro())
   if (typeof distro !== 'string' || !distro) {
-    throw new Error('Orca could not determine the default WSL distro for Antigravity accounts.')
+    throw new Error('Topo could not determine the default WSL distro for Antigravity accounts.')
   }
   return distro
 }

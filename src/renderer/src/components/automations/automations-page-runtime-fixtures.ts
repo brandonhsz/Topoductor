@@ -29,8 +29,8 @@ type RuntimeFixtureMocks = {
 export function addRuntimeProject(mocks: RuntimeFixtureMocks, runtimeId: string): void {
   const repo = {
     id: RUNTIME_REPO_ID,
-    displayName: 'gpu-orca',
-    path: '/repos/gpu-orca',
+    displayName: 'gpu-topo',
+    path: '/repos/gpu-topo',
     badgeColor: '#111111',
     addedAt: 1,
     worktreeBaseRef: 'main',
@@ -40,7 +40,7 @@ export function addRuntimeProject(mocks: RuntimeFixtureMocks, runtimeId: string)
     id: RUNTIME_WORKSPACE_ID,
     repoId: RUNTIME_REPO_ID,
     displayName: 'main',
-    path: '/repos/gpu-orca',
+    path: '/repos/gpu-topo',
     branch: 'main'
   } as Worktree
   const setup: ProjectHostSetup = {
@@ -48,8 +48,8 @@ export function addRuntimeProject(mocks: RuntimeFixtureMocks, runtimeId: string)
     projectId: 'project-2',
     hostId: `runtime:${runtimeId}`,
     repoId: RUNTIME_REPO_ID,
-    path: '/repos/gpu-orca',
-    displayName: 'gpu-orca',
+    path: '/repos/gpu-topo',
+    displayName: 'gpu-topo',
     setupState: 'ready',
     setupMethod: 'legacy-repo',
     createdAt: 1,
