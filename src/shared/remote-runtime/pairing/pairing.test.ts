@@ -10,6 +10,12 @@ describe('pairing offer', () => {
     publicKeyB64: 'dGVzdC1wdWJsaWMta2V5LWJhc2U2NC1lbmNvZGVk'
   }
 
+  it('accepts legacy orca:// pairing links from hosts that have not migrated', () => {
+    const code = encodePairingOffer(offer).slice('topo://pair?code='.length)
+    expect(parsePairingCode(`orca://pair?code=${code}`)).toEqual(offer)
+    expect(parsePairingCode(`orca://pairing?code=${code}`)).toBeNull()
+  })
+
   it('preserves partial padding consistently across Node and browser runtimes', () => {
     const url = encodePairingOffer(offer)
     const code = new URLSearchParams(url.slice(url.indexOf('?') + 1)).get('code')!

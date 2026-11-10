@@ -74,8 +74,7 @@ export function getDevInstanceIdentity(
     cleanEnvValue(env.TOPO_DEV_WORKTREE_NAME) ??
     cleanEnvValue(path.basename(repoRoot ?? process.cwd()))
   const devLabel = cleanEnvValue(env.TOPO_DEV_INSTANCE_LABEL) ?? formatLabel(branch, worktreeName)
-  const dockTitle =
-    cleanEnvValue(env.TOPO_DEV_DOCK_TITLE) ?? `${BASE_APP_NAME}: ${branch ?? devLabel ?? 'dev'}`
+  const dockTitle = cleanEnvValue(env.TOPO_DEV_DOCK_TITLE) ?? BASE_APP_NAME
 
   return {
     name: dockTitle,

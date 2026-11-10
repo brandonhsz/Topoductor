@@ -5,6 +5,14 @@ import {
   PAIRING_INPUT_MAX_CHARACTERS
 } from './mobile-pairing-protocol-limits'
 
+// Why: hosts still running Orca emit orca:// links; accept them alongside topo://.
+const PAIRING_URL_PROTOCOLS = new Set(['topo:', 'orca:'])
+
+function hasPairingUrlScheme(input: string): boolean {
+  const lower = input.toLowerCase()
+  return lower.startsWith('topo://') || lower.startsWith('orca://')
+}
+
 export function encodePairingOffer(offer: PairingOffer): string {
   const json = JSON.stringify(PairingOfferSchema.parse(offer))
   const base64url = Buffer.from(json, 'utf-8')
@@ -38,7 +46,7 @@ function extractPairingCodeFromUrl(url: string): string | null {
     return null
   }
   // Exact pairing host prevents prefix matches such as topo://pairing from carrying runtime credentials.
-  if (parsed.protocol !== 'topo:' || parsed.hostname !== 'pair') {
+  if (!PAIRING_URL_PROTOCOLS.has(parsed.protocol) || parsed.hostname !== 'pair') {
     return null
   }
   if (parsed.pathname !== '' && parsed.pathname !== '/') {
@@ -61,7 +69,7 @@ export function parsePairingCode(input: string): PairingOffer | null {
     return null
   }
   try {
-    if (trimmed.toLowerCase().startsWith('topo://')) {
+    if (hasPairingUrlScheme(trimmed)) {
       return decodePairingOffer(trimmed)
     }
     return decodePairingBase64(trimmed)

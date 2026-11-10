@@ -220,7 +220,7 @@ export function PluginInstallDialog({
                 }}
                 placeholder={t(
                   'auto.components.settings.PluginInstallDialog.gitPlaceholder',
-                  'https://github.com/acme/orca-notes'
+                  'https://github.com/acme/topo-notes'
                 )}
                 spellCheck={false}
                 aria-invalid={kind === 'git' && Boolean(error)}

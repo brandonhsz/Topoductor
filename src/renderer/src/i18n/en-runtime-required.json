@@ -1673,14 +1673,14 @@
         "historyItemTooLarge": "This part of the chat was too large to show.",
         "historyRepaired": "Part of this chat's history couldn't be loaded.",
         "modelFallback": "Claude switched models: {{from}} → {{to}}.",
+        "plan": "Plan",
+        "stoppedBeforeStart": "Stopped manually",
         "topoStopCanContinue": "You can continue in this conversation.",
         "topoStopCrash": "Topo on {{machine}} stopped unexpectedly while this response was in progress.",
         "topoStopQuit": "Topo on {{machine}} was closed while this response was in progress.",
         "topoStopRemote": "Topo on {{machine}} stopped while this response was in progress.",
         "topoStopUnnamedServer": "the remote server",
-        "topoStopUpdate": "Topo on {{machine}} restarted for an update while this response was in progress.",
-        "plan": "Plan",
-        "stoppedBeforeStart": "Stopped manually"
+        "topoStopUpdate": "Topo on {{machine}} restarted for an update while this response was in progress."
       },
       "openedPullRequests": {
         "many_one": "Opened {{count}} pull request",
@@ -2311,13 +2311,13 @@
       },
       "statusDetails": {
         "guestUnanswered": "The distro is running but didn’t answer Topo’s check.",
-        "topodUnanswered": "Topo’s server in the distro didn’t answer.",
         "peerCheckFailed": "Topo couldn’t ask the WSL host whether another Topo on this computer still uses it: {{detail}}",
         "removalUnrecorded": "Topo couldn’t record what this Remove left running: {{detail}}",
         "restartGaveUp_one": "Could not restart the Topo server in {{distro}} after {{count}} attempt",
         "restartGaveUp_other": "Could not restart the Topo server in {{distro}} after {{count}} attempts",
         "runningListUnavailable": "Windows didn’t report whether the distro is running.",
-        "serviceUnconfirmed": "The WSL service did not confirm whether the distro runs."
+        "serviceUnconfirmed": "The WSL service did not confirm whether the distro runs.",
+        "topodUnanswered": "Topo’s server in the distro didn’t answer."
       }
     }
   },

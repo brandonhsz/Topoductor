@@ -117,10 +117,6 @@ function formatDevInstanceLabel(branch, worktreeName) {
   return branch || worktreeName || null
 }
 
-function createDockTitle(branch, label) {
-  return `Topo: ${branch || label || 'dev'}`
-}
-
 function seedDevInstanceIdentityEnv() {
   const branch =
     process.env.TOPO_DEV_BRANCH ||
@@ -129,7 +125,7 @@ function seedDevInstanceIdentityEnv() {
   const worktreeName = process.env.TOPO_DEV_WORKTREE_NAME || path.basename(repoRoot)
   const label = process.env.TOPO_DEV_INSTANCE_LABEL || formatDevInstanceLabel(branch, worktreeName)
   const identitySeed = process.env.TOPO_DEV_INSTANCE_KEY || repoRoot
-  const dockTitle = process.env.TOPO_DEV_DOCK_TITLE || createDockTitle(branch, label)
+  const dockTitle = process.env.TOPO_DEV_DOCK_TITLE || 'Topo'
 
   process.env.TOPO_DEV_REPO_ROOT ||= repoRoot
   process.env.TOPO_DEV_INSTANCE_KEY ||= identitySeed
@@ -216,7 +212,7 @@ function prepareMacDevElectronApp() {
     electronVersion = JSON.parse(readFileSync(electronPackagePath, 'utf8')).version ?? null
   } catch {}
 
-  const title = process.env.TOPO_DEV_DOCK_TITLE || 'Topo: dev'
+  const title = process.env.TOPO_DEV_DOCK_TITLE || 'Topo'
   const identityKey = process.env.TOPO_DEV_INSTANCE_KEY || repoRoot
   // v11 stabilizes Info.plist/cdhash; ignored stale marker fields permit schema narrowing without another bump.
   const bundleLayoutVersion = 'stable-cdhash-dock-name-from-bundle-dir-v11'
