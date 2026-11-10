@@ -45,7 +45,7 @@ export function isWorkspaceHiddenBySidebarFilters(
   }
   const hideOtherClients = ui.hideWorkspacesFromOtherDevices === true
   const switches: WorkspaceKindSwitches = {
-    hideDefaultBranchWorkspace: ui.hideDefaultBranchWorkspace === true,
+    hideDefaultBranchWorkspace: ui.hideDefaultBranchWorkspace !== false,
     hideAutomationGeneratedWorkspaces: ui.hideAutomationGeneratedWorkspaces === true,
     hideCliCreatedWorkspaces: ui.hideCliCreatedWorkspaces === true,
     hideDetachedHeadWorkspaces: ui.hideDetachedHeadWorkspaces === true

@@ -182,7 +182,7 @@ export function getDefaultUIState(): PersistedUIState {
     automationHostFilter: { kind: 'all' },
     manualRepoOrder: [],
     showSleepingWorkspaces: DEFAULT_SHOW_SLEEPING_WORKSPACES,
-    hideDefaultBranchWorkspace: false,
+    hideDefaultBranchWorkspace: true,
     hideAutomationGeneratedWorkspaces: false,
     hideCliCreatedWorkspaces: false,
     hideDetachedHeadWorkspaces: false,

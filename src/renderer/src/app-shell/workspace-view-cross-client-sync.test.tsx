@@ -250,24 +250,24 @@ describe('workspace view preferences: cross-client persistence (STA-5781)', () =
     // A flip-back matches the pre-ack baseline. Track in-flight fields so an obsolete ack/echo cannot erase the second toggle (PR #17057).
     holdAcks = true
     act(() => {
-      store.getState().setHideDefaultBranchWorkspace(true)
+      store.getState().setHideAutomationGeneratedWorkspaces(true)
     })
     await flushDesktopDebounce()
-    expect(authority.get().hideDefaultBranchWorkspace).toBe(true)
+    expect(authority.get().hideAutomationGeneratedWorkspaces).toBe(true)
 
     act(() => {
-      store.getState().setHideDefaultBranchWorkspace(false)
+      store.getState().setHideAutomationGeneratedWorkspaces(false)
     })
     // Deliver the first write’s echo before its ack.
     deliverBroadcasts()
-    expect(store.getState().hideDefaultBranchWorkspace).toBe(false)
+    expect(store.getState().hideAutomationGeneratedWorkspaces).toBe(false)
 
     await resolveAcks()
     await flushDesktopDebounce()
     await resolveAcks()
-    expect(authority.get().hideDefaultBranchWorkspace).toBe(false)
+    expect(authority.get().hideAutomationGeneratedWorkspaces).toBe(false)
     deliverBroadcasts()
-    expect(store.getState().hideDefaultBranchWorkspace).toBe(false)
+    expect(store.getState().hideAutomationGeneratedWorkspaces).toBe(false)
   })
 
   it('a terminal rejection leaves one dirty field without an automatic retry loop', async () => {
@@ -275,7 +275,7 @@ describe('workspace view preferences: cross-client persistence (STA-5781)', () =
     rejectSets = true
     setCallCount = 0
     act(() => {
-      store.getState().setHideDefaultBranchWorkspace(true)
+      store.getState().setHideAutomationGeneratedWorkspaces(true)
     })
 
     vi.advanceTimersByTime(150)
@@ -291,7 +291,7 @@ describe('workspace view preferences: cross-client persistence (STA-5781)', () =
         capturePersistedUIWriteBaseline(state),
         state.persistedUIWriteBaseline!
       )
-    ).toEqual({ hideDefaultBranchWorkspace: true })
+    ).toEqual({ hideAutomationGeneratedWorkspaces: true })
     expect(vi.getTimerCount()).toBe(0)
 
     // A new edit explicitly flushes both its change and the previous dirty field.
@@ -302,7 +302,7 @@ describe('workspace view preferences: cross-client persistence (STA-5781)', () =
     vi.advanceTimersByTime(150)
     await Promise.resolve()
     expect(setCallCount).toBe(2)
-    expect(authority.get().hideDefaultBranchWorkspace).toBe(true)
+    expect(authority.get().hideAutomationGeneratedWorkspaces).toBe(true)
     expect(authority.get().hideCliCreatedWorkspaces).toBe(true)
     expect(store.getState().persistedUIWriteInFlightCounts).toEqual({})
 
@@ -323,7 +323,7 @@ describe('workspace view preferences: cross-client persistence (STA-5781)', () =
     rejectNextSet = true
     setCallCount = 0
     act(() => {
-      store.getState().setHideDefaultBranchWorkspace(true)
+      store.getState().setHideAutomationGeneratedWorkspaces(true)
     })
     vi.advanceTimersByTime(150)
     expect(setCallCount).toBe(1)
@@ -331,7 +331,7 @@ describe('workspace view preferences: cross-client persistence (STA-5781)', () =
 
     // Flip back and edit another field in flight; only newer edits authorize the trailing pass.
     act(() => {
-      store.getState().setHideDefaultBranchWorkspace(false)
+      store.getState().setHideAutomationGeneratedWorkspaces(false)
       store.getState().setHideCliCreatedWorkspaces(true)
     })
     holdAcks = false
@@ -342,7 +342,7 @@ describe('workspace view preferences: cross-client persistence (STA-5781)', () =
     await Promise.resolve()
 
     expect(setCallCount).toBe(2)
-    expect(authority.get().hideDefaultBranchWorkspace).toBe(false)
+    expect(authority.get().hideAutomationGeneratedWorkspaces).toBe(false)
     expect(authority.get().hideCliCreatedWorkspaces).toBe(true)
     expect(store.getState().persistedUIWriteInFlightCounts).toEqual({})
 
@@ -357,7 +357,7 @@ describe('workspace view preferences: cross-client persistence (STA-5781)', () =
     holdAcks = true
     setCallCount = 0
     act(() => {
-      store.getState().setHideDefaultBranchWorkspace(true)
+      store.getState().setHideAutomationGeneratedWorkspaces(true)
     })
     vi.advanceTimersByTime(150)
     expect(setCallCount).toBe(1)
@@ -391,7 +391,7 @@ describe('workspace view preferences: cross-client persistence (STA-5781)', () =
       throw new Error('non-cloneable argument')
     }
     act(() => {
-      store.getState().setHideDefaultBranchWorkspace(true)
+      store.getState().setHideAutomationGeneratedWorkspaces(true)
     })
     await flushDesktopDebounce()
     // A leaked marker would pin the field against hydration for the renderer's life.
@@ -403,22 +403,22 @@ describe('workspace view preferences: cross-client persistence (STA-5781)', () =
       store.getState().setHideCliCreatedWorkspaces(true)
     })
     await flushDesktopDebounce()
-    expect(authority.get().hideDefaultBranchWorkspace).toBe(true)
+    expect(authority.get().hideAutomationGeneratedWorkspaces).toBe(true)
   })
 
   it('desktop and another client changing the same field converge on the newest write', async () => {
     act(() => {
-      store.getState().setHideDefaultBranchWorkspace(true)
+      store.getState().setHideAutomationGeneratedWorkspaces(true)
     })
     await flushDesktopDebounce()
     deliverBroadcasts()
 
     // Another client flips the SAME field afterwards; last writer wins everywhere.
-    authority.set({ hideDefaultBranchWorkspace: false })
+    authority.set({ hideAutomationGeneratedWorkspaces: false })
     deliverBroadcasts()
-    expect(authority.get().hideDefaultBranchWorkspace).toBe(false)
+    expect(authority.get().hideAutomationGeneratedWorkspaces).toBe(false)
     await flushDesktopDebounce()
-    expect(authority.get().hideDefaultBranchWorkspace).toBe(false)
-    expect(store.getState().hideDefaultBranchWorkspace).toBe(false)
+    expect(authority.get().hideAutomationGeneratedWorkspaces).toBe(false)
+    expect(store.getState().hideAutomationGeneratedWorkspaces).toBe(false)
   })
 })

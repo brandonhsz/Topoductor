@@ -93,7 +93,7 @@ export function createUiPreferenceActions(set: UISliceSet, get: UISliceGet): Par
     },
     manualRepoOrder: [],
 
-    hideDefaultBranchWorkspace: false,
+    hideDefaultBranchWorkspace: true,
     setHideDefaultBranchWorkspace: (v) => set({ hideDefaultBranchWorkspace: v }),
     hideAutomationGeneratedWorkspaces: false,
     setHideAutomationGeneratedWorkspaces: (v) => set({ hideAutomationGeneratedWorkspaces: v }),
