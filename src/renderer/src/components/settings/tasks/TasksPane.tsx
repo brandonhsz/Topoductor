@@ -9,6 +9,8 @@ import {
   resolveVisibleTaskProvider
 } from '../../../../../shared/work-items/task-providers'
 import { JiraIcon } from '@/components/icons/JiraIcon'
+import { AvenaPMIcon } from '@/components/icons/AvenaPMIcon'
+import { AvenaPMSetupSteps } from './TaskSourceAvenaPMSetup'
 import { LinearIcon } from '@/components/icons/LinearIcon'
 import { Button } from '@/components/ui/button'
 import { useAppStore } from '@/store/index'
@@ -92,6 +94,18 @@ const PROVIDER_META: Record<
       )
     },
     Icon: ({ className }) => <JiraIcon className={className} />
+  },
+  avenapm: {
+    get label() {
+      return translate('auto.components.settings.TasksPane.avenapmLabel', 'AvenaPM')
+    },
+    get description() {
+      return translate(
+        'auto.components.settings.TasksPane.avenapmDescription',
+        'Sign in with Google to browse the AvenaPM operation queue in Tasks.'
+      )
+    },
+    Icon: ({ className }) => <AvenaPMIcon className={className} />
   }
 }
 
@@ -209,6 +223,14 @@ export function TasksPane({ settings, updateSettings }: TasksPaneProps): React.J
                   canHide={canHide}
                   onToggleVisible={() => toggleProvider('linear')}
                   onOpenIntegrations={() => openIntegrations(LINEAR_INTEGRATION_SECTION_ID)}
+                />
+              ) : provider === 'avenapm' ? (
+                <AvenaPMSetupSteps
+                  connected={readiness.connected}
+                  checking={readiness.checking}
+                  visible={visible}
+                  canHide={canHide}
+                  onToggleVisible={() => toggleProvider('avenapm')}
                 />
               ) : provider === 'jira' ? (
                 <JiraSetupSteps

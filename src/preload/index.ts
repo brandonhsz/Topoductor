@@ -81,6 +81,7 @@ import { runtimeEnvironmentsApi } from './api/runtime-environments-bridge'
 import { rateLimitsApi } from './api/rate-limits-bridge'
 import { opencodeGoCredentialsApi } from './api/opencode-go-credentials-bridge'
 import { minimaxCredentialsApi } from './api/minimax-credentials-bridge'
+import { avenapmApi } from './api/avenapm-bridge'
 import { zcodePlanCredentialsApi } from './api/zcode-plan-credentials-bridge'
 import { grokAccountsApi } from './api/grok-accounts-bridge'
 import { cursorAccountsApi } from './api/cursor-accounts-bridge'
@@ -187,6 +188,7 @@ const api = {
   rateLimits: rateLimitsApi,
   opencodeGoCredentials: opencodeGoCredentialsApi,
   minimaxCredentials: minimaxCredentialsApi,
+  avenapm: avenapmApi,
   zcodePlanCredentials: zcodePlanCredentialsApi,
   grokAccounts: grokAccountsApi,
   cursorAccounts: cursorAccountsApi,

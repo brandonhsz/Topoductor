@@ -2,7 +2,10 @@ import type { GlobalSettings } from '../../../shared/global-settings-types'
 import type { PersistedState } from '../../../shared/persisted-state-types'
 import type { ProjectGroup } from '../../../shared/project-group-types'
 import { deriveGlobalWindowsRuntimeDefaultFromLegacySettings } from '../../../shared/execution-host/project-runtime-legacy-migration'
-import { normalizeTaskProviderSettings } from '../../../shared/work-items/task-providers'
+import {
+  addOnceDefaultedTaskProviders,
+  normalizeTaskProviderSettings
+} from '../../../shared/work-items/task-providers'
 import { normalizeAutoRenameBranchFromWorkDefaultOn } from '../../../shared/auto-rename-branch-from-work-settings'
 import { normalizePluginSystemEnabledDefaultOn } from '../../../shared/plugins/plugin-system-settings'
 import { migrateNestedWorkerMaxDepthDefault } from '../../../shared/orchestration/workers/nested-worker-depth'
@@ -126,11 +129,12 @@ export function prepareLoadedProfileSettings(
   })
   const visibleTaskProvidersDefaultedForJira =
     parsed.settings?.visibleTaskProvidersDefaultedForJira === true
-  const migratedVisibleTaskProviders = visibleTaskProvidersDefaultedForJira
-    ? rawTaskProviderSettings.visibleTaskProviders
-    : rawTaskProviderSettings.visibleTaskProviders.includes('jira')
-      ? rawTaskProviderSettings.visibleTaskProviders
-      : [...rawTaskProviderSettings.visibleTaskProviders, 'jira' as const]
+  const visibleTaskProvidersDefaultedForAvenaPM =
+    parsed.settings?.visibleTaskProvidersDefaultedForAvenaPM === true
+  const migratedVisibleTaskProviders = addOnceDefaultedTaskProviders(
+    rawTaskProviderSettings.visibleTaskProviders,
+    { jira: visibleTaskProvidersDefaultedForJira, avenapm: visibleTaskProvidersDefaultedForAvenaPM }
+  )
   const taskProviderSettings = normalizeTaskProviderSettings({
     visibleTaskProviders: migratedVisibleTaskProviders,
     defaultTaskSource: rawTaskProviderSettings.defaultTaskSource
@@ -151,7 +155,7 @@ export function prepareLoadedProfileSettings(
   if (migratePrimarySelectionPlatformDefault || stampPrimarySelectionTerminalDefaults) {
     markNeedsSave()
   }
-  if (!visibleTaskProvidersDefaultedForJira) {
+  if (!visibleTaskProvidersDefaultedForJira || !visibleTaskProvidersDefaultedForAvenaPM) {
     markNeedsSave()
   }
   const claudeAgentTeamsDefaultDisabledMigrated =

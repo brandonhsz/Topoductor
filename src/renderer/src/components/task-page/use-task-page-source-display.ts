@@ -51,7 +51,7 @@ export function useTaskPageSourceDisplay<Model extends TaskPageSourceDisplayInpu
         hostLabelById
       })
     }
-    if (taskSource === 'linear' || taskSource === 'jira') {
+    if (taskSource === 'linear' || taskSource === 'jira' || taskSource === 'avenapm') {
       return getTaskSourceContextSummary({
         provider: taskSource,
         providerLabel,
