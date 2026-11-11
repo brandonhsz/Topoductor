@@ -30,9 +30,12 @@ export type AvenaPMTask = {
   size: string | null
   classification: string
   assignee: { email: string; name: string } | null
+  /** Where the ticket came from (e.g. `intercom`), when AvenaPM knows. */
+  source: string | null
   url: string
   createdAt: string
   updatedAt: string
+  doneAt: string | null
 }
 
 export type AvenaPMUser = { email: string; name: string }

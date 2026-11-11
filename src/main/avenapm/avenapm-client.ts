@@ -155,9 +155,11 @@ function mapTask(value: unknown, baseUrl: string): AvenaPMTask | null {
     size: stringOrNull(raw.size),
     classification: stringOrNull(raw.clasificacion) ?? 'sin_clasificar',
     assignee: readUser(raw.assignee),
+    source: stringOrNull(raw.source),
     url: `${baseUrl}/tareas?tarea=${encodeURIComponent(raw.id)}`,
     createdAt: stringOrNull(raw.createdAt) ?? '',
-    updatedAt: stringOrNull(raw.updatedAt) ?? ''
+    updatedAt: stringOrNull(raw.updatedAt) ?? '',
+    doneAt: stringOrNull(raw.doneAt)
   }
 }
 
