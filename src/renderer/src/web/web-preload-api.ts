@@ -11,6 +11,7 @@ import {
   createMiniMaxCredentialsApi
 } from './preload-api/web-agent-accounts-api'
 import { createWebAgentStatusApi } from './preload-api/web-agent-status-api'
+import { createWebAvenaPMApi } from './preload-api/web-avenapm-api'
 import { createWebAiVaultApi } from './preload-api/web-ai-vault-api'
 import { createWebAppApi } from './preload-api/web-app-api'
 import { createBrowserApi, createEmulatorApi } from './preload-api/web-browser-api'
@@ -125,6 +126,7 @@ function createWebPreloadApi(): Omit<Partial<PreloadApi>, 'settings' | 'plugins'
     rateLimits: createRateLimitsApi(),
     opencodeGoCredentials: createOpenCodeGoCredentialsApi(),
     minimaxCredentials: createMiniMaxCredentialsApi(),
+    avenapm: createWebAvenaPMApi(),
     zcodePlanCredentials: createZcodePlanCredentialsApi(),
     grokAccounts: createGrokAccountsApi(),
     cursorAccounts: createCursorAccountsApi(),

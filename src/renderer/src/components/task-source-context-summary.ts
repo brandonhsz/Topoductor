@@ -62,7 +62,7 @@ export function getTaskSourceContextSummary(
   args:
     | ({ provider: Extract<TaskProvider, 'github' | 'gitlab'> } & RepoBackedTaskSourceSummaryArgs)
     | {
-        provider: Extract<TaskProvider, 'linear' | 'jira'>
+        provider: Extract<TaskProvider, 'linear' | 'jira' | 'avenapm'>
         providerLabel: string
         hostAvailability?: readonly TaskSourceHostAvailability[]
         hostLabelById?: HostLabelLookup
@@ -87,6 +87,9 @@ export function getTaskSourceContextSummary(
         },
         t
       )
+    case 'avenapm':
+      // Why: AvenaPM credentials live on this desktop, so no execution host is involved.
+      return { label: args.providerLabel, title: args.providerLabel }
     case 'jira':
       return getAccountBackedTaskSourceSummary(
         args.providerLabel,
@@ -239,6 +242,8 @@ function getProviderIdentityLabel(
       return identity.workspaceName ?? identity.workspaceId ?? null
     case 'jira':
       return identity.siteUrl ?? identity.siteId ?? null
+    case 'avenapm':
+      return identity.baseUrl ?? null
   }
 }
 

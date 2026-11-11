@@ -1,6 +1,12 @@
-export type TaskProvider = 'github' | 'gitlab' | 'linear' | 'jira'
+export type TaskProvider = 'github' | 'gitlab' | 'linear' | 'jira' | 'avenapm'
 
-export const TASK_PROVIDERS: readonly TaskProvider[] = ['github', 'gitlab', 'linear', 'jira']
+export const TASK_PROVIDERS: readonly TaskProvider[] = [
+  'github',
+  'gitlab',
+  'linear',
+  'jira',
+  'avenapm'
+]
 
 const TASK_PROVIDER_SET = new Set<TaskProvider>(TASK_PROVIDERS)
 
@@ -96,8 +102,8 @@ function isTaskProviderAvailable(
   if (provider === 'gitlab') {
     return availability.gitlabInstalled
   }
-  // Disconnected Jira must remain visible as its own first-time setup entry point.
-  if (provider === 'jira') {
+  // Disconnected Jira/AvenaPM must remain visible as their own first-time setup entry points.
+  if (provider === 'jira' || provider === 'avenapm') {
     return true
   }
   return availability.linearConnected
@@ -111,4 +117,18 @@ export function resolveVisibleTaskProvider(
     return preferred
   }
   return visibleProviders[0] ?? 'github'
+}
+
+/** Appends providers introduced after a profile saved its visible list, once per provider. */
+export function addOnceDefaultedTaskProviders(
+  visibleProviders: readonly TaskProvider[],
+  alreadyDefaulted: Partial<Record<TaskProvider, boolean>>
+): TaskProvider[] {
+  const migrated = [...visibleProviders]
+  for (const [provider, defaulted] of Object.entries(alreadyDefaulted)) {
+    if (!defaulted && !migrated.includes(provider as TaskProvider)) {
+      migrated.push(provider as TaskProvider)
+    }
+  }
+  return migrated
 }

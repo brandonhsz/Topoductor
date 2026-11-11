@@ -3,6 +3,7 @@ import {
   foldWorkspaceNameWhitespaceToHyphen
 } from './workspace-name-text-scanner'
 import { escapeRegex } from './string-utils'
+import type { TaskProvider } from './work-items/task-providers'
 import type { JiraIssueKeyCasing } from './ui-chrome-types'
 import { JIRA_ISSUE_KEY_PATTERN } from './jira/jira-issue-url'
 
@@ -47,7 +48,7 @@ export type WorkspaceIntentWorkItem = {
   type: 'issue' | 'pr' | 'mr'
   number: number
   title: string
-  provider?: 'github' | 'gitlab' | 'linear' | 'jira'
+  provider?: TaskProvider
   linearIdentifier?: string
   jiraIdentifier?: string
 }

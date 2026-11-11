@@ -3400,7 +3400,30 @@
           "linearViewNotFound": "Saved Linear view was not found.",
           "linearViewRestoreFailed": "Failed to restore saved Linear view."
         },
-        "shownCount_one": "{{count}} shown"
+        "shownCount_one": "{{count}} shown",
+        "avenapmPromptCopied": "Ticket prompt copied",
+        "avenapmPromptCopyFailed": "Couldn’t copy the prompt",
+        "avenapmStatusOpen": "Open",
+        "avenapmStatusTodo": "To do",
+        "avenapmStatusInProgress": "In progress",
+        "avenapmStatusInReview": "In review",
+        "avenapmStatusDone": "Done",
+        "avenapmConnectTitle": "Connect AvenaPM",
+        "avenapmConnectDescription": "Sign in with your Avena Google account to browse the operation queue and start work from its tickets.",
+        "avenapmConnecting": "Waiting for browser sign-in…",
+        "avenapmSignIn": "Sign in with Google",
+        "avenapmCancel": "Cancel",
+        "avenapmHide": "Hide AvenaPM",
+        "avenapmRefresh": "Refresh",
+        "avenapmSignOut": "Sign out of AvenaPM",
+        "avenapmSignedInAs": "Signed in as {{value0}}",
+        "avenapmEmpty": "No tickets in this view.",
+        "avenapmUnassigned": "Unassigned",
+        "avenapmCopyPrompt": "Copy prompt for {{value0}}",
+        "avenapmCopyPromptShort": "Copy agent prompt",
+        "avenapmOpenTicket": "Open {{value0}} in AvenaPM",
+        "avenapmOpenInAvenaPM": "Open in AvenaPM",
+        "avenapmSource": "AvenaPM"
       },
       "Terminal": {
         "73768427cf": "Close",
@@ -9530,7 +9553,14 @@
           "integrationsHint": "Credentials for all providers also live under",
           "integrationsLink": "Integrations",
           "skillHint": ". After Linear is connected, usage examples stay under Settings → Linear.",
-          "incompleteBannerBodyWithLinear": "Hide providers you do not use, or expand a card and finish its steps. For Linear: API access, the agent skill, and Show in Tasks."
+          "incompleteBannerBodyWithLinear": "Hide providers you do not use, or expand a card and finish its steps. For Linear: API access, the agent skill, and Show in Tasks.",
+          "connectAvenaPMTitle": "Sign in to AvenaPM",
+          "avenapmSignedInAs": "Signed in as {{value0}}",
+          "connectAvenaPMDescription": "Use your Avena Google account in the browser; Topo keeps a personal token.",
+          "signOutAvenaPM": "Sign out",
+          "signInAvenaPM": "Sign in with Google",
+          "avenapmLabel": "AvenaPM",
+          "avenapmDescription": "Sign in with Google to browse the AvenaPM operation queue in Tasks."
         },
         "TerminalAppearanceSection": {
           "a14a427ae4": "Thickness of the pane divider line.",

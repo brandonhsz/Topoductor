@@ -8,6 +8,7 @@ import type {
   ZcodePlanCredentialsApi
 } from './api/agent-account-api'
 import type { HooksApi } from './api/agent-hook-api'
+import type { AvenaPMApi } from './api/avenapm-api'
 import type { SkillsApi } from './api/agent-skill-api'
 import type { AgentAwakeApi, AgentStatusApi } from './api/agent-status-api'
 import type {
@@ -158,6 +159,7 @@ export type PreloadApi = {
     clearApiKey: () => Promise<{ apiKeyConfigured: boolean }>
   }
   minimaxCredentials: MinimaxCredentialsApi
+  avenapm: AvenaPMApi
   zcodePlanCredentials: ZcodePlanCredentialsApi
   grokAccounts: GrokAccountsApi
   cursorAccounts: CursorAccountsApi

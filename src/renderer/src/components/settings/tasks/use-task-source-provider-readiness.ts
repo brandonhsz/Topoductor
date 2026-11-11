@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { TaskProvider } from '../../../../../shared/work-items/task-providers'
 import {
   GLOBAL_AGENT_SKILL_SOURCE_KINDS,
@@ -12,6 +12,10 @@ import { localPreflightContextKey } from '@/lib/local-preflight-context-key'
 import { getProviderRuntimeContextKey } from '@/runtime/hosts/observations/provider-runtime-context'
 import { useAppStore } from '@/store/index'
 import type { TaskProviderReadiness } from './task-source-setup-state'
+import {
+  refreshAvenaPMStatus,
+  useAvenaPMConnection
+} from '@/components/task-page/avenapm/avenapm-connection-store'
 
 export function useTaskSourceProviderReadiness(
   visibleProviders: readonly TaskProvider[]
@@ -33,6 +37,12 @@ export function useTaskSourceProviderReadiness(
   const linearStatusContextKey = useAppStore((s) => s.linearStatusContextKey)
   const providerRuntimeContextKey = getProviderRuntimeContextKey(settings)
   const activeSkillRuntime = useActiveProjectSkillRuntime()
+  const avenapmConnection = useAvenaPMConnection()
+  useEffect(() => {
+    void refreshAvenaPMStatus()
+  }, [])
+  const avenapmChecking = avenapmConnection.status === null
+  const avenapmConnected = avenapmConnection.status?.connected === true
 
   const {
     installed: linearSkillInstalled,
@@ -91,9 +101,16 @@ export function useTaskSourceProviderReadiness(
         connected: jiraConnected,
         checking: jiraChecking,
         visible: visible.has('jira')
+      },
+      avenapm: {
+        connected: avenapmConnected,
+        checking: avenapmChecking,
+        visible: visible.has('avenapm')
       }
     }
   }, [
+    avenapmChecking,
+    avenapmConnected,
     githubConnected,
     gitlabConnected,
     jiraChecking,
