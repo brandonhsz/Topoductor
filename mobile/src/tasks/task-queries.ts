@@ -228,5 +228,8 @@ export function taskListParams(input: TaskListInput, repoKey: string): HostQuery
             query
           }
         : null
+    case 'avenapm':
+      // AvenaPM signs in through a desktop browser loopback; the phone has no read behind it.
+      return null
   }
 }

@@ -1,6 +1,6 @@
 import Svg, { Path } from 'react-native-svg'
 
-export type TaskProviderLogoKind = 'github' | 'gitlab' | 'linear' | 'jira'
+export type TaskProviderLogoKind = 'github' | 'gitlab' | 'linear' | 'jira' | 'avenapm'
 
 type Props = {
   provider: TaskProviderLogoKind
@@ -9,6 +9,23 @@ type Props = {
 }
 
 export function TaskProviderLogo({ provider, size = 16, color }: Props) {
+  if (provider === 'avenapm') {
+    return (
+      <Svg
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={color}
+        strokeWidth={2}
+      >
+        <Path d="M4.5 4h15a1.5 1.5 0 0 1 1.5 1.5v2A1.5 1.5 0 0 1 19.5 9h-15A1.5 1.5 0 0 1 3 7.5v-2A1.5 1.5 0 0 1 4.5 4z" />
+        <Path d="M4.5 11h15a1.5 1.5 0 0 1 1.5 1.5v2a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 14.5v-2A1.5 1.5 0 0 1 4.5 11z" />
+        <Path d="M6 20h12" strokeLinecap="round" />
+      </Svg>
+    )
+  }
+
   if (provider === 'github') {
     return (
       <Svg

@@ -3827,7 +3827,8 @@
       "refreshGitLab": "Actualizar elementos de trabajo de GitLab",
       "refreshJira": "Actualizar issues de Jira",
       "refreshLinear": "Actualizar Linear",
-      "title": "Tareas"
+      "title": "Tareas",
+      "refreshAvenaPM": "Actualizar tickets de AvenaPM"
     },
     "searchControl": {
       "jiraPlaceholder": "JQL de Jira, p. ej. project = ABC AND statusCategory != Done",
@@ -3855,7 +3856,8 @@
       "noGitLabTasks": "No hay tareas de GitLab",
       "noJiraTasks": "No hay tareas de Jira",
       "noLinearTasks": "No hay tareas de Linear",
-      "reportedSubtitle": "Issues sin resolver que has reportado"
+      "reportedSubtitle": "Issues sin resolver que has reportado",
+      "noAvenaPMTasks": "No hay tareas de AvenaPM"
     },
     "tasksCreateDrawers": {
       "connect": "Conectar",
