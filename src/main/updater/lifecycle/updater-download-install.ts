@@ -10,8 +10,23 @@ import { updaterCodedMessage } from '../../../shared/updater-failure-copy'
 import { QUIT_AND_INSTALL_DELAY_MS } from './updater-state'
 import { UpdaterRemoteStatus } from './updater-remote-status'
 import { prepareThisProcessShipItStaging } from '../mac-install/shipit-leftover-recovery'
+import { app } from 'electron'
+import {
+  downloadUnsignedMacUpdate,
+  isUnsignedMacSelfUpdateEnabled,
+  launchUnsignedMacInstaller,
+  type StagedUnsignedMacUpdate
+} from '../mac-install/unsigned-mac-self-update'
+import { releaseSessionsForInstaller } from './updater-installer-session-release'
 
 export abstract class UpdaterDownloadInstall extends UpdaterRemoteStatus {
+  private stagedUnsignedMacUpdate: StagedUnsignedMacUpdate | null = null
+
+  // Squirrel.Mac rejects ad-hoc signed updates, so interactive unsigned builds swap the bundle themselves.
+  private usesUnsignedMacSelfUpdate(): boolean {
+    return this.updateInstallMode === 'interactive' && isUnsignedMacSelfUpdateEnabled()
+  }
+
   protected quitAndInstall(): void {
     if (
       this.localBuildSelectionInProgress ||
@@ -24,6 +39,11 @@ export abstract class UpdaterDownloadInstall extends UpdaterRemoteStatus {
     }
 
     if (this.deferHeadlessServeInstall('install', this.getPendingInstallVersion())) {
+      return
+    }
+    const staged = this.stagedUnsignedMacUpdate
+    if (staged && staged.version === this.getPendingInstallVersion()) {
+      void this.installUnsignedMacUpdate(staged)
       return
     }
     // A queued check must not repoint the feed while native staging or installation is pending.
@@ -92,6 +112,10 @@ export abstract class UpdaterDownloadInstall extends UpdaterRemoteStatus {
     if (this.deferHeadlessServeInstall('download', version)) {
       return
     }
+    if (this.usesUnsignedMacSelfUpdate()) {
+      void this.downloadUnsignedMacUpdate(version)
+      return
+    }
     this.downloadInFlight = true
     const localBuildDownload = this.activeUpdateSource === 'local'
     beginMacUpdateDownload()
@@ -118,6 +142,53 @@ export abstract class UpdaterDownloadInstall extends UpdaterRemoteStatus {
       void preparingStaging.then(startDownload)
     } else {
       startDownload()
+    }
+  }
+
+  private async downloadUnsignedMacUpdate(version: string): Promise<void> {
+    this.downloadInFlight = true
+    this.stagedUnsignedMacUpdate = null
+    this.sendStatus({ state: 'downloading', percent: 0, version })
+    try {
+      this.stagedUnsignedMacUpdate = await downloadUnsignedMacUpdate(version, (percent) =>
+        this.sendStatus({ state: 'downloading', percent, version })
+      )
+      recordUpdaterLifecycle('unsigned_mac_update_staged', { version })
+      this.sendStatus({ state: 'downloaded', version, releaseUrl: this.getKnownReleaseUrl() })
+    } catch (error) {
+      this.sendErrorStatus(error instanceof Error ? error.message : String(error))
+    } finally {
+      this.downloadInFlight = false
+    }
+  }
+
+  private async installUnsignedMacUpdate(staged: StagedUnsignedMacUpdate): Promise<void> {
+    this.finishActiveUpdateCheckAttempt()
+    this.clearBackgroundCheckLaunchPending()
+    this.quitAndInstallInProgress = true
+    this.quittingForUpdate = true
+    this.sendStatus(
+      { state: 'downloaded', version: staged.version, installing: true },
+      { force: true }
+    )
+    try {
+      await this.runBeforeUpdateQuitCleanup()
+      await launchUnsignedMacInstaller(staged)
+      recordUpdaterLifecycle('unsigned_mac_update_install_launched', { version: staged.version })
+      releaseSessionsForInstaller()
+      this.updateInstallCommitted = true
+      app.quit()
+    } catch (error) {
+      this.resetQuitForUpdateState()
+      this.sendToMainWindow('updater:quitAndInstallAborted')
+      this.sendInstallFailureStatus({
+        state: 'error',
+        message: this.withInstallFailureCause(
+          'Could not restart to install the update. Topo remains open.',
+          error
+        ),
+        version: staged.version
+      })
     }
   }
 

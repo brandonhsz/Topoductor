@@ -1,4 +1,5 @@
 import { app, powerMonitor } from 'electron'
+import { primeUnsignedMacDetection } from '../mac-install/unsigned-mac-self-update'
 import type { BrowserWindow } from 'electron'
 import type { ReleaseBuild, ReleaseChannel } from '../../../shared/release-channel'
 import type { ReleaseBuildListOptions } from '../releases/updater-release-build-cache'
@@ -128,6 +129,7 @@ export class UpdaterSetup extends UpdaterDownloadInstall {
     this.getReleaseChannelOverride = opts?.getReleaseChannelOverride ?? null
     this.getUpdateDelayDays = opts?.getUpdateDelayDays ?? null
     this.updateInstallMode = opts?.installMode ?? 'interactive'
+    void primeUnsignedMacDetection()
     this.lastInstallDeferralVersion = { download: null, install: null }
 
     const serveHandoffFailure = getServeUpdateHandoffFailure()
