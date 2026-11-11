@@ -7,6 +7,7 @@ import type { RpcResponse } from '../transport/rpc/rpc-wire-types'
 import { taskLinearStatusRead, taskPreflightRead } from '../tasks/mobile-task-runtime-operations'
 import {
   filterAvailableTaskProviders,
+  isMobileTaskProvider,
   normalizeVisibleTaskProviders,
   type TaskProvider
 } from '../../../src/shared/work-items/task-providers'
@@ -148,7 +149,9 @@ export function useNewWorkspaceRuntimeContext(
       const availableProviders = filterAvailableTaskProviders(visibleProviders, {
         gitlabInstalled: glabInstalled,
         linearConnected
-      }).filter((provider) => visibleProviders.includes(provider))
+      })
+        .filter((provider) => visibleProviders.includes(provider))
+        .filter(isMobileTaskProvider)
       publish({ availableProviders })
       const [jiraRes] = await jiraProbe
       if (!stale) {

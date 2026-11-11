@@ -132,3 +132,8 @@ export function addOnceDefaultedTaskProviders(
   }
   return migrated
 }
+
+/** AvenaPM signs in through a desktop browser loopback, so phone clients never list it. */
+export function isMobileTaskProvider(provider: TaskProvider): boolean {
+  return provider !== 'avenapm'
+}
