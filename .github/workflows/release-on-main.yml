@@ -131,7 +131,10 @@ jobs:
       - name: Package unsigned macOS (arm64 + x64)
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+          # The x64 terminal-host smoke runs under a cold Rosetta on the arm64 runner.
+          TOPO_TERMINAL_HOST_BOOT_TIMEOUT_MS: '180000'
         run: |
+          /usr/sbin/softwareupdate --install-rosetta --agree-to-license >/dev/null 2>&1 || true
           node config/scripts/topod-distribution/prebuilds/pinned-node-downloads.mjs darwin-arm64 darwin-x64
           pnpm run ensure:electron-runtime
           TOPO_BUILD_COMMIT="$(git rev-parse --short=12 HEAD)" \
