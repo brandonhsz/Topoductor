@@ -1,0 +1,183 @@
+name: Release on main
+
+# Every merge to main ships the next patch: bump package.json, build unsigned macOS (arm64 + x64),
+# tag, and publish the GitHub release that Check for Updates reads. Unsigned builds self-update
+# (src/main/updater/mac-install/unsigned-mac-self-update.ts), so no Apple signing secrets are needed.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-on-main
+  cancel-in-progress: false
+
+jobs:
+  release:
+    # The release commit itself is pushed with GITHUB_TOKEN, which never re-triggers workflows;
+    # the message guard also covers manual "Release x.y.z" commits.
+    if: >-
+      github.repository == 'brandonhsz/Topoductor' &&
+      (github.event_name == 'workflow_dispatch' ||
+       !startsWith(github.event.head_commit.message, 'Release '))
+    runs-on: macos-15
+    timeout-minutes: 150
+    env:
+      TOPO_BACKGROUND_LAUNCH: '1'
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Compute next version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          current="$(node -p "require('./package.json').version")"
+          latest_tag="$(git tag --list 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
+          next="$(CURRENT="$current" LATEST="${latest_tag#v}" node -e '
+            const parse = (v) => (v || "0.0.0").split(".").map(Number)
+            const cmp = (a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]
+            const a = parse(process.env.CURRENT), b = parse(process.env.LATEST)
+            const base = cmp(a, b) >= 0 ? a : b
+            console.log(`${base[0]}.${base[1]}.${base[2] + 1}`)
+          ')"
+          echo "Current $current, latest tag ${latest_tag:-none}, releasing $next"
+          echo "version=$next" >>"$GITHUB_OUTPUT"
+          echo "previous_tag=$latest_tag" >>"$GITHUB_OUTPUT"
+
+      - name: Bump package.json
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          node -e '
+            const fs = require("fs")
+            const raw = fs.readFileSync("package.json", "utf8")
+            fs.writeFileSync("package.json", raw.replace(/"version": "[^"]+"/, `"version": "${process.env.VERSION}"`))
+          '
+          node -p "require('./package.json').version"
+
+      - name: Setup pnpm
+        uses: pnpm/setup@v2
+        with:
+          install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+          check-latest: true
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            mobile/pnpm-lock.yaml
+
+      - name: Cache Electron downloads
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/Library/Caches/electron
+            ~/Library/Caches/electron-builder
+          key: electron-builder-mac-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            electron-builder-mac-
+
+      # Both arch natives are needed to package arm64 and x64 from one runner.
+      - name: Install dependencies
+        uses: nick-fields/retry@v4
+        with:
+          timeout_minutes: 15
+          max_attempts: 3
+          retry_wait_seconds: 30
+          command: pnpm install --frozen-lockfile --cpu=current,x64,arm64
+
+      - uses: ./.github/actions/install-mobile-dependencies
+
+      - name: Build app
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: |
+          pnpm run build:desktop
+          pnpm run build:computer-macos
+          pnpm run build:keyboard-layout-macos
+          pnpm run build:process-footprint-macos
+          pnpm run build:notification-status-macos
+
+      - name: Package unsigned macOS (arm64 + x64)
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          node config/scripts/topod-distribution/prebuilds/pinned-node-downloads.mjs darwin-arm64 darwin-x64
+          pnpm run ensure:electron-runtime
+          TOPO_BUILD_COMMIT="$(git rev-parse --short=12 HEAD)" \
+            pnpm exec electron-builder --config config/electron-builder.config.cjs --mac --publish never
+
+      - name: Check release artifacts
+        id: artifacts
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          files=(
+            dist/latest-mac.yml
+            "dist/Topo-$VERSION-arm64-mac.zip" "dist/Topo-$VERSION-arm64-mac.zip.blockmap"
+            "dist/Topo-$VERSION-mac.zip" "dist/Topo-$VERSION-mac.zip.blockmap"
+            dist/topo-macos-arm64.dmg dist/topo-macos-arm64.dmg.blockmap
+            dist/topo-macos-x64.dmg dist/topo-macos-x64.dmg.blockmap
+          )
+          for f in "${files[@]}"; do test -s "$f" || { echo "::error::Missing $f"; exit 1; }; done
+          grep -q "^version: $VERSION$" dist/latest-mac.yml
+          printf '%s\n' "${files[@]}" >"$RUNNER_TEMP/release-files.txt"
+
+      - name: Commit and tag the release
+        shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package.json
+          git commit -m "Release $VERSION"
+          git tag -a "v$VERSION" -m "Topo $VERSION"
+          git push origin "v$VERSION"
+          # Main may have moved during the build; the tag still pins the released commit.
+          git push origin HEAD:main || echo "::warning::main moved during the build; package.json there still has the previous version."
+
+      - name: Publish GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          PREVIOUS_TAG: ${{ steps.version.outputs.previous_tag }}
+        run: |
+          set -euo pipefail
+          changes="$(gh api "repos/$GITHUB_REPOSITORY/releases/generate-notes" \
+            -f tag_name="v$VERSION" ${PREVIOUS_TAG:+-f previous_tag_name="$PREVIOUS_TAG"} --jq .body)"
+          cat >"$RUNNER_TEMP/notes.md" <<EOF
+          ## Download
+
+          - **Apple Silicon (M1–M4):** \`topo-macos-arm64.dmg\`
+          - **Intel:** \`topo-macos-x64.dmg\`
+
+          Already on Topo 1.4.258 or newer? Use **Check for Updates**: it downloads, verifies and installs this release by itself.
+
+          ## Opening the app (not signed yet)
+
+          This build is not signed or notarized by Apple, so macOS blocks a fresh install the first time. After dragging Topo to Applications, either right-click Topo.app → **Open** → **Open**, or run \`xattr -dr com.apple.quarantine /Applications/Topo.app\`.
+
+          $changes
+          EOF
+          # macOS ships bash 3.2, which has no mapfile.
+          files=()
+          while IFS= read -r f; do files+=("$f"); done <"$RUNNER_TEMP/release-files.txt"
+          gh release create "v$VERSION" --verify-tag --latest \
+            --title "Topo $VERSION" --notes-file "$RUNNER_TEMP/notes.md" "${files[@]}"
