@@ -17,13 +17,31 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  guard:
+    if: github.repository == 'brandonhsz/Topoductor'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+    steps:
+      # The release commit is pushed with GITHUB_TOKEN, which never re-triggers workflows; this also
+      # skips manual "Release x.y.z" commits without matching PR titles that merely start with "Release".
+      - name: Skip version-bump commits
+        id: check
+        shell: bash
+        env:
+          MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          subject="${MESSAGE%%$'\n'*}"
+          if [[ "$subject" =~ ^Release\ [0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "should_release=false" >>"$GITHUB_OUTPUT"
+          else
+            echo "should_release=true" >>"$GITHUB_OUTPUT"
+          fi
+
   release:
-    # The release commit itself is pushed with GITHUB_TOKEN, which never re-triggers workflows;
-    # the message guard also covers manual "Release x.y.z" commits.
-    if: >-
-      github.repository == 'brandonhsz/Topoductor' &&
-      (github.event_name == 'workflow_dispatch' ||
-       !startsWith(github.event.head_commit.message, 'Release '))
+    needs: guard
+    if: needs.guard.outputs.should_release == 'true'
     runs-on: macos-15
     timeout-minutes: 150
     env:
