@@ -1,6 +1,10 @@
 import { normalizeAgentDefaultSurface } from '../../../shared/native-chat/native-chat-providers'
 import { normalizeNativeChatAppearanceSettings } from '../../../shared/native-chat/native-chat-appearance-settings'
-import { getDefaultVoiceSettings } from '../../../shared/constants'
+import { getDefaultVoiceSettings, LEGACY_DEFAULT_APP_FONT_FAMILY } from '../../../shared/constants'
+import {
+  LEGACY_DEFAULT_TERMINAL_THEME_DARK,
+  LEGACY_DEFAULT_TERMINAL_THEME_LIGHT
+} from '../../../shared/terminal-themes/terminal-theme-selection'
 import { normalizePRBotAuthorOverrides } from '../../../shared/source-control/review-comments/pr-bot-author-overrides'
 import { normalizeTerminalQuickCommands } from '../../../shared/terminal/quick-commands/terminal-quick-commands'
 import { normalizeOpenInApplications } from '../../../shared/open-in-applications'
@@ -137,6 +141,8 @@ export function normalizeLoadedGlobalSettings(
     ...migratedTerminalColorOverrides,
     floatingTerminalEnabled: migratedFloatingTerminalEnabled,
     floatingTerminalDefaultedForAllUsers: true,
+    ...migrateReskinDefaults(parsed.settings, defaults.settings),
+    reskinDefaultsMigrated: true,
     floatingTerminalCwd: migratedFloatingTerminalCwd,
     floatingTerminalTrustedCwds: migratedFloatingTerminalTrustedCwds,
     floatingTerminalCwdMigratedToAppWorkspace: true,
@@ -210,4 +216,25 @@ function migrateDictationShortcutMode(
       ? stored.dictationHoldToRecord
       : settings?.voiceDictationModeDefaultedToAuto !== true)
   return dictationShortcutModeSettings(dictationHoldToRecord ? 'auto' : 'toggle')
+}
+
+/** Moves values still equal to a pre-reskin default to the current default, once per profile. */
+function migrateReskinDefaults(
+  saved: PersistedState['settings'] | undefined,
+  defaults: PersistedState['settings']
+): Partial<PersistedState['settings']> {
+  if (!saved || saved.reskinDefaultsMigrated === true) {
+    return {}
+  }
+  return {
+    ...(saved.appFontFamily === LEGACY_DEFAULT_APP_FONT_FAMILY && {
+      appFontFamily: defaults.appFontFamily
+    }),
+    ...(saved.terminalThemeDark === LEGACY_DEFAULT_TERMINAL_THEME_DARK && {
+      terminalThemeDark: defaults.terminalThemeDark
+    }),
+    ...(saved.terminalThemeLight === LEGACY_DEFAULT_TERMINAL_THEME_LIGHT && {
+      terminalThemeLight: defaults.terminalThemeLight
+    })
+  }
 }

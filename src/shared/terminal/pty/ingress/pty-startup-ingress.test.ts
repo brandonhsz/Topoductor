@@ -7,7 +7,7 @@ const COLORS = { foreground: '#2e3434', background: '#ffffff' }
 const FOREGROUND_REPLY = '\x1b]10;rgb:2e2e/3434/3434\x1b\\'
 const BACKGROUND_REPLY = '\x1b]11;rgb:ffff/ffff/ffff\x1b\\'
 
-const DEFAULT_BACKGROUND_REPLY = '\x1b]11;rgb:2828/2c2c/3434\x1b\\'
+const DEFAULT_BACKGROUND_REPLY = '\x1b]11;rgb:1c1c/1818/1515\x1b\\'
 // The two echo shapes a cooked POSIX tty produces for a written reply: ECHOCTL
 // caret forms, and readline eating `ESC ]` / ST while self-inserting the rest.
 const POSIX_COOKED_ECHOES = [

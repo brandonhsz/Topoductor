@@ -284,6 +284,8 @@ export type GlobalSettings = GlobalSettingsBase & {
   browserSshWorkspaceRoutingProbeSkippedTargetIds?: string[]
   /** One-shot migration flag for the floating-workspace default-on rollout; after migration an explicit off sticks. */
   floatingTerminalDefaultedForAllUsers?: boolean
+  /** One-shot flag: profiles still on the pre-reskin app font or terminal themes move to the current defaults once; later picks stick. */
+  reskinDefaultsMigrated?: boolean
   /** Start dir for new floating-workspace terminal tabs; empty or '~' = home dir. */
   floatingTerminalCwd: string
   /** Picker-approved floating-workspace dirs reauthorized across restarts; renderer text alone must not populate this. */
