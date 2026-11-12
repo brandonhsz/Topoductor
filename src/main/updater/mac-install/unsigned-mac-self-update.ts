@@ -5,13 +5,12 @@ import { join } from 'node:path'
 import { app } from 'electron'
 import { parse } from 'yaml'
 import { runProcess } from '@topo/process-host'
-import { spawnDetachedWithoutInheritance } from '@topo/process-host/isolated-detached-spawn'
 import { getReleaseDownloadUrl } from '../releases/updater-release-readiness'
 
 /**
  * Self-update for macOS builds without a Developer ID signature. Squirrel.Mac rejects an ad-hoc
  * signed update, so these builds download the release zip themselves, verify it against
- * latest-mac.yml, and swap the bundle from a detached script once Topo has quit.
+ * latest-mac.yml, and swap the bundle from a launchd job once Topo has quit.
  */
 
 const DOWNLOAD_TIMEOUT_MS = 10 * 60 * 1000
@@ -175,36 +174,68 @@ function shellQuote(value: string): string {
   return `'${value.replaceAll("'", `'\\''`)}'`
 }
 
-/** Detached so it outlives this process: waits for Topo to exit, swaps the bundle, then relaunches. */
+const INSTALLER_LABEL_PREFIX = 'io.topo.self-update'
+const INSTALLER_EXIT_WAIT_SECONDS = 300
+
+/**
+ * Runs as its own launchd job (`launchctl submit`), never as Topo's child: macOS reaps an app's
+ * children when it quits and quarantines whatever they write, which left a half-installed,
+ * "damaged" bundle when the script ran detached. It refuses to swap a Topo that is still running,
+ * verifies no quarantine survived the copy, and logs to ~/Library/Logs/Topo/self-update.log.
+ */
 export async function launchUnsignedMacInstaller(staged: StagedUnsignedMacUpdate): Promise<void> {
   const target = getRunningMacAppBundlePath()
   if (!target) {
     throw new Error('Could not locate the running Topo.app.')
   }
+  const logDir = join(app.getPath('home'), 'Library', 'Logs', 'Topo')
+  await mkdir(logDir, { recursive: true })
+  const label = `${INSTALLER_LABEL_PREFIX}.${staged.version}.${process.pid}`
   const script = join(staged.workDir, 'install.sh')
-  const backup = `${target}.previous`
   await writeFile(
     script,
     [
       '#!/bin/sh',
       `PID=${process.pid}`,
+      `LABEL=${shellQuote(label)}`,
       `TARGET=${shellQuote(target)}`,
-      `BACKUP=${shellQuote(backup)}`,
+      `BACKUP=${shellQuote(`${target}.previous`)}`,
       `NEW=${shellQuote(staged.appPath)}`,
       `WORK=${shellQuote(staged.workDir)}`,
-      'i=0; while kill -0 "$PID" 2>/dev/null && [ $i -lt 600 ]; do sleep 0.2; i=$((i+1)); done',
+      `exec >>${shellQuote(join(logDir, 'self-update.log'))} 2>&1`,
+      'log() { echo "$(date "+%Y-%m-%d %H:%M:%S") [${LABEL}] $*"; }',
+      'finish() { log "$1"; /bin/launchctl remove "$LABEL" >/dev/null 2>&1; exit 0; }',
+      `log "waiting for Topo (pid $PID) to quit"`,
+      `i=0; while kill -0 "$PID" 2>/dev/null && [ $i -lt ${INSTALLER_EXIT_WAIT_SECONDS * 5} ]; do sleep 0.2; i=$((i+1)); done`,
+      // Never swap a bundle out from under a running Topo.
+      'kill -0 "$PID" 2>/dev/null && finish "Topo is still running; update not installed"',
+      '/usr/bin/xattr -dr com.apple.quarantine "$NEW" 2>/dev/null',
       'rm -rf "$BACKUP"',
       'if mv "$TARGET" "$BACKUP" && /usr/bin/ditto "$NEW" "$TARGET"; then',
       '  /usr/bin/xattr -dr com.apple.quarantine "$TARGET" 2>/dev/null',
+      '  if /usr/bin/xattr -lr "$TARGET" 2>/dev/null | grep -q com.apple.quarantine; then',
+      '    log "quarantine survived xattr -dr; clearing file by file"',
+      '    /usr/bin/find "$TARGET" -exec /usr/bin/xattr -d com.apple.quarantine {} \\; 2>/dev/null',
+      '  fi',
       '  rm -rf "$BACKUP"',
+      '  log "installed $(/usr/bin/plutil -extract CFBundleShortVersionString raw "$TARGET/Contents/Info.plist")"',
       'else',
+      '  log "copy failed; restoring the previous Topo"',
       '  rm -rf "$TARGET"; mv "$BACKUP" "$TARGET"',
       'fi',
       '/usr/bin/open "$TARGET"',
       'rm -rf "$WORK"',
+      'finish "done"',
       ''
     ].join('\n')
   )
   await chmod(script, 0o700)
-  spawnDetachedWithoutInheritance({ program: '/bin/sh', args: [script] }).unref()
+  const submitted = await runProcess({
+    program: '/bin/launchctl',
+    args: ['submit', '-l', label, '--', '/bin/sh', script],
+    timeoutMs: 30_000
+  })
+  if (submitted.code !== 0) {
+    throw new Error(`Could not schedule the update installer: ${submitted.stderr.trim()}`)
+  }
 }
