@@ -25,6 +25,9 @@ import {
 } from '../media/images/NativeChatMarkdownImage'
 import { remarkNativeChatFileDestinations } from './native-chat-markdown-file-destinations'
 import { remarkNativeChatMediaPathPreviews } from './native-chat-markdown-media-path-previews'
+import { NativeChatMarkdownVideo } from '../media/videos/NativeChatMarkdownVideo'
+import { filePreviewForPath } from '../../../../../shared/file-preview/file-preview-kind'
+import { routeNativeChatHref } from '../../../../../shared/native-chat/native-chat-href-routing'
 import { NativeChatLinkPeek } from '../links/previews/NativeChatLinkPeek'
 import { NativeChatLinkPeekContext } from '../links/previews/native-chat-link-peek-context'
 import { useNativeChatLinkClick } from '../links/actions/native-chat-link-click-context'
@@ -71,6 +74,11 @@ function withFileDestinations(
   }
 }
 
+function isNativeChatVideoHref(src: string | undefined): src is string {
+  const route = routeNativeChatHref(src)
+  return route.kind === 'file' && filePreviewForPath(route.pathText)?.kind === 'video'
+}
+
 type MarkdownElementProps = { node?: { tagName: string }; children?: ReactNode }
 
 function containsImage(children: ReactNode): boolean {
@@ -92,7 +100,12 @@ function createNativeChatImageExtension(
     remarkPlugins: [...base.remarkPlugins, remarkNativeChatMediaPathPreviews],
     components: {
       ...base.components,
-      img: ({ src, alt }) => <NativeChatMarkdownImage src={src} alt={alt} />,
+      img: ({ src, alt }) =>
+        isNativeChatVideoHref(src) ? (
+          <NativeChatMarkdownVideo src={src} alt={alt} />
+        ) : (
+          <NativeChatMarkdownImage src={src} alt={alt} />
+        ),
       a: (props) => {
         const renderAnchor = (children: ReactNode): ReactNode => (
           <NativeChatLinkPeek href={props.href}>
