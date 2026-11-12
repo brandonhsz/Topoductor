@@ -26,7 +26,7 @@ const USER_FILE_NEEDS_ABSOLUTE_PATH_MESSAGE =
   'Access denied: a file opened by name needs an absolute path.'
 const USER_FILE_ACCESS: LocalFileAccess = { kind: 'user-file' }
 
-const CHAT_IMAGE_TYPE_MESSAGE = 'Access denied: a chat can only show local image files.'
+const CHAT_MEDIA_TYPE_MESSAGE = 'Access denied: a chat can only show local image files or videos.'
 
 export async function resolveDesktopAuthorizedPath(
   targetPath: string,
@@ -60,9 +60,10 @@ export async function resolveUserNamedRegularFile(
   return filePath
 }
 
-// Chat uses img rendering; PDF previews need a different surface.
-function isChatImage(filePath: string): boolean {
-  return filePreviewForPath(filePath)?.kind === 'image'
+// Chat renders images and videos inline; PDF previews need a different surface.
+function isChatMedia(filePath: string): boolean {
+  const kind = filePreviewForPath(filePath)?.kind
+  return kind === 'image' || kind === 'video'
 }
 
 // Resolve path text first because devices can hide behind dot and parent segments.
@@ -124,8 +125,8 @@ async function resolveChatImagePath(targetPath: string, store: RuntimeStore): Pr
     await resolveDesktopAuthorizedPath(realTarget, store)
   }
   // A .png symlink to a secret is not an image.
-  if (!isChatImage(realTarget)) {
-    throw new Error(CHAT_IMAGE_TYPE_MESSAGE)
+  if (!isChatMedia(realTarget)) {
+    throw new Error(CHAT_MEDIA_TYPE_MESSAGE)
   }
   return realTarget
 }

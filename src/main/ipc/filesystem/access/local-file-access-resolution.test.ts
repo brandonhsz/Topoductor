@@ -207,6 +207,22 @@ describe('document-resource requests', () => {
 describe('chat-image requests', () => {
   const CHAT_IMAGE = { kind: 'chat-image' } as const
 
+  it('show a video outside every project, but not audio or text', async () => {
+    await writeFile(join(outside, 'demo.mp4'), 'video')
+    await writeFile(join(outside, 'voice.mp3'), 'audio')
+    const store = makeStore({})
+
+    expect(
+      await settles(resolveLocalFileRequestPath(join(outside, 'demo.mp4'), CHAT_IMAGE, store))
+    ).toBe('ok')
+    expect(
+      await settles(resolveLocalFileRequestPath(join(outside, 'voice.mp3'), CHAT_IMAGE, store))
+    ).toBe('denied')
+    expect(
+      await settles(resolveLocalFileRequestPath(join(outside, 'notes.txt'), CHAT_IMAGE, store))
+    ).toBe('denied')
+  })
+
   it.skipIf(process.platform === 'win32')(
     'refuse an image-named link to a text file or a device',
     async () => {
