@@ -129,6 +129,21 @@ afterEach(() => {
 })
 
 describe('native chat Markdown image preview', () => {
+  it('previews an image named by its path in inline code and expands it on click', async () => {
+    render(<Transcript content="Captura: `/tmp/shots/bar.png`, notas en `notes.png`" />)
+
+    const image = await screen.findByRole('img', { name: 'bar.png' })
+    expect(image).toHaveAttribute('src', 'blob:image-1')
+    expect(screen.getAllByRole('button', { name: /^View image:/ })).toHaveLength(1)
+    expect(mocks.readRuntimeFilePreview).toHaveBeenCalledExactlyOnceWith(
+      expect.anything(),
+      '/tmp/shots/bar.png',
+      { kind: 'chat-image' }
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'View image: bar.png' }))
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
+  })
+
   it('routes image reads and actions through the selected owner provider across owner changes and removal', async () => {
     const original = useAppStore.getState()
     const fixture = nativeChatFanoutFixture(1, 1, 0)

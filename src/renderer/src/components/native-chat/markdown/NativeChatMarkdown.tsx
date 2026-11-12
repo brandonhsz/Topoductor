@@ -24,6 +24,7 @@ import {
   NativeChatMarkdownImageLinkContext
 } from '../media/images/NativeChatMarkdownImage'
 import { remarkNativeChatFileDestinations } from './native-chat-markdown-file-destinations'
+import { remarkNativeChatMediaPathPreviews } from './native-chat-markdown-media-path-previews'
 import { NativeChatLinkPeek } from '../links/previews/NativeChatLinkPeek'
 import { NativeChatLinkPeekContext } from '../links/previews/native-chat-link-peek-context'
 import { useNativeChatLinkClick } from '../links/actions/native-chat-link-click-context'
@@ -88,6 +89,7 @@ function createNativeChatImageExtension(
   const base = withFileDestinations(visualExtension)
   return {
     ...base,
+    remarkPlugins: [...base.remarkPlugins, remarkNativeChatMediaPathPreviews],
     components: {
       ...base.components,
       img: ({ src, alt }) => <NativeChatMarkdownImage src={src} alt={alt} />,
