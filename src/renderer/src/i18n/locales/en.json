@@ -24604,5 +24604,10 @@
     "stopped": "{{host}} stopped controlling browser tabs until Topo restarts.",
     "disallowed": "{{host}} can no longer control browser tabs. Turn it back on in Settings > SSH.",
     "failed": "Couldn’t stop {{host}}. Turn off its browser control in Settings > SSH."
+  },
+  "statusBar": {
+    "appVersion": {
+      "ariaLabel": "Topo version {{version}}"
+    }
   }
 }
