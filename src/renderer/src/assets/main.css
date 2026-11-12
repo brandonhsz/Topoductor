@@ -12,6 +12,29 @@
 @import '../../../shared/styles/scrollbar-sleek.css';
 
 @font-face {
+  font-family: 'Instrument Sans';
+  src: url('./fonts/InstrumentSans-LatinExt-Variable.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('./fonts/InstrumentSans-Latin-Variable.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
   font-family: 'Geist';
   src: url('./fonts/Geist-Variable.woff2') format('woff2');
   font-weight: 100 900;
@@ -187,34 +210,34 @@
 }
 
 :root {
-  --app-font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --app-font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-sans: var(--app-font-family);
   --font-mono:
     'SF Mono', SFMono-Regular, ui-monospace, 'Cascadia Code', Menlo, Consolas, 'Liberation Mono',
     monospace;
-  --radius: 0.625rem;
-  --topo-security-background: #fff;
-  --topo-security-foreground: #0a0a0a;
-  --topo-security-card: #fff;
-  --topo-security-card-foreground: #0a0a0a;
-  --topo-security-popover: #fff;
-  --topo-security-popover-foreground: #0a0a0a;
-  --topo-security-primary: #171717;
-  --topo-security-primary-foreground: #fafafa;
-  --topo-security-secondary: #f5f5f5;
-  --topo-security-secondary-foreground: #171717;
-  --topo-security-muted: #f5f5f5;
-  --topo-security-muted-foreground: #696969;
-  --topo-security-accent: #f5f5f5;
-  --topo-security-accent-foreground: #171717;
-  --topo-security-border: #e5e5e5;
-  --topo-security-input: #e5e5e5;
-  --topo-security-ring: #a1a1a1;
-  --topo-security-floating-surface: rgba(255, 255, 255, 0.82);
-  --topo-security-dialog-surface: rgba(255, 255, 255, 0.96);
-  --background: #fff;
-  --editor-surface: #ffffff;
-  --foreground: #0a0a0a;
+  --radius: 0.75rem;
+  --topo-security-background: #fbf8f4;
+  --topo-security-foreground: #1c1713;
+  --topo-security-card: #fffdfa;
+  --topo-security-card-foreground: #1c1713;
+  --topo-security-popover: #fffdfa;
+  --topo-security-popover-foreground: #1c1713;
+  --topo-security-primary: #b4561a;
+  --topo-security-primary-foreground: #fff;
+  --topo-security-secondary: #f3ede5;
+  --topo-security-secondary-foreground: #2a221c;
+  --topo-security-muted: #f3ede5;
+  --topo-security-muted-foreground: #6e6257;
+  --topo-security-accent: #efe7dc;
+  --topo-security-accent-foreground: #2a221c;
+  --topo-security-border: #e6ddd1;
+  --topo-security-input: #e6ddd1;
+  --topo-security-ring: #c98a5a;
+  --topo-security-floating-surface: rgba(255, 253, 250, 0.84);
+  --topo-security-dialog-surface: rgba(255, 253, 250, 0.96);
+  --background: #fbf8f4;
+  --editor-surface: #fffdfa;
+  --foreground: #1c1713;
   --chat-canvas-mix: 0%;
   --chat-foreground-mix: 82%;
   --chat-strong-mix: 92%;
@@ -231,24 +254,24 @@
   --chat-composer-border-mix: 11%;
   --chat-selection-mix: 30%;
   --chat-content-max-width: 46rem;
-  --card: #fff;
-  --card-foreground: #0a0a0a;
-  --popover: #fff;
-  --popover-foreground: #0a0a0a;
+  --card: #fffdfa;
+  --card-foreground: #1c1713;
+  --popover: #fffdfa;
+  --popover-foreground: #1c1713;
   /* Glass tints for menus and dialogs; a plugin theme replaces both with its --popover. */
-  --floating-surface: rgba(255, 255, 255, 0.82);
+  --floating-surface: rgba(255, 253, 250, 0.84);
   --dialog-surface: color-mix(in srgb, var(--background) 96%, transparent);
-  --primary: #171717;
-  --primary-foreground: #fafafa;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #171717;
-  --muted: #f5f5f5;
-  --muted-foreground: #696969;
-  --accent: #f5f5f5;
-  --accent-foreground: #171717;
-  --border: #e5e5e5;
-  --input: #e5e5e5;
-  --ring: #a1a1a1;
+  --primary: #b4561a;
+  --primary-foreground: #fff;
+  --secondary: #f3ede5;
+  --secondary-foreground: #2a221c;
+  --muted: #f3ede5;
+  --muted-foreground: #6e6257;
+  --accent: #efe7dc;
+  --accent-foreground: #2a221c;
+  --border: #e6ddd1;
+  --input: #e6ddd1;
+  --ring: #c98a5a;
   --terminal-pane-locate: var(--color-blue-600);
   --ai-action-accent: var(--color-violet-500);
   /* Use one question hue across surfaces, distinct from working-yellow. */
@@ -266,20 +289,20 @@
   --chart-3: var(--color-blue-600);
   --chart-4: var(--color-blue-700);
   --chart-5: var(--color-blue-800);
-  --worktree-sidebar: #f5f5f5;
-  --worktree-sidebar-foreground: #0a0a0a;
-  --worktree-sidebar-accent: #eaeaea;
-  --worktree-sidebar-accent-foreground: #171717;
-  --worktree-sidebar-border: #e5e5e5;
-  --worktree-sidebar-ring: #a1a1a1;
-  --sidebar: #fafafa;
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #171717;
-  --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #f5f5f5;
-  --sidebar-accent-foreground: #171717;
-  --sidebar-border: #e5e5e5;
-  --sidebar-ring: #a1a1a1;
+  --worktree-sidebar: #f3ede5;
+  --worktree-sidebar-foreground: #1c1713;
+  --worktree-sidebar-accent: #e9e0d3;
+  --worktree-sidebar-accent-foreground: #2a221c;
+  --worktree-sidebar-border: #e6ddd1;
+  --worktree-sidebar-ring: #c98a5a;
+  --sidebar: #f7f2ec;
+  --sidebar-foreground: #1c1713;
+  --sidebar-primary: #b4561a;
+  --sidebar-primary-foreground: #fff;
+  --sidebar-accent: #efe7dc;
+  --sidebar-accent-foreground: #2a221c;
+  --sidebar-border: #e6ddd1;
+  --sidebar-ring: #c98a5a;
   --terminal-pane-title-on-dark-fg: rgb(255 255 255 / 0.52);
   --terminal-pane-title-on-dark-input-fg: rgb(255 255 255 / 0.7);
   --terminal-pane-title-on-dark-placeholder: rgb(255 255 255 / 0.38);
@@ -306,8 +329,8 @@
   --markdown-search-match: #facc15;
   --markdown-search-match-active: #fb923c;
   /* Split dividers must clear 3:1 against --card even before hover; --border is too faint. */
-  --split-divider: #868690;
-  --split-divider-hover: #71717a;
+  --split-divider: #8c7f72;
+  --split-divider-hover: #6e6257;
   /* `--tab-bar` is set only by themes; keep in sync with PLUGIN_APP_THEME_CSS_FALLBACKS. */
   /* White --card can't be lifted, so light mode recesses inactive tabs to keep the active one lighter. */
   --tab-active: var(--tab-bar, var(--card));
@@ -315,28 +338,28 @@
 }
 
 .dark {
-  --topo-security-background: #0a0a0a;
-  --topo-security-foreground: #f0f0f0;
-  --topo-security-card: #171717;
-  --topo-security-card-foreground: #f0f0f0;
-  --topo-security-popover: #171717;
-  --topo-security-popover-foreground: #f0f0f0;
-  --topo-security-primary: #e5e5e5;
-  --topo-security-primary-foreground: #171717;
-  --topo-security-secondary: #262626;
-  --topo-security-secondary-foreground: #f0f0f0;
-  --topo-security-muted: #262626;
-  --topo-security-muted-foreground: #acacac;
-  --topo-security-accent: #404040;
-  --topo-security-accent-foreground: #f0f0f0;
-  --topo-security-border: rgb(255 255 255 / 0.07);
-  --topo-security-input: rgb(255 255 255 / 0.15);
-  --topo-security-ring: #737373;
-  --topo-security-floating-surface: rgba(0, 0, 0, 0.72);
-  --topo-security-dialog-surface: rgba(23, 23, 23, 0.96);
-  --background: #0a0a0a;
-  --editor-surface: #1e1e1e;
-  --foreground: #f0f0f0;
+  --topo-security-background: #14110f;
+  --topo-security-foreground: #f2ebe3;
+  --topo-security-card: #1c1815;
+  --topo-security-card-foreground: #f2ebe3;
+  --topo-security-popover: #1c1815;
+  --topo-security-popover-foreground: #f2ebe3;
+  --topo-security-primary: #f2a93b;
+  --topo-security-primary-foreground: #1a1208;
+  --topo-security-secondary: #2a2420;
+  --topo-security-secondary-foreground: #f2ebe3;
+  --topo-security-muted: #2a2420;
+  --topo-security-muted-foreground: #b0a497;
+  --topo-security-accent: #3a3029;
+  --topo-security-accent-foreground: #f2ebe3;
+  --topo-security-border: rgb(255 235 210 / 0.08);
+  --topo-security-input: rgb(255 235 210 / 0.15);
+  --topo-security-ring: #a8762e;
+  --topo-security-floating-surface: rgba(20, 16, 13, 0.78);
+  --topo-security-dialog-surface: rgba(28, 24, 21, 0.96);
+  --background: #14110f;
+  --editor-surface: #1e1a17;
+  --foreground: #f2ebe3;
   --chat-canvas-mix: 5%;
   --chat-foreground-mix: 78%;
   --chat-strong-mix: 90%;
@@ -353,23 +376,23 @@
   --chat-composer-border-mix: 9%;
   --chat-selection-mix: 40%;
   --chat-content-max-width: 46rem;
-  --card: #171717;
-  --card-foreground: #f0f0f0;
-  --popover: #171717;
-  --popover-foreground: #f0f0f0;
-  --floating-surface: rgba(0, 0, 0, 0.72);
-  --dialog-surface: rgba(23, 23, 23, 0.96);
-  --primary: #e5e5e5;
-  --primary-foreground: #171717;
-  --secondary: #262626;
-  --secondary-foreground: #f0f0f0;
-  --muted: #262626;
-  --muted-foreground: #acacac;
-  --accent: #404040;
-  --accent-foreground: #f0f0f0;
-  --border: rgb(255 255 255 / 0.07);
-  --input: rgb(255 255 255 / 0.15);
-  --ring: #737373;
+  --card: #1c1815;
+  --card-foreground: #f2ebe3;
+  --popover: #1c1815;
+  --popover-foreground: #f2ebe3;
+  --floating-surface: rgba(20, 16, 13, 0.78);
+  --dialog-surface: rgba(28, 24, 21, 0.96);
+  --primary: #f2a93b;
+  --primary-foreground: #1a1208;
+  --secondary: #2a2420;
+  --secondary-foreground: #f2ebe3;
+  --muted: #2a2420;
+  --muted-foreground: #b0a497;
+  --accent: #3a3029;
+  --accent-foreground: #f2ebe3;
+  --border: rgb(255 235 210 / 0.08);
+  --input: rgb(255 235 210 / 0.15);
+  --ring: #a8762e;
   --terminal-pane-locate: var(--color-blue-400);
   --ai-action-accent: var(--color-violet-400);
   --agent-question: var(--color-orange-500);
@@ -383,22 +406,22 @@
   --chart-4: var(--color-blue-700);
   --chart-5: var(--color-blue-800);
   /* Mirror light mode’s lifted worktree sidebar above the dark canvas. */
-  --worktree-sidebar: #2a2a2a;
-  --worktree-sidebar-foreground: #f0f0f0;
-  --worktree-sidebar-accent: #353535;
-  --worktree-sidebar-accent-foreground: #f0f0f0;
+  --worktree-sidebar: #241e1a;
+  --worktree-sidebar-foreground: #f2ebe3;
+  --worktree-sidebar-accent: #312822;
+  --worktree-sidebar-accent-foreground: #f2ebe3;
   /* Match --border / --sidebar-border (7%) so the left sidebar's divider lines
      aren't brighter than the rest of the UI in dark mode (#5906). */
-  --worktree-sidebar-border: rgb(255 255 255 / 0.07);
-  --worktree-sidebar-ring: #737373;
-  --sidebar: #171717;
-  --sidebar-foreground: #f0f0f0;
-  --sidebar-primary: #1447e6;
-  --sidebar-primary-foreground: #f0f0f0;
-  --sidebar-accent: #262626;
-  --sidebar-accent-foreground: #f0f0f0;
-  --sidebar-border: rgb(255 255 255 / 0.07);
-  --sidebar-ring: #525252;
+  --worktree-sidebar-border: rgb(255 235 210 / 0.08);
+  --worktree-sidebar-ring: #a8762e;
+  --sidebar: #1c1815;
+  --sidebar-foreground: #f2ebe3;
+  --sidebar-primary: #f2a93b;
+  --sidebar-primary-foreground: #1a1208;
+  --sidebar-accent: #2a2420;
+  --sidebar-accent-foreground: #f2ebe3;
+  --sidebar-border: rgb(255 235 210 / 0.08);
+  --sidebar-ring: #6b5f55;
   --terminal-pane-title-on-dark-fg: rgb(255 255 255 / 0.52);
   --terminal-pane-title-on-dark-input-fg: rgb(255 255 255 / 0.7);
   --terminal-pane-title-on-dark-placeholder: rgb(255 255 255 / 0.38);
@@ -425,8 +448,8 @@
   --markdown-search-match: #facc15;
   --markdown-search-match-active: #fb923c;
   /* Brighter than terminal defaults so the always-visible line clears 3:1 on `--card`. */
-  --split-divider: #71717a;
-  --split-divider-hover: #a1a1aa;
+  --split-divider: #7f7268;
+  --split-divider-hover: #b0a497;
   --tab-active: color-mix(in srgb, var(--foreground) 6%, var(--tab-bar, var(--card)));
   --tab-inactive: var(--tab-bar, var(--card));
 }
@@ -438,7 +461,7 @@
   color-scheme: light;
   --destructive: #e40014;
   --destructive-foreground: #fff;
-  --status-success: #147638;
+  --status-success: #126c34;
   --status-success-background: color-mix(in srgb, var(--status-success) 10%, transparent);
   --status-success-border: color-mix(in srgb, var(--status-success) 25%, transparent);
   /* Needs-attention states use yellow, separate from errors and working states. */
@@ -459,7 +482,7 @@
   --git-decoration-renamed: #007acc;
   --git-decoration-untracked: #007100;
   --git-decoration-copied: #007acc;
-  --git-decoration-ignored: #737373;
+  --git-decoration-ignored: #6e6257;
   --diff-added: var(--git-decoration-added);
   --diff-removed: var(--git-decoration-deleted);
   --diff-added-background: color-mix(in srgb, var(--diff-added) 13%, transparent);
@@ -494,7 +517,7 @@
   --git-decoration-renamed: #73c991;
   --git-decoration-untracked: #73c991;
   --git-decoration-copied: #73c991;
-  --git-decoration-ignored: #808080;
+  --git-decoration-ignored: #8f8579;
   --diff-added: var(--git-decoration-added);
   --diff-removed: var(--git-decoration-deleted);
   --diff-added-background: color-mix(in srgb, var(--diff-added) 16%, transparent);
@@ -775,7 +798,7 @@ body[data-modal-overlay-open]
     height: 100dvh;
     font-family: var(
       --app-font-family,
-      'Geist',
+      'Instrument Sans',
       -apple-system,
       BlinkMacSystemFont,
       'Segoe UI',

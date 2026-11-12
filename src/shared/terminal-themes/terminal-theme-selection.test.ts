@@ -8,14 +8,16 @@ import {
 
 const base = {
   theme: 'system' as const,
-  terminalThemeDark: 'Ghostty Default Style Dark',
+  terminalThemeDark: 'Topo Dark',
   terminalUseSeparateLightTheme: true,
-  terminalThemeLight: 'Builtin Tango Light'
+  terminalThemeLight: 'Topo Light'
 }
 
 describe('terminal colour overrides per theme slot (#10561)', () => {
   const settings = {
     ...base,
+    terminalThemeDark: 'Ghostty Default Style Dark',
+    terminalThemeLight: 'Builtin Tango Light',
     terminalColorOverrides: { background: '#101010' },
     terminalColorOverridesLight: { foreground: '#202020' }
   }
@@ -114,9 +116,9 @@ describe('deleting an imported terminal theme (#32138)', () => {
     const { updates, undo } = terminalCustomThemeRemoval(settings, 'warp:dusk')
     expect(updates).toEqual({
       terminalCustomThemes: [kept],
-      terminalThemeDark: 'Ghostty Default Style Dark',
+      terminalThemeDark: 'Topo Dark',
       terminalColorOverrides: undefined,
-      terminalThemeLight: 'Builtin Tango Light',
+      terminalThemeLight: 'Topo Light',
       terminalColorOverridesLight: undefined
     })
     const afterDelete = { ...settings, ...updates, terminalCustomThemes: [kept] }

@@ -2,7 +2,7 @@
 
 UI rules for Topo. Token values live in `src/renderer/src/assets/main.css` (canonical); this file documents _roles and rules_, not values.
 
-The identity is **monochrome and quiet**: neutral grays carry the chrome, color is reserved for state (selection ring, destructive, git decorations). Topo mostly hosts other tools (Monaco, xterm, Markdown previews), so its own UI should recede and frame. When in doubt:
+The identity is **warm and quiet** ("burrow"): earth-tinted neutrals carry the chrome, one accent (helmet amber in dark, clay in light) marks the primary action, focus ring and active tab, and other color is reserved for state (destructive, agent status, git decorations). Never reintroduce pure grays; tint new neutrals from the existing tokens. The UI font is Instrument Sans. Topo mostly hosts other tools (Monaco, xterm, Markdown previews), so its own UI should recede and frame. When in doubt:
 
 - Reach for **muted/accent/border** before color.
 - Reach for **CSS variables** before hardcoded hex.

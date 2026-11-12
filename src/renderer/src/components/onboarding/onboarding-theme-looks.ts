@@ -134,8 +134,7 @@ function currentTerminal(
   settings: GlobalSettings,
   base: ThemeLookBase
 ): ThemeLookPalette['terminal'] {
-  const fallback =
-    TERMINAL_THEME_CATALOG[base === 'dark' ? 'Ghostty Default Style Dark' : 'Builtin Tango Light']
+  const fallback = TERMINAL_THEME_CATALOG[base === 'dark' ? 'Topo Dark' : 'Topo Light']
   return (
     terminalPalette(resolveTerminalPalette({ ...settings, theme: base }, base === 'dark').theme) ??
     terminalPalette(fallback)!

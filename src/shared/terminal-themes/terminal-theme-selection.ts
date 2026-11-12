@@ -21,8 +21,11 @@ import type { TerminalOscColorQueryReplyColors } from '../terminal/protocol/quer
 import { TERMINAL_THEME_CATALOG } from './terminal-theme-catalog'
 import type { TerminalThemeMap } from './types'
 
-export const DEFAULT_TERMINAL_THEME_DARK = 'Ghostty Default Style Dark'
-export const DEFAULT_TERMINAL_THEME_LIGHT = 'Builtin Tango Light'
+export const DEFAULT_TERMINAL_THEME_DARK = 'Topo Dark'
+export const DEFAULT_TERMINAL_THEME_LIGHT = 'Topo Light'
+// Earlier defaults; profiles still holding them move to the current ones once.
+export const LEGACY_DEFAULT_TERMINAL_THEME_DARK = 'Ghostty Default Style Dark'
+export const LEGACY_DEFAULT_TERMINAL_THEME_LIGHT = 'Builtin Tango Light'
 
 export type TerminalThemeSelectionSettings = Pick<
   GlobalSettings,

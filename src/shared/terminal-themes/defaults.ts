@@ -1,6 +1,57 @@
 import type { TerminalThemeMap } from './types'
 
 export const DEFAULT_TERMINAL_THEMES: TerminalThemeMap = {
+  // Topo's own looks: background matches the app card so panes sit flush with the chrome.
+  'Topo Dark': {
+    background: '#1c1815',
+    foreground: '#ebe3d9',
+    cursor: '#f2a93b',
+    cursorAccent: '#1c1815',
+    selectionBackground: '#6b4f33',
+    selectionForeground: '#ffffff',
+    black: '#14110f',
+    red: '#e06c66',
+    green: '#a9bd6a',
+    yellow: '#f2c66d',
+    blue: '#86a7c4',
+    magenta: '#c19ac2',
+    cyan: '#8cc2b5',
+    white: '#d8cfc4',
+    brightBlack: '#7f7268',
+    brightRed: '#f07a72',
+    brightGreen: '#bccd5a',
+    brightYellow: '#f2a93b',
+    brightBlue: '#9cbbe0',
+    brightMagenta: '#d3a6dc',
+    brightCyan: '#7fcfbd',
+    brightWhite: '#f2ebe3'
+  },
+
+  'Topo Light': {
+    background: '#fffdfa',
+    foreground: '#2a221c',
+    cursor: '#b4561a',
+    cursorAccent: '#fffdfa',
+    selectionBackground: '#f1d9c2',
+    selectionForeground: '#2a221c',
+    black: '#2a221c',
+    red: '#c0281b',
+    green: '#4e8a06',
+    yellow: '#8e6a00',
+    blue: '#3465a4',
+    magenta: '#7a4f7f',
+    cyan: '#05727e',
+    white: '#6e6257',
+    brightBlack: '#5c5048',
+    brightRed: '#d7372a',
+    brightGreen: '#1b7a1b',
+    brightYellow: '#9a5a10',
+    brightBlue: '#204a87',
+    brightMagenta: '#9a6aa0',
+    brightCyan: '#034b50',
+    brightWhite: '#3d3530'
+  },
+
   // Most colors come from Ghostty. Topo raises dark selection contrast because Ghostty's
   // original #3e4451 blends into Codex-style gray instruction blocks.
   'Ghostty Default Style Dark': {

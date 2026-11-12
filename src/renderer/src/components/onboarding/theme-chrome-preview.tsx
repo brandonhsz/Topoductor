@@ -28,13 +28,13 @@ export function ChromePreview({ variant }: { variant: GlobalSettings['theme'] })
 }
 
 function ChromeMock({ dark }: { dark: boolean }) {
-  const bg = dark ? 'bg-[#0f1115]' : 'bg-[#f7f8fa]'
-  const sidebar = dark ? 'bg-[#16181d]' : 'bg-[#eceef2]'
+  const bg = dark ? 'bg-[#14110f]' : 'bg-[#fbf8f4]'
+  const sidebar = dark ? 'bg-[#241e1a]' : 'bg-[#f3ede5]'
   const sidebarBorder = dark ? 'border-white/5' : 'border-black/5'
   const row = dark ? 'bg-white/10' : 'bg-black/10'
   const rowDim = dark ? 'bg-white/5' : 'bg-black/5'
-  const tab = dark ? 'bg-[#1d2026] border-white/5' : 'bg-white border-black/5'
-  const accent = 'bg-violet-500/80'
+  const tab = dark ? 'bg-[#1c1815] border-white/5' : 'bg-[#fffdfa] border-black/5'
+  const accent = dark ? 'bg-[#f2a93b]' : 'bg-[#b4561a]'
   return (
     <div className={cn('flex size-full', bg)}>
       <div className={cn('flex w-[34%] flex-col gap-1 border-r p-1.5', sidebar, sidebarBorder)}>

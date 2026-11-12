@@ -71,7 +71,7 @@ describe('TerminalHost PTY owner backend', () => {
 
   // Without a reported theme, the session answers using Topo’s default colors.
   const query = '\x1b]10;?\x07'
-  const reply = '\x1b]10;rgb:ffff/ffff/ffff\x1b\\'
+  const reply = '\x1b]10;rgb:ebeb/e3e3/d9d9\x1b\\'
   // ConPTY echoes a reply with its ESC bytes stripped; wsl.exe's echo shape is unverified.
   const conptyEcho = reply.replaceAll('\x1b', '')
 
