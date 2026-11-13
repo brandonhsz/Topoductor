@@ -19,6 +19,7 @@ import {
 import { normalizeTerminalDefaultShell } from '../../../shared/shell/launch/terminal-default-shell'
 import { projectSourceControlAiToLegacyCommitMessageAi } from '../../../shared/source-control/ai/settings/source-control-ai-legacy-projection'
 import { normalizeNativeChatShellEnvironmentVariables } from '../../../shared/native-chat/native-chat-shell-environment'
+import { normalizeTopoMcpServers } from '../../../shared/mcp/topo-mcp-server-types'
 import { publishedLegacyChatPermissionMode } from '../../../shared/agent-launch/permissions/agent-chat-permission-mode'
 import {
   expandWorkspaceDirHome,
@@ -167,6 +168,7 @@ export function normalizeLoadedGlobalSettings(
     nativeChatShellEnvironmentVariables: normalizeNativeChatShellEnvironmentVariables(
       parsed.settings?.nativeChatShellEnvironmentVariables
     ),
+    topoMcpServers: normalizeTopoMcpServers(parsed.settings?.topoMcpServers),
     // Old clients identify hosts with per-chat permissions through this valid value.
     nativeChatPermissionMode: publishedLegacyChatPermissionMode({
       ...parsed.settings,

@@ -10,6 +10,7 @@ import type { JiraProjectReference } from './jira/jira-project-reference'
 import type { TopodRetainedMarker } from './topod-retained-marker'
 import type { EditorFormatter } from './editor-formatter'
 import type { AgentWorkspaceTrustDecision } from './agent-launch/permissions/agent-workspace-trust-decision'
+import type { TopoMcpServer } from './mcp/topo-mcp-server-types'
 
 export type RepoKind = 'git' | 'folder'
 
@@ -69,6 +70,8 @@ export type Repo = {
   ghAccount?: GhAccountBinding
   /** Controls Topo's fork-default-branch sync offer for repos with upstream metadata. */
   forkSyncMode?: ForkSyncMode
+  /** Repo-local MCP servers Topo injects into agents; same-named entries override the global list. */
+  mcpServers?: TopoMcpServer[]
   /** Whether Topo pre-trusts this repo's worktrees for agents. Absent means undecided: desktop launches ask once. */
   agentWorkspaceTrust?: AgentWorkspaceTrustDecision
   /** Canonical identity for the repo remote Topo should use for provider-level grouping. */

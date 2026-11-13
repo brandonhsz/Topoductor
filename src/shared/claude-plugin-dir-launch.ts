@@ -5,7 +5,7 @@ import {
   type AgentStartupShell
 } from './agent-launch/startup/tui-agent-startup-shell'
 
-export function withClaudeAgentViewPlugin(
+export function withClaudePluginDir(
   command: string,
   root: string,
   shell: AgentStartupShell

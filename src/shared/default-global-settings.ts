@@ -160,6 +160,7 @@ export function buildDefaultSettings(args: {
     nativeChatTurnDiffSummary: true,
     nativeChatInheritShellEnvironment: true,
     nativeChatShellEnvironmentVariables: [],
+    topoMcpServers: [],
     nativeChatSessionOptions: {},
     // New chats of agents on their own settings; others start in their agent permission.
     nativeChatPermissionMode: 'full-access',

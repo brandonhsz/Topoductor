@@ -190,6 +190,7 @@ export class RepoLifecycleOperations {
         | 'issueSourcePreference'
         | 'forkSyncMode'
         | 'agentWorkspaceTrust'
+        | 'mcpServers'
         | 'externalWorktreeVisibilityPromptDismissedAt'
         | 'externalWorktreeInboxBaselinePaths'
         | 'importedExternalWorktreePaths'

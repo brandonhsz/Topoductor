@@ -58,6 +58,24 @@ function isCodexExecutable(token: string | undefined): boolean {
   return basename !== undefined && /^codex(?:\.(?:exe|cmd|bat|ps1))?$/.test(basename)
 }
 
+/** Appends Codex options to a lone Codex invocation; any other command is returned unchanged. */
+export function withCodexArgs(
+  command: string,
+  args: readonly string[],
+  shell: AgentStartupShell
+): string {
+  const tokens = tokenizeStartupCommand(command, shell)
+  // Why: only a lone Codex invocation is safe; a wrapper may not forward -c, a compound line would
+  // hand it to another command, and the command may end its options with `--`.
+  return args.length &&
+    !/[;&|<>`$()\n]/.test(command) &&
+    tokens.ok &&
+    isCodexExecutable(tokens.tokens[0]) &&
+    !tokens.tokens.includes('--')
+    ? `${command} ${args.map((arg) => quoteStartupArg(arg, shell)).join(' ')}`
+    : command
+}
+
 /** Appends the per-launch terminal input flags to a recorded agent command. */
 export function withAgentTerminalInputArgs(
   command: string,
@@ -66,18 +84,9 @@ export function withAgentTerminalInputArgs(
   platform: NodeJS.Platform | null,
   shell: AgentStartupShell
 ): string {
-  const inputArgs = agentTerminalInputArgs(agent, platform)
-  const tokens = tokenizeStartupCommand(command, shell)
-  // Why: only a lone Codex invocation is safe; a wrapper may not forward -c, a compound line would
-  // hand it to another command, and the command may already set it or end its options with `--`.
-  return inputArgs.length &&
-    !/[;&|<>`$()\n]/.test(command) &&
-    tokens.ok &&
-    isCodexExecutable(tokens.tokens[0]) &&
-    !command.includes('disable_paste_burst') &&
-    !tokens.tokens.includes('--')
-    ? `${command} ${inputArgs.map((arg) => quoteStartupArg(arg, shell)).join(' ')}`
-    : command
+  return command.includes('disable_paste_burst')
+    ? command
+    : withCodexArgs(command, agentTerminalInputArgs(agent, platform), shell)
 }
 
 export type ResolvedAgentLaunchCommand =

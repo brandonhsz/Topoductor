@@ -10,6 +10,7 @@ import type { SettingsRenderContext } from './settings-render-context'
 import {
   renderAccountsSettingsSection,
   renderAgentsSettingsSection,
+  renderMcpServersSettingsSection,
   renderDesktopCapabilitySettingsSections,
   renderLinearSettingsSection,
   renderOrchestrationSettingsSection
@@ -141,6 +142,7 @@ export function renderSettingsPage(
                   {renderAgentsSettingsSection(context, t)}
                   {renderAccountsSettingsSection(context, t)}
                   {renderOrchestrationSettingsSection(context, t)}
+                  {renderMcpServersSettingsSection(context, t)}
                   {renderLinearSettingsSection(context, t)}
                   {renderDesktopCapabilitySettingsSections(context, t)}
                   {renderTopoAccountSettingsSection(context, t)}

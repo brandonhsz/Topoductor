@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { withClaudeAgentViewPlugin } from './claude-agent-view-launch'
+import { withClaudePluginDir } from './claude-plugin-dir-launch'
 import {
   tokenizeStartupCommand,
   type AgentStartupShell
@@ -9,7 +9,7 @@ it.each(['posix', 'powershell', 'cmd'] as const)(
   'preserves existing plugin arguments and prompts in %s',
   (shell: AgentStartupShell) => {
     const command = 'claude --plugin-dir user-plugin --resume session -- "my prompt"'
-    const result = withClaudeAgentViewPlugin(command, 'topo plugin', shell)
+    const result = withClaudePluginDir(command, 'topo plugin', shell)
     const parsed = tokenizeStartupCommand(result, shell)
     expect(parsed.ok && parsed.tokens).toEqual([
       'claude',
@@ -28,6 +28,6 @@ it.each(['posix', 'powershell', 'cmd'] as const)(
 it.each(['ssh host claude', 'bash -c claude', 'echo /bin/claude', 'claude && echo done'])(
   'leaves shell syntax and ambiguous executables unchanged: %s',
   (command) => {
-    expect(withClaudeAgentViewPlugin(command, '/topo/plugin', 'posix')).toBe(command)
+    expect(withClaudePluginDir(command, '/topo/plugin', 'posix')).toBe(command)
   }
 )

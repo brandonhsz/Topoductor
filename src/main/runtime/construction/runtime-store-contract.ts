@@ -200,6 +200,7 @@ export type RuntimeStore = {
     nativeChatInlineVisuals?: GlobalSettings['nativeChatInlineVisuals']
     nativeChatInheritShellEnvironment?: GlobalSettings['nativeChatInheritShellEnvironment']
     nativeChatShellEnvironmentVariables?: GlobalSettings['nativeChatShellEnvironmentVariables']
+    topoMcpServers?: GlobalSettings['topoMcpServers']
     aiVaultSearch?: GlobalSettings['aiVaultSearch']
     sourceControlAi?: GlobalSettings['sourceControlAi']
     commitMessageAi?: GlobalSettings['commitMessageAi']

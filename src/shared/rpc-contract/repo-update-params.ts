@@ -9,6 +9,7 @@ import {
   normalizeWorktreeVisibilitySourcePreferences
 } from '../worktree/visibility-sources'
 import { OptionalFiniteNumber, OptionalString } from './rpc-param-primitives'
+import { normalizeTopoMcpServers } from '../mcp/topo-mcp-server-types'
 import { editorFormatterSchema } from '../editor-formatter'
 
 export const RepoSourceControlAiOverrides = z
@@ -74,6 +75,7 @@ export function createRepoUpdateSchema<T extends Readonly<Record<string, z.ZodTy
         }),
       forkSyncMode: z.enum(['ask', 'safe-auto', 'off']).optional(),
       agentWorkspaceTrust: z.enum(['pre-trust', 'agent-asks']).optional(),
+      mcpServers: z.unknown().transform(normalizeTopoMcpServers).optional(),
       externalWorktreeVisibility: z.enum(['hide', 'show']).nullable().optional(),
       externalWorktreeVisibilityPromptDismissedAt: z.number().finite().optional(),
       externalWorktreeInboxBaselinePaths: z.array(z.string()).optional(),

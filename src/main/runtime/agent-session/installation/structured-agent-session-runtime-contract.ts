@@ -14,6 +14,8 @@ import type { RuntimeAgentAccountHomeResolver } from '../model-catalog/structure
 import type { ClaudeCliFlagSupport } from '../../../claude/claude-cli-flag-support'
 import type { StructuredAgentSessionLogger } from '../../../native-chat/agent-session-wire/host/structured-agent-session-logger'
 import type { AgentSessionStatusSummary } from '../../../../shared/agent-session/agent-session-wire'
+import type { CodexStructuredLaunchPartDeps } from '../../../codex/structured/launch/codex-structured-launch-resolution'
+import type { ClaudeStructuredLaunchPartDeps } from '../../../claude/structured/launch/claude-structured-launch-resolution'
 import type { AgentSessionTurnCompletionEvent } from '../../../../shared/agent-session/view/agent-session-turn-completion-wire'
 
 export type StructuredAgentSessionRuntimeDeps = StructuredAgentSessionTransportOverrides & {
@@ -51,6 +53,10 @@ export type StructuredAgentSessionRuntimeDeps = StructuredAgentSessionTransportO
   idleSweep?: StructuredAgentSessionHostDeps['idleSweep']
   /** What a chat saved before its agent had modes ran with; fills that chat's mode once. */
   resolveAgentFullAccess?: (agent: string) => boolean
+  /** Topo-managed MCP servers for a workspace's Claude chats; absent hands none. */
+  resolveClaudeTopoMcp?: ClaudeStructuredLaunchPartDeps['resolveTopoMcp']
+  /** Topo-managed MCP servers for a workspace's Codex chats; absent hands none. */
+  resolveCodexTopoMcp?: CodexStructuredLaunchPartDeps['resolveTopoMcp']
   /** The user's per-agent environment overlay from settings, laid over every agent's base env. */
   resolveAgentLaunchEnv?: (agent: string) => Record<string, string>
   /** The settings a per-agent Command override is read from, for the same agents. */
