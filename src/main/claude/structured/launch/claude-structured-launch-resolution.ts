@@ -139,6 +139,10 @@ export type ClaudeStructuredLaunchPartDeps = {
   attachmentDirectory?: string
   /** Omit version-gated flags when support cannot be checked. */
   cliFlags?: Pick<ClaudeCliFlagSupport, 'check'>
+  /** Topo-managed MCP servers for the chat's workspace, as a Claude plugin plus its secret env. */
+  resolveTopoMcp?: (
+    workspaceId: string
+  ) => Promise<{ pluginDir: string; env: Record<string, string> } | null>
   /** Whether Claude wrote a transcript for this id; defaults to the transcript resolver. */
   hasTranscript?: (input: {
     providerSessionId: string
@@ -225,6 +229,7 @@ export function claudeStructuredLaunchPart(
       record.sessionId,
       probeLaunch
     )
+    const topoMcp = (await deps.resolveTopoMcp?.(record.location.workspaceId)) ?? null
     const configured = claudeStructuredLaunchArgs(await deps.resolveLaunchArgs())
     const { thinkingDisplayArgs, visuals } = await launchFlags
     const additionalDirectories = [
@@ -255,6 +260,7 @@ export function claudeStructuredLaunchPart(
         withNativeChatVisualsEnv(
           {
             ...withClaudeArtifactDefault(base),
+            ...topoMcp?.env,
             // The turn translator relies on Claude's authoritative idle frame when no result arrives.
             [CLAUDE_SESSION_STATE_EVENTS_ENV]: '1'
           },
@@ -263,6 +269,9 @@ export function claudeStructuredLaunchPart(
       sources,
       { runtimeOnPath: false }
     )
+    const plugins = [visuals?.pluginDir, topoMcp?.pluginDir]
+      .filter((path): path is string => Boolean(path))
+      .map((path) => ({ type: 'local' as const, path }))
     const accountRecipe = await prepareClaudeLaunchAccount(router, env, accountHome.path)
     const launchHome = accountRecipe.home
     const resumesTranscript = resumedWithoutRouter ?? (await resumes(launchHome))
@@ -288,7 +297,7 @@ export function claudeStructuredLaunchPart(
           ...CLAUDE_STRUCTURED_BASE_OPTIONS,
           ...permission,
           ...(additionalDirectories.length ? { additionalDirectories } : {}),
-          ...(visuals?.pluginDir ? { plugins: [{ type: 'local', path: visuals.pluginDir }] } : {}),
+          ...(plugins.length ? { plugins } : {}),
           extraArgs: {
             ...configured.extraArgs,
             ...CLAUDE_STRUCTURED_BASE_OPTIONS.extraArgs,

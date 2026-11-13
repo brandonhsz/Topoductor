@@ -5,6 +5,7 @@ import { AgentDefaultSurfaceSection } from '../agents/surfaces/AgentDefaultSurfa
 import { ComputerUsePane } from '../computer-use/ComputerUsePane'
 import { LinearAgentSkillPane } from '../skills/linear/LinearAgentSkillPane'
 import { OrchestrationPane } from '../orchestration/OrchestrationPane'
+import { TopoMcpServersPane } from '../mcp/TopoMcpServersPane'
 import { VoicePane } from '../voice/VoicePane'
 import { SettingsSection } from '../section-layout/SettingsSection'
 import { SettingsHostScopeUnavailableNotice } from '../host-scope/SettingsHostScopePicker'
@@ -127,6 +128,29 @@ export function renderOrchestrationSettingsSection(
     >
       {view.isSectionMounted('orchestration') ? (
         <OrchestrationPane settings={model.settings} updateSettings={model.updateSettings} />
+      ) : null}
+    </SettingsSection>
+  )
+}
+
+export function renderMcpServersSettingsSection(
+  context: SettingsRenderContext,
+  t: Translate = translate
+): React.JSX.Element {
+  const { model, navigation, view } = context
+  return (
+    <SettingsSection
+      id="mcp-servers"
+      grouped
+      title={t('components.settings.mcp.title', 'MCP Servers')}
+      description={t(
+        'components.settings.mcp.description',
+        'MCP servers Topo adds when it launches Claude Code, Codex or Cursor.'
+      )}
+      searchEntries={navigation.getSectionSearchEntries('mcp-servers')}
+    >
+      {view.isSectionMounted('mcp-servers') ? (
+        <TopoMcpServersPane settings={model.settings} updateSettings={model.updateSettings} />
       ) : null}
     </SettingsSection>
   )

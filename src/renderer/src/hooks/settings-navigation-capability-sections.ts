@@ -9,6 +9,7 @@ import { getMobileSettingsPaneSearchEntries } from '@/components/settings/mobile
 import { getTopoAccountSettingsSearchEntries } from '@/components/settings/accounts/topo/topo-account-settings-search'
 import { TopoLogoSettingsIcon } from '@/components/settings/page/topo-logo-settings-icon'
 import { getOrchestrationPaneSearchEntries } from '@/components/settings/orchestration/orchestration-search'
+import { getMcpServersPaneSearchEntries } from '@/components/settings/mcp/mcp-servers-search'
 import { getVoicePaneSearchEntries } from '@/components/settings/voice/voice-pane-search'
 import { translate } from '@/i18n/i18n'
 import type { Translate } from '@/i18n/use-translate'
@@ -20,6 +21,7 @@ import {
   Mic,
   MousePointerClick,
   Network,
+  Plug,
   SlidersHorizontal,
   Smartphone,
   UserCog
@@ -72,6 +74,17 @@ export function buildCapabilitySettingsSections(
       searchEntries: getOrchestrationPaneSearchEntries({
         includeLocalRuntimeSettings: !isWebClient
       }),
+      group: 'capabilities'
+    },
+    {
+      id: 'mcp-servers',
+      title: t('components.settings.mcp.title', 'MCP Servers'),
+      description: t(
+        'components.settings.mcp.description',
+        'MCP servers Topo adds when it launches Claude Code, Codex or Cursor.'
+      ),
+      icon: Plug,
+      searchEntries: getMcpServersPaneSearchEntries(),
       group: 'capabilities'
     },
     // Expose only with connected Linear; its skill needs linked provider capability.

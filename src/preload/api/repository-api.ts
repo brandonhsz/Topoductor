@@ -68,6 +68,7 @@ export type RepositoryApi = {
         | 'projectGroupId'
         | 'forkSyncMode'
         | 'agentWorkspaceTrust'
+        | 'mcpServers'
       >
     > & {
       projectGroupOrder?: number | null

@@ -19,6 +19,9 @@ import type { AgentSessionRecord } from '../../../../shared/agent-session/lifecy
 import type { StructuredAgentSessionHostDeps } from '../../../native-chat/agent-session-wire/host/structured-agent-session-host-types'
 import { TopoRuntimeWithStartTuiIdleVisibleReadProbe } from '../../terminal/wait/terminal-wait-visible-probe'
 
+import { prepareClaudeTopoMcp, prepareCodexTopoMcp } from '../../../mcp/topo-mcp-launch'
+import { repoForAgentWorkspace } from '../../../agent-launch/trust/agent-workspace-trust-spawn'
+import { getAppEnvironment } from '../../../../shared/app-environment'
 export abstract class RuntimeStructuredAgentHost extends TopoRuntimeWithStartTuiIdleVisibleReadProbe {
   /** Apply the host-owning desktop's account overlay to configured agent environment. */
   protected structuredAgentLaunchEnv(
@@ -59,6 +62,23 @@ export abstract class RuntimeStructuredAgentHost extends TopoRuntimeWithStartTui
         ? { prepareCodexCatalogProbeHome: this.prepareCodexCatalogProbeHomeFn }
         : {})
     }
+  }
+
+  /** Claude chats get the same Topo MCP servers as Claude terminals in that workspace. */
+  protected resolveClaudeTopoMcp(workspaceId: string) {
+    return prepareClaudeTopoMcp({
+      agent: 'claude',
+      settings: this.requireStore().getSettings(),
+      repo: repoForAgentWorkspace(workspaceId, this.requireStore()),
+      userDataPath: getAppEnvironment().getPath('userData')
+    })
+  }
+
+  protected resolveCodexTopoMcp(workspaceId: string) {
+    return prepareCodexTopoMcp({
+      settings: this.requireStore().getSettings(),
+      repo: repoForAgentWorkspace(workspaceId, this.requireStore())
+    })
   }
 
   async structuredAgentModelCatalog() {

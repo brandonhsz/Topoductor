@@ -8,6 +8,7 @@ import { normalizeGhAccountBinding } from '../../../shared/github/account-bindin
 import { normalizeJiraProjectReference } from '../../../shared/jira/jira-project-reference'
 import type { GhAccountBinding } from '../../../shared/github/account-binding'
 import { sanitizeAgentWorkspaceTrustDecision } from '../../../shared/agent-launch/permissions/agent-workspace-trust-decision'
+import { normalizeTopoMcpServers } from '../../../shared/mcp/topo-mcp-server-types'
 import {
   normalizeCustomWorktreeVisibilitySources,
   normalizeWorktreeVisibilitySourcePreferences
@@ -79,6 +80,7 @@ export function sanitizeRepoUpdatesForPersistence<
       | 'projectHostSetupMethod'
       | 'forkSyncMode'
       | 'agentWorkspaceTrust'
+      | 'mcpServers'
       | 'defaultJiraProject'
       | 'customWorktreeVisibilitySources'
       | 'worktreeVisibilitySourcePreferences'
@@ -162,6 +164,9 @@ export function sanitizeRepoUpdatesForPersistence<
     } else {
       sanitized.agentWorkspaceTrust = agentWorkspaceTrust
     }
+  }
+  if ('mcpServers' in sanitized) {
+    sanitized.mcpServers = normalizeTopoMcpServers(sanitized.mcpServers)
   }
   // Null explicitly clears ghAccount; only malformed shapes are discarded.
   if ('ghAccount' in sanitized && sanitized.ghAccount != null) {

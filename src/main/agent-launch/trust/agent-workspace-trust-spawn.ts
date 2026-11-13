@@ -22,21 +22,29 @@ type AgentWorkspaceTrustSetting =
   | undefined
 
 export type AgentWorkspaceTrustRepoLookup = {
-  getRepo?: (repoId: string) => Pick<Repo, 'agentWorkspaceTrust'> | undefined
+  getRepo?: (repoId: string) => Pick<Repo, 'agentWorkspaceTrust' | 'mcpServers'> | undefined
 }
 
-/** Folder workspaces and floating terminals have no repo, so only the global setting applies. */
-export function agentWorkspaceTrustDecisionForWorkspace(
+/** Folder workspaces and floating terminals have no repo. */
+export function repoForAgentWorkspace(
   workspaceId: string | undefined,
   store: AgentWorkspaceTrustRepoLookup | undefined
-): AgentWorkspaceTrustDecision | undefined {
+): Pick<Repo, 'agentWorkspaceTrust' | 'mcpServers'> | undefined {
   const scope = workspaceId ? parseWorkspaceKey(workspaceId) : null
   if (!workspaceId || scope?.type === 'folder') {
     return undefined
   }
   const worktreeId = scope?.type === 'worktree' ? scope.worktreeId : workspaceId
   const repoId = splitWorktreeId(worktreeId)?.repoId
-  return repoId ? store?.getRepo?.(repoId)?.agentWorkspaceTrust : undefined
+  return repoId ? store?.getRepo?.(repoId) : undefined
+}
+
+/** Without a repo, only the global setting applies. */
+export function agentWorkspaceTrustDecisionForWorkspace(
+  workspaceId: string | undefined,
+  store: AgentWorkspaceTrustRepoLookup | undefined
+): AgentWorkspaceTrustDecision | undefined {
+  return repoForAgentWorkspace(workspaceId, store)?.agentWorkspaceTrust
 }
 
 /** Return null for no-op spawns: an extra async tick can reorder pane reservations. */

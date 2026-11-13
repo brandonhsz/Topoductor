@@ -1,4 +1,4 @@
-import { withClaudeAgentViewPlugin } from '../../../shared/claude-agent-view-launch'
+import { withClaudePluginDir } from '../../../shared/claude-plugin-dir-launch'
 import { resolveStartupShell } from '../../../shared/agent-launch/startup/tui-agent-startup-shell'
 import { resolveLocalWindowsAgentStartupShell } from '../../../shared/windows-terminal-shell'
 import { getAppEnvironment } from '../../../shared/app-environment'
@@ -10,7 +10,11 @@ import { prepareOpenCodePtyLaunch } from '../../opencode/opencode-pty-launch'
 import { LEGACY_TERMINAL_SHIM_REMOTE_ENV_KEYS } from '../../pty/shell-startup/legacy-terminal-shim-dir'
 import { PI_PROCESS_OWNER_ENV_KEYS } from '../../pty/shell-startup/pi-process-owner-env'
 import { planCodexNoDaemonLaunch } from '../../pty/shell-startup/codex-no-daemon-launch-command'
-import { applyAgentWorkspaceTrustToSpawn } from '../../agent-launch/trust/agent-workspace-trust-spawn'
+import {
+  applyAgentWorkspaceTrustToSpawn,
+  repoForAgentWorkspace
+} from '../../agent-launch/trust/agent-workspace-trust-spawn'
+import { applyTopoMcpToTerminalLaunch } from '../../mcp/topo-mcp-launch'
 import type { PtySpawnOptions } from '../../providers/pty-provider-contract'
 import type { CodexAccountSelectionTarget } from '../../codex-accounts/runtime-selection'
 import { getStartupTerminalIngressIntent } from '../terminal-startup-color-query-replies'
@@ -140,12 +144,33 @@ export async function assemblePtySpawnLaunchOptions(input: PtySpawnLaunchOptions
       ? { wsl: { distro: input.expectedWslDistro ?? undefined } }
       : {})
   })
-  const env = openCodeLaunch.env
+  let env = openCodeLaunch.env
   const pluginDir = !connectionId ? env?.TOPO_CLAUDE_AGENT_VIEW_PLUGIN_DIR : undefined
-  const launchCommand =
+  let launchCommand =
     pluginDir && openCodeLaunch.command
-      ? withClaudeAgentViewPlugin(openCodeLaunch.command, pluginDir, shell)
+      ? withClaudePluginDir(openCodeLaunch.command, pluginDir, shell)
       : openCodeLaunch.command
+  // Files live on this host, so a relayed SSH or WSL guest launch cannot reach them.
+  if (
+    launchAgent &&
+    launchCommand &&
+    !connectionId &&
+    input.codexRuntime !== 'wsl' &&
+    !input.preAdoptedStablePane
+  ) {
+    const mcp = await applyTopoMcpToTerminalLaunch({
+      agent: launchAgent,
+      settings: input.getSettings?.(),
+      repo: repoForAgentWorkspace(args.trustWorktreeId ?? args.worktreeId, input.store),
+      userDataPath: getAppEnvironment().getPath('userData'),
+      cwd: input.cwd,
+      command: launchCommand,
+      env,
+      shell
+    })
+    launchCommand = mcp.command
+    env = mcp.env
+  }
   promoteAgentTeamsShimPath(env, input.requestedAgentTeamsPath)
   const spawnOptions: PtySpawnOptions = {
     cols: args.cols,

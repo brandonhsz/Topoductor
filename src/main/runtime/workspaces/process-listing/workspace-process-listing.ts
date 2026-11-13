@@ -266,6 +266,8 @@ export abstract class TopoRuntimeWithGetWorktreePs extends RuntimeChatWorkerEven
       nativeChatVisuals: {
         isEnabled: () => this.requireStore().getSettings().nativeChatInlineVisuals !== false
       },
+      resolveClaudeTopoMcp: (workspaceId) => this.resolveClaudeTopoMcp(workspaceId),
+      resolveCodexTopoMcp: (workspaceId) => this.resolveCodexTopoMcp(workspaceId),
       resolveAgentFullAccess: (agent) =>
         isTuiAgent(agent) &&
         preModeChatGetsFullAccess(agent, this.requireStore().getSettings(), process.platform),

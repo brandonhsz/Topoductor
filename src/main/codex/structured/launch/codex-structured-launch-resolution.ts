@@ -46,6 +46,10 @@ export type CodexStructuredLaunchPartDeps = {
     pathEnv?: string | null
     homePath?: string
   }) => StructuredAgentCommand
+  /** Topo-managed MCP servers for the chat's workspace, as `-c` overrides plus the env they read. */
+  resolveTopoMcp?: (
+    workspaceId: string
+  ) => { configArgs: string[]; env: Record<string, string> } | null
 }
 
 export type CodexStructuredInvocationDeps = Pick<
@@ -135,6 +139,7 @@ export function codexStructuredLaunchPart(
     })
     const environment = await basis.environment()
     const args = codexStructuredLaunchArgs(await deps.resolveLaunchArgs())
+    const topoMcp = deps.resolveTopoMcp?.(record.location.workspaceId) ?? null
     const head = agentSessionProviderHandleChainHead(record.providerHandleChain)
     const resumeThreadId = head?.handle.nativeId ?? null
     // Match the first turn's model to avoid duplicate prompt injection on a model switch.
@@ -160,7 +165,7 @@ export function codexStructuredLaunchPart(
       launch: {
         command,
         prefixArgs,
-        args: [...prefixArgs, ...args, 'app-server'],
+        args: [...prefixArgs, ...args, ...(topoMcp?.configArgs ?? []), 'app-server'],
         codexHome: accountHome.path,
         resumeThreadId,
         // Only created threads may be unsaved; resumed, forked and adopted threads were persisted.
@@ -173,7 +178,11 @@ export function codexStructuredLaunchPart(
         ...(visuals ? { visuals } : {})
       },
       env: withNativeChatVisualsEnv(
-        { ...environment, ...(accountHome.path ? { CODEX_HOME: accountHome.path } : {}) },
+        {
+          ...environment,
+          ...topoMcp?.env,
+          ...(accountHome.path ? { CODEX_HOME: accountHome.path } : {})
+        },
         visuals
       ),
       // Clear inherited scratch paths that may belong to another chat.

@@ -46,6 +46,7 @@ import {
 import { resolveAiVaultSearchSettings } from '../../shared/ai-vault/search/ai-vault-search-settings'
 import { applySessionSearchSettingsChange } from '../ai-vault-search/session-search-enablement'
 import { getRuntimeEnvironmentRegistryRoot } from './runtime-environments/runtime-environment-registry-root'
+import { normalizeTopoMcpServers } from '../../shared/mcp/topo-mcp-server-types'
 
 const SETTINGS_CHANGED_WHITELIST_SET = new Set<string>(SETTINGS_CHANGED_WHITELIST)
 const registryRoot = getRuntimeEnvironmentRegistryRoot
@@ -141,6 +142,9 @@ export function registerSettingsHandlers(
     }
     if ('aiVaultSearch' in args) {
       sanitizedArgs.aiVaultSearch = resolveAiVaultSearchSettings(args)
+    }
+    if ('topoMcpServers' in args) {
+      sanitizedArgs.topoMcpServers = normalizeTopoMcpServers(args.topoMcpServers)
     }
     if ('terminalCustomThemes' in args) {
       sanitizedArgs.terminalCustomThemes = normalizeTerminalCustomThemes(args.terminalCustomThemes)
