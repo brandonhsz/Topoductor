@@ -60,6 +60,15 @@ vi.mock('./use-jira-source-connection', () => ({
   useJiraSourceConnection: () => ({ status: null, loaded: false })
 }))
 vi.mock('./use-jira-url-source', () => ({ useJiraUrlSource: mocks.readJiraSource }))
+vi.mock('../task-page/avenapm/avenapm-connection-store', () => ({
+  useAvenaPMConnection: () => ({
+    status: { connected: false, baseUrl: '' },
+    connecting: false,
+    error: null
+  }),
+  refreshAvenaPMStatus: async () => {},
+  markAvenaPMDisconnected: () => {}
+}))
 vi.mock('../use-jira-project-inventory', () => ({
   useJiraProjectInventory: () => ({ projects: [], connected: true, error: null, loading: false })
 }))

@@ -6,6 +6,7 @@ export type SmartWorkspaceCommandRowKind =
   | 'branch'
   | 'linear'
   | 'jira'
+  | 'avenapm'
   | 'jira-account'
 
 export type SmartWorkspaceCommandRow = {
@@ -13,7 +14,7 @@ export type SmartWorkspaceCommandRow = {
   value: string
 }
 
-export type SmartWorkspaceSourceIntent = 'github' | 'gitlab' | 'linear' | 'jira' | null
+export type SmartWorkspaceSourceIntent = 'github' | 'gitlab' | 'linear' | 'jira' | 'avenapm' | null
 
 export function resolveSmartWorkspaceCommandValue({
   currentValue,
@@ -39,26 +40,9 @@ export function resolveSmartWorkspaceCommandValue({
     return rows.some((row) => row.value === currentValue) ? currentValue : (rows[0]?.value ?? '')
   }
 
-  if (sourceIntent === 'github') {
-    const githubRow = rows.find((row) => row.kind === 'github')
-    if (githubRow) {
-      return githubRow.value
-    }
-  } else if (sourceIntent === 'gitlab') {
-    const gitlabRow = rows.find((row) => row.kind === 'gitlab')
-    if (gitlabRow) {
-      return gitlabRow.value
-    }
-  } else if (sourceIntent === 'linear') {
-    const linearRow = rows.find((row) => row.kind === 'linear')
-    if (linearRow) {
-      return linearRow.value
-    }
-  } else if (sourceIntent === 'jira') {
-    const jiraRow = rows.find((row) => row.kind === 'jira')
-    if (jiraRow) {
-      return jiraRow.value
-    }
+  const intentRow = sourceIntent ? rows.find((row) => row.kind === sourceIntent) : undefined
+  if (intentRow) {
+    return intentRow.value
   }
 
   return rows.some((row) => row.value === currentValue) ? currentValue : rows[0].value

@@ -1,10 +1,12 @@
 import type React from 'react'
 import { CaseSensitive, GitBranch, Github, Gitlab, Sparkles } from 'lucide-react'
 
+import { AvenaPMIcon } from '@/components/icons/AvenaPMIcon'
 import { JiraIcon } from '@/components/icons/JiraIcon'
 import { translate } from '@/i18n/i18n'
 import type { Translate } from '@/i18n/use-translate'
 import type { SmartNameMode } from '../../../../shared/new-workspace/smart-workspace-source-results'
+import { isTaskProvider, type TaskProvider } from '../../../../shared/work-items/task-providers'
 
 export type MrStateFilter = 'opened' | 'merged' | 'closed' | 'all'
 
@@ -45,35 +47,47 @@ export function getMrStateFilters(
   ]
 }
 
+type ModeTab = Omit<SmartWorkspaceNameModeOption, 'id'>
+
+/** Keyed by TaskProvider: a new connector fails typecheck until it has a composer tab. */
+function getTaskProviderModes(t: Translate): Record<TaskProvider, ModeTab> {
+  return {
+    github: {
+      label: t('auto.components.new.workspace.SmartWorkspaceNameField.0a180280bd', 'GitHub'),
+      Icon: Github
+    },
+    linear: {
+      label: t('auto.components.new.workspace.SmartWorkspaceNameField.7a47af0565', 'Linear'),
+      Icon: LinearModeIcon
+    },
+    jira: {
+      label: t('auto.components.new.workspace.SmartWorkspaceNameField.jiraMode', 'Jira'),
+      Icon: JiraIcon
+    },
+    avenapm: {
+      label: t('auto.components.new.workspace.SmartWorkspaceNameField.avenapmMode', 'AvenaPM'),
+      Icon: AvenaPMIcon
+    },
+    gitlab: {
+      label: t('auto.components.new.workspace.SmartWorkspaceNameField.2cfc6be192', 'GitLab'),
+      Icon: Gitlab
+    }
+  }
+}
+
 export function getSmartWorkspaceNameModes(
   t: Translate = translate
 ): SmartWorkspaceNameModeOption[] {
+  const providers = Object.entries(getTaskProviderModes(t)).flatMap(([id, tab]) =>
+    isTaskProvider(id) ? [{ id, ...tab }] : []
+  )
   return [
     {
       id: 'smart',
       label: t('auto.components.new.workspace.SmartWorkspaceNameField.b3c60c2b7c', 'Smart'),
       Icon: Sparkles
     },
-    {
-      id: 'github',
-      label: t('auto.components.new.workspace.SmartWorkspaceNameField.0a180280bd', 'GitHub'),
-      Icon: Github
-    },
-    {
-      id: 'linear',
-      label: t('auto.components.new.workspace.SmartWorkspaceNameField.7a47af0565', 'Linear'),
-      Icon: LinearModeIcon
-    },
-    {
-      id: 'jira',
-      label: t('auto.components.new.workspace.SmartWorkspaceNameField.jiraMode', 'Jira'),
-      Icon: JiraIcon
-    },
-    {
-      id: 'gitlab',
-      label: t('auto.components.new.workspace.SmartWorkspaceNameField.2cfc6be192', 'GitLab'),
-      Icon: Gitlab
-    },
+    ...providers,
     {
       id: 'branches',
       label: t('auto.components.new.workspace.SmartWorkspaceNameField.2e4c7c95fe', 'Branch'),

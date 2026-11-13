@@ -219,6 +219,15 @@ vi.mock('../../src/renderer/src/components/new-workspace/use-jira-source-connect
 vi.mock('../../src/renderer/src/components/new-workspace/use-jira-url-source', () => ({
   useJiraUrlSource: () => ({ intent: false })
 }))
+vi.mock('../../src/renderer/src/components/task-page/avenapm/avenapm-connection-store', () => ({
+  useAvenaPMConnection: () => ({
+    status: { connected: false, baseUrl: '' },
+    connecting: false,
+    error: null
+  }),
+  refreshAvenaPMStatus: async () => {},
+  markAvenaPMDisconnected: () => {}
+}))
 vi.mock('../../src/renderer/src/components/use-jira-project-inventory', () => ({
   useJiraProjectInventory: () => ({ projects: [], connected: true, error: null, loading: false })
 }))

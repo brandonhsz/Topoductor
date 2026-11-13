@@ -8,17 +8,11 @@ import {
   isSmartWorkspaceLinearIssueIntentMatch,
   parseBoundedSmartWorkspaceLinearIssueUrlIntent
 } from './smart-workspace-linear-intent'
+import type { SmartNameMode } from './smart-workspace-source-results'
 
 export type SmartWorkspaceGitLabUrlIntent = NonNullable<ReturnType<typeof parseGitLabIssueOrMRLink>>
 
-type SmartWorkspaceUrlSourceMode =
-  | 'smart'
-  | 'github'
-  | 'gitlab'
-  | 'branches'
-  | 'linear'
-  | 'jira'
-  | 'text'
+type SmartWorkspaceUrlSourceMode = SmartNameMode
 
 export type SmartWorkspaceUrlSourceRow =
   | { kind: 'use-name'; value: 'use-name'; name: string }

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { LinearIcon } from '@/components/icons/LinearIcon'
 import { JiraIcon } from '@/components/icons/JiraIcon'
+import { AvenaPMIcon } from '@/components/icons/AvenaPMIcon'
 import { Trans } from 'react-i18next'
 import { i18n } from '@/i18n/i18n'
 import { useTranslate } from '@/i18n/use-translate'
@@ -41,6 +42,9 @@ export function RowIcon({ row }: { row: RowEntry }): React.JSX.Element {
   }
   if (row.kind === 'jira' || row.kind === 'jira-account') {
     return <JiraIcon className="size-3.5 shrink-0 text-muted-foreground" />
+  }
+  if (row.kind === 'avenapm') {
+    return <AvenaPMIcon className="size-3.5 shrink-0 text-muted-foreground" />
   }
   return <LinearIcon className="size-3.5 shrink-0 text-muted-foreground" />
 }
@@ -142,6 +146,16 @@ export function RowLabel({
         {showJiraSiteContext && siteLabel ? (
           <span className="text-muted-foreground"> — {siteLabel}</span>
         ) : null}
+      </span>
+    )
+  }
+  if (row.kind === 'avenapm') {
+    return (
+      <span className="min-w-0 truncate">
+        {row.task.shortId ? (
+          <span className="font-medium text-foreground">{row.task.shortId} </span>
+        ) : null}
+        {row.task.title}
       </span>
     )
   }

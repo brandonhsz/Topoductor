@@ -8,7 +8,11 @@ import {
   parseBoundedSmartWorkspaceLinearIssueUrlIntent,
   prioritizeSmartWorkspaceLinearIssueResults
 } from '../../../../shared/new-workspace/smart-workspace-linear-intent'
-import { resolveSmartWorkspaceCommandValue } from './smart-workspace-command-value'
+import {
+  resolveSmartWorkspaceCommandValue,
+  type SmartWorkspaceSourceIntent
+} from './smart-workspace-command-value'
+import { getAvenaPMComposerTasks } from './use-avenapm-composer-source'
 import {
   buildSmartWorkspaceSourceRows,
   getVisibleBranchResults,
@@ -45,6 +49,8 @@ export function useWorkItemSourcePresentation(
     gitlabSourceAvailable,
     gitlabItems,
     jiraIssues,
+    avenapmTasks,
+    avenapmLoading,
     linearAvailable,
     linearStatusChecked,
     linearIssues,
@@ -119,6 +125,7 @@ export function useWorkItemSourcePresentation(
         value,
         debouncedQuery
       }),
+      avenapmTasks: getAvenaPMComposerTasks(avenapmTasks, mode, value),
       linearAvailable: linearAvailable && !linearUrlLookupFailed,
       linearIssues: prioritizeSmartWorkspaceLinearIssueResults(
         value,
@@ -152,6 +159,7 @@ export function useWorkItemSourcePresentation(
     jiraSource.intent,
     jiraSource.issue,
     jiraIssues,
+    avenapmTasks,
     linearAvailable,
     linearIssues,
     linearUrlIntentOwnsInput,
@@ -176,7 +184,7 @@ export function useWorkItemSourcePresentation(
   const isQueryStale =
     !linearUrlIntentOwnsInput && trimmedValue.length > 0 && trimmedDebouncedQuery !== trimmedValue
   // Why: unambiguous refs highlight their source row instead of the typed-text fallback.
-  const sourceIntent = useMemo<'github' | 'gitlab' | 'linear' | 'jira' | null>(() => {
+  const sourceIntent = useMemo<SmartWorkspaceSourceIntent>(() => {
     if (!isSmartWorkspaceSourceQueryWithinLimit(value)) {
       return null
     }
@@ -193,6 +201,10 @@ export function useWorkItemSourcePresentation(
     if (parseGitLabIssueOrMRLink(trimmed) !== null) {
       return 'gitlab'
     }
+    // Why: a typed ticket ID only yields AvenaPM rows when it exactly matches one.
+    if (mode === 'smart' && rows.some((row) => row.kind === 'avenapm')) {
+      return 'avenapm'
+    }
     if (linearAvailable) {
       const linearIntent = parseBoundedSmartWorkspaceLinearIssueInput(trimmed)
       if (
@@ -206,7 +218,7 @@ export function useWorkItemSourcePresentation(
       }
     }
     return null
-  }, [jiraSource.intent, linearAvailable, rows, value])
+  }, [jiraSource.intent, linearAvailable, mode, rows, value])
   // Why: a slow host status read must not let Enter accept a pasted Linear URL as plain text.
   const unresolvedLinearUrlIntent =
     linearUrlIntentOwnsInput &&
@@ -238,7 +250,12 @@ export function useWorkItemSourcePresentation(
     linearLoading && (!linearUrlIntentOwnsInput || showLinearUrlLoadingFeedback)
   const loading = jiraSource.intent
     ? jiraSource.loading
-    : githubLoading || gitlabLoading || branchesLoading || visibleLinearLoading || jiraLoading
+    : githubLoading ||
+      gitlabLoading ||
+      branchesLoading ||
+      visibleLinearLoading ||
+      jiraLoading ||
+      avenapmLoading
   // Why: only spin on first load, not refreshes with retained rows.
   const showSearchSpinner = loading && searchResultRows.length === 0
   const ActiveInputIcon =
