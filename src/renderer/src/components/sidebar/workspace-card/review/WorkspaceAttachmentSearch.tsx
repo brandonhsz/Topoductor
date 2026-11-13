@@ -94,7 +94,8 @@ export function WorkspaceAttachmentSearch({
     githubSourceContext: contexts.github,
     linearSourceContext: contexts.linear,
     gitlabSourceContext: contexts.gitlab,
-    jiraSourceContext: contexts.jira
+    jiraSourceContext: contexts.jira,
+    avenapmEnabled: false
   })
   const toAttachment = controller.resolveRow
   const linked = (row: RowEntry): boolean => {

@@ -36,7 +36,8 @@ beforeEach(() => {
     },
     sparsePresets: { list: vi.fn(async () => []) },
     worktrees: { listRetiredNames: vi.fn(async () => ({ names: [], exhaustedTiers: 0 })) },
-    preflight: { detectAgents: vi.fn(async () => []) }
+    preflight: { detectAgents: vi.fn(async () => []) },
+    avenapm: { status: vi.fn(async () => ({ connected: false, baseUrl: '' })) }
   })
   useAppStore.setState({
     repos: [

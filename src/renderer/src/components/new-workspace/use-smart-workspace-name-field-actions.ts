@@ -22,6 +22,7 @@ import type { useSmartWorkspaceFieldFocusControls } from './use-smart-workspace-
 import { useAppStore } from '@/store'
 import type { useWorkItemSourcePresentation } from './use-work-item-source-presentation'
 import { openAppHttpLink } from '@/lib/browser/navigation/app-http-link-open'
+import { getAvenaPMTaskWorkspaceSeed } from '../task-page/avenapm/avenapm-task-workspace'
 
 type Foundation = ReturnType<typeof useWorkItemSourceSearch> &
   SmartWorkspaceNameFieldProps &
@@ -101,6 +102,9 @@ export function useSmartWorkspaceNameFieldActions(
           return
         }
         onJiraIssueSelect?.(row.issue, sourceContext)
+      } else if (row.kind === 'avenapm') {
+        // Same seed the AvenaPM task page prefills, so both entry points name workspaces alike.
+        onValueChange(getAvenaPMTaskWorkspaceSeed(row.task))
       } else {
         onLinearIssueSelect(row.issue)
       }

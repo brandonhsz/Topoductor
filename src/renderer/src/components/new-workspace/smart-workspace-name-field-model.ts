@@ -110,6 +110,8 @@ export type WorkItemSourceSearchProps = Pick<
   gitlabEnabled?: boolean
   typedTextEnabled?: boolean
   defaultLinearWorkspaceId?: string
+  /** Off where rows must persist as workspace attachments, which AvenaPM tickets can't yet. */
+  avenapmEnabled?: boolean
 }
 export type NormalizedWorkItemSourceSearchProps = WorkItemSourceSearchProps & {
   disabled: boolean

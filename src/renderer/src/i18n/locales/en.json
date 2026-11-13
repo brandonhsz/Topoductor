@@ -15761,6 +15761,8 @@
             "retryJira": "Retry",
             "searchJira": "Search Jira issues or paste an issue URL",
             "jiraMode": "Jira",
+            "avenapmMode": "AvenaPM",
+            "searchAvenaPM": "Search AvenaPM tickets by ID or title",
             "jiraSelectBindFailed": "Couldn’t link this Jira issue. Pick the matching site or reconnect Jira, then try again.",
             "emoji": "Emoji",
             "loadingLinearIssue": "Loading Linear issue…",

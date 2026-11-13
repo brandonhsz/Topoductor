@@ -1,5 +1,9 @@
 import { useEffect, useMemo } from 'react'
-import { filterAvailableTaskProviders } from '../../../../shared/work-items/task-providers'
+import {
+  filterAvailableTaskProviders,
+  isTaskProvider,
+  type TaskProvider
+} from '../../../../shared/work-items/task-providers'
 import type { ExecutionHostId } from '../../../../shared/execution-host'
 import { getMrStateFilters, getSmartWorkspaceNameModes } from './smart-workspace-localized-options'
 import {
@@ -25,7 +29,8 @@ export function useSmartWorkspaceFieldAvailability({
   linearStatusChecked,
   linearStatusPending,
   checkLinearConnection,
-  jiraSourceConnected
+  jiraSourceConnected,
+  avenapmSourceConnected
 }: {
   props: NormalizedWorkItemSourceSearchProps
   state: FieldState
@@ -43,6 +48,7 @@ export function useSmartWorkspaceFieldAvailability({
   linearStatusPending: boolean
   checkLinearConnection: () => Promise<void>
   jiraSourceConnected: boolean
+  avenapmSourceConnected: boolean
 }) {
   const t = useTranslate()
   const { disabled, textOnly, repoBackedSourcesDisabled, branchesEnabled, value } = props
@@ -65,21 +71,20 @@ export function useSmartWorkspaceFieldAvailability({
     [gitlabSourceAvailable, linearStatus.connected]
   )
   const linearAvailable = availableTaskProviders.includes('linear')
+  // Why: a Record forces every new task connector to decide when its composer tab shows.
+  const providerModeAvailable: Record<TaskProvider, boolean> = {
+    github: !repoBackedSourcesDisabled,
+    gitlab: gitlabSourceAvailable,
+    linear: linearAvailable,
+    jira: jiraSourceConnected,
+    avenapm: avenapmSourceConnected
+  }
   const availableModes = getSmartWorkspaceNameModes(t).filter((item) => {
     if (textOnly) {
       return item.id === 'text'
     }
-    if (item.id === 'github') {
-      return !repoBackedSourcesDisabled
-    }
-    if (item.id === 'gitlab') {
-      return gitlabSourceAvailable
-    }
-    if (item.id === 'linear') {
-      return linearAvailable
-    }
-    if (item.id === 'jira') {
-      return jiraSourceConnected
+    if (isTaskProvider(item.id)) {
+      return providerModeAvailable[item.id]
     }
     if (item.id === 'branches') {
       return branchesEnabled && !repoBackedSourcesDisabled

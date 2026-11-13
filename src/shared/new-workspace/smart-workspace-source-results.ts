@@ -1,5 +1,6 @@
 import type { GitHubWorkItem } from '../github/work-item-types'
 import type { GitLabWorkItem } from '../gitlab-types'
+import type { AvenaPMTask } from '../avenapm/avenapm-types'
 import type { JiraIssue } from '../jira/jira-types'
 import type { LinearIssue } from '../linear/issue-types'
 import type { LinearCollectionResult } from '../linear/workspace-types'
@@ -7,6 +8,7 @@ import type { BaseRefSearchResult } from '../repo-types'
 import { parseJiraIssueUrl } from '../jira/jira-issue-url'
 import { buildJiraTextMatchJql } from '../jira/jira-search-input-jql'
 import type { GitHubIssueOrPRLink } from '../github/links'
+import type { TaskProvider } from '../work-items/task-providers'
 import {
   buildSmartWorkspaceUrlSourceRows,
   type SmartWorkspaceGitLabUrlIntent
@@ -18,7 +20,8 @@ export {
   isSmartWorkspaceSourceQueryWithinLimit
 } from './smart-workspace-source-query'
 
-export type SmartNameMode = 'smart' | 'github' | 'gitlab' | 'branches' | 'linear' | 'jira' | 'text'
+/** Every task connector is a mode, so a new provider cannot ship without its composer tab. */
+export type SmartNameMode = 'smart' | 'branches' | 'text' | TaskProvider
 
 export type SmartWorkspaceSourceRow =
   | { kind: 'use-name'; value: string; name: string }
@@ -28,6 +31,7 @@ export type SmartWorkspaceSourceRow =
   | { kind: 'branch'; value: string; refName: string; localBranchName: string }
   | { kind: 'linear'; value: string; issue: LinearIssue }
   | { kind: 'jira'; value: string; issue: JiraIssue }
+  | { kind: 'avenapm'; value: string; task: AvenaPMTask }
 
 type LinearIssueSourceInput = LinearIssue[] | LinearCollectionResult<LinearIssue> | null | undefined
 
@@ -38,6 +42,7 @@ const EMPTY_HINT_BY_MODE: Record<SmartNameMode, string> = {
   branches: 'No matching branches.',
   linear: 'Start typing to search Linear issues.',
   jira: 'Start typing to search Jira issues, or paste an issue URL.',
+  avenapm: 'Start typing to search AvenaPM tickets.',
   text: ''
 }
 
@@ -202,6 +207,7 @@ export function buildSmartWorkspaceSourceRows({
   jiraIntent = false,
   jiraIssue,
   jiraIssues = [],
+  avenapmTasks = [],
   linearAvailable,
   linearIssues,
   linearUrlIntentOwnsResults = false,
@@ -218,6 +224,8 @@ export function buildSmartWorkspaceSourceRows({
   jiraIntent?: boolean
   jiraIssue?: JiraIssue | null
   jiraIssues?: JiraIssue[]
+  /** Already matched to the query by the caller; AvenaPM has no server-side search. */
+  avenapmTasks?: AvenaPMTask[]
   linearAvailable: boolean
   linearIssues: LinearIssueSourceInput
   linearUrlIntentOwnsResults?: boolean
@@ -304,6 +312,15 @@ export function buildSmartWorkspaceSourceRows({
   }
   if (mode === 'jira') {
     nextRows.push(...jiraIssues.map(toJiraSourceRow))
+  }
+  if (mode === 'smart' || mode === 'avenapm') {
+    nextRows.push(
+      ...avenapmTasks.map((task) => ({
+        kind: 'avenapm' as const,
+        value: `avenapm-${task.id}`,
+        task
+      }))
+    )
   }
   return nextRows.slice(0, resultLimit + 1)
 }

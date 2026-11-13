@@ -26,6 +26,7 @@ import { useSmartWorkspaceFieldAvailability } from './use-smart-workspace-field-
 import { useWorkItemSourceState } from './use-work-item-source-state'
 import { useJiraComposerProject } from './use-jira-composer-project'
 import { useComposerSourceScope } from './use-composer-source-scope'
+import { useAvenaPMComposerSource } from './use-avenapm-composer-source'
 
 export function useWorkItemSourceFoundation(props: NormalizedWorkItemSourceSearchProps) {
   const {
@@ -202,6 +203,7 @@ export function useWorkItemSourceFoundation(props: NormalizedWorkItemSourceSearc
   )
   const showJiraSiteContext =
     state.mode === 'jira' && jiraConnectionStatus?.selectedSiteId === 'all'
+  const avenapmSource = useAvenaPMComposerSource(props, state.mode)
   const jiraStatusId = React.useId()
   const linearStatusId = React.useId()
   const availability = useSmartWorkspaceFieldAvailability({
@@ -218,7 +220,8 @@ export function useWorkItemSourceFoundation(props: NormalizedWorkItemSourceSearc
     linearStatusChecked: hasLinearSearchSource || linearStatusChecked,
     linearStatusPending: hasLinearSearchSource && !linearConnection.loaded,
     checkLinearConnection,
-    jiraSourceConnected
+    jiraSourceConnected,
+    avenapmSourceConnected: avenapmSource.avenapmConnected
   })
   const linearUrlIntentOwnsInput =
     parseBoundedSmartWorkspaceLinearIssueUrlIntent(value) !== null &&
@@ -292,6 +295,7 @@ export function useWorkItemSourceFoundation(props: NormalizedWorkItemSourceSearc
     jiraSourceConnected,
     ...jiraProject,
     showJiraSiteContext,
+    ...avenapmSource,
     jiraStatusId,
     linearStatusId
   }

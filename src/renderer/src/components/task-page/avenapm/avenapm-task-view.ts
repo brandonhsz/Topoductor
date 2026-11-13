@@ -88,7 +88,7 @@ function matchesAssignee(
   }
 }
 
-function matchesSearch(task: AvenaPMTask, search: string): boolean {
+export function matchesAvenaPMTaskSearch(task: AvenaPMTask, search: string): boolean {
   const needle = search.trim().toLowerCase()
   if (!needle) {
     return true
@@ -111,7 +111,7 @@ export function filterAvenaPMTasks(
       (statuses === null || statuses.includes(task.status)) &&
       matchesAssignee(task, view.assignee, myEmail) &&
       (view.classifications.length === 0 || view.classifications.includes(task.classification)) &&
-      matchesSearch(task, view.search)
+      matchesAvenaPMTaskSearch(task, view.search)
   )
 }
 
