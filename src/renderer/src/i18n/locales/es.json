@@ -20929,7 +20929,8 @@
         "auto": "Automático (desde el origen)",
         "fromSource": "Vacío: se toma del issue, ticket o nombre del workspace",
         "flow": "Flujo de Harness [Opcional]",
-        "none": "Ninguno"
+        "none": "Ninguno",
+        "optional": "Opcional"
       },
       "openWorkspace": "Abrir workspace con este flujo",
       "chatTask": {

@@ -73,10 +73,14 @@ function FieldInput({
           id={id}
           rows={2}
           value={value}
-          placeholder={t(
-            'components.harness.composer.fromSource',
-            'Empty: taken from the issue, ticket or workspace name'
-          )}
+          placeholder={
+            field.optional
+              ? t('components.harness.composer.optional', 'Optional')
+              : t(
+                  'components.harness.composer.fromSource',
+                  'Empty: taken from the issue, ticket or workspace name'
+                )
+          }
           onChange={(event) => onChange(event.target.value)}
         />
       )}

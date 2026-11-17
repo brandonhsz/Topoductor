@@ -21889,7 +21889,8 @@
         "auto": "Automatic (from the source)",
         "fromSource": "Empty: taken from the issue, ticket or workspace name",
         "flow": "Harness flow [Optional]",
-        "none": "None"
+        "none": "None",
+        "optional": "Optional"
       },
       "openWorkspace": "Open a workspace with this flow",
       "chatTask": {
