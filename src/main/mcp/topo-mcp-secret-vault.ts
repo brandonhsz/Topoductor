@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, statSync } from 'node:fs'
+import { readFile, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { getAppEnvironment } from '../../shared/app-environment'
 import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
@@ -16,17 +16,18 @@ function vaultPath(): string {
   return join(getAppEnvironment().getPath('userData'), 'mcp-secrets.json.enc')
 }
 
+function isMissing(error: unknown): boolean {
+  return asRecord(error)?.code === 'ENOENT'
+}
+
 /** Null means unreadable, never empty: rewriting it would drop every other secret. */
-function readVault(): VaultFile | null {
+async function readVault(): Promise<VaultFile | null> {
   const path = vaultPath()
   try {
-    if (!existsSync(path)) {
-      return { version: 1, ciphertexts: {} }
-    }
-    if (statSync(path).size > MAX_BYTES) {
+    if ((await stat(path)).size > MAX_BYTES) {
       return null
     }
-    const parsed = asRecord(JSON.parse(readFileSync(path, 'utf8')))
+    const parsed = asRecord(JSON.parse(await readFile(path, 'utf8')))
     const ciphertexts = asRecord(parsed?.ciphertexts)
     if (parsed?.version === 1 && ciphertexts) {
       return {
@@ -39,6 +40,9 @@ function readVault(): VaultFile | null {
       }
     }
   } catch (error) {
+    if (isMissing(error)) {
+      return { version: 1, ciphertexts: {} }
+    }
     if (isUnreadableError(error)) {
       return null
     }
@@ -46,9 +50,16 @@ function readVault(): VaultFile | null {
   return { version: 1, ciphertexts: {} }
 }
 
-/** Secret env and header values for Topo-managed MCP servers, keyed by `topoMcpSecretKey`. */
-export function readTopoMcpSecret(key: string): string | null {
-  const cipher = readVault()?.ciphertexts[key]
+let writes: Promise<unknown> = Promise.resolve()
+
+/** Serializes read-modify-write so two secret saves never drop each other. */
+function serialized<T>(task: () => Promise<T>): Promise<T> {
+  const next = writes.then(task, task)
+  writes = next.catch(() => {})
+  return next
+}
+
+function decrypt(cipher: string | undefined): string | null {
   if (typeof cipher !== 'string' || !hasSecretStore()) {
     return null
   }
@@ -63,36 +74,49 @@ export function readTopoMcpSecret(key: string): string | null {
   }
 }
 
-export function hasTopoMcpSecret(key: string): boolean {
-  return typeof readVault()?.ciphertexts[key] === 'string'
+/** Reads the vault once per launch; the returned lookup decrypts `topoMcpSecretKey` entries. */
+export async function loadTopoMcpSecretReader(): Promise<(key: string) => string | null> {
+  const ciphertexts = (await readVault())?.ciphertexts ?? {}
+  return (key) => decrypt(ciphertexts[key])
+}
+
+export async function hasTopoMcpSecret(key: string): Promise<boolean> {
+  return typeof (await readVault())?.ciphertexts[key] === 'string'
 }
 
 // Never fall back to plaintext: a weak or missing keyring refuses the write instead.
-export function writeTopoMcpSecret(key: string, value: string): TopoMcpSecretResult<true> {
-  const store = hasSecretStore() ? getSecretStore() : null
-  if (!store?.isEncryptionAvailable()) {
-    return { ok: false, error: 'OS-backed encryption is unavailable; secret not stored' }
-  }
-  const gap = store.describeProtectionGap()
-  if (gap) {
-    return { ok: false, error: gap }
-  }
-  const vault = readVault()
-  if (!vault) {
-    return { ok: false, error: UNREADABLE }
-  }
-  if (!Object.hasOwn(vault.ciphertexts, key) && Object.keys(vault.ciphertexts).length >= MAX_KEYS) {
-    return { ok: false, error: `MCP secret vault exceeds the ${MAX_KEYS}-key limit` }
-  }
-  vault.ciphertexts[key] = store.encryptString(value).toString('base64')
-  writeSecureFile(vaultPath(), JSON.stringify(vault, null, 2))
-  return { ok: true, value: true }
+export function writeTopoMcpSecret(key: string, value: string): Promise<TopoMcpSecretResult<true>> {
+  return serialized(async () => {
+    const store = hasSecretStore() ? getSecretStore() : null
+    if (!store?.isEncryptionAvailable()) {
+      return { ok: false, error: 'OS-backed encryption is unavailable; secret not stored' }
+    }
+    const gap = store.describeProtectionGap()
+    if (gap) {
+      return { ok: false, error: gap }
+    }
+    const vault = await readVault()
+    if (!vault) {
+      return { ok: false, error: UNREADABLE }
+    }
+    if (
+      !Object.hasOwn(vault.ciphertexts, key) &&
+      Object.keys(vault.ciphertexts).length >= MAX_KEYS
+    ) {
+      return { ok: false, error: `MCP secret vault exceeds the ${MAX_KEYS}-key limit` }
+    }
+    vault.ciphertexts[key] = store.encryptString(value).toString('base64')
+    writeSecureFile(vaultPath(), JSON.stringify(vault, null, 2))
+    return { ok: true, value: true }
+  })
 }
 
-export function deleteTopoMcpSecret(key: string): void {
-  const vault = readVault()
-  if (vault && Object.hasOwn(vault.ciphertexts, key)) {
-    delete vault.ciphertexts[key]
-    writeSecureFile(vaultPath(), JSON.stringify(vault, null, 2))
-  }
+export function deleteTopoMcpSecret(key: string): Promise<void> {
+  return serialized(async () => {
+    const vault = await readVault()
+    if (vault && Object.hasOwn(vault.ciphertexts, key)) {
+      delete vault.ciphertexts[key]
+      writeSecureFile(vaultPath(), JSON.stringify(vault, null, 2))
+    }
+  })
 }

@@ -15,31 +15,34 @@ function secretKey(value: unknown): string | null {
 
 /** The renderer may write, delete and ask which secrets exist; values never travel back to it. */
 export function registerTopoMcpHandlers(): void {
-  ipcMain.handle('topoMcp:secretStatus', (_event, keys: unknown): Record<string, boolean> => {
-    const status: Record<string, boolean> = {}
-    for (const raw of Array.isArray(keys) ? keys.slice(0, 512) : []) {
-      const key = secretKey(raw)
-      if (key) {
-        status[key] = hasTopoMcpSecret(key)
+  ipcMain.handle(
+    'topoMcp:secretStatus',
+    async (_event, keys: unknown): Promise<Record<string, boolean>> => {
+      const status: Record<string, boolean> = {}
+      for (const raw of Array.isArray(keys) ? keys.slice(0, 512) : []) {
+        const key = secretKey(raw)
+        if (key) {
+          status[key] = await hasTopoMcpSecret(key)
+        }
       }
+      return status
     }
-    return status
-  })
+  )
   ipcMain.handle(
     'topoMcp:setSecret',
-    (_event, rawKey: unknown, value: unknown): TopoMcpSecretWriteResult => {
+    async (_event, rawKey: unknown, value: unknown): Promise<TopoMcpSecretWriteResult> => {
       const key = secretKey(rawKey)
       if (!key || typeof value !== 'string' || !value || value.length > MAX_SECRET_LENGTH) {
         return { ok: false, error: 'invalid secret' }
       }
-      const result = writeTopoMcpSecret(key, value)
+      const result = await writeTopoMcpSecret(key, value)
       return result.ok ? { ok: true } : { ok: false, error: result.error }
     }
   )
-  ipcMain.handle('topoMcp:deleteSecret', (_event, rawKey: unknown): void => {
+  ipcMain.handle('topoMcp:deleteSecret', async (_event, rawKey: unknown): Promise<void> => {
     const key = secretKey(rawKey)
     if (key) {
-      deleteTopoMcpSecret(key)
+      await deleteTopoMcpSecret(key)
     }
   })
 }

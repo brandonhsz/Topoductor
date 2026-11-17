@@ -49,7 +49,7 @@ export type CodexStructuredLaunchPartDeps = {
   /** Topo-managed MCP servers for the chat's workspace, as `-c` overrides plus the env they read. */
   resolveTopoMcp?: (
     workspaceId: string
-  ) => { configArgs: string[]; env: Record<string, string> } | null
+  ) => Promise<{ configArgs: string[]; env: Record<string, string> } | null>
 }
 
 export type CodexStructuredInvocationDeps = Pick<
@@ -139,7 +139,7 @@ export function codexStructuredLaunchPart(
     })
     const environment = await basis.environment()
     const args = codexStructuredLaunchArgs(await deps.resolveLaunchArgs())
-    const topoMcp = deps.resolveTopoMcp?.(record.location.workspaceId) ?? null
+    const topoMcp = (await deps.resolveTopoMcp?.(record.location.workspaceId)) ?? null
     const head = agentSessionProviderHandleChainHead(record.providerHandleChain)
     const resumeThreadId = head?.handle.nativeId ?? null
     // Match the first turn's model to avoid duplicate prompt injection on a model switch.

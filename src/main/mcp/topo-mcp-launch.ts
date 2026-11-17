@@ -12,7 +12,7 @@ import {
 import type { Repo } from '../../shared/repo-types'
 import { ensureClaudeTopoMcpPlugin } from './claude-topo-mcp-plugin'
 import { syncCursorTopoMcpFile } from './cursor-topo-mcp-file'
-import { readTopoMcpSecret } from './topo-mcp-secret-vault'
+import { loadTopoMcpSecretReader } from './topo-mcp-secret-vault'
 
 /** Agents whose launches Topo can hand MCP servers to. */
 const TOPO_MCP_AGENTS: ReadonlySet<TuiAgent> = new Set([
@@ -27,9 +27,9 @@ type TopoMcpScope = {
   repo: Pick<Repo, 'mcpServers'> | undefined
 }
 
-export function resolveTopoMcpLaunch(
+export async function resolveTopoMcpLaunch(
   args: TopoMcpScope & { agent: TuiAgent }
-): TopoMcpLaunch | null {
+): Promise<TopoMcpLaunch | null> {
   if (!TOPO_MCP_AGENTS.has(args.agent)) {
     return null
   }
@@ -38,14 +38,14 @@ export function resolveTopoMcpLaunch(
     repo: args.repo?.mcpServers,
     agent: args.agent
   })
-  return servers.length ? buildTopoMcpLaunch(servers, readTopoMcpSecret) : null
+  return servers.length ? buildTopoMcpLaunch(servers, await loadTopoMcpSecretReader()) : null
 }
 
 /** Claude's plugin folder for this launch plus the secret env it expands; null when nothing applies. */
 export async function prepareClaudeTopoMcp(
   args: TopoMcpScope & { agent?: TuiAgent; userDataPath: string }
 ): Promise<{ pluginDir: string; env: Record<string, string> } | null> {
-  const launch = resolveTopoMcpLaunch({ ...args, agent: args.agent ?? 'claude' })
+  const launch = await resolveTopoMcpLaunch({ ...args, agent: args.agent ?? 'claude' })
   const pluginDir = launch
     ? await ensureClaudeTopoMcpPlugin(args.userDataPath, launch.servers)
     : null
@@ -53,10 +53,10 @@ export async function prepareClaudeTopoMcp(
 }
 
 /** Codex `-c` overrides for this launch plus the env they read; null when nothing applies. */
-export function prepareCodexTopoMcp(
+export async function prepareCodexTopoMcp(
   args: TopoMcpScope
-): { configArgs: string[]; env: Record<string, string> } | null {
-  const launch = resolveTopoMcpLaunch({ ...args, agent: 'codex' })
+): Promise<{ configArgs: string[]; env: Record<string, string> } | null> {
+  const launch = await resolveTopoMcpLaunch({ ...args, agent: 'codex' })
   return launch ? codexTopoMcpLaunch(launch) : null
 }
 
@@ -77,7 +77,7 @@ export async function applyTopoMcpToTerminalLaunch(
   }
   let prepared: { command: string; env: Record<string, string> } | null = null
   if (args.agent === 'codex') {
-    const codex = prepareCodexTopoMcp(args)
+    const codex = await prepareCodexTopoMcp(args)
     prepared = codex
       ? { command: withCodexArgs(args.command, codex.configArgs, args.shell), env: codex.env }
       : null
@@ -109,7 +109,7 @@ async function applyTopoMcpToCursorLaunch(
   if (!args.cwd) {
     return unchanged
   }
-  const launch = resolveTopoMcpLaunch({ ...args, agent: 'cursor' })
+  const launch = await resolveTopoMcpLaunch({ ...args, agent: 'cursor' })
   try {
     const sync = await syncCursorTopoMcpFile({
       folder: args.cwd,
