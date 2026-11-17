@@ -11,7 +11,10 @@ export type HarnessChatStatus = {
   flowName: string
   status: HarnessRunStatus
   tasks: HarnessChatTask[]
-  decisions: Pick<HarnessPendingDecision, 'id' | 'title' | 'prompt' | 'choices'>[]
+  /** `fields` lists the start-field keys a restart decision asks for. */
+  decisions: (Pick<HarnessPendingDecision, 'id' | 'title' | 'prompt' | 'choices'> & {
+    fields: string[]
+  })[]
   /** True while Topo runs steps of its own (review table, adversarial review) for this chat. */
   topoWorking: boolean
   error: string | null
@@ -23,11 +26,12 @@ export function harnessChatStatus(run: HarnessRun): HarnessChatStatus {
     flowName: run.flowName,
     status: run.status,
     tasks: run.chatTasks,
-    decisions: run.pending.map(({ id, title, prompt, choices }) => ({
+    decisions: run.pending.map(({ id, title, prompt, choices, fields }) => ({
       id,
       title,
       prompt,
-      choices
+      choices,
+      fields: fields.map((field) => field.key)
     })),
     topoWorking: run.steps.some((step) => step.status === 'running' && step.agent !== null),
     error: run.error
