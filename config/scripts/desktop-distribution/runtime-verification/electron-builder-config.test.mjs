@@ -71,6 +71,35 @@ describe('electron-builder config', () => {
     }
   })
 
+  // 1.4.267 shipped worktree .cache/fixtures screenshots and typecheck build info in app.asar.
+  it('keeps worktree dev caches out of app.asar', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'topo-packaging-cache-'))
+    const source = join(root, 'app')
+    const cachePaths = [
+      '.cache/vite/deps/chunk.js',
+      '.cache/vite.lock',
+      '.cache/fixtures/harness-page.png',
+      '.cache/typecheck/tsconfig.tc.web.tsbuildinfo'
+    ]
+    try {
+      for (const fixturePath of ['package.json', 'out/main/index.js', ...cachePaths]) {
+        const file = join(source, fixturePath)
+        await mkdir(dirname(file), { recursive: true })
+        await writeFile(file, 'synthetic fixture\n')
+      }
+      const destination = join(root, 'selected')
+      await copyFiles([
+        new FileMatcher(source, destination, (value) => value, electronBuilderConfig.files)
+      ])
+      expect(existsSync(join(destination, 'out/main/index.js'))).toBe(true)
+      for (const cachePath of cachePaths) {
+        expect(existsSync(join(destination, cachePath)), cachePath).toBe(false)
+      }
+    } finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   // All-negation lists implicitly include **/*; missing examples exclusion shipped hostile-panel in 1.4.160-rc.3. Exercise real matcher, not pattern spelling.
 
   // CI never creates ~270MB/branch out/electron-dev caches; only local packages exposed this bloat.
