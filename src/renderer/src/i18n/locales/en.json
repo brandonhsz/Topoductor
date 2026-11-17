@@ -21899,6 +21899,16 @@
         "working": "The workspace chat is working on this step.",
         "readOnly": "The workspace chat is working on this step. File edits are blocked here.",
         "open": "Open the chat"
+      },
+      "chatProgress": {
+        "summary": "{{group}}: {{done}}/{{total}} done",
+        "status": {
+          "running": "Running",
+          "waiting": "Waiting",
+          "done": "Done",
+          "failed": "Failed",
+          "stopped": "Stopped"
+        }
       }
     }
   },

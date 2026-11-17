@@ -50,13 +50,29 @@ export const HARNESS_COMMAND_SPECS: CommandSpec[] = [
     examples: ['topo harness guard < payload.json']
   },
   {
+    path: ['harness', 'capture'],
+    summary: 'PostToolUse hook: hand a Harness subagent’s exact prompt and reply to Topo',
+    usage: 'topo harness capture < hook-payload.json',
+    allowedFlags: [...GLOBAL_FLAGS, 'worktree'],
+    notes: [
+      'Topo installs this as a Claude PostToolUse hook on the subagent tool for chats that drive a Harness flow. Only prompts carrying a Harness task marker are sent; a rejection is fed back to the chat. It never blocks on errors.'
+    ],
+    examples: ['topo harness capture < payload.json']
+  },
+  {
     path: ['harness', 'answer'],
     summary: 'Record the person’s answer to a Harness decision',
-    usage: 'topo harness answer --decision <id> [--choice <option>] [--text <answer>] [--json]',
-    allowedFlags: [...GLOBAL_FLAGS, 'worktree', 'decision', 'choice', 'text'],
-    notes: [CALLER_NOTE, 'Only record what the person said; never decide for them.'],
+    usage:
+      'topo harness answer --decision <id> [--choice <option>] [--text <answer>] [--field <key>=<value>] [--json]',
+    allowedFlags: [...GLOBAL_FLAGS, 'worktree', 'decision', 'choice', 'text', 'field'],
+    notes: [
+      CALLER_NOTE,
+      'Only record what the person said; never decide for them.',
+      'A restart decision takes the new start values with --field (e.g. --field intent=...); without them --text becomes the first required field.'
+    ],
     examples: [
-      'topo harness answer --decision run-1-d2 --choice "Idea consolidada" --text "Sí, adelante"'
+      'topo harness answer --decision run-1-d2 --choice "Idea consolidada" --text "Sí, adelante"',
+      'topo harness answer --decision run-1-d3 --field intent="Una sola pestaña"'
     ]
   }
 ]

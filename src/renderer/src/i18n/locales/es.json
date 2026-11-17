@@ -20939,6 +20939,16 @@
         "working": "El chat del workspace está trabajando en este paso.",
         "readOnly": "El chat del workspace está trabajando en este paso. Aquí no se pueden editar archivos.",
         "open": "Abrir el chat"
+      },
+      "chatProgress": {
+        "summary": "{{group}}: {{done}}/{{total}} listos",
+        "status": {
+          "running": "En curso",
+          "waiting": "En espera",
+          "done": "Listo",
+          "failed": "Falló",
+          "stopped": "Detenido"
+        }
       }
     }
   },

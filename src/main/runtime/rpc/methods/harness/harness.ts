@@ -4,6 +4,7 @@ import {
   HarnessCompleteParams,
   HarnessGuardParams,
   HarnessStatusParams,
+  HarnessSubagentResultParams,
   HarnessWaitParams
 } from '../../../../../shared/rpc-contract/harness-params'
 import {
@@ -11,6 +12,7 @@ import {
   type HarnessChatStatus
 } from '../../../../../shared/harness/harness-chat-status'
 import type { HarnessRun } from '../../../../../shared/harness/harness-run-types'
+import type { HarnessSubagentResult } from '../../../../../shared/harness/harness-subagent-contract'
 import { harnessEditDenial } from '../../../../harness/harness-edit-guard'
 import {
   getHarnessRunService,
@@ -93,6 +95,12 @@ export const HARNESS_METHODS = [
     params: HarnessCompleteParams,
     handler: async (params, { runtime }): Promise<HarnessChatStatus> => {
       const { service, run } = await callerRun(runtime, params)
+      const task = run.chatTasks.find((entry) => entry.id === params.taskId)
+      if (task?.delivery === 'subagent') {
+        throw new Error(
+          `harness_subagent_required: ${params.taskId} completes when you launch its subagent with the exact prompt`
+        )
+      }
       const accepted = service.completeChat(run.id, {
         taskId: params.taskId,
         output: params.output,
@@ -131,9 +139,18 @@ export const HARNESS_METHODS = [
         decisionId: params.decisionId,
         choice: params.choice ?? null,
         text: params.text ?? '',
-        fields: {}
+        fields: params.fields ?? {}
       })
       return harnessChatStatus(run)
+    }
+  }),
+  defineMethod({
+    name: 'harness.subagentResult',
+    permission: 'workspace',
+    params: HarnessSubagentResultParams,
+    handler: async (params, { runtime }): Promise<HarnessSubagentResult> => {
+      const { service, run } = await callerRun(runtime, params)
+      return service.completeSubagent(run.id, params.prompt, params.output)
     }
   })
 ]
