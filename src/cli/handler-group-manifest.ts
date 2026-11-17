@@ -212,7 +212,14 @@ export const HANDLER_GROUPS: readonly HandlerGroup[] = [
   },
   {
     name: 'harness',
-    keys: ['harness status', 'harness complete', 'harness wait', 'harness answer', 'harness guard'],
+    keys: [
+      'harness status',
+      'harness complete',
+      'harness wait',
+      'harness answer',
+      'harness guard',
+      'harness capture'
+    ],
     load: async () => (await import('./handlers/harness.js')).HARNESS_HANDLERS
   },
   {

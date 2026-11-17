@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { buildHandlerRoutes, dispatch, type HandlerContext } from './dispatch'
-import type { HandlerGroup } from './handler-group-manifest'
+import { HANDLER_GROUPS, type HandlerGroup } from './handler-group-manifest'
 
 describe('duplicate command keys', () => {
   const group = (name: string, keys: string[]): HandlerGroup => ({
@@ -35,5 +35,13 @@ describe('dispatch errors', () => {
       code: 'invalid_argument',
       message: 'Unknown command: not a command'
     })
+  })
+})
+
+describe('handler group keys', () => {
+  it('registers every harness handler so hooks never hit "Unknown command"', async () => {
+    const group = HANDLER_GROUPS.find((entry) => entry.name === 'harness')!
+    const handlers = await group.load()
+    expect([...group.keys].sort()).toEqual(Object.keys(handlers).sort())
   })
 })
