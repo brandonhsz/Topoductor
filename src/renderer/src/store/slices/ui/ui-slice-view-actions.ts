@@ -106,6 +106,16 @@ export function createUiViewActions(set: UISliceSet, get: UISliceGet): Partial<U
       set((state) => ({
         activeView: state.previousViewBeforeMobile
       })),
+    openHarnessPage: () =>
+      set((state) => ({
+        activeView: 'harness',
+        previousViewBeforeHarness:
+          state.activeView === 'harness' ? state.previousViewBeforeHarness : state.activeView
+      })),
+    closeHarnessPage: () =>
+      set((state) => ({
+        activeView: state.previousViewBeforeHarness
+      })),
     setNewWorkspaceDraft: (draft) => set({ newWorkspaceDraft: draft }),
     clearNewWorkspaceDraft: () => set({ newWorkspaceDraft: null })
   }

@@ -18,9 +18,7 @@ export async function observeAutomationChatRun(
   run: AutomationRun,
   signal: AbortSignal
 ): Promise<AutomationRunCompletionObservation> {
-  await runtime.ensureStructuredAgentSessionHost()
-  const host = getStructuredAgentSessionHost()
-  if (!host || !run.chatSessionId) {
+  if (!run.chatSessionId) {
     throw new Error('Chat session unavailable')
   }
   const store = await runtime.openAgentSessionRecordStore()
@@ -38,8 +36,30 @@ export async function observeAutomationChatRun(
       error: `${agent} could not confirm this run's prompt. Open the chat before running again.`
     }
   }
-  const messageId = receipt.messageId
-  const sessionId = run.chatSessionId
+  return observeChatPromptReply(
+    runtime,
+    {
+      sessionId: run.chatSessionId,
+      messageId: receipt.messageId,
+      agent,
+      deadlineAt: (run.dispatchedAt ?? run.createdAt) + 6 * 60 * 60 * 1000
+    },
+    signal
+  )
+}
+
+/** Resolves when the turn answering `messageId` settles, with the assistant text of that turn. */
+export async function observeChatPromptReply(
+  runtime: TopoRuntimeService,
+  target: { sessionId: string; messageId: string; agent: string; deadlineAt: number },
+  signal: AbortSignal
+): Promise<AutomationRunCompletionObservation> {
+  await runtime.ensureStructuredAgentSessionHost()
+  const host = getStructuredAgentSessionHost()
+  if (!host) {
+    throw new Error('Chat session unavailable')
+  }
+  const { sessionId, messageId, agent } = target
   return new Promise((resolve, reject) => {
     let release: (() => void) | undefined
     let settled = false
@@ -77,7 +97,7 @@ export async function observeAutomationChatRun(
           status: 'dispatch_failed',
           error: `${agent} did not report a result within 6 hours. Open the chat before running again.`
         }),
-      Math.max(1, (run.dispatchedAt ?? run.createdAt) + 6 * 60 * 60 * 1000 - Date.now())
+      Math.max(1, target.deadlineAt - Date.now())
     )
     const interest = (): string => {
       const journal = currentJournal

@@ -83,6 +83,7 @@ import { opencodeGoCredentialsApi } from './api/opencode-go-credentials-bridge'
 import { minimaxCredentialsApi } from './api/minimax-credentials-bridge'
 import { avenapmApi } from './api/avenapm-bridge'
 import { topoMcpApi } from './api/topo-mcp-bridge'
+import { harnessApi } from './api/harness-bridge'
 import { zcodePlanCredentialsApi } from './api/zcode-plan-credentials-bridge'
 import { grokAccountsApi } from './api/grok-accounts-bridge'
 import { cursorAccountsApi } from './api/cursor-accounts-bridge'
@@ -191,6 +192,7 @@ const api = {
   minimaxCredentials: minimaxCredentialsApi,
   avenapm: avenapmApi,
   topoMcp: topoMcpApi,
+  harness: harnessApi,
   zcodePlanCredentials: zcodePlanCredentialsApi,
   grokAccounts: grokAccountsApi,
   cursorAccounts: cursorAccountsApi,

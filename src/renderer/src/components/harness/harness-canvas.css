@@ -1,0 +1,34 @@
+[data-harness-canvas] .react-flow {
+  --xy-background-color: var(--background);
+  --xy-background-pattern-color: color-mix(in srgb, var(--border) 70%, var(--background));
+  --xy-edge-stroke: color-mix(in srgb, var(--muted-foreground) 55%, var(--background));
+  --xy-edge-stroke-selected: var(--ring);
+  --xy-connectionline-stroke: var(--ring);
+  --xy-handle-background-color: var(--muted-foreground);
+  --xy-handle-border-color: var(--background);
+  --xy-selection-background-color: color-mix(in srgb, var(--ring) 10%, transparent);
+  --xy-selection-border: 1px dotted var(--ring);
+  --xy-controls-button-background-color: var(--card);
+  --xy-controls-button-background-color-hover: var(--accent);
+  --xy-controls-button-color: var(--foreground);
+  --xy-controls-button-border-color: var(--border);
+  --xy-minimap-background-color: var(--card);
+  --xy-minimap-mask-background-color: color-mix(in srgb, var(--background) 60%, transparent);
+  --xy-edge-label-background-color: var(--background);
+  --xy-edge-label-color: var(--muted-foreground);
+  --xy-attribution-background-color: transparent;
+}
+
+[data-harness-canvas] .react-flow__edge-textbg {
+  fill: var(--background);
+}
+
+[data-harness-canvas] .react-flow__edge-text {
+  font-size: 11px;
+  fill: var(--muted-foreground);
+}
+
+[data-harness-canvas] .react-flow__edge.harness-edge-live path {
+  stroke: var(--primary);
+  stroke-width: 2;
+}
