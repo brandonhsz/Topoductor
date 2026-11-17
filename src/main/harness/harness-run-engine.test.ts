@@ -251,4 +251,104 @@ describe('HarnessRunEngine', () => {
     await settle()
     expect(run.status).toBe('completed')
   })
+
+  describe('subagent steps', () => {
+    function mesaFlow(extra: Partial<HarnessAgentNode> = {}): HarnessFlow {
+      return flowOf(
+        [
+          agent('u', { runner: 'subagent', block: 'Mesa', ...extra }),
+          agent('i', { runner: 'subagent', block: 'Mesa', ...extra }),
+          agent('sintesis', { runner: 'chat', inputs: ['u', 'i'], joinAll: true })
+        ],
+        [
+          edge('start', 'u'),
+          edge('start', 'i'),
+          edge('u', 'sintesis'),
+          edge('i', 'sintesis'),
+          edge('sintesis', 'fin')
+        ]
+      )
+    }
+
+    function chatRun(flow: HarnessFlow): HarnessRun {
+      return { ...runOf(flow, { intent: 'Tablero' }), mode: 'chat', chatSessionId: 's1' }
+    }
+
+    it('opens one marked subagent task per node and completes it only with the exact prompt', async () => {
+      const { launch, replies } = controlledLauncher()
+      const run = chatRun(mesaFlow())
+      const engine = new HarnessRunEngine(run, {
+        launch,
+        onChange: () => {},
+        chatProvider: async () => 'claude'
+      })
+      engine.start()
+      await settle()
+
+      expect(replies.size).toBe(0)
+      expect(run.chatTasks.map((task) => [task.nodeId, task.delivery])).toEqual([
+        ['u', 'subagent'],
+        ['i', 'subagent']
+      ])
+      const [u, i] = run.chatTasks
+      expect(u!.subagent!.prompt.split('\n')[0]).toBe(`[topo-harness-task:${u!.id}]`)
+      expect(u!.subagent!.prompt).toContain('TAREA:u')
+      expect(u!.subagent!.label).toBe('u')
+
+      expect(
+        engine.completeChat({ taskId: u!.id, output: 'resumen del chat', outcome: null })
+      ).toBe(false)
+      expect(run.chatTasks).toHaveLength(2)
+
+      const tampered = engine.completeSubagent(`${u!.subagent!.prompt}\nOpina como el chat.`, 'x')
+      expect(tampered).toEqual({ taskId: null, reason: expect.any(String) })
+      expect(run.chatTasks).toHaveLength(2)
+
+      expect(engine.completeSubagent(u!.subagent!.prompt, 'crítica cruda U')).toEqual({
+        taskId: u!.id,
+        reason: null
+      })
+      expect(engine.completeSubagent(i!.subagent!.prompt, 'crítica cruda I').taskId).toBe(i!.id)
+      await settle()
+
+      expect(run.vars.u).toBe('crítica cruda U')
+      expect(run.vars.i).toBe('crítica cruda I')
+      expect(run.steps.find((step) => step.nodeId === 'u')!.runner).toBe('subagent')
+      expect(run.chatTasks.map((task) => [task.nodeId, task.delivery ?? 'self'])).toEqual([
+        ['sintesis', 'self']
+      ])
+      expect(run.chatTasks[0]!.instructions).toContain('crítica cruda U')
+    })
+
+    it('falls back to its own agents when the chat cannot host subagents', async () => {
+      const { launch, replies } = controlledLauncher()
+      const run = chatRun(mesaFlow())
+      const engine = new HarnessRunEngine(run, {
+        launch,
+        onChange: () => {},
+        chatProvider: async () => 'codex'
+      })
+      engine.start()
+      await settle()
+
+      expect(run.chatTasks).toEqual([])
+      expect([...replies.keys()].sort()).toEqual(['i', 'u'])
+      expect(run.steps.find((step) => step.nodeId === 'u')!.runner).toBe('topo')
+    })
+
+    it('falls back when the node pins an agent other than the chat', async () => {
+      const { launch, replies } = controlledLauncher()
+      const run = chatRun(mesaFlow({ agent: 'codex' }))
+      const engine = new HarnessRunEngine(run, {
+        launch,
+        onChange: () => {},
+        chatProvider: async () => 'claude'
+      })
+      engine.start()
+      await settle()
+
+      expect(run.chatTasks).toEqual([])
+      expect([...replies.keys()].sort()).toEqual(['i', 'u'])
+    })
+  })
 })
