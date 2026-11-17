@@ -7,6 +7,7 @@ import {
   pluginHookWanted,
   runPluginHook
 } from '../../plugins/hooks/plugin-hook-dispatch'
+import { harnessEditDenial } from '../../harness/harness-edit-guard'
 import { readAgentToolCall, type AgentToolCallOwner } from './agent-tool-call-reader'
 
 /** Sent by hook scripts that print Topo's answer as Claude Code's PreToolUse decision. */
@@ -84,6 +85,29 @@ export async function answerAgentToolPluginHooks(
   }
 }
 
+/** Claude's PreToolUse deny when a Harness flow forbids editing in this workspace right now. */
+function harnessDenialFor(
+  source: AgentHookSource,
+  body: unknown,
+  headers: IncomingHttpHeaders,
+  owner: AgentToolCallOwner
+): string | null {
+  if (source !== 'claude' || headers[AGENT_TOOL_DECISION_HEADER] !== CLAUDE_PRE_TOOL_USE_DECISION) {
+    return null
+  }
+  const call = readAgentToolCall(source, body, owner)
+  if (call?.phase !== 'before') {
+    return null
+  }
+  const reason = harnessEditDenial(call.payload.tool, {
+    sessionId: null,
+    worktreeId: owner.worktreeId ?? null
+  })
+  return reason
+    ? claudePreToolUse({ permissionDecision: 'deny', permissionDecisionReason: reason })
+    : null
+}
+
 /**
  * Ends a hook post: 200 with the agent's decision when a plugin made one, else 204 as before.
  * `owner` is the event status ingestion accepted; null (rejected or fenced) skips plugins.
@@ -95,6 +119,12 @@ export async function respondAfterAgentToolPluginHooks(
   headers: IncomingHttpHeaders,
   owner: AgentToolCallOwner | null
 ): Promise<void> {
+  const harnessDenial = owner ? harnessDenialFor(source, body, headers, owner) : null
+  if (harnessDenial) {
+    res.writeHead(200, { 'content-type': 'application/json' })
+    res.end(harnessDenial)
+    return
+  }
   // The usual case: no plugin listens, so answer at once without reading the call.
   if (!owner || (!pluginHookWanted('agent.tool.before') && !pluginHookWanted('agent.tool.after'))) {
     res.writeHead(204)

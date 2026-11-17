@@ -377,6 +377,13 @@ import {
   WorkItemsList as WorkItemsListOfGitlabParams
 } from './gitlab-params'
 import {
+  HarnessAnswerParams,
+  HarnessCompleteParams,
+  HarnessGuardParams,
+  HarnessStatusParams,
+  HarnessWaitParams
+} from './harness-params'
+import {
   HostedReviewCreate,
   HostedReviewCreationEligibility,
   HostedReviewForBranch
@@ -1207,6 +1214,11 @@ export const RPC_PARAMS_BY_METHOD = {
   'gitlab.updateMRState': UpdateMrState,
   'gitlab.workItemByPath': WorkItemByPath,
   'gitlab.workItemDetails': WorkItemDetailsOfGitlabParams,
+  'harness.answer': HarnessAnswerParams,
+  'harness.complete': HarnessCompleteParams,
+  'harness.guard': HarnessGuardParams,
+  'harness.status': HarnessStatusParams,
+  'harness.wait': HarnessWaitParams,
   'host.declareClient': TopodDeclareClientParamsSchema,
   'host.gitBash.isAvailable': null,
   'host.peerDesktops': TopodPeerDesktopsParamsSchema,

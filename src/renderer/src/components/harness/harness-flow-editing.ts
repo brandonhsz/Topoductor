@@ -51,6 +51,8 @@ export function createHarnessNode(
         agent: null,
         prompt: '',
         reuseSession: true,
+        runner: 'chat',
+        allowEdits: true,
         outputKey: id
       }
     case 'human':
@@ -64,6 +66,8 @@ export function createHarnessNode(
         roles: [],
         verifyCommand: '',
         checkpointEachWave: true,
+        runner: 'chat',
+        allowEdits: true,
         outputKey: id
       }
     case 'end':

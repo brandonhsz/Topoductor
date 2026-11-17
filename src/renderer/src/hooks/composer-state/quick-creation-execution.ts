@@ -1,6 +1,8 @@
 import type { QuickCreationExecutionInput } from './composer-model'
 
 import { resolveQuickCreateLinkedWorkItemPrompt } from '@/lib/linked-work-item-context'
+import { prepareHarnessCreation } from '@/components/harness/harness-composer-start'
+import { getHarnessComposerChoice } from '@/components/harness/harness-composer-choice-store'
 import { useCallback } from 'react'
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
 import type { WorktreeCreationRequest } from '@/lib/workspace/creation/pending-worktree-creation'
@@ -90,10 +92,18 @@ export function useQuickCreationExecution(input: QuickCreationExecutionInput) {
         trimmedNote
       } = prepared
 
-      const promptLinkedWorkItem = agent === null ? null : submitLinkedWorkItem
-
-      const { prompt: quickPrompt, draftPrompt: quickDraftPrompt } =
-        resolveQuickCreateLinkedWorkItemPrompt(promptLinkedWorkItem, trimmedNote)
+      // A Harness flow replaces the linked-item draft: its kickoff carries the source and is sent at once.
+      const harness =
+        agent === null
+          ? null
+          : prepareHarnessCreation(getHarnessComposerChoice(), submitLinkedWorkItem, workspaceName)
+      const promptLinkedWorkItem = agent === null || harness ? null : submitLinkedWorkItem
+      const resolvedPrompt = resolveQuickCreateLinkedWorkItemPrompt(
+        promptLinkedWorkItem,
+        harness?.kickoff ?? trimmedNote
+      )
+      let quickPrompt = resolvedPrompt.prompt
+      const quickDraftPrompt = resolvedPrompt.draftPrompt
 
       const startupPolicySettlement = await settleComposerSubmit(
         persistSetupAgentStartupPolicy(),
@@ -147,11 +157,15 @@ export function useQuickCreationExecution(input: QuickCreationExecutionInput) {
             promptDelivery
           }))
       const structuredLaunch = agentLaunchRoute === 'structured-native-chat'
+      if (harness && !structuredLaunch) {
+        // Terminal agents start before the run exists, so they read the protocol in their first message.
+        quickPrompt = harness.terminalKickoff
+      }
 
       const quickStartup = await prepareQuickComposerStartup({
         agent,
-        linkedWorkItem: submitLinkedWorkItem,
-        note: trimmedNote,
+        linkedWorkItem: harness ? null : submitLinkedWorkItem,
+        note: harness ? quickPrompt : trimmedNote,
         repoId,
         executionHostId: selectedRepoExecutionHostId,
         settings,
@@ -233,6 +247,7 @@ export function useQuickCreationExecution(input: QuickCreationExecutionInput) {
         pendingFirstAgentMessageRename,
         note: trimmedNote,
         startupPlan: quickStartup.startupPlan,
+        ...(harness ? { harnessStart: harness.start } : {}),
         quickPrompt,
         launchDraftPrompt: quickDraftPrompt,
         promptDelivery,

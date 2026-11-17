@@ -50,8 +50,35 @@ export type HarnessDecisionAnswer = {
   fields: Record<string, string>
 }
 
+/** `chat`: the workspace chat drives the flow through `topo harness`; `orchestrated`: Topo launches every step. */
+export type HarnessRunMode = 'chat' | 'orchestrated'
+
+/** A step handed to the workspace chat; it stays open until the chat reports it with `topo harness completar`. */
+export type HarnessChatTask = {
+  id: string
+  stepId: string
+  nodeId: string
+  taskId: string | null
+  title: string
+  /** The full prompt for this step, as Topo would send it to a fresh agent. */
+  instructions: string
+  choices: string[]
+  allowEdits: boolean
+  createdAt: number
+}
+
+export type HarnessChatCompletion = {
+  taskId: string
+  output: string
+  outcome: string | null
+}
+
 export type HarnessRun = {
   id: string
+  mode: HarnessRunMode
+  /** The chat that drives a chat-mode run; null until it is known. */
+  chatSessionId: string | null
+  chatTasks: HarnessChatTask[]
   flowId: string
   flowName: string
   /** The flow as it was when the run started; later edits never change a running graph. */
@@ -69,12 +96,14 @@ export type HarnessRun = {
 export type HarnessRunSummary = Pick<
   HarnessRun,
   'id' | 'flowId' | 'flowName' | 'worktreeId' | 'status' | 'createdAt' | 'updatedAt'
-> & { pendingCount: number }
+> & { pendingCount: number; mode: HarnessRunMode }
 
 export type HarnessRunStartRequest = {
   flowId: string
   worktreeId: string
   fields: Record<string, string>
+  mode: HarnessRunMode
+  chatSessionId: string | null
 }
 
 export type HarnessApi = {

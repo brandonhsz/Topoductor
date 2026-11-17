@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import { useIntlLocale, useTranslate } from '@/i18n/use-translate'
 import { tuiAgentDisplayName } from '../../../../shared/agent-launch/catalog/tui-agent-display-names'
 import type {
+  HarnessChatTask,
   HarnessPendingDecision,
   HarnessRun,
   HarnessRunStatus,
@@ -17,7 +18,7 @@ import {
   type HarnessCanvasSelection,
   type HarnessNodeLiveStatus
 } from './HarnessFlowCanvas'
-import { HarnessStartFieldsForm, initialFieldValues } from './HarnessRunDialog'
+import { HarnessStartFieldsForm, initialFieldValues } from './HarnessStartFieldsForm'
 import { revealHarnessSession } from './harness-session-reveal'
 import { useHarnessRun } from './use-harness-data'
 
@@ -130,6 +131,47 @@ function DecisionCard({
   )
 }
 
+function ChatTaskCard({
+  run,
+  task
+}: {
+  run: HarnessRun
+  task: HarnessChatTask
+}): React.JSX.Element {
+  const t = useTranslate()
+  return (
+    <section className="flex flex-col gap-2 rounded-xl border border-primary/40 p-3">
+      <p className="text-sm font-medium">{task.title}</p>
+      <p className="text-xs text-muted-foreground">
+        {task.allowEdits
+          ? t('components.harness.chatTask.working', 'The workspace chat is working on this step.')
+          : t(
+              'components.harness.chatTask.readOnly',
+              'The workspace chat is working on this step. File edits are blocked here.'
+            )}
+      </p>
+      {/* Terminal drivers carry a pane marker, not a chat to reopen. */}
+      {run.chatSessionId && !run.chatSessionId.startsWith('terminal:') ? (
+        <Button
+          variant="outline"
+          size="xs"
+          className="self-start"
+          onClick={() =>
+            void revealHarnessSession({
+              kind: 'structured',
+              worktreeId: run.worktreeId,
+              sessionId: run.chatSessionId!
+            })
+          }
+        >
+          <ExternalLink />
+          {t('components.harness.chatTask.open', 'Open the chat')}
+        </Button>
+      ) : null}
+    </section>
+  )
+}
+
 function StepCard({ step }: { step: HarnessRunStep }): React.JSX.Element {
   const t = useTranslate()
   const statusLabel = useStatusLabel()
@@ -232,6 +274,9 @@ function RunDetail({ run }: { run: HarnessRun }): React.JSX.Element {
         </div>
       </section>
       <aside className="scrollbar-sleek flex w-96 shrink-0 flex-col gap-3 overflow-y-auto border-l border-border p-4">
+        {run.chatTasks.map((task) => (
+          <ChatTaskCard key={task.id} run={run} task={task} />
+        ))}
         {run.pending.map((decision) => (
           <DecisionCard key={decision.id} run={run} decision={decision} />
         ))}

@@ -10,6 +10,16 @@ export function withClaudePluginDir(
   root: string,
   shell: AgentStartupShell
 ): string {
+  return withClaudeOption(command, '--plugin-dir', root, shell)
+}
+
+/** Adds `flag value` right after a lone Claude invocation; any other command is returned unchanged. */
+export function withClaudeOption(
+  command: string,
+  flag: string,
+  value: string,
+  shell: AgentStartupShell
+): string {
   const parsed = tokenizeStartupCommand(command, shell)
   if (!parsed.ok) {
     return command
@@ -44,5 +54,5 @@ export function withClaudePluginDir(
     }
   }
   const end = parsed.spans[index].end
-  return `${command.slice(0, end)} --plugin-dir ${quoteStartupArg(root, shell)}${command.slice(end)}`
+  return `${command.slice(0, end)} ${flag} ${quoteStartupArg(value, shell)}${command.slice(end)}`
 }

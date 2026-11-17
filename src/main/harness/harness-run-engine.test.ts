@@ -23,6 +23,8 @@ function agent(id: string, extra: Partial<HarnessAgentNode> = {}): HarnessAgentN
     agent: null,
     prompt: `TAREA:${id}`,
     reuseSession: false,
+    runner: 'topo',
+    allowEdits: true,
     inputs: ['intent'],
     outputKey: id,
     joinAll: false,
@@ -65,6 +67,9 @@ function flowOf(nodes: HarnessNode[], edges: HarnessEdge[]): HarnessFlow {
 function runOf(flow: HarnessFlow, vars: Record<string, string>): HarnessRun {
   return {
     id: 'run',
+    mode: 'orchestrated',
+    chatSessionId: null,
+    chatTasks: [],
     flowId: flow.id,
     flowName: flow.name,
     flow,
@@ -209,5 +214,41 @@ describe('HarnessRunEngine', () => {
       'escalar',
       'fin'
     ])
+  })
+  it('hands chat steps to the workspace chat and runs topo steps itself', async () => {
+    const flow = flowOf(
+      [
+        agent('idea', { runner: 'chat', allowEdits: false }),
+        agent('mesa', { runner: 'topo' }),
+        agent('plan', { runner: 'chat', inputs: ['mesa'] })
+      ],
+      [edge('start', 'idea'), edge('idea', 'mesa'), edge('mesa', 'plan'), edge('plan', 'fin')]
+    )
+    const { launch, replies } = controlledLauncher()
+    const run = {
+      ...runOf(flow, { intent: 'Tablero' }),
+      mode: 'chat' as const,
+      chatSessionId: 's1'
+    }
+    const engine = new HarnessRunEngine(run, { launch, onChange: () => {} })
+    engine.start()
+    await settle()
+    expect(run.chatTasks.map((task) => [task.nodeId, task.allowEdits])).toEqual([['idea', false]])
+    expect(replies.size).toBe(0)
+
+    expect(engine.completeChat({ taskId: 'nope', output: '', outcome: null })).toBe(false)
+    engine.completeChat({ taskId: run.chatTasks[0]!.id, output: 'Idea v1', outcome: null })
+    await settle()
+    expect(run.chatTasks).toEqual([])
+    expect([...replies.keys()]).toEqual(['mesa'])
+
+    replies.get('mesa')!('preguntas de la mesa')
+    await settle()
+    expect(run.chatTasks.map((task) => task.nodeId)).toEqual(['plan'])
+    expect(run.chatTasks[0]!.instructions).toContain('### mesa\npreguntas de la mesa')
+
+    engine.completeChat({ taskId: run.chatTasks[0]!.id, output: 'Plan', outcome: null })
+    await settle()
+    expect(run.status).toBe('completed')
   })
 })

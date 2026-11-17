@@ -1,3 +1,4 @@
+import { claudeHarnessLaunchOptions } from './claude-harness-launch-options'
 import type { ClaudeAccountRecipe } from '../../../../shared/agent-session/lifecycle/agent-session-acquired-account'
 import { prepareClaudeLaunchAccount } from '../../claude-launch-account'
 import { assertStructuredAgentResolutionCurrent } from '../../../native-chat/structured-agent-command-resolution'
@@ -143,6 +144,8 @@ export type ClaudeStructuredLaunchPartDeps = {
   resolveTopoMcp?: (
     workspaceId: string
   ) => Promise<{ pluginDir: string; env: Record<string, string> } | null>
+  /** Extra system instructions for this chat, e.g. the Harness flow it drives; null adds none. */
+  resolveSystemAppend?: (workspaceId: string, sessionId: string) => Promise<string | null>
   /** Whether Claude wrote a transcript for this id; defaults to the transcript resolver. */
   hasTranscript?: (input: {
     providerSessionId: string
@@ -230,6 +233,7 @@ export function claudeStructuredLaunchPart(
       probeLaunch
     )
     const topoMcp = (await deps.resolveTopoMcp?.(record.location.workspaceId)) ?? null
+    const harness = await claudeHarnessLaunchOptions(deps.resolveSystemAppend, record)
     const configured = claudeStructuredLaunchArgs(await deps.resolveLaunchArgs())
     const { thinkingDisplayArgs, visuals } = await launchFlags
     const additionalDirectories = [
@@ -295,6 +299,7 @@ export function claudeStructuredLaunchPart(
         accountRecipe,
         options: {
           ...CLAUDE_STRUCTURED_BASE_OPTIONS,
+          ...harness.options,
           ...permission,
           ...(additionalDirectories.length ? { additionalDirectories } : {}),
           ...(plugins.length ? { plugins } : {}),
@@ -302,7 +307,8 @@ export function claudeStructuredLaunchPart(
             ...configured.extraArgs,
             ...CLAUDE_STRUCTURED_BASE_OPTIONS.extraArgs,
             ...permission.extraArgs,
-            ...thinkingDisplayArgs
+            ...thinkingDisplayArgs,
+            ...harness.extraArgs
           },
           // Claude owns where a resumed conversation continues; the stored leaf is Topo's bookkeeping.
           ...(resumesTranscript

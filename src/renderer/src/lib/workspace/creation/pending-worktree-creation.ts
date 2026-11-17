@@ -131,6 +131,8 @@ export type WorktreeCreationRequest = {
   note: string
   // Seed the first terminal only when backend did not launch it; null for blank shells.
   startupPlan: AgentStartupPlan | null
+  /** Harness flow the new workspace's chat drives; the run starts once the worktree exists. */
+  harnessStart?: { flowId: string; fields: Record<string, string> }
   quickPrompt: string
   /** Launch context delivered only as an unsent TUI-input draft (argv prefill or
    *  startup paste); completion seeds the chat-composer copy from it. */

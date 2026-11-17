@@ -45,7 +45,9 @@ async function runWaveTask(
     context: feedback ? [...context, { key: 'verificacion_fallida', value: feedback }] : context,
     choices: [],
     // A retry after a failed verification continues the chat that wrote the task.
-    sessionKey: `${node.id}:${task.id}`
+    sessionKey: `${node.id}:${task.id}`,
+    runner: node.runner,
+    allowEdits: node.allowEdits
   })
   return result ? extractSummary(result.output) : '(tarea omitida)'
 }
@@ -96,7 +98,10 @@ async function closeWave(
       { key: 'resumenes_de_los_agentes', value: summaries.join('\n\n') }
     ],
     choices: verify ? ['ok', 'falla'] : [],
-    sessionKey: null
+    sessionKey: null,
+    // The wave audit always runs on fresh eyes, never the chat that wrote the code.
+    runner: 'topo',
+    allowEdits: false
   })
 }
 

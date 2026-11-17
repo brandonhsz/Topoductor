@@ -46,6 +46,8 @@ export type CodexStructuredLaunchPartDeps = {
     pathEnv?: string | null
     homePath?: string
   }) => StructuredAgentCommand
+  /** Extra developer instructions for this chat, e.g. the Harness flow it drives; null adds none. */
+  resolveDeveloperInstructions?: (workspaceId: string, sessionId: string) => Promise<string | null>
   /** Topo-managed MCP servers for the chat's workspace, as `-c` overrides plus the env they read. */
   resolveTopoMcp?: (
     workspaceId: string
@@ -140,6 +142,9 @@ export function codexStructuredLaunchPart(
     const environment = await basis.environment()
     const args = codexStructuredLaunchArgs(await deps.resolveLaunchArgs())
     const topoMcp = (await deps.resolveTopoMcp?.(record.location.workspaceId)) ?? null
+    const developerInstructions =
+      (await deps.resolveDeveloperInstructions?.(record.location.workspaceId, record.sessionId)) ??
+      null
     const head = agentSessionProviderHandleChainHead(record.providerHandleChain)
     const resumeThreadId = head?.handle.nativeId ?? null
     // Match the first turn's model to avoid duplicate prompt injection on a model switch.
@@ -165,7 +170,16 @@ export function codexStructuredLaunchPart(
       launch: {
         command,
         prefixArgs,
-        args: [...prefixArgs, ...args, ...(topoMcp?.configArgs ?? []), 'app-server'],
+        args: [
+          ...prefixArgs,
+          ...args,
+          ...(topoMcp?.configArgs ?? []),
+          // One app-server per chat, so a config override reaches only this chat's threads.
+          ...(developerInstructions
+            ? ['-c', `developer_instructions=${JSON.stringify(developerInstructions)}`]
+            : []),
+          'app-server'
+        ],
         codexHome: accountHome.path,
         resumeThreadId,
         // Only created threads may be unsaved; resumed, forked and adopted threads were persisted.

@@ -11,6 +11,8 @@ export const DELIVERY_NODES: HarnessNode[] = [
     position: at(0, 2),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: false,
     prompt: `Rompe la Idea consolidada en tareas pequeñas que varios agentes puedan trabajar en paralelo sin pisarse. No escribas código: solo produce el plan. Lee el proyecto para ubicar las capas y archivos reales.
 
 1. Contrato entre capas: tipos de datos nuevos o modificados y firmas de las funciones o endpoints que la UI va a llamar (qué reciben, qué devuelven y qué errores pueden ocurrir). El contrato es la primera tarea y es del rol Lógica.
@@ -50,6 +52,8 @@ Presenta el plan en markdown (Contrato, tabla de Tareas con ID/Rol/Tarea/Criteri
     inputs: ['consolidada'],
     verifyCommand: '',
     checkpointEachWave: true,
+    runner: 'chat',
+    allowEdits: true,
     outputKey: 'ejecucion',
     joinAll: false,
     maxVisits: 5,
@@ -91,6 +95,8 @@ Presenta el plan en markdown (Contrato, tabla de Tareas con ID/Rol/Tarea/Criteri
     position: at(3, 2),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: true,
     prompt: `Analiza el resultado viéndolo funcionar en la app real, no solo leyendo el código o confiando en las pruebas. No arregles código en este nodo: solo observa y reporta.
 1. Plan de evidencias: por cada tarea de Visual o Lógica, define qué captura (un estado) o video (una interacción) demuestra su criterio de aceptación. Las tareas sin pantalla se evidencian por su efecto visible o por la salida de las pruebas.
 2. Levanta la app (reutilízala si ya corre). Si no compila o muestra un error, eso ya es un hallazgo.
@@ -118,6 +124,8 @@ Presenta el plan en markdown (Contrato, tabla de Tareas con ID/Rol/Tarea/Criteri
     position: at(3, 3.2),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: true,
     prompt: `Resuelve cada hallazgo y demuéstralo con la misma evidencia que lo detectó.
 1. Respalda las evidencias "antes" de tocar nada.
 2. Clasifica cada hallazgo: Visual, Lógica y datos, Prueba equivocada, Evidencia mal hecha o Problema de la idea. Si no está claro, investiga la causa antes de asignarlo.
@@ -160,6 +168,8 @@ Un hallazgo no se marca ✅ sin su evidencia "después".`,
     position: at(4, 2),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: true,
     prompt: `Genera un solo video con señales que muestre lo que se trabajó, de principio a fin.
 - Feature: portada con el Intent, recorrido de cada tarea en el orden en que la usaría una persona real (leyenda, señal numerada, pausa) y cierre con una línea por tarea.
 - Bug: el mismo guion de la reproducción (ver «reproduccion»), grabado con el fix, compuesto lado a lado con el video "antes" (izquierda error, derecha fix).
@@ -183,6 +193,8 @@ Revisa capturas de los puntos clave antes de entregar.
     position: at(0, 1),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: true,
     prompt: `Antes de que cualquier agente toque código, reproduce el error y deja evidencia, porque después del fix ya no se podrá grabar.
 1. Escribe un guion neutral que reproduzca el error paso a paso; los mismos pasos deben servir después para mostrar el fix.
 2. Grábalo (video o capturas) señalando el punto donde falla, sin un expect que corte la grabación.
@@ -202,6 +214,8 @@ Si el error no se reproduce, dilo: sin reproducción no hay bug confirmado.`,
     position: at(5, 2),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: true,
     prompt: `Publica el trabajo para revisión siguiendo las reglas del repositorio (nombre de rama, formato de commits, checks previos al push).
 Mira el modo de PR en la sección Proyecto.
 - PR único: revisa que no queden cambios sin commit y que los checks pasen, sube la rama y abre un pull request (o merge request, según el proveedor: gh, glab…) con el Intent, qué se construyó, cómo se verificó y la ruta del video final.
@@ -221,6 +235,8 @@ Responde con los enlaces. Si algo lo impide (sin remoto, checks rotos, sin permi
     position: at(6, 2),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: false,
     prompt: `Revisa esta corrida para que el sistema no repita sus errores. Usa el historial (reintentos, fallas, escalados, decisiones) y los hallazgos.
 Por cada lección, propón cómo volverla estructural, en este orden de preferencia:
 1. Una regla de lint, check o script del repositorio que lo detecte solo.
@@ -255,6 +271,8 @@ Descarta lecciones que fueron mala suerte puntual. Formato: tabla Lección | Evi
     position: at(7, 3.2),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: true,
     prompt: `Implementa en el repositorio solo las propuestas de tipo lint/check/script que la persona aprobó (ver su decisión). Cada regla nueva debe fallar con el error original y pasar con el código actual: demuéstralo con la salida real. Haz commit aparte para cada una. No toques CLAUDE.md ni AGENTS.md. Al final lista qué quedó y qué cambios al flujo debe hacer la persona a mano.`,
     inputs: ['aprendizajes', 'decision_aprendizajes'],
     outputKey: 'aprendizajes_aplicados',

@@ -193,6 +193,57 @@ function WavesFields({
   )
 }
 
+function RunnerFields<N extends HarnessAgentNode | HarnessWavesNode>({
+  node,
+  onChange
+}: {
+  node: N
+  onChange: (node: N) => void
+}): React.JSX.Element {
+  const t = useTranslate()
+  return (
+    <>
+      <InspectorField
+        label={t('components.harness.inspector.runner', 'Who runs it')}
+        hint={t(
+          'components.harness.inspector.runnerHint',
+          'The workspace chat follows the flow. Choose Topo for steps that need other models or fresh eyes, like a review table.'
+        )}
+      >
+        {(id) => (
+          <Select
+            value={node.runner}
+            onValueChange={(runner) =>
+              onChange({ ...node, runner: runner === 'topo' ? 'topo' : 'chat' })
+            }
+          >
+            <SelectTrigger id={id} size="sm" className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="chat">
+                {t('components.harness.inspector.runnerChat', 'The workspace chat')}
+              </SelectItem>
+              <SelectItem value="topo">
+                {t('components.harness.inspector.runnerTopo', 'Topo, with its own agent')}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        )}
+      </InspectorField>
+      <InspectorSwitch
+        label={t('components.harness.inspector.allowEdits', 'Allow editing files')}
+        hint={t(
+          'components.harness.inspector.allowEditsHint',
+          'Off blocks file edits while the chat is on this step (Claude), like ideation before the plan is approved.'
+        )}
+        checked={node.allowEdits}
+        onChange={(allowEdits) => onChange({ ...node, allowEdits })}
+      />
+    </>
+  )
+}
+
 export function HarnessNodeInspector({
   flow,
   node,
@@ -235,6 +286,9 @@ export function HarnessNodeInspector({
           fields={node.fields}
           onChange={(fields) => onChange({ ...node, fields })}
         />
+      ) : null}
+      {node.kind === 'agent' || node.kind === 'waves' ? (
+        <RunnerFields node={node} onChange={onChange} />
       ) : null}
       {node.kind === 'agent' ? (
         <InspectorField label={t('components.harness.inspector.agent', 'Agent')}>
