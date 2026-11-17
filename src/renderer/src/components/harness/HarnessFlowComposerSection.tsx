@@ -11,31 +11,11 @@ import {
 import { useTranslate } from '@/i18n/use-translate'
 import type { HarnessStartField } from '../../../../shared/harness/harness-flow-types'
 import { HARNESS_AUTO_OPTION } from './harness-composer-start'
+import { rememberedHarnessFlowId, rememberHarnessFlow } from './harness-last-flow'
 import { setHarnessComposerChoice, useHarnessComposerChoice } from './harness-composer-choice-store'
 import { useHarnessFlows } from './use-harness-data'
 
 const NO_FLOW = '__none__'
-const LAST_FLOW_KEY = 'topo.harness.lastFlowByRepo'
-
-function readLastFlows(): Record<string, string | null> {
-  try {
-    const parsed: unknown = JSON.parse(localStorage.getItem(LAST_FLOW_KEY) ?? '{}')
-    return typeof parsed === 'object' && parsed !== null
-      ? Object.fromEntries(Object.entries(parsed))
-      : {}
-  } catch {
-    return {}
-  }
-}
-
-export function rememberHarnessFlow(repoId: string, flowId: string | null): void {
-  try {
-    localStorage.setItem(LAST_FLOW_KEY, JSON.stringify({ ...readLastFlows(), [repoId]: flowId }))
-  } catch {
-    // A private window only loses the remembered choice.
-  }
-}
-
 function FieldInput({
   field,
   value,
@@ -88,28 +68,34 @@ function FieldInput({
   )
 }
 
-/** Picks the Harness flow the new workspace's chat will drive, remembering the last one per repo. */
+/** Picks the Harness flow the new workspace's chat will drive, remembering the last one per project. */
 export function HarnessFlowComposerSection({
-  repoId
+  repoId,
+  memoryKey,
+  disabled
 }: {
-  repoId: string
+  /** Null lists only global flows, e.g. before a multi-host project resolves its repo. */
+  repoId: string | null
+  memoryKey: string
+  /** Blank Terminal has no agent to drive a flow. */
+  disabled: boolean
 }): React.JSX.Element | null {
   const t = useTranslate()
   const value = useHarnessComposerChoice()
   const onChange = setHarnessComposerChoice
-  const { flows } = useHarnessFlows(repoId || null)
+  const { flows } = useHarnessFlows(repoId)
   const restoredFor = useRef<string | null>(null)
 
   useEffect(() => {
     // Restore once per repo, after its flows load; a later pick must not be overwritten.
-    if (!flows || restoredFor.current === repoId) {
+    if (!flows || restoredFor.current === memoryKey) {
       return
     }
-    restoredFor.current = repoId
-    const remembered = readLastFlows()[repoId]
+    restoredFor.current = memoryKey
+    const remembered = rememberedHarnessFlowId(memoryKey)
     const flow = remembered ? flows.find((entry) => entry.id === remembered) : null
     onChange(flow ? { flow, fields: {} } : null)
-  }, [flows, repoId, onChange])
+  }, [flows, memoryKey, onChange])
 
   if (!flows || flows.length === 0) {
     return null
@@ -122,10 +108,11 @@ export function HarnessFlowComposerSection({
         {t('components.harness.composer.flow', 'Harness flow [Optional]')}
       </label>
       <Select
-        value={value?.flow.id ?? NO_FLOW}
+        disabled={disabled}
+        value={disabled ? NO_FLOW : (value?.flow.id ?? NO_FLOW)}
         onValueChange={(flowId) => {
           const flow = flows.find((entry) => entry.id === flowId) ?? null
-          rememberHarnessFlow(repoId, flow?.id ?? null)
+          rememberHarnessFlow(memoryKey, flow?.id ?? null)
           onChange(flow ? { flow, fields: {} } : null)
         }}
       >
@@ -141,7 +128,12 @@ export function HarnessFlowComposerSection({
           ))}
         </SelectContent>
       </Select>
-      {value
+      {disabled ? (
+        <p className="text-2xs text-muted-foreground">
+          {t('components.harness.composer.needsAgent', 'Choose an agent to drive a flow.')}
+        </p>
+      ) : null}
+      {value && !disabled
         ? fields.map((field) => (
             <FieldInput
               key={field.key}
