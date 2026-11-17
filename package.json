@@ -237,6 +237,7 @@
     "@topo/process-host": "workspace:*",
     "@xterm/addon-serialize": "0.15.0-beta.330",
     "@xterm/headless": "6.1.0-beta.334",
+    "@xyflow/react": "12.12.1",
     "agent-browser": "~0.39.4",
     "electron-updater": "^6.8.10",
     "fflate": "0.8.3",

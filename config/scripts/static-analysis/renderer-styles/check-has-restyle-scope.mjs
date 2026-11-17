@@ -16,7 +16,8 @@ const VENDOR_CSS = [
   '@xterm/xterm/css/xterm.css',
   'monaco-editor/min/vs/editor/editor.main.css',
   'pdfjs-dist/web/pdf_viewer.css',
-  'react-grab/styles.css'
+  'react-grab/styles.css',
+  '@xyflow/react/dist/style.css'
 ]
 // Accepted vendor findings. pdf.js's sheet stays loaded once the lazy ImageViewer first opens, but
 // these anchor on viewer-only widgets: the #34312 harness showed no subtree restyle and the same

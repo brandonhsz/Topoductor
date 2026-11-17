@@ -13,6 +13,7 @@ import {
 import { createWebAgentStatusApi } from './preload-api/web-agent-status-api'
 import { createWebAvenaPMApi } from './preload-api/web-avenapm-api'
 import { createWebTopoMcpApi } from './preload-api/web-topo-mcp-api'
+import { createWebHarnessApi } from './preload-api/web-harness-api'
 import { createWebAiVaultApi } from './preload-api/web-ai-vault-api'
 import { createWebAppApi } from './preload-api/web-app-api'
 import { createBrowserApi, createEmulatorApi } from './preload-api/web-browser-api'
@@ -129,6 +130,7 @@ function createWebPreloadApi(): Omit<Partial<PreloadApi>, 'settings' | 'plugins'
     minimaxCredentials: createMiniMaxCredentialsApi(),
     avenapm: createWebAvenaPMApi(),
     topoMcp: createWebTopoMcpApi(),
+    harness: createWebHarnessApi(),
     zcodePlanCredentials: createZcodePlanCredentialsApi(),
     grokAccounts: createGrokAccountsApi(),
     cursorAccounts: createCursorAccountsApi(),

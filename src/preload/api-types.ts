@@ -10,6 +10,7 @@ import type {
 import type { HooksApi } from './api/agent-hook-api'
 import type { AvenaPMApi } from './api/avenapm-api'
 import type { TopoMcpApi } from '../shared/mcp/topo-mcp-secret-api'
+import type { HarnessApi } from '../shared/harness/harness-run-types'
 import type { SkillsApi } from './api/agent-skill-api'
 import type { AgentAwakeApi, AgentStatusApi } from './api/agent-status-api'
 import type {
@@ -162,6 +163,7 @@ export type PreloadApi = {
   minimaxCredentials: MinimaxCredentialsApi
   avenapm: AvenaPMApi
   topoMcp: TopoMcpApi
+  harness: HarnessApi
   zcodePlanCredentials: ZcodePlanCredentialsApi
   grokAccounts: GrokAccountsApi
   cursorAccounts: CursorAccountsApi

@@ -1,0 +1,174 @@
+import { randomUUID } from 'node:crypto'
+import { readFile, stat } from 'node:fs/promises'
+import { join } from 'node:path'
+import { getAppEnvironment } from '../../shared/app-environment'
+import type {
+  HarnessDecisionAnswer,
+  HarnessRun,
+  HarnessRunStartRequest,
+  HarnessRunSummary
+} from '../../shared/harness/harness-run-types'
+import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
+import { writeSecureJsonFile } from '../../shared/secure-storage/secure-file'
+import type { HarnessAgentLauncher } from './harness-agent-launcher'
+import { getHarnessFlow } from './harness-flow-store'
+import { HarnessRunEngine } from './harness-run-engine'
+
+const MAX_KEPT_RUNS = 50
+const MAX_BYTES = 32 * 1024 * 1024
+const PERSIST_DELAY_MS = 500
+const INTERRUPTED = 'Topo se cerró mientras esta ejecución corría.'
+
+export function summarizeHarnessRun(run: HarnessRun): HarnessRunSummary {
+  return {
+    id: run.id,
+    flowId: run.flowId,
+    flowName: run.flowName,
+    worktreeId: run.worktreeId,
+    status: run.status,
+    createdAt: run.createdAt,
+    updatedAt: run.updatedAt,
+    pendingCount: run.pending.length
+  }
+}
+
+function runsPath(): string {
+  return join(getAppEnvironment().getPath('userData'), 'harness-runs.json')
+}
+
+function isHarnessRun(value: unknown): value is HarnessRun {
+  const record = asRecord(value)
+  return (
+    typeof record?.id === 'string' &&
+    typeof record.worktreeId === 'string' &&
+    Array.isArray(record.steps) &&
+    Array.isArray(record.pending) &&
+    asRecord(record.flow) !== null &&
+    asRecord(record.vars) !== null
+  )
+}
+
+/** Runs that were live when Topo quit cannot be resumed: their agents' replies were never observed. */
+async function readPersistedRuns(): Promise<HarnessRun[]> {
+  const path = runsPath()
+  try {
+    if ((await stat(path)).size > MAX_BYTES) {
+      return []
+    }
+    const runs = asRecord(JSON.parse(await readFile(path, 'utf8')))?.runs
+    return (Array.isArray(runs) ? runs.filter(isHarnessRun) : []).map((run) =>
+      run.status === 'running' || run.status === 'waiting'
+        ? { ...run, status: 'stopped', pending: [], error: run.error ?? INTERRUPTED }
+        : run
+    )
+  } catch {
+    return []
+  }
+}
+
+export class HarnessRunService {
+  private readonly runs = new Map<string, HarnessRun>()
+  private readonly engines = new Map<string, HarnessRunEngine>()
+  private persistTimer: ReturnType<typeof setTimeout> | null = null
+  private readonly loaded: Promise<void>
+
+  constructor(
+    private readonly launch: HarnessAgentLauncher,
+    private readonly notify: (run: HarnessRunSummary) => void
+  ) {
+    this.loaded = readPersistedRuns().then((runs) => {
+      for (const run of runs) {
+        if (!this.runs.has(run.id)) {
+          this.runs.set(run.id, run)
+        }
+      }
+    })
+  }
+
+  async list(): Promise<HarnessRunSummary[]> {
+    await this.loaded
+    return [...this.runs.values()]
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .map(summarizeHarnessRun)
+  }
+
+  async get(runId: string): Promise<HarnessRun | null> {
+    await this.loaded
+    return this.runs.get(runId) ?? null
+  }
+
+  async start(request: HarnessRunStartRequest): Promise<HarnessRun> {
+    await this.loaded
+    const flow = await getHarnessFlow(request.flowId)
+    if (!flow) {
+      throw new Error('Flow not found')
+    }
+    const now = Date.now()
+    const run: HarnessRun = {
+      id: `run-${randomUUID()}`,
+      flowId: flow.id,
+      flowName: flow.name,
+      flow,
+      worktreeId: request.worktreeId,
+      status: 'running',
+      vars: { ...request.fields },
+      steps: [],
+      pending: [],
+      error: null,
+      createdAt: now,
+      updatedAt: now
+    }
+    this.runs.set(run.id, run)
+    this.prune()
+    const engine = new HarnessRunEngine(run, {
+      launch: this.launch,
+      onChange: (changed) => this.changed(changed)
+    })
+    this.engines.set(run.id, engine)
+    engine.start()
+    this.changed(run)
+    return run
+  }
+
+  answer(runId: string, answer: HarnessDecisionAnswer): void {
+    this.engines.get(runId)?.answer(answer)
+  }
+
+  stop(runId: string): void {
+    this.engines.get(runId)?.stop()
+  }
+
+  delete(runId: string): void {
+    this.engines.get(runId)?.stop()
+    this.engines.delete(runId)
+    this.runs.delete(runId)
+    this.schedulePersist()
+  }
+
+  private changed(run: HarnessRun): void {
+    if (run.status === 'completed' || run.status === 'failed' || run.status === 'stopped') {
+      this.engines.delete(run.id)
+    }
+    this.notify(summarizeHarnessRun(run))
+    this.schedulePersist()
+  }
+
+  private prune(): void {
+    const finished = [...this.runs.values()]
+      .filter((run) => !this.engines.has(run.id))
+      .sort((a, b) => a.createdAt - b.createdAt)
+    while (this.runs.size > MAX_KEPT_RUNS && finished.length > 0) {
+      this.runs.delete(finished.shift()!.id)
+    }
+  }
+
+  private schedulePersist(): void {
+    if (this.persistTimer) {
+      return
+    }
+    this.persistTimer = setTimeout(() => {
+      this.persistTimer = null
+      writeSecureJsonFile(runsPath(), { version: 1, runs: [...this.runs.values()] })
+    }, PERSIST_DELAY_MS)
+  }
+}
