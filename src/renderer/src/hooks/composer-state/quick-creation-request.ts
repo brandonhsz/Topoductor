@@ -52,6 +52,7 @@ export type QuickCreationRequestInput = {
   note: string
   creationStartup?: WorktreeCreationRequest['creationStartup']
   startupPlan: AgentStartupPlan | null
+  harnessStart?: WorktreeCreationRequest['harnessStart']
   quickPrompt: string
   launchDraftPrompt: string | null | undefined
   promptDelivery: 'draft' | 'auto-submit'
@@ -128,6 +129,7 @@ export function buildQuickCreationRequest(
     pendingFirstAgentMessageRename: input.pendingFirstAgentMessageRename,
     note: input.note,
     startupPlan: input.startupPlan,
+    ...(input.harnessStart ? { harnessStart: input.harnessStart } : {}),
     quickPrompt: input.quickPrompt,
     ...(input.launchDraftPrompt ? { launchDraftPrompt: input.launchDraftPrompt } : {}),
     promptDelivery: input.promptDelivery,

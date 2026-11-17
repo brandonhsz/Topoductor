@@ -55,6 +55,8 @@ export type StructuredAgentSessionRuntimeDeps = StructuredAgentSessionTransportO
   resolveAgentFullAccess?: (agent: string) => boolean
   /** Topo-managed MCP servers for a workspace's Claude chats; absent hands none. */
   resolveClaudeTopoMcp?: ClaudeStructuredLaunchPartDeps['resolveTopoMcp']
+  /** System instructions for a chat starting in a workspace (its Harness flow); absent adds none. */
+  resolveChatInstructions?: (workspaceId: string, sessionId: string) => Promise<string | null>
   /** Topo-managed MCP servers for a workspace's Codex chats; absent hands none. */
   resolveCodexTopoMcp?: CodexStructuredLaunchPartDeps['resolveTopoMcp']
   /** The user's per-agent environment overlay from settings, laid over every agent's base env. */

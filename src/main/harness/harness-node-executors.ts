@@ -107,7 +107,9 @@ export async function executeAgentNode(
     instructions: node.prompt,
     context: contextEntries(rt.run.vars, node.inputs),
     choices,
-    sessionKey: node.reuseSession ? node.id : null
+    sessionKey: node.reuseSession ? node.id : null,
+    runner: node.runner,
+    allowEdits: node.allowEdits
   })
   if (result === null) {
     return null

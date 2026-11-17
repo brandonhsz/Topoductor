@@ -68,7 +68,10 @@ function createCodexAdapter(context: StructuredAgentAdapterContext): StructuredA
             ? { prepareLaunchAccountHome: deps.prepareLaunchAccountHome }
             : {}),
           ...(deps.resolveCodexCommand ? { resolveCommand: deps.resolveCodexCommand } : {}),
-          ...(deps.resolveCodexTopoMcp ? { resolveTopoMcp: deps.resolveCodexTopoMcp } : {})
+          ...(deps.resolveCodexTopoMcp ? { resolveTopoMcp: deps.resolveCodexTopoMcp } : {}),
+          ...(deps.resolveChatInstructions
+            ? { resolveDeveloperInstructions: deps.resolveChatInstructions }
+            : {})
         })
       ),
       deps.readCodexInstallation
@@ -124,7 +127,10 @@ function createClaudeAdapter(
         resolveAuthPolicy: deps.resolveClaudeAuthPolicy,
         attachmentDirectory: agentSessionAttachmentStoreRoot(deps.stateDirectory),
         ...(deps.claudeCliFlags ? { cliFlags: deps.claudeCliFlags } : {}),
-        ...(deps.resolveClaudeTopoMcp ? { resolveTopoMcp: deps.resolveClaudeTopoMcp } : {})
+        ...(deps.resolveClaudeTopoMcp ? { resolveTopoMcp: deps.resolveClaudeTopoMcp } : {}),
+        ...(deps.resolveChatInstructions
+          ? { resolveSystemAppend: deps.resolveChatInstructions }
+          : {})
       })
     ),
     ...(deps.resolveClaudeCommand ? { resolveClaudeCommand: deps.resolveClaudeCommand } : {}),

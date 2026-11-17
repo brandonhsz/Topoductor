@@ -2,6 +2,7 @@ import { edgeFires } from '../../shared/harness/harness-agent-prompt'
 import type { HarnessNode } from '../../shared/harness/harness-flow-types'
 import type {
   HarnessAgentSessionRef,
+  HarnessChatCompletion,
   HarnessDecisionAnswer,
   HarnessPendingDecision,
   HarnessRun,
@@ -20,11 +21,13 @@ import {
   HarnessRunStopped,
   type AgentStepRequest,
   type AgentStepResult,
+  type HarnessChatTaskRequest,
   type HarnessDecisionRequest,
   type HarnessStepRuntime
 } from './harness-step-runtime'
 import { executeWavesNode } from './harness-wave-executor'
 import { appendHistory, runHarnessAgentStep } from './harness-agent-step'
+import { HarnessChatInbox } from './harness-chat-inbox'
 
 const FINISHED: ReadonlySet<HarnessRun['status']> = new Set(['completed', 'failed', 'stopped'])
 
@@ -44,13 +47,16 @@ export class HarnessRunEngine implements HarnessStepRuntime {
     string,
     { resolve: (answer: HarnessDecisionAnswer) => void; reject: (error: Error) => void }
   >()
+  private readonly chatInbox: HarnessChatInbox
   private stepCounter = 0
   private decisionCounter = 0
 
   constructor(
     readonly run: HarnessRun,
     private readonly deps: HarnessRunEngineDeps
-  ) {}
+  ) {
+    this.chatInbox = new HarnessChatInbox(run, () => this.touch())
+  }
 
   start(): void {
     const start = this.run.flow.nodes.find((node) => node.kind === 'start')
@@ -81,6 +87,7 @@ export class HarnessRunEngine implements HarnessStepRuntime {
       waiter.reject(new HarnessRunStopped())
     }
     this.waiters.clear()
+    this.chatInbox.cancelAll(new HarnessRunStopped())
     this.run.pending = []
     for (const step of this.run.steps) {
       if (step.status === 'running' || step.status === 'waiting') {
@@ -142,6 +149,15 @@ export class HarnessRunEngine implements HarnessStepRuntime {
       this.run.pending.push(pending)
       this.touch()
     })
+  }
+
+  awaitChat(step: HarnessRunStep, task: HarnessChatTaskRequest): Promise<HarnessChatCompletion> {
+    this.assertRunning()
+    return this.chatInbox.open(step, task)
+  }
+
+  completeChat(completion: HarnessChatCompletion): boolean {
+    return this.chatInbox.complete(completion)
   }
 
   runAgentStep(request: AgentStepRequest): Promise<AgentStepResult | null> {

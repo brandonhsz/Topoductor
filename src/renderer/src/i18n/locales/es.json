@@ -20817,8 +20817,6 @@
       "copiedMarkdown": "Copiado como AGENTS.md",
       "copyMarkdown": "Copiar como AGENTS.md",
       "deleteFlow": "Eliminar flujo",
-      "runFlow": "Ejecutar",
-      "noWorkspace": "Abre un workspace en la barra lateral para ejecutar este flujo en él.",
       "inspector": {
         "edgeLabel": "Condición",
         "edgeLabelHint": "Vacía: siempre se sigue (varias conexiones vacías corren en paralelo). Con texto: una salida que eligen el agente o tú.",
@@ -20873,19 +20871,19 @@
         "edgeWhenOp": "Comparación",
         "edgeWhenValue": "Valor",
         "rolePaths": "Carpetas de este rol",
-        "rolePathsPlaceholder": "Carpetas que le pertenecen, separadas por comas"
+        "rolePathsPlaceholder": "Carpetas que le pertenecen, separadas por comas",
+        "runner": "Quién lo corre",
+        "runnerHint": "El chat del workspace sigue el flujo. Elige Topo para pasos que necesitan otros modelos u ojos frescos, como la mesa de diálogo.",
+        "runnerChat": "El chat del workspace",
+        "runnerTopo": "Topo, con su propio agente",
+        "allowEdits": "Permitir editar archivos",
+        "allowEditsHint": "Apagado bloquea editar archivos mientras el chat está en este paso (Claude), como en la ideación antes de aprobar el plan."
       },
       "title": "Harness",
       "tabs": {
         "flows": "Flujos",
         "runsWaiting": "Ejecuciones ({{count}} esperando)",
         "runs": "Ejecuciones"
-      },
-      "run": {
-        "cancel": "Cancelar",
-        "start": "Ejecutar",
-        "title": "Ejecutar «{{flow}}»",
-        "description": "Topo lanza el agente de cada nodo en {{workspace}}. Los agentes pueden leer y cambiar sus archivos."
       },
       "status": {
         "running": "Corriendo",
@@ -20926,7 +20924,20 @@
         "stackedHint": "Cada oleada abre su propio PR encima del anterior. Requiere «Commit después de cada oleada»."
       },
       "close": "Cerrar Harness",
-      "closeTooltip": "Cerrar · Esc"
+      "closeTooltip": "Cerrar · Esc",
+      "composer": {
+        "auto": "Automático (desde el origen)",
+        "fromSource": "Vacío: se toma del issue, ticket o nombre del workspace",
+        "flow": "Flujo de Harness [Opcional]",
+        "none": "Ninguno",
+        "optional": "Opcional"
+      },
+      "openWorkspace": "Abrir workspace con este flujo",
+      "chatTask": {
+        "working": "El chat del workspace está trabajando en este paso.",
+        "readOnly": "El chat del workspace está trabajando en este paso. Aquí no se pueden editar archivos.",
+        "open": "Abrir el chat"
+      }
     }
   },
   "dashboardPopout": {

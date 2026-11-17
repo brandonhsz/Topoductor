@@ -1,5 +1,8 @@
 import type { TuiAgent } from '../../shared/agent-launch/catalog/tui-agent'
+import type { HarnessNodeRunner } from '../../shared/harness/harness-flow-types'
 import type {
+  HarnessChatCompletion,
+  HarnessChatTask,
   HarnessDecisionAnswer,
   HarnessPendingDecision,
   HarnessRun,
@@ -28,7 +31,15 @@ export type AgentStepRequest = {
   choices: string[]
   /** Steps sharing a key continue one chat across visits; null always starts fresh. */
   sessionKey: string | null
+  /** Who runs the step in a chat-driven run; orchestrated runs always launch an agent. */
+  runner: HarnessNodeRunner
+  allowEdits: boolean
 }
+
+export type HarnessChatTaskRequest = Pick<
+  HarnessChatTask,
+  'nodeId' | 'taskId' | 'title' | 'instructions' | 'choices' | 'allowEdits'
+>
 
 export type AgentStepResult = { step: HarnessRunStep; output: string; outcome: string | null }
 
@@ -49,6 +60,8 @@ export type HarnessStepRuntime = {
   }) => HarnessRunStep
   finishStep: (step: HarnessRunStep, patch: Partial<HarnessRunStep>) => void
   ask: (step: HarnessRunStep, decision: HarnessDecisionRequest) => Promise<HarnessDecisionAnswer>
+  /** Hands a step to the workspace chat and resolves when the chat reports it. */
+  awaitChat: (step: HarnessRunStep, task: HarnessChatTaskRequest) => Promise<HarnessChatCompletion>
   /** Null means the person chose to skip the failed step. */
   runAgentStep: (request: AgentStepRequest) => Promise<AgentStepResult | null>
   /** Stops the run; always throws so the caller unwinds. */

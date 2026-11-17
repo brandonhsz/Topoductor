@@ -122,6 +122,7 @@ export const ROOT_HELP_TEXT_PRIMARY = [
   '',
   'Chats:',
   '  chat rename               Rename a chat tab',
+  '  harness status            Show your current Harness flow step',
   '',
   'Files:',
   '  file open                 Open a file as a tab, view stays put (--focus brings you to it)',

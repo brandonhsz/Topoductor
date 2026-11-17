@@ -158,7 +158,9 @@ function node(raw: unknown): HarnessNode | null {
         kind: 'agent',
         agent: agentOrNull(record.agent),
         prompt: text(record.prompt),
-        reuseSession: record.reuseSession !== false
+        reuseSession: record.reuseSession !== false,
+        runner: record.runner === 'topo' ? 'topo' : 'chat',
+        allowEdits: record.allowEdits !== false
       }
     case 'human':
       return { ...base, ...flowStep, kind: 'human', prompt: text(record.prompt) }
@@ -170,7 +172,9 @@ function node(raw: unknown): HarnessNode | null {
         planKey: key(record.planKey),
         roles: waveRoles(record.roles),
         verifyCommand: text(record.verifyCommand, 2000),
-        checkpointEachWave: record.checkpointEachWave === true
+        checkpointEachWave: record.checkpointEachWave === true,
+        runner: record.runner === 'topo' ? 'topo' : 'chat',
+        allowEdits: record.allowEdits !== false
       }
     case 'end':
       return { ...base, kind: 'end' }

@@ -10,11 +10,8 @@ import { prepareOpenCodePtyLaunch } from '../../opencode/opencode-pty-launch'
 import { LEGACY_TERMINAL_SHIM_REMOTE_ENV_KEYS } from '../../pty/shell-startup/legacy-terminal-shim-dir'
 import { PI_PROCESS_OWNER_ENV_KEYS } from '../../pty/shell-startup/pi-process-owner-env'
 import { planCodexNoDaemonLaunch } from '../../pty/shell-startup/codex-no-daemon-launch-command'
-import {
-  applyAgentWorkspaceTrustToSpawn,
-  repoForAgentWorkspace
-} from '../../agent-launch/trust/agent-workspace-trust-spawn'
-import { applyTopoMcpToTerminalLaunch } from '../../mcp/topo-mcp-launch'
+import { applyAgentWorkspaceTrustToSpawn } from '../../agent-launch/trust/agent-workspace-trust-spawn'
+import { applyWorkspaceExtrasToTerminalLaunch } from '../../agent-launch/terminal-launch-workspace-extras'
 import type { PtySpawnOptions } from '../../providers/pty-provider-contract'
 import type { CodexAccountSelectionTarget } from '../../codex-accounts/runtime-selection'
 import { getStartupTerminalIngressIntent } from '../terminal-startup-color-query-replies'
@@ -158,18 +155,19 @@ export async function assemblePtySpawnLaunchOptions(input: PtySpawnLaunchOptions
     input.codexRuntime !== 'wsl' &&
     !input.preAdoptedStablePane
   ) {
-    const mcp = await applyTopoMcpToTerminalLaunch({
+    const extras = await applyWorkspaceExtrasToTerminalLaunch({
       agent: launchAgent,
       settings: input.getSettings?.(),
-      repo: repoForAgentWorkspace(args.trustWorktreeId ?? args.worktreeId, input.store),
-      userDataPath: getAppEnvironment().getPath('userData'),
+      worktreeId: args.trustWorktreeId ?? args.worktreeId,
+      store: input.store,
+      paneKey: input.paneKey,
       cwd: input.cwd,
       command: launchCommand,
       env,
       shell
     })
-    launchCommand = mcp.command
-    env = mcp.env
+    launchCommand = extras.command
+    env = extras.env
   }
   promoteAgentTeamsShimPath(env, input.requestedAgentTeamsPath)
   const spawnOptions: PtySpawnOptions = {

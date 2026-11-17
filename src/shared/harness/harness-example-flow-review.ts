@@ -17,6 +17,9 @@ function reviewer(id: string, title: string, angle: string, row: number): Harnes
     // Pick a different model per reviewer in the inspector; disagreement between models is the point.
     agent: null,
     reuseSession: true,
+    // Reviewers and judge run on Topo so other models, and not the author, look at the diff.
+    runner: 'topo',
+    allowEdits: false,
     prompt: `${REVIEWER_RULES}\n\nTu ángulo: ${angle}`,
     inputs: ['intent', 'plan', 'ejecucion', 'correccion'],
     outputKey: id,
@@ -60,6 +63,8 @@ export const REVIEW_NODES: HarnessAgentNode[] = [
     position: at(6, 5.3),
     agent: null,
     reuseSession: true,
+    runner: 'topo',
+    allowEdits: false,
     prompt: `Recibes los hallazgos de varios revisores adversariales. Decide cuáles son reales.
 1. Junta los duplicados.
 2. Verifica cada hallazgo contra el código y, si hace falta, corre su evidencia. No aceptes un hallazgo solo porque varios revisores lo dijeron.

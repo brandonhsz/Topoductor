@@ -38,11 +38,52 @@ function assertRunning(signal: AbortSignal): void {
   }
 }
 
+/** The chat already has the flow's rules and project data in its instructions, so a task carries only the step. */
+async function handToChat(
+  rt: HarnessStepRuntime,
+  request: AgentStepRequest
+): Promise<AgentStepResult> {
+  const { run } = rt
+  const step = rt.addStep({
+    nodeId: request.nodeId,
+    taskId: request.taskId,
+    title: request.title,
+    agent: null,
+    status: 'running'
+  })
+  if (run.chatSessionId && !run.chatSessionId.startsWith('terminal:')) {
+    step.session = { kind: 'structured', worktreeId: run.worktreeId, sessionId: run.chatSessionId }
+  }
+  const instructions = buildHarnessAgentPrompt({
+    ...request,
+    flow: { ...run.flow, sharedInstructions: '', project: { ...run.flow.project, notes: '' } },
+    visit: step.visit
+  })
+  const done = await rt.awaitChat(step, {
+    nodeId: request.nodeId,
+    taskId: request.taskId,
+    title: request.title,
+    instructions,
+    choices: request.choices,
+    allowEdits: request.allowEdits
+  })
+  const outcome =
+    done.outcome && request.choices.includes(done.outcome)
+      ? done.outcome
+      : parseOutcome(done.output, request.choices)
+  rt.finishStep(step, { status: 'done', output: done.output, outcome })
+  return { step, output: done.output, outcome }
+}
+
 /** Runs one agent turn; on failure the person retries, skips (null) or stops the run. */
 export async function runHarnessAgentStep(
   { rt, launch, signal, sessions }: HarnessAgentStepContext,
   request: AgentStepRequest
 ): Promise<AgentStepResult | null> {
+  if (rt.run.mode === 'chat' && request.runner === 'chat') {
+    assertRunning(signal)
+    return handToChat(rt, request)
+  }
   const agent = request.agent ?? rt.run.flow.defaultAgent
   for (;;) {
     assertRunning(signal)

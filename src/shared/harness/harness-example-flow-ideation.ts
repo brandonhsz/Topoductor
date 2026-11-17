@@ -48,6 +48,8 @@ export const IDEATION_NODES: HarnessNode[] = [
     position: at(1, -1.4),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: true,
     prompt: `Investiga la pregunta del Intent sin cambiar el producto.
 - Responde con evidencia: lee el código, corre comandos, haz sondas o prototipos desechables y mide cuando aplique. Nada de opiniones sin respaldo.
 - No dejes cambios en el workspace: si creaste prototipos, bórralos o dilo con su ruta.
@@ -66,6 +68,8 @@ Entrega: la respuesta en 3 a 5 líneas, la evidencia (comandos, rutas, salidas) 
     position: at(1, 0),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: false,
     prompt: `Con el Intent registrado, describe la idea: qué haría, cómo se vería y qué cambiaría para quien la use.
 Si el usuario dio una idea inicial, parte de ella: ordénala y complétala, pero no la reemplaces por otra. Si no la dio, propón la versión más simple que sea fiel al Intent.
 Si el usuario llegó con una solución ("agrega un botón que..."), identifica la intención detrás.
@@ -85,6 +89,8 @@ Entrega un solo párrafo con el formato **Idea (vN):** ..., donde N es el númer
     position: at(2, -1),
     agent: null,
     reuseSession: true,
+    runner: 'topo',
+    allowEdits: false,
     prompt: `Cuestiona la idea desde quien la va a usar.
 - ¿Quién es exactamente el usuario y en qué momento la usa?
 - ¿Qué tan fácil es entenderla la primera vez? ¿Qué pasos sobran?
@@ -106,6 +112,8 @@ ${MESA_RULES}`,
     position: at(2, 0),
     agent: null,
     reuseSession: true,
+    runner: 'topo',
+    allowEdits: false,
     prompt: `Cuestiona cómo se construiría, sin jerga técnica: habla de piezas, datos, dependencias y riesgos como se los explicarías a alguien que no programa. Puedes leer el código del proyecto para fundamentar tus preguntas.
 - ¿Qué información necesita guardarse o moverse, y de dónde sale?
 - ¿Qué partes ya existen en el proyecto y cuáles serían nuevas?
@@ -127,6 +135,8 @@ ${MESA_RULES}`,
     position: at(2, 1),
     agent: null,
     reuseSession: true,
+    runner: 'topo',
+    allowEdits: false,
     prompt: `Cuestiona si vale la pena y si la idea sigue fiel al Intent.
 - ¿Qué tan cerca está la idea actual de la intención original? Califica: alta / media / baja y explica por qué.
 - ¿La idea se desvió, creció de más o se quedó corta respecto al Intent?
@@ -148,6 +158,8 @@ ${MESA_RULES}`,
     position: at(3, 0),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: false,
     prompt: `Presenta las respuestas de los agentes juntas, como una conversación de mesa, con este formato:
 
 ### Ronda N
@@ -187,6 +199,8 @@ No respondas las preguntas por el usuario. Si una pregunta se puede resolver con
     position: at(5, 0),
     agent: null,
     reuseSession: true,
+    runner: 'chat',
+    allowEdits: false,
     prompt: `Entrega un resumen final con: Intent, Tipo, Idea final, decisiones tomadas en cada ronda y preguntas que quedaron abiertas a propósito. Este resumen es la entrada de la implementación.`,
     inputs: ['intent', 'tipo', 'idea', 'sintesis', 'respuesta'],
     outputKey: 'consolidada',

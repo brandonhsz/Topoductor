@@ -1,3 +1,4 @@
+import { startHarnessRunForCreatedWorktree } from './worktree-creation-harness-start'
 import { prepareWorktreeCreationHooks, setupCreateArgs } from './worktree-creation-hook-preparation'
 import { useAppStore } from '@/store/index'
 import { activateAndRevealWorktree } from '@/lib/workspace/activation/worktree-activation'
@@ -143,6 +144,7 @@ export async function executeWorktreeCreation(
   }
 
   const worktree = result.worktree
+  await startHarnessRunForCreatedWorktree(preparedRequest, worktree.id)
   // Why: cancellation can race a successful backend adoption; clean up again after it settles so an adopted workspace cannot outlive its destroyed VM.
   if (!useAppStore.getState().pendingWorktreeCreations[creationId]) {
     if (preparedRequest.ephemeralVmRuntimeId) {

@@ -211,6 +211,11 @@ export const HANDLER_GROUPS: readonly HandlerGroup[] = [
     load: async () => (await import('./handlers/chat.js')).CHAT_HANDLERS
   },
   {
+    name: 'harness',
+    keys: ['harness status', 'harness complete', 'harness wait', 'harness answer', 'harness guard'],
+    load: async () => (await import('./handlers/harness.js')).HARNESS_HANDLERS
+  },
+  {
     name: 'connector',
     keys: [
       'connector start',

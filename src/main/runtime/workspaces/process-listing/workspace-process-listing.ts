@@ -1,3 +1,4 @@
+import { getHarnessRunService } from '../../../harness/harness-run-registry'
 import { getRepoHostIdentityForParts } from '../../../../shared/repo-host-identity'
 import { createRepoRowExecutionHostLookup } from '../../../../shared/execution-host/worktree-execution-host-resolution'
 import { resolveWorktreeHostRouting } from '../catalog/worktree-launch-host-repo'
@@ -268,6 +269,8 @@ export abstract class TopoRuntimeWithGetWorktreePs extends RuntimeChatWorkerEven
       },
       resolveClaudeTopoMcp: (workspaceId) => this.resolveClaudeTopoMcp(workspaceId),
       resolveCodexTopoMcp: (workspaceId) => this.resolveCodexTopoMcp(workspaceId),
+      resolveChatInstructions: async (workspaceId, sessionId) =>
+        getHarnessRunService()?.chatInstructions(workspaceId, sessionId) ?? null,
       resolveAgentFullAccess: (agent) =>
         isTuiAgent(agent) &&
         preModeChatGetsFullAccess(agent, this.requireStore().getSettings(), process.platform),

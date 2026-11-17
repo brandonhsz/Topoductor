@@ -61,13 +61,7 @@ export default function HarnessPage(): React.JSX.Element {
         </Tooltip>
       </header>
       {tab === 'flows' ? (
-        <HarnessFlowsView
-          workspace={workspace}
-          onRunStarted={(runId) => {
-            setSelectedRunId(runId)
-            setTab('runs')
-          }}
-        />
+        <HarnessFlowsView workspace={workspace} />
       ) : (
         <HarnessRunsView runs={runs} selectedRunId={selectedRunId} onSelectRun={setSelectedRunId} />
       )}

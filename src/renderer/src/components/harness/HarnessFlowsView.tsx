@@ -26,7 +26,8 @@ import type { HarnessFlow, HarnessNodeKind } from '../../../../shared/harness/ha
 import { harnessFlowToMarkdown } from '../../../../shared/harness/harness-flow-markdown'
 import { HarnessFlowCanvas, type HarnessCanvasSelection } from './HarnessFlowCanvas'
 import { HarnessInspector } from './HarnessInspector'
-import { HarnessRunDialog } from './HarnessRunDialog'
+import { rememberHarnessFlow } from './HarnessFlowComposerSection'
+import { useAppStore } from '@/store'
 import {
   copyHarnessFlowForRepo,
   createEmptyHarnessFlow,
@@ -40,11 +41,9 @@ import type { HarnessWorkspaceContext } from './use-harness-workspace'
 const SAVE_DELAY_MS = 600
 
 export function HarnessFlowsView({
-  workspace,
-  onRunStarted
+  workspace
 }: {
   workspace: HarnessWorkspaceContext
-  onRunStarted: (runId: string) => void
 }): React.JSX.Element {
   const t = useTranslate()
   const { flows, error } = useHarnessFlows(workspace.repoId)
@@ -53,7 +52,6 @@ export function HarnessFlowsView({
   const [edits, setEdits] = useState<HarnessFlow | null>(null)
   const [selection, setSelection] = useState<HarnessCanvasSelection>(null)
   const [saveState, setSaveState] = useState<'saved' | 'saving' | 'error'>('saved')
-  const [runOpen, setRunOpen] = useState(false)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pendingSave = useRef<HarnessFlow | null>(null)
 
@@ -117,11 +115,6 @@ export function HarnessFlowsView({
   }
 
   const problems = useMemo(() => (draft ? harnessFlowProblems(draft) : []), [draft])
-  const startField = draft?.nodes.find((node) => node.kind === 'start')
-  const startFields = useMemo(
-    () => (startField?.kind === 'start' ? startField.fields : []),
-    [startField]
-  )
 
   if (error) {
     return <p className="p-5 text-sm text-destructive">{error}</p>
@@ -264,21 +257,29 @@ export function HarnessFlowsView({
               </DropdownMenu>
               <Button
                 size="xs"
-                disabled={problems.length > 0 || !workspace.worktreeId}
-                onClick={() => setRunOpen(true)}
+                disabled={problems.length > 0}
+                onClick={() => {
+                  void flush()
+                    .catch(() => {})
+                    .then(() => {
+                      // The composer restores the remembered flow for this repo.
+                      if (workspace.repoId) {
+                        rememberHarnessFlow(workspace.repoId, draft.id)
+                      }
+                      useAppStore.getState().openModal('new-workspace-composer', {
+                        telemetrySource: 'unknown',
+                        ...(workspace.repoId ? { initialRepoId: workspace.repoId } : {})
+                      })
+                    })
+                }}
               >
                 <Play />
-                {t('components.harness.runFlow', 'Run')}
+                {t('components.harness.openWorkspace', 'Open a workspace with this flow')}
               </Button>
             </div>
-            {problems.length > 0 || !workspace.worktreeId ? (
+            {problems.length > 0 ? (
               <div className="shrink-0 border-b border-border bg-status-warning-background px-3 py-1.5 text-xs text-status-warning-text">
-                {!workspace.worktreeId
-                  ? t(
-                      'components.harness.noWorkspace',
-                      'Open a workspace in the sidebar to run this flow in it.'
-                    )
-                  : problems[0]}
+                {problems[0]}
               </div>
             ) : null}
             <div className="min-h-0 flex-1">
@@ -300,23 +301,6 @@ export function HarnessFlowsView({
               onSelect={setSelection}
             />
           </aside>
-          <HarnessRunDialog
-            open={runOpen}
-            onOpenChange={setRunOpen}
-            flowName={draft.name}
-            workspaceName={workspace.name}
-            fields={startFields}
-            onStart={async (fields) => {
-              await flush()
-              const run = await window.api.harness.startRun({
-                flowId: draft.id,
-                worktreeId: workspace.worktreeId!,
-                fields
-              })
-              setRunOpen(false)
-              onRunStarted(run.id)
-            }}
-          />
         </>
       ) : null}
     </div>

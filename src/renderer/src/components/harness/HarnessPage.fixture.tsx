@@ -32,6 +32,9 @@ function step(
 
 const run: HarnessRun = {
   id: 'run-1',
+  mode: 'chat',
+  chatSessionId: null,
+  chatTasks: [],
   flowId: flow.id,
   flowName: flow.name,
   flow,
@@ -84,10 +87,7 @@ export const flows = defineFixture({
   setup: mockHarnessApi,
   render: () => (
     <div className="flex h-[760px] flex-col">
-      <HarnessFlowsView
-        workspace={{ worktreeId: 'wt', repoId: 'repo', name: 'inconnu' }}
-        onRunStarted={() => {}}
-      />
+      <HarnessFlowsView workspace={{ worktreeId: 'wt', repoId: 'repo', name: 'inconnu' }} />
     </div>
   )
 })
@@ -107,7 +107,8 @@ export const liveRun = defineFixture({
             status: 'waiting',
             createdAt: run.createdAt,
             updatedAt: run.updatedAt,
-            pendingCount: 1
+            pendingCount: 1,
+            mode: 'chat'
           }
         ]}
         selectedRunId={run.id}

@@ -8,6 +8,7 @@ import {
   saveHarnessFlow
 } from '../../harness/harness-flow-store'
 import { HarnessRunService } from '../../harness/harness-run-service'
+import { setHarnessRunService } from '../../harness/harness-run-registry'
 import type { TopoRuntimeService } from '../../runtime/topo-runtime'
 
 const MAX_ID = 256
@@ -60,6 +61,7 @@ export function registerHarnessHandlers(runtime: TopoRuntimeService): void {
   const runs = new HarnessRunService(createHarnessAgentLauncher(runtime), (run) =>
     broadcast('harness:runChanged', run)
   )
+  setHarnessRunService(runs)
   ipcMain.handle('harness:listFlows', (_event, repoId: unknown) =>
     listHarnessFlows(typeof repoId === 'string' && repoId ? repoId : null)
   )
@@ -79,7 +81,12 @@ export function registerHarnessHandlers(runtime: TopoRuntimeService): void {
     return runs.start({
       flowId: id(record?.flowId),
       worktreeId: id(record?.worktreeId),
-      fields: textRecord(record?.fields)
+      fields: textRecord(record?.fields),
+      mode: record?.mode === 'chat' ? 'chat' : 'orchestrated',
+      chatSessionId:
+        typeof record?.chatSessionId === 'string' && record.chatSessionId
+          ? id(record.chatSessionId)
+          : null
     })
   })
   ipcMain.handle('harness:answerDecision', (_event, runId: unknown, answer: unknown) => {

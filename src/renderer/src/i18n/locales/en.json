@@ -21777,8 +21777,6 @@
       "copiedMarkdown": "Copied as AGENTS.md",
       "copyMarkdown": "Copy as AGENTS.md",
       "deleteFlow": "Delete flow",
-      "runFlow": "Run",
-      "noWorkspace": "Open a workspace in the sidebar to run this flow in it.",
       "inspector": {
         "edgeLabel": "Condition",
         "edgeLabelHint": "Empty: always followed (several empty connections run in parallel). With text: an outcome the agent or you choose.",
@@ -21833,19 +21831,19 @@
         "reuseSession": "Continue the same chat each round",
         "reuseSessionHint": "The agent keeps what it read before. Turn it off for a fresh look every round.",
         "rolePaths": "Folders this role owns",
-        "rolePathsPlaceholder": "Folders it owns, separated by commas"
+        "rolePathsPlaceholder": "Folders it owns, separated by commas",
+        "runner": "Who runs it",
+        "runnerHint": "The workspace chat follows the flow. Choose Topo for steps that need other models or fresh eyes, like a review table.",
+        "runnerChat": "The workspace chat",
+        "runnerTopo": "Topo, with its own agent",
+        "allowEdits": "Allow editing files",
+        "allowEditsHint": "Off blocks file edits while the chat is on this step (Claude), like ideation before the plan is approved."
       },
       "title": "Harness",
       "tabs": {
         "flows": "Flows",
         "runsWaiting": "Runs ({{count}} waiting)",
         "runs": "Runs"
-      },
-      "run": {
-        "cancel": "Cancel",
-        "start": "Run",
-        "title": "Run «{{flow}}»",
-        "description": "Topo launches each node’s agent in {{workspace}}. Agents can read and change its files."
       },
       "status": {
         "running": "Running",
@@ -21886,7 +21884,20 @@
         "stackedHint": "Each wave opens its own PR on top of the previous one. Needs “Commit after each wave”."
       },
       "close": "Close Harness",
-      "closeTooltip": "Close · Esc"
+      "closeTooltip": "Close · Esc",
+      "composer": {
+        "auto": "Automatic (from the source)",
+        "fromSource": "Empty: taken from the issue, ticket or workspace name",
+        "flow": "Harness flow [Optional]",
+        "none": "None",
+        "optional": "Optional"
+      },
+      "openWorkspace": "Open a workspace with this flow",
+      "chatTask": {
+        "working": "The workspace chat is working on this step.",
+        "readOnly": "The workspace chat is working on this step. File edits are blocked here.",
+        "open": "Open the chat"
+      }
     }
   },
   "dashboardPopout": {

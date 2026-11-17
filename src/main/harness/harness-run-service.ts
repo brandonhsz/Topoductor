@@ -3,6 +3,7 @@ import { readFile, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { getAppEnvironment } from '../../shared/app-environment'
 import type {
+  HarnessChatCompletion,
   HarnessDecisionAnswer,
   HarnessRun,
   HarnessRunStartRequest,
@@ -11,6 +12,7 @@ import type {
 import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
 import { writeSecureJsonFile } from '../../shared/secure-storage/secure-file'
 import type { HarnessAgentLauncher } from './harness-agent-launcher'
+import { harnessChatInstructions } from '../../shared/harness/harness-chat-instructions'
 import { getHarnessFlow } from './harness-flow-store'
 import { HarnessRunEngine } from './harness-run-engine'
 
@@ -28,7 +30,8 @@ export function summarizeHarnessRun(run: HarnessRun): HarnessRunSummary {
     status: run.status,
     createdAt: run.createdAt,
     updatedAt: run.updatedAt,
-    pendingCount: run.pending.length
+    pendingCount: run.pending.length,
+    mode: run.mode
   }
 }
 
@@ -56,11 +59,18 @@ async function readPersistedRuns(): Promise<HarnessRun[]> {
       return []
     }
     const runs = asRecord(JSON.parse(await readFile(path, 'utf8')))?.runs
-    return (Array.isArray(runs) ? runs.filter(isHarnessRun) : []).map((run) =>
-      run.status === 'running' || run.status === 'waiting'
+    return (Array.isArray(runs) ? runs.filter(isHarnessRun) : []).map((stored) => {
+      // Runs saved before chat mode existed were all orchestrated.
+      const run: HarnessRun = {
+        ...stored,
+        mode: stored.mode === 'chat' ? 'chat' : 'orchestrated',
+        chatSessionId: typeof stored.chatSessionId === 'string' ? stored.chatSessionId : null,
+        chatTasks: []
+      }
+      return run.status === 'running' || run.status === 'waiting'
         ? { ...run, status: 'stopped', pending: [], error: run.error ?? INTERRUPTED }
         : run
-    )
+    })
   } catch {
     return []
   }
@@ -70,6 +80,7 @@ export class HarnessRunService {
   private readonly runs = new Map<string, HarnessRun>()
   private readonly engines = new Map<string, HarnessRunEngine>()
   private persistTimer: ReturnType<typeof setTimeout> | null = null
+  private readonly listeners = new Set<(run: HarnessRun) => void>()
   private readonly loaded: Promise<void>
 
   constructor(
@@ -110,6 +121,9 @@ export class HarnessRunService {
       flowName: flow.name,
       flow,
       worktreeId: request.worktreeId,
+      mode: request.mode,
+      chatSessionId: request.chatSessionId,
+      chatTasks: [],
       status: 'running',
       vars: { ...request.fields },
       steps: [],
@@ -145,7 +159,83 @@ export class HarnessRunService {
     this.schedulePersist()
   }
 
+  completeChat(runId: string, completion: HarnessChatCompletion): boolean {
+    return this.engines.get(runId)?.completeChat(completion) ?? false
+  }
+
+  bindChatSession(runId: string, sessionId: string): void {
+    const run = this.runs.get(runId)
+    if (run && run.mode === 'chat' && !run.chatSessionId) {
+      run.chatSessionId = sessionId
+      this.changed(run)
+    }
+  }
+
+  /** The live chat-mode run a caller belongs to: its own session first, then its workspace. */
+  async findChatRun(caller: {
+    sessionId: string | null
+    worktreeId: string | null
+  }): Promise<HarnessRun | null> {
+    await this.loaded
+    const live = [...this.runs.values()]
+      .filter((run) => run.mode === 'chat' && this.engines.has(run.id))
+      .sort((a, b) => b.createdAt - a.createdAt)
+    return (
+      (caller.sessionId ? live.find((run) => run.chatSessionId === caller.sessionId) : null) ??
+      (caller.worktreeId ? live.find((run) => run.worktreeId === caller.worktreeId) : null) ??
+      null
+    )
+  }
+
+  /** Resolves on the run's next change, or with the same run after `timeoutMs`. */
+  waitForChange(runId: string, timeoutMs: number): Promise<HarnessRun | null> {
+    return new Promise((resolve) => {
+      const done = (): void => {
+        clearTimeout(timer)
+        this.listeners.delete(listener)
+        resolve(this.runs.get(runId) ?? null)
+      }
+      const listener = (run: HarnessRun): void => {
+        if (run.id === runId) {
+          done()
+        }
+      }
+      const timer = setTimeout(done, timeoutMs)
+      this.listeners.add(listener)
+    })
+  }
+
+  /** Instructions for a chat starting in `worktreeId`; the first chat to start claims a run that has none. */
+  chatInstructions(worktreeId: string, sessionId: string): string | null {
+    const run = [...this.runs.values()]
+      .filter(
+        (entry) =>
+          entry.mode === 'chat' && this.engines.has(entry.id) && entry.worktreeId === worktreeId
+      )
+      .sort((a, b) => b.createdAt - a.createdAt)[0]
+    if (!run || (run.chatSessionId && run.chatSessionId !== sessionId)) {
+      return null
+    }
+    this.bindChatSession(run.id, sessionId)
+    return harnessChatInstructions(run.flow)
+  }
+
+  /** Whether the chat of `worktreeId` may edit files now: only while one of its open tasks allows it. */
+  editsAllowed(caller: { sessionId: string | null; worktreeId: string | null }): boolean {
+    const live = [...this.runs.values()].filter(
+      (run) =>
+        run.mode === 'chat' &&
+        this.engines.has(run.id) &&
+        ((caller.sessionId !== null && run.chatSessionId === caller.sessionId) ||
+          (caller.worktreeId !== null && run.worktreeId === caller.worktreeId))
+    )
+    return live.every((run) => run.chatTasks.some((task) => task.allowEdits))
+  }
+
   private changed(run: HarnessRun): void {
+    for (const listener of this.listeners) {
+      listener(run)
+    }
     if (run.status === 'completed' || run.status === 'failed' || run.status === 'stopped') {
       this.engines.delete(run.id)
     }

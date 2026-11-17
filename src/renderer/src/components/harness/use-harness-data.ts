@@ -10,7 +10,13 @@ export function useHarnessFlows(repoId: string | null): {
   const [flows, setFlows] = useState<HarnessFlow[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const reload = useCallback(() => {
-    window.api.harness
+    // Hosts and shells without the Harness bridge (older preloads, partial API stubs) show no flows.
+    const harness = window.api?.harness
+    if (!harness) {
+      setFlows([])
+      return
+    }
+    harness
       .listFlows(repoId)
       .then((next) => {
         setFlows(next)
@@ -22,7 +28,7 @@ export function useHarnessFlows(repoId: string | null): {
   }, [repoId])
   useEffect(() => {
     reload()
-    return window.api.harness.onFlowsChanged(reload)
+    return window.api?.harness?.onFlowsChanged(reload)
   }, [reload])
   return { flows, error, reload }
 }

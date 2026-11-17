@@ -2,6 +2,7 @@ import React from 'react'
 import { ChevronDown, Settings2 } from 'lucide-react'
 import type AgentCombobox from '@/components/agent/AgentCombobox'
 import { AgentLaunchPicker } from '@/components/agent/AgentLaunchPicker'
+import { HarnessFlowComposerSection } from '@/components/harness/HarnessFlowComposerSection'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
@@ -24,6 +25,7 @@ type NewWorkspaceComposerAgentSectionProps = Pick<
   | 'onCreate'
   | 'advancedOpen'
   | 'onToggleAdvanced'
+  | 'repoId'
 > & {
   advancedLocked?: boolean
   visibleQuickAgents: React.ComponentProps<typeof AgentCombobox>['agents']
@@ -49,7 +51,8 @@ export function NewWorkspaceComposerAgentSection({
   advancedLocked = false,
   onToggleAdvanced,
   defaultTuiAgent,
-  handleSetDefaultAgent
+  handleSetDefaultAgent,
+  repoId
 }: NewWorkspaceComposerAgentSectionProps): React.JSX.Element {
   const t = useTranslate()
   return (
@@ -101,6 +104,8 @@ export function NewWorkspaceComposerAgentSection({
           onPick={(agent, draft, entry) => onQuickAgentChange(agent, draft?.surface, draft, entry)}
         />
       </div>
+      {/* A flow needs an agent to drive it, so Blank Terminal hides the picker. */}
+      {quickAgent !== null && repoId ? <HarnessFlowComposerSection repoId={repoId} /> : null}
 
       <div className="!mb-2">
         <Button
