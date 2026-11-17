@@ -88,8 +88,8 @@ Entrega un solo párrafo con el formato **Idea (vN):** ..., donde N es el númer
     block: 'Bloque 1 · Mesa',
     position: at(2, -1),
     agent: null,
-    reuseSession: true,
-    runner: 'topo',
+    reuseSession: false,
+    runner: 'subagent',
     allowEdits: false,
     prompt: `Cuestiona la idea desde quien la va a usar.
 - ¿Quién es exactamente el usuario y en qué momento la usa?
@@ -111,8 +111,8 @@ ${MESA_RULES}`,
     block: 'Bloque 1 · Mesa',
     position: at(2, 0),
     agent: null,
-    reuseSession: true,
-    runner: 'topo',
+    reuseSession: false,
+    runner: 'subagent',
     allowEdits: false,
     prompt: `Cuestiona cómo se construiría, sin jerga técnica: habla de piezas, datos, dependencias y riesgos como se los explicarías a alguien que no programa. Puedes leer el código del proyecto para fundamentar tus preguntas.
 - ¿Qué información necesita guardarse o moverse, y de dónde sale?
@@ -134,8 +134,8 @@ ${MESA_RULES}`,
     block: 'Bloque 1 · Mesa',
     position: at(2, 1),
     agent: null,
-    reuseSession: true,
-    runner: 'topo',
+    reuseSession: false,
+    runner: 'subagent',
     allowEdits: false,
     prompt: `Cuestiona si vale la pena y si la idea sigue fiel al Intent.
 - ¿Qué tan cerca está la idea actual de la intención original? Califica: alta / media / baja y explica por qué.

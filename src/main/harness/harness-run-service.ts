@@ -2,6 +2,8 @@ import { randomUUID } from 'node:crypto'
 import { readFile, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { getAppEnvironment } from '../../shared/app-environment'
+import type { TuiAgent } from '../../shared/agent-launch/catalog/tui-agent'
+import type { HarnessSubagentResult } from '../../shared/harness/harness-subagent-contract'
 import type {
   HarnessChatCompletion,
   HarnessDecisionAnswer,
@@ -31,7 +33,8 @@ export function summarizeHarnessRun(run: HarnessRun): HarnessRunSummary {
     createdAt: run.createdAt,
     updatedAt: run.updatedAt,
     pendingCount: run.pending.length,
-    mode: run.mode
+    mode: run.mode,
+    chatSessionId: run.chatSessionId
   }
 }
 
@@ -85,7 +88,8 @@ export class HarnessRunService {
 
   constructor(
     private readonly launch: HarnessAgentLauncher,
-    private readonly notify: (run: HarnessRunSummary) => void
+    private readonly notify: (run: HarnessRunSummary) => void,
+    private readonly chatProvider?: (run: HarnessRun) => Promise<TuiAgent | null>
   ) {
     this.loaded = readPersistedRuns().then((runs) => {
       for (const run of runs) {
@@ -136,7 +140,8 @@ export class HarnessRunService {
     this.prune()
     const engine = new HarnessRunEngine(run, {
       launch: this.launch,
-      onChange: (changed) => this.changed(changed)
+      onChange: (changed) => this.changed(changed),
+      chatProvider: this.chatProvider
     })
     this.engines.set(run.id, engine)
     engine.start()
@@ -161,6 +166,15 @@ export class HarnessRunService {
 
   completeChat(runId: string, completion: HarnessChatCompletion): boolean {
     return this.engines.get(runId)?.completeChat(completion) ?? false
+  }
+
+  completeSubagent(runId: string, prompt: string, output: string): HarnessSubagentResult {
+    return (
+      this.engines.get(runId)?.completeSubagent(prompt, output) ?? {
+        taskId: null,
+        reason: null
+      }
+    )
   }
 
   bindChatSession(runId: string, sessionId: string): void {

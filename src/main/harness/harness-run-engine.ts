@@ -1,4 +1,6 @@
+import type { TuiAgent } from '../../shared/agent-launch/catalog/tui-agent'
 import { edgeFires } from '../../shared/harness/harness-agent-prompt'
+import type { HarnessSubagentResult } from '../../shared/harness/harness-subagent-contract'
 import type { HarnessNode } from '../../shared/harness/harness-flow-types'
 import type {
   HarnessAgentSessionRef,
@@ -34,6 +36,8 @@ const FINISHED: ReadonlySet<HarnessRun['status']> = new Set(['completed', 'faile
 export type HarnessRunEngineDeps = {
   launch: HarnessAgentLauncher
   onChange: (run: HarnessRun) => void
+  /** Agent of the run's chat; without it `subagent` steps fall back to Topo's own agents. */
+  chatProvider?: (run: HarnessRun) => Promise<TuiAgent | null>
 }
 
 /** Walks one run's graph: fans out on unlabeled edges, joins on `joinAll`, pauses on people. */
@@ -158,6 +162,14 @@ export class HarnessRunEngine implements HarnessStepRuntime {
 
   completeChat(completion: HarnessChatCompletion): boolean {
     return this.chatInbox.complete(completion)
+  }
+
+  completeSubagent(prompt: string, output: string): HarnessSubagentResult {
+    return this.chatInbox.completeSubagent(prompt, output)
+  }
+
+  async chatProvider(): Promise<TuiAgent | null> {
+    return this.deps.chatProvider ? this.deps.chatProvider(this.run) : null
   }
 
   runAgentStep(request: AgentStepRequest): Promise<AgentStepResult | null> {

@@ -11,7 +11,7 @@ import { EMPTY_HARNESS_PROJECT } from './harness-flow-normalize'
 
 export const HARNESS_EXAMPLE_FLOW_ID = 'intent-to-delivery'
 /** Bump when the example changes so unedited copies upgrade. */
-export const HARNESS_EXAMPLE_FLOW_VERSION = 5
+export const HARNESS_EXAMPLE_FLOW_VERSION = 6
 
 const SHARED_INSTRUCTIONS = `Trabajas dentro de un flujo de desarrollo agéntico dirigido por Topo. Topo lanza un agente por nodo, le pasa el contexto y decide el siguiente nodo con tu respuesta final.
 

@@ -1,3 +1,4 @@
+import type { HarnessSubagentResult } from '../../shared/harness/harness-subagent-contract'
 import type {
   HarnessChatCompletion,
   HarnessDecisionAnswer,
@@ -11,6 +12,7 @@ export type HarnessChatRuns = {
   findChatRun: (caller: HarnessCaller) => Promise<HarnessRun | null>
   bindChatSession: (runId: string, sessionId: string) => void
   completeChat: (runId: string, completion: HarnessChatCompletion) => boolean
+  completeSubagent: (runId: string, prompt: string, output: string) => HarnessSubagentResult
   waitForChange: (runId: string, timeoutMs: number) => Promise<HarnessRun | null>
   answer: (runId: string, answer: HarnessDecisionAnswer) => void
   editsAllowed: (caller: HarnessCaller) => boolean

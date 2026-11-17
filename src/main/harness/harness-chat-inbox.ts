@@ -4,7 +4,20 @@ import type {
   HarnessRun,
   HarnessRunStep
 } from '../../shared/harness/harness-run-types'
+import {
+  harnessSubagentPrompt,
+  matchSubagentPrompt,
+  type HarnessSubagentResult
+} from '../../shared/harness/harness-subagent-contract'
 import type { HarnessChatTaskRequest } from './harness-step-runtime'
+
+const SUBAGENT_REJECTIONS = {
+  no_marker: null,
+  unknown_task:
+    'Topo Harness: ese subagente no corresponde a ningún paso abierto. Corre `topo harness status`.',
+  prompt_mismatch:
+    'Topo Harness: el prompt del subagente no es el exacto del paso. Lánzalo otra vez con el prompt tal cual, sin agregar ni resumir nada.'
+} as const
 
 /** Steps waiting on the workspace chat; each resolves when the chat reports it through `topo harness`. */
 export class HarnessChatInbox {
@@ -20,10 +33,17 @@ export class HarnessChatInbox {
   ) {}
 
   open(step: HarnessRunStep, request: HarnessChatTaskRequest): Promise<HarnessChatCompletion> {
+    const { delivery = 'self', ...fields } = request
+    const id = `${this.run.id}-c${++this.counter}`
     const task: HarnessChatTask = {
-      ...request,
-      id: `${this.run.id}-c${++this.counter}`,
+      ...fields,
+      id,
       stepId: step.id,
+      delivery,
+      subagent:
+        delivery === 'subagent'
+          ? { label: request.title, prompt: harnessSubagentPrompt(id, request.instructions) }
+          : null,
       createdAt: Date.now()
     }
     return new Promise((resolve, reject) => {
@@ -33,8 +53,26 @@ export class HarnessChatInbox {
     })
   }
 
-  /** False when the task is unknown or already reported. */
+  /** False when the task is unknown, already reported, or must come from a subagent. */
   complete(completion: HarnessChatCompletion): boolean {
+    const task = this.run.chatTasks.find((entry) => entry.id === completion.taskId)
+    if (task?.delivery === 'subagent') {
+      return false
+    }
+    return this.settle(completion)
+  }
+
+  /** Completes the subagent task whose exact prompt was captured; a reason when the prompt does not fit. */
+  completeSubagent(prompt: string, output: string): HarnessSubagentResult {
+    const match = matchSubagentPrompt(prompt, this.run.chatTasks)
+    if ('error' in match) {
+      return { taskId: null, reason: SUBAGENT_REJECTIONS[match.error] }
+    }
+    this.settle({ taskId: match.task.id, output, outcome: null })
+    return { taskId: match.task.id, reason: null }
+  }
+
+  private settle(completion: HarnessChatCompletion): boolean {
     const waiter = this.waiters.get(completion.taskId)
     if (!waiter) {
       return false

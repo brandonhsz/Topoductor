@@ -1,4 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron'
+import type { TuiAgent } from '../../../shared/agent-launch/catalog/tui-agent'
+import { isTuiAgent } from '../../../shared/harness/harness-flow-normalize'
 import type { HarnessDecisionAnswer } from '../../../shared/harness/harness-run-types'
 import { asRecord } from '../../../shared/workspace-setup/setup-script-import-parsers'
 import { createHarnessAgentLauncher } from '../../harness/harness-agent-launcher'
@@ -50,6 +52,23 @@ function broadcast(channel: string, payload?: unknown): void {
   }
 }
 
+/** Terminal chats (`terminal:<pane>`) have no conversation record, so their steps keep Topo's own agents. */
+async function harnessChatProvider(
+  runtime: TopoRuntimeService,
+  chatSessionId: string | null
+): Promise<TuiAgent | null> {
+  if (!chatSessionId || chatSessionId.startsWith('terminal:')) {
+    return null
+  }
+  try {
+    const store = await runtime.openAgentSessionRecordStore()
+    const provider = store.getConversation(chatSessionId)?.provider
+    return provider && isTuiAgent(provider) ? provider : null
+  } catch {
+    return null
+  }
+}
+
 let registered = false
 
 /** Idempotent: macOS can attach a replacement window to the same app. */
@@ -58,8 +77,10 @@ export function registerHarnessHandlers(runtime: TopoRuntimeService): void {
     return
   }
   registered = true
-  const runs = new HarnessRunService(createHarnessAgentLauncher(runtime), (run) =>
-    broadcast('harness:runChanged', run)
+  const runs = new HarnessRunService(
+    createHarnessAgentLauncher(runtime),
+    (run) => broadcast('harness:runChanged', run),
+    (run) => harnessChatProvider(runtime, run.chatSessionId)
   )
   setHarnessRunService(runs)
   ipcMain.handle('harness:listFlows', (_event, repoId: unknown) =>
