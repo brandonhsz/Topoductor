@@ -1,3 +1,4 @@
+import { resolveQuickCreateLinkedWorkItemPrompt } from '@/lib/linked-work-item-context'
 import { harnessChatInstructions } from '../../../../shared/harness/harness-chat-instructions'
 import type { HarnessFlow, HarnessStartField } from '../../../../shared/harness/harness-flow-types'
 
@@ -89,6 +90,23 @@ export type HarnessCreation = {
   kickoff: string
   /** First message for a terminal agent, which gets the protocol here instead. */
   terminalKickoff: string
+}
+
+/** The created agent's first message: a Harness kickoff, else the linked item's prompt or draft. */
+export function resolveQuickCreationPrompt(args: {
+  harness: HarnessCreation | null
+  structuredLaunch: boolean
+  linkedWorkItem: Parameters<typeof resolveQuickCreateLinkedWorkItemPrompt>[0]
+  note: string
+}): { prompt: string; draftPrompt: string | null } {
+  if (!args.harness) {
+    return resolveQuickCreateLinkedWorkItemPrompt(args.linkedWorkItem, args.note)
+  }
+  // Not routed through the note resolver: it treats notes as comments and would drop the kickoff.
+  return {
+    prompt: args.structuredLaunch ? args.harness.kickoff : args.harness.terminalKickoff,
+    draftPrompt: null
+  }
 }
 
 export function prepareHarnessCreation(

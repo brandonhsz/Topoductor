@@ -288,8 +288,8 @@ module.exports = {
     '!cloud{,/**/*}',
     // Release archives and other build staging are not runtime resources.
     '!.build{,/**/*}',
-    // Worktree-local Vite dependency caches are development inputs.
-    '!.cache/vite{,.lock}{,/**/*}',
+    // Worktree-local dev caches (Vite deps, typecheck, fixture shots) are never runtime inputs.
+    '!.cache{,/**/*}',
     '!docs{,/**/*}',
     '!mobile{,/**/*}',
     '!native{,/**/*}',

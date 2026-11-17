@@ -1,7 +1,9 @@
 import type { QuickCreationExecutionInput } from './composer-model'
 
-import { resolveQuickCreateLinkedWorkItemPrompt } from '@/lib/linked-work-item-context'
-import { prepareHarnessCreation } from '@/components/harness/harness-composer-start'
+import {
+  prepareHarnessCreation,
+  resolveQuickCreationPrompt
+} from '@/components/harness/harness-composer-start'
 import { getHarnessComposerChoice } from '@/components/harness/harness-composer-choice-store'
 import { useCallback } from 'react'
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
@@ -97,13 +99,14 @@ export function useQuickCreationExecution(input: QuickCreationExecutionInput) {
         agent === null
           ? null
           : prepareHarnessCreation(getHarnessComposerChoice(), submitLinkedWorkItem, workspaceName)
-      const promptLinkedWorkItem = agent === null || harness ? null : submitLinkedWorkItem
-      const resolvedPrompt = resolveQuickCreateLinkedWorkItemPrompt(
-        promptLinkedWorkItem,
-        harness?.kickoff ?? trimmedNote
-      )
-      let quickPrompt = resolvedPrompt.prompt
-      const quickDraftPrompt = resolvedPrompt.draftPrompt
+      const promptFor = (structuredLaunch: boolean) =>
+        resolveQuickCreationPrompt({
+          harness,
+          structuredLaunch,
+          linkedWorkItem: agent === null ? null : submitLinkedWorkItem,
+          note: trimmedNote
+        })
+      const { prompt: routePrompt, draftPrompt: quickDraftPrompt } = promptFor(true)
 
       const startupPolicySettlement = await settleComposerSubmit(
         persistSetupAgentStartupPolicy(),
@@ -153,14 +156,11 @@ export function useQuickCreationExecution(input: QuickCreationExecutionInput) {
                 ? 'runtime:pending-ephemeral-vm'
                 : (workspaceRunContext?.hostId ?? selectedRepoExecutionHostId ?? undefined)
             },
-            prompt: quickDraftPrompt ?? quickPrompt,
+            prompt: quickDraftPrompt ?? routePrompt,
             promptDelivery
           }))
       const structuredLaunch = agentLaunchRoute === 'structured-native-chat'
-      if (harness && !structuredLaunch) {
-        // Terminal agents start before the run exists, so they read the protocol in their first message.
-        quickPrompt = harness.terminalKickoff
-      }
+      const quickPrompt = promptFor(structuredLaunch).prompt
 
       const quickStartup = await prepareQuickComposerStartup({
         agent,
