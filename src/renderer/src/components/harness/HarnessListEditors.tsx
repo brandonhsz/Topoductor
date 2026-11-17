@@ -30,7 +30,7 @@ export function StartFieldsEditor({
       </p>
       {fields.map((field, index) => (
         <div
-          key={rows.keys[index]}
+          key={rows.keys[index] ?? field.key}
           className="flex flex-col gap-1.5 rounded-md border border-border p-2"
         >
           <div className="flex items-center gap-1.5">
@@ -81,12 +81,13 @@ export function StartFieldsEditor({
       <Button
         variant="outline"
         size="sm"
-        onClick={() =>
+        onClick={() => {
+          rows.add()
           onChange([
             ...fields,
             { key: `campo_${fields.length + 1}`, label: '', options: [], optional: false }
           ])
-        }
+        }}
       >
         <Plus />
         {t('components.harness.inspector.addField', 'Add field')}
@@ -115,7 +116,7 @@ export function WaveRolesEditor({
       </p>
       {roles.map((role, index) => (
         <div
-          key={rows.keys[index]}
+          key={rows.keys[index] ?? role.name}
           className="flex flex-col gap-1.5 rounded-md border border-border p-2"
         >
           <div className="flex items-center gap-1.5">
@@ -137,7 +138,7 @@ export function WaveRolesEditor({
             </Button>
           </div>
           <AgentSelect
-            id={`wave-role-${rows.keys[index]}`}
+            id={`wave-role-${rows.keys[index] ?? role.name}`}
             value={role.agent}
             flowDefault={flowDefault}
             onChange={(agent) => update(index, { agent })}
@@ -162,7 +163,10 @@ export function WaveRolesEditor({
       <Button
         variant="outline"
         size="sm"
-        onClick={() => onChange([...roles, { name: '', agent: null, prompt: '', paths: [] }])}
+        onClick={() => {
+          rows.add()
+          onChange([...roles, { name: '', agent: null, prompt: '', paths: [] }])
+        }}
       >
         <Plus />
         {t('components.harness.inspector.addRole', 'Add role')}

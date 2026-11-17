@@ -1,4 +1,4 @@
-import React, { useId, useRef, useState } from 'react'
+import React, { useId, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
@@ -10,6 +10,7 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { useTranslate } from '@/i18n/use-translate'
+import { createNonSecureContextUuid } from '../../../../shared/non-secure-context-uuid'
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
 import {
   ALL_TUI_AGENTS,
@@ -116,20 +117,21 @@ export function ListInput({
   )
 }
 
-let rowKeySeed = 0
+function rowKey(): string {
+  return createNonSecureContextUuid()
+}
 
 /** Stable React keys for editable rows whose own fields (names, keys) change while typing. */
-export function useRowKeys(count: number): { keys: string[]; remove: (index: number) => void } {
-  const keys = useRef<string[]>([])
-  while (keys.current.length < count) {
-    keys.current.push(`row-${++rowKeySeed}`)
-  }
-  keys.current.length = count
+export function useRowKeys(count: number): {
+  keys: string[]
+  add: () => void
+  remove: (index: number) => void
+} {
+  const [keys, setKeys] = useState<string[]>(() => Array.from({ length: count }, rowKey))
   return {
-    keys: keys.current,
-    remove: (index) => {
-      keys.current.splice(index, 1)
-    }
+    keys,
+    add: () => setKeys((current) => [...current, rowKey()]),
+    remove: (index) => setKeys((current) => current.filter((_, i) => i !== index))
   }
 }
 

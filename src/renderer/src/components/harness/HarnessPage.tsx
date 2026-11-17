@@ -48,7 +48,7 @@ export default function HarnessPage(): React.JSX.Element {
             <Button
               variant="ghost"
               size="icon"
-              className="ml-auto size-7 shrink-0 rounded-full"
+              className="ml-auto size-7 shrink-0"
               onClick={closePage}
               aria-label={t('components.harness.close', 'Close Harness')}
             >

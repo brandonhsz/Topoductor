@@ -55,9 +55,11 @@ export function useHarnessRun(runId: string | null): HarnessRun | null {
       return
     }
     let alive = true
-    let latest = 0
+    // Only the newest request may write, so a slow older read never overwrites fresher state.
+    let latest: object | null = null
     const load = (): void => {
-      const ticket = ++latest
+      const ticket = {}
+      latest = ticket
       void window.api.harness.getRun(runId).then((next) => {
         if (alive && ticket === latest) {
           setRun(next)

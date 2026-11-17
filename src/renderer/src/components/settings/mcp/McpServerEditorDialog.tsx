@@ -37,6 +37,26 @@ type McpServerEditorDialogProps = {
   onSave: (server: TopoMcpServer) => void
 }
 
+/** Writes secrets before the server so a failed write never saves a server missing its secret. */
+async function saveServerDraft(
+  draft: McpServerDraft,
+  server: TopoMcpServer | null
+): Promise<{ ok: true; server: TopoMcpServer } | { ok: false; error: string }> {
+  try {
+    const result = serverFromDraft(draft, server)
+    for (const write of result.secretWrites) {
+      const written = await window.api.topoMcp.setSecret(write.key, write.value)
+      if (!written.ok) {
+        return { ok: false, error: written.error }
+      }
+    }
+    await Promise.all(result.secretDeletes.map((key) => window.api.topoMcp.deleteSecret(key)))
+    return { ok: true, server: result.server }
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : String(error) }
+  }
+}
+
 export function McpServerEditorDialog({
   server,
   takenNames,
@@ -91,21 +111,14 @@ export function McpServerEditorDialog({
     }
     setSaving(true)
     setSaveError(null)
-    try {
-      const result = serverFromDraft(draft, server)
-      for (const write of result.secretWrites) {
-        const written = await window.api.topoMcp.setSecret(write.key, write.value)
-        if (!written.ok) {
-          setSaveError(written.error)
-          return
-        }
-      }
-      await Promise.all(result.secretDeletes.map((key) => window.api.topoMcp.deleteSecret(key)))
-      onSave(result.server)
-      onOpenChange(false)
-    } finally {
-      setSaving(false)
+    const saved = await saveServerDraft(draft, server)
+    setSaving(false)
+    if (!saved.ok) {
+      setSaveError(saved.error)
+      return
     }
+    onSave(saved.server)
+    onOpenChange(false)
   }
 
   const section = valueSection(draft.transport)
