@@ -1,7 +1,13 @@
 import { readFile } from 'node:fs/promises'
 import type { CommandHandler } from '../dispatch'
-import { getOptionalNumberFlag, getOptionalStringFlag, getRequiredStringFlag } from '../flags'
+import {
+  getOptionalNumberFlag,
+  getOptionalStringFlag,
+  getRepeatedStringFlag,
+  getRequiredStringFlag
+} from '../flags'
 import { printResult } from '../format'
+import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
 import { RuntimeClientError, type RuntimeRpcSuccess } from '../runtime-client'
 import { readInjectedAgentSessionId } from '../../shared/agent-session/lifecycle/agent-session-caller-env'
 import {
@@ -48,6 +54,34 @@ function show(result: RuntimeRpcSuccess<HarnessChatStatus>, json: boolean): void
   printResult(result, json, formatHarnessChatStatus)
 }
 
+const SUBAGENT_MARKER = '[topo-harness-task:'
+const SUMMARY_TAG = '<tools-used-before-summary>'
+const FOREGROUND_REQUIRED =
+  'Topo Harness: este paso necesita la respuesta final del subagente. Lánzalo otra vez en primer plano (run_in_background: false) con el mismo prompt.'
+
+/** The subagent's own text: Claude prepends a tag block listing the tools it used. */
+function subagentText(response: Record<string, unknown>): string {
+  const content = Array.isArray(response.content) ? response.content : []
+  return content
+    .map((block: unknown) =>
+      typeof block === 'object' && block !== null && 'text' in block ? String(block.text) : ''
+    )
+    .filter((text) => text && !text.includes(SUMMARY_TAG))
+    .join('\n')
+}
+
+function record(value: unknown): Record<string, unknown> {
+  return asRecord(value) ?? {}
+}
+
+/** `--field key=value` pairs for a restart decision. */
+function answerFields(flags: Map<string, string | boolean>): Record<string, string> | null {
+  const pairs = getRepeatedStringFlag(flags, 'field')
+    .map((entry) => [entry.slice(0, entry.indexOf('=')), entry.slice(entry.indexOf('=') + 1)])
+    .filter(([key]) => key)
+  return pairs.length > 0 ? Object.fromEntries(pairs) : null
+}
+
 async function readStdin(): Promise<string> {
   const chunks: Buffer[] = []
   for await (const chunk of process.stdin) {
@@ -88,6 +122,31 @@ export const HARNESS_HANDLERS: Record<string, CommandHandler> = {
       // Allow: Topo may be closed or this is not a Harness workspace.
     }
   },
+  // PostToolUse hook for the subagent tool; fails open like the guard.
+  'harness capture': async ({ flags, client }) => {
+    try {
+      const payload = record(JSON.parse(await readStdin()))
+      const prompt = String(record(payload.tool_input).prompt ?? '')
+      if (!prompt.includes(SUBAGENT_MARKER)) {
+        return
+      }
+      const response = record(payload.tool_response)
+      if (response.status !== 'completed') {
+        console.log(JSON.stringify({ decision: 'block', reason: FOREGROUND_REQUIRED }))
+        return
+      }
+      const result = await client.call<{ taskId: string | null; reason: string | null }>(
+        'harness.subagentResult',
+        { ...callerParams(flags, client.isRemote), prompt, output: subagentText(response) },
+        { timeoutMs: 5_000 }
+      )
+      if (result.result.reason) {
+        console.log(JSON.stringify({ decision: 'block', reason: result.result.reason }))
+      }
+    } catch {
+      // Topo may be closed; the chat sees the subagent's answer either way.
+    }
+  },
   'harness status': async ({ flags, client, json }) => {
     show(
       await client.call<HarnessChatStatus>('harness.status', callerParams(flags, client.isRemote)),
@@ -121,12 +180,14 @@ export const HARNESS_HANDLERS: Record<string, CommandHandler> = {
   'harness answer': async ({ flags, client, json }) => {
     const choice = getOptionalStringFlag(flags, 'choice')
     const text = getOptionalStringFlag(flags, 'text')
+    const fields = answerFields(flags)
     show(
       await client.call<HarnessChatStatus>('harness.answer', {
         ...callerParams(flags, client.isRemote),
         decisionId: getRequiredStringFlag(flags, 'decision'),
         ...(choice ? { choice } : {}),
-        ...(text ? { text } : {})
+        ...(text ? { text } : {}),
+        ...(fields ? { fields } : {})
       }),
       json
     )

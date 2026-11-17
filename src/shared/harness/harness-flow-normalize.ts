@@ -159,7 +159,7 @@ function node(raw: unknown): HarnessNode | null {
         agent: agentOrNull(record.agent),
         prompt: text(record.prompt),
         reuseSession: record.reuseSession !== false,
-        runner: record.runner === 'topo' ? 'topo' : 'chat',
+        runner: record.runner === 'topo' || record.runner === 'subagent' ? record.runner : 'chat',
         allowEdits: record.allowEdits !== false
       }
     case 'human':

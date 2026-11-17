@@ -381,6 +381,7 @@ import {
   HarnessCompleteParams,
   HarnessGuardParams,
   HarnessStatusParams,
+  HarnessSubagentResultParams,
   HarnessWaitParams
 } from './harness-params'
 import {
@@ -1218,6 +1219,7 @@ export const RPC_PARAMS_BY_METHOD = {
   'harness.complete': HarnessCompleteParams,
   'harness.guard': HarnessGuardParams,
   'harness.status': HarnessStatusParams,
+  'harness.subagentResult': HarnessSubagentResultParams,
   'harness.wait': HarnessWaitParams,
   'host.declareClient': TopodDeclareClientParamsSchema,
   'host.gitBash.isAvailable': null,

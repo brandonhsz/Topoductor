@@ -1,4 +1,5 @@
 import { buildHarnessAgentPrompt, parseOutcome } from '../../shared/harness/harness-agent-prompt'
+import { resolveChatRunner } from '../../shared/harness/harness-subagent-contract'
 import type { HarnessAgentSessionRef, HarnessRunStep } from '../../shared/harness/harness-run-types'
 import type { HarnessAgentLauncher } from './harness-agent-launcher'
 import {
@@ -49,7 +50,8 @@ async function handToChat(
     taskId: request.taskId,
     title: request.title,
     agent: null,
-    status: 'running'
+    status: 'running',
+    runner: 'chat'
   })
   if (run.chatSessionId && !run.chatSessionId.startsWith('terminal:')) {
     step.session = { kind: 'structured', worktreeId: run.worktreeId, sessionId: run.chatSessionId }
@@ -75,14 +77,50 @@ async function handToChat(
   return { step, output: done.output, outcome }
 }
 
+/** The chat launches the step as its own subagent with the full prompt; Topo keeps the subagent's raw reply. */
+async function handToSubagent(
+  rt: HarnessStepRuntime,
+  request: AgentStepRequest
+): Promise<AgentStepResult> {
+  const step = rt.addStep({
+    nodeId: request.nodeId,
+    taskId: request.taskId,
+    title: request.title,
+    agent: null,
+    status: 'running',
+    runner: 'subagent'
+  })
+  const done = await rt.awaitChat(step, {
+    nodeId: request.nodeId,
+    taskId: request.taskId,
+    title: request.title,
+    instructions: buildHarnessAgentPrompt({ ...request, flow: rt.run.flow, visit: step.visit }),
+    choices: request.choices,
+    allowEdits: request.allowEdits,
+    delivery: 'subagent'
+  })
+  const outcome = parseOutcome(done.output, request.choices)
+  rt.finishStep(step, { status: 'done', output: done.output, outcome })
+  return { step, output: done.output, outcome }
+}
+
 /** Runs one agent turn; on failure the person retries, skips (null) or stops the run. */
 export async function runHarnessAgentStep(
   { rt, launch, signal, sessions }: HarnessAgentStepContext,
   request: AgentStepRequest
 ): Promise<AgentStepResult | null> {
-  if (rt.run.mode === 'chat' && request.runner === 'chat') {
+  if (rt.run.mode === 'chat') {
+    const runner =
+      request.runner === 'subagent'
+        ? resolveChatRunner(request, await rt.chatProvider())
+        : request.runner
     assertRunning(signal)
-    return handToChat(rt, request)
+    if (runner === 'chat') {
+      return handToChat(rt, request)
+    }
+    if (runner === 'subagent') {
+      return handToSubagent(rt, request)
+    }
   }
   const agent = request.agent ?? rt.run.flow.defaultAgent
   for (;;) {
@@ -92,7 +130,8 @@ export async function runHarnessAgentStep(
       taskId: request.taskId,
       title: request.title,
       agent,
-      status: 'running'
+      status: 'running',
+      runner: 'topo'
     })
     const promptInput = { ...request, flow: rt.run.flow, visit: step.visit }
     const resume = request.sessionKey ? (sessions.get(request.sessionKey) ?? null) : null

@@ -29,6 +29,18 @@ export function redirectOnLimit(
   return { goto: target }
 }
 
+/** A chat answers a restart in free text; without explicit fields that text is the first required one. */
+function restartFields(
+  node: HarnessStartNode,
+  answer: { text: string; fields: Record<string, string> }
+): Record<string, string> {
+  if (Object.keys(answer.fields).length > 0 || !answer.text.trim()) {
+    return answer.fields
+  }
+  const first = node.fields.find((field) => !field.optional) ?? node.fields[0]
+  return first ? { [first.key]: answer.text.trim() } : {}
+}
+
 export async function executeStartNode(
   rt: HarnessStepRuntime,
   node: HarnessStartNode,
@@ -51,12 +63,13 @@ export async function executeStartNode(
       choices: [],
       fields: node.fields
     })
+    const fields = restartFields(node, answer)
     for (const field of node.fields) {
       const previous = run.vars[field.key]
       if (previous) {
         run.vars[`${field.key}_anterior`] = previous
       }
-      run.vars[field.key] = answer.fields[field.key] ?? previous ?? ''
+      run.vars[field.key] = fields[field.key] ?? previous ?? ''
     }
   }
   rt.finishStep(step, {

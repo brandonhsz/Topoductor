@@ -1,5 +1,5 @@
 import type { TuiAgent } from '../agent-launch/catalog/tui-agent'
-import type { HarnessFlow, HarnessStartField } from './harness-flow-types'
+import type { HarnessFlow, HarnessNodeRunner, HarnessStartField } from './harness-flow-types'
 
 export type HarnessRunStatus = 'running' | 'waiting' | 'completed' | 'failed' | 'stopped'
 
@@ -18,6 +18,8 @@ export type HarnessRunStep = {
   visit: number
   status: HarnessStepStatus
   agent: TuiAgent | null
+  /** How the step actually ran after fallback; absent on runs saved before subagent steps. */
+  runner?: HarnessNodeRunner | null
   session: HarnessAgentSessionRef | null
   output: string
   outcome: string | null
@@ -64,7 +66,19 @@ export type HarnessChatTask = {
   instructions: string
   choices: string[]
   allowEdits: boolean
+  /** `subagent` tasks complete only through the capture hook; absent means `self`. */
+  delivery?: HarnessChatTaskDelivery
+  subagent?: HarnessChatSubagentTask | null
   createdAt: number
+}
+
+export type HarnessChatTaskDelivery = 'self' | 'subagent'
+
+export type HarnessChatSubagentTask = {
+  /** Shown as the subagent's description, e.g. «🧭 Agente Usabilidad». */
+  label: string
+  /** Exact prompt for the chat's subagent tool; first line is the `[topo-harness-task:<id>]` marker. */
+  prompt: string
 }
 
 export type HarnessChatCompletion = {
@@ -96,7 +110,7 @@ export type HarnessRun = {
 export type HarnessRunSummary = Pick<
   HarnessRun,
   'id' | 'flowId' | 'flowName' | 'worktreeId' | 'status' | 'createdAt' | 'updatedAt'
-> & { pendingCount: number; mode: HarnessRunMode }
+> & { pendingCount: number; mode: HarnessRunMode; chatSessionId?: string | null }
 
 export type HarnessRunStartRequest = {
   flowId: string

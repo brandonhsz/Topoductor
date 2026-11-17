@@ -20873,9 +20873,10 @@
         "rolePaths": "Carpetas de este rol",
         "rolePathsPlaceholder": "Carpetas que le pertenecen, separadas por comas",
         "runner": "Quién lo corre",
-        "runnerHint": "El chat del workspace sigue el flujo. Elige Topo para pasos que necesitan otros modelos u ojos frescos, como la mesa de diálogo.",
+        "runnerHint": "El chat del workspace sigue el flujo. Los subagentes corren un paso con contexto limpio, sin abrir otra pestaña. Elige Topo para pasos que necesitan otros modelos, como la mesa de diálogo.",
         "runnerChat": "El chat del workspace",
         "runnerTopo": "Topo, con su propio agente",
+        "runnerSubagent": "Subagentes del chat del workspace",
         "allowEdits": "Permitir editar archivos",
         "allowEditsHint": "Apagado bloquea editar archivos mientras el chat está en este paso (Claude), como en la ideación antes de aprobar el plan."
       },
@@ -20938,6 +20939,16 @@
         "working": "El chat del workspace está trabajando en este paso.",
         "readOnly": "El chat del workspace está trabajando en este paso. Aquí no se pueden editar archivos.",
         "open": "Abrir el chat"
+      },
+      "chatProgress": {
+        "summary": "{{group}}: {{done}}/{{total}} listos",
+        "status": {
+          "running": "En curso",
+          "waiting": "En espera",
+          "done": "Listo",
+          "failed": "Falló",
+          "stopped": "Detenido"
+        }
       }
     }
   },

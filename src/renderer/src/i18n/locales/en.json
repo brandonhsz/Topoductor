@@ -21833,9 +21833,10 @@
         "rolePaths": "Folders this role owns",
         "rolePathsPlaceholder": "Folders it owns, separated by commas",
         "runner": "Who runs it",
-        "runnerHint": "The workspace chat follows the flow. Choose Topo for steps that need other models or fresh eyes, like a review table.",
+        "runnerHint": "The workspace chat follows the flow. Subagents run a step in fresh context without a new tab. Choose Topo for steps that need other models, like a review table.",
         "runnerChat": "The workspace chat",
         "runnerTopo": "Topo, with its own agent",
+        "runnerSubagent": "Subagents of the workspace chat",
         "allowEdits": "Allow editing files",
         "allowEditsHint": "Off blocks file edits while the chat is on this step (Claude), like ideation before the plan is approved."
       },
@@ -21898,6 +21899,16 @@
         "working": "The workspace chat is working on this step.",
         "readOnly": "The workspace chat is working on this step. File edits are blocked here.",
         "open": "Open the chat"
+      },
+      "chatProgress": {
+        "summary": "{{group}}: {{done}}/{{total}} done",
+        "status": {
+          "running": "Running",
+          "waiting": "Waiting",
+          "done": "Done",
+          "failed": "Failed",
+          "stopped": "Stopped"
+        }
       }
     }
   },

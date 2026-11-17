@@ -9,6 +9,7 @@ import type {
   HarnessFlow,
   HarnessHumanNode,
   HarnessNode,
+  HarnessNodeRunner,
   HarnessWavesNode
 } from '../../../../shared/harness/harness-flow-types'
 import { StartFieldsEditor, WaveRolesEditor } from './HarnessListEditors'
@@ -193,6 +194,13 @@ function WavesFields({
   )
 }
 
+function toNodeRunner(value: string, allowSubagent: boolean): HarnessNodeRunner {
+  if (value === 'topo') {
+    return 'topo'
+  }
+  return value === 'subagent' && allowSubagent ? 'subagent' : 'chat'
+}
+
 function RunnerFields<N extends HarnessAgentNode | HarnessWavesNode>({
   node,
   onChange
@@ -207,14 +215,14 @@ function RunnerFields<N extends HarnessAgentNode | HarnessWavesNode>({
         label={t('components.harness.inspector.runner', 'Who runs it')}
         hint={t(
           'components.harness.inspector.runnerHint',
-          'The workspace chat follows the flow. Choose Topo for steps that need other models or fresh eyes, like a review table.'
+          'The workspace chat follows the flow. Subagents run a step in fresh context without a new tab. Choose Topo for steps that need other models, like a review table.'
         )}
       >
         {(id) => (
           <Select
             value={node.runner}
             onValueChange={(runner) =>
-              onChange({ ...node, runner: runner === 'topo' ? 'topo' : 'chat' })
+              onChange({ ...node, runner: toNodeRunner(runner, node.kind === 'agent') })
             }
           >
             <SelectTrigger id={id} size="sm" className="w-full">
@@ -227,6 +235,14 @@ function RunnerFields<N extends HarnessAgentNode | HarnessWavesNode>({
               <SelectItem value="topo">
                 {t('components.harness.inspector.runnerTopo', 'Topo, with its own agent')}
               </SelectItem>
+              {node.kind === 'agent' ? (
+                <SelectItem value="subagent">
+                  {t(
+                    'components.harness.inspector.runnerSubagent',
+                    'Subagents of the workspace chat'
+                  )}
+                </SelectItem>
+              ) : null}
             </SelectContent>
           </Select>
         )}

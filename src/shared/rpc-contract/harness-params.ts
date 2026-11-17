@@ -27,5 +27,13 @@ export const HarnessGuardParams = HarnessCaller.extend({
 export const HarnessAnswerParams = HarnessCaller.extend({
   decisionId: z.string().min(1).max(256),
   choice: z.string().max(256).optional(),
-  text: z.string().max(MAX_OUTPUT).optional()
+  text: z.string().max(MAX_OUTPUT).optional(),
+  /** Start-field values for a restart decision; without them `text` fills the first required field. */
+  fields: z.record(z.string().min(1).max(64), z.string().max(MAX_OUTPUT)).optional()
+}).strict()
+
+/** Sent by the PostToolUse capture hook after the chat's subagent tool returns. */
+export const HarnessSubagentResultParams = HarnessCaller.extend({
+  prompt: z.string().max(MAX_OUTPUT),
+  output: z.string().max(MAX_OUTPUT)
 }).strict()

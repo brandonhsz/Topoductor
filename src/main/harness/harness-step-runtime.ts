@@ -1,5 +1,6 @@
 import type { TuiAgent } from '../../shared/agent-launch/catalog/tui-agent'
 import type { HarnessNodeRunner } from '../../shared/harness/harness-flow-types'
+import type { HarnessSubagentResult } from '../../shared/harness/harness-subagent-contract'
 import type {
   HarnessChatCompletion,
   HarnessChatTask,
@@ -39,7 +40,12 @@ export type AgentStepRequest = {
 export type HarnessChatTaskRequest = Pick<
   HarnessChatTask,
   'nodeId' | 'taskId' | 'title' | 'instructions' | 'choices' | 'allowEdits'
->
+> & {
+  /** `subagent` tasks carry `instructions` as the subagent's prompt and complete only by capture. */
+  delivery?: 'self' | 'subagent'
+}
+
+export type { HarnessSubagentResult }
 
 export type AgentStepResult = { step: HarnessRunStep; output: string; outcome: string | null }
 
@@ -57,9 +63,12 @@ export type HarnessStepRuntime = {
     title: string
     agent: TuiAgent | null
     status: HarnessRunStep['status']
+    runner?: HarnessNodeRunner
   }) => HarnessRunStep
   finishStep: (step: HarnessRunStep, patch: Partial<HarnessRunStep>) => void
   ask: (step: HarnessRunStep, decision: HarnessDecisionRequest) => Promise<HarnessDecisionAnswer>
+  /** Agent of the chat that drives a chat-mode run; null when unknown or not a chat. */
+  chatProvider: () => Promise<TuiAgent | null>
   /** Hands a step to the workspace chat and resolves when the chat reports it. */
   awaitChat: (step: HarnessRunStep, task: HarnessChatTaskRequest) => Promise<HarnessChatCompletion>
   /** Null means the person chose to skip the failed step. */

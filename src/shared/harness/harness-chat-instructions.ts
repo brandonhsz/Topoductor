@@ -5,8 +5,13 @@ function flowOutline(flow: HarnessFlow): string {
   return flow.nodes
     .filter((node) => node.kind !== 'start')
     .map((node) => {
+      const runner = 'runner' in node ? node.runner : null
       const by =
-        'runner' in node && node.runner === 'topo' ? ' (lo corre Topo con otros agentes)' : ''
+        runner === 'topo'
+          ? ' (lo corre Topo con otros agentes)'
+          : runner === 'subagent'
+            ? ' (lo corren subagentes que lanzas tú)'
+            : ''
       return `- ${node.title}${node.block ? ` · ${node.block}` : ''}${by}`
     })
     .join('\n')

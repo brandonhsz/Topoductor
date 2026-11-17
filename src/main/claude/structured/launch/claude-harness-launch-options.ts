@@ -1,10 +1,16 @@
-// The guard asks Topo before each edit; a Harness step may forbid edits (e.g. ideation).
+// The guard asks Topo before each edit (a step may forbid edits); capture hands Topo each Harness subagent's exact prompt and reply.
 const HARNESS_GUARD_SETTINGS = JSON.stringify({
   hooks: {
     PreToolUse: [
       {
         matcher: 'Edit|Write|MultiEdit|NotebookEdit',
         hooks: [{ type: 'command', command: '"$TOPO_CLI_COMMAND" harness guard' }]
+      }
+    ],
+    PostToolUse: [
+      {
+        matcher: 'Agent|Task',
+        hooks: [{ type: 'command', command: '"$TOPO_CLI_COMMAND" harness capture' }]
       }
     ]
   }

@@ -4,7 +4,8 @@ export const HARNESS_FLOW_SCHEMA_VERSION = 1
 
 export type HarnessNodeKind = 'start' | 'agent' | 'human' | 'waves' | 'end'
 
-export type HarnessNodeRunner = 'chat' | 'topo'
+/** `subagent` has the workspace chat launch the step as its own subagent; agent nodes only. */
+export type HarnessNodeRunner = 'chat' | 'topo' | 'subagent'
 
 export type HarnessStartField = {
   key: string
@@ -51,7 +52,7 @@ export type HarnessAgentNode = HarnessNodeBase & {
   prompt: string
   /** Later visits continue the same chat, so the agent keeps what it learned. */
   reuseSession: boolean
-  /** In chat-driven runs, `topo` launches its own agent (multi-model, fresh eyes); `chat` hands the step to the workspace chat. */
+  /** In chat-driven runs, `topo` launches its own agent (multi-model, fresh eyes); `chat` hands the step to the workspace chat; `subagent` has that chat launch it as a subagent. */
   runner: HarnessNodeRunner
   /** False blocks file edits while this step is the chat's current task. */
   allowEdits: boolean
