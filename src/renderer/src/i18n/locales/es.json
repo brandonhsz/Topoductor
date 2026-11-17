@@ -20930,7 +20930,8 @@
         "fromSource": "Vacío: se toma del issue, ticket o nombre del workspace",
         "flow": "Flujo de Harness [Opcional]",
         "none": "Ninguno",
-        "optional": "Opcional"
+        "optional": "Opcional",
+        "needsAgent": "Elige un agente para usar un flujo."
       },
       "openWorkspace": "Abrir workspace con este flujo",
       "chatTask": {

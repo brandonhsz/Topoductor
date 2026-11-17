@@ -21890,7 +21890,8 @@
         "fromSource": "Empty: taken from the issue, ticket or workspace name",
         "flow": "Harness flow [Optional]",
         "none": "None",
-        "optional": "Optional"
+        "optional": "Optional",
+        "needsAgent": "Choose an agent to drive a flow."
       },
       "openWorkspace": "Open a workspace with this flow",
       "chatTask": {

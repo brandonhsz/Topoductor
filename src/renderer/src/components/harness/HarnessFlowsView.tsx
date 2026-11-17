@@ -26,7 +26,7 @@ import type { HarnessFlow, HarnessNodeKind } from '../../../../shared/harness/ha
 import { harnessFlowToMarkdown } from '../../../../shared/harness/harness-flow-markdown'
 import { HarnessFlowCanvas, type HarnessCanvasSelection } from './HarnessFlowCanvas'
 import { HarnessInspector } from './HarnessInspector'
-import { rememberHarnessFlow } from './HarnessFlowComposerSection'
+import { rememberHarnessFlow } from './harness-last-flow'
 import { useAppStore } from '@/store'
 import {
   copyHarnessFlowForRepo,

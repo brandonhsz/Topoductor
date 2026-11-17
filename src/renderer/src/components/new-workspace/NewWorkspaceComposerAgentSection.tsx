@@ -105,7 +105,11 @@ export function NewWorkspaceComposerAgentSection({
         />
       </div>
       {/* A flow needs an agent to drive it, so Blank Terminal hides the picker. */}
-      {quickAgent !== null && repoId ? <HarnessFlowComposerSection repoId={repoId} /> : null}
+      <HarnessFlowComposerSection
+        repoId={repoId || null}
+        memoryKey={repoId || selectedProjectId || 'global'}
+        disabled={quickAgent === null}
+      />
 
       <div className="!mb-2">
         <Button
