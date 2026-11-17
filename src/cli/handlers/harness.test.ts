@@ -15,6 +15,7 @@ function harnessClient(result: unknown = { taskId: 'critic-1', reason: null }): 
     result,
     _meta: { runtimeId: 'runtime-1' }
   })
+  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the handlers only use call and isRemote
   return { client: { call, isRemote: false } as unknown as RuntimeClient, call }
 }
 
@@ -138,7 +139,7 @@ describe('harness capture', () => {
     const printed = printedJson(log)
     expect(printed).toHaveLength(1)
     expect(printed[0]).toMatchObject({ decision: 'block' })
-    expect((printed[0] as { reason: string }).reason).toContain('primer plano')
+    expect(printed[0]).toMatchObject({ reason: expect.stringContaining('primer plano') })
   })
 
   it('ignores subagents that are not Harness tasks', async () => {

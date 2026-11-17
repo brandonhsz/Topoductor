@@ -19,7 +19,11 @@ function renderAgentInspector() {
     intent: 'Intent',
     end: 'End'
   })
-  const node = createHarnessNode(empty, 'agent', { x: 0, y: 0 }, 'Mesa') as HarnessAgentNode
+  const created = createHarnessNode(empty, 'agent', { x: 0, y: 0 }, 'Mesa')
+  if (created.kind !== 'agent') {
+    throw new Error('expected an agent node')
+  }
+  const node: HarnessAgentNode = created
   const flow = { ...empty, nodes: [...empty.nodes, node] }
   const onChange = vi.fn()
   render(<HarnessNodeInspector flow={flow} node={node} onChange={onChange} onDelete={vi.fn()} />)

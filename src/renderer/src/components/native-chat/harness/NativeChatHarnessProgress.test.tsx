@@ -16,9 +16,14 @@ const progress: HarnessSubagentProgress = {
   done: 2,
   total: 3,
   agents: [
-    { title: 'Revisor de seguridad', status: 'done', output: 'Sin hallazgos críticos' },
-    { title: 'Revisor de UX', status: 'failed', output: 'El botón no tiene foco visible' },
-    { title: 'Revisor de pruebas', status: 'running', output: 'borrador parcial' }
+    { id: 's1', title: 'Revisor de seguridad', status: 'done', output: 'Sin hallazgos críticos' },
+    {
+      id: 's2',
+      title: 'Revisor de UX',
+      status: 'failed',
+      output: 'El botón no tiene foco visible'
+    },
+    { id: 's3', title: 'Revisor de pruebas', status: 'running', output: 'borrador parcial' }
   ]
 }
 

@@ -11,7 +11,7 @@ export type HarnessSubagentProgress = {
   group: string
   done: number
   total: number
-  agents: { title: string; status: HarnessStepStatus; output: string }[]
+  agents: { id: string; title: string; status: HarnessStepStatus; output: string }[]
 }
 
 export type HarnessSubagentResult = { taskId: string | null; reason: string | null }
@@ -77,6 +77,6 @@ export function harnessSubagentProgress(run: HarnessRun): HarnessSubagentProgres
     group,
     done: current.filter((step) => step.status === 'done').length,
     total: current.length,
-    agents: current.map(({ title, status, output }) => ({ title, status, output }))
+    agents: current.map(({ id, title, status, output }) => ({ id, title, status, output }))
   }
 }

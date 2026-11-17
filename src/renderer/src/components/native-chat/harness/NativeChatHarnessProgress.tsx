@@ -98,8 +98,8 @@ export function NativeChatHarnessProgress({
               role="list"
               className="scrollbar-sleek max-h-72 space-y-1.5 overflow-y-auto border-t border-border px-3 py-2"
             >
-              {progress.agents.map((agent, index) => (
-                <li key={`${index}:${agent.title}`} data-status={agent.status} className="min-w-0">
+              {progress.agents.map((agent) => (
+                <li key={agent.id} data-status={agent.status} className="min-w-0">
                   <div className="flex h-6 min-w-0 items-center gap-2">
                     <StatusIcon status={agent.status} />
                     <span className="min-w-0 truncate font-medium text-foreground">

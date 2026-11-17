@@ -7,17 +7,19 @@ const progress = {
   total: 3,
   agents: [
     {
+      id: 's1',
       title: 'Security critic',
       status: 'done' as const,
       output:
         'No critical findings.\nThe token refresh path keeps the old session until the new one is confirmed.'
     },
     {
+      id: 's2',
       title: 'UX critic',
       status: 'failed' as const,
       output: 'The Retry button has no visible focus ring.'
     },
-    { title: 'Test critic', status: 'running' as const, output: 'partial draft' }
+    { id: 's3', title: 'Test critic', status: 'running' as const, output: 'partial draft' }
   ]
 }
 

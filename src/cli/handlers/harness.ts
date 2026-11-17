@@ -7,6 +7,7 @@ import {
   getRequiredStringFlag
 } from '../flags'
 import { printResult } from '../format'
+import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
 import { RuntimeClientError, type RuntimeRpcSuccess } from '../runtime-client'
 import { readInjectedAgentSessionId } from '../../shared/agent-session/lifecycle/agent-session-caller-env'
 import {
@@ -70,7 +71,7 @@ function subagentText(response: Record<string, unknown>): string {
 }
 
 function record(value: unknown): Record<string, unknown> {
-  return typeof value === 'object' && value !== null ? (value as Record<string, unknown>) : {}
+  return asRecord(value) ?? {}
 }
 
 /** `--field key=value` pairs for a restart decision. */
