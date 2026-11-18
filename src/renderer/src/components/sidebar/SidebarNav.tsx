@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { SetupGuideSidebarEntry } from './SetupGuideSidebarEntry'
 import { SidebarTaskNavButton } from './SidebarTaskNavButton'
+import { PluginPanelSidebarEntries } from './PluginPanelSidebarEntries'
 import { HideSidebarMenu } from './sidebar-nav-controls'
 import { useTranslate } from '@/i18n/use-translate'
 import { lazyWithRetry } from '@/lib/lazy-with-retry'
@@ -300,6 +301,7 @@ const SidebarNav = React.memo(function SidebarNav() {
         />
         <span className="flex-1">{t('auto.components.sidebar.SidebarNav.harness', 'Harness')}</span>
       </button>
+      <PluginPanelSidebarEntries />
     </div>
   )
 })

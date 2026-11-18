@@ -7,6 +7,7 @@ import {
   PLUGIN_HOOKS_SINCE,
   PLUGIN_HOST_ACTIONS_SINCE,
   PLUGIN_MANIFEST_V2_SINCE,
+  PLUGIN_PANEL_SIDEBAR_ENTRY_SINCE,
   PLUGIN_PANEL_UI_SINCE,
   PLUGIN_SCHEMA_SINCE_V1
 } from '../manifest/plugin-schema-field-docs'
@@ -30,7 +31,8 @@ export const PLUGIN_SCHEMA_NEWEST_SINCE = [
   PLUGIN_HOST_ACTIONS_SINCE,
   PLUGIN_COMMAND_REPLACES_SINCE,
   PLUGIN_APPEARANCE_SINCE,
-  PLUGIN_FONTS_SINCE
+  PLUGIN_FONTS_SINCE,
+  PLUGIN_PANEL_SIDEBAR_ENTRY_SINCE
 ].reduce((newest, version) => (satisfiesTopoEngineRange(version, `>=${newest}`) ? version : newest))
 
 /**
