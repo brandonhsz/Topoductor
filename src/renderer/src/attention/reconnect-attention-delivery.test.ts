@@ -11,18 +11,21 @@ vi.mock('@/lib/blocked-notification-fallback', () => ({
 }))
 
 const HOST = 'runtime:env-1'
+const NOW = 1_800_000_000_000
 const dispatch = vi.fn<
   (request: NotificationDispatchRequest) => Promise<NotificationDispatchResult>
 >(async () => ({ delivered: true }))
 const playSound = vi.fn(async () => ({ played: true }))
 
 beforeEach(() => {
+  vi.useFakeTimers({ now: NOW, toFake: ['Date'] })
   vi.stubGlobal('window', { api: { notifications: { dispatch, playSound } } })
 })
 
 afterEach(() => {
   reconnectAttention.forget(HOST)
   vi.unstubAllGlobals()
+  vi.useRealTimers()
   vi.clearAllMocks()
 })
 
@@ -35,10 +38,9 @@ function deliver(worktreeId: string, executionHost?: `runtime:${string}`): Promi
 }
 
 function reconnect(): void {
-  const now = Date.now()
-  reconnectAttention.observe(HOST, true, now)
-  reconnectAttention.observe(HOST, false, now)
-  reconnectAttention.observe(HOST, true, now)
+  reconnectAttention.observe(HOST, true, NOW)
+  reconnectAttention.observe(HOST, false, NOW)
+  reconnectAttention.observe(HOST, true, NOW)
 }
 
 describe('reconnect burst delivery', () => {
@@ -104,7 +106,7 @@ describe('reconnect burst delivery', () => {
   })
 
   it('leaves hosts outside a reconnect and local work untouched', async () => {
-    reconnectAttention.observe(HOST, true, Date.now())
+    reconnectAttention.observe(HOST, true, NOW)
     await deliver('wt-a', HOST)
     await deliver('wt-b')
 
