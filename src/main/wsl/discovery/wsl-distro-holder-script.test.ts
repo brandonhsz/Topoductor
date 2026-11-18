@@ -88,6 +88,9 @@ function waitingOnTopod(holder: ChildProcess): boolean {
 
 const releasePath = (): string => join(home, '.topo', TOPOD_WSL_HOLDER_RELEASE_FILENAME)
 
+/** Above Linux's PID_MAX_LIMIT, so a real holder's pid can never land on a fake entry. */
+const FAKE_PID_BASE = 4_194_304
+
 /** One fake /proc entry, as the kernel writes its status file. */
 function fakeProcess(
   pid: number,
@@ -162,7 +165,7 @@ describe.skipIf(process.platform === 'win32')('WSL distro holder script', () => 
 
   it('keeps the distro while the user still runs something, and lets go once it ends', async () => {
     // e.g. a detached tmux server or a nohup'd job started from a Topo terminal.
-    const job = fakeProcess(4242)
+    const job = fakeProcess(FAKE_PID_BASE + 4242)
     const { exited } = await holderWithRequest()
     // Its note says it decided to hold.
     await expect.poll(readBlocked, { timeout: 15_000 }).not.toBe('')
@@ -173,9 +176,9 @@ describe.skipIf(process.platform === 'win32')('WSL distro holder script', () => 
   })
 
   it('keeps the distro while a container runs, though its shim belongs to root', async () => {
-    const shim = fakeProcess(4343, { name: 'containerd-shim-runc-v2', uid: 0 })
+    const shim = fakeProcess(FAKE_PID_BASE + 4343, { name: 'containerd-shim-runc-v2', uid: 0 })
     // dockerd itself, idle and root-owned, is a system service, not work.
-    fakeProcess(4344, { name: 'dockerd', uid: 0 })
+    fakeProcess(FAKE_PID_BASE + 4344, { name: 'dockerd', uid: 0 })
     const { exited } = await holderWithRequest()
     await expect.poll(readBlocked, { timeout: 15_000 }).toBe('containerd-shim-runc-v2\n')
     expect(await within(HOLDING_MS, exited)).toBe('running')
@@ -190,7 +193,7 @@ describe.skipIf(process.platform === 'win32')('WSL distro holder script', () => 
   })
 
   it('fails closed on a status file it cannot parse', async () => {
-    const dir = join(proc, '7000')
+    const dir = join(proc, String(FAKE_PID_BASE + 7000))
     mkdirSync(dir)
     writeFileSync(join(dir, 'status'), 'Name:\tmystery\n')
     const { exited } = await holderWithRequest()
@@ -200,7 +203,7 @@ describe.skipIf(process.platform === 'win32')('WSL distro holder script', () => 
 
   it("counts an unreadable entry only when it is the user's own (hidepid=noaccess)", async () => {
     // Root's status files are unreadable under hidepid; their directories still show their owner.
-    const dir = join(proc, '7100')
+    const dir = join(proc, String(FAKE_PID_BASE + 7100))
     mkdirSync(dir)
     writeFileSync(join(dir, 'status'), 'Name:\tsecret\n')
     chmodSync(join(dir, 'status'), 0o000)

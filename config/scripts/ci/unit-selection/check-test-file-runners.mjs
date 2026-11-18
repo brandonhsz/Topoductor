@@ -81,11 +81,14 @@ const NON_UNIT_TEST_RUNNERS = [
     ]
   },
   {
-    // `topo plugin test` runs every example's own tests in Node; the unit test drives it.
-    name: 'example plugin tests (topo plugin test)',
-    include: ['examples/plugins/*/src/**/*.test.ts', 'examples/plugins/*/src/**/*.test.tsx'],
+    // `topo plugin test` runs every in-repo plugin's own tests in Node; the unit test drives it.
+    name: 'in-repo plugin tests (topo plugin test)',
+    include: [
+      '{examples/plugins,plugins}/*/src/**/*.test.ts',
+      '{examples/plugins,plugins}/*/src/**/*.test.tsx'
+    ],
     sources: ['src/cli/plugin-authoring/plugin-test-runner.test.ts'],
-    mirrors: ['readdirSync(EXAMPLES)']
+    mirrors: ["['examples/plugins', 'plugins']"]
   },
   {
     name: 'repository plugin tests (topo plugin test)',

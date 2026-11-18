@@ -102,12 +102,16 @@ describe('topo plugin test', () => {
   )
 })
 
-const EXAMPLES = resolve(__dirname, '../../../examples/plugins')
-// Every example with its own tests (examples/plugins/*/src/*.test.tsx).
-const TESTED_EXAMPLES = readdirSync(EXAMPLES).filter((name) => {
-  const src = join(EXAMPLES, name, 'src')
-  return existsSync(src) && readdirSync(src).some((file) => PLUGIN_TEST_FILE.test(file))
-})
+const REPO_ROOT = resolve(__dirname, '../../..')
+// Every in-repo plugin with its own tests (examples/plugins/*/src and plugins/*/src).
+const TESTED_PLUGINS = ['examples/plugins', 'plugins'].flatMap((root) =>
+  readdirSync(join(REPO_ROOT, root))
+    .filter((name) => {
+      const src = join(REPO_ROOT, root, name, 'src')
+      return existsSync(src) && readdirSync(src).some((file) => PLUGIN_TEST_FILE.test(file))
+    })
+    .map((name) => `${root}/${name}`)
+)
 
 const REPO_PLUGINS = resolve(__dirname, '../../../plugins')
 // Plugins that live in the repository (plugins/*/src/*.test.tsx) run the same way.
@@ -177,11 +181,11 @@ describe('topo plugin test with a worker', () => {
   )
 })
 
-describe('the example plugins', () => {
-  it.each(TESTED_EXAMPLES)(
+describe('the in-repo plugins', () => {
+  it.each(TESTED_PLUGINS)(
     '%s passes its own tests and renders without problems',
-    async (example) => {
-      const dir = join(EXAMPLES, example)
+    async (plugin) => {
+      const dir = join(REPO_ROOT, plugin)
       const files = await findPluginTestFiles(dir)
       expect(files.length).toBeGreaterThan(0)
       expect(await runPluginTests({ dir, files, quietStdout: true })).toMatchObject({

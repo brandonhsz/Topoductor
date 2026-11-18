@@ -209,7 +209,8 @@ jobs:
           git fetch --no-tags --depth=1 origin "$BUN_TOPOD_COMMIT"
           git worktree add --detach "$RUNNER_TEMP/bun-topod-source" "$BUN_TOPOD_COMMIT"
           pnpm --dir "$RUNNER_TEMP/bun-topod-source" install --frozen-lockfile --ignore-scripts
-          node "$RUNNER_TEMP/bun-topod-source/config/scripts/build-topod-bun.mjs" --out-dir "$RUNNER_TEMP/bun-topod"
+          # The pinned commit predates the rebrand, so its script keeps the orcad name.
+          node "$RUNNER_TEMP/bun-topod-source/config/scripts/build-orcad-bun.mjs" --out-dir "$RUNNER_TEMP/bun-topod"
           echo "slot=$RUNNER_TEMP/bun-topod" >> "$GITHUB_OUTPUT"
           echo "executable=$(command -v bun)" >> "$GITHUB_OUTPUT"
       # Linux release slots come from the floor and Alpine lanes; this slot serves local tests.
