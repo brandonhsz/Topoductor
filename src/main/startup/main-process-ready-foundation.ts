@@ -12,7 +12,7 @@ import {
   browserManager
 } from '../browser/guest-lifecycle/manager/browser-manager'
 import { browserSiteDisplayController } from '../browser/site-settings/display/browser-site-display-controller'
-import { ensureActiveTopoProfile } from '../topo-profiles/profile-index-store'
+import { ensureActiveTopoProfileAfterOrcaImport } from './orca-user-data-import-startup'
 import { getCanonicalUserDataPath } from '../persistence/loading-store/user-data-path'
 import { getAppEnvironment } from '../../shared/app-environment'
 import { loadWslMoveFence } from '../persistence/moving-wsl-projects/wsl-move-scope-guard'
@@ -143,7 +143,7 @@ export async function initializeReadyFoundation(): Promise<void> {
   state.managedWslCliStartupBarrierReady = createWslCliReconciliationStartupBarrier(
     state.managedWslCliReconciliationReady
   )
-  const profile = ensureActiveTopoProfile()
+  const profile = await ensureActiveTopoProfileAfterOrcaImport()
   state.activeTopoProfile = profile
   // Read durable browser hosting ID before window argv stamps it or renderer and lease ownership diverge.
   initializeBrowserClientHostId(profile.profileDirectory)
