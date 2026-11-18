@@ -5,6 +5,13 @@ import type { Product, SearchCandidate } from './protocol'
 const query = atom('')
 const results = atom<{ productId: string; candidates: SearchCandidate[] } | null>(null)
 
+// A whole render is capped at 512 KiB: an oversized photo saved by an older version is skipped.
+const MAX_IMAGE_LENGTH = 40_000
+
+function shown(image: string | null | undefined): string | null {
+  return image && image.length <= MAX_IMAGE_LENGTH ? image : null
+}
+
 function money(value: number | null): string {
   return value === null ? 'sin precio' : `$${value.toLocaleString('es-MX')}`
 }
@@ -36,9 +43,9 @@ function ChosenReplacement({ product }: { product: Product }) {
     <Stack gap="xs">
       <Text weight="semibold">Reemplazo propuesto</Text>
       <Row gap="sm" align="start">
-        {proposal.image ? (
+        {shown(proposal.image) ? (
           <Image
-            src={proposal.image}
+            src={shown(proposal.image) ?? ''}
             alt={proposal.title ?? 'Producto de reemplazo'}
             size="md"
             rounded
@@ -83,8 +90,8 @@ export function RepairSearch({ product }: { product: Product }) {
       <ChosenReplacement product={product} />
       {candidates.map((candidate) => (
         <Row key={candidate.url} gap="sm" align="center">
-          {candidate.image ? (
-            <Image src={candidate.image} alt={candidate.title} size="xs" rounded />
+          {shown(candidate.image) ? (
+            <Image src={shown(candidate.image) ?? ''} alt={candidate.title} size="xs" rounded />
           ) : null}
           <Stack gap="none">
             <Text truncate>{candidate.title}</Text>
