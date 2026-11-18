@@ -1265,13 +1265,6 @@
         "projectRootRegistrationFailed": "Error al registrar la raíz del proyecto creada por la receta en el entorno de ejecución",
         "provisionedRootRequiresSsh": "Las recetas de raíz aprovisionada actualmente requieren una conexión SSH directa."
       },
-      "blocked": {
-        "notification": {
-          "fallback": {
-            "de50bef680": "macOS está bloqueando las notificaciones de Topo"
-          }
-        }
-      },
       "linear": {
         "usage": {
           "examples": {

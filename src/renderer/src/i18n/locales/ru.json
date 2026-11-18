@@ -1759,13 +1759,6 @@
         "projectRootRegistrationFailed": "Не удалось зарегистрировать корень проекта, созданный по рецепту, в среде выполнения.",
         "provisionedRootRequiresSsh": "Рецепты с подготовкой корня проекта пока требуют прямого SSH-подключения."
       },
-      "blocked": {
-        "notification": {
-          "fallback": {
-            "de50bef680": "macOS блокирует уведомления Topo"
-          }
-        }
-      },
       "linear": {
         "usage": {
           "examples": {

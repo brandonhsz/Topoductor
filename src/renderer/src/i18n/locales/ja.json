@@ -1257,13 +1257,6 @@
         "projectRootRegistrationFailed": "レシピによって作成されたプロジェクトルートをランタイムに登録できませんでした。",
         "provisionedRootRequiresSsh": "現在、プロビジョニングされたルートレシピには直接 SSH 接続が必要です。"
       },
-      "blocked": {
-        "notification": {
-          "fallback": {
-            "de50bef680": "macOS が Topo の通知をブロックしています"
-          }
-        }
-      },
       "linear": {
         "usage": {
           "examples": {

@@ -1715,13 +1715,6 @@
         "projectRootRegistrationFailed": "Das vom Rezept erstellte Projektstammverzeichnis konnte nicht in der Laufzeitumgebung registriert werden.",
         "provisionedRootRequiresSsh": "Rezepte mit bereitgestelltem Stammverzeichnis erfordern derzeit eine direkte SSH-Verbindung."
       },
-      "blocked": {
-        "notification": {
-          "fallback": {
-            "de50bef680": "macOS blockiert Topo-Benachrichtigungen"
-          }
-        }
-      },
       "linear": {
         "usage": {
           "examples": {

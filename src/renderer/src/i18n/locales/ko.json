@@ -1257,13 +1257,6 @@
         "projectRootRegistrationFailed": "런타임에서 레시피로 생성된 프로젝트 루트 등록 실패",
         "provisionedRootRequiresSsh": "프로비저닝된 루트 레시피에는 현재 직접 SSH 연결이 필요합니다."
       },
-      "blocked": {
-        "notification": {
-          "fallback": {
-            "de50bef680": "macOS가 Topo 알림을 차단하고 있습니다"
-          }
-        }
-      },
       "linear": {
         "usage": {
           "examples": {

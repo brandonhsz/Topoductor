@@ -1957,7 +1957,6 @@
       "blocked": {
         "notification": {
           "fallback": {
-            "de50bef680": "macOS is blocking Topo notifications",
             "bannersBlocked": "macOS is blocking Topo's banners",
             "soundAndDockInstead": "Topo will alert you with sound and the Dock instead."
           }

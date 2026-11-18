@@ -1486,13 +1486,6 @@
         "projectRootRegistrationFailed": "Échec de l'enregistrement sur le runtime de la racine de projet créée par la recette.",
         "provisionedRootRequiresSsh": "Les recettes à racine provisionnée nécessitent actuellement une connexion SSH directe."
       },
-      "blocked": {
-        "notification": {
-          "fallback": {
-            "de50bef680": "macOS bloque les notifications Topo"
-          }
-        }
-      },
       "linear": {
         "usage": {
           "examples": {

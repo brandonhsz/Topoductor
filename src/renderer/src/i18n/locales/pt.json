@@ -2645,13 +2645,6 @@
         "projectRootRegistrationFailed": "Falha ao registrar no runtime a raiz do projeto criada pela receita.",
         "provisionedRootRequiresSsh": "Receitas de raiz provisionada atualmente exigem uma conexão SSH direta."
       },
-      "blocked": {
-        "notification": {
-          "fallback": {
-            "de50bef680": "O macOS está bloqueando as notificações do Topo"
-          }
-        }
-      },
       "linear": {
         "usage": {
           "examples": {
