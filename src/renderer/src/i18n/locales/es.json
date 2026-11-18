@@ -4625,6 +4625,32 @@
             "rpm": "{{rpm}} RPM",
             "autoDescription": "macOS ajusta la velocidad según la temperatura",
             "maxDescription": "Todos los ventiladores a máxima velocidad. Pide tu contraseña de administrador; vuelven a automático al cerrar Topo."
+          },
+          "FanThermalChart": {
+            "palmrest": "Reposamanos",
+            "chip": "Chip",
+            "blend": "Mezcla",
+            "ariaLabel": "Temperatura y velocidad de los ventiladores en los últimos {{minutes}} min",
+            "degrees": "{{value}} °C",
+            "rpmAxis": "RPM",
+            "minutesAgo": "Hace {{minutes}} min",
+            "now": "Ahora",
+            "waiting": "Esperando lecturas",
+            "fanName": "Ventilador {{n}}",
+            "rpm": "{{rpm}} RPM",
+            "chipOnly": "Esta Mac no tiene un sensor de reposamanos que Topo reconozca, así que usa solo la temperatura del chip."
+          },
+          "FanCurveEditor": {
+            "degrees": "{{value}} °C",
+            "sourceLabel": "La curva sigue",
+            "maxSpeed": "Máx.",
+            "minSpeed": "Mín.",
+            "macosZone": "macOS",
+            "nowMarker": "Ahora: {{temp}}",
+            "point": "Punto {{n}}",
+            "pointValue": "{{temp}}, {{percent}} % de velocidad",
+            "activePoint": "Punto {{n}}: {{temp}} → {{percent}} % de velocidad",
+            "hint": "Por debajo del primer punto decide macOS. Arrastra los puntos o usa las flechas."
           }
         }
       },

@@ -5408,6 +5408,32 @@
             "rpm": "{{rpm}} RPM",
             "autoDescription": "macOS adjusts fan speed to temperature",
             "maxDescription": "Run all fans at full speed. Needs your administrator password; fans return to automatic when Topo closes."
+          },
+          "FanThermalChart": {
+            "palmrest": "Palm rest",
+            "chip": "Chip",
+            "blend": "Blend",
+            "ariaLabel": "Temperature and fan speed over the last {{minutes}} min",
+            "degrees": "{{value}} °C",
+            "rpmAxis": "RPM",
+            "minutesAgo": "{{minutes}} min ago",
+            "now": "Now",
+            "waiting": "Waiting for readings",
+            "fanName": "Fan {{n}}",
+            "rpm": "{{rpm}} RPM",
+            "chipOnly": "This Mac has no palm-rest sensor Topo recognizes, so it uses the chip temperature only."
+          },
+          "FanCurveEditor": {
+            "degrees": "{{value}} °C",
+            "sourceLabel": "Curve follows",
+            "maxSpeed": "Max",
+            "minSpeed": "Min",
+            "macosZone": "macOS",
+            "nowMarker": "Now: {{temp}}",
+            "point": "Point {{n}}",
+            "pointValue": "{{temp}}, {{percent}}% speed",
+            "activePoint": "Point {{n}}: {{temp}} → {{percent}}% speed",
+            "hint": "Below the first point macOS decides. Drag points or use the arrow keys."
           }
         }
       },

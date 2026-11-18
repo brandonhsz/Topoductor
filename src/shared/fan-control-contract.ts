@@ -150,9 +150,7 @@ export const FAN_CONTROL_HELPER_BINARY = 'topo-fan-control'
 export const FAN_CONTROL_HELPER_COMMANDS = {
   status: 'status',
   sensors: 'sensors',
-  control: 'control',
-  /** Legacy max-only hold; removed once `control` ships (T17). */
-  hold: 'hold'
+  control: 'control'
 } as const
 
 export const FAN_CONTROL_SESSION_ARGS = {
@@ -162,9 +160,6 @@ export const FAN_CONTROL_SESSION_ARGS = {
 } as const
 
 export const FAN_CONTROL_SESSION_READY_LINE = 'ready'
-/** Legacy aliases for the max-only hold; removed with it (T17). */
-export const FAN_CONTROL_HOLD_ARGS = FAN_CONTROL_SESSION_ARGS
-export const FAN_CONTROL_HOLD_READY_LINE = FAN_CONTROL_SESSION_READY_LINE
 export const FAN_CONTROL_SESSION_WRITE_REJECTED_LINE = 'write-rejected'
 export const FAN_CONTROL_TARGETS_VERSION = 1
 

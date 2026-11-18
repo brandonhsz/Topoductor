@@ -1,11 +1,12 @@
 import Darwin
 import IOKit
 
-// topo-fan-control: reads fan state from the SMC and, as root, holds the fans at max speed.
-//   status                                          -> one JSON line, no privileges needed
-//   hold --parent-pid <pid> --lease <abs> [--dry-run] -> forces max until the lease is removed,
-//                                                     the parent dies, or a signal arrives;
-//                                                     always restores the original fan mode.
+// topo-fan-control: reads fan state and temperatures from the SMC and, as root, drives fan targets.
+//   status                                             -> one JSON line, no privileges needed
+//   sensors                                            -> one JSON line of chip/palm-rest/battery temps
+//   control --parent-pid <pid> --lease <abs> [--dry-run] -> applies the per-fan targets main writes to
+//                                                        the lease until it is removed, the parent dies,
+//                                                        or a signal arrives; always restores fan modes.
 
 enum ExitCode: Int32 {
   case ok = 0
@@ -24,12 +25,14 @@ private enum SmcLayout {
   static let dataType = 32
   static let result = 40
   static let selector = 42
+  static let index = 44
   static let bytes = 48
 }
 
 private enum SmcSelector: UInt8 {
   case read = 5
   case write = 6
+  case keyAtIndex = 8
   case keyInfo = 9
 }
 
@@ -111,6 +114,19 @@ final class Smc {
     return decodeNumber(value)
   }
 
+  func keyCount() -> Int {
+    guard let value = read("#KEY") else { return 0 }
+    return value.bytes.reduce(0) { ($0 << 8) | Int($1) }
+  }
+
+  func key(at index: Int) -> String? {
+    var input = [UInt8](repeating: 0, count: SmcLayout.size)
+    input[SmcLayout.selector] = SmcSelector.keyAtIndex.rawValue
+    store(UInt32(index), into: &input, at: SmcLayout.index)
+    guard let output = call(input) else { return nil }
+    return fourCCString(load(output, at: SmcLayout.key))
+  }
+
   /// Encodes `number` in the same SMC type the key already uses.
   func writeNumber(_ key: String, _ number: Double) -> Bool {
     guard let current = read(key), let bytes = encodeNumber(number, type: current.type) else {
@@ -141,6 +157,8 @@ private func decodeNumber(_ value: SmcValue) -> Double? {
     return Double(Float(bitPattern: load(bytes, at: 0)))
   case "fpe2" where bytes.count == 2:
     return Double((UInt16(bytes[0]) << 8) | UInt16(bytes[1])) / 4
+  case "sp78" where bytes.count == 2:
+    return Double(Int16(bitPattern: (UInt16(bytes[0]) << 8) | UInt16(bytes[1]))) / 256
   case "ui8 " where bytes.count == 1:
     return Double(bytes[0])
   case "ui16" where bytes.count == 2:
@@ -218,15 +236,82 @@ func runStatus() -> ExitCode {
   return .ok
 }
 
-// MARK: - hold
+// MARK: - sensors
 
-struct HoldArguments {
+private enum SensorGroup: CaseIterable {
+  case chip, palmrest, battery
+
+  var name: String {
+    switch self {
+    case .chip: return "chip"
+    case .palmrest: return "palmrest"
+    case .battery: return "battery"
+    }
+  }
+
+  // Apple does not document these keys and they vary by model; verified on Apple Silicon (M2 Pro).
+  static func of(_ key: String) -> SensorGroup? {
+    if key.hasPrefix("Tp") || key.hasPrefix("Te") { return .chip }
+    if key == "Ts0P" || key == "Ts1P" { return .palmrest }
+    if key.hasPrefix("TB") && key.hasSuffix("T") { return .battery }
+    return nil
+  }
+}
+
+private let plausibleCelsius = 5.0..<130.0
+
+private func isJsonSafeKey(_ key: String) -> Bool {
+  key.utf8.count == 4 && key.utf8.allSatisfy { $0 >= 0x20 && $0 < 0x7f && $0 != 0x22 && $0 != 0x5c }
+}
+
+/// The SMC keeps its key table sorted, so the T* range is found by bisection instead of a ~0.6 s sweep.
+private func temperatureKeys(_ smc: Smc) -> [String] {
+  let count = smc.keyCount()
+  var low = 0
+  var high = count
+  while low < high {
+    let middle = (low + high) / 2
+    guard let key = smc.key(at: middle) else { return [] }
+    if key.utf8.lexicographicallyPrecedes("T".utf8) { low = middle + 1 } else { high = middle }
+  }
+  var keys: [String] = []
+  for index in low..<count {
+    guard let key = smc.key(at: index), key.hasPrefix("T") else { break }
+    keys.append(key)
+  }
+  return keys
+}
+
+func runSensors() -> ExitCode {
+  guard let smc = Smc() else {
+    printJsonLine("{\"error\":\(jsonString("cannot open AppleSMC"))}")
+    return .failure
+  }
+  var groups: [SensorGroup: [String]] = [:]
+  for key in temperatureKeys(smc) {
+    guard isJsonSafeKey(key),
+      let group = SensorGroup.of(key), let celsius = smc.readNumber(key),
+      plausibleCelsius.contains(celsius)
+    else { continue }
+    let rounded = (celsius * 10).rounded() / 10
+    groups[group, default: []].append("{\"key\":\"\(key)\",\"c\":\(rounded)}")
+  }
+  let body = SensorGroup.allCases.map { group in
+    "\"\(group.name)\":[\((groups[group] ?? []).joined(separator: ","))]"
+  }
+  printJsonLine("{\(body.joined(separator: ","))}")
+  return .ok
+}
+
+// MARK: - control
+
+struct ControlArguments {
   let parentPid: pid_t
   let leasePath: String
   let dryRun: Bool
 }
 
-func parseHoldArguments(_ args: ArraySlice<String>) -> HoldArguments? {
+func parseControlArguments(_ args: ArraySlice<String>) -> ControlArguments? {
   var parentPid: pid_t?
   var leasePath: String?
   var dryRun = false
@@ -251,7 +336,7 @@ func parseHoldArguments(_ args: ArraySlice<String>) -> HoldArguments? {
     }
   }
   guard let parentPid, let leasePath else { return nil }
-  return HoldArguments(parentPid: parentPid, leasePath: leasePath, dryRun: dryRun)
+  return ControlArguments(parentPid: parentPid, leasePath: leasePath, dryRun: dryRun)
 }
 
 private func processUid(_ pid: pid_t) -> uid_t? {
@@ -262,7 +347,7 @@ private func processUid(_ pid: pid_t) -> uid_t? {
 }
 
 /// Opens the lease without following links and only if it is a plain file owned by the parent's user,
-/// because the real hold writes it as root.
+/// because the real control session reads and writes it as root.
 private func openLease(_ path: String, ownerPid: pid_t) -> Int32? {
   let descriptor = open(path, O_RDWR | O_NOFOLLOW | O_CLOEXEC)
   guard descriptor >= 0 else { return nil }
@@ -281,6 +366,16 @@ private func writeLease(_ descriptor: Int32, _ text: String) {
   _ = ftruncate(descriptor, 0)
   _ = bytes.withUnsafeBytes { pwrite(descriptor, $0.baseAddress, bytes.count, 0) }
   _ = fsync(descriptor)
+}
+
+private let maxLeaseBytes = 512
+
+/// Reads the whole lease through the already-verified descriptor.
+private func readLease(_ descriptor: Int32) -> [UInt8]? {
+  var buffer = [UInt8](repeating: 0, count: maxLeaseBytes + 1)
+  let count = buffer.withUnsafeMutableBytes { pread(descriptor, $0.baseAddress, maxLeaseBytes + 1, 0) }
+  guard count >= 0, count <= maxLeaseBytes else { return nil }
+  return Array(buffer[0..<count])
 }
 
 private func leaseRemoved(_ descriptor: Int32, path: String) -> Bool {
@@ -304,71 +399,178 @@ private func installStopSignals() {
   signal(SIGPIPE, SIG_IGN)
 }
 
-/// Remembers each fan's original mode so every exit path can hand control back to macOS.
-final class FanHold {
+private let targetsVersion = 1
+private let maxTargets = 16
+private let targetsPrefix = "{\"v\":\(targetsVersion),\"targets\":["
+private let targetsSuffix = "]}"
+
+/// Parses exactly the line main's serializeFanTargets writes; anything else (pending, ready,
+/// a torn write, another version) is nil, which hands every fan to macOS.
+func parseTargetsLine(_ bytes: [UInt8]) -> [Double?]? {
+  guard bytes.allSatisfy({ $0 < 0x80 }) else { return nil }
+  let line = String(decoding: bytes, as: UTF8.self).trimmingWhitespace()
+  guard line.hasPrefix(targetsPrefix), line.hasSuffix(targetsSuffix),
+    line.count >= targetsPrefix.count + targetsSuffix.count
+  else { return nil }
+  let list = line.dropFirst(targetsPrefix.count).dropLast(targetsSuffix.count)
+  if list.isEmpty { return [] }
+  let items = list.split(separator: ",", omittingEmptySubsequences: false)
+  guard items.count <= maxTargets else { return nil }
+  var targets: [Double?] = []
+  for item in items {
+    if item == "null" {
+      targets.append(nil)
+    } else if item.allSatisfy({ $0.isASCII && ($0.isNumber || $0 == "." || $0 == "-") }),
+      let rpm = Double(item), rpm.isFinite
+    {
+      targets.append(rpm)
+    } else {
+      return nil
+    }
+  }
+  return targets
+}
+
+private extension String {
+  func trimmingWhitespace() -> String {
+    let isSpace: (Character) -> Bool = { $0 == " " || $0 == "\n" || $0 == "\r" || $0 == "\t" }
+    guard let first = firstIndex(where: { !isSpace($0) }),
+      let last = lastIndex(where: { !isSpace($0) })
+    else { return "" }
+    return String(self[first...last])
+  }
+}
+
+private func targetsJson(_ targets: [Double?]) -> String {
+  let items = targets.map { target -> String in
+    guard let target else { return "null" }
+    return target == target.rounded() && abs(target) < 1e9 ? String(Int(target)) : String(target)
+  }
+  return targetsPrefix + items.joined(separator: ",") + targetsSuffix
+}
+
+private enum FanTarget: Equatable {
+  case auto
+  case rpm(Double)
+}
+
+private struct FanLimits {
+  let minRpm: Double
+  let maxRpm: Double
+}
+
+/// Owns the fans for the session: remembers each original mode so every exit path hands them back.
+final class FanControl {
   private let smc: Smc
-  private var originalModes: [Int: Double] = [:]
+  private var originalModes: [Int: UInt8] = [:]
+  private var limits: [Int: FanLimits] = [:]
+  private var applied: [Int: FanTarget] = [:]
 
   init(smc: Smc) { self.smc = smc }
 
-  func forceMax() -> Bool {
+  /// Records the original modes and hands every fan to macOS; the write doubles as a root check.
+  func begin() -> Bool {
     let count = fanCount(smc)
     guard count > 0 else { return false }
     for index in 0..<count {
       guard let mode = smc.readNumber(modeKey(index)) else { return false }
-      originalModes[index] = mode
+      originalModes[index] = UInt8(clamping: Int(mode))
+      if let minRpm = smc.readNumber("F\(index)Mn"), let maxRpm = smc.readNumber("F\(index)Mx"),
+        minRpm > 0, maxRpm >= minRpm
+      {
+        limits[index] = FanLimits(minRpm: minRpm, maxRpm: maxRpm)
+      }
     }
-    return reassert()
+    return apply(Array(repeating: nil, count: count), force: true)
   }
 
-  @discardableResult
-  func reassert() -> Bool {
-    originalModes.keys.sorted().allSatisfy { index in
-      guard let maxRpm = smc.readNumber("F\(index)Mx"), maxRpm > 0 else { return false }
-      return smc.write(modeKey(index), [1]) && smc.writeNumber("F\(index)Tg", maxRpm)
+  /// Unknown limits, missing entries and non-positive rpm all mean macOS keeps that fan.
+  private func target(for index: Int, in targets: [Double?]) -> FanTarget {
+    guard index < targets.count, let rpm = targets[index], rpm > 0, let limit = limits[index] else {
+      return .auto
     }
+    return .rpm(min(max(rpm, limit.minRpm), limit.maxRpm).rounded())
+  }
+
+  /// Writes only fans whose target changed unless `force`, which macOS needs after sleep/wake.
+  /// Never re-reads FxMd to validate: mode writes land with up to a second of lag.
+  @discardableResult
+  func apply(_ targets: [Double?], force: Bool = false) -> Bool {
+    var ok = true
+    for index in originalModes.keys.sorted() {
+      let next = target(for: index, in: targets)
+      guard force || applied[index] != next else { continue }
+      let written: Bool
+      switch next {
+      case .auto:
+        written = smc.write(modeKey(index), [0])
+      case .rpm(let rpm):
+        written = smc.write(modeKey(index), [1]) && smc.writeNumber("F\(index)Tg", rpm)
+      }
+      if written {
+        applied[index] = next
+      } else {
+        applied[index] = nil
+        ok = false
+      }
+    }
+    return ok
   }
 
   func restore() {
     for (index, mode) in originalModes {
-      _ = smc.write(modeKey(index), [UInt8(clamping: Int(mode))])
+      _ = smc.write(modeKey(index), [mode])
     }
     originalModes.removeAll()
   }
 }
 
-func runHold(_ args: ArraySlice<String>) -> ExitCode {
-  guard let arguments = parseHoldArguments(args), processAlive(arguments.parentPid),
+func runControl(_ args: ArraySlice<String>) -> ExitCode {
+  guard let arguments = parseControlArguments(args), processAlive(arguments.parentPid),
     let lease = openLease(arguments.leasePath, ownerPid: arguments.parentPid)
   else { return .invalidArgs }
   defer { close(lease) }
   installStopSignals()
 
-  var hold: FanHold?
+  var control: FanControl?
   if !arguments.dryRun {
     guard let smc = Smc() else {
       writeLease(lease, "write-rejected")
       return .writeRejected
     }
-    let fanHold = FanHold(smc: smc)
-    hold = fanHold
-    guard fanHold.forceMax() else {
-      fanHold.restore()
+    let fanControl = FanControl(smc: smc)
+    control = fanControl
+    guard fanControl.begin() else {
+      fanControl.restore()
       writeLease(lease, "write-rejected")
       return .writeRejected
     }
   }
-  defer { hold?.restore() }
+  defer { control?.restore() }
   writeLease(lease, "ready")
 
+  var appliedBytes: [UInt8]? = nil
+  var previousBytes: [UInt8]? = nil
   var ticks = 0
+  var targets: [Double?] = []
   while stopRequested == 0, processAlive(arguments.parentPid),
     !leaseRemoved(lease, path: arguments.leasePath)
   {
+    // An unreadable or oversized lease parses as nil, handing every fan to macOS.
+    let bytes = readLease(lease) ?? []
+    // Main rewrites the lease in place, so a read can land mid-write; act only on a line seen twice.
+    if bytes == previousBytes, bytes != appliedBytes {
+      appliedBytes = bytes
+      let parsed = parseTargetsLine(bytes)
+      targets = parsed ?? []
+      control?.apply(targets)
+      if arguments.dryRun, let parsed { printJsonLine(targetsJson(parsed)) }
+    }
+    previousBytes = bytes
     usleep(200_000)
     ticks += 1
-    // macOS can reclaim the fans after sleep/wake; re-apply max every few seconds.
-    if ticks % 25 == 0 { hold?.reassert() }
+    // macOS reclaims the fans after sleep/wake; re-apply every few seconds.
+    if ticks % 25 == 0 { control?.apply(targets, force: true) }
   }
   return .ok
 }
@@ -380,8 +582,10 @@ let exitCode: ExitCode
 switch arguments.first {
 case "status" where arguments.count == 1:
   exitCode = runStatus()
-case "hold":
-  exitCode = runHold(arguments.dropFirst())
+case "sensors" where arguments.count == 1:
+  exitCode = runSensors()
+case "control":
+  exitCode = runControl(arguments.dropFirst())
 default:
   exitCode = .invalidArgs
 }

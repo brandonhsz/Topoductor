@@ -1,8 +1,12 @@
 import {
   FAN_CONTROL_HELPER_COMMANDS,
-  FAN_CONTROL_HOLD_ARGS,
+  FAN_CONTROL_SESSION_ARGS,
+  FAN_CONTROL_TARGETS_VERSION,
+  type FanControlHelperSensorsOutput,
   type FanControlHelperStatusOutput,
-  type FanReading
+  type FanControlTargets,
+  type FanReading,
+  type FanSensorValue
 } from '../../shared/fan-control-contract'
 
 // POSIX single-quoting: the root shell sees the value verbatim, including embedded quotes.
@@ -10,21 +14,33 @@ function shellQuote(value: string): string {
   return `'${value.replaceAll("'", "'\\''")}'`
 }
 
-export function buildFanControlHoldCommand(args: {
+export function buildFanControlSessionCommand(args: {
   helperPath: string
   parentPid: number
   leasePath: string
 }): string {
   return [
     shellQuote(args.helperPath),
-    FAN_CONTROL_HELPER_COMMANDS.hold,
-    FAN_CONTROL_HOLD_ARGS.parentPid,
+    FAN_CONTROL_HELPER_COMMANDS.control,
+    FAN_CONTROL_SESSION_ARGS.parentPid,
     String(args.parentPid),
-    FAN_CONTROL_HOLD_ARGS.lease,
+    FAN_CONTROL_SESSION_ARGS.lease,
     shellQuote(args.leasePath),
-    // Detached so osascript returns while the root hold keeps running.
+    // Detached so osascript returns while the root session keeps running.
     '>/dev/null 2>&1 &'
   ].join(' ')
+}
+
+/** @deprecated The helper no longer accepts `hold`; FanControlService moves to the session command (T19). */
+export const buildFanControlHoldCommand = buildFanControlSessionCommand
+
+/** The lease line the root `control` loop reads; null hands that fan to macOS. */
+export function serializeFanTargets(targets: readonly (number | null)[]): string {
+  const line: FanControlTargets = {
+    v: FAN_CONTROL_TARGETS_VERSION,
+    targets: targets.map((rpm) => (rpm === null ? null : Math.round(rpm)))
+  }
+  return JSON.stringify(line)
 }
 
 /** osascript reports a dismissed administrator prompt as "User canceled. (-128)". */
@@ -51,13 +67,16 @@ function isFanReading(value: unknown): value is FanReading {
   )
 }
 
-export function parseFanControlStatusOutput(stdout: string): FanControlHelperStatusOutput | null {
-  let parsed: unknown
+function parseHelperJson(stdout: string): unknown {
   try {
-    parsed = JSON.parse(stdout.trim())
+    return JSON.parse(stdout.trim())
   } catch {
     return null
   }
+}
+
+export function parseFanControlStatusOutput(stdout: string): FanControlHelperStatusOutput | null {
+  const parsed = parseHelperJson(stdout)
   if (typeof parsed !== 'object' || parsed === null || !('fans' in parsed) || !('mode' in parsed)) {
     return null
   }
@@ -66,4 +85,41 @@ export function parseFanControlStatusOutput(stdout: string): FanControlHelperSta
     return null
   }
   return { fans, mode }
+}
+
+function isSensorGroup(value: unknown): value is FanSensorValue[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (reading: unknown) =>
+        typeof reading === 'object' &&
+        reading !== null &&
+        'key' in reading &&
+        typeof reading.key === 'string' &&
+        'c' in reading &&
+        typeof reading.c === 'number'
+    )
+  )
+}
+
+export function parseFanSensorsOutput(stdout: string): FanControlHelperSensorsOutput | null {
+  const parsed = parseHelperJson(stdout)
+  if (
+    typeof parsed !== 'object' ||
+    parsed === null ||
+    !('chip' in parsed) ||
+    !('palmrest' in parsed) ||
+    !('battery' in parsed)
+  ) {
+    return null
+  }
+  const { chip, palmrest, battery } = parsed
+  if (!isSensorGroup(chip) || !isSensorGroup(palmrest) || !isSensorGroup(battery)) {
+    return null
+  }
+  return {
+    chip: chip.map(({ key, c }) => ({ key, c })),
+    palmrest: palmrest.map(({ key, c }) => ({ key, c })),
+    battery: battery.map(({ key, c }) => ({ key, c }))
+  }
 }
