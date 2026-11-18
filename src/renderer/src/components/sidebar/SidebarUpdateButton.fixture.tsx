@@ -13,11 +13,11 @@ function footerFixture(updateStatus: UpdateStatus): ReturnType<typeof defineFixt
     render: () => (
       <div className="bg-worktree-sidebar text-worktree-sidebar-foreground">
         <div className="flex items-center gap-1 border-t border-worktree-sidebar-border px-2 py-1.5">
-          <Button variant="ghost" size="icon-xs" className="text-muted-foreground">
+          <Button variant="ghost" size="icon-xs">
             <Settings className="size-3.5" />
           </Button>
           <SidebarUpdateButton />
-          <Button variant="ghost" size="icon-xs" className="text-muted-foreground">
+          <Button variant="ghost" size="icon-xs">
             <CircleHelp className="size-3.5" />
           </Button>
         </div>

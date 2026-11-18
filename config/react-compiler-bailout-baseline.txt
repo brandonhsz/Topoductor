@@ -11,7 +11,7 @@
 2 src/renderer/src/components/StarNagCard.tsx
 2 src/renderer/src/components/TerminalLegacyTerminalPanes.tsx
 2 src/renderer/src/components/TerminalSplitWorkspaceSurfaces.tsx
-10 src/renderer/src/components/UpdateCard.tsx
+8 src/renderer/src/components/UpdateCard.tsx
 1 src/renderer/src/components/WorktreeBaseFallbackDialog.tsx
 1 src/renderer/src/components/activity/activity-terminal-portal-status.ts
 1 src/renderer/src/components/activity/activity-thread-hover-card-summary.tsx

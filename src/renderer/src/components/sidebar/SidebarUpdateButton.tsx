@@ -45,18 +45,24 @@ function getLabel(model: SidebarUpdateButtonModel, t: Translate): string {
 }
 
 function UpdateIcon({ model }: { model: SidebarUpdateButtonModel }): React.JSX.Element {
+  // Quiet like Settings/Help until something needs attention.
+  const quiet = model.kind === 'idle' || model.kind === 'checking'
+  const className = quiet ? 'size-3.5 text-muted-foreground' : 'size-3.5'
   switch (model.kind) {
     case 'idle':
-      return <RefreshCw className="size-3.5" />
+      return <RefreshCw className={className} />
     case 'checking':
     case 'installing':
-      return <Loader2 className="size-3.5 animate-spin" />
+      return <Loader2 className={`${className} animate-spin`} />
     case 'waiting':
-      return <Clock3 className="size-3.5" />
+      return <Clock3 className={className} />
     case 'error':
-      return <AlertCircle className="size-3.5" />
-    default:
-      return <ArrowDownToLine className="size-3.5" />
+      return <AlertCircle className={className} />
+    case 'available':
+    case 'external':
+    case 'downloading':
+    case 'ready':
+      return <ArrowDownToLine className={className} />
   }
 }
 
@@ -86,7 +92,7 @@ function SidebarUpdateButtonView({
           type="button"
           aria-label={label}
           disabled={model.disabled}
-          className={model.badge ? 'relative text-foreground' : 'relative text-muted-foreground'}
+          className="relative"
           onClick={onClick}
         >
           <UpdateIcon model={model} />
