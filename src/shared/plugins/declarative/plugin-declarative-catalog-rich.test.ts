@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { isPluginDeclarativeImagePath } from './plugin-declarative-content-props'
+import {
+  isPluginDeclarativeImageDataUrl,
+  isPluginDeclarativeImagePath,
+  PLUGIN_IMAGE_DATA_URL_MAX_LENGTH
+} from './plugin-declarative-content-props'
 import { PLUGIN_DECLARATIVE_LIMITS as LIMITS } from './plugin-declarative-limits'
 import { parsePluginDeclarativeTree } from './plugin-declarative-tree'
 
@@ -55,6 +59,17 @@ describe('catalog 2 components', () => {
         expect.arrayContaining(['Table: ignored invalid rows', 'Tree: ignored invalid items'])
       )
     }
+  })
+
+  it('takes inline PNG, JPEG and WebP data URLs within the size cap', () => {
+    expect(isPluginDeclarativeImageDataUrl('data:image/webp;base64,UklGRg==')).toBe(true)
+    expect(isPluginDeclarativeImageDataUrl('data:image/svg+xml;base64,PHN2Zz4=')).toBe(false)
+    expect(isPluginDeclarativeImageDataUrl('data:image/png,raw')).toBe(false)
+    expect(
+      isPluginDeclarativeImageDataUrl(
+        `data:image/png;base64,${'A'.repeat(PLUGIN_IMAGE_DATA_URL_MAX_LENGTH)}`
+      )
+    ).toBe(false)
   })
 
   it('takes only image files inside the plugin', () => {

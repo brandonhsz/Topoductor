@@ -84,7 +84,11 @@ declare module 'orca' {
     wrap?: boolean
     maxHeight?: MaxHeight
   }
-  /** An image file in the plugin (`assets/logo.png`); never a URL. `alt: ''` for decoration. */
+  /**
+   * An image file in the plugin (`assets/logo.png`), or a PNG, JPEG or WebP `data:` URL up to
+   * 256 KiB (since 1.4.275) that the plugin's worker fetched; never an http(s) URL. `alt: ''` for
+   * decoration.
+   */
   export type ImageProps = Leaf & {
     src: string
     alt: string
