@@ -1,68 +1,87 @@
-import {
-  FAN_CONTROL_HELPER_COMMANDS,
-  FAN_CONTROL_HOLD_READY_LINE,
-  type FanControlError,
-  type FanControlHelperStatusOutput,
-  type FanControlMode,
-  type FanControlSetResult,
-  type FanControlStatus,
-  type FanControlUnsupportedReason,
-  type FanReading
+import type {
+  FanControlError,
+  FanControlGlobalSettings,
+  FanControlMode,
+  FanControlSetResult,
+  FanControlStatus,
+  FanControlUnsupportedReason,
+  FanCurve,
+  FanFeedbackReply,
+  ThermalSample
 } from '../../shared/fan-control-contract'
+import { FanControlLoop } from './fan-control-loop'
+import { hotBoostFor, manualRpmProblem, nextManualRpm } from './fan-control-mode-targets'
+import { FanControlPolling, type FanControlTimers } from './fan-control-polling'
 import {
-  buildFanControlHoldCommand,
-  isPrivilegePromptCancelled,
-  parseFanControlStatusOutput
-} from './fan-control-helper-protocol'
+  cloneFanCurve,
+  FanControlProfileStore,
+  initialSmartProfile
+} from './fan-control-profile-store'
+import { FanControlSessionLease, type FanControlLeaseDeps } from './fan-control-session-lease'
+import { fanControlStatusSnapshot } from './fan-control-status-snapshot'
+import { validateFanCurve } from './fan-curve-model'
+import { FanFeedbackPromptState } from './fan-feedback-prompt-state'
+import type { RunFanHelper } from './fan-helper-readings'
+import { FanThermalHistory } from './fan-thermal-history'
+import { FanViewerLease } from './fan-viewer-lease'
+import { applyFeedback } from './smart-fan-profile'
 
-type HelperResult = { code: number | null; stdout: string; stderr: string }
-
-export type FanControlServiceDeps = {
+export type FanControlServiceDeps = FanControlLeaseDeps & {
   platform: NodeJS.Platform
-  helperPath: string | null
-  leasePath: string
-  pid: number
-  runHelper: (args: string[]) => Promise<HelperResult>
-  runPrivileged: (command: string) => Promise<void>
-  fs: {
-    writeFile: (path: string, data: string) => Promise<void>
-    readFile: (path: string) => Promise<string | null>
-    rm: (path: string) => Promise<void>
-    rmSync: (path: string) => void
-  }
-  sleep?: (ms: number) => Promise<void>
-  readyTimeoutMs?: number
+  profilePath: string
+  runHelper: RunFanHelper
+  getSettings: () => FanControlGlobalSettings
+  updateSettings: (patch: Partial<FanControlGlobalSettings>) => void
+  now: () => number
+  timers: FanControlTimers
+  fs: FanControlLeaseDeps['fs'] & { rename: (from: string, to: string) => Promise<void> }
 }
 
 type Listener = (status: FanControlStatus) => void
 
-const LEASE_PENDING = 'pending'
-const LEASE_WRITE_REJECTED = 'write-rejected'
-const READY_POLL_STEP_MS = 100
-const DEFAULT_READY_TIMEOUT_MS = 5_000
+const TICK_INTERVAL_MS = 2_000
+// Past this a getStatus() re-reads the fans once instead of answering with an old RPM.
+const STALE_READING_MS = 5_000
 
-function errorDetail(error: unknown): string {
-  return error instanceof Error ? error.message : String(error)
+function unsupportedFailure(
+  status: Extract<FanControlStatus, { supported: false }>
+): FanControlSetResult {
+  return { ok: false, error: { kind: 'helper-failed', detail: status.reason }, status }
 }
 
 export class FanControlService {
   private readonly deps: FanControlServiceDeps
+  private readonly lease: FanControlSessionLease
+  private readonly profile: FanControlProfileStore
+  private readonly polling: FanControlPolling
+  private readonly history = new FanThermalHistory()
+  private readonly feedback = new FanFeedbackPromptState()
+  private readonly loop: FanControlLoop
   private readonly listeners = new Set<Listener>()
-  private unsupported: FanControlUnsupportedReason | null = null
   private writeRejected = false
-  private hasReading = false
-  private mode: FanControlMode = 'auto'
-  private pending = false
-  private fans: FanReading[] = []
-  private lastError: FanControlError | undefined
-  // Bumped on every mode change so a refresh started under an older hold cannot misreport it.
-  private modeGeneration = 0
-  private releaseRequested = false
+  // Missing three pings means the viewer's window hid or closed.
+  private readonly viewer = new FanViewerLease(3 * TICK_INTERVAL_MS)
+  // A later setMode wins over one still waiting on the password prompt.
+  private modeRequest = 0
   private inflightRefresh: Promise<FanControlStatus> | null = null
-  private inflightMax: Promise<FanControlSetResult> | null = null
+  private tickChain: Promise<unknown> = Promise.resolve()
 
   constructor(deps: FanControlServiceDeps) {
     this.deps = deps
+    this.lease = new FanControlSessionLease(deps, () => this.loop.released)
+    this.profile = new FanControlProfileStore({ path: deps.profilePath, fs: deps.fs })
+    this.polling = new FanControlPolling(deps.timers, TICK_INTERVAL_MS, () => {
+      if (this.syncPolling()) {
+        void this.tick()
+      }
+    })
+    this.loop = new FanControlLoop({
+      ...deps,
+      lease: this.lease,
+      profile: this.profile,
+      history: this.history,
+      feedback: this.feedback
+    })
   }
 
   async getStatus(): Promise<FanControlStatus> {
@@ -70,14 +89,21 @@ export class FanControlService {
     if (fixed) {
       return { supported: false, reason: fixed }
     }
-    return this.hasReading ? this.snapshot() : this.refresh()
+    await this.profile.ensureLoaded()
+    const { readAt } = this.loop
+    const stale = readAt === null || this.deps.now() - readAt > STALE_READING_MS
+    return stale && !this.loop.released ? this.refresh() : this.snapshot()
   }
 
   refresh(): Promise<FanControlStatus> {
-    this.inflightRefresh ??= this.readStatus().finally(() => {
+    this.inflightRefresh ??= this.observe(() => this.loop.readFanStatus()).finally(() => {
       this.inflightRefresh = null
     })
     return this.inflightRefresh
+  }
+
+  getHistory(): Promise<ThermalSample[]> {
+    return Promise.resolve(this.history.list())
   }
 
   subscribe(listener: Listener): () => void {
@@ -85,52 +111,141 @@ export class FanControlService {
     return () => this.listeners.delete(listener)
   }
 
-  /** A viewer asks for a fresh reading; the renderer drives the cadence only while its menu is open. */
+  /** A viewer (e.g. the open panel) needs live readings even while macOS owns the fans; repeat calls only renew its lease. */
   setMonitoring(active: boolean): void {
-    if (active) {
-      void this.refresh()
+    const started = this.viewer.update(active, this.deps.now())
+    if (this.syncPolling() && started && this.loop.mode === 'auto') {
+      void this.tick()
     }
   }
 
   async setMode(mode: FanControlMode): Promise<FanControlSetResult> {
-    if (mode === 'auto') {
-      return this.releaseToAuto()
-    }
-    if (this.inflightMax) {
-      return this.inflightMax
-    }
-    const status = await this.getStatus()
+    const request = ++this.modeRequest
+    const status = await this.currentStatus()
     if (!status.supported) {
-      return { ok: false, error: { kind: 'helper-failed', detail: status.reason }, status }
+      return unsupportedFailure(status)
     }
-    if (this.mode === 'max') {
-      return { ok: true, status }
+    if (mode !== 'auto' && !status.controllable) {
+      return { ok: false, error: { kind: 'not-controllable' }, status }
     }
-    this.inflightMax = this.startHold().finally(() => {
-      this.inflightMax = null
-    })
-    return this.inflightMax
+    if (mode !== 'auto' && this.lease.state !== 'active') {
+      const failure = await this.openSession(request)
+      if (failure) {
+        return failure
+      }
+    }
+    if (request !== this.modeRequest) {
+      return { ok: true, status: this.snapshot() }
+    }
+    this.loop.mode = mode
+    this.loop.hotBoost = null
+    this.loop.lastError = undefined
+    this.profile.pausedMode = null
+    await this.profile.update({ lastMode: mode })
+    this.syncPolling()
+    await this.tick()
+    return { ok: true, status: this.emit() }
   }
 
-  /** Synchronous so it completes before Electron exits; the root hold restores auto when the lease vanishes. */
+  async setCurve(curve: FanCurve): Promise<FanControlSetResult> {
+    const status = await this.currentStatus()
+    if (!status.supported) {
+      return unsupportedFailure(status)
+    }
+    const validation = validateFanCurve(curve)
+    if (!validation.ok) {
+      const error: FanControlError = { kind: 'invalid-curve', detail: validation.detail }
+      return { ok: false, error, status: this.snapshot() }
+    }
+    await this.profile.update({ curve: cloneFanCurve(curve) })
+    return this.afterProfileChange('curve')
+  }
+
+  async setManualRpm(index: number, rpm: number): Promise<FanControlSetResult> {
+    const status = await this.currentStatus()
+    if (!status.supported) {
+      return unsupportedFailure(status)
+    }
+    const fan = this.loop.fans.find((candidate) => candidate.index === index)
+    const detail = manualRpmProblem(fan, index, rpm)
+    if (detail) {
+      return { ok: false, error: { kind: 'invalid-rpm', detail }, status: this.snapshot() }
+    }
+    const saved = this.loop.mode === 'manual' ? this.profile.current.manualRpm : null
+    const manualRpm = nextManualRpm(saved, this.loop.fans, index, rpm)
+    await this.profile.update({ manualRpm })
+    return this.setMode('manual')
+  }
+
+  async answerFeedback(promptId: string, reply: FanFeedbackReply): Promise<FanControlSetResult> {
+    await this.profile.ensureLoaded()
+    if (reply === 'never') {
+      this.deps.updateSettings({ fanSmartFeedbackPrompts: false })
+      this.feedback.dismiss()
+      return { ok: true, status: this.emit() }
+    }
+    const now = this.deps.now()
+    const prompt = this.feedback.answer(promptId, now)
+    if (!prompt) {
+      return { ok: true, status: this.snapshot() }
+    }
+    const learned = applyFeedback(this.profile.current.smart, reply, prompt.tempC)
+    if (reply === 'hot') {
+      this.loop.hotBoost = hotBoostFor(this.loop.fans, this.loop.appliedRpm, now)
+    }
+    await this.profile.update({ smart: { ...learned, updatedAt: now } })
+    return { ok: true, status: this.emit() }
+  }
+
+  async resetSmartProfile(): Promise<FanControlSetResult> {
+    await this.profile.ensureLoaded()
+    this.loop.hotBoost = null
+    await this.profile.update({ smart: initialSmartProfile() })
+    return this.afterProfileChange('smart')
+  }
+
+  async dismissPausedMode(): Promise<FanControlStatus> {
+    await this.profile.ensureLoaded()
+    this.profile.pausedMode = null
+    if (this.loop.mode === 'auto') {
+      await this.profile.update({ lastMode: 'auto' })
+    }
+    return this.emit()
+  }
+
+  /** One control-loop step: read sensors, keep history, schedule feedback and write lease targets. */
+  tick(): Promise<FanControlStatus> {
+    const run = this.tickChain.then(() => this.observe(() => this.loop.step()))
+    this.tickChain = run.catch(() => undefined)
+    return run
+  }
+
+  /** Synchronous so it completes before Electron exits; the root session restores auto when the lease vanishes. */
   releaseForQuit(): void {
-    if (this.mode !== 'max' && !this.pending) {
-      return
-    }
-    this.releaseRequested = this.pending
-    this.mode = 'auto'
-    this.modeGeneration++
-    try {
-      this.deps.fs.rmSync(this.deps.leasePath)
-    } catch (error) {
-      console.warn('[fan-control] Failed to remove lease on quit:', error)
+    this.loop.released = true
+    this.syncPolling()
+    this.lease.closeSync()
+  }
+
+  /** macOS owns the fans while asleep; the session stays open so wake needs no password. */
+  async handleSuspend(): Promise<void> {
+    this.loop.suspended = true
+    if (this.lease.state === 'active') {
+      await this.loop.writeTargets(this.loop.fans.map(() => null))
+      this.emit()
     }
   }
 
-  async handleSuspend(): Promise<void> {
-    if (this.mode === 'max' || this.pending) {
-      await this.releaseToAuto()
+  async handleResume(): Promise<void> {
+    this.loop.suspended = false
+    if (this.lease.state === 'active' && !this.loop.released) {
+      await this.tick()
     }
+  }
+
+  /** Status for an edit: reads the hardware only before the first reading. */
+  private currentStatus(): Promise<FanControlStatus> {
+    return this.loop.hasReading ? Promise.resolve(this.snapshot()) : this.getStatus()
   }
 
   private fixedUnsupportedReason(): FanControlUnsupportedReason | null {
@@ -144,17 +259,12 @@ export class FanControlService {
   }
 
   private snapshot(): FanControlStatus {
-    const fixed = this.fixedUnsupportedReason() ?? this.unsupported
+    const fixed = this.fixedUnsupportedReason()
     if (fixed) {
       return { supported: false, reason: fixed }
     }
-    return {
-      supported: true,
-      mode: this.mode,
-      fans: this.fans,
-      pending: this.pending,
-      ...(this.lastError ? { lastError: this.lastError } : {})
-    }
+    const { loop, profile, lease, feedback } = this
+    return fanControlStatusSnapshot({ loop, profile, lease, feedback })
   }
 
   private emit(): FanControlStatus {
@@ -169,135 +279,60 @@ export class FanControlService {
     return status
   }
 
-  private async readStatus(): Promise<FanControlStatus> {
+  /** Runs a hardware read and notifies subscribers only when the visible status changed. */
+  private async observe(read: () => Promise<void>): Promise<FanControlStatus> {
     const fixed = this.fixedUnsupportedReason()
     if (fixed) {
       return { supported: false, reason: fixed }
     }
-    const generation = this.modeGeneration
-    let output: FanControlHelperStatusOutput | null = null
-    try {
-      const result = await this.deps.runHelper([FAN_CONTROL_HELPER_COMMANDS.status])
-      output = result.code === 0 ? parseFanControlStatusOutput(result.stdout) : null
-    } catch (error) {
-      console.warn('[fan-control] Status helper failed:', error)
-    }
+    await this.profile.ensureLoaded()
     const previous = JSON.stringify(this.snapshot())
-    this.hasReading = true
-    if (!output) {
-      this.unsupported = 'smc-unavailable'
-    } else if (output.fans.length === 0) {
-      this.unsupported = 'no-fans'
-    } else {
-      this.unsupported = null
-      this.fans = output.fans
-      const holdExited =
-        this.mode === 'max' &&
-        !this.pending &&
-        output.mode === 'auto' &&
-        generation === this.modeGeneration
-      if (holdExited) {
-        this.mode = 'auto'
-        this.modeGeneration++
-        this.lastError = { kind: 'hold-exited', detail: 'Fans returned to automatic control' }
-        await this.removeLease()
-      }
-    }
-    return JSON.stringify(this.snapshot()) === previous ? this.snapshot() : this.emit()
+    await read()
+    this.syncPolling()
+    const status = this.snapshot()
+    return JSON.stringify(status) === previous ? status : this.emit()
   }
 
-  private async startHold(): Promise<FanControlSetResult> {
-    const { helperPath, leasePath, pid } = this.deps
-    this.pending = true
-    this.releaseRequested = false
-    this.lastError = undefined
-    this.emit()
+  /** Re-targets from the last reading, queued behind any running tick; spawns no helper. */
+  private async afterProfileChange(mode: FanControlMode): Promise<FanControlSetResult> {
+    if (this.loop.mode === mode && this.lease.state === 'active') {
+      const run = this.tickChain.then(() => this.loop.applyModeTargets())
+      this.tickChain = run.catch(() => undefined)
+      await run
+    }
+    return { ok: true, status: this.emit() }
+  }
 
-    const fail = async (error: FanControlError): Promise<FanControlSetResult> => {
-      await this.removeLease()
-      this.pending = false
-      this.lastError = error
+  /** Starts or stops the interval; returns whether a tick is still wanted. */
+  private syncPolling(): boolean {
+    const watched = this.viewer.activeAt(this.deps.now())
+    const wanted = !this.loop.released && (watched || this.loop.mode !== 'auto')
+    this.polling.sync(wanted)
+    return wanted
+  }
+
+  private async openSession(request: number): Promise<FanControlSetResult | null> {
+    const opening = await this.lease.ensureOpen(() => {
+      this.loop.lastError = undefined
+      this.emit()
+    })
+    if (this.lease.state === 'active') {
+      return null
+    }
+    if (opening.kind === 'write-rejected') {
+      this.writeRejected = true
+      const error: FanControlError = { kind: 'helper-failed', detail: 'write-rejected' }
       return { ok: false, error, status: this.emit() }
     }
-
-    try {
-      await this.deps.fs.writeFile(leasePath, LEASE_PENDING)
-    } catch (error) {
-      return fail({ kind: 'helper-failed', detail: errorDetail(error) })
-    }
-    const command = buildFanControlHoldCommand({
-      helperPath: helperPath ?? '',
-      parentPid: pid,
-      leasePath
-    })
-    try {
-      await this.deps.runPrivileged(command)
-    } catch (error) {
-      return fail(
-        isPrivilegePromptCancelled(error)
-          ? { kind: 'auth-cancelled' }
-          : { kind: 'helper-failed', detail: errorDetail(error) }
-      )
-    }
-
-    const lease = await this.awaitHoldSignal()
-    if (this.releaseRequested || lease === null) {
-      this.pending = false
+    // A newer mode request already decided what the fans do; this failure is no longer news.
+    if (request !== this.modeRequest) {
       return { ok: true, status: this.emit() }
     }
-    if (lease === LEASE_WRITE_REJECTED) {
-      this.writeRejected = true
-      await this.removeLease()
-      this.pending = false
-      const error: FanControlError = { kind: 'helper-failed', detail: LEASE_WRITE_REJECTED }
-      return { ok: false, error, status: this.emit() }
-    }
-    if (lease !== FAN_CONTROL_HOLD_READY_LINE) {
-      return fail({ kind: 'helper-failed', detail: 'Fan hold did not become ready' })
-    }
-    this.pending = false
-    this.mode = 'max'
-    this.modeGeneration++
-    return { ok: true, status: this.emit() }
-  }
-
-  private async awaitHoldSignal(): Promise<string | null> {
-    const sleep = this.deps.sleep ?? ((ms) => new Promise((resolve) => setTimeout(resolve, ms)))
-    const timeoutMs = this.deps.readyTimeoutMs ?? DEFAULT_READY_TIMEOUT_MS
-    let lease: string | null = null
-    for (let elapsed = 0; elapsed <= timeoutMs; elapsed += READY_POLL_STEP_MS) {
-      lease = (await this.deps.fs.readFile(this.deps.leasePath))?.trim() ?? null
-      if (
-        lease === null ||
-        lease === FAN_CONTROL_HOLD_READY_LINE ||
-        lease === LEASE_WRITE_REJECTED ||
-        this.releaseRequested
-      ) {
-        return lease
-      }
-      await sleep(READY_POLL_STEP_MS)
-    }
-    return lease
-  }
-
-  private async releaseToAuto(): Promise<FanControlSetResult> {
-    if (this.pending) {
-      this.releaseRequested = true
-    }
-    if (this.mode === 'max' || this.pending) {
-      this.mode = 'auto'
-      this.modeGeneration++
-      this.lastError = undefined
-      await this.removeLease()
-    }
-    return { ok: true, status: this.emit() }
-  }
-
-  private async removeLease(): Promise<void> {
-    try {
-      await this.deps.fs.rm(this.deps.leasePath)
-    } catch (error) {
-      console.warn('[fan-control] Failed to remove lease:', error)
-    }
+    const error: FanControlError =
+      opening.kind === 'failed'
+        ? opening.error
+        : { kind: 'helper-failed', detail: 'Fan control session closed while opening' }
+    this.loop.lastError = error
+    return { ok: false, error, status: this.emit() }
   }
 }

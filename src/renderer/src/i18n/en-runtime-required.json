@@ -1083,6 +1083,10 @@
       },
       "status": {
         "bar": {
+          "FanControlStatusSegment": {
+            "smartLearned_one": "Learned from {{count}} answer. It never runs fans slower than macOS would.",
+            "smartLearned_other": "Learned from {{count}} answers. It never runs fans slower than macOS would."
+          },
           "NativeChatResumeStatusSegment": {
             "ariaLabelCount_one": "{{count}} chat available to resume",
             "ariaLabelCount_other": "{{count}} chats available to resume",

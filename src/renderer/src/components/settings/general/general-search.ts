@@ -5,6 +5,7 @@ import { searchKeywords, translateSearchKeyword } from '../search/settings-searc
 import { createLocalizedCatalog } from '@/i18n/localized-catalog'
 import { getGeneralProjectRuntimeSearchEntries } from './project-runtime/general-project-runtime-search'
 import { getGeneralSupportSearchEntries } from './general-support-search'
+import { getGeneralFanSearchEntries } from './general-fan-search'
 import { getUpdateDelayDescription, getUpdateDelayTitle } from '../updates/update-delay-copy'
 
 export const getGeneralWorkspaceSearchEntries = createLocalizedCatalog(() => [
@@ -269,6 +270,8 @@ export const getGeneralUpdateSearchEntries = createLocalizedCatalog(() => [
 
 type GeneralPaneSearchOptions = {
   includeProjectRuntime?: boolean
+  /** Fan control exists only in the macOS desktop app; elsewhere its row renders nothing. */
+  includeFans?: boolean
 }
 
 export function getGeneralPaneSearchEntries(
@@ -280,6 +283,7 @@ export function getGeneralPaneSearchEntries(
     ...(options.includeProjectRuntime === false ? [] : getGeneralProjectRuntimeSearchEntries()),
     ...getGeneralEditorSearchEntries(),
     ...getGeneralCliSearchEntries(),
+    ...(options.includeFans === false ? [] : getGeneralFanSearchEntries()),
     ...getGeneralUpdateSearchEntries(),
     ...getGeneralSupportSearchEntries()
   ]

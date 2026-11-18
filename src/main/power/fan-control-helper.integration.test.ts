@@ -5,10 +5,16 @@ import { join, resolve } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   FAN_CONTROL_HELPER_BINARY,
+  FAN_CONTROL_HELPER_COMMANDS,
   FAN_CONTROL_HELPER_EXIT_CODES,
-  FAN_CONTROL_HOLD_READY_LINE
+  FAN_CONTROL_SESSION_ARGS,
+  FAN_CONTROL_SESSION_READY_LINE
 } from '../../shared/fan-control-contract'
-import { parseFanControlStatusOutput } from './fan-control-helper-protocol'
+import {
+  parseFanControlStatusOutput,
+  parseFanSensorsOutput,
+  serializeFanTargets
+} from './fan-control-helper-protocol'
 
 const HELPER = resolve(
   __dirname,
@@ -38,18 +44,63 @@ function spawnParent(): ChildProcess {
   return parent
 }
 
-function spawnHold(parentPid: number, lease: string): ChildProcess {
-  const hold = spawn(
+type ControlSession = { child: ChildProcess; stdoutLines: () => string[] }
+
+// --dry-run never touches the SMC and echoes each new valid targets line it reads to stdout.
+function spawnControl(parentPid: number, lease: string): ControlSession {
+  const child = spawn(
     HELPER,
-    ['hold', '--parent-pid', String(parentPid), '--lease', lease, '--dry-run'],
-    { stdio: 'ignore' }
+    [
+      FAN_CONTROL_HELPER_COMMANDS.control,
+      FAN_CONTROL_SESSION_ARGS.parentPid,
+      String(parentPid),
+      FAN_CONTROL_SESSION_ARGS.lease,
+      lease,
+      FAN_CONTROL_SESSION_ARGS.dryRun
+    ],
+    { stdio: ['ignore', 'pipe', 'ignore'] }
   )
-  cleanups.push(() => hold.kill('SIGKILL'))
-  return hold
+  cleanups.push(() => child.kill('SIGKILL'))
+  let stdout = ''
+  child.stdout?.setEncoding('utf8')
+  child.stdout?.on('data', (chunk: string) => {
+    stdout += chunk
+  })
+  return {
+    child,
+    stdoutLines: () =>
+      stdout
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean)
+  }
+}
+
+async function readySession(): Promise<ControlSession & { lease: string; parent: ChildProcess }> {
+  const lease = tempLease()
+  const parent = spawnParent()
+  const session = spawnControl(parent.pid!, lease)
+  await vi.waitFor(() => leaseIsReady(lease), { timeout: 2000 })
+  return { ...session, lease, parent }
 }
 
 function leaseIsReady(lease: string): void {
-  expect(readFileSync(lease, 'utf8').trim()).toBe(FAN_CONTROL_HOLD_READY_LINE)
+  expect(readFileSync(lease, 'utf8').trim()).toBe(FAN_CONTROL_SESSION_READY_LINE)
+}
+
+// Main rewrites the lease in place: a rename would change the inode and end the session.
+function writeTargets(lease: string, line: string): void {
+  writeFileSync(lease, `${line}\n`)
+}
+
+function echoedTargets(session: ControlSession): unknown[] {
+  return session.stdoutLines().map((line) => JSON.parse(line))
+}
+
+async function waitForEcho(session: ControlSession, targets: (number | null)[]): Promise<void> {
+  await vi.waitFor(() => expect(echoedTargets(session)).toContainEqual({ v: 1, targets }), {
+    timeout: 2000
+  })
 }
 
 async function expectExit(child: ChildProcess): Promise<number | null> {
@@ -83,52 +134,98 @@ describe.skipIf(!canRun)('topo-fan-control helper (no root)', () => {
     }
   })
 
-  it('hold --dry-run marks the lease ready and exits within 2s once the lease is removed', async () => {
-    const lease = tempLease()
-    const parent = spawnParent()
-    const hold = spawnHold(parent.pid!, lease)
-
-    await vi.waitFor(() => leaseIsReady(lease), { timeout: 2000 })
-    rmSync(lease)
-    expect(await expectExit(hold)).toBe(FAN_CONTROL_HELPER_EXIT_CODES.ok)
+  it('sensors prints one JSON line with chip, palm-rest and battery readings', () => {
+    const result = spawnSync(HELPER, [FAN_CONTROL_HELPER_COMMANDS.sensors], {
+      encoding: 'utf8',
+      timeout: 5000
+    })
+    expect(result.status).toBe(FAN_CONTROL_HELPER_EXIT_CODES.ok)
+    expect(result.stdout.trim().split('\n')).toHaveLength(1)
+    const parsed = parseFanSensorsOutput(result.stdout)
+    if (!parsed) {
+      throw new Error(`sensors printed invalid JSON: ${result.stdout}`)
+    }
+    for (const reading of [...parsed.chip, ...parsed.palmrest, ...parsed.battery]) {
+      expect(reading).toEqual({ key: expect.stringMatching(/^T/), c: expect.any(Number) })
+    }
   })
 
-  it('hold --dry-run exits within 2s once the parent process dies', async () => {
-    const lease = tempLease()
-    const parent = spawnParent()
-    const hold = spawnHold(parent.pid!, lease)
-
-    await vi.waitFor(() => leaseIsReady(lease), { timeout: 2000 })
-    parent.kill('SIGKILL')
-    expect(await expectExit(hold)).toBe(FAN_CONTROL_HELPER_EXIT_CODES.ok)
+  it('control --dry-run marks the lease ready and exits within 2s once the lease is removed', async () => {
+    const session = await readySession()
+    rmSync(session.lease)
+    expect(await expectExit(session.child)).toBe(FAN_CONTROL_HELPER_EXIT_CODES.ok)
   })
 
-  it('hold --dry-run exits on SIGTERM', async () => {
-    const lease = tempLease()
-    const parent = spawnParent()
-    const hold = spawnHold(parent.pid!, lease)
+  it('control --dry-run reads each new targets line from the lease', async () => {
+    const session = await readySession()
 
-    await vi.waitFor(() => leaseIsReady(lease), { timeout: 2000 })
-    hold.kill('SIGTERM')
-    await expectExit(hold)
+    writeTargets(session.lease, serializeFanTargets([3500, null]))
+    await waitForEcho(session, [3500, null])
+
+    writeTargets(session.lease, serializeFanTargets([null, 6800]))
+    await waitForEcho(session, [null, 6800])
+    expect(session.child.exitCode).toBeNull()
+  })
+
+  // The root session outlives "auto": only the lease or the parent ends it, so no new password.
+  it('control --dry-run keeps reading after targets hand every fan to macOS', async () => {
+    const session = await readySession()
+
+    writeTargets(session.lease, serializeFanTargets([null, null]))
+    await waitForEcho(session, [null, null])
+    writeTargets(session.lease, serializeFanTargets([2317, 2317]))
+    await waitForEcho(session, [2317, 2317])
+  })
+
+  it('control --dry-run exits within 2s once the parent process dies', async () => {
+    const session = await readySession()
+    session.parent.kill('SIGKILL')
+    expect(await expectExit(session.child)).toBe(FAN_CONTROL_HELPER_EXIT_CODES.ok)
+  })
+
+  it('control --dry-run exits on SIGTERM', async () => {
+    const session = await readySession()
+    session.child.kill('SIGTERM')
+    await expectExit(session.child)
   })
 
   it.each([
-    ['a relative lease path', ['hold', '--parent-pid', '1', '--lease', 'fan.lease', '--dry-run']],
-    ['a non-numeric pid', ['hold', '--parent-pid', 'abc', '--lease', '/tmp/x.lease', '--dry-run']],
-    ['a missing lease', ['hold', '--parent-pid', '1', '--dry-run']],
+    [
+      'a relative lease path',
+      ['control', '--parent-pid', '1', '--lease', 'fan.lease', '--dry-run']
+    ],
+    [
+      'a non-numeric pid',
+      ['control', '--parent-pid', 'abc', '--lease', '/tmp/x.lease', '--dry-run']
+    ],
+    ['a missing lease', ['control', '--parent-pid', '1', '--dry-run']],
     ['an unknown command', ['format-disk']],
-    ['an unknown flag', ['hold', '--parent-pid', '1', '--lease', '/tmp/x.lease', '--exec', 'sh']]
+    [
+      'an unknown flag',
+      ['control', '--parent-pid', '1', '--lease', '/tmp/x.lease', '--exec', 'sh']
+    ],
+    ['extra sensors arguments', ['sensors', '--all']]
   ])('rejects %s with exit code 2', (_label, args) => {
     expect(runSync(args)).toBe(FAN_CONTROL_HELPER_EXIT_CODES.invalidArgs)
   })
 
-  it('refuses a lease that is a symlink, since the real hold writes it as root', () => {
+  it('rejects the removed legacy hold even with a valid lease', () => {
+    const lease = tempLease()
+    const parent = spawnParent()
+    const result = spawnSync(
+      HELPER,
+      ['hold', '--parent-pid', String(parent.pid), '--lease', lease, '--dry-run'],
+      { stdio: 'ignore', timeout: 1500 }
+    )
+    expect(result.status).toBe(FAN_CONTROL_HELPER_EXIT_CODES.invalidArgs)
+  })
+
+  it('refuses a lease that is a symlink, since the real control session writes it as root', () => {
     const lease = tempLease()
     const link = `${lease}.link`
     symlinkSync(lease, link)
     expect(
-      runSync(['hold', '--parent-pid', String(process.pid), '--lease', link, '--dry-run'])
+      runSync(['control', '--parent-pid', String(process.pid), '--lease', link, '--dry-run'])
     ).toBe(FAN_CONTROL_HELPER_EXIT_CODES.invalidArgs)
   })
 })

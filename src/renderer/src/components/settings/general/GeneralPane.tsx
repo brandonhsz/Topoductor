@@ -24,6 +24,8 @@ import { useTranslate } from '@/i18n/use-translate'
 import { DefaultWindowsProjectRuntimeSetting } from './project-runtime/DefaultWindowsProjectRuntimeSetting'
 import { defaultScopeHost } from '@/runtime/hosts/selection/default-creation-host'
 import { SettingsGroup } from '../section-layout/SettingsGroup'
+import { FanSmartModeSetting } from './FanSmartModeSetting'
+import { getGeneralFanSearchEntries } from './general-fan-search'
 
 type GeneralSearchEntry = ReturnType<typeof getGeneralNavigationSearchEntries>[number]
 
@@ -256,6 +258,10 @@ export function GeneralPane({
         wslAvailable={wslAvailable}
         wslCapabilitiesLoading={wslCapabilitiesLoading}
       />
+    ) : null,
+    getDesktopPlatformFromUserAgent(navigator.userAgent) === 'darwin' &&
+    matchesSettingsSearch(searchQuery, getGeneralFanSearchEntries()) ? (
+      <FanSmartModeSetting key="fans" settings={settings} updateSettings={updateSettings} />
     ) : null,
     matchesSettingsSearch(searchQuery, getGeneralUpdateSearchEntries()) ? (
       <GeneralUpdateSettingsSection key="updates" />

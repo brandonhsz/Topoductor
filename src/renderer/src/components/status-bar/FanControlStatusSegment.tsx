@@ -1,34 +1,34 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Fan } from 'lucide-react'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { isPairedWebClientWindow } from '@/lib/desktop-window-chrome'
 import { installWindowVisibilityInterval } from '@/lib/window-visibility-interval'
-import { uiNumberFormat } from '@/i18n/ui-intl-formatters'
-import { useTranslate, type Translate } from '@/i18n/use-translate'
+import { cn } from '@/lib/utils'
+import { useTranslate } from '@/i18n/use-translate'
 import type { PreloadApi } from '../../../../preload/api-types'
 import type {
   FanControlApi,
   FanControlError,
   FanControlMode,
-  FanControlStatus
+  FanControlSetResult,
+  FanControlStatus,
+  FanCurve,
+  FanFeedbackReply,
+  SupportedFanControlStatus,
+  ThermalSample
 } from '../../../../shared/fan-control-contract'
+import { FanControlPanel, fanModeLabel, type FanControlPanelHandlers } from './FanControlPanel'
+import { FanFeedbackPrompt } from './FanFeedbackPrompt'
 import { STATUS_BAR_CONTEXT_MENU_EXEMPT_PROPS } from './status-bar-context-menu-policy'
 
-export type SupportedFanControlStatus = Extract<FanControlStatus, { supported: true }>
+export type { SupportedFanControlStatus }
 
-// Intl formatter caches key on option identity, so this must be a module constant.
-const RPM_FORMAT: Intl.NumberFormatOptions = { maximumFractionDigits: 0 }
-// Live RPM only while the menu is open; the interval pauses with the window.
+// Live readings only while the panel is open; the interval pauses with the window.
 const FAN_READING_REFRESH_MS = 2_000
+// Matches the ten minutes of history main keeps.
+const HISTORY_WINDOW_MS = 10 * 60_000
+const MIN_SAMPLE_GAP_MS = 1_000
 
 function fanControlBridge(): FanControlApi | undefined {
   // Paired web clients expose a partial bridge without fan control.
@@ -36,159 +36,168 @@ function fanControlBridge(): FanControlApi | undefined {
   return api?.fanControl
 }
 
-function modeLabel(mode: FanControlMode, t: Translate): string {
-  return mode === 'max'
-    ? t('auto.components.status.bar.FanControlStatusSegment.max', 'Max speed')
-    : t('auto.components.status.bar.FanControlStatusSegment.auto', 'Automatic')
-}
-
-function errorNotice(error: FanControlError, t: Translate): string {
-  switch (error.kind) {
-    case 'auth-cancelled':
-      return t(
-        'auto.components.status.bar.FanControlStatusSegment.authCancelled',
-        'Permission cancelled — fans stay automatic.'
-      )
-    case 'hold-exited':
-      return t(
-        'auto.components.status.bar.FanControlStatusSegment.holdExited',
-        'Max speed stopped — fans are back to automatic.'
-      )
-    case 'helper-failed':
-      return t(
-        'auto.components.status.bar.FanControlStatusSegment.helperFailed',
-        'Could not change fan speed.'
-      )
+// A fans-only reading would start the RPM lines before the temperature lines.
+function liveSample(status: SupportedFanControlStatus, at: number): ThermalSample | null {
+  const { chipC, palmrestC, blendC } = status.thermal
+  if (chipC === null && palmrestC === null && blendC === null) {
+    return null
   }
+  return { ...status.thermal, at, fanRpm: status.fans.map((fan) => fan.rpm) }
 }
 
-export function FanControlMenuView({
+function appendLiveSample(history: ThermalSample[], sample: ThermalSample | null): ThermalSample[] {
+  const last = history.at(-1)
+  if (!sample || (last && sample.at - last.at < MIN_SAMPLE_GAP_MS)) {
+    return history
+  }
+  const since = sample.at - HISTORY_WINDOW_MS
+  return [...history.filter((s) => s.at >= since), sample]
+}
+
+export function FanControlPanelView({
   status,
+  history,
   iconOnly,
   notice,
+  answering,
+  open,
   defaultOpen,
+  onOpenChange,
   onSelectMode,
-  onOpenChange
-}: {
+  onCurveChange,
+  onManualRpm,
+  onDismissPaused,
+  onAnswerFeedback
+}: FanControlPanelHandlers & {
+  onAnswerFeedback: (reply: FanFeedbackReply) => void
   status: SupportedFanControlStatus
+  history: ThermalSample[]
   iconOnly: boolean
   notice: FanControlError | null
+  answering: boolean
+  open?: boolean
   defaultOpen?: boolean
-  onSelectMode: (mode: FanControlMode) => void
   onOpenChange?: (open: boolean) => void
 }): React.JSX.Element {
   const t = useTranslate()
-  const isMax = status.mode === 'max'
+  const [panelOpenInner, setPanelOpenInner] = useState(defaultOpen ?? false)
+  const panelOpen = open ?? panelOpenInner
+  const panelRef = useRef<HTMLDivElement>(null)
+  const handleOpenChange = (next: boolean): void => {
+    setPanelOpenInner(next)
+    onOpenChange?.(next)
+  }
+  const isActive = status.mode !== 'auto'
   const title = t('auto.components.status.bar.FanControlStatusSegment.title', 'Fan speed')
-  const currentLabel = modeLabel(status.mode, t)
+  const currentLabel = fanModeLabel(status.mode, t)
+  const statusText = status.pausedMode
+    ? t(
+        'auto.components.status.bar.FanControlStatusSegment.pausedStatus',
+        '{{status}}, {{mode}} paused',
+        { status: currentLabel, mode: fanModeLabel(status.pausedMode, t) }
+      )
+    : currentLabel
   const ariaLabel = t(
     'auto.components.status.bar.FanControlStatusSegment.ariaLabel',
     '{{title}}, {{status}}',
-    { title, status: currentLabel }
+    { title, status: statusText }
   )
-  const shownError = notice ?? status.lastError ?? null
-  const rpmFormat = uiNumberFormat(RPM_FORMAT)
+  const prompt = status.feedbackPrompt
+
+  const answerPrompt = prompt ? (
+    <FanFeedbackPrompt prompt={prompt} pending={answering} onAnswer={onAnswerFeedback} />
+  ) : null
 
   return (
-    <DropdownMenu modal={false} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
+    // The question floats on its own while the panel is closed; with the panel open it moves inside.
+    <Popover open={prompt !== null && !panelOpen}>
+      <PopoverAnchor asChild>
+        <span className="inline-flex">
+          <Popover open={panelOpen} onOpenChange={handleOpenChange}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    {...STATUS_BAR_CONTEXT_MENU_EXEMPT_PROPS}
+                    data-fan-mode={status.mode}
+                    className="inline-flex cursor-pointer items-center gap-1 rounded px-1 py-0.5 text-muted-foreground transition-colors hover:bg-accent/70 hover:text-foreground"
+                    aria-label={ariaLabel}
+                  >
+                    <Fan
+                      className={cn(
+                        'size-3',
+                        isActive && 'text-foreground',
+                        status.pending && 'motion-safe:animate-spin'
+                      )}
+                    />
+                    {!iconOnly ? (
+                      <span className="text-2xs font-medium">{currentLabel}</span>
+                    ) : null}
+                    <span
+                      aria-hidden
+                      className={cn(
+                        'size-1.5 rounded-full',
+                        isActive
+                          ? 'bg-foreground'
+                          : status.pausedMode
+                            ? 'border border-foreground'
+                            : 'bg-muted-foreground/40'
+                      )}
+                    />
+                  </button>
+                </PopoverTrigger>
+              </TooltipTrigger>
+              <TooltipContent side="top" sideOffset={6}>
+                {ariaLabel}
+              </TooltipContent>
+            </Tooltip>
+            <PopoverContent
               {...STATUS_BAR_CONTEXT_MENU_EXEMPT_PROPS}
-              data-fan-mode={status.mode}
-              className="inline-flex cursor-pointer items-center gap-1 rounded px-1 py-0.5 text-muted-foreground transition-colors hover:bg-accent/70 hover:text-foreground"
-              aria-label={ariaLabel}
+              side="top"
+              align="end"
+              sideOffset={8}
+              wheelScroll
+              ref={panelRef}
+              tabIndex={-1}
+              aria-label={title}
+              className="w-[360px]"
+              // Land on the panel itself so Tab reaches every control without a stray focus ring.
+              onOpenAutoFocus={(event) => {
+                event.preventDefault()
+                panelRef.current?.focus()
+              }}
             >
-              <Fan
-                className={`size-3 ${isMax ? 'text-foreground' : ''} ${
-                  status.pending ? 'motion-safe:animate-spin' : ''
-                }`}
-              />
-              {!iconOnly ? <span className="text-[11px] font-medium">{currentLabel}</span> : null}
-              <span
-                aria-hidden
-                className={`size-1.5 rounded-full ${
-                  isMax ? 'bg-foreground' : 'bg-muted-foreground/40'
-                }`}
-              />
-            </button>
-          </DropdownMenuTrigger>
-        </TooltipTrigger>
-        <TooltipContent side="top" sideOffset={6}>
-          {ariaLabel}
-        </TooltipContent>
-      </Tooltip>
-      <DropdownMenuContent
+              <div className="flex max-h-[var(--radix-popover-content-available-height)] flex-col gap-3 overflow-y-auto p-3 scrollbar-sleek">
+                <FanControlPanel
+                  status={status}
+                  history={history}
+                  notice={notice}
+                  answerPrompt={answerPrompt}
+                  onSelectMode={onSelectMode}
+                  onCurveChange={onCurveChange}
+                  onManualRpm={onManualRpm}
+                  onDismissPaused={onDismissPaused}
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
+        </span>
+      </PopoverAnchor>
+      <PopoverContent
         {...STATUS_BAR_CONTEXT_MENU_EXEMPT_PROPS}
         side="top"
         align="end"
         sideOffset={8}
+        aria-label={title}
         className="w-72"
+        // A question must not pull focus from the terminal or editor.
+        onOpenAutoFocus={(event) => event.preventDefault()}
+        onCloseAutoFocus={(event) => event.preventDefault()}
       >
-        <DropdownMenuLabel>
-          <span className="flex items-center justify-between gap-3">
-            <span>{title}</span>
-            <span className="font-normal text-muted-foreground">{currentLabel}</span>
-          </span>
-        </DropdownMenuLabel>
-        {status.fans.length > 0 ? (
-          <ul className="px-2 pb-1.5 text-[11px] text-muted-foreground">
-            {status.fans.map((fan) => (
-              <li key={fan.index} className="flex items-center justify-between gap-3 py-0.5">
-                <span>
-                  {t('auto.components.status.bar.FanControlStatusSegment.fanName', 'Fan {{n}}', {
-                    n: fan.index + 1
-                  })}
-                </span>
-                <span className="tabular-nums text-foreground">
-                  {t('auto.components.status.bar.FanControlStatusSegment.rpm', '{{rpm}} RPM', {
-                    rpm: rpmFormat.format(fan.rpm)
-                  })}
-                </span>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup
-          value={status.mode}
-          onValueChange={(value) => onSelectMode(value === 'max' ? 'max' : 'auto')}
-        >
-          <DropdownMenuRadioItem value="auto" disabled={status.pending}>
-            <span className="flex flex-col">
-              <span>{modeLabel('auto', t)}</span>
-              <span className="text-[11px] font-normal text-muted-foreground">
-                {t(
-                  'auto.components.status.bar.FanControlStatusSegment.autoDescription',
-                  'macOS adjusts fan speed to temperature'
-                )}
-              </span>
-            </span>
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="max" disabled={status.pending}>
-            <span className="flex flex-col">
-              <span>{modeLabel('max', t)}</span>
-              <span className="text-[11px] font-normal text-muted-foreground">
-                {t(
-                  'auto.components.status.bar.FanControlStatusSegment.maxDescription',
-                  'Run all fans at full speed. Needs your administrator password; fans return to automatic when Topo closes.'
-                )}
-              </span>
-            </span>
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-        {shownError ? (
-          <>
-            <DropdownMenuSeparator />
-            <p role="status" className="px-2 py-1.5 text-[11px] text-muted-foreground">
-              {errorNotice(shownError, t)}
-            </p>
-          </>
-        ) : null}
-      </DropdownMenuContent>
-    </DropdownMenu>
+        <div className="p-3">{answerPrompt}</div>
+      </PopoverContent>
+    </Popover>
   )
 }
 
@@ -199,7 +208,12 @@ export function FanControlStatusSegment({
 }): React.JSX.Element | null {
   const [status, setStatus] = useState<FanControlStatus | null>(null)
   const [notice, setNotice] = useState<FanControlError | null>(null)
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [panelOpen, setPanelOpen] = useState(false)
+  const [history, setHistory] = useState<ThermalSample[]>([])
+  const [draftCurve, setDraftCurve] = useState<FanCurve | null>(null)
+  const [answering, setAnswering] = useState(false)
+  const panelOpenRef = useRef(false)
+  const curveRequestRef = useRef(0)
 
   useEffect(() => {
     const api = fanControlBridge()
@@ -207,15 +221,23 @@ export function FanControlStatusSegment({
       return
     }
     let mounted = true
+    let pushed = false
     const unsubscribe = api.onChanged((next) => {
-      if (mounted) {
-        setStatus(next)
+      if (!mounted) {
+        return
+      }
+      pushed = true
+      setStatus(next)
+      if (panelOpenRef.current && next.supported) {
+        const sample = liveSample(next, Date.now())
+        setHistory((prev) => appendLiveSample(prev, sample))
       }
     })
     void api
       .getStatus()
       .then((next) => {
-        if (mounted) {
+        // A pushed status is newer than this initial answer.
+        if (mounted && !pushed) {
           setStatus(next)
         }
       })
@@ -228,53 +250,154 @@ export function FanControlStatusSegment({
 
   useEffect(() => {
     const api = fanControlBridge()
-    if (!menuOpen || !api) {
+    if (!panelOpen || !api) {
       return
     }
+    let active = true
     api.setMonitoring(true)
     const stop = installWindowVisibilityInterval({
       run: () => api.setMonitoring(true),
       intervalMs: FAN_READING_REFRESH_MS
     })
+    void api
+      .getHistory()
+      .then((samples) => {
+        if (!active) {
+          return
+        }
+        const lastAt = samples.at(-1)?.at ?? 0
+        // Keep live samples that arrived while history was loading.
+        setHistory((prev) => [...samples, ...prev.filter((s) => s.at > lastAt)])
+      })
+      .catch(() => {})
     return () => {
+      active = false
       stop()
       api.setMonitoring(false)
     }
-  }, [menuOpen])
+  }, [panelOpen])
 
-  const handleOpenChange = useCallback((open: boolean) => {
-    if (open) {
-      setNotice(null)
-    }
-    setMenuOpen(open)
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      panelOpenRef.current = open
+      if (open) {
+        setNotice(null)
+        setHistory(status?.supported ? appendLiveSample([], liveSample(status, Date.now())) : [])
+      }
+      setPanelOpen(open)
+    },
+    [status]
+  )
+
+  const applyResult = useCallback((result: FanControlSetResult) => {
+    setStatus(result.status)
+    setNotice(result.ok ? null : result.error)
   }, [])
 
-  const handleSelectMode = useCallback((mode: FanControlMode) => {
+  const handleSelectMode = useCallback(
+    (mode: FanControlMode) => {
+      const api = fanControlBridge()
+      if (!api) {
+        return
+      }
+      setNotice(null)
+      void api
+        .setMode(mode)
+        .then(applyResult)
+        .catch(() => setNotice({ kind: 'helper-failed', detail: '' }))
+    },
+    [applyResult]
+  )
+
+  const handleCurveChange = useCallback(
+    (curve: FanCurve) => {
+      const api = fanControlBridge()
+      if (!api) {
+        return
+      }
+      curveRequestRef.current += 1
+      const request = curveRequestRef.current
+      // Keeps a dragged point under the pointer while the save round-trips.
+      setDraftCurve(curve)
+      const settle = (): void => {
+        if (request === curveRequestRef.current) {
+          setDraftCurve(null)
+        }
+      }
+      void api
+        .setCurve(curve)
+        .then((result) => {
+          applyResult(result)
+          settle()
+        })
+        .catch(() => {
+          setNotice({ kind: 'invalid-curve', detail: '' })
+          settle()
+        })
+    },
+    [applyResult]
+  )
+
+  const handleManualRpm = useCallback(
+    (index: number, rpm: number) => {
+      const api = fanControlBridge()
+      if (!api) {
+        return
+      }
+      void api
+        .setManualRpm(index, rpm)
+        .then(applyResult)
+        .catch(() => setNotice({ kind: 'helper-failed', detail: '' }))
+    },
+    [applyResult]
+  )
+
+  const handleDismissPaused = useCallback(() => {
     const api = fanControlBridge()
     if (!api) {
       return
     }
-    setNotice(null)
     void api
-      .setMode(mode)
-      .then((result) => {
-        setStatus(result.status)
-        setNotice(result.ok ? null : result.error)
-      })
-      .catch(() => setNotice({ kind: 'helper-failed', detail: '' }))
+      .dismissPausedMode()
+      .then(setStatus)
+      .catch(() => {})
   }, [])
+
+  const promptId = status?.supported ? status.feedbackPrompt?.id : undefined
+  const handleAnswerFeedback = useCallback(
+    (reply: FanFeedbackReply) => {
+      const api = fanControlBridge()
+      if (!api || !promptId) {
+        return
+      }
+      setAnswering(true)
+      void api
+        .answerFeedback(promptId, reply)
+        .then(applyResult)
+        .catch(() => setNotice({ kind: 'helper-failed', detail: '' }))
+        .finally(() => setAnswering(false))
+    },
+    [applyResult, promptId]
+  )
 
   if (isPairedWebClientWindow() || !status?.supported) {
     return null
   }
 
   return (
-    <FanControlMenuView
-      status={status}
+    <FanControlPanelView
+      status={draftCurve ? { ...status, curve: draftCurve } : status}
+      history={history}
       iconOnly={iconOnly}
       notice={notice}
-      onSelectMode={handleSelectMode}
+      answering={answering}
+      open={panelOpen}
       onOpenChange={handleOpenChange}
+      onSelectMode={handleSelectMode}
+      onCurveChange={handleCurveChange}
+      onManualRpm={handleManualRpm}
+      onDismissPaused={handleDismissPaused}
+      onAnswerFeedback={handleAnswerFeedback}
     />
   )
 }
