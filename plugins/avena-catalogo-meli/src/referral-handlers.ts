@@ -33,7 +33,7 @@ export function registerReferralHandlers(orca: OrcaWorkerApi, context: CatalogCo
     for (const [target, proposal] of proposals) {
       proposals.set(target, {
         ...proposal,
-        image: proposal.image ? await context.fetchImage(proposal.image) : null
+        image: proposal.image ? await context.fetchImage(proposal.image, 'preview') : null
       })
     }
     await context.recordAttempts(
@@ -150,7 +150,7 @@ export function registerReferralHandlers(orca: OrcaWorkerApi, context: CatalogCo
       const candidates = await Promise.all(
         results.map(async ({ imageUrl, ...result }) => ({
           ...result,
-          image: imageUrl ? await context.fetchImage(imageUrl) : null
+          image: imageUrl ? await context.fetchImage(imageUrl, 'thumb') : null
         }))
       )
       return {

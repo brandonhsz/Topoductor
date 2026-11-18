@@ -77,8 +77,14 @@ export class MeliBrowser {
     if (tab && tabId) {
       return { browserPageId: tabId, url: text(tab.url) ?? '' }
     }
+    // The worker runs outside any workspace, so `--worktree active` cannot resolve: name one.
+    const worktrees = records(field(await this.run(['worktree', 'list'], 20_000), 'worktrees'))
+    const worktreeId = text(worktrees[0]?.id)
+    if (!worktreeId) {
+      throw new MeliSessionError('Abre un workspace en Topo para poder usar MercadoLibre.')
+    }
     const created = await this.run(
-      ['tab', 'create', '--url', LINKBUILDER_URL, '--worktree', 'active'],
+      ['tab', 'create', '--url', LINKBUILDER_URL, '--worktree', `id:${worktreeId}`],
       30_000
     )
     const createdId = text(field(created, 'browserPageId'))
