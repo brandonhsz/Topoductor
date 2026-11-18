@@ -689,7 +689,10 @@ describe('FanControlService lifecycle', () => {
     const harness = createHarness()
     await harness.service.setMode('max')
     harness.runHelper.mockResolvedValue({ code: 0, stdout: TWO_FANS, stderr: '' })
-
+    // Past the write grace period, two auto readings in a row mean the root loop let go.
+    harness.clock.now += 3_000
+    await harness.service.refresh()
+    harness.clock.now += TICK_MS
     const status = expectSupported(await harness.service.refresh())
 
     expect(status.mode).toBe('auto')

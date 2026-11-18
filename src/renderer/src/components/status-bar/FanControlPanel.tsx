@@ -185,7 +185,11 @@ function FanCurveSection({
           ? t(
               'auto.components.status.bar.FanControlStatusSegment.smartLearned',
               'Learned from {{count}} answers. It never runs fans slower than macOS would.',
-              { count: status.smart.answers }
+              {
+                count: status.smart.answers,
+                defaultValue_one:
+                  'Learned from {{count}} answer. It never runs fans slower than macOS would.'
+              }
             )
           : t(
               'auto.components.status.bar.FanControlStatusSegment.smartStarting',

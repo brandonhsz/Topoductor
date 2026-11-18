@@ -13,7 +13,14 @@ import {
 import { useAppStore } from '@/store/index'
 import { matchesSettingsSearch } from '../search/settings-search'
 import { getGeneralPaneSearchEntries } from './general-search'
+import type { SettingsSearchEntry } from '../search/settings-search'
 import { FanSmartModeSetting } from './FanSmartModeSetting'
+
+function fanEntries(entries: SettingsSearchEntry[]): SettingsSearchEntry[] {
+  return entries.filter(
+    (entry) => matchesSettingsSearch('fan', entry) && matchesSettingsSearch('smart', entry)
+  )
+}
 
 type ConfirmOptions = { title: string; confirmVariant?: string }
 const confirmDialog = vi.hoisted(() => ({
@@ -174,9 +181,21 @@ describe('FanSmartModeSetting search', () => {
   })
 
   it('is listed in the General pane search entries', () => {
-    const fanEntries = getGeneralPaneSearchEntries().filter(
-      (entry) => matchesSettingsSearch('fan', entry) && matchesSettingsSearch('smart', entry)
-    )
-    expect(fanEntries.length).toBeGreaterThan(0)
+    expect(fanEntries(getGeneralPaneSearchEntries())).not.toHaveLength(0)
+  })
+
+  it('lists no fan entries off macOS, where the row renders nothing', async () => {
+    expect(fanEntries(getGeneralPaneSearchEntries({ includeFans: false }))).toHaveLength(0)
+    const { buildSettingsNavigationMetadata } =
+      await import('@/hooks/useSettingsNavigationMetadata')
+    const generalEntries = (isMac: boolean): SettingsSearchEntry[] =>
+      buildSettingsNavigationMetadata({
+        isMac,
+        isWindows: !isMac,
+        isWebClient: false,
+        repos: []
+      }).find((section) => section.id === 'general')?.searchEntries ?? []
+    expect(fanEntries(generalEntries(false))).toHaveLength(0)
+    expect(fanEntries(generalEntries(true))).not.toHaveLength(0)
   })
 })

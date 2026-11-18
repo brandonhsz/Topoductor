@@ -232,6 +232,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup()
   vi.unstubAllGlobals()
+  vi.restoreAllMocks()
 })
 
 describe('FanControlStatusSegment visibility', () => {
@@ -562,5 +563,61 @@ describe('FanControlStatusSegment feedback prompt', () => {
     await mount()
     await openPanel()
     expect(screen.queryByRole('button', { name: /^warm$/i })).toBeNull()
+  })
+})
+
+describe('FanControlStatusSegment status ordering', () => {
+  it('keeps a pushed status when the initial getStatus answers later with an older one', async () => {
+    const api = stubApi(AUTO)
+    let answer: (status: FanControlStatus) => void = () => {}
+    vi.mocked(api.getStatus).mockImplementation(
+      () =>
+        new Promise<FanControlStatus>((resolve) => {
+          answer = resolve
+        })
+    )
+    await mount()
+    act(() => api.emit(MAX))
+    await act(async () => {
+      answer(AUTO)
+    })
+    expect(trigger().getAttribute('data-fan-mode')).toBe('max')
+  })
+})
+
+describe('FanControlStatusSegment live history', () => {
+  function firstX(container: HTMLElement, series: string): string | undefined {
+    const d = container.querySelector(`[data-series="${series}"]`)?.getAttribute('d') ?? ''
+    return /^M([\d.]+)/.exec(d)?.[1]
+  }
+
+  it('starts temperature and RPM lines together when the first status had no temperatures', async () => {
+    const noTemps: SupportedFanControlStatus = {
+      ...AUTO,
+      thermal: { chipC: null, palmrestC: null, blendC: null, palmrestAvailable: true }
+    }
+    const api = stubApi(noTemps)
+    const now = vi.spyOn(Date, 'now').mockReturnValue(1_000_000)
+    await mount()
+    const panel = await openPanel()
+    now.mockReturnValue(1_002_000)
+    act(() => api.emit(AUTO))
+    now.mockReturnValue(1_004_000)
+    act(() => api.emit({ ...AUTO, thermal: { ...AUTO.thermal, chipC: 75 } }))
+
+    expect(firstX(panel, 'chip')).toBeDefined()
+    expect(firstX(panel, 'chip')).toBe(firstX(panel, 'fan-0'))
+  })
+})
+
+describe('FanControlStatusSegment smart learning count', () => {
+  it('uses the singular for one answer and the plural otherwise', async () => {
+    const smart = { ...AUTO.smart, answers: 1 }
+    const api = stubApi({ ...AUTO, mode: 'smart', smart })
+    await mount()
+    const panel = await openPanel()
+    expect(panel.textContent).toMatch(/Learned from 1 answer\./)
+    act(() => api.emit({ ...AUTO, mode: 'smart', smart: { ...smart, answers: 4 } }))
+    expect(panel.textContent).toMatch(/Learned from 4 answers\./)
   })
 })

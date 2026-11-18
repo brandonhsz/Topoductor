@@ -259,6 +259,7 @@ export function GeneralPane({
         wslCapabilitiesLoading={wslCapabilitiesLoading}
       />
     ) : null,
+    getDesktopPlatformFromUserAgent(navigator.userAgent) === 'darwin' &&
     matchesSettingsSearch(searchQuery, getGeneralFanSearchEntries()) ? (
       <FanSmartModeSetting key="fans" settings={settings} updateSettings={updateSettings} />
     ) : null,

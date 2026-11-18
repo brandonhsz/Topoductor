@@ -133,7 +133,7 @@ export function buildCapabilitySettingsSections(
 }
 
 export function buildSetupSettingsSections(
-  { isLocalWindowsHost, isWebClient }: SettingsNavigationBuildOptions,
+  { isMac, isLocalWindowsHost, isWebClient }: SettingsNavigationBuildOptions,
   t: Translate = translate
 ): SettingsNavSection[] {
   const showDesktopOnlySettings = !isWebClient
@@ -185,7 +185,10 @@ export function buildSetupSettingsSections(
         'Workspace defaults, app setup, and maintenance.'
       ),
       icon: SlidersHorizontal,
-      searchEntries: getGeneralPaneSearchEntries({ includeProjectRuntime: isLocalWindowsHost }),
+      searchEntries: getGeneralPaneSearchEntries({
+        includeProjectRuntime: isLocalWindowsHost,
+        includeFans: isMac && !isWebClient
+      }),
       group: 'setup'
     },
     {

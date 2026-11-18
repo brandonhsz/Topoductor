@@ -459,22 +459,22 @@ private struct FanLimits {
   let maxRpm: Double
 }
 
-/// Owns the fans for the session: remembers each original mode so every exit path hands them back.
+/// Owns the fans for the session; every exit path hands them back to macOS (FxMd 0).
 final class FanControl {
   private let smc: Smc
-  private var originalModes: [Int: UInt8] = [:]
+  private var fanIndexes: [Int] = []
   private var limits: [Int: FanLimits] = [:]
   private var applied: [Int: FanTarget] = [:]
 
   init(smc: Smc) { self.smc = smc }
 
-  /// Records the original modes and hands every fan to macOS; the write doubles as a root check.
+  /// Hands every fan to macOS; the write doubles as a root check.
   func begin() -> Bool {
     let count = fanCount(smc)
     guard count > 0 else { return false }
     for index in 0..<count {
-      guard let mode = smc.readNumber(modeKey(index)) else { return false }
-      originalModes[index] = UInt8(clamping: Int(mode))
+      guard smc.readNumber(modeKey(index)) != nil else { return false }
+      fanIndexes.append(index)
       if let minRpm = smc.readNumber("F\(index)Mn"), let maxRpm = smc.readNumber("F\(index)Mx"),
         minRpm > 0, maxRpm >= minRpm
       {
@@ -497,7 +497,7 @@ final class FanControl {
   @discardableResult
   func apply(_ targets: [Double?], force: Bool = false) -> Bool {
     var ok = true
-    for index in originalModes.keys.sorted() {
+    for index in fanIndexes {
       let next = target(for: index, in: targets)
       guard force || applied[index] != next else { continue }
       let written: Bool
@@ -517,11 +517,12 @@ final class FanControl {
     return ok
   }
 
+  /// Always auto, never the mode found at begin(): that may be a crashed session's stale manual.
   func restore() {
-    for (index, mode) in originalModes {
-      _ = smc.write(modeKey(index), [mode])
+    for index in fanIndexes {
+      _ = smc.write(modeKey(index), [0])
     }
-    originalModes.removeAll()
+    fanIndexes.removeAll()
   }
 }
 

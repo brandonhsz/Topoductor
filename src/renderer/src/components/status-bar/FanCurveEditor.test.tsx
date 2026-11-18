@@ -236,6 +236,54 @@ describe('FanCurveEditor dragging', () => {
   })
 })
 
+describe('FanCurveEditor drag commit', () => {
+  it('previews a drag locally and commits one curve on pointer up', () => {
+    const onChange = curveChange()
+    render(<Controlled initial={CURVE} onChange={onChange} />)
+    const target = points()[2]
+    act(() => {
+      fireEvent.pointerDown(target, { pointerId: 1, button: 0, clientX: 0, clientY: 0 })
+    })
+    for (const fraction of [0.8, 0.85, 0.9, 0.95]) {
+      act(() => {
+        fireEvent.pointerMove(target, {
+          pointerId: 1,
+          buttons: 1,
+          clientX: PLOT_RECT.width * fraction,
+          clientY: PLOT_RECT.height * 0.05
+        })
+      })
+    }
+    expect(onChange).not.toHaveBeenCalled()
+    expect(Number(points()[2].getAttribute('aria-valuenow'))).toBeGreaterThan(70)
+
+    act(() => {
+      fireEvent.pointerUp(target, { pointerId: 1, button: 0 })
+    })
+
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(lastCurve(onChange).points[2].tempC).toBeGreaterThan(80)
+    expectValidCurve(lastCurve(onChange))
+  })
+
+  it('drops the preview without committing when the pointer is cancelled', () => {
+    const onChange = curveChange()
+    render(<Controlled initial={CURVE} onChange={onChange} />)
+    const target = points()[2]
+    act(() => {
+      fireEvent.pointerDown(target, { pointerId: 1, button: 0, clientX: 0, clientY: 0 })
+    })
+    act(() => {
+      fireEvent.pointerMove(target, { pointerId: 1, buttons: 1, clientX: 380, clientY: 10 })
+    })
+    act(() => {
+      fireEvent.pointerCancel(target, { pointerId: 1 })
+    })
+    expect(onChange).not.toHaveBeenCalled()
+    expect(points()[2].getAttribute('aria-valuenow')).toBe('70')
+  })
+})
+
 describe('FanCurveEditor now marker', () => {
   it('marks where the Mac is now on the selected source', () => {
     const { rerender } = render(

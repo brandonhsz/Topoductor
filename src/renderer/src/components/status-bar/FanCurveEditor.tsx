@@ -111,6 +111,9 @@ export function FanCurveEditor({
   const tempFormat = uiNumberFormat(TEMP_FORMAT)
   const plotRef = useRef<SVGRectElement>(null)
   const draggingRef = useRef<number | null>(null)
+  // A drag previews locally and commits once on release, so main is not re-saved per pointermove.
+  const dragDraftRef = useRef<FanCurve | null>(null)
+  const [dragDraft, setDragDraft] = useState<FanCurve | null>(null)
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const sourceLabelId = useId()
 
@@ -119,14 +122,14 @@ export function FanCurveEditor({
       value: tempFormat.format(value)
     })
 
-  const movePoint = (index: number, wanted: FanCurvePoint): void => {
-    const points = curve.points.slice()
+  const movedCurve = (base: FanCurve, index: number, wanted: FanCurvePoint): FanCurve | null => {
+    const points = base.points.slice()
     const moved = clampPoint(points, index, wanted)
     if (moved.tempC === points[index].tempC && moved.percent === points[index].percent) {
-      return
+      return null
     }
     points[index] = moved
-    onChange({ ...curve, points })
+    return { ...base, points }
   }
 
   const handlePointerMove = (event: React.PointerEvent<SVGSVGElement>): void => {
@@ -138,22 +141,33 @@ export function FanCurveEditor({
     const rect = plot.getBoundingClientRect()
     const fx = (event.clientX - rect.left) / (rect.width || 1)
     const fy = (event.clientY - rect.top) / (rect.height || 1)
-    movePoint(index, {
+    const next = movedCurve(dragDraftRef.current ?? curve, index, {
       tempC: FAN_CURVE_LIMITS.minTempC + fx * TEMP_SPAN,
       percent: FAN_CURVE_LIMITS.minPercent + (1 - fy) * PERCENT_SPAN
     })
+    if (next) {
+      dragDraftRef.current = next
+      setDragDraft(next)
+    }
   }
 
-  const endDrag = (): void => {
+  const endDrag = (commit: boolean): void => {
+    const draft = dragDraftRef.current
     draggingRef.current = null
+    dragDraftRef.current = null
+    setDragDraft(null)
+    if (commit && draft) {
+      onChange(draft)
+    }
   }
 
-  const shownSource = effectiveTemperatureSource(curve.source, thermal.palmrestAvailable)
+  const shown = dragDraft ?? curve
+  const shownSource = effectiveTemperatureSource(shown.source, thermal.palmrestAvailable)
   const nowC = readingForSource(shownSource, thermal)
-  const nowPercent = nowC === null ? null : percentAt(curve.points, nowC)
-  const first = curve.points[0]
-  const last = curve.points.at(-1)
-  const active = activeIndex === null ? undefined : curve.points[activeIndex]
+  const nowPercent = nowC === null ? null : percentAt(shown.points, nowC)
+  const first = shown.points[0]
+  const last = shown.points.at(-1)
+  const active = activeIndex === null ? undefined : shown.points[activeIndex]
 
   return (
     <div className="flex flex-col gap-2">
@@ -194,8 +208,8 @@ export function FanCurveEditor({
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         className={cn('block h-auto w-full touch-none select-none', disabled && 'opacity-60')}
         onPointerMove={handlePointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
+        onPointerUp={() => endDrag(true)}
+        onPointerCancel={() => endDrag(false)}
       >
         <rect
           ref={plotRef}
@@ -256,7 +270,7 @@ export function FanCurveEditor({
         {first && last ? (
           <>
             <polygon
-              points={`${x(first.tempC)},${y(FAN_CURVE_LIMITS.minPercent)} ${polyline(curve.points)} ${PAD.left + PLOT_W},${y(last.percent)} ${PAD.left + PLOT_W},${y(FAN_CURVE_LIMITS.minPercent)}`}
+              points={`${x(first.tempC)},${y(FAN_CURVE_LIMITS.minPercent)} ${polyline(shown.points)} ${PAD.left + PLOT_W},${y(last.percent)} ${PAD.left + PLOT_W},${y(FAN_CURVE_LIMITS.minPercent)}`}
               className="fill-chart-2/10"
             />
             <line
@@ -282,7 +296,7 @@ export function FanCurveEditor({
         ) : null}
         <polyline
           data-series="curve"
-          points={polyline(curve.points)}
+          points={polyline(shown.points)}
           fill="none"
           strokeWidth={2}
           strokeLinejoin="round"
@@ -324,7 +338,7 @@ export function FanCurveEditor({
             ) : null}
           </g>
         ) : null}
-        {curve.points.map((point, index) => (
+        {shown.points.map((point, index) => (
           <g
             key={index}
             role="slider"
@@ -360,10 +374,13 @@ export function FanCurveEditor({
               }
               event.preventDefault()
               const step = event.shiftKey ? KEY_STEP_LARGE : KEY_STEP
-              movePoint(index, {
+              const next = movedCurve(curve, index, {
                 tempC: point.tempC + delta[0] * step,
                 percent: point.percent + delta[1] * step
               })
+              if (next) {
+                onChange(next)
+              }
             }}
           >
             <circle cx={x(point.tempC)} cy={y(point.percent)} r={11} className="fill-transparent" />

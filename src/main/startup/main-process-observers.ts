@@ -65,8 +65,8 @@ export function initializeMainProcessObservers(): void {
   )
   const fanControlService = getFanControlService(store)
   registerFanControlHandlers(fanControlService)
-  // The root hold also exits on parent death; releasing early restores auto before Topo is gone.
-  app.on('before-quit', () => fanControlService.releaseForQuit())
+  // will-quit, not before-quit: a vetoed quit must keep fan control alive. Parent death covers app.exit.
+  app.on('will-quit', () => fanControlService.releaseForQuit())
   subscribeSystemPowerLifecycle({
     onSuspend: () => void fanControlService.handleSuspend(),
     onResume: () => void fanControlService.handleResume()

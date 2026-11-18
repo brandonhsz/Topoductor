@@ -139,6 +139,7 @@ export class FanControlProfileStore {
   private readonly deps: FanControlProfileStoreDeps
   private loading: Promise<void> | null = null
   private writes: Promise<void> = Promise.resolve()
+  private queued: string | null = null
 
   constructor(deps: FanControlProfileStoreDeps) {
     this.deps = deps
@@ -167,10 +168,17 @@ export class FanControlProfileStore {
     return (raw === null ? null : parseFanControlProfile(raw)) ?? defaultFanControlProfile()
   }
 
-  /** Serialized tmp + rename so a crash mid-write never leaves a torn profile. */
+  /** Serialized tmp + rename so a crash mid-write never leaves a torn profile; a queued write takes the newest data. */
   private save(profile: FanControlProfile): Promise<void> {
-    const data = JSON.stringify(profile)
-    this.writes = this.writes.then(() => this.write(data))
+    const alreadyQueued = this.queued !== null
+    this.queued = JSON.stringify(profile)
+    if (!alreadyQueued) {
+      this.writes = this.writes.then(() => {
+        const data = this.queued ?? ''
+        this.queued = null
+        return this.write(data)
+      })
+    }
     return this.writes
   }
 

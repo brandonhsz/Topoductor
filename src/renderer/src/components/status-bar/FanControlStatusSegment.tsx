@@ -36,13 +36,18 @@ function fanControlBridge(): FanControlApi | undefined {
   return api?.fanControl
 }
 
-function liveSample(status: SupportedFanControlStatus, at: number): ThermalSample {
+// A fans-only reading would start the RPM lines before the temperature lines.
+function liveSample(status: SupportedFanControlStatus, at: number): ThermalSample | null {
+  const { chipC, palmrestC, blendC } = status.thermal
+  if (chipC === null && palmrestC === null && blendC === null) {
+    return null
+  }
   return { ...status.thermal, at, fanRpm: status.fans.map((fan) => fan.rpm) }
 }
 
-function appendLiveSample(history: ThermalSample[], sample: ThermalSample): ThermalSample[] {
+function appendLiveSample(history: ThermalSample[], sample: ThermalSample | null): ThermalSample[] {
   const last = history.at(-1)
-  if (last && sample.at - last.at < MIN_SAMPLE_GAP_MS) {
+  if (!sample || (last && sample.at - last.at < MIN_SAMPLE_GAP_MS)) {
     return history
   }
   const since = sample.at - HISTORY_WINDOW_MS
@@ -216,10 +221,12 @@ export function FanControlStatusSegment({
       return
     }
     let mounted = true
+    let pushed = false
     const unsubscribe = api.onChanged((next) => {
       if (!mounted) {
         return
       }
+      pushed = true
       setStatus(next)
       if (panelOpenRef.current && next.supported) {
         const sample = liveSample(next, Date.now())
@@ -229,7 +236,8 @@ export function FanControlStatusSegment({
     void api
       .getStatus()
       .then((next) => {
-        if (mounted) {
+        // A pushed status is newer than this initial answer.
+        if (mounted && !pushed) {
           setStatus(next)
         }
       })
@@ -274,7 +282,7 @@ export function FanControlStatusSegment({
       panelOpenRef.current = open
       if (open) {
         setNotice(null)
-        setHistory(status?.supported ? [liveSample(status, Date.now())] : [])
+        setHistory(status?.supported ? appendLiveSample([], liveSample(status, Date.now())) : [])
       }
       setPanelOpen(open)
     },

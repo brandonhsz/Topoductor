@@ -270,6 +270,8 @@ export const getGeneralUpdateSearchEntries = createLocalizedCatalog(() => [
 
 type GeneralPaneSearchOptions = {
   includeProjectRuntime?: boolean
+  /** Fan control exists only in the macOS desktop app; elsewhere its row renders nothing. */
+  includeFans?: boolean
 }
 
 export function getGeneralPaneSearchEntries(
@@ -281,7 +283,7 @@ export function getGeneralPaneSearchEntries(
     ...(options.includeProjectRuntime === false ? [] : getGeneralProjectRuntimeSearchEntries()),
     ...getGeneralEditorSearchEntries(),
     ...getGeneralCliSearchEntries(),
-    ...getGeneralFanSearchEntries(),
+    ...(options.includeFans === false ? [] : getGeneralFanSearchEntries()),
     ...getGeneralUpdateSearchEntries(),
     ...getGeneralSupportSearchEntries()
   ]

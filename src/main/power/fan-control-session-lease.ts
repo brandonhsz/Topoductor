@@ -27,13 +27,13 @@ export type FanControlLeaseDeps = {
 
 export type FanControlSessionOpening =
   | { kind: 'ready' }
-  | { kind: 'released' }
   | { kind: 'write-rejected' }
   | { kind: 'failed'; error: FanControlError }
 
 const LEASE_PENDING = 'pending'
 const READY_POLL_STEP_MS = 100
 const DEFAULT_READY_TIMEOUT_MS = 5_000
+const RELEASED_ERROR: FanControlError = { kind: 'helper-failed', detail: 'Topo is quitting' }
 
 function errorDetail(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
@@ -80,10 +80,17 @@ export class FanControlSessionLease {
   }
 
   private async openTracked(onPending: () => void): Promise<FanControlSessionOpening> {
+    if (this.isReleased()) {
+      return { kind: 'failed', error: RELEASED_ERROR }
+    }
     this.state = 'pending'
     onPending()
-    const opening = await this.open()
-    this.state = opening.kind === 'ready' && !this.isReleased() ? 'active' : 'none'
+    let opening = await this.open()
+    // Removing the lease is what tells a root session that started anyway to hand fans back.
+    if (opening.kind === 'ready' && this.isReleased()) {
+      opening = await this.fail(RELEASED_ERROR)
+    }
+    this.state = opening.kind === 'ready' ? 'active' : 'none'
     return opening
   }
 
@@ -111,7 +118,7 @@ export class FanControlSessionLease {
     }
     const signal = await this.awaitSignal()
     if (this.isReleased()) {
-      return { kind: 'released' }
+      return this.fail(RELEASED_ERROR)
     }
     if (signal === FAN_CONTROL_SESSION_WRITE_REJECTED_LINE) {
       await this.remove()
