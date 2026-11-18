@@ -1,7 +1,8 @@
-import { useEffect, useId, useState } from 'react'
+import { useId, useState } from 'react'
 import { Check, ChevronDown, Circle, CircleAlert, CircleSlash, Loader2, X } from 'lucide-react'
 import { useTranslate, type Translate } from '@/i18n/use-translate'
 import { cn } from '@/lib/utils'
+import { useNow } from '@/hooks/use-now'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { tuiAgentDisplayName } from '../../../../../shared/agent-launch/catalog/tui-agent-display-names'
@@ -83,14 +84,7 @@ const finished = (status: HarnessStepStatus): boolean => status === 'done' || st
 
 /** Minutes move while an agent works; nothing ticks once none does. */
 function useMinuteClock(fixed: number | undefined, ticking: boolean): number {
-  const [now, setNow] = useState(() => Date.now())
-  useEffect(() => {
-    if (fixed !== undefined || !ticking) {
-      return
-    }
-    const timer = setInterval(() => setNow(Date.now()), MINUTE_MS / 2)
-    return () => clearInterval(timer)
-  }, [fixed, ticking])
+  const now = useNow(MINUTE_MS / 2, fixed === undefined && ticking)
   return fixed ?? now
 }
 

@@ -1,3 +1,4 @@
+// @topo-isolated-worker: browser-grab-ipc may be cached bound to another file's browser-manager mock.
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   getWorkspaceDocPageGuest,

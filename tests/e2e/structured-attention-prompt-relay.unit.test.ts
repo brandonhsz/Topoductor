@@ -64,6 +64,8 @@ describe('Delayed remote prompt delivery', () => {
       dispatchMobileNotification: relay.dispatch.bind(relay),
       readAuthorizationStatus: async () => 'authorized',
       recordDeliveryOutcome: () => {},
+      readLastDeliveryOutcome: () => null,
+      requestDockAttention: () => {},
       deliverNative: () => ({ delivered: true }),
       platform: 'linux',
       now: () => 20_000
@@ -442,6 +444,8 @@ describe('Remote prompt settlement', () => {
       dispatchMobileNotification: relay.dispatch.bind(relay),
       readAuthorizationStatus: async () => 'authorized',
       recordDeliveryOutcome: () => {},
+      readLastDeliveryOutcome: () => null,
+      requestDockAttention: () => {},
       deliverNative: () => ({ delivered: true }),
       platform: 'linux',
       now: () => 20_000
