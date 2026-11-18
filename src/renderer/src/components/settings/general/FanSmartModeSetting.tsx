@@ -23,6 +23,15 @@ function fanControlBridge(): FanControlApi | undefined {
   return api?.fanControl
 }
 
+// React Compiler cannot lower try/catch inside components, so the bridge call lives here.
+async function resetSmartProfileSafely(bridge: FanControlApi): Promise<boolean> {
+  try {
+    return (await bridge.resetSmartProfile()).ok
+  } catch {
+    return false
+  }
+}
+
 export function FanSmartModeSetting({
   settings,
   updateSettings
@@ -74,19 +83,14 @@ export function FanSmartModeSetting({
       return
     }
     setResetting(true)
-    try {
-      const result = await bridge.resetSmartProfile()
-      if (result.ok) {
-        toast.success(t('settings.fanSmart.resetDone', 'Smart fan learning reset.'))
-      } else {
-        toast.error(t('settings.fanSmart.resetFailed', 'Could not reset Smart fan learning.'))
-      }
-    } catch {
+    const reset = await resetSmartProfileSafely(bridge)
+    if (reset) {
+      toast.success(t('settings.fanSmart.resetDone', 'Smart fan learning reset.'))
+    } else {
       toast.error(t('settings.fanSmart.resetFailed', 'Could not reset Smart fan learning.'))
-    } finally {
-      if (mounted.current) {
-        setResetting(false)
-      }
+    }
+    if (mounted.current) {
+      setResetting(false)
     }
   }
 

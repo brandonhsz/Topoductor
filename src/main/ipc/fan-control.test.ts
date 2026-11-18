@@ -6,10 +6,15 @@ import {
   type FanCurve,
   type ThermalSample
 } from '../../shared/fan-control-contract'
-import type { FanControlService } from '../power/fan-control-service'
+import type { FanControlTimers } from '../power/fan-control-polling'
+import { FanControlService, type FanControlServiceDeps } from '../power/fan-control-service'
+import type { RunFanHelper } from '../power/fan-helper-readings'
 
 const { handleMock, onMock } = vi.hoisted(() => ({
-  handleMock: vi.fn(),
+  handleMock:
+    vi.fn<
+      (channel: string, listener: (event: unknown, ...args: unknown[]) => Promise<unknown>) => void
+    >(),
   onMock: vi.fn()
 }))
 
@@ -23,30 +28,54 @@ import { registerFanControlHandlers } from './fan-control'
 const STATUS: FanControlStatus = { supported: false, reason: 'not-macos' }
 const RESULT: FanControlSetResult = { ok: true, status: STATUS }
 
-function fakeService() {
-  return {
-    getStatus: vi.fn(async () => STATUS),
-    getHistory: vi.fn(async (): Promise<ThermalSample[]> => []),
-    setMode: vi.fn(async () => RESULT),
-    setCurve: vi.fn(async () => RESULT),
-    setManualRpm: vi.fn(async () => RESULT),
-    answerFeedback: vi.fn(async () => RESULT),
-    resetSmartProfile: vi.fn(async () => RESULT),
-    dismissPausedMode: vi.fn(async () => STATUS),
-    setMonitoring: vi.fn(),
-    subscribe: vi.fn(() => () => {})
+// Every public method is stubbed below, so these deps are never reached.
+const INERT_DEPS: FanControlServiceDeps = {
+  helperPath: null,
+  leasePath: '',
+  pid: 0,
+  runPrivileged: vi.fn<FanControlServiceDeps['runPrivileged']>(),
+  fs: {
+    writeFile: vi.fn<FanControlServiceDeps['fs']['writeFile']>(),
+    readFile: vi.fn<FanControlServiceDeps['fs']['readFile']>(),
+    rm: vi.fn<FanControlServiceDeps['fs']['rm']>(),
+    rmSync: vi.fn<FanControlServiceDeps['fs']['rmSync']>(),
+    rename: vi.fn<FanControlServiceDeps['fs']['rename']>()
+  },
+  platform: 'darwin',
+  profilePath: '',
+  runHelper: vi.fn<RunFanHelper>(),
+  getSettings: vi.fn<FanControlServiceDeps['getSettings']>(),
+  updateSettings: vi.fn<FanControlServiceDeps['updateSettings']>(),
+  now: vi.fn<FanControlServiceDeps['now']>(),
+  timers: {
+    setInterval: vi.fn<FanControlTimers['setInterval']>(),
+    clearInterval: vi.fn<FanControlTimers['clearInterval']>()
   }
 }
 
-type FakeService = ReturnType<typeof fakeService>
-let service: FakeService
+function fakeService(): FanControlService {
+  const fake = new FanControlService(INERT_DEPS)
+  vi.spyOn(fake, 'getStatus').mockImplementation(async () => STATUS)
+  vi.spyOn(fake, 'getHistory').mockImplementation(async (): Promise<ThermalSample[]> => [])
+  vi.spyOn(fake, 'setMode').mockImplementation(async () => RESULT)
+  vi.spyOn(fake, 'setCurve').mockImplementation(async () => RESULT)
+  vi.spyOn(fake, 'setManualRpm').mockImplementation(async () => RESULT)
+  vi.spyOn(fake, 'answerFeedback').mockImplementation(async () => RESULT)
+  vi.spyOn(fake, 'resetSmartProfile').mockImplementation(async () => RESULT)
+  vi.spyOn(fake, 'dismissPausedMode').mockImplementation(async () => STATUS)
+  vi.spyOn(fake, 'setMonitoring').mockImplementation(() => {})
+  vi.spyOn(fake, 'subscribe').mockImplementation(() => () => {})
+  return fake
+}
+
+let service: FanControlService
 
 function handler(channel: string): (...args: unknown[]) => Promise<unknown> {
   const call = handleMock.mock.calls.find(([registered]) => registered === channel)
   if (!call) {
     throw new Error(`no handler registered for ${channel}`)
   }
-  const fn = call[1] as (event: unknown, ...args: unknown[]) => Promise<unknown>
+  const fn = call[1]
   return async (...args) => fn({}, ...args)
 }
 
@@ -62,7 +91,7 @@ beforeEach(() => {
   handleMock.mockReset()
   onMock.mockReset()
   service = fakeService()
-  registerFanControlHandlers(service as unknown as FanControlService)
+  registerFanControlHandlers(service)
 })
 
 describe('fan control IPC: setMode', () => {
@@ -85,7 +114,7 @@ describe('fan control IPC: getHistory', () => {
     const history: ThermalSample[] = [
       { at: 1, chipC: 60, palmrestC: 30, blendC: 50, palmrestAvailable: true, fanRpm: [2317] }
     ]
-    service.getHistory.mockResolvedValueOnce(history)
+    vi.mocked(service.getHistory).mockResolvedValueOnce(history)
     await expect(handler(FAN_CONTROL_CHANNELS.getHistory)()).resolves.toBe(history)
   })
 })

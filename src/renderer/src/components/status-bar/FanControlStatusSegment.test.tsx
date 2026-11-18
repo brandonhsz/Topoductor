@@ -10,7 +10,6 @@ import {
   useState,
   type ComponentProps,
   type MouseEvent,
-  type ReactElement,
   type ReactNode
 } from 'react'
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
@@ -64,13 +63,12 @@ vi.mock('@/components/ui/popover', () => {
   }
   function PopoverTrigger({ children }: { children?: ReactNode }) {
     const { open, setOpen } = useContext(PopoverContext)
-    if (!isValidElement(children)) {
+    if (!isValidElement<{ onClick?: (event: MouseEvent) => void }>(children)) {
       return <>{children}</>
     }
-    const child = children as ReactElement<{ onClick?: (event: MouseEvent) => void }>
-    return cloneElement(child, {
+    return cloneElement(children, {
       onClick: (event: MouseEvent) => {
-        child.props.onClick?.(event)
+        children.props.onClick?.(event)
         setOpen(!open)
       }
     })
@@ -221,9 +219,11 @@ function maxButton(panel: HTMLElement): HTMLElement {
 }
 
 function fanSlider(panel: HTMLElement, n: number): HTMLInputElement {
-  return within(panel).getByRole('slider', {
-    name: new RegExp(`fan ${n}`, 'i')
-  }) as HTMLInputElement
+  const slider = within(panel).getByRole('slider', { name: new RegExp(`fan ${n}`, 'i') })
+  if (!(slider instanceof HTMLInputElement)) {
+    throw new Error(`expected fan ${n} slider to be an input`)
+  }
+  return slider
 }
 
 beforeEach(() => {

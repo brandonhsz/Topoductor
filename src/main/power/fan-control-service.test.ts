@@ -94,15 +94,22 @@ function sensorsOutput({ chipC, palmrestC }: Sensors): string {
   })
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+// Only `targets` is checked so a malformed version still reaches the `v` assertion.
+function isFanControlTargets(value: unknown): value is FanControlTargets {
+  return isRecord(value) && 'targets' in value
+}
+
 function parseLease(raw: string | undefined): FanControlTargets | null {
   if (raw === undefined) {
     return null
   }
   try {
     const parsed: unknown = JSON.parse(raw.trim())
-    return typeof parsed === 'object' && parsed !== null && 'targets' in parsed
-      ? (parsed as FanControlTargets)
-      : null
+    return isFanControlTargets(parsed) ? parsed : null
   } catch {
     return null
   }
@@ -232,7 +239,11 @@ function storedProfile(files: Map<string, string>): Record<string, unknown> {
   if (raw === undefined) {
     throw new Error('expected the profile to be persisted')
   }
-  return JSON.parse(raw) as Record<string, unknown>
+  const parsed: unknown = JSON.parse(raw)
+  if (!isRecord(parsed)) {
+    throw new Error('expected the persisted profile to be an object')
+  }
+  return parsed
 }
 
 function profileFile(profile: {
@@ -252,7 +263,7 @@ function profileFile(profile: {
 
 // Tolerates INITIAL_SMART_CURVE shipped as a FanCurve or as its bare points.
 function curvePoints(curve: FanCurve | readonly FanCurvePoint[]): FanCurvePoint[] {
-  return Array.isArray(curve) ? [...curve] : [...(curve as FanCurve).points]
+  return 'points' in curve ? [...curve.points] : [...curve]
 }
 
 async function startSmartPrompt(harness: Harness): Promise<SupportedStatus> {

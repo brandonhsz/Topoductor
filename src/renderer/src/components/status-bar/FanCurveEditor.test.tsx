@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import {
   FAN_CURVE_LIMITS,
   type FanCurve,
@@ -57,12 +57,18 @@ function points(): HTMLElement[] {
   return screen.getAllByRole('slider', { name: /point/i })
 }
 
-function lastCurve(onChange: ReturnType<typeof vi.fn>): FanCurve {
+type CurveChange = Mock<(curve: FanCurve) => void>
+
+function curveChange(): CurveChange {
+  return vi.fn<(curve: FanCurve) => void>()
+}
+
+function lastCurve(onChange: CurveChange): FanCurve {
   const call = onChange.mock.calls.at(-1)
   if (!call) {
     throw new Error('onChange was never called')
   }
-  return call[0] as FanCurve
+  return call[0]
 }
 
 function expectValidCurve(curve: FanCurve): void {
@@ -116,7 +122,7 @@ beforeEach(() => {
     right: PLOT_RECT.left + PLOT_RECT.width,
     bottom: PLOT_RECT.top + PLOT_RECT.height,
     toJSON: () => ({})
-  } as DOMRect)
+  } satisfies DOMRect)
   for (const method of ['setPointerCapture', 'releasePointerCapture'] as const) {
     if (!Element.prototype[method]) {
       Element.prototype[method] = () => {}
@@ -142,7 +148,7 @@ describe('FanCurveEditor points', () => {
   })
 
   it('moves a point with the arrow keys and reports a valid curve', () => {
-    const onChange = vi.fn()
+    const onChange = curveChange()
     render(<Controlled initial={CURVE} onChange={onChange} />)
     press(points()[1], 'ArrowRight')
     let curve = lastCurve(onChange)
@@ -164,18 +170,18 @@ describe('FanCurveEditor points', () => {
   })
 
   it('keeps the source when a point moves', () => {
-    const onChange = vi.fn()
+    const onChange = curveChange()
     render(<Controlled initial={{ ...CURVE, source: 'chip' }} onChange={onChange} />)
     press(points()[0], 'ArrowUp')
     expect(lastCurve(onChange).source).toBe('chip')
   })
 
   it('never lets a point cross its neighbour with the keyboard', () => {
-    const onChange = vi.fn()
+    const onChange = curveChange()
     render(<Controlled initial={CURVE} onChange={onChange} />)
     press(points()[0], 'ArrowRight', 40)
     press(points()[2], 'ArrowDown', 120)
-    for (const [curve] of onChange.mock.calls as [FanCurve][]) {
+    for (const [curve] of onChange.mock.calls) {
       expectValidCurve(curve)
     }
     const curve = lastCurve(onChange)
@@ -184,7 +190,7 @@ describe('FanCurveEditor points', () => {
   })
 
   it('clamps points to the curve limits', () => {
-    const onChange = vi.fn()
+    const onChange = curveChange()
     const edge: FanCurve = {
       source: 'blend',
       points: [
@@ -197,7 +203,7 @@ describe('FanCurveEditor points', () => {
     press(points()[0], 'ArrowDown', 30)
     press(points()[1], 'ArrowRight', 30)
     press(points()[1], 'ArrowUp', 30)
-    for (const [curve] of onChange.mock.calls as [FanCurve][]) {
+    for (const [curve] of onChange.mock.calls) {
       expectValidCurve(curve)
     }
     const curve = lastCurve(onChange)
@@ -210,7 +216,7 @@ describe('FanCurveEditor points', () => {
 
 describe('FanCurveEditor dragging', () => {
   it('drags a point toward hotter and faster', () => {
-    const onChange = vi.fn()
+    const onChange = curveChange()
     render(<Controlled initial={CURVE} onChange={onChange} />)
     drag(points()[2], PLOT_RECT.width * 0.95, PLOT_RECT.height * 0.02)
     const curve = lastCurve(onChange)
@@ -220,7 +226,7 @@ describe('FanCurveEditor dragging', () => {
   })
 
   it('stops a dragged point before it crosses the next one', () => {
-    const onChange = vi.fn()
+    const onChange = curveChange()
     render(<Controlled initial={CURVE} onChange={onChange} />)
     drag(points()[0], PLOT_RECT.width, PLOT_RECT.height)
     const curve = lastCurve(onChange)

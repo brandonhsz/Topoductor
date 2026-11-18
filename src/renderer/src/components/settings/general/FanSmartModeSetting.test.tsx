@@ -15,7 +15,11 @@ import { matchesSettingsSearch } from '../search/settings-search'
 import { getGeneralPaneSearchEntries } from './general-search'
 import { FanSmartModeSetting } from './FanSmartModeSetting'
 
-const confirmDialog = vi.hoisted(() => ({ answer: true, confirm: vi.fn() }))
+type ConfirmOptions = { title: string; confirmVariant?: string }
+const confirmDialog = vi.hoisted(() => ({
+  answer: true,
+  confirm: vi.fn<(options: ConfirmOptions) => Promise<boolean>>()
+}))
 vi.mock('@/components/confirmation-dialog-context', () => ({
   useConfirmationDialog: () => confirmDialog.confirm
 }))
@@ -29,11 +33,19 @@ const SUPPORTED: SupportedFanControlStatus = {
 }
 
 function stubFanControl(status: FanControlStatus = SUPPORTED): FanControlApi {
-  const api = {
+  const result = { ok: true as const, status }
+  const api: FanControlApi = {
     getStatus: vi.fn(async () => status),
-    resetSmartProfile: vi.fn(async () => ({ ok: true as const, status })),
+    getHistory: vi.fn(async () => []),
+    setMode: vi.fn(async () => result),
+    setCurve: vi.fn(async () => result),
+    setManualRpm: vi.fn(async () => result),
+    answerFeedback: vi.fn(async () => result),
+    resetSmartProfile: vi.fn(async () => result),
+    dismissPausedMode: vi.fn(async () => status),
+    setMonitoring: vi.fn(),
     onChanged: vi.fn(() => () => {})
-  } as unknown as FanControlApi
+  }
   vi.stubGlobal('api', { fanControl: api })
   return api
 }
@@ -126,9 +138,7 @@ describe('FanSmartModeSetting reset learning', () => {
     await act(async () => {
       fireEvent.click(resetButton())
     })
-    const [options] = confirmDialog.confirm.mock.calls[0] as [
-      { title: string; confirmVariant?: string }
-    ]
+    const [options] = confirmDialog.confirm.mock.calls[0]
     expect(options.title).toMatch(/reset/i)
     expect(options.confirmVariant).toBe('destructive')
   })

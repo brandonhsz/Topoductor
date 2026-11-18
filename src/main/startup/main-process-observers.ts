@@ -63,13 +63,13 @@ export function initializeMainProcessObservers(): void {
       store.getSettings().keepComputerAwakeWhileAgentsRun
     )
   )
-  const fanControlService = getFanControlService()
+  const fanControlService = getFanControlService(store)
   registerFanControlHandlers(fanControlService)
   // The root hold also exits on parent death; releasing early restores auto before Topo is gone.
   app.on('before-quit', () => fanControlService.releaseForQuit())
   subscribeSystemPowerLifecycle({
     onSuspend: () => void fanControlService.handleSuspend(),
-    onResume: () => {}
+    onResume: () => void fanControlService.handleResume()
   })
   // Hydrated rows preserve UI only; only this runtime's live hook events may keep the machine awake.
   state.agentAwakeService.setStatuses([])
