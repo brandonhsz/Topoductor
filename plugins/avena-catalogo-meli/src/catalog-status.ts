@@ -143,6 +143,18 @@ export function classify(product: Classifiable): ProductStatus {
   return diff > PRICE_TOLERANCE_PCT ? 'precio_cambio' : 'ok'
 }
 
+/** A referral link whose ML reading shows a price different from the saved one, whatever its status. */
+export function hasNewMlPrice(product: Product): boolean {
+  const { reading } = product
+  return (
+    product.linkKind === 'referido' &&
+    reading?.ok === true &&
+    reading.price !== null &&
+    reading.price > 0 &&
+    reading.price !== product.price
+  )
+}
+
 export function withStatus<T extends Product>(product: T): T {
   return {
     ...product,

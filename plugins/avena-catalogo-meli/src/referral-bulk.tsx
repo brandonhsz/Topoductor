@@ -43,7 +43,7 @@ export function ReferralBulk() {
               runAction('repairs', () => plugin.request('catalog.proposeReplacements'))
             }
           >
-            Buscar reemplazos ({broken} rotos)
+            {`Buscar reemplazos (${broken} rotos)`}
           </Button>
         ) : null}
         <Button
@@ -53,7 +53,7 @@ export function ReferralBulk() {
           tooltip="Pide a MercadoLibre un link de referido para cada producto con link directo. Quedan como propuesta hasta guardarlos."
           onPress={() => runAction('generate', () => plugin.request('catalog.generateReferrals'))}
         >
-          Generar referidos ({direct} sin referido)
+          {`Generar referidos (${direct} sin referido)`}
         </Button>
         {pending > 0 ? (
           read(confirmingReferrals) ? (

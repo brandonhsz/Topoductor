@@ -25,7 +25,6 @@ import {
   changeFilter,
   changeSearch,
   changeSort,
-  confirmingBulk,
   connection,
   filter,
   loadConnection,
@@ -45,6 +44,7 @@ import {
   view,
   type Filter
 } from './panel-state'
+import { PriceBulk } from './price-bulk'
 import { money, ProductDetail } from './product-detail'
 import { ReferralBulk } from './referral-bulk'
 import { StatusLegend } from './status-legend'
@@ -110,15 +110,6 @@ function selectedKeys(id: string | null): string[] {
   return id ? [id] : []
 }
 
-async function applyAll(): Promise<void> {
-  set(confirmingBulk, false)
-  await runAction('bulk', async () =>
-    plugin.request('catalog.applyPrices', {
-      ids: await plugin.request('catalog.ids', { scope: 'applicable' })
-    })
-  )
-}
-
 export function setup(ctx: PanelContext): void {
   ctx.subscriptions.push(
     plugin.on('audit.progress', (payload) => set(progress, payload)),
@@ -132,7 +123,6 @@ export function setup(ctx: PanelContext): void {
 
 function Toolbar() {
   const working = read(busy) !== null || read(progress)?.running === true
-  const pending = read(view)?.applicable ?? 0
   return (
     <Stack gap="xs">
       <Row gap="xs" wrap>
@@ -151,27 +141,6 @@ function Toolbar() {
           Leer precios en ML
         </Button>
       </Row>
-      {pending > 0 ? (
-        read(confirmingBulk) ? (
-          <Row gap="xs" wrap>
-            <Button tone="accent" icon="check" disabled={working} onPress={applyAll}>
-              Confirmar {pending} precios
-            </Button>
-            <Button variant="ghost" onPress={() => set(confirmingBulk, false)}>
-              Cancelar
-            </Button>
-          </Row>
-        ) : (
-          <Button
-            variant="outline"
-            icon="upload"
-            disabled={working}
-            onPress={() => set(confirmingBulk, true)}
-          >
-            Aplicar {pending} cambios de precio seguros
-          </Button>
-        )
-      ) : null}
     </Stack>
   )
 }
@@ -220,6 +189,7 @@ export default function Panel() {
         </Callout>
       ) : null}
       <Toolbar />
+      <PriceBulk />
       <ReferralBulk />
       <AuditStatus />
       {message ? (

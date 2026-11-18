@@ -2,6 +2,7 @@ import { assert, mockHost, mount, test } from 'orca/testing'
 import * as panel from './panel'
 import { CatalogDb } from './catalog-db'
 import { REVIEW_FIXTURE } from './panel-fixture'
+import type { BulkScope } from './protocol'
 
 const CONFIG = {
   backendUrl: 'https://api.ejemplo.com',
@@ -19,7 +20,7 @@ function catalogRequests() {
   return {
     'catalog.view': (query: Parameters<CatalogDb['view']>[0]) => db.view(query),
     'catalog.history': ({ id }: { id: string }) => db.history(id),
-    'catalog.ids': ({ scope }: { scope: 'applicable' | 'pendingReferrals' }) => db.ids(scope)
+    'catalog.ids': ({ scope }: { scope: BulkScope }) => db.ids(scope)
   }
 }
 
@@ -36,7 +37,8 @@ test('asks for connections before anything else', async () => {
         withReferral: 0,
         direct: 0,
         applicable: 0,
-        pendingReferrals: 0
+        pendingReferrals: 0,
+        withNewPrice: 0
       }),
       'connection.status': () => ({
         mongo: false,
@@ -175,4 +177,29 @@ test('the detail never shows a history that is not the selected row', async () =
   await view.selectRows({ type: 'Table' }, ['biotin'])
   assert.equal(view.find({ text: /Aplicar \$615/ }), null)
   assert.equal(view.findAll({ type: 'Card' }).length, 0)
+})
+
+test('applies every new ML price after a warning that names the ones to review', async () => {
+  const applied: string[][] = []
+  const host = mockHost({
+    capabilities: ['storage:own'],
+    requests: {
+      ...catalogRequests(),
+      'connection.status': () => CONNECTED,
+      'catalog.applyPrices': ({ ids }: { ids: string[] }) => {
+        applied.push(ids)
+        return { ok: true, message: 'ok' }
+      }
+    }
+  })
+  const view = await mount(panel, { host })
+  await view.press({ text: 'Aplicar precios de ML a todos (2)' })
+  assert.ok(view.summary().some((line) => line.includes('¿Aplicar 2 precios?')))
+  assert.ok(view.find({ text: /Incluye 1 productos que piden revisión/ }))
+  await view.press({ text: 'Confirmar 2 precios' })
+  // The 80% jump goes too; the broken link, the direct one and the current price do not.
+  assert.deepEqual(
+    applied.map((ids) => ids.slice().sort()),
+    [['biotin', 'mult']]
+  )
 })
