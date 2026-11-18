@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { HostFrameNavigationRegistry } from './host-frame-navigation-guard'
 import { isPluginFramePermissionRequest } from './host-frame-permission-policy'
+import { PLUGIN_PANEL_FRAME_NAME_PREFIX } from '../../shared/plugins/frames/plugin-frame-bridge'
+import { NATIVE_CHAT_VISUAL_FRAME_NAME_PREFIX } from '../../shared/native-chat/native-chat-visual-shell'
 
 type TestFrame = {
   name: string
@@ -15,8 +17,8 @@ function frame(name: string, parent: TestFrame | null = null): TestFrame {
 
 describe('main-window permission requests from plugin frames', () => {
   const registry = new HostFrameNavigationRegistry()
-  const plugin = frame('topo-plugin-panel:tab')
-  const chatVisual = frame('topo-chat-visual:x')
+  const plugin = frame(`${PLUGIN_PANEL_FRAME_NAME_PREFIX}tab`)
+  const chatVisual = frame(`${NATIVE_CHAT_VISUAL_FRAME_NAME_PREFIX}x`)
   registry.register(plugin)
   registry.register(chatVisual)
 
@@ -39,7 +41,7 @@ describe('main-window permission requests from plugin frames', () => {
     expect(
       isPluginFramePermissionRequest({
         isMainFrame: false,
-        requestingFrame: frame('topo-plugin-panel:fake')
+        requestingFrame: frame(`${PLUGIN_PANEL_FRAME_NAME_PREFIX}fake`)
       })
     ).toBe(false)
     expect(isPluginFramePermissionRequest({ isMainFrame: true, requestingFrame: plugin })).toBe(
