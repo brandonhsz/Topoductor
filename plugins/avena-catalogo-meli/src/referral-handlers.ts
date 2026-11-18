@@ -17,6 +17,8 @@ import { proposeReferrals, proposeReferralsWithCards } from './referral-proposal
 
 export type CatalogContext = {
   catalog(): Promise<Catalog>
+  /** A catalog product, or one of the owner whose link is not from ML yet. */
+  find(id: string): Promise<Product | null>
   saveProducts(change: (products: Product[]) => Product[]): Promise<void>
   recordAttempts(attempts: readonly [string, string, ReferralProposal][]): Promise<void>
   fetchImage: ImageFetcher
@@ -234,7 +236,7 @@ export function registerReferralHandlers(orca: OrcaWorkerApi, context: CatalogCo
 
   /** «Usar este»: the referral, its price and the product's link, written in one step. */
   orca.panels.handle('catalog.replaceLink', async ({ id, url }): Promise<ActionResult> => {
-    const product = (await context.catalog()).products.find((candidate) => candidate.id === id)
+    const product = await context.find(id)
     if (!product) {
       return { ok: false, message: 'El producto ya no está en el catálogo.' }
     }

@@ -88,14 +88,10 @@ export function mongoCatalogSource(uri: string, location: MongoLocation): Catalo
     })
     await client.connect()
     try {
-      const query: Record<string, unknown> = {
-        owner: location.owner,
-        productURL: MELI_URL,
-        deletedDate: null
-      }
-      if (ids) {
-        query._id = { $in: ids }
-      }
+      // Named products come whatever their link (one sold elsewhere may get its first ML link).
+      const query: Record<string, unknown> = ids
+        ? { owner: location.owner, deletedDate: null, _id: { $in: ids } }
+        : { owner: location.owner, deletedDate: null, productURL: MELI_URL }
       const docs = await client
         .db(location.database)
         .collection<SupplementDocument>(location.collection)

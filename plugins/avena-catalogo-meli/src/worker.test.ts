@@ -88,12 +88,17 @@ function fakes(database: SourceProduct[]) {
       if (uri.includes('unreachable')) {
         throw new Error('querySrv ENOTFOUND')
       }
-      return database
-        .filter((row) => !ids || ids.includes(row.id))
-        .map((row) => ({
-          ...row,
-          linkKind: isReferralUrl(row.productURL) ? ('referido' as const) : ('directo' as const)
-        }))
+      return (
+        database
+          // Like Mongo: a listing is ML-only, named ids come whatever their link.
+          .filter((row) =>
+            ids ? ids.includes(row.id) : /meli\.la|mercadolibre/.test(row.productURL)
+          )
+          .map((row) => ({
+            ...row,
+            linkKind: isReferralUrl(row.productURL) ? ('referido' as const) : ('directo' as const)
+          }))
+      )
     },
     meli: () => meli,
     fetchImage: async (url: string) =>
@@ -540,4 +545,40 @@ test('«Usar este» writes nothing when MercadoLibre refuses the referral', asyn
   assert.equal(result.message, 'No entra al programa de afiliados (depende del vendedor)')
   assert.deepEqual(writes, [])
   assert.equal(stored().products[0]?.productURL, 'https://meli.la/abc')
+})
+
+test('«Usar este» gives a product sold in its own store its first ML link', async () => {
+  const { worker, stored, cards, referrals, writes } = await start([
+    source(),
+    source({
+      id: 'store',
+      productURL: 'https://blife.mx/products/psyllium',
+      linkKind: 'directo',
+      name: 'psyllium husk fiber',
+      price: 349
+    })
+  ])
+  await worker.request('catalog.sync')
+  assert.equal(
+    stored().products.some((p) => p.id === 'store'),
+    false
+  )
+
+  const listing = 'https://www.mercadolibre.com.mx/psyllium/p/MLM7'
+  referrals.set(listing, { url: listing, referral: 'https://meli.la/psy', reason: null })
+  cards.set(
+    'https://meli.la/psy',
+    card('https://meli.la/psy', {
+      price: 327.18,
+      listPrice: null,
+      discountPercentage: null,
+      title: 'Fibra de Psyllium Husk Nutricost 240'
+    })
+  )
+  const result = await worker.request('catalog.replaceLink', { id: 'store', url: listing })
+  assert.equal(result.ok, true)
+  assert.equal(writes.at(-1)?.[0]?.productURL, 'https://meli.la/psy')
+  const joined = stored().products.find((p) => p.id === 'store')
+  assert.equal(joined?.productURL, 'https://meli.la/psy')
+  assert.equal(joined?.price, 327.18)
 })
