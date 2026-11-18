@@ -1,4 +1,5 @@
 import type { UpdateStatus } from '../../../../shared/update-status-types'
+import { clampUpdateDownloadPercent } from '@/lib/update-download-percent'
 
 export type SidebarUpdateButtonKind =
   | 'idle'
@@ -58,13 +59,14 @@ export function getSidebarUpdateButtonModel(status: UpdateStatus): SidebarUpdate
       return model('downloading', 'expand-card', {
         badge: true,
         version: status.version,
-        percent: Math.max(0, Math.min(100, Math.round(status.percent)))
+        percent: clampUpdateDownloadPercent(status.percent)
       })
     case 'downloaded':
       return status.installing
         ? model('installing', 'none', { badge: true, version: status.version })
         : model('ready', 'install', { badge: true, version: status.version })
-    case 'error': {
+    case 'error':
+      // Retry rules (retryable, local builds, signatures, install blocks) live in the card.
       if (status.installBlock) {
         return model('waiting', 'expand-card', { badge: true, version: status.version })
       }
@@ -74,13 +76,7 @@ export function getSidebarUpdateButtonModel(status: UpdateStatus): SidebarUpdate
           version: status.recovery.version
         })
       }
-      if (status.retryAction === 'install') {
-        return model('error', 'install', { badge: true, version: status.version })
-      }
-      if (status.version !== undefined) {
-        return model('error', 'download-and-install', { badge: true, version: status.version })
-      }
-      return model('error', 'check')
-    }
+      // The alert icon already signals attention; a "!" badge would double it.
+      return model('error', 'expand-card', { version: status.version })
   }
 }

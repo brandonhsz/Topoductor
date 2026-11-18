@@ -3,6 +3,7 @@ import { AlertCircle, CheckCircle2, Clock3, Download, Loader2 } from 'lucide-rea
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useAppStore } from '../../store'
 import { useTranslate } from '@/i18n/use-translate'
+import { clampUpdateDownloadPercent } from '@/lib/update-download-percent'
 import { getUpdateInstallBlockGuidance } from '../maintenance/update-card/update-install-block-guidance'
 
 // Always expose the collapsed update card so pending downloads and installs remain reachable.
@@ -27,7 +28,7 @@ export function UpdateStatusSegment({
       : null
   const segment = (() => {
     if (status.state === 'downloading') {
-      const pct = Math.max(0, Math.min(100, Math.round(status.percent)))
+      const pct = clampUpdateDownloadPercent(status.percent)
       return {
         icon: <Download className="size-3 text-muted-foreground" />,
         label: `${pct}%`,

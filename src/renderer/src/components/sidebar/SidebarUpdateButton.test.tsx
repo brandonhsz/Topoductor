@@ -1,10 +1,12 @@
 // @vitest-environment happy-dom
+import type React from 'react'
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { UpdateStatus } from '../../../../shared/update-status-types'
 import { getUpdateCheckClickOptions } from '@/lib/update-check-click-options'
 import { useAppStore } from '../../store'
 import { TooltipProvider } from '../ui/tooltip'
+import { UpdateCard } from '../UpdateCard'
 import { SidebarUpdateButton } from './SidebarUpdateButton'
 
 const mocks = vi.hoisted(() => ({ web: false }))
@@ -19,12 +21,17 @@ function setStatus(status: UpdateStatus): void {
   act(() => useAppStore.getState().setUpdateStatus(status))
 }
 
-function renderButton(): void {
-  render(
+function renderButton({ withCard = false }: { withCard?: boolean } = {}): {
+  hideButton: () => void
+} {
+  const view = (showButton: boolean): React.JSX.Element => (
     <TooltipProvider>
-      <SidebarUpdateButton />
+      {withCard ? <UpdateCard /> : null}
+      {showButton ? <SidebarUpdateButton /> : null}
     </TooltipProvider>
   )
+  const { rerender } = render(view(true))
+  return { hideButton: () => rerender(view(false)) }
 }
 
 function updateButton(name: RegExp = /update/i): HTMLElement {
@@ -47,7 +54,10 @@ beforeEach(() => {
   )
   Object.defineProperty(window, 'api', {
     configurable: true,
-    value: { updater: { check, download, quitAndInstall } }
+    value: {
+      updater: { check, download, quitAndInstall },
+      ui: { set: vi.fn().mockResolvedValue(undefined) }
+    }
   })
 })
 
@@ -73,12 +83,23 @@ describe('SidebarUpdateButton', () => {
   it('forwards click modifiers to the update check', () => {
     renderButton()
     setStatus({ state: 'not-available' })
-    const button = updateButton(/check for updates/i)
     const modifiers = { altKey: false, ctrlKey: true, metaKey: true, shiftKey: true }
 
-    fireEvent.pointerDown(button, modifiers)
-    fireEvent.click(button, modifiers)
+    fireEvent.click(updateButton(/check for updates/i), modifiers)
     expect(check).toHaveBeenCalledWith(getUpdateCheckClickOptions(modifiers))
+  })
+
+  it('ignores modifiers from an abandoned pointer press on a later keyboard click', () => {
+    renderButton()
+    setStatus({ state: 'idle' })
+    const button = updateButton(/check for updates/i)
+
+    fireEvent.pointerDown(button, { shiftKey: true, metaKey: true, altKey: true })
+    fireEvent.pointerLeave(button)
+    fireEvent.click(button)
+    expect(check).toHaveBeenCalledWith(
+      getUpdateCheckClickOptions({ altKey: false, ctrlKey: false, metaKey: false, shiftKey: false })
+    )
   })
 
   it('shows a badge and the version when an update is available, even if the card was dismissed', () => {
@@ -91,10 +112,10 @@ describe('SidebarUpdateButton', () => {
   })
 
   it('downloads then installs exactly once when applying an available update', async () => {
-    renderButton()
+    renderButton({ withCard: true })
     setStatus({ state: 'available', version: VERSION, changelog: null })
 
-    fireEvent.click(updateButton(new RegExp(VERSION.replaceAll('.', '\\.'))))
+    fireEvent.click(updateButton(new RegExp(`Update to Topo v${VERSION.replaceAll('.', '\\.')}`)))
     expect(download).toHaveBeenCalledTimes(1)
     expect(quitAndInstall).not.toHaveBeenCalled()
 
@@ -105,8 +126,32 @@ describe('SidebarUpdateButton', () => {
     expect(quitAndInstall).toHaveBeenCalledTimes(1)
   })
 
-  it('does not install a download it did not start', async () => {
-    renderButton()
+  it('still installs once when the sidebar closes during the download', async () => {
+    const { hideButton } = renderButton({ withCard: true })
+    setStatus({ state: 'available', version: VERSION, changelog: null })
+    fireEvent.click(updateButton(new RegExp(`Update to Topo v${VERSION.replaceAll('.', '\\.')}`)))
+
+    setStatus({ state: 'downloading', version: VERSION, percent: 50 })
+    hideButton()
+    setStatus({ state: 'downloaded', version: VERSION })
+    await act(async () => {})
+    expect(quitAndInstall).toHaveBeenCalledTimes(1)
+  })
+
+  it('installs once when the card started the download and the button is also mounted', async () => {
+    renderButton({ withCard: true })
+    setStatus({ state: 'available', version: VERSION, changelog: null })
+    fireEvent.click(screen.getAllByRole('button', { name: /^Update$/ })[0]!)
+
+    setStatus({ state: 'downloading', version: VERSION, percent: 50 })
+    setStatus({ state: 'downloaded', version: VERSION })
+    await act(async () => {})
+    expect(quitAndInstall).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not install a download nobody requested', async () => {
+    renderButton({ withCard: true })
+    setStatus({ state: 'available', version: VERSION, changelog: null })
     setStatus({ state: 'downloading', version: VERSION, percent: 10 })
     setStatus({ state: 'downloaded', version: VERSION })
     await act(async () => {})
@@ -153,7 +198,11 @@ describe('SidebarUpdateButton', () => {
 
   it.each<[string, UpdateStatus, RegExp]>([
     ['checking', { state: 'checking', userInitiated: true }, /checking/i],
-    ['installing', { state: 'downloaded', version: VERSION, installing: true }, /update/i]
+    [
+      'installing',
+      { state: 'downloaded', version: VERSION, installing: true },
+      /^Preparing update$/
+    ]
   ])('is disabled with a spinner while %s', (_label, status, name) => {
     renderButton()
     setStatus(status)
@@ -163,12 +212,31 @@ describe('SidebarUpdateButton', () => {
     expect(button.querySelector('.animate-spin')).not.toBeNull()
   })
 
-  it('labels a failed update so it can be retried', () => {
+  it.each<[string, UpdateStatus]>([
+    ['download error', { state: 'error', message: 'download failed', version: VERSION }],
+    [
+      'non-retryable install error',
+      {
+        state: 'error',
+        message: 'install failed',
+        version: VERSION,
+        retryAction: 'install',
+        retryable: false
+      }
+    ],
+    ['check error', { state: 'error', message: 'offline' }]
+  ])('opens the update card for a %s instead of choosing its own retry', (_label, status) => {
     renderButton()
-    setStatus({ state: 'error', message: 'download failed', version: VERSION })
+    setStatus(status)
+    act(() => useAppStore.getState().setUpdateCardCollapsed(true))
 
-    fireEvent.click(updateButton(/failed/i))
-    expect(download).toHaveBeenCalledTimes(1)
+    const button = updateButton(/^Update failed\. Click for details$/)
+    expect(within(button).queryByText('!')).toBeNull()
+    fireEvent.click(button)
+    expect(useAppStore.getState().updateCardCollapsed).toBe(false)
+    expect(download).not.toHaveBeenCalled()
+    expect(quitAndInstall).not.toHaveBeenCalled()
+    expect(check).not.toHaveBeenCalled()
   })
 
   it('shows the install error in the tooltip when installing is rejected', async () => {
@@ -182,6 +250,20 @@ describe('SidebarUpdateButton', () => {
     fireEvent.focus(button)
 
     expect((await screen.findAllByText(/disk is full/)).length).toBeGreaterThan(0)
+  })
+
+  it('clears a stale install error once the update status changes', async () => {
+    quitAndInstall.mockRejectedValueOnce(new Error('disk is full'))
+    renderButton()
+    setStatus({ state: 'downloaded', version: VERSION })
+    fireEvent.click(updateButton(/ready/i))
+    await act(async () => {})
+
+    setStatus({ state: 'downloaded', version: VERSION, installing: true })
+    setStatus({ state: 'downloaded', version: VERSION })
+    fireEvent.focus(updateButton(/ready/i))
+    await act(async () => {})
+    expect(screen.queryAllByText(/disk is full/)).toHaveLength(0)
   })
 
   it('does not render in the web client', () => {

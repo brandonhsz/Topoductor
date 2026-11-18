@@ -13,7 +13,11 @@ export function createUiUpdateActions(set: UISliceSet, get: UISliceGet): Partial
       const update: Partial<
         Pick<
           UISlice,
-          'updateStatus' | 'updateChangelog' | 'updateCardCollapsed' | 'updateUserInitiatedCycle'
+          | 'updateStatus'
+          | 'updateChangelog'
+          | 'updateCardCollapsed'
+          | 'updateUserInitiatedCycle'
+          | 'updateInstallOnDownload'
         >
       > = {
         updateStatus: status
@@ -22,6 +26,9 @@ export function createUiUpdateActions(set: UISliceSet, get: UISliceGet): Partial
         update.updateUserInitiatedCycle = status.userInitiated === true
       } else if (status.state === 'idle') {
         update.updateUserInitiatedCycle = false
+      }
+      if (status.state !== 'downloading' && status.state !== 'downloaded') {
+        update.updateInstallOnDownload = false
       }
       if (status.state === 'available') {
         // Why: always overwrite (even with null) so a prior version's changelog can't leak into a later simple-mode update.
@@ -96,6 +103,8 @@ export function createUiUpdateActions(set: UISliceSet, get: UISliceGet): Partial
       }),
     updateCardCollapsed: false,
     setUpdateCardCollapsed: (collapsed) => set({ updateCardCollapsed: collapsed }),
+    updateInstallOnDownload: false,
+    setUpdateInstallOnDownload: (install) => set({ updateInstallOnDownload: install }),
     updateReassuranceSeen: false,
     markUpdateReassuranceSeen: () => {
       void window.api.ui.set({ updateReassuranceSeen: true }).catch(console.error)

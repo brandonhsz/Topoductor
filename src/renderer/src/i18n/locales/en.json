@@ -236,10 +236,8 @@
       "external": "Topo v{{version}} update available",
       "downloading": "Downloading update… {{percent}}%",
       "ready": "Update ready: restart to install Topo v{{version}}",
-      "installing": "Preparing update…",
-      "waiting": "Update waiting for other Topo instances",
-      "failed": "Update failed. Click to retry",
-      "installFailed": "Couldn't install the update: {{message}}"
+      "installFailed": "Couldn't install the update: {{message}}",
+      "failedDetails": "Update failed. Click for details"
     }
   },
   "app": {

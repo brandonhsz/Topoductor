@@ -33,11 +33,14 @@ function getLabel(model: SidebarUpdateButtonModel, t: Translate): string {
         version
       })
     case 'installing':
-      return t('sidebar.updateButton.installing', 'Preparing update…')
+      return t('updates.installBlock.preparingLabel', 'Preparing update')
     case 'waiting':
-      return t('sidebar.updateButton.waiting', 'Update waiting for other Topo instances')
+      return t(
+        'updates.installBlock.waitingAriaLabel',
+        'Update waiting for other Topo instances. Click to expand.'
+      )
     case 'error':
-      return t('sidebar.updateButton.failed', 'Update failed. Click to retry')
+      return t('sidebar.updateButton.failedDetails', 'Update failed. Click for details')
   }
 }
 
@@ -71,7 +74,7 @@ function SidebarUpdateButtonView({
   model: SidebarUpdateButtonModel
 }): React.JSX.Element {
   const t = useTranslate()
-  const { onPointerDown, onClick, installError } = useSidebarUpdateButtonActions(model)
+  const { onClick, installError } = useSidebarUpdateButtonActions(model)
   const label = getLabel(model, t)
 
   return (
@@ -84,7 +87,6 @@ function SidebarUpdateButtonView({
           aria-label={label}
           disabled={model.disabled}
           className={model.badge ? 'relative text-foreground' : 'relative text-muted-foreground'}
-          onPointerDown={onPointerDown}
           onClick={onClick}
         >
           <UpdateIcon model={model} />

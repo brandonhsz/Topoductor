@@ -1,6 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import type { UpdateStatus } from '../../../../shared/update-status-types'
-import { useAppStore } from '../../store'
 import {
   getSidebarUpdateButtonModel,
   type SidebarUpdateButtonModel
@@ -101,29 +100,51 @@ const rows: Row[] = [
   [
     'error with install retry',
     { state: 'error', message: 'install failed', version: VERSION, retryAction: 'install' },
-    { kind: 'error', badge: true, version: VERSION, action: 'install', disabled: false }
+    { kind: 'error', badge: false, version: VERSION, action: 'expand-card', disabled: false }
+  ],
+  [
+    'error with install retry the card refuses',
+    {
+      state: 'error',
+      message: 'install failed',
+      version: VERSION,
+      retryAction: 'install',
+      retryable: false
+    },
+    { kind: 'error', badge: false, action: 'expand-card', disabled: false }
   ],
   [
     'error with version',
     { state: 'error', message: 'download failed', version: VERSION },
+    { kind: 'error', badge: false, version: VERSION, action: 'expand-card', disabled: false }
+  ],
+  [
+    'non-retryable download error',
+    { state: 'error', message: 'download failed', version: VERSION, retryable: false },
+    { kind: 'error', badge: false, action: 'expand-card', disabled: false }
+  ],
+  [
+    'local build error',
+    { state: 'error', message: 'bad build', version: VERSION, source: 'local' },
+    { kind: 'error', badge: false, action: 'expand-card', disabled: false }
+  ],
+  [
+    'install block without install retry',
     {
-      kind: 'error',
-      badge: true,
+      state: 'error',
+      message: 'blocked',
       version: VERSION,
-      action: 'download-and-install',
-      disabled: false
-    }
+      retryable: false,
+      installBlock: { reason: 'busy', instances: [] }
+    },
+    { kind: 'waiting', badge: true, action: 'expand-card', disabled: false }
   ],
   [
     'error without version',
     { state: 'error', message: 'offline' },
-    { kind: 'error', badge: false, version: null, action: 'check', disabled: false }
+    { kind: 'error', badge: false, version: null, action: 'expand-card', disabled: false }
   ]
 ]
-
-afterEach(() => {
-  useAppStore.setState(useAppStore.getInitialState(), true)
-})
 
 describe('getSidebarUpdateButtonModel', () => {
   it.each(rows)('maps %s', (_label, status, expected) => {
@@ -149,14 +170,5 @@ describe('getSidebarUpdateButtonModel', () => {
       percent: raw
     })
     expect(model.percent).toBe(expected)
-  })
-
-  it('keeps the badge on for a version the card dismissed', () => {
-    const status: UpdateStatus = { state: 'available', version: VERSION, changelog: null }
-    const before = getSidebarUpdateButtonModel(status)
-    useAppStore.setState({ dismissedUpdateVersion: VERSION })
-    const after = getSidebarUpdateButtonModel(status)
-    expect(after).toEqual(before)
-    expect(after.badge).toBe(true)
   })
 })

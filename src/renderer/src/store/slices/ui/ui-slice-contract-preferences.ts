@@ -210,6 +210,9 @@ export type UISlicePersistence = {
   // Ephemeral disclosure state; setUpdateStatus initializes it when the phase or error actionability changes.
   updateCardCollapsed: boolean
   setUpdateCardCollapsed: (collapsed: boolean) => void
+  // Why: one owner (UpdateCard) installs after a user-requested download, even if the requesting surface unmounts.
+  updateInstallOnDownload: boolean
+  setUpdateInstallOnDownload: (install: boolean) => void
   updateReassuranceSeen: boolean
   markUpdateReassuranceSeen: () => void
   seenMacosUpdateRequirement: string | null
