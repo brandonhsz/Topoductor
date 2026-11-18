@@ -61,3 +61,19 @@ export function getSelectedNotificationSoundPath(settings: NotificationSettings)
   }
   return { path: normalizedPath }
 }
+
+/** Resolves an IPC sound request: a `soundId` forces that bundled sound, otherwise the user's selection. */
+export function getRequestedNotificationSoundPath(
+  settings: NotificationSettings,
+  request: unknown
+): ReturnType<typeof getSelectedNotificationSoundPath> {
+  const soundId =
+    typeof request === 'object' && request !== null && 'soundId' in request
+      ? request.soundId
+      : undefined
+  if (soundId === undefined) {
+    return getSelectedNotificationSoundPath(settings)
+  }
+  const builtInPath = typeof soundId === 'string' ? BUILT_IN_NOTIFICATION_SOUNDS.get(soundId) : null
+  return builtInPath ? { path: builtInPath } : { path: null, reason: 'missing-path' }
+}

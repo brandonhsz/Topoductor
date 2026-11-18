@@ -1,9 +1,11 @@
 /** Share delivery, success sound and blocked-permission fallback across surfaces; callers own message content. Main applies banner preferences after mobile fanout, so callers cannot promise a banner. */
 import { playDesktopNotificationSound } from '@/lib/desktop-notification-sound'
 import { showBlockedNotificationFallbackToast } from '@/lib/blocked-notification-fallback'
+import { resolveAttentionAlertPlan } from '../../../shared/attention-alert-plan'
 import type {
   NotificationDispatchRequest,
-  NotificationDispatchResult
+  NotificationDispatchResult,
+  NotificationSoundId
 } from '../../../shared/notification-settings-types'
 
 export type AgentAttentionNotificationSound = {
@@ -20,9 +22,16 @@ export function deliverAgentAttentionNotification(
     .dispatch(request)
     .then((result) => {
       onResult?.(result)
-      if (result.delivered) {
-        void playDesktopNotificationSound(sound.customSoundId, sound.customSoundVolume)
-        return
+      const plan = resolveAttentionAlertPlan(result, {
+        // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the plan only distinguishes 'system' from any other id.
+        customSoundId: sound.customSoundId as NotificationSoundId
+      })
+      if (plan.playSound) {
+        void playDesktopNotificationSound(
+          sound.customSoundId,
+          sound.customSoundVolume,
+          plan.soundId
+        )
       }
       // Surface blocked macOS permission in-app rather than silently losing the notification.
       if (result.reason === 'blocked-by-system') {
