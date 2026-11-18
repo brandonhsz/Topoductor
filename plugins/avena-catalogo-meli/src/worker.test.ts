@@ -3,9 +3,10 @@ import { assert, mockHost, mountWorker, test } from 'orca/testing'
 import type { SupplementUpdate } from './backend-client'
 import type { MongoLocation, SourceProduct } from './catalog-source'
 import { isReferralUrl } from './catalog-status'
-import type { CardReading, MeliClient, ReferralResult } from './meli-browser'
+import type { CardReading, MeliClient, ReferralResult, SearchResult } from './meli-browser'
+import { CatalogDb } from './catalog-db'
 import type { Catalog } from './protocol'
-import { field, isCatalog } from './json-fields'
+import { field } from './json-fields'
 import { activateWith } from './worker'
 
 const CAPABILITIES = ['storage:own', 'secrets:own', 'settings:own']
@@ -51,6 +52,7 @@ const card = (url: string, overrides: Partial<CardReading> = {}): CardReading =>
   title: 'Biotina Nutricost en cápsula 240 un',
   seller: 'Nutricost',
   mlItemId: 'MLM19775686',
+  imageUrl: 'https://http2.mlstatic.com/card.webp',
   ...overrides
 })
 
@@ -58,6 +60,7 @@ function fakes(database: SourceProduct[]) {
   const writes: SupplementUpdate[][] = []
   const cards = new Map<string, CardReading>()
   const referrals = new Map<string, ReferralResult>()
+  const searches = new Map<string, SearchResult[]>()
   const meli: MeliClient = {
     async readCards(urls, onBatch) {
       await onBatch(urls.map((url) => cards.get(url) ?? card(url, { ok: false, price: null })))
@@ -74,8 +77,12 @@ function fakes(database: SourceProduct[]) {
     },
     async canonicalUrl() {
       return { status: 404, canonical: null, unavailable: false }
+    },
+    async search(query) {
+      return searches.get(query) ?? []
     }
   }
+  const db: { current: CatalogDb | null } = { current: null }
   const deps = {
     catalogSource: (uri: string, _location: MongoLocation) => async (ids?: readonly string[]) => {
       if (uri.includes('unreachable')) {
@@ -89,6 +96,12 @@ function fakes(database: SourceProduct[]) {
         }))
     },
     meli: () => meli,
+    fetchImage: async (url: string) =>
+      `data:image/webp;base64,${Buffer.from(url).toString('base64')}`,
+    openDb: () => {
+      db.current = new CatalogDb(':memory:')
+      return db.current
+    },
     async patch(_credentials: unknown, updates: readonly SupplementUpdate[]) {
       writes.push([...updates])
       for (const update of updates) {
@@ -100,7 +113,7 @@ function fakes(database: SourceProduct[]) {
       return updates
     }
   }
-  return { writes, cards, referrals, deps }
+  return { writes, cards, referrals, searches, deps, db }
 }
 
 async function start(database: SourceProduct[], secrets: Record<string, string> = SECRETS) {
@@ -110,13 +123,10 @@ async function start(database: SourceProduct[], secrets: Record<string, string> 
     { default: (orca: OrcaWorkerApi) => activateWith(orca, fake.deps) },
     { host }
   )
-  const stored = (): Catalog => {
-    const value = host.data().storage.catalog
-    if (!isCatalog(value)) {
-      throw new Error('no catalog stored')
-    }
-    return value
-  }
+  const stored = (): Catalog => ({
+    products: fake.db.current?.all() ?? [],
+    syncedAt: fake.db.current?.syncedAt() ?? null
+  })
   return { ...fake, host, worker, stored }
 }
 
@@ -142,7 +152,10 @@ test('sync loads the catalog and counts links shared by two products', async () 
   const result = await worker.request('catalog.sync')
   assert.equal(result.ok, true)
   assert.deepEqual(
-    stored().products.map((product) => [product.id, product.sharedCount, product.status]),
+    stored()
+      .products.slice()
+      .sort((a, b) => a.id.localeCompare(b.id))
+      .map((product) => [product.id, product.sharedCount, product.status]),
     [
       ['p1', 2, 'sin_revisar'],
       ['p2', 2, 'sin_revisar'],
@@ -216,7 +229,7 @@ test('a rejected referral keeps the reason ML gave', async () => {
   assert.equal(result.ok, false)
   assert.equal(
     stored().products[0].proposal?.reason,
-    'Este producto no cumple con los requisitos del Programa.'
+    'No entra al programa de afiliados (depende del vendedor)'
   )
 })
 
@@ -273,4 +286,201 @@ test('saving the configuration stores it in the plugin settings', async () => {
   const { worker, host } = await start([source()])
   await worker.request('connection.save', { config: { catalogOwner: ' otra-marca ' } })
   assert.equal(host.data().settings.catalogOwner, 'otra-marca')
+})
+
+test('bulk referrals propose one per direct link and save only the ones asked for', async () => {
+  const first = 'https://www.mercadolibre.com.mx/a/p/MLM1'
+  const second = 'https://www.mercadolibre.com.mx/b/p/MLM2'
+  const { worker, stored, referrals, cards, writes } = await start([
+    source({ id: 'a', productURL: first, linkKind: 'directo' }),
+    source({ id: 'b', productURL: second, linkKind: 'directo' }),
+    source({ id: 'c' })
+  ])
+  referrals.set(first, { url: first, referral: 'https://meli.la/a', reason: null })
+  cards.set('https://meli.la/a', card('https://meli.la/a'))
+  await worker.request('catalog.sync')
+
+  assert.equal((await worker.request('catalog.generateReferrals')).ok, true)
+  for (
+    let tries = 0;
+    tries < 50 &&
+    !worker.posts.some(
+      (post) => post.event === 'referrals.progress' && field(post.payload, 'running') === false
+    );
+    tries++
+  ) {
+    await new Promise((resolve) => setTimeout(resolve, 5))
+  }
+  const byId = new Map(stored().products.map((product) => [product.id, product]))
+  assert.equal(byId.get('a')?.proposal?.url, 'https://meli.la/a')
+  assert.equal(byId.get('b')?.proposal?.url, null)
+  assert.equal(
+    byId.get('b')?.proposal?.reason,
+    'No entra al programa de afiliados (depende del vendedor)'
+  )
+  assert.equal(byId.get('b')?.status, 'referido_rechazado')
+  assert.equal(byId.get('c')?.proposal, null)
+  assert.deepEqual(writes, [])
+
+  assert.equal((await worker.request('catalog.applyProposals', { ids: ['a', 'b'] })).ok, true)
+  assert.deepEqual(writes, [[{ id: 'a', productURL: 'https://meli.la/a' }]])
+})
+
+test('a large catalog fits in the local database with its reading history', async () => {
+  const many = Array.from({ length: 1500 }, (_, index) =>
+    source({ id: `p${index}`, productURL: `https://meli.la/${index}`, name: 'x'.repeat(300) })
+  )
+  const { worker, stored, db } = await start(many)
+  assert.equal((await worker.request('catalog.sync')).ok, true)
+  assert.equal(stored().products.length, 1500)
+  await worker.request('catalog.audit', {})
+  await settledAudit(worker)
+  await worker.request('catalog.audit', {})
+  const history = db.current?.history('p7')
+  assert.equal(history?.readings.length, 2)
+  const page = await worker.request('catalog.view', {
+    filter: 'roto',
+    search: '',
+    sort: { column: 'producto', direction: 'asc' },
+    limit: 50
+  })
+  assert.equal(page.rows.length, 50)
+  assert.equal(page.total, 1500)
+  assert.equal(page.counts.roto, 1500)
+})
+
+test('what older versions kept in the plugin storage moves into the database', async () => {
+  const fake = fakes([source()])
+  const legacy = {
+    syncedAt: 1,
+    products: [
+      {
+        ...source(),
+        sharedCount: 1,
+        reading: card('https://meli.la/abc'),
+        proposal: null,
+        status: 'ok',
+        diffPct: null
+      }
+    ]
+  }
+  const host = mockHost({
+    capabilities: CAPABILITIES,
+    secrets: SECRETS,
+    settings: SETTINGS,
+    storage: { catalog: legacy }
+  })
+  const worker = await mountWorker(
+    { default: (orca: OrcaWorkerApi) => activateWith(orca, fake.deps) },
+    { host }
+  )
+  const page = await worker.request('catalog.view', {
+    filter: 'todos',
+    search: '',
+    sort: { column: 'producto', direction: 'asc' },
+    limit: 10
+  })
+  assert.equal(page.rows[0]?.reading?.mlItemId, 'MLM19775686')
+  assert.equal(host.data().storage.catalog, undefined)
+})
+
+test('referral attempts are kept with their reason', async () => {
+  const direct = 'https://www.mercadolibre.com.mx/p/MLM40443067'
+  const { worker, db } = await start([source({ productURL: direct, linkKind: 'directo' })])
+  await worker.request('catalog.sync')
+  await worker.request('catalog.generateReferral', { id: 'p1' })
+  await worker.request('catalog.generateReferral', { id: 'p1' })
+  const attempts = db.current?.history('p1')?.attempts ?? []
+  assert.equal(attempts.length, 2)
+  assert.equal(attempts[0]?.reason, 'No entra al programa de afiliados (depende del vendedor)')
+})
+
+test('a broken link is repaired from a search result the person picks', async () => {
+  const { worker, stored, cards, referrals, searches, writes } = await start([source()])
+  const replacement = 'https://www.mercadolibre.com.mx/biotina/p/MLM99'
+  searches.set('nutricost biotin', [
+    {
+      url: replacement,
+      title: 'Biotina Nutricost 240 cápsulas',
+      price: 380,
+      seller: 'Nutricost',
+      imageUrl: 'https://http2.mlstatic.com/a.webp'
+    }
+  ])
+  referrals.set(replacement, { url: replacement, referral: 'https://meli.la/fixed', reason: null })
+  cards.set('https://meli.la/fixed', card('https://meli.la/fixed'))
+  await worker.request('catalog.sync')
+  await worker.request('catalog.audit', {})
+  await settledAudit(worker)
+  assert.equal(stored().products[0]?.status, 'roto')
+
+  const found = await worker.request('catalog.searchReplacement', { id: 'p1' })
+  assert.deepEqual(
+    found.candidates.map((candidate) => candidate.url),
+    [replacement]
+  )
+  await worker.request('catalog.generateReferral', { id: 'p1', url: replacement })
+  assert.equal(stored().products[0]?.proposal?.url, 'https://meli.la/fixed')
+  assert.match(found.candidates[0]?.image ?? '', /^data:image\/webp;base64,/)
+  assert.match(stored().products[0]?.proposal?.image ?? '', /^data:image\/webp;base64,/)
+
+  assert.equal(stored().products[0]?.status, 'referido_listo')
+
+  const ids = await worker.request('catalog.ids', { scope: 'pendingReferrals' })
+  const saved = await worker.request('catalog.applyProposals', { ids })
+  assert.deepEqual(writes, [[{ id: 'p1', productURL: 'https://meli.la/fixed' }]])
+  assert.match(saved.message, /Verificando/)
+  // Saving reads the new link again: «Al día» or «Cambio de precio» means it took.
+  for (let tries = 0; tries < 50 && stored().products[0]?.status === 'sin_revisar'; tries++) {
+    await new Promise((resolve) => setTimeout(resolve, 5))
+  }
+  assert.equal(stored().products[0]?.status, 'precio_cambio')
+  assert.equal(stored().products[0]?.productURL, 'https://meli.la/fixed')
+})
+
+test('bulk repair proposes only search results of the same brand', async () => {
+  const { worker, stored, cards, referrals, searches } = await start([
+    source({ id: 'a', productURL: 'https://meli.la/a' }),
+    source({ id: 'b', productURL: 'https://meli.la/b', brand: 'gnc', name: 'zinc' })
+  ])
+  const same = 'https://www.mercadolibre.com.mx/biotina/p/MLM1'
+  searches.set('nutricost biotin', [
+    {
+      url: 'https://www.mercadolibre.com.mx/otra/p/MLM0',
+      title: 'Biotina Genérica',
+      price: 1,
+      seller: null,
+      imageUrl: null
+    },
+    { url: same, title: 'Biotina Nutricost 240', price: 2, seller: null, imageUrl: null }
+  ])
+  searches.set('gnc zinc', [
+    {
+      url: 'https://www.mercadolibre.com.mx/zinc/p/MLM2',
+      title: 'Zinc Nature Made',
+      price: 3,
+      seller: null,
+      imageUrl: null
+    }
+  ])
+  referrals.set(same, { url: same, referral: 'https://meli.la/new-a', reason: null })
+  cards.set('https://meli.la/new-a', card('https://meli.la/new-a'))
+  await worker.request('catalog.sync')
+  await worker.request('catalog.audit', {})
+  await settledAudit(worker)
+
+  assert.equal((await worker.request('catalog.proposeReplacements')).ok, true)
+  for (
+    let tries = 0;
+    tries < 50 &&
+    !worker.posts.some(
+      (post) => post.event === 'repairs.progress' && field(post.payload, 'running') === false
+    );
+    tries++
+  ) {
+    await new Promise((resolve) => setTimeout(resolve, 5))
+  }
+  const byId = new Map(stored().products.map((product) => [product.id, product]))
+  assert.equal(byId.get('a')?.proposal?.url, 'https://meli.la/new-a')
+  assert.equal(byId.get('b')?.proposal, null)
 })

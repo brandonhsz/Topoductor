@@ -24,6 +24,10 @@ export function readCardsExpression(urls: readonly string[], concurrency = 10): 
     const cents = el.querySelector('.andes-money-amount__cents');
     return Number(fraction.textContent.replace(/[.,]/g, '') + (cents ? '.' + cents.textContent.trim() : ''));
   };
+  const imageOf = (card) => {
+    const img = card.querySelector('img');
+    return img ? (img.getAttribute('data-src') || img.currentSrc || img.src || null) : null;
+  };
   const extract = (doc, url) => {
     const card = doc && doc.querySelector && doc.querySelector('.rl-card-featured');
     const path = doc && doc.location ? doc.location.pathname : null;
@@ -41,7 +45,8 @@ export function readCardsExpression(urls: readonly string[], concurrency = 10): 
       discountPercentage: discount ? Number(discount[1]) : (listPrice && price ? Math.round(100 * (listPrice - price) / listPrice) : null),
       title: ((q('.poly-component__title') || {}).textContent || '').trim() || null,
       seller: ((q('.poly-component__seller') || {}).textContent || '').trim().replace(/^Por /, '') || null,
-      mlItemId: link ? ((link.href.match(/MLM-?\\w*\\d+/) || [null])[0]) : null
+      mlItemId: link ? ((link.href.match(/MLM-?\\w*\\d+/) || [null])[0]) : null,
+      imageUrl: imageOf(card)
     };
   };
   const open = (url) => new Promise((resolve) => {
@@ -114,3 +119,28 @@ export function canonicalUrlExpression(url: string): string {
   }
 })()`
 }
+
+/** The search page for a product name: listado.mercadolibre.com.mx/<words-joined-by-dashes>. */
+export function searchUrl(query: string): string {
+  const slug = query
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+  return `https://listado.mercadolibre.com.mx/${slug}`
+}
+
+/** The first results of a search page: title, clean product URL, price and seller. */
+export const SEARCH_RESULTS_EXPRESSION = `JSON.stringify([...document.querySelectorAll('.poly-card')].slice(0, 8).map((card) => {
+  const link = card.querySelector('a.poly-component__title, .poly-component__title a, a');
+  const fraction = card.querySelector('.poly-price__current .andes-money-amount__fraction');
+  const cents = card.querySelector('.poly-price__current .andes-money-amount__cents');
+  return {
+    title: ((card.querySelector('.poly-component__title') || {}).textContent || '').trim(),
+    url: link ? link.href.split('#')[0] : null,
+    price: fraction ? Number(fraction.textContent.replace(/[.,]/g, '') + (cents ? '.' + cents.textContent.trim() : '')) : null,
+    seller: ((card.querySelector('.poly-component__seller') || {}).textContent || '').trim().replace(/^Por /, '') || null,
+    imageUrl: (() => { const img = card.querySelector('img'); return img ? (img.getAttribute('data-src') || img.currentSrc || img.src || null) : null })()
+  };
+}).filter((result) => result.url && result.title))`

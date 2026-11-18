@@ -13,8 +13,10 @@ import {
   Switch,
   Text
 } from 'orca'
-import { STATUS_LABELS } from './catalog-status'
-import { busy, progress, runAction, selected, urlDraft } from './panel-state'
+import { STATUS_DESCRIPTIONS, STATUS_LABELS } from './catalog-status'
+import { busy, changeFilter, progress, runAction, selected, urlDraft } from './panel-state'
+import { ProductHistory } from './product-history'
+import { RepairSearch } from './repair-search'
 import type { Product } from './protocol'
 
 export function money(value: number | null | undefined): string {
@@ -26,7 +28,6 @@ export function money(value: number | null | undefined): string {
 function facts(product: Product) {
   const { reading } = product
   return [
-    { label: 'Estatus', value: STATUS_LABELS[product.status] },
     { label: 'Owner', value: product.owner || '—' },
     { label: 'Link', value: product.productURL },
     {
@@ -76,6 +77,20 @@ export function ProductDetail() {
             </Text>
           </Callout>
         ) : null}
+        <Row gap="xs" align="center">
+          <Text muted size="sm">
+            Estatus
+          </Text>
+          <Button
+            size="xs"
+            variant="outline"
+            icon="info"
+            tooltip={STATUS_DESCRIPTIONS[product.status]}
+            onPress={() => changeFilter(product.status)}
+          >
+            {STATUS_LABELS[product.status]}
+          </Button>
+        </Row>
         <KeyValue items={facts(product)} />
         <Row gap="xs" wrap>
           <Button
@@ -105,6 +120,12 @@ export function ProductDetail() {
             Abrir
           </Button>
         </Row>
+        {product.status === 'roto' ||
+        (product.status === 'referido_listo' && product.reading?.ok === false) ? (
+          <Callout tone="warning" title="Link roto">
+            <RepairSearch product={product} />
+          </Callout>
+        ) : null}
         <Input
           label="URL de MercadoLibre"
           placeholder={
@@ -180,6 +201,7 @@ export function ProductDetail() {
             )
           }
         />
+        <ProductHistory />
       </Stack>
     </Card>
   )

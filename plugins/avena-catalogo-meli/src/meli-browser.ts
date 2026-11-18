@@ -2,13 +2,15 @@
 // session lives there, and plugins have no browser API of their own.
 import { execFile } from 'node:child_process'
 import { amount, field, records, text, toCardReading } from './json-fields'
-import type { MeliReading } from './protocol'
+import type { MeliReading, SearchCandidate } from './protocol'
 import {
   canonicalUrlExpression,
   generateLinksExpression,
   LINKBUILDER_BATCH,
   LINKBUILDER_URL,
   readCardsExpression,
+  SEARCH_RESULTS_EXPRESSION,
+  searchUrl,
   SESSION_EXPRESSION
 } from './meli-page-scripts'
 
@@ -27,7 +29,11 @@ export type MeliClient = {
   canonicalUrl(
     url: string
   ): Promise<{ status: number; canonical: string | null; unavailable: boolean }>
+  search(query: string): Promise<SearchResult[]>
 }
+
+/** A search result as the page shows it; the worker turns `imageUrl` into the panel's image. */
+export type SearchResult = Omit<SearchCandidate, 'image'> & { imageUrl: string | null }
 
 export class MeliSessionError extends Error {}
 
@@ -65,7 +71,7 @@ export class MeliBrowser {
   private async findTab(): Promise<Tab> {
     const listed = await this.run(['tab', 'list', '--worktree', 'all'], 20_000)
     const tab = records(field(listed, 'tabs')).find((candidate) =>
-      text(candidate.url)?.startsWith('https://www.mercadolibre.com.mx/')
+      /^https:\/\/[a-z]+\.mercadolibre\.com\.mx\//.test(text(candidate.url) ?? '')
     )
     const tabId = text(tab?.browserPageId)
     if (tab && tabId) {
@@ -167,5 +173,30 @@ export class MeliBrowser {
       canonical: text(field(page, 'canonical')),
       unavailable: field(page, 'unavailable') === true
     }
+  }
+
+  /** The first results MercadoLibre's own search shows for a product name. */
+  async search(query: string): Promise<SearchResult[]> {
+    const tab = await this.findTab()
+    await this.run(['goto', '--page', tab.browserPageId, '--url', searchUrl(query)], 45_000)
+    await this.run(['wait', '--page', tab.browserPageId, '--selector', '.poly-card'], 20_000).catch(
+      () => undefined
+    )
+    const found = await this.evaluate(tab.browserPageId, SEARCH_RESULTS_EXPRESSION)
+    return records(found).flatMap((result) => {
+      const url = text(result.url)
+      const title = text(result.title)
+      return url && title
+        ? [
+            {
+              url,
+              title,
+              price: amount(result.price),
+              seller: text(result.seller),
+              imageUrl: text(result.imageUrl)
+            }
+          ]
+        : []
+    })
   }
 }

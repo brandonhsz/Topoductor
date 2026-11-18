@@ -21,27 +21,34 @@ import {
 import { STATUS_LABELS } from './catalog-status'
 import { ConnectionForm } from './connection-form'
 import {
-  applicable,
   busy,
-  catalog,
+  changeFilter,
+  changeSearch,
+  changeSort,
   confirmingBulk,
   connection,
   filter,
   loadConnection,
+  loadMore,
+  loadView,
   notice,
-  products,
   progress,
+  referralProgress,
+  refreshAll,
+  repairProgress,
   REVIEW_STATUSES,
   runAction,
   search,
   selectedId,
+  selectProduct,
   sort,
-  urlDraft,
-  visible,
+  view,
   type Filter
 } from './panel-state'
 import { money, ProductDetail } from './product-detail'
-import type { Product, ProductStatus } from './protocol'
+import { ReferralBulk } from './referral-bulk'
+import { StatusLegend } from './status-legend'
+import type { CatalogView, Product, ProductStatus } from './protocol'
 
 const STATUS_ORDER: readonly ProductStatus[] = [...REVIEW_STATUSES, 'ok', 'sin_revisar']
 
@@ -65,7 +72,10 @@ function toRow(product: Product): TableRow {
     key: product.id,
     cells: {
       producto: `${product.brand} · ${product.name}`,
-      estatus: STATUS_LABELS[product.status],
+      estatus:
+        product.status === 'referido_rechazado' && product.proposal?.reason
+          ? `Rechazado: ${product.proposal.reason}`
+          : STATUS_LABELS[product.status],
       guardado: money(product.price),
       ml: reading ? (reading.ok ? money(reading.price) : 'roto') : '—',
       dif: product.diffPct === null ? '' : `${product.diffPct > 0 ? '+' : ''}${product.diffPct}%`
@@ -73,16 +83,13 @@ function toRow(product: Product): TableRow {
   }
 }
 
-function filterOptions(all: readonly Product[]) {
-  const count = (status: ProductStatus) => all.filter((product) => product.status === status).length
-  const review = all.filter((product) => REVIEW_STATUSES.includes(product.status)).length
+function filterOptions(current: CatalogView) {
+  const count = (status: ProductStatus) => current.counts[status] ?? 0
+  const review = REVIEW_STATUSES.reduce((sum, status) => sum + count(status), 0)
   return [
     { value: 'revisar', label: `Por revisar (${review})` },
-    { value: 'todos', label: `Todos (${all.length})` },
-    {
-      value: 'con_referido',
-      label: `Con link de referido (${all.filter((product) => product.linkKind === 'referido').length})`
-    },
+    { value: 'todos', label: `Todos (${current.all})` },
+    { value: 'con_referido', label: `Con link de referido (${current.withReferral})` },
     ...STATUS_ORDER.filter((status) => count(status) > 0).map((status) => ({
       value: status,
       label: `${STATUS_LABELS[status]} (${count(status)})`
@@ -103,26 +110,29 @@ function selectedKeys(id: string | null): string[] {
   return id ? [id] : []
 }
 
-function select(id: string | null): void {
-  set(selectedId, id)
-  set(urlDraft, '')
-}
-
 async function applyAll(): Promise<void> {
   set(confirmingBulk, false)
-  await runAction('bulk', () =>
-    plugin.request('catalog.applyPrices', { ids: read(applicable).map((product) => product.id) })
+  await runAction('bulk', async () =>
+    plugin.request('catalog.applyPrices', {
+      ids: await plugin.request('catalog.ids', { scope: 'applicable' })
+    })
   )
 }
 
 export function setup(ctx: PanelContext): void {
-  ctx.subscriptions.push(plugin.on('audit.progress', (payload) => set(progress, payload)))
+  ctx.subscriptions.push(
+    plugin.on('audit.progress', (payload) => set(progress, payload)),
+    plugin.on('referrals.progress', (payload) => set(referralProgress, payload)),
+    plugin.on('repairs.progress', (payload) => set(repairProgress, payload)),
+    plugin.on('catalog.changed', () => void refreshAll())
+  )
+  void loadView()
   void loadConnection().catch(() => undefined)
 }
 
 function Toolbar() {
   const working = read(busy) !== null || read(progress)?.running === true
-  const pending = read(applicable).length
+  const pending = read(view)?.applicable ?? 0
   return (
     <Stack gap="xs">
       <Row gap="xs" wrap>
@@ -135,7 +145,7 @@ function Toolbar() {
         </Button>
         <Button
           icon="play"
-          disabled={working || read(products).length === 0}
+          disabled={working || (read(view)?.all ?? 0) === 0}
           onPress={() => runAction('audit', () => plugin.request('catalog.audit', {}))}
         >
           Leer precios en ML
@@ -194,8 +204,7 @@ function AuditStatus() {
 }
 
 export default function Panel() {
-  const data = read(catalog)
-  const all = read(products)
+  const data = read(view)
   const status = read(connection)
   const message = read(notice)
   const missing = status !== null && (!status.mongo || !status.backend)
@@ -203,7 +212,7 @@ export default function Panel() {
     <Stack gap="md">
       <Row justify="between">
         <Heading>Catálogo MercadoLibre</Heading>
-        <Badge tone="accent">{all.length} productos</Badge>
+        <Badge tone="accent">{data?.all ?? 0} productos</Badge>
       </Row>
       {missing ? (
         <Callout tone="warning" title="Faltan conexiones">
@@ -211,13 +220,14 @@ export default function Panel() {
         </Callout>
       ) : null}
       <Toolbar />
+      <ReferralBulk />
       <AuditStatus />
       {message ? (
         <Callout tone={message.ok ? 'success' : 'danger'}>
           <Text>{message.text}</Text>
         </Callout>
       ) : null}
-      {data === null || all.length === 0 ? (
+      {data === null || data.all === 0 ? (
         <EmptyState
           icon="database"
           title="Sin catálogo cargado"
@@ -225,15 +235,16 @@ export default function Panel() {
         />
       ) : (
         <Stack gap="sm">
+          <StatusLegend />
           <Row gap="xs">
             <Select
               label="Filtro"
               labelHidden
               value={read(filter)}
-              options={filterOptions(all)}
+              options={filterOptions(data)}
               onChange={(value) => {
                 if (isFilter(value)) {
-                  set(filter, value)
+                  changeFilter(value)
                 }
               }}
             />
@@ -243,18 +254,20 @@ export default function Panel() {
               type="search"
               placeholder="Marca o nombre"
               value={read(search)}
-              onChange={(value) => set(search, value)}
+              onChange={changeSearch}
             />
           </Row>
           <Table
             label="Suplementos"
             columns={COLUMNS}
-            rows={read(visible).map(toRow)}
+            rows={data.rows.map(toRow)}
             sort={read(sort)}
-            onSortChange={(next) => set(sort, next)}
+            onSortChange={changeSort}
+            hasMore={data.rows.length < data.total}
+            onLoadMore={loadMore}
             selectionMode="single"
             selected={selectedKeys(read(selectedId))}
-            onSelectionChange={({ keys }) => select(keys[0] ?? null)}
+            onSelectionChange={({ keys }) => selectProduct(keys[0] ?? null)}
             emptyText="Nada con este filtro."
             maxHeight="md"
           />

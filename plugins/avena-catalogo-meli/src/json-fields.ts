@@ -35,7 +35,8 @@ export function toCardReading(raw: JsonRecord, checkedAt: number): MeliReading &
     discountPercentage: amount(raw.discountPercentage),
     title: text(raw.title),
     seller: text(raw.seller),
-    mlItemId: text(raw.mlItemId)
+    mlItemId: text(raw.mlItemId),
+    imageUrl: text(raw.imageUrl)
   }
 }
 

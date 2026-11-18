@@ -43,6 +43,23 @@ Los documentos de Mongo deben tener `owner`, `productURL`, `price`, `name`, `bra
 El worker usa el CLI de Topo para manejar el navegador; en macOS lo encuentra solo, en otros
 sistemas pon su ruta en Ajustes.
 
+## Base local
+
+El worker guarda el catálogo en un archivo SQLite (`node:sqlite`, incluido en el Node de Topo;
+no hay dependencias nativas):
+
+| Tabla               | Qué guarda                                                                  |
+| ------------------- | --------------------------------------------------------------------------- |
+| `products`          | El estado actual de cada producto: lectura, propuesta de referido y estatus |
+| `readings`          | Cada lectura de precio en MercadoLibre, con fecha (historial)               |
+| `referral_attempts` | Cada intento de referido, con el link generado o el motivo del rechazo      |
+
+Por defecto vive en la carpeta de datos del usuario (`~/Library/Application Support/topo-catalogo-mercadolibre/catalog.db`
+en macOS, `%USERPROFILE%\AppData\Roaming\…` en Windows, `~/.local/share/…` en Linux); el ajuste
+**Ruta de la base local** la cambia. El panel no carga el catálogo: pide al worker la página
+filtrada y ordenada que muestra, y el historial del producto seleccionado. Lo que versiones
+anteriores guardaban en el almacenamiento del plugin se migra a la base la primera vez.
+
 ## Desarrollo
 
 ```sh

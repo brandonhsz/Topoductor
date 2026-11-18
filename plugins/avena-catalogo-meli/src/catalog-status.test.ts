@@ -1,5 +1,12 @@
 import { assert, describe, test } from 'orca/testing'
-import { brandMatches, classify, pricePayload, priceDiffPct, withStatus } from './catalog-status'
+import {
+  brandMatches,
+  classify,
+  nameMatches,
+  pricePayload,
+  priceDiffPct,
+  withStatus
+} from './catalog-status'
 import type { MeliReading, Product } from './protocol'
 
 const reading = (overrides: Partial<MeliReading> = {}): MeliReading => ({
@@ -47,6 +54,14 @@ describe('classify', () => {
       ),
       'link_directo'
     )
+  })
+
+  test('a direct link MercadoLibre refused keeps its own status', () => {
+    const rejected = product({
+      linkKind: 'directo',
+      proposal: { url: null, reason: 'La publicación está pausada', title: null, createdAt: 1 }
+    })
+    assert.equal(classify(rejected), 'referido_rechazado')
   })
 
   test('an unread link waits for a reading, a missing card is broken', () => {
@@ -109,4 +124,10 @@ describe('pricePayload', () => {
   test('nothing to write without a live reading', () => {
     assert.equal(pricePayload(product({ reading: reading({ ok: false, price: null }) })), null)
   })
+})
+
+test('a same-brand result only counts when it names the product too', () => {
+  assert.equal(nameMatches('Matter', 'Ka 30', 'Matter Ossforte Colageno 30 Porciones'), false)
+  assert.equal(nameMatches('Matter', 'Ka 30', 'Matter Ka 30 Colágeno 30 sobres'), true)
+  assert.equal(nameMatches('nutricost', 'biotin', 'Biotina Nutricost 240 cápsulas'), true)
 })
