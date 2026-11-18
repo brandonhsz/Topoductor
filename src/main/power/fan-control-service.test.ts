@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, type Mock } from 'vitest'
 import type { FanControlStatus } from '../../shared/fan-control-contract'
 import { FanControlService, type FanControlServiceDeps } from './fan-control-service'
 
@@ -12,21 +12,34 @@ const TWO_FANS = JSON.stringify({
   ]
 })
 
+type RunHelper = FanControlServiceDeps['runHelper']
+type RunPrivileged = FanControlServiceDeps['runPrivileged']
+type SupportedStatus = Extract<FanControlStatus, { supported: true }>
+
 type Harness = {
   service: FanControlService
   deps: FanControlServiceDeps
   files: Map<string, string>
-  runPrivileged: ReturnType<typeof vi.fn>
-  runHelper: ReturnType<typeof vi.fn>
+  runPrivileged: Mock<RunPrivileged>
+  runHelper: Mock<RunHelper>
 }
 
-function createHarness(overrides: Partial<FanControlServiceDeps> = {}): Harness {
+type HarnessOverrides = Partial<Omit<FanControlServiceDeps, 'runHelper' | 'runPrivileged'>> & {
+  runHelper?: Mock<RunHelper>
+  runPrivileged?: (files: Map<string, string>) => Mock<RunPrivileged>
+}
+
+function createHarness(overrides: HarnessOverrides = {}): Harness {
   const files = new Map<string, string>()
-  const runHelper = vi.fn(async () => ({ code: 0, stdout: TWO_FANS, stderr: '' }))
+  const { runHelper: helperOverride, runPrivileged: privilegedOverride, ...rest } = overrides
+  const runHelper =
+    helperOverride ?? vi.fn<RunHelper>(async () => ({ code: 0, stdout: TWO_FANS, stderr: '' }))
   // The real hold rewrites the lease to 'ready' once both fans are forced.
-  const runPrivileged = vi.fn(async () => {
-    files.set(LEASE, 'ready')
-  })
+  const runPrivileged =
+    privilegedOverride?.(files) ??
+    vi.fn<RunPrivileged>(async () => {
+      files.set(LEASE, 'ready')
+    })
   const deps: FanControlServiceDeps = {
     platform: 'darwin',
     helperPath: HELPER,
@@ -48,20 +61,16 @@ function createHarness(overrides: Partial<FanControlServiceDeps> = {}): Harness 
     },
     sleep: async () => {},
     readyTimeoutMs: 50,
-    ...overrides
+    ...rest
   }
-  return {
-    service: new FanControlService(deps),
-    deps,
-    files,
-    runPrivileged: deps.runPrivileged as ReturnType<typeof vi.fn>,
-    runHelper: deps.runHelper as ReturnType<typeof vi.fn>
-  }
+  return { service: new FanControlService(deps), deps, files, runPrivileged, runHelper }
 }
 
-function expectSupported(status: FanControlStatus): Extract<FanControlStatus, { supported: true }> {
-  expect(status.supported).toBe(true)
-  return status as Extract<FanControlStatus, { supported: true }>
+function expectSupported(status: FanControlStatus): SupportedStatus {
+  if (!status.supported) {
+    throw new Error(`expected a supported status, got ${status.reason}`)
+  }
+  return status
 }
 
 describe('FanControlService support detection', () => {
@@ -81,7 +90,7 @@ describe('FanControlService support detection', () => {
 
   it('reports no-fans for fanless Macs', async () => {
     const { service } = createHarness({
-      runHelper: vi.fn(async () => ({
+      runHelper: vi.fn<RunHelper>(async () => ({
         code: 0,
         stdout: JSON.stringify({ mode: 'auto', fans: [] }),
         stderr: ''
@@ -92,7 +101,7 @@ describe('FanControlService support detection', () => {
 
   it('reports smc-unavailable when the status helper fails', async () => {
     const { service } = createHarness({
-      runHelper: vi.fn(async () => ({
+      runHelper: vi.fn<RunHelper>(async () => ({
         code: 1,
         stdout: '{"error":"cannot open AppleSMC"}',
         stderr: ''
@@ -123,7 +132,7 @@ describe('FanControlService.setMode', () => {
     expect(expectSupported(result.status).mode).toBe('max')
     expect(files.has(LEASE)).toBe(true)
     expect(runPrivileged).toHaveBeenCalledTimes(1)
-    const command = runPrivileged.mock.calls[0][0] as string
+    const [command] = runPrivileged.mock.calls[0]
     expect(command).toContain(`'${HELPER}' hold`)
     expect(command).toContain('--parent-pid 4242')
     expect(command).toContain(`--lease '${LEASE}'`)
@@ -133,14 +142,15 @@ describe('FanControlService.setMode', () => {
 
   it('escapes single quotes in paths before handing them to the root shell', async () => {
     const lease = "/Users/o'brien/Library/Application Support/topo/fan-control.lease"
-    const { service, runPrivileged, files } = createHarness({
+    const { service, runPrivileged } = createHarness({
       leasePath: lease,
-      runPrivileged: vi.fn(async () => {
-        files.set(lease, 'ready')
-      })
+      runPrivileged: (files) =>
+        vi.fn<RunPrivileged>(async () => {
+          files.set(lease, 'ready')
+        })
     })
     await service.setMode('max')
-    const command = runPrivileged.mock.calls[0][0] as string
+    const [command] = runPrivileged.mock.calls[0]
     expect(command).toContain(
       `--lease '/Users/o'\\''brien/Library/Application Support/topo/fan-control.lease'`
     )
@@ -152,9 +162,10 @@ describe('FanControlService.setMode', () => {
       stderr: 'execution error: User canceled. (-128)'
     })
     const { service, files } = createHarness({
-      runPrivileged: vi.fn(async () => {
-        throw cancelled
-      })
+      runPrivileged: () =>
+        vi.fn<RunPrivileged>(async () => {
+          throw cancelled
+        })
     })
     const result = await service.setMode('max')
 
@@ -180,7 +191,9 @@ describe('FanControlService.setMode', () => {
   })
 
   it('reports helper-failed and stays in auto when the hold never signals ready', async () => {
-    const { service, files } = createHarness({ runPrivileged: vi.fn(async () => {}) })
+    const { service, files } = createHarness({
+      runPrivileged: () => vi.fn<RunPrivileged>(async () => {})
+    })
     const result = await service.setMode('max')
 
     expect(result).toMatchObject({ ok: false, error: { kind: 'helper-failed' } })

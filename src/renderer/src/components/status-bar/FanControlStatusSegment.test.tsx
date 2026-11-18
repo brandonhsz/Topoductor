@@ -201,7 +201,7 @@ describe('FanControlStatusSegment state', () => {
     stubApi({ ...AUTO, pending: true })
     await mount()
     for (const option of screen.getAllByRole('menuitemradio')) {
-      expect((option as HTMLButtonElement).disabled).toBe(true)
+      expect(option.hasAttribute('disabled')).toBe(true)
     }
   })
 })

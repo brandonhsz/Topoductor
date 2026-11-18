@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Fan } from 'lucide-react'
 import {
   DropdownMenu,
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { isPairedWebClientWindow } from '@/lib/desktop-window-chrome'
+import { installWindowVisibilityInterval } from '@/lib/window-visibility-interval'
 import { uiNumberFormat } from '@/i18n/ui-intl-formatters'
 import { useTranslate, type Translate } from '@/i18n/use-translate'
 import type { PreloadApi } from '../../../../preload/api-types'
@@ -26,10 +27,13 @@ export type SupportedFanControlStatus = Extract<FanControlStatus, { supported: t
 
 // Intl formatter caches key on option identity, so this must be a module constant.
 const RPM_FORMAT: Intl.NumberFormatOptions = { maximumFractionDigits: 0 }
+// Live RPM only while the menu is open; the interval pauses with the window.
+const FAN_READING_REFRESH_MS = 2_000
 
 function fanControlBridge(): FanControlApi | undefined {
   // Paired web clients expose a partial bridge without fan control.
-  return (window.api as Partial<PreloadApi> | undefined)?.fanControl
+  const api: Partial<PreloadApi> | undefined = window.api
+  return api?.fanControl
 }
 
 function modeLabel(mode: FanControlMode, t: Translate): string {
@@ -123,9 +127,11 @@ export function FanControlMenuView({
         sideOffset={8}
         className="w-72"
       >
-        <DropdownMenuLabel className="flex items-center justify-between gap-3">
-          <span>{title}</span>
-          <span className="font-normal text-muted-foreground">{currentLabel}</span>
+        <DropdownMenuLabel>
+          <span className="flex items-center justify-between gap-3">
+            <span>{title}</span>
+            <span className="font-normal text-muted-foreground">{currentLabel}</span>
+          </span>
         </DropdownMenuLabel>
         {status.fans.length > 0 ? (
           <ul className="px-2 pb-1.5 text-[11px] text-muted-foreground">
@@ -150,7 +156,7 @@ export function FanControlMenuView({
           value={status.mode}
           onValueChange={(value) => onSelectMode(value === 'max' ? 'max' : 'auto')}
         >
-          <DropdownMenuRadioItem value="auto" disabled={status.pending} className="py-1.5">
+          <DropdownMenuRadioItem value="auto" disabled={status.pending}>
             <span className="flex flex-col">
               <span>{modeLabel('auto', t)}</span>
               <span className="text-[11px] font-normal text-muted-foreground">
@@ -161,7 +167,7 @@ export function FanControlMenuView({
               </span>
             </span>
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="max" disabled={status.pending} className="py-1.5">
+          <DropdownMenuRadioItem value="max" disabled={status.pending}>
             <span className="flex flex-col">
               <span>{modeLabel('max', t)}</span>
               <span className="text-[11px] font-normal text-muted-foreground">
@@ -193,7 +199,7 @@ export function FanControlStatusSegment({
 }): React.JSX.Element | null {
   const [status, setStatus] = useState<FanControlStatus | null>(null)
   const [notice, setNotice] = useState<FanControlError | null>(null)
-  const monitoringRef = useRef(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const api = fanControlBridge()
@@ -217,21 +223,30 @@ export function FanControlStatusSegment({
     return () => {
       mounted = false
       unsubscribe()
-      if (monitoringRef.current) {
-        monitoringRef.current = false
-        api.setMonitoring(false)
-      }
     }
   }, [])
+
+  useEffect(() => {
+    const api = fanControlBridge()
+    if (!menuOpen || !api) {
+      return
+    }
+    api.setMonitoring(true)
+    const stop = installWindowVisibilityInterval({
+      run: () => api.setMonitoring(true),
+      intervalMs: FAN_READING_REFRESH_MS
+    })
+    return () => {
+      stop()
+      api.setMonitoring(false)
+    }
+  }, [menuOpen])
 
   const handleOpenChange = useCallback((open: boolean) => {
     if (open) {
       setNotice(null)
     }
-    if (monitoringRef.current !== open) {
-      monitoringRef.current = open
-      fanControlBridge()?.setMonitoring(open)
-    }
+    setMenuOpen(open)
   }, [])
 
   const handleSelectMode = useCallback((mode: FanControlMode) => {

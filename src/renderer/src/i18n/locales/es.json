@@ -4612,6 +4612,19 @@
           },
           "InlineUsageBars": {
             "resetsAt": "Se restablece a las {{when}}"
+          },
+          "FanControlStatusSegment": {
+            "max": "Máxima velocidad",
+            "auto": "Automático",
+            "authCancelled": "Permiso cancelado: los ventiladores siguen en automático.",
+            "holdExited": "Se detuvo la máxima velocidad: los ventiladores volvieron a automático.",
+            "helperFailed": "No se pudo cambiar la velocidad de los ventiladores.",
+            "title": "Velocidad de ventiladores",
+            "ariaLabel": "{{title}}, {{status}}",
+            "fanName": "Ventilador {{n}}",
+            "rpm": "{{rpm}} RPM",
+            "autoDescription": "macOS ajusta la velocidad según la temperatura",
+            "maxDescription": "Todos los ventiladores a máxima velocidad. Pide tu contraseña de administrador; vuelven a automático al cerrar Topo."
           }
         }
       },

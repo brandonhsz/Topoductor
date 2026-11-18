@@ -40,7 +40,6 @@ const LEASE_PENDING = 'pending'
 const LEASE_WRITE_REJECTED = 'write-rejected'
 const READY_POLL_STEP_MS = 100
 const DEFAULT_READY_TIMEOUT_MS = 5_000
-const POLL_INTERVAL_MS = 2_000
 
 function errorDetail(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
@@ -61,8 +60,6 @@ export class FanControlService {
   private releaseRequested = false
   private inflightRefresh: Promise<FanControlStatus> | null = null
   private inflightMax: Promise<FanControlSetResult> | null = null
-  private monitoring = false
-  private pollTimer: ReturnType<typeof setInterval> | null = null
 
   constructor(deps: FanControlServiceDeps) {
     this.deps = deps
@@ -88,12 +85,11 @@ export class FanControlService {
     return () => this.listeners.delete(listener)
   }
 
+  /** A viewer asks for a fresh reading; the renderer drives the cadence only while its menu is open. */
   setMonitoring(active: boolean): void {
-    this.monitoring = active
     if (active) {
       void this.refresh()
     }
-    this.syncPolling()
   }
 
   async setMode(mode: FanControlMode): Promise<FanControlSetResult> {
@@ -118,7 +114,6 @@ export class FanControlService {
 
   /** Synchronous so it completes before Electron exits; the root hold restores auto when the lease vanishes. */
   releaseForQuit(): void {
-    this.stopPolling()
     if (this.mode !== 'max' && !this.pending) {
       return
     }
@@ -206,7 +201,6 @@ export class FanControlService {
         this.modeGeneration++
         this.lastError = { kind: 'hold-exited', detail: 'Fans returned to automatic control' }
         await this.removeLease()
-        this.syncPolling()
       }
     }
     return JSON.stringify(this.snapshot()) === previous ? this.snapshot() : this.emit()
@@ -264,7 +258,6 @@ export class FanControlService {
     this.pending = false
     this.mode = 'max'
     this.modeGeneration++
-    this.syncPolling()
     return { ok: true, status: this.emit() }
   }
 
@@ -296,7 +289,6 @@ export class FanControlService {
       this.modeGeneration++
       this.lastError = undefined
       await this.removeLease()
-      this.syncPolling()
     }
     return { ok: true, status: this.emit() }
   }
@@ -306,24 +298,6 @@ export class FanControlService {
       await this.deps.fs.rm(this.deps.leasePath)
     } catch (error) {
       console.warn('[fan-control] Failed to remove lease:', error)
-    }
-  }
-
-  // Poll only while someone is watching or max is held; idle Topo never polls the SMC.
-  private syncPolling(): void {
-    const shouldPoll = this.monitoring || this.mode === 'max'
-    if (shouldPoll && !this.pollTimer) {
-      this.pollTimer = setInterval(() => void this.refresh(), POLL_INTERVAL_MS)
-      this.pollTimer.unref?.()
-    } else if (!shouldPoll) {
-      this.stopPolling()
-    }
-  }
-
-  private stopPolling(): void {
-    if (this.pollTimer) {
-      clearInterval(this.pollTimer)
-      this.pollTimer = null
     }
   }
 }

@@ -37,11 +37,18 @@ export function isPrivilegePromptCancelled(error: unknown): boolean {
 }
 
 function isFanReading(value: unknown): value is FanReading {
-  if (typeof value !== 'object' || value === null) {
-    return false
-  }
-  const record = value as Record<string, unknown>
-  return ['index', 'rpm', 'minRpm', 'maxRpm'].every((key) => typeof record[key] === 'number')
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'index' in value &&
+    typeof value.index === 'number' &&
+    'rpm' in value &&
+    typeof value.rpm === 'number' &&
+    'minRpm' in value &&
+    typeof value.minRpm === 'number' &&
+    'maxRpm' in value &&
+    typeof value.maxRpm === 'number'
+  )
 }
 
 export function parseFanControlStatusOutput(stdout: string): FanControlHelperStatusOutput | null {
@@ -51,10 +58,10 @@ export function parseFanControlStatusOutput(stdout: string): FanControlHelperSta
   } catch {
     return null
   }
-  if (typeof parsed !== 'object' || parsed === null) {
+  if (typeof parsed !== 'object' || parsed === null || !('fans' in parsed) || !('mode' in parsed)) {
     return null
   }
-  const { fans, mode } = parsed as Record<string, unknown>
+  const { fans, mode } = parsed
   if (!Array.isArray(fans) || !fans.every(isFanReading) || (mode !== 'auto' && mode !== 'manual')) {
     return null
   }

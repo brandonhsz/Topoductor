@@ -11,9 +11,6 @@ function isFanControlMode(value: unknown): value is FanControlMode {
 }
 
 export function registerFanControlHandlers(service: FanControlService): void {
-  // Track viewers per renderer so a closed window cannot leave polling on forever.
-  const monitoringViewers = new Set<number>()
-
   ipcMain.handle(FAN_CONTROL_CHANNELS.getStatus, () => service.getStatus())
   ipcMain.handle(
     FAN_CONTROL_CHANNELS.setMode,
@@ -24,22 +21,10 @@ export function registerFanControlHandlers(service: FanControlService): void {
       return service.setMode(mode)
     }
   )
-  ipcMain.on(FAN_CONTROL_CHANNELS.setMonitoring, (event, active: unknown) => {
-    if (typeof active !== 'boolean') {
-      return
+  ipcMain.on(FAN_CONTROL_CHANNELS.setMonitoring, (_event, active: unknown) => {
+    if (typeof active === 'boolean') {
+      service.setMonitoring(active)
     }
-    const sender = event.sender
-    const id = sender.id
-    if (active && !monitoringViewers.has(id)) {
-      monitoringViewers.add(id)
-      sender.once('destroyed', () => {
-        monitoringViewers.delete(id)
-        service.setMonitoring(monitoringViewers.size > 0)
-      })
-    } else if (!active) {
-      monitoringViewers.delete(id)
-    }
-    service.setMonitoring(monitoringViewers.size > 0)
   })
 
   service.subscribe((status) => {
