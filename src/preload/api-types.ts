@@ -13,6 +13,7 @@ import type { TopoMcpApi } from '../shared/mcp/topo-mcp-secret-api'
 import type { HarnessApi } from '../shared/harness/harness-run-types'
 import type { SkillsApi } from './api/agent-skill-api'
 import type { AgentAwakeApi, AgentStatusApi } from './api/agent-status-api'
+import type { FanControlApi } from '../shared/fan-control-contract'
 import type {
   ClaudeUsageApi,
   CodexUsageApi,
@@ -113,6 +114,7 @@ export type PreloadApi = {
   telemetryAcknowledgeBanner: TelemetryApi['telemetryAcknowledgeBanner']
   settings: SettingsApi
   agentAwake: AgentAwakeApi
+  fanControl: FanControlApi
   localhostWorktreeLabels: LocalhostWorktreeLabelsApi
   keybindings: KeybindingsApi
   codexAccounts: CodexAccountsApi
