@@ -37,6 +37,25 @@
     "refreshingDetails": "Actualizando los detalles de la comprobación…"
   },
   "settings": {
+    "fanSmart": {
+      "groupTitle": "Ventiladores",
+      "questionsTitle": "Preguntar cómo se siente la Mac",
+      "questionsDescription": "En el modo Inteligente de los ventiladores, Topo pregunta de vez en cuando cómo se sienten la parte de abajo y el reposamanos, y aprende de tus respuestas.",
+      "resetTitle": "Aprendizaje del modo Inteligente",
+      "resetDescription": "Olvida lo que el modo Inteligente de los ventiladores aprendió de tus respuestas y vuelve a su curva inicial.",
+      "resetButton": "Reiniciar aprendizaje",
+      "resetConfirmTitle": "¿Reiniciar el aprendizaje del modo Inteligente?",
+      "resetConfirmDescription": "Topo olvida todas tus respuestas y el modo Inteligente vuelve a su curva inicial. No se puede deshacer.",
+      "resetConfirm": "Reiniciar",
+      "resetDone": "Se reinició el aprendizaje del modo Inteligente.",
+      "resetFailed": "No se pudo reiniciar el aprendizaje del modo Inteligente.",
+      "keywordFan": "ventilador",
+      "keywordFans": "ventiladores",
+      "keywordSmart": "inteligente",
+      "keywordTemperature": "temperatura",
+      "keywordReset": "reiniciar",
+      "keywordLearning": "aprendizaje"
+    },
     "chat": {
       "permissionsAgentsLink": "Configuración → Agentes",
       "permissionsTitle": "Permisos para chats nuevos",

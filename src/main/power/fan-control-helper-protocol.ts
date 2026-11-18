@@ -31,9 +31,6 @@ export function buildFanControlSessionCommand(args: {
   ].join(' ')
 }
 
-/** @deprecated The helper no longer accepts `hold`; FanControlService moves to the session command (T19). */
-export const buildFanControlHoldCommand = buildFanControlSessionCommand
-
 /** The lease line the root `control` loop reads; null hands that fan to macOS. */
 export function serializeFanTargets(targets: readonly (number | null)[]): string {
   const line: FanControlTargets = {

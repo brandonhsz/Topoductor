@@ -545,6 +545,25 @@
     "refreshingDetails": "Refreshing check details…"
   },
   "settings": {
+    "fanSmart": {
+      "groupTitle": "Fans",
+      "questionsTitle": "Ask how the Mac feels",
+      "questionsDescription": "In Smart fan mode, Topo now and then asks how the bottom and palm rest feel, and learns from your answers.",
+      "resetTitle": "Smart fan learning",
+      "resetDescription": "Forget what Smart fan mode learned from your answers and go back to its starting curve.",
+      "resetButton": "Reset learning",
+      "resetConfirmTitle": "Reset Smart fan learning?",
+      "resetConfirmDescription": "Topo forgets every answer you gave and Smart mode goes back to its starting curve. This can’t be undone.",
+      "resetConfirm": "Reset",
+      "resetDone": "Smart fan learning reset.",
+      "resetFailed": "Could not reset Smart fan learning.",
+      "keywordFan": "fan",
+      "keywordFans": "fans",
+      "keywordSmart": "smart",
+      "keywordTemperature": "temperature",
+      "keywordReset": "reset",
+      "keywordLearning": "learning"
+    },
     "chat": {
       "launch": {
         "on": "Chat UI is on",
