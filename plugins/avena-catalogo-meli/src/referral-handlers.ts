@@ -1,11 +1,18 @@
 // Referral links: one product from its detail, or every product without one in the background.
 import type { OrcaWorkerApi } from 'orca/worker'
 import type { SupplementUpdate } from './backend-client'
-import { brandMatches, isMeliUrl, isReferralUrl, withStatus } from './catalog-status'
+import {
+  brandMatches,
+  isMeliUrl,
+  isReferralUrl,
+  nameMatches,
+  pricePayload,
+  withStatus
+} from './catalog-status'
 import type { ImageFetcher } from './image-data'
 import type { MeliClient } from './meli-browser'
 import type { ActionResult, Catalog, Product, ReferralProposal } from './protocol'
-import { proposeReferrals } from './referral-proposal'
+import { proposeReferrals, proposeReferralsWithCards } from './referral-proposal'
 
 export type CatalogContext = {
   catalog(): Promise<Catalog>
@@ -184,8 +191,12 @@ export function registerReferralHandlers(orca: OrcaWorkerApi, context: CatalogCo
       let searched = 0
       for (const product of broken) {
         const results = await client.search(`${product.brand} ${product.name}`)
-        // Only a result naming the same brand is proposed; a person reviews it before saving.
-        const match = results.find((result) => brandMatches(product.brand, result.title))
+        // Only a result naming the same brand and product is proposed; a person still reviews it.
+        const match = results.find(
+          (result) =>
+            brandMatches(product.brand, result.title) &&
+            nameMatches(product.brand, product.name, result.title)
+        )
         if (match) {
           targets.set(product.id, match.url)
         }
@@ -217,5 +228,54 @@ export function registerReferralHandlers(orca: OrcaWorkerApi, context: CatalogCo
         bulkRunning = false
       })
     return { ok: true, message: `Buscando reemplazo para ${total} links rotos…` }
+  })
+
+  /** «Usar este»: the referral, its price and the product's link, written in one step. */
+  orca.panels.handle('catalog.replaceLink', async ({ id, url }): Promise<ActionResult> => {
+    const product = (await context.catalog()).products.find((candidate) => candidate.id === id)
+    if (!product) {
+      return { ok: false, message: 'El producto ya no está en el catálogo.' }
+    }
+    if (!isMeliUrl(url) || isReferralUrl(url)) {
+      return { ok: false, message: 'Elige un resultado de mercadolibre.com.mx.' }
+    }
+    try {
+      const { proposals, cards } = await proposeReferralsWithCards(await context.meli(), [url])
+      const found = proposals.get(url)
+      const proposal = found
+        ? {
+            ...found,
+            image: found.image ? await context.fetchImage(found.image, 'preview') : null
+          }
+        : null
+      if (proposal) {
+        await context.recordAttempts([[id, url, proposal]])
+      }
+      const card = proposal?.url ? cards.get(proposal.url) : undefined
+      if (!proposal?.url || !card) {
+        if (proposal) {
+          await context.saveProducts((products) =>
+            products.map((p) => (p.id === id ? withStatus({ ...p, proposal }) : p))
+          )
+        }
+        return { ok: false, message: proposal?.reason ?? 'MercadoLibre no generó el referido.' }
+      }
+      const { url: _cardUrl, ...reading } = card
+      const price = pricePayload({ ...product, reading })
+      await context.write([{ ...price, id, productURL: proposal.url }])
+      await context.refresh([id])
+      // The new link was just read: keep that reading so the status shows right away.
+      await context.saveProducts((products) =>
+        products.map((p) => (p.id === id ? withStatus({ ...p, reading }) : p))
+      )
+      return {
+        ok: true,
+        message: price?.price
+          ? `Link reemplazado por ${proposal.url} y precio actualizado a $${price.price.toLocaleString('es-MX')}.`
+          : `Link reemplazado por ${proposal.url}. MercadoLibre no mostró precio: revísalo con «Leer precio».`
+      }
+    } catch (error) {
+      return { ok: false, message: message(error) }
+    }
   })
 }

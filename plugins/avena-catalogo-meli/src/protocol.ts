@@ -190,6 +190,8 @@ declare module 'orca' {
     }
     /** For every broken link, proposes the first same-brand search result, in the background. */
     'catalog.proposeReplacements': { output: ActionResult }
+    /** Generates the referral for `url`, then writes it and its price to the product. */
+    'catalog.replaceLink': { input: { id: string; url: string }; output: ActionResult }
     'catalog.applyUrl': { input: { id: string; url: string }; output: ActionResult }
     'catalog.setStock': { input: { id: string; hasStock: boolean }; output: ActionResult }
   }

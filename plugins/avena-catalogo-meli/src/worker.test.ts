@@ -441,7 +441,9 @@ test('a broken link is repaired from a search result the person picks', async ()
 test('bulk repair proposes only search results of the same brand', async () => {
   const { worker, stored, cards, referrals, searches } = await start([
     source({ id: 'a', productURL: 'https://meli.la/a' }),
-    source({ id: 'b', productURL: 'https://meli.la/b', brand: 'gnc', name: 'zinc' })
+    source({ id: 'b', productURL: 'https://meli.la/b', brand: 'gnc', name: 'zinc' }),
+    // Same brand, another product: never proposed.
+    source({ id: 'c', productURL: 'https://meli.la/c', brand: 'Matter', name: 'Ka 30' })
   ])
   const same = 'https://www.mercadolibre.com.mx/biotina/p/MLM1'
   searches.set('nutricost biotin', [
@@ -453,6 +455,15 @@ test('bulk repair proposes only search results of the same brand', async () => {
       imageUrl: null
     },
     { url: same, title: 'Biotina Nutricost 240', price: 2, seller: null, imageUrl: null }
+  ])
+  searches.set('Matter Ka 30', [
+    {
+      url: 'https://www.mercadolibre.com.mx/ossforte/p/MLM3',
+      title: 'Matter Ossforte Colageno 30 Porciones',
+      price: 4,
+      seller: null,
+      imageUrl: null
+    }
   ])
   searches.set('gnc zinc', [
     {
@@ -483,4 +494,50 @@ test('bulk repair proposes only search results of the same brand', async () => {
   const byId = new Map(stored().products.map((product) => [product.id, product]))
   assert.equal(byId.get('a')?.proposal?.url, 'https://meli.la/new-a')
   assert.equal(byId.get('b')?.proposal, null)
+  assert.equal(byId.get('c')?.proposal, null)
+})
+
+test('«Usar este» writes the new referral and its price in one step', async () => {
+  const { worker, stored, cards, referrals, writes } = await start([source()])
+  const replacement = 'https://www.mercadolibre.com.mx/biotina/p/MLM99'
+  referrals.set(replacement, { url: replacement, referral: 'https://meli.la/fixed', reason: null })
+  cards.set(
+    'https://meli.la/fixed',
+    card('https://meli.la/fixed', { price: 380, listPrice: 420, discountPercentage: 10 })
+  )
+  await worker.request('catalog.sync')
+
+  const result = await worker.request('catalog.replaceLink', { id: 'p1', url: replacement })
+  assert.equal(result.ok, true)
+  assert.match(result.message, /\$380/)
+  assert.deepEqual(writes, [
+    [
+      {
+        id: 'p1',
+        price: 380,
+        priceCheckedAt: '2026-11-18T00:00:00.000Z',
+        listPrice: 420,
+        discountPercentage: 10,
+        mlItemId: 'MLM19775686',
+        productURL: 'https://meli.la/fixed'
+      }
+    ]
+  ])
+  const [saved] = stored().products
+  assert.equal(saved.productURL, 'https://meli.la/fixed')
+  assert.equal(saved.price, 380)
+  assert.equal(saved.status, 'ok')
+})
+
+test('«Usar este» writes nothing when MercadoLibre refuses the referral', async () => {
+  const { worker, stored, writes } = await start([source()])
+  await worker.request('catalog.sync')
+  const result = await worker.request('catalog.replaceLink', {
+    id: 'p1',
+    url: 'https://www.mercadolibre.com.mx/otra/p/MLM5'
+  })
+  assert.equal(result.ok, false)
+  assert.equal(result.message, 'No entra al programa de afiliados (depende del vendedor)')
+  assert.deepEqual(writes, [])
+  assert.equal(stored().products[0]?.productURL, 'https://meli.la/abc')
 })

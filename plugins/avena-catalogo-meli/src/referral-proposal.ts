@@ -1,4 +1,4 @@
-import type { MeliClient, ReferralResult } from './meli-browser'
+import type { CardReading, MeliClient, ReferralResult } from './meli-browser'
 import type { ReferralProposal } from './protocol'
 
 const GENERIC_LIST = 'El referido abre la lista genérica del afiliado, no el producto'
@@ -59,8 +59,16 @@ export async function proposeReferrals(
   client: MeliClient,
   targets: readonly string[]
 ): Promise<Map<string, ReferralProposal>> {
+  return (await proposeReferralsWithCards(client, targets)).proposals
+}
+
+/** The proposals plus each referral's featured card, whose price can be written right away. */
+export async function proposeReferralsWithCards(
+  client: MeliClient,
+  targets: readonly string[]
+): Promise<{ proposals: Map<string, ReferralProposal>; cards: Map<string, CardReading> }> {
   const results = await retryForeign(client, await client.generateReferrals(targets))
-  const cards = new Map<string, { ok: boolean; title: string | null; imageUrl?: string | null }>()
+  const cards = new Map<string, CardReading>()
   const referrals = results.flatMap((result) => (result.referral ? [result.referral] : []))
   if (referrals.length > 0) {
     await client.readCards(referrals, async (batch) => {
@@ -70,7 +78,7 @@ export async function proposeReferrals(
     })
   }
   const createdAt = Date.now()
-  return new Map(
+  const proposals = new Map(
     results.map((result): [string, ReferralProposal] => {
       const card = result.referral ? cards.get(result.referral) : undefined
       if (!result.referral) {
@@ -93,4 +101,5 @@ export async function proposeReferrals(
       ]
     })
   )
+  return { proposals, cards }
 }

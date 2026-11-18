@@ -123,11 +123,16 @@ test('each status chip explains itself on hover and filters on press', async () 
 })
 
 test('a broken link offers to search MercadoLibre for a replacement', async () => {
+  const replaced: string[] = []
   const host = mockHost({
     capabilities: ['storage:own'],
     requests: {
       ...catalogRequests(),
       'connection.status': () => CONNECTED,
+      'catalog.replaceLink': ({ id }: { id: string }) => {
+        replaced.push(id)
+        return { ok: true, message: 'Link reemplazado' }
+      },
       'catalog.searchReplacement': () => ({
         ok: true,
         message: '1 resultados',
@@ -150,6 +155,8 @@ test('a broken link offers to search MercadoLibre for a replacement', async () =
   assert.ok(view.find({ text: 'Gomitas B Life Kids' }))
   assert.equal(view.findAll({ type: 'Image' }).length, 1)
   assert.ok(view.find({ text: 'Usar este' }))
+  await view.press({ text: 'Usar este' })
+  assert.deepEqual(replaced, ['kids'])
   assert.deepEqual(view.errors, [])
 })
 
