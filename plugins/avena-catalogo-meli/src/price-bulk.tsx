@@ -16,10 +16,7 @@ export function PriceBulk() {
   const current = read(view)
   const safe = current?.applicable ?? 0
   const all = current?.withNewPrice ?? 0
-  const risky = Math.max(
-    0,
-    all - (current?.counts.precio_cambio ?? 0) - (current?.counts.sin_precio_base ?? 0)
-  )
+  const risky = Math.max(0, all - safe)
   const working = read(busy) !== null || read(progress)?.running === true
   const asking = read(confirming)
   if (all === 0 && safe === 0) {
@@ -35,8 +32,8 @@ export function PriceBulk() {
         <Stack gap="xs">
           {asking === 'allPrices' && risky > 0 ? (
             <Text>
-              Incluye {risky} productos que piden revisión (saltos mayores a 50%, identidad dudosa o
-              link compartido): su precio de MercadoLibre podría ser de otro producto.
+              Incluye {risky} productos que piden revisión (saltos mayores a 50% o identidad
+              dudosa): su precio de MercadoLibre podría ser de otro producto.
             </Text>
           ) : null}
           <Row gap="xs">
@@ -58,10 +55,10 @@ export function PriceBulk() {
           variant="outline"
           icon="upload"
           disabled={working}
-          tooltip="Solo «Cambio de precio» y «Sin precio guardado»: los que no necesitan revisión."
+          tooltip="«Cambio de precio», «Sin precio guardado» y los links compartidos con otro precio en MercadoLibre."
           onPress={() => set(confirming, 'applicable')}
         >
-          Aplicar {safe} cambios de precio seguros
+          {`Aplicar ${safe} cambios de precio`}
         </Button>
       ) : null}
       {all > 0 ? (

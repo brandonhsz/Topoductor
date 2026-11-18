@@ -95,7 +95,7 @@ test('bulk apply asks to confirm and sends only the safe price changes', async (
     }
   })
   const view = await mount(panel, { host })
-  await view.press({ text: 'Aplicar 1 cambios de precio seguros' })
+  await view.press({ text: 'Aplicar 1 cambios de precio' })
   assert.deepEqual(applied, [])
   await view.press({ text: 'Confirmar 1 precios' })
   // The 80% jump (mult) waits for a person.

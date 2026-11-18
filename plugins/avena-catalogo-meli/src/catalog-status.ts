@@ -28,7 +28,7 @@ export const STATUS_DESCRIPTIONS: Record<ProductStatus, string> = {
   revisar_identidad:
     'La marca no aparece en el título de MercadoLibre: el link podría apuntar a otro producto.',
   link_compartido:
-    'Varios productos usan el mismo link (p. ej. sabores o tamaños): el precio leído podría no ser de este.',
+    'Varios productos usan el mismo link (p. ej. sabores o tamaños). Si su precio en MercadoLibre cambió, se aplica con los cambios de precio aunque podría ser de otra presentación.',
   roto: 'El link abre la lista genérica del afiliado, no el producto: salió de las recomendaciones o de venta.',
   link_directo:
     'Tiene link directo de MercadoLibre, sin referido: no genera comisión. Genera su referido.',
@@ -152,6 +152,14 @@ export function hasNewMlPrice(product: Product): boolean {
     reading.price !== null &&
     reading.price > 0 &&
     reading.price !== product.price
+  )
+}
+
+/** What «Aplicar cambios de precio» writes: price changes, missing prices and shared links. */
+export function isApplicable(product: Product): boolean {
+  return (
+    APPLICABLE_STATUSES.includes(product.status) ||
+    (product.status === 'link_compartido' && hasNewMlPrice(product))
   )
 }
 

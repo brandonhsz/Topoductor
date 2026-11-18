@@ -3,7 +3,7 @@
 import { mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { DatabaseSync } from 'node:sqlite'
-import { APPLICABLE_STATUSES, hasNewMlPrice } from './catalog-status'
+import { hasNewMlPrice, isApplicable } from './catalog-status'
 import { isRecord } from './json-fields'
 import type {
   BulkScope,
@@ -251,7 +251,7 @@ export class CatalogDb {
       all: single('SELECT COUNT(*) AS n FROM products'),
       withReferral: single("SELECT COUNT(*) AS n FROM products WHERE link_kind = 'referido'"),
       direct: single("SELECT COUNT(*) AS n FROM products WHERE link_kind = 'directo'"),
-      applicable: APPLICABLE_STATUSES.reduce((sum, status) => sum + (counts[status] ?? 0), 0),
+      applicable: this.all().filter(isApplicable).length,
       pendingReferrals: single(
         "SELECT COUNT(*) AS n FROM products WHERE status = 'referido_listo'"
       ),
@@ -301,7 +301,7 @@ export class CatalogDb {
         scope === 'allPrices'
           ? hasNewMlPrice(product)
           : scope === 'applicable'
-            ? APPLICABLE_STATUSES.includes(product.status)
+            ? isApplicable(product)
             : product.status === 'referido_listo'
       )
       .map((product) => product.id)

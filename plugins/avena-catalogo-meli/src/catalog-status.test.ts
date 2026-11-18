@@ -2,6 +2,7 @@ import { assert, describe, test } from 'orca/testing'
 import {
   brandMatches,
   classify,
+  isApplicable,
   nameMatches,
   pricePayload,
   priceDiffPct,
@@ -130,4 +131,16 @@ test('a same-brand result only counts when it names the product too', () => {
   assert.equal(nameMatches('Matter', 'Ka 30', 'Matter Ossforte Colageno 30 Porciones'), false)
   assert.equal(nameMatches('Matter', 'Ka 30', 'Matter Ka 30 Colágeno 30 sobres'), true)
   assert.equal(nameMatches('nutricost', 'biotin', 'Biotina Nutricost 240 cápsulas'), true)
+})
+
+test('a shared link with another ML price is applied with the price changes', () => {
+  assert.equal(
+    isApplicable(product({ sharedCount: 2, price: 1199.45, reading: reading({ price: 846 }) })),
+    true
+  )
+  assert.equal(
+    isApplicable(product({ sharedCount: 2, price: 846, reading: reading({ price: 846 }) })),
+    false
+  )
+  assert.equal(isApplicable(product({ price: 60 })), false)
 })

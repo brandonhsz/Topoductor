@@ -15,8 +15,9 @@ y mantener al día sus precios y links de afiliado, uno por uno o en lote.
   referido.
 - **Por producto**: leer su precio, aplicarlo, generar el referido de una URL de ML (queda como
   propuesta hasta guardarlo), guardar una URL tal cual y prender o apagar el stock.
-- **En lote**: aplicar solo los cambios de precio seguros (cambio de precio y sin precio guardado).
-  Los saltos, los links compartidos y los de identidad dudosa esperan a una persona.
+- **En lote**: «Aplicar cambios de precio» escribe los cambios de precio, los precios que faltaban y
+  los links compartidos cuyo precio en MercadoLibre cambió. «Aplicar precios de ML a todos» incluye
+  además los saltos mayores a 50% y los de identidad dudosa, tras una advertencia.
 
 ## Configuración
 
