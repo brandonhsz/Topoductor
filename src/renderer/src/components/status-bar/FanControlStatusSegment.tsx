@@ -19,11 +19,12 @@ import type {
   FanControlApi,
   FanControlError,
   FanControlMode,
-  FanControlStatus
+  FanControlStatus,
+  SupportedFanControlStatus
 } from '../../../../shared/fan-control-contract'
 import { STATUS_BAR_CONTEXT_MENU_EXEMPT_PROPS } from './status-bar-context-menu-policy'
 
-export type SupportedFanControlStatus = Extract<FanControlStatus, { supported: true }>
+export type { SupportedFanControlStatus }
 
 // Intl formatter caches key on option identity, so this must be a module constant.
 const RPM_FORMAT: Intl.NumberFormatOptions = { maximumFractionDigits: 0 }
@@ -55,6 +56,9 @@ function errorNotice(error: FanControlError, t: Translate): string {
         'Max speed stopped — fans are back to automatic.'
       )
     case 'helper-failed':
+    case 'invalid-curve':
+    case 'invalid-rpm':
+    case 'not-controllable':
       return t(
         'auto.components.status.bar.FanControlStatusSegment.helperFailed',
         'Could not change fan speed.'

@@ -3,10 +3,12 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type {
-  FanControlApi,
-  FanControlSetResult,
-  FanControlStatus
+import {
+  NEUTRAL_SUPPORTED_FAN_STATUS_FIELDS,
+  type FanControlApi,
+  type FanControlSetResult,
+  type FanControlStatus,
+  type SupportedFanControlStatus
 } from '../../../../shared/fan-control-contract'
 import { FanControlStatusSegment } from './FanControlStatusSegment'
 
@@ -70,8 +72,9 @@ vi.mock('@/components/ui/tooltip', () => {
   return { Tooltip: Pass, TooltipTrigger: Pass, TooltipContent: Pass, TooltipProvider: Pass }
 })
 
-const AUTO: FanControlStatus = {
+const AUTO: SupportedFanControlStatus = {
   supported: true,
+  ...NEUTRAL_SUPPORTED_FAN_STATUS_FIELDS,
   mode: 'auto',
   pending: false,
   fans: [
@@ -79,7 +82,7 @@ const AUTO: FanControlStatus = {
     { index: 1, rpm: 2510, minRpm: 2317, maxRpm: 6800 }
   ]
 }
-const MAX: FanControlStatus = {
+const MAX: SupportedFanControlStatus = {
   ...AUTO,
   mode: 'max',
   fans: AUTO.fans.map((f) => ({ ...f, rpm: 6790 }))
@@ -91,7 +94,13 @@ function stubApi(initial: FanControlStatus, setResult?: FanControlSetResult): Ap
   let listener: ((status: FanControlStatus) => void) | null = null
   const api: ApiStub = {
     getStatus: vi.fn(async () => initial),
+    getHistory: vi.fn(async () => []),
     setMode: vi.fn(async () => setResult ?? { ok: true as const, status: MAX }),
+    setCurve: vi.fn(async () => ({ ok: true as const, status: initial })),
+    setManualRpm: vi.fn(async () => ({ ok: true as const, status: initial })),
+    answerFeedback: vi.fn(async () => ({ ok: true as const, status: initial })),
+    resetSmartProfile: vi.fn(async () => ({ ok: true as const, status: initial })),
+    dismissPausedMode: vi.fn(async () => initial),
     setMonitoring: vi.fn(),
     onChanged: vi.fn((cb) => {
       listener = cb

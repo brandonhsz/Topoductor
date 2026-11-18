@@ -1,9 +1,13 @@
 import { defineFixture } from '../../component-fixtures/component-fixture'
-import type { FanControlError } from '../../../../shared/fan-control-contract'
+import {
+  NEUTRAL_SUPPORTED_FAN_STATUS_FIELDS,
+  type FanControlError
+} from '../../../../shared/fan-control-contract'
 import { FanControlMenuView, type SupportedFanControlStatus } from './FanControlStatusSegment'
 
 const AUTO: SupportedFanControlStatus = {
   supported: true,
+  ...NEUTRAL_SUPPORTED_FAN_STATUS_FIELDS,
   mode: 'auto',
   pending: false,
   fans: [

@@ -1,6 +1,7 @@
 import {
   FAN_CONTROL_HELPER_COMMANDS,
-  FAN_CONTROL_HOLD_READY_LINE,
+  FAN_CONTROL_SESSION_READY_LINE,
+  NEUTRAL_SUPPORTED_FAN_STATUS_FIELDS,
   type FanControlError,
   type FanControlHelperStatusOutput,
   type FanControlMode,
@@ -150,6 +151,7 @@ export class FanControlService {
     }
     return {
       supported: true,
+      ...NEUTRAL_SUPPORTED_FAN_STATUS_FIELDS,
       mode: this.mode,
       fans: this.fans,
       pending: this.pending,
@@ -252,7 +254,7 @@ export class FanControlService {
       const error: FanControlError = { kind: 'helper-failed', detail: LEASE_WRITE_REJECTED }
       return { ok: false, error, status: this.emit() }
     }
-    if (lease !== FAN_CONTROL_HOLD_READY_LINE) {
+    if (lease !== FAN_CONTROL_SESSION_READY_LINE) {
       return fail({ kind: 'helper-failed', detail: 'Fan hold did not become ready' })
     }
     this.pending = false
@@ -269,7 +271,7 @@ export class FanControlService {
       lease = (await this.deps.fs.readFile(this.deps.leasePath))?.trim() ?? null
       if (
         lease === null ||
-        lease === FAN_CONTROL_HOLD_READY_LINE ||
+        lease === FAN_CONTROL_SESSION_READY_LINE ||
         lease === LEASE_WRITE_REJECTED ||
         this.releaseRequested
       ) {
