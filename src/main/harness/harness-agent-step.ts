@@ -144,7 +144,8 @@ export async function runHarnessAgentStep(
           worktreeId: rt.run.worktreeId,
           prompt: buildHarnessAgentPrompt(promptInput),
           resume,
-          resumePrompt: buildHarnessAgentPrompt({ ...promptInput, continuing: true })
+          resumePrompt: buildHarnessAgentPrompt({ ...promptInput, continuing: true }),
+          withoutTab: rt.run.mode === 'chat'
         },
         (session) => {
           step.session = session

@@ -10,6 +10,7 @@ import {
 import { useStructuredSessionChildRowContext } from './use-structured-session-child-row-context'
 import { NativeChatHarnessProgress } from '../../harness/NativeChatHarnessProgress'
 import { useNativeChatHarnessProgress } from '../../harness/use-native-chat-harness-progress'
+import { revealHarnessSession } from '../../../harness/harness-session-reveal'
 
 type StoppingBackgroundTasks = {
   sessionId: string
@@ -55,7 +56,7 @@ export function NativeChatStructuredSessionStatus(props: {
     ? new Set([...(activeStopping?.taskIds ?? NO_STOPPING_TASKS), ...confirmedListed.keys()])
     : (activeStopping?.taskIds ?? NO_STOPPING_TASKS)
   const childRowContext = useStructuredSessionChildRowContext(props.paneKey)
-  const harnessProgress = useNativeChatHarnessProgress(props.sessionId)
+  const harnessFlow = useNativeChatHarnessProgress(props.sessionId)
 
   const onStop = (taskId?: string) => {
     const sessionId = props.sessionId
@@ -104,7 +105,11 @@ export function NativeChatStructuredSessionStatus(props: {
 
   return (
     <>
-      <NativeChatHarnessProgress progress={harnessProgress} />
+      <NativeChatHarnessProgress
+        progress={harnessFlow?.progress ?? null}
+        onOpenSession={(session) => void revealHarnessSession(session)}
+        onAnswer={(decisionId, choice) => harnessFlow?.answer(decisionId, choice)}
+      />
       {props.tasks.backgroundTasks.show ? (
         <NativeChatBackgroundTasksStatus
           isVisible={props.isVisible}

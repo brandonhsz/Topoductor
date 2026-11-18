@@ -20941,13 +20941,27 @@
         "open": "Abrir el chat"
       },
       "chatProgress": {
-        "summary": "{{group}}: {{done}}/{{total}} listos",
+        "title": "{{flow}} · {{block}}",
+        "summary": {
+          "attention_one": "{{count}} agente te necesita",
+          "attention_other": "{{count}} agentes te necesitan",
+          "attention_many": "{{count}} agentes te necesitan",
+          "tabless_one": "{{count}} agente sin pestaña",
+          "tabless_other": "{{count}} agentes sin pestaña",
+          "tabless_many": "{{count}} agentes sin pestaña",
+          "done": "{{done}}/{{total}} listos"
+        },
+        "groupCount": "{{done}}/{{total}} listos",
+        "subagents": "subagentes",
+        "topoAgent": "{{agent}} · agente de Topo",
+        "open": "Abrir chat",
+        "openAndReply": "Abrir chat y responder",
         "status": {
-          "running": "En curso",
-          "waiting": "En espera",
-          "done": "Listo",
-          "failed": "Falló",
-          "stopped": "Detenido"
+          "working": "trabajando · {{minutes}} min",
+          "waiting": "pendiente",
+          "done": "listo",
+          "failed": "falló",
+          "stopped": "detenido"
         }
       }
     }

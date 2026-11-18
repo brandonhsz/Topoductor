@@ -53,12 +53,11 @@ import { resolveUnlaunchedIntent } from './agent-launch-intent-resolution'
 import {
   publishEarlyTab,
   withPlacement,
+  type AgentLaunchPolicy,
   type AgentLaunchView
 } from './agent-launch-tab-publication'
 
-type HostLaunchContext = RpcContext & {
-  agentLaunchPolicy?: { onSurfacePublished?: (surface: AgentLaunchResult) => void }
-}
+type HostLaunchContext = RpcContext & { agentLaunchPolicy?: AgentLaunchPolicy }
 
 async function runAgentLaunch(
   { intent, decidedMode }: Awaited<ReturnType<typeof resolveUnlaunchedIntent>>,
@@ -77,7 +76,7 @@ async function runAgentLaunch(
       replaySafe?.callerKey,
       callerNavigationId !== null,
       replaySafe?.terminalSpawn,
-      view
+      context.agentLaunchPolicy?.withoutChatTab ? { ...view, withoutChatTab: true } : view
     ),
     workspaces: agentLaunchWorkspaceFactory(context, intent.agent),
     // The tab is shown as it is published, not after a prompt that can take a minute to land.

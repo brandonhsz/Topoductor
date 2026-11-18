@@ -38,6 +38,8 @@ export type HarnessRunEngineDeps = {
   onChange: (run: HarnessRun) => void
   /** Agent of the run's chat; without it `subagent` steps fall back to Topo's own agents. */
   chatProvider?: (run: HarnessRun) => Promise<TuiAgent | null>
+  /** Stops an agent session the run started; nobody else would stop a session with no tab. */
+  closeSession?: (session: HarnessAgentSessionRef) => void
 }
 
 /** Walks one run's graph: fans out on unlabeled edges, joins on `joinAll`, pauses on people. */
@@ -87,6 +89,7 @@ export class HarnessRunEngine implements HarnessStepRuntime {
       return
     }
     this.controller.abort()
+    this.closeTablessSessions()
     for (const waiter of this.waiters.values()) {
       waiter.reject(new HarnessRunStopped())
     }
@@ -182,6 +185,14 @@ export class HarnessRunEngine implements HarnessStepRuntime {
       },
       request
     )
+  }
+
+  private closeTablessSessions(): void {
+    for (const step of this.run.steps) {
+      if (step.status !== 'done' && step.session?.kind === 'structured' && step.session.tabless) {
+        this.deps.closeSession?.(step.session)
+      }
+    }
   }
 
   private isFinished(): boolean {

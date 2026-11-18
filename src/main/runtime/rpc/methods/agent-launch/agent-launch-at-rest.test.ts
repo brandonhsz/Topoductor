@@ -21,7 +21,7 @@ import {
   setAgentLaunchRecordStore
 } from './agent-launch.test-fixture'
 
-const { AGENT_LAUNCH_METHODS } = await import('./agent-launch')
+const { AGENT_LAUNCH_METHODS, launchAgentOnHost } = await import('./agent-launch')
 const AGENT_LAUNCH_REPLAY = methodNamed(AGENT_LAUNCH_METHODS, 'agent.launchReplay')
 const AGENT_LAUNCH = methodNamed(AGENT_LAUNCH_METHODS, 'agent.launch')
 // The `topo` CLI carries no capability list.
@@ -347,4 +347,24 @@ it('a tab publication failure after commit never calls the prompt undelivered', 
     { source: { kind: 'user' }, dispatchState: 'pending' }
   ])
   expect(rig.adapter.acquire).not.toHaveBeenCalled()
+})
+
+it('an in-process launch without a chat tab journals its prompt and opens no tab', async () => {
+  const runtime = launchRuntime()
+  const result = await launchAgentOnHost(
+    AGENT_LAUNCH.params.parse({
+      agent: 'codex',
+      operationId: `${HOST_TEST_NOW}-${'a'.repeat(32)}`,
+      sessionId: SESSION,
+      presentation: 'background',
+      target: { kind: 'existing', worktree: 'id:wt-7' },
+      prompt: { text: 'audit the wave', delivery: 'submit' }
+    }),
+    rpcContext(runtime, { caller: { kind: 'local-cli' } }),
+    { withoutChatTab: true }
+  )
+  expect(result.outcome).toMatchObject({ kind: 'structured', sessionId: SESSION })
+  expect(result.prompt?.outcome).toBe('journaled')
+  expect(runtime.publishStructuredAgentSessionTab).not.toHaveBeenCalled()
+  expect(rig.store.getConversation(SESSION)?.provider).toBe('codex')
 })

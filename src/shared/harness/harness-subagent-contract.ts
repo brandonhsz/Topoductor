@@ -1,18 +1,10 @@
 import type { TuiAgent } from '../agent-launch/catalog/tui-agent'
 import type { HarnessNodeRunner } from './harness-flow-types'
-import type { HarnessChatTask, HarnessRun, HarnessStepStatus } from './harness-run-types'
+import type { HarnessChatTask } from './harness-run-types'
 
 export type HarnessSubagentMatch =
   | { task: HarnessChatTask }
   | { error: 'no_marker' | 'unknown_task' | 'prompt_mismatch' }
-
-export type HarnessSubagentProgress = {
-  /** Block and visit the agents belong to, e.g. «Bloque 1 · Mesa». */
-  group: string
-  done: number
-  total: number
-  agents: { id: string; title: string; status: HarnessStepStatus; output: string }[]
-}
 
 export type HarnessSubagentResult = { taskId: string | null; reason: string | null }
 
@@ -58,25 +50,4 @@ export function matchSubagentPrompt(
   return comparable(prompt) === comparable(task.subagent.prompt)
     ? { task }
     : { error: 'prompt_mismatch' }
-}
-
-/** Progress of the subagent steps of the current block and visit; null when there are none. */
-export function harnessSubagentProgress(run: HarnessRun): HarnessSubagentProgress | null {
-  const blockOf = (nodeId: string): string =>
-    run.flow.nodes.find((node) => node.id === nodeId)?.block ?? ''
-  const subagentSteps = run.steps.filter((step) => step.runner === 'subagent')
-  const latest = subagentSteps.at(-1)
-  if (!latest) {
-    return null
-  }
-  const group = blockOf(latest.nodeId)
-  const current = subagentSteps.filter(
-    (step) => step.visit === latest.visit && blockOf(step.nodeId) === group
-  )
-  return {
-    group,
-    done: current.filter((step) => step.status === 'done').length,
-    total: current.length,
-    agents: current.map(({ id, title, status, output }) => ({ id, title, status, output }))
-  }
 }

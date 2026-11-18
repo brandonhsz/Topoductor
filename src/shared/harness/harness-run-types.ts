@@ -6,7 +6,8 @@ export type HarnessRunStatus = 'running' | 'waiting' | 'completed' | 'failed' | 
 export type HarnessStepStatus = 'running' | 'waiting' | 'done' | 'failed' | 'stopped'
 
 export type HarnessAgentSessionRef =
-  | { kind: 'structured'; worktreeId: string; sessionId: string }
+  /** `tabless`: Topo started the chat without a tab; one opens when the person asks. */
+  | { kind: 'structured'; worktreeId: string; sessionId: string; tabless?: true }
   | { kind: 'terminal'; worktreeId: string; paneKey: string | null; handle: string }
 
 export type HarnessRunStep = {

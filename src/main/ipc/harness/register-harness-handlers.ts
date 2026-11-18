@@ -3,7 +3,10 @@ import type { TuiAgent } from '../../../shared/agent-launch/catalog/tui-agent'
 import { isTuiAgent } from '../../../shared/harness/harness-flow-normalize'
 import type { HarnessDecisionAnswer } from '../../../shared/harness/harness-run-types'
 import { asRecord } from '../../../shared/workspace-setup/setup-script-import-parsers'
-import { createHarnessAgentLauncher } from '../../harness/harness-agent-launcher'
+import {
+  closeHarnessTablessSession,
+  createHarnessAgentLauncher
+} from '../../harness/harness-agent-launcher'
 import {
   deleteHarnessFlow,
   listHarnessFlows,
@@ -80,7 +83,8 @@ export function registerHarnessHandlers(runtime: TopoRuntimeService): void {
   const runs = new HarnessRunService(
     createHarnessAgentLauncher(runtime),
     (run) => broadcast('harness:runChanged', run),
-    (run) => harnessChatProvider(runtime, run.chatSessionId)
+    (run) => harnessChatProvider(runtime, run.chatSessionId),
+    closeHarnessTablessSession
   )
   setHarnessRunService(runs)
   ipcMain.handle('harness:listFlows', (_event, repoId: unknown) =>

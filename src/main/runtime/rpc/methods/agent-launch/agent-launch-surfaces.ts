@@ -47,7 +47,7 @@ export function agentLaunchSurfaceFactory(
   view: AgentLaunchView = { early: null, presentation: undefined }
 ): AgentLaunchSurfaceFactory {
   const movesHostWindow = agentLaunchMovesHostWindow(context)
-  const { early: earlyTab, presentation } = view
+  const { early: earlyTab, presentation, withoutChatTab } = view
   return {
     createStructuredSession: async ({
       worktreeId,
@@ -99,6 +99,7 @@ export function agentLaunchSurfaceFactory(
         ...(atRest ? { atRest: true as const } : {}),
         ...(firstMessage ? { firstMessage } : {}),
         ...(signal ? { signal } : {}),
+        ...(withoutChatTab ? { withoutTab: true as const } : {}),
         activate:
           !callerPresentsSurface &&
           (presentation === undefined || (presentation === 'focused' && movesHostWindow))

@@ -252,6 +252,83 @@ describe('HarnessRunEngine', () => {
     expect(run.status).toBe('completed')
   })
 
+  describe('agents Topo runs for a chat', () => {
+    function topoRun(mode: HarnessRun['mode']): HarnessRun {
+      const flow = flowOf(
+        [agent('cierre', { runner: 'topo' })],
+        [edge('start', 'cierre'), edge('cierre', 'fin')]
+      )
+      return { ...runOf(flow, { intent: 'Tablero' }), mode, chatSessionId: 's1' }
+    }
+
+    it('launches them without a tab only when a chat drives the run', async () => {
+      for (const mode of ['chat', 'orchestrated'] as const) {
+        const requests: Parameters<HarnessAgentLauncher>[0][] = []
+        const launch: HarnessAgentLauncher = (request) => {
+          requests.push(request)
+          return new Promise(() => {})
+        }
+        new HarnessRunEngine(topoRun(mode), { launch, onChange: () => {} }).start()
+        await settle()
+        expect(requests.map((request) => request.withoutTab)).toEqual([mode === 'chat'])
+      }
+    })
+
+    it('closes the tabless sessions still working when the run stops', async () => {
+      const closed: string[] = []
+      const launch: HarnessAgentLauncher = (_request, onSession) => {
+        onSession({ kind: 'structured', worktreeId: 'wt', sessionId: 'hidden', tabless: true })
+        return new Promise(() => {})
+      }
+      const run = topoRun('chat')
+      const engine = new HarnessRunEngine(run, {
+        launch,
+        onChange: () => {},
+        closeSession: (session) => {
+          closed.push(session.kind === 'structured' ? session.sessionId : session.handle)
+        }
+      })
+      engine.start()
+      await settle()
+      expect(closed).toEqual([])
+      engine.stop()
+      expect(closed).toEqual(['hidden'])
+      expect(run.steps.find((step) => step.nodeId === 'cierre')!.status).toBe('stopped')
+    })
+
+    it('leaves sessions that have a tab, or that finished, to the person', async () => {
+      const closed: string[] = []
+      let calls = 0
+      const launch: HarnessAgentLauncher = (_request, onSession) => {
+        calls++
+        onSession(
+          calls === 1
+            ? { kind: 'structured', worktreeId: 'wt', sessionId: 'done', tabless: true }
+            : { kind: 'structured', worktreeId: 'wt', sessionId: 'tabbed' }
+        )
+        return calls === 1 ? Promise.resolve({ ok: true, text: 'ok' }) : new Promise(() => {})
+      }
+      const flow = flowOf(
+        [agent('a', { runner: 'topo' }), agent('b', { runner: 'topo' })],
+        [edge('start', 'a'), edge('a', 'b'), edge('b', 'fin')]
+      )
+      const engine = new HarnessRunEngine(
+        { ...runOf(flow, { intent: 'x' }), mode: 'chat', chatSessionId: 's1' },
+        {
+          launch,
+          onChange: () => {},
+          closeSession: (session) => {
+            closed.push(session.kind === 'structured' ? session.sessionId : session.handle)
+          }
+        }
+      )
+      engine.start()
+      await settle()
+      engine.stop()
+      expect(closed).toEqual([])
+    })
+  })
+
   describe('subagent steps', () => {
     function mesaFlow(extra: Partial<HarnessAgentNode> = {}): HarnessFlow {
       return flowOf(

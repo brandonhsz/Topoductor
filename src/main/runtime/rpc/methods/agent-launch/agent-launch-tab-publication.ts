@@ -82,6 +82,15 @@ export type EarlyAgentLaunchTab = {
 export type AgentLaunchView = {
   early: EarlyAgentLaunchTab | null
   presentation: AgentLaunchParams['presentation']
+  /** In-process only: a chat is created with no tab; a terminal agent still needs its tab. */
+  withoutChatTab?: boolean
+}
+
+/** What in-process launchers (schedules, Harness) decide beyond the RPC params. */
+export type AgentLaunchPolicy = {
+  onSurfacePublished?: (surface: AgentLaunchResult) => void
+  /** A chat runs without a tab until someone opens it; never reachable from RPC params. */
+  withoutChatTab?: boolean
 }
 
 export function withPlacement(result: AgentLaunchResult, view: AgentLaunchView): AgentLaunchResult {
