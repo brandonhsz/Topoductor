@@ -68,7 +68,8 @@ export function normalizeNotificationSettings(value: unknown): NotificationSetti
     notifyHiddenWorkspaces: booleanOr(
       candidate.notifyHiddenWorkspaces,
       defaults.notifyHiddenWorkspaces
-    )
+    ),
+    dockAttention: booleanOr(candidate.dockAttention, defaults.dockAttention)
   }
 }
 

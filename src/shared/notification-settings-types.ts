@@ -37,6 +37,17 @@ export type NotificationSettings = {
   mutedNotificationSourceIds: NotificationSourceId[]
   /** Off silences every notification from a workspace the sidebar's Filters switches hide. Local only. */
   notifyHiddenWorkspaces: boolean
+  /** Bounce the Dock (flash the window off macOS) when an alert passes every gate; needs no OS permission. */
+  dockAttention: boolean
+}
+
+export type NotificationSoundId = NotificationSettings['customSoundId']
+
+/** Options for the preload sound player; soundId overrides the selection with a bundled sound. */
+export type NotificationSoundRequest = {
+  force?: boolean
+  volume?: number
+  soundId?: Exclude<NotificationSoundId, 'system' | 'custom'>
 }
 
 export type NotificationEventSource = 'agent-task-complete' | 'terminal-bell' | 'test'
@@ -119,6 +130,8 @@ export type NotificationDispatchResult = {
     | 'blocked-by-system'
     | 'invalid-request'
     | 'already-read'
+  /** True only when macOS confirmed authorization, so the banner (and its 'system' sound) is trusted. */
+  nativeBannerTrusted?: boolean
 }
 
 export type NotificationDismissResult = {
