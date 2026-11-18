@@ -10,7 +10,7 @@ import type {
   ThermalSample
 } from '../../shared/fan-control-contract'
 import { FanControlLoop } from './fan-control-loop'
-import { hotBoostFor, manualRpmProblem } from './fan-control-mode-targets'
+import { hotBoostFor, manualRpmProblem, nextManualRpm } from './fan-control-mode-targets'
 import { FanControlPolling, type FanControlTimers } from './fan-control-polling'
 import {
   cloneFanCurve,
@@ -22,6 +22,7 @@ import { validateFanCurve } from './fan-curve-model'
 import { FanFeedbackPromptState } from './fan-feedback-prompt-state'
 import type { RunFanHelper } from './fan-helper-readings'
 import { FanThermalHistory } from './fan-thermal-history'
+import { FanViewerLease } from './fan-viewer-lease'
 import { applyFeedback } from './smart-fan-profile'
 
 export type FanControlServiceDeps = FanControlLeaseDeps & {
@@ -55,7 +56,8 @@ export class FanControlService {
   private readonly loop: FanControlLoop
   private readonly listeners = new Set<Listener>()
   private writeRejected = false
-  private monitoring = false
+  // Missing three pings means the viewer's window hid or closed.
+  private readonly viewer = new FanViewerLease(3 * TICK_INTERVAL_MS)
   // A later setMode wins over one still waiting on the password prompt.
   private modeRequest = 0
   private inflightRefresh: Promise<FanControlStatus> | null = null
@@ -65,7 +67,11 @@ export class FanControlService {
     this.deps = deps
     this.lease = new FanControlSessionLease(deps, () => this.loop.released)
     this.profile = new FanControlProfileStore({ path: deps.profilePath, fs: deps.fs })
-    this.polling = new FanControlPolling(deps.timers, TICK_INTERVAL_MS, () => void this.tick())
+    this.polling = new FanControlPolling(deps.timers, TICK_INTERVAL_MS, () => {
+      if (this.syncPolling()) {
+        void this.tick()
+      }
+    })
     this.loop = new FanControlLoop({
       ...deps,
       lease: this.lease,
@@ -100,11 +106,10 @@ export class FanControlService {
     return () => this.listeners.delete(listener)
   }
 
-  /** A viewer (e.g. the open panel) needs live readings even while macOS owns the fans. */
+  /** A viewer (e.g. the open panel) needs live readings even while macOS owns the fans; repeat calls only renew its lease. */
   setMonitoring(active: boolean): void {
-    this.monitoring = active
-    this.syncPolling()
-    if (active) {
+    const started = this.viewer.update(active, this.deps.now())
+    if (this.syncPolling() && started && this.loop.mode === 'auto') {
       void this.tick()
     }
   }
@@ -161,12 +166,8 @@ export class FanControlService {
     if (detail) {
       return { ok: false, error: { kind: 'invalid-rpm', detail }, status: this.snapshot() }
     }
-    const manualRpm = { ...this.profile.current.manualRpm }
-    if (rpm === 0) {
-      delete manualRpm[index]
-    } else {
-      manualRpm[index] = Math.round(rpm)
-    }
+    const saved = this.loop.mode === 'manual' ? this.profile.current.manualRpm : null
+    const manualRpm = nextManualRpm(saved, this.loop.fans, index, rpm)
     await this.profile.update({ manualRpm })
     return this.setMode('manual')
   }
@@ -305,8 +306,12 @@ export class FanControlService {
     return { ok: true, status: this.emit() }
   }
 
-  private syncPolling(): void {
-    this.polling.sync(!this.loop.released && (this.monitoring || this.loop.mode !== 'auto'))
+  /** Starts or stops the interval; returns whether a tick is still wanted. */
+  private syncPolling(): boolean {
+    const watched = this.viewer.activeAt(this.deps.now())
+    const wanted = !this.loop.released && (watched || this.loop.mode !== 'auto')
+    this.polling.sync(wanted)
+    return wanted
   }
 
   private async openSession(): Promise<FanControlSetResult | null> {

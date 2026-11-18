@@ -12,6 +12,7 @@ import {
   type ThermalReading
 } from '../../../../shared/fan-control-contract'
 import {
+  effectiveTemperatureSource,
   readingForSource,
   TEMPERATURE_SERIES_STROKE,
   temperatureSourceLabel
@@ -147,7 +148,8 @@ export function FanCurveEditor({
     draggingRef.current = null
   }
 
-  const nowC = readingForSource(curve.source, thermal)
+  const shownSource = effectiveTemperatureSource(curve.source, thermal.palmrestAvailable)
+  const nowC = readingForSource(shownSource, thermal)
   const nowPercent = nowC === null ? null : percentAt(curve.points, nowC)
   const first = curve.points[0]
   const last = curve.points.at(-1)
@@ -168,7 +170,7 @@ export function FanCurveEditor({
           variant="segmented-card"
           aria-labelledby={sourceLabelId}
           className="w-auto grid-cols-3"
-          value={curve.source}
+          value={shownSource}
           disabled={disabled}
           onValueChange={(value) => {
             const source = TEMPERATURE_SOURCES.find((s) => s === value)
@@ -181,7 +183,7 @@ export function FanCurveEditor({
             <ToggleGroupItem
               key={source}
               value={source}
-              disabled={disabled || (source === 'palmrest' && !thermal.palmrestAvailable)}
+              disabled={disabled || (source !== 'chip' && !thermal.palmrestAvailable)}
             >
               {temperatureSourceLabel(source, t)}
             </ToggleGroupItem>
@@ -292,7 +294,7 @@ export function FanCurveEditor({
             aria-label={t('auto.components.status.bar.FanCurveEditor.nowMarker', 'Now: {{temp}}', {
               temp: degrees(Math.round(nowC))
             })}
-            className={TEMPERATURE_SERIES_STROKE[curve.source]}
+            className={TEMPERATURE_SERIES_STROKE[shownSource]}
           >
             <line
               x1={x(nowC)}

@@ -201,3 +201,43 @@ export const feedbackQuestion = defineFixture({
     />
   )
 })
+
+// Automatic after an earlier manual session left a saved target behind.
+export const staleManualTarget = defineFixture({
+  width: WIDTH,
+  render: () => <Panel status={{ ...AUTO, manualRpm: { 0: 4000 } }} />
+})
+
+// Max reads slightly above the fans' rated maximum.
+const OVERSHOOT_HISTORY = TWO_FAN_HISTORY.map((s, i) =>
+  i < 40 ? s : { ...s, fanRpm: s.fanRpm.map(() => 6843) }
+)
+
+export const maxOvershoot = defineFixture({
+  width: WIDTH,
+  render: () => (
+    <Panel
+      status={{ ...statusFor(OVERSHOOT_HISTORY), mode: 'max', session: 'active' }}
+      samples={OVERSHOOT_HISTORY}
+    />
+  )
+})
+
+// The panel was just opened: twenty seconds of readings.
+const SHORT_HISTORY = TWO_FAN_HISTORY.slice(-5)
+
+export const shortHistory = defineFixture({
+  width: WIDTH,
+  render: () => <Panel status={statusFor(SHORT_HISTORY)} samples={SHORT_HISTORY} />
+})
+
+// The default curve follows the blend, which equals the chip without a palm rest.
+export const noPalmrestBlendCurve = defineFixture({
+  width: WIDTH,
+  render: () => (
+    <Panel
+      status={{ ...statusFor(ONE_FAN_NO_PALMREST), mode: 'curve' }}
+      samples={ONE_FAN_NO_PALMREST}
+    />
+  )
+})

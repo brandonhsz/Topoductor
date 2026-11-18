@@ -352,7 +352,8 @@ export function FanControlPanel({
             <FanManualSpeedRow
               key={fan.index}
               fan={fan}
-              target={status.manualRpm[fan.index] ?? fan.rpm}
+              // A saved manual speed is only the current target while manual is active.
+              target={(status.mode === 'manual' && status.manualRpm[fan.index]) || fan.rpm}
               disabled={status.pending}
               onCommit={onManualRpm}
             />

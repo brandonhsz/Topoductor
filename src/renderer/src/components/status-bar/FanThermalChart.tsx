@@ -61,7 +61,16 @@ function LegendSwatch({
 }
 
 const WITH_PALMREST: readonly TemperatureSource[] = ['palmrest', 'chip', 'blend']
-const CHIP_ONLY: readonly TemperatureSource[] = ['chip', 'blend']
+// Without a palm rest the blend is the chip, so only the chip is shown.
+const CHIP_ONLY: readonly TemperatureSource[] = ['chip']
+
+/** The source a curve really follows: blend and palm rest fall back to the chip without a palm-rest sensor. */
+export function effectiveTemperatureSource(
+  source: TemperatureSource,
+  palmrestAvailable: boolean
+): TemperatureSource {
+  return palmrestAvailable ? source : 'chip'
+}
 
 export function temperatureSourceLabel(source: TemperatureSource, t: Translate): string {
   switch (source) {
@@ -141,8 +150,10 @@ export function FanThermalChart({
     )
     const [tempLo, tempHi] = temperatureDomain(temps)
     const tempY = linearY(tempLo, tempHi)
-    const rpmHi = Math.max(1, ...fans.map((f) => f.maxRpm), ...history.flatMap((s) => s.fanRpm))
-    const rpmY = linearY(0, rpmHi)
+    // Readings can overshoot the rated maximum a little; the axis stays at the rated value.
+    const rpmHi = Math.max(1, ...fans.map((f) => f.maxRpm))
+    const rpmScale = linearY(0, rpmHi)
+    const rpmY: ScaleY = (value) => rpmScale(Math.min(value, rpmHi))
     return {
       tempLo,
       tempHi,
@@ -165,12 +176,20 @@ export function FanThermalChart({
   }, [history, fans, sources])
 
   const latest = history.at(-1)
-  const spanMinutes =
-    history.length > 1 ? Math.max(1, Math.round((history.at(-1)!.at - history[0].at) / 60_000)) : 0
+  const spanSeconds =
+    history.length > 1 ? Math.round((history.at(-1)!.at - history[0].at) / 1000) : 0
+  const spanText =
+    spanSeconds < 60
+      ? t('auto.components.status.bar.FanThermalChart.seconds', '{{seconds}} s', {
+          seconds: spanSeconds
+        })
+      : t('auto.components.status.bar.FanThermalChart.minutes', '{{minutes}} min', {
+          minutes: Math.round(spanSeconds / 60)
+        })
   const title = t(
     'auto.components.status.bar.FanThermalChart.ariaLabel',
-    'Temperature and fan speed over the last {{minutes}} min',
-    { minutes: spanMinutes }
+    'Temperature and fan speed over the last {{span}}',
+    { span: spanText }
   )
   const degrees = (value: number): string =>
     t('auto.components.status.bar.FanThermalChart.degrees', '{{value}} °C', {
@@ -221,15 +240,15 @@ export function FanThermalChart({
             </text>
           </g>
         ) : null}
-        {spanMinutes > 0 ? (
+        {spanSeconds > 0 ? (
           <>
             <text
               x={PAD.left}
               y={VIEW_H - 4}
               className="fill-muted-foreground text-3xs tabular-nums"
             >
-              {t('auto.components.status.bar.FanThermalChart.minutesAgo', '{{minutes}} min ago', {
-                minutes: spanMinutes
+              {t('auto.components.status.bar.FanThermalChart.spanAgo', '{{span}} ago', {
+                span: spanText
               })}
             </text>
             <text
@@ -264,8 +283,7 @@ export function FanThermalChart({
             className={cn(fanStyle(i).stroke, 'opacity-80')}
           />
         ))}
-        {/* Without a palm rest the blend equals the chip, so the chip line goes on top. */}
-        {(palmrestAvailable ? chart.temperatures : chart.temperatures.toReversed()).map((line) => (
+        {chart.temperatures.map((line) => (
           <path
             key={line.source}
             data-series={line.source}

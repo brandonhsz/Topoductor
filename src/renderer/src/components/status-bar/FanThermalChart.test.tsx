@@ -111,3 +111,40 @@ describe('FanThermalChart fan speeds', () => {
     expect(geometry(series(container, 'blend'))).not.toBe('')
   })
 })
+
+describe('FanThermalChart axes and chip-only Macs', () => {
+  it("caps the RPM axis at the fans' maximum and keeps overshooting readings inside the plot", () => {
+    const overshoot = HISTORY.map((s) => ({ ...s, fanRpm: [6843, 6843] }))
+    const { container } = render(
+      <FanThermalChart history={overshoot} fans={FANS} palmrestAvailable />
+    )
+    expect(screen.queryByText('6,843')).toBeNull()
+    expect(screen.getByText('6,800')).toBeTruthy()
+    const ys = geometry(series(container, 'fan-0'))
+      .split(/[ML]/)
+      .filter(Boolean)
+      .map((point) => Number(point.trim().split(' ')[1]))
+    const plotTop = Math.min(
+      ...Array.from(container.querySelectorAll('line')).map((line) =>
+        Number(line.getAttribute('y1'))
+      )
+    )
+    expect(Math.min(...ys)).toBeGreaterThanOrEqual(plotTop)
+  })
+
+  it('labels the time axis with the span the samples really cover', () => {
+    const short = [sample(0, 62, 32, [2320, 2510]), sample(20, 64, 32, [2320, 2510])]
+    render(<FanThermalChart history={short} fans={FANS} palmrestAvailable />)
+    expect(screen.queryByText(/min ago/i)).toBeNull()
+    expect(screen.getByText('20 s ago')).toBeTruthy()
+  })
+
+  it('shows only the chip on a Mac without a palm-rest sensor, with no blend line or legend', () => {
+    const { container } = render(
+      <FanThermalChart history={CHIP_ONLY} fans={FANS} palmrestAvailable={false} />
+    )
+    expect(series(container, 'blend')).toBeNull()
+    expect(screen.queryByText(/^blend$/i)).toBeNull()
+    expect(screen.getByText(/^chip$/i)).toBeTruthy()
+  })
+})

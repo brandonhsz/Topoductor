@@ -295,6 +295,26 @@ describe('FanCurveEditor source selector', () => {
   })
 })
 
+describe('FanCurveEditor source selector on a chip-only Mac', () => {
+  it('follows the chip and disables palm rest and blend', () => {
+    render(
+      <FanCurveEditor
+        curve={CURVE}
+        thermal={{ chipC: 80, palmrestC: null, blendC: 80, palmrestAvailable: false }}
+        onChange={vi.fn()}
+      />
+    )
+    expect(screen.getByRole('radio', { name: /chip/i }).getAttribute('aria-checked')).toBe('true')
+    for (const name of [/palm rest/i, /blend/i]) {
+      const radio = screen.getByRole('radio', { name })
+      expect(radio.getAttribute('aria-checked')).toBe('false')
+      expect(radio.hasAttribute('disabled') || radio.getAttribute('aria-disabled') === 'true').toBe(
+        true
+      )
+    }
+  })
+})
+
 describe('FanCurveEditor learned curve', () => {
   it('overlays the learned smart curve only when one is given', () => {
     const { container, rerender } = render(

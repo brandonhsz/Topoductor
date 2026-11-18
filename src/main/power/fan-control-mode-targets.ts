@@ -70,6 +70,33 @@ export function fanTargetsFor(input: FanModeTargetsInput): (number | null)[] {
   }
 }
 
+/**
+ * Manual targets after setting one fan. Entering manual (`saved` null) holds every other spinning
+ * fan at its current speed rather than an older saved one; stopped or below-minimum fans stay with
+ * macOS. rpm 0 hands the set fan back to macOS.
+ */
+export function nextManualRpm(
+  saved: Record<number, number> | null,
+  fans: FanReading[],
+  index: number,
+  rpm: number
+): Record<number, number> {
+  const targets: Record<number, number> = { ...saved }
+  if (!saved) {
+    for (const fan of fans) {
+      if (fan.rpm >= fan.minRpm) {
+        targets[fan.index] = Math.min(Math.round(fan.rpm), fan.maxRpm)
+      }
+    }
+  }
+  if (rpm === 0) {
+    delete targets[index]
+  } else {
+    targets[index] = Math.round(rpm)
+  }
+  return targets
+}
+
 /** Why a manual speed is refused; rpm 0 hands the fan back to macOS. */
 export function manualRpmProblem(
   fan: FanReading | undefined,

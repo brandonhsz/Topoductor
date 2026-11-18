@@ -398,6 +398,18 @@ describe('FanControlStatusSegment manual speed', () => {
     expect(fanSlider(panel, 2).value).toBe('2510')
   })
 
+  it('shows the live RPM, not a saved manual target, outside manual mode', async () => {
+    const fans = [
+      { ...AUTO.fans[0], rpm: 3100 },
+      { ...AUTO.fans[1], rpm: 2510 }
+    ]
+    stubApi({ ...AUTO, mode: 'auto', fans, manualRpm: { 0: 4000 } })
+    await mount()
+    const panel = await openPanel()
+    expect(fanSlider(panel, 1).value).toBe('3100')
+    expect(within(panel).queryByText(/4,000 RPM/)).toBeNull()
+  })
+
   it('sends the committed RPM for that fan', async () => {
     const api = stubApi(AUTO)
     await mount()
