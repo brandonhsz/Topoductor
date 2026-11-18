@@ -12,6 +12,8 @@ export type PluginHostPanel = {
   /** Lucide icon name declared in the plugin manifest. */
   icon?: string
   tabKey: `plugin:${string}`
+  /** Also listed in the left sidebar; absent on hosts that predate the field. */
+  sidebarEntry?: boolean
 }
 
 /** pending awaits consent; idle defers worker startup; errored exhausted retries or failed startup. */

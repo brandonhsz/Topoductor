@@ -5,6 +5,7 @@ import { PLUGIN_ENUM_SINCE_KEY } from '../manifest/plugin-engine-floor-keys'
 import {
   pluginPathFieldDoc,
   pluginFieldDoc,
+  PLUGIN_PANEL_SIDEBAR_ENTRY_SINCE,
   PLUGIN_PANEL_UI_SINCE,
   PLUGIN_SCHEMA_SINCE_V1,
   PLUGIN_SOURCE_MODULES_SINCE
@@ -137,6 +138,16 @@ export const pluginPanelContributionSchema = z
           'How the panel draws its UI. `html` (default) shows `entry` as a web page in an isolated frame; `components` runs `entry` as a hidden module and Topo draws the component tree it returns with its own controls.',
           PLUGIN_PANEL_UI_SINCE,
           ['components']
+        )
+      ),
+    sidebarEntry: z
+      .boolean()
+      .optional()
+      .meta(
+        pluginFieldDoc(
+          'Also lists the panel in the left sidebar, below Harness, with its `title` and `icon`; pressing it opens the panel in the right sidebar of the open workspace.',
+          PLUGIN_PANEL_SIDEBAR_ENTRY_SINCE,
+          [true]
         )
       )
   })

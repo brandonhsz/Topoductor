@@ -599,6 +599,14 @@
             "html",
             "components"
           ]
+        },
+        "sidebarEntry": {
+          "description": "Also lists the panel in the left sidebar, below Harness, with its `title` and `icon`; pressing it opens the panel in the right sidebar of the open workspace.",
+          "x-orca-since": "1.4.274",
+          "examples": [
+            true
+          ],
+          "type": "boolean"
         }
       },
       "required": [

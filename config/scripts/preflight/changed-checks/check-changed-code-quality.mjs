@@ -15,7 +15,8 @@ import {
 } from './secondary-scan-directive-pattern.mjs'
 
 const SOURCE_FILE_PATTERN = /\.(?:[cm]?[jt]sx?)$/
-const ROOT_CODE_QUALITY_IGNORED_PREFIXES = ['cloud/']
+// Plugin vendor folders hold bundled third-party code, like node_modules.
+const ROOT_CODE_QUALITY_IGNORED_PATTERNS = [/^cloud\//, /^plugins\/[^/]+\/vendor\//]
 const CASTING_RULE = 'typescript/consistent-type-assertions'
 const CASTING_DISABLE_PATTERN =
   /\/[/*]\s*(?:oxlint|eslint)-disable(?:-next-line|-line)?\s[^\n]*typescript\/consistent-type-assertions/
@@ -129,7 +130,7 @@ function splitNullDelimited(output) {
 }
 
 export function isRootCodeQualityPath(file) {
-  return !ROOT_CODE_QUALITY_IGNORED_PREFIXES.some((prefix) => file.startsWith(prefix))
+  return !ROOT_CODE_QUALITY_IGNORED_PATTERNS.some((pattern) => pattern.test(file))
 }
 
 function resolveBase(root, requestedBase) {

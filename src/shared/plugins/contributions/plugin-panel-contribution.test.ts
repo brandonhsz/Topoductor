@@ -50,3 +50,17 @@ describe('panel ui', () => {
     )
   })
 })
+
+describe('panel sidebarEntry', () => {
+  it('is read from the release that lists panels in the left sidebar', () => {
+    expect(parsePluginManifest(manifest('>=1.4.273', { sidebarEntry: true })).ok).toBe(false)
+    expect(parsePluginManifest(manifest('>=1.4.274', { sidebarEntry: true })).ok).toBe(true)
+  })
+
+  it('takes only a boolean', () => {
+    expect(
+      pluginPanelContributionSchema.safeParse({ ...panel, entry: 'panel.js', sidebarEntry: 'left' })
+        .success
+    ).toBe(false)
+  })
+})

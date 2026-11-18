@@ -21,6 +21,8 @@ export const PLUGIN_EDITOR_FRAME_SINCE = '1.4.248'
 export const PLUGIN_HOOKS_SINCE = '1.4.248'
 /** Workers act on workspaces, terminals and agents: `workspace:write`, `terminal:read`, `agent:launch`. */
 export const PLUGIN_HOST_ACTIONS_SINCE = '1.4.248'
+/** First release that lists `panels[].sidebarEntry` panels in the left sidebar. */
+export const PLUGIN_PANEL_SIDEBAR_ENTRY_SINCE = '1.4.274'
 /** First release that plays an app theme's `background.videoPath`. */
 export const PLUGIN_THEME_VIDEO_BACKGROUND_SINCE = '1.4.254'
 

@@ -1,0 +1,79 @@
+{
+  "manifestVersion": 2,
+  "id": "avena-catalogo-meli",
+  "name": "Catálogo MercadoLibre",
+  "version": "0.1.0",
+  "description": "Revisa productos con link de MercadoLibre guardados en Mongo: lee precios y links de afiliado desde el navegador de Topo, genera referidos y guarda los cambios a través de un backend propio.",
+  "engines": {
+    "orca": ">=1.4.246"
+  },
+  "execution": "trusted-worker",
+  "pluginApi": 1,
+  "main": "src/worker.ts",
+  "contributes": {
+    "panels": [
+      {
+        "id": "catalogo",
+        "title": "Catálogo MercadoLibre",
+        "icon": "database",
+        "entry": "src/panel.tsx",
+        "ui": "components"
+      }
+    ],
+    "settings": [
+      {
+        "key": "backendUrl",
+        "title": "URL del backend",
+        "description": "Base del backend que escribe precios, links y stock, p. ej. https://api.ejemplo.com.",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "key": "backendPricesPath",
+        "title": "Ruta del endpoint de escritura",
+        "description": "Endpoint PATCH que recibe [{ id, price, productURL, hasStock, listPrice, discountPercentage, mlItemId, priceCheckedAt }] con Basic auth de admin.",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "key": "mongoDatabase",
+        "title": "Base de Mongo",
+        "description": "Base de datos donde viven los productos.",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "key": "mongoCollection",
+        "title": "Colección de Mongo",
+        "description": "Colección de productos.",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "key": "catalogOwner",
+        "title": "Owner",
+        "description": "Solo se revisan los productos con este valor en el campo owner.",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "key": "topoCli",
+        "title": "Ruta del CLI de Topo",
+        "description": "El worker usa el CLI para leer MercadoLibre en el navegador de Topo. Vacío: la ruta de la app en macOS.",
+        "type": "string",
+        "default": ""
+      }
+    ]
+  },
+  "capabilities": [
+    {
+      "kind": "storage:own"
+    },
+    {
+      "kind": "secrets:own"
+    },
+    {
+      "kind": "settings:own"
+    }
+  ]
+}

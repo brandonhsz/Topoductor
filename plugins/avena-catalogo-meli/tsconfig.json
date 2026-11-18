@@ -1,0 +1,17 @@
+{
+  "extends": "./.orca/types/tsconfig.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "typeRoots": [".orca/types", "../../node_modules/@types"],
+    "types": [
+      "orca",
+      "orca-host",
+      "orca-frame",
+      "orca-worker",
+      "orca-services",
+      "topo-testing",
+      "node"
+    ]
+  },
+  "include": ["src", "vendor/*.d.mts"]
+}
