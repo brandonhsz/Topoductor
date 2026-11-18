@@ -114,6 +114,8 @@ export type NotificationDispatchRequest = {
   structuredOrigin?: StructuredAttentionOrigin
   /** The execution host already pushed this to its paired phones, so main must not fan it out again. */
   mobileDeliveredByHost?: boolean
+  /** Part of a host's reconnect burst whose one sound and Dock bounce another delivery already carried. */
+  reconnectCoalesced?: boolean
 }
 
 export type NotificationDispatchResult = {

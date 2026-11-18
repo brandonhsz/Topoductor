@@ -2,6 +2,7 @@
 import { playDesktopNotificationSound } from '@/lib/desktop-notification-sound'
 import { showBlockedNotificationFallbackToast } from '@/lib/blocked-notification-fallback'
 import { resolveAttentionAlertPlan } from '../../../shared/attention-alert-plan'
+import { reconnectAttention } from './reconnect-attention-chime'
 import type {
   NotificationDispatchRequest,
   NotificationDispatchResult,
@@ -18,15 +19,18 @@ export function deliverAgentAttentionNotification(
   sound: AgentAttentionNotificationSound,
   onResult?: (result: NotificationDispatchResult | null) => void
 ): void {
+  const reconnectCoalesced =
+    request.executionHost !== undefined &&
+    reconnectAttention.coalesceAlert(request.executionHost, Date.now())
   void window.api.notifications
-    .dispatch(request)
+    .dispatch(reconnectCoalesced ? { ...request, reconnectCoalesced } : request)
     .then((result) => {
       onResult?.(result)
       const plan = resolveAttentionAlertPlan(result, {
         // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the plan only distinguishes 'system' from any other id.
         customSoundId: sound.customSoundId as NotificationSoundId
       })
-      if (plan.playSound) {
+      if (plan.playSound && !reconnectCoalesced) {
         void playDesktopNotificationSound(
           sound.customSoundId,
           sound.customSoundVolume,

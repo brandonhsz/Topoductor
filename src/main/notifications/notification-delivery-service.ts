@@ -84,7 +84,8 @@ export function createNotificationDeliveryService(
       return nativeBannerTrusted ? { ...result, nativeBannerTrusted: true } : result
     }
     // Untrusted banners stay silent so the renderer's fallback sound is the only one heard.
-    const bannerOptions = nativeBannerTrusted ? options : { ...options, silent: true }
+    const bannerOptions =
+      nativeBannerTrusted && !request.reconnectCoalesced ? options : { ...options, silent: true }
     const result = deps.deliverNative(request, bannerOptions, settings)
     return result instanceof Promise ? result.then(recordIfDelivered) : recordIfDelivered(result)
   }
@@ -193,7 +194,7 @@ export function createNotificationDeliveryService(
         }
       }
 
-      if (settings.dockAttention) {
+      if (settings.dockAttention && !request.reconnectCoalesced) {
         deps.requestDockAttention()
       }
 

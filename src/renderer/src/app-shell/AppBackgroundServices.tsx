@@ -14,6 +14,7 @@ import { StructuredAgentSessionStatusBridge } from '../components/native-chat/se
 import { NativeChatVisualGuestThemePublisher } from '../components/native-chat/media/visuals/NativeChatVisualGuestThemePublisher'
 import { usePairedMobileDevices } from '../components/mobile/paired-mobile-devices'
 import { HarnessDecisionAttentionBridge } from '../attention/harness-decision-attention-bridge'
+import { ReconnectAttentionBridge } from '../attention/reconnect-attention-bridge'
 
 const DashboardPopoutBridge = lazy(() => import('../components/dashboard/DashboardPopoutBridge'))
 const AgentListVerdictPublisher = lazy(
@@ -59,6 +60,8 @@ export function AppBackgroundServices(): React.JSX.Element {
       <StructuredAgentSessionAttentionBridge />
       {/* Harness agents have no tab, so a run awaiting a decision alerts from here. */}
       <HarnessDecisionAttentionBridge />
+      {/* A host's reconnect replays each missed completion; only the first one sounds and bounces. */}
+      <ReconnectAttentionBridge />
     </>
   )
 }

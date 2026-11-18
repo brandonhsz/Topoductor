@@ -218,4 +218,13 @@ describe('requestDockAttention', () => {
     expect(requestDockAttention).not.toHaveBeenCalled()
     expect(deliverNative).toHaveBeenCalledTimes(1)
   })
+
+  it('is not requested for a reconnect burst member, whose banner also stays silent', async () => {
+    const { dispatch, requestDockAttention, deliverNative } = setup({ authorization: 'authorized' })
+    await expect(dispatch({ ...REQUEST, reconnectCoalesced: true })).resolves.toMatchObject({
+      delivered: true
+    })
+    expect(requestDockAttention).not.toHaveBeenCalled()
+    expect(deliverNative.mock.calls[0]?.[1].silent).toBe(true)
+  })
 })
