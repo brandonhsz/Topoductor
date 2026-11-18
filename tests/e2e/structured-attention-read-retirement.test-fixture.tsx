@@ -58,7 +58,8 @@ export const NOTIFICATION_SETTINGS: NotificationSettings = {
   customSoundPath: null,
   customSoundVolume: 1,
   mutedNotificationSourceIds: [],
-  notifyHiddenWorkspaces: false
+  notifyHiddenWorkspaces: false,
+  dockAttention: false
 }
 export const SCOPE = {
   executionHostId: 'local',
