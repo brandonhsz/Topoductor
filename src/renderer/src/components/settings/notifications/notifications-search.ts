@@ -127,6 +127,30 @@ export const getNotificationsPaneSearchEntries = createLocalizedCatalog(() => [
   },
   {
     title: translate(
+      'auto.components.settings.notifications.search.dockAttention',
+      'Dock and Taskbar Attention'
+    ),
+    description: translate(
+      'auto.components.settings.notifications.search.dockAttentionDescription',
+      'Bounce the Dock icon on macOS, or flash the taskbar on Windows and Linux, when an agent needs you.'
+    ),
+    keywords: [
+      ...translateSearchKeyword(
+        'auto.components.settings.notifications.search.ca8faa40d7',
+        'notifications'
+      ),
+      ...translateSearchKeyword('auto.components.settings.notifications.search.dock', 'dock'),
+      ...translateSearchKeyword('auto.components.settings.notifications.search.bounce', 'bounce'),
+      ...translateSearchKeyword('auto.components.settings.notifications.search.taskbar', 'taskbar'),
+      ...translateSearchKeyword('auto.components.settings.notifications.search.flash', 'flash'),
+      ...translateSearchKeyword(
+        'auto.components.settings.notifications.search.a2ab73b325',
+        'attention'
+      )
+    ]
+  },
+  {
+    title: translate(
       'auto.components.settings.notifications.search.96562a72c6',
       'Suppress While Focused'
     ),

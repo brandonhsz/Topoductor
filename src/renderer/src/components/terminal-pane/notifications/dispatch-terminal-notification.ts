@@ -149,7 +149,8 @@ export function dispatchTerminalNotification(
           event.paneKey === undefined
             ? undefined
             : canonicalOrchestrationForRow(state, event.paneKey)
-        )
+        ),
+      agentState: agentStatus?.state
     },
     createTerminalAttentionSurface(state)
   )

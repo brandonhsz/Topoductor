@@ -1,3 +1,4 @@
+import { isHumanBlockingAgentState } from '../../../shared/mobile-push-alert'
 import type {
   AgentAttentionSubject,
   AgentAttentionSurface,
@@ -13,6 +14,8 @@ export type AgentAttentionRequest = {
   hasFreshActivityEvidence: boolean
   /** A dispatched worker finished: its coordinator gets the result, so the person gets nothing. */
   coordinatorOnlyNews?: boolean
+  /** Raw agent state; a human-blocking one still alerts from a muted workspace. */
+  agentState?: string
 }
 
 export type AgentAttentionUnreadWrite = {
@@ -57,8 +60,8 @@ export function resolveAgentAttention(
   surface: AgentAttentionSurface
 ): AgentAttentionDecision {
   const { workspaceId } = request.subject
-  // Muted workspaces get no unread, banner, sound or push.
-  if (surface.isWorkspaceMuted(workspaceId)) {
+  // Muted workspaces get no unread, banner, sound or push unless the agent is stopped on a person.
+  if (surface.isWorkspaceMuted(workspaceId) && !isHumanBlockingAgentState(request.agentState)) {
     return { admitted: false, cause: 'muted-workspace' }
   }
   if (request.coordinatorOnlyNews) {

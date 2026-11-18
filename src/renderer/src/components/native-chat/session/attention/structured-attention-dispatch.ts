@@ -86,7 +86,8 @@ function dispatchStructuredAttention(
       hasFreshActivityEvidence: true,
       coordinatorOnlyNews: isCoordinatorOnlyChatNews(edge, news.agentState, () =>
         canonicalOrchestrationForRow(state, paneKey)
-      )
+      ),
+      agentState: news.agentState
     },
     createStructuredAttentionSurface(state)
   )

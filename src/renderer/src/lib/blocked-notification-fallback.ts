@@ -11,13 +11,13 @@ export function showBlockedNotificationFallbackToast(): void {
   shownThisSession = true
   toast.warning(
     translate(
-      'auto.lib.blocked.notification.fallback.de50bef680',
-      'macOS is blocking Topo notifications'
+      'auto.lib.blocked.notification.fallback.bannersBlocked',
+      "macOS is blocking Topo's banners"
     ),
     {
       description: translate(
-        'auto.components.onboarding.mac.notification.permission.card.721d2bedb6',
-        'Turn on Allow notifications for Topo in System Settings.'
+        'auto.lib.blocked.notification.fallback.soundAndDockInstead',
+        'Topo will alert you with sound and the Dock instead.'
       ),
       action: {
         label: translate(

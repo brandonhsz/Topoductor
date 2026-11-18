@@ -8,7 +8,10 @@ export function detectHarnessDecisionAttention(
   previous: HarnessRunSummary | undefined,
   next: HarnessRunSummary
 ): HarnessDecisionAttention | null {
-  throw new Error(`detectHarnessDecisionAttention not implemented: ${previous?.id} ${next.id}`)
+  if (next.status !== 'waiting' || next.pendingCount <= (previous?.pendingCount ?? 0)) {
+    return null
+  }
+  return { attentionKey: `harness:${next.id}:${next.pendingCount}:${next.updatedAt}` }
 }
 
 export function buildHarnessDecisionDispatchRequest(
@@ -16,7 +19,12 @@ export function buildHarnessDecisionDispatchRequest(
   attention: HarnessDecisionAttention,
   labels: { repoLabel?: string; worktreeLabel?: string }
 ): NotificationDispatchRequest {
-  throw new Error(
-    `buildHarnessDecisionDispatchRequest not implemented: ${run.id} ${attention.attentionKey} ${labels.worktreeLabel}`
-  )
+  return {
+    source: 'agent-task-complete',
+    agentState: 'waiting',
+    worktreeId: run.worktreeId,
+    attentionKey: attention.attentionKey,
+    repoLabel: labels.repoLabel,
+    worktreeLabel: labels.worktreeLabel
+  }
 }

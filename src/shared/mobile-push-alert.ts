@@ -40,7 +40,7 @@ export function isAgentNeedsInputAlert(source: string | undefined, agentState: s
 
 /** An agent state that leaves the agent stopped until a person answers. */
 export function isHumanBlockingAgentState(state: string | undefined): boolean {
-  throw new Error(`isHumanBlockingAgentState not implemented: ${state}`)
+  return isAgentNeedsInputAlert('agent-task-complete', state)
 }
 
 /** Drops finished-agent alerts only; bells and the push test follow the desktop's own settings. */
