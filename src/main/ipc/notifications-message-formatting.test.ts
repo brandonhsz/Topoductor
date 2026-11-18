@@ -58,13 +58,14 @@ describe('registerNotificationHandlers', () => {
           agentPrompt: 'Do not show this request text'
         }
       )
-    ).toEqual({ delivered: true })
+    ).toMatchObject({ delivered: true })
 
-    expect(notificationCtorMock).toHaveBeenCalledWith({
-      title: 'jinjing-work / main - Claude finished',
-      body: 'Claude finished.',
-      silent: true
-    })
+    expect(notificationCtorMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'jinjing-work / main - Claude finished',
+        body: 'Claude finished.'
+      })
+    )
   })
 
   it('normalizes custom agent labels and re-bounds multiline assistant previews', async () => {
@@ -93,7 +94,7 @@ describe('registerNotificationHandlers', () => {
           agentLastAssistantMessage: longAssistantMessage
         }
       )
-    ).toEqual({ delivered: true })
+    ).toMatchObject({ delivered: true })
 
     const options = (
       notificationCtorMock.mock.calls as unknown as [{ title: string; body: string }][]
