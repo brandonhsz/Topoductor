@@ -21,6 +21,7 @@ import { AppVersionStatusSegment } from './AppVersionStatusSegment'
 import { SkillUpdateStatusSegment } from './SkillUpdateStatusSegment'
 import { NativeChatResumeStatusSegment } from './NativeChatResumeStatusSegment'
 import { CaffeinateStatusSegment } from './CaffeinateStatusSegment'
+import { FanControlStatusSegment } from './FanControlStatusSegment'
 import { PluginsStatusSegment } from './PluginsStatusSegment'
 import { PluginStatusBarItems } from './PluginStatusBarItems'
 import { RemoteServerUpdateStatusSegment } from './RemoteServerUpdateStatusSegment'
@@ -315,6 +316,7 @@ export function StatusBarSurface({
               <PluginsStatusSegment />
               <PluginStatusBarItems iconOnly={segmentsIconOnly} />
               <CaffeinateStatusSegment iconOnly={segmentsIconOnly} />
+              <FanControlStatusSegment iconOnly={segmentsIconOnly} />
             </>
           ) : null}
           <RemoteServerUpdateStatusSegment iconOnly={segmentsIconOnly} />

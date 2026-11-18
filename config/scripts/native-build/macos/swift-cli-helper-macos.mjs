@@ -53,7 +53,8 @@ const DEV_SWIFT_CLI_HELPERS = [
     'topo-keyboard-layout',
     'shifted Option composition stays conservative'
   ],
-  ['process-footprint-macos', 'topo-process-footprint', 'memory panel falls back to top']
+  ['process-footprint-macos', 'topo-process-footprint', 'memory panel falls back to top'],
+  ['fan-control-macos', 'topo-fan-control', 'fan control button stays hidden']
 ]
 
 /** Dev bundles build each helper for the host arch; a missing swiftc only degrades that helper's feature. */

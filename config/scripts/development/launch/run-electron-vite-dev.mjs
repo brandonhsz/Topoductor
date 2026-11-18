@@ -257,7 +257,8 @@ function prepareMacDevElectronApp() {
   const requiredResourcePaths = [
     chromiumResourcePath,
     path.join(appPath, 'Contents', 'MacOS', 'topo-keyboard-layout'),
-    path.join(appPath, 'Contents', 'MacOS', 'topo-process-footprint')
+    path.join(appPath, 'Contents', 'MacOS', 'topo-process-footprint'),
+    path.join(appPath, 'Contents', 'MacOS', 'topo-fan-control')
   ]
 
   function copiedAppIsUsable() {

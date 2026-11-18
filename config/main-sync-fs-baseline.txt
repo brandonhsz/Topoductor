@@ -434,6 +434,7 @@
 8 src/main/ports/darwin-port-scan-lock.ts
 1 src/main/ports/port-scan-command-client.ts
 1 src/main/ports/port-scan-command-execution.ts
+2 src/main/power/fan-control-service-instance.ts
 2 src/main/provider-process/provider-executable-missing.ts
 5 src/main/providers/local-pty/local-pty-executable-spawn.ts
 1 src/main/providers/local-pty/local-pty-session-operations.ts

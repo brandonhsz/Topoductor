@@ -5395,6 +5395,19 @@
           },
           "InlineUsageBars": {
             "resetsAt": "Resets {{when}}"
+          },
+          "FanControlStatusSegment": {
+            "max": "Max speed",
+            "auto": "Automatic",
+            "authCancelled": "Permission cancelled — fans stay automatic.",
+            "holdExited": "Max speed stopped — fans are back to automatic.",
+            "helperFailed": "Could not change fan speed.",
+            "title": "Fan speed",
+            "ariaLabel": "{{title}}, {{status}}",
+            "fanName": "Fan {{n}}",
+            "rpm": "{{rpm}} RPM",
+            "autoDescription": "macOS adjusts fan speed to temperature",
+            "maxDescription": "Run all fans at full speed. Needs your administrator password; fans return to automatic when Topo closes."
           }
         }
       },
