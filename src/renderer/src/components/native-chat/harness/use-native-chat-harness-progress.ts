@@ -14,6 +14,8 @@ import type {
   HarnessRunSummary
 } from '../../../../../shared/harness/harness-run-types'
 
+const NO_LIVE_STATUSES: ReadonlyMap<string, HarnessSessionLiveStatus> = new Map()
+
 const isLive = (status: HarnessRunStatus): boolean => status === 'running' || status === 'waiting'
 
 const belongsTo = (summary: HarnessRunSummary, sessionId: string): boolean =>
@@ -95,36 +97,42 @@ function useHarnessSessionsLiveStatus(
     () => getStructuredAgentSessionStatusFeed(runtimeTargetForOwnerEnvironment(environmentId)),
     [environmentId]
   )
-  // The feed updates its map in place, so a counter is the change signal.
-  const [revision, setRevision] = useState(0)
+  // The feed updates its map in place, so each change copies out the watched sessions.
+  const [statuses, setStatuses] =
+    useState<ReadonlyMap<string, HarnessSessionLiveStatus>>(NO_LIVE_STATUSES)
   useEffect(() => {
     if (!sessionIds) {
       return
     }
+    const ids = sessionIds.split(' ')
     const deactivate = feed.activate()
-    const bump = (): void => setRevision((current) => current + 1)
-    const offs = sessionIds.split(' ').map((id) => feed.subscribeSession(id, bump))
-    bump()
+    const refresh = (): void => {
+      const snapshot = feed.getSnapshot()
+      setStatuses(
+        new Map(
+          ids.flatMap((id) => {
+            const summary = snapshot.get(id)
+            if (!summary) {
+              return []
+            }
+            const tool = summary.status === 'working' ? summary.toolName : undefined
+            const status: HarnessSessionLiveStatus = {
+              attention: summary.status === 'attention',
+              activity: tool ? [tool, summary.toolInput].filter(Boolean).join(': ') : null
+            }
+            return [[id, status] as const]
+          })
+        )
+      )
+    }
+    const offs = ids.map((id) => feed.subscribeSession(id, refresh))
+    refresh()
     return () => {
       offs.forEach((off) => off())
       deactivate()
     }
   }, [feed, sessionIds])
-  return useCallback(
-    (sessionId: string) => {
-      const summary = feed.getSnapshot().get(sessionId)
-      if (!summary) {
-        return null
-      }
-      const tool = summary.status === 'working' ? summary.toolName : undefined
-      return {
-        attention: summary.status === 'attention',
-        activity: tool ? [tool, summary.toolInput].filter(Boolean).join(': ') : null
-      }
-    },
-    // oxlint-disable-next-line react-hooks/exhaustive-deps -- revision is the feed's change signal.
-    [feed, revision]
-  )
+  return useCallback((sessionId: string) => statuses.get(sessionId) ?? null, [statuses])
 }
 
 export function useNativeChatHarnessProgress(sessionId: string): NativeChatHarnessFlow | null {
