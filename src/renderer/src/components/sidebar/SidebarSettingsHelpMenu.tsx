@@ -33,6 +33,7 @@ import { SetupGuideProgressRing } from '../setup-guide/SetupGuideProgressRing'
 import { useSetupGuideProgress } from '../setup-guide/use-setup-guide-progress'
 import { lazyWithRetry } from '@/lib/lazy-with-retry'
 import type * as SidebarFeedbackDialogModule from './sidebar-feedback/SidebarFeedbackDialog'
+import { SidebarUpdateButton } from './SidebarUpdateButton'
 import { useTranslate } from '@/i18n/use-translate'
 import { getUpdateCheckClickOptions, getUpdateCheckHint } from '@/lib/update-check-click-options'
 import { openAppHttpLink } from '@/lib/browser/navigation/app-http-link-open'
@@ -212,6 +213,7 @@ export function SidebarSettingsHelpMenu(): React.JSX.Element {
             ) : null}
           </TooltipContent>
         </Tooltip>
+        <SidebarUpdateButton />
         <DropdownMenu modal={false} open={menuOpen} onOpenChange={handleMenuOpenChange}>
           <Tooltip>
             <TooltipTrigger asChild>

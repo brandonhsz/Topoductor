@@ -228,6 +228,16 @@
       "existingTitle": "Add on the {{distro}} host (recommended)",
       "existingWhy": "{{distro}} already runs as a host, so Git, files and terminals run natively in Linux instead of across the Windows file share.",
       "existingAccept": "Add on host"
+    },
+    "updateButton": {
+      "check": "Check for updates",
+      "checking": "Checking for updates…",
+      "available": "Update to Topo v{{version}}",
+      "external": "Topo v{{version}} update available",
+      "downloading": "Downloading update… {{percent}}%",
+      "ready": "Update ready: restart to install Topo v{{version}}",
+      "installFailed": "Couldn't install the update: {{message}}",
+      "failedDetails": "Update failed. Click for details"
     }
   },
   "app": {

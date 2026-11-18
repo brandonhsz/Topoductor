@@ -21,7 +21,7 @@ export function UpdateCardStateContent({
   errorCard,
   linuxPackageRecovery,
   isLocalBuild,
-  hasStartedDownload,
+  installOnDownload,
   prefersReducedMotion,
   mediaFailed,
   mediaLoaded,
@@ -40,7 +40,7 @@ export function UpdateCardStateContent({
     diagnostic: string
   } | null
   isLocalBuild: boolean
-  hasStartedDownload: boolean
+  installOnDownload: boolean
   prefersReducedMotion: boolean
   mediaFailed: boolean
   mediaLoaded: boolean
@@ -114,7 +114,7 @@ export function UpdateCardStateContent({
         </div>
       )
     }
-    return hasStartedDownload ? (
+    return installOnDownload ? (
       <div className="p-4">
         <p className="text-sm">{t('auto.components.UpdateCard.09a55c39b5', 'Installing...')}</p>
       </div>
