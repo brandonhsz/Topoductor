@@ -391,7 +391,7 @@ Table cells (`ui.has('RelativeTime')`).
 | `Tree`         | `label` and `items` (`{ key, label, description?, icon?, disabled?, hasChildren?, children? }[]`) required; `selected`, `defaultSelected`, `expanded`, `defaultExpanded`, `maxHeight`, `onSelect`, `onToggle`, `onAction`                                                                                                                            | none       |
 | `Markdown`     | `content` (required, up to 64 KiB)                                                                                                                                                                                                                                                                                                                   | none       |
 | `CodeView`     | `code` (required, up to 64 KiB), `language`, `label`, `lineNumbers`, `wrap`, `maxHeight`                                                                                                                                                                                                                                                             | none       |
-| `Image`        | `src` (required: an image file in the plugin), `alt` (required; `''` for decoration), `size` (`xs` `sm` `md` `lg` `full`), `fit` (`contain` `cover`), `rounded`                                                                                                                                                                                      | none       |
+| `Image`        | `src` (required: an image file in the plugin, or a `data:` image URL), `alt` (required; `''` for decoration), `size` (`xs` `sm` `md` `lg` `full`), `fit` (`contain` `cover`), `rounded`                                                                                                                                                              | none       |
 | `KeyValue`     | `items` (`{ label, value, tone?, code? }[]`, required), `label`                                                                                                                                                                                                                                                                                      | none       |
 | `Callout`      | `tone`, `title`, `icon`                                                                                                                                                                                                                                                                                                                              | any        |
 | `Skeleton`     | `shape` (`text` `block` `circle`), `lines` (1–10, for `text`), `label` (its screen-reader name; default "Loading")                                                                                                                                                                                                                                   | none       |
@@ -481,7 +481,9 @@ network.
 **Images** come from the plugin's own folder (`assets/logo.png`): a static PNG, JPEG or WebP up to 8 MiB
 and 4096 pixels a side, read by Topo with the same containment checks as the plugin's other files and the
 same header check as a manifest's images. A URL, an absolute path or `..` is refused; an image that
-cannot be shown draws a neutral placeholder.
+cannot be shown draws a neutral placeholder. From 1.4.275 `src` may instead be a `data:` URL of a
+PNG, JPEG or WebP (base64, up to 256 KiB): for an image only the plugin's worker can reach, such as a
+product photo it downloaded. The panel still loads nothing from the network itself.
 
 **CodeView** colours code with Topo's own highlighter, including languages a syntax plugin adds, when
 `language` names one; an unknown language stays plain.

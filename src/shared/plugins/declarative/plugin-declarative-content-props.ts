@@ -21,6 +21,14 @@ const documentText = z.string().max(LIMITS.maxDocumentLength)
 // The formats Topo checks from their header before any decoder runs (plugin-image-format.ts).
 const IMAGE_EXTENSION = /\.(?:png|jpe?g|webp)$/i
 
+/** Inline image bytes a worker fetched; a panel never loads them from the network itself. */
+export const PLUGIN_IMAGE_DATA_URL_MAX_LENGTH = 256 * 1024
+const IMAGE_DATA_URL = /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/
+
+export function isPluginDeclarativeImageDataUrl(src: string): boolean {
+  return src.length <= PLUGIN_IMAGE_DATA_URL_MAX_LENGTH && IMAGE_DATA_URL.test(src)
+}
+
 /** A file inside the plugin: relative, `/`-separated, no `.`/`..` segments, never a URL. */
 export function isPluginDeclarativeImagePath(path: string): boolean {
   return (
@@ -50,8 +58,13 @@ const imageProps = z
   .object({
     src: z
       .string()
-      .max(512)
-      .refine(isPluginDeclarativeImagePath, 'must be an image file in the plugin'),
+      .max(PLUGIN_IMAGE_DATA_URL_MAX_LENGTH)
+      .refine(
+        (src) =>
+          (src.length <= 512 && isPluginDeclarativeImagePath(src)) ||
+          isPluginDeclarativeImageDataUrl(src),
+        'must be an image file in the plugin or a PNG, JPEG or WebP data: URL'
+      ),
     /** Empty for a purely decorative image. */
     alt: label,
     size: z.enum(['xs', 'sm', 'md', 'lg', 'full']).optional(),

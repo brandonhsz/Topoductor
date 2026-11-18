@@ -1,10 +1,14 @@
 import { useContext, useEffect, useState } from 'react'
 import { ImageOff } from 'lucide-react'
 import type { PluginDeclarativeProps } from '../../../../../shared/plugins/declarative/plugin-declarative-catalog'
-import { isPluginDeclarativeImagePath } from '../../../../../shared/plugins/declarative/plugin-declarative-content-props'
+import {
+  isPluginDeclarativeImageDataUrl,
+  isPluginDeclarativeImagePath
+} from '../../../../../shared/plugins/declarative/plugin-declarative-content-props'
 import { PluginDeclarativeHostServicesContext } from './plugin-declarative-assets'
 
-/** A plugin file, read by main inside the plugin root; never a URL, so nothing leaves the machine. */
+/** A plugin file read by main inside the plugin root, or inline bytes the plugin already holds:
+ *  never a URL, so the panel itself loads nothing from the network. */
 export function PluginDeclarativeImage({
   src,
   alt,
@@ -30,7 +34,8 @@ export function PluginDeclarativeImage({
       current = false
     }
   }, [loadImage, src])
-  const url = loaded?.src === src ? loaded.url : undefined
+  const inline = isPluginDeclarativeImageDataUrl(src) ? src : null
+  const url = inline ?? (loaded?.src === src ? loaded.url : undefined)
   return (
     <span
       data-size={size}

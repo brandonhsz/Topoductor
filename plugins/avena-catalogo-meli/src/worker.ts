@@ -1,4 +1,4 @@
-// The plugin's worker: keeps the catalog in orca.storage (shared with the panel), reads ML through
+// The plugin's worker: keeps the catalog in a local SQLite database, reads ML through
 // Topo's browser, and writes through the configured backend.
 import type { OrcaWorkerApi } from 'orca/worker'
 import { patchSupplements, type BackendCredentials, type SupplementUpdate } from './backend-client'
@@ -10,34 +10,30 @@ import {
   type SourceProduct
 } from './catalog-source'
 import { backendCredentials, mongoLocation, readCatalogConfig } from './catalog-config'
-import { isReferralUrl, pricePayload, withStatus } from './catalog-status'
-import { isCatalog } from './json-fields'
+import { isMeliUrl, isReferralUrl, pricePayload, withStatus } from './catalog-status'
+import { CatalogDb } from './catalog-db'
+import { imageFetcher, type ImageFetcher } from './image-data'
+import { CatalogRepository, type OpenCatalogDb } from './catalog-repository'
 import { cliRunner, MeliBrowser, type MeliClient } from './meli-browser'
-import { proposeReferral } from './referral-proposal'
+import { registerReferralHandlers } from './referral-handlers'
 import type { ActionResult, Catalog, CatalogConfig, ConnectionStatus, Product } from './protocol'
 
 export type WorkerDeps = {
   catalogSource(uri: string, location: MongoLocation): CatalogSource
   meli(cliPath: string): MeliClient
   patch(credentials: BackendCredentials, updates: readonly SupplementUpdate[]): Promise<unknown>
+  openDb: OpenCatalogDb
+  fetchImage: ImageFetcher
 }
 
-const CATALOG = 'catalog'
 const DEFAULT_CLI = '/Applications/Topo.app/Contents/Resources/bin/topo'
-const ML_URL = /^https:\/\/(meli\.la|(www\.|articulo\.)?mercadolibre\.com\.mx)\//i
 
 const realDeps: WorkerDeps = {
   catalogSource: mongoCatalogSource,
   meli: (cliPath) => new MeliBrowser(cliRunner(cliPath)),
-  patch: patchSupplements
-}
-
-type StoredJson = Parameters<OrcaWorkerApi['storage']['set']>[1]
-
-/** The catalog is plain JSON already; the round trip types it as storage's JsonValue. */
-function storedJson(catalog: Catalog): StoredJson {
-  const json: StoredJson = JSON.parse(JSON.stringify(catalog))
-  return json
+  patch: patchSupplements,
+  openDb: (path) => new CatalogDb(path),
+  fetchImage: imageFetcher()
 }
 
 function message(error: unknown): string {
@@ -75,22 +71,15 @@ function sharedCounts(
 export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
   let auditRunning = false
 
+  const repository = new CatalogRepository(orca, deps.openDb)
+
   async function catalog(): Promise<Catalog> {
-    const stored = await orca.storage.get(CATALOG)
-    return isCatalog(stored) ? stored : { products: [], syncedAt: null }
+    const db = await repository.database()
+    return { products: db.all(), syncedAt: db.syncedAt() }
   }
 
-  async function saveProducts(
-    change: (products: Product[]) => Product[],
-    syncedAt?: number
-  ): Promise<void> {
-    const current = await catalog()
-    const next: Catalog = {
-      products: change(current.products),
-      syncedAt: syncedAt ?? current.syncedAt
-    }
-    await orca.storage.set(CATALOG, storedJson(next))
-  }
+  const saveProducts = (change: (products: Product[]) => Product[]): Promise<void> =>
+    repository.update(change)
 
   async function mongoSource(): Promise<CatalogSource> {
     const uri = await orca.secrets.get('mongoUri')
@@ -139,6 +128,9 @@ export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
   }
 
   orca.panels.handle('connection.status', status)
+  orca.panels.handle('catalog.view', async (query) => (await repository.database()).view(query))
+  orca.panels.handle('catalog.history', async ({ id }) => (await repository.database()).history(id))
+  orca.panels.handle('catalog.ids', async ({ scope }) => (await repository.database()).ids(scope))
 
   orca.panels.handle('connection.save', async (input) => {
     for (const [key, value] of Object.entries(input.config ?? {})) {
@@ -182,14 +174,14 @@ export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
       const products = sources.map((source) =>
         fromSource(source, previous.get(source.id), counts.get(source.productURL) ?? 1)
       )
-      await orca.storage.set(CATALOG, storedJson({ products, syncedAt: Date.now() }))
+      await repository.replace(products, Date.now())
       return { ok: true, message: `${products.length} suplementos cargados de la base.` }
     } catch (error) {
       return { ok: false, message: message(error) }
     }
   })
 
-  orca.panels.handle('catalog.audit', async ({ ids }): Promise<ActionResult> => {
+  async function startAudit(ids?: readonly string[]): Promise<ActionResult> {
     if (auditRunning) {
       return { ok: false, message: 'Ya hay una lectura de precios en curso.' }
     }
@@ -211,6 +203,7 @@ export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
     // Long reads run past a request's 2-minute limit: answer now, report through posts.
     void client
       .readCards(urls, async (batch) => {
+        await repository.recordReadings(batch)
         const byUrl = new Map(batch.map((reading) => [reading.url, reading]))
         await saveProducts((current) =>
           current.map((product) => {
@@ -252,30 +245,20 @@ export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
         auditRunning = false
       })
     return { ok: true, message: `Leyendo ${urls.length} links en MercadoLibre…` }
-  })
+  }
 
-  orca.panels.handle('catalog.generateReferral', async ({ id, url }): Promise<ActionResult> => {
-    const product = (await catalog()).products.find((candidate) => candidate.id === id)
-    if (!product) {
-      return { ok: false, message: 'El producto ya no está en el catálogo.' }
-    }
-    const target = (url ?? (product.linkKind === 'directo' ? product.productURL : '')).trim()
-    if (!ML_URL.test(target) || isReferralUrl(target)) {
-      return {
-        ok: false,
-        message: 'Pega la URL del producto en mercadolibre.com.mx para generar su referido.'
-      }
-    }
-    try {
-      const proposal = await proposeReferral(await meli(), target)
-      await saveProducts((products) =>
-        products.map((candidate) => (candidate.id === id ? { ...candidate, proposal } : candidate))
-      )
-      return proposal.url
-        ? { ok: true, message: `Referido listo: ${proposal.url}` }
-        : { ok: false, message: proposal.reason ?? 'MercadoLibre no generó el referido' }
-    } catch (error) {
-      return { ok: false, message: message(error) }
+  orca.panels.handle('catalog.audit', ({ ids }) => startAudit(ids))
+
+  registerReferralHandlers(orca, {
+    catalog,
+    saveProducts,
+    recordAttempts: (attempts) => repository.recordAttempts(attempts),
+    verify: (ids) => startAudit(ids),
+    fetchImage: deps.fetchImage,
+    refresh,
+    meli,
+    write: async (updates) => {
+      await deps.patch(await backend(), updates)
     }
   })
 
@@ -298,13 +281,22 @@ export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
 
   orca.panels.handle('catalog.applyUrl', async ({ id, url }): Promise<ActionResult> => {
     const productURL = url.trim()
-    if (!ML_URL.test(productURL)) {
+    if (!isMeliUrl(productURL)) {
       return { ok: false, message: 'La URL debe ser de meli.la o mercadolibre.com.mx.' }
     }
     try {
       await deps.patch(await backend(), [{ id, productURL }])
       await refresh([id])
-      return { ok: true, message: 'URL guardada en la base.' }
+      if (!isReferralUrl(productURL)) {
+        return { ok: true, message: 'URL guardada en la base.' }
+      }
+      const verifying = await startAudit([id])
+      return {
+        ok: true,
+        message: verifying.ok
+          ? 'URL guardada. Verificando en MercadoLibre: si queda «Al día» o «Cambio de precio», ya quedó.'
+          : 'URL guardada. Usa «Leer precio» para confirmar que abre el producto.'
+      }
     } catch (error) {
       return { ok: false, message: message(error) }
     }
