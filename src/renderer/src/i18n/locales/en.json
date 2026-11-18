@@ -21911,13 +21911,25 @@
         "open": "Open the chat"
       },
       "chatProgress": {
-        "summary": "{{group}}: {{done}}/{{total}} done",
+        "title": "{{flow}} · {{block}}",
+        "summary": {
+          "attention_one": "{{count}} agent needs you",
+          "attention_other": "{{count}} agents need you",
+          "tabless_one": "{{count}} agent without a tab",
+          "tabless_other": "{{count}} agents without a tab",
+          "done": "{{done}}/{{total}} done"
+        },
+        "groupCount": "{{done}}/{{total}} done",
+        "subagents": "subagents",
+        "topoAgent": "{{agent}} · Topo agent",
+        "open": "Open chat",
+        "openAndReply": "Open chat and reply",
         "status": {
-          "running": "Running",
-          "waiting": "Waiting",
-          "done": "Done",
-          "failed": "Failed",
-          "stopped": "Stopped"
+          "working": "working · {{minutes}} min",
+          "waiting": "pending",
+          "done": "done",
+          "failed": "failed",
+          "stopped": "stopped"
         }
       }
     }

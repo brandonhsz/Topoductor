@@ -10,6 +10,7 @@ import type { AutomationRunCompletionObservation } from '../automations/run-comp
 import { observeChatPromptReply } from '../automations/runtime-chat-run-observer'
 import { createRuntimeAutomationRunTerminalObserver } from '../automations/runtime-terminal-run-observer'
 import { getStructuredAgentSessionHost } from '../native-chat/agent-session-wire/host/structured-agent-session-registry'
+import { closeStructuredAgentSessionChild } from '../runtime/agent-session/structured-agent-session-close'
 import { launchAgentOnHost } from '../runtime/rpc/methods/agent-launch/agent-launch'
 import { structuredAgentRuntimeMetadata } from '../runtime/agent-session/installation/structured-agent-runtime-metadata'
 import { rpcCallerOperationKey } from '../runtime/rpc/rpc-caller-identity'
@@ -26,6 +27,8 @@ export type HarnessAgentLaunchRequest = {
   /** A chat from an earlier visit; `resumePrompt` goes there instead of a new session. */
   resume: HarnessAgentSessionRef | null
   resumePrompt: string
+  /** A chat-driven run shows its own agents in the chat; only terminal agents still get a tab. */
+  withoutTab: boolean
 }
 
 export type HarnessAgentReply = { ok: true; text: string } | { ok: false; error: string }
@@ -112,11 +115,17 @@ export function createHarnessAgentLauncher(runtime: TopoRuntimeService): Harness
         prompt: { text: request.prompt, delivery: 'submit' },
         target: { kind: 'existing', worktree: `id:${request.worktreeId}` }
       },
-      { runtime, caller: HARNESS_CALLER }
+      { runtime, caller: HARNESS_CALLER },
+      { withoutChatTab: request.withoutTab }
     )
     const { outcome } = result
     if (outcome.kind === 'structured') {
-      onSession({ kind: 'structured', worktreeId: result.worktreeId, sessionId: outcome.sessionId })
+      onSession({
+        kind: 'structured',
+        worktreeId: result.worktreeId,
+        sessionId: outcome.sessionId,
+        ...(request.withoutTab ? { tabless: true as const } : {})
+      })
       if (result.prompt?.outcome !== 'journaled') {
         return { ok: false, error: `${agentName} started, but Topo could not confirm the prompt.` }
       }
@@ -133,4 +142,19 @@ export function createHarnessAgentLauncher(runtime: TopoRuntimeService): Harness
     }
     return replyOf(await terminalObserver.observeCompletion(outcome.handle, { signal }), agentName)
   }
+}
+
+/** Stops a chat Topo started without a tab; a tab the person opened stays, showing the stopped chat. */
+export function closeHarnessTablessSession(session: HarnessAgentSessionRef): void {
+  if (session.kind !== 'structured' || !session.tabless) {
+    return
+  }
+  // The host records a tab id even for a chat it never showed, so it cannot tell opened from hidden.
+  void closeStructuredAgentSessionChild(session.sessionId, { surface: null })
+    .then((outcome) => {
+      if (!outcome.stopped && outcome.closeAttempted) {
+        console.warn('[harness] could not stop a tabless agent', session.sessionId, outcome.reason)
+      }
+    })
+    .catch((error: unknown) => console.warn('[harness] could not stop a tabless agent', error))
 }

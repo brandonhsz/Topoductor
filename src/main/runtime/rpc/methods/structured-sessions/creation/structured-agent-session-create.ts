@@ -45,7 +45,7 @@ export type PreparedStructuredAgentSessionCreate = {
   attachParams: AgentSessionAttachParams
   hostLaunchDirectory?: string
   catalogModels?: StructuredAgentSessionCreateOptions['catalogModels']
-  /** Null when the caller supplied its own location; only a resolved worktree publishes a tab. */
+  /** Null when the session must exist without a tab; only a resolved worktree publishes one. */
   tab: { workspaceId: string; agent: StructuredAgentId } | null
   /** Absent for older clients and provider-dependent in-process callers. */
   atRest?: { firstMessage?: StructuredAgentSessionFirstMessage }
@@ -299,6 +299,8 @@ export async function createStructuredAgentSessionForWorktree(args: {
   atRest?: true
   firstMessage?: StructuredAgentSessionFirstMessage
   signal?: AbortSignal
+  /** Create the session with no tab; `agentSession.reveal` opens one on demand. */
+  withoutTab?: true
 }): Promise<AgentSessionMutationResult<AgentSessionAttachResult>> {
   // An at-rest create's ledger row is keyed by its intent, as a client's create is.
   const envelope = args.atRest
@@ -318,7 +320,7 @@ export async function createStructuredAgentSessionForWorktree(args: {
   return commitStructuredAgentSessionCreate({
     runtime: args.runtime,
     caller: args.caller,
-    prepared,
+    prepared: args.withoutTab ? { ...prepared, tab: null } : prepared,
     activate: args.activate
   })
 }

@@ -1448,6 +1448,16 @@
     }
   },
   "components": {
+    "harness": {
+      "chatProgress": {
+        "summary": {
+          "attention_one": "{{count}} agent needs you",
+          "attention_other": "{{count}} agents need you",
+          "tabless_one": "{{count}} agent without a tab",
+          "tabless_other": "{{count}} agents without a tab"
+        }
+      }
+    },
     "native-chat": {
       "approval": {
         "allow": "Allow",

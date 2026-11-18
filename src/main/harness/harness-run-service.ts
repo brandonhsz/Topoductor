@@ -16,7 +16,7 @@ import { writeSecureJsonFile } from '../../shared/secure-storage/secure-file'
 import type { HarnessAgentLauncher } from './harness-agent-launcher'
 import { harnessChatInstructions } from '../../shared/harness/harness-chat-instructions'
 import { getHarnessFlow } from './harness-flow-store'
-import { HarnessRunEngine } from './harness-run-engine'
+import { HarnessRunEngine, type HarnessRunEngineDeps } from './harness-run-engine'
 
 const MAX_KEPT_RUNS = 50
 const MAX_BYTES = 32 * 1024 * 1024
@@ -89,7 +89,8 @@ export class HarnessRunService {
   constructor(
     private readonly launch: HarnessAgentLauncher,
     private readonly notify: (run: HarnessRunSummary) => void,
-    private readonly chatProvider?: (run: HarnessRun) => Promise<TuiAgent | null>
+    private readonly chatProvider?: (run: HarnessRun) => Promise<TuiAgent | null>,
+    private readonly closeSession?: HarnessRunEngineDeps['closeSession']
   ) {
     this.loaded = readPersistedRuns().then((runs) => {
       for (const run of runs) {
@@ -141,7 +142,8 @@ export class HarnessRunService {
     const engine = new HarnessRunEngine(run, {
       launch: this.launch,
       onChange: (changed) => this.changed(changed),
-      chatProvider: this.chatProvider
+      chatProvider: this.chatProvider,
+      closeSession: this.closeSession
     })
     this.engines.set(run.id, engine)
     engine.start()
