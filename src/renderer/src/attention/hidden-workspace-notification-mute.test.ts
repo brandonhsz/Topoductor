@@ -127,6 +127,12 @@ describe('isWorkspaceNotificationMutedBySidebarFilters', () => {
   })
 })
 
+const ADMITTED_CLI_COMPLETION = {
+  admitted: true,
+  unread: { workspaceId: CLI_ID, subjectKey: null, groupId: null, reason: 'agent-completion' },
+  delivery: { workspaceId: CLI_ID, subjectKey: null, workspaceIsActive: false }
+}
+
 describe('muted workspace attention', () => {
   it('earns no unread and no delivery request from the attention policy', () => {
     const decision = resolveAgentAttention(
@@ -140,6 +146,45 @@ describe('muted workspace attention', () => {
     )
     expect(decision).toEqual({ admitted: false, cause: 'muted-workspace' })
     expect(createStructuredAttentionSurface(store.getState()).isWorkspaceMuted(CLI_ID)).toBe(true)
+  })
+
+  it.each([
+    ['terminal', createTerminalAttentionSurface],
+    ['structured chat', createStructuredAttentionSurface]
+  ] as const)(
+    'still alerts for a %s agent blocked on a person inside a hidden workspace',
+    (_kind, createSurface) => {
+      for (const agentState of ['blocked', 'waiting']) {
+        const decision = resolveAgentAttention(
+          {
+            subject: { workspaceId: CLI_ID },
+            reason: 'agent-completion',
+            settlesTurn: true,
+            hasFreshActivityEvidence: true,
+            agentState
+          },
+          createSurface(store.getState())
+        )
+        expect(decision).toEqual(ADMITTED_CLI_COMPLETION)
+      }
+    }
+  )
+
+  it('keeps a finished agent in a hidden workspace silent while notifyHiddenWorkspaces is off', () => {
+    const finished = {
+      subject: { workspaceId: CLI_ID },
+      reason: 'agent-completion' as const,
+      settlesTurn: true,
+      hasFreshActivityEvidence: true,
+      agentState: 'done'
+    }
+    expect(
+      resolveAgentAttention(finished, createTerminalAttentionSurface(store.getState()))
+    ).toEqual({ admitted: false, cause: 'muted-workspace' })
+    setNotifyHiddenWorkspaces(true)
+    expect(
+      resolveAgentAttention(finished, createTerminalAttentionSurface(store.getState()))
+    ).toEqual(ADMITTED_CLI_COMPLETION)
   })
 
   it('writes no bell marker for a muted workspace, and still does for a visible one', () => {

@@ -60,6 +60,43 @@ describe('resolveAgentAttention', () => {
     expect(sink.calls).toEqual([])
   })
 
+  it.each(['blocked', 'waiting'])(
+    'lets a %s agent through a muted workspace, since it is stopped until a person answers',
+    (agentState) => {
+      const sink = makeSink()
+      applyAgentAttention(
+        resolveAgentAttention(
+          completion({ agentState }),
+          makeSurface({ isWorkspaceMuted: () => true })
+        ),
+        sink
+      )
+      expect(sink.calls).toEqual([
+        `unread:${WORKSPACE}:${SUBJECT}:${GROUP}:agent-completion`,
+        `deliver:${WORKSPACE}:${SUBJECT}`
+      ])
+    }
+  )
+
+  it.each(['done', 'working', undefined])(
+    'keeps a muted workspace silent for an agent in state %s',
+    (agentState) => {
+      const decision = resolveAgentAttention(
+        completion({ agentState }),
+        makeSurface({ isWorkspaceMuted: () => true })
+      )
+      expect(decision).toEqual({ admitted: false, cause: 'muted-workspace' })
+    }
+  )
+
+  it('still drops coordinator-only news from a blocked agent in a muted workspace', () => {
+    const decision = resolveAgentAttention(
+      completion({ agentState: 'blocked', coordinatorOnlyNews: true }),
+      makeSurface({ isWorkspaceMuted: () => true })
+    )
+    expect(decision).toEqual({ admitted: false, cause: 'coordinator-only-news' })
+  })
+
   it('admits a viewed surface for delivery but earns it no unread', () => {
     const decision = resolveAgentAttention(
       completion(),
