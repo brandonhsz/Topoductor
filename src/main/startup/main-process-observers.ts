@@ -3,6 +3,9 @@ import { join } from 'node:path'
 import { AgentAwakeService } from '../power/agent-awake-service'
 import { normalizeComputerAwakeMode } from '../../shared/computer-awake-mode'
 import { registerSystemResumeBroadcast } from '../power/system-resume-broadcast'
+import { subscribeSystemPowerLifecycle } from '../power/system-power-lifecycle'
+import { getFanControlService } from '../power/fan-control-service-instance'
+import { registerFanControlHandlers } from '../ipc/fan-control'
 import { readDesktopAwayState } from '../notifications/desktop-away-state'
 import {
   listCapableSharedControlSockets,
@@ -60,6 +63,14 @@ export function initializeMainProcessObservers(): void {
       store.getSettings().keepComputerAwakeWhileAgentsRun
     )
   )
+  const fanControlService = getFanControlService()
+  registerFanControlHandlers(fanControlService)
+  // The root hold also exits on parent death; releasing early restores auto before Topo is gone.
+  app.on('before-quit', () => fanControlService.releaseForQuit())
+  subscribeSystemPowerLifecycle({
+    onSuspend: () => void fanControlService.handleSuspend(),
+    onResume: () => {}
+  })
   // Hydrated rows preserve UI only; only this runtime's live hook events may keep the machine awake.
   state.agentAwakeService.setStatuses([])
   state.uninstallRepoMaintenanceIdleGate = installRepoMaintenanceIdleGate({

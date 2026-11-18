@@ -126,6 +126,7 @@ jobs:
           pnpm run build:computer-macos
           pnpm run build:keyboard-layout-macos
           pnpm run build:process-footprint-macos
+          pnpm run build:fan-control-macos
           pnpm run build:notification-status-macos
 
       - name: Package unsigned macOS (arm64 + x64)

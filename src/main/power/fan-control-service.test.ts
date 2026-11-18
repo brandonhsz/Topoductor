@@ -50,7 +50,13 @@ function createHarness(overrides: Partial<FanControlServiceDeps> = {}): Harness 
     readyTimeoutMs: 50,
     ...overrides
   }
-  return { service: new FanControlService(deps), deps, files, runPrivileged, runHelper }
+  return {
+    service: new FanControlService(deps),
+    deps,
+    files,
+    runPrivileged: deps.runPrivileged as ReturnType<typeof vi.fn>,
+    runHelper: deps.runHelper as ReturnType<typeof vi.fn>
+  }
 }
 
 function expectSupported(status: FanControlStatus): Extract<FanControlStatus, { supported: true }> {

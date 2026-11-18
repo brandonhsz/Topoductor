@@ -547,6 +547,11 @@ module.exports = {
         'topo-process-footprint',
         context.packager
       )
+      await signMacStandaloneHelper(
+        join(resourcesDir, '..', 'MacOS', 'topo-fan-control'),
+        'topo-fan-control',
+        context.packager
+      )
       await packageMacTerminalHost(join(resourcesDir, '..', '..'), context)
     }
   },
@@ -671,6 +676,10 @@ module.exports = {
       {
         from: 'native/process-footprint-macos/.build/release/topo-process-footprint',
         to: 'MacOS/topo-process-footprint'
+      },
+      {
+        from: 'native/fan-control-macos/.build/release/topo-fan-control',
+        to: 'MacOS/topo-fan-control'
       }
     ],
     target: [
