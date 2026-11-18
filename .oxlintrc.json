@@ -254,6 +254,7 @@
     "src/cli/bundled-skill-guides.ts",
     "resources/plugins/declarative/*.mjs",
     "**/node_modules",
+    "plugins/*/vendor/**",
     "**/dist",
     "**/out",
     "cloud/**",
