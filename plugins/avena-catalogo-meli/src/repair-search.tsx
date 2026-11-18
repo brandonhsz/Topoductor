@@ -88,8 +88,9 @@ export function RepairSearch({ product }: { product: Product }) {
         </Button>
       </Row>
       <ChosenReplacement product={product} />
-      {candidates.map((candidate) => (
-        <Row key={candidate.url} gap="sm" align="center">
+      {candidates.map((candidate, index) => (
+        // Listing URLs can pass Topo's 1 KiB cap on keys; the position is unique per search.
+        <Row key={String(index)} gap="sm" align="center">
           {shown(candidate.image) ? (
             <Image src={shown(candidate.image) ?? ''} alt={candidate.title} size="xs" rounded />
           ) : null}

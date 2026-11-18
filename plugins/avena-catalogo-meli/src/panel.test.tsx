@@ -133,7 +133,8 @@ test('a broken link offers to search MercadoLibre for a replacement', async () =
         message: '1 resultados',
         candidates: [
           {
-            url: 'https://www.mercadolibre.com.mx/x/p/MLM1',
+            // Real listing URLs can run past Topo's 1 KiB cap on keys.
+            url: `https://www.mercadolibre.com.mx/${'x'.repeat(1200)}/p/MLM1`,
             title: 'Gomitas B Life Kids',
             price: 289,
             seller: 'B Life',
