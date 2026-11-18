@@ -12,6 +12,10 @@ import {
   writePassHash
 } from './check-changed-pass-cache.mjs'
 import { planChangedChecks } from './check-changed-selection.mjs'
+import {
+  reclassifyUnitTestFailures,
+  runFailingFilesOnBase
+} from './check-changed-preexisting-failures.mjs'
 import { resolveOxcCliInvocation } from '../../tool-invocation/oxc-cli-invocation.mjs'
 import { resolvePnpmCliInvocation } from '../../tool-invocation/pnpm-cli-invocation.mjs'
 
@@ -22,6 +26,7 @@ const DEFAULT_STEP_TIMEOUT_MINUTES = 30
 const MAX_PATH_ARGUMENT_CHARS = 24_000
 // Concurrent agents each run this gate; automatic Vitest sizing per run overloaded shared hosts.
 const DEFAULT_VITEST_MAX_WORKERS = '2'
+const UNIT_TESTS_TASK = 'unit tests'
 const LINTABLE = /\.[cm]?[jt]sx?$/
 const ANTI_SLOP_ROOTS = ['src/', 'config/', 'tests/', 'mobile/']
 
@@ -145,7 +150,7 @@ function buildTasks(root, plan, { files, mergeBase, maxWorkers, bun }) {
         `--maxWorkers=${maxWorkers ?? DEFAULT_VITEST_MAX_WORKERS}`
       ])
     tasks.push({
-      name: 'unit tests',
+      name: UNIT_TESTS_TASK,
       steps: [
         step(node, [
           'config/scripts/native-build/node-addons/ensure-native-runtime.mjs',
@@ -338,15 +343,29 @@ export async function main(root, argv) {
   heartbeat.unref()
   const results = await runPool(tasks, concurrency, async (task) => {
     running.set(task.name, performance.now())
-    const result = await runTask(task, {
+    let result = await runTask(task, {
       root,
       env,
       runProcess,
       stepTimeoutMs: options.stepTimeoutMs
     })
+    if (!result.ok && task.name === UNIT_TESTS_TASK) {
+      result = await reclassifyUnitTestFailures(result, {
+        mergeBase,
+        runOnBase: (failingFiles) =>
+          runFailingFilesOnBase({
+            root,
+            mergeBase,
+            files: failingFiles,
+            env,
+            runProcess,
+            maxWorkers: options.maxWorkers ?? DEFAULT_VITEST_MAX_WORKERS
+          })
+      })
+    }
     running.delete(task.name)
     if (result.ok) {
-      console.log(`✓ ${task.name} (${result.elapsed})`)
+      console.log(`✓ ${task.name} (${result.elapsed})${result.note ? `\n${result.note}` : ''}`)
     } else {
       console.error(`\n✗ ${task.name} (${result.elapsed})\n${tail(result.output)}`)
     }
