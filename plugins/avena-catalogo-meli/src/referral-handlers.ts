@@ -10,6 +10,7 @@ import {
   withStatus
 } from './catalog-status'
 import type { ImageFetcher } from './image-data'
+import { savedSize, sizeMismatch } from './presentation'
 import type { MeliClient } from './meli-browser'
 import type { ActionResult, Catalog, Product, ReferralProposal } from './protocol'
 import { proposeReferrals, proposeReferralsWithCards } from './referral-proposal'
@@ -195,7 +196,8 @@ export function registerReferralHandlers(orca: OrcaWorkerApi, context: CatalogCo
         const match = results.find(
           (result) =>
             brandMatches(product.brand, result.title) &&
-            nameMatches(product.brand, product.name, result.title)
+            nameMatches(product.brand, product.name, result.title) &&
+            !sizeMismatch(savedSize(product.name, product.quantity), result.title)
         )
         if (match) {
           targets.set(product.id, match.url)

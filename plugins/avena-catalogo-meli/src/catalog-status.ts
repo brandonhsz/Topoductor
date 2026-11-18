@@ -1,4 +1,5 @@
 import type { SupplementUpdate } from './backend-client'
+import { savedSize, sizeMismatch } from './presentation'
 import type { MeliReading, Product, ProductStatus } from './protocol'
 
 export const STATUS_LABELS: Record<ProductStatus, string> = {
@@ -8,6 +9,7 @@ export const STATUS_LABELS: Record<ProductStatus, string> = {
   sin_precio_base: 'Sin precio guardado',
   revisar_salto: 'Salto mayor a 50%',
   revisar_identidad: 'Revisar identidad',
+  otra_presentacion: 'Otra presentación',
   link_compartido: 'Link compartido',
   roto: 'Link roto',
   link_directo: 'Link sin referido',
@@ -35,7 +37,9 @@ export const STATUS_DESCRIPTIONS: Record<ProductStatus, string> = {
   referido_rechazado:
     'MercadoLibre no generó su referido; el motivo queda guardado en el producto. Se puede reintentar más adelante.',
   referido_listo:
-    'Ya hay un referido que abre el producto; falta guardarlo con «Guardar N referidos generados». Al guardarlo se vuelve a leer para confirmar que quedó.'
+    'Ya hay un referido que abre el producto; falta guardarlo con «Guardar N referidos generados». Al guardarlo se vuelve a leer para confirmar que quedó.',
+  otra_presentacion:
+    'El tamaño en MercadoLibre no coincide con el del producto (p. ej. 480 g contra 510 g): el precio es de otra presentación. Revísalo antes de aplicarlo o busca el link de su tamaño.'
 }
 
 /** Statuses whose ML price can be written without a person checking the match first. */
@@ -109,7 +113,7 @@ export function priceDiffPct(saved: number | null, reading: MeliReading | null):
 
 type Classifiable = Pick<
   Product,
-  'brand' | 'price' | 'linkKind' | 'sharedCount' | 'reading' | 'proposal'
+  'brand' | 'name' | 'quantity' | 'price' | 'linkKind' | 'sharedCount' | 'reading' | 'proposal'
 >
 
 export function classify(product: Classifiable): ProductStatus {
@@ -126,6 +130,10 @@ export function classify(product: Classifiable): ProductStatus {
   }
   if (!reading.ok) {
     return 'roto'
+  }
+  // Another size of the same product weighs more than a shared link: its price is not this one's.
+  if (sizeMismatch(savedSize(product.name, product.quantity), reading.title)) {
+    return 'otra_presentacion'
   }
   if (product.sharedCount > 1) {
     return 'link_compartido'

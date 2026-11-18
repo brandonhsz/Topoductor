@@ -9,6 +9,7 @@ export type ProductStatus =
   | 'sin_precio_base'
   | 'revisar_salto'
   | 'revisar_identidad'
+  | 'otra_presentacion'
   | 'link_compartido'
   | 'roto'
   | 'link_directo'

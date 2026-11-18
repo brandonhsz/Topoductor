@@ -144,3 +144,15 @@ test('a shared link with another ML price is applied with the price changes', ()
   )
   assert.equal(isApplicable(product({ price: 60 })), false)
 })
+
+test('a listing of another size is its own status, ahead of a shared link', () => {
+  const bigger = product({
+    name: 'falcon performance choco bronze 722 g',
+    brand: 'birdman',
+    sharedCount: 2,
+    price: 846,
+    reading: reading({ price: 846, title: 'Birdman Falcon Performance | Chocolate | 1.14kg' })
+  })
+  assert.equal(classify(bigger), 'otra_presentacion')
+  assert.equal(isApplicable(bigger), false)
+})

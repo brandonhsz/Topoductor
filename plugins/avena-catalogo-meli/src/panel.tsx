@@ -19,6 +19,7 @@ import {
   type TableRow
 } from 'orca'
 import { STATUS_LABELS } from './catalog-status'
+import { sizeNote } from './presentation'
 import { ConnectionForm } from './connection-form'
 import {
   busy,
@@ -75,7 +76,9 @@ function toRow(product: Product): TableRow {
       estatus:
         product.status === 'referido_rechazado' && product.proposal?.reason
           ? `Rechazado: ${product.proposal.reason}`
-          : STATUS_LABELS[product.status],
+          : product.status === 'otra_presentacion'
+            ? `Otra presentación: ${sizeNote(product.name, product.quantity, reading?.title ?? null) ?? ''}`
+            : STATUS_LABELS[product.status],
       guardado: money(product.price),
       ml: reading ? (reading.ok ? money(reading.price) : 'roto') : '—',
       dif: product.diffPct === null ? '' : `${product.diffPct > 0 ? '+' : ''}${product.diffPct}%`

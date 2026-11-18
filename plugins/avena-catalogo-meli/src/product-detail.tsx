@@ -14,6 +14,7 @@ import {
   Text
 } from 'orca'
 import { STATUS_DESCRIPTIONS, STATUS_LABELS } from './catalog-status'
+import { formatSize, parseSizes, sizeNote } from './presentation'
 import { busy, changeFilter, progress, runAction, selected, urlDraft } from './panel-state'
 import { ProductHistory } from './product-history'
 import { RepairSearch } from './repair-search'
@@ -53,6 +54,13 @@ function facts(product: Product) {
     {
       label: 'Presentación',
       value: [product.quantity, product.flavor].filter(Boolean).join(' · ') || '—'
+    },
+    {
+      label: 'Presentación en ML',
+      value: parseSizes(reading?.title).map(formatSize).join(' · ') || '—',
+      tone: sizeNote(product.name, product.quantity, reading?.title ?? null)
+        ? ('warning' as const)
+        : undefined
     }
   ]
 }

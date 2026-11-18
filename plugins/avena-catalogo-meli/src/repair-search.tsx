@@ -1,5 +1,6 @@
 import { atom, Button, Image, Input, plugin, read, Row, set, Stack, Text } from 'orca'
 import { busy, runAction, selectedId } from './panel-state'
+import { sizeNote } from './presentation'
 import type { Product, SearchCandidate } from './protocol'
 
 const query = atom('')
@@ -105,6 +106,11 @@ export function RepairSearch({ product }: { product: Product }) {
           ) : null}
           <Stack gap="none">
             <Text truncate>{candidate.title}</Text>
+            {sizeNote(product.name, product.quantity, candidate.title) ? (
+              <Text tone="warning" size="xs">
+                {`Otro tamaño: ${sizeNote(product.name, product.quantity, candidate.title)}`}
+              </Text>
+            ) : null}
             <Text muted size="xs">
               {`${money(candidate.price)}${candidate.seller ? ` · ${candidate.seller}` : ''}`}
             </Text>
