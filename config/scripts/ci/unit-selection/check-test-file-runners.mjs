@@ -88,6 +88,12 @@ const NON_UNIT_TEST_RUNNERS = [
     mirrors: ['readdirSync(EXAMPLES)']
   },
   {
+    name: 'repository plugin tests (topo plugin test)',
+    include: ['plugins/*/src/**/*.test.ts', 'plugins/*/src/**/*.test.tsx'],
+    sources: ['src/cli/plugin-authoring/plugin-test-runner.test.ts'],
+    mirrors: ['readdirSync(REPO_PLUGINS)']
+  },
+  {
     name: 'docs site',
     include: ['docs/site/tests/*.test.mjs'],
     sources: ['docs/site/package.json'],

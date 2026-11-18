@@ -109,6 +109,15 @@ const TESTED_EXAMPLES = readdirSync(EXAMPLES).filter((name) => {
   return existsSync(src) && readdirSync(src).some((file) => PLUGIN_TEST_FILE.test(file))
 })
 
+const REPO_PLUGINS = resolve(__dirname, '../../../plugins')
+// Plugins that live in the repository (plugins/*/src/*.test.tsx) run the same way.
+const TESTED_REPO_PLUGINS = existsSync(REPO_PLUGINS)
+  ? readdirSync(REPO_PLUGINS).filter((name) => {
+      const src = join(REPO_PLUGINS, name, 'src')
+      return existsSync(src) && readdirSync(src).some((file) => PLUGIN_TEST_FILE.test(file))
+    })
+  : []
+
 describe('topo plugin test with a worker', () => {
   it(
     "runs a .ts worker's own tests through mountWorker, resolving its imports as Topo does",
@@ -186,6 +195,24 @@ describe('the example plugins', () => {
     },
     // Each run starts its own Node process and transpiles the plugin.
     60_000
+  )
+})
+
+describe('the repository plugins', () => {
+  it.each(TESTED_REPO_PLUGINS)(
+    '%s passes its own tests and renders without problems',
+    async (plugin) => {
+      const dir = join(REPO_PLUGINS, plugin)
+      const files = await findPluginTestFiles(dir)
+      expect(await runPluginTests({ dir, files, quietStdout: true })).toMatchObject({
+        runner: 'node',
+        code: 0
+      })
+      const checks = await checkPluginPanels(dir)
+      expect(checks.map(({ issues }) => issues)).toEqual(checks.map(() => []))
+    },
+    // Each run starts its own Node process and transpiles the plugin.
+    120_000
   )
 })
 
