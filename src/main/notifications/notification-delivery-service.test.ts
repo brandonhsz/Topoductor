@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type {
   NotificationDispatchRequest,
   NotificationDispatchResult,
@@ -10,13 +10,10 @@ vi.mock('electron', async () =>
   (await import('../ipc/notifications-test-harness')).createElectronModuleMock()
 )
 
-import {
-  recordNotificationDeliveryOutcome,
-  resetNotificationPermissionEvidence
-} from '../ipc/notification-permission-probe'
 import { createNotificationDeliveryService } from './notification-delivery-service'
 
 type AuthorizationStatus = 'authorized' | 'denied' | 'not-determined' | 'unknown' | null
+type DeliveryOutcome = 'delivered' | 'failed'
 type BannerOptions = { title: string; body: string; silent?: boolean }
 
 const REQUEST: NotificationDispatchRequest = {
@@ -32,10 +29,13 @@ function setup(
     authorization?: AuthorizationStatus
     settings?: Partial<NotificationSettings>
     windowFocused?: boolean
-    wasRead?: boolean
+    wasRead?: boolean | (() => boolean)
     supported?: boolean
+    lastOutcome?: DeliveryOutcome
   } = {}
 ) {
+  let lastOutcome: DeliveryOutcome | null = options.lastOutcome ?? null
+  const wasRead = options.wasRead
   const settings = { ...getDefaultNotificationSettings(), ...options.settings }
   const requestDockAttention = vi.fn((): void => {})
   const deliverNative = vi.fn(
@@ -57,21 +57,23 @@ function setup(
     readAuthorizationStatus: vi.fn((): Promise<AuthorizationStatus> =>
       Promise.resolve(options.authorization ?? null)
     ),
-    recordDeliveryOutcome: vi.fn(),
+    recordDeliveryOutcome: (outcome: DeliveryOutcome) => {
+      lastOutcome = outcome
+    },
+    readLastDeliveryOutcome: () => lastOutcome,
     deliverNative,
     platform: options.platform ?? 'darwin',
     now: () => 1_000_000,
-    wasRead: () => options.wasRead ?? false,
+    wasRead: () => (typeof wasRead === 'function' ? wasRead() : (wasRead ?? false)),
     requestDockAttention
   }
   const service = createNotificationDeliveryService(deps)
   const dispatch = async (request: NotificationDispatchRequest) => service.dispatch(request)
-  return { dispatch, requestDockAttention, deliverNative }
+  const recordOutcome = (outcome: DeliveryOutcome) => {
+    lastOutcome = outcome
+  }
+  return { dispatch, requestDockAttention, deliverNative, recordOutcome }
 }
-
-beforeEach(() => {
-  resetNotificationPermissionEvidence()
-})
 
 describe('nativeBannerTrusted', () => {
   it('is true when macOS confirms authorization', async () => {
@@ -92,31 +94,46 @@ describe('nativeBannerTrusted', () => {
     }
   )
 
-  it('is not true off macOS, where no authorization is read', async () => {
-    const { dispatch } = setup({ platform: 'linux', authorization: 'authorized' })
-    const result = await dispatch(REQUEST)
-    expect(result.delivered).toBe(true)
-    expect(result.nativeBannerTrusted).not.toBe(true)
-  })
+  it.each<NodeJS.Platform>(['win32', 'linux'])(
+    'is true on %s, where a supported banner carries its own sound',
+    async (platform) => {
+      const { dispatch } = setup({ platform })
+      await expect(dispatch(REQUEST)).resolves.toEqual({
+        delivered: true,
+        nativeBannerTrusted: true
+      })
+    }
+  )
 })
 
 describe('blocked-by-system after an observed failure', () => {
   it.each<AuthorizationStatus>(['unknown', null])(
-    'skips the banner once macOS rejected one and authorization is %s',
+    'reports blocked but still attempts a silent banner when authorization is %s',
     async (authorization) => {
-      recordNotificationDeliveryOutcome('failed')
-      const { dispatch, deliverNative } = setup({ authorization })
+      const { dispatch, deliverNative } = setup({ authorization, lastOutcome: 'failed' })
       await expect(dispatch(REQUEST)).resolves.toEqual({
         delivered: false,
         reason: 'blocked-by-system'
       })
-      expect(deliverNative).not.toHaveBeenCalled()
+      expect(deliverNative).toHaveBeenCalledTimes(1)
+      expect(deliverNative.mock.calls[0]?.[1].silent).toBe(true)
     }
   )
 
+  it('stops reporting blocked once a later banner is delivered', async () => {
+    const { dispatch, recordOutcome } = setup({ authorization: 'unknown', lastOutcome: 'failed' })
+    await expect(dispatch(REQUEST)).resolves.toMatchObject({ reason: 'blocked-by-system' })
+    recordOutcome('delivered')
+    await expect(dispatch({ ...REQUEST, worktreeId: 'repo-1::/tmp/wt-2' })).resolves.toMatchObject({
+      delivered: true
+    })
+  })
+
   it('still delivers a trusted banner when authorization is confirmed', async () => {
-    recordNotificationDeliveryOutcome('failed')
-    const { dispatch, deliverNative } = setup({ authorization: 'authorized' })
+    const { dispatch, deliverNative } = setup({
+      authorization: 'authorized',
+      lastOutcome: 'failed'
+    })
     await expect(dispatch(REQUEST)).resolves.toEqual({
       delivered: true,
       nativeBannerTrusted: true
@@ -125,8 +142,10 @@ describe('blocked-by-system after an observed failure', () => {
   })
 
   it('delivers normally when the last observed outcome was delivered', async () => {
-    recordNotificationDeliveryOutcome('delivered')
-    const { dispatch, deliverNative } = setup({ authorization: 'unknown' })
+    const { dispatch, deliverNative } = setup({
+      authorization: 'unknown',
+      lastOutcome: 'delivered'
+    })
     const result = await dispatch(REQUEST)
     expect(result.delivered).toBe(true)
     expect(deliverNative).toHaveBeenCalledTimes(1)
@@ -143,10 +162,10 @@ describe('banner sound', () => {
     }
   )
 
-  it('is silent off macOS, where the banner is never trusted', async () => {
-    const { dispatch, deliverNative } = setup({ platform: 'linux' })
+  it.each<NodeJS.Platform>(['win32', 'linux'])('keeps the system sound on %s', async (platform) => {
+    const { dispatch, deliverNative } = setup({ platform })
     await dispatch(REQUEST)
-    expect(deliverNative.mock.calls[0]?.[1].silent).toBe(true)
+    expect(deliverNative.mock.calls[0]?.[1].silent).not.toBe(true)
   })
 
   it('keeps the system sound on a trusted banner', async () => {
@@ -207,6 +226,17 @@ describe('requestDockAttention', () => {
     const { dispatch, requestDockAttention } = setup({ authorization: 'authorized', ...options })
     await expect(dispatch(request)).resolves.toMatchObject({ reason })
     expect(requestDockAttention).not.toHaveBeenCalled()
+  })
+
+  it('is not requested when the alert is read while macOS authorization is read', async () => {
+    let reads = 0
+    const { dispatch, requestDockAttention, deliverNative } = setup({
+      authorization: 'authorized',
+      wasRead: () => ++reads > 1
+    })
+    await expect(dispatch(REQUEST)).resolves.toMatchObject({ reason: 'already-read' })
+    expect(requestDockAttention).not.toHaveBeenCalled()
+    expect(deliverNative).not.toHaveBeenCalled()
   })
 
   it('is not requested when dockAttention is off, while the banner still goes out', async () => {

@@ -1,71 +1,64 @@
 /** Collapse the completions a host replays on reconnect into one alert per host. */
 export const RECONNECT_ATTENTION_SETTLE_MS = 10_000
 
-export type HostAttentionSample = {
-  connected: boolean
-  unreadWorkspaceIds: readonly string[]
-}
+/** Identifies the reconnect window a delivery claimed, so a late release cannot reopen a newer one. */
+export type ReconnectWindow = { readonly settleUntil: number | null }
 
-export type ReconnectAttention = { hostId: string; newUnreadWorkspaceIds: string[] }
+export type ReconnectAlertClaim = { coalesced: boolean; window?: ReconnectWindow }
 
 export type ReconnectAttentionTracker = {
-  observe(hostId: string, sample: HostAttentionSample, now: number): ReconnectAttention | null
-  /** True when a delivery from this host must stay quiet because its reconnect alert is already spent. */
-  coalesceAlert(hostId: string, now: number): boolean
+  observe(hostId: string, connected: boolean, now: number): void
+  /** Claims the reconnect window's one alert; coalesced when another delivery already holds it, so this one stays quiet. */
+  coalesceAlert(hostId: string, now: number): ReconnectAlertClaim
+  /** Hands the claimed alert back when main did not sound it, only while that window is still current. */
+  releaseAlert(hostId: string, window: ReconnectWindow): void
   forget(hostId: string): void
 }
 
 type HostState = {
   connected: boolean
-  baseline: ReadonlySet<string>
   settleUntil: number | null
-  chimed: boolean
-  alertOwed: boolean
+  alerted: boolean
 }
 
 export function createReconnectAttentionTracker(): ReconnectAttentionTracker {
   const hosts = new Map<string, HostState>()
-  const settling = (host: HostState | undefined, now: number): host is HostState =>
-    host !== undefined && host.connected && host.settleUntil !== null && now <= host.settleUntil
+  const settling = (hostId: string, now: number): HostState | undefined => {
+    const host = hosts.get(hostId)
+    return host?.connected && host.settleUntil !== null && now <= host.settleUntil
+      ? host
+      : undefined
+  }
 
   return {
-    observe(hostId, sample, now) {
+    observe(hostId, connected, now) {
       const host = hosts.get(hostId)
-      if (!host || !sample.connected) {
+      if (!host || !connected) {
+        hosts.set(hostId, { connected, settleUntil: null, alerted: false })
+      } else if (!host.connected) {
         hosts.set(hostId, {
-          connected: sample.connected,
-          baseline: new Set(sample.unreadWorkspaceIds),
-          settleUntil: null,
-          chimed: false,
-          alertOwed: false
+          connected,
+          settleUntil: now + RECONNECT_ATTENTION_SETTLE_MS,
+          alerted: false
         })
-        return null
       }
-      if (!host.connected) {
-        host.connected = true
-        host.settleUntil = now + RECONNECT_ATTENTION_SETTLE_MS
-        host.chimed = false
-      }
-      if (!settling(host, now) || host.chimed) {
-        return null
-      }
-      const fresh = sample.unreadWorkspaceIds.filter((id) => !host.baseline.has(id)).sort()
-      if (fresh.length === 0) {
-        return null
-      }
-      host.chimed = true
-      host.alertOwed = true
-      return { hostId, newUnreadWorkspaceIds: fresh }
     },
     coalesceAlert(hostId, now) {
-      const host = hosts.get(hostId)
-      if (!settling(host, now)) {
-        return false
+      const host = settling(hostId, now)
+      if (!host) {
+        return { coalesced: false }
       }
-      // The first replayed delivery carries the host's one alert; the rest of the burst stays quiet.
-      const owed = host.alertOwed
-      host.alertOwed = false
-      return !owed
+      if (host.alerted) {
+        return { coalesced: true }
+      }
+      host.alerted = true
+      return { coalesced: false, window: host }
+    },
+    releaseAlert(hostId, window) {
+      const host = hosts.get(hostId)
+      if (host === window) {
+        host.alerted = false
+      }
     },
     forget(hostId) {
       hosts.delete(hostId)

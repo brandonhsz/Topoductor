@@ -1,9 +1,13 @@
-import type { NotificationDispatchResult, NotificationSoundId } from './notification-settings-types'
+import type {
+  NotificationDispatchResult,
+  NotificationSoundId,
+  NotificationSoundRequest
+} from './notification-settings-types'
 
 export type AttentionAlertPlan = {
   playSound: boolean
   /** Bundled sound to force when the user's choice ('system') relies on an untrusted banner. */
-  soundId: NotificationSoundId | null
+  soundId: NonNullable<NotificationSoundRequest['soundId']> | null
 }
 
 export const FALLBACK_ATTENTION_SOUND_ID = 'two-tone' satisfies NotificationSoundId
@@ -19,7 +23,7 @@ const UNTRUSTED_BANNER_REASONS: ReadonlySet<NotificationDispatchResult['reason']
 /** Decides whether Topo's own sound must carry an alert the macOS banner may never show. */
 export function resolveAttentionAlertPlan(
   result: NotificationDispatchResult | null,
-  sound: { customSoundId: NotificationSoundId }
+  sound: { customSoundId: string }
 ): AttentionAlertPlan {
   if (!result) {
     return SILENT_PLAN

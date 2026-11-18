@@ -34,11 +34,11 @@ export function NotificationDockAttentionToggle({
         isMac
           ? t(
               'auto.components.settings.NotificationsPane.dockAttentionMacDescription',
-              'Bounce the Dock icon and show the pending count when an agent needs you, even if macOS blocks banners.'
+              'Bounce the Dock icon when an agent finishes or needs you, even if macOS blocks banners.'
             )
           : t(
               'auto.components.settings.NotificationsPane.dockAttentionWindowDescription',
-              'Flash the taskbar icon or window when an agent needs you.'
+              'Flash the taskbar icon or window when an agent finishes or needs you.'
             )
       }
       checked={settings.dockAttention}

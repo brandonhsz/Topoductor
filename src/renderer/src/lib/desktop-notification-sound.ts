@@ -1,18 +1,12 @@
-import type {
-  NotificationSoundId,
-  NotificationSoundRequest
-} from '../../../shared/notification-settings-types'
+import type { NotificationSoundRequest } from '../../../shared/notification-settings-types'
 
 /** `overrideSoundId` forces a bundled sound when the user's own choice cannot carry the alert. */
 export async function playDesktopNotificationSound(
   customSoundId: string | null | undefined,
   customSoundVolume?: number | null,
-  overrideSoundId?: NotificationSoundId | null
+  overrideSoundId?: NotificationSoundRequest['soundId'] | null
 ): Promise<boolean> {
-  const soundId =
-    overrideSoundId && overrideSoundId !== 'system' && overrideSoundId !== 'custom'
-      ? overrideSoundId
-      : undefined
+  const soundId = overrideSoundId ?? undefined
   if (!soundId && (!customSoundId || customSoundId === 'system')) {
     return false
   }

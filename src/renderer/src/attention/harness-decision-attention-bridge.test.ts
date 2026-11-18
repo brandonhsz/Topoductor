@@ -125,6 +125,25 @@ describe('harness decision attention bridge', () => {
     )
   })
 
+  it('ignores worktree and session ids that name Object.prototype members', async () => {
+    await subscribe()
+
+    expect(() =>
+      emit(
+        run({
+          status: 'waiting',
+          pendingCount: 1,
+          worktreeId: 'constructor',
+          chatSessionId: 'constructor'
+        })
+      )
+    ).not.toThrow()
+    expect(deliver).toHaveBeenCalledWith(
+      expect.not.objectContaining({ surface: 'agent-session' }),
+      expect.anything()
+    )
+  })
+
   it('does nothing without a Harness bridge', async () => {
     vi.stubGlobal('window', { api: {} })
     const off = await subscribe()

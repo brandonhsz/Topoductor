@@ -12,7 +12,7 @@ function makeDock() {
 function run(overrides: Partial<DockAttentionDeps>) {
   const window = makeWindow(false)
   const dock = makeDock()
-  const deps = { platform: 'darwin', window, dock, ...overrides } as DockAttentionDeps
+  const deps: DockAttentionDeps = { platform: 'darwin', window, dock, ...overrides }
   return { result: requestDockAttention(deps), window, dock }
 }
 

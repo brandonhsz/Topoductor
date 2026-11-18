@@ -12,7 +12,6 @@ import { reserveNotificationCooldown } from '../../shared/notification-burst-coo
 import { toHostSessionPaneKey } from '../../shared/workspace-layout/terminal-surface-id'
 import { isNotificationSourceEnabled } from '../../shared/notification-source-gate'
 import { notificationDeliveryId } from '../../shared/notification-delivery-id'
-import { getLastObservedDeliveryOutcome } from '../ipc/notification-permission-probe'
 
 type NativeNotificationReservation = {
   isCurrent: () => boolean
@@ -30,6 +29,7 @@ export type NotificationDeliveryDependencies = {
     'authorized' | 'denied' | 'not-determined' | 'unknown' | null
   >
   recordDeliveryOutcome: (outcome: 'delivered' | 'failed') => void
+  readLastDeliveryOutcome: () => 'delivered' | 'failed' | null
   deliverNative: (
     request: NotificationDispatchRequest,
     options: ReturnType<typeof buildNotificationOptions>,
@@ -194,44 +194,49 @@ export function createNotificationDeliveryService(
         }
       }
 
-      if (settings.dockAttention && !request.reconnectCoalesced) {
-        deps.requestDockAttention()
+      const requestDockAttention = () => {
+        if (settings.dockAttention && !request.reconnectCoalesced) {
+          deps.requestDockAttention()
+        }
       }
 
       if (!deps.isNotificationSupported()) {
+        requestDockAttention()
         return { delivered: false, reason: 'not-supported' }
       }
 
       const reservation = deps.reserveNative?.(request)
-      const deliverNative = (nativeBannerTrusted: boolean) =>
-        deliverNativeAndRecord(
+      const deliverNative = (nativeBannerTrusted: boolean) => {
+        requestDockAttention()
+        return deliverNativeAndRecord(
           request,
           notificationOptions,
           settings,
           nativeBannerTrusted,
           reservation
         )
+      }
       try {
         // macOS swallows denied/undecided notifications; allow the renderer fallback instead.
         const result =
           deps.platform !== 'darwin'
-            ? deliverNative(false)
-            : deps.readAuthorizationStatus().then((authorization) => {
+            ? deliverNative(true)
+            : deps.readAuthorizationStatus().then(async (authorization) => {
                 if (deps.wasRead?.(request) || reservation?.isCurrent() === false) {
                   return { delivered: false, reason: 'already-read' } as const
                 }
                 if (authorization === 'denied' || authorization === 'not-determined') {
                   deps.recordDeliveryOutcome('failed')
+                  requestDockAttention()
                   return { delivered: false, reason: 'blocked-by-system' } as const
                 }
-                // An observed rejection outweighs an unreadable status; only explicit authorization overrides it.
-                if (
-                  authorization !== 'authorized' &&
-                  getLastObservedDeliveryOutcome() === 'failed'
-                ) {
-                  return { delivered: false, reason: 'blocked-by-system' } as const
-                }
-                return deliverNative(authorization === 'authorized')
+                // An observed rejection outweighs an unreadable status, but a later delivered banner can still clear it.
+                const blocked =
+                  authorization !== 'authorized' && deps.readLastDeliveryOutcome() === 'failed'
+                const delivered = await deliverNative(authorization === 'authorized')
+                return blocked && delivered.delivered
+                  ? ({ delivered: false, reason: 'blocked-by-system' } as const)
+                  : delivered
               })
         if (result instanceof Promise) {
           return result.finally(() => reservation?.release())

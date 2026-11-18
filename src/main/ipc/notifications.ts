@@ -235,6 +235,7 @@ export function registerNotificationHandlers(store: Store, runtime?: TopoRuntime
       : null,
     readAuthorizationStatus: readNotificationAuthorizationStatus,
     recordDeliveryOutcome: recordNotificationDeliveryOutcome,
+    readLastDeliveryOutcome: getLastObservedDeliveryOutcome,
     deliverNative: deliverNativeNotification,
     platform: process.platform,
     now: () => Date.now(),

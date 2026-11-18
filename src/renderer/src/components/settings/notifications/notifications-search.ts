@@ -132,7 +132,7 @@ export const getNotificationsPaneSearchEntries = createLocalizedCatalog(() => [
     ),
     description: translate(
       'auto.components.settings.notifications.search.dockAttentionDescription',
-      'Bounce the Dock icon on macOS, or flash the taskbar on Windows and Linux, when an agent needs you.'
+      'Bounce the Dock icon on macOS, or flash the taskbar on Windows and Linux, when an agent finishes or needs you.'
     ),
     keywords: [
       ...translateSearchKeyword(

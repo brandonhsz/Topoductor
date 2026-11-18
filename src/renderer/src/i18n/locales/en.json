@@ -8823,8 +8823,8 @@
           "e1b1724793": "A coding agent asks for permission or has a question.",
           "dockAttentionMac": "Bounce Dock Icon",
           "dockAttentionWindow": "Flash Taskbar or Window",
-          "dockAttentionMacDescription": "Bounce the Dock icon and show the pending count when an agent needs you, even if macOS blocks banners.",
-          "dockAttentionWindowDescription": "Flash the taskbar icon or window when an agent needs you."
+          "dockAttentionMacDescription": "Bounce the Dock icon when an agent finishes or needs you, even if macOS blocks banners.",
+          "dockAttentionWindowDescription": "Flash the taskbar icon or window when an agent finishes or needs you."
         },
         "OpenAiTranscriptionKeyDialog": {
           "fa83512e48": "Save Key",
@@ -11120,7 +11120,7 @@
             "5b9dafd570": "question",
             "009548060d": "input",
             "dockAttention": "Dock and Taskbar Attention",
-            "dockAttentionDescription": "Bounce the Dock icon on macOS, or flash the taskbar on Windows and Linux, when an agent needs you.",
+            "dockAttentionDescription": "Bounce the Dock icon on macOS, or flash the taskbar on Windows and Linux, when an agent finishes or needs you.",
             "dock": "dock",
             "bounce": "bounce",
             "taskbar": "taskbar",

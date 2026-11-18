@@ -4,6 +4,7 @@ import { useAppStore } from '@/store'
 import type { HarnessRunSummary } from '../../../shared/harness/harness-run-types'
 import type { NotificationDispatchRequest } from '../../../shared/notification-settings-types'
 import { isStructuredTab } from '../../../shared/agent-session/view/structured-agent-session-tab'
+import { structuredChatTabBySessionId } from '@/lib/structured-chat-tab-index'
 import { structuredAgentSessionPaneKey } from '../../../shared/agent-session/view/structured-agent-session-projection'
 import {
   buildHarnessDecisionDispatchRequest,
@@ -28,10 +29,12 @@ function chatSurfaceFor(
   if (!run.chatSessionId) {
     return {}
   }
-  const tab = state.unifiedTabsByWorktree?.[run.worktreeId]?.find(
-    (candidate) => isStructuredTab(candidate) && candidate.entityId === run.chatSessionId
+  const tab = structuredChatTabBySessionId(
+    state.unifiedTabsByWorktree,
+    run.worktreeId,
+    run.chatSessionId
   )
-  return tab
+  return tab && isStructuredTab(tab)
     ? { surface: 'agent-session', paneKey: structuredAgentSessionPaneKey(tab.id, tab.entityId) }
     : {}
 }

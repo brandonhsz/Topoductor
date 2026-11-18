@@ -26,24 +26,24 @@ afterEach(() => {
   vi.clearAllMocks()
 })
 
-async function deliver(worktreeId: string, executionHost?: `runtime:${string}`): Promise<void> {
+function deliver(worktreeId: string, executionHost?: `runtime:${string}`): Promise<void> {
   deliverAgentAttentionNotification(
     { source: 'agent-task-complete', agentState: 'done', worktreeId, executionHost },
     { customSoundId: 'chime', customSoundVolume: null }
   )
-  await new Promise((resolve) => setTimeout(resolve, 0))
+  return new Promise((resolve) => setTimeout(resolve, 0))
 }
 
-function reconnectWithUnread(unreadWorkspaceIds: string[]): void {
+function reconnect(): void {
   const now = Date.now()
-  reconnectAttention.observe(HOST, { connected: true, unreadWorkspaceIds: [] }, now)
-  reconnectAttention.observe(HOST, { connected: false, unreadWorkspaceIds: [] }, now)
-  reconnectAttention.observe(HOST, { connected: true, unreadWorkspaceIds }, now)
+  reconnectAttention.observe(HOST, true, now)
+  reconnectAttention.observe(HOST, false, now)
+  reconnectAttention.observe(HOST, true, now)
 }
 
 describe('reconnect burst delivery', () => {
   it('sounds and bounces once for every completion a reconnect replays', async () => {
-    reconnectWithUnread(['wt-a', 'wt-b', 'wt-c'])
+    reconnect()
     await deliver('wt-a', HOST)
     await deliver('wt-b', HOST)
     await deliver('wt-c', HOST)
@@ -56,16 +56,55 @@ describe('reconnect burst delivery', () => {
     ])
   })
 
-  it('stays quiet for a reconnect that brought no new unread', async () => {
-    reconnectWithUnread([])
+  it('sounds the first alert after a reconnect, whatever the store saw as unread', async () => {
+    reconnect()
     await deliver('wt-a', HOST)
 
-    expect(playSound).not.toHaveBeenCalled()
-    expect(dispatch.mock.calls[0]?.[0].reconnectCoalesced).toBe(true)
+    expect(playSound).toHaveBeenCalledTimes(1)
+    expect(dispatch.mock.calls[0]?.[0].reconnectCoalesced).toBeUndefined()
+  })
+
+  it('keeps the alert for the next delivery when main did not sound the first one', async () => {
+    dispatch.mockResolvedValueOnce({ delivered: false, reason: 'cooldown' })
+    reconnect()
+    await deliver('wt-a', HOST)
+    await deliver('wt-b', HOST)
+
+    expect(playSound).toHaveBeenCalledTimes(1)
+    expect(dispatch.mock.calls.map(([request]) => request.reconnectCoalesced)).toEqual([
+      undefined,
+      undefined
+    ])
+  })
+
+  it('sends only the first of a racing burst uncoalesced, so main bounces and sounds once', async () => {
+    reconnect()
+    await Promise.all([deliver('wt-a', HOST), deliver('wt-b', HOST), deliver('wt-c', HOST)])
+
+    expect(playSound).toHaveBeenCalledTimes(1)
+    expect(dispatch.mock.calls.map(([request]) => request.reconnectCoalesced)).toEqual([
+      undefined,
+      true,
+      true
+    ])
+  })
+
+  it('releases the alert when main did not sound it, even while the burst races', async () => {
+    dispatch.mockResolvedValueOnce({ delivered: false, reason: 'cooldown' })
+    reconnect()
+    await deliver('wt-a', HOST)
+    await Promise.all([deliver('wt-b', HOST), deliver('wt-c', HOST)])
+
+    expect(playSound).toHaveBeenCalledTimes(1)
+    expect(dispatch.mock.calls.map(([request]) => request.reconnectCoalesced)).toEqual([
+      undefined,
+      undefined,
+      true
+    ])
   })
 
   it('leaves hosts outside a reconnect and local work untouched', async () => {
-    reconnectAttention.observe(HOST, { connected: true, unreadWorkspaceIds: [] }, Date.now())
+    reconnectAttention.observe(HOST, true, Date.now())
     await deliver('wt-a', HOST)
     await deliver('wt-b')
 

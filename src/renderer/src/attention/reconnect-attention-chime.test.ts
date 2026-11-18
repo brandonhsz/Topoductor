@@ -2,167 +2,116 @@ import { describe, expect, it } from 'vitest'
 import {
   RECONNECT_ATTENTION_SETTLE_MS,
   createReconnectAttentionTracker,
-  type ReconnectAttentionTracker
+  type ReconnectAlertClaim,
+  type ReconnectAttentionTracker,
+  type ReconnectWindow
 } from './reconnect-attention-chime'
 
 const T0 = 1_000_000
+const READY = T0 + 60_000
 
-function connected(...unreadWorkspaceIds: string[]) {
-  return { connected: true, unreadWorkspaceIds }
-}
-
-function disconnected(...unreadWorkspaceIds: string[]) {
-  return { connected: false, unreadWorkspaceIds }
-}
-
-/** A host that was seen connected, then dropped, so the next ready sample is a reconnect. */
-function trackerAfterOutage(hostId: string, ...unreadBefore: string[]): ReconnectAttentionTracker {
+/** A host that was seen connected, dropped, and reconnected at READY. */
+function trackerAfterReconnect(hostId: string): ReconnectAttentionTracker {
   const tracker = createReconnectAttentionTracker()
-  expect(tracker.observe(hostId, connected(...unreadBefore), T0)).toBeNull()
-  expect(tracker.observe(hostId, disconnected(...unreadBefore), T0 + 1_000)).toBeNull()
+  tracker.observe(hostId, true, T0)
+  tracker.observe(hostId, false, T0 + 1_000)
+  tracker.observe(hostId, true, READY)
   return tracker
 }
 
+function claimedWindow({ window }: ReconnectAlertClaim): ReconnectWindow {
+  if (!window) {
+    throw new Error('expected this delivery to claim the alert')
+  }
+  return window
+}
+
 describe('createReconnectAttentionTracker', () => {
-  it('chimes once when a host reconnects with one new unread workspace', () => {
-    const tracker = trackerAfterOutage('host-a')
+  it('lets the first alert of a reconnect window through and quiets the rest', () => {
+    const tracker = trackerAfterReconnect('host-a')
 
-    expect(tracker.observe('host-a', connected('wt-1'), T0 + 60_000)).toEqual({
-      hostId: 'host-a',
-      newUnreadWorkspaceIds: ['wt-1']
-    })
+    expect(tracker.coalesceAlert('host-a', READY).coalesced).toBe(false)
+    expect(tracker.coalesceAlert('host-a', READY + 1_000).coalesced).toBe(true)
+    expect(tracker.coalesceAlert('host-a', READY + 2_000).coalesced).toBe(true)
   })
 
-  it('chimes once for several new unread workspaces, not once per workspace', () => {
-    const tracker = trackerAfterOutage('host-a')
+  it('hands a released alert to the next delivery of the window', () => {
+    const tracker = trackerAfterReconnect('host-a')
+    tracker.releaseAlert('host-a', claimedWindow(tracker.coalesceAlert('host-a', READY)))
 
-    expect(tracker.observe('host-a', connected('wt-3', 'wt-1', 'wt-2'), T0 + 60_000)).toEqual({
-      hostId: 'host-a',
-      newUnreadWorkspaceIds: ['wt-1', 'wt-2', 'wt-3']
-    })
+    expect(tracker.coalesceAlert('host-a', READY + 1_000).coalesced).toBe(false)
+    expect(tracker.coalesceAlert('host-a', READY + 2_000).coalesced).toBe(true)
   })
 
-  it('stays quiet when the host reconnects with no unread at all', () => {
-    const tracker = trackerAfterOutage('host-a')
+  it('ignores a release from an earlier window once the host reconnected again', () => {
+    const tracker = trackerAfterReconnect('host-a')
+    const earlier = tracker.coalesceAlert('host-a', READY)
+    tracker.observe('host-a', false, READY + 1_000)
+    tracker.observe('host-a', true, READY + 2_000)
+    expect(tracker.coalesceAlert('host-a', READY + 2_000).coalesced).toBe(false)
+    tracker.releaseAlert('host-a', claimedWindow(earlier))
 
-    expect(tracker.observe('host-a', connected(), T0 + 60_000)).toBeNull()
+    expect(tracker.coalesceAlert('host-a', READY + 4_000).coalesced).toBe(true)
   })
 
-  it('stays quiet when the only unread was already unread before the outage', () => {
-    const tracker = trackerAfterOutage('host-a', 'wt-old')
+  it('leaves alerts after the settle window to the live emitters', () => {
+    const tracker = trackerAfterReconnect('host-a')
+    tracker.coalesceAlert('host-a', READY)
+    const after = READY + RECONNECT_ATTENTION_SETTLE_MS + 1
 
-    expect(tracker.observe('host-a', connected('wt-old'), T0 + 60_000)).toBeNull()
+    expect(tracker.coalesceAlert('host-a', after).coalesced).toBe(false)
+    expect(tracker.coalesceAlert('host-a', after).coalesced).toBe(false)
   })
 
-  it('counts only workspaces that were not unread before the outage', () => {
-    const tracker = trackerAfterOutage('host-a', 'wt-old')
-
-    expect(tracker.observe('host-a', connected('wt-old', 'wt-new'), T0 + 60_000)).toEqual({
-      hostId: 'host-a',
-      newUnreadWorkspaceIds: ['wt-new']
-    })
-  })
-
-  it('catches unread that lands after the ready sample while hydration settles', () => {
-    const tracker = trackerAfterOutage('host-a')
-
-    expect(tracker.observe('host-a', connected(), T0 + 60_000)).toBeNull()
-    expect(tracker.observe('host-a', connected('wt-1'), T0 + 62_000)).toEqual({
-      hostId: 'host-a',
-      newUnreadWorkspaceIds: ['wt-1']
-    })
-  })
-
-  it('does not chime again for unread that keeps arriving after it already chimed', () => {
-    const tracker = trackerAfterOutage('host-a')
-
-    expect(tracker.observe('host-a', connected('wt-1'), T0 + 60_000)).not.toBeNull()
-    expect(tracker.observe('host-a', connected('wt-1', 'wt-2'), T0 + 61_000)).toBeNull()
-    expect(tracker.observe('host-a', connected('wt-1', 'wt-2'), T0 + 62_000)).toBeNull()
-  })
-
-  it('leaves unread arriving after the settle window to the live emitters', () => {
-    const tracker = trackerAfterOutage('host-a')
-    const ready = T0 + 60_000
-
-    expect(tracker.observe('host-a', connected(), ready)).toBeNull()
-    expect(
-      tracker.observe('host-a', connected('wt-1'), ready + RECONNECT_ATTENTION_SETTLE_MS + 1)
-    ).toBeNull()
-  })
-
-  it('never chimes on the first sighting of a host (startup is not a reconnect)', () => {
+  it('never opens a window on the first sighting of a host (startup is not a reconnect)', () => {
     const tracker = createReconnectAttentionTracker()
+    tracker.observe('host-a', true, T0)
 
-    expect(tracker.observe('host-a', connected('wt-1', 'wt-2'), T0)).toBeNull()
+    expect(tracker.coalesceAlert('host-a', T0).coalesced).toBe(false)
+    expect(tracker.coalesceAlert('host-a', T0).coalesced).toBe(false)
   })
 
-  it('never chimes for a host that stays connected and gains unread', () => {
-    const tracker = createReconnectAttentionTracker()
+  it('never coalesces while the host is still disconnected', () => {
+    const tracker = trackerAfterReconnect('host-a')
+    tracker.coalesceAlert('host-a', READY)
+    tracker.observe('host-a', false, READY + 1_000)
 
-    expect(tracker.observe('host-a', connected(), T0)).toBeNull()
-    expect(tracker.observe('host-a', connected('wt-1'), T0 + 1_000)).toBeNull()
+    expect(tracker.coalesceAlert('host-a', READY + 2_000).coalesced).toBe(false)
   })
 
-  it('never chimes while the host is still disconnected', () => {
-    const tracker = trackerAfterOutage('host-a')
+  it('opens a fresh window on a second, separate reconnect', () => {
+    const tracker = trackerAfterReconnect('host-a')
+    tracker.coalesceAlert('host-a', READY)
+    tracker.observe('host-a', false, READY + 60_000)
+    tracker.observe('host-a', true, READY + 120_000)
 
-    expect(tracker.observe('host-a', disconnected('wt-1'), T0 + 30_000)).toBeNull()
+    expect(tracker.coalesceAlert('host-a', READY + 120_000).coalesced).toBe(false)
+    expect(tracker.coalesceAlert('host-a', READY + 121_000).coalesced).toBe(true)
   })
 
-  it('chimes again on a second, separate reconnect with new unread', () => {
-    const tracker = trackerAfterOutage('host-a')
+  it('tracks each host on its own', () => {
+    const tracker = trackerAfterReconnect('host-a')
+    tracker.observe('host-b', true, T0)
+    tracker.observe('host-b', false, T0 + 1_000)
+    tracker.observe('host-b', true, READY)
+    tracker.coalesceAlert('host-a', READY)
 
-    expect(tracker.observe('host-a', connected('wt-1'), T0 + 60_000)).not.toBeNull()
-    expect(tracker.observe('host-a', disconnected('wt-1'), T0 + 120_000)).toBeNull()
-    expect(tracker.observe('host-a', connected('wt-1', 'wt-2'), T0 + 180_000)).toEqual({
-      hostId: 'host-a',
-      newUnreadWorkspaceIds: ['wt-2']
-    })
-  })
-
-  it('treats a workspace read during the outage and unread again on reconnect as new', () => {
-    const tracker = trackerAfterOutage('host-a', 'wt-1')
-
-    expect(tracker.observe('host-a', disconnected(), T0 + 30_000)).toBeNull()
-    expect(tracker.observe('host-a', connected('wt-1'), T0 + 60_000)).toEqual({
-      hostId: 'host-a',
-      newUnreadWorkspaceIds: ['wt-1']
-    })
-  })
-
-  it('tracks each host on its own: one chime per reconnected host', () => {
-    const tracker = createReconnectAttentionTracker()
-    tracker.observe('host-a', connected(), T0)
-    tracker.observe('host-b', connected(), T0)
-    tracker.observe('host-a', disconnected(), T0 + 1_000)
-    tracker.observe('host-b', disconnected(), T0 + 1_000)
-
-    expect(tracker.observe('host-a', connected('wt-a'), T0 + 60_000)).toEqual({
-      hostId: 'host-a',
-      newUnreadWorkspaceIds: ['wt-a']
-    })
-    expect(tracker.observe('host-b', connected('wt-b'), T0 + 60_000)).toEqual({
-      hostId: 'host-b',
-      newUnreadWorkspaceIds: ['wt-b']
-    })
-    expect(tracker.observe('host-a', connected('wt-a'), T0 + 61_000)).toBeNull()
+    expect(tracker.coalesceAlert('host-b', READY).coalesced).toBe(false)
   })
 
   it('does not let one host reconnecting arm another host that never dropped', () => {
-    const tracker = createReconnectAttentionTracker()
-    tracker.observe('host-a', connected(), T0)
-    tracker.observe('host-b', connected(), T0)
-    tracker.observe('host-a', disconnected(), T0 + 1_000)
-    tracker.observe('host-a', connected(), T0 + 60_000)
+    const tracker = trackerAfterReconnect('host-a')
+    tracker.observe('host-b', true, T0)
+    tracker.coalesceAlert('host-b', READY)
 
-    expect(tracker.observe('host-b', connected('wt-b'), T0 + 61_000)).toBeNull()
+    expect(tracker.coalesceAlert('host-b', READY).coalesced).toBe(false)
   })
 
-  it('forgets a removed host so it cannot chime from stale state', () => {
-    const tracker = trackerAfterOutage('host-a')
+  it('forgets a removed host so it cannot coalesce from stale state', () => {
+    const tracker = trackerAfterReconnect('host-a')
+    tracker.coalesceAlert('host-a', READY)
     tracker.forget('host-a')
 
-    expect(tracker.observe('host-a', connected('wt-1'), T0 + 60_000)).toBeNull()
+    expect(tracker.coalesceAlert('host-a', READY).coalesced).toBe(false)
   })
 })

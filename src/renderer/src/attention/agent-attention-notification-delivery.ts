@@ -5,8 +5,7 @@ import { resolveAttentionAlertPlan } from '../../../shared/attention-alert-plan'
 import { reconnectAttention } from './reconnect-attention-chime'
 import type {
   NotificationDispatchRequest,
-  NotificationDispatchResult,
-  NotificationSoundId
+  NotificationDispatchResult
 } from '../../../shared/notification-settings-types'
 
 export type AgentAttentionNotificationSound = {
@@ -19,17 +18,23 @@ export function deliverAgentAttentionNotification(
   sound: AgentAttentionNotificationSound,
   onResult?: (result: NotificationDispatchResult | null) => void
 ): void {
-  const reconnectCoalesced =
-    request.executionHost !== undefined &&
-    reconnectAttention.coalesceAlert(request.executionHost, Date.now())
+  const host = request.executionHost
+  const claim = host !== undefined ? reconnectAttention.coalesceAlert(host, Date.now()) : null
+  const reconnectCoalesced = claim?.coalesced === true
+  // Only an alert main actually sounded spends the host's reconnect window.
+  const releaseUnsoundedAlert = () => {
+    if (host !== undefined && claim?.window) {
+      reconnectAttention.releaseAlert(host, claim.window)
+    }
+  }
   void window.api.notifications
     .dispatch(reconnectCoalesced ? { ...request, reconnectCoalesced } : request)
     .then((result) => {
       onResult?.(result)
-      const plan = resolveAttentionAlertPlan(result, {
-        // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: the plan only distinguishes 'system' from any other id.
-        customSoundId: sound.customSoundId as NotificationSoundId
-      })
+      const plan = resolveAttentionAlertPlan(result, sound)
+      if (!result.delivered && !plan.playSound) {
+        releaseUnsoundedAlert()
+      }
       if (plan.playSound && !reconnectCoalesced) {
         void playDesktopNotificationSound(
           sound.customSoundId,
@@ -43,6 +48,7 @@ export function deliverAgentAttentionNotification(
       }
     })
     .catch((err) => {
+      releaseUnsoundedAlert()
       onResult?.(null)
       console.warn('Failed to dispatch notification:', err)
     })

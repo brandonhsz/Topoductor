@@ -62,7 +62,8 @@ describe('registerNotificationHandlers', () => {
 
     expect(notificationCtorMock).toHaveBeenCalledWith({
       title: 'jinjing-work / main - Claude finished',
-      body: 'Claude finished.'
+      body: 'Claude finished.',
+      silent: true
     })
   })
 
