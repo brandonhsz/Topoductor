@@ -1,6 +1,8 @@
 /** Share delivery, success sound and blocked-permission fallback across surfaces; callers own message content. Main applies banner preferences after mobile fanout, so callers cannot promise a banner. */
 import { playDesktopNotificationSound } from '@/lib/desktop-notification-sound'
 import { showBlockedNotificationFallbackToast } from '@/lib/blocked-notification-fallback'
+import { resolveAttentionAlertPlan } from '../../../shared/attention-alert-plan'
+import { reconnectAttention } from './reconnect-attention-chime'
 import type {
   NotificationDispatchRequest,
   NotificationDispatchResult
@@ -16,13 +18,29 @@ export function deliverAgentAttentionNotification(
   sound: AgentAttentionNotificationSound,
   onResult?: (result: NotificationDispatchResult | null) => void
 ): void {
+  const host = request.executionHost
+  const claim = host !== undefined ? reconnectAttention.coalesceAlert(host, Date.now()) : null
+  const reconnectCoalesced = claim?.coalesced === true
+  // Only an alert main actually sounded spends the host's reconnect window.
+  const releaseUnsoundedAlert = () => {
+    if (host !== undefined && claim?.window) {
+      reconnectAttention.releaseAlert(host, claim.window)
+    }
+  }
   void window.api.notifications
-    .dispatch(request)
+    .dispatch(reconnectCoalesced ? { ...request, reconnectCoalesced } : request)
     .then((result) => {
       onResult?.(result)
-      if (result.delivered) {
-        void playDesktopNotificationSound(sound.customSoundId, sound.customSoundVolume)
-        return
+      const plan = resolveAttentionAlertPlan(result, sound)
+      if (!result.delivered && !plan.playSound) {
+        releaseUnsoundedAlert()
+      }
+      if (plan.playSound && !reconnectCoalesced) {
+        void playDesktopNotificationSound(
+          sound.customSoundId,
+          sound.customSoundVolume,
+          plan.soundId
+        )
       }
       // Surface blocked macOS permission in-app rather than silently losing the notification.
       if (result.reason === 'blocked-by-system') {
@@ -30,6 +48,7 @@ export function deliverAgentAttentionNotification(
       }
     })
     .catch((err) => {
+      releaseUnsoundedAlert()
       onResult?.(null)
       console.warn('Failed to dispatch notification:', err)
     })

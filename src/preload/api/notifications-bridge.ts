@@ -8,24 +8,28 @@ import type {
   NotificationPermissionStatusResult,
   NotificationSoundDataResult,
   NotificationSoundPathResult,
+  NotificationSoundRequest,
   NotificationSoundResult,
   StructuredNotificationRead
 } from '../../shared/notification-settings-types'
 import type { AgentSessionExecutionLocation } from '../../shared/agent-session/lifecycle/agent-session-record'
 import type { PreloadApi } from '../api-types'
 
+type CachedNotificationSound = { path: string; blobUrl: string; audio: HTMLAudioElement }
 // Reuse sound data to avoid reading large files for every notification.
-let cachedNotificationSound: {
-  path: string
-  blobUrl: string
-  audio: HTMLAudioElement
-} | null = null
-function disposeCachedNotificationSound(): void {
-  if (cachedNotificationSound) {
-    cachedNotificationSound.audio.pause()
-    cachedNotificationSound.audio.src = ''
-    URL.revokeObjectURL(cachedNotificationSound.blobUrl)
-    cachedNotificationSound = null
+// Why: a separate fallback slot keeps a forced bundled sound from evicting the user's own sound.
+const cachedNotificationSounds: Record<'selected' | 'fallback', CachedNotificationSound | null> = {
+  selected: null,
+  fallback: null
+}
+type NotificationSoundSlot = keyof typeof cachedNotificationSounds
+function disposeCachedNotificationSound(slot: NotificationSoundSlot): void {
+  const cached = cachedNotificationSounds[slot]
+  if (cached) {
+    cached.audio.pause()
+    cached.audio.src = ''
+    URL.revokeObjectURL(cached.blobUrl)
+    cachedNotificationSounds[slot] = null
   }
 }
 
@@ -58,42 +62,41 @@ export const notificationsApi = {
     ipcRenderer.invoke('notifications:getPermissionStatus'),
   probeDelivery: (args?: { force?: boolean }): Promise<NotificationDeliveryProbeResult> =>
     ipcRenderer.invoke('notifications:probeDelivery', args),
-  playSound: async (options?: {
-    force?: boolean
-    volume?: number
-  }): Promise<NotificationSoundResult> => {
+  playSound: async (options?: NotificationSoundRequest): Promise<NotificationSoundResult> => {
+    const soundRequest = options?.soundId ? { soundId: options.soundId } : undefined
+    const slot: NotificationSoundSlot = soundRequest ? 'fallback' : 'selected'
     try {
-      const resolved = (await ipcRenderer.invoke(
-        'notifications:resolveSoundPath'
-      )) as NotificationSoundPathResult
+      const resolved: NotificationSoundPathResult = await ipcRenderer.invoke(
+        'notifications:resolveSoundPath',
+        ...(soundRequest ? [soundRequest] : [])
+      )
       if (!resolved.ok) {
-        if (cachedNotificationSound) {
-          disposeCachedNotificationSound()
-        }
+        disposeCachedNotificationSound(slot)
         return { played: false, reason: resolved.reason }
       }
 
-      let entry = cachedNotificationSound
+      let entry = cachedNotificationSounds[slot]
       if (!entry || entry.path !== resolved.path) {
-        const sound = (await ipcRenderer.invoke(
-          'notifications:loadSound'
-        )) as NotificationSoundDataResult
+        const sound: NotificationSoundDataResult = await ipcRenderer.invoke(
+          'notifications:loadSound',
+          ...(soundRequest ? [soundRequest] : [])
+        )
         if (!sound.ok) {
-          disposeCachedNotificationSound()
+          disposeCachedNotificationSound(slot)
           return { played: false, reason: sound.reason }
         }
         // Another playSound may have populated the cache during this load.
-        const latestEntry = cachedNotificationSound
+        const latestEntry = cachedNotificationSounds[slot]
         if (latestEntry?.path === sound.path) {
           entry = latestEntry
         } else {
           const arrayBuffer = new ArrayBuffer(sound.data.byteLength)
           new Uint8Array(arrayBuffer).set(sound.data)
           const blob = new Blob([arrayBuffer], { type: sound.mimeType })
-          disposeCachedNotificationSound()
+          disposeCachedNotificationSound(slot)
           const blobUrl = URL.createObjectURL(blob)
           entry = { path: sound.path, blobUrl, audio: new Audio(blobUrl) }
-          cachedNotificationSound = entry
+          cachedNotificationSounds[slot] = entry
         }
       }
 

@@ -1691,13 +1691,6 @@
         "projectRootRegistrationFailed": "Tarif ile oluşturulan proje kökü çalışma zamanına kaydedilemedi.",
         "provisionedRootRequiresSsh": "Sağlanmış kök tarifleri şu anda doğrudan bir SSH bağlantısı gerektirir."
       },
-      "blocked": {
-        "notification": {
-          "fallback": {
-            "de50bef680": "macOS, Topo bildirimlerini engelliyor"
-          }
-        }
-      },
       "linear": {
         "usage": {
           "examples": {

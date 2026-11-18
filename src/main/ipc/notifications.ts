@@ -1,4 +1,4 @@
-import { BrowserWindow, Notification, ipcMain, powerMonitor } from 'electron'
+import { BrowserWindow, Notification, app, ipcMain, powerMonitor } from 'electron'
 import { readDesktopAwayState } from '../notifications/desktop-away-state'
 import type { Store } from '../persistence/loading-store/store'
 import type {
@@ -14,6 +14,7 @@ import { isNotificationAttentionAcknowledgement } from '../../shared/notificatio
 import type { TopoRuntimeService } from '../runtime/topo-runtime'
 import { readNotificationAuthorizationStatus } from './notification-authorization-status'
 import { setTrayAttention } from '../tray/system-tray'
+import { requestDockAttention } from '../dock/dock-attention'
 import { isMainWindowVisible } from '../window/main-window-visibility'
 import { activeNotificationsById } from './native-notification-lifecycle'
 import { deliverNativeNotification } from './native-notification-delivery'
@@ -221,10 +222,11 @@ export function registerNotificationHandlers(store: Store, runtime?: TopoRuntime
     }
   )
 
+  const findActiveWindow = (): BrowserWindow | null =>
+    BrowserWindow.getAllWindows().find((window) => !window.isDestroyed()) ?? null
   const deliveryService = createNotificationDeliveryService({
     readNotificationSettings: () => store.getSettings().notifications,
-    findActiveWindow: () =>
-      BrowserWindow.getAllWindows().find((window) => !window.isDestroyed()) ?? null,
+    findActiveWindow,
     isWindowVisible: isMainWindowVisible,
     setTrayAttention,
     isNotificationSupported: () => Notification.isSupported(),
@@ -233,10 +235,18 @@ export function registerNotificationHandlers(store: Store, runtime?: TopoRuntime
       : null,
     readAuthorizationStatus: readNotificationAuthorizationStatus,
     recordDeliveryOutcome: recordNotificationDeliveryOutcome,
+    readLastDeliveryOutcome: getLastObservedDeliveryOutcome,
     deliverNative: deliverNativeNotification,
     platform: process.platform,
     now: () => Date.now(),
     wasRead: announced.wasRead,
+    requestDockAttention: () => {
+      requestDockAttention({
+        platform: process.platform,
+        window: findActiveWindow(),
+        dock: app.dock
+      })
+    },
     reserveNative: (request) => {
       if (!request.notificationId || (!request.paneKey && !request.worktreeId)) {
         return undefined

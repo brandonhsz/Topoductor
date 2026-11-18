@@ -9,6 +9,7 @@ import {
   useMacNotificationPermissionState
 } from '@/components/notifications/mac-notification-permission-card'
 import { NotificationSettingToggle } from './NotificationSettingToggle'
+import { NotificationDockAttentionToggle } from './NotificationDockAttentionToggle'
 import { NotificationHostToggles } from './NotificationHostToggles'
 import { NotificationSoundSection } from './NotificationSoundSection'
 import { sendNotificationSettingsTestNotification } from '@/components/notifications/notification-test-delivery'
@@ -234,6 +235,11 @@ export function NotificationsPane({
       />
 
       <Separator />
+
+      <NotificationDockAttentionToggle
+        settings={notificationSettings}
+        updateSettings={(updates) => updateNotificationSettings(updates.notifications ?? {})}
+      />
 
       <NotificationSettingToggle
         label={t('auto.components.settings.NotificationsPane.00cd406dbb', 'Suppress While Focused')}

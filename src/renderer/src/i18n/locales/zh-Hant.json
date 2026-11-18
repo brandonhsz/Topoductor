@@ -1663,13 +1663,6 @@
         "projectRootRegistrationFailed": "在執行環境中註冊由配方建立的專案根目錄失敗。",
         "provisionedRootRequiresSsh": "使用已佈建根目錄的配方目前需要直接 SSH 連線。"
       },
-      "blocked": {
-        "notification": {
-          "fallback": {
-            "de50bef680": "macOS 正在阻止 Topo 通知"
-          }
-        }
-      },
       "linear": {
         "usage": {
           "examples": {

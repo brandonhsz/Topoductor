@@ -29,6 +29,7 @@ export type NotificationDeliveryDependencies = {
     'authorized' | 'denied' | 'not-determined' | 'unknown' | null
   >
   recordDeliveryOutcome: (outcome: 'delivered' | 'failed') => void
+  readLastDeliveryOutcome: () => 'delivered' | 'failed' | null
   deliverNative: (
     request: NotificationDispatchRequest,
     options: ReturnType<typeof buildNotificationOptions>,
@@ -42,6 +43,8 @@ export type NotificationDeliveryDependencies = {
   wasRead?: (request: NotificationDispatchRequest) => boolean
   /** Called for each actual desktop banner or mobile alert. */
   recordAnnounced?: (request: NotificationDispatchRequest) => void
+  /** Sole owner of the Dock bounce / taskbar flash for an alert that passed every gate. */
+  requestDockAttention: () => void
 }
 
 export type NotificationDeliveryService = {
@@ -67,18 +70,23 @@ export function createNotificationDeliveryService(
     request: NotificationDispatchRequest,
     options: ReturnType<typeof buildNotificationOptions>,
     settings: NotificationSettings,
+    nativeBannerTrusted: boolean,
     reservation?: NativeNotificationReservation
   ): NotificationDispatchResult | Promise<NotificationDispatchResult> => {
     const recordIfDelivered = (result: NotificationDispatchResult): NotificationDispatchResult => {
       if (result.delivered && reservation?.isCurrent() === false) {
         return { delivered: false, reason: 'already-read' }
       }
-      if (result.delivered) {
-        deps.recordAnnounced?.(request)
+      if (!result.delivered) {
+        return result
       }
-      return result
+      deps.recordAnnounced?.(request)
+      return nativeBannerTrusted ? { ...result, nativeBannerTrusted: true } : result
     }
-    const result = deps.deliverNative(request, options, settings)
+    // Untrusted banners stay silent so the renderer's fallback sound is the only one heard.
+    const bannerOptions =
+      nativeBannerTrusted && !request.reconnectCoalesced ? options : { ...options, silent: true }
+    const result = deps.deliverNative(request, bannerOptions, settings)
     return result instanceof Promise ? result.then(recordIfDelivered) : recordIfDelivered(result)
   }
 
@@ -186,27 +194,49 @@ export function createNotificationDeliveryService(
         }
       }
 
+      const requestDockAttention = () => {
+        if (settings.dockAttention && !request.reconnectCoalesced) {
+          deps.requestDockAttention()
+        }
+      }
+
       if (!deps.isNotificationSupported()) {
+        requestDockAttention()
         return { delivered: false, reason: 'not-supported' }
       }
 
       const reservation = deps.reserveNative?.(request)
-      const deliverNative = () =>
-        deliverNativeAndRecord(request, notificationOptions, settings, reservation)
+      const deliverNative = (nativeBannerTrusted: boolean) => {
+        requestDockAttention()
+        return deliverNativeAndRecord(
+          request,
+          notificationOptions,
+          settings,
+          nativeBannerTrusted,
+          reservation
+        )
+      }
       try {
         // macOS swallows denied/undecided notifications; allow the renderer fallback instead.
         const result =
           deps.platform !== 'darwin'
-            ? deliverNative()
-            : deps.readAuthorizationStatus().then((authorization) => {
+            ? deliverNative(true)
+            : deps.readAuthorizationStatus().then(async (authorization) => {
                 if (deps.wasRead?.(request) || reservation?.isCurrent() === false) {
                   return { delivered: false, reason: 'already-read' } as const
                 }
                 if (authorization === 'denied' || authorization === 'not-determined') {
                   deps.recordDeliveryOutcome('failed')
+                  requestDockAttention()
                   return { delivered: false, reason: 'blocked-by-system' } as const
                 }
-                return deliverNative()
+                // An observed rejection outweighs an unreadable status, but a later delivered banner can still clear it.
+                const blocked =
+                  authorization !== 'authorized' && deps.readLastDeliveryOutcome() === 'failed'
+                const delivered = await deliverNative(authorization === 'authorized')
+                return blocked && delivered.delivered
+                  ? ({ delivered: false, reason: 'blocked-by-system' } as const)
+                  : delivered
               })
         if (result instanceof Promise) {
           return result.finally(() => reservation?.release())

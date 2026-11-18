@@ -72,6 +72,8 @@ export function deliverNativeNotification(
     release()
   }
   notification.on('failed', failedHandler)
+  // A shown banner proves macOS delivers again, clearing an earlier 'failed'.
+  notification.once('show', () => recordNotificationDeliveryOutcome('delivered'))
 
   const worktreeId = args.worktreeId
   const paneTarget = args.paneKey ? parsePaneKey(args.paneKey) : null
@@ -128,7 +130,6 @@ export function deliverNativeNotification(
         release()
         return { delivered: false, reason: 'not-displayed' }
       }
-      recordNotificationDeliveryOutcome('delivered')
       return { delivered: true }
     })
   }

@@ -1976,7 +1976,8 @@
       "blocked": {
         "notification": {
           "fallback": {
-            "de50bef680": "macOS is blocking Topo notifications"
+            "bannersBlocked": "macOS is blocking Topo's banners",
+            "soundAndDockInstead": "Topo will alert you with sound and the Dock instead."
           }
         }
       },
@@ -8891,7 +8892,11 @@
           "6e6df3a09a": "Choose Custom File",
           "76e02467b8": "Change Custom File",
           "63fc5ec9d2": "Agent Needs Input",
-          "e1b1724793": "A coding agent asks for permission or has a question."
+          "e1b1724793": "A coding agent asks for permission or has a question.",
+          "dockAttentionMac": "Bounce Dock Icon",
+          "dockAttentionWindow": "Flash Taskbar or Window",
+          "dockAttentionMacDescription": "Bounce the Dock icon when an agent finishes or needs you, even if macOS blocks banners.",
+          "dockAttentionWindowDescription": "Flash the taskbar icon or window when an agent finishes or needs you."
         },
         "OpenAiTranscriptionKeyDialog": {
           "fa83512e48": "Save Key",
@@ -11185,7 +11190,13 @@
             "c9b2b656e0": "Notify when a coding agent asks for permission or has a question.",
             "b8bf5471d1": "permission",
             "5b9dafd570": "question",
-            "009548060d": "input"
+            "009548060d": "input",
+            "dockAttention": "Dock and Taskbar Attention",
+            "dockAttentionDescription": "Bounce the Dock icon on macOS, or flash the taskbar on Windows and Linux, when an agent finishes or needs you.",
+            "dock": "dock",
+            "bounce": "bounce",
+            "taskbar": "taskbar",
+            "flash": "flash"
           }
         },
         "orchestration": {

@@ -1257,13 +1257,6 @@
         "projectRootRegistrationFailed": "在运行时上注册环境模板创建的项目根目录失败",
         "provisionedRootRequiresSsh": "预配根配方当前需要直接 SSH 连接。"
       },
-      "blocked": {
-        "notification": {
-          "fallback": {
-            "de50bef680": "macOS 正在阻止 Topo 通知"
-          }
-        }
-      },
       "linear": {
         "usage": {
           "examples": {
