@@ -13,7 +13,7 @@ const UNITS: [RegExp, SizeClass, number][] = [
   [/^(ml|mililitros?)$/, 'volume', 1],
   [/^(l|lt|lts|litros?)$/, 'volume', 1000],
   [
-    /^(caps?|capsulas?|capsules?|tabs?|tabletas?|tablets?|softgels?|gomitas?|gummies|sobres?|piezas?|pzas?|pz|porciones|servings|unidades|un)$/,
+    /^(caps?|capsulas?|caspulas?|capsules?|tabs?|tabletas?|tablets?|softgels?|gomitas?|gummies|gels?|geles|sobres?|piezas?|pzas?|pz|porciones|servicios|servings|unidades|un)$/,
     'pieces',
     1
   ]

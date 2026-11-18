@@ -27,3 +27,9 @@ test('another size of the same product is flagged, rounding is not', () => {
   assert.equal(sizeMismatch(savedSize('fitmingo 1.02 kg', null), 'Fitmingo | 1020 g'), null)
   assert.equal(sizeMismatch(savedSize('mct oil', null), 'MCT Oil 500 ml'), null)
 })
+
+test('reads gels, servings and the catalog typo «cáspulas»', () => {
+  assert.deepEqual(parseSizes('Maurten Gel 100 Caf 100 12 gels'), [{ kind: 'pieces', value: 12 }])
+  assert.deepEqual(parseSizes('Electrolitos De 60 Servicios'), [{ kind: 'pieces', value: 60 }])
+  assert.deepEqual(parseSizes('150 cáspulas'), [{ kind: 'pieces', value: 150 }])
+})

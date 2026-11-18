@@ -143,4 +143,5 @@ export const SEARCH_RESULTS_EXPRESSION = `JSON.stringify([...document.querySelec
     seller: ((card.querySelector('.poly-component__seller') || {}).textContent || '').trim().replace(/^Por /, '') || null,
     imageUrl: (() => { const img = card.querySelector('img'); return img ? (img.getAttribute('data-src') || img.currentSrc || img.src || null) : null })()
   };
-}).filter((result) => result.url && result.title))`
+// Sponsored results link to a click tracker, not to the product: never a link to keep.
+}).filter((result) => result.url && result.title && !/^https:\\/\\/click\\d*\\.mercadolibre\\./.test(result.url)))`
