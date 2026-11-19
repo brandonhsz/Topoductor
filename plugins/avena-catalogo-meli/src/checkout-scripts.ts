@@ -127,3 +127,30 @@ export const PAGE_PATH_EXPRESSION = 'JSON.stringify({ path: location.pathname })
 
 export const isVerificationPath = (path: string): boolean =>
   /captcha|account-verification|\/login|\/security/.test(path)
+
+/** Which way to buy a listing offers, and how many products the account cart already holds. */
+export const PRODUCT_ACTIONS_EXPRESSION = `JSON.stringify((() => {${HELPERS}
+  const cart = document.querySelector('a.nav-cart');
+  const count = Number(((cart && cart.getAttribute('aria-label')) || '').match(/\\d+/)?.[0] || 0);
+  return {
+    buyNow: !!byText(/^comprar ahora$/),
+    addToCart: !!byText(/^agregar al carrito$/),
+    cartCount: count
+  };
+})())`
+
+export const ADD_TO_CART_EXPRESSION = `(async () => {${HELPERS}
+  const add = byText(/^agregar al carrito$/);
+  if (!add) return JSON.stringify({ ok: false, message: 'Ya no está «Agregar al carrito»' });
+  add.click();
+  return JSON.stringify({ ok: true });
+})()`
+
+export const CART_URL = 'https://www.mercadolibre.com.mx/gz/cart/v2'
+
+export const CART_CONTINUE_EXPRESSION = `(async () => {${HELPERS}
+  const next = byText(/^continuar compra$/);
+  if (!next) return JSON.stringify({ ok: false, message: 'El carrito no muestra «Continuar compra»' });
+  next.click();
+  return JSON.stringify({ ok: true });
+})()`

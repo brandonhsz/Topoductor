@@ -189,3 +189,22 @@ test("the review must show the order's postal code and street before confirming"
   assert.equal(showsAddress('Enviar a Av. Patria 1200, CP 45110, Zapopan', ADDRESS), true)
   assert.equal(showsAddress('Enviar a Calle Falsa 123, CP 55797', ADDRESS), false)
 })
+
+test('a test checkout that stops ready on purpose counts as ready for review', async () => {
+  const { source, reports } = queue([order([{ productId: 'c', quantity: 1 }], 2000)])
+  const browser = checkout(() => ({
+    stage: 'domicilio',
+    total: null,
+    orderNumber: null,
+    message: 'Domicilio llenado',
+    testPassed: true
+  }))
+  const run = await processOrders({
+    source,
+    products: new Map([['c', product('c', 299)]]),
+    checkout: browser.client,
+    mode: 'prueba'
+  })
+  assert.equal(run.review, 1)
+  assert.equal(reports.at(-1)?.status, 'en_revision')
+})

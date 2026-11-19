@@ -1,6 +1,6 @@
 // Processes pending purchase orders: checks each against its cap with the prices read, buys item
 // by item through the referrals, and reports what happened to the order source.
-import type { CheckoutClient } from './checkout-browser'
+import type { CheckoutClient, CheckoutResult } from './checkout-browser'
 import type { Product } from './protocol'
 import type { OrderItemResult, OrderStatus, PurchaseMode, PurchaseOrder } from './schedule-types'
 
@@ -81,7 +81,7 @@ async function processOrder(
         mode,
         maxTotal: remaining
       })
-      .catch((error: unknown) => ({
+      .catch((error: unknown): CheckoutResult => ({
         stage: 'error',
         total: null,
         orderNumber: null,
@@ -90,7 +90,7 @@ async function processOrder(
     results.push({ productId: product.id, ...result })
     if (result.stage === 'comprado') {
       remaining -= result.total ?? 0
-    } else if (!(mode === 'prueba' && result.stage === 'resumen')) {
+    } else if (!(mode === 'prueba' && (result.stage === 'resumen' || result.testPassed === true))) {
       await source.report(order.id, 'detenido', results)
       return 'detenido'
     }

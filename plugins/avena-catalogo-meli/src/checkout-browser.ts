@@ -1,7 +1,11 @@
 // One MercadoLibre purchase of one product, step by step in Topo's browser. Every step reads the
 // page first and stops with the step it reached when anything is not as expected.
 import {
+  ADD_TO_CART_EXPRESSION,
   addressFormExpression,
+  CART_CONTINUE_EXPRESSION,
+  CART_URL,
+  PRODUCT_ACTIONS_EXPRESSION,
   BUY_NOW_EXPRESSION,
   CHECKOUT_STATE_EXPRESSION,
   CONFIRM_EXPRESSION,
@@ -30,6 +34,8 @@ export type CheckoutResult = {
   total: number | null
   orderNumber: string | null
   message: string
+  /** Test mode stopped where it should: everything up to buying worked. */
+  testPassed?: boolean
 }
 
 export type CheckoutClient = { checkout(request: CheckoutRequest): Promise<CheckoutResult> }
@@ -123,6 +129,65 @@ export class CheckoutBrowser implements CheckoutClient {
       .catch(() => undefined)
   }
 
+  /**
+   * From the product page into the checkout: «Comprar ahora» when the listing has it, otherwise
+   * the cart, but only an empty one, so other products in it are never bought along.
+   * `null` when the checkout is open; a result when the purchase stops here.
+   */
+  private async startPurchase(
+    page: string,
+    request: CheckoutRequest
+  ): Promise<CheckoutResult | null> {
+    const stop = (message: string, stage = 'producto'): CheckoutResult => ({
+      stage,
+      total: null,
+      orderNumber: null,
+      message
+    })
+    const quantity = await this.step(page, quantityExpression(request.quantity))
+    if (field(quantity, 'ok') !== true) {
+      return stop(text(field(quantity, 'message')) ?? 'No se pudo elegir la cantidad')
+    }
+    const actions = await this.step(page, PRODUCT_ACTIONS_EXPRESSION)
+    if (field(actions, 'buyNow') === true) {
+      const bought = await this.step(page, BUY_NOW_EXPRESSION)
+      return field(bought, 'ok') === true
+        ? null
+        : stop(text(field(bought, 'message')) ?? 'No se pudo usar «Comprar ahora»')
+    }
+    if (field(actions, 'addToCart') !== true) {
+      return stop(
+        'La publicación no tiene «Comprar ahora» ni «Agregar al carrito» (sin stock o pausada)'
+      )
+    }
+    const inCart = amount(field(actions, 'cartCount')) ?? 0
+    if (inCart > 0) {
+      return stop(
+        `Solo se vende por carrito y el carrito de la cuenta tiene ${inCart} productos: vacíalo para que no se compren junto con el pedido`,
+        'carrito'
+      )
+    }
+    if (request.mode === 'prueba') {
+      return {
+        ...stop(
+          'Solo se vende por carrito y el carrito está vacío: en modo real se agregaría y seguiría al pago (modo prueba: no se agregó)',
+          'carrito'
+        ),
+        testPassed: true
+      }
+    }
+    const added = await this.step(page, ADD_TO_CART_EXPRESSION)
+    if (field(added, 'ok') !== true) {
+      return stop(text(field(added, 'message')) ?? 'No se pudo agregar al carrito')
+    }
+    await pause(this.stepPauseMs)
+    await this.goto(page, CART_URL)
+    const next = await this.step(page, CART_CONTINUE_EXPRESSION)
+    return field(next, 'ok') === true
+      ? null
+      : stop(text(field(next, 'message')) ?? 'No se pudo continuar desde el carrito', 'carrito')
+  }
+
   async checkout(request: CheckoutRequest): Promise<CheckoutResult> {
     const stop = (stage: string, message: string, total: number | null = null): CheckoutResult => ({
       stage,
@@ -153,11 +218,9 @@ export class CheckoutBrowser implements CheckoutClient {
     if (!(await this.passVerification(tab, 'al abrir el producto'))) {
       return unsolved()
     }
-    for (const expression of [quantityExpression(request.quantity), BUY_NOW_EXPRESSION]) {
-      const done = await this.step(page, expression)
-      if (field(done, 'ok') !== true) {
-        return stop('producto', text(field(done, 'message')) ?? 'No se pudo preparar la compra')
-      }
+    const ready = await this.startPurchase(page, request)
+    if (ready) {
+      return ready
     }
     await pause(this.stepPauseMs)
     let addressDone = false
@@ -191,7 +254,10 @@ export class CheckoutBrowser implements CheckoutClient {
           return stop(step, text(field(filled, 'message')) ?? 'No se pudo llenar el domicilio')
         }
         if (request.mode === 'prueba') {
-          return stop(step, 'Domicilio llenado (modo prueba: no se guardó en la cuenta)')
+          return {
+            ...stop(step, 'Domicilio llenado (modo prueba: no se guardó en la cuenta)'),
+            testPassed: true
+          }
         }
         await this.step(page, SAVE_ADDRESS_EXPRESSION)
         addressDone = true
