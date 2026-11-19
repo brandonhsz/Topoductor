@@ -169,8 +169,8 @@ function AuditStatus() {
   return current.blocked ? (
     <Callout tone="danger" title="La lectura se detuvo">
       <Text>
-        MercadoLibre pidió iniciar sesión o verificar la cuenta. Hazlo en el navegador de Topo y
-        vuelve a leer: lo ya leído se conservó ({current.done}/{current.total}).
+        {current.reason ?? 'MercadoLibre pidió verificación en el navegador de Topo.'} Vuelve a leer
+        cuando esté resuelto: lo ya leído se conservó ({current.done}/{current.total}).
       </Text>
     </Callout>
   ) : (

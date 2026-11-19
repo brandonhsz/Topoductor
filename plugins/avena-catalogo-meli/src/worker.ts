@@ -193,7 +193,8 @@ export function activateWith(rawOrca: OrcaWorkerApi, deps: WorkerDeps): void {
             running: false,
             done,
             total: urls.length,
-            blocked: true
+            blocked: true,
+            reason: message(error)
           })
         }
       )

@@ -159,7 +159,14 @@ export type ConnectionStatus = {
   config: CatalogConfig
 }
 
-export type AuditProgress = { running: boolean; done: number; total: number; blocked: boolean }
+export type AuditProgress = {
+  running: boolean
+  done: number
+  total: number
+  blocked: boolean
+  /** Why the read stopped, in words a person can act on. */
+  reason?: string
+}
 
 export type ReferralProgress = {
   running: boolean

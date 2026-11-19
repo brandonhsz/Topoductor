@@ -84,3 +84,49 @@ test('with a chosen workspace and no tab there, opens one in that workspace', as
   const create = calls.find((args) => args[0] === 'tab' && args[1] === 'create')
   assert.deepEqual(create?.slice(-2), ['--worktree', 'id:r::/work/a'])
 })
+
+test('reading prices needs no affiliate session: any MercadoLibre page will do', async () => {
+  const calls: string[][] = []
+  const browser = new MeliBrowser(async (args) => {
+    calls.push(args)
+    if (args.slice(0, 2).join(' ') === 'tab list') {
+      return { tabs: [{ browserPageId: 'p', url: 'https://www.mercadolibre.com.mx/l/afiliados' }] }
+    }
+    if (args[0] === 'eval') {
+      return {
+        result: JSON.stringify([
+          { url: 'https://meli.la/a', ok: true, price: 900, title: 'Vitatú', path: '/social/al1' }
+        ])
+      }
+    }
+    return {}
+  })
+  const read: unknown[] = []
+  await browser.readCards(['https://meli.la/a'], async (batch) => {
+    read.push(...batch)
+  })
+  assert.equal(read.length, 1)
+  assert.ok(
+    !calls.some((args) => args.includes('https://www.mercadolibre.com.mx/afiliados/linkbuilder'))
+  )
+  assert.equal(
+    calls.filter((args) => args[0] === 'eval').length,
+    1,
+    'no session check before reading'
+  )
+})
+
+test('from a page outside www.mercadolibre.com.mx, reading starts on the home page', async () => {
+  const gotos: string[] = []
+  const browser = new MeliBrowser(async (args) => {
+    if (args.slice(0, 2).join(' ') === 'tab list') {
+      return { tabs: [{ browserPageId: 'p', url: 'https://listado.mercadolibre.com.mx/omega' }] }
+    }
+    if (args[0] === 'goto') {
+      gotos.push(args[4] ?? '')
+    }
+    return args[0] === 'eval' ? { result: '[]' } : {}
+  })
+  await browser.readCards(['https://meli.la/a'], async () => undefined)
+  assert.deepEqual(gotos, ['https://www.mercadolibre.com.mx/'])
+})

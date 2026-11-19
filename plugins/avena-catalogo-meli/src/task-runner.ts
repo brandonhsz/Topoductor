@@ -9,6 +9,11 @@ export type TaskOutcome = { ok: boolean; summary: string }
 const LONG = 60 * 60_000
 const finished = (payload: unknown) => field(payload, 'running') === false
 
+const stopReason = (end: unknown): string => {
+  const reason = field(end, 'reason')
+  return typeof reason === 'string' && reason ? reason : 'MercadoLibre pidió verificación'
+}
+
 function result(answer: unknown): TaskOutcome {
   return { ok: field(answer, 'ok') === true, summary: String(field(answer, 'message') ?? '') }
 }
@@ -41,7 +46,7 @@ export function createTaskRunner(options: {
         }
         return {
           ok: field(end, 'blocked') !== true,
-          summary: `${String(field(end, 'done'))}/${String(field(end, 'total'))} links leídos${field(end, 'blocked') === true ? '; MercadoLibre pidió verificación' : ''}`
+          summary: `${String(field(end, 'done'))}/${String(field(end, 'total'))} links leídos${field(end, 'blocked') === true ? `; ${stopReason(end)}` : ''}`
         }
       }
       case 'updatePrices': {
@@ -54,7 +59,7 @@ export function createTaskRunner(options: {
         if (field(read, 'blocked') === true) {
           return {
             ok: false,
-            summary: `${readSummary}; MercadoLibre pidió verificación, no se aplicó nada`
+            summary: `${readSummary}; ${stopReason(read)}. No se aplicó nada`
           }
         }
         const ids = await call('catalog.ids', { scope: 'priceUpdates' })

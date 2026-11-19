@@ -39,6 +39,8 @@ export class MeliSessionError extends Error {}
 
 const READ_BATCH = 24
 
+const HOME_URL = 'https://www.mercadolibre.com.mx/'
+
 export function cliRunner(cliPath: string): CliRunner {
   return (args, timeoutMs) =>
     new Promise((resolve, reject) => {
@@ -168,12 +170,27 @@ export class MeliBrowser {
     return tab.browserPageId
   }
 
+  /**
+   * Any page of www.mercadolibre.com.mx: the meli.la iframes need that origin, not an account.
+   * Prices are public, so reading them works logged out or with any account.
+   */
+  private async openMeliPage(): Promise<string> {
+    const tab = await this.findTab()
+    if (!tab.url.startsWith(HOME_URL)) {
+      await this.run(['goto', '--page', tab.browserPageId, '--url', HOME_URL], 45_000)
+      await this.run(['wait', '--page', tab.browserPageId, '--load', 'load'], 30_000).catch(
+        () => undefined
+      )
+    }
+    return tab.browserPageId
+  }
+
   /** Reads every meli.la, calling `onBatch` as each batch lands so progress survives a stop. */
   async readCards(
     urls: readonly string[],
     onBatch: (batch: CardReading[]) => Promise<void>
   ): Promise<void> {
-    const pageId = await this.openLinkBuilder()
+    const pageId = await this.openMeliPage()
     for (let index = 0; index < urls.length; index += READ_BATCH) {
       const raw = await this.evaluate(
         pageId,
@@ -220,7 +237,7 @@ export class MeliBrowser {
   async canonicalUrl(
     url: string
   ): Promise<{ status: number; canonical: string | null; unavailable: boolean }> {
-    const pageId = await this.openLinkBuilder()
+    const pageId = await this.openMeliPage()
     const page = await this.evaluate(pageId, canonicalUrlExpression(url))
     return {
       status: amount(field(page, 'status')) ?? 0,
