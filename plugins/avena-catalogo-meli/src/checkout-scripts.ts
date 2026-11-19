@@ -2,12 +2,24 @@
 // string describing what it saw or did, so the worker decides the next step from facts.
 import type { OrderAddress } from './schedule-types'
 
+/**
+ * Reads the last amount of a text: MercadoLibre writes «$ 1.691 , 75 $ 913 , 12» (struck price,
+ * then the one paid), with cents apart and «,» or «.» as thousands separator.
+ */
+export const MONEY_HELPER = `const money = (text) => {
+    const all = [...(text || '').replace(/\\s/g, '').matchAll(/\\$([\\d.,]*\\d)/g)].map((m) => m[1]);
+    if (all.length === 0) return null;
+    const last = all[all.length - 1];
+    const cents = /^(.*)[.,](\\d{2})$/.exec(last);
+    return Number(cents ? cents[1].replace(/[.,]/g, '') + '.' + cents[2] : last.replace(/[.,]/g, ''));
+  }`
+
 const HELPERS = `
   const norm = (t) => (t || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/\\s+/g, ' ').trim();
   const visible = (el) => !!el && el.getClientRects().length > 0 && !el.disabled;
   const buttons = () => [...document.querySelectorAll('button, a[role=button], a.andes-button, input[type=submit]')].filter(visible);
   const byText = (re) => buttons().find((b) => re.test(norm(b.textContent || b.value)));
-  const money = (text) => { const m = (text || '').replace(/\\s/g, '').match(/\\$([\\d.,]+)/); return m ? Number(m[1].replace(/,/g, '')) : null };
+  ${MONEY_HELPER}
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 `
 
