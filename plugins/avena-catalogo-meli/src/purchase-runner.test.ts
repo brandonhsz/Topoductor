@@ -115,7 +115,8 @@ test('test mode walks every item to the review and buys nothing', async () => {
     stage: 'resumen',
     total: 300,
     orderNumber: null,
-    message: `listo ${request.quantity}`
+    message: `listo ${request.quantity}`,
+    testPassed: true
   }))
   const run = await processOrders({
     source,
@@ -201,4 +202,22 @@ test('a test checkout that stops ready on purpose counts as ready for review', a
   })
   assert.equal(run.review, 1)
   assert.equal(reports.at(-1)?.status, 'en_revision')
+})
+
+test('a test checkout stopped by the cap is stopped, not ready for review', async () => {
+  const { source, reports } = queue([order([{ productId: 'c', quantity: 1 }], 400)])
+  const browser = checkout(() => ({
+    stage: 'resumen',
+    total: 450,
+    orderNumber: null,
+    message: 'El total $450 supera el tope $400'
+  }))
+  const run = await processOrders({
+    source,
+    products: new Map([['c', product('c', 299)]]),
+    checkout: browser.client,
+    mode: 'prueba'
+  })
+  assert.equal(run.stopped, 1)
+  assert.equal(reports.at(-1)?.status, 'detenido')
 })

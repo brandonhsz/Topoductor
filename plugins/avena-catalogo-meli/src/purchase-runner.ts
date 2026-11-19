@@ -90,7 +90,7 @@ async function processOrder(
     results.push({ productId: product.id, ...result })
     if (result.stage === 'comprado') {
       remaining -= result.total ?? 0
-    } else if (!(mode === 'prueba' && (result.stage === 'resumen' || result.testPassed === true))) {
+    } else if (!(mode === 'prueba' && result.testPassed === true)) {
       await source.report(order.id, 'detenido', results)
       return 'detenido'
     }
