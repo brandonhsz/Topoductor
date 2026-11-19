@@ -7,6 +7,8 @@ import {
   CONFIRM_EXPRESSION,
   CONTINUE_EXPRESSION,
   FEATURED_PRODUCT_EXPRESSION,
+  isVerificationPath,
+  PAGE_PATH_EXPRESSION,
   quantityExpression,
   SAVE_ADDRESS_EXPRESSION
 } from './checkout-scripts'
@@ -83,6 +85,13 @@ export class CheckoutBrowser implements CheckoutClient {
       return stop('referido', 'El referido no muestra el producto (link roto)')
     }
     await this.goto(page, productUrl)
+    const path = text(field(await this.step(page, PAGE_PATH_EXPRESSION), 'path')) ?? ''
+    if (isVerificationPath(path)) {
+      return stop(
+        'verificacion',
+        'MercadoLibre pidió verificación (captcha): complétala en el navegador de Topo y reintenta'
+      )
+    }
     for (const expression of [quantityExpression(request.quantity), BUY_NOW_EXPRESSION]) {
       const done = await this.step(page, expression)
       if (field(done, 'ok') !== true) {

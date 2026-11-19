@@ -99,7 +99,7 @@ export const CHECKOUT_STATE_EXPRESSION = `JSON.stringify((() => {${HELPERS}
   const totalLine = [...document.querySelectorAll('*')].reverse().find((el) => el.children.length < 4 && /^(total|pagas)\\b/.test(norm(el.textContent)) && /\\$/.test(el.textContent));
   const orderNumber = (text.match(/(?:compra|orden|pedido)[^0-9]{0,30}#?\\s?(\\d{8,})/) || [])[1] || null;
   let step = 'desconocido';
-  if (/account-verification|login|security/.test(path)) step = 'verificacion';
+  if (/captcha|account-verification|login|security/.test(path)) step = 'verificacion';
   else if (/congrats|felicidades|ya tenemos tu compra|compra realizada/.test(path + ' ' + text)) step = 'comprado';
   else if (/addresses/.test(path)) step = 'domicilio';
   else if (confirm) step = 'resumen';
@@ -121,3 +121,9 @@ export const CONFIRM_EXPRESSION = `(async () => {${HELPERS}
   confirm.click();
   return JSON.stringify({ ok: true });
 })()`
+
+/** Where the tab is: MercadoLibre answers a suspicious visit with a captcha wall. */
+export const PAGE_PATH_EXPRESSION = 'JSON.stringify({ path: location.pathname })'
+
+export const isVerificationPath = (path: string): boolean =>
+  /captcha|account-verification|\/login|\/security/.test(path)
