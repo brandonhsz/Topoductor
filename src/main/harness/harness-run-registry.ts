@@ -2,13 +2,15 @@ import type { HarnessSubagentResult } from '../../shared/harness/harness-subagen
 import type {
   HarnessChatCompletion,
   HarnessDecisionAnswer,
-  HarnessRun
+  HarnessRun,
+  HarnessRunSummary
 } from '../../shared/harness/harness-run-types'
 
 type HarnessCaller = { sessionId: string | null; worktreeId: string | null }
 
 /** What RPC methods, hooks and launches need from the run service, without importing the engine. */
 export type HarnessChatRuns = {
+  list: () => Promise<HarnessRunSummary[]>
   findChatRun: (caller: HarnessCaller) => Promise<HarnessRun | null>
   bindChatSession: (runId: string, sessionId: string) => void
   completeChat: (runId: string, completion: HarnessChatCompletion) => boolean

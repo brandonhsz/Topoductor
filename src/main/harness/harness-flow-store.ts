@@ -14,6 +14,7 @@ import {
 } from '../../shared/harness/harness-example-flow'
 import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
 import { writeSecureJsonFile } from '../../shared/secure-storage/secure-file'
+import { createHarnessSerialQueue } from './harness-serial-queue'
 import { deleteHarnessFlowVersions, getHarnessFlowVersion } from './harness-flow-version-store'
 
 type FlowsFile = {
@@ -63,14 +64,7 @@ async function readFlowsFile(): Promise<FlowsFile | null> {
   }
 }
 
-let queue: Promise<unknown> = Promise.resolve()
-
-/** Serializes read-modify-write so two saves never drop each other's flow. */
-function serialized<T>(task: () => Promise<T>): Promise<T> {
-  const next = queue.then(task, task)
-  queue = next.catch(() => {})
-  return next
-}
+const serialized = createHarnessSerialQueue()
 
 /** Seeds the example once, and upgrades it later only when the person never edited it. */
 function withCurrentExample(file: FlowsFile): FlowsFile | null {

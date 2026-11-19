@@ -19,6 +19,7 @@ import {
   type HarnessChatRuns
 } from '../../../../harness/harness-run-registry'
 import type { TopoRuntimeService } from '../../../topo-runtime'
+import { callerWorkspace } from './harness-caller-workspace'
 
 const DEFAULT_WAIT_MS = 5 * 60 * 1000
 
@@ -30,28 +31,12 @@ function requireService(): HarnessChatRuns {
   return service
 }
 
-/** Chats carry only a session id; their workspace comes from the session record. */
-async function sessionWorkspace(
-  runtime: TopoRuntimeService,
-  sessionId: string | undefined
-): Promise<string | null> {
-  if (!sessionId) {
-    return null
-  }
-  try {
-    const store = await runtime.openAgentSessionRecordStore()
-    return store.getConversation(sessionId)?.location.workspaceId ?? null
-  } catch {
-    return null
-  }
-}
-
 async function callerRun(
   runtime: TopoRuntimeService,
   params: { sessionId?: string; worktreeId?: string }
 ): Promise<{ service: HarnessChatRuns; run: HarnessRun }> {
   const service = requireService()
-  const worktreeId = params.worktreeId ?? (await sessionWorkspace(runtime, params.sessionId))
+  const worktreeId = await callerWorkspace(runtime, params)
   const run = await service.findChatRun({ sessionId: params.sessionId ?? null, worktreeId })
   if (!run) {
     throw new Error('harness_no_run: no chat-driven Harness flow is running for this workspace')
@@ -76,7 +61,7 @@ export const HARNESS_METHODS = [
     permission: 'workspace',
     params: HarnessGuardParams,
     handler: async (params, { runtime }): Promise<{ reason: string | null }> => {
-      const worktreeId = params.worktreeId ?? (await sessionWorkspace(runtime, params.sessionId))
+      const worktreeId = await callerWorkspace(runtime, params)
       return {
         reason: harnessEditDenial(params.tool, { sessionId: params.sessionId ?? null, worktreeId })
       }

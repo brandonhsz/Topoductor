@@ -9,9 +9,17 @@ import {
 } from '../../harness/harness-agent-launcher'
 import {
   deleteHarnessFlow,
+  getHarnessFlow,
   listHarnessFlows,
+  onHarnessFlowsChanged,
+  restoreHarnessFlowVersion,
   saveHarnessFlow
 } from '../../harness/harness-flow-store'
+import {
+  getHarnessFlowVersion,
+  listHarnessFlowVersions,
+  recordHarnessFlowVersion
+} from '../../harness/harness-flow-version-store'
 import { HarnessRunService } from '../../harness/harness-run-service'
 import { setHarnessRunService } from '../../harness/harness-run-registry'
 import type { TopoRuntimeService } from '../../runtime/topo-runtime'
@@ -90,15 +98,30 @@ export function registerHarnessHandlers(runtime: TopoRuntimeService): void {
   ipcMain.handle('harness:listFlows', (_event, repoId: unknown) =>
     listHarnessFlows(typeof repoId === 'string' && repoId ? repoId : null)
   )
-  ipcMain.handle('harness:saveFlow', async (_event, flow: unknown) => {
-    const saved = await saveHarnessFlow(flow)
-    broadcast('harness:flowsChanged')
-    return saved
+  // The store is the only source of change events, so agent edits over RPC reach the editor too.
+  onHarnessFlowsChanged((change) => broadcast('harness:flowsChanged', change))
+  ipcMain.handle('harness:saveFlow', (_event, flow: unknown) => saveHarnessFlow(flow))
+  ipcMain.handle('harness:deleteFlow', (_event, flowId: unknown) => deleteHarnessFlow(id(flowId)))
+  ipcMain.handle('harness:listFlowVersions', (_event, flowId: unknown) =>
+    listHarnessFlowVersions(id(flowId))
+  )
+  ipcMain.handle('harness:getFlowVersion', (_event, flowId: unknown, versionId: unknown) =>
+    getHarnessFlowVersion(id(flowId), id(versionId))
+  )
+  ipcMain.handle('harness:saveFlowVersion', async (_event, flowId: unknown, summary: unknown) => {
+    const flow = await getHarnessFlow(id(flowId))
+    if (!flow) {
+      throw new Error(`harness_flow_not_found: ${String(flowId)}`)
+    }
+    return recordHarnessFlowVersion({
+      flow,
+      author: 'person',
+      summary: typeof summary === 'string' ? summary : ''
+    })
   })
-  ipcMain.handle('harness:deleteFlow', async (_event, flowId: unknown) => {
-    await deleteHarnessFlow(id(flowId))
-    broadcast('harness:flowsChanged')
-  })
+  ipcMain.handle('harness:restoreFlowVersion', (_event, flowId: unknown, versionId: unknown) =>
+    restoreHarnessFlowVersion(id(flowId), id(versionId))
+  )
   ipcMain.handle('harness:listRuns', () => runs.list())
   ipcMain.handle('harness:getRun', (_event, runId: unknown) => runs.get(id(runId)))
   ipcMain.handle('harness:startRun', (_event, request: unknown) => {

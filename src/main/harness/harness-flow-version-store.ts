@@ -12,6 +12,7 @@ import {
 } from '../../shared/harness/harness-flow-version-types'
 import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
 import { writeSecureJsonFile } from '../../shared/secure-storage/secure-file'
+import { createHarnessSerialQueue } from './harness-serial-queue'
 
 export const MAX_VERSIONS_PER_FLOW = 200
 
@@ -83,14 +84,7 @@ function withoutFlow({ flow: _flow, ...summary }: HarnessFlowVersion): HarnessFl
   return summary
 }
 
-let queue: Promise<unknown> = Promise.resolve()
-
-/** Serializes read-modify-write so two recordings never drop each other's version. */
-function serialized<T>(task: () => Promise<T>): Promise<T> {
-  const next = queue.then(task, task)
-  queue = next.catch(() => {})
-  return next
-}
+const serialized = createHarnessSerialQueue()
 
 /** Newest first. */
 export function listHarnessFlowVersions(flowId: string): Promise<HarnessFlowVersionSummary[]> {

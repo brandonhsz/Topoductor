@@ -19,7 +19,8 @@ const store = vi.hoisted(() => ({
   saveHarnessFlow: vi.fn<(flow: HarnessFlow, options?: unknown) => Promise<HarnessFlow>>(),
   listHarnessFlowVersions: vi.fn(),
   getHarnessFlowVersion: vi.fn(),
-  recordHarnessFlowVersion: vi.fn<(input: { author: string }) => Promise<unknown>>(),
+  recordHarnessFlowVersion:
+    vi.fn<(input: { flow: HarnessFlow; author: string; summary: string }) => Promise<unknown>>(),
   listRuns: vi.fn()
 }))
 
@@ -85,14 +86,16 @@ function flow(overrides: Partial<HarnessFlow> = {}): HarnessFlow {
 const repoA: HarnessFlowScope = { kind: 'repo', repoId: 'repo-a' }
 const callerA = { worktreeId: 'repo-a::/work/a' }
 
-// oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: harness.flows.* only reads openAgentSessionRecordStore from the runtime.
+const runtimeStub = {
+  openAgentSessionRecordStore: async () => ({
+    getConversation: (id: string) =>
+      id === 'session-b' ? { location: { workspaceId: 'repo-b::/work/b' } } : null
+  })
+}
+
 const context: RpcContext = {
-  runtime: {
-    openAgentSessionRecordStore: async () => ({
-      getConversation: (id: string) =>
-        id === 'session-b' ? { location: { workspaceId: 'repo-b::/work/b' } } : null
-    })
-  } as unknown as RpcContext['runtime'],
+  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: harness.flows.* only reads openAgentSessionRecordStore from the runtime.
+  runtime: runtimeStub as unknown as RpcContext['runtime'],
   caller: { kind: 'local-cli' }
 }
 
@@ -104,14 +107,15 @@ function method(name: string): RpcMethod {
   return found
 }
 
-// oxlint-disable typescript/consistent-type-assertions -- SAFETY: each handler's declared return type is erased by eraseRpcMethods; these restore it per method name.
 const list = (params: object): Promise<HarnessFlowListItem[]> =>
+  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: eraseRpcMethods erases the handler's declared HarnessFlowListItem[] result.
   method('harness.flows.list').handler(params, context) as Promise<HarnessFlowListItem[]>
 const get = (params: object): Promise<HarnessFlowReading> =>
+  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: eraseRpcMethods erases the handler's declared HarnessFlowReading result.
   method('harness.flows.get').handler(params, context) as Promise<HarnessFlowReading>
 const save = (params: object): Promise<HarnessFlowSaveResult> =>
+  // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: eraseRpcMethods erases the handler's declared HarnessFlowSaveResult result.
   method('harness.flows.save').handler(params, context) as Promise<HarnessFlowSaveResult>
-// oxlint-enable typescript/consistent-type-assertions
 
 function versionOf(content: HarnessFlow): HarnessFlowVersion {
   return {
