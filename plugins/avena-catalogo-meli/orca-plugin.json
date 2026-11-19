@@ -71,6 +71,14 @@
         "type": "string",
         "default": ""
       }
+    ],
+    "statusBarItems": [
+      {
+        "id": "tareas",
+        "text": "Catálogo ML",
+        "icon": "calendar",
+        "tooltip": "Tareas programadas del catálogo de MercadoLibre: mientras el plugin esté activo, corren a su hora."
+      }
     ]
   },
   "capabilities": [
@@ -82,6 +90,9 @@
     },
     {
       "kind": "settings:own"
+    },
+    {
+      "kind": "notifications:show"
     }
   ]
 }

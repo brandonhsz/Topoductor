@@ -63,12 +63,12 @@ export function cliRunner(cliPath: string): CliRunner {
     })
 }
 
-type Tab = { browserPageId: string; url: string }
+export type Tab = { browserPageId: string; url: string }
 
 export class MeliBrowser {
-  constructor(private readonly run: CliRunner) {}
+  constructor(readonly run: CliRunner) {}
 
-  private async findTab(): Promise<Tab> {
+  async findTab(): Promise<Tab> {
     const listed = await this.run(['tab', 'list', '--worktree', 'all'], 20_000)
     const tab = records(field(listed, 'tabs')).find((candidate) =>
       /^https:\/\/[a-z]+\.mercadolibre\.com\.mx\//.test(text(candidate.url) ?? '')
@@ -94,7 +94,7 @@ export class MeliBrowser {
     return { browserPageId: createdId, url: LINKBUILDER_URL }
   }
 
-  private async evaluate(pageId: string, expression: string, timeoutMs = 60_000): Promise<unknown> {
+  async evaluate(pageId: string, expression: string, timeoutMs = 60_000): Promise<unknown> {
     const answer = field(
       await this.run(['eval', '--page', pageId, '--expression', expression], timeoutMs),
       'result'

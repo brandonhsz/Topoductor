@@ -1,4 +1,15 @@
 // The panel <-> worker contract, declared once: src/panel.tsx and src/worker.ts both read it.
+import type {
+  OrderAddress,
+  OrderItem,
+  PurchaseMode,
+  PurchaseOrder,
+  Schedule,
+  ScheduleRun,
+  TaskKind
+} from './schedule-types'
+
+export type SchedulesState = { schedules: Schedule[]; runs: ScheduleRun[]; orders: PurchaseOrder[] }
 
 export type LinkKind = 'referido' | 'directo'
 
@@ -198,6 +209,27 @@ declare module 'orca' {
     'catalog.proposeReplacements': { output: ActionResult }
     /** Generates the referral for `url`, then writes it and its price to the product. */
     'catalog.replaceLink': { input: { id: string; url: string }; output: ActionResult }
+    'schedules.state': { output: SchedulesState }
+    'schedules.save': {
+      input: {
+        id?: string
+        kind: TaskKind
+        days: number[]
+        time: string
+        enabled: boolean
+        mode: PurchaseMode
+      }
+      output: ActionResult
+    }
+    'schedules.remove': { input: { id: string }; output: ActionResult }
+    /** Runs a task now, in the background; its outcome lands in the run history. */
+    'schedules.runNow': { input: { kind: TaskKind; mode: PurchaseMode }; output: ActionResult }
+    /** Adds a purchase order to the mock queue (stand-in for the backend). */
+    'orders.createMock': {
+      input: { address: OrderAddress; items: OrderItem[]; cap: number }
+      output: ActionResult
+    }
+    'orders.retry': { input: { id: string }; output: ActionResult }
     'catalog.applyUrl': { input: { id: string; url: string }; output: ActionResult }
     'catalog.setStock': { input: { id: string; hasStock: boolean }; output: ActionResult }
   }
@@ -206,6 +238,7 @@ declare module 'orca' {
     'audit.progress': AuditProgress
     /** Posted after every write to the local database. */
     'catalog.changed': { at: number }
+    'schedules.changed': { at: number }
     'referrals.progress': ReferralProgress
     'repairs.progress': RepairProgress
   }
