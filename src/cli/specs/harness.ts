@@ -40,6 +40,51 @@ export const HARNESS_COMMAND_SPECS: CommandSpec[] = [
     examples: ['topo harness wait', 'topo harness wait --timeout 600']
   },
   {
+    path: ['harness', 'flow', 'list'],
+    summary: 'List the Harness flows this workspace can use',
+    usage: 'topo harness flow list [--worktree <selector>] [--json]',
+    allowedFlags: [...GLOBAL_FLAGS, 'worktree'],
+    notes: [
+      CALLER_NOTE,
+      'A repo copy of a flow replaces the global one for that repo; only the copy is listed.'
+    ],
+    examples: ['topo harness flow list --json']
+  },
+  {
+    path: ['harness', 'flow', 'show'],
+    summary: 'Read a Harness flow with its diagram, problems and warnings',
+    usage: 'topo harness flow show --flow <id> [--worktree <selector>] [--json]',
+    allowedFlags: [...GLOBAL_FLAGS, 'worktree', 'flow'],
+    notes: [
+      CALLER_NOTE,
+      'Always read the flow with --json before editing it: result.flow is the HarnessFlow to edit and result.flow.updatedAt goes to save --expected-updated-at.',
+      'Tell the person when affectsAllRepos is true (a global flow reaches every repo) or activeRuns > 0 (runs in progress keep their copy and do not change).'
+    ],
+    examples: [
+      'topo harness flow show --flow flow-entrega',
+      'topo harness flow show --flow flow-entrega --json'
+    ]
+  },
+  {
+    path: ['harness', 'flow', 'save'],
+    summary: 'Create or change a Harness flow from a JSON file; every save is a version',
+    usage:
+      'topo harness flow save --file <flow.json> --summary <text> [--expected-updated-at <n>] [--scope global|repo] [--worktree <selector>] [--json]',
+    allowedFlags: [...GLOBAL_FLAGS, 'worktree', 'file', 'summary', 'expected-updated-at', 'scope'],
+    notes: [
+      CALLER_NOTE,
+      '--file holds the whole HarnessFlow as JSON, read on this machine. Start from `show --json` result.flow; omit id to create a new flow.',
+      'Pass --expected-updated-at with the updatedAt you read; if someone changed the flow since, the save fails with harness_flow_conflict: read again, reapply and retry.',
+      '--summary says what changed and why (max 500 chars); the person sees it in the version history and can restore the previous version.',
+      '--scope only applies when creating (default: the caller’s repo, or global outside a repo).',
+      'Runs in progress do not change: they keep the copy they started with. Tell the person when the result reports affectsAllRepos or activeRuns > 0, and fix any problems it lists.'
+    ],
+    examples: [
+      'topo harness flow save --file flow.json --summary "Agrega revisión de seguridad" --expected-updated-at 1763400000000',
+      'topo harness flow save --file new-flow.json --summary "Flujo de soporte" --scope repo'
+    ]
+  },
+  {
     path: ['harness', 'guard'],
     summary: 'PreToolUse hook: deny file edits the current Harness step does not allow',
     usage: 'topo harness guard < hook-payload.json',

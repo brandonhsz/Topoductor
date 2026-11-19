@@ -1,5 +1,6 @@
 // @vitest-environment happy-dom
 
+import '@testing-library/jest-dom/vitest'
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { HarnessFlowVersionSummary } from '../../../../shared/harness/harness-flow-version-types'
@@ -111,9 +112,7 @@ describe('HarnessFlowVersions', () => {
   it('steps from the current version when nothing is previewed', () => {
     const props = renderVersions({ currentVersionId: 'v3', previewVersionId: null })
 
-    expect(
-      (screen.getByRole('button', { name: 'Next version' }) as HTMLButtonElement).disabled
-    ).toBe(true)
+    expect(screen.getByRole('button', { name: 'Next version' })).toBeDisabled()
     fireEvent.click(screen.getByRole('button', { name: 'Previous version' }))
 
     expect(props.onPreview).toHaveBeenCalledWith('v2')
@@ -122,9 +121,7 @@ describe('HarnessFlowVersions', () => {
   it('cannot step past the oldest version', () => {
     renderVersions({ previewVersionId: 'v1' })
 
-    expect(
-      (screen.getByRole('button', { name: 'Previous version' }) as HTMLButtonElement).disabled
-    ).toBe(true)
+    expect(screen.getByRole('button', { name: 'Previous version' })).toBeDisabled()
   })
 
   it('restores the previewed version and can go back to the current one', () => {
@@ -139,13 +136,13 @@ describe('HarnessFlowVersions', () => {
 
   it('does not save a version with an empty or blank summary', () => {
     const props = renderVersions()
-    const save = screen.getByRole('button', { name: 'Save version' }) as HTMLButtonElement
+    const save = screen.getByRole('button', { name: 'Save version' })
 
-    expect(save.disabled).toBe(true)
+    expect(save).toBeDisabled()
     fireEvent.change(screen.getByRole('textbox', { name: 'Version summary' }), {
       target: { value: '   ' }
     })
-    expect(save.disabled).toBe(true)
+    expect(save).toBeDisabled()
     fireEvent.click(save)
 
     expect(props.onSaveVersion).not.toHaveBeenCalled()
@@ -169,8 +166,6 @@ describe('HarnessFlowVersions', () => {
       target: { value: 'Tightened the review prompt' }
     })
 
-    expect(
-      (screen.getByRole('button', { name: 'Save version' }) as HTMLButtonElement).disabled
-    ).toBe(true)
+    expect(screen.getByRole('button', { name: 'Save version' })).toBeDisabled()
   })
 })

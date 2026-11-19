@@ -14,6 +14,7 @@ import {
 } from '../../shared/harness/harness-example-flow'
 import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
 import { writeSecureJsonFile } from '../../shared/secure-storage/secure-file'
+import { deleteHarnessFlowVersions, getHarnessFlowVersion } from './harness-flow-version-store'
 
 type FlowsFile = {
   version: 1
@@ -138,48 +139,121 @@ export type HarnessFlowSaveOptions = {
   summary?: string
 }
 
-export function saveHarnessFlow(
-  raw: unknown,
-  _options?: HarnessFlowSaveOptions
-): Promise<HarnessFlow> {
-  return serialized(async () => {
-    const file = await loadSeeded()
-    if (!file) {
-      throw new Error('Harness flows file exists but could not be read; refusing to overwrite it')
+const listeners = new Set<(change: HarnessFlowChange) => void>()
+
+/** The only emitter of flow changes; IPC and RPC subscribe here instead of broadcasting. */
+export function onHarnessFlowsChanged(listener: (change: HarnessFlowChange) => void): () => void {
+  listeners.add(listener)
+  return () => {
+    listeners.delete(listener)
+  }
+}
+
+function emitChange(change: HarnessFlowChange): void {
+  for (const listener of listeners) {
+    try {
+      listener(change)
+    } catch (error) {
+      // A failing listener must not turn a completed write into a rejected save.
+      console.error('[harness] flows change listener failed', error)
     }
+  }
+}
+
+async function loadWritable(): Promise<FlowsFile> {
+  const file = await loadSeeded()
+  if (!file) {
+    throw new Error(
+      'harness_flows_unreadable: Harness flows file exists but could not be read; refusing to overwrite it'
+    )
+  }
+  return file
+}
+
+function writeFlow(file: FlowsFile, flow: HarnessFlow): HarnessFlow {
+  const saved = { ...flow, updatedAt: Date.now() }
+  const others = file.flows.filter((existing) => existing.id !== saved.id)
+  if (others.length >= MAX_FLOWS) {
+    throw new Error(`harness_flow_limit: Harness supports up to ${MAX_FLOWS} flows`)
+  }
+  writeSecureJsonFile(flowsPath(), { ...file, flows: [...others, saved] })
+  return saved
+}
+
+/** Autosave path: never records a version; callers that want one record it themselves. */
+export async function saveHarnessFlow(
+  raw: unknown,
+  options: HarnessFlowSaveOptions = {}
+): Promise<HarnessFlow> {
+  const saved = await serialized(async () => {
+    const file = await loadWritable()
     const flow = normalizeHarnessFlow(raw)
     if (!flow) {
-      throw new Error('Invalid harness flow')
+      throw new Error('harness_flow_invalid: Invalid harness flow')
     }
-    const saved = { ...flow, updatedAt: Date.now() }
-    const others = file.flows.filter((existing) => existing.id !== saved.id)
-    if (others.length >= MAX_FLOWS) {
-      throw new Error(`Harness supports up to ${MAX_FLOWS} flows`)
+    const stored = file.flows.find((existing) => existing.id === flow.id)
+    if (
+      options.expectedUpdatedAt !== undefined &&
+      stored?.updatedAt !== options.expectedUpdatedAt
+    ) {
+      throw new Error(
+        `harness_flow_conflict: flow ${flow.id} changed since ${options.expectedUpdatedAt}`
+      )
     }
-    writeSecureJsonFile(flowsPath(), { ...file, flows: [...others, saved] })
-    return saved
+    return writeFlow(file, flow)
   })
+  emitChange({
+    flowId: saved.id,
+    kind: 'saved',
+    source: options.source ?? 'person',
+    summary: options.summary ?? '',
+    updatedAt: saved.updatedAt
+  })
+  return saved
 }
 
-export function deleteHarnessFlow(flowId: string): Promise<void> {
-  return serialized(async () => {
+export async function deleteHarnessFlow(flowId: string): Promise<void> {
+  const removed = await serialized(async () => {
     const file = await loadSeeded()
-    if (file) {
-      writeSecureJsonFile(flowsPath(), {
-        ...file,
-        flows: file.flows.filter((flow) => flow.id !== flowId)
-      })
+    if (!file || !file.flows.some((flow) => flow.id === flowId)) {
+      return false
     }
+    writeSecureJsonFile(flowsPath(), {
+      ...file,
+      flows: file.flows.filter((flow) => flow.id !== flowId)
+    })
+    return true
   })
+  await deleteHarnessFlowVersions(flowId)
+  if (removed) {
+    emitChange({ flowId, kind: 'deleted', source: 'person', summary: '', updatedAt: null })
+  }
 }
 
-export function restoreHarnessFlowVersion(
-  _flowId: string,
-  _versionId: string
+/** Makes a version current under the flow's id and scope; later versions stay in the history. */
+export async function restoreHarnessFlowVersion(
+  flowId: string,
+  versionId: string
 ): Promise<HarnessFlow> {
-  return Promise.reject(new Error('not_implemented'))
-}
-
-export function onHarnessFlowsChanged(_listener: (change: HarnessFlowChange) => void): () => void {
-  throw new Error('not_implemented')
+  const version = await getHarnessFlowVersion(flowId, versionId)
+  if (!version) {
+    throw new Error(`harness_flow_version_not_found: ${flowId}/${versionId}`)
+  }
+  const restored = await serialized(async () => {
+    const file = await loadWritable()
+    const current = file.flows.find((flow) => flow.id === flowId)
+    return writeFlow(file, {
+      ...version.flow,
+      id: flowId,
+      scope: current?.scope ?? version.flow.scope
+    })
+  })
+  emitChange({
+    flowId,
+    kind: 'restored',
+    source: 'person',
+    summary: version.summary,
+    updatedAt: restored.updatedAt
+  })
+  return restored
 }

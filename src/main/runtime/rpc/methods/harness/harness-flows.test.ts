@@ -16,10 +16,10 @@ import { HARNESS_FLOW_METHODS } from './harness-flows'
 const store = vi.hoisted(() => ({
   listHarnessFlows: vi.fn(),
   getHarnessFlow: vi.fn(),
-  saveHarnessFlow: vi.fn(),
+  saveHarnessFlow: vi.fn<(flow: HarnessFlow, options?: unknown) => Promise<HarnessFlow>>(),
   listHarnessFlowVersions: vi.fn(),
   getHarnessFlowVersion: vi.fn(),
-  recordHarnessFlowVersion: vi.fn(),
+  recordHarnessFlowVersion: vi.fn<(input: { author: string }) => Promise<unknown>>(),
   listRuns: vi.fn()
 }))
 
@@ -104,12 +104,14 @@ function method(name: string): RpcMethod {
   return found
 }
 
+// oxlint-disable typescript/consistent-type-assertions -- SAFETY: each handler's declared return type is erased by eraseRpcMethods; these restore it per method name.
 const list = (params: object): Promise<HarnessFlowListItem[]> =>
   method('harness.flows.list').handler(params, context) as Promise<HarnessFlowListItem[]>
 const get = (params: object): Promise<HarnessFlowReading> =>
   method('harness.flows.get').handler(params, context) as Promise<HarnessFlowReading>
 const save = (params: object): Promise<HarnessFlowSaveResult> =>
   method('harness.flows.save').handler(params, context) as Promise<HarnessFlowSaveResult>
+// oxlint-enable typescript/consistent-type-assertions
 
 function versionOf(content: HarnessFlow): HarnessFlowVersion {
   return {
@@ -214,7 +216,7 @@ describe('harness.flows.save', () => {
         (call, index) =>
           [
             store.recordHarnessFlowVersion.mock.invocationCallOrder[index],
-            `version:${(call[0] as { author: string }).author}`
+            `version:${call[0].author}`
           ] as const
       ),
       ...store.saveHarnessFlow.mock.invocationCallOrder.map((n) => [n, 'save'] as const)
@@ -299,7 +301,7 @@ describe('harness.flows.save', () => {
       summary: 'Flujo nuevo'
     })
 
-    const written = store.saveHarnessFlow.mock.calls[0][0] as HarnessFlow
+    const written = store.saveHarnessFlow.mock.calls[0][0]
     expect(written.id).not.toBe('inventado')
     expect(written.id.length).toBeGreaterThan(0)
     expect(written.scope).toEqual(repoA)
@@ -313,7 +315,7 @@ describe('harness.flows.save', () => {
 
     await save({ ...callerA, flow: withoutId, summary: 'Flujo global', scope: 'global' })
 
-    const written = store.saveHarnessFlow.mock.calls[0][0] as HarnessFlow
+    const written = store.saveHarnessFlow.mock.calls[0][0]
     expect(written.id).toEqual(expect.any(String))
     expect(written.id.length).toBeGreaterThan(0)
     expect(written.scope).toEqual({ kind: 'global' })
