@@ -1,5 +1,6 @@
 // The panel's side of scheduled tasks and the mock purchase-order queue.
 import type { OrcaWorkerApi } from 'orca/worker'
+import type { FlowQueue } from './flow-queue'
 import type { ActionResult } from './protocol'
 import type { OrderSource } from './purchase-runner'
 import { nextRunAt, parseTime } from './schedule-time'
@@ -22,13 +23,14 @@ export function mockOrderSource(store: ScheduleStore): OrderSource {
 export function registerScheduleHandlers(
   orca: OrcaWorkerApi,
   store: () => Promise<ScheduleStore>,
-  scheduler: () => Promise<Scheduler>
+  scheduler: () => Promise<Scheduler>,
+  queue: FlowQueue
 ): void {
   const changed = () => orca.panels.post('schedules.changed', { at: Date.now() })
 
   orca.panels.handle('schedules.state', async () => {
     const db = await store()
-    return { schedules: db.schedules(), runs: db.runs(), orders: db.orders() }
+    return { schedules: db.schedules(), runs: db.runs(), orders: db.orders(), queue: queue.state() }
   })
 
   orca.panels.handle('schedules.save', async (input): Promise<ActionResult> => {

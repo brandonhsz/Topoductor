@@ -1,4 +1,5 @@
 // The panel <-> worker contract, declared once: src/panel.tsx and src/worker.ts both read it.
+import type { QueueState } from './flow-queue'
 import type {
   OrderAddress,
   OrderItem,
@@ -9,7 +10,13 @@ import type {
   TaskKind
 } from './schedule-types'
 
-export type SchedulesState = { schedules: Schedule[]; runs: ScheduleRun[]; orders: PurchaseOrder[] }
+export type SchedulesState = {
+  schedules: Schedule[]
+  runs: ScheduleRun[]
+  orders: PurchaseOrder[]
+  /** MercadoLibre flows run one at a time: what runs now and what waits. */
+  queue: QueueState
+}
 
 export type LinkKind = 'referido' | 'directo'
 

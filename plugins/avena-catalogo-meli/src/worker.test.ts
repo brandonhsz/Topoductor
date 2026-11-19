@@ -6,6 +6,7 @@ import { isReferralUrl } from './catalog-status'
 import type { CardReading, MeliClient, ReferralResult, SearchResult } from './meli-browser'
 import { CatalogDb } from './catalog-db'
 import { ScheduleStore } from './schedule-store'
+import { SqliteFlowLock } from './flow-queue'
 import type { Catalog } from './protocol'
 import { field } from './json-fields'
 import { activateWith } from './worker'
@@ -103,6 +104,7 @@ function fakes(database: SourceProduct[]) {
     },
     meli: () => meli,
     openSchedules: () => new ScheduleStore(':memory:'),
+    openLock: () => new SqliteFlowLock(':memory:'),
     checkout: () => ({
       checkout: async () => ({ stage: 'resumen', total: 1, orderNumber: null, message: 'ok' })
     }),

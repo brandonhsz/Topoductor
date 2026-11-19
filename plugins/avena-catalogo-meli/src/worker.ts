@@ -10,6 +10,8 @@ import { CheckoutBrowser, type CheckoutClient, type CheckoutOptions } from './ch
 import { withLocalPanels } from './local-panels'
 import { ScheduleStore } from './schedule-store'
 import { wireSchedules } from './schedule-wiring'
+import { FlowQueue, SqliteFlowLock, type LockStore } from './flow-queue'
+import { queuedMeli } from './meli-queue'
 import { imageFetcher, type ImageFetcher } from './image-data'
 import { CatalogRepository, type OpenCatalogDb } from './catalog-repository'
 import { cliRunner, MeliBrowser, type MeliClient } from './meli-browser'
@@ -25,6 +27,7 @@ export type WorkerDeps = {
   openDb: OpenCatalogDb
   fetchImage: ImageFetcher
   openSchedules(path: string): ScheduleStore
+  openLock(path: string): LockStore
   checkout(cliPath: string, options: CheckoutOptions, workspace?: string): CheckoutClient
 }
 
@@ -37,6 +40,7 @@ const realDeps: WorkerDeps = {
   openDb: (path) => new CatalogDb(path),
   fetchImage: imageFetcher(),
   openSchedules: (path) => new ScheduleStore(path),
+  openLock: (path) => new SqliteFlowLock(path),
   checkout: (cliPath, options, workspace) =>
     new CheckoutBrowser(new MeliBrowser(cliRunner(cliPath), workspace), options)
 }
@@ -77,7 +81,12 @@ export function activateWith(rawOrca: OrcaWorkerApi, deps: WorkerDeps): void {
   }
   const workspace = async (): Promise<string> =>
     String((await orca.settings.get('browserWorkspace')) ?? '')
-  const meli = async (): Promise<MeliClient> => deps.meli(await cliPath(), await workspace())
+  let lock: Promise<LockStore> | null = null
+  const queue = new FlowQueue(() => (lock ??= repository.path().then(deps.openLock)), {
+    changed: () => orca.panels.post('schedules.changed', { at: Date.now() })
+  })
+  const meli = async (): Promise<MeliClient> =>
+    queuedMeli(deps.meli(await cliPath(), await workspace()), queue)
 
   /** Re-reads `ids` from Mongo after a write, so the panel shows what the database holds. */
   async function refresh(ids: readonly string[]): Promise<void> {
@@ -266,6 +275,7 @@ export function activateWith(rawOrca: OrcaWorkerApi, deps: WorkerDeps): void {
     databasePath: () => repository.path(),
     openStore: deps.openSchedules,
     products: async () => (await catalog()).products,
+    queue,
     checkout: async () => {
       const minutes = Number(await orca.settings.get('captchaWaitMinutes'))
       return deps.checkout(

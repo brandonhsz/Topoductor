@@ -164,11 +164,34 @@ const RUN_COLUMNS = [
   { key: 'resultado', label: 'Resultado' }
 ]
 
+function QueueStatus() {
+  const queue = read(schedulesState)?.queue
+  if (!queue) {
+    return null
+  }
+  const parts = [
+    queue.running ? `En proceso: ${queue.running}` : null,
+    queue.elsewhere ? `En proceso en otro worker: ${queue.elsewhere}` : null,
+    queue.waiting.length > 0 ? `En espera: ${queue.waiting.join(' → ')}` : null
+  ].filter((part): part is string => part !== null)
+  return (
+    <Row gap="xs" wrap>
+      <Badge tone={parts.length > 0 ? 'accent' : 'neutral'}>Cola de MercadoLibre</Badge>
+      <Text size="xs" muted={parts.length === 0}>
+        {parts.length > 0
+          ? parts.join(' · ')
+          : 'Libre: el siguiente flujo empieza en cuanto llegue.'}
+      </Text>
+    </Row>
+  )
+}
+
 export function SchedulesPanel() {
   const state = read(schedulesState)
   const schedules = state?.schedules ?? []
   return (
     <Stack gap="sm">
+      <QueueStatus />
       <Callout tone="neutral">
         <Text size="xs">
           Las tareas corren dentro de Topo mientras el plugin esté activo (indicador «Catálogo ML»
