@@ -2,7 +2,7 @@ import { assert, test } from 'orca/testing'
 import { FlowQueue, SqliteFlowLock } from './flow-queue'
 
 const later = () => {
-  let open = () => undefined as void
+  let open: () => void = () => undefined
   const gate = new Promise<void>((resolve) => {
     open = resolve
   })
