@@ -55,6 +55,13 @@ function Order({ order }: { order: PurchaseOrder }) {
             </Text>
           )
         })}
+        {order.results
+          .filter((result) => result.productId === '')
+          .map((result) => (
+            <Text key={result.stage} size="xs" muted={result.stage !== 'merma'}>
+              {result.message}
+            </Text>
+          ))}
         {order.status === 'detenido' || order.status === 'en_revision' ? (
           <Row>
             <Button

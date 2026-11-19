@@ -15,7 +15,7 @@ test('updating prices reads every link first, then writes the changes it found',
       }
     },
     bus: { next: async () => ({ running: false, done: 415, total: 415, blocked: false }) },
-    processOrders: async () => ({ processed: 0, bought: 0, review: 0, stopped: 0 })
+    processOrders: async () => ({ processed: 0, bought: 0, review: 0, stopped: 0, loss: 0 })
   })
   const outcome = await run('updatePrices', 'prueba')
   assert.deepEqual(
@@ -33,7 +33,7 @@ test('a blocked read applies nothing', async () => {
   const run = createTaskRunner({
     call: async (name) => (calls.push(name), { ok: true, message: '' }),
     bus: { next: async () => ({ running: false, done: 24, total: 415, blocked: true }) },
-    processOrders: async () => ({ processed: 0, bought: 0, review: 0, stopped: 0 })
+    processOrders: async () => ({ processed: 0, bought: 0, review: 0, stopped: 0, loss: 0 })
   })
   const outcome = await run('updatePrices', 'prueba')
   assert.deepEqual(calls, ['catalog.audit'])

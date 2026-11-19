@@ -30,7 +30,8 @@ export function showsAddress(pageText: string, address: OrderAddress): boolean {
 }
 
 export type StepContext = {
-  request: CheckoutRequest
+  /** The request with its cap already fixed. */
+  request: CheckoutRequest & { maxTotal: number }
   step(expression: string): Promise<unknown>
   pause(): Promise<void>
   /** Waits for a person to solve a captcha; `false` when nobody did in time. */

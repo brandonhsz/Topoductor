@@ -159,6 +159,7 @@ export const PRODUCT_ACTIONS_EXPRESSION = `JSON.stringify((() => {${HELPERS}
   return {
     buyNow: !!byText(/^comprar ahora$/),
     addToCart: !!byText(/^agregar al carrito$/),
+    price: Number((document.querySelector('[itemprop=price]') || { getAttribute: () => '' }).getAttribute('content')) || null,
     cartCount: count
   };
 })())`

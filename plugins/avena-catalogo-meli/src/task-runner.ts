@@ -101,7 +101,7 @@ export function createTaskRunner(options: {
           summary:
             run.processed === 0
               ? 'No había pedidos pendientes'
-              : `${run.processed} pedidos: ${run.bought} comprados, ${run.review} listos (prueba), ${run.stopped} detenidos`
+              : `${run.processed} pedidos: ${run.bought} comprados, ${run.review} listos (prueba), ${run.stopped} detenidos${run.loss > 0 ? ` · merma $${run.loss}` : ''}`
         }
       }
     }

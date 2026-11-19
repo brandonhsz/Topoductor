@@ -13,7 +13,7 @@ import {
 } from './checkout-scripts'
 import { cartContents, closeSession, type SessionPage } from './checkout-cleanup'
 import { walkCheckout } from './checkout-steps'
-import { field, text } from './json-fields'
+import { amount, field, text } from './json-fields'
 import type { MeliBrowser, Tab } from './meli-browser'
 import type { OrderAddress, PurchaseMode } from './schedule-types'
 
@@ -22,8 +22,12 @@ export type CheckoutRequest = {
   quantity: number
   address: OrderAddress
   mode: PurchaseMode
-  /** Most this purchase may cost; a higher total is never confirmed. */
-  maxTotal: number
+  /**
+   * Most this purchase may cost; a higher total is never confirmed. `null`: the price the product
+   * page shows when buying, times the quantity, plus shipping and rounding (Avena absorbs price
+   * rises; only unexpected charges stop the purchase).
+   */
+  maxTotal: number | null
 }
 
 export type CheckoutResult = {
@@ -40,6 +44,14 @@ export type CheckoutResult = {
 export type CheckoutClient = { checkout(request: CheckoutRequest): Promise<CheckoutResult> }
 
 export { showsAddress } from './checkout-steps'
+
+/** Shipping MercadoLibre may add at the review (its flat rates seen: $79–$99). */
+const SHIPPING_ALLOWANCE = 99
+
+/** The cap when Avena absorbs price rises: the page price, plus shipping and 1% of rounding. */
+export function capFromPrice(price: number, quantity: number): number {
+  return Math.round((price * quantity * 1.01 + SHIPPING_ALLOWANCE) * 100) / 100
+}
 
 const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -122,20 +134,29 @@ export class CheckoutBrowser implements CheckoutClient {
     page: string,
     request: CheckoutRequest,
     inCart: readonly string[]
-  ): Promise<{ stopped: CheckoutResult | null; viaCart: boolean }> {
+  ): Promise<{ stopped: CheckoutResult | null; viaCart: boolean; maxTotal: number }> {
+    let maxTotal = request.maxTotal ?? 0
     const stop = (message: string, stage = 'producto') => ({
       stopped: { stage, total: null, orderNumber: null, message },
-      viaCart: false
+      viaCart: false,
+      maxTotal
     })
     const quantity = await this.step(page, quantityExpression(request.quantity))
     if (field(quantity, 'ok') !== true) {
       return stop(text(field(quantity, 'message')) ?? 'No se pudo elegir la cantidad')
     }
     const actions = await this.step(page, PRODUCT_ACTIONS_EXPRESSION)
+    if (request.maxTotal === null) {
+      const price = amount(field(actions, 'price'))
+      if (price === null || price <= 0) {
+        return stop('No se pudo leer el precio del producto para fijar el tope de la compra')
+      }
+      maxTotal = capFromPrice(price, request.quantity)
+    }
     if (field(actions, 'buyNow') === true) {
       const bought = await this.step(page, BUY_NOW_EXPRESSION)
       return field(bought, 'ok') === true
-        ? { stopped: null, viaCart: false }
+        ? { stopped: null, viaCart: false, maxTotal }
         : stop(text(field(bought, 'message')) ?? 'No se pudo usar «Comprar ahora»')
     }
     if (field(actions, 'addToCart') !== true) {
@@ -157,7 +178,7 @@ export class CheckoutBrowser implements CheckoutClient {
     await this.goto(page, CART_URL)
     const next = await this.step(page, CART_CONTINUE_EXPRESSION)
     return field(next, 'ok') === true
-      ? { stopped: null, viaCart: true }
+      ? { stopped: null, viaCart: true, maxTotal }
       : stop(text(field(next, 'message')) ?? 'No se pudo continuar desde el carrito', 'carrito')
   }
 
@@ -202,7 +223,7 @@ export class CheckoutBrowser implements CheckoutClient {
     }
     await pause(this.stepPauseMs)
     const result = await walkCheckout({
-      request,
+      request: { ...request, maxTotal: started.maxTotal },
       step: (expression) => this.step(page, expression),
       pause: async () => {
         await pause(this.stepPauseMs)

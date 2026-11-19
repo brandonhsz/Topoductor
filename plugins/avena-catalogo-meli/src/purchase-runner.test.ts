@@ -87,18 +87,27 @@ function checkout(answer: (request: CheckoutRequest) => CheckoutResult) {
   }
 }
 
-test('an order over its cap is stopped before opening MercadoLibre', async () => {
-  const { source, reports } = queue([order([{ productId: 'c', quantity: 3 }], 500)])
-  const browser = checkout(() => ({ stage: 'resumen', total: 1, orderNumber: null, message: '' }))
+test('an order whose price went up is bought anyway, and the loss is recorded', async () => {
+  const { source, reports } = queue([order([{ productId: 'v', quantity: 1 }], 523)])
+  const browser = checkout(() => ({
+    stage: 'comprado',
+    total: 900,
+    orderNumber: '2000016155355945',
+    message: 'Compra confirmada'
+  }))
   const run = await processOrders({
     source,
-    products: new Map([['c', product('c', 299)]]),
+    products: new Map([['v', product('v', 900)]]),
     checkout: browser.client,
     mode: 'real'
   })
-  assert.deepEqual(run, { processed: 1, bought: 0, review: 0, stopped: 1 })
-  assert.equal(browser.requests.length, 0)
-  assert.match(reports.at(-1)?.results[0]?.message ?? '', /supera el tope \$500/)
+  assert.deepEqual(run, { processed: 1, bought: 1, review: 0, stopped: 0, loss: 377 })
+  assert.equal(browser.requests[0]?.maxTotal, null, 'the cap is the price read when buying')
+  const last = reports.at(-1)
+  assert.equal(last?.status, 'comprado')
+  const loss = last?.results.find((result) => result.stage === 'merma')
+  assert.equal(loss?.total, 377)
+  assert.match(loss?.message ?? '', /pagado \$900 · cobrado \$523/)
 })
 
 test('test mode walks every item to the review and buys nothing', async () => {
@@ -163,7 +172,7 @@ test('a real purchase stops at the first item that does not go through, and neve
     mode: 'real'
   })
   assert.equal(run.stopped, 1)
-  assert.equal(browser.requests[1]?.maxTotal, 401)
+  assert.equal(browser.requests[1]?.maxTotal, null)
   const last = reports.at(-1)
   assert.equal(last?.status, 'detenido')
   assert.deepEqual(
@@ -172,12 +181,25 @@ test('a real purchase stops at the first item that does not go through, and neve
   )
 })
 
-test('a product without a live referral stops the order', async () => {
+test('a product whose link is known to be broken stops the order', async () => {
   const { source } = queue([order([{ productId: 'r', quantity: 1 }], 9999)])
   const browser = checkout(() => ({ stage: 'resumen', total: 1, orderNumber: null, message: '' }))
+  const broken = withStatus({
+    ...product('r', 299),
+    reading: {
+      ok: false,
+      checkedAt: 1,
+      price: null,
+      listPrice: null,
+      discountPercentage: null,
+      title: null,
+      seller: null,
+      mlItemId: null
+    }
+  })
   const run = await processOrders({
     source,
-    products: new Map([['r', product('r', null)]]),
+    products: new Map([['r', broken]]),
     checkout: browser.client,
     mode: 'real'
   })

@@ -71,7 +71,7 @@ type Fake = {
  */
 function fakeMeli({
   captchaReads = 0,
-  actions = { buyNow: true, addToCart: false },
+  actions = { buyNow: true, addToCart: false, price: 160 },
   steps = FULL_CHECKOUT,
   cart = {},
   stuckCart = false,
@@ -320,4 +320,26 @@ test('the review must name the order street and number', () => {
   assert.equal(showsAddress('Avenida Patria 1200 Cambiar dirección', ADDRESS), true)
   assert.equal(showsAddress('Calle Falsa 123 Cambiar dirección', ADDRESS), false)
   assert.equal(showsAddress('Avenida Patria 980', ADDRESS), false)
+})
+
+test('without a fixed cap, the cap is the price on the product page plus shipping', async () => {
+  const meli = fakeMeli()
+  const result = await buy(meli).checkout({ ...REQUEST, maxTotal: null })
+  assert.equal(result.stage, 'resumen')
+  assert.equal(result.testPassed, true)
+})
+
+test('an unexpected charge over the product page price is never paid', async () => {
+  const meli = fakeMeli({ steps: [{ ...REVIEW, total: 420, text: REVIEW.text }] })
+  const result = await buy(meli).checkout({ ...REQUEST, mode: 'real', maxTotal: null })
+  assert.equal(result.stage, 'resumen')
+  assert.match(result.message, /supera el tope/)
+  assert.equal(meli.ran(CONFIRM_EXPRESSION), false)
+})
+
+test('a product page without a readable price stops when there is no fixed cap', async () => {
+  const meli = fakeMeli({ actions: { buyNow: true, addToCart: false, price: null } })
+  const result = await buy(meli).checkout({ ...REQUEST, maxTotal: null })
+  assert.equal(result.stage, 'producto')
+  assert.match(result.message, /precio/)
 })
