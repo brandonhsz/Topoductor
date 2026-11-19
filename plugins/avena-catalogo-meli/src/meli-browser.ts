@@ -63,7 +63,8 @@ export function cliRunner(cliPath: string): CliRunner {
     })
 }
 
-export type Tab = { browserPageId: string; url: string }
+/** `worktreeId` is the workspace holding the tab, to bring it on screen. */
+export type Tab = { browserPageId: string; url: string; worktreeId?: string }
 
 export class MeliBrowser {
   constructor(readonly run: CliRunner) {}
@@ -75,7 +76,11 @@ export class MeliBrowser {
     )
     const tabId = text(tab?.browserPageId)
     if (tab && tabId) {
-      return { browserPageId: tabId, url: text(tab.url) ?? '' }
+      return {
+        browserPageId: tabId,
+        url: text(tab.url) ?? '',
+        worktreeId: text(tab.worktreeId) ?? undefined
+      }
     }
     // The worker runs outside any workspace, so `--worktree active` cannot resolve: name one.
     const worktrees = records(field(await this.run(['worktree', 'list'], 20_000), 'worktrees'))
@@ -91,7 +96,7 @@ export class MeliBrowser {
     if (!createdId) {
       throw new MeliSessionError('No se pudo abrir MercadoLibre en el navegador de Topo.')
     }
-    return { browserPageId: createdId, url: LINKBUILDER_URL }
+    return { browserPageId: createdId, url: LINKBUILDER_URL, worktreeId }
   }
 
   async evaluate(pageId: string, expression: string, timeoutMs = 60_000): Promise<unknown> {

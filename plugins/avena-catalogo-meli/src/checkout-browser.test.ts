@@ -43,7 +43,9 @@ function fakeMeli(captchaReads: number) {
   const run: CliRunner = async (args) => {
     commands.push(args)
     if (args[0] === 'tab' && args[1] === 'list') {
-      return { tabs: [{ browserPageId: 'p1', url: 'https://www.mercadolibre.com.mx/' }] }
+      return {
+        tabs: [{ browserPageId: 'p1', url: 'https://www.mercadolibre.com.mx/', worktreeId: 'w1' }]
+      }
     }
     if (args[0] !== 'eval') {
       return {}
@@ -79,7 +81,13 @@ test('a captcha brings the tab to the front, waits for a person and then carries
   assert.equal(result.stage, 'domicilio')
   assert.match(result.message, /Domicilio llenado/)
   assert.ok(
-    meli.commands.some((args) => args.join(' ') === 'tab switch --page p1 --focus'),
+    meli.commands.some((args) => args.join(' ') === 'worktree activate --worktree id:w1'),
+    'opens the workspace that holds the tab'
+  )
+  assert.ok(
+    meli.commands.some(
+      (args) => args.join(' ') === 'tab switch --page p1 --worktree id:w1 --focus'
+    ),
     'reveals the tab'
   )
   assert.equal(notes.length, 1)

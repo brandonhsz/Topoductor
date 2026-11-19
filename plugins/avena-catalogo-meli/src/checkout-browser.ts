@@ -13,7 +13,7 @@ import {
   SAVE_ADDRESS_EXPRESSION
 } from './checkout-scripts'
 import { amount, field, text } from './json-fields'
-import type { MeliBrowser } from './meli-browser'
+import type { MeliBrowser, Tab } from './meli-browser'
 import type { OrderAddress, PurchaseMode } from './schedule-types'
 
 export type CheckoutRequest = {
@@ -85,12 +85,18 @@ export class CheckoutBrowser implements CheckoutClient {
    * When MercadoLibre shows a captcha, brings its tab to the front and waits for a person to solve
    * it. Nothing here ever answers the captcha. `false` when nobody solved it in time.
    */
-  private async passVerification(pageId: string, context: string): Promise<boolean> {
+  private async passVerification(tab: Tab, context: string): Promise<boolean> {
+    const pageId = tab.browserPageId
     if (!isVerificationPath(await this.path(pageId))) {
       return true
     }
+    // The tab may live in another workspace than the one on screen: open that one first.
+    const worktree = tab.worktreeId ? ['--worktree', `id:${tab.worktreeId}`] : []
+    if (tab.worktreeId) {
+      await this.browser.run(['worktree', 'activate', ...worktree], 15_000).catch(() => undefined)
+    }
     await this.browser
-      .run(['tab', 'switch', '--page', pageId, '--focus'], 15_000)
+      .run(['tab', 'switch', '--page', pageId, ...worktree, '--focus'], 15_000)
       .catch(() => undefined)
     this.options.onVerification?.(
       `MercadoLibre pidió un captcha ${context}. Resuélvelo en el navegador de Topo: la compra sigue sola.`
@@ -124,7 +130,8 @@ export class CheckoutBrowser implements CheckoutClient {
       orderNumber: null,
       message
     })
-    const { browserPageId: page } = await this.browser.findTab()
+    const tab = await this.browser.findTab()
+    const page = tab.browserPageId
     const unsolved = () =>
       stop(
         'verificacion',
@@ -135,7 +142,7 @@ export class CheckoutBrowser implements CheckoutClient {
     await this.browser
       .run(['wait', '--page', page, '--selector', '.rl-card-featured'], 25_000)
       .catch(() => undefined)
-    if (!(await this.passVerification(page, 'al abrir el referido'))) {
+    if (!(await this.passVerification(tab, 'al abrir el referido'))) {
       return unsolved()
     }
     const productUrl = text(field(await this.step(page, FEATURED_PRODUCT_EXPRESSION), 'url'))
@@ -143,7 +150,7 @@ export class CheckoutBrowser implements CheckoutClient {
       return stop('referido', 'El referido no muestra el producto (link roto)')
     }
     await this.goto(page, productUrl)
-    if (!(await this.passVerification(page, 'al abrir el producto'))) {
+    if (!(await this.passVerification(tab, 'al abrir el producto'))) {
       return unsolved()
     }
     for (const expression of [quantityExpression(request.quantity), BUY_NOW_EXPRESSION]) {
@@ -167,7 +174,7 @@ export class CheckoutBrowser implements CheckoutClient {
         }
       }
       if (step === 'verificacion') {
-        if (!(await this.passVerification(page, 'durante el pago'))) {
+        if (!(await this.passVerification(tab, 'durante el pago'))) {
           return stop(step, 'MercadoLibre pidió verificación de la cuenta y nadie la completó')
         }
         continue
