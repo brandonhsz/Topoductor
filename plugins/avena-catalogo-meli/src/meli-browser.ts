@@ -117,6 +117,31 @@ export class MeliBrowser {
     return { browserPageId: createdId, url: LINKBUILDER_URL, worktreeId }
   }
 
+  /**
+   * Clicks the button named `button` inside the open dialog whose title matches `dialog`, through
+   * Topo's accessibility snapshot: it reaches menus and iframes a page script cannot click.
+   */
+  async clickInDialog(tab: Tab, dialog: RegExp, button: string): Promise<boolean> {
+    const snapshot =
+      text(field(await this.run(['snapshot', '--page', tab.browserPageId], 30_000), 'snapshot')) ??
+      ''
+    const lines = snapshot.split('\n')
+    const start = lines.findIndex((line) => /dialog "/.test(line) && dialog.test(line))
+    const ref =
+      start === -1
+        ? null
+        : lines
+            .slice(start + 1)
+            .map((line) => new RegExp(`button "${button}" \\[ref=(e\\d+)\\]`).exec(line)?.[1])
+            .find((found) => found !== undefined)
+    if (!ref) {
+      return false
+    }
+    const worktree = tab.worktreeId ? ['--worktree', `id:${tab.worktreeId}`] : []
+    await this.run(['click', '--element', ref, ...worktree], 30_000)
+    return true
+  }
+
   async evaluate(pageId: string, expression: string, timeoutMs = 60_000): Promise<unknown> {
     const answer = field(
       await this.run(['eval', '--page', pageId, '--expression', expression], timeoutMs),

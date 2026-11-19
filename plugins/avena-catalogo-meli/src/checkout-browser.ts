@@ -3,7 +3,6 @@
 import {
   ADD_TO_CART_EXPRESSION,
   BUY_NOW_EXPRESSION,
-  CART_CLEAR_EXPRESSION,
   CART_CONTINUE_EXPRESSION,
   CART_URL,
   FEATURED_PRODUCT_EXPRESSION,
@@ -12,8 +11,9 @@ import {
   PRODUCT_ACTIONS_EXPRESSION,
   quantityExpression
 } from './checkout-scripts'
+import { cartContents, closeSession, type SessionPage } from './checkout-cleanup'
 import { walkCheckout } from './checkout-steps'
-import { amount, field, text } from './json-fields'
+import { field, text } from './json-fields'
 import type { MeliBrowser, Tab } from './meli-browser'
 import type { OrderAddress, PurchaseMode } from './schedule-types'
 
@@ -33,6 +33,8 @@ export type CheckoutResult = {
   message: string
   /** Test mode stopped where it should: everything up to buying worked. */
   testPassed?: boolean
+  /** Closing the session left the order's address in the account or products in the cart. */
+  cleanupFailed?: boolean
 }
 
 export type CheckoutClient = { checkout(request: CheckoutRequest): Promise<CheckoutResult> }
@@ -118,7 +120,8 @@ export class CheckoutBrowser implements CheckoutClient {
    */
   private async startPurchase(
     page: string,
-    request: CheckoutRequest
+    request: CheckoutRequest,
+    inCart: readonly string[]
   ): Promise<{ stopped: CheckoutResult | null; viaCart: boolean }> {
     const stop = (message: string, stage = 'producto') => ({
       stopped: { stage, total: null, orderNumber: null, message },
@@ -140,10 +143,9 @@ export class CheckoutBrowser implements CheckoutClient {
         'La publicación no tiene «Comprar ahora» ni «Agregar al carrito» (sin stock o pausada)'
       )
     }
-    const inCart = amount(field(actions, 'cartCount')) ?? 0
-    if (inCart > 0) {
+    if (inCart.length > 0) {
       return stop(
-        `Solo se vende por carrito y el carrito de la cuenta tiene ${inCart} productos: vacíalo para que no se compren junto con el pedido`,
+        `Solo se vende por carrito y el carrito de la cuenta tiene ${inCart.length} producto(s): no se compran junto con el pedido`,
         'carrito'
       )
     }
@@ -159,15 +161,20 @@ export class CheckoutBrowser implements CheckoutClient {
       : stop(text(field(next, 'message')) ?? 'No se pudo continuar desde el carrito', 'carrito')
   }
 
-  async checkout(request: CheckoutRequest): Promise<CheckoutResult> {
+  private async purchase(
+    tab: Tab,
+    session: SessionPage,
+    request: CheckoutRequest
+  ): Promise<CheckoutResult> {
     const stop = (stage: string, message: string, total: number | null = null): CheckoutResult => ({
       stage,
       total,
       orderNumber: null,
       message
     })
-    const tab = await this.browser.findTab()
     const page = tab.browserPageId
+    // The cart is read from its pages before anything is added: the header counter lies.
+    const inCart = await cartContents(session)
     const unsolved = () =>
       stop(
         'verificacion',
@@ -189,7 +196,7 @@ export class CheckoutBrowser implements CheckoutClient {
     if (!(await this.passVerification(tab, 'al abrir el producto'))) {
       return unsolved()
     }
-    const started = await this.startPurchase(page, request)
+    const started = await this.startPurchase(page, request, inCart)
     if (started.stopped) {
       return started.stopped
     }
@@ -202,17 +209,34 @@ export class CheckoutBrowser implements CheckoutClient {
       },
       passVerification: () => this.passVerification(tab, 'durante el pago')
     })
-    // The cart was empty before: whatever is in it now is this purchase's, and it never stays.
-    if (started.viaCart && result.stage !== 'comprado') {
-      await this.goto(page, CART_URL)
-      await pause(this.stepPauseMs)
-      const cleared = await this.step(page, CART_CLEAR_EXPRESSION)
-      const removed = amount(field(cleared, 'removed')) ?? 0
-      return {
-        ...result,
-        message: `${result.message}${removed > 0 ? ' · se quitó del carrito' : ' · revisa el carrito: no se pudo quitar'}`
+    return result
+  }
+
+  /** One purchase, then the session is always closed: address deleted, cart verified empty. */
+  async checkout(request: CheckoutRequest): Promise<CheckoutResult> {
+    const tab = await this.browser.findTab()
+    const session: SessionPage = {
+      browser: this.browser,
+      tab,
+      goto: (url) => this.goto(tab.browserPageId, url),
+      step: (expression) => this.step(tab.browserPageId, expression),
+      pause: async () => {
+        await pause(this.stepPauseMs)
       }
     }
-    return result
+    const result = await this.purchase(tab, session, request).catch(
+      (error: unknown): CheckoutResult => ({
+        stage: 'error',
+        total: null,
+        orderNumber: null,
+        message: error instanceof Error ? error.message : String(error)
+      })
+    )
+    const closed = await closeSession(session, request.address)
+    return {
+      ...result,
+      message: `${result.message} · ${closed.note}`,
+      ...(closed.ok ? {} : { cleanupFailed: true })
+    }
   }
 }

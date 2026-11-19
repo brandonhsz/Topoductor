@@ -196,3 +196,43 @@ export const CART_CLEAR_EXPRESSION = `(async () => {${HELPERS}
   }
   return JSON.stringify({ ok: true, removed });
 })()`
+
+/** The cart shows one tab at a time: «Mercado Libre» and «Full Súper» are checked one by one. */
+export const CART_HUB_URLS = [CART_URL, `${CART_URL}?hub_selected=full_super`]
+
+/**
+ * The products the open cart tab lists, by title. The header's counter only counts the selected
+ * ones, so the page is read instead.
+ */
+export const CART_ITEMS_EXPRESSION = `JSON.stringify((() => {${HELPERS}
+  const removes = [...document.querySelectorAll('button')].filter(visible).filter((b) => norm(b.getAttribute('aria-label')) === 'eliminar producto');
+  const titles = removes.map((b) => {
+    let card = b;
+    while (card.parentElement && !/\\$/.test(card.innerText || '')) card = card.parentElement;
+    const link = card.querySelector('a[href*="MLM"], h2, h3, [class*=title]');
+    return ((link && link.textContent) || card.innerText || '').trim().replace(/\\s+/g, ' ').slice(0, 120);
+  });
+  return { titles };
+})())`
+
+export const ADDRESSES_URL =
+  'https://www.mercadolibre.com.mx/addresses/v3/hub/actionable?app-id=MY_ML'
+
+/**
+ * Saved addresses of "Mi cuenta → Direcciones" that belong to `address`: same recipient, postal
+ * code and phone. With `open`, opens the «Más acciones» menu of the first one.
+ */
+export function addressMatchesExpression(address: OrderAddress, open: boolean): string {
+  return `(async () => {${HELPERS}
+  const a = ${JSON.stringify({ recipient: address.recipient, postalCode: address.postalCode, phone: address.phone })};
+  const digits = (t) => (t || '').replace(/\\D/g, '');
+  const phone = digits(a.phone).slice(-8);
+  const cards = [...document.querySelectorAll('button[aria-label^="Más acciones para"]')].filter(visible).map((menu) => {
+    let card = menu;
+    while (card.parentElement && !/codigo postal/.test(norm(card.innerText))) card = card.parentElement;
+    return { menu, text: card.innerText || '' };
+  }).filter((c) => norm(c.text).includes(norm(a.recipient)) && c.text.includes(a.postalCode) && digits(c.text).includes(phone));
+  if (${open} && cards.length > 0) { cards[0].menu.click(); await wait(1200); }
+  return JSON.stringify({ ok: ${open} ? cards.length > 0 : true, matches: cards.length });
+})()`
+}

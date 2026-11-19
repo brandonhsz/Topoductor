@@ -4,7 +4,11 @@ import {
   ADD_TO_CART_EXPRESSION,
   addressFormExpression,
   BUY_NOW_EXPRESSION,
+  ADDRESSES_URL,
+  addressMatchesExpression,
   CART_CLEAR_EXPRESSION,
+  CART_HUB_URLS,
+  CART_ITEMS_EXPRESSION,
   CART_CONTINUE_EXPRESSION,
   CART_URL,
   CHECKOUT_STATE_EXPRESSION,
@@ -53,36 +57,102 @@ type Fake = {
   captchaReads?: number
   actions?: unknown
   steps?: unknown[]
+  /** What each cart tab holds when the purchase starts. */
+  cart?: { marketplace?: string[]; fullSuper?: string[] }
+  /** The cart keeps its products whatever is clicked. */
+  stuckCart?: boolean
+  /** «Eliminar» on an address does nothing. */
+  stuckAddress?: boolean
 }
 
-/** A tab that shows the captcha wall for the first `captchaReads` path reads, then the product. */
+/**
+ * A MercadoLibre tab: a captcha for the first `captchaReads` path reads, then the product; a cart
+ * with two tabs, and the account's saved addresses with their «Más acciones» menu.
+ */
 function fakeMeli({
   captchaReads = 0,
-  actions = { buyNow: true, addToCart: false, cartCount: 0 },
-  steps = FULL_CHECKOUT
+  actions = { buyNow: true, addToCart: false },
+  steps = FULL_CHECKOUT,
+  cart = {},
+  stuckCart = false,
+  stuckAddress = false
 }: Fake = {}) {
   const commands: string[][] = []
   let pathReads = 0
   let stateReads = 0
-  const answers = new Map<string, unknown>([
-    [quantityExpression(1), { ok: true }],
-    [BUY_NOW_EXPRESSION, { ok: true }],
-    [PRODUCT_ACTIONS_EXPRESSION, actions],
-    [ADD_TO_CART_EXPRESSION, { ok: true }],
-    [CART_CONTINUE_EXPRESSION, { ok: true }],
-    [CART_CLEAR_EXPRESSION, { ok: true, removed: 1 }],
-    [addressFormExpression(ADDRESS), { ok: true }],
-    [SAVE_ADDRESS_EXPRESSION, { ok: true }],
-    [MAP_CONFIRM_EXPRESSION, { ok: true }],
-    [SKIP_DETAILS_EXPRESSION, { ok: true }],
-    [CONFIRM_EXPRESSION, { ok: true }]
+  let url = ''
+  let dialog: 'none' | 'menu' | 'confirm' = 'none'
+  const hubs = {
+    marketplace: [...(cart.marketplace ?? [])],
+    fullSuper: [...(cart.fullSuper ?? [])]
+  }
+  const addresses: string[] = []
+  const hub = () => (url.includes('full_super') ? hubs.fullSuper : hubs.marketplace)
+  const answers = new Map<string, () => unknown>([
+    [quantityExpression(1), () => ({ ok: true })],
+    [BUY_NOW_EXPRESSION, () => ({ ok: true })],
+    [PRODUCT_ACTIONS_EXPRESSION, () => actions],
+    [ADD_TO_CART_EXPRESSION, () => (hubs.fullSuper.push('Proteína Gold Standard'), { ok: true })],
+    [CART_CONTINUE_EXPRESSION, () => ({ ok: true })],
+    [CART_ITEMS_EXPRESSION, () => ({ titles: url.startsWith(CART_URL) ? [...hub()] : [] })],
+    [
+      CART_CLEAR_EXPRESSION,
+      () => {
+        const removed = stuckCart ? 0 : hub().splice(0).length
+        return { ok: true, removed }
+      }
+    ],
+    [addressFormExpression(ADDRESS), () => ({ ok: true })],
+    [SAVE_ADDRESS_EXPRESSION, () => (addresses.push('Prueba'), { ok: true })],
+    [MAP_CONFIRM_EXPRESSION, () => ({ ok: true })],
+    [SKIP_DETAILS_EXPRESSION, () => ({ ok: true })],
+    [CONFIRM_EXPRESSION, () => ({ ok: true })],
+    [
+      addressMatchesExpression(ADDRESS, true),
+      () => {
+        if (addresses.length === 0 || url !== ADDRESSES_URL) {
+          return { ok: false, matches: 0 }
+        }
+        dialog = 'menu'
+        return { ok: true, matches: addresses.length }
+      }
+    ],
+    [
+      addressMatchesExpression(ADDRESS, false),
+      () => ({ ok: true, matches: url === ADDRESSES_URL ? addresses.length : -1 })
+    ]
   ])
+  const snapshots = {
+    none: '- main',
+    menu: '- dialog "Más acciones para Avenida Patria 1200"\n  - button "Editar" [ref=e1]\n  - button "Eliminar" [ref=e2]',
+    confirm:
+      '- dialog "¿Quieres eliminar esta dirección?"\n  - button "Eliminar" [ref=e3]\n  - button "Cancelar" [ref=e4]'
+  }
   const run: CliRunner = async (args) => {
     commands.push(args)
     if (args[0] === 'tab' && args[1] === 'list') {
       return {
         tabs: [{ browserPageId: 'p1', url: 'https://www.mercadolibre.com.mx/', worktreeId: 'w1' }]
       }
+    }
+    if (args[0] === 'goto') {
+      url = args[4] ?? ''
+      dialog = 'none'
+      return {}
+    }
+    if (args[0] === 'snapshot') {
+      return { snapshot: snapshots[dialog] }
+    }
+    if (args[0] === 'click') {
+      if (args[2] === 'e2' && dialog === 'menu') {
+        dialog = 'confirm'
+      } else if (args[2] === 'e3' && dialog === 'confirm') {
+        dialog = 'none'
+        if (!stuckAddress) {
+          addresses.shift()
+        }
+      }
+      return { clicked: args[2] }
     }
     if (args[0] !== 'eval') {
       return {}
@@ -101,11 +171,13 @@ function fakeMeli({
     if (expression.includes('rl-card-featured')) {
       return { result: JSON.stringify({ url: 'https://articulo.mercadolibre.com.mx/MLM-1' }) }
     }
-    return { result: JSON.stringify(answers.get(expression) ?? { ok: false }) }
+    return { result: JSON.stringify(answers.get(expression)?.() ?? { ok: false }) }
   }
   const ran = (expression: string) =>
     commands.some((args) => args[0] === 'eval' && args[4] === expression)
-  return { run, commands, ran }
+  const visited = (target: string) =>
+    commands.some((args) => args[0] === 'goto' && args[4] === target)
+  return { run, commands, ran, visited, hubs, addresses }
 }
 
 const options = (notes: string[], waitMs = 10) => ({
@@ -160,25 +232,60 @@ test('a captcha nobody solves in time stops as a verification', async () => {
   assert.match(result.message, /nadie/)
 })
 
-test('a cart-only product stops when the account cart already holds other products', async () => {
-  const meli = fakeMeli({ actions: { buyNow: false, addToCart: true, cartCount: 10 } })
+test('a cart-only product stops when the cart holds other products, which the close removes', async () => {
+  const meli = fakeMeli({
+    actions: { buyNow: false, addToCart: true },
+    cart: { fullSuper: ['Omega 3 Salmón B Life'] }
+  })
   const result = await buy(meli).checkout({ ...REQUEST, mode: 'real' })
   assert.equal(result.stage, 'carrito')
-  assert.match(result.message, /10 productos/)
+  assert.match(result.message, /1 producto/)
   assert.equal(meli.ran(ADD_TO_CART_EXPRESSION), false)
-  assert.equal(meli.ran(CART_CLEAR_EXPRESSION), false)
+  assert.match(result.message, /Omega 3 Salmón B Life/)
+  assert.deepEqual(meli.hubs.fullSuper, [])
+  assert.equal(result.cleanupFailed, undefined)
 })
 
 test('test mode buys a cart-only product through the cart and empties it afterwards', async () => {
-  const meli = fakeMeli({ actions: { buyNow: false, addToCart: true, cartCount: 0 } })
+  const meli = fakeMeli({ actions: { buyNow: false, addToCart: true } })
   const result = await buy(meli).checkout(REQUEST)
   assert.equal(meli.ran(ADD_TO_CART_EXPRESSION), true)
   assert.equal(meli.ran(CART_CONTINUE_EXPRESSION), true)
   assert.equal(result.stage, 'resumen')
   assert.equal(result.testPassed, true)
-  assert.equal(meli.commands.filter((args) => args[0] === 'goto' && args[4] === CART_URL).length, 2)
-  assert.equal(meli.ran(CART_CLEAR_EXPRESSION), true)
-  assert.match(result.message, /se quitó del carrito/)
+  assert.match(result.message, /se quitó del carrito: Proteína Gold Standard/)
+  assert.deepEqual(meli.hubs.fullSuper, [])
+})
+
+test('every purchase ends deleting the order address and checking both cart tabs', async () => {
+  const meli = fakeMeli()
+  const result = await buy(meli).checkout(REQUEST)
+  assert.equal(result.stage, 'resumen')
+  assert.deepEqual(meli.addresses, [])
+  assert.match(result.message, /domicilio del pedido eliminado/)
+  assert.match(result.message, /carrito vacío/)
+  for (const cartUrl of CART_HUB_URLS) {
+    assert.ok(meli.visited(cartUrl), cartUrl)
+  }
+  assert.ok(
+    meli.commands.some((args) => args.join(' ') === 'click --element e3 --worktree id:w1'),
+    'confirms the deletion in its dialog'
+  )
+  assert.equal(result.cleanupFailed, undefined)
+})
+
+test('a cart that cannot be emptied is flagged', async () => {
+  const meli = fakeMeli({ cart: { marketplace: ['Birdman Creatina'] }, stuckCart: true })
+  const result = await buy(meli).checkout(REQUEST)
+  assert.equal(result.cleanupFailed, true)
+  assert.match(result.message, /⚠ el carrito no quedó vacío: Birdman Creatina/)
+})
+
+test('an address that cannot be deleted is flagged', async () => {
+  const meli = fakeMeli({ stuckAddress: true })
+  const result = await buy(meli).checkout(REQUEST)
+  assert.equal(result.cleanupFailed, true)
+  assert.match(result.message, /⚠ no se pudo eliminar el domicilio/)
 })
 
 test('a real purchase never confirms without a payment method chosen', async () => {
