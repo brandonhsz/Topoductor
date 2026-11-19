@@ -1,5 +1,6 @@
 import { atom, Button, Image, Input, plugin, read, Row, set, Stack, Text } from 'orca'
 import { busy, runAction, selectedId } from './panel-state'
+import { sizeNote } from './presentation'
 import type { Product, SearchCandidate } from './protocol'
 
 const query = atom('')
@@ -10,6 +11,15 @@ const MAX_IMAGE_LENGTH = 40_000
 
 function shown(image: string | null | undefined): string | null {
   return image && image.length <= MAX_IMAGE_LENGTH ? image : null
+}
+
+/** A short stable key: listing URLs (slug plus filters) can pass Topo's 1 KiB cap on keys. */
+export function resultKey(url: string): string {
+  let hash = 5381
+  for (let index = 0; index < url.length; index++) {
+    hash = ((hash << 5) + hash + url.charCodeAt(index)) >>> 0
+  }
+  return `${url.match(/MLMU?-?\d+/)?.[0] ?? 'ml'}-${hash.toString(36)}`
 }
 
 function money(value: number | null): string {
@@ -27,9 +37,10 @@ async function search(product: Product): Promise<void> {
   })
 }
 
+/** Generates the referral, checks it opens the product, and writes the link and its price. */
 function choose(product: Product, candidate: SearchCandidate): Promise<void> {
-  return runAction('referral', () =>
-    plugin.request('catalog.generateReferral', { id: product.id, url: candidate.url })
+  return runAction('replace', () =>
+    plugin.request('catalog.replaceLink', { id: product.id, url: candidate.url })
   )
 }
 
@@ -70,8 +81,8 @@ export function RepairSearch({ product }: { product: Product }) {
   return (
     <Stack gap="sm">
       <Text muted size="xs">
-        Busca el producto en MercadoLibre y elige el resultado correcto: se genera su referido y
-        queda como propuesta hasta guardarlo.
+        Busca el producto en MercadoLibre y elige el correcto: «Usar este» genera su referido,
+        comprueba que abra el producto y guarda en la base el link nuevo y su precio.
       </Text>
       <Row gap="xs">
         <Input
@@ -89,12 +100,17 @@ export function RepairSearch({ product }: { product: Product }) {
       </Row>
       <ChosenReplacement product={product} />
       {candidates.map((candidate) => (
-        <Row key={candidate.url} gap="sm" align="center">
+        <Row key={resultKey(candidate.url)} gap="sm" align="center">
           {shown(candidate.image) ? (
             <Image src={shown(candidate.image) ?? ''} alt={candidate.title} size="xs" rounded />
           ) : null}
           <Stack gap="none">
             <Text truncate>{candidate.title}</Text>
+            {sizeNote(product.name, product.quantity, candidate.title) ? (
+              <Text tone="warning" size="xs">
+                {`Otro tamaño: ${sizeNote(product.name, product.quantity, candidate.title)}`}
+              </Text>
+            ) : null}
             <Text muted size="xs">
               {`${money(candidate.price)}${candidate.seller ? ` · ${candidate.seller}` : ''}`}
             </Text>
@@ -102,6 +118,7 @@ export function RepairSearch({ product }: { product: Product }) {
           <Button
             size="sm"
             variant="outline"
+            tooltip="Genera el referido, comprueba que abra este producto y guarda el link y el precio en la base."
             disabled={working || candidate.url === product.proposal?.url}
             onPress={() => choose(product, candidate)}
           >

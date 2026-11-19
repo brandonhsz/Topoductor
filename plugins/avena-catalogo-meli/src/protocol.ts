@@ -9,6 +9,7 @@ export type ProductStatus =
   | 'sin_precio_base'
   | 'revisar_salto'
   | 'revisar_identidad'
+  | 'otra_presentacion'
   | 'link_compartido'
   | 'roto'
   | 'link_directo'
@@ -78,6 +79,9 @@ export type Catalog = {
 
 export type Filter = 'revisar' | 'todos' | 'con_referido' | ProductStatus
 
+/** `applicable`: safe price changes. `allPrices`: every new ML price. `pendingReferrals`: referrals to save. */
+export type BulkScope = 'applicable' | 'allPrices' | 'pendingReferrals'
+
 export type CatalogViewQuery = {
   filter: Filter
   search: string
@@ -96,6 +100,8 @@ export type CatalogView = {
   direct: number
   applicable: number
   pendingReferrals: number
+  /** Referral links whose ML price differs from the saved one, any status. */
+  withNewPrice: number
 }
 
 export type PriceHistoryEntry = {
@@ -172,7 +178,7 @@ declare module 'orca' {
     /** The product with its last price readings and referral attempts. */
     'catalog.history': { input: { id: string }; output: ProductHistory | null }
     /** Ids of the products a bulk action applies to. */
-    'catalog.ids': { input: { scope: 'applicable' | 'pendingReferrals' }; output: string[] }
+    'catalog.ids': { input: { scope: BulkScope }; output: string[] }
     /** Reads ML for the given ids (every referral link when empty) in the background. */
     'catalog.audit': { input: { ids?: string[] }; output: ActionResult }
     /** Builds a meli.la for `url` (the product's own direct link when omitted) and keeps it as a proposal. */
@@ -190,6 +196,8 @@ declare module 'orca' {
     }
     /** For every broken link, proposes the first same-brand search result, in the background. */
     'catalog.proposeReplacements': { output: ActionResult }
+    /** Generates the referral for `url`, then writes it and its price to the product. */
+    'catalog.replaceLink': { input: { id: string; url: string }; output: ActionResult }
     'catalog.applyUrl': { input: { id: string; url: string }; output: ActionResult }
     'catalog.setStock': { input: { id: string; hasStock: boolean }; output: ActionResult }
   }

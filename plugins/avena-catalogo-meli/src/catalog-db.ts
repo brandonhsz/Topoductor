@@ -3,9 +3,10 @@
 import { mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { DatabaseSync } from 'node:sqlite'
-import { APPLICABLE_STATUSES } from './catalog-status'
+import { hasNewMlPrice, isApplicable } from './catalog-status'
 import { isRecord } from './json-fields'
 import type {
+  BulkScope,
   CatalogView,
   CatalogViewQuery,
   MeliReading,
@@ -20,6 +21,7 @@ const REVIEW_STATUSES: readonly ProductStatus[] = [
   'sin_precio_base',
   'revisar_salto',
   'revisar_identidad',
+  'otra_presentacion',
   'link_compartido',
   'roto',
   'link_directo',
@@ -250,8 +252,11 @@ export class CatalogDb {
       all: single('SELECT COUNT(*) AS n FROM products'),
       withReferral: single("SELECT COUNT(*) AS n FROM products WHERE link_kind = 'referido'"),
       direct: single("SELECT COUNT(*) AS n FROM products WHERE link_kind = 'directo'"),
-      applicable: APPLICABLE_STATUSES.reduce((sum, status) => sum + (counts[status] ?? 0), 0),
-      pendingReferrals: single("SELECT COUNT(*) AS n FROM products WHERE status = 'referido_listo'")
+      applicable: this.all().filter(isApplicable).length,
+      pendingReferrals: single(
+        "SELECT COUNT(*) AS n FROM products WHERE status = 'referido_listo'"
+      ),
+      withNewPrice: this.all().filter(hasNewMlPrice).length
     }
   }
 
@@ -291,12 +296,14 @@ export class CatalogDb {
   }
 
   /** Ids for the bulk buttons: safe price changes, or generated referrals not saved yet. */
-  ids(scope: 'applicable' | 'pendingReferrals'): string[] {
+  ids(scope: BulkScope): string[] {
     return this.all()
       .filter((product) =>
-        scope === 'applicable'
-          ? APPLICABLE_STATUSES.includes(product.status)
-          : product.status === 'referido_listo'
+        scope === 'allPrices'
+          ? hasNewMlPrice(product)
+          : scope === 'applicable'
+            ? isApplicable(product)
+            : product.status === 'referido_listo'
       )
       .map((product) => product.id)
   }

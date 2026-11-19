@@ -21,6 +21,7 @@ export const REVIEW_STATUSES: readonly ProductStatus[] = [
   'sin_precio_base',
   'revisar_salto',
   'revisar_identidad',
+  'otra_presentacion',
   'link_compartido',
   'roto',
   'link_directo',
@@ -42,7 +43,6 @@ export const notice = atom<{ ok: boolean; text: string } | null>(null)
 export const busy = atom<string | null>(null)
 export const progress = atom<AuditProgress | null>(null)
 export const connection = atom<ConnectionStatus | null>(null)
-export const confirmingBulk = atom(false)
 export const referralProgress = atom<ReferralProgress | null>(null)
 export const confirmingReferrals = atom(false)
 export const repairProgress = atom<RepairProgress | null>(null)

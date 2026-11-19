@@ -14,10 +14,20 @@ import {
   Text
 } from 'orca'
 import { STATUS_DESCRIPTIONS, STATUS_LABELS } from './catalog-status'
+import { formatSize, parseSizes, sizeNote } from './presentation'
 import { busy, changeFilter, progress, runAction, selected, urlDraft } from './panel-state'
 import { ProductHistory } from './product-history'
 import { RepairSearch } from './repair-search'
-import type { Product } from './protocol'
+import type { Product, ProductStatus } from './protocol'
+
+// Statuses whose fix is a better link: the search offers one of the right product and size.
+const REPAIRABLE: Partial<Record<ProductStatus, string>> = {
+  roto: 'Link roto',
+  otra_presentacion: 'Link de otra presentación',
+  link_compartido: 'Link compartido con otra variante',
+  revisar_identidad: 'El link podría ser de otro producto',
+  revisar_salto: 'Precio con salto mayor a 50%'
+}
 
 export function money(value: number | null | undefined): string {
   return typeof value === 'number'
@@ -53,6 +63,13 @@ function facts(product: Product) {
     {
       label: 'Presentación',
       value: [product.quantity, product.flavor].filter(Boolean).join(' · ') || '—'
+    },
+    {
+      label: 'Presentación en ML',
+      value: parseSizes(reading?.title).map(formatSize).join(' · ') || '—',
+      tone: sizeNote(product.name, product.quantity, reading?.title ?? null)
+        ? ('warning' as const)
+        : undefined
     }
   ]
 }
@@ -120,9 +137,9 @@ export function ProductDetail() {
             Abrir
           </Button>
         </Row>
-        {product.status === 'roto' ||
+        {REPAIRABLE[product.status] ||
         (product.status === 'referido_listo' && product.reading?.ok === false) ? (
-          <Callout tone="warning" title="Link roto">
+          <Callout tone="warning" title={REPAIRABLE[product.status] ?? 'Link roto'}>
             <RepairSearch product={product} />
           </Callout>
         ) : null}

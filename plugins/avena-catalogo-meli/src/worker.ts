@@ -6,8 +6,7 @@ import {
   mongoCatalogSource,
   normalizeMongoUri,
   type CatalogSource,
-  type MongoLocation,
-  type SourceProduct
+  type MongoLocation
 } from './catalog-source'
 import { backendCredentials, mongoLocation, readCatalogConfig } from './catalog-config'
 import { isMeliUrl, isReferralUrl, pricePayload, withStatus } from './catalog-status'
@@ -15,6 +14,7 @@ import { CatalogDb } from './catalog-db'
 import { imageFetcher, type ImageFetcher } from './image-data'
 import { CatalogRepository, type OpenCatalogDb } from './catalog-repository'
 import { cliRunner, MeliBrowser, type MeliClient } from './meli-browser'
+import { fromSource, sharedCounts } from './catalog-merge'
 import { registerReferralHandlers } from './referral-handlers'
 import type { ActionResult, Catalog, CatalogConfig, ConnectionStatus, Product } from './protocol'
 
@@ -38,34 +38,6 @@ const realDeps: WorkerDeps = {
 
 function message(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
-}
-
-function fromSource(
-  source: SourceProduct,
-  previous: Product | undefined,
-  sharedCount: number
-): Product {
-  const sameLink = previous?.productURL === source.productURL
-  return withStatus({
-    ...source,
-    sharedCount,
-    reading: sameLink ? previous.reading : null,
-    proposal: sameLink ? previous.proposal : null,
-    status: 'sin_revisar',
-    diffPct: null
-  })
-}
-
-function sharedCounts(
-  products: readonly { productURL: string; linkKind: string }[]
-): Map<string, number> {
-  const counts = new Map<string, number>()
-  for (const product of products) {
-    if (product.linkKind === 'referido') {
-      counts.set(product.productURL, (counts.get(product.productURL) ?? 0) + 1)
-    }
-  }
-  return counts
 }
 
 export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
@@ -103,12 +75,27 @@ export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
       (await (await mongoSource())(ids)).map((product) => [product.id, product])
     )
     await saveProducts((products) => {
-      const counts = sharedCounts(products.map((product) => fresh.get(product.id) ?? product))
-      return products.map((product) => {
+      // A product that just got its first ML link joins the catalog.
+      const joining = [...fresh.values()].filter(
+        (source) => isMeliUrl(source.productURL) && !products.some((p) => p.id === source.id)
+      )
+      const all = [...products, ...joining.map((source) => fromSource(source, undefined, 1))]
+      const counts = sharedCounts(all.map((product) => fresh.get(product.id) ?? product))
+      return all.map((product) => {
         const source = fresh.get(product.id) ?? product
         return fromSource(source, product, counts.get(source.productURL) ?? 1)
       })
     })
+  }
+
+  /** A product of the catalog, or of the owner in Mongo when its link is not from ML yet. */
+  async function find(id: string): Promise<Product | null> {
+    const known = (await catalog()).products.find((product) => product.id === id)
+    if (known) {
+      return known
+    }
+    const [source] = await (await mongoSource())([id])
+    return source ? fromSource(source, undefined, 1) : null
   }
 
   async function status(): Promise<ConnectionStatus> {
@@ -251,6 +238,7 @@ export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
 
   registerReferralHandlers(orca, {
     catalog,
+    find,
     saveProducts,
     recordAttempts: (attempts) => repository.recordAttempts(attempts),
     verify: (ids) => startAudit(ids),
