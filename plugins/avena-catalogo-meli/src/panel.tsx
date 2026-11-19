@@ -49,6 +49,9 @@ import { PriceBulk } from './price-bulk'
 import { money, ProductDetail } from './product-detail'
 import { ReferralBulk } from './referral-bulk'
 import { StatusLegend } from './status-legend'
+import { OrdersPanel } from './orders-panel'
+import { SchedulesPanel } from './schedules-panel'
+import { loadSchedules } from './schedules-state'
 import type { CatalogView, Product, ProductStatus } from './protocol'
 
 const STATUS_ORDER: readonly ProductStatus[] = [...REVIEW_STATUSES, 'ok', 'sin_revisar']
@@ -118,10 +121,12 @@ export function setup(ctx: PanelContext): void {
     plugin.on('audit.progress', (payload) => set(progress, payload)),
     plugin.on('referrals.progress', (payload) => set(referralProgress, payload)),
     plugin.on('repairs.progress', (payload) => set(repairProgress, payload)),
-    plugin.on('catalog.changed', () => void refreshAll())
+    plugin.on('catalog.changed', () => void refreshAll()),
+    plugin.on('schedules.changed', () => void loadSchedules())
   )
   void loadView()
   void loadConnection().catch(() => undefined)
+  void loadSchedules().catch(() => undefined)
 }
 
 function Toolbar() {
@@ -252,6 +257,15 @@ export default function Panel() {
         </Stack>
       )}
       <ProductDetail />
+      <Collapsible title="Tareas programadas" description="Lo que corre solo, a su hora">
+        <SchedulesPanel />
+      </Collapsible>
+      <Collapsible
+        title="Pedidos de compra (prueba)"
+        description="Cola simulada hasta conectar el backend"
+      >
+        <OrdersPanel />
+      </Collapsible>
       {!missing ? (
         <Collapsible title="Conexiones" description="Mongo, backend y MercadoLibre">
           <ConnectionForm />
