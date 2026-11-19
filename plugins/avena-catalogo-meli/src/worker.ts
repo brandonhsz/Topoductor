@@ -6,7 +6,7 @@ import { mongoCatalogSource, type CatalogSource, type MongoLocation } from './ca
 import { backendCredentials, mongoLocation, readCatalogConfig } from './catalog-config'
 import { isMeliUrl, isReferralUrl, pricePayload, withStatus } from './catalog-status'
 import { CatalogDb } from './catalog-db'
-import { CheckoutBrowser, type CheckoutClient } from './checkout-browser'
+import { CheckoutBrowser, type CheckoutClient, type CheckoutOptions } from './checkout-browser'
 import { withLocalPanels } from './local-panels'
 import { ScheduleStore } from './schedule-store'
 import { wireSchedules } from './schedule-wiring'
@@ -25,7 +25,7 @@ export type WorkerDeps = {
   openDb: OpenCatalogDb
   fetchImage: ImageFetcher
   openSchedules(path: string): ScheduleStore
-  checkout(cliPath: string): CheckoutClient
+  checkout(cliPath: string, options: CheckoutOptions): CheckoutClient
 }
 
 const DEFAULT_CLI = '/Applications/Topo.app/Contents/Resources/bin/topo'
@@ -37,7 +37,7 @@ const realDeps: WorkerDeps = {
   openDb: (path) => new CatalogDb(path),
   fetchImage: imageFetcher(),
   openSchedules: (path) => new ScheduleStore(path),
-  checkout: (cliPath) => new CheckoutBrowser(new MeliBrowser(cliRunner(cliPath)))
+  checkout: (cliPath, options) => new CheckoutBrowser(new MeliBrowser(cliRunner(cliPath)), options)
 }
 
 function message(error: unknown): string {
@@ -263,7 +263,17 @@ export function activateWith(rawOrca: OrcaWorkerApi, deps: WorkerDeps): void {
     databasePath: () => repository.path(),
     openStore: deps.openSchedules,
     products: async () => (await catalog()).products,
-    checkout: async () => deps.checkout(await cliPath())
+    checkout: async () => {
+      const minutes = Number(await orca.settings.get('captchaWaitMinutes'))
+      return deps.checkout(await cliPath(), {
+        waitMs: (Number.isFinite(minutes) && minutes > 0 ? minutes : 15) * 60_000,
+        onVerification: (body) => {
+          void orca.host
+            .call('notifications.show', { title: 'MercadoLibre pide captcha', body })
+            .catch(() => undefined)
+        }
+      })
+    }
   })
 }
 

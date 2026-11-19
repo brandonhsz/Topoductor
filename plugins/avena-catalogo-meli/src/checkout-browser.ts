@@ -53,8 +53,58 @@ export function showsAddress(pageText: string, address: OrderAddress): boolean {
 
 const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
+export type CheckoutOptions = {
+  /** How long to wait for a person to solve a captcha before giving up. */
+  waitMs?: number
+  pollMs?: number
+  /** Pause between checkout steps, so pages settle. */
+  stepPauseMs?: number
+  /** Called once per captcha, so someone hears about it while the tab waits in front. */
+  onVerification?(message: string): void
+}
+
 export class CheckoutBrowser implements CheckoutClient {
-  constructor(private readonly browser: MeliBrowser) {}
+  private readonly waitMs: number
+  private readonly pollMs: number
+  private readonly stepPauseMs: number
+
+  constructor(
+    private readonly browser: MeliBrowser,
+    private readonly options: CheckoutOptions = {}
+  ) {
+    this.waitMs = options.waitMs ?? 15 * 60_000
+    this.pollMs = options.pollMs ?? 3000
+    this.stepPauseMs = options.stepPauseMs ?? 5000
+  }
+
+  private async path(pageId: string): Promise<string> {
+    return text(field(await this.step(pageId, PAGE_PATH_EXPRESSION), 'path')) ?? ''
+  }
+
+  /**
+   * When MercadoLibre shows a captcha, brings its tab to the front and waits for a person to solve
+   * it. Nothing here ever answers the captcha. `false` when nobody solved it in time.
+   */
+  private async passVerification(pageId: string, context: string): Promise<boolean> {
+    if (!isVerificationPath(await this.path(pageId))) {
+      return true
+    }
+    await this.browser
+      .run(['tab', 'switch', '--page', pageId, '--focus'], 15_000)
+      .catch(() => undefined)
+    this.options.onVerification?.(
+      `MercadoLibre pidió un captcha ${context}. Resuélvelo en el navegador de Topo: la compra sigue sola.`
+    )
+    const deadline = Date.now() + this.waitMs
+    while (Date.now() < deadline) {
+      await pause(this.pollMs)
+      if (!isVerificationPath(await this.path(pageId).catch(() => '/captcha'))) {
+        await pause(this.stepPauseMs)
+        return true
+      }
+    }
+    return false
+  }
 
   private async step(pageId: string, expression: string): Promise<unknown> {
     return this.browser.evaluate(pageId, expression, 60_000)
@@ -75,22 +125,26 @@ export class CheckoutBrowser implements CheckoutClient {
       message
     })
     const { browserPageId: page } = await this.browser.findTab()
+    const unsolved = () =>
+      stop(
+        'verificacion',
+        `MercadoLibre pidió un captcha y nadie lo resolvió en ${Math.round(this.waitMs / 60_000)} min`
+      )
     // Through the referral, so the purchase carries the affiliate parameters.
     await this.goto(page, request.referralUrl)
     await this.browser
       .run(['wait', '--page', page, '--selector', '.rl-card-featured'], 25_000)
       .catch(() => undefined)
+    if (!(await this.passVerification(page, 'al abrir el referido'))) {
+      return unsolved()
+    }
     const productUrl = text(field(await this.step(page, FEATURED_PRODUCT_EXPRESSION), 'url'))
     if (!productUrl) {
       return stop('referido', 'El referido no muestra el producto (link roto)')
     }
     await this.goto(page, productUrl)
-    const path = text(field(await this.step(page, PAGE_PATH_EXPRESSION), 'path')) ?? ''
-    if (isVerificationPath(path)) {
-      return stop(
-        'verificacion',
-        'MercadoLibre pidió verificación (captcha): complétala en el navegador de Topo y reintenta'
-      )
+    if (!(await this.passVerification(page, 'al abrir el producto'))) {
+      return unsolved()
     }
     for (const expression of [quantityExpression(request.quantity), BUY_NOW_EXPRESSION]) {
       const done = await this.step(page, expression)
@@ -98,7 +152,7 @@ export class CheckoutBrowser implements CheckoutClient {
         return stop('producto', text(field(done, 'message')) ?? 'No se pudo preparar la compra')
       }
     }
-    await pause(5000)
+    await pause(this.stepPauseMs)
     let addressDone = false
     for (let index = 0; index < MAX_STEPS; index++) {
       const state = await this.step(page, CHECKOUT_STATE_EXPRESSION)
@@ -113,7 +167,10 @@ export class CheckoutBrowser implements CheckoutClient {
         }
       }
       if (step === 'verificacion') {
-        return stop(step, 'MercadoLibre pidió verificación de la cuenta')
+        if (!(await this.passVerification(page, 'durante el pago'))) {
+          return stop(step, 'MercadoLibre pidió verificación de la cuenta y nadie la completó')
+        }
+        continue
       }
       if (step === 'pago') {
         return stop(step, 'Falta elegir o guardar un medio de pago en la cuenta')
@@ -155,7 +212,7 @@ export class CheckoutBrowser implements CheckoutClient {
       } else {
         return stop(step, `Paso del checkout no reconocido (${text(field(state, 'path')) ?? ''})`)
       }
-      await pause(5000)
+      await pause(this.stepPauseMs)
     }
     return stop('checkout', 'El checkout no terminó en los pasos esperados')
   }
