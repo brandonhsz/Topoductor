@@ -3,6 +3,10 @@ import { join } from 'node:path'
 import { getAppEnvironment } from '../../shared/app-environment'
 import { normalizeHarnessFlow } from '../../shared/harness/harness-flow-normalize'
 import type { HarnessFlow } from '../../shared/harness/harness-flow-types'
+import type {
+  HarnessFlowAuthor,
+  HarnessFlowChange
+} from '../../shared/harness/harness-flow-version-types'
 import {
   createHarnessExampleFlow,
   HARNESS_EXAMPLE_FLOW_ID,
@@ -127,7 +131,17 @@ export function getHarnessFlow(flowId: string): Promise<HarnessFlow | null> {
   )
 }
 
-export function saveHarnessFlow(raw: unknown): Promise<HarnessFlow> {
+export type HarnessFlowSaveOptions = {
+  /** Rejects with `harness_flow_conflict` when the stored flow changed since this value. */
+  expectedUpdatedAt?: number
+  source?: HarnessFlowAuthor
+  summary?: string
+}
+
+export function saveHarnessFlow(
+  raw: unknown,
+  _options?: HarnessFlowSaveOptions
+): Promise<HarnessFlow> {
   return serialized(async () => {
     const file = await loadSeeded()
     if (!file) {
@@ -157,4 +171,15 @@ export function deleteHarnessFlow(flowId: string): Promise<void> {
       })
     }
   })
+}
+
+export function restoreHarnessFlowVersion(
+  _flowId: string,
+  _versionId: string
+): Promise<HarnessFlow> {
+  return Promise.reject(new Error('not_implemented'))
+}
+
+export function onHarnessFlowsChanged(_listener: (change: HarnessFlowChange) => void): () => void {
+  throw new Error('not_implemented')
 }

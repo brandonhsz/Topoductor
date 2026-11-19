@@ -32,9 +32,9 @@ import {
   copyHarnessFlowForRepo,
   createEmptyHarnessFlow,
   createHarnessNode,
-  duplicateHarnessFlow,
-  harnessFlowProblems
+  duplicateHarnessFlow
 } from './harness-flow-editing'
+import { harnessFlowProblems } from '../../../../shared/harness/harness-flow-problems'
 import { useHarnessFlows } from './use-harness-data'
 import type { HarnessWorkspaceContext } from './use-harness-workspace'
 

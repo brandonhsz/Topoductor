@@ -3,7 +3,7 @@ import { z } from 'zod'
 const MAX_OUTPUT = 256 * 1024
 
 /** The calling chat names itself by session id (chats) or worktree id (terminals). */
-const HarnessCaller = z.object({
+export const HarnessCaller = z.object({
   sessionId: z.string().min(1).max(256).optional(),
   worktreeId: z.string().min(1).max(4096).optional()
 })
