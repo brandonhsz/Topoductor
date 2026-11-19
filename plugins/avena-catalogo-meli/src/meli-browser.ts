@@ -67,12 +67,26 @@ export function cliRunner(cliPath: string): CliRunner {
 export type Tab = { browserPageId: string; url: string; worktreeId?: string }
 
 export class MeliBrowser {
-  constructor(readonly run: CliRunner) {}
+  private readonly workspace: string | null
+
+  /** `workspacePath`: the Topo workspace whose browser to use; any workspace when empty. */
+  constructor(
+    readonly run: CliRunner,
+    workspacePath?: string
+  ) {
+    this.workspace = workspacePath?.trim().replace(/\/+$/, '') || null
+  }
+
+  private inWorkspace(worktreeId: string | null): boolean {
+    return !this.workspace || (worktreeId ?? '').endsWith(`::${this.workspace}`)
+  }
 
   async findTab(): Promise<Tab> {
     const listed = await this.run(['tab', 'list', '--worktree', 'all'], 20_000)
-    const tab = records(field(listed, 'tabs')).find((candidate) =>
-      /^https:\/\/[a-z]+\.mercadolibre\.com\.mx\//.test(text(candidate.url) ?? '')
+    const tab = records(field(listed, 'tabs')).find(
+      (candidate) =>
+        /^https:\/\/[a-z]+\.mercadolibre\.com\.mx\//.test(text(candidate.url) ?? '') &&
+        this.inWorkspace(text(candidate.worktreeId))
     )
     const tabId = text(tab?.browserPageId)
     if (tab && tabId) {
@@ -84,9 +98,13 @@ export class MeliBrowser {
     }
     // The worker runs outside any workspace, so `--worktree active` cannot resolve: name one.
     const worktrees = records(field(await this.run(['worktree', 'list'], 20_000), 'worktrees'))
-    const worktreeId = text(worktrees[0]?.id)
+    const worktreeId = text(worktrees.find((worktree) => this.inWorkspace(text(worktree.id)))?.id)
     if (!worktreeId) {
-      throw new MeliSessionError('Abre un workspace en Topo para poder usar MercadoLibre.')
+      throw new MeliSessionError(
+        this.workspace
+          ? `No encontré el workspace ${this.workspace} en Topo: revisa el ajuste «Workspace del navegador».`
+          : 'Abre un workspace en Topo para poder usar MercadoLibre.'
+      )
     }
     const created = await this.run(
       ['tab', 'create', '--url', LINKBUILDER_URL, '--worktree', `id:${worktreeId}`],

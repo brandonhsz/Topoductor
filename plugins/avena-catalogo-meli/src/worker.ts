@@ -20,24 +20,25 @@ import type { ActionResult, Catalog, CatalogConfig, Product } from './protocol'
 
 export type WorkerDeps = {
   catalogSource(uri: string, location: MongoLocation): CatalogSource
-  meli(cliPath: string): MeliClient
+  meli(cliPath: string, workspace?: string): MeliClient
   patch(credentials: BackendCredentials, updates: readonly SupplementUpdate[]): Promise<unknown>
   openDb: OpenCatalogDb
   fetchImage: ImageFetcher
   openSchedules(path: string): ScheduleStore
-  checkout(cliPath: string, options: CheckoutOptions): CheckoutClient
+  checkout(cliPath: string, options: CheckoutOptions, workspace?: string): CheckoutClient
 }
 
 const DEFAULT_CLI = '/Applications/Topo.app/Contents/Resources/bin/topo'
 
 const realDeps: WorkerDeps = {
   catalogSource: mongoCatalogSource,
-  meli: (cliPath) => new MeliBrowser(cliRunner(cliPath)),
+  meli: (cliPath, workspace) => new MeliBrowser(cliRunner(cliPath), workspace),
   patch: patchSupplements,
   openDb: (path) => new CatalogDb(path),
   fetchImage: imageFetcher(),
   openSchedules: (path) => new ScheduleStore(path),
-  checkout: (cliPath, options) => new CheckoutBrowser(new MeliBrowser(cliRunner(cliPath)), options)
+  checkout: (cliPath, options, workspace) =>
+    new CheckoutBrowser(new MeliBrowser(cliRunner(cliPath), workspace), options)
 }
 
 function message(error: unknown): string {
@@ -74,7 +75,9 @@ export function activateWith(rawOrca: OrcaWorkerApi, deps: WorkerDeps): void {
     const configured = await orca.settings.get('topoCli')
     return String(configured || process.env.TOPO_CLI_COMMAND || DEFAULT_CLI)
   }
-  const meli = async (): Promise<MeliClient> => deps.meli(await cliPath())
+  const workspace = async (): Promise<string> =>
+    String((await orca.settings.get('browserWorkspace')) ?? '')
+  const meli = async (): Promise<MeliClient> => deps.meli(await cliPath(), await workspace())
 
   /** Re-reads `ids` from Mongo after a write, so the panel shows what the database holds. */
   async function refresh(ids: readonly string[]): Promise<void> {
@@ -265,14 +268,18 @@ export function activateWith(rawOrca: OrcaWorkerApi, deps: WorkerDeps): void {
     products: async () => (await catalog()).products,
     checkout: async () => {
       const minutes = Number(await orca.settings.get('captchaWaitMinutes'))
-      return deps.checkout(await cliPath(), {
-        waitMs: (Number.isFinite(minutes) && minutes > 0 ? minutes : 15) * 60_000,
-        onVerification: (body) => {
-          void orca.host
-            .call('notifications.show', { title: 'MercadoLibre pide captcha', body })
-            .catch(() => undefined)
-        }
-      })
+      return deps.checkout(
+        await cliPath(),
+        {
+          waitMs: (Number.isFinite(minutes) && minutes > 0 ? minutes : 15) * 60_000,
+          onVerification: (body) => {
+            void orca.host
+              .call('notifications.show', { title: 'MercadoLibre pide captcha', body })
+              .catch(() => undefined)
+          }
+        },
+        await workspace()
+      )
     }
   })
 }
