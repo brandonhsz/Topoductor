@@ -25,7 +25,8 @@ const MAX_ROUNDS = 5
 
 function titles(answer: unknown): string[] {
   const listed = field(answer, 'titles')
-  return Array.isArray(listed) ? listed.flatMap((title) => text(title) ?? []) : []
+  // In the narrow cart each product has two «Eliminar producto» buttons: one title per product.
+  return Array.isArray(listed) ? [...new Set(listed.flatMap((title) => text(title) ?? []))] : []
 }
 
 /** Every product in the cart, both tabs, read from the pages. */

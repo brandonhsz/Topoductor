@@ -343,3 +343,9 @@ test('a product page without a readable price stops when there is no fixed cap',
   assert.equal(result.stage, 'producto')
   assert.match(result.message, /precio/)
 })
+
+test('a product with two delete buttons (narrow cart) is named once', async () => {
+  const meli = fakeMeli({ cart: { fullSuper: ['Omega 3 Salmón B Life', 'Omega 3 Salmón B Life'] } })
+  const result = await buy(meli).checkout(REQUEST)
+  assert.match(result.message, /se quitó del carrito: Omega 3 Salmón B Life ·/)
+})
