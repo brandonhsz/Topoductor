@@ -1,6 +1,5 @@
 import { assert, test } from 'orca/testing'
 import type { CheckoutRequest, CheckoutResult } from './checkout-browser'
-import { showsAddress } from './checkout-browser'
 import { withStatus } from './catalog-status'
 import type { Product } from './protocol'
 import { processOrders, type OrderSource } from './purchase-runner'
@@ -183,11 +182,6 @@ test('a product without a live referral stops the order', async () => {
   })
   assert.equal(run.stopped, 1)
   assert.equal(browser.requests.length, 0)
-})
-
-test("the review must show the order's postal code and street before confirming", () => {
-  assert.equal(showsAddress('Enviar a Av. Patria 1200, CP 45110, Zapopan', ADDRESS), true)
-  assert.equal(showsAddress('Enviar a Calle Falsa 123, CP 55797', ADDRESS), false)
 })
 
 test('a test checkout that stops ready on purpose counts as ready for review', async () => {

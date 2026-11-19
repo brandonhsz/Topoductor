@@ -2,20 +2,17 @@
 // page first and stops with the step it reached when anything is not as expected.
 import {
   ADD_TO_CART_EXPRESSION,
-  addressFormExpression,
+  BUY_NOW_EXPRESSION,
+  CART_CLEAR_EXPRESSION,
   CART_CONTINUE_EXPRESSION,
   CART_URL,
-  PRODUCT_ACTIONS_EXPRESSION,
-  BUY_NOW_EXPRESSION,
-  CHECKOUT_STATE_EXPRESSION,
-  CONFIRM_EXPRESSION,
-  CONTINUE_EXPRESSION,
   FEATURED_PRODUCT_EXPRESSION,
   isVerificationPath,
   PAGE_PATH_EXPRESSION,
-  quantityExpression,
-  SAVE_ADDRESS_EXPRESSION
+  PRODUCT_ACTIONS_EXPRESSION,
+  quantityExpression
 } from './checkout-scripts'
+import { walkCheckout } from './checkout-steps'
 import { amount, field, text } from './json-fields'
 import type { MeliBrowser, Tab } from './meli-browser'
 import type { OrderAddress, PurchaseMode } from './schedule-types'
@@ -40,22 +37,7 @@ export type CheckoutResult = {
 
 export type CheckoutClient = { checkout(request: CheckoutRequest): Promise<CheckoutResult> }
 
-const MAX_STEPS = 8
-
-function normalize(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
-/** Whether the review page names the order's postal code and street. */
-export function showsAddress(pageText: string, address: OrderAddress): boolean {
-  const page = normalize(pageText)
-  return page.includes(normalize(address.postalCode)) && page.includes(normalize(address.street))
-}
+export { showsAddress } from './checkout-steps'
 
 const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -137,12 +119,10 @@ export class CheckoutBrowser implements CheckoutClient {
   private async startPurchase(
     page: string,
     request: CheckoutRequest
-  ): Promise<CheckoutResult | null> {
-    const stop = (message: string, stage = 'producto'): CheckoutResult => ({
-      stage,
-      total: null,
-      orderNumber: null,
-      message
+  ): Promise<{ stopped: CheckoutResult | null; viaCart: boolean }> {
+    const stop = (message: string, stage = 'producto') => ({
+      stopped: { stage, total: null, orderNumber: null, message },
+      viaCart: false
     })
     const quantity = await this.step(page, quantityExpression(request.quantity))
     if (field(quantity, 'ok') !== true) {
@@ -152,7 +132,7 @@ export class CheckoutBrowser implements CheckoutClient {
     if (field(actions, 'buyNow') === true) {
       const bought = await this.step(page, BUY_NOW_EXPRESSION)
       return field(bought, 'ok') === true
-        ? null
+        ? { stopped: null, viaCart: false }
         : stop(text(field(bought, 'message')) ?? 'No se pudo usar «Comprar ahora»')
     }
     if (field(actions, 'addToCart') !== true) {
@@ -167,15 +147,6 @@ export class CheckoutBrowser implements CheckoutClient {
         'carrito'
       )
     }
-    if (request.mode === 'prueba') {
-      return {
-        ...stop(
-          'Solo se vende por carrito y el carrito está vacío: en modo real se agregaría y seguiría al pago (modo prueba: no se agregó)',
-          'carrito'
-        ),
-        testPassed: true
-      }
-    }
     const added = await this.step(page, ADD_TO_CART_EXPRESSION)
     if (field(added, 'ok') !== true) {
       return stop(text(field(added, 'message')) ?? 'No se pudo agregar al carrito')
@@ -184,7 +155,7 @@ export class CheckoutBrowser implements CheckoutClient {
     await this.goto(page, CART_URL)
     const next = await this.step(page, CART_CONTINUE_EXPRESSION)
     return field(next, 'ok') === true
-      ? null
+      ? { stopped: null, viaCart: true }
       : stop(text(field(next, 'message')) ?? 'No se pudo continuar desde el carrito', 'carrito')
   }
 
@@ -218,75 +189,30 @@ export class CheckoutBrowser implements CheckoutClient {
     if (!(await this.passVerification(tab, 'al abrir el producto'))) {
       return unsolved()
     }
-    const ready = await this.startPurchase(page, request)
-    if (ready) {
-      return ready
+    const started = await this.startPurchase(page, request)
+    if (started.stopped) {
+      return started.stopped
     }
     await pause(this.stepPauseMs)
-    let addressDone = false
-    for (let index = 0; index < MAX_STEPS; index++) {
-      const state = await this.step(page, CHECKOUT_STATE_EXPRESSION)
-      const step = text(field(state, 'step')) ?? 'desconocido'
-      const total = amount(field(state, 'total'))
-      if (step === 'comprado') {
-        return {
-          stage: 'comprado',
-          total,
-          orderNumber: text(field(state, 'orderNumber')),
-          message: 'Compra confirmada'
-        }
-      }
-      if (step === 'verificacion') {
-        if (!(await this.passVerification(tab, 'durante el pago'))) {
-          return stop(step, 'MercadoLibre pidió verificación de la cuenta y nadie la completó')
-        }
-        continue
-      }
-      if (step === 'pago') {
-        return stop(step, 'Falta elegir o guardar un medio de pago en la cuenta')
-      }
-      if (step === 'domicilio') {
-        if (addressDone) {
-          return stop(step, 'MercadoLibre no aceptó el domicilio')
-        }
-        const filled = await this.step(page, addressFormExpression(request.address))
-        if (field(filled, 'ok') !== true) {
-          return stop(step, text(field(filled, 'message')) ?? 'No se pudo llenar el domicilio')
-        }
-        if (request.mode === 'prueba') {
-          return {
-            ...stop(step, 'Domicilio llenado (modo prueba: no se guardó en la cuenta)'),
-            testPassed: true
-          }
-        }
-        await this.step(page, SAVE_ADDRESS_EXPRESSION)
-        addressDone = true
-      } else if (step === 'resumen') {
-        if (total === null) {
-          return stop(step, 'No se pudo leer el total del resumen')
-        }
-        // A saved address of the account would skip the form: never confirm another address.
-        if (!showsAddress(text(field(state, 'text')) ?? '', request.address)) {
-          return stop(step, 'El resumen no muestra el domicilio del pedido', total)
-        }
-        if (total > request.maxTotal) {
-          return stop(step, `El total $${total} supera el tope $${request.maxTotal}`, total)
-        }
-        if (request.mode === 'prueba') {
-          return stop(
-            'resumen',
-            `Listo para confirmar por $${total} (modo prueba: no se compró)`,
-            total
-          )
-        }
-        await this.step(page, CONFIRM_EXPRESSION)
-      } else if (step === 'continuar') {
-        await this.step(page, CONTINUE_EXPRESSION)
-      } else {
-        return stop(step, `Paso del checkout no reconocido (${text(field(state, 'path')) ?? ''})`)
-      }
+    const result = await walkCheckout({
+      request,
+      step: (expression) => this.step(page, expression),
+      pause: async () => {
+        await pause(this.stepPauseMs)
+      },
+      passVerification: () => this.passVerification(tab, 'durante el pago')
+    })
+    // The cart was empty before: whatever is in it now is this purchase's, and it never stays.
+    if (started.viaCart && result.stage !== 'comprado') {
+      await this.goto(page, CART_URL)
       await pause(this.stepPauseMs)
+      const cleared = await this.step(page, CART_CLEAR_EXPRESSION)
+      const removed = amount(field(cleared, 'removed')) ?? 0
+      return {
+        ...result,
+        message: `${result.message}${removed > 0 ? ' · se quitó del carrito' : ' · revisa el carrito: no se pudo quitar'}`
+      }
     }
-    return stop('checkout', 'El checkout no terminó en los pasos esperados')
+    return result
   }
 }

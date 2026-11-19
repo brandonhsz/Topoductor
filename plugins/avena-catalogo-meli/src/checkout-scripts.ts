@@ -5,7 +5,7 @@ import type { OrderAddress } from './schedule-types'
 const HELPERS = `
   const norm = (t) => (t || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/\\s+/g, ' ').trim();
   const visible = (el) => !!el && el.getClientRects().length > 0 && !el.disabled;
-  const buttons = () => [...document.querySelectorAll('button, a[role=button], input[type=submit]')].filter(visible);
+  const buttons = () => [...document.querySelectorAll('button, a[role=button], a.andes-button, input[type=submit]')].filter(visible);
   const byText = (re) => buttons().find((b) => re.test(norm(b.textContent || b.value)));
   const money = (text) => { const m = (text || '').replace(/\\s/g, '').match(/\\$([\\d.,]+)/); return m ? Number(m[1].replace(/,/g, '')) : null };
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -40,39 +40,44 @@ export const BUY_NOW_EXPRESSION = `(async () => {${HELPERS}
   return JSON.stringify({ ok: true });
 })()`
 
-/** Fills MercadoLibre's "Nuevo domicilio" form; it does not press «Guardar». */
+/**
+ * Fills MercadoLibre's "Nuevo domicilio" form; it does not press «Guardar». The postal code fills
+ * Estado, Municipio and Localidad by itself; Colonia is a list of that code's neighbourhoods.
+ */
 export function addressFormExpression(address: OrderAddress): string {
   return `(async () => {${HELPERS}
   const a = ${JSON.stringify(address)};
   const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
-  const field = (label) => {
-    const l = [...document.querySelectorAll('label')].find((x) => norm(x.textContent).startsWith(norm(label)));
-    const id = l && l.getAttribute('for');
-    return (id && document.getElementById(id)) || [...document.querySelectorAll('input')].find((i) => norm(i.getAttribute('aria-label')).startsWith(norm(label)));
+  const labelOf = (el) => {
+    const by = el.getAttribute('aria-labelledby');
+    const own = el.id && document.querySelector('label[for="' + el.id + '"]');
+    return norm((by && document.getElementById(by)?.textContent) || (own && own.textContent) || el.getAttribute('aria-label') || '');
   };
+  const input = (label) => [...document.querySelectorAll('input, textarea')].find((i) => i.type !== 'hidden' && labelOf(i).startsWith(norm(label)));
+  const combo = (label) => [...document.querySelectorAll('[role=combobox]')].find((b) => b.tagName !== 'INPUT' && labelOf(b).startsWith(norm(label)));
   const type = async (label, value) => {
-    const input = field(label);
-    if (!input) throw new Error('No se encontró el campo «' + label + '»');
-    input.focus(); setter.call(input, value);
-    input.dispatchEvent(new Event('input', { bubbles: true })); input.dispatchEvent(new Event('change', { bubbles: true }));
-    input.blur(); await wait(500);
+    const field = input(label);
+    if (!field) throw new Error('No se encontró el campo «' + label + '»');
+    field.focus(); setter.call(field, value);
+    field.dispatchEvent(new Event('input', { bubbles: true })); field.dispatchEvent(new Event('change', { bubbles: true }));
+    field.blur(); await wait(500);
   };
   const choose = async (label, wanted) => {
-    const box = [...document.querySelectorAll('[role=combobox]')].find((b) => norm(b.getAttribute('aria-label') || '').startsWith(norm(label)) || norm(b.closest('div')?.textContent || '').startsWith(norm(label)));
+    const box = combo(label);
     if (!box) throw new Error('No se encontró la lista «' + label + '»');
-    box.click(); await wait(800);
+    if (norm(box.textContent) === norm(wanted)) return;
+    box.click(); await wait(1200);
     const options = [...document.querySelectorAll('[role=option]')];
-    const option = options.find((o) => norm(o.textContent) === norm(wanted)) || options.find((o) => norm(o.textContent).includes(norm(wanted))) || (options.length === 1 ? options[0] : null);
+    const option = options.find((o) => norm(o.textContent) === norm(wanted)) || options.find((o) => norm(o.textContent).includes(norm(wanted)));
     if (!option) throw new Error('«' + wanted + '» no está entre las opciones de «' + label + '»');
     option.click(); await wait(800);
   };
   try {
-    await type('Código Postal', a.postalCode); await wait(1500);
+    await type('Código Postal', a.postalCode); await wait(2500);
     await choose('Estado', a.state);
     await choose('Municipio', a.municipality);
-    const locality = [...document.querySelectorAll('[role=combobox]')].find((b) => /localidad/.test(norm(b.getAttribute('aria-label') || b.closest('div')?.textContent)));
-    if (locality) await choose('Localidad', a.municipality);
-    await type('Colonia', a.colonia);
+    if (combo('Localidad') && norm(combo('Localidad').textContent).startsWith('selecciona')) await choose('Localidad', a.municipality);
+    if (combo('Colonia')) await choose('Colonia', a.colonia); else await type('Colonia', a.colonia);
     await type('Dirección', a.street + ' ' + a.number);
     if (a.interior) await type('Número interior', a.interior);
     await type('Nombre y apellido', a.recipient);
@@ -95,17 +100,24 @@ export const SAVE_ADDRESS_EXPRESSION = `(async () => {${HELPERS}
 export const CHECKOUT_STATE_EXPRESSION = `JSON.stringify((() => {${HELPERS}
   const text = norm(document.body.innerText).slice(0, 6000);
   const path = location.pathname;
-  const confirm = byText(/^(confirmar compra|pagar|confirmar)$/);
+  const confirm = byText(/^(pagar y finalizar|confirmar compra|pagar|confirmar)$/);
   const totalLine = [...document.querySelectorAll('*')].reverse().find((el) => el.children.length < 4 && /^(total|pagas)\\b/.test(norm(el.textContent)) && /\\$/.test(el.textContent));
   const orderNumber = (text.match(/(?:compra|orden|pedido)[^0-9]{0,30}#?\\s?(\\d{8,})/) || [])[1] || null;
+  // The innermost block that holds the "Medios de pago" heading and its radio buttons.
+  const payment = [...document.querySelectorAll('section, div')]
+    .filter((el) => /^medios de pago/.test(norm(el.textContent)) && el.querySelector('input[type=radio]'))
+    .sort((a, b) => a.querySelectorAll('*').length - b.querySelectorAll('*').length)[0];
+  const paymentChosen = !!(payment && payment.querySelector('input[type=radio]:checked'));
   let step = 'desconocido';
   if (/captcha|account-verification|login|security/.test(path)) step = 'verificacion';
   else if (/congrats|felicidades|ya tenemos tu compra|compra realizada/.test(path + ' ' + text)) step = 'comprado';
+  else if (/\\/addresses\\/v3\\/map/.test(path)) step = 'mapa';
+  else if (/\\/addresses\\/extra-info/.test(path)) step = 'detalles';
   else if (/addresses/.test(path)) step = 'domicilio';
   else if (confirm) step = 'resumen';
-  else if (/elige como pagar|medio de pago|como quieres pagar/.test(text)) step = 'pago';
+  else if (/elige como pagar|como quieres pagar/.test(text)) step = 'pago';
   else if (byText(/^continuar$/)) step = 'continuar';
-  return { step, path, total: totalLine ? money(totalLine.textContent) : null, orderNumber, text };
+  return { step, path, total: totalLine ? money(totalLine.textContent) : null, orderNumber, paymentChosen, text };
 })())`
 
 export const CONTINUE_EXPRESSION = `(async () => {${HELPERS}
@@ -116,7 +128,7 @@ export const CONTINUE_EXPRESSION = `(async () => {${HELPERS}
 })()`
 
 export const CONFIRM_EXPRESSION = `(async () => {${HELPERS}
-  const confirm = byText(/^(confirmar compra|pagar|confirmar)$/);
+  const confirm = byText(/^(pagar y finalizar|confirmar compra|pagar|confirmar)$/);
   if (!confirm) return JSON.stringify({ ok: false, message: 'Ya no está el botón de confirmar' });
   confirm.click();
   return JSON.stringify({ ok: true });
@@ -154,4 +166,33 @@ export const CART_CONTINUE_EXPRESSION = `(async () => {${HELPERS}
   if (!next) return JSON.stringify({ ok: false, message: 'El carrito no muestra «Continuar»' });
   next.click();
   return JSON.stringify({ ok: true });
+})()`
+
+/** "Revisa la dirección": accepts the street and number it shows, then saves the address. */
+export const MAP_CONFIRM_EXPRESSION = `(async () => {${HELPERS}
+  const next = byText(/^continuar$/);
+  if (next) { next.click(); await wait(1500); }
+  const save = byText(/^guardar direccion$/);
+  if (!save) return JSON.stringify({ ok: false, message: 'No se encontró «Guardar dirección»' });
+  save.click();
+  return JSON.stringify({ ok: true });
+})()`
+
+/** "Cuéntanos más sobre tu dirección" is optional. */
+export const SKIP_DETAILS_EXPRESSION = `(async () => {${HELPERS}
+  const skip = byText(/^omitir$/);
+  if (!skip) return JSON.stringify({ ok: false, message: 'No se encontró «Omitir»' });
+  skip.click();
+  return JSON.stringify({ ok: true });
+})()`
+
+/** Removes every product of the cart; only used on a cart that was empty before the purchase. */
+export const CART_CLEAR_EXPRESSION = `(async () => {${HELPERS}
+  let removed = 0;
+  for (let tries = 0; tries < 20; tries++) {
+    const remove = [...document.querySelectorAll('button')].filter(visible).find((b) => norm(b.getAttribute('aria-label')) === 'eliminar producto');
+    if (!remove) break;
+    remove.click(); removed++; await wait(2500);
+  }
+  return JSON.stringify({ ok: true, removed });
 })()`
