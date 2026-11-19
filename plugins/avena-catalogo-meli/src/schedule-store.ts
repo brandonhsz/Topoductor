@@ -111,6 +111,18 @@ export class ScheduleStore {
       .run(at, ok ? 1 : 0, summary.slice(0, 2000), id)
   }
 
+  /** Closes what a restart cut off: unfinished runs fail, orders in progress wait again. */
+  recoverInterrupted(at: number): void {
+    this.db
+      .prepare(
+        'UPDATE schedule_runs SET finished_at = ?, ok = 0, summary = ? WHERE finished_at IS NULL'
+      )
+      .run(at, 'Interrumpida: el plugin se reinició a media tarea')
+    for (const order of this.orders('en_proceso')) {
+      this.saveOrder({ ...order, status: 'pendiente', updatedAt: at })
+    }
+  }
+
   runs(limit = 30): ScheduleRun[] {
     return this.db
       .prepare('SELECT * FROM schedule_runs ORDER BY started_at DESC LIMIT ?')

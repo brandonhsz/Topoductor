@@ -21,6 +21,8 @@ export function startScheduler(options: {
 }): Scheduler {
   const now = options.now ?? Date.now
   let busy: Promise<unknown> = Promise.resolve()
+  // Nothing runs yet in this process, so anything still open was cut off by a restart.
+  options.store.recoverInterrupted(now())
 
   const execute = (kind: TaskKind, mode: PurchaseMode, scheduleId: string | null) => {
     const job = busy.then(async (): Promise<TaskOutcome> => {

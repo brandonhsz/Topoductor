@@ -63,3 +63,43 @@ test('a paused task never runs', async () => {
   scheduler.stop()
   assert.deepEqual(ran, [])
 })
+
+test('a run cut off by a restart is closed and its order goes back to pending', async () => {
+  const store = new ScheduleStore(':memory:')
+  store.startRun(null, 'processOrders', 1)
+  store.saveOrder({
+    id: 'o1',
+    createdAt: 1,
+    updatedAt: 1,
+    status: 'en_proceso',
+    address: {
+      recipient: 'Prueba',
+      phone: '1',
+      street: 'Calle',
+      number: '1',
+      interior: null,
+      colonia: 'Centro',
+      postalCode: '45110',
+      municipality: 'Zapopan',
+      state: 'Jalisco',
+      references: null
+    },
+    items: [{ productId: 'c', quantity: 1 }],
+    cap: 400,
+    results: []
+  })
+  const scheduler = startScheduler({
+    store,
+    run: async () => ({ ok: true, summary: '' }),
+    changed: () => undefined,
+    notify: () => undefined,
+    now: () => 50,
+    everyMs: 3_600_000
+  })
+  scheduler.stop()
+  const [run] = store.runs()
+  assert.equal(run?.finishedAt, 50)
+  assert.equal(run?.ok, false)
+  assert.match(run?.summary ?? '', /Interrumpida/)
+  assert.equal(store.orders()[0]?.status, 'pendiente')
+})
