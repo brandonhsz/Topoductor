@@ -2,7 +2,6 @@ import { assert, test } from 'orca/testing'
 import { MONEY_HELPER } from './checkout-scripts'
 
 // Runs the page helper exactly as the checkout pages do.
-// oxlint-disable-next-line no-new-func -- SAFETY: the code under test is our own constant string
 const money = new Function('text', `${MONEY_HELPER}; return money(text)`)
 
 test('amounts read as MercadoLibre writes them: cents apart, struck price first', () => {
