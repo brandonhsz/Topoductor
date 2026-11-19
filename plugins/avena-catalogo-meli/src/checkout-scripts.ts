@@ -149,8 +149,9 @@ export const ADD_TO_CART_EXPRESSION = `(async () => {${HELPERS}
 export const CART_URL = 'https://www.mercadolibre.com.mx/gz/cart/v2'
 
 export const CART_CONTINUE_EXPRESSION = `(async () => {${HELPERS}
-  const next = byText(/^continuar compra$/);
-  if (!next) return JSON.stringify({ ok: false, message: 'El carrito no muestra «Continuar compra»' });
+  // The cart labels it «Continuar compra» or «Continuar (N)», N being the products selected.
+  const next = byText(/^continuar( compra)?( \\(\\d+\\))?$/);
+  if (!next) return JSON.stringify({ ok: false, message: 'El carrito no muestra «Continuar»' });
   next.click();
   return JSON.stringify({ ok: true });
 })()`
