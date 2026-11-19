@@ -50,6 +50,10 @@ export class ScheduleStore {
     this.db = new DatabaseSync(path)
     this.db.exec('PRAGMA busy_timeout = 5000;')
     this.db.exec(SCHEMA)
+    const columns = this.db.prepare('PRAGMA table_info(schedules)').all()
+    if (!columns.some((column) => column.name === 'every_hours')) {
+      this.db.exec('ALTER TABLE schedules ADD COLUMN every_hours INTEGER')
+    }
   }
 
   schedules(): Schedule[] {
@@ -64,6 +68,7 @@ export class ScheduleStore {
                 kind: row.kind,
                 days: json<number[]>(row.days, []),
                 time: String(row.time),
+                everyHours: typeof row.every_hours === 'number' ? row.every_hours : null,
                 enabled: row.enabled === 1,
                 mode: row.mode === 'real' ? ('real' as const) : ('prueba' as const),
                 nextRunAt: typeof row.next_run_at === 'number' ? row.next_run_at : null,
@@ -77,8 +82,8 @@ export class ScheduleStore {
   saveSchedule(schedule: Schedule): void {
     this.db
       .prepare(
-        `INSERT OR REPLACE INTO schedules (id, kind, days, time, enabled, mode, next_run_at, last_run_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+        `INSERT OR REPLACE INTO schedules (id, kind, days, time, enabled, mode, next_run_at, last_run_at, every_hours)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .run(
         schedule.id,
@@ -88,7 +93,8 @@ export class ScheduleStore {
         schedule.enabled ? 1 : 0,
         schedule.mode,
         schedule.nextRunAt,
-        schedule.lastRunAt
+        schedule.lastRunAt,
+        schedule.everyHours ?? null
       )
   }
 

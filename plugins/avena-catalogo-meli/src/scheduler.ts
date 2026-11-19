@@ -49,7 +49,7 @@ export function startScheduler(options: {
     options.store.saveSchedule({
       ...schedule,
       lastRunAt: at,
-      nextRunAt: nextRunAt(schedule.days, schedule.time, at)
+      nextRunAt: nextRunAt(schedule.days, schedule.time, at, schedule.everyHours)
     })
   }
 

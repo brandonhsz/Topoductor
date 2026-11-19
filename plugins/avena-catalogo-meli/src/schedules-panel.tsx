@@ -24,6 +24,11 @@ import { scheduleDraft, schedulesState } from './schedules-state'
 
 const KINDS = Object.keys(TASK_LABELS).filter((kind): kind is TaskKind => kind in TASK_LABELS)
 
+const REPEATS = [
+  { value: '0', label: 'Una vez al día' },
+  ...[1, 2, 3, 4, 6, 8, 12].map((hours) => ({ value: String(hours), label: `Cada ${hours} h` }))
+]
+
 const when = (at: number | null) => (at ? new Date(at).toLocaleString('es-MX') : '—')
 
 function save(schedule: Schedule, enabled: boolean): Promise<void> {
@@ -33,6 +38,7 @@ function save(schedule: Schedule, enabled: boolean): Promise<void> {
       kind: schedule.kind,
       days: schedule.days,
       time: schedule.time,
+      everyHours: schedule.everyHours ?? null,
       enabled,
       mode: schedule.mode
     })
@@ -53,7 +59,7 @@ function ScheduleRow({ schedule }: { schedule: Schedule }) {
           ) : null}
         </Row>
         <Text muted size="xs">
-          {`${describeDays(schedule.days)} a las ${schedule.time} · próxima: ${schedule.enabled ? when(schedule.nextRunAt) : 'en pausa'}`}
+          {`${describeDays(schedule.days)} ${schedule.everyHours ? `cada ${schedule.everyHours} h desde las ${schedule.time}` : `a las ${schedule.time}`} · próxima: ${schedule.enabled ? when(schedule.nextRunAt) : 'en pausa'}`}
         </Text>
       </Stack>
       <Row gap="xs">
@@ -112,6 +118,12 @@ function NewSchedule() {
           value={draft.time}
           onChange={(time) => set(scheduleDraft, { ...draft, time })}
         />
+        <Select
+          label="Repetir"
+          value={String(draft.everyHours)}
+          options={REPEATS}
+          onChange={(value) => set(scheduleDraft, { ...draft, everyHours: Number(value) || 0 })}
+        />
       </Row>
       <Row gap="xs" wrap>
         {WEEKDAY_LABELS.map((label, day) => (
@@ -147,7 +159,11 @@ function NewSchedule() {
           disabled={read(busy) !== null}
           onPress={() =>
             runAction('schedule', () =>
-              plugin.request('schedules.save', { ...draft, enabled: true })
+              plugin.request('schedules.save', {
+                ...draft,
+                everyHours: draft.everyHours || null,
+                enabled: true
+              })
             )
           }
         >

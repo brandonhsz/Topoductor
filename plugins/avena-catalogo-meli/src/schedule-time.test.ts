@@ -21,3 +21,23 @@ test('refuses bad times and empty days', () => {
   assert.equal(nextRunAt([], '09:00', 0), null)
   assert.equal(describeDays([1, 2, 3, 4, 5]), 'Lunes a viernes')
 })
+
+test('repeating every 3 hours runs at the next slot from the start time', () => {
+  // Slots at 00:00, 03:00 … 21:00.
+  assert.equal(
+    nextRunAt([0, 1, 2, 3, 4, 5, 6], '00:00', at(2026, 11, 19, 10, 20), 3),
+    at(2026, 11, 19, 12)
+  )
+  assert.equal(
+    nextRunAt([0, 1, 2, 3, 4, 5, 6], '00:00', at(2026, 11, 19, 12), 3),
+    at(2026, 11, 19, 15)
+  )
+  // After the last slot of the day, the first one of the next.
+  assert.equal(
+    nextRunAt([0, 1, 2, 3, 4, 5, 6], '00:00', at(2026, 11, 19, 22), 3),
+    at(2026, 11, 20, 0)
+  )
+  // The start time sets the grid: 01:30 → 04:30, 07:30 …
+  assert.equal(nextRunAt([4], '01:30', at(2026, 11, 19, 5), 3), at(2026, 11, 19, 7, 30))
+  assert.equal(describeDays([0, 1, 2, 3, 4, 5, 6]), 'Todos los días')
+})

@@ -98,7 +98,8 @@ export type Catalog = {
 export type Filter = 'revisar' | 'todos' | 'con_referido' | ProductStatus
 
 /** `applicable`: safe price changes. `allPrices`: every new ML price. `pendingReferrals`: referrals to save. */
-export type BulkScope = 'applicable' | 'allPrices' | 'pendingReferrals'
+/** `priceUpdates`: the safe changes plus big jumps up, for the scheduled price update. */
+export type BulkScope = 'applicable' | 'allPrices' | 'priceUpdates' | 'pendingReferrals'
 
 export type CatalogViewQuery = {
   filter: Filter
@@ -223,6 +224,7 @@ declare module 'orca' {
         kind: TaskKind
         days: number[]
         time: string
+        everyHours?: number | null
         enabled: boolean
         mode: PurchaseMode
       }

@@ -4,6 +4,7 @@ export type TaskKind =
   | 'sync'
   | 'audit'
   | 'applyPrices'
+  | 'updatePrices'
   | 'generateReferrals'
   | 'proposeReplacements'
   | 'processOrders'
@@ -12,6 +13,7 @@ export const TASK_LABELS: Record<TaskKind, string> = {
   sync: 'Sincronizar base',
   audit: 'Leer precios en ML',
   applyPrices: 'Aplicar cambios de precio',
+  updatePrices: 'Actualizar precios (leer y aplicar)',
   generateReferrals: 'Generar referidos',
   proposeReplacements: 'Buscar reemplazos de links rotos',
   processOrders: 'Procesar pedidos de compra'
@@ -25,6 +27,8 @@ export type Schedule = {
   kind: TaskKind
   days: number[]
   time: string
+  /** Repeats every this many hours on the grid through `time`; once a day when empty. */
+  everyHours?: number | null
   enabled: boolean
   mode: PurchaseMode
   nextRunAt: number | null

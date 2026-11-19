@@ -103,3 +103,31 @@ test('a run cut off by a restart is closed and its order goes back to pending', 
   assert.match(run?.summary ?? '', /Interrumpida/)
   assert.equal(store.orders()[0]?.status, 'pendiente')
 })
+
+test('a task repeating every 3 hours moves to its next slot after running', async () => {
+  const store = new ScheduleStore(':memory:')
+  const clock = new Date(2026, 10, 19, 12, 1).getTime()
+  store.saveSchedule({
+    id: 'p',
+    kind: 'updatePrices',
+    days: [0, 1, 2, 3, 4, 5, 6],
+    time: '00:00',
+    everyHours: 3,
+    enabled: true,
+    mode: 'prueba',
+    nextRunAt: new Date(2026, 10, 19, 12).getTime(),
+    lastRunAt: null
+  })
+  const scheduler = startScheduler({
+    store,
+    run: async () => ({ ok: true, summary: '' }),
+    changed: () => undefined,
+    notify: () => undefined,
+    now: () => clock,
+    everyMs: 3_600_000
+  })
+  await scheduler.tick()
+  scheduler.stop()
+  assert.equal(store.schedules()[0]?.nextRunAt, new Date(2026, 10, 19, 15).getTime())
+  assert.equal(store.schedules()[0]?.everyHours, 3)
+})

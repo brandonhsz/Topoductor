@@ -44,6 +44,27 @@ export function createTaskRunner(options: {
           summary: `${String(field(end, 'done'))}/${String(field(end, 'total'))} links leídos${field(end, 'blocked') === true ? '; MercadoLibre pidió verificación' : ''}`
         }
       }
+      case 'updatePrices': {
+        const read = await background('catalog.audit', {}, 'audit.progress')
+        const failed = field(read, 'failed')
+        if (typeof failed === 'string') {
+          return { ok: false, summary: failed }
+        }
+        const readSummary = `${String(field(read, 'done'))}/${String(field(read, 'total'))} links leídos`
+        if (field(read, 'blocked') === true) {
+          return {
+            ok: false,
+            summary: `${readSummary}; MercadoLibre pidió verificación, no se aplicó nada`
+          }
+        }
+        const ids = await call('catalog.ids', { scope: 'priceUpdates' })
+        const list = Array.isArray(ids) ? ids.filter((id) => typeof id === 'string') : []
+        if (list.length === 0) {
+          return { ok: true, summary: `${readSummary} · sin cambios de precio` }
+        }
+        const applied = result(await call('catalog.applyPrices', { ids: list }))
+        return { ok: applied.ok, summary: `${readSummary} · ${applied.summary}` }
+      }
       case 'applyPrices': {
         const ids = await call('catalog.ids', { scope: 'applicable' })
         const list = Array.isArray(ids) ? ids.filter((id) => typeof id === 'string') : []

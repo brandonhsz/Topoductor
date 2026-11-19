@@ -47,9 +47,12 @@ export function registerScheduleHandlers(
       kind: input.kind,
       days: [...new Set(input.days)].sort(),
       time: input.time.trim(),
+      everyHours: input.everyHours ?? null,
       enabled: input.enabled,
       mode: input.kind === 'processOrders' ? input.mode : 'prueba',
-      nextRunAt: input.enabled ? nextRunAt(input.days, input.time, Date.now()) : null,
+      nextRunAt: input.enabled
+        ? nextRunAt(input.days, input.time, Date.now(), input.everyHours)
+        : null,
       lastRunAt: previous?.lastRunAt ?? null
     })
     changed()

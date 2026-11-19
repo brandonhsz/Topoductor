@@ -171,6 +171,23 @@ export function isApplicable(product: Product): boolean {
   )
 }
 
+/**
+ * What the scheduled price update writes: the safe changes, and big jumps when the price went up
+ * (selling below MercadoLibre loses money). Big drops, other sizes and doubtful identities wait
+ * for a person: they are often a reading of another product.
+ */
+export function isPriceUpdate(product: Product): boolean {
+  const { reading } = product
+  return (
+    isApplicable(product) ||
+    (product.status === 'revisar_salto' &&
+      reading?.ok === true &&
+      reading.price !== null &&
+      product.price !== null &&
+      reading.price > product.price)
+  )
+}
+
 export function withStatus<T extends Product>(product: T): T {
   return {
     ...product,

@@ -10,25 +10,52 @@ export function parseTime(time: string): { hour: number; minute: number } | null
   return match ? { hour: Number(match[1]), minute: Number(match[2]) } : null
 }
 
-/** The first run strictly after `after` (epoch ms), or null when no day is chosen. */
-export function nextRunAt(days: readonly number[], time: string, after: number): number | null {
+/** Minutes of the day a task runs at: `time` alone, or every `everyHours` on its grid. */
+function slots(
+  time: { hour: number; minute: number },
+  everyHours: number | null | undefined
+): number[] {
+  const first = time.hour * 60 + time.minute
+  if (!everyHours || everyHours <= 0) {
+    return [first]
+  }
+  const step = everyHours * 60
+  const out: number[] = []
+  for (let minute = first % step; minute < 24 * 60; minute += step) {
+    out.push(minute)
+  }
+  return out
+}
+
+/**
+ * The first run strictly after `after` (epoch ms), or null when no day is chosen. With
+ * `everyHours`, the task repeats on a grid that goes through `time` (00:00 every 3 h → 00, 03 …).
+ */
+export function nextRunAt(
+  days: readonly number[],
+  time: string,
+  after: number,
+  everyHours?: number | null
+): number | null {
   const at = parseTime(time)
   if (!at || days.length === 0) {
     return null
   }
   const start = new Date(after)
   for (let offset = 0; offset <= 7; offset++) {
-    const candidate = new Date(
-      start.getFullYear(),
-      start.getMonth(),
-      start.getDate() + offset,
-      at.hour,
-      at.minute,
-      0,
-      0
-    )
-    if (candidate.getTime() > after && days.includes(candidate.getDay())) {
-      return candidate.getTime()
+    for (const minute of slots(at, everyHours)) {
+      const candidate = new Date(
+        start.getFullYear(),
+        start.getMonth(),
+        start.getDate() + offset,
+        Math.floor(minute / 60),
+        minute % 60,
+        0,
+        0
+      )
+      if (candidate.getTime() > after && days.includes(candidate.getDay())) {
+        return candidate.getTime()
+      }
     }
   }
   return null

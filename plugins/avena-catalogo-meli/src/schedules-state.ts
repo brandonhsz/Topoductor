@@ -9,6 +9,8 @@ export type ScheduleDraft = {
   kind: TaskKind
   days: number[]
   time: string
+  /** 0: once a day at `time`. */
+  everyHours: number
   mode: PurchaseMode
 }
 
@@ -16,6 +18,7 @@ export const scheduleDraft = atom<ScheduleDraft>({
   kind: 'audit',
   days: [1, 2, 3, 4, 5],
   time: '09:00',
+  everyHours: 0,
   mode: 'prueba'
 })
 

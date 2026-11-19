@@ -3,6 +3,7 @@ import {
   brandMatches,
   classify,
   isApplicable,
+  isPriceUpdate,
   nameMatches,
   pricePayload,
   priceDiffPct,
@@ -155,4 +156,15 @@ test('a listing of another size is its own status, ahead of a shared link', () =
   })
   assert.equal(classify(bigger), 'otra_presentacion')
   assert.equal(isApplicable(bigger), false)
+})
+
+test('the scheduled price update also follows big jumps up, never big drops', () => {
+  const up = product({ price: 424.15, reading: reading({ price: 900 }) })
+  const down = product({ price: 900, reading: reading({ price: 300 }) })
+  assert.equal(up.status, 'revisar_salto')
+  assert.equal(down.status, 'revisar_salto')
+  assert.equal(isPriceUpdate(up), true)
+  assert.equal(isPriceUpdate(down), false)
+  assert.equal(isPriceUpdate(product({ price: 100, reading: reading({ price: 110 }) })), true)
+  assert.equal(isPriceUpdate(product({ price: 100 })), false)
 })
