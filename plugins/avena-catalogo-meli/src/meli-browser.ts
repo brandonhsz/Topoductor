@@ -70,13 +70,25 @@ export type Tab = { browserPageId: string; url: string; worktreeId?: string }
 
 export class MeliBrowser {
   private readonly workspace: string | null
+  private readonly profile: string | null
 
-  /** `workspacePath`: the Topo workspace whose browser to use; any workspace when empty. */
+  /**
+   * `workspacePath`: the Topo workspace whose browser to use; any workspace when empty.
+   * `profileId`: the browser profile (account) to use; empty: the default one. A machine that
+   * also buys in MercadoLibre keeps its buying tab in the default profile, so the catalog uses its
+   * own profile and never takes that tab.
+   */
   constructor(
     readonly run: CliRunner,
-    workspacePath?: string
+    workspacePath?: string,
+    profileId?: string
   ) {
     this.workspace = workspacePath?.trim().replace(/\/+$/, '') || null
+    this.profile = profileId?.trim() || null
+  }
+
+  private inProfile(profileId: string | null): boolean {
+    return (profileId || 'default') === (this.profile ?? 'default') || (!this.profile && !profileId)
   }
 
   private inWorkspace(worktreeId: string | null): boolean {
@@ -88,7 +100,8 @@ export class MeliBrowser {
     const tab = records(field(listed, 'tabs')).find(
       (candidate) =>
         /^https:\/\/[a-z]+\.mercadolibre\.com\.mx\//.test(text(candidate.url) ?? '') &&
-        this.inWorkspace(text(candidate.worktreeId))
+        this.inWorkspace(text(candidate.worktreeId)) &&
+        this.inProfile(text(candidate.profileId))
     )
     const tabId = text(tab?.browserPageId)
     if (tab && tabId) {
@@ -109,7 +122,7 @@ export class MeliBrowser {
       )
     }
     const created = await this.run(
-      ['tab', 'create', '--url', LINKBUILDER_URL, '--worktree', `id:${worktreeId}`],
+      ['tab', 'create', '--url', LINKBUILDER_URL, '--worktree', `id:${worktreeId}`, ...(this.profile ? ['--profile', this.profile] : [])],
       30_000
     )
     const createdId = text(field(created, 'browserPageId'))
