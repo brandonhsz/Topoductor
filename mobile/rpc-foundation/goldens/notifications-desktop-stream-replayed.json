@@ -50,6 +50,14 @@
         }
       }
     },
+    "156046a979d6": {
+      "name": "device-store.setItem",
+      "ordinal": 8,
+      "value": {
+        "key": "topo:pushDismissalWatermarks:v1",
+        "value": "[{\"key\":\"[\\\"Yw3NKWbEM2aRElRI\\\",\\\"epoch-1\\\",\\\"note-2\\\"]\",\"seq\":8,\"expiresAt\":1767312000000}]"
+      }
+    },
     "18432013281e": {
       "name": "notifications.getMissedSince#2",
       "ordinal": 7,
@@ -119,14 +127,6 @@
     },
     "5359579cc62d": {
       "running": true
-    },
-    "7956587756c3": {
-      "name": "device-store.setItem",
-      "ordinal": 8,
-      "value": {
-        "key": "topo:pushDismissalWatermarks:v1",
-        "value": "[{\"key\":\"[\\\"Yw3NKWbEM2aRElRI\\\",\\\"epoch-1\\\",\\\"note-2\\\"]\",\"seq\":8,\"expiresAt\":1767312000000}]"
-      }
     },
     "865d199fe5a5": {
       "name": "notification-tray.dismiss",
@@ -206,7 +206,7 @@
             "cutover": "eb79a9b3682a"
           },
           "state": "5359579cc62d",
-          "effects": ["7956587756c3", "865d199fe5a5"]
+          "effects": ["156046a979d6", "865d199fe5a5"]
         }
       },
       {
@@ -227,7 +227,7 @@
             "stop": "eb79a9b3682a"
           },
           "state": "a0b2bcfcde77",
-          "effects": ["7956587756c3", "865d199fe5a5"]
+          "effects": ["156046a979d6", "865d199fe5a5"]
         }
       }
     ]

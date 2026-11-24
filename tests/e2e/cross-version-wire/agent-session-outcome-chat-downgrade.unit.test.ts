@@ -28,6 +28,7 @@ import {
   releaseModuleExport,
   resolveBaselineReleaseRef
 } from './release-checkout'
+import { sharesUserDataWith } from './pre-rebrand-releases'
 
 // A chat this build has written, new or an existing one whose input rows an older build wrote, is
 // refused by each of the two last releases before outcome storage as a newer Topo's, which leaves
@@ -142,7 +143,7 @@ function savedContent(): Map<string, unknown> {
 }
 
 describe('a chat this build wrote, opened by a shipped build', () => {
-  it.each([
+  it.for([
     ['new', 'the last release before outcome storage'],
     ['existing', 'the last release before outcome storage'],
     ['new', 'the release before it'],
@@ -151,19 +152,23 @@ describe('a chat this build wrote, opened by a shipped build', () => {
     ['existing', 'the writable baseline']
   ] as const)(
     'keeps a %s chat from %s, leaving every byte as it was, and reads whole again after',
-    async (kind, build) => {
-      const prefix = await savedChat(kind)
-      const before = databaseBytes()
-      const saved = savedContent()
-      expect(before['agent-session-journal.db']).toBeDefined()
+    async ([kind, build], { skip }) => {
       const inWindow = build !== 'the writable baseline'
-      const checkout = await materializeReleaseCheckout(
+      const releaseRef =
         build === 'the last release before outcome storage'
           ? REFUSING_RELEASE_REFS[0]
           : inWindow
             ? REFUSING_RELEASE_REFS[1]
             : WRITABLE_BASELINE_REF
+      skip(
+        !sharesUserDataWith(releaseRef),
+        'an Orca build would open it; Topo data never reaches one'
       )
+      const prefix = await savedChat(kind)
+      const before = databaseBytes()
+      const saved = savedContent()
+      expect(before['agent-session-journal.db']).toBeDefined()
+      const checkout = await materializeReleaseCheckout(releaseRef)
       const support = await importReleaseCheckoutModule(
         checkout,
         `${JOURNAL}/journal-host-database-test-support.ts`

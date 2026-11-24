@@ -10,11 +10,11 @@ describe('GitHub project repo matching', () => {
   it('does not path-match a repo whose resolved slug points somewhere else', () => {
     expect(
       findRepoForGitHubProjectRepository(
-        'brandonhsz/Topoductor',
-        [{ id: 'repo-1', path: '/Users/me/brandonhsz/Topoductor', displayName: 'topo' }],
+        'brandonhsz/topo',
+        [{ id: 'repo-1', path: '/Users/me/brandonhsz/topo', displayName: 'topo' }],
         {
           'repo-1': {
-            path: '/Users/me/brandonhsz/Topoductor',
+            path: '/Users/me/brandonhsz/topo',
             repository: { owner: 'fork', repo: 'topo' }
           }
         }
@@ -25,7 +25,7 @@ describe('GitHub project repo matching', () => {
   it('matches same-named repositories only on the active Project host', () => {
     expect(
       findRepoForGitHubProjectRepository(
-        'brandonhsz/Topoductor',
+        'brandonhsz/topo',
         repos,
         {
           'repo-1': {
@@ -74,8 +74,8 @@ describe('GitHub project repo matching', () => {
   it('does not use hostless path heuristics for Enterprise Project rows', () => {
     expect(
       findRepoForGitHubProjectRepository(
-        'brandonhsz/Topoductor',
-        [{ id: 'repo-1', path: '/Users/me/brandonhsz/Topoductor', displayName: 'topo' }],
+        'brandonhsz/topo',
+        [{ id: 'repo-1', path: '/Users/me/brandonhsz/topo', displayName: 'topo' }],
         {},
         'github.acme-corp.com'
       )

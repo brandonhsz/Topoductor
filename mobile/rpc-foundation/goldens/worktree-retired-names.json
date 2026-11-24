@@ -35,13 +35,7 @@
         "startedAt": 0
       }
     },
-    "85d826c606ff": {
-      "registry": {
-        "exhaustedTiers": 2,
-        "names": ["marlin", "topo"]
-      }
-    },
-    "97b3650e7890": {
+    "c842b4aecd61": {
       "name": "worktree.listRetiredNames#1",
       "ordinal": 1,
       "args": [
@@ -86,6 +80,12 @@
         "names": []
       }
     },
+    "eb68dad59d1c": {
+      "registry": {
+        "exhaustedTiers": 2,
+        "names": ["marlin", "topo"]
+      }
+    },
     "eb79a9b3682a": {
       "status": "fulfilled",
       "startedAt": 0,
@@ -113,12 +113,12 @@
       {
         "id": "settled",
         "observation": {
-          "sender": ["97b3650e7890"],
+          "sender": ["c842b4aecd61"],
           "payloads": ["3a6762b141aa"],
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "85d826c606ff",
+          "state": "eb68dad59d1c",
           "effects": []
         }
       }

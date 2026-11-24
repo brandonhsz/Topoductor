@@ -4,6 +4,14 @@
   "family": "session.startup",
   "namedDeltas": [],
   "values": {
+    "193eb4ca1259": {
+      "name": "toast",
+      "ordinal": 9,
+      "value": {
+        "durationMs": 3000,
+        "message": "Open Topo on the host to wake sleeping agents."
+      }
+    },
     "19efe7a6058c": {
       "name": "worktree.activate#1",
       "ordinal": 7,
@@ -65,18 +73,18 @@
         "startedAt": 2550
       }
     },
-    "38b377793c34": {
-      "name": "ensure-session-tabs",
-      "ordinal": 5,
-      "value": {}
-    },
-    "4319ba45c158": {
+    "28034377fb88": {
       "name": "toast",
-      "ordinal": 9,
+      "ordinal": 16,
       "value": {
         "durationMs": 3000,
         "message": "Open Topo on the host to wake sleeping agents."
       }
+    },
+    "38b377793c34": {
+      "name": "ensure-session-tabs",
+      "ordinal": 5,
+      "value": {}
     },
     "4669e4d646e8": {
       "name": "fetch-terminals",
@@ -171,14 +179,6 @@
       "name": "clear-delayed-action-timers",
       "ordinal": 4,
       "value": {}
-    },
-    "9a856559977e": {
-      "name": "toast",
-      "ordinal": 16,
-      "value": {
-        "durationMs": 3000,
-        "message": "Open Topo on the host to wake sleeping agents."
-      }
     },
     "a509dd4610b2": {
       "name": "fetch-terminals",
@@ -316,7 +316,7 @@
             "95c8385db422",
             "38b377793c34",
             "4669e4d646e8",
-            "4319ba45c158",
+            "193eb4ca1259",
             "ba45b883b259"
           ]
         }
@@ -337,7 +337,7 @@
             "95c8385db422",
             "38b377793c34",
             "4669e4d646e8",
-            "4319ba45c158",
+            "193eb4ca1259",
             "ba45b883b259",
             "a509dd4610b2"
           ]
@@ -360,7 +360,7 @@
             "95c8385db422",
             "38b377793c34",
             "4669e4d646e8",
-            "4319ba45c158",
+            "193eb4ca1259",
             "ba45b883b259",
             "a509dd4610b2",
             "6c4561ecc9ee",
@@ -385,12 +385,12 @@
             "95c8385db422",
             "38b377793c34",
             "4669e4d646e8",
-            "4319ba45c158",
+            "193eb4ca1259",
             "ba45b883b259",
             "a509dd4610b2",
             "6c4561ecc9ee",
             "63abf3b998b3",
-            "9a856559977e"
+            "28034377fb88"
           ]
         }
       },
@@ -411,12 +411,12 @@
             "95c8385db422",
             "38b377793c34",
             "4669e4d646e8",
-            "4319ba45c158",
+            "193eb4ca1259",
             "ba45b883b259",
             "a509dd4610b2",
             "6c4561ecc9ee",
             "63abf3b998b3",
-            "9a856559977e"
+            "28034377fb88"
           ]
         }
       },
@@ -437,12 +437,12 @@
             "95c8385db422",
             "38b377793c34",
             "4669e4d646e8",
-            "4319ba45c158",
+            "193eb4ca1259",
             "ba45b883b259",
             "a509dd4610b2",
             "6c4561ecc9ee",
             "63abf3b998b3",
-            "9a856559977e",
+            "28034377fb88",
             "650e3aedd38c",
             "b86ad4df402e"
           ]

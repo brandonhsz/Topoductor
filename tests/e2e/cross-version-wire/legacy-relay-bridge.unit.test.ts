@@ -39,6 +39,7 @@ import {
   startReleasedRelayDaemon,
   type ReleasedRelayInstall
 } from './released-relay-daemon'
+import { sharesUserDataWith } from './pre-rebrand-releases'
 
 const TARGET_ID = 'ssh-upgraded'
 // Budget for the release build and its 30s owner grace.
@@ -61,7 +62,8 @@ function waitFor(check: () => boolean, timeoutMs: number): Promise<void> {
   })
 }
 
-describe.skipIf(process.platform === 'win32')(
+// An Orca relay keeps Orca's socket and state names, which a Topo host never looks for.
+describe.skipIf(process.platform === 'win32' || !sharesUserDataWith(PREVIOUS_RELAY_REF))(
   `terminals a ${PREVIOUS_RELAY_REF} relay kept running across the upgrade`,
   () => {
     let root: string

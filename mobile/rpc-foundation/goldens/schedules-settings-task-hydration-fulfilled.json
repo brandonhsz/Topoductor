@@ -585,6 +585,13 @@
         }
       }
     },
+    "4a05ab39aa8f": {
+      "name": "projectRepoNotInTopo",
+      "ordinal": 20,
+      "value": {
+        "$rpc": "null"
+      }
+    },
     "4cbaceb42c08": {
       "name": "detailPayload",
       "ordinal": 21,
@@ -730,13 +737,6 @@
         }
       }
     },
-    "714d4b3547ff": {
-      "name": "projectRepoNotInTopo",
-      "ordinal": 20,
-      "value": {
-        "$rpc": "null"
-      }
-    },
     "71bedad13169": {
       "name": "ui.get#1",
       "ordinal": 36,
@@ -808,6 +808,11 @@
         "kind": "unknown"
       }
     },
+    "7dcc6e2192d6": {
+      "name": "trustedTopoHooks",
+      "ordinal": 45,
+      "value": {}
+    },
     "800b1afcceea": {
       "name": "preflight.check#1",
       "ordinal": 37,
@@ -865,11 +870,6 @@
           "$rpc": "null"
         }
       }
-    },
-    "87bd323da79d": {
-      "name": "trustedTopoHooks",
-      "ordinal": 45,
-      "value": {}
     },
     "8a053731b837": {
       "name": "visibleProviders",
@@ -942,6 +942,21 @@
             "capabilities": ["mobile.tasks.v1"]
           }
         }
+      }
+    },
+    "90e0c61432d4": {
+      "name": "jiraConnection",
+      "ordinal": 44,
+      "value": {
+        "connected": false,
+        "credentialError": {
+          "$rpc": "null"
+        },
+        "selection": {
+          "$rpc": "null"
+        },
+        "sites": [],
+        "unavailableReason": "Update Topo desktop to browse Jira on mobile."
       }
     },
     "931e8e15095d": {
@@ -1049,21 +1064,6 @@
       "name": "error",
       "ordinal": 44,
       "value": "ui.get#1 rejected"
-    },
-    "a20a93879807": {
-      "name": "jiraConnection",
-      "ordinal": 44,
-      "value": {
-        "connected": false,
-        "credentialError": {
-          "$rpc": "null"
-        },
-        "selection": {
-          "$rpc": "null"
-        },
-        "sites": [],
-        "unavailableReason": "Update Topo desktop to browse Jira on mobile."
-      }
     },
     "a4b7901e0372": {
       "name": "linear.status#1",
@@ -1415,7 +1415,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -1473,7 +1473,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -1486,7 +1486,7 @@
             "d50362207233",
             "9d27c74981a1",
             "ba788c58e435",
-            "87bd323da79d",
+            "7dcc6e2192d6",
             "600862ad27b3",
             "57568fbaf4f7",
             "40f00017ad77",
@@ -1553,7 +1553,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -1611,7 +1611,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -1624,7 +1624,7 @@
             "d50362207233",
             "9d27c74981a1",
             "ba788c58e435",
-            "87bd323da79d",
+            "7dcc6e2192d6",
             "600862ad27b3",
             "57568fbaf4f7",
             "40f00017ad77",
@@ -1691,7 +1691,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -1752,7 +1752,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -1814,7 +1814,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -1875,7 +1875,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -1937,7 +1937,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -1998,7 +1998,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -2060,7 +2060,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -2072,7 +2072,7 @@
             "394fb5675266",
             "d50362207233",
             "9d27c74981a1",
-            "a20a93879807",
+            "90e0c61432d4",
             "d53e8fa810a5",
             "c32aa6b83185",
             "32b1c27f9f78"
@@ -2123,7 +2123,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -2135,7 +2135,7 @@
             "394fb5675266",
             "d50362207233",
             "9d27c74981a1",
-            "a20a93879807",
+            "90e0c61432d4",
             "42c4d0584b72",
             "c32aa6b83185",
             "32b1c27f9f78"
@@ -2186,7 +2186,7 @@
             "3c66c971fe96",
             "c11fe123ce70",
             "2b39b469a001",
-            "714d4b3547ff",
+            "4a05ab39aa8f",
             "4cbaceb42c08",
             "98281d0e8b13",
             "9f545b97e888",
@@ -2198,7 +2198,7 @@
             "394fb5675266",
             "d50362207233",
             "9d27c74981a1",
-            "a20a93879807",
+            "90e0c61432d4",
             "4fe7877fc963",
             "c32aa6b83185",
             "32b1c27f9f78"

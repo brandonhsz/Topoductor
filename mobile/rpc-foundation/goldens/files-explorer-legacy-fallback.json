@@ -4,6 +4,29 @@
   "family": "files.explorer-screen",
   "namedDeltas": [],
   "values": {
+    "1eb3c47a0e7d": {
+      "crash": {
+        "$rpc": "null"
+      },
+      "elements": {
+        "ChevronLeft": 1,
+        "Defs": 1,
+        "FlatList": 1,
+        "LinearGradient": 1,
+        "Pressable": 1,
+        "Rect": 1,
+        "SafeAreaView": 1,
+        "Search": 1,
+        "Stop": 2,
+        "Svg": 1,
+        "Text": 2,
+        "TextInput": 1,
+        "View": 11
+      },
+      "labels": ["Back to session", "Filter files"],
+      "rows": ["dir:src", "file:README.md"],
+      "text": ["Files", "topo-files - Showing first 5000"]
+    },
     "25ac0f3b2c33": {
       "name": "files.list#1",
       "ordinal": 3,
@@ -56,33 +79,26 @@
       "ordinal": 2,
       "json": "{\"id\":\"frame-1\",\"deviceToken\":\"recording-device\",\"method\":\"files.readDir\",\"params\":{\"worktree\":\"id:wt-files\",\"relativePath\":\"\",\"limit\":500}}"
     },
-    "75aaf142eb3b": {
-      "name": "files.list#1",
-      "ordinal": 4,
-      "json": "{\"id\":\"frame-2\",\"deviceToken\":\"recording-device\",\"method\":\"files.list\",\"params\":{\"worktree\":\"id:wt-files\"}}"
-    },
-    "948a6977def7": {
+    "6f16b3140405": {
       "crash": {
         "$rpc": "null"
       },
       "elements": {
+        "ActivityIndicator": 1,
         "ChevronLeft": 1,
-        "Defs": 1,
-        "FlatList": 1,
-        "LinearGradient": 1,
         "Pressable": 1,
-        "Rect": 1,
         "SafeAreaView": 1,
-        "Search": 1,
-        "Stop": 2,
-        "Svg": 1,
-        "Text": 2,
-        "TextInput": 1,
-        "View": 11
+        "Text": 3,
+        "View": 7
       },
-      "labels": ["Back to session", "Filter files"],
-      "rows": ["dir:src", "file:README.md"],
-      "text": ["Files", "topo-files - Showing first 5000"]
+      "labels": ["Back to session"],
+      "rows": [],
+      "text": ["Files", "topo-files", "Loading files…"]
+    },
+    "75aaf142eb3b": {
+      "name": "files.list#1",
+      "ordinal": 4,
+      "json": "{\"id\":\"frame-2\",\"deviceToken\":\"recording-device\",\"method\":\"files.list\",\"params\":{\"worktree\":\"id:wt-files\"}}"
     },
     "c3427cf20352": {
       "name": "files.readDir#1",
@@ -120,22 +136,6 @@
           "ok": false
         }
       }
-    },
-    "c721e7f4a5c5": {
-      "crash": {
-        "$rpc": "null"
-      },
-      "elements": {
-        "ActivityIndicator": 1,
-        "ChevronLeft": 1,
-        "Pressable": 1,
-        "SafeAreaView": 1,
-        "Text": 3,
-        "View": 7
-      },
-      "labels": ["Back to session"],
-      "rows": [],
-      "text": ["Files", "topo-files", "Loading files…"]
     },
     "ca13345ac236": {
       "name": "files.readDir#1",
@@ -185,7 +185,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "c721e7f4a5c5",
+          "state": "6f16b3140405",
           "effects": []
         }
       },
@@ -197,7 +197,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "948a6977def7",
+          "state": "1eb3c47a0e7d",
           "effects": []
         }
       }

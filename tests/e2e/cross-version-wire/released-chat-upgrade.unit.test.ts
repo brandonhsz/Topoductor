@@ -33,6 +33,7 @@ import {
   writeReleasedChat,
   type Agent
 } from './released-chat-writers'
+import { sharesUserDataWith } from './pre-rebrand-releases'
 
 // The two releases before outcome storage, and the oldest release whose chat database this build still
 // reads, writes a Claude and a Codex chat through its own writers. This build admits every row as
@@ -168,7 +169,7 @@ async function carryOn(
 }
 
 describe('a chat a shipped release wrote, carried on by this build', () => {
-  it.each([
+  it.for([
     ['the last release before outcome storage', 'claude'],
     ['the last release before outcome storage', 'codex'],
     ['the release before it', 'claude'],
@@ -177,7 +178,8 @@ describe('a chat a shipped release wrote, carried on by this build', () => {
     ['the oldest release with this chat database', 'codex']
   ] as const)(
     'admits every row %s wrote for a %s chat, opens it as the newest release does, then edits, sends and rewinds it',
-    async (build, agent) => {
+    async ([build, agent], { skip }) => {
+      skip(!sharesUserDataWith(RELEASES[build]()), 'an Orca build wrote it; Topo never reads it')
       const directory = mkdtempSync(join(tmpdir(), 'topo-released-chat-upgrade-'))
       const shipped = mkdtempSync(join(tmpdir(), 'topo-released-chat-shipped-'))
       const identity = identityOf(agent)

@@ -62,7 +62,7 @@ describe('extractGitHubIssueSourceFallback', () => {
     ).toEqual({
       repoId: 'repo-1',
       repoPath: '/work/topo',
-      repoLabel: 'brandonhsz/Topoductor'
+      repoLabel: 'brandonhsz/topo'
     })
   })
 

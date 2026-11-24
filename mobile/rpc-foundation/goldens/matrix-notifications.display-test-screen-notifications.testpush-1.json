@@ -156,6 +156,25 @@
         "Could not reach the desktop. Try again."
       ]
     },
+    "3c86f994283e": {
+      "crash": {
+        "$rpc": "null"
+      },
+      "elements": {
+        "ChevronRight": 1,
+        "Pressable": 2,
+        "Text": 5,
+        "View": 7
+      },
+      "labels": ["Send test notification", "Troubleshooting"],
+      "text": [
+        "Having trouble receiving alerts?",
+        "Send test notification",
+        "Troubleshooting",
+        "Test push delivery, or a local notification when push is unavailable.",
+        "Could not send through Topo’s push service. Try again."
+      ]
+    },
     "401bb4233294": {
       "name": "notifications.testPush#1",
       "ordinal": 1,
@@ -187,6 +206,25 @@
           "ok": true
         }
       }
+    },
+    "46b0ceaa9406": {
+      "crash": {
+        "$rpc": "null"
+      },
+      "elements": {
+        "ChevronRight": 1,
+        "Pressable": 2,
+        "Text": 5,
+        "View": 7
+      },
+      "labels": ["Send test notification", "Troubleshooting"],
+      "text": [
+        "Having trouble receiving alerts?",
+        "Send test notification",
+        "Troubleshooting",
+        "Test push delivery, or a local notification when push is unavailable.",
+        "Accepted by Topo’s push service. Check for the notification."
+      ]
     },
     "48ca1f6dbd96": {
       "name": "notifications.testPush#1",
@@ -275,25 +313,6 @@
         }
       }
     },
-    "6b7fba36efde": {
-      "crash": {
-        "$rpc": "null"
-      },
-      "elements": {
-        "ChevronRight": 1,
-        "Pressable": 2,
-        "Text": 5,
-        "View": 7
-      },
-      "labels": ["Send test notification", "Troubleshooting"],
-      "text": [
-        "Having trouble receiving alerts?",
-        "Send test notification",
-        "Troubleshooting",
-        "Test push delivery, or a local notification when push is unavailable.",
-        "Accepted by Topo’s push service. Check for the notification."
-      ]
-    },
     "8a172d4948a9": {
       "crash": {
         "$rpc": "null"
@@ -329,25 +348,6 @@
         "Troubleshooting",
         "Test push delivery, or a local notification when push is unavailable.",
         "transport failure"
-      ]
-    },
-    "93cdaf5110fc": {
-      "crash": {
-        "$rpc": "null"
-      },
-      "elements": {
-        "ChevronRight": 1,
-        "Pressable": 2,
-        "Text": 5,
-        "View": 7
-      },
-      "labels": ["Send test notification", "Troubleshooting"],
-      "text": [
-        "Having trouble receiving alerts?",
-        "Send test notification",
-        "Troubleshooting",
-        "Test push delivery, or a local notification when push is unavailable.",
-        "Could not send through Topo’s push service. Try again."
       ]
     },
     "95172d96bab4": {
@@ -437,20 +437,6 @@
           },
           "id": "frame-1",
           "ok": false
-        }
-      }
-    },
-    "b23af609a818": {
-      "name": "notification.schedule",
-      "ordinal": 3,
-      "value": {
-        "content": {
-          "body": "Local notification test from this phone.",
-          "sound": "default",
-          "title": "Test notification"
-        },
-        "trigger": {
-          "channelId": "topo-desktop"
         }
       }
     },
@@ -570,6 +556,20 @@
         }
       }
     },
+    "f4b86c625240": {
+      "name": "notification.schedule",
+      "ordinal": 3,
+      "value": {
+        "content": {
+          "body": "Local notification test from this phone.",
+          "sound": "default",
+          "title": "Test notification"
+        },
+        "trigger": {
+          "channelId": "topo-desktop"
+        }
+      }
+    },
     "f68b017d64bd": {
       "name": "notifications.testPush#1",
       "ordinal": 2,
@@ -613,7 +613,7 @@
             "mount": "eb79a9b3682a",
             "press": "eb79a9b3682a"
           },
-          "state": "6b7fba36efde",
+          "state": "46b0ceaa9406",
           "effects": []
         }
       },
@@ -626,7 +626,7 @@
             "mount": "eb79a9b3682a",
             "press": "eb79a9b3682a"
           },
-          "state": "93cdaf5110fc",
+          "state": "3c86f994283e",
           "effects": []
         }
       },
@@ -639,7 +639,7 @@
             "mount": "eb79a9b3682a",
             "press": "eb79a9b3682a"
           },
-          "state": "93cdaf5110fc",
+          "state": "3c86f994283e",
           "effects": []
         }
       },
@@ -652,7 +652,7 @@
             "mount": "eb79a9b3682a",
             "press": "eb79a9b3682a"
           },
-          "state": "93cdaf5110fc",
+          "state": "3c86f994283e",
           "effects": []
         }
       },
@@ -665,7 +665,7 @@
             "mount": "eb79a9b3682a",
             "press": "eb79a9b3682a"
           },
-          "state": "93cdaf5110fc",
+          "state": "3c86f994283e",
           "effects": []
         }
       },
@@ -678,7 +678,7 @@
             "mount": "eb79a9b3682a",
             "press": "eb79a9b3682a"
           },
-          "state": "93cdaf5110fc",
+          "state": "3c86f994283e",
           "effects": []
         }
       },
@@ -718,7 +718,7 @@
             "press": "eb79a9b3682a"
           },
           "state": "4b56b6931151",
-          "effects": ["b23af609a818"]
+          "effects": ["f4b86c625240"]
         }
       },
       {

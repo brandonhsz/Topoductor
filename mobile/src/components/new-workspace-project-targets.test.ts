@@ -23,7 +23,7 @@ describe('new workspace project targets', () => {
     ])
 
     expect(options).toHaveLength(1)
-    expect(options[0]).toMatchObject({ label: 'topo', detail: 'brandonhsz/Topoductor' })
+    expect(options[0]).toMatchObject({ label: 'topo', detail: 'brandonhsz/topo' })
   })
 
   it('shows the provider slug recovered from canonical git identity', () => {
@@ -33,14 +33,14 @@ describe('new workspace project targets', () => {
         displayName: 'topo',
         path: '/src/topo',
         gitRemoteIdentity: {
-          canonicalKey: 'github.com/brandonhsz/Topoductor',
+          canonicalKey: 'github.com/brandonhsz/topo',
           remoteName: 'origin',
-          remoteUrl: 'git@github.com:brandonhsz/Topoductor.git'
+          remoteUrl: 'git@github.com:brandonhsz/topo.git'
         }
       }
     ])
 
-    expect(options[0]).toMatchObject({ label: 'topo', detail: 'brandonhsz/Topoductor' })
+    expect(options[0]).toMatchObject({ label: 'topo', detail: 'brandonhsz/topo' })
   })
 
   it('labels local, SSH, and paired runtime targets as the host list names them', () => {

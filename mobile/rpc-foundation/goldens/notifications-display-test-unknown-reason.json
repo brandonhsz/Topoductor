@@ -42,6 +42,25 @@
         "variant": "push-test-result"
       }
     },
+    "3c86f994283e": {
+      "crash": {
+        "$rpc": "null"
+      },
+      "elements": {
+        "ChevronRight": 1,
+        "Pressable": 2,
+        "Text": 5,
+        "View": 7
+      },
+      "labels": ["Send test notification", "Troubleshooting"],
+      "text": [
+        "Having trouble receiving alerts?",
+        "Send test notification",
+        "Troubleshooting",
+        "Test push delivery, or a local notification when push is unavailable.",
+        "Could not send through Topo’s push service. Try again."
+      ]
+    },
     "67d697ba09ce": {
       "name": "notifications.testPush#1",
       "ordinal": 1,
@@ -94,25 +113,6 @@
         "Send test notification",
         "Troubleshooting",
         "Test push delivery, or a local notification when push is unavailable."
-      ]
-    },
-    "93cdaf5110fc": {
-      "crash": {
-        "$rpc": "null"
-      },
-      "elements": {
-        "ChevronRight": 1,
-        "Pressable": 2,
-        "Text": 5,
-        "View": 7
-      },
-      "labels": ["Send test notification", "Troubleshooting"],
-      "text": [
-        "Having trouble receiving alerts?",
-        "Send test notification",
-        "Troubleshooting",
-        "Test push delivery, or a local notification when push is unavailable.",
-        "Could not send through Topo’s push service. Try again."
       ]
     },
     "9585b40ac04d": {
@@ -185,7 +185,7 @@
             "mount": "eb79a9b3682a",
             "press": "eb79a9b3682a"
           },
-          "state": "93cdaf5110fc",
+          "state": "3c86f994283e",
           "effects": ["14bb4c669631"]
         }
       }

@@ -44,6 +44,11 @@
         "provider": "gitlab"
       }
     },
+    "131daaa92026": {
+      "name": "error",
+      "ordinal": 21,
+      "value": "The Topo server connection changed. Try again."
+    },
     "14949c71727e": {
       "name": "mutatingStatus",
       "ordinal": 7,
@@ -193,11 +198,6 @@
         }
       }
     },
-    "2f5158a37621": {
-      "name": "error",
-      "ordinal": 21,
-      "value": "The Topo server connection changed. Try again."
-    },
     "38e625888db0": {
       "name": "mutatingStatus",
       "ordinal": 25,
@@ -207,6 +207,11 @@
       "name": "error",
       "ordinal": 10,
       "value": ""
+    },
+    "48340c1dff99": {
+      "name": "error",
+      "ordinal": 21,
+      "value": "Update Topo on the executing server to edit this item or load its repository options."
     },
     "53f159da3fa6": {
       "name": "status.get#1",
@@ -379,6 +384,57 @@
       "ordinal": 12,
       "value": true
     },
+    "88b94f74f580": {
+      "error": "Update Topo on the executing server to edit this item or load its repository options.",
+      "item": {
+        "provider": "github",
+        "source": {
+          "id": "github:issue:9",
+          "labels": ["bug"],
+          "number": 9,
+          "repoId": "repo-1",
+          "reviewRequests": [],
+          "state": "open",
+          "type": "issue",
+          "url": "https://github.com/owner/repo/issues/9"
+        },
+        "title": "An issue"
+      },
+      "items": [
+        {
+          "provider": "gitlab",
+          "source": {
+            "id": "gitlab:issue:4",
+            "labels": ["bug"],
+            "number": 4,
+            "projectRef": {
+              "host": "gitlab.com",
+              "path": "group/project"
+            },
+            "repoId": "repo-1",
+            "state": "opened",
+            "type": "issue"
+          },
+          "title": "A GitLab issue"
+        }
+      ],
+      "mutating": false,
+      "payload": {
+        "assignees": [],
+        "body": "body",
+        "comments": [
+          {
+            "author": "octocat",
+            "body": "a thought",
+            "createdAt": "2020-01-01T00:00:00.000Z",
+            "id": "comment-2"
+          }
+        ],
+        "labels": ["bug"],
+        "pipelineJobs": [],
+        "provider": "gitlab"
+      }
+    },
     "8eb3d442b303": {
       "name": "status.get#1",
       "ordinal": 17,
@@ -418,6 +474,57 @@
       "ordinal": 14,
       "value": {
         "$rpc": "null"
+      }
+    },
+    "989fc2ba42dc": {
+      "error": "The Topo server connection changed. Try again.",
+      "item": {
+        "provider": "github",
+        "source": {
+          "id": "github:issue:9",
+          "labels": ["bug"],
+          "number": 9,
+          "repoId": "repo-1",
+          "reviewRequests": [],
+          "state": "open",
+          "type": "issue",
+          "url": "https://github.com/owner/repo/issues/9"
+        },
+        "title": "An issue"
+      },
+      "items": [
+        {
+          "provider": "gitlab",
+          "source": {
+            "id": "gitlab:issue:4",
+            "labels": ["bug"],
+            "number": 4,
+            "projectRef": {
+              "host": "gitlab.com",
+              "path": "group/project"
+            },
+            "repoId": "repo-1",
+            "state": "opened",
+            "type": "issue"
+          },
+          "title": "A GitLab issue"
+        }
+      ],
+      "mutating": false,
+      "payload": {
+        "assignees": [],
+        "body": "body",
+        "comments": [
+          {
+            "author": "octocat",
+            "body": "a thought",
+            "createdAt": "2020-01-01T00:00:00.000Z",
+            "id": "comment-2"
+          }
+        ],
+        "labels": ["bug"],
+        "pipelineJobs": [],
+        "provider": "gitlab"
       }
     },
     "98d8019d44b9": {
@@ -503,57 +610,6 @@
         }
       }
     },
-    "9a14ab19057c": {
-      "error": "Update Topo on the executing server to edit this item or load its repository options.",
-      "item": {
-        "provider": "github",
-        "source": {
-          "id": "github:issue:9",
-          "labels": ["bug"],
-          "number": 9,
-          "repoId": "repo-1",
-          "reviewRequests": [],
-          "state": "open",
-          "type": "issue",
-          "url": "https://github.com/owner/repo/issues/9"
-        },
-        "title": "An issue"
-      },
-      "items": [
-        {
-          "provider": "gitlab",
-          "source": {
-            "id": "gitlab:issue:4",
-            "labels": ["bug"],
-            "number": 4,
-            "projectRef": {
-              "host": "gitlab.com",
-              "path": "group/project"
-            },
-            "repoId": "repo-1",
-            "state": "opened",
-            "type": "issue"
-          },
-          "title": "A GitLab issue"
-        }
-      ],
-      "mutating": false,
-      "payload": {
-        "assignees": [],
-        "body": "body",
-        "comments": [
-          {
-            "author": "octocat",
-            "body": "a thought",
-            "createdAt": "2020-01-01T00:00:00.000Z",
-            "id": "comment-2"
-          }
-        ],
-        "labels": ["bug"],
-        "pipelineJobs": [],
-        "provider": "gitlab"
-      }
-    },
     "9d1f08a6e600": {
       "name": "error",
       "ordinal": 16,
@@ -605,57 +661,6 @@
       "name": "mutatingStatus",
       "ordinal": 22,
       "value": false
-    },
-    "af72cee469d2": {
-      "error": "The Topo server connection changed. Try again.",
-      "item": {
-        "provider": "github",
-        "source": {
-          "id": "github:issue:9",
-          "labels": ["bug"],
-          "number": 9,
-          "repoId": "repo-1",
-          "reviewRequests": [],
-          "state": "open",
-          "type": "issue",
-          "url": "https://github.com/owner/repo/issues/9"
-        },
-        "title": "An issue"
-      },
-      "items": [
-        {
-          "provider": "gitlab",
-          "source": {
-            "id": "gitlab:issue:4",
-            "labels": ["bug"],
-            "number": 4,
-            "projectRef": {
-              "host": "gitlab.com",
-              "path": "group/project"
-            },
-            "repoId": "repo-1",
-            "state": "opened",
-            "type": "issue"
-          },
-          "title": "A GitLab issue"
-        }
-      ],
-      "mutating": false,
-      "payload": {
-        "assignees": [],
-        "body": "body",
-        "comments": [
-          {
-            "author": "octocat",
-            "body": "a thought",
-            "createdAt": "2020-01-01T00:00:00.000Z",
-            "id": "comment-2"
-          }
-        ],
-        "labels": ["bug"],
-        "pipelineJobs": [],
-        "provider": "gitlab"
-      }
     },
     "b26dc20548a8": {
       "name": "actionItem",
@@ -798,11 +803,6 @@
           "ok": true
         }
       }
-    },
-    "da210729f992": {
-      "name": "error",
-      "ordinal": 21,
-      "value": "Update Topo on the executing server to edit this item or load its repository options."
     },
     "e0bebf1cd037": {
       "name": "status.get#1",
@@ -980,7 +980,7 @@
             "gitlab-status-0": "eb79a9b3682a",
             "github-metadata-1": "eb79a9b3682a"
           },
-          "state": "9a14ab19057c",
+          "state": "88b94f74f580",
           "effects": [
             "cc2ece9478f0",
             "eda130337c99",
@@ -998,7 +998,7 @@
             "9d1f08a6e600",
             "5a062aaf1adc",
             "f3640f6ae8be",
-            "da210729f992",
+            "48340c1dff99",
             "ac29c6ccf3a3"
           ]
         }
@@ -1013,7 +1013,7 @@
             "gitlab-status-0": "eb79a9b3682a",
             "github-metadata-1": "eb79a9b3682a"
           },
-          "state": "9a14ab19057c",
+          "state": "88b94f74f580",
           "effects": [
             "cc2ece9478f0",
             "eda130337c99",
@@ -1031,7 +1031,7 @@
             "9d1f08a6e600",
             "5a062aaf1adc",
             "f3640f6ae8be",
-            "da210729f992",
+            "48340c1dff99",
             "ac29c6ccf3a3"
           ]
         }
@@ -1046,7 +1046,7 @@
             "gitlab-status-0": "eb79a9b3682a",
             "github-metadata-1": "eb79a9b3682a"
           },
-          "state": "9a14ab19057c",
+          "state": "88b94f74f580",
           "effects": [
             "cc2ece9478f0",
             "eda130337c99",
@@ -1064,7 +1064,7 @@
             "9d1f08a6e600",
             "5a062aaf1adc",
             "f3640f6ae8be",
-            "da210729f992",
+            "48340c1dff99",
             "ac29c6ccf3a3"
           ]
         }
@@ -1079,7 +1079,7 @@
             "gitlab-status-0": "eb79a9b3682a",
             "github-metadata-1": "eb79a9b3682a"
           },
-          "state": "9a14ab19057c",
+          "state": "88b94f74f580",
           "effects": [
             "cc2ece9478f0",
             "eda130337c99",
@@ -1097,7 +1097,7 @@
             "9d1f08a6e600",
             "5a062aaf1adc",
             "f3640f6ae8be",
-            "da210729f992",
+            "48340c1dff99",
             "ac29c6ccf3a3"
           ]
         }
@@ -1112,7 +1112,7 @@
             "gitlab-status-0": "eb79a9b3682a",
             "github-metadata-1": "eb79a9b3682a"
           },
-          "state": "9a14ab19057c",
+          "state": "88b94f74f580",
           "effects": [
             "cc2ece9478f0",
             "eda130337c99",
@@ -1130,7 +1130,7 @@
             "9d1f08a6e600",
             "5a062aaf1adc",
             "f3640f6ae8be",
-            "da210729f992",
+            "48340c1dff99",
             "ac29c6ccf3a3"
           ]
         }
@@ -1145,7 +1145,7 @@
             "gitlab-status-0": "eb79a9b3682a",
             "github-metadata-1": "eb79a9b3682a"
           },
-          "state": "9a14ab19057c",
+          "state": "88b94f74f580",
           "effects": [
             "cc2ece9478f0",
             "eda130337c99",
@@ -1163,7 +1163,7 @@
             "9d1f08a6e600",
             "5a062aaf1adc",
             "f3640f6ae8be",
-            "da210729f992",
+            "48340c1dff99",
             "ac29c6ccf3a3"
           ]
         }
@@ -1178,7 +1178,7 @@
             "gitlab-status-0": "eb79a9b3682a",
             "github-metadata-1": "eb79a9b3682a"
           },
-          "state": "9a14ab19057c",
+          "state": "88b94f74f580",
           "effects": [
             "cc2ece9478f0",
             "eda130337c99",
@@ -1196,7 +1196,7 @@
             "9d1f08a6e600",
             "5a062aaf1adc",
             "f3640f6ae8be",
-            "da210729f992",
+            "48340c1dff99",
             "ac29c6ccf3a3"
           ]
         }
@@ -1211,7 +1211,7 @@
             "gitlab-status-0": "eb79a9b3682a",
             "github-metadata-1": "eb79a9b3682a"
           },
-          "state": "9a14ab19057c",
+          "state": "88b94f74f580",
           "effects": [
             "cc2ece9478f0",
             "eda130337c99",
@@ -1229,7 +1229,7 @@
             "9d1f08a6e600",
             "5a062aaf1adc",
             "f3640f6ae8be",
-            "da210729f992",
+            "48340c1dff99",
             "ac29c6ccf3a3"
           ]
         }
@@ -1244,7 +1244,7 @@
             "gitlab-status-0": "eb79a9b3682a",
             "github-metadata-1": "eb79a9b3682a"
           },
-          "state": "af72cee469d2",
+          "state": "989fc2ba42dc",
           "effects": [
             "cc2ece9478f0",
             "eda130337c99",
@@ -1262,7 +1262,7 @@
             "9d1f08a6e600",
             "5a062aaf1adc",
             "f3640f6ae8be",
-            "2f5158a37621",
+            "131daaa92026",
             "ac29c6ccf3a3"
           ]
         }
@@ -1277,7 +1277,7 @@
             "gitlab-status-0": "eb79a9b3682a",
             "github-metadata-1": "eb79a9b3682a"
           },
-          "state": "af72cee469d2",
+          "state": "989fc2ba42dc",
           "effects": [
             "cc2ece9478f0",
             "eda130337c99",
@@ -1295,7 +1295,7 @@
             "9d1f08a6e600",
             "5a062aaf1adc",
             "f3640f6ae8be",
-            "2f5158a37621",
+            "131daaa92026",
             "ac29c6ccf3a3"
           ]
         }

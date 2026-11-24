@@ -13,6 +13,7 @@ import {
   releaseModuleExport,
   resolveBaselineReleaseRef
 } from './release-checkout'
+import { sharesUserDataWith } from './pre-rebrand-releases'
 
 // Single-use pairing must survive a downgrade, accept rows an older host made, and stay invisible to old clients.
 const SUITE_TIMEOUT_MS = 180_000
@@ -74,21 +75,24 @@ describe('cross-version: single-use pairing tickets', () => {
     expect(upgraded.validateToken(older.token)?.deviceId).toBe(older.deviceId)
   })
 
-  it('rows an older host minted keep working and are never treated as single-use', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-xv-ticket-'))
-    const released = new PreTicketRegistry(userDataPath)
-    const phone = released.addDevice('Phone', 'mobile')
-    released.updateLastSeen(phone.deviceId)
+  it.skipIf(!sharesUserDataWith(PRE_TICKET_RELEASE_REF))(
+    'rows an older host minted keep working and are never treated as single-use',
+    () => {
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-xv-ticket-'))
+      const released = new PreTicketRegistry(userDataPath)
+      const phone = released.addDevice('Phone', 'mobile')
+      released.updateLastSeen(phone.deviceId)
 
-    const current = new DeviceRegistry(userDataPath)
-    expect(current.validateToken(phone.token)?.deviceId).toBe(phone.deviceId)
-    expect(() => current.exchangePairingTicket(phone.deviceId, phone.token, EXCHANGED)).toThrow(
-      'not_a_ticket'
-    )
-    expect(current.validateToken(phone.token)?.deviceId).toBe(phone.deviceId)
-    // The desktop can't tell which app made it, so it never asks anyone to update.
-    expect(usesOlderPairingMethod(current.getDevice(phone.deviceId)!, current.listDevices())).toBe(
-      false
-    )
-  })
+      const current = new DeviceRegistry(userDataPath)
+      expect(current.validateToken(phone.token)?.deviceId).toBe(phone.deviceId)
+      expect(() => current.exchangePairingTicket(phone.deviceId, phone.token, EXCHANGED)).toThrow(
+        'not_a_ticket'
+      )
+      expect(current.validateToken(phone.token)?.deviceId).toBe(phone.deviceId)
+      // The desktop can't tell which app made it, so it never asks anyone to update.
+      expect(
+        usesOlderPairingMethod(current.getDevice(phone.deviceId)!, current.listDevices())
+      ).toBe(false)
+    }
+  )
 })

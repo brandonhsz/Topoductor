@@ -74,6 +74,45 @@
         }
       }
     },
+    "1eb3c47a0e7d": {
+      "crash": {
+        "$rpc": "null"
+      },
+      "elements": {
+        "ChevronLeft": 1,
+        "Defs": 1,
+        "FlatList": 1,
+        "LinearGradient": 1,
+        "Pressable": 1,
+        "Rect": 1,
+        "SafeAreaView": 1,
+        "Search": 1,
+        "Stop": 2,
+        "Svg": 1,
+        "Text": 2,
+        "TextInput": 1,
+        "View": 11
+      },
+      "labels": ["Back to session", "Filter files"],
+      "rows": ["dir:src", "file:README.md"],
+      "text": ["Files", "topo-files - Showing first 5000"]
+    },
+    "22f5868e8595": {
+      "crash": {
+        "$rpc": "null"
+      },
+      "elements": {
+        "ChevronLeft": 1,
+        "CircleAlert": 1,
+        "Pressable": 2,
+        "SafeAreaView": 1,
+        "Text": 5,
+        "View": 7
+      },
+      "labels": ["Back to session"],
+      "rows": [],
+      "text": ["Files", "topo-files", "Unable to Load", "Unable to load files", "Retry"]
+    },
     "25ac0f3b2c33": {
       "name": "files.list#1",
       "ordinal": 3,
@@ -121,7 +160,12 @@
         }
       }
     },
-    "30b248ba1f14": {
+    "34bd55d6f194": {
+      "name": "files.readDir#1",
+      "ordinal": 2,
+      "json": "{\"id\":\"frame-1\",\"deviceToken\":\"recording-device\",\"method\":\"files.readDir\",\"params\":{\"worktree\":\"id:wt-files\",\"relativePath\":\"\",\"limit\":500}}"
+    },
+    "404b005fed58": {
       "crash": {
         "$rpc": "null"
       },
@@ -135,12 +179,7 @@
       },
       "labels": ["Back to session"],
       "rows": [],
-      "text": ["Files", "topo-files", "Unable to Load", "Unable to load files", "Retry"]
-    },
-    "34bd55d6f194": {
-      "name": "files.readDir#1",
-      "ordinal": 2,
-      "json": "{\"id\":\"frame-1\",\"deviceToken\":\"recording-device\",\"method\":\"files.readDir\",\"params\":{\"worktree\":\"id:wt-files\",\"relativePath\":\"\",\"limit\":500}}"
+      "text": ["Files", "topo-files", "Unable to Load", "outer refused", "Retry"]
     },
     "40f20f4d65e9": {
       "name": "files.readDir#1",
@@ -181,27 +220,21 @@
       "ordinal": 4,
       "json": "{\"id\":\"frame-2\",\"deviceToken\":\"recording-device\",\"method\":\"files.readDir\",\"params\":{\"worktree\":\"id:wt-files\",\"relativePath\":\"\",\"limit\":500}}"
     },
-    "5bf19f172f7e": {
+    "6f16b3140405": {
       "crash": {
         "$rpc": "null"
       },
       "elements": {
+        "ActivityIndicator": 1,
         "ChevronLeft": 1,
-        "CircleAlert": 1,
-        "Pressable": 2,
+        "Pressable": 1,
         "SafeAreaView": 1,
-        "Text": 5,
+        "Text": 3,
         "View": 7
       },
       "labels": ["Back to session"],
       "rows": [],
-      "text": [
-        "Files",
-        "topo-files",
-        "Unable to Load",
-        "The host sent a reply this app could not read (files.readDir)",
-        "Retry"
-      ]
+      "text": ["Files", "topo-files", "Loading files…"]
     },
     "75aaf142eb3b": {
       "name": "files.list#1",
@@ -242,22 +275,6 @@
         }
       }
     },
-    "7e1b93aa6c0d": {
-      "crash": {
-        "$rpc": "null"
-      },
-      "elements": {
-        "ChevronLeft": 1,
-        "CircleAlert": 1,
-        "Pressable": 2,
-        "SafeAreaView": 1,
-        "Text": 5,
-        "View": 7
-      },
-      "labels": ["Back to session"],
-      "rows": [],
-      "text": ["Files", "topo-files", "Unable to Load", "outer refused", "Retry"]
-    },
     "835009844467": {
       "name": "files.readDir#1",
       "ordinal": 1,
@@ -293,52 +310,6 @@
           }
         }
       }
-    },
-    "948a6977def7": {
-      "crash": {
-        "$rpc": "null"
-      },
-      "elements": {
-        "ChevronLeft": 1,
-        "Defs": 1,
-        "FlatList": 1,
-        "LinearGradient": 1,
-        "Pressable": 1,
-        "Rect": 1,
-        "SafeAreaView": 1,
-        "Search": 1,
-        "Stop": 2,
-        "Svg": 1,
-        "Text": 2,
-        "TextInput": 1,
-        "View": 11
-      },
-      "labels": ["Back to session", "Filter files"],
-      "rows": ["dir:src", "file:README.md"],
-      "text": ["Files", "topo-files - Showing first 5000"]
-    },
-    "9f1a5ca359ab": {
-      "crash": {
-        "$rpc": "null"
-      },
-      "elements": {
-        "ChevronLeft": 1,
-        "Defs": 1,
-        "FlatList": 1,
-        "LinearGradient": 1,
-        "Pressable": 1,
-        "Rect": 1,
-        "SafeAreaView": 1,
-        "Search": 1,
-        "Stop": 2,
-        "Svg": 1,
-        "Text": 2,
-        "TextInput": 1,
-        "View": 11
-      },
-      "labels": ["Back to session", "Filter files"],
-      "rows": ["dir:src", "file:README.md"],
-      "text": ["Files", "topo-files"]
     },
     "a0f5e1e0ad66": {
       "name": "files.readDir#1",
@@ -376,6 +347,51 @@
           "ok": false
         }
       }
+    },
+    "a280e3155fbd": {
+      "crash": {
+        "$rpc": "null"
+      },
+      "elements": {
+        "ChevronLeft": 1,
+        "CircleAlert": 1,
+        "Pressable": 2,
+        "SafeAreaView": 1,
+        "Text": 5,
+        "View": 7
+      },
+      "labels": ["Back to session"],
+      "rows": [],
+      "text": [
+        "Files",
+        "topo-files",
+        "Unable to Load",
+        "The host sent a reply this app could not read (files.readDir)",
+        "Retry"
+      ]
+    },
+    "c27318fc5fb9": {
+      "crash": {
+        "$rpc": "null"
+      },
+      "elements": {
+        "ChevronLeft": 1,
+        "Defs": 1,
+        "FlatList": 1,
+        "LinearGradient": 1,
+        "Pressable": 1,
+        "Rect": 1,
+        "SafeAreaView": 1,
+        "Search": 1,
+        "Stop": 2,
+        "Svg": 1,
+        "Text": 2,
+        "TextInput": 1,
+        "View": 11
+      },
+      "labels": ["Back to session", "Filter files"],
+      "rows": ["dir:src", "file:README.md"],
+      "text": ["Files", "topo-files"]
     },
     "c3427cf20352": {
       "name": "files.readDir#1",
@@ -456,22 +472,6 @@
           ]
         }
       }
-    },
-    "c721e7f4a5c5": {
-      "crash": {
-        "$rpc": "null"
-      },
-      "elements": {
-        "ActivityIndicator": 1,
-        "ChevronLeft": 1,
-        "Pressable": 1,
-        "SafeAreaView": 1,
-        "Text": 3,
-        "View": 7
-      },
-      "labels": ["Back to session"],
-      "rows": [],
-      "text": ["Files", "topo-files", "Loading files…"]
     },
     "ca13345ac236": {
       "name": "files.readDir#1",
@@ -661,7 +661,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "c721e7f4a5c5",
+          "state": "6f16b3140405",
           "effects": []
         }
       },
@@ -673,7 +673,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "9f1a5ca359ab",
+          "state": "c27318fc5fb9",
           "effects": []
         }
       },
@@ -685,7 +685,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "5bf19f172f7e",
+          "state": "a280e3155fbd",
           "effects": []
         }
       },
@@ -697,7 +697,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "5bf19f172f7e",
+          "state": "a280e3155fbd",
           "effects": []
         }
       },
@@ -709,7 +709,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "5bf19f172f7e",
+          "state": "a280e3155fbd",
           "effects": []
         }
       },
@@ -721,7 +721,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "5bf19f172f7e",
+          "state": "a280e3155fbd",
           "effects": []
         }
       },
@@ -733,7 +733,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "5bf19f172f7e",
+          "state": "a280e3155fbd",
           "effects": []
         }
       },
@@ -745,7 +745,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "7e1b93aa6c0d",
+          "state": "404b005fed58",
           "effects": []
         }
       },
@@ -757,7 +757,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "30b248ba1f14",
+          "state": "22f5868e8595",
           "effects": []
         }
       },
@@ -769,7 +769,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "948a6977def7",
+          "state": "1eb3c47a0e7d",
           "effects": []
         }
       },
@@ -781,7 +781,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "c721e7f4a5c5",
+          "state": "6f16b3140405",
           "effects": []
         }
       },
@@ -793,7 +793,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "c721e7f4a5c5",
+          "state": "6f16b3140405",
           "effects": []
         }
       }

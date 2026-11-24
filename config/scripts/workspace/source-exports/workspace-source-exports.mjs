@@ -57,6 +57,9 @@ function packageExports(manifest, metadata) {
   return entries
 }
 
+// Release trees from before the Orca → Topo rebrand name their source condition `orca-source`.
+const SOURCE_CONDITIONS = ['topo-source', 'orca-source']
+
 export function createWorkspaceSourceResolver(root = process.cwd()) {
   root = realpathSync(root)
   const packages = new Map()
@@ -68,15 +71,15 @@ export function createWorkspaceSourceResolver(root = process.cwd()) {
     }
     packages.set(metadata.name, { manifest, native: manifest.startsWith('native/') })
     for (const [key, conditions] of packageExports(manifest, metadata)) {
-      if (
-        !conditions ||
-        typeof conditions !== 'object' ||
-        !Object.hasOwn(conditions, 'topo-source')
-      ) {
+      const condition =
+        conditions && typeof conditions === 'object'
+          ? SOURCE_CONDITIONS.find((name) => Object.hasOwn(conditions, name))
+          : undefined
+      if (!condition) {
         continue
       }
       const specifier = metadata.name + (key === '.' ? '' : key.slice(1))
-      sources.set(specifier, sourceTarget(root, manifest, conditions['topo-source']))
+      sources.set(specifier, sourceTarget(root, manifest, conditions[condition]))
     }
   }
   return {
