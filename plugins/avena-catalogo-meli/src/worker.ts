@@ -22,7 +22,7 @@ import type { ActionResult, Catalog, CatalogConfig, Product } from './protocol'
 
 export type WorkerDeps = {
   catalogSource(uri: string, location: MongoLocation): CatalogSource
-  meli(cliPath: string, workspace?: string): MeliClient
+  meli(cliPath: string, workspace?: string, profile?: string): MeliClient
   patch(credentials: BackendCredentials, updates: readonly SupplementUpdate[]): Promise<unknown>
   openDb: OpenCatalogDb
   fetchImage: ImageFetcher
@@ -35,7 +35,7 @@ const DEFAULT_CLI = '/Applications/Topo.app/Contents/Resources/bin/topo'
 
 const realDeps: WorkerDeps = {
   catalogSource: mongoCatalogSource,
-  meli: (cliPath, workspace) => new MeliBrowser(cliRunner(cliPath), workspace),
+  meli: (cliPath, workspace, profile) => new MeliBrowser(cliRunner(cliPath), workspace, profile),
   patch: patchSupplements,
   openDb: (path) => new CatalogDb(path),
   fetchImage: imageFetcher(),
@@ -81,12 +81,14 @@ export function activateWith(rawOrca: OrcaWorkerApi, deps: WorkerDeps): void {
   }
   const workspace = async (): Promise<string> =>
     String((await orca.settings.get('browserWorkspace')) ?? '')
+  const profile = async (): Promise<string> =>
+    String((await orca.settings.get('browserProfile')) ?? '')
   let lock: Promise<LockStore> | null = null
   const queue = new FlowQueue(() => (lock ??= repository.path().then(deps.openLock)), {
     changed: () => orca.panels.post('schedules.changed', { at: Date.now() })
   })
   const meli = async (): Promise<MeliClient> =>
-    queuedMeli(deps.meli(await cliPath(), await workspace()), queue)
+    queuedMeli(deps.meli(await cliPath(), await workspace(), await profile()), queue)
 
   /** Re-reads `ids` from Mongo after a write, so the panel shows what the database holds. */
   async function refresh(ids: readonly string[]): Promise<void> {
