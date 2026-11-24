@@ -3,7 +3,7 @@
 import { mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { DatabaseSync } from 'node:sqlite'
-import { hasNewMlPrice, isApplicable } from './catalog-status'
+import { hasNewMlPrice, isApplicable, isPriceUpdate } from './catalog-status'
 import { isRecord } from './json-fields'
 import type {
   BulkScope,
@@ -303,7 +303,9 @@ export class CatalogDb {
           ? hasNewMlPrice(product)
           : scope === 'applicable'
             ? isApplicable(product)
-            : product.status === 'referido_listo'
+            : scope === 'priceUpdates'
+              ? isPriceUpdate(product)
+              : product.status === 'referido_listo'
       )
       .map((product) => product.id)
   }

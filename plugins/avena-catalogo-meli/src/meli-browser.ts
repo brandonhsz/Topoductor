@@ -39,6 +39,8 @@ export class MeliSessionError extends Error {}
 
 const READ_BATCH = 24
 
+const HOME_URL = 'https://www.mercadolibre.com.mx/'
+
 export function cliRunner(cliPath: string): CliRunner {
   return (args, timeoutMs) =>
     new Promise((resolve, reject) => {
@@ -63,38 +65,99 @@ export function cliRunner(cliPath: string): CliRunner {
     })
 }
 
-type Tab = { browserPageId: string; url: string }
+/** `worktreeId` is the workspace holding the tab, to bring it on screen. */
+export type Tab = { browserPageId: string; url: string; worktreeId?: string }
 
 export class MeliBrowser {
-  constructor(private readonly run: CliRunner) {}
+  private readonly workspace: string | null
+  private readonly profile: string | null
 
-  private async findTab(): Promise<Tab> {
+  /**
+   * `workspacePath`: the Topo workspace whose browser to use; any workspace when empty.
+   * `profileId`: the browser profile (account) to use; empty: the default one. A machine that
+   * also buys in MercadoLibre keeps its buying tab in the default profile, so the catalog uses its
+   * own profile and never takes that tab.
+   */
+  constructor(
+    readonly run: CliRunner,
+    workspacePath?: string,
+    profileId?: string
+  ) {
+    this.workspace = workspacePath?.trim().replace(/\/+$/, '') || null
+    this.profile = profileId?.trim() || null
+  }
+
+  private inProfile(profileId: string | null): boolean {
+    return (profileId || 'default') === (this.profile ?? 'default') || (!this.profile && !profileId)
+  }
+
+  private inWorkspace(worktreeId: string | null): boolean {
+    return !this.workspace || (worktreeId ?? '').endsWith(`::${this.workspace}`)
+  }
+
+  async findTab(): Promise<Tab> {
     const listed = await this.run(['tab', 'list', '--worktree', 'all'], 20_000)
-    const tab = records(field(listed, 'tabs')).find((candidate) =>
-      /^https:\/\/[a-z]+\.mercadolibre\.com\.mx\//.test(text(candidate.url) ?? '')
+    const tab = records(field(listed, 'tabs')).find(
+      (candidate) =>
+        /^https:\/\/[a-z]+\.mercadolibre\.com\.mx\//.test(text(candidate.url) ?? '') &&
+        this.inWorkspace(text(candidate.worktreeId)) &&
+        this.inProfile(text(candidate.profileId))
     )
     const tabId = text(tab?.browserPageId)
     if (tab && tabId) {
-      return { browserPageId: tabId, url: text(tab.url) ?? '' }
+      return {
+        browserPageId: tabId,
+        url: text(tab.url) ?? '',
+        worktreeId: text(tab.worktreeId) ?? undefined
+      }
     }
     // The worker runs outside any workspace, so `--worktree active` cannot resolve: name one.
     const worktrees = records(field(await this.run(['worktree', 'list'], 20_000), 'worktrees'))
-    const worktreeId = text(worktrees[0]?.id)
+    const worktreeId = text(worktrees.find((worktree) => this.inWorkspace(text(worktree.id)))?.id)
     if (!worktreeId) {
-      throw new MeliSessionError('Abre un workspace en Topo para poder usar MercadoLibre.')
+      throw new MeliSessionError(
+        this.workspace
+          ? `No encontré el workspace ${this.workspace} en Topo: revisa el ajuste «Workspace del navegador».`
+          : 'Abre un workspace en Topo para poder usar MercadoLibre.'
+      )
     }
     const created = await this.run(
-      ['tab', 'create', '--url', LINKBUILDER_URL, '--worktree', `id:${worktreeId}`],
+      ['tab', 'create', '--url', LINKBUILDER_URL, '--worktree', `id:${worktreeId}`, ...(this.profile ? ['--profile', this.profile] : [])],
       30_000
     )
     const createdId = text(field(created, 'browserPageId'))
     if (!createdId) {
       throw new MeliSessionError('No se pudo abrir MercadoLibre en el navegador de Topo.')
     }
-    return { browserPageId: createdId, url: LINKBUILDER_URL }
+    return { browserPageId: createdId, url: LINKBUILDER_URL, worktreeId }
   }
 
-  private async evaluate(pageId: string, expression: string, timeoutMs = 60_000): Promise<unknown> {
+  /**
+   * Clicks the button named `button` inside the open dialog whose title matches `dialog`, through
+   * Topo's accessibility snapshot: it reaches menus and iframes a page script cannot click.
+   */
+  async clickInDialog(tab: Tab, dialog: RegExp, button: string): Promise<boolean> {
+    const snapshot =
+      text(field(await this.run(['snapshot', '--page', tab.browserPageId], 30_000), 'snapshot')) ??
+      ''
+    const lines = snapshot.split('\n')
+    const start = lines.findIndex((line) => /dialog "/.test(line) && dialog.test(line))
+    const ref =
+      start === -1
+        ? null
+        : lines
+            .slice(start + 1)
+            .map((line) => new RegExp(`button "${button}" \\[ref=(e\\d+)\\]`).exec(line)?.[1])
+            .find((found) => found !== undefined)
+    if (!ref) {
+      return false
+    }
+    const worktree = tab.worktreeId ? ['--worktree', `id:${tab.worktreeId}`] : []
+    await this.run(['click', '--element', ref, ...worktree], 30_000)
+    return true
+  }
+
+  async evaluate(pageId: string, expression: string, timeoutMs = 60_000): Promise<unknown> {
     const answer = field(
       await this.run(['eval', '--page', pageId, '--expression', expression], timeoutMs),
       'result'
@@ -120,12 +183,27 @@ export class MeliBrowser {
     return tab.browserPageId
   }
 
+  /**
+   * Any page of www.mercadolibre.com.mx: the meli.la iframes need that origin, not an account.
+   * Prices are public, so reading them works logged out or with any account.
+   */
+  private async openMeliPage(): Promise<string> {
+    const tab = await this.findTab()
+    if (!tab.url.startsWith(HOME_URL)) {
+      await this.run(['goto', '--page', tab.browserPageId, '--url', HOME_URL], 45_000)
+      await this.run(['wait', '--page', tab.browserPageId, '--load', 'load'], 30_000).catch(
+        () => undefined
+      )
+    }
+    return tab.browserPageId
+  }
+
   /** Reads every meli.la, calling `onBatch` as each batch lands so progress survives a stop. */
   async readCards(
     urls: readonly string[],
     onBatch: (batch: CardReading[]) => Promise<void>
   ): Promise<void> {
-    const pageId = await this.openLinkBuilder()
+    const pageId = await this.openMeliPage()
     for (let index = 0; index < urls.length; index += READ_BATCH) {
       const raw = await this.evaluate(
         pageId,
@@ -172,7 +250,7 @@ export class MeliBrowser {
   async canonicalUrl(
     url: string
   ): Promise<{ status: number; canonical: string | null; unavailable: boolean }> {
-    const pageId = await this.openLinkBuilder()
+    const pageId = await this.openMeliPage()
     const page = await this.evaluate(pageId, canonicalUrlExpression(url))
     return {
       status: amount(field(page, 'status')) ?? 0,

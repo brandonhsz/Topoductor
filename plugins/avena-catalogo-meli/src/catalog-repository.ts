@@ -17,11 +17,16 @@ export class CatalogRepository {
     private readonly open: OpenCatalogDb
   ) {}
 
+  async path(): Promise<string> {
+    const configured = await this.orca.settings.get('databasePath')
+    return typeof configured === 'string' && configured.trim()
+      ? configured.trim()
+      : defaultDatabasePath()
+  }
+
   async database(): Promise<CatalogDb> {
     if (!this.opened) {
-      const configured = await this.orca.settings.get('databasePath')
-      const path = typeof configured === 'string' && configured.trim() ? configured.trim() : null
-      const db = this.open(path ?? defaultDatabasePath())
+      const db = this.open(await this.path())
       await this.migrateStorage(db)
       this.opened = db
     }

@@ -1,4 +1,22 @@
 // The panel <-> worker contract, declared once: src/panel.tsx and src/worker.ts both read it.
+import type { QueueState } from './flow-queue'
+import type {
+  OrderAddress,
+  OrderItem,
+  PurchaseMode,
+  PurchaseOrder,
+  Schedule,
+  ScheduleRun,
+  TaskKind
+} from './schedule-types'
+
+export type SchedulesState = {
+  schedules: Schedule[]
+  runs: ScheduleRun[]
+  orders: PurchaseOrder[]
+  /** MercadoLibre flows run one at a time: what runs now and what waits. */
+  queue: QueueState
+}
 
 export type LinkKind = 'referido' | 'directo'
 
@@ -80,7 +98,8 @@ export type Catalog = {
 export type Filter = 'revisar' | 'todos' | 'con_referido' | ProductStatus
 
 /** `applicable`: safe price changes. `allPrices`: every new ML price. `pendingReferrals`: referrals to save. */
-export type BulkScope = 'applicable' | 'allPrices' | 'pendingReferrals'
+/** `priceUpdates`: the safe changes plus big jumps up, for the scheduled price update. */
+export type BulkScope = 'applicable' | 'allPrices' | 'priceUpdates' | 'pendingReferrals'
 
 export type CatalogViewQuery = {
   filter: Filter
@@ -140,7 +159,14 @@ export type ConnectionStatus = {
   config: CatalogConfig
 }
 
-export type AuditProgress = { running: boolean; done: number; total: number; blocked: boolean }
+export type AuditProgress = {
+  running: boolean
+  done: number
+  total: number
+  blocked: boolean
+  /** Why the read stopped, in words a person can act on. */
+  reason?: string
+}
 
 export type ReferralProgress = {
   running: boolean
@@ -198,6 +224,28 @@ declare module 'orca' {
     'catalog.proposeReplacements': { output: ActionResult }
     /** Generates the referral for `url`, then writes it and its price to the product. */
     'catalog.replaceLink': { input: { id: string; url: string }; output: ActionResult }
+    'schedules.state': { output: SchedulesState }
+    'schedules.save': {
+      input: {
+        id?: string
+        kind: TaskKind
+        days: number[]
+        time: string
+        everyHours?: number | null
+        enabled: boolean
+        mode: PurchaseMode
+      }
+      output: ActionResult
+    }
+    'schedules.remove': { input: { id: string }; output: ActionResult }
+    /** Runs a task now, in the background; its outcome lands in the run history. */
+    'schedules.runNow': { input: { kind: TaskKind; mode: PurchaseMode }; output: ActionResult }
+    /** Adds a purchase order to the mock queue (stand-in for the backend). */
+    'orders.createMock': {
+      input: { address: OrderAddress; items: OrderItem[]; cap: number }
+      output: ActionResult
+    }
+    'orders.retry': { input: { id: string }; output: ActionResult }
     'catalog.applyUrl': { input: { id: string; url: string }; output: ActionResult }
     'catalog.setStock': { input: { id: string; hasStock: boolean }; output: ActionResult }
   }
@@ -206,6 +254,7 @@ declare module 'orca' {
     'audit.progress': AuditProgress
     /** Posted after every write to the local database. */
     'catalog.changed': { at: number }
+    'schedules.changed': { at: number }
     'referrals.progress': ReferralProgress
     'repairs.progress': RepairProgress
   }

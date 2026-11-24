@@ -5,6 +5,8 @@ import type { MongoLocation, SourceProduct } from './catalog-source'
 import { isReferralUrl } from './catalog-status'
 import type { CardReading, MeliClient, ReferralResult, SearchResult } from './meli-browser'
 import { CatalogDb } from './catalog-db'
+import { ScheduleStore } from './schedule-store'
+import { SqliteFlowLock } from './flow-queue'
 import type { Catalog } from './protocol'
 import { field } from './json-fields'
 import { activateWith } from './worker'
@@ -101,6 +103,11 @@ function fakes(database: SourceProduct[]) {
       )
     },
     meli: () => meli,
+    openSchedules: () => new ScheduleStore(':memory:'),
+    openLock: () => new SqliteFlowLock(':memory:'),
+    checkout: () => ({
+      checkout: async () => ({ stage: 'resumen', total: 1, orderNumber: null, message: 'ok' })
+    }),
     fetchImage: async (url: string) =>
       `data:image/webp;base64,${Buffer.from(url).toString('base64')}`,
     openDb: () => {
@@ -581,4 +588,27 @@ test('«Usar este» gives a product sold in its own store its first ML link', as
   const joined = stored().products.find((p) => p.id === 'store')
   assert.equal(joined?.productURL, 'https://meli.la/psy')
   assert.equal(joined?.price, 327.18)
+})
+
+test('a task run now through the scheduler lands in the history', async () => {
+  const { worker } = await start([source()])
+  await worker.request('catalog.sync')
+  const saved = await worker.request('schedules.save', {
+    kind: 'sync',
+    days: [1, 3, 5],
+    time: '07:00',
+    enabled: true,
+    mode: 'prueba'
+  })
+  assert.equal(saved.ok, true)
+  await worker.request('schedules.runNow', { kind: 'sync', mode: 'prueba' })
+  let state = await worker.request('schedules.state')
+  for (let tries = 0; tries < 50 && state.runs[0]?.finishedAt == null; tries++) {
+    await new Promise((resolve) => setTimeout(resolve, 5))
+    state = await worker.request('schedules.state')
+  }
+  assert.equal(state.schedules[0]?.kind, 'sync')
+  assert.ok(state.schedules[0]?.nextRunAt)
+  assert.equal(state.runs[0]?.ok, true)
+  assert.match(state.runs[0]?.summary ?? '', /1 suplementos/)
 })

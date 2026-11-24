@@ -2,45 +2,56 @@
 // Topo's browser, and writes through the configured backend.
 import type { OrcaWorkerApi } from 'orca/worker'
 import { patchSupplements, type BackendCredentials, type SupplementUpdate } from './backend-client'
-import {
-  mongoCatalogSource,
-  normalizeMongoUri,
-  type CatalogSource,
-  type MongoLocation
-} from './catalog-source'
+import { mongoCatalogSource, type CatalogSource, type MongoLocation } from './catalog-source'
 import { backendCredentials, mongoLocation, readCatalogConfig } from './catalog-config'
 import { isMeliUrl, isReferralUrl, pricePayload, withStatus } from './catalog-status'
 import { CatalogDb } from './catalog-db'
+import { CheckoutBrowser, type CheckoutClient, type CheckoutOptions } from './checkout-browser'
+import { withLocalPanels } from './local-panels'
+import { ScheduleStore } from './schedule-store'
+import { wireSchedules } from './schedule-wiring'
+import { FlowQueue, SqliteFlowLock, type LockStore } from './flow-queue'
+import { queuedMeli } from './meli-queue'
 import { imageFetcher, type ImageFetcher } from './image-data'
 import { CatalogRepository, type OpenCatalogDb } from './catalog-repository'
 import { cliRunner, MeliBrowser, type MeliClient } from './meli-browser'
 import { fromSource, sharedCounts } from './catalog-merge'
+import { registerConnectionHandlers } from './connection-handlers'
 import { registerReferralHandlers } from './referral-handlers'
-import type { ActionResult, Catalog, CatalogConfig, ConnectionStatus, Product } from './protocol'
+import type { ActionResult, Catalog, CatalogConfig, Product } from './protocol'
 
 export type WorkerDeps = {
   catalogSource(uri: string, location: MongoLocation): CatalogSource
-  meli(cliPath: string): MeliClient
+  meli(cliPath: string, workspace?: string, profile?: string): MeliClient
   patch(credentials: BackendCredentials, updates: readonly SupplementUpdate[]): Promise<unknown>
   openDb: OpenCatalogDb
   fetchImage: ImageFetcher
+  openSchedules(path: string): ScheduleStore
+  openLock(path: string): LockStore
+  checkout(cliPath: string, options: CheckoutOptions, workspace?: string): CheckoutClient
 }
 
 const DEFAULT_CLI = '/Applications/Topo.app/Contents/Resources/bin/topo'
 
 const realDeps: WorkerDeps = {
   catalogSource: mongoCatalogSource,
-  meli: (cliPath) => new MeliBrowser(cliRunner(cliPath)),
+  meli: (cliPath, workspace, profile) => new MeliBrowser(cliRunner(cliPath), workspace, profile),
   patch: patchSupplements,
   openDb: (path) => new CatalogDb(path),
-  fetchImage: imageFetcher()
+  fetchImage: imageFetcher(),
+  openSchedules: (path) => new ScheduleStore(path),
+  openLock: (path) => new SqliteFlowLock(path),
+  checkout: (cliPath, options, workspace) =>
+    new CheckoutBrowser(new MeliBrowser(cliRunner(cliPath), workspace), options)
 }
 
 function message(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
 
-export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
+export function activateWith(rawOrca: OrcaWorkerApi, deps: WorkerDeps): void {
+  // Scheduled tasks reuse the panel's handlers and progress posts in-process.
+  const { orca, call, bus } = withLocalPanels(rawOrca)
   let auditRunning = false
 
   const repository = new CatalogRepository(orca, deps.openDb)
@@ -64,10 +75,20 @@ export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
   const backend = (): Promise<BackendCredentials> => backendCredentials(orca)
   const config = (): Promise<CatalogConfig> => readCatalogConfig(orca)
 
-  async function meli(): Promise<MeliClient> {
+  async function cliPath(): Promise<string> {
     const configured = await orca.settings.get('topoCli')
-    return deps.meli(String(configured || process.env.TOPO_CLI_COMMAND || DEFAULT_CLI))
+    return String(configured || process.env.TOPO_CLI_COMMAND || DEFAULT_CLI)
   }
+  const workspace = async (): Promise<string> =>
+    String((await orca.settings.get('browserWorkspace')) ?? '')
+  const profile = async (): Promise<string> =>
+    String((await orca.settings.get('browserProfile')) ?? '')
+  let lock: Promise<LockStore> | null = null
+  const queue = new FlowQueue(() => (lock ??= repository.path().then(deps.openLock)), {
+    changed: () => orca.panels.post('schedules.changed', { at: Date.now() })
+  })
+  const meli = async (): Promise<MeliClient> =>
+    queuedMeli(deps.meli(await cliPath(), await workspace(), await profile()), queue)
 
   /** Re-reads `ids` from Mongo after a write, so the panel shows what the database holds. */
   async function refresh(ids: readonly string[]): Promise<void> {
@@ -98,60 +119,10 @@ export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
     return source ? fromSource(source, undefined, 1) : null
   }
 
-  async function status(): Promise<ConnectionStatus> {
-    const [mongoUri, email, password, current] = await Promise.all([
-      orca.secrets.get('mongoUri'),
-      orca.secrets.get('backendEmail'),
-      orca.secrets.get('backendPassword'),
-      config()
-    ])
-    return {
-      mongo: Boolean(
-        mongoUri && current.mongoDatabase && current.mongoCollection && current.catalogOwner
-      ),
-      backend: Boolean(email && password && current.backendUrl && current.backendPricesPath),
-      config: current
-    }
-  }
-
-  orca.panels.handle('connection.status', status)
+  registerConnectionHandlers(orca, deps.catalogSource)
   orca.panels.handle('catalog.view', async (query) => (await repository.database()).view(query))
   orca.panels.handle('catalog.history', async ({ id }) => (await repository.database()).history(id))
   orca.panels.handle('catalog.ids', async ({ scope }) => (await repository.database()).ids(scope))
-
-  orca.panels.handle('connection.save', async (input) => {
-    for (const [key, value] of Object.entries(input.config ?? {})) {
-      if (typeof value === 'string') {
-        await orca.settings.set(key, value.trim())
-      }
-    }
-    const mongoUri = input.mongoUri?.trim() ? normalizeMongoUri(input.mongoUri) : null
-    if (mongoUri) {
-      // Test before storing so a bad URI never replaces one that works.
-      try {
-        await deps.catalogSource(mongoUri, mongoLocation(await config()))([])
-      } catch (error) {
-        return {
-          status: await status(),
-          result: { ok: false, message: `No se pudo conectar a Mongo: ${message(error)}` }
-        }
-      }
-      await orca.secrets.set('mongoUri', mongoUri)
-    }
-    const entries: [string, string | undefined][] = [
-      ['backendEmail', input.backendEmail],
-      ['backendPassword', input.backendPassword]
-    ]
-    for (const [key, value] of entries) {
-      if (value?.trim()) {
-        await orca.secrets.set(key, value.trim())
-      }
-    }
-    return {
-      status: await status(),
-      result: { ok: true, message: 'Conexiones guardadas en los secretos del plugin.' }
-    }
-  })
 
   orca.panels.handle('catalog.sync', async (): Promise<ActionResult> => {
     try {
@@ -224,7 +195,8 @@ export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
             running: false,
             done,
             total: urls.length,
-            blocked: true
+            blocked: true,
+            reason: message(error)
           })
         }
       )
@@ -297,6 +269,30 @@ export function activateWith(orca: OrcaWorkerApi, deps: WorkerDeps): void {
       return { ok: true, message: hasStock ? 'Marcado con stock.' : 'Marcado sin stock.' }
     } catch (error) {
       return { ok: false, message: message(error) }
+    }
+  })
+
+  wireSchedules(orca, {
+    call,
+    bus,
+    databasePath: () => repository.path(),
+    openStore: deps.openSchedules,
+    products: async () => (await catalog()).products,
+    queue,
+    checkout: async () => {
+      const minutes = Number(await orca.settings.get('captchaWaitMinutes'))
+      return deps.checkout(
+        await cliPath(),
+        {
+          waitMs: (Number.isFinite(minutes) && minutes > 0 ? minutes : 15) * 60_000,
+          onVerification: (body) => {
+            void orca.host
+              .call('notifications.show', { title: 'MercadoLibre pide captcha', body })
+              .catch(() => undefined)
+          }
+        },
+        await workspace()
+      )
     }
   })
 }
