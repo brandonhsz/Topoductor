@@ -1,4 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { z } from 'zod'
+import type {
+  HarnessFlowsGetParams,
+  HarnessFlowsListParams,
+  HarnessFlowsSaveParams
+} from '../../../../../shared/rpc-contract/harness-flow-params'
 import { eraseRpcMethods, type RpcContext, type RpcMethod } from '../../core'
 import { EMPTY_HARNESS_PROJECT } from '../../../../../shared/harness/harness-flow-normalize'
 import type {
@@ -107,13 +113,13 @@ function method(name: string): RpcMethod {
   return found
 }
 
-const list = (params: object): Promise<HarnessFlowListItem[]> =>
+const list = (params: z.input<typeof HarnessFlowsListParams>): Promise<HarnessFlowListItem[]> =>
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: eraseRpcMethods erases the handler's declared HarnessFlowListItem[] result.
   method('harness.flows.list').handler(params, context) as Promise<HarnessFlowListItem[]>
-const get = (params: object): Promise<HarnessFlowReading> =>
+const get = (params: z.input<typeof HarnessFlowsGetParams>): Promise<HarnessFlowReading> =>
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: eraseRpcMethods erases the handler's declared HarnessFlowReading result.
   method('harness.flows.get').handler(params, context) as Promise<HarnessFlowReading>
-const save = (params: object): Promise<HarnessFlowSaveResult> =>
+const save = (params: z.input<typeof HarnessFlowsSaveParams>): Promise<HarnessFlowSaveResult> =>
   // oxlint-disable-next-line typescript/consistent-type-assertions -- SAFETY: eraseRpcMethods erases the handler's declared HarnessFlowSaveResult result.
   method('harness.flows.save').handler(params, context) as Promise<HarnessFlowSaveResult>
 
