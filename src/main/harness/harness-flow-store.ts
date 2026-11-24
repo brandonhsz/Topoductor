@@ -16,6 +16,7 @@ import { asRecord } from '../../shared/workspace-setup/setup-script-import-parse
 import { writeSecureJsonFile } from '../../shared/secure-storage/secure-file'
 import { createHarnessSerialQueue } from './harness-serial-queue'
 import { deleteHarnessFlowVersions, getHarnessFlowVersion } from './harness-flow-version-store'
+import { HarnessFlowError } from '../../shared/harness/harness-flow-errors'
 
 type FlowsFile = {
   version: 1
@@ -157,8 +158,9 @@ function emitChange(change: HarnessFlowChange): void {
 async function loadWritable(): Promise<FlowsFile> {
   const file = await loadSeeded()
   if (!file) {
-    throw new Error(
-      'harness_flows_unreadable: Harness flows file exists but could not be read; refusing to overwrite it'
+    throw new HarnessFlowError(
+      'harness_flows_unreadable',
+      'Harness flows file exists but could not be read; refusing to overwrite it'
     )
   }
   return file
@@ -168,7 +170,7 @@ function writeFlow(file: FlowsFile, flow: HarnessFlow): HarnessFlow {
   const saved = { ...flow, updatedAt: Date.now() }
   const others = file.flows.filter((existing) => existing.id !== saved.id)
   if (others.length >= MAX_FLOWS) {
-    throw new Error(`harness_flow_limit: Harness supports up to ${MAX_FLOWS} flows`)
+    throw new HarnessFlowError('harness_flow_limit', `Harness supports up to ${MAX_FLOWS} flows`)
   }
   writeSecureJsonFile(flowsPath(), { ...file, flows: [...others, saved] })
   return saved
@@ -183,15 +185,16 @@ export async function saveHarnessFlow(
     const file = await loadWritable()
     const flow = normalizeHarnessFlow(raw)
     if (!flow) {
-      throw new Error('harness_flow_invalid: Invalid harness flow')
+      throw new HarnessFlowError('harness_flow_invalid', 'Invalid harness flow')
     }
     const stored = file.flows.find((existing) => existing.id === flow.id)
     if (
       options.expectedUpdatedAt !== undefined &&
       stored?.updatedAt !== options.expectedUpdatedAt
     ) {
-      throw new Error(
-        `harness_flow_conflict: flow ${flow.id} changed since ${options.expectedUpdatedAt}`
+      throw new HarnessFlowError(
+        'harness_flow_conflict',
+        `flow ${flow.id} changed since ${options.expectedUpdatedAt}`
       )
     }
     return writeFlow(file, flow)
@@ -231,7 +234,7 @@ export async function restoreHarnessFlowVersion(
 ): Promise<HarnessFlow> {
   const version = await getHarnessFlowVersion(flowId, versionId)
   if (!version) {
-    throw new Error(`harness_flow_version_not_found: ${flowId}/${versionId}`)
+    throw new HarnessFlowError('harness_flow_version_not_found', `${flowId}/${versionId}`)
   }
   const restored = await serialized(async () => {
     const file = await loadWritable()

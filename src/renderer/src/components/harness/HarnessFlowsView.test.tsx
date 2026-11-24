@@ -246,6 +246,43 @@ describe('HarnessFlowsView versions', () => {
   })
 })
 
+describe('HarnessFlowsView current version', () => {
+  it('moves Current to a version the agent records after a restore', async () => {
+    await openEditor()
+    fireEvent.click(versionButton('First draft'))
+    await settle()
+    fireEvent.click(screen.getByRole('button', { name: 'Restore' }))
+    await settle()
+    expect(versionButton('First draft')).toHaveTextContent('Current')
+
+    const agentVersion: HarnessFlowVersionSummary = {
+      id: 'v5',
+      flowId: 'flow-1',
+      createdAt: 5,
+      author: 'agent',
+      summary: 'Agent tweak'
+    }
+    harness.listFlowVersions.mockImplementation(async () => [agentVersion, ...versions])
+    await emit(agentChange('flow-1'))
+
+    expect(versionButton('Agent tweak')).toHaveTextContent('Current')
+    expect(versionButton('First draft')).not.toHaveTextContent('Current')
+  })
+
+  it('does not offer to save a version while previewing an older one', async () => {
+    await openEditor()
+    fireEvent.change(screen.getByRole('textbox', { name: 'Version summary' }), {
+      target: { value: 'Snapshot' }
+    })
+    expect(screen.getByRole('button', { name: 'Save version' })).toBeEnabled()
+
+    fireEvent.click(versionButton('First draft'))
+    await settle()
+
+    expect(screen.getByRole('button', { name: 'Save version' })).toBeDisabled()
+  })
+})
+
 describe('HarnessFlowsView agent changes', () => {
   async function editThenAgentChanges(): Promise<void> {
     await openEditor()
@@ -261,6 +298,8 @@ describe('HarnessFlowsView agent changes', () => {
     expect(screen.getByText('Split review in two')).toBeInTheDocument()
     await settle(2_000)
     expect(harness.saveFlow).not.toHaveBeenCalled()
+    expect(screen.queryByText('Saving…')).not.toBeInTheDocument()
+    expect(screen.getByText('Not saved yet')).toBeInTheDocument()
     expect(
       within(canvas()).getByRole('heading', { name: 'Review flow (mine)' })
     ).toBeInTheDocument()

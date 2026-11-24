@@ -244,7 +244,7 @@ describe('harness.flows.save', () => {
     expect(order()).toEqual(['version:person', 'save', 'version:agent'])
     const [before, after] = store.recordHarnessFlowVersion.mock.calls.map((call) => call[0])
     expect(before.flow).toEqual(stored)
-    expect(before.summary).toContain('Antes del cambio del agente')
+    expect(before.summary).toContain('Before the agent change')
     expect(store.saveHarnessFlow).toHaveBeenCalledWith(
       expect.objectContaining({ id: 'f', name: 'Entrega rápida' }),
       { expectedUpdatedAt: 100, source: 'agent', summary: 'Renombra el flujo' }

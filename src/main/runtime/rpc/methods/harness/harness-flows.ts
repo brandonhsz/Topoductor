@@ -30,8 +30,9 @@ import {
 import { getHarnessRunService } from '../../../../harness/harness-run-registry'
 import type { TopoRuntimeService } from '../../../topo-runtime'
 import { callerWorkspace } from './harness-caller-workspace'
+import { HarnessFlowError } from '../../../../../shared/harness/harness-flow-errors'
 
-const BEFORE_AGENT_SUMMARY = 'Antes del cambio del agente'
+const BEFORE_AGENT_SUMMARY = 'Before the agent change'
 
 async function callerRepo(
   runtime: TopoRuntimeService,
@@ -39,7 +40,10 @@ async function callerRepo(
 ): Promise<string | null> {
   const worktreeId = await callerWorkspace(runtime, params)
   if (!worktreeId) {
-    throw new Error('harness_no_workspace: run inside a Topo workspace or pass --worktree')
+    throw new HarnessFlowError(
+      'harness_no_workspace',
+      'run inside a Topo workspace or pass --worktree'
+    )
   }
   return splitWorktreeId(worktreeId)?.repoId || null
 }
@@ -47,7 +51,7 @@ async function callerRepo(
 /** A repo copy is only reachable from its own repo. */
 function assertReachable(flow: HarnessFlow, repoId: string | null): void {
   if (flow.scope.kind === 'repo' && flow.scope.repoId !== repoId) {
-    throw new Error(`harness_flow_scope_forbidden: ${flow.id} belongs to another repo`)
+    throw new HarnessFlowError('harness_flow_scope_forbidden', `${flow.id} belongs to another repo`)
   }
 }
 
@@ -91,7 +95,10 @@ function newFlowScope(
     return { kind: 'global' }
   }
   if (!repoId) {
-    throw new Error('harness_flow_scope_forbidden: this workspace has no repo for a repo flow')
+    throw new HarnessFlowError(
+      'harness_flow_scope_forbidden',
+      'this workspace has no repo for a repo flow'
+    )
   }
   return { kind: 'repo', repoId }
 }
@@ -122,7 +129,7 @@ export const HARNESS_FLOW_METHODS = [
       const repoId = await callerRepo(runtime, params)
       const flow = await getHarnessFlow(params.flowId)
       if (!flow) {
-        throw new Error(`harness_flow_not_found: ${params.flowId}`)
+        throw new HarnessFlowError('harness_flow_not_found', `${params.flowId}`)
       }
       assertReachable(flow, repoId)
       return readingOf(flow)

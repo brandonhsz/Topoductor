@@ -189,9 +189,11 @@ export function HarnessFlowsView({
               <span className="ml-auto text-2xs text-muted-foreground" aria-live="polite">
                 {saveState === 'saving'
                   ? t('components.harness.saving', 'Saving…')
-                  : saveState === 'error'
-                    ? t('components.harness.saveFailed', 'Not saved')
-                    : t('components.harness.saved', 'Saved')}
+                  : saveState === 'held'
+                    ? t('components.harness.unsavedHeld', 'Not saved yet')
+                    : saveState === 'error'
+                      ? t('components.harness.saveFailed', 'Not saved')
+                      : t('components.harness.saved', 'Saved')}
               </span>
               <Button
                 size="icon-xs"
@@ -358,7 +360,7 @@ export function HarnessFlowsView({
                   versions={history.versions}
                   currentVersionId={history.currentVersionId}
                   previewVersionId={previewed?.id ?? null}
-                  saving={history.saving || conflict !== null}
+                  saving={history.saving || conflict !== null || previewed !== null}
                   onPreview={(versionId) =>
                     void history
                       .openPreview(draft.id, versionId)

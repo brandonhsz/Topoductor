@@ -23,6 +23,7 @@ import {
 import { HarnessRunService } from '../../harness/harness-run-service'
 import { setHarnessRunService } from '../../harness/harness-run-registry'
 import type { TopoRuntimeService } from '../../runtime/topo-runtime'
+import { HarnessFlowError } from '../../../shared/harness/harness-flow-errors'
 
 const MAX_ID = 256
 const MAX_TEXT = 256 * 1024
@@ -111,7 +112,7 @@ export function registerHarnessHandlers(runtime: TopoRuntimeService): void {
   ipcMain.handle('harness:saveFlowVersion', async (_event, flowId: unknown, summary: unknown) => {
     const flow = await getHarnessFlow(id(flowId))
     if (!flow) {
-      throw new Error(`harness_flow_not_found: ${String(flowId)}`)
+      throw new HarnessFlowError('harness_flow_not_found', `${String(flowId)}`)
     }
     return recordHarnessFlowVersion({
       flow,

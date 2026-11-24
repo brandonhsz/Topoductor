@@ -52,11 +52,14 @@ export function useHarnessFlows(
 
 const SAVE_DELAY_MS = 600
 
+/** `held`: local edits wait behind the agent-change prompt and are not being saved. */
+export type HarnessFlowSaveState = 'saved' | 'saving' | 'held' | 'error'
+
 /** Debounced autosave of the open flow's local edits; `hold` keeps them unsaved until `release`. */
 export function useHarnessFlowAutosave(): {
   edits: HarnessFlow | null
   setEdits: (edits: HarnessFlow | null) => void
-  saveState: 'saved' | 'saving' | 'error'
+  saveState: HarnessFlowSaveState
   change: (next: HarnessFlow) => void
   flush: () => Promise<void>
   discard: () => void
@@ -70,7 +73,7 @@ export function useHarnessFlowAutosave(): {
 } {
   // Local edits win over the saved copy until the selection moves to another flow.
   const [edits, setEdits] = useState<HarnessFlow | null>(null)
-  const [saveState, setSaveState] = useState<'saved' | 'saving' | 'error'>('saved')
+  const [saveState, setSaveState] = useState<HarnessFlowSaveState>('saved')
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pendingSave = useRef<HarnessFlow | null>(null)
   const saveInFlight = useRef(false)
@@ -112,7 +115,7 @@ export function useHarnessFlowAutosave(): {
     (next: HarnessFlow) => {
       setEdits(next)
       pendingSave.current = next
-      setSaveState('saving')
+      setSaveState(held.current ? 'held' : 'saving')
       if (saveTimer.current) {
         clearTimeout(saveTimer.current)
       }
@@ -148,6 +151,7 @@ export function useHarnessFlowAutosave(): {
       if (reaction === 'ask') {
         held.current = true
         cancelTimer()
+        setSaveState('held')
       } else if (reaction === 'reload') {
         // Drop the local copy only once the fresh one is in, unless the person edited meanwhile.
         void reloaded.then(() => {
@@ -187,8 +191,12 @@ export function useHarnessFlowVersions(
   const [preview, setPreview] = useState<HarnessFlowVersion | null>(null)
   const previewRequest = useRef<string | null>(null)
   const [saving, setSaving] = useState(false)
-  // Restoring does not add a version, so the restored one stays current until the next save.
-  const [restored, setRestored] = useState<{ flowId: string; versionId: string } | null>(null)
+  // Restoring adds no version, so the restored one stays current until a newer version appears.
+  const [restored, setRestored] = useState<{
+    flowId: string
+    versionId: string
+    newestAtRestore: string | null
+  } | null>(null)
   const refresh = useCallback(async (id: string): Promise<void> => {
     const versions = await window.api.harness.listFlowVersions(id)
     setLoaded({ flowId: id, versions })
@@ -212,7 +220,10 @@ export function useHarnessFlowVersions(
   }
   return {
     versions,
-    currentVersionId: restored?.flowId === flowId ? restored.versionId : (versions[0]?.id ?? null),
+    currentVersionId:
+      restored?.flowId === flowId && restored.newestAtRestore === (versions[0]?.id ?? null)
+        ? restored.versionId
+        : (versions[0]?.id ?? null),
     preview: preview?.flowId === flowId ? preview : null,
     refresh,
     openPreview: async (id, versionId) => {
@@ -236,15 +247,15 @@ export function useHarnessFlowVersions(
         throw caught
       }
       setSaving(false)
-      setRestored(null)
       await refresh(id)
     },
     restore: async (id, versionId) => {
       await flush()
       await window.api.harness.restoreFlowVersion(id, versionId)
       leavePreview()
-      setRestored({ flowId: id, versionId })
-      await refresh(id)
+      const latest = await window.api.harness.listFlowVersions(id)
+      setLoaded({ flowId: id, versions: latest })
+      setRestored({ flowId: id, versionId, newestAtRestore: latest[0]?.id ?? null })
     }
   }
 }

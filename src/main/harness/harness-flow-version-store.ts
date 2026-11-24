@@ -13,6 +13,7 @@ import {
 import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
 import { writeSecureJsonFile } from '../../shared/secure-storage/secure-file'
 import { createHarnessSerialQueue } from './harness-serial-queue'
+import { HarnessFlowError } from '../../shared/harness/harness-flow-errors'
 
 export const MAX_VERSIONS_PER_FLOW = 200
 
@@ -26,7 +27,7 @@ const SAFE_FLOW_ID = /^[A-Za-z0-9_-]+$/
 
 function historyPath(flowId: string): string {
   if (!SAFE_FLOW_ID.test(flowId)) {
-    throw new Error('harness_flow_version_invalid: unsafe flow id')
+    throw new HarnessFlowError('harness_flow_version_invalid', 'unsafe flow id')
   }
   return join(getAppEnvironment().getPath('userData'), 'harness-flow-versions', `${flowId}.json`)
 }
@@ -64,16 +65,16 @@ async function readVersions(flowId: string): Promise<HarnessFlowVersion[]> {
     if (asRecord(error)?.code === 'ENOENT') {
       return []
     }
-    throw new Error('harness_flow_versions_unreadable', { cause: error })
+    throw new HarnessFlowError('harness_flow_versions_unreadable', '', { cause: error })
   }
   let parsed: Record<string, unknown> | null
   try {
     parsed = asRecord(JSON.parse(contents))
   } catch (error) {
-    throw new Error('harness_flow_versions_unreadable', { cause: error })
+    throw new HarnessFlowError('harness_flow_versions_unreadable', '', { cause: error })
   }
   if (parsed?.version !== 1 || !Array.isArray(parsed.versions)) {
-    throw new Error('harness_flow_versions_unreadable')
+    throw new HarnessFlowError('harness_flow_versions_unreadable', '')
   }
   return parsed.versions
     .map((raw) => storedVersion(raw, flowId))
@@ -108,8 +109,9 @@ export function recordHarnessFlowVersion(input: {
   return serialized(async () => {
     const summary = input.summary.trim()
     if (!summary || summary.length > HARNESS_FLOW_VERSION_SUMMARY_MAX) {
-      throw new Error(
-        `harness_flow_version_invalid: summary must be 1-${HARNESS_FLOW_VERSION_SUMMARY_MAX} characters`
+      throw new HarnessFlowError(
+        'harness_flow_version_invalid',
+        `summary must be 1-${HARNESS_FLOW_VERSION_SUMMARY_MAX} characters`
       )
     }
     const flowId = input.flow.id
