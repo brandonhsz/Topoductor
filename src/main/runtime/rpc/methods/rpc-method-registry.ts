@@ -45,6 +45,7 @@ import { RECIPE_VM_WAKE_METHODS } from './host-management/recipe-vm-wake'
 import { ENVIRONMENT_DOCTOR_METHODS } from './host-management/environment-doctor'
 import { SPEECH_METHODS } from './speech/speech'
 import { HARNESS_METHODS } from './harness/harness'
+import { HARNESS_FLOW_METHODS } from './harness/harness-flows'
 import { CLIENT_UI_METHODS } from './client-state/client-ui'
 import { CLIENT_EVENT_METHODS } from './client-events/client-events'
 import { WORKSPACE_PORT_METHODS } from './workspace-ports/workspace-ports'
@@ -144,6 +145,7 @@ export const ALL_RPC_METHODS = [
   ...ENVIRONMENT_DOCTOR_METHODS,
   ...SPEECH_METHODS,
   ...HARNESS_METHODS,
+  ...HARNESS_FLOW_METHODS,
   ...WORKSPACE_PORT_METHODS,
   ...LINK_PREVIEW_METHODS,
   ...PLUGIN_METHODS,

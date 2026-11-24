@@ -377,6 +377,11 @@ import {
   WorkItemsList as WorkItemsListOfGitlabParams
 } from './gitlab-params'
 import {
+  HarnessFlowsGetParams,
+  HarnessFlowsListParams,
+  HarnessFlowsSaveParams
+} from './harness-flow-params'
+import {
   HarnessAnswerParams,
   HarnessCompleteParams,
   HarnessGuardParams,
@@ -1217,6 +1222,9 @@ export const RPC_PARAMS_BY_METHOD = {
   'gitlab.workItemDetails': WorkItemDetailsOfGitlabParams,
   'harness.answer': HarnessAnswerParams,
   'harness.complete': HarnessCompleteParams,
+  'harness.flows.get': HarnessFlowsGetParams,
+  'harness.flows.list': HarnessFlowsListParams,
+  'harness.flows.save': HarnessFlowsSaveParams,
   'harness.guard': HarnessGuardParams,
   'harness.status': HarnessStatusParams,
   'harness.subagentResult': HarnessSubagentResultParams,

@@ -1,5 +1,10 @@
 import type { TuiAgent } from '../agent-launch/catalog/tui-agent'
 import type { HarnessFlow, HarnessNodeRunner, HarnessStartField } from './harness-flow-types'
+import type {
+  HarnessFlowChange,
+  HarnessFlowVersion,
+  HarnessFlowVersionSummary
+} from './harness-flow-version-types'
 
 export type HarnessRunStatus = 'running' | 'waiting' | 'completed' | 'failed' | 'stopped'
 
@@ -125,12 +130,17 @@ export type HarnessApi = {
   listFlows: (repoId: string | null) => Promise<HarnessFlow[]>
   saveFlow: (flow: HarnessFlow) => Promise<HarnessFlow>
   deleteFlow: (flowId: string) => Promise<void>
+  listFlowVersions: (flowId: string) => Promise<HarnessFlowVersionSummary[]>
+  getFlowVersion: (flowId: string, versionId: string) => Promise<HarnessFlowVersion | null>
+  /** The person's explicit «Guardar versión»; autosaves never create versions. */
+  saveFlowVersion: (flowId: string, summary: string) => Promise<HarnessFlowVersionSummary>
+  restoreFlowVersion: (flowId: string, versionId: string) => Promise<HarnessFlow>
   listRuns: () => Promise<HarnessRunSummary[]>
   getRun: (runId: string) => Promise<HarnessRun | null>
   startRun: (request: HarnessRunStartRequest) => Promise<HarnessRun>
   answerDecision: (runId: string, answer: HarnessDecisionAnswer) => Promise<void>
   stopRun: (runId: string) => Promise<void>
   deleteRun: (runId: string) => Promise<void>
-  onFlowsChanged: (callback: () => void) => () => void
+  onFlowsChanged: (callback: (change: HarnessFlowChange | null) => void) => () => void
   onRunChanged: (callback: (run: HarnessRunSummary) => void) => () => void
 }

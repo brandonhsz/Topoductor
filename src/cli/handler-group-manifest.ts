@@ -218,9 +218,18 @@ export const HANDLER_GROUPS: readonly HandlerGroup[] = [
       'harness wait',
       'harness answer',
       'harness guard',
-      'harness capture'
+      'harness capture',
+      'harness flow list',
+      'harness flow show',
+      'harness flow save'
     ],
-    load: async () => (await import('./handlers/harness.js')).HARNESS_HANDLERS
+    load: async () => {
+      const [{ HARNESS_HANDLERS }, { HARNESS_FLOW_HANDLERS }] = await Promise.all([
+        import('./handlers/harness.js'),
+        import('./handlers/harness-flows.js')
+      ])
+      return { ...HARNESS_HANDLERS, ...HARNESS_FLOW_HANDLERS }
+    }
   },
   {
     name: 'connector',

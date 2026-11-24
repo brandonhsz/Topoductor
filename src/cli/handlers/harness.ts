@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises'
 import type { CommandHandler } from '../dispatch'
 import {
   getOptionalNumberFlag,
@@ -7,9 +6,9 @@ import {
   getRequiredStringFlag
 } from '../flags'
 import { printResult } from '../format'
+import { callerParams, readCallerFile } from './harness-caller'
 import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
 import { RuntimeClientError, type RuntimeRpcSuccess } from '../runtime-client'
-import { readInjectedAgentSessionId } from '../../shared/agent-session/lifecycle/agent-session-caller-env'
 import {
   formatHarnessChatStatus,
   type HarnessChatStatus
@@ -18,31 +17,11 @@ import {
 const WAIT_SECONDS = 300
 const WAIT_GRACE_MS = 15_000
 
-/** The flow belongs to a workspace: name it explicitly, or let the chat or terminal identify itself. */
-function callerParams(
-  flags: Map<string, string | boolean>,
-  isRemote: boolean
-): { sessionId?: string; worktreeId?: string } {
-  const worktreeId = getOptionalStringFlag(flags, 'worktree') ?? process.env.TOPO_WORKTREE_ID
-  const sessionId = isRemote ? undefined : readInjectedAgentSessionId()
-  if (!worktreeId && !sessionId) {
-    throw new RuntimeClientError(
-      'invalid_argument',
-      'Missing --worktree: this is not running inside a Topo workspace chat or terminal.'
-    )
-  }
-  return {
-    ...(sessionId ? { sessionId } : {}),
-    ...(worktreeId ? { worktreeId } : {})
-  }
-}
-
 async function outputOf(flags: Map<string, string | boolean>): Promise<string> {
   const file = getOptionalStringFlag(flags, 'output-file')
   const text = getOptionalStringFlag(flags, 'output')
   if (file) {
-    // The host may not share this filesystem, so the file is read here.
-    return readFile(file, 'utf8')
+    return readCallerFile(file)
   }
   if (text) {
     return text

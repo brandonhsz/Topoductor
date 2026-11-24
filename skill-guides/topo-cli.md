@@ -323,6 +323,25 @@ icons, syntaxes and translations install without approval; anything that runs co
 command. Load `references/plugins.md` before creating, loading, installing, enabling or publishing
 a plugin. To design, write and debug a plugin end to end, invoke the `topo-plugin-authoring` skill.
 
+## Harness Flows
+
+A Harness flow is the step graph Topo runs for a workspace. When the person asks you to change
+one, edit it through the CLI, never the files under Topo's data folder:
+
+```text
+TOPO harness flow list --json
+TOPO harness flow show --flow <id> --json
+TOPO harness flow save --file flow.json --summary "<what and why>" --expected-updated-at <updatedAt> --json
+```
+
+- Read with `show --json` before editing; write the whole `result.flow` object, changed, to the
+  file. Omit `id` to create a flow (`--scope global|repo` applies only then).
+- Pass `--expected-updated-at` with the `updatedAt` you read. On `harness_flow_conflict`, read
+  again, reapply your change and retry.
+- Every save becomes a version the person can restore. Runs in progress do not change.
+- Tell the person when the result shows `affectsAllRepos: true` or `activeRuns` above 0, and fix
+  the `problems` it lists.
+
 ## Agent Session Search
 
 `TOPO search` runs a full-text search over the agent sessions indexed on one Topo host: this machine, or the paired server named by `--environment` or `--pairing-code`. There is no all-computers search.

@@ -22028,7 +22028,35 @@
           "failed": "failed",
           "stopped": "stopped"
         }
-      }
+      },
+      "conflict": {
+        "title": "The agent changed this flow",
+        "keepMine": "Keep mine",
+        "useAgent": "Show the agent's version"
+      },
+      "versions": {
+        "title": "Versions",
+        "previous": "Previous version",
+        "next": "Next version",
+        "restore": "Restore",
+        "backToCurrent": "Back to current",
+        "empty": "No saved versions yet.",
+        "list": "Versions",
+        "current": "Current",
+        "author": {
+          "agent": "Agent",
+          "person": "You"
+        },
+        "summaryPlaceholder": "What changed?",
+        "summaryLabel": "Version summary",
+        "save": "Save version",
+        "toggle": "Version history",
+        "previewing": "Viewing “{{summary}}” · read-only",
+        "loadFailed": "Could not open that version",
+        "restoreFailed": "Could not restore that version",
+        "saveFailed": "Could not save the version"
+      },
+      "unsavedHeld": "Not saved yet"
     }
   },
   "dashboardPopout": {

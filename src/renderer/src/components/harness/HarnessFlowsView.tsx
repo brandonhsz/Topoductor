@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   Bot,
   Copy,
@@ -9,7 +9,8 @@ import {
   Plus,
   Trash2,
   UserRound,
-  FolderGit2
+  FolderGit2,
+  History
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -26,19 +27,31 @@ import type { HarnessFlow, HarnessNodeKind } from '../../../../shared/harness/ha
 import { harnessFlowToMarkdown } from '../../../../shared/harness/harness-flow-markdown'
 import { HarnessFlowCanvas, type HarnessCanvasSelection } from './HarnessFlowCanvas'
 import { HarnessInspector } from './HarnessInspector'
+import { HarnessFlowVersions } from './HarnessFlowVersions'
+import { HarnessFlowConflictBanner } from './HarnessFlowConflictBanner'
 import { rememberHarnessFlow } from './harness-last-flow'
 import { useAppStore } from '@/store'
 import {
   copyHarnessFlowForRepo,
   createEmptyHarnessFlow,
   createHarnessNode,
-  duplicateHarnessFlow,
-  harnessFlowProblems
+  duplicateHarnessFlow
 } from './harness-flow-editing'
-import { useHarnessFlows } from './use-harness-data'
+import { harnessFlowProblems } from '../../../../shared/harness/harness-flow-problems'
+import { useHarnessFlowAutosave, useHarnessFlows, useHarnessFlowVersions } from './use-harness-data'
 import type { HarnessWorkspaceContext } from './use-harness-workspace'
 
-const SAVE_DELAY_MS = 600
+const ignoreFlowChange = (): void => {}
+
+/** Local edits win over the saved copy until the selection moves to another flow. */
+function openHarnessFlow(
+  flows: HarnessFlow[] | null,
+  selectedId: string | null,
+  edits: HarnessFlow | null
+): HarnessFlow | null {
+  const saved = flows?.find((flow) => flow.id === selectedId) ?? flows?.[0] ?? null
+  return edits && edits.id === (selectedId ?? saved?.id) ? edits : saved
+}
 
 export function HarnessFlowsView({
   workspace
@@ -46,39 +59,26 @@ export function HarnessFlowsView({
   workspace: HarnessWorkspaceContext
 }): React.JSX.Element {
   const t = useTranslate()
-  const { flows, error } = useHarnessFlows(workspace.repoId)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  // Local edits win over the saved copy until the selection moves to another flow.
-  const [edits, setEdits] = useState<HarnessFlow | null>(null)
   const [selection, setSelection] = useState<HarnessCanvasSelection>(null)
-  const [saveState, setSaveState] = useState<'saved' | 'saving' | 'error'>('saved')
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const pendingSave = useRef<HarnessFlow | null>(null)
-
-  const flush = useCallback(async (): Promise<void> => {
-    if (saveTimer.current) {
-      clearTimeout(saveTimer.current)
-      saveTimer.current = null
+  const { edits, setEdits, saveState, change, flush, ...autosave } = useHarnessFlowAutosave()
+  const [conflict, setConflict] = useState<{ flowId: string; summary: string } | null>(null)
+  const [versionsOpen, setVersionsOpen] = useState(true)
+  const { flows, error, reload } = useHarnessFlows(workspace.repoId, (event, reloaded, list) => {
+    const openFlowId = openHarnessFlow(list, selectedId, edits)?.id ?? null
+    if (autosave.react(event, openFlowId, reloaded) === 'ask' && event) {
+      setConflict({ flowId: event.flowId, summary: event.summary })
     }
-    const flow = pendingSave.current
-    if (!flow) {
-      return
-    }
-    pendingSave.current = null
-    setSaveState('saving')
-    try {
-      await window.api.harness.saveFlow(flow)
-      setSaveState('saved')
-    } catch (caught) {
-      setSaveState('error')
-      throw caught
-    }
-  }, [])
+  })
 
-  useEffect(() => () => void flush().catch(() => {}), [flush])
+  const dropLocalEdits = (): void => {
+    autosave.discard()
+    setConflict(null)
+  }
 
-  const saved = flows?.find((flow) => flow.id === selectedId) ?? flows?.[0] ?? null
-  const draft = edits && edits.id === (selectedId ?? saved?.id) ? edits : saved
+  const draft = openHarnessFlow(flows, selectedId, edits)
+  const history = useHarnessFlowVersions(draft?.id ?? null, flush)
+  const previewed = history.preview
   const addable: { kind: HarnessNodeKind; icon: typeof Bot; label: string }[] = [
     { kind: 'agent', icon: Bot, label: t('components.harness.add.agent', 'Agent') },
     { kind: 'human', icon: UserRound, label: t('components.harness.add.human', 'Your turn') },
@@ -86,33 +86,31 @@ export function HarnessFlowsView({
     { kind: 'end', icon: Flag, label: t('components.harness.add.end', 'End') }
   ]
 
-  const change = useCallback(
-    (next: HarnessFlow) => {
-      setEdits(next)
-      pendingSave.current = next
-      setSaveState('saving')
-      if (saveTimer.current) {
-        clearTimeout(saveTimer.current)
-      }
-      saveTimer.current = setTimeout(() => void flush().catch(() => {}), SAVE_DELAY_MS)
-    },
-    [flush]
-  )
+  // Leaving a flow never saves edits held behind the agent-change prompt.
+  const leaveFlow = (): Promise<void> => {
+    if (conflict) {
+      dropLocalEdits()
+    }
+    history.leavePreview()
+    setSelection(null)
+    return flush().catch(() => {})
+  }
 
   const select = (flow: HarnessFlow): void => {
-    void flush().catch(() => {})
+    void leaveFlow()
     setSelectedId(flow.id)
     setEdits(null)
-    setSelection(null)
   }
 
   const create = async (flow: HarnessFlow): Promise<void> => {
-    await flush().catch(() => {})
+    await leaveFlow()
     const created = await window.api.harness.saveFlow(flow)
     setSelectedId(created.id)
     setEdits(created)
     setSelection(null)
   }
+
+  const failed = (message: string) => (): void => void toast.error(message)
 
   const problems = useMemo(() => (draft ? harnessFlowProblems(draft) : []), [draft])
 
@@ -176,6 +174,7 @@ export function HarnessFlowsView({
                   key={kind}
                   variant="outline"
                   size="xs"
+                  disabled={previewed !== null}
                   onClick={() => {
                     const maxX = Math.max(0, ...draft.nodes.map((node) => node.position.x))
                     const node = createHarnessNode(draft, kind, { x: maxX + 300, y: 0 }, label)
@@ -190,10 +189,21 @@ export function HarnessFlowsView({
               <span className="ml-auto text-2xs text-muted-foreground" aria-live="polite">
                 {saveState === 'saving'
                   ? t('components.harness.saving', 'Saving…')
-                  : saveState === 'error'
-                    ? t('components.harness.saveFailed', 'Not saved')
-                    : t('components.harness.saved', 'Saved')}
+                  : saveState === 'held'
+                    ? t('components.harness.unsavedHeld', 'Not saved yet')
+                    : saveState === 'error'
+                      ? t('components.harness.saveFailed', 'Not saved')
+                      : t('components.harness.saved', 'Saved')}
               </span>
+              <Button
+                size="icon-xs"
+                aria-label={t('components.harness.versions.toggle', 'Version history')}
+                aria-pressed={versionsOpen}
+                variant={versionsOpen ? 'secondary' : 'ghost'}
+                onClick={() => setVersionsOpen((open) => !open)}
+              >
+                <History />
+              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -244,7 +254,8 @@ export function HarnessFlowsView({
                   <DropdownMenuItem
                     variant="destructive"
                     onSelect={() => {
-                      pendingSave.current = null
+                      dropLocalEdits()
+                      history.leavePreview()
                       void window.api.harness.deleteFlow(draft.id)
                       setSelectedId(null)
                       setEdits(null)
@@ -277,29 +288,118 @@ export function HarnessFlowsView({
                 {t('components.harness.openWorkspace', 'Open a workspace with this flow')}
               </Button>
             </div>
-            {problems.length > 0 ? (
+            {conflict && conflict.flowId === draft.id ? (
+              <div className="shrink-0 border-b border-border px-3 py-2">
+                <HarnessFlowConflictBanner
+                  summary={conflict.summary}
+                  onUseAgent={dropLocalEdits}
+                  onKeepMine={() => {
+                    setConflict(null)
+                    void autosave.release().catch(() => {})
+                  }}
+                />
+              </div>
+            ) : null}
+            {previewed ? (
+              <div className="flex shrink-0 items-center gap-1.5 border-b border-border bg-muted px-3 py-1.5 text-xs text-muted-foreground">
+                <History className="size-3.5 shrink-0" />
+                <span className="min-w-0 truncate">
+                  {t(
+                    'components.harness.versions.previewing',
+                    'Viewing “{{summary}}” · read-only',
+                    { summary: previewed.summary }
+                  )}
+                </span>
+              </div>
+            ) : problems.length > 0 ? (
               <div className="shrink-0 border-b border-border bg-status-warning-background px-3 py-1.5 text-xs text-status-warning-text">
                 {problems[0]}
               </div>
             ) : null}
             <div className="min-h-0 flex-1">
-              <HarnessFlowCanvas
-                key={draft.id}
-                flow={draft}
-                editable
-                selection={selection}
-                onSelect={setSelection}
-                onFlowChange={change}
-              />
+              {previewed ? (
+                <HarnessFlowCanvas
+                  key={`${draft.id}:${previewed.id}`}
+                  flow={previewed.flow}
+                  editable={false}
+                  selection={null}
+                  onSelect={ignoreFlowChange}
+                  onFlowChange={ignoreFlowChange}
+                />
+              ) : (
+                <HarnessFlowCanvas
+                  key={draft.id}
+                  flow={draft}
+                  editable
+                  selection={selection}
+                  onSelect={setSelection}
+                  onFlowChange={change}
+                />
+              )}
             </div>
           </section>
-          <aside className="scrollbar-sleek w-80 shrink-0 overflow-y-auto border-l border-border p-4">
-            <HarnessInspector
-              flow={draft}
-              selection={selection}
-              onFlowChange={change}
-              onSelect={setSelection}
-            />
+          <aside className="flex w-80 shrink-0 flex-col border-l border-border">
+            {previewed ? null : (
+              <div className="scrollbar-sleek min-h-0 flex-1 overflow-y-auto p-4">
+                <HarnessInspector
+                  flow={draft}
+                  selection={selection}
+                  onFlowChange={change}
+                  onSelect={setSelection}
+                />
+              </div>
+            )}
+            {versionsOpen || previewed ? (
+              <div
+                className={cn(
+                  'scrollbar-sleek overflow-y-auto p-4',
+                  previewed ? 'min-h-0 flex-1' : 'max-h-1/2 shrink-0 border-t border-border'
+                )}
+              >
+                <HarnessFlowVersions
+                  versions={history.versions}
+                  currentVersionId={history.currentVersionId}
+                  previewVersionId={previewed?.id ?? null}
+                  saving={history.saving || conflict !== null || previewed !== null}
+                  onPreview={(versionId) =>
+                    void history
+                      .openPreview(draft.id, versionId)
+                      .catch(
+                        failed(
+                          t('components.harness.versions.loadFailed', 'Could not open that version')
+                        )
+                      )
+                  }
+                  onRestore={(versionId) =>
+                    void history
+                      .restore(draft.id, versionId)
+                      .then(async () => {
+                        await reload()
+                        dropLocalEdits()
+                        setSelection(null)
+                      })
+                      .catch(
+                        failed(
+                          t(
+                            'components.harness.versions.restoreFailed',
+                            'Could not restore that version'
+                          )
+                        )
+                      )
+                  }
+                  onBackToCurrent={history.leavePreview}
+                  onSaveVersion={(summary) =>
+                    void history
+                      .save(draft.id, summary)
+                      .catch(
+                        failed(
+                          t('components.harness.versions.saveFailed', 'Could not save the version')
+                        )
+                      )
+                  }
+                />
+              </div>
+            ) : null}
           </aside>
         </>
       ) : null}

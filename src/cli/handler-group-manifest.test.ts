@@ -44,4 +44,13 @@ describe('handler group keys', () => {
     const handlers = await group.load()
     expect([...group.keys].sort()).toEqual(Object.keys(handlers).sort())
   })
+
+  it('routes the harness flow commands through the harness group', async () => {
+    const group = HANDLER_GROUPS.find((entry) => entry.name === 'harness')!
+    const handlers = await group.load()
+    for (const key of ['harness flow list', 'harness flow show', 'harness flow save']) {
+      expect(group.keys).toContain(key)
+      expect(handlers[key]).toBeTypeOf('function')
+    }
+  })
 })

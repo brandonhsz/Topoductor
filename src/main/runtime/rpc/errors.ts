@@ -15,6 +15,7 @@ import {
 import type { RpcEnvelopeMeta, RpcFailure, RpcSuccess } from './core'
 import { CONNECTOR_REPLY_ERROR_CODES } from '../../../shared/rpc-contract/connector-params'
 import { ORCHESTRATION_SESSION_CALLER_ERROR_CODES } from '../../../shared/orchestration/orchestration-session-caller-codes'
+import { HARNESS_FLOW_ERROR_CODES } from '../../../shared/harness/harness-flow-errors'
 import { computerUseErrorRecoveryData } from '../../../shared/computer-use-error-recovery'
 import { COMPUTER_ERROR_CODES } from '../../../shared/computer-use-runtime-types'
 import { TerminalSplitOutcomeError } from '../../../shared/workspace-layout/terminal-split-outcome'
@@ -194,7 +195,9 @@ const STRUCTURED_RUNTIME_PASSTHROUGH_CODES: ReadonlySet<string> = new Set([
   ...PLUGIN_CLI_ERROR_CODES,
   // Keep owner conflicts distinct so clients can choose reload, re-adopt or stop offering the action.
   ...Object.values(AUTOMATION_OWNER_CONFLICT_CODES),
-  ...Object.values(ORCHESTRATION_SESSION_CALLER_ERROR_CODES)
+  ...Object.values(ORCHESTRATION_SESSION_CALLER_ERROR_CODES),
+  // Agents editing flows retry on a conflict instead of parsing the message.
+  ...HARNESS_FLOW_ERROR_CODES
 ])
 
 export function mapRuntimeError(id: string, meta: RpcEnvelopeMeta, error: unknown): RpcFailure {
