@@ -122,7 +122,15 @@ export class MeliBrowser {
       )
     }
     const created = await this.run(
-      ['tab', 'create', '--url', LINKBUILDER_URL, '--worktree', `id:${worktreeId}`, ...(this.profile ? ['--profile', this.profile] : [])],
+      [
+        'tab',
+        'create',
+        '--url',
+        LINKBUILDER_URL,
+        '--worktree',
+        `id:${worktreeId}`,
+        ...(this.profile ? ['--profile', this.profile] : [])
+      ],
       30_000
     )
     const createdId = text(field(created, 'browserPageId'))
