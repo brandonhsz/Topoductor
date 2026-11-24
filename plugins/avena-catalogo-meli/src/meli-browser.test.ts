@@ -131,14 +131,23 @@ test('from a page outside www.mercadolibre.com.mx, reading starts on the home pa
   assert.deepEqual(gotos, ['https://www.mercadolibre.com.mx/'])
 })
 
-test('with a chosen profile, uses only that profile\'s MercadoLibre tab, never another account\'s', async () => {
+test("with a chosen profile, uses only that profile's MercadoLibre tab, never another account's", async () => {
   const browser = new MeliBrowser(
     async (args) =>
       args.slice(0, 2).join(' ') === 'tab list'
         ? {
             tabs: [
-              { browserPageId: 'compras', url: 'https://www.mercadolibre.com.mx/', worktreeId: 'r::/work/a' },
-              { browserPageId: 'afiliados', url: 'https://www.mercadolibre.com.mx/x', worktreeId: 'r::/work/a', profileId: 'p-afiliados' }
+              {
+                browserPageId: 'compras',
+                url: 'https://www.mercadolibre.com.mx/',
+                worktreeId: 'r::/work/a'
+              },
+              {
+                browserPageId: 'afiliados',
+                url: 'https://www.mercadolibre.com.mx/x',
+                worktreeId: 'r::/work/a',
+                profileId: 'p-afiliados'
+              }
             ]
           }
         : {},
@@ -150,20 +159,35 @@ test('with a chosen profile, uses only that profile\'s MercadoLibre tab, never a
 
 test('with a chosen profile and no tab of it, opens one in that profile', async () => {
   const calls: string[][] = []
-  const browser = new MeliBrowser(async (args) => {
-    calls.push(args)
-    switch (args.slice(0, 2).join(' ')) {
-      case 'tab list':
-        return { tabs: [{ browserPageId: 'compras', url: 'https://www.mercadolibre.com.mx/', worktreeId: 'r::/work/a' }] }
-      case 'worktree list':
-        return { worktrees: [{ id: 'r::/work/a' }] }
-      case 'tab create':
-        return { browserPageId: 'nueva' }
-      default:
-        return {}
-    }
-  }, '/work/a', 'p-afiliados')
+  const browser = new MeliBrowser(
+    async (args) => {
+      calls.push(args)
+      switch (args.slice(0, 2).join(' ')) {
+        case 'tab list':
+          return {
+            tabs: [
+              {
+                browserPageId: 'compras',
+                url: 'https://www.mercadolibre.com.mx/',
+                worktreeId: 'r::/work/a'
+              }
+            ]
+          }
+        case 'worktree list':
+          return { worktrees: [{ id: 'r::/work/a' }] }
+        case 'tab create':
+          return { browserPageId: 'nueva' }
+        default:
+          return {}
+      }
+    },
+    '/work/a',
+    'p-afiliados'
+  )
   assert.equal((await browser.findTab()).browserPageId, 'nueva')
   const create = calls.find((args) => args[0] === 'tab' && args[1] === 'create') ?? []
-  assert.deepEqual(create.slice(create.indexOf('--profile'), create.indexOf('--profile') + 2), ['--profile', 'p-afiliados'])
+  assert.deepEqual(create.slice(create.indexOf('--profile'), create.indexOf('--profile') + 2), [
+    '--profile',
+    'p-afiliados'
+  ])
 })
