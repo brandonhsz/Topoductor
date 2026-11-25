@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { CustomPet } from '../../../../shared/pet-types'
 import { applyCodexSpriteTimingDefaults } from '../../../../shared/codex-pet-sprite-defaults'
 import { useAppStore } from '../../store'
-import { BUNDLED_PET, findBundledPet, isBundledPetId } from './pet-models'
+import { BUNDLED_PET, findBundledPet, isBundledPetId, type BundledPet } from './pet-models'
 import {
   detectedSpriteCache,
   loadCustomBlobUrl,
@@ -89,8 +89,7 @@ export function usePetUrl(): ResolvedPet {
   }, [customId, customFileName, customMime, customKind, customSpriteFps, customHasManifestSprite])
 
   if (bundled) {
-    const pet = findBundledPet(petId) ?? BUNDLED_PET
-    return { url: pet.url, ready: true, sprite: null, detected: null }
+    return resolveBundledPet(findBundledPet(petId) ?? BUNDLED_PET, true)
   }
   if (customMeta && customUrl) {
     // Invalid dimensions/fps break frame math; fall through to detection.
@@ -114,5 +113,11 @@ export function usePetUrl(): ResolvedPet {
     }
     return { url: customUrl, ready: true, sprite: null, detected: null }
   }
-  return { url: BUNDLED_PET.url, ready: false, sprite: null, detected: null }
+  return resolveBundledPet(BUNDLED_PET, false)
+}
+
+function resolveBundledPet(pet: BundledPet, ready: boolean): ResolvedPet {
+  return pet.sprite
+    ? { url: pet.url, ready, sprite: pet.sprite, detected: null }
+    : { url: pet.url, ready, sprite: null, detected: null }
 }
