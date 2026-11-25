@@ -4,7 +4,8 @@ import type { AgentJournalItemIdentity } from './agent-session-journal-identity'
 
 const KEY_DELIMITER = ':'
 const VERBATIM_BOUNDED_COMPONENT_TAG = '%FF'
-const BOUNDED_COMPONENT_PATTERN = /^[\s\S]{0,40}~topo-oversized~(?:[1-9]\d*)~[0-9a-f]{16}$/
+// Chats Orca wrote (imported on first run) keep their `~orca-oversized~` components.
+const BOUNDED_COMPONENT_PATTERN = /^[\s\S]{0,40}~(?:topo|orca)-oversized~(?:[1-9]\d*)~[0-9a-f]{16}$/
 const PARSED_JOURNAL_ITEM_KEY = Symbol('parsedJournalItemKey')
 
 type ParsedJournalItemIdentity = AgentJournalItemIdentity & {
@@ -154,8 +155,13 @@ export function parseAgentJournalItemKey(key: string): AgentJournalItemIdentity 
       preserveExactKey
     )
   }
-  if (provider === 'topo' && rest.length === 1) {
-    return parsedIdentity({ provider, clientMessageId: rest[0] as string }, key, preserveExactKey)
+  // Orca wrote its own items under `orca:`; keep that exact key so imported chats address their rows.
+  if ((provider === 'topo' || provider === 'orca') && rest.length === 1) {
+    return parsedIdentity(
+      { provider: 'topo', clientMessageId: rest[0] as string },
+      key,
+      preserveExactKey || provider === 'orca'
+    )
   }
   if (provider === 'legacy' && rest.length === 3) {
     return parsedIdentity(

@@ -8,6 +8,7 @@ import { DeviceRegistry } from '../../../src/main/runtime/rpc/server/pairing/dev
 import type { DeviceEntry } from '../../../src/main/runtime/rpc/server/pairing/device-entry'
 import { DEVICE_REGISTRY_FILENAME } from '../../../src/main/runtime/rpc/server/pairing/mobile-pairing-files'
 import { importReleaseCheckoutModule, materializeReleaseCheckout } from './release-checkout'
+import { sharesUserDataWith } from './pre-rebrand-releases'
 
 // Across downgrade, preserve ephemeral key rows and token auth; only hosts advertising the capability may receive session-only registration.
 // The last release without session-only keys; a newer baseline would itself drop the row.
@@ -32,28 +33,31 @@ beforeAll(async () => {
 }, SUITE_TIMEOUT_MS)
 
 describe('cross-version: session-only browser rows', () => {
-  it('a released registry keeps the session row and token rows; this host drops it on restart', () => {
-    const userDataPath = mkdtempSync(join(tmpdir(), 'topo-xv-web-session-'))
-    const current = new DeviceRegistry(userDataPath)
-    const legacy = current.addDevice('Browser', 'runtime')
-    current.updateLastSeen(legacy.deviceId)
-    const keyB64 = Buffer.from(nacl.sign.keyPair().publicKey).toString('base64')
-    const session = current.forkDeviceKey(legacy.deviceId, keyB64, 'Tab', { ephemeral: true })
+  it.skipIf(!sharesUserDataWith(PRE_EPHEMERAL_REF))(
+    'a released registry keeps the session row and token rows; this host drops it on restart',
+    () => {
+      const userDataPath = mkdtempSync(join(tmpdir(), 'topo-xv-web-session-'))
+      const current = new DeviceRegistry(userDataPath)
+      const legacy = current.addDevice('Browser', 'runtime')
+      current.updateLastSeen(legacy.deviceId)
+      const keyB64 = Buffer.from(nacl.sign.keyPair().publicKey).toString('base64')
+      const session = current.forkDeviceKey(legacy.deviceId, keyB64, 'Tab', { ephemeral: true })
 
-    const released = new ReleasedRegistry(userDataPath)
-    expect(released.validateToken(legacy.token)?.deviceId).toBe(legacy.deviceId)
-    released.updateLastSeen(legacy.deviceId)
-    const rows: DeviceEntry[] = JSON.parse(
-      readFileSync(join(userDataPath, DEVICE_REGISTRY_FILENAME), 'utf8')
-    )
-    expect(rows.find((row) => row.deviceId === session.deviceId)).toMatchObject({
-      ephemeral: true,
-      devicePublicKeyB64: keyB64
-    })
-    expect(rows.find((row) => row.deviceId === session.deviceId)?.token).toBeUndefined()
+      const released = new ReleasedRegistry(userDataPath)
+      expect(released.validateToken(legacy.token)?.deviceId).toBe(legacy.deviceId)
+      released.updateLastSeen(legacy.deviceId)
+      const rows: DeviceEntry[] = JSON.parse(
+        readFileSync(join(userDataPath, DEVICE_REGISTRY_FILENAME), 'utf8')
+      )
+      expect(rows.find((row) => row.deviceId === session.deviceId)).toMatchObject({
+        ephemeral: true,
+        devicePublicKeyB64: keyB64
+      })
+      expect(rows.find((row) => row.deviceId === session.deviceId)?.token).toBeUndefined()
 
-    const restarted = new DeviceRegistry(userDataPath)
-    expect(restarted.getDevice(session.deviceId)).toBeNull()
-    expect(restarted.validateToken(legacy.token)?.deviceId).toBe(legacy.deviceId)
-  })
+      const restarted = new DeviceRegistry(userDataPath)
+      expect(restarted.getDevice(session.deviceId)).toBeNull()
+      expect(restarted.validateToken(legacy.token)?.deviceId).toBe(legacy.deviceId)
+    }
+  )
 })

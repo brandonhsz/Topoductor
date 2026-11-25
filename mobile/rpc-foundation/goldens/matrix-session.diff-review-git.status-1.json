@@ -65,15 +65,6 @@
         "startedAt": 0
       }
     },
-    "14804a5e414f": {
-      "status": "fulfilled",
-      "startedAt": 0,
-      "settledAt": 0,
-      "value": {
-        "kind": "unavailable",
-        "message": "Update Topo desktop to review changes on mobile."
-      }
-    },
     "1f10fad6906c": {
       "name": "worktree.show#1",
       "ordinal": 2,
@@ -98,6 +89,14 @@
       "settlement": {
         "status": "pending",
         "startedAt": 0
+      }
+    },
+    "301bf861a5cf": {
+      "branchCompare": "unloaded",
+      "diff": "unloaded",
+      "snapshot": {
+        "kind": "unavailable",
+        "message": "Update Topo desktop to review changes on mobile."
       }
     },
     "32a7c0ae7918": {
@@ -276,14 +275,6 @@
           "id": "frame-1",
           "ok": false
         }
-      }
-    },
-    "55c07df45014": {
-      "branchCompare": "unloaded",
-      "diff": "unloaded",
-      "snapshot": {
-        "kind": "unavailable",
-        "message": "Update Topo desktop to review changes on mobile."
       }
     },
     "5a46fcc976ac": {
@@ -482,6 +473,15 @@
       "name": "repo.list#1",
       "ordinal": 6,
       "json": "{\"id\":\"frame-3\",\"deviceToken\":\"recording-device\",\"method\":\"repo.list\"}"
+    },
+    "75efcf922fe5": {
+      "status": "fulfilled",
+      "startedAt": 0,
+      "settledAt": 0,
+      "value": {
+        "kind": "unavailable",
+        "message": "Update Topo desktop to review changes on mobile."
+      }
     },
     "8baf252a9a66": {
       "name": "git.status#1",
@@ -1030,9 +1030,9 @@
           "sender": ["45d1ea7c0b42", "5dd74fdeb001", "9affac551982"],
           "payloads": ["8db27b0778a5", "5dbd52d6a1c7", "648638103acb"],
           "settlements": {
-            "snapshot": "14804a5e414f"
+            "snapshot": "75efcf922fe5"
           },
-          "state": "55c07df45014",
+          "state": "301bf861a5cf",
           "effects": []
         }
       },

@@ -40,6 +40,21 @@
         }
       }
     },
+    "227efcdce933": {
+      "file": {},
+      "markdown": {
+        "tab-md": {
+          "baseVersion": "",
+          "content": "# disk",
+          "editable": false,
+          "isDirty": false,
+          "localContent": "# disk",
+          "readOnlyReason": "Editing needs Topo desktop running.",
+          "stale": false,
+          "status": "ready"
+        }
+      }
+    },
     "232de05393a9": {
       "name": "files.read#1",
       "ordinal": 3,
@@ -299,21 +314,6 @@
         }
       }
     },
-    "c6cea5310098": {
-      "file": {},
-      "markdown": {
-        "tab-md": {
-          "baseVersion": "",
-          "content": "# disk",
-          "editable": false,
-          "isDirty": false,
-          "localContent": "# disk",
-          "readOnlyReason": "Editing needs Topo desktop running.",
-          "stale": false,
-          "status": "ready"
-        }
-      }
-    },
     "d4be01606497": {
       "name": "files.read#1",
       "ordinal": 4,
@@ -481,7 +481,7 @@
           "settlements": {
             "markdown": "eb79a9b3682a"
           },
-          "state": "c6cea5310098",
+          "state": "227efcdce933",
           "effects": []
         }
       },

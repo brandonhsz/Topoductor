@@ -66,7 +66,7 @@ describe('createTopoQueryStorage', () => {
 
     // sha256 of the 620-character storage key of `ownKey`.
     expect([...memory.rows.keys()]).toEqual([
-      '1b7af21ba777cb9df9bb4374b31946114af6196c3ec2cb1a478743c4aed03d0b'
+      '5f2a2603afb356fc37c4d34286a44955654fdc795b61aa4fee1a5d4cd82b0cf9'
     ])
     // A later document reads the stored record back.
     const nextDocument = persisterOver(createTopoQueryStorage(memory.backend), 'q1|files.dir@1')

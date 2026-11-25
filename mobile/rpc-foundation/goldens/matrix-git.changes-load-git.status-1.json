@@ -278,15 +278,6 @@
         "message": "Unable to load source control"
       }
     },
-    "25657dcfb625": {
-      "branchCompareState": {
-        "kind": "idle"
-      },
-      "screenState": {
-        "kind": "unavailable",
-        "message": "Update Topo desktop to use Source Control on mobile."
-      }
-    },
     "270fa28bd742": {
       "name": "git.status#2",
       "ordinal": 6,
@@ -444,6 +435,15 @@
             "ok": false
           }
         }
+      }
+    },
+    "4e3396d3bd2a": {
+      "branchCompareState": {
+        "kind": "idle"
+      },
+      "screenState": {
+        "kind": "unavailable",
+        "message": "Update Topo desktop to use Source Control on mobile."
       }
     },
     "5aa0b968f37f": {
@@ -1308,7 +1308,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "25657dcfb625",
+          "state": "4e3396d3bd2a",
           "effects": []
         }
       },
@@ -1320,7 +1320,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "25657dcfb625",
+          "state": "4e3396d3bd2a",
           "effects": []
         }
       },
@@ -1332,7 +1332,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "25657dcfb625",
+          "state": "4e3396d3bd2a",
           "effects": ["e1883df1f8f5"]
         }
       },

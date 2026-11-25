@@ -123,7 +123,15 @@
         "Test push delivery, or a local notification when push is unavailable."
       ]
     },
-    "b23af609a818": {
+    "eb79a9b3682a": {
+      "status": "fulfilled",
+      "startedAt": 0,
+      "settledAt": 0,
+      "value": {
+        "$rpc": "undefined"
+      }
+    },
+    "f4b86c625240": {
       "name": "notification.schedule",
       "ordinal": 3,
       "value": {
@@ -135,14 +143,6 @@
         "trigger": {
           "channelId": "topo-desktop"
         }
-      }
-    },
-    "eb79a9b3682a": {
-      "status": "fulfilled",
-      "startedAt": 0,
-      "settledAt": 0,
-      "value": {
-        "$rpc": "undefined"
       }
     },
     "f68b017d64bd": {
@@ -189,7 +189,7 @@
             "press": "eb79a9b3682a"
           },
           "state": "933633d0fbce",
-          "effects": ["b23af609a818"]
+          "effects": ["f4b86c625240"]
         }
       }
     ]

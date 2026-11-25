@@ -4,7 +4,7 @@
   "family": "aiVault.resume-launch",
   "namedDeltas": [],
   "values": {
-    "0bce25f5646d": {
+    "3635f5d0f772": {
       "name": "session.tabs.createTerminal#1",
       "ordinal": 2,
       "json": "{\"id\":\"frame-1\",\"deviceToken\":\"recording-device\",\"method\":\"session.tabs.createTerminal\",\"params\":{\"worktree\":\"id:workspace-1\",\"env\":{\"TOPO_RESUME\":\"1\"},\"envToDelete\":[\"CODEX_HOME\"],\"launchAgent\":\"codex\",\"clientMutationId\":\"resume-mutation-1\",\"activate\":false,\"select\":true,\"navigation\":\"caller\"}}"
@@ -19,22 +19,7 @@
         "title": "codex"
       }
     },
-    "6e79da536ca9": {
-      "status": "fulfilled",
-      "startedAt": 0,
-      "settledAt": 0,
-      "value": {
-        "id": "tab-9",
-        "terminal": "terminal-9",
-        "title": "codex"
-      }
-    },
-    "7d9e7036f3d0": {
-      "name": "terminal.send#1",
-      "ordinal": 4,
-      "json": "{\"id\":\"frame-2\",\"deviceToken\":\"recording-device\",\"method\":\"terminal.send\",\"params\":{\"terminal\":\"terminal-9\",\"text\":\"codex resume rollout\",\"enter\":true}}"
-    },
-    "a67829619e64": {
+    "629c24f9dd2d": {
       "name": "session.tabs.createTerminal#1",
       "ordinal": 1,
       "args": [
@@ -82,6 +67,21 @@
         }
       }
     },
+    "6e79da536ca9": {
+      "status": "fulfilled",
+      "startedAt": 0,
+      "settledAt": 0,
+      "value": {
+        "id": "tab-9",
+        "terminal": "terminal-9",
+        "title": "codex"
+      }
+    },
+    "7d9e7036f3d0": {
+      "name": "terminal.send#1",
+      "ordinal": 4,
+      "json": "{\"id\":\"frame-2\",\"deviceToken\":\"recording-device\",\"method\":\"terminal.send\",\"params\":{\"terminal\":\"terminal-9\",\"text\":\"codex resume rollout\",\"enter\":true}}"
+    },
     "cceac9bcb36d": {
       "name": "terminal.send#1",
       "ordinal": 3,
@@ -127,8 +127,8 @@
       {
         "id": "resumed",
         "observation": {
-          "sender": ["a67829619e64", "cceac9bcb36d"],
-          "payloads": ["0bce25f5646d", "7d9e7036f3d0"],
+          "sender": ["629c24f9dd2d", "cceac9bcb36d"],
+          "payloads": ["3635f5d0f772", "7d9e7036f3d0"],
           "settlements": {
             "full": "6e79da536ca9"
           },

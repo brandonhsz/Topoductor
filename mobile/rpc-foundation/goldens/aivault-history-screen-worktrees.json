@@ -59,22 +59,6 @@
         "startedAt": 0
       }
     },
-    "7623e8b568b1": {
-      "crash": {
-        "$rpc": "null"
-      },
-      "elements": {
-        "ActivityIndicator": 1,
-        "ChevronLeft": 1,
-        "Pressable": 2,
-        "RefreshCw": 1,
-        "SafeAreaView": 1,
-        "Text": 3,
-        "View": 8
-      },
-      "labels": ["Back", "Refresh agent sessions"],
-      "text": ["Agent Session History", "topo-history", "Loading agent sessions…"]
-    },
     "7c48e0564605": {
       "name": "status.get#1",
       "ordinal": 5,
@@ -90,6 +74,22 @@
           "payload": "agentSession.subscribeStatus#1"
         }
       ]
+    },
+    "9813241ed7d6": {
+      "crash": {
+        "$rpc": "null"
+      },
+      "elements": {
+        "ActivityIndicator": 1,
+        "ChevronLeft": 1,
+        "Pressable": 2,
+        "RefreshCw": 1,
+        "SafeAreaView": 1,
+        "Text": 3,
+        "View": 8
+      },
+      "labels": ["Back", "Refresh agent sessions"],
+      "text": ["Agent Session History", "topo-history", "Loading agent sessions…"]
     },
     "a0b80301d553": {
       "name": "aiVault.listSessions#1",
@@ -240,7 +240,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "7623e8b568b1",
+          "state": "9813241ed7d6",
           "effects": []
         }
       },
@@ -252,7 +252,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "7623e8b568b1",
+          "state": "9813241ed7d6",
           "effects": []
         }
       },
@@ -264,7 +264,7 @@
           "settlements": {
             "mount": "eb79a9b3682a"
           },
-          "state": "7623e8b568b1",
+          "state": "9813241ed7d6",
           "effects": ["7e8b2964ad63"]
         }
       }

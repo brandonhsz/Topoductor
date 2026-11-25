@@ -256,48 +256,6 @@
         }
       }
     },
-    "2c6dd148501e": {
-      "outcome": {
-        "committed": true,
-        "ok": true,
-        "prefill": {
-          "base": "main",
-          "blockedReason": {
-            "$rpc": "null"
-          },
-          "body": "Host body",
-          "canCreate": true,
-          "nextAction": {
-            "$rpc": "null"
-          },
-          "provider": "github",
-          "reviewLookupOutcome": "not_found",
-          "title": "Host title"
-        },
-        "status": {
-          "branch": "feature",
-          "conflictOperation": "unknown",
-          "entries": [],
-          "head": "def5678",
-          "upstreamStatus": {
-            "ahead": 0,
-            "behind": 0,
-            "behindCommitsArePatchEquivalent": {
-              "$rpc": "undefined"
-            },
-            "hasConfiguredPushTarget": {
-              "$rpc": "undefined"
-            },
-            "hasUpstream": true,
-            "upstreamName": {
-              "$rpc": "undefined"
-            }
-          }
-        },
-        "url": "https://review.test/5",
-        "warning": "Pull Request created, but Topo could not refresh it yet."
-      }
-    },
     "324be6bef431": {
       "name": "hostedReview.getCreationEligibility#1",
       "ordinal": 16,
@@ -924,6 +882,51 @@
         "startedAt": 0
       }
     },
+    "89fc6c2319af": {
+      "status": "fulfilled",
+      "startedAt": 0,
+      "settledAt": 0,
+      "value": {
+        "committed": true,
+        "ok": true,
+        "prefill": {
+          "base": "main",
+          "blockedReason": {
+            "$rpc": "null"
+          },
+          "body": "Host body",
+          "canCreate": true,
+          "nextAction": {
+            "$rpc": "null"
+          },
+          "provider": "github",
+          "reviewLookupOutcome": "not_found",
+          "title": "Host title"
+        },
+        "status": {
+          "branch": "feature",
+          "conflictOperation": "unknown",
+          "entries": [],
+          "head": "def5678",
+          "upstreamStatus": {
+            "ahead": 0,
+            "behind": 0,
+            "behindCommitsArePatchEquivalent": {
+              "$rpc": "undefined"
+            },
+            "hasConfiguredPushTarget": {
+              "$rpc": "undefined"
+            },
+            "hasUpstream": true,
+            "upstreamName": {
+              "$rpc": "undefined"
+            }
+          }
+        },
+        "url": "https://review.test/5",
+        "warning": "Pull Request created, but Topo could not refresh it yet."
+      }
+    },
     "8b784bb9dff5": {
       "status": "fulfilled",
       "startedAt": 0,
@@ -1095,51 +1098,6 @@
       "name": "progress",
       "ordinal": 8,
       "value": "generating_commit_message"
-    },
-    "b661d30b2d73": {
-      "status": "fulfilled",
-      "startedAt": 0,
-      "settledAt": 0,
-      "value": {
-        "committed": true,
-        "ok": true,
-        "prefill": {
-          "base": "main",
-          "blockedReason": {
-            "$rpc": "null"
-          },
-          "body": "Host body",
-          "canCreate": true,
-          "nextAction": {
-            "$rpc": "null"
-          },
-          "provider": "github",
-          "reviewLookupOutcome": "not_found",
-          "title": "Host title"
-        },
-        "status": {
-          "branch": "feature",
-          "conflictOperation": "unknown",
-          "entries": [],
-          "head": "def5678",
-          "upstreamStatus": {
-            "ahead": 0,
-            "behind": 0,
-            "behindCommitsArePatchEquivalent": {
-              "$rpc": "undefined"
-            },
-            "hasConfiguredPushTarget": {
-              "$rpc": "undefined"
-            },
-            "hasUpstream": true,
-            "upstreamName": {
-              "$rpc": "undefined"
-            }
-          }
-        },
-        "url": "https://review.test/5",
-        "warning": "Pull Request created, but Topo could not refresh it yet."
-      }
     },
     "c9569b29c1f2": {
       "name": "worktree.set#1",
@@ -1351,6 +1309,48 @@
       "name": "progress",
       "ordinal": 18,
       "value": "pushing"
+    },
+    "feefab6b7d48": {
+      "outcome": {
+        "committed": true,
+        "ok": true,
+        "prefill": {
+          "base": "main",
+          "blockedReason": {
+            "$rpc": "null"
+          },
+          "body": "Host body",
+          "canCreate": true,
+          "nextAction": {
+            "$rpc": "null"
+          },
+          "provider": "github",
+          "reviewLookupOutcome": "not_found",
+          "title": "Host title"
+        },
+        "status": {
+          "branch": "feature",
+          "conflictOperation": "unknown",
+          "entries": [],
+          "head": "def5678",
+          "upstreamStatus": {
+            "ahead": 0,
+            "behind": 0,
+            "behindCommitsArePatchEquivalent": {
+              "$rpc": "undefined"
+            },
+            "hasConfiguredPushTarget": {
+              "$rpc": "undefined"
+            },
+            "hasUpstream": true,
+            "upstreamName": {
+              "$rpc": "undefined"
+            }
+          }
+        },
+        "url": "https://review.test/5",
+        "warning": "Pull Request created, but Topo could not refresh it yet."
+      }
     },
     "ffef2a178ce4": {
       "name": "worktree.set#1",
@@ -1817,9 +1817,9 @@
             "ffef2a178ce4"
           ],
           "settlements": {
-            "run": "b661d30b2d73"
+            "run": "89fc6c2319af"
           },
-          "state": "2c6dd148501e",
+          "state": "feefab6b7d48",
           "effects": [
             "e83dca631c9c",
             "b2ae4b8e30b7",
@@ -1861,9 +1861,9 @@
             "ffef2a178ce4"
           ],
           "settlements": {
-            "run": "b661d30b2d73"
+            "run": "89fc6c2319af"
           },
-          "state": "2c6dd148501e",
+          "state": "feefab6b7d48",
           "effects": [
             "e83dca631c9c",
             "b2ae4b8e30b7",
@@ -1905,9 +1905,9 @@
             "ffef2a178ce4"
           ],
           "settlements": {
-            "run": "b661d30b2d73"
+            "run": "89fc6c2319af"
           },
-          "state": "2c6dd148501e",
+          "state": "feefab6b7d48",
           "effects": [
             "e83dca631c9c",
             "b2ae4b8e30b7",
@@ -1949,9 +1949,9 @@
             "ffef2a178ce4"
           ],
           "settlements": {
-            "run": "b661d30b2d73"
+            "run": "89fc6c2319af"
           },
-          "state": "2c6dd148501e",
+          "state": "feefab6b7d48",
           "effects": [
             "e83dca631c9c",
             "b2ae4b8e30b7",
