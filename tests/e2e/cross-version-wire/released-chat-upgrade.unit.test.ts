@@ -169,76 +169,82 @@ async function carryOn(
 }
 
 describe('a chat a shipped release wrote, carried on by this build', () => {
-  it.for([
+  const cases: [keyof typeof RELEASES, 'claude' | 'codex'][] = [
     ['the last release before outcome storage', 'claude'],
     ['the last release before outcome storage', 'codex'],
     ['the release before it', 'claude'],
     ['the release before it', 'codex'],
     ['the oldest release with this chat database', 'claude'],
     ['the oldest release with this chat database', 'codex']
-  ] as const)(
-    'admits every row %s wrote for a %s chat, opens it as the newest release does, then edits, sends and rewinds it',
-    async ([build, agent], { skip }) => {
-      // Orca chats do reach Topo since the first-run import, but they keep `orca:` item keys that
-      // Topo's send, rewind and queue paths derive as `topo:`; re-enable once those keys migrate.
-      skip(!sharesUserDataWith(RELEASES[build]()), 'Orca item keys are not migrated yet')
-      const directory = mkdtempSync(join(tmpdir(), 'topo-released-chat-upgrade-'))
-      const shipped = mkdtempSync(join(tmpdir(), 'topo-released-chat-shipped-'))
-      const identity = identityOf(agent)
-      try {
-        const written = await writeReleasedChat(RELEASES[build](), agent, directory)
-        // Anti-vacuous: the release's stream (beyond the two sends and the Stop turn), sends and
-        // queue all reached the chat.
-        expect(written.snapshot.items.length).toBeGreaterThan(3)
-        expect(written.snapshot.submissions.map((entry) => entry.clientMessageId)).toEqual(
-          expect.arrayContaining(['sent', 'refused'])
-        )
-        expect(written.cards).toHaveLength(2)
+  ]
+  const run = async (build: keyof typeof RELEASES, agent: 'claude' | 'codex'): Promise<void> => {
+    const directory = mkdtempSync(join(tmpdir(), 'topo-released-chat-upgrade-'))
+    const shipped = mkdtempSync(join(tmpdir(), 'topo-released-chat-shipped-'))
+    const identity = identityOf(agent)
+    try {
+      const written = await writeReleasedChat(RELEASES[build](), agent, directory)
+      // Anti-vacuous: the release's stream (beyond the two sends and the Stop turn), sends and
+      // queue all reached the chat.
+      expect(written.snapshot.items.length).toBeGreaterThan(3)
+      expect(written.snapshot.submissions.map((entry) => entry.clientMessageId)).toEqual(
+        expect.arrayContaining(['sent', 'refused'])
+      )
+      expect(written.cards).toHaveLength(2)
 
-        const database = openTestJournalHostDatabase(directory)
-        const rows = liveTestJournalRows(database.db, identity.sessionId)
-        expect(rows.filter((row) => !parseJournalRow(row.rowJson).ok)).toEqual([])
-        // Anti-vacuous: the release wrote every row kind a chat holds (cards in their own table
-        // before they moved into the rows).
-        const kinds = new Set(rows.map((row) => JSON.parse(row.rowJson).kind))
-        expect([...kinds].filter((kind) => kind !== 'queue').sort()).toEqual(
-          ['dispatch', 'epoch', 'item', 'lifecycle-batch', 'submission', 'tombstone'].sort()
-        )
-        expect(kinds.has('queue')).toBe(build !== 'the oldest release with this chat database')
-        expect(restoreJournal(database.db, identity.sessionId)).toMatchObject({
-          newer: null,
-          damage: null
-        })
-        await closeTestJournalHostDatabase(directory)
-        cpSync(directory, shipped, { recursive: true })
+      const database = openTestJournalHostDatabase(directory)
+      const rows = liveTestJournalRows(database.db, identity.sessionId)
+      expect(rows.filter((row) => !parseJournalRow(row.rowJson).ok)).toEqual([])
+      // Anti-vacuous: the release wrote every row kind a chat holds (cards in their own table
+      // before they moved into the rows).
+      const kinds = new Set(rows.map((row) => JSON.parse(row.rowJson).kind))
+      expect([...kinds].filter((kind) => kind !== 'queue').sort()).toEqual(
+        ['dispatch', 'epoch', 'item', 'lifecycle-batch', 'submission', 'tombstone'].sort()
+      )
+      expect(kinds.has('queue')).toBe(build !== 'the oldest release with this chat database')
+      expect(restoreJournal(database.db, identity.sessionId)).toMatchObject({
+        newer: null,
+        damage: null
+      })
+      await closeTestJournalHostDatabase(directory)
+      cpSync(directory, shipped, { recursive: true })
 
-        const ours = await carryOn(createTrackedJournalOpener(), agent, directory, written, rows)
-        if (build !== 'the oldest release with this chat database') {
-          expect(
-            ours.seen.cards
-              .filter((card) => card.state === 'withdrawn')
-              .map((card) => card.messageId)
-          ).toEqual(['card-1'])
-          // A release in the window wrote the shapes this build reads, so it opens as written,
-          // and the edit records the card the old rows hold in its place among them.
-          expect(releaseWritten(ours.opened)).toMatchObject(releaseWritten(written))
-          const edits = openTestJournalHostDatabase(directory)
-            .db.prepare(`SELECT ordinal FROM journal_outcomes
+      const ours = await carryOn(createTrackedJournalOpener(), agent, directory, written, rows)
+      if (build !== 'the oldest release with this chat database') {
+        expect(
+          ours.seen.cards.filter((card) => card.state === 'withdrawn').map((card) => card.messageId)
+        ).toEqual(['card-1'])
+        // A release in the window wrote the shapes this build reads, so it opens as written,
+        // and the edit records the card the old rows hold in its place among them.
+        expect(releaseWritten(ours.opened)).toMatchObject(releaseWritten(written))
+        const edits = openTestJournalHostDatabase(directory)
+          .db.prepare(`SELECT ordinal FROM journal_outcomes
             WHERE field = 'queue.cards' AND entry_key = '"card-2"'`)
-            .all()
-          expect(edits).toContainEqual({ ordinal: JOURNAL_PREFIX_ORDINAL })
-          await closeTestJournalHostDatabase(directory)
-        }
-        // This build opens the chat as the newest release does.
-        const newest = await releasedJournalOpener(resolveBaselineReleaseRef())
-        expect(releaseWritten(ours.opened)).toMatchObject(
-          releaseWritten(await openedBy(newest, agent, shipped))
-        )
-      } finally {
-        rmSync(directory, { recursive: true, force: true })
-        rmSync(shipped, { recursive: true, force: true })
+          .all()
+        expect(edits).toContainEqual({ ordinal: JOURNAL_PREFIX_ORDINAL })
+        await closeTestJournalHostDatabase(directory)
       }
-    },
+      // This build opens the chat as the newest release does.
+      const newest = await releasedJournalOpener(resolveBaselineReleaseRef())
+      expect(releaseWritten(ours.opened)).toMatchObject(
+        releaseWritten(await openedBy(newest, agent, shipped))
+      )
+    } finally {
+      rmSync(directory, { recursive: true, force: true })
+      rmSync(shipped, { recursive: true, force: true })
+    }
+  }
+  // Orca chats reach Topo through the first-run import but keep `orca:` item keys that Topo's send,
+  // rewind and queue paths derive as `topo:`; run those once the keys migrate.
+  const reachesTopo = ([build, _agent]: (typeof cases)[number]): boolean =>
+    sharesUserDataWith(RELEASES[build]())
+  it.each(cases.filter(reachesTopo))(
+    'admits every row %s wrote for a %s chat, opens it as the newest release does, then edits, sends and rewinds it',
+    run,
+    SUITE_TIMEOUT_MS
+  )
+  it.skip.each(cases.filter((entry) => !reachesTopo(entry)))(
+    'admits every row %s wrote for a %s chat, opens it as the newest release does, then edits, sends and rewinds it',
+    run,
     SUITE_TIMEOUT_MS
   )
 })

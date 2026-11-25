@@ -143,87 +143,95 @@ function savedContent(): Map<string, unknown> {
 }
 
 describe('a chat this build wrote, opened by a shipped build', () => {
-  it.for([
+  type Build =
+    | 'the last release before outcome storage'
+    | 'the release before it'
+    | 'the writable baseline'
+  const cases: ['new' | 'existing', Build][] = [
     ['new', 'the last release before outcome storage'],
     ['existing', 'the last release before outcome storage'],
     ['new', 'the release before it'],
     ['existing', 'the release before it'],
     ['new', 'the writable baseline'],
     ['existing', 'the writable baseline']
-  ] as const)(
-    'keeps a %s chat from %s, leaving every byte as it was, and reads whole again after',
-    async ([kind, build], { skip }) => {
-      const inWindow = build !== 'the writable baseline'
-      const releaseRef =
-        build === 'the last release before outcome storage'
-          ? REFUSING_RELEASE_REFS[0]
-          : inWindow
-            ? REFUSING_RELEASE_REFS[1]
-            : WRITABLE_BASELINE_REF
-      skip(
-        !sharesUserDataWith(releaseRef),
-        'an Orca build would open it; Topo data never reaches one'
-      )
-      const prefix = await savedChat(kind)
-      const before = databaseBytes()
-      const saved = savedContent()
-      expect(before['agent-session-journal.db']).toBeDefined()
-      const checkout = await materializeReleaseCheckout(releaseRef)
-      const support = await importReleaseCheckoutModule(
-        checkout,
-        `${JOURNAL}/journal-host-database-test-support.ts`
-      )
-      const older = releaseModuleExport<() => ReleasedOpener>(
-        support,
-        'createTrackedJournalOpener'
-      )()
-      const close = releaseModuleExport<(stateDirectory: string) => void>(
-        support,
-        'closeTestJournalHostDatabase'
-      )
-      try {
-        if (inWindow) {
-          const failure = await older.open({ identity: IDENTITY, stateDirectory: directory }).then(
-            () => null,
-            (error: unknown) => error
-          )
-          expect(failure).toMatchObject(SAVED_BY_NEWER_TOPO)
-        } else {
-          const opened = await older.open({ identity: OLDER_IDENTITY, stateDirectory: directory })
-          // It latches read-only at the marker, having read only the rows before it.
-          expect(opened.snapshot().items).toHaveLength(Math.max(prefix.length - 1, 0))
-          await expect(
-            opened.appendItem(
-              { provider: 'codex', threadId: 'thread-1', turnId: 'turn-1', ordinal: 9 },
-              { kind: 'status', text: 'from the older build' },
-              { fence: 1, turnScope: AGENT_JOURNAL_THREAD_SCOPE }
-            )
-          ).rejects.toMatchObject({ code: 'journal_read_only' })
-        }
-      } finally {
-        await older.closeAll()
-        close(directory)
-      }
+  ]
+  const releaseRefOf = (build: Build): string =>
+    build === 'the last release before outcome storage'
+      ? REFUSING_RELEASE_REFS[0]
+      : build === 'the release before it'
+        ? REFUSING_RELEASE_REFS[1]
+        : WRITABLE_BASELINE_REF
+  const run = async (kind: 'new' | 'existing', build: Build): Promise<void> => {
+    const inWindow = build !== 'the writable baseline'
+    const releaseRef = releaseRefOf(build)
+    const prefix = await savedChat(kind)
+    const before = databaseBytes()
+    const saved = savedContent()
+    expect(before['agent-session-journal.db']).toBeDefined()
+    const checkout = await materializeReleaseCheckout(releaseRef)
+    const support = await importReleaseCheckoutModule(
+      checkout,
+      `${JOURNAL}/journal-host-database-test-support.ts`
+    )
+    const older = releaseModuleExport<() => ReleasedOpener>(support, 'createTrackedJournalOpener')()
+    const close = releaseModuleExport<(stateDirectory: string) => void>(
+      support,
+      'closeTestJournalHostDatabase'
+    )
+    try {
       if (inWindow) {
-        expect(databaseBytes()).toEqual(before)
+        const failure = await older.open({ identity: IDENTITY, stateDirectory: directory }).then(
+          () => null,
+          (error: unknown) => error
+        )
+        expect(failure).toMatchObject(SAVED_BY_NEWER_TOPO)
       } else {
-        const after = savedContent()
-        expect(
-          [...saved].filter(([name, content]) => !isDeepStrictEqual(after.get(name), content))
-        ).toEqual([])
+        const opened = await older.open({ identity: OLDER_IDENTITY, stateDirectory: directory })
+        // It latches read-only at the marker, having read only the rows before it.
+        expect(opened.snapshot().items).toHaveLength(Math.max(prefix.length - 1, 0))
+        await expect(
+          opened.appendItem(
+            { provider: 'codex', threadId: 'thread-1', turnId: 'turn-1', ordinal: 9 },
+            { kind: 'status', text: 'from the older build' },
+            { fence: 1, turnScope: AGENT_JOURNAL_THREAD_SCOPE }
+          )
+        ).rejects.toMatchObject({ code: 'journal_read_only' })
       }
-      // Upgraded again, this build reads the prefix and its records, the rows still as they were.
-      const database = openTestJournalHostDatabase(directory)
-      try {
-        const reopened = restoreJournal(database.db, IDENTITY.sessionId)
-        expect(reopened).toMatchObject({ newer: null, damage: null })
-        expect(reopened?.state.items.size).toBe(kind === 'existing' ? 6 : 3)
-        const rows = liveTestJournalRows(database.db, IDENTITY.sessionId)
-        expect(rows.slice(0, prefix.length)).toEqual(prefix)
-      } finally {
-        await closeTestJournalHostDatabase(directory)
-      }
-    },
+    } finally {
+      await older.closeAll()
+      close(directory)
+    }
+    if (inWindow) {
+      expect(databaseBytes()).toEqual(before)
+    } else {
+      const after = savedContent()
+      expect(
+        [...saved].filter(([name, content]) => !isDeepStrictEqual(after.get(name), content))
+      ).toEqual([])
+    }
+    // Upgraded again, this build reads the prefix and its records, the rows still as they were.
+    const database = openTestJournalHostDatabase(directory)
+    try {
+      const reopened = restoreJournal(database.db, IDENTITY.sessionId)
+      expect(reopened).toMatchObject({ newer: null, damage: null })
+      expect(reopened?.state.items.size).toBe(kind === 'existing' ? 6 : 3)
+      const rows = liveTestJournalRows(database.db, IDENTITY.sessionId)
+      expect(rows.slice(0, prefix.length)).toEqual(prefix)
+    } finally {
+      await closeTestJournalHostDatabase(directory)
+    }
+  }
+  // Topo keeps its own user data, so an Orca build never opens a chat this build wrote.
+  const reachesOrca = ([, build]: (typeof cases)[number]): boolean =>
+    !sharesUserDataWith(releaseRefOf(build))
+  it.each(cases.filter((entry) => !reachesOrca(entry)))(
+    'keeps a %s chat from %s, leaving every byte as it was, and reads whole again after',
+    run,
+    SUITE_TIMEOUT_MS
+  )
+  it.skip.each(cases.filter(reachesOrca))(
+    'keeps a %s chat from %s, leaving every byte as it was, and reads whole again after',
+    run,
     SUITE_TIMEOUT_MS
   )
 })
