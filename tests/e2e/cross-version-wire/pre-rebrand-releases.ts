@@ -7,9 +7,10 @@ function patch(ref: string): number | null {
 }
 
 /**
- * Data handoffs with an Orca build no longer happen: Topo keeps its own user data directory and
- * renamed the files and ids Orca wrote (`orca-devices.json`, `orca:` item ids), so neither reads
- * the other's rows. Wire-protocol journeys against those builds still run.
+ * Topo keeps its own user data directory and renamed the files and ids Orca wrote
+ * (`orca-devices.json`, `orca:` item ids). The first-run import copies some of Orca's state once, but
+ * pairing, relays and downgrades never hand data to or from an Orca build. Wire-protocol journeys
+ * against those builds still run.
  */
 export function sharesUserDataWith(ref: string): boolean {
   const released = patch(ref)

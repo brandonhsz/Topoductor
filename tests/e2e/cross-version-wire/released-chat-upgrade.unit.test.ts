@@ -179,7 +179,9 @@ describe('a chat a shipped release wrote, carried on by this build', () => {
   ] as const)(
     'admits every row %s wrote for a %s chat, opens it as the newest release does, then edits, sends and rewinds it',
     async ([build, agent], { skip }) => {
-      skip(!sharesUserDataWith(RELEASES[build]()), 'an Orca build wrote it; Topo never reads it')
+      // Orca chats do reach Topo since the first-run import, but they keep `orca:` item keys that
+      // Topo's send, rewind and queue paths derive as `topo:`; re-enable once those keys migrate.
+      skip(!sharesUserDataWith(RELEASES[build]()), 'Orca item keys are not migrated yet')
       const directory = mkdtempSync(join(tmpdir(), 'topo-released-chat-upgrade-'))
       const shipped = mkdtempSync(join(tmpdir(), 'topo-released-chat-shipped-'))
       const identity = identityOf(agent)
