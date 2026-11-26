@@ -12,6 +12,7 @@ export type HostHeaderMenuAction =
   | 'ssh-reconnect'
   | 'ssh-disconnect'
   | 'runtime-check-connection'
+  | 'remote-desktop'
   | 'remove'
 
 export type HostHeaderMenuModel = {
@@ -32,6 +33,8 @@ export type HostHeaderMenuInput = {
   repairableWithAccessLink?: boolean
   /** A WSL host whose distro is stopped; Start is the one act that boots it (E9). */
   wslDistroStopped?: boolean
+  /** Desktop builds can open a host's screen; web and mobile clients cannot. */
+  remoteDesktopSupported?: boolean
 }
 
 function sshActions(connected: boolean): HostHeaderMenuAction[] {
@@ -63,6 +66,14 @@ export function buildHostHeaderMenuModel(input: HostHeaderMenuInput): HostHeader
       break
     case 'local':
       break
+  }
+
+  if (
+    input.remoteDesktopSupported === true &&
+    input.health !== 'blocked' &&
+    ((input.kind === 'ssh' && input.sshConnected === true) || input.kind === 'runtime')
+  ) {
+    actions.push('remote-desktop')
   }
 
   actions.push('manage')

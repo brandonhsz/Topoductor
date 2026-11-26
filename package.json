@@ -234,6 +234,7 @@
     "@anthropic-ai/claude-agent-sdk": "0.3.318",
     "@floating-ui/dom": "1.8.0",
     "@linear/sdk": "^97.0.0",
+    "@novnc/novnc": "1.7.0",
     "@parcel/watcher": "^2.5.6",
     "@topo/process-host": "workspace:*",
     "@xterm/addon-serialize": "0.15.0-beta.330",

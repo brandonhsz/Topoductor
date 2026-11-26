@@ -24988,5 +24988,33 @@
     "appVersion": {
       "ariaLabel": "Topo version {{version}}"
     }
+  },
+  "remoteDesktop": {
+    "open": "Open remote desktop",
+    "connecting": "Connecting to the remote desktop…",
+    "errorTitle": "Could not show the remote desktop",
+    "reconnect": "Reconnect",
+    "ctrlAltDel": "Send Ctrl+Alt+Del",
+    "status": {
+      "connected": "Connected",
+      "connecting": "Connecting…",
+      "credentials": "Waiting for sign-in",
+      "disconnected": "Disconnected"
+    },
+    "credentials": {
+      "title": "Sign in to this computer",
+      "rejectedTitle": "Sign-in failed",
+      "macDescription": "Use the account name and password of a user on the remote computer. Topo stores them encrypted in your system keychain.",
+      "vncDescription": "Enter the screen sharing password set on the remote computer. Topo stores it encrypted in your system keychain.",
+      "username": "Account name",
+      "password": "Password",
+      "submit": "Connect"
+    },
+    "sessionLost": "The remote desktop connection closed.",
+    "unknownHost": "Unknown remote host.",
+    "recoverableError": {
+      "title": "Remote desktop hit an error.",
+      "description": "Retry to remount it, or close and reopen the window."
+    }
   }
 }

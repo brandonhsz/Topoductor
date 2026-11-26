@@ -24318,5 +24318,33 @@
     "branchName": "Nombre de la rama",
     "invalidBranchName": "Este nombre de rama no es válido. Elige otro nombre.",
     "createBranchFailed": "Topo no pudo crear la rama. Revisa este repositorio en una terminal e inténtalo de nuevo."
+  },
+  "remoteDesktop": {
+    "open": "Abrir escritorio remoto",
+    "connecting": "Conectando al escritorio remoto…",
+    "errorTitle": "No se pudo mostrar el escritorio remoto",
+    "reconnect": "Reconectar",
+    "ctrlAltDel": "Enviar Ctrl+Alt+Supr",
+    "status": {
+      "connected": "Conectado",
+      "connecting": "Conectando…",
+      "credentials": "Esperando inicio de sesión",
+      "disconnected": "Desconectado"
+    },
+    "credentials": {
+      "title": "Inicia sesión en esta computadora",
+      "rejectedTitle": "No se pudo iniciar sesión",
+      "macDescription": "Usa el nombre de cuenta y la contraseña de un usuario de la computadora remota. Topo los guarda cifrados en el llavero del sistema.",
+      "vncDescription": "Escribe la contraseña de compartir pantalla configurada en la computadora remota. Topo la guarda cifrada en el llavero del sistema.",
+      "username": "Nombre de cuenta",
+      "password": "Contraseña",
+      "submit": "Conectar"
+    },
+    "sessionLost": "Se cerró la conexión con el escritorio remoto.",
+    "unknownHost": "Host remoto desconocido.",
+    "recoverableError": {
+      "title": "El escritorio remoto tuvo un error.",
+      "description": "Reintenta para volver a cargarlo, o cierra y vuelve a abrir la ventana."
+    }
   }
 }

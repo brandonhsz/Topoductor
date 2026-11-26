@@ -1,4 +1,5 @@
 import type { DirectSshAuthority } from '../../../shared/ssh-types'
+import { runSshTargetTeardownListeners } from './ssh-target-teardown-listeners'
 import { getSshTargetRegistryStore } from '../../ssh/targets/ssh-target-registry'
 import { clearSshHostServerStatus } from '../../ssh/host-server/ssh-host-server-status'
 import { isSshConnectionSolelyOwnedBy } from '../../ssh/connection/ssh-connection-attribution'
@@ -89,12 +90,13 @@ export async function teardownSshTargetTransport(targetId: string): Promise<void
   stopLegacyRelayBridge(targetId)
   forgetPortForwardRestoreState(targetId)
   // Release listeners before reconnect; independent system-SSH tunnels also retain ports after session disconnect.
-  const [forwards, managedTunnels, disconnect] = await Promise.allSettled([
+  const [forwards, managedTunnels, remoteDesktop, disconnect] = await Promise.allSettled([
     portForwardManager?.removeAllForwards(targetId),
     // Import lazily: SSH-only callers may lack the app paths resolved by managed tunnels.
     import('../../managed-server/lifecycle/topod-managed-tunnel').then((tunnels) =>
       tunnels.closeTopodManagedTunnelsForTarget(targetId)
     ),
+    runSshTargetTeardownListeners(targetId),
     (async () => connectionManager?.disconnect(targetId))()
   ])
   if (forwards.status === 'rejected') {
@@ -102,6 +104,9 @@ export async function teardownSshTargetTransport(targetId: string): Promise<void
   }
   if (managedTunnels.status === 'rejected') {
     throw managedTunnels.reason
+  }
+  if (remoteDesktop.status === 'rejected') {
+    throw remoteDesktop.reason
   }
   if (disconnect.status === 'rejected') {
     throw disconnect.reason

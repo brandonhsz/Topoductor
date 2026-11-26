@@ -30,6 +30,7 @@ import type { CrashReportsApi, FeedbackApi } from './api/crash-report-api'
 import type { DashboardApi, TerminalPreviewApi } from './api/dashboard-api'
 import type { DocPreviewApi } from './api/doc-preview-api'
 import type { EmulatorApi } from './api/emulator-api'
+import type { RemoteDesktopApi } from '../shared/remote-desktop/remote-desktop-contract'
 import type { EphemeralVmApi } from './api/ephemeral-vm-api'
 import type { ExportApi, FilesystemApi } from './api/filesystem-api'
 import type { GitInspectionApi } from './api/git-inspection-api'
@@ -136,6 +137,7 @@ export type PreloadApi = {
   browser: BrowserApi
   browserPasswords: BrowserPasswordsApi
   emulator: EmulatorApi
+  remoteDesktop: RemoteDesktopApi
   hooks: HooksApi
   ephemeralVm: EphemeralVmApi
   cache: WorkspaceSessionApi['cache']
