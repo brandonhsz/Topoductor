@@ -4,7 +4,7 @@ import { eraseRpcMethods, type RpcContext, type RpcMethod } from '../../../core'
 import { AVENAPM_METHODS, type AvenaPMQueueResult } from './avenapm'
 
 const client = vi.hoisted(() => ({ listAvenaPMTasks: vi.fn() }))
-vi.mock('../../../../../avenapm/avenapm-client', () => client)
+vi.mock('../../../../../avenapm/avenapm-task-queue', () => client)
 
 function task(shortId: string, assignee: AvenaPMTask['assignee']): AvenaPMTask {
   return {

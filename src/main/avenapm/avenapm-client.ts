@@ -1,13 +1,7 @@
-import {
-  AVENAPM_DEFAULT_BASE_URL,
-  type AvenaPMConnectionStatus,
-  type AvenaPMListTasksArgs,
-  type AvenaPMListTasksResult,
-  type AvenaPMTask,
-  type AvenaPMUser
-} from '../../shared/avenapm/avenapm-types'
+import type { AvenaPMConnectionStatus } from '../../shared/avenapm/avenapm-types'
 import { beginLoopbackPkceAuthorization } from '../oauth/loopback-pkce-authorization'
 import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
+import { readUser, requestJson, resolveBaseUrl } from './avenapm-http'
 import {
   TOPO_CLOUD_CALLBACK_RESPONSE_HEADERS,
   TOPO_CLOUD_CALLBACK_SUCCESS_PAGE
@@ -18,50 +12,7 @@ import {
   saveAvenaPMCredential
 } from './avenapm-credential-store'
 
-const REQUEST_TIMEOUT_MS = 20_000
-
-// Why env override: lets a local avena-pm (`next dev`) stand in for production while developing.
-function resolveBaseUrl(): string {
-  const override = process.env.TOPO_AVENAPM_URL?.trim()
-  return (override || AVENAPM_DEFAULT_BASE_URL).replace(/\/+$/, '')
-}
-
 let connectAbort: AbortController | null = null
-
-async function requestJson(
-  url: string,
-  init: { method?: string; token?: string; body?: unknown } = {}
-): Promise<{ status: number; body: unknown }> {
-  const headers: Record<string, string> = { accept: 'application/json' }
-  if (init.token) {
-    headers.authorization = `Bearer ${init.token}`
-  }
-  if (init.body !== undefined) {
-    headers['content-type'] = 'application/json'
-  }
-  const response = await fetch(url, {
-    method: init.method ?? 'GET',
-    headers,
-    body: init.body === undefined ? undefined : JSON.stringify(init.body),
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
-  })
-  const text = await response.text()
-  let body: unknown = null
-  try {
-    body = text ? JSON.parse(text) : null
-  } catch {
-    body = text
-  }
-  return { status: response.status, body }
-}
-
-function readUser(value: unknown): AvenaPMUser | null {
-  const raw = asRecord(value)
-  if (!raw || typeof raw.email !== 'string') {
-    return null
-  }
-  return { email: raw.email, name: typeof raw.name === 'string' ? raw.name : raw.email }
-}
 
 export function getAvenaPMStatus(): AvenaPMConnectionStatus {
   const credential = readAvenaPMCredential()
@@ -135,83 +86,4 @@ export async function disconnectAvenaPM(): Promise<AvenaPMConnectionStatus> {
   return { connected: false, baseUrl: resolveBaseUrl() }
 }
 
-function stringOrNull(value: unknown): string | null {
-  return typeof value === 'string' && value.length > 0 ? value : null
-}
-
-function mapTask(value: unknown, baseUrl: string): AvenaPMTask | null {
-  const raw = asRecord(value)
-  if (!raw || typeof raw.id !== 'string' || typeof raw.title !== 'string') {
-    return null
-  }
-  const priority = typeof raw.priority === 'number' ? raw.priority : Number(raw.priority)
-  return {
-    id: raw.id,
-    shortId: stringOrNull(raw.idCorto),
-    title: raw.title,
-    description: stringOrNull(raw.description),
-    status: stringOrNull(raw.status) ?? 'por_hacer',
-    priority: Number.isFinite(priority) ? priority : null,
-    size: stringOrNull(raw.size),
-    classification: stringOrNull(raw.clasificacion) ?? 'sin_clasificar',
-    assignee: readUser(raw.assignee),
-    source: stringOrNull(raw.source),
-    url: `${baseUrl}/tareas?tarea=${encodeURIComponent(raw.id)}`,
-    createdAt: stringOrNull(raw.createdAt) ?? '',
-    updatedAt: stringOrNull(raw.updatedAt) ?? '',
-    doneAt: stringOrNull(raw.doneAt)
-  }
-}
-
-export async function listAvenaPMTasks(
-  args: AvenaPMListTasksArgs = {}
-): Promise<AvenaPMListTasksResult> {
-  const credential = readAvenaPMCredential()
-  if (!credential) {
-    return { ok: false, reason: 'not_connected', message: 'AvenaPM is not connected.' }
-  }
-  const url = new URL(`${credential.baseUrl}/api/app/cola`)
-  if (args.status) {
-    url.searchParams.set('status', args.status)
-  }
-  if (args.classification) {
-    url.searchParams.set('clasificacion', args.classification)
-  }
-  if (args.includeClosed) {
-    url.searchParams.set('incluirCerradas', '1')
-  }
-  try {
-    const { status, body } = await requestJson(url.toString(), { token: credential.token })
-    if (status === 401) {
-      return {
-        ok: false,
-        reason: 'unauthorized',
-        message: 'AvenaPM session expired. Sign in again.'
-      }
-    }
-    if (status !== 200) {
-      const error = asRecord(body)?.error
-      return {
-        ok: false,
-        reason: 'request_failed',
-        message: typeof error === 'string' ? error : `AvenaPM request failed (${status}).`
-      }
-    }
-    const payload = asRecord(body)
-    const rawTasks: unknown[] = Array.isArray(payload?.tareas) ? payload.tareas : []
-    const queueName = asRecord(payload?.cola)?.name
-    return {
-      ok: true,
-      queueName: typeof queueName === 'string' ? queueName : 'Operación',
-      tasks: rawTasks
-        .map((task) => mapTask(task, credential.baseUrl))
-        .filter((task): task is AvenaPMTask => task !== null)
-    }
-  } catch (error) {
-    return {
-      ok: false,
-      reason: 'request_failed',
-      message: error instanceof Error ? error.message : String(error)
-    }
-  }
-}
+export { listAvenaPMTasks } from './avenapm-task-queue'

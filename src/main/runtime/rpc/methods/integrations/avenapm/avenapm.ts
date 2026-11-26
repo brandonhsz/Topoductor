@@ -1,6 +1,6 @@
 import type { AvenaPMTask } from '../../../../../../shared/avenapm/avenapm-types'
 import { AvenaPMQueueParams } from '../../../../../../shared/rpc-contract/avenapm-params'
-import { listAvenaPMTasks } from '../../../../../avenapm/avenapm-client'
+import { listAvenaPMTasks } from '../../../../../avenapm/avenapm-task-queue'
 import { defineMethod } from '../../../core'
 
 export type AvenaPMQueueResult = { queueName: string; tasks: AvenaPMTask[] }
