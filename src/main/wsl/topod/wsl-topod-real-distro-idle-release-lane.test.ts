@@ -1,7 +1,7 @@
 // WSL via topod, phase 3 of the real-distro lane (R40 / E17): after the survive phase's teardown,
 // a fresh topod with a short idle timeout keeps its distro while a terminal is live, then
 // idle-exits once it is closed and the holder lets the distro stop with no release call.
-// Records guest and VM memory before and after. .github/workflows/wsl-topod-e2e.yml runs it.
+// Records guest and VM memory before and after. No CI lane runs it; run it by hand on a WSL2 host.
 //
 // Run: TOPO_RUN_WSL_TOPOD_LANE=1 pnpm test <this file>
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
