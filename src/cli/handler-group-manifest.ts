@@ -233,6 +233,11 @@ export const HANDLER_GROUPS: readonly HandlerGroup[] = [
     }
   },
   {
+    name: 'avenapm',
+    keys: ['avenapm queue'],
+    load: async () => (await import('./handlers/avenapm.js')).AVENAPM_HANDLERS
+  },
+  {
     name: 'connector',
     keys: [
       'connector start',

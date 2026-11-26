@@ -354,6 +354,15 @@ TOPO harness start --flow <id> --field <key>=<value> --field <key>=<value>
   until the flow ends.
 - `harness_run_active` means this workspace already drives a flow; do not start another one.
 
+To see the AvenaPM operation queue (the account connected in Topo settings):
+
+```text
+TOPO avenapm queue --status por_hacer --unassigned --json
+```
+
+- `--require-any` exits with status 1 when no ticket matches; automation prechecks use it to skip
+  a run, and its new workspace, when there is nothing to take.
+
 ## Agent Session Search
 
 `TOPO search` runs a full-text search over the agent sessions indexed on one Topo host: this machine, or the paired server named by `--environment` or `--pairing-code`. There is no all-computers search.

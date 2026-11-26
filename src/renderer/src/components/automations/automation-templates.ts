@@ -19,6 +19,8 @@ export type AutomationTemplate = {
   agentId?: TuiAgent
   missedRunGraceMinutes?: string
   workspaceMode?: AutomationWorkspaceMode
+  /** Shell command run before each scheduled run; a failing exit skips it. */
+  precheckCommand?: string
 }
 
 export const getAutomationTemplates = createLocalizedCatalog((): AutomationTemplate[] => [
@@ -154,6 +156,8 @@ export const getAutomationTemplates = createLocalizedCatalog((): AutomationTempl
     agentId: 'claude',
     missedRunGraceMinutes: '30',
     // One workspace per ticket, so parallel tickets never share a branch.
-    workspaceMode: 'new_per_run'
+    workspaceMode: 'new_per_run',
+    // Skips the run, and its new workspace, when the queue has nothing to take.
+    precheckCommand: 'topo avenapm queue --status por_hacer --unassigned --require-any'
   }
 ])
