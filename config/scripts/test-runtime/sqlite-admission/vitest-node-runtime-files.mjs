@@ -23,6 +23,8 @@ const NODE_RUNTIME_INCLUDE = [
   // The forced-probe handoff race opens only under V8's promise scheduling, which Electron main uses.
   'src/main/github/rate-limit.test.ts',
   // Electron main bridges streams with Node's implementation.
+  // A closed child pipe surfaces as EPIPE under Node; Bun on macOS reports no write error.
+  'src/main/text-generation/source-control-wsl-prompt.test.ts',
   'src/main/host/electron-http-client.test.ts',
   'src/main/browser/extensions/native-messaging/browser-extension-native-host-process-backpressure.test.ts',
   'src/main/daemon/providers/lifecycle/testing/daemon-init-provider-installation.test.ts',
