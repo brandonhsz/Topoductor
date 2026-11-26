@@ -2,10 +2,11 @@ import { Linking, Platform } from 'react-native'
 import { useRouter } from 'expo-router'
 import Constants from 'expo-constants'
 import AboutScreen from '../src/settings/about-screen'
+import { appReleaseVersion } from '../src/app-update/app-release-version'
 
-// Read version and native build id from expo-constants to match app.json: iOS buildNumber and Android versionCode.
+// Release version travels with the JS bundle (OTA); the build id is the native binary's iOS buildNumber or Android versionCode.
 function getVersionLabel(): string {
-  const version = Constants.expoConfig?.version ?? '?.?.?'
+  const version = appReleaseVersion
   const build =
     Platform.OS === 'ios'
       ? Constants.expoConfig?.ios?.buildNumber

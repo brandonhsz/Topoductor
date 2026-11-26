@@ -64,7 +64,7 @@ export const fileExplorerStyles = themedStyleSheet(() => ({
     fontSize: typography.metaSize
   },
   showMoreText: {
-    color: colors.accentBlue,
+    color: colors.accent,
     fontSize: typography.bodySize,
     fontWeight: '500'
   },
@@ -73,7 +73,7 @@ export const fileExplorerStyles = themedStyleSheet(() => ({
     fontSize: typography.metaSize
   },
   searchAllText: {
-    color: colors.accentBlue,
+    color: colors.accent,
     fontSize: typography.metaSize,
     fontWeight: '600'
   },

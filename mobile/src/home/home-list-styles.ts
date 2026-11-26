@@ -27,7 +27,7 @@ export const homeListStyles = themedStyleSheet(() => ({
   sectionCount: { fontWeight: '500', color: colors.textMuted, fontVariant: ['tabular-nums'] },
   sectionAside: { fontSize: 14, color: colors.textMuted, fontVariant: ['tabular-nums'] },
   sectionAsideRow: { flexShrink: 1, flexDirection: 'row', alignItems: 'center', gap: 6 },
-  sectionLink: { color: colors.accentBlue, fontWeight: '500' },
+  sectionLink: { color: colors.accent, fontWeight: '500' },
   linkPressed: { opacity: 0.5 },
   firstSectionHeading: { marginTop: spacing.xs },
   // Matches a heading's top gap for a group that has none.
@@ -91,7 +91,7 @@ export const homeListStyles = themedStyleSheet(() => ({
     minHeight: 44,
     paddingHorizontal: ROW_LEADING_PADDING
   },
-  actionLabel: { fontSize: 16, color: colors.accentBlue },
+  actionLabel: { fontSize: 16, color: colors.accent },
   // A desktop's needs-you count, in the Feed badge's amber.
   countPill: {
     minWidth: 20,

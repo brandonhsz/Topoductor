@@ -26,7 +26,7 @@ export function FieldTextInput({
   return (
     <TextInput
       placeholderTextColor={colors.textMuted}
-      selectionColor={colors.accentBlue}
+      selectionColor={colors.accent}
       {...inputProps}
       onFocus={focus.onFocus}
       onBlur={focus.onBlur}

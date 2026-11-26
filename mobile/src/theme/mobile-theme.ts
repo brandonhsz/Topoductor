@@ -4,43 +4,43 @@ export type MobileColorScheme = 'light' | 'dark'
 
 const darkColors = {
   // --background, --sidebar, --secondary, --border
-  bgBase: '#0a0a0a',
-  bgPanel: '#171717',
-  bgRaised: '#262626',
-  borderSubtle: 'rgba(255, 255, 255, 0.07)',
-  editorSurface: '#1e1e1e',
+  bgBase: '#14110f',
+  bgPanel: '#1c1815',
+  bgRaised: '#2a2420',
+  borderSubtle: 'rgba(255, 235, 210, 0.08)',
+  editorSurface: '#1e1a17',
   // Sheets sit a step above the screen, their groups a step above the sheet (the desktop's sidebar and secondary).
-  sheetSurface: '#171717',
-  sheetGroup: '#262626',
+  sheetSurface: '#1c1815',
+  sheetGroup: '#2a2420',
   // A translucent grey that reads on any surface: off switches, and chips or picked segments on a sheet group.
-  translucentFill: 'rgba(120, 120, 128, 0.36)',
+  translucentFill: 'rgba(130, 118, 106, 0.36)',
   // --chat-composer-surface painted over --chat-canvas, and --chat-composer-border.
-  composerSurface: '#1f1f1f',
-  composerBorder: 'rgba(250, 250, 250, 0.09)',
-  composerControl: '#262626',
-  // A text field's edge, 3:1 on the screen, a sheet and a sheet group (WCAG 1.4.11): desktop's dark --ring.
-  inputBorder: '#737373',
+  composerSurface: '#282421',
+  composerBorder: 'rgba(255, 235, 210, 0.09)',
+  composerControl: '#2a2420',
+  // A text field's edge, 3:1 on the screen, a sheet and a sheet group (WCAG 1.4.11).
+  inputBorder: '#7d7268',
   skillToken: '#8ab4f8',
   skillTokenSurface: 'rgba(59, 130, 246, 0.2)',
   // Your own message: --chat-user-surface and --chat-user-border over --chat-canvas, text in --chat-foreground-strong.
-  chatUserSurface: '#262626',
-  chatUserBorder: 'rgba(250, 250, 250, 0.06)',
-  chatForegroundStrong: '#e3e3e3',
+  chatUserSurface: '#2a2420',
+  chatUserBorder: 'rgba(255, 235, 210, 0.06)',
+  chatForegroundStrong: '#ddd6cf',
 
   // --foreground, --muted-foreground, --chat-foreground-faint
-  textPrimary: '#fafafa',
-  textSecondary: '#acacac',
-  textMuted: '#898989',
+  textPrimary: '#f2ebe3',
+  textSecondary: '#b0a497',
+  textMuted: '#8f8780',
 
   // --primary: the filled primary-action surface.
-  surfaceBright: '#e5e5e5',
+  surfaceBright: '#ece4da',
   // A list screen's floating create (+) button: the accent, as on Home, since a pale disc glares on the dark page.
-  createActionFill: '#3276f2',
-  onCreateActionFill: '#ffffff',
+  createActionFill: '#f2a93b',
+  onCreateActionFill: '#1a1208',
 
-  accentBlue: '#3276f2',
-  // White text preserves contrast on saturated accent fills.
-  onAccent: '#ffffff',
+  accent: '#f2a93b',
+  // Desktop's dark --primary (helmet amber) and --primary-foreground ink; light uses clay with white.
+  onAccent: '#1a1208',
 
   // --status-success, --status-warning, --destructive
   statusGreen: '#86efac',
@@ -81,35 +81,35 @@ const darkColors = {
 export type MobilePalette = { readonly [K in keyof typeof darkColors]: string }
 
 const lightColors: MobilePalette = {
-  bgBase: '#ffffff',
-  bgPanel: '#fafafa',
-  bgRaised: '#f5f5f5',
-  borderSubtle: '#e5e5e5',
-  editorSurface: '#ffffff',
+  bgBase: '#fbf8f4',
+  bgPanel: '#f7f2ec',
+  bgRaised: '#f3ede5',
+  borderSubtle: '#e6ddd1',
+  editorSurface: '#fffdfa',
   // Light inverts it: a grey sheet under white groups, as iOS does.
-  sheetSurface: '#f5f5f5',
-  sheetGroup: '#ffffff',
-  translucentFill: 'rgba(120, 120, 128, 0.16)',
-  composerSurface: '#ffffff',
-  composerBorder: 'rgba(10, 10, 10, 0.11)',
-  composerControl: '#f5f5f5',
-  // Desktop's light --ring (#a1a1a1) is under 3:1 on white, so both schemes share the dark one.
-  inputBorder: '#737373',
+  sheetSurface: '#f3ede5',
+  sheetGroup: '#fffdfa',
+  translucentFill: 'rgba(130, 118, 106, 0.16)',
+  composerSurface: '#fffdfa',
+  composerBorder: 'rgba(28, 23, 19, 0.11)',
+  composerControl: '#f3ede5',
+  // Desktop's light --ring is under 3:1 on its background, so both schemes share one warm grey.
+  inputBorder: '#7d7268',
   skillToken: '#1d4ed8',
   skillTokenSurface: 'rgba(59, 130, 246, 0.12)',
-  chatUserSurface: '#f5f5f5',
-  chatUserBorder: 'rgba(10, 10, 10, 0.07)',
-  chatForegroundStrong: '#1e1e1e',
+  chatUserSurface: '#f3ede5',
+  chatUserBorder: 'rgba(28, 23, 19, 0.07)',
+  chatForegroundStrong: '#2e2925',
 
-  textPrimary: '#0a0a0a',
-  textSecondary: '#696969',
-  textMuted: '#696969',
+  textPrimary: '#1c1713',
+  textSecondary: '#6e6257',
+  textMuted: '#6e6257',
 
-  surfaceBright: '#171717',
-  createActionFill: '#171717',
+  surfaceBright: '#2a221c',
+  createActionFill: '#b4561a',
   onCreateActionFill: '#ffffff',
 
-  accentBlue: '#225be3',
+  accent: '#b4561a',
   onAccent: '#ffffff',
 
   statusGreen: '#147638',

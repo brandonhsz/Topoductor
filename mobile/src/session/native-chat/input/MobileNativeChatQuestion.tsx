@@ -122,7 +122,7 @@ export function MobileNativeChatQuestion({
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.header}>
-        <CircleHelp size={15} color={colors.accentBlue} strokeWidth={2.2} />
+        <CircleHelp size={15} color={colors.accent} strokeWidth={2.2} />
         <MobileNativeChatQuestionText title content={question.question} style={styles.question} />
         <MobileNativeChatCardHeaderAction
           prompt={question.prompt}
@@ -253,7 +253,7 @@ const styles = themedStyleSheet(() => ({
     borderColor: colors.borderSubtle
   },
   optionSelected: {
-    borderColor: colors.accentBlue
+    borderColor: colors.accent
   },
   optionBody: {
     flex: 1,
@@ -278,15 +278,15 @@ const styles = themedStyleSheet(() => ({
     justifyContent: 'center'
   },
   checkboxOn: {
-    backgroundColor: colors.accentBlue,
-    borderColor: colors.accentBlue
+    backgroundColor: colors.accent,
+    borderColor: colors.accent
   },
   submit: {
     minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radii.control,
-    backgroundColor: colors.accentBlue
+    backgroundColor: colors.accent
   },
   submitDisabled: {
     backgroundColor: colors.bgRaised

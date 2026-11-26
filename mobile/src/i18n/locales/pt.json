@@ -2813,6 +2813,7 @@
       "checkUpdates": "Verificar atualizações",
       "checkUpdatesStatus": "Verificar atualizações, {{status}}",
       "checking": "Verificando…",
+      "downloading": "Baixando atualização…",
       "installedVersion": "Versão {{version}}",
       "lastCheckedDays_many": "Última verificação há {{count}} d",
       "lastCheckedDays_one": "Última verificação há {{count}} d",
@@ -2825,6 +2826,8 @@
       "lastCheckedMinutes_one": "Última verificação há {{count}} min",
       "lastCheckedMinutes_other": "Última verificação há {{count}} min",
       "neverChecked": "Nunca",
+      "otaReady": "Atualização baixada",
+      "restartToUpdate": "Reiniciar",
       "upToDate": "Atualizado",
       "update": "Atualizar",
       "updateToVersion": "Atualizar para o Topo {{version}}"

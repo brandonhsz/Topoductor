@@ -211,7 +211,7 @@ const styles = themedStyleSheet(() => ({
     height: DOT,
     borderRadius: radii.pill,
     borderWidth: 2,
-    borderColor: colors.accentBlue
+    borderColor: colors.accent
   },
   dotBase: {
     width: DOT,

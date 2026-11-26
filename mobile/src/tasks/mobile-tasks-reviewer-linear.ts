@@ -123,7 +123,7 @@ export function getLinearIssueGroup(
           issue.assignee?.displayName ?? translate('tasks.reviewerLinear.unassigned', 'Unassigned')
         )
       },
-      color: colors.accentBlue
+      color: colors.accent
     }
   }
   if (groupBy === 'priority') {
@@ -132,7 +132,7 @@ export function getLinearIssueGroup(
       get label() {
         return getLinearPriorityLabel(issue.priority)
       },
-      color: issue.priority === 1 ? colors.statusRed : colors.accentBlue
+      color: issue.priority === 1 ? colors.statusRed : colors.accent
     }
   }
   if (groupBy === 'team') {
@@ -143,7 +143,7 @@ export function getLinearIssueGroup(
     get label() {
       return translate('tasks.reviewerLinear.issues', 'Issues')
     },
-    color: colors.accentBlue
+    color: colors.accent
   }
 }
 
@@ -173,7 +173,7 @@ function groupOrderedLinearIssues(
         get label() {
           return translate('tasks.reviewerLinear.issues', 'Issues')
         },
-        color: colors.accentBlue,
+        color: colors.accent,
         issues: sorted
       }
     ]

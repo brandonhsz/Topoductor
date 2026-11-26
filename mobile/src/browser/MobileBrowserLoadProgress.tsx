@@ -130,7 +130,7 @@ const styles = themedStyleSheet(() => ({
     right: 0,
     bottom: 0,
     height: 2,
-    backgroundColor: colors.accentBlue,
+    backgroundColor: colors.accent,
     transformOrigin: 'left'
   }
 }))

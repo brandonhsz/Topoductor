@@ -32,6 +32,7 @@ import { usePairingLinks } from '../src/navigation/use-pairing-links'
 import { consumeInitialLaunchIntent } from '../src/navigation/initial-launch-intent'
 import { recoverMobileRelayPairing } from '../src/pairing/mobile-relay-pairing-recovery'
 import { appUpdateChecker } from '../src/app-update/app-update-runtime'
+import { hotUpdater } from '../src/app-update/hot-updater-client'
 import { SideSafeArea } from '../src/layout/side-safe-area'
 import { SideRailProvider } from '../src/layout/side-rail'
 import { useFollowDeviceUiLocale } from '../src/i18n/use-follow-device-ui-locale'
@@ -64,7 +65,7 @@ Notifications.setNotificationHandler({
 // Survive root recovery, including shells without clearLastNotificationResponse.
 const handledNotificationIds = new Set<string>()
 
-export default function RootLayout() {
+function RootLayout() {
   const colorScheme = useMobileColorScheme()
   useFollowDeviceUiLocale()
   const pathname = usePathname()
@@ -251,3 +252,8 @@ const styles = themedStyleSheet(() => ({
     backgroundColor: colors.bgBase
   }
 }))
+
+// Non-forced OTAs download in the background and apply on the next cold start.
+export default hotUpdater
+  ? hotUpdater.wrap({ updateStrategy: 'appVersion' })(RootLayout)
+  : RootLayout

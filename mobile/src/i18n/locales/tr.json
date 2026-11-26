@@ -2743,6 +2743,7 @@
       "checkUpdates": "Güncellemeleri denetle",
       "checkUpdatesStatus": "Güncellemeleri denetle, {{status}}",
       "checking": "Kontrol ediliyor…",
+      "downloading": "Güncelleme indiriliyor…",
       "installedVersion": "Sürüm {{version}}",
       "lastCheckedDays_one": "Son kontrol: {{count}} gün önce",
       "lastCheckedDays_other": "Son kontrol: {{count}} gün önce",
@@ -2752,6 +2753,8 @@
       "lastCheckedMinutes_one": "Son kontrol: {{count}} dk önce",
       "lastCheckedMinutes_other": "Son kontrol: {{count}} dk önce",
       "neverChecked": "Hiçbir zaman",
+      "otaReady": "Güncelleme indirildi",
+      "restartToUpdate": "Yeniden başlat",
       "upToDate": "Güncel",
       "update": "Güncelle",
       "updateToVersion": "Topo {{version}} sürümüne güncelle"

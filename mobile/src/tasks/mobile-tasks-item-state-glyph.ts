@@ -50,7 +50,7 @@ export function taskItemStateGlyph(item: TaskItem): TaskItemStateGlyph {
         ? reviewGlyph(item.source.state)
         : issueGlyph(item.source.state)
     case 'gitlabTodo':
-      return { icon: CircleDot, color: colors.accentBlue }
+      return { icon: CircleDot, color: colors.accent }
     case 'linear':
       return { icon: CircleDot, color: item.source.state.color || colors.textMuted }
     case 'jira': {
@@ -59,7 +59,7 @@ export function taskItemStateGlyph(item: TaskItem): TaskItemStateGlyph {
         return { icon: CircleCheck, color: colors.statusGreen }
       }
       return category === 'indeterminate'
-        ? { icon: CircleDot, color: colors.accentBlue }
+        ? { icon: CircleDot, color: colors.accent }
         : { icon: Circle, color: colors.textSecondary }
     }
   }

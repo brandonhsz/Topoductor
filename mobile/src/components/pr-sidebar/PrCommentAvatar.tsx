@@ -3,13 +3,7 @@ import { colors, radii } from '../../theme/mobile-theme'
 import { themedStyleSheet } from '../../theme/themed-styles'
 import { useMobileColorScheme } from '../../theme/use-mobile-color-scheme'
 
-const AVATAR_TONES = [
-  'accentBlue',
-  'statusPurple',
-  'statusAmber',
-  'statusGreen',
-  'statusRed'
-] as const
+const AVATAR_TONES = ['accent', 'statusPurple', 'statusAmber', 'statusGreen', 'statusRed'] as const
 
 function avatarTone(login: string): string {
   let hash = 0

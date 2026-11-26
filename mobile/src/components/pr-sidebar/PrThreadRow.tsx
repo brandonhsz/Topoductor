@@ -216,7 +216,7 @@ export function PrThreadRow({
             {ask ? (
               <PrTextLink
                 accent
-                icon={<Sparkles size={14} color={colors.accentBlue} strokeWidth={2.2} />}
+                icon={<Sparkles size={14} color={colors.accent} strokeWidth={2.2} />}
                 label={ask.label}
                 onPress={ask.onPress}
                 busy={ask.busy}

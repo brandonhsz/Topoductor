@@ -341,7 +341,7 @@ const styles = themedStyleSheet(() => ({
   },
   facts: { marginTop: spacing.md, marginHorizontal: spacing.lg },
   statusPushed: { color: colors.textSecondary, fontSize: typography.bodySize },
-  statusUnpushed: { color: colors.accentBlue, fontSize: typography.bodySize, fontWeight: '500' },
+  statusUnpushed: { color: colors.accent, fontSize: typography.bodySize, fontWeight: '500' },
   loading: { paddingVertical: spacing.lg },
   note: {
     color: colors.textMuted,

@@ -2813,6 +2813,7 @@
       "checkUpdates": "Rechercher des mises à jour",
       "checkUpdatesStatus": "Rechercher des mises à jour, {{status}}",
       "checking": "Vérification…",
+      "downloading": "Téléchargement de la mise à jour…",
       "installedVersion": "Version {{version}}",
       "lastCheckedDays_many": "Dernière vérification il y a {{count}} j",
       "lastCheckedDays_one": "Dernière vérification il y a {{count}} j",
@@ -2825,6 +2826,8 @@
       "lastCheckedMinutes_one": "Dernière vérification il y a {{count}} min",
       "lastCheckedMinutes_other": "Dernière vérification il y a {{count}} min",
       "neverChecked": "Jamais",
+      "otaReady": "Mise à jour téléchargée",
+      "restartToUpdate": "Redémarrer",
       "upToDate": "À jour",
       "update": "Mettre à jour",
       "updateToVersion": "Mettre à jour vers Topo {{version}}"

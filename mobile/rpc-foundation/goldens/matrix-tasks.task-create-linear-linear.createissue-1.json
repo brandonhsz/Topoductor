@@ -59,41 +59,6 @@
         "$rpc": "null"
       }
     },
-    "29d4d3d3640c": {
-      "composer": false,
-      "creating": false,
-      "error": "",
-      "item": {
-        "key": "linear:linear-workspace:issue-3",
-        "provider": "linear",
-        "source": {
-          "description": "a body",
-          "id": "issue-3",
-          "identifier": "ENG-3",
-          "labels": [],
-          "priority": 0,
-          "state": {
-            "color": "#3276f2",
-            "name": "Open",
-            "type": "unstarted"
-          },
-          "team": {
-            "id": "team-1",
-            "workspaceId": "linear-workspace",
-            "workspaceName": "Workspace"
-          },
-          "title": "A sub-issue",
-          "updatedAt": "2026-01-01T00:00:00.000Z",
-          "url": "",
-          "workspaceId": "linear-workspace",
-          "workspaceName": "Workspace"
-        },
-        "status": "Open",
-        "subtitle": "ENG-3 · undefined",
-        "title": "A sub-issue",
-        "updatedAt": "2026-01-01T00:00:00.000Z"
-      }
-    },
     "30d39651f586": {
       "name": "reply-salvage",
       "ordinal": 5,
@@ -421,6 +386,40 @@
       "ordinal": 6,
       "value": false
     },
+    "8f717fc42de4": {
+      "name": "actionItem",
+      "ordinal": 5,
+      "value": {
+        "key": "linear:linear-workspace:issue-3",
+        "provider": "linear",
+        "source": {
+          "description": "a body",
+          "id": "issue-3",
+          "identifier": "ENG-3",
+          "labels": [],
+          "priority": 0,
+          "state": {
+            "color": "#f2a93b",
+            "name": "Open",
+            "type": "unstarted"
+          },
+          "team": {
+            "id": "team-1",
+            "workspaceId": "linear-workspace",
+            "workspaceName": "Workspace"
+          },
+          "title": "A sub-issue",
+          "updatedAt": "2026-01-01T00:00:00.000Z",
+          "url": "",
+          "workspaceId": "linear-workspace",
+          "workspaceName": "Workspace"
+        },
+        "status": "Open",
+        "subtitle": "ENG-3 · undefined",
+        "title": "A sub-issue",
+        "updatedAt": "2026-01-01T00:00:00.000Z"
+      }
+    },
     "91259ae589b2": {
       "name": "error",
       "ordinal": 5,
@@ -540,40 +539,6 @@
         "$rpc": "null"
       }
     },
-    "e20c41f15d23": {
-      "name": "actionItem",
-      "ordinal": 5,
-      "value": {
-        "key": "linear:linear-workspace:issue-3",
-        "provider": "linear",
-        "source": {
-          "description": "a body",
-          "id": "issue-3",
-          "identifier": "ENG-3",
-          "labels": [],
-          "priority": 0,
-          "state": {
-            "color": "#3276f2",
-            "name": "Open",
-            "type": "unstarted"
-          },
-          "team": {
-            "id": "team-1",
-            "workspaceId": "linear-workspace",
-            "workspaceName": "Workspace"
-          },
-          "title": "A sub-issue",
-          "updatedAt": "2026-01-01T00:00:00.000Z",
-          "url": "",
-          "workspaceId": "linear-workspace",
-          "workspaceName": "Workspace"
-        },
-        "status": "Open",
-        "subtitle": "ENG-3 · undefined",
-        "title": "A sub-issue",
-        "updatedAt": "2026-01-01T00:00:00.000Z"
-      }
-    },
     "e92e2340bb29": {
       "composer": true,
       "creating": false,
@@ -599,6 +564,41 @@
       "name": "error",
       "ordinal": 2,
       "value": ""
+    },
+    "f89a450367d0": {
+      "composer": false,
+      "creating": false,
+      "error": "",
+      "item": {
+        "key": "linear:linear-workspace:issue-3",
+        "provider": "linear",
+        "source": {
+          "description": "a body",
+          "id": "issue-3",
+          "identifier": "ENG-3",
+          "labels": [],
+          "priority": 0,
+          "state": {
+            "color": "#f2a93b",
+            "name": "Open",
+            "type": "unstarted"
+          },
+          "team": {
+            "id": "team-1",
+            "workspaceId": "linear-workspace",
+            "workspaceName": "Workspace"
+          },
+          "title": "A sub-issue",
+          "updatedAt": "2026-01-01T00:00:00.000Z",
+          "url": "",
+          "workspaceId": "linear-workspace",
+          "workspaceName": "Workspace"
+        },
+        "status": "Open",
+        "subtitle": "ENG-3 · undefined",
+        "title": "A sub-issue",
+        "updatedAt": "2026-01-01T00:00:00.000Z"
+      }
     },
     "f8df20507017": {
       "name": "error",
@@ -665,11 +665,11 @@
             "mount": "eb79a9b3682a",
             "create-0": "eb79a9b3682a"
           },
-          "state": "29d4d3d3640c",
+          "state": "f89a450367d0",
           "effects": [
             "5294116e0f90",
             "ed3a7d6bc894",
-            "e20c41f15d23",
+            "8f717fc42de4",
             "fa467ac4ab12",
             "0fef9dc7845d",
             "13b1e9c092d4",

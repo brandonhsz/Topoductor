@@ -2739,6 +2739,7 @@
       "checkUpdates": "업데이트 확인",
       "checkUpdatesStatus": "업데이트 확인, {{status}}",
       "checking": "확인 중…",
+      "downloading": "업데이트 다운로드 중…",
       "installedVersion": "버전 {{version}}",
       "lastCheckedDays_one": "마지막 확인: {{count}}일 전",
       "lastCheckedDays_other": "마지막 확인: {{count}}일 전",
@@ -2748,6 +2749,8 @@
       "lastCheckedMinutes_one": "마지막 확인: {{count}}분 전",
       "lastCheckedMinutes_other": "마지막 확인: {{count}}분 전",
       "neverChecked": "확인한 적 없음",
+      "otaReady": "업데이트 다운로드됨",
+      "restartToUpdate": "재시작",
       "upToDate": "최신 상태",
       "update": "업데이트",
       "updateToVersion": "Topo {{version}} 버전으로 업데이트"

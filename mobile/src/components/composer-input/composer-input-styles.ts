@@ -54,8 +54,8 @@ export const composerInputStyles = themedStyleSheet(() => ({
   },
   // The edge thickens to a 2pt accent ring, drawn as an outline so nothing moves.
   focused: {
-    borderColor: colors.accentBlue,
-    outlineColor: colors.accentBlue,
+    borderColor: colors.accent,
+    outlineColor: colors.accent,
     outlineStyle: 'solid',
     outlineWidth: 1
   },

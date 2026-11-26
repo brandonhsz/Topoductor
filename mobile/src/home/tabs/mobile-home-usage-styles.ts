@@ -31,7 +31,7 @@ export const mobileHomeUsageStyles = themedStyleSheet(() => ({
     borderRadius: radii.pill,
     backgroundColor: colors.skillTokenSurface
   },
-  badgeText: { fontSize: 12, color: colors.accentBlue },
+  badgeText: { fontSize: 12, color: colors.accent },
   meter: { flexDirection: 'row', alignItems: 'center', gap: METER_GAP, marginTop: 6 },
   meterLabel: { width: METER_LABEL_WIDTH, fontSize: 13, color: colors.textSecondary },
   track: {

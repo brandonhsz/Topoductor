@@ -205,7 +205,7 @@ const MobileAgentListRow = memo(function MobileAgentListRow(props: {
                 ? t('agents.actions.markRead', 'Mark as read')
                 : t('agents.actions.markUnread', 'Mark as unread'),
               icon: unread ? Eye : EyeOff,
-              background: colors.accentBlue,
+              background: colors.accent,
               foreground: colors.onAccent,
               onPress: () => props.handlers.onSetRead([row], unread)
             }

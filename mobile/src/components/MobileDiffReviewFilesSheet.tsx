@@ -278,7 +278,7 @@ const styles = themedStyleSheet(() => ({
     overflow: 'hidden',
     paddingHorizontal: spacing.sm,
     borderRadius: radii.pill,
-    color: colors.accentBlue,
+    color: colors.accent,
     // The same blue tint the composer gives a picked skill.
     backgroundColor: colors.skillTokenSurface,
     fontSize: typography.metaSize

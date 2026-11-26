@@ -15,3 +15,8 @@ dist/
 *.mobileprovision
 *.orig.*
 web-build/
+
+# OTA (hot-updater) credentials and build output; fastlane IPA output
+.env.hotupdater
+.hot-updater/
+/build/
