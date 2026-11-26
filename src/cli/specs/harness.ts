@@ -6,6 +6,22 @@ const CALLER_NOTE =
 
 export const HARNESS_COMMAND_SPECS: CommandSpec[] = [
   {
+    path: ['harness', 'start'],
+    summary: 'Start a Harness flow driven by this workspace chat',
+    usage:
+      'topo harness start --flow <id> [--field <key>=<value>]... [--worktree <selector>] [--json]',
+    allowedFlags: [...GLOBAL_FLAGS, 'worktree', 'flow', 'field'],
+    notes: [
+      CALLER_NOTE,
+      'Meant for chats that start a flow on their own, like a scheduled automation. Each --field fills a start field; required fields must be set.',
+      'Prints the flow protocol and the first step: follow it with `topo harness status`, `complete` and `wait` until the flow ends.',
+      'Fails with harness_run_active when this workspace already drives a flow.'
+    ],
+    examples: [
+      'topo harness start --flow avenapm-ticket --field ticket=OP-142 --field correo=dev@example.com'
+    ]
+  },
+  {
     path: ['harness', 'status'],
     summary: 'Show your current Harness step and any decision waiting on the person',
     usage: 'topo harness status [--worktree <selector>] [--json]',

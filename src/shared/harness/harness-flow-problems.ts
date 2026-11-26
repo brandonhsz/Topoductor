@@ -1,5 +1,22 @@
 import type { HarnessFlow } from './harness-flow-types'
 
+/** Start values a run cannot begin with: required fields left empty and values outside a field's options. */
+export function harnessStartFieldProblems(
+  flow: HarnessFlow,
+  fields: Record<string, string>
+): string[] {
+  const start = flow.nodes.find((node) => node.kind === 'start')
+  return (start?.kind === 'start' ? start.fields : []).flatMap((field) => {
+    const value = fields[field.key]?.trim() ?? ''
+    if (!value) {
+      return field.optional ? [] : [`Falta «${field.key}» (${field.label}).`]
+    }
+    return field.options.length > 0 && !field.options.includes(value)
+      ? [`«${field.key}» debe ser uno de: ${field.options.join(', ')}.`]
+      : []
+  })
+}
+
 /** Problems that would stall a run, in the order a person should fix them. */
 export function harnessFlowProblems(flow: HarnessFlow): string[] {
   const problems: string[] = []
@@ -13,6 +30,9 @@ export function harnessFlowProblems(flow: HarnessFlow): string[] {
       'limitTarget' in node && node.limitTarget
         ? [{ source: node.id, target: node.limitTarget }]
         : []
+    ),
+    ...starts.flatMap((start) =>
+      flow.escalationNode ? [{ source: start.id, target: flow.escalationNode }] : []
     )
   ]
   const reachable = new Set<string>(starts.map((node) => node.id))

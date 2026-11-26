@@ -1,6 +1,6 @@
 import { execFile, spawn } from 'node:child_process'
 import { globSync } from 'node:fs'
-import { copyFile, cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { copyFile, cp, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { dirname, join, sep } from 'node:path'
@@ -193,7 +193,8 @@ server.listen(0, '127.0.0.1', () => {
   itRunsUnixShell.each(unixLauncherFixtures)(
     'sanitizes node env and forwards argv verbatim through the $name launcher',
     async (launcherFixture) => {
-      const root = await mkdtemp(join(tmpdir(), 'topo-unix-cli-env-'))
+      // The launcher resolves its own path; macOS tmpdir() is a symlink into /private.
+      const root = await realpath(await mkdtemp(join(tmpdir(), 'topo-unix-cli-env-')))
       try {
         const appDir = join(root, ...launcherFixture.appDir)
         const launcherPath = join(appDir, ...launcherFixture.launcher)

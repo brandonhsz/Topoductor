@@ -16,6 +16,7 @@ import { writeSecureJsonFile } from '../../shared/secure-storage/secure-file'
 import type { HarnessAgentLauncher } from './harness-agent-launcher'
 import { harnessChatInstructions } from '../../shared/harness/harness-chat-instructions'
 import { getHarnessFlow } from './harness-flow-store'
+import { harnessRunAllowsEdits } from './harness-edit-policy'
 import { HarnessRunEngine, type HarnessRunEngineDeps } from './harness-run-engine'
 
 const MAX_KEPT_RUNS = 50
@@ -236,16 +237,15 @@ export class HarnessRunService {
     return harnessChatInstructions(run.flow)
   }
 
-  /** Whether the chat of `worktreeId` may edit files now: only while one of its open tasks allows it. */
+  /** Whether agents of `worktreeId` (or the run's own chat) may edit files now. */
   editsAllowed(caller: { sessionId: string | null; worktreeId: string | null }): boolean {
     const live = [...this.runs.values()].filter(
       (run) =>
-        run.mode === 'chat' &&
         this.engines.has(run.id) &&
         ((caller.sessionId !== null && run.chatSessionId === caller.sessionId) ||
           (caller.worktreeId !== null && run.worktreeId === caller.worktreeId))
     )
-    return live.every((run) => run.chatTasks.some((task) => task.allowEdits))
+    return live.every(harnessRunAllowsEdits)
   }
 
   private changed(run: HarnessRun): void {

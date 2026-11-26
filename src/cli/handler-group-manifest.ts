@@ -215,6 +215,7 @@ export const HANDLER_GROUPS: readonly HandlerGroup[] = [
     keys: [
       'harness status',
       'harness complete',
+      'harness start',
       'harness wait',
       'harness answer',
       'harness guard',
@@ -230,6 +231,11 @@ export const HANDLER_GROUPS: readonly HandlerGroup[] = [
       ])
       return { ...HARNESS_HANDLERS, ...HARNESS_FLOW_HANDLERS }
     }
+  },
+  {
+    name: 'avenapm',
+    keys: ['avenapm queue'],
+    load: async () => (await import('./handlers/avenapm.js')).AVENAPM_HANDLERS
   },
   {
     name: 'connector',

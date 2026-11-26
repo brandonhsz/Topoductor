@@ -1,15 +1,21 @@
-import {
-  contextEntries,
-  extractSection,
-  extractSummary
-} from '../../shared/harness/harness-agent-prompt'
+import { extractSection, extractSummary } from '../../shared/harness/harness-agent-prompt'
 import type { HarnessWavesNode } from '../../shared/harness/harness-flow-types'
 import {
   formatWaveTask,
+  harnessWavePlanProblems,
+  isRedWave,
   parseHarnessWavePlan,
+  type HarnessWavePlan,
   type HarnessWaveTask
 } from '../../shared/harness/harness-wave-plan'
-import { CONTINUE, RETRY, STOP, type HarnessStepRuntime } from './harness-step-runtime'
+import {
+  BACK_TO_PLAN,
+  CONTINUE,
+  HarnessRedirect,
+  RETRY,
+  STOP,
+  type HarnessStepRuntime
+} from './harness-step-runtime'
 
 const WAVE_FIX_ATTEMPTS = 2
 
@@ -52,19 +58,28 @@ async function runWaveTask(
   return result ? extractSummary(result.output) : '(tarea omitida)'
 }
 
+function verifyInstruction(verify: string, red: boolean): string {
+  if (!verify) {
+    return '1. No hay comando de verificación: omite este paso.'
+  }
+  if (red) {
+    return `1. Esta oleada es la fase roja del TDD: corre \`${verify}\` y confirma que solo fallan las pruebas nuevas, por la implementación que aún no existe (incluido el typecheck de lo que importan). Eso cuenta como \`ok\`. Responde \`falla\` solo si algo falla por otra razón (sintaxis, configuración, pruebas que ya existían) o si alguna prueba nueva ya pasa, e indica qué tareas (por ID) son dueñas.`
+  }
+  return `1. Corre \`${verify}\` y reporta el resultado real. Si algo falla, indica qué tareas (por ID) son dueñas del problema y por qué.`
+}
+
 function closingInstructions(
   rt: HarnessStepRuntime,
   node: HarnessWavesNode,
   wave: number,
-  verify: string
+  verify: string,
+  red: boolean
 ): string {
   const { flowName, flow } = rt.run
   const stacked = flow.project.prMode === 'stacked'
   return [
     'Cierras una oleada que escribieron otros agentes. No confíes en sus resúmenes: revisa el estado real del workspace.',
-    verify
-      ? `1. Corre \`${verify}\` y reporta el resultado real. Si algo falla, indica qué tareas (por ID) son dueñas del problema y por qué.`
-      : '1. No hay comando de verificación: omite este paso.',
+    verifyInstruction(verify, red),
     '2. Escribe una sección `## Diff real` a partir de `git status --porcelain` y `git diff HEAD` (incluye archivos nuevos): una línea por archivo con su ruta y qué cambió de verdad. Marca con ⚠️ las tareas cuyo resumen no coincide con el diff. Si el workspace no es un repositorio git, descríbelo a partir de los archivos y dilo. Máximo 40 líneas.',
     node.checkpointEachWave
       ? `3. ${verify ? 'Solo si la verificación pasa: ' : ''}si es un repositorio git y hay cambios, haz \`git add -A\` y un commit "Harness ${flowName}: oleada ${wave}".`
@@ -86,13 +101,14 @@ async function closeWave(
   summaries: string[]
 ): Promise<Awaited<ReturnType<HarnessStepRuntime['runAgentStep']>>> {
   const verify = node.verifyCommand.trim() || rt.run.flow.project.testCommand.trim()
+  const red = isRedWave(tasks)
   return rt.runAgentStep({
     nodeId: node.id,
     taskId: `oleada-${wave}`,
     title: `Cierre oleada ${wave}`,
     block: node.block,
     agent: node.roles.find((role) => role.name === 'Pruebas')?.agent ?? null,
-    instructions: closingInstructions(rt, node, wave, verify),
+    instructions: closingInstructions(rt, node, wave, verify, red),
     context: [
       { key: 'tareas', value: tasks.map(formatWaveTask).join('\n\n') },
       { key: 'resumenes_de_los_agentes', value: summaries.join('\n\n') }
@@ -103,6 +119,52 @@ async function closeWave(
     runner: 'topo',
     allowEdits: false
   })
+}
+
+/** Parallel tasks sharing a file overwrite each other, so a broken plan runs only when the person says so. */
+async function confirmPlanProblems(
+  rt: HarnessStepRuntime,
+  node: HarnessWavesNode,
+  plan: HarnessWavePlan
+): Promise<void> {
+  const problems = harnessWavePlanProblems(plan)
+  if (problems.length === 0) {
+    return
+  }
+  const producer = rt.run.flow.nodes.find(
+    (candidate) => candidate.kind === 'agent' && candidate.outputKey === node.planKey
+  )
+  const list = problems.map((line) => `- ${line}`).join('\n')
+  if (producer && rt.run.flow.escalationNode) {
+    // Nobody watches an unattended run; the plan node's visit limit bounds this loop.
+    rt.writeVar(`${node.planKey}_problemas`, list)
+    throw new HarnessRedirect(producer.id)
+  }
+  const step = rt.addStep({
+    nodeId: node.id,
+    taskId: null,
+    title: `${node.title}: revisión del plan`,
+    agent: null,
+    status: 'waiting'
+  })
+  const answer = await rt.ask(step, {
+    title: node.title,
+    reason: 'human',
+    prompt: producer
+      ? `El plan rompe sus propias reglas de oleadas. Regrésalo a «${producer.title}» con estos problemas, o continúa bajo tu riesgo.`
+      : 'El plan rompe sus propias reglas de oleadas. Continúa bajo tu riesgo o detén la corrida.',
+    context: [{ key: 'problemas_del_plan', value: list }],
+    choices: producer ? [BACK_TO_PLAN, CONTINUE, STOP] : [CONTINUE, STOP],
+    fields: []
+  })
+  rt.finishStep(step, { status: 'done', outcome: answer.choice })
+  if (answer.choice === STOP) {
+    rt.stopRun()
+  }
+  if (answer.choice === BACK_TO_PLAN && producer) {
+    rt.writeVar(`${node.planKey}_problemas`, list)
+    throw new HarnessRedirect(producer.id)
+  }
 }
 
 /** Waves run in order; the tasks of one wave run in parallel in the same workspace. */
@@ -116,7 +178,8 @@ export async function executeWavesNode(
       `«${node.title}» no encontró un plan con bloque \`\`\`json en la variable «${node.planKey}».`
     )
   }
-  const context = contextEntries(rt.run.vars, node.inputs)
+  await confirmPlanProblems(rt, node, plan)
+  const context = rt.inputContext(node)
   const report: string[] = []
   for (const { wave, tasks } of plan.waves) {
     let pendingTasks = tasks
@@ -164,6 +227,6 @@ export async function executeWavesNode(
       ].join('\n\n')
     )
   }
-  rt.run.vars[node.outputKey] = report.join('\n\n---\n\n')
+  rt.writeVar(node.outputKey, report.join('\n\n---\n\n'))
   return null
 }

@@ -141,8 +141,11 @@ function node(raw: unknown): HarnessNode | null {
     block: text(record.block, MAX_SHORT),
     position: position(record.position)
   }
+  const freshInputs = keys(record.freshInputs)
   const flowStep = {
     inputs: keys(record.inputs),
+    // Omitted when empty so flows saved before the field compare equal to their normalized copy.
+    ...(freshInputs.length > 0 ? { freshInputs } : {}),
     outputKey: key(record.outputKey) || id,
     joinAll: record.joinAll === true,
     maxVisits: maxVisits(record.maxVisits),
@@ -223,6 +226,7 @@ export function normalizeHarnessFlow(raw: unknown): HarnessFlow | null {
       parsed.limitTarget = null
     }
   }
+  const escalationNode = key(record.escalationNode)
   const edges: HarnessEdge[] = []
   const edgeIds = new Set<string>()
   for (const candidate of Array.isArray(record.edges) ? record.edges.slice(0, MAX_EDGES) : []) {
@@ -251,6 +255,7 @@ export function normalizeHarnessFlow(raw: unknown): HarnessFlow | null {
     defaultAgent: agentOrNull(record.defaultAgent) ?? 'claude',
     sharedInstructions: text(record.sharedInstructions),
     project: project(record.project),
+    ...(seen.has(escalationNode) ? { escalationNode } : {}),
     nodes,
     edges,
     updatedAt: finite(record.updatedAt, 0)

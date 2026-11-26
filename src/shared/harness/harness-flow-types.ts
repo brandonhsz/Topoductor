@@ -22,6 +22,8 @@ export type HarnessPosition = { x: number; y: number }
 type HarnessStepFields = {
   /** Variables whose latest value is handed to the step as context. */
   inputs: string[]
+  /** Inputs handed again only once rewritten, so a loop never re-sends findings already handled. */
+  freshInputs?: string[]
   /** Variable that stores the step's final answer. */
   outputKey: string
   /** True waits for every upstream node that ran in this pass before starting. */
@@ -139,6 +141,8 @@ export type HarnessFlow = {
   /** Rules prepended to every agent launched by this flow. */
   sharedInstructions: string
   project: HarnessProjectProfile
+  /** Node that takes over whenever the run would wait for a person outside human nodes; absent waits. */
+  escalationNode?: string | null
   nodes: HarnessNode[]
   edges: HarnessEdge[]
   updatedAt: number

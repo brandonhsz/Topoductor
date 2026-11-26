@@ -7,7 +7,7 @@ export function at(col: number, row: number): HarnessPosition {
   return { x: col * COL, y: row * ROW }
 }
 
-const MESA_RULES = `Recibes el Intent, la última Idea (vN) y las respuestas que el usuario dio en rondas anteriores.
+const MESA_RULES = `Recibes el Intent, la última Idea (vN), las respuestas que el usuario dio en rondas anteriores y la síntesis de la ronda anterior. Si la síntesis te encargó una sonda o prototipo, hazla primero y reporta lo que viste.
 Devuelve máximo 3 preguntas o cuestionamientos, concretos y priorizados. No propongas soluciones: solo cuestiona. No escribas código de producción.
 Si una duda tuya se responde observando algo (cómo se ve, si funciona, rendimiento), no se la preguntes a la persona: haz una sonda o prototipo desechable, reporta lo que viste y marca la duda como resuelta.`
 
@@ -98,7 +98,7 @@ Entrega un solo párrafo con el formato **Idea (vN):** ..., donde N es el númer
 - ¿Resuelve un problema real que el usuario siente, o uno que imaginamos?
 
 ${MESA_RULES}`,
-    inputs: ['intent', 'idea', 'respuesta'],
+    inputs: ['intent', 'idea', 'respuesta', 'sintesis'],
     outputKey: 'usabilidad',
     joinAll: false,
     maxVisits: 10,
@@ -121,7 +121,7 @@ ${MESA_RULES}`,
 - ¿Hay una versión más simple que logre lo mismo?
 
 ${MESA_RULES}`,
-    inputs: ['intent', 'idea', 'respuesta'],
+    inputs: ['intent', 'idea', 'respuesta', 'sintesis'],
     outputKey: 'ingeniero',
     joinAll: false,
     maxVisits: 10,
@@ -144,7 +144,7 @@ ${MESA_RULES}`,
 - ¿Hay supuestos que habría que validar antes de seguir?
 
 ${MESA_RULES}`,
-    inputs: ['intent', 'idea', 'respuesta'],
+    inputs: ['intent', 'idea', 'respuesta', 'sintesis'],
     outputKey: 'viabilidad',
     joinAll: false,
     maxVisits: 10,

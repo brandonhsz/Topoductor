@@ -17,12 +17,22 @@ export const DELIVERY_NODES: HarnessNode[] = [
 
 1. Contrato entre capas: tipos de datos nuevos o modificados y firmas de las funciones o endpoints que la UI va a llamar (qué reciben, qué devuelven y qué errores pueden ocurrir). El contrato es la primera tarea y es del rol Lógica.
 2. Tareas: cada una pertenece a un solo rol (Visual, Lógica o Pruebas), es pequeña, tiene criterios de aceptación verificables y declara dependencias y archivos. Dos tareas que modifican el mismo archivo no pueden ir en la misma oleada. Cada tarea de Visual o Lógica tiene una tarea de Pruebas que la precede (fase roja del TDD).
-3. Oleadas: oleada 0 = configuración de pruebas (si falta) y el contrato; oleada 1 = pruebas en rojo; oleadas 2…N = Visual y Lógica en paralelo.
+3. Oleadas: oleada 0 = configuración de pruebas (si falta) y el contrato; oleada 1 = pruebas en rojo, marcadas con \`"red": true\` porque deben fallar hasta que exista la implementación; oleadas 2…N = Visual y Lógica en paralelo. Una tarea solo depende de tareas de oleadas anteriores.
 4. Si aparece una duda de fondo sobre la idea, dilo en "Riesgos y preguntas abiertas" en lugar de inventar la respuesta.
+5. Si recibes «plan_problemas», Topo encontró que el plan anterior rompía estas reglas: corrígelos todos.
 
 Presenta el plan en markdown (Contrato, tabla de Tareas con ID/Rol/Tarea/Criterios/Depende de/Archivos/Oleada, Riesgos y preguntas abiertas) y al final incluye el mismo plan en un bloque \`\`\`json con este formato exacto:
-{"tasks":[{"id":"T1","role":"Lógica","title":"...","criteria":"...","dependsOn":[],"files":["..."],"wave":0}]}`,
-    inputs: ['intent', 'tipo', 'idea_inicial', 'consolidada', 'reproduccion', 'aprobacion'],
+{"tasks":[{"id":"T1","role":"Lógica","title":"...","criteria":"...","dependsOn":[],"files":["..."],"wave":0,"red":false}]}`,
+    inputs: [
+      'intent',
+      'tipo',
+      'idea_inicial',
+      'consolidada',
+      'reproduccion',
+      'aprobacion',
+      'plan_problemas'
+    ],
+    freshInputs: ['aprobacion', 'plan_problemas'],
     outputKey: 'plan',
     joinAll: false,
     maxVisits: 10,
@@ -111,6 +121,7 @@ Presenta el plan en markdown (Contrato, tabla de Tareas con ID/Rol/Tarea/Criteri
 
 **Hallazgos:** qué falla, en qué paso y qué evidencia lo muestra, y qué rol es dueño del problema.`,
     inputs: ['consolidada', 'plan', 'ejecucion', 'correccion'],
+    freshInputs: ['correccion'],
     outputKey: 'analisis',
     joinAll: false,
     maxVisits: 6,
@@ -139,8 +150,11 @@ Informe:
 **Pruebas:** X pasaron, Y fallaron.
 **Pendientes / escalados:** ...
 
-Un hallazgo no se marca ✅ sin su evidencia "después".`,
+Un hallazgo no se marca ✅ sin su evidencia "después".
+Al cerrar: si lo que corregiste venía del interrogatorio (recibiste «interrogatorio»), elige "Resuelto: interrogatorio" para que los revisores verifiquen solo tu corrección; si venía del análisis, elige "Resuelto".`,
     inputs: ['analisis', 'interrogatorio', 'plan'],
+    // Each round fixes only the findings that sent it here, not the ones an earlier round closed.
+    freshInputs: ['analisis', 'interrogatorio'],
     outputKey: 'correccion',
     joinAll: false,
     maxVisits: 3,
@@ -173,13 +187,16 @@ Un hallazgo no se marca ✅ sin su evidencia "después".`,
     prompt: `Genera un solo video con señales que muestre lo que se trabajó, de principio a fin.
 - Feature: portada con el Intent, recorrido de cada tarea en el orden en que la usaría una persona real (leyenda, señal numerada, pausa) y cierre con una línea por tarea.
 - Bug: el mismo guion de la reproducción (ver «reproduccion»), grabado con el fix, compuesto lado a lado con el video "antes" (izquierda error, derecha fix).
+- Refactor: demuestra que el comportamiento no cambió. Recorre los flujos que toca el refactor en la app y muestra la suite de pruebas pasando; si no hay nada visible, la salida de las pruebas antes y después es la evidencia.
+- Investigación no llega aquí.
 Revisa capturas de los puntos clave antes de entregar.
 
 ### Evidencia final
-**Intent:** ...   **Tipo:** feature | bug
+**Intent:** ...   **Tipo:** feature | bug | refactor
 **Video:** ruta completa
 **Qué se ve:** 1) ... 2) ... 3) ...`,
     inputs: ['intent', 'tipo', 'consolidada', 'reproduccion', 'analisis', 'correccion'],
+    freshInputs: ['correccion'],
     outputKey: 'evidencia_final',
     joinAll: false,
     maxVisits: 3,

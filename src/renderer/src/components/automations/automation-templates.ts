@@ -1,4 +1,7 @@
-import type { AutomationSchedulePreset } from '../../../../shared/automations/automation-definition'
+import type {
+  AutomationSchedulePreset,
+  AutomationWorkspaceMode
+} from '../../../../shared/automations/automation-definition'
 import type { TuiAgent } from '../../../../shared/agent-launch/catalog/tui-agent'
 import { translate } from '@/i18n/i18n'
 import { createLocalizedCatalog } from '@/i18n/localized-catalog'
@@ -15,6 +18,9 @@ export type AutomationTemplate = {
   dayOfWeek?: string
   agentId?: TuiAgent
   missedRunGraceMinutes?: string
+  workspaceMode?: AutomationWorkspaceMode
+  /** Shell command run before each scheduled run; a failing exit skips it. */
+  precheckCommand?: string
 }
 
 export const getAutomationTemplates = createLocalizedCatalog((): AutomationTemplate[] => [
@@ -122,5 +128,36 @@ export const getAutomationTemplates = createLocalizedCatalog((): AutomationTempl
     preset: 'hourly',
     time: '00:15',
     missedRunGraceMinutes: '30'
+  },
+  {
+    id: 'avenapm-ticket-hourly',
+    category: translate(
+      'auto.components.automations.automation.templates.avenapmTicket.category',
+      'Avena PM'
+    ),
+    label: translate(
+      'auto.components.automations.automation.templates.avenapmTicket.label',
+      'Automatic ticket'
+    ),
+    description: translate(
+      'auto.components.automations.automation.templates.avenapmTicket.description',
+      'Each hour, take the next unowned ticket from the queue and run it through the Harness ticket flow up to the PR.'
+    ),
+    name: translate(
+      'auto.components.automations.automation.templates.avenapmTicket.name',
+      'Automatic Avena PM ticket'
+    ),
+    prompt: translate(
+      'auto.components.automations.automation.templates.avenapmTicket.prompt',
+      'Take the next ticket from the Avena PM operations queue and resolve it with the Harness flow «Ticket automático (Avena PM)».\n1. List the queue with `listar_tareas_cola`. Pick the oldest ticket in «Por hacer», with no owner, that belongs to this repository. If there is none, reply «Sin tickets» and stop without starting anything.\n2. Start the flow in this workspace: `topo harness start --flow avenapm-ticket --field ticket=<ID> --field correo=<your-email>` (use `$TOPO_CLI_COMMAND` if `topo` is not on the PATH). Replace <your-email> in this prompt with the email you take tickets with.\n3. Follow the protocol it prints until the flow ends: `topo harness status`, do the task, report it with `topo harness complete`, and run `topo harness wait` while Topo runs steps with other agents.\nNobody will answer questions during this run: never wait for a person. When the flow cannot go on, it comments and pauses the ticket on its own.'
+    ),
+    preset: 'hourly',
+    time: '00:05',
+    agentId: 'claude',
+    missedRunGraceMinutes: '30',
+    // One workspace per ticket, so parallel tickets never share a branch.
+    workspaceMode: 'new_per_run',
+    // Skips the run, and its new workspace, when the queue has nothing to take.
+    precheckCommand: 'topo avenapm queue --status por_hacer --unassigned --require-any'
   }
 ])

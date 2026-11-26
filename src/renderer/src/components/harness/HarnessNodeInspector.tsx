@@ -58,6 +58,21 @@ function FlowStepFields<N extends StepNode>({
         )}
       </InspectorField>
       <InspectorField
+        label={t('components.harness.inspector.freshInputs', 'Only when new')}
+        hint={t(
+          'components.harness.inspector.freshInputsHint',
+          'Received variables passed again only after they change, so a loop never re-sends findings it already handled.'
+        )}
+      >
+        {(id) => (
+          <ListInput
+            id={id}
+            values={node.freshInputs ?? []}
+            onChange={(freshInputs) => onChange({ ...node, freshInputs })}
+          />
+        )}
+      </InspectorField>
+      <InspectorField
         label={t('components.harness.inspector.output', 'Delivers to variable')}
         hint={t(
           'components.harness.inspector.outputHint',

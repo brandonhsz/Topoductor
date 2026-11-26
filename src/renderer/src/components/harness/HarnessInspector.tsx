@@ -22,6 +22,8 @@ import {
   SelectValue
 } from '@/components/ui/select'
 
+const WAIT_FOR_PERSON = '__wait__'
+
 function EdgeConditionFields({
   when,
   variables,
@@ -177,6 +179,38 @@ function FlowInspector({
             flowDefault={null}
             onChange={(agent) => agent && onChange({ ...flow, defaultAgent: agent })}
           />
+        )}
+      </InspectorField>
+      <InspectorField
+        label={t('components.harness.inspector.escalationNode', 'When nobody is watching')}
+        hint={t(
+          'components.harness.inspector.escalationNodeHint',
+          'Failures, missing outcomes and loop limits go to this node instead of waiting for you. Human nodes still ask.'
+        )}
+      >
+        {(id) => (
+          <Select
+            value={flow.escalationNode ?? WAIT_FOR_PERSON}
+            onValueChange={(value) =>
+              onChange({ ...flow, escalationNode: value === WAIT_FOR_PERSON ? null : value })
+            }
+          >
+            <SelectTrigger id={id} size="sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={WAIT_FOR_PERSON}>
+                {t('components.harness.inspector.escalationWait', 'Wait for me')}
+              </SelectItem>
+              {flow.nodes
+                .filter((node) => node.kind === 'agent')
+                .map((node) => (
+                  <SelectItem key={node.id} value={node.id}>
+                    {node.title}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
         )}
       </InspectorField>
       <InspectorField

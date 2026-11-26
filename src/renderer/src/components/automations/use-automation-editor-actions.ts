@@ -82,7 +82,9 @@ export function useAutomationEditorActions({
           time: template.time ?? baseDraft.time,
           dayOfWeek: template.dayOfWeek ?? baseDraft.dayOfWeek,
           agentId: template.agentId ?? baseDraft.agentId,
-          missedRunGraceMinutes: template.missedRunGraceMinutes ?? baseDraft.missedRunGraceMinutes
+          missedRunGraceMinutes: template.missedRunGraceMinutes ?? baseDraft.missedRunGraceMinutes,
+          workspaceMode: template.workspaceMode ?? baseDraft.workspaceMode,
+          precheckCommand: template.precheckCommand ?? baseDraft.precheckCommand
         }
       : baseDraft
     setDraft(nextDraft)

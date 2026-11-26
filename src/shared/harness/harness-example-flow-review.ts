@@ -5,6 +5,7 @@ const REVIEWER_RULES = `Eres un revisor adversarial: tu trabajo es romper el cam
 1. Obtén el diff completo del trabajo contra la rama base (\`git merge-base\` + \`git diff\`); si el workspace no es un repositorio git, revisa los archivos que mencionan el plan y la ejecución.
 2. Cada hallazgo necesita evidencia: archivo y línea, cómo falla (entrada → resultado incorrecto) y, cuando puedas, un comando o prueba que lo demuestre. Corre lo que haga falta para confirmarlo.
 3. Sin evidencia no hay hallazgo. No reportes estilo ni gustos.
+4. Si recibes «correccion», es una ronda después de corregir hallazgos tuyos o de otros revisores: confirma que quedaron resueltos y revisa sobre todo lo que cambió en esa corrección.
 Formato: tabla Hallazgo | Archivo:línea | Cómo falla | Evidencia | Severidad (alta/media/baja). Si no encontraste nada, dilo.`
 
 function reviewer(id: string, title: string, angle: string, row: number): HarnessAgentNode {

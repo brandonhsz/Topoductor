@@ -23,6 +23,8 @@ const NODE_RUNTIME_INCLUDE = [
   // The forced-probe handoff race opens only under V8's promise scheduling, which Electron main uses.
   'src/main/github/rate-limit.test.ts',
   // Electron main bridges streams with Node's implementation.
+  // A closed child pipe surfaces as EPIPE under Node; Bun on macOS reports no write error.
+  'src/main/text-generation/source-control-wsl-prompt.test.ts',
   'src/main/host/electron-http-client.test.ts',
   'src/main/browser/extensions/native-messaging/browser-extension-native-host-process-backpressure.test.ts',
   'src/main/daemon/providers/lifecycle/testing/daemon-init-provider-installation.test.ts',
@@ -36,6 +38,13 @@ const NODE_RUNTIME_INCLUDE = [
   // Asserts an observer survives a forced collection; conservative retention would hide a lost one.
   'config/scripts/test-runtime/dom/happy-dom-mutation-observer-retention.test.ts',
   // These reach Node SQLite through a shared helper or a dynamic import, which the scan skips.
+  // They reopen a WAL database read-only after closing it, which Bun's macOS SQLite refuses.
+  'src/main/runtime/push/notifications/mobile-notification-dismissal-store.test.ts',
+  'src/main/runtime/push/notifications/mobile-notification-dismissal-read-failure.test.ts',
+  'src/main/ipc/notifications-external-acknowledgement.test.ts',
+  'src/main/ipc/notifications-subject-retirement.test.ts',
+  // The hook server restores its persisted status the same way after a simulated restart.
+  'src/main/agent-hooks/server/testing/**/*.test.ts',
   'src/main/claude/claude-transcript-catch-up.test.ts',
   'src/main/claude/claude-transcript-duration.test.ts',
   'tests/e2e/native-chat-startup-option-pickers.unit.test.ts',
@@ -87,7 +96,6 @@ const NODE_RUNTIME_INCLUDE = [
   'src/**/*allocation*.test.ts',
   'src/**/*expiry*.test.ts',
   'src/shared/own-retained-string.test.ts',
-  'src/main/agent-hooks/server/testing/http/server-transport-interference.test.ts',
   'src/main/plugins/workers/plugin-worker-supervision.integration.test.ts',
   'src/main/plugins/workers/plugin-worker-dev-restart-storage.integration.test.ts',
   // Worker TypeScript loads through node:module registerHooks, which Bun lacks.

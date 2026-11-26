@@ -6,6 +6,7 @@ export const CLI_COMMAND_NAMES = [
   'agent-teams-tmux',
   'artifacts',
   'automations',
+  'avenapm',
   'back',
   'browser',
   'capture',

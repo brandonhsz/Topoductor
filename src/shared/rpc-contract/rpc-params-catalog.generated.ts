@@ -95,6 +95,7 @@ import {
   AutomationRuns,
   AutomationUpdate
 } from './automation-params'
+import { AvenaPMQueueParams } from './avenapm-params'
 import { CertificateProceed } from './browser-core-params'
 import { ExtensionList, ExtensionReload } from './browser-extension-params'
 import { MouseClick } from './browser-extras-params'
@@ -385,6 +386,7 @@ import {
   HarnessAnswerParams,
   HarnessCompleteParams,
   HarnessGuardParams,
+  HarnessStartParams,
   HarnessStatusParams,
   HarnessSubagentResultParams,
   HarnessWaitParams
@@ -906,6 +908,7 @@ export const RPC_PARAMS_BY_METHOD = {
   'automation.runs': AutomationRuns,
   'automation.show': AutomationId,
   'automation.update': AutomationUpdate,
+  'avenapm.queue': AvenaPMQueueParams,
   'browser.back': ExpectUrlBrowserTarget,
   'browser.capture.start': BrowserTarget,
   'browser.capture.stop': BrowserTarget,
@@ -1226,6 +1229,7 @@ export const RPC_PARAMS_BY_METHOD = {
   'harness.flows.list': HarnessFlowsListParams,
   'harness.flows.save': HarnessFlowsSaveParams,
   'harness.guard': HarnessGuardParams,
+  'harness.start': HarnessStartParams,
   'harness.status': HarnessStatusParams,
   'harness.subagentResult': HarnessSubagentResultParams,
   'harness.wait': HarnessWaitParams,

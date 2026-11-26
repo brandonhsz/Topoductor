@@ -1,6 +1,7 @@
 import {
   existsSync,
   mkdtempSync,
+  realpathSync,
   mkdirSync,
   readFileSync,
   rmSync,
@@ -29,7 +30,8 @@ afterEach(async () => {
 })
 
 function fixture(): { root: string; packageDir: string; main: string } {
-  const root = mkdtempSync(join(tmpdir(), 'topo-process-host-dev-'))
+  // Watchers report real paths; macOS tmpdir() is a symlink into /private.
+  const root = realpathSync(mkdtempSync(join(tmpdir(), 'topo-process-host-dev-')))
   temporaryRoots.push(root)
   const packageDir = join(root, 'src', 'packages', 'process-host')
   const sourceDir = join(packageDir, 'src')

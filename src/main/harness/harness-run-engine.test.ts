@@ -252,6 +252,173 @@ describe('HarnessRunEngine', () => {
     expect(run.status).toBe('completed')
   })
 
+  it('asks how to continue when a skipped step only leaves through labeled edges', async () => {
+    const flow = flowOf(
+      [agent('analisis'), agent('corregir')],
+      [
+        edge('start', 'analisis'),
+        edge('analisis', 'corregir', 'Hay hallazgos'),
+        edge('analisis', 'fin', 'Todo cumple'),
+        edge('corregir', 'fin')
+      ]
+    )
+    const launch: HarnessAgentLauncher = async () => ({ ok: false, error: 'sin cuota' })
+    const run = runOf(flow, { intent: 'Revisar' })
+    const engine = new HarnessRunEngine(run, { launch, onChange: () => {} })
+    engine.start()
+    await settle()
+    engine.answer({
+      decisionId: run.pending[0]!.id,
+      choice: 'Omitir y seguir',
+      text: '',
+      fields: {}
+    })
+    await settle()
+
+    expect(run.status).toBe('waiting')
+    expect(run.pending[0]!.choices).toEqual(['Hay hallazgos', 'Todo cumple'])
+    engine.answer({ decisionId: run.pending[0]!.id, choice: 'Todo cumple', text: '', fields: {} })
+    await settle()
+    expect(run.status).toBe('completed')
+    expect(run.steps.at(-1)!.nodeId).toBe('fin')
+  })
+
+  it('hands fresh inputs again only after they are rewritten', async () => {
+    const flow = flowOf(
+      [
+        agent('analisis', { inputs: ['plan', 'correccion'], freshInputs: ['correccion'] }),
+        agent('correccion', { inputs: ['analisis'] })
+      ],
+      [
+        edge('start', 'analisis'),
+        edge('analisis', 'correccion', 'Hay hallazgos'),
+        edge('analisis', 'analisis', 'Repetir'),
+        edge('analisis', 'fin', 'Todo cumple'),
+        edge('correccion', 'analisis')
+      ]
+    )
+    const { launch, replies, prompts } = controlledLauncher()
+    const run = runOf(flow, { plan: 'PLAN-1' })
+    new HarnessRunEngine(run, { launch, onChange: () => {} }).start()
+    await settle()
+    replies.get('analisis')!('SALIDA: Hay hallazgos')
+    await settle()
+    replies.get('correccion')!('CORRECCION-1')
+    await settle()
+    expect(prompts.at(-1)).toContain('CORRECCION-1')
+
+    replies.get('analisis')!('SALIDA: Repetir')
+    await settle()
+    expect(prompts.at(-1)).toContain('PLAN-1')
+    expect(prompts.at(-1)).not.toContain('CORRECCION-1')
+  })
+
+  it('sends a plan that breaks its wave rules back to the node that wrote it', async () => {
+    const flow = flowOf(
+      [
+        agent('plan', { inputs: ['plan_problemas'], freshInputs: ['plan_problemas'] }),
+        {
+          kind: 'waves',
+          id: 'ejecucion',
+          title: 'Ejecución',
+          block: '',
+          position: at,
+          planKey: 'plan',
+          roles: [{ name: 'Lógica', agent: null, prompt: 'TAREA:tarea', paths: [] }],
+          verifyCommand: '',
+          checkpointEachWave: false,
+          runner: 'topo',
+          allowEdits: true,
+          inputs: [],
+          outputKey: 'ejecucion',
+          joinAll: false,
+          maxVisits: 5,
+          limitTarget: null
+        }
+      ],
+      [edge('start', 'plan'), edge('plan', 'ejecucion'), edge('ejecucion', 'fin')]
+    )
+    const conflicting = JSON.stringify({
+      tasks: [
+        { id: 'T1', role: 'Lógica', title: 'a', wave: 0, files: ['a.ts'] },
+        { id: 'T2', role: 'Lógica', title: 'b', wave: 0, files: ['a.ts'] }
+      ]
+    })
+    const { launch, replies, prompts } = controlledLauncher()
+    const run = runOf(flow, {})
+    const engine = new HarnessRunEngine(run, { launch, onChange: () => {} })
+    engine.start()
+    await settle()
+    replies.get('plan')!(`\`\`\`json\n${conflicting}\n\`\`\``)
+    await settle()
+
+    expect(run.pending[0]!.choices).toEqual(['Volver al plan', 'Continuar', 'Detener'])
+    engine.answer({
+      decisionId: run.pending[0]!.id,
+      choice: 'Volver al plan',
+      text: '',
+      fields: {}
+    })
+    await settle()
+    expect(prompts.at(-1)).toContain('TAREA:plan')
+    expect(prompts.at(-1)).toContain('T1 y T2 tocan a.ts en la misma oleada 0.')
+  })
+
+  describe('flows with an escalation node', () => {
+    function unattended(extra: HarnessNode[] = [], edges: HarnessEdge[] = []): HarnessFlow {
+      return {
+        ...flowOf(
+          [agent('trabajo'), agent('escalar', { inputs: ['motivo_escalado'] }), ...extra],
+          [edge('start', 'trabajo'), edge('trabajo', 'fin'), edge('escalar', 'fin'), ...edges]
+        ),
+        escalationNode: 'escalar'
+      }
+    }
+
+    it('sends a failed step to the escalation node instead of waiting', async () => {
+      const prompts: string[] = []
+      const launch: HarnessAgentLauncher = async (request) => {
+        prompts.push(request.prompt)
+        return request.prompt.includes('TAREA:trabajo')
+          ? { ok: false, error: 'sin cuota' }
+          : { ok: true, text: 'comentado' }
+      }
+      const run = runOf(unattended(), {})
+      new HarnessRunEngine(run, { launch, onChange: () => {} }).start()
+      await settle()
+
+      expect(run.pending).toEqual([])
+      expect(run.status).toBe('completed')
+      expect(run.steps.map((step) => step.nodeId)).toEqual(['start', 'trabajo', 'escalar', 'fin'])
+      expect(prompts.at(-1)).toContain('El agente falló: sin cuota')
+    })
+
+    it('still asks a person in human nodes and when the escalation node itself fails', async () => {
+      const launch: HarnessAgentLauncher = async () => ({ ok: false, error: 'caído' })
+      const human: HarnessNode = {
+        kind: 'human',
+        id: 'persona',
+        title: 'Persona',
+        block: '',
+        position: at,
+        prompt: 'Decide',
+        inputs: [],
+        outputKey: 'persona',
+        joinAll: false,
+        maxVisits: 5,
+        limitTarget: null
+      }
+      const run = runOf(
+        { ...unattended([human], [edge('start', 'persona')]), escalationNode: 'escalar' },
+        {}
+      )
+      new HarnessRunEngine(run, { launch, onChange: () => {} }).start()
+      await settle()
+
+      expect(run.pending.map((decision) => decision.nodeId).sort()).toEqual(['escalar', 'persona'])
+    })
+  })
+
   describe('agents Topo runs for a chat', () => {
     function topoRun(mode: HarnessRun['mode']): HarnessRun {
       const flow = flowOf(
