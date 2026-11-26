@@ -335,7 +335,7 @@ export function MobileNativeChatComposer({
               t('chat.composer.placeholder', 'Ask anything, @ to mention files, / for commands')
             }
             placeholderTextColor={colors.textMuted}
-            selectionColor={colors.accentBlue}
+            selectionColor={colors.accent}
             multiline
             editable={!editSession?.locked}
             // Why: never revoke `editable` — iOS resigns first responder on a focused

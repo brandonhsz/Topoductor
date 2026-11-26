@@ -27,7 +27,7 @@ export function AppUpdateCard(props: {
         style={({ pressed }) => [styles.cardMain, pressed && styles.cardPressed]}
         onPress={props.onPress}
       >
-        <ArrowUpFromLine size={20} color={colors.accentBlue} />
+        <ArrowUpFromLine size={20} color={colors.accent} />
         <Text style={styles.title} numberOfLines={1}>
           {title}
         </Text>
@@ -79,7 +79,7 @@ const styles = themedStyleSheet(() => ({
     borderRadius: radii.control,
     backgroundColor: colors.bgRaised
   },
-  updateLabel: { color: colors.accentBlue, fontSize: 15, fontWeight: '600' },
+  updateLabel: { color: colors.accent, fontSize: 15, fontWeight: '600' },
   dismissButton: {
     width: 40,
     height: 40,

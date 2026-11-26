@@ -67,7 +67,7 @@ export const prTabStyles = themedStyleSheet(() => ({
     backgroundColor: colors.translucentFill,
     overflow: 'hidden'
   },
-  progressFill: { height: 3, borderRadius: radii.pill, backgroundColor: colors.accentBlue },
+  progressFill: { height: 3, borderRadius: radii.pill, backgroundColor: colors.accent },
   changesMeta: { color: colors.textSecondary, fontSize: typography.metaSize },
   descriptionHeader: {
     flexDirection: 'row',

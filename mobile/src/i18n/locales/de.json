@@ -2743,6 +2743,7 @@
       "checkUpdates": "Nach Updates suchen",
       "checkUpdatesStatus": "Nach Updates suchen, {{status}}",
       "checking": "Wird geprüft…",
+      "downloading": "Update wird geladen…",
       "installedVersion": "Version {{version}}",
       "lastCheckedDays_one": "Zuletzt vor {{count}} Tag geprüft",
       "lastCheckedDays_other": "Zuletzt vor {{count}} Tagen geprüft",
@@ -2752,6 +2753,8 @@
       "lastCheckedMinutes_one": "Zuletzt vor {{count}} Min. geprüft",
       "lastCheckedMinutes_other": "Zuletzt vor {{count}} Min. geprüft",
       "neverChecked": "Nie",
+      "otaReady": "Update heruntergeladen",
+      "restartToUpdate": "Neu starten",
       "upToDate": "Aktuell",
       "update": "Aktualisieren",
       "updateToVersion": "Auf Topo {{version}} aktualisieren"

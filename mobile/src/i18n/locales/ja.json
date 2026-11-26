@@ -2739,6 +2739,7 @@
       "checkUpdates": "アップデートを確認",
       "checkUpdatesStatus": "アップデートを確認、{{status}}",
       "checking": "確認中…",
+      "downloading": "アップデートをダウンロード中…",
       "installedVersion": "バージョン {{version}}",
       "lastCheckedDays_one": "最終確認：{{count}} 日前",
       "lastCheckedDays_other": "最終確認：{{count}} 日前",
@@ -2748,6 +2749,8 @@
       "lastCheckedMinutes_one": "最終確認：{{count}} 分前",
       "lastCheckedMinutes_other": "最終確認：{{count}} 分前",
       "neverChecked": "未確認",
+      "otaReady": "アップデートをダウンロードしました",
+      "restartToUpdate": "再起動",
       "upToDate": "最新",
       "update": "更新",
       "updateToVersion": "Topo {{version}} に更新"

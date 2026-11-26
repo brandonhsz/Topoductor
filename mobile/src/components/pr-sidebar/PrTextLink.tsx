@@ -44,6 +44,6 @@ export function PrTextLink({
 const styles = themedStyleSheet(() => ({
   link: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   linkText: { color: colors.textSecondary, fontSize: 14, fontWeight: '600' },
-  linkAccent: { color: colors.accentBlue },
+  linkAccent: { color: colors.accent },
   linkDisabled: { opacity: feedback.disabledOpacity }
 }))

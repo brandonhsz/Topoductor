@@ -171,7 +171,7 @@ const styles = themedStyleSheet(() => ({
     minHeight: 48,
     paddingHorizontal: 22,
     borderRadius: radii.control,
-    backgroundColor: colors.accentBlue
+    backgroundColor: colors.accent
   },
   ctaLabel: { fontSize: 16, fontWeight: '600', color: colors.onAccent }
 }))

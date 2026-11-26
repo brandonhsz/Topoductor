@@ -69,7 +69,7 @@ export function MobileHomeHostList(props: MobileHomeHostListProps) {
           style={({ pressed }) => [homeListStyles.actionRow, pressed && homeListStyles.rowPressed]}
           onPress={props.onPairDesktop}
         >
-          <Plus size={18} color={colors.accentBlue} />
+          <Plus size={18} color={colors.accent} />
           <Text style={homeListStyles.actionLabel}>
             {t('home.desktops.pairDesktop', 'Pair a desktop')}
           </Text>

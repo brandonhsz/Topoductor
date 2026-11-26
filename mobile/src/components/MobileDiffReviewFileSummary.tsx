@@ -213,7 +213,7 @@ const styles = themedStyleSheet(() => ({
     justifyContent: 'center'
   },
   boxChecked: {
-    backgroundColor: colors.accentBlue,
-    borderColor: colors.accentBlue
+    backgroundColor: colors.accent,
+    borderColor: colors.accent
   }
 }))

@@ -116,6 +116,9 @@ jobs:
           TOPO_ANDROID_KEYSTORE_PASSWORD: ${{ steps.signing.outputs.mode == 'release' && secrets.TOPO_ANDROID_KEYSTORE_PASSWORD || '' }}
           TOPO_ANDROID_KEY_ALIAS: ${{ steps.signing.outputs.mode == 'release' && secrets.TOPO_ANDROID_KEY_ALIAS || '' }}
           TOPO_ANDROID_KEY_PASSWORD: ${{ steps.signing.outputs.mode == 'release' && secrets.TOPO_ANDROID_KEY_PASSWORD || '' }}
+          # Metro inlines these into the bundle; unset skips OTA checks instead of failing the build.
+          EXPO_PUBLIC_HOT_UPDATER_BASE_URL: ${{ vars.HOT_UPDATER_BASE_URL }}
+          EXPO_PUBLIC_HOT_UPDATER_API_KEY: ${{ secrets.HOT_UPDATER_API_KEY }}
         run: cd android && ./gradlew assembleRelease
 
       - name: Remove release keystore

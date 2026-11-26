@@ -101,7 +101,7 @@ const styles = themedStyleSheet(() => ({
     borderRadius: radii.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.accentBlue,
+    backgroundColor: colors.accent,
     shadowColor: '#000',
     shadowOpacity: 0.3,
     shadowRadius: 10,

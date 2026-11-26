@@ -98,7 +98,7 @@ function renderList(node: List, key: number, ctx: MarkdownBlockContext, depth: n
               style={[styles.taskMarker, { height: styles.listText.lineHeight * ctx.textScale }]}
             >
               {item.checked ? (
-                <SquareCheck size={14 * ctx.textScale} color={colors.accentBlue} strokeWidth={2} />
+                <SquareCheck size={14 * ctx.textScale} color={colors.accent} strokeWidth={2} />
               ) : (
                 <Square size={14 * ctx.textScale} color={colors.textSecondary} strokeWidth={2} />
               )}

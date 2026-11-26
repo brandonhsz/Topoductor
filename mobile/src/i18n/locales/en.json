@@ -39,7 +39,10 @@
       "update": "Update",
       "installedVersion": "Version {{version}}",
       "checkUpdatesStatus": "Check for updates, {{status}}",
-      "checkUpdates": "Check for updates"
+      "checkUpdates": "Check for updates",
+      "downloading": "Downloading update…",
+      "otaReady": "Update downloaded",
+      "restartToUpdate": "Restart"
     },
     "browserSettingsScreen": {
       "desktopBrowser": "Topo browser on desktop",

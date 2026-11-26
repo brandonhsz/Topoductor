@@ -46,7 +46,7 @@ export function MobileSwitch({
   const reducedMotion = useReducedMotionEnabled()
   const progress = useSharedValue(value ? 1 : 0)
   const offColor = colors.translucentFill
-  const onColor = colors.accentBlue
+  const onColor = colors.accent
 
   useEffect(() => {
     progress.value = withTiming(value ? 1 : 0, {

@@ -2883,6 +2883,7 @@
       "checkUpdates": "Проверить обновления",
       "checkUpdatesStatus": "Проверить обновления, {{status}}",
       "checking": "Проверка…",
+      "downloading": "Загрузка обновления…",
       "installedVersion": "Версия {{version}}",
       "lastCheckedDays_few": "Проверено {{count}} дн. назад",
       "lastCheckedDays_many": "Проверено {{count}} дн. назад",
@@ -2898,6 +2899,8 @@
       "lastCheckedMinutes_one": "Проверено {{count}} мин назад",
       "lastCheckedMinutes_other": "Проверено {{count}} мин назад",
       "neverChecked": "Никогда",
+      "otaReady": "Обновление загружено",
+      "restartToUpdate": "Перезапустить",
       "upToDate": "Обновлений нет",
       "update": "Обновить",
       "updateToVersion": "Обновить Topo до {{version}}"

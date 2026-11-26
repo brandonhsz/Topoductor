@@ -44,7 +44,7 @@ export function TextField({
       ref={inputRef}
       editable={editable}
       placeholderTextColor={colors.textMuted}
-      selectionColor={colors.accentBlue}
+      selectionColor={colors.accent}
       style={[styles.fieldText, monospace && styles.mono]}
       {...inputProps}
       onFocus={focus.onFocus}

@@ -8,7 +8,7 @@ import { themedStyleSheet } from '../theme/themed-styles'
 import { useMobileColorScheme } from '../theme/use-mobile-color-scheme'
 import { SettingsSection } from './settings-screen-frame'
 
-export type AppUpdateCheckRowStatus = 'idle' | 'checking' | 'up-to-date' | 'failed'
+export type AppUpdateCheckRowStatus = 'idle' | 'checking' | 'downloading' | 'up-to-date' | 'failed'
 
 function checkRowValue(
   t: Translate,
@@ -18,6 +18,9 @@ function checkRowValue(
 ) {
   if (status === 'checking') {
     return t('settings.appUpdateSettingsRows.checking', 'Checking…')
+  }
+  if (status === 'downloading') {
+    return t('settings.appUpdateSettingsRows.downloading', 'Downloading update…')
   }
   if (status === 'up-to-date') {
     return t('settings.appUpdateSettingsRows.upToDate', 'Up to date')
@@ -76,6 +79,9 @@ export function AppUpdateSettingsRows(props: {
   checkStatus: AppUpdateCheckRowStatus
   onUpdate: (url: string) => void
   onCheck: () => void
+  /** An OTA bundle is downloaded and a restart applies it. */
+  otaReady: boolean
+  onApplyOta: () => void
 }) {
   const t = useMobileTranslation()
   useMobileColorScheme()
@@ -102,9 +108,22 @@ export function AppUpdateSettingsRows(props: {
       })}
     />
   ) : null
+  const otaRow = props.otaReady ? (
+    <ListRow
+      key="ota"
+      title={t('settings.appUpdateSettingsRows.otaReady', 'Update downloaded')}
+      accessory={
+        <Text style={styles.actionValue}>
+          {t('settings.appUpdateSettingsRows.restartToUpdate', 'Restart')}
+        </Text>
+      }
+      onPress={props.onApplyOta}
+    />
+  ) : null
   return (
     <SettingsSection>
       {versionRow}
+      {otaRow}
       <ListRow
         key="check"
         title={t('settings.appUpdateSettingsRows.checkUpdates', 'Check for updates')}
@@ -116,7 +135,7 @@ export function AppUpdateSettingsRows(props: {
             status: checkValue
           }
         )}
-        busy={props.checkStatus === 'checking'}
+        busy={props.checkStatus === 'checking' || props.checkStatus === 'downloading'}
         onPress={props.onCheck}
       />
     </SettingsSection>

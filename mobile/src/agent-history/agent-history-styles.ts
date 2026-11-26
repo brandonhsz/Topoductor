@@ -90,7 +90,7 @@ export const styles = themedStyleSheet(() => ({
     paddingVertical: 1
   },
   currentBadgeText: {
-    color: colors.accentBlue,
+    color: colors.accent,
     fontSize: 11,
     fontWeight: '600'
   },

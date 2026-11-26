@@ -81,7 +81,7 @@ export function MessageBox({
           multiline={multiline}
           textAlignVertical="top"
           placeholderTextColor={colors.textMuted}
-          selectionColor={colors.accentBlue}
+          selectionColor={colors.accent}
           style={[
             styles.messageText,
             !hasActions && styles.formText,

@@ -33,7 +33,7 @@ function resolveRowContent(row: SourceRow, t: Translate): RowContent {
       }
     case 'create-branch':
       return {
-        icon: <GitBranch size={18} color={colors.accentBlue} />,
+        icon: <GitBranch size={18} color={colors.accent} />,
         title: t('components.smartWorkspaceSourceRow.createBranch', 'Create branch "{{name}}"', {
           name: row.name
         }),

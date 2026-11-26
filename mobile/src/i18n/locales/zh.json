@@ -2739,6 +2739,7 @@
       "checkUpdates": "检查更新",
       "checkUpdatesStatus": "检查更新，{{status}}",
       "checking": "检查中…",
+      "downloading": "正在下载更新…",
       "installedVersion": "版本 {{version}}",
       "lastCheckedDays_one": "上次检查：{{count}} 天前",
       "lastCheckedDays_other": "上次检查：{{count}} 天前",
@@ -2748,6 +2749,8 @@
       "lastCheckedMinutes_one": "上次检查：{{count}} 分钟前",
       "lastCheckedMinutes_other": "上次检查：{{count}} 分钟前",
       "neverChecked": "从未",
+      "otaReady": "更新已下载",
+      "restartToUpdate": "重新启动",
       "upToDate": "已是最新",
       "update": "更新",
       "updateToVersion": "更新至 Topo {{version}}"

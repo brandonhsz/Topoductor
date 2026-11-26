@@ -152,7 +152,7 @@ export const mobileTasksDetailStyles = themedStyleSheet(() => ({
     paddingVertical: 2
   },
   detailChipSelected: {
-    borderColor: colors.accentBlue,
+    borderColor: colors.accent,
     backgroundColor: colors.translucentFill
   },
   detailChipText: {

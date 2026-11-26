@@ -64,7 +64,7 @@ export const hubStyles = themedStyleSheet(() => ({
     minWidth: spacing.sm
   },
   chipCreateText: {
-    color: colors.accentBlue,
+    color: colors.accent,
     fontSize: typography.bodySize,
     fontWeight: '600'
   },

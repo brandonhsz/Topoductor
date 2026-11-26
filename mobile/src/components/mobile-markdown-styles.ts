@@ -39,7 +39,7 @@ export const styles = themedStyleSheet(() => ({
     textDecorationLine: 'line-through'
   },
   link: {
-    color: colors.accentBlue,
+    color: colors.accent,
     textDecorationLine: 'underline'
   },
   inlineCode: {
@@ -58,7 +58,7 @@ export const styles = themedStyleSheet(() => ({
   kbd: { borderWidth: 1, borderColor: colors.borderSubtle },
   ins: { textDecorationLine: 'underline' },
   inlineCodeLink: {
-    color: colors.accentBlue,
+    color: colors.accent,
     textDecorationLine: 'underline'
   },
   callout: {
@@ -242,7 +242,7 @@ export const styles = themedStyleSheet(() => ({
     color: colors.textPrimary
   },
   footnoteReference: {
-    color: colors.accentBlue
+    color: colors.accent
   },
   rule: {
     marginVertical: spacing.xs,

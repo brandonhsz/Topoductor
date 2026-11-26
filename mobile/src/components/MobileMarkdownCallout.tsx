@@ -16,7 +16,7 @@ import { useMobileColorScheme } from '../theme/use-mobile-color-scheme'
 // Desktop's markdown-github-callout.tsx in the phone's tokens.
 const CALLOUTS: Record<GitHubCalloutKind, { color: () => string; label: () => string }> = {
   note: {
-    color: () => colors.accentBlue,
+    color: () => colors.accent,
     label: () => translate('components.markdownCallout.note', 'Note')
   },
   tip: {
