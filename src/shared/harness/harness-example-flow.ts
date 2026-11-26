@@ -11,7 +11,7 @@ import { EMPTY_HARNESS_PROJECT } from './harness-flow-normalize'
 
 export const HARNESS_EXAMPLE_FLOW_ID = 'intent-to-delivery'
 /** Bump when the example changes so unedited copies upgrade. */
-export const HARNESS_EXAMPLE_FLOW_VERSION = 7
+export const HARNESS_EXAMPLE_FLOW_VERSION = 8
 
 const SHARED_INSTRUCTIONS = `Trabajas dentro de un flujo de desarrollo agéntico dirigido por Topo. Topo lanza un agente por nodo, le pasa el contexto y decide el siguiente nodo con tu respuesta final.
 
@@ -33,6 +33,8 @@ function edge(
 function tipo(value: string): HarnessEdgeCondition {
   return { key: 'tipo', op: 'eq', value }
 }
+
+const REVIEWERS = ['revisor_bugs', 'revisor_regresiones', 'revisor_calidad', 'revisor_seguridad']
 
 const edges: HarnessEdge[] = [
   // Router: each kind of task takes the shortest branch that still proves the result.
@@ -63,6 +65,8 @@ const edges: HarnessEdge[] = [
   edge('analisis', 'correccion', 'Hay hallazgos'),
   edge('analisis', 'idea', 'La idea no era lo que se quería'),
   edge('correccion', 'analisis', 'Resuelto'),
+  // Fixes of confirmed review findings go back to the reviewers, not through analysis and the video again.
+  ...REVIEWERS.map((reviewer) => edge('correccion', reviewer, 'Resuelto: interrogatorio')),
   edge('correccion', 'correccion', 'Otro intento'),
   edge('correccion', 'idea', 'Problema de la idea'),
   edge('escalado', 'correccion', 'Reintentar'),

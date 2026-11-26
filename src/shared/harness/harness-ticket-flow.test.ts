@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { outcomeChoices } from './harness-agent-prompt'
 import { normalizeHarnessFlow } from './harness-flow-normalize'
 import { harnessFlowProblems } from './harness-flow-problems'
+import { createHarnessExampleFlow } from './harness-example-flow'
 import { createHarnessTicketFlow } from './harness-ticket-flow'
 
 const flow = createHarnessTicketFlow(0)
@@ -42,5 +43,24 @@ describe('ticket flow', () => {
     const ends = flow.nodes.filter((node) => node.kind === 'end').map((node) => node.id)
     const targets = new Set(flow.edges.map((edge) => edge.target))
     expect(ends.every((id) => targets.has(id))).toBe(true)
+  })
+})
+
+describe('fixes of confirmed review findings', () => {
+  it.each([
+    ['ticket', createHarnessTicketFlow(0)],
+    ['delivery', createHarnessExampleFlow(0)]
+  ])('go straight back to every reviewer in the %s flow', (_name, candidate) => {
+    expect(outcomeChoices(candidate, 'correccion', {})).toContain('Resuelto: interrogatorio')
+    const targets = candidate.edges
+      .filter((edge) => edge.source === 'correccion' && edge.label === 'Resuelto: interrogatorio')
+      .map((edge) => edge.target)
+    expect(targets).toEqual([
+      'revisor_bugs',
+      'revisor_regresiones',
+      'revisor_calidad',
+      'revisor_seguridad'
+    ])
+    expect(normalizeHarnessFlow(candidate)).toEqual(candidate)
   })
 })

@@ -150,7 +150,8 @@ Informe:
 **Pruebas:** X pasaron, Y fallaron.
 **Pendientes / escalados:** ...
 
-Un hallazgo no se marca ✅ sin su evidencia "después".`,
+Un hallazgo no se marca ✅ sin su evidencia "después".
+Al cerrar: si lo que corregiste venía del interrogatorio (recibiste «interrogatorio»), elige "Resuelto: interrogatorio" para que los revisores verifiquen solo tu corrección; si venía del análisis, elige "Resuelto".`,
     inputs: ['analisis', 'interrogatorio', 'plan'],
     // Each round fixes only the findings that sent it here, not the ones an earlier round closed.
     freshInputs: ['analisis', 'interrogatorio'],

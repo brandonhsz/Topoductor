@@ -12,7 +12,7 @@ import { EMPTY_HARNESS_PROJECT } from './harness-flow-normalize'
 
 export const HARNESS_TICKET_FLOW_ID = 'avenapm-ticket'
 /** Bump when the flow changes so unedited copies upgrade. */
-export const HARNESS_TICKET_FLOW_VERSION = 1
+export const HARNESS_TICKET_FLOW_VERSION = 2
 
 const SHARED_INSTRUCTIONS = `Trabajas dentro de un flujo de Topo que resuelve un ticket de la cola de operación de Avena (Squads, tickets OP-xxx) sin ninguna persona hasta el PR. Topo lanza un agente por nodo, le pasa el contexto y decide el siguiente nodo con tu respuesta final.
 
@@ -240,6 +240,7 @@ Entrega lo que quedó en el ticket.`
 ]
 
 const ESCALATE = 'Necesita una persona'
+const REVIEWERS = REVIEW_NODES.filter((node) => node.id !== 'juez').map((node) => node.id)
 
 const edges: HarnessEdge[] = [
   edge('ticket', 'tomar'),
@@ -266,6 +267,7 @@ const edges: HarnessEdge[] = [
   edge('analisis', 'revisor_seguridad', 'Todo cumple'),
   edge('analisis', 'correccion', 'Hay hallazgos'),
   edge('correccion', 'analisis', 'Resuelto'),
+  ...REVIEWERS.map((reviewer) => edge('correccion', reviewer, 'Resuelto: interrogatorio')),
   edge('correccion', 'correccion', 'Otro intento'),
   edge('correccion', ESCALATION, ESCALATE),
   edge('revisor_bugs', 'juez'),
