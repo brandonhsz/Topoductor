@@ -131,7 +131,8 @@ export async function runHarnessAgentStep(
       title: request.title,
       agent,
       status: 'running',
-      runner: 'topo'
+      runner: 'topo',
+      allowEdits: request.allowEdits
     })
     const promptInput = { ...request, flow: rt.run.flow, visit: step.visit }
     const resume = request.sessionKey ? (sessions.get(request.sessionKey) ?? null) : null

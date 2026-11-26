@@ -26,6 +26,8 @@ export type HarnessRunStep = {
   agent: TuiAgent | null
   /** How the step actually ran after fallback; absent on runs saved before subagent steps. */
   runner?: HarnessNodeRunner | null
+  /** Set on agent steps Topo runs itself, so the edit guard can follow them; absent elsewhere. */
+  allowEdits?: boolean
   session: HarnessAgentSessionRef | null
   output: string
   outcome: string | null

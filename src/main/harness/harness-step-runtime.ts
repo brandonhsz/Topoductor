@@ -73,6 +73,7 @@ export type HarnessStepRuntime = {
     agent: TuiAgent | null
     status: HarnessRunStep['status']
     runner?: HarnessNodeRunner
+    allowEdits?: boolean
   }) => HarnessRunStep
   finishStep: (step: HarnessRunStep, patch: Partial<HarnessRunStep>) => void
   writeVar: (key: string, value: string) => void
