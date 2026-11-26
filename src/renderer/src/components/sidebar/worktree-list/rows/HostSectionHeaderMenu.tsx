@@ -4,6 +4,7 @@ import {
   Ellipsis,
   Link2,
   Loader2,
+  Monitor,
   Pencil,
   Plug,
   Play,
@@ -29,6 +30,7 @@ import { translate } from '@/i18n/i18n'
 import { useTranslate, type Translate } from '@/i18n/use-translate'
 import { sshConnectVerb } from '@/ssh/ssh-connect-verb'
 import { parseExecutionHostId } from '../../../../../../shared/execution-host'
+import { isRemoteDesktopHostId } from '../../../../../../shared/remote-desktop/remote-desktop-contract'
 import { runtimePairingRepairRoute } from '../../../../../../shared/remote-runtime/host-catalog/runtime-environments'
 
 import { describeRuntimeCompatBlock } from '@/lib/runtime-host-copy'
@@ -104,7 +106,8 @@ export function HostSectionHeaderMenu({ row }: { row: HostHeaderRow }): React.JS
     compatibility: row.compatibility,
     blockedReason: row.blockedReason,
     repairableWithAccessLink,
-    wslDistroStopped: stoppedWslDistro !== null
+    wslDistroStopped: stoppedWslDistro !== null,
+    remoteDesktopSupported: window.api.remoteDesktop !== undefined
   })
   const removalTarget = resolveHostRemoval(row.hostId)
 
@@ -295,6 +298,18 @@ export function HostSectionHeaderMenu({ row }: { row: HostHeaderRow }): React.JS
           <DropdownMenuItem onSelect={() => void handleCheckConnection()}>
             <RefreshCw className="size-3.5" />
             {t('auto.components.sidebar.HostSectionHeaderMenu.2d3e4f5a6b', 'Check connection')}
+          </DropdownMenuItem>
+        )}
+        {model.actions.includes('remote-desktop') && (
+          <DropdownMenuItem
+            onSelect={() => {
+              if (isRemoteDesktopHostId(row.hostId)) {
+                void window.api.remoteDesktop.openWindow(row.hostId, row.label)
+              }
+            }}
+          >
+            <Monitor className="size-3.5" />
+            {t('remoteDesktop.open', 'Open remote desktop')}
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />

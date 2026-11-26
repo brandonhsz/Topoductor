@@ -59,6 +59,7 @@ import { appIconApi } from './api/app-icon-bridge'
 import { browserPasswordsApi } from './api/browser-passwords-bridge'
 import { browserApi } from './api/browser/browser-bridge'
 import { emulatorApi } from './api/emulator-bridge'
+import { remoteDesktopApi } from './api/remote-desktop-bridge'
 import { hooksApi } from './api/hooks-bridge'
 import { ephemeralVmApi } from './api/ephemeral-vm-bridge'
 import { cacheApi } from './api/cache-bridge'
@@ -169,6 +170,7 @@ const api = {
   browser: browserApi,
   browserPasswords: browserPasswordsApi,
   emulator: emulatorApi,
+  remoteDesktop: remoteDesktopApi,
   hooks: hooksApi,
   ephemeralVm: ephemeralVmApi,
   cache: cacheApi,

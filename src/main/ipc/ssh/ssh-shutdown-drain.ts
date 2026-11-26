@@ -5,6 +5,7 @@ import {
 } from './ssh-connect-attempt-registry'
 import { connectionManager, portForwardManager } from './ssh-ipc-context'
 import { shutdownTopodManagedTunnels } from '../../managed-server/lifecycle/topod-managed-tunnel'
+import { runSshShutdownListeners } from './ssh-target-teardown-listeners'
 import { closeAllPlainSshTerminals } from '../../ssh/plain-ssh-terminal/plain-ssh-terminal-sessions'
 
 // One absolute deadline bounds all phases, including connects stuck before their next cancellation checkpoint.
@@ -66,7 +67,11 @@ function sshShutdownTasks(): SshShutdownTask[] {
     {
       // Independent ssh -L children survive app exit and retain ports needed by the next launch.
       targetId: '*forwards',
-      promise: Promise.all([portForwardManager?.closeAll(), shutdownTopodManagedTunnels()])
+      promise: Promise.all([
+        portForwardManager?.closeAll(),
+        shutdownTopodManagedTunnels(),
+        runSshShutdownListeners()
+      ])
     },
     {
       // Plain SSH terminals have no restoration owner and must end with Topo.

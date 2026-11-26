@@ -310,6 +310,7 @@ export const electronViteConfig: UserConfig = {
         input: {
           index: resolve('src/renderer/index.html'),
           popout: resolve('src/renderer/popout.html'),
+          'remote-desktop': resolve('src/renderer/remote-desktop.html'),
           space: resolve('src/renderer/space.html'),
           web: resolve('src/renderer/web-index.html')
         }
