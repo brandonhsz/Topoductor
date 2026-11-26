@@ -150,6 +150,7 @@ export function useAutomationDraftEffects({
             }
           : {}),
         missedRunGraceMinutes: template.missedRunGraceMinutes ?? current.missedRunGraceMinutes,
+        workspaceMode: template.workspaceMode ?? current.workspaceMode,
         scheduleWarning: null
       }))
     },

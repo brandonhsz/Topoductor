@@ -7,25 +7,18 @@ import type {
   HarnessFlowAuthor,
   HarnessFlowChange
 } from '../../shared/harness/harness-flow-version-types'
-import {
-  createHarnessExampleFlow,
-  HARNESS_EXAMPLE_FLOW_ID,
-  HARNESS_EXAMPLE_FLOW_VERSION
-} from '../../shared/harness/harness-example-flow'
 import { asRecord } from '../../shared/workspace-setup/setup-script-import-parsers'
 import { writeSecureJsonFile } from '../../shared/secure-storage/secure-file'
 import { createHarnessSerialQueue } from './harness-serial-queue'
 import { deleteHarnessFlowVersions, getHarnessFlowVersion } from './harness-flow-version-store'
 import { HarnessFlowError } from '../../shared/harness/harness-flow-errors'
+import {
+  readBuiltinSeeds,
+  withCurrentBuiltins,
+  type HarnessSeedFile
+} from './harness-builtin-flow-seeding'
 
-type FlowsFile = {
-  version: 1
-  seeded: boolean
-  /** Example revision last written, and its `updatedAt` then (to tell whether it was edited). */
-  exampleVersion: number
-  exampleSeededAt: number | null
-  flows: HarnessFlow[]
-}
+type FlowsFile = HarnessSeedFile & { version: 1 }
 
 const MAX_BYTES = 8 * 1024 * 1024
 const MAX_FLOWS = 200
@@ -54,53 +47,33 @@ async function readFlowsFile(): Promise<FlowsFile | null> {
       seeded: parsed.seeded === true,
       exampleVersion: typeof parsed.exampleVersion === 'number' ? parsed.exampleVersion : 1,
       exampleSeededAt: typeof parsed.exampleSeededAt === 'number' ? parsed.exampleSeededAt : null,
+      builtins: readBuiltinSeeds(parsed.builtins),
       flows: parsed.flows
         .map(normalizeHarnessFlow)
         .filter((flow): flow is HarnessFlow => flow !== null)
     }
   } catch (error) {
     return isMissing(error)
-      ? { version: 1, seeded: false, exampleVersion: 0, exampleSeededAt: null, flows: [] }
+      ? {
+          version: 1,
+          seeded: false,
+          exampleVersion: 0,
+          exampleSeededAt: null,
+          builtins: {},
+          flows: []
+        }
       : null
   }
 }
 
 const serialized = createHarnessSerialQueue()
 
-/** Seeds the example once, and upgrades it later only when the person never edited it. */
-function withCurrentExample(file: FlowsFile): FlowsFile | null {
-  if (file.seeded && file.exampleVersion >= HARNESS_EXAMPLE_FLOW_VERSION) {
-    return null
-  }
-  const now = Date.now()
-  const example = createHarnessExampleFlow(now)
-  const stored = file.flows.find((flow) => flow.id === HARNESS_EXAMPLE_FLOW_ID)
-  const others = file.flows.filter((flow) => flow.id !== HARNESS_EXAMPLE_FLOW_ID)
-  const upgraded = { ...file, seeded: true, exampleVersion: HARNESS_EXAMPLE_FLOW_VERSION }
-  if (file.seeded && !stored) {
-    return upgraded
-  }
-  if (!stored || stored.updatedAt === file.exampleSeededAt) {
-    return { ...upgraded, exampleSeededAt: now, flows: [example, ...others] }
-  }
-  if (file.exampleSeededAt === null) {
-    // Files from before edit tracking: keep the old copy under its own id rather than guess.
-    const previous = {
-      ...stored,
-      id: `${HARNESS_EXAMPLE_FLOW_ID}-anterior`,
-      name: `${stored.name} (versión anterior)`
-    }
-    return { ...upgraded, exampleSeededAt: now, flows: [example, previous, ...others] }
-  }
-  return upgraded
-}
-
 async function loadSeeded(): Promise<FlowsFile | null> {
   const file = await readFlowsFile()
   if (!file) {
     return null
   }
-  const next = withCurrentExample(file)
+  const next = withCurrentBuiltins(file, Date.now())
   if (!next) {
     return file
   }

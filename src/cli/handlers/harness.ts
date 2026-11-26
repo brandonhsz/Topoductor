@@ -14,6 +14,8 @@ import {
   type HarnessChatStatus
 } from '../../shared/harness/harness-chat-status'
 
+type HarnessStartResult = { instructions: string; status: HarnessChatStatus }
+
 const WAIT_SECONDS = 300
 const WAIT_GRACE_MS = 15_000
 
@@ -125,6 +127,18 @@ export const HARNESS_HANDLERS: Record<string, CommandHandler> = {
     } catch {
       // Topo may be closed; the chat sees the subagent's answer either way.
     }
+  },
+  'harness start': async ({ flags, client, json }) => {
+    const result = await client.call<HarnessStartResult>('harness.start', {
+      ...callerParams(flags, client.isRemote),
+      flowId: getRequiredStringFlag(flags, 'flow'),
+      fields: answerFields(flags) ?? {}
+    })
+    printResult(
+      result,
+      json,
+      (started) => `${started.instructions}\n\n---\n\n${formatHarnessChatStatus(started.status)}`
+    )
   },
   'harness status': async ({ flags, client, json }) => {
     show(

@@ -1,5 +1,5 @@
 import type { TuiAgent } from '../../shared/agent-launch/catalog/tui-agent'
-import { edgeFires } from '../../shared/harness/harness-agent-prompt'
+import { edgeFires, type HarnessContextEntry } from '../../shared/harness/harness-agent-prompt'
 import type { HarnessSubagentResult } from '../../shared/harness/harness-subagent-contract'
 import type { HarnessNode } from '../../shared/harness/harness-flow-types'
 import type {
@@ -16,6 +16,7 @@ import {
   redirectOnLimit,
   type HarnessRoute,
   executeAgentNode,
+  executeEndNode,
   executeHumanNode,
   executeStartNode
 } from './harness-node-executors'
@@ -30,6 +31,8 @@ import {
 import { executeWavesNode } from './harness-wave-executor'
 import { appendHistory, runHarnessAgentStep } from './harness-agent-step'
 import { HarnessChatInbox } from './harness-chat-inbox'
+import { escalateDecision, followRedirect, harnessEscalationTarget } from './harness-escalation'
+import { HarnessInputFreshness } from './harness-input-freshness'
 
 const FINISHED: ReadonlySet<HarnessRun['status']> = new Set(['completed', 'failed', 'stopped'])
 
@@ -49,6 +52,7 @@ export class HarnessRunEngine implements HarnessStepRuntime {
   private readonly joinWaiting = new Set<string>()
   private readonly visits = new Map<string, number>()
   private readonly sessions = new Map<string, HarnessAgentSessionRef>()
+  private readonly freshness = new HarnessInputFreshness()
   private readonly waiters = new Map<
     string,
     { resolve: (answer: HarnessDecisionAnswer) => void; reject: (error: Error) => void }
@@ -89,7 +93,12 @@ export class HarnessRunEngine implements HarnessStepRuntime {
       return
     }
     this.controller.abort()
-    this.closeTablessSessions()
+    // Nobody else would stop a session the run started without a tab.
+    for (const step of this.run.steps) {
+      if (step.status !== 'done' && step.session?.kind === 'structured' && step.session.tabless) {
+        this.deps.closeSession?.(step.session)
+      }
+    }
     for (const waiter of this.waiters.values()) {
       waiter.reject(new HarnessRunStopped())
     }
@@ -138,12 +147,24 @@ export class HarnessRunEngine implements HarnessStepRuntime {
 
   finishStep(step: HarnessRunStep, patch: Partial<HarnessRunStep>): void {
     Object.assign(step, patch, { endedAt: Date.now() })
-    this.run.vars.historial = appendHistory(this.run.vars.historial, step)
+    this.writeVar('historial', appendHistory(this.run.vars.historial, step))
     this.touch()
+  }
+
+  writeVar(key: string, value: string): void {
+    this.freshness.write(this.run.vars, key, value)
+  }
+
+  inputContext(node: Extract<HarnessNode, { inputs: string[] }>): HarnessContextEntry[] {
+    return this.freshness.context(this.run.vars, node)
   }
 
   ask(step: HarnessRunStep, decision: HarnessDecisionRequest): Promise<HarnessDecisionAnswer> {
     this.assertRunning()
+    const escalation = harnessEscalationTarget(this.run.flow, step.nodeId)
+    if (escalation) {
+      return escalateDecision(this, step, decision, escalation)
+    }
     const pending: HarnessPendingDecision = {
       ...decision,
       id: `${this.run.id}-d${++this.decisionCounter}`,
@@ -185,14 +206,6 @@ export class HarnessRunEngine implements HarnessStepRuntime {
       },
       request
     )
-  }
-
-  private closeTablessSessions(): void {
-    for (const step of this.run.steps) {
-      if (step.status !== 'done' && step.session?.kind === 'structured' && step.session.tabless) {
-        this.deps.closeSession?.(step.session)
-      }
-    }
   }
 
   private isFinished(): boolean {
@@ -239,6 +252,7 @@ export class HarnessRunEngine implements HarnessStepRuntime {
   private launchNode(node: HarnessNode): void {
     this.active.set(node.id, (this.active.get(node.id) ?? 0) + 1)
     void this.execute(node)
+      .catch(followRedirect)
       .then((route) => {
         this.release(node.id)
         if ('goto' in route) {
@@ -313,17 +327,8 @@ export class HarnessRunEngine implements HarnessStepRuntime {
         return executeHumanNode(this, node)
       case 'waves':
         return executeWavesNode(this, node)
-      case 'end': {
-        const step = this.addStep({
-          nodeId: node.id,
-          taskId: null,
-          title: node.title,
-          agent: null,
-          status: 'running'
-        })
-        this.finishStep(step, { status: 'done' })
-        return null
-      }
+      case 'end':
+        return executeEndNode(this, node)
     }
   }
 }

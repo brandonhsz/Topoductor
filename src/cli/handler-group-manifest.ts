@@ -215,6 +215,7 @@ export const HANDLER_GROUPS: readonly HandlerGroup[] = [
     keys: [
       'harness status',
       'harness complete',
+      'harness start',
       'harness wait',
       'harness answer',
       'harness guard',

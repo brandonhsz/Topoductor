@@ -3,6 +3,7 @@ import type {
   HarnessChatCompletion,
   HarnessDecisionAnswer,
   HarnessRun,
+  HarnessRunStartRequest,
   HarnessRunSummary
 } from '../../shared/harness/harness-run-types'
 
@@ -11,6 +12,7 @@ type HarnessCaller = { sessionId: string | null; worktreeId: string | null }
 /** What RPC methods, hooks and launches need from the run service, without importing the engine. */
 export type HarnessChatRuns = {
   list: () => Promise<HarnessRunSummary[]>
+  start: (request: HarnessRunStartRequest) => Promise<HarnessRun>
   findChatRun: (caller: HarnessCaller) => Promise<HarnessRun | null>
   bindChatSession: (runId: string, sessionId: string) => void
   completeChat: (runId: string, completion: HarnessChatCompletion) => boolean

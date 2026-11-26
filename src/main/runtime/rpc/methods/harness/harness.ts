@@ -3,6 +3,7 @@ import {
   HarnessAnswerParams,
   HarnessCompleteParams,
   HarnessGuardParams,
+  HarnessStartParams,
   HarnessStatusParams,
   HarnessSubagentResultParams,
   HarnessWaitParams
@@ -12,6 +13,12 @@ import {
   type HarnessChatStatus
 } from '../../../../../shared/harness/harness-chat-status'
 import type { HarnessRun } from '../../../../../shared/harness/harness-run-types'
+import { harnessChatInstructions } from '../../../../../shared/harness/harness-chat-instructions'
+import {
+  harnessFlowProblems,
+  harnessStartFieldProblems
+} from '../../../../../shared/harness/harness-flow-problems'
+import { getHarnessFlow } from '../../../../harness/harness-flow-store'
 import type { HarnessSubagentResult } from '../../../../../shared/harness/harness-subagent-contract'
 import { harnessEditDenial } from '../../../../harness/harness-edit-guard'
 import {
@@ -55,7 +62,41 @@ function hasWorkForChat(run: HarnessRun): boolean {
   )
 }
 
+export type HarnessStartResult = { instructions: string; status: HarnessChatStatus }
+
 export const HARNESS_METHODS = [
+  defineMethod({
+    name: 'harness.start',
+    permission: 'workspace',
+    params: HarnessStartParams,
+    handler: async (params, { runtime }): Promise<HarnessStartResult> => {
+      const service = requireService()
+      const worktreeId = await callerWorkspace(runtime, params)
+      if (!worktreeId) {
+        throw new Error('harness_no_workspace: run it inside a workspace chat or pass --worktree')
+      }
+      if (await service.findChatRun({ sessionId: params.sessionId ?? null, worktreeId })) {
+        throw new Error('harness_run_active: this workspace already drives a Harness flow')
+      }
+      const flow = await getHarnessFlow(params.flowId)
+      if (!flow) {
+        throw new Error(`harness_flow_not_found: ${params.flowId}`)
+      }
+      const fields = params.fields ?? {}
+      const problems = [...harnessFlowProblems(flow), ...harnessStartFieldProblems(flow, fields)]
+      if (problems.length > 0) {
+        throw new Error(`harness_invalid_start: ${problems.join(' ')}`)
+      }
+      const run = await service.start({
+        flowId: flow.id,
+        worktreeId,
+        fields,
+        mode: 'chat',
+        chatSessionId: params.sessionId ?? null
+      })
+      return { instructions: harnessChatInstructions(run.flow), status: harnessChatStatus(run) }
+    }
+  }),
   defineMethod({
     name: 'harness.guard',
     permission: 'workspace',

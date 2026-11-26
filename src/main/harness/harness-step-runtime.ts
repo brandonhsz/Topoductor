@@ -1,5 +1,6 @@
 import type { TuiAgent } from '../../shared/agent-launch/catalog/tui-agent'
-import type { HarnessNodeRunner } from '../../shared/harness/harness-flow-types'
+import type { HarnessContextEntry } from '../../shared/harness/harness-agent-prompt'
+import type { HarnessNode, HarnessNodeRunner } from '../../shared/harness/harness-flow-types'
 import type { HarnessSubagentResult } from '../../shared/harness/harness-subagent-contract'
 import type {
   HarnessChatCompletion,
@@ -14,10 +15,18 @@ export const RETRY = 'Reintentar'
 export const SKIP = 'Omitir y seguir'
 export const STOP = 'Detener'
 export const CONTINUE = 'Continuar'
+export const BACK_TO_PLAN = 'Volver al plan'
 
 export class HarnessRunStopped extends Error {
   constructor() {
     super('Harness run stopped')
+  }
+}
+
+/** Thrown by an executor to leave its node for `nodeId` instead of following its edges. */
+export class HarnessRedirect extends Error {
+  constructor(readonly nodeId: string) {
+    super(`Harness redirect to ${nodeId}`)
   }
 }
 
@@ -66,6 +75,9 @@ export type HarnessStepRuntime = {
     runner?: HarnessNodeRunner
   }) => HarnessRunStep
   finishStep: (step: HarnessRunStep, patch: Partial<HarnessRunStep>) => void
+  writeVar: (key: string, value: string) => void
+  /** The node's inputs as context, minus `freshInputs` it already received unchanged. */
+  inputContext: (node: Extract<HarnessNode, { inputs: string[] }>) => HarnessContextEntry[]
   ask: (step: HarnessRunStep, decision: HarnessDecisionRequest) => Promise<HarnessDecisionAnswer>
   /** Agent of the chat that drives a chat-mode run; null when unknown or not a chat. */
   chatProvider: () => Promise<TuiAgent | null>

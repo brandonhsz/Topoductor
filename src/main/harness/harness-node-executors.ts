@@ -1,6 +1,7 @@
-import { contextEntries, outcomeChoices } from '../../shared/harness/harness-agent-prompt'
+import { outcomeChoices } from '../../shared/harness/harness-agent-prompt'
 import type {
   HarnessAgentNode,
+  HarnessEndNode,
   HarnessHumanNode,
   HarnessNode,
   HarnessStartNode
@@ -67,9 +68,9 @@ export async function executeStartNode(
     for (const field of node.fields) {
       const previous = run.vars[field.key]
       if (previous) {
-        run.vars[`${field.key}_anterior`] = previous
+        rt.writeVar(`${field.key}_anterior`, previous)
       }
-      run.vars[field.key] = fields[field.key] ?? previous ?? ''
+      rt.writeVar(field.key, fields[field.key] ?? previous ?? '')
     }
   }
   rt.finishStep(step, {
@@ -94,14 +95,14 @@ export async function executeHumanNode(
     title: node.title,
     reason: 'human',
     prompt: node.prompt,
-    context: contextEntries(rt.run.vars, node.inputs),
+    context: rt.inputContext(node),
     choices: outcomeChoices(rt.run.flow, node.id, rt.run.vars),
     fields: []
   })
   const output = [answer.choice ? `Decisión: ${answer.choice}` : '', answer.text]
     .filter(Boolean)
     .join('\n\n')
-  rt.run.vars[node.outputKey] = output
+  rt.writeVar(node.outputKey, output)
   rt.finishStep(step, { status: 'done', output, outcome: answer.choice })
   return answer.choice
 }
@@ -118,16 +119,17 @@ export async function executeAgentNode(
     block: node.block,
     agent: node.agent,
     instructions: node.prompt,
-    context: contextEntries(rt.run.vars, node.inputs),
+    context: rt.inputContext(node),
     choices,
     sessionKey: node.reuseSession ? node.id : null,
     runner: node.runner,
     allowEdits: node.allowEdits
   })
   if (result === null) {
-    return null
+    // A skipped step that only leaves through labeled edges would silently end the run.
+    return choices.length > 0 ? askOutcomeAfterSkip(rt, node, choices) : null
   }
-  rt.run.vars[node.outputKey] = result.output
+  rt.writeVar(node.outputKey, result.output)
   if (choices.length === 0 || result.outcome) {
     return result.outcome
   }
@@ -141,6 +143,30 @@ export async function executeAgentNode(
   })
   result.step.outcome = answer.choice
   rt.touch()
+  return answer.choice
+}
+
+async function askOutcomeAfterSkip(
+  rt: HarnessStepRuntime,
+  node: HarnessAgentNode,
+  choices: string[]
+): Promise<string | null> {
+  const step = rt.addStep({
+    nodeId: node.id,
+    taskId: null,
+    title: node.title,
+    agent: null,
+    status: 'waiting'
+  })
+  const answer = await rt.ask(step, {
+    title: node.title,
+    reason: 'outcome',
+    prompt: 'Se omitió este paso. Elige cómo sigue el flujo.',
+    context: [],
+    choices,
+    fields: []
+  })
+  rt.finishStep(step, { status: 'done', outcome: answer.choice })
   return answer.choice
 }
 
@@ -168,4 +194,16 @@ export async function confirmExtraVisit(
   if (answer.choice === STOP) {
     rt.stopRun()
   }
+}
+
+export function executeEndNode(rt: HarnessStepRuntime, node: HarnessEndNode): null {
+  const step = rt.addStep({
+    nodeId: node.id,
+    taskId: null,
+    title: node.title,
+    agent: null,
+    status: 'running'
+  })
+  rt.finishStep(step, { status: 'done' })
+  return null
 }

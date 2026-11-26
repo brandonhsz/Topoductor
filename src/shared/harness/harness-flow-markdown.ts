@@ -42,7 +42,7 @@ function nodeSection(flow: HarnessFlow, node: HarnessNode): string {
       break
     case 'agent':
       lines.push(
-        `Agente: ${node.agent ? tuiAgentDisplayName(node.agent) : `el del flujo (${tuiAgentDisplayName(flow.defaultAgent)})`}. Recibe: ${node.inputs.join(', ') || '—'}. Entrega: \`${node.outputKey}\`.${node.joinAll ? ' Espera a todos los nodos anteriores.' : ''}`,
+        `Agente: ${node.agent ? tuiAgentDisplayName(node.agent) : `el del flujo (${tuiAgentDisplayName(flow.defaultAgent)})`}. Recibe: ${node.inputs.join(', ') || '—'}.${node.freshInputs?.length ? ` Solo si cambiaron: ${node.freshInputs.join(', ')}.` : ''} Entrega: \`${node.outputKey}\`.${node.joinAll ? ' Espera a todos los nodos anteriores.' : ''}`,
         '',
         node.prompt
       )
@@ -71,6 +71,13 @@ function nodeSection(flow: HarnessFlow, node: HarnessNode): string {
   return lines.join('\n')
 }
 
+function escalationNote(flow: HarnessFlow): string {
+  const target = flow.nodes.find((node) => node.id === flow.escalationNode)
+  return target
+    ? `Nadie atiende esta corrida: si un paso falla, no elige salida o llega a su límite, sigue en «${target.title}» en vez de esperar a una persona.`
+    : ''
+}
+
 /** The flow as instructions any agent can follow without Topo driving it. */
 export function harnessFlowToMarkdown(flow: HarnessFlow): string {
   const diagram = [
@@ -94,6 +101,7 @@ export function harnessFlowToMarkdown(flow: HarnessFlow): string {
     `# ${flow.name}`,
     flow.description,
     'Todo trabajo sigue este grafo. Ningún nodo se salta.',
+    escalationNote(flow),
     `\`\`\`mermaid\n${diagram}\n\`\`\``,
     flow.sharedInstructions ? `## Reglas para todos los agentes\n${flow.sharedInstructions}` : '',
     harnessProjectSection(flow),

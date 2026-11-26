@@ -17640,6 +17640,13 @@
               "category": "Mantenimiento",
               "name": "Control de mantenimiento cada hora",
               "prompt": "Compruebe si hay trabajos atascados, archivos generados obsoletos, validación fallida y cualquier cosa que necesite atención humana. Informe solo problemas procesables."
+            },
+            "avenapmTicket": {
+              "category": "Avena PM",
+              "label": "Ticket automático",
+              "description": "Cada hora toma el siguiente ticket sin dueño de la cola y lo lleva por el flujo de tickets de Harness hasta el PR.",
+              "name": "Ticket automático de Avena PM",
+              "prompt": "Toma el siguiente ticket de la cola de operación de Avena PM y resuélvelo con el flujo de Harness «Ticket automático (Avena PM)».\n1. Lista la cola con `listar_tareas_cola`. Elige el ticket más antiguo en «Por hacer», sin dueño, que pertenezca a este repositorio. Si no hay ninguno, responde «Sin tickets» y termina sin iniciar nada.\n2. Inicia el flujo en este workspace: `topo harness start --flow avenapm-ticket --field ticket=<ID> --field correo=<tu-correo>` (usa `$TOPO_CLI_COMMAND` si `topo` no está en el PATH). Reemplaza <tu-correo> en este prompt por el correo con el que tomas tickets.\n3. Sigue el protocolo que imprime hasta que el flujo termine: `topo harness status`, haz la tarea, repórtala con `topo harness complete` y corre `topo harness wait` mientras Topo corre pasos con otros agentes.\nNadie va a contestar preguntas durante esta corrida: nunca esperes a una persona. Cuando el flujo no puede seguir, comenta y pausa el ticket por su cuenta."
             }
           },
           "schedule": {
@@ -20919,8 +20926,13 @@
         "removeRole": "Quitar rol",
         "rolePrompt": "Prompt del rol",
         "addRole": "Agregar rol",
+        "escalationNode": "Cuando nadie está mirando",
+        "escalationNodeHint": "Las fallas, las salidas sin elegir y los límites de ciclos van a este nodo en vez de esperarte. Los nodos humanos siguen preguntando.",
+        "escalationWait": "Esperarme",
         "inputs": "Recibe",
         "inputsHint": "Variables que recibe como contexto, separadas por comas. Disponibles: {{vars}}",
+        "freshInputs": "Solo si cambió",
+        "freshInputsHint": "Variables recibidas que solo se vuelven a pasar cuando cambian, para que un ciclo no reenvíe hallazgos ya atendidos.",
         "output": "Entrega en la variable",
         "outputHint": "Los nodos siguientes reciben la respuesta final de este nodo con este nombre.",
         "joinAll": "Esperar a todos los nodos anteriores",

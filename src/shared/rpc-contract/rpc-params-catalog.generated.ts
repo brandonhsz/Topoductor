@@ -385,6 +385,7 @@ import {
   HarnessAnswerParams,
   HarnessCompleteParams,
   HarnessGuardParams,
+  HarnessStartParams,
   HarnessStatusParams,
   HarnessSubagentResultParams,
   HarnessWaitParams
@@ -1226,6 +1227,7 @@ export const RPC_PARAMS_BY_METHOD = {
   'harness.flows.list': HarnessFlowsListParams,
   'harness.flows.save': HarnessFlowsSaveParams,
   'harness.guard': HarnessGuardParams,
+  'harness.start': HarnessStartParams,
   'harness.status': HarnessStatusParams,
   'harness.subagentResult': HarnessSubagentResultParams,
   'harness.wait': HarnessWaitParams,

@@ -10,6 +10,12 @@ export const HarnessCaller = z.object({
 
 export const HarnessStatusParams = HarnessCaller.strict()
 
+/** Starts a chat-driven run in the caller's workspace, e.g. from a scheduled automation. */
+export const HarnessStartParams = HarnessCaller.extend({
+  flowId: z.string().min(1).max(256),
+  fields: z.record(z.string().min(1).max(64), z.string().max(MAX_OUTPUT)).optional()
+}).strict()
+
 export const HarnessCompleteParams = HarnessCaller.extend({
   taskId: z.string().min(1).max(256),
   output: z.string().max(MAX_OUTPUT),

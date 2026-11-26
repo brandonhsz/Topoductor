@@ -191,3 +191,47 @@ describe('harness answer', () => {
     })
   })
 })
+
+describe('harness start', () => {
+  beforeEach(() => {
+    vi.stubEnv('TOPO_AGENT_SESSION_ID', 'chat-7')
+    vi.stubEnv('TOPO_WORKTREE_ID', '')
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.restoreAllMocks()
+  })
+
+  it('starts the flow with its fields and prints the protocol before the first step', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const { client, call } = harnessClient({
+      instructions: '# Flujo de trabajo: Tickets',
+      status: {
+        runId: 'run-1',
+        flowName: 'Tickets',
+        status: 'running',
+        tasks: [],
+        decisions: [],
+        topoWorking: false,
+        error: null
+      }
+    })
+    await HARNESS_HANDLERS['harness start']({
+      flags: new Map<string, string | boolean>([
+        ['flow', 'avenapm-ticket'],
+        ['field', 'ticket=OP-142']
+      ]),
+      client,
+      cwd: '/tmp/worktree',
+      json: false
+    })
+
+    expect(call).toHaveBeenCalledWith('harness.start', {
+      sessionId: 'chat-7',
+      flowId: 'avenapm-ticket',
+      fields: { ticket: 'OP-142' }
+    })
+    expect(String(log.mock.calls[0]?.[0])).toMatch(/^# Flujo de trabajo: Tickets/)
+  })
+})

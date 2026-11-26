@@ -18437,6 +18437,13 @@
               "category": "Maintenance",
               "name": "Hourly maintenance check",
               "prompt": "Check for stuck work, stale generated files, failing validation, and anything that needs human attention. Report only actionable issues."
+            },
+            "avenapmTicket": {
+              "category": "Avena PM",
+              "label": "Automatic ticket",
+              "description": "Each hour, take the next unowned ticket from the queue and run it through the Harness ticket flow up to the PR.",
+              "name": "Automatic Avena PM ticket",
+              "prompt": "Take the next ticket from the Avena PM operations queue and resolve it with the Harness flow «Ticket automático (Avena PM)».\n1. List the queue with `listar_tareas_cola`. Pick the oldest ticket in «Por hacer», with no owner, that belongs to this repository. If there is none, reply «Sin tickets» and stop without starting anything.\n2. Start the flow in this workspace: `topo harness start --flow avenapm-ticket --field ticket=<ID> --field correo=<your-email>` (use `$TOPO_CLI_COMMAND` if `topo` is not on the PATH). Replace <your-email> in this prompt with the email you take tickets with.\n3. Follow the protocol it prints until the flow ends: `topo harness status`, do the task, report it with `topo harness complete`, and run `topo harness wait` while Topo runs steps with other agents.\nNobody will answer questions during this run: never wait for a person. When the flow cannot go on, it comments and pauses the ticket on its own."
             }
           },
           "list": {
@@ -21906,8 +21913,13 @@
         "removeRole": "Remove role",
         "rolePrompt": "Role prompt",
         "addRole": "Add role",
+        "escalationNode": "When nobody is watching",
+        "escalationNodeHint": "Failures, missing outcomes and loop limits go to this node instead of waiting for you. Human nodes still ask.",
+        "escalationWait": "Wait for me",
         "inputs": "Receives",
         "inputsHint": "Variables passed as context, separated by commas. Available: {{vars}}",
+        "freshInputs": "Only when new",
+        "freshInputsHint": "Received variables passed again only after they change, so a loop never re-sends findings it already handled.",
         "output": "Delivers to variable",
         "outputHint": "Later nodes receive this node’s final answer under this name.",
         "joinAll": "Wait for every previous node",
