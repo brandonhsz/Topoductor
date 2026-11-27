@@ -1,6 +1,9 @@
 import { Readable } from 'node:stream'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { parseArgs, specPaths } from '../args'
+import { getRepeatedStringFlag } from '../flags'
 import type { RuntimeClient } from '../runtime-client'
+import { HARNESS_COMMAND_SPECS } from '../specs/harness'
 import { HARNESS_HANDLERS } from './harness'
 
 const MARKED_PROMPT = 'Revisa el plan.\n[topo-harness-task:critic-1]'
@@ -233,5 +236,18 @@ describe('harness start', () => {
       fields: { ticket: 'OP-142' }
     })
     expect(String(log.mock.calls[0]?.[0])).toMatch(/^# Flujo de trabajo: Tickets/)
+  })
+
+  it.each([['start'], ['answer']])('keeps every --field given to harness %s', (command) => {
+    const paths = HARNESS_COMMAND_SPECS.flatMap(specPaths)
+    const parsed = parseArgs(
+      ['harness', command, '--field', 'ticket=OP-142', '--field=correo=dev@example.com'],
+      paths,
+      HARNESS_COMMAND_SPECS
+    )
+    expect(getRepeatedStringFlag(parsed.flags, 'field')).toEqual([
+      'ticket=OP-142',
+      'correo=dev@example.com'
+    ])
   })
 })
