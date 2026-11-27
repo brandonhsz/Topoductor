@@ -19,6 +19,8 @@ import {
   toSshExecutionHostId
 } from '../../../../shared/execution-host'
 import { buildExecutionHostRegistry } from '../../../../shared/execution-host/execution-host-registry'
+import type { RemoteDesktopHostId } from '../../../../shared/remote-desktop/remote-desktop-contract'
+import { openRemoteDesktop } from './RemoteDesktopStatusAction'
 import { pickerExecutionHosts } from '../../../../shared/execution-host/managed-topod-execution-host'
 import {
   isListedRemoteServer,
@@ -64,6 +66,10 @@ export function SshStatusSegment({
   const recordFeatureInteraction = useAppStore((s) => s.recordFeatureInteraction)
   const [menuOpen, setMenuOpen] = useState(false)
   const [findOpen, setFindOpen] = useState(false)
+  const openDesktop = useCallback((hostId: RemoteDesktopHostId, label: string) => {
+    setMenuOpen(false)
+    openRemoteDesktop(hostId, label)
+  }, [])
   const triggerRef = useRef<HTMLButtonElement>(null)
   const [repairTarget, setRepairTarget] = useState<{ id: string; label: string } | null>(null)
 
@@ -263,7 +269,7 @@ export function SshStatusSegment({
             onConnect={() => connectRuntimeHost(host.id)}
             onDisconnect={() => disconnectRuntimeHost(host.id)}
             onRecover={() => openRecovery(host)}
-            remoteDesktopHostId={toRuntimeExecutionHostId(host.id)}
+            onOpenRemoteDesktop={() => openDesktop(toRuntimeExecutionHostId(host.id), host.label)}
           />
         ))}
         {connectedTargets.map((target) => (
@@ -272,6 +278,7 @@ export function SshStatusSegment({
             targetId={target.id}
             label={target.label}
             status={target.status}
+            onOpenRemoteDesktop={() => openDesktop(toSshExecutionHostId(target.id), target.label)}
           />
         ))}
         {inactiveRuntimeHosts.map((host) => (
@@ -285,7 +292,7 @@ export function SshStatusSegment({
             onConnect={() => connectRuntimeHost(host.id)}
             onDisconnect={() => disconnectRuntimeHost(host.id)}
             onRecover={() => openRecovery(host)}
-            remoteDesktopHostId={toRuntimeExecutionHostId(host.id)}
+            onOpenRemoteDesktop={() => openDesktop(toRuntimeExecutionHostId(host.id), host.label)}
           />
         ))}
         {disconnectedTargets.map((target) => (
@@ -294,6 +301,7 @@ export function SshStatusSegment({
             targetId={target.id}
             label={target.label}
             status={target.status}
+            onOpenRemoteDesktop={() => openDesktop(toSshExecutionHostId(target.id), target.label)}
           />
         ))}
         {hiddenIdleCount > 0 ? (

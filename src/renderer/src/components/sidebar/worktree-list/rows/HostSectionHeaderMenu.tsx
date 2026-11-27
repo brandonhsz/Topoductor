@@ -304,7 +304,7 @@ export function HostSectionHeaderMenu({ row }: { row: HostHeaderRow }): React.JS
           <DropdownMenuItem
             onSelect={() => {
               if (isRemoteDesktopHostId(row.hostId)) {
-                void window.api.remoteDesktop.openWindow(row.hostId, row.label)
+                useAppStore.getState().openRemoteDesktopPage(row.hostId, row.label)
               }
             }}
           >

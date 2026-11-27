@@ -16,7 +16,6 @@ import {
   useSshConnectInFlight
 } from '@/ssh/ssh-connect-in-flight'
 import type { SshConnectionStatus } from '../../../../shared/ssh-types'
-import { toSshExecutionHostId } from '../../../../shared/execution-host'
 import { RemoteDesktopStatusAction } from './RemoteDesktopStatusAction'
 
 export async function connectSshTargetFromStatusMenu(targetId: string): Promise<void> {
@@ -41,11 +40,13 @@ export async function connectSshTargetFromStatusMenu(targetId: string): Promise<
 export function SshTargetStatusRow({
   targetId,
   label,
-  status
+  status,
+  onOpenRemoteDesktop
 }: {
   targetId: string
   label: string
   status: SshConnectionStatus
+  onOpenRemoteDesktop?: () => void
 }): React.JSX.Element {
   const t = useTranslate()
   const [busy, setBusy] = useState(false)
@@ -94,8 +95,8 @@ export function SshTargetStatusRow({
           <span>{STATUS_LABELS[status]}</span>
         </div>
       </div>
-      {status === 'connected' && !busy ? (
-        <RemoteDesktopStatusAction hostId={toSshExecutionHostId(targetId)} label={label} />
+      {status === 'connected' && !busy && onOpenRemoteDesktop ? (
+        <RemoteDesktopStatusAction onOpen={onOpenRemoteDesktop} />
       ) : null}
       {busy || connectInFlight ? (
         <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />

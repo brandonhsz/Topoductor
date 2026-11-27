@@ -20,12 +20,7 @@ import type {
   RuntimeHostBlockedCopy,
   RuntimeHostBlockedRecovery
 } from './remote-host-connection-status'
-import type { RemoteDesktopHostId } from '../../../../shared/remote-desktop/remote-desktop-contract'
-import {
-  isRemoteDesktopAvailable,
-  openRemoteDesktopWindow,
-  RemoteDesktopStatusAction
-} from './RemoteDesktopStatusAction'
+import { isRemoteDesktopAvailable, RemoteDesktopStatusAction } from './RemoteDesktopStatusAction'
 
 function runtimeStatusLabel(state: RuntimeHostConnectionState, t: Translate = translate): string {
   switch (state) {
@@ -159,7 +154,7 @@ export function RuntimeHostStatusRow({
   onConnect,
   onDisconnect,
   onRecover,
-  remoteDesktopHostId
+  onOpenRemoteDesktop
 }: {
   label: string
   state: RuntimeHostConnectionState
@@ -171,7 +166,7 @@ export function RuntimeHostStatusRow({
   onDisconnect?: () => Promise<void>
   onRecover?: () => void
   /** Offers the host's screen; omitted while the host refuses this client. */
-  remoteDesktopHostId?: RemoteDesktopHostId
+  onOpenRemoteDesktop?: () => void
 }): React.JSX.Element {
   const t = useTranslate()
   const intlLocale = useIntlLocale()
@@ -191,7 +186,7 @@ export function RuntimeHostStatusRow({
   const transportAction = isConnectedRuntimeHostState(state) ? onDisconnect : onConnect
   const action = repairs ? onRecover : transportAction
   const hasSubmenu = Boolean(detail || blocked)
-  const desktopHostId = blocked ? undefined : remoteDesktopHostId
+  const openDesktop = blocked ? undefined : onOpenRemoteDesktop
 
   const handleAction = useCallback(async () => {
     if (repairs) {
@@ -314,7 +309,7 @@ export function RuntimeHostStatusRow({
     return (
       <div className="flex items-center gap-2.5 px-2 py-1.5">
         {rowDetails}
-        {desktopHostId ? <RemoteDesktopStatusAction hostId={desktopHostId} label={label} /> : null}
+        {openDesktop ? <RemoteDesktopStatusAction onOpen={openDesktop} /> : null}
         {actionButton}
       </div>
     )
@@ -331,9 +326,7 @@ export function RuntimeHostStatusRow({
     >
       <DropdownMenuSubTrigger className="gap-2.5 px-2 py-1.5" hideChevron>
         {rowDetails}
-        {desktopHostId ? (
-          <RemoteDesktopStatusAction hostId={desktopHostId} label={label} insideMenuTrigger />
-        ) : null}
+        {openDesktop ? <RemoteDesktopStatusAction onOpen={openDesktop} insideMenuTrigger /> : null}
         {actionButton}
       </DropdownMenuSubTrigger>
       <DropdownMenuSubContent className="w-[min(18rem,calc(100vw-1rem))] p-1.5">
@@ -353,8 +346,8 @@ export function RuntimeHostStatusRow({
         {diagnosticLabel ? (
           <div className="px-1.5 pb-1.5 text-[10px] text-muted-foreground">{diagnosticLabel}</div>
         ) : null}
-        {desktopHostId && isRemoteDesktopAvailable() ? (
-          <DropdownMenuItem onSelect={() => openRemoteDesktopWindow(desktopHostId, label)}>
+        {openDesktop && isRemoteDesktopAvailable() ? (
+          <DropdownMenuItem onSelect={openDesktop}>
             {t('remoteDesktop.open', 'Open remote desktop')}
           </DropdownMenuItem>
         ) : null}

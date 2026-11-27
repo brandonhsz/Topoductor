@@ -116,6 +116,20 @@ export function createUiViewActions(set: UISliceSet, get: UISliceGet): Partial<U
       set((state) => ({
         activeView: state.previousViewBeforeHarness
       })),
+    openRemoteDesktopPage: (hostId, label) =>
+      set((state) => ({
+        activeView: 'remote-desktop',
+        remoteDesktopPage: { hostId, label },
+        previousViewBeforeRemoteDesktop:
+          state.activeView === 'remote-desktop'
+            ? state.previousViewBeforeRemoteDesktop
+            : state.activeView
+      })),
+    closeRemoteDesktopPage: () =>
+      set((state) => ({
+        activeView: state.previousViewBeforeRemoteDesktop,
+        remoteDesktopPage: null
+      })),
     setNewWorkspaceDraft: (draft) => set({ newWorkspaceDraft: draft }),
     clearNewWorkspaceDraft: () => set({ newWorkspaceDraft: null })
   }

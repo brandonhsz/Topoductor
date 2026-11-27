@@ -1,8 +1,14 @@
 import { useTranslate } from '@/i18n/use-translate'
+import { useAppStore } from '@/store'
 import type { RemoteDesktopHostId } from '../../../../shared/remote-desktop/remote-desktop-contract'
 
 export function openRemoteDesktopWindow(hostId: RemoteDesktopHostId, label: string): void {
   void window.api?.remoteDesktop?.openWindow(hostId, label)
+}
+
+/** Shows the host's screen embedded in the main window. */
+export function openRemoteDesktop(hostId: RemoteDesktopHostId, label: string): void {
+  useAppStore.getState().openRemoteDesktopPage(hostId, label)
 }
 
 /** Web and mobile clients have no remote desktop bridge. */
@@ -12,12 +18,11 @@ export function isRemoteDesktopAvailable(): boolean {
 
 /** Text action beside a host's Connect/Disconnect, matching its sibling buttons. */
 export function RemoteDesktopStatusAction({
-  hostId,
-  label,
+  onOpen,
   insideMenuTrigger = false
 }: {
-  hostId: RemoteDesktopHostId
-  label: string
+  /** The menu owner opens the desktop and closes itself so the page is reachable. */
+  onOpen: () => void
   /** A submenu trigger is already interactive, so the action renders as a span there. */
   insideMenuTrigger?: boolean
 }): React.JSX.Element | null {
@@ -31,7 +36,7 @@ export function RemoteDesktopStatusAction({
     onPointerDown: (event: React.PointerEvent) => event.stopPropagation(),
     onClick: (event: React.MouseEvent) => {
       event.stopPropagation()
-      openRemoteDesktopWindow(hostId, label)
+      onOpen()
     }
   }
   const className =

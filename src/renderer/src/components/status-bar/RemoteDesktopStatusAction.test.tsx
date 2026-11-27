@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { RuntimeHostStatusRow } from './RuntimeHostStatusRow'
 
+vi.mock('@/store', () => ({ useAppStore: { getState: () => ({}) } }))
 vi.mock('@/components/ui/dropdown-menu', () => {
   const content = ({ children }: PropsWithChildren) => <div>{children}</div>
   return {
@@ -18,40 +19,29 @@ vi.mock('@/components/ui/dropdown-menu', () => {
   }
 })
 
-function stubRemoteDesktopBridge(): ReturnType<typeof vi.fn> {
-  const openWindow = vi.fn(async () => undefined)
-  vi.stubGlobal('api', { remoteDesktop: { openWindow } })
-  return openWindow
-}
-
 afterEach(() => {
   cleanup()
   vi.unstubAllGlobals()
 })
 
-describe('remote desktop in the host status menu', () => {
-  it('opens the server desktop from its status row', () => {
-    const openWindow = stubRemoteDesktopBridge()
-    render(
-      <RuntimeHostStatusRow
-        label="Topoductor"
-        state="connected"
-        remoteDesktopHostId="runtime:env-1"
-      />
-    )
+describe('remote desktop in a host status row', () => {
+  it('opens the server desktop from its row', () => {
+    vi.stubGlobal('api', { remoteDesktop: {} })
+    const open = vi.fn()
+    render(<RuntimeHostStatusRow label="Topoductor" state="connected" onOpenRemoteDesktop={open} />)
 
     fireEvent.click(screen.getByRole('button', { name: 'Desktop' }))
 
-    expect(openWindow).toHaveBeenCalledWith('runtime:env-1', 'Topoductor')
+    expect(open).toHaveBeenCalledTimes(1)
   })
 
   it('offers no desktop for a server that refused this client', () => {
-    stubRemoteDesktopBridge()
+    vi.stubGlobal('api', { remoteDesktop: {} })
     render(
       <RuntimeHostStatusRow
         label="Topoductor"
         state="connected"
-        remoteDesktopHostId="runtime:env-1"
+        onOpenRemoteDesktop={vi.fn()}
         blocked={{
           label: 'Access revoked',
           summary: 'Access revoked',
@@ -67,11 +57,7 @@ describe('remote desktop in the host status menu', () => {
   it('offers no desktop on clients without the bridge', () => {
     vi.stubGlobal('api', {})
     render(
-      <RuntimeHostStatusRow
-        label="Topoductor"
-        state="connected"
-        remoteDesktopHostId="runtime:env-1"
-      />
+      <RuntimeHostStatusRow label="Topoductor" state="connected" onOpenRemoteDesktop={vi.fn()} />
     )
 
     expect(screen.queryByRole('button', { name: 'Desktop' })).toBeNull()
