@@ -572,6 +572,11 @@ import {
 import { RecipeVmWakeParams } from './recipe-vm-wake-params'
 import { ReferenceFind, ReferenceList } from './reference-params'
 import {
+  RemoteDesktopCloseParams,
+  RemoteDesktopStreamParams,
+  RemoteDesktopWriteParams
+} from './remote-desktop-params'
+import {
   ProjectGroupCreate,
   ProjectGroupImportNested,
   ProjectGroupMoveProject,
@@ -1457,6 +1462,9 @@ export const RPC_PARAMS_BY_METHOD = {
   'projectHostSetup.update': ProjectHostSetupUpdate,
   'reference.find': ReferenceFind,
   'reference.list': ReferenceList,
+  'remoteDesktop.close': RemoteDesktopCloseParams,
+  'remoteDesktop.stream': RemoteDesktopStreamParams,
+  'remoteDesktop.write': RemoteDesktopWriteParams,
   'repo.add': RepoPath,
   'repo.addRemote': RepoAddRemote,
   'repo.baseRefDefault': RepoSelector,

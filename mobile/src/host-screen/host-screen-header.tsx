@@ -4,6 +4,7 @@ import {
   CalendarClock,
   ChevronLeft,
   List,
+  Monitor,
   MoreHorizontal,
   PanelLeftClose,
   SquareTerminal,
@@ -125,6 +126,14 @@ export function HostScreenHeader({
       disabled: disconnected,
       closeBeforePress: true,
       onPress: () => actions.navigateFromHostList(`${hostPath}/accounts`)
+    },
+    {
+      id: 'remote-desktop',
+      label: t('hostScreen.hostScreenHeader.remoteDesktop', 'Remote desktop'),
+      icon: Monitor,
+      disabled: disconnected,
+      closeBeforePress: true,
+      onPress: () => actions.navigateFromHostList(`${hostPath}/remote-desktop`)
     },
     ...(floatingWorkspaceEnabled
       ? [

@@ -679,7 +679,8 @@
       "accounts": "Accounts",
       "tasks": "Tasks",
       "moreActions": "More actions",
-      "automations": "Automations"
+      "automations": "Automations",
+      "remoteDesktop": "Remote desktop"
     },
     "hostScreenOverlays": {
       "deleteWorktree": "Delete Worktree",
@@ -822,7 +823,8 @@
       "changes": "Changes",
       "pullRequest": "Pull Request",
       "workspace": "Workspace",
-      "automations": "Automations"
+      "automations": "Automations",
+      "remoteDesktop": "Remote desktop"
     }
   },
   "notifications": {
@@ -4877,6 +4879,27 @@
     "activity": {
       "needsWindow": "Couldn’t update. Open Topo on {{desktop}}.",
       "failed": "Couldn’t update the agent list."
+    }
+  },
+  "remoteDesktop": {
+    "title": "Remote desktop",
+    "keyboard": "Keyboard",
+    "reconnect": "Reconnect",
+    "connecting": "Connecting…",
+    "connect": "Connect",
+    "username": "Username",
+    "password": "Password",
+    "credentialsAccount": "Sign in with an account on this computer. It is saved on this phone.",
+    "credentialsPassword": "Enter the screen sharing password. It is saved on this phone.",
+    "sessionLost": "The remote desktop connection closed.",
+    "hostTooOld": "Update Topo on this computer to open its remote desktop from your phone.",
+    "keys": {
+      "escape": "Esc",
+      "tab": "Tab",
+      "left": "Left arrow",
+      "up": "Up arrow",
+      "down": "Down arrow",
+      "right": "Right arrow"
     }
   }
 }
