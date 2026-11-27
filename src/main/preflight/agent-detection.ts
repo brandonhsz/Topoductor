@@ -1,4 +1,5 @@
 // Runtime preflight must stay independent of ipcMain registration.
+import { ghAuthStatusOutputIsSignedIn } from './gh-auth-status-output'
 import type {
   PathSource,
   ShellHydrationFailureReason
@@ -167,8 +168,7 @@ async function isGhAuthenticated(probe: CommandRuntime): Promise<boolean> {
     // Some nonzero auth results retain success markers; preserve compatibility with partial output.
     const stdout = (error as { stdout?: string }).stdout ?? ''
     const stderr = (error as { stderr?: string }).stderr ?? ''
-    const output = `${stdout}\n${stderr}`
-    return output.includes('Logged in') || output.includes('Active account: true')
+    return ghAuthStatusOutputIsSignedIn(`${stdout}\n${stderr}`)
   }
 }
 

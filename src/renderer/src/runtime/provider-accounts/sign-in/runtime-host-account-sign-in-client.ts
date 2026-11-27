@@ -10,8 +10,11 @@ import {
   type HostAccountSignInProvider,
   type HostAccountSignInStatus
 } from '../../../../../shared/host-account-sign-in-types'
-import { HOST_ACCOUNT_SIGN_IN_RUNTIME_CAPABILITY } from '../../../../../shared/account-runtime-capabilities'
-import { CODEX_LOGIN_CANCELLED_MESSAGE } from '../../../../../shared/codex-auth-errors'
+import {
+  CANCELLED_MESSAGE,
+  HOST_SIGN_IN_ROUTE,
+  PROVIDER_LABEL
+} from './host-account-sign-in-routes'
 import type { RuntimeClientTarget } from '../../../../../shared/runtime-client-target'
 import { classifyTerminalProcessInspectionFailure } from '../../../../../shared/terminal/pty/lifecycle/terminal-process-inspection'
 import { assertRuntimeEnvironmentCapability } from '../../rpc/compatibility/runtime-capability-proof'
@@ -27,11 +30,6 @@ const WAIT_TIMEOUT_MS = 35_000
 export const HOST_SIGN_IN_RETRY_WINDOW_MS = 80_000
 const RETRY_DELAY_MS = 2_000
 const NOT_ACTIVE = 'This sign-in is no longer active in this client.'
-const CANCELLED_MESSAGE: Record<HostAccountSignInProvider, string> = {
-  claude: 'Claude sign-in was cancelled.',
-  codex: CODEX_LOGIN_CANCELLED_MESSAGE
-}
-
 /** Per-provider host sign-in: checking → starting → following → settled. Register before await so Cancel persists until host names/acknowledges its flow, retrying after answers. Pin original pairing so another machine never receives the code. */
 type Attempt = {
   owner: EnvironmentTarget
@@ -109,15 +107,19 @@ async function deliverCancel(attempt: Attempt): Promise<void> {
   if (!flowId || attempt.cancelDelivered) {
     return
   }
-  advance(attempt, await call(attempt, 'accounts.hostSignInCancel', { flowId }))
+  advance(
+    attempt,
+    await call(attempt, `${HOST_SIGN_IN_ROUTE[attempt.provider].methods}Cancel`, { flowId })
+  )
   attempt.cancelDelivered = true
 }
 
 async function follow(attempt: Attempt): Promise<HostAccountSignInStatus> {
+  const route = HOST_SIGN_IN_ROUTE[attempt.provider]
   await assertRuntimeEnvironmentCapability(
     attempt.owner.environmentId,
-    HOST_ACCOUNT_SIGN_IN_RUNTIME_CAPABILITY,
-    'This server runs an older Topo that cannot add accounts from here. Update Topo on that server, or run `topo account add` in a terminal there.'
+    route.capability,
+    route.outdated
   )
   if (attempt.cancelRequested) {
     throw new Error(CANCELLED_MESSAGE[attempt.provider])
@@ -127,7 +129,7 @@ async function follow(attempt: Attempt): Promise<HostAccountSignInStatus> {
   advance(
     attempt,
     await retryLostAnswers(() =>
-      call(attempt, 'accounts.hostSignInStart', { provider: attempt.provider })
+      call(attempt, `${route.methods}Start`, { provider: attempt.provider })
     )
   )
   attempt.stage = 'following'
@@ -148,7 +150,7 @@ async function follow(attempt: Attempt): Promise<HostAccountSignInStatus> {
       await retryLostAnswers(() =>
         call(
           attempt,
-          'accounts.hostSignInWait',
+          `${route.methods}Wait`,
           { flowId: status.flowId, afterRevision: status.revision },
           WAIT_TIMEOUT_MS
         )
@@ -202,7 +204,7 @@ function runHostAccountSignIn(
   if (runningHostAccountSignInOwner(provider)) {
     return Promise.reject(
       new Error(
-        `A ${provider === 'claude' ? 'Claude' : 'Codex'} sign-in is still running on another server. Cancel or finish it there first.`
+        `A ${PROVIDER_LABEL[provider]} sign-in is still running on another server. Cancel or finish it there first.`
       )
     )
   }
@@ -287,6 +289,12 @@ export async function addCodexAccountOnHost(
     throw new Error('Codex signed in, but the server sent no account list.')
   }
   return status.codex
+}
+
+/** Signs `owner`'s own gh in to github.com through a device code opened on this device. */
+export async function signInGitHubOnHost(owner: EnvironmentTarget): Promise<string | null> {
+  const status = await runHostAccountSignIn(owner, 'github')
+  return status.github?.login ?? null
 }
 
 export async function submitHostAccountSignInCode(

@@ -233,6 +233,11 @@ export const HANDLER_GROUPS: readonly HandlerGroup[] = [
     }
   },
   {
+    name: 'github-sign-in',
+    keys: ['github login'],
+    load: async () => (await import('./handlers/github-sign-in.js')).GITHUB_SIGN_IN_HANDLERS
+  },
+  {
     name: 'avenapm',
     keys: ['avenapm queue'],
     load: async () => (await import('./handlers/avenapm.js')).AVENAPM_HANDLERS

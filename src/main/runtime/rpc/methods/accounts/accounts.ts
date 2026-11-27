@@ -37,7 +37,9 @@ function hostSignInFlows(runtime: TopoRuntimeService): HostAccountSignInFlows {
   let flows = hostSignIns.get(runtime)
   if (!flows) {
     flows = new HostAccountSignInFlows((provider, channel) =>
-      runtime.runHostAccountSignIn(provider, channel)
+      provider === 'github'
+        ? Promise.reject(new Error('GitHub signs in through github.hostSignInStart.'))
+        : runtime.runHostAccountSignIn(provider, channel)
     )
     hostSignIns.set(runtime, flows)
   }

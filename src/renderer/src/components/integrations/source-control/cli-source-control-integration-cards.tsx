@@ -12,6 +12,7 @@ import {
 import { getProviderAccountScope } from '../../provider-accounts/provider-account-scope'
 import { ProviderHostScopeControl } from '../../provider-accounts/ProviderHostScopeControl'
 import { usePreflightCardStatuses } from './source-control-preflight-card-status'
+import { GitHubHostSignInAction } from './GitHubHostSignInAction'
 import { translate } from '@/i18n/i18n'
 import { useTranslate, type Translate } from '@/i18n/use-translate'
 import { openAppHttpLink } from '@/lib/browser/navigation/app-http-link-open'
@@ -181,6 +182,9 @@ export function GitHubIntegrationCard(): React.JSX.Element {
               </div>
             </>
           )
+        ) : null}
+        {status === 'connected' || status === 'not-authenticated' ? (
+          <GitHubHostSignInAction connected={connected} onSignedIn={refresh} />
         ) : null}
       </ProviderAccountScopeDetails>
     </IntegrationCardShell>

@@ -40,6 +40,7 @@ export const ROOT_HELP_TEXT_PRIMARY = [
   'Hosts:',
   '  host list                 List targetable machines and how to name each one',
   '  host rm                   Remove a saved SSH target',
+  "  github login              Sign a host's gh in to GitHub with a device code",
   '',
   'Environments:',
   '  environment add           Save a remote Topo runtime from a pairing code',
