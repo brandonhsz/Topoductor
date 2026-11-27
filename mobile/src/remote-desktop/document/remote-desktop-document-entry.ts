@@ -7,12 +7,6 @@ import type {
 
 // Runs inside the native WebView: noVNC draws here; bytes and credentials travel through native.
 
-declare global {
-  interface Window {
-    ReactNativeWebView?: { postMessage: (message: string) => void }
-  }
-}
-
 const SEND_FLUSH_MS = 8
 const XK = {
   BackSpace: 0xff08,
@@ -27,7 +21,16 @@ const XK = {
 } as const
 
 function post(event: RemoteDesktopDocumentEvent): void {
-  window.ReactNativeWebView?.postMessage(JSON.stringify(event))
+  // react-native-webview injects this bridge before the document runs.
+  const bridge: unknown = 'ReactNativeWebView' in window ? window.ReactNativeWebView : null
+  if (
+    typeof bridge === 'object' &&
+    bridge !== null &&
+    'postMessage' in bridge &&
+    typeof bridge.postMessage === 'function'
+  ) {
+    bridge.postMessage(JSON.stringify(event))
+  }
 }
 
 function toBase64(bytes: Uint8Array): string {

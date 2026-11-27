@@ -59,6 +59,8 @@ export class RemoteDesktopSessionController {
       return
     }
     switch (event.type) {
+      case 'loaded':
+        return
       case 'send':
         this.outgoing.push(event.data)
         void this.pumpWrites()
@@ -75,8 +77,6 @@ export class RemoteDesktopSessionController {
         return
       case 'engineError':
         this.setState({ phase: 'error', message: event.message })
-        return
-      case 'loaded':
     }
   }
 
@@ -99,6 +99,8 @@ export class RemoteDesktopSessionController {
     }
     const event = parsed.data
     switch (event.type) {
+      case 'end':
+        return
       case 'ready':
         // A replayed stream after a reconnect is a fresh VNC connection; the viewer must restart with it.
         if (this.subscriptionId !== null && this.subscriptionId !== event.subscriptionId) {
@@ -125,8 +127,6 @@ export class RemoteDesktopSessionController {
       case 'error':
         this.dependencies.post({ type: 'remoteClosed', reason: event.message })
         this.setState({ phase: 'error', message: describeStreamRefusal(event) })
-        return
-      case 'end':
     }
   }
 
