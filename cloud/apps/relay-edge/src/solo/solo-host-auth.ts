@@ -103,7 +103,7 @@ export async function verifySoloProof(env: SoloEnv, origin: string, raw: unknown
   const unsigned = `${hostKeyB64url}.${expiresAt36}.${random}`
   const expectedId = `${unsigned}.${b64url(await derive(env, 'id', unsigned))}`
   if (!timingSafeEqualStr(expectedId, body.data.challengeId)) { return null }
-  const expiresAt = parseInt(expiresAt36, 36)
+  const expiresAt = Number.parseInt(expiresAt36, 36)
   if (!Number.isSafeInteger(expiresAt) || now > expiresAt) { return null }
   const hostPublicKey = fromB64(hostKeyB64url)
   if (hostPublicKey.byteLength !== 32) { return null }
