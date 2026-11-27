@@ -74,6 +74,7 @@ export async function exchangeRelayHostKeyAuthorization(input: {
   relayUrl: string
   keypair: E2EEKeypair
   fetch?: typeof globalThis.fetch
+  now?: () => number
 }): Promise<RelayAuthorization> {
   const fetchImpl = input.fetch ?? globalThis.fetch
   const challenge = await postRelayJson(
@@ -86,7 +87,8 @@ export async function exchangeRelayHostKeyAuthorization(input: {
     gatewayOrigin: input.relayUrl,
     hostFingerprint: deriveRelayHostId(input.keypair.publicKey),
     hostPublicKey: input.keypair.publicKey,
-    hostSecretKey: input.keypair.secretKey
+    hostSecretKey: input.keypair.secretKey,
+    now: input.now
   })
   if (!proofB64) {
     // A challenge this host cannot answer is a refusal, never retried as a dropped packet.

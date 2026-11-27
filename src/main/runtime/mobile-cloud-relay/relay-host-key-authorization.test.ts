@@ -10,6 +10,8 @@ import {
 } from './relay-host-key-authorization'
 
 const RELAY_URL = 'https://relay-solo.example.workers.dev'
+const NOW = 1_770_000_000_000
+const now = (): number => NOW
 
 function jsonResponse(status: number, body: unknown, headers: Record<string, string> = {}) {
   return new Response(JSON.stringify(body), {
@@ -35,7 +37,7 @@ function relay(
         hostKeypair: keypair,
         gatewayOrigin: options.challengeOrigin ?? RELAY_URL,
         hostFingerprint: deriveRelayHostId(keypair.publicKey),
-        issuedAt: Date.now()
+        issuedAt: NOW
       })
       proof = built.proof
       return jsonResponse(200, built.challenge)
@@ -44,7 +46,7 @@ function relay(
     const proven =
       typeof body === 'object' && body !== null && 'proofB64' in body && body.proofB64 === proof
     return proven
-      ? jsonResponse(200, { relayToken: 'relay-jwt', expiresAt: Date.now() + 300_000 })
+      ? jsonResponse(200, { relayToken: 'relay-jwt', expiresAt: NOW + 300_000 })
       : jsonResponse(401, { error: 'invalid_proof' })
   }
   return { keypair, calls, fetchImpl }
@@ -56,7 +58,8 @@ describe('exchangeRelayHostKeyAuthorization', () => {
     const authorization = await exchangeRelayHostKeyAuthorization({
       relayUrl: RELAY_URL,
       keypair,
-      fetch: fetchImpl
+      fetch: fetchImpl,
+      now
     })
     expect(authorization.relayToken).toBe('relay-jwt')
     expect(calls).toEqual([`${RELAY_URL}/v1/host/challenge`, `${RELAY_URL}/v1/host/session`])
@@ -67,7 +70,8 @@ describe('exchangeRelayHostKeyAuthorization', () => {
     const error = await exchangeRelayHostKeyAuthorization({
       relayUrl: RELAY_URL,
       keypair,
-      fetch: fetchImpl
+      fetch: fetchImpl,
+      now
     }).catch((caught: unknown) => caught)
     expect(error).toBeInstanceOf(RelayHttpError)
     expect(error).toMatchObject({ statusCode: 401 })
@@ -79,7 +83,8 @@ describe('exchangeRelayHostKeyAuthorization', () => {
     const error = await exchangeRelayHostKeyAuthorization({
       relayUrl: RELAY_URL,
       keypair,
-      fetch: fetchImpl
+      fetch: fetchImpl,
+      now
     }).catch((caught: unknown) => caught)
     expect(error).toMatchObject({ statusCode: 429, retryAfterMs: 7000 })
   })
