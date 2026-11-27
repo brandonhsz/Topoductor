@@ -51,8 +51,10 @@ const sessions = new RemoteDesktopSessionService({
 const sessionOwners = new Map<string, WebContents>()
 
 function requireHostWindow(sender: WebContents, hostId: unknown): RemoteDesktopHostId {
-  if (!isRemoteDesktopHostId(hostId) || remoteDesktopHostOfRenderer(sender) !== hostId) {
-    throw new Error('Remote desktop request did not come from this host’s window.')
+  // The main window embeds any host's desktop; a popped-out window only reaches its own host.
+  const allowed = isTrustedUIRenderer(sender) || remoteDesktopHostOfRenderer(sender) === hostId
+  if (!isRemoteDesktopHostId(hostId) || !allowed) {
+    throw new Error('Remote desktop request did not come from Topo or this host’s window.')
   }
   return hostId
 }

@@ -119,7 +119,8 @@ export const TopLevelViewSchema = z.enum([
   'skills',
   'artifacts',
   'mobile',
-  'harness'
+  'harness',
+  'remote-desktop'
 ])
 
 export const UiUpdateFields = z

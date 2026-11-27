@@ -1,3 +1,4 @@
+import type { RemoteDesktopHostId } from '../../../../../shared/remote-desktop/remote-desktop-contract'
 import type {
   AgentSubjectRead,
   AgentSubjectReadIntent
@@ -124,6 +125,7 @@ export type UiViewHistory =
   | 'artifacts'
   | 'mobile'
   | 'harness'
+  | 'remote-desktop'
 
 export type UISliceCore = {
   sidebarOpen: boolean
@@ -165,6 +167,9 @@ export type UISliceCore = {
   previousViewBeforeMobile: Exclude<UiViewHistory, 'mobile'>
   previousViewBeforeArtifacts: Exclude<UiViewHistory, 'artifacts'>
   previousViewBeforeHarness: Exclude<UiViewHistory, 'harness'>
+  previousViewBeforeRemoteDesktop: Exclude<UiViewHistory, 'remote-desktop'>
+  /** The host whose screen the remote desktop page shows; null when it is closed. */
+  remoteDesktopPage: { hostId: RemoteDesktopHostId; label: string } | null
   setActiveView: (view: UISliceCore['activeView']) => void
   taskPageData: TaskPageData
   taskResumeState: TaskResumeState | undefined
@@ -210,6 +215,8 @@ export type UISliceCore = {
   closeMobilePage: () => void
   openHarnessPage: () => void
   closeHarnessPage: () => void
+  openRemoteDesktopPage: (hostId: RemoteDesktopHostId, label: string) => void
+  closeRemoteDesktopPage: () => void
   setNewWorkspaceDraft: (draft: NonNullable<UISliceCore['newWorkspaceDraft']>) => void
   clearNewWorkspaceDraft: () => void
   pendingRevealWorktree: PendingSidebarWorktreeReveal | null

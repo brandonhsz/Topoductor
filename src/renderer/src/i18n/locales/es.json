@@ -24346,6 +24346,8 @@
       "title": "El escritorio remoto tuvo un error.",
       "description": "Reintenta para volver a cargarlo, o cierra y vuelve a abrir la ventana."
     },
-    "statusAction": "Escritorio"
+    "statusAction": "Escritorio",
+    "popOut": "Abrir en ventana",
+    "close": "Cerrar escritorio remoto"
   }
 }

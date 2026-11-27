@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Loader2, RotateCw } from 'lucide-react'
+import { ExternalLink, Loader2, RotateCw, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useTranslate } from '@/i18n/use-translate'
 import type { RemoteDesktopHostId } from '../../../../shared/remote-desktop/remote-desktop-contract'
@@ -8,10 +8,17 @@ import { useRemoteDesktopSession } from './use-remote-desktop-session'
 
 export function RemoteDesktopRoot({
   hostId,
-  title
+  title,
+  embedded = false,
+  onPopOut,
+  onClose
 }: {
   hostId: RemoteDesktopHostId
   title: string
+  /** Inside the main window it fills its page instead of the whole window. */
+  embedded?: boolean
+  onPopOut?: () => void
+  onClose?: () => void
 }): React.JSX.Element {
   const t = useTranslate()
   const screen = useRef<HTMLDivElement | null>(null)
@@ -21,7 +28,13 @@ export function RemoteDesktopRoot({
   )
 
   return (
-    <div className="flex h-screen w-screen flex-col bg-background text-foreground">
+    <div
+      className={
+        embedded
+          ? 'flex h-full min-h-0 min-w-0 flex-1 flex-col bg-background text-foreground'
+          : 'flex h-screen w-screen flex-col bg-background text-foreground'
+      }
+    >
       <header className="flex h-10 shrink-0 items-center gap-2 border-b px-3">
         <span className="truncate text-sm font-medium">{title}</span>
         <span className="text-xs text-muted-foreground">
@@ -43,6 +56,22 @@ export function RemoteDesktopRoot({
             <RotateCw className="size-4" />
             {t('remoteDesktop.reconnect', 'Reconnect')}
           </Button>
+          {onPopOut ? (
+            <Button variant="ghost" size="sm" onClick={onPopOut}>
+              <ExternalLink className="size-4" />
+              {t('remoteDesktop.popOut', 'Open in window')}
+            </Button>
+          ) : null}
+          {onClose ? (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={onClose}
+              aria-label={t('remoteDesktop.close', 'Close remote desktop')}
+            >
+              <X className="size-4" />
+            </Button>
+          ) : null}
         </div>
       </header>
       <main className="relative min-h-0 flex-1 bg-black">

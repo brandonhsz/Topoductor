@@ -128,4 +128,5 @@ export type TopLevelView =
   | 'skills'
   | 'artifacts'
   | 'mobile'
+  | 'remote-desktop'
   | 'harness'
