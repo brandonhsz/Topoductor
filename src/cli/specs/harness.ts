@@ -11,6 +11,7 @@ export const HARNESS_COMMAND_SPECS: CommandSpec[] = [
     usage:
       'topo harness start --flow <id> [--field <key>=<value>]... [--worktree <selector>] [--json]',
     allowedFlags: [...GLOBAL_FLAGS, 'worktree', 'flow', 'field'],
+    repeatableFlags: ['field'],
     notes: [
       CALLER_NOTE,
       'Meant for chats that start a flow on their own, like a scheduled automation. Each --field fills a start field; required fields must be set.',
@@ -126,6 +127,7 @@ export const HARNESS_COMMAND_SPECS: CommandSpec[] = [
     usage:
       'topo harness answer --decision <id> [--choice <option>] [--text <answer>] [--field <key>=<value>] [--json]',
     allowedFlags: [...GLOBAL_FLAGS, 'worktree', 'decision', 'choice', 'text', 'field'],
+    repeatableFlags: ['field'],
     notes: [
       CALLER_NOTE,
       'Only record what the person said; never decide for them.',
