@@ -177,6 +177,10 @@ export const EXECUTION_HOST_METHODS = [
   'projectGroup.list',
   'project.list',
   'projectHostSetup.list',
+  // The screen is the host's own; its VNC bytes ride the phone's encrypted channel.
+  'remoteDesktop.close',
+  'remoteDesktop.stream',
+  'remoteDesktop.write',
   'repo.baseRefDefault',
   'repo.gitAvailable',
   'repo.hooks',

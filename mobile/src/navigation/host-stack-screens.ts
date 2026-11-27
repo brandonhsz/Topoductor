@@ -33,6 +33,12 @@ export const HOST_STACK_SCREENS = [
     }
   },
   {
+    name: '[hostId]/remote-desktop',
+    get title() {
+      return translate('navigation.hostStackScreens.remoteDesktop', 'Remote desktop')
+    }
+  },
+  {
     name: '[hostId]/session/[worktreeId]',
     get title() {
       return translate('navigation.hostStackScreens.terminal', 'Terminal')

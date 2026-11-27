@@ -1605,7 +1605,8 @@
       "hideSidebar": "Ocultar barra lateral",
       "reconnect": "Reconectar",
       "tasks": "Tareas",
-      "automations": "Automatizaciones"
+      "automations": "Automatizaciones",
+      "remoteDesktop": "Escritorio remoto"
     },
     "hostScreenOverlays": {
       "deleteConfirmMessage": "¿Eliminar \"{{name}}\" ({{branch}})?",
@@ -1720,7 +1721,8 @@
       "tasks": "Tareas",
       "terminal": "Terminal",
       "workspace": "Espacio de trabajo",
-      "automations": "Automatizaciones"
+      "automations": "Automatizaciones",
+      "remoteDesktop": "Escritorio remoto"
     }
   },
   "newWorkspace": {
@@ -4291,6 +4293,27 @@
           }
         }
       }
+    }
+  },
+  "remoteDesktop": {
+    "title": "Escritorio remoto",
+    "keyboard": "Teclado",
+    "reconnect": "Reconectar",
+    "connecting": "Conectando…",
+    "connect": "Conectar",
+    "username": "Usuario",
+    "password": "Contraseña",
+    "credentialsAccount": "Inicia sesión con una cuenta de esta computadora. Se guarda en este teléfono.",
+    "credentialsPassword": "Escribe la contraseña de compartir pantalla. Se guarda en este teléfono.",
+    "sessionLost": "Se cerró la conexión del escritorio remoto.",
+    "hostTooOld": "Actualiza Topo en esta computadora para abrir su escritorio remoto desde tu teléfono.",
+    "keys": {
+      "escape": "Esc",
+      "tab": "Tab",
+      "left": "Flecha izquierda",
+      "up": "Flecha arriba",
+      "down": "Flecha abajo",
+      "right": "Flecha derecha"
     }
   }
 }
