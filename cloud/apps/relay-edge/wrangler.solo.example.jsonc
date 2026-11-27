@@ -1,0 +1,46 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Single-owner relay (src/solo/solo-worker.ts): one Worker is director, cell and token issuer,
+  // on Durable Objects' SQLite only (no Postgres), within the Workers Free plan.
+  // Copy to wrangler.solo.jsonc (gitignored), set "name", then:
+  //   pnpm solo:keys --host <relayHostId>     (writes the gitignored .solo-secrets.json and .dev.vars)
+  //   wrangler secret bulk .solo-secrets.json --config wrangler.solo.jsonc
+  //   wrangler deploy --config wrangler.solo.jsonc
+  // Secrets, never in this file: RELAY_SIGNING_JWK, RELAY_JWKS, SOLO_CHALLENGE_KEY,
+  // ADMIN_SIGNING_KEY, SOLO_ALLOWED_HOST_IDS.
+  "name": "topo-relay-solo",
+  "main": "src/solo/solo-worker.ts",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  // Same aliases as wrangler.jsonc: the bundle imports the cells' credential store from source.
+  "alias": {
+    "@topo-cloud/relay-contract": "../../packages/relay-contract/src/index.ts",
+    "@topo-cloud/relay-contract/persistence-invariants": "../../packages/relay-contract/src/persistence-invariants.ts",
+    "@topo-cloud/relay-contract/protocol-limits": "../../packages/relay-contract/src/protocol-limits.ts"
+  },
+  // https://<name>.<account>.workers.dev: the URL the desktop is built with (TOPO_RELAY_URL).
+  "workers_dev": true,
+  "durable_objects": {
+    "bindings": [
+      { "name": "HOST_RELAY", "class_name": "HostRelay" },
+      { "name": "SPLICE_RELAY", "class_name": "SpliceRelay" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["HostRelay"] },
+    { "tag": "v2", "new_sqlite_classes": ["SpliceRelay"] }
+  ],
+  // Unauthenticated phone/data upgrades and solo auth calls per source per colo. Remove the block
+  // if the account cannot create a Rate Limiting binding; the edge then runs unlimited.
+  "ratelimits": [{ "name": "PREAUTH_LIMITER", "namespace_id": "1001", "simple": { "limit": 60, "period": 60 } }],
+  "vars": {
+    "EDGE_BACKEND": "object",
+    "EDGE_CELL_ID": "solo",
+    "RELAY_JWT_AUDIENCE": "topo-relay",
+    "RELAY_AUTH_ISSUER": "topo-relay-solo",
+    "ADMIN_ISSUER": "topo-relay-solo-admin",
+    "PING_INTERVAL_MS": "30000",
+    "SILENCE_TIMEOUT_MS": "75000",
+    "ORPHAN_GRACE_MS": "30000"
+  }
+}

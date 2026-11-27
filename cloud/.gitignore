@@ -20,3 +20,10 @@ override.tf.json
 
 # Contains development signing keys and personal data.
 data/
+
+# Solo relay (apps/relay-edge): deploy config and generated secrets stay local.
+apps/relay-edge/wrangler.solo.jsonc
+apps/relay-edge/.solo-secrets.json
+.dev.vars
+.dev.vars.*
+.wrangler/

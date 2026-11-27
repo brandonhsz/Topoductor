@@ -3,6 +3,7 @@ import { Badge } from '../../ui/badge'
 import { translate } from '../../../i18n/i18n'
 import { useTranslate, type Translate } from '@/i18n/use-translate'
 import { useAppStore } from '../../../store/index'
+import { canUseMobileRelay } from '../../../../../shared/mobile-relay-availability'
 import { useTopoProfileAuthStatusRefresh } from '@/hooks/use-topo-profile-auth-status-refresh'
 import { cn } from '@/lib/utils'
 import type {
@@ -56,7 +57,7 @@ export function MobilePairingConnectionOptions({
   const t = useTranslate()
   const authStatus = useAppStore((state) => state.topoProfileAuthStatus)
   const [relayStatus, setRelayStatus] = useState<MobileRelayStatusDetail>({ status: 'offline' })
-  const signedIn = authStatus?.state === 'connected'
+  const signedIn = canUseMobileRelay(authStatus)
   const reconnectRequired = authStatus?.state === 'reconnect-required'
   // Unconfigured builds have no Relay sign-in endpoint; mark unavailable instead of offering a dead CTA.
   const configured = authStatus?.configured !== false

@@ -17,9 +17,13 @@ export type TopoCloudAuthConfig = {
   relayTokenEndpoint: string
   connectorTokenEndpoint: string
   relayDirectorUrl: string
+  // host-key: a self-hosted relay issues tokens against the host's E2EE key, no Topo Cloud session.
+  relayAuthMode: RelayAuthMode
   clientId: string
   scope: string
 }
+
+export type RelayAuthMode = 'cloud-session' | 'host-key'
 
 const DEFAULT_SCOPE = 'openid profile email offline_access'
 const PRODUCTION_API_BASE_URL = 'https://login.onorca.dev'
@@ -32,6 +36,29 @@ function isPackagedTopoBuild(): boolean {
     return app?.isPackaged === true
   } catch {
     return false
+  }
+}
+
+function buildSoloRelayUrl(): string | null {
+  return typeof TOPO_SOLO_RELAY_URL === 'string' ? TOPO_SOLO_RELAY_URL : null
+}
+
+// TOPO_RELAY_URL (+ TOPO_RELAY_AUTH=host-key) overrides the relay a build was made with.
+export function resolveRelay(
+  env: NodeJS.ProcessEnv,
+  allowLoopbackHttp: boolean,
+  buildRelayUrl: string | null = buildSoloRelayUrl()
+): { relayDirectorUrl: string; relayAuthMode: RelayAuthMode } {
+  const envRelayUrl = cleanOrigin(env.TOPO_RELAY_URL, allowLoopbackHttp)
+  const soloRelayUrl = envRelayUrl ? null : cleanOrigin(buildRelayUrl ?? undefined, false)
+  const requested = env.TOPO_RELAY_AUTH?.trim()
+  const relayAuthMode: RelayAuthMode =
+    requested === 'host-key' || (requested !== 'cloud-session' && soloRelayUrl)
+      ? 'host-key'
+      : 'cloud-session'
+  return {
+    relayDirectorUrl: envRelayUrl ?? soloRelayUrl ?? PRODUCTION_RELAY_DIRECTOR_URL,
+    relayAuthMode
   }
 }
 
@@ -93,8 +120,7 @@ export function getTopoCloudAuthConfig(
       connectorTokenEndpoint:
         cleanEndpointUrl(env.TOPO_CLOUD_CONNECTOR_TOKEN_URL) ??
         endpoint(apiBaseUrl, '/v1/desktop/auth/connector-token'),
-      relayDirectorUrl:
-        cleanOrigin(env.TOPO_RELAY_URL, allowLoopbackHttp) ?? PRODUCTION_RELAY_DIRECTOR_URL,
+      ...resolveRelay(env, allowLoopbackHttp),
       clientId,
       scope: env.TOPO_CLOUD_AUTH_SCOPE?.trim() || DEFAULT_SCOPE
     }

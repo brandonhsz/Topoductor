@@ -16,6 +16,7 @@ import {
   type RelayAssignment
 } from './relay-http-client'
 import { relayIdentityKey } from './relay-auth-identity'
+import { exchangeRelayHostKeyAuthorization } from './relay-host-key-authorization'
 import { RelayOriginPool } from './relay-origin-pool'
 import { RelayRegionRefresh } from './relay-region-refresh'
 import { relayRenewalDelayMs } from './relay-renewal-jitter'
@@ -213,12 +214,7 @@ export class RelaySessionBroker {
   private async open(accessToken: string): Promise<void> {
     this.publishStatus('connecting')
     const [authorization, preferredRegion] = await Promise.all([
-      exchangeRelayAuthorization({
-        endpoint: this.options.authConfig.relayTokenEndpoint,
-        accessToken,
-        keypair: this.options.keypair,
-        fetch: this.options.fetch
-      }),
+      this.authorize(accessToken),
       this.options.resolvePreferredRegion?.().catch(() => undefined) ?? Promise.resolve(undefined)
     ])
     this.assertCurrent()
@@ -251,6 +247,18 @@ export class RelaySessionBroker {
     this.regionRefresh?.start(assignment)
   }
 
+  private authorize(accessToken: string): Promise<RelayAuthorization> {
+    const { authConfig, keypair, fetch } = this.options
+    return authConfig.relayAuthMode === 'host-key'
+      ? exchangeRelayHostKeyAuthorization({ relayUrl: authConfig.relayDirectorUrl, keypair, fetch })
+      : exchangeRelayAuthorization({
+          endpoint: authConfig.relayTokenEndpoint,
+          accessToken,
+          keypair,
+          fetch
+        })
+  }
+
   private scheduleRefresh(): void {
     const authorization = this.authorization
     if (!authorization || this.closed) {
@@ -271,12 +279,7 @@ export class RelaySessionBroker {
         this.closeNow(refresh.hostCloseReason)
         return
       }
-      const authorization = await exchangeRelayAuthorization({
-        endpoint: this.options.authConfig.relayTokenEndpoint,
-        accessToken: refresh.accessToken,
-        keypair: this.options.keypair,
-        fetch: this.options.fetch
-      })
+      const authorization = await this.authorize(refresh.accessToken)
       this.assertCurrent()
       this.originPool.refreshAuthorization(authorization.relayToken)
       this.authorization = authorization

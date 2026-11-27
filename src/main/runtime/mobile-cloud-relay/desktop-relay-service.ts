@@ -24,6 +24,7 @@ import { pairingAuthorizationForContext } from './relay-pairing-authorization'
 import { deriveRelayHostId } from './relay-http-client'
 import { RelayDemandLedger } from './relay-demand-ledger'
 import { createRelayRegionPreferenceReader } from './relay-region-preference-reader'
+import { soloRelayAuthContext } from './relay-host-key-authorization'
 
 type DesktopRelayServiceOptions = {
   authConfig: TopoCloudAuthConfig
@@ -63,7 +64,10 @@ export class DesktopRelayService {
     })
     const regionPreference = createRelayRegionPreferenceReader(options)
     this.coordinator = new RelayAuthCoordinator({
-      readContext: () => readRelayAuthContext(options.authConfig, options.userDataPath),
+      readContext: () =>
+        options.authConfig.relayAuthMode === 'host-key'
+          ? Promise.resolve(soloRelayAuthContext(deriveRelayHostId(keypair.publicKey)))
+          : readRelayAuthContext(options.authConfig, options.userDataPath),
       hasDemand: ({ identity }) => this.demandLedger.hasDemand(relayIdentityKey(identity)),
       openBroker: async ({ context, isCurrent, refreshAccessToken }) => {
         const broker = await RelaySessionBroker.connect({

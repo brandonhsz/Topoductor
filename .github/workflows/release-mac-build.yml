@@ -191,6 +191,7 @@ jobs:
           TOPO_RELEASE_JAVASCRIPT_SOURCE_SHA: ${{ inputs.javascript_source_sha }}
           TOPO_DIAGNOSTICS_TOKEN_URL: https://www.onorca.dev/diagnostics/token
           TOPO_POSTHOG_WRITE_KEY: ${{ secrets.TOPO_POSTHOG_WRITE_KEY }}
+          TOPO_SOLO_RELAY_URL: ${{ vars.TOPO_SOLO_RELAY_URL }}
 
       # Design D2: the parent release-cut run merged it from every node-server lane at this tag.
       - name: Download the topod deployment template from the release run

@@ -121,6 +121,8 @@ jobs:
       - name: Build app
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+          # Self-hosted relay origin (repo variable); unset builds use Topo Cloud's relay.
+          TOPO_SOLO_RELAY_URL: ${{ vars.TOPO_SOLO_RELAY_URL }}
         run: |
           pnpm run build:desktop
           pnpm run build:computer-macos
