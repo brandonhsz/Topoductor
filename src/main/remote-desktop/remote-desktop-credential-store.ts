@@ -73,10 +73,14 @@ export class RemoteDesktopCredentialStore {
     if (!secrets.isEncryptionAvailable()) {
       throw new RemoteDesktopSecretStoreUnavailableError()
     }
-    return {
-      username: entry.username,
-      password: secrets.decryptString(Buffer.from(entry.sealedPassword, 'base64'))
+    let password: string
+    try {
+      password = secrets.decryptString(Buffer.from(entry.sealedPassword, 'base64'))
+    } catch {
+      // Sealed under another keychain key (e.g. a different Topo build); ask the user again.
+      return null
     }
+    return { username: entry.username, password }
   }
 
   async forget(hostId: RemoteDesktopHostId): Promise<void> {

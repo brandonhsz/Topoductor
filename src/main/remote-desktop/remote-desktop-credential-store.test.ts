@@ -43,6 +43,22 @@ describe('RemoteDesktopCredentialStore', () => {
     expect(await store.load('ssh:other')).toBeNull()
   })
 
+  it('treats a password sealed under another keychain key as missing', async () => {
+    await new RemoteDesktopCredentialStore(() => reversingSecretStore(), path).save('ssh:box', {
+      username: null,
+      password: 'pw'
+    })
+    const foreignKey: SecretStore = {
+      ...reversingSecretStore(),
+      decryptString: () => {
+        throw new Error('Error while decrypting the ciphertext provided to safeStorage')
+      }
+    }
+    const store = new RemoteDesktopCredentialStore(() => foreignKey, path)
+
+    expect(await store.load('ssh:box')).toBeNull()
+  })
+
   it('refuses to store a password without OS encryption', async () => {
     const store = new RemoteDesktopCredentialStore(() => reversingSecretStore(false), path)
     await expect(store.save('ssh:box', { username: null, password: 'pw' })).rejects.toThrow(

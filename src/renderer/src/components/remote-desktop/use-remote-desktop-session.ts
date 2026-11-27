@@ -124,7 +124,9 @@ export function useRemoteDesktopSession(
         const types = eventDetail(event)?.types
         session.needsUsername = Array.isArray(types) && types.includes('username')
         void (async () => {
-          const saved = session.triedSaved ? null : await api.getSessionCredential(sessionId)
+          const saved = session.triedSaved
+            ? null
+            : await api.getSessionCredential(sessionId).catch(() => null)
           if (live.current !== session) {
             return
           }
