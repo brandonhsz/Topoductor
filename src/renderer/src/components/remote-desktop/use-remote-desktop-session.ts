@@ -97,6 +97,7 @@ export function useRemoteDesktopSession(
     rfb.resizeSession = false
     rfb.focusOnClick = true
     rfb.background = 'transparent'
+    rfb.showDotCursor = true
     const listeners = new AbortController()
     const session: LiveSession = {
       sessionId,
