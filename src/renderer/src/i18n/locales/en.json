@@ -25015,6 +25015,7 @@
     "recoverableError": {
       "title": "Remote desktop hit an error.",
       "description": "Retry to remount it, or close and reopen the window."
-    }
+    },
+    "statusAction": "Desktop"
   }
 }

@@ -263,6 +263,7 @@ export function SshStatusSegment({
             onConnect={() => connectRuntimeHost(host.id)}
             onDisconnect={() => disconnectRuntimeHost(host.id)}
             onRecover={() => openRecovery(host)}
+            remoteDesktopHostId={toRuntimeExecutionHostId(host.id)}
           />
         ))}
         {connectedTargets.map((target) => (
@@ -284,6 +285,7 @@ export function SshStatusSegment({
             onConnect={() => connectRuntimeHost(host.id)}
             onDisconnect={() => disconnectRuntimeHost(host.id)}
             onRecover={() => openRecovery(host)}
+            remoteDesktopHostId={toRuntimeExecutionHostId(host.id)}
           />
         ))}
         {disconnectedTargets.map((target) => (
