@@ -16,6 +16,8 @@ import {
   useSshConnectInFlight
 } from '@/ssh/ssh-connect-in-flight'
 import type { SshConnectionStatus } from '../../../../shared/ssh-types'
+import { toSshExecutionHostId } from '../../../../shared/execution-host'
+import { RemoteDesktopStatusAction } from './RemoteDesktopStatusAction'
 
 export async function connectSshTargetFromStatusMenu(targetId: string): Promise<void> {
   if (isSshConnectInFlight(targetId)) {
@@ -92,6 +94,9 @@ export function SshTargetStatusRow({
           <span>{STATUS_LABELS[status]}</span>
         </div>
       </div>
+      {status === 'connected' && !busy ? (
+        <RemoteDesktopStatusAction hostId={toSshExecutionHostId(targetId)} label={label} />
+      ) : null}
       {busy || connectInFlight ? (
         <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />
       ) : canConnectSshStatus(status) ? (
