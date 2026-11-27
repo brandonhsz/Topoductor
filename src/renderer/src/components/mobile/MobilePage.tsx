@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { toast } from 'sonner'
 import { useMountedRef } from '@/hooks/useMountedRef'
 import { useAppStore } from '@/store'
+import { canUseMobileRelay } from '../../../../shared/mobile-relay-availability'
 import type { Platform, StepIndex } from './MobileHero'
 import type { PairingNetworkInterface } from '../../../../shared/pairing-address-auto-selection'
 import { translate } from '@/i18n/i18n'
@@ -36,7 +37,7 @@ export default function MobilePage(): React.JSX.Element {
   const [pairingQrError, setPairingQrError] = useState(false)
   const [relayMintFailure, setRelayMintFailure] = useState<MobileRelayMintFailure | null>(null)
   const [pairLoading, setPairLoading] = useState(false)
-  const signedIn = useAppStore((state) => state.topoProfileAuthStatus?.state === 'connected')
+  const signedIn = useAppStore((state) => canUseMobileRelay(state.topoProfileAuthStatus))
   const refreshAuthStatus = useAppStore((state) => state.fetchTopoProfileAuthStatus)
   const [connectionMode, setConnectionMode] = useMobilePairingConnectionMode()
   const [networkInterfaces, setNetworkInterfaces] = useState<PairingNetworkInterface[]>([])

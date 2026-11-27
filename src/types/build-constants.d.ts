@@ -7,6 +7,9 @@ declare const TOPO_POSTHOG_WRITE_KEY: string | null
 // TOPO_DIAGNOSTICS_TOKEN_URL overrides it for developers testing packaged builds against staging.
 declare const TOPO_DIAGNOSTICS_TOKEN_URL: string | null
 
+// Self-hosted relay origin baked in by the builder (cloud/apps/relay-edge solo Worker); null uses Topo Cloud's relay.
+declare const TOPO_SOLO_RELAY_URL: string | null
+
 // Full commit the build was made from (`git rev-parse HEAD`); official skill installs pin to it.
 declare const TOPO_BUILD_COMMIT: string
 

@@ -1,4 +1,5 @@
 import type { TopoProfileAuthStatus } from '../../shared/topo-profiles'
+import type { MobileRelayAuthStatus } from '../../shared/mobile-relay-availability'
 import type { ActiveTopoProfileState } from './profile-index-store'
 import { getTopoCloudAuthConfig, isTopoCloudDevAuthEnabled } from './profile-cloud-auth-config'
 import { readCloudSession } from './profile-cloud-session-owner'
@@ -6,8 +7,19 @@ import { readCloudSession } from './profile-cloud-session-owner'
 export function getTopoProfileAuthStatusFromProfile(
   active: ActiveTopoProfileState,
   userDataPath: string
-): TopoProfileAuthStatus {
+): MobileRelayAuthStatus {
   const configState = getTopoCloudAuthConfig()
+  const status = cloudAuthStatus(active, userDataPath, configState)
+  return configState.configured && configState.config.relayAuthMode === 'host-key'
+    ? { ...status, relaySelfHosted: true }
+    : status
+}
+
+function cloudAuthStatus(
+  active: ActiveTopoProfileState,
+  userDataPath: string,
+  configState: ReturnType<typeof getTopoCloudAuthConfig>
+): TopoProfileAuthStatus {
   const devAuthEnabled = isTopoCloudDevAuthEnabled()
   const configured = configState.configured || devAuthEnabled
   const cloud = active.profile.cloud

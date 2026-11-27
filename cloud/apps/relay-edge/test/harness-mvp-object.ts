@@ -61,7 +61,9 @@ export async function mint(key: KeyLike, relayHostId: string, issuer = ISSUER): 
 // `drop` returns true for an outbound frame the test wants lost (a host that stops answering pings).
 // `caps` replaces the shipped desktop's capability header (default: as shipped today).
 export const SHIPPED_CAPS = 'pending-conn-details,idle-regional-rehome-v1'
-export function control(host: Host, jwt: string, epoch = EPOCH, opts: { drop?: (frame: string) => boolean; caps?: string } = {}) {
+// `identity` replaces the director's test account (the solo relay names hosts by key).
+export type ControlIdentity = { userId: string; profileId: string; organizationId: string }
+export function control(host: Host, jwt: string, epoch = EPOCH, opts: { drop?: (frame: string) => boolean; caps?: string; identity?: ControlIdentity } = {}) {
   const events = { closes: [] as number[], opens: [] as { connId: string }[], drains: [] as Record<string, unknown>[], dropped: 0, pings: 0, offers: 0, acks: 0 }
   let transport: CloudRelayTransport | null = null
   const client = new RelayControlClient({
@@ -69,7 +71,7 @@ export function control(host: Host, jwt: string, epoch = EPOCH, opts: { drop?: (
     relayJwt: jwt,
     relayHostId: host.relayHostId,
     assignmentEpoch: epoch,
-    identity: { userId: USER, profileId: `prof-${USER}`, organizationId: '' },
+    identity: opts.identity ?? { userId: USER, profileId: `prof-${USER}`, organizationId: '' },
     keypair: host.keypair as never,
     appVersion: 'mvp',
     onConnectionOpen: (m) => {

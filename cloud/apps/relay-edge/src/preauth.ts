@@ -24,7 +24,7 @@ export function sourceKey(request: Request): string {
 
 // Counted per source per colo by the Rate Limiting binding. Fails open: a limiter outage must not
 // refuse live users. Without a binding (local spike runs) nothing is limited.
-export async function admitPreAuth(env: Env, request: Request, kind: 'phone' | 'data' | 'health'): Promise<boolean> {
+export async function admitPreAuth(env: Env, request: Request, kind: 'phone' | 'data' | 'health' | 'solo'): Promise<boolean> {
   if (!env.PREAUTH_LIMITER) { return true }
   try {
     const { success } = await env.PREAUTH_LIMITER.limit({ key: `${kind}:${sourceKey(request)}` })

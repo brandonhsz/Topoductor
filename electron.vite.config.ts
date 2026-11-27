@@ -57,6 +57,11 @@ const TOPO_DIAGNOSTICS_TOKEN_URL_LITERAL =
   typeof topoDiagnosticsTokenUrl === 'string' && topoDiagnosticsTokenUrl.length > 0
     ? JSON.stringify(topoDiagnosticsTokenUrl)
     : 'null'
+const topoSoloRelayUrl = process.env.TOPO_SOLO_RELAY_URL
+const TOPO_SOLO_RELAY_URL_LITERAL =
+  typeof topoSoloRelayUrl === 'string' && topoSoloRelayUrl.length > 0
+    ? JSON.stringify(topoSoloRelayUrl)
+    : 'null'
 
 const darkBuildSwitches: {
   darkBuildDefines: () => Record<string, string>
@@ -251,6 +256,7 @@ export const electronViteConfig: UserConfig = {
       TOPO_BUILD_IDENTITY: TOPO_BUILD_IDENTITY_LITERAL,
       TOPO_POSTHOG_WRITE_KEY: TOPO_POSTHOG_WRITE_KEY_LITERAL,
       TOPO_DIAGNOSTICS_TOKEN_URL: TOPO_DIAGNOSTICS_TOKEN_URL_LITERAL,
+      TOPO_SOLO_RELAY_URL: TOPO_SOLO_RELAY_URL_LITERAL,
       TOPO_BUILD_COMMIT: TOPO_BUILD_COMMIT_LITERAL,
       ...DARK_BUILD_DEFINES
     },

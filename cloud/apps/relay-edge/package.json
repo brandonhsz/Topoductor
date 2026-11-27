@@ -9,7 +9,11 @@
     "spike": "tsx spike/run-all.ts",
     "test": "vitest run",
     "test:schema": "tsx test/apply-schema.ts",
-    "test:mvp": "tsx test/mvp.ts"
+    "test:mvp": "tsx test/mvp.ts",
+    "solo:dev": "wrangler dev --config wrangler.solo.jsonc --port 8788 --ip 127.0.0.1",
+    "solo:keys": "tsx scripts/solo-keys.ts",
+    "solo:e2e": "tsx test/solo-e2e.ts",
+    "solo:host-id": "tsx scripts/solo-host-id.ts"
   },
   "dependencies": {
     "@types/pg": "^8.23.1",

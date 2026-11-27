@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAppStore } from '@/store'
+import { canUseMobileRelay } from '../../../../shared/mobile-relay-availability'
 import {
   resolveMobilePairingConnectionMode,
   type MobilePairingConnectionMode
@@ -11,7 +12,7 @@ export function useMobilePairingConnectionMode(): [
   React.Dispatch<React.SetStateAction<MobilePairingConnectionMode>>
 ] {
   const savedConnectionMode = useAppStore((s) => s.settings?.mobilePairingConnectionMode)
-  const signedIn = useAppStore((s) => s.topoProfileAuthStatus?.state === 'connected')
+  const signedIn = useAppStore((s) => canUseMobileRelay(s.topoProfileAuthStatus))
   const [connectionMode, setConnectionMode] = useState<MobilePairingConnectionMode>(() =>
     resolveMobilePairingConnectionMode(savedConnectionMode, { signedIn })
   )

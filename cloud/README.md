@@ -71,6 +71,30 @@ an immutable public source revision and combines it with its deployment configur
 relay and push images, and checks for secrets without cloud credentials. Private CI
 also validates Terraform, scans the SQL proxy and broker, and runs deployment contracts.
 
+## Single-owner relay (Cloudflare Workers Free)
+
+`apps/relay-edge/src/solo` runs the whole relay as one Worker: the edge's Durable
+Objects carry the sockets and credentials (SQLite, no Postgres), and the same
+Worker answers the director's `/v1/assign` and `/v1/resolve`. Desktops get relay
+tokens by proving their E2EE host key (`/v1/host/challenge`, `/v1/host/session`,
+the push gateway's challenge), with no Topo Cloud account; only the
+`relayHostId`s in `SOLO_ALLOWED_HOST_IDS` are served.
+
+```sh
+cd cloud/apps/relay-edge
+cp wrangler.solo.example.jsonc wrangler.solo.jsonc        # gitignored; set "name"
+pnpm solo:host-id "<Topo userData>/topo-e2ee-keypair.json"
+pnpm solo:keys --host <relayHostId>                       # gitignored secrets
+pnpm exec wrangler deploy --config wrangler.solo.jsonc
+pnpm exec wrangler secret bulk .solo-secrets.json --config wrangler.solo.jsonc
+pnpm solo:e2e                                             # local workerd check
+```
+
+Build the desktop with `TOPO_SOLO_RELAY_URL=https://<name>.<account>.workers.dev`
+to use it with host-key auth; at runtime `TOPO_RELAY_URL` and
+`TOPO_RELAY_AUTH=host-key|cloud-session` override the build. To add a desktop,
+append its id to `SOLO_ALLOWED_HOST_IDS` and upload the secrets again.
+
 ## Local development
 
 ```sh
