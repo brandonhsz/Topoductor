@@ -158,7 +158,9 @@ async function minifyWebOutput() {
           minifyIdentifiers: !outputPath.startsWith('assets/'),
           minifySyntax: true,
           minifyWhitespace: true,
-          target: 'es2020'
+          target: 'es2020',
+          // Desktop-only lazy chunks (noVNC) keep a module-level await the renderer build already tolerates; web never loads them.
+          supported: { 'top-level-await': true }
         })
         writeFileSync(targetPath, result.code)
       })
