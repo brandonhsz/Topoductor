@@ -28,7 +28,7 @@ const LOGIN_CANCELLED_MESSAGES = new Set([
 export type HostAccountSignInRunner = (
   provider: HostAccountSignInProvider,
   channel: HostAccountSignInChannel
-) => Promise<Pick<HostAccountSignInStatus, 'claude' | 'codex'>>
+) => Promise<Pick<HostAccountSignInStatus, 'claude' | 'codex' | 'github'>>
 
 type Flow = {
   owner: string

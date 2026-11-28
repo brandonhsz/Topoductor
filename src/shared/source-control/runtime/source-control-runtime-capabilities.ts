@@ -28,7 +28,11 @@ export const GITLAB_MR_INVOLVEMENT_UPDATE_REQUIRED_MESSAGE =
 export const ANTIGRAVITY_CONFIGURED_MODEL_RUNTIME_CAPABILITY =
   'git.antigravity-configured-model.v1' as const
 
+// Why: a paired client signs the host's own `gh` in to GitHub; older hosts lack github.hostSignIn*.
+export const GITHUB_HOST_SIGN_IN_RUNTIME_CAPABILITY = 'github.host-sign-in.v1' as const
+
 export const SOURCE_CONTROL_RUNTIME_CAPABILITIES = [
+  GITHUB_HOST_SIGN_IN_RUNTIME_CAPABILITY,
   GIT_HISTORY_REFS_CAPABILITY,
   GIT_GRAPH_TAB_CAPABILITY,
   GIT_COMMIT_ACTIONS_CAPABILITY,

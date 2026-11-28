@@ -20,7 +20,7 @@ vi.mock('./command-runner/gh-exec-file', async () => {
     ghExecFileAsync: ghExecFileAsyncMock
   }
 })
-import { resolveLocalGitUsernameDetailed, resetGhLoginCacheForTests } from './git-username'
+import { resolveLocalGitUsernameDetailed, resetGhLoginCache } from './git-username'
 
 function makeExecError(
   message: string,
@@ -43,7 +43,7 @@ describe('resolveLocalGitUsername', () => {
 
   beforeEach(() => {
     vi.resetAllMocks()
-    resetGhLoginCacheForTests()
+    resetGhLoginCache()
     gitConfig = {}
     originRemoteUrl = undefined
     remoteUrls = {}

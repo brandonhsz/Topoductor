@@ -13,6 +13,7 @@ import { IntegrationCardPresentationProvider } from '../../integrations/presenta
 import { useIntegrationProviderStatusRefresh } from '../../../hooks/use-integration-provider-status-refresh'
 import { SettingsGroup } from '../section-layout/SettingsGroup'
 import { useTranslate } from '@/i18n/use-translate'
+import type { RuntimeClientTarget } from '../../../../../shared/runtime-client-target'
 
 // Flat presentation turns each provider into one row: -mx-4 cancels its inset, and inner rules are dropped so only rows divide.
 function ProviderRow({ children }: { children: React.ReactNode }): React.JSX.Element {
@@ -23,7 +24,12 @@ function ProviderRow({ children }: { children: React.ReactNode }): React.JSX.Ele
   )
 }
 
-export function IntegrationsPane(): React.JSX.Element {
+export function IntegrationsPane({
+  hostTarget
+}: {
+  /** The Settings host; its own gh can be signed in from here. */
+  hostTarget?: RuntimeClientTarget
+}): React.JSX.Element {
   const t = useTranslate()
   useIntegrationProviderStatusRefresh()
 
@@ -38,7 +44,7 @@ export function IntegrationsPane(): React.JSX.Element {
           )}
         >
           <ProviderRow>
-            <GitHubIntegrationCard />
+            <GitHubIntegrationCard hostTarget={hostTarget} />
           </ProviderRow>
           <ProviderRow>
             <GitLabIntegrationCard />

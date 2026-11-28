@@ -3,7 +3,12 @@ import type {
   CodexRateLimitAccountsState
 } from './managed-account-types'
 
-export type HostAccountSignInProvider = 'claude' | 'codex'
+export type HostAccountSignInProvider = 'claude' | 'codex' | 'github'
+/** Providers whose sign-in adds a managed account; GitHub signs the host's gh in instead. */
+export type ManagedHostAccountSignInProvider = Exclude<HostAccountSignInProvider, 'github'>
+
+/** The GitHub login a host's `gh` signed in as. */
+export type GitHubHostSignInResult = { login: string | null }
 
 export type HostAccountSignInPhase =
   | 'starting'
@@ -16,7 +21,7 @@ export type HostAccountSignInPhase =
 /** What a login running on the host asks of the person on another device. */
 export type HostAccountSignInPrompt = {
   url: string
-  /** Codex's one-time device code, typed into that page. */
+  /** The one-time device code (Codex, GitHub), typed into that page. */
   userCode: string | null
   /** Claude shows a code after sign-in that has to come back to the host. */
   needsCode: boolean
@@ -43,6 +48,7 @@ export type HostAccountSignInStatus = {
   errorCode?: string
   claude?: ClaudeRateLimitAccountsState
   codex?: CodexRateLimitAccountsState
+  github?: GitHubHostSignInResult
 }
 
 // One English table for sign-in failures Topo names itself; the login's own errors stay uncoded.
@@ -62,7 +68,8 @@ export const HOST_ACCOUNT_SIGN_IN_SETTLED_PHASES: ReadonlySet<HostAccountSignInP
 // Why a fixed list: the host publishes this page and the client opens it, so neither trusts the other.
 const SIGN_IN_PAGE_HOSTS: Record<HostAccountSignInProvider, ReadonlySet<string>> = {
   claude: new Set(['claude.com', 'claude.ai']),
-  codex: new Set(['auth.openai.com'])
+  codex: new Set(['auth.openai.com']),
+  github: new Set(['github.com'])
 }
 
 /** Whether `url` is an https page of the provider's own sign-in host. */

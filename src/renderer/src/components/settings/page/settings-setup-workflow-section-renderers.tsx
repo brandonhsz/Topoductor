@@ -103,7 +103,9 @@ export function renderIntegrationsSettingsSection(
       searchEntries={navigation.getSectionSearchEntries('integrations')}
       bodyClassName="rounded-none border-0 bg-transparent p-0 shadow-none"
     >
-      {view.isSectionMounted('integrations') ? <IntegrationsPane /> : null}
+      {view.isSectionMounted('integrations') ? (
+        <IntegrationsPane hostTarget={context.model.settingsHostScope.target} />
+      ) : null}
     </SettingsSection>
   )
 }

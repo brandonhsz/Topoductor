@@ -38,6 +38,7 @@ export const CLI_COMMAND_NAMES = [
   'full-screenshot',
   'geolocation',
   'get',
+  'github',
   'goto',
   'highlight',
   'host',

@@ -15,7 +15,7 @@ import type { CodexAccountSelectionTarget } from '../../../../shared/codex-selec
 import type { RateLimitService } from '../../../rate-limits/service/rate-limit-service'
 import type {
   HostAccountSignInChannel,
-  HostAccountSignInProvider,
+  ManagedHostAccountSignInProvider,
   HostAccountSignInStatus
 } from '../../../../shared/host-account-sign-in-types'
 import type {
@@ -282,7 +282,7 @@ export class RuntimeAccountController {
 
   /** Adds a host account whose login a client on another device finishes. */
   async runHostSignIn(
-    provider: HostAccountSignInProvider,
+    provider: ManagedHostAccountSignInProvider,
     channel: HostAccountSignInChannel
   ): Promise<Pick<HostAccountSignInStatus, 'claude' | 'codex'>> {
     const { claudeAccounts, codexAccounts } = this.requireServices()

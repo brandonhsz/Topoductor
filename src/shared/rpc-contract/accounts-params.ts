@@ -113,6 +113,9 @@ export const FinishClaudeSignInParams = z
 
 export const HostAccountSignInStartParams = z.object({ provider: z.enum(['claude', 'codex']) })
 
+// Why no provider: github.hostSignInStart only signs the host's gh in; extra keys are dropped.
+export const GitHubHostSignInStartParams = z.object({})
+
 export const HostAccountSignInWaitParams = z.object({
   flowId: z.string().min(1).max(64),
   afterRevision: z.number().int().nonnegative().default(0)
