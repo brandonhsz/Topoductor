@@ -38,6 +38,11 @@ export function harnessChatStatus(run: HarnessRun): HarnessChatStatus {
   }
 }
 
+export function harnessCompleteCommand(task: Pick<HarnessChatTask, 'id' | 'choices'>): string {
+  const outcome = task.choices.length > 0 ? ` --outcome "<${task.choices.join(' | ')}>"` : ''
+  return `topo harness complete --task ${task.id} --output-file <archivo con tu entregable>${outcome}`
+}
+
 /** Plain text for the agent: every instruction it needs to take its next step. */
 export function formatHarnessChatStatus(status: HarnessChatStatus): string {
   const lines = [`Flujo «${status.flowName}» — ${status.status}`]
@@ -75,7 +80,7 @@ export function formatHarnessChatStatus(status: HarnessChatStatus): string {
         : 'En este paso NO edites archivos: Topo bloquea las ediciones.',
       task.instructions,
       '',
-      `Cuando termines: topo harness complete --task ${task.id} --output-file <archivo con tu entregable>${task.choices.length > 0 ? ` --outcome "<${task.choices.join(' | ')}>"` : ''}`
+      `Cuando termines: ${harnessCompleteCommand(task)}`
     )
   }
   for (const decision of status.decisions) {

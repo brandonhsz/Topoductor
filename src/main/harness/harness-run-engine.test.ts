@@ -417,6 +417,70 @@ describe('HarnessRunEngine', () => {
 
       expect(run.pending.map((decision) => decision.nodeId).sort()).toEqual(['escalar', 'persona'])
     })
+
+    function chatReview(): { run: HarnessRun; engine: HarnessRunEngine } {
+      const flow: HarnessFlow = {
+        ...flowOf(
+          [
+            agent('revision', { runner: 'chat' }),
+            agent('corregir'),
+            agent('escalar', { inputs: ['motivo_escalado'] })
+          ],
+          [
+            edge('start', 'revision'),
+            edge('revision', 'corregir', 'Hay hallazgos'),
+            edge('revision', 'fin', 'Todo cumple'),
+            edge('corregir', 'fin'),
+            edge('escalar', 'fin')
+          ]
+        ),
+        escalationNode: 'escalar'
+      }
+      const run: HarnessRun = { ...runOf(flow, {}), mode: 'chat', chatSessionId: 's1' }
+      const engine = new HarnessRunEngine(run, {
+        launch: controlledLauncher().launch,
+        onChange: () => {}
+      })
+      engine.start()
+      return { run, engine }
+    }
+
+    it('rejects a chat completion without an outcome and keeps the task open', async () => {
+      const { run, engine } = chatReview()
+      await settle()
+      const taskId = run.chatTasks[0]!.id
+
+      expect(() => engine.completeChat({ taskId, output: 'Listo', outcome: null })).toThrow(
+        `harness_outcome_required: la tarea ${taskId} necesita --outcome. Salidas válidas: «Hay hallazgos», «Todo cumple». La tarea sigue abierta; reintenta: topo harness complete --task ${taskId} --output-file <archivo con tu entregable> --outcome "<Hay hallazgos | Todo cumple>"`
+      )
+      await settle()
+      expect(run.chatTasks.map((task) => task.id)).toEqual([taskId])
+      expect(run.pending).toEqual([])
+      expect(run.steps.map((step) => step.nodeId)).toEqual(['start', 'revision'])
+
+      expect(engine.completeChat({ taskId, output: 'Listo', outcome: 'todo cumple' })).toBe(true)
+      await settle()
+      expect(run.status).toBe('completed')
+      expect(run.steps.map((step) => [step.nodeId, step.outcome])).toEqual([
+        ['start', null],
+        ['revision', 'Todo cumple'],
+        ['fin', null]
+      ])
+    })
+
+    it('rejects an outcome that is not one of the labels', async () => {
+      const { run, engine } = chatReview()
+      await settle()
+      const taskId = run.chatTasks[0]!.id
+
+      expect(() => engine.completeChat({ taskId, output: 'Listo', outcome: 'Resuelto' })).toThrow(
+        /^harness_outcome_invalid: «Resuelto» no es una salida .*«Hay hallazgos», «Todo cumple»/
+      )
+      await settle()
+      expect(run.chatTasks.map((task) => task.id)).toEqual([taskId])
+      expect(run.pending).toEqual([])
+      expect(run.vars.motivo_escalado).toBeUndefined()
+    })
   })
 
   describe('agents Topo runs for a chat', () => {

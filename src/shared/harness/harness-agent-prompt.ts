@@ -60,10 +60,15 @@ export function parseOutcome(output: string, choices: readonly string[]): string
     if (!match) {
       continue
     }
-    const picked = comparable(match[1]!)
-    return choices.find((choice) => comparable(choice) === picked) ?? null
+    return matchOutcome(match[1]!, choices)
   }
   return null
+}
+
+/** The choice `label` names, ignoring case, accents and quotes; null when it names none. */
+export function matchOutcome(label: string, choices: readonly string[]): string | null {
+  const picked = comparable(label)
+  return choices.find((choice) => comparable(choice) === picked) ?? null
 }
 
 /** Text under the last `## <title>` heading (any level), up to the next heading of that level or higher. */
