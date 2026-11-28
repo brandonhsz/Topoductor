@@ -7,6 +7,8 @@ import { getSshConnectionManager } from '../ssh/targets/ssh-target-registry'
 import { quotePosixShell } from '../../shared/shell/launch/shell-argument-quoting'
 import { admitSelfInitiatedTreeKill } from '../pty/process-retirement/own-chromium-tree-kill-guard'
 import { errorMessage } from '../../shared/error-message'
+import { getAppEnvironment, hasAppEnvironment } from '../../shared/app-environment'
+import { prependTopoCliDirToChildPath } from '../cli/topo-cli-child-path'
 
 type AutomationPrecheckExecutionTarget =
   | {
@@ -128,6 +130,26 @@ export function killLocalPrecheckProcessTree(
   return forceKillTimer
 }
 
+/** Prechecks like `topo avenapm queue` need this app's CLI on PATH, as its terminals have it. */
+function localPrecheckEnv(): NodeJS.ProcessEnv {
+  if (!hasAppEnvironment()) {
+    return process.env
+  }
+  const env: Record<string, string> = {}
+  for (const [key, value] of Object.entries(process.env)) {
+    if (value !== undefined) {
+      env[key] = value
+    }
+  }
+  const app = getAppEnvironment()
+  prependTopoCliDirToChildPath(env, {
+    isPackaged: app.isPackaged(),
+    userDataPath: app.getPath('userData'),
+    resourcesPath: process.resourcesPath ?? null
+  })
+  return env
+}
+
 function runLocalPrecheck(
   precheck: AutomationPrecheck,
   target: Extract<AutomationPrecheckExecutionTarget, { type: 'local' }>
@@ -145,7 +167,7 @@ function runLocalPrecheck(
     const child = spawn(precheck.command, {
       cwd: target.cwd,
       detached: process.platform !== 'win32',
-      env: process.env,
+      env: localPrecheckEnv(),
       shell: true,
       windowsHide: true
     })
