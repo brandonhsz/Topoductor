@@ -2,7 +2,9 @@ import { Readable } from 'node:stream'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { parseArgs, specPaths } from '../args'
 import { getRepeatedStringFlag } from '../flags'
-import type { RuntimeClient } from '../runtime-client'
+import { cliErrorExitCode } from '../cli-exit-code'
+import { reportCliError } from '../format'
+import { RuntimeRpcFailureError, type RuntimeClient } from '../runtime-client'
 import { HARNESS_COMMAND_SPECS } from '../specs/harness'
 import { HARNESS_HANDLERS } from './harness'
 
@@ -249,5 +251,62 @@ describe('harness start', () => {
       'ticket=OP-142',
       'correo=dev@example.com'
     ])
+  })
+})
+
+describe('harness complete', () => {
+  const rejection =
+    'harness_outcome_required: la tarea run-c1 necesita --outcome. Salidas válidas: «Hay hallazgos», «Todo cumple». La tarea sigue abierta; reintenta: topo harness complete --task run-c1 --output-file <archivo con tu entregable> --outcome "<Hay hallazgos | Todo cumple>"'
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllEnvs()
+  })
+
+  /** Runs `harness complete` without --outcome against a runtime that rejects it, then reports like the CLI does. */
+  async function rejectedComplete(json: boolean): Promise<{
+    log: ReturnType<typeof vi.spyOn>
+    error: ReturnType<typeof vi.spyOn>
+    exitCode: number
+  }> {
+    vi.stubEnv('TOPO_AGENT_SESSION_ID', 'chat-7')
+    const failure = new RuntimeRpcFailureError({
+      id: 'req-1',
+      ok: false,
+      error: { code: 'runtime_error', message: rejection },
+      _meta: { runtimeId: 'runtime-1' }
+    })
+    const { client, call } = harnessClient()
+    call.mockReset().mockRejectedValue(failure)
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const caught = await HARNESS_HANDLERS['harness complete']({
+      flags: new Map([
+        ['task', 'run-c1'],
+        ['output', 'Listo']
+      ]),
+      client,
+      cwd: '/tmp/worktree',
+      json
+    }).catch((thrown: unknown) => thrown)
+    expect(caught).toBe(failure)
+    expect(call.mock.calls[0]![1]).not.toHaveProperty('outcome')
+    reportCliError(caught, json, { commandPath: ['harness', 'complete'] })
+    return { log, error, exitCode: cliErrorExitCode(caught, ['harness', 'complete']) }
+  }
+
+  it('prints a rejected outcome with its labels and the retry command, exiting nonzero', async () => {
+    const { error, exitCode } = await rejectedComplete(false)
+    expect(String(error.mock.calls[0]?.[0])).toContain(rejection)
+    expect(exitCode).toBe(1)
+  })
+
+  it('returns the rejection in the --json failure envelope, exiting nonzero', async () => {
+    const { log, exitCode } = await rejectedComplete(true)
+    expect(JSON.parse(String(log.mock.calls[0]?.[0]))).toMatchObject({
+      ok: false,
+      error: { message: rejection }
+    })
+    expect(exitCode).toBe(1)
   })
 })

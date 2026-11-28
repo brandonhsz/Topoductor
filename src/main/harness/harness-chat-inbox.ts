@@ -4,6 +4,8 @@ import type {
   HarnessRun,
   HarnessRunStep
 } from '../../shared/harness/harness-run-types'
+import { matchOutcome, parseOutcome } from '../../shared/harness/harness-agent-prompt'
+import { harnessCompleteCommand } from '../../shared/harness/harness-chat-status'
 import {
   harnessSubagentPrompt,
   matchSubagentPrompt,
@@ -18,6 +20,26 @@ const SUBAGENT_REJECTIONS = {
   prompt_mismatch:
     'Topo Harness: el prompt del subagente no es el exacto del paso. Lánzalo otra vez con el prompt tal cual, sin agregar ni resumir nada.'
 } as const
+
+/** Throws while a task that leaves through labeled edges lacks a valid outcome, so the chat retries instead of the run escalating. */
+function chosenOutcome(task: HarnessChatTask, completion: HarnessChatCompletion): string | null {
+  if (task.choices.length === 0) {
+    return completion.outcome
+  }
+  const outcome = completion.outcome
+    ? matchOutcome(completion.outcome, task.choices)
+    : parseOutcome(completion.output, task.choices)
+  if (outcome) {
+    return outcome
+  }
+  const problem = completion.outcome
+    ? `harness_outcome_invalid: «${completion.outcome}» no es una salida de la tarea ${task.id}.`
+    : `harness_outcome_required: la tarea ${task.id} necesita --outcome.`
+  const labels = task.choices.map((choice) => `«${choice}»`).join(', ')
+  throw new Error(
+    `${problem} Salidas válidas: ${labels}. La tarea sigue abierta; reintenta: ${harnessCompleteCommand(task)}`
+  )
+}
 
 /** Steps waiting on the workspace chat; each resolves when the chat reports it through `topo harness`. */
 export class HarnessChatInbox {
@@ -53,13 +75,13 @@ export class HarnessChatInbox {
     })
   }
 
-  /** False when the task is unknown, already reported, or must come from a subagent. */
+  /** False when the task is unknown, already reported, or must come from a subagent; throws on a missing or invalid outcome. */
   complete(completion: HarnessChatCompletion): boolean {
     const task = this.run.chatTasks.find((entry) => entry.id === completion.taskId)
-    if (task?.delivery === 'subagent') {
+    if (!task || task.delivery === 'subagent' || !this.waiters.has(task.id)) {
       return false
     }
-    return this.settle(completion)
+    return this.settle({ ...completion, outcome: chosenOutcome(task, completion) })
   }
 
   /** Completes the subagent task whose exact prompt was captured; a reason when the prompt does not fit. */
