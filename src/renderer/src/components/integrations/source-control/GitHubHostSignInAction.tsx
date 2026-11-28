@@ -2,22 +2,21 @@ import { useState } from 'react'
 import { Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { useAppStore } from '@/store/index'
 import { useTranslate } from '@/i18n/use-translate'
-import { defaultScopeHost } from '@/runtime/hosts/selection/default-creation-host'
 import { signInGitHubOnHost } from '@/runtime/provider-accounts/sign-in/runtime-host-account-sign-in-client'
 import { HostAccountSignInPrompt } from '../../settings/accounts/sign-in/HostAccountSignInPrompt'
+import type { RuntimeClientTarget } from '../../../../../shared/runtime-client-target'
 
 /** Signs the remote server's own gh in from this device; renders nothing for this desktop. */
 export function GitHubHostSignInAction(props: {
+  owner: RuntimeClientTarget | undefined
   connected: boolean
   onSignedIn: () => void
 }): React.JSX.Element | null {
   const t = useTranslate()
-  const settings = useAppStore((s) => s.settings)
-  const owner = defaultScopeHost(settings)
+  const owner = props.owner
   const [running, setRunning] = useState(false)
-  if (owner.kind !== 'environment') {
+  if (owner?.kind !== 'environment') {
     return null
   }
   const hostLabel = t('integrations.github.hostSignIn.hostLabel', 'the remote server')

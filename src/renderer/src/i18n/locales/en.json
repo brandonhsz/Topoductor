@@ -25019,5 +25019,17 @@
     "statusAction": "Desktop",
     "popOut": "Open in window",
     "close": "Close remote desktop"
+  },
+  "integrations": {
+    "github": {
+      "hostSignIn": {
+        "hostLabel": "the remote server",
+        "doneAs": "The server is signed in to GitHub as {{login}}.",
+        "done": "The server is signed in to GitHub.",
+        "failed": "GitHub sign-in did not finish.",
+        "again": "Sign in again on the server",
+        "start": "Sign in on the server"
+      }
+    }
   }
 }
