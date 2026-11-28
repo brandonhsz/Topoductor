@@ -47,7 +47,7 @@ export function GitHubHostSignInAction(props: {
   }
   return (
     <div className="space-y-2">
-      <Button variant="outline" size="sm" disabled={running} onClick={signIn} className="gap-1.5">
+      <Button variant="outline" size="sm" disabled={running} onClick={signIn}>
         {running ? <Loader2 className="size-3.5 animate-spin" /> : <LogIn className="size-3.5" />}
         {props.connected
           ? t('integrations.github.hostSignIn.again', 'Sign in again on the server')

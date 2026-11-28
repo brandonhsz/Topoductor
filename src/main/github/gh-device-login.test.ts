@@ -1,5 +1,4 @@
 import { EventEmitter } from 'node:events'
-import type { ChildProcess } from 'node:child_process'
 import { describe, expect, it, vi } from 'vitest'
 import type { HostAccountSignInChannel } from '../../shared/host-account-sign-in-types'
 import {
@@ -35,10 +34,14 @@ describe('parseGhDeviceLoginPrompt', () => {
   })
 })
 
-function fakeChild(): ChildProcess & { stderr: EventEmitter } {
-  const child = new EventEmitter() as ChildProcess & { stderr: EventEmitter }
-  Object.assign(child, { stdout: new EventEmitter(), stderr: new EventEmitter(), kill: vi.fn() })
-  return child
+type FakeChild = EventEmitter & { stdout: EventEmitter; stderr: EventEmitter; kill: () => void }
+
+function fakeChild(): FakeChild {
+  return Object.assign(new EventEmitter(), {
+    stdout: new EventEmitter(),
+    stderr: new EventEmitter(),
+    kill: vi.fn()
+  })
 }
 
 function setup(): {

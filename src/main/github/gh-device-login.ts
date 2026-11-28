@@ -1,4 +1,4 @@
-import { spawn, type ChildProcess } from 'node:child_process'
+import { spawnProcess } from '@topo/process-host'
 import { stripAnsiEscapeSequences } from '../../shared/ansi-escape-sequences'
 import type {
   GitHubHostSignInResult,
@@ -33,9 +33,20 @@ export function parseGhDeviceLoginPrompt(output: string): { url: string; userCod
   return code && url ? { url: url[0], userCode: code[1].toUpperCase() } : null
 }
 
+type LoginOutput = { on(event: 'data', listener: (chunk: Buffer) => void): unknown } | null
+
+/** The slice of a child process the login reads; tests pass a fake. */
+export type GhLoginProcess = {
+  stdout: LoginOutput
+  stderr: LoginOutput
+  on(event: 'error', listener: (error: Error) => void): unknown
+  on(event: 'close', listener: (code: number | null) => void): unknown
+  kill(): unknown
+}
+
 export type GhDeviceLoginDeps = {
   findGh: () => Promise<string | null>
-  spawnLogin: (binary: string, args: string[], env: NodeJS.ProcessEnv) => ChildProcess
+  spawnLogin: (binary: string, args: string[], env: NodeJS.ProcessEnv) => GhLoginProcess
   run: (binary: string, args: string[], env: NodeJS.ProcessEnv) => Promise<string>
   env: () => NodeJS.ProcessEnv
   onSignedIn: () => void
@@ -47,7 +58,7 @@ const defaultDeps: GhDeviceLoginDeps = {
     return probe.status === 'available' ? probe.binary : null
   },
   spawnLogin: (binary, args, env) =>
-    spawn(binary, args, { env, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true }),
+    spawnProcess({ program: binary, args, env, stdio: ['ignore', 'pipe', 'pipe'] }),
   run: async (binary, args, env) =>
     (await execLocalPreflightCommandOrThrow(binary, args, { env, timeoutMs: FOLLOW_UP_TIMEOUT_MS }))
       .stdout,
